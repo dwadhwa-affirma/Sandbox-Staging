@@ -1,0 +1,68 @@
+<apex:page standardStylesheets="false" controller="MemberAuthenticationController" action="{!CheckIfMemberValidated}">
+
+  <apex:stylesheet value="{!$Resource.style_c}" /> 
+  <apex:stylesheet value="{!$Resource.bootstrap}" />
+  <head>
+        <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" />
+    </head>
+  <section class="chervon">
+  <div class="container">
+    <h2><i aria-hidden="true" class="fa fa-key"></i> Basic Authentication Confirmed</h2>
+    <div class="seperator-confirm"></div>
+    <h4>{!Names.FirstName} {!Names.LastName}</h4>
+    <div class="row">
+      <div class="col-md-6 col-sm-6 col-xs-12">
+        <div class="row">
+          <div class="member-aut">
+            <div class="col-md-5 col-sm-6 col-xs-6"><i aria-hidden="true" class="{!if(PhoneNumberMatch=='true','fa fa-check-circle','fa fa-close error')}"></i> Phone #</div>
+                <div class="col-md-5 col-sm-6 col-xs-6">
+                <apex:outputText id="phone" value="{!PhoneNumber}"/>
+            </div>
+          </div>
+         <apex:outputPanel rendered="{!MemberNumberMatch}">
+          <div class="member-aut">
+            <div class="col-md-5 col-sm-6 col-xs-6"><i aria-hidden="true" class="fa fa-check-circle"></i> Member #</div>
+            <div class="col-md-5 col-sm-6 col-xs-6">
+                <apex:outputText id="MemberNumber" value="{!EnteredMemberNumber}"/> 
+            </div>
+          </div>
+          </apex:outputPanel>
+          <apex:outputPanel rendered="{!SSNnumberMatch}">
+          <div class="member-aut">
+            <div class="col-md-5 col-sm-6 col-xs-6"><i aria-hidden="true" class="fa fa-check-circle"></i> Last 4 of SSN </div>
+            <div class="col-md-5 col-sm-6 col-xs-6"> 
+            <apex:outputText id="SSN" value="{!EnteredSSN}" />
+            </div>
+          </div>
+          </apex:outputPanel>
+          <apex:outputPanel rendered="{!CardNumberMatch}">
+          <div class="member-aut">
+            <div class="col-md-5 col-sm-6 col-xs-6"><i aria-hidden="true" class="fa fa-check-circle"></i> Card #</div>
+            <div class="col-md-5 col-sm-6 col-xs-6"> 
+                <apex:outputText id="CardNumber" value="{!EnteredCardNumberLastdigits}"/>
+            </div>
+          </div>
+          </apex:outputPanel>
+          <apex:outputPanel rendered="{!PINMatch}">
+          <div class="member-aut">
+            <div class="col-md-5 col-sm-6 col-xs-6"><i aria-hidden="true" class="fa fa-check-circle"></i> PIN </div>
+            <div class="col-md-5 col-sm-6 col-xs-6"> ****</div>
+          </div>
+          </apex:outputPanel>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<div class="but-area">
+    <div class="container">
+        <div class="row">
+        <apex:form > 
+            <div class="col-md-12 col-sm-12 col-xs-12">
+                <apex:commandButton styleClass="btn btn-primary pull-right" id="AuthenticatedButton" value="Authenticated" action="{!DetailsPage}" immediate="true"></apex:commandButton>
+            </div>
+         </apex:form> 
+        </div>
+    </div>
+</div>
+</apex:page>

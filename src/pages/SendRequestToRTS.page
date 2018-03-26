@@ -1,0 +1,7 @@
+<apex:page controller="SendRequestToRTSController" action="{!init}" >
+    <apex:form >
+        <apex:outputPanel >
+            
+        </apex:outputPanel>
+    </apex:form>
+</apex:page>

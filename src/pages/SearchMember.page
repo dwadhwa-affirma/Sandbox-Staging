@@ -1,0 +1,256 @@
+<apex:page controller="SearchMemberController">
+
+    <apex:form >
+        <apex:pageMessages id="errors" />
+        <apex:pageBlock title="Advanced Search" >
+
+            <table width="100%" border="0">
+                <tr>  
+                    <td width="200" valign="top">
+                        <apex:pageBlock title="Parameters:" mode="edit" id="criteria">
+                            
+                            <table cellpadding="2" cellspacing="2" id="t01" style="float: left">
+                                <tr class="Person">
+                                    <td style="font-weight:bold;">First Name<br/>
+                                        <apex:inputText value="{!firstnameQuery}" style="width:150px;" styleClass="fname" required="false" label="First Name"/>
+                                    </td>
+                                </tr>
+                                <tr class="Person">
+                                    <td style="font-weight:bold;">Last Name<br/>
+                                        <apex:inputText value="{!lastnameQuery}" style="width:150px;" required="false" styleClass="lname" label="Last Name"/>
+                                    </td>
+                                </tr>
+                                <tr class="Person">
+                                    <td style="font-weight:bold;">SSN Last 4 Digits<br/>
+                                        <apex:inputText value="{!SSNLast4Query}" style="width:150px;" label="SSN Last 4" required="false" styleClass="ssnlast4"/>
+                                    </td>
+                                </tr>
+                                <tr class="Person">
+                                    <td style="font-weight:bold;">Residential City<br/>
+                                        <apex:inputText value="{!memberCityQuery}" style="width:150px;" label="SSN Last 4" required="false" styleClass="memCity"/>
+                                    </td>
+                                </tr>
+                                <tr class="Person">
+                                    <td style="font-weight:bold;">Residential State<br/>
+                                        <apex:inputText value="{!memberStateQuery}" style="width:150px;" label="SSN Last 4" required="false" styleClass="memState"/>
+                                    </td>
+                                </tr>
+                            </table>
+                           
+                            <table cellpadding="2" cellspacing="2" style="float: left">
+                                
+                                <th class="or" style="padding:8px;color:red;" align="Center"> (OR) </th>
+                                
+                            </table>
+                            
+                            <table cellpadding="2" cellspacing="2" id="t02" >
+                                <tr class="Member">
+                                    <td style="font-weight:bold;">Member Number<br/>
+                                        <apex:inputText value="{!MembernumberQuery}" style="width:150px;" required="false" label="Member #" styleClass="mnumber"/>
+                                    </td>
+                                </tr>
+                                <tr class="Member">
+                                    <td style="font-weight:bold;">Card Name<br/>
+                                        <apex:inputText value="{!CardnameQuery}" style="width:150px;" required="false" label="Card Name" styleClass="cname"/>
+                                    </td>
+                                </tr>
+                                <tr class="Member">
+                                    <td style="font-weight:bold;">Card Number<br/>
+                                        <apex:inputText value="{!CardnumberQuery}" style="width:150px;" required="false" label="Card #" styleClass="cnumber"/>
+                                    </td>
+                                </tr>
+                                <tr class="Member">
+                                    <td style="font-weight:bold;">VIN Number<br/>
+                                        <apex:inputText value="{!VINQuery}" style="width:150px;" required="false" label="VIN #" styleClass="vnumber"/>
+                                    </td>
+                                </tr>
+                                <tr class="Member">
+                                    <td style="font-weight:bold;">Loan Number<br/>
+                                        <apex:inputText value="{!LoannumberQuery}" style="width:150px;" required="false" label="Loan #" styleClass="lnumber"/>
+                                    </td>
+                                </tr>
+                                <tr class="Member">
+                                    <td style="font-weight:bold;">Property Address<br/>
+                                        <apex:inputText value="{!PropertyAddressQuery}" style="width:150px;" required="false" label="Prop Address" styleClass="pAddress"/>
+                                    </td>
+                                </tr>
+                                <tr class="Member">
+                                    <td style="font-weight:bold;">Property City<br/>
+                                        <apex:inputText value="{!PropertyCityQuery}" style="width:150px;" required="false" label="Prop City" styleClass="pCity"/>
+                                    </td>
+                                </tr>
+                                <tr class="Member">
+                                    <td style="font-weight:bold;">Property State<br/>
+                                        <apex:inputText value="{!PropertyStateQuery}" style="width:150px;" required="false" label="Prop State" styleClass="pState"/>
+                                    </td>
+                                </tr>
+                                <tr class="Member">
+                                    <td style="font-weight:bold;">Property Zip<br/>
+                                        <apex:inputText value="{!PropertyZipQuery}" style="width:150px;" required="false" label="Prop Zip" styleClass="pZip"/>
+                                    </td>
+                                </tr>
+                            </table>
+                           
+                            <table cellpadding="2" cellspacing="2" >
+                                <tr>
+                                    <td><br/>
+                                        <div class="buttonMember"><apex:commandButton action="{!searchAccount}"  styleClass="memberbuttonId" value="Search" status="MemberStatusId" reRender="memberresults,errors" style="width:150px;margin-bottom: 5px;"/>
+                                        </div>
+                                        <div class="buttonAccount"><apex:commandButton action="{!executeSearch}" styleClass="accountbuttonId" value="Search" status="StatusId" style="width:150px;margin-bottom: 5px;" reRender="results,errors"/>
+                                        </div> 
+                                        <div class="clearData"><apex:commandButton action="{!clearAll}" value="Clear All" style="width:150px;" reRender="memberresults,trustresults,results,errors,criteria,script"/></div>
+                                    </td>
+                                </tr> 
+        
+                           </table>
+                       </apex:pageBlock>
+                   </td>
+                   <td valign="top">
+                    <div class="memberAccounts">
+                        <div style="overflow: scroll; width: 900px; height: 450px;">
+                       <apex:pageBlock mode="edit" id="memberresults">
+                       <apex:actionStatus id="MemberStatusId" layout="inline">
+                           <apex:facet name="start" > 
+                               <img src="/img/loading.gif" /> 
+                               <font size="2" color="blue">Searching.. Please Wait..</font>                  
+                           </apex:facet>
+                       </apex:actionStatus>
+                   
+                       <apex:pageBlockTable value="{!MemberAccountInfo}" var="accDetails">
+                       
+                           <apex:column headerValue="Search Results">  
+                     <!--  <apex:commandLink action="/apex/SetRecordType?acctId={!Account.Id}" value="Link"/> -->
+                           <apex:outputLink value="/{!accDetails.id}" target="_blank">{!accDetails.Name}</apex:outputLink>
+                           </apex:column> 
+                           <apex:column value="{!accDetails.Card_Name__c}"/>
+                           <apex:column value="{!accDetails.Card_Number__c}" /> 
+                           <apex:column value="{!accDetails.Loan_Number__c}" />
+                           <apex:column value="{!accDetails.VIN__c}" />
+                           </apex:pageBlockTable>
+                       <apex:pageMessage rendered="{!searchMsgDetails}" strength="3" severity="info" title="Search Not Found"><font size="3">Please try a different search. </font> </apex:pageMessage>
+                          
+                       </apex:pageBlock>
+                        </div>
+                    </div>
+                    <div class="accounts">
+                           <apex:pageBlock mode="edit" id="results">
+                           <apex:actionStatus id="StatusId" layout="inline">
+                               <apex:facet name="start" > 
+                                   <img src="/img/loading.gif" /> 
+                                   <font size="2" color="blue">Searching.. Please Wait..</font>                  
+                               </apex:facet>
+                           </apex:actionStatus>
+                                <apex:pageBlockTable value="{!AccountDetails}" var="acc">
+                                   <apex:column headerValue="Search Results">               
+                                       <apex:outputLink value="/{!acc.id}" target="_blank">{!acc.Name}</apex:outputLink>
+                                   </apex:column>
+                                <!--   <apex:column value="{!acc.firstname}" />
+                                   <apex:column value="{!acc.lastname}"/> -->
+                                   <apex:column value="{!acc.SSN_TIN_Encrypted__pc}" />             
+                                   <apex:column value="{!acc.PersonBirthdate}"/>
+                                 <!--  <apex:column value="{!acc.PersonHomePhone}"/>
+                                   <apex:column value="{!acc.PersonEmail}"/>
+                                   <apex:column value="{!acc.Residential_Zipocde__pc}"/>  -->
+                               </apex:pageBlockTable>
+                               <apex:pageMessage rendered="{!searchMsg}" strength="3" severity="info" title="Search Not Found"><font size="3">Please try a different search. </font> </apex:pageMessage>
+                       </apex:pageBlock>
+                    </div>
+                   </td>
+                </tr>
+            </table>
+            
+        </apex:pageBlock>
+    </apex:form>
+
+    <!-- <apex:includeScript value="{!URLFOR($Resource.DSP, 'dsp/js/jquery.min.js')}"/> -->
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+    <script src="http://code.jquery.com/jquery-2.1.4.min.js" type="text/javascript"></script>
+    <script src="../../soap/ajax/29.0/connection.js" type="text/javascript"></script>
+    <script src="../../soap/ajax/29.0/apex.js" type="text/javascript"></script>
+    <apex:outputPanel id="script">
+    <script type="text/javascript"> 
+    $(document).ready(function() { 
+
+        /*   $(document).on("keypress", ".fname", function() { 
+            if(event.keyCode == 13){ 
+                $(".accountbuttonId").click(); 
+                return false; 
+            } 
+        });  */
+        
+        $('.fname')
+        .add('.lname')
+        .add('.ssnlast4')
+        .add('.memCity')
+        .add('.memState')
+        .keypress(function(e) {
+            // var key1 = 13;
+                if (e.keyCode == 13) {
+                    $('.accountbuttonId').click();
+                    return true;
+                }
+            });  
+        
+        $('.cname')
+        .add('.mnumber')
+        .add('.cnumber')
+        .add('.vnumber')
+        .add('.lnumber')
+        .add('.pAddress')
+        .add('.pCity')
+        .add('.pState')
+        .add('.pZip')
+        .keypress(function(e1) {
+            // var key1 = 13;
+                if (e1.keyCode == 13) {
+                    $('.memberbuttonId').click();
+                    return true;
+                }
+            });
+        
+        $('.accounts').hide();
+        $('.memberAccounts').hide();
+        $('.buttonMember').hide();
+        $('.buttonAccount').hide();
+       
+        $('.Person').click(function(){
+            $('.Person').show();
+            $('.Member').hide();
+            $('.accounts').show();
+            $('.memberAccounts').hide();
+            $('.buttonMember').hide();
+            $('.buttonAccount').show();
+            $('.or').hide();
+        }); 
+            $('.Person').keyup(function(){
+            $('.Person').show();
+            $('.Member').hide();
+            $('.accounts').show();
+            $('.memberAccounts').hide();
+            $('.buttonMember').hide();
+            $('.buttonAccount').show();
+            $('.or').hide();    
+        }); 
+        
+        $('.Member').click(function(){
+            $('.Member').show();
+            $('.Person').hide();
+            $('.accounts').hide();
+            $('.memberAccounts').show();
+            $('.buttonMember').show();
+            $('.buttonAccount').hide();
+            $('.or').hide();
+        });
+            $('.Member').keyup(function(){
+            $('.Member').show();
+            $('.Person').hide();
+            $('.accounts').hide();
+            $('.memberAccounts').show();
+            $('.buttonMember').show();
+            $('.buttonAccount').hide();
+            $('.or').hide();
+        });    
+    });
+    </script>
+    </apex:outputPanel>
+</apex:page>

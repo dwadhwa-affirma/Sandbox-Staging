@@ -1,0 +1,1499 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <actionOverrides>
+        <actionName>CallHighlightAction</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>CancelEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Delete</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Edit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>EmailHighlightAction</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>EnableCustomerPortalUser</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>List</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>ListClean</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>New</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>RequestUpdate</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>SaveEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>SmsHighlightAction</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Tab</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>View</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>ViewCustomerPortalUser</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>WebsiteHighlightAction</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <compactLayoutAssignment>SYSTEM</compactLayoutAssignment>
+    <enableEnhancedLookup>true</enableEnhancedLookup>
+    <enableFeeds>false</enableFeeds>
+    <enableHistory>false</enableHistory>
+    <fields>
+        <fullName>AccountNumber</fullName>
+    </fields>
+    <fields>
+        <fullName>AccountSource</fullName>
+        <type>Picklist</type>
+    </fields>
+    <fields>
+        <fullName>Address_Check__c</fullName>
+        <externalId>false</externalId>
+        <formula>IF((ISBLANK(  Residential_City__pc  ) &amp;&amp; 
+ISBLANK(  Residential_Country__pc  ) &amp;&amp; 
+ISBLANK(  Residential_Country_Code__pc ) &amp;&amp; 
+ISBLANK(  Residential_Extra_Address__pc  ) &amp;&amp; 
+ISBLANK(  Residential_State__pc  ) &amp;&amp; 
+ISBLANK(  Residential_Street__pc  ) &amp;&amp; 
+ISBLANK(  Residential_Zipocde__pc )), &apos;TRUE&apos;, &apos;FALSE&apos;)</formula>
+        <label>Address Check</label>
+        <required>false</required>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Age__c</fullName>
+        <externalId>false</externalId>
+        <formula>(TODAY() -  PersonContact.BIRTH_DATE__c )*24/(365*24)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Age</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Alt_Email_Raw__c</fullName>
+        <externalId>false</externalId>
+        <label>Alternate Email</label>
+        <length>40</length>
+        <required>false</required>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>AnnualRevenue</fullName>
+    </fields>
+    <fields>
+        <fullName>Bad_Email__c</fullName>
+        <externalId>false</externalId>
+        <formula>LOWER(PersonEmail) &lt;&gt; LOWER(Email_raw__c)  || LOWER( Alternate_Email__pc ) &lt;&gt; LOWER( Alt_Email_Raw__c )</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Bad Email</label>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>BillingAddress</fullName>
+    </fields>
+    <fields>
+        <fullName>Description</fullName>
+    </fields>
+    <fields>
+        <fullName>Email_raw__c</fullName>
+        <externalId>false</externalId>
+        <label>Email</label>
+        <length>40</length>
+        <required>false</required>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Emp_Birth_Date__c</fullName>
+        <externalId>false</externalId>
+        <formula>IF( 
+!ISBLANK(Employee_Restricted_Access__c), 
+&quot;**/**/****&quot;, 
+TEXT(MONTH(BIRTH_DATE__pc)) &amp; &quot;/&quot; &amp; TEXT(DAY(BIRTH_DATE__pc)) &amp; &quot;/&quot; &amp;TEXT(YEAR(BIRTH_DATE__pc)) 
+)</formula>
+        <label>Birth Date</label>
+        <required>false</required>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Emp_SSN_Last_4__c</fullName>
+        <externalId>false</externalId>
+        <formula>IF( 
+!ISBLANK(Employee_Restricted_Access__c)  , 
+&quot;****&quot;, 
+SSN_Last_4__pc 
+)</formula>
+        <label>SSN Last 4</label>
+        <required>false</required>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Employee_Restricted_Access__c</fullName>
+        <externalId>false</externalId>
+        <label>Employee Restricted Access</label>
+        <precision>5</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Fax</fullName>
+    </fields>
+    <fields>
+        <fullName>Home_Phone_Number__c</fullName>
+        <externalId>false</externalId>
+        <label>Home Phone Number</label>
+        <required>false</required>
+        <type>Phone</type>
+    </fields>
+    <fields>
+        <fullName>ID_1_Type__c</fullName>
+        <externalId>false</externalId>
+        <formula>CASE(ID_1_Type__pc , 
+0, &apos;000 Unknown&apos;, 
+1, &apos;001 Known Existing Member&apos;,
+2, &apos;002 State Drivers License&apos;,
+3, &apos;003 State ID Card&apos;,
+4, &apos;004 US Passport&apos;,
+5, &apos;005 Foreign Passport&apos;,
+6, &apos;006 Military ID Card&apos;,
+7, &apos;007 Foreign Government Issued ID&apos;,
+8, &apos;008 Resident Alien Card&apos;,
+9, &apos;009 Disabled/elderly with no ID&apos;,
+10, &apos;010 Foreign Entity with no ID&apos;,
+11, &apos;011 Low Enforcement&apos;,
+12, &apos;012 Amish Customer with no ID&apos;,
+13, &apos;013 Student&apos;,
+14, &apos;014 Birth Certificate&apos;,
+15, &apos;015 Minor with no ID&apos;,
+16, &apos;016 TWIC Card&apos;,
+&apos;Value Not Found&apos;)</formula>
+        <label>ID 1 Type</label>
+        <required>false</required>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>ID_2_Type__c</fullName>
+        <externalId>false</externalId>
+        <formula>CASE(ID_2_Type__pc , 
+0, &apos;000 Unknown&apos;, 
+1, &apos;001 Known Existing Member&apos;, 
+2, &apos;002 State Drivers License&apos;, 
+3, &apos;003 State ID Card&apos;, 
+4, &apos;004 US Passport&apos;, 
+5, &apos;005 Foreign Passport&apos;, 
+6, &apos;006 Military ID Card&apos;, 
+7, &apos;007 Foreign Government Issued ID&apos;, 
+8, &apos;008 Resident Alien Card&apos;, 
+9, &apos;009 Disabled/elderly with no ID&apos;, 
+10, &apos;010 Foreign Entity with no ID&apos;, 
+11, &apos;011 Low Enforcement&apos;, 
+12, &apos;012 Amish Customer with no ID&apos;, 
+13, &apos;013 Student&apos;, 
+14, &apos;014 Birth Certificate&apos;, 
+15, &apos;015 Minor with no ID&apos;, 
+16, &apos;016 TWIC Card&apos;, 
+&apos;Value Not Found&apos;)</formula>
+        <label>ID 2 Type</label>
+        <required>false</required>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>ID_3_Type__c</fullName>
+        <externalId>false</externalId>
+        <formula>CASE(ID_3_Type__pc  , 
+0, &apos;000 Unknown&apos;, 
+1, &apos;001 Known Existing Member&apos;, 
+2, &apos;002 State Drivers License&apos;, 
+3, &apos;003 State ID Card&apos;, 
+4, &apos;004 US Passport&apos;, 
+5, &apos;005 Foreign Passport&apos;, 
+6, &apos;006 Military ID Card&apos;, 
+7, &apos;007 Foreign Government Issued ID&apos;, 
+8, &apos;008 Resident Alien Card&apos;, 
+9, &apos;009 Disabled/elderly with no ID&apos;, 
+10, &apos;010 Foreign Entity with no ID&apos;, 
+11, &apos;011 Low Enforcement&apos;, 
+12, &apos;012 Amish Customer with no ID&apos;, 
+13, &apos;013 Student&apos;, 
+14, &apos;014 Birth Certificate&apos;, 
+15, &apos;015 Minor with no ID&apos;, 
+16, &apos;016 TWIC Card&apos;, 
+&apos;Value Not Found&apos;)</formula>
+        <label>ID 3 Type</label>
+        <required>false</required>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Industry</fullName>
+        <type>Picklist</type>
+    </fields>
+    <fields>
+        <fullName>IsCustomerPortal</fullName>
+    </fields>
+    <fields>
+        <fullName>Jigsaw</fullName>
+    </fields>
+    <fields>
+        <fullName>Last_NA_LEHS__c</fullName>
+        <description>The last date that a needs assessment housing section was created for the member.</description>
+        <externalId>false</externalId>
+        <label>Last NA LEHS</label>
+        <summarizedField>Needs_Assesment__c.Last_LEHS__c</summarizedField>
+        <summaryFilterItems>
+            <field>Needs_Assesment__c.Last_LEHS__c</field>
+            <operation>notEqual</operation>
+            <value></value>
+        </summaryFilterItems>
+        <summaryForeignKey>Needs_Assesment__c.Member__c</summaryForeignKey>
+        <summaryOperation>max</summaryOperation>
+        <type>Summary</type>
+    </fields>
+    <fields>
+        <fullName>Last_NA_LEOM__c</fullName>
+        <description>The last date that a needs assessment life events section was created for the member.</description>
+        <externalId>false</externalId>
+        <label>Last NA LEOM</label>
+        <summarizedField>Needs_Assesment__c.Last_LEOM__c</summarizedField>
+        <summaryForeignKey>Needs_Assesment__c.Member__c</summaryForeignKey>
+        <summaryOperation>max</summaryOperation>
+        <type>Summary</type>
+    </fields>
+    <fields>
+        <fullName>Last_NA__c</fullName>
+        <description>Date of the last needs assessment record</description>
+        <externalId>false</externalId>
+        <label>Last NA</label>
+        <summarizedField>Needs_Assesment__c.CreatedDate</summarizedField>
+        <summaryForeignKey>Needs_Assesment__c.Member__c</summaryForeignKey>
+        <summaryOperation>max</summaryOperation>
+        <type>Summary</type>
+    </fields>
+    <fields>
+        <fullName>Member_Map_Link__c</fullName>
+        <externalId>false</externalId>
+        <formula>IF(ISBLANK(Residential_Street__pc) , &quot;&quot;, 
+   HYPERLINK(&quot;https://maps.google.com/maps?q=&quot; &amp; 
+              Residential_Street__pc   &amp; &apos;,+&apos; &amp; 
+              Residential_City__pc     &amp; &apos;,+&apos; &amp; 
+              Residential_State__pc    &amp; &apos;,+&apos; &amp; 
+              Residential_Country__pc  &amp; &apos;,+&apos; &amp; 
+              Residential_Zipocde__pc ,
+      &quot;Click for Map&quot;)
+)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Member Map Link</label>
+        <required>false</required>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Member_Verification_OTP_Invalid_Attempt__c</fullName>
+        <externalId>false</externalId>
+        <label>Member Verification OTP Invalid Attempt</label>
+        <required>false</required>
+        <type>DateTime</type>
+    </fields>
+    <fields>
+        <fullName>NA_Complete__c</fullName>
+        <description>Formula flag to indicate that all sections of a member&apos;s active NA are comlplete</description>
+        <externalId>false</externalId>
+        <formula>NA_LEHS_Complete__c  &amp;&amp;  NA_LEOM_Complete__c &amp;&amp; NA_LEWS_Complete__c &amp;&amp; NA_LEMP_Complete__c  &amp;&amp;
+NA_LECF_Complete__c  &amp;&amp;  NA_LESF_Complete__c &amp;&amp; NA_LESB_Complete__c &amp;&amp; NA_LECP_Complete__c &amp;&amp;
+NA_LEPT_Complete__c &amp;&amp; NA_LEMD_Complete__c &amp;&amp; NA_LEOL_Complete__c &amp;&amp; NA_LEAV_Complete__c &amp;&amp;
+NA_LEEM_Complete__c &amp;&amp; NA_LEMQ_Complete__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>NA Complete</label>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>NA_Eligibility__c</fullName>
+        <defaultValue>false</defaultValue>
+        <description>Flag used for member needs assessments eligibility</description>
+        <externalId>false</externalId>
+        <label>NA Eligibility</label>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>NA_Expired__c</fullName>
+        <description>Formula flag to determine if any section of member&apos;s NA has expired</description>
+        <externalId>false</externalId>
+        <formula>NA_LEHS_Expired__c  ||  NA_LEOM_Expired__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>NA Expired</label>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>NA_LEAV_Complete__c</fullName>
+        <defaultValue>false</defaultValue>
+        <externalId>false</externalId>
+        <label>NA_LEAV_Complete</label>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>NA_LECF_Complete__c</fullName>
+        <defaultValue>false</defaultValue>
+        <externalId>false</externalId>
+        <label>NA_LECF_Complete</label>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>NA_LECP_Complete__c</fullName>
+        <defaultValue>false</defaultValue>
+        <externalId>false</externalId>
+        <label>NA_LECP_Complete</label>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>NA_LEEM_Complete__c</fullName>
+        <defaultValue>false</defaultValue>
+        <externalId>false</externalId>
+        <label>NA_LEEM_Complete</label>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>NA_LEHS_Complete__c</fullName>
+        <defaultValue>false</defaultValue>
+        <description>Indicator to show if the NA Housing section is considered complete (TRUE) or partial (FALSE)</description>
+        <externalId>false</externalId>
+        <label>NA LEHS Complete</label>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>NA_LEHS_Expired__c</fullName>
+        <externalId>false</externalId>
+        <formula>IF( ( Last_NA_LEHS__c = null  ||   
+      Last_NA_LEHS__c &lt;  NOW() -(1440/1440) ) &amp;&amp; 
+      NA_Eligibility__c  = TRUE ,
+          true, 
+          false
+)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>NA LEHS Expired</label>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>NA_LEHS_Update__c</fullName>
+        <externalId>false</externalId>
+        <label>NA LEHS Update</label>
+        <required>false</required>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>NA_LEMD_Complete__c</fullName>
+        <defaultValue>false</defaultValue>
+        <externalId>false</externalId>
+        <label>NA_LEMD_Complete</label>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>NA_LEMP_Complete__c</fullName>
+        <defaultValue>false</defaultValue>
+        <externalId>false</externalId>
+        <label>NA_LEMP_Complete</label>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>NA_LEMQ_Complete__c</fullName>
+        <defaultValue>false</defaultValue>
+        <externalId>false</externalId>
+        <label>NA_LEMQ_Complete</label>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>NA_LEOL_Complete__c</fullName>
+        <defaultValue>false</defaultValue>
+        <externalId>false</externalId>
+        <label>NA_LEOL_Complete</label>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>NA_LEOM_Complete__c</fullName>
+        <defaultValue>false</defaultValue>
+        <externalId>false</externalId>
+        <label>NA LEOM Complete</label>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>NA_LEOM_Expired__c</fullName>
+        <description>Set a flag used for NA LEOM section expiration</description>
+        <externalId>false</externalId>
+        <formula>IF( (Last_NA_LEOM__c  = null  ||   
+      Last_NA_LEOM__c &lt;  NOW() -(1440/1440) ) &amp;&amp; 
+      NA_Eligibility__c  = TRUE ,
+          true, 
+          false
+)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>NA LEOM Expired</label>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>NA_LEOM_Update__c</fullName>
+        <description>Need Assessment last update field</description>
+        <externalId>false</externalId>
+        <label>NA LEOM Update</label>
+        <required>false</required>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>NA_LEPT_Complete__c</fullName>
+        <defaultValue>false</defaultValue>
+        <externalId>false</externalId>
+        <label>NA_LEPT_Complete</label>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>NA_LESB_Complete__c</fullName>
+        <defaultValue>false</defaultValue>
+        <externalId>false</externalId>
+        <label>NA_LESB_Complete</label>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>NA_LESF_Complete__c</fullName>
+        <defaultValue>false</defaultValue>
+        <externalId>false</externalId>
+        <label>NA_LESF_Complete</label>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>NA_LEWS_Complete__c</fullName>
+        <defaultValue>false</defaultValue>
+        <externalId>false</externalId>
+        <label>NA_LEWS_Complete</label>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>NA_Opt_Out_Date__c</fullName>
+        <description>The date 1 year into the future when the member will be able to have needs assessments performed.  The member can choose to opt out of the needs assessments for a period of 1 year.  This value is set by a workflow rule triggered by the NA Opt Out field change.</description>
+        <externalId>false</externalId>
+        <label>NA Opt Out Date</label>
+        <required>false</required>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>NA_Opt_Out_Updated__c</fullName>
+        <externalId>false</externalId>
+        <label>NA Opt Out Updated</label>
+        <required>false</required>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>NA_Opt_Out__c</fullName>
+        <defaultValue>false</defaultValue>
+        <description>When checked, indicates that the member has opted to not participate in needs assessments for the period of 1 year.</description>
+        <externalId>false</externalId>
+        <label>NA Opt Out</label>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Name</fullName>
+    </fields>
+    <fields>
+        <fullName>NumberOfEmployees</fullName>
+    </fields>
+    <fields>
+        <fullName>Onbase_Drivers_License__c</fullName>
+        <description>Onbase Drivers License</description>
+        <externalId>false</externalId>
+        <label>Onbase Drivers License</label>
+        <required>false</required>
+        <type>Url</type>
+    </fields>
+    <fields>
+        <fullName>Onbase_Signature_Card__c</fullName>
+        <description>Onbase Signature Card</description>
+        <externalId>false</externalId>
+        <label>Onbase Signature Card</label>
+        <required>false</required>
+        <type>Url</type>
+    </fields>
+    <fields>
+        <fullName>OwnerId</fullName>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Ownership</fullName>
+        <type>Picklist</type>
+    </fields>
+    <fields>
+        <fullName>ParentId</fullName>
+        <type>Hierarchy</type>
+    </fields>
+    <fields>
+        <fullName>PersonAssistantName</fullName>
+    </fields>
+    <fields>
+        <fullName>PersonAssistantPhone</fullName>
+    </fields>
+    <fields>
+        <fullName>PersonBirthdate</fullName>
+    </fields>
+    <fields>
+        <fullName>PersonDepartment</fullName>
+    </fields>
+    <fields>
+        <fullName>PersonDoNotCall</fullName>
+    </fields>
+    <fields>
+        <fullName>PersonEmail</fullName>
+    </fields>
+    <fields>
+        <fullName>PersonHasOptedOutOfEmail</fullName>
+    </fields>
+    <fields>
+        <fullName>PersonHasOptedOutOfFax</fullName>
+    </fields>
+    <fields>
+        <fullName>PersonHomePhone</fullName>
+    </fields>
+    <fields>
+        <fullName>PersonID__c</fullName>
+        <caseSensitive>false</caseSensitive>
+        <externalId>true</externalId>
+        <label>PersonID</label>
+        <length>10</length>
+        <required>false</required>
+        <type>Text</type>
+        <unique>true</unique>
+    </fields>
+    <fields>
+        <fullName>PersonLastCURequestDate</fullName>
+    </fields>
+    <fields>
+        <fullName>PersonLastCUUpdateDate</fullName>
+    </fields>
+    <fields>
+        <fullName>PersonLeadSource</fullName>
+        <type>Picklist</type>
+    </fields>
+    <fields>
+        <fullName>PersonMailingAddress</fullName>
+    </fields>
+    <fields>
+        <fullName>PersonMobilePhone</fullName>
+    </fields>
+    <fields>
+        <fullName>PersonOtherAddress</fullName>
+    </fields>
+    <fields>
+        <fullName>PersonOtherPhone</fullName>
+    </fields>
+    <fields>
+        <fullName>PersonTitle</fullName>
+    </fields>
+    <fields>
+        <fullName>Phone</fullName>
+    </fields>
+    <fields>
+        <fullName>Phone_Check__c</fullName>
+        <description>Concatenates and removes special charactors for the 3 phone# fields used for IVR authentication</description>
+        <externalId>false</externalId>
+        <formula>SUBSTITUTE(SUBSTITUTE(SUBSTITUTE(SUBSTITUTE(Home_Phone__pc,   &quot;(&quot;, &quot;&quot;), &quot;)&quot;, &quot;&quot;), &quot; &quot;, &quot;&quot;), &quot;-&quot;, &quot;&quot;)  &amp; &quot;,&quot; &amp;
+SUBSTITUTE(SUBSTITUTE(SUBSTITUTE(SUBSTITUTE(Mobile_Phone__pc, &quot;(&quot;, &quot;&quot;), &quot;)&quot;, &quot;&quot;), &quot; &quot;, &quot;&quot;), &quot;-&quot;, &quot;&quot;)  &amp; &quot;,&quot; &amp;
+SUBSTITUTE(SUBSTITUTE(SUBSTITUTE(SUBSTITUTE(Work_Phone__pc,   &quot;(&quot;, &quot;&quot;), &quot;)&quot;, &quot;&quot;), &quot; &quot;, &quot;&quot;), &quot;-&quot;, &quot;&quot;)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Phone Check</label>
+        <required>false</required>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Rating</fullName>
+        <type>Picklist</type>
+    </fields>
+    <fields>
+        <fullName>ShippingAddress</fullName>
+    </fields>
+    <fields>
+        <fullName>Sic</fullName>
+    </fields>
+    <fields>
+        <fullName>SicDesc</fullName>
+    </fields>
+    <fields>
+        <fullName>Site</fullName>
+    </fields>
+    <fields>
+        <fullName>TickerSymbol</fullName>
+    </fields>
+    <fields>
+        <fullName>Type</fullName>
+        <type>Picklist</type>
+    </fields>
+    <fields>
+        <fullName>Website</fullName>
+    </fields>
+    <listViews>
+        <fullName>test2</fullName>
+        <columns>ACCOUNT.NAME</columns>
+        <columns>PersonID__c</columns>
+        <columns>PersonID__pc</columns>
+        <filterScope>Everything</filterScope>
+        <label>1 - PersonID Changes</label>
+        <sharedTo>
+            <role>IT</role>
+        </sharedTo>
+    </listViews>
+    <listViews>
+        <fullName>test55</fullName>
+        <columns>ACCOUNT.NAME</columns>
+        <columns>PC_LAST_NAME</columns>
+        <columns>PC_FIRST_NAME</columns>
+        <columns>Email_raw__c</columns>
+        <columns>PersonID__c</columns>
+        <columns>PersonID__pc</columns>
+        <filterScope>Everything</filterScope>
+        <label>test55</label>
+    </listViews>
+    <recordTypes>
+        <fullName>Business_Account</fullName>
+        <active>true</active>
+        <label>Business Account</label>
+        <picklistValues>
+            <picklist>AccountSource</picklist>
+            <values>
+                <fullName>Advertisement</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Employee Referral</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>External Referral</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Other</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Partner</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Public Relations</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Seminar - Internal</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Seminar - Partner</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Trade Show</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Web</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Word of mouth</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>Industry</picklist>
+            <values>
+                <fullName>Agriculture</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Apparel</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Banking</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Biotechnology</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Chemicals</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Communications</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Construction</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Consulting</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Education</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Electronics</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Energy</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Engineering</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Entertainment</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Environmental</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Finance</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Food %26 Beverage</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Government</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Healthcare</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Hospitality</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Insurance</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Machinery</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Manufacturing</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Media</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Not For Profit</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Other</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Recreation</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Retail</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Shipping</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Technology</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Telecommunications</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Transportation</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Utilities</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>Ownership</picklist>
+            <values>
+                <fullName>Other</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Private</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Public</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Subsidiary</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>Rating</picklist>
+            <values>
+                <fullName>Cold</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Hot</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Warm</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>Type</picklist>
+            <values>
+                <fullName>Analyst</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Competitor</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Customer</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Integrator</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Investor</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Other</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Partner</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Press</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Prospect</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Reseller</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+    </recordTypes>
+    <searchLayouts>
+        <customTabListAdditionalFields>ACCOUNT.NAME</customTabListAdditionalFields>
+        <customTabListAdditionalFields>ACCOUNT.PHONE1</customTabListAdditionalFields>
+        <customTabListAdditionalFields>SSN_Last_4__pc</customTabListAdditionalFields>
+        <customTabListAdditionalFields>Residential_City__pc</customTabListAdditionalFields>
+        <customTabListAdditionalFields>Residential_State__pc</customTabListAdditionalFields>
+        <customTabListAdditionalFields>BIRTH_DATE__pc</customTabListAdditionalFields>
+        <customTabListAdditionalFields>PC_EMAIL</customTabListAdditionalFields>
+        <excludedStandardButtons>DataDotComGetAccountsMultiAddAction</excludedStandardButtons>
+        <excludedStandardButtons>New</excludedStandardButtons>
+        <lookupDialogsAdditionalFields>ACCOUNT.NAME</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>ACCOUNT.SITE</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>CORE.USERS.ALIAS</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>ACCOUNT.TYPE</lookupDialogsAdditionalFields>
+        <lookupFilterFields>ACCOUNT.NAME</lookupFilterFields>
+        <lookupFilterFields>ACCOUNT.SITE</lookupFilterFields>
+        <lookupFilterFields>CORE.USERS.ALIAS</lookupFilterFields>
+        <lookupFilterFields>ACCOUNT.TYPE</lookupFilterFields>
+        <lookupPhoneDialogsAdditionalFields>ACCOUNT.NAME</lookupPhoneDialogsAdditionalFields>
+        <lookupPhoneDialogsAdditionalFields>ACCOUNT.SITE</lookupPhoneDialogsAdditionalFields>
+        <lookupPhoneDialogsAdditionalFields>CORE.USERS.ALIAS</lookupPhoneDialogsAdditionalFields>
+        <lookupPhoneDialogsAdditionalFields>ACCOUNT.TYPE</lookupPhoneDialogsAdditionalFields>
+        <lookupPhoneDialogsAdditionalFields>ACCOUNT.PHONE1</lookupPhoneDialogsAdditionalFields>
+        <lookupPhoneDialogsAdditionalFields>PC_PHONE3</lookupPhoneDialogsAdditionalFields>
+        <lookupPhoneDialogsAdditionalFields>PC_PHONE4</lookupPhoneDialogsAdditionalFields>
+        <lookupPhoneDialogsAdditionalFields>PC_PHONE5</lookupPhoneDialogsAdditionalFields>
+        <lookupPhoneDialogsAdditionalFields>PC_PHONE6</lookupPhoneDialogsAdditionalFields>
+        <lookupPhoneDialogsAdditionalFields>Home_Phone_Number__c</lookupPhoneDialogsAdditionalFields>
+        <lookupPhoneDialogsAdditionalFields>Home_Phone__pc</lookupPhoneDialogsAdditionalFields>
+        <lookupPhoneDialogsAdditionalFields>Mobile_Phone__pc</lookupPhoneDialogsAdditionalFields>
+        <lookupPhoneDialogsAdditionalFields>Work_Phone__pc</lookupPhoneDialogsAdditionalFields>
+        <searchFilterFields>Residential_City__pc</searchFilterFields>
+        <searchFilterFields>Residential_State__pc</searchFilterFields>
+        <searchResultsAdditionalFields>ACCOUNT.NAME</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>Emp_SSN_Last_4__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>Residential_City__pc</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>Residential_State__pc</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>Emp_Birth_Date__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>ACCOUNT.PHONE1</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>PC_EMAIL</searchResultsAdditionalFields>
+    </searchLayouts>
+    <sharingModel>ReadWrite</sharingModel>
+    <validationRules>
+        <fullName>AccountNameReadOnly</fullName>
+        <active>false</active>
+        <description>Prevent non admin users from editing member(person) records</description>
+        <errorConditionFormula>(ISCHANGED(FirstName) || ISCHANGED(LastName) ||  ISCHANGED(MiddleName) ||  ISCHANGED(Salutation) ||  ISCHANGED(Suffix))</errorConditionFormula>
+        <errorMessage>Member Name cannot be changed.</errorMessage>
+    </validationRules>
+    <webLinks>
+        <fullName>Create_Case</fullName>
+        <availability>online</availability>
+        <displayType>button</displayType>
+        <linkType>javascript</linkType>
+        <masterLabel>Create Case</masterLabel>
+        <openType>onClickJavaScript</openType>
+        <protected>false</protected>
+        <url>window.open(&apos;/apex/SetRecordType?acctId={!Account.Id}&amp;firstPage=true&apos;, &apos;SetRecordType&apos;)</url>
+    </webLinks>
+    <webLinks>
+        <fullName>Create_Lead</fullName>
+        <availability>online</availability>
+        <description>Creating lead from an existing Person</description>
+        <displayType>button</displayType>
+        <linkType>javascript</linkType>
+        <masterLabel>Create Lead</masterLabel>
+        <openType>onClickJavaScript</openType>
+        <protected>false</protected>
+        <url>{!REQUIRESCRIPT(&apos;/soap/ajax/33.0/connection.js&apos;)} 
+
+var redirectUrl = &quot;00Q/e?ent=Lead&amp;RecordType={!$Label.LeadRecordTypeID}	&amp;retURL=&quot;+&apos;{!Account.Id}&apos;+&quot;&amp;save_new_url=%2F00Q%2Fe%3FretURL%3D%252F00Q%252Fo&quot;; // Basic Url redirect to Lead edit page. 
+console.log(&apos;redirectUrl:&apos;,redirectUrl); 
+var person; // SOQL query to fetch the person record 
+
+
+try{ 
+person = sforce.connection.query(&quot;SELECT Id,Name,Alternate_Email__pc,FirstName,MiddleName,LastName,PersonEmail,Residential_City__pc,Residential_Country_Code__pc,Residential_Country__pc,Residential_Extra_Address__pc,Residential_State__pc,Residential_Street__pc,Residential_Zipocde__pc, PersonMobilePhone, PersonHomePhone, PersonOtherPhone, Phone FROM Account Where Id = &apos;{!Account.Id}&apos;&quot;); 
+
+var res = person.getArray(&quot;records&quot;); // storing an array in a string. 
+console.log(&apos;ressss::&apos;,res); 
+var FirstName; // Storing First name 
+var LastName; // Storing Last name 
+var StreetAddress; // Storing Last name = rec[0].Street__c; 
+var City; // Storing City = rec[0].City__c; 
+var State; // Storing State = rec[0].State__c; 
+var ZipCode; // Storing Zip code = rec[0].Zip_Code__c; 
+var Country; // Storing Country 
+var HomePhone 
+var MobilePhone 
+var OtherPhone 
+var Phone; // Storing Phone 
+var Email; // Storing Email 
+var AccountName; 
+
+if(res[0].Name == null){ 
+AccountName = &apos;&apos;; 
+}else{ 
+AccountName = res[0].Name; 
+} 
+console.log(&apos;accName:::&apos;,AccountName); 
+
+if(res[0].FirstName == null){ 
+FirstName = &apos;&apos;; 
+}else{ 
+FirstName = res[0].FirstName; 
+} 
+
+if(res[0].LastName == null){ 
+LastName = &apos;&apos;; 
+}else{ 
+LastName = res[0].LastName; 
+} 
+
+if(res[0].Residential_Street__pc == null){ 
+StreetAddress = &apos;&apos;; 
+}else{ 
+StreetAddress = res[0].Residential_Street__pc; 
+} 
+
+if(res[0].Residential_City__pc == null){ 
+City = &apos;&apos;; 
+}else{ 
+City = res[0].Residential_City__pc; 
+} 
+
+if(res[0].Residential_State__pc == null){ 
+State = &apos;&apos;; 
+}else{ 
+State = res[0].Residential_State__pc; 
+} 
+
+if(res[0].Residential_Zipocde__pc == null){ 
+ZipCode = &apos;&apos;; 
+}else{ 
+ZipCode = res[0].Residential_Zipocde__pc; 
+} 
+
+if(res[0].Residential_Country__pc == null){ 
+Country = &apos;&apos;; 
+}else{ 
+Country = res[0].Residential_Country__pc; 
+} 
+
+
+
+if(res[0].PersonHomePhone == null){ 
+HomePhone = &apos;&apos;; 
+}else{ 
+HomePhone = res[0].PersonHomePhone; 
+} 
+
+if(res[0].PersonMobilePhone == null){ 
+MobilePhone = &apos;&apos;; 
+}else{ 
+MobilePhone= res[0].PersonMobilePhone; 
+} 
+
+if(res[0].Phone == null){ 
+Phone = &apos;&apos;; 
+}else{ 
+Phone = res[0].Phone; 
+} 
+
+if(res[0].PersonOtherPhone == null){ 
+OtherPhone = &apos;&apos;; 
+}else{ 
+OtherPhone = res[0].PersonOtherPhone ; 
+} 
+
+
+
+if(res[0].PersonEmail == null){ 
+Email = &apos;&apos;; 
+}else{ 
+Email = res[0].PersonEmail; 
+} 
+redirectUrl+=&quot;&amp;{!$Label.LeadStreetAddress}=&quot;+StreetAddress+ 
+&quot;&amp;name_firstlea2=&quot;+FirstName+ 
+&quot;&amp;name_lastlea2=&quot;+LastName+ 
+&quot;&amp;{!$Label.LeadCity}=&quot;+City+ 
+&quot;&amp;{!$Label.LeadState}=&quot;+State+ 
+&quot;&amp;{!$Label.LeadZipCode}=&quot;+ZipCode+ 
+&quot;&amp;{!$Label.LeadCountry}=&quot;+Country+ 
+&quot;&amp;{!$Label.LeadAccountName}=&quot;+AccountName+ 
+&quot;&amp;{!$Label.LeadAccountId}=&quot;+&apos;{!Account.Id}&apos;+ 
+&quot;&amp;lea11=&quot;+Email+ 
+&quot;&amp;lea8=&quot;+Phone+ 
+&quot;&amp;lea9=&quot;+MobilePhone+ 
+&quot;&amp;{!$Label.LeadHomePhone}=&quot;+HomePhone+ 
+&quot;&amp;{!$Label.LeadOtherPhone}=&quot;+OtherPhone; // adding prefill data in a url. 
+
+window.open(redirectUrl); // redirecting the url. 
+console.log(&apos;URL:::&apos;,redirectUrl); 
+}catch(error){ 
+alert(&apos;Error retrieving the record&apos;); 
+}</url>
+    </webLinks>
+    <webLinks>
+        <fullName>Create_Lead_Custom</fullName>
+        <availability>online</availability>
+        <displayType>button</displayType>
+        <linkType>javascript</linkType>
+        <masterLabel>Create Lead</masterLabel>
+        <openType>onClickJavaScript</openType>
+        <protected>false</protected>
+        <url>window.location.href = &apos;/apex/CreateNewLead?accountid={!Account.Id}&apos;;</url>
+    </webLinks>
+    <webLinks>
+        <fullName>EasyUpload</fullName>
+        <availability>online</availability>
+        <displayType>button</displayType>
+        <encodingKey>UTF-8</encodingKey>
+        <height>600</height>
+        <linkType>url</linkType>
+        <masterLabel>EasyUpload</masterLabel>
+        <openType>sidebar</openType>
+        <protected>false</protected>
+        <url>/apex/EasyUploadAttachment?parentId={!Account.Id}</url>
+    </webLinks>
+    <webLinks>
+        <fullName>GoogleMaps</fullName>
+        <availability>online</availability>
+        <displayType>link</displayType>
+        <encodingKey>UTF-8</encodingKey>
+        <hasMenubar>false</hasMenubar>
+        <hasScrollbars>true</hasScrollbars>
+        <hasToolbar>false</hasToolbar>
+        <height>600</height>
+        <isResizable>true</isResizable>
+        <linkType>url</linkType>
+        <masterLabel>Google Maps</masterLabel>
+        <openType>newWindow</openType>
+        <position>none</position>
+        <protected>false</protected>
+        <showsLocation>false</showsLocation>
+        <showsStatus>false</showsStatus>
+        <url>http://maps.google.com/maps?f=q&amp;hl=en&amp;q={!Account_BillingStreet}+{!Account_BillingCity}+{!Account_BillingState}&amp;om=1</url>
+    </webLinks>
+    <webLinks>
+        <fullName>GoogleNews</fullName>
+        <availability>online</availability>
+        <displayType>link</displayType>
+        <encodingKey>UTF-8</encodingKey>
+        <hasMenubar>false</hasMenubar>
+        <hasScrollbars>true</hasScrollbars>
+        <hasToolbar>false</hasToolbar>
+        <height>600</height>
+        <isResizable>true</isResizable>
+        <linkType>url</linkType>
+        <masterLabel>Google News</masterLabel>
+        <openType>newWindow</openType>
+        <position>none</position>
+        <protected>false</protected>
+        <showsLocation>false</showsLocation>
+        <showsStatus>false</showsStatus>
+        <url>http://www.google.com/news?&amp;q={!Account_Name}&amp;btnG=Search+News</url>
+    </webLinks>
+    <webLinks>
+        <fullName>GoogleSearch</fullName>
+        <availability>online</availability>
+        <displayType>link</displayType>
+        <encodingKey>UTF-8</encodingKey>
+        <hasMenubar>false</hasMenubar>
+        <hasScrollbars>true</hasScrollbars>
+        <hasToolbar>false</hasToolbar>
+        <height>600</height>
+        <isResizable>true</isResizable>
+        <linkType>url</linkType>
+        <masterLabel>Google Search</masterLabel>
+        <openType>newWindow</openType>
+        <position>none</position>
+        <protected>false</protected>
+        <showsLocation>false</showsLocation>
+        <showsStatus>false</showsStatus>
+        <url>http://www.google.com/search?q={!Account_Name}</url>
+    </webLinks>
+    <webLinks>
+        <fullName>MaritzCX__Billing</fullName>
+        <availability>online</availability>
+        <displayType>link</displayType>
+        <encodingKey>UTF-8</encodingKey>
+        <hasMenubar>true</hasMenubar>
+        <hasScrollbars>true</hasScrollbars>
+        <hasToolbar>true</hasToolbar>
+        <height>600</height>
+        <isResizable>true</isResizable>
+        <linkType>url</linkType>
+        <masterLabel>Billing</masterLabel>
+        <openType>newWindow</openType>
+        <position>none</position>
+        <protected>false</protected>
+        <showsLocation>true</showsLocation>
+        <showsStatus>true</showsStatus>
+        <url>http://www.genwatt.com/genwatt/billing.htm?actname={!Account.Name}</url>
+    </webLinks>
+    <webLinks>
+        <fullName>Secure_Authentication</fullName>
+        <availability>online</availability>
+        <displayType>button</displayType>
+        <hasMenubar>false</hasMenubar>
+        <hasScrollbars>true</hasScrollbars>
+        <hasToolbar>false</hasToolbar>
+        <height>600</height>
+        <isResizable>true</isResizable>
+        <linkType>page</linkType>
+        <masterLabel>Secure Authentication</masterLabel>
+        <openType>newWindow</openType>
+        <page>SecureOTPAuthentication</page>
+        <position>none</position>
+        <protected>false</protected>
+        <showsLocation>false</showsLocation>
+        <showsStatus>false</showsStatus>
+    </webLinks>
+    <webLinks>
+        <fullName>dsfs__Send_with_DocuSign</fullName>
+        <availability>online</availability>
+        <description>This button will initiate a DocuSign Envelope that will be linked to the Account.</description>
+        <displayType>button</displayType>
+        <linkType>javascript</linkType>
+        <masterLabel>Send with DocuSign</masterLabel>
+        <openType>onClickJavaScript</openType>
+        <protected>false</protected>
+        <url>{!REQUIRESCRIPT(&quot;/apex/dsfs__DocuSign_JavaScript&quot;)}
+DocuSign_CreateEnvelope();</url>
+    </webLinks>
+    <webLinks>
+        <fullName>dsfs__Verify_with_DNB</fullName>
+        <availability>online</availability>
+        <description>This button will initiate DnBs Pre-Contract Risk Screening linked to the Opportunity</description>
+        <displayType>button</displayType>
+        <linkType>javascript</linkType>
+        <masterLabel>Verify with D&amp;B</masterLabel>
+        <openType>onClickJavaScript</openType>
+        <protected>false</protected>
+        <url>{!REQUIRESCRIPT(&quot;/apex/dsfs__DocuSign_JavaScript&quot;)}
+        
+{!REQUIRESCRIPT(&apos;//ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js&apos;)} 
+{!REQUIRESCRIPT(&apos;//ajax.googleapis.com/ajax/libs/jqueryui/1.11.2/jquery-ui.min.js&apos;)} 
+
+var html = &apos;&lt;div id=&quot;dialog&quot; style=&quot;display: none;&quot;&gt;&lt;/div&gt;&apos;;
+
+var $g = jQuery.noConflict();
+
+var address = &apos;&lt;iframe id=&quot;dnbContent&quot; width=&quot;700&quot; height=&quot;730&quot; scrolling=&quot;no&quot; marginheight=&quot;0&quot; marginwidth=&quot;0&quot; frameborder=&quot;0&quot; src=&quot;&apos;+DocuSign_GetVerifyWithDnb(&apos;account&apos;)+&apos;&quot;&gt;&lt;/iframe&gt;&apos;;
+		
+$g(function() { 
+
+	$g(&apos;head&apos;).append(&apos;&lt;link rel=&quot;stylesheet&quot; href=&quot;https://code.jquery.com/ui/1.11.4/themes/redmond/jquery-ui.css&quot;/&gt;&apos;);
+
+	if($g(&apos;#dialog&apos;).length == 0) {
+		$g(&apos;body&apos;).append(html); 
+	}
+	$g(&quot;#dialog&quot;).dialog({ 
+		autoOpen: true, 
+		modal: true, 
+		width: 700,
+		height: 783,
+		open: function(event, ui) {
+		  if($g(&apos;#myNewImage&apos;).length == 0) {
+		     $g(&quot;.ui-dialog-titlebar&quot;).append(&quot;&lt;img src=&apos;&quot;+getDnbLogo()+&quot;&apos; id=&apos;myNewImage&apos; /&gt;&quot;);
+		  }
+		  $g(&apos;.ui-widget-overlay&apos;).bind(&apos;click&apos;,function(){
+    			$g(&apos;#dialog&apos;).dialog(&quot;close&quot;);
+		  });
+		}
+	})
+	if($g(&apos;#dnbContent&apos;).length == 0) {
+		$g(&apos;#dialog&apos;).append(address); 
+	}
+
+
+	$g(&quot;.ui-dialog-title&quot;).hide();
+	$g(&quot;#dialog&quot;).css(&apos;padding&apos;, &apos;0px&apos;);
+	$g(&quot;.ui-widget-header&quot;).attr(&apos;style&apos;, &apos;padding-top:5px; padding-right:5px; padding-left:10px;padding-bottom:5px; border-radius:0px; background: #005172;border:0px;margin:auto;&apos;);
+	$g(&quot;.ui-button-text&quot;).css(&apos;padding&apos;, &apos;0&apos;);
+	$g(&quot;.ui-icon-closethick&quot;).attr(&apos;style&apos;, &apos;background-color:#005172; width:19px; height:19px; margin-top:-10px; margin-left:-10px;&apos;);
+	$g(&quot;.ui-dialog-titlebar-close&quot;).attr(&apos;style&apos;, &apos;border-radius:0px; padding:0px; width:18px; height:18px; border:0px;&apos;);
+	$g(&quot;.ui-dialog&quot;).css(&apos;z-index&apos;, &apos;10000&apos;);
+	$g(&quot;.ui-dialog&quot;).css(&apos;border-radius&apos;, &apos;0px&apos;);
+});</url>
+    </webLinks>
+    <webLinks>
+        <fullName>et4ae5__ExactTarget_Resubscribe</fullName>
+        <availability>online</availability>
+        <displayType>link</displayType>
+        <linkType>javascript</linkType>
+        <masterLabel>Marketing Cloud Resubscribe</masterLabel>
+        <openType>onClickJavaScript</openType>
+        <protected>false</protected>
+        <url>{!REQUIRESCRIPT(&quot;/soap/ajax/19.0/connection.js&quot;)}
+{!REQUIRESCRIPT(&quot;/soap/ajax/15.0/apex.js&quot;)}
+var pacId, didResub;
+try
+{
+pacId=sforce.apex.execute(&quot;et4ae5/jsButtonMethods&quot;,&quot;getPACId&quot;, {acctId:&quot;{!CASESAFEID( Account.Id )}&quot;}); 
+didResub=sforce.apex.execute(&quot;et4ae5/jsButtonMethods&quot;,&quot;performResub&quot;, {subscriberKey:pacId,objectType:&quot;contact&quot;});
+}
+catch (e)
+{
+pacId=sforce.apex.execute(&quot;jsButtonMethods&quot;,&quot;getPACId&quot;, {acctId:&quot;{!CASESAFEID( Account.Id )}&quot;}); 
+didResub=sforce.apex.execute(&quot;jsButtonMethods&quot;,&quot;performResub&quot;, {subscriberKey:pacId,objectType:&quot;contact&quot;});
+}
+if (didResub==&quot;connection error&quot;)
+{
+alert(&quot;The connection to Marketing Cloud is currently unavailable. Try your request again later. If the problem persists, please contact your system administrator.&quot;);
+}
+else if (didResub==&quot;not found&quot;)
+{
+alert(&quot;This subscriber could not be found in the All Subscriber List in Marketing Cloud. The Email Opt Out flag will not be updated.&quot;);
+}
+else if (didResub==&quot;other error&quot;)
+{
+alert(&quot;An unexpected error has been encountered. The Email Opt Out flag will not be updated.&quot;);
+}
+else if (didResub==&quot;not integrated&quot;)
+{
+alert(&quot;You must be integrated with Marketing Cloud to update an Marketing Cloud subscriber.&quot;);
+}
+else if (didResub==&quot;success&quot;)
+{
+alert(&quot;{!Account.Name} was resubscribed successfully.&quot;);
+} 
+var theUrl=&quot;/{!Account.Id}&quot;;
+parent.location.href=theUrl;</url>
+    </webLinks>
+    <webLinks>
+        <fullName>et4ae5__ExactTarget_Unsubscribe</fullName>
+        <availability>online</availability>
+        <displayType>link</displayType>
+        <linkType>javascript</linkType>
+        <masterLabel>Marketing Cloud Unsubscribe</masterLabel>
+        <openType>onClickJavaScript</openType>
+        <protected>false</protected>
+        <url>{!REQUIRESCRIPT(&quot;/soap/ajax/19.0/connection.js&quot;)}
+{!REQUIRESCRIPT(&quot;/soap/ajax/15.0/apex.js&quot;)}
+var pacId, didUnsub;
+try
+{
+pacId=sforce.apex.execute(&quot;et4ae5/jsButtonMethods&quot;,&quot;getPACId&quot;, {acctId:&quot;{!CASESAFEID( Account.Id )}&quot;}); 
+didUnsub=sforce.apex.execute(&quot;et4ae5/jsButtonMethods&quot;,&quot;performUnsub&quot;, {subscriberKey:pacId,objectType:&quot;contact&quot;});
+}
+catch (e)
+{
+pacId=sforce.apex.execute(&quot;jsButtonMethods&quot;,&quot;getPACId&quot;, {acctId:&quot;{!CASESAFEID( Account.Id )}&quot;}); 
+didUnsub=sforce.apex.execute(&quot;jsButtonMethods&quot;,&quot;performUnsub&quot;, {subscriberKey:pacId,objectType:&quot;contact&quot;});
+}
+if (didUnsub==&quot;connection error&quot;)
+{
+alert(&quot;The connection to Marketing Cloud is currently unavailable. Try your request again later. If the problem persists, please contact your system administrator.&quot;);
+}
+else if (didUnsub==&quot;not found&quot;)
+{
+alert(&quot;This subscriber could not be found in the All Subscriber List in Marketing Cloud. The Email Opt Out flag will not be updated.&quot;);
+}
+else if (didUnsub==&quot;other error&quot;)
+{
+alert(&quot;An unexpected error has been encountered. The Email Opt Out flag will not be updated.&quot;);
+}
+else if (didUnsub==&quot;not integrated&quot;)
+{
+alert(&quot;You must be integrated with Marketing Cloud to update an Marketing Cloud subscriber.&quot;);
+}
+else if (didUnsub==&quot;success&quot;)
+{
+alert(&quot;{!Account.Name} was unsubscribed successfully.&quot;);
+} 
+var theUrl=&quot;/{!Account.Id}&quot;;
+parent.location.href=theUrl;</url>
+    </webLinks>
+    <webLinks>
+        <fullName>et4ae5__Send_ExactTarget_Email</fullName>
+        <availability>online</availability>
+        <displayType>link</displayType>
+        <linkType>javascript</linkType>
+        <masterLabel>Send Marketing Cloud Email</masterLabel>
+        <openType>onClickJavaScript</openType>
+        <protected>false</protected>
+        <url>{!REQUIRESCRIPT(&quot;/soap/ajax/19.0/connection.js&quot;)}
+{!REQUIRESCRIPT(&quot;/soap/ajax/15.0/apex.js&quot;)}
+try
+{
+var urlPrefix = sforce.apex.execute(&quot;et4ae5/jsButtonMethods&quot;,&quot;namespace&quot;, {});
+var pacId=sforce.apex.execute(&quot;et4ae5/jsButtonMethods&quot;,&quot;getPACId&quot;, {acctId:&quot;{!CASESAFEID( Account.Id )}&quot;});
+var theUrl = &quot;https://&quot;+urlPrefix+&quot;/apex/singleSendETEmail?contactId=&quot;+pacId;
+var npaUrl = parent.location.href;
+if(pacId==&quot;error&quot;)
+{
+parent.location.href = npaUrl;
+}
+else
+{
+parent.location.href = theUrl;
+}
+}
+catch(e)
+{
+var pacId=sforce.apex.execute(&quot;jsButtonMethods&quot;,&quot;getPACId&quot;, {acctId:&quot;{!CASESAFEID( Account.Id )}&quot;});
+var theUrl = &quot;/apex/singleSendETEmail?contactId=&quot;+pacId;
+var npaUrl = parent.location.href;
+if(pacId==&quot;error&quot;)
+{
+parent.location.href = npaUrl;
+}
+else
+{
+parent.location.href = theUrl;
+}
+}</url>
+    </webLinks>
+    <webLinks>
+        <fullName>et4ae5__View_ExactTarget_Analytics</fullName>
+        <availability>online</availability>
+        <displayType>link</displayType>
+        <linkType>javascript</linkType>
+        <masterLabel>View Marketing Cloud Analytics</masterLabel>
+        <openType>onClickJavaScript</openType>
+        <protected>false</protected>
+        <url>{!REQUIRESCRIPT(&quot;/soap/ajax/19.0/connection.js&quot;)}
+{!REQUIRESCRIPT(&quot;/soap/ajax/15.0/apex.js&quot;)}
+try
+{
+var urlPrefix = sforce.apex.execute(&quot;et4ae5/jsButtonMethods&quot;,&quot;namespace&quot;, {});
+var pacId=sforce.apex.execute(&quot;et4ae5/jsButtonMethods&quot;,&quot;getPACId&quot;, {acctId:&quot;{!CASESAFEID( Account.Id )}&quot;});
+var theUrl = &quot;https://et4ae5.&quot;+urlPrefix+&quot;/apex/SubscriberAnalytics?id=&quot;+pacId+&quot;&amp;obj=contact&quot;;
+var npaUrl = parent.location.href;
+if(pacId==&quot;error&quot;)
+{
+parent.location.href = npaUrl;
+}
+else
+{
+parent.location.href = theUrl;
+}
+}
+catch(e)
+{
+var pacId=sforce.apex.execute(&quot;jsButtonMethods&quot;,&quot;getPACId&quot;, {acctId:&quot;{!CASESAFEID( Account.Id )}&quot;});
+var theUrl = &quot;/apex/SubscriberAnalytics?id=&quot;+pacId+&quot;&amp;obj=contact&quot;;
+var npaUrl = parent.location.href;
+if(pacId==&quot;error&quot;)
+{
+parent.location.href = npaUrl;
+}
+else
+{
+parent.location.href = theUrl;
+}
+}</url>
+    </webLinks>
+</CustomObject>

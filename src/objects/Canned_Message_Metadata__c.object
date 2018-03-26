@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <customSettingsType>List</customSettingsType>
+    <enableFeeds>false</enableFeeds>
+    <fields>
+        <fullName>Chevron_Footer__c</fullName>
+        <externalId>false</externalId>
+        <label>Chevron Footer</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>TextArea</type>
+    </fields>
+    <fields>
+        <fullName>Chevron_Header__c</fullName>
+        <externalId>false</externalId>
+        <label>Chevron Header</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>TextArea</type>
+    </fields>
+    <fields>
+        <fullName>Spectrum_Footer__c</fullName>
+        <externalId>false</externalId>
+        <label>Spectrum Footer</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>TextArea</type>
+    </fields>
+    <fields>
+        <fullName>Spectrum_Header__c</fullName>
+        <externalId>false</externalId>
+        <label>Spectrum Header</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>TextArea</type>
+    </fields>
+    <label>Canned Message Metadata</label>
+    <visibility>Protected</visibility>
+</CustomObject>

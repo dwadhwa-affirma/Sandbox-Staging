@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <customSettingsType>List</customSettingsType>
+    <enableFeeds>false</enableFeeds>
+    <fields>
+        <fullName>NA_Expiration__c</fullName>
+        <description>The number of minutes to use in the calculation that determines when a new needs assessment is due.  This is in minutes to support development and test efforts.  A one year expiration would be (365 Days X 24 Hours X 60 minutes = 525600 minutes)</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Value in minutes used for expiration and the basis of a new NA needed indication.</inlineHelpText>
+        <label>NA Expiration</label>
+        <precision>8</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <label>Needs Assessment Configuration</label>
+    <visibility>Protected</visibility>
+</CustomObject>

@@ -1,0 +1,9 @@
+<apex:page standardController="Case" showheader="true" tabstyle="case" >
+    <style> body { font-family: 'Arial Unicode MS'; } </style>
+    <h1><b>Creating Standalone Cases</b></h1>
+    <p style="color:red;">
+         To create cases that are not currently related to either a member
+         or an account, use the <b>"Create Case"</b> button found on any 
+         case list view (queue list).</p>
+    <apex:ListViews type="Case" />
+</apex:page>

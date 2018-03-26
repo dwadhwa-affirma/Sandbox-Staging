@@ -1,0 +1,373 @@
+<apex:page standardController="Account" extensions="NeedAssessmentController" action="{!Page_Load}">
+    <!-- <apex:includescript value="//code.jquery.com/jquery-1.11.1.min.js" /> -->
+    <!--apex:includescript value="//cdn.datatables.net/1.10.7/js/jquery.dataTables.min.js" /-->
+    <!--apex:stylesheet value="//cdn.datatables.net/1.10.7/css/jquery.dataTables.min.css" /-->
+
+    <apex:includescript value="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js" />
+    <link rel="stylesheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css" />
+    <script>
+
+    </script>
+    <style>
+        #snackbar {
+            visibility: hidden;
+            min-width: 250px;
+            margin-left: -125px;
+            background-color: #c0ffb7;
+            color: #20262d;
+            text-align: center;
+            border-radius: 2px;
+            padding: 16px;
+            position: fixed;
+            z-index: 1;
+            left: 50%;
+            bottom: 30px;
+            font-size: 17px;
+        }
+
+
+           
+            #snackbar.show {
+                visibility: visible;
+                -webkit-animation: fadein 0.5s, fadeout 0.5s 2.5s;
+                animation: fadein 0.5s, fadeout 0.5s 2.5s;
+            }
+
+        @-webkit-keyframes fadein {
+            from {
+                bottom: 0;
+                opacity: 0;
+            }
+
+            to {
+                bottom: 30px;
+                opacity: 1;
+            }
+        }
+
+        @keyframes fadein {
+            from {
+                bottom: 0;
+                opacity: 0;
+            }
+
+            to {
+                bottom: 30px;
+                opacity: 1;
+            }
+        }
+
+        @-webkit-keyframes fadeout {
+            from {
+                bottom: 30px;
+                opacity: 1;
+            }
+
+            to {
+                bottom: 0;
+                opacity: 0;
+            }
+        }
+
+        @keyframes fadeout {
+            from {
+                bottom: 30px;
+                opacity: 1;
+            }
+
+            to {
+                bottom: 0;
+                opacity: 0;
+            }
+        }
+         
+    .rich-tab-header
+    {
+        height:30px !important;
+    }
+   
+    </style>
+
+    <style>
+        .pbTitle {
+             white-space: nowrap;
+        }
+        .activeTab {
+            background-color: #236FBD;
+            color: white;
+            background-image: none;
+        }
+
+        .inactiveTab {
+            background-color: lightgrey;
+            color: black;
+            background-image: none;
+        }
+
+        .completeTab {
+            background-color: #66cc99;
+            color: black;
+            background-image: none;
+            border-radius: 2px;
+        }
+
+        .partialTab {
+            background-color: #F0E68C;
+            color: black;
+            background-image: none;
+        }
+
+        .optOutTab {
+            background-color: lightgrey;
+            color: black;
+            background-image: none;
+        }
+
+        .expiredTab {
+            background-color: #c65353;
+            color: black;
+            background-image: none;
+        }
+
+        .mainQuestion {
+            font-weight: bold;
+            text-align: left;
+        }
+
+        .subQuestion {
+            text-indent: 10px;
+        }
+
+        .lastVal {
+            background-color: #E6E6FA;
+            text-align: center;
+            min-width: 120px;
+        }
+
+        .colHeader {
+            font-weight: bold;
+            text-align: center;
+        }
+        
+        .colRec {
+            vertical-align: top;
+        }
+        
+        .recVal {
+            color: green;
+        }
+    </style>
+    
+    <table border="1">
+        <tr>
+            <td>
+                <apex:tabPanel headerAlignment="left" switchType="server" id="na" tabClass="activeTab" inactiveTabClass="inactiveTab" rendered="{!IF(MemberAbove18 == TRUE && PrimaryAccountWithAtleastoneTrust == TRUE && ShowData == true ,'true','false' )}">
+                    <apex:tab label="Overview" reRender="ad" labelWidth="100" title="">
+            
+                        <b>Which of the following topics can we help you with today?</b>
+
+                        <apex:form rendered="true">
+                        <table>
+                        <tr>
+                        <td>
+                            <table border="2" width="348" style="float:left; margin-top:25px;">
+                                <tr>
+                                
+                                
+                                    <td width="18">
+                                        <table cellspacing="5">
+                                            <tr>
+                                                <td>
+                                                    <apex:image id="naS1" width="16" height="16"
+                                                                title="Red=Expired, Green=Complete, Yellow=Partial, Gray=Opt Out"
+                                                                value="{!FeedBackAboutCurrentExperience}" />
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    <apex:image id="naS2" width="16" height="16"
+                                                                title="Red=Expired, Green=Complete, Yellow=Partial, Gray=Opt Out"
+                                                                value="{!FinanceKeyFileEvent}" />
+                                                                
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    <apex:image id="naS3" width="16" height="16"
+                                                                title="Red=Expired, Green=Complete, Yellow=Partial, Gray=Opt Out"
+                                                                value="{!OptimizeMoveYourMoney}" />
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    <apex:image id="naS4" width="16" height="16"
+                                                                title="Red=Expired, Green=Complete, Yellow=Partial, Gray=Opt Out"
+                                                                value="{!EarnMore}" />
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    <apex:image id="naS5" width="16" height="16"
+                                                                title="Red=Expired, Green=Complete, Yellow=Partial, Gray=Opt Out"
+                                                                value="{!ExtendBenifits}" />
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                    <td width="330">
+                                        <apex:selectRadio value="{!selectedNaSection}" layout="pageDirection" title="">
+                                            <apex:selectOptions value="{!ListNaSection}" />
+                                            <apex:actionSupport event="onchange" reRender="na" />
+                                        </apex:selectRadio>
+                                    </td>
+                                </tr>
+                            </table>
+                       </td><td></td>
+                       </tr>     
+                       </table>
+                            <div style="float: left; margin-top: 30px; margin-left: 2px;">
+
+                 <apex:outputPanel rendered="{!IF(Account.BIRTH_DATE__pc == null, true, false)}">
+                                    <label style="color:red;">
+                                        No birth date on this record
+                                      
+                                    </label>
+                                    <br /><br />
+                                </apex:outputPanel>
+
+
+                                <apex:outputPanel id="divOPT" rendered="{!accountFirst.NA_Opt_Out__c}">
+                                    <label style="color:red;">
+                                        Member has opted-out of the  Member Connect Questionnaire
+                                        <br />
+                                        Opt-out Expiration:
+                                        <apex:outputText value="{0, date, MM/dd/yyyy}">
+                                            <apex:param value="{!accountFirst.NA_Opt_Out_Date__c}" />
+                                        </apex:outputText>
+
+                                    </label>
+                                    <br /><br />
+                                </apex:outputPanel>
+
+                                <label>
+                                    NA Opt-out
+
+                                </label>
+                                <label>
+
+                                    <apex:inputField value="{!accountFirst.NA_Opt_Out__c}" onchange="document.getElementById(this.id.replace('chkButton', 'btnSubmit')).click();" id="chkButton" />
+                                </label>
+                                <label>
+                                    Click here if member wants to opt out of Member Connect Questionnaire
+
+                                </label>
+                                <apex:commandButton action="{!changeOptOut}" value="Save" id="btnSubmit" style="display:none;" />
+
+                            </div>
+                        </apex:form>
+
+
+
+                    </apex:tab>
+
+                    <apex:tab label="Contact Preferences" labelWidth="100" title="Ensure your contact preferences are up to date" styleClass="{!ContactPreferenceTabClass}">
+                        
+                                                    <c:Na_ContactPreferences Account="{!accountFirst}" CTRL="{!CTRL}" />
+                    </apex:tab>
+                   
+
+                    <apex:tab label="Provide Feedback" rendered="{!IF(selectedNaSection == '1' ,true,false)}"
+                              labelWidth="100" title="Provide Feedback about your current experience" styleClass="{!CurrentFeedbackTabClass}">
+                        <apex:pageBlock >
+
+                            <c:NA_CurrentFeedback Account="{!accountFirst}" CTRL="{!CTRL}" />
+                        </apex:pageBlock>
+                    </apex:tab>
+
+                    <apex:tab label="Housing" rendered="{!IF(selectedNaSection == '2' ,true,false)}" labelWidth="100" title="Finance your key life events - Housing"
+                              styleClass="{!HousingTabClass}">
+                        <c:NA_Housing Account="{!accountFirst}" CTRL="{!CTRL}" />
+
+                    </apex:tab>
+
+                    <apex:tab label="Auto/Vehicle     " rendered="{!IF(selectedNaSection == '2' ,true,false)}" 
+                     labelWidth="100" title="Finance your key life events - Auto/Vehicle" styleClass="{!AutoVehicleTabClass}" >
+                        
+                        <c:NA_AutoVehicle Account="{!accountFirst}" CTRL="{!CTRL}" />
+                        
+                    </apex:tab>
+
+                    <apex:tab label="Existing Loans    " rendered="{!IF(selectedNaSection == '2' ,true,false)}" labelWidth="100" title="Finance your key life events - Other Existing Loans"
+                    styleClass="{!OtherLoanTabClass}">
+                         <c:Na_OtherExistingLoans Account="{!accountFirst}" CTRL="{!CTRL}" />
+
+                    </apex:tab>
+
+                    <apex:tab label="Other   Milestones" rendered="{!IF(selectedNaSection == '2' ,true,false)}" labelWidth="100" title="Financing Your Life Events - Other Milestones"
+                              styleClass="{!OtherTabClass}">
+                        <apex:form >
+
+                            <apex:inputHidden value="{!accountFirst.Last_NA_LEOM__c}" />
+                            <apex:inputHidden value="{!accountFirst.NA_Opt_Out__c}" />
+
+                        </apex:form>
+                        <c:NA_Other_Milestones Account="{!accountFirst}" CTRL="{!CTRL}" />
+                    </apex:tab>
+
+                    <apex:tab label="Payments / Transfers" rendered="{!IF(selectedNaSection == '3' ,true,false)}" labelWidth="100" styleClass="{!MoveYourMoneyTabClass}">
+                        <c:NA_MakingPayments Account="{!accountFirst}" CTRL="{!CTRL}" />
+
+                    </apex:tab>
+
+                    <apex:tab label="Deposits" rendered="{!IF(selectedNaSection == '3' ,true,false)}" labelWidth="100" styleClass="{!MakingDepositsTabClass}">  
+                        <c:Na_MakingDeposite Account="{!accountFirst}" CTRL="{!CTRL}"/>
+                    </apex:tab>
+
+                    <apex:tab label="Withdrawals" rendered="{!IF(selectedNaSection == '3' ,true,false)}" labelWidth="100" styleClass="{!WidthdrawalTabClass}">
+
+
+                        <c:Na_Widthdrawal Account="{!accountFirst}" CTRL="{!CTRL}" />
+
+                    </apex:tab>
+
+                    <apex:tab label="Shared Branching" rendered="{!IF(selectedNaSection == '3' ,true,false)}" labelWidth="100" styleClass="{!SharedBranchingTabClass}">
+                        <apex:pageBlock >
+                            <c:Na_SharedBranching Account="{!accountFirst}" CTRL="{!CTRL}" />
+                        </apex:pageBlock>
+                    </apex:tab>
+
+                    <apex:tab label="ATM Network" rendered="{!IF(selectedNaSection == '3' ,true,false)}" labelWidth="100"  styleClass="{!SFATMNetworkTabClass}">
+                        <c:NA_SFATMNetwork Account="{!accountFirst}" CTRL="{!CTRL}" />
+                    </apex:tab>
+
+                    <apex:tab label="Primary Account" rendered="{!IF(selectedNaSection == '3' ,true,false)}" labelWidth="100" styleClass="{!PrimaryTransactionTabClass}">
+                           <c:Na_PrimaryTransaction Account="{!accountFirst}" CTRL="{!CTRL}" />
+                    </apex:tab>
+
+                    <apex:tab label="Earn More From Savings" rendered="{!IF(selectedNaSection == '4' ,true,false)}" labelWidth="100" styleClass="{!EarnMoreTabClass}">
+                        
+                            <c:NA_Earn_More Account="{!accountFirst}" CTRL="{!CTRL}" />
+                        
+                    </apex:tab>
+
+
+                    <apex:tab label="Extend Benefits" rendered="{!IF(selectedNaSection == '5' ,true,false)}" labelWidth="100" styleClass="{!ExtendBenifitsTabClass}">
+                        <apex:pageBlock >
+                            <c:Na_MembershipReferralQuestions Account="{!accountFirst}" CTRL="{!CTRL}" />
+                        </apex:pageBlock>
+                    </apex:tab>
+
+                    <apex:tab label="Recommendations" labelWidth="100" title="Recommendations" >
+                        <c:NA_Recomendation Account="{!accountFirst}" acc2="{!accId2}" /> 
+
+                    </apex:tab>
+ 
+                </apex:tabPanel>
+            </td>
+        </tr>
+    </table>
+
+
+
+
+</apex:page>

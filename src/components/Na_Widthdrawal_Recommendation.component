@@ -1,0 +1,66 @@
+<apex:component allowDML="true">
+
+<apex:attribute name="nao" description="This is the value for the component." type="Needs_Assesment__c" required="true" />
+<apex:attribute name="styleclass" description="This is the value for the component." type="string" required="true" />
+			<apex:attribute name="renderDetails" description="This is the value for the component." type="string" required="true" />
+
+                 <apex:outputpanel rendered="{!renderDetails}">
+                              <tr  class="{!styleclass}" style='display:none;'>
+                                <td>
+                                &nbsp;
+                                </td>
+                                <td>
+                                &nbsp;
+                                </td>
+                                
+	                             	 <td colspan="2">
+	                           	 	<table>
+	                           	 		<tr>
+	                           	 			<td>
+		                            			<h2>Withdrawals</h2>
+		                            		</td>
+	                           	 		</tr>	
+	                           	 		<tr style="display:{!if(nao.LEWS_CFCU_ATM__c ||
+	                           	 		 nao.LEWS_Shared_ATM__c  ||
+	                           	 		 nao.LEWS_Other_ATM__c ||
+	                           	 		 nao.LEWS_InPerson__c
+	                           	 		    , "", "none")}">
+	                           	 			<td class="subQuestion">	
+	                           	 				Where do you typically make cash withdrawals?
+	                           	 			</td>
+	                           	 		</tr>
+	                           	 	                       	 		 
+										<tr  style="display:{!if(nao.LEWS_CFCU_ATM__c , "", "none")}">
+												<td></td>
+	                           	 			  <td>CFCU/Spectrum ATM</td>
+	                           	 			  
+	                           	 		</tr>
+	                           	 		
+	                           	 		
+	                           	 		<tr  style="display:{!if(nao.LEWS_Shared_ATM__c  , "", "none")}">
+	                           	 				<td></td>
+	                           	 			  <td>Shared ATM (surcharge free network)</td>
+	                           	 			  
+	                           	 		</tr>
+										<tr  style="display:{!if(nao.LEWS_Other_ATM__c , "", "none")}">
+											<td></td>
+	                           	 			  <td >Other ATM</td>
+	                           	 			  
+	                           	 		</tr>
+	                           	 		
+	                           	 		<tr  style="display:{!if(nao.LEWS_InPerson__c  , "", "none")}">
+	                           	 			<td></td>
+	                           	 			  <td>In person (branch)</td>
+	                           	 			  
+	                           	 		</tr>
+	                           	 		<tr  style="display:{!if(nao.LEWS_Comment__c != null , "", "none")}">
+	                           	 			  <td>Comment</td>
+	                           	 			  <td><apex:outputlabel value="{!nao.LEWS_Comment__c}" /></td>
+	                           	 		</tr>
+									</table>
+	                           	 </td>
+                            </tr>
+                            
+                            </apex:outputpanel>
+    
+</apex:component>

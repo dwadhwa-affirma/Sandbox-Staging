@@ -1,0 +1,142 @@
+<apex:component controller="Na_ReferralQuestionsController" allowDML="true">
+    <apex:attribute name="Account" description="This is the value for the component." type="Account" required="true" assignTo="{!AccountC}" />
+    <apex:attribute name="CTRL" description="This is the value for the component." type="NeedAssessmentController" required="true" assignTo="{!parentController}" />
+    <apex:form >
+
+
+         <apex:pageBlock title="Membership Referral Questions">
+            <div id="snackbar">Data saved successfully!</div>
+            <div style="padding-bottom:5px"><h3>
+                <p>Family members are eligible for membership at the Credit Union. 
+                Would you like to share their names so we can help meet the needs of your whole family? 
+                </p>
+                <p>You will also receive $25 for each person you refer that becomes a Credit Union member! 
+                <br/>(Prompt for one or more of the following: spouse, partner, children, grandchildren, siblings, 
+                    parents, grandparents, roommates)
+                 </p>
+            
+            
+            </h3></div>
+            <table border="2">
+                <tr>
+                    <td>
+ 
+                        <table> 
+                            <tr>
+                                <td></td>
+                                <td class="mainQuestion"  align="right" width="200" style="text-align: center;">
+                                                Current As Of<br></br>
+                                                <apex:outputText value="{0, date, MMMM d','  yyyy}">
+                                                          <apex:param value="{!lmm_New .LEMQ_Last_Updated_On__c}" />
+                                                </apex:outputText>
+                                </td>
+                            </tr>
+                            
+                        </table>
+
+                        <apex:pageBlockTable value="{!otherExistingLoans}" var="loan" id="tblLoan">
+
+
+                            <apex:column Headervalue="Name">
+
+                                <apex:inputField value="{!loan.Name__c}" />
+                            </apex:column>
+
+                            <apex:column Headervalue="Age">
+
+                                <apex:inputField value="{!loan.Age__c}" />
+                            </apex:column>
+
+
+                            <apex:column Headervalue="Want to refer them for membership?">
+
+                                <apex:inputField value="{!loan.Want_to_Refer_Membership__c}"  style="width: 80px"/>
+                            </apex:column>
+
+                            <apex:column > <!--  Headervalue="Delete"> -->
+                                <apex:commandButton value="Delete" onclick="deleteLoan(this);  return false;">
+                                </apex:commandButton>
+                                <apex:commandButton value="Delete" action="{!deleteOtherExistingLoan}" reRender="tblLoan" styleClass="deleteButton" style="display: none;">
+                                    <apex:param name="DeleteIndex" value="{!0}" assignTo="{!loanid }" />
+
+                                </apex:commandButton>
+
+
+                            </apex:column>
+		
+                        </apex:pageBlockTable>
+                        
+                        <div style="float:right; margin-right: 50px;">
+                            <apex:commandButton action="{!addOtherExistingLoan}" reRender="tblLoan" Value="Add" /> 
+                        </div>
+                        <div style="padding-top:5px">
+                        	Only ask age if person is 22 or younger (qualifies for MySavings) 
+                        </div>
+                    </td>
+                    <td class="colRec" >
+                         <table border="0">
+                            <tr>
+                                <td class="colHeader" >Recommendations</td>
+                                <td></td>
+                            </tr>
+                           <tr><td>Refer Related Individuals for Credit Union</td><td><apex:inputField value="{!lmm_New.Rec_LEMQ_1__c}" /></td></tr>
+                            
+                          
+                        </table>
+                    </td>
+                </tr>
+            </table>
+
+
+         
+
+
+        </apex:pageBlock>
+        
+        <br />
+        <br />
+        <table>
+            <tr>
+                <td align="right" width="300">
+
+
+                    <apex:commandButton value="Save" action="{!SubmitFeedbackForm}" />
+
+                </td>
+            </tr>
+        </table>
+        <apex:actionFunction action="{!resetscript}" name="resetscript" rerender="scriptcontainer" />
+        <input type="text" value="{!script}" id="scriptext" style="visibility:hidden" />
+    </apex:form>
+    <script>
+        function deleteLoan(ele)
+        {
+            var index = whichChild(ele.parentNode.parentNode);
+
+
+            var click = ele.nextSibling.getAttribute('onclick').replace("'DeleteIndex':'0'","'DeleteIndex':'" + index + "'");
+
+            ele.nextSibling.setAttribute('onclick', click);
+            ele.nextSibling.click();
+        }
+
+        function whichChild(elem){
+            var  i= 0;
+            while((elem=elem.previousSibling)!=null) ++i;
+            return i;
+        }
+    </script>
+    <script>
+function toastsuccess()
+{
+    if (document.getElementById("scriptext").value == '1')
+    {
+        var x = document.getElementById("snackbar")
+        x.className = "show";
+        setTimeout(function(){ x.className = x.className.replace("show", ""); }, 3000);
+    }
+    resetscript();
+}
+ toastsuccess();
+    </script>
+</apex:component>

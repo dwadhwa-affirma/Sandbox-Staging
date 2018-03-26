@@ -1,0 +1,76 @@
+<apex:page controller="QueueOwnersOnlyController">
+	<head>
+<meta http-equiv="refresh" content="300" />
+	</head>
+	<apex:form id="formId">
+
+		<apex:outputPanel id="msgs1">
+			<apex:pageMessages />
+		</apex:outputPanel>
+
+		<script
+			src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+		<script src="http://code.jquery.com/jquery-2.1.4.min.js"
+			type="text/javascript"></script>
+		<script src="../../soap/ajax/29.0/connection.js"
+			type="text/javascript"></script>
+		<script src="../../soap/ajax/29.0/apex.js" type="text/javascript"></script>
+		<script type="text/javascript">
+            function selectAllCheckboxes(obj,receivedInputID){
+                var inputCheckBox = document.getElementsByTagName("input"); 
+                for(var i=0; i<inputCheckBox.length; i++){          
+                    if(inputCheckBox[i].id.indexOf(receivedInputID)!=-1){                                     
+                        inputCheckBox[i].checked = obj.checked;                      
+                    } 
+                }
+            }
+            
+            window.onload = function() {
+                  jQuery('input[type=text]').blur();
+            };
+        </script>
+
+		<!--  <apex:pageBlock >          
+               <apex:pageBlockButtons location="top">
+                   <apex:commandButton onclick="window.open('/apex/CaseOwnerPage');" value="ChangeOwner" /> 
+               </apex:pageBlockButtons> -->
+
+		<apex:pageBlock rendered="{!qWrap.size>0}">
+			<apex:pageBlockSection collapsible="false" columns="2">
+				<apex:inputField value="{!cas.ownerId}" />
+				<apex:commandButton action="{!editSelected}" value="Update Records"
+					reRender="resultsTable,msgs1,formId" status="waitStatus" />
+			</apex:pageBlockSection>
+			<!--<apex:pageBlockSection collapsible="false" columns="1" title="Similar Accounts" rendered="{!IF(AND(NOT(ISNULL(wrapperList)), wrapperList.size>0),True,False)}"> -->
+
+			<apex:pageBlockTable value="{!qWrap}" var="var" id="resultsTable">
+				<apex:column >
+					<apex:facet name="header">
+						<apex:inputCheckbox onclick="selectAllCheckboxes(this,'inputCheckId1')" />
+					</apex:facet>
+					<apex:inputCheckbox id="inputCheckId1" value="{!var.selected}"
+						styleClass="chkSelected" />
+				</apex:column>
+				<apex:column headerValue="Case Number">
+					<apex:outputLink value="/{!var.cs.Id}" target="_blank">{!var.cs.caseNumber}</apex:outputLink>
+				</apex:column>
+				<apex:column headerValue="Category" value="{!var.cs.Category__c}" />
+				<apex:column headerValue="Status" value="{!var.cs.Status}" />
+				<apex:column headerValue="Future Date" value="{!var.cs.Future_Date__c}" />
+				<apex:column headerValue="Date/Time Opened"
+					value="{!var.cs.CreatedDate}" />
+				<!-- <apex:column headerValue="Days Elapsed" value="{!var.cs.Days_elapsed__c}"/> -->
+				<apex:column headerValue="Hours Elapsed"
+					value="{!var.cs.Hours_Elapsed__c}" />
+				<apex:column headerValue="Queue Name" value="{!var.cs.Owner.Name}">
+					<!--   <apex:outputLink value="/p/own/Queue/d?id={!var.cs.OwnerId}" target="_blank">{!var.cs.Owner.Name}</apex:outputLink>-->
+				</apex:column>
+				<!--  <apex:column headerValue="No. of Cases" value="{!var.count}"> 
+                  <apex:outputLink value="/apex/DashboardQueueCases?queue3Id={!var.qId}" target="_blank">{!var.count}</apex:outputLink>
+              </apex:column>  -->
+			</apex:pageBlockTable>
+
+		</apex:pageBlock>
+		<!--  </div> -->
+	</apex:form>
+</apex:page>

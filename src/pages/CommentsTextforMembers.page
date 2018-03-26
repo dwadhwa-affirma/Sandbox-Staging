@@ -1,0 +1,24 @@
+<apex:page standardController="Account" extensions="CommentsTextforMembersController">
+    <style>
+    ul {
+  columns: 2;
+  }
+    </style>
+    <apex:form >
+        <div>
+        <ul class="columns" data-columns="2">
+             <table>                                       
+                <apex:repeat value="{!rwcwList}" var="wcw">  
+                    <tr> 
+                       <td >
+                          <font color="{!if(wcw != null,'blue','')}">
+                               <apex:outputText value="{!wcw}"/>
+                          </font>
+                       </td>
+                     </tr>
+                </apex:repeat>        
+             </table>       
+        </ul>
+        </div>        
+        </apex:form>
+    </apex:page>

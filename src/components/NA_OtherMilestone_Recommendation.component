@@ -1,0 +1,251 @@
+<apex:component allowDML="true">
+<apex:attribute name="nao" description="This is the value for the component." type="Needs_Assesment__c" required="true" />
+<apex:attribute name="styleclass" description="This is the value for the component." type="string" required="true" />
+<apex:attribute name="renderDetails" description="This is the value for the component." type="string" required="true" />
+<apex:attribute name="sectionName" description="This is the value for the component." type="string" required="true" />
+
+                 <apex:outputpanel rendered="{!renderDetails}">
+                              <tr  class="{!styleclass}" style='display:none;'>  
+                              
+                                <td>
+                                &nbsp;
+                                </td>
+                                <td>
+                                &nbsp;
+                                </td>
+                                <td colspan="2">
+                                    <table>
+                                        
+                                         
+                                     <apex:outputpanel rendered="{!If(sectionName == "heloc" || sectionName == 'lc',true,false)}">     
+	                                     <tr>
+                                            <td>
+                                                <h2>Travel</h2>
+                                            </td>
+                                        </tr>
+	                                     <tr style="display:{!if(nao.Travel__c != null, "","none")}">
+												<td class="mainQuestion" width="200" colspan="1">Are you planning to travel?</td>
+			                                
+			                                <td><apex:outputlabel value="{!nao.Travel__c}" /></td>
+			                              
+			                                
+			                            </tr>
+									
+									
+									<tr style="display:{!if(nao.Travel_Timeframe__c != null  , "", "none")}">
+											<td class="subQuestion" width="200" colspan="1">If yes, how are you planning to pay?</td>
+		                                
+		                                <td><apex:outputlabel value="{!nao.Travel_Timeframe__c}" /></td>
+		                            </tr>
+									
+									<tr style="display:{!if(nao.Travel_Plan__c != null  , "", "none")}">
+											<td class="subQuestion" width="200" colspan="1">If yes, what is your plan?</td>
+		                                
+		                                <td><apex:outputlabel value="{!nao.Travel_Plan__c}" /></td>
+		                            </tr>
+		                            </apex:outputpanel>
+									                                    
+									<apex:outputpanel rendered="{!If(sectionName == "heloc" || sectionName == "lc",true,false)}">
+									<tr>
+                                            <td>
+                                                <h2>Life</h2>
+                                            </td>
+                                        </tr>
+									<tr style="display:{!if(nao.Life_Events__c != null , "", "none")}" >
+											<td class="MainQuestion" width="200" colspan="1">Are you planning for life events (weddings, etc.)?</td>
+		                                
+		                                <td><apex:outputlabel value="{!nao.Life_Events__c}" /></td>
+		                            </tr>
+									
+									
+									<tr style="display:{!if(nao.Life_Events_Timeframe__c != null  , "", "none")}">
+											<td class="subQuestion" width="200" colspan="1">If yes, what is your timeframe?</td>
+		                                <td>
+			                                 <apex:outputlabel value="{!nao.Life_Events_Timeframe__c}" />
+		                                </td>
+		                            </tr>
+		                            
+		                            <tr style="display:{!if(nao.Life_Events_Plan__c != null  , "", "none")}">
+											<td class="subQuestion" width="200" colspan="1">If yes, what is your plan?</td>
+		                                <td>
+			                                 <apex:outputlabel value="{!nao.Life_Events_Plan__c}" />
+		                                </td>
+		                            </tr>
+		                            </apex:outputpanel>
+		                            
+		                            <apex:outputpanel rendered="{!If(sectionName == "rv",true,false)}">
+		                            <tr>
+                                            <td>
+                                                <h2>Boat / RV</h2>
+                                            </td>
+                                    </tr>
+		                            <tr style="display:{!if(nao.Purchase_RV_Boat__c != null  , "", "none")}">
+											<td class="subQuestion" width="200" colspan="1">Are you planning to purchase a boat or RV?</td>
+		                                <td>
+			                                 <apex:outputlabel value="{!nao.Purchase_RV_Boat__c}" />
+		                                </td>
+		                            </tr>
+		                            <tr style="display:{!if(nao.Purchase_RV_Boat_Timeframe__c != null  , "", "none")}">
+											<td class="subQuestion" width="200" colspan="1">If yes, what is your timeframe?</td>
+		                                <td>
+			                                 <apex:outputlabel value="{!nao.Purchase_RV_Boat_Timeframe__c}" />
+		                                </td>
+		                            </tr>
+ 									<tr style="display:{!if(nao.Purchase_RV_Boat_Plan__c != null  , "", "none")}">
+											<td class="subQuestion" width="200" colspan="1">If yes, how are you planning to pay?</td>
+		                                <td>
+			                                 <apex:outputlabel value="{!nao.Purchase_RV_Boat_Plan__c}" />
+		                                </td>
+		                            </tr>
+		                            </apex:outputpanel>
+		                            
+		                            <apex:outputpanel rendered="{!If(sectionName == "retiremment",true,false)}">
+		                             <tr>
+                                            <td>
+                                                <h2>Retiremment</h2>
+                                            </td>
+                                    </tr>
+ 									<tr style="display:{!if(nao.Retirement_New__c != null  , "", "none")}">
+											<td class="MainQuestion" width="200" colspan="1">Are you planning for retirement?</td>
+		                                <td>
+			                                 <apex:outputlabel value="{!nao.Retirement_New__c}" />
+		                                </td>
+		                            </tr>
+		                            <tr style="display:{!if(nao.Retirement_Timeframe__c != null  , "", "none")}">
+											<td class="subQuestion" width="200" colspan="1">If yes, what is your timeframe?</td>
+		                                <td>
+			                                 <apex:outputlabel value="{!nao.Retirement_Timeframe__c}" />
+		                                </td>
+		                            </tr>
+ 									<tr style="display:{!if(nao.Retirement_Plan__c != null  , "", "none")}">
+											<td class="subQuestion" width="200" colspan="1">If yes, how are you planning to pay?</td>
+		                                <td>
+			                                 <apex:outputlabel value="{!nao.Retirement_Plan__c}" />
+		                                </td>
+		                            </tr>
+		                            </apex:outputpanel>
+		                            
+		                            
+		                            <apex:outputpanel rendered="{!If(sectionName == "medical" || sectionName =="lc",true,false)}">
+		                            <tr>
+                                            <td>
+                                                <h2>Medical</h2>
+                                            </td>
+                                        </tr>
+		                            <tr style="display:{!if(nao.Medical__c != null  , "", "none")}">
+											<td class="MainQuestion" width="200" colspan="1">Are you planning for medical expenses?</td>
+		                                <td>
+			                                 <apex:outputlabel value="{!nao.Medical__c}" />
+		                                </td>
+		                            </tr>
+		                            <tr style="display:{!if(nao.Medical_Timeframe__c != null  , "", "none")}">
+											<td class="subQuestion" width="200" colspan="1">If yes, what is your timeframe?</td>
+		                                <td>
+			                                 <apex:outputlabel value="{!nao.Medical_Timeframe__c}" />
+		                                </td>
+		                            </tr>
+ 									<tr style="display:{!if(nao.Medical_Plan__c != null  , "", "none")}">
+											<td class="subQuestion" width="200" colspan="1">If yes, how are you planning to pay?</td>
+		                                <td>
+			                                 <apex:outputlabel value="{!nao.Medical_Plan__c}" />
+		                                </td>
+		                            </tr>
+		                            </apex:outputpanel>
+		                            
+		                            <apex:outputpanel rendered="{!If(sectionName == "college",true,false)}">
+		                            <tr>
+                                            <td>
+                                                <h2>College</h2>
+                                            </td>
+                                        </tr>
+		                             <tr style="display:{!if(nao.College__c != null , "", "none")}">
+											<td class="MainQuestion" width="200" colspan="1">Are you planning for college expenses?</td>
+		                                <td>
+			                                 <apex:outputlabel value="{!nao.College__c}" />
+		                                </td>
+		                            </tr>
+		                            <tr style="display:{!if(nao.College_Timeframe__c != null  , "", "none")}">
+											<td class="subQuestion" width="200" colspan="1">If yes, what is your timeframe?</td>
+		                                <td>
+			                                 <apex:outputlabel value="{!nao.College_Timeframe__c}" />
+		                                </td>
+		                            </tr>
+ 									<tr style="display:{!if(nao.College_Timeframe__c != null  , "", "none")}">
+											<td class="subQuestion" width="200" colspan="1">If yes, how are you planning to pay?</td>
+		                                <td>
+			                                 <apex:outputlabel value="{!nao.College_Timeframe__c}" />
+		                                </td>
+		                            </tr> 
+		                            </apex:outputpanel>     
+		                                     	
+		                             
+		                                       
+		                            <apex:outputpanel rendered="{!If(sectionName == "heloc",true,false)}">
+		                            
+		                            <tr>
+                                            <td>
+                                                <h2>Home Improvements</h2>
+                                            </td>
+                                        </tr>
+		                             <tr style="display:{!if(nao.Home_Improvement__c != null  , "", "none")}">
+											<td class="MainQuestion" width="200" colspan="1">Are you planning any home improvements?</td>
+		                                <td>
+			                                 <apex:outputlabel value="{!nao.Home_Improvement__c}" />
+		                                </td>
+		                            </tr>
+		                            <tr style="display:{!if(nao.Home_Improvement_Timeframe__c != null  , "", "none")}">
+											<td class="subQuestion" width="200" colspan="1">If yes, what is your timeframe?</td>
+		                                <td>
+			                                 <apex:outputlabel value="{!nao.Home_Improvement_Timeframe__c}" />
+		                                </td>
+		                            </tr>
+ 									<tr style="display:{!if(nao.Home_Improvement_Plan__c != null  , "", "none")}">
+											<td class="subQuestion" width="200" colspan="1">If yes, how are you planning to pay?</td>
+		                                <td>
+			                                 <apex:outputlabel value="{!nao.Home_Improvement_Plan__c}" />
+		                                </td>
+		                            </tr> 
+		                            </apex:outputpanel>     
+		                                     	        	
+		                              <apex:outputpanel rendered="{!If(sectionName == "lc",true,false)}">
+		                            
+		                            <tr>
+                                            <td>
+                                                <h2>Other Expenses</h2>
+                                            </td>
+                                        </tr>
+		                             <tr style="display:{!if(nao.Other__c != null  , "", "none")}">
+											<td class="MainQuestion" width="200" colspan="1">Are you planning for other expenses?</td>
+		                                <td>
+			                                 <apex:outputlabel value="{!nao.Other__c}" />
+		                                </td>
+		                            </tr>
+		                            <tr style="display:{!if(nao.Other_Timeframe__c != null  , "", "none")}">
+											<td class="subQuestion" width="200" colspan="1">If yes, what is your timeframe?</td>
+		                                <td>
+			                                 <apex:outputlabel value="{!nao.Other_Timeframe__c}" />
+		                                </td>
+		                            </tr>
+ 									<tr style="display:{!if(nao.Other_Plan__c != null  , "", "none")}">
+											<td class="subQuestion" width="200" colspan="1">If yes, how are you planning to pay?</td>
+		                                <td>
+			                                 <apex:outputlabel value="{!nao.Other_Plan__c}" />
+		                                </td>
+		                            </tr> 
+		                            
+		                            <tr style="display:{!if(nao.LEOM_PlanUnforeseen__c  != null && nao.LEOM_PlanUnforeseen__c != '' , "", "none")}">
+											<td class="subQuestion" width="200" colspan="1">How are you planning to pay for unforeseen expenses?</td>
+		                                <td>
+			                                 <apex:outputlabel value="{!nao.LEOM_PlanUnforeseen__c}" />
+		                                </td>
+		                            </tr> 
+		                            
+		                            
+		                            </apex:outputpanel>   
+		                                                                                            
+                                    </table>
+                                 </td>
+                            </tr>
+                            
+                            </apex:outputpanel>
+</apex:component>

@@ -1,0 +1,289 @@
+<apex:page standardController="Lead" extensions="CreateNewLeadController" tabStyle="Case" showHeader="true">
+<style>
+    .classHidden 
+    {
+        display: none;
+    }
+</style>
+ <apex:form id="fm" enctype="multipart/form-data">
+       <apex:outputPanel id="msgs">
+            <apex:pageMessages />
+        </apex:outputPanel>
+         <apex:pageBlock title="Create Lead" id="pb1">
+            <apex:pageBlockSection columns="2" title="Lead Information" id="pbs">
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel Value="{!$ObjectType.Lead.fields.Person__c.Label}"/>
+                    <apex:inputField value="{!leadObject.Person__c}" taborderhint="1" />
+
+                    
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem >
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel Value="{!$ObjectType.Lead.fields.Member_Account__c.Label}" />
+                    <apex:outputPanel styleClass="requiredInput" layout="block" id="op">
+                        
+                        <apex:inputText value="{!MemberAccountID}" id="targetId" styleClass="accountID classHidden" /> 
+                      
+                      <apex:inputText tabindex="2" size="35" value="{!accountName}" id="targetName" onFocus="this.blur()" disabled="false" styleClass="accountName"/> 
+                      <img  tabindex="3" src="/s.gif" onclick="openLookupPopup('{!AccountID}'); return false" class="lookupIcon" 
+                            onmouseout="this.className='lookupIcon';" alt="Account Name Lookup (New Window)" onmouseover="this.className='lookupIconOn';"/>       
+                    </apex:outputPanel>
+                </apex:pageBlockSectionItem>
+                
+                 <apex:pageBlockSectionItem >
+                    <apex:outputLabel Value="Lead Owner"/>
+                    <apex:outputLabel value="{!OwnerName}" />
+                </apex:pageBlockSectionItem>
+                
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel Value="{!$ObjectType.Lead.fields.FirstName.Label}"/>
+                    <apex:outputPanel styleClass="requiredInput" layout="block" id="op">
+                        <apex:inputField value="{!leadObject.Salutation}"  taborderhint="4" />&nbsp;
+                        <apex:inputField value="{!leadObject.FirstName}"  taborderhint="5" />
+                    </apex:outputPanel>
+                </apex:pageBlockSectionItem>
+             <apex:pageBlockSectionItem >
+                    <apex:outputLabel Value="{!$ObjectType.Lead.fields.Keep__c.Label}"/>
+                    <apex:inputField value="{!leadObject.Keep__c}" />
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel Value="{!$ObjectType.Lead.fields.MiddleName.Label}"/>
+                    <apex:inputField value="{!leadObject.MiddleName}"  taborderhint="6"/>
+                </apex:pageBlockSectionItem>                
+                <apex:pageBlockSectionItem >
+                 </apex:pageBlockSectionItem>
+                
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel Value="{!$ObjectType.Lead.fields.LastName.Label}"/>
+                    <apex:inputField value="{!leadObject.LastName}"  taborderhint="7" />
+                </apex:pageBlockSectionItem>
+                
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel Value="{!$ObjectType.Lead.fields.LeadSource.Label}"/>
+                    <apex:inputField value="{!leadObject.LeadSource}" />
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel Value="{!$ObjectType.Lead.fields.Suffix.Label}"/>
+                    <apex:inputField value="{!leadObject.Suffix}"  taborderhint="8"/>
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel Value="{!$ObjectType.Lead.fields.Event_Source__c.Label}"/>
+                    <apex:inputField value="{!leadObject.Event_Source__c}" />
+                </apex:pageBlockSectionItem>
+                
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel Value="{!$ObjectType.Lead.fields.Phone.Label}"/>
+                    <apex:inputField value="{!leadObject.Phone}"  taborderhint="9"/>
+                </apex:pageBlockSectionItem>
+                
+                
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel Value="{!$ObjectType.Lead.fields.Product_Type__c.Label}"/>
+                    <apex:outputpanel >
+                    <div class="requiredInput">
+                    <div class="requiredBlock"></div>
+                    <apex:inputField value="{!leadObject.Product_Type__c}" styleClass="{!productTypeClass}"/>
+                      </div>
+                      <apex:outputpanel rendered="{!(productTypeClass != '')}">
+                      <div class="errorMsg"><strong>Error:</strong> You must enter a value</div>
+                         </apex:outputpanel>
+                    </apex:outputpanel>
+                </apex:pageBlockSectionItem>
+                 <apex:pageBlockSectionItem >
+                    <apex:outputLabel Value="{!$ObjectType.Lead.fields.Home_Phone__c.Label}"/>
+                    <apex:inputField value="{!leadObject.Home_Phone__c}"  taborderhint="10"/>
+                </apex:pageBlockSectionItem>
+                
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel Value="{!$ObjectType.Lead.fields.Product_Subtype__c.Label}"/>
+                                   
+                        <apex:inputField value="{!leadObject.Product_Subtype__c}" />
+                  
+                </apex:pageBlockSectionItem>
+                
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel Value="{!$ObjectType.Lead.fields.Other_Phone__c.Label}"/>
+                    <apex:inputField value="{!leadObject.Other_Phone__c}"  taborderhint="11"/> 
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel Value="{!$ObjectType.Lead.fields.Brand__c.Label}"/>
+                    <apex:outputpanel >
+                    <div class="requiredInput">
+                    <div class="requiredBlock"></div>
+                    <apex:inputField value="{!leadObject.Brand__c}" styleClass="{!brandClass}" />
+                     <apex:outputpanel rendered="{!(brandClass != '')}">
+                      <div class="errorMsg"><strong>Error:</strong> You must enter a value</div>
+                         </apex:outputpanel>
+                    
+                     </div> 
+                    </apex:outputpanel>
+                </apex:pageBlockSectionItem>
+                    <apex:pageBlockSectionItem >
+                    <apex:outputLabel Value="{!$ObjectType.Lead.fields.Best_Time_To_Call__c.Label}"/>
+                    <apex:inputField value="{!leadObject.Best_Time_To_Call__c}"   taborderhint="12"/>
+                </apex:pageBlockSectionItem>
+                       <apex:pageBlockSectionItem >
+                    <apex:outputLabel Value="{!$ObjectType.Lead.fields.Escalated__c.Label}"/>
+                    <apex:inputField value="{!leadObject.Escalated__c}" />
+                </apex:pageBlockSectionItem>
+               <apex:pageBlockSectionItem >
+                    <apex:outputLabel Value="{!$ObjectType.Lead.fields.Email.Label}"/>
+                    <apex:inputField value="{!leadObject.Email}" taborderhint="13"/>
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem >
+                  </apex:pageBlockSectionItem>
+                 <apex:pageBlockSectionItem >
+                      <apex:outputLabel Value="{!$ObjectType.Lead.fields.Branch_of_Lead_creator__c.Label}"/>
+                             <apex:selectList id="BranchName" Value="{!BranchOption}" size="1" >
+                                <apex:selectOptions value="{!BranchOptionList}" />
+                              <apex:actionSupport event="onchange" action="{!SetEpsisUserID}" reRender="Episys_User_ID__c_block">
+                              </apex:actionSupport>
+                         </apex:selectList>
+                   </apex:pageBlockSectionItem>
+                
+                 
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel Value="{!$ObjectType.Lead.fields.Episys_User_ID__c.Label}"/>
+                    <apex:inputField value="{!leadObject.Episys_User_ID__c}"   Id="Episys_User_ID__c_block"/>
+                </apex:pageBlockSectionItem>
+                 <apex:pageBlockSectionItem >
+                </apex:pageBlockSectionItem>
+                    <apex:pageBlockSectionItem >
+                    <apex:outputLabel Value="{!$ObjectType.Lead.fields.Description.Label}"/>
+                    <apex:inputField value="{!leadObject.Description}" />
+                </apex:pageBlockSectionItem>
+                    <apex:pageBlockSectionItem >
+                    <apex:outputLabel Value="{!$ObjectType.Lead.fields.Mortgage_Loan_Officer__c.Label}"/>
+                
+                    <apex:inputField value="{!leadObject.Mortgage_Loan_Officer__c}" taborderhint="16"/>
+                
+                </apex:pageBlockSectionItem>
+                  <apex:pageBlockSectionItem >
+                   <apex:outputLabel Value="{!$ObjectType.Lead.fields.Lead_Type__c.Label}"/>
+                        <apex:inputField value="{!leadObject.Lead_Type__c}" />
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel Value="Lead Status" />
+                    
+                    <apex:inputField value="{!leadObject.Status}" taborderhint="14"/>
+                </apex:pageBlockSectionItem>
+                  <apex:pageBlockSectionItem >
+                    
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel Value="{!$ObjectType.Lead.fields.Sub_Status__c.Label}"/>
+                    <apex:inputField value="{!leadObject.Sub_Status__c}" taborderhint="15" />
+                </apex:pageBlockSectionItem>
+              
+                <apex:pageBlockSectionItem >
+                </apex:pageBlockSectionItem>
+                  <apex:pageBlockSectionItem >
+                    <apex:outputLabel Value="{!$ObjectType.Lead.fields.Episys_Flag__c.Label}"/>
+                    <apex:inputField value="{!leadObject.Episys_Flag__c}" taborderhint="17" />
+                </apex:pageBlockSectionItem>
+                
+                            
+            </apex:pageBlockSection> 
+            
+            
+        
+            
+            <apex:pageBlockSection columns="2" title="Address Information">
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel Value="{!$ObjectType.Lead.fields.Street_Address_1__c.Label}"/>
+                    <apex:inputField value="{!leadObject.Street_Address_1__c}" />
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel Value="{!$ObjectType.Lead.fields.Property_Address__c.Label}"/>
+                    <apex:inputField value="{!leadObject.Property_Address__c}" />
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel Value="{!$ObjectType.Lead.fields.Street_Address_2__c.Label}"/>
+                    <apex:inputField value="{!leadObject.Street_Address_2__c}" />
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem >    
+                    <apex:outputLabel Value="{!$ObjectType.Lead.fields.Property_City__c.Label}"/>
+                    <apex:inputField value="{!leadObject.Property_City__c}" />
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel Value="{!$ObjectType.Lead.fields.City__c.Label}"/>
+                    <apex:inputField value="{!leadObject.City__c}" />
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel Value="{!$ObjectType.Lead.fields.Property_State__c.Label}"/>
+                    <apex:inputField value="{!leadObject.Property_State__c}" />
+                </apex:pageBlockSectionItem>
+                    <apex:pageBlockSectionItem >
+                    <apex:outputLabel Value="{!$ObjectType.Lead.fields.State__c.Label}"/>
+                    <apex:inputField value="{!leadObject.State__c}" />
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel Value="{!$ObjectType.Lead.fields.Property_Zip__c.Label}"/>
+                    <apex:inputField value="{!leadObject.Property_Zip__c}" />
+                </apex:pageBlockSectionItem>
+            
+            
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel Value="{!$ObjectType.Lead.fields.Zip_Code__c.Label}"/>
+                    <apex:inputField value="{!leadObject.Zip_Code__c}" />
+                </apex:pageBlockSectionItem>
+                    <apex:pageBlockSectionItem >
+                    </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel Value="{!$ObjectType.Lead.fields.Country__c.Label}"/>
+                    <apex:inputField value="{!leadObject.Country__c}" />
+                </apex:pageBlockSectionItem>
+            </apex:pageBlockSection>
+            
+             <apex:pageBlockButtons >
+                <apex:commandButton action="{!save}" value="Save"/>
+
+            </apex:pageBlockButtons>
+            
+            
+         </apex:pageBlock> 
+         
+         
+
+
+  
+         
+         
+ </apex:form>
+      <script>
+         var newWin=null;
+         function openLookupPopup(id)
+         {
+            debugger;
+            var url="/apex/AccountLookUPOnCreateLead?accId="+id;
+            newWin = window.open(url, 'Popup','height=500,width=600,left=100,top=100,resizable=no,scrollbars=yes,toolbar=no,status=no');
+             if (window.focus) 
+             {
+                newWin.focus();
+             } 
+            return false;
+         }
+               
+         function closeLookupPopup()
+         {
+         debugger;
+            if (null!=newWin)
+            {
+               newWin.close();
+            }  
+         } 
+         
+          function disableEnterKey(e) {
+                var key;
+                if (window.event)
+                    key = window.event.keyCode;
+                else
+                    key = e.which;
+                return (key != 13);
+            }
+        
+      </script>
+      
+         
+</apex:page>

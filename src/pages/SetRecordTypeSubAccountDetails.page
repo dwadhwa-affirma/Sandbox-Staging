@@ -1,0 +1,288 @@
+<apex:page standardController="Case" extensions="SetRecordTypeSubAccountDetailsController" tabStyle="Case" id="pg" showHeader="false">
+    <head>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.blockUI/2.70/jquery.blockUI.min.js"></script>
+
+    </head>
+    <style>
+        .main_div {
+            float: left;
+            width: 100%;
+        }
+
+        .inner_div {
+            float: left;
+            width: 100%;
+            padding: 10px 0px;
+        }
+
+        .span_class {
+            float: left;
+            margin-right: 10px;
+        }
+    </style>
+
+    <apex:form id="fm">
+        <!-- <apex:outputPanel id="msgs"> -->
+        <apex:pageMessages id="msgs" />
+        <!--   </apex:outputPanel> -->
+        <!--   <apex:actionFunction action="{!scOptions}" name="generateScValues" reRender="scName,tcName" />
+           <apex:actionFunction action="{!tcOptions}" name="generateTcValues" reRender="tcName" /> -->
+
+        <apex:pageBlock title="Create Case" id="pb1">
+            <apex:pageBlockSection columns="2" title="Account Details" id="pbs">
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel Value="Account Number" for="accName" />
+                    <apex:outputField value="{!acc.Name}" id="accName" />
+                </apex:pageBlockSectionItem>
+                <!--<apex:pageBlockSectionItem >
+                          <apex:outputLabel Value="E-mail Address" for="emailID"/>
+                          <apex:outputField value="{!acc.PersonEmail}" id="emailID"/>
+                      </apex:pageBlockSectionItem>
+                      <apex:pageBlockSectionitem id="pbsi">
+                          <apex:outputLabel value="Account"/>
+                          <apex:outputPanel id="op">
+                              <apex:inputHidden value="{!accountId}" id="targetId" />
+                              <apex:inputText size="35" value="{!accountName}" id="targetName" onFocus="this.blur()" disabled="false"/> <a href="#" onclick="openLookupPopup('{!accId}'); return false">Lookup</a>
+                              <apex:inputText size="35" value="{!accountName}" id="targetName" onFocus="this.blur()" disabled="false"/> <img src="/s.gif" onclick="openLookupPopup('{!accId}', '{!accountId}'); return false" class="lookupIcon" onmouseout="this.className='lookupIcon';" alt="Account Name Lookup (New Window)" onmouseover="this.className='lookupIconOn';"/>
+                          </apex:outputPanel>
+                      </apex:pageBlockSectionitem> -->
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel Value="Brand" for="emailID" />
+                    <apex:outputField value="{!acc.Brand__c}" id="emailID" />
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionitem id="pbsi">
+                    <apex:outputLabel value="Member" />
+                    <apex:outputPanel styleClass="requiredInput" layout="block" id="op">
+                        <apex:outputPanel styleClass="requiredBlock" layout="block" />
+                        <apex:inputHidden value="{!personId}" id="targetId" />
+                        <!--  <apex:inputText size="35" value="{!accountName}" id="targetName" onFocus="this.blur()" disabled="false"/> <a href="#" onclick="openLookupPopup('{!accId}'); return false">Lookup</a>  -->
+                        <apex:inputText size="35" value="{!accountName}" id="targetName" onFocus="this.blur()" disabled="false" /> <img src="/s.gif" onclick="openLookupPopup('{!accId}', '{!personId}'); return false" class="lookupIcon" onmouseout="this.className='lookupIcon';" alt="Account Name Lookup (New Window)" onmouseover="this.className='lookupIconOn';" />
+                    </apex:outputPanel>
+                </apex:pageBlockSectionitem>
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="Ownership" for="ownr" />
+                    <apex:actionRegion >
+                        <apex:inputField value="{!case.Ownership__c}" id="ownr">
+                            <apex:actionSupport event="onchange" reRender="ajaxrequest" />
+                        </apex:inputField>
+                    </apex:actionRegion>
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem ></apex:pageBlockSectionItem>
+            </apex:pageBlockSection>
+
+            <apex:outputPanel id="ajaxrequest">
+                <apex:pageBlockSection rendered="{!Case.Ownership__c ='Assign'}">
+                    <apex:pageBlockSectionItem ></apex:pageBlockSectionItem>
+                    <apex:pageBlockSectionItem >
+                        <apex:outputLabel value="Case Owner" for="cownr" />
+                        <apex:inputField value="{!case.OwnerId}" onkeypress="return disableEnterKey(event)" />
+                    </apex:pageBlockSectionItem>
+                </apex:pageBlockSection>
+            </apex:outputPanel>
+
+            <!--  <apex:pageBlockSection id="pbs1">
+                  <apex:pageBlockSectionItem >
+                      <apex:outputLabel value="Ownership" for="ownr"/>
+                       <apex:actionRegion >
+                      <apex:inputField value="{!case.Ownership__c}" id="ownr" >
+                             <apex:actionSupport event="onchange" reRender="pbs1"/>
+                      </apex:inputField>
+                         </apex:actionRegion>
+                  </apex:pageBlockSectionItem>
+                  <apex:pageBlockSectionItem ></apex:pageBlockSectionItem>
+                  <apex:pageBlockSectionItem >
+                      <apex:outputLabel value="Case Owner" for="cownr" rendered="{!Case.Ownership__c ='Assign'}"/>
+                      <apex:inputField value="{!case.OwnerId}" id="cownr" rendered="{!Case.Ownership__c ='Assign'}"/>
+                  </apex:pageBlockSectionItem>
+              </apex:pageBlockSection> -->
+
+            <apex:pageBLockSection columns="2" title="Please select appropriate values for the fields">
+                <apex:pageBlockSectionItem >
+                 
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="Status" for="sts" />
+                    <apex:inputField value="{!case.Status}" id="sts" />
+                </apex:pageBlockSectionItem>
+
+                <apex:pageBlockSectionitem >
+                    <apex:outputLabel Value="Search Field" for="pcName" />
+                    <apex:inputText id="SearchField" value="{!searchText}" onkeypress="return onenter(event)" />
+                </apex:pageBlockSectionitem>
+
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="Subject" for="sub" />
+                    <apex:inputField value="{!case.Subject}" id="sub" />
+                    
+                </apex:pageBlockSectionItem>
+
+<apex:pageBlockSectionItem >
+					
+				</apex:pageBlockSectionItem>
+				
+				   <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="Future Date" for="ftrdt"/>
+                    <apex:inputField value="{!case.Future_Date__c}" id="ftrdt" />                    
+                </apex:pageBlockSectionItem>   
+                <apex:pageBlockSectionitem >
+                    <apex:outputLabel Value="Search Result" for="searchName" />
+                    <apex:selectList id="selectSearchResult" styleclass="selectlistprimaryid" value="{!selectedPrimary}" onchange="changeCategories(this.value);" size="8" style="width: 550px;">
+                        <apex:selectOptions value="{!SearchResult}"></apex:selectOptions>
+                    </apex:selectList>
+                </apex:pageBlockSectionitem>
+
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="Internal Case Comments" for="cmts" />
+                    <apex:inputField value="{!case.CaseComments__c}" id="cmts" style="width: 500px; height: 130px" />
+                </apex:pageBlockSectionItem>
+
+                <apex:pageBlockSectionitem >
+                    <apex:outputLabel Value=""></apex:outputLabel>
+                    <apex:outputLabel Value="--------------Or--------------" />
+                </apex:pageBlockSectionitem>
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="Ticket #" for="ltk" />
+                    <apex:inputField value="{!case.LTK__c}" id="ltk" />
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionitem >
+                    <apex:outputLabel Value="Primary Category" for="pcName" />
+                    <apex:outputPanel styleClass="requiredInput" layout="block" id="op">
+                        <apex:outputPanel styleClass="requiredBlock" layout="block" />
+                        <apex:selectList id="pcName" size="1" value="{!pcValue}" onchange="generateScValues()">
+                            <apex:selectOptions value="{!pcOptionList}" />
+                        </apex:selectList>
+                    </apex:outputPanel>
+                </apex:pageBlockSectionitem>
+
+
+                <apex:pageBlockSectionitem >
+                    <apex:outputLabel value="Check the box to attach a document." />
+                        <apex:inputCheckbox value="{!b1}">
+                            <apex:actionsupport event="onclick" action="{!change}" reRender="pb1" />
+                        </apex:inputCheckbox>
+                    
+                </apex:pageBlockSectionitem>
+
+                <apex:pageBlockSectionitem >
+                    <apex:outputLabel Value="Secondary Category" for="scName" />
+                    <apex:outputPanel styleClass="requiredInput" layout="block" id="op">
+                        <apex:outputPanel styleClass="requiredBlock" layout="block" />
+                        <apex:selectList id="scName" size="1" value="{!scValue}" onchange="generateTcValues()">
+                            <apex:selectOptions value="{!scOptionList}" />
+                        </apex:selectList>
+                    </apex:outputPanel>
+                </apex:pageBlockSectionitem>
+                <apex:pageBlockSectionitem >
+
+                </apex:pageBlockSectionitem>
+                <apex:pageBlockSectionitem >
+                    <apex:outputLabel Value="Tertiary Category" for="tcName" />
+                    <apex:outputPanel styleClass="requiredInput" layout="block" id="op">
+                        <apex:outputPanel styleClass="requiredBlock" layout="block" />
+                        <apex:selectList id="tcName" size="1" value="{!tcValue}">
+                            <apex:selectOptions value="{!tcOptionList}" />
+                        </apex:selectList>
+                    </apex:outputPanel>
+                </apex:pageBlockSectionitem>
+                <!--  <apex:pageBlockSectionItem >
+                          <apex:outputLabel Value="Tertiary Category" for="tcName" />
+                          <apex:selectList id="tcName" size="1" value="{!tcValue}">
+                              <apex:selectOptions value="{!tcOptionList}"/>
+                          </apex:selectList>
+                      </apex:pageBlockSectionItem>   -->
+
+            </apex:pageBLockSection>
+
+
+
+            
+
+            <apex:pageBlockButtons location="Bottom" id="ButtonBlockId">
+                <apex:actionStatus id="SubmitBtnStatus">
+                    <apex:facet name="stop">
+                        <apex:outputPanel >
+                            <apex:commandButton value="Submit " action="{!process1}" reRender="msgs" rendered="{!bool == false}" styleClass="buttonStyle" style="font-size:15px;" status="SubmitBtnStatus" />
+                            <apex:commandButton value="Cancel " action="{!doCancel}" onclick="window.close()" rendered="{!bool == false}" styleClass="buttonStyle" style="font-size:15px;" immediate="true" />
+                            <apex:commandButton value="Next " action="{!nextPage}" reRender="msgs" rendered="{!bool}" styleClass="buttonStyle" style="font-size:15px;" status="SubmitBtnStatus" />
+                        </apex:outputPanel>
+                    </apex:facet>
+                    <apex:facet name="start">
+                        <apex:outputPanel >
+                            <apex:commandButton value="Saving..." disabled="true" />
+                        </apex:outputPanel>
+                    </apex:facet>
+                </apex:actionStatus>
+            </apex:pageBlockButtons>
+            <apex:actionFunction action="{!scOptions}" name="generateScValues" reRender="scName,tcName,selectSearchResult,SearchField" />
+            <apex:actionFunction action="{!tcOptions}" name="generateTcValues" reRender="tcName" />
+            <apex:actionFunction name="getSearchText" action="{!SearchTertiary}" reRender="selectSearchResult,scName,tcName,pcName" />
+            <apex:actionFunction name="changeCategoriesMain" action="{!ChangeCategories}" reRender="scName,tcName,pcName,selectSearchResult">
+                <apex:param name="fieldToShow" value="" assignTo="{!selectedPrimary}" />
+            </apex:actionFunction>
+        </apex:pageBlock>
+
+        <script>
+         var newWin=null;
+         function openLookupPopup(id)
+         {
+            var url="/apex/PersonLookUpOnCaseSubAccs?accId="+id;
+            newWin = window.open(url, 'Popup','height=500,width=600,left=100,top=100,resizable=no,scrollbars=yes,toolbar=no,status=no');
+         if (window.focus)
+         {
+            newWin.focus();
+         }
+            return false;
+         }
+
+         function closeLookupPopup()
+         {
+            if (null!=newWin)
+            {
+               newWin.close();
+            }
+         }
+
+        function disableEnterKey(e)
+        {
+            var key;
+            if(window.event)
+                key = window.event.keyCode;
+            else
+                key = e.which;
+            return (key != 13);
+        }
+
+        function onenter(e) {
+
+                if (window.event) {
+                    key = window.event.keyCode;     //IE
+                }
+                else {
+                    key = e.which;     //firefox
+                }
+                if (key == 13) {
+                    getSearchText();
+                    $.blockUI({ message: '<h1>Just a moment...</h1>' });
+                    test();
+                    return false;
+
+                } else {
+                    return true;
+                }
+            }
+            $(document).ajaxStop($.unblockUI);
+            function test() {
+                $.ajax({ url: 'wait.php', cache: false });
+            }
+
+            function changeCategories(val)
+            {
+                  $.blockUI({ message: '<h1>Just a moment...</h1>' });
+                   test();
+
+                     changeCategoriesMain(val);
+            }
+        </script>
+    </apex:form>
+</apex:page>

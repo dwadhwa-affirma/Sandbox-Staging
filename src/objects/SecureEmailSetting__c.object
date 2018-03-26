@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <customSettingsType>List</customSettingsType>
+    <enableFeeds>false</enableFeeds>
+    <fields>
+        <fullName>Chevron_KB__c</fullName>
+        <externalId>false</externalId>
+        <label>Chevron_KB</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Url</type>
+    </fields>
+    <fields>
+        <fullName>List_of_Allowed_Extensions__c</fullName>
+        <externalId>false</externalId>
+        <label>List of allowed Extensions</label>
+        <length>255</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>List_of_Blocked_Extensions__c</fullName>
+        <externalId>false</externalId>
+        <label>List of Blocked Extensions</label>
+        <length>255</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>ProfileId__c</fullName>
+        <externalId>false</externalId>
+        <label>Profile Id</label>
+        <length>255</length>
+        <required>true</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Spectrum_KB__c</fullName>
+        <externalId>false</externalId>
+        <label>Spectrum_KB</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Url</type>
+    </fields>
+    <fields>
+        <fullName>chevron_url__c</fullName>
+        <externalId>false</externalId>
+        <label>chevron_url</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Url</type>
+    </fields>
+    <fields>
+        <fullName>spectrum_url__c</fullName>
+        <externalId>false</externalId>
+        <label>spectrum_url</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Url</type>
+    </fields>
+    <fields>
+        <fullName>url_redirection_enabled__c</fullName>
+        <defaultValue>false</defaultValue>
+        <externalId>false</externalId>
+        <label>url_redirection_enabled</label>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <label>Secure Email Setting</label>
+    <visibility>Protected</visibility>
+</CustomObject>

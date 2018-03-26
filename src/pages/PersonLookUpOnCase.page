@@ -1,0 +1,45 @@
+<apex:page standardController="Account" sidebar="False" showHeader="false" extensions="PersonLookUpOnCaseController">
+    <apex:form >
+        <apex:pageBlock >
+           <!-- <apex:pageBlockTable value="{!accList}" var="var">
+                <apex:column headerValue="Member Name">
+                    <apex:outputLink value="#" onclick="fillIn('{!var.Name}', '{!var.id}')">{!var.Name}</apex:outputLink>
+                </apex:column>
+                <apex:column headerValue="Email" value="{!var.PersonEmail}"/>
+                <apex:column headerValue="Resdiential City" value="{!var.Residential_City__pc}"/>
+                <apex:column headerValue="Residential Country" value="{!var.Residential_Country__pc}"/> 
+        </apex:pageBlockTable> -->
+                <apex:pageBlockTable value="{!paList}" var="var">
+                <apex:column headerValue="Member Name">
+                    <apex:outputLink value="#" onclick="fillIn('{!var.PersonID__r.Name}', '{!var.PersonID__c}')">{!var.PersonID__r.Name}</apex:outputLink>
+                </apex:column>
+                <apex:column headerValue="Relationship" value="{!var.TypeTranslate__c}"/>
+        </apex:pageBlockTable>
+            
+        </apex:pageBlock>
+    </apex:form>
+    <script>
+        function fillIn(name, id)
+        {
+            var winMain=window.opener;
+            if (null==winMain)
+            {
+                winMain=window.parent.opener;
+            }
+            var ele=winMain.document.getElementById("pg:fm:pb1:pbs:pbsi:targetName");
+            ele.value=name;
+            winMain.document.getElementById("pg:fm:pb1:pbs:pbsi:targetId").value=id;
+            CloseWindow();
+        }
+ 
+       function CloseWindow()
+       {
+          var winMain=window.opener;
+          if (null==winMain)
+          {
+             winMain=window.parent.opener;
+          }
+          winMain.closeLookupPopup();
+       }
+    </script>
+</apex:page>

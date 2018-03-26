@@ -1,0 +1,19 @@
+<apex:page standardController="Account" title="Sample Position Layout Page" showHeader="true" sidebar="false" >
+    <apex:sectionHeader title="Section Header - {!$ObjectType.Account.label} Edit" subtitle="Member 360 View"/>
+        <apex:form >
+            <apex:pageBlock title="{! $User.FirstName} - PageBlock Title" mode="edit" id="thePageBlock">
+                <apex:pageBlockButtons >
+                    <apex:commandButton value="Save" action="{!save}"/>
+                    <apex:commandButton value="Cancel" action="{!cancel}"/>
+                </apex:pageBlockButtons>
+    
+                <apex:pageBlockSection id="theSection" title="PageBlockSection 1" columns="2">
+
+
+                </apex:pageBlockSection>
+            <apex:pageBlockSection title="PageBlockSection 2" columns="1">
+   
+            </apex:pageBlockSection>
+        </apex:pageBlock>
+        </apex:form>
+</apex:page>

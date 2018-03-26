@@ -1,0 +1,39 @@
+<apex:page standardController="Account_Details__c" sidebar="False" showHeader="false" extensions="AccountNumLookupOnCaseController">
+    <apex:form >
+        <apex:pageBlock >
+            <apex:pageBlockTable value="{!accList}" var="var">
+                <apex:column headerValue="Account Number">
+                    <apex:outputLink value="#" onclick="fillIn('{!var.Name}', '{!var.id}')">{!var.Name}</apex:outputLink>
+                </apex:column>
+                <apex:column headerValue="RecType" value="{!var.RecType__c}"/>
+                <apex:column headerValue="TypeTranslate" value="{!var.TypeTranslate__c}"/>
+                <apex:column headerValue="Brand" value="{!var.Brand__c}"/> 
+        </apex:pageBlockTable>
+        </apex:pageBlock>
+    </apex:form>
+    <script>
+        function fillIn(name, id)
+        {
+            var winMain=window.opener;
+            if (null==winMain)
+            {
+                winMain=window.parent.opener;
+            }
+            var ele=winMain.document.getElementById("pg:fm:pb1:pbs:pbsi:targetName");
+            ele.value=name;
+            winMain.document.getElementById("pg:fm:pb1:pbs:pbsi:targetId").value=id;
+
+            CloseWindow();
+        }
+ 
+       function CloseWindow()
+       {
+          var winMain=window.opener;
+          if (null==winMain)
+          {
+             winMain=window.parent.opener;
+          }
+          winMain.closeLookupPopup();
+       }
+    </script>
+</apex:page>

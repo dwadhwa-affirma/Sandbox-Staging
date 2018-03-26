@@ -1,0 +1,98 @@
+<apex:page controller="MemberNumberController">
+
+    <apex:form >
+        <apex:pageMessages id="errors" />
+        
+        <apex:pageBlock mode="edit" id="criteria">
+
+            <table width="100%" border="0">
+                <tr> 
+                    
+                 <td width="200" valign="top">                             
+                            <table cellpadding="2" cellspacing="2" id="t02">
+                                <tr class="Member">
+                                    <td style="font-weight:bold;">Member Number<br/>
+                                        <apex:inputText value="{!MembernumberQuery}" style="width:150px;" required="false" label="Member #" styleClass="mnumber"/>
+                                    </td>
+                                </tr>
+                            </table>
+                           
+                            <table cellpadding="2" cellspacing="2" >
+                                <tr>
+                                    <td><br/>
+                                        <div class="buttonMember"><apex:commandButton action="{!searchAccount}"  styleClass="memberbuttonId" value="Search" status="MemberStatusId" reRender="memberresults,errors" style="width:150px;margin-bottom: 5px;"/>
+                                        </div>
+                                        <div class="clearData"><apex:commandButton action="{!clearAll}" value="Clear All" style="width:150px;" reRender="memberresults,trustresults,results,errors,criteria,script"/></div>
+                                    </td>
+                                </tr>         
+                           </table>              
+                    </td> 
+                   
+                    <td valign="top">
+                         <div class="memberAccounts">
+                         <!--   <div style="overflow: scroll; width: 850px; height: 450px;">  -->                   
+                              <apex:pageBlock mode="edit" id="memberresults">                       
+                                      <apex:actionStatus id="MemberStatusId" layout="inline">
+                                            <apex:facet name="start" > 
+                                                <img src="/img/loading.gif" /> 
+                                                <font size="2" color="blue">Searching.. Please Wait..</font>                  
+                                            </apex:facet>
+                                      </apex:actionStatus>            
+                                 <apex:pageBlockTable value="{!MemberAccountInfo}" var="accDetails">                       
+                                      <apex:column headerValue="Name">  
+                                            <apex:outputLink value="/{!accDetails.PersonID__c}" target="_parent">{!accDetails.PersonId__r.Name}</apex:outputLink>
+                                      </apex:column> 
+                                      <apex:column headerValue="Account Type/ Share Type" value="{!accDetails.Account_Number__r.TypeTranslate__c}" />
+                                      <apex:column headerValue="Share ID" value="{!accDetails.Account_Number__r.ID1__c}" />
+                                      <apex:column headerValue="Name Type/ Relationship" value="{!accDetails.Split_Type_Translate__c}" />
+                                 </apex:pageBlockTable>  
+                        
+                                <apex:pageMessage rendered="{!searchMsgDetails}" strength="3" severity="info" title="Search Not Found"><font size="3">Please try a different search. </font> </apex:pageMessage>                          
+                             </apex:pageBlock>
+                         <!--  </div> -->
+                         </div>                 
+                     </td>
+                    
+                </tr>
+            </table>            
+        </apex:pageBlock>
+    </apex:form>
+
+    <!-- <apex:includeScript value="{!URLFOR($Resource.DSP, 'dsp/js/jquery.min.js')}"/> -->
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+    <script src="http://code.jquery.com/jquery-2.1.4.min.js" type="text/javascript"></script>
+    <script src="../../soap/ajax/29.0/connection.js" type="text/javascript"></script>
+    <script src="../../soap/ajax/29.0/apex.js" type="text/javascript"></script>
+    <apex:outputPanel id="script">
+    <script type="text/javascript"> 
+          $(document).ready(function() { 
+           $(document).on("keypress", ".mnumber", function() { 
+            if(event.keyCode == 13){ 
+                $(".memberbuttonId").click(); 
+                return false; 
+            } 
+        });  
+        
+               
+        $('.memberAccounts').hide();
+        $('.buttonMember').hide(); 
+               $('.clearData').hide();
+        $('.Member').click(function(){
+            $('.Member').show();           
+            $('.memberAccounts').show();
+            $('.buttonMember').show();
+            $('.clearData').show();            
+        });
+            $('.Member').keyup(function(){
+            $('.Member').show();            
+            $('.memberAccounts').show(); 
+            $('.clearData').show();
+        }); 
+    });
+        
+    window.onload = function() {
+        jQuery('input[type=text]').blur();
+    };
+    </script>
+    </apex:outputPanel>
+</apex:page>

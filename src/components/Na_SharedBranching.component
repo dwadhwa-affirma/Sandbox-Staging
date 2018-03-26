@@ -1,0 +1,97 @@
+<apex:component controller="Na_SharedBranchingController" allowDML="true">
+
+    <apex:attribute name="Account" description="This is the value for the component." type="Account" required="true" assignTo="{!AccountC}" />
+    <apex:attribute name="CTRL" description="This is the value for the component." type="NeedAssessmentController" required="true" assignTo="{!parentController}" />
+
+    <apex:form >
+        <apex:pageBlock title="Optimize how you move your money - Shared Branching">
+            <div id="snackbar">Data saved successfully!</div>
+            
+            <div style="padding-bottom:5px"><h3>Shared branching enables you to make many transactions for your CFCU/Spectrum account at a network of participating credit union branches.</h3></div>
+
+            <table border="2">
+                <tr>
+                    <td>
+                        <table border="0">
+                            <tr>
+                                <td></td>
+                                <td class="mainQuestion" align="center" style="text-align: center;">
+                                            	Current As Of<br></br>
+                                                <apex:outputText value="{0, date, MMMM d','  yyyy}">
+                                                          <apex:param value="{!lmm_New.LESB_Last_Updated_On__c}" />
+                                                </apex:outputText>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="mainQuestion">Are you aware of this shared branch network?</td>
+                                <td><apex:inputField value="{!lmm_New .LESB_Aware_SharedBranching__c}" /></td>
+                            </tr>
+                            <tr>
+                                <td class="mainQuestion">Do you know where the most convenient shared branch locations are for you?</td>
+                                <td><apex:inputField value="{!lmm_New.LESB_Aware_ConvBranching__c}" /></td>
+                            </tr>
+                            <tr>
+                            	<td colspan="2">
+                            		<hr></hr>
+                            	</td>
+                            </tr>                            
+                            <tr>
+                                <td class="mainQuestion" valign="top">Comments</td>
+                                <td><apex:inputField value="{!lmm_New.LESB_SharedBranching_Comments__c}" style="width: 280px; height: 80px"/></td>
+                                <!-- 
+                                <td class="lastVal">
+                                    <c:NeedAssessmentHistory fieldName="LESB_SharedBranching_Comments__c" NeedAssessmentID="{!NA_id}"></c:NeedAssessmentHistory>
+                                </td>
+                                -->
+                            </tr>
+                        </table>
+                    </td>
+
+                    <td valign="top">
+                        <table border="0">
+                            <tr>
+                                <td class="colHeader">Recommendations</td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    Shared Branching
+                                </td>
+                                <td>
+                                    <apex:inputField value="{!lmm_New.REC_LEMD_3__c}" />
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+            </table>
+            <p></p>
+            <table>
+                <tr>
+                    <td align="right" width="300">
+                        <apex:commandButton value="Save" action="{!SubmitSharedBranchingForm}" />
+                    </td>
+                </tr>
+            </table>
+            <apex:actionFunction action="{!resetscript}" name="resetscript" rerender="scriptcontainer" />
+            <apex:outputPanel id="scriptcontainer">
+                <input type="text" value="{!script}" id="scriptext" style="visibility:hidden" />
+            </apex:outputPanel>
+        </apex:pageBlock>
+    </apex:form>
+    <script>
+function toastsuccess()
+{
+    if (document.getElementById("scriptext").value == '1')
+    {
+        var x = document.getElementById("snackbar")
+        x.className = "show";
+        setTimeout(function(){ x.className = x.className.replace("show", ""); }, 3000);
+    }
+    resetscript();
+}
+ toastsuccess();
+    </script>
+
+
+</apex:component>

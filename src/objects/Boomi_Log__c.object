@@ -1,0 +1,379 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <actionOverrides>
+        <actionName>Accept</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>CancelEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Clone</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Delete</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Edit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>List</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>New</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>SaveEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Tab</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>View</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <allowInChatterGroups>false</allowInChatterGroups>
+    <compactLayoutAssignment>SYSTEM</compactLayoutAssignment>
+    <deploymentStatus>Deployed</deploymentStatus>
+    <description>Logging for the nightly Boomi sync process</description>
+    <enableActivities>false</enableActivities>
+    <enableBulkApi>true</enableBulkApi>
+    <enableFeeds>false</enableFeeds>
+    <enableHistory>false</enableHistory>
+    <enableReports>true</enableReports>
+    <enableSearch>true</enableSearch>
+    <enableSharing>true</enableSharing>
+    <enableStreamingApi>true</enableStreamingApi>
+    <fields>
+        <fullName>DB_Count__c</fullName>
+        <externalId>false</externalId>
+        <label>DB Count</label>
+        <precision>8</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>DB_Delta__c</fullName>
+        <externalId>false</externalId>
+        <label>DB Delta</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>DB_Total__c</fullName>
+        <externalId>false</externalId>
+        <label>DB Total</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Doc_Count__c</fullName>
+        <externalId>false</externalId>
+        <label>Doc Count</label>
+        <precision>10</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Duration__c</fullName>
+        <externalId>false</externalId>
+        <formula>IF(FLOOR( MOD( (End_Time__c  -  Start_Time__c) * 24, 24 ) )&gt;0, 
+     text(FLOOR( MOD( (End_Time__c  -  Start_Time__c) * 24, 24 ) )) + &quot;:&quot;, &quot;&quot;) +
+
+IF(ROUND( MOD( (End_Time__c  -  Start_Time__c) * 24 * 60, 60 ), 0 )&lt;10,&quot;0&quot;,&quot;&quot;) + 
+text(ROUND( MOD( (End_Time__c  -  Start_Time__c) * 24 * 60, 60 ), 0 )) + &apos;:&apos; +
+
+IF(ROUND( MOD( (End_Time__c  -  Start_Time__c) * 24 * 60 * 60, 60 ), 0 )&lt;10,&quot;0&quot;,&quot;&quot;) + 
+text(ROUND( MOD( (End_Time__c  -  Start_Time__c) * 24 * 60 * 60, 60 ), 0 ))</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Duration</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>End_Time__c</fullName>
+        <externalId>false</externalId>
+        <label>End Time</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>DateTime</type>
+    </fields>
+    <fields>
+        <fullName>Error__c</fullName>
+        <externalId>false</externalId>
+        <label>Error</label>
+        <length>10</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Process__c</fullName>
+        <externalId>false</externalId>
+        <label>Process</label>
+        <length>40</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Start_Time__c</fullName>
+        <externalId>false</externalId>
+        <label>Start Time</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>DateTime</type>
+    </fields>
+    <label>Boomi Log</label>
+    <listViews>
+        <fullName>All</fullName>
+        <columns>Process__c</columns>
+        <columns>Start_Time__c</columns>
+        <columns>End_Time__c</columns>
+        <columns>Duration__c</columns>
+        <columns>DB_Count__c</columns>
+        <columns>Error__c</columns>
+        <filterScope>Everything</filterScope>
+        <label>01 All</label>
+    </listViews>
+    <listViews>
+        <fullName>Errors</fullName>
+        <columns>Process__c</columns>
+        <columns>Start_Time__c</columns>
+        <columns>End_Time__c</columns>
+        <columns>Duration__c</columns>
+        <columns>DB_Count__c</columns>
+        <columns>Error__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Error__c</field>
+            <operation>equals</operation>
+            <value>TRUE</value>
+        </filters>
+        <label>20 Errors</label>
+    </listViews>
+    <listViews>
+        <fullName>Last_30_Days</fullName>
+        <columns>Process__c</columns>
+        <columns>Start_Time__c</columns>
+        <columns>End_Time__c</columns>
+        <columns>Duration__c</columns>
+        <columns>DB_Count__c</columns>
+        <columns>Error__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Start_Time__c</field>
+            <operation>equals</operation>
+            <value>LAST_N_DAYS:30</value>
+        </filters>
+        <label>05 Last 30 Days</label>
+    </listViews>
+    <listViews>
+        <fullName>P1_Episys_Names</fullName>
+        <columns>Process__c</columns>
+        <columns>Start_Time__c</columns>
+        <columns>End_Time__c</columns>
+        <columns>Duration__c</columns>
+        <columns>DB_Count__c</columns>
+        <columns>Doc_Count__c</columns>
+        <columns>Error__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Process__c</field>
+            <operation>equals</operation>
+            <value>Episys User ID</value>
+        </filters>
+        <label>P1 - Episys Names</label>
+    </listViews>
+    <listViews>
+        <fullName>P2_Accounts</fullName>
+        <columns>Process__c</columns>
+        <columns>Start_Time__c</columns>
+        <columns>End_Time__c</columns>
+        <columns>Duration__c</columns>
+        <columns>DB_Count__c</columns>
+        <columns>Doc_Count__c</columns>
+        <columns>Error__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Process__c</field>
+            <operation>equals</operation>
+            <value>Accounts (Delta)</value>
+        </filters>
+        <label>P2 - Accounts</label>
+    </listViews>
+    <listViews>
+        <fullName>P3_Persons</fullName>
+        <columns>Process__c</columns>
+        <columns>Start_Time__c</columns>
+        <columns>End_Time__c</columns>
+        <columns>Duration__c</columns>
+        <columns>DB_Count__c</columns>
+        <columns>Doc_Count__c</columns>
+        <columns>Error__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Process__c</field>
+            <operation>equals</operation>
+            <value>Person (Full)</value>
+        </filters>
+        <label>P3 - Persons</label>
+    </listViews>
+    <listViews>
+        <fullName>P4_PA_Cleanup</fullName>
+        <columns>Process__c</columns>
+        <columns>Start_Time__c</columns>
+        <columns>End_Time__c</columns>
+        <columns>Duration__c</columns>
+        <columns>DB_Count__c</columns>
+        <columns>Doc_Count__c</columns>
+        <columns>Error__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Process__c</field>
+            <operation>equals</operation>
+            <value>PA Cleanup (Full)</value>
+        </filters>
+        <label>P4 - PA Cleanup</label>
+    </listViews>
+    <listViews>
+        <fullName>P4_Person_Accounts</fullName>
+        <columns>Process__c</columns>
+        <columns>Start_Time__c</columns>
+        <columns>End_Time__c</columns>
+        <columns>Duration__c</columns>
+        <columns>DB_Count__c</columns>
+        <columns>Doc_Count__c</columns>
+        <columns>Error__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Process__c</field>
+            <operation>equals</operation>
+            <value>PersonAccount (Full)</value>
+        </filters>
+        <label>P4 - Person Accounts</label>
+    </listViews>
+    <listViews>
+        <fullName>P5_Episys_Notes</fullName>
+        <columns>Process__c</columns>
+        <columns>Start_Time__c</columns>
+        <columns>End_Time__c</columns>
+        <columns>Duration__c</columns>
+        <columns>DB_Count__c</columns>
+        <columns>Doc_Count__c</columns>
+        <columns>Error__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Process__c</field>
+            <operation>equals</operation>
+            <value>Episys Notes (Delta)</value>
+        </filters>
+        <label>P5 - Episys Notes</label>
+    </listViews>
+    <listViews>
+        <fullName>This_Week</fullName>
+        <columns>Process__c</columns>
+        <columns>Start_Time__c</columns>
+        <columns>End_Time__c</columns>
+        <columns>Duration__c</columns>
+        <columns>DB_Count__c</columns>
+        <columns>Error__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Start_Time__c</field>
+            <operation>greaterOrEqual</operation>
+            <value>THIS_WEEK</value>
+        </filters>
+        <label>04 This Week</label>
+    </listViews>
+    <listViews>
+        <fullName>Today</fullName>
+        <columns>Process__c</columns>
+        <columns>Start_Time__c</columns>
+        <columns>End_Time__c</columns>
+        <columns>Duration__c</columns>
+        <columns>DB_Count__c</columns>
+        <columns>DB_Delta__c</columns>
+        <columns>DB_Total__c</columns>
+        <columns>Error__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Start_Time__c</field>
+            <operation>greaterOrEqual</operation>
+            <value>TODAY</value>
+        </filters>
+        <label>02 Today</label>
+    </listViews>
+    <listViews>
+        <fullName>Yesterday</fullName>
+        <columns>Process__c</columns>
+        <columns>Start_Time__c</columns>
+        <columns>End_Time__c</columns>
+        <columns>Duration__c</columns>
+        <columns>DB_Count__c</columns>
+        <columns>Doc_Count__c</columns>
+        <columns>Error__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Start_Time__c</field>
+            <operation>equals</operation>
+            <value>YESTERDAY</value>
+        </filters>
+        <label>03 Yesterday</label>
+    </listViews>
+    <nameField>
+        <label>Boomi Sync Name</label>
+        <type>Text</type>
+    </nameField>
+    <pluralLabel>Boomi Log</pluralLabel>
+    <searchLayouts>
+        <customTabListAdditionalFields>Process__c</customTabListAdditionalFields>
+        <customTabListAdditionalFields>Start_Time__c</customTabListAdditionalFields>
+        <customTabListAdditionalFields>Duration__c</customTabListAdditionalFields>
+        <customTabListAdditionalFields>End_Time__c</customTabListAdditionalFields>
+        <customTabListAdditionalFields>DB_Count__c</customTabListAdditionalFields>
+        <customTabListAdditionalFields>Error__c</customTabListAdditionalFields>
+        <excludedStandardButtons>New</excludedStandardButtons>
+        <excludedStandardButtons>Accept</excludedStandardButtons>
+        <excludedStandardButtons>ChangeOwner</excludedStandardButtons>
+        <lookupDialogsAdditionalFields>Process__c</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>Start_Time__c</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>End_Time__c</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>Duration__c</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>DB_Count__c</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>Error__c</lookupDialogsAdditionalFields>
+        <searchResultsAdditionalFields>Process__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>Start_Time__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>End_Time__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>Duration__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>DB_Count__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>Error__c</searchResultsAdditionalFields>
+    </searchLayouts>
+    <sharingModel>ReadWrite</sharingModel>
+</CustomObject>

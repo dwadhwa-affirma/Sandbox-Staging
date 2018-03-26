@@ -1,0 +1,156 @@
+<apex:page standardController="Account" extensions="UsersAccountDetailsController"  >
+    <apex:form >
+        <apex:includescript value="//code.jquery.com/jquery-1.11.1.min.js" / > 
+        <apex:includescript value="//cdn.datatables.net/1.10.7/js/jquery.dataTables.min.js" />
+        <apex:stylesheet value="//cdn.datatables.net/1.10.7/css/jquery.dataTables.min.css" />
+                
+        <script type="text/javascript" >
+            j$ = jQuery.noConflict();
+            j$(document).ready( function () {
+                theTable1 = j$('[id$="CaseTable"]').DataTable({
+                });
+                theTable2 = j$('[id$="ContactTable"]').DataTable({
+                });
+                theTable3 = j$('[id$="WarningCodesTable"]').DataTable({
+                });
+            });
+        </script>
+        <style>
+            .activeTab {background-color: #236FBD; color:white; background-image:none}
+            .inactiveTab { background-color: lightgrey; color:black; background-image:none}
+        </style>
+
+        
+        <apex:tabPanel switchType="client" selectedTab="Case Details" tabClass="activeTab" inactiveTabClass="inactiveTab">
+        <apex:tab label="User Details" reRender="ud">
+        <apex:pageBlock >
+        <apex:pageBlockSection columns="1" id="ud">
+          <!--    <apex:pageBlockSection title="User Details" columns="1">  -->
+                 <apex:pageBlockTable value="{!ContactList}" var="var" id="ContactTable" >
+                 <!-- <apex:column headerValue="Contact Id" value="{!var.Id}"/> -->
+                    <apex:column headerValue="Member">
+                    <apex:outputLink value="/{!var.Id}" target="_blank">{!var.PersonID__r.FirstName + ' ' + var.PersonID__r.LastName}</apex:outputLink>
+                    </apex:column>
+                 <!-- <apex:column headerValue="Acct #" value="{!var.Account_Number__c}"/ >   -->
+                    <apex:column headerValue="Acct #" >
+                    <apex:outputLink value="/{!var.Account_Number__c}" target="_blank">{!var.Account_Number__r.Name}</apex:outputLink>
+                    </apex:column> 
+                    <apex:column headerValue="SSN/TIN" value="{!var.PersonID__r.SSN_TIN_Encrypted__pc}"/>
+                    <apex:column headerValue="Name Type" value="{!var.TypeTranslate__c}"/>
+                    <apex:column headerValue="Acct Type" value="{!var.Account_Type__c}"/>
+                    <apex:column headerValue="Relationship" value="{!var.Relationship__c}"/>
+                    <apex:column headerValue="Date Opened" value="{!var.Open_Date__c}"/>
+                    <apex:column headerValue="Birth Date" value="{!var.PersonID__r.PersonBirthdate}"/>
+                    </apex:pageBlockTable>
+            </apex:pageBlockSection>
+            </apex:pageBlock>
+            </apex:tab>
+            
+            <apex:tab label="Case Details" reRender="cd">
+            <apex:pageBlock >
+            <apex:pageBlockSection columns="1" id="cd" >
+           <!--   <apex:pageBlockSection title="Case Details" columns="1">  -->
+                <apex:pageBlockTable value="{!caseList}" var="var" id="CaseTable" >
+                  <!--   <apex:column headerValue="CaseIDs" value="{!var.Id}"/>    -->
+                    <apex:column headerValue="Case Number">
+                    <apex:outputLink value="/{!var.Id}" target="_blank">{!var.casenumber}</apex:outputLink>
+                    </apex:column>
+                    <apex:column headerValue="Case Owner" >
+                    <apex:outputText value="{!var.Owner.Name}"/>
+                    </apex:column>
+                    <apex:column headerValue="Primary Category" value="{!var.Primary_Category__c}"/>
+                    <apex:column headerValue="Secondary Category" value="{!var.Secondary_Category__c}"/>
+                    <apex:column headerValue="Tertiary Category" value="{!var.Tertiary_Category__c}"/>
+                    <apex:column headerValue="Case Status" value="{!var.Status}"/>
+                    <apex:column headerValue="Brand" value="{!var.Brand__c}"/>
+                </apex:pageBlockTable>
+            </apex:pageBlockSection>
+        </apex:pageBlock>
+       </apex:tab>
+            
+           <apex:tab label="Warning Codes" reRender="wc">
+            <apex:pageBlock >
+            <apex:pageBlockSection columns="1" id="wc">
+              <!--  <apex:pageBlockTable value="{!contactList}" var="var" id="WarningCodesTable">
+                <apex:column headerValue="Member">
+                    <apex:outputLink value="/{!var.Id}" target="_blank">{!var.PersonID__r.FirstName + ' ' + var.PersonID__r.LastName}</apex:outputLink>
+                </apex:column>
+                <apex:column headerValue="Acct #" >
+                    <apex:outputLink value="/{!var.Account_Number__c}" target="_blank">{!var.Account_Number__r.Name}</apex:outputLink>
+                </apex:column>
+               
+                <apex:column headerValue="WARNING 01 CODE">
+                <apex:outputField value="{!var.Account_Number__r.WARNING_01_CODE__c}" rendered="{!var.Account_Number__r.WARNING_01_CODE__c != '0-NONE' && var.Account_Number__r.WARNING_01_CODE__c != null}"/>
+                </apex:column> 
+                <apex:column headerValue="WARNING 02 CODE" >
+                <apex:outputField value="{!var.Account_Number__r.WARNING_02_CODE__c}" rendered="{!var.Account_Number__r.WARNING_02_CODE__c != '0-NONE' && var.Account_Number__r.WARNING_02_CODE__c != null}"/>
+                </apex:column>       
+                <apex:column headerValue="WARNING 03 CODE">
+                <apex:outputField value="{!var.Account_Number__r.WARNING_03_CODE__c}" rendered="{!var.Account_Number__r.WARNING_03_CODE__c != '0-NONE' && var.Account_Number__r.WARNING_03_CODE__c != null}"/>
+                </apex:column> 
+                <apex:column headerValue="WARNING 04 CODE">
+                <apex:outputField value="{!var.Account_Number__r.WARNING_04_CODE__c}" rendered="{!var.Account_Number__r.WARNING_04_CODE__c != '0-NONE' && var.Account_Number__r.WARNING_04_CODE__c != null}"/>
+                </apex:column>
+                <apex:column headerValue="WARNING 05 CODE">
+                <apex:outputField value="{!var.Account_Number__r.WARNING_05_CODE__c}" rendered="{!var.Account_Number__r.WARNING_05_CODE__c != '0-NONE' && var.Account_Number__r.WARNING_05_CODE__c != null}"/>
+                </apex:column>
+                <apex:column headerValue="WARNING 06 CODE">
+                <apex:outputField value="{!var.Account_Number__r.WARNING_06_CODE__c}" rendered="{!var.Account_Number__r.WARNING_06_CODE__c != '0-NONE' && var.Account_Number__r.WARNING_06_CODE__c != null}"/>
+                </apex:column>
+                <apex:column headerValue="WARNING 07 CODE">
+                <apex:outputField value="{!var.Account_Number__r.WARNING_07_CODE__c}" rendered="{!var.Account_Number__r.WARNING_07_CODE__c != '0-NONE' && var.Account_Number__r.WARNING_07_CODE__c != null}"/>
+                </apex:column>
+                <apex:column headerValue="WARNING 08 CODE">
+                <apex:outputField value="{!var.Account_Number__r.WARNING_08_CODE__c}" rendered="{!var.Account_Number__r.WARNING_08_CODE__c != '0-NONE' && var.Account_Number__r.WARNING_08_CODE__c != null}"/>
+                </apex:column>
+                <apex:column headerValue="WARNING 09 CODE">
+                <apex:outputField value="{!var.Account_Number__r.WARNING_09_CODE__c}" rendered="{!var.Account_Number__r.WARNING_09_CODE__c != '0-NONE' && var.Account_Number__r.WARNING_09_CODE__c != null}"/>
+                </apex:column>
+                <apex:column headerValue="WARNING 10 CODE">
+                <apex:outputField value="{!var.Account_Number__r.WARNING_10_CODE__c}" rendered="{!var.Account_Number__r.WARNING_10_CODE__c != '0-NONE' && var.Account_Number__r.WARNING_10_CODE__c != null}"/>
+                </apex:column>
+                <apex:column headerValue="WARNING 11 CODE">
+                <apex:outputField value="{!var.Account_Number__r.WARNING_11_CODE__c}" rendered="{!var.Account_Number__r.WARNING_11_CODE__c != '0-NONE' && var.Account_Number__r.WARNING_11_CODE__c != null}"/>
+                </apex:column>
+                <apex:column headerValue="WARNING 12 CODE">
+                <apex:outputField value="{!var.Account_Number__r.WARNING_12_CODE__c}" rendered="{!var.Account_Number__r.WARNING_12_CODE__c != '0-NONE' && var.Account_Number__r.WARNING_12_CODE__c != null}"/>
+                </apex:column>
+                <apex:column headerValue="WARNING 13 CODE">
+                <apex:outputField value="{!var.Account_Number__r.WARNING_13_CODE__c}" rendered="{!var.Account_Number__r.WARNING_13_CODE__c != '0-NONE' && var.Account_Number__r.WARNING_13_CODE__c != null}"/>
+                </apex:column>
+                <apex:column headerValue="WARNING 14 CODE">
+                <apex:outputField value="{!var.Account_Number__r.WARNING_14_CODE__c}" rendered="{!var.Account_Number__r.WARNING_14_CODE__c != '0-NONE' && var.Account_Number__r.WARNING_14_CODE__c != null}"/>
+                </apex:column>
+                <apex:column headerValue="WARNING 15 CODE">
+                <apex:outputField value="{!var.Account_Number__r.WARNING_15_CODE__c}" rendered="{!var.Account_Number__r.WARNING_15_CODE__c != '0-NONE' && var.Account_Number__r.WARNING_15_CODE__c != null}"/>
+                </apex:column>
+                <apex:column headerValue="WARNING 16 CODE">
+                <apex:outputField value="{!var.Account_Number__r.WARNING_16_CODE__c}" rendered="{!var.Account_Number__r.WARNING_16_CODE__c != '0-NONE' && var.Account_Number__r.WARNING_16_CODE__c != null}"/>
+                </apex:column>
+                <apex:column headerValue="WARNING 17 CODE">
+                <apex:outputField value="{!var.Account_Number__r.WARNING_17_CODE__c}" rendered="{!var.Account_Number__r.WARNING_17_CODE__c != '0-NONE' && var.Account_Number__r.WARNING_17_CODE__c != null}"/>
+                </apex:column>
+                <apex:column headerValue="WARNING 18 CODE">
+                <apex:outputField value="{!var.Account_Number__r.WARNING_18_CODE__c}" rendered="{!var.Account_Number__r.WARNING_18_CODE__c != '0-NONE' && var.Account_Number__r.WARNING_18_CODE__c != null}"/>
+                </apex:column>
+                <apex:column headerValue="WARNING 19 CODE">
+                <apex:outputField value="{!var.Account_Number__r.WARNING_19_CODE__c}" rendered="{!var.Account_Number__r.WARNING_19_CODE__c != '0-NONE' && var.Account_Number__r.WARNING_19_CODE__c != null}"/>
+                </apex:column>
+                <apex:column headerValue="WARNING 20 CODE">
+                <apex:outputField value="{!var.Account_Number__r.WARNING_20_CODE__c}" rendered="{!var.Account_Number__r.WARNING_20_CODE__c != '0-NONE' && var.Account_Number__r.WARNING_20_CODE__c != null}"/>
+                </apex:column> 
+                </apex:pageBlockTable> -->
+                    <apex:pageBlockTable value="{!wsWrapperList}" var="var" id="WarningCodesTable">
+                        <apex:column headerValue="Acct #" >
+                            <apex:outputLink value="/{!var.accId}" target="_blank">{!var.accNum}</apex:outputLink>
+                        </apex:column>
+                        <apex:column headerValue="WARNING CODE">
+                            <apex:outputText value="{!var.WarningCode}" />
+                        </apex:column> 
+                    </apex:pageBlockTable> 
+                </apex:pageBlockSection>
+                </apex:pageBlock> 
+                </apex:tab>            
+                </apex:tabPanel>
+    </apex:form>
+</apex:page>

@@ -1,0 +1,167 @@
+<apex:component controller="Na_OtherExistingLoans" allowDML="true">
+    <apex:attribute name="Account" description="This is the value for the component." type="Account" required="true" assignTo="{!AccountC}" />
+    <apex:attribute name="CTRL" description="This is the value for the component." type="NeedAssessmentController" required="true" assignTo="{!parentController}" />
+    <apex:form >
+
+
+
+        <apex:pageBlock title="Other Existing Loans">
+            <div id="snackbar">Data saved successfully!</div>
+			<div style="padding-bottom:5px"><h3>We'd like to ask you a few questions about your key life events so we can better anticipate your needs and better serve you.</h3></div>
+            <table border="2">
+                <tr>
+                    <td>
+
+                        <table>
+                            <tr>
+                                <td></td>
+                                <td class="mainQuestion"  align="right" width="200" style="text-align: center;">
+                                            	Current As Of<br></br>
+                                                <apex:outputText value="{0, date, MMMM d','  yyyy}">
+                                                          <apex:param value="{!lmm_New .LEOL_Last_Updated_On__c}" />
+                                                </apex:outputText>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    Do you have loans with other financial institutions?"
+                                        (Prompt for home equity, personal line of credit, RV/boat, student/college)
+                                </td>
+                                <td> <!--  class="lastVal"> -->
+                                     <apex:inputField value="{!lmm_New.LEOL_Other_Existing_Loans__c}" />
+                                </td>
+                                <!-- 
+                                 <td class="lastVal">
+                                  <c:NeedAssessmentHistory fieldName="LEOL_Other_Existing_Loans__c" NeedAssessmentID="{!NA_id}"></c:NeedAssessmentHistory>
+                                </td>
+                                -->
+                                
+                            </tr>
+                        </table>
+
+                        <apex:pageBlockTable value="{!otherExistingLoans}" var="loan" id="tblLoan">
+
+
+                            <apex:column Headervalue="Financial Institution">
+
+                                <apex:inputField value="{!loan.Financial_Institution__c}" />
+                            </apex:column>
+
+                            <apex:column Headervalue="Type of Loan">
+
+                                <apex:inputField value="{!loan.Type_of_Loan__c}" />
+                            </apex:column>
+
+
+                            <apex:column Headervalue="Balance">
+
+                                <apex:inputField value="{!loan.Balance__c}"  style="width: 80px"/>
+                            </apex:column>
+
+                            <apex:column Headervalue="Rate">
+
+                                <apex:inputField value="{!loan.Rate__c}"  style="width: 50px"/>
+                            </apex:column> 
+
+                            <apex:column Headervalue="End Date">
+
+                                <apex:inputField value="{!loan.End_Date__c}" />
+                            </apex:column>
+
+                            <apex:column > <!--  Headervalue="Delete"> -->
+                                <apex:commandButton value="Delete" onclick="deleteLoan(this);  return false;">
+                                </apex:commandButton>
+                                <apex:commandButton value="Delete" action="{!deleteOtherExistingLoan}" reRender="tblLoan" styleClass="deleteButton" style="display: none;">
+                                    <apex:param name="DeleteIndex" value="{!0}" assignTo="{!loanid }" />
+
+                                </apex:commandButton>
+
+
+                            </apex:column>
+
+                        </apex:pageBlockTable>
+                        <div style="float:right; margin-right: 50px;">
+                            <apex:commandButton action="{!addOtherExistingLoan}" reRender="tblLoan" Value="Add Loan" />
+                        </div>
+                    </td>
+                    <td class="colRec">
+                         <table border="0">
+                            <tr>
+                                <td class="colHeader" >Recommendations</td>
+                                <td></td>
+                            </tr>
+                            
+                            <tr>
+                                <td>
+                                    Refinance for Existing Loans
+                                </td>
+                                <td>
+                                    <apex:inputField value="{!lmm_New.Rec_LEOL_1__c}" />
+                                </td>
+                            </tr>
+                             <tr>
+                                <td>
+                                    Debt Consolidation
+                                </td>
+                                <td>
+                                    <apex:inputField value="{!lmm_New.Rec_LEOL_2__c}" />
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+            </table>
+
+
+         
+
+
+        </apex:pageBlock>
+        
+        <br />
+        <br />
+        <table>
+            <tr>
+                <td align="right" width="300">
+
+
+                    <apex:commandButton value="Save" action="{!SubmitFeedbackForm}" />
+
+                </td>
+            </tr>
+        </table>
+        <apex:actionFunction action="{!resetscript}" name="resetscript" rerender="scriptcontainer" />
+        <input type="text" value="{!script}" id="scriptext" style="visibility:hidden" />
+    </apex:form>
+    <script>
+        function deleteLoan(ele)
+        {
+            var index = whichChild(ele.parentNode.parentNode);
+
+
+            var click = ele.nextSibling.getAttribute('onclick').replace("'DeleteIndex':'0'","'DeleteIndex':'" + index + "'");
+
+            ele.nextSibling.setAttribute('onclick', click);
+            ele.nextSibling.click();
+        }
+
+        function whichChild(elem){
+            var  i= 0;
+            while((elem=elem.previousSibling)!=null) ++i;
+            return i;
+        }
+    </script>
+    <script>
+function toastsuccess()
+{
+    if (document.getElementById("scriptext").value == '1')
+    {
+        var x = document.getElementById("snackbar")
+        x.className = "show";
+        setTimeout(function(){ x.className = x.className.replace("show", ""); }, 3000);
+    }
+    resetscript();
+}
+ toastsuccess();
+    </script>
+</apex:component>

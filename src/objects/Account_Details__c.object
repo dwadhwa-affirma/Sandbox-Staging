@@ -1,0 +1,3743 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <actionOverrides>
+        <actionName>Accept</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>CancelEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Clone</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Delete</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Edit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>List</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>New</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>SaveEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Tab</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>View</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <allowInChatterGroups>false</allowInChatterGroups>
+    <compactLayoutAssignment>SYSTEM</compactLayoutAssignment>
+    <deploymentStatus>Deployed</deploymentStatus>
+    <description>This Object will be used to store all the MemberShip Account as well as Sub-Account related information.</description>
+    <enableActivities>true</enableActivities>
+    <enableBulkApi>true</enableBulkApi>
+    <enableEnhancedLookup>true</enableEnhancedLookup>
+    <enableFeeds>false</enableFeeds>
+    <enableHistory>true</enableHistory>
+    <enableReports>true</enableReports>
+    <enableSearch>true</enableSearch>
+    <enableSharing>true</enableSharing>
+    <enableStreamingApi>true</enableStreamingApi>
+    <fields>
+        <fullName>APR__c</fullName>
+        <externalId>false</externalId>
+        <label>APR</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>AccountID__c</fullName>
+        <externalId>true</externalId>
+        <label>AccountID</label>
+        <length>20</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Address_Check__c</fullName>
+        <externalId>false</externalId>
+        <formula>IF((ISBLANK( Mailing_City__c ) &amp;&amp; 
+                ISBLANK( Mailing_Country__c ) &amp;&amp; 
+                ISBLANK( Mailing_Country_Code__c ) &amp;&amp; 
+                ISBLANK( Mailing_Extra_Address__c ) &amp;&amp; 
+                ISBLANK( Mailing_State__c ) &amp;&amp; 
+                ISBLANK( Mailing_Street__c ) &amp;&amp; 
+                ISBLANK( Mailing_Zipcode__c )), &apos;TRUE&apos;, &apos;FALSE&apos;)</formula>
+        <label>Address Check</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Address_From__c</fullName>
+        <externalId>false</externalId>
+        <label>Address From</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Member</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Primary Account</fullName>
+                    <default>false</default>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>Application_Funded_By__c</fullName>
+        <externalId>false</externalId>
+        <label>Application Funded By</label>
+        <length>40</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Application_Loaded_By__c</fullName>
+        <externalId>false</externalId>
+        <label>Application Loaded By</label>
+        <length>40</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Arbitration_Opt_Out_Date__c</fullName>
+        <externalId>false</externalId>
+        <label>Arbitration Opt Out Date</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>Audio_HB_Frozen_Mode__c</fullName>
+        <externalId>false</externalId>
+        <label>Audio/HB Frozen Mode</label>
+        <precision>5</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>AuthLimit__c</fullName>
+        <externalId>false</externalId>
+        <label>Auth Limit</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>Auto_Payment_Discount__c</fullName>
+        <externalId>false</externalId>
+        <label>Auto Payment Discount</label>
+        <length>40</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Available_Balance__c</fullName>
+        <externalId>false</externalId>
+        <label>Available Balance</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>Available_Credit__c</fullName>
+        <externalId>false</externalId>
+        <label>Available Credit</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>BalanceNightly__c</fullName>
+        <description>Place holder for balances from the nightly sync process</description>
+        <externalId>false</externalId>
+        <label>Balance</label>
+        <precision>16</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>Balance__c</fullName>
+        <externalId>false</externalId>
+        <label>Balance</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>BlockCode__c</fullName>
+        <externalId>false</externalId>
+        <label>Block Code</label>
+        <length>1</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>BrandImage__c</fullName>
+        <description>Brand image. This formula uses the hardcoded url of the logo images in Production. This allows us to automate the sandbox refresh process.</description>
+        <externalId>false</externalId>
+        <formula>IF(Reference__c == &apos;BC02&apos;,     
+     IMAGE(&quot;/resource/Logo_SpectrumCU&quot;,&quot;SpectrumCU&quot;, 35, 35 ),
+     IMAGE(&quot;/resource/Logo_ChevronFCU&quot;,&quot;CFCU&quot;, 35, 35 )
+)</formula>
+        <label>Brand</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Brand_Code__c</fullName>
+        <externalId>false</externalId>
+        <label>Brand Code</label>
+        <length>4</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Brand__c</fullName>
+        <externalId>false</externalId>
+        <formula>IF(Reference__c == &apos;BC01&apos;, &apos;Chevron&apos;, IF(Reference__c == &apos;BC02&apos;, &apos;Spectrum&apos;, &apos;Chevron&apos;))</formula>
+        <label>Brand</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>CP_Eligibility1__c</fullName>
+        <externalId>false</externalId>
+        <formula>CASE(CP_Eligibility__c, 
+0, &apos;0: Ineligible&apos;,
+1, &apos;1: Eligible&apos;,
+&apos;&apos;)</formula>
+        <label>Current Eligible Status</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>CP_Eligibility__c</fullName>
+        <externalId>false</externalId>
+        <label>CP Eligibility</label>
+        <precision>5</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Card_Name__c</fullName>
+        <externalId>false</externalId>
+        <label>Card Name</label>
+        <length>70</length>
+        <required>false</required>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Card_Number_Last_4_Digits__c</fullName>
+        <externalId>false</externalId>
+        <formula>RIGHT(Emp_Card_Number__c, 4)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Card Number Last 4 Digits</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Card_Number__c</fullName>
+        <externalId>false</externalId>
+        <label>Card Number</label>
+        <length>20</length>
+        <required>false</required>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Charge_Off_Amount__c</fullName>
+        <externalId>false</externalId>
+        <label>Charge Off Amount</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>Charge_Off_Date__c</fullName>
+        <externalId>false</externalId>
+        <label>Charge Off Date</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>Close_Date__c</fullName>
+        <externalId>false</externalId>
+        <label>Close Date</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>Combined_Account_ID__c</fullName>
+        <externalId>false</externalId>
+        <label>Combined_Account_ID</label>
+        <length>255</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Comment_Block_01__c</fullName>
+        <description>Comment Block 1</description>
+        <externalId>false</externalId>
+        <label>Comment 01</label>
+        <length>40</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Comment_Block_02__c</fullName>
+        <externalId>false</externalId>
+        <label>Comment 02</label>
+        <length>40</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Comment_Block_03__c</fullName>
+        <externalId>false</externalId>
+        <label>Comment 03</label>
+        <length>40</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Comment_Block_04__c</fullName>
+        <externalId>false</externalId>
+        <label>Comment 04</label>
+        <length>40</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Comment_Block_05__c</fullName>
+        <externalId>false</externalId>
+        <label>Comment 05</label>
+        <length>40</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Comment_Block_06__c</fullName>
+        <externalId>false</externalId>
+        <label>Comment 06</label>
+        <length>40</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Comment_Block_07__c</fullName>
+        <externalId>false</externalId>
+        <label>Comment 07</label>
+        <length>40</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Comment_Block_08__c</fullName>
+        <externalId>false</externalId>
+        <label>Comment 08</label>
+        <length>40</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Comment_Block_09__c</fullName>
+        <externalId>false</externalId>
+        <label>Comment 09</label>
+        <length>40</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Comment_Block_10__c</fullName>
+        <externalId>false</externalId>
+        <label>Comment 10</label>
+        <length>40</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Comment_Block_11__c</fullName>
+        <externalId>false</externalId>
+        <label>Comment 11</label>
+        <length>40</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Comment_Block_12__c</fullName>
+        <externalId>false</externalId>
+        <label>Comment 12</label>
+        <length>40</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Comment_Block_13__c</fullName>
+        <externalId>false</externalId>
+        <label>Comment 13</label>
+        <length>40</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Comment_Block_14__c</fullName>
+        <externalId>false</externalId>
+        <label>Comment 14</label>
+        <length>40</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Comment_Block_15__c</fullName>
+        <externalId>false</externalId>
+        <label>Comment 15</label>
+        <length>40</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Comment_Block_16__c</fullName>
+        <externalId>false</externalId>
+        <label>Comment 16</label>
+        <length>40</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Comment_Block_17__c</fullName>
+        <externalId>false</externalId>
+        <label>Comment 17</label>
+        <length>40</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Comment_Block_18__c</fullName>
+        <externalId>false</externalId>
+        <label>Comment 18</label>
+        <length>40</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Comment_Block_19__c</fullName>
+        <externalId>false</externalId>
+        <label>Comment 19</label>
+        <length>40</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Comment_Block_20__c</fullName>
+        <externalId>false</externalId>
+        <label>Comment 20</label>
+        <length>40</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Comments_Block__c</fullName>
+        <externalId>false</externalId>
+        <label>Comments Block</label>
+        <length>32768</length>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>LongTextArea</type>
+        <visibleLines>3</visibleLines>
+    </fields>
+    <fields>
+        <fullName>Correspondence_Date__c</fullName>
+        <externalId>false</externalId>
+        <label>Correspondence Date</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>Created_At_Branch1__c</fullName>
+        <externalId>false</externalId>
+        <formula>Text(Created_At_Branch__c)  &amp;  &apos; &apos;  &amp;  
+CASE(Created_At_Branch__c, 
+72, &apos;eBranch&apos;,
+0, &apos;Head Quarter&apos;,
+200, &apos;Spectrum&apos;,
+270, &apos;Spectrum&apos;,
+299, &apos;Spectrum&apos;,
+99, &apos;ATM&apos;,
+96, &apos;Consumer Lending&apos;,
+24, &apos;CA Bakersfield&apos;,
+05, &apos;Brea&apos;,
+20, &apos;Camino Media&apos;,
+02, &apos;Concord&apos;,
+09, &apos;El Segundo&apos;,
+206, &apos;Spectrum Pleasant Hill&apos;,
+21, &apos;Kern River/ China Grade&apos;,
+04, &apos;Richmond&apos;,
+03, &apos;San Ramon&apos;,
+201, &apos;Spectrum San Francisco&apos;,
+29, &apos;Denver&apos;,
+06, &apos;Covington&apos;,
+203, &apos;Spectrum Frederick Bechtel&apos;,
+23, &apos;Pascagoula&apos;,
+19, &apos;Aramco&apos;,
+17, &apos;Bellaire&apos;,
+14, &apos;1600 Smith&apos;,
+208, &apos;Spectrum El Paso&apos;,
+25, &apos;Post Oak&apos;,
+202, &apos;Spectrum Houston Galleria&apos;,
+207, &apos;Bountiful&apos;,
+28, &apos;Salt Lake City Refinery&apos;,
+205, &apos;Spectrum Reston&apos;,
+01, &apos;San Francisco&apos;,
+22, &apos;West Loop&apos;,
+53, &apos;Electronic&apos;,
+55, &apos;Inactive, Low Balance, No Loans*&apos;,
+56, &apos;Inactive, Low Balance, Chargeoffs&apos;,
+57, &apos;Inactive, Low Balance, Bad Address&apos;,
+88, &apos;Operation Services&apos;,
+93, &apos;Member Services&apos;,
+98, &apos;Remote Access&apos;,
+204, &apos;Spectrum Westridge Mall&apos;,
+253, &apos;Spectrum Electronic&apos;,
+255, &apos;Spectrum Inactive, Low Balance, No Loans*&apos;,
+256, &apos;Spectrum Inactive, Low Balance, Chargeoffs&apos;,
+257, &apos;Spectrum Inactive, Low Balance, Bad Address&apos;,
+293, &apos;Spectrum Member Services Branch&apos;,                     
+&apos;&apos;)</formula>
+        <label>Created At Branch</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Created_At_Branch__c</fullName>
+        <externalId>false</externalId>
+        <label>Created At Branch</label>
+        <precision>5</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Created_By_Episys_User__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <externalId>false</externalId>
+        <label>Created By Episys User</label>
+        <referenceTo>Episys_User__c</referenceTo>
+        <relationshipName>EpisysUser</relationshipName>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Created_By_User_Alias__c</fullName>
+        <externalId>false</externalId>
+        <label>Created By User Alias</label>
+        <length>10</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Created_By_User_Episys__c</fullName>
+        <externalId>false</externalId>
+        <formula>TEXT(Created_By_User__c)   &amp; &apos; &apos;  &amp; Created_By_User_Text__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Created By Episys User</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Created_By_User_Text__c</fullName>
+        <externalId>false</externalId>
+        <label>Created By User Text</label>
+        <length>255</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Created_By_User__c</fullName>
+        <externalId>false</externalId>
+        <label>Created By User</label>
+        <precision>5</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Credit_Limit_Expiration__c</fullName>
+        <externalId>false</externalId>
+        <label>Credit Limit Expiration</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>Credit_Limit__c</fullName>
+        <externalId>false</externalId>
+        <label>Credit LImit</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>Credit_Score_Date__c</fullName>
+        <externalId>false</externalId>
+        <label>Credit Score Date</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>Credit_Score__c</fullName>
+        <externalId>false</externalId>
+        <label>Credit Score</label>
+        <length>40</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Current_Branch1__c</fullName>
+        <externalId>false</externalId>
+        <formula>Text(Current_Branch__c)  &amp;  &apos; &apos;  &amp; CASE(Current_Branch__c, 
+72, &apos;eBranch&apos;,
+99, &apos;ATM&apos;,
+96, &apos;Consumer Lending&apos;,
+0, &apos;Head Quarter&apos;,
+200, &apos;Spectrum&apos;,
+270, &apos;Spectrum&apos;,
+24, &apos;CA Bakersfield&apos;, 
+05, &apos;Brea&apos;, 
+20, &apos;Camino Media&apos;, 
+02, &apos;Concord&apos;, 
+09, &apos;El Segundo&apos;, 
+206, &apos;Spectrum Pleasant Hill&apos;, 
+21, &apos;Kern River/ China Grade&apos;, 
+04, &apos;Richmond&apos;, 
+03, &apos;San Ramon&apos;, 
+201, &apos;Spectrum San Francisco&apos;, 
+29, &apos;Denver&apos;, 
+06, &apos;Covington&apos;, 
+203, &apos;Spectrum Frederick Bechtel&apos;, 
+23, &apos;Pascagoula&apos;, 
+19, &apos;Aramco&apos;, 
+17, &apos;Bellaire&apos;, 
+14, &apos;1600 Smith&apos;, 
+208, &apos;El Paso&apos;, 
+08, &apos;El paso&apos;,
+25, &apos;Post Oak&apos;, 
+202, &apos;Spectrum Houston Galleria&apos;, 
+27, &apos;Bountiful&apos;, 
+28, &apos;Salt Lake City Refinery&apos;, 
+205, &apos;Spectrum Reston&apos;,
+01, &apos;San Francisco&apos;, 
+22, &apos;West Loop&apos;, 
+53, &apos;Electronic&apos;, 
+55, &apos;Inactive, Low Balance, No Loans*&apos;, 
+56, &apos;Inactive, Low Balance, Chargeoffs&apos;, 
+57, &apos;Inactive, Low Balance, Bad Address&apos;, 
+88, &apos;Operation Services&apos;, 
+93, &apos;Member Services&apos;, 
+98, &apos;Remote Access&apos;, 
+204, &apos;Spectrum Westridge Mall&apos;, 
+253, &apos;Spectrum Electronic&apos;, 
+255, &apos;Spectrum Inactive, Low Balance, No Loans*&apos;, 
+256, &apos;Spectrum Inactive, Low Balance, Chargeoffs&apos;, 
+257, &apos;Spectrum Inactive, Low Balance, Bad Address&apos;, 
+293, &apos;Spectrum Member Services Branch&apos;,  
+&apos;&apos;)</formula>
+        <label>Current Branch</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Current_Branch__c</fullName>
+        <externalId>false</externalId>
+        <label>Current Branch</label>
+        <precision>5</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Date_CP_Removed__c</fullName>
+        <externalId>false</externalId>
+        <label>Date CP Removed</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>Date_CP_Revoked__c</fullName>
+        <externalId>false</externalId>
+        <label>Date CP Revoked</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>Date_Cert_Stepped_Up__c</fullName>
+        <externalId>false</externalId>
+        <label>Date Cert Stepped Up</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>Date_Last_Overdrawn__c</fullName>
+        <externalId>false</externalId>
+        <label>Date Last Overdrawn</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>Dealer_City__c</fullName>
+        <externalId>false</externalId>
+        <label>Dealer City</label>
+        <length>32</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Dealer_Code__c</fullName>
+        <externalId>false</externalId>
+        <label>Dealer Code</label>
+        <length>10</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Dealer_State__c</fullName>
+        <externalId>false</externalId>
+        <label>Dealer State</label>
+        <length>2</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Debt_To_Income_Ratio__c</fullName>
+        <externalId>false</externalId>
+        <label>Debt To Income Ratio</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>DepLimit__c</fullName>
+        <externalId>false</externalId>
+        <label>Dep Limit</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>Description__c</fullName>
+        <externalId>false</externalId>
+        <label>Description</label>
+        <length>30</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Div_Last_Year__c</fullName>
+        <externalId>false</externalId>
+        <label>Div Last Year</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>Div_Post_Code1__c</fullName>
+        <externalId>false</externalId>
+        <formula>Text(Div_Post_Code__c) &amp; &apos; &apos; &amp; 
+CASE(Div_Post_Code__c, 
+0.00, &apos;To Share&apos;, 
+1.00, &apos;By Check&apos;, 
+2.00, &apos;Transfer&apos;, 
+3.00, &apos;Forfeit&apos;, 
+&apos;&apos;)</formula>
+        <label>Div Post Code</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Div_Post_Code__c</fullName>
+        <externalId>false</externalId>
+        <label>Div Post Code</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Div_Rate1__c</fullName>
+        <externalId>false</externalId>
+        <formula>Text(Div_Rate__c/1000) &amp; &apos;%&apos;</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Div Rate</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Div_Rate__c</fullName>
+        <externalId>false</externalId>
+        <label>Div Rate</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Div_Type__c</fullName>
+        <externalId>false</externalId>
+        <label>Div Type</label>
+        <precision>5</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Div_YTD__c</fullName>
+        <externalId>false</externalId>
+        <label>Div YTD</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>Draw_End_Date__c</fullName>
+        <externalId>false</externalId>
+        <label>Draw End Date</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>Due_Date__c</fullName>
+        <externalId>false</externalId>
+        <label>Due Date</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>Emp_Available_Balance__c</fullName>
+        <externalId>false</externalId>
+        <formula>IF(OR(ISBLANK(Available_Balance__c), Available_Balance__c == 0)  , &quot;&quot;,
+IF(AND
+      (OR(RESTRICTED_ACCESS__c&gt;0,Parent_Account__r.RESTRICTED_ACCESS__c&gt;0), 
+       $Profile.Name  &lt;&gt; &quot;EPS&quot;,
+       $Profile.Name  &lt;&gt; &quot;Fraud&quot;   ) ,
+   &quot;****&quot;, IF( Available_Balance__c &lt; 1,&quot;&quot;,
+   &quot;$&quot; + 
+IF( 
+  Available_Balance__c&gt;= 1000000, 
+  TEXT(FLOOR(Available_Balance__c/ 1000000)) &amp; &quot;,&quot;,  &quot;&quot;) &amp; 
+IF( 
+  Available_Balance__c&gt;= 1000, 
+  RIGHT(TEXT(FLOOR(Available_Balance__c/ 1000)), 3) &amp; &quot;,&quot;, &quot;&quot;) &amp; 
+  RIGHT(TEXT(FLOOR(Available_Balance__c)), 3) &amp; &quot;.&quot; &amp; 
+IF( 
+  MOD(Available_Balance__c, 1) * 100 &lt; 10, 
+  &quot;0&quot; &amp; TEXT(ROUND(MOD(Available_Balance__c , 1), 2) * 100), 
+  TEXT(MIN(ROUND(MOD(Available_Balance__c, 1), 2) * 100, 99)) 
+)
+
+)
+)
+)</formula>
+        <label>Available Balance</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Emp_Balance__c</fullName>
+        <externalId>false</externalId>
+        <formula>IF(OR(ISBLANK(Balance__c), Balance__c == 0), &quot;&quot;, 
+IF(AND 
+(OR(RESTRICTED_ACCESS__c&gt;0, 
+Parent_Account__r.RESTRICTED_ACCESS__c&gt;0 
+), 
+$Profile.Name &lt;&gt; &quot;EPS&quot;, 
+$Profile.Name &lt;&gt; &quot;Fraud&quot; 
+) , 
+&quot;****&quot;,
+IF(ISNULL(Balance__c),&quot;&quot;, 
+IF(Balance__c&lt; 0, &quot;(&quot;, &quot;&quot;) &amp; &quot;$&quot; &amp; 
+IF(ABS(Balance__c) &gt;= 1000000, TEXT(FLOOR(ABS(Balance__c) / 1000000)) &amp; &quot;,&quot;, &quot;&quot;) &amp; 
+IF(ABS(Balance__c) &gt;= 1000, RIGHT(TEXT(FLOOR(ABS(Balance__c) / 1000)), 3) &amp; &quot;,&quot;, &quot;&quot;) &amp; 
+RIGHT(TEXT(FLOOR(ABS(Balance__c))), 3) &amp; &quot;.&quot; &amp; 
+IF(MOD(ABS(Balance__c) , 1) * 100 &lt; 10, &quot;0&quot; &amp; TEXT(ROUND(MOD(ABS(Balance__c) , 1), 2) * 100), TEXT(MIN(ROUND(MOD(ABS(Balance__c) , 1), 2) * 100, 99))) &amp; 
+IF(Balance__c&lt; 0, &quot;)&quot;, &quot;&quot;) 
+)
+)
+)</formula>
+        <label>Balance</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Emp_Card_Number__c</fullName>
+        <externalId>false</externalId>
+        <formula>IF(AND(RecType__c = &quot;CARD&quot;,OR(RESTRICTED_ACCESS__c&gt;0,Parent_Account__r.RESTRICTED_ACCESS__c&gt;0)),
+   &quot;************&quot; +  RIGHT(Card_Number__c, 4) ,  
+    Card_Number__c 
+
+)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Card Number</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Episys_User_ID__c</fullName>
+        <externalId>false</externalId>
+        <label>Episys User ID</label>
+        <precision>5</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Expiration_Date__c</fullName>
+        <externalId>false</externalId>
+        <label>Expiration Date</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>FrozenTranslated__c</fullName>
+        <externalId>false</externalId>
+        <label>Frozen Translated</label>
+        <length>45</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>High_Value_Flag__c</fullName>
+        <description>Code value to indicate that an ACCT level account is considered 1 (high value), 2 (high potential), or 0 (no designation).</description>
+        <externalId>false</externalId>
+        <label>High Value Flag</label>
+        <precision>1</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>ID1__c</fullName>
+        <externalId>false</externalId>
+        <label>Share ID</label>
+        <length>4</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>ID_Type__c</fullName>
+        <externalId>false</externalId>
+        <label>ID Type</label>
+        <precision>5</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>ID__c</fullName>
+        <externalId>false</externalId>
+        <label>ID</label>
+        <length>4</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>IRS_Code__c</fullName>
+        <externalId>false</externalId>
+        <label>IRS Code</label>
+        <precision>5</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Insurance_Type__c</fullName>
+        <externalId>false</externalId>
+        <label>Insurance Type</label>
+        <precision>5</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Interest_Last_Year__c</fullName>
+        <externalId>false</externalId>
+        <label>Interest Last Year</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>Interest_Past_Due__c</fullName>
+        <externalId>false</externalId>
+        <label>Interest Past Due</label>
+        <precision>7</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>Interest_Rate1__c</fullName>
+        <externalId>false</externalId>
+        <formula>Text(Interest_Rate__c)  &amp; &apos;%&apos;</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Interest Rate</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Interest_Rate_Margin1__c</fullName>
+        <externalId>false</externalId>
+        <formula>Text(Interest_Rate_Margin__c) &amp; &apos;%&apos;</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Interest Rate Margin</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Interest_Rate_Margin_Sign__c</fullName>
+        <externalId>false</externalId>
+        <label>Interest Rate Margin Sign</label>
+        <precision>5</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Interest_Rate_Margin__c</fullName>
+        <externalId>false</externalId>
+        <label>Interest Rate Margin</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Interest_Rate__c</fullName>
+        <externalId>false</externalId>
+        <label>Interest Rate</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>3</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Interest_YTD__c</fullName>
+        <externalId>false</externalId>
+        <label>Interest Paid YTD</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>Invalid_Password_Attempts__c</fullName>
+        <externalId>false</externalId>
+        <label>Invalid Password Attempts</label>
+        <precision>5</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Issue_Date__c</fullName>
+        <externalId>false</externalId>
+        <label>Issue Date</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>Last_Div_Amount__c</fullName>
+        <externalId>false</externalId>
+        <label>Last Div Amount</label>
+        <precision>7</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>Last_Div_Date__c</fullName>
+        <externalId>false</externalId>
+        <label>Last Div Date</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>Last_HB_Logon_Date__c</fullName>
+        <externalId>false</externalId>
+        <label>Last HB Logon Date</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>Last_HB_Password_Change__c</fullName>
+        <externalId>false</externalId>
+        <label>Last HB Password Change</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>Last_Payment_Date__c</fullName>
+        <externalId>false</externalId>
+        <label>Last Payment Date</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>Last_Transaction_Date__c</fullName>
+        <externalId>false</externalId>
+        <label>Last Transaction Date</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>Last_logon_Date__c</fullName>
+        <externalId>false</externalId>
+        <label>Last Logon Date</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>Late_Charge_Due__c</fullName>
+        <externalId>false</externalId>
+        <label>Late Charge Due</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>Late_Charge_Unpaid__c</fullName>
+        <externalId>false</externalId>
+        <label>Late Charge Unpaid</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>Limit_Amount__c</fullName>
+        <externalId>false</externalId>
+        <label>Limit Amount</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>Loan_Number__c</fullName>
+        <externalId>false</externalId>
+        <label>Loan Number</label>
+        <length>40</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Loan_code__c</fullName>
+        <externalId>false</externalId>
+        <label>Loan Code</label>
+        <precision>5</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>LocId__c</fullName>
+        <externalId>false</externalId>
+        <label>LocId</label>
+        <length>4</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Locator__c</fullName>
+        <externalId>false</externalId>
+        <label>Locator</label>
+        <precision>16</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>MICR_Account_Number__c</fullName>
+        <externalId>false</externalId>
+        <label>MICR Acct Number</label>
+        <length>20</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Mailing_Address_From1__c</fullName>
+        <description>Indicator to show where the address on an ACCT record came from. 
+M = Name Mailing Record 
+P = Primary Name Record</description>
+        <externalId>false</externalId>
+        <formula>CASE( Mailing_Address_From__c, 
+&apos;M&apos;, &apos;Name Mailing Record&apos;, 
+&apos;P&apos;, &apos;Primary Name Record&apos;, 
+&apos;&apos;)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <inlineHelpText>If found, the address on an ACCT record will come from the&quot;Name Mailing Record&quot;.  If not found the address will come from the &quot;Primary Name Record&quot;.</inlineHelpText>
+        <label>Mailing Address From</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Mailing_Address_From__c</fullName>
+        <description>Indicator to show where the address on an ACCT record came from.
+M = Name Mailing Record
+P = Primary Name Record</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Indicator to show where the address on an ACCT record came from.
+M = Name Mailing Record
+P = Primary Name Record</inlineHelpText>
+        <label>Mailing Address From</label>
+        <length>1</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Mailing_City__c</fullName>
+        <externalId>false</externalId>
+        <label>Mailing City</label>
+        <length>40</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Mailing_Country_Code__c</fullName>
+        <externalId>false</externalId>
+        <label>Mailing Country Code</label>
+        <length>2</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Mailing_Country__c</fullName>
+        <externalId>false</externalId>
+        <label>Mailing Country</label>
+        <length>20</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Mailing_Extra_Address__c</fullName>
+        <externalId>false</externalId>
+        <label>Mailing Extra Address</label>
+        <length>40</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Mailing_Map_Link__c</fullName>
+        <externalId>false</externalId>
+        <formula>IF(   ISBLANK(Mailing_Street__c) , &quot;&quot;, 
+   HYPERLINK(&quot;https://maps.google.com/maps?q=&quot; &amp; 
+              Mailing_Street__c &amp; &apos;,+&apos; &amp; 
+              Mailing_City__c &amp; &apos;,+&apos; &amp; 
+              Mailing_State__c &amp; &apos;,+&apos; &amp; 
+              Mailing_Country__c &amp; &apos;,+&apos; &amp; 
+              Mailing_Zipcode__c  ,
+      &quot;Click for Map&quot;)
+)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Mailing Map Link</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Mailing_State__c</fullName>
+        <externalId>false</externalId>
+        <label>Mailing State</label>
+        <length>10</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Mailing_Street__c</fullName>
+        <externalId>false</externalId>
+        <label>Mailing Street</label>
+        <length>40</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Mailing_Zipcode__c</fullName>
+        <externalId>false</externalId>
+        <label>Mailing Zipcode</label>
+        <length>10</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Maturity_Date__c</fullName>
+        <externalId>false</externalId>
+        <label>Maturity Date</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>Maturity_Post_Code__c</fullName>
+        <externalId>false</externalId>
+        <label>Maturity Post Code</label>
+        <precision>5</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Member_Group_Seg__c</fullName>
+        <externalId>false</externalId>
+        <label>Member Group / Seg</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Mortgage_Name_1__c</fullName>
+        <externalId>false</externalId>
+        <label>Mortgage Name 1</label>
+        <length>40</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Mortgage_Name_2__c</fullName>
+        <externalId>false</externalId>
+        <label>Mortgage Name 2</label>
+        <length>40</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>NEGATIVEBALANCEDATE__c</fullName>
+        <externalId>false</externalId>
+        <label>Negative Balance Date</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>NOTENUMBER__c</fullName>
+        <externalId>false</externalId>
+        <label>Note Number</label>
+        <length>10</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>ODT_OPT_IN_OPTION_OTHER__c</fullName>
+        <externalId>false</externalId>
+        <label>ODT Opt-In Option Other</label>
+        <precision>5</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>ODT_OPT_IN_OPTION_RAGE__c</fullName>
+        <externalId>false</externalId>
+        <label>ODT Opt-In Option Reg E</label>
+        <precision>5</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>ODT_OPT_IN_STATUS_OTHER__c</fullName>
+        <externalId>false</externalId>
+        <label>ODT Opt-In Status Other</label>
+        <precision>5</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>ODT_OPT_IN_STATUS_RAGE__c</fullName>
+        <externalId>false</externalId>
+        <label>ODT Opt-In Status Reg E</label>
+        <precision>5</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>ODT_Opt_In_Option_Other1__c</fullName>
+        <externalId>false</externalId>
+        <formula>CASE(ODT_OPT_IN_OPTION_OTHER__c, 
+0, &apos;0: Auth/Courtesy Pay Fee/NSF Fee&apos;,
+4, &apos;4: No Auth/Courtesy Pay Fee/NSF Fee&apos;,
+&apos;&apos;)</formula>
+        <label>ODT Opt-In Option Other</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>ODT_Opt_In_Option_Reg_E1__c</fullName>
+        <externalId>false</externalId>
+        <formula>CASE(ODT_OPT_IN_OPTION_RAGE__c, 
+1, &apos;1: Auth/Courtesy Pay Fee/No NSF Fee&apos;, 
+7, &apos;7: No Auth/No Courtesy Pay Fee/No NSF Fee&apos;,  
+&apos;&apos;)</formula>
+        <label>ODT Opt-In Option Reg E</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>ODT_Opt_In_Status_Other1__c</fullName>
+        <externalId>false</externalId>
+        <formula>CASE(ODT_OPT_IN_STATUS_OTHER__c, 
+0, &apos;0: Opt Out&apos;, 
+1, &apos;1: Opt In&apos;,
+2, &apos;2: No Response&apos;, 
+&apos;&apos;)</formula>
+        <label>ODT Opt-In Status Other</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>ODT_Opt_In_Status_Reg_E1__c</fullName>
+        <externalId>false</externalId>
+        <formula>CASE(ODT_OPT_IN_STATUS_RAGE__c, 
+0, &apos;0: Opt Out&apos;, 
+1, &apos;1: Opt In&apos;,  
+&apos;&apos;)</formula>
+        <label>ODT Opt-In Status Reg E</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>OLD_MICR_NUMBER__c</fullName>
+        <externalId>false</externalId>
+        <label>Old MICR Number</label>
+        <length>20</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>OPEN_DATE__c</fullName>
+        <externalId>false</externalId>
+        <label>Open Date</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>ORIGINALBALANCE__c</fullName>
+        <externalId>false</externalId>
+        <label>Original Balance</label>
+        <precision>12</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>ORIGINALDATE__c</fullName>
+        <externalId>false</externalId>
+        <label>Original Date</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>OVERDRAFTTOLERANCE__c</fullName>
+        <externalId>false</externalId>
+        <label>Overdraw Tolerance</label>
+        <precision>12</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>Onboarded__c</fullName>
+        <defaultValue>false</defaultValue>
+        <externalId>false</externalId>
+        <label>Onboarded</label>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>PARTIALPAYMENT__c</fullName>
+        <externalId>false</externalId>
+        <label>Partial Payment</label>
+        <precision>12</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>PASTDUEPAYMENT__c</fullName>
+        <externalId>false</externalId>
+        <label>Past Due Payment</label>
+        <precision>12</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>PAYMENTDUE__c</fullName>
+        <externalId>false</externalId>
+        <label>Payment Due</label>
+        <precision>12</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>PAYMENTFREQUENCY1__c</fullName>
+        <externalId>false</externalId>
+        <formula>Text(PAYMENTFREQUENCY__c) &amp; &apos; &apos; &amp; CASE(PAYMENTFREQUENCY__c, 
+00, &apos;Single pay&apos;, 
+01, &apos;Annual&apos;,
+02, &apos;Semiannual&apos;,
+03, &apos;Quarterly&apos;,
+04, &apos;Monthly&apos;,
+05, &apos;Semimonthly&apos;,
+06, &apos;Biweekly skip first&apos;,
+07, &apos;Biweekly skip last&apos;,
+08, &apos;Biweekly&apos;,
+09, &apos;Weekly&apos;,
+10, &apos;Immediate&apos;,
+11, &apos;Weekly skip first&apos;,
+12, &apos;Weekly skip last&apos;,
+13, &apos;Bimonthly&apos;,
+14, &apos;Amortize Schedule&apos;,
+&apos;&apos;)</formula>
+        <label>Payment Frequency</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>PAYMENTFREQUENCY__c</fullName>
+        <externalId>false</externalId>
+        <label>Payment Frequency</label>
+        <precision>5</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>PAYMENTMETHOD1__c</fullName>
+        <externalId>false</externalId>
+        <formula>Text(PAYMENTMETHOD__c) &amp; &apos; &apos; &amp; CASE(PAYMENTMETHOD__c, 
+0, &apos;Cash&apos;, 
+1, &apos;Coupon&apos;,
+2, &apos;Auto transfer&apos;,
+3, &apos;Payroll&apos;,
+4, &apos;Payroll after due&apos;,
+5, &apos;Distribution&apos;,
+6, &apos;Distribution after due&apos;,
+7, &apos;Scheduled auto transfer&apos;,
+8, &apos;Scheduled auto transfer after due&apos;,
+9, &apos;Amortization transfer&apos;,
+&apos;&apos;)</formula>
+        <label>Payment Method</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>PAYMENTMETHOD__c</fullName>
+        <externalId>false</externalId>
+        <label>Payment Method</label>
+        <precision>5</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>PAYMENT__c</fullName>
+        <externalId>false</externalId>
+        <label>Payment</label>
+        <precision>12</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>PAYOFFAMOUNT__c</fullName>
+        <externalId>false</externalId>
+        <label>Payoff Amount</label>
+        <precision>12</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>POID__c</fullName>
+        <externalId>false</externalId>
+        <label>POID</label>
+        <length>5</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>POSLIMIT__c</fullName>
+        <externalId>false</externalId>
+        <label>POS Limit</label>
+        <precision>12</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>PRINCIPAL_BALANCE__c</fullName>
+        <externalId>false</externalId>
+        <label>Principal Balance</label>
+        <precision>12</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>PRINCIPAL_PAST_DUE__c</fullName>
+        <externalId>false</externalId>
+        <label>Principal Past Due</label>
+        <precision>12</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>PROMO_REPORT_CODE__c</fullName>
+        <externalId>false</externalId>
+        <label>Promo Report Code</label>
+        <length>40</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>PROPERTY_ADDRESS__c</fullName>
+        <externalId>false</externalId>
+        <label>Property Address</label>
+        <length>40</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>ParentOrd__c</fullName>
+        <externalId>false</externalId>
+        <label>ParentOrd</label>
+        <length>4</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Parent_Account__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <description>This is a self-relationship field used to link SubAccounts(recType) to the respective MembershipAccounts(recType)</description>
+        <externalId>false</externalId>
+        <label>Parent Account</label>
+        <referenceTo>Account_Details__c</referenceTo>
+        <relationshipName>Accounts</relationshipName>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Preference_Locator__c</fullName>
+        <externalId>false</externalId>
+        <label>Preference Locator</label>
+        <precision>10</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Property_City__c</fullName>
+        <externalId>false</externalId>
+        <label>Property City</label>
+        <length>40</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Property_Map_Link__c</fullName>
+        <externalId>false</externalId>
+        <formula>IF(ISBLANK(PROPERTY_ADDRESS__c) , &quot;&quot;, 
+   HYPERLINK(&quot;https://maps.google.com/maps?q=&quot; &amp; 
+              PROPERTY_ADDRESS__c  &amp; &apos;,+&apos; &amp; 
+              Property_City__c  &amp; &apos;,+&apos; &amp; 
+              Property_State__c  &amp; &apos;,+&apos; &amp; 
+              Property_Zip__c,
+      &quot;Click for Map&quot;)
+)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Property Map Link</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Property_State__c</fullName>
+        <externalId>false</externalId>
+        <label>Property State</label>
+        <length>40</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Property_Zip__c</fullName>
+        <externalId>false</externalId>
+        <label>Property Zip</label>
+        <length>40</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>REGDCHECKCOUNT__c</fullName>
+        <externalId>false</externalId>
+        <label>RegD Check Count</label>
+        <precision>5</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>REGDTRANSFERCOUNT__c</fullName>
+        <externalId>false</externalId>
+        <label>RegD Transfer Count</label>
+        <precision>5</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>REISSUECODE__c</fullName>
+        <externalId>false</externalId>
+        <label>Reissue Code</label>
+        <precision>5</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>RESTRICTED_ACCESS__c</fullName>
+        <externalId>true</externalId>
+        <label>Restricted Access</label>
+        <precision>5</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>RecTypeID__c</fullName>
+        <externalId>false</externalId>
+        <label>RecTypeID</label>
+        <length>5</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>RecType__c</fullName>
+        <externalId>false</externalId>
+        <label>RecType</label>
+        <length>4</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Reference__c</fullName>
+        <description>Brand Code BC01=Chevron Federal Credit Union, BC02=Spectrum Credit Union</description>
+        <externalId>false</externalId>
+        <label>Reference</label>
+        <length>20</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Refresh_Time__c</fullName>
+        <externalId>false</externalId>
+        <label>Refresh Time</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>DateTime</type>
+    </fields>
+    <fields>
+        <fullName>Restricted_Access1__c</fullName>
+        <externalId>false</externalId>
+        <formula>Text( RESTRICTED_ACCESS__c ) &amp; &apos; &apos; &amp; 
+CASE( RESTRICTED_ACCESS__c , 
+0, &apos;Normal&apos;, 
+1, &apos;Restricted&apos;, 
+2, &apos;Sensitive&apos;,
+3, &apos;Employee&apos;,
+4, &apos;Employee Family&apos;,
+5, &apos;Employee Sensitive&apos;,
+6, &apos;Employee Sensitive Family&apos;,
+&apos;0 Normal&apos;)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Restricted Access</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>RtsDateTime__c</fullName>
+        <externalId>false</externalId>
+        <label>RtsDateTime</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>DateTime</type>
+    </fields>
+    <fields>
+        <fullName>SERVICE_1__c</fullName>
+        <externalId>false</externalId>
+        <label>Service: 1</label>
+        <precision>5</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>SERVICE_2__c</fullName>
+        <externalId>false</externalId>
+        <label>Service: 2</label>
+        <precision>5</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>SERVICE_3__c</fullName>
+        <externalId>false</externalId>
+        <label>Service: 3</label>
+        <precision>5</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>SERVICE_4__c</fullName>
+        <externalId>false</externalId>
+        <label>Service: 4</label>
+        <precision>5</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>SERVICE_5__c</fullName>
+        <externalId>false</externalId>
+        <label>Service: 5</label>
+        <precision>5</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>SERVICE_6__c</fullName>
+        <externalId>false</externalId>
+        <label>Service: 6</label>
+        <precision>5</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>SERVICE_7__c</fullName>
+        <externalId>false</externalId>
+        <label>Service: 7</label>
+        <precision>5</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>SERVICE_8__c</fullName>
+        <externalId>false</externalId>
+        <label>Service: 8</label>
+        <precision>5</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>SHARECODE__c</fullName>
+        <externalId>false</externalId>
+        <label>Share Code</label>
+        <precision>5</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>STATEMENT_MAIL_CODE__c</fullName>
+        <externalId>false</externalId>
+        <label>Statement Mail Code</label>
+        <precision>5</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>STATUSREASON__c</fullName>
+        <externalId>false</externalId>
+        <label>Status Reason</label>
+        <precision>5</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>STATUS__c</fullName>
+        <externalId>false</externalId>
+        <label>Status</label>
+        <precision>5</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>SecureEmailAddress__c</fullName>
+        <description>Account level email address</description>
+        <externalId>false</externalId>
+        <label>Secure Email Address</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Email</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Service1__c</fullName>
+        <externalId>false</externalId>
+        <formula>Text(SERVICE_1__c) &amp; &apos; &apos; &amp; 
+CASE(SERVICE_1__c, 
+0, &apos;&apos;, 
+01, &apos;Transfer In (Make Payments To)&apos;, 
+02, &apos;Transfer In To Closed End Loans From Cross Member&apos;, 
+03, &apos;Transfer In, Transfer Out, Withdrawals&apos;, 
+11, &apos;New Solutions Checking Conversion&apos;, 
+12, &apos;MySavings Savings Account&apos;, 
+13, &apos;Chevron West Credit Card Sweep Share&apos;, 
+16, &apos;Promo 6 Month Cert&apos;, 
+30, &apos;Transfer In, Transfer Out, Withdrawal, Bill Pay&apos;, 
+80, &apos;Members With Bill Payer&apos;, 
+20, &apos;Spectrum Non-Interest Heloc&apos;, 
+21, &apos;Chevron West 2-10 Year Fully Amortizing&apos;, 
+22, &apos;Chevron West 10 Year Fully Amortizing&apos;, 
+23, &apos;Chevron West 96 Month Fully Amortizing&apos;, 
+40, &apos;GAP&apos;, 
+41, &apos;MBI&apos;, 
+42, &apos;HMO4CARS&apos;, 
+43, &apos;GAP &amp; MBI&apos;, 
+44, &apos;GAP &amp; HMO4CARS&apos;, 
+45, &apos;MBI &amp; HMO4CARS&apos;, 
+46, &apos;GAP/HMO4CARS/MBI&apos;, 
+50, &apos;3% + Share Rate&apos;, 
+51, &apos;4% + Share Rate&apos;, 
+52, &apos;7% + Share Rate&apos;, 
+94, &apos;Member Opt-Out Of Credit Limit Increase!&apos;, 
+95, &apos;Fixed Payment Service Code&apos;, 
+96, &apos;Waive Annual Fee&apos;, 
+97, &apos;Close Loan At End Of Cycle&apos;, 
+98, &apos;Waive Late Fee&apos;, 
+99, &apos;Waive Overlimit Fee&apos;, 
+&apos;&apos;)</formula>
+        <label>Service: 1</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Service2__c</fullName>
+        <externalId>false</externalId>
+        <formula>Text(SERVICE_2__c) &amp; &apos; &apos; &amp; 
+CASE(SERVICE_2__c, 
+0, &apos;&apos;, 
+01, &apos;Transfer In (Make Payments To)&apos;, 
+02, &apos;Transfer In To Closed End Loans From Cross Member&apos;, 
+03, &apos;Transfer In, Transfer Out, Withdrawals&apos;, 
+11, &apos;New Solutions Checking Conversion&apos;, 
+12, &apos;MySavings Savings Account&apos;, 
+13, &apos;Chevron West Credit Card Sweep Share&apos;, 
+16, &apos;Promo 6 Month Cert&apos;, 
+30, &apos;Transfer In, Transfer Out, Withdrawal, Bill Pay&apos;, 
+80, &apos;Members With Bill Payer&apos;, 
+20, &apos;Spectrum Non-Interest Heloc&apos;, 
+21, &apos;Chevron West 2-10 Year Fully Amortizing&apos;, 
+22, &apos;Chevron West 10 Year Fully Amortizing&apos;, 
+23, &apos;Chevron West 96 Month Fully Amortizing&apos;, 
+40, &apos;GAP&apos;, 
+41, &apos;MBI&apos;, 
+42, &apos;HMO4CARS&apos;, 
+43, &apos;GAP &amp; MBI&apos;, 
+44, &apos;GAP &amp; HMO4CARS&apos;, 
+45, &apos;MBI &amp; HMO4CARS&apos;, 
+46, &apos;GAP/HMO4CARS/MBI&apos;, 
+50, &apos;3% + Share Rate&apos;, 
+51, &apos;4% + Share Rate&apos;, 
+52, &apos;7% + Share Rate&apos;, 
+94, &apos;Member Opt-Out Of Credit Limit Increase!&apos;, 
+95, &apos;Fixed Payment Service Code&apos;, 
+96, &apos;Waive Annual Fee&apos;, 
+97, &apos;Close Loan At End Of Cycle&apos;, 
+98, &apos;Waive Late Fee&apos;, 
+99, &apos;Waive Overlimit Fee&apos;, 
+&apos;&apos;)</formula>
+        <label>Service: 2</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Service3__c</fullName>
+        <externalId>false</externalId>
+        <formula>Text(SERVICE_3__c) &amp; &apos; &apos; &amp; 
+CASE(SERVICE_3__c, 
+0, &apos;&apos;, 
+01, &apos;Transfer In (Make Payments To)&apos;, 
+02, &apos;Transfer In To Closed End Loans From Cross Member&apos;, 
+03, &apos;Transfer In, Transfer Out, Withdrawals&apos;, 
+11, &apos;New Solutions Checking Conversion&apos;, 
+12, &apos;MySavings Savings Account&apos;, 
+13, &apos;Chevron West Credit Card Sweep Share&apos;, 
+16, &apos;Promo 6 Month Cert&apos;, 
+30, &apos;Transfer In, Transfer Out, Withdrawal, Bill Pay&apos;, 
+80, &apos;Members With Bill Payer&apos;, 
+20, &apos;Spectrum Non-Interest Heloc&apos;, 
+21, &apos;Chevron West 2-10 Year Fully Amortizing&apos;, 
+22, &apos;Chevron West 10 Year Fully Amortizing&apos;, 
+23, &apos;Chevron West 96 Month Fully Amortizing&apos;, 
+40, &apos;GAP&apos;, 
+41, &apos;MBI&apos;, 
+42, &apos;HMO4CARS&apos;, 
+43, &apos;GAP &amp; MBI&apos;, 
+44, &apos;GAP &amp; HMO4CARS&apos;, 
+45, &apos;MBI &amp; HMO4CARS&apos;, 
+46, &apos;GAP/HMO4CARS/MBI&apos;, 
+50, &apos;3% + Share Rate&apos;, 
+51, &apos;4% + Share Rate&apos;, 
+52, &apos;7% + Share Rate&apos;, 
+94, &apos;Member Opt-Out Of Credit Limit Increase!&apos;, 
+95, &apos;Fixed Payment Service Code&apos;, 
+96, &apos;Waive Annual Fee&apos;, 
+97, &apos;Close Loan At End Of Cycle&apos;, 
+98, &apos;Waive Late Fee&apos;, 
+99, &apos;Waive Overlimit Fee&apos;, 
+&apos;&apos;)</formula>
+        <label>Service: 3</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Service4__c</fullName>
+        <externalId>false</externalId>
+        <formula>Text(SERVICE_4__c) &amp; &apos; &apos; &amp; 
+CASE(SERVICE_4__c, 
+0, &apos;&apos;, 
+01, &apos;Transfer In (Make Payments To)&apos;, 
+02, &apos;Transfer In To Closed End Loans From Cross Member&apos;, 
+03, &apos;Transfer In, Transfer Out, Withdrawals&apos;, 
+11, &apos;New Solutions Checking Conversion&apos;, 
+12, &apos;MySavings Savings Account&apos;, 
+13, &apos;Chevron West Credit Card Sweep Share&apos;, 
+16, &apos;Promo 6 Month Cert&apos;, 
+30, &apos;Transfer In, Transfer Out, Withdrawal, Bill Pay&apos;, 
+80, &apos;Members With Bill Payer&apos;, 
+20, &apos;Spectrum Non-Interest Heloc&apos;, 
+21, &apos;Chevron West 2-10 Year Fully Amortizing&apos;, 
+22, &apos;Chevron West 10 Year Fully Amortizing&apos;, 
+23, &apos;Chevron West 96 Month Fully Amortizing&apos;, 
+40, &apos;GAP&apos;, 
+41, &apos;MBI&apos;, 
+42, &apos;HMO4CARS&apos;, 
+43, &apos;GAP &amp; MBI&apos;, 
+44, &apos;GAP &amp; HMO4CARS&apos;, 
+45, &apos;MBI &amp; HMO4CARS&apos;, 
+46, &apos;GAP/HMO4CARS/MBI&apos;, 
+50, &apos;3% + Share Rate&apos;, 
+51, &apos;4% + Share Rate&apos;, 
+52, &apos;7% + Share Rate&apos;, 
+94, &apos;Member Opt-Out Of Credit Limit Increase!&apos;, 
+95, &apos;Fixed Payment Service Code&apos;, 
+96, &apos;Waive Annual Fee&apos;, 
+97, &apos;Close Loan At End Of Cycle&apos;, 
+98, &apos;Waive Late Fee&apos;, 
+99, &apos;Waive Overlimit Fee&apos;, 
+&apos;&apos;)</formula>
+        <label>Service: 4</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Service5__c</fullName>
+        <externalId>false</externalId>
+        <formula>Text(SERVICE_5__c) &amp; &apos; &apos; &amp; 
+CASE(SERVICE_5__c, 
+0, &apos;&apos;, 
+01, &apos;Transfer In (Make Payments To)&apos;, 
+02, &apos;Transfer In To Closed End Loans From Cross Member&apos;, 
+03, &apos;Transfer In, Transfer Out, Withdrawals&apos;, 
+11, &apos;New Solutions Checking Conversion&apos;, 
+12, &apos;MySavings Savings Account&apos;, 
+13, &apos;Chevron West Credit Card Sweep Share&apos;, 
+16, &apos;Promo 6 Month Cert&apos;, 
+30, &apos;Transfer In, Transfer Out, Withdrawal, Bill Pay&apos;, 
+80, &apos;Members With Bill Payer&apos;, 
+20, &apos;Spectrum Non-Interest Heloc&apos;, 
+21, &apos;Chevron West 2-10 Year Fully Amortizing&apos;, 
+22, &apos;Chevron West 10 Year Fully Amortizing&apos;, 
+23, &apos;Chevron West 96 Month Fully Amortizing&apos;, 
+40, &apos;GAP&apos;, 
+41, &apos;MBI&apos;, 
+42, &apos;HMO4CARS&apos;, 
+43, &apos;GAP &amp; MBI&apos;, 
+44, &apos;GAP &amp; HMO4CARS&apos;, 
+45, &apos;MBI &amp; HMO4CARS&apos;, 
+46, &apos;GAP/HMO4CARS/MBI&apos;, 
+50, &apos;3% + Share Rate&apos;, 
+51, &apos;4% + Share Rate&apos;, 
+52, &apos;7% + Share Rate&apos;, 
+94, &apos;Member Opt-Out Of Credit Limit Increase!&apos;, 
+95, &apos;Fixed Payment Service Code&apos;, 
+96, &apos;Waive Annual Fee&apos;, 
+97, &apos;Close Loan At End Of Cycle&apos;, 
+98, &apos;Waive Late Fee&apos;, 
+99, &apos;Waive Overlimit Fee&apos;, 
+&apos;&apos;)</formula>
+        <label>Service: 5</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Service6__c</fullName>
+        <externalId>false</externalId>
+        <formula>Text(SERVICE_6__c) &amp; &apos; &apos; &amp; 
+CASE(SERVICE_6__c, 
+0, &apos;&apos;, 
+01, &apos;Transfer In (Make Payments To)&apos;, 
+02, &apos;Transfer In To Closed End Loans From Cross Member&apos;, 
+03, &apos;Transfer In, Transfer Out, Withdrawals&apos;, 
+11, &apos;New Solutions Checking Conversion&apos;, 
+12, &apos;MySavings Savings Account&apos;, 
+13, &apos;Chevron West Credit Card Sweep Share&apos;, 
+16, &apos;Promo 6 Month Cert&apos;, 
+30, &apos;Transfer In, Transfer Out, Withdrawal, Bill Pay&apos;, 
+80, &apos;Members With Bill Payer&apos;, 
+20, &apos;Spectrum Non-Interest Heloc&apos;, 
+21, &apos;Chevron West 2-10 Year Fully Amortizing&apos;, 
+22, &apos;Chevron West 10 Year Fully Amortizing&apos;, 
+23, &apos;Chevron West 96 Month Fully Amortizing&apos;, 
+40, &apos;GAP&apos;, 
+41, &apos;MBI&apos;, 
+42, &apos;HMO4CARS&apos;, 
+43, &apos;GAP &amp; MBI&apos;, 
+44, &apos;GAP &amp; HMO4CARS&apos;, 
+45, &apos;MBI &amp; HMO4CARS&apos;, 
+46, &apos;GAP/HMO4CARS/MBI&apos;, 
+50, &apos;3% + Share Rate&apos;, 
+51, &apos;4% + Share Rate&apos;, 
+52, &apos;7% + Share Rate&apos;, 
+94, &apos;Member Opt-Out Of Credit Limit Increase!&apos;, 
+95, &apos;Fixed Payment Service Code&apos;, 
+96, &apos;Waive Annual Fee&apos;, 
+97, &apos;Close Loan At End Of Cycle&apos;, 
+98, &apos;Waive Late Fee&apos;, 
+99, &apos;Waive Overlimit Fee&apos;, 
+&apos;&apos;)</formula>
+        <label>Service: 6</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Service7__c</fullName>
+        <externalId>false</externalId>
+        <formula>Text(SERVICE_7__c) &amp; &apos; &apos; &amp; 
+CASE(SERVICE_7__c, 
+0, &apos;&apos;, 
+01, &apos;Transfer In (Make Payments To)&apos;, 
+02, &apos;Transfer In To Closed End Loans From Cross Member&apos;, 
+03, &apos;Transfer In, Transfer Out, Withdrawals&apos;, 
+11, &apos;New Solutions Checking Conversion&apos;, 
+12, &apos;MySavings Savings Account&apos;, 
+13, &apos;Chevron West Credit Card Sweep Share&apos;, 
+16, &apos;Promo 6 Month Cert&apos;, 
+30, &apos;Transfer In, Transfer Out, Withdrawal, Bill Pay&apos;, 
+80, &apos;Members With Bill Payer&apos;, 
+20, &apos;Spectrum Non-Interest Heloc&apos;, 
+21, &apos;Chevron West 2-10 Year Fully Amortizing&apos;, 
+22, &apos;Chevron West 10 Year Fully Amortizing&apos;, 
+23, &apos;Chevron West 96 Month Fully Amortizing&apos;, 
+40, &apos;GAP&apos;, 
+41, &apos;MBI&apos;, 
+42, &apos;HMO4CARS&apos;, 
+43, &apos;GAP &amp; MBI&apos;, 
+44, &apos;GAP &amp; HMO4CARS&apos;, 
+45, &apos;MBI &amp; HMO4CARS&apos;, 
+46, &apos;GAP/HMO4CARS/MBI&apos;, 
+50, &apos;3% + Share Rate&apos;, 
+51, &apos;4% + Share Rate&apos;, 
+52, &apos;7% + Share Rate&apos;, 
+94, &apos;Member Opt-Out Of Credit Limit Increase!&apos;, 
+95, &apos;Fixed Payment Service Code&apos;, 
+96, &apos;Waive Annual Fee&apos;, 
+97, &apos;Close Loan At End Of Cycle&apos;, 
+98, &apos;Waive Late Fee&apos;, 
+99, &apos;Waive Overlimit Fee&apos;, 
+&apos;&apos;)</formula>
+        <label>Service: 7</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Service8__c</fullName>
+        <externalId>false</externalId>
+        <formula>Text(SERVICE_8__c) &amp; &apos; &apos; &amp; 
+CASE(SERVICE_8__c, 
+0, &apos;&apos;, 
+01, &apos;Transfer In (Make Payments To)&apos;, 
+02, &apos;Transfer In To Closed End Loans From Cross Member&apos;, 
+03, &apos;Transfer In, Transfer Out, Withdrawals&apos;, 
+11, &apos;New Solutions Checking Conversion&apos;, 
+12, &apos;MySavings Savings Account&apos;, 
+13, &apos;Chevron West Credit Card Sweep Share&apos;, 
+16, &apos;Promo 6 Month Cert&apos;, 
+30, &apos;Transfer In, Transfer Out, Withdrawal, Bill Pay&apos;, 
+80, &apos;Members With Bill Payer&apos;, 
+20, &apos;Spectrum Non-Interest Heloc&apos;, 
+21, &apos;Chevron West 2-10 Year Fully Amortizing&apos;, 
+22, &apos;Chevron West 10 Year Fully Amortizing&apos;, 
+23, &apos;Chevron West 96 Month Fully Amortizing&apos;, 
+40, &apos;GAP&apos;, 
+41, &apos;MBI&apos;, 
+42, &apos;HMO4CARS&apos;, 
+43, &apos;GAP &amp; MBI&apos;, 
+44, &apos;GAP &amp; HMO4CARS&apos;, 
+45, &apos;MBI &amp; HMO4CARS&apos;, 
+46, &apos;GAP/HMO4CARS/MBI&apos;, 
+50, &apos;3% + Share Rate&apos;, 
+51, &apos;4% + Share Rate&apos;, 
+52, &apos;7% + Share Rate&apos;, 
+94, &apos;Member Opt-Out Of Credit Limit Increase!&apos;, 
+95, &apos;Fixed Payment Service Code&apos;, 
+96, &apos;Waive Annual Fee&apos;, 
+97, &apos;Close Loan At End Of Cycle&apos;, 
+98, &apos;Waive Late Fee&apos;, 
+99, &apos;Waive Overlimit Fee&apos;, 
+&apos;&apos;)</formula>
+        <label>Service: 8</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Statement_Mail_Translate__c</fullName>
+        <description>Concatenate SMC, &quot;-&quot;, CUStatementMailcodeDescription</description>
+        <externalId>false</externalId>
+        <label>Statement Mail Code</label>
+        <length>45</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Status1__c</fullName>
+        <externalId>false</externalId>
+        <formula>Text(STATUS__c) &amp; &apos; &apos; &amp; 
+CASE(STATUS__c, 
+0.00, &apos;Not Issued&apos;, 
+1.00, &apos;Issued&apos;, 
+2.00, &apos;Capture&apos;, 
+&apos;&apos;)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Card Status</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Status_Reason__c</fullName>
+        <externalId>false</externalId>
+        <formula>CASE(STATUSREASON__c, 
+0, &apos;000 Retain-No Reason Specified&apos;, 
+1, &apos;001 Retain-Lost&apos;,
+2, &apos;002 Retain-Stolen&apos;,
+3, &apos;003 Retain-Fraud&apos;, 
+4, &apos;004 Retain-Permanent Restraint&apos;,
+5, &apos;005 Retain-Bad Debt&apos;,
+6, &apos;006 Retain-Checking Dormant&apos;, 
+7, &apos;007 Retain-Checking Closed&apos;,
+8, &apos;008 Retain-Checking NSF&apos;,
+9, &apos;009 Retain-Bankruptcy&apos;, 
+10, &apos;010 Retain-Marital Problems&apos;,
+11, &apos;011 Retain-Deceased&apos;,
+12, &apos;012 Retain-Collection&apos;, 
+13, &apos;013 Retain-Collection (Skip)&apos;,
+14, &apos;014 Retain-Collection (Legal Pursuit)&apos;,
+15, &apos;015 Retain-Closed for Cause&apos;,
+16, &apos;016 Retain-Closed per Cardholder&apos;,
+17, &apos;017 Retain-Closed (Duplicate)&apos;, 
+18, &apos;018 Retain-Chargeoff&apos;,
+19, &apos;019 Retain-Excessive PIN Retries&apos;,
+20, &apos;020 Retain-Requested by Network&apos;, 
+100, &apos;100 Return-No Reason Specified&apos;,
+101, &apos;101 Return-Lost&apos;,
+102, &apos;102 Return-Stolen&apos;,
+103, &apos;103 Return-Fraud&apos;,
+104, &apos;104 Return-Permanent Restraint&apos;,
+105, &apos;105 Return-Bad Debt&apos;,
+106, &apos;106 Return-Checking Dormant&apos;,
+107, &apos;107 Return-Checking Closed&apos;,
+108, &apos;108 Return-Checking NSF&apos;,
+109, &apos;109 Return-Bankruptcy&apos;,
+110, &apos;110 Return-Marital Problems&apos;,
+111, &apos;111 Return-Deceased&apos;,
+112, &apos;112 Return-Collection&apos;,
+113, &apos;113 Return-Collection (Skip)&apos;,
+114, &apos;114 Return-Collection (Legal Pursuit)&apos;,
+115, &apos;115 Return-Closed for Cause&apos;,
+116, &apos;116 Return-Closed per Cardholder&apos;,
+117, &apos;117 Return-Closed (Duplicate)&apos;,
+118, &apos;118 Return-Chargeoff&apos;,
+119, &apos;119 Return-Excessive PIN Retries&apos;,
+120, &apos;120 Return-Requested by Network&apos;,
+&apos;&apos;)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Status Reason</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>TERMFREQUENCY__c</fullName>
+        <externalId>false</externalId>
+        <label>Term Frequency</label>
+        <precision>5</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>TERMPERIOD__c</fullName>
+        <externalId>false</externalId>
+        <label>Term Period</label>
+        <precision>5</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>TYPE__c</fullName>
+        <externalId>false</externalId>
+        <label>Type</label>
+        <precision>5</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Trigger_Time_15__c</fullName>
+        <externalId>false</externalId>
+        <formula>Refresh_Time__c - 0.038</formula>
+        <label>Trigger Time 15</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>DateTime</type>
+    </fields>
+    <fields>
+        <fullName>TypeTranslate__c</fullName>
+        <externalId>false</externalId>
+        <label>Account Type / Share Type</label>
+        <length>45</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Unique_Account_Number__c</fullName>
+        <caseSensitive>false</caseSensitive>
+        <description>Unique/External key used to represent a Unique Account Number. It will always be a hidden field used to make sure all the Account Numbers are unique.</description>
+        <externalId>true</externalId>
+        <label>Unique Account Number</label>
+        <length>20</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>true</unique>
+    </fields>
+    <fields>
+        <fullName>VIN__c</fullName>
+        <externalId>false</externalId>
+        <label>VIN</label>
+        <length>20</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Vehicle_Title_UC12_Make__c</fullName>
+        <externalId>false</externalId>
+        <label>Vehicle Title UC12 Make</label>
+        <length>40</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Vehicle_Title_UC12_Model__c</fullName>
+        <externalId>false</externalId>
+        <label>Vehicle Title UC12 Model</label>
+        <length>40</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Vehicle_Title_UC12_VIN__c</fullName>
+        <externalId>false</externalId>
+        <label>Vehicle Title UC12 VIN</label>
+        <length>40</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Vehicle_Title_UC12_Year__c</fullName>
+        <externalId>false</externalId>
+        <label>Vehicle Title UC12 Year</label>
+        <length>40</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Vehicle_Title_UC14_VIN__c</fullName>
+        <externalId>false</externalId>
+        <label>Vehicle Title UC14 VIN</label>
+        <length>40</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Vehicle_Title_UC14_YrMkMdl__c</fullName>
+        <externalId>false</externalId>
+        <label>Vehicle Title UC14 YrMkMdl</label>
+        <length>40</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Vehicle_Title_UC16_VIN__c</fullName>
+        <externalId>false</externalId>
+        <label>Vehicle Title UC16 VIN</label>
+        <length>40</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Vehicle_Title_UC16_YrMkMdl__c</fullName>
+        <externalId>false</externalId>
+        <label>Vehicle Title UC16 YrMkMdl</label>
+        <length>40</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Vehicle_Title_UC18_VIN__c</fullName>
+        <externalId>false</externalId>
+        <label>Vehicle Title UC18 VIN</label>
+        <length>40</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Vehicle_Title_UC18_YrMkMdl__c</fullName>
+        <externalId>false</externalId>
+        <label>Vehicle Title UC18 YrMkMdl</label>
+        <length>40</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Vehicle_Title_UC4_Make__c</fullName>
+        <externalId>false</externalId>
+        <label>Vehicle Title UC4 Make</label>
+        <length>40</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Vehicle_Title_UC4_Model__c</fullName>
+        <externalId>false</externalId>
+        <label>Vehicle Title UC4 Model</label>
+        <length>40</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Vehicle_Title_UC4_VIN__c</fullName>
+        <externalId>false</externalId>
+        <label>Vehicle Title UC4 VIN</label>
+        <length>40</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Vehicle_Title_UC4_Year__c</fullName>
+        <externalId>false</externalId>
+        <label>Vehicle Title UC4 Year</label>
+        <length>40</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Vehicle_Title_UC8_Make__c</fullName>
+        <externalId>false</externalId>
+        <label>Vehicle Title UC8 Make</label>
+        <length>40</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Vehicle_Title_UC8_Model__c</fullName>
+        <externalId>false</externalId>
+        <label>Vehicle Title UC8 Model</label>
+        <length>40</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Vehicle_Title_UC8_VIN__c</fullName>
+        <externalId>false</externalId>
+        <label>Vehicle Title UC8 VIN</label>
+        <length>40</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Vehicle_Title_UC8_Year__c</fullName>
+        <externalId>false</externalId>
+        <label>Vehicle Title UC8 Year</label>
+        <length>40</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>W8_BEN_EXPIRATION_DATE__c</fullName>
+        <externalId>false</externalId>
+        <label>W8-BEN Expiration Date</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>W8_BEN_ON_FILE__c</fullName>
+        <externalId>false</externalId>
+        <label>W8-BEN On File</label>
+        <length>40</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>WARNING_01_CODE__c</fullName>
+        <externalId>false</externalId>
+        <label>Warning 01 Code</label>
+        <length>45</length>
+        <required>false</required>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>WARNING_02_CODE__c</fullName>
+        <externalId>false</externalId>
+        <label>Warning 02 Code</label>
+        <length>45</length>
+        <required>false</required>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>WARNING_03_CODE__c</fullName>
+        <externalId>false</externalId>
+        <label>Warning 03 Code</label>
+        <length>45</length>
+        <required>false</required>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>WARNING_04_CODE__c</fullName>
+        <externalId>false</externalId>
+        <label>Warning 04 Code</label>
+        <length>45</length>
+        <required>false</required>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>WARNING_05_CODE__c</fullName>
+        <externalId>false</externalId>
+        <label>Warning 05 Code</label>
+        <length>45</length>
+        <required>false</required>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>WARNING_06_CODE__c</fullName>
+        <externalId>false</externalId>
+        <label>Warning 06 Code</label>
+        <length>45</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>WARNING_07_CODE__c</fullName>
+        <externalId>false</externalId>
+        <label>Warning 07 Code</label>
+        <length>45</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>WARNING_08_CODE__c</fullName>
+        <externalId>false</externalId>
+        <label>Warning 08 Code</label>
+        <length>45</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>WARNING_09_CODE__c</fullName>
+        <externalId>false</externalId>
+        <label>Warning 09 Code</label>
+        <length>45</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>WARNING_10_CODE__c</fullName>
+        <externalId>false</externalId>
+        <label>Warning 10 Code</label>
+        <length>45</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>WARNING_11_CODE__c</fullName>
+        <externalId>false</externalId>
+        <label>Warning 11 Code</label>
+        <length>45</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>WARNING_12_CODE__c</fullName>
+        <externalId>false</externalId>
+        <label>Warning 12 Code</label>
+        <length>45</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>WARNING_13_CODE__c</fullName>
+        <externalId>false</externalId>
+        <label>Warning 13 Code</label>
+        <length>45</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>WARNING_14_CODE__c</fullName>
+        <externalId>false</externalId>
+        <label>Warning 14 Code</label>
+        <length>45</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>WARNING_15_CODE__c</fullName>
+        <externalId>false</externalId>
+        <label>Warning 15 Code</label>
+        <length>45</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>WARNING_16_CODE__c</fullName>
+        <externalId>false</externalId>
+        <label>Warning 16 Code</label>
+        <length>45</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>WARNING_17_CODE__c</fullName>
+        <externalId>false</externalId>
+        <label>Warning 17 Code</label>
+        <length>45</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>WARNING_18_CODE__c</fullName>
+        <externalId>false</externalId>
+        <label>Warning 18 Code</label>
+        <length>45</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>WARNING_19_CODE__c</fullName>
+        <externalId>false</externalId>
+        <label>Warning 19 Code</label>
+        <length>45</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>WARNING_20_CODE__c</fullName>
+        <externalId>false</externalId>
+        <label>Warning 20 Code</label>
+        <length>45</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>temp__c</fullName>
+        <externalId>false</externalId>
+        <label>temp</label>
+        <precision>1</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <label>Member Account</label>
+    <listViews>
+        <fullName>ATM_Debit_Cards</fullName>
+        <columns>NAME</columns>
+        <columns>Card_Name__c</columns>
+        <columns>Emp_Card_Number__c</columns>
+        <columns>TypeTranslate__c</columns>
+        <columns>AuthLimit__c</columns>
+        <columns>Brand__c</columns>
+        <columns>Expiration_Date__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>RecType__c</field>
+            <operation>equals</operation>
+            <value>CARD</value>
+        </filters>
+        <label>CU ATM/Debit Cards</label>
+    </listViews>
+    <listViews>
+        <fullName>All_Account_Records</fullName>
+        <columns>NAME</columns>
+        <columns>TypeTranslate__c</columns>
+        <columns>RecType__c</columns>
+        <columns>RecTypeID__c</columns>
+        <columns>Emp_Card_Number__c</columns>
+        <columns>Brand__c</columns>
+        <columns>Current_Branch__c</columns>
+        <columns>CREATED_DATE</columns>
+        <filterScope>Everything</filterScope>
+        <label>All Account Records</label>
+    </listViews>
+    <listViews>
+        <fullName>All_Mortgage_Records</fullName>
+        <columns>NAME</columns>
+        <columns>Brand__c</columns>
+        <columns>PROPERTY_ADDRESS__c</columns>
+        <columns>Property_City__c</columns>
+        <columns>Property_State__c</columns>
+        <columns>Property_Zip__c</columns>
+        <columns>Loan_Number__c</columns>
+        <columns>OPEN_DATE__c</columns>
+        <columns>Maturity_Date__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>RecType__c</field>
+            <operation>equals</operation>
+            <value>MORT</value>
+        </filters>
+        <label>CU Mortgage Records</label>
+    </listViews>
+    <listViews>
+        <fullName>All_Trust_Records</fullName>
+        <columns>NAME</columns>
+        <columns>TypeTranslate__c</columns>
+        <columns>RecType__c</columns>
+        <columns>Balance__c</columns>
+        <columns>Brand__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>TypeTranslate__c</field>
+            <operation>contains</operation>
+            <value>Trust</value>
+        </filters>
+        <label>CU Trust Records</label>
+    </listViews>
+    <listViews>
+        <fullName>CU_Membership_Accounts</fullName>
+        <columns>NAME</columns>
+        <columns>Brand__c</columns>
+        <columns>RECORDTYPE</columns>
+        <columns>TypeTranslate__c</columns>
+        <columns>OPEN_DATE__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>RecType__c</field>
+            <operation>equals</operation>
+            <value>ACCT</value>
+        </filters>
+        <label>CU Membership Accounts</label>
+    </listViews>
+    <listViews>
+        <fullName>CU_Shares</fullName>
+        <columns>NAME</columns>
+        <columns>Brand__c</columns>
+        <columns>TypeTranslate__c</columns>
+        <columns>OPEN_DATE__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>RecType__c</field>
+            <operation>equals</operation>
+            <value>SHAR</value>
+        </filters>
+        <label>CU Shares</label>
+    </listViews>
+    <listViews>
+        <fullName>CU_Student_Loans</fullName>
+        <columns>NAME</columns>
+        <columns>TypeTranslate__c</columns>
+        <columns>OPEN_DATE__c</columns>
+        <columns>Last_Payment_Date__c</columns>
+        <columns>Maturity_Date__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>RecType__c</field>
+            <operation>equals</operation>
+            <value>STDL</value>
+        </filters>
+        <label>CU Student Loans</label>
+    </listViews>
+    <listViews>
+        <fullName>Secure_Email</fullName>
+        <columns>NAME</columns>
+        <columns>TypeTranslate__c</columns>
+        <columns>Brand__c</columns>
+        <columns>RecType__c</columns>
+        <columns>SecureEmailAddress__c</columns>
+        <columns>LAST_UPDATE</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>SecureEmailAddress__c</field>
+            <operation>notEqual</operation>
+        </filters>
+        <label>Secure Email</label>
+    </listViews>
+    <nameField>
+        <label>Account Number</label>
+        <trackHistory>false</trackHistory>
+        <type>Text</type>
+    </nameField>
+    <pluralLabel>Member Account</pluralLabel>
+    <recordTypeTrackHistory>false</recordTypeTrackHistory>
+    <recordTypes>
+        <fullName>Card</fullName>
+        <active>true</active>
+        <description>This record type will be used to store all the CARD Information</description>
+        <label>Card</label>
+        <picklistValues>
+            <picklist>Address_From__c</picklist>
+            <values>
+                <fullName>Member</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Primary Account</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+    </recordTypes>
+    <recordTypes>
+        <fullName>Loan</fullName>
+        <active>true</active>
+        <description>This record type will be used to store all the LOAN Information</description>
+        <label>Loan</label>
+        <picklistValues>
+            <picklist>Address_From__c</picklist>
+            <values>
+                <fullName>Member</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Primary Account</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+    </recordTypes>
+    <recordTypes>
+        <fullName>Membership</fullName>
+        <active>true</active>
+        <description>This record type will be used to store all the Membership Accounts</description>
+        <label>Membership</label>
+        <picklistValues>
+            <picklist>Address_From__c</picklist>
+            <values>
+                <fullName>Member</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Primary Account</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+    </recordTypes>
+    <recordTypes>
+        <fullName>Mortgage</fullName>
+        <active>true</active>
+        <description>This record type will be used to store all the Mortgage Information</description>
+        <label>Mortgage</label>
+        <picklistValues>
+            <picklist>Address_From__c</picklist>
+            <values>
+                <fullName>Member</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Primary Account</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+    </recordTypes>
+    <recordTypes>
+        <fullName>Share</fullName>
+        <active>true</active>
+        <description>This record type will be used to store all the SHARE Information</description>
+        <label>Share</label>
+        <picklistValues>
+            <picklist>Address_From__c</picklist>
+            <values>
+                <fullName>Member</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Primary Account</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+    </recordTypes>
+    <recordTypes>
+        <fullName>Student_Loan</fullName>
+        <active>true</active>
+        <description>This record type will be used to store all the Student Loan Information</description>
+        <label>Student Loan</label>
+        <picklistValues>
+            <picklist>Address_From__c</picklist>
+            <values>
+                <fullName>Member</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Primary Account</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+    </recordTypes>
+    <searchLayouts>
+        <customTabListAdditionalFields>Balance__c</customTabListAdditionalFields>
+        <customTabListAdditionalFields>Brand__c</customTabListAdditionalFields>
+        <customTabListAdditionalFields>TypeTranslate__c</customTabListAdditionalFields>
+        <customTabListAdditionalFields>OPEN_DATE__c</customTabListAdditionalFields>
+        <lookupDialogsAdditionalFields>RecType__c</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>OPEN_DATE__c</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>TypeTranslate__c</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>TYPE__c</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>Expiration_Date__c</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>Description__c</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>FrozenTranslated__c</lookupDialogsAdditionalFields>
+        <searchFilterFields>NAME</searchFilterFields>
+        <searchFilterFields>AccountID__c</searchFilterFields>
+        <searchFilterFields>RecType__c</searchFilterFields>
+        <searchFilterFields>TypeTranslate__c</searchFilterFields>
+        <searchFilterFields>Description__c</searchFilterFields>
+        <searchFilterFields>OPEN_DATE__c</searchFilterFields>
+        <searchFilterFields>Balance__c</searchFilterFields>
+        <searchFilterFields>RECORDTYPE</searchFilterFields>
+        <searchFilterFields>Brand__c</searchFilterFields>
+        <searchResultsAdditionalFields>TypeTranslate__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>ID1__c</searchResultsAdditionalFields>
+    </searchLayouts>
+    <sharingModel>ReadWrite</sharingModel>
+    <webLinks>
+        <fullName>Create_Case</fullName>
+        <availability>online</availability>
+        <displayType>button</displayType>
+        <linkType>javascript</linkType>
+        <masterLabel>Create Case</masterLabel>
+        <openType>onClickJavaScript</openType>
+        <protected>false</protected>
+        <url>window.open(&apos;/apex/SetRecordTypeAccountDetails?acctId={!Account_Details__c.Id}&amp;firstPage=true&apos;, &apos;SetRecordTypeAccountDetails&apos;)</url>
+    </webLinks>
+    <webLinks>
+        <fullName>Create_CaseSubAccs</fullName>
+        <availability>online</availability>
+        <displayType>button</displayType>
+        <linkType>javascript</linkType>
+        <masterLabel>Create Case</masterLabel>
+        <openType>onClickJavaScript</openType>
+        <protected>false</protected>
+        <url>window.open(&apos;/apex/SetRecordTypeSubAccountDetails?acctId={!Account_Details__c.Id}&amp;firstPage=true&apos;, &apos;SetRecordTypeSubAccountDetails&apos;)</url>
+    </webLinks>
+    <webLinks>
+        <fullName>New_Case</fullName>
+        <availability>online</availability>
+        <displayType>button</displayType>
+        <encodingKey>UTF-8</encodingKey>
+        <hasMenubar>false</hasMenubar>
+        <hasScrollbars>true</hasScrollbars>
+        <hasToolbar>false</hasToolbar>
+        <height>600</height>
+        <isResizable>true</isResizable>
+        <linkType>url</linkType>
+        <masterLabel>New Case(With Person)</masterLabel>
+        <openType>newWindow</openType>
+        <position>none</position>
+        <protected>false</protected>
+        <showsLocation>false</showsLocation>
+        <showsStatus>false</showsStatus>
+        <url>/apex/PersonLookUp?Id={!Account_Details__c.Id}</url>
+    </webLinks>
+    <webLinks>
+        <fullName>OnBase_Request</fullName>
+        <availability>online</availability>
+        <displayType>button</displayType>
+        <linkType>javascript</linkType>
+        <masterLabel>Documents</masterLabel>
+        <openType>onClickJavaScript</openType>
+        <protected>false</protected>
+        <url>window.open(&apos;/apex/SendRequestToOnBase?accNum={!Account_Details__c.Name}&apos;, &apos;SendRequestToOnBase&apos;)</url>
+    </webLinks>
+    <webLinks>
+        <fullName>RTS_Request</fullName>
+        <availability>online</availability>
+        <displayType>button</displayType>
+        <encodingKey>UTF-8</encodingKey>
+        <height>600</height>
+        <linkType>url</linkType>
+        <masterLabel>Refresh All</masterLabel>
+        <openType>noSidebar</openType>
+        <protected>false</protected>
+        <url>/apex/SendRequestToRTS?accNum={!Account_Details__c.Name}</url>
+    </webLinks>
+    <webLinks>
+        <fullName>Refresh_All_Accounts</fullName>
+        <availability>online</availability>
+        <displayType>button</displayType>
+        <encodingKey>UTF-8</encodingKey>
+        <height>600</height>
+        <linkType>url</linkType>
+        <masterLabel>Refresh All</masterLabel>
+        <openType>noSidebar</openType>
+        <protected>false</protected>
+        <url>/apex/SendRequestToRTSinSubAccount?accNum={!Account_Details__c.Id}</url>
+    </webLinks>
+    <webLinks>
+        <fullName>Sub_RTS_Request</fullName>
+        <availability>online</availability>
+        <displayType>button</displayType>
+        <encodingKey>UTF-8</encodingKey>
+        <height>600</height>
+        <linkType>url</linkType>
+        <masterLabel>Refresh</masterLabel>
+        <openType>noSidebar</openType>
+        <protected>false</protected>
+        <url>/apex/SendRequestToRTSSubAccs?accNum={!Account_Details__c.Combined_Account_ID__c}</url>
+    </webLinks>
+</CustomObject>

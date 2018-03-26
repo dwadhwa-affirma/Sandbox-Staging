@@ -1,0 +1,383 @@
+<apex:page standardController="Account" extensions="UsersAccountDetailsController"  >
+
+    <apex:form >      
+        <apex:includescript value="//code.jquery.com/jquery-1.11.1.min.js" /> 
+        <apex:includescript value="//cdn.datatables.net/1.10.7/js/jquery.dataTables.min.js" />
+        <apex:stylesheet value="//cdn.datatables.net/1.10.7/css/jquery.dataTables.min.css" />
+         
+        <script type="text/javascript" >
+
+            j$ = jQuery.noConflict();
+            j$(document).ready( function () {
+                j$("td:empty").html("&nbsp;");
+                theTable1 = j$('[id$="CaseTable"]').DataTable({
+                    "order": [[ 0, "desc" ]]
+                });
+                j$("td:empty").html("&nbsp;");
+                theTable2 = j$('[id$="ContactTable"]').DataTable({
+                    order: [[ 0, 'asc' ], [ 1, 'asc' ]]
+                });
+                j$("td:empty").html("&nbsp;");
+                theTable3 = j$('[id$="WarningCodesTable"]').DataTable({
+                    order: [[ 0, 'asc' ], [ 3, 'asc']]
+                });
+                j$("td:empty").html("&nbsp;");
+                theTable4 = j$('[id$="accTable"]').DataTable({
+                    order: [[ 0, 'asc' ], [ 1, 'asc' ]]
+                });
+                j$("td:empty").html("&nbsp;");
+                theTable5 = j$('[id$="CaseTasks"]').DataTable({
+                    order: [[ 0, 'desc' ]]
+                });
+                j$("td:empty").html("&nbsp;");
+                theTable6 = j$('[id$="CaseComments"]').DataTable({
+                    order: [[ 0, 'desc' ]]
+                });
+                j$("td:empty").html("&nbsp;");
+                theTable7 = j$('[id$="cardTable"]').DataTable({
+                    order: [[ 0, 'asc' ]]
+                });
+                j$("td:empty").html("&nbsp;");
+                theTable8 = j$('[id$="ClosedCasesTable"]').DataTable({
+                    order: [[ 0, 'asc' ]]
+                });
+                j$("td:empty").html("&nbsp;");
+            });
+            
+            function openCreditCardWindow(url)
+            {
+            	var w = 800;
+            	var h = 400;
+            	var dualScreenLeft = window.screenLeft != undefined ? window.screenLeft : screen.left;
+			    var dualScreenTop = window.screenTop != undefined ? window.screenTop : screen.top;
+			
+			    var width = window.innerWidth ? window.innerWidth : document.documentElement.clientWidth ? document.documentElement.clientWidth : screen.width;
+			    var height = window.innerHeight ? window.innerHeight : document.documentElement.clientHeight ? document.documentElement.clientHeight : screen.height;
+			
+			    var left = ((width / 2) - (w / 2)) + dualScreenLeft;
+			    var top = ((height / 2) - (h / 2)) + dualScreenTop;
+			    
+			    var newWindow = window.open(url, "CreditCardWindow", 'scrollbars=yes, width=' + w + ', height=' + h + ', top=' + top + ', left=' + left);
+			    
+            }
+        </script> 
+        <style>
+            .activeTab {background-color: #236FBD; color:white; background-image:none}
+            .inactiveTab { background-color: lightgrey; color:black; background-image:none}
+            .caseTab {background-color:#F0E68C; color:black; background-image:none}
+            .taskTab {background-color:#F0E68C; color:black; background-image:none}
+        </style>
+
+        
+        <apex:tabPanel switchType="client" tabClass="activeTab" inactiveTabClass="inactiveTab" >
+        
+            <apex:tab label="Account Details" reRender="ad" labelWidth="120" rendered="{!accList.size > 0}">
+            <apex:pageBlock >
+               
+            <apex:pageBlockSection columns="1" id="ad">
+               <apex:pageBlockTable value="{!accList}" var="var" id="accTable">
+                    <apex:column headerValue="Acct #" style="background-color:{!IF(var.Close_Date__c!=null,"gray",'')}">
+                        <apex:outputLink value="/{!var.Id}" target="_parent">{!var.Name}</apex:outputLink>
+                    </apex:column>
+                    <apex:column headerValue="Rec Type" value="{!var.RecType__c}" style="background-color:{!IF(var.Close_Date__c!=null,"gray",'')}"/>
+                    <apex:column headerValue="Brand" value="{!var.Brand__c}" style="background-color:{!IF(var.Close_Date__c!=null,"gray",'')}"/>
+                  <!--  <apex:column headerValue="Combined AccountId" value="{!var.Combined_Account_ID__c}"/> -->                    
+                    <apex:column headerValue="TypeTranslate" value="{!var.TypeTranslate__c}" style="background-color:{!IF(var.Close_Date__c!=null,"gray",'')}"/>
+                    <apex:column headerValue="ID" value="{!var.ID1__c}" style="background-color:{!IF(var.Close_Date__c!=null,"gray",'')}"/>
+                    <apex:column headerValue="Loan Number" value="{!var.Loan_Number__c}" style="background-color:{!IF(var.Close_Date__c!=null,"gray",'')}"/>
+                  <!--  <apex:column headerValue="Balance" value="{!var.Balance__c}" style="background-color:{!IF(var.Balance__c != ABS(var.Balance__c),"red",IF(var.Close_Date__c!=null,"gray",''))}"/> -->
+                 <!-- <apex:column headerValue="Close Date" >
+                   {!var.Close_Date__c} </apex:column> -->
+                   <apex:column headerValue="Available Balance" value="{!var.Emp_Available_Balance__c}" style="background-color:{!IF(var.Available_Balance__c != ABS(var.Available_Balance__c),"#ff1a1a",IF(var.Close_Date__c != NULL,"gray",''))}"/>
+                   <apex:column headerValue="Balance" value="{!var.Emp_Balance__c}" style="background-color:{!IF(var.Balance__c != ABS(var.Balance__c),"#ff1a1a",IF(var.Close_Date__c != NULL,"gray",''))}"/>
+                   <apex:column headerValue="Open Date" value="{!var.OPEN_DATE__c}" style="background-color:{!IF(var.Close_Date__c!=null,"gray",'')}"/>
+                   <apex:column headerValue="Close Date" value="{!var.Close_Date__c}" style="background-color:{!IF(var.Close_Date__c!=null,"gray",'')}"/>
+                </apex:pageBlockTable>
+            </apex:pageBlockSection>
+            </apex:pageBlock>
+            </apex:tab>
+            
+        
+        <apex:tab label="Related Persons" reRender="ud" labelWidth="120" rendered="{!ContactList.size > 0}">
+        <apex:pageBlock >
+        <apex:pageBlockSection columns="1" id="ud">
+          <!--   <apex:pageBlockSection title="User Details" columns="1">  -->
+                 <apex:pageBlockTable value="{!ContactList}" var="var" id="ContactTable" >
+                 <!-- <apex:column headerValue="Contact Id" value="{!var.Id}"/> -->
+                    <apex:column headerValue="Member">
+                         <apex:outputLink value="/{!var.PersonID__c}" target="_parent">{!var.PersonID__r.Name}</apex:outputLink>
+                    </apex:column>
+                 <!-- <apex:column headerValue="Acct #" value="{!var.Account_Number__c}"/ >  -->
+                    <apex:column headerValue="Acct #" >
+                         <apex:outputLink value="/{!var.Account_Number__c}" target="_parent">{!var.Account_Number__r.Name}</apex:outputLink>
+                    </apex:column>
+                    <apex:column headerValue="Name Type/ Relationship" value="{!var.TypeTranslate__c}"/>
+                    <apex:column headerValue="Brand" value="{!var.Account_Number__r.Brand__c}"/>
+                    <apex:column headerValue="Type Translate" value="{!var.Account_Number__r.TypeTranslate__c}"/>                    
+                    <apex:column headerValue="Rec Type" value="{!var.Account_Type__c}"/>
+                 <!--   <apex:column headerValue="SSN/TIN" value="{!var.PersonID__r.SSN_Last_4__pc}"/>
+               <apex:column headerValue="Relationship" value="{!var.Relationship__c}"/> 
+               <apex:column headerValue="Birth Date" value="{!var.PersonID__r.BIRTH_DATE__pc}"/>  
+                    <apex:column headerValue="Date Opened" value="{!var.Open_Date__c}"/> -->
+                    </apex:pageBlockTable>
+            </apex:pageBlockSection>
+            </apex:pageBlock>
+            </apex:tab>
+            
+            
+            <apex:tab label="Card Details" reRender="crd" labelWidth="120"  rendered="{!cardList.size > 0}">
+            <apex:pageBlock >                
+            <apex:pageBlockSection columns="1" id="crd">
+               <apex:pageBlockTable value="{!cardList}" var="var" id="cardTable">
+                    <apex:column headerValue="Acct #" style="background-color:{!IF(var.Expiration_Date__c!=null && var.Expiration_Date__c <= today(),"gray",'')}">
+                        <apex:outputLink value="/{!var.Id}" target="_parent">{!var.Name}</apex:outputLink>
+                    </apex:column>
+                  <!--  <apex:column headerValue="Rec Type" value="{!var.RecType__c}" style="background-color:{!IF(var.Expiration_Date__c!=null && var.Expiration_Date__c <= today(),"gray",'')}"/> -->
+                    <apex:column headerValue="Brand" value="{!var.Brand__c}" style="background-color:{!IF(var.Expiration_Date__c!=null && var.Expiration_Date__c <= today(),"gray",'')}"/>
+                  <!--  <apex:column headerValue="Combined AccountId" value="{!var.Combined_Account_ID__c}"/> -->                    
+                    <apex:column headerValue="Description" value="{!var.TypeTranslate__c}" style="background-color:{!IF(var.Expiration_Date__c!=null && var.Expiration_Date__c <= today(),"gray",'')}"/>
+                   <!-- <apex:column headerValue="Loan Number" value="{!var.Loan_Number__c}" style="background-color:{!IF(var.Expiration_Date__c!=null && var.Expiration_Date__c == today(),"gray",'')}"/>-->
+                   <apex:column headerValue="Card Number Last 4 digits" value="{!var.Card_Number_Last_4_Digits__c}" style="background-color:{!IF(var.Expiration_Date__c!=null && var.Expiration_Date__c <= today(),"gray",'')}"/>
+                   <apex:column headerValue="Card Name" value="{!var.Card_Name__c}" style="background-color:{!IF(var.Expiration_Date__c!=null && var.Expiration_Date__c <= today(),"gray",'')}"/>
+                   <!--  <apex:column headerValue="Balance" value="{!var.Balance__c}" style="background-color:{!IF(var.Balance__c != ABS(var.Balance__c),"red",IF(var.Close_Date__c!=null,"gray",''))}"/> -->
+                 <!-- <apex:column headerValue="Close Date" >
+                   {!var.Close_Date__c} </apex:column> -->
+                   <apex:column headerValue="Issue Date" value="{!var.Issue_Date__c}" style="background-color:{!IF(var.Expiration_Date__c!=null && var.Expiration_Date__c <= today(),"gray",'')}"/>
+                   <apex:column headerValue="Expiration Date" value="{!var.Expiration_Date__c}" style="background-color:{!IF(var.Expiration_Date__c != null && var.Expiration_Date__c <= today(),"gray",'')}"/>
+                    <apex:column headerValue="View" style="background-color:{!IF(var.Expiration_Date__c!=null && var.Expiration_Date__c <= today(),"gray",'')}">
+                    <apex:outputPanel rendered="{!var.Onboarded__c}">
+                     <a href='#' onclick='openCreditCardWindow("/apex/MasterCardAlerts?card={!var.Card_Number_Last_4_Digits__c}&account={!var.Name}")' >MasterCard Alerts</a>
+                    </apex:outputPanel>    
+                    </apex:column>
+                </apex:pageBlockTable>
+            </apex:pageBlockSection>
+            </apex:pageBlock>
+            </apex:tab>
+
+           
+            <apex:tab label="Active Cases ({!caseList.size})" rendered="{! caseList.size >= 1}" reRender="cd" labelWidth="120" styleClass="caseTab" > 
+            <apex:pageBlock >
+            <apex:pageBlockSection columns="1" id="cd" >
+                <apex:pageBlockTable value="{!caseList}" var="var" id="CaseTable" >
+                    <apex:column headerValue="Case Number">
+                    <apex:outputLink value="/{!var.Id}" target="_parent">{!var.casenumber}</apex:outputLink>
+                    </apex:column>
+                    <apex:column headerValue="Acct #">
+                    <apex:outputLink value="/{!var.Account_Number__c}" target="_parent">{!var.Account_Number__r.Name}</apex:outputLink>
+                    </apex:column>
+                    <apex:column headerValue="Member Name">
+                    <apex:outputLink value="/{!var.Account}" target="_parent">{!var.Account.Name}</apex:outputLink>
+                    </apex:column>
+                    <apex:column headerValue="Case Category" value="{!var.Category__c}"/> 
+                    <apex:column headerValue="Case Subject" value="{!var.Subject}"/> 
+                     <apex:column headerValue="Case Origin" value="{!var.Origin}"/>
+                    <apex:column headerValue="Open Date" value="{!var.CreatedDate}"/>
+                    <apex:column headerValue="Brand" value="{!var.Account_Number__r.Brand__c}"/>
+                    <apex:column headerValue="Case Status" value="{!var.Status}"/>
+                    <apex:column headerValue="Case Owner">
+                    <apex:outputText value="{!var.Owner.Name}"/>
+                    </apex:column>
+                   
+              </apex:pageBlockTable>              
+            </apex:pageBlockSection>
+            </apex:pageBlock>
+            </apex:tab>
+            
+            <apex:tab label="Closed Cases" reRender="clc" labelWidth="120" rendered="{!caseList1.size >=1 }" >
+            <apex:pageBlock >
+            <apex:pageBlockSection columns="1" id="clc" >
+           <!--   <apex:pageBlockSection title="Case Details" columns="1">  -->
+                <apex:pageBlockTable value="{!caseList1}" var="var" id="ClosedCasesTable" >
+                  <!--   <apex:column headerValue="CaseIDs" value="{!var.Id}"/>    -->
+                    <apex:column headerValue="Case Number">
+                    <apex:outputLink value="/{!var.Id}" target="_parent">{!var.casenumber}</apex:outputLink>
+                    </apex:column>
+                    <apex:column headerValue="Acct #">
+                    <apex:outputLink value="/{!var.Account_Number__c}" target="_parent">{!var.Account_Number__r.Name}</apex:outputLink>
+                    </apex:column>
+                    <apex:column headerValue="Member Name">
+                    <apex:outputLink value="/{!var.Account}" target="_parent">{!var.Account.Name}</apex:outputLink>
+                    </apex:column>
+                    <apex:column headerValue="Case Category" value="{!var.Category__c}"/>
+                    <apex:column headerValue="Case Subject" value="{!var.Subject}"/>  
+                    <apex:column headerValue="Case Origin" value="{!var.Origin}"/>
+                    <apex:column headerValue="Open Date" value="{!var.CreatedDate}"/>
+                    <apex:column headerValue="Brand" value="{!var.Account_Number__r.Brand__c}"/>
+                     <apex:column headerValue="Case Status" value="{!var.Status}"/>
+                    <apex:column headerValue="Case Owner">
+                    <apex:outputText value="{!var.Owner.Name}"/>
+                    </apex:column>
+                    <apex:column headerValue="Close Date" value="{!var.ClosedDate}"/>
+                </apex:pageBlockTable>
+            </apex:pageBlockSection>
+            </apex:pageBlock>
+            </apex:tab>
+
+            
+            <apex:tab label="Active Tasks ({!tskList.size})"  rendered="{!TaskCommentsShow}" reRender="ctasks" labelWidth="120" styleClass="taskTab">
+            <apex:pageBlock >
+            <apex:pageBlockSection columns="1" id="ctasks" >
+                <apex:pageBlockTable value="{!tsks}" var="var" id="CaseTasks" >
+                    <apex:column headerValue="Case Number" style="vertical-align:top; text-align:center;">                     
+                    <apex:outputLink value="/{!cnum_by_id1[var]}" target="_parent">{!var}</apex:outputLink> 
+                    </apex:column>
+                    <apex:column headerValue="Acct #" value="{!cnum_by_id5[var]}" style="vertical-align:top; text-align:center;"/>
+                    <apex:column headerValue="Member Name" value="{!cnum_by_id6[var]}" style="vertical-align:top; text-align:center;"/>
+                    <apex:column headerValue="Case Category" style="vertical-align:top; text-align:center;">
+                    <apex:outputText value="{!cnum_by_id2[var]}" /> 
+                    </apex:column>
+                    <apex:column headerValue="Case Status" value="{!cnum_by_id3[var]}" style="vertical-align:top; text-align:center;"/>
+                    <apex:column headerValue="Tasks" style="vertical-align:top; text-align:left;"> 
+                    <apex:repeat value="{!tsks[var]}" var="tasks">
+                       <apex:pageBlockSectionItem >
+                           <font color="#236FBD">Status:</font> {!tasks.Status} <br/> <font color="#236FBD">Subject:</font> {!tasks.Subject} <br/> <font color="#236FBD">Comments:</font> {!tasks.Description}
+                           <br/>
+                           <br/>
+                       </apex:pageBlockSectionItem>
+                    </apex:repeat>
+                    </apex:column>                    
+                </apex:pageBlockTable>
+            </apex:pageBlockSection>
+            </apex:pageBlock>
+            </apex:tab>
+                        	
+            
+            <apex:tab label="Case Comments" reRender="ccom" labelWidth="120"  rendered="{!CaseComentComments}">
+            <apex:pageBlock >
+            <apex:pageBlockSection columns="1" id="ccom" >
+          <!--  <apex:pageBlockSection title="Case Comments" columns="1">  -->
+                <apex:pageBlockTable value="{!mccomm}" var="var" id="CaseComments" >
+                    <apex:column headerValue="Case Number" style="vertical-align:top; text-align:center;"> 
+                        <apex:outputLink value="/{!cnum_by_id1[var]}" target="_parent">{!var}</apex:outputLink> 
+                    </apex:column>
+                    <apex:column headerValue="Acct #" value="{!cnum_by_id5[var]}" style="vertical-align:top; text-align:center;"/>
+                    <apex:column headerValue="Member Name" value="{!cnum_by_id6[var]}" style="vertical-align:top; text-align:center;"/>
+                    <apex:column headerValue="Case Category" style="vertical-align:top; text-align:center;">
+                      <apex:outputText value="{!cnum_by_id2[var]}" /> 
+                    </apex:column>
+                    <apex:column headerValue="Case Status" value="{!cnum_by_id3[var]}" style="vertical-align:top; text-align:center;"/>
+                  <!--  <apex:column headerValue="Brand" value="{!cnum_by_id4[var]}"/>  
+                    <apex:column headerValue="Subject" value="{!cnum_by_id7[var]}"/>  -->
+                    <apex:column headerValue="Case Comments" style="vertical-align:top; text-align:left;"> 
+                    <apex:repeat value="{!mccomm[var]}" var="comment">
+                        <apex:outputText value="{0,date,MM/dd/yyyy hh:mm a}">
+                                 <apex:param value="{!comment.CreatedDate-(7/24)}" /> 
+                        </apex:outputText>                       
+                        <br/>
+                        <apex:outputText value="{!comment.commentbody}" /> 
+                        <br/>
+                        <br/> 
+                    </apex:repeat>
+                    </apex:column>
+           <!-- <apex:column headerValue="Case Comments" value="{!mccomm[cnum]}"/>  -->
+                </apex:pageBlockTable>
+            </apex:pageBlockSection>
+        </apex:pageBlock>
+       </apex:tab>
+            
+            <apex:tab label="Warning/Comments" reRender="wc" labelWidth="120"  rendered="{! wsWrapperList.size >=1 }" >
+            <apex:pageBlock >
+            <apex:pageBlockSection columns="1" id="wc">
+              <!--  <apex:pageBlockTable value="{!contactList}" var="var" id="WarningCodesTable">
+                <apex:column headerValue="Member">
+                    <apex:outputLink value="/{!var.Id}" target="_parent">{!var.PersonID__r.FirstName + ' ' + var.PersonID__r.LastName}</apex:outputLink>
+                </apex:column>
+                <apex:column headerValue="Acct #" >
+                    <apex:outputLink value="/{!var.Account_Number__c}" target="_parent">{!var.Account_Number__r.Name}</apex:outputLink>
+                </apex:column>
+               
+                <apex:column headerValue="WARNING 01 CODE">
+                <apex:outputField value="{!var.Account_Number__r.WARNING_01_CODE__c}" rendered="{!var.Account_Number__r.WARNING_01_CODE__c != '0-NONE' && var.Account_Number__r.WARNING_01_CODE__c != null}"/>
+                </apex:column> 
+                <apex:column headerValue="WARNING 02 CODE" >
+                <apex:outputField value="{!var.Account_Number__r.WARNING_02_CODE__c}" rendered="{!var.Account_Number__r.WARNING_02_CODE__c != '0-NONE' && var.Account_Number__r.WARNING_02_CODE__c != null}"/>
+                </apex:column>       
+                <apex:column headerValue="WARNING 03 CODE">
+                <apex:outputField value="{!var.Account_Number__r.WARNING_03_CODE__c}" rendered="{!var.Account_Number__r.WARNING_03_CODE__c != '0-NONE' && var.Account_Number__r.WARNING_03_CODE__c != null}"/>
+                </apex:column> 
+                <apex:column headerValue="WARNING 04 CODE">
+                <apex:outputField value="{!var.Account_Number__r.WARNING_04_CODE__c}" rendered="{!var.Account_Number__r.WARNING_04_CODE__c != '0-NONE' && var.Account_Number__r.WARNING_04_CODE__c != null}"/>
+                </apex:column>
+                <apex:column headerValue="WARNING 05 CODE">
+                <apex:outputField value="{!var.Account_Number__r.WARNING_05_CODE__c}" rendered="{!var.Account_Number__r.WARNING_05_CODE__c != '0-NONE' && var.Account_Number__r.WARNING_05_CODE__c != null}"/>
+                </apex:column>
+                <apex:column headerValue="WARNING 06 CODE">
+                <apex:outputField value="{!var.Account_Number__r.WARNING_06_CODE__c}" rendered="{!var.Account_Number__r.WARNING_06_CODE__c != '0-NONE' && var.Account_Number__r.WARNING_06_CODE__c != null}"/>
+                </apex:column>
+                <apex:column headerValue="WARNING 07 CODE">
+                <apex:outputField value="{!var.Account_Number__r.WARNING_07_CODE__c}" rendered="{!var.Account_Number__r.WARNING_07_CODE__c != '0-NONE' && var.Account_Number__r.WARNING_07_CODE__c != null}"/>
+                </apex:column>
+                <apex:column headerValue="WARNING 08 CODE">
+                <apex:outputField value="{!var.Account_Number__r.WARNING_08_CODE__c}" rendered="{!var.Account_Number__r.WARNING_08_CODE__c != '0-NONE' && var.Account_Number__r.WARNING_08_CODE__c != null}"/>
+                </apex:column>
+                <apex:column headerValue="WARNING 09 CODE">
+                <apex:outputField value="{!var.Account_Number__r.WARNING_09_CODE__c}" rendered="{!var.Account_Number__r.WARNING_09_CODE__c != '0-NONE' && var.Account_Number__r.WARNING_09_CODE__c != null}"/>
+                </apex:column>
+                <apex:column headerValue="WARNING 10 CODE">
+                <apex:outputField value="{!var.Account_Number__r.WARNING_10_CODE__c}" rendered="{!var.Account_Number__r.WARNING_10_CODE__c != '0-NONE' && var.Account_Number__r.WARNING_10_CODE__c != null}"/>
+                </apex:column>
+                <apex:column headerValue="WARNING 11 CODE">
+                <apex:outputField value="{!var.Account_Number__r.WARNING_11_CODE__c}" rendered="{!var.Account_Number__r.WARNING_11_CODE__c != '0-NONE' && var.Account_Number__r.WARNING_11_CODE__c != null}"/>
+                </apex:column>
+                <apex:column headerValue="WARNING 12 CODE">
+                <apex:outputField value="{!var.Account_Number__r.WARNING_12_CODE__c}" rendered="{!var.Account_Number__r.WARNING_12_CODE__c != '0-NONE' && var.Account_Number__r.WARNING_12_CODE__c != null}"/>
+                </apex:column>
+                <apex:column headerValue="WARNING 13 CODE">
+                <apex:outputField value="{!var.Account_Number__r.WARNING_13_CODE__c}" rendered="{!var.Account_Number__r.WARNING_13_CODE__c != '0-NONE' && var.Account_Number__r.WARNING_13_CODE__c != null}"/>
+                </apex:column>
+                <apex:column headerValue="WARNING 14 CODE">
+                <apex:outputField value="{!var.Account_Number__r.WARNING_14_CODE__c}" rendered="{!var.Account_Number__r.WARNING_14_CODE__c != '0-NONE' && var.Account_Number__r.WARNING_14_CODE__c != null}"/>
+                </apex:column>
+                <apex:column headerValue="WARNING 15 CODE">
+                <apex:outputField value="{!var.Account_Number__r.WARNING_15_CODE__c}" rendered="{!var.Account_Number__r.WARNING_15_CODE__c != '0-NONE' && var.Account_Number__r.WARNING_15_CODE__c != null}"/>
+                </apex:column>
+                <apex:column headerValue="WARNING 16 CODE">
+                <apex:outputField value="{!var.Account_Number__r.WARNING_16_CODE__c}" rendered="{!var.Account_Number__r.WARNING_16_CODE__c != '0-NONE' && var.Account_Number__r.WARNING_16_CODE__c != null}"/>
+                </apex:column>
+                <apex:column headerValue="WARNING 17 CODE">
+                <apex:outputField value="{!var.Account_Number__r.WARNING_17_CODE__c}" rendered="{!var.Account_Number__r.WARNING_17_CODE__c != '0-NONE' && var.Account_Number__r.WARNING_17_CODE__c != null}"/>
+                </apex:column>
+                <apex:column headerValue="WARNING 18 CODE">
+                <apex:outputField value="{!var.Account_Number__r.WARNING_18_CODE__c}" rendered="{!var.Account_Number__r.WARNING_18_CODE__c != '0-NONE' && var.Account_Number__r.WARNING_18_CODE__c != null}"/>
+                </apex:column>
+                <apex:column headerValue="WARNING 19 CODE">
+                <apex:outputField value="{!var.Account_Number__r.WARNING_19_CODE__c}" rendered="{!var.Account_Number__r.WARNING_19_CODE__c != '0-NONE' && var.Account_Number__r.WARNING_19_CODE__c != null}"/>
+                </apex:column>
+                <apex:column headerValue="WARNING 20 CODE">
+                <apex:outputField value="{!var.Account_Number__r.WARNING_20_CODE__c}" rendered="{!var.Account_Number__r.WARNING_20_CODE__c != '0-NONE' && var.Account_Number__r.WARNING_20_CODE__c != null}"/>
+                </apex:column> 
+                </apex:pageBlockTable> -->
+                    <apex:pageBlockTable value="{!wsWrapperList}" var="var" id="WarningCodesTable">
+                        <apex:column headerValue="Acct #" style="background-color:{!IF(var.CloseDate!=null,"gray",'')}">
+                            <apex:outputLink value="/{!var.accId}" target="_parent">{!var.accNum}</apex:outputLink>
+                        </apex:column>                        
+                        <apex:column headerValue="TypeTranslate" style="background-color:{!IF(var.CloseDate!=null,"gray",'')}">
+                            <apex:outputText value="{!var.tpeTrans}"/>
+                        </apex:column>
+                        <apex:column headerValue="ID" style="background-color:{!IF(var.CloseDate!=null,"gray",'')}">
+                            <apex:outputText value="{!var.shareNo}"/>
+                        </apex:column>
+                        <apex:column headerValue="RecType" style="background-color:{!IF(var.CloseDate!=null,"gray",'')}">
+                            <apex:outputText value="{!var.recTpe}"/> 
+                        </apex:column>
+                        <apex:column headerValue="Warning/Comments" style="background-color:{!IF(var.CloseDate!=null,"gray",'')}">
+                        <font color="{!if(var.Descriptn=='Warning Code','red','blue')}">
+                            <apex:outputText value="{!var.WarningCode}"/>
+                        </font>  
+                        </apex:column>
+                        <apex:column headerValue="Type" style="background-color:{!IF(var.CloseDate!=null,"gray",'')}">                            
+                            <apex:outputText value="{!var.Descriptn}"/>                           
+                        </apex:column>
+                     <!--   <apex:column headerValue="Comments">
+                        <font color="{!if(var.WarningCode!=null,'blue','')}">
+                            <apex:outputText value="{!var.Commts}"/>
+                        </font>
+                        </apex:column> -->
+                    </apex:pageBlockTable> 
+                </apex:pageBlockSection>
+                </apex:pageBlock> 
+                </apex:tab>
+            
+           </apex:tabPanel>
+    </apex:form>
+</apex:page>

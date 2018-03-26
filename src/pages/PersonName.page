@@ -1,0 +1,13 @@
+<apex:page standardController="Account_Details__c" extensions="PersonNameController">
+    <apex:form >    
+          <apex:pageBlock > 
+           <apex:pageBlockTable value="{!paList}" var="var">
+            <!-- <apex:column headerValue="Account Name" value="{!var.Account_Number__c}"/> -->
+               <apex:column headerValue="Person Name"> 
+               <apex:outputLink value="/{!var.PersonID__c}" target="_parent">{!var.PersonID__r.Name}</apex:outputLink>
+               </apex:column>
+               <apex:column headerValue="Relationship" value="{!var.TypeTranslate__c}"/>
+               </apex:pageBlockTable>
+           </apex:pageBlock>               
+    </apex:form>
+</apex:page>

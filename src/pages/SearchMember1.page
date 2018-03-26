@@ -1,0 +1,236 @@
+<apex:page standardController="Case" extensions="SearchMemberController2">
+
+    <apex:form >
+       <!-- <style>
+            table#t01 {
+                border: 1px solid grey;
+                border-collapse: collapse;
+            }
+            table#t02 {
+                border: 1px solid grey;
+                border-collapse: collapse;
+            }
+        </style> -->
+       <!-- <apex:image url="{!imageURL}" width="40%" height="40%"/>  -->
+        <apex:pageMessages id="errors" />
+        <apex:pageBlock title="Advanced Search" >
+     <!--   <font color="blue">For Person Account:</font> Either<font color="MediumVioletRed"> First Name OR Last Name</font> AND <font color="MediumVioletRed">SSN Last 4 Digits are required</font><br/><br/>
+        <font color="blue">For Trust Accounts:</font> <font color="MediumVioletRed">Trust Name</font> AND <font color="MediumVioletRed">TIN Last 4 Digits are required</font><br/><br/>
+        <font color="blue">For Member No:</font><font color="MediumVioletRed"> Member Number# is required</font><br/><br/>  -->
+       <!-- <h>For Person Account: Either First Name OR Last Name OR SSN Last 4 Digits are required</h><br/><br/>
+        <h>For Trust Accounts: Trust Name OR TIN Last 4 Digits are required</h><br/><br/>
+        <h>For Member No: Member Number# is required</h><br/><br/> -->
+            <table width="100%" border="0">
+                <tr>  
+                    <td width="200" valign="top">
+                        <apex:pageBlock title="Parameters:" mode="edit" id="criteria">
+                            <table cellpadding="2" cellspacing="2" id="t01">
+                                <tr class="Person">
+                                    <td style="font-weight:bold;">First Name<br/>
+                                        <apex:inputText value="{!firstnameQuery}" style="width:150px;" styleClass="fname" required="false" label="First Name"/>
+                                    </td>
+                                </tr>
+                                <tr class="Person">
+                                    <td style="font-weight:bold;">Last Name<br/>
+                                        <apex:inputText value="{!lastnameQuery}" style="width:150px;" required="false" styleClass="lname" label="Last Name"/>
+                                    </td>
+                                </tr>
+                                <tr class="Person">
+                                    <td style="font-weight:bold;">SSN Last 4 Digits<br/>
+                                        <apex:inputText value="{!SSNLast4Query}" style="width:150px;" label="SSN Last 4" required="false" styleClass="ssnlast4"/>
+                                    </td>
+                                </tr>
+                            </table>
+                                
+                            <table cellpadding="2" cellspacing="2" >
+                                
+                                <th class="or" style="padding:8px;color:red;" align="Center"> (OR) </th>
+                                
+                            </table>
+                                
+                            <table cellpadding="2" cellspacing="2" id="t02">
+                                <tr class="Member">
+                                    <td style="font-weight:bold;">Member Number<br/>
+                                        <apex:inputText value="{!MembernumberQuery}" style="width:150px;" required="false" label="Member #" styleClass="mnumber required"/>
+                                    </td>
+                                </tr>
+                                <tr class="Member">
+                                    <td style="font-weight:bold;">Card Name<br/>
+                                        <apex:inputText value="{!CardnameQuery}" style="width:150px;" required="false" label="Card Name" styleClass="cname"/>
+                                    </td>
+                                </tr>
+                                <tr class="Member">
+                                    <td style="font-weight:bold;">Card Number<br/>
+                                        <apex:inputText value="{!CardnumberQuery}" style="width:150px;" required="false" label="Card #" styleClass="cnumber"/>
+                                    </td>
+                                </tr> 
+                            </table>
+                           
+                            <table cellpadding="2" cellspacing="2" >
+                                <tr>
+                                    <td><br/>
+                                        <div class="buttonMember"><apex:commandButton action="{!searchAccount}"  styleClass="memberbuttonId" value="Search" status="MemberStatusId" reRender="memberresults,errors" style="width:150px;margin-bottom: 5px;"/>
+                                        </div>
+                                        <div class="buttonAccount"><apex:commandButton action="{!executeSearch}" styleClass="accountbuttonId" value="Search" status="StatusId" style="width:150px;margin-bottom: 5px;" reRender="results,errors"/>
+                                        </div> 
+                                        <div class="clearData"><apex:commandButton action="{!clearAll}" value="Clear All" style="width:150px;" reRender="memberresults,trustresults,results,errors,criteria,script"/></div>
+                                    </td>
+                                </tr> 
+        
+                           </table>
+                       </apex:pageBlock>
+                   </td>
+                   <td valign="top">
+                    <div class="memberAccounts">
+                       <apex:pageBlock mode="edit" id="memberresults">
+                       <apex:actionStatus id="MemberStatusId" layout="inline">
+                           <apex:facet name="start" > 
+                               <img src="/img/loading.gif" /> 
+                               <font size="2" color="blue">Searching.. Please Wait..</font>                  
+                           </apex:facet>
+                       </apex:actionStatus>
+                   
+                       <apex:pageBlockTable value="{!MemberAccountInfo}" var="accDetails">
+                       
+                           <apex:column headerValue="Search Results">  
+                     <!--  <apex:commandLink action="/apex/SetRecordType?acctId={!Account.Id}" value="Link"/> -->
+                           <apex:outputLink value="/{!accDetails.id}" target="_blank">{!accDetails.Name}</apex:outputLink>
+                           </apex:column> 
+                           <apex:column value="{!accDetails.Card_Name__c}"/>
+                           <apex:column value="{!accDetails.Card_Number__c}" />             
+                           </apex:pageBlockTable>
+                       <apex:pageMessage rendered="{!searchMsgDetails}" strength="3" severity="info" title="Search Not Found"><font size="3">Please try a different search. </font> </apex:pageMessage>
+                          
+                       </apex:pageBlock>
+                    </div>
+                    <div class="accounts">
+                           <apex:pageBlock mode="edit" id="results">
+                           <apex:actionStatus id="StatusId" layout="inline">
+                               <apex:facet name="start" > 
+                                   <img src="/img/loading.gif" /> 
+                                   <font size="2" color="blue">Searching.. Please Wait..</font>                  
+                               </apex:facet>
+                           </apex:actionStatus>
+                                <apex:pageBlockTable value="{!AccountDetails}" var="acc">
+                                   <apex:column headerValue="Search Results">               
+                                       <apex:outputLink value="/{!acc.id}" target="_blank">{!acc.Name}</apex:outputLink>
+                                   </apex:column>
+                                   <apex:column value="{!acc.firstname}" />
+                                   <apex:column value="{!acc.lastname}"/>
+                                   <apex:column value="{!acc.SSN_TIN_Encrypted__pc}" />             
+                                   <apex:column value="{!acc.PersonBirthdate}"/>
+                                   <apex:column value="{!acc.PersonHomePhone}"/>
+                                   <apex:column value="{!acc.PersonEmail}"/>
+                                   <apex:column value="{!acc.Residential_Zipocde__pc}"/>
+                               </apex:pageBlockTable>
+                               <apex:pageMessage rendered="{!searchMsg}" strength="3" severity="info" title="Search Not Found"><font size="3">Please try a different search. </font> </apex:pageMessage>
+                       </apex:pageBlock>
+                    </div>
+                   </td>
+                </tr>
+            </table>
+        </apex:pageBlock>
+    </apex:form>
+
+    <!-- <apex:includeScript value="{!URLFOR($Resource.DSP, 'dsp/js/jquery.min.js')}"/> -->
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+    <script src="http://code.jquery.com/jquery-2.1.4.min.js" type="text/javascript"></script>
+    <script src="../../soap/ajax/29.0/connection.js" type="text/javascript"></script>
+    <script src="../../soap/ajax/29.0/apex.js" type="text/javascript"></script>
+    <apex:outputPanel id="script">
+    <script type="text/javascript">
+    $(document).ready(function() {
+        $('.accounts').hide();
+        $('.memberAccounts').hide();
+        $('.buttonMember').hide();
+        $('.buttonAccount').hide();
+        var Privileges =  $('#SelectRenderer');
+        var select = this.value;
+        Privileges.change(function() {
+            if($(this).val() == 'Person'){
+                $('.Person').show();
+                $('.Org').hide();
+                $('.Member').hide();
+                $('.accounts').show();
+                $('.memberAccounts').hide();
+                $('.trustAccounts').hide();
+                $('.buttonMember').hide();
+                $('.buttonAccount').show();
+                $('.buttonTrust').hide();
+            }
+            else if($(this).val() == 'Member No'){
+                $('.Member').show();
+                $('.Person').hide();
+                $('.Org').hide();
+                $('.accounts').hide();
+                $('.memberAccounts').show();
+                $('.trustAccounts').hide();
+                $('.buttonMember').show();
+                $('.buttonAccount').hide();
+                $('.buttonTrust').hide();
+            }
+        });
+        function PersonvalidateForm() {
+            var FirstN = $('.fname').val();
+            var LastN = $('.lname').val();
+            var SSNL4 = $('.ssnlast4').val();
+
+            if(FirstN == "" && LastN == "" && SSNL4 == ""){
+                alert("First name or Last name or SSNLast4 must be filled out");
+                return false;
+            }
+        }
+        function MembervalidateForm() {
+            var Mnbr = $('.mnumber').val();
+            /*if(Mnbr == ""){
+                alert("Member Number is required")
+                return false;
+            }*/
+        }
+
+        $('.accountbuttonId').click(function(){
+            return PersonvalidateForm();
+        });
+        $('.memberbuttonId').click(function(){
+            return MembervalidateForm();
+        });
+        $('.Person').click(function(){
+           $('.Person').show();
+            $('.Member').hide();
+            $('.accounts').show();
+            $('.memberAccounts').hide();
+            $('.buttonMember').hide();
+            $('.buttonAccount').show();
+            $('.or').hide();
+        });
+        $('.Person').keyup(function(){
+           $('.Person').show();
+            $('.Member').hide();
+            $('.accounts').show();
+            $('.memberAccounts').hide();
+            $('.buttonMember').hide();
+            $('.buttonAccount').show();
+            $('.or').hide();
+        });
+        $('.Member').click(function(){
+           $('.Member').show();
+            $('.Person').hide();
+            $('.accounts').hide();
+            $('.memberAccounts').show();
+            $('.buttonMember').show();
+            $('.buttonAccount').hide();
+            $('.or').hide();
+        });
+        $('.Member').keyup(function(){
+           $('.Member').show();
+            $('.Person').hide();
+            $('.accounts').hide();
+            $('.memberAccounts').show();
+            $('.buttonMember').show();
+            $('.buttonAccount').hide();
+            $('.or').hide();
+        });
+    });
+    </script>
+    </apex:outputPanel>
+</apex:page>

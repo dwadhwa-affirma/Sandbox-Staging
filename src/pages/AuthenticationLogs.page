@@ -1,0 +1,29 @@
+<apex:page standardController="Account" extensions="AuthenitcationLogsController">
+<apex:form >
+<apex:pageBlock title="Authentication Logs">
+<apex:pageBlockTable value="{!logs}" var="log" id="tblLoan">
+ <apex:column Headervalue="Decision">
+
+                                <apex:outputlabel value="{!log.Decision__c}" />
+                            </apex:column>
+                             <apex:column Headervalue="Created Date">
+
+
+<apex:outputText value="{0, date, MMMM d','  yyyy}">
+    <apex:param value="{!log.CreatedDate}" /> 
+</apex:outputText>
+
+                                
+                            </apex:column>
+ <apex:column Headervalue="Staff Name">
+
+                                <apex:outputlabel value="{!log.CreatedBy.Name}" />
+                            </apex:column>
+                            
+</apex:pageBlockTable>
+</apex:pageBlock>
+</apex:form>
+
+
+
+</apex:page>

@@ -1,0 +1,196 @@
+<apex:component controller="Na_ContactPreferences" allowDML="true">
+
+    <apex:attribute name="Account" description="This is the value for the component." type="Account" required="true" assignTo="{!AccountC}" />
+    <apex:attribute name="CTRL" description="This is the value for the component." type="NeedAssessmentController" required="true" assignTo="{!parentController}" />
+
+    <apex:form >
+        <apex:pageBlock title="Verify member's phone #, email address, and physical address. Update via the standard processes.">
+            <div id="snackbar">Data saved successfully!</div>
+            <table border="0" cellpadding="2" ><tr><td>
+                <table border="0" cellpadding="2" >
+                    <tr>
+                         <td>
+                         </td>
+
+                                 <tr>
+                                     <td class="mainQuestion"  align="right" width="120" style="text-align: center;">
+                                            	Current As Of<br></br>
+                                         <apex:outputText value="{0, date, MMMM d','  yyyy}">
+                                         <apex:param value="{!lmm_New.LECP_Last_Updated_On__c}" />
+                                         </apex:outputText>
+                                     </td>
+                                 </tr>
+                                 <tr><td><p></p></td></tr>
+
+                    </tr>     
+                    <tr>
+                         <td class="mainQuestion" valign="top">What is the best way to send you written materials? (check one or both)</td>
+  						 
+                    </tr>
+                    <tr>
+                    <td>
+                             <table border="0">
+                                 <tr>
+                                     <td class="subQuestion"  align="left" style="text-align: left; width: 100px">Email</td>
+                                     <td align="left"><apex:inputField value="{!lmm_New.LECP_Written_Materials_Way_To_Send_Email__c}" /></td>
+                                     <!-- <td width="200" class="lastVal"><c:NeedAssessmentHistory fieldName="LECP_Written_Materials_Way_To_Send_Email__c" NeedAssessmentID="{!NA_id}"></c:NeedAssessmentHistory></td>  -->
+                                 </tr>
+                                 <tr>
+                                     <td class="subQuestion"  align="left" style="text-align: left;">Mail</td>
+                                     <td  align="left"><apex:inputField value="{!lmm_New.LECP_Written_Materials_Way_To_Send_Mail__c}" /></td>
+                                     <!--  
+                                     <td class="lastVal"><c:NeedAssessmentHistory fieldName="LECP_Written_Materials_Way_To_Send_Mail__c" NeedAssessmentID="{!NA_id}"></c:NeedAssessmentHistory></td> -->                                          
+                                 </tr>
+                                 <tr><td><p></p></td></tr>
+                             </table>
+                         </td>            
+                    </tr>        
+                    <tr></tr>
+                    <tr>
+<!-- 
+                         <td class="mainQuestion" valign="top">Do we have your consent to contact you at the following phone # if there are products or services we think might be appropriate for you?</td>                           
+-->                         
+                                <td colspan="2" >
+                                    <table border="0">
+                                        <tr>
+ <!--                                        
+                                            <td class="mainQuestion"  align="right" style="text-align: right; width: 100px">Phone Number</td>
+                                            <td  align="left"><apex:inputField value="{!lmm_New .LECP_ContactPhone_Yes__c}" /></td>
+-->
+                                            <!--   <td width="200" class="lastVal"><c:NeedAssessmentHistory fieldName="LECP_ContactPhone_Yes__c" NeedAssessmentID="{!NA_id}"></c:NeedAssessmentHistory></td> -->
+                                        </tr>
+                                        <tr>
+<!-- 
+                                            <td class="mainQuestion"  align="right" style="text-align: right;">Preferred Number</td>
+                                            <td  align="left"><apex:inputField value="{!lmm_New .LECP_ContactPhone_No__c}" /></td>
+ -->                                                                                    
+                                            <!-- <td class="lastVal"></td> -->
+                                        </tr>
+                                    </table>
+                                </td>               
+                            </tr>
+<!--                             
+                            <tr>
+                                <td class="mainQuestion" valign="top" style="text-align: right;" >Comments</td>
+                                <td colspan="2">
+                                    <table border="0">
+                                        <tr>
+                                            <td  align="left"><apex:inputField value="{!lmm_New .LECP_Comments__c}" style="width: 280px; height: 100px"/></td>
+-->                                            
+                                            <!-- <td width="200" class="lastVal"><c:NeedAssessmentHistory fieldName="LECP_Comments__c" NeedAssessmentID="{!NA_id}"></c:NeedAssessmentHistory></td> -->
+<!-- 
+                                        </tr>
+                                    </table>
+                                </td>              
+                            </tr>
+-->
+               </table>
+
+               </td></tr></table>
+                        
+<!--
+                    <td valign="top">
+                       <table border="0">
+                            <tr>
+                                <td class="colHeader">Recommendations</td>
+                                <td></td>
+                            </tr>   
+                            <tr>
+                                <td>
+                                    HELOC
+                                </td>
+                                <td>
+                                    <apex:inputField value="{!lmm_New.Rec_LEOM_1__c}" />
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    RV loan
+                                </td>
+                                <td>
+                                    <apex:inputField value="{!lmm_New.Rec_LEOM_2__c}" />
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    Health Savings Account
+                                </td>
+                                <td>
+                                    <apex:inputField value="{!lmm_New.Rec_LEOM_3__c}" />
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    Personal line of credit
+                                </td>
+                                <td>
+                                    <apex:inputField value="{!lmm_New.Rec_LEOM_4__c}" />
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    Student loans
+                                </td>
+                                <td>
+                                    <apex:inputField value="{!lmm_New.Rec_LEOM_5__c}" />
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    CDs
+                                </td>
+                                <td>
+                                    <apex:inputField value="{!lmm_New.Rec_LEOM_6__c}" />
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    Money market
+                                </td>
+                                <td>
+                                    <apex:inputField value="{!lmm_New.Rec_LEOM_7__c}" />
+                                </td>
+                           </tr> 
+                        </table>  
+                    </td>
+
+                </tr>
+            </table> -->
+            <p></p>
+            <table>
+                <tr>
+                    <td align="right" width="250">
+                        <apex:commandButton value="Save" action="{!SubmitFeedbackForm}" />
+                    </td>
+                </tr>
+            </table>
+            <apex:actionFunction action="{!resetscript}" name="resetscript" rerender="scriptcontainer" />
+            <apex:outputPanel id="scriptcontainer">
+                <input type="text" value="{!script}" id="scriptext" style="visibility:hidden" />
+            </apex:outputPanel>
+            <table>
+            	<tr>
+            		<td>
+            		<!-- 	<b>Please use your standard update process so the member does not assume that their data is changed.</b>   -->
+            		</td>
+            	</tr>
+            </table>
+
+        </apex:pageBlock>
+    </apex:form>
+    <script>
+function toastsuccess()
+{
+    if (document.getElementById("scriptext").value == '1')
+    {
+        var x = document.getElementById("snackbar")
+        x.className = "show";
+        setTimeout(function(){ x.className = x.className.replace("show", ""); }, 3000);
+    }
+    resetscript();
+}
+ toastsuccess();
+    </script>
+
+
+</apex:component>

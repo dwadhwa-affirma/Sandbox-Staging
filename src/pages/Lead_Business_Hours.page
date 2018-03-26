@@ -1,0 +1,5 @@
+<apex:page standardcontroller="Lead" extensions="LeadBusinessHoursController">
+<!-- Begin Default Content REMOVE THIS -->
+<h2>Open Business Hours: </h2>
+<h2><apex:outputText value="{!LeadHours.Open_Hours__c}"  /></h2>
+</apex:page>
