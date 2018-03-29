@@ -368,10 +368,11 @@
 											</div>
 											<div class="col-sm-6 col-xs-6">
 												<div class="checkbox">
+												
 													<apex:inputCheckbox id="MMN" style="display:none;" styleclass="confirm newconfirm" label="Select Checkbox to Confirm" rendered="{!MMNMatch=='true' && SelectedID != ''}" selected="{!MMNConfirm}"><span style="display:none;" class="no-label">Select Checkbox to Confirm</span></apex:inputcheckbox>
 													
 													
-													 <apex:outputpanel styleclass="confirmRadio newconfirmRadio"  id="MMNNew" rendered="{!DOBMatch=='true' && SelectedID != ''}">
+													 <apex:outputpanel styleclass="confirmRadio newconfirmRadio"  id="MMNNew" rendered="{!MMNMatch=='true' && SelectedID != ''}">
 													 	<span class="chkAligned">
 															<input type="checkbox" name="MMNNewPass" id="MMNNewPass" value="Pass"/>
 														
@@ -543,7 +544,7 @@
 											  <table class="txtforother">
 											  	<tr>
 													<td class="addtcol1"><apex:outputText >Text for Other</apex:outputText></td> 
-													<td class="addtcol2"><apex:inputText value="{!AdditionalTokenOtherText}" html-class="othertext" onkeyup="javascript:countChecks()" Maxlength="255"></apex:inputText> </td>
+													<td class="addtcol2"><apex:inputText value="{!AdditionalTokenOtherText}" html-class="othertext" onkeyup="javascript:countChecksNew()" Maxlength="255"></apex:inputText> </td>
 													<td class="addtcol3">
 															<apex:outputText ><span class="advalOtherError" style="display:none" ><i aria-hidden="true" class="fa fa-close"></i>  &nbsp; Required</span></apex:outputText>
 													</td>
