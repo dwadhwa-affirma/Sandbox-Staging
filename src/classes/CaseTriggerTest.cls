@@ -93,6 +93,8 @@ public class CaseTriggerTest {
     
     
     static testMethod void testMethod6(){
+   		
+   		
    
         Account_Details__c accDetail = new Account_Details__c();
         accDetail.Name = 'Test';
@@ -106,6 +108,7 @@ public class CaseTriggerTest {
  
         Case cs1 = new Case();
           cs1.Account_Number__c = accDetail.Id;
+         
         insert cs1;
         
         cs1.Account_Number__c = accDetail1.Id;
@@ -184,8 +187,16 @@ public class CaseTriggerTest {
     
     static testMethod void testMethod10(){
 
+CaseRecordType__c crt = new CaseRecordType__c();
+   		crt.Primary_Category__c = 'AAA';
+   		crt.Secondary_Category__c = 'BBB';
+   		crt.Teritiary_Category__c = 'CCC';
+   		crt.Name = 'AAA';
+   		crt.SLA__c = 50;
+   		insert crt;
+   		
         Account_Details__c accDetail = new Account_Details__c();
-        accDetail.Name = 'Test';
+        accDetail.Name = 'Test123';
         accDetail.RecType__c = 'ACCT';
         insert accDetail;
         
@@ -213,10 +224,19 @@ public class CaseTriggerTest {
         Case cs = new Case();
         cs.Brand__c = 'Specturm';
         cs.Origin = 'Email';
-        cs.Subject = '1234 testing';
+        cs.Subject = '1234 testing tet sdf asdfa';
+         cs.Primary_Category__c = 'AAA';
+          cs.Secondary_Category__c = 'BBB';
+          cs.Tertiary_Category__c = 'CCC';
+          cs.Origin = 'BoomiBulk';
         cs.Account_Number__c = accDetail.Id;
+        cs.Member_Number__c = 'Test123';
         cs.AccountId = acc.Id;       
         insert cs;
+        
+        cs.Origin = 'Email';
+        
+        update cs;
     }
     
     static testMethod void testMethod11(){

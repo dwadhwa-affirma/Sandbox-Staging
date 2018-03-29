@@ -23,35 +23,38 @@ trigger CaseTrigger on Case (before insert, before update, after insert, after u
             updateownershipLog(Trigger.New);          
         }
         
-         for(Case c_new : Trigger.new){   
-             list<CaseRecordType__c> scList = [SELECT Id,
+        
+        // Removed query from for loop so we need to query object once for all cases
+          list<CaseRecordType__c> scList = [SELECT Id,
                                                  Primary_Category__c,
                                                  Secondary_Category__c,
                                                  Teritiary_Category__c,
                                                  Record_Type_Name__c,
                                                  RecordTypeId__c, SLA__c
                                             FROM CaseRecordType__c 
-                                           WHERE Primary_Category__c =:c_new.Primary_Category__c 
+                                        /*   WHERE Primary_Category__c =:c_new.Primary_Category__c 
                                              AND Secondary_Category__c=:c_new.Secondary_Category__c 
                                              AND Teritiary_Category__c=:c_new.Tertiary_Category__c 
-                                             LIMIT 1]; 
-                   if(scList.Size() > 0)
-                   {
-                       
-                            c_new.SLA__c =  scList[0].SLA__c;
-                       
-                    
-                   }              
-                  
-                  
-                    Map<ID,Schema.RecordTypeInfo> rt_Map = Case.sObjectType.getDescribe().getRecordTypeInfosById();
+                                             LIMIT 1*/]; 
+        
+         for(Case c_new : Trigger.new){   
+         	 
+         	 for(CaseRecordType__c sc : scList)
+         	 {
+         	 	
+         	 	if(sc.Primary_Category__c == c_new.Primary_Category__c && sc.Secondary_Category__c == c_new.Secondary_Category__c  && sc.Teritiary_Category__c == c_new.Tertiary_Category__c)
+         	 	{
+         	 		 c_new.SLA__c =  scList[0].SLA__c;
+         	 		 Map<ID,Schema.RecordTypeInfo> rt_Map = Case.sObjectType.getDescribe().getRecordTypeInfosById();
                    
-                   if(rt_map.get(c_new.recordTypeID).getName().containsIgnoreCase('Survey Cases')){
-                        c_new.SLA__c =  40;
-                    }   
-                   
-                         
-                                             
+	                 if(rt_map.get(c_new.recordTypeID).getName().containsIgnoreCase('Survey Cases')){
+	                 	c_new.SLA__c =  40;
+	                  }  
+         	 		
+         	 	}
+         	 }
+         	 
+               
          }
         
         
@@ -78,28 +81,36 @@ public void CaseAssign(list < case > newValues)   {
 System.Debug('Calling the CaseAssign method');
     if(newValues[0].Origin == 'BoomiBulk'){
     System.Debug('This is a BoomiBulk Case: ' +newValues[0].caseNumber);
-         Set < Id > CaseIds = new Set < Id > ();        
+         Set < Id > CaseIds = new Set < Id > ();
+         //To avoid too many SOQL "SOQL statement taken outside loop 
          for (case cse: newValues) {
             CaseIds.add(cse.id); 
-            Database.DMLOptions dmo = new Database.DMLOptions();            
+         }
+          Database.DMLOptions dmo = new Database.DMLOptions();            
             dmo.assignmentRuleHeader.useDefaultRule= true;                     
-            case cs=[select id from case where case.id in : CaseIds];            
-            cs.setOptions(dmo); 
-
+            List<case> cs=[select id from case where case.id in : CaseIds];   
+            for(case c : cs )
+            {
+            	
+            	c.setOptions(dmo);	
+            }                
+            
+            
             List<Person_Account__c> pa = [Select PersonId__c,  
                                                  Account_Number__c
                                             from Person_Account__c 
                                            where Account_Number__c = :newValues[0].Account_Number__c 
                                              AND Name_Type__c = 0];
-    
-
-            System.Debug('PA List: ' +pa);
-            System.Debug('PA ID: ' +pa[0].PersonID__C);
-
-            cs.AccountId = pa[0].PersonID__C;
-
+            
+            for(case c : cs )
+            {
+            	
+            	c.AccountId = pa[0].PersonID__C;
+            }
+            
             update cs;    
-         }
+      
+         
      } else {
      System.Debug('This is Not a BoomiBulk Case: ' +newValues[0].caseNumber);
      }
@@ -164,7 +175,7 @@ System.Debug('Calling the CaseAssign method');
              cList[0].Member_Number__c = '';
                 cList[0].Code_Number__c = '';
             }else{          
-          
+          system.debug('cList###' + cList);
             List<String> splitted = cList[0].Subject.split('\\s+');
            
           /*  if(splitted.size()>0 && splitted.size()<=1){
@@ -177,11 +188,11 @@ System.Debug('Calling the CaseAssign method');
             } */
                 
              if(splitted.size()>0 && splitted.size()<=1){
-                  cList[0].Code_Number__c = splitted[0].left(10);
+                  cList[0].Code_Number__c = splitted[0];
              }
-        
+        system.debug('splitted###' + splitted);
         if(splitted.size()>=2){
-            cList[0].Code_Number__c = splitted[0].left(10);
+            cList[0].Code_Number__c = splitted[0];
             cList[0].Member_Number__c = splitted[1];
                  integer i;
                  integer membersize = cList[0].Member_Number__c.length();
