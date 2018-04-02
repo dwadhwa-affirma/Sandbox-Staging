@@ -69,7 +69,8 @@
             <table>
                 <tr>
                     <td align="right" width="300">
-                        <apex:commandButton value="Save" action="{!SubmitSharedBranchingForm}" />
+                        <apex:commandButton value="Save" action="{!SubmitSharedBranchingForm}"  onclick="$(this).hide();$(this).next().show();" />
+						<input type="submit" value="Saving..." style="display:none;" disabled="disabled" class="btn"/>
                     </td>
                 </tr>
             </table>

@@ -158,7 +158,9 @@
                     <td align="right" width="300">
 
 
-                        <apex:commandButton value="Save" action="{!SubmitEarnMoreForm}" />
+                        <apex:commandButton value="Save" action="{!SubmitEarnMoreForm}" onclick="$(this).hide();$(this).next().show();"  />
+                        
+						<input type="submit" value="Saving..." style="display:none;" disabled="disabled" class="btn"/>
 
                     </td>
                 </tr>
