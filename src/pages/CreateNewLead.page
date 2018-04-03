@@ -234,6 +234,13 @@
                     <apex:outputLabel Value="{!$ObjectType.Lead.fields.Country__c.Label}"/>
                     <apex:inputField value="{!leadObject.Country__c}" />
                 </apex:pageBlockSectionItem>
+                
+                <apex:pageBlockSectionItem > </apex:pageBlockSectionItem>
+                <apex:inputField value="{!LeadObject.Estimate_Value__c}" />
+                <apex:pageBlockSectionItem > </apex:pageBlockSectionItem>
+                <apex:inputField value="{!LeadObject.Loan_Amount__c}" />
+                
+                
             </apex:pageBlockSection>
             
              <apex:pageBlockButtons >

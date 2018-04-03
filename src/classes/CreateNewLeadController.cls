@@ -3,6 +3,8 @@ public class CreateNewLeadController
     public string AccountID {get;set;}
     public string MemberAccountID {get;set;}
     
+    public string EstimateAmount {get;set;}
+    public string LoanAmount {get;set;}
    
     public Lead leadObject {get;set;}
     public string OwnerName {get;set;}
@@ -92,7 +94,8 @@ public class CreateNewLeadController
          if(MemberAccountID!=NULL){
           leadObject.Member_Branch__c = currentBranch(MemberAccountID); }    
                   BranchOptionList = itemsList();  
-              
+          leadObject.Estimate_Value__c = EstimateAmount;
+          leadObject.Loan_Amount__c = LoanAmount;    
     }
      //member branch code 
         public ID currentBranch(String memID){           
@@ -163,10 +166,10 @@ public class CreateNewLeadController
        
        //leadObject.OwnerID = OwnerID;
        Database.DMLOptions dmo=new Database.DMLOptions();
-  	   dmo.assignmentRuleHeader.useDefaultRule= true;
+       dmo.assignmentRuleHeader.useDefaultRule= true;
 
-  	   leadobject.setOptions(dmo);
-  		
+       leadobject.setOptions(dmo);
+        
         if(!string.isBlank(MemberAccountID)){
             
          leadObject.Member_Account__c = MemberAccountID;
@@ -176,8 +179,8 @@ public class CreateNewLeadController
             leadObject.Episys_User_ID__c = SelectedEpisysUserId;
         }     
         /*system.debug('---leadObject--- Ownership ---' + leadObject.Ownership__c);   
-       if(leadObject.Ownership__c == 'Assign' || leadObject.Ownership__c == 'Keep'){       		
-       		leadObject.Keep__c = true;
+       if(leadObject.Ownership__c == 'Assign' || leadObject.Ownership__c == 'Keep'){            
+            leadObject.Keep__c = true;
        }*/
        
         

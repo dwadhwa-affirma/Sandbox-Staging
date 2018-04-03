@@ -13,21 +13,21 @@ public with sharing class PersonAccountTriggerHandler {
         
         for(Person_Account__c pa: newMap.values()){
             if(pa.Name_Type__c == 0){
-	            //CRM-1090 only add person whose open date is within 7 days
-	            if (pa.Open_Date__c != null && pa.Open_Date__c.daysBetween(date.today()) <= 7)
-	            {
-	            	System.debug('adding person account with open date..' + pa.Open_Date__c);
-	            	System.debug('adding person account with Account ID..' + pa.AccountID__c);
-	                paList.add(pa); 
-	                personIds.add(pa.PersonID__c);
-	                accDetailIds.add(pa.Account_Number__c);
-	            }
-	            else
-	            {
-	            	System.debug('Not adding person account with open date..' + pa.Open_Date__c);
-	            	System.debug('Not adding person account with Account ID..' + pa.AccountID__c);
-	                
-	            }                
+              //CRM-1090 only add person whose open date is within 7 days
+              if (pa.Open_Date__c != null && pa.Open_Date__c.daysBetween(date.today()) <= 7)
+              {
+                System.debug('adding person account with open date..' + pa.Open_Date__c);
+                System.debug('adding person account with Account ID..' + pa.AccountID__c);
+                  paList.add(pa); 
+                  personIds.add(pa.PersonID__c);
+                  accDetailIds.add(pa.Account_Number__c);
+              }
+              else
+              {
+                System.debug('Not adding person account with open date..' + pa.Open_Date__c);
+                System.debug('Not adding person account with Account ID..' + pa.AccountID__c);
+                  
+              }                
             }
         }
         
@@ -54,7 +54,12 @@ public with sharing class PersonAccountTriggerHandler {
        // Id queueGroupId = [SELECT Id FROM Group WHERE Type='Queue' AND Name= 'Operations-Memberships Queue'].Id;
         Id queueGroupId = [SELECT Id FROM Group WHERE Type='Queue' AND Name= 'eBranch Queue'].Id;
         
-        list<User> userList = [SELECT Id, Name, Alias, IsActive FROM User where IsActive = true];
+        //list<User> userList = [SELECT Id, Name, Alias, IsActive FROM User where IsActive = true];
+        
+        list<User> userList = [SELECT Id, Name, Alias, IsActive FROM User
+                                where (Profile.Name !='Messaging center Customers') and (isActive = True)];
+
+        
         
         for(User u: userList){
             userMap1.put(u.Name.toupperCase(), u.Id);
@@ -97,9 +102,9 @@ public with sharing class PersonAccountTriggerHandler {
                 system.debug('check for user..' + userAliasMap.get(accDetailMap.get(var.Account_Number__c).Created_By_User_Alias__c));
                 
                 if(userAliasMap.get(accDetailMap.get(var.Account_Number__c).Created_By_User_Alias__c) != null){
-                	system.debug('###Inside  assigning owner' + userAliasMap.get(accDetailMap.get(var.Account_Number__c).Created_By_User_Alias__c));
+                  system.debug('###Inside  assigning owner' + userAliasMap.get(accDetailMap.get(var.Account_Number__c).Created_By_User_Alias__c));
                // if(userMap1.get(accDetailMap.get(var.Account_Number__c).Created_By_User_Text__c) != null){
-                    c.OwnerId = userAliasMap.get(accDetailMap.get(var.Account_Number__c).Created_By_User_Alias__c);
+                    c.OwnerId = userAliasMap.get((accDetailMap.get(var.Account_Number__c).Created_By_User_Alias__c).toupperCase());
                 }else if(userAliasMap.get(accDetailMap.get(var.Account_Number__c).Created_By_User_Alias__c) == null || accDetailMap.get(var.Account_Number__c).Created_By_User__c == NULL 
                    || uList != NULL){
                     system.debug('Inside assigning eBranch queue');
