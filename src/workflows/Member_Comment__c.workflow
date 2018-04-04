@@ -37,6 +37,18 @@
         <template>unfiled$public/Secure_Portal_Notification_CUCase_Spctrm</template>
     </alerts>
     <alerts>
+        <fullName>Send_Member_Email_Notification_CU_New_Case_Spectrum</fullName>
+        <description>Send Member Email Notification CU New Case - Spectrum</description>
+        <protected>false</protected>
+        <recipients>
+            <field>Member_Email__c</field>
+            <type>email</type>
+        </recipients>
+        <senderAddress>noreply@spectrumcu.org</senderAddress>
+        <senderType>OrgWideEmailAddress</senderType>
+        <template>unfiled$public/Secure_Portal_Notif_CU_First_Spectrum</template>
+    </alerts>
+    <alerts>
         <fullName>Send_Member_Email_Notification_CU_Wires_Case_CFCU</fullName>
         <description>Send Member Email Notification CU Wires Case - CFCU</description>
         <protected>false</protected>
@@ -59,6 +71,18 @@
         <senderAddress>noreply@spectrumcu.org</senderAddress>
         <senderType>OrgWideEmailAddress</senderType>
         <template>unfiled$public/Secure_Portal_Notification_Wires_Spctrm</template>
+    </alerts>
+    <alerts>
+        <fullName>Send_Member_Email_Notification_New_Case_CFCU</fullName>
+        <description>Send Member Email Notification New Case - CFCU</description>
+        <protected>false</protected>
+        <recipients>
+            <field>Member_Email__c</field>
+            <type>email</type>
+        </recipients>
+        <senderAddress>noreply@chevronfcu.org</senderAddress>
+        <senderType>OrgWideEmailAddress</senderType>
+        <template>unfiled$public/Secure_Portal_Notification_CU_First_CFCU</template>
     </alerts>
     <alerts>
         <fullName>Send_Member_Email_Notification_Spectrum</fullName>
@@ -112,6 +136,41 @@
         <targetObject>Case__c</targetObject>
     </fieldUpdates>
     <rules>
+        <fullName>CU Case - New Chevron Case</fullName>
+        <actions>
+            <name>Send_Member_Email_Notification_New_Case_CFCU</name>
+            <type>Alert</type>
+        </actions>
+        <active>true</active>
+        <criteriaItems>
+            <field>Case.Created_by_Portal_Member__c</field>
+            <operation>equals</operation>
+            <value>False</value>
+        </criteriaItems>
+        <criteriaItems>
+            <field>Member_Comment__c.Communication_Origin__c</field>
+            <operation>equals</operation>
+            <value>CU</value>
+        </criteriaItems>
+        <criteriaItems>
+            <field>Member_Comment__c.Brand__c</field>
+            <operation>equals</operation>
+            <value>Chevron</value>
+        </criteriaItems>
+        <criteriaItems>
+            <field>Member_Comment__c.Category__c</field>
+            <operation>notContain</operation>
+            <value>Account Maintenance / Wires / Foreign - New</value>
+        </criteriaItems>
+        <criteriaItems>
+            <field>Case.MemberCommentCount__c</field>
+            <operation>equals</operation>
+            <value>0</value>
+        </criteriaItems>
+        <description>Purpose of this workflow is to record the member&apos;s email address that created the portal case and send the member the notification email.</description>
+        <triggerType>onCreateOnly</triggerType>
+    </rules>
+    <rules>
         <fullName>CU Case - New Chevron Comment</fullName>
         <actions>
             <name>Send_Member_Email_Notification_CU_Case_CFCU</name>
@@ -138,7 +197,47 @@
             <operation>notContain</operation>
             <value>Account Maintenance / Wires / Foreign - New</value>
         </criteriaItems>
+        <criteriaItems>
+            <field>Case.MemberCommentCount__c</field>
+            <operation>greaterThan</operation>
+            <value>0</value>
+        </criteriaItems>
         <description>Purpose of this workflow is to record the member&apos;s email address that created the portal case and send the member the notification email.</description>
+        <triggerType>onCreateOnly</triggerType>
+    </rules>
+    <rules>
+        <fullName>CU Case - New Spectrum Case</fullName>
+        <actions>
+            <name>Send_Member_Email_Notification_CU_New_Case_Spectrum</name>
+            <type>Alert</type>
+        </actions>
+        <active>true</active>
+        <criteriaItems>
+            <field>Case.Created_by_Portal_Member__c</field>
+            <operation>equals</operation>
+            <value>False</value>
+        </criteriaItems>
+        <criteriaItems>
+            <field>Member_Comment__c.Communication_Origin__c</field>
+            <operation>equals</operation>
+            <value>CU</value>
+        </criteriaItems>
+        <criteriaItems>
+            <field>Member_Comment__c.Brand__c</field>
+            <operation>equals</operation>
+            <value>Spectrum</value>
+        </criteriaItems>
+        <criteriaItems>
+            <field>Member_Comment__c.Category__c</field>
+            <operation>notContain</operation>
+            <value>Account Maintenance / Wires / Foreign - New</value>
+        </criteriaItems>
+        <criteriaItems>
+            <field>Case.MemberCommentCount__c</field>
+            <operation>equals</operation>
+            <value>0</value>
+        </criteriaItems>
+        <description>Purpose of this workflow is to send the Portal member the notification email.</description>
         <triggerType>onCreateOnly</triggerType>
     </rules>
     <rules>
@@ -167,6 +266,11 @@
             <field>Member_Comment__c.Category__c</field>
             <operation>notContain</operation>
             <value>Account Maintenance / Wires / Foreign - New</value>
+        </criteriaItems>
+        <criteriaItems>
+            <field>Case.MemberCommentCount__c</field>
+            <operation>greaterThan</operation>
+            <value>0</value>
         </criteriaItems>
         <description>Purpose of this workflow is to send the Portal member the notification email.</description>
         <triggerType>onCreateOnly</triggerType>

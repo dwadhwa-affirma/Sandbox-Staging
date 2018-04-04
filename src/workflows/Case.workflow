@@ -232,6 +232,15 @@
         <protected>false</protected>
     </fieldUpdates>
     <fieldUpdates>
+        <fullName>Edit_Status</fullName>
+        <field>Sub_Status__c</field>
+        <literalValue>Day2 Started</literalValue>
+        <name>Edit Status</name>
+        <notifyAssignee>false</notifyAssignee>
+        <operation>Literal</operation>
+        <protected>false</protected>
+    </fieldUpdates>
+    <fieldUpdates>
         <fullName>Onboarding_Day_14_Sub_Status</fullName>
         <field>Sub_Status__c</field>
         <literalValue>Day14 Started</literalValue>
@@ -442,6 +451,42 @@
         <protected>false</protected>
     </fieldUpdates>
     <fieldUpdates>
+        <fullName>Status</fullName>
+        <field>Status</field>
+        <literalValue>Follow Up</literalValue>
+        <name>Status</name>
+        <notifyAssignee>false</notifyAssignee>
+        <operation>Literal</operation>
+        <protected>false</protected>
+    </fieldUpdates>
+    <fieldUpdates>
+        <fullName>Status_1</fullName>
+        <field>Status</field>
+        <literalValue>Follow Up</literalValue>
+        <name>Status - 1</name>
+        <notifyAssignee>false</notifyAssignee>
+        <operation>Literal</operation>
+        <protected>false</protected>
+    </fieldUpdates>
+    <fieldUpdates>
+        <fullName>Sub_status</fullName>
+        <field>Sub_Status__c</field>
+        <literalValue>Day1 Started</literalValue>
+        <name>Sub status</name>
+        <notifyAssignee>false</notifyAssignee>
+        <operation>Literal</operation>
+        <protected>false</protected>
+    </fieldUpdates>
+    <fieldUpdates>
+        <fullName>Sub_status_1</fullName>
+        <field>Sub_Status__c</field>
+        <literalValue>Day1 Started</literalValue>
+        <name>Sub status 1</name>
+        <notifyAssignee>false</notifyAssignee>
+        <operation>Literal</operation>
+        <protected>false</protected>
+    </fieldUpdates>
+    <fieldUpdates>
         <fullName>Turn_off_Send_Secure_Email_Flag</fullName>
         <field>Send_Secure_Email__c</field>
         <literalValue>0</literalValue>
@@ -534,6 +579,15 @@
         <operation>LookupValue</operation>
         <protected>false</protected>
         <reevaluateOnChange>true</reevaluateOnChange>
+    </fieldUpdates>
+    <fieldUpdates>
+        <fullName>subject_change</fullName>
+        <field>Subject</field>
+        <formula>Catagory__c</formula>
+        <name>Subject change</name>
+        <notifyAssignee>false</notifyAssignee>
+        <operation>Formula</operation>
+        <protected>false</protected>
     </fieldUpdates>
     <rules>
         <fullName>Account Maintenance - Active - 2 Day Escalation</fullName>
@@ -1119,6 +1173,37 @@ Status = Open and 1 Day after Status</description>
         </workflowTimeTriggers>
     </rules>
     <rules>
+        <fullName>Onboarding 10 - Mins</fullName>
+        <active>false</active>
+        <criteriaItems>
+            <field>Case.RecordTypeId</field>
+            <operation>equals</operation>
+            <value>Onboarding</value>
+        </criteriaItems>
+        <criteriaItems>
+            <field>Case.OwnerId</field>
+            <operation>notContain</operation>
+            <value>Queue</value>
+        </criteriaItems>
+        <triggerType>onCreateOrTriggeringUpdate</triggerType>
+        <workflowTimeTriggers>
+            <actions>
+                <name>Status_1</name>
+                <type>FieldUpdate</type>
+            </actions>
+            <actions>
+                <name>Sub_status_1</name>
+                <type>FieldUpdate</type>
+            </actions>
+            <actions>
+                <name>test</name>
+                <type>Task</type>
+            </actions>
+            <timeLength>1</timeLength>
+            <workflowTimeTriggerUnit>Hours</workflowTimeTriggerUnit>
+        </workflowTimeTriggers>
+    </rules>
+    <rules>
         <fullName>Onboarding 14 days</fullName>
         <active>true</active>
         <criteriaItems>
@@ -1610,6 +1695,33 @@ Status = Open and 1 Day after Status</description>
         <triggerType>onAllChanges</triggerType>
     </rules>
     <rules>
+        <fullName>Test Task</fullName>
+        <active>false</active>
+        <criteriaItems>
+            <field>Case.Subject</field>
+            <operation>equals</operation>
+            <value>Rana Test</value>
+        </criteriaItems>
+        <criteriaItems>
+            <field>Case.OwnerId</field>
+            <operation>notContain</operation>
+            <value>Queue</value>
+        </criteriaItems>
+        <triggerType>onCreateOrTriggeringUpdate</triggerType>
+        <workflowTimeTriggers>
+            <actions>
+                <name>Edit_Status</name>
+                <type>FieldUpdate</type>
+            </actions>
+            <actions>
+                <name>Test_Task_Count</name>
+                <type>Task</type>
+            </actions>
+            <timeLength>1</timeLength>
+            <workflowTimeTriggerUnit>Hours</workflowTimeTriggerUnit>
+        </workflowTimeTriggers>
+    </rules>
+    <rules>
         <fullName>Transactions -  Open - Escalation</fullName>
         <active>false</active>
         <criteriaItems>
@@ -1879,6 +1991,17 @@ Status = Open and 1 Day after Status</description>
         <subject>Perform Day 90 Follow Up Call With New Member</subject>
     </tasks>
     <tasks>
+        <fullName>Send_Day_0_10_Letter_to_Member</fullName>
+        <assignedToType>owner</assignedToType>
+        <description>Test</description>
+        <dueDateOffset>1</dueDateOffset>
+        <notifyAssignee>true</notifyAssignee>
+        <priority>Normal</priority>
+        <protected>false</protected>
+        <status>Open</status>
+        <subject>Send Day 0 10 Letter to Member</subject>
+    </tasks>
+    <tasks>
         <fullName>Send_Day_1_Welcome_Email_to_Member</fullName>
         <assignedToType>creator</assignedToType>
         <description>Send the Onboarding &quot;Day 1 Welcome Email&quot; to the new member</description>
@@ -1943,5 +2066,39 @@ Status = Open and 1 Day after Status</description>
         <protected>false</protected>
         <status>Open</status>
         <subject>Send Day 2 Thank You Card to Member</subject>
+    </tasks>
+    <tasks>
+        <fullName>Test_Task_Count</fullName>
+        <assignedTo>drana@chevronfcu.org</assignedTo>
+        <assignedToType>user</assignedToType>
+        <description>Check</description>
+        <dueDateOffset>1</dueDateOffset>
+        <notifyAssignee>false</notifyAssignee>
+        <priority>Normal</priority>
+        <protected>false</protected>
+        <status>Open</status>
+        <subject>Test Task Count</subject>
+    </tasks>
+    <tasks>
+        <fullName>Test_Task_Count1</fullName>
+        <assignedTo>drana@chevronfcu.org</assignedTo>
+        <assignedToType>user</assignedToType>
+        <dueDateOffset>1</dueDateOffset>
+        <notifyAssignee>false</notifyAssignee>
+        <priority>Normal</priority>
+        <protected>false</protected>
+        <status>Open</status>
+        <subject>Test Task Count1</subject>
+    </tasks>
+    <tasks>
+        <fullName>test</fullName>
+        <assignedToType>owner</assignedToType>
+        <description>asdfasdfafda</description>
+        <dueDateOffset>15</dueDateOffset>
+        <notifyAssignee>false</notifyAssignee>
+        <priority>Normal</priority>
+        <protected>false</protected>
+        <status>Open</status>
+        <subject>test</subject>
     </tasks>
 </Workflow>

@@ -52,10 +52,32 @@
     <enableSharing>true</enableSharing>
     <enableStreamingApi>true</enableStreamingApi>
     <fields>
+        <fullName>Additional_Token_Option1_Match__c</fullName>
+        <externalId>false</externalId>
+        <label>Additional Token Option1 Match</label>
+        <length>5</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
         <fullName>Additional_Token_Option1__c</fullName>
         <externalId>false</externalId>
         <label>Additional Token Option1</label>
         <length>255</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Additional_Token_Option2_Match__c</fullName>
+        <externalId>false</externalId>
+        <label>Additional Token Option2 Match</label>
+        <length>5</length>
         <required>false</required>
         <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
@@ -74,6 +96,17 @@
         <unique>false</unique>
     </fields>
     <fields>
+        <fullName>Additional_Token_Option3_Match__c</fullName>
+        <externalId>false</externalId>
+        <label>Additional Token Option3 Match</label>
+        <length>5</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
         <fullName>Additional_Token_Option3__c</fullName>
         <externalId>false</externalId>
         <label>Additional_Token_Option3</label>
@@ -85,9 +118,31 @@
         <unique>false</unique>
     </fields>
     <fields>
+        <fullName>Additional_Token_Other_Text1__c</fullName>
+        <externalId>false</externalId>
+        <label>Additional Token Other Text1</label>
+        <length>255</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Additional_Token_Other_Text2__c</fullName>
+        <externalId>false</externalId>
+        <label>Additional Token Other Text2</label>
+        <length>255</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
         <fullName>Additional_Token_Other_Text__c</fullName>
         <externalId>false</externalId>
-        <label>Additional_Token_Other_Text</label>
+        <label>Additional Token Other Text3</label>
         <length>255</length>
         <required>false</required>
         <trackHistory>false</trackHistory>
@@ -197,6 +252,17 @@
         <externalId>false</externalId>
         <label>EmailMatch</label>
         <length>5</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Email_New__c</fullName>
+        <externalId>false</externalId>
+        <label>Email_New</label>
+        <length>255</length>
         <required>false</required>
         <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
@@ -425,6 +491,18 @@ null )</formula>
         <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Log_Clear_All_Field__c</fullName>
+        <externalId>false</externalId>
+        <label>Log Clear All Field</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
         <unique>false</unique>
     </fields>
     <fields>
@@ -872,6 +950,7 @@ null )</formula>
     <searchLayouts>
         <customTabListAdditionalFields>Brand__c</customTabListAdditionalFields>
         <customTabListAdditionalFields>Member_Name__c</customTabListAdditionalFields>
+        <customTabListAdditionalFields>CallerPhoneNumber__c</customTabListAdditionalFields>
         <customTabListAdditionalFields>Decision__c</customTabListAdditionalFields>
         <customTabListAdditionalFields>OTP_Email__c</customTabListAdditionalFields>
         <customTabListAdditionalFields>OTP_Phone__c</customTabListAdditionalFields>

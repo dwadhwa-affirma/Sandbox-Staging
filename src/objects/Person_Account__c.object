@@ -307,11 +307,13 @@
     </listViews>
     <listViews>
         <fullName>X20_New_Person_Accounts</fullName>
+        <columns>NAME</columns>
         <columns>PersonID__c</columns>
         <columns>Person_ID_Number__c</columns>
         <columns>Account_Number__c</columns>
         <columns>TypeTranslate__c</columns>
         <columns>Name_Type__c</columns>
+        <columns>CREATED_DATE</columns>
         <columns>LAST_UPDATE</columns>
         <filterScope>Everything</filterScope>
         <filters>

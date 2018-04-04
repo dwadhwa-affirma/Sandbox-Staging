@@ -10,7 +10,21 @@
     </types>
     <types>
         <members>*</members>
-        <name>ApexComponent</name>
+        <name>Flow</name>
+    </types>
+    <types>
+        <members>*</members>
+        <name>ApexPage</name>
+    </types>
+    <types>
+        <members>CFCU_Production</members>
+        <members>CFCU_Service</members>
+        <members>DocuSignDlrsMdapi</members>
+        <members>DocuSignSFDCSoapApi</members>
+        <members>ET4AE5_MCC_TokenService</members>
+        <members>MetadataAPI</members>
+        <members>RealtimeWebcallout</members>
+        <name>RemoteSiteSetting</name>
     </types>
     <types>
         <members>*</members>
@@ -18,7 +32,81 @@
     </types>
     <types>
         <members>*</members>
-        <name>ApexPage</name>
+        <name>ApexTestSuite</name>
+    </types>
+    <types>
+        <members>*</members>
+        <name>Workflow</name>
+    </types>
+    <types>
+        <members>Account</members>
+        <members>AccountContactRole</members>
+        <members>Activity</members>
+        <members>Asset</members>
+        <members>AssetRelationship</members>
+        <members>AssistantProgress</members>
+        <members>Campaign</members>
+        <members>CampaignMember</members>
+        <members>Case</members>
+        <members>CaseContactRole</members>
+        <members>CaseMilestone</members>
+        <members>CollaborationGroup</members>
+        <members>CollaborationGroupMember</members>
+        <members>Contact</members>
+        <members>ContentVersion</members>
+        <members>Contract</members>
+        <members>ContractContactRole</members>
+        <members>ContractLineItem</members>
+        <members>DuplicateRecordItem</members>
+        <members>DuplicateRecordSet</members>
+        <members>EmailMessage</members>
+        <members>Entitlement</members>
+        <members>EntitlementContact</members>
+        <members>Event</members>
+        <members>ExchangeUserMapping</members>
+        <members>FeedItem</members>
+        <members>ForecastingAdjustment</members>
+        <members>ForecastingCategoryMapping</members>
+        <members>ForecastingOwnerAdjustment</members>
+        <members>ForecastingQuota</members>
+        <members>ForecastingTypeToCategory</members>
+        <members>Lead</members>
+        <members>Macro</members>
+        <members>MacroAction</members>
+        <members>MacroInstruction</members>
+        <members>NetworkMember</members>
+        <members>Opportunity</members>
+        <members>OpportunityCompetitor</members>
+        <members>OpportunityContactRole</members>
+        <members>OpportunityLineItem</members>
+        <members>Order</members>
+        <members>OrderItem</members>
+        <members>PartnerRole</members>
+        <members>PersonAccount</members>
+        <members>Pricebook2</members>
+        <members>PricebookEntry</members>
+        <members>Product2</members>
+        <members>QuickText</members>
+        <members>Quote</members>
+        <members>QuoteLineItem</members>
+        <members>Scorecard</members>
+        <members>ScorecardAssociation</members>
+        <members>ScorecardMetric</members>
+        <members>ServiceContract</members>
+        <members>Site</members>
+        <members>SocialPersona</members>
+        <members>SocialPost</members>
+        <members>Solution</members>
+        <members>StreamingChannel</members>
+        <members>Task</members>
+        <members>Topic</members>
+        <members>TopicAssignment</members>
+        <members>User</members>
+        <members>WorkBadge</members>
+        <members>WorkBadgeDefinition</members>
+        <members>WorkThanks</members>
+        <members>*</members>
+        <name>CustomObject</name>
     </types>
     <version>38.0</version>
 </Package>

@@ -67,12 +67,14 @@
     <compactLayoutAssignment>SYSTEM</compactLayoutAssignment>
     <enableEnhancedLookup>true</enableEnhancedLookup>
     <enableFeeds>false</enableFeeds>
-    <enableHistory>false</enableHistory>
+    <enableHistory>true</enableHistory>
     <fields>
         <fullName>AccountNumber</fullName>
+        <trackHistory>false</trackHistory>
     </fields>
     <fields>
         <fullName>AccountSource</fullName>
+        <trackHistory>false</trackHistory>
         <type>Picklist</type>
     </fields>
     <fields>
@@ -87,6 +89,7 @@ ISBLANK(  Residential_Street__pc  ) &amp;&amp;
 ISBLANK(  Residential_Zipocde__pc )), &apos;TRUE&apos;, &apos;FALSE&apos;)</formula>
         <label>Address Check</label>
         <required>false</required>
+        <trackHistory>false</trackHistory>
         <type>Text</type>
         <unique>false</unique>
     </fields>
@@ -99,6 +102,7 @@ ISBLANK(  Residential_Zipocde__pc )), &apos;TRUE&apos;, &apos;FALSE&apos;)</form
         <precision>18</precision>
         <required>false</required>
         <scale>2</scale>
+        <trackHistory>false</trackHistory>
         <type>Number</type>
         <unique>false</unique>
     </fields>
@@ -108,11 +112,13 @@ ISBLANK(  Residential_Zipocde__pc )), &apos;TRUE&apos;, &apos;FALSE&apos;)</form
         <label>Alternate Email</label>
         <length>40</length>
         <required>false</required>
+        <trackHistory>false</trackHistory>
         <type>Text</type>
         <unique>false</unique>
     </fields>
     <fields>
         <fullName>AnnualRevenue</fullName>
+        <trackHistory>false</trackHistory>
     </fields>
     <fields>
         <fullName>Bad_Email__c</fullName>
@@ -120,13 +126,16 @@ ISBLANK(  Residential_Zipocde__pc )), &apos;TRUE&apos;, &apos;FALSE&apos;)</form
         <formula>LOWER(PersonEmail) &lt;&gt; LOWER(Email_raw__c)  || LOWER( Alternate_Email__pc ) &lt;&gt; LOWER( Alt_Email_Raw__c )</formula>
         <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
         <label>Bad Email</label>
+        <trackHistory>false</trackHistory>
         <type>Checkbox</type>
     </fields>
     <fields>
         <fullName>BillingAddress</fullName>
+        <trackHistory>false</trackHistory>
     </fields>
     <fields>
         <fullName>Description</fullName>
+        <trackHistory>false</trackHistory>
     </fields>
     <fields>
         <fullName>Email_raw__c</fullName>
@@ -134,6 +143,7 @@ ISBLANK(  Residential_Zipocde__pc )), &apos;TRUE&apos;, &apos;FALSE&apos;)</form
         <label>Email</label>
         <length>40</length>
         <required>false</required>
+        <trackHistory>false</trackHistory>
         <type>Text</type>
         <unique>false</unique>
     </fields>
@@ -147,6 +157,7 @@ TEXT(MONTH(BIRTH_DATE__pc)) &amp; &quot;/&quot; &amp; TEXT(DAY(BIRTH_DATE__pc)) 
 )</formula>
         <label>Birth Date</label>
         <required>false</required>
+        <trackHistory>false</trackHistory>
         <type>Text</type>
         <unique>false</unique>
     </fields>
@@ -160,6 +171,7 @@ SSN_Last_4__pc
 )</formula>
         <label>SSN Last 4</label>
         <required>false</required>
+        <trackHistory>false</trackHistory>
         <type>Text</type>
         <unique>false</unique>
     </fields>
@@ -170,17 +182,20 @@ SSN_Last_4__pc
         <precision>5</precision>
         <required>false</required>
         <scale>0</scale>
+        <trackHistory>false</trackHistory>
         <type>Number</type>
         <unique>false</unique>
     </fields>
     <fields>
         <fullName>Fax</fullName>
+        <trackHistory>false</trackHistory>
     </fields>
     <fields>
         <fullName>Home_Phone_Number__c</fullName>
         <externalId>false</externalId>
         <label>Home Phone Number</label>
         <required>false</required>
+        <trackHistory>false</trackHistory>
         <type>Phone</type>
     </fields>
     <fields>
@@ -207,6 +222,7 @@ SSN_Last_4__pc
 &apos;Value Not Found&apos;)</formula>
         <label>ID 1 Type</label>
         <required>false</required>
+        <trackHistory>false</trackHistory>
         <type>Text</type>
         <unique>false</unique>
     </fields>
@@ -234,6 +250,7 @@ SSN_Last_4__pc
 &apos;Value Not Found&apos;)</formula>
         <label>ID 2 Type</label>
         <required>false</required>
+        <trackHistory>false</trackHistory>
         <type>Text</type>
         <unique>false</unique>
     </fields>
@@ -261,11 +278,13 @@ SSN_Last_4__pc
 &apos;Value Not Found&apos;)</formula>
         <label>ID 3 Type</label>
         <required>false</required>
+        <trackHistory>false</trackHistory>
         <type>Text</type>
         <unique>false</unique>
     </fields>
     <fields>
         <fullName>Industry</fullName>
+        <trackHistory>false</trackHistory>
         <type>Picklist</type>
     </fields>
     <fields>
@@ -273,6 +292,7 @@ SSN_Last_4__pc
     </fields>
     <fields>
         <fullName>Jigsaw</fullName>
+        <trackHistory>false</trackHistory>
     </fields>
     <fields>
         <fullName>Last_NA_LEHS__c</fullName>
@@ -287,6 +307,7 @@ SSN_Last_4__pc
         </summaryFilterItems>
         <summaryForeignKey>Needs_Assesment__c.Member__c</summaryForeignKey>
         <summaryOperation>max</summaryOperation>
+        <trackHistory>false</trackHistory>
         <type>Summary</type>
     </fields>
     <fields>
@@ -297,6 +318,7 @@ SSN_Last_4__pc
         <summarizedField>Needs_Assesment__c.Last_LEOM__c</summarizedField>
         <summaryForeignKey>Needs_Assesment__c.Member__c</summaryForeignKey>
         <summaryOperation>max</summaryOperation>
+        <trackHistory>false</trackHistory>
         <type>Summary</type>
     </fields>
     <fields>
@@ -307,6 +329,7 @@ SSN_Last_4__pc
         <summarizedField>Needs_Assesment__c.CreatedDate</summarizedField>
         <summaryForeignKey>Needs_Assesment__c.Member__c</summaryForeignKey>
         <summaryOperation>max</summaryOperation>
+        <trackHistory>false</trackHistory>
         <type>Summary</type>
     </fields>
     <fields>
@@ -324,6 +347,7 @@ SSN_Last_4__pc
         <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
         <label>Member Map Link</label>
         <required>false</required>
+        <trackHistory>false</trackHistory>
         <type>Text</type>
         <unique>false</unique>
     </fields>
@@ -332,6 +356,7 @@ SSN_Last_4__pc
         <externalId>false</externalId>
         <label>Member Verification OTP Invalid Attempt</label>
         <required>false</required>
+        <trackHistory>false</trackHistory>
         <type>DateTime</type>
     </fields>
     <fields>
@@ -344,6 +369,7 @@ NA_LEPT_Complete__c &amp;&amp; NA_LEMD_Complete__c &amp;&amp; NA_LEOL_Complete__
 NA_LEEM_Complete__c &amp;&amp; NA_LEMQ_Complete__c</formula>
         <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
         <label>NA Complete</label>
+        <trackHistory>false</trackHistory>
         <type>Checkbox</type>
     </fields>
     <fields>
@@ -352,6 +378,7 @@ NA_LEEM_Complete__c &amp;&amp; NA_LEMQ_Complete__c</formula>
         <description>Flag used for member needs assessments eligibility</description>
         <externalId>false</externalId>
         <label>NA Eligibility</label>
+        <trackHistory>false</trackHistory>
         <type>Checkbox</type>
     </fields>
     <fields>
@@ -361,6 +388,7 @@ NA_LEEM_Complete__c &amp;&amp; NA_LEMQ_Complete__c</formula>
         <formula>NA_LEHS_Expired__c  ||  NA_LEOM_Expired__c</formula>
         <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
         <label>NA Expired</label>
+        <trackHistory>false</trackHistory>
         <type>Checkbox</type>
     </fields>
     <fields>
@@ -368,6 +396,7 @@ NA_LEEM_Complete__c &amp;&amp; NA_LEMQ_Complete__c</formula>
         <defaultValue>false</defaultValue>
         <externalId>false</externalId>
         <label>NA_LEAV_Complete</label>
+        <trackHistory>false</trackHistory>
         <type>Checkbox</type>
     </fields>
     <fields>
@@ -375,6 +404,7 @@ NA_LEEM_Complete__c &amp;&amp; NA_LEMQ_Complete__c</formula>
         <defaultValue>false</defaultValue>
         <externalId>false</externalId>
         <label>NA_LECF_Complete</label>
+        <trackHistory>false</trackHistory>
         <type>Checkbox</type>
     </fields>
     <fields>
@@ -382,6 +412,7 @@ NA_LEEM_Complete__c &amp;&amp; NA_LEMQ_Complete__c</formula>
         <defaultValue>false</defaultValue>
         <externalId>false</externalId>
         <label>NA_LECP_Complete</label>
+        <trackHistory>false</trackHistory>
         <type>Checkbox</type>
     </fields>
     <fields>
@@ -389,6 +420,7 @@ NA_LEEM_Complete__c &amp;&amp; NA_LEMQ_Complete__c</formula>
         <defaultValue>false</defaultValue>
         <externalId>false</externalId>
         <label>NA_LEEM_Complete</label>
+        <trackHistory>false</trackHistory>
         <type>Checkbox</type>
     </fields>
     <fields>
@@ -397,6 +429,7 @@ NA_LEEM_Complete__c &amp;&amp; NA_LEMQ_Complete__c</formula>
         <description>Indicator to show if the NA Housing section is considered complete (TRUE) or partial (FALSE)</description>
         <externalId>false</externalId>
         <label>NA LEHS Complete</label>
+        <trackHistory>false</trackHistory>
         <type>Checkbox</type>
     </fields>
     <fields>
@@ -410,6 +443,7 @@ NA_LEEM_Complete__c &amp;&amp; NA_LEMQ_Complete__c</formula>
 )</formula>
         <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
         <label>NA LEHS Expired</label>
+        <trackHistory>false</trackHistory>
         <type>Checkbox</type>
     </fields>
     <fields>
@@ -417,6 +451,7 @@ NA_LEEM_Complete__c &amp;&amp; NA_LEMQ_Complete__c</formula>
         <externalId>false</externalId>
         <label>NA LEHS Update</label>
         <required>false</required>
+        <trackHistory>false</trackHistory>
         <type>Date</type>
     </fields>
     <fields>
@@ -424,6 +459,7 @@ NA_LEEM_Complete__c &amp;&amp; NA_LEMQ_Complete__c</formula>
         <defaultValue>false</defaultValue>
         <externalId>false</externalId>
         <label>NA_LEMD_Complete</label>
+        <trackHistory>false</trackHistory>
         <type>Checkbox</type>
     </fields>
     <fields>
@@ -431,6 +467,7 @@ NA_LEEM_Complete__c &amp;&amp; NA_LEMQ_Complete__c</formula>
         <defaultValue>false</defaultValue>
         <externalId>false</externalId>
         <label>NA_LEMP_Complete</label>
+        <trackHistory>false</trackHistory>
         <type>Checkbox</type>
     </fields>
     <fields>
@@ -438,6 +475,7 @@ NA_LEEM_Complete__c &amp;&amp; NA_LEMQ_Complete__c</formula>
         <defaultValue>false</defaultValue>
         <externalId>false</externalId>
         <label>NA_LEMQ_Complete</label>
+        <trackHistory>false</trackHistory>
         <type>Checkbox</type>
     </fields>
     <fields>
@@ -445,6 +483,7 @@ NA_LEEM_Complete__c &amp;&amp; NA_LEMQ_Complete__c</formula>
         <defaultValue>false</defaultValue>
         <externalId>false</externalId>
         <label>NA_LEOL_Complete</label>
+        <trackHistory>false</trackHistory>
         <type>Checkbox</type>
     </fields>
     <fields>
@@ -452,6 +491,7 @@ NA_LEEM_Complete__c &amp;&amp; NA_LEMQ_Complete__c</formula>
         <defaultValue>false</defaultValue>
         <externalId>false</externalId>
         <label>NA LEOM Complete</label>
+        <trackHistory>false</trackHistory>
         <type>Checkbox</type>
     </fields>
     <fields>
@@ -466,6 +506,7 @@ NA_LEEM_Complete__c &amp;&amp; NA_LEMQ_Complete__c</formula>
 )</formula>
         <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
         <label>NA LEOM Expired</label>
+        <trackHistory>false</trackHistory>
         <type>Checkbox</type>
     </fields>
     <fields>
@@ -474,6 +515,7 @@ NA_LEEM_Complete__c &amp;&amp; NA_LEMQ_Complete__c</formula>
         <externalId>false</externalId>
         <label>NA LEOM Update</label>
         <required>false</required>
+        <trackHistory>false</trackHistory>
         <type>Date</type>
     </fields>
     <fields>
@@ -481,6 +523,7 @@ NA_LEEM_Complete__c &amp;&amp; NA_LEMQ_Complete__c</formula>
         <defaultValue>false</defaultValue>
         <externalId>false</externalId>
         <label>NA_LEPT_Complete</label>
+        <trackHistory>false</trackHistory>
         <type>Checkbox</type>
     </fields>
     <fields>
@@ -488,6 +531,7 @@ NA_LEEM_Complete__c &amp;&amp; NA_LEMQ_Complete__c</formula>
         <defaultValue>false</defaultValue>
         <externalId>false</externalId>
         <label>NA_LESB_Complete</label>
+        <trackHistory>false</trackHistory>
         <type>Checkbox</type>
     </fields>
     <fields>
@@ -495,6 +539,7 @@ NA_LEEM_Complete__c &amp;&amp; NA_LEMQ_Complete__c</formula>
         <defaultValue>false</defaultValue>
         <externalId>false</externalId>
         <label>NA_LESF_Complete</label>
+        <trackHistory>false</trackHistory>
         <type>Checkbox</type>
     </fields>
     <fields>
@@ -502,6 +547,7 @@ NA_LEEM_Complete__c &amp;&amp; NA_LEMQ_Complete__c</formula>
         <defaultValue>false</defaultValue>
         <externalId>false</externalId>
         <label>NA_LEWS_Complete</label>
+        <trackHistory>false</trackHistory>
         <type>Checkbox</type>
     </fields>
     <fields>
@@ -510,6 +556,7 @@ NA_LEEM_Complete__c &amp;&amp; NA_LEMQ_Complete__c</formula>
         <externalId>false</externalId>
         <label>NA Opt Out Date</label>
         <required>false</required>
+        <trackHistory>false</trackHistory>
         <type>Date</type>
     </fields>
     <fields>
@@ -517,6 +564,7 @@ NA_LEEM_Complete__c &amp;&amp; NA_LEMQ_Complete__c</formula>
         <externalId>false</externalId>
         <label>NA Opt Out Updated</label>
         <required>false</required>
+        <trackHistory>false</trackHistory>
         <type>Date</type>
     </fields>
     <fields>
@@ -525,13 +573,16 @@ NA_LEEM_Complete__c &amp;&amp; NA_LEMQ_Complete__c</formula>
         <description>When checked, indicates that the member has opted to not participate in needs assessments for the period of 1 year.</description>
         <externalId>false</externalId>
         <label>NA Opt Out</label>
+        <trackHistory>false</trackHistory>
         <type>Checkbox</type>
     </fields>
     <fields>
         <fullName>Name</fullName>
+        <trackHistory>false</trackHistory>
     </fields>
     <fields>
         <fullName>NumberOfEmployees</fullName>
+        <trackHistory>false</trackHistory>
     </fields>
     <fields>
         <fullName>Onbase_Drivers_License__c</fullName>
@@ -539,6 +590,7 @@ NA_LEEM_Complete__c &amp;&amp; NA_LEMQ_Complete__c</formula>
         <externalId>false</externalId>
         <label>Onbase Drivers License</label>
         <required>false</required>
+        <trackHistory>false</trackHistory>
         <type>Url</type>
     </fields>
     <fields>
@@ -547,46 +599,59 @@ NA_LEEM_Complete__c &amp;&amp; NA_LEMQ_Complete__c</formula>
         <externalId>false</externalId>
         <label>Onbase Signature Card</label>
         <required>false</required>
+        <trackHistory>false</trackHistory>
         <type>Url</type>
     </fields>
     <fields>
         <fullName>OwnerId</fullName>
+        <trackHistory>false</trackHistory>
         <type>Lookup</type>
     </fields>
     <fields>
         <fullName>Ownership</fullName>
+        <trackHistory>false</trackHistory>
         <type>Picklist</type>
     </fields>
     <fields>
         <fullName>ParentId</fullName>
+        <trackHistory>false</trackHistory>
         <type>Hierarchy</type>
     </fields>
     <fields>
         <fullName>PersonAssistantName</fullName>
+        <trackHistory>false</trackHistory>
     </fields>
     <fields>
         <fullName>PersonAssistantPhone</fullName>
+        <trackHistory>false</trackHistory>
     </fields>
     <fields>
         <fullName>PersonBirthdate</fullName>
+        <trackHistory>false</trackHistory>
     </fields>
     <fields>
         <fullName>PersonDepartment</fullName>
+        <trackHistory>false</trackHistory>
     </fields>
     <fields>
         <fullName>PersonDoNotCall</fullName>
+        <trackHistory>false</trackHistory>
     </fields>
     <fields>
         <fullName>PersonEmail</fullName>
+        <trackHistory>false</trackHistory>
     </fields>
     <fields>
         <fullName>PersonHasOptedOutOfEmail</fullName>
+        <trackHistory>false</trackHistory>
     </fields>
     <fields>
         <fullName>PersonHasOptedOutOfFax</fullName>
+        <trackHistory>false</trackHistory>
     </fields>
     <fields>
         <fullName>PersonHomePhone</fullName>
+        <trackHistory>false</trackHistory>
     </fields>
     <fields>
         <fullName>PersonID__c</fullName>
@@ -595,6 +660,7 @@ NA_LEEM_Complete__c &amp;&amp; NA_LEMQ_Complete__c</formula>
         <label>PersonID</label>
         <length>10</length>
         <required>false</required>
+        <trackHistory>false</trackHistory>
         <type>Text</type>
         <unique>true</unique>
     </fields>
@@ -606,25 +672,32 @@ NA_LEEM_Complete__c &amp;&amp; NA_LEMQ_Complete__c</formula>
     </fields>
     <fields>
         <fullName>PersonLeadSource</fullName>
+        <trackHistory>false</trackHistory>
         <type>Picklist</type>
     </fields>
     <fields>
         <fullName>PersonMailingAddress</fullName>
+        <trackHistory>false</trackHistory>
     </fields>
     <fields>
         <fullName>PersonMobilePhone</fullName>
+        <trackHistory>false</trackHistory>
     </fields>
     <fields>
         <fullName>PersonOtherAddress</fullName>
+        <trackHistory>false</trackHistory>
     </fields>
     <fields>
         <fullName>PersonOtherPhone</fullName>
+        <trackHistory>false</trackHistory>
     </fields>
     <fields>
         <fullName>PersonTitle</fullName>
+        <trackHistory>false</trackHistory>
     </fields>
     <fields>
         <fullName>Phone</fullName>
+        <trackHistory>false</trackHistory>
     </fields>
     <fields>
         <fullName>Phone_Check__c</fullName>
@@ -636,35 +709,64 @@ SUBSTITUTE(SUBSTITUTE(SUBSTITUTE(SUBSTITUTE(Work_Phone__pc,   &quot;(&quot;, &qu
         <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
         <label>Phone Check</label>
         <required>false</required>
+        <trackHistory>false</trackHistory>
         <type>Text</type>
         <unique>false</unique>
     </fields>
     <fields>
         <fullName>Rating</fullName>
+        <trackHistory>false</trackHistory>
         <type>Picklist</type>
     </fields>
     <fields>
         <fullName>ShippingAddress</fullName>
+        <trackHistory>false</trackHistory>
     </fields>
     <fields>
         <fullName>Sic</fullName>
+        <trackHistory>false</trackHistory>
     </fields>
     <fields>
         <fullName>SicDesc</fullName>
+        <trackHistory>false</trackHistory>
     </fields>
     <fields>
         <fullName>Site</fullName>
+        <trackHistory>false</trackHistory>
     </fields>
     <fields>
         <fullName>TickerSymbol</fullName>
+        <trackHistory>false</trackHistory>
     </fields>
     <fields>
         <fullName>Type</fullName>
+        <trackHistory>false</trackHistory>
         <type>Picklist</type>
     </fields>
     <fields>
         <fullName>Website</fullName>
+        <trackHistory>false</trackHistory>
     </fields>
+    <listViews>
+        <fullName>AllAccounts</fullName>
+        <columns>PersonID__c</columns>
+        <columns>ACCOUNT.NAME</columns>
+        <columns>ACCOUNT.PHONE1</columns>
+        <columns>ACCOUNT.TYPE</columns>
+        <columns>LastModifiedDate__pc</columns>
+        <columns>NA_Eligibility__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>PersonID__pc</field>
+            <operation>notEqual</operation>
+        </filters>
+        <label>All Members</label>
+    </listViews>
+    <listViews>
+        <fullName>MyAccounts</fullName>
+        <filterScope>Mine</filterScope>
+        <label>My Accounts</label>
+    </listViews>
     <listViews>
         <fullName>test2</fullName>
         <columns>ACCOUNT.NAME</columns>
@@ -676,17 +778,7 @@ SUBSTITUTE(SUBSTITUTE(SUBSTITUTE(SUBSTITUTE(Work_Phone__pc,   &quot;(&quot;, &qu
             <role>IT</role>
         </sharedTo>
     </listViews>
-    <listViews>
-        <fullName>test55</fullName>
-        <columns>ACCOUNT.NAME</columns>
-        <columns>PC_LAST_NAME</columns>
-        <columns>PC_FIRST_NAME</columns>
-        <columns>Email_raw__c</columns>
-        <columns>PersonID__c</columns>
-        <columns>PersonID__pc</columns>
-        <filterScope>Everything</filterScope>
-        <label>test55</label>
-    </listViews>
+    <recordTypeTrackHistory>false</recordTypeTrackHistory>
     <recordTypes>
         <fullName>Business_Account</fullName>
         <active>true</active>
@@ -950,13 +1042,11 @@ SUBSTITUTE(SUBSTITUTE(SUBSTITUTE(SUBSTITUTE(Work_Phone__pc,   &quot;(&quot;, &qu
     <searchLayouts>
         <customTabListAdditionalFields>ACCOUNT.NAME</customTabListAdditionalFields>
         <customTabListAdditionalFields>ACCOUNT.PHONE1</customTabListAdditionalFields>
-        <customTabListAdditionalFields>SSN_Last_4__pc</customTabListAdditionalFields>
+        <customTabListAdditionalFields>Emp_SSN_Last_4__c</customTabListAdditionalFields>
         <customTabListAdditionalFields>Residential_City__pc</customTabListAdditionalFields>
         <customTabListAdditionalFields>Residential_State__pc</customTabListAdditionalFields>
-        <customTabListAdditionalFields>BIRTH_DATE__pc</customTabListAdditionalFields>
+        <customTabListAdditionalFields>Emp_Birth_Date__c</customTabListAdditionalFields>
         <customTabListAdditionalFields>PC_EMAIL</customTabListAdditionalFields>
-        <excludedStandardButtons>DataDotComGetAccountsMultiAddAction</excludedStandardButtons>
-        <excludedStandardButtons>New</excludedStandardButtons>
         <lookupDialogsAdditionalFields>ACCOUNT.NAME</lookupDialogsAdditionalFields>
         <lookupDialogsAdditionalFields>ACCOUNT.SITE</lookupDialogsAdditionalFields>
         <lookupDialogsAdditionalFields>CORE.USERS.ALIAS</lookupDialogsAdditionalFields>
@@ -978,15 +1068,16 @@ SUBSTITUTE(SUBSTITUTE(SUBSTITUTE(SUBSTITUTE(Work_Phone__pc,   &quot;(&quot;, &qu
         <lookupPhoneDialogsAdditionalFields>Home_Phone__pc</lookupPhoneDialogsAdditionalFields>
         <lookupPhoneDialogsAdditionalFields>Mobile_Phone__pc</lookupPhoneDialogsAdditionalFields>
         <lookupPhoneDialogsAdditionalFields>Work_Phone__pc</lookupPhoneDialogsAdditionalFields>
-        <searchFilterFields>Residential_City__pc</searchFilterFields>
-        <searchFilterFields>Residential_State__pc</searchFilterFields>
         <searchResultsAdditionalFields>ACCOUNT.NAME</searchResultsAdditionalFields>
-        <searchResultsAdditionalFields>Emp_SSN_Last_4__c</searchResultsAdditionalFields>
-        <searchResultsAdditionalFields>Residential_City__pc</searchResultsAdditionalFields>
-        <searchResultsAdditionalFields>Residential_State__pc</searchResultsAdditionalFields>
-        <searchResultsAdditionalFields>Emp_Birth_Date__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>ACCOUNT.SITE</searchResultsAdditionalFields>
         <searchResultsAdditionalFields>ACCOUNT.PHONE1</searchResultsAdditionalFields>
-        <searchResultsAdditionalFields>PC_EMAIL</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>CORE.USERS.ALIAS</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>ACCOUNT.ACCOUNT_NUMBER</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>ACCOUNT.RECORDTYPE</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>ACCOUNT.TYPE</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>ACCOUNT.IS_CUSTOMERSUCCESS</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>PARENT_NAME</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>PC_BIRTHDATE</searchResultsAdditionalFields>
     </searchLayouts>
     <sharingModel>ReadWrite</sharingModel>
     <validationRules>
@@ -1020,10 +1111,11 @@ SUBSTITUTE(SUBSTITUTE(SUBSTITUTE(SUBSTITUTE(Work_Phone__pc,   &quot;(&quot;, &qu
 var redirectUrl = &quot;00Q/e?ent=Lead&amp;RecordType={!$Label.LeadRecordTypeID}	&amp;retURL=&quot;+&apos;{!Account.Id}&apos;+&quot;&amp;save_new_url=%2F00Q%2Fe%3FretURL%3D%252F00Q%252Fo&quot;; // Basic Url redirect to Lead edit page. 
 console.log(&apos;redirectUrl:&apos;,redirectUrl); 
 var person; // SOQL query to fetch the person record 
-
+//alert(&apos;redirectUrl is:::&apos;+redirectUrl);
 
 try{ 
-person = sforce.connection.query(&quot;SELECT Id,Name,Alternate_Email__pc,FirstName,MiddleName,LastName,PersonEmail,Residential_City__pc,Residential_Country_Code__pc,Residential_Country__pc,Residential_Extra_Address__pc,Residential_State__pc,Residential_Street__pc,Residential_Zipocde__pc, PersonMobilePhone, PersonHomePhone, PersonOtherPhone, Phone FROM Account Where Id = &apos;{!Account.Id}&apos;&quot;); 
+person = sforce.connection.query(&quot;SELECT Id,Name,Alternate_Email__pc,FirstName,MiddleName,LastName,PersonEmail,Residential_City__pc,Residential_Country_Code__pc,Residential_Country__pc,Residential_Extra_Address__pc,Residential_State__pc,Residential_Street__pc,Residential_Zipocde__pc, PersonMobilePhone, Home_Phone__pc, Phone FROM Account Where Id = &apos;{!Account.Id}&apos;&quot;);
+//alert(&apos;Query result is:::&apos;+person); 
 
 var res = person.getArray(&quot;records&quot;); // storing an array in a string. 
 console.log(&apos;ressss::&apos;,res); 
@@ -1095,7 +1187,7 @@ Country = res[0].Residential_Country__pc;
 if(res[0].PersonHomePhone == null){ 
 HomePhone = &apos;&apos;; 
 }else{ 
-HomePhone = res[0].PersonHomePhone; 
+HomePhone = res[0].Home_Phone__pc; 
 } 
 
 if(res[0].PersonMobilePhone == null){ 
@@ -1110,11 +1202,11 @@ Phone = &apos;&apos;;
 Phone = res[0].Phone; 
 } 
 
-if(res[0].PersonOtherPhone == null){ 
-OtherPhone = &apos;&apos;; 
-}else{ 
-OtherPhone = res[0].PersonOtherPhone ; 
-} 
+//if(res[0].PersonOtherPhone == null){ 
+//OtherPhone = &apos;&apos;; 
+//}else{ 
+//OtherPhone = res[0].PersonOtherPhone ; 
+//} 
 
 
 
@@ -1135,8 +1227,10 @@ redirectUrl+=&quot;&amp;{!$Label.LeadStreetAddress}=&quot;+StreetAddress+
 &quot;&amp;lea11=&quot;+Email+ 
 &quot;&amp;lea8=&quot;+Phone+ 
 &quot;&amp;lea9=&quot;+MobilePhone+ 
-&quot;&amp;{!$Label.LeadHomePhone}=&quot;+HomePhone+ 
-&quot;&amp;{!$Label.LeadOtherPhone}=&quot;+OtherPhone; // adding prefill data in a url. 
+&quot;&amp;{!$Label.LeadHomePhone}=&quot;+HomePhone;
+//+ 
+//&quot;&amp;{!$Label.LeadOtherPhone}=&quot;+OtherPhone; 
+// adding prefill data in a url. 
 
 window.open(redirectUrl); // redirecting the url. 
 console.log(&apos;URL:::&apos;,redirectUrl); 
@@ -1241,24 +1335,6 @@ alert(&apos;Error retrieving the record&apos;);
         <showsLocation>true</showsLocation>
         <showsStatus>true</showsStatus>
         <url>http://www.genwatt.com/genwatt/billing.htm?actname={!Account.Name}</url>
-    </webLinks>
-    <webLinks>
-        <fullName>Secure_Authentication</fullName>
-        <availability>online</availability>
-        <displayType>button</displayType>
-        <hasMenubar>false</hasMenubar>
-        <hasScrollbars>true</hasScrollbars>
-        <hasToolbar>false</hasToolbar>
-        <height>600</height>
-        <isResizable>true</isResizable>
-        <linkType>page</linkType>
-        <masterLabel>Secure Authentication</masterLabel>
-        <openType>newWindow</openType>
-        <page>SecureOTPAuthentication</page>
-        <position>none</position>
-        <protected>false</protected>
-        <showsLocation>false</showsLocation>
-        <showsStatus>false</showsStatus>
     </webLinks>
     <webLinks>
         <fullName>dsfs__Send_with_DocuSign</fullName>

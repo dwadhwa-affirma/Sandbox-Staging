@@ -86,10 +86,6 @@
         <description>Lead process for all the Call Center Users</description>
         <isActive>false</isActive>
         <values>
-            <fullName>Closed</fullName>
-            <default>false</default>
-        </values>
-        <values>
             <fullName>Open</fullName>
             <default>true</default>
         </values>
@@ -133,258 +129,6 @@
         <trackHistory>false</trackHistory>
     </fields>
     <fields>
-        <fullName>Assign_To_View__c</fullName>
-        <externalId>false</externalId>
-        <label>Assign To View</label>
-        <required>false</required>
-        <trackHistory>false</trackHistory>
-        <type>Picklist</type>
-        <valueSet>
-            <restricted>true</restricted>
-            <valueSetDefinition>
-                <sorted>false</sorted>
-                <value>
-                    <fullName>None1</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>Call Center</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>Other</fullName>
-                    <default>false</default>
-                </value>
-            </valueSetDefinition>
-        </valueSet>
-    </fields>
-    <fields>
-        <fullName>AssignedBranch__c</fullName>
-        <externalId>false</externalId>
-        <label>AssignedBranch</label>
-        <required>false</required>
-        <trackHistory>false</trackHistory>
-        <type>Picklist</type>
-        <valueSet>
-            <restricted>true</restricted>
-            <valueSetDefinition>
-                <sorted>false</sorted>
-                <value>
-                    <fullName>0</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>1</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>2</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>3</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>4</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>5</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>6</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>7</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>8</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>9</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>14</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>15</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>17</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>19</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>20</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>21</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>22</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>23</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>24</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>25</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>27</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>28</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>29</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>70</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>71</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>72</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>80</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>81</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>82</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>83</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>84</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>85</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>86</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>87</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>88</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>89</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>90</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>91</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>92</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>93</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>94</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>95</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>96</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>97</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>98</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>99</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>201</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>202</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>203</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>204</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>205</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>206</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>207</fullName>
-                    <default>false</default>
-                </value>
-            </valueSetDefinition>
-        </valueSet>
-    </fields>
-    <fields>
         <fullName>Best_Time_To_Call__c</fullName>
         <externalId>false</externalId>
         <label>Best Time To Call</label>
@@ -393,40 +137,6 @@
         <trackHistory>true</trackHistory>
         <type>Text</type>
         <unique>false</unique>
-    </fields>
-    <fields>
-        <fullName>Best_time_to_contact__c</fullName>
-        <externalId>false</externalId>
-        <label>Best time to contact</label>
-        <required>false</required>
-        <trackHistory>false</trackHistory>
-        <type>MultiselectPicklist</type>
-        <valueSet>
-            <valueSetDefinition>
-                <sorted>false</sorted>
-                <value>
-                    <fullName>7 a.m. - 9 a.m.</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>9 a.m. - Noon</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>Noon - 2 p.m.</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>2 p.m. - 4 p.m.</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>4 p.m. - 6 p.m.</fullName>
-                    <default>false</default>
-                </value>
-            </valueSetDefinition>
-        </valueSet>
-        <visibleLines>4</visibleLines>
     </fields>
     <fields>
         <fullName>Branch_of_Lead_creator__c</fullName>
@@ -463,7 +173,7 @@
                     <default>false</default>
                 </value>
                 <value>
-                    <fullName>08</fullName>
+                    <fullName>208</fullName>
                     <default>false</default>
                 </value>
                 <value>
@@ -643,7 +353,7 @@
         <externalId>false</externalId>
         <label>Brand</label>
         <required>false</required>
-        <trackHistory>true</trackHistory>
+        <trackHistory>false</trackHistory>
         <type>Picklist</type>
         <valueSet>
             <valueSetDefinition>
@@ -698,57 +408,6 @@
         <unique>false</unique>
     </fields>
     <fields>
-        <fullName>Current_Home_Refinance__c</fullName>
-        <externalId>false</externalId>
-        <label>Current Home Refinance</label>
-        <required>false</required>
-        <trackHistory>false</trackHistory>
-        <type>Picklist</type>
-        <valueSet>
-            <restricted>true</restricted>
-            <valueSetDefinition>
-                <sorted>false</sorted>
-                <value>
-                    <fullName>Immediate Need</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>3-6 months</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>6-9 months</fullName>
-                    <default>false</default>
-                </value>
-            </valueSetDefinition>
-        </valueSet>
-    </fields>
-    <fields>
-        <fullName>Debt_Consolidation_Refinance__c</fullName>
-        <externalId>false</externalId>
-        <label>Debt Consolidation Refinance</label>
-        <required>false</required>
-        <trackHistory>false</trackHistory>
-        <type>Picklist</type>
-        <valueSet>
-            <valueSetDefinition>
-                <sorted>false</sorted>
-                <value>
-                    <fullName>Immediate Need</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>3-6 months</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>6-9 months</fullName>
-                    <default>false</default>
-                </value>
-            </valueSetDefinition>
-        </valueSet>
-    </fields>
-    <fields>
         <fullName>Description</fullName>
         <trackHistory>true</trackHistory>
     </fields>
@@ -756,7 +415,7 @@
         <fullName>Description__c</fullName>
         <externalId>false</externalId>
         <label>Description</label>
-        <length>100</length>
+        <length>250</length>
         <required>false</required>
         <trackHistory>false</trackHistory>
         <type>Text</type>
@@ -810,6 +469,16 @@
         <type>Checkbox</type>
     </fields>
     <fields>
+        <fullName>Estimate_Value__c</fullName>
+        <externalId>false</externalId>
+        <label>Estimate Value</label>
+        <length>100</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
         <fullName>Event_Create_Date__c</fullName>
         <externalId>false</externalId>
         <label>Event Create Date</label>
@@ -833,6 +502,62 @@
                 </value>
                 <value>
                     <fullName>Event – San Francisco Plaza Event 11/30/17</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Event-Pascagoula-Contractor Safety Meeting-12/07/17</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Event-Pascagoula-Brock New Hire Orientation-01/05/18</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Event-Richmond-Pinole Valley Juniors Fundraiser-01/07/18</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Event-El Paso-Contractor Visit-01/24/18</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Event-1600 Smith Houston-Lunch and Learn-01/24/18</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Event-Pascagoula-Chevron Retiree Luncheon-01/23/18</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Event-Post Oak Houston-Briarpark Atrium Event-01/24/18</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Event-El Paso-Lobby Event-02/02/18</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Event-Post Oak Houston-Stewart Legacy Event-01/25/18</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Event-Pascagoula-Meet and Greet-01/30/18</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Event-Reston-Open House-01/31/18</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Event-Houston Galleria-Lobby Event-02/07/18</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Event-Pascagoula-Contractor New Hire Orientation-01/19/18</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Event-Covington-Meet and Greet-01/31/18</fullName>
                     <default>false</default>
                 </value>
             </valueSetDefinition>
@@ -911,27 +636,11 @@
         <fullName>I_m_interested_in__c</fullName>
         <externalId>false</externalId>
         <label>I&apos;m interested in</label>
+        <length>50</length>
         <required>false</required>
         <trackHistory>false</trackHistory>
-        <type>Picklist</type>
-        <valueSet>
-            <restricted>true</restricted>
-            <valueSetDefinition>
-                <sorted>false</sorted>
-                <value>
-                    <fullName>New Home Purchase</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>Current Home Refinance</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>Debt Consolidation Refinance</fullName>
-                    <default>false</default>
-                </value>
-            </valueSetDefinition>
-        </valueSet>
+        <type>Text</type>
+        <unique>false</unique>
     </fields>
     <fields>
         <fullName>Image_URL__c</fullName>
@@ -958,7 +667,7 @@
         <externalId>false</externalId>
         <inlineHelpText>Keep ownership of the Lead and do not allow the assignment rules to route it to a group&apos;s queue.</inlineHelpText>
         <label>Keep</label>
-        <trackHistory>false</trackHistory>
+        <trackHistory>true</trackHistory>
         <type>Checkbox</type>
     </fields>
     <fields>
@@ -966,6 +675,7 @@
     </fields>
     <fields>
         <fullName>LeadSource</fullName>
+        <inlineHelpText>Event -  El Segundo Company Picnic</inlineHelpText>
         <trackHistory>false</trackHistory>
         <type>Picklist</type>
     </fields>
@@ -998,7 +708,7 @@
         <fullName>Lead_Type__c</fullName>
         <externalId>false</externalId>
         <label>Lead Type</label>
-        <required>true</required>
+        <required>false</required>
         <trackHistory>false</trackHistory>
         <type>Picklist</type>
         <valueSet>
@@ -1020,6 +730,16 @@
                 </value>
             </valueSetDefinition>
         </valueSet>
+    </fields>
+    <fields>
+        <fullName>Loan_Amount__c</fullName>
+        <externalId>false</externalId>
+        <label>Loan Amount</label>
+        <length>100</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <type>Text</type>
+        <unique>false</unique>
     </fields>
     <fields>
         <fullName>Member_Account__c</fullName>
@@ -1089,41 +809,29 @@
         <trackHistory>false</trackHistory>
     </fields>
     <fields>
-        <fullName>New_Home_Purchase__c</fullName>
-        <externalId>false</externalId>
-        <label>New Home Purchase</label>
-        <required>false</required>
-        <trackHistory>false</trackHistory>
-        <type>Picklist</type>
-        <valueSet>
-            <valueSetDefinition>
-                <sorted>false</sorted>
-                <value>
-                    <fullName>Immediate Need</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>3-6 months</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>6-12 months</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>12-18 months</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>18 months or more</fullName>
-                    <default>false</default>
-                </value>
-            </valueSetDefinition>
-        </valueSet>
-    </fields>
-    <fields>
         <fullName>NumberOfEmployees</fullName>
         <trackHistory>false</trackHistory>
+    </fields>
+    <fields>
+        <fullName>Open_Hours__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <externalId>false</externalId>
+        <label>Open Hours</label>
+        <lookupFilter>
+            <active>true</active>
+            <filterItems>
+                <field>$Source.Id</field>
+                <operation>equals</operation>
+                <valueField>OpenHours__c.LeadId__c</valueField>
+            </filterItems>
+            <isOptional>false</isOptional>
+        </lookupFilter>
+        <referenceTo>OpenHours__c</referenceTo>
+        <relationshipLabel>Leads</relationshipLabel>
+        <relationshipName>Leads</relationshipName>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <type>Lookup</type>
     </fields>
     <fields>
         <fullName>Other_Phone__c</fullName>
@@ -1137,9 +845,17 @@
         <fullName>Over72_hours__c</fullName>
         <description>Number of hours since lead is created is over 72 hours or not.</description>
         <externalId>false</externalId>
-        <formula>(NOW()-CreatedDate)*24&gt;72</formula>
+        <formula>(NOW()-CreatedDate)*24 &gt; 72</formula>
         <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
         <label>Over 72 hours</label>
+        <trackHistory>false</trackHistory>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Over_30_days__c</fullName>
+        <externalId>false</externalId>
+        <formula>IF((NOW()- CreatedDate)*24&gt;30*24 , True, False)</formula>
+        <label>Over 30 days</label>
         <trackHistory>false</trackHistory>
         <type>Checkbox</type>
     </fields>
@@ -1147,31 +863,6 @@
         <fullName>OwnerId</fullName>
         <trackHistory>true</trackHistory>
         <type>Lookup</type>
-    </fields>
-    <fields>
-        <fullName>Ownership__c</fullName>
-        <externalId>false</externalId>
-        <label>Ownership</label>
-        <required>false</required>
-        <trackHistory>false</trackHistory>
-        <type>Picklist</type>
-        <valueSet>
-            <valueSetDefinition>
-                <sorted>false</sorted>
-                <value>
-                    <fullName>Keep</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>Auto Assign</fullName>
-                    <default>true</default>
-                </value>
-                <value>
-                    <fullName>Assign</fullName>
-                    <default>false</default>
-                </value>
-            </valueSetDefinition>
-        </valueSet>
     </fields>
     <fields>
         <fullName>Person__c</fullName>
@@ -1557,6 +1248,10 @@
                     <default>false</default>
                 </value>
                 <value>
+                    <fullName>Thank You for Attending</fullName>
+                    <default>false</default>
+                </value>
+                <value>
                     <fullName>Variable Line of Credit</fullName>
                     <default>false</default>
                 </value>
@@ -1823,6 +1518,10 @@
                 <controllingFieldValue>Misc</controllingFieldValue>
                 <valueName>SCU New Hire PLOC</valueName>
             </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Misc</controllingFieldValue>
+                <valueName>Thank You for Attending</valueName>
+            </valueSettings>
         </valueSet>
     </fields>
     <fields>
@@ -1857,10 +1556,6 @@
                 </value>
                 <value>
                     <fullName>Mortgage</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>Solar</fullName>
                     <default>false</default>
                 </value>
                 <value>
@@ -1916,61 +1611,10 @@
         <type>Picklist</type>
     </fields>
     <fields>
-        <fullName>Request_Newsletter__c</fullName>
+        <fullName>Source__c</fullName>
         <externalId>false</externalId>
-        <label>Request Newsletter</label>
-        <required>false</required>
-        <trackHistory>false</trackHistory>
-        <type>Picklist</type>
-        <valueSet>
-            <valueSetDefinition>
-                <sorted>false</sorted>
-                <value>
-                    <fullName>General</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>Real Estate</fullName>
-                    <default>false</default>
-                </value>
-            </valueSetDefinition>
-        </valueSet>
-    </fields>
-    <fields>
-        <fullName>Request_additional_information__c</fullName>
-        <externalId>false</externalId>
-        <label>Request additional information</label>
-        <required>false</required>
-        <trackHistory>false</trackHistory>
-        <type>MultiselectPicklist</type>
-        <valueSet>
-            <valueSetDefinition>
-                <sorted>false</sorted>
-                <value>
-                    <fullName>First Time Home Buyer Program</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>Real Estate Lending Education Material</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>Preferred Realtor® Program (PRP)</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>Credit Union Membership Information</fullName>
-                    <default>false</default>
-                </value>
-            </valueSetDefinition>
-        </valueSet>
-        <visibleLines>4</visibleLines>
-    </fields>
-    <fields>
-        <fullName>State_P__c</fullName>
-        <externalId>false</externalId>
-        <label>State/province</label>
-        <length>100</length>
+        <label>Source</label>
+        <length>250</length>
         <required>false</required>
         <trackHistory>false</trackHistory>
         <type>Text</type>
@@ -2023,6 +1667,10 @@
             <valueSetDefinition>
                 <sorted>false</sorted>
                 <value>
+                    <fullName>Contact</fullName>
+                    <default>false</default>
+                </value>
+                <value>
                     <fullName>Not Interested</fullName>
                     <default>false</default>
                 </value>
@@ -2044,6 +1692,10 @@
                 </value>
                 <value>
                     <fullName>App Completed</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Follow Up Required</fullName>
                     <default>false</default>
                 </value>
                 <value>
@@ -2082,15 +1734,23 @@
                     <fullName>Contact Attempted</fullName>
                     <default>false</default>
                 </value>
-                <value>
-                    <fullName>Follow Up Required</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>Contact</fullName>
-                    <default>false</default>
-                </value>
             </valueSetDefinition>
+            <valueSettings>
+                <controllingFieldValue>In Process</controllingFieldValue>
+                <valueName>Appointment Set Branch</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>In Process</controllingFieldValue>
+                <valueName>Appointment Set Phone</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>In Process</controllingFieldValue>
+                <valueName>Additional Follow-up Required</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>In Process</controllingFieldValue>
+                <valueName>Contact Attempted</valueName>
+            </valueSettings>
             <valueSettings>
                 <controllingFieldValue>Closed</controllingFieldValue>
                 <valueName>Not Interested</valueName>
@@ -2131,23 +1791,17 @@
                 <controllingFieldValue>Closed</controllingFieldValue>
                 <valueName>Duplicate</valueName>
             </valueSettings>
-            <valueSettings>
-                <controllingFieldValue>In Process</controllingFieldValue>
-                <valueName>Appointment Set Branch</valueName>
-            </valueSettings>
-            <valueSettings>
-                <controllingFieldValue>In Process</controllingFieldValue>
-                <valueName>Appointment Set Phone</valueName>
-            </valueSettings>
-            <valueSettings>
-                <controllingFieldValue>In Process</controllingFieldValue>
-                <valueName>Additional Follow-up Required</valueName>
-            </valueSettings>
-            <valueSettings>
-                <controllingFieldValue>In Process</controllingFieldValue>
-                <valueName>Contact Attempted</valueName>
-            </valueSettings>
         </valueSet>
+    </fields>
+    <fields>
+        <fullName>SubmitterIP__c</fullName>
+        <externalId>false</externalId>
+        <label>Submitter IP</label>
+        <length>250</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <type>Text</type>
+        <unique>false</unique>
     </fields>
     <fields>
         <fullName>Support_Contact_Details__c</fullName>
@@ -2163,35 +1817,64 @@
         <fullName>Timeframe__c</fullName>
         <externalId>false</externalId>
         <label>Timeframe</label>
+        <length>50</length>
         <required>false</required>
         <trackHistory>false</trackHistory>
-        <type>Picklist</type>
-        <valueSet>
-            <restricted>true</restricted>
-            <valueSetDefinition>
-                <sorted>false</sorted>
-                <value>
-                    <fullName>Immediate Need</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>3-6 months</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>6-12 months</fullName>
-                    <default>false</default>
-                </value>
-                <value>
-                    <fullName>12 months or more</fullName>
-                    <default>false</default>
-                </value>
-            </valueSetDefinition>
-        </valueSet>
+        <type>Text</type>
+        <unique>false</unique>
     </fields>
     <fields>
         <fullName>Title</fullName>
         <trackHistory>false</trackHistory>
+    </fields>
+    <fields>
+        <fullName>UID__c</fullName>
+        <description>Unique ID for attaching the loan application (Marketing Cloud)</description>
+        <externalId>false</externalId>
+        <label>UID</label>
+        <length>50</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>UnbouncePageID__c</fullName>
+        <externalId>false</externalId>
+        <label>Unbounce Page ID</label>
+        <length>250</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>UnbouncePageVariant__c</fullName>
+        <externalId>false</externalId>
+        <label>Unbounce Page Variant</label>
+        <length>250</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>UnbounceSubmissionDate__c</fullName>
+        <externalId>false</externalId>
+        <label>Unbounce Submission Date</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>UnbounceSubmissionTime__c</fullName>
+        <externalId>false</externalId>
+        <label>Unbounce Submission Time</label>
+        <length>250</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <type>Text</type>
+        <unique>false</unique>
     </fields>
     <fields>
         <fullName>Website</fullName>
@@ -3338,21 +3021,30 @@
         <type>Number</type>
         <unique>false</unique>
     </fields>
+    <fields>
+        <fullName>temp__c</fullName>
+        <defaultValue>false</defaultValue>
+        <externalId>false</externalId>
+        <label>temp</label>
+        <trackHistory>false</trackHistory>
+        <type>Checkbox</type>
+    </fields>
     <listViews>
         <fullName>AllOpenLeads</fullName>
         <columns>lead_number_link__c</columns>
-        <columns>Episys_User_ID__c</columns>
         <columns>FULL_NAME</columns>
-        <columns>CREATEDBY_USER.ALIAS</columns>
+        <columns>Member_Account__c</columns>
+        <columns>Open_Hours__c</columns>
         <columns>Product_Subtype__c</columns>
-        <columns>LEAD.PHONE</columns>
-        <columns>LEAD.EMAIL</columns>
         <columns>LEAD.STATUS</columns>
         <columns>Sub_Status__c</columns>
         <columns>LEAD.CREATED_DATE</columns>
+        <columns>CORE.USERS.LAST_NAME</columns>
+        <columns>CORE.USERS.FIRST_NAME</columns>
         <columns>CORE.USERS.ALIAS</columns>
-        <columns>LEAD.LAST_UPDATE</columns>
+        <columns>CREATEDBY_USER.ALIAS</columns>
         <columns>UPDATEDBY_USER.ALIAS</columns>
+        <columns>LEAD.LAST_UPDATE</columns>
         <filterScope>Everything</filterScope>
         <filters>
             <field>LEAD.STATUS</field>
@@ -3382,17 +3074,128 @@
         <label>All Closed Leads</label>
     </listViews>
     <listViews>
-        <fullName>All_Leads</fullName>
+        <fullName>All_Event_Leads</fullName>
         <columns>lead_number_link__c</columns>
         <columns>FULL_NAME</columns>
-        <columns>LEAD.UNREAD</columns>
-        <columns>LEAD.STATUS</columns>
-        <columns>CORE.USERS.ALIAS</columns>
-        <columns>CREATEDBY_USER.ALIAS</columns>
+        <columns>Member_Account__c</columns>
+        <columns>LEAD.CREATED_DATE</columns>
         <columns>Product_Type__c</columns>
-        <columns>Product_Subtype__c</columns>
+        <columns>LEAD.LEAD_SOURCE</columns>
+        <columns>LEAD.STATUS</columns>
+        <columns>CORE.USERS.LAST_NAME</columns>
+        <columns>LEAD.LAST_UPDATE</columns>
+        <columns>Description__c</columns>
         <filterScope>Everything</filterScope>
-        <label>All Leads</label>
+        <filters>
+            <field>LEAD.STATUS</field>
+            <operation>notEqual</operation>
+            <value>Closed</value>
+        </filters>
+        <filters>
+            <field>LEAD.LEAD_SOURCE</field>
+            <operation>contains</operation>
+            <value>event</value>
+        </filters>
+        <label>All Event Leads</label>
+    </listViews>
+    <listViews>
+        <fullName>Bakersfield_Camino_Kern_Event_Leads</fullName>
+        <columns>lead_number_link__c</columns>
+        <columns>LEAD.LAST_NAME</columns>
+        <columns>Member_Account__c</columns>
+        <columns>LEAD.CREATED_DATE</columns>
+        <columns>Product_Type__c</columns>
+        <columns>LEAD.LEAD_SOURCE</columns>
+        <columns>Event_Source__c</columns>
+        <columns>LEAD.STATUS</columns>
+        <columns>LEAD.LAST_UPDATE</columns>
+        <columns>CORE.USERS.LAST_NAME</columns>
+        <columns>Description__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>LEAD.LEAD_SOURCE</field>
+            <operation>contains</operation>
+            <value>bakersfield,camino,kern</value>
+        </filters>
+        <filters>
+            <field>LEAD.STATUS</field>
+            <operation>notEqual</operation>
+            <value>Closed</value>
+        </filters>
+        <filters>
+            <field>Product_Type__c</field>
+            <operation>notContain</operation>
+            <value>thank you</value>
+        </filters>
+        <filters>
+            <field>Product_Subtype__c</field>
+            <operation>notContain</operation>
+            <value>thank you</value>
+        </filters>
+        <filters>
+            <field>LEAD.LEAD_SOURCE</field>
+            <operation>contains</operation>
+            <value>event</value>
+        </filters>
+        <label>Bakersfield-Camino-Kern Event Leads</label>
+        <sharedTo>
+            <roleAndSubordinatesInternal>Branch_Bakersfield_024</roleAndSubordinatesInternal>
+            <roleAndSubordinatesInternal>Branch_Camino_Media_020</roleAndSubordinatesInternal>
+            <roleAndSubordinatesInternal>Branch_Kern_River_021</roleAndSubordinatesInternal>
+            <roleAndSubordinatesInternal>Regional_Manager_Southern_California</roleAndSubordinatesInternal>
+        </sharedTo>
+    </listViews>
+    <listViews>
+        <fullName>Bay_Area_event_Leads</fullName>
+        <columns>lead_number_link__c</columns>
+        <columns>LEAD.LAST_NAME</columns>
+        <columns>Member_Account__c</columns>
+        <columns>LEAD.CREATED_DATE</columns>
+        <columns>Product_Type__c</columns>
+        <columns>LEAD.LEAD_SOURCE</columns>
+        <columns>Event_Source__c</columns>
+        <columns>LEAD.STATUS</columns>
+        <columns>CORE.USERS.LAST_NAME</columns>
+        <columns>LEAD.LAST_UPDATE</columns>
+        <columns>Description__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>LEAD.LEAD_SOURCE</field>
+            <operation>contains</operation>
+            <value>pleasant,francisco,ramon,richmond</value>
+        </filters>
+        <filters>
+            <field>LEAD.STATUS</field>
+            <operation>notEqual</operation>
+            <value>Closed</value>
+        </filters>
+        <filters>
+            <field>Product_Type__c</field>
+            <operation>notContain</operation>
+            <value>thank you</value>
+        </filters>
+        <filters>
+            <field>Product_Subtype__c</field>
+            <operation>notContain</operation>
+            <value>thank you</value>
+        </filters>
+        <filters>
+            <field>LEAD.LEAD_SOURCE</field>
+            <operation>contains</operation>
+            <value>event</value>
+        </filters>
+        <label>Bay Area Event Leads</label>
+        <sharedTo>
+            <roleAndSubordinatesInternal>Branch_Concord_002</roleAndSubordinatesInternal>
+            <roleAndSubordinatesInternal>Branch_Manager_Concord_002</roleAndSubordinatesInternal>
+            <roleAndSubordinatesInternal>Branch_Manager_Richmond_004</roleAndSubordinatesInternal>
+            <roleAndSubordinatesInternal>Branch_Manager_San_Francisco_201</roleAndSubordinatesInternal>
+            <roleAndSubordinatesInternal>Branch_Manager_San_Ramon_003</roleAndSubordinatesInternal>
+            <roleAndSubordinatesInternal>Branch_Richmond_004</roleAndSubordinatesInternal>
+            <roleAndSubordinatesInternal>Branch_San_Francisco_201</roleAndSubordinatesInternal>
+            <roleAndSubordinatesInternal>Branch_San_Ramon_003</roleAndSubordinatesInternal>
+            <roleAndSubordinatesInternal>Regional_Manager_Bay_Area</roleAndSubordinatesInternal>
+        </sharedTo>
     </listViews>
     <listViews>
         <fullName>Business_Development_Queue_Lead</fullName>
@@ -3407,11 +3210,64 @@
         <columns>CORE.USERS.ALIAS</columns>
         <columns>LEAD.CREATED_DATE</columns>
         <columns>CREATEDBY_USER.ALIAS</columns>
-        <columns>UPDATEDBY_USER.ALIAS</columns>
         <columns>LEAD.LAST_UPDATE</columns>
+        <columns>UPDATEDBY_USER.ALIAS</columns>
         <filterScope>Queue</filterScope>
+        <filters>
+            <field>Lead_Type__c</field>
+            <operation>equals</operation>
+            <value>Business</value>
+        </filters>
         <label>Business Development Queue</label>
         <queue>Business_Development_Queue</queue>
+    </listViews>
+    <listViews>
+        <fullName>Central_Region_Event_Leads</fullName>
+        <columns>lead_number_link__c</columns>
+        <columns>LEAD.LAST_NAME</columns>
+        <columns>Member_Account__c</columns>
+        <columns>LEAD.CREATED_DATE</columns>
+        <columns>Product_Type__c</columns>
+        <columns>LEAD.LEAD_SOURCE</columns>
+        <columns>Event_Source__c</columns>
+        <columns>LEAD.STATUS</columns>
+        <columns>CORE.USERS.LAST_NAME</columns>
+        <columns>LEAD.LAST_UPDATE</columns>
+        <columns>Description__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>LEAD.LEAD_SOURCE</field>
+            <operation>contains</operation>
+            <value>galleria,paso,midland</value>
+        </filters>
+        <filters>
+            <field>LEAD.STATUS</field>
+            <operation>notEqual</operation>
+            <value>Closed</value>
+        </filters>
+        <filters>
+            <field>Product_Type__c</field>
+            <operation>notContain</operation>
+            <value>thank you</value>
+        </filters>
+        <filters>
+            <field>Product_Subtype__c</field>
+            <operation>notContain</operation>
+            <value>thank you</value>
+        </filters>
+        <filters>
+            <field>LEAD.LEAD_SOURCE</field>
+            <operation>contains</operation>
+            <value>event</value>
+        </filters>
+        <label>Central Region Event Leads</label>
+        <sharedTo>
+            <roleAndSubordinatesInternal>Branch_El_Paso_208</roleAndSubordinatesInternal>
+            <roleAndSubordinatesInternal>Branch_Houston_Galleria_202</roleAndSubordinatesInternal>
+            <roleAndSubordinatesInternal>Branch_Manager_El_Paso_008</roleAndSubordinatesInternal>
+            <roleAndSubordinatesInternal>Branch_Manager_Houston_Galleria_202</roleAndSubordinatesInternal>
+            <roleAndSubordinatesInternal>Regional_Manager_Houston</roleAndSubordinatesInternal>
+        </sharedTo>
     </listViews>
     <listViews>
         <fullName>Consumer_Lending_Referral_Queue_Lead</fullName>
@@ -3426,64 +3282,235 @@
         <columns>CORE.USERS.ALIAS</columns>
         <columns>LEAD.CREATED_DATE</columns>
         <columns>CREATEDBY_USER.ALIAS</columns>
-        <columns>UPDATEDBY_USER.ALIAS</columns>
         <columns>LEAD.LAST_UPDATE</columns>
+        <columns>UPDATEDBY_USER.ALIAS</columns>
         <filterScope>Queue</filterScope>
         <label>Consumer Lending Referral Queue</label>
         <queue>Consumer_Lending_Referral_Queue</queue>
     </listViews>
     <listViews>
-        <fullName>Inserted_lead</fullName>
-        <columns>FULL_NAME</columns>
-        <columns>LEAD.COMPANY</columns>
-        <columns>LEAD.EMAIL</columns>
-        <columns>LEAD.STATUS</columns>
-        <columns>LEAD.CREATED_DATE</columns>
-        <columns>CORE.USERS.ALIAS</columns>
+        <fullName>Covington_Event_Leads</fullName>
+        <columns>lead_number_link__c</columns>
+        <columns>LEAD.LAST_NAME</columns>
         <columns>Member_Account__c</columns>
+        <columns>LEAD.CREATED_DATE</columns>
+        <columns>Product_Type__c</columns>
+        <columns>LEAD.LEAD_SOURCE</columns>
+        <columns>Event_Source__c</columns>
+        <columns>LEAD.STATUS</columns>
+        <columns>CORE.USERS.LAST_NAME</columns>
+        <columns>LEAD.LAST_UPDATE</columns>
+        <columns>Description__c</columns>
         <filterScope>Everything</filterScope>
         <filters>
-            <field>CORE.USERS.ALIAS</field>
-            <operation>equals</operation>
-            <value>kbak</value>
+            <field>LEAD.LEAD_SOURCE</field>
+            <operation>contains</operation>
+            <value>covington</value>
         </filters>
-        <label>Inserted lead</label>
+        <filters>
+            <field>LEAD.STATUS</field>
+            <operation>notContain</operation>
+            <value>Closed</value>
+        </filters>
+        <filters>
+            <field>Product_Type__c</field>
+            <operation>notContain</operation>
+            <value>thank you</value>
+        </filters>
+        <filters>
+            <field>Product_Subtype__c</field>
+            <operation>notContain</operation>
+            <value>thank you</value>
+        </filters>
+        <filters>
+            <field>LEAD.LEAD_SOURCE</field>
+            <operation>contains</operation>
+            <value>event</value>
+        </filters>
+        <label>Covington Event Leads</label>
+        <sharedTo>
+            <roleAndSubordinatesInternal>Branch_Covington_006</roleAndSubordinatesInternal>
+            <roleAndSubordinatesInternal>Regional_Manager_Eastern</roleAndSubordinatesInternal>
+        </sharedTo>
     </listViews>
     <listViews>
-        <fullName>Marketing_Referrals_Queue_Lead</fullName>
-        <columns>FULL_NAME</columns>
-        <columns>LEAD.PHONE</columns>
-        <columns>LEAD.EMAIL</columns>
+        <fullName>Eastern_Region_Event_Leads</fullName>
+        <columns>lead_number_link__c</columns>
+        <columns>LEAD.LAST_NAME</columns>
+        <columns>Member_Account__c</columns>
+        <columns>LEAD.CREATED_DATE</columns>
+        <columns>Product_Type__c</columns>
+        <columns>LEAD.LEAD_SOURCE</columns>
+        <columns>LEAD.STATUS</columns>
+        <columns>CORE.USERS.LAST_NAME</columns>
+        <columns>LEAD.LAST_UPDATE</columns>
+        <columns>Description__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>LEAD.LEAD_SOURCE</field>
+            <operation>contains</operation>
+            <value>pascagoula,covington,reston</value>
+        </filters>
+        <filters>
+            <field>LEAD.STATUS</field>
+            <operation>notEqual</operation>
+            <value>Closed</value>
+        </filters>
+        <filters>
+            <field>Product_Type__c</field>
+            <operation>notContain</operation>
+            <value>thank you</value>
+        </filters>
+        <filters>
+            <field>Product_Subtype__c</field>
+            <operation>notContain</operation>
+            <value>thank you</value>
+        </filters>
+        <filters>
+            <field>LEAD.LEAD_SOURCE</field>
+            <operation>contains</operation>
+            <value>event</value>
+        </filters>
+        <label>Eastern Region Event Leads</label>
+        <sharedTo>
+            <roleAndSubordinates>Branch_Covington_006</roleAndSubordinates>
+            <roleAndSubordinates>Branch_Pascagoula_023</roleAndSubordinates>
+            <roleAndSubordinates>Branch_Reston_205</roleAndSubordinates>
+            <roleAndSubordinates>Regional_Manager_Eastern</roleAndSubordinates>
+        </sharedTo>
+    </listViews>
+    <listViews>
+        <fullName>El_Segundo_Brea_Event_Leads</fullName>
+        <columns>lead_number_link__c</columns>
+        <columns>LEAD.LAST_NAME</columns>
+        <columns>Member_Account__c</columns>
+        <columns>LEAD.CREATED_DATE</columns>
+        <columns>Product_Type__c</columns>
+        <columns>LEAD.LEAD_SOURCE</columns>
+        <columns>LEAD.STATUS</columns>
+        <columns>LEAD.LAST_UPDATE</columns>
+        <columns>CORE.USERS.LAST_NAME</columns>
+        <columns>Description__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Product_Subtype__c</field>
+            <operation>notContain</operation>
+            <value>thank you</value>
+        </filters>
+        <filters>
+            <field>LEAD.LEAD_SOURCE</field>
+            <operation>contains</operation>
+            <value>segundo,brea</value>
+        </filters>
+        <filters>
+            <field>LEAD.STATUS</field>
+            <operation>notEqual</operation>
+            <value>Closed</value>
+        </filters>
+        <filters>
+            <field>Product_Type__c</field>
+            <operation>notContain</operation>
+            <value>thank you</value>
+        </filters>
+        <filters>
+            <field>LEAD.LEAD_SOURCE</field>
+            <operation>contains</operation>
+            <value>event</value>
+        </filters>
+        <label>El Segundo-Brea Event Leads</label>
+        <sharedTo>
+            <roleAndSubordinatesInternal>Branch_Brea_005</roleAndSubordinatesInternal>
+            <roleAndSubordinatesInternal>Branch_El_Segundo_009</roleAndSubordinatesInternal>
+            <roleAndSubordinatesInternal>Regional_Manager_Southern_California</roleAndSubordinatesInternal>
+        </sharedTo>
+    </listViews>
+    <listViews>
+        <fullName>El_Segundo_Lead_View</fullName>
+        <columns>lead_number_link__c</columns>
+        <columns>Person__c</columns>
+        <columns>LEAD.CREATED_DATE</columns>
+        <columns>CORE.USERS.ALIAS</columns>
+        <columns>CREATEDBY_USER.ALIAS</columns>
+        <columns>LEAD.STATUS</columns>
+        <columns>LEAD.LEAD_SOURCE</columns>
         <columns>Product_Type__c</columns>
         <columns>Product_Subtype__c</columns>
+        <columns>LEAD.LAST_UPDATE</columns>
+        <columns>Description__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>LEAD.STATUS</field>
+            <operation>notContain</operation>
+            <value>Closed</value>
+        </filters>
+        <filters>
+            <field>LEAD.LEAD_SOURCE</field>
+            <operation>contains</operation>
+            <value>segundo</value>
+        </filters>
+        <filters>
+            <field>LEAD.LEAD_SOURCE</field>
+            <operation>contains</operation>
+            <value>event</value>
+        </filters>
+        <filters>
+            <field>Product_Type__c</field>
+            <operation>notContain</operation>
+            <value>thank you</value>
+        </filters>
+        <filters>
+            <field>Product_Subtype__c</field>
+            <operation>notContain</operation>
+            <value>thank you</value>
+        </filters>
+        <label>El Segundo Lead View</label>
+        <sharedTo>
+            <roleAndSubordinatesInternal>Branch_El_Segundo_009</roleAndSubordinatesInternal>
+            <roleAndSubordinatesInternal>Regional_Manager_Southern_California</roleAndSubordinatesInternal>
+        </sharedTo>
+    </listViews>
+    <listViews>
+        <fullName>Marketing_Referral_Queue_Lead</fullName>
+        <columns>lead_number_link__c</columns>
+        <columns>FULL_NAME</columns>
+        <columns>Product_Type__c</columns>
+        <columns>Product_Subtype__c</columns>
+        <columns>LEAD.PHONE</columns>
+        <columns>LEAD.LEAD_SOURCE</columns>
         <columns>LEAD.STATUS</columns>
         <columns>Sub_Status__c</columns>
         <columns>CORE.USERS.ALIAS</columns>
         <columns>LEAD.CREATED_DATE</columns>
         <columns>CREATEDBY_USER.ALIAS</columns>
-        <columns>UPDATEDBY_USER.ALIAS</columns>
         <columns>LEAD.LAST_UPDATE</columns>
+        <columns>UPDATEDBY_USER.ALIAS</columns>
         <filterScope>Queue</filterScope>
         <label>Marketing Referral Queue</label>
         <queue>Marketing_Referral_Queue</queue>
     </listViews>
     <listViews>
         <fullName>MyUnreadLeads</fullName>
+        <booleanFilter>1 or 2</booleanFilter>
         <columns>lead_number_link__c</columns>
         <columns>FULL_NAME</columns>
-        <columns>LEAD.COMPANY</columns>
         <columns>LEAD.STATE</columns>
         <columns>LEAD.PHONE</columns>
         <columns>LEAD.EMAIL</columns>
         <columns>LEAD.UNREAD</columns>
         <columns>LEAD.STATUS</columns>
+        <columns>LEAD.CREATED_DATE</columns>
         <filterScope>Mine</filterScope>
         <filters>
             <field>LEAD.UNREAD</field>
             <operation>equals</operation>
             <value>1</value>
         </filters>
-        <label>All My Unread Leads</label>
+        <filters>
+            <field>LEAD.STATUS</field>
+            <operation>notEqual</operation>
+            <value>Closed</value>
+        </filters>
+        <label>All My Unread &amp; Open Leads</label>
     </listViews>
     <listViews>
         <fullName>My_Leads</fullName>
@@ -3494,9 +3521,247 @@
         <columns>LEAD.EMAIL</columns>
         <columns>LEAD.UNREAD</columns>
         <columns>LEAD.STATUS</columns>
-        <columns>CORE.USERS.ALIAS</columns>
+        <columns>LEAD.CREATED_DATE</columns>
         <filterScope>Mine</filterScope>
         <label>All My Leads</label>
+    </listViews>
+    <listViews>
+        <fullName>North_Central_Event_Leads</fullName>
+        <columns>lead_number_link__c</columns>
+        <columns>LEAD.LAST_NAME</columns>
+        <columns>Member_Account__c</columns>
+        <columns>LEAD.CREATED_DATE</columns>
+        <columns>Product_Type__c</columns>
+        <columns>LEAD.LEAD_SOURCE</columns>
+        <columns>LEAD.STATUS</columns>
+        <columns>CORE.USERS.LAST_NAME</columns>
+        <columns>LEAD.LAST_UPDATE</columns>
+        <columns>Description__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>LEAD.LEAD_SOURCE</field>
+            <operation>contains</operation>
+            <value>smith,aramco,post,bountiful,salt</value>
+        </filters>
+        <filters>
+            <field>LEAD.STATUS</field>
+            <operation>notEqual</operation>
+            <value>Closed</value>
+        </filters>
+        <filters>
+            <field>Product_Type__c</field>
+            <operation>notContain</operation>
+            <value>thank you</value>
+        </filters>
+        <filters>
+            <field>Product_Subtype__c</field>
+            <operation>notContain</operation>
+            <value>thank you</value>
+        </filters>
+        <filters>
+            <field>LEAD.LEAD_SOURCE</field>
+            <operation>contains</operation>
+            <value>event</value>
+        </filters>
+        <label>North Central Event Leads</label>
+        <sharedTo>
+            <roleAndSubordinatesInternal>Regional_Manager_Houston</roleAndSubordinatesInternal>
+        </sharedTo>
+    </listViews>
+    <listViews>
+        <fullName>Pascagoula_Event_Leads</fullName>
+        <columns>lead_number_link__c</columns>
+        <columns>LEAD.LAST_NAME</columns>
+        <columns>Member_Account__c</columns>
+        <columns>LEAD.CREATED_DATE</columns>
+        <columns>Product_Type__c</columns>
+        <columns>LEAD.LEAD_SOURCE</columns>
+        <columns>LEAD.STATUS</columns>
+        <columns>CORE.USERS.LAST_NAME</columns>
+        <columns>LEAD.LAST_UPDATE</columns>
+        <columns>Description__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>LEAD.LEAD_SOURCE</field>
+            <operation>contains</operation>
+            <value>pascagoula</value>
+        </filters>
+        <filters>
+            <field>LEAD.STATUS</field>
+            <operation>notEqual</operation>
+            <value>Closed</value>
+        </filters>
+        <filters>
+            <field>Product_Type__c</field>
+            <operation>notContain</operation>
+            <value>thank you</value>
+        </filters>
+        <filters>
+            <field>Product_Subtype__c</field>
+            <operation>notContain</operation>
+            <value>thank you</value>
+        </filters>
+        <filters>
+            <field>LEAD.LEAD_SOURCE</field>
+            <operation>contains</operation>
+            <value>event</value>
+        </filters>
+        <label>Pascagoula Event Leads</label>
+        <sharedTo>
+            <roleAndSubordinatesInternal>Branch_Pascagoula_023</roleAndSubordinatesInternal>
+            <roleAndSubordinatesInternal>Regional_Manager_Eastern</roleAndSubordinatesInternal>
+        </sharedTo>
+    </listViews>
+    <listViews>
+        <fullName>Pascagoula_Leads</fullName>
+        <columns>lead_number_link__c</columns>
+        <columns>FULL_NAME</columns>
+        <columns>Member_Account__c</columns>
+        <columns>Product_Type__c</columns>
+        <columns>LEAD.CREATED_DATE</columns>
+        <columns>LEAD.STATUS</columns>
+        <columns>CORE.USERS.ALIAS</columns>
+        <columns>CORE.USERS.LAST_NAME</columns>
+        <columns>LEAD.LEAD_SOURCE</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>LEAD.STATUS</field>
+            <operation>notEqual</operation>
+            <value>Closed</value>
+        </filters>
+        <filters>
+            <field>CORE.USERS.ALIAS</field>
+            <operation>contains</operation>
+            <value>asmi,jaxt,arob,hluc,tasm,lwal</value>
+        </filters>
+        <label>Pascagoula Leads</label>
+        <sharedTo>
+            <roleAndSubordinatesInternal>Branch_Pascagoula_023</roleAndSubordinatesInternal>
+            <roleAndSubordinatesInternal>IT</roleAndSubordinatesInternal>
+            <roleAndSubordinatesInternal>Regional_Manager_Eastern</roleAndSubordinatesInternal>
+        </sharedTo>
+    </listViews>
+    <listViews>
+        <fullName>Pleasant_Hill_Event_Leads</fullName>
+        <columns>lead_number_link__c</columns>
+        <columns>LEAD.LAST_NAME</columns>
+        <columns>Member_Account__c</columns>
+        <columns>LEAD.CREATED_DATE</columns>
+        <columns>Product_Type__c</columns>
+        <columns>LEAD.LEAD_SOURCE</columns>
+        <columns>LEAD.STATUS</columns>
+        <columns>CORE.USERS.LAST_NAME</columns>
+        <columns>LEAD.LAST_UPDATE</columns>
+        <columns>Description__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>LEAD.LEAD_SOURCE</field>
+            <operation>contains</operation>
+            <value>pleasant</value>
+        </filters>
+        <filters>
+            <field>LEAD.STATUS</field>
+            <operation>notEqual</operation>
+            <value>Closed</value>
+        </filters>
+        <filters>
+            <field>Product_Type__c</field>
+            <operation>notContain</operation>
+            <value>thank you</value>
+        </filters>
+        <filters>
+            <field>Product_Subtype__c</field>
+            <operation>notContain</operation>
+            <value>thank you</value>
+        </filters>
+        <filters>
+            <field>LEAD.LEAD_SOURCE</field>
+            <operation>contains</operation>
+            <value>event</value>
+        </filters>
+        <label>Pleasant Hill Event Leads</label>
+        <sharedTo>
+            <roleAndSubordinatesInternal>Branch_Pleasant_Hill_206</roleAndSubordinatesInternal>
+            <roleAndSubordinatesInternal>Regional_Manager_Bay_Area</roleAndSubordinatesInternal>
+        </sharedTo>
+    </listViews>
+    <listViews>
+        <fullName>Pleasant_Hill_Leads</fullName>
+        <columns>lead_number_link__c</columns>
+        <columns>LEAD.LAST_NAME</columns>
+        <columns>Member_Account__c</columns>
+        <columns>LEAD.CREATED_DATE</columns>
+        <columns>Product_Type__c</columns>
+        <columns>Product_Subtype__c</columns>
+        <columns>CORE.USERS.ALIAS</columns>
+        <columns>LEAD.STATUS</columns>
+        <columns>Description__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>CORE.USERS.ALIAS</field>
+            <operation>equals</operation>
+            <value>chda,jusb,ldel</value>
+        </filters>
+        <filters>
+            <field>LEAD.LEAD_SOURCE</field>
+            <operation>notContain</operation>
+            <value>event</value>
+        </filters>
+        <filters>
+            <field>LEAD.STATUS</field>
+            <operation>notEqual</operation>
+            <value>Closed</value>
+        </filters>
+        <label>Pleasant Hill Leads</label>
+        <sharedTo>
+            <roleAndSubordinatesInternal>Branch_Pleasant_Hill_206</roleAndSubordinatesInternal>
+            <roleAndSubordinatesInternal>Regional_Manager_Bay_Area</roleAndSubordinatesInternal>
+        </sharedTo>
+    </listViews>
+    <listViews>
+        <fullName>Post_Oak_Event_Leads</fullName>
+        <columns>lead_number_link__c</columns>
+        <columns>LEAD.LAST_NAME</columns>
+        <columns>Member_Account__c</columns>
+        <columns>LEAD.CREATED_DATE</columns>
+        <columns>Product_Type__c</columns>
+        <columns>LEAD.LEAD_SOURCE</columns>
+        <columns>LEAD.STATUS</columns>
+        <columns>CORE.USERS.LAST_NAME</columns>
+        <columns>LEAD.LAST_UPDATE</columns>
+        <columns>Description__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Event_Source__c</field>
+            <operation>contains</operation>
+            <value>post</value>
+        </filters>
+        <filters>
+            <field>Event_Source__c</field>
+            <operation>contains</operation>
+            <value>event</value>
+        </filters>
+        <filters>
+            <field>LEAD.STATUS</field>
+            <operation>notEqual</operation>
+            <value>Closed</value>
+        </filters>
+        <filters>
+            <field>Product_Type__c</field>
+            <operation>notContain</operation>
+            <value>thank you</value>
+        </filters>
+        <filters>
+            <field>Product_Subtype__c</field>
+            <operation>notContain</operation>
+            <value>thank you</value>
+        </filters>
+        <label>Post Oak Event Leads</label>
+        <sharedTo>
+            <roleAndSubordinatesInternal>Branch_Manager_Post_Oak_025</roleAndSubordinatesInternal>
+            <roleAndSubordinatesInternal>Branch_Post_Oak_025</roleAndSubordinatesInternal>
+            <roleAndSubordinatesInternal>Regional_Manager_Houston</roleAndSubordinatesInternal>
+        </sharedTo>
     </listViews>
     <listViews>
         <fullName>Products_Services_Referral_Queue_Lead</fullName>
@@ -3516,15 +3781,6 @@
         <filterScope>Queue</filterScope>
         <label>Products &amp; Services Referral Queue</label>
         <queue>Products_Services_Referral_Queue</queue>
-    </listViews>
-    <listViews>
-        <fullName>QA_Test_Queue_Lead</fullName>
-        <filterScope>Queue</filterScope>
-        <label>QA Test Queue</label>
-        <queue>QA_Test_Queue</queue>
-        <sharedTo>
-            <allInternalUsers></allInternalUsers>
-        </sharedTo>
     </listViews>
     <listViews>
         <fullName>Real_Estate_Referrals_Lead</fullName>
@@ -3565,12 +3821,411 @@
         <queue>Real_Estate_Servicing</queue>
     </listViews>
     <listViews>
+        <fullName>Richmond_Event_Leads</fullName>
+        <columns>lead_number_link__c</columns>
+        <columns>LEAD.LAST_NAME</columns>
+        <columns>Member_Account__c</columns>
+        <columns>LEAD.CREATED_DATE</columns>
+        <columns>Product_Type__c</columns>
+        <columns>LEAD.LEAD_SOURCE</columns>
+        <columns>LEAD.STATUS</columns>
+        <columns>CORE.USERS.LAST_NAME</columns>
+        <columns>LEAD.LAST_UPDATE</columns>
+        <columns>Description__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>LEAD.LEAD_SOURCE</field>
+            <operation>contains</operation>
+            <value>Richmond</value>
+        </filters>
+        <filters>
+            <field>LEAD.STATUS</field>
+            <operation>notEqual</operation>
+            <value>Closed</value>
+        </filters>
+        <filters>
+            <field>Product_Type__c</field>
+            <operation>notContain</operation>
+            <value>thank you</value>
+        </filters>
+        <filters>
+            <field>Product_Subtype__c</field>
+            <operation>notContain</operation>
+            <value>thank you</value>
+        </filters>
+        <filters>
+            <field>LEAD.LEAD_SOURCE</field>
+            <operation>contains</operation>
+            <value>event</value>
+        </filters>
+        <label>Richmond Event Leads</label>
+        <sharedTo>
+            <roleAndSubordinatesInternal>Branch_Manager_Richmond_004</roleAndSubordinatesInternal>
+            <roleAndSubordinatesInternal>Branch_Richmond_004</roleAndSubordinatesInternal>
+            <roleAndSubordinatesInternal>Regional_Manager_Bay_Area</roleAndSubordinatesInternal>
+        </sharedTo>
+    </listViews>
+    <listViews>
+        <fullName>Richmond_Leads</fullName>
+        <columns>lead_number_link__c</columns>
+        <columns>LEAD.LAST_NAME</columns>
+        <columns>Member_Account__c</columns>
+        <columns>LEAD.CREATED_DATE</columns>
+        <columns>Product_Type__c</columns>
+        <columns>Product_Subtype__c</columns>
+        <columns>LEAD.STATUS</columns>
+        <columns>CORE.USERS.ALIAS</columns>
+        <columns>Description__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>LEAD.LEAD_SOURCE</field>
+            <operation>notContain</operation>
+            <value>event</value>
+        </filters>
+        <filters>
+            <field>CORE.USERS.ALIAS</field>
+            <operation>equals</operation>
+            <value>hrod,jega,lwad</value>
+        </filters>
+        <filters>
+            <field>LEAD.STATUS</field>
+            <operation>notEqual</operation>
+            <value>Closed</value>
+        </filters>
+        <label>Richmond Leads</label>
+        <sharedTo>
+            <roleAndSubordinatesInternal>Branch_Manager_Richmond_004</roleAndSubordinatesInternal>
+            <roleAndSubordinatesInternal>Branch_Richmond_004</roleAndSubordinatesInternal>
+            <roleAndSubordinatesInternal>Regional_Manager_Bay_Area</roleAndSubordinatesInternal>
+        </sharedTo>
+    </listViews>
+    <listViews>
+        <fullName>Ruby_Leads</fullName>
+        <booleanFilter>1 AND (2 or 3 or 4 or 5)</booleanFilter>
+        <columns>lead_number_link__c</columns>
+        <columns>FULL_NAME</columns>
+        <columns>Member_Account__c</columns>
+        <columns>LEAD.STATUS</columns>
+        <columns>LEAD.CREATED_DATE</columns>
+        <columns>CORE.USERS.ALIAS</columns>
+        <columns>CREATEDBY_USER.ALIAS</columns>
+        <columns>Description__c</columns>
+        <columns>LEAD.LEAD_SOURCE</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>LEAD.STATUS</field>
+            <operation>notEqual</operation>
+            <value>Closed</value>
+        </filters>
+        <filters>
+            <field>CORE.USERS.ALIAS</field>
+            <operation>equals</operation>
+            <value>mwat,mvin,aves,rvau,jtuc,ltel,rste,esmi,mrod,spoh,rort,anwa,bmax,jmar,cmag,lisl</value>
+        </filters>
+        <filters>
+            <field>CORE.USERS.ALIAS</field>
+            <operation>equals</operation>
+            <value>tjon,pjog,mivy,sgul,cgon,juja,lewg,bedr,jdon,cdav,dcur,pcha,mbuc,tbas</value>
+        </filters>
+        <filters>
+            <field>CREATEDBY_USER.ALIAS</field>
+            <operation>equals</operation>
+            <value>mwat,mvin,aves,rvau,jtuc,ltel,rste,esmi,mrod,spoh,rort,anwa,bmax,jmar,cmag,lisl</value>
+        </filters>
+        <filters>
+            <field>CREATEDBY_USER.ALIAS</field>
+            <operation>equals</operation>
+            <value>tjon,pjog,mivy,sgul,cgon,juja,lewg,bedr,jdon,cdav,dcur,pcha,mbuc,tbas</value>
+        </filters>
+        <label>Call Center Leads</label>
+        <sharedTo>
+            <group>Call_Center_Managers</group>
+            <roleAndSubordinatesInternal>eBranch_Manager</roleAndSubordinatesInternal>
+        </sharedTo>
+    </listViews>
+    <listViews>
+        <fullName>Salt_Lake_Bountiful_Event_Leads</fullName>
+        <columns>lead_number_link__c</columns>
+        <columns>LEAD.LAST_NAME</columns>
+        <columns>Member_Account__c</columns>
+        <columns>LEAD.CREATED_DATE</columns>
+        <columns>Product_Type__c</columns>
+        <columns>LEAD.LEAD_SOURCE</columns>
+        <columns>LEAD.STATUS</columns>
+        <columns>CORE.USERS.LAST_NAME</columns>
+        <columns>LEAD.LAST_UPDATE</columns>
+        <columns>Description__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>LEAD.LEAD_SOURCE</field>
+            <operation>contains</operation>
+            <value>salt,bountiful</value>
+        </filters>
+        <filters>
+            <field>LEAD.STATUS</field>
+            <operation>notEqual</operation>
+            <value>Closed</value>
+        </filters>
+        <filters>
+            <field>Product_Type__c</field>
+            <operation>notContain</operation>
+            <value>thank you</value>
+        </filters>
+        <filters>
+            <field>Product_Subtype__c</field>
+            <operation>notContain</operation>
+            <value>thank you</value>
+        </filters>
+        <filters>
+            <field>LEAD.LEAD_SOURCE</field>
+            <operation>contains</operation>
+            <value>event</value>
+        </filters>
+        <label>Salt Lake &amp; Bountiful Event Leads</label>
+        <sharedTo>
+            <roleAndSubordinatesInternal>Branch_Bountiful_207</roleAndSubordinatesInternal>
+            <roleAndSubordinatesInternal>Branch_Manager_Bountiful_207</roleAndSubordinatesInternal>
+            <roleAndSubordinatesInternal>Branch_SLC_Refinery_028</roleAndSubordinatesInternal>
+            <roleAndSubordinatesInternal>Regional_Manager_Houston</roleAndSubordinatesInternal>
+        </sharedTo>
+    </listViews>
+    <listViews>
+        <fullName>San_Francisco_Branch_Leads</fullName>
+        <columns>lead_number_link__c</columns>
+        <columns>LEAD.LAST_NAME</columns>
+        <columns>Member_Account__c</columns>
+        <columns>LEAD.CREATED_DATE</columns>
+        <columns>Product_Type__c</columns>
+        <columns>Product_Subtype__c</columns>
+        <columns>LEAD.STATUS</columns>
+        <columns>CORE.USERS.ALIAS</columns>
+        <columns>Description__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>CORE.USERS.ALIAS</field>
+            <operation>equals</operation>
+            <value>mpar,jmil,zash</value>
+        </filters>
+        <filters>
+            <field>LEAD.STATUS</field>
+            <operation>notEqual</operation>
+            <value>Closed</value>
+        </filters>
+        <filters>
+            <field>LEAD.LEAD_SOURCE</field>
+            <operation>notContain</operation>
+            <value>event</value>
+        </filters>
+        <label>San Francisco Branch Leads</label>
+        <sharedTo>
+            <roleAndSubordinatesInternal>Branch_Manager_San_Francisco_201</roleAndSubordinatesInternal>
+            <roleAndSubordinatesInternal>Branch_San_Francisco_201</roleAndSubordinatesInternal>
+            <roleAndSubordinatesInternal>Regional_Manager_Bay_Area</roleAndSubordinatesInternal>
+        </sharedTo>
+    </listViews>
+    <listViews>
+        <fullName>San_Francisco_Event_Leads</fullName>
+        <columns>lead_number_link__c</columns>
+        <columns>LEAD.LAST_NAME</columns>
+        <columns>Member_Account__c</columns>
+        <columns>LEAD.CREATED_DATE</columns>
+        <columns>Product_Type__c</columns>
+        <columns>LEAD.LEAD_SOURCE</columns>
+        <columns>LEAD.STATUS</columns>
+        <columns>CORE.USERS.LAST_NAME</columns>
+        <columns>LEAD.LAST_UPDATE</columns>
+        <columns>Description__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>LEAD.LEAD_SOURCE</field>
+            <operation>contains</operation>
+            <value>francisco</value>
+        </filters>
+        <filters>
+            <field>LEAD.STATUS</field>
+            <operation>notEqual</operation>
+            <value>Closed</value>
+        </filters>
+        <filters>
+            <field>Product_Type__c</field>
+            <operation>notContain</operation>
+            <value>thank you</value>
+        </filters>
+        <filters>
+            <field>Product_Subtype__c</field>
+            <operation>notContain</operation>
+            <value>thank you</value>
+        </filters>
+        <filters>
+            <field>LEAD.LEAD_SOURCE</field>
+            <operation>contains</operation>
+            <value>event</value>
+        </filters>
+        <label>San Francisco Event Leads</label>
+        <sharedTo>
+            <roleAndSubordinatesInternal>Branch_Manager_San_Francisco_201</roleAndSubordinatesInternal>
+            <roleAndSubordinatesInternal>Branch_San_Francisco_201</roleAndSubordinatesInternal>
+            <roleAndSubordinatesInternal>Regional_Manager_Bay_Area</roleAndSubordinatesInternal>
+        </sharedTo>
+    </listViews>
+    <listViews>
+        <fullName>San_Ramon_Event_Leads</fullName>
+        <columns>lead_number_link__c</columns>
+        <columns>LEAD.LAST_NAME</columns>
+        <columns>Member_Account__c</columns>
+        <columns>LEAD.CREATED_DATE</columns>
+        <columns>Product_Type__c</columns>
+        <columns>LEAD.LEAD_SOURCE</columns>
+        <columns>LEAD.STATUS</columns>
+        <columns>CORE.USERS.LAST_NAME</columns>
+        <columns>LEAD.LAST_UPDATE</columns>
+        <columns>Description__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>LEAD.LEAD_SOURCE</field>
+            <operation>contains</operation>
+            <value>san ramon</value>
+        </filters>
+        <filters>
+            <field>LEAD.STATUS</field>
+            <operation>notEqual</operation>
+            <value>Closed</value>
+        </filters>
+        <filters>
+            <field>Product_Type__c</field>
+            <operation>notContain</operation>
+            <value>thank you</value>
+        </filters>
+        <filters>
+            <field>Product_Subtype__c</field>
+            <operation>notContain</operation>
+            <value>thank you</value>
+        </filters>
+        <filters>
+            <field>LEAD.LEAD_SOURCE</field>
+            <operation>contains</operation>
+            <value>event</value>
+        </filters>
+        <label>San Ramon Event Leads</label>
+        <sharedTo>
+            <roleAndSubordinatesInternal>Branch_Manager_San_Ramon_003</roleAndSubordinatesInternal>
+            <roleAndSubordinatesInternal>Branch_San_Ramon_003</roleAndSubordinatesInternal>
+            <roleAndSubordinatesInternal>Regional_Manager_Bay_Area</roleAndSubordinatesInternal>
+        </sharedTo>
+    </listViews>
+    <listViews>
+        <fullName>San_Ramon_Lead_Queue</fullName>
+        <columns>lead_number_link__c</columns>
+        <columns>LEAD.LAST_NAME</columns>
+        <columns>Member_Account__c</columns>
+        <columns>LEAD.CREATED_DATE</columns>
+        <columns>Product_Type__c</columns>
+        <columns>Product_Subtype__c</columns>
+        <columns>CORE.USERS.ALIAS</columns>
+        <columns>LEAD.STATUS</columns>
+        <columns>Description__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>CORE.USERS.ALIAS</field>
+            <operation>equals</operation>
+            <value>cval,jcor,jrei,lmul,mrog,mwsu,stma</value>
+        </filters>
+        <filters>
+            <field>LEAD.LEAD_SOURCE</field>
+            <operation>notContain</operation>
+            <value>event</value>
+        </filters>
+        <filters>
+            <field>LEAD.STATUS</field>
+            <operation>notEqual</operation>
+            <value>Closed</value>
+        </filters>
+        <label>San Ramon Lead Queue</label>
+        <sharedTo>
+            <roleAndSubordinatesInternal>Branch_Manager_San_Ramon_003</roleAndSubordinatesInternal>
+            <roleAndSubordinatesInternal>Branch_San_Ramon_003</roleAndSubordinatesInternal>
+            <roleAndSubordinatesInternal>Regional_Manager_Bay_Area</roleAndSubordinatesInternal>
+        </sharedTo>
+    </listViews>
+    <listViews>
+        <fullName>Southern_Cal_Event_Leads</fullName>
+        <columns>lead_number_link__c</columns>
+        <columns>LEAD.LAST_NAME</columns>
+        <columns>Member_Account__c</columns>
+        <columns>LEAD.CREATED_DATE</columns>
+        <columns>Product_Type__c</columns>
+        <columns>LEAD.LEAD_SOURCE</columns>
+        <columns>LEAD.STATUS</columns>
+        <columns>LEAD.LAST_UPDATE</columns>
+        <columns>CORE.USERS.LAST_NAME</columns>
+        <columns>Description__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>LEAD.LEAD_SOURCE</field>
+            <operation>contains</operation>
+            <value>segundo,brea,bakersfield,camino,kern</value>
+        </filters>
+        <filters>
+            <field>LEAD.STATUS</field>
+            <operation>notEqual</operation>
+            <value>Closed</value>
+        </filters>
+        <filters>
+            <field>Product_Type__c</field>
+            <operation>notContain</operation>
+            <value>thank you</value>
+        </filters>
+        <filters>
+            <field>Product_Subtype__c</field>
+            <operation>notContain</operation>
+            <value>thank you</value>
+        </filters>
+        <filters>
+            <field>LEAD.LEAD_SOURCE</field>
+            <operation>contains</operation>
+            <value>event</value>
+        </filters>
+        <label>Southern Cal Event Leads</label>
+        <sharedTo>
+            <roleAndSubordinatesInternal>Branch_Bakersfield_024</roleAndSubordinatesInternal>
+            <roleAndSubordinatesInternal>Branch_Brea_005</roleAndSubordinatesInternal>
+            <roleAndSubordinatesInternal>Branch_Camino_Media_020</roleAndSubordinatesInternal>
+            <roleAndSubordinatesInternal>Branch_El_Segundo_009</roleAndSubordinatesInternal>
+            <roleAndSubordinatesInternal>Branch_Kern_River_021</roleAndSubordinatesInternal>
+            <roleAndSubordinatesInternal>Branch_Manager_Bakersfield_024</roleAndSubordinatesInternal>
+            <roleAndSubordinatesInternal>Regional_Manager_Southern_California</roleAndSubordinatesInternal>
+        </sharedTo>
+    </listViews>
+    <listViews>
+        <fullName>Spectrum_Leads_Lead</fullName>
+        <columns>lead_number_link__c</columns>
+        <columns>FULL_NAME</columns>
+        <columns>Product_Type__c</columns>
+        <columns>Product_Subtype__c</columns>
+        <columns>LEAD.LEAD_SOURCE</columns>
+        <columns>LEAD.STATE_CODE</columns>
+        <columns>LEAD.PHONE</columns>
+        <columns>LEAD.STATUS</columns>
+        <columns>CORE.USERS.ALIAS</columns>
+        <columns>CORE.USERS.LAST_NAME</columns>
+        <columns>LEAD.CREATED_DATE</columns>
+        <columns>LEAD.LAST_UPDATE</columns>
+        <filterScope>Queue</filterScope>
+        <label>Spectrum Leads Queue</label>
+        <queue>Spectrum_Leads_Queue</queue>
+        <sharedTo>
+            <allInternalUsers></allInternalUsers>
+        </sharedTo>
+    </listViews>
+    <listViews>
         <fullName>TodaysLeads</fullName>
         <columns>lead_number_link__c</columns>
         <columns>FULL_NAME</columns>
-        <columns>LEAD.COMPANY</columns>
-        <columns>LEAD.STATE</columns>
+        <columns>City__c</columns>
+        <columns>State__c</columns>
         <columns>LEAD.EMAIL</columns>
+        <columns>Product_Type__c</columns>
+        <columns>Sub_Status__c</columns>
         <columns>LEAD.STATUS</columns>
         <columns>LEAD.CREATED_DATE</columns>
         <columns>CORE.USERS.ALIAS</columns>
@@ -3603,12 +4258,80 @@
         <queue>Vehicle_Lending_Queue</queue>
     </listViews>
     <listViews>
-        <fullName>zzz_IT_Test_Queue_Lead</fullName>
-        <filterScope>Queue</filterScope>
-        <label>zzz - IT Test Queue</label>
-        <queue>zzz_IT_Test_Queue</queue>
+        <fullName>X1600_Smith_Aramco_Event_Leads</fullName>
+        <columns>lead_number_link__c</columns>
+        <columns>LEAD.LAST_NAME</columns>
+        <columns>Member_Account__c</columns>
+        <columns>LEAD.CREATED_DATE</columns>
+        <columns>Product_Type__c</columns>
+        <columns>LEAD.LEAD_SOURCE</columns>
+        <columns>Event_Source__c</columns>
+        <columns>LEAD.STATUS</columns>
+        <columns>CORE.USERS.LAST_NAME</columns>
+        <columns>LEAD.LAST_UPDATE</columns>
+        <columns>Description__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>LEAD.LEAD_SOURCE</field>
+            <operation>contains</operation>
+            <value>smith,aramco</value>
+        </filters>
+        <filters>
+            <field>LEAD.STATUS</field>
+            <operation>notContain</operation>
+            <value>Closed</value>
+        </filters>
+        <filters>
+            <field>Product_Type__c</field>
+            <operation>notContain</operation>
+            <value>thank you</value>
+        </filters>
+        <filters>
+            <field>Product_Subtype__c</field>
+            <operation>notContain</operation>
+            <value>thank you</value>
+        </filters>
+        <filters>
+            <field>LEAD.LEAD_SOURCE</field>
+            <operation>contains</operation>
+            <value>event</value>
+        </filters>
+        <label>1600 Smith &amp; Aramco Event Leads</label>
         <sharedTo>
-            <allInternalUsers></allInternalUsers>
+            <roleAndSubordinatesInternal>Branch_1600_Smith_014</roleAndSubordinatesInternal>
+            <roleAndSubordinatesInternal>Branch_Aramaco_019</roleAndSubordinatesInternal>
+            <roleAndSubordinatesInternal>Regional_Manager_Houston</roleAndSubordinatesInternal>
+        </sharedTo>
+    </listViews>
+    <listViews>
+        <fullName>X1_Marketing_Cloud_Web2Lead_form_Leads</fullName>
+        <columns>lead_number_link__c</columns>
+        <columns>FULL_NAME</columns>
+        <columns>Member_Account__c</columns>
+        <columns>Product_Subtype__c</columns>
+        <columns>LEAD.STATUS</columns>
+        <columns>Sub_Status__c</columns>
+        <columns>LEAD.CREATED_DATE</columns>
+        <columns>CORE.USERS.LAST_NAME</columns>
+        <columns>CORE.USERS.FIRST_NAME</columns>
+        <columns>CORE.USERS.ALIAS</columns>
+        <columns>CREATEDBY_USER.ALIAS</columns>
+        <columns>UPDATEDBY_USER.ALIAS</columns>
+        <columns>LEAD.LAST_UPDATE</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>LEAD.STATUS</field>
+            <operation>notEqual</operation>
+            <value>Closed</value>
+        </filters>
+        <filters>
+            <field>CREATEDBY_USER.ALIAS</field>
+            <operation>equals</operation>
+            <value>msyst</value>
+        </filters>
+        <label>1. Marketing Cloud (Web2Lead form) Leads</label>
+        <sharedTo>
+            <group>Demo_Users</group>
         </sharedTo>
     </listViews>
     <recordTypeTrackHistory>false</recordTypeTrackHistory>
@@ -3618,21 +4341,6 @@
         <businessProcess>Default</businessProcess>
         <description>record type for all the Branch Users</description>
         <label>Branch</label>
-        <picklistValues>
-            <picklist>Assign_To_View__c</picklist>
-            <values>
-                <fullName>Call Center</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>None</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Other</fullName>
-                <default>false</default>
-            </values>
-        </picklistValues>
         <picklistValues>
             <picklist>Brand_Code__c</picklist>
             <values>
@@ -3859,6 +4567,18 @@
         <picklistValues>
             <picklist>Product_Subtype__c</picklist>
             <values>
+                <fullName>1st Mortgage</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>2nd Mortgage</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>90 Day Note-Unsecured</fullName>
+                <default>false</default>
+            </values>
+            <values>
                 <fullName>ARM 1%2F1</fullName>
                 <default>false</default>
             </values>
@@ -3887,6 +4607,98 @@
                 <default>false</default>
             </values>
             <values>
+                <fullName>ATM Card</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Auto - Liberty</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Auto - New</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Auto -Used</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Auto Refinance</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Balance Transfer</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Bill Pay</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Bridging</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>CFCU Company Guaranteed</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>CFCU Disaster Assistance-Level 3</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Checking</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Credit Card in Repayment</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Credit Cards</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Credit Protection</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>DPA Interest Only HELOC</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>DPA Texan HELOC</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Debit Card</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Debt Consolidation</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Direct Deposit</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Emergency Relief</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Expatriate Services</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Farm Equipment - New</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Farm Equipment - Used</fullName>
+                <default>false</default>
+            </values>
+            <values>
                 <fullName>Fixed 2nd</fullName>
                 <default>false</default>
             </values>
@@ -3907,14 +4719,266 @@
                 <default>false</default>
             </values>
             <values>
+                <fullName>GAP</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>HELOC Relocation</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>HSA</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>HSA Debit Card</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Holiday Club</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Home</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Home Equity Line of Credit</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Home Equity Line-TX</fullName>
+                <default>false</default>
+            </values>
+            <values>
                 <fullName>Home Equity Loan</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>IRA</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>IRA Roth</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Indirect Use</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Interest Only HELOC</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Interest Only TX HELOC</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>MBI-Warranty</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Market Edge</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Mobile Banking</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Mobile Deposit</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Mobile Home - New</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Mobile Home - Used</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Money Market</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Motorcycle - New</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Motorcycle - Used</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>My Savings</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>New Hire PLOC</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>New Solutions</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Online Banking</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Other</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Overdraft</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Pascagoula HELOC</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Payroll Deduction</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Personal Line of Credit</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Personal Line of Credit Increase</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Personal Loan</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>RE Workout</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Recreational Vehicle - New</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Recreational Vehicle - Used</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>SCU New Hire PLOC</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Savings</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Savings Bonds</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Secured Line of Credit</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Secured-Interest Only</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Secured-Other</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Share Certificates</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Share Secured</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Signature</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Student Loan</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Sub Savings</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Variable Line of Credit</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Visa College</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Visa Corporate</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Visa Platinum</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Visa Secured</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Visa Signature</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Wire Transfer</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Workout Loan</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Workout Loan-Unsecured</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>eStatements%2FeNotices</fullName>
                 <default>false</default>
             </values>
         </picklistValues>
         <picklistValues>
             <picklist>Product_Type__c</picklist>
             <values>
+                <fullName>Accounts%2FShares</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Cards</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Consumer Lending</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Insurance</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Misc</fullName>
+                <default>false</default>
+            </values>
+            <values>
                 <fullName>Mortgage</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Vehicle Lending</fullName>
                 <default>false</default>
             </values>
         </picklistValues>
@@ -3941,6 +5005,14 @@
             </values>
             <values>
                 <fullName>App Online</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Contact</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Follow Up Required</fullName>
                 <default>false</default>
             </values>
             <values>
@@ -3972,21 +5044,6 @@
         <description>record type for all the Call Center Users</description>
         <label>Call Center</label>
         <picklistValues>
-            <picklist>Assign_To_View__c</picklist>
-            <values>
-                <fullName>Call Center</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>None</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Other</fullName>
-                <default>false</default>
-            </values>
-        </picklistValues>
-        <picklistValues>
             <picklist>Brand_Code__c</picklist>
             <values>
                 <fullName>BC01</fullName>
@@ -4212,6 +5269,18 @@
         <picklistValues>
             <picklist>Product_Subtype__c</picklist>
             <values>
+                <fullName>1st Mortgage</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>2nd Mortgage</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>90 Day Note-Unsecured</fullName>
+                <default>false</default>
+            </values>
+            <values>
                 <fullName>ARM 1%2F1</fullName>
                 <default>false</default>
             </values>
@@ -4240,6 +5309,98 @@
                 <default>false</default>
             </values>
             <values>
+                <fullName>ATM Card</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Auto - Liberty</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Auto - New</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Auto -Used</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Auto Refinance</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Balance Transfer</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Bill Pay</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Bridging</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>CFCU Company Guaranteed</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>CFCU Disaster Assistance-Level 3</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Checking</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Credit Card in Repayment</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Credit Cards</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Credit Protection</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>DPA Interest Only HELOC</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>DPA Texan HELOC</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Debit Card</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Debt Consolidation</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Direct Deposit</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Emergency Relief</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Expatriate Services</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Farm Equipment - New</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Farm Equipment - Used</fullName>
+                <default>false</default>
+            </values>
+            <values>
                 <fullName>Fixed 2nd</fullName>
                 <default>false</default>
             </values>
@@ -4260,14 +5421,266 @@
                 <default>false</default>
             </values>
             <values>
+                <fullName>GAP</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>HELOC Relocation</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>HSA</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>HSA Debit Card</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Holiday Club</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Home</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Home Equity Line of Credit</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Home Equity Line-TX</fullName>
+                <default>false</default>
+            </values>
+            <values>
                 <fullName>Home Equity Loan</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>IRA</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>IRA Roth</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Indirect Use</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Interest Only HELOC</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Interest Only TX HELOC</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>MBI-Warranty</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Market Edge</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Mobile Banking</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Mobile Deposit</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Mobile Home - New</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Mobile Home - Used</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Money Market</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Motorcycle - New</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Motorcycle - Used</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>My Savings</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>New Hire PLOC</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>New Solutions</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Online Banking</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Other</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Overdraft</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Pascagoula HELOC</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Payroll Deduction</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Personal Line of Credit</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Personal Line of Credit Increase</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Personal Loan</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>RE Workout</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Recreational Vehicle - New</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Recreational Vehicle - Used</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>SCU New Hire PLOC</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Savings</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Savings Bonds</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Secured Line of Credit</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Secured-Interest Only</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Secured-Other</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Share Certificates</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Share Secured</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Signature</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Student Loan</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Sub Savings</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Variable Line of Credit</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Visa College</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Visa Corporate</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Visa Platinum</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Visa Secured</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Visa Signature</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Wire Transfer</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Workout Loan</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Workout Loan-Unsecured</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>eStatements%2FeNotices</fullName>
                 <default>false</default>
             </values>
         </picklistValues>
         <picklistValues>
             <picklist>Product_Type__c</picklist>
             <values>
+                <fullName>Accounts%2FShares</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Cards</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Consumer Lending</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Insurance</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Misc</fullName>
+                <default>false</default>
+            </values>
+            <values>
                 <fullName>Mortgage</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Vehicle Lending</fullName>
                 <default>false</default>
             </values>
         </picklistValues>
@@ -4294,6 +5707,14 @@
             </values>
             <values>
                 <fullName>App Online</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Contact</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Follow Up Required</fullName>
                 <default>false</default>
             </values>
             <values>
@@ -4325,17 +5746,9 @@
         <description>record type for existing members</description>
         <label>Existing Member</label>
         <picklistValues>
-            <picklist>Assign_To_View__c</picklist>
+            <picklist>Branch_of_Lead_creator__c</picklist>
             <values>
-                <fullName>Call Center</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>None</fullName>
-                <default>true</default>
-            </values>
-            <values>
-                <fullName>Other</fullName>
+                <fullName>99999</fullName>
                 <default>false</default>
             </values>
         </picklistValues>
@@ -4369,6 +5782,62 @@
             </values>
             <values>
                 <fullName>Event %E2%80%93 San Francisco Plaza Event 11%2F30%2F17</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Event-1600 Smith Houston-Lunch and Learn-01%2F24%2F18</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Event-Covington-Meet and Greet-01%2F31%2F18</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Event-El Paso-Contractor Visit-01%2F24%2F18</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Event-El Paso-Lobby Event-02%2F02%2F18</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Event-Houston Galleria-Lobby Event-02%2F07%2F18</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Event-Pascagoula-Brock New Hire Orientation-01%2F05%2F18</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Event-Pascagoula-Chevron Retiree Luncheon-01%2F23%2F18</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Event-Pascagoula-Contractor New Hire Orientation-01%2F19%2F18</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Event-Pascagoula-Contractor Safety Meeting-12%2F07%2F17</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Event-Pascagoula-Meet and Greet-01%2F30%2F18</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Event-Post Oak Houston-Briarpark Atrium Event-01%2F24%2F18</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Event-Post Oak Houston-Stewart Legacy Event-01%2F25%2F18</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Event-Reston-Open House-01%2F31%2F18</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Event-Richmond-Pinole Valley Juniors Fundraiser-01%2F07%2F18</fullName>
                 <default>false</default>
             </values>
         </picklistValues>
@@ -4510,11 +5979,47 @@
                 <default>false</default>
             </values>
             <values>
+                <fullName>BD %E2%80%93 Aerotek Lunch and Learn 11%2F14%2F17</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>BD %E2%80%93 NHPO Meet and Greet  11%2F16%2F17</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>BDM-Realtor Referral</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>BDO-Realtor Referral</fullName>
+                <default>false</default>
+            </values>
+            <values>
                 <fullName>Employee Referral</fullName>
                 <default>false</default>
             </values>
             <values>
                 <fullName>External Referral</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Online Ad %E2%80%93 Real Estate</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Online Ad-CD 10%2F17</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Online Ad-CD Special 10%2F17</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Online Ad-MarketEdge 9%2F17</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Online Advertisement</fullName>
                 <default>false</default>
             </values>
             <values>
@@ -4527,10 +6032,6 @@
             </values>
             <values>
                 <fullName>Public Relations</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Richmond Branch Lunch and Learn 7%2F19</fullName>
                 <default>false</default>
             </values>
             <values>
@@ -4950,6 +6451,10 @@
                 <default>false</default>
             </values>
             <values>
+                <fullName>Thank You for Attending</fullName>
+                <default>false</default>
+            </values>
+            <values>
                 <fullName>Variable Line of Credit</fullName>
                 <default>false</default>
             </values>
@@ -5017,10 +6522,6 @@
                 <default>false</default>
             </values>
             <values>
-                <fullName>Solar</fullName>
-                <default>false</default>
-            </values>
-            <values>
                 <fullName>Vehicle Lending</fullName>
                 <default>false</default>
             </values>
@@ -5063,7 +6564,15 @@
                 <default>false</default>
             </values>
             <values>
+                <fullName>Contact</fullName>
+                <default>false</default>
+            </values>
+            <values>
                 <fullName>Contact Attempted</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Follow Up Required</fullName>
                 <default>false</default>
             </values>
             <values>
@@ -5095,17 +6604,9 @@
         <description>record type for non members</description>
         <label>Non Member</label>
         <picklistValues>
-            <picklist>Assign_To_View__c</picklist>
+            <picklist>Branch_of_Lead_creator__c</picklist>
             <values>
-                <fullName>Call Center</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>None</fullName>
-                <default>true</default>
-            </values>
-            <values>
-                <fullName>Other</fullName>
+                <fullName>99999</fullName>
                 <default>false</default>
             </values>
         </picklistValues>
@@ -5139,6 +6640,62 @@
             </values>
             <values>
                 <fullName>Event %E2%80%93 San Francisco Plaza Event 11%2F30%2F17</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Event-1600 Smith Houston-Lunch and Learn-01%2F24%2F18</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Event-Covington-Meet and Greet-01%2F31%2F18</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Event-El Paso-Contractor Visit-01%2F24%2F18</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Event-El Paso-Lobby Event-02%2F02%2F18</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Event-Houston Galleria-Lobby Event-02%2F07%2F18</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Event-Pascagoula-Brock New Hire Orientation-01%2F05%2F18</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Event-Pascagoula-Chevron Retiree Luncheon-01%2F23%2F18</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Event-Pascagoula-Contractor New Hire Orientation-01%2F19%2F18</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Event-Pascagoula-Contractor Safety Meeting-12%2F07%2F17</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Event-Pascagoula-Meet and Greet-01%2F30%2F18</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Event-Post Oak Houston-Briarpark Atrium Event-01%2F24%2F18</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Event-Post Oak Houston-Stewart Legacy Event-01%2F25%2F18</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Event-Reston-Open House-01%2F31%2F18</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Event-Richmond-Pinole Valley Juniors Fundraiser-01%2F07%2F18</fullName>
                 <default>false</default>
             </values>
         </picklistValues>
@@ -5280,11 +6837,47 @@
                 <default>false</default>
             </values>
             <values>
+                <fullName>BD %E2%80%93 Aerotek Lunch and Learn 11%2F14%2F17</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>BD %E2%80%93 NHPO Meet and Greet  11%2F16%2F17</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>BDM-Realtor Referral</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>BDO-Realtor Referral</fullName>
+                <default>false</default>
+            </values>
+            <values>
                 <fullName>Employee Referral</fullName>
                 <default>false</default>
             </values>
             <values>
                 <fullName>External Referral</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Online Ad %E2%80%93 Real Estate</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Online Ad-CD 10%2F17</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Online Ad-CD Special 10%2F17</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Online Ad-MarketEdge 9%2F17</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Online Advertisement</fullName>
                 <default>false</default>
             </values>
             <values>
@@ -5297,10 +6890,6 @@
             </values>
             <values>
                 <fullName>Public Relations</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Richmond Branch Lunch and Learn 7%2F19</fullName>
                 <default>false</default>
             </values>
             <values>
@@ -5720,6 +7309,10 @@
                 <default>false</default>
             </values>
             <values>
+                <fullName>Thank You for Attending</fullName>
+                <default>false</default>
+            </values>
+            <values>
                 <fullName>Variable Line of Credit</fullName>
                 <default>false</default>
             </values>
@@ -5787,10 +7380,6 @@
                 <default>false</default>
             </values>
             <values>
-                <fullName>Solar</fullName>
-                <default>false</default>
-            </values>
-            <values>
                 <fullName>Vehicle Lending</fullName>
                 <default>false</default>
             </values>
@@ -5833,7 +7422,15 @@
                 <default>false</default>
             </values>
             <values>
+                <fullName>Contact</fullName>
+                <default>false</default>
+            </values>
+            <values>
                 <fullName>Contact Attempted</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Follow Up Required</fullName>
                 <default>false</default>
             </values>
             <values>
@@ -5860,18 +7457,15 @@
     </recordTypes>
     <searchLayouts>
         <customTabListAdditionalFields>FULL_NAME</customTabListAdditionalFields>
-        <customTabListAdditionalFields>CORE.USERS.ALIAS</customTabListAdditionalFields>
         <customTabListAdditionalFields>lead_number_link__c</customTabListAdditionalFields>
+        <customTabListAdditionalFields>CORE.USERS.ALIAS</customTabListAdditionalFields>
         <customTabListAdditionalFields>LEAD.CREATED_DATE</customTabListAdditionalFields>
-        <customTabListAdditionalFields>City__c</customTabListAdditionalFields>
+        <customTabListAdditionalFields>LEAD.CITY</customTabListAdditionalFields>
         <customTabListAdditionalFields>State__c</customTabListAdditionalFields>
         <customTabListAdditionalFields>Person__c</customTabListAdditionalFields>
         <customTabListAdditionalFields>Mortgage_Loan_Officer__c</customTabListAdditionalFields>
         <customTabListAdditionalFields>LEAD.STATUS</customTabListAdditionalFields>
         <customTabListAdditionalFields>Product_Type__c</customTabListAdditionalFields>
-        <excludedStandardButtons>New</excludedStandardButtons>
-        <excludedStandardButtons>AddToCampaign</excludedStandardButtons>
-        <excludedStandardButtons>ChangeStatus</excludedStandardButtons>
         <lookupDialogsAdditionalFields>FULL_NAME</lookupDialogsAdditionalFields>
         <lookupDialogsAdditionalFields>LEAD.COMPANY</lookupDialogsAdditionalFields>
         <lookupPhoneDialogsAdditionalFields>FULL_NAME</lookupPhoneDialogsAdditionalFields>
@@ -5882,7 +7476,7 @@
         <lookupPhoneDialogsAdditionalFields>Other_Phone__c</lookupPhoneDialogsAdditionalFields>
         <searchResultsAdditionalFields>FULL_NAME</searchResultsAdditionalFields>
         <searchResultsAdditionalFields>LEAD.TITLE</searchResultsAdditionalFields>
-        <searchResultsAdditionalFields>lead_number_link__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>Lead_Number__c</searchResultsAdditionalFields>
         <searchResultsAdditionalFields>LEAD.PHONE</searchResultsAdditionalFields>
         <searchResultsAdditionalFields>LEAD.MOBILE_PHONE</searchResultsAdditionalFields>
         <searchResultsAdditionalFields>LEAD.EMAIL</searchResultsAdditionalFields>
@@ -5900,9 +7494,9 @@
         <fullName>keepEscalated_after72hours</fullName>
         <active>false</active>
         <description>Can not turn off escalation after 72 hours</description>
-        <errorConditionFormula>AND(( NOW()  -    CreatedDate ) * 24 &gt; 72 ,  ISCHANGED( Escalated__c ) )</errorConditionFormula>
+        <errorConditionFormula>AND(NOW()&gt;(CreatedDate + 3),  NOT(Escalated__c))</errorConditionFormula>
         <errorDisplayField>Escalated__c</errorDisplayField>
-        <errorMessage>Can not DeEscalate Lead after 72 hours</errorMessage>
+        <errorMessage>Can not deEscalate Lead after 72 hours</errorMessage>
     </validationRules>
     <webLinks>
         <fullName>EasyUpload</fullName>
@@ -5985,53 +7579,6 @@
         <showsLocation>false</showsLocation>
         <showsStatus>false</showsStatus>
         <url>http://www.google.com/search?q={!Lead_Company}</url>
-    </webLinks>
-    <webLinks>
-        <fullName>Save_Acct_Check</fullName>
-        <availability>online</availability>
-        <description>Custom Save button that will check for a missing Member Number as ask if the user wants to proceed.</description>
-        <displayType>button</displayType>
-        <linkType>javascript</linkType>
-        <masterLabel>Save &amp; Warn</masterLabel>
-        <openType>onClickJavaScript</openType>
-        <protected>false</protected>
-        <url>{!REQUIRESCRIPT(&apos;//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js&apos;)}
-{!REQUIRESCRIPT(&apos;//ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min.js&apos;)}
-if( &quot;{!Lead.Member_Account__c}&quot; == &quot;&quot;){ 
-try{
-  jQuery(function() {
-    /*Append the jQuery CSS CDN Link to the Head tag.*/
-    jQuery(&apos;head&apos;).append(&apos;&lt;link rel=&quot;stylesheet&quot; href=&quot;//ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/themes/start/jquery-ui.css&quot; type=&quot;text/css&quot; /&gt;&apos;);
-    
-    /*Create the HTML(DIV Tag) for the Dialog.*/
-    var html = 
-      &apos;&lt;div id=&quot;dialog&quot; title=&quot;No Member Number Entered&quot;&gt;&lt;p&gt;You have not entered a Member Number. Do you want to continue without one?&lt;/p&gt;&lt;/div&gt;&apos;;
-    
-    /*Check if the Dialog(DIV Tag) already exists if not then Append the same to the Body tag.*/
-    if(!jQuery(&apos;[id=dialog]&apos;).size()){
-      jQuery(&apos;body&apos;).append(html);
-    }    
-
-    /*Open the jQuery Dialog.*/ 
-    jQuery( &quot;#dialog&quot; ).dialog({
-      autoOpen: true,
-      modal: true,
-      buttons: {
-        &quot;Continue&quot;: function() {
-       /*   location.replace(&apos;/home/home.jsp&apos;); */
-          jQuery( this ).dialog( &quot;close&quot; );
-        },
-        Cancel: function() {
-          jQuery( this ).dialog( &quot;close&quot; );
-        }
-      }
-    });
-  }); 
-}
-catch(e){
-alert(&apos;An Error has Occured. Error: &apos; + e);
-}
-}</url>
     </webLinks>
     <webLinks>
         <fullName>dsfs__Send_with_DocuSign</fullName>
