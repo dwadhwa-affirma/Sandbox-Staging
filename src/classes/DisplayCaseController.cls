@@ -18,8 +18,9 @@ global  class DisplayCaseController {
          public string Extension {get;set;}
          public string SD {get;set;}
          public string Responsivecss {get;set;}
+         public static string latestCommmentBySupportidd {get;set;}
          
-        
+         
          
         // constructor
         public DisplayCaseController() 
@@ -276,7 +277,6 @@ global  class DisplayCaseController {
                     {
                         message.Description = cases[i].Description;
                         message.ShortDescription = cases[i].Description;
-                        
                     }
                     else
                     {
@@ -320,10 +320,14 @@ global  class DisplayCaseController {
                     }
                     
                     message.CreatedById = cases[i].CreatedById;
+                    
                     if (currentcaseid == cases[i].Id)
                     {
-                        message.LatestCommentBySupport = LoadLatestCommentBySupport(cases[i].Id);
-                       
+                       message.LatestCommentBySupport = LoadLatestCommentBySupport(cases[i].Id);
+                       string latestCommmentBySupportid= GetLatestCommentBySupportId(cases[i].Id);
+                       system.debug('latestid...' + latestCommmentBySupportid);
+                       message.LatestCommentfiles = GetLatestSupportAttachment(latestCommmentBySupportid);
+                       //latestCommmentBySupportidd = latestCommmentBySupportid;
                     }
                     else
                     {
@@ -425,6 +429,82 @@ global  class DisplayCaseController {
             
             
     }
+    global static List<FileList> GetLatestSupportAttachment(string messageid)
+    {
+    	List<attachment> attachments = [Select Id,Name,BodyLength, ParentId from Attachment Where ParentId  =: messageId];
+    	List<FileList> filelists = new List<FileList>();
+    	FileList fl = new FileList();
+    	integer j =0 ;
+    	system.debug('att ...' + attachments.size()); 
+    	         if (attachments != null)
+                    {
+                        for( j=0; j< attachments.size(); j++ ) 
+                        {
+                        	system.debug('compare...' + messageid + '...' + attachments[j].id);
+                            if (messageid == attachments[j].parentId)
+                            
+                            {
+                                
+                                fl.filename = attachments[j].Name;
+                                fl.downloadurl = 'servlet/servlet.FileDownload?file=' + attachments[j].id ;
+                                string ext = '';
+                                try
+                                { 
+                                    ext = attachments[j].Name.split('\\.')[1];
+                                }
+                                catch (Exception ex)
+                                {
+                                
+                                }
+                                ext = ext.toLowerCase();
+			                    if(ext == 'doc' || ext == 'docx'){
+			                    	ext = 'word';
+			                    }
+			                    else if(ext == 'xls' || ext == 'xlsx'){
+			                    	ext = 'excel';
+			                    }
+			                    else if(ext == 'ppt' || ext == 'ppts'){
+			                    	ext = 'powerpoint';
+			                    }
+			                     else if(ext == 'jpg' || ext == 'jpeg' || ext == 'png'|| ext == 'bmp'){
+			                    	ext = 'jpg';
+			                    }
+			                    else if(ext == 'one'){
+			                    	ext = 'onenote';
+			                    }
+			                    
+			                   
+                                fl.fileicon = ext;
+                                string displaysize;
+                                    
+                                if(attachments[j].BodyLength < 1000)
+                                {
+                                    displaySize = attachments[j].BodyLength + ' Bytes';
+                                    //displaySize = attachments[j].BodyLength + 'KB';
+                                    System.debug('displaySize1=='+ displaySize);
+                                }                               
+                                else if(attachments[j].BodyLength > 1000 && attachments[j].BodyLength < 1000000)
+                                {
+                                    displaySize = Math.floor(attachments[j].BodyLength/1000) + ' KB';
+                                    //displaySize = attachments[j].BodyLength + 'KB';
+                                    System.debug('displaySize1=='+ displaySize);
+                                }
+                                else
+                                {
+                                    displaySize  = Math.round((attachments[j].BodyLength / 1000000)*10)/10 + ' MB';
+                                    //displaySize  = (attachments[j].BodyLength)/100 + 'MB';
+                                     System.debug('displaySize2=='+ displaySize);
+                                }
+                                
+                                    fl.filesize = displaySize;
+                                     System.debug('fl.filesize=='+ fl.filesize);
+                                    filelists.add(fl);
+                            }
+                        }
+                    }
+                    
+    	return filelists;
+    }
         @RemoteAction
     global static List<Member_Comment__c> GetCaseComment(string caseid)
     {
@@ -444,9 +524,25 @@ global  class DisplayCaseController {
             {
                 LatestcommentBySupport = casecommentdata[0].Member_Communication__c;
                 System.debug(LatestcommentBySupport);
+            	latestCommmentBySupportidd = casecommentData[0].id;    
+                
             }
             return  LatestcommentBySupport;
         
+        }
+        
+        
+         global static String GetLatestCommentBySupportId(string caseId)
+         {
+            string LoggedinUserID = UserInfo.getUserId();
+            string MessageId = '';
+            List<Member_Comment__c> casecommentdata = [SELECT Case__r.Id,ID, Member_Communication__c, CreatedById,CreatedDate FROM Member_Comment__c Where Case__r.Id =: caseid and draft__c != true and  CreatedById !=: LoggedinUserID order by CreatedDate Desc  Limit 1];
+            if(casecommentdata.Size()> 0)
+            {
+                MessageId = casecommentdata[0].Id;
+            }
+            
+        	return MessageId;
         }
     
     @RemoteAction
