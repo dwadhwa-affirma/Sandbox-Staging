@@ -175,7 +175,7 @@
                                                         <p><b><!-- ko if: model.Subject().length !=0 --><span style="white-space: pre-line;Font-size:18px;" data-bind="html: Subject"></span><!-- /ko --></b></p>
                                                         
                                                         <p style="white-space: pre-line; word-wrap:break-word" data-bind="html: LatestCommentBySupport"></p>
-                                                        <p><b>afasfsdfsf{!latestCommmentBySupportidd}</b></p>
+                                                        
                                                             <div data-bind="visible : model.LatestCommentfiles().length > 0">  
                                                                 <ul class="attachments comment_detailed_attachment" style="padding-left:0px;">
                                                                     <li><!--  <apex:image url="{!URLFOR($Resource.MessagingAssets,'MessagingAssets/img/attach_icon.png')}"
