@@ -25,6 +25,7 @@ global class Message {
     	public string LatestCommentBySupport {get;set;} 
     	public Id CreatedById {get;set;}
     	public List<FileList> files {get;set;}
+    	public List<FileList> LatestCommentfiles {get;set;}
     	public Boolean ShowCaseBelow {get;set;} 
     	public Integer Days_after_closed_date {get; set;}
     	public DateTime CaseCreatedDate {get;set;}
