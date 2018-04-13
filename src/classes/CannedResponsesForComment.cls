@@ -43,7 +43,7 @@ Public Class CannedResponsesForComment{
          // caseId = Member_Comment__c.Case__c;
         system.debug('caseId....'+caseId);    
         tempCase = new Case();        
-        tempCase = [select id,Account_Number__c, AccountId, CreatedBy.Email from case where id =:caseId];
+        tempCase = [select id,Account_Number__c, AccountId, CreatedBy.Email,SecureEmail__c from case where id =:caseId];
         
      
         system.debug('case...'+tempCase);
@@ -58,9 +58,20 @@ Public Class CannedResponsesForComment{
                 system.debug('ad.SecureEmailAddress__c--'+ad.SecureEmailAddress__c);
                 stopSave = true;
             }
+           
             else{
                 stopSave = false;
                 system.debug('a.PersonEmail-123-');
+            }
+            
+            
+            if(stopsave && !string.isEmpty( tempCase.SecureEmail__c))
+            {
+            	
+            	 
+                stopSave = false;
+                
+            
             }
             
         }
@@ -257,9 +268,15 @@ Public Class CannedResponsesForComment{
                 mbobj.Member_Communication__c = MemberDescription;
                 mbobj.Draft__c = Draft;
                 mbobj.Case__c = CaseId;
-                if (ad != null)
+                if (tempCase != null && tempCase.SecureEmail__c != null)
+                {
+                    //mbobj.Member_Email__c = ad.SecureEmailAddress__c;
+                    mbobj.Member_Email__c = tempCase.SecureEmail__c;
+                }
+                else if (ad != null)// This is temporay fix until all cases are updated
                 {
                     mbobj.Member_Email__c = ad.SecureEmailAddress__c;
+                    //mbobj.Member_Email__c = tempCase.SecureEmail__c
                 }
                 mbobj.Case_Creator_Email__c = tempCase.CreatedBy.Email;
 

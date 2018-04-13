@@ -1033,7 +1033,7 @@ global  class DisplayCaseController {
     @RemoteAction   
     global static Id ButtonReply_Click(string id, string comment, string DeviceType )
         {
-            Case c = [Select AccountId, CreatedBy.Email from Case where Id =: id];
+            Case c = [Select AccountId, CreatedBy.Email,SecureEmail__c from Case where Id =: id];
             System.Debug(c);
             Account a = [select PersonEmail from account where id =: c.AccountId];
             Id membercaseid;
@@ -1043,7 +1043,12 @@ global  class DisplayCaseController {
             membercomment.IsRead__c = true;
             membercomment.Device_Type__c = DeviceType;
             membercomment.draft__c = false;
-            if (a.PersonEmail != null)
+           
+            if (c.SecureEmail__c != null)
+            {
+                membercomment.Member_Email__c = c.SecureEmail__c;
+            }
+            else if (a.PersonEmail != null) // This is temporay fix until all cases are updated
             {
                 membercomment.Member_Email__c = a.PersonEmail;
             }
