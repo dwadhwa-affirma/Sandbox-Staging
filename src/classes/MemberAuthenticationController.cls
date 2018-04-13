@@ -12,7 +12,7 @@ public class MemberAuthenticationController{
     	3) Clear all fields and values entered by agent
     */
     
-    
+  public  Integer clickcount =0;
     public String PhoneNumber{get;set;}
     public String PhoneNumberMatch{get;set;}
     public String IVRPhoneNumberMatch;
@@ -171,6 +171,8 @@ public class MemberAuthenticationController{
     public string AdditionalToken3chk {get;set;}
 	public string AdditionalToken3chkString {get;set;}{AdditionalToken3chkString='';}
     public string AdditionalTokenOtherText {get;set;}
+    public string AdditionalTokenOtherText1 {get;set;}
+    public string AdditionalTokenOtherText2 {get;set;}
     
     // internal
     public String MultipleMemberNumberAlert{get; set;}{MultipleMemberNumberAlert = '';}
@@ -190,7 +192,7 @@ public class MemberAuthenticationController{
             options.add(new SelectOption('Password from comment flag','Password from Comment flag'));
             options.add(new SelectOption('Red Herring','Red Herring'));
             options.add(new SelectOption('Transaction history question','Transaction history question'));
-            //options.add(new SelectOption('Other','Other'));
+            options.add(new SelectOption('Other','Other'));
             
             return options;
     		
@@ -1473,6 +1475,7 @@ public class MemberAuthenticationController{
     public PageReference clearFields(){    
             system.debug('called');    
             ClearAllflag = true; 
+            clickcount ++;
             NameList = new list<Account>();       
             MemberLoanDetails = new List<Account_Details__c>();     
             MemberNameDobDetails = new List<Person_Account__c>();       
@@ -1546,6 +1549,8 @@ public class MemberAuthenticationController{
 		     AdditionalToken3chk ='';
 		     
 		     AdditionalTokenOtherText='';
+		     AdditionalTokenOtherText1='';
+		     AdditionalTokenOtherText2='';
 		     
 		     AdditionalToken3chkString='';
 		     AdditionalToken2chkString='';
@@ -1600,10 +1605,12 @@ public class MemberAuthenticationController{
            
         RecordType s =[select Id,Name,SobjectType from RecordType where name ='IVR Authentication Log' and SobjectType='Authenticated_Log__c'];
         log.RecordTypeId= s.id;    
-        
+		log.Log_Clear_All_Field__c = clickcount;
         if(ClearAllflag){
             if(MemberNumberConfirm){
                 log.MemberNumberMatch__c = 'true';
+                
+                system.debug('clickcount========' +  clickcount);
             }if(!MemberNumberConfirm){
                 log.MemberNumberMatch__c = 'false';
             }                   
@@ -1754,20 +1761,22 @@ public class MemberAuthenticationController{
            log.Additional_Token_Option2_Match__c = substring(AdditionalToken2chkString,5);
            log.Additional_Token_Option3_Match__c = substring(AdditionalToken3chkString,5);
            
-           if (AdditionalToken1chkString == 'Pass')
+           if (AdditionalToken1Selection != null && AdditionalToken1Selection != '')
            {
            		log.Additional_Token_Option1__c = substring(AdditionalToken1Selection,255);
            }
-           if (AdditionalToken1chkString == 'Pass')
+           if (AdditionalToken2Selection != null && AdditionalToken2Selection != '')
            {
             	log.Additional_Token_Option2__c = substring(AdditionalToken2Selection,255);
            }
-           if (AdditionalToken1chkString == 'Pass')
+           if (AdditionalToken3Selection != null && AdditionalToken3Selection != '')
            {
             	log.Additional_Token_Option3__c = substring(AdditionalToken3Selection,255);
            }
-            
+           
            log.Additional_Token_Other_Text__c = substring(AdditionalTokenOtherText,255);
+           log.Additional_Token_Other_Text1__c = substring(AdditionalTokenOtherText1,255);
+           log.Additional_Token_Other_Text2__c = substring(AdditionalTokenOtherText2,255);
             
               
         log.SalesforceID__c = SalesforceID;

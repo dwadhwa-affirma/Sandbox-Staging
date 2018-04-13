@@ -31,22 +31,34 @@ private class GetAllCasesforAccountTest {
         case3.Brand__c ='Spectrum';
         insert case3;
         
+        Case case4 = new Case();
+        case4.Subject = 'Test';
+        case4.Description = 'test';
+        case4.Accountid = acobj.Id;
+        case4.Brand__c ='Spectrum';
+        case4.ParentId = case1.id;
+        insert case4;
+        
+        Case case5 = new Case();
+        case5.Subject = 'Test';
+        case5.Description = 'test';
+        case5.Accountid = acobj.Id;
+        case5.Brand__c ='Spectrum';
+        case5.Parentid = case1.id; 
+        insert case5;
+        
+      	
+      	 System.currentPageReference().getParameters().put('recId',case1.Id);
+	        
+	   		String Caseids = case2.id + ',' + case3.id;
+	   		
        
         Test.StartTest(); 
-        	String Caseids = case2.id + ',' + case3.id;
-	         System.currentPageReference().getParameters().put('recId',case1.Id);
+        	
+            GetAllCasesForAccount ga = new GetAllCasesForAccount();
+            ga.Caseids = Caseids;
+	        ga.ButtonSave_Click();
 	         
-	         List<string> cids = new List <string>();
-	         List<Case> cdataToNull = new List<Case>();
-	     //   system.debug('CaseId==============' + CaseId);
-	       case CaseDetail = new Case();
-	        
-			CaseDetail = [Select Id,AccountID from Case where Id =: case1.Id limit 1];
-	     	 //List <case>  CaseList = [Select Id, AccountId,Account_Number__c,Brand__c,CaseNumber,Case_type__c, Status, Subject, Description from Case where Accountid =: CaseDetail.AccountId and id !=: case1.Id];
-	        //list<Case>	ListCaseSelected = [select id from Case where ParentId =: case1.id];
-	        //GetAllCasesForAccount ga = new GetAllCasesForAccount();
-	        // ApexPages.currentPage().getParameters().put('recid',case1.Id);
-	        //ga.ButtonSave_Click();
 	        
         Test.StopTest();
         

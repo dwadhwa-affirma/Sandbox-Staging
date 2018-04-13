@@ -63,7 +63,7 @@ public with sharing class PersonAccountTriggerHandler {
         
         for(User u: userList){
             userMap1.put(u.Name.toupperCase(), u.Id);
-            userAliasMap.put(u.Alias, u.Id);
+            userAliasMap.put(u.Alias.toupperCase(), u.Id);
         } 
         
         list<User> userList1 = [SELECT Id, Name, Alias, IsActive FROM User where IsActive = false];
@@ -101,7 +101,7 @@ public with sharing class PersonAccountTriggerHandler {
                 system.debug('var.accounnumber ' + var.Account_Number__c);
                 system.debug('check for user..' + userAliasMap.get(accDetailMap.get(var.Account_Number__c).Created_By_User_Alias__c));
                 
-                if(userAliasMap.get(accDetailMap.get(var.Account_Number__c).Created_By_User_Alias__c) != null){
+                if(userAliasMap.get(accDetailMap.get(var.Account_Number__c).Created_By_User_Alias__c)!= null){
                   system.debug('###Inside  assigning owner' + userAliasMap.get(accDetailMap.get(var.Account_Number__c).Created_By_User_Alias__c));
                // if(userMap1.get(accDetailMap.get(var.Account_Number__c).Created_By_User_Text__c) != null){
                     c.OwnerId = userAliasMap.get((accDetailMap.get(var.Account_Number__c).Created_By_User_Alias__c).toupperCase());

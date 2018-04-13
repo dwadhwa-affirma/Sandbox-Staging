@@ -22,7 +22,7 @@ public class UsersAccountDetailsController {
     public list<Account_Details__c> cardList{get;set;}
     public boolean CaseComentComments {get;set;}
         public boolean TaskCommentsShow {get;set;}
-    
+ public   List<AccountList360> listAccountList360 {get;set;}
     
     public UsersAccountDetailsController(ApexPages.StandardController controller){
         //this.cRec = (Case)Controller.getRecord();
@@ -41,20 +41,51 @@ public class UsersAccountDetailsController {
     public void personAccounts(string accId){
         list<Person_Account__c> paList = new list<Person_Account__c>();
             paList = [SELECT Id,
-                             Account_Number__c, Account_Number__r.RecType__c, Account_Number__r.Name FROM Person_Account__c WHERE PersonID__c =:accId];
+                             Account_Number__c, Account_Number__r.RecType__c, Account_Number__r.Name,TypeTranslate__c FROM Person_Account__c WHERE PersonID__c =:accId];
         accountDetails(paList);
        // ContactDetails(paList);
         warningCodeDetails(paList);     
     }
     
+    public class AccountList360
+    {
+    	public string Id {get;set;}
+    	public string Name {get;set;}
+    	public string RecType {get;set;}
+    	public string TypeTranslate {get;set;}
+    	public string ID1 {get;set;}
+    	
+		public string Brand {get;set;}
+    	public string Combined_Account_ID {get;set;}
+    	public string Loan_Number {get;set;}
+    	public Date Close_Date {get;set;}
+    	public string Card_Number_Last_4_Digits {get;set;}
+    	public Date OPEN_DATE {get;set;}
+    	public Date  Expiration_Date {get;set;}
+    	public date Issue_Date {get;set;}
+    	public string Emp_Available_Balance {get;set;}
+    	public decimal Available_Balance {get;set;}
+    	public string Emp_Balance {get;set;}
+    	
+    	public decimal Balance {get;set;}
+    	public string Relationship {get;set;}
+    	
+    	
+    }
+    
    public void accountDetails(list<Person_Account__c> paList){
         set<String> accountNumberSet = new set<String>();
         set<Id> accIdset = new set<Id>();
+        Map<string,string> listRelationships = new  Map<string,string>(); 
+        Map<string,string> listRelationshipsName = new  Map<string,string>(); 
         set<String> acctypeSet = new set<String>();
         for(Person_Account__c var: paList){
             accountNumberSet.add(var.Account_Number__r.Name);
             acctypeSet.add(var.Account_Number__r.RecType__c);
             accIdSet.add(var.Account_Number__c);
+            listRelationships.put(var.Account_Number__c,var.TypeTranslate__c);
+			listRelationshipsName.put(var.Account_Number__r.Name,var.TypeTranslate__c);
+            
         }
         accList = new list<Account_Details__c>();
         if(acctypeSet.contains('ACCT')){
@@ -94,6 +125,59 @@ public class UsersAccountDetailsController {
                               Emp_Available_Balance__c,
                               Available_Balance__c FROM Account_Details__c Where Id IN:accIdSet and RecType__c != 'CARD'];
         }
+         listAccountList360  = new  List<AccountList360> ();
+        for(Account_Details__c acc : accList)
+        {
+        	AccountList360 obj = new AccountList360();
+        	obj.Id = acc.Id;
+        	obj.Name = acc.Name;
+			obj.RecType = acc.RecType__c;
+			obj.TypeTranslate = acc.TypeTranslate__c;
+			obj.Balance = acc.Balance__c;
+			obj.ID1 = acc.ID1__c;
+			obj.Combined_Account_ID = acc.Combined_Account_ID__c;
+			
+			obj.Card_Number_Last_4_Digits = acc.Card_Number_Last_4_Digits__c;
+			obj.Combined_Account_ID = acc.Combined_Account_ID__c;
+			obj.Loan_Number = acc.Loan_Number__c;
+			obj.Brand = acc.Brand__c;
+			obj.Loan_Number = acc.Loan_Number__c;
+			obj.Close_Date = acc.Close_Date__c;
+			obj.Expiration_Date = acc.Expiration_Date__c;
+			obj.OPEN_DATE = acc.OPEN_DATE__c;
+			obj.Issue_Date = acc.Issue_Date__c;
+			obj.Emp_Balance = acc.Emp_Balance__c;
+			obj.Emp_Available_Balance = acc.Emp_Available_Balance__c;
+			obj.Available_Balance = acc.Available_Balance__c;
+			if(acctypeSet.contains('ACCT')){
+				obj.Relationship = listRelationshipsName.get(obj.Name);			
+				
+			}
+			else
+			{
+				obj.Relationship = listRelationships.get(obj.Id);
+			}
+			
+			
+			if(obj.Relationship != null && !obj.Relationship.contains('Beneficiary'))
+			{
+				listAccountList360.add(obj);	
+			}	
+        }
+        
+        
+        set<String> accountNumberSetWOBeneficiary = new set<String>();
+        set<String> accIdSetWOBeneficiary = new set<String>();
+        
+        
+        for(AccountList360 item : listAccountList360){
+        	accountNumberSetWOBeneficiary.add(item.Name);
+        }
+        
+                for(AccountList360 item : listAccountList360){
+        	accountNumberSetWOBeneficiary.add(item.Name);
+        }
+        
        system.debug('accountNumberSet ---  '  + accountNumberSet);
        cardList = new list<Account_Details__c>();
        if(acctypeSet.contains('ACCT')){
@@ -149,7 +233,7 @@ public class UsersAccountDetailsController {
        for(Account_Details__c accDl : accList){
            clsDate.add(String.valueOf(accDl.Close_Date__c));
        } */
-        ContactDetails(accList);
+        ContactDetails(accList, listAccountList360);
        // warningCodeDetails(paList);
     } 
     
@@ -402,15 +486,16 @@ public class UsersAccountDetailsController {
          system.debug(wsWrapperList);
     }
     
-    public void ContactDetails(list<Account_Details__c> accList){
+    public void ContactDetails(list<Account_Details__c> accList, List<AccountList360> listAccount){
         set<String> accName = new Set<String>();
         
         for(Account_Details__c var: accList){
             accName.add(var.Name);
         }
-        
+      Id testId = System.currentPageReference().getParameters().get('Id');
+      
       ContactList = new list<Person_Account__c>();
-        ContactList = [Select Id,
+       list<Person_Account__c> ContactList1 = [Select Id,
                               personId__c,
                               Account_Number__c,
                               TypeTranslate__c,
@@ -424,9 +509,25 @@ public class UsersAccountDetailsController {
                               PersonID__r.FirstName,
                               PersonID__r.LastName,
                               PersonID__r.Name,
-                              Account_Number__r.Brand__c From Person_Account__c WHERE Account_Number__r.Name IN :accName];
+                              Account_Number__r.Brand__c From Person_Account__c WHERE Account_Number__r.Name IN :accName /*AND personId__c != :testId*/];
+                              
+		ContactList = [Select Id,
+                              personId__c,
+                              Account_Number__c,
+                              TypeTranslate__c,
+                              Account_Type__c,
+                              Relationship__c,
+                              PersonID__r.SSN_Last_4__pc,
+                              Open_Date__c,
+                             // PersonID__r.BIRTH_DATE__pc,
+                              Account_Number__r.Name,
+                              Account_Number__r.TypeTranslate__c,
+                              PersonID__r.FirstName,
+                              PersonID__r.LastName,
+                              PersonID__r.Name,
+                              Account_Number__r.Brand__c From Person_Account__c WHERE Account_Number__r.Name IN :accName AND personId__c != :testId];
         
-        caseDetails(ContactList);
+        caseDetails(ContactList1);
     }
     
     
@@ -453,6 +554,8 @@ public class UsersAccountDetailsController {
                            Subject,
                            CreatedDate,
                            Origin,
+                           Parent.CaseNumber,
+                           
                            ClosedDate FROM case WHERE AccountId IN :accIds AND Status != 'Closed'];
        
         caseList1 = [Select Id,
@@ -472,6 +575,8 @@ public class UsersAccountDetailsController {
                            Subject,
                            CreatedDate,
                            Origin,
+                           Parent.CaseNumber,
+                           
                            ClosedDate FROM case WHERE AccountId IN :accIds AND Status = 'Closed'];
 
 

@@ -1,0 +1,234 @@
+<apex:page standardController="Case">
+
+<script src="/soap/ajax/10.0/connection.js"> </script >
+
+<script src="/soap/ajax/10.0/apex.js"> </script >
+
+  
+
+
+
+
+<div class="individualPalette">
+   <div class="caseBlock">
+      <div id="j_id0:j_id1:pageblock" class="bPageBlock brandSecondaryBrd apexDefaultPageBlock secondaryPalette">
+         <div class="pbHeader">
+            <table border="0" cellpadding="0" cellspacing="0">
+               <tbody>
+                  <tr>
+                     <td class="pbTitle">
+                        <h2 class="mainTitle">Related Cases</h2>
+                     </td>
+                     <td>&nbsp;</td>
+                  </tr>
+               </tbody>
+            </table>
+         </div>
+         <div class="pbBody">
+            <table class="list" id="j_id0:j_id1:pageblock:pageblocktable" border="0" cellpadding="0" cellspacing="0">
+                <colgroup span="3"></colgroup>
+                
+                <thead class="" >
+                    <tr class="headerRow">
+                     
+                     <th class="headerRow" scope="col" colspan="1" id="j_id0:j_id1:pageblock:pageblocktable:j_id6header">
+                        <div id="j_id0:j_id1:pageblock:pageblocktable:j_id6header:sortDiv">Case Number</div>
+                     </th>
+                      <th class="headerRow" scope="col" colspan="1" id="j_id0:j_id1:pageblock:pageblocktable:j_id8header">
+                        <div id="j_id0:j_id1:pageblock:pageblocktable:j_id8header:sortDiv">Relationship</div>
+                     </th>
+                 
+                     <th class="headerRow" scope="col" colspan="1" id="j_id0:j_id1:pageblock:pageblocktable:j_id8header">
+                        <div id="j_id0:j_id1:pageblock:pageblocktable:j_id8header:sortDiv">Subject</div>
+                     </th>
+                      <th class="headerRow" scope="col" colspan="1" id="j_id0:j_id1:pageblock:pageblocktable:j_id8header">
+                        <div id="j_id0:j_id1:pageblock:pageblocktable:j_id8header:sortDiv">Parent Case</div>
+                     </th>
+                  </tr>
+            
+                </thead>
+                <tbody id="tableCases">
+                
+                </tbody>
+            </table>
+         
+         <br />
+          </div>
+         <div class="pbFooter secondaryPalette">
+            <div class="bg"></div>
+         </div>
+      </div>
+   </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<script>
+sforce.connection.sessionId = '{!$Api.Session_ID}';
+var ReferraAccepted = sforce.connection.query("SELECT ID,CaseNumber, Subject, Parent.Id,Parent.CaseNumber from Case where parentid ='{!Case.Id}'");
+
+var stringHTML = ""; 
+
+
+if(ReferraAccepted.size == "1")
+{
+	var    classString = "dataRow even  first";
+    
+    stringHTML += '<tr class="' + classString  + '" onmouseover="if (window.hiOn){hiOn(this);} " onmouseout="if (window.hiOff){hiOff(this);} " onblur="if (window.hiOff){hiOff(this);}" onfocus="if (window.hiOn){hiOn(this);}"><td  class="dataCell"><a href="/' + ReferraAccepted.records.Id + '">' + ReferraAccepted.records.CaseNumber + "</a></td>" +
+        "<td class='dataCell' >Child</td>" +
+    "<td class='dataCell' >" + (ReferraAccepted.records.Subject == null ? "" : ReferraAccepted.records.Subject) + "</td>";
+
+    if(  ReferraAccepted.records.Parent != null && ReferraAccepted.records.Parent.Id != null)
+    {
+        stringHTML += "<td  class='dataCell'><a href='/" + ReferraAccepted.records.Parent.Id + "'>" + ReferraAccepted.records.Parent.CaseNumber + "</a></td>";
+    }
+    else
+    {
+        stringHTML += "<td  class='dataCell'>&nbsp;</td>";
+    }
+    stringHTML += "</tr>";
+}
+else if(ReferraAccepted.size != "0")
+{
+
+	for(var i =0;i<ReferraAccepted.records.length; i++)
+	{
+	    var classString = '';
+	    if(i == 0)
+	    {
+	        classString = "dataRow even  first";
+	    }
+	    
+	    else if(i % 2 == 0)
+	    {
+	        classString = "dataRow odd";
+	    }
+	    else if(i % 2 == 1)
+	    {
+	        classString = "dataRow even";
+	    } 
+	    //<a href="/5007A000004LF1v">00072268</a>
+	    if(i == ReferraAccepted.records.length - 1)
+	    {
+	        classString += " last"; 
+	    }
+	    debugger;
+	    stringHTML += '<tr class="' + classString  + '" onmouseover="if (window.hiOn){hiOn(this);} " onmouseout="if (window.hiOff){hiOff(this);} " onblur="if (window.hiOff){hiOff(this);}" onfocus="if (window.hiOn){hiOn(this);}"><td  class="dataCell"><a href="/' + ReferraAccepted.records[i].Id + '">' + ReferraAccepted.records[i].CaseNumber + "</a></td>" +
+	      "<td class='dataCell' >Child</td>" +
+	    "<td class='dataCell' >" + (ReferraAccepted.records[i].Subject == null ? "" : ReferraAccepted.records[i].Subject) + "</td>";
+	    if(  ReferraAccepted.records[i].Parent != null && ReferraAccepted.records[i].Parent.Id != null)
+	    {
+	        stringHTML += "<td  class='dataCell'><a href='/" + ReferraAccepted.records[i].Parent.Id + "'>" + ReferraAccepted.records[i].Parent.CaseNumber + "</a></td>";
+	    }
+	    else
+	    {
+	        stringHTML += "<td  class='dataCell'>&nbsp;</td>";
+	    }
+	    stringHTML += "</tr>";
+	    
+	}
+}
+var parentCaseId = '{!Case.Parent.Id}';
+
+if(parentCaseId != '')
+{
+	ReferraAccepted = sforce.connection.query("SELECT ID,CaseNumber, Subject, Parent.Id,Parent.CaseNumber from Case where id  != '{!Case.Id}' and (parentid  = '{!Case.Parent.Id}' or Id  = '{!Case.Parent.Id}')");
+	if(ReferraAccepted.size == "1")
+	{
+		var    classString = "dataRow even  first";
+	    
+	    stringHTML += '<tr class="' + classString  + '" onmouseover="if (window.hiOn){hiOn(this);} " onmouseout="if (window.hiOff){hiOff(this);} " onblur="if (window.hiOff){hiOff(this);}" onfocus="if (window.hiOn){hiOn(this);}"><td  class="dataCell"><a href="/' + ReferraAccepted.records.Id + '">' + ReferraAccepted.records.CaseNumber + "</a></td>";
+	    if(ReferraAccepted.records.Id ==  parentCaseId)
+	    {
+	       stringHTML +=  "<td class='dataCell' >Parent</td>";
+	     }
+	     else
+	     {
+	       stringHTML +=  "<td class='dataCell' >Sibling</td>";
+	     }
+	     
+	    stringHTML += "<td class='dataCell' >" + (ReferraAccepted.records.Subject == null ? "" : ReferraAccepted.records.Subject) + "</td>";
+	    if(  ReferraAccepted.records.Parent != null && ReferraAccepted.records.Parent.Id != null)
+	    {
+	        stringHTML += "<td  class='dataCell'><a href='/" + ReferraAccepted.records.Parent.Id + "'>" + ReferraAccepted.records.Parent.CaseNumber + "</a></td>";
+	    }
+	    else
+	    {
+	        stringHTML += "<td  class='dataCell'>&nbsp;</td>";
+	    }
+	    stringHTML += "</tr>";
+	}
+	else if(ReferraAccepted.size != "0")
+	{
+	
+		for(var i =0;i<ReferraAccepted.records.length; i++)
+		{
+		    var classString = '';
+		    if(i == 0)
+		    {
+		        classString = "dataRow even  first";
+		    }
+		    
+		    else if(i % 2 == 0)
+		    {
+		        classString = "dataRow odd";
+		    }
+		    else if(i % 2 == 1)
+		    {
+		        classString = "dataRow even";
+		    } 
+		    //<a href="/5007A000004LF1v">00072268</a>
+		    if(i == ReferraAccepted.records.length - 1)
+		    {
+		        classString += " last"; 
+		    }
+		    
+		    stringHTML += '<tr class="' + classString  + '" onmouseover="if (window.hiOn){hiOn(this);} " onmouseout="if (window.hiOff){hiOff(this);} " onblur="if (window.hiOff){hiOff(this);}" onfocus="if (window.hiOn){hiOn(this);}"><td  class="dataCell"><a href="/' + ReferraAccepted.records[i].Id + '">' + ReferraAccepted.records[i].CaseNumber + "</a></td>";
+		     if(ReferraAccepted.records[i].Id ==  parentCaseId)
+		    {
+		       stringHTML +=  "<td class='dataCell' >Parent</td>";
+		     }
+		     else
+		     {
+		       stringHTML +=  "<td class='dataCell' >Sibling</td>";
+		     }
+		    
+		   stringHTML += "<td class='dataCell' >" + (ReferraAccepted.records[i].Subject == null ? "" : ReferraAccepted.records[i].Subject) + "</td>";
+		    if(  ReferraAccepted.records[i].Parent != null && ReferraAccepted.records[i].Parent.Id != null)
+		    {
+		        stringHTML += "<td  class='dataCell'><a href='/" + ReferraAccepted.records[i].Parent.Id + "'>" + ReferraAccepted.records[i].Parent.CaseNumber + "</a></td>";
+		    }
+		    else
+		    {
+		        stringHTML += "<td  class='dataCell'>&nbsp;</td>";
+		    }
+		    stringHTML += "</tr>";
+		    
+		}
+	}
+}
+
+
+
+
+document.getElementById("tableCases").innerHTML = stringHTML;
+
+
+</script>  
+
+
+
+</apex:page>

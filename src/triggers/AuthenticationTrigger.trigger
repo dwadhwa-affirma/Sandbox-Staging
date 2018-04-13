@@ -42,7 +42,7 @@ trigger AuthenticationTrigger on Authenticated_Log__c (before insert, before upd
             for(Authenticated_Log__c au:Trigger.new){
                  
                      //Commenting for production deployment since these fields don't exist 
-                              au.Email__c = act[0].Email_raw__c;
+                              au.Email_New__c = act[0].Email_raw__c;
                               au.Brand__c = prsn[0].Brand__c;
                               au.First_Name__c = act[0].FirstName;
                               au.PersonId__c = act[0].PersonID__c;
