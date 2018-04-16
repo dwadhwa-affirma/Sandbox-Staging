@@ -73,7 +73,7 @@
         
       
          
-            <apex:tab label="Account Details" reRender="ad" labelWidth="120" rendered="{!accList.size > 0}">
+            <apex:tab label="Account Details" reRender="ad" labelWidth="120">
             <apex:pageBlock >
                
             <apex:pageBlockSection columns="1" id="ad">

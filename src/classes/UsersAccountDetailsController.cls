@@ -1,5 +1,4 @@
-public class UsersAccountDetailsController {
-   
+public class UsersAccountDetailsController {   
     public string accId;
     public list<case> caseList{get;set;}
     public list<Case> caseList1{get;set;}
@@ -88,8 +87,9 @@ public class UsersAccountDetailsController {
             
         }
         accList = new list<Account_Details__c>();
+        list<Account_Details__c> accList1 = new list<Account_Details__c>();
         if(acctypeSet.contains('ACCT')){
-            accList = [SELECT Id,
+            accList1 = [SELECT Id,
                               Name,
                               RecType__c,
                               TypeTranslate__c,
@@ -107,7 +107,7 @@ public class UsersAccountDetailsController {
                               Emp_Available_Balance__c,
                               Available_Balance__c FROM Account_Details__c WHERE Name IN:accountNumberSet and RecType__c != 'CARD'];
         }else{
-            accList = [SELECT Id,
+            accList1 = [SELECT Id,
                               Name,
                               RecType__c,
                               TypeTranslate__c,
@@ -126,7 +126,7 @@ public class UsersAccountDetailsController {
                               Available_Balance__c FROM Account_Details__c Where Id IN:accIdSet and RecType__c != 'CARD'];
         }
          listAccountList360  = new  List<AccountList360> ();
-        for(Account_Details__c acc : accList)
+        for(Account_Details__c acc : accList1)
         {
         	AccountList360 obj = new AccountList360();
         	obj.Id = acc.Id;
@@ -162,6 +162,7 @@ public class UsersAccountDetailsController {
 			if(obj.Relationship != null && !obj.Relationship.contains('Beneficiary'))
 			{
 				listAccountList360.add(obj);	
+				accList.add(acc);
 			}	
         }
         
@@ -172,10 +173,11 @@ public class UsersAccountDetailsController {
         
         for(AccountList360 item : listAccountList360){
         	accountNumberSetWOBeneficiary.add(item.Name);
+        	accIdSetWOBeneficiary.add(item.id);
         }
         
                 for(AccountList360 item : listAccountList360){
-        	accountNumberSetWOBeneficiary.add(item.Name);
+        	
         }
         
        system.debug('accountNumberSet ---  '  + accountNumberSet);
@@ -196,7 +198,7 @@ public class UsersAccountDetailsController {
                               Expiration_Date__c,
                               Issue_Date__c,
                               Emp_Balance__c,
-                              Card_Name__c FROM Account_Details__c Where Name IN:accountNumberSet and RecType__c = 'CARD'];
+                              Card_Name__c FROM Account_Details__c Where Name IN:accountNumberSetWOBeneficiary and RecType__c = 'CARD'];
         }else{
             cardList = [SELECT Id,
                               Name,
@@ -213,7 +215,7 @@ public class UsersAccountDetailsController {
                               Expiration_Date__c,
                               Issue_Date__c,
                               Emp_Balance__c,
-                              Card_Name__c FROM Account_Details__c Where Id IN:accIdSet and RecType__c = 'CARD'];
+                              Card_Name__c FROM Account_Details__c Where Id IN:accIdSetWOBeneficiary and RecType__c = 'CARD'];
         }
         List<string> listCard = new List<string>();
         for(Account_Details__c card : cardList){
@@ -233,7 +235,7 @@ public class UsersAccountDetailsController {
        for(Account_Details__c accDl : accList){
            clsDate.add(String.valueOf(accDl.Close_Date__c));
        } */
-        ContactDetails(accList, listAccountList360);
+        ContactDetails(accList1, accList);
        // warningCodeDetails(paList);
     } 
     
@@ -251,6 +253,8 @@ public class UsersAccountDetailsController {
             acctypeSet.add(var.Account_Number__r.RecType__c);
             accIdSet.add(var.Account_Number__c);
         }
+        
+        
         
         list<Account_Details__c> accountDetailsList = new list<Account_Details__c>();
         if(acctypeSet.contains('ACCT')){
@@ -361,136 +365,150 @@ public class UsersAccountDetailsController {
          wsWrapperList = new list<warningStringWrapper>();
                                     
          for(Account_Details__c var: accountDetailsList){
-             
-             if(var.WARNING_01_CODE__c != '000-NONE' && var.WARNING_01_CODE__c != NULL && var.WARNING_01_CODE__c != '0-NONE'){
-                 wsWrapperList.add(new warningStringWrapper(var.Id,var.Name,var.Close_Date__c,var.WARNING_01_CODE__c,var.RecType__c,var.TypeTranslate__c, docMap, var.ID1__c, 'Warning Code'));
+             boolean found = false;
+             for(AccountList360 accountQDetails : listAccountList360)
+             {
+             	if(accountQDetails.id == var.id)
+             	{
+             		found = true;
+             	}
              }
-             if(var.Comment_Block_01__c != null){
-                 wsWrapperList.add(new warningStringWrapper(var.Id,var.Name,var.Close_Date__c,var.Comment_Block_01__c,var.RecType__c,var.TypeTranslate__c, docMap, var.ID1__c, 'Comment'));
-             }
-             if(var.WARNING_02_CODE__c != '000-NONE' && var.WARNING_02_CODE__c != NULL && var.WARNING_02_CODE__c != '0-NONE'){
-                 wsWrapperList.add(new warningStringWrapper(var.Id,var.Name,var.Close_Date__c,var.WARNING_02_CODE__c,var.RecType__c,var.TypeTranslate__c, docMap, var.ID1__c, 'Warning Code'));
-             }
-             if(var.Comment_Block_02__c != null){
-                 wsWrapperList.add(new warningStringWrapper(var.Id,var.Name,var.Close_Date__c,var.Comment_Block_02__c,var.RecType__c,var.TypeTranslate__c, docMap, var.ID1__c, 'Comment'));
-             }
-             if(var.WARNING_03_CODE__c != '000-NONE' && var.WARNING_03_CODE__c != NULL && var.WARNING_03_CODE__c != '0-NONE'){
-                 wsWrapperList.add(new warningStringWrapper(var.Id,var.Name,var.Close_Date__c,var.WARNING_03_CODE__c,var.RecType__c,var.TypeTranslate__c, docMap, var.ID1__c, 'Warning Code'));
-             }
-             if(var.Comment_Block_03__c != null){
-                 wsWrapperList.add(new warningStringWrapper(var.Id,var.Name,var.Close_Date__c,var.Comment_Block_03__c,var.RecType__c,var.TypeTranslate__c, docMap, var.ID1__c, 'Comment'));
-             }
-             if(var.WARNING_04_CODE__c != '000-NONE' && var.WARNING_04_CODE__c != NULL && var.WARNING_04_CODE__c != '0-NONE'){
-                 wsWrapperList.add(new warningStringWrapper(var.Id,var.Name,var.Close_Date__c,var.WARNING_04_CODE__c,var.RecType__c,var.TypeTranslate__c, docMap, var.ID1__c, 'Warning Code'));
-             }
-             if(var.Comment_Block_04__c != null){
-                 wsWrapperList.add(new warningStringWrapper(var.Id,var.Name,var.Close_Date__c,var.Comment_Block_04__c,var.RecType__c,var.TypeTranslate__c, docMap, var.ID1__c, 'Comment'));
-             }
-             if(var.WARNING_05_CODE__c != '000-NONE' && var.WARNING_05_CODE__c != NULL && var.WARNING_05_CODE__c != '0-NONE'){
-                 wsWrapperList.add(new warningStringWrapper(var.Id,var.Name,var.Close_Date__c,var.WARNING_05_CODE__c,var.RecType__c,var.TypeTranslate__c, docMap, var.ID1__c, 'Warning Code'));
-             }
-             if(var.Comment_Block_05__c != null){
-                 wsWrapperList.add(new warningStringWrapper(var.Id,var.Name,var.Close_Date__c,var.Comment_Block_05__c,var.RecType__c,var.TypeTranslate__c, docMap, var.ID1__c, 'Comment'));
-             }
-             if(var.WARNING_06_CODE__c != '000-NONE' && var.WARNING_06_CODE__c != NULL && var.WARNING_06_CODE__c != '0-NONE'){
-                 wsWrapperList.add(new warningStringWrapper(var.Id,var.Name,var.Close_Date__c,var.WARNING_06_CODE__c,var.RecType__c,var.TypeTranslate__c, docMap, var.ID1__c, 'Warning Code'));
-             }
-             if(var.Comment_Block_06__c != null){
-                 wsWrapperList.add(new warningStringWrapper(var.Id,var.Name,var.Close_Date__c,var.Comment_Block_06__c,var.RecType__c,var.TypeTranslate__c, docMap, var.ID1__c, 'Comment'));
-             }
-             if(var.WARNING_07_CODE__c != '000-NONE' && var.WARNING_07_CODE__c != NULL && var.WARNING_07_CODE__c != '0-NONE'){
-                 wsWrapperList.add(new warningStringWrapper(var.Id,var.Name,var.Close_Date__c,var.WARNING_07_CODE__c,var.RecType__c,var.TypeTranslate__c, docMap, var.ID1__c, 'Warning Code'));
-             }
-             if(var.Comment_Block_07__c != null){
-                 wsWrapperList.add(new warningStringWrapper(var.Id,var.Name,var.Close_Date__c,var.Comment_Block_07__c,var.RecType__c,var.TypeTranslate__c, docMap, var.ID1__c, 'Comment'));
-             }
-             if(var.WARNING_08_CODE__c != '000-NONE' && var.WARNING_08_CODE__c != NULL && var.WARNING_08_CODE__c != '0-NONE'){
-                 wsWrapperList.add(new warningStringWrapper(var.Id,var.Name,var.Close_Date__c,var.WARNING_08_CODE__c,var.RecType__c,var.TypeTranslate__c, docMap, var.ID1__c, 'Warning Code'));
-             }
-             if(var.Comment_Block_08__c != null){
-                 wsWrapperList.add(new warningStringWrapper(var.Id,var.Name,var.Close_Date__c,var.Comment_Block_08__c,var.RecType__c,var.TypeTranslate__c, docMap, var.ID1__c, 'Comment'));
-             }
-             if(var.WARNING_09_CODE__c != '000-NONE' && var.WARNING_09_CODE__c != NULL && var.WARNING_09_CODE__c != '0-NONE'){
-                 wsWrapperList.add(new warningStringWrapper(var.Id,var.Name,var.Close_Date__c,var.WARNING_09_CODE__c,var.RecType__c,var.TypeTranslate__c, docMap, var.ID1__c, 'Warning Code'));
-             }
-             if(var.Comment_Block_09__c != null){
-                 wsWrapperList.add(new warningStringWrapper(var.Id,var.Name,var.Close_Date__c,var.Comment_Block_09__c,var.RecType__c,var.TypeTranslate__c, docMap, var.ID1__c, 'Comment'));
-             }
-             if(var.WARNING_10_CODE__c != '000-NONE' && var.WARNING_10_CODE__c != NULL && var.WARNING_10_CODE__c != '0-NONE'){
-                 wsWrapperList.add(new warningStringWrapper(var.Id,var.Name,var.Close_Date__c,var.WARNING_10_CODE__c,var.RecType__c,var.TypeTranslate__c, docMap, var.ID1__c, 'Warning Code'));
-             }
-             if(var.Comment_Block_10__c != null){
-                 wsWrapperList.add(new warningStringWrapper(var.Id,var.Name,var.Close_Date__c,var.Comment_Block_10__c,var.RecType__c,var.TypeTranslate__c, docMap, var.ID1__c, 'Comment'));
-             }
-             if(var.WARNING_11_CODE__c != '000-NONE' && var.WARNING_11_CODE__c != NULL && var.WARNING_11_CODE__c != '0-NONE'){
-                 wsWrapperList.add(new warningStringWrapper(var.Id,var.Name,var.Close_Date__c,var.WARNING_11_CODE__c,var.RecType__c,var.TypeTranslate__c, docMap, var.ID1__c, 'Warning Code'));
-             }
-             if(var.Comment_Block_11__c != null){
-                 wsWrapperList.add(new warningStringWrapper(var.Id,var.Name,var.Close_Date__c,var.Comment_Block_11__c,var.RecType__c,var.TypeTranslate__c, docMap, var.ID1__c, 'Comment'));
-             }
-             if(var.WARNING_12_CODE__c != '000-NONE' && var.WARNING_12_CODE__c != NULL && var.WARNING_12_CODE__c != '0-NONE'){
-                 wsWrapperList.add(new warningStringWrapper(var.Id,var.Name,var.Close_Date__c,var.WARNING_12_CODE__c,var.RecType__c,var.TypeTranslate__c, docMap, var.ID1__c, 'Warning Code'));
-             }
-             if(var.Comment_Block_12__c != null){
-                 wsWrapperList.add(new warningStringWrapper(var.Id,var.Name,var.Close_Date__c,var.Comment_Block_12__c,var.RecType__c,var.TypeTranslate__c, docMap, var.ID1__c, 'Comment'));
-             }
-             if(var.WARNING_13_CODE__c != '000-NONE' && var.WARNING_13_CODE__c != NULL && var.WARNING_13_CODE__c != '0-NONE'){
-                 wsWrapperList.add(new warningStringWrapper(var.Id,var.Name,var.Close_Date__c,var.WARNING_13_CODE__c,var.RecType__c,var.TypeTranslate__c, docMap, var.ID1__c, 'Warning Code'));
-             }
-             if(var.Comment_Block_13__c != null){
-                 wsWrapperList.add(new warningStringWrapper(var.Id,var.Name,var.Close_Date__c,var.Comment_Block_13__c,var.RecType__c,var.TypeTranslate__c, docMap, var.ID1__c, 'Comment'));
-             }
-             if(var.WARNING_14_CODE__c != '000-NONE' && var.WARNING_14_CODE__c != NULL && var.WARNING_14_CODE__c != '0-NONE'){
-                 wsWrapperList.add(new warningStringWrapper(var.Id,var.Name,var.Close_Date__c,var.WARNING_14_CODE__c,var.RecType__c,var.TypeTranslate__c, docMap, var.ID1__c, 'Warning Code'));
-             }
-             if(var.Comment_Block_14__c != null){
-                 wsWrapperList.add(new warningStringWrapper(var.Id,var.Name,var.Close_Date__c,var.Comment_Block_14__c,var.RecType__c,var.TypeTranslate__c, docMap, var.ID1__c, 'Comment'));
-             }
-             if(var.WARNING_15_CODE__c != '000-NONE' && var.WARNING_15_CODE__c != NULL && var.WARNING_15_CODE__c != '0-NONE'){
-                 wsWrapperList.add(new warningStringWrapper(var.Id,var.Name,var.Close_Date__c,var.WARNING_15_CODE__c,var.RecType__c,var.TypeTranslate__c, docMap, var.ID1__c, 'Warning Code'));
-             }
-             if(var.Comment_Block_15__c != null){
-                 wsWrapperList.add(new warningStringWrapper(var.Id,var.Name,var.Close_Date__c,var.Comment_Block_15__c,var.RecType__c,var.TypeTranslate__c, docMap, var.ID1__c, 'Comment'));
-             }
-             if(var.WARNING_16_CODE__c != '000-NONE' && var.WARNING_16_CODE__c != NULL && var.WARNING_16_CODE__c != '0-NONE'){
-                 wsWrapperList.add(new warningStringWrapper(var.Id,var.Name,var.Close_Date__c,var.WARNING_16_CODE__c,var.RecType__c,var.TypeTranslate__c, docMap, var.ID1__c, 'Warning Code'));
-             }
-             if(var.Comment_Block_16__c != null){
-                 wsWrapperList.add(new warningStringWrapper(var.Id,var.Name,var.Close_Date__c,var.Comment_Block_16__c,var.RecType__c,var.TypeTranslate__c, docMap, var.ID1__c, 'Comment'));
-             }
-             if(var.WARNING_17_CODE__c != '000-NONE' && var.WARNING_17_CODE__c != NULL && var.WARNING_17_CODE__c != '0-NONE'){
-                 wsWrapperList.add(new warningStringWrapper(var.Id,var.Name,var.Close_Date__c,var.WARNING_17_CODE__c,var.RecType__c,var.TypeTranslate__c, docMap, var.ID1__c, 'Warning Code'));
-             }
-             if(var.Comment_Block_17__c != null){
-                 wsWrapperList.add(new warningStringWrapper(var.Id,var.Name,var.Close_Date__c,var.Comment_Block_17__c,var.RecType__c,var.TypeTranslate__c, docMap, var.ID1__c, 'Comment'));
-             }
-             if(var.WARNING_18_CODE__c != '000-NONE' && var.WARNING_18_CODE__c != NULL && var.WARNING_18_CODE__c != '0-NONE'){
-                 wsWrapperList.add(new warningStringWrapper(var.Id,var.Name,var.Close_Date__c,var.WARNING_18_CODE__c,var.RecType__c,var.TypeTranslate__c, docMap, var.ID1__c, 'Warning Code'));
-             }
-             if(var.Comment_Block_18__c != null){
-                 wsWrapperList.add(new warningStringWrapper(var.Id,var.Name,var.Close_Date__c,var.Comment_Block_18__c,var.RecType__c,var.TypeTranslate__c, docMap, var.ID1__c, 'Comment'));
-             }
-             if(var.WARNING_19_CODE__c != '000-NONE' && var.WARNING_19_CODE__c != NULL && var.WARNING_19_CODE__c != '0-NONE'){
-                 wsWrapperList.add(new warningStringWrapper(var.Id,var.Name,var.Close_Date__c,var.WARNING_19_CODE__c,var.RecType__c,var.TypeTranslate__c, docMap, var.ID1__c, 'Warning Code'));
-             }
-             if(var.Comment_Block_19__c != null){
-                 wsWrapperList.add(new warningStringWrapper(var.Id,var.Name,var.Close_Date__c,var.Comment_Block_19__c,var.RecType__c,var.TypeTranslate__c, docMap, var.ID1__c, 'Comment'));
-             }
-             if(var.WARNING_20_CODE__c != '000-NONE' && var.WARNING_20_CODE__c != NULL && var.WARNING_20_CODE__c != '0-NONE'){
-                 wsWrapperList.add(new warningStringWrapper(var.Id,var.Name,var.Close_Date__c,var.WARNING_20_CODE__c,var.RecType__c,var.TypeTranslate__c, docMap, var.ID1__c, 'Warning Code'));
-             }
-             if(var.Comment_Block_20__c != null){
-                 wsWrapperList.add(new warningStringWrapper(var.Id,var.Name,var.Close_Date__c,var.Comment_Block_20__c,var.RecType__c,var.TypeTranslate__c, docMap, var.ID1__c, 'Comment'));
+             if(found)
+             {
+	             if(var.WARNING_01_CODE__c != '000-NONE' && var.WARNING_01_CODE__c != NULL && var.WARNING_01_CODE__c != '0-NONE'){
+	                 wsWrapperList.add(new warningStringWrapper(var.Id,var.Name,var.Close_Date__c,var.WARNING_01_CODE__c,var.RecType__c,var.TypeTranslate__c, docMap, var.ID1__c, 'Warning Code'));
+	             }
+	             if(var.Comment_Block_01__c != null){
+	                 wsWrapperList.add(new warningStringWrapper(var.Id,var.Name,var.Close_Date__c,var.Comment_Block_01__c,var.RecType__c,var.TypeTranslate__c, docMap, var.ID1__c, 'Comment'));
+	             }
+	             if(var.WARNING_02_CODE__c != '000-NONE' && var.WARNING_02_CODE__c != NULL && var.WARNING_02_CODE__c != '0-NONE'){
+	                 wsWrapperList.add(new warningStringWrapper(var.Id,var.Name,var.Close_Date__c,var.WARNING_02_CODE__c,var.RecType__c,var.TypeTranslate__c, docMap, var.ID1__c, 'Warning Code'));
+	             }
+	             if(var.Comment_Block_02__c != null){
+	                 wsWrapperList.add(new warningStringWrapper(var.Id,var.Name,var.Close_Date__c,var.Comment_Block_02__c,var.RecType__c,var.TypeTranslate__c, docMap, var.ID1__c, 'Comment'));
+	             }
+	             if(var.WARNING_03_CODE__c != '000-NONE' && var.WARNING_03_CODE__c != NULL && var.WARNING_03_CODE__c != '0-NONE'){
+	                 wsWrapperList.add(new warningStringWrapper(var.Id,var.Name,var.Close_Date__c,var.WARNING_03_CODE__c,var.RecType__c,var.TypeTranslate__c, docMap, var.ID1__c, 'Warning Code'));
+	             }
+	             if(var.Comment_Block_03__c != null){
+	                 wsWrapperList.add(new warningStringWrapper(var.Id,var.Name,var.Close_Date__c,var.Comment_Block_03__c,var.RecType__c,var.TypeTranslate__c, docMap, var.ID1__c, 'Comment'));
+	             }
+	             if(var.WARNING_04_CODE__c != '000-NONE' && var.WARNING_04_CODE__c != NULL && var.WARNING_04_CODE__c != '0-NONE'){
+	                 wsWrapperList.add(new warningStringWrapper(var.Id,var.Name,var.Close_Date__c,var.WARNING_04_CODE__c,var.RecType__c,var.TypeTranslate__c, docMap, var.ID1__c, 'Warning Code'));
+	             }
+	             if(var.Comment_Block_04__c != null){
+	                 wsWrapperList.add(new warningStringWrapper(var.Id,var.Name,var.Close_Date__c,var.Comment_Block_04__c,var.RecType__c,var.TypeTranslate__c, docMap, var.ID1__c, 'Comment'));
+	             }
+	             if(var.WARNING_05_CODE__c != '000-NONE' && var.WARNING_05_CODE__c != NULL && var.WARNING_05_CODE__c != '0-NONE'){
+	                 wsWrapperList.add(new warningStringWrapper(var.Id,var.Name,var.Close_Date__c,var.WARNING_05_CODE__c,var.RecType__c,var.TypeTranslate__c, docMap, var.ID1__c, 'Warning Code'));
+	             }
+	             if(var.Comment_Block_05__c != null){
+	                 wsWrapperList.add(new warningStringWrapper(var.Id,var.Name,var.Close_Date__c,var.Comment_Block_05__c,var.RecType__c,var.TypeTranslate__c, docMap, var.ID1__c, 'Comment'));
+	             }
+	             if(var.WARNING_06_CODE__c != '000-NONE' && var.WARNING_06_CODE__c != NULL && var.WARNING_06_CODE__c != '0-NONE'){
+	                 wsWrapperList.add(new warningStringWrapper(var.Id,var.Name,var.Close_Date__c,var.WARNING_06_CODE__c,var.RecType__c,var.TypeTranslate__c, docMap, var.ID1__c, 'Warning Code'));
+	             }
+	             if(var.Comment_Block_06__c != null){
+	                 wsWrapperList.add(new warningStringWrapper(var.Id,var.Name,var.Close_Date__c,var.Comment_Block_06__c,var.RecType__c,var.TypeTranslate__c, docMap, var.ID1__c, 'Comment'));
+	             }
+	             if(var.WARNING_07_CODE__c != '000-NONE' && var.WARNING_07_CODE__c != NULL && var.WARNING_07_CODE__c != '0-NONE'){
+	                 wsWrapperList.add(new warningStringWrapper(var.Id,var.Name,var.Close_Date__c,var.WARNING_07_CODE__c,var.RecType__c,var.TypeTranslate__c, docMap, var.ID1__c, 'Warning Code'));
+	             }
+	             if(var.Comment_Block_07__c != null){
+	                 wsWrapperList.add(new warningStringWrapper(var.Id,var.Name,var.Close_Date__c,var.Comment_Block_07__c,var.RecType__c,var.TypeTranslate__c, docMap, var.ID1__c, 'Comment'));
+	             }
+	             if(var.WARNING_08_CODE__c != '000-NONE' && var.WARNING_08_CODE__c != NULL && var.WARNING_08_CODE__c != '0-NONE'){
+	                 wsWrapperList.add(new warningStringWrapper(var.Id,var.Name,var.Close_Date__c,var.WARNING_08_CODE__c,var.RecType__c,var.TypeTranslate__c, docMap, var.ID1__c, 'Warning Code'));
+	             }
+	             if(var.Comment_Block_08__c != null){
+	                 wsWrapperList.add(new warningStringWrapper(var.Id,var.Name,var.Close_Date__c,var.Comment_Block_08__c,var.RecType__c,var.TypeTranslate__c, docMap, var.ID1__c, 'Comment'));
+	             }
+	             if(var.WARNING_09_CODE__c != '000-NONE' && var.WARNING_09_CODE__c != NULL && var.WARNING_09_CODE__c != '0-NONE'){
+	                 wsWrapperList.add(new warningStringWrapper(var.Id,var.Name,var.Close_Date__c,var.WARNING_09_CODE__c,var.RecType__c,var.TypeTranslate__c, docMap, var.ID1__c, 'Warning Code'));
+	             }
+	             if(var.Comment_Block_09__c != null){
+	                 wsWrapperList.add(new warningStringWrapper(var.Id,var.Name,var.Close_Date__c,var.Comment_Block_09__c,var.RecType__c,var.TypeTranslate__c, docMap, var.ID1__c, 'Comment'));
+	             }
+	             if(var.WARNING_10_CODE__c != '000-NONE' && var.WARNING_10_CODE__c != NULL && var.WARNING_10_CODE__c != '0-NONE'){
+	                 wsWrapperList.add(new warningStringWrapper(var.Id,var.Name,var.Close_Date__c,var.WARNING_10_CODE__c,var.RecType__c,var.TypeTranslate__c, docMap, var.ID1__c, 'Warning Code'));
+	             }
+	             if(var.Comment_Block_10__c != null){
+	                 wsWrapperList.add(new warningStringWrapper(var.Id,var.Name,var.Close_Date__c,var.Comment_Block_10__c,var.RecType__c,var.TypeTranslate__c, docMap, var.ID1__c, 'Comment'));
+	             }
+	             if(var.WARNING_11_CODE__c != '000-NONE' && var.WARNING_11_CODE__c != NULL && var.WARNING_11_CODE__c != '0-NONE'){
+	                 wsWrapperList.add(new warningStringWrapper(var.Id,var.Name,var.Close_Date__c,var.WARNING_11_CODE__c,var.RecType__c,var.TypeTranslate__c, docMap, var.ID1__c, 'Warning Code'));
+	             }
+	             if(var.Comment_Block_11__c != null){
+	                 wsWrapperList.add(new warningStringWrapper(var.Id,var.Name,var.Close_Date__c,var.Comment_Block_11__c,var.RecType__c,var.TypeTranslate__c, docMap, var.ID1__c, 'Comment'));
+	             }
+	             if(var.WARNING_12_CODE__c != '000-NONE' && var.WARNING_12_CODE__c != NULL && var.WARNING_12_CODE__c != '0-NONE'){
+	                 wsWrapperList.add(new warningStringWrapper(var.Id,var.Name,var.Close_Date__c,var.WARNING_12_CODE__c,var.RecType__c,var.TypeTranslate__c, docMap, var.ID1__c, 'Warning Code'));
+	             }
+	             if(var.Comment_Block_12__c != null){
+	                 wsWrapperList.add(new warningStringWrapper(var.Id,var.Name,var.Close_Date__c,var.Comment_Block_12__c,var.RecType__c,var.TypeTranslate__c, docMap, var.ID1__c, 'Comment'));
+	             }
+	             if(var.WARNING_13_CODE__c != '000-NONE' && var.WARNING_13_CODE__c != NULL && var.WARNING_13_CODE__c != '0-NONE'){
+	                 wsWrapperList.add(new warningStringWrapper(var.Id,var.Name,var.Close_Date__c,var.WARNING_13_CODE__c,var.RecType__c,var.TypeTranslate__c, docMap, var.ID1__c, 'Warning Code'));
+	             }
+	             if(var.Comment_Block_13__c != null){
+	                 wsWrapperList.add(new warningStringWrapper(var.Id,var.Name,var.Close_Date__c,var.Comment_Block_13__c,var.RecType__c,var.TypeTranslate__c, docMap, var.ID1__c, 'Comment'));
+	             }
+	             if(var.WARNING_14_CODE__c != '000-NONE' && var.WARNING_14_CODE__c != NULL && var.WARNING_14_CODE__c != '0-NONE'){
+	                 wsWrapperList.add(new warningStringWrapper(var.Id,var.Name,var.Close_Date__c,var.WARNING_14_CODE__c,var.RecType__c,var.TypeTranslate__c, docMap, var.ID1__c, 'Warning Code'));
+	             }
+	             if(var.Comment_Block_14__c != null){
+	                 wsWrapperList.add(new warningStringWrapper(var.Id,var.Name,var.Close_Date__c,var.Comment_Block_14__c,var.RecType__c,var.TypeTranslate__c, docMap, var.ID1__c, 'Comment'));
+	             }
+	             if(var.WARNING_15_CODE__c != '000-NONE' && var.WARNING_15_CODE__c != NULL && var.WARNING_15_CODE__c != '0-NONE'){
+	                 wsWrapperList.add(new warningStringWrapper(var.Id,var.Name,var.Close_Date__c,var.WARNING_15_CODE__c,var.RecType__c,var.TypeTranslate__c, docMap, var.ID1__c, 'Warning Code'));
+	             }
+	             if(var.Comment_Block_15__c != null){
+	                 wsWrapperList.add(new warningStringWrapper(var.Id,var.Name,var.Close_Date__c,var.Comment_Block_15__c,var.RecType__c,var.TypeTranslate__c, docMap, var.ID1__c, 'Comment'));
+	             }
+	             if(var.WARNING_16_CODE__c != '000-NONE' && var.WARNING_16_CODE__c != NULL && var.WARNING_16_CODE__c != '0-NONE'){
+	                 wsWrapperList.add(new warningStringWrapper(var.Id,var.Name,var.Close_Date__c,var.WARNING_16_CODE__c,var.RecType__c,var.TypeTranslate__c, docMap, var.ID1__c, 'Warning Code'));
+	             }
+	             if(var.Comment_Block_16__c != null){
+	                 wsWrapperList.add(new warningStringWrapper(var.Id,var.Name,var.Close_Date__c,var.Comment_Block_16__c,var.RecType__c,var.TypeTranslate__c, docMap, var.ID1__c, 'Comment'));
+	             }
+	             if(var.WARNING_17_CODE__c != '000-NONE' && var.WARNING_17_CODE__c != NULL && var.WARNING_17_CODE__c != '0-NONE'){
+	                 wsWrapperList.add(new warningStringWrapper(var.Id,var.Name,var.Close_Date__c,var.WARNING_17_CODE__c,var.RecType__c,var.TypeTranslate__c, docMap, var.ID1__c, 'Warning Code'));
+	             }
+	             if(var.Comment_Block_17__c != null){
+	                 wsWrapperList.add(new warningStringWrapper(var.Id,var.Name,var.Close_Date__c,var.Comment_Block_17__c,var.RecType__c,var.TypeTranslate__c, docMap, var.ID1__c, 'Comment'));
+	             }
+	             if(var.WARNING_18_CODE__c != '000-NONE' && var.WARNING_18_CODE__c != NULL && var.WARNING_18_CODE__c != '0-NONE'){
+	                 wsWrapperList.add(new warningStringWrapper(var.Id,var.Name,var.Close_Date__c,var.WARNING_18_CODE__c,var.RecType__c,var.TypeTranslate__c, docMap, var.ID1__c, 'Warning Code'));
+	             }
+	             if(var.Comment_Block_18__c != null){
+	                 wsWrapperList.add(new warningStringWrapper(var.Id,var.Name,var.Close_Date__c,var.Comment_Block_18__c,var.RecType__c,var.TypeTranslate__c, docMap, var.ID1__c, 'Comment'));
+	             }
+	             if(var.WARNING_19_CODE__c != '000-NONE' && var.WARNING_19_CODE__c != NULL && var.WARNING_19_CODE__c != '0-NONE'){
+	                 wsWrapperList.add(new warningStringWrapper(var.Id,var.Name,var.Close_Date__c,var.WARNING_19_CODE__c,var.RecType__c,var.TypeTranslate__c, docMap, var.ID1__c, 'Warning Code'));
+	             }
+	             if(var.Comment_Block_19__c != null){
+	                 wsWrapperList.add(new warningStringWrapper(var.Id,var.Name,var.Close_Date__c,var.Comment_Block_19__c,var.RecType__c,var.TypeTranslate__c, docMap, var.ID1__c, 'Comment'));
+	             }
+	             if(var.WARNING_20_CODE__c != '000-NONE' && var.WARNING_20_CODE__c != NULL && var.WARNING_20_CODE__c != '0-NONE'){
+	                 wsWrapperList.add(new warningStringWrapper(var.Id,var.Name,var.Close_Date__c,var.WARNING_20_CODE__c,var.RecType__c,var.TypeTranslate__c, docMap, var.ID1__c, 'Warning Code'));
+	             }
+	             if(var.Comment_Block_20__c != null){
+	                 wsWrapperList.add(new warningStringWrapper(var.Id,var.Name,var.Close_Date__c,var.Comment_Block_20__c,var.RecType__c,var.TypeTranslate__c, docMap, var.ID1__c, 'Comment'));
+	             }
              }
          }
          system.debug(wsWrapperList);
     }
     
-    public void ContactDetails(list<Account_Details__c> accList, List<AccountList360> listAccount){
+    public void ContactDetails(list<Account_Details__c> accList1, list<Account_Details__c> accList){
         set<String> accName = new Set<String>();
+        set<String> accNameWoBeneficiary = new Set<String>();
         
-        for(Account_Details__c var: accList){
+        for(Account_Details__c var: accList1){
             accName.add(var.Name);
+        }
+        for(Account_Details__c var: accList){
+            accNameWoBeneficiary.add(var.Name);
         }
       Id testId = System.currentPageReference().getParameters().get('Id');
       
@@ -509,7 +527,7 @@ public class UsersAccountDetailsController {
                               PersonID__r.FirstName,
                               PersonID__r.LastName,
                               PersonID__r.Name,
-                              Account_Number__r.Brand__c From Person_Account__c WHERE Account_Number__r.Name IN :accName /*AND personId__c != :testId*/];
+                              Account_Number__r.Brand__c From Person_Account__c WHERE Account_Number__r.Name IN :accNameWoBeneficiary /*AND personId__c != :testId*/];
                               
 		ContactList = [Select Id,
                               personId__c,
