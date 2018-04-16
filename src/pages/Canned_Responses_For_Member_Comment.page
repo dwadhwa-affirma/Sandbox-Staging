@@ -27,7 +27,7 @@
 					rowClasses="rowstyle" width="100%" styleclass="searchwrap">
 					<apex:outputPanel id="SearchTextPanel">
 						<apex:outputLabel value="Search" styleclass="searchlabel"></apex:outputLabel>
-						<apex:inputText id="SearchField" value="{!searchText}"
+						<apex:inputText disabled="{!isReadonly}"  id="SearchField" value="{!searchText}"
 							onkeypress="return onenter(event)" />
 					</apex:outputPanel>
 				</apex:panelGrid>
@@ -42,7 +42,7 @@
 					<!--<apex:outputLabel >Primary Category</apex:outputLabel>-->
 					<apex:outputPanel id="FirstPanel">
 						<apex:selectList styleclass="selectlistprimaryid"
-							value="{!selectedPrimary}" size="1" onchange="loadPrimaryList()">
+							value="{!selectedPrimary}"  disabled="{!isReadonly}" size="1" onchange="loadPrimaryList()">
 							<apex:selectOptions value="{!Primary}"></apex:selectOptions>
 						</apex:selectList>
 					</apex:outputPanel>
@@ -51,7 +51,7 @@
 					rowClasses="rowstyle" width="100%">
 					<!--<apex:outputLabel >Secondary Category</apex:outputLabel>-->
 					<apex:outputPanel id="SecondPanel">
-						<apex:selectList styleclass="selectlistsecondaryid"
+						<apex:selectList disabled="{!isReadonly}" styleclass="selectlistsecondaryid"
 							value="{!selectedSecondary}" size="1"
 							onchange="loadSecondoryList()">
 							<apex:selectOptions value="{!Secondary}"></apex:selectOptions>
@@ -63,7 +63,7 @@
 					<!--<apex:outputLabel >Tertiary Category</apex:outputLabel>-->
 					<apex:outputPanel id="ThirdPanel">
 						<apex:selectList styleclass="selectlisttertiaryid"
-							value="{!selectedTertiary}" size="1"
+							value="{!selectedTertiary}"   disabled="{!isReadonly}" size="1"
 							onchange="loadTertiaryList()">
 							<apex:selectOptions value="{!Tertiary}"></apex:selectOptions>
 						</apex:selectList>
@@ -73,7 +73,7 @@
 					rowClasses="rowstyle" width="100%">
 					<apex:outputPanel id="titlePanel">
 						<apex:outputLabel styleclass="selectlabel">Select a Response Comment</apex:outputLabel>
-						<apex:selectList styleclass="selectlistid"
+						<apex:selectList disabled="{!isReadonly}" styleclass="selectlistid"
 							value="{!selectedTitle}" size="6"
 							onchange="loadSelectedDecription()">
 							<apex:selectOptions value="{!items}"></apex:selectOptions>
@@ -84,7 +84,23 @@
 					rowClasses="rowstyle" width="100%">
 					<apex:outputPanel id="draftpanel">
 						<apex:outputLabel >Draft?</apex:outputLabel>&nbsp;
-                          <apex:inputCheckbox value="{!Draft}" />
+                          <apex:inputCheckbox disabled="{!isReadonly}" value="{!Draft}" />
+
+					</apex:outputPanel>
+				</apex:panelGrid>
+				<apex:panelGrid columns="2" border="0" cellpadding="3px"
+					rowClasses="rowstyle" width="100%" rendered="{!If(isReadonly, true, false)}" >
+					<apex:outputPanel id="draftpanel2">
+						<apex:outputLabel >CU Read</apex:outputLabel>&nbsp;
+                          <apex:inputCheckbox value="{!CURead}" />
+
+					</apex:outputPanel>
+				</apex:panelGrid>
+				<apex:panelGrid columns="2" border="0" cellpadding="3px"
+					rowClasses="rowstyle" width="100%" rendered="{!If(isReadonly, true, false)}">
+					<apex:outputPanel id="draftpanel3">
+						<apex:outputLabel >Member Read</apex:outputLabel>&nbsp;
+                          <apex:inputCheckbox value="{!MemberRead}" />
 
 					</apex:outputPanel>
 				</apex:panelGrid>
@@ -94,7 +110,7 @@
 					rowClasses="rowstyle">
 					<apex:outputLabel value="Member Communication"
 						style="padding-left:30px; float:right"></apex:outputLabel>
-					<apex:inputTextarea id="setDescription" styleClass="setDescription"
+					<apex:inputTextarea disabled="{!isReadonly}" id="setDescription" styleClass="setDescription"
 						richText="true" value="{!MemberDescription}" style="width: 100%" />
 
 					<!-- <apex:outputLabel value="Case" style="padding-left:30px;"></apex:outputLabel>
@@ -125,10 +141,10 @@
 							<apex:column headerValue="">
 								<a
 									href="/servlet/servlet.FileDownload?file={!obj.attachmentobj.Id}"
-									target="_blank" styleClass="btn">Download Attachment</a>
+									target="_blank" class="btn">Download Attachment</a>
 							</apex:column>
 							<apex:column headerValue="Select">
-								<apex:inputCheckbox value="{!obj.checkvalue}" />
+								<apex:inputCheckbox disabled="{!isReadonly}" value="{!obj.checkvalue}" />
 								<!--<input type="checkbox" id="{!obj.attachmentobj.Id}" value="first_checkbox"/>-->
 							</apex:column>
 						</apex:pageBlockTable>

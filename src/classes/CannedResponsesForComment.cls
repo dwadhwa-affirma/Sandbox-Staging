@@ -21,18 +21,40 @@ Public Class CannedResponsesForComment{
     public string MemberDescription {get;set;} 
      public boolean Draft {get;set;} 
     Public boolean showBtn {get;set;}
+    public string membercommentid {get;set;}
     //public string msg {get;set;}
     public boolean stopSave {get;set;}
+	public boolean CURead {get;set;}
+	public boolean MemberRead {get;set;}
     Case tempCase;
     public Account a;
+    public boolean isReadonly {get;set;}
     public Account_Details__c ad;
-    
+    public string listAttachedFilesName {get;set;}
     public CannedResponsesForComment(ApexPages.StandardController controller) {
         stopSave = true;
         draft = false;
         con = controller;
         Member_Comment__c m = (Member_Comment__c)con.getrecord();
-        caseId = m.case__c;
+        List<Attachment> Lstattachment = new List<Attachment>();
+        if(m.id == null){
+        	caseId = m.case__c;	
+        	isReadonly = false;
+        	membercommentid = '';
+        }
+        else
+        {
+        	Member_Comment__c mInner = [select case__c,Member_Communication__c,Draft__c,CU_Read__c,IsMarkRead__c from Member_Comment__c where Id =: m.Id];
+        	caseId = mInner.case__c;
+        	MemberDescription = mInner.Member_Communication__c;
+			CURead = mInner.CU_Read__c;
+			MemberRead = mInner.IsMarkRead__c;
+            Lstattachment = [SELECT Id, Name, Body, ContentType FROM Attachment where parentid =: m.Id];
+            isReadonly = !mInner.Draft__c;
+        	membercommentid = m.Id;
+        	draft = mInner.Draft__c;
+        }
+        
 
         cannedMessageHeader = [Select id, Chevron_Footer__c, Chevron_Header__c, Spectrum_Footer__c, Spectrum_Header__c from Canned_Message_Metadata__c limit 1];
         //msg = 'Please assign Email address to Member to save the Member Comment'; 
@@ -98,8 +120,16 @@ Public Class CannedResponsesForComment{
                         showBtn = true;
                         attachmentWrapper wrapobj = new attachmentWrapper(); 
                         system.debug('approvalIds--'+approvalIds);
-                        wrapobj.attachmentobj = c;                    
+                        wrapobj.attachmentobj = c;   
                         wrapobj.checkvalue = false;
+                        for(attachment att : Lstattachment)
+                        {
+                        	if(att.Name == c.Name)
+                        	{
+                        	wrapobj.checkvalue = true;	
+                        	}
+                        }                 
+                        
                         wrapperLst.add(wrapobj); 
                     }                    
                 }                       
@@ -265,58 +295,84 @@ Public Class CannedResponsesForComment{
                 }   */
                 MemberLst = new List<Member_Comment__c>();         
                 Member_Comment__c mbobj = new Member_Comment__c();
-                mbobj.Member_Communication__c = MemberDescription;
-                mbobj.Draft__c = Draft;
-                mbobj.Case__c = CaseId;
-                if (tempCase != null && tempCase.SecureEmail__c != null)
-                {
-                    //mbobj.Member_Email__c = ad.SecureEmailAddress__c;
-                    mbobj.Member_Email__c = tempCase.SecureEmail__c;
+                if(!isReadonly){
+	                mbobj.Member_Communication__c = MemberDescription;
+	                mbobj.Draft__c = Draft;
+	                mbobj.Case__c = CaseId;
+	                if (tempCase != null && tempCase.SecureEmail__c != null)
+	                {
+	                    //mbobj.Member_Email__c = ad.SecureEmailAddress__c;
+	                    mbobj.Member_Email__c = tempCase.SecureEmail__c;
+	                }
+	                else if (ad != null)// This is temporay fix until all cases are updated
+	                {
+	                    mbobj.Member_Email__c = ad.SecureEmailAddress__c;
+	                    //mbobj.Member_Email__c = tempCase.SecureEmail__c
+	                }
+	                mbobj.Case_Creator_Email__c = tempCase.CreatedBy.Email;
                 }
-                else if (ad != null)// This is temporay fix until all cases are updated
+                else
                 {
-                    mbobj.Member_Email__c = ad.SecureEmailAddress__c;
-                    //mbobj.Member_Email__c = tempCase.SecureEmail__c
+                	mbobj.IsMarkRead__c = MemberRead;
+                	mbobj.CU_Read__c = CURead;
                 }
-                mbobj.Case_Creator_Email__c = tempCase.CreatedBy.Email;
-
                     MemberLst.add(mbobj);
-                    if(!MemberLst.isEmpty()){
-                        insert MemberLst;
-                        mid = MemberLst[0].id;
-                    }               
+                    if(membercommentid == '')
+                    {
+	                    if(!MemberLst.isEmpty()){
+	                        insert MemberLst;
+	                        mid = MemberLst[0].id;
+	                    }
+                    }   
+                    else
+                    {
+                    	mid = membercommentid;
+                    	if(!MemberLst.isEmpty()){
+                    		MemberLst[0].id = mid;
+	                        update MemberLst;
+	                        mid = MemberLst[0].id;
+	                    }
+                    	
+                    }            
                                 
                 system.debug('MemberLst--'+MemberLst);
             }
-            if(wrapperLst.size () > 0 && wrapperLst != null){
-            aId = new List<string>();
-                for(attachmentWrapper wrap : wrapperLst){
-                    if(wrap.checkvalue == true){                        
-                        aId.add(wrap.attachmentobj.id);                                                              
-                    }                    
-                }
-                if(!MemberLst.isEmpty()){
-                    if(aId != null && aId.size() > 0){           
-                        List<Attachment> Lstattachment = new List<Attachment>();
-                        Lstattachment = [SELECT Id, Name, Body, ContentType FROM Attachment where id IN : aId];
-                        system.debug('Lstattachment ---'+Lstattachment);
-                        if(Lstattachment != null && Lstattachment.size() > 0){
-                            list<Attachment> MbAttchmentLst = new list<Attachment>();
-                            for(Attachment a : Lstattachment){
-                                 Attachment att = new Attachment();
-                                 att.name = a.name;
-                                 att.body = a.body;
-                                 att.Name = a.Name;
-                                 att.ContentType  = a.ContentType;
-                                 att.parentid = MemberLst[0].id;
-                                 MbAttchmentLst.add(att);
-                            }
-                            insert MbAttchmentLst;
-                            system.debug('MbAttchmentLst--'+MbAttchmentLst[0].id);
-                        }
-                        
-                    }
-                }                                  
+            if(!isReadonly){
+	            if(wrapperLst.size () > 0 && wrapperLst != null){
+	            aId = new List<string>();
+	                for(attachmentWrapper wrap : wrapperLst){
+	                    if(wrap.checkvalue == true){                        
+	                        aId.add(wrap.attachmentobj.id);                                                              
+	                    }                    
+	                }
+	                if(!MemberLst.isEmpty()){
+	                    if(aId != null && aId.size() > 0){
+	                    	List<Attachment> listAttachmentToDelete = new List<Attachment>();
+	                    	listAttachmentToDelete = [SELECT Id, Name, Body, ContentType FROM Attachment where parentid =: membercommentid];
+	                    	delete listAttachmentToDelete;           
+	                        List<Attachment> Lstattachment = new List<Attachment>();
+	                        Lstattachment = [SELECT Id, Name, Body, ContentType FROM Attachment where id IN : aId];
+	                        
+	                        
+	                        system.debug('Lstattachment ---'+Lstattachment);
+	                        if(Lstattachment != null && Lstattachment.size() > 0){
+	                            list<Attachment> MbAttchmentLst = new list<Attachment>();
+	                            for(Attachment a : Lstattachment){
+	                                 Attachment att = new Attachment();
+	                                 att.name = a.name;
+	                                 att.body = a.body;
+	                                 att.Name = a.Name;
+	                                 att.ContentType  = a.ContentType;
+	                                 att.parentid = MemberLst[0].id;
+	                                 MbAttchmentLst.add(att);
+	                            }
+	                            insert MbAttchmentLst;
+	                            system.debug('MbAttchmentLst--'+MbAttchmentLst[0].id);
+	                        }
+	                        
+	                    }
+	                }                                  
+	            }
             }
             PageReference nextPage = new PageReference('/' + caseId);
             return nextPage;
