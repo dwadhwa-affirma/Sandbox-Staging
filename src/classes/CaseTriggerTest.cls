@@ -99,6 +99,7 @@ public class CaseTriggerTest {
         Account_Details__c accDetail = new Account_Details__c();
         accDetail.Name = 'Test';
         accDetail.RecType__c = 'ACCT';
+        accDetail.SecureEmailAddress__c = 'test@test.com';
         insert accDetail;
         
         Account_Details__c accDetail1 = new Account_Details__c();
@@ -134,6 +135,8 @@ public class CaseTriggerTest {
         
        cs.OwnerId = user1.Id; 
        update cs;
+        
+        List<GroupMember> gm = [select group.name, group.DeveloperName from GroupMember where UserOrGroupId = :user1.Id];
       
     } 
     
@@ -200,6 +203,11 @@ CaseRecordType__c crt = new CaseRecordType__c();
         accDetail.RecType__c = 'ACCT';
         insert accDetail;
         
+        Account_Details__c accDetail1 = new Account_Details__c();
+        accDetail1.Name = 'Test1234';
+        accDetail1.RecType__c = 'ACCT';
+        insert accDetail1;
+        
         String RecTypeId= [select Id from RecordType where (Name='Person Account') and (SobjectType='Account')].Id;
         
         Account acc = new Account(
@@ -215,15 +223,34 @@ CaseRecordType__c crt = new CaseRecordType__c();
          
         insert acc;
         
+         Account acc1 = new Account(
+           RecordTypeID=RecTypeId,
+           FirstName='Test FName',
+           LastName='Test LName',
+           PersonMailingStreet='test@yahoo.com',
+           PersonMailingPostalCode='12345',
+           PersonMailingCity='SFO',
+           PersonEmail='test@yahoo.com',
+           PersonHomePhone='1234567',
+           PersonMobilePhone='12345678');
+         
+        insert acc1;
+        
         Person_Account__c pa = new Person_Account__c();
         pa.PersonID__c = acc.Id;
         pa.Account_Number__c = accDetail.Id; 
         pa.Name_Type__c = 0;
         insert pa;
-
+		
+        Person_Account__c pa1 = new Person_Account__c();
+        pa1.PersonID__c = acc1.Id;
+        pa1.Account_Number__c = accDetail1.Id; 
+        pa1.Name_Type__c = 0;
+        insert pa1;
+        
         Case cs = new Case();
         cs.Brand__c = 'Specturm';
-        cs.Origin = 'Email';
+     //   cs.Origin = 'Email';
         cs.Subject = '1234 testing tet sdf asdfa';
          cs.Primary_Category__c = 'AAA';
           cs.Secondary_Category__c = 'BBB';
@@ -235,8 +262,98 @@ CaseRecordType__c crt = new CaseRecordType__c();
         insert cs;
         
         cs.Origin = 'Email';
-        
+        cs.AccountId = acc1.Id;
         update cs;
+        
+         Case cs1 = new Case();
+         cs1.Brand__c = 'Specturm';
+    	 cs1.Subject = '1234 testing tet sdf asdfa';
+         cs1.Primary_Category__c = 'AAA';
+         cs1.Secondary_Category__c = 'BBB';
+         cs1.Tertiary_Category__c = 'CCC';
+         cs1.Origin = 'BoomiBulk';
+         cs1.Account_Number__c = accDetail.Id;
+         cs1.Member_Number__c = 'Test123';
+         cs1.AccountId = null;       
+        insert cs1;
+        
+        cs1.Origin = 'Email';
+        
+        update cs1;
+        
+         Case cs2 = new Case();
+         cs2.Brand__c = 'Specturm';
+    	 cs2.Subject = '';
+         cs2.Primary_Category__c = 'AAA';
+         cs2.Secondary_Category__c = 'BBB';
+         cs2.Tertiary_Category__c = 'CCC';
+         cs2.Origin = 'MaritzCX';
+         cs2.Account_Number__c = accDetail.Id;
+         cs2.Member_Number__c = 'Test123';
+         cs2.AccountId = null;       
+        insert cs2;
+        
+        cs2.Origin = 'Email';
+        
+       
+        
+        Case cs3 = new Case();
+         cs3.Brand__c = 'Specturm';
+    	 cs3.Subject = '1234 testing tet sdf :Relationship';
+         cs3.Primary_Category__c = 'AAA';
+         cs3.Secondary_Category__c = 'BBB';
+         cs3.Tertiary_Category__c = 'CCC';
+         cs3.Origin = 'MaritzCX';
+         cs3.Account_Number__c = accDetail.Id;
+         cs3.Member_Number__c = 'Test123';
+         cs3.AccountId = null;  
+        
+        insert cs3;
+        
+        cs3.Origin = 'Email';
+        
+      List<Case> cclist = new List<Case>();
+        cclist.add(cs2);
+        cclist.add(cs3);
+        update cclist;
+        
+         Case cs4 = new Case();
+         cs4.Brand__c = 'Specturm';
+    	 cs4.Subject = 'Call Center:Test';
+         cs4.Primary_Category__c = 'Surveys';
+         cs4.Secondary_Category__c = 'Call Center';
+         cs4.Tertiary_Category__c = 'Other';
+         cs4.Origin = 'MaritzCX';
+         cs4.Account_Number__c = accDetail.Id;
+         cs4.Member_Number__c = 'Test123';
+         cs4.AccountId = acc.Id;       
+        insert cs4;
+        
+        cs4.Origin = 'Email';
+        
+       
+        
+        Case cs5 = new Case();
+         cs5.Brand__c = 'Specturm';
+    	 cs5.Subject = 'Relationship Survey :901:214414';
+         cs5.Primary_Category__c = 'Surveys';
+         cs5.Secondary_Category__c = 'Branch';
+         cs5.Tertiary_Category__c = 'Other';
+         cs5.Origin = 'MaritzCX';
+         cs5.Account_Number__c = accDetail.Id;
+         cs5.Member_Number__c = 'Test123';
+         cs5.AccountId = acc.Id; 
+         insert cs5;
+        
+        cs5.Origin = 'Email';
+        
+       List<Case> cclist1 = new List<Case>();
+        cclist1.add(cs4);
+        cclist1.add(cs5);
+        update cclist1;
+       
+       
+        
     }
     
     static testMethod void testMethod11(){
