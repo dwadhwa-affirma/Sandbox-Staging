@@ -155,11 +155,11 @@
 				<!--<apex:commandButton value="Save" action="{!save}"/>-->
 				<apex:commandButton value="Save"
 					onclick="validateMe(); return false;" reRender="frm"
-					rendered="{!If(isReadonly, true, false)}"
+					rendered="{!If(isReadonly, false, true)}"
 					disabled="{!if(stopSave = true,true,false)}" />
 				<apex:commandButton value="Save & New"
 					onclick="validateMeonNew(); return false;"
-					rendered="{!If(isReadonly, true, false)}"
+					rendered="{!If(isReadonly, false, true)}"
 					disabled="{!if(stopSave = true,true,false)}" />
 				<!--<apex:commandButton value="Save & New" action="{!savenew}"/>-->
 				<apex:commandButton value="Cancel" action="{!cancelall}" />
