@@ -5999,6 +5999,22 @@
                 <default>false</default>
             </values>
             <values>
+                <fullName>Event %E2%80%93 Bi-weekly Bakersfield Stockdale Towers Bldg%2E</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Event %E2%80%93 Bi-weekly Camino Media BK9525</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Event %E2%80%93 Bi-weekly Camino Media F-Wing Cafe</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Event %E2%80%93 Bi-weekly Kern River Deli</fullName>
+                <default>false</default>
+            </values>
+            <values>
                 <fullName>External Referral</fullName>
                 <default>false</default>
             </values>
@@ -6854,6 +6870,22 @@
             </values>
             <values>
                 <fullName>Employee Referral</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Event %E2%80%93 Bi-weekly Bakersfield Stockdale Towers Bldg%2E</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Event %E2%80%93 Bi-weekly Camino Media BK9525</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Event %E2%80%93 Bi-weekly Camino Media F-Wing Cafe</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Event %E2%80%93 Bi-weekly Kern River Deli</fullName>
                 <default>false</default>
             </values>
             <values>

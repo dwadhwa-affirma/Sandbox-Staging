@@ -1202,6 +1202,11 @@ IF( ISBLANK($Setup.MaritzCX__AlPublic__c.MaritzCX__NamespacePrefix__c)  , &apos;
         <fullName>MemberCommentCount__c</fullName>
         <externalId>false</externalId>
         <label>MemberCommentCount</label>
+        <summaryFilterItems>
+            <field>Member_Comment__c.Draft__c</field>
+            <operation>notEqual</operation>
+            <value>True</value>
+        </summaryFilterItems>
         <summaryForeignKey>Member_Comment__c.Case__c</summaryForeignKey>
         <summaryOperation>count</summaryOperation>
         <trackHistory>false</trackHistory>
@@ -2141,6 +2146,17 @@ IF( ISBLANK($Setup.MaritzCX__AlPublic__c.MaritzCX__NamespacePrefix__c)  , &apos;
                 <valueName>Shares.</valueName>
             </valueSettings>
         </valueSet>
+    </fields>
+    <fields>
+        <fullName>Secure_Email__c</fullName>
+        <externalId>false</externalId>
+        <formula>IF(NULLVALUE(Account_Number__r.Parent_Account__c, &apos;&apos;) = &apos;&apos; , Account_Number__r.SecureEmailAddress__c , Account_Number__r.Parent_Account__r.SecureEmailAddress__c)</formula>
+        <label>Secure_Email</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
     </fields>
     <fields>
         <fullName>Select_Account_Number__c</fullName>
@@ -4750,6 +4766,7 @@ if(Value(Mid(TEXT(CreatedDate- 8/24 ), 12,2))-12 &gt;= 0,
         <columns>CASES.CREATED_DATE</columns>
         <columns>CASES.LAST_UPDATE</columns>
         <columns>Future_Date__c</columns>
+        <columns>Open_Task_Count__c</columns>
         <filterScope>Everything</filterScope>
         <label>All Cases</label>
     </listViews>
@@ -4811,6 +4828,25 @@ if(Value(Mid(TEXT(CreatedDate- 8/24 ), 12,2))-12 &gt;= 0,
             <value>Closed</value>
         </filters>
         <label>All Open Cases</label>
+    </listViews>
+    <listViews>
+        <fullName>All_Open_Cases_with_New_Columns</fullName>
+        <columns>CASES.CASE_NUMBER</columns>
+        <columns>CONTACT.LAST_NAME</columns>
+        <columns>Primary_Category__c</columns>
+        <columns>CORE.USERS.LAST_NAME</columns>
+        <columns>CASES.STATUS</columns>
+        <columns>Open_Task_Count__c</columns>
+        <columns>Future_Date__c</columns>
+        <columns>SLA_Breached__c</columns>
+        <columns>SLA__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Open_Task_Count__c</field>
+            <operation>greaterThan</operation>
+            <value>1</value>
+        </filters>
+        <label>All Open Cases with New Columns</label>
     </listViews>
     <listViews>
         <fullName>All_Queue_Cases</fullName>

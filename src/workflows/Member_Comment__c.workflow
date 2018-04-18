@@ -142,6 +142,7 @@
             <type>Alert</type>
         </actions>
         <active>true</active>
+        <booleanFilter>1 AND 2 AND 3 AND 4 AND 5 AND 6</booleanFilter>
         <criteriaItems>
             <field>Case.Created_by_Portal_Member__c</field>
             <operation>equals</operation>
@@ -167,8 +168,13 @@
             <operation>equals</operation>
             <value>0</value>
         </criteriaItems>
+        <criteriaItems>
+            <field>Member_Comment__c.Draft__c</field>
+            <operation>notEqual</operation>
+            <value>True</value>
+        </criteriaItems>
         <description>Purpose of this workflow is to record the member&apos;s email address that created the portal case and send the member the notification email.</description>
-        <triggerType>onCreateOnly</triggerType>
+        <triggerType>onCreateOrTriggeringUpdate</triggerType>
     </rules>
     <rules>
         <fullName>CU Case - New Chevron Comment</fullName>
@@ -177,6 +183,7 @@
             <type>Alert</type>
         </actions>
         <active>true</active>
+        <booleanFilter>1 AND 2 AND 3 AND 4 AND 5 AND 6</booleanFilter>
         <criteriaItems>
             <field>Case.Created_by_Portal_Member__c</field>
             <operation>equals</operation>
@@ -198,12 +205,17 @@
             <value>Account Maintenance / Wires / Foreign - New</value>
         </criteriaItems>
         <criteriaItems>
+            <field>Member_Comment__c.Draft__c</field>
+            <operation>notEqual</operation>
+            <value>True</value>
+        </criteriaItems>
+        <criteriaItems>
             <field>Case.MemberCommentCount__c</field>
             <operation>greaterThan</operation>
             <value>0</value>
         </criteriaItems>
         <description>Purpose of this workflow is to record the member&apos;s email address that created the portal case and send the member the notification email.</description>
-        <triggerType>onCreateOnly</triggerType>
+        <triggerType>onCreateOrTriggeringUpdate</triggerType>
     </rules>
     <rules>
         <fullName>CU Case - New Spectrum Case</fullName>
@@ -212,6 +224,7 @@
             <type>Alert</type>
         </actions>
         <active>true</active>
+        <booleanFilter>1 AND 2 AND 3 AND 4 AND 5 AND 6</booleanFilter>
         <criteriaItems>
             <field>Case.Created_by_Portal_Member__c</field>
             <operation>equals</operation>
@@ -237,8 +250,13 @@
             <operation>equals</operation>
             <value>0</value>
         </criteriaItems>
+        <criteriaItems>
+            <field>Member_Comment__c.Draft__c</field>
+            <operation>notEqual</operation>
+            <value>True</value>
+        </criteriaItems>
         <description>Purpose of this workflow is to send the Portal member the notification email.</description>
-        <triggerType>onCreateOnly</triggerType>
+        <triggerType>onCreateOrTriggeringUpdate</triggerType>
     </rules>
     <rules>
         <fullName>CU Case - New Spectrum Comment</fullName>
@@ -247,6 +265,7 @@
             <type>Alert</type>
         </actions>
         <active>true</active>
+        <booleanFilter>1 AND 2 AND 3 AND 4 AND 5 AND 6</booleanFilter>
         <criteriaItems>
             <field>Case.Created_by_Portal_Member__c</field>
             <operation>equals</operation>
@@ -272,8 +291,13 @@
             <operation>greaterThan</operation>
             <value>0</value>
         </criteriaItems>
+        <criteriaItems>
+            <field>Member_Comment__c.Draft__c</field>
+            <operation>notEqual</operation>
+            <value>True</value>
+        </criteriaItems>
         <description>Purpose of this workflow is to send the Portal member the notification email.</description>
-        <triggerType>onCreateOnly</triggerType>
+        <triggerType>onCreateOrTriggeringUpdate</triggerType>
     </rules>
     <rules>
         <fullName>CU Wires Case - New Chevron Comment</fullName>
@@ -302,8 +326,13 @@
             <operation>contains</operation>
             <value>Account Maintenance / Wires / Foreign - New</value>
         </criteriaItems>
+        <criteriaItems>
+            <field>Member_Comment__c.Draft__c</field>
+            <operation>notEqual</operation>
+            <value>True</value>
+        </criteriaItems>
         <description>Purpose of this workflow is to send the Portal member the notification email of a CU initiated Wires case.</description>
-        <triggerType>onCreateOnly</triggerType>
+        <triggerType>onCreateOrTriggeringUpdate</triggerType>
     </rules>
     <rules>
         <fullName>CU Wires Case - New Spectrum Comment</fullName>
@@ -332,8 +361,13 @@
             <operation>contains</operation>
             <value>Account Maintenance / Wires / Foreign - New</value>
         </criteriaItems>
+        <criteriaItems>
+            <field>Member_Comment__c.Draft__c</field>
+            <operation>notEqual</operation>
+            <value>True</value>
+        </criteriaItems>
         <description>Purpose of this workflow is to send the Portal member the notification email of a CU initiated Wires case.</description>
-        <triggerType>onCreateOnly</triggerType>
+        <triggerType>onCreateOrTriggeringUpdate</triggerType>
     </rules>
     <rules>
         <fullName>Creator Identification</fullName>
@@ -376,8 +410,13 @@
             <operation>contains</operation>
             <value>Chevron</value>
         </criteriaItems>
+        <criteriaItems>
+            <field>Member_Comment__c.Draft__c</field>
+            <operation>notEqual</operation>
+            <value>True</value>
+        </criteriaItems>
         <description>Purpose of this workflow is to record the member&apos;s email address that created the portal case and send the member the notification email.</description>
-        <triggerType>onCreateOnly</triggerType>
+        <triggerType>onCreateOrTriggeringUpdate</triggerType>
     </rules>
     <rules>
         <fullName>MBR Case - New Spectrum Comment</fullName>
@@ -405,8 +444,13 @@
             <operation>equals</operation>
             <value>Spectrum</value>
         </criteriaItems>
+        <criteriaItems>
+            <field>Member_Comment__c.Draft__c</field>
+            <operation>notEqual</operation>
+            <value>True</value>
+        </criteriaItems>
         <description>Purpose of this workflow is to record the Portal member&apos;s email address that created the portal case and send the member the notification email.</description>
-        <triggerType>onCreateOnly</triggerType>
+        <triggerType>onCreateOrTriggeringUpdate</triggerType>
     </rules>
     <rules>
         <fullName>Mark Case as unread</fullName>
