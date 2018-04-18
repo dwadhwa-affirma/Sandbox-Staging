@@ -433,22 +433,22 @@ global  class DisplayCaseController {
     {
     	List<attachment> attachments = [Select Id,Name,BodyLength, ParentId from Attachment Where ParentId  =: messageId];
     	List<FileList> filelists = new List<FileList>();
-    	FileList fl = new FileList();
+    	
     	integer j =0 ;
-    	system.debug('att ...' + attachments.size()); 
     	         if (attachments != null)
                     {
                         for( j=0; j< attachments.size(); j++ ) 
                         {
+                        	FileList fl = new FileList();
                         	system.debug('compare...' + messageid + '...' + attachments[j].id);
-                            if (messageid == attachments[j].parentId)
-                            
+                            //if (messageid == attachments[j].parentId)
+                            if (1==1)
                             {
                                 
                                 fl.filename = attachments[j].Name;
                                 fl.downloadurl = 'servlet/servlet.FileDownload?file=' + attachments[j].id ;
                                 string ext = '';
-                                try
+                                try 
                                 { 
                                     ext = attachments[j].Name.split('\\.')[1];
                                 }
@@ -497,12 +497,11 @@ global  class DisplayCaseController {
                                 }
                                 
                                     fl.filesize = displaySize;
-                                     System.debug('fl.filesize=='+ fl.filesize);
+                                    System.debug('fl.filesize=='+ fl.filesize);
                                     filelists.add(fl);
                             }
                         }
                     }
-                    
     	return filelists;
     }
         @RemoteAction
