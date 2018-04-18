@@ -552,7 +552,15 @@ public class UsersAccountDetailsController {
     public void caseDetails(list<Person_Account__c> paList1){
         set<Id> accIds = new set<Id>();
         for(Person_Account__c var: paList1){
-            accIds.add(var.PersonID__c);
+			 boolean found = false;
+             for(AccountList360 accountQDetails : listAccountList360)
+             {
+             	if(accountQDetails.id == var.Account_Number__c)
+             	{
+             		found = true;
+             	}
+             }
+            accIds.add(var.Account_Number__c);
         }
         
         caseList = [Select Id,
@@ -574,7 +582,7 @@ public class UsersAccountDetailsController {
                            Origin,
                            Parent.CaseNumber,
                            
-                           ClosedDate FROM case WHERE AccountId IN :accIds AND Status != 'Closed'];
+                           ClosedDate FROM case WHERE Account_Number__c IN :accIds AND Status != 'Closed'];
        
         caseList1 = [Select Id,
                            CaseNumber,
@@ -595,7 +603,7 @@ public class UsersAccountDetailsController {
                            Origin,
                            Parent.CaseNumber,
                            
-                           ClosedDate FROM case WHERE AccountId IN :accIds AND Status = 'Closed'];
+                           ClosedDate FROM case WHERE Account_Number__c IN :accIds AND Status = 'Closed'];
 
 
         Map<Id, String> cnum_by_id = new Map<Id, String>();
