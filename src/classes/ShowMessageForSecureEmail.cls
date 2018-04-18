@@ -7,9 +7,9 @@ public  class ShowMessageForSecureEmail {
         
                 CaseId = System.currentPageReference().getParameters().get('id');
                Case CaseDetail = new Case();
-                CaseDetail = [Select Id,SecureEmail__c from Case where Id =: CaseId limit 1];
+                CaseDetail = [Select Id,Secure_Email__c from Case where Id =: CaseId limit 1];
                 
-                if((CaseDetail.SecureEmail__c == null) && (String.IsEmpty(CaseDetail.SecureEmail__c)) )
+                if((CaseDetail.Secure_Email__c == null) && (String.IsEmpty(CaseDetail.Secure_Email__c)) )
                 {
                    SecureEmail = 'Please add email address to member account in order to create a member message.';
                 }

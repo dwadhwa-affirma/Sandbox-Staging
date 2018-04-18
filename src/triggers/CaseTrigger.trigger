@@ -61,70 +61,7 @@ trigger CaseTrigger on Case (before insert, before update, after insert, after u
     }
     
     
-    if(trigger.IsInsert && Trigger.isbefore)
-    {
-	    List<string> CaseIds = new List<string>();
-	    List<string> accountNumbers = new List<string>(); 
-	    Map<string,string> accountNumberCaseMapping = new Map<string,string>(); 
-		
-		 for(Case c_new : Trigger.new){  
-		 		accountNumberCaseMapping.put(c_new.id,c_new.Account_Number__c);
-		 	  CaseIds.add(c_new.id);
-		 	  
-		 	  
-		 	  accountNumbers.add(c_new.Account_Number__c); 
-		 }
-		
-		List<Account_Details__c> listAccountDetails = [select id,Name,SecureEmailAddress__c from Account_Details__c where id in: accountNumbers];
-		
-		Map<string, string> mapIdnameAccountDetails = new Map<string, string>(); 
-		List<string> listAccountNumberText = new List<string>();
-		for(Account_Details__c item : listAccountDetails)
-		{
-			listAccountNumberText.Add(item.Name);
-			mapIdnameAccountDetails.put(item.id,item.Name);
-		}
-		List<Account_Details__c> listAccountDetailFinal = [select id,Name,SecureEmailAddress__c from Account_Details__c where Name in: listAccountNumberText and RecType__c = 'ACCT'];
-		
-		for(Account_Details__c item : listAccountDetailFinal)
-		{
-		
-			if(item.SecureEmailAddress__c != null && item.SecureEmailAddress__c != '')
-			{
-				
-				for(String accountid :mapIdnameAccountDetails.keySet()){
-						
-		    		string accountNumber = mapIdnameAccountDetails.get(accountid);
-		    		
-		    		
-		    		if(accountNumber == item.Name)
-		    		{
-		    			
-		    			
-		    			for(String caseid :accountNumberCaseMapping.keySet()){
-		    				
-		    				string accountidFinal = accountNumberCaseMapping.get(caseid);
-		    				
-		    				
-		    				if(accountidFinal == accountid)
-		    				{
-		    					
-		    					
-		    					 for(Case c_new : Trigger.new){  
-		    					 	system.debug('###caseid---' + caseid);
-		    					 	system.debug('###c_new.id---' + c_new.id);
-		    					 	if(caseid == c_new.id)
-		    					 	{
-		    					 		c_new.SecureEmail__c = item.SecureEmailAddress__c;
-		    					 	}
-		    					 }
-		    				}
-		    			}
-		    		}
-				}
-			}
-		}
-    }
+   
     if(Trigger.isAfter){
         if(Trigger.isInsert){
             

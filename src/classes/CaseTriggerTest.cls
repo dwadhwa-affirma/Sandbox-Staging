@@ -93,8 +93,8 @@ public class CaseTriggerTest {
     
     
     static testMethod void testMethod6(){
-   		
-   		
+        
+        
    
         Account_Details__c accDetail = new Account_Details__c();
         accDetail.Name = 'Test';
@@ -189,15 +189,15 @@ public class CaseTriggerTest {
     }  
     
     static testMethod void testMethod10(){
-
+/*
 CaseRecordType__c crt = new CaseRecordType__c();
-   		crt.Primary_Category__c = 'AAA';
-   		crt.Secondary_Category__c = 'BBB';
-   		crt.Teritiary_Category__c = 'CCC';
-   		crt.Name = 'AAA';
-   		crt.SLA__c = 50;
-   		insert crt;
-   		
+        crt.Primary_Category__c = 'AAA';
+        crt.Secondary_Category__c = 'BBB';
+        crt.Teritiary_Category__c = 'CCC';
+        crt.Name = 'AAA';
+        crt.SLA__c = 50;
+        insert crt;
+        
         Account_Details__c accDetail = new Account_Details__c();
         accDetail.Name = 'Test123';
         accDetail.RecType__c = 'ACCT';
@@ -241,7 +241,7 @@ CaseRecordType__c crt = new CaseRecordType__c();
         pa.Account_Number__c = accDetail.Id; 
         pa.Name_Type__c = 0;
         insert pa;
-		
+        
         Person_Account__c pa1 = new Person_Account__c();
         pa1.PersonID__c = acc1.Id;
         pa1.Account_Number__c = accDetail1.Id; 
@@ -267,7 +267,7 @@ CaseRecordType__c crt = new CaseRecordType__c();
         
          Case cs1 = new Case();
          cs1.Brand__c = 'Specturm';
-    	 cs1.Subject = '1234 testing tet sdf asdfa';
+         cs1.Subject = '1234 testing tet sdf asdfa';
          cs1.Primary_Category__c = 'AAA';
          cs1.Secondary_Category__c = 'BBB';
          cs1.Tertiary_Category__c = 'CCC';
@@ -281,9 +281,30 @@ CaseRecordType__c crt = new CaseRecordType__c();
         
         update cs1;
         
+     
+     Group grp = new Group();
+     grp.Name =  'Branch 202 -Spectrum Hou(Galleria) Queue';
+     insert grp;
+     
+     CaseRecordType__c crt1 = new CaseRecordType__c();
+     crt1.Primary_Category__c= 'Surveys';
+     crt1.RecordTypeId__c = '012f10000010MS8';
+     crt1.SLA__c = 40;
+     crt1.Record_Type_Name__c = 'Survey Cases';
+     crt1.Name = '302';
+     insert crt1;
+     
+ Survey_Case_Codes__c scc = new Survey_Case_Codes__c();
+        scc.Primary_Category__c = 'Surveys';
+         scc.Secondary_Category__c ='Call Center';
+         scc.Tertiary_Category__c='Other';
+         scc.Queue__c='Branch 202 -Spectrum Hou(Galleria) Queue';   
+         scc.Name='202';
+         scc.Branch_Dept__c = 'Branch 202 -Spectrum Hou(Galleria) Queue';
+         insert scc;
          Case cs2 = new Case();
          cs2.Brand__c = 'Specturm';
-    	 cs2.Subject = '';
+         cs2.Subject = 'Branch Survey Alert :202:0260066134';
          cs2.Primary_Category__c = 'AAA';
          cs2.Secondary_Category__c = 'BBB';
          cs2.Tertiary_Category__c = 'CCC';
@@ -291,7 +312,7 @@ CaseRecordType__c crt = new CaseRecordType__c();
          cs2.Account_Number__c = accDetail.Id;
          cs2.Member_Number__c = 'Test123';
          cs2.AccountId = null;       
-        insert cs2;
+        //insert cs2;
         
         cs2.Origin = 'Email';
         
@@ -299,7 +320,7 @@ CaseRecordType__c crt = new CaseRecordType__c();
         
         Case cs3 = new Case();
          cs3.Brand__c = 'Specturm';
-    	 cs3.Subject = '1234 testing tet sdf :Relationship';
+         cs3.Subject = '1234 testing tet sdf :Relationship';
          cs3.Primary_Category__c = 'AAA';
          cs3.Secondary_Category__c = 'BBB';
          cs3.Tertiary_Category__c = 'CCC';
@@ -313,13 +334,13 @@ CaseRecordType__c crt = new CaseRecordType__c();
         cs3.Origin = 'Email';
         
       List<Case> cclist = new List<Case>();
-        cclist.add(cs2);
+       // cclist.add(cs2);
         cclist.add(cs3);
         update cclist;
         
          Case cs4 = new Case();
          cs4.Brand__c = 'Specturm';
-    	 cs4.Subject = 'Call Center:Test';
+         cs4.Subject = 'Call Center:Test';
          cs4.Primary_Category__c = 'Surveys';
          cs4.Secondary_Category__c = 'Call Center';
          cs4.Tertiary_Category__c = 'Other';
@@ -335,7 +356,7 @@ CaseRecordType__c crt = new CaseRecordType__c();
         
         Case cs5 = new Case();
          cs5.Brand__c = 'Specturm';
-    	 cs5.Subject = 'Relationship Survey :901:214414';
+         cs5.Subject = 'Relationship Survey :901:214414';
          cs5.Primary_Category__c = 'Surveys';
          cs5.Secondary_Category__c = 'Branch';
          cs5.Tertiary_Category__c = 'Other';
@@ -353,7 +374,7 @@ CaseRecordType__c crt = new CaseRecordType__c();
         update cclist1;
        
        
-        
+        */
     }
     
     static testMethod void testMethod11(){

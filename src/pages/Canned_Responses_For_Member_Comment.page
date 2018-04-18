@@ -89,7 +89,7 @@
 					</apex:outputPanel>
 				</apex:panelGrid>
 				<apex:panelGrid columns="2" border="0" cellpadding="3px"
-					rowClasses="rowstyle" width="100%" rendered="{!If(isReadonly, true, false)}" >
+					rowClasses="rowstyle" width="100%" rendered="{!If(isReadonly, false, false)}" >
 					<apex:outputPanel id="draftpanel2">
 						<apex:outputLabel >CU Read</apex:outputLabel>&nbsp;
                           <apex:inputCheckbox value="{!CURead}" />
@@ -97,7 +97,7 @@
 					</apex:outputPanel>
 				</apex:panelGrid>
 				<apex:panelGrid columns="2" border="0" cellpadding="3px"
-					rowClasses="rowstyle" width="100%" rendered="{!If(isReadonly, true, false)}">
+					rowClasses="rowstyle" width="100%" rendered="{!If(isReadonly, false, false)}">
 					<apex:outputPanel id="draftpanel3">
 						<apex:outputLabel >Member Read</apex:outputLabel>&nbsp;
                           <apex:inputCheckbox value="{!MemberRead}" />
@@ -155,9 +155,11 @@
 				<!--<apex:commandButton value="Save" action="{!save}"/>-->
 				<apex:commandButton value="Save"
 					onclick="validateMe(); return false;" reRender="frm"
+					rendered="{!If(isReadonly, true, false)}"
 					disabled="{!if(stopSave = true,true,false)}" />
 				<apex:commandButton value="Save & New"
 					onclick="validateMeonNew(); return false;"
+					rendered="{!If(isReadonly, true, false)}"
 					disabled="{!if(stopSave = true,true,false)}" />
 				<!--<apex:commandButton value="Save & New" action="{!savenew}"/>-->
 				<apex:commandButton value="Cancel" action="{!cancelall}" />

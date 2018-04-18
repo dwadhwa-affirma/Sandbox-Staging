@@ -9,12 +9,12 @@ public class ShowMessageForSecureEmailTest{
 
            Case cs = new Case();
               cs.Brand__c = 'CFCU';
-              cs.SecureEmail__c ='';
+        //      cs.SecureEmail__c ='';
             insert cs;
             
             Case cs1 = new Case();
               cs1.Brand__c = 'CFCU';
-              cs1.SecureEmail__c ='test@test.com';
+             // cs1.SecureEmail__c ='test@test.com';
                 insert cs1;
                 
              
