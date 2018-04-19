@@ -11,201 +11,201 @@ public class MemberVerification
     public integer OTPNextAttemptValidAfterHours {get;set;}
     public Account acc {get;set;}
     public string IsIneligibleLocal {get;set;}
-	public string Brand {get;set;}
-	public List<string> allRelatedAccounts {get;set;}
-	public  list<String> accids {get;set;}
-	public boolean ShowData {get;set;}
-	public string NoContactInfo {get;set;}
-	
-	
+    public string Brand {get;set;}
+    public List<string> allRelatedAccounts {get;set;}
+    public  list<String> accids {get;set;}
+    public boolean ShowData {get;set;}
+    public string NoContactInfo {get;set;}
+    
+    
     public List<wrapperAccount> ListOfEmailsAndPhoneNumbers()
     {
-        	GetRelatedAccountsPopulated();
-        	if(listWrapperAccount != null)
-        	{
-        		return listWrapperAccount;
-        	}
-        	
+            GetRelatedAccountsPopulated();
+            if(listWrapperAccount != null)
+            {
+                return listWrapperAccount;
+            }
+            
             if(listWrapperAccount == null || listWrapperAccount.size() == 0)
             {
-            	NoContactInfo = 'false';
+                NoContactInfo = 'false';
                 List<Account> listAccount; 
                 
                 if(allRelatedAccounts != null && allRelatedAccounts.size() > 0)
                 {
-                	
+                    
                    listAccount = [select Id,Member_Verification_OTP_Invalid_Attempt__c,Home_Phone__pc,FirstName,LastName,Mobile_Phone__pc,Work_Phone__pc,PersonEmail,Alternate_Email__pc from Account where ID in :allRelatedAccounts ];
                    listWrapperAccount = new List<wrapperAccount> ();
                    set<string> listContacts = new set<string>();
-				
+                
                    
-                   		for(Account accountLocal : listAccount)
-						   {
-							   	 if(accountLocal.Mobile_Phone__pc != null && accountLocal.Mobile_Phone__pc != '')
-			                    {
-			                    	if(!listContacts.contains(accountLocal.Mobile_Phone__pc) && accountLocal.id == acc.id)
-			                    	{
-				                        wrapperAccount accLocal = new wrapperAccount();
-				                        
-				                         accLocal.fieldType = 'P';
-				                         accLocal.value = accountLocal.Mobile_Phone__pc;
-				                         accLocal.encryptedvalue = encryptPhone(accountLocal.Mobile_Phone__pc);
-				                         accLocal.fieldName = 'Mobile_Phone__pc - ' + accountLocal.Id;
-				                         listWrapperAccount.Add(accLocal);
-				                         listContacts.add(accountLocal.Mobile_Phone__pc);
-			                    	}
-			                    }
-						   }
-						   for(Account accountLocal : listAccount )
-						   {
-							   if(accountLocal.Home_Phone__pc != null && accountLocal.Home_Phone__pc != '')
-			                    {
-			                    	if(!listContacts.contains(accountLocal.Home_Phone__pc) && accountLocal.id == acc.id)
-			                    	{
-				                        wrapperAccount accLocal = new wrapperAccount();
-				                         accLocal.fieldType = 'P';
-				                         accLocal.value = accountLocal.Home_Phone__pc ;
-				                         accLocal.encryptedvalue = encryptPhone(accountLocal.Home_Phone__pc);
-				                         accLocal.fieldName = 'Home_Phone__pc - ' + accountLocal.Id;
-				                         listWrapperAccount.Add(accLocal);
-				                          listContacts.add(accountLocal.Home_Phone__pc);
-			                    	}
-			                         
-			                    }
-						   }
-	                       for(Account accountLocal : listAccount)
-						   {
-							   if(accountLocal.Work_Phone__pc != null && accountLocal.Work_Phone__pc != '')
-			                    {
-			                    	if(!listContacts.contains(accountLocal.Work_Phone__pc)&& accountLocal.id == acc.id)
-			                    	{
-			                       		 wrapperAccount accLocal = new wrapperAccount();
-				                         accLocal.fieldType = 'P';
-				                         accLocal.value = accountLocal.Work_Phone__pc;
-				                         accLocal.encryptedvalue = encryptPhone(accountLocal.Work_Phone__pc);
-				                         accLocal.fieldName = 'Work_Phone__pc - ' + accountLocal.Id;
-				                         listWrapperAccount.Add(accLocal);
-				                          listContacts.add(accountLocal.Work_Phone__pc);
-			                    	}
-			                    }
-						   }
-	                       for(Account accountLocal : listAccount)
-						   {
-							    if(accountLocal.PersonEmail != null && accountLocal.PersonEmail != '')
-			                    {
-			                    	if(!listContacts.contains(accountLocal.PersonEmail) && accountLocal.id == acc.id)
-			                    	{
-				                        wrapperAccount accLocal = new wrapperAccount();
-				                         accLocal.fieldType = 'E';
-				                         accLocal.value = accountLocal.PersonEmail;
-				                         accLocal.encryptedvalue = encryptEmail(accountLocal.PersonEmail);
-				                         accLocal.fieldName = 'PersonEmail - ' + accountLocal.Id;
-				                         listWrapperAccount.Add(accLocal);
-				                           listContacts.add(accountLocal.PersonEmail);
-			                    	}
-			                    }
-						   }
-	                       for(Account accountLocal : listAccount)
-						   {
-							    if(accountLocal.Alternate_Email__pc != null && accountLocal.Alternate_Email__pc != '')
-			                    {
-			                    	if(!listContacts.contains(accountLocal.Alternate_Email__pc) && accountLocal.id == acc.id)
-			                    	{
-				                       wrapperAccount accLocal = new wrapperAccount();
-				                         accLocal.fieldType = 'E';
-				                         accLocal.value = accountLocal.Alternate_Email__pc;
-				                         accLocal.encryptedvalue = encryptEmail(accountLocal.Alternate_Email__pc);
-				                         accLocal.fieldName = 'Alternate_Email__pc - ' + accountLocal.Id;
-				                         listWrapperAccount.Add(accLocal);
-				                         listContacts.Add(accountLocal.Alternate_Email__pc);
-			                    	}
-			                    }
-						   }
+                        for(Account accountLocal : listAccount)
+                           {
+                                 if(accountLocal.Mobile_Phone__pc != null && accountLocal.Mobile_Phone__pc != '')
+                                {
+                                    if(!listContacts.contains(accountLocal.Mobile_Phone__pc) && accountLocal.id == acc.id)
+                                    {
+                                        wrapperAccount accLocal = new wrapperAccount();
+                                        
+                                         accLocal.fieldType = 'P';
+                                         accLocal.value = accountLocal.Mobile_Phone__pc;
+                                         accLocal.encryptedvalue = encryptPhone(accountLocal.Mobile_Phone__pc);
+                                         accLocal.fieldName = 'Mobile_Phone__pc - ' + accountLocal.Id;
+                                         listWrapperAccount.Add(accLocal);
+                                         listContacts.add(accountLocal.Mobile_Phone__pc);
+                                    }
+                                }
+                           }
+                           for(Account accountLocal : listAccount )
+                           {
+                               if(accountLocal.Home_Phone__pc != null && accountLocal.Home_Phone__pc != '')
+                                {
+                                    if(!listContacts.contains(accountLocal.Home_Phone__pc) && accountLocal.id == acc.id)
+                                    {
+                                        wrapperAccount accLocal = new wrapperAccount();
+                                         accLocal.fieldType = 'P';
+                                         accLocal.value = accountLocal.Home_Phone__pc ;
+                                         accLocal.encryptedvalue = encryptPhone(accountLocal.Home_Phone__pc);
+                                         accLocal.fieldName = 'Home_Phone__pc - ' + accountLocal.Id;
+                                         listWrapperAccount.Add(accLocal);
+                                          listContacts.add(accountLocal.Home_Phone__pc);
+                                    }
+                                     
+                                }
+                           }
+                           for(Account accountLocal : listAccount)
+                           {
+                               if(accountLocal.Work_Phone__pc != null && accountLocal.Work_Phone__pc != '')
+                                {
+                                    if(!listContacts.contains(accountLocal.Work_Phone__pc)&& accountLocal.id == acc.id)
+                                    {
+                                         wrapperAccount accLocal = new wrapperAccount();
+                                         accLocal.fieldType = 'P';
+                                         accLocal.value = accountLocal.Work_Phone__pc;
+                                         accLocal.encryptedvalue = encryptPhone(accountLocal.Work_Phone__pc);
+                                         accLocal.fieldName = 'Work_Phone__pc - ' + accountLocal.Id;
+                                         listWrapperAccount.Add(accLocal);
+                                          listContacts.add(accountLocal.Work_Phone__pc);
+                                    }
+                                }
+                           }
+                           for(Account accountLocal : listAccount)
+                           {
+                                if(accountLocal.PersonEmail != null && accountLocal.PersonEmail != '')
+                                {
+                                    if(!listContacts.contains(accountLocal.PersonEmail) && accountLocal.id == acc.id)
+                                    {
+                                        wrapperAccount accLocal = new wrapperAccount();
+                                         accLocal.fieldType = 'E';
+                                         accLocal.value = accountLocal.PersonEmail;
+                                         accLocal.encryptedvalue = encryptEmail(accountLocal.PersonEmail);
+                                         accLocal.fieldName = 'PersonEmail - ' + accountLocal.Id;
+                                         listWrapperAccount.Add(accLocal);
+                                           listContacts.add(accountLocal.PersonEmail);
+                                    }
+                                }
+                           }
+                           for(Account accountLocal : listAccount)
+                           {
+                                if(accountLocal.Alternate_Email__pc != null && accountLocal.Alternate_Email__pc != '')
+                                {
+                                    if(!listContacts.contains(accountLocal.Alternate_Email__pc) && accountLocal.id == acc.id)
+                                    {
+                                       wrapperAccount accLocal = new wrapperAccount();
+                                         accLocal.fieldType = 'E';
+                                         accLocal.value = accountLocal.Alternate_Email__pc;
+                                         accLocal.encryptedvalue = encryptEmail(accountLocal.Alternate_Email__pc);
+                                         accLocal.fieldName = 'Alternate_Email__pc - ' + accountLocal.Id;
+                                         listWrapperAccount.Add(accLocal);
+                                         listContacts.Add(accountLocal.Alternate_Email__pc);
+                                    }
+                                }
+                           }
                    
                    
-	                
-	                	for(Account accountLocal : listAccount)
-						   {
-							   	 if(accountLocal.Mobile_Phone__pc != null && accountLocal.Mobile_Phone__pc != '')
-			                    {
-			                    	if(!listContacts.contains(accountLocal.Mobile_Phone__pc) && accountLocal.id != acc.id)
-			                    	{
-				                        wrapperAccount accLocal = new wrapperAccount();
-				                        
-				                         accLocal.fieldType = 'P';
-				                         accLocal.value = accountLocal.Mobile_Phone__pc;
-				                         accLocal.encryptedvalue = encryptPhone(accountLocal.Mobile_Phone__pc);
-				                         accLocal.fieldName = 'Mobile_Phone__pc - ' + accountLocal.Id;
-				                         listWrapperAccount.Add(accLocal);
-				                         listContacts.add(accountLocal.Mobile_Phone__pc);
-			                    	}
-			                    }
-						   }
-						   for(Account accountLocal : listAccount)
-						   {
-							   if(accountLocal.Home_Phone__pc != null && accountLocal.Home_Phone__pc != '')
-			                    {
-			                    	if(!listContacts.contains(accountLocal.Home_Phone__pc) && accountLocal.id != acc.id)
-			                    	{
-				                        wrapperAccount accLocal = new wrapperAccount();
-				                         accLocal.fieldType = 'P';
-				                         accLocal.value = accountLocal.Home_Phone__pc ;
-				                         accLocal.encryptedvalue = encryptPhone(accountLocal.Home_Phone__pc);
-				                         accLocal.fieldName = 'Home_Phone__pc - ' + accountLocal.Id;
-				                         listWrapperAccount.Add(accLocal);
-				                          listContacts.add(accountLocal.Home_Phone__pc);
-			                    	}
-			                         
-			                    }
-						   }
-	                       for(Account accountLocal : listAccount)
-						   {
-							   if(accountLocal.Work_Phone__pc != null && accountLocal.Work_Phone__pc != '')
-			                    {
-			                    	if(!listContacts.contains(accountLocal.Work_Phone__pc) && accountLocal.id != acc.id)
-			                    	{
-			                       		 wrapperAccount accLocal = new wrapperAccount();
-				                         accLocal.fieldType = 'P';
-				                         accLocal.value = accountLocal.Work_Phone__pc;
-				                         accLocal.encryptedvalue = encryptPhone(accountLocal.Work_Phone__pc);
-				                         accLocal.fieldName = 'Work_Phone__pc - ' + accountLocal.Id;
-				                         listWrapperAccount.Add(accLocal);
-				                          listContacts.add(accountLocal.Work_Phone__pc);
-			                    	}
-			                    }
-						   }
-	                       for(Account accountLocal : listAccount)
-						   {
-							    if(accountLocal.PersonEmail != null && accountLocal.PersonEmail != '')
-			                    {
-			                    	if(!listContacts.contains(accountLocal.PersonEmail) && accountLocal.id != acc.id)
-			                    	{
-				                        wrapperAccount accLocal = new wrapperAccount();
-				                         accLocal.fieldType = 'E';
-				                         accLocal.value = accountLocal.PersonEmail;
-				                         accLocal.encryptedvalue = encryptEmail(accountLocal.PersonEmail);
-				                         accLocal.fieldName = 'PersonEmail - ' + accountLocal.Id;
-				                         listWrapperAccount.Add(accLocal);
-				                           listContacts.add(accountLocal.PersonEmail);
-			                    	}
-			                    }
-						   }
-	                       for(Account accountLocal : listAccount)
-						   {
-							    if(accountLocal.Alternate_Email__pc != null && accountLocal.Alternate_Email__pc != '')
-			                    {
-			                    	if(!listContacts.contains(accountLocal.Alternate_Email__pc) && accountLocal.id != acc.id)
-			                    	{
-				                       wrapperAccount accLocal = new wrapperAccount();
-				                         accLocal.fieldType = 'E';
-				                         accLocal.value = accountLocal.Alternate_Email__pc;
-				                         accLocal.encryptedvalue = encryptEmail(accountLocal.Alternate_Email__pc);
-				                         accLocal.fieldName = 'Alternate_Email__pc - ' + accountLocal.Id;
-				                         listWrapperAccount.Add(accLocal);
-				                         listContacts.Add(accountLocal.Alternate_Email__pc);
-			                    	}
-			                    }
-						   }
+                    
+                        for(Account accountLocal : listAccount)
+                           {
+                                 if(accountLocal.Mobile_Phone__pc != null && accountLocal.Mobile_Phone__pc != '')
+                                {
+                                    if(!listContacts.contains(accountLocal.Mobile_Phone__pc) && accountLocal.id != acc.id)
+                                    {
+                                        wrapperAccount accLocal = new wrapperAccount();
+                                        
+                                         accLocal.fieldType = 'P';
+                                         accLocal.value = accountLocal.Mobile_Phone__pc;
+                                         accLocal.encryptedvalue = encryptPhone(accountLocal.Mobile_Phone__pc);
+                                         accLocal.fieldName = 'Mobile_Phone__pc - ' + accountLocal.Id;
+                                         listWrapperAccount.Add(accLocal);
+                                         listContacts.add(accountLocal.Mobile_Phone__pc);
+                                    }
+                                }
+                           }
+                           for(Account accountLocal : listAccount)
+                           {
+                               if(accountLocal.Home_Phone__pc != null && accountLocal.Home_Phone__pc != '')
+                                {
+                                    if(!listContacts.contains(accountLocal.Home_Phone__pc) && accountLocal.id != acc.id)
+                                    {
+                                        wrapperAccount accLocal = new wrapperAccount();
+                                         accLocal.fieldType = 'P';
+                                         accLocal.value = accountLocal.Home_Phone__pc ;
+                                         accLocal.encryptedvalue = encryptPhone(accountLocal.Home_Phone__pc);
+                                         accLocal.fieldName = 'Home_Phone__pc - ' + accountLocal.Id;
+                                         listWrapperAccount.Add(accLocal);
+                                          listContacts.add(accountLocal.Home_Phone__pc);
+                                    }
+                                     
+                                }
+                           }
+                           for(Account accountLocal : listAccount)
+                           {
+                               if(accountLocal.Work_Phone__pc != null && accountLocal.Work_Phone__pc != '')
+                                {
+                                    if(!listContacts.contains(accountLocal.Work_Phone__pc) && accountLocal.id != acc.id)
+                                    {
+                                         wrapperAccount accLocal = new wrapperAccount();
+                                         accLocal.fieldType = 'P';
+                                         accLocal.value = accountLocal.Work_Phone__pc;
+                                         accLocal.encryptedvalue = encryptPhone(accountLocal.Work_Phone__pc);
+                                         accLocal.fieldName = 'Work_Phone__pc - ' + accountLocal.Id;
+                                         listWrapperAccount.Add(accLocal);
+                                          listContacts.add(accountLocal.Work_Phone__pc);
+                                    }
+                                }
+                           }
+                           for(Account accountLocal : listAccount)
+                           {
+                                if(accountLocal.PersonEmail != null && accountLocal.PersonEmail != '')
+                                {
+                                    if(!listContacts.contains(accountLocal.PersonEmail) && accountLocal.id != acc.id)
+                                    {
+                                        wrapperAccount accLocal = new wrapperAccount();
+                                         accLocal.fieldType = 'E';
+                                         accLocal.value = accountLocal.PersonEmail;
+                                         accLocal.encryptedvalue = encryptEmail(accountLocal.PersonEmail);
+                                         accLocal.fieldName = 'PersonEmail - ' + accountLocal.Id;
+                                         listWrapperAccount.Add(accLocal);
+                                           listContacts.add(accountLocal.PersonEmail);
+                                    }
+                                }
+                           }
+                           for(Account accountLocal : listAccount)
+                           {
+                                if(accountLocal.Alternate_Email__pc != null && accountLocal.Alternate_Email__pc != '')
+                                {
+                                    if(!listContacts.contains(accountLocal.Alternate_Email__pc) && accountLocal.id != acc.id)
+                                    {
+                                       wrapperAccount accLocal = new wrapperAccount();
+                                         accLocal.fieldType = 'E';
+                                         accLocal.value = accountLocal.Alternate_Email__pc;
+                                         accLocal.encryptedvalue = encryptEmail(accountLocal.Alternate_Email__pc);
+                                         accLocal.fieldName = 'Alternate_Email__pc - ' + accountLocal.Id;
+                                         listWrapperAccount.Add(accLocal);
+                                         listContacts.Add(accountLocal.Alternate_Email__pc);
+                                    }
+                                }
+                           }
                 }
             }
            
@@ -216,28 +216,28 @@ public class MemberVerification
     
     public void SaveNoContactInfoLog()
     {
-    		Authenticated_Log__c log = new Authenticated_Log__c();
-			system.debug('SalesForceID =' + acc.Id);
-			log.SalesforceID__c = acc.Id;
-			
-			log.First_Name__c = acc.FirstName;
-			log.Last_Name__c = acc.LastName;
-			log.Staff_Name__c = UserInfo.getName();
-			System.debug('log No Contact Info ' + log);
-			
-			upsert log;
-			log.Decision__c = 'OTP - No Contact Info';
-			update log;
-			
-			
+            Authenticated_Log__c log = new Authenticated_Log__c();
+            system.debug('SalesForceID =' + acc.Id);
+            log.SalesforceID__c = acc.Id;
+            
+            log.First_Name__c = acc.FirstName;
+            log.Last_Name__c = acc.LastName;
+            log.Staff_Name__c = UserInfo.getName();
+            System.debug('log No Contact Info ' + log);
+            
+            upsert log;
+            log.Decision__c = 'OTP - No Contact Info';
+            update log;
+            
+            
     }
         
         
    public void GetRelatedAccountsPopulated()
    {
-   		    
-   		if(accids == null || accids.Size() == 0)
-   			allRelatedAccounts = new list<string>();
+            
+        if(accids == null || accids.Size() == 0)
+            allRelatedAccounts = new list<string>();
             allRelatedAccounts.add(accID);
             
             
@@ -247,7 +247,7 @@ public class MemberVerification
             
             OTPNextAttemptValidAfterHours = integer.valueOf(data1.OTPNextAttemptValidAfterHours__c);
             
-   	  		List<Account> listAccount; 
+            List<Account> listAccount; 
             if(acc == null)
             {
               listAccount = [select Id,Member_Verification_OTP_Invalid_Attempt__c,FirstName,LastName,home_phone__pc,Mobile_Phone__pc,Work_Phone__pc,PersonEmail,Alternate_Email__pc from Account where ID =:accID ];
@@ -308,15 +308,15 @@ public class MemberVerification
     
         {
             //GetRelatedAccountsPopulated();
-          	ListOfEmailsAndPhoneNumbers();
-          	
-          	if(listWrapperAccount.size() == 0)
-	        {
-	        		SaveNoContactInfoLog();
-					NoContactInfo = 'true';
-					Verified = 'NoContactInfo';
-					return;
-	        }
+            ListOfEmailsAndPhoneNumbers();
+            
+            if(listWrapperAccount.size() == 0)
+            {
+                    SaveNoContactInfoLog();
+                    NoContactInfo = 'true';
+                    Verified = 'NoContactInfo';
+                    return;
+            }
                                      
             list<Account_Details__c>  listAccountDetails = [select Id,Comments_Block__c,
             Brand__c,
@@ -345,125 +345,125 @@ public class MemberVerification
              from Account_Details__c where Id in: accids];
            
            
-		list<string> wcwList = new list<string>();
-		if(listAccountDetails.Size() > 0)
-		{
-        	Brand = listAccountDetails[0].Brand__c;
-        	
-        	
-	        	  for(Account_Details__c var: listAccountDetails){
-	        	
-	            if(var.Comment_Block_01__c != NULL || var.Comment_Block_01__c != ''){
-	                
-	                 wcwList.add(var.Comment_Block_01__c);
-	            }
-	            if(var.Comment_Block_02__c != NULL || var.Comment_Block_02__c != ''){
-	                
-	                  wcwList.add(var.Comment_Block_02__c);
-	            }
-	            if(var.Comment_Block_03__c != NULL || var.Comment_Block_03__c != ''){
-	                
-	                  wcwList.add(var.Comment_Block_03__c);
-	            }            
-	            if(var.Comment_Block_04__c != NULL || var.Comment_Block_04__c != ''){
-	                
-	                  wcwList.add(var.Comment_Block_04__c);
-	            }
-	            if(var.Comment_Block_05__c != NULL || var.Comment_Block_05__c != ''){
-	               
-	                  wcwList.add(var.Comment_Block_05__c);
-	            }
-	            if(var.Comment_Block_06__c != NULL || var.Comment_Block_06__c != ''){
-	               
-	                  wcwList.add(var.Comment_Block_06__c);
-	            }
-	            if(var.Comment_Block_07__c != NULL || var.Comment_Block_07__c != ''){
-	               
-	                  wcwList.add(var.Comment_Block_07__c);
-	            }
-	            if(var.Comment_Block_08__c != NULL || var.Comment_Block_08__c != ''){
-	               
-	                  wcwList.add(var.Comment_Block_08__c);
-	            }
-	            if(var.Comment_Block_09__c != NULL || var.Comment_Block_09__c != ''){
-	               
-	                  wcwList.add(var.Comment_Block_09__c);
-	            }
-	            if(var.Comment_Block_10__c != NULL || var.Comment_Block_10__c != ''){
-	               
-	                  wcwList.add(var.Comment_Block_10__c);
-	            }
-	            if(var.Comment_Block_11__c != NULL || var.Comment_Block_11__c != ''){
-	               
-	                  wcwList.add(var.Comment_Block_11__c);
-	            }
-	            if(var.Comment_Block_12__c != NULL || var.Comment_Block_12__c != ''){
-	               
-	                  wcwList.add(var.Comment_Block_12__c);
-	            }
-	            if(var.Comment_Block_13__c != NULL || var.Comment_Block_13__c != ''){
-	               
-	                  wcwList.add(var.Comment_Block_13__c);
-	            }
-	            if(var.Comment_Block_14__c != NULL || var.Comment_Block_14__c != ''){
-	               
-	                  wcwList.add(var.Comment_Block_14__c);
-	            }
-	            if(var.Comment_Block_15__c != NULL || var.Comment_Block_15__c != ''){
-	               
-	                  wcwList.add(var.Comment_Block_15__c); 
-	            }
-	            if(var.Comment_Block_16__c != NULL || var.Comment_Block_16__c != ''){
-	               
-	                  wcwList.add(var.Comment_Block_16__c); 
-	            }
-	            if(var.Comment_Block_17__c != NULL || var.Comment_Block_17__c != ''){
-	               
-	                  wcwList.add(var.Comment_Block_17__c); 
-	            }
-	            if(var.Comment_Block_18__c != NULL || var.Comment_Block_18__c != ''){
-	               
-	                  wcwList.add(var.Comment_Block_18__c);
-	            }
-	            if(var.Comment_Block_19__c != NULL || var.Comment_Block_19__c != ''){
-	               
-	                  wcwList.add(var.Comment_Block_19__c);
-	            }
-	            if(var.Comment_Block_20__c != NULL || var.Comment_Block_20__c != ''){
-	                
-	                  wcwList.add(var.Comment_Block_20__c);
-	            }           
-	        }
-	        
-			if(wcwList.size()>0)
-			{
-				for(string str : wcwList)
-				{
-					if(str != null && str.Contains('TELEPHONE/EMAIL CHANGED WITHIN 60 DAYS'))
-					{
-						
-						Authenticated_Log__c log = new Authenticated_Log__c();
-				        log.SalesforceID__c = acc.Id;
-				        log.First_Name__c = acc.FirstName;
-				        log.Last_Name__c = acc.LastName;
-				        log.Staff_Name__c = UserInfo.getName();
-				        log.Decision__c = 'OTP – Not Eligible';
-				        insert log;
-				        acc.Member_Verification_OTP_Invalid_Attempt__c = system.now();
-		            	update acc;
-				        System.Debug('not eligible---' + acc.id);
-	                	Verified='Changed';
-	                    IsIneligibleLocal = 'true';
-	                    return;
-					}
-				}
-			}
-	           IsIneligibleLocal = 'false';
-		}
+        list<string> wcwList = new list<string>();
+        if(listAccountDetails.Size() > 0)
+        {
+            Brand = listAccountDetails[0].Brand__c;
+            
+            
+                  for(Account_Details__c var: listAccountDetails){
+                
+                if(var.Comment_Block_01__c != NULL || var.Comment_Block_01__c != ''){
+                    
+                     wcwList.add(var.Comment_Block_01__c);
+                }
+                if(var.Comment_Block_02__c != NULL || var.Comment_Block_02__c != ''){
+                    
+                      wcwList.add(var.Comment_Block_02__c);
+                }
+                if(var.Comment_Block_03__c != NULL || var.Comment_Block_03__c != ''){
+                    
+                      wcwList.add(var.Comment_Block_03__c);
+                }            
+                if(var.Comment_Block_04__c != NULL || var.Comment_Block_04__c != ''){
+                    
+                      wcwList.add(var.Comment_Block_04__c);
+                }
+                if(var.Comment_Block_05__c != NULL || var.Comment_Block_05__c != ''){
+                   
+                      wcwList.add(var.Comment_Block_05__c);
+                }
+                if(var.Comment_Block_06__c != NULL || var.Comment_Block_06__c != ''){
+                   
+                      wcwList.add(var.Comment_Block_06__c);
+                }
+                if(var.Comment_Block_07__c != NULL || var.Comment_Block_07__c != ''){
+                   
+                      wcwList.add(var.Comment_Block_07__c);
+                }
+                if(var.Comment_Block_08__c != NULL || var.Comment_Block_08__c != ''){
+                   
+                      wcwList.add(var.Comment_Block_08__c);
+                }
+                if(var.Comment_Block_09__c != NULL || var.Comment_Block_09__c != ''){
+                   
+                      wcwList.add(var.Comment_Block_09__c);
+                }
+                if(var.Comment_Block_10__c != NULL || var.Comment_Block_10__c != ''){
+                   
+                      wcwList.add(var.Comment_Block_10__c);
+                }
+                if(var.Comment_Block_11__c != NULL || var.Comment_Block_11__c != ''){
+                   
+                      wcwList.add(var.Comment_Block_11__c);
+                }
+                if(var.Comment_Block_12__c != NULL || var.Comment_Block_12__c != ''){
+                   
+                      wcwList.add(var.Comment_Block_12__c);
+                }
+                if(var.Comment_Block_13__c != NULL || var.Comment_Block_13__c != ''){
+                   
+                      wcwList.add(var.Comment_Block_13__c);
+                }
+                if(var.Comment_Block_14__c != NULL || var.Comment_Block_14__c != ''){
+                   
+                      wcwList.add(var.Comment_Block_14__c);
+                }
+                if(var.Comment_Block_15__c != NULL || var.Comment_Block_15__c != ''){
+                   
+                      wcwList.add(var.Comment_Block_15__c); 
+                }
+                if(var.Comment_Block_16__c != NULL || var.Comment_Block_16__c != ''){
+                   
+                      wcwList.add(var.Comment_Block_16__c); 
+                }
+                if(var.Comment_Block_17__c != NULL || var.Comment_Block_17__c != ''){
+                   
+                      wcwList.add(var.Comment_Block_17__c); 
+                }
+                if(var.Comment_Block_18__c != NULL || var.Comment_Block_18__c != ''){
+                   
+                      wcwList.add(var.Comment_Block_18__c);
+                }
+                if(var.Comment_Block_19__c != NULL || var.Comment_Block_19__c != ''){
+                   
+                      wcwList.add(var.Comment_Block_19__c);
+                }
+                if(var.Comment_Block_20__c != NULL || var.Comment_Block_20__c != ''){
+                    
+                      wcwList.add(var.Comment_Block_20__c);
+                }           
+            }
+            
+            if(wcwList.size()>0)
+            {
+                for(string str : wcwList)
+                {
+                    if(str != null && str.Contains('TELEPHONE/EMAIL CHANGED WITHIN 60 DAYS'))
+                    {
+                        
+                        Authenticated_Log__c log = new Authenticated_Log__c();
+                        log.SalesforceID__c = acc.Id;
+                        log.First_Name__c = acc.FirstName;
+                        log.Last_Name__c = acc.LastName;
+                        log.Staff_Name__c = UserInfo.getName();
+                        log.Decision__c = 'OTP – Not Eligible';
+                        insert log;
+                        acc.Member_Verification_OTP_Invalid_Attempt__c = system.now();
+                        update acc;
+                        System.Debug('not eligible---' + acc.id);
+                        Verified='Changed';
+                        IsIneligibleLocal = 'true';
+                        return;
+                    }
+                }
+            }
+               IsIneligibleLocal = 'false';
+        }
       
             else
             {
-            	 IsIneligibleLocal = 'false';
+                 IsIneligibleLocal = 'false';
             }
             
             
@@ -495,8 +495,8 @@ public class MemberVerification
     
     public void ResendOTP()
     {
-    	GenerateRandomOTP();
-    	
+        GenerateRandomOTP();
+        
     }
     
     public void GenerateRandomOTP()
@@ -510,7 +510,7 @@ public class MemberVerification
         //RandomNumber = RandomNumber.left(6);
 
         RandomNumber =String.valueOf(Math.random());
-		RandomNumber= RandomNumber.substring(2,8);
+        RandomNumber= RandomNumber.substring(2,8);
         
         
         for(wrapperAccount a : listWrapperAccount){
@@ -554,14 +554,14 @@ public class MemberVerification
         }
         if(resend == 'true')
         {
-        	
-	        log.Decision__c = 'OTP – Code Resent';
-	        
-	      
+            
+            log.Decision__c = 'OTP – Code Resent';
+            
+          
         }
         else
         {
-        	log.Decision__c = 'OTP – Code Sent';
+            log.Decision__c = 'OTP – Code Sent';
         }
       insert log;
         
@@ -570,42 +570,42 @@ public class MemberVerification
     
     public void cancelOTP()
     {
-    		Authenticated_Log__c log = new Authenticated_Log__c();
-	        log.SalesforceID__c = acc.Id;
-	        log.First_Name__c = acc.FirstName;
-	        log.Last_Name__c = acc.LastName;
-	        log.Staff_Name__c = UserInfo.getName();
-	        log.Decision__c = 'OTP – Code not provided';
-	        if(IsEmail != null && IsEmail && EmailPhoneNumber != null && EmailPhoneNumber != '')
-	        {
-	          log.OTP_Email__c = EmailPhoneNumber;
-	        }
-	        else if(IsEmail != null && EmailPhoneNumber != null && EmailPhoneNumber != '')
-	        {
-	            log.OTP_Phone__c = EmailPhoneNumber;
-	        }
-	        insert log;
-	        acc.Member_Verification_OTP_Invalid_Attempt__c = system.now();
+            Authenticated_Log__c log = new Authenticated_Log__c();
+            log.SalesforceID__c = acc.Id;
+            log.First_Name__c = acc.FirstName;
+            log.Last_Name__c = acc.LastName;
+            log.Staff_Name__c = UserInfo.getName();
+            log.Decision__c = 'OTP – Code not provided';
+            if(IsEmail != null && IsEmail && EmailPhoneNumber != null && EmailPhoneNumber != '')
+            {
+              log.OTP_Email__c = EmailPhoneNumber;
+            }
+            else if(IsEmail != null && EmailPhoneNumber != null && EmailPhoneNumber != '')
+            {
+                log.OTP_Phone__c = EmailPhoneNumber;
+            }
+            insert log;
+            acc.Member_Verification_OTP_Invalid_Attempt__c = system.now();
             update acc;
-	        Verified = 'Cancelled';
+            Verified = 'Cancelled';
     }
     
     public void SendSMS(string phone, string message,string Name)
     {
-            List <smagicinteract__smsmagic__c> smsObjectList = new List <smagicinteract__smsmagic__c>();
+               List <smagicinteract__smsmagic__c> smsObjectList = new List <smagicinteract__smsmagic__c>();
             String senderId = 'CreditUnion';
             smagicinteract__smsMagic__c smsObject = new smagicinteract__smsMagic__c();
             smsObject.smagicinteract__SenderId__c = 'CreditUnion';
             string emailadd;
-	        if(Brand == 'Spectrum')
-	        {
-	        	emailadd = 'SpectrumSMS';
-	        }
-	        else
-	        {
-	        	emailadd = 'ChevronSMS';
-	        }
-            list<smagicinteract__SMS_Template__c> listTemplate =  [select Id,smagicinteract__Text__c from smagicinteract__SMS_Template__c where smagicinteract__Name__c =: emailadd];
+            if(Brand == 'Spectrum')
+            {
+                emailadd = 'SpectrumSMS';
+            }
+            else
+            {
+                emailadd = 'ChevronSMS';
+            }
+        list<smagicinteract__SMS_Template__c> listTemplate =  [select Id,smagicinteract__Text__c from smagicinteract__SMS_Template__c where smagicinteract__Name__c =: emailadd];
            
             smsObject.smagicinteract__PhoneNumber__c = phone;
              smsObject.smagicinteract__Name__c = Name; // records name
@@ -639,11 +639,11 @@ public class MemberVerification
         string emailadd;
         if(Brand == 'Spectrum')
         {
-        	emailadd = 'noreply@spectrumcu.org';
+            emailadd = 'noreply@spectrumcu.org';
         }
         else
         {
-        	emailadd = 'noreply@chevronfcu.org';
+            emailadd = 'noreply@chevronfcu.org';
         }
         
         List<OrgWideEmailAddress> listAdd = [select Id,Address,DisplayName  from OrgWideEmailAddress where Address =: emailadd];
@@ -735,12 +735,12 @@ public class MemberVerification
     
     public List<SelectOption> PhoneList_Options
     {
-    	
+        
         get {
-        	List<SelectOption> options = new List<SelectOption>();
-        	ListOfEmailsAndPhoneNumbers();    
-        	if(listWrapperAccount != null && listWrapperAccount.size() > 0)
-        	{
+            List<SelectOption> options = new List<SelectOption>();
+            ListOfEmailsAndPhoneNumbers();    
+            if(listWrapperAccount != null && listWrapperAccount.size() > 0)
+            {
                  
                     for(wrapperAccount a : listWrapperAccount){
                             if(a.fieldType == 'P')
@@ -749,7 +749,7 @@ public class MemberVerification
                             }
                         }
                         system.debug('Phoneoptions-----' + options);
-        	}
+            }
                 return options;
         }
     }
@@ -757,10 +757,10 @@ public class MemberVerification
     public List<SelectOption> EmailsList_Options
     {
         get {
-        	ListOfEmailsAndPhoneNumbers();
-        	List<SelectOption> options = new List<SelectOption>();    
-        	if(listWrapperAccount != null && listWrapperAccount.size() > 0)
-        	{
+            ListOfEmailsAndPhoneNumbers();
+            List<SelectOption> options = new List<SelectOption>();    
+            if(listWrapperAccount != null && listWrapperAccount.size() > 0)
+            {
                 
                     for(wrapperAccount a : listWrapperAccount){
                             if(a.fieldType == 'E')
@@ -770,8 +770,8 @@ public class MemberVerification
                         }
                         system.debug('Emailoptions-----' + options);
                
-        	}
-        	 return options;
+            }
+             return options;
         }
     }
     
