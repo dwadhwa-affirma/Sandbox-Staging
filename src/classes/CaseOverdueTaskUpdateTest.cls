@@ -1,0 +1,32 @@
+@isTest
+private class CaseOverdueTaskUpdateTest {
+	
+    static testMethod void myUnitTest() {
+        String CRON_EXP = '0 0 0 15 3 ? *';
+         Case cs = new Case();
+           cs.Brand__c = 'CFCU';
+           cs.Primary_Category__c = 'Shared Branch';
+          
+        insert cs;
+        
+        Task tk = new task();
+          tk.Status = 'Open';
+         tk.activityDate = system.today().addDays(-2);	
+        tk.Type = 'Case';
+        tk.whatId = cs.id;
+        insert tk;
+    
+        
+        Test.startTest();
+       			
+       	
+		           String jobId1 = System.schedule('CaseOverdueTaskUpdateTest',  CRON_EXP, new CaseOverdueTaskUpdate());
+		            CronTrigger ct1 = [SELECT Id, CronExpression, TimesTriggered, NextFireTime FROM CronTrigger WHERE id = :jobId1];
+		            System.assertEquals(CRON_EXP, ct1.CronExpression);
+		            System.assertEquals(0, ct1.TimesTriggered); 
+  
+
+
+        	Test.stopTest();
+    }
+}
