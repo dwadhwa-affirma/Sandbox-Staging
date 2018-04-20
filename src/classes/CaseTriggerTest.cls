@@ -189,7 +189,7 @@ public class CaseTriggerTest {
     }  
     
     static testMethod void testMethod10(){
-/*
+
 CaseRecordType__c crt = new CaseRecordType__c();
         crt.Primary_Category__c = 'AAA';
         crt.Secondary_Category__c = 'BBB';
@@ -302,79 +302,12 @@ CaseRecordType__c crt = new CaseRecordType__c();
          scc.Name='202';
          scc.Branch_Dept__c = 'Branch 202 -Spectrum Hou(Galleria) Queue';
          insert scc;
-         Case cs2 = new Case();
-         cs2.Brand__c = 'Specturm';
-         cs2.Subject = 'Branch Survey Alert :202:0260066134';
-         cs2.Primary_Category__c = 'AAA';
-         cs2.Secondary_Category__c = 'BBB';
-         cs2.Tertiary_Category__c = 'CCC';
-         cs2.Origin = 'MaritzCX';
-         cs2.Account_Number__c = accDetail.Id;
-         cs2.Member_Number__c = 'Test123';
-         cs2.AccountId = null;       
-        //insert cs2;
-        
-        cs2.Origin = 'Email';
-        
-       
-        
-        Case cs3 = new Case();
-         cs3.Brand__c = 'Specturm';
-         cs3.Subject = '1234 testing tet sdf :Relationship';
-         cs3.Primary_Category__c = 'AAA';
-         cs3.Secondary_Category__c = 'BBB';
-         cs3.Tertiary_Category__c = 'CCC';
-         cs3.Origin = 'MaritzCX';
-         cs3.Account_Number__c = accDetail.Id;
-         cs3.Member_Number__c = 'Test123';
-         cs3.AccountId = null;  
-        
-        insert cs3;
-        
-        cs3.Origin = 'Email';
-        
-      List<Case> cclist = new List<Case>();
-       // cclist.add(cs2);
-        cclist.add(cs3);
-        update cclist;
-        
-         Case cs4 = new Case();
-         cs4.Brand__c = 'Specturm';
-         cs4.Subject = 'Call Center:Test';
-         cs4.Primary_Category__c = 'Surveys';
-         cs4.Secondary_Category__c = 'Call Center';
-         cs4.Tertiary_Category__c = 'Other';
-         cs4.Origin = 'MaritzCX';
-         cs4.Account_Number__c = accDetail.Id;
-         cs4.Member_Number__c = 'Test123';
-         cs4.AccountId = acc.Id;       
-        insert cs4;
-        
-        cs4.Origin = 'Email';
-        
-       
-        
-        Case cs5 = new Case();
-         cs5.Brand__c = 'Specturm';
-         cs5.Subject = 'Relationship Survey :901:214414';
-         cs5.Primary_Category__c = 'Surveys';
-         cs5.Secondary_Category__c = 'Branch';
-         cs5.Tertiary_Category__c = 'Other';
-         cs5.Origin = 'MaritzCX';
-         cs5.Account_Number__c = accDetail.Id;
-         cs5.Member_Number__c = 'Test123';
-         cs5.AccountId = acc.Id; 
-         insert cs5;
-        
-        cs5.Origin = 'Email';
-        
-       List<Case> cclist1 = new List<Case>();
-        cclist1.add(cs4);
-        cclist1.add(cs5);
-        update cclist1;
        
        
-        */
+        
+       
+       
+        
     }
     
     static testMethod void testMethod11(){

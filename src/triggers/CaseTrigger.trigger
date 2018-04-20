@@ -11,6 +11,8 @@ trigger CaseTrigger on Case (before insert, before update, after insert, after u
             updateSurveyCase(Trigger.new);    
         }
         if (Trigger.isUpdate) {
+        	if(IsOtherThanTaskCountFieldUpdated())
+        	{
             updateCaseBrandInfo(Trigger.new);
             updateEmailtoSend(Trigger.new);
             updateErrorOnCaseClosing(Trigger.new);
@@ -20,10 +22,12 @@ trigger CaseTrigger on Case (before insert, before update, after insert, after u
                                                     
             updateMemberInfo(Trigger.New, Trigger.Old);  
             
-            updateownershipLog(Trigger.New);          
+            updateownershipLog(Trigger.New);        
+        	}  
         }
         
-        
+        if(IsOtherThanTaskCountFieldUpdated())
+        	{
         // Removed query from for loop so we need to query object once for all cases
           list<CaseRecordType__c> scList = [SELECT Id,
                                                  Primary_Category__c,
@@ -38,24 +42,26 @@ trigger CaseTrigger on Case (before insert, before update, after insert, after u
                                              LIMIT 1*/]; 
         
          for(Case c_new : Trigger.new){   
-         	 
-         	 for(CaseRecordType__c sc : scList)
-         	 {
-         	 	
-         	 	if(sc.Primary_Category__c == c_new.Primary_Category__c && sc.Secondary_Category__c == c_new.Secondary_Category__c  && sc.Teritiary_Category__c == c_new.Tertiary_Category__c)
-         	 	{
-         	 		 c_new.SLA__c =  scList[0].SLA__c;
-         	 		 Map<ID,Schema.RecordTypeInfo> rt_Map = Case.sObjectType.getDescribe().getRecordTypeInfosById();
-                   
-	                 if(rt_map.get(c_new.recordTypeID).getName().containsIgnoreCase('Survey Cases')){
-	                 	c_new.SLA__c =  40;
-	                  }  
-         	 		
-         	 	}
-         	 }
-         	 
+         	 if(scList.size()> 0)
+             {
+                 for(CaseRecordType__c sc : scList)
+                 {
+                    
+                    if(sc.Primary_Category__c == c_new.Primary_Category__c && sc.Secondary_Category__c == c_new.Secondary_Category__c  && sc.Teritiary_Category__c == c_new.Tertiary_Category__c)
+                    {
+                         c_new.SLA__c =  scList[0].SLA__c;
+                         Map<ID,Schema.RecordTypeInfo> rt_Map = Case.sObjectType.getDescribe().getRecordTypeInfosById();
+                       
+                         if(rt_map.get(c_new.recordTypeID).getName().containsIgnoreCase('Survey Cases')){
+                            c_new.SLA__c =  40;
+                          }  
+                        
+                    }
+                 }
+         }
                
          }
+        	}
         
         
     }
@@ -722,5 +728,47 @@ System.Debug('Calling the CaseAssign method');
           
           
           
-}              
+}          
+
+
+private boolean IsOtherThanTaskCountFieldUpdated()
+{ 
+	if(trigger.isinsert)
+	{
+		return true;
+		
+	}
+        Case gplObject = new Case(); // This takes all available fields from the required object. 
+        Schema.SObjectType objType = gplObject.getSObjectType(); 
+        Map<String, Schema.SObjectField> mapFields = Schema.SObjectType.Case.fields.getMap(); 
+        
+        for(Case	 gpl : trigger.new)
+        {
+            Case	 oldGPL = trigger.oldMap.get(gpl.Id);
+		if(mapFields.size()>0)
+        {
+            for (String str : mapFields.keyset()) 
+            { 
+                try 
+                { 
+                    if(gpl.get(str) != oldGPL.get(str) && str.toLowerCase() == 'Overdue_task_count__c')
+                    { 
+                    	System.Debug('Other than Email updated...' + str);
+                        return false; 
+                    } 
+                } 
+                catch (Exception e) 
+                { 
+                    System.Debug('Error: ' + e); 
+                } 
+            }
+        }
+        }
+        System.Debug('No Other field than Email updated...');
+        
+        return true;
+}
+    
+
+    
 }
