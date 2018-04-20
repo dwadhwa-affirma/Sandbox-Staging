@@ -54,7 +54,7 @@ public class CannedResponsesForCommentTest{
             List<Account_Details__c> Account_Details = new List<Account_Details__c>();
             Account_Details__c ad = new Account_Details__c();
             ad.Name = fid;
-            
+            ad.Reference__c = 'BC01';
             Account_Details.add(ad);
             insert Account_Details;
            // Creating  Person_Account__c
@@ -123,7 +123,8 @@ public class CannedResponsesForCommentTest{
             cr.Tertiary_Lookup_Text__c = 'Test';
             insert cr;
             
-            ApexPages.StandardController sc = new ApexPages.StandardController(memberComment);        
+            ApexPages.StandardController sc = new ApexPages.StandardController(memberComment);   
+                 
             CannedResponsesForComment crc = new CannedResponsesForComment(sc);      
                  
             List<CannedResponsesForComment.attachmentWrapper> wrapList = crc.wrapperLst;
@@ -151,10 +152,22 @@ public class CannedResponsesForCommentTest{
             crc.savenew();
             crc.selectedTertiary = 'Test';
             crc.selectedTitle = cr.id;
-            crc.getSelectedDecription();
             crc.getTitlesByCategories();
+            crc.getSelectedDecription();
+            
             crc.save();
             crc.cancelall();
+            
+            insert memberComment;
+            
+            apexpages.currentpage().getparameters().put('caseId' , cas.id);
+            ApexPages.StandardController sc1 = new ApexPages.StandardController(memberComment);   
+            CannedResponsesForComment crc1 = new CannedResponsesForComment(sc1); 
+           /* Member_Comment__c m = new Member_Comment__c();
+            m.case__c = cas.id;
+            apexpages.currentpage().getparameters().put('caseId' , cas.id);
+            ApexPages.StandardController sc1 = new ApexPages.StandardController(m);   
+            CannedResponsesForComment crc1 = new CannedResponsesForComment(sc1);   */   
     
       }
    

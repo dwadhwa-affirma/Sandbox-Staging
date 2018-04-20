@@ -281,7 +281,7 @@ CaseRecordType__c crt = new CaseRecordType__c();
         
         update cs1;
         
-     
+
      Group grp = new Group();
      grp.Name =  'Branch 202 -Spectrum Hou(Galleria) Queue';
      insert grp;
