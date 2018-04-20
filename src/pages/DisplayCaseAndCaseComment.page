@@ -188,6 +188,18 @@
                                                                 <apex:outputText value="<" escape="false" />!-- /ko --<apex:outputText value=">" escape="false" />
                                                                 </ul>
                                                                 </div>
+															<div data-bind="visible : model.files().length > 0 && model.ShowCaseBelow() == false">
+                                                                <ul class="attachments comment_detailed_attachment" style="padding-left:0px;">
+                                                                    <li><!--  <apex:image url="{!URLFOR($Resource.MessagingAssets,'MessagingAssets/img/attach_icon.png')}"
+                                                                            width="21" alt="" />--> Submitted Attachments :</li>
+                                                                <apex:outputText value="<" escape="false" />!-- ko foreach: model.files() --<apex:outputText value=">" escape="false" />
+                                                                    <li><a id="download2" class="pdf_icon" 
+                                                                    data-bind="html: filename, attr:{ 'href': downloadurl }, click: downloaddoc, css: { pdf_icon: fileicon() == 'pdf', 'word_icon' : fileicon() == 'docx','excel_icon' : fileicon()=='xlsx','powerpoint_icon' : fileicon()=='pptx','onenote_icon' : fileicon()=='one','jpg_icon' : fileicon()=='jpg','png_icon' : fileicon()=='png'}">
+                                                                        </a>&nbsp;(<span data-bind="text:filesize"></span>)
+                                                                    </li>
+                                                                <apex:outputText value="<" escape="false" />!-- /ko --<apex:outputText value=">" escape="false" />
+                                                                </ul>
+                                                               </div> 
                                                         
                                                         
                                                     </div>
