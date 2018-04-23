@@ -1,75 +1,75 @@
 <apex:page standardStylesheets="false" controller="MemberAuthenticationController" Action="{!VerifyCallerDetails}">
     <style>
-  .relatedSelectionError, .adval1Error, .adval2Error, .adval3Error, .advalOtherError, .advalOtherError1, .advalOtherError2, .advalOtherErrorinv, .advalOtherErrorinv1, .advalOtherErrorinv2, .loanSelectionError, .additionalTokenSelectionError
-  {
-    color:red;
-    font-size:12px !important;
-  }   
-  .atTitle
-  {
-    width:100% !important;
-  }
-  .additionalTokenContainer select
-  {
-    color:#000;
-  }     
-  
-  .chervon .form-right .checkbox span{padding-left: 15px;}  
-    .txtforother{border-top:0px dotted #ccc;margin-top: 15px; width: 100%;}
-    .txtforother td{border: 0; padding-top: 15px;}
-    .txtforother .othertext{width: 100%;}
-    
-    .txtforother1{border-top:0px dotted #ccc;margin-top: 15px; width: 100%;}
-    .txtforother1 td{border: 0; padding-top: 15px;}
-    .txtforother1 .othertext1{width: 100%;}
-    
-    .txtforother2{border-top:0px dotted #ccc;margin-top: 15px; width: 100%;}
-    .txtforother2 td{border: 0; padding-top: 15px;}
-    .txtforother2 .othertext2{width: 100%;}
-    
-    .additionalTokenContainer .pbHeader .pbTitle{width: 100%; padding-left: 11px;}
-    .additionalTokenContainer .addtcol1{width: 35%;}
-    .additionalTokenContainer .addtcol2{width: 37%;}
-    .additionalTokenContainer .addtcol3{width: 23%;}
-    .additionalTokenContainer .addtcol1 select{min-height: 26px;}
-    .txtforother{display:none;}
-    .txtforother1{display:none;}
-    .txtforother2{display:none;}
+	.relatedSelectionError, .adval1Error, .adval2Error, .adval3Error, .advalOtherError, .advalOtherError1, .advalOtherError2, .advalOtherErrorinv, .advalOtherErrorinv1, .advalOtherErrorinv2, .loanSelectionError, .additionalTokenSelectionError, .additionalTokenSelectionErrorSameNameText, .additionalTokenSelectionErrorSameName
+	{
+		color:red;
+		font-size:12px !important;
+	}   
+	.atTitle
+	{
+		width:100% !important;
+	}
+	.additionalTokenContainer select
+	{
+		color:#000;
+	}     
+	
+	.chervon .form-right .checkbox span{padding-left: 15px;}	
+		.txtforother{border-top:0px dotted #ccc;margin-top: 15px; width: 100%;}
+		.txtforother td{border: 0; padding-top: 15px;}
+		.txtforother .othertext{width: 100%;}
+		
+		.txtforother1{border-top:0px dotted #ccc;margin-top: 15px; width: 100%;}
+		.txtforother1 td{border: 0; padding-top: 15px;}
+		.txtforother1 .othertext1{width: 100%;}
+		
+		.txtforother2{border-top:0px dotted #ccc;margin-top: 15px; width: 100%;}
+		.txtforother2 td{border: 0; padding-top: 15px;}
+		.txtforother2 .othertext2{width: 100%;}
+		
+		.additionalTokenContainer .pbHeader .pbTitle{width: 100%; padding-left: 11px;}
+		.additionalTokenContainer .addtcol1{width: 35%;}
+		.additionalTokenContainer .addtcol2{width: 37%;}
+		.additionalTokenContainer .addtcol3{width: 23%;}
+		.additionalTokenContainer .addtcol1 select{min-height: 26px;}
+		.txtforother{display:none;}
+		.txtforother1{display:none;}
+		.txtforother2{display:none;}
 
-    .noborder{
-      border-bottom-width: 0px; !important;
-      border: none !important;  
-    }
-    .chkAligned{
-      vertical-align: middle;
-        padding-top: 10px !important;
-    }
-    .chkAlignedx {
-        width: 65px;
-        float: left;
-        left: 0;
-    }
-    .chkAlignedx .checkbox input[type="checkbox"] {
-        left: 0;
-        top: 0;
-        margin-top: 11px;
-    }
-    span.newconfirmRadio{
-      left: 0;
-    }
-    .chkAlignedx .checkbox label {
-        position: relative;
-        top: 0px;
-        left: 15px;
-    }
-    .chervon .form-right .checkbox .chkAlignedx > label{
-      padding-left:20px !important;
-    }
-    .tblchkbx span {
-        padding-left: 0 !important;
-        margin-top: 0;
-        left: 0px;
-    }
+		.noborder{
+			border-bottom-width: 0px; !important;
+			border: none !important;	
+		}
+		.chkAligned{
+			vertical-align: middle;
+    		padding-top: 10px !important;
+		}
+		.chkAlignedx {
+		    width: 65px;
+		    float: left;
+		    left: 0;
+		}
+		.chkAlignedx .checkbox input[type="checkbox"] {
+		    left: 0;
+		    top: 0;
+		    margin-top: 11px;
+		}
+		span.newconfirmRadio{
+			left: 0;
+		}
+		.chkAlignedx .checkbox label {
+		    position: relative;
+		    top: 0px;
+		    left: 15px;
+		}
+		.chervon .form-right .checkbox .chkAlignedx > label{
+			padding-left:20px !important;
+		}
+		.tblchkbx span {
+		    padding-left: 0 !important;
+		    margin-top: 0;
+		    left: 0px;
+		}
     </style>    
         
     <head>
@@ -84,20 +84,20 @@
     </apex:form>
     <style>
     .chervon .form-right .checkbox label {
-      padding: 0px 15px 0 5px !important;
-      font-size:12px;
-  }
-  .additionalTokenContainer .addtcol3 {
-      width: 23%;
-  }
-  table.newconfirmRadio tr td {
+	    padding: 0px 15px 0 5px !important;
+	    font-size:12px;
+	}
+	.additionalTokenContainer .addtcol3 {
+    	width: 23%;
+	}
+	table.newconfirmRadio tr td {
     border-width: 0 0 0px 0 !important;
     vertical-align: middle;
-  }
-    table.loancheckradio tr td {
+	}
+		table.loancheckradio tr td {
     border-width: 0 0 0px 0 !important;
     vertical-align: middle;
-  }
+	}
     </style>
     
     <section class="chervon">
@@ -130,8 +130,8 @@
                                 </div>    
                                 <div class="col-sm-12 no-padding">
                                     <div class="checkbox">                                            
-                                        <apex:outputText rendered="{!PhoneNumberMatch=='true'}"><span class="confirm"><i aria-hidden="true" class="fa fa-check"></i>   Valid</span></apex:outputText> 
-                                        <apex:outputText rendered="{!PhoneNumberMatch=='false'}"><span class="error"><i aria-hidden="true" class="fa fa-close"></i>   No Match Found</span></apex:outputText>
+                                        <apex:outputText rendered="{!PhoneNumberMatch=='true'}"><span class="confirm"><i aria-hidden="true" class="fa fa-check"></i> &nbsp; Valid</span></apex:outputText> 
+                                        <apex:outputText rendered="{!PhoneNumberMatch=='false'}"><span class="error"><i aria-hidden="true" class="fa fa-close"></i> &nbsp; No Match Found</span></apex:outputText>
                                     </div>
                                 </div>     
                             </div>
@@ -149,8 +149,8 @@
                             
                                 <div class="col-sm-12 no-padding" id="MemberNoDiv"> 
                                     <div class="checkbox">
-                                        <apex:outputText id="MembersucessText" rendered="{!MemberNumberMatch=='true'}"><span class="confirm"><i aria-hidden="true" class="fa fa-check"></i>   Verified</span></apex:outputText> 
-                                        <apex:outputText id="MemberNoErrorText" rendered="{!MemberNumberMatch=='false'}"><span class="error"><i aria-hidden="true" class="fa fa-close"></i>   Invalid</span></apex:outputText>
+                                        <apex:outputText id="MembersucessText" rendered="{!MemberNumberMatch=='true'}"><span class="confirm"><i aria-hidden="true" class="fa fa-check"></i> &nbsp; Verified</span></apex:outputText> 
+                                        <apex:outputText id="MemberNoErrorText" rendered="{!MemberNumberMatch=='false'}"><span class="error"><i aria-hidden="true" class="fa fa-close"></i> &nbsp; Invalid</span></apex:outputText>
                                     </div>
                                 </div>-->
                                      <apex:outputPanel >
@@ -158,16 +158,16 @@
                                         <span class="pull-right"><i aria-hidden="true" class="fa fa-user"></i></span>
                                     </apex:outputLabel>
                                     <div class="col-sm-12 no-padding">
-                                       <apex:outputText styleClass="form-control inputcan memnumin" rendered="{!ClearAllflag == false && MemberNumberMatchStatus != ''}" id="MemberNumberout" value="{!EnteredMemberNumber}">
+                                    	 <apex:outputText styleClass="form-control inputcan memnumin" rendered="{!ClearAllflag == false && MemberNumberMatchStatus != ''}" id="MemberNumberout" value="{!EnteredMemberNumber}">
                                          </apex:outputText>
                                          <apex:inputText styleClass="form-control inputcan memnumin" rendered="{!ClearAllflag == true}" html-placeholder="Select to type" maxlength="10" id="MemberNumberThis" value="{!EnteredMemberNumber}" onkeypress="return onenterforMember(event)">
                                          </apex:inputText>
                                     </div>
                                     <div class="col-sm-12 no-padding" id="MemberNoDiv">
-                                      <div class="checkbox">
+                                    	<div class="checkbox">
                                             <!--<apex:inputCheckbox id="MemberNum" styleclass="confirm newconfirm" rendered="{!MemberNumberMatch=='true'}" selected="{!MemberNumberConfirm}"><label for="Checkbox1"><span>Select Checkbox to Confirm</span></label></apex:inputcheckbox> -->
-                                            <apex:outputText id="MembersucessText" rendered="{!MemberNumberMatch=='true'}"><span class="confirm"><i aria-hidden="true" class="memnumcheck fa fa-check"></i>   {!MemberNumberMatchStatus}</span></apex:outputText> 
-                                            <apex:outputText id="MemberNoErrorText" rendered="{!MemberNumberMatch=='false'}"><span class="error"><i aria-hidden="true" class="fa fa-close"></i>    No Match Found</span></apex:outputText>
+                                            <apex:outputText id="MembersucessText" rendered="{!MemberNumberMatch=='true'}"><span class="confirm"><i aria-hidden="true" class="memnumcheck fa fa-check"></i> &nbsp; {!MemberNumberMatchStatus}</span></apex:outputText> 
+                                            <apex:outputText id="MemberNoErrorText" rendered="{!MemberNumberMatch=='false'}"><span class="error"><i aria-hidden="true" class="fa fa-close"></i>  &nbsp; No Match Found</span></apex:outputText>
                                             <apex:outputLabel value="{!MultipleMemberNumberAlert}" rendered="{!if(MultipleMemberNumberAlert == '',false,true)}"></apex:outputLabel> 
                                        </div>
                                     </div>
@@ -191,7 +191,7 @@
                                        
                                     </apex:selectRadio>                       
                               </apex:form>
-                              <apex:outputText rendered="{!NameList == null}"><span><i aria-hidden="true"></i>    No Member Found</span></apex:outputText>
+                              <apex:outputText rendered="{!NameList == null}"><span><i aria-hidden="true"></i>  &nbsp; No Member Found</span></apex:outputText>
                             </div>
                         </div>
                     </div>
@@ -223,8 +223,8 @@
                                     </div>
                                     <div class="col-sm-6 col-xs-6">
                                             <div class="checkbox">  
-                                                <apex:outputText rendered="{!CardNumberMatch=='true' }"><span class="confirm"><i aria-hidden="true" class="fa fa-check"></i>   Valid</span></apex:outputText> 
-                                                <apex:outputText rendered="{!CardNumberMatch=='false' }"><span class="error" ><i aria-hidden="true" class="fa fa-close"></i>    No Matches Found</span></apex:outputText>                                                                                    
+                                                <apex:outputText rendered="{!CardNumberMatch=='true' }"><span class="confirm"><i aria-hidden="true" class="fa fa-check"></i> &nbsp; Valid</span></apex:outputText> 
+                                                <apex:outputText rendered="{!CardNumberMatch=='false' }"><span class="error" ><i aria-hidden="true" class="fa fa-close"></i>  &nbsp; No Matches Found</span></apex:outputText>                                                                                    
                                             </div>
                                     </div>
                                 </div>
@@ -240,8 +240,8 @@
                                     </div>    
                                     <div class="col-sm-4 col-xs-4">
                                         <div class="checkbox">                                            
-                                            <apex:outputText rendered="{!If((PINMatch=='true' && pinString=='****'),true,false)}"><span class="confirm"><i aria-hidden="true" class="fa fa-check"></i>   Valid</span></apex:outputText> 
-                                            <apex:outputText rendered="{!If((PINMatch=='false' && pinString=='****'),true,false)}"><span class="error"><i aria-hidden="true" class="fa fa-close"></i>   Invalid</span></apex:outputText>
+                                            <apex:outputText rendered="{!If((PINMatch=='true' && pinString=='****'),true,false)}"><span class="confirm"><i aria-hidden="true" class="fa fa-check"></i> &nbsp; Valid</span></apex:outputText> 
+                                            <apex:outputText rendered="{!If((PINMatch=='false' && pinString=='****'),true,false)}"><span class="error"><i aria-hidden="true" class="fa fa-close"></i> &nbsp; Invalid</span></apex:outputText>
                                         </div>
                                     </div>
                                 </div>
@@ -249,346 +249,348 @@
                                 </div>
                                 
                                 <div class="row">
-                                  <div class="col-md-5">
-                                    <div class="form-group">
-                      <apex:outputPanel >
-                      <apex:outputLabel for="#" styleclass="col-sm-12 col-xs-4 control-label">Last 4 SSN 
-                        <span class="pull-left"><i aria-hidden="true" class="fa fa-hashtag"></i></span>
-                      </apex:outputLabel>
-                      <div class="col-sm-6 col-xs-6 no-padding">
-                         <apex:OutputText styleClass="form-control inputcan" rendered="{!ClearAllflag == false}"   id="SSNOut" value="{!EnteredSSN}">
-                         </apex:OutputText>
-                         <apex:inputText styleClass="form-control inputcan" rendered="{! ClearAllflag == true}" html-placeholder="Select to type"  maxlength="4" id="SSN" value="{!EnteredSSN}" onkeypress="return onenterForSSN(event,this.value)">
-                         </apex:inputText>
-                      </div>
-                      <div class="col-sm-6 col-xs-6">
-                         <div class="checkbox">
-                          <apex:inputCheckbox id="SSNnumber"  style="display:none;" styleclass="confirm newconfirm" label="Select Checkbox to Confirm" rendered="{!SSNnumberMatch=='true'  && SelectedID != ''}" selected="{!SSNnumberConfirm}" ><span style="display:none;" class="no-label">Select Checkbox to Confirm</span></apex:inputcheckbox>
-                          <!--  <apex:selectRadio styleclass="newconfirmRadio" id="SSNnumberNew" value="{!SSNnumberConfirmString}" rendered="{!SSNnumberMatch=='true'  && SelectedID != ''}"  layout="lineDirection">
-                            <apex:selectOption itemLabel="Not Asked" id="SSNnumberNew1" itemValue="NA"></apex:selectOption>
-                            <apex:selectOption itemLabel="Pass" id="SSNnumberNew2" itemValue="Pass"></apex:selectOption>
-                            <apex:selectOption itemLabel="Fail" id="SSNnumberNew3" itemValue="Fail"></apex:selectOption>
-                          </apex:selectRadio>  -->
-                           <apex:outputpanel styleclass="newconfirmRadio"  id="SSNnumberNew" rendered="{!SSNnumberMatch=='true'  && SelectedID != ''}">
-                             <span class="chkAligned">
-                              <input type="checkbox" name="SSNnumberNewPass" id="SSNnumberNewPass" value="Pass"/>
-                            
-                              <label for="SSNnumberNewPass">Pass</label>
-                            </span>
-                            <span class="chkAligned">
-                              <input type="checkbox" name="SSNnumberNewFail" id="SSNnumberNewFail"  value="Fail"/>
-                              <label for="SSNnumberNewFail">Fail</label>
-                            </span>
-                          </apex:outputpanel> 
-                          
-                          
-                          <apex:outputText rendered="{!SSNnumberMatch=='false'}"><span class="error"><i aria-hidden="true" class="fa fa-close"></i>    No Matches Found</span></apex:outputText>
-                        </div>                                        
-                      </div>
-                      </apex:outputPanel>
-                    </div>    
-                    <div class="form-group">
-                      <apex:outputPanel >
-                      <apex:outputLabel for="#" styleclass="col-sm-12 col-xs-4 control-label">DOB 
-                        <span class="pull-left"><i aria-hidden="true" class="fa fa-calendar-check-o"></i></span>
-                      </apex:outputLabel>
-                      <div class="col-sm-6 col-xs-6 no-padding">
-                        <apex:outputText rendered="{!ClearAllflag == false}" styleClass="form-control inputcan"  id="DOBOut" value="{!DOB}" >
-                        </apex:outputText>
-                        <apex:inputText rendered="{!ClearAllflag == true}" styleClass="form-control inputcan" html-placeholder="YYYY-MM-DD" id="DOB" value="{!DOB}" onkeypress="return onenterDOB(event)">
-                        </apex:inputText>
-                        <div class="validateDOB" style="display:none"></div>
-                      </div>
-                      <div class="col-sm-6 col-xs-6">
-                         <div class="checkbox">
-                          <apex:inputCheckbox id="DOBC" style="display:none;" styleclass="confirm newconfirm" label="Select Checkbox to Confirm" rendered="{!DOBMatch=='true' && SelectedID != ''}" selected="{!DOBConfirm}"><span style="display:none;" class="no-label">Select Checkbox to Confirm</span></apex:inputcheckbox>
-                          
-                           <apex:outputpanel styleclass="newconfirmRadio"  id="DOBCNew" rendered="{!DOBMatch=='true' && SelectedID != ''}">
-                             <span class="chkAligned">
-                              <input type="checkbox" name="DOBCNewPass" id="DOBCNewPass" value="Pass"/>
-                            
-                              <label for="DOBCNewPass">Pass</label>
-                            </span>
-                            <span class="chkAligned">
-                              <input type="checkbox" name="DOBCNewFail" id="DOBCNewFail"  value="Fail"/>
-                              <label for="DOBCNewFail">Fail</label>
-                            </span>
-                          </apex:outputpanel> 
-                          
-                        <!--    <apex:selectRadio styleclass="newconfirmRadio" id="DOBCNew" rendered="{!DOBMatch=='true' && SelectedID != ''}" value="{!DOBConfirmString}"  layout="lineDirection">
-                            <apex:selectOption itemLabel="Not Asked" id="DOBCNew1" itemValue="NA"></apex:selectOption>
-                            <apex:selectOption itemLabel="Pass" id="DOBCNew2" itemValue="Pass"></apex:selectOption>
-                            <apex:selectOption itemLabel="Fail" id="DOBCNew3" itemValue="Fail"></apex:selectOption>
-                          </apex:selectRadio>-->
-                          
-                          
-                          <apex:outputText rendered="{!DOBMatch=='false'}"><span class="error"><i aria-hidden="true" class="fa fa-close"></i>    No Matches Found</span></apex:outputText>
-                        </div> 
-                      </div>
-                      </apex:outputPanel>
-                    </div>        
-                    
-                    <div class="form-group">
-                      <apex:outputLabel for="#" styleclass="col-sm-12 col-xs-4 control-label">DL/STATE ID/PASSPORT 
-                         <span class="pull-left"><i aria-hidden="true" class="fa fa-wpforms"></i></span> 
-                      </apex:outputLabel>
-                      <div class="col-sm-6 col-xs-6  no-padding">
-                           <apex:outputText styleClass="form-control inputcan" rendered="{!ClearAllflag == false}" id="IDNoOut" value="{!IdNumber}">
-                           </apex:outputText>
-                           <apex:inputText styleClass="form-control inputcan" rendered="{!ClearAllflag == true}" html-placeholder="Select to type" maxlength="16" id="IDNo" value="{!IdNumber}" onkeypress="return onenter(event)">
-                           </apex:inputText>
-                      </div>
-                      <div class="col-sm-6 col-xs-6">
-                        <div class="checkbox">
-                          <apex:inputCheckbox id="IdNumber" style="display:none;" styleclass="confirm newconfirm" label="Select Checkbox to Confirm" rendered="{!IdNumberMatch=='true'  && SelectedID != ''}" selected="{!IdNumberConfirm}"><span style="display:none;" class="no-label">Select Checkbox to Confirm</span></apex:inputcheckbox>
-                          
-                           <apex:outputpanel styleclass="confirmRadio newconfirmRadio"  id="IdNumberNew"  rendered="{!IdNumberMatch=='true'  && SelectedID != ''}">
-                             <span class="chkAligned">
-                              <input type="checkbox" name="IdNumberNewPass" id="IdNumberNewPass" value="Pass"/>
-                            
-                              <label for="IdNumberNewPass">Pass</label>
-                            </span>
-                            <span class="chkAligned">
-                              <input type="checkbox" name="IdNumberNewFail" id="IdNumberNewFail"  value="Fail"/>
-                              <label for="IdNumberNewFail">Fail</label>
-                            </span>
-                          </apex:outputpanel> 
-                          
-                          
-                        <!--   <apex:selectRadio styleclass="confirmRadio newconfirmRadio" id="IdNumberNew" rendered="{!IdNumberMatch=='true'  && SelectedID != ''}" value="{!IdNumberConfirmString}"   layout="lineDirection">
-                            <apex:selectOption itemLabel="Not Asked" id="IdNumberNew1" itemValue="NA"></apex:selectOption>
-                            <apex:selectOption itemLabel="Pass" id="IdNumberNew2" itemValue="Pass"></apex:selectOption>
-                            <apex:selectOption itemLabel="Fail" id="IdNumberNew3" itemValue="Fail"></apex:selectOption>
-                          </apex:selectRadio>  -->
-                          
-                          
-                          
-                          <apex:outputText rendered="{!IdNumberMatch=='false'}"><span class="error" ><i aria-hidden="true" class="fa fa-close"></i>    No Matches Found</span></apex:outputText>
-                        </div>
-                      </div>
-                    </div>
-                    <div class="form-group">
-                      <apex:outputLabel for="#" styleclass="col-sm-12 col-xs-4 control-label">Account Password/MMN 
-                        <span class="pull-left"><i aria-hidden="true" class="fa fa-users"></i></span>
-                      </apex:outputLabel>
-                      <div class="col-sm-6 col-xs-6 no-padding">
-                          <apex:outputText styleClass="form-control inputcan" rendered="{!ClearAllflag == false}" id="MMNameout" value="{!MMN}">
-                          </apex:outputText>
-                          <apex:inputText styleClass="form-control inputcan" rendered="{!ClearAllflag == true}" html-placeholder="Select to type" id="MMName" value="{!MMN}" onkeypress="return onenter(event)">
-                          </apex:inputText>
-                      </div>
-                      <div class="col-sm-6 col-xs-6">
-                        <div class="checkbox">
-                        
-                          <apex:inputCheckbox id="MMN" style="display:none;" styleclass="confirm newconfirm" label="Select Checkbox to Confirm" rendered="{!MMNMatch=='true' && SelectedID != ''}" selected="{!MMNConfirm}"><span style="display:none;" class="no-label">Select Checkbox to Confirm</span></apex:inputcheckbox>
-                          
-                          
-                           <apex:outputpanel styleclass="confirmRadio newconfirmRadio"  id="MMNNew" rendered="{!MMNMatch=='true' && SelectedID != ''}">
-                             <span class="chkAligned">
-                              <input type="checkbox" name="MMNNewPass" id="MMNNewPass" value="Pass"/>
-                            
-                              <label for="MMNNewPass">Pass</label>
-                            </span>
-                            <span class="chkAligned">
-                              <input type="checkbox" name="MMNNewFail" id="MMNNewFail"  value="Fail"/>
-                              <label for="MMNNewFail">Fail</label>
-                            </span>
-                          </apex:outputpanel> 
-                          
-                          
-                          
-                        <!--   <apex:selectRadio styleclass="confirmRadio newconfirmRadio" id="MMNNew" rendered="{!MMNMatch=='true' && SelectedID != ''}" value="{!MMNConfirmString}" layout="lineDirection">
-                            <apex:selectOption itemLabel="Not Asked" id="MMNNew1" itemValue="NA"></apex:selectOption>
-                            <apex:selectOption itemLabel="Pass" id="MMNNew2" itemValue="Pass"></apex:selectOption>
-                            <apex:selectOption itemLabel="Fail" id="MMNNew3" itemValue="Fail"></apex:selectOption>
-                          </apex:selectRadio>  -->
-                          
-                          <apex:outputText rendered="{!MMNMatch=='false'}"><span class="error" ><i aria-hidden="true" class="fa fa-close"></i>    No Matches Found</span></apex:outputText>
-                        </div>
-                      </div>
-                    </div>
-                                    <div class="form-group">
-                      <apex:outputLabel for="#" styleclass="col-sm-12 col-xs-4 control-label">Email 
-                        <span class="pull-left"><i aria-hidden="true" class="fa fa-envelope"></i></span>
-                      </apex:outputLabel>
-                      <div class="col-sm-6 col-xs-6 no-padding">
-                          <apex:outputText styleClass="form-control inputcan" rendered="{!ClearAllflag == false}" id="Emailout" value="{!Email}">
-                          </apex:outputText>
-                          <apex:inputText styleClass="form-control inputcan" rendered="{!ClearAllflag == true}" html-placeholder="Select to type" id="EmailName" value="{!Email}" onkeypress="return onenter(event)">
-                          </apex:inputText>
-                      </div>
-                      <div class="col-sm-6 col-xs-6">
-                        <div class="checkbox">
-                          <apex:inputCheckbox id="Email" style="display:none;" styleclass="confirm newconfirm" label="Select Checkbox to Confirm" rendered="{!EmailMatch=='true' && SelectedID != ''}" selected="{!EmailConfirm}"><span style="display:none;" class="no-label">Select Checkbox to Confirm</span></apex:inputcheckbox>
-                          
-                          
-                          <apex:outputpanel styleclass="confirmRadio newconfirmRadio"  id="EmailNew" rendered="{!EmailMatch=='true' && SelectedID != ''}" >
-                             <span class="chkAligned">
-                              <input type="checkbox" name="EmailNewPass" id="EmailNewPass" value="Pass"/>
-                            
-                              <label for="EmailNewPass">Pass</label>
-                            </span>
-                            <span class="chkAligned">
-                              <input type="checkbox" name="EmailNewFail" id="EmailNewFail"  value="Fail"/>
-                              <label for="EmailNewFail">Fail</label>
-                            </span>
-                          </apex:outputpanel> 
-                          
-                          
-                          <!--  <apex:selectRadio styleclass="confirmRadio newconfirmRadio" id="EmailNew"  rendered="{!EmailMatch=='true' && SelectedID != ''}" value="{!EmailConfirmString}"  layout="lineDirection">
-                            <apex:selectOption itemLabel="Not Asked" id="EmailNew1" itemValue="NA"></apex:selectOption>
-                            <apex:selectOption itemLabel="Pass" id="EmailNew2" itemValue="Pass"></apex:selectOption>
-                            <apex:selectOption itemLabel="Fail" id="EmailNew3" itemValue="Fail"></apex:selectOption>
-                          </apex:selectRadio>  -->
-                          
-                          
-                          <apex:outputText rendered="{!EmailMatch=='false'}"><span class="error" ><i aria-hidden="true" class="fa fa-close"></i>    No Matches Found</span></apex:outputText>
-                        </div>
-                      </div>
-                    </div>
-                                  </div>
-                                  <div class="col-md-7">
-                                    <div class="table-responsive urv-g additionalTokenContainer">
-                       <apex:pageBlock rendered="{!IF(selectedID != null && selectedID != '', true, false) }" title="Additional Tokens">
-                        <table class="table">
-                        <tr class="dataRow even  first">
-                          <td class="addtcol1">
-                          <apex:selectList value="{!AdditionalToken1Selection}" onchange="javascript:showOtherArea1(this, true)" multiselect="false" size="1" html-class="additionaltoken1 additionaltoken-all"  id="token1">
-                            <apex:selectOptions value="{!AdditionalTokens}"/>
-                           </apex:selectList>
+                                	<div class="col-md-5">
+                                		<div class="form-group">
+											<apex:outputPanel >
+											<apex:outputLabel for="#" styleclass="col-sm-12 col-xs-4 control-label">Last 4 SSN 
+												<span class="pull-left"><i aria-hidden="true" class="fa fa-hashtag"></i></span>
+											</apex:outputLabel>
+											<div class="col-sm-6 col-xs-6 no-padding">
+												 <apex:OutputText styleClass="form-control inputcan" rendered="{!ClearAllflag == false}"   id="SSNOut" value="{!EnteredSSN}">
+												 </apex:OutputText>
+												 <apex:inputText styleClass="form-control inputcan" rendered="{! ClearAllflag == true}" html-placeholder="Select to type"  maxlength="4" id="SSN" value="{!EnteredSSN}" onkeypress="return onenterForSSN(event,this.value)">
+												 </apex:inputText>
+											</div>
+											<div class="col-sm-6 col-xs-6">
+												 <div class="checkbox">
+													<apex:inputCheckbox id="SSNnumber"  style="display:none;" styleclass="confirm newconfirm" label="Select Checkbox to Confirm" rendered="{!SSNnumberMatch=='true'  && SelectedID != ''}" selected="{!SSNnumberConfirm}" ><span style="display:none;" class="no-label">Select Checkbox to Confirm</span></apex:inputcheckbox>
+													<!--  <apex:selectRadio styleclass="newconfirmRadio" id="SSNnumberNew" value="{!SSNnumberConfirmString}" rendered="{!SSNnumberMatch=='true'  && SelectedID != ''}"  layout="lineDirection">
+													  <apex:selectOption itemLabel="Not Asked" id="SSNnumberNew1" itemValue="NA"></apex:selectOption>
+													  <apex:selectOption itemLabel="Pass" id="SSNnumberNew2" itemValue="Pass"></apex:selectOption>
+													  <apex:selectOption itemLabel="Fail" id="SSNnumberNew3" itemValue="Fail"></apex:selectOption>
+													</apex:selectRadio>  -->
+													 <apex:outputpanel styleclass="newconfirmRadio"  id="SSNnumberNew" rendered="{!SSNnumberMatch=='true'  && SelectedID != ''}">
+													 	<span class="chkAligned">
+															<input type="checkbox" name="SSNnumberNewPass" id="SSNnumberNewPass" value="Pass"/>
+														
+															<label for="SSNnumberNewPass">Pass</label>
+														</span>
+														<span class="chkAligned">
+															<input type="checkbox" name="SSNnumberNewFail" id="SSNnumberNewFail"  value="Fail"/>
+															<label for="SSNnumberNewFail">Fail</label>
+														</span>
+													</apex:outputpanel> 
+													
+													
+													<apex:outputText rendered="{!SSNnumberMatch=='false'}"><span class="error"><i aria-hidden="true" class="fa fa-close"></i>  &nbsp; No Matches Found</span></apex:outputText>
+												</div>                                        
+											</div>
+											</apex:outputPanel>
+										</div>    
+										<div class="form-group">
+											<apex:outputPanel >
+											<apex:outputLabel for="#" styleclass="col-sm-12 col-xs-4 control-label">DOB 
+												<span class="pull-left"><i aria-hidden="true" class="fa fa-calendar-check-o"></i></span>
+											</apex:outputLabel>
+											<div class="col-sm-6 col-xs-6 no-padding">
+												<apex:outputText rendered="{!ClearAllflag == false}" styleClass="form-control inputcan"  id="DOBOut" value="{!DOB}" >
+												</apex:outputText>
+												<apex:inputText rendered="{!ClearAllflag == true}" styleClass="form-control inputcan" html-placeholder="MM-DD-YYYY" id="DOB" value="{!DOB}" onkeypress="return onenterDOB(event)">
+												</apex:inputText>
+												<div class="validateDOB" style="display:none"></div>
+											</div>
+											<div class="col-sm-6 col-xs-6">
+												 <div class="checkbox">
+													<apex:inputCheckbox id="DOBC" style="display:none;" styleclass="confirm newconfirm" label="Select Checkbox to Confirm" rendered="{!DOBMatch=='true' && SelectedID != ''}" selected="{!DOBConfirm}"><span style="display:none;" class="no-label">Select Checkbox to Confirm</span></apex:inputcheckbox>
+													
+													 <apex:outputpanel styleclass="newconfirmRadio"  id="DOBCNew" rendered="{!DOBMatch=='true' && SelectedID != ''}">
+													 	<span class="chkAligned">
+															<input type="checkbox" name="DOBCNewPass" id="DOBCNewPass" value="Pass"/>
+														
+															<label for="DOBCNewPass">Pass</label>
+														</span>
+														<span class="chkAligned">
+															<input type="checkbox" name="DOBCNewFail" id="DOBCNewFail"  value="Fail"/>
+															<label for="DOBCNewFail">Fail</label>
+														</span>
+													</apex:outputpanel> 
+													
+												<!--  	<apex:selectRadio styleclass="newconfirmRadio" id="DOBCNew" rendered="{!DOBMatch=='true' && SelectedID != ''}" value="{!DOBConfirmString}"  layout="lineDirection">
+													  <apex:selectOption itemLabel="Not Asked" id="DOBCNew1" itemValue="NA"></apex:selectOption>
+													  <apex:selectOption itemLabel="Pass" id="DOBCNew2" itemValue="Pass"></apex:selectOption>
+													  <apex:selectOption itemLabel="Fail" id="DOBCNew3" itemValue="Fail"></apex:selectOption>
+													</apex:selectRadio>-->
+													
+													
+													<apex:outputText rendered="{!DOBMatch=='false'}"><span class="error"><i aria-hidden="true" class="fa fa-close"></i>  &nbsp; No Matches Found</span></apex:outputText>
+												</div> 
+											</div>
+											</apex:outputPanel>
+										</div>        
+										
+										<div class="form-group">
+											<apex:outputLabel for="#" styleclass="col-sm-12 col-xs-4 control-label">DL/STATE ID/PASSPORT 
+											   <span class="pull-left"><i aria-hidden="true" class="fa fa-wpforms"></i></span> 
+											</apex:outputLabel>
+											<div class="col-sm-6 col-xs-6  no-padding">
+												   <apex:outputText styleClass="form-control inputcan" rendered="{!ClearAllflag == false}" id="IDNoOut" value="{!IdNumber}">
+												   </apex:outputText>
+												   <apex:inputText styleClass="form-control inputcan" rendered="{!ClearAllflag == true}" html-placeholder="Select to type" maxlength="16" id="IDNo" value="{!IdNumber}" onkeypress="return onenter(event)">
+												   </apex:inputText>
+											</div>
+											<div class="col-sm-6 col-xs-6">
+												<div class="checkbox">
+													<apex:inputCheckbox id="IdNumber" style="display:none;" styleclass="confirm newconfirm" label="Select Checkbox to Confirm" rendered="{!IdNumberMatch=='true'  && SelectedID != ''}" selected="{!IdNumberConfirm}"><span style="display:none;" class="no-label">Select Checkbox to Confirm</span></apex:inputcheckbox>
+													
+													 <apex:outputpanel styleclass="confirmRadio newconfirmRadio"  id="IdNumberNew"  rendered="{!IdNumberMatch=='true'  && SelectedID != ''}">
+													 	<span class="chkAligned">
+															<input type="checkbox" name="IdNumberNewPass" id="IdNumberNewPass" value="Pass"/>
+														
+															<label for="IdNumberNewPass">Pass</label>
+														</span>
+														<span class="chkAligned">
+															<input type="checkbox" name="IdNumberNewFail" id="IdNumberNewFail"  value="Fail"/>
+															<label for="IdNumberNewFail">Fail</label>
+														</span>
+													</apex:outputpanel> 
+													
+													
+												<!-- 	<apex:selectRadio styleclass="confirmRadio newconfirmRadio" id="IdNumberNew" rendered="{!IdNumberMatch=='true'  && SelectedID != ''}" value="{!IdNumberConfirmString}"   layout="lineDirection">
+													  <apex:selectOption itemLabel="Not Asked" id="IdNumberNew1" itemValue="NA"></apex:selectOption>
+													  <apex:selectOption itemLabel="Pass" id="IdNumberNew2" itemValue="Pass"></apex:selectOption>
+													  <apex:selectOption itemLabel="Fail" id="IdNumberNew3" itemValue="Fail"></apex:selectOption>
+													</apex:selectRadio>  -->
+													
+													
+													
+													<apex:outputText rendered="{!IdNumberMatch=='false'}"><span class="error" ><i aria-hidden="true" class="fa fa-close"></i>  &nbsp; No Matches Found</span></apex:outputText>
+												</div>
+											</div>
+										</div>
+										<div class="form-group">
+											<apex:outputLabel for="#" styleclass="col-sm-12 col-xs-4 control-label">Account Password/MMN 
+												<span class="pull-left"><i aria-hidden="true" class="fa fa-users"></i></span>
+											</apex:outputLabel>
+											<div class="col-sm-6 col-xs-6 no-padding">
+												  <apex:outputText styleClass="form-control inputcan" rendered="{!ClearAllflag == false}" id="MMNameout" value="{!MMN}">
+												  </apex:outputText>
+												  <apex:inputText styleClass="form-control inputcan" rendered="{!ClearAllflag == true}" html-placeholder="Select to type" id="MMName" value="{!MMN}" onkeypress="return onenter(event)">
+												  </apex:inputText>
+											</div>
+											<div class="col-sm-6 col-xs-6">
+												<div class="checkbox">
+												
+													<apex:inputCheckbox id="MMN" style="display:none;" styleclass="confirm newconfirm" label="Select Checkbox to Confirm" rendered="{!MMNMatch=='true' && SelectedID != ''}" selected="{!MMNConfirm}"><span style="display:none;" class="no-label">Select Checkbox to Confirm</span></apex:inputcheckbox>
+													
+													
+													 <apex:outputpanel styleclass="confirmRadio newconfirmRadio"  id="MMNNew" rendered="{!MMNMatch=='true' && SelectedID != ''}">
+													 	<span class="chkAligned">
+															<input type="checkbox" name="MMNNewPass" id="MMNNewPass" value="Pass"/>
+														
+															<label for="MMNNewPass">Pass</label>
+														</span>
+														<span class="chkAligned">
+															<input type="checkbox" name="MMNNewFail" id="MMNNewFail"  value="Fail"/>
+															<label for="MMNNewFail">Fail</label>
+														</span>
+													</apex:outputpanel> 
+													
+													
+													
+												<!-- 	<apex:selectRadio styleclass="confirmRadio newconfirmRadio" id="MMNNew" rendered="{!MMNMatch=='true' && SelectedID != ''}" value="{!MMNConfirmString}" layout="lineDirection">
+													  <apex:selectOption itemLabel="Not Asked" id="MMNNew1" itemValue="NA"></apex:selectOption>
+													  <apex:selectOption itemLabel="Pass" id="MMNNew2" itemValue="Pass"></apex:selectOption>
+													  <apex:selectOption itemLabel="Fail" id="MMNNew3" itemValue="Fail"></apex:selectOption>
+													</apex:selectRadio>  -->
+													
+													<apex:outputText rendered="{!MMNMatch=='false'}"><span class="error" ><i aria-hidden="true" class="fa fa-close"></i>  &nbsp; No Matches Found</span></apex:outputText>
+												</div>
+											</div>
+										</div>
+                                		<div class="form-group">
+											<apex:outputLabel for="#" styleclass="col-sm-12 col-xs-4 control-label">Email 
+												<span class="pull-left"><i aria-hidden="true" class="fa fa-envelope"></i></span>
+											</apex:outputLabel>
+											<div class="col-sm-6 col-xs-6 no-padding">
+												  <apex:outputText styleClass="form-control inputcan" rendered="{!ClearAllflag == false}" id="Emailout" value="{!Email}">
+												  </apex:outputText>
+												  <apex:inputText styleClass="form-control inputcan" rendered="{!ClearAllflag == true}" html-placeholder="Select to type" id="EmailName" value="{!Email}" onkeypress="return onenter(event)">
+												  </apex:inputText>
+											</div>
+											<div class="col-sm-6 col-xs-6">
+												<div class="checkbox">
+													<apex:inputCheckbox id="Email" style="display:none;" styleclass="confirm newconfirm" label="Select Checkbox to Confirm" rendered="{!EmailMatch=='true' && SelectedID != ''}" selected="{!EmailConfirm}"><span style="display:none;" class="no-label">Select Checkbox to Confirm</span></apex:inputcheckbox>
+													
+													
+													<apex:outputpanel styleclass="confirmRadio newconfirmRadio"  id="EmailNew" rendered="{!EmailMatch=='true' && SelectedID != ''}" >
+													 	<span class="chkAligned">
+															<input type="checkbox" name="EmailNewPass" id="EmailNewPass" value="Pass"/>
+														
+															<label for="EmailNewPass">Pass</label>
+														</span>
+														<span class="chkAligned">
+															<input type="checkbox" name="EmailNewFail" id="EmailNewFail"  value="Fail"/>
+															<label for="EmailNewFail">Fail</label>
+														</span>
+													</apex:outputpanel> 
+													
+													
+													<!--  <apex:selectRadio styleclass="confirmRadio newconfirmRadio" id="EmailNew"  rendered="{!EmailMatch=='true' && SelectedID != ''}" value="{!EmailConfirmString}"  layout="lineDirection">
+													  <apex:selectOption itemLabel="Not Asked" id="EmailNew1" itemValue="NA"></apex:selectOption>
+													  <apex:selectOption itemLabel="Pass" id="EmailNew2" itemValue="Pass"></apex:selectOption>
+													  <apex:selectOption itemLabel="Fail" id="EmailNew3" itemValue="Fail"></apex:selectOption>
+													</apex:selectRadio>  -->
+													
+													
+													<apex:outputText rendered="{!EmailMatch=='false'}"><span class="error" ><i aria-hidden="true" class="fa fa-close"></i>  &nbsp; No Matches Found</span></apex:outputText>
+												</div>
+											</div>
+										</div>
+                                	</div>
+                                	<div class="col-md-7">
+                                		<div class="table-responsive urv-g additionalTokenContainer">
+											 <apex:pageBlock rendered="{!IF(selectedID != null && selectedID != '', true, false) }" title="Additional Tokens">
+											  <table class="table">
+												<tr class="dataRow even  first">
+													<td class="addtcol1">
+													<apex:selectList value="{!AdditionalToken1Selection}" onchange="javascript:showOtherArea1(this, true)" multiselect="false" size="1" html-class="additionaltoken1 additionaltoken-all"  id="token1">
+														<apex:selectOptions value="{!AdditionalTokens}"/>
+													 </apex:selectList>
 
-                          </td>
-                          <td class="addtcol2"> <div class="tblchkbx pb5">
-                               <div class="checkbox">
-                                <apex:inputCheckbox style="display:none;" id="additionalToken1Select" selected="{!AdditionalToken1chk}" styleclass="confirm newconfirm" label="Select to Verify" onclick="setTokenValue(this,1)"  ></apex:inputcheckbox><span  style="display:none;" class="no-label" >Select to Verify</span>
-                                
-                                <apex:outputpanel styleclass="newconfirmRadio"  id="additionalToken1SelectNew" >
-                                 <span class="chkAlignedx">
-                                  <input type="checkbox" disabled="disabled" name="additionalToken1SelectNewPass" id="additionalToken1SelectNewPass" value="Pass"/>
-                                
-                                  <label for="additionalToken1SelectNewPass">Pass</label>
-                                </span>
-                                <span class="chkAlignedx">
-                                  <input type="checkbox" disabled="disabled" name="additionalToken1SelectNewFail" id="additionalToken1SelectNewFail"  value="Fail"/>
-                                  <label for="additionalToken1SelectNewFail">Fail</label>
-                                </span>
-                              </apex:outputpanel> 
-                                
-                            <!-- <apex:selectRadio styleclass="newconfirmRadio" id="additionalToken1SelectNew" value="{!AdditionalToken1chkString}" layout="lineDirection">
-                                  <apex:selectOption itemLabel="Not Asked" id="additionalToken1SelectNew1" itemValue="NA"></apex:selectOption>
-                                  <apex:selectOption itemLabel="Pass" id="additionalToken1SelectNew2" itemValue="Pass"></apex:selectOption>
-                                  <apex:selectOption itemLabel="Fail" id="additionalToken1SelectNew3" itemValue="Fail"></apex:selectOption>
-                                </apex:selectRadio>  -->    
-                                                        
-                                </div> 
-                              </div></td>
-                              <td class="addtcol3">
-                              <apex:outputText ><span class="adval1Error" style="display:none" ><i aria-hidden="true" class="fa fa-close"></i>    Invalid entry</span></apex:outputText>
-                              </td>
-                        </tr>
-                        <tr class="txtforother1">
-                          <td class="addtcol1"><apex:outputText >Text for Other</apex:outputText></td> 
-                          <td class="addtcol2"><apex:inputText value="{!AdditionalTokenOtherText1}" html-class="othertext1"  onkeyup="javascript:countChecksNew()" Maxlength="255"></apex:inputText> </td>
-                          <td class="addtcol3">
-                              <apex:outputText ><span class="advalOtherErrorinv1" style="display:none" ><i aria-hidden="true" class="fa fa-close"></i>    Invalid Text</span></apex:outputText>
-                              <apex:outputText ><span class="advalOtherError1" style="display:none" ><i aria-hidden="true" class="fa fa-close"></i>    Required</span></apex:outputText>
-                          </td>
-                        </tr>
-                        <tr class="dataRow odd ">
-                          <td class="addtcol1">
-                          <apex:selectList value="{!AdditionalToken2Selection}" onchange="javascript:showOtherArea2(this, true)" multiselect="false" size="1" html-class="additionaltoken2 additionaltoken-all" id="token2">
-                            <apex:selectOptions value="{!AdditionalTokens}"/>
-                           </apex:selectList>
-                          </td>
-                          <td class="addtcol2"> <div class="tblchkbx pb5">
-                               <div class="checkbox">
-                                <apex:inputCheckbox style="display:none;" id="additionalToken2Select" selected="{!AdditionalToken2chk}"  styleclass="confirm newconfirm" label="Select to Verify"  onclick="setTokenValue(this,2)"></apex:inputcheckbox><span style="display:none;" class="no-label" >Select to Verify</span>
-                                
-                                  <apex:outputpanel styleclass="newconfirmRadio"  id="additionalToken2SelectNew" >
-                                 <span class="chkAlignedx">
-                                  <input type="checkbox" disabled="disabled"  name="additionalToken2SelectNewPass" id="additionalToken2SelectNewPass" value="Pass"/>
-                                
-                                  <label for="additionalToken2SelectNewPass">Pass</label>
-                                </span>
-                                <span class="chkAlignedx">
-                                  <input type="checkbox" disabled="disabled" name="additionalToken2SelectNewFail" id="additionalToken2SelectNewFail"  value="Fail"/>
-                                  <label for="additionalToken2SelectNewFail">Fail</label>
-                                </span>
-                              </apex:outputpanel> 
-                                
-                            <!-- <apex:selectRadio styleclass="newconfirmRadio" id="additionalToken2SelectNew"  value="{!AdditionalToken2chkString}" layout="lineDirection">
-                                  <apex:selectOption itemLabel="Not Asked" id="additionalToken2SelectNew1" itemValue="NA"></apex:selectOption>
-                                  <apex:selectOption itemLabel="Pass" id="additionalToken2SelectNew2" itemValue="Pass"></apex:selectOption>
-                                  <apex:selectOption itemLabel="Fail" id="additionalToken2SelectNew3" itemValue="Fail"></apex:selectOption>
-                                </apex:selectRadio>            -->                  
-                                </div> 
-                              </div></td>
-                              <td class="addtcol3">
-                              <apex:outputText ><span class="adval2Error" style="display:none" ><i aria-hidden="true" class="fa fa-close"></i>    Invalid entry</span></apex:outputText>
-                              </td>
-                        </tr>
-                        
-                        <tr class="txtforother2">
-                          <td class="addtcol1"><apex:outputText >Text for Other</apex:outputText></td> 
-                          <td class="addtcol2"><apex:inputText value="{!AdditionalTokenOtherText2}" html-class="othertext2" onkeyup="javascript:countChecksNew()" Maxlength="255"></apex:inputText> </td>
-                          <td class="addtcol3">
-                              <apex:outputText ><span class="advalOtherErrorinv2" style="display:none" ><i aria-hidden="true" class="fa fa-close"></i>    Invalid Text</span></apex:outputText>
-                              <apex:outputText ><span class="advalOtherError2" style="display:none" ><i aria-hidden="true" class="fa fa-close"></i>    Required</span></apex:outputText>
-                          </td>
-                        </tr>
-                        <tr class="dataRow even  last">
-                          <td class="addtcol1">
-                          <apex:selectList value="{!AdditionalToken3Selection}" onchange="javascript:showOtherArea(this, true)" multiselect="false" size="1" html-class="additionaltoken3 additionaltoken-all" id="token3">
-                            <apex:selectOptions value="{!AdditionalTokensWithOther}" />
-                           </apex:selectList>
-                          </td>
-                          <td class="addtcol2"> <div class="tblchkbx pb5">
-                               <div class="checkbox">
-                                <apex:inputCheckbox style="display:none;" id="additionalToken3Select" selected="{!AdditionalToken3chk}" styleclass="confirm newconfirm" label="Select to Verify" onclick="setTokenValue(this,3)"  ></apex:inputcheckbox><span style="display:none;" class="no-label" >Select to Verify</span>
-                                
-                                  <apex:outputpanel styleclass="newconfirmRadio"  id="additionalToken3SelectNew" >
-                                 <span class="chkAlignedx">
-                                  <input type="checkbox" disabled="disabled" name="additionalToken3SelectNewPass" id="additionalToken3SelectNewPass" value="Pass"/>
-                                
-                                  <label for="additionalToken3SelectNewPass">Pass</label>
-                                </span>
-                                <span class="chkAlignedx">
-                                  <input type="checkbox" disabled="disabled" name="additionalToken3SelectNewFail" id="additionalToken3SelectNewFail"  value="Fail"/>
-                                  <label for="additionalToken3SelectNewFail">Fail</label>
-                                </span>
-                              </apex:outputpanel> 
-                                 <!--  <apex:selectRadio styleclass="newconfirmRadio" id="additionalToken3SelectNew"  value="{!AdditionalToken3chkString}" layout="lineDirection">
-                                  <apex:selectOption itemLabel="Not Asked" id="additionalToken3SelectNew1" itemValue="NA"></apex:selectOption>
-                                  <apex:selectOption itemLabel="Pass" id="additionalToken3SelectNew2" itemValue="Pass"></apex:selectOption>
-                                  <apex:selectOption itemLabel="Fail" id="additionalToken3SelectNew3" itemValue="Fail"></apex:selectOption>
-                                </apex:selectRadio>       -->                     
-                                </div> 
-                              </div></td>
-                             <td class="addtcol3">
-                              <apex:outputText ><span class="adval3Error" style="display:none" ><i aria-hidden="true" class="fa fa-close"></i>    Invalid entry</span></apex:outputText>
-                              </td>
-                        </tr>
-                        <tr class="txtforother">
-                          <td class="addtcol1"><apex:outputText >Text for Other</apex:outputText></td> 
-                          <td class="addtcol2"><apex:inputText value="{!AdditionalTokenOtherText}" html-class="othertext"  onkeyup="javascript:countChecksNew()" Maxlength="255"></apex:inputText> </td>
-                          <td class="addtcol3">
-                              <apex:outputText ><span class="advalOtherErrorinv" style="display:none" ><i aria-hidden="true" class="fa fa-close"></i>    Invalid Text</span></apex:outputText>
-                              <apex:outputText ><span class="advalOtherError" style="display:none" ><i aria-hidden="true" class="fa fa-close"></i>    Required</span></apex:outputText>
-                          </td>
-                        </tr>
-                        </table>
-                        <apex:outputText ><span class="additionalTokenSelectionError" style="display:none" ><i aria-hidden="true" class="fa fa-close"></i>    Maximum of two additional tokens will be counted.</span></apex:outputText>
-                      
-                       </apex:pageBlock>
-                       </div>
-                                  </div>
+													</td>
+													<td class="addtcol2"> <div class="tblchkbx pb5">
+															 <div class="checkbox">
+															  <apex:inputCheckbox style="display:none;" id="additionalToken1Select" selected="{!AdditionalToken1chk}" styleclass="confirm newconfirm" label="Select to Verify" onclick="setTokenValue(this,1)"  ></apex:inputcheckbox><span  style="display:none;" class="no-label" >Select to Verify</span>
+															  
+															  <apex:outputpanel styleclass="newconfirmRadio"  id="additionalToken1SelectNew" >
+															 	<span class="chkAlignedx">
+																	<input type="checkbox" disabled="disabled" name="additionalToken1SelectNewPass" id="additionalToken1SelectNewPass" value="Pass"/>
+																
+																	<label for="additionalToken1SelectNewPass">Pass</label>
+																</span>
+																<span class="chkAlignedx">
+																	<input type="checkbox" disabled="disabled" name="additionalToken1SelectNewFail" id="additionalToken1SelectNewFail"  value="Fail"/>
+																	<label for="additionalToken1SelectNewFail">Fail</label>
+																</span>
+															</apex:outputpanel> 
+															  
+														<!-- <apex:selectRadio styleclass="newconfirmRadio" id="additionalToken1SelectNew" value="{!AdditionalToken1chkString}" layout="lineDirection">
+																  <apex:selectOption itemLabel="Not Asked" id="additionalToken1SelectNew1" itemValue="NA"></apex:selectOption>
+																  <apex:selectOption itemLabel="Pass" id="additionalToken1SelectNew2" itemValue="Pass"></apex:selectOption>
+																  <apex:selectOption itemLabel="Fail" id="additionalToken1SelectNew3" itemValue="Fail"></apex:selectOption>
+																</apex:selectRadio>  -->	  
+															                          
+															  </div> 
+														  </div></td>
+														  <td class="addtcol3">
+															<apex:outputText ><span class="adval1Error" style="display:none" ><i aria-hidden="true" class="fa fa-close"></i>  &nbsp; Invalid entry</span></apex:outputText>
+														  </td>
+												</tr>
+												<tr class="txtforother1">
+													<td class="addtcol1"><apex:outputText >Text for Other</apex:outputText></td> 
+													<td class="addtcol2"><apex:inputText value="{!AdditionalTokenOtherText1}" html-class="othertext1"  onkeyup="javascript:countChecksNew()" Maxlength="255"></apex:inputText> </td>
+													<td class="addtcol3">
+															<apex:outputText ><span class="advalOtherErrorinv1" style="display:none" ><i aria-hidden="true" class="fa fa-close"></i>  &nbsp; Invalid Text</span></apex:outputText>
+															<apex:outputText ><span class="advalOtherError1" style="display:none" ><i aria-hidden="true" class="fa fa-close"></i>  &nbsp; Required</span></apex:outputText>
+													</td>
+												</tr>
+												<tr class="dataRow odd ">
+													<td class="addtcol1">
+													<apex:selectList value="{!AdditionalToken2Selection}" onchange="javascript:showOtherArea2(this, true)" multiselect="false" size="1" html-class="additionaltoken2 additionaltoken-all" id="token2">
+														<apex:selectOptions value="{!AdditionalTokens}"/>
+													 </apex:selectList>
+													</td>
+													<td class="addtcol2"> <div class="tblchkbx pb5">
+															 <div class="checkbox">
+															  <apex:inputCheckbox style="display:none;" id="additionalToken2Select" selected="{!AdditionalToken2chk}"  styleclass="confirm newconfirm" label="Select to Verify"  onclick="setTokenValue(this,2)"></apex:inputcheckbox><span style="display:none;" class="no-label" >Select to Verify</span>
+															  
+															    <apex:outputpanel styleclass="newconfirmRadio"  id="additionalToken2SelectNew" >
+															 	<span class="chkAlignedx">
+																	<input type="checkbox" disabled="disabled"  name="additionalToken2SelectNewPass" id="additionalToken2SelectNewPass" value="Pass"/>
+																
+																	<label for="additionalToken2SelectNewPass">Pass</label>
+																</span>
+																<span class="chkAlignedx">
+																	<input type="checkbox" disabled="disabled" name="additionalToken2SelectNewFail" id="additionalToken2SelectNewFail"  value="Fail"/>
+																	<label for="additionalToken2SelectNewFail">Fail</label>
+																</span>
+															</apex:outputpanel> 
+															  
+														<!-- <apex:selectRadio styleclass="newconfirmRadio" id="additionalToken2SelectNew"  value="{!AdditionalToken2chkString}" layout="lineDirection">
+																  <apex:selectOption itemLabel="Not Asked" id="additionalToken2SelectNew1" itemValue="NA"></apex:selectOption>
+																  <apex:selectOption itemLabel="Pass" id="additionalToken2SelectNew2" itemValue="Pass"></apex:selectOption>
+																  <apex:selectOption itemLabel="Fail" id="additionalToken2SelectNew3" itemValue="Fail"></apex:selectOption>
+																</apex:selectRadio>            -->	                
+															  </div> 
+														  </div></td>
+														  <td class="addtcol3">
+															<apex:outputText ><span class="adval2Error" style="display:none" ><i aria-hidden="true" class="fa fa-close"></i>  &nbsp; Invalid entry</span></apex:outputText>
+														  </td>
+												</tr>
+												
+												<tr class="txtforother2">
+													<td class="addtcol1"><apex:outputText >Text for Other</apex:outputText></td> 
+													<td class="addtcol2"><apex:inputText value="{!AdditionalTokenOtherText2}" html-class="othertext2" onkeyup="javascript:countChecksNew()" Maxlength="255"></apex:inputText> </td>
+													<td class="addtcol3">
+															<apex:outputText ><span class="advalOtherErrorinv2" style="display:none" ><i aria-hidden="true" class="fa fa-close"></i>  &nbsp; Invalid Text</span></apex:outputText>
+															<apex:outputText ><span class="advalOtherError2" style="display:none" ><i aria-hidden="true" class="fa fa-close"></i>  &nbsp; Required</span></apex:outputText>
+													</td>
+												</tr>
+												<tr class="dataRow even  last">
+													<td class="addtcol1">
+													<apex:selectList value="{!AdditionalToken3Selection}" onchange="javascript:showOtherArea(this, true)" multiselect="false" size="1" html-class="additionaltoken3 additionaltoken-all" id="token3">
+														<apex:selectOptions value="{!AdditionalTokensWithOther}" />
+													 </apex:selectList>
+													</td>
+													<td class="addtcol2"> <div class="tblchkbx pb5">
+															 <div class="checkbox">
+															  <apex:inputCheckbox style="display:none;" id="additionalToken3Select" selected="{!AdditionalToken3chk}" styleclass="confirm newconfirm" label="Select to Verify" onclick="setTokenValue(this,3)"  ></apex:inputcheckbox><span style="display:none;" class="no-label" >Select to Verify</span>
+															  
+															    <apex:outputpanel styleclass="newconfirmRadio"  id="additionalToken3SelectNew" >
+															 	<span class="chkAlignedx">
+																	<input type="checkbox" disabled="disabled" name="additionalToken3SelectNewPass" id="additionalToken3SelectNewPass" value="Pass"/>
+																
+																	<label for="additionalToken3SelectNewPass">Pass</label>
+																</span>
+																<span class="chkAlignedx">
+																	<input type="checkbox" disabled="disabled" name="additionalToken3SelectNewFail" id="additionalToken3SelectNewFail"  value="Fail"/>
+																	<label for="additionalToken3SelectNewFail">Fail</label>
+																</span>
+															</apex:outputpanel> 
+															   <!--  <apex:selectRadio styleclass="newconfirmRadio" id="additionalToken3SelectNew"  value="{!AdditionalToken3chkString}" layout="lineDirection">
+																  <apex:selectOption itemLabel="Not Asked" id="additionalToken3SelectNew1" itemValue="NA"></apex:selectOption>
+																  <apex:selectOption itemLabel="Pass" id="additionalToken3SelectNew2" itemValue="Pass"></apex:selectOption>
+																  <apex:selectOption itemLabel="Fail" id="additionalToken3SelectNew3" itemValue="Fail"></apex:selectOption>
+																</apex:selectRadio>       -->                     
+															  </div> 
+														  </div></td>
+														 <td class="addtcol3">
+															<apex:outputText ><span class="adval3Error" style="display:none" ><i aria-hidden="true" class="fa fa-close"></i>  &nbsp; Invalid entry</span></apex:outputText>
+														  </td>
+												</tr>
+												<tr class="txtforother">
+													<td class="addtcol1"><apex:outputText >Text for Other</apex:outputText></td> 
+													<td class="addtcol2"><apex:inputText value="{!AdditionalTokenOtherText}" html-class="othertext"  onkeyup="javascript:countChecksNew()" Maxlength="255"></apex:inputText> </td>
+													<td class="addtcol3">
+															<apex:outputText ><span class="advalOtherErrorinv" style="display:none" ><i aria-hidden="true" class="fa fa-close"></i>  &nbsp; Invalid Text</span></apex:outputText>
+															<apex:outputText ><span class="advalOtherError" style="display:none" ><i aria-hidden="true" class="fa fa-close"></i>  &nbsp; Required</span></apex:outputText>
+													</td>
+												</tr>
+											  </table>
+											  <apex:outputText ><span class="additionalTokenSelectionError" style="display:none" ><i aria-hidden="true" class="fa fa-close"></i>  &nbsp; Maximum of two additional tokens will be counted.<br/></span></apex:outputText>
+											  <apex:outputText ><span class="additionalTokenSelectionErrorSameNameText" style="display:none" ><i aria-hidden="true" class="fa fa-close"></i>  &nbsp; Please enter a unique description for each "Other" Additional token value.<br/></span></apex:outputText>
+											  <apex:outputText ><span class="additionalTokenSelectionErrorSameName" style="display:none" ><i aria-hidden="true" class="fa fa-close"></i>  &nbsp; Please select different Additional tokens.<br/></span></apex:outputText>
+											
+											 </apex:pageBlock>
+											 </div>
+                                	</div>
                                 </div>
                                 
                                 
                              
                             <div class="col-sm-12 col-xs-4 no-padding">                                                         
                                 <div class="table-responsive urv-g">                                                                   
-                                <apex:outputText id="MemberNoErrorText" rendered="{!showErrorMsgLoanData}"><span class="errorForTable"><i aria-hidden="true" class="fa fa-close"></i>   Loan Data Not Available</span></apex:outputText>
+                                <apex:outputText id="MemberNoErrorText" rendered="{!showErrorMsgLoanData}"><span class="errorForTable"><i aria-hidden="true" class="fa fa-close"></i> &nbsp; Loan Data Not Available</span></apex:outputText>
                                 <apex:pageBlock title="Loan Accounts" rendered="{!IF(MemberLoanDetails.size >0, true, false) }">
                                     <apex:pageBlockTable value="{!MemberLoanDetails}" var="obj"  id="MemberLoanData" styleClass="table" >
                                         <apex:column headerValue="Account Number">
@@ -623,24 +625,24 @@
                                             
                                             
                                             <apex:outputpanel styleclass="newconfirmRadio"  id="loancheckradio">
-                           <span class="chkAligned" style="padding-left: 18px !important; padding-top: 0px !important;">
-                            <input type="checkbox" name="loancheckradio{!obj.ID}Pass" id="loancheckradio{!obj.ID}Pass" value="Pass" style="margin-top: 0px;" />
-                          
-                            <label for="loancheckradio{!obj.ID}Pass">Pass</label>
-                          </span>
-                          <span class="chkAligned" style="padding-left: 18px !important; padding-top: 0px !important; ">
-                            <input type="checkbox" name="loancheckradio{!obj.ID}Fail" id="loancheckradio{!obj.ID}Fail"  value="Fail" style="margin-top: 0px;" />
-                            <label for="loancheckradio{!obj.ID}Fail">Fail</label>
-                          </span>
-                        </apex:outputpanel> 
-                        
+												 	<span class="chkAligned" style="padding-left: 18px !important; padding-top: 0px !important;">
+														<input type="checkbox" name="loancheckradio{!obj.ID}Pass" id="loancheckradio{!obj.ID}Pass" value="Pass" style="margin-top: 0px;" />
+													
+														<label for="loancheckradio{!obj.ID}Pass">Pass</label>
+													</span>
+													<span class="chkAligned" style="padding-left: 18px !important; padding-top: 0px !important; ">
+														<input type="checkbox" name="loancheckradio{!obj.ID}Fail" id="loancheckradio{!obj.ID}Fail"  value="Fail" style="margin-top: 0px;" />
+														<label for="loancheckradio{!obj.ID}Fail">Fail</label>
+													</span>
+												</apex:outputpanel> 
+												
                                             
                                             
                                         <!--    <apex:selectRadio styleClass="loancheckradio" onchange="SetLoanSelectedID('{!obj.ID}', this);" layout="lineDirection">
-                        <apex:selectOption itemLabel="Not Asked" itemValue="NA" ></apex:selectOption>
-                        <apex:selectOption itemLabel="Pass" itemValue="Pass"></apex:selectOption>
-                        <apex:selectOption itemLabel="Fail" itemValue="Fail"></apex:selectOption>
-                      </apex:selectRadio>    --> 
+											  <apex:selectOption itemLabel="Not Asked" itemValue="NA" ></apex:selectOption>
+											  <apex:selectOption itemLabel="Pass" itemValue="Pass"></apex:selectOption>
+											  <apex:selectOption itemLabel="Fail" itemValue="Fail"></apex:selectOption>
+											</apex:selectRadio>    --> 
                                                                     
                                           </div> 
                                           </div>
@@ -651,24 +653,24 @@
                                    <!-- <div class="checkbox loantblCheckbox ">
                                         <apex:inputCheckbox id="loandeatil" styleclass="confirm newconfirm" label="Select to Verify" rendered="{!if(MemberLoanDetails.size > 0,true,false)}" selected="{!LoanDetailConfirm}"><span class="no-label" >Select to Verify</span></apex:inputcheckbox>                                                                                                               
                                     </div> -->
-                                    <apex:outputText ><span class="loanSelectionError" style="display:none" ><i aria-hidden="true" class="fa fa-close"></i>    Maximum of one loan validation will be counted.</span></apex:outputText>
+                                    <apex:outputText ><span class="loanSelectionError" style="display:none" ><i aria-hidden="true" class="fa fa-close"></i>  &nbsp; Maximum of one loan validation will be counted.</span></apex:outputText>
                                 </div>
                             </div>
                             
                             <div class="col-sm-12 col-xs-12 no-padding">                                                        
                                 <div class="table-responsive urv-g2">
-                                    <apex:outputText rendered="{!showErrorMsgJTmemberTable}"><span class="errorForTable" ><i aria-hidden="true" class="fa fa-close"></i>    Related Person Data Not Available</span></apex:outputText>
+                                    <apex:outputText rendered="{!showErrorMsgJTmemberTable}"><span class="errorForTable" ><i aria-hidden="true" class="fa fa-close"></i>  &nbsp; Related Person Data Not Available</span></apex:outputText>
                                                                  
                                 <apex:pageBlock rendered="{!IF(JTMemberNameDobDetails.size >0, true, false) }" title="Related Persons">
                                    
                                     <apex:pageBlockTable value="{!JTwrapperLst}" var="obj"  id="MemberNameDOBData" styleClass="table" rendered="{!IF(JTMemberNameDobDetails.size >0, true, false) }"> 
                                         <!--<apex:repeat value="{!uniqueMembersDetail[obj]}" var="temp">-->
-                                          <apex:column headerValue="Account Number">
-                                          <apex:outputText value="{!obj.AccountNumber}"></apex:outputText>
-                                          </apex:column>
-                                          <apex:column headerValue="NameType/Relationship">
-                                          <apex:outputText value="{!obj.RelationShip}"></apex:outputText>
-                                          </apex:column>
+                                        	<apex:column headerValue="Account Number">
+                                        	<apex:outputText value="{!obj.AccountNumber}"></apex:outputText>
+                                        	</apex:column>
+                                        	<apex:column headerValue="NameType/Relationship">
+                                        	<apex:outputText value="{!obj.RelationShip}"></apex:outputText>
+                                        	</apex:column>
                                             <apex:column headerValue="Name and DOB">
                                               <b><apex:outputText value="{!obj.Jtname}"></apex:outputText></b><br/>
                                                 <apex:outputText value="{0,date,MM/dd/yyyy}">
@@ -680,59 +682,59 @@
                                           <div class="tblchkbx pb5">
                                              <div class="checkbox">
                                               <!--apex:outputPanel rendered="{!showErrorMsgLoanData}">
-                                                  <apex:outputText ><span class="error"><i aria-hidden="true" class="fa fa-close"></i>  Not Available</span></apex:outputText> 
+                                                  <apex:outputText ><span class="error"><i aria-hidden="true" class="fa fa-close"></i> &nbsp;Not Available</span></apex:outputText> 
                                               </apex:outputPanel>-->
                                               <apex:inputCheckbox style="display:none;" id="tableNum" value="{!obj.ckJtMemberNameConfirm}" onclick="SetSelectedID('JT','{!obj.ID}', this);" styleclass="confirm newconfirm rpselection" label="Select to Verify" rendered="{!IF(JTMemberNameDobDetails.size >0, true, false) }" selected="{!obj.ckJtMemberNameConfirm}" ></apex:inputcheckbox><span class="no-label"  style="display:none;" >Select to Verify</span>
                                             <div class="MNDiv" id="divMN{!obj.ID}">
-                                                
+                                            	  
                                             <apex:outputpanel styleclass="rpselectionMNradio newconfirmRadio">
-                           <span class="chkAligned" style="padding-left: 18px !important; padding-top: 0px !important;">
-                            <input type="checkbox" name="rpselectionMNradio{!obj.ID}Pass" id="rpselectionMNradio{!obj.ID}Pass" value="Pass" onchange="SetSelectedID('JT','{!obj.ID}', this);"  style="margin-top: 0px;"  />
-                          
-                            <label for="rpselectionMNradio{!obj.ID}Pass">Pass</label>
-                          </span>
-                          <span class="chkAligned" style="padding-left: 18px !important; padding-top: 0px !important;">
-                            <input type="checkbox" name="rpselectionMNradio{!obj.ID}Fail" id="rpselectionMNradio{!obj.ID}Fail"  value="Fail" onchange="SetSelectedID('JT','{!obj.ID}', this);"  style="margin-top: 0px;" />
-                            <label for="rpselectionMNradio{!obj.ID}Fail">Fail</label>
-                          </span>
-                        </apex:outputpanel> 
+												 	<span class="chkAligned" style="padding-left: 18px !important; padding-top: 0px !important;">
+														<input type="checkbox" name="rpselectionMNradio{!obj.ID}Pass" id="rpselectionMNradio{!obj.ID}Pass" value="Pass" onchange="SetSelectedID('JT','{!obj.ID}', this);"  style="margin-top: 0px;"  />
+													
+														<label for="rpselectionMNradio{!obj.ID}Pass">Pass</label>
+													</span>
+													<span class="chkAligned" style="padding-left: 18px !important; padding-top: 0px !important;">
+														<input type="checkbox" name="rpselectionMNradio{!obj.ID}Fail" id="rpselectionMNradio{!obj.ID}Fail"  value="Fail" onchange="SetSelectedID('JT','{!obj.ID}', this);"  style="margin-top: 0px;" />
+														<label for="rpselectionMNradio{!obj.ID}Fail">Fail</label>
+													</span>
+												</apex:outputpanel> 
                                             
                                             
-                      <!--   <apex:selectRadio styleClass="rpselectionMNradio" onchange="SetSelectedID('JT','{!obj.ID}', this);" layout="lineDirection">
-                            <apex:selectOption itemLabel="Not Asked" itemValue="NA" ></apex:selectOption>
-                            <apex:selectOption itemLabel="Pass" itemValue="Pass"></apex:selectOption>
-                            <apex:selectOption itemLabel="Fail" itemValue="Fail"></apex:selectOption>
-                        </apex:selectRadio> -->
-                      </div>                                                                         
+											<!-- 	<apex:selectRadio styleClass="rpselectionMNradio" onchange="SetSelectedID('JT','{!obj.ID}', this);" layout="lineDirection">
+													  <apex:selectOption itemLabel="Not Asked" itemValue="NA" ></apex:selectOption>
+													  <apex:selectOption itemLabel="Pass" itemValue="Pass"></apex:selectOption>
+													  <apex:selectOption itemLabel="Fail" itemValue="Fail"></apex:selectOption>
+												</apex:selectRadio> -->
+											</div>                                                                         
                                               </div> 
                                           </div>
                                           <div class="tblchkbx">
                                              <div class="checkbox">
                                               <!--apex:outputPanel rendered="{!showErrorMsgLoanData}">
-                                                  <apex:outputText ><span class="error" ><i aria-hidden="true" class="fa fa-close"></i>   Not Available</span></apex:outputText> 
+                                                  <apex:outputText ><span class="error" ><i aria-hidden="true" class="fa fa-close"></i>  &nbsp;Not Available</span></apex:outputText> 
                                               </apex:outputPanel>-->
                                               <div class="DOBDiv" id="divDOB{!obj.ID}">
                                               
                                               
-                                                  
+                                              	  
                                             <apex:outputpanel styleclass="rpselectionDOBradio newconfirmRadio">
-                           <span class="chkAligned" style="padding-left: 18px !important; padding-top: 0px !important;">
-                            <input type="checkbox" name="rpselectionDOBradio{!obj.ID}Pass" id="rpselectionDOBradio{!obj.ID}Pass" value="Pass" onchange="SetSelectedID('JT','{!obj.ID}', this);"  style="margin-top: 0px;"  />
-                          
-                            <label for="rpselectionDOBradio{!obj.ID}Pass">Pass</label>
-                          </span>
-                          <span class="chkAligned" style="padding-left: 18px !important; padding-top: 0px !important;">
-                            <input type="checkbox" name="rpselectionDOBradio{!obj.ID}Fail" id="rpselectionDOBradio{!obj.ID}Fail"  value="Fail" onchange="SetSelectedID('JT','{!obj.ID}', this);"  style="margin-top: 0px;" />
-                            <label for="rpselectionDOBradio{!obj.ID}Fail">Fail</label>
-                          </span>
+												 	<span class="chkAligned" style="padding-left: 18px !important; padding-top: 0px !important;">
+														<input type="checkbox" name="rpselectionDOBradio{!obj.ID}Pass" id="rpselectionDOBradio{!obj.ID}Pass" value="Pass" onchange="SetSelectedID('JT','{!obj.ID}', this);"  style="margin-top: 0px;"  />
+													
+														<label for="rpselectionDOBradio{!obj.ID}Pass">Pass</label>
+													</span>
+													<span class="chkAligned" style="padding-left: 18px !important; padding-top: 0px !important;">
+														<input type="checkbox" name="rpselectionDOBradio{!obj.ID}Fail" id="rpselectionDOBradio{!obj.ID}Fail"  value="Fail" onchange="SetSelectedID('JT','{!obj.ID}', this);"  style="margin-top: 0px;" />
+														<label for="rpselectionDOBradio{!obj.ID}Fail">Fail</label>
+													</span>
                                               
                                               </apex:outputpanel> 
                                             <!-- <apex:selectRadio styleClass="rpselectionDOBradio"  onchange="SetSelectedID('JT','{!obj.ID}', this);" layout="lineDirection">
-                          <apex:selectOption itemLabel="Not Asked" itemValue="NA" ></apex:selectOption>
-                          <apex:selectOption itemLabel="Pass" itemValue="Pass"></apex:selectOption>
-                          <apex:selectOption itemLabel="Fail" itemValue="Fail"></apex:selectOption>
-                      </apex:selectRadio>   -->  
-                      </div>
+												  <apex:selectOption itemLabel="Not Asked" itemValue="NA" ></apex:selectOption>
+												  <apex:selectOption itemLabel="Pass" itemValue="Pass"></apex:selectOption>
+												  <apex:selectOption itemLabel="Fail" itemValue="Fail"></apex:selectOption>
+											</apex:selectRadio>   -->  
+											</div>
                                               <apex:inputCheckbox style="display:none;" id="tableNum1" value="{!obj.ckJtMemberDOBConfirm}" onclick="SetSelectedID('JT','{!obj.ID}', this);" styleclass="confirm newconfirm rpselection" label="Select to Verify" rendered="{!IF(JTMemberNameDobDetails.size >0, true, false) }" selected="{!obj.ckJtMemberDOBConfirm}"></apex:inputcheckbox><span class="no-label"  style="display:none;" >Select to Verify</span>
                                                                       
                                               </div> 
@@ -742,7 +744,7 @@
                                             
                                            <!--</apex:repeat> -->
                                     </apex:pageBlockTable>                                              
-                                 <apex:outputText ><span class="relatedSelectionError" style="display:none" ><i aria-hidden="true" class="fa fa-close"></i>    Maximum of two related person validations will be counted.</span></apex:outputText>          
+                                 <apex:outputText ><span class="relatedSelectionError" style="display:none" ><i aria-hidden="true" class="fa fa-close"></i>  &nbsp; Maximum of two related person validations will be counted.</span></apex:outputText>          
                                 </apex:pageBlock>
                                 
                                 </div>
@@ -784,7 +786,7 @@
                            <apex:inputText value="{!DOBConfirmString}" styleClass="DOBCNew" style="display:none"/>
                            <apex:inputText value="{!DOBConfirm}" styleClass="DOBC" style="display:none"/>
                            <apex:inputText value="{!IdNumberConfirm}" styleClass="IdNumber" style="display:none"/>  
-               <apex:inputText value="{!IdNumberConfirmString}" styleClass="IdNumberNew" style="display:none"/>  
+						   <apex:inputText value="{!IdNumberConfirmString}" styleClass="IdNumberNew" style="display:none"/>  
                            <apex:inputText value="{!MMNConfirm}" styleClass="MMN" style="display:none"/>
                            <apex:inputText value="{!MMNConfirmString}" styleClass="MMNNew" style="display:none"/>
                            
@@ -822,8 +824,8 @@
             $("[id$='AuthenticatedButton']").prop("disabled", true);
             countChecks();         
             $('.additionaltoken-all').change(function(){
-            //  $(this).parent().next().find("input").change();
-            //  countChecksNew();  
+            //	$(this).parent().next().find("input").change();
+            //	countChecksNew();  
             });                 
          $('.newconfirm').on('change', function() {                
             if($(this).prop('checked') === true){
@@ -831,7 +833,7 @@
              
                 if ($(this).hasClass('cardconfirm'))
                 {
-                  $(this).parent().find('span').html("Valid");
+                	$(this).parent().find('span').html("Valid");
                 }
                 else
                 {
@@ -851,53 +853,53 @@
         });
          $('.newconfirmRadio').find('input').on('change', function() {
          
-           var passid, failid;
-           var currentValue = $(this).val();
-           var className = $(this).attr('id').replace(currentValue, '');
-           var oldValue;
-           
-           if(currentValue == 'Pass')
-           {
-             oldValue = 'Fail';
-           }
-           else
-           {
-             oldValue = 'Pass';
-           }
-           
-           if($(this).prop('checked') === true)
-           {
-             $('#' + className + oldValue).prop('checked', false);
-             setCheckedValuesNew( className,currentValue);
-           }
-           else
-           {
-             setCheckedValuesNew( className,'');
-           }
-           
-           if($(this).attr('id').indexOf('loancheckradio') >= 0)
-           {
-             if($(this).prop('checked') === true)
-             {
-              SetLoanSelectedID(className.replace('loancheckradio',''),currentValue);
-             }
-             else
-             {
-             SetLoanSelectedID(className.replace('loancheckradio',''),' ');
-             }
+         	var passid, failid;
+         	var currentValue = $(this).val();
+         	var className = $(this).attr('id').replace(currentValue, '');
+         	var oldValue;
+         	
+         	if(currentValue == 'Pass')
+         	{
+         		oldValue = 'Fail';
+         	}
+         	else
+         	{
+         		oldValue = 'Pass';
+         	}
+         	
+         	if($(this).prop('checked') === true)
+         	{
+         		$('#' + className + oldValue).prop('checked', false);
+         		setCheckedValuesNew( className,currentValue);
+         	}
+         	else
+         	{
+         		setCheckedValuesNew( className,'');
+         	}
+         	
+         	if($(this).attr('id').indexOf('loancheckradio') >= 0)
+         	{
+         		if($(this).prop('checked') === true)
+         		{
+         		 SetLoanSelectedID(className.replace('loancheckradio',''),currentValue);
+         		}
+         		else
+         		{
+         		SetLoanSelectedID(className.replace('loancheckradio',''),' ');
+         		}
       
-           }           
-           
-           
-           countChecksNew();    
-         
-        });
+         	}         	
+         	
+         	
+         	countChecksNew();    
+	       
+	      });
         $('.newconfirm').each(function(){
-          
+        	
            if($(this).prop('checked') === true){
                  if ($(this).hasClass('cardconfirm'))
                 {
-                  $(this).parent().find('span').html("Valid");
+                	$(this).parent().find('span').html("Valid");
                 }
                 else
                 {
@@ -912,7 +914,7 @@
         $('.confirm').each(function(){
             if ($(this).parent().parent().parent().find('.form-control').hasClass('memnumin') ==false)
             {
-              $(this).parent().parent().parent().find('.form-control').addClass("form-control-valid");
+            	$(this).parent().parent().parent().find('.form-control').addClass("form-control-valid");
             } 
         });
         
@@ -929,37 +931,37 @@
       function SetSelectedID(type, id, control)
       {
       
-        var val = $("[id$='JTSelectedID']").val();
-        var allMembers = val.split(';');
-        memberDetails = '';
-        for(var i =0; i < allMembers.length; i++)
-        {
-          var memberDetailsArray = allMembers[i].split('#');
-          var memberid = memberDetailsArray[0];
-          var MN = $('#divMN' + memberid).find('input:checked').val();
-          if(MN == undefined)
-          {
-            MN = ' ';
-          }
-          var DOB = $('#divDOB' + memberid).find('input:checked').val();
-          if(DOB == undefined)
-          {
-            DOB = ' ';
-          }
-          if(memberDetails == '')
-          {
-           memberDetails =  memberid + '#' + MN + '#' + DOB;
-          }
-          else
-          {
-            memberDetails = memberDetails + ';' + memberid + '#' + MN + '#' + DOB;
-          }
-          
-          
-          
-        }
-        $("[id$='JTSelectedID']").val(memberDetails);
-        countChecksNew();
+      	var val = $("[id$='JTSelectedID']").val();
+      	var allMembers = val.split(';');
+      	memberDetails = '';
+      	for(var i =0; i < allMembers.length; i++)
+      	{
+      		var memberDetailsArray = allMembers[i].split('#');
+      		var memberid = memberDetailsArray[0];
+      		var MN = $('#divMN' + memberid).find('input:checked').val();
+      		if(MN == undefined)
+      		{
+      			MN = ' ';
+      		}
+      		var DOB = $('#divDOB' + memberid).find('input:checked').val();
+      		if(DOB == undefined)
+      		{
+      			DOB = ' ';
+      		}
+      		if(memberDetails == '')
+      		{
+      		 memberDetails =  memberid + '#' + MN + '#' + DOB;
+      		}
+      		else
+      		{
+      			memberDetails = memberDetails + ';' + memberid + '#' + MN + '#' + DOB;
+      		}
+      		
+      		
+      		
+      	}
+      	$("[id$='JTSelectedID']").val(memberDetails);
+      	countChecksNew();
       /*  if (type == 'JT')
         {
             if ($(control).is(':checked'))
@@ -967,7 +969,7 @@
                 var val = $("[id$='JTSelectedID']").val();
                 for()
                 {
-                  
+                	
                 }
                 if (val != '')
                 {
@@ -1048,7 +1050,7 @@
       function SetLoanSelectedID(id, value)
       {
         
-          
+        	
             /*if(value == 'Pass')
             {
                 var val = $("[id$='LoanSelectedID']").val();
@@ -1070,7 +1072,7 @@
                 var vals = val.split(';');
                 for(var i =0; i< vals.length;i++)
                 {
-                  id
+                	id
                     if (vals[i].split('|')[0] != id)
                     {
                         if (newVal == '')
@@ -1093,7 +1095,7 @@
             var vals = val.split(';');
             for(var i =0; i< vals.length;i++)
             {
-              if (vals[i].split('#')[0] == id)
+            	if (vals[i].split('#')[0] == id)
                 {
                     if (newVal == '')
                     {
@@ -1106,7 +1108,7 @@
                 }
                 else
                 {
-                  if (newVal == '')
+                	if (newVal == '')
                     {
                         newVal += vals[i].split('|')[0] + '#' + vals[i].split('#')[1];
                     }
@@ -1119,7 +1121,7 @@
             $("[id$='LoanSelectedID']").val(newVal);
             
             
-          
+        	
         countChecksNew();  
         
       }
@@ -1150,17 +1152,17 @@
       }
       
       
-  function setCheckedValuesNew(field,face){
-      var boolValue = false;
-      if(face == 'Pass')
-      {
-        boolValue = 'True';
-      }
-      else
-      {
-        boolValue = 'False';
-      }
-      
+	function setCheckedValuesNew(field,face){
+			var boolValue = false;
+			if(face == 'Pass')
+			{
+				boolValue = 'True';
+			}
+			else
+			{
+				boolValue = 'False';
+			}
+			
           var fields = field.split(':');
           var i = fields.length;
           var fieldname = field;
@@ -1168,28 +1170,28 @@
               $('.MemberNum').prop("value", face);
           }if(fieldname.indexOf('SSNnumberNew') >= 0){
               $('.SSNnumberNew').prop("value", face);
-        $('.SSNnumber').prop("value", boolValue);
+			  $('.SSNnumber').prop("value", boolValue);
           }if(fieldname.indexOf('DOBCNew') >= 0){
               $('.DOBCNew').prop("value", face);
-        $('.DOBC').prop("value", boolValue);
+			  $('.DOBC').prop("value", boolValue);
           }if(fieldname.indexOf('IdNumberNew') >= 0){
               $('.IdNumberNew').prop("value", face);
-        $('.IdNumber').prop("value", boolValue);
+			  $('.IdNumber').prop("value", boolValue);
           }if(fieldname.indexOf('MMNNew') >= 0){
               $('.MMNNew').prop("value", face);
-        $('.MMN').prop("value", boolValue);
+			  $('.MMN').prop("value", boolValue);
           }if(fieldname.indexOf('EmailNew') >= 0){
-        $('.EmailNew').prop("value", face);
-        $('.Email').prop("value", boolValue);
+			  $('.EmailNew').prop("value", face);
+			  $('.Email').prop("value", boolValue);
           }if(fieldname.indexOf('additionalToken1SelectNew') >= 0){
-        $('.additionalToken1Select').prop("value", face);
-        $('.additionalToken1SelectNew').prop("value", boolValue);
+			  $('.additionalToken1Select').prop("value", face);
+			  $('.additionalToken1SelectNew').prop("value", boolValue);
           }if(fieldname.indexOf('additionalToken2SelectNew') >= 0){
-        $('.additionalToken2Select').prop("value", face);
-        $('.additionalToken2SelectNew').prop("value", boolValue);
+			  $('.additionalToken2Select').prop("value", face);
+			  $('.additionalToken2SelectNew').prop("value", boolValue);
           }if(fieldname.indexOf('additionalToken3SelectNew') >= 0){
-        $('.additionalToken3Select').prop("value", face);
-        $('.additionalToken3SelectNew').prop("value", boolValue);
+			  $('.additionalToken3Select').prop("value", face);
+			  $('.additionalToken3SelectNew').prop("value", boolValue);
           }
           
           
@@ -1222,248 +1224,242 @@
     
     function compareOtherText()
     {
-      
-       
-       if(($('.othertext1').val()!='') && ( $('.othertext1').val() == $('.othertext2').val()))
-       {
-         $('.advalOtherErrorinv1').show();
-         return 'invalid';
-       }
-       else
-       {
-         $('.advalOtherErrorinv1').hide();
-         
-       }
-       
-       if(($('.othertext2').val()!='') && ( $('.othertext1').val() == $('.othertext2').val()))
-       {
-         $('.advalOtherErrorinv2').show();
-         return 'invalid';
-       }
-       else
-       {
-         $('.advalOtherErrorinv2').hide();
-       }
-       
-       if(($('.othertext1').val()!='') && ( $('.othertext1').val() == $('.othertext').val()))
-       {
-         $('.advalOtherErrorinv1').show();
-         return 'invalid';
-       }
-       else
-       {
-         $('.advalOtherErrorinv1').hide();
-       }
-       
-       if(($('.othertext2').val()!='') && ( $('.othertext2').val() == $('.othertext').val()))
-       {
-         $('.advalOtherErrorinv2').show();
-         return 'invalid';
-       }
-       else
-       {
-         $('.advalOtherErrorinv2').hide();
-       }
-     
-       if(($('.othertext').val()!='') && ( $('.othertext').val() == $('.othertext1').val()))
-       {
-         $('.advalOtherErrorinv3').show();
-         return 'invalid';
-       }
-       else
-       {
-         $('.advalOtherErrorinv3').hide();
-       }
-      if(($('.othertext').val()!='') && ( $('.othertext').val() == $('.othertext2').val()))
-       {
-         $('.advalOtherErrorinv3').show();
-         return 'invalid';
-       }
-       else
-       {
-         $('.advalOtherErrorinv3').hide();
-       }
-          
+    	
+   		$('.additionalTokenSelectionErrorSameNameText').hide();
+   		if(($('.othertext1').val()!='') && ( $('.othertext1').val() == $('.othertext2').val()))
+   		{
+   			$('.additionalTokenSelectionErrorSameNameText').show();
+   			return 'invalid';
+   		}
+   		
+   		if(($('.othertext2').val()!='') && ( $('.othertext1').val() == $('.othertext2').val()))
+   		{
+   			$('.additionalTokenSelectionErrorSameNameText').show();
+   			return 'invalid';
+   		}
+   	
+   		
+   		if(($('.othertext1').val()!='') && ( $('.othertext1').val() == $('.othertext').val()))
+   		{
+   			$('.additionalTokenSelectionErrorSameNameText').show();
+   			return 'invalid';
+   		}
+   		
+   		
+   		if(($('.othertext2').val()!='') && ( $('.othertext2').val() == $('.othertext').val()))
+   		{
+   			$('.additionalTokenSelectionErrorSameNameText').show();
+   			return 'invalid';
+   		}
+   		
+   	
+   		if(($('.othertext').val()!='') && ( $('.othertext').val() == $('.othertext1').val()))
+   		{
+   			$('.additionalTokenSelectionErrorSameNameText').show();
+   			return 'invalid';
+   		}
+   		
+    	if(($('.othertext').val()!='') && ( $('.othertext').val() == $('.othertext2').val()))
+   		{
+   			$('.additionalTokenSelectionErrorSameNameText').show();
+   			return 'invalid';
+   		}
+   		
+   		   
     }
     var failcountGlobal = 0;
     
     function countChecksNew(){
-      
-      var result;
-      
-      var adval1 = '',adval2 = '',adval3 = '';
-      adval1 = showHideAdditionalTokenError(1);
-      adval2 = showHideAdditionalTokenError(2);
-      adval3 = showHideAdditionalTokenError(3);
-      
-      if( adval1 == 'Invalid' || adval2 == 'Invalid' || adval3 == 'Invalid')
-         {
-           return;
-         }    
-         
-      if ((adval1 != '' && adval2 != '') && (adval1 != 'Other' && adval2 != 'Other') && adval1 == adval2 )
-         {
-                $('.adval1Error').show();
-                $('.seperator').removeClass("seperator-confirm");
-                result = 'invalid';
-             
-      
-         }
-         else
-         {
-           $('.seperator').addClass("seperator-confirm");
-           $('.adval1Error').hide();
-           
-           
-         }
-         
-         if ((adval2 != '' && adval3!='') && ((adval2 != 'Other' && adval3 !='Other')) && adval2 == adval3)
-         {
-           $('.adval2Error').show();
-           $('.seperator').removeClass("seperator-confirm");
-           result = 'invalid';
-           
-           
-         }
-         else
-         {
-           $('.adval2Error').hide();
-           $('.seperator').addClass("seperator-confirm");
-           
-         }
-         
-         if ((adval1 != '' && adval3 != '') && (adval1 != 'Other' && adval3 != 'Other') && adval1 == adval3)
-         {
-           $('.adval3Error').show();
-           $('.seperator').removeClass("seperator-confirm");
-           result = 'invalid';
-             
-           
-         }
-         else
-         {
-           $('.adval3Error').hide();
-           $('.seperator').addClass("seperator-confirm");
-         }
-         
-        if ((adval3 == 'Other') && $('.othertext').val() == '' )
-         {
-           $('.advalOtherError').show();
-           result = 'invalid';
-           
-         } 
-         else
-         {
-           $('.advalOtherError').hide();
-         }
-       
-           if ((adval1 == 'Other' ) && $('.othertext1').val() == '' )
-              {
-                $('.advalOtherError1').show();
-              result = 'invalid';
-                
-              } 
-              else
-              {
-                $('.advalOtherError1').hide();
-                
-              }
-              
-              
-              if (( adval2 == 'Other' ) && $('.othertext2').val() == '' )
-              {
-                $('.advalOtherError2').show();
-                result = 'invalid';
-                
-              } 
-              else
-              {
-                $('.advalOtherError2').hide();
-              }
-              
-       var passcount =0;
-       var failcount =0;
-       var additionaltokencount = 0;
-       
-       if ($("[id$='AdditionalToken1chkStringHidden']").val() == 'Pass')
-       {
-         passcount++;
-         additionaltokencount++;
-       }
-       if ($("[id$='AdditionalToken2chkStringHidden']").val() == 'Pass')
-       {
-         passcount++;
-         additionaltokencount++;
-       }
-       if ($("[id$='AdditionalToken3chkStringHidden']").val() == 'Pass')
-       {
-         passcount++;
-         additionaltokencount++;
-       }
-       
-       
-       if ($("[id$='AdditionalToken1chkStringHidden']").val() == 'Fail')
-       {
-         failcount++;
-         //additionaltokencount--;
-       }
-       if ($("[id$='AdditionalToken2chkStringHidden']").val() == 'Fail')
-       {
-         failcount++;
-         //additionaltokencount--;
-       }
-       if ($("[id$='AdditionalToken3chkStringHidden']").val() == 'Fail')
-       {
-         failcount++;
-         //additionaltokencount--;
-       }
-       
-       if($('.IdNumberNew').val() == 'Pass')
-       {
-         passcount++;
-       }
-       if($('.MMNNew').val() == 'Pass')
-       {
-         passcount++;
-       }
-       if($('.EmailNew').val() == 'Pass')
-       {
-         passcount++;
-       }
-       
-       if($('.IdNumberNew').val() == 'Fail')
-       {
-         failcount++;
-       }
-       if($('.MMNNew').val() == 'Fail')
-       {
-         failcount++;
-       }
-       if($('.EmailNew').val() == 'Fail')
-       {
-         failcount++;
-       }
-       
-       
+    	
+    	var result;
+    	
+    	var adval1 = '',adval2 = '',adval3 = '';
+    	adval1 = showHideAdditionalTokenError(1);
+    	adval2 = showHideAdditionalTokenError(2);
+    	adval3 = showHideAdditionalTokenError(3);
+    	
+    	if( adval1 == 'Invalid' || adval2 == 'Invalid' || adval3 == 'Invalid')
+       	{
+       		return;
+       	}    
+       	$('.additionalTokenSelectionErrorSameName').hide();
+    	if ((adval1 != '' && adval2 != '') && (adval1 != 'Other' && adval2 != 'Other') && adval1 == adval2 )
+       	{
+       			
+       	   		$('.additionalTokenSelectionErrorSameName').show();
+       	   		$('.seperator').removeClass("seperator-confirm");
+       	   		result = 'invalid';
+	       		
+	    
+       	}
+       	else
+       	{
+       		$('.seperator').addClass("seperator-confirm");
+       		//$('.adval1Error').hide();
+       		
+       		
+       	}
+       	
+       	if ((adval2 != '' && adval3!='') && ((adval2 != 'Other' && adval3 !='Other')) && adval2 == adval3)
+       	{
+       		$('.additionalTokenSelectionErrorSameName').show();
+       		$('.seperator').removeClass("seperator-confirm");
+       		result = 'invalid';
+       		
+	       	
+       	}
+       	else
+       	{
+       		//$('.adval2Error').hide();
+       		$('.seperator').addClass("seperator-confirm");
+       		
+       	}
+       	
+       	if ((adval1 != '' && adval3 != '') && (adval1 != 'Other' && adval3 != 'Other') && adval1 == adval3)
+       	{
+       	
+       		$('.additionalTokenSelectionErrorSameName').show();
+       		$('.seperator').removeClass("seperator-confirm");
+       		result = 'invalid';
+	       		
+	       	
+       	}
+       	else
+       	{
+       		//$('.adval3Error').hide();
+       		$('.seperator').addClass("seperator-confirm");
+       	}
+       	
+	    	if ((adval3 == 'Other') && $('.othertext').val() == '' )
+	   		{
+	   			$('.advalOtherError').show();
+	   			result = 'invalid';
+	   			
+	   		} 
+	   		else
+	   		{
+	   			$('.advalOtherError').hide();
+	   		}
+   		
+   				if ((adval1 == 'Other' ) && $('.othertext1').val() == '' )
+          		{
+          			$('.advalOtherError1').show();
+        			result = 'invalid';
+          			
+          		} 
+          		else
+          		{
+          			$('.advalOtherError1').hide();
+          			
+          		}
+          		
+          		
+          		if (( adval2 == 'Other' ) && $('.othertext2').val() == '' )
+          		{
+          			$('.advalOtherError2').show();
+          			result = 'invalid';
+          			
+          		} 
+          		else
+          		{
+          			$('.advalOtherError2').hide();
+          		}
+          		
+   		var passcount =0;
+   		var failcount =0;
+   		var additionaltokencount = 0;
+   		
+   		if ($("[id$='AdditionalToken1chkStringHidden']").val() == 'Pass')
+   		{
+   			passcount++;
+   			additionaltokencount++;
+   		}
+   		if ($("[id$='AdditionalToken2chkStringHidden']").val() == 'Pass')
+   		{
+   			passcount++;
+   			additionaltokencount++;
+   		}
+   		if ($("[id$='AdditionalToken3chkStringHidden']").val() == 'Pass')
+   		{
+   			passcount++;
+   			additionaltokencount++;
+   		}
+   		
+   		
+   		if ($("[id$='AdditionalToken1chkStringHidden']").val() == 'Fail')
+   		{
+   			failcount++;
+   			//additionaltokencount--;
+   		}
+   		if ($("[id$='AdditionalToken2chkStringHidden']").val() == 'Fail')
+   		{
+   			failcount++;
+   			//additionaltokencount--;
+   		}
+   		if ($("[id$='AdditionalToken3chkStringHidden']").val() == 'Fail')
+   		{
+   			failcount++;
+   			//additionaltokencount--;
+   		}
+   		
+   		if($('.IdNumberNew').val() == 'Pass')
+   		{
+   			passcount++;
+   		}
+   		if($('.MMNNew').val() == 'Pass')
+   		{
+   			passcount++;
+   		}
+   		if($('.EmailNew').val() == 'Pass')
+   		{
+   			passcount++;
+   		}
+   		
+   		if($('.IdNumberNew').val() == 'Fail')
+   		{
+   			failcount++;
+   		}
+   		if($('.MMNNew').val() == 'Fail')
+   		{
+   			failcount++;
+   		}
+   		if($('.EmailNew').val() == 'Fail')
+   		{
+   			failcount++;
+   		}
+   		
+   		
    
-      if(additionaltokencount > 2 )
-      {
-        $(".additionalTokenSelectionError").show();
-      }
-      else
-      {
-        $(".additionalTokenSelectionError").hide();
-      }
-      
-      
-       var val = $("[id$='LoanSelectedID']").val();
+  		if(additionaltokencount > 2 )
+  		{
+  			passcount--;
+  			$(".additionalTokenSelectionError").show();
+  			$('.seperator').removeClass("seperator-confirm");
+            $("[id$='AuthenticatedButton']").prop("disabled", true);
+            $("[id$='NewLead']").prop("disabled", false); 
+            $("[id$='NotAuthButton']").prop("disabled", false); 
+            $("[id$='ClearInvalidFields']").prop("disabled", false); 
+  			
+  		}
+  		else
+  		{
+  			$('.seperator').addClass("seperator-confirm");
+  			$(".additionalTokenSelectionError").hide();
+  			$("[id$='AuthenticatedButton']").prop("disabled", false);  
+            $("[id$='NewLead']").prop("disabled", true); 
+            $("[id$='NotAuthButton']").prop("disabled", true); 
+            $("[id$='ClearInvalidFields']").prop("disabled", true);
+  		}
+  		
+  		
+   		var val = $("[id$='LoanSelectedID']").val();
         var newVal = '';
         var vals = val.split(';');
         var loancount = 0;
         var failloancount = 0;
         for(var i =0; i< vals.length;i++)
         {
-          if (vals[i].split('#')[1] == 'Pass')
+        	if (vals[i].split('#')[1] == 'Pass')
             {
                 loancount++;
             }   
@@ -1471,30 +1467,30 @@
         
         for(var i =0; i< vals.length;i++)
         {
-          if (vals[i].split('#')[1] == 'Fail')
+        	if (vals[i].split('#')[1] == 'Fail')
             {
                 failloancount++;
             }   
         }
         
         if (loancount > 1)
-    {
-      $('.loanSelectionError').show();
-    }
-    else
-    {
-      $('.loanSelectionError').hide();
-    }
-       
-       if(loancount > 1)
-       {
-         loancount = 1;
-       }
-       var comparetextresult = compareOtherText();
-       
-       
-       
-        var JTSelectedID = $("[id$='JTSelectedID']").val();
+		{
+			$('.loanSelectionError').show();
+		}
+		else
+		{
+			$('.loanSelectionError').hide();
+		}
+   		
+   		if(loancount > 1)
+   		{
+   			loancount = 1;
+   		}
+   		var comparetextresult = compareOtherText();
+   		
+   		
+   		
+   	   var JTSelectedID = $("[id$='JTSelectedID']").val();
        var allMembers = JTSelectedID.split(';');
        memberDetails = '';
        var passMember = 0;
@@ -1508,93 +1504,93 @@
        
         if(MN == 'Pass')
         {
-          passMember++;
+        	passMember++;
          
         }
         if(DOB == 'Pass')
         {
-          passMember++;
+        	passMember++;
         }
         
         if(MN == 'Fail')
         {
-          failMember++;
+        	failMember++;
          
         }
         if(DOB == 'Fail')
         {
-          failMember++;
+        	failMember++;
         }
         
        }
        if(passMember > 2)
        {
-        $('.relatedSelectionError').show();
-        passMember = 2;
-        }
-        else
-        {
-     $('.relatedSelectionError').hide();
-        }
-       passcount += passMember + loancount;
-       failcount +=  failMember + failloancount;
-       
-       var verified = passcount;
-       if(passcount >= 3)
-       {
-         verified = 3;
-       }
-       
-       
-  
-       $('.count').text(verified);
-       
-       if(failcount >= 2)
-       {
-         failcountGlobal = 2;
-         
-         $(".checkbox").each(function(){
-         
-           if($(this).find("input:checkbox").length > 0 && $(this).find("input:checkbox:checked").length == 0)
-           {
-             $(this).find("input:checkbox").prop("disabled", true);
-           
-           }
-         });
-      $('.seperator').removeClass("seperator-confirm");
+   		 $('.relatedSelectionError').show();
+   		 passMember = 2;
+   	   }
+   	   else
+   	   {
+ 		$('.relatedSelectionError').hide();
+   	   }
+   		passcount += passMember + loancount;
+   		failcount +=  failMember + failloancount;
+   		
+   		var verified = passcount;
+   		if(passcount >= 3)
+   		{
+   			verified = 3;
+   		}
+   		
+   		
+	
+   		$('.count').text(verified);
+   		
+   		if(failcount >= 2)
+   		{
+   			failcountGlobal = 2;
+   			
+   			$(".checkbox").each(function(){
+   			
+   				if($(this).find("input:checkbox").length > 0 && $(this).find("input:checkbox:checked").length == 0)
+   				{
+   					$(this).find("input:checkbox").prop("disabled", true);
+   				
+   				}
+   			});
+			$('.seperator').removeClass("seperator-confirm");
             $("[id$='AuthenticatedButton']").prop("disabled", true);
             $("[id$='NewLead']").prop("disabled", false); 
             $("[id$='NotAuthButton']").prop("disabled", false); 
             $("[id$='ClearInvalidFields']").prop("disabled", false); 
-         
-       
-       }
-       else
-       {
-         failcountGlobal = failcount;
-         $(".checkbox").each(function(){
-           $(this).find("input:checkbox").prop("disabled", false);
-         });
-         showOtherArea1(document.getElementsByClassName("additionaltoken1")[0],false);
-         showOtherArea2(document.getElementsByClassName("additionaltoken2")[0],false);
-         showOtherArea(document.getElementsByClassName("additionaltoken3")[0],false);
-         
-       }
-       
-       if(comparetextresult =='invalid'|| result == 'invalid' )
-       {         $('.seperator').removeClass("seperator-confirm");
-                $("[id$='AuthenticatedButton']").prop("disabled", true);  
+   			
+   		
+   		}
+   		else
+   		{
+   			failcountGlobal = failcount;
+   			$(".checkbox").each(function(){
+   				$(this).find("input:checkbox").prop("disabled", false);
+   			});
+   			showOtherArea1(document.getElementsByClassName("additionaltoken1")[0],false);
+   			showOtherArea2(document.getElementsByClassName("additionaltoken2")[0],false);
+   			showOtherArea(document.getElementsByClassName("additionaltoken3")[0],false);
+   			
+   		}
+   		
+   		if(comparetextresult =='invalid'|| result == 'invalid' )
+   		{				 $('.seperator').removeClass("seperator-confirm");
+   			 			$("[id$='AuthenticatedButton']").prop("disabled", true);  
                        $("[id$='NewLead']").prop("disabled", false); 
                        $("[id$='NotAuthButton']").prop("disabled", false); 
                        $("[id$='ClearInvalidFields']").prop("disabled", false);
                        $("[id$='NotAuthButton']").prop("disabled", true); 
-       }
-       
-       else
-       {
-       
-       if(passcount >= 3 && failcount < 2  ){
-           
+   		}
+   		
+   		else
+   		{
+   		
+   		if(passcount >= 3 && failcount < 2 ){
+   				
                    $('.seperator').addClass("seperator-confirm");
                    var r = radioTest();
                    if(r == true){
@@ -1604,6 +1600,8 @@
                        $("[id$='ClearInvalidFields']").prop("disabled", true);
                    }
                }
+               
+               
                else if(passcount < 3){
               
                    $('.seperator').removeClass("seperator-confirm");
@@ -1614,152 +1612,152 @@
                }
                else
                {
-                    $('.seperator').removeClass("seperator-confirm");
+               		 $('.seperator').removeClass("seperator-confirm");
                    $("[id$='AuthenticatedButton']").prop("disabled", true);
                    $("[id$='NewLead']").prop("disabled", false); 
                    $("[id$='NotAuthButton']").prop("disabled", false); 
                    $("[id$='ClearInvalidFields']").prop("disabled", false); 
                } 
            } 
-       
-       }    
+   		
+   		}    
     
     
     
     function showHideAdditionalTokenError(number)
     {
-      if (($("[id$='AdditionalToken" + number + "chkStringHidden']").val() == 'Pass') || ($("[id$='AdditionalToken" + number + "chkStringHidden']").val() == 'Fail'))
-      {
-        adval1 = $('.additionaltoken' +  number).val();
-      if (adval1 == '')
-      {
-        $('.adval' + number + 'Error').show();
-        return 'Invalid';
-      }
-      else
-      {
-        $('.adval' + number + 'Error').hide();
-      }
-      return adval1;
-          
-        }
-        else
-    {
-      $('.adval' + number + 'Error').hide();
-      return '';
-    }
+    	if (($("[id$='AdditionalToken" + number + "chkStringHidden']").val() == 'Pass') || ($("[id$='AdditionalToken" + number + "chkStringHidden']").val() == 'Fail'))
+    	{
+    		adval1 = $('.additionaltoken' +  number).val();
+			if (adval1 == '')
+			{
+				$('.adval' + number + 'Error').show();
+				return 'Invalid';
+			}
+			else
+			{
+				$('.adval' + number + 'Error').hide();
+			}
+			return adval1;
+      		
+      	}
+      	else
+		{
+			$('.adval' + number + 'Error').hide();
+			return '';
+		}
     }
     
       function countChecks(){
+      		
+      			var relatedSelection = $('.rpselection:checked').size();
+      			if (relatedSelection > 2)
+      			{
+      				$('.relatedSelectionError').show();
+      				//return false;
+      			}
+      			else
+      			{
+      				$('.relatedSelectionError').hide();
+      			}
+      			
+      			var loanSelection = $('.loancheckbox:checked').size();
+      			
+      			if (loanSelection > 1)
+      			{
+      				$('.loanSelectionError').show();
+      			}
+      			else
+      			{
+      				$('.loanSelectionError').hide();
+      			}
+      			
+      			var adval1 = '',adval2 = '',adval3 = '';
+      			
+      			if ($("[id$='additionalToken1Select']").is(':checked'))
+      			{
+      				adval1 = $('.additionaltoken1').val();
+      				if (adval1 == '')
+      				{
+      					$('.adval1Error').show();
+      					return;
+      				}
+      				else
+      				{
+      					$('.adval1Error').hide();
+      				}
+      				
+	      			
+      			}
+      			if ($("[id$='additionalToken2Select']").is(':checked'))
+      			{
+      				adval2 = $('.additionaltoken2').val();
+      				if (adval2 == '')
+      				{
+      					$('.adval2Error').show();
+      					return;
+      				}	
+      				else
+      				{
+      					$('.adval2Error').hide();
+      				}
+      			}
+      			if ($("[id$='additionalToken3Select']").is(':checked'))
+      			{
+      				adval3 = $('.additionaltoken3').val();
+      				if (adval3 == '')
+      				{
+      					$('.adval3Error').show();
+      					return;
+      				}	
+      				else
+      				{
+      					$('.adval3Error').hide();
+      				}	
+      			}
           
-            var relatedSelection = $('.rpselection:checked').size();
-            if (relatedSelection > 2)
-            {
-              $('.relatedSelectionError').show();
-              //return false;
-            }
-            else
-            {
-              $('.relatedSelectionError').hide();
-            }
-            
-            var loanSelection = $('.loancheckbox:checked').size();
-            
-            if (loanSelection > 1)
-            {
-              $('.loanSelectionError').show();
-            }
-            else
-            {
-              $('.loanSelectionError').hide();
-            }
-            
-            var adval1 = '',adval2 = '',adval3 = '';
-            
-            if ($("[id$='additionalToken1Select']").is(':checked'))
-            {
-              adval1 = $('.additionaltoken1').val();
-              if (adval1 == '')
-              {
-                $('.adval1Error').show();
-                return;
-              }
-              else
-              {
-                $('.adval1Error').hide();
-              }
-              
-              
-            }
-            if ($("[id$='additionalToken2Select']").is(':checked'))
-            {
-              adval2 = $('.additionaltoken2').val();
-              if (adval2 == '')
-              {
-                $('.adval2Error').show();
-                return;
-              }  
-              else
-              {
-                $('.adval2Error').hide();
-              }
-            }
-            if ($("[id$='additionalToken3Select']").is(':checked'))
-            {
-              adval3 = $('.additionaltoken3').val();
-              if (adval3 == '')
-              {
-                $('.adval3Error').show();
-                return;
-              }  
-              else
-              {
-                $('.adval3Error').hide();
-              }  
-            }
+          		if (adval1 != '' && adval2 != '' && adval1 == adval2 )
+	          	{
+	          		$('.adval1Error').show();
+	          		return;
+	          	}
+	          	else
+	          	{
+	          		$('.adval1Error').hide();
+	          	}
+	          	
+	          	if (adval2 != '' && adval3 != '' && adval2 == adval3 )
+	          	{
+	          		$('.adval2Error').show();
+	          		return;
+	          	}
+	          	else
+	          	{
+	          		$('.adval2Error').hide();
+	          	}
+	          	
+	          	if (adval1 != '' && adval3 != '' && adval1 == adval3 )
+	          	{
+	          		$('.adval1Error').show();
+	          		return;
+	          	}
+	          	else
+	          	{
+	          		$('.adval1Error').hide();
+	          	}
           
-              if (adval1 != '' && adval2 != '' && adval1 == adval2 )
-              {
-                $('.adval1Error').show();
-                return;
-              }
-              else
-              {
-                $('.adval1Error').hide();
-              }
-              
-              if (adval2 != '' && adval3 != '' && adval2 == adval3 )
-              {
-                $('.adval2Error').show();
-                return;
-              }
-              else
-              {
-                $('.adval2Error').hide();
-              }
-              
-              if (adval1 != '' && adval3 != '' && adval1 == adval3 )
-              {
-                $('.adval1Error').show();
-                return;
-              }
-              else
-              {
-                $('.adval1Error').hide();
-              }
-          
-              if ((adval1 == 'Other' || adval2 == 'Other' || adval3 == 'Other') && $('.othertext').val() == '' )
-              {
-                $('.advalOtherError').show();
-                return;
-              } 
-              else
-              {
-                $('.advalOtherError').hide();
-              }
-              
-              
-              
+          		if ((adval1 == 'Other' || adval2 == 'Other' || adval3 == 'Other') && $('.othertext').val() == '' )
+          		{
+          			$('.advalOtherError').show();
+          			return;
+          		} 
+          		else
+          		{
+          			$('.advalOtherError').hide();
+          		}
+          		
+          		
+          		
                var checkedval = $('.confirm:checked').size();               
                var pin = '{!PINMatch}';
               /* if($("[id$='CardNum']").prop('checked') === true && pin != 'true' && '{!pinString}' == '****'){
@@ -1768,26 +1766,26 @@
                
                if (relatedSelection > 2)
                {
-                   checkedval = checkedval - relatedSelection +2;
+               		checkedval = checkedval - relatedSelection +2;
                }
                
                if (loanSelection > 1)
                {
-                   checkedval = checkedval - loanSelection +1;
+               		checkedval = checkedval - loanSelection +1;
                }
                 if($("[id$='CardNum']").prop('checked') === true)
                {
-                 checkedval = checkedval - 1;
+               	checkedval = checkedval - 1;
                
                }
                if($("[id$='SSNnumber']").prop('checked') === true)
                {
-                 checkedval = checkedval - 1;
+               	checkedval = checkedval - 1;
                
                }
                if($("[id$='DOBC']").prop('checked') === true)
                {
-                 checkedval = checkedval - 1;
+               	checkedval = checkedval - 1;
                
                }
                    
@@ -2031,25 +2029,25 @@
     
     function setTokenValue(obj,vrbl)
     {
-      if (vrbl == 1)
-      {
-        
-        $('[id$=AdditionalToken1chkHidden]').val($(obj).is(":checked"));
-        
-      }
-      
-      if (vrbl == 2)
-      {
-        $('[id$=AdditionalToken2chkHidden]').val($(obj).is(":checked"));
-      }
-      
-      if (vrbl == 3)
-      {
-        
-        $('[id$=AdditionalToken3chkHidden]').val($(obj).is(":checked"));
-        
-      }
-      
+    	if (vrbl == 1)
+    	{
+    		
+    		$('[id$=AdditionalToken1chkHidden]').val($(obj).is(":checked"));
+    		
+    	}
+    	
+    	if (vrbl == 2)
+    	{
+    		$('[id$=AdditionalToken2chkHidden]').val($(obj).is(":checked"));
+    	}
+    	
+    	if (vrbl == 3)
+    	{
+    		
+    		$('[id$=AdditionalToken3chkHidden]').val($(obj).is(":checked"));
+    		
+    	}
+    	
     }
     function showOtherArea(obj, callCount)
     {
@@ -2070,25 +2068,25 @@
       
        $(obj).parent().parent().find(":checkbox").prop("disabled","disabled");
        $(obj).parent().parent().find(":checkbox").prop("checked","");
-            $('.additionalToken3Select').prop("value", "");
-     $('.additionalToken3SelectNew').prop("value", "False");
-     
+	          $('.additionalToken3Select').prop("value", "");
+		 $('.additionalToken3SelectNew').prop("value", "False");
+		 
        
      }
      else if(failcountGlobal < 2)
      {
-    
+		
         $(obj).parent().parent().find(":checkbox").prop("disabled","");
-           if(callCount)
-           {
+        	 if(callCount)
+        	 {
          $(obj).parent().parent().find(":checkbox").prop("checked","");
-            $('.additionalToken3Select').prop("value", "");
-     $('.additionalToken3SelectNew').prop("value", "False");
-     }
-    
+	          $('.additionalToken3Select').prop("value", "");
+		 $('.additionalToken3SelectNew').prop("value", "False");
+		 }
+		
      }
       if(callCount)
-          countChecksNew();
+	     	 countChecksNew();
     }
     
     function showOtherArea1(obj, callCount)
@@ -2110,24 +2108,24 @@
        
        $(obj).parent().parent().find(":checkbox").prop("disabled","disabled");
         $(obj).parent().parent().find(":checkbox").prop("checked","");
-       $('.additionalToken1Select').prop("value", "");
-     $('.additionalToken1SelectNew').prop("value", "False");
-     
-       }
+	     $('.additionalToken1Select').prop("value", "");
+		 $('.additionalToken1SelectNew').prop("value", "False");
+		 
+	     }
      else if(failcountGlobal < 2)
      {
-    
+		
         $(obj).parent().parent().find(":checkbox").prop("disabled","");
         if(callCount)
         {
          $(obj).parent().parent().find(":checkbox").prop("checked","");
-       $('.additionalToken1Select').prop("value", "");
-     $('.additionalToken1SelectNew').prop("value", "False");
-     }
-    
+	     $('.additionalToken1Select').prop("value", "");
+		 $('.additionalToken1SelectNew').prop("value", "False");
+		 }
+		
      }
      if(callCount)
-       countChecksNew();
+			 countChecksNew();
     }
     
     function showOtherArea2(obj, callCount)
@@ -2148,61 +2146,61 @@
        $(obj).parent().parent().find(":checkbox").prop("disabled","disabled");
         if(callCount)
          $(obj).parent().parent().find(":checkbox").prop("checked","");
-       $('.additionalToken2Select').prop("value", "");
-   $('.additionalToken2SelectNew').prop("value", "False");
+	     $('.additionalToken2Select').prop("value", "");
+	 $('.additionalToken2SelectNew').prop("value", "False");
      
      }
      else if(failcountGlobal < 2)
      {
-    
+		
         $(obj).parent().parent().find(":checkbox").prop("disabled","");
          if(callCount)
          {
           $(obj).parent().parent().find(":checkbox").prop("checked","");
-       $('.additionalToken2Select').prop("value", "");
-   $('.additionalToken2SelectNew').prop("value", "False");
-   }
-     
+	     $('.additionalToken2Select').prop("value", "");
+	 $('.additionalToken2SelectNew').prop("value", "False");
+	 }
+	 	
         
      }
     
-    if(callCount)
-     countChecksNew();
+	  if(callCount)
+		 countChecksNew();
     }
     
     </script>
         <script>
-             
-      $(document).ready(function(){
+           	
+    	$(document).ready(function(){
             if ($(".memnumcheck").parent().text().indexOf("Valid") >= 0 || $(".memnumcheck").parent().text().indexOf("Verified") >= 0)
             {
-              $(".memnumcheck").show();
-              $(".memnumin").addClass("form-control-valid");
+            	$(".memnumcheck").show();
+            	$(".memnumin").addClass("form-control-valid");
             }
             else if ($(".memnumcheck").parent().text().indexOf("No Match") >= 0)
             {
-              $(".memnumcheck").show();
-              $(".memnumin").addClass("form-control-error");
+            	$(".memnumcheck").show();
+            	$(".memnumin").addClass("form-control-error");
             }             
             else
             {
-              $(".memnumcheck").hide();
-              $(".memnumin").addClass("form-control-black");  
+            	$(".memnumcheck").hide();
+            	$(".memnumin").addClass("form-control-black");	
             }
             
             $('.loancheckradio').each(function(){
-              $(this).find('input').first().prop('checked', true);
+            	$(this).find('input').first().prop('checked', true);
             });
           /*   $('.MNDiv').each(function(){
-              $(this).find('input').first().prop('checked', true);
+            	$(this).find('input').first().prop('checked', true);
             });
             $('.DOBDiv').each(function(){
-              $(this).find('input').first().prop('checked', true);
+            	$(this).find('input').first().prop('checked', true);
             });*/
-      });
-      
-      
-     
+    	});
+    	
+    	
+   	
     </script>
     
     <style>

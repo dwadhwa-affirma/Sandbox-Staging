@@ -894,7 +894,8 @@ public class MemberAuthenticationController{
                 	}
                 	else
                 	{
-                    	DOB = String.valueof(selectedOne.BIRTH_DATE__pc);
+                		Dob = DateTime.newInstance(selectedOne.BIRTH_DATE__pc.year(),selectedOne.BIRTH_DATE__pc.month(),selectedOne.BIRTH_DATE__pc.day()).format('MM-dd-YYYY');
+                    	//DOB = String.valueof(selectedOne.BIRTH_DATE__pc);
                     	DOBMatch = 'true';
                 	}
 	                
@@ -908,7 +909,8 @@ public class MemberAuthenticationController{
                 	}
                 	else
                 	{
-                    	DOB = String.valueof(selectedOne.BIRTH_DATE__pc);
+                    	//DOB = String.valueof(selectedOne.BIRTH_DATE__pc);
+                    	Dob = DateTime.newInstance(selectedOne.BIRTH_DATE__pc.year(),selectedOne.BIRTH_DATE__pc.month(),selectedOne.BIRTH_DATE__pc.day()).format('MM-dd-YYYY');
                     	DOBMatch = 'true';
                 	}
                 	/*
