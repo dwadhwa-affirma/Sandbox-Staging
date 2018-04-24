@@ -127,20 +127,21 @@
       
       
       
-      
+     
       
           <div id="section1" class="otpsecs">
               <h3 class="subtitle">Please select a delivery method</h3>
-              
+               <apex:outputText value="Recently Updated items are disabled"  style="color:Red" />
               <div class="row optwrap">
                   <div class="col-md-6">
                       <apex:outputpanel id="EmailPanel" rendered="{!If(EmailsList_Options.empty == false, true, false)}">
                           <p><b>Email</b></p>
                           <apex:selectRadio value="{!selectedID}" id="EmailCheck" layout="pageDirection"> 
-                              <apex:selectOptions value="{!EmailsList_Options}" id="EmaillistRadio"/>
+                               <apex:selectOptions value="{!EmailsList_Options}" id="EmaillistRadio"/> 
+                               
                             </apex:selectRadio> 
-                            
-                            
+                           
+                           
                             	
                             </apex:outputpanel>
                       
@@ -150,6 +151,7 @@
                           <p><b>Phone</b></p>
                             <apex:selectRadio value="{!selectedID}" id="PhoneCheck" layout="pageDirection"> 
                               <apex:selectOptions value="{!PhoneList_Options}" id="PhonelistRadio"/>
+                              
                             </apex:selectRadio> 
                            
                             
