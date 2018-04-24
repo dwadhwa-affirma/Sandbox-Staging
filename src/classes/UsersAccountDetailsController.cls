@@ -543,7 +543,7 @@ public class UsersAccountDetailsController {
                               PersonID__r.FirstName,
                               PersonID__r.LastName,
                               PersonID__r.Name,
-                              Account_Number__r.Brand__c From Person_Account__c WHERE Account_Number__r.Name IN :accName AND personId__c != :testId];
+                              Account_Number__r.Brand__c From Person_Account__c WHERE Account_Number__r.Name IN :accNameWoBeneficiary AND personId__c != :testId];
         
         caseDetails(ContactList1);
     }
