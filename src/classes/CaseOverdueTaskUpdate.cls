@@ -38,7 +38,7 @@ global class CaseOverdueTaskUpdate implements Schedulable {
        CaseOverdueTaskUpdateBatch b = new CaseOverdueTaskUpdateBatch();
        b.listMap = listMap;
        b.listCases = listCases;
-       Database.executeBatch(b, 10);
+       Database.executeBatch(b, 1000);
        
        
    }

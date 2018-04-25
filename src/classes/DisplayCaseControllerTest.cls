@@ -281,6 +281,8 @@
         mc.Case__c = ids2;
         insert mc; 
         string mcid = mc.Id;
+         
+         DisplayCaseController.latestCommmentBySupportidd = mc.id;
         List<Member_Comment__c> casecommentdata = DisplayCaseController.GetCaseComment(ids2);
         MemberMessageView m = null;    
         
@@ -397,6 +399,7 @@
 	                  mc.Case__c = ids2;
 	                  mc.draft__c = false;
 	                  insert mc; 
+              			
 	                  string mcid = mc.Id;
 	                  List<Member_Comment__c> casecommentdata = DisplayCaseController.GetCaseComment(ids2);
 	                   MemberMessageView m = null;               
