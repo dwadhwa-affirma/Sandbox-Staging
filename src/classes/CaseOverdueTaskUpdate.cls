@@ -1,45 +1,24 @@
 global class CaseOverdueTaskUpdate implements Schedulable {
      global void execute(SchedulableContext SC) {
        
-    List<Case_Overdue_Task__c> lisCaseOverdueTask = new List<Case_Overdue_Task__c>();
+
        
-       lisCaseOverdueTask = [select id from Case_Overdue_Task__c];
+       List<Case_Overdue_Task_Processing__c> listCase_Overdue_Task_Processing  = [select Case__c,Processing__c,Overdue_Task_Count__c from Case_Overdue_Task_Processing__c where Processing__c = false limit 30];
        
-       delete lisCaseOverdueTask;
-       
-       
-       AggregateResult[] groupedResults  = [select whatId,Count(id) from task where Status != 'Completed' and activityDate < today and What.Type = 'Case' group by whatId];
-       
-       system.debug('groupedResults###' + groupedResults);
-       
-       map<string,decimal> listMap = new map<string,decimal> ();
-      string listCases  = '';
-       
-    
+      
        
        
        List<Case_Overdue_Task__c> lisCaseOverdueTaskToBeInserted = new List<Case_Overdue_Task__c>();
-       for (AggregateResult ar : groupedResults)  {
-        string caseid = (string)ar.get('whatId');
-             listMap.put(caseid, (decimal)ar.get('expr0'));  
-             if(listCases == '')
-             {
-                listCases = listCases + '\'' + caseid + '\'';
-             }
-             else
-             {  
-                listCases =  listCases + ',' + '\'' + caseid + '\'';
-             }
-             
+       for (Case_Overdue_Task_Processing__c ar : listCase_Overdue_Task_Processing)  {
+       		Case_Overdue_Task__c obj = new Case_Overdue_Task__c();
+       		obj.Case__c = ar.Case__c;
+       		obj.Overdue_Task_Count__c = ar.Overdue_Task_Count__c;
+       		lisCaseOverdueTaskToBeInserted.add(obj);
+       		ar.Processing__c = true;
+       		 
        }
-       
-       listCases = ' ('+ listCases +')';
-       System.debug('listCases###: ' + listCases);
-       CaseOverdueTaskUpdateBatch b = new CaseOverdueTaskUpdateBatch();
-       b.listMap = listMap;
-       b.listCases = listCases;
-       Database.executeBatch(b, 1000);
-       
-       
+		
+       insert lisCaseOverdueTaskToBeInserted;
+       update listCase_Overdue_Task_Processing;
    }
 }
