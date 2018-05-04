@@ -24,6 +24,14 @@ public class PersonLookUpOnCaseController {
                              PersonID__r.Name,
                              TypeTranslate__c FROM Person_Account__c WHERE Account_Number__c =:accId];
         accountDetails(paList);
+          for(Person_Account__c item : paList)
+          {
+          	
+          	if(item.PersonID__r != null && item.PersonID__r.Name != null)
+          	{
+          		item.PersonID__r.Name = item.PersonID__r.Name.replace('\'','\\\'');
+          	}
+          }   
              
     }
     
