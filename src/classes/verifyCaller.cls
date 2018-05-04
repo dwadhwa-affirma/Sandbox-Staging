@@ -44,11 +44,11 @@ public class verifyCaller{
         }
         if (phoneNumber.length() > = 10)
         {
-	        phoneNumber1 = phoneNumber.substring(0,3);
-	        phoneNumber2 = phoneNumber.substring(3,6);
-	        phoneNumber3 = phoneNumber.substring(6,10);
-	        
-	        phoneNumber = '('+phoneNumber1+')'+' '+phoneNumber2+'-'+phoneNumber3;
+        phoneNumber1 = phoneNumber.substring(0,3);
+        phoneNumber2 = phoneNumber.substring(3,6);
+        phoneNumber3 = phoneNumber.substring(6,10);
+        
+        phoneNumber = '('+phoneNumber1+')'+' '+phoneNumber2+'-'+phoneNumber3;
         }
         
         system.debug('phoneNumber....'+phoneNumber);
@@ -65,11 +65,14 @@ public class verifyCaller{
             phoneNumber = phoneNumber.remove(' ');
             phoneNumber = phoneNumber.remove('-');
         }
-        phoneNumber1 = phoneNumber.substring(0,3);
-        phoneNumber2 = phoneNumber.substring(3,6);
-        phoneNumber3 = phoneNumber.substring(6,10);
-        
-        phoneNumber = phoneNumber1+'-'+phoneNumber2+'-'+phoneNumber3;
+        if (phoneNumber.length() > = 10)
+        {
+	        phoneNumber1 = phoneNumber.substring(0,3);
+	        phoneNumber2 = phoneNumber.substring(3,6);
+	        phoneNumber3 = phoneNumber.substring(6,10);
+	        phoneNumber = phoneNumber1+'-'+phoneNumber2+'-'+phoneNumber3;
+        }
+
         system.debug('phoneNumber....'+phoneNumber);
         return phoneNumber;        
     }

@@ -37,6 +37,21 @@
         margin-right: 8px;
         margin-bottom: 10px;
     }
+    .htmlcontent p
+    {
+    	margin-top:10px;
+    	margin-bottom:10px;
+    	
+    }
+    .htmlcontent
+    {
+    	font-size: 14px;
+    	font-family:"Helvetica Neue",Helvetica,Arial,sans-serif;
+    }
+    .htmlcontent ul>li
+    {
+    	margin:3px !important;
+    }
         </style>
         
         
@@ -174,34 +189,22 @@
                                                         <p><!-- ko if: model.PrimaryCategory().length !=0 --> <span style="white-space: pre-line;" data-bind="html: PrimaryCategory()"></span><!-- /ko --> | Case Number #<span data-bind="html: casenumber"></span></p>
                                                         <p><b><!-- ko if: model.Subject().length !=0 --><span style="white-space: pre-line;Font-size:18px;" data-bind="html: Subject"></span><!-- /ko --></b></p>
                                                         
-                                                        <p style="white-space: pre-line; word-wrap:break-word" data-bind="html: LatestCommentBySupport"></p>
+                                                        <p class="htmlcontent" data-bind="html: LatestCommentBySupport"></p>
                                                         
                                                             <div data-bind="visible : model.LatestCommentfiles().length > 0">  
-	                                                                <ul class="attachments comment_detailed_attachment" style="padding-left:0px;">
-	                                                                    <li><!--  <apex:image url="{!URLFOR($Resource.MessagingAssets,'MessagingAssets/img/attach_icon.png')}"
-	                                                                            width="21" alt="" />--> Submitted Attachments :</li>
-	                                                              	  <apex:outputText value="<" escape="false" />!-- ko foreach: model.LatestCommentfiles() --<apex:outputText value=">" escape="false" />
-	                                                                    <li><a id="download2" class="pdf_icon" 
-	                                                                    data-bind="html: filename, attr:{ 'href': downloadurl }, click: downloaddoc, css: { pdf_icon: fileicon() == 'pdf', 'word_icon' : fileicon() == 'docx','excel_icon' : fileicon()=='xlsx','powerpoint_icon' : fileicon()=='pptx','onenote_icon' : fileicon()=='one','jpg_icon' : fileicon()=='jpg','png_icon' : fileicon()=='png'}">
-	                                                                        </a>&nbsp;(<span data-bind="text:filesize"></span>)
-	                                                                    </li>
-	                                                                <apex:outputText value="<" escape="false" />!-- /ko --<apex:outputText value=">" escape="false" />
-	                                                                </ul>
-                                                                </div>
-											
- 																<div data-bind="visible : model.files().length > 0 && model.ShowCaseBelow() == false">  
                                                                 <ul class="attachments comment_detailed_attachment" style="padding-left:0px;">
                                                                     <li><!--  <apex:image url="{!URLFOR($Resource.MessagingAssets,'MessagingAssets/img/attach_icon.png')}"
                                                                             width="21" alt="" />--> Submitted Attachments :</li>
-                                                                <apex:outputText value="<" escape="false" />!-- ko foreach: model.files() --<apex:outputText value=">" escape="false" />
+                                                                <apex:outputText value="<" escape="false" />!-- ko foreach: model.LatestCommentfiles() --<apex:outputText value=">" escape="false" />
                                                                     <li><a id="download2" class="pdf_icon" 
                                                                     data-bind="html: filename, attr:{ 'href': downloadurl }, click: downloaddoc, css: { pdf_icon: fileicon() == 'pdf', 'word_icon' : fileicon() == 'docx','excel_icon' : fileicon()=='xlsx','powerpoint_icon' : fileicon()=='pptx','onenote_icon' : fileicon()=='one','jpg_icon' : fileicon()=='jpg','png_icon' : fileicon()=='png'}">
                                                                         </a>&nbsp;(<span data-bind="text:filesize"></span>)
                                                                     </li>
                                                                 <apex:outputText value="<" escape="false" />!-- /ko --<apex:outputText value=">" escape="false" />
                                                                 </ul>
-                                                                </div>																
-											                                                        
+                                                                </div>
+                                                        
+                                                        
                                                     </div>
                                                 </apex:outputPanel>
                                             </div>
@@ -373,20 +376,15 @@
                                                         </div>
                                                         <div class="longdata">
                                                              <div data-bind="visible : model.files() && model.files().length > 0" class="attachments comment_detailed_attachment">
-
-                                                                     <ul class="ulattachment comment_detailed_attachment PMattachments">
-                                                                   <li class="attachimg"><apex:image url="{!URLFOR($Resource.MessagingAssets,'MessagingAssets/img/attach_icon.png')}"
-                                                                                    width="21" alt="" /> :</li>
-
                                                                 <apex:outputText value="<" escape="false" />!-- ko foreach: model.files() --<apex:outputText value=">" escape="false" />
                                                                      
+                                                                     <ul class="ulattachment">
                                                                     <li><a id="download2" class="pdf_icon" data-bind="html: filename, attr:{ 'href': downloadurl }, click: downloaddoc, css: { pdf_icon: fileicon() == 'pdf', 'word_icon' : fileicon() == 'docx','excel_icon' : fileicon()=='xlsx','powerpoint_icon' : fileicon()=='pptx','onenote_icon' : fileicon()=='one','jpg_icon' : fileicon()=='jpg','png_icon' : fileicon()=='png'}">
                                                                         </a>&nbsp;(<span data-bind="text:filesize"></span>)
                                                                     </li>
+                                                                     </ul>
                                                                      
                                                                 <apex:outputText value="<" escape="false" />!-- /ko --<apex:outputText value=">" escape="false" />
-                                                                </ul>
-                                                                
                                                                </div>
                                                             <p  style="white-space: pre-line" data-bind="html: Description " ></p>
                                                             
