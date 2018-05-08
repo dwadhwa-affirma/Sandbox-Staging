@@ -350,7 +350,7 @@ public class UsersAccountDetailsController {
                                      Comment_Block_17__c,
                                      Comment_Block_18__c,
                                      Comment_Block_19__c,
-                                     Comment_Block_20__c FROM Account_Details__c Where Id IN:accIdSet];
+                                     Comment_Block_20__c FROM Account_Details__c Where Name IN:accountNumberSet];
         }           
             
         system.debug(accountDetailsList); 
