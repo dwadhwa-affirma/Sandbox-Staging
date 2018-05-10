@@ -49,14 +49,19 @@ trigger CaseTrigger on Case (before insert, before update, after insert, after u
                     
                     if(sc.Primary_Category__c == c_new.Primary_Category__c && sc.Secondary_Category__c == c_new.Secondary_Category__c  && sc.Teritiary_Category__c == c_new.Tertiary_Category__c)
                     {
-                         c_new.SLA__c =  scList[0].SLA__c;
-                         Map<ID,Schema.RecordTypeInfo> rt_Map = Case.sObjectType.getDescribe().getRecordTypeInfosById();
-                       
-                         if(rt_map.get(c_new.recordTypeID).getName().containsIgnoreCase('Survey Cases')){
+                         c_new.SLA__c =  sc.SLA__c;
+                         
+                        
+                         //Map<ID,Schema.RecordTypeInfo> rt_Map = Case.sObjectType.getDescribe().getRecordTypeInfosById();
+                     }  
+                         
+                          // if(rt_map.get(c_new.recordTypeID).getName().containsIgnoreCase('Survey Cases')){
+                   
+                         if(c_new.Primary_Category__c == 'Surveys'){
                             c_new.SLA__c =  40;
                           }  
                         
-                    }
+                   // }
                  }
          }
                
@@ -737,8 +742,7 @@ System.Debug('Calling the CaseAssign method');
           
           
           
-}          
-
+}        
 
 private boolean IsOtherThanTaskCountFieldUpdated()
 { 
