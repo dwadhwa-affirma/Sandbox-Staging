@@ -244,7 +244,8 @@ public class UsersAccountDetailsController {
         for(Person_Account__c var: paList){
             paIds.add(var.Account_Number__c);
         } */
-        
+        Map<string,string> listRelationships = new  Map<string,string>(); 
+        Map<string,string> listRelationshipsName = new  Map<string,string>(); 
         set<String> accountNumberSet = new set<String>();
         set<Id> accIdset = new set<Id>();
         set<String> acctypeSet = new set<String>();
@@ -252,10 +253,12 @@ public class UsersAccountDetailsController {
             accountNumberSet.add(var.Account_Number__r.Name);
             acctypeSet.add(var.Account_Number__r.RecType__c);
             accIdSet.add(var.Account_Number__c);
+            listRelationships.put(var.Account_Number__c,var.TypeTranslate__c);
+			listRelationshipsName.put(var.Account_Number__r.Name,var.TypeTranslate__c);
         }
         
         
-        
+           
         list<Account_Details__c> accountDetailsList = new list<Account_Details__c>();
         if(acctypeSet.contains('ACCT')){
         accountDetailsList = [Select Id,
@@ -366,13 +369,24 @@ public class UsersAccountDetailsController {
                                     
          for(Account_Details__c var: accountDetailsList){
              boolean found = false;
-             for(AccountList360 accountQDetails : listAccountList360)
+             if(listRelationshipsName.containsKey(var.Name))
              {
-             	if(accountQDetails.id == var.id)
+	             string relationship = listRelationshipsName.get(var.Name);
+	             
+	             if(!relationship.contains('Beneficiary'))
+	             {
+	             	found = true;
+	             	
+	             }
+             }
+             /*for(Account_Details__c accountQDetails : listRelationshipsName)
+             {
+             	
+             	if(accountQDetails.id == var.id && listRelationshipsName.get(obj.Name))
              	{
              		found = true;
              	}
-             }
+             }*/
              if(found)
              {
 	             if(var.WARNING_01_CODE__c != '000-NONE' && var.WARNING_01_CODE__c != NULL && var.WARNING_01_CODE__c != '0-NONE'){
