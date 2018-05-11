@@ -22,6 +22,18 @@
         </recipients>
         <senderAddress>noreply@chevronfcu.org</senderAddress>
         <senderType>OrgWideEmailAddress</senderType>
+        <template>unfiled$public/Secure_Portal_Notification_CFCU5</template>
+    </alerts>
+    <alerts>
+        <fullName>Send_Member_Email_Notification_CU_Case_Comment_CFCU</fullName>
+        <description>Send Member Email Notification CU Case (Comment)- CFCU</description>
+        <protected>false</protected>
+        <recipients>
+            <field>Member_Email__c</field>
+            <type>email</type>
+        </recipients>
+        <senderAddress>noreply@chevronfcu.org</senderAddress>
+        <senderType>OrgWideEmailAddress</senderType>
         <template>unfiled$public/Secure_Portal_Notification_CU_Case_CFCU</template>
     </alerts>
     <alerts>
