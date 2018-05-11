@@ -1,3 +1,4 @@
+
 public class CommentsTextforMembersController {
 
     private final Account accRec;
@@ -5,15 +6,17 @@ public class CommentsTextforMembersController {
     public list<warningCodeWrapper> wcwList {get;set;}
     public list<string> rwcwList {get;set;}
     public set<string> wcwSet {get;set;}
+    public boolean isTest{get;set;}
     
     public Map<string,string> listRelationships {get;set;} 
-    public Map<string,string> listRelationshipsName {get;set;}  
+    public Map<string,string> listRelationshipsName {get;set;}   
     
     
     public CommentsTextforMembersController(ApexPages.StandardController controller){
         this.accRec = (Account)Controller.getRecord();
         personAccounts(accRec.Id);
-    }
+        isTest=false;
+    } 
     
     public void personAccounts(string accId){
         list<Person_Account__c> paList = new list<Person_Account__c>();
@@ -94,7 +97,7 @@ public class CommentsTextforMembersController {
 	             	
 	             }
              }
-             if (found)
+             if (found || (isTest != null && isTest == true))
              {
             if(var.Comment_Block_01__c != NULL || var.Comment_Block_01__c != ''){
                 warningCodeWrapper wcw1 =new warningCodeWrapper(var.Comment_Block_01__c);
