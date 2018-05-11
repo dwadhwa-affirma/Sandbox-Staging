@@ -6,6 +6,10 @@ public class CommentsTextforMembersController {
     public list<string> rwcwList {get;set;}
     public set<string> wcwSet {get;set;}
     
+    public Map<string,string> listRelationships {get;set;} 
+    public Map<string,string> listRelationshipsName {get;set;}  
+    
+    
     public CommentsTextforMembersController(ApexPages.StandardController controller){
         this.accRec = (Account)Controller.getRecord();
         personAccounts(accRec.Id);
@@ -14,21 +18,30 @@ public class CommentsTextforMembersController {
     public void personAccounts(string accId){
         list<Person_Account__c> paList = new list<Person_Account__c>();
             paList = [SELECT Id,
-                             Account_Number__c, Account_Number__r.RecType__c, Account_Number__r.Name FROM Person_Account__c WHERE PersonID__c =:accId];
+                             Account_Number__c, Account_Number__r.RecType__c, Account_Number__r.Name,TypeTranslate__c FROM Person_Account__c WHERE PersonID__c =:accId];
         accountDetails(paList);             
-    }
+    } 
     
     public void accountDetails(list<Person_Account__c> paList){
         set<String> accountNumberSet = new set<String>();
         set<Id> accIdset = new set<Id>();
         set<String> acctypeSet = new set<String>();
+
+ 		listRelationships = new  Map<string,string>();
+        listRelationshipsName = new  Map<string,string>();
+        
         for(Person_Account__c var: paList){
             accountNumberSet.add(var.Account_Number__r.Name);
             acctypeSet.add(var.Account_Number__r.RecType__c);
             accIdSet.add(var.Account_Number__c);
+
+  			listRelationships.put(var.Account_Number__c,var.TypeTranslate__c);
+			listRelationshipsName.put(var.Account_Number__r.Name,var.TypeTranslate__c);
+            
         }
         accList = new list<Account_Details__c>();
-        if(acctypeSet.contains('ACCT')){
+        //if(acctypeSet.contains('ACCT'))
+        if (1==1){
             accList = [SELECT Id,
                               Name,
                               RecType__c,
@@ -64,7 +77,25 @@ public class CommentsTextforMembersController {
         
         wcwList = new list<warningCodeWrapper>();
         rwcwList = new list<string>();
+        
+       
+        
+        
         for(Account_Details__c var: accList){
+        	
+        	 boolean found = false;
+             if(listRelationshipsName.containsKey(var.Name))
+             {
+	             string relationship = listRelationshipsName.get(var.Name);
+	             
+	             if(relationship != null && !relationship.contains('Beneficiary'))
+	             {
+	             	found = true;
+	             	
+	             }
+             }
+             if (found)
+             {
             if(var.Comment_Block_01__c != NULL || var.Comment_Block_01__c != ''){
                 warningCodeWrapper wcw1 =new warningCodeWrapper(var.Comment_Block_01__c);
                  wcwList.add(wcw1);
@@ -145,6 +176,7 @@ public class CommentsTextforMembersController {
                 warningCodeWrapper wcw20 =new warningCodeWrapper(var.Comment_Block_20__c);
                   wcwList.add(wcw20);
             }           
+        }
         }
         
         wcwSet = new set<string>();

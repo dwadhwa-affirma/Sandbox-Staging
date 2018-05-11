@@ -20,15 +20,15 @@ public class UsersAccountDetailsController {
     public Map<String, String> cnum_by_id7{get;set;}
     public list<Account_Details__c> cardList{get;set;}
     public boolean CaseComentComments {get;set;}
-        public boolean TaskCommentsShow {get;set;}
- public   List<AccountList360> listAccountList360 {get;set;}
+    public boolean TaskCommentsShow {get;set;}
+ 	public List<AccountList360> listAccountList360 {get;set;}
     
     public UsersAccountDetailsController(ApexPages.StandardController controller){
         //this.cRec = (Case)Controller.getRecord();
         CaseComentComments = false;
         TaskCommentsShow = false;
         accId = System.currentPageReference().getParameters().get('Id');
-        system.debug('account say person id....'+accID);
+        system.debug('account say person id....'+accID); 
         if(accId!=NULL || accId!=''){
             personAccounts(accId);
             
@@ -198,7 +198,7 @@ public class UsersAccountDetailsController {
                               Expiration_Date__c,
                               Issue_Date__c,
                               Emp_Balance__c,
-                              Card_Name__c FROM Account_Details__c Where Name IN:accountNumberSetWOBeneficiary and RecType__c = 'CARD'];
+                              Card_Name__c FROM Account_Details__c Where Name IN: accountNumberSetWOBeneficiary and RecType__c = 'CARD'];
         }else{
             cardList = [SELECT Id,
                               Name,
@@ -215,7 +215,7 @@ public class UsersAccountDetailsController {
                               Expiration_Date__c,
                               Issue_Date__c,
                               Emp_Balance__c,
-                              Card_Name__c FROM Account_Details__c Where Id IN:accIdSetWOBeneficiary and RecType__c = 'CARD'];
+                              Card_Name__c FROM Account_Details__c Where Name IN:accountNumberSetWOBeneficiary and RecType__c = 'CARD'];
         }
         List<string> listCard = new List<string>();
         for(Account_Details__c card : cardList){
@@ -254,11 +254,11 @@ public class UsersAccountDetailsController {
             acctypeSet.add(var.Account_Number__r.RecType__c);
             accIdSet.add(var.Account_Number__c);
             listRelationships.put(var.Account_Number__c,var.TypeTranslate__c);
-			listRelationshipsName.put(var.Account_Number__r.Name,var.TypeTranslate__c);
+      listRelationshipsName.put(var.Account_Number__r.Name,var.TypeTranslate__c);
         }
         
         
-           
+        
         list<Account_Details__c> accountDetailsList = new list<Account_Details__c>();
         if(acctypeSet.contains('ACCT')){
         accountDetailsList = [Select Id,
@@ -371,21 +371,21 @@ public class UsersAccountDetailsController {
              boolean found = false;
              if(listRelationshipsName.containsKey(var.Name))
              {
-	             string relationship = listRelationshipsName.get(var.Name);
-	             
-	             if(!relationship.contains('Beneficiary'))
-	             {
-	             	found = true;
-	             	
-	             }
+               string relationship = listRelationshipsName.get(var.Name);
+               
+               if(relationship != null && !relationship.contains('Beneficiary'))
+             	{
+             		found = true;
+                 
+             	}
              }
              /*for(Account_Details__c accountQDetails : listRelationshipsName)
              {
-             	
-             	if(accountQDetails.id == var.id && listRelationshipsName.get(obj.Name))
-             	{
-             		found = true;
-             	}
+               
+               if(accountQDetails.id == var.id && listRelationshipsName.get(obj.Name))
+               {
+                 found = true;
+               }
              }*/
              if(found)
              {
