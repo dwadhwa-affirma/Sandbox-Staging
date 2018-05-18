@@ -123,7 +123,7 @@ public class UsersAccountDetailsController {
                               Issue_Date__c,
                               Emp_Balance__c,
                               Emp_Available_Balance__c,
-                              Available_Balance__c FROM Account_Details__c Where Id IN:accIdSet and RecType__c != 'CARD'];
+                              Available_Balance__c FROM Account_Details__c Where Name IN:accountNumberSet and RecType__c != 'CARD'];
         }
          listAccountList360  = new  List<AccountList360> ();
         for(Account_Details__c acc : accList1)
@@ -155,7 +155,7 @@ public class UsersAccountDetailsController {
 			}
 			else
 			{
-				obj.Relationship = listRelationships.get(obj.Id);
+				obj.Relationship = listRelationshipsName.get(obj.Name);	
 			}
 			
 			

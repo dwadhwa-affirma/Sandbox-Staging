@@ -1,7 +1,8 @@
 @isTest
 public class UsersAccountDetailsControllerTest {
-    static testmethod void testmethod1(){
-           List<Account_Details__c> account_details_Obj = new List<Account_Details__c>{
+	static void SetUp(){
+		test.StartTest();
+		List<Account_Details__c> account_details_Obj = new List<Account_Details__c>{
 						    new Account_Details__c(Name = '0000147163', Balance__c = 0.00, Combined_Account_ID__c = '0000147163S0100P0100', ID1__c = '0100', Onboarded__c = true, RecType__c = 'ACCT', TypeTranslate__c = '1-PRIMARY SHARE',WARNING_01_CODE__c='ABC',
 WARNING_02_CODE__c='ABC',
 WARNING_03_CODE__c='ABC',
@@ -130,7 +131,7 @@ Comment_Block_20__c='ABC'
 
 		    Insert account_details_Obj;
 		    
-		        Account account_Obj = new Account(LastName = 'BANDATest', FirstName = 'MARIATest', Type = 'null', PersonHasOptedOutOfEmail = false, NA_Eligibility__c = false, NA_LEAV_Complete__c = true, NA_LECF_Complete__c = true, NA_LECP_Complete__c = true, NA_LEEM_Complete__c = true, NA_LEHS_Complete__c = true, NA_LEMD_Complete__c = false, NA_LEMP_Complete__c = false, NA_LEMQ_Complete__c = true, NA_LEOL_Complete__c = true, NA_LEOM_Complete__c = true, NA_LEPT_Complete__c = true, NA_LESB_Complete__c = false, NA_LESF_Complete__c = true, NA_LEWS_Complete__c = true, NA_Opt_Out__c = false, smagicinteract__SMSOptOut__pc = false, et4ae5__HasOptedOutOfMobile__pc = false);
+ Account account_Obj = new Account(LastName = 'BANDATest', FirstName = 'MARIATest', Type = 'null', PersonHasOptedOutOfEmail = false, NA_Eligibility__c = false, NA_LEAV_Complete__c = true, NA_LECF_Complete__c = true, NA_LECP_Complete__c = true, NA_LEEM_Complete__c = true, NA_LEHS_Complete__c = true, NA_LEMD_Complete__c = false, NA_LEMP_Complete__c = false, NA_LEMQ_Complete__c = true, NA_LEOL_Complete__c = true, NA_LEOM_Complete__c = true, NA_LEPT_Complete__c = true, NA_LESB_Complete__c = false, NA_LESF_Complete__c = true, NA_LEWS_Complete__c = true, NA_Opt_Out__c = false, smagicinteract__SMSOptOut__pc = false, et4ae5__HasOptedOutOfMobile__pc = false);
     Insert account_Obj; 
     
     Account_Details__c obj = [select id from Account_Details__c where id =: account_details_Obj[0].id];
@@ -141,8 +142,9 @@ Comment_Block_20__c='ABC'
     		new Person_Account__c(Account_Number__c = account_details_Obj[2].Id, PersonID__c = account_Obj.Id)};
 		     Insert person_obj;
 		     
-		Account account_Obj1 = new Account(LastName = 'BANDATest1', FirstName = 'MARIATest1', Type = 'null', PersonHasOptedOutOfEmail = false, NA_Eligibility__c = false, NA_LEAV_Complete__c = true, NA_LECF_Complete__c = true, NA_LECP_Complete__c = true, NA_LEEM_Complete__c = true, NA_LEHS_Complete__c = true, NA_LEMD_Complete__c = false, NA_LEMP_Complete__c = false, NA_LEMQ_Complete__c = true, NA_LEOL_Complete__c = true, NA_LEOM_Complete__c = true, NA_LEPT_Complete__c = true, NA_LESB_Complete__c = false, NA_LESF_Complete__c = true, NA_LEWS_Complete__c = true, NA_Opt_Out__c = false, smagicinteract__SMSOptOut__pc = false, et4ae5__HasOptedOutOfMobile__pc = false);
-    Insert account_Obj1;      
+	Account account_Obj1 = new Account(LastName = 'BANDATest1', FirstName = 'MARIATest1', Type = 'null', PersonHasOptedOutOfEmail = false, NA_Eligibility__c = false, NA_LEAV_Complete__c = true, NA_LECF_Complete__c = true, NA_LECP_Complete__c = true, NA_LEEM_Complete__c = true, NA_LEHS_Complete__c = true, NA_LEMD_Complete__c = false, NA_LEMP_Complete__c = false, NA_LEMQ_Complete__c = true, NA_LEOL_Complete__c = true, NA_LEOM_Complete__c = true, NA_LEPT_Complete__c = true, NA_LESB_Complete__c = false, NA_LESF_Complete__c = true, NA_LEWS_Complete__c = true, NA_Opt_Out__c = false, smagicinteract__SMSOptOut__pc = false, et4ae5__HasOptedOutOfMobile__pc = false);
+    Insert account_Obj1;  
+        
 		List<Person_Account__c> person_obj1= 
 		new List<Person_Account__c>{new Person_Account__c(TypeTranslate__c='0000/Primary',Account_Number__c = account_details_Obj[1].Id, PersonID__c = account_Obj.Id), 
 			new Person_Account__c(TypeTranslate__c='0000/Primary',Account_Number__c = account_details_Obj[2].Id, PersonID__c = account_Obj1.Id)};
@@ -226,7 +228,7 @@ Comment_Block_20__c='ABC'
 			
 			
 			
-			List<Case> case_Obj1 = new List<Case>{
+		 /*	List<Case> case_Obj1 = new List<Case>{
 		    new Case(Status = 'In Process', Origin = null, Subject = 'Test',  IsEscalated = false, AccountId = account_Obj1.Id, Account_Number__c = account_details_Obj[1].Id, Additional_Documents__c = false, Five_Day_Flag__c = false, IsMarkDeleted__c = false, IsMarkRead__c = false, IsMarkSaved__c = false, Primary_Category__c = 'Account Maintenance', Secondary_Category__c = 'Account Services', Tertiary_Category__c = 'Extended Check Hold'),
 		    new Case(Status = 'In Process', Origin = null, Subject = 'Test',  IsEscalated = false, AccountId = account_Obj1.Id, Account_Number__c = account_details_Obj[1].Id, Additional_Documents__c = false, Five_Day_Flag__c = false, IsMarkDeleted__c = false, IsMarkRead__c = false, IsMarkSaved__c = false, Primary_Category__c = 'Account Maintenance', Secondary_Category__c = 'Account Services', Tertiary_Category__c = 'Extended Check Hold'),
 		    new Case(Status = 'In Process', Origin = null, Subject = 'Test',  IsEscalated = false, AccountId = account_Obj1.Id, Account_Number__c = account_details_Obj[1].Id, Additional_Documents__c = false, Five_Day_Flag__c = false, IsMarkDeleted__c = false, IsMarkRead__c = false, IsMarkSaved__c = false, Primary_Category__c = 'Account Maintenance', Secondary_Category__c = 'Account Services', Tertiary_Category__c = 'Extended Check Hold'),
@@ -244,7 +246,7 @@ Comment_Block_20__c='ABC'
          case_Obj1.Add(cs6);
          case_Obj1.Add(cs7);
          case_Obj1.Add(cs8);
-           */   
+           
 		 Insert case_Obj1;
 		List<CaseComment> CaseComment_Obj1 = new List<CaseComment>{		 
 						new CaseComment(CommentBody='test', IsPublished = true,ParentId=case_Obj1[0].Id),
@@ -270,19 +272,32 @@ Comment_Block_20__c='ABC'
 						
 							    
 						};
-			insert task_Obj1;
-            
+			insert task_Obj1;*/   
+			
+			
+	}
+	
+	static void TearDown(){
+		test.StopTest();
+	}
+    static testmethod void testmethod1(){
+           
+         SetUp();  
         PageReference pageRef = Page.UsersAccountDetails;
-        Test.setCurrentPage(pageRef);        
+        Test.setCurrentPage(pageRef);    
+        Account account_Obj = [select Id from account limit 1];        
+        Account account_Obj1 = [select Id from account limit 1];
+        
         ApexPages.currentPage().getParameters().put('ID', account_Obj.Id);
         UsersAccountDetailsController controller = new UsersAccountDetailsController(new ApexPages.StandardController(account_Obj));
         
         ApexPages.currentPage().getParameters().put('ID', account_Obj1.Id);
         controller = new UsersAccountDetailsController(new ApexPages.StandardController(account_Obj1));
-        
+        TearDown();
    }
     
     static testmethod void testmethod2(){
+        
         
         String RecTypeId= [select Id from RecordType where (Name='Person Account') and (SobjectType='Account')].Id;
         
@@ -303,14 +318,16 @@ Comment_Block_20__c='ABC'
         accDetail.Name = 'Test';
         accDetail.RecType__c = 'ACCT';
         insert accDetail;
-        
         PageReference pageRef = Page.UsersAccountDetails;
         Test.setCurrentPage(pageRef);
+        // Account acc = [select Id from account limit 1];       
+        //  Account_Details__c accDetail = [select Id from Account_Details__c limit 1];       
         ApexPages.currentPage().getParameters().put('ID', acc.Id);
         
         map<string,Id> docMap = new map<string,Id>();
 
         UsersAccountDetailsController controller = new UsersAccountDetailsController(new ApexPages.StandardController(acc));
         UsersAccountDetailsController.warningStringWrapper wrp=new UsersAccountDetailsController.warningStringWrapper(accDetail.Id,'test2', Date.newInstance(2016, 5, 3), 'test3','test4','test5', docMap,'ACCT','Warning Code');
+      //  TearDown();
     }
 }
