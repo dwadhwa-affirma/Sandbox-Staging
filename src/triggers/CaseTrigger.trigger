@@ -11,8 +11,8 @@ trigger CaseTrigger on Case (before insert, before update, after insert, after u
             updateSurveyCase(Trigger.new);    
         }
         if (Trigger.isUpdate) {
-            if(IsOtherThanTaskCountFieldUpdated())
-            {
+          if(IsOtherThanTaskCountFieldUpdated())
+          {
             updateCaseBrandInfo(Trigger.new);
             updateEmailtoSend(Trigger.new);
             updateErrorOnCaseClosing(Trigger.new);
@@ -23,11 +23,11 @@ trigger CaseTrigger on Case (before insert, before update, after insert, after u
             updateMemberInfo(Trigger.New, Trigger.Old);  
             
             updateownershipLog(Trigger.New);        
-            }  
+          }  
         }
         
         if(IsOtherThanTaskCountFieldUpdated())
-            {
+          {
         // Removed query from for loop so we need to query object once for all cases
           list<CaseRecordType__c> scList = [SELECT Id,
                                                  Primary_Category__c,
@@ -42,7 +42,7 @@ trigger CaseTrigger on Case (before insert, before update, after insert, after u
                                              LIMIT 1*/]; 
         
          for(Case c_new : Trigger.new){   
-             if(scList.size()> 0)
+            if(scList.size()> 0)
              {
                  for(CaseRecordType__c sc : scList)
                  {
@@ -51,22 +51,15 @@ trigger CaseTrigger on Case (before insert, before update, after insert, after u
                     {
                          c_new.SLA__c =  sc.SLA__c;
                          
-                        
-                         //Map<ID,Schema.RecordTypeInfo> rt_Map = Case.sObjectType.getDescribe().getRecordTypeInfosById();
-                     }  
-                         
-                          // if(rt_map.get(c_new.recordTypeID).getName().containsIgnoreCase('Survey Cases')){
-                   
-                         if(c_new.Primary_Category__c == 'Surveys'){
+                    }
+		    if(c_new.Primary_Category__c == 'Surveys'){
                             c_new.SLA__c =  40;
-                          }  
-                        
-                   // }
+                    }
                  }
          }
                
          }
-            }
+          }
         
         
     }
@@ -104,8 +97,8 @@ System.Debug('Calling the CaseAssign method');
             List<case> cs=[select id from case where case.id in : CaseIds];   
             for(case c : cs )
             {
-                
-                c.setOptions(dmo);  
+              
+              c.setOptions(dmo);  
             }                
             
             
@@ -117,8 +110,8 @@ System.Debug('Calling the CaseAssign method');
             
             for(case c : cs )
             {
-                
-                c.AccountId = pa[0].PersonID__C;
+              
+              c.AccountId = pa[0].PersonID__C;
             }
             
             update cs;    
@@ -253,7 +246,7 @@ System.Debug('Calling the CaseAssign method');
         List<EmailtoCaseCode__c> crtList = [Select Primary_Category__c, Secondary_Category__c, Teritiary_Category__c, RecordTypeId__c from EmailtoCaseCode__c where Name =:newListCrt];    
         
         for(Case c : Trigger.new){
-            if(accDetails.size()>0 && pa.size()>0 ){
+            if(accDetails.size()>0 || pa.size()>0 ){
                 c.Account_Number__c = accDetails[0].Id;
                 c.AccountId = pa[0].PersonId__c;
                 c.ContactId = conMap.get(pa[0].PersonId__c);
@@ -266,15 +259,6 @@ System.Debug('Calling the CaseAssign method');
                 c.State__c = pa[0].PersonId__r.Residential_State__pc;
                 c.Country__c = pa[0].PersonId__r.Residential_Country__pc;
                 c.Zip_Code__c = pa[0].PersonId__r.Residential_Zipocde__pc;} 
-                
-                
-                if(accDetails.size()>0 && pa.size()==0 ){
-                c.Account_Number__c = accDetails[0].Id;
-                }
-                
-                
-                
-                
                 if(crtList.size()>0 || !crtList.isEmpty()){
                 c.Primary_Category__c = crtList[0].Primary_Category__c;
                 c.Secondary_Category__c = crtList[0].Secondary_Category__c;
@@ -742,23 +726,24 @@ System.Debug('Calling the CaseAssign method');
           
           
           
-}        
+}          
+
 
 private boolean IsOtherThanTaskCountFieldUpdated()
 { 
-    if(trigger.isinsert)
-    {
-        return true;
-        
-    }
+  if(trigger.isinsert)
+  {
+    return true;
+    
+  }
         Case gplObject = new Case(); // This takes all available fields from the required object. 
         Schema.SObjectType objType = gplObject.getSObjectType(); 
         Map<String, Schema.SObjectField> mapFields = Schema.SObjectType.Case.fields.getMap(); 
         
-        for(Case     gpl : trigger.new)
+        for(Case   gpl : trigger.new)
         {
-            Case     oldGPL = trigger.oldMap.get(gpl.Id);
-        if(mapFields.size()>0)
+            Case   oldGPL = trigger.oldMap.get(gpl.Id);
+    if(mapFields.size()>0)
         {
             for (String str : mapFields.keyset()) 
             { 
@@ -766,7 +751,7 @@ private boolean IsOtherThanTaskCountFieldUpdated()
                 { 
                     if(gpl.get(str) != oldGPL.get(str) && str.toLowerCase() == 'Overdue_task_count__c')
                     { 
-                        System.Debug('Other than Email updated...' + str);
+                      System.Debug('Other than Email updated...' + str);
                         return false; 
                     } 
                 } 
