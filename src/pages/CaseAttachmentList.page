@@ -1,4 +1,4 @@
-<apex:page standardController="Case" extensions="GetCaseAttachments" showHeader="false" standardStylesheets="true" TabStyle="Case" >
+<apex:page standardController="Case" extensions="GetCaseAttachments1" showHeader="false" standardStylesheets="true" TabStyle="Case" >
 <apex:form >
         <apex:pageBlock >
           

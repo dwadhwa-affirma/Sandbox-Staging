@@ -21,7 +21,7 @@ private class LeadBusinessHoursControllerTest
     ApexPages.currentPage().getParameters().put('Id', led.Id);   
     LeadBusinessHoursController controller = new LeadBusinessHoursController(new ApexPages.StandardController(led));
    
-        
+    LeadBusinessHoursController.GetLeadHours(led.Id)  ;  
         
 	}
 }

@@ -9,4 +9,11 @@ public class LeadBusinessHoursController {
 			LeadHours = new OpenHours__c();
 			LeadHours = [select Id, Open_Hours__c from OpenHours__c where leadId__c =: LeadId limit 1];			
 		}		
+		
+		 @AuraEnabled 
+		 public static OpenHours__c GetLeadHours(string LeadId){
+		 	LeadHours = new OpenHours__c();
+			LeadHours = [select Id, Open_Hours__c from OpenHours__c where leadId__c =: LeadId limit 1];	
+			return LeadHours;
+		 }
 }

@@ -541,8 +541,7 @@ public class UsersAccountDetailsController {
                               PersonID__r.FirstName,
                               PersonID__r.LastName,
                               PersonID__r.Name,
-                              Account_Number__r.Brand__c From Person_Account__c WHERE Account_Number__r.Name IN :accNameWoBeneficiary /*AND personId__c != :testId*/];
-                              
+                              Account_Number__r.Brand__c From Person_Account__c WHERE Account_Number__r.Name IN :accNameWoBeneficiary /*AND personId__c != :testId*/];                  
 		ContactList = [Select Id,
                               personId__c,
                               Account_Number__c,
@@ -565,17 +564,13 @@ public class UsersAccountDetailsController {
     
     public void caseDetails(list<Person_Account__c> paList1){
         set<Id> accIds = new set<Id>();
-        for(Person_Account__c var: paList1){
-			 boolean found = false;
-             for(AccountList360 accountQDetails : listAccountList360)
+       for(AccountList360 accountQDetails : listAccountList360)
              {
-             	if(accountQDetails.id == var.Account_Number__c)
-             	{
-             		found = true;
-             	}
-             }
-            accIds.add(var.Account_Number__c);
-        }
+             	accIds.add(accountQDetails.id);
+          }
+        
+        
+        system.debug('accIds###' + accIds);
         
         caseList = [Select Id,
                            CaseNumber,

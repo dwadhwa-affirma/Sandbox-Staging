@@ -60,6 +60,50 @@ Public class AttachmentNameUpdateTest{
         mem.Case__c = cas.id;
         //mem.Name = 'test';
         insert mem;
+        
+         Case cas1 = new Case();
+        //List<Contact> contact = [SELECT AccountId, FirstName, LastName FROM Contact WHERE Id =:contactid];
+        cas1.Subject = 'TestCaseSubject';
+        cas1.Description = 'TestCaseSubject';
+        cas1.Account_Number__c = ad.id;
+        cas1.AccountID = acc.id;
+        cas1.Primary_Category__c = 'Online Banking';
+        cas1.Status ='Open';
+        insert cas1;
+         
+        Member_Comment__c mem1 = new Member_Comment__c();
+        mem1.Case__c = cas1.id;
+        
+        insert mem1;
+         
+         string before = 'Testing base 64 encode';            
+         Blob beforeblob = Blob.valueOf(before);
+         
+         ContentVersion cv = new ContentVersion();
+         cv.title = 'test content trigger';      
+         cv.PathOnClient ='test';           
+         cv.VersionData =beforeblob;          
+         insert cv; 
+         
+         
+          ContentVersion testContent = [SELECT id, ContentDocumentId FROM ContentVersion where Id = :cv.Id];
+       
+         ContentDocumentLink attach3 =new ContentDocumentLink();    
+         attach3.ContentDocumentId= testContent.ContentDocumentId;
+         attach3.LinkedEntityId=mem.id;
+         attach3.ShareType= 'V';
+        insert attach3;
+        
+        ContentDocumentLink attach4 =new ContentDocumentLink();    
+         attach4.ContentDocumentId= testContent.ContentDocumentId;
+         attach4.LinkedEntityId=mem1.id;
+         attach4.ShareType= 'V';
+        insert attach4;
+        
+       
+        
+        delete attach4;
+        
  
         Attachment attach1=new Attachment();    
         attach1.Name='Unit Test Attachment';

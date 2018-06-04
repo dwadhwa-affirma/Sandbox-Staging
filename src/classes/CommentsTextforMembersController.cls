@@ -1,4 +1,3 @@
-
 public class CommentsTextforMembersController {
 
     private final Account accRec;

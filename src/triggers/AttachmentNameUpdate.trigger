@@ -53,9 +53,9 @@ trigger AttachmentNameUpdate on Attachment (after update,after delete,after inse
     }
     //Map<id,Member_Comment__c> MemberMap  = new Map<id,Member_Comment__c >([select id, Name from Member_Comment__c  where id IN :parent]);
     //Memberlst  = [select id,Name from Member_Comment__c where Id in: parent];
-    for (Member_Comment__c mem : [select Id, Name,Attachment_Number__c,(SELECT Id FROM Attachments)  from Member_Comment__c where Id IN :parent]) {
+    for (Member_Comment__c mem : [select Id, Name,Attachment_Number__c,(SELECT Id FROM Attachments) ,(Select id from ContentDocumentLinks) from Member_Comment__c where Id IN :parent]) {
         //MemberMap.get(mem.Id).Attachment_Number__c = mem.Attachments.size();
-        mem.Attachment_Number__c = mem.Attachments.size();
+        mem.Attachment_Number__c = mem.Attachments.size() + mem.ContentDocumentLinks.size();
         MemberlsttoUpdate.add(mem);
     }
     system.debug('--MemberlsttoUpdate--'+MemberlsttoUpdate);

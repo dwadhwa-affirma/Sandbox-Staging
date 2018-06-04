@@ -7,7 +7,7 @@ public class PersonNameController {
     public PersonNameController(ApexPages.StandardController controller){
        // this.cRec = (Account_Details__c)Controller.getRecord();
         accId = System.currentPageReference().getParameters().get('Id');
-        if(accId != null){
+     if(accId != null){   
         Account_Details__c objNmae = [select id,Name from Account_Details__c where id=:accId];
         
         system.debug('Account Id is:::::'+accId);
@@ -16,7 +16,7 @@ public class PersonNameController {
         }else{
             
         }
-        }
+     }
     } 
         
         public void personAccounts(string accId){

@@ -161,7 +161,7 @@ global  class DisplayCaseController {
             userAccount.Brand = ad[0].Brand__c;
         }
                 
-        System.Debug('UserAccount:-' + userAccount);
+        System.Debug('TypeOfView:-' + TypeOfView);
         /* common code ends */
 
         DateTime date18months = DateTime.now().addMonths(-18);
@@ -190,6 +190,7 @@ global  class DisplayCaseController {
             {
                 parentcaseId.Add(casesCreatedBySupport[i].Id);
             }
+            System.Debug('parentcaseId:-' + parentcaseId);
             CommentsbySupport = [SELECT Case__r.Id, CreatedDate,Id, Member_Communication__c, Name, IsRead__c FROM Member_Comment__c Where CreatedById !=:LoggedinUser and case__r.Account_Number__r.Name =:userAccount.fedid order by CreatedDate desc];
             
             if(CommentsbySupport.size()>0)
@@ -250,14 +251,17 @@ global  class DisplayCaseController {
             string shortdesc ='';
             List<Message> messages = new List<Message>();
             List<Attachment> attachments;
+            List<ContentDocumentLink> attachments1;
             if(cases.size()>0)
              {
                 // 3/31 only show attachments added by member
                 if(Test.isRunningTest()){
                     attachments = [Select Id,Name,BodyLength, ParentId from Attachment Where ParentId in :parentcaseId];
+                    attachments1 = [select Id, ContentDocumentId,LinkedEntityId, ContentDocument.Title, ContentDocument.FileType from ContentDocumentLink where LinkedEntityId =:parentcaseId];
                 }
                 else{
                      attachments  = [Select Id,Name,BodyLength, ParentId from Attachment Where ParentId in :parentcaseId and  createdby.Profile.UserLicense.LicenseDefinitionKey !='SFDC'];
+                     attachments1 = [select Id, ContentDocumentId,LinkedEntityId, ContentDocument.Title, ContentDocument.FileType, ContentDocument.ContentSize from ContentDocumentLink where LinkedEntityId =:parentcaseId];
                 
                 System.debug('attachments=' + attachments);
                 }
@@ -407,7 +411,84 @@ global  class DisplayCaseController {
                                     filelists.add(fl);
                             }
                         }
+                        
+                       
+                        
+                        
+                        
                     }
+                    
+                    
+                    if(attachments1 != null)
+                    {
+                    			 
+                        system.debug('attachments1 ---'  + attachments1.size());
+                        for(j=0; j< attachments1.size(); j++ )
+                        {
+                            if (cases[i].Id == attachments1[j].LinkedEntityId)
+                            {
+                                FileList fl = new FileList();
+                                fl.filename = attachments1[j].ContentDocument.Title;
+                                fl.downloadurl = '/sfc/servlet.shepherd/document/download/'+ string.valueOf(attachments1[j].ContentDocumentId);
+                                string ext = '';
+                                try
+                                { 
+                                    ext = attachments1[j].ContentDocument.FileType;
+                                }
+                                catch (Exception ex)
+                                {
+                                
+                                }
+                                ext = ext.toLowerCase();
+			                    if(ext == 'doc' || ext == 'docx'){
+			                    	ext = 'word';
+			                    }
+			                    else if(ext == 'xls' || ext == 'xlsx'){
+			                    	ext = 'excel';
+			                    }
+			                    else if(ext == 'ppt' || ext == 'ppts'){
+			                    	ext = 'powerpoint';
+			                    }
+			                     else if(ext == 'jpg' || ext == 'jpeg' || ext == 'png'|| ext == 'bmp'){
+			                    	ext = 'jpg';
+			                    }
+			                    else if(ext == 'one'){
+			                    	ext = 'onenote';
+			                    }
+			                    
+			                   
+                                fl.fileicon = ext;
+                                string displaysize;
+                                    
+                                if(attachments1[j].ContentDocument.ContentSize < 1000)
+                                {
+                                    displaySize = attachments[j].BodyLength + ' Bytes';
+                                    //displaySize = attachments[j].BodyLength + 'KB';
+                                    System.debug('displaySize1=='+ displaySize);
+                                }                               
+                                else if(attachments1[j].ContentDocument.ContentSize > 1000 && attachments1[j].ContentDocument.ContentSize < 1000000)
+                                {
+                                    displaySize = Math.floor(attachments[j].BodyLength/1000) + ' KB';
+                                    //displaySize = attachments[j].BodyLength + 'KB';
+                                    System.debug('displaySize1=='+ displaySize);
+                                }
+                                else
+                                {
+                                    displaySize  = Math.round((attachments[j].BodyLength / 1000000)*10)/10 + ' MB';
+                                    //displaySize  = (attachments[j].BodyLength)/100 + 'MB';
+                                     System.debug('displaySize2=='+ displaySize);
+                                }
+                                
+                                    fl.filesize = displaySize;
+                                     System.debug('fl.filesize=='+ fl.filesize);
+                                    filelists.add(fl);
+                            }
+                        }
+                        
+                        
+                    
+                    }
+                    
                     message.files = filelists;
                 
                     messages.Add(message);
@@ -432,6 +513,7 @@ global  class DisplayCaseController {
     global static List<FileList> GetLatestSupportAttachment(string messageid)
     {
     	List<attachment> attachments = [Select Id,Name,BodyLength, ParentId from Attachment Where ParentId  =: messageId];
+    	List<ContentDocumentLink> attachments1 = [select Id, ContentDocumentId,LinkedEntityId, ContentDocument.Title, ContentDocument.FileType,ContentDocument.ContentSize from ContentDocumentLink where LinkedEntityId =:messageId];
     	List<FileList> filelists = new List<FileList>();
     	
     	integer j =0 ;
@@ -501,7 +583,82 @@ global  class DisplayCaseController {
                                     filelists.add(fl);
                             }
                         }
+                        
+                        
+                       
+                        
+                        
+                        
                     }
+                    
+                    if(attachments1 != null)
+                    {
+                    	 system.debug('attachments1 ---'  + attachments1.size());
+                        for(j=0; j< attachments1.size(); j++ )
+                        {
+                            if (1==1)
+                            {
+                                FileList fl = new FileList();
+                                fl.filename = attachments1[j].ContentDocument.Title;
+                                fl.downloadurl = '/sfc/servlet.shepherd/document/download/'+ string.valueOf(attachments1[j].ContentDocumentId);
+                                string ext = '';
+                                try
+                                { 
+                                    ext = attachments1[j].ContentDocument.FileType;
+                                }
+                                catch (Exception ex)
+                                {
+                                
+                                }
+                                ext = ext.toLowerCase();
+			                    if(ext == 'doc' || ext == 'docx'){
+			                    	ext = 'word';
+			                    }
+			                    else if(ext == 'xls' || ext == 'xlsx'){
+			                    	ext = 'excel';
+			                    }
+			                    else if(ext == 'ppt' || ext == 'ppts'){
+			                    	ext = 'powerpoint';
+			                    }
+			                     else if(ext == 'jpg' || ext == 'jpeg' || ext == 'png'|| ext == 'bmp'){
+			                    	ext = 'jpg';
+			                    }
+			                    else if(ext == 'one'){
+			                    	ext = 'onenote';
+			                    }
+			                    
+			                   
+                                fl.fileicon = ext;
+                                string displaysize;
+                                    
+                                if(attachments1[j].ContentDocument.ContentSize < 1000)
+                                {
+                                    displaySize = attachments1[j].ContentDocument.ContentSize + ' Bytes';
+                                    //displaySize = attachments[j].BodyLength + 'KB';
+                                    System.debug('displaySize1=='+ displaySize);
+                                }                               
+                                else if(attachments1[j].ContentDocument.ContentSize > 1000 && attachments1[j].ContentDocument.ContentSize < 1000000)
+                                {
+                                    displaySize = Math.floor(attachments1[j].ContentDocument.ContentSize/1000) + ' KB';
+                                    //displaySize = attachments[j].BodyLength + 'KB';
+                                    System.debug('displaySize1=='+ displaySize);
+                                }
+                                else
+                                {
+                                    displaySize  = Math.round((attachments1[j].ContentDocument.ContentSize / 1000000)*10)/10 + ' MB';
+                                    //displaySize  = (attachments[j].BodyLength)/100 + 'MB';
+                                     System.debug('displaySize2=='+ displaySize);
+                                }
+                                
+                                    fl.filesize = displaySize;
+                                     System.debug('fl.filesize=='+ fl.filesize);
+                                    filelists.add(fl);
+                            }
+                        }
+                    	
+                    }
+                    
+                    
     	return filelists;
     }
         @RemoteAction
@@ -616,6 +773,20 @@ global  class DisplayCaseController {
             
             
             List<Attachment> attachments = [Select Id,Name,BodyLength, ParentId from Attachment Where ParentId in :membercommentId];
+            List<ContentDocumentLink> attachments1 = new List<ContentDocumentLink>();
+            if(membercommentId.size() > 0)
+            {
+          
+	           attachments1 = [select Id, ContentDocumentId,LinkedEntityId, ContentDocument.Title, ContentDocument.FileType,ContentDocument.ContentSize	 from ContentDocumentLink where LinkedEntityId in :membercommentId];
+	           system.debug('attachments1========'+ attachments1);
+	            system.debug('membercommentId.size()11111========'+ membercommentId); 
+            }
+            
+          
+            
+           
+            
+            
             
             
             for( i =0 ;i < comments.size(); i++)
@@ -701,7 +872,88 @@ global  class DisplayCaseController {
                                 filelists.add(fl);
                         }
                     }
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
                 }
+                
+                if(attachments1 != null)
+                {
+                	 system.debug('attachments1 ---'  + attachments1.size());
+                        for(j=0; j< attachments1.size(); j++ )
+                        {
+                            
+                            if (comments[i].Id == attachments1[j].LinkedEntityId)
+                            {
+                                FileList fl = new FileList();
+                                fl.filename = attachments1[j].ContentDocument.Title;
+                                fl.downloadurl = '/sfc/servlet.shepherd/document/download/'+ string.valueOf(attachments1[j].ContentDocumentId);
+                                string ext = '';
+                                try
+                                { 
+                                    ext = attachments1[j].ContentDocument.FileType;
+                                }
+                                catch (Exception ex)
+                                {
+                                
+                                }
+                                ext = ext.toLowerCase();
+			                    if(ext == 'doc' || ext == 'docx'){
+			                    	ext = 'word';
+			                    }
+			                    else if(ext == 'xls' || ext == 'xlsx'){
+			                    	ext = 'excel';
+			                    }
+			                    else if(ext == 'ppt' || ext == 'ppts'){
+			                    	ext = 'powerpoint';
+			                    }
+			                     else if(ext == 'jpg' || ext == 'jpeg' || ext == 'png'|| ext == 'bmp'){
+			                    	ext = 'jpg';
+			                    }
+			                    else if(ext == 'one'){
+			                    	ext = 'onenote';
+			                    }
+			                    
+			                   
+                                fl.fileicon = ext;
+                                string displaysize;
+                                    
+                                if(attachments1[j].ContentDocument.ContentSize < 1000)
+                                {
+                                    displaySize = attachments1[j].ContentDocument.ContentSize + ' Bytes';
+                                    //displaySize = attachments[j].BodyLength + 'KB';
+                                    System.debug('displaySize1=='+ displaySize);
+                                }                               
+                                else if(attachments1[j].ContentDocument.ContentSize > 1000 && attachments1[j].ContentDocument.ContentSize < 1000000)
+                                {
+                                    displaySize = Math.floor(attachments1[j].ContentDocument.ContentSize/1000) + ' KB';
+                                    //displaySize = attachments[j].BodyLength + 'KB';
+                                    System.debug('displaySize1=='+ displaySize);
+                                }
+                                else
+                                {
+                                    displaySize  = Math.round((attachments1[j].ContentDocument.ContentSize / 1000000)*10)/10 + ' MB';
+                                    //displaySize  = (attachments[j].BodyLength)/100 + 'MB';
+                                     System.debug('displaySize2=='+ displaySize);
+                                }
+                                
+                                    fl.filesize = displaySize;
+                                     System.debug('fl.filesize=='+ fl.filesize);
+                                    filelists.add(fl);
+                            }
+                        }
+                        
+                        
+                	
+                	
+                }
+                
+                
                 mc.files = filelists;
                 
                 membercommentlist.add(mc);
