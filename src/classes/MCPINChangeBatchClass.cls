@@ -20,9 +20,10 @@ global class MCPINChangeBatchClass implements Database.Batchable<sobject> {
 			
 			if(obj != null)
 			{
-				Matcher emailMatcher = MyPattern.matcher(memberemail);
 				
-				if (memberemail == null || !emailMatcher.matches()) {
+				
+				if (memberemail == null || !MyPattern.matcher(memberemail).matches()) {
+					
 					MC_PIN_Change_Log__c objLog =  new MC_PIN_Change_Log__c();
 					objLog.ODS_Key__c = objMCPIN.OdsKey__c;
 					if(memberemail == null)
@@ -34,6 +35,7 @@ global class MCPINChangeBatchClass implements Database.Batchable<sobject> {
 				}
 				else
 				{
+					
 					SendOTPEmail(memberemail, obj.Brand__c);
 					
 				}
