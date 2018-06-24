@@ -450,6 +450,7 @@
                                 	<div class="col-md-7">
                                 		<div class="table-responsive urv-g additionalTokenContainer">
 											 <apex:pageBlock rendered="{!IF(selectedID != null && selectedID != '', true, false) }" title="Additional Tokens">
+											 
 											  <table class="table">
 												<tr class="dataRow even  first">
 													<td class="addtcol1">
@@ -536,7 +537,7 @@
 															<apex:outputText ><span class="advalOtherError2" style="display:none" ><i aria-hidden="true" class="fa fa-close"></i>  &nbsp; Required</span></apex:outputText>
 													</td>
 												</tr>
-												<tr class="dataRow even  last">
+												<tr class="dataRow even">
 													<td class="addtcol1">
 													<apex:selectList value="{!AdditionalToken3Selection}" onchange="javascript:showOtherArea(this, true)" multiselect="false" size="1" html-class="additionaltoken3 additionaltoken-all" id="token3">
 														<apex:selectOptions value="{!AdditionalTokensWithOther}" />
@@ -576,12 +577,72 @@
 															<apex:outputText ><span class="advalOtherError" style="display:none" ><i aria-hidden="true" class="fa fa-close"></i>  &nbsp; Required</span></apex:outputText>
 													</td>
 												</tr>
+												
+												
+												
+												<Tr>
+												
+												<td colspan="3">
+													 <apex:outputText ><span class="additionalTokenSelectionError" style="display:none" ><i aria-hidden="true" class="fa fa-close"></i>  &nbsp; Maximum of two additional tokens will be counted.<br/></span></apex:outputText>
+												  <apex:outputText ><span class="additionalTokenSelectionErrorSameNameText" style="display:none" ><i aria-hidden="true" class="fa fa-close"></i>  &nbsp; Please enter a unique description for each "Other" Additional token value.<br/></span></apex:outputText>
+												  <apex:outputText ><span class="additionalTokenSelectionErrorSameName" style="display:none" ><i aria-hidden="true" class="fa fa-close"></i>  &nbsp; Please select different Additional tokens.<br/></span></apex:outputText>
+												</td>
+												</Tr>
+												
+												
+												
+												
+												
+												
+												
+													<tr class="dataRow even  last">
+													<td class="but-area">
+													<input type="submit" style="margin-top:0px; margin-right:60px;" class="btn btn-primary pull-right" onclick="IsIneligibleComplete(); return false;" value="OTP" />
+									 				
+													</td>
+													<td class="addtcol2"> <div class="tblchkbx pb5">
+															 <div class="checkbox">
+															  
+															  
+															    
+															 	<span class="chkAlignedx">
+																	<input type="checkbox" disabled="disabled" name="OTPResult" id="OTPResultPass" value="Pass"/>
+																
+																	<label for="OTPResultPass">Pass</label>
+																</span>
+																<span class="chkAlignedx">
+																	<input type="checkbox" disabled="disabled" name="OTPResult" id="OTPResultFail"  value="Fail"/>
+																	<label for="OTPResultFail">Fail</label>
+																</span>
+															
+															  </div> 
+														  </div></td>
+														 <td class="addtcol3">
+															
+														  </td>
+												</tr>
+												
+												
+												
+												
+												
+												
+												
+												
+												
+												
 											  </table>
-											  <apex:outputText ><span class="additionalTokenSelectionError" style="display:none" ><i aria-hidden="true" class="fa fa-close"></i>  &nbsp; Maximum of two additional tokens will be counted.<br/></span></apex:outputText>
-											  <apex:outputText ><span class="additionalTokenSelectionErrorSameNameText" style="display:none" ><i aria-hidden="true" class="fa fa-close"></i>  &nbsp; Please enter a unique description for each "Other" Additional token value.<br/></span></apex:outputText>
-											  <apex:outputText ><span class="additionalTokenSelectionErrorSameName" style="display:none" ><i aria-hidden="true" class="fa fa-close"></i>  &nbsp; Please select different Additional tokens.<br/></span></apex:outputText>
+											 
 											
 											 </apex:pageBlock>
+									
+									
+									 				
+									 				
+												
+													
+												
+									 				
 											 </div>
                                 	</div>
                                 </div>
@@ -808,6 +869,13 @@
                            <apex:inputText value="{!AdditionalToken1chkString}" styleClass="additionalToken1Select" style="display:none" id="AdditionalToken1chkStringHidden"/>
                            <apex:inputText value="{!AdditionalToken2chkString}" styleClass="additionalToken2Select" style="display:none" id="AdditionalToken2chkStringHidden"/>
                            <apex:inputText value="{!AdditionalToken3chkString}" styleClass="additionalToken3Select"  style="display:none" id="AdditionalToken3chkStringHidden"/>
+                           
+                           
+                           <apex:inputText value="{!OTPVerified}" styleClass="OTPVerifiedResult"  style="display:none" />
+                           
+                           
+                           
+                           
                            
                            <!--<apex:inputText value="{!fieldnametocheck}" styleClass="fieldnametocheck" style="display:none"/>   -->
                            
@@ -1414,6 +1482,10 @@
    		{
    			passcount++;
    		}
+   		if(OTPResult == 'Pass')
+   		{
+   			passcount++;
+   		}
    		
    		if($('.IdNumberNew').val() == 'Fail')
    		{
@@ -1428,6 +1500,10 @@
    			failcount++;
    		}
    		
+   		if(OTPResult == 'Fail')
+   		{
+   			failcount++;
+   		}
    		
    
   		if(additionaltokencount > 2 )
@@ -2087,6 +2163,9 @@
      }
       if(callCount)
 	     	 countChecksNew();
+	     	 
+$('#OTPResultPass').prop('disabled', 'disabled');
+     	$('#OTPResultFail').prop('disabled', 'disabled');
     }
     
     function showOtherArea1(obj, callCount)
@@ -2126,6 +2205,9 @@
      }
      if(callCount)
 			 countChecksNew();
+			 
+$('#OTPResultPass').prop('disabled', 'disabled');
+     	$('#OTPResultFail').prop('disabled', 'disabled');
     }
     
     function showOtherArea2(obj, callCount)
@@ -2166,6 +2248,10 @@
     
 	  if(callCount)
 		 countChecksNew();
+
+
+	$('#OTPResultPass').prop('disabled', 'disabled');
+     	$('#OTPResultFail').prop('disabled', 'disabled');
     }
     
     </script>
@@ -2202,9 +2288,38 @@
     	
    	
     </script>
-    
-    <style>
-     
+     <script>
+     var windowObject;
+     var OTPEmail = '';
+     var OTPPhone = '';
+     var OTPResult = '';
+    function IsIneligibleComplete()
+            {
+                var x = screen.width/2 - 700/2;
+                var y = screen.height/2 - 450/2;
+                windowObject = window.open('/apex/SecureOTPAuthenticationIVR?id={!selectedID}','OpenedWindow', 'width=700,height=500,left='+x+',top='+y );
+            }
+    </script>
+    <script>
+     function updateOTPResult()
+     {
+     	
+     	
+     	
+     	$('#OTPResultPass').prop('checked', false);
+     	$('#OTPResultFail').prop('checked', false);
+     	if(OTPResult == 'Pass')
+     	{
+     		$('#OTPResultPass').prop('checked', true);
+     		
+     	} 
+     	else
+     	{
+     		$('#OTPResultFail').prop('checked', true);
+     	}
+     	$('.OTPVerifiedResult').val(OTPResult);
+     	countChecksNew();
+     }
       
-    </style>
+    </script>
 </apex:page>
