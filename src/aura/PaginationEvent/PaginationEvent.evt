@@ -1,0 +1,10 @@
+<aura:event type="COMPONENT" description="Event template">
+	<aura:attribute name="PageSize" type="Integer" />
+	<aura:attribute name="PageNumber" type="Integer" />
+	<aura:attribute name="SectionName" type="String" />
+	<aura:attribute name="SortBy" type="String" />
+	<aura:attribute name="SortDir" type="String" />
+	<aura:attribute name="Account" type="String" />
+	<aura:attribute name="CardNumber" type="String" />
+    <aura:attribute name="SearchText" type="String" />    
+</aura:event>

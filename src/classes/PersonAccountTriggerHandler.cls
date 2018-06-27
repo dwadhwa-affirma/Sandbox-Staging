@@ -52,7 +52,7 @@ public with sharing class PersonAccountTriggerHandler {
         }
  
        // Id queueGroupId = [SELECT Id FROM Group WHERE Type='Queue' AND Name= 'Operations-Memberships Queue'].Id;
-        Id queueGroupId = [SELECT Id FROM Group WHERE Type='Queue' AND Name= 'eBranch Queue'].Id;
+        Id queueGroupId = [SELECT Id FROM Group WHERE Type='Queue' AND DeveloperName= 'eBranch_Queue'].Id;
         
         //list<User> userList = [SELECT Id, Name, Alias, IsActive FROM User where IsActive = true];
         

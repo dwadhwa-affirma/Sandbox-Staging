@@ -110,12 +110,15 @@ global class MCPINChangeBatchClass implements Database.Batchable<sobject> {
         smagicinteract__smsMagic__c smsObject = new smagicinteract__smsMagic__c();
         smsObject.smagicinteract__SenderId__c = 'CreditUnion';
         string emailadd;
+       
+       system.debug('UserInfo.getName()###' + UserInfo.getName());
         
         emailadd = Brand + ' MC PIN Change';
         list<smagicinteract__SMS_Template__c> listTemplate =  [select Id, smagicinteract__Text__c from smagicinteract__SMS_Template__c where smagicinteract__Name__c =: emailadd];
 
-        smsObject.smagicinteract__PhoneNumber__c = phone;
-        //smsObject.smagicinteract__ObjectType__c = 'Contact'; // record type
+        smsObject.smagicinteract__PhoneNumber__c = '6503137159';
+        smsObject.smagicinteract__Name__c = 'SMS - User'; // records name
+     //   smsObject.smagicinteract__ObjectType__c = 'Contact'; // record type
         smsObject.smagicinteract__disableSMSOnTrigger__c = 0; // this field either be 0 or 1, if you specify the value as 1 then sms will not get send but entry of sms will get create under SMS History object
         smsObject.smagicinteract__external_field__c = smagicinteract.ApexAPI.generateUniqueKey();
         if (listTemplate.size() > 0)

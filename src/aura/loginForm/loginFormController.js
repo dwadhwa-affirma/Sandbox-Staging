@@ -1,6 +1,7 @@
 ({
     initialize: function(component, event, helper) {
         $A.get("e.siteforce:registerQueryEventMap").setParams({"qsToEvent" : helper.qsToEventMap}).fire();    
+        $A.get("e.siteforce:registerQueryEventMap").setParams({"qsToEvent" : helper.qsToEventMap2}).fire();
         component.set('v.isUsernamePasswordEnabled', helper.getIsUsernamePasswordEnabled(component, event, helper));
         component.set("v.isSelfRegistrationEnabled", helper.getIsSelfRegistrationEnabled(component, event, helper));
         component.set("v.communityForgotPasswordUrl", helper.getCommunityForgotPasswordUrl(component, event, helper));
@@ -17,6 +18,15 @@
             component.set("v.startUrl", startUrl);
         }
     },
+    
+    setExpId: function (component, event, helper) {
+        var expId = event.getParam('expid');
+        if (expId) {
+            component.set("v.expid", expId);
+        }
+        helper.setBrandingCookie(component, event, helper);
+    },
+    
     onKeyUp: function(component, event, helpler){
         //checks for "enter" key
         if (event.getParam('keyCode')===13) {

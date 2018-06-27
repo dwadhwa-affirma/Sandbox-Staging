@@ -1,0 +1,122 @@
+<aura:component controller="CollectionsInLightningCls" implements="force:appHostable,force:hasRecordId" access="global">
+
+    <aura:attribute name="Model" access="global" Type="Needs_Assesment__c" />
+    <aura:attribute name="picklistFields" type="Map" default="{}" />
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}" />	
+	<aura:registerEvent name="AssessmentSave" type="c:SaveNeedAssessmentEvent"/>
+		
+    <b style="padding:0 0 5px 0;display:block; font-size : 16px;">Financing Your Life Events- Auto/Vehicle</b><br /> 
+    <b>We'd like to ask you a few questions about your key life events so we can better anticipate your needs and better serve you.</b>    
+    <table border="1" class="otherTbl" width="100%">
+        <tbody>
+            <tr>
+                <td>
+
+                    <table border="0" width="100%">
+                        <tbody>
+                            <tr>
+                                <td colspan="2"><b>Current As Of <ui:outputDate format="MMMM dd, YYYY" value="{!v.Model.LEAV_Last_Updated_On__c}" /></b>                                    
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="mainQuestion" width="200">
+                                	<b>Do you have a current auto/vehicle loan?	</b>
+                                </td>
+                                <td>
+                                    <ui:inputSelect aura:id="Needs_Assesment__c.LEAV_Current__c" value="{!v.Model.LEAV_Current__c}" />
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td class="subQuestion" width="200">&nbsp; If yes, Who is your current auto/vehicle loan provider?</td>
+                                <td>
+                                    <ui:inputSelect aura:id="Needs_Assesment__c.LEAV_CurrentLoanProvider__c" value="{!v.Model.LEAV_CurrentLoanProvider__c}" />
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="subQuestion" width="200">&nbsp; If yes, what is your current rate?</td>
+                                <td>
+                                    <ui:inputNumber value="{!v.Model.LEAV_CurrentRate__c}" />
+                                </td>
+
+                            </tr>
+
+
+                            <tr>
+                                <td class="subQuestion" width="200">&nbsp; If yes, what is your monthly payment?</td>
+                                <td>
+                                    <ui:inputNumber value="{!v.Model.LEAV_CurrentBalance__c}" />
+                                </td>
+
+                            </tr>
+
+                            <tr>
+                                <td class="subQuestion" width="200">&nbsp; If yes, what is the end date of the loan?</td>
+                                <td>
+                                    <ui:inputDate value="{!v.Model.LEAV_EndDateLoan__c}" aura:id="endDate" keyup="{!c.changeDate}"  keypress="{!c.changeDate}" displayDatePicker="true" />
+                                </td>
+
+                            </tr>            
+                            <tr>
+                                <td class="mainQuestion" width="200"><b>Are you planning to purchase an auto/vehicle?</b>
+                                </td>
+                                <td>
+                                    <ui:inputSelect aura:id="Needs_Assesment__c.LEAV_PlanningToBuy__c" value="{!v.Model.LEAV_PlanningToBuy__c}" />
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td class="subQuestion" width="200">&nbsp; If Yes, when?</td>
+                                <td>
+                                    <ui:inputDate value="{!v.Model.LEAV_PlanDate__c}" aura:id="planDate" keyup="{!c.changeDate}"  keypress="{!c.changeDate}" displayDatePicker="true"/>
+                                </td>
+                            </tr>                            
+                            <tr>
+                                <td class="subQuestion" width="200">&nbsp; If yes, do you anticipate needing financing?
+                                </td>
+                                <td>
+                                    <ui:inputSelect aura:id="Needs_Assesment__c.LEAV_AnticipateFinance__c" value="{!v.Model.LEAV_AnticipateFinance__c}" />
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan="2">
+                                    <hr />
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td class="subQuestion" valign="top" width="200">Auto/Vehicle Comments	</td>
+                                <td>
+                                    <ui:inputTextArea value="{!v.Model.LEAV_ContactPreferences_New__c}" />
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </td>
+                <td valign="top">
+                    <table border="0" class="otherTbl" width="100%">
+                        <tbody>
+                            <tr>
+                                <td class="colHeader"><b>Recommendations</b></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>Auto Loan</td>
+                                <td>
+                                    <ui:inputCheckbox value="{!v.Model.REC_LEAV_1__c}" />
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>                    
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table>
+	 	<tr>
+             <td style="text-align:right; padding-top:5px;">
+                 <button class="slds-button slds-button--brand" onclick="{!c.saveAutoVehicleClick}">Save</button>
+             </td>
+        </tr>
+    </table>
+</aura:component>

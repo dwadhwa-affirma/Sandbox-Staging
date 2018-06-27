@@ -1,0 +1,156 @@
+<aura:component implements="flexipage:availableForAllPageTypes,force:appHostable" controller="MemberNumberLightningController" access="global">
+
+    <aura:attribute name="Model" access="global" Type="Object" />
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}" />
+    <aura:attribute name="loading" type="Boolean" default="false" />
+    <aura:attribute name="searchText" type="String" default="" />
+    <aura:attribute name="NoRecord" type="Boolean" default="false" />
+
+
+    <aura:attribute name="bannerTitle" access="global" Type="String" default="" />
+    <aura:attribute name="bannerText" access="global" Type="String" default="" />
+    <aura:attribute name="BannerLink" access="global" Type="String" default="" />
+    <aura:attribute name="BannerLinkHover" access="global" Type="String" default="" />
+    <aura:attribute name="bannerLinkText" access="global" Type="String" default="" />
+    <aura:attribute name="bannerExpirationFlag" access="global" Type="Boolean" default="false" />    
+
+
+    <style>
+        /* Loading Style*/
+        
+        .loadingDiv {
+            position: absolute;
+            z-index: 100;
+            background: rgba(255, 255, 255, 0.8);
+            width: 100%;
+            height: 70%;
+            top: 0px;
+        }
+        
+        .loadingDiv .demo-only {
+            z-index: 101;
+        }
+        /* Loading Style End*/
+        
+        .tbl-height {
+            max-height: 200px;
+            height: auto;
+            overflow-y: auto;
+        }
+        
+        .homeHomeCard .slds-card {
+            padding: 1rem;
+        }
+        
+        .homeHomeCard {
+            position: relative;
+        }
+        
+        .searchDiv {
+            padding: 0 0 1.2rem 0;
+            position: relative;
+        }
+        
+        .searchDiv .uiInputText {
+            width: 57%;
+            float: left;
+        }
+        
+        .searchDiv .slds-button.slds-button--brand {
+            float: left;
+            margin-left: 5px;
+            line-height: 2.2rem;
+        }
+        
+        .clearfix:after {
+            display: table;
+            clear: both;
+            content: ' ';
+        }
+        
+        .slds-truncate {
+            display: block;
+        }
+        
+        .searchDiv .lbl{float:left; margin:8px 5px 0 0;}
+        
+    </style>
+
+
+    <div class="homeHomeCard">
+
+        
+
+        <aura:if isTrue="{!(v.loading == true)}">
+            <div class="loadingDiv">
+                <div class="demo-only" style='height: 6rem; '>
+                    <div role="status" class="slds-spinner slds-spinner_medium">
+                        <span class="slds-assistive-text">Loading</span>
+                        <div class="slds-spinner__dot-a"></div>
+                        <div class="slds-spinner__dot-b"></div>
+                    </div>
+                </div>
+            </div>
+        </aura:if>
+        <div>
+
+            <article class="slds-card slds-card_boundary forceBaseCard">
+            <aura:if isTrue="{!(v.bannerExpirationFlag == true)}">            
+                <p style="background-color: yellow"><b>{!v.bannerTitle} &nbsp;{!v.bannerText}</b>&nbsp;<a target="_blank" href="{!v.BannerLink}" title="{!v.BannerLinkHover}">{!v.bannerLinkText}</a></p>            
+        </aura:if>
+        <br/>
+                <div class="searchDiv">
+                	<label class="slds-form-element__label lbl"><b>Member Number</b></label>
+                    <ui:inputText value="{!v.searchText}" keyup="{!c.searchRecord}" click="{!c.showGrid}" focus="{!c.showGrid}"> </ui:inputText> &nbsp;
+                    <button class="slds-button slds-button--brand" onclick="{!c.searchRecords}">Search</button>
+                    <button style="height:37px" class="slds-button slds-button--neutral uiButton forceActionButton" onclick="{!c.clearSearch}">Clear Search</button>
+                    <div class="clearfix"></div>
+                </div>
+                <div class="tbl-height">
+                    <table class="slds-table slds-table_bordered slds-table_resizable-cols slds-table_fixed-layout" role="grid" id="tblMembernoSearch" style="display:none;">
+                        <thead>
+                            <tr class="slds-line-height_reset">
+                                <th aria-sort="none" class="slds-is-sortable slds-is-resizable slds-text-title_caps" aria-label="Name" scope="col">
+                                    <div class="slds-th__action"><span class="slds-truncate" title="Lead Number"><b>Name</b></span></div>
+                                </th>
+                                <th aria-sort="none" class="slds-is-sortable slds-is-resizable slds-text-title_caps" aria-label="Name" scope="col">
+                                    <div class="slds-th__action"><span class="slds-truncate" title="Name"><b>Account Type/ Share Type</b></span></div>
+                                </th>
+                                
+
+                                <th aria-sort="none" class="slds-is-sortable slds-is-resizable slds-text-title_caps" aria-label="Name" scope="col">
+                                    <div class="slds-th__action"><span class="slds-truncate" title="Status"><b>Name Type/ Relationship</b></span></div>
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <aura:iteration items="{!v.Model}" var="item" indexVar="index">
+                                <tr>
+                                    <td>
+                                        <a class="slds-truncate" onclick="{!c.selectMember}" _id="{!item.PersonID__c}" href="javascript:void(0);" title="{!item.PersonID__r.Name}">{!item.PersonID__r.Name}</a>
+                                    </td>
+                                    <td>
+                                        <span class="slds-truncate" title="{!item.Account_Number__r.TypeTranslate__c}">{!item.Account_Number__r.TypeTranslate__c}</span>
+                                    </td>
+                                                                        
+                                    <td>
+                                        <span class="slds-truncate" title="{!item.Split_Type_Translate__c}">{!item.Split_Type_Translate__c}</span>
+                                    </td>
+                                </tr>
+                            </aura:iteration>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="clearfix"></div>
+                <div>
+                    <aura:if isTrue="{!(v.NoRecord == true)}">
+                    	<ui:message title="Search Not Found" severity="error" closable="false">
+            				<br/>
+            				Please try a different search.
+            			</ui:message>
+                    </aura:if>
+                </div>
+            </article>
+        </div>
+    </div>
+</aura:component>

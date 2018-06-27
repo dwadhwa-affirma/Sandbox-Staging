@@ -1,0 +1,806 @@
+<aura:component controller="CollectionsInLightningCls" implements="flexipage:availableForAllPageTypes,force:appHostable,force:hasRecordId" access="global">
+    <aura:attribute name="Model" access="global" Type="Needs_Assesment__c" />
+    <aura:attribute name="picklistFields" type="Map" default="{}" />
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}" />
+    <aura:registerEvent name="AssessmentSave" type="c:SaveNeedAssessmentEvent" />
+
+    <aura:attribute name="CallCenterExtendedHours" type="Boolean" access="global" default="false" />
+    <aura:attribute name="OnlineBanking" type="Boolean" access="global" default="false" />
+    <aura:attribute name="MobileBanking" type="Boolean" access="global" default="false" />
+    <aura:attribute name="SurchargeFreeATMNetwork" type="Boolean" access="global" default="false" />
+
+    <aura:attribute name="Mortgage" type="Boolean" access="global" default="false" />
+    <aura:attribute name="PreferredRealtor" type="Boolean" access="global" default="false" />
+
+    <aura:attribute name="AutoVehicle" type="Boolean" access="global" default="false" />
+
+    <aura:attribute name="HELOC" type="Boolean" access="global" default="false" />
+    <aura:attribute name="RVLoan" type="Boolean" access="global" default="false" />
+    <aura:attribute name="IRA" type="Boolean" access="global" default="false" />
+    <aura:attribute name="HealthSavingsAccount" type="Boolean" access="global" default="false" />
+    <aura:attribute name="PersonalLineOfCredit" type="Boolean" access="global" default="false" />
+    <aura:attribute name="StudentLoans" type="Boolean" access="global" default="false" />
+    
+    <aura:attribute name="RefinanceForExistingLoans" type="Boolean" access="global" default="false" />
+    <aura:attribute name="DebtConsolidation" type="Boolean" access="global" default="false" />
+
+    <aura:attribute name="Withdrawals_SurchargeFreeATMNetwork" type="Boolean" access="global" default="false" />
+    
+    <aura:attribute name="SharedBranching" type="Boolean" access="global" default="false" />
+    
+    <aura:attribute name="DirectDeposit" type="Boolean" access="global" default="false" />
+    <aura:attribute name="MobileDeposits" type="Boolean" access="global" default="false" />
+    <aura:attribute name="Deposits_SharedBranching" type="Boolean" access="global" default="false" />
+    <aura:attribute name="Deposits_SurchargeFreeATMNetwork" type="Boolean" access="global" default="false" />
+    <aura:attribute name="MarketEdge" type="Boolean" access="global" default="false" />
+    
+    <aura:attribute name="CheckingAccount" type="Boolean" access="global" default="false" />
+    
+    <aura:attribute name="ATMNetwork_SurchargeFreeATMNetwork" type="Boolean" access="global" default="false" />
+    
+    <aura:attribute name="EarnMoreFromSavings_MarketEdge" type="Boolean" access="global" default="false" />
+    <aura:attribute name="EarnMoreFromSavings_IRA" type="Boolean" access="global" default="false" />
+    <aura:attribute name="EarnMoreFromSavings_HealthSavingsAccount" type="Boolean" access="global" default="false" />
+    
+    <aura:attribute name="ReferRelatedIndividualsForCreditUnion" type="Boolean" access="global" default="false" />
+    
+    <aura:attribute name="SignUpForBillPay" type="Boolean" access="global" default="false" />
+    <aura:attribute name="DebitCardRecurringPayments" type="Boolean" access="global" default="false" />
+    <aura:attribute name="P2PTransfers" type="Boolean" access="global" default="false" />
+    <aura:attribute name="A2ATransfers" type="Boolean" access="global" default="false" />
+    <aura:attribute name="ACHWire" type="Boolean" access="global" default="false" />
+    <aura:attribute name="ForeignWire" type="Boolean" access="global" default="false" />
+    <aura:attribute name="BenefitsOfDebitCard" type="Boolean" access="global" default="false" />
+    <aura:attribute name="CreditCard" type="Boolean" access="global" default="false" />
+    
+    <aura:attribute name="otherExistingLoans" type="NA_Other_Existing_Loans__c[]" /> 
+    <aura:attribute name="DepositDetails" type="NA_Deposit__c[]" /> 
+    <aura:attribute name="MembershipDetails" type="NA_Membership_Referral_Questions__c[]" /> 
+    
+    
+    <style>
+        .tblRecomm{width:75%}
+        .tblRecomm td:nth-child(1) {
+            width: 45%
+        }
+        
+        .tblRecomm td:nth-child(3) {
+            width:30px
+        }
+        
+        .tblRecomm .descicn {
+            text-decoration: none;
+            font-size: 24px;
+            color: rgb(0, 112, 210);
+            cursor: pointer;
+            padding: 0 7px;
+        }
+        
+        .descTD {
+            border: 1px solid #ccc;
+            padding: 10px 15px;
+            margin: 7px 0;
+        }
+        
+        .descTD table {
+            border-collapse: collapse;
+        }
+        
+        .descTD h2 {
+            font-weight: bold;
+            font-size: 15px;
+            color: #000;
+        }
+        
+        .descTD .mainQuestion,
+        .descTD .MainQuestion {
+            font-weight: bold;
+            color: #000;
+            width: 65%;
+        }
+        
+        .descTD .subQuestion {
+            color: #000;
+            width: 65%;
+        }
+        
+        .descTD td {
+            padding: 4px 5px;
+            vertical-align: top;
+            color: #777;
+            word-break:break-all;
+        }
+        
+        .descTD .bottombor {
+            border-bottom: 1px solid #eee; 
+        }
+        .slds-table th{text-align:left;}
+        .expandcollapseall{background:none; border:0;text-decoration:underline; padding:0; color:blue;}
+    </style>
+
+    <table border="0" cell-padding="0" cell-spacing="0" class="tblRecomm">
+        <tr>
+            <td colspan="3"><button class="expandcollapseall" onclick="{!c.expandcollapseallClick}">Expand / Collapse All</button></td>
+        </tr>
+
+        <!--O1 : Provide Feedback-->
+        <tr style="{!v.Model.REC_LECF_1__c == true ? '': 'display:none'}">
+            <td>Call Center extended hours</td>
+            <td>
+                <ui:inputSelect aura:id="Needs_Assesment__c.REC_LECF_Outcome_1__c" value="{!v.Model.REC_LECF_Outcome_1__c}" />
+            </td>
+            <aura:if isTrue="{!(v.CallCenterExtendedHours )}">
+                <td><span class='descicn' id='CallCenterExtendedHours' onclick="{!c.showhideDetails}">-</span></td>
+                <aura:set attribute="else">
+                    <td><span class='descicn' id='CallCenterExtendedHours' onclick="{!c.showhideDetails}">+</span></td>
+                </aura:set>
+            </aura:if>
+        </tr>
+        <aura:if isTrue="{!(v.CallCenterExtendedHours )}">
+            <tr style="{!v.Model.REC_LECF_1__c == true ? '': 'display:none'}">
+                <td colspan="2">
+                    <div class="descTD">
+                        <c:Recommendations_CurrentFeedback Model="{!v.Model}" />
+                    </div>
+                </td>
+
+            </tr>
+        </aura:if>
+        <tr style="{!v.Model.REC_LECF_2__c == true ? '': 'display:none'}">
+            <td>Online Banking</td>
+            <td>
+                <ui:inputSelect aura:id="Needs_Assesment__c.REC_LECF_Outcome_2__c" value="{!v.Model.REC_LECF_Outcome_2__c}" />
+            </td>
+            <aura:if isTrue="{!(v.OnlineBanking )}">
+                <td><span class='descicn' id='OnlineBanking' onclick="{!c.showhideDetails}">-</span></td>
+                <aura:set attribute="else">
+                    <td><span class='descicn' id='OnlineBanking' onclick="{!c.showhideDetails}">+</span></td>
+                </aura:set>
+            </aura:if>
+        </tr>
+        <aura:if isTrue="{!(v.OnlineBanking )}">
+            <tr style="{!v.Model.REC_LECF_2__c == true ? '': 'display:none'}">
+                <td colspan="2">
+                    <div class="descTD">
+                        <c:Recommendations_CurrentFeedback Model="{!v.Model}" />
+                    </div>
+                </td>
+
+            </tr>
+        </aura:if>
+        <tr style="{!v.Model.REC_LECF_3__c == true ? '': 'display:none'}">
+            <td>Mobile Banking</td>
+            <td>
+                <ui:inputSelect aura:id="Needs_Assesment__c.REC_LECF_Outcome_3__c" value="{!v.Model.REC_LECF_Outcome_3__c}" />
+            </td>
+            <aura:if isTrue="{!(v.MobileBanking )}">
+                <td><span class='descicn' id='MobileBanking' onclick="{!c.showhideDetails}">-</span></td>
+                <aura:set attribute="else">
+                    <td><span class='descicn' id='MobileBanking' onclick="{!c.showhideDetails}">+</span></td>
+                </aura:set>
+            </aura:if>
+        </tr>
+        <aura:if isTrue="{!(v.MobileBanking )}">
+            <tr style="{!v.Model.REC_LECF_3__c == true ? '': 'display:none'}">
+                <td colspan="2">
+                    <div class="descTD">
+                        <c:Recommendations_CurrentFeedback Model="{!v.Model}" />
+                    </div>
+                </td>
+
+            </tr>
+        </aura:if>
+        <tr style="{!v.Model.REC_LECF_4__c == true ? '': 'display:none'}">
+            <td>Surcharge-free ATM network </td>
+            <td>
+                <ui:inputSelect aura:id="Needs_Assesment__c.REC_LECF_Outcome_4__c" value="{!v.Model.REC_LECF_Outcome_4__c}" />
+            </td>
+            <aura:if isTrue="{!(v.SurchargeFreeATMNetwork )}">
+                <td><span class='descicn' id='SurchargeFreeATMNetwork' onclick="{!c.showhideDetails}">-</span></td>
+                <aura:set attribute="else">
+                    <td><span class='descicn' id='SurchargeFreeATMNetwork' onclick="{!c.showhideDetails}">+</span></td>
+                </aura:set>
+            </aura:if>
+        </tr>
+        <aura:if isTrue="{!(v.SurchargeFreeATMNetwork || v.Withdrawals_SurchargeFreeATMNetwork || v.Deposits_SurchargeFreeATMNetwork || v.ATMNetwork_SurchargeFreeATMNetwork )}">
+            <tr style="{!v.Model.REC_LECF_4__c == true ? '': 'display:none'}">
+                <td colspan="2">
+                    <div class="descTD">
+                        <c:Recommendations_CurrentFeedback Model="{!v.Model}" />
+                        <c:Recommedations_Deposits Model="{!v.Model}" />
+                        <c:Recommendations_Withdrawals Model="{!v.Model}" />
+                        <c:Recommendations_ATMNetwork Model="{!v.Model}" />
+                    </div>
+                </td>
+            </tr>
+        </aura:if>
+
+        <!--O2 : Housing-->
+        <tr style="{!v.Model.Rec_LEHS_1__c == true ? '': 'display:none'}">
+            <td>Mortgages</td>
+            <td>
+                <ui:inputSelect aura:id="Needs_Assesment__c.Rec_LEHS_1_Outcome__c" value="{!v.Model.Rec_LEHS_1_Outcome__c}" />
+            </td>
+            <aura:if isTrue="{!(v.Mortgage )}">
+                <td><span class='descicn' id='Mortgage' onclick="{!c.showhideDetails}">-</span></td>
+                <aura:set attribute="else">
+                    <td><span class='descicn' id='Mortgage' onclick="{!c.showhideDetails}">+</span></td>
+                </aura:set>
+            </aura:if>
+        </tr>
+        <aura:if isTrue="{!(v.Mortgage )}">
+            <tr style="{!v.Model.Rec_LEHS_1__c == true ? '': 'display:none'}">
+                <td colspan="2">
+                    <div class="descTD">
+                        <c:Recommendations_Housing Model="{!v.Model}" />
+                    </div>
+                </td>
+
+            </tr>
+        </aura:if>
+        <tr style="{!v.Model.Rec_LEHS_2__c == true ? '': 'display:none'}">
+            <td>Preferred Realtor</td>
+            <td>
+                <ui:inputSelect aura:id="Needs_Assesment__c.Rec_LEHS_Outcome_2__c" value="{!v.Model.Rec_LEHS_Outcome_2__c}" />
+            </td>
+            <aura:if isTrue="{!(v.PreferredRealtor )}">
+                <td><span class='descicn' id='PreferredRealtor' onclick="{!c.showhideDetails}">-</span></td>
+                <aura:set attribute="else">
+                    <td><span class='descicn' id='PreferredRealtor' onclick="{!c.showhideDetails}">+</span></td>
+                </aura:set>
+            </aura:if>
+        </tr>
+        <aura:if isTrue="{!(v.PreferredRealtor )}">
+            <tr style="{!v.Model.Rec_LEHS_2__c == true ? '': 'display:none'}">
+                <td colspan="2">
+                    <div class="descTD">
+                        <c:Recommendations_Housing Model="{!v.Model}" />
+                    </div>
+                </td>
+
+            </tr>
+        </aura:if>
+
+        <!--O2 : Auto/Vehicle-->
+        <tr style="{!v.Model.REC_LEAV_1__c == true ? '': 'display:none'}">
+            <td>Auto Loans</td>
+            <td>
+                <ui:inputSelect aura:id="Needs_Assesment__c.REC_LEAV_Outcome_1__c" value="{!v.Model.REC_LEAV_Outcome_1__c}" />
+            </td>
+            <aura:if isTrue="{!(v.AutoVehicle )}">
+                <td><span class='descicn' id='AutoVehicle' onclick="{!c.showhideDetails}">-</span></td>
+                <aura:set attribute="else">
+                    <td><span class='descicn' id='AutoVehicle' onclick="{!c.showhideDetails}">+</span></td>
+                </aura:set>
+            </aura:if>
+        </tr>
+        <aura:if isTrue="{!(v.AutoVehicle )}">
+            <tr style="{!v.Model.REC_LEAV_1__c == true ? '': 'display:none'}">
+                <td colspan="2">
+                    <div class="descTD">
+                        <c:Recommendations_AutoVehicle Model="{!v.Model}" />
+                    </div>
+                </td>
+
+            </tr>
+        </aura:if>
+
+		<!--O2 : Existing Loans-->
+        <tr style="{!v.Model.Rec_LEOL_1__c == true ? '': 'display:none'}">
+            <td>Refinance for Existing Loans</td>
+            <td>
+                <ui:inputSelect aura:id="Needs_Assesment__c.Rec_LEOL_Outcome_1__c" value="{!v.Model.Rec_LEOL_Outcome_1__c}" />
+            </td>
+            <aura:if isTrue="{!(v.RefinanceForExistingLoans)}">
+                <td><span class='descicn' id='RefinanceForExistingLoans' onclick="{!c.showhideDetails}">-</span></td>
+                <aura:set attribute="else">
+                    <td><span class='descicn' id='RefinanceForExistingLoans' onclick="{!c.showhideDetails}">+</span></td>
+                </aura:set>
+            </aura:if>
+        </tr>
+        <aura:if isTrue="{!(v.RefinanceForExistingLoans)}">
+            <tr style="{!v.Model.Rec_LEOL_1__c == true ? '': 'display:none'}">
+                <td colspan="2">
+                    <div class="descTD">
+                        <c:Recommedations_ExistingLoans Model="{!v.Model}" otherExistingLoans="{!v.otherExistingLoans}" />
+                    </div>
+                </td>
+
+            </tr>
+        </aura:if>
+        <tr style="{!v.Model.Rec_LEOL_2__c == true ? '': 'display:none'}">
+            <td>Debt Consolidation</td>
+            <td>
+                <ui:inputSelect aura:id="Needs_Assesment__c.Rec_LEOL_Outcome_2__c" value="{!v.Model.Rec_LEOL_Outcome_2__c}" />
+            </td>
+            <aura:if isTrue="{!(v.DebtConsolidation )}">
+                <td><span class='descicn' id='DebtConsolidation' onclick="{!c.showhideDetails}">-</span></td>
+                <aura:set attribute="else">
+                    <td><span class='descicn' id='DebtConsolidation' onclick="{!c.showhideDetails}">+</span></td>
+                </aura:set>
+            </aura:if>
+        </tr>
+        <aura:if isTrue="{!(v.DebtConsolidation )}">
+            <tr style="{!v.Model.Rec_LEOL_2__c == true ? '': 'display:none'}">
+                <td colspan="2">
+                    <div class="descTD">
+                        <c:Recommedations_ExistingLoans Model="{!v.Model}" otherExistingLoans="{!v.otherExistingLoans}" />
+                    </div>
+                </td>
+            </tr>
+        </aura:if>
+
+        <!--O2 : Other Milestones-->
+        <tr style="{!v.Model.Rec_LEOM_1__c == true ? '': 'display:none'}">
+            <td>HELOC</td>
+            <td>
+                <ui:inputSelect aura:id="Needs_Assesment__c.Rec_LEOM_Outcome_1__c" value="{!v.Model.Rec_LEOM_Outcome_1__c}" />
+            </td>
+            <aura:if isTrue="{!(v.HELOC )}">
+                <td><span class='descicn' id='HELOC' onclick="{!c.showhideDetails}">-</span></td>
+                <aura:set attribute="else">
+                    <td><span class='descicn' id='HELOC' onclick="{!c.showhideDetails}">+</span></td>
+                </aura:set>
+            </aura:if>
+        </tr>
+        <aura:if isTrue="{!(v.HELOC )}">
+            <tr style="{!v.Model.Rec_LEOM_1__c == true ? '': 'display:none'}">
+                <td colspan="2">
+                    <div class="descTD">
+                        <c:Recommendations_OtherMilestones Model="{!v.Model}" sectionName="heloc" />
+                    </div>
+                </td>
+            </tr>
+        </aura:if>
+        <tr style="{!v.Model.Rec_LEOM_2__c == true ? '': 'display:none'}">
+            <td>RV Loan</td>
+            <td>
+                <ui:inputSelect aura:id="Needs_Assesment__c.Rec_LEOM_Outcome_2__c" value="{!v.Model.Rec_LEOM_Outcome_2__c}" />
+            </td>
+            <aura:if isTrue="{!(v.RVLoan )}">
+                <td><span class='descicn' id='RVLoan' onclick="{!c.showhideDetails}">-</span></td>
+                <aura:set attribute="else">
+                    <td><span class='descicn' id='RVLoan' onclick="{!c.showhideDetails}">+</span></td>
+                </aura:set>
+            </aura:if>
+        </tr>
+        <aura:if isTrue="{!(v.RVLoan )}">
+            <tr style="{!v.Model.Rec_LEOM_2__c == true ? '': 'display:none'}">
+                <td colspan="2">
+                    <div class="descTD">
+                        <c:Recommendations_OtherMilestones Model="{!v.Model}" sectionName="rv" />
+                    </div>
+                </td>
+
+            </tr>
+        </aura:if>
+        <tr style="{!v.Model.Rec_LEOM_3__c == true ? '': 'display:none'}">
+            <td>IRA</td>
+            <td>
+                <ui:inputSelect aura:id="Needs_Assesment__c.Rec_LEEM_Outcome_2__c" value="{!v.Model.Rec_LEEM_Outcome_2__c}" />
+            </td>
+            <aura:if isTrue="{!(v.IRA )}">
+                <td><span class='descicn' id='IRA' onclick="{!c.showhideDetails}">-</span></td>
+                <aura:set attribute="else">
+                    <td><span class='descicn' id='IRA' onclick="{!c.showhideDetails}">+</span></td>
+                </aura:set>
+            </aura:if>
+        </tr>
+        <aura:if isTrue="{!(v.IRA || v.EarnMoreFromSavings_IRA )}">
+            <tr style="{!v.Model.Rec_LEOM_3__c == true ? '': 'display:none'}">
+                <td colspan="2">
+                    <div class="descTD">
+                        <c:Recommendations_OtherMilestones Model="{!v.Model}" sectionName="retiremment" />
+                        <c:Recommendations_EarnMoreFromSavings Model="{!v.Model}" sectionName="ira"  DepositDetails="{!v.DepositDetails}"  />
+                    </div>
+                </td>
+
+            </tr>
+        </aura:if>
+        <tr style="{!v.Model.Rec_LEOM_4__c == true ? '': 'display:none'}">
+            <td>Health Savings Account</td>
+            <td>
+                <ui:inputSelect aura:id="Needs_Assesment__c.Rec_LEOM_Outcome_3__c" value="{!v.Model.Rec_LEOM_Outcome_3__c}" />
+            </td>
+            <aura:if isTrue="{!(v.HealthSavingsAccount )}">
+                <td><span class='descicn' id='HealthSavingsAccount' onclick="{!c.showhideDetails}">-</span></td>
+                <aura:set attribute="else">
+                    <td><span class='descicn' id='HealthSavingsAccount' onclick="{!c.showhideDetails}">+</span></td>
+                </aura:set>
+            </aura:if>
+        </tr>
+        <aura:if isTrue="{!(v.HealthSavingsAccount || v.EarnMoreFromSavings_HealthSavingsAccount )}">
+            <tr style="{!v.Model.Rec_LEOM_4__c == true ? '': 'display:none'}">
+                <td colspan="2">
+                    <div class="descTD">
+                        <c:Recommendations_OtherMilestones Model="{!v.Model}" sectionName="medical" />
+                        <c:Recommendations_EarnMoreFromSavings Model="{!v.Model}" sectionName="health" DepositDetails="{!v.DepositDetails}" />
+                    </div>
+                </td>
+
+            </tr>
+        </aura:if>
+        <tr style="{!v.Model.Rec_LEOM_5__c == true ? '': 'display:none'}">
+            <td>Personal Line of Credit</td>
+            <td>
+                <ui:inputSelect aura:id="Needs_Assesment__c.Rec_LEOM_Outcome_4__c" value="{!v.Model.Rec_LEOM_Outcome_4__c}" />
+            </td>
+            <aura:if isTrue="{!(v.PersonalLineOfCredit )}">
+                <td><span class='descicn' id='PersonalLineOfCredit' onclick="{!c.showhideDetails}">-</span></td>
+                <aura:set attribute="else">
+                    <td><span class='descicn' id='PersonalLineOfCredit' onclick="{!c.showhideDetails}">+</span></td>
+                </aura:set>
+            </aura:if>
+        </tr>
+        <aura:if isTrue="{!(v.PersonalLineOfCredit )}">
+            <tr style="{!v.Model.Rec_LEOM_5__c == true ? '': 'display:none'}">
+                <td colspan="2">
+                    <div class="descTD">
+                        <c:Recommendations_OtherMilestones Model="{!v.Model}" sectionName="lc" />
+                    </div>
+                </td>
+
+            </tr>
+        </aura:if>
+        <tr style="{!v.Model.Rec_LEOM_6__c == true ? '': 'display:none'}">
+            <td>Student Loans</td>
+            <td>
+                <ui:inputSelect aura:id="Needs_Assesment__c.Rec_LEOM_Outcome_5__c" value="{!v.Model.Rec_LEOM_Outcome_5__c}" />
+            </td>
+            <aura:if isTrue="{!(v.StudentLoans )}">
+                <td><span class='descicn' id='StudentLoans' onclick="{!c.showhideDetails}">-</span></td>
+                <aura:set attribute="else">
+                    <td><span class='descicn' id='StudentLoans' onclick="{!c.showhideDetails}">+</span></td>
+                </aura:set>
+            </aura:if>
+        </tr>
+        <aura:if isTrue="{!(v.StudentLoans )}">
+            <tr style="{!v.Model.Rec_LEOM_6__c == true ? '': 'display:none'}">
+                <td colspan="2">
+                    <div class="descTD">
+                        <c:Recommendations_OtherMilestones Model="{!v.Model}" sectionName="college" />
+                    </div>
+                </td>
+
+            </tr>
+        </aura:if>
+
+        
+
+        <!--O3 : Payments/Transfers-->
+        <tr style="{!v.Model.REC_LEMP_1__c == true ? '': 'display:none'}">
+            <td>Sign-up for Bill Pay</td>
+            <td>
+                <ui:inputSelect aura:id="Needs_Assesment__c.REC_LEMP_Outcome_1__c" value="{!v.Model.REC_LEMP_Outcome_1__c}" />
+            </td>
+            <aura:if isTrue="{!(v.SignUpForBillPay )}">
+                <td><span class='descicn' id='SignUpForBillPay' onclick="{!c.showhideDetails}">-</span></td>
+                <aura:set attribute="else">
+                    <td><span class='descicn' id='SignUpForBillPay' onclick="{!c.showhideDetails}">+</span></td>
+                </aura:set> 
+            </aura:if>
+        </tr>
+        <aura:if isTrue="{!(v.SignUpForBillPay )}">
+            <tr style="{!v.Model.REC_LEMP_1__c == true ? '': 'display:none'}">
+                <td colspan="2">
+                    <div class="descTD">
+                        <c:Recommendations_PaymentsTransfers Model="{!v.Model}" sectionName="payments" />
+                    </div>
+                </td>
+            </tr>
+        </aura:if>
+        <tr style="{!v.Model.REC_LEMP_2__c == true ? '': 'display:none'}">
+            <td>Debit Card Recurring Payments</td>
+            <td>
+                <ui:inputSelect aura:id="Needs_Assesment__c.REC_LEMP_Outcome_2__c" value="{!v.Model.REC_LEMP_Outcome_2__c}" />
+            </td>
+            <aura:if isTrue="{!(v.DebitCardRecurringPayments )}">
+                <td><span class='descicn' id='DebitCardRecurringPayments' onclick="{!c.showhideDetails}">-</span></td>
+                <aura:set attribute="else">
+                    <td><span class='descicn' id='DebitCardRecurringPayments' onclick="{!c.showhideDetails}">+</span></td>
+                </aura:set>
+            </aura:if>
+        </tr>
+        <aura:if isTrue="{!(v.DebitCardRecurringPayments )}">
+            <tr style="{!v.Model.REC_LEMP_2__c == true ? '': 'display:none'}">
+                <td colspan="2">
+                    <div class="descTD">
+                        <c:Recommendations_PaymentsTransfers Model="{!v.Model}" sectionName="payments" />
+                    </div>
+                </td>
+            </tr>
+        </aura:if>
+        <tr style="{!v.Model.REC_LEMP_3__c == true ? '': 'display:none'}">
+            <td>P2P Transfers</td>
+            <td>
+                <ui:inputSelect aura:id="Needs_Assesment__c.REC_LEMP_Outcome_3__c" value="{!v.Model.REC_LEMP_Outcome_3__c}" />
+            </td>
+            <aura:if isTrue="{!(v.P2PTransfers )}">
+                <td><span class='descicn' id='P2PTransfers' onclick="{!c.showhideDetails}">-</span></td>
+                <aura:set attribute="else">
+                    <td><span class='descicn' id='P2PTransfers' onclick="{!c.showhideDetails}">+</span></td>
+                </aura:set>
+            </aura:if>
+        </tr>
+        <aura:if isTrue="{!(v.P2PTransfers )}">
+            <tr style="{!v.Model.REC_LEMP_3__c == true ? '': 'display:none'}">
+                <td colspan="2">
+                    <div class="descTD">
+                        <c:Recommendations_PaymentsTransfers Model="{!v.Model}" sectionName="payments" />
+                    </div>
+                </td>
+            </tr>
+        </aura:if>
+        <tr style="{!v.Model.REC_LEMP_4__c == true ? '': 'display:none'}">
+            <td>A2A Transfers</td>
+            <td>
+                <ui:inputSelect aura:id="Needs_Assesment__c.REC_LEMP_Outcome_4__c" value="{!v.Model.REC_LEMP_Outcome_4__c}" />
+            </td>
+            <aura:if isTrue="{!(v.A2ATransfers )}">
+                <td><span class='descicn' id='A2ATransfers' onclick="{!c.showhideDetails}">-</span></td>
+                <aura:set attribute="else">
+                    <td><span class='descicn' id='A2ATransfers' onclick="{!c.showhideDetails}">+</span></td>
+                </aura:set>
+            </aura:if>
+        </tr>
+        <aura:if isTrue="{!(v.A2ATransfers )}">
+            <tr style="{!v.Model.REC_LEMP_4__c == true ? '': 'display:none'}">
+                <td colspan="2">
+                    <div class="descTD">
+                        <c:Recommendations_PaymentsTransfers Model="{!v.Model}" sectionName="payments" />
+                    </div>
+                </td>
+            </tr>
+        </aura:if>
+        <tr style="{!v.Model.REC_LEMP_5__c == true ? '': 'display:none'}">
+            <td>ACH/Wire</td>
+            <td>
+                <ui:inputSelect aura:id="Needs_Assesment__c.REC_LEMP_Outcome_5__c" value="{!v.Model.REC_LEMP_Outcome_5__c}" />
+            </td>
+            <aura:if isTrue="{!(v.ACHWire )}">
+                <td><span class='descicn' id='ACHWire' onclick="{!c.showhideDetails}">-</span></td>
+                <aura:set attribute="else">
+                    <td><span class='descicn' id='ACHWire' onclick="{!c.showhideDetails}">+</span></td>
+                </aura:set>
+            </aura:if>
+        </tr>
+        <aura:if isTrue="{!(v.ACHWire )}">
+            <tr style="{!v.Model.REC_LEMP_5__c == true ? '': 'display:none'}">
+                <td colspan="2">
+                    <div class="descTD">
+                        <c:Recommendations_PaymentsTransfers Model="{!v.Model}" sectionName="daytransfer" />
+                    </div>
+                </td>
+            </tr>
+        </aura:if>
+        <tr style="{!v.Model.REC_LEMP_6__c == true ? '': 'display:none'}">
+            <td>Foreign Wire</td>
+            <td>
+                <ui:inputSelect aura:id="Needs_Assesment__c.REC_LEMP_Outcome_6__c" value="{!v.Model.REC_LEMP_Outcome_6__c}" />
+            </td>
+            <aura:if isTrue="{!(v.ForeignWire )}">
+                <td><span class='descicn' id='ForeignWire' onclick="{!c.showhideDetails}">-</span></td>
+                <aura:set attribute="else">
+                    <td><span class='descicn' id='ForeignWire' onclick="{!c.showhideDetails}">+</span></td>
+                </aura:set>
+            </aura:if>
+        </tr>
+        <aura:if isTrue="{!(v.ForeignWire )}">
+            <tr style="{!v.Model.REC_LEMP_6__c == true ? '': 'display:none'}">
+                <td colspan="2">
+                    <div class="descTD">
+                        <c:Recommendations_PaymentsTransfers Model="{!v.Model}" sectionName="foreign" />
+                    </div>
+                </td>
+            </tr>
+        </aura:if>
+        <tr style="{!v.Model.REC_LEMP_7__c == true ? '': 'display:none'}">
+            <td>Benefits of Debit Card</td>
+            <td>
+                <ui:inputSelect aura:id="Needs_Assesment__c.REC_LEMP_Outcome_7__c" value="{!v.Model.REC_LEMP_Outcome_7__c}" />
+            </td>
+            <aura:if isTrue="{!(v.BenefitsOfDebitCard )}">
+                <td><span class='descicn' id='BenefitsOfDebitCard' onclick="{!c.showhideDetails}">-</span></td>
+                <aura:set attribute="else">
+                    <td><span class='descicn' id='BenefitsOfDebitCard' onclick="{!c.showhideDetails}">+</span></td>
+                </aura:set>
+            </aura:if>
+        </tr>
+        <aura:if isTrue="{!(v.BenefitsOfDebitCard )}">
+            <tr style="{!v.Model.REC_LEMP_7__c == true ? '': 'display:none'}">
+                <td colspan="2">
+                    <div class="descTD">
+                        <c:Recommendations_PaymentsTransfers Model="{!v.Model}" sectionName="dc" />
+                    </div>
+                </td>
+            </tr>
+        </aura:if>
+        <tr style="{!v.Model.REC_LEMP_8__c == true ? '': 'display:none'}">
+            <td>Credit Card</td>
+            <td>
+                <ui:inputSelect aura:id="Needs_Assesment__c.REC_LEMP_Outcome_8__c" value="{!v.Model.REC_LEMP_Outcome_8__c}" />
+            </td>
+            <aura:if isTrue="{!(v.CreditCard )}">
+                <td><span class='descicn' id='CreditCard' onclick="{!c.showhideDetails}">-</span></td>
+                <aura:set attribute="else">
+                    <td><span class='descicn' id='CreditCard' onclick="{!c.showhideDetails}">+</span></td>
+                </aura:set>
+            </aura:if>
+        </tr>
+        <aura:if isTrue="{!(v.CreditCard )}">
+            <tr style="{!v.Model.REC_LEMP_8__c == true ? '': 'display:none'}">
+                <td colspan="2">
+                    <div class="descTD">
+                        <c:Recommendations_PaymentsTransfers Model="{!v.Model}" sectionName="cc" />
+                    </div>
+                </td>
+            </tr>
+        </aura:if>
+
+        <!--O3 : Deposites-->
+        <tr style="{!v.Model.REC_LEMD_1__c == true ? '': 'display:none'}">
+            <td>Direct Deposit</td>
+            <td>
+                <ui:inputSelect aura:id="Needs_Assesment__c.REC_LEMD_Outcome_1__c" value="{!v.Model.REC_LEMD_Outcome_1__c}" />
+            </td>
+            <aura:if isTrue="{!(v.DirectDeposit )}">
+                <td><span class='descicn' id='DirectDeposit' onclick="{!c.showhideDetails}">-</span></td>
+                <aura:set attribute="else">
+                    <td><span class='descicn' id='DirectDeposit' onclick="{!c.showhideDetails}">+</span></td>
+                </aura:set>
+            </aura:if>
+        </tr>
+        <aura:if isTrue="{!(v.DirectDeposit )}">
+            <tr style="{!v.Model.REC_LEMD_1__c == true ? '': 'display:none'}">
+                <td colspan="2">
+                    <div class="descTD">
+                        <c:Recommedations_Deposits Model="{!v.Model}" />
+                    </div>
+                </td>
+            </tr>
+        </aura:if>
+        <tr style="{!v.Model.REC_LEMD_2__c == true ? '': 'display:none'}">
+            <td>Mobile Deposits</td>
+            <td>
+                <ui:inputSelect aura:id="Needs_Assesment__c.REC_LEMD_Outcome_2__c" value="{!v.Model.REC_LEMD_Outcome_2__c}" />
+            </td>
+            <aura:if isTrue="{!(v.MobileDeposits )}">
+                <td><span class='descicn' id='MobileDeposits' onclick="{!c.showhideDetails}">-</span></td>
+                <aura:set attribute="else">
+                    <td><span class='descicn' id='MobileDeposits' onclick="{!c.showhideDetails}">+</span></td>
+                </aura:set>
+            </aura:if>
+        </tr>
+        <aura:if isTrue="{!(v.MobileDeposits )}">
+            <tr style="{!v.Model.REC_LEMD_2__c == true ? '': 'display:none'}">
+                <td colspan="2">
+                    <div class="descTD">
+                        <c:Recommedations_Deposits Model="{!v.Model}" />
+                    </div>
+                </td>
+            </tr>
+        </aura:if>
+        <tr style="{!v.Model.REC_LEMD_3__c == true ? '': 'display:none'}">
+            <td>Shared Branching</td>
+            <td>
+                <ui:inputSelect aura:id="Needs_Assesment__c.REC_LEMD_Outcome_3__c" value="{!v.Model.REC_LEMD_Outcome_3__c}" />
+            </td>
+            <aura:if isTrue="{!(v.SharedBranching )}">
+                <td><span class='descicn' id='SharedBranching' onclick="{!c.showhideDetails}">-</span></td>
+                <aura:set attribute="else">
+                    <td><span class='descicn' id='SharedBranching' onclick="{!c.showhideDetails}">+</span></td>
+                </aura:set>
+            </aura:if>
+        </tr>
+        <aura:if isTrue="{!(v.SharedBranching || v.Deposits_SharedBranching )}">
+            <tr style="{!v.Model.REC_LEMD_3__c == true ? '': 'display:none'}">
+                <td colspan="2">
+                    <div class="descTD">
+                        <c:Recommedations_Deposits Model="{!v.Model}" />
+                        <c:Recommendations_SharedBranching Model="{!v.Model}" />
+                    </div>
+                </td>
+            </tr>
+        </aura:if>
+
+        <tr style="{!v.Model.REC_LEEM_1__c == true ? '': 'display:none'}">
+            <td>Market Edge</td>
+            <td>
+                <ui:inputSelect aura:id="Needs_Assesment__c.Rec_LEEM_Outcome_1__c" value="{!v.Model.Rec_LEEM_Outcome_1__c}" />
+            </td>
+            <aura:if isTrue="{!(v.MarketEdge )}">
+                <td><span class='descicn' id='MarketEdge' onclick="{!c.showhideDetails}">-</span></td>
+                <aura:set attribute="else">
+                    <td><span class='descicn' id='MarketEdge' onclick="{!c.showhideDetails}">+</span></td>
+                </aura:set>
+            </aura:if>
+        </tr>
+        <aura:if isTrue="{!(v.MarketEdge || v.EarnMoreFromSavings_MarketEdge )}">
+            <tr style="{!v.Model.REC_LEEM_1__c == true ? '': 'display:none'}">
+                <td colspan="2">
+                    <div class="descTD">
+                        <c:Recommedations_Deposits Model="{!v.Model}" />
+                        <c:Recommendations_EarnMoreFromSavings Model="{!v.Model}" sectionName="comment" DepositDetails="{!v.DepositDetails}" />
+                    </div>
+                </td>
+            </tr>
+        </aura:if>
+
+        <!--O3 : Withdrawals-->
+
+
+        <!--O3 : Shared Branching-->
+
+
+        <!--O3 : ATM Network-->
+
+
+        <!--O3 : Primary Account-->
+        <tr style="{!v.Model.REC_LEPT_1__c == true ? '': 'display:none'}">
+            <td>Checking Account</td>
+            <td>
+                <ui:inputSelect aura:id="Needs_Assesment__c.REC_LEPT_Outcome_1__c" value="{!v.Model.REC_LEPT_Outcome_1__c}" />
+            </td>
+            <aura:if isTrue="{!(v.CheckingAccount )}">
+                <td><span class='descicn' id='CheckingAccount' onclick="{!c.showhideDetails}">-</span></td>
+                <aura:set attribute="else">
+                    <td><span class='descicn' id='CheckingAccount' onclick="{!c.showhideDetails}">+</span></td>
+                </aura:set>
+            </aura:if>
+        </tr>
+		<aura:if isTrue="{!(v.CheckingAccount )}">
+            <tr style="{!v.Model.REC_LEPT_1__c == true ? '': 'display:none'}">
+                <td colspan="2">
+                    <div class="descTD">
+                        <c:Recommendations_PrimaryAccount Model="{!v.Model}" />
+                    </div>
+                </td>
+            </tr>
+        </aura:if>
+
+        <!--O4 : Earn More From Savings--> 
+
+
+
+        <!--O5 : Extend Benefits-->
+        <tr style="{!v.Model.Rec_LEMQ_1__c == true ? '': 'display:none'}">
+            <td>Refer Related Individuals for Credit Union </td>
+            <td>
+                <ui:inputSelect aura:id="Needs_Assesment__c.REC_LEMQ_Outcome_1__c" value="{!v.Model.REC_LEMQ_Outcome_1__c}" />
+            </td>
+            <aura:if isTrue="{!(v.ReferRelatedIndividualsForCreditUnion )}">
+                <td><span class='descicn' id='ReferRelatedIndividualsForCreditUnion' onclick="{!c.showhideDetails}">-</span></td>
+                <aura:set attribute="else">
+                    <td><span class='descicn' id='ReferRelatedIndividualsForCreditUnion' onclick="{!c.showhideDetails}">+</span></td>
+                </aura:set>
+            </aura:if>
+        </tr>
+		<aura:if isTrue="{!(v.ReferRelatedIndividualsForCreditUnion )}">
+            <tr style="{!v.Model.Rec_LEMQ_1__c == true ? '': 'display:none'}">
+                <td colspan="2">
+                    <div class="descTD">
+                        <c:Recommendations_ExtendedBenefits Model="{!v.Model}" MembershipDetails="{!v.MembershipDetails}" />
+                    </div>
+                </td>
+            </tr>
+        </aura:if>
+
+
+        <tr>
+            <td colspan="2">
+                <hr />
+            </td>
+        </tr>
+        <tr>
+            <td>Recommendation Comments</td>
+            <td>
+                <ui:inputTextArea value="{!v.Model.Rec_Comment__c}" />
+            </td>
+        </tr>
+        <tr>
+            <td colspan="3">
+                <button class="slds-button slds-button--brand" onclick="{!c.saveHousingClick}">Save</button>
+            </td>
+        </tr>
+    </table>
+</aura:component>

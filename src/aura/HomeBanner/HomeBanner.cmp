@@ -1,0 +1,41 @@
+<aura:component implements="flexipage:availableForAllPageTypes,force:appHostable" access="global">
+	
+	<aura:handler name="init" value="{!this}" action="{!c.doInit}" />		
+	<aura:attribute name="bannerTitle" access="global" Type="String" default="" />
+	<aura:attribute name="bannerText" access="global" Type="String" default="" />
+	<aura:attribute name="BannerLink" access="global" Type="String" default="" />
+	<aura:attribute name="BannerLinkHover" access="global" Type="String" default="" />
+	<aura:attribute name="bannerLinkText" access="global" Type="String" default="" />
+	<aura:attribute name="bannerExpirationFlag" access="global" Type="Boolean" default="false" />
+	
+	
+	 <style>        
+        
+        .homeHomeCard .slds-card {
+            padding: 1rem;            
+        }
+          .homeHomeCard {
+          	position:relative;          	
+          }
+          .currentCard {          	
+          	background-color : yellow !important;            
+          }
+        
+        .clearfix:after {
+            display: table;
+            clear: both;
+            content: ' ';
+        }
+         .slds-truncate{display:block;}
+    </style>
+
+	<aura:if isTrue="{!(v.bannerExpirationFlag == true)}">
+	<div class="homeHomeCard currentCard">
+	<article class="slds-card slds-card_boundary forceBaseCard">	
+		
+		<p style="background-color: yellow"><b>{!v.bannerTitle} &nbsp;{!v.bannerText}</b>&nbsp;<a target="_blank"  href="{!v.BannerLink}" title="{!v.BannerLinkHover}">{!v.bannerLinkText}</a></p>		
+	
+	</article>
+	</div>
+	</aura:if>
+</aura:component>

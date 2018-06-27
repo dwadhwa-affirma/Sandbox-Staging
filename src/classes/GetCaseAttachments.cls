@@ -7,21 +7,25 @@ public class GetCaseAttachments {
     			List<string> parentId = new List<string>();
         		List<Attachment> attachments = new List<Attachment>();
         		List<ListAttachment> listAttachments  = new List<ListAttachment>();
+        		List<string> parentIdmembercomment = new List<string>();
         		
                // CaseId = System.currentPageReference().getParameters().get('id');
                 parentId.Add(CaseId);
+                
                
                 List<Member_Comment__c> membercomment = [Select Id from Member_Comment__c where case__c =: CaseId];
                 for(Member_Comment__c mc : membercomment)
                 {
-                    parentId.Add(mc.Id);
+                    parentIdmembercomment.Add(mc.Id);
+                    
                 }
                  system.debug('ParentId####DW' + parentId);
+                 system.debug('parentIdmembercomment####DW' + parentIdmembercomment);
                  attachments = [SELECT BodyLength,Description,Id,LastModifiedDate ,Name,OwnerId,ParentId, Owner.Name, CreatedBy.Profile.Name FROM Attachment where ParentId IN: parentId];
-                 List<ContentDocumentLink> ContentDocumentLst = [select Id, ContentDocumentId, ContentDocument.Title, ContentDocument.FileType, ContentDocument.ContentSize, ContentDocument.OwnerId, ContentDocument.ContentModifiedDate, ContentDocument.CreatedBy.Name, ContentDocument.CreatedBy.Profile.Name from ContentDocumentLink where LinkedEntityId IN: parentId];
+               //  List<ContentDocumentLink> ContentDocumentLst = [select Id, ContentDocumentId,LinkedEntityId, ContentDocument.Title, ContentDocument.FileType, ContentDocument.ContentSize, ContentDocument.OwnerId, ContentDocument.ContentModifiedDate, ContentDocument.CreatedBy.Name, ContentDocument.CreatedBy.Profile.Name from ContentDocumentLink where LinkedEntityId IN: parentIdmembercomment];
                   system.debug('attachments1####DW' + attachments);
                   
-                   system.debug('ContentDocumentLst####DW' + ContentDocumentLst);
+                 //  system.debug('ContentDocumentLst####DW' + ContentDocumentLst);
                   
                   listAttachments = new List<ListAttachment>();
                  for(Attachment att : attachments)
@@ -50,14 +54,26 @@ public class GetCaseAttachments {
                         {
                             la.displaySize  = Math.round((att.BodyLength / 1000000)*10)/10 + ' MB';
                         }
-                        
+                        List<Approve_Attachment__c> approved = new List<Approve_Attachment__c>();
+                        approved = [select id,Case_ID__c,Attachment_Id__c, ContentDocumentLinkId__c from Approve_Attachment__c where Attachment_Id__c =: att.Id];
+                        if(approved != null && approved.size()> 0)
+                        {
+                        	la.isApproved = true;
+                        }
+                        else
+                        {
+                        	la.isApproved = false;
+                        }
                         la.Name = att.Name;
-                        la.LastModifiedDate = att.LastModifiedDate;
+                        la.LastModifiedDate = att.LastModifiedDate.format('MM/dd/yyyy HH:mm:ss');
                         la.CreatedBy = att.Owner.Name;
+                        la.downloadLink = '/servlet/servlet.FileDownload?file='+ string.valueOf(att.id) +'&operationContext=S1';
+                        la.attachmentId = att.Id;
                         listAttachments.add(la);
+                        
                      }
-                     
-                    for(ContentDocumentLink cd : ContentDocumentLst)
+                     system.debug('listAttachments==='+listAttachments);
+                 /*   for(ContentDocumentLink cd : ContentDocumentLst)
                     {
                         ListAttachment la = new ListAttachment();
                         
@@ -85,11 +101,21 @@ public class GetCaseAttachments {
                         }
                         
                         la.Name = cd.ContentDocument.Title;
-                        la.LastModifiedDate = cd.ContentDocument.ContentModifiedDate;
+                        la.LastModifiedDate = cd.ContentDocument.ContentModifiedDate.format('MM/dd/yyyy HH:mm:ss');
                         la.CreatedBy = cd.ContentDocument.CreatedBy.Name;
+                        la.downloadLink = '/sfc/servlet.shepherd/document/download/'+ string.valueOf(cd.ContentDocumentId);
                         listAttachments.add(la);
-                     }
+                     }*/
+                     
+                     system.debug('listContentDocument==='+listAttachments);
             return listAttachments;          
+    }
+    
+    @AuraEnabled 
+    public static void DeleteAttachment(string attachmentId){
+    	Attachment attachmentToDelete = new Attachment();
+    	attachmentToDelete = [SELECT BodyLength,Description,Id,LastModifiedDate ,Name,OwnerId,ParentId FROM Attachment where Id =: attachmentId];
+    	delete attachmentToDelete;
     }
     
   public class ListAttachment
@@ -103,7 +129,13 @@ public class GetCaseAttachments {
         @AuraEnabled
         public string CreatedBy {get;set;}
         @AuraEnabled
-        public datetime LastModifiedDate {get;set;}
+        public string LastModifiedDate {get;set;}
+        @AuraEnabled
+        public string downloadLink {get;set;}
+        @AuraEnabled
+        public string attachmentId {get;set;}
+         @AuraEnabled
+        public boolean isApproved {get;set;}
   }
     
 }

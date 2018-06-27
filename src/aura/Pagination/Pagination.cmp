@@ -1,0 +1,300 @@
+<aura:component implements="flexipage:availableForAllPageTypes,force:appHostable,force:hasRecordId" access="global">
+
+    <aura:attribute name="currentPage" type="Integer" default="1" description="rows of table" access="global" />
+    <aura:attribute name="ListObject" type="Object[]" description="rows of table" access="global" />
+    <aura:attribute name="PageSize" type="Integer" default="10" description="rows of table" access="global" />
+    <aura:attribute name="SectionName" type="string" default="1" description="rows of table" access="global" />
+    <aura:attribute name="TotalRecords" type="integer" default="1" description="rows of table" access="global" />
+ 	<aura:attribute name="loading" type="Boolean" default="false" />
+    <aura:attribute name="Pages" type="Integer[]" description="rows of table" access="global" />
+	<aura:attribute name="TotalPages" type="Integer" description="total pages" access="global" />
+
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}" />
+
+    <aura:handler name="change" value="{!v.TotalRecords}" action="{!c.PagesChange}" />
+
+    <aura:attribute name="HeaderTitleArray" type="string[]" description="rows of table" />
+    <aura:attribute name="HeaderColumnArray" type="string[]" description="rows of table" />
+    <aura:attribute name="HeaderTitleString" type="string" description="rows of table" access="global" />
+    <aura:attribute name="HeaderColumnString" type="string" description="rows of table" access="global" />
+    <aura:attribute name="Type" type="string" description="table type" />
+    <aura:attribute name="ColumnType" type="string[]" description="column type" />
+    <aura:attribute name="ChildRepeatingObject" type="string" description="rows of child repeating table" access="global" />
+    <aura:attribute name="ChildRepeatingColumns" type="string[]" description="field names of child table columns" />
+    
+    <aura:attribute name="widths" type="string" description="Current Active Tab Index"  />
+    <aura:attribute name="widthsArray" type="string[]" description="Current Active Tab Index" />
+    
+    <aura:attribute name="setStyle" type="string" description="set conditional background color to column" />
+    <aura:attribute name="account" type="string" description="account for master card alerts" />
+    <aura:attribute name="card" type="string" description="card number for master card alerts" />
+    <aura:registerEvent name="PaginationEvent" type="c:PaginationEvent" />
+    <aura:attribute name="arrowdownIcon" type="String" access="public" default="utility:arrowdown"/>
+    <aura:attribute name="arrowupIcon" type="String" access="public" default="utility:arrowup"/>
+    <aura:attribute name="SortBy" type="String" />
+    <aura:attribute name="SortDir" type="String" />
+	<aura:attribute name="searchField" type="string" access="public" default="" />
+    <style>
+        .paginationDiv {
+            text-align: center;
+        }
+        
+        .paginationDiv .slds-button,
+        .paginationDiv .slds-button_brand {
+            padding-left: 0.7rem;
+            padding-right: 0.7rem;
+            line-height: 1.8rem;
+        }
+        .pagingheader .pagingnumber{float:left;}
+        .pagingheader .search{float:right;margin-top:15px; margin-bottom: 10px;}
+        .pagingnumber {
+            width: 50%;
+            margin-bottom: 10px;
+        }
+        
+        .pagingnumber span {
+            display: inline-block;
+        }
+        
+        .pagingnumber .slds-form-element {
+            position: relative;
+            display: inline-block;
+            margin: 0 5px;
+        }
+        
+        .pagingnumber .slds-select_container:before{
+        	display:none;
+        }
+        .pagingnumber .slds-select_container:after{
+        	bottom:12px;
+        }
+        
+        .clearfix {
+            display: table;
+            clear: both;
+            content: '';
+        }
+        
+        .bottompaginationwrap {
+            padding: 10px 0 0;
+            border-top: 1px solid #000;
+        }
+        
+        .bottompaginationwrap .showingpage {
+            float: left;
+            padding-top: 6px;
+        }
+        
+        .bottompaginationwrap .paginationDiv {
+            float: right;
+        }
+        
+         @media (min-width: 48em){
+     		.cMemberWrapperFor360View .slds-modal__container {width:65%;max-width:90%;}
+     }
+     .pgnumberswrap{display:inline-block;margin:0 .25rem}
+    </style>
+    
+    <div class="pagingheader">
+    	<aura:if isTrue="{!v.TotalRecords > 0}">
+	    <div class="pagingnumber">
+	        <span>Show</span>
+	        <lightning:select name="mySelect" onchange="{!c.changePageSize}" value="{!v.PageSize}">
+	            <option text="5" value="5" />
+	            <option text="10" value="10" />
+	            <option text="20" value="20" />
+	            <option text="30" value="30" />
+	            <option text="40" value="40" />
+	        </lightning:select>
+	        <span>entries</span>
+	    </div>
+	    </aura:if>
+	    <div class="search">
+	    	<label class="slds-form-element__label">Search: </label>
+	        <div class="slds-form-element__control" style="display:inline-block;">
+	              <input class="input uiInput uiInputText uiInput--default uiInput--input" value="{!v.searchField}" onkeyup="{!c.searchEvents}" />
+			</div>
+	     </div>
+	     <div class="clearfix"></div>
+	 </div>
+    
+    <div style="overflow-x: auto;" class="tablewithpaging">
+        <table class="slds-table slds-table_bordered slds-table_fixed-layout">
+            <thead>
+                <tr class="slds-text-title_caps">
+                    <aura:iteration items="{!v.HeaderTitleArray}" var="col" indexVar="number">
+                    	<aura:iteration items="{!v.HeaderColumnArray}" var="field" indexVar="num">
+                    		<aura:iteration items="{!v.widthsArray}" var="widthNum" indexVar="numwidth">
+                    	
+                    	
+                    		<aura:if isTrue="{!and(number == num, numwidth == num)}">
+                    			<aura:if isTrue="{!(col == 'Case Comments' || col == 'Warning/Comments' || col == 'Type')}">
+                    				<th  style="{!widthNum}">
+                    					<span class="slds-truncate" title="{!col}" id="{!number}" style="font-weight: 400; text-transform: uppercase;">									
+		                            		{!col}                     	
+										</span>
+                    				</th>
+                    				<aura:set attribute="else">
+                    					 <th  style="{!widthNum}" aria-sort="none" 
+                    					 			class="{!((v.SortDir == 'Asc' &amp;&amp; v.SortBy == field) ? 'slds-is-sortable slds-is-resizable slds-text-title_caps slds-is-sorted slds-is-sorted_desc' : ((v.SortDir == 'Desc' &amp;&amp; v.SortBy == field) ? 'slds-is-sortable slds-is-resizable slds-text-title_caps slds-is-sorted slds-is-sorted_desc': 'slds-is-sortable slds-is-resizable slds-text-title_caps'))}" aria-label="Name" scope="col" id="{!number}">
+		                            		<a class="slds-th__action slds-text-link_reset" onclick="{!c.SortColumn}" id="{!number}" role="button" tabindex="-1">
+				                                <span class="slds-assistive-text" id="{!number}">Sort by: </span>
+				                                <span class="slds-truncate" title="{!col}" id="{!number}" style="font-weight: 400; text-transform: uppercase;">									
+				                            		{!col}                           	
+												</span>
+				                                <div class="slds-icon_container" id="{!number}">
+				                                	<span class="slds-icon slds-icon_x-small slds-icon-text-default slds-is-sortable__icon" aria-hidden="true">
+				                                		<aura:if isTrue="{!(v.SortDir == 'Asc' &amp;&amp; v.SortBy == field)}">	                                			                                		
+					                                		<lightning:icon iconName="{#v.arrowupIcon}" size="x-small" />
+					                                		<aura:set attribute="else">
+					                                			<aura:if isTrue="{!(v.SortDir == 'Desc' &amp;&amp; v.SortBy == field)}">
+					                                				<lightning:icon iconName="{#v.arrowdownIcon}" size="x-small" />	
+					                                				<aura:set attribute="else">
+					                                					<lightning:icon iconName="{#v.arrowupIcon}" size="xx-small" />
+					                                				</aura:set>		                                				
+					                                			</aura:if>	
+					                                		</aura:set>
+				                                		</aura:if>		                                			                                		        							
+				                                    </span>
+				                                </div>
+				                            </a>
+		                            		<span class="slds-assistive-text" aria-live="assertive" aria-atomic="true">Sorted none</span>
+		                        		</th>
+                    				</aura:set>
+                    			</aura:if>
+                    			
+                    		</aura:if>
+                    		</aura:iteration>                       
+                    	</aura:iteration>
+                    </aura:iteration>
+					 <aura:if isTrue="{!(v.SectionName == 'cardList')}">
+                           <th aria-sort="none" class="slds-is-sortable slds-is-resizable slds-text-title_caps" aria-label="Name" scope="col" id="last" style="font-weight: 400; text-transform: uppercase;">View</th>
+                    </aura:if>
+                </tr>
+            </thead>
+            <tbody>
+                <aura:if isTrue="{!v.TotalRecords > 0}">
+                    <aura:if isTrue="{!v.Type == 'Repeating'}">
+                        <aura:iteration items="{!v.ListObject}" var="item">
+                            <tr>
+                                <aura:iteration items="{!v.HeaderColumnArray}" var="col" indexVar="num">
+                                    <aura:if isTrue="{!col == 'lstCaseComments'}">
+                                        <td>
+                                            <aura:iteration items="{!item.lstCaseComments}" var="childitem" indexVar="idx">
+                                                <aura:iteration items="{!v.ChildRepeatingColumns}" var="childcol">
+                                                    <c:FieldValue ItemObject="{!childitem}" FieldName="{!childcol}" IsChildTable="true" IsShowColumnHeading="false" />
+                                                </aura:iteration>
+                                            </aura:iteration>
+                                        </td>
+                                        <aura:set attribute="else">
+                                            <aura:if isTrue="{!col == 'lstTasks'}">
+                                                <td>
+                                                    <aura:iteration items="{!item.lstTasks}" var="childitem" indexVar="idx">
+                                                        <aura:iteration items="{!v.ChildRepeatingColumns}" var="childcol">
+                                                            <c:FieldValue ItemObject="{!childitem}" FieldName="{!childcol}" IsChildTable="true" IsShowColumnHeading="true" />
+                                                        </aura:iteration>
+                                                    </aura:iteration>
+                                                </td>
+                                                <aura:set attribute="else">
+                                                    <c:FieldValue ItemObject="{!item}" FieldName="{!col}" ColumnType="{!v.ColumnType}" ColumnIndex="{!num}" />
+                                                </aura:set>
+                                            </aura:if>
+                                        </aura:set>
+                                    </aura:if> 
+                                </aura:iteration>
+                            </tr>
+                        </aura:iteration>
+                        <aura:set attribute="else">
+                            <aura:iteration items="{!v.ListObject}" var="item">
+                                <tr style="{!('background-color:' + (((v.SectionName == 'Warning/Comments' &amp;&amp; item.CloseDate != null) || (v.SectionName == 'accList' &amp;&amp; item.Close_Date__c != null) || (v.SectionName == cardList &amp;&amp; item.Expiration_Date__c != null)) ? '#cccccc' : ''))}">
+                                	<aura:if isTrue="{!v.SectionName == 'Warning/Comments'}">
+                                		<aura:iteration items="{!v.HeaderColumnArray}" var="col" indexVar="number">
+                                				<aura:if isTrue="{!(col == 'WarningCode')}">
+                                					<aura:if isTrue="{!(item.Descriptn == 'Warning Code')}">
+                                						<c:FieldValue ItemObject="{!item}" FieldName="{!col}" ColumnType="{!v.ColumnType}" ColumnIndex="{!number}" setcolor='true' color='red' />
+                                						<aura:set attribute="else">
+                                							<c:FieldValue ItemObject="{!item}" FieldName="{!col}" ColumnType="{!v.ColumnType}" ColumnIndex="{!number}" setcolor='true' color='blue' />
+                                						</aura:set>
+                                					</aura:if>
+                                					<aura:set attribute="else">
+                                						<c:FieldValue ItemObject="{!item}" FieldName="{!col}" ColumnType="{!v.ColumnType}" ColumnIndex="{!number}" />
+                                					</aura:set>
+                                				</aura:if>
+                                                
+                                     	</aura:iteration>
+                                		<aura:set attribute="else">
+                                			<aura:iteration items="{!v.HeaderColumnArray}" var="col" indexVar="number">
+                                                <c:FieldValue ItemObject="{!item}" FieldName="{!col}" ColumnType="{!v.ColumnType}" ColumnIndex="{!number}" />
+                                     		</aura:iteration>
+                                		</aura:set>
+                                	</aura:if>
+                                     
+                                    <aura:if isTrue="{!(v.SectionName == 'cardList')}">
+                                    	<aura:if isTrue="{!item.Onboarded__c == true}">
+                                    		<td><div class="slds-truncate" title="MasterCard Alerts"><a href="javascript:void(0);" role="{!item.Name}" id="{!item.Card_Number_Last_4_Digits__c}" onclick="{!c.OpenMasterCardAlerts}">MasterCard Alerts</a></div></td>
+	                                    	<aura:set attribute="else">
+	                                    		<td></td>
+	      									</aura:set>
+                                    	</aura:if>                                    	
+                                    </aura:if>
+                                </tr>
+                            </aura:iteration>
+                        </aura:set>
+                    </aura:if>
+                    <aura:set attribute="else">
+                        <tr>
+                        	<aura:if isTrue="{!(v.SectionName == 'cardList')}">
+                        		<td colspan="{!(v.HeaderColumnArray.length + 1)}">
+	                                No data available in table.
+	                            </td>
+	                        	<aura:set attribute="else">
+	                        		<td colspan="{!v.HeaderColumnArray.length}">
+		                                No data available in table.
+		                            </td>
+	                        	</aura:set>
+                        	</aura:if>
+                            
+                        </tr>
+                    </aura:set>
+                </aura:if>
+            </tbody>
+        </table>
+    </div>
+
+    <aura:if isTrue="{!v.TotalRecords > 0}">
+        <div class="bottompaginationwrap">
+            <div class="showingpage">
+            		Showing {!((v.currentPage-1)*(v.PageSize) + 1)} to {!((v.TotalRecords > v.PageSize) ? (((v.currentPage)*(v.PageSize)) &lt; v.TotalRecords ? ((v.currentPage)*(v.PageSize)) : v.TotalRecords ) : v.TotalRecords)} of {!v.TotalRecords} Entries
+            </div>
+            <div class="paginationDiv">
+            	<button class="slds-button slds-button--neutral" style="{!(v.currentPage &gt; 1 ? '' : 'display:none;')}" onclick="{!c.First}">&laquo;</button>
+                <button class="slds-button slds-button--neutral" style="{!(v.currentPage &gt; 1 ? '' : 'display:none;')}" onclick="{!c.Previous}">&lt;</button>
+				<div class="pgnumberswrap">
+                <aura:iteration items="{!v.Pages}" var="col">
+                    <aura:if isTrue="{!(v.currentPage == col)}">
+                        <button class="slds-button slds-button_brand">{!col}</button>
+
+                        <aura:set attribute="else">
+                            <button class="slds-button slds-button--neutral" id="{!col}" onclick="{!c.ChangePage}">{!col}</button>
+                        </aura:set>
+                    </aura:if>
+                </aura:iteration>
+                </div>
+                <button class="slds-button slds-button--neutral" style="{!(v.currentPage &lt; v.TotalPages ? '' : 'display:none;')}" onclick="{!c.Next}">&gt;</button>
+                <button class="slds-button slds-button--neutral" style="{!(v.currentPage &lt; v.TotalPages ? '' : 'display:none;')}" onclick="{!c.Last}">&raquo;</button>
+            </div>
+            <div class="clearfix"></div>
+        </div>
+    </aura:if>
+    
+    <aura:if isTrue="{!(v.loading == true)}">
+    	 <div class="loadingDiv"> 
+                    <div class="demo-only" style='height: 6rem; '>
+                        <div role="status" class="slds-spinner slds-spinner_medium">
+                            <div class="slds-spinner__dot-a"></div>
+                            <div class="slds-spinner__dot-b"></div>
+                        </div>
+                    </div>
+                    </div>
+                </aura:if>
+</aura:component>

@@ -1,0 +1,55 @@
+({
+	getCaseAttachments : function(component) {	
+		var action = component.get("c.GetCaseAttachments");
+		var recordId = component.get("v.recordId");	
+		
+		action.setParams({
+		"CaseId": recordId
+		});
+		
+			action.setCallback(this, function(resp) {				
+			var state=resp.getState();			
+			if(state === "SUCCESS"){		
+				var res = resp.getReturnValue();
+				console.log(res);				
+				component.set("v.Attachments", res); 	
+				component.set("v.AttachmentsCount", res.length); 					
+				      			
+			}
+		});
+		
+		$A.enqueueAction(action);
+	},
+	
+	deleteAttachment : function(component) {	
+		debugger;
+		var attachmentId= event.target.getAttribute("id");
+		var action = component.get("c.DeleteAttachment");
+		
+		action.setParams({
+		"attachmentId": attachmentId
+		});
+		
+			action.setCallback(this, function(resp) {
+				debugger;
+			var state=resp.getState();			
+			if(state === "SUCCESS"){		
+				var toastEvent = $A.get("e.force:showToast");
+	        
+		        toastEvent.setParams({		            
+		            message : 'Attachment Deleted Successfully',	                        
+		            duration:' 500',
+		            key: 'info_alt',
+		            type: 'success',
+		            mode: 'pester'
+		        });
+		        toastEvent.fire();						
+				  $A.get('e.force:refreshView').fire();    			
+			}
+		});
+		
+		$A.enqueueAction(action);
+		
+	},
+	
+})

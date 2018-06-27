@@ -1,247 +1,247 @@
 <apex:page standardController="Member_Comment__c"
-	standardStylesheets="true" extensions="CannedResponsesForComment"
-	showHeader="true" tabStyle="Member_Comment__c">
-	<head>
+    standardStylesheets="true" extensions="CannedResponsesForComment"
+    showHeader="true" tabStyle="Member_Comment__c">
+    <head>
 <script
-	src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
 <script
-	src="https://cdnjs.cloudflare.com/ajax/libs/jquery.blockUI/2.70/jquery.blockUI.min.js"></script>
+    src="https://cdnjs.cloudflare.com/ajax/libs/jquery.blockUI/2.70/jquery.blockUI.min.js"></script>
 
-	</head>
-	<style>
+    </head>
+    <style>
 </style>
 
 
-	<apex:facet name="header">
-		<img src="/img/icon/cases32.png" class="pageTitleIcon" />
-		<h3>New Member Comment</h3>
-	</apex:facet>
+    <apex:facet name="header">
+        <img src="/img/icon/cases32.png" class="pageTitleIcon" />
+        <h3>New Member Comment</h3>
+    </apex:facet>
 
-	<apex:form >
+    <apex:form >
 
 
-		<apex:pageBlock mode="edit" tabStyle="Member_Comment__c"
-			title="Member Comment Edit">
-			<div id="col1">
-				<apex:panelGrid columns="2" border="0" cellpadding="3px"
-					rowClasses="rowstyle" width="100%" styleclass="searchwrap">
-					<apex:outputPanel id="SearchTextPanel">
-						<apex:outputLabel value="Search" styleclass="searchlabel"></apex:outputLabel>
-						<apex:inputText disabled="{!isReadonly}"  id="SearchField" value="{!searchText}"
-							onkeypress="return onenter(event)" />
-					</apex:outputPanel>
-				</apex:panelGrid>
-				<apex:panelGrid columns="1" border="0" bgcolor="white"
-					rowClasses="rowstyle" width="100%">
-					<apex:outputLabel style="width:auto;text-align:center">
-						<center>--------OR-------</center>
-					</apex:outputLabel>
-				</apex:panelGrid>
-				<apex:panelGrid columns="1" border="0" cellpadding="3px"
-					rowClasses="rowstyle" width="100%">
-					<!--<apex:outputLabel >Primary Category</apex:outputLabel>-->
-					<apex:outputPanel id="FirstPanel">
-						<apex:selectList styleclass="selectlistprimaryid"
-							value="{!selectedPrimary}"  disabled="{!isReadonly}" size="1" onchange="loadPrimaryList()">
-							<apex:selectOptions value="{!Primary}"></apex:selectOptions>
-						</apex:selectList>
-					</apex:outputPanel>
-				</apex:panelGrid>
-				<apex:panelGrid columns="1" border="0" cellpadding="3px"
-					rowClasses="rowstyle" width="100%">
-					<!--<apex:outputLabel >Secondary Category</apex:outputLabel>-->
-					<apex:outputPanel id="SecondPanel">
-						<apex:selectList disabled="{!isReadonly}" styleclass="selectlistsecondaryid"
-							value="{!selectedSecondary}" size="1"
-							onchange="loadSecondoryList()">
-							<apex:selectOptions value="{!Secondary}"></apex:selectOptions>
-						</apex:selectList>
-					</apex:outputPanel>
-				</apex:panelGrid>
-				<apex:panelGrid columns="1" border="0" cellpadding="3px"
-					rowClasses="rowstyle" width="100%">
-					<!--<apex:outputLabel >Tertiary Category</apex:outputLabel>-->
-					<apex:outputPanel id="ThirdPanel">
-						<apex:selectList styleclass="selectlisttertiaryid"
-							value="{!selectedTertiary}"   disabled="{!isReadonly}" size="1"
-							onchange="loadTertiaryList()">
-							<apex:selectOptions value="{!Tertiary}"></apex:selectOptions>
-						</apex:selectList>
-					</apex:outputPanel>
-				</apex:panelGrid>
-				<apex:panelGrid columns="2" border="0" cellpadding="3px"
-					rowClasses="rowstyle" width="100%">
-					<apex:outputPanel id="titlePanel">
-						<apex:outputLabel styleclass="selectlabel">Select a Response Comment</apex:outputLabel>
-						<apex:selectList disabled="{!isReadonly}" styleclass="selectlistid"
-							value="{!selectedTitle}" size="6"
-							onchange="loadSelectedDecription()">
-							<apex:selectOptions value="{!items}"></apex:selectOptions>
-						</apex:selectList>
-					</apex:outputPanel>
-				</apex:panelGrid>
-				<apex:panelGrid columns="2" border="0" cellpadding="3px"
-					rowClasses="rowstyle" width="100%">
-					<apex:outputPanel id="draftpanel">
-						<apex:outputLabel >Draft?</apex:outputLabel>&nbsp;
+        <apex:pageBlock mode="edit" tabStyle="Member_Comment__c"
+            title="Member Comment Edit">
+            <div id="col1">
+                <apex:panelGrid columns="2" border="0" cellpadding="3px"
+                    rowClasses="rowstyle" width="100%" styleclass="searchwrap">
+                    <apex:outputPanel id="SearchTextPanel">
+                        <apex:outputLabel value="Search" styleclass="searchlabel"></apex:outputLabel>
+                        <apex:inputText disabled="{!isReadonly}"  id="SearchField" value="{!searchText}"
+                            onkeypress="return onenter(event)" />
+                    </apex:outputPanel>
+                </apex:panelGrid>
+                <apex:panelGrid columns="1" border="0" bgcolor="white"
+                    rowClasses="rowstyle" width="100%">
+                    <apex:outputLabel style="width:auto;text-align:center">
+                        <center>--------OR-------</center>
+                    </apex:outputLabel>
+                </apex:panelGrid>
+                <apex:panelGrid columns="1" border="0" cellpadding="3px"
+                    rowClasses="rowstyle" width="100%">
+                    <!--<apex:outputLabel >Primary Category</apex:outputLabel>-->
+                    <apex:outputPanel id="FirstPanel">
+                        <apex:selectList styleclass="selectlistprimaryid"
+                            value="{!selectedPrimary}"  disabled="{!isReadonly}" size="1" onchange="loadPrimaryList()">
+                            <apex:selectOptions value="{!Primary}"></apex:selectOptions>
+                        </apex:selectList>
+                    </apex:outputPanel>
+                </apex:panelGrid>
+                <apex:panelGrid columns="1" border="0" cellpadding="3px"
+                    rowClasses="rowstyle" width="100%">
+                    <!--<apex:outputLabel >Secondary Category</apex:outputLabel>-->
+                    <apex:outputPanel id="SecondPanel">
+                        <apex:selectList disabled="{!isReadonly}" styleclass="selectlistsecondaryid"
+                            value="{!selectedSecondary}" size="1"
+                            onchange="loadSecondoryList()">
+                            <apex:selectOptions value="{!Secondary}"></apex:selectOptions>
+                        </apex:selectList>
+                    </apex:outputPanel>
+                </apex:panelGrid>
+                <apex:panelGrid columns="1" border="0" cellpadding="3px"
+                    rowClasses="rowstyle" width="100%">
+                    <!--<apex:outputLabel >Tertiary Category</apex:outputLabel>-->
+                    <apex:outputPanel id="ThirdPanel">
+                        <apex:selectList styleclass="selectlisttertiaryid"
+                            value="{!selectedTertiary}"   disabled="{!isReadonly}" size="1"
+                            onchange="loadTertiaryList()">
+                            <apex:selectOptions value="{!Tertiary}"></apex:selectOptions>
+                        </apex:selectList>
+                    </apex:outputPanel>
+                </apex:panelGrid>
+                <apex:panelGrid columns="2" border="0" cellpadding="3px"
+                    rowClasses="rowstyle" width="100%">
+                    <apex:outputPanel id="titlePanel">
+                        <apex:outputLabel styleclass="selectlabel">Select a Response Comment</apex:outputLabel>
+                        <apex:selectList disabled="{!isReadonly}" styleclass="selectlistid"
+                            value="{!selectedTitle}" size="6"
+                            onchange="loadSelectedDecription()">
+                            <apex:selectOptions value="{!items}"></apex:selectOptions>
+                        </apex:selectList>
+                    </apex:outputPanel>
+                </apex:panelGrid>
+                <apex:panelGrid columns="2" border="0" cellpadding="3px"
+                    rowClasses="rowstyle" width="100%">
+                    <apex:outputPanel id="draftpanel">
+                        <apex:outputLabel >Draft?</apex:outputLabel>&nbsp;
                           <apex:inputCheckbox disabled="{!isReadonly}" value="{!Draft}" />
 
-					</apex:outputPanel>
-				</apex:panelGrid>
-				<apex:panelGrid columns="2" border="0" cellpadding="3px"
-					rowClasses="rowstyle" width="100%" rendered="{!If(isReadonly, false, false)}" >
-					<apex:outputPanel id="draftpanel2">
-						<apex:outputLabel >CU Read</apex:outputLabel>&nbsp;
+                    </apex:outputPanel>
+                </apex:panelGrid>
+                <apex:panelGrid columns="2" border="0" cellpadding="3px"
+                    rowClasses="rowstyle" width="100%" rendered="{!If(isReadonly, false, false)}" >
+                    <apex:outputPanel id="draftpanel2">
+                        <apex:outputLabel >CU Read</apex:outputLabel>&nbsp;
                           <apex:inputCheckbox value="{!CURead}" />
 
-					</apex:outputPanel>
-				</apex:panelGrid>
-				<apex:panelGrid columns="2" border="0" cellpadding="3px"
-					rowClasses="rowstyle" width="100%" rendered="{!If(isReadonly, false, false)}">
-					<apex:outputPanel id="draftpanel3">
-						<apex:outputLabel >Member Read</apex:outputLabel>&nbsp;
+                    </apex:outputPanel>
+                </apex:panelGrid>
+                <apex:panelGrid columns="2" border="0" cellpadding="3px"
+                    rowClasses="rowstyle" width="100%" rendered="{!If(isReadonly, false, false)}">
+                    <apex:outputPanel id="draftpanel3">
+                        <apex:outputLabel >Member Read</apex:outputLabel>&nbsp;
                           <apex:inputCheckbox value="{!MemberRead}" />
 
-					</apex:outputPanel>
-				</apex:panelGrid>
-			</div>
-			<div id="col2">
-				<apex:panelGrid columns="2" border="0" cellpadding="3px"
-					rowClasses="rowstyle">
-					<apex:outputLabel value="Member Communication"
-						style="padding-left:30px; float:right"></apex:outputLabel>
-					<apex:inputTextarea disabled="{!isReadonly}" id="setDescription" styleClass="setDescription"
-						richText="true" value="{!MemberDescription}" style="width: 100%" />
+                    </apex:outputPanel>
+                </apex:panelGrid>
+            </div>
+            <div id="col2">
+                <apex:panelGrid columns="2" border="0" cellpadding="3px"
+                    rowClasses="rowstyle">
+                    <apex:outputLabel value="Member Communication"
+                        style="padding-left:30px; float:right"></apex:outputLabel>
+                    <apex:inputTextarea disabled="{!isReadonly}" id="setDescription" styleClass="setDescription"
+                        richText="true" value="{!MemberDescription}" style="width: 100%" />
 
-					<!-- <apex:outputLabel value="Case" style="padding-left:30px;"></apex:outputLabel>
+                    <!-- <apex:outputLabel value="Case" style="padding-left:30px;"></apex:outputLabel>
                               <apex:inputfield value="{!Member_Comment__c.Case__c}"/>
                                -->
-				</apex:panelGrid>
+                </apex:panelGrid>
 
-			</div>
-			<apex:outputPanel id="choosenval">
-				<apex:inputText value="{!chosenDescription}" styleClass="chosendecs"
-					style="visibility: hidden;" />
-			</apex:outputPanel>
+            </div>
+            <apex:outputPanel id="choosenval">
+                <apex:inputText value="{!chosenDescription}" styleClass="chosendecs"
+                    style="visibility: hidden;" />
+            </apex:outputPanel>
 
-			<div style="margin-top: 30px; float: left; width: 100%;">
-				<apex:outputPanel id="showmsg"
-					rendered="{!if(stopSave = true,true,false)}">
-					<strong><apex:outputText value="Please add Email address to member Account in order to create a member massage."
-							style="font-size:12px;color:red;"></apex:outputText></strong>
-				</apex:outputPanel>
-				<apex:outputPanel id="outPnl"
-					rendered="{!if(showBtn = true,true,false)}">
-					<apex:pageBlock title="Select Attachments to share:">
-						<apex:pageBlockTable value="{!wrapperLst}" var="obj">
-							<apex:column headerValue="Attachment Name">
-								<!--<apex:outputLink value="/{!obj.attachmentobj.id}">{!obj.attachmentobj.Name}</apex:outputLink>-->
-								<apex:outputText value="{!obj.attachmentobj.Name}" />
-							</apex:column>
-							<apex:column headerValue="">
-								<a
-									href="/servlet/servlet.FileDownload?file={!obj.attachmentobj.Id}"
-									target="_blank" class="btn">Download Attachment</a>
-							</apex:column>
-							<apex:column headerValue="Select">
-								<apex:inputCheckbox disabled="{!isReadonly}" value="{!obj.checkvalue}" />
-								<!--<input type="checkbox" id="{!obj.attachmentobj.Id}" value="first_checkbox"/>-->
-							</apex:column>
-						</apex:pageBlockTable>
-					</apex:pageBlock>
-				</apex:outputPanel>
-			</div>
-			<apex:pageBlockButtons >
-				<!--<apex:commandButton value="Save" action="{!save}"/>-->
-				<apex:commandButton value="Save"
-					onclick="validateMe(); return false;" reRender="frm"
-					rendered="{!If(isReadonly, false, true)}"
-					disabled="{!if(stopSave = true,true,false)}" />
-				<apex:commandButton value="Save & New"
-					onclick="validateMeonNew(); return false;"
-					rendered="{!If(isReadonly, false, true)}"
-					disabled="{!if(stopSave = true,true,false)}" />
-				<!--<apex:commandButton value="Save & New" action="{!savenew}"/>-->
-				<apex:commandButton value="Cancel" action="{!cancelall}" />
-			</apex:pageBlockButtons>
-			<apex:actionFunction name="getCommentsPrimary"
-				action="{!getTitlesByCategories}"
-				reRender="SecondPanel,titlePanel,SearchTextPanel" />
-			<apex:actionFunction name="getCommentsSecond"
-				action="{!getTitlesByCategories}"
-				reRender="ThirdPanel,titlePanel,SearchTextPanel" />
-			<apex:actionFunction name="getComments"
-				action="{!getTitlesByCategories}"
-				reRender="titlePanel,SearchTextPanel" />
-			<apex:actionFunction name="getSearchText"
-				action="{!getTitlesBySearchText}"
-				reRender="titlePanel,FirstPanel,SecondPanel,ThirdPanel" />
-			<apex:actionFunction name="getSelectedDecription"
-				action="{!getSelectedDecription}" reRender="choosenval"
-				oncomplete="assignVal()" />
-			<apex:actionFunction name="saveIt" action="{!save}" />
-			<apex:actionFunction name="saveandNew" action="{!savenew}" />
-		</apex:pageBlock>
-	</apex:form>
-	<style>
+            <div style="margin-top: 30px; float: left; width: 100%;">
+                <apex:outputPanel id="showmsg"
+                    rendered="{!if(stopSave = true,true,false)}">
+                    <strong><apex:outputText value="Please add Email address to member Account in order to create a member massage."
+                            style="font-size:12px;color:red;"></apex:outputText></strong>
+                </apex:outputPanel>
+                <apex:outputPanel id="outPnl"
+                    rendered="{!if(showBtn = true,true,false)}">
+                    <apex:pageBlock title="Select Attachments to share:">
+                        <apex:pageBlockTable value="{!wrapperLst}" var="obj">
+                            <apex:column headerValue="Attachment Name">
+                                <!--<apex:outputLink value="/{!obj.attachmentobj.id}">{!obj.attachmentobj.Name}</apex:outputLink>-->
+                                <apex:outputText value="{!obj.attachmentobj.Name}" />
+                            </apex:column>
+                            <apex:column headerValue="">
+                                <a
+                                    href="/servlet/servlet.FileDownload?file={!obj.attachmentobj.Id}"
+                                    target="_blank" class="btn">Download Attachment</a>
+                            </apex:column>
+                            <apex:column headerValue="Select">
+                                <apex:inputCheckbox disabled="{!isReadonly}" value="{!obj.checkvalue}" />
+                                <!--<input type="checkbox" id="{!obj.attachmentobj.Id}" value="first_checkbox"/>-->
+                            </apex:column>
+                        </apex:pageBlockTable>
+                    </apex:pageBlock>
+                </apex:outputPanel>
+            </div>
+            <apex:pageBlockButtons >
+                <!--<apex:commandButton value="Save" action="{!save}"/>-->
+                <apex:commandButton value="Save"
+                    onclick="validateMe(); return false;" reRender="frm"
+                    rendered="{!If(isReadonly, false, true)}"
+                    disabled="{!if(stopSave = true,true,false)}" />
+                <apex:commandButton value="Save & New"
+                    onclick="validateMeonNew(); return false;"
+                    rendered="{!If(isReadonly, false, true)}"
+                    disabled="{!if(stopSave = true,true,false)}" />
+                <!--<apex:commandButton value="Save & New" action="{!savenew}"/>-->
+                <apex:commandButton value="Cancel" action="{!cancelall}" />
+            </apex:pageBlockButtons>
+            <apex:actionFunction name="getCommentsPrimary"
+                action="{!getTitlesByCategories}"
+                reRender="SecondPanel,titlePanel,SearchTextPanel" />
+            <apex:actionFunction name="getCommentsSecond"
+                action="{!getTitlesByCategories}"
+                reRender="ThirdPanel,titlePanel,SearchTextPanel" />
+            <apex:actionFunction name="getComments"
+                action="{!getTitlesByCategories}"
+                reRender="titlePanel,SearchTextPanel" />
+            <apex:actionFunction name="getSearchText"
+                action="{!getTitlesBySearchText}"
+                reRender="titlePanel,FirstPanel,SecondPanel,ThirdPanel" />
+            <apex:actionFunction name="getSelectedDecription"
+                action="{!getSelectedDecription}" reRender="choosenval"
+                oncomplete="assignVal()" />
+            <apex:actionFunction name="saveIt" action="{!save}" />
+            <apex:actionFunction name="saveandNew" action="{!savenew}" />
+        </apex:pageBlock>
+    </apex:form>
+    <style>
 .rowstyle {
-	border-bottom-width: 0px;
+    border-bottom-width: 0px;
 }
 
 .left {
-	width: 33%;
-	float: left;
+    width: 33%;
+    float: left;
 }
 
 .right {
-	width: 66%;
-	float: left;
+    width: 66%;
+    float: left;
 }
 
 #col1 select {
-	width: 100%;
+    width: 100%;
 }
 
 #col1 {
-	width: 25%;
-	float: left;
+    width: 25%;
+    float: left;
 }
 
 #col2 {
-	width: 75%;
-	float: left;
+    width: 75%;
+    float: left;
 }
 
 .pbBottomButtons {
-	clear: both;
+    clear: both;
 }
 
 .selectlabel {
-	display: block;
-	margin-bottom: 5px;
+    display: block;
+    margin-bottom: 5px;
 }
 
 .searchlabel {
-	display: block;
+    display: block;
 }
 
 table.searchwrap td:last-child {
-	width: 80%;
+    width: 80%;
 }
 
 table.searchwrap td:first-child {
-	width: 20%;
+    width: 20%;
 }
 
 table.searchwrap input {
-	width: 100%;
+    width: 100%;
 }
 
 .cke_reset {
-	width: 600px;
+    width: 600px;
 }
 </style>
-	<script>
+    <script>
         
         
         function onenter(e){    

@@ -1,0 +1,40 @@
+<aura:component implements="flexipage:availableForAllPageTypes,force:appHostable,force:hasRecordId,force:lightningQuickAction">
+	  <aura:attribute name="recordId" type="string"/>
+      
+      
+      <aura:registerEvent name="ClosePopup" type="c:SaveNeedAssessmentEvent"/>
+      
+      
+      <div role="dialog" tabindex="-1" aria-labelledby="header43" class="slds-modal slds-fade-in-open">
+		  <div class="slds-modal__container">
+		    <div class="slds-modal__header">
+		      <button class="slds-button slds-modal__close slds-button--icon-inverse" title="Close">
+		       
+		        <span class="slds-assistive-text">Close</span>
+		      </button>
+		      <h2 id="header43" class="slds-text-heading--medium">Upload Attachment(s)</h2>
+		      
+		    </div>
+		    <div class="slds-modal__content slds-p-around--medium">
+		       
+    
+		      <br />
+                   <c:fileUpload parentId="{!v.recordId}" />            
+                    <br />  
+		      
+		      
+		      
+		    </div>
+		    <div class="slds-modal__footer">
+		      <button class="slds-button slds-button_neutral" onclick="{!c.closePopup}">Cancel</button>
+		       
+		    </div>
+		  </div>
+		</div>
+<div class="slds-backdrop slds-backdrop--open"></div>
+    
+      
+      
+      
+      
+</aura:component>

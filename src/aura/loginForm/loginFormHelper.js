@@ -4,6 +4,10 @@
         'startURL'  : 'e.c:setStartUrl'
     },
 
+    qsToEventMap2: {
+        'expid'  : 'e.c:setExpId'
+    },
+    
     handleLogin: function (component, event, helpler) {
         var username = component.find("username").get("v.value");
         var password = component.find("password").get("v.value");
@@ -65,5 +69,15 @@
             }
         });
         $A.enqueueAction(action);
+    },
+
+    setBrandingCookie: function (component, event, helpler) {
+        var expId = component.get("v.expid");
+        if (expId) {
+            var action = component.get("c.setExperienceId");
+            action.setParams({expId:expId});
+            action.setCallback(this, function(a){ });
+            $A.enqueueAction(action);
+        }
     }
 })

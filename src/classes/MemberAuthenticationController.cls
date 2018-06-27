@@ -17,6 +17,8 @@ public class MemberAuthenticationController{
     public String PhoneNumberMatch{get;set;}
     public String IVRPhoneNumberMatch;
     
+    public String OTPVerified {get;set;}
+    
     
     public String EnteredCardNumber{get;set;}
     private String IVREnteredCardNumber{get;set;}
@@ -188,7 +190,7 @@ public class MemberAuthenticationController{
             options.add(new SelectOption('Birth place','Birth place'));
             //options.add(new SelectOption('Email address','Email address'));
             options.add(new SelectOption('Online banking username','Online banking username'));
-            options.add(new SelectOption('OTP','OTP'));
+            //options.add(new SelectOption('OTP','OTP'));
             options.add(new SelectOption('Password from comment flag','Password from Comment flag'));
             options.add(new SelectOption('Red Herring','Red Herring'));
             options.add(new SelectOption('Transaction history question','Transaction history question'));
@@ -209,7 +211,7 @@ public class MemberAuthenticationController{
             options.add(new SelectOption('Birth place','Birth place'));
             //options.add(new SelectOption('Email address','Email address'));
             options.add(new SelectOption('Online banking username','Online banking username'));
-            options.add(new SelectOption('OTP','OTP'));
+            //options.add(new SelectOption('OTP','OTP'));
             options.add(new SelectOption('Password from comment flag','Password from Comment flag'));
             options.add(new SelectOption('Red Herring','Red Herring'));
             options.add(new SelectOption('Transaction history question','Transaction history question'));
@@ -1742,6 +1744,9 @@ public class MemberAuthenticationController{
          
          }
          
+         
+         
+         
          System.debug('AdditionalToken1chk---' + AdditionalToken1chk );
           System.debug('AdditionalToken2chk---' + AdditionalToken2chk );
          System.debug('AdditionalToken3chk---' + AdditionalToken3chk );
@@ -1783,6 +1788,19 @@ public class MemberAuthenticationController{
               
         log.SalesforceID__c = SalesforceID;
         log.Decision__c = substring(decision,100);
+        //OTPVerified
+        if(OTPVerified != '' && OTPVerified != null)
+        {
+        	log.IVR_OTP_Result__c = OTPVerified;
+        	Datetime createddate = System.now().addminutes(-5);
+        	List<Authenticated_Log__c> listOTPLog = [select id, OTP_Email__c, OTP_Phone__c from Authenticated_Log__c where SalesforceID__c =: SalesforceID and CreatedDate >: createddate order by CreatedDate desc limit 1 ];
+        	if(listOTPLog.size() > 0)
+        	{
+        		log.OTP_Email__c =listOTPLog[0].OTP_Email__c;
+        		log.OTP_Phone__c =listOTPLog[0].OTP_Phone__c;
+        	}
+
+        }
         system.debug('log ###' + log);
         insert log;
         return SalesforceID;

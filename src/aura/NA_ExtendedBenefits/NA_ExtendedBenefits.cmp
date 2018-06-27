@@ -1,0 +1,101 @@
+<aura:component controller="CollectionsInLightningCls" implements="force:appHostable,force:hasRecordId" access="global">
+
+    <aura:attribute name="Model" access="global" Type="Needs_Assesment__c" default="{'sobjectType':'Needs_Assesment__c'}" />
+    <aura:attribute name="picklistFields" type="Map" default="{}" />
+    <aura:attribute name="deletedItems" type="String[]"  />
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}" />
+	<aura:attribute name="membershipLoans" type="NA_Membership_Referral_Questions__c[]" />
+    <aura:registerEvent name="AssessmentSave" type="c:SaveNeedAssessmentEvent" />
+    <aura:handler event="c:DeleteotherEvt" action="{!c.removeDeletedRow}"/>
+<style>
+	.slds-table th{text-align:center; font-weight:bold;}
+	.slds-table th, .slds-table td{padding:	0.25rem 0.5rem !important;}
+	.uiInput--input.input{    min-height: 1.875rem; height: 1.875rem;   padding: 0 6px;}
+	.uiInput--select.select{padding: 0 18px 0 6px;}
+	.uiInput--input .input{  padding: 0 20px 0 6px;height: 1.875rem;}
+	.uiInput--datetime .datePicker-openIcon{right: 5px;}
+</style>
+
+
+    <b style="padding:0 0 5px 0;display:block; font-size : 16px;">Membership Referral Questions</b>
+
+    <div style="padding-bottom: 5px">
+        <h3><b>Family members are eligible for membership at the Credit Union. Would you like to share their names so we can help meet the needs of your whole family?</b></h3>
+        <br />
+        <h3><b>You will also receive $25 for each person you refer that becomes a Credit Union member! 
+(Prompt for one or more of the following: spouse, partner, children, grandchildren, siblings, parents, grandparents, roommates)</b></h3>
+    </div>
+    <table border="1" class="otherTbl" width="100%">
+        <tbody>
+            <tr>
+                <td>
+                    <table border="0" width="100%">
+                        <tbody>
+                            <tr>
+                                <td colspan="2"><b>Current As Of <ui:outputDate format="MMMM dd, YYYY" value="{!v.Model.LEMQ_Last_Updated_On__c}" /></b>
+                                </td>
+                            </tr>                            
+                        </tbody>
+                    </table>
+                    <p style="text-align:right; padding:5px 0;"><button class="slds-button slds-button--brand" onclick="{!c.addNewLoanItem}">Add</button></p>
+                    <table border="0" width="100%"  class="slds-table slds-table_bordered slds-no-cell-focus slds-table_edit" role="grid">
+                        <thead>
+                        <tr>                           
+                            <th>
+                                <span class="slds-truncate" title="Name">Name</span>
+                            </th>
+                            <th width="120px">
+                                <span class="slds-truncate" title="Age">Age</span>
+                            </th>
+                            <th>
+                                <span class="slds-truncate" title="Rate">Want to refer them for membership?</span>
+                            </th>                             
+                            <th>                                
+                                <span class="slds-truncate" title="Delete"> 
+									<span class="slds-icon_container null slds-icon__svg--default">
+                                         <c:svgIcon svgPath="/assets/icons/utility-sprite/svg/symbols.svg#delete" category="utility" size="small" name="delete" />
+									</span>
+								</span>
+                            </th>
+                        </tr>    
+                        </thead>
+                        <tbody>
+                        <aura:iteration items="{!v.membershipLoans}" var="item" indexVar="index">
+                          <c:NA_ExtendedBenefitsItems Loan="{!item}" rowIndex="{!index}" />
+                        </aura:iteration>    
+                        </tbody>                          
+						
+						
+                    </table>
+                    <br/>
+                    <h3>
+                	Only ask age if person is 22 or younger (qualifies for MySavings)                	
+                </h3>
+                </td>   
+                <td valign="top">
+                    <table border="0" class="otherTbl" width="100%">
+                        <tbody>
+                            <tr>
+                                <td class="colHeader"><b>Recommendations</b></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>Refer Related Individuals for Credit Union</td>
+                                <td>
+                                    <ui:inputCheckbox value="{!v.Model.Rec_LEMQ_1__c}" />                                   
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </td>                
+            </tr>
+        </tbody>
+    </table>
+    <table>
+        <tr>
+            <td style="text-align:right; padding-top:5px;">
+                <button class="slds-button slds-button--brand" onclick="{!c.saveExistingLoansClick}">Save</button>
+            </td>
+        </tr>
+    </table>
+</aura:component>

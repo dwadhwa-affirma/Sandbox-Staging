@@ -1,0 +1,95 @@
+<aura:component controller="CollectionsInLightningCls" implements="flexipage:availableForAllPageTypes,force:appHostable,force:hasRecordId" access="global">
+
+    <aura:attribute name="Model" access="global" Type="Needs_Assesment__c" />
+    
+	
+	<aura:registerEvent name="AssessmentSave" type="c:SaveNeedAssessmentEvent"/>
+    <b style="padding:0 0 5px 0;display:block; font-size : 16px;">Optimize how you move your money - Making Withdrawals</b>
+     
+    <table border="1" class="otherTbl" width="100%">
+        <tbody>
+            <tr>
+                <td>
+                
+
+                    <table border="0" width="100%">
+                        <tbody>
+                            <tr>
+                                <td colspan="2"><b>Current As Of <ui:outputDate format="MMMM dd, YYYY" value="{!v.Model.LEWS_Last_Updated_On__c}" /></b>
+                                    
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="mainQuestion" width="200"><b>Where do you typically make cash withdrawals?</b></td>
+                                
+                            </tr>
+
+                            <tr>
+                                <td class="subQuestion" width="200">&nbsp;<b>CFCU/Spectrum ATM</b></td>
+                                <td>
+                                    <ui:inputCheckbox value="{!v.Model.LEWS_CFCU_ATM__c}" />
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="subQuestion" width="200">&nbsp;<b>Shared ATM (surcharge free network)</b></td>
+                                <td>
+                                    <ui:inputCheckbox value="{!v.Model.LEWS_Shared_ATM__c}" />
+                                </td>
+
+                            </tr>
+
+
+                            <tr>
+                                <td class="subQuestion" width="200">&nbsp;<b>Other ATM</b></td>
+                                <td>
+                                     <ui:inputCheckbox value="{!v.Model.LEWS_Other_ATM__c}" />
+                                </td>
+
+                            </tr>
+
+                            <tr>
+                                <td class="subQuestion" width="200">&nbsp;<b>In Person (branch)</b></td>
+                                <td>
+                                    <ui:inputCheckbox value="{!v.Model.LEWS_InPerson__c}" />
+                                </td>
+
+                            </tr>                                                                          
+                            <tr>
+                                <td class="subQuestion" valign="top" width="200"><b>Comments</b></td>
+                                <td>
+                                    <ui:inputTextArea value="{!v.Model.LEWS_Comment_New__c}" />
+                                </td>
+
+                            </tr>
+                        </tbody>
+                    </table>
+                </td>
+                <td valign="top">
+                    <table border="0" class="otherTbl" width="100%">
+                        <tbody>
+                            <tr>
+                                <td class="colHeader"><b>Recommendations</b></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>Surcharge-free ATM network</td>
+                                <td>
+                                    <ui:inputCheckbox value="{!v.Model.REC_LECF_4__c}" />
+                                </td>
+                            </tr>
+                                                      
+                        </tbody>
+                    </table>
+                    
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table>
+	 	<tr>
+             <td style="text-align:right; padding-top:5px;">
+                 <button class="slds-button slds-button--brand" onclick="{!c.saveWithdrawalsClick}">Save</button>
+             </td>
+        </tr>
+    </table>
+</aura:component>

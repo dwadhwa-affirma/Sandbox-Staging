@@ -17,31 +17,12 @@ public class MCPINChangeTest {
 	 static testMethod void test_getData_UseCase1(){
 	 	MC_PIN_Change__c obj1 = new MC_PIN_Change__c();
 	 	obj1.Card_Number__c = '4459';
-	 	obj1.Email__c = 'test@sample.com';
+	 
 	 	obj1.Member_Number__c = '0260049344';
-	 	obj1.Mobile_Phone__c = '1234567890';
+	 
 	 	obj1.OdsKey__c = '123456789';
 	 	insert obj1;
 	 	
-	 	Account_Details__c accDetail =  [select id,Reference__c from Account_Details__c limit 1 ];
-	 	accDetail.Reference__c = 'BC01';
-	 	update accDetail;
-	 	MC_PIN_Change__c obj2 = new MC_PIN_Change__c();
-	 	obj2.Card_Number__c = '4459';
-	 	obj2.Email__c = 'test@sample.com';
-	 	obj2.Member_Number__c = '0260049344';
-	 	obj2.Mobile_Phone__c = '1234567890';
-	 	obj2.OdsKey__c = '123456788';
-	 	insert obj2;
-	 	
-	 	
-	 	MC_PIN_Change__c obj3 = new MC_PIN_Change__c();
-	 	obj3.Card_Number__c = '4459';
-	 	
-	 	obj3.Member_Number__c = '0260049344';
-	 	
-	 	obj3.OdsKey__c = '123456787';
-	 	insert obj3;
 	 	
 	 }
 	

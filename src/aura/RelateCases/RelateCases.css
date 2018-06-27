@@ -1,0 +1,31 @@
+.THIS {
+}
+
+.THIS .Salutation {
+            width: 20%;
+            margin-bottom: 5px;
+        }
+      	.THIS .modal-body{position:relative;}
+        .THIS .slds-modal__content {
+			overflow: hidden;
+			overflow-y: auto;
+			height: 600px !important;
+			max-height: 600px !important;
+			padding:0px !important;
+		}
+		.THIS .slds-modal__header{
+			position: relative;
+			border-top-right-radius: .25rem;
+			border-top-left-radius: .25rem;
+			border-bottom: 2px solid rgb(221, 219, 218);
+			padding: 0px !important;
+			text-align: center;
+		}
+		.THIS .slds-p-around--medium{padding:0px !important;}
+		.THIS .slds-p-around_medium{padding:0px !important;}
+        .THIS .modal-maincontent{min-height: 280px;max-height: 280px;overflow-y: auto;}
+        .THIS .slds-p-around_medium { padding:0px !important;}
+        .THIS .forceChatterBasePublisher :not(.PHONE)  .cuf-content{padding:0px !important;}
+		.THIS .slds-p-around_medium, .THIS .slds-p-around--medium{padding:0px !important;}
+		.THIS .cRelateCases{padding:15px;}
+		.THIS .slds-modal__container{max-width: 40rem !important; width:70% !important;}

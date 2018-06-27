@@ -1,0 +1,64 @@
+<aura:component controller="CollectionsInLightningCls" implements="flexipage:availableForAllPageTypes,force:appHostable,force:hasRecordId" access="global">
+    <aura:attribute name="Model" access="global" Type="Needs_Assesment__c" />
+
+    <table>
+        <tr>
+            <td colspan="2">
+                <h2>Deposits</h2>
+            </td>
+        </tr>
+        <aura:if isTrue="{!and(v.Model.LEMD_CFCU_Spectrum_YesNo__c != null , v.Model.LEMD_CFCU_Spectrum_YesNo__c !=' ') || 
+                                          			and(v.Model.LEMD_At_another_financial_insti_YesNo__c != null , v.Model.LEMD_At_another_financial_insti_YesNo__c !=' ')}">
+            <tr class="bottombor">
+                <td class="subQuestion">Do you have direct deposit for your primary sources of income?</td>
+                <td>
+                	<aura:if isTrue="{!and(v.Model.LEMD_CFCU_Spectrum_YesNo__c != null , v.Model.LEMD_CFCU_Spectrum_YesNo__c !=' ')}">
+                		{!v.Model.LEMD_CFCU_Spectrum_YesNo__c} - at CFCU/Spectrum <br />
+                	</aura:if>
+                	<aura:if isTrue="{!and(v.Model.LEMD_At_another_financial_insti_YesNo__c != null , v.Model.LEMD_At_another_financial_insti_YesNo__c != ' ')}">
+                		{!v.Model.LEMD_At_another_financial_insti_YesNo__c} - at another financial institution
+                	</aura:if>
+                </td>
+            </tr>
+        </aura:if>
+        <aura:if isTrue="{!(v.Model.LEMD_CommentsForDD__c != null)}">
+            <tr class="bottombor">
+                <td class="subQuestion">Comments</td>
+                <td>
+                    {!v.Model.LEMD_CommentsForDD__c}
+                </td>
+            </tr>
+        </aura:if>
+        <aura:if isTrue="{!and(v.Model.LEMD_In_person_branch__c != null , v.Model.LEMD_In_person_branch__c) ||
+                                        	and(v.Model.LEMD_ATM__c != null , v.Model.LEMD_ATM__c ) ||
+                                        	and(v.Model.LEMD_Online__c != null , v.Model.LEMD_Online__c ) ||
+                                        	 and(v.Model.LEMD_Mobile__c != null , v.Model.LEMD_Mobile__c)}">
+            <tr>
+                <td class="subQuestion">How do you prefer to deposit checks?</td>
+                <td>
+                	<aura:if isTrue="{!and(v.Model.LEMD_In_person_branch__c != null , v.Model.LEMD_In_person_branch__c)}">
+                	In person(branch) <br />
+                	</aura:if>
+                	<aura:if isTrue="{!and(v.Model.LEMD_ATM__c != null , v.Model.LEMD_ATM__c)}">
+                	ATM <br />
+                	</aura:if>
+                	<aura:if isTrue="{!and(v.Model.LEMD_Online__c != null , v.Model.LEMD_Online__c)}">
+                	Online <br />
+                	</aura:if>
+                	<aura:if isTrue="{!and(v.Model.LEMD_Mobile__c != null , v.Model.LEMD_Mobile__c)}">
+                	Mobile
+                	</aura:if>
+                </td>
+            </tr>
+        </aura:if>
+        <aura:if isTrue="{!(v.Model.LEMD_CommentsDC__c != null)}">
+            <tr>
+                <td class="subQuestion" width="200">Comments</td>
+                <td>
+                    {!v.Model.LEMD_CommentsDC__c}
+                </td>
+            </tr>
+        </aura:if>
+    </table>
+
+</aura:component>

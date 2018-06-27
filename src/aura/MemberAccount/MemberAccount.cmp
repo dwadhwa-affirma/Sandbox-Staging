@@ -1,0 +1,5 @@
+<aura:component implements="flexipage:availableForAllPageTypes,force:appHostable,force:hasRecordId" access="global" controller="MemberAccountController">
+    
+    
+
+</aura:component>

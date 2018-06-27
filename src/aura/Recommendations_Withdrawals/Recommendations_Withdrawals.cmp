@@ -1,0 +1,44 @@
+<aura:component controller="CollectionsInLightningCls" implements="flexipage:availableForAllPageTypes,force:appHostable,force:hasRecordId" access="global">
+    <aura:attribute name="Model" access="global" Type="Needs_Assesment__c" />
+
+    <table>
+        <tr>
+            <td colspan="2">
+                <h2>Withdrawals</h2>
+            </td>
+        </tr>
+        <aura:if isTrue="{!(v.Model.LEWS_CFCU_ATM__c ||
+	                           	 		 v.Model.LEWS_Shared_ATM__c  ||
+	                           	 		 v.Model.LEWS_Other_ATM__c ||
+	                           	 		 v.Model.LEWS_InPerson__c)}">
+            <tr class="bottombor">
+                <td class="subQuestion">
+                    Where do you typically make cash withdrawals?
+                </td>
+                <td>
+                	<aura:if isTrue="{!(v.Model.LEWS_CFCU_ATM__c != null)}">
+                		CFCU/Spectrum ATM <br />
+                	</aura:if>
+                	<aura:if isTrue="{!(v.Model.LEWS_Shared_ATM__c != null)}">
+                		Shared ATM (surcharge free network) <br />
+                	</aura:if>
+                	<aura:if isTrue="{!(v.Model.LEWS_Other_ATM__c != null)}">
+                		Other ATM <br />
+		            </aura:if>
+		            <aura:if isTrue="{!(v.Model.LEWS_InPerson__c != null)}">
+		                In person (branch)
+		            </aura:if>
+                </td>
+            </tr>
+        </aura:if>
+        <aura:if isTrue="{!(v.Model.LEWS_Comment__c != null)}">
+            <tr class="bottombor">
+                <td class="subQuestion">Comment</td>
+                <td>
+                    {!v.Model.LEWS_Comment__c}
+                </td>
+            </tr>
+        </aura:if>
+    </table>
+
+</aura:component>

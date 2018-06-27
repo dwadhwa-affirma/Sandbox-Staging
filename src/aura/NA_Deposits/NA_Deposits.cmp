@@ -1,0 +1,145 @@
+<aura:component controller="CollectionsInLightningCls" implements="force:appHostable,force:hasRecordId" access="global">
+
+    <aura:attribute name="Model" access="global" Type="Needs_Assesment__c" />
+    <aura:attribute name="picklistFields" type="Map" default="{}" />
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}" />
+
+    <aura:registerEvent name="AssessmentSave" type="c:SaveNeedAssessmentEvent" />
+    <b style="padding:0 0 5px 0;display:block; font-size : 16px;">Optimize how you move your money - Making Deposits</b>
+
+
+    <table border="1" class="otherTbl" width="100%">
+        <tbody>
+            <tr>
+                <td>
+
+
+
+                    <table border="0" width="100%">
+                        <tbody>
+                            <tr>
+                                <td colspan="2"><b>Current As Of <ui:outputDate format="MMMM dd, YYYY" value="{!v.Model.LEMD_Last_Updated_On__c}" /></b>
+
+                                </td>
+                            </tr>
+                            <tr>
+
+                                <td class="mainQuestion" width="200"><b>Do you have direct deposit for your primary sources of income?</b></td>
+                            </tr>
+
+                            <tr>
+                                <td class="subQuestion" width="200">&nbsp; At CFCU/Spectrum</td>
+                                <td>
+                                    <ui:inputSelect aura:id="Needs_Assesment__c.LEMD_CFCU_Spectrum_YesNo__c" value="{!v.Model.LEMD_CFCU_Spectrum_YesNo__c}" />
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="subQuestion" width="200">&nbsp; At another financial institution</td>
+                                <td>
+                                    <ui:inputselect aura:id="Needs_Assesment__c.LEMD_At_another_financial_insti_YesNo__c" value="{!v.Model.LEMD_At_another_financial_insti_YesNo__c}" />
+                                </td>
+
+                            </tr>
+                            <tr>
+                                <td class="subQuestion" width="200">&nbsp; Comments (If you have selected No)</td>
+                                <td>
+                                    <ui:inputTextArea value="{!v.Model.LEMD_CommentsForDD_New__c}" />
+                                </td>
+
+                            </tr>
+                            <tr>
+                                <td class="mainQuestion" width="200"><b>How do you prefer to deposit checks?</b>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="subQuestion" width="200">&nbsp; In person(branch)</td>
+                                <td>
+                                    <ui:inputCheckbox value="{!v.Model.LEMD_In_person_branch__c}" />
+                                </td>
+
+                            </tr>
+                            <tr>
+                                <td class="subQuestion" width="200">&nbsp; ATM</td>
+                                <td>
+                                    <ui:inputCheckbox value="{!v.Model.LEMD_ATM__c}" />
+                                </td>
+
+                            </tr>
+                            <tr>
+                                <td class="subQuestion" width="200">&nbsp; Online</td>
+                                <td>
+                                    <ui:inputCheckbox value="{!v.Model.LEMD_Online__c}" />
+                                </td>
+
+                            </tr>
+                            <tr>
+                                <td class="subQuestion" width="200">&nbsp; Mobile</td>
+                                <td>
+                                    <ui:inputCheckbox value="{!v.Model.LEMD_Mobile__c}" />
+                                </td>
+
+                            </tr>
+                            <tr>
+                                <td class="subQuestion" width="200">&nbsp; Comments</td>
+                                <td>
+                                    <ui:inputTextArea value="{!v.Model.LEMD_CommentsDC_New__c}" />
+                                </td>
+
+                            </tr>
+                        </tbody>
+                    </table>
+                </td>
+                <td valign="top">
+                    <table border="0" class="otherTbl" width="100%">
+                        <tbody>
+                            <tr>
+                                <td class="colHeader"><b>Recommendations</b></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>Direct Deposit</td>
+                                <td>
+                                    <ui:inputCheckbox value="{!v.Model.REC_LEMD_1__c}" />
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Mobile Deposits </td>
+                                <td>
+                                    <ui:inputCheckbox value="{!v.Model.REC_LEMD_2__c}" />
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Shared Branching </td>
+                                <td>
+                                    <ui:inputCheckbox value="{!v.Model.REC_LEMD_3__c}" />
+                                </td>
+                            </tr>
+                            <tr>
+                                <td> Surcharge-free ATM network </td>
+                                <td>
+                                    <ui:inputCheckbox value="{!v.Model.REC_LECF_4__c}" />
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Market Edge </td>
+                                <td>
+                                    <ui:inputCheckbox value="{!v.Model.REC_LEEM_1__c}" />
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table>
+
+        <tr>
+            <td style="text-align:right; padding-top:5px;">
+                <button class="slds-button slds-button--brand" onclick="{!c.saveDepositsClick}">Save</button>
+            </td>
+        </tr>
+    </table>
+
+</aura:component>

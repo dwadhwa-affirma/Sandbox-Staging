@@ -1,0 +1,60 @@
+({
+	fetchPicklistFields: function(component) {
+		var picklistFields = component.get("v.picklistFields");
+		debugger;
+		var NAFields = ["LESF_Aware_ATM_Network_YesNo__c", "LESF_ATM_Location_YesNo__c"];
+		picklistFields['Needs_Assesment__c'] = NAFields;
+		 
+		this.getPicklistValues(component,picklistFields);
+	},
+	 
+	getPicklistValues : function(component, sobjFieldsmap) {		
+		var action = component.get("c.getPicklistValues");
+		debugger;
+		action.setParams({
+		"objpicklistFieldsMap": JSON.stringify(sobjFieldsmap)
+		});			
+			action.setCallback(this, function(resp) {
+			var state=resp.getState();
+			debugger;
+			console.log('state ' + state);
+			if(state === "SUCCESS"){
+				var res = resp.getReturnValue();
+				console.log(res);
+				var obj;
+				for(obj in res){
+					var objName = res[obj];
+					console.log('object name --> ' + obj);
+					var field;
+					for(field in objName){
+						console.log('fields --> ' + field);
+						var optionValues = objName[field];
+						console.log('options --> ' + optionValues);
+						this.buildPicklist(component, obj + "." + field, optionValues);
+					}
+				}
+			}
+		});
+		$A.enqueueAction(action);
+	},
+	 
+	buildPicklist: function(component, elementId, optionValues) {
+		var opts = [];
+		if (optionValues != undefined && optionValues.length > 0) {
+			opts.push({
+			class: "optionClass",
+			label: "--- None ---",
+			value: ""
+			});
+		}
+	 
+		for (var i = 0; i < optionValues.length; i++) {
+			opts.push({
+			class: "optionClass",
+			value: optionValues[i],
+			label: optionValues[i]
+			});
+		}
+		component.find(elementId).set("v.options", opts);
+	}    
+})

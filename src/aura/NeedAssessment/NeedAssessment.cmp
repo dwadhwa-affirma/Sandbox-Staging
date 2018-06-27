@@ -1,0 +1,451 @@
+<aura:component implements="flexipage:availableForAllPageTypes,force:appHostable,force:hasRecordId" access="global" controller="NeedAssessmentLightningController">
+    <aura:registerEvent name="saveNeedAssessment" type="c:SaveNeedAssessmentEvent" />
+    <aura:attribute name="Model" type="NeedAssessmentLightningModel" access="global" />
+
+
+    <aura:attribute name="Overview" type="Boolean" access="global" />
+    <aura:attribute name="Housing" type="Boolean" access="global" />
+    <aura:attribute name="ContactPreference" type="Boolean" access="global" />
+    <aura:attribute name="SectionSelection" type="Boolean" access="global" />
+    <aura:attribute name="AutoVehicle" type="Boolean" access="global" />
+    <aura:attribute name="CurrentFeedback" type="Boolean" access="global" />
+    <aura:attribute name="Withdrawals" type="String" access="global" />
+    <aura:attribute name="SharedBranching" type="Boolean" access="global" />
+    <aura:attribute name="Deposits" type="Boolean" access="global" />
+    <aura:attribute name="OtherMilestones" type="Boolean" access="global" />
+    <aura:attribute name="PrimaryAccount" type="Boolean" access="global" />
+    <aura:attribute name="Recommendations" type="Boolean" access="global" />
+    <aura:attribute name="ATMNETWORK" type="Boolean" access="global" />
+    <aura:attribute name="CurrentLoans" type="Boolean" access="global" />
+    <aura:attribute name="ExtendedBenefits" type="Boolean" access="global" />
+    <aura:attribute name="PaymentsTransfers" type="Boolean" access="global" />
+    <aura:attribute name="EarnMore" type="Boolean" access="global" />
+
+    <aura:handler value="{!this}" name="init" action="{!c.doInit}" />
+    <aura:handler name="AssessmentSave" event="c:SaveNeedAssessmentEvent" action="{!c.HandleSaveAssessment}" />
+    <aura:handler name="FetchPickLists" event="c:FetchPickListEvent" action="{!c.FetchPickList}" />
+    <aura:attribute name="loading" type="Boolean" default="false" />
+
+
+    <style>
+        /* Loading Style*/
+        
+        .loadingDiv {
+            position: absolute;
+            z-index: 100;
+            background: rgba(255, 255, 255, 0.8);
+            width: 100%;
+            height: 96%;
+        }
+        
+        .loadingDiv .demo-only {
+            z-index: 101;
+        }
+        /* Loading Style End*/
+        
+        .tabset {
+            min-height: 220px;
+        }
+        
+        .needassessmenttabs .slds-tabs_default__item,
+        .needassessmenttabs .slds-tabs_default__item {
+            color: #000000;
+            position: relative;
+            margin-right: 1px;
+            margin-bottom: -3px;
+            padding: 0 .55rem;
+            text-transform: capitalize;
+        }
+        
+        .needassessmenttabs .slds-tabs_default__link,
+        .needassessmenttabs .slds-tabs--default__link {
+            display: table-cell;
+            vertical-align: middle;
+            font-size: 11px;
+            height: 2.8rem;
+            line-height: 1rem;
+            text-align: center;
+            text-transform: capitalize;
+            font-size: 13px !important;
+        }
+        
+        .needassessmenttabs .slds-tabs_default__content {
+            border: 0;
+            padding: 0;
+        }
+        
+        .needassessmenttabs .slds-tabs_default__nav,
+        .needassessmenttabs .slds-tabs_default__nav {
+            border: 0;
+        }
+        
+        .needassessmenttabs .slds-tabs_default__link:hover,
+        .needassessmenttabs .slds-tabs_default__link:focus,
+        .needassessmenttabs .slds-tabs_default__link:hover,
+        .needassessmenttabs .slds-tabs_default__link:focus {
+            color: #fff;
+        }
+        
+        .needassessmenttabs .slds-tabs_default__item.slds-active .needassessmenttabs .slds-tabs_default__link:hover,
+        .needassessmenttabs .slds-tabs_default__item.slds-active .needassessmenttabs .slds-tabs_default__link:hover,
+        .needassessmenttabs .slds-tabs_default__item.slds-is-active .slds-tabs_default__link:hover,
+        .needassessmenttabs .slds-tabs_default__item.slds-is-active .slds-tabs_default__link:hover,
+        .needassessmenttabs .slds-tabs_default__item.slds-active .slds-tabs_default__link:hover,
+        .needassessmenttabs .slds-tabs_default__item.slds-active .slds-tabs_default__link:hover,
+        .needassessmenttabs .slds-tabs_default__item.slds-is-active .slds-tabs_default__link:hover,
+        .needassessmenttabs .slds-tabs_default__item.slds-is-active .slds-tabs_default__link:hover {
+            color: #fff;
+        }
+        
+        .needassessmenttabs .slds-tabs_default__item:hover:after,
+        .needassessmenttabs .slds-tabs_default__item:hover:after {
+            border-color: transparent;
+        }
+        
+        .needassessmenttabs .slds-tabs_default__link:hover,
+        .needassessmenttabs .slds-tabs_default__link:hover,
+        .needassessmenttabs .slds-tabs_default__item .slds-active,
+        .needassessmenttabs .slds-tabs_default__item .slds-active .slds-tabs_default__link,
+        .needassessmenttabs .slds-tabs_default__item .slds-active .slds-tabs_default__link:hover,
+        {
+            color: #fff !important;
+        }
+        
+        .needassessmenttabs .slds-tabs_default__item.slds-active:after,
+        .needassessmenttabs .slds-tabs_default__item.slds-is-active:after,
+        .needassessmenttabs .slds-tabs--default__item.slds-active:after,
+        .needassessmenttabs .slds-tabs--default__item.slds-is-active:after,
+        .needassessmenttabs .slds-tabs_default__item:hover:after,
+        .slds-tabs--default__item:hover:after {
+            height: 3px;
+        }
+        
+        .needassessmenttabs .slds-tabs_default__item.optOutTab,
+        .needassessmenttabs .slds-tabs_default__item.optOutTab {
+            border-color: lightgrey;
+            color: #fff;
+            background: lightgrey;
+        }
+        
+        .needassessmenttabs .slds-tabs_default__item.slds-active.optOutTab {
+            z-index: 1;
+        }
+        
+        .needassessmenttabs .slds-tabs_default__content.optOutTab {
+            border: 3px solid lightgrey;
+            padding: 15px;
+        }
+        
+        .needassessmenttabs .slds-tabs_default__item.expiredTab,
+        .needassessmenttabs .slds-tabs_default__item.expiredTab {
+            border-color: #c65353;
+            color: #fff;
+            background: #c65353;
+        }
+        
+        .needassessmenttabs .slds-tabs_default__item.slds-active.expiredTab {
+            z-index: 1;
+        }
+        
+        .needassessmenttabs .slds-tabs_default__content.expiredTab {
+            border: 3px solid #c65353;
+            padding: 15px;
+        }
+        
+        .needassessmenttabs .slds-tabs_default__item.completeTab,
+        .needassessmenttabs .slds-tabs_default__item.completeTab {
+            border-color: #66cc99;
+            color: #fff;
+            background: #66cc99;
+        }
+        
+        .needassessmenttabs .slds-tabs_default__item.slds-active.completeTab {
+            z-index: 1;
+        }
+        
+        .needassessmenttabs .slds-tabs_default__content.completeTab {
+            border: 3px solid #66cc99;
+            padding: 15px;
+        }
+        
+        .needassessmenttabs .slds-tabs_default__item.partialTab,
+        .needassessmenttabs .slds-tabs_default__item.partialTab {
+            border-color: #EDB547;
+            color: #fff;
+            background: #EDB547;
+        }
+        
+        .needassessmenttabs .slds-tabs_default__item.slds-active.partialTab {
+            z-index: 1;
+        }
+        
+        .needassessmenttabs .slds-tabs_default__content.partialTab {
+            border: 3px solid #EDB547;
+            padding: 15px;
+        }
+        
+        .needassessmenttabs .slds-tabs_default__item.OverViewtab,
+        .needassessmenttabs .slds-tabs_default__item.OverViewtab {
+            border-color: #aaa;
+            color: #fff;
+            background: #aaa;
+        }
+        
+        .needassessmenttabs .slds-tabs_default__item.slds-active.OverViewtab {
+            z-index: 1;
+        }
+        
+        .needassessmenttabs .slds-tabs_default__content.OverViewtab {
+            border: 3px solid #aaa;
+            padding: 15px;
+        }
+        
+        table.needTbl {
+            width: auto !important;
+        }
+        
+        table.needTbl td {
+            padding: 5px !important;
+        }
+        
+        table.otherTbl td {
+            padding: 5px !important;
+            vertical-align: top;
+        }
+        
+        .radOverview .uiInputRadio {
+            position: relative;
+        }
+        
+        .radOverview .uiInputRadio label {
+            padding-left: 17px;
+            cursor: pointer;
+        }
+        
+        .radOverview .uiInputRadio input[type="radio"] {
+            position: absolute;
+            top: 3px;
+            left: 0;
+        }
+        
+        .optoutclass input[type="checkbox"] {
+            display: inline-block;
+        }
+    </style>
+
+
+
+	<aura:if isTrue="{!(and(and(v.Model.MemberAbove18, v.Model.PrimaryAccountWithAtleastoneTrust), v.Model.ShowData))}">
+        <div class="needassessmenttabs">
+
+            <div class="slds-tabs_default">
+                <aura:if isTrue="{!(v.loading == true)}">
+                    <div class="loadingDiv">
+                        <div class="demo-only" style='height: 6rem; '>
+                            <div role="status" class="slds-spinner slds-spinner_medium">
+                                <span class="slds-assistive-text">Loading</span>
+                                <div class="slds-spinner__dot-a"></div>
+                                <div class="slds-spinner__dot-b"></div>
+                            </div>
+                        </div>
+                    </div>
+                </aura:if>
+
+
+                <ul class="slds-tabs_default__nav" role="tablist">
+                    <li class="{! 'OverViewtab  slds-tabs_default__item '  + (v.Overview == true ? 'slds-active'  : '')}" title="Item One" role="presentation"><a onclick="{!c.selectTab}" class="slds-tabs_default__link" href="javascript:void(0);" role="tab" tabindex="0" aria-selected="true" aria-controls="tab-default-1" id="tab-default-1__item">Overview</a></li>
+                    <li class="{!v.Model.TabButttonColors.ContactPreferenceTabClass + '  slds-tabs_default__item '   +  (v.ContactPreference == true ? 'slds-active'  : '')}" title="Item Two" role="presentation"><a onclick="{!c.selectTab}" class="slds-tabs_default__link" href="javascript:void(0);" role="tab" tabindex="-1" aria-selected="false" aria-controls="tab-default-2" id="tab-default-2__item">Contact<br />Preferences</a></li>
+                    <aura:if isTrue="{!and(v.SectionSelection != null, v.SectionSelection == 'FeedBack')}">
+                        <li class="{!v.Model.TabButttonColors.CurrentFeedbackTabClass + '  slds-tabs_default__item '   +  (v.CurrentFeedback == true ? 'slds-active'  : '')}" title="Item Ten" role="presentation"><a onclick="{!c.selectTab}" class="slds-tabs_default__link" href="javascript:void(0);" role="tab" tabindex="-1" aria-selected="false" aria-controls="tab-default-5" id="tab-default-5__item">Provide<br />Feedback</a></li>
+                    </aura:if>
+                    <aura:if isTrue="{!and(v.SectionSelection != null, v.SectionSelection == 'Finance')}">
+                        <li class="{!v.Model.TabButttonColors.HousingTabClass + '  slds-tabs_default__item ' + (v.Housing == true ? ' slds-active'  : '')}" title="Item Three" role="presentation"><a onclick="{!c.selectTab}" class="slds-tabs_default__link" href="javascript:void(0);" role="tab" tabindex="-1" aria-selected="false" aria-controls="tab-default-3" id="tab-default-3__item">Housing</a></li>
+                        <li class="{!v.Model.TabButttonColors.AutoVehicleTabClass + '  slds-tabs_default__item ' + (v.AutoVehicle == true ? ' slds-active'  : '')}" title="Item Three" role="presentation"><a onclick="{!c.selectTab}" class="slds-tabs_default__link" href="javascript:void(0);" role="tab" tabindex="-1" aria-selected="false" aria-controls="tab-default-4" id="tab-default-4__item">Auto<br />/Vehicle</a></li>
+                        <li class="{!v.Model.TabButttonColors.OtherLoanTabClass + ' slds-tabs_default__item ' + (v.CurrentLoans == true ? 'slds-active'  : '')}" title="Item Three" role="presentation"><a onclick="{!c.selectTab}" class="slds-tabs_default__link" href="javascript:void(0);" role="tab" tabindex="-1" aria-selected="false" aria-controls="tab-default-12" id="tab-default-12__item">Existing<br />Loans</a></li>
+                        <li class="{!v.Model.TabButttonColors.OtherTabClass + ' slds-tabs_default__item ' + (v.OtherMilestones == true ? 'slds-active'  : '')}" title="Item Three" role="presentation"><a onclick="{!c.selectTab}" class="slds-tabs_default__link" href="javascript:void(0);" role="tab" tabindex="-1" aria-selected="false" aria-controls="tab-default-8" id="tab-default-8__item">Other<br />Milestones</a></li>
+                    </aura:if>
+                    <aura:if isTrue="{!and(v.SectionSelection != null, v.SectionSelection == 'Money')}">
+                        <li class="{!v.Model.TabButttonColors.MoveYourMoneyTabClass + ' slds-tabs_default__item ' + (v.PaymentsTransfers == true ? 'slds-active'  : '')}" title="Item Three" role="presentation"><a onclick="{!c.selectTab}" class="slds-tabs_default__link" href="javascript:void(0);" role="tab" tabindex="-1" aria-selected="false" aria-controls="tab-default-13" id="tab-default-13__item">Payments/<br />Transfers</a></li>
+                        <li class="{!v.Model.TabButttonColors.MakingDepositsTabClass + ' slds-tabs_default__item ' + (v.Deposits == true ? 'slds-active'  : '')}" title="Item Three" role="presentation"><a onclick="{!c.selectTab}" class="slds-tabs_default__link" href="javascript:void(0);" role="tab" tabindex="-1" aria-selected="false" aria-controls="tab-default-10" id="tab-default-10__item">Deposits</a></li>
+                        <li class="{!v.Model.TabButttonColors.WidthdrawalTabClass + '  slds-tabs_default__item ' + (v.Withdrawals == true ? 'slds-active'  : '')}" title="Item Three" role="presentation"><a onclick="{!c.selectTab}" class="slds-tabs_default__link" href="javascript:void(0);" role="tab" tabindex="-1" aria-selected="false" aria-controls="tab-default-6" id="tab-default-6__item">Withdrawals</a></li>
+                        <li class="{!v.Model.TabButttonColors.SharedBranchingTabClass + '  slds-tabs_default__item ' + (v.SharedBranching == true ? 'slds-active'  : '')}" title="Item Three" role="presentation"><a onclick="{!c.selectTab}" class="slds-tabs_default__link" href="javascript:void(0);" role="tab" tabindex="-1" aria-selected="false" aria-controls="tab-default-7" id="tab-default-7__item">Shared<br/>Branching</a></li>
+                        <li class="{!v.Model.TabButttonColors.SFATMNetworkTabClass + '  slds-tabs_default__item ' + (v.ATMNETWORK == true ? 'slds-active'  : '')}" title="Item Three" role="presentation"><a onclick="{!c.selectTab}" class="slds-tabs_default__link" href="javascript:void(0);" role="tab" tabindex="-1" aria-selected="false" aria-controls="tab-default-11" id="tab-default-11__item">ATM<br/>Network</a></li>
+                        <li class="{!v.Model.TabButttonColors.PrimaryTransactionTabClass + '  slds-tabs_default__item ' + (v.PrimaryAccount == true ? 'slds-active'  : '')}" title="Item Three" role="presentation"><a onclick="{!c.selectTab}" class="slds-tabs_default__link" href="javascript:void(0);" role="tab" tabindex="-1" aria-selected="false" aria-controls="tab-default-9" id="tab-default-9__item">Primary<br />Account</a></li>
+
+                    </aura:if>
+                    <aura:if isTrue="{!and(v.SectionSelection != null, v.SectionSelection == 'EarnMore')}">
+                        <li class="{!v.Model.TabButttonColors.EarnMoreTabClass + '  slds-tabs_default__item ' + (v.EarnMore == true ? 'slds-active'  : '')}" title="Item Three" role="presentation"><a onclick="{!c.selectTab}" class="slds-tabs_default__link" href="javascript:void(0);" role="tab" tabindex="-1" aria-selected="false" aria-controls="tab-default-15" id="tab-default-15__item">Earn More<br />From Savings</a></li>
+                    </aura:if>
+
+                    <aura:if isTrue="{!and(v.SectionSelection != null, v.SectionSelection == 'Membership')}">
+                        <li class="{!v.Model.TabButttonColors.ExtendBenifitsTabClass + '  slds-tabs_default__item ' + (v.ExtendedBenefits == true ? 'slds-active'  : '')}" title="Item Three" role="presentation"><a onclick="{!c.selectTab}" class="slds-tabs_default__link" href="javascript:void(0);" role="tab" tabindex="-1" aria-selected="false" aria-controls="tab-default-14" id="tab-default-14__item">Extended<br />Benefits</a></li>
+                    </aura:if>
+                    <li class="{! 'OverViewtab slds-tabs_default__item ' + (v.Recommendations == true ? 'slds-active'  : '')}" title="Item Three" role="presentation"><a onclick="{!c.selectTab}" class="slds-tabs_default__link" href="javascript:void(0);" role="tab" tabindex="-1" aria-selected="false" aria-controls="tab-default-99" id="tab-default-99__item">Recommendations</a></li>
+                </ul>
+
+                <div id="tab-default-1" class="{!('slds-tabs_default__content OverViewtab  ' + (v.Overview == true ? ' slds-show'  : ' slds-hide'))}" role="tabpanel" aria-labelledby="tab-default-1__item">
+
+
+                    <aura:if isTrue="{!(!v.loading)}">
+                        <b>Which of the following topics can we help you with today?</b>
+                        <table>
+                            <tr>
+                                <td>
+                                    <table border="1" class="needTbl" style="float: left; margin-top: 25px;">
+                                        <tr>
+                                            <td>
+                                                <table cellspacing="5">
+                                                    <tr>
+                                                        <td><img src="{!v.Model.RadioButttonColors.FeedBackAboutCurrentExperience}" height="16" width="16" /></td>
+
+                                                    </tr>
+                                                    <tr>
+                                                        <td><img src="{!v.Model.RadioButttonColors.FinanceKeyFileEvent}" height="16" width="16" /></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td><img src="{!v.Model.RadioButttonColors.OptimizeMoveYourMoney}" height="16" width="16" /></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td><img src="{!v.Model.RadioButttonColors.EarnMore}" height="16" width="16" /></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td><img src="{!v.Model.RadioButttonColors.ExtendBenifits}" height="16" width="16" /></td>
+                                                    </tr>
+                                                </table>
+                                            </td>
+                                            <td width="400" class="radOverview">
+                                                <table cellspacing="5">
+                                                    <tr>
+                                                        <td>
+                                                            <b><ui:inputRadio aura:id="FeedBack" name="preferences" value="{!(v.SectionSelection == 'FeedBack' ? true : false)}" change="{!c.onGroup}" label="Provide Feedback about your current experience" /> </b>
+                                                        </td>
+
+                                                    </tr>
+                                                    <tr>
+                                                        <td>
+                                                            <b><ui:inputRadio aura:id="Finance" name="preferences"  value="{!(v.SectionSelection == 'Finance' ? true : false)}" change="{!c.onGroup}" label="Finance your key life events" /></b>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>
+                                                            <b><ui:inputRadio aura:id="Money" name="preferences"  value="{!(v.SectionSelection == 'Money' ? true : false)}" change="{!c.onGroup}" label="Optimize how you move your money" /></b> </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>
+                                                            <b><ui:inputRadio aura:id="EarnMore" name="preferences" value="{!(v.SectionSelection == 'EarnMore' ? true : false)}" change="{!c.onGroup}" label="Earn more from your savings" /></b> </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>
+                                                            <b><ui:inputRadio aura:id="Membership" name="preferences" value="{!(v.SectionSelection == 'Membership' ? true : false)}" change="{!c.onGroup}" label="Extend the benefits of membership" /></b>
+                                                        </td>
+                                                    </tr>
+                                                </table>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </td>
+
+
+                                <td></td>
+                            </tr>
+                        </table>
+                    </aura:if>
+
+                </div>
+                <div id="tab-default-2" class="{!('slds-tabs_default__content ' + v.Model.TabButttonColors.ContactPreferenceTabClass  + (v.ContactPreference == true ? '  slds-show'  : '  slds-hide'))}" role="tabpanel" aria-labelledby="tab-default-2__item">
+                    <c:NA_ContactPreference Model="{!v.Model.objNeedsAssessment}" />
+                </div>
+                <aura:if isTrue="{!and(v.SectionSelection != null, v.SectionSelection == 'FeedBack')}">
+                    <div id="tab-default-5" class="{!('slds-tabs_default__content ' + v.Model.TabButttonColors.CurrentFeedbackTabClass + (v.CurrentFeedback == true ? '  slds-show'  : '  slds-hide'))}" role="tabpanel" aria-labelledby="tab-default-5__item">
+                        <c:NA_CurrentFeedback Model="{!v.Model.objNeedsAssessment}" />
+                    </div>
+                </aura:if>
+
+                <aura:if isTrue="{!and(v.SectionSelection != null, v.SectionSelection == 'Finance')}">
+                    <div id="tab-default-3" class="{!('slds-tabs_default__content ' + v.Model.TabButttonColors.HousingTabClass + (v.Housing == true ? '  slds-show'  : '  slds-hide'))}" role="tabpanel" aria-labelledby="tab-default-3__item">
+                        <c:Na_Housing Model="{!v.Model.objNeedsAssessment}" />
+                    </div>
+                    <div id="tab-default-4" class="{!('slds-tabs_default__content ' + v.Model.TabButttonColors.AutoVehicleTabClass + (v.AutoVehicle == true ? '  slds-show'  : '  slds-hide'))}" role="tabpanel" aria-labelledby="tab-default-4__item">
+                        <c:Na_AutoVehicle Model="{!v.Model.objNeedsAssessment}" />
+                    </div>
+                    <div id="tab-default-12" class="{!('slds-tabs_default__content ' + v.Model.TabButttonColors.OtherLoanTabClass + (v.CurrentLoans == true ? '  slds-show'  : '  slds-hide'))}" role="tabpanel" aria-labelledby="tab-default-12__item">
+                        <c:ExistingLoans Model="{!v.Model.objNeedsAssessment}" otherExistingLoans="{!v.Model.ExistingLoansDetails}" />
+                    </div>
+
+                    <div id="tab-default-8" class="{!('slds-tabs_default__content ' + v.Model.TabButttonColors.OtherTabClass + (v.OtherMilestones == true ? '  slds-show'  : ' slds-hide'))}" role="tabpanel" aria-labelledby="tab-default-8__item">
+                        <c:NA_OtherMileStones Model="{!v.Model.objNeedsAssessment}" />
+                    </div>
+
+                </aura:if>
+                <aura:if isTrue="{!and(v.SectionSelection != null, v.SectionSelection == 'Money')}">
+                    <div id="tab-default-6" class="{!('slds-tabs_default__content ' + v.Model.TabButttonColors.WidthdrawalTabClass + (v.Withdrawals == true ? '  slds-show'  : '  slds-hide'))}" role="tabpanel" aria-labelledby="tab-default-6__item">
+                        <c:NA_Withdrawals Model="{!v.Model.objNeedsAssessment}" />
+                    </div>
+
+                    <div id="tab-default-7" class="{!('slds-tabs_default__content ' + v.Model.TabButttonColors.SharedBranchingTabClass + (v.SharedBranching == true ? '  slds-show'  : '  slds-hide'))}" role="tabpanel" aria-labelledby="tab-default-7__item">
+                        <c:NA_SharedBranching Model="{!v.Model.objNeedsAssessment}" />
+                    </div>
+                    <div id="tab-default-11" class="{!('slds-tabs_default__content ' + v.Model.TabButttonColors.SFATMNetworkTabClass + (v.ATMNETWORK == true ? '  slds-show'  : ' slds-hide'))}" role="tabpanel" aria-labelledby="tab-default-11__item">
+                        <c:NA_ATMNETWORK Model="{!v.Model.objNeedsAssessment}" />
+                    </div>
+                    <div id="tab-default-10" class="{!('slds-tabs_default__content ' + v.Model.TabButttonColors.MakingDepositsTabClass + (v.Deposits == true ? ' slds-show'  : ' slds-hide'))}" role="tabpanel" aria-labelledby="tab-default-10__item">
+                        <c:NA_Deposits Model="{!v.Model.objNeedsAssessment}" />
+                    </div>
+                    <div id="tab-default-9" class="{!('slds-tabs_default__content ' + v.Model.TabButttonColors.PrimaryTransactionTabClass + (v.PrimaryAccount == true ? '  slds-show'  : '  slds-hide'))}" role="tabpanel" aria-labelledby="tab-default-9__item">
+                        <c:Na_PrimaryAccount Model="{!v.Model.objNeedsAssessment}" />
+                    </div>
+                    <div id="tab-default-13" class="{!('slds-tabs_default__content ' + v.Model.TabButttonColors.MoveYourMoneyTabClass + (v.PaymentsTransfers == true ? '  slds-show'  : '  slds-hide'))}" role="tabpanel" aria-labelledby="tab-default-13__item">
+                        <c:NA_MakingPayments Model="{!v.Model.objNeedsAssessment}" />
+                    </div>
+
+                </aura:if>
+                <aura:if isTrue="{!and(v.SectionSelection != null, v.SectionSelection == 'EarnMore')}">
+                    <div id="tab-default-15" class="{!('slds-tabs_default__content ' + v.Model.TabButttonColors.EarnMoreTabClass + (v.EarnMore == true ? '  slds-show'  : '  slds-hide'))}" role="tabpanel" aria-labelledby="tab-default-15__item">
+                        <c:NA_EarnMore Model="{!v.Model.objNeedsAssessment}" deposits="{!v.Model.DepositDetails}" />
+                    </div>
+                </aura:if>
+
+                <aura:if isTrue="{!and(v.SectionSelection != null, v.SectionSelection == 'Membership')}">
+                    <div id="tab-default-14" class="{!('slds-tabs_default__content ' + v.Model.TabButttonColors.ExtendBenifitsTabClass + (v.ExtendedBenefits == true ? '  slds-show'  : '  slds-hide'))}" role="tabpanel" aria-labelledby="tab-default-14__item">
+                        <c:NA_ExtendedBenefits Model="{!v.Model.objNeedsAssessment}" membershipLoans="{!v.Model.MembershipDetails}" />
+                    </div>
+                </aura:if>
+
+                <div id="tab-default-99" class="{!('slds-tabs_default__content OverViewtab '  + (v.Recommendations == true ? '  slds-show'  : '  slds-hide'))}" role="tabpanel" aria-labelledby="tab-default-99__item">
+                    <c:Recommendations Model="{!v.Model.objNeedsAssessment}" otherExistingLoans="{!v.Model.ExistingLoansDetails}" DepositDetails="{!v.Model.DepositDetails}" MembershipDetails="{!v.Model.MembershipDetails}" />
+                </div>
+            </div>
+            <br/>
+            <div>
+                <aura:if isTrue="{!v.Model.AccountDetails.NA_Opt_Out__c}">
+                    <p style="color:red;">
+                        Member has opted-out of the Member Connect Questionnaire<br/> Opt-out Expiration:
+                        <ui:outputDate format="MMMM dd, YYYY" value="{!v.Model.AccountDetails.NA_Opt_Out_Date__c}" />
+                    </p>
+                </aura:if>
+                <p style="padding-top:7px;" class="optoutclass">Opt-out
+                    <ui:inputCheckbox value="{!v.Model.AccountDetails.NA_Opt_Out__c}" change="{!c.onCheckoptOut}" /> Click here if member wants to opt out of Member Connect Questionnaire</p>
+            </div>
+        </div>
+        <aura:set attribute="else">
+            <aura:if isTrue="{!(v.loading == true)}">
+                <div class="loadingDiv">
+                    <div class="demo-only" style='height: 6rem; '>
+                        <div role="status" class="slds-spinner slds-spinner_medium">
+                            <span class="slds-assistive-text">Loading</span>
+                            <div class="slds-spinner__dot-a"></div>
+                            <div class="slds-spinner__dot-b"></div>
+                        </div>
+                    </div>
+                </div>
+                <aura:set attribute="else">
+                	<p>
+                		<h3><b>Member is not eligible for Needs Assessment</b></h3></p>
+                </aura:set>
+            </aura:if>
+
+            
+        </aura:set>
+    </aura:if>
+
+</aura:component>

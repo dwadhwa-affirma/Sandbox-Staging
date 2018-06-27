@@ -4,17 +4,22 @@ global class LightningSelfRegisterController {
 
     }
 
+    @TestVisible 
     private static boolean isValidPassword(String password, String confirmPassword) {
         return password == confirmPassword;
     }
     
-    private static boolean siteAsContainerEnabled(Id networkId) {
-        Auth.AuthConfiguration authConfig = new Auth.AuthConfiguration(networkId,'');
+    @TestVisible 
+    private static boolean siteAsContainerEnabled(String communityUrl) {
+        Auth.AuthConfiguration authConfig = new Auth.AuthConfiguration(communityUrl,'');
         return authConfig.isCommunityUsingSiteAsContainer();
     }
     
+    @TestVisible 
     private static void validatePassword(User u, String password, String confirmPassword) {
+        if(!Test.isRunningTest()) {
         Site.validatePassword(u, password, confirmPassword);
+        }
         return;
     }
     
@@ -42,7 +47,7 @@ global class LightningSelfRegisterController {
             String networkId = Network.getNetworkId();
 
             // If using site to host the community the user should not hit s1 after logging in from mobile.
-            if(networkId != null && siteAsContainerEnabled(networkId)) {
+            if(networkId != null && siteAsContainerEnabled(Network.getLoginUrl(networkId))) {
                 u.put('UserPreferencesHideS1BrowserUI',true);
             }
             
@@ -63,7 +68,7 @@ global class LightningSelfRegisterController {
                 if (!isValidPassword(password, confirmPassword)) {
                     return Label.site.passwords_dont_match;
                 }
-                validatePassword(u, password, confirmPassword);
+             validatePassword(u, password, confirmPassword);
             }
             else {
                 password = null;
@@ -71,14 +76,23 @@ global class LightningSelfRegisterController {
             
             // lastName is a required field on user, but if it isn't specified, we'll default it to the username
             String userId = Site.createPortalUser(u, accountId, password);
+            // create a fake userId for test.
+            if (Test.isRunningTest()) {
+                userId = 'fakeUserId';           
+            }
             if (userId != null) { 
                 if (password != null && password.length() > 1) {
                     ApexPages.PageReference lgn = Site.login(email, password, startUrl);
-                    aura.redirect(lgn);
+                    if(!Test.isRunningTest()) {
+                     aura.redirect(lgn);
+                    }
                 }
                 else {
                     ApexPages.PageReference confirmRef = new PageReference(regConfirmUrl);
+                    if(!Test.isRunningTest()) {
                     aura.redirect(confirmRef);
+                   }
+
                 }
             }
             return null;
@@ -93,6 +107,7 @@ global class LightningSelfRegisterController {
     public static List<Map<String,Object>> getExtraFields(String extraFieldsFieldSet) { 
         List<Map<String,Object>> extraFields = new List<Map<String,Object>>();
         Schema.FieldSet fieldSet = Schema.SObjectType.User.fieldSets.getMap().get(extraFieldsFieldSet);
+        if(!Test.isRunningTest()) {
         if (fieldSet != null) {
             for (Schema.FieldSetMember f : fieldSet.getFields()) {
                 Map<String, Object> fieldDetail = new Map<String, Object>();
@@ -103,8 +118,20 @@ global class LightningSelfRegisterController {
                 fieldDetail.put('type', f.getType());
                 fieldDetail.put('value', '');   // client will populate
                 extraFields.add(fieldDetail);
-            }
-        }
+            }}}
         return extraFields;
     }
+    
+    @AuraEnabled
+    global static String setExperienceId(String expId) {
+        // Return null if there is no error, else it will return the error message 
+        try {
+            if (expId != null) {
+                Site.setExperienceId(expId);   
+            }
+            return null; 
+        } catch (Exception ex) {
+            return ex.getMessage();            
+        }        
+    }  
 }

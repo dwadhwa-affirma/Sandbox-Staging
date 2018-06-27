@@ -1,0 +1,30 @@
+<aura:component implements="flexipage:availableForAllPageTypes,force:appHostable,force:hasRecordId,force:lightningQuickActionWithoutHeader,lightning:actionOverride" controller="MemberActCommentsTextLightningController">
+	<aura:attribute name="rwcwList" type="string[]" />
+	<aura:attribute name="loading" type="Boolean" default="false" />
+	<aura:handler name="init" value="{!this}" action="{!c.doInit}" />
+	<aura:attribute name="recordId" type="String"  />
+
+      <div>
+        <ul class="columns" data-columns="2">
+             <table>
+				<aura:iteration items="{!v.rwcwList}" var="item">
+					<tr> 
+                       <td style="{!(item != null ? 'color:blue' : '')}">                          
+                          		<ui:outputText value="{!item}"></ui:outputText>  
+                       </td>
+                     </tr>
+				</aura:iteration>
+			</table>
+		</ul>
+	</div>
+	<aura:if isTrue="{!(v.loading == true)}">
+        <div class="loadingDiv"> 
+            <div class="demo-only" style='height: 6rem; '>
+                <div role="status" class="slds-spinner slds-spinner_medium">
+                    <div class="slds-spinner__dot-a"></div>
+                    <div class="slds-spinner__dot-b"></div>
+                </div>
+            </div>
+        </div>
+    </aura:if>
+</aura:component>

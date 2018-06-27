@@ -86,7 +86,7 @@ public with sharing class GetAllCasesForAccount {
 				list<Case> ListCaseSelected1 = new list<Case>();
 				system.debug('CaseDetail.ParentId###'+CaseDetail1.ParentId);
 				
-					ListCaseSelected1 = [select id, ParentId from Case where ParentId =: caseid or ParentId  =: CaseDetail1.ParentId];
+					ListCaseSelected1 = [select id, ParentId from Case where ParentId =: caseid /*or ParentId  =: CaseDetail1.ParentId*/];
 				
 
 				string SelectedIds = '';
