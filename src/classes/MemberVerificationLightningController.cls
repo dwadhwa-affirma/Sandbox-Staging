@@ -158,11 +158,11 @@ public class MemberVerificationLightningController
 
     }
 
-    private static List<KeyValuePairModel> GetPhoneList_Options(List<wrapperAccount> listWrapperAccount)
+    private static List<KeyValuePairModelWithBit> GetPhoneList_Options(List<wrapperAccount> listWrapperAccount)
     {
 
 
-        List<KeyValuePairModel> options = new List<KeyValuePairModel>();
+        List<KeyValuePairModelWithBit> options = new List<KeyValuePairModelWithBit>();
 
         if (listWrapperAccount != null && listWrapperAccount.size() > 0)
         {
@@ -171,9 +171,10 @@ public class MemberVerificationLightningController
             {
                 if (a.fieldType == 'P')
                 {
-                    KeyValuePairModel pair = new KeyValuePairModel();
+                    KeyValuePairModelWithBit pair = new KeyValuePairModelWithBit();
                     pair.Text = a.fieldName;
                     pair.Value = a.encryptedvalue;
+                    pair.isEnabled = !a.isEnabled;
                     options.add(pair);
                 }
             }
@@ -183,11 +184,11 @@ public class MemberVerificationLightningController
 
     }
 
-    private static List<KeyValuePairModel> GetEmailsList_Options(List<wrapperAccount> listWrapperAccount)
+    private static List<KeyValuePairModelWithBit> GetEmailsList_Options(List<wrapperAccount> listWrapperAccount)
     {
 
 
-        List<KeyValuePairModel> options = new List<KeyValuePairModel>();
+        List<KeyValuePairModelWithBit> options = new List<KeyValuePairModelWithBit>();
         if (listWrapperAccount != null && listWrapperAccount.size() > 0)
         {
 
@@ -195,9 +196,10 @@ public class MemberVerificationLightningController
             {
                 if (a.fieldType == 'E')
                 {
-                    KeyValuePairModel pair = new KeyValuePairModel();
+                    KeyValuePairModelWithBit pair = new KeyValuePairModelWithBit();
                     pair.Text = a.fieldName;
                     pair.Value = a.encryptedvalue;
+                    pair.isEnabled = !a.isEnabled;
                     options.add(pair);
                 }
             }
@@ -220,11 +222,13 @@ public class MemberVerificationLightningController
         string IsIneligibleLocal = 'false';
         string NoContactInfo = 'false';
         List<Account> listAccount;
+        List<accounthistory> listhistory;
 
         if (allRelatedAccounts != null && allRelatedAccounts.size() > 0)
         {
 
             listAccount = [select Id, Member_Verification_OTP_Invalid_Attempt__c, Home_Phone__pc, FirstName, LastName, Mobile_Phone__pc, Work_Phone__pc, PersonEmail, Alternate_Email__pc from Account where ID in :allRelatedAccounts];
+            listhistory = [Select accountid,field,OldValue, NewValue, CreatedDate From accounthistory where accountid in :allRelatedAccounts and createddate >: (date.TODAY() - 60)];
             listWrapperAccount = new List<wrapperAccount>();
             set<string> listContacts = new set<string>();
 
@@ -241,6 +245,15 @@ public class MemberVerificationLightningController
                         accLocal.value = accountLocal.Mobile_Phone__pc;
                         accLocal.encryptedvalue = encryptPhone(accountLocal.Mobile_Phone__pc);
                         accLocal.fieldName = 'Mobile_Phone__pc - ' + accountLocal.Id;
+                        accLocal.isEnabled = true;                       
+                                         for(accounthistory accounthistoryLocal : listhistory)
+                                         {                                         	                     	
+                                         	if((accounthistoryLocal.accountid == accountLocal.id) && (accounthistoryLocal.Field == 'Mobile_Phone__pc') )
+                                         	{
+                                         		accLocal.isEnabled = false;
+                                         	}
+                                         }                                         
+                                         listWrapperAccount.Add(accLocal);
                         listWrapperAccount.Add(accLocal);
                         listContacts.add(accountLocal.Mobile_Phone__pc);
                     }
@@ -257,6 +270,15 @@ public class MemberVerificationLightningController
                         accLocal.value = accountLocal.Home_Phone__pc;
                         accLocal.encryptedvalue = encryptPhone(accountLocal.Home_Phone__pc);
                         accLocal.fieldName = 'Home_Phone__pc - ' + accountLocal.Id;
+                        accLocal.isEnabled = true;
+                                          for(accounthistory accounthistoryLocal : listhistory)
+                                         { 
+                                         	                     	
+                                         	if((accounthistoryLocal.accountid == accountLocal.id) && (accounthistoryLocal.Field == 'Home_Phone__pc') )
+                                         	{
+                                         		accLocal.isEnabled = false;
+                                         	}
+                                         }   
                         listWrapperAccount.Add(accLocal);
                         listContacts.add(accountLocal.Home_Phone__pc);
                     }
@@ -274,6 +296,15 @@ public class MemberVerificationLightningController
                         accLocal.value = accountLocal.Work_Phone__pc;
                         accLocal.encryptedvalue = encryptPhone(accountLocal.Work_Phone__pc);
                         accLocal.fieldName = 'Work_Phone__pc - ' + accountLocal.Id;
+                         accLocal.isEnabled = true;
+                                          for(accounthistory accounthistoryLocal : listhistory)
+                                         { 
+                                         	                     	
+                                         	if((accounthistoryLocal.accountid == accountLocal.id) && (accounthistoryLocal.Field == 'Work_Phone__pc') )
+                                         	{
+                                         		accLocal.isEnabled = false;
+                                         	}
+                                         }
                         listWrapperAccount.Add(accLocal);
                         listContacts.add(accountLocal.Work_Phone__pc);
                     }
@@ -290,6 +321,15 @@ public class MemberVerificationLightningController
                         accLocal.value = accountLocal.PersonEmail;
                         accLocal.encryptedvalue = encryptEmail(accountLocal.PersonEmail);
                         accLocal.fieldName = 'PersonEmail - ' + accountLocal.Id;
+                        accLocal.isEnabled = true;
+                                         for(accounthistory accounthistoryLocal : listhistory)
+                                         { 
+                                         	                     	
+                                         	if((accounthistoryLocal.accountid == accountLocal.id) && (accounthistoryLocal.Field == 'PersonEmail') )
+                                         	{
+                                         		accLocal.isEnabled = false;
+                                         	}
+                                         } 
                         listWrapperAccount.Add(accLocal);
                         listContacts.add(accountLocal.PersonEmail);
                     }
@@ -306,6 +346,15 @@ public class MemberVerificationLightningController
                         accLocal.value = accountLocal.Alternate_Email__pc;
                         accLocal.encryptedvalue = encryptEmail(accountLocal.Alternate_Email__pc);
                         accLocal.fieldName = 'Alternate_Email__pc - ' + accountLocal.Id;
+                        accLocal.isEnabled = true;
+                                         for(accounthistory accounthistoryLocal : listhistory)
+                                         { 
+                                         	                     	
+                                         	if((accounthistoryLocal.accountid == accountLocal.id) && (accounthistoryLocal.Field == 'Alternate_Email__pc') )
+                                         	{
+                                         		accLocal.isEnabled = false;
+                                         	}
+                                         }  
                         listWrapperAccount.Add(accLocal);
                         listContacts.Add(accountLocal.Alternate_Email__pc);
                     }
@@ -326,6 +375,15 @@ public class MemberVerificationLightningController
                         accLocal.value = accountLocal.Mobile_Phone__pc;
                         accLocal.encryptedvalue = encryptPhone(accountLocal.Mobile_Phone__pc);
                         accLocal.fieldName = 'Mobile_Phone__pc - ' + accountLocal.Id;
+                        accLocal.isEnabled = true;
+                                         for(accounthistory accounthistoryLocal : listhistory)
+                                         { 
+                                         	                     	
+                                         	if((accounthistoryLocal.accountid == accountLocal.id) && (accounthistoryLocal.Field == 'Mobile_Phone__pc') )
+                                         	{
+                                         		accLocal.isEnabled = false;
+                                         	}
+                                         }
                         listWrapperAccount.Add(accLocal);
                         listContacts.add(accountLocal.Mobile_Phone__pc);
                     }
@@ -342,6 +400,15 @@ public class MemberVerificationLightningController
                         accLocal.value = accountLocal.Home_Phone__pc;
                         accLocal.encryptedvalue = encryptPhone(accountLocal.Home_Phone__pc);
                         accLocal.fieldName = 'Home_Phone__pc - ' + accountLocal.Id;
+                        accLocal.isEnabled = true;
+                                         for(accounthistory accounthistoryLocal : listhistory)
+                                         { 
+                                         	                     	
+                                         	if((accounthistoryLocal.accountid == accountLocal.id) && (accounthistoryLocal.Field == 'Home_Phone__pc') )
+                                         	{
+                                         		accLocal.isEnabled = false;
+                                         	}
+                                         }
                         listWrapperAccount.Add(accLocal);
                         listContacts.add(accountLocal.Home_Phone__pc);
                     }
@@ -359,6 +426,15 @@ public class MemberVerificationLightningController
                         accLocal.value = accountLocal.Work_Phone__pc;
                         accLocal.encryptedvalue = encryptPhone(accountLocal.Work_Phone__pc);
                         accLocal.fieldName = 'Work_Phone__pc - ' + accountLocal.Id;
+                        accLocal.isEnabled = true;
+                                         for(accounthistory accounthistoryLocal : listhistory)
+                                         { 
+                                         	                     	
+                                         	if((accounthistoryLocal.accountid == accountLocal.id) && (accounthistoryLocal.Field == 'Work_Phone__pc') )
+                                         	{
+                                         		accLocal.isEnabled = false;
+                                         	}
+                                         } 
                         listWrapperAccount.Add(accLocal);
                         listContacts.add(accountLocal.Work_Phone__pc);
                     }
@@ -375,6 +451,15 @@ public class MemberVerificationLightningController
                         accLocal.value = accountLocal.PersonEmail;
                         accLocal.encryptedvalue = encryptEmail(accountLocal.PersonEmail);
                         accLocal.fieldName = 'PersonEmail - ' + accountLocal.Id;
+                        accLocal.isEnabled = true;
+                                         for(accounthistory accounthistoryLocal : listhistory)
+                                         { 
+                                         	                     	
+                                         	if((accounthistoryLocal.accountid == accountLocal.id) && (accounthistoryLocal.Field == 'PersonEmail') )
+                                         	{
+                                         		accLocal.isEnabled = false;
+                                         	}
+                                         } 
                         listWrapperAccount.Add(accLocal);
                         listContacts.add(accountLocal.PersonEmail);
                     }
@@ -391,6 +476,15 @@ public class MemberVerificationLightningController
                         accLocal.value = accountLocal.Alternate_Email__pc;
                         accLocal.encryptedvalue = encryptEmail(accountLocal.Alternate_Email__pc);
                         accLocal.fieldName = 'Alternate_Email__pc - ' + accountLocal.Id;
+                        accLocal.isEnabled = true;
+                                         for(accounthistory accounthistoryLocal : listhistory)
+                                         { 
+                                         	                     	
+                                         	if((accounthistoryLocal.accountid == accountLocal.id) && (accounthistoryLocal.Field == 'Alternate_Email__pc') )
+                                         	{
+                                         		accLocal.isEnabled = false;
+                                         	}
+                                         }
                         listWrapperAccount.Add(accLocal);
                         listContacts.Add(accountLocal.Alternate_Email__pc);
                     }
@@ -571,10 +665,10 @@ public class MemberVerificationLightningController
 
             }
         }
-        List<KeyValuePairModel> listPhoneList = GetPhoneList_Options(listWrapperAccount);
-        List<KeyValuePairModel> listEmailList = GetEmailsList_Options(listWrapperAccount);
+        List<KeyValuePairModelWithBit> listPhoneList = GetPhoneList_Options(listWrapperAccount);
+        List<KeyValuePairModelWithBit> listEmailList = GetEmailsList_Options(listWrapperAccount);
         OTPVerificationModel obj = new OTPVerificationModel();
-        obj.IsIneligible = IsIneligibleLocal;
+        obj.IsIneligible = 'false';
         obj.Brand = Brand;
         obj.PhoneList_Options = GetPhoneList_Options(listWrapperAccount);
 
@@ -642,7 +736,7 @@ public class MemberVerificationLightningController
         public string fieldType { get; set; }
         public string value { get; set; }
         public string encryptedvalue { get; set; }
-
+		public boolean isEnabled {get; set;}
     }
 
     public class warningCodeWrapper
@@ -1005,5 +1099,7 @@ public class MemberVerificationLightningController
 		acc.Member_Verification_OTP_Invalid_Attempt__c = system.now();
         update acc;
 	}
+
+
 
 }
