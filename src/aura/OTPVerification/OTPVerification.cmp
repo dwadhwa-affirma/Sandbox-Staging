@@ -110,7 +110,9 @@
                         <p><b>Email</b></p>
                         <aura:iteration items="{!v.Model.EmailsList_Options}" var="stage">
                             <div class="radlist">
-                            <ui:inputRadio label="" name="memberverification" value="false" class="{!stage.Text}" change="{!c.onRadioSelect}" />
+                         
+                            <ui:inputRadio label="" name="memberverification" value="false" class="{!stage.Text}" change="{!c.onRadioSelect}" disabled="{!stage.isEnabled}"/>
+                           
                             <span>{!stage.Value}</span>
                             </div>
                         </aura:iteration>
@@ -121,7 +123,9 @@
 	                        <p><b>Phone</b></p>
 	                        <aura:iteration items="{!v.Model.PhoneList_Options}" var="stage">
 	                           <div class="radlist">
-	                            <ui:inputRadio label="" name="memberverification" value="false" class="{!stage.Text}" change="{!c.onRadioSelect}" />
+	                           
+	                            <ui:inputRadio label="" name="memberverification" value="false" class="{!stage.Text}" change="{!c.onRadioSelect}" disabled="{!stage.isEnabled}"/>
+	                            
 	                            <span>{!stage.Value}</span>
 	                            </div>
 	                        </aura:iteration>
