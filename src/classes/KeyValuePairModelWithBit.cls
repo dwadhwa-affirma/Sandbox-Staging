@@ -1,4 +1,4 @@
-   public class KeyValuePairModelWithBit
+public class KeyValuePairModelWithBit
     {
     
     	@auraenabled
@@ -21,4 +21,3 @@
 	    	this.isEnabled = false;
 	    }
     }
-   
