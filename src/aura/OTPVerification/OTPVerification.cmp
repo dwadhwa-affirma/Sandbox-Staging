@@ -104,6 +104,7 @@
         <!--showing 3 screens based on progress indicator steps-->
         <div class="{!v.currentStep == '1' ? 'slds-show' : 'slds-hide'}">
             <h3 style="font-size:18px; text-align: center;">Please select a delivery method</h3>
+             <span style="color:red">Recently Updated items are disabled</span>
             <div class="optwrap" id="optwrap">
             	<div class="row">
             		<div class="col-md-6">                    
