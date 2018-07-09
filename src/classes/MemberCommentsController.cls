@@ -11,7 +11,7 @@ public without sharing class MemberCommentsController {
 		  wrapperObject wrapperobj = new wrapperObject();		  
 		  
 		  
-		    if(!Schema.sObjectType.Canned_Responses__c.isCreateable())
+		   if(Schema.sObjectType.Member_Comment__c.isCreateable())
 			{
 					system.debug('Object not accessible');
 					wrapperobj.isObjectAccess = true;
@@ -19,8 +19,8 @@ public without sharing class MemberCommentsController {
 			}	
 			else
 			{
-				wrapperobj.isObjectAccess = true;
-			}  
+				wrapperobj.isObjectAccess = false;
+			}    
 			
 			if (Schema.sObjectType.Member_Comment__c.fields.CU_Read__c.isUpdateable()) {
    					wrapperobj.isCUReadEditable = true;
