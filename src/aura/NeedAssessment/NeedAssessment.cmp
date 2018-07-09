@@ -440,7 +440,7 @@
                 </div>
                 <aura:set attribute="else">
                 	<p>
-                		<h3><b>Member is not eligible for Needs Assessment</b></h3></p>
+                		<h3><b>Member is not eligible for Member Connect</b></h3></p>
                 </aura:set>
             </aura:if>
 

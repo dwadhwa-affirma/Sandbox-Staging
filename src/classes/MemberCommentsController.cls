@@ -11,7 +11,7 @@ public without sharing class MemberCommentsController {
 		  wrapperObject wrapperobj = new wrapperObject();		  
 		  
 		  
-		    if(Schema.sObjectType.Member_Comment__c.isCreateable())
+		    if(!Schema.sObjectType.Canned_Responses__c.isCreateable())
 			{
 					system.debug('Object not accessible');
 					wrapperobj.isObjectAccess = true;
@@ -19,7 +19,7 @@ public without sharing class MemberCommentsController {
 			}	
 			else
 			{
-				wrapperobj.isObjectAccess = false;
+				wrapperobj.isObjectAccess = true;
 			}  
 			
 			if (Schema.sObjectType.Member_Comment__c.fields.CU_Read__c.isUpdateable()) {
@@ -377,10 +377,11 @@ public without sharing class MemberCommentsController {
             {
             	//MemberLst = new List<Member_Comment__c>();         
                 Member_Comment__c mbobj = [select id, case__c, Draft__c from Member_Comment__c where id =:editMemberCommentId];
-                mbobj.Member_Communication__c = MemberDescription;
-                system.debug('Dhwani Draft' + Draft);
+                if(mbobj.Draft__c)
+                {
+                mbobj.Member_Communication__c = MemberDescription;                
                 mbobj.Draft__c = Draft;
-                mbobj.CU_Read__c = CURead;
+               // mbobj.CU_Read__c = CURead;
                 //mbobj.Case__c = CaseId;
                 if (secureEmailAddress != null && secureEmailAddress != '')
                 {
@@ -534,7 +535,12 @@ public without sharing class MemberCommentsController {
 	                        }
                     	}*/
                     }                    
-                }            	
+                } 
+				}  
+              else{
+                    	 mbobj.CU_Read__c = CURead;
+                    	 update mbobj;
+                  }         	
             }
         }
         catch(exception e){

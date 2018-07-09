@@ -22,8 +22,16 @@
 	},
 	
 	deleteAttachment : function(component) {	
-		debugger;
+		
 		var attachmentId= event.target.getAttribute("id");
+		var name= event.target.getAttribute("data-name");
+		
+		if(!confirm('Are you sure, you want to delete ' + name + ' ?'))
+		{
+			return;
+		}
+		
+		
 		var action = component.get("c.DeleteAttachment");
 		
 		action.setParams({

@@ -167,7 +167,13 @@
 			          
 			        var isFileUpload = component.get('v.isFileUpload');
                     if(isFileUpload){
-        				component.set("v.isFileUploadComponent", true);                       
+        				component.set("v.isFileUploadComponent", true); 
+        				if(document.getElementsByClassName('modal-maincontent')[0] != undefined){          
+        				document.getElementsByClassName('modal-maincontent')[0].style.minHeight = '350px';
+						document.getElementsByClassName('modal-maincontent')[0].style.height = '350px';
+						document.getElementsByClassName('modal-maincontent')[0].parentElement.parentElement.parentElement.parentElement.parentElement.parentElement.style.height  = '471px';
+						} 
+						
                     }
                     else
                     {

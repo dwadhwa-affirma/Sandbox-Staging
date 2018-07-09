@@ -5,14 +5,14 @@ public class TakeOwnershipController {
     {
     	Id currentUserId = UserInfo.getUserId();    	
     	
-    	system.debug('Azhar currentUserId' + currentUserId);
+    	
     	
     	List<Case> selectedCase = new List<Case>();
     	selectedCase = [Select Id, OwnerId from Case Where Id =: caseId limit 1];
     	if(selectedCase != null && selectedCase.size() > 0)
     	{
     		selectedCase[0].OwnerId = currentUserId;
-    		system.debug('Azhar selectedCase.OwnerId' + selectedCase[0].OwnerId);
+    	
     		update selectedCase[0];
     	}    	
     	else

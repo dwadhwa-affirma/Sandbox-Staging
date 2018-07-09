@@ -78,7 +78,7 @@
 <td><span data-aura-rendered-by="85:1176;a" class="uiImage uiOutputCheckbox" data-aura-class="uiImage uiOutputCheckbox">{!item.CreatedBy}</span></td>
 <td style="-webkit-transform: none !important;    border-collapse: separate !important;"><span data-aura-rendered-by="85:1176;a" class="uiImage uiOutputCheckbox" data-aura-class="uiImage uiOutputCheckbox"><ui:inputCheckbox value="{!item.isApproved}" disabled="true" class="chkFromMember"/></span></td>
 <td style="-webkit-transform: none !important;"><span data-aura-rendered-by="85:1176;a" class="uiImage uiOutputCheckbox" data-aura-class="uiImage uiOutputCheckbox"><ui:inputCheckbox value="{!item.FromMember}" disabled="true" class="chkFromMember"/></span></td>
-<td style="width: 1%;"><span><button class="slds-button slds-button--brand" onclick="{!c.deleteAttachment}" id="{!item.attachmentId}">Delete</button></span> </td>
+<td style="width: 1%;"><span><button class="slds-button slds-button--brand" onclick="{!c.deleteAttachment}" data-name="{!item.Name}" id="{!item.attachmentId}">Delete</button></span> </td>
 </tr>
  </aura:iteration>
 <aura:if isTrue="{!v.Attachments.length == 0}">                            
