@@ -53,6 +53,8 @@ public class MemberAuthenticationController{
 	public string SSNnumberConfirmString{get;set;}{SSNnumberConfirmString = '';}
       
     public String SalesforceID{get;set;}
+    
+    public string fromMarsData {get;set;}
      
     public String DOB{get;set;}
     public string IVRDOB{get;set;}
@@ -60,6 +62,14 @@ public class MemberAuthenticationController{
     public String IVRDOBMatch{get;set;}
     public boolean DOBConfirm{get;set;}{DOBConfirm = false;}
     public string DOBConfirmString {get;set;} {DOBConfirmString = '';}
+    
+     // DL/STATE ID/PASSPORT
+    public String DLStateIdPassport{get;set;}
+    public string IVRDLStateIdPassport{get;set;}
+    public String DLStateIdPassportMatch{get;set;}
+    public String IVRDLStateIdPassportMatch{get;set;}
+    public boolean DLStateIdPassportConfirm{get;set;}{DLStateIdPassportConfirm = false;}
+    public string DLStateIdPassportConfirmString {get;set;} {DLStateIdPassportConfirmString = '';}
     // DL/STATE ID/PASSPORT
     public String IdNumber{get;set;}
     public String IdNumberMatch{get;set;}
@@ -257,8 +267,18 @@ public class MemberAuthenticationController{
             noOfVerifiedFields = noOfVerifiedFields+1;
         }  
         if(noOfVerifiedFields < 3){
-            setConfirmationOncheckboxes();
-            pageCalulated = new PageReference('/apex/verifiy');
+        	setConfirmationOncheckboxes();
+        	
+        	if(EnteredMemberNumber == null || EnteredMemberNumber == '')
+        	{
+        		fromMarsData = 'True';
+        	}
+        	else
+        	{
+        		fromMarsData = 'False';
+        	}
+        	
+    		pageCalulated = new PageReference('/apex/verifiy');         
             pageCalulated.setRedirect(false);
         }
         else
@@ -288,6 +308,10 @@ public class MemberAuthenticationController{
             IdNumberConfirm = false;
             IdNumberConfirmString = '';
         }
+        if(DLStateIdPassportMatch == 'true'){
+            DLStateIdPassportConfirm = false;
+            DLStateIdPassportConfirmString = '';
+        }
         if(MMNMatch == 'true'){
             MMNConfirm = false;
             MMNConfirmString = '';
@@ -300,6 +324,10 @@ public class MemberAuthenticationController{
         
         if(CardNumberMatch == 'true'){
             CardNumberConfirm = true;
+        }
+        if(DLStateIdPassportMatch == 'true'){
+            DLStateIdPassportConfirm = false;
+            DLStateIdPassportConfirmString = '';
         }
        
     }
@@ -410,6 +438,7 @@ public class MemberAuthenticationController{
         system.debug('inside verify selected caller');
         system.debug('EnteredCardNumber= '+ EnteredCardNumber);
         system.debug('EnteredCardNumberLastdigits---'+EnteredCardNumberLastdigits);
+        system.debug('DLStateIdPassport= '+ DLStateIdPassport);
         if (EnteredCardNumberFormatted != '' && EnteredCardNumberFormatted != null)
         {
         	EnteredCardNumber = EnteredCardNumberFormatted;
@@ -531,7 +560,18 @@ public class MemberAuthenticationController{
                                 DOBMatch = '';
                             }
                     }
-                    if(IdNumberMatch == 'true'){
+                    if(DLStateIdPassportMatch == 'true'){
+                        if(DLStateIdPassport == null || DLStateIdPassport == ''){DLStateIdPassportMatch = '';}     
+                        userEnteredInformation.ICardNumber = DLStateIdPassport;
+                    }else{
+                        if(DLStateIdPassport!=null && DLStateIdPassport != '' && (DLStateIdPassportMatch == null || DLStateIdPassportMatch == '')){
+                            userEnteredInformation.ICardNumber = DLStateIdPassport;
+                            fieldnametocheck = 'DLStateIdPassport';
+                        }else if(DLStateIdPassport == null || DLStateIdPassport == ''){
+                            DLStateIdPassport = '';
+                        }
+                    }
+                    /*if(IdNumberMatch == 'true'){
                         if(IdNumber == null || IdNumber == ''){IdNumberMatch = '';}     
                         userEnteredInformation.ICardNumber = IdNumber;
                     }else{
@@ -541,7 +581,7 @@ public class MemberAuthenticationController{
                         }else if(IdNumber == null || IdNumber == ''){
                             IdNumberMatch = '';
                         }
-                    } 
+                    } */
                     if(MMNMatch == 'true'){
                         if(MMN == null || MMN == ''){MMNMatch = '';} 
                         userEnteredInformation.MMN = MMN;
@@ -592,6 +632,10 @@ public class MemberAuthenticationController{
                             }
                             if(oldFieldToMatch == 'IdNumber'){
                                 userEnteredInformation.ICardNumber = IdNumber;
+                                fieldnametocheck = oldFieldToMatch;
+                            }
+                            if(oldFieldToMatch == 'DLStateIdPassport'){
+                                userEnteredInformation.ICardNumber = DLStateIdPassport;
                                 fieldnametocheck = oldFieldToMatch;
                             }
                             if(oldFieldToMatch == 'MMN'){
@@ -677,6 +721,12 @@ public class MemberAuthenticationController{
                                 }                        
                                 fieldnametocheck = '';
                             }
+                            if(fieldnametocheck == 'DLStateIdPassport'){
+                                if(DLStateIdPassport != ''){
+                                    DLStateIdPassportMatch = 'true';
+                                }                        
+                                fieldnametocheck = '';
+                            }
                             if(fieldnametocheck == 'MMN'){
                                 if(MMN != ''){
                                     MMNMatch = 'true';
@@ -730,6 +780,14 @@ public class MemberAuthenticationController{
                                     IdNumberMatch = 'false';
                                 }else{
                                     IdNumberMatch = '';
+                                }
+                                fieldnametocheck = '';
+                            }
+                            if(fieldnametocheck == 'DLStateIdPassport'){
+                                if(DLStateIdPassport != ''){
+                                    DLStateIdPassportMatch = 'false';
+                                }else{
+                                    DLStateIdPassportMatch = '';
                                 }
                                 fieldnametocheck = '';
                             }
@@ -1316,7 +1374,7 @@ public class MemberAuthenticationController{
 	        }*/
 	        
 			string IDNumberToMatch = '';
-            IDNumberToMatch = string.isEmpty(selectedOne.ID_1_Number__pc) ? '' : selectedOne.ID_1_Number__pc;
+           /* IDNumberToMatch = string.isEmpty(selectedOne.ID_1_Number__pc) ? '' : selectedOne.ID_1_Number__pc;
             if (string.isempty(IDNumberToMatch))
             {
             IDNumberToMatch += string.isEmpty(selectedOne.ID_2_Number__pc) ? '' : selectedOne.ID_2_Number__pc;
@@ -1332,13 +1390,63 @@ public class MemberAuthenticationController{
             else
             {
              IDNumberToMatch += string.isEmpty(selectedOne.ID_3_Number__pc) ? '' : ', ' + selectedOne.ID_3_Number__pc;
-            }
-	        
-	        
+            }*/
+	      //  string IDTypeToMatch = '';
+	        string DLStateIdPassportToMatch='';
+	      /*  if(selectedOne.ID_1_Type__c != null){
+	         	DLStateIdPassportToMatch = selectedOne.ID_1_Type__c + ' ' + (selectedOne.ID_1_Number__pc == null? '' : string.valueof(selectedOne.ID_1_Number__pc)) + ' ' + (selectedOne.ID_1_Expiration_Date__pc == null? '' : string.valueof(selectedOne.ID_1_Expiration_Date__pc));	        	
+	        }
+	        if(selectedOne.ID_2_Type__c != null){
+	         	DLStateIdPassportToMatch = DLStateIdPassportToMatch + ', ' + (selectedOne.ID_2_Type__c + ' ' + (selectedOne.ID_2_Number__pc == null? '' : string.valueof(selectedOne.ID_2_Number__pc)) + ' ' + (selectedOne.ID_2_Expiration_Date__pc == null? '' : string.valueof(selectedOne.ID_2_Expiration_Date__pc)));	        	
+	        }
+	        if(selectedOne.ID_3_Type__c != null){
+	         	DLStateIdPassportToMatch = DLStateIdPassportToMatch + ', ' + (selectedOne.ID_3_Type__c + ' ' + (selectedOne.ID_3_Number__pc == null? '' : string.valueof(selectedOne.ID_3_Number__pc)) + ' ' + (selectedOne.ID_3_Expiration_Date__pc == null? '' : string.valueof(selectedOne.ID_3_Expiration_Date__pc)));	        	
+	        }*/
+	       
+	        //IDTypeToMatch = string.isEmpty(selectedOne.ID_1_Type__pc) ? (string.isEmpty(selectedOne.ID_2_Type__pc) ? selectedOne.ID_3_Type__pc : selectedOne.ID_2_Type__pc) :selectedOne.ID_1_Type__pc ;
+	        if(string.isEmpty(DLStateIdPassport)){
+		        if(selectedOne.ID_1_Type__c == null){
+		        	if(selectedOne.ID_2_Type__c != null){
+		        		DLStateIdPassportToMatch = selectedOne.ID_2_Type__c + ' ' + (selectedOne.ID_2_Number__pc == null? '' :selectedOne.ID_2_Number__pc) + ' ' + (selectedOne.ID_2_Expiration_Date__pc == null? '' : string.valueof(selectedOne.ID_2_Expiration_Date__pc.date()));
+		        	}
+		        	else
+		        	{
+		        		DLStateIdPassportToMatch = (selectedOne.ID_3_Type__c == null? '' : string.valueof(selectedOne.ID_3_Type__c)) + ' ' + (selectedOne.ID_3_Number__pc == null? '' : selectedOne.ID_3_Number__pc) + ' ' + (selectedOne.ID_3_Expiration_Date__pc == null? '' : string.valueof(selectedOne.ID_3_Expiration_Date__pc.date()));
+		        	}
+		        }
+		        else{
+		        	DLStateIdPassportToMatch = selectedOne.ID_1_Type__c + ' ' + (selectedOne.ID_1_Number__pc == null? '' : string.valueof(selectedOne.ID_1_Number__pc)) + ' ' + (selectedOne.ID_1_Expiration_Date__pc == null? '' : string.valueof(selectedOne.ID_1_Expiration_Date__pc.date()));
+		        }
+	        }
+	        else
+	        {
+	        	if(selectedOne.ID_1_Number__pc == DLStateIdPassport)
+	        	{
+	        		DLStateIdPassportToMatch = selectedOne.ID_1_Type__c + ' ' + (selectedOne.ID_1_Number__pc == null? '' : string.valueof(selectedOne.ID_1_Number__pc)) + ' ' + (selectedOne.ID_1_Expiration_Date__pc == null? '' : string.valueof(selectedOne.ID_1_Expiration_Date__pc.date()));
+	        	}
+	        	else if(selectedOne.ID_2_Number__pc == DLStateIdPassport){
+	        		DLStateIdPassportToMatch = selectedOne.ID_2_Type__c + ' ' + (selectedOne.ID_2_Number__pc == null? '' :selectedOne.ID_2_Number__pc) + ' ' + (selectedOne.ID_2_Expiration_Date__pc == null? '' : string.valueof(selectedOne.ID_2_Expiration_Date__pc.date()));
+	        	}
+	        	else if(selectedOne.ID_3_Number__pc == DLStateIdPassport){
+	        		DLStateIdPassportToMatch = (selectedOne.ID_3_Type__c == null? '' : string.valueof(selectedOne.ID_3_Type__c)) + ' ' + (selectedOne.ID_3_Number__pc == null? '' : selectedOne.ID_3_Number__pc) + ' ' + (selectedOne.ID_3_Expiration_Date__pc == null? '' : string.valueof(selectedOne.ID_3_Expiration_Date__pc.date()));
+	        	}
+	        }
 	        // Set ID Number Status
-	        system.debug('IdNumber---'+IdNumber);
+	        system.debug('IdNumber---'+DLStateIdPassportToMatch);
+	        
+	        if (DLStateIdPassportToMatch != '')
+           {
+           		DLStateIdPassport = DLStateIdPassportToMatch;
+           		DLStateIdPassportMatch = 'true';
+           }
+           else
+           {
+           		DLStateIdPassport = '';
+           		DLStateIdPassportMatch= '';
+           
+           }
 	                
-           if (IDNumberToMatch != '')
+        /*   if (IDNumberToMatch != '')
            {
            		IdNumber = IDNumberToMatch;
            		IdNumberMatch = 'true';
@@ -1348,7 +1456,7 @@ public class MemberAuthenticationController{
            		IdNumber = '';
            		IdNumberMatch= '';
            
-           }
+           }*/
 	        
     }
     
@@ -1430,6 +1538,8 @@ public class MemberAuthenticationController{
         System.debug(NameList);
         setConfirmationOncheckboxes();
         //collaboration();
+        
+        
         try{ 
             system.debug('time to go check for size');
             if(!(NameList.size()>0)){
@@ -1514,6 +1624,11 @@ public class MemberAuthenticationController{
             
             EnteredMemberNumber = '';
             
+            DLStateIdPassport ='';
+            DLStateIdPassportMatch='';
+            DLStateIdPassportConfirm =false;
+            DLStateIdPassportConfirmString='';
+            
             
                        
             EnteredMemberNumber = '';
@@ -1559,6 +1674,11 @@ public class MemberAuthenticationController{
 		     AdditionalToken3chkString='';
 		     AdditionalToken2chkString='';
 		     AdditionalToken1chkString=''; 
+        
+        	  if(fromMarsData == 'True')
+        	  {
+        	  	fromMarsData  = 'False';
+        	  }
            
             return null;
     }
@@ -1855,6 +1975,11 @@ public class MemberAuthenticationController{
         EnteredMemberNumber = ApexPages.currentPage().getParameters().get('EnteredMemberNumber');
         IVREnteredMemberNumber = EnteredMemberNumber;
         // special validation for users entering 4# and null
+        if(EnteredMemberNumber == null || EnteredMemberNumber == '')
+        {
+        	return;
+        }
+        
         string truncatedMNumber = removeInitialZero(EnteredMemberNumber);
         if (truncatedMNumber.length() < 2 ||  EnteredMemberNumber == 'NULL')
         {
