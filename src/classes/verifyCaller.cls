@@ -42,15 +42,11 @@ public class verifyCaller{
             phoneNumber = phoneNumber.remove(' ');
             phoneNumber = phoneNumber.remove('-');
         }
-        if (phoneNumber.length() > = 10)
-        {
         phoneNumber1 = phoneNumber.substring(0,3);
         phoneNumber2 = phoneNumber.substring(3,6);
         phoneNumber3 = phoneNumber.substring(6,10);
         
         phoneNumber = '('+phoneNumber1+')'+' '+phoneNumber2+'-'+phoneNumber3;
-        }
-        
         system.debug('phoneNumber....'+phoneNumber);
         return phoneNumber;        
     }
@@ -65,14 +61,11 @@ public class verifyCaller{
             phoneNumber = phoneNumber.remove(' ');
             phoneNumber = phoneNumber.remove('-');
         }
-        if (phoneNumber.length() > = 10)
-        {
-	        phoneNumber1 = phoneNumber.substring(0,3);
-	        phoneNumber2 = phoneNumber.substring(3,6);
-	        phoneNumber3 = phoneNumber.substring(6,10);
-	        phoneNumber = phoneNumber1+'-'+phoneNumber2+'-'+phoneNumber3;
-        }
-
+        phoneNumber1 = phoneNumber.substring(0,3);
+        phoneNumber2 = phoneNumber.substring(3,6);
+        phoneNumber3 = phoneNumber.substring(6,10);
+        
+        phoneNumber = phoneNumber1+'-'+phoneNumber2+'-'+phoneNumber3;
         system.debug('phoneNumber....'+phoneNumber);
         return phoneNumber;        
     }
@@ -200,7 +193,7 @@ public class verifyCaller{
     
     public List<Account> queryByParametersAvailable(verificationObject input, boolean onlyQueryParameters){
         String check = '';
-        String queryString = 'select FirstName , LastName , ID, SSN_Last_4__pc, BIRTH_DATE__pc,Mothers_Maiden_Name__pc, PersonEmail, ID_1_Number__pc ,ID_2_Number__pc, ID_3_Number__pc from Account where (';
+        String queryString = 'select FirstName , LastName , ID, SSN_Last_4__pc, BIRTH_DATE__pc,Mothers_Maiden_Name__pc, PersonEmail, ID_1_Number__pc ,ID_2_Number__pc, ID_3_Number__pc, ID_1_Type__pc, ID_2_Type__pc, ID_3_Type__pc, ID_1_Expiration_Date__pc, ID_2_Expiration_Date__pc, ID_3_Expiration_Date__pc, ID_1_Type__c, ID_2_Type__c, ID_3_Type__c from Account where (';
         String conditions = '';
         String additionalConditions = ''; 
         String phoneQuery = '';

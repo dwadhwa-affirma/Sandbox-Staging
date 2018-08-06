@@ -640,6 +640,7 @@ public class CreateCaseMemberPageController {
             cs.OwnerId = caseObject.OwnerId;
             }
             cs.Future_Date__c = caseObject.Future_Date__c;  
+            System.debug('Before Insert###');
        try{ 
            insert cs;
            if(Test.isRunningTest()){

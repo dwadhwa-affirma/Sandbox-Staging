@@ -1,6 +1,20 @@
-trigger CaseTrigger on Case (before insert, before update, after insert, after update) {
+trigger CaseTrigger on Case (before insert, before update, after insert, after update, before delete) {
 
     Id loggedInUserId;
+    if(Trigger.isBefore && Trigger.isDelete){
+    	case tempCase = [select id, Subject from case where Subject =: 'This is a test Case to Upload Attachment.' and status ='In Process'];
+    	system.debug(tempCase);
+    	for(case c: Trigger.old){
+    		system.debug('c====' + c);
+    	
+	    		if(c.id == tempCase.id)
+	    		{    			
+	    			 c.addError('You can not delete this case');
+	    		}
+    		
+    	}
+    	return;
+    }
 
     if (Trigger.isBefore) {
         if (Trigger.isInsert) {
@@ -63,9 +77,7 @@ trigger CaseTrigger on Case (before insert, before update, after insert, after u
         
         
     }
-    
-    
-   
+        
     if(Trigger.isAfter){
         if(Trigger.isInsert){
             
@@ -137,7 +149,12 @@ System.Debug('Calling the CaseAssign method');
     public void updateEmailtoSend(List<Case> newCaseList){
         for(Case c : newCaseList){
             try{
-            C.Email_to_Send__c = C.Email_Address__c; // Used for sending email to the member.
+            String emailRegex = '([a-zA-Z0-9_\\-\\.]+)@((\\[a-z]{1,3}\\.[a-z]{1,3}\\.[a-z]{1,3}\\.)|(([a-zA-Z0-9\\-]+\\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})';
+			Pattern MyPattern = Pattern.compile(emailRegex);
+			Matcher MyMatcher = MyPattern.matcher(C.Email_Address__c);
+			if (MyMatcher.matches()){
+				 C.Email_to_Send__c = C.Email_Address__c; // Used for sending email to the member.
+			}	
             }catch(Exception e){}
         }
     

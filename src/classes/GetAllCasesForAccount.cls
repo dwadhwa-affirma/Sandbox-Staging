@@ -74,14 +74,36 @@ public with sharing class GetAllCasesForAccount {
     @AuraEnabled    
     public static List<CaseListSelection> GetAllCases(Id caseid)
     {
-    		system.debug('c');
+    		
+				 
+        
+
+
     			Case CaseDetail1 = new Case();
     			List<CaseListSelection> cls = new List<CaseListSelection>();
     			
 				CaseDetail1 = [Select Id,AccountID,Parentid from Case where Id =: caseid limit 1];
-				system.debug('CaseDetail.AccountId====' + CaseDetail1.AccountId);
+				
+				List<string> accountNumberSet = new List<string>();
+				list<Person_Account__c> paList = [SELECT Id,
+                             Account_Number__c, Account_Number__r.RecType__c,TypeTranslate__c, Account_Number__r.Name FROM Person_Account__c WHERE PersonID__c =:CaseDetail1.AccountId];
+				 for(Person_Account__c var: paList){
+            			accountNumberSet.add(var.Account_Number__r.Name);
+				 }
+				
+				
+				List<Account_Details__c> listAccountDetails = [SELECT Id from Account_Details__c where Name =: accountNumberSet and RecType__c != 'CARD'];
+				
+				
+				List<Person_Account__c> listPersonAccount = [Select PersonID__c from Person_Account__c where Account_Number__r.Name In:  accountNumberSet];
+				List<string> listAccountIds = new List<string>(); 
+				for(Person_Account__c pcAccount : listPersonAccount)
+				{
+					listAccountIds.add(pcAccount.PersonID__c);
+				}
+				
 				List<Case> CaseList1 = [Select Id, AccountId,Account_Number__c,Brand__c,CaseNumber,Case_type__c, Status, Subject, Description 
-						from Case where Accountid =: CaseDetail1.AccountId and id !=: caseid and Id !=: CaseDetail1.ParentId];
+						from Case where Accountid In: listAccountIds and id !=: caseid and Id !=: CaseDetail1.ParentId];
 				
 				list<Case> ListCaseSelected1 = new list<Case>();
 				system.debug('CaseDetail.ParentId###'+CaseDetail1.ParentId);
