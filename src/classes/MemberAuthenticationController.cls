@@ -1407,28 +1407,130 @@ public class MemberAuthenticationController{
 	        if(string.isEmpty(DLStateIdPassport)){
 		        if(selectedOne.ID_1_Type__c == null){
 		        	if(selectedOne.ID_2_Type__c != null){
-		        		DLStateIdPassportToMatch = selectedOne.ID_2_Type__c + ' ' + (selectedOne.ID_2_Number__pc == null? '' :selectedOne.ID_2_Number__pc) + ' ' + (selectedOne.ID_2_Expiration_Date__pc == null? '' : string.valueof(selectedOne.ID_2_Expiration_Date__pc.date()));
+		        		string ID_1_Type = '';
+		        		if(selectedOne.ID_2_Type__pc == null)
+		        		{
+		        			ID_1_Type = null;
+		        		}
+		        		if(selectedOne.ID_2_Type__pc == 2)
+		        		{
+		        			ID_1_Type = 'DL';
+		        		}
+		        		else if(selectedOne.ID_2_Type__pc == 3)
+		        		{
+		        			ID_1_Type = 'SID';
+		        		}
+		        		else if(selectedOne.ID_2_Type__pc == 4 || selectedOne.ID_2_Type__pc == 5)
+		        		{
+		        			ID_1_Type = 'PSPT'; 
+		        		}
+		        		DLStateIdPassportToMatch = ID_1_Type + ' ' + (selectedOne.ID_2_Number__pc == null? '' :selectedOne.ID_2_Number__pc) + ' ' + (selectedOne.ID_2_Expiration_Date__pc == null? '' : string.valueof(selectedOne.ID_2_Expiration_Date__pc.date()));
 		        	}
 		        	else
 		        	{
-		        		DLStateIdPassportToMatch = (selectedOne.ID_3_Type__c == null? '' : string.valueof(selectedOne.ID_3_Type__c)) + ' ' + (selectedOne.ID_3_Number__pc == null? '' : selectedOne.ID_3_Number__pc) + ' ' + (selectedOne.ID_3_Expiration_Date__pc == null? '' : string.valueof(selectedOne.ID_3_Expiration_Date__pc.date()));
+		        		string ID_1_Type = '';
+		        		if(selectedOne.ID_3_Type__pc == null)
+		        		{
+		        			ID_1_Type = null;
+		        		}
+		        		if(selectedOne.ID_3_Type__pc == 2)
+		        		{
+		        			ID_1_Type = 'DL';
+		        		}
+		        		else if(selectedOne.ID_3_Type__pc == 3)
+		        		{
+		        			ID_1_Type = 'SID';
+		        		}
+		        		else if(selectedOne.ID_3_Type__pc == 4 || selectedOne.ID_3_Type__pc == 5)
+		        		{
+		        			ID_1_Type = 'PSPT'; 
+		        		}
+		        		DLStateIdPassportToMatch = ID_1_Type + ' ' + (selectedOne.ID_3_Number__pc == null? '' : selectedOne.ID_3_Number__pc) + ' ' + (selectedOne.ID_3_Expiration_Date__pc == null? '' : string.valueof(selectedOne.ID_3_Expiration_Date__pc.date()));
 		        	}
 		        }
 		        else{
-		        	DLStateIdPassportToMatch = selectedOne.ID_1_Type__c + ' ' + (selectedOne.ID_1_Number__pc == null? '' : string.valueof(selectedOne.ID_1_Number__pc)) + ' ' + (selectedOne.ID_1_Expiration_Date__pc == null? '' : string.valueof(selectedOne.ID_1_Expiration_Date__pc.date()));
+		        		string ID_1_Type = '';
+		        		if(selectedOne.ID_1_Type__pc == null)
+		        		{
+		        			ID_1_Type = null;
+		        		}
+		        		if(selectedOne.ID_1_Type__pc == 2)
+		        		{
+		        			ID_1_Type = 'DL';
+		        		}
+		        		else if(selectedOne.ID_1_Type__pc == 3)
+		        		{
+		        			ID_1_Type = 'SID';
+		        		}
+		        		else if(selectedOne.ID_1_Type__pc == 4|| selectedOne.ID_1_Type__pc == 5)
+		        		{
+		        			ID_1_Type = 'PSPT'; 
+		        		}
+		        	DLStateIdPassportToMatch = ID_1_Type + ' ' + (selectedOne.ID_1_Number__pc == null? '' : string.valueof(selectedOne.ID_1_Number__pc)) + ' ' + (selectedOne.ID_1_Expiration_Date__pc == null? '' : string.valueof(selectedOne.ID_1_Expiration_Date__pc.date()));
 		        }
 	        }
 	        else
 	        {
 	        	if(selectedOne.ID_1_Number__pc == DLStateIdPassport)
 	        	{
-	        		DLStateIdPassportToMatch = selectedOne.ID_1_Type__c + ' ' + (selectedOne.ID_1_Number__pc == null? '' : string.valueof(selectedOne.ID_1_Number__pc)) + ' ' + (selectedOne.ID_1_Expiration_Date__pc == null? '' : string.valueof(selectedOne.ID_1_Expiration_Date__pc.date()));
+	        		string ID_1_Type = '';
+		        		if(selectedOne.ID_1_Type__pc == null)
+		        		{
+		        			ID_1_Type = null;
+		        		}
+		        		if(selectedOne.ID_1_Type__pc == 2)
+		        		{
+		        			ID_1_Type = 'DL';
+		        		}
+		        		else if(selectedOne.ID_1_Type__pc == 3)
+		        		{
+		        			ID_1_Type = 'SID';
+		        		}
+		        		else if(selectedOne.ID_1_Type__pc == 4 || selectedOne.ID_1_Type__pc == 5)
+		        		{
+		        			ID_1_Type = 'PSPT'; 
+		        		}
+	        		DLStateIdPassportToMatch = ID_1_Type + ' ' + (selectedOne.ID_1_Number__pc == null? '' : string.valueof(selectedOne.ID_1_Number__pc)) + ' ' + (selectedOne.ID_1_Expiration_Date__pc == null? '' : string.valueof(selectedOne.ID_1_Expiration_Date__pc.date()));
 	        	}
 	        	else if(selectedOne.ID_2_Number__pc == DLStateIdPassport){
-	        		DLStateIdPassportToMatch = selectedOne.ID_2_Type__c + ' ' + (selectedOne.ID_2_Number__pc == null? '' :selectedOne.ID_2_Number__pc) + ' ' + (selectedOne.ID_2_Expiration_Date__pc == null? '' : string.valueof(selectedOne.ID_2_Expiration_Date__pc.date()));
+	        		string ID_1_Type = '';
+		        		if(selectedOne.ID_2_Type__pc == null)
+		        		{
+		        			ID_1_Type = null;
+		        		}
+		        		if(selectedOne.ID_2_Type__pc == 2)
+		        		{
+		        			ID_1_Type = 'DL';
+		        		}
+		        		else if(selectedOne.ID_2_Type__pc == 3)
+		        		{
+		        			ID_1_Type = 'SID';
+		        		}
+		        		else if(selectedOne.ID_2_Type__pc == 4 || selectedOne.ID_2_Type__pc == 5)
+		        		{
+		        			ID_1_Type = 'PSPT'; 
+		        		}
+	        		DLStateIdPassportToMatch = ID_1_Type + ' ' + (selectedOne.ID_2_Number__pc == null? '' :selectedOne.ID_2_Number__pc) + ' ' + (selectedOne.ID_2_Expiration_Date__pc == null? '' : string.valueof(selectedOne.ID_2_Expiration_Date__pc.date()));
 	        	}
 	        	else if(selectedOne.ID_3_Number__pc == DLStateIdPassport){
-	        		DLStateIdPassportToMatch = (selectedOne.ID_3_Type__c == null? '' : string.valueof(selectedOne.ID_3_Type__c)) + ' ' + (selectedOne.ID_3_Number__pc == null? '' : selectedOne.ID_3_Number__pc) + ' ' + (selectedOne.ID_3_Expiration_Date__pc == null? '' : string.valueof(selectedOne.ID_3_Expiration_Date__pc.date()));
+	        		string ID_1_Type = '';
+		        		if(selectedOne.ID_3_Type__pc == null)
+		        		{
+		        			ID_1_Type = null;
+		        		}
+		        		if(selectedOne.ID_3_Type__pc == 2)
+		        		{
+		        			ID_1_Type = 'DL';
+		        		}
+		        		else if(selectedOne.ID_3_Type__pc == 3)
+		        		{
+		        			ID_1_Type = 'SID';
+		        		}
+		        		else if(selectedOne.ID_3_Type__pc == 4 || selectedOne.ID_3_Type__pc == 5)
+		        		{
+		        			ID_1_Type = 'PSPT'; 
+		        		}
+	        		DLStateIdPassportToMatch = ID_1_Type + ' ' + (selectedOne.ID_3_Number__pc == null? '' : selectedOne.ID_3_Number__pc) + ' ' + (selectedOne.ID_3_Expiration_Date__pc == null? '' : string.valueof(selectedOne.ID_3_Expiration_Date__pc.date()));
 	        	}
 	        }
 	        // Set ID Number Status

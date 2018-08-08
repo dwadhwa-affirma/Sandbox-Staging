@@ -1,4 +1,4 @@
-<apex:page standardStylesheets="false" controller="MemberAuthenticationController" Action="{!VerifyCallerDetails}">
+<apex:page showHeader="false" sidebar="false" standardStylesheets="false" controller="MemberAuthenticationController" Action="{!VerifyCallerDetails}">
     <style>
 	.relatedSelectionError, .adval1Error, .adval2Error, .adval3Error, .advalOtherError, .advalOtherError1, .advalOtherError2, .advalOtherErrorinv, .advalOtherErrorinv1, .advalOtherErrorinv2, .loanSelectionError, .additionalTokenSelectionError, .additionalTokenSelectionErrorSameNameText, .additionalTokenSelectionErrorSameName
 	{
@@ -209,7 +209,7 @@
                         
                         <div class="form-right" id="parentdiv">
                                 <div class="row ss cardpinwrap">
-                                  <div class="col-md-5 pr0">
+                                  <div class="col-md-5 pr0"  style="width:54%">
                                     <div class="form-group">
                                     <apex:outputLabel for="#" styleclass="col-xs-12 control-label">Card Number 
                                         <span class="pull-left"><i aria-hidden="true" class="fa fa-credit-card"></i></span>
@@ -229,7 +229,7 @@
                                     </div>
                                 </div>
                                   </div>
-                                  <div class="col-md-7">
+                                  <div class="col-md-7" style="width:46%">
                                     <div class="form-group">                                                                      
                                     <apex:outputLabel for="Pin" styleclass="col-xs-12 control-label">Pin Number 
                                         <span class="pull-left"><i aria-hidden="true" class="fa fa-shield"></i></span>
@@ -249,7 +249,7 @@
                                 </div>
                                 
                                 <div class="row">
-                                	<div class="col-md-5">
+                                	<div class="col-md-5" style="width:54%">
                                 		<div class="form-group">
 											<apex:outputPanel >
 											<apex:outputLabel for="#" styleclass="col-sm-12 col-xs-4 control-label">Last 4 SSN 
@@ -333,16 +333,16 @@
 											   <span class="pull-left"><i aria-hidden="true" class="fa fa-wpforms"></i></span> 
 											</apex:outputLabel>
 											<div class="col-sm-6 col-xs-6  no-padding">
-												   <apex:outputText styleClass="form-control inputcan" rendered="{!ClearAllflag == false}" id="IDNoOut" value="{!IdNumber}">
+												   <apex:outputText styleClass="form-control inputcan" rendered="{!ClearAllflag == false}" id="IDNoOut" value="{!DLStateIdPassport}">
 												   </apex:outputText>
-												   <apex:inputText styleClass="form-control inputcan" rendered="{!ClearAllflag == true}" html-placeholder="Select to type" maxlength="16" id="IDNo" value="{!IdNumber}" onkeypress="return onenter(event)">
+												   <apex:inputText styleClass="form-control inputcan" rendered="{!ClearAllflag == true}" html-placeholder="Select to type" maxlength="16" id="IDNo" value="{!DLStateIdPassport}" onkeypress="return onenter(event)">
 												   </apex:inputText>
 											</div>
 											<div class="col-sm-6 col-xs-6">
 												<div class="checkbox">
-													<apex:inputCheckbox id="IdNumber" style="display:none;" styleclass="confirm newconfirm" label="Select Checkbox to Confirm" rendered="{!IdNumberMatch=='true'  && SelectedID != ''}" selected="{!IdNumberConfirm}"><span style="display:none;" class="no-label">Select Checkbox to Confirm</span></apex:inputcheckbox>
+													<apex:inputCheckbox id="IdNumber" style="display:none;" styleclass="confirm newconfirm" label="Select Checkbox to Confirm" rendered="{!DLStateIdPassportMatch=='true'  && SelectedID != ''}" selected="{!IdNumberConfirm}"><span style="display:none;" class="no-label">Select Checkbox to Confirm</span></apex:inputcheckbox>
 													
-													 <apex:outputpanel styleclass="confirmRadio newconfirmRadio"  id="IdNumberNew"  rendered="{!IdNumberMatch=='true'  && SelectedID != ''}">
+													 <apex:outputpanel styleclass="confirmRadio newconfirmRadio"  id="IdNumberNew"  rendered="{!DLStateIdPassportMatch=='true'  && SelectedID != ''}">
 													 	<span class="chkAligned">
 															<input type="checkbox" name="IdNumberNewPass" id="IdNumberNewPass" value="Pass"/>
 														
@@ -447,7 +447,7 @@
 											</div>
 										</div>
                                 	</div>
-                                	<div class="col-md-7">
+                                	<div class="col-md-7" style="width:46%">
                                 		<div class="table-responsive urv-g additionalTokenContainer">
 											 <apex:pageBlock rendered="{!IF(selectedID != null && selectedID != '', true, false) }" title="Additional Tokens">
 											 
@@ -652,15 +652,15 @@
                             <div class="col-sm-12 col-xs-4 no-padding">                                                         
                                 <div class="table-responsive urv-g">                                                                   
                                 <apex:outputText id="MemberNoErrorText" rendered="{!showErrorMsgLoanData}"><span class="errorForTable"><i aria-hidden="true" class="fa fa-close"></i> &nbsp; Loan Data Not Available</span></apex:outputText>
-                                <apex:pageBlock title="Loan Accounts" rendered="{!IF(MemberLoanDetails.size >0, true, false) }">
+                                   <apex:pageBlock title="Loan Accounts" rendered="{!IF(MemberLoanDetails.size >0, true, false) }">
                                     <apex:pageBlockTable value="{!MemberLoanDetails}" var="obj"  id="MemberLoanData" styleClass="table" >
-                                        <apex:column headerValue="Account Number">
+                                        <apex:column headerValue="Account Number" style="background-color:{!IF(obj.Close_Date__c!=null,"LightGray",'')}">
                                             <apex:outputText value="{!obj.Name}"></apex:outputText>
                                         </apex:column>
-                                        <apex:column headerValue="Loan Type">
+                                        <apex:column headerValue="Loan Type" style="background-color:{!IF(obj.Close_Date__c!=null,"LightGray",'')}">
                                             <apex:outputText value="{!obj.TypeTranslate__c}"></apex:outputText>
                                         </apex:column>
-                                        <apex:column headerValue="Current Balance">
+                                        <apex:column headerValue="Current Balance" style="background-color:{!IF(obj.Close_Date__c!=null,"LightGray",'')}">
                                             <apex:outputText value="{!obj.Balance__c}"></apex:outputText>
                                         </apex:column>
                                        <!--<apex:column headerValue="Opened Date">
@@ -668,34 +668,46 @@
                                                 <apex:param value="{!obj.OPEN_DATE__c}" /> 
                                             </apex:outputText>
                                         </apex:column>-->
-                                        <apex:column headerValue="Close/Maturity Date">
+                                        <apex:column headerValue="Close/Maturity Date" style="background-color:{!IF(obj.Close_Date__c!=null,"LightGray",'')}">
                                             <apex:outputText value="{0,date,MM/dd/yyyy}">
                                                 <apex:param value="{!obj.Close_Date__c}" /> 
                                             </apex:outputText>
                                             <!--<apex:outputText value="{!obj.Close_Date__c}"></apex:outputText>-->
                                         </apex:column>
-                                        <apex:column headerValue="Monthly Payment">
+                                        <apex:column headerValue="Monthly Payment" style="background-color:{!IF(obj.Close_Date__c!=null,"LightGray",'')}">
                                             <apex:outputText value="{!obj.PAYMENT__c}"></apex:outputText>
                                         </apex:column>
 
-                                        <apex:column >
+                                        <apex:column style="background-color:{!IF(obj.Close_Date__c!=null,"LightGray",'')}">
                                           <div class="tblchkbx">
                                            <div class="checkbox">                                            
                                             <apex:inputCheckbox id="tableNum" style="display:none;" styleclass="confirm newconfirm loancheckbox" label="Select to Verify" onclick="SetLoanSelectedID('{!obj.ID}', this);" rendered="{!showloantables}"></apex:inputcheckbox><span  style="display:none;" class="no-label" >Select to Verify</span>
                                             
                                             
                                             
-                                            <apex:outputpanel styleclass="newconfirmRadio"  id="loancheckradio">
+                                            <apex:outputpanel styleclass="newconfirmRadio"  id="loancheckradio" rendered="{!IF(obj.Close_Date__c==null, true, false) }"  >
 												 	<span class="chkAligned" style="padding-left: 18px !important; padding-top: 0px !important;">
-														<input type="checkbox" name="loancheckradio{!obj.ID}Pass" id="loancheckradio{!obj.ID}Pass" value="Pass" style="margin-top: 0px;" />
+												 		<input type="checkbox" name="loancheckradio{!obj.ID}Pass" id="loancheckradio{!obj.ID}Pass" value="Pass" style="margin-top: 0px;" />
 													
 														<label for="loancheckradio{!obj.ID}Pass">Pass</label>
 													</span>
 													<span class="chkAligned" style="padding-left: 18px !important; padding-top: 0px !important; ">
-														<input type="checkbox" name="loancheckradio{!obj.ID}Fail" id="loancheckradio{!obj.ID}Fail"  value="Fail" style="margin-top: 0px;" />
+														<input type="checkbox" name="loancheckradio{!obj.ID}Fail"  id="loancheckradio{!obj.ID}Fail"  value="Fail" style="margin-top: 0px;"/>
 														<label for="loancheckradio{!obj.ID}Fail">Fail</label>
 													</span>
-												</apex:outputpanel> 
+											</apex:outputpanel> 
+											
+											<apex:outputpanel styleclass="newconfirmRadio"  id="loancheckradiodisabled" rendered="{!IF(obj.Close_Date__c!=null, true, false) }"  >
+												 	<span class="chkAligned" style="padding-left: 18px !important; padding-top: 0px !important;">
+												 		<input type="checkbox" disabled = "disabled" name="loancheckradio{!obj.ID}Pass" id="loancheckradio{!obj.ID}Pass" value="Pass" style="margin-top: 0px;" />
+													
+														<label for="loancheckradio{!obj.ID}Pass">Pass</label>
+													</span>
+													<span class="chkAligned" style="padding-left: 18px !important; padding-top: 0px !important; ">
+														<input type="checkbox" disabled = "disabled" name="loancheckradio{!obj.ID}Fail"  id="loancheckradio{!obj.ID}Fail"  value="Fail" style="margin-top: 0px;"/>
+														<label for="loancheckradio{!obj.ID}Fail">Fail</label>
+													</span>
+											</apex:outputpanel>
 												
                                             
                                             
@@ -710,6 +722,7 @@
                                         </apex:column>
                                     </apex:pageBlockTable>                                               
                                 </apex:pageBlock>
+                                
                                 
                                    <!-- <div class="checkbox loantblCheckbox ">
                                         <apex:inputCheckbox id="loandeatil" styleclass="confirm newconfirm" label="Select to Verify" rendered="{!if(MemberLoanDetails.size > 0,true,false)}" selected="{!LoanDetailConfirm}"><span class="no-label" >Select to Verify</span></apex:inputcheckbox>                                                                                                               
@@ -832,7 +845,7 @@
                                     <apex:commandButton styleClass="btn btn-primary pull-right" id="AuthenticatedButton" value="Basic Authenticated" action="{!DetailsPage}" onclick="setting()"></apex:commandButton>
                                     <!--<apex:commandButton styleClass="btn btn-primary pull-right" action="{!AlternateAutheticationPageAction}" id="AlternativeButton" value="Alternative Authentication" ></apex:commandButton>-->
                                     <apex:commandButton id="NewLead" styleClass="btn btn-primary pull-right" action="{!NewLeadPage}" value="New Lead"></apex:commandButton>
-                                    <apex:commandButton styleClass="btn btn-primary pull-right" id="ClearInvalidFields" value="Clear All Fields" action="{!clearFields}"></apex:commandButton>
+                                    <apex:commandButton styleClass="btn btn-primary pull-right btnClearAll" id="ClearInvalidFields" value="Clear All Fields" action="{!clearFields}"></apex:commandButton>
                                     
                                 </div>
                             </div>
@@ -2322,4 +2335,15 @@ $('#OTPResultPass').prop('disabled', 'disabled');
      }
       
     </script>
+    <script>
+    $(document).ready(function(){
+    	var fromMarsData = '{!fromMarsData}';
+    	if(fromMarsData == 'True')
+    	{
+    		$('.btnClearAll').click();
+    	}
+    });
+    </script>
+    
+    
 </apex:page>

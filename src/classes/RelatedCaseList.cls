@@ -43,7 +43,7 @@ public with sharing class RelatedCaseList {
                     CaseListCollection clc = new CaseListCollection();
                     if(rcaselist[i].id == parentCaseId )
                     {
-                       clc.relation = 'Parent'; 
+                       clc.relation = 'Parent Case'; 
                        clc.cases =rcaselist[i];
                     	collection.Add(clc);
                         
@@ -51,7 +51,7 @@ public with sharing class RelatedCaseList {
                     
                     else if(rcaselist[i].Parentid !=null && rcaselist[i].parentid == parentCaseId )
                     {                    	
-                        clc.relation = 'Sibling';
+                        clc.relation = 'Case Sibling';
                         clc.cases =rcaselist[i];
                     	collection.Add(clc);
                     }
