@@ -8,6 +8,7 @@ trigger AccountDetailsTrigger on Account_Details__c (before insert, before updat
         if(trigger.isUpdate){
             myMethod(Trigger.new);
             myMethod3(Trigger.new);
+            updateMemberBranchonMember(Trigger.new);
         }
     }
    
@@ -33,15 +34,91 @@ public void myMethod(List<Account_Details__c> accList){
     }
 }
 
+
+public void updateMemberBranchonMember(List<Account_Details__c> accList)
+{
+	
+	List<string> ids = new List<string>();
+	Map<Id,string> accountMemberBranch = new Map<Id,string>(); 
+		for(Account_Details__c acc : accList)
+		{
+			boolean changeBranch = true;
+			
+			if(Trigger.isupdate)
+			{
+				Account_Details__c accOldDetails = Trigger.oldMap.get(acc.Id);	
+				if(accOldDetails.Current_Branch1__c == acc.Current_Branch1__c)
+				{
+					changeBranch = false;
+				}
+			}
+			
+			if(changeBranch && acc.RecType__C == 'ACCT')
+			{
+				ids.add(acc.id);
+				accountMemberBranch.put(acc.id,acc.Current_Branch1__c);
+			}
+		}
+	
+	List<Person_Account__C> listPA = [select id,Account_Number__c,PersonId__c from Person_Account__C where Account_Number__c in : ids];
+	
+	Map<string,string> listMemberBranch = new Map<string,string>();
+	List<string> listMembers = new List<string>();
+	 
+	for(Person_Account__C item : listPA)
+	{
+		listMembers.add(item.PersonId__c);
+		
+	}
+	
+	List<Person_Account__C> listAccMember = [select id,PersonId__c,Account_Number__c from Person_Account__C where PersonId__c in: listMembers and Account_Number__r.RecType__c = 'ACCT'];
+	
+	Set<string> memberFound = new Set<string>(); 
+	
+	for(Person_Account__C item : listAccMember)
+	{
+		if(!memberFound.contains(item.Id))
+		{
+			string branch = accountMemberBranch.get(item.Account_Number__c);
+			memberFound.add(item.PersonId__c);
+			listMemberBranch.put(item.PersonId__c, branch);
+		}
+		
+	}
+	
+	List<Account> listMainAccount = [select id,Member_Branch__c from Account where Id in: memberFound];
+	List<Valid_Branch__c> branchList = [select id,Name from Valid_Branch__c];
+	Set<String> existingBranch = new Set<String>();
+	
+	for(Account acc: listMainAccount)
+	{
+		string memberBranch = listMemberBranch.get(acc.id);
+		existingBranch.add(listMemberBranch.get(acc.id));
+		
+		for(Integer i=0;i<branchList.size();i++)
+		{
+			String branchName = branchList[i].Name;
+			
+			if (existingBranch.contains(branchName))
+    		{
+        		acc.Member_Branch__c = memberBranch;
+    		}
+    	}
+	}
+	
+	update listMainAccount;
+	 	
+}
+
 private boolean IsOtherThanEmailFieldUpdated()
 { 
         Account_Details__c gplObject = new Account_Details__c(); // This takes all available fields from the required object. 
         Schema.SObjectType objType = gplObject.getSObjectType(); 
         Map<String, Schema.SObjectField> mapFields = Schema.SObjectType.Account_Details__c.fields.getMap(); 
         
-        for(Account_Details__c   gpl : trigger.new)
+        for(Account_Details__c	 gpl : trigger.new)
         {
-            Account_Details__c   oldGPL = trigger.oldMap.get(gpl.Id);
+            Account_Details__c	 oldGPL = trigger.oldMap.get(gpl.Id);
 
             for (String str : mapFields.keyset()) 
             { 
@@ -49,7 +126,7 @@ private boolean IsOtherThanEmailFieldUpdated()
                 { 
                     if(gpl.get(str) != oldGPL.get(str) && str.toLowerCase() != 'secureemailaddress__c')
                     { 
-                        System.Debug('Other than Email updated...' + str);
+                    	System.Debug('Other than Email updated...' + str);
                         return true; 
                     } 
                 } 
@@ -70,7 +147,7 @@ public void myMethod3(List<Account_Details__c> accList){
      
      if(trigger.IsUpdate && !IsOtherThanEmailFieldUpdated())
      {
-        return;
+     	return;
      }
          
      List<WarningCodeMapping__c> wcList = [SELECT Warning_Code_Number__c, Warning_Code_Text__c FROM WarningCodeMapping__c];
