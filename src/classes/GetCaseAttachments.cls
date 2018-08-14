@@ -1,23 +1,52 @@
-public class GetCaseAttachments {	
+public class GetCaseAttachments {   
 
     @AuraEnabled 
     public static object GetCaseAttachments(string CaseId)
     {
-    			 system.debug('CaseId####DW' + CaseId);
-    			List<string> parentId = new List<string>();
-        		List<Attachment> attachments = new List<Attachment>();
-        		List<ListAttachment> listAttachments  = new List<ListAttachment>();
-        		List<string> parentIdmembercomment = new List<string>();
-        		
-               // CaseId = System.currentPageReference().getParameters().get('id');
+                 system.debug('CaseId####DW' + CaseId);
+                List<string> parentId = new List<string>();
+                List<Attachment> attachments = new List<Attachment>();
+                List<ListAttachment> listAttachments  = new List<ListAttachment>();
+                List<string> parentIdmembercomment = new List<string>();
+                
+                Case caseDetail = [select status, Attachments_Are_Deleted__c from Case where Id =: CaseId];
+                //CaseId = System.currentPageReference().getParameters().get('id');
                 parentId.Add(CaseId);
                 
+                List<OnBase_Document__c> onbaseList = [Select Id,Name,Attachment_Id__c,IsMovedToOnBase__c,Document_Type__c,Attachment_Created_On__c,Attachment_Owner__r.Name from OnBase_Document__c where case__c =: CaseId  or Member_Comment__r.Case__C =: caseId];
+                //listAttachments = new List<ListAttachment>();
+                system.debug('caseDetail.Attachments_Are_Deleted__ :: '+caseDetail.Attachments_Are_Deleted__c);
+                //system.debug('onbaseList :: '+ onbaseList[0]);
+                if(caseDetail.Attachments_Are_Deleted__c == true){
+                	system.debug('In If ');
+                	for(OnBase_Document__c onbaseObj : onbaseList){
+                    	ListAttachment la = new ListAttachment();
+                    	 
+                   		la.Name = onbaseObj.Name;
+                        la.DocumentType = onbaseObj.Document_Type__c;
+                        la.LastModifiedDate = onbaseObj.Attachment_Created_On__c.format('MM/dd/yyyy');
+                        la.CreatedBy = onbaseObj.Attachment_Owner__r.Name;
+                        la.isMovedToOnBase = onbaseObj.IsMovedToOnBase__c;
+                        if(onbaseObj.Document_Type__c == '' || onbaseObj.Document_Type__c == 'Not For OnBase'){
+                        	la.downloadLink = '/servlet/servlet.FileDownload?file='+ string.valueOf(onbaseObj.attachment_id__c) +'&operationContext=S1';
+                        }else{
+                        	la.downloadLink = '';
+                        }
+                        listAttachments.add(la);
+                	}
+                }else{
+                	
+                
+                Map<Id,OnBase_Document__c> onbaseDocumentMap = new Map<Id,OnBase_Document__c>();
+                for(OnBase_Document__c onbaseObj : onbaseList){
+                    onbaseDocumentMap.put(onbaseObj.Attachment_Id__c,onbaseObj);
+                }
                
                 List<Member_Comment__c> membercomment = [Select Id from Member_Comment__c where case__c =: CaseId];
                 for(Member_Comment__c mc : membercomment)
                 {
                     parentIdmembercomment.Add(mc.Id);
-                    
+                                    parentId.Add(mc.Id);
                 }
                  system.debug('ParentId####DW' + parentId);
                  system.debug('parentIdmembercomment####DW' + parentIdmembercomment);
@@ -27,7 +56,7 @@ public class GetCaseAttachments {
                   
                  //  system.debug('ContentDocumentLst####DW' + ContentDocumentLst);
                   
-                  listAttachments = new List<ListAttachment>();
+                  
                  for(Attachment att : attachments)
                     {
                         ListAttachment la = new ListAttachment();
@@ -58,21 +87,30 @@ public class GetCaseAttachments {
                         approved = [select id,Case_ID__c,Attachment_Id__c, ContentDocumentLinkId__c from Approve_Attachment__c where Attachment_Id__c =: att.Id];
                         if(approved != null && approved.size()> 0)
                         {
-                        	la.isApproved = true;
+                            la.isApproved = true;
                         }
                         else
                         {
-                        	la.isApproved = false;
+                            la.isApproved = false;
                         }
                         la.Name = att.Name;
-                        la.LastModifiedDate = att.LastModifiedDate.format('MM/dd/yyyy HH:mm:ss');
+                        la.LastModifiedDate = att.LastModifiedDate.format('MM/dd/yyyy');
                         la.CreatedBy = att.Owner.Name;
                         la.downloadLink = '/servlet/servlet.FileDownload?file='+ string.valueOf(att.id) +'&operationContext=S1';
                         la.attachmentId = att.Id;
+                        if(onbaseDocumentMap.containsKey(att.Id)){
+                            OnBase_Document__c onbaseObj = onbaseDocumentMap.get(att.Id);
+                            la.isMovedToOnBase = onbaseObj.IsMovedToOnBase__c;
+                            la.DocumentType = onbaseObj.Document_Type__c;
+                        }
+                        
                         listAttachments.add(la);
                         
                      }
                      system.debug('listAttachments==='+listAttachments);
+                }
+    
+                     
                  /*   for(ContentDocumentLink cd : ContentDocumentLst)
                     {
                         ListAttachment la = new ListAttachment();
@@ -108,19 +146,23 @@ public class GetCaseAttachments {
                      }*/
                      
                      system.debug('listContentDocument==='+listAttachments);
-            return listAttachments;          
+                     
+                     ListAttachmentWithCaseDetail response = new ListAttachmentWithCaseDetail();
+                     response.attachmentList = listAttachments;
+                     response.caseDetail = caseDetail;
+            return response;          
     }
     
     @AuraEnabled 
     public static void DeleteAttachment(string attachmentId){
-    	Attachment attachmentToDelete = new Attachment();
-    	attachmentToDelete = [SELECT BodyLength,Description,Id,LastModifiedDate ,Name,OwnerId,ParentId FROM Attachment where Id =: attachmentId];
-    	delete attachmentToDelete;
+        Attachment attachmentToDelete = new Attachment();
+        attachmentToDelete = [SELECT BodyLength,Description,Id,LastModifiedDate ,Name,OwnerId,ParentId FROM Attachment where Id =: attachmentId];
+        delete attachmentToDelete;
     }
     
   public class ListAttachment
   {
-  		@AuraEnabled
+        @AuraEnabled
         public  Boolean FromMember {get; set;} 
         @AuraEnabled  
         public  string  displaysize {get; set;} 
@@ -136,6 +178,15 @@ public class GetCaseAttachments {
         public string attachmentId {get;set;}
          @AuraEnabled
         public boolean isApproved {get;set;}
+        @AuraEnabled
+        public boolean isMovedToOnBase = false;
+        @AuraEnabled
+        public string DocumentType = '';
   }
-    
+   public class ListAttachmentWithCaseDetail{
+        @AuraEnabled
+        public List<ListAttachment> attachmentList {get;set;}
+        @AuraEnabled
+        public Case caseDetail{get;set;}
+   }
 }

@@ -16,6 +16,8 @@ public class MemberAuthenticationController{
     public String PhoneNumber{get;set;}
     public String PhoneNumberMatch{get;set;}
     public String IVRPhoneNumberMatch;
+    public String ReasonCode{get;set;}
+    public String HighFlag{get;set;}
     
     public String OTPVerified {get;set;}
     
@@ -1801,6 +1803,8 @@ public class MemberAuthenticationController{
         System.debug(substring(Email,50));
         log.Email__c = substring(Email, 50);
         log.EmailMatch__c = substring(EmailMatch,5);
+        log.HP_HV__c = substring(HighFlag,5);
+        log.IVR_Code__c = substring(ReasonCode,10);
         
         //log.MMN__c = substring(MMN, 50);
         system.debug('Names object----' + Names);
@@ -2076,6 +2080,15 @@ public class MemberAuthenticationController{
         PhoneNumber = ApexPages.currentPage().getParameters().get('CallersPhoneNumber');
         EnteredMemberNumber = ApexPages.currentPage().getParameters().get('EnteredMemberNumber');
         IVREnteredMemberNumber = EnteredMemberNumber;
+        ReasonCode = ApexPages.currentPage().getParameters().get('Reason');
+        HighFlag = ApexPages.currentPage().getParameters().get('HighValueFlag');
+        
+        
+        if(ReasonCode == null || ReasonCode == '')
+        {
+        	ReasonCode = 'Unknown';
+        }
+        
         // special validation for users entering 4# and null
         if(EnteredMemberNumber == null || EnteredMemberNumber == '')
         {

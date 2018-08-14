@@ -39,9 +39,9 @@ private boolean IsOtherThanEmailFieldUpdated()
         Schema.SObjectType objType = gplObject.getSObjectType(); 
         Map<String, Schema.SObjectField> mapFields = Schema.SObjectType.Account_Details__c.fields.getMap(); 
         
-        for(Account_Details__c	 gpl : trigger.new)
+        for(Account_Details__c   gpl : trigger.new)
         {
-            Account_Details__c	 oldGPL = trigger.oldMap.get(gpl.Id);
+            Account_Details__c   oldGPL = trigger.oldMap.get(gpl.Id);
 
             for (String str : mapFields.keyset()) 
             { 
@@ -49,7 +49,7 @@ private boolean IsOtherThanEmailFieldUpdated()
                 { 
                     if(gpl.get(str) != oldGPL.get(str) && str.toLowerCase() != 'secureemailaddress__c')
                     { 
-                    	System.Debug('Other than Email updated...' + str);
+                        System.Debug('Other than Email updated...' + str);
                         return true; 
                     } 
                 } 
@@ -70,7 +70,7 @@ public void myMethod3(List<Account_Details__c> accList){
      
      if(trigger.IsUpdate && !IsOtherThanEmailFieldUpdated())
      {
-     	return;
+        return;
      }
          
      List<WarningCodeMapping__c> wcList = [SELECT Warning_Code_Number__c, Warning_Code_Text__c FROM WarningCodeMapping__c];

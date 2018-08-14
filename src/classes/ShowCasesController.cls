@@ -518,11 +518,12 @@ global with sharing  class ShowCasesController {
 				cas.IsMarkRead__c = true;
 				update cas;
 			}
-		List<Member_Comment__c> membercomments =  [SELECT Case__r.Id, CreatedDate,Id,Member_Comment__c,Name, IsRead__c FROM Member_Comment__c Where case__r.Id =: id and draft__c != true];
+		List<Member_Comment__c> membercomments =  [SELECT Case__r.Id,Member_Read_Date_Time__c, CreatedDate,Id,Member_Comment__c,Name, IsRead__c FROM Member_Comment__c Where case__r.Id =: id and draft__c != true];
 		
 			for(Member_Comment__c mc:membercomments)
 			{
 				mc.IsRead__c = true;
+				mc.Member_Read_Date_Time__c = System.now();
 				
 			}
 			update membercomments;

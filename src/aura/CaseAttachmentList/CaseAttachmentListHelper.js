@@ -6,15 +6,16 @@
 		action.setParams({
 		"CaseId": recordId
 		});
-		
+			debugger;
 			action.setCallback(this, function(resp) {				
 			var state=resp.getState();			
-			if(state === "SUCCESS"){		
+			if(state === "SUCCESS"){	
+			debugger;	
 				var res = resp.getReturnValue();
 				console.log(res);				
-				component.set("v.Attachments", res); 	
-				component.set("v.AttachmentsCount", res.length); 					
-				      			
+				component.set("v.Attachments", res.attachmentList); 	
+				component.set("v.AttachmentsCount", res.attachmentList.length);
+				component.set("v.CaseDetail", res.caseDetail); 					 			
 			}
 		});
 		
@@ -22,7 +23,6 @@
 	},
 	
 	deleteAttachment : function(component) {	
-		
 		var attachmentId= event.target.getAttribute("id");
 		var name= event.target.getAttribute("data-name");
 		
@@ -30,8 +30,6 @@
 		{
 			return;
 		}
-		
-		
 		var action = component.get("c.DeleteAttachment");
 		
 		action.setParams({

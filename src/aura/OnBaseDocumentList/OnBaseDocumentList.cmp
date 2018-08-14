@@ -1,0 +1,179 @@
+<aura:component controller="OnBaseDocumentController" implements="flexipage:availableForAllPageTypes,force:appHostable,force:hasRecordId,force:lightningQuickAction">
+    <aura:handler value="{!this}" name="init" action="{!c.doInit}" />
+    <aura:attribute name="Model" access="global" Type="Object" />    
+    <aura:attribute name="picklistFields" type="Map" default="{}" />
+    <aura:attribute name="DocTypeOptions" type="string[]" default="{}" />
+    <aura:attribute name="OnBase_Document__c" type="OnBase_Document__c" />
+    <aura:attribute name="recordId" type="string"/>
+    <aura:attribute name="DDLCount" type="integer"/>
+  
+    
+    <aura:attribute name="loadingOnbase" type="Boolean" default="false" />
+    <aura:registerEvent name="ClosePopup" type="c:SaveNeedAssessmentEvent"/>
+    <style>
+        /* Loading Style*/
+        
+        .loadingOnbase {
+            
+            z-index: 100;
+            background: rgba(255, 255, 255, 0.8);
+        
+            
+        }
+        
+        .loadingOnbase .demo-only {
+            z-index: 101;
+        }
+        /* Loading Style End*/
+        
+        .Salutation {
+            width: 20%;
+            margin-bottom: 5px;
+        }
+        .modal-body{position:relative;}
+        .cCreateLead.loadingDiv{top:0; left:0; height:100%;}
+        .twoField .forceInputField{width:80px; display:inline-block;}
+        .twoField .forceInputField .uiPopupTrigger a{height: calc(2.125rem + 2px); line-height: calc(2.125rem + 2px);}
+        .twoField .uiInputText{width:160px; display:inline-block; margin-left:7px; vertical-align:top;}
+        .slds-table_edit thead th, .slds-table--edit thead th{padding: .25rem .5rem; font-size:12px;}
+        .uiInputCheckbox {margin:auto;}
+    </style>
+    
+    
+    
+     
+    <div role="dialog" tabindex="-1" aria-labelledby="header43" class="slds-modal slds-fade-in-open">
+                 <aura:if isTrue="{!(v.loadingOnbase == true)}">
+        <div class="loadingOnbase">
+            <div class="demo-only">
+                <div role="status" class="slds-spinner slds-spinner_medium">
+                    <div class="slds-spinner__dot-a"></div>
+                    <div class="slds-spinner__dot-b"></div>
+                </div>
+            </div>
+        </div>
+    </aura:if>
+		  <div class="slds-modal__container">
+		    <div class="slds-modal__header">
+		      <button class="slds-button slds-modal__close slds-button--icon-inverse" title="Close">
+		       
+		        <span class="slds-assistive-text">Close</span>
+		      </button>
+		      <h2 id="header43" class="slds-text-heading--medium">OnBase Attachments</h2>
+		      
+		    </div>
+		    <div class="slds-modal__content slds-p-around--medium" style="min-height:300px;">
+		    <h3 class="slds-section-title--divider">Case Number: {!v.Model.caseNumber}
+		    </h3>
+		    <aura:if isTrue="{! (v.Model.IsInValidDocumentAvailable == true)}">
+		    	<div> <span style="color: red">* This document type is not allowed for OnBase Sync. Please contact your administrator if additional document types are needed otherwise you can select the document type "Not for Onbase"</span></div>
+		    </aura:if>
+		        <div class="slds-grid">
+        <div class="slds-col">
+            <div class="slds-form--stacked slds-m-bottom--x-small">
+                <div class="slds-form-element"><br />
+             
+                    <table border="0" width="100%" class="slds-table slds-table_bordered slds-no-cell-focus slds-table_edit" style="table-layout:fixed;" role="grid">
+                        <thead>
+                            <tr>
+                                <th>
+                                    <span class="slds-truncate" title="Type of deposit"><b>Document Name</b></span>
+                                </th>
+                                <th width="100px">
+                                    <span class="slds-truncate" title="DocumentType"><b>Last Modified</b></span>
+                                </th>
+                                <th>
+                                    <span class="slds-truncate" title="DocumentType"><b>Document Type</b></span>
+                                </th>
+                                <!-- <th>
+                                    <span class="slds-truncate" title="Status"><b>Status</b></span>
+                                </th> -->
+                                <!-- <th width="120px">
+                                    <span class="slds-truncate" title="Approve"><b>Move to OnBase</b></span>
+                                </th> -->
+                            </tr>
+                        </thead>
+                        <tbody>
+                            
+                            
+                            <aura:iteration items="{!v.Model.onbaseDocuments}" var="item" indexVar="index"> 
+                                <tr>
+                                    <td>
+                                       	<span class="slds-truncate" style="display:block;"><span style="color:red">{! (item.IsOnBaseSupportedFile)?'':'*'}</span><a target="_blank" href="{!item.downloadLink}">{!item.Name}</a> </span>
+                                    </td>
+                                    <td>
+                                       	<span class="slds-truncate" style="display:block;"><a target="_blank" href="{!item.downloadLink}">{!item.LastModifiedDate}</a>   </span>
+                                    </td>
+                                    <td>
+                                    	 <lightning:select value="{!item.DocumentType}" variant="label-hidden" disabled="{! item.IsMovedToOnBase}" class="slds-form_inline">
+                                    	 	<option value="" >--- Document Type ---</option>
+                                    	 	<aura:if isTrue="{! item.IsOnBaseSupportedFile}">
+		                                     	 <aura:iteration items="{!v.DocTypeOptions}" var="docType">
+				                                     	<option value="{!docType}" >{!docType}</option>
+				                                     </aura:iteration>
+		                                     	<aura:set attribute="else">
+				                                    <option value="{!v.DocTypeOptions[0]}" >{!v.DocTypeOptions[0]}</option>
+		                                     	</aura:set>
+		                                     </aura:if>
+	                                      </lightning:select>
+                                    </td>
+                                    
+                                    <!-- <td>
+                                    	{! item.IsMovedToOnBase == true ? 'Moved to OnBase'  : (item.DocumentType == null ? ''  : 'Pending')}
+                                    </td>  --> 
+                                    <!-- <td>
+                                         <ui:inputCheckbox value="{!item.checkvalue}" />
+                                    </td> -->                                  
+                                </tr>
+                            </aura:iteration>
+                                                      
+                            <aura:if isTrue="{!v.Model.onbaseDocuments.length == 0}">                            
+                                <tr>
+                                    <td colspan="3">No Attachment found !</td>
+                                </tr>
+                            </aura:if>  
+                        </tbody>
+                    </table>                    
+                    <br />                    
+                </div>
+            </div>
+        </div>
+    </div>
+		      
+		    </div>
+		    <div class="slds-modal__footer">
+		            <button class="slds-button slds-button_neutral" onclick="{!c.closePopup}">Cancel</button>
+                 <aura:if isTrue="{!v.Model.onbaseDocuments.length > 0}">     
+                <button class="slds-button slds-button--brand" onclick="{!c.onBaseSave}">Save</button>
+                </aura:if>
+		    </div>
+		  </div>
+		</div>
+<div class="slds-backdrop slds-backdrop--open"></div>
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+  
+ 
+    
+  
+   
+</aura:component>
