@@ -7,6 +7,7 @@ public class AccountDetailsTriggerTest {
             accDetails.Name = 'test';
             accDetails.SecureEmailAddress__c = 'sample@sample.com';
             accDetails.Created_By_User__c = 1;
+            accDetails.RecType__c = 'ACCT';
         insert accDetails;
         
         Episys_User__c eu = new Episys_User__c();

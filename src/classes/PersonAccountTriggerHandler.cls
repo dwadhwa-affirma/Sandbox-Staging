@@ -126,4 +126,56 @@ public with sharing class PersonAccountTriggerHandler {
         }
         update accDetailList;
     }
+    public static void UpdateAccountBranch(List<Person_Account__c> personAcc){
+    	set<Id> accDetailIds = new set<Id>();
+    	set<Id> personIds = new set<Id>();
+    	List<Account_Details__c> accDetailMap = new List<Account_Details__c>();
+    	list<Person_Account__c> paList = new list<Person_Account__c>();
+    	Map<Id,string> accountMemberBranch = new Map<Id,string>();
+    	Map<string,string> listMemberBranch = new Map<string,string>();
+    	
+    	for(Person_Account__c pa: personAcc){	
+    		paList.add(pa);
+    		accDetailIds.add(pa.Account_Number__c);
+    		personIds.add(pa.PersonID__c);    			
+    	}
+    	
+    	accDetailMap = [select id,RecType__c,Current_Branch1__c,Current_Branch__c from Account_Details__c where ID in : accDetailIds];
+    	
+    	for(Account_Details__c acc : accDetailMap){
+         	if(acc.RecType__C == 'ACCT'){
+         		accountMemberBranch.put(acc.id,acc.Current_Branch1__c);
+         	}
+    	} 
+    	
+    	for(Person_Account__c pa: personAcc){	
+    		string branch = accountMemberBranch.get(pa.Account_Number__c);
+    	  	listMemberBranch.put(pa.PersonId__c, branch);
+    	}
+    	
+    	
+    	list<Account> personList = [SELECT Id, Member_Branch__c FROM Account WHERE Id IN: personIds];
+    	
+    	List<Valid_Branch__c> branchList = [select id,Name from Valid_Branch__c];
+		Set<String> existingBranch = new Set<String>();
+	
+    	for(Account acc: personList)
+		{
+			
+			string memberBranch = listMemberBranch.get(acc.id);
+			existingBranch.add(listMemberBranch.get(acc.id));
+			
+			
+			for(Integer i=0;i<branchList.size();i++)
+			{
+				String branchName = branchList[i].Name;
+				
+				if (existingBranch.contains(branchName))
+	    		{
+	        		acc.Member_Branch__c = memberBranch;
+	     		}
+	    	}		
+		}
+		update personList;
+    }	
 }
