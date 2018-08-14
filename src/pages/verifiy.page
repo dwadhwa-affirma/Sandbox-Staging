@@ -98,17 +98,34 @@
     border-width: 0 0 0px 0 !important;
     vertical-align: middle;
 	}
+	.headingval:after{display:table; content:''; clear:both}
+	.headingval .float-left{float:left; margin-right:15px; width:auto !important;}
+	.headingval .float-left > span{padding: 15px; height: auto; border: 0; display: block;}
+	.headingval .float-right{float:right; margin-right:15px; width:auto !important;}
+	.headingval .float-right > span{padding: 15px; height: auto; border: 0; display: block;}
     </style>
     
     <section class="chervon">
         <div class="container">
             <!--<h2><i aria-hidden="true" class="{!if(NameList!=null,'fa fa-check-circle-o','fa fa-exclamation-triangle')}"></i> Verification Required (<span class="count">0</span>/3)</h2>-->
-            <h2><label class="fa fa-check-circle-o" style="display:{!if(NameList!=null,'block','none')};">
-                 <b> Verification Required (<span class="count">0</span>/3) </b>
-                </label> 
-                 <label class="fa fa-exclamation-triangle" style="display:{!if(NameList!=null,'none','block')};">
-                 <b> No Member Found </b>
-                 </label></h2>
+            <div class="headingval">
+            	<h2 class="float-left">
+	            	<label class="fa fa-check-circle-o" style="display:{!if(NameList!=null,'block','none')};">
+	                 	<b> Verification Required (<span class="count">0</span>/3) </b>
+	                </label> 
+	                 <label class="fa fa-exclamation-triangle" style="display:{!if(NameList!=null,'none','block')};">
+	                 	<b> No Member Found </b>
+	                 </label>
+	           	</h2>
+	           	<div class="float-right">
+	           		<apex:image value="{!If(HighFlag == "1", $Resource.HighPotential,'')}"  rendered="{!IF(HighFlag != "0", true, false)}"/>
+                 <apex:image value="{!If(HighFlag == "2", $Resource.HighValue,'')}"  rendered="{!IF(HighFlag != "0", true, false)}"/>
+	           	</div>
+	           	<div class="float-right">
+	           		<apex:outputText style="font-weight: bold;font-size: 16px;" id="ReasonCode"  value="Reason: {!ReasonCode}"/>
+	           	</div>
+            </div>
+            
             <!--<div class="seperator" ></div>-->
             <div class="{!if(NameList!=null,'seperator','seperator-error')}" ></div>            
             <div class="wrapper">
