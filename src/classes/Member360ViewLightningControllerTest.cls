@@ -2,7 +2,7 @@
 private class Member360ViewLightningControllerTest {
 @testSetup
 		  static void setupTestData(){
-		    test.startTest();
+		    
 		    List<Account_Details__c> account_details_Obj = new List<Account_Details__c>{
 						    new Account_Details__c(Name = '0000147163', Balance__c = 0.00, Combined_Account_ID__c = '0000147163S0100P0100', ID1__c = '0100', Onboarded__c = true, RecType__c = 'ACCT', TypeTranslate__c = '1-PRIMARY SHARE',WARNING_01_CODE__c='ABC',
 WARNING_02_CODE__c='ABC',
@@ -199,7 +199,7 @@ Comment_Block_20__c='ABC'
               CaseComment_Obj.Add(cm6);
               */
 			insert CaseComment_Obj;
-			
+	
 			List<Task> task_Obj = new List<Task>{		 
 						new Task(Subject='test', Description='Description',Status = 'Open',WhatId=case_Obj[0].Id),
 						new Task(Subject='test1', Description='Description',Status = 'Open',WhatId=case_Obj[0].Id),
@@ -226,7 +226,7 @@ Comment_Block_20__c='ABC'
               task_Obj.Add(t6);*/
 			  insert task_Obj;
 			
-			
+		/*	
 			
 			List<Case> case_Obj1 = new List<Case>{
 		    new Case(Status = 'In Process', Origin = null, Subject = 'Test', ClosedDate = null, IsEscalated = false, AccountId = account_Obj1.Id, Account_Number__c = account_details_Obj[1].Id, Additional_Documents__c = false, Staff_Escalated__c = false, Five_Day_Flag__c = false, IsMarkDeleted__c = false, IsMarkRead__c = false, IsMarkSaved__c = false, Primary_Category__c = 'Account Maintenance', Secondary_Category__c = 'Account Services', Tertiary_Category__c = 'Extended Check Hold', MaritzCX__Response_Deleted_From_MaritzCX__c = false, SLATemp__c = false),
@@ -235,7 +235,7 @@ Comment_Block_20__c='ABC'
 		    new Case(Status = 'In Process', Origin = null, Subject = 'Test', ClosedDate = null, IsEscalated = false, AccountId = account_Obj1.Id,  Account_Number__c = account_details_Obj[1].Id, Additional_Documents__c = false, Staff_Escalated__c = false, Five_Day_Flag__c = false, IsMarkDeleted__c = false, IsMarkRead__c = false, IsMarkSaved__c = false, Primary_Category__c = 'Account Maintenance', Secondary_Category__c = 'Account Services', Tertiary_Category__c = 'Extended Check Hold', MaritzCX__Response_Deleted_From_MaritzCX__c = false, SLATemp__c = false)
 		    
                 };   
-              
+            */  
         /*   List<Case> case_Obj1 = new List<Case>();
           Case cs5 = new Case(Status = 'In Process', Origin = null, Subject = 'Test', ClosedDate = null, IsEscalated = false, AccountId = account_Obj1.Id, Account_Number__c = account_details_Obj[1].Id, Additional_Documents__c = false, Staff_Escalated__c = false, Five_Day_Flag__c = false, IsMarkDeleted__c = false, IsMarkRead__c = false, IsMarkSaved__c = false, Primary_Category__c = 'Account Maintenance', Secondary_Category__c = 'Account Services', Tertiary_Category__c = 'Extended Check Hold', MaritzCX__Response_Deleted_From_MaritzCX__c = false, SLATemp__c = false);
 		  Case cs6 = new Case(Status = 'In Process', Origin = null, Subject = 'Test', ClosedDate = null, IsEscalated = false, AccountId = account_Obj1.Id, Account_Number__c = account_details_Obj[1].Id, Additional_Documents__c = false, Staff_Escalated__c = false, Five_Day_Flag__c = false, IsMarkDeleted__c = false, IsMarkRead__c = false, IsMarkSaved__c = false, Primary_Category__c = 'Account Maintenance', Secondary_Category__c = 'Account Services', Tertiary_Category__c = 'Extended Check Hold', MaritzCX__Response_Deleted_From_MaritzCX__c = false, SLATemp__c = false);
@@ -247,7 +247,7 @@ Comment_Block_20__c='ABC'
          case_Obj1.Add(cs7);
          case_Obj1.Add(cs8);
            */   
-		 Insert case_Obj1;
+	/*	 Insert case_Obj1;
 		List<CaseComment> CaseComment_Obj1 = new List<CaseComment>{		 
 						new CaseComment(CommentBody='test', IsPublished = true,ParentId=case_Obj1[0].Id),
 						new CaseComment(CommentBody='test1', IsPublished = true,ParentId=case_Obj1[0].Id),
@@ -272,18 +272,21 @@ Comment_Block_20__c='ABC'
 						
 							    
 						};
-			insert task_Obj1;
-		    test.stopTest();
+			insert task_Obj1;*/
+			
+		    
   }
  static testMethod void GetAllDataTest() {
+ 	TEst.starttest();
  	List<Account> obj = [select id from Account limit 2];
  	Memeber360ViewLightningController.GetAllData(obj[0].Id);
  	Memeber360ViewLightningController.GetAllData(obj[1].Id);
- 	
+ 	TEst.stoptest();
  }   
  
  static testmethod void GetAccountPaggingDataTest()
  {
+ 	TEst.starttest();
  	List<Account> obj = [select Id from Account limit 2];
  	
  	Memeber360ViewLightningController.GetPagingData(obj[0].Id,1,10,'accList','','','test');
@@ -295,7 +298,6 @@ Comment_Block_20__c='ABC'
  	Memeber360ViewLightningController.GetPagingData(obj[0].Id,1,10,'related persons','','','test');
  	Memeber360ViewLightningController.GetPagingData(obj[0].Id,1,10,'related persons','TypeTranslate__c','ASC','08/08/2012');
  	
- 	
  	Memeber360ViewLightningController.GetPagingData(obj[1].Id,1,10,'accList','','','test');
  	Memeber360ViewLightningController.GetPagingData(obj[1].Id,1,10,'accList','Name','ASC','08/08/2012');
      
@@ -304,11 +306,12 @@ Comment_Block_20__c='ABC'
  	
  	Memeber360ViewLightningController.GetPagingData(obj[1].Id,1,10,'related persons','','','test');
  	Memeber360ViewLightningController.GetPagingData(obj[1].Id,1,10,'related persons','TypeTranslate__c','ASC','08/08/2012');
-   
+    	TEst.stoptest();
  }
  
   static testmethod void GetCasesPaggingDataTest()
   {
+  	TEst.starttest();
   	List<Account> obj = [select Id from Account limit 2];
   	
   	Memeber360ViewLightningController.GetPagingData(obj[0].Id,1,10,'active cases','','','test');
@@ -328,11 +331,13 @@ Comment_Block_20__c='ABC'
  	Memeber360ViewLightningController.GetPagingData(obj[1].Id,1,10,'close cases','CaseNumber','ASC','08/08/2012');
      
 	Memeber360ViewLightningController.GetPagingData(obj[1].Id,1,10,'Case Comments','AccountNumberName','Desc','test');
+	TEst.stoptest();
  //
   }
   
   static testmethod void GetTasksPaggingDataTest()
   {
+  	TEst.starttest();
   	List<Account> obj = [select Id from Account limit 2];
   	
   	Memeber360ViewLightningController.GetPagingData(obj[0].Id,1,10,'Active Tasks','AccountNumberName','Asc','test');
@@ -342,10 +347,12 @@ Comment_Block_20__c='ABC'
  	Memeber360ViewLightningController.GetPagingData(obj[1].Id,1,10,'Active Tasks','AccountName','Asc','08/08/2012');
  	
  		Memeber360ViewLightningController.GetPagingData(obj[1].Id,1,10,'Case Comments','AccountName','ASC','08/08/2012');
+ 		TEst.stoptest();
   }
   
   static testmethod void GetWarningCommentsPaggingDataTest()
   {
+  	  	TEst.starttest();
   	List<Account> obj = [select Id from Account limit 2];
   	
   	Memeber360ViewLightningController.GetPagingData(obj[0].Id,1,10,'Warning/Comments','accNum','asc','Comments');
@@ -358,5 +365,6 @@ Comment_Block_20__c='ABC'
  	Memeber360ViewLightningController.GetPagingData(obj[1].Id,1,10,'Warning/Comments','tpeTrans','asc','08/08/2012');
 	Memeber360ViewLightningController.GetPagingData(obj[1].Id,1,10,'Warning/Comments','shareNo','asc','Comments');
  	Memeber360ViewLightningController.GetPagingData(obj[1].Id,1,10,'Warning/Comments','recTpe','asc','08/08/2012');
+ 	TEst.stoptest();
   }
 }

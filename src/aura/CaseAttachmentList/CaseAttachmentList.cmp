@@ -33,7 +33,9 @@
 
 <div style="float:right;">
 <aura:if isTrue="{! and(v.CaseDetail != null,v.CaseDetail.Status != 'Closed')}">
-	<span><button class="slds-button slds-button--brand" style="float:right;margin-left:10px;" onclick="{!c.openOnBaseAttachments}" >Index</button></span>
+	<aura:if isTrue="{! and(v.CaseDetail != null,v.CaseDetail.Account_Number__c != null)}">
+		<span><button class="slds-button slds-button--brand" style="float:right;margin-left:10px;" onclick="{!c.openOnBaseAttachments}" >Index</button></span>
+	</aura:if>
 	<span><button class="slds-button slds-button--brand" style="margin-right:10px;" onclick="{!c.openUploadAttachments}" >Attach</button></span>
 	<span><button class="slds-button slds-button--brand" onclick="{!c.openApproveAttachments}" >Approve</button></span>
 </aura:if>

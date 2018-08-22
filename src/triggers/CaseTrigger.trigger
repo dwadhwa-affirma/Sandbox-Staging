@@ -2,18 +2,18 @@ trigger CaseTrigger on Case (before insert, before update, after insert, after u
 
     Id loggedInUserId;
     if(Trigger.isBefore && Trigger.isDelete){
-    	case tempCase = [select id, Subject from case where Subject =: 'This is a test Case to Upload Attachment.' and status ='In Process'];
-    	system.debug(tempCase);
-    	for(case c: Trigger.old){
-    		system.debug('c====' + c);
-    	
-	    		if(c.id == tempCase.id)
-	    		{    			
-	    			 c.addError('You can not delete this case');
-	    		}
-    		
-    	}
-    	return;
+        case tempCase = [select id, Subject from case where Subject =: 'This is a test Case to Upload Attachment.' and status ='In Process'];
+        system.debug(tempCase);
+        for(case c: Trigger.old){
+            system.debug('c====' + c);
+        
+                if(c.id == tempCase.id)
+                {               
+                     c.addError('You can not delete this case');
+                }
+            
+        }
+        return;
     }
 
     if (Trigger.isBefore) {
@@ -69,7 +69,7 @@ trigger CaseTrigger on Case (before insert, before update, after insert, after u
                          c_new.SLA__c =  sc.SLA__c;
                          
                     }
-		    if(c_new.Primary_Category__c == 'Surveys'){
+            if(c_new.Primary_Category__c == 'Surveys'){
                             c_new.SLA__c =  40;
                     }
                  }
@@ -153,11 +153,11 @@ System.Debug('Calling the CaseAssign method');
         for(Case c : newCaseList){
             try{
             String emailRegex = '([a-zA-Z0-9_\\-\\.]+)@((\\[a-z]{1,3}\\.[a-z]{1,3}\\.[a-z]{1,3}\\.)|(([a-zA-Z0-9\\-]+\\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})';
-			Pattern MyPattern = Pattern.compile(emailRegex);
-			Matcher MyMatcher = MyPattern.matcher(C.Email_Address__c);
-			if (MyMatcher.matches()){
-				 C.Email_to_Send__c = C.Email_Address__c; // Used for sending email to the member.
-			}	
+            Pattern MyPattern = Pattern.compile(emailRegex);
+            Matcher MyMatcher = MyPattern.matcher(C.Email_Address__c);
+            if (MyMatcher.matches()){
+                 C.Email_to_Send__c = C.Email_Address__c; // Used for sending email to the member.
+            }   
             }catch(Exception e){}
         }
     
@@ -424,7 +424,7 @@ System.Debug('Calling the CaseAssign method');
         Map<Id, Task> taskMap = new Map<Id, Task>();
          
         List<Task> tskList = [SELECT Id, WhatId FROM Task WHERE IsClosed=false AND WhatId IN :trigger.newMap.keySet()];
-              
+         Map<Object, Object> caseAttachMap = new Map<Object, Object>();
         System.debug('tskList is:::'+tskList);
 
          for(Task t : tskList)
@@ -436,8 +436,8 @@ System.Debug('Calling the CaseAssign method');
         for(Case c : inCases)
          {
            if(c.Status == 'Closed' && c.Future_Date__c > system.today()){
-           	
-           	c.addError('Case cannot be closed with a future date greater than today.');
+            
+            c.addError('Case cannot be closed with a future date greater than today.');
            }
            
            if(c.Status == 'Closed'){
@@ -446,6 +446,32 @@ System.Debug('Calling the CaseAssign method');
            }
           }    
          }
+         
+        AggregateResult[] pendingAttachCases = [select count(id) pendingDocCount, case__c from OnBase_Document__c where ((case__c IN:trigger.newMap.keySet() or Member_Comment__r.Case__C IN: trigger.newMap.keySet()) and document_type__c = '')  group by case__c];
+        
+        for(AggregateResult aggRes : pendingAttachCases){
+            System.debug('aggRes :: '+ aggRes);
+            caseAttachMap.put(aggRes.get('Case__c'),aggRes.get('pendingDocCount'));
+        }
+        
+        System.debug('caseAttachMap :: '+caseAttachMap);
+        
+        
+        for(Case c : inCases)
+         {
+           if(c.Status == 'Closed'){
+                if(caseAttachMap.containsKey(c.Id) && (Integer) caseAttachMap.get(c.Id)>0){
+                        c.addError('All attachments must be indexed before the case can be closed.');
+                }
+            }    
+         }
+         
+         
+         
+         
+         
+         
+         
         }
     
     public void updateContactName(List<Case> ccList){

@@ -60,7 +60,8 @@ trigger AttachmentNameUpdate on Attachment (after update,after delete,after inse
 	            onbaseObj.Member_Comment__c = a.ParentId;	
 	            }
 	            onbaseObj.IsMovedToOnBase__c = false;
-	            onbaseObj.Name = a.Name;
+	            //onbaseObj.Name = a.Name;
+	            onbaseObj.Document_Name__c = a.Name;
 	            onbaseObj.Document_Type__c = null;
 	            onbaseObj.Attachment_Owner__c = a.OwnerId;
 	            onbaseObj.Attachment_Created_On__c = a.CreatedDate;

@@ -9,8 +9,9 @@ public class GetCaseAttachments {
                 List<ListAttachment> listAttachments  = new List<ListAttachment>();
                 List<string> parentIdmembercomment = new List<string>();
                 
-                Case caseDetail = [select status, Attachments_Are_Deleted__c from Case where Id =: CaseId];
+                Case caseDetail = [select status, Attachments_Are_Deleted__c, Account_Number__c from Case where Id =: CaseId];
                 //CaseId = System.currentPageReference().getParameters().get('id');
+                system.debug('caseDetail.Account_Number__r :: '+caseDetail.Account_Number__c);
                 parentId.Add(CaseId);
                 
                 List<OnBase_Document__c> onbaseList = [Select Id,Name,Attachment_Id__c,IsMovedToOnBase__c,Document_Type__c,Attachment_Created_On__c,Attachment_Owner__r.Name from OnBase_Document__c where case__c =: CaseId  or Member_Comment__r.Case__C =: caseId];

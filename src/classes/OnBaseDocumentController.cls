@@ -19,16 +19,16 @@ public with sharing class OnBaseDocumentController {
             caseNum = c.caseNumber;            
             CaseAttachmentLst = [SELECT Id, Name,  ContentType FROM Attachment WHERE Parentid =:caseId AND createdby.Profile.UserLicense.LicenseDefinitionKey = 'SFDC'];
           
-            List<OnBase_Document__c> documentList = [select Id, Name, Attachment_Id__c,Document_Type__c,IsMovedToOnBase__c,Attachment_Created_On__c from OnBase_Document__c where (Case__c =:caseId or Member_Comment__r.Case__C =: caseId) and IsMovedToOnBase__c =: false];
+            List<OnBase_Document__c> documentList = [select Id, Name,Document_Name__c, Attachment_Id__c,Document_Type__c,IsMovedToOnBase__c,Attachment_Created_On__c from OnBase_Document__c where (Case__c =:caseId or Member_Comment__r.Case__C =: caseId) and IsMovedToOnBase__c =: false];
             for(OnBase_Document__c onbaseAttch : documentList){            	
             	OnBaseAttachments obj = new OnBaseAttachments();
             	obj.Id = onbaseAttch.Id;
-            	obj.Name = onbaseAttch.Name;
+            	obj.Name = (onbaseAttch.Document_Name__c!=null) ?onbaseAttch.Document_Name__c:onbaseAttch.Name;
             	obj.DocumentType = onbaseAttch.Document_Type__c;
             	obj.IsMovedToOnBase = onbaseAttch.IsMovedToOnBase__c;
             	obj.downloadLink = '/servlet/servlet.FileDownload?file='+ string.valueOf(onbaseAttch.Attachment_Id__c) +'&operationContext=S1';
             	obj.LastModifiedDate = onbaseAttch.Attachment_Created_On__c.format('MM/dd/yyyy');
-            	if(supportedFileExtSet.contains(onbaseAttch.Name.substringAfterLast('.').toLowerCase()) || supportedFileExtSet.contains(onbaseAttch.Name.substringAfterLast('.').toUpperCase())){
+            	if(supportedFileExtSet.contains(obj.Name.substringAfterLast('.').toLowerCase()) || supportedFileExtSet.contains(obj.Name.substringAfterLast('.').toUpperCase())){
             		obj.IsOnBaseSupportedFile = true;
             	}else{
             		obj.IsOnBaseSupportedFile = false;
