@@ -481,8 +481,25 @@
 
     <div>
         <div style="{!(v.isFileUploadComponent ? 'padding:15px;' : 'display:none;')}" id="Filecontainer">
-            <b>Please attach file for case ({!v.CaseNumber}):</b> <br/><br/>
+            <b>Please attach file for case ({!v.CaseNumber}):</b> <br/>
             
+            
+            <aura:if isTrue="{!(v.caseObject.Status == 'Closed')}">
+            
+             <ul class="has-error uiInputDefaultError uiInput uiInputSelect uiInput--default uiInput--select" id="MemberPickerError">
+                                            <li class="form-element__help" style="font-weight:bold;">  <span>
+                                            
+           Please note that attaching one or more documents to this case will Re-Open the case. 
+            <br/>
+            Attached document(s) are required to be indexed before this case can be closed.
+            <br/>
+            Please go to CASE ATTACHMENTS section on the case details page to index the document(s). 
+             
+            </span></li>
+                                        </ul>
+          
+            
+            </aura:if>
             <c:fileUpload parentId="{!v.caseId}" />
             
 			
@@ -506,6 +523,7 @@
     <footer class="slds-modal__footer" id="CreateCaseMemberPageFooter">
         <button class="slds-button slds-button_neutral" onclick="{!c.closePopup}">Cancel</button>
         <button class="slds-button slds-button_brand" onclick="{!c.saveCase}" style="{!(v.isFileUpload ? 'display:none;' : '')}">Save</button>
+        
         <button class="slds-button slds-button_brand" onclick="{!c.saveCase}" style="{!(v.isFileUpload &amp;&amp; v.isFileUploadComponent == false? '' : 'display:none;')}">Next</button>        
     </footer>
 </aura:component>

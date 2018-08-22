@@ -3,7 +3,7 @@
     <aura:attribute name="Model" access="global" Type="Object" />    
     <aura:attribute name="picklistFields" type="Map" default="{}" />
     <aura:attribute name="DocTypeOptions" type="string[]" default="{}" />
-    <aura:attribute name="OnBase_Document__c" type="OnBase_Document__c" />
+    <aura:attribute name="OnBase_Document__c" type="object" />
     <aura:attribute name="recordId" type="string"/>
     <aura:attribute name="DDLCount" type="integer"/>
   

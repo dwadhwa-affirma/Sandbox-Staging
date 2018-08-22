@@ -42,6 +42,8 @@ trigger AttachmentNameUpdate on Attachment (after update,after delete,after inse
     }
     if(Trigger.isInsert && Trigger.isAfter){
     	List<OnBase_Document__c> onbaseAttachmentsList  = new List<OnBase_Document__c>();   
+    	List<string> Caseids = new List<string>();
+    	List<string> memberCommentids = new List<string>();
         for(Attachment a : Trigger.New){
             attachmentDetails.put(a.id,a);
             parent.add(a.ParentId);
@@ -49,15 +51,22 @@ trigger AttachmentNameUpdate on Attachment (after update,after delete,after inse
           	Schema.SObjectType objType = a.ParentId.getsobjecttype();
             system.debug('a.Parent.Type12 :: '+ a.parentid.getsobjecttype());
             if(objType == Case.sObjectType || objType == Member_Comment__c.sObjectType){
+            	
+            	
+            	
+            	
+            	
 	            OnBase_Document__c onbaseObj = new OnBase_Document__c();
 	            onbaseObj.Attachment_Id__c = a.id;
 	            if(objType == Case.sObjectType)
 	            {
 	            onbaseObj.Case__c = a.ParentId;
+	            Caseids.add(a.ParentId);
 	            }
 	            else
 	            {
 	            onbaseObj.Member_Comment__c = a.ParentId;	
+	            memberCommentids.add(a.ParentId);
 	            }
 	            onbaseObj.IsMovedToOnBase__c = false;
 	            //onbaseObj.Name = a.Name;
@@ -68,6 +77,17 @@ trigger AttachmentNameUpdate on Attachment (after update,after delete,after inse
 	            onbaseAttachmentsList.add(onbaseObj);
             }
         }
+        
+        
+        List<Case> listCasetoReopened = [select id from case where Status = 'Closed' and Id in: Caseids];
+        
+        
+        
+        for(Case itemCase : listCasetoReopened)
+        {
+        	itemCase.Status = 'Re Opened';
+        }
+        update listCasetoReopened;
         insert (onbaseAttachmentsList);
     }
     
