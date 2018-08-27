@@ -279,7 +279,9 @@ CaseRecordType__c crt = new CaseRecordType__c();
         
         cs1.Origin = 'Email';
         
-        update cs1;
+        
+        
+       /* update cs1;
         
 
      Group grp = new Group();
@@ -301,7 +303,7 @@ CaseRecordType__c crt = new CaseRecordType__c();
          scc.Queue__c='Branch 202 -Spectrum Hou(Galleria) Queue';   
          scc.Name='202';
          scc.Branch_Dept__c = 'Branch 202 -Spectrum Hou(Galleria) Queue';
-         insert scc;
+         insert scc;*/
        
        
         
