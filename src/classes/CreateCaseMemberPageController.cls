@@ -377,6 +377,7 @@ public class CreateCaseMemberPageController {
                 cs.OwnerId = caseObject.OwnerId;
             }
             cs.Future_Date__c = caseObject.Future_Date__c;  
+            cs.Follow_up_Text__c = caseObject.Follow_up_Text__c; 
        try{ 
            insert cs;
            if(Test.isRunningTest()){
@@ -492,7 +493,8 @@ public class CreateCaseMemberPageController {
             if(cs.Ownership__c == 'Assign'){
                 cs.OwnerId = caseObject.OwnerId;
             }
-            cs.Future_Date__c = caseObject.Future_Date__c;  
+            cs.Future_Date__c = caseObject.Future_Date__c;
+            cs.Follow_up_Text__c = caseObject.Follow_up_Text__c;  
        try{ 
            insert cs;
            if(Test.isRunningTest()){
@@ -640,7 +642,7 @@ public class CreateCaseMemberPageController {
             cs.OwnerId = caseObject.OwnerId;
             }
             cs.Future_Date__c = caseObject.Future_Date__c;  
-            System.debug('Before Insert###');
+            cs.Follow_up_Text__c = caseObject.Follow_up_Text__c; 
        try{ 
            insert cs;
            if(Test.isRunningTest()){

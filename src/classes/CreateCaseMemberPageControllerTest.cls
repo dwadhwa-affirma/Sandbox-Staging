@@ -70,7 +70,7 @@ private class CreateCaseMemberPageControllerTest
 		 
 		Account account_Obj = [select id, PersonEmail, Email_raw__c,PersonHomePhone, FirstName, LastName, Residential_Street__pc, Residential_Extra_Address__pc, Residential_City__pc,  Residential_State__pc, Residential_Country__pc, Residential_Zipocde__pc from Account limit 1];
 		Case case_Obj = [select
-			Description, Ownership__c,OwnerId,Future_Date__c,
+			Description, Ownership__c,OwnerId,Future_Date__c,Follow_up_Text__c ,
 			Id, Brand__c, LTK__c, CaseComments__c,Phone_Number__c, Status, Primary_Category__c , ContactId, Subject, IsEscalated ,Account_Number__c, Additional_Documents__c , Staff_Escalated__c , Five_Day_Flag__c, IsMarkDeleted__c, IsMarkRead__c , IsMarkSaved__c, Secondary_Category__c, Tertiary_Category__c, MaritzCX__Response_Deleted_From_MaritzCX__c, SLATemp__c
 		 from Case limit 1];
 				
@@ -93,7 +93,7 @@ private class CreateCaseMemberPageControllerTest
 		 
 		Account account_Obj = [select id, PersonEmail, Email_raw__c,PersonHomePhone, FirstName, LastName, Residential_Street__pc, Residential_Extra_Address__pc, Residential_City__pc,  Residential_State__pc, Residential_Country__pc, Residential_Zipocde__pc from Account limit 1];
 		Case case_Obj = [select
-			Description, Ownership__c,OwnerId,Future_Date__c,
+			Description, Ownership__c,OwnerId,Future_Date__c,Follow_up_Text__c ,
 			Id, Brand__c, LTK__c, CaseComments__c,Phone_Number__c, Status, Primary_Category__c , ContactId, Subject, IsEscalated ,Account_Number__c, Additional_Documents__c , Staff_Escalated__c , Five_Day_Flag__c, IsMarkDeleted__c, IsMarkRead__c , IsMarkSaved__c, Secondary_Category__c, Tertiary_Category__c, MaritzCX__Response_Deleted_From_MaritzCX__c, SLATemp__c
 		 from Case limit 1];			
 		
@@ -112,7 +112,7 @@ private class CreateCaseMemberPageControllerTest
 		 
 		Account account_Obj = [select id, PersonEmail, Email_raw__c,PersonHomePhone, FirstName, LastName, Residential_Street__pc, Residential_Extra_Address__pc, Residential_City__pc,  Residential_State__pc, Residential_Country__pc, Residential_Zipocde__pc from Account limit 1];
 		Case case_Obj = [select
-			Description, Ownership__c,OwnerId,Future_Date__c,
+			Description, Ownership__c,OwnerId,Future_Date__c,Follow_up_Text__c ,
 			Id, Brand__c, LTK__c, CaseComments__c,Phone_Number__c, Status, Primary_Category__c , ContactId, Subject, IsEscalated ,Account_Number__c, Additional_Documents__c , Staff_Escalated__c , Five_Day_Flag__c, IsMarkDeleted__c, IsMarkRead__c , IsMarkSaved__c, Secondary_Category__c, Tertiary_Category__c, MaritzCX__Response_Deleted_From_MaritzCX__c, SLATemp__c
 		 from Case limit 1];		
 		
@@ -124,7 +124,7 @@ private class CreateCaseMemberPageControllerTest
 	// Test Method: saveStandAloneData
 	public static testmethod void Test_saveStandAloneData(){
 		Case case_Obj = [select 
-			Description, Ownership__c,OwnerId,Future_Date__c,
+			Description, Ownership__c,OwnerId,Future_Date__c,Follow_up_Text__c ,
 			Id, Brand__c, LTK__c, CaseComments__c,Phone_Number__c, Status, Primary_Category__c , ContactId, Subject, IsEscalated ,Account_Number__c, Additional_Documents__c , Staff_Escalated__c , Five_Day_Flag__c, IsMarkDeleted__c, IsMarkRead__c , IsMarkSaved__c, Secondary_Category__c, Tertiary_Category__c, MaritzCX__Response_Deleted_From_MaritzCX__c, SLATemp__c
 		 from Case limit 1];
 				
@@ -137,7 +137,7 @@ private class CreateCaseMemberPageControllerTest
 	// Test Method: saveStandAloneData
 	public static testmethod void Test_saveStandAloneDataSecondaryCategory(){
 		Case case_Obj = [select 
-			Description, Ownership__c,OwnerId,Future_Date__c,
+			Description, Ownership__c,OwnerId,Future_Date__c,Follow_up_Text__c ,
 			Id, Brand__c, LTK__c, CaseComments__c,Phone_Number__c, Status, Primary_Category__c , ContactId, Subject, IsEscalated ,Account_Number__c, Additional_Documents__c , Staff_Escalated__c , Five_Day_Flag__c, IsMarkDeleted__c, IsMarkRead__c , IsMarkSaved__c, Secondary_Category__c, Tertiary_Category__c, MaritzCX__Response_Deleted_From_MaritzCX__c, SLATemp__c
 		 from Case limit 1];
 				
@@ -148,7 +148,7 @@ private class CreateCaseMemberPageControllerTest
 	// Test Method: saveStandAloneData
 	public static testmethod void Test_saveStandAloneDataTertiaryCategory(){
 		Case case_Obj = [select 
-			Description, Ownership__c,OwnerId,Future_Date__c,
+			Description, Ownership__c,OwnerId,Future_Date__c,Follow_up_Text__c ,
 			Id, Brand__c, LTK__c, CaseComments__c,Phone_Number__c, Status, Primary_Category__c , ContactId, Subject, IsEscalated ,Account_Number__c, Additional_Documents__c , Staff_Escalated__c , Five_Day_Flag__c, IsMarkDeleted__c, IsMarkRead__c , IsMarkSaved__c, Secondary_Category__c, Tertiary_Category__c, MaritzCX__Response_Deleted_From_MaritzCX__c, SLATemp__c
 		 from Case limit 1];
 		
@@ -168,7 +168,7 @@ private class CreateCaseMemberPageControllerTest
 		Person_Account__c person_account_Obj = [select Account_Number__c, PersonID__c, Relationship__c, TypeTranslate__c from Person_Account__c limit 1];   		
     		
 		Case case_Obj = [select
-			Description, Ownership__c,OwnerId,Future_Date__c,
+			Description, Ownership__c,OwnerId,Future_Date__c,Follow_up_Text__c ,
 			Id, Brand__c, LTK__c, CaseComments__c,Phone_Number__c, Status, Primary_Category__c , ContactId, Subject, IsEscalated ,Account_Number__c, Additional_Documents__c , Staff_Escalated__c , Five_Day_Flag__c, IsMarkDeleted__c, IsMarkRead__c , IsMarkSaved__c, Secondary_Category__c, Tertiary_Category__c, MaritzCX__Response_Deleted_From_MaritzCX__c, SLATemp__c
 		 from Case limit 1];
 				
