@@ -202,7 +202,7 @@ System.Debug('Calling the CaseAssign method');
                 cList[0].Code_Number__c = '';
             }else{          
           system.debug('cList###' + cList);
-            List<String> splitted = cList[0].Subject.split('\\s+');
+            List<String> splitted = cList[0].Subject.replace('[EXTERNAL] ','').split('\\s+');
            
           /*  if(splitted.size()>0 && splitted.size()<=1){
             cList[0].Member_Number__c = splitted[0];
@@ -268,17 +268,21 @@ System.Debug('Calling the CaseAssign method');
         for(Case c : Trigger.new){
             if(accDetails.size()>0 || pa.size()>0 ){
                 c.Account_Number__c = accDetails[0].Id;
-                c.AccountId = pa[0].PersonId__c;
-                c.ContactId = conMap.get(pa[0].PersonId__c);
-                c.First_Name__c = pa[0].PersonId__r.FirstName;
-                c.Last_Name__c = pa[0].PersonId__r.LastName;
-                c.Middle_Name__c = pa[0].PersonId__r.MiddleName;
-                c.Street_Address_1__c = pa[0].PersonId__r.Residential_Street__pc;
-                c.Street_Address_2__c = pa[0].PersonId__r.Residential_Extra_Address__pc;
-                c.City__c = pa[0].PersonId__r.Residential_City__pc;
-                c.State__c = pa[0].PersonId__r.Residential_State__pc;
-                c.Country__c = pa[0].PersonId__r.Residential_Country__pc;
-                c.Zip_Code__c = pa[0].PersonId__r.Residential_Zipocde__pc;} 
+                if(pa.size() > 0)
+                {
+                	c.AccountId = pa[0].PersonId__c;
+	                c.ContactId = conMap.get(pa[0].PersonId__c);
+	                c.First_Name__c = pa[0].PersonId__r.FirstName;
+	                c.Last_Name__c = pa[0].PersonId__r.LastName;
+	                c.Middle_Name__c = pa[0].PersonId__r.MiddleName;
+	                c.Street_Address_1__c = pa[0].PersonId__r.Residential_Street__pc;
+	                c.Street_Address_2__c = pa[0].PersonId__r.Residential_Extra_Address__pc;
+	                c.City__c = pa[0].PersonId__r.Residential_City__pc;
+	                c.State__c = pa[0].PersonId__r.Residential_State__pc;
+	                c.Country__c = pa[0].PersonId__r.Residential_Country__pc;
+	                c.Zip_Code__c = pa[0].PersonId__r.Residential_Zipocde__pc;
+                }
+                } 
                 if(crtList.size()>0 || !crtList.isEmpty()){
                 c.Primary_Category__c = crtList[0].Primary_Category__c;
                 c.Secondary_Category__c = crtList[0].Secondary_Category__c;
