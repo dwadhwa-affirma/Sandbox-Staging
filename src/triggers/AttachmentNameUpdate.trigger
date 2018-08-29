@@ -1,4 +1,4 @@
-trigger AttachmentNameUpdate on Attachment (after update,after delete,after insert) {
+trigger AttachmentNameUpdate on Attachment (after update,after delete,after insert, before insert) {
 
     List<Approve_Attachment__c> toupdateApproveAttachment  = new List<Approve_Attachment__c>();
     
@@ -20,12 +20,12 @@ trigger AttachmentNameUpdate on Attachment (after update,after delete,after inse
         }
         
         set<Id> notClosedCaseSet = (new Map<Id,Case>([select id from case where ID IN: parent and status != 'Closed'])).keySet();
-        set<Id> notClosedCaseMemberComment = (new Map<Id,Member_Comment__c>([select id from Member_Comment__c where Case__c IN: parent and Case__r.status != 'Closed'])).keySet();
+        set<Id> notClosedCaseMemberComment = (new Map<Id,Member_Comment__c>([select id from Member_Comment__c where Id IN: parent and Case__r.status != 'Closed'])).keySet();
         set<Id> attachmentIdsForOnbase = new set<Id>();
         for(Attachment a : Trigger.old){
-        	if(notClosedCaseSet.Contains(a.ParentId) || notClosedCaseMemberComment.Contains(a.ParentId)){
-        		attachmentIdsForOnbase.add(a.id);
-        	}
+            if(notClosedCaseSet.Contains(a.ParentId) || notClosedCaseMemberComment.Contains(a.ParentId)){
+                attachmentIdsForOnbase.add(a.id);
+            }
         }
         
         
@@ -36,45 +36,89 @@ trigger AttachmentNameUpdate on Attachment (after update,after delete,after inse
         List<OnBase_Document__c> onbaseAttachmentsList = [select id from OnBase_Document__c where Attachment_Id__c IN : attachmentIdsForOnbase];
         system.debug('onbaseAttachmentsList :: '+onbaseAttachmentsList);
         if(!onbaseAttachmentsList.isEmpty()){
-        	system.debug('In If :: ');
-        	delete onbaseAttachmentsList;
+            system.debug('In If :: ');
+            delete onbaseAttachmentsList;
         }
     }
+    
+    if(Trigger.isInsert && Trigger.isBefore){
+        system.debug('Rename called');
+         List<string> listAttachmentForCaseIds = new List<string>();
+         List<string> listAttachmentIds = new List<string>(); 
+         for(Attachment a : Trigger.New)
+         {
+            Schema.SObjectType objType = a.ParentId.getsobjecttype();
+            if(objType == Case.sObjectType && a.CreatedBy.Profile.Name != 'Messaging center Customers')
+            {
+              listAttachmentForCaseIds.add(a.parentId);
+            }
+            
+            listAttachmentIds.add(a.Id);
+         }
+         system.debug('Rename called 1' + listAttachmentIds);
+         List<Attachment> mapValues = [SELECT Id,ParentId,Name FROM Attachment where ParentId =: listAttachmentForCaseIds and Id not in:  listAttachmentIds];
+         system.debug('Rename called 2' + mapValues);
+         for(Attachment a : Trigger.New)
+         {
+            for(Attachment caseAttachment : mapValues)
+            {
+                if(a.ParentId == caseAttachment.parentId && a.Name == caseAttachment.Name)
+                {
+                    string s = string.valueOf(system.now()).replace(' ' ,'-').replace(':','-');
+                    
+                    String[] arrayFileName =  a.Name.split('\\.');
+                    string fileName = '';
+                    system.debug('arrayFileName' + arrayFileName);
+                    for (Integer i = 0; i < arrayFileName.size()-1; i++) {
+                        fileName = fileName + arrayFileName[i] + '.';
+                    }
+
+                    fileName = fileName +  ' - ' + s + '.' + arrayFileName[arrayFileName.size()-1];
+                    system.debug(fileName);
+                    
+                    
+                    a.Name = fileName;
+                    
+                    break;
+                    
+                }
+            }
+            
+         }
+         
+    }
+    
+    
     if(Trigger.isInsert && Trigger.isAfter){
-    	List<OnBase_Document__c> onbaseAttachmentsList  = new List<OnBase_Document__c>();   
-    	List<string> Caseids = new List<string>();
-    	List<string> memberCommentids = new List<string>();
+        List<OnBase_Document__c> onbaseAttachmentsList  = new List<OnBase_Document__c>();   
+        List<string> Caseids = new List<string>();
+        List<string> memberCommentids = new List<string>();
         for(Attachment a : Trigger.New){
             attachmentDetails.put(a.id,a);
             parent.add(a.ParentId);
           
-          	Schema.SObjectType objType = a.ParentId.getsobjecttype();
+            Schema.SObjectType objType = a.ParentId.getsobjecttype();
             system.debug('a.Parent.Type12 :: '+ a.parentid.getsobjecttype());
             if(objType == Case.sObjectType || objType == Member_Comment__c.sObjectType){
-            	
-            	
-            	
-            	
-            	
-	            OnBase_Document__c onbaseObj = new OnBase_Document__c();
-	            onbaseObj.Attachment_Id__c = a.id;
-	            if(objType == Case.sObjectType)
-	            {
-	            onbaseObj.Case__c = a.ParentId;
-	            Caseids.add(a.ParentId);
-	            }
-	            else
-	            {
-	            onbaseObj.Member_Comment__c = a.ParentId;	
-	            memberCommentids.add(a.ParentId);
-	            }
-	            onbaseObj.IsMovedToOnBase__c = false;
-	            //onbaseObj.Name = a.Name;
-	            onbaseObj.Document_Name__c = a.Name;
-	            onbaseObj.Document_Type__c = null;
-	            onbaseObj.Attachment_Owner__c = a.OwnerId;
-	            onbaseObj.Attachment_Created_On__c = a.CreatedDate;
-	            onbaseAttachmentsList.add(onbaseObj);
+                OnBase_Document__c onbaseObj = new OnBase_Document__c();
+                onbaseObj.Attachment_Id__c = a.id;
+                if(objType == Case.sObjectType)
+                {
+                onbaseObj.Case__c = a.ParentId;
+                Caseids.add(a.ParentId);
+                }
+                else
+                {
+                onbaseObj.Member_Comment__c = a.ParentId;   
+                memberCommentids.add(a.ParentId);
+                }
+                onbaseObj.IsMovedToOnBase__c = false;
+                //onbaseObj.Name = a.Name;
+                onbaseObj.Document_Name__c = a.Name;
+                onbaseObj.Document_Type__c = null;
+                onbaseObj.Attachment_Owner__c = a.OwnerId;
+                onbaseObj.Attachment_Created_On__c = a.CreatedDate;
+                onbaseAttachmentsList.add(onbaseObj);
             }
         }
         
@@ -85,7 +129,7 @@ trigger AttachmentNameUpdate on Attachment (after update,after delete,after inse
         
         for(Case itemCase : listCasetoReopened)
         {
-        	itemCase.Status = 'Re Opened';
+            itemCase.Status = 'Re Opened';
         }
         update listCasetoReopened;
         insert (onbaseAttachmentsList);

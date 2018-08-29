@@ -44,7 +44,7 @@ private class OnBaseTest{
 	GetCaseAttachments.GetCaseAttachments(listCase[0].Id);
 	OnBaseDocumentController.caseAttachments objcaseAttachment =	OnBaseDocumentController.getAttachmentData(listCase[0].Id);
 	objcaseAttachment.onbaseDocuments[0].DocumentType = 'Account Verification Documents';
-	objcaseAttachment.onbaseDocuments[1].DocumentType = 'Account Verification Documents';
+	//objcaseAttachment.onbaseDocuments[1].DocumentType = 'Account Verification Documents';
 
 	string wrapperString = JSON.serialize(objcaseAttachment.onbaseDocuments);
 	OnBaseDocumentController.saveAttachments(wrapperString,listCase[0].Id, new List<string>());
@@ -58,7 +58,7 @@ private class OnBaseTest{
 	 List<OnBaseDocumentAPI.OnBaseDocumentAPIResopnse> listApiResponse = OnBaseDocumentAPI.getOnBaseDocuemnts();
 	RestRequest req = new RestRequest();
 	req.requestURI = '/services/apexrest/OnBaseDocumentAPI';
-	req.requestBody = blob.valueof(listApiResponse[0].AttachmentID + ',' + listApiResponse[1].AttachmentID);
+	req.requestBody = blob.valueof(listApiResponse[0].AttachmentID /*+ ',' + listApiResponse[1].AttachmentID*/);
 	req.httpMethod = 'post';
 	RestContext.request = req;
 	OnBaseDocumentAPI.updateOnBaseDocuemnts();

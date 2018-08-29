@@ -95,9 +95,10 @@
 	<aura:if isTrue="{! and(v.CaseDetail.Status != 'Closed',item.isMovedToOnBase == false)}">
 		
 		
+		<aura:if isTrue="{! item.isApproved == false}">
 		
 			<span><button class="slds-button slds-button--brand" style="padding-left:0.5rem;padding-right:0.5rem" onclick="{!c.deleteAttachment}" data-name="{!item.Name}" id="{!item.attachmentId}">Delete</button></span> 
-		
+		</aura:if>
 	</aura:if>
 	</td>
 	</tr>

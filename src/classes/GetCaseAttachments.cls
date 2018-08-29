@@ -51,7 +51,7 @@ public class GetCaseAttachments {
                 }
                  system.debug('ParentId####DW' + parentId);
                  system.debug('parentIdmembercomment####DW' + parentIdmembercomment);
-                 attachments = [SELECT BodyLength,Description,Id,LastModifiedDate ,Name,OwnerId,ParentId, Owner.Name, CreatedBy.Profile.Name FROM Attachment where ParentId IN: parentId];
+                 attachments = [SELECT BodyLength,Description,Id,LastModifiedDate ,Name,OwnerId,ParentId, Owner.Name, CreatedBy.Profile.Name, Parent.Type FROM Attachment where ParentId IN: parentId];
                //  List<ContentDocumentLink> ContentDocumentLst = [select Id, ContentDocumentId,LinkedEntityId, ContentDocument.Title, ContentDocument.FileType, ContentDocument.ContentSize, ContentDocument.OwnerId, ContentDocument.ContentModifiedDate, ContentDocument.CreatedBy.Name, ContentDocument.CreatedBy.Profile.Name from ContentDocumentLink where LinkedEntityId IN: parentIdmembercomment];
                   system.debug('attachments1####DW' + attachments);
                   
@@ -61,7 +61,7 @@ public class GetCaseAttachments {
                  for(Attachment att : attachments)
                     {
                         ListAttachment la = new ListAttachment();
-                        
+                        system.debug('AttType ::'+att.Parent.Type);
                         if(att.CreatedBy.Profile.Name == 'Messaging center Customers' )
                         {
                             la.FromMember = true;
@@ -69,6 +69,9 @@ public class GetCaseAttachments {
                         else
                         {
                             la.FromMember = false;
+                            if(att.Parent.Type != 'Case'){
+                            	continue;
+                            }
                         }
                         
                         if(att.BodyLength < 1000)

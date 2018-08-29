@@ -279,8 +279,6 @@ CaseRecordType__c crt = new CaseRecordType__c();
         
         cs1.Origin = 'Email';
         
-        
-        
        /* update cs1;
         
 

@@ -25,7 +25,7 @@ global class OnBaseDocumentDeleteAttachments implements Schedulable{
     	}
     	
     	if(attchIdSet.size() > 0){
-	    	List<Attachment> attachmentList = [select id from Attachment where Parent.Type = 'Case' and Id IN: attchIdSet];
+	    	List<Attachment> attachmentList = [select id from Attachment where (Parent.Type = 'Case' or Parent.Type = 'Member_Comment__c') and Id IN: attchIdSet];
 	    	system.debug('onbaseAttchList :: '+attachmentList);
 	    	
 	    	delete attachmentList;

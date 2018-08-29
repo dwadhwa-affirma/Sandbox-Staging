@@ -19,8 +19,12 @@ public with sharing class OnBaseDocumentController {
             caseNum = c.caseNumber;            
             CaseAttachmentLst = [SELECT Id, Name,  ContentType FROM Attachment WHERE Parentid =:caseId AND createdby.Profile.UserLicense.LicenseDefinitionKey = 'SFDC'];
           
-            List<OnBase_Document__c> documentList = [select Id, Name,Document_Name__c, Attachment_Id__c,Document_Type__c,IsMovedToOnBase__c,Attachment_Created_On__c from OnBase_Document__c where (Case__c =:caseId or Member_Comment__r.Case__C =: caseId) and IsMovedToOnBase__c =: false];
-            for(OnBase_Document__c onbaseAttch : documentList){            	
+            List<OnBase_Document__c> documentList = [select Id, Name,Document_Name__c, Attachment_Id__c,Document_Type__c,IsMovedToOnBase__c,Attachment_Created_On__c,Member_Comment__r.CreatedBy.Profile.Name from OnBase_Document__c where (Case__c =:caseId or Member_Comment__r.Case__C =: caseId) and IsMovedToOnBase__c =: false];
+            for(OnBase_Document__c onbaseAttch : documentList){ 
+            	if(onbaseAttch.Member_Comment__c!=null && onbaseAttch.Member_Comment__r.CreatedBy.Profile.Name != 'Messaging center Customers'){
+            		Continue;
+            	}
+            	system.debug('onbaseAttch---' + onbaseAttch.Member_Comment__r.CreatedBy.Profile.Name);           	
             	OnBaseAttachments obj = new OnBaseAttachments();
             	obj.Id = onbaseAttch.Id;
             	obj.Name = (onbaseAttch.Document_Name__c!=null) ?onbaseAttch.Document_Name__c:onbaseAttch.Name;
@@ -56,9 +60,10 @@ public with sharing class OnBaseDocumentController {
 	
     @AuraEnabled
 	public static void saveAttachments(string wrapperString, string caseId,List<string> approvalids){
-		system.debug('ApprovalIDs :: '+approvalids);
+		system.debug('caseId :: '+caseId);
 		List<OnBaseAttachments> onbaseAttachList = (List<OnBaseAttachments>)JSON.deserialize(wrapperString, List<OnBaseAttachments>.class);		
        
+
         
         //Map<Id,OnBaseAttachments> onbaseWrapperMap = new Map<Id,OnBaseAttachments>();
         List<OnBase_Document__c> onbaseListToInsert = new List<OnBase_Document__c>();
@@ -66,7 +71,14 @@ public with sharing class OnBaseDocumentController {
         //set <string> unchecked = new set <string>();
         
         if(onbaseAttachList.size () > 0 && onbaseAttachList != null){
-	        
+	      
+			List<OnBase_Document__c> repeatedDocumentList = [select Id,Document_Name__c, Member_Comment__r.CreatedBy.Profile.Name from OnBase_Document__c where (Case__c =:caseId or Member_Comment__r.Case__C =: caseId) and Member_Comment__c!=null and Member_Comment__r.CreatedBy.Profile.Name != 'Messaging center Customers' and IsMovedToOnBase__c =: false];
+			system.debug('repeatedDocumentList :: '+repeatedDocumentList);
+			
+			Map<String,OnBase_Document__c> otherMemberComAttachMap = new Map<String,OnBase_Document__c>();
+			for(OnBase_Document__c onbaseObj : repeatedDocumentList){  
+				otherMemberComAttachMap.put(onbaseObj.Document_Name__c,onbaseObj);
+			}
 	        for(OnBaseAttachments onbaseObj : onbaseAttachList){  
 	        	system.debug('DocumentType :: '+onbaseObj.DocumentType);              	
 	            //if(onbaseObj.DocumentType != ''){  
@@ -78,6 +90,12 @@ public with sharing class OnBaseDocumentController {
                     onbaseDocObj.Move_To_OnBase_Date__c = system.now();
                     
                     onbaseListToInsert.add(onbaseDocObj);
+                    
+                    if(otherMemberComAttachMap.containsKey(onbaseObj.Name)){
+                    	 OnBase_Document__c repeatedDoc = otherMemberComAttachMap.get(onbaseObj.Name);
+                    	 repeatedDoc.Document_Type__c = onbaseObj.DocumentType;
+                    	 onbaseListToInsert.add(repeatedDoc);
+                    }
 	                //attachmentDetails.put(wrap.attachmentobj.id,wrap.attachmentobj);
 	           // }
 	            //else{        
