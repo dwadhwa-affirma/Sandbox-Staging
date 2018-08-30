@@ -1,4 +1,4 @@
-public with sharing class OnBaseDocumentController {
+public class OnBaseDocumentController {
     @AuraEnabled
 	public static caseAttachments getAttachmentData(String caseId)
 	{	      
@@ -14,18 +14,32 @@ public with sharing class OnBaseDocumentController {
 		List<OnBaseAttachments> onbaseDocumentList = new List<OnBaseAttachments>();
 		Boolean IsInValidDocumentAvailable = false;
 		string caseNum = '';
+		caseAttachments objCaseAttach = new caseAttachments();
+		objCaseAttach.AccountNumberNotAvailable = false;
         If(caseId != null){        
-            Case c = [select CaseNumber from case where id =: caseId limit 1];            
+            Case c = [select CaseNumber,Account_Number__c from case where id =: caseId limit 1];
+            if(c.Account_Number__c == null)
+	    	{
+	    		objCaseAttach.AccountNumberNotAvailable = true;
+	    	}
+	    	else
+	    	{
+	    		objCaseAttach.AccountNumberNotAvailable = false;
+	    	}
+            
             caseNum = c.caseNumber;            
-            CaseAttachmentLst = [SELECT Id, Name,  ContentType FROM Attachment WHERE Parentid =:caseId AND createdby.Profile.UserLicense.LicenseDefinitionKey = 'SFDC'];
+            CaseAttachmentLst = [SELECT Id, Name,  ContentType FROM Attachment WHERE Parentid =:caseId 
+                                 /*AND createdby.Profile.UserLicense.LicenseDefinitionKey = 'SFDC'*/];
           
             List<OnBase_Document__c> documentList = [select Id, Name,Document_Name__c, Attachment_Id__c,Document_Type__c,IsMovedToOnBase__c,Attachment_Created_On__c,Member_Comment__r.CreatedBy.Profile.Name from OnBase_Document__c where (Case__c =:caseId or Member_Comment__r.Case__C =: caseId) and IsMovedToOnBase__c =: false];
             for(OnBase_Document__c onbaseAttch : documentList){ 
-            	if(onbaseAttch.Member_Comment__c!=null && onbaseAttch.Member_Comment__r.CreatedBy.Profile.Name != 'Messaging center Customers'){
+            	if(onbaseAttch.Member_Comment__c!=null && 
+                   	onbaseAttch.Member_Comment__r.CreatedBy.Profile.Name != 'Messaging center Customers'){
             		Continue;
             	}
             	system.debug('onbaseAttch---' + onbaseAttch.Member_Comment__r.CreatedBy.Profile.Name);           	
             	OnBaseAttachments obj = new OnBaseAttachments();
+            	
             	obj.Id = onbaseAttch.Id;
             	obj.Name = (onbaseAttch.Document_Name__c!=null) ?onbaseAttch.Document_Name__c:onbaseAttch.Name;
             	obj.DocumentType = onbaseAttch.Document_Type__c;
@@ -33,7 +47,14 @@ public with sharing class OnBaseDocumentController {
             	obj.downloadLink = '/servlet/servlet.FileDownload?file='+ string.valueOf(onbaseAttch.Attachment_Id__c) +'&operationContext=S1';
             	obj.LastModifiedDate = onbaseAttch.Attachment_Created_On__c.format('MM/dd/yyyy');
             	if(supportedFileExtSet.contains(obj.Name.substringAfterLast('.').toLowerCase()) || supportedFileExtSet.contains(obj.Name.substringAfterLast('.').toUpperCase())){
-            		obj.IsOnBaseSupportedFile = true;
+            		if(c.Account_Number__c == null)
+            		{
+            			obj.IsOnBaseSupportedFile = false;
+            		}
+            		else
+            		{
+            			obj.IsOnBaseSupportedFile = true;
+            		}
             	}else{
             		obj.IsOnBaseSupportedFile = false;
             	}
@@ -44,10 +65,12 @@ public with sharing class OnBaseDocumentController {
             	onbaseDocumentList.add(obj);            	           	
             }
             
+            
         }
         
     
-		caseAttachments objCaseAttach = new caseAttachments();
+		
+		
 		//objCaseAttach.attachments = wrapperLst;
 		objCaseAttach.caseNumber = caseNum;
 		//objCaseAttach.approvalids = approvalIds;
@@ -124,6 +147,7 @@ public with sharing class OnBaseDocumentController {
 		public string LastModifiedDate;
 		@AuraEnabled
 		public boolean IsOnBaseSupportedFile {get;set;}
+		
     } 
    
     
@@ -136,6 +160,9 @@ public with sharing class OnBaseDocumentController {
         public set<id> approvalids {get;set;}
         @AuraEnabled         
         public Boolean IsInValidDocumentAvailable {get;set;}
+        @AuraEnabled         
+        public Boolean AccountNumberNotAvailable {get;set;}
+        
     }
     
     @AuraEnabled
