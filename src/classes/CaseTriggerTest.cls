@@ -236,7 +236,7 @@ CaseRecordType__c crt = new CaseRecordType__c();
          
         insert acc1;
         
-        Person_Account__c pa = new Person_Account__c();
+      /*    Person_Account__c pa = new Person_Account__c();
         pa.PersonID__c = acc.Id;
         pa.Account_Number__c = accDetail.Id; 
         pa.Name_Type__c = 0;
@@ -279,7 +279,7 @@ CaseRecordType__c crt = new CaseRecordType__c();
         
         cs1.Origin = 'Email';
         
-       /* update cs1;
+      update cs1;
         
 
      Group grp = new Group();
