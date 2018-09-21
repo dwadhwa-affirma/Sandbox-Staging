@@ -118,8 +118,8 @@
 	                 </label>
 	           	</h2>
 	           	<div class="float-right">
-	           		<apex:image value="{!If(HighFlag == "1", $Resource.HighPotential,'')}"  rendered="{!IF(HighFlag != "0", true, false)}"/>
-                 <apex:image value="{!If(HighFlag == "2", $Resource.HighValue,'')}"  rendered="{!IF(HighFlag != "0", true, false)}"/>
+	           		<apex:image value="{!If(HighFlag == "2", $Resource.HighPotential,'')}"  rendered="{!IF(HighFlag != "0", true, false)}"/>
+                 <apex:image value="{!If(HighFlag == "1", $Resource.HighValue,'')}"  rendered="{!IF(HighFlag != "0", true, false)}"/>
 	           	</div>
 	           	<div class="float-right">
 	           		<apex:outputText style="font-weight: bold;font-size: 16px;" id="ReasonCode"  value="Reason: {!ReasonCode}"/>

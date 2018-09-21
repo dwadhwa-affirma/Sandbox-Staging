@@ -1,10 +1,10 @@
 @isTest
 private class cloneCaseControllerTest
 {
-	
-	// Test Method: cloneCaseInsertUpdate
-	public static testmethod void Test_cloneCaseInsertUpdate(){
-		//SetUp();
+    
+    // Test Method: cloneCaseInsertUpdate
+    public static testmethod void Test_cloneCaseInsertUpdate(){
+        //SetUp();
          String uid = UserInfo.getUserId();
         RecordType recordtype =[SELECT Id,Name FROM RecordType WHERE Name='Person Account'];
         User currentUser = [SELECT LocaleSidKey, LanguageLocaleKey, TimeZoneSidKey, EmailEncodingKey FROM User WHERE Id=:uid];    
@@ -95,27 +95,29 @@ private class cloneCaseControllerTest
         List<ContentVersion> lstContent = [SELECT id, ContentDocumentId FROM ContentVersion where Id IN: cv];
         List<ContentDocumentLink> lstContentDocumentLink = new List<ContentDocumentLink>();
         for (ContentVersion testcontent : lstContent)
-		{
-        	ContentDocumentLink contentlink=new ContentDocumentLink();
-        	contentlink.LinkedEntityId=cas.Id;
-        	contentlink.ShareType= 'V';
-        	contentlink.ContentDocumentId=testcontent.ContentDocumentId;
-        	lstContentDocumentLink.add(contentlink);
-		}
+        {
+            ContentDocumentLink contentlink=new ContentDocumentLink();
+            contentlink.LinkedEntityId=cas.Id;
+            contentlink.ShareType= 'V';
+            contentlink.ContentDocumentId=testcontent.ContentDocumentId;
+            lstContentDocumentLink.add(contentlink);
+        }
         insert lstContentDocumentLink;
+        
+        Test.starttest();
             
         string recordid = cas.Id;
-		boolean subject = true;
-		boolean description = true;
-		boolean device_type = true;
-		boolean status = true;
-		boolean cat = true;
-		boolean membercomment = true;
-		boolean casecomment = true;
-		boolean attachment = true;
-		// TODO : Change following Assert Statement
-		cloneCaseController.cloneCaseInsertUpdate(recordid, subject, description, device_type, status, cat, membercomment, casecomment, attachment);
- 	}
-		
-		//TearDown();
-	}
+        boolean subject = true;
+        boolean description = true;
+        boolean device_type = true;
+        boolean status = true;
+        boolean cat = true;
+        boolean membercomment = true;
+        boolean casecomment = true;
+        boolean attachment = true;
+        // TODO : Change following Assert Statement
+        cloneCaseController.cloneCaseInsertUpdate(recordid, subject, description, device_type, status, cat, membercomment, casecomment, attachment);
+    }
+        
+        //TearDown();
+    }
