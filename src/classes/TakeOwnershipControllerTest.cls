@@ -23,13 +23,16 @@ private class TakeOwnershipControllerTest {
     		
     	Contact contact_Obj = new Contact(AccountId = account_Obj.Id, LastName = 'BANDA', HasOptedOutOfEmail = false, CreatedDate = Date.ValueOf('2017-12-05 21:18:53'), LastModifiedDate = Date.ValueOf('2018-02-08 11:26:44'));
     		Insert contact_Obj;
-    		
-    	Lead leadObj =new Lead(LastName = 'Test', Status='Open', Product_Type__c='Cards',  Brand__c = 'CFCU', Lead_Type__c = 'Business');
-       		Insert leadObj;	
 		
 		Case caseObj =new Case(Status = 'In Process', Description='test description', Phone_Number__c='', CaseComments__c ='new comment',  Brand__c = 'CFCU', Primary_Category__c = 'Marketing', ContactId = contact_Obj.id, Origin = null, Subject = 'Test', ClosedDate = null, IsEscalated = false,Account_Number__c = account_Details_Obj.Id, Additional_Documents__c = false, Staff_Escalated__c = false, Five_Day_Flag__c = false, IsMarkDeleted__c = false, IsMarkRead__c = false, IsMarkSaved__c = false, Secondary_Category__c = 'Account Services', Tertiary_Category__c = 'Extended Check Hold', MaritzCX__Response_Deleted_From_MaritzCX__c = false, SLATemp__c = false);
        		Insert caseObj;
-       		
+     Lead ld = new Lead (LastName = 'Test',Product_Type__c = 'Card',Brand__c = 'CFCU',FirstName = 'test',MiddleName = 'New', Description = 'New',
+    						Salutation = 'MR.',Suffix = 'MR',Status = 'New',Phone= '1234567890',Email='test@test.com',MobilePhone='1234567892',How_did_you_hear_about_us__c='Website',Event_Source__c='Event-Reston-Open House-04/20/18',
+   							 LeadSource='BDO-Realtor Referral' , Street_Address_1__c='Address 1',State__c= 'NY',Zip_Code__c= '12345',City__c='NYC',Country__c ='USA');
+    	insert ld; 	
+      
+      Opportunity op = new Opportunity(Name = 'Name', StageName = 'Open',  CloseDate = system.today(),  Is_Converted__c = true,   Opportunity_Source__c = 'Word of mouth', AccountId = account_Obj.id,  Ownership__c = 'Auto Assign', Episys_User_ID__c = 1);
+       insert op;
        
 		
 		test.StopTest();
@@ -39,7 +42,11 @@ private class TakeOwnershipControllerTest {
         Case objCase = [select Id from case limit 1];
         TakeOwnershipController.changeCaseOwnership(objCase.Id);
         
-        Lead objLead = [select Id from lead limit 1];
-        TakeOwnershipController.changeCaseOwnership(objLead.Id);
+        Lead l = [select Id from Lead limit 1];
+        TakeOwnershipController.changeCaseOwnership(l.Id);
+       
+        Opportunity o = [select Id from Opportunity limit 1];
+        TakeOwnershipController.changeCaseOwnership(o.Id);
+        
     }
 }

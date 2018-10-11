@@ -1,0 +1,17 @@
+.THIS {
+}
+
+.THIS .lbl{
+		margin-right: 0px !important;
+	}
+.THIS .selcountry{
+		width:105px !important;
+	}
+	
+	.THIS .slds-small-size--1-of-1{
+	font-size: .75rem;
+    font-family: 'Salesforce Sans',Arial,sans-serif;
+	}
+    .THIS .modal-body{
+     height: auto !important;
+     }

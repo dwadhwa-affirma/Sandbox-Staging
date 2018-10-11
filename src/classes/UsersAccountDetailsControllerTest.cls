@@ -1,9 +1,8 @@
 @isTest
 public class UsersAccountDetailsControllerTest {
-	static void SetUp(){
-		test.StartTest();
-		List<Account_Details__c> account_details_Obj = new List<Account_Details__c>{
-						    new Account_Details__c(Name = '0000147163', Balance__c = 0.00, Combined_Account_ID__c = '0000147163S0100P0100', ID1__c = '0100', Onboarded__c = true, RecType__c = 'ACCT', TypeTranslate__c = '1-PRIMARY SHARE',WARNING_01_CODE__c='ABC',
+    static void SetUp(){
+        List<Account_Details__c> account_details_Obj = new List<Account_Details__c>{
+                            new Account_Details__c(Name = '0000147163', Balance__c = 0.00, Combined_Account_ID__c = '0000147163S0100P0100', ID1__c = '0100', Onboarded__c = true, RecType__c = 'ACCT', TypeTranslate__c = '1-PRIMARY SHARE',WARNING_01_CODE__c='ABC',
 WARNING_02_CODE__c='ABC',
 WARNING_03_CODE__c='ABC',
 WARNING_04_CODE__c='ABC',
@@ -44,7 +43,7 @@ Comment_Block_18__c='ABC',
 Comment_Block_19__c='ABC',
 Comment_Block_20__c='ABC'
 ),
-						    new Account_Details__c(Name = '0000147163', Balance__c = 0.00, Combined_Account_ID__c = '0000147163S0100P0100', ID1__c = '0100', Onboarded__c = true, RecType__c = 'SHAR', TypeTranslate__c = '1-PRIMARY SHARE',WARNING_01_CODE__c='ABC',
+                            new Account_Details__c(Name = '0000147163', Balance__c = 0.00, Combined_Account_ID__c = '0000147163S0100P0100', ID1__c = '0100', Onboarded__c = true, RecType__c = 'SHAR', TypeTranslate__c = '1-PRIMARY SHARE',WARNING_01_CODE__c='ABC',
 WARNING_02_CODE__c='ABC',
 WARNING_03_CODE__c='ABC',
 WARNING_04_CODE__c='ABC',
@@ -85,7 +84,7 @@ Comment_Block_18__c='ABC',
 Comment_Block_19__c='ABC',
 Comment_Block_20__c='ABC'
 ),
-						    new Account_Details__c(Name = '0000147163', Balance__c = 0.00, Combined_Account_ID__c = '0000147163S0100P0100', ID1__c = '0100', Onboarded__c = true, RecType__c = 'CARD', TypeTranslate__c = '1-PRIMARY SHARE',WARNING_01_CODE__c='ABC',
+                            new Account_Details__c(Name = '0000147163', Balance__c = 0.00, Combined_Account_ID__c = '0000147163S0100P0100', ID1__c = '0100', Onboarded__c = true, RecType__c = 'CARD', TypeTranslate__c = '1-PRIMARY SHARE',WARNING_01_CODE__c='ABC',
 WARNING_02_CODE__c='ABC',
 WARNING_03_CODE__c='ABC',
 WARNING_04_CODE__c='ABC',
@@ -126,36 +125,36 @@ Comment_Block_18__c='ABC',
 Comment_Block_19__c='ABC',
 Comment_Block_20__c='ABC'
 )
-						};
-						
+                        };
+                        
 
-		    Insert account_details_Obj;
-		    
+            Insert account_details_Obj;
+            
  Account account_Obj = new Account(LastName = 'BANDATest', FirstName = 'MARIATest', Type = 'null', PersonHasOptedOutOfEmail = false, NA_Eligibility__c = false, NA_LEAV_Complete__c = true, NA_LECF_Complete__c = true, NA_LECP_Complete__c = true, NA_LEEM_Complete__c = true, NA_LEHS_Complete__c = true, NA_LEMD_Complete__c = false, NA_LEMP_Complete__c = false, NA_LEMQ_Complete__c = true, NA_LEOL_Complete__c = true, NA_LEOM_Complete__c = true, NA_LEPT_Complete__c = true, NA_LESB_Complete__c = false, NA_LESF_Complete__c = true, NA_LEWS_Complete__c = true, NA_Opt_Out__c = false, smagicinteract__SMSOptOut__pc = false, et4ae5__HasOptedOutOfMobile__pc = false);
     Insert account_Obj; 
     
     Account_Details__c obj = [select id from Account_Details__c where id =: account_details_Obj[0].id];
     
-    	List<Person_Account__c> person_obj= new List<Person_Account__c>{
-    		new Person_Account__c(TypeTranslate__c='0000/Primary',Account_Number__c = account_details_Obj[0].id, PersonID__c = account_Obj.Id), 
-    		new Person_Account__c(TypeTranslate__c='0000/Primary',Account_Number__c = account_details_Obj[0].Id, PersonID__c = account_Obj.Id), 
-    		new Person_Account__c(Account_Number__c = account_details_Obj[2].Id, PersonID__c = account_Obj.Id)};
-		     Insert person_obj;
-		     
-	Account account_Obj1 = new Account(LastName = 'BANDATest1', FirstName = 'MARIATest1', Type = 'null', PersonHasOptedOutOfEmail = false, NA_Eligibility__c = false, NA_LEAV_Complete__c = true, NA_LECF_Complete__c = true, NA_LECP_Complete__c = true, NA_LEEM_Complete__c = true, NA_LEHS_Complete__c = true, NA_LEMD_Complete__c = false, NA_LEMP_Complete__c = false, NA_LEMQ_Complete__c = true, NA_LEOL_Complete__c = true, NA_LEOM_Complete__c = true, NA_LEPT_Complete__c = true, NA_LESB_Complete__c = false, NA_LESF_Complete__c = true, NA_LEWS_Complete__c = true, NA_Opt_Out__c = false, smagicinteract__SMSOptOut__pc = false, et4ae5__HasOptedOutOfMobile__pc = false);
+        List<Person_Account__c> person_obj= new List<Person_Account__c>{
+            new Person_Account__c(TypeTranslate__c='0000/Primary',Account_Number__c = account_details_Obj[0].id, PersonID__c = account_Obj.Id), 
+            new Person_Account__c(TypeTranslate__c='0000/Primary',Account_Number__c = account_details_Obj[0].Id, PersonID__c = account_Obj.Id), 
+            new Person_Account__c(Account_Number__c = account_details_Obj[2].Id, PersonID__c = account_Obj.Id)};
+             Insert person_obj;
+             
+    Account account_Obj1 = new Account(LastName = 'BANDATest1', FirstName = 'MARIATest1', Type = 'null', PersonHasOptedOutOfEmail = false, NA_Eligibility__c = false, NA_LEAV_Complete__c = true, NA_LECF_Complete__c = true, NA_LECP_Complete__c = true, NA_LEEM_Complete__c = true, NA_LEHS_Complete__c = true, NA_LEMD_Complete__c = false, NA_LEMP_Complete__c = false, NA_LEMQ_Complete__c = true, NA_LEOL_Complete__c = true, NA_LEOM_Complete__c = true, NA_LEPT_Complete__c = true, NA_LESB_Complete__c = false, NA_LESF_Complete__c = true, NA_LEWS_Complete__c = true, NA_Opt_Out__c = false, smagicinteract__SMSOptOut__pc = false, et4ae5__HasOptedOutOfMobile__pc = false);
     Insert account_Obj1;  
         
-		List<Person_Account__c> person_obj1= 
-		new List<Person_Account__c>{new Person_Account__c(TypeTranslate__c='0000/Primary',Account_Number__c = account_details_Obj[1].Id, PersonID__c = account_Obj.Id), 
-			new Person_Account__c(TypeTranslate__c='0000/Primary',Account_Number__c = account_details_Obj[2].Id, PersonID__c = account_Obj1.Id)};
-		     Insert person_obj1; 	
-		    	
-		List<Case> case_Obj = new List<Case>{
-		    new Case(Status = 'In Process', Origin = null, Subject = 'Test',  IsEscalated = false, AccountId = account_Obj.Id, Account_Number__c = account_details_Obj[0].Id, Additional_Documents__c = false, Five_Day_Flag__c = false, IsMarkDeleted__c = false, IsMarkRead__c = false, IsMarkSaved__c = false, Primary_Category__c = 'Account Maintenance', Secondary_Category__c = 'Account Services', Tertiary_Category__c = 'Extended Check Hold'),
-		    new Case(Status = 'In Process', Origin = null, Subject = 'Test',  IsEscalated = false, AccountId = account_Obj.Id, Account_Number__c = account_details_Obj[0].Id, Additional_Documents__c = false, Five_Day_Flag__c = false, IsMarkDeleted__c = false, IsMarkRead__c = false, IsMarkSaved__c = false, Primary_Category__c = 'Account Maintenance', Secondary_Category__c = 'Account Services', Tertiary_Category__c = 'Extended Check Hold'),
-		    new Case(Status = 'In Process', Origin = null, Subject = 'Test',  IsEscalated = false, AccountId = account_Obj.Id, Account_Number__c = account_details_Obj[0].Id, Additional_Documents__c = false, Five_Day_Flag__c = false, IsMarkDeleted__c = false, IsMarkRead__c = false, IsMarkSaved__c = false, Primary_Category__c = 'Account Maintenance', Secondary_Category__c = 'Account Services', Tertiary_Category__c = 'Extended Check Hold'),
-		    new Case(Status = 'In Process', Origin = null, Subject = 'Test',  IsEscalated = false,AccountId = account_Obj.Id,  Account_Number__c = account_details_Obj[0].Id, Additional_Documents__c = false, Five_Day_Flag__c = false, IsMarkDeleted__c = false, IsMarkRead__c = false, IsMarkSaved__c = false, Primary_Category__c = 'Account Maintenance', Secondary_Category__c = 'Account Services', Tertiary_Category__c = 'Extended Check Hold')
-		    
+        List<Person_Account__c> person_obj1= 
+        new List<Person_Account__c>{new Person_Account__c(TypeTranslate__c='0000/Primary',Account_Number__c = account_details_Obj[1].Id, PersonID__c = account_Obj.Id), 
+            new Person_Account__c(TypeTranslate__c='0000/Primary',Account_Number__c = account_details_Obj[2].Id, PersonID__c = account_Obj1.Id)};
+             Insert person_obj1;    
+                
+        List<Case> case_Obj = new List<Case>{
+            new Case(Status = 'In Process', Origin = null, Subject = 'Test',  IsEscalated = false, AccountId = account_Obj.Id, Account_Number__c = account_details_Obj[0].Id, Additional_Documents__c = false, Five_Day_Flag__c = false, IsMarkDeleted__c = false, IsMarkRead__c = false, IsMarkSaved__c = false, Primary_Category__c = 'Account Maintenance', Secondary_Category__c = 'Account Services', Tertiary_Category__c = 'Extended Check Hold'),
+            new Case(Status = 'In Process', Origin = null, Subject = 'Test',  IsEscalated = false, AccountId = account_Obj.Id, Account_Number__c = account_details_Obj[0].Id, Additional_Documents__c = false, Five_Day_Flag__c = false, IsMarkDeleted__c = false, IsMarkRead__c = false, IsMarkSaved__c = false, Primary_Category__c = 'Account Maintenance', Secondary_Category__c = 'Account Services', Tertiary_Category__c = 'Extended Check Hold'),
+            new Case(Status = 'In Process', Origin = null, Subject = 'Test',  IsEscalated = false, AccountId = account_Obj.Id, Account_Number__c = account_details_Obj[0].Id, Additional_Documents__c = false, Five_Day_Flag__c = false, IsMarkDeleted__c = false, IsMarkRead__c = false, IsMarkSaved__c = false, Primary_Category__c = 'Account Maintenance', Secondary_Category__c = 'Account Services', Tertiary_Category__c = 'Extended Check Hold'),
+            new Case(Status = 'In Process', Origin = null, Subject = 'Test',  IsEscalated = false,AccountId = account_Obj.Id,  Account_Number__c = account_details_Obj[0].Id, Additional_Documents__c = false, Five_Day_Flag__c = false, IsMarkDeleted__c = false, IsMarkRead__c = false, IsMarkSaved__c = false, Primary_Category__c = 'Account Maintenance', Secondary_Category__c = 'Account Services', Tertiary_Category__c = 'Extended Check Hold')
+            
                 }; 
              /* List<Case> case_Obj = new List<Case>();
               
@@ -169,28 +168,28 @@ Comment_Block_20__c='ABC'
               case_Obj.Add(cs3);
               case_Obj.Add(cs4);*/
                          
-			  Insert case_Obj;
+              Insert case_Obj;
               
-		List<CaseComment> CaseComment_Obj = new List<CaseComment>{		 
-						new CaseComment(CommentBody='test', IsPublished = true,ParentId=case_Obj[0].Id),
-						new CaseComment(CommentBody='test1', IsPublished = true,ParentId=case_Obj[0].Id),
-						new CaseComment(CommentBody='test2', IsPublished = true,ParentId=case_Obj[0].Id),
-						new CaseComment(CommentBody='test3', IsPublished = true,ParentId=case_Obj[0].Id),
-						
-						new CaseComment(CommentBody='test', IsPublished = true,ParentId=case_Obj[1].Id),
-						new CaseComment(CommentBody='test1', IsPublished = true,ParentId=case_Obj[1].Id)
-						
-							    
-						};
+        List<CaseComment> CaseComment_Obj = new List<CaseComment>{       
+                        new CaseComment(CommentBody='test', IsPublished = true,ParentId=case_Obj[0].Id),
+                        new CaseComment(CommentBody='test1', IsPublished = true,ParentId=case_Obj[0].Id),
+                        new CaseComment(CommentBody='test2', IsPublished = true,ParentId=case_Obj[0].Id),
+                        new CaseComment(CommentBody='test3', IsPublished = true,ParentId=case_Obj[0].Id),
+                        
+                        new CaseComment(CommentBody='test', IsPublished = true,ParentId=case_Obj[1].Id),
+                        new CaseComment(CommentBody='test1', IsPublished = true,ParentId=case_Obj[1].Id)
+                        
+                                
+                        };
               
             /*  List<CaseComment> CaseComment_Obj = new List<CaseComment>();
               
               CaseComment cm1 = new CaseComment(CommentBody='test', IsPublished = true,ParentId=case_Obj[0].Id);
               CaseComment cm2 = new CaseComment(CommentBody='test1', IsPublished = true,ParentId=case_Obj[0].Id);
-			  CaseComment cm3 =	new CaseComment(CommentBody='test2', IsPublished = true,ParentId=case_Obj[0].Id);
-			  CaseComment cm4 =	new CaseComment(CommentBody='test3', IsPublished = true,ParentId=case_Obj[0].Id);
-			  CaseComment cm5 =	new CaseComment(CommentBody='test', IsPublished = true,ParentId=case_Obj[1].Id);
-			  CaseComment cm6 =	new CaseComment(CommentBody='test1', IsPublished = true,ParentId=case_Obj[1].Id);
+              CaseComment cm3 = new CaseComment(CommentBody='test2', IsPublished = true,ParentId=case_Obj[0].Id);
+              CaseComment cm4 = new CaseComment(CommentBody='test3', IsPublished = true,ParentId=case_Obj[0].Id);
+              CaseComment cm5 = new CaseComment(CommentBody='test', IsPublished = true,ParentId=case_Obj[1].Id);
+              CaseComment cm6 = new CaseComment(CommentBody='test1', IsPublished = true,ParentId=case_Obj[1].Id);
               CaseComment_Obj.Add(cm1);
               CaseComment_Obj.Add(cm2);
               CaseComment_Obj.Add(cm3);
@@ -198,88 +197,88 @@ Comment_Block_20__c='ABC'
               CaseComment_Obj.Add(cm5);
               CaseComment_Obj.Add(cm6);
               */
-			insert CaseComment_Obj;
-			
-			List<Task> task_Obj = new List<Task>{		 
-						new Task(Subject='test', Description='Description',Status = 'Open',WhatId=case_Obj[0].Id),
-						new Task(Subject='test1', Description='Description',Status = 'Open',WhatId=case_Obj[0].Id),
-						new Task(Subject='test2', Description='Description',Status = 'Open',WhatId=case_Obj[0].Id),
-						new Task(Subject='test3', Description='Description',Status = 'Open',WhatId=case_Obj[0].Id),
-						
-						new Task(Subject='test', Description='Description',Status = 'Open',WhatId=case_Obj[1].Id),
-						new Task(Subject='test1', Description='Description',Status = 'Open',WhatId=case_Obj[1].Id)
-						
-							    
-						};
+            insert CaseComment_Obj;
+            
+            List<Task> task_Obj = new List<Task>{        
+                        new Task(Subject='test', Description='Description',Status = 'Open',WhatId=case_Obj[0].Id),
+                        new Task(Subject='test1', Description='Description',Status = 'Open',WhatId=case_Obj[0].Id),
+                        new Task(Subject='test2', Description='Description',Status = 'Open',WhatId=case_Obj[0].Id),
+                        new Task(Subject='test3', Description='Description',Status = 'Open',WhatId=case_Obj[0].Id),
+                        
+                        new Task(Subject='test', Description='Description',Status = 'Open',WhatId=case_Obj[1].Id),
+                        new Task(Subject='test1', Description='Description',Status = 'Open',WhatId=case_Obj[1].Id)
+                        
+                                
+                        };
              /* List<Task> task_Obj = new List<Task>();
               Task t1 = new Task(Subject='test', Description='Description',Status = 'Open',WhatId=case_Obj[0].Id);
               Task t2 = new Task(Subject='test1', Description='Description',Status = 'Open',WhatId=case_Obj[0].Id);
-			  Task t3 = new Task(Subject='test2', Description='Description',Status = 'Open',WhatId=case_Obj[0].Id);
-			  Task t4 =	new Task(Subject='test3', Description='Description',Status = 'Open',WhatId=case_Obj[0].Id);
-			  Task t5 =	new Task(Subject='test', Description='Description',Status = 'Open',WhatId=case_Obj[1].Id);
-			  Task t6 =	new Task(Subject='test1', Description='Description',Status = 'Open',WhatId=case_Obj[1].Id);
+              Task t3 = new Task(Subject='test2', Description='Description',Status = 'Open',WhatId=case_Obj[0].Id);
+              Task t4 = new Task(Subject='test3', Description='Description',Status = 'Open',WhatId=case_Obj[0].Id);
+              Task t5 = new Task(Subject='test', Description='Description',Status = 'Open',WhatId=case_Obj[1].Id);
+              Task t6 = new Task(Subject='test1', Description='Description',Status = 'Open',WhatId=case_Obj[1].Id);
               task_Obj.Add(t1);
               task_Obj.Add(t2);
               task_Obj.Add(t3);
               task_Obj.Add(t4);
               task_Obj.Add(t5);
               task_Obj.Add(t6);*/
-			  insert task_Obj;
-			
-			
-			
-		 /*	List<Case> case_Obj1 = new List<Case>{
-		    new Case(Status = 'In Process', Origin = null, Subject = 'Test',  IsEscalated = false, AccountId = account_Obj1.Id, Account_Number__c = account_details_Obj[1].Id, Additional_Documents__c = false, Five_Day_Flag__c = false, IsMarkDeleted__c = false, IsMarkRead__c = false, IsMarkSaved__c = false, Primary_Category__c = 'Account Maintenance', Secondary_Category__c = 'Account Services', Tertiary_Category__c = 'Extended Check Hold'),
-		    new Case(Status = 'In Process', Origin = null, Subject = 'Test',  IsEscalated = false, AccountId = account_Obj1.Id, Account_Number__c = account_details_Obj[1].Id, Additional_Documents__c = false, Five_Day_Flag__c = false, IsMarkDeleted__c = false, IsMarkRead__c = false, IsMarkSaved__c = false, Primary_Category__c = 'Account Maintenance', Secondary_Category__c = 'Account Services', Tertiary_Category__c = 'Extended Check Hold'),
-		    new Case(Status = 'In Process', Origin = null, Subject = 'Test',  IsEscalated = false, AccountId = account_Obj1.Id, Account_Number__c = account_details_Obj[1].Id, Additional_Documents__c = false, Five_Day_Flag__c = false, IsMarkDeleted__c = false, IsMarkRead__c = false, IsMarkSaved__c = false, Primary_Category__c = 'Account Maintenance', Secondary_Category__c = 'Account Services', Tertiary_Category__c = 'Extended Check Hold'),
-		    new Case(Status = 'In Process', Origin = null, Subject = 'Test',  IsEscalated = false, AccountId = account_Obj1.Id,  Account_Number__c = account_details_Obj[1].Id, Additional_Documents__c = false, Five_Day_Flag__c = false, IsMarkDeleted__c = false, IsMarkRead__c = false, IsMarkSaved__c = false, Primary_Category__c = 'Account Maintenance', Secondary_Category__c = 'Account Services', Tertiary_Category__c = 'Extended Check Hold')
-		    
+              insert task_Obj;
+            
+            
+            
+         /* List<Case> case_Obj1 = new List<Case>{
+            new Case(Status = 'In Process', Origin = null, Subject = 'Test',  IsEscalated = false, AccountId = account_Obj1.Id, Account_Number__c = account_details_Obj[1].Id, Additional_Documents__c = false, Five_Day_Flag__c = false, IsMarkDeleted__c = false, IsMarkRead__c = false, IsMarkSaved__c = false, Primary_Category__c = 'Account Maintenance', Secondary_Category__c = 'Account Services', Tertiary_Category__c = 'Extended Check Hold'),
+            new Case(Status = 'In Process', Origin = null, Subject = 'Test',  IsEscalated = false, AccountId = account_Obj1.Id, Account_Number__c = account_details_Obj[1].Id, Additional_Documents__c = false, Five_Day_Flag__c = false, IsMarkDeleted__c = false, IsMarkRead__c = false, IsMarkSaved__c = false, Primary_Category__c = 'Account Maintenance', Secondary_Category__c = 'Account Services', Tertiary_Category__c = 'Extended Check Hold'),
+            new Case(Status = 'In Process', Origin = null, Subject = 'Test',  IsEscalated = false, AccountId = account_Obj1.Id, Account_Number__c = account_details_Obj[1].Id, Additional_Documents__c = false, Five_Day_Flag__c = false, IsMarkDeleted__c = false, IsMarkRead__c = false, IsMarkSaved__c = false, Primary_Category__c = 'Account Maintenance', Secondary_Category__c = 'Account Services', Tertiary_Category__c = 'Extended Check Hold'),
+            new Case(Status = 'In Process', Origin = null, Subject = 'Test',  IsEscalated = false, AccountId = account_Obj1.Id,  Account_Number__c = account_details_Obj[1].Id, Additional_Documents__c = false, Five_Day_Flag__c = false, IsMarkDeleted__c = false, IsMarkRead__c = false, IsMarkSaved__c = false, Primary_Category__c = 'Account Maintenance', Secondary_Category__c = 'Account Services', Tertiary_Category__c = 'Extended Check Hold')
+            
                 };   
               
         /*   List<Case> case_Obj1 = new List<Case>();
           Case cs5 = new Case(Status = 'In Process', Origin = null, Subject = 'Test',  IsEscalated = false, AccountId = account_Obj1.Id, Account_Number__c = account_details_Obj[1].Id, Additional_Documents__c = false, Five_Day_Flag__c = false, IsMarkDeleted__c = false, IsMarkRead__c = false, IsMarkSaved__c = false, Primary_Category__c = 'Account Maintenance', Secondary_Category__c = 'Account Services', Tertiary_Category__c = 'Extended Check Hold');
-		  Case cs6 = new Case(Status = 'In Process', Origin = null, Subject = 'Test',  IsEscalated = false, AccountId = account_Obj1.Id, Account_Number__c = account_details_Obj[1].Id, Additional_Documents__c = false, Five_Day_Flag__c = false, IsMarkDeleted__c = false, IsMarkRead__c = false, IsMarkSaved__c = false, Primary_Category__c = 'Account Maintenance', Secondary_Category__c = 'Account Services', Tertiary_Category__c = 'Extended Check Hold');
-		  Case cs7 = new Case(Status = 'In Process', Origin = null, Subject = 'Test',  IsEscalated = false, AccountId = account_Obj1.Id, Account_Number__c = account_details_Obj[1].Id, Additional_Documents__c = false, Five_Day_Flag__c = false, IsMarkDeleted__c = false, IsMarkRead__c = false, IsMarkSaved__c = false, Primary_Category__c = 'Account Maintenance', Secondary_Category__c = 'Account Services', Tertiary_Category__c = 'Extended Check Hold');
-		  Case cs8 = new Case(Status = 'In Process', Origin = null, Subject = 'Test',  IsEscalated = false, AccountId = account_Obj1.Id,  Account_Number__c = account_details_Obj[1].Id, Additional_Documents__c = false, Five_Day_Flag__c = false, IsMarkDeleted__c = false, IsMarkRead__c = false, IsMarkSaved__c = false, Primary_Category__c = 'Account Maintenance', Secondary_Category__c = 'Account Services', Tertiary_Category__c = 'Extended Check Hold');
+          Case cs6 = new Case(Status = 'In Process', Origin = null, Subject = 'Test',  IsEscalated = false, AccountId = account_Obj1.Id, Account_Number__c = account_details_Obj[1].Id, Additional_Documents__c = false, Five_Day_Flag__c = false, IsMarkDeleted__c = false, IsMarkRead__c = false, IsMarkSaved__c = false, Primary_Category__c = 'Account Maintenance', Secondary_Category__c = 'Account Services', Tertiary_Category__c = 'Extended Check Hold');
+          Case cs7 = new Case(Status = 'In Process', Origin = null, Subject = 'Test',  IsEscalated = false, AccountId = account_Obj1.Id, Account_Number__c = account_details_Obj[1].Id, Additional_Documents__c = false, Five_Day_Flag__c = false, IsMarkDeleted__c = false, IsMarkRead__c = false, IsMarkSaved__c = false, Primary_Category__c = 'Account Maintenance', Secondary_Category__c = 'Account Services', Tertiary_Category__c = 'Extended Check Hold');
+          Case cs8 = new Case(Status = 'In Process', Origin = null, Subject = 'Test',  IsEscalated = false, AccountId = account_Obj1.Id,  Account_Number__c = account_details_Obj[1].Id, Additional_Documents__c = false, Five_Day_Flag__c = false, IsMarkDeleted__c = false, IsMarkRead__c = false, IsMarkSaved__c = false, Primary_Category__c = 'Account Maintenance', Secondary_Category__c = 'Account Services', Tertiary_Category__c = 'Extended Check Hold');
 
          case_Obj1.Add(cs5);
          case_Obj1.Add(cs6);
          case_Obj1.Add(cs7);
          case_Obj1.Add(cs8);
            
-		 Insert case_Obj1;
-		List<CaseComment> CaseComment_Obj1 = new List<CaseComment>{		 
-						new CaseComment(CommentBody='test', IsPublished = true,ParentId=case_Obj1[0].Id),
-						new CaseComment(CommentBody='test1', IsPublished = true,ParentId=case_Obj1[0].Id),
-						new CaseComment(CommentBody='test2', IsPublished = true,ParentId=case_Obj1[0].Id),
-						new CaseComment(CommentBody='test3', IsPublished = true,ParentId=case_Obj1[0].Id),
-						
-						new CaseComment(CommentBody='test', IsPublished = true,ParentId=case_Obj1[1].Id),
-						new CaseComment(CommentBody='test1', IsPublished = true,ParentId=case_Obj1[1].Id)
-						
-							    
-						};
-			insert CaseComment_Obj1;
-			
-			List<Task> task_Obj1 = new List<Task>{		 
-						new Task(Subject='test', Description='Description',Status = 'Open',WhatId=case_Obj1[0].Id),
-						new Task(Subject='test1', Description='Description',Status = 'Open',WhatId=case_Obj1[0].Id),
-						new Task(Subject='test2', Description='Description',Status = 'Open',WhatId=case_Obj1[0].Id),
-						new Task(Subject='test3', Description='Description',Status = 'Open',WhatId=case_Obj1[0].Id),
-						
-						new Task(Subject='test', Description='Description',Status = 'Open',WhatId=case_Obj1[1].Id),
-						new Task(Subject='test1', Description='Description',Status = 'Open',WhatId=case_Obj1[1].Id)
-						
-							    
-						};
-			insert task_Obj1;*/   
-			
-			
-	}
-	
-	static void TearDown(){
-		test.StopTest();
-	}
+         Insert case_Obj1;
+        List<CaseComment> CaseComment_Obj1 = new List<CaseComment>{      
+                        new CaseComment(CommentBody='test', IsPublished = true,ParentId=case_Obj1[0].Id),
+                        new CaseComment(CommentBody='test1', IsPublished = true,ParentId=case_Obj1[0].Id),
+                        new CaseComment(CommentBody='test2', IsPublished = true,ParentId=case_Obj1[0].Id),
+                        new CaseComment(CommentBody='test3', IsPublished = true,ParentId=case_Obj1[0].Id),
+                        
+                        new CaseComment(CommentBody='test', IsPublished = true,ParentId=case_Obj1[1].Id),
+                        new CaseComment(CommentBody='test1', IsPublished = true,ParentId=case_Obj1[1].Id)
+                        
+                                
+                        };
+            insert CaseComment_Obj1;
+            
+            List<Task> task_Obj1 = new List<Task>{       
+                        new Task(Subject='test', Description='Description',Status = 'Open',WhatId=case_Obj1[0].Id),
+                        new Task(Subject='test1', Description='Description',Status = 'Open',WhatId=case_Obj1[0].Id),
+                        new Task(Subject='test2', Description='Description',Status = 'Open',WhatId=case_Obj1[0].Id),
+                        new Task(Subject='test3', Description='Description',Status = 'Open',WhatId=case_Obj1[0].Id),
+                        
+                        new Task(Subject='test', Description='Description',Status = 'Open',WhatId=case_Obj1[1].Id),
+                        new Task(Subject='test1', Description='Description',Status = 'Open',WhatId=case_Obj1[1].Id)
+                        
+                                
+                        };
+            insert task_Obj1;*/   
+            
+            
+    }
+    
+    static void TearDown(){
+        test.StopTest();
+    }
     static testmethod void testmethod1(){
            
          SetUp();  
@@ -288,6 +287,7 @@ Comment_Block_20__c='ABC'
         Account account_Obj = [select Id from account limit 1];        
         Account account_Obj1 = [select Id from account limit 1];
         
+        Test.startTest();
         ApexPages.currentPage().getParameters().put('ID', account_Obj.Id);
         UsersAccountDetailsController controller = new UsersAccountDetailsController(new ApexPages.StandardController(account_Obj));
         
@@ -325,9 +325,11 @@ Comment_Block_20__c='ABC'
         ApexPages.currentPage().getParameters().put('ID', acc.Id);
         
         map<string,Id> docMap = new map<string,Id>();
-
+        
+        Test.StartTest();      
         UsersAccountDetailsController controller = new UsersAccountDetailsController(new ApexPages.StandardController(acc));
         UsersAccountDetailsController.warningStringWrapper wrp=new UsersAccountDetailsController.warningStringWrapper(accDetail.Id,'test2', Date.newInstance(2016, 5, 3), 'test3','test4','test5', docMap,'ACCT','Warning Code');
+        Test.StopTest();
       //  TearDown();
     }
 }

@@ -74,8 +74,9 @@ public class clspicklist{
         }        
         
         for (String fieldName : objResults.keySet()){
-
+			if(objApiName != 'Opportunity'){
             objResults.get(fieldName).add('Other');
+			}
         }
       
         

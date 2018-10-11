@@ -8,7 +8,10 @@ public class verifyCaller{
         String additionalformat = getAdditionalPhoneNumber(phoneNumber);
         String additionalformat1 = getAdditionalPhoneNumber1(phoneNumber);
         try{
-            namesofCaller = [select FirstName , LastName , ID, SSN_Last_4__pc, BIRTH_DATE__pc,Mothers_Maiden_Name__pc, PersonEmail,ID_1_Number__pc ,ID_2_Number__pc, ID_3_Number__pc,(select Card_Number__c FROM Person_Account__r ) from Account where PersonHomePhone =:phoneNumber OR PersonMobilePhone=:phoneNumber 
+            namesofCaller = [select FirstName , LastName , ID, SSN_Last_4__pc, BIRTH_DATE__pc,Mothers_Maiden_Name__pc, PersonEmail,ID_1_Number__pc ,ID_2_Number__pc,
+            ID_3_Number__pc,(select Card_Number__c FROM Person_Account__r ), 
+            ID_1_Type__pc, ID_2_Type__pc, ID_3_Type__pc, ID_1_Expiration_Date__pc, ID_2_Expiration_Date__pc, ID_3_Expiration_Date__pc, ID_1_Type__c, ID_2_Type__c, ID_3_Type__c
+            from Account where PersonHomePhone =:phoneNumber OR PersonMobilePhone=:phoneNumber 
             OR  PersonOtherPhone =:phoneNumber OR Phone =:phoneNumber OR PersonAssistantPhone =:phoneNumber OR PersonHomePhone =:additionalformat OR PersonMobilePhone=:additionalformat 
             OR  PersonOtherPhone =:additionalformat OR Phone =:additionalformat OR PersonAssistantPhone =:additionalformat OR Home_Phone__pc =:additionalformat OR Mobile_Phone__pc =:additionalformat OR  Work_Phone__pc =:additionalformat OR Home_Phone__pc =:additionalformat1 OR Mobile_Phone__pc =:additionalformat1 OR  Work_Phone__pc =:additionalformat1
             OR  Home_Phone__pc =:phoneNumber OR Mobile_Phone__pc =:phoneNumber OR  Work_Phone__pc =:phoneNumber];            
@@ -172,7 +175,7 @@ public class verifyCaller{
     
     public Boolean validateMemberNumber(string memberNumber)
     {
-    	if(memberNumber != null && memberNumber != ''){
+        if(memberNumber != null && memberNumber != ''){
             List<Person_Account__c> memberLists = [select id,PersonID__c from Person_Account__c where 
             TypeTranslate__C != '0004/Beneficiary' and 
             Account_Number__r.name =: memberNumber];
@@ -185,15 +188,15 @@ public class verifyCaller{
             }
             else
             {
-            	return false;    
+                return false;    
             }
-    	}
-    	return false;
+        }
+        return false;
     }
     
     public List<Account> queryByParametersAvailable(verificationObject input, boolean onlyQueryParameters){
         String check = '';
-        String queryString = 'select FirstName , LastName , ID, SSN_Last_4__pc, BIRTH_DATE__pc,Mothers_Maiden_Name__pc, PersonEmail, ID_1_Number__pc ,ID_2_Number__pc, ID_3_Number__pc, ID_1_Type__pc, ID_2_Type__pc, ID_3_Type__pc, ID_1_Expiration_Date__pc, ID_2_Expiration_Date__pc, ID_3_Expiration_Date__pc, ID_1_Type__c, ID_2_Type__c, ID_3_Type__c from Account where (';
+        String queryString = 'select FirstName , LastName , ID, SSN_Last_4__pc, BIRTH_DATE__pc,Mothers_Maiden_Name__pc, PersonEmail,  ID_1_Number__pc ,ID_2_Number__pc, ID_3_Number__pc, ID_1_Type__pc, ID_2_Type__pc, ID_3_Type__pc, ID_1_Expiration_Date__pc, ID_2_Expiration_Date__pc, ID_3_Expiration_Date__pc, ID_1_Type__c, ID_2_Type__c, ID_3_Type__c from Account where (';
         String conditions = '';
         String additionalConditions = ''; 
         String phoneQuery = '';

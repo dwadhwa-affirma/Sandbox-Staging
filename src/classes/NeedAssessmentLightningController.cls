@@ -7,7 +7,7 @@ public class NeedAssessmentLightningController {
     	 		    system.debug('accountid-----' + accountid);	
           account acc;
           Needs_Assesment__c objNeedsAssessment;
-          acc = [select id,NA_Opt_Out__c,NA_LECP_Complete__c,NA_LECF_Complete__c,NA_LEHS_Complete__c,NA_LEOL_Complete__c, NA_LEOM_Complete__c, NA_LEMP_Complete__c, NA_LEMD_Complete__c, NA_LEWS_Complete__c, NA_LESB_Complete__c, NA_LESF_Complete__c, NA_LEPT_Complete__c,NA_LEEM_Complete__c, NA_LEMQ_Complete__c, NA_LEAV_Complete__c, NA_Opt_Out_Date__c, BIRTH_DATE__pc 
+          acc = [select id,RecordType.Name,NA_Opt_Out__c,NA_LECP_Complete__c,NA_LECF_Complete__c,NA_LEHS_Complete__c,NA_LEOL_Complete__c, NA_LEOM_Complete__c, NA_LEMP_Complete__c, NA_LEMD_Complete__c, NA_LEWS_Complete__c, NA_LESB_Complete__c, NA_LESF_Complete__c, NA_LEPT_Complete__c,NA_LEEM_Complete__c, NA_LEMQ_Complete__c, NA_LEAV_Complete__c, NA_Opt_Out_Date__c, BIRTH_DATE__pc 
     	  			from account where id =: accountid limit 1];    	  
    	  
 	    	NeedAssessmentLightningModel obj = new NeedAssessmentLightningModel();
@@ -187,11 +187,22 @@ public class NeedAssessmentLightningController {
                         
            	obj.ExistingLoansDetails = otherExistingLoans;            
                         
+            if(objNeedsAssessment != null && objNeedsAssessment.id != null)
+            
+            {
            	list<NA_Membership_Referral_Questions__c> loans = new list<NA_Membership_Referral_Questions__c>();
 				loans = [select id, Age__c, Name__c, Needs_Assessment__c, Want_to_Refer_Membership__c 
                         from NA_Membership_Referral_Questions__c where Needs_Assessment__c =: objNeedsAssessment.Id];
                         
 			obj.MembershipDetails = loans;
+			
+            }
+            else
+            {
+            obj.MembershipDetails = new list<NA_Membership_Referral_Questions__c>();	
+            	
+            }
+            
     	  	
     	  	list<NA_Deposit__c> deposits = new list<NA_Deposit__c>();
 				deposits = [select id, Balance__c, Financial_Instituition__c, Needs_Assessment__c, Rate__c, Type__c 

@@ -1,0 +1,22 @@
+.THIS {
+}
+
+.THIS .heighLightSortedText{
+	background-color:yellow
+}
+
+.THIS .truncate{
+	display: block
+}
+.THIS .slds-icon-text-default {
+      		 fill: white !important;
+			}
+.THIS .slds-icon_small, .THIS .slds-icon--small {
+			        width: 1.5rem;
+				    height: 1.5rem;
+				}
+	      
+.THIS .slds-button_icon-x-small, .THIS .slds-button--icon-x-small{
+		       line-height: 0;
+		       border-radius: 50%;
+	       }

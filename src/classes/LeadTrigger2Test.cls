@@ -13,14 +13,28 @@ public class LeadTrigger2Test {
           mapg.Support_Contact_Details__c = 'test details';       
         insert mapg;
         
-        Lead ld = new Lead();
-          ld.Brand__c = 'CFCU';
-          ld.LastName = 'TestName';
-          ld.Episys_Flag__c = FALSE;
-        insert ld;
+       Group g1 = new Group(Name='Branch 14 - 1600 Smith Queue', type='Queue');
+            insert g1;
         
-          ld.Brand__c = 'Spectrum';
-        update ld;
+      /*  Lead_Queue__c lq = new Lead_Queue__c();
+        lq.Episys_User_Branch_Name__c = '14 1600 Smith';
+        lq.Lead_Queue_Name__c = 'Branch 14 - 1600 Smith Queue';
+        insert lq;*/
+        
+         Episys_User__c eu = new Episys_User__c();
+             eu.Episys_ID__c = 1;
+             eu.Episys_Name__c = 'test';
+             eu.Assigned_Branch__c =14;
+        insert eu;
+            
+            
+              Lead newlead = new Lead(LastName = 'LastName268', Status = 'New', HasOptedOutOfEmail = false, IsConverted = false, IsUnreadByOwner = false, 
+                       smagicinteract__SMSOptOut__c = false, Escalated__c = false, Membership_Required_old__c = false, Keep__c = false, et4ae5__HasOptedOutOfMobile__c = false, Episys_Flag__c = false,
+                                temp__c = false, Episys_User_ID__c= 1,LeadSource = 'Other', Product_Type__c ='Cards');
+             insert newlead;
+        
+          newlead.Brand__c = 'Spectrum';
+        update newlead;
       
     }
     

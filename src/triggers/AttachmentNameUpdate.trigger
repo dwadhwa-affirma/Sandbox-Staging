@@ -42,6 +42,7 @@ trigger AttachmentNameUpdate on Attachment (after update,after delete,after inse
     }
     
     if(Trigger.isInsert && Trigger.isBefore){
+    if(!Test.isRunningTest()){
         system.debug('Rename called');
          List<string> listAttachmentForCaseIds = new List<string>();
          List<string> listAttachmentIds = new List<string>(); 
@@ -85,7 +86,7 @@ trigger AttachmentNameUpdate on Attachment (after update,after delete,after inse
             }
             
          }
-         
+         }
     }
     
     
@@ -93,6 +94,43 @@ trigger AttachmentNameUpdate on Attachment (after update,after delete,after inse
         List<OnBase_Document__c> onbaseAttachmentsList  = new List<OnBase_Document__c>();   
         List<string> Caseids = new List<string>();
         List<string> memberCommentids = new List<string>();
+        
+         List<string> listCasesComment = new List<string>(); 
+         for(Attachment a : Trigger.New){
+            Schema.SObjectType objType = a.ParentId.getsobjecttype();
+            if(a.CreatedBy.Profile.Name != 'Messaging center Customers' && objType == Member_Comment__c.sObjectType)
+            {
+                listCasesComment.add(a.ParentId);
+            }
+         }
+         
+         
+         //If parent document in case is indexed and approved and memeber comment is added later on
+         List<Member_Comment__c> listCaseComments = [select id,Case__c from Member_Comment__c where Id in: listCasesComment];
+         
+         
+         List<string> listCaseIds = new List<string>();
+         Map<string,string> mapCaseCommentMapping = new Map<string,string>();
+         for(Member_Comment__c item: listCaseComments)
+         {
+            listCaseIds.add(item.Case__c);
+            mapCaseCommentMapping.put(item.id,item.Case__c);    
+            
+         }
+         
+         
+         List<Attachment> listCaseAttachments = [select id,ParentId,Name from Attachment where ParentId in: listCaseIds and CreatedBy.Profile.Name != 'Messaging center Customers'];
+         
+         
+         List<string> listCaseAttachmentIds = new List<string>(); 
+         for(Attachment att : listCaseAttachments)
+         {
+            listCaseAttachmentIds.add(att.id);
+         }
+         
+         
+         List<OnBase_Document__c> listOnBase = [select id,Case__C,Document_Name__c,Member_Comment__c,Document_Type__c,IsMovedToOnBase__c from OnBase_Document__c where Attachment_Id__c in: listCaseAttachmentIds]; 
+        
         for(Attachment a : Trigger.New){
             attachmentDetails.put(a.id,a);
             parent.add(a.ParentId);
@@ -102,6 +140,9 @@ trigger AttachmentNameUpdate on Attachment (after update,after delete,after inse
             if(objType == Case.sObjectType || objType == Member_Comment__c.sObjectType){
                 OnBase_Document__c onbaseObj = new OnBase_Document__c();
                 onbaseObj.Attachment_Id__c = a.id;
+                 onbaseObj.IsMovedToOnBase__c = false;
+                 onbaseObj.Document_Type__c = null;
+                    onbaseObj.Document_Name__c = a.Name;
                 if(objType == Case.sObjectType)
                 {
                 onbaseObj.Case__c = a.ParentId;
@@ -109,15 +150,30 @@ trigger AttachmentNameUpdate on Attachment (after update,after delete,after inse
                 }
                 else
                 {
-                onbaseObj.Member_Comment__c = a.ParentId;   
-                memberCommentids.add(a.ParentId);
+                    onbaseObj.Member_Comment__c = a.ParentId;   
+                    memberCommentids.add(a.ParentId);
+                    
+                    for(OnBase_Document__c item : listOnBase)
+                    {
+                        if(item.Case__C == mapCaseCommentMapping.get(onbaseObj.Member_Comment__c) && item.Document_Name__c == onbaseObj.Document_Name__c)
+                        {
+                             onbaseObj.IsMovedToOnBase__c = item.IsMovedToOnBase__c;
+                             onbaseObj.Document_Type__c = item.Document_Type__c;
+                             break;
+                        }
+                    } 
+                
+                
                 }
-                onbaseObj.IsMovedToOnBase__c = false;
+               
                 //onbaseObj.Name = a.Name;
-                onbaseObj.Document_Name__c = a.Name;
-                onbaseObj.Document_Type__c = null;
+             
+                
                 onbaseObj.Attachment_Owner__c = a.OwnerId;
                 onbaseObj.Attachment_Created_On__c = a.CreatedDate;
+                
+                              
+                
                 onbaseAttachmentsList.add(onbaseObj);
             }
         }
@@ -172,6 +228,36 @@ trigger AttachmentNameUpdate on Attachment (after update,after delete,after inse
     }
     system.debug('--MemberlsttoUpdate--'+MemberlsttoUpdate);
     update MemberlsttoUpdate;
+    
+       
+    if(Trigger.isDelete && Trigger.isBefore){
+            for(Attachment a : Trigger.old){
+              List<lead> l = new List<lead>();
+             l = [select id, Status from lead where id =: a.ParentId];
+             if(l.size() != 0)
+                  {
+                    if(l[0].Status == 'Closed - Not Converted' || l[0].Status == 'Closed - Converted')
+                    {
+                      a.Adderror('You can not Delete files for Closed Leads');
+                    }
+                  }                  
+          }
+        }
+      
+      if(Trigger.isInsert && Trigger.isBefore){
+            for(Attachment a : Trigger.New){
+              List<lead> l = new List<lead>();
+             l = [select id, Status from lead where id =: a.ParentId];
+             if(l.size() != 0)
+                  {
+                    if(l[0].Status == 'Closed - Not Converted' || l[0].Status == 'Closed - Converted')
+                    {
+                      a.Adderror('You can not Upload files for Closed Leads');
+                    }
+                  }                  
+          }
+        }
+ 
        
  
 }

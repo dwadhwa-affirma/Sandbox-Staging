@@ -3,13 +3,28 @@ private class CreateLeadControllerTest{
   @testSetup
   static void setupTestData(){
     test.startTest();
-    Lead ld = new Lead(LastName = 'LastName268', Status = 'Open', HasOptedOutOfEmail = false, IsConverted = false, IsUnreadByOwner = false, CreatedDate = DateTime.now(), //CreatedById = acc.id,
-                       LastModifiedDate = DateTime.now(), smagicinteract__SMSOptOut__c = false, Escalated__c = false, Membership_Required_old__c = false, Keep__c = false, et4ae5__HasOptedOutOfMobile__c = false, Episys_Flag__c = false, temp__c = false);
+    Group g1 = new Group(Name='Branch 14 - 1600 Smith Queue', type='Queue');
+            insert g1;
+  Episys_User__c eu = new Episys_User__c();
+             eu.Episys_ID__c = 1;
+             eu.Episys_Name__c = 'test';
+             eu.Assigned_Branch__c =14;
+        insert eu;
+            
+    Lead ld = new Lead(LastName = 'LastName268', Status = 'New', HasOptedOutOfEmail = false, IsConverted = false, IsUnreadByOwner = false, CreatedDate = DateTime.now(), //CreatedById = acc.id,
+                       LastModifiedDate = DateTime.now(), smagicinteract__SMSOptOut__c = false, Escalated__c = false, Membership_Required_old__c = false, Keep__c = false, 
+                       et4ae5__HasOptedOutOfMobile__c = false, Episys_User_ID__c =1, Product_Type__c ='Cards', Product_Subtype__c ='Credit Cards',Episys_Flag__c = false, temp__c = false, LeadSource='PTM');
     Insert ld; 
     test.stopTest();
   }
 static testMethod void test_FetchLeedData(){
+   test.startTest();
     String RecTypeId= [select Id from RecordType where (Name='Person Account') and (SobjectType='Account')].Id;
+        
+          Lead led = new Lead(LastName = 'LastName268', Status = 'New', HasOptedOutOfEmail = false, IsConverted = false, IsUnreadByOwner = false, CreatedDate = DateTime.now(), //CreatedById = acc.id,
+                       LastModifiedDate = DateTime.now(), smagicinteract__SMSOptOut__c = false, Escalated__c = false, Membership_Required_old__c = false, Keep__c = false, 
+                       et4ae5__HasOptedOutOfMobile__c = false, Episys_User_ID__c =1, Product_Type__c ='Cards', Product_Subtype__c ='Credit Cards',Episys_Flag__c = false, temp__c = false, LeadSource='PTM');
+ 
         
         Account acc = new Account(
            RecordTypeID=RecTypeId,
@@ -46,12 +61,13 @@ static testMethod void test_FetchLeedData(){
         controller.SetEpsisUserID();
         
        controller.save();
-
+	
     List<Lead> ld  =  [SELECT LastName,Status,HasOptedOutOfEmail,IsConverted,IsUnreadByOwner,CreatedDate,CreatedById,LastModifiedDate,LastModifiedById,smagicinteract__SMSOptOut__c,Escalated__c,Membership_Required_old__c,Keep__c,et4ae5__HasOptedOutOfMobile__c,Episys_Flag__c,temp__c from Lead];
     System.assertEquals(true,ld.size()>0);
     CreateLeadController obj01 = new CreateLeadController();
     lead leadObj = CreateLeadController.FetchLeedData(acc.id);
-    CreateLeadController.LeadInsertUpdate(leadObj,acc.id);
+    CreateLeadController.LeadInsertUpdate(led,acc.id);
+   test.stopTest();
 
   }
   

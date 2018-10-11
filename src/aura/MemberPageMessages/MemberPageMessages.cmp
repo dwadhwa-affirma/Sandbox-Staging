@@ -13,38 +13,29 @@
 <aura:attribute name="ShowOTPInvalidAttempt" type="string" />
 <aura:attribute name="OTPNextAttemptValidAfterHours" type="string" />
 <aura:attribute name="IsShowOTPButton" type="string" />
+<aura:attribute name="RecordTypeName" type="string" />
  
  <aura:handler name="init" value="{! this }" action="{! c.doinit }"/> 
 <style>
 table.cMemberPageMessages{position: absolute;
     top: 25px;
-    right: 300px;
+    right: 350px;
     z-index: 100;
     width: auto;
     max-width: 40%;}
     .forceHighlightsStencilDesktop .actionsContainer{padding-top:0;}
-    .failedOTP{margin-top: 14px;position: absolute;right: 107px;top: 52px;z-index: 100;}
+    .failedOTP{margin-top: 14px;position: absolute;right: 107px;top: 52px;}
     .redOTP a, .redOTP a:hover{color:#fff;background:#ac2925 !important;}
     .btnOTPtab{display:none;}
     .redOTP + li {border-radius: .25rem 0 0 .25rem !important; -webkit-border-radius: .25rem 0 0 .25rem !important;}
    
-   @media(max-width:992px){
-   	table.cMemberPageMessages .naTextNorm{font-size:12px !important;}
-   	table.cMemberPageMessages {
-	    right: auto;
-	    left: 250px; 
-	}
-   }   
+   @media(max-width:1080px){table.cMemberPageMessages{right:auto; left:270px;}}
    @media(max-width:1024px){
     .failedOTP{left: 684px;width:200px;right:auto;}
    }
-   
-   table.cMemberPageMessages td{
-   height:48px;
-   }
     </style>
-
- <table align="right">
+<aura:if isTrue="{! (v.RecordTypeName != 'Pre Member')}">
+ 	<table align="right">
         	<tr align="right">        	  
 	        	<td align="right">
 	        		<aura:if isTrue="{!(v.Highpotentialflag == 'true')}">
@@ -76,9 +67,11 @@ table.cMemberPageMessages{position: absolute;
 	        		</aura:if>
 	        	</td>
 	        </tr>
-</table>
-    <aura:if isTrue="{! (v.ShowOTPInvalidAttempt == 'true')}">
-	<div class="failedOTP"><b><small style="color:#ac2925;">Failed OTP attempt in last {! v.OTPNextAttemptValidAfterHours} hours.</small></b>
-	</div>      
+	</table>
 </aura:if>
+    <aura:if isTrue="{! (v.ShowOTPInvalidAttempt == 'true')}">
+		<div class="failedOTP"><b><small style="color:#ac2925;">Failed OTP attempt in last {! v.OTPNextAttemptValidAfterHours} hours.</small></b>
+		</div>      
+	</aura:if>
+
 </aura:component>

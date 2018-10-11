@@ -69,11 +69,24 @@
         if(isSelected && Owner != undefined && Owner != null && Owner != '')
         {
 	        var action = component.get("c.saveUserCases");        
+	        
+	         var wrapperArray = new Array();
+            for(var m=0; m < data.length; m++)
+            {            
+                if(data[m].selected)
+                {
+                                       data[m].selected = true;
+                    var item = { CaseModel: { id:  data[m].CaseModel.Id, OwnerId:  data[m].CaseModel.OwnerId}, selected: true };
+                    wrapperArray.push(item);       		
+                }
+               
+            }
+	        
 	        action.setParams({
-		    	"qWrapstr" : JSON.stringify(data),
+		    	"qWrapstr" : JSON.stringify(wrapperArray),
 	            "OwnerId" : Owner
 		    });
-		    
+
 	        action.setCallback(this, function(response) {
 	            var state = response.getState();
 	            if (state === "SUCCESS") {

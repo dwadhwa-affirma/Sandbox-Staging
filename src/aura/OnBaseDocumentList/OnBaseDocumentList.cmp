@@ -63,10 +63,18 @@
 		      
 		    </div>
 		    <div class="slds-modal__content slds-p-around--medium" style="min-height:300px;">
-		    <h3 class="slds-section-title--divider">Case Number: {!v.Model.caseNumber}
+		    <h3 class="slds-section-title--divider">Case Number: {!v.Model.caseNumber} {!v.Model.AccountNumberNotAvailable}
 		    </h3>
 		    <aura:if isTrue="{! (v.Model.IsInValidDocumentAvailable == true)}">
-		    	<div> <span style="color: red">* This document type is not allowed for OnBase Sync. Please contact your administrator if additional document types are needed otherwise you can select the document type "Not for Onbase"</span></div>
+		    	<aura:if isTrue="{! (v.Model.AccountNumberNotAvailable == false)}">
+		    		<div> <span style="color: red">* This document type is not allowed for OnBase Sync. Please contact your administrator if additional document types are needed otherwise you can select the document type "Not for Onbase"</span></div>
+		    	
+		    	<aura:set attribute="else">
+		    	
+		    		<div> <span style="color: red">* Indexing document is not allowed as the case is not attached to any account. You can index as "Not For OnBase".</span></div>
+		    	</aura:set>
+		    	</aura:if>
+		    	
 		    </aura:if>
 		        <div class="slds-grid">
         <div class="slds-col">

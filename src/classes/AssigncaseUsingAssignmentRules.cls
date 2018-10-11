@@ -10,6 +10,8 @@ public class AssigncaseUsingAssignmentRules {
             cs.setOptions(dmo); 
             cs.test__c= 'tst1';            
             update cs;    
+             
+             
          }
     }
 }

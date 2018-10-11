@@ -197,7 +197,7 @@ public class MemberPageMessagesLightningController {
 	{
 			list<Person_Account__c> paList = new list<Person_Account__c>();
         	paList = [SELECT Id,Account_Number__c,Account_Number__r.RecType__c, Account_Number__r.Name FROM Person_Account__c WHERE PersonID__c =:actId and TypeTranslate__c in ('0001/Joint Member','0000/Primary')];
-        	List<Account>	account = [select Id,BIRTH_DATE__pc,NA_Complete__c,Last_NA_LEHS__c, Last_NA_LEOM__c, NA_LEHS_Complete__c, NA_LEWS_Complete__c, NA_Opt_Out_Updated__c,
+        	List<Account>	account = [select Id,RecordType.name,BIRTH_DATE__pc,NA_Complete__c,Last_NA_LEHS__c, Last_NA_LEOM__c, NA_LEHS_Complete__c, NA_LEWS_Complete__c, NA_Opt_Out_Updated__c,
                                      NA_LEMP_Complete__c, NA_LECF_Complete__c, NA_LEOM_Complete__c, NA_Opt_Out_Date__c, NA_LESF_Complete__c, NA_LESB_Complete__c,
                                      NA_LEHS_Expired__c, NA_LEOM_Expired__c, NA_Eligibility__c, NA_Opt_Out__c, NA_LECP_Complete__c, NA_LEPT_Complete__c, NA_LEMD_Complete__c,
                                      NA_LEOL_Complete__c,NA_LEAV_Complete__c,NA_LEEM_Complete__c,NA_LEMQ_Complete__c, Member_Verification_OTP_Invalid_Attempt__c from Account where id =: actId limit 1];
@@ -329,6 +329,7 @@ public class MemberPageMessagesLightningController {
 		   
 		   boolean IsShowOTPButton = showData_OTP();
 		   m.put('IsShowOTPButton',string.valueOf(IsShowOTPButton));
+		    m.put('RecordTypeName',account[0].RecordType.name);
 		   return m;
        }
        

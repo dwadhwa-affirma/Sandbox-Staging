@@ -1667,7 +1667,7 @@ public class MemberAuthenticationController{
     
     public PageReference homePage1(){
         PageReference pageCalulated = null;
-        pageCalulated = new PageReference('/home/home.jsp');
+        pageCalulated = new PageReference('/');
         pageCalulated.setRedirect(true);
         return pageCalulated;
     }

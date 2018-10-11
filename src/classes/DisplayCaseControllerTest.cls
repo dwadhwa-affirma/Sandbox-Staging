@@ -2,10 +2,10 @@
  public with sharing class DisplayCaseControllerTest {
  
  
- 	@testsetup public static void setup()
- 	{
- 		 
- 		  SecureEmailSetting__c customsetting;
+   @testsetup public static void setup()
+   {
+      
+       SecureEmailSetting__c customsetting;
       customsetting = new SecureEmailSetting__c();
         customsetting.Name ='Secure Email Setting';
         customsetting.url_redirection_enabled__c = true;
@@ -85,7 +85,7 @@
              system.runas(u)
       {
       
- 			List<Case> cases = new List<Case>();
+       List<Case> cases = new List<Case>();
            Case cas = new Case();
              cas.Subject = 'Test Subject Inquires';
              cas.Description = 'Test Description Inquires';
@@ -106,6 +106,7 @@
                 attach.parentId= cas.id;
                 AttachmentLst.add(attach);
             }        
+          test.startTest();
             insert AttachmentLst;
             
              Case cas1 = new Case();
@@ -184,13 +185,13 @@
                 cas7.Primary_Category__c = 'Online Banking';
                 cas7.Status ='Open';
                cases.add(cas7);
-             	insert cases;  
+               insert cases;  
              
-            
+             test.stoptest();
       }
- 		
- 		
- 	}
+     
+     
+   }
  
    @istest public static void LoadCaseandSavedMessagesTest()
   {
@@ -211,9 +212,9 @@
      ids = cases[0].id;
      
      string view='';
-	User u = [SELECT LocaleSidKey, LanguageLocaleKey, TimeZoneSidKey, EmailEncodingKey FROM User WHERE UserName = 'testUserName@test.com' limit 1];
-		system.runas(u)
-		{             
+  User u = [SELECT LocaleSidKey, LanguageLocaleKey, TimeZoneSidKey, EmailEncodingKey FROM User WHERE UserName = 'testUserName@test.com' limit 1];
+    system.runas(u)
+    {             
           DisplayCaseController controller = new DisplayCaseController();
           controller.PageLoad();  
           string fid2 ='00009999'  ;
@@ -228,7 +229,7 @@
                   messages = DisplayCaseController.GetAllMessagesforUser('SavedMessages','CreatedDate','Desc',ids);
                   messages = DisplayCaseController.GetAllMessagesforUser('Messages','CreatedDate','Desc',ids);
                   Test.stopTest();
-		}
+    }
                   
         
   }
@@ -249,17 +250,17 @@
      string ids2;
      
      List<Case> cases= [select Id from case where subject = 'Test Subject Inquires' limit 1];
-     	ids = cases[0].id;
+       ids = cases[0].id;
         List<Case> cases2= [select Id from case where subject = 'Test Subject Mobile Banking' limit 1];
             
         ids2 = cases2[0].id;
                   
      string view='';
      User u = [SELECT LocaleSidKey, LanguageLocaleKey, TimeZoneSidKey, EmailEncodingKey FROM User WHERE UserName = 'testUserName@test.com' limit 1];
-	 system.runas(u)
+   system.runas(u)
      {
       
- 		
+     
              
         DisplayCaseController controller = new DisplayCaseController();
         controller.PageLoad();  
@@ -269,7 +270,7 @@
         List<Message> messages3 = new List<Message>();
                  
                   
-		Test.startTest(); 
+    Test.startTest(); 
         System.assertEquals(1, 1);
         messages3 = DisplayCaseController.GetAllMessagesforUser('DeletedMessages','Category','Desc',ids);  
                   
@@ -287,16 +288,16 @@
         MemberMessageView m = null;    
         
         FileList fl = new FileList();
-	                string xblob = 'abc';
-	                Blob myBlob = Blob.valueof(xblob);
-	                
-	                
-	                
-	                Attachment att = new  Attachment();
-	                att.Parentid = mcid;
-	                att.Name = 'Excel.ppt';
-	                att.Body = myBlob;
-	                insert att; 
+                  string xblob = 'abc';
+                  Blob myBlob = Blob.valueof(xblob);
+                  
+                  
+                  
+                  Attachment att = new  Attachment();
+                  att.Parentid = mcid;
+                  att.Name = 'Excel.ppt';
+                  att.Body = myBlob;
+                  insert att; 
                    
         m = DisplayCaseController.LoadMemberComments(ids2);
                              
@@ -325,16 +326,16 @@
        
     system.runas(u)
       {
-      	List<Case> cases= [select Id from case where subject = 'Test Subject Inquires 2' limit 1];
-     	if (cases.size() > 0)
-     	{
-     		ids = cases[0].id;
-     	}
-     	else
-     	{
-     		system.debug(ids);
-     		return;
-     	}
+        List<Case> cases= [select Id from case where subject = 'Test Subject Inquires 2' limit 1];
+       if (cases.size() > 0)
+       {
+         ids = cases[0].id;
+       }
+       else
+       {
+         system.debug(ids);
+         return;
+       }
         List<Case> cases2= [select Id from case where subject = 'Test Subject Mobile Banking' limit 1];
             Test.StartTest();
         ids2 = cases2[0].id;
@@ -361,7 +362,7 @@
   
   @isTest public static void LoadCaseComment2()
   {
-  	 string fid ='0000999999'  ;    
+     string fid ='0000999999'  ;    
      String uid = UserInfo.getUserId();
      Profile profile = [SELECT Id,Name FROM Profile where Name ='Messaging Center Customers' ];
      RecordType recordtype =[SELECT Id,Name FROM RecordType WHERE Name='Person Account'];
@@ -376,53 +377,53 @@
      User u = [SELECT LocaleSidKey, LanguageLocaleKey, TimeZoneSidKey, EmailEncodingKey FROM User WHERE UserName = 'testUserName@test.com' limit 1];        
             
      
-	    system.runas(u)
-	      {
-	      	List<Case> cases= [select Id from case where subject = 'Test Subject Inquires 2' limit 1];
-	     	if (cases.size() > 0)
-	     	{
-	     		ids = cases[0].id;
-	     	}
-	     	else
-	     	{
-	     		system.debug(ids);
-	     		return;
-	     	}
-	     	 List<Case> cases2= [select Id from case where subject = 'Test Subject Mobile Banking' limit 1];
-	            
-	        ids2 = cases2[0].id;
-	        Test.StartTest();  
-	  	 	string LatestcommentBySupport = DisplayCaseController.LoadLatestCommentBySupport(ids);
-	                  Member_Comment__c mc = new Member_Comment__c();
-	                  mc.Member_Comment__c ='test';
-	                  mc.Member_Communication__c ='test';
-	                  mc.Case__c = ids2;
-	                  mc.draft__c = false;
-	                  insert mc; 
-              			
-	                  string mcid = mc.Id;
-	                  List<Member_Comment__c> casecommentdata = DisplayCaseController.GetCaseComment(ids2);
-	                   MemberMessageView m = null;               
-	                   m = DisplayCaseController.LoadMemberComments(ids2);
-	                   
-	                  FileList fl = new FileList();
-	                string xblob = 'abc';
-	                Blob myBlob = Blob.valueof(xblob);
-	                
-	                
-	                
-	                Attachment att = new  Attachment();
-	                att.Parentid = mcid;
-	                att.Name = 'Excel.ppt';
-	                att.Body = myBlob;
-	                insert att; 
-	                List<Attachment> attl = null; 
-	                
-	                System.assertEquals(1, 1); 
-	                attl = DisplayCaseController.GetAttachment(ids);
-	                Message msg3 = null; 
-	                msg3 = DisplayCaseController.LoadPreviousCase('SavedMessages','CreatedDate','Desc',ids);
-	  }
+      system.runas(u)
+        {
+          List<Case> cases= [select Id from case where subject = 'Test Subject Inquires 2' limit 1];
+         if (cases.size() > 0)
+         {
+           ids = cases[0].id;
+         }
+         else
+         {
+           system.debug(ids);
+           return;
+         }
+          List<Case> cases2= [select Id from case where subject = 'Test Subject Mobile Banking' limit 1];
+              
+          ids2 = cases2[0].id;
+          Test.StartTest();  
+         string LatestcommentBySupport = DisplayCaseController.LoadLatestCommentBySupport(ids);
+                    Member_Comment__c mc = new Member_Comment__c();
+                    mc.Member_Comment__c ='test';
+                    mc.Member_Communication__c ='test';
+                    mc.Case__c = ids2;
+                    mc.draft__c = false;
+                    insert mc; 
+                    
+                    string mcid = mc.Id;
+                    List<Member_Comment__c> casecommentdata = DisplayCaseController.GetCaseComment(ids2);
+                     MemberMessageView m = null;               
+                     m = DisplayCaseController.LoadMemberComments(ids2);
+                     
+                    FileList fl = new FileList();
+                  string xblob = 'abc';
+                  Blob myBlob = Blob.valueof(xblob);
+                  
+                  
+                  
+                  Attachment att = new  Attachment();
+                  att.Parentid = mcid;
+                  att.Name = 'Excel.ppt';
+                  att.Body = myBlob;
+                  insert att; 
+                  List<Attachment> attl = null; 
+                  
+                  System.assertEquals(1, 1); 
+                  attl = DisplayCaseController.GetAttachment(ids);
+                  Message msg3 = null; 
+                  msg3 = DisplayCaseController.LoadPreviousCase('SavedMessages','CreatedDate','Desc',ids);
+    }
   }
    @IsTest public static void LoadNextMessageSet()
   {
@@ -441,7 +442,7 @@
      
       
             List<Case> cases= [select Id from case where subject = 'Test Subject Inquires 2' limit 1];
-     	ids = cases[0].id;
+       ids = cases[0].id;
         List<Case> cases2= [select Id from case where subject = 'Test Subject Mobile Banking' limit 1];
             
         ids2 = cases2[0].id;
@@ -454,7 +455,7 @@
     system.runas(u)
       {
         
-      		
+          
           DisplayCaseController controller = new DisplayCaseController();
           controller.PageLoad();  
           string fid2 ='00009999'  ;
@@ -492,7 +493,7 @@
                 att.Name = 'Excel.ppt';
                 att.Body = myBlob;
                 insert att; 
-            	 Test.startTest(); 
+               Test.startTest(); 
                 List<Attachment> attl = null; 
                
                 System.assertEquals(1, 1); 
@@ -532,17 +533,17 @@
              string ids3 = cases[3].id;*/
              
                 List<Case> cases= [select Id from case where subject = 'Test Subject Inquires' limit 1];
-     			 ids = cases[0].id;
-        		
-        		List<Case> cases1= [select Id from case where subject = 'Test Subject Online Banking 0' limit 1];
-        		 ids1 = cases1[0].id;
-        		
-        		List<Case> cases2= [select Id from case where subject = 'Test Subject Mobile Banking 11' limit 1];
-        		ids2 = cases2[0].id;
-        		
-        		List<Case> cases3= [select Id from case where subject = 'Test Subject Mobile Banking' limit 1];
-        		ids3 = cases3[0].id;
-        		
+            ids = cases[0].id;
+            
+            List<Case> cases1= [select Id from case where subject = 'Test Subject Online Banking 0' limit 1];
+             ids1 = cases1[0].id;
+            
+            List<Case> cases2= [select Id from case where subject = 'Test Subject Mobile Banking 11' limit 1];
+            ids2 = cases2[0].id;
+            
+            List<Case> cases3= [select Id from case where subject = 'Test Subject Mobile Banking' limit 1];
+            ids3 = cases3[0].id;
+            
 
 
             FileList fl = new FileList();

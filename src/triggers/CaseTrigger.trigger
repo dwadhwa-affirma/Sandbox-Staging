@@ -22,7 +22,8 @@ trigger CaseTrigger on Case (before insert, before update, after insert, after u
             updateCaseBrandInfo(Trigger.new);
             updateEmailtoSend(Trigger.new);
             updateAccountNumberfromSubject(Trigger.new);
-            updateSurveyCase(Trigger.new);    
+            updateSurveyCase(Trigger.new); 
+            updateBranchRegion(Trigger.new);   
         }
         if (Trigger.isUpdate) {
           if(IsOtherThanTaskCountFieldUpdated())
@@ -32,11 +33,13 @@ trigger CaseTrigger on Case (before insert, before update, after insert, after u
             updateErrorOnCaseClosing(Trigger.new);
             updateContactName(Trigger.new);
             surveyCaseValidation(Trigger.old);
+            updateBranchRegion(Trigger.new); 
            // updateSurveyCase(Trigger.new);         
                                                     
             updateMemberInfo(Trigger.New, Trigger.Old);  
             
-            updateownershipLog(Trigger.New);     
+            updateownershipLog(Trigger.New);    
+           
             
             
                
@@ -95,7 +98,53 @@ trigger CaseTrigger on Case (before insert, before update, after insert, after u
 //            CaseAssign(Trigger.new);
         }  
     }
+
     
+public void updateBranchRegion(List<case> caseList)   { 
+    
+    set<Id> accDetailIds = new set<Id>();
+    list<case> cases = new list<case>();
+    List<Account_Details__c> accDetailMap = new List<Account_Details__c>();
+    Map<Id,string> accountMemberBranch = new Map<Id,string>();
+    
+    for(Case c: caseList){  
+        if(c.Account_Number__c != null)
+        {
+            accDetailIds.add(c.Account_Number__c);      
+            cases.add(c);   
+        }
+    }
+    
+    if(accDetailIds.size() > 0){
+        
+        accDetailMap = [select id,RecType__c,Current_Branch1__c,Current_Branch__c from Account_Details__c where ID in : accDetailIds];
+        
+        for(Account_Details__c acc : accDetailMap){
+            accountMemberBranch.put(acc.id,acc.Current_Branch1__c); 
+        }
+        
+        List<Valid_Branch__c> branchList = [select id,Region__c,Name from Valid_Branch__c];
+        
+        for(Case c: cases)
+        {
+            string memberBranch = accountMemberBranch.get(c.Account_Number__c);
+            
+                       
+                    
+            for(Integer i=0;i<branchList.size();i++)
+            {
+                String branchName = branchList[i].Name;
+                
+            
+                if (memberBranch.equals(branchName))
+                {
+                    
+                    c.Branch_Region__c = branchList[i].Region__c;   
+                }
+            }
+        }
+    }
+}
 
 // This method is used to force case assignment rules when bulk loading cases via Boomi  
 public void CaseAssign(list < case > newValues)   { 
@@ -270,17 +319,17 @@ System.Debug('Calling the CaseAssign method');
                 c.Account_Number__c = accDetails[0].Id;
                 if(pa.size() > 0)
                 {
-                	c.AccountId = pa[0].PersonId__c;
-	                c.ContactId = conMap.get(pa[0].PersonId__c);
-	                c.First_Name__c = pa[0].PersonId__r.FirstName;
-	                c.Last_Name__c = pa[0].PersonId__r.LastName;
-	                c.Middle_Name__c = pa[0].PersonId__r.MiddleName;
-	                c.Street_Address_1__c = pa[0].PersonId__r.Residential_Street__pc;
-	                c.Street_Address_2__c = pa[0].PersonId__r.Residential_Extra_Address__pc;
-	                c.City__c = pa[0].PersonId__r.Residential_City__pc;
-	                c.State__c = pa[0].PersonId__r.Residential_State__pc;
-	                c.Country__c = pa[0].PersonId__r.Residential_Country__pc;
-	                c.Zip_Code__c = pa[0].PersonId__r.Residential_Zipocde__pc;
+                    c.AccountId = pa[0].PersonId__c;
+                    c.ContactId = conMap.get(pa[0].PersonId__c);
+                    c.First_Name__c = pa[0].PersonId__r.FirstName;
+                    c.Last_Name__c = pa[0].PersonId__r.LastName;
+                    c.Middle_Name__c = pa[0].PersonId__r.MiddleName;
+                    c.Street_Address_1__c = pa[0].PersonId__r.Residential_Street__pc;
+                    c.Street_Address_2__c = pa[0].PersonId__r.Residential_Extra_Address__pc;
+                    c.City__c = pa[0].PersonId__r.Residential_City__pc;
+                    c.State__c = pa[0].PersonId__r.Residential_State__pc;
+                    c.Country__c = pa[0].PersonId__r.Residential_Country__pc;
+                    c.Zip_Code__c = pa[0].PersonId__r.Residential_Zipocde__pc;
                 }
                 } 
                 if(crtList.size()>0 || !crtList.isEmpty()){

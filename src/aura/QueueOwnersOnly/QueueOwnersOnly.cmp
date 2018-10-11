@@ -130,9 +130,7 @@
                                         <span class="slds-truncate" title="{!item.CaseModel.Status}">{!item.CaseModel.Status}</span>
                                     </td>
                                     <td>
-                                        <span class="slds-truncate" title="{!item.CaseModel.Future_Date__c}">
-                                        {!item.CaseModel.Future_Date__c}
-                                        </span>
+                                        <span class="slds-truncate" title="{!item.CaseModel.future_date__c}">{!item.CaseModel.future_date__c}</span>
                                     </td>
                                     <td>
                                     	<span class="slds-truncate"><ui:outputDateTime format="MMMM dd, YYYY hh:mm a" value="{!item.CaseModel.CreatedDate}" /></span>                                        

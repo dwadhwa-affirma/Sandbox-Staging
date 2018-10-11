@@ -137,11 +137,11 @@
                 }                
                component.set("v.loading", 'false');
                debugger;
-                var footer = document.getElementById('OTPVerificationPageFooter');
+               /* var footer = document.getElementById('OTPVerificationPageFooter');
         		var body = helper.closest(footer,'.modal-container');
         		body.append(footer);
         		footer.previousSibling.remove();
-        		footer.parentNode.setAttribute('id','OTPVerificationPopup');
+        		footer.parentNode.setAttribute('id','OTPVerificationPopup');*/
 			}
 		});
 		 

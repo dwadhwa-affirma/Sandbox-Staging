@@ -1,12 +1,12 @@
 .THIS .naTextNorm  {color:      black; 
-                      /*   font-size:   130%;*/ 
+                         font-size:   130%; 
                          font-weight: bold;
                          text-align:  right;
                          }
          .THIS   .naTextAlert {color:      red; 
-                         /*font-size:   130%;*/
+                         font-size:   130%;
                          font-weight: bold;
                          text-align:  right;}
  .THIS td {text-align:right;}
  
- /*.THIS {position:absolute;top:44px;right:400px;z-index:100;}*/
+ .THIS {position:absolute;top:44px;right:400px;z-index:100;}

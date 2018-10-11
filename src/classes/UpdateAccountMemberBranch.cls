@@ -2,12 +2,13 @@ global class UpdateAccountMemberBranch implements Database.Batchable<sObject>{
 
    global Database.QueryLocator start(Database.BatchableContext BC){
       String ACCT = 'ACCT';
-      String Query='Select Id, RecType__c, Current_Branch1__c from Account_Details__c where RecType__C =:ACCT';
+      String Query='Select Id,Name, RecType__c, Current_Branch1__c from Account_Details__c where RecType__c =:ACCT';
       return Database.getQueryLocator(Query);
+      
    }
 
    global void execute(Database.BatchableContext BC, List<Account_Details__c> scope){
-     List<string> ids = new List<string>();
+     Set<string> ids = new Set<string>();
      Map<Id,string> accountMemberBranch = new Map<Id,string>();
      
      for(Account_Details__c acc : scope)
@@ -15,29 +16,22 @@ global class UpdateAccountMemberBranch implements Database.Batchable<sObject>{
         ids.add(acc.id);
         accountMemberBranch.put(acc.id,acc.Current_Branch1__c);
      }
-
-    List<Person_Account__C> listPA = [select id,Account_Number__c,PersonId__c from Person_Account__C where Account_Number__c in : ids];
+        
+    AggregateResult[] groupedResults = [SELECT PersonId__c,Account_Number__c, PersonID__r.id acctId FROM Person_Account__c WHERE Account_Number__c in: ids group by PersonId__c,PersonID__r.id,Account_Number__c];
+    
+    System.debug('groupedResults' +groupedResults);
     
     Map<string,string> listMemberBranch = new Map<string,string>();
-    List<string> listMembers = new List<string>();
-     
-    for(Person_Account__C item : listPA)
-    {
-        listMembers.add(item.PersonId__c);
-        
-    }
-    
-    List<Person_Account__C> listAccMember = [select id,PersonId__c,Account_Number__c from Person_Account__C where PersonId__c in: listMembers and Account_Number__r.RecType__c = 'ACCT'];
-    
+ 
     Set<string> memberFound = new Set<string>(); 
     
-    for(Person_Account__C item : listAccMember)
+    for(AggregateResult item : groupedResults)
     {
-        if(!memberFound.contains(item.Id))
+        if(!memberFound.contains((string)item.get('PersonId__c')))
         {
-            string branch = accountMemberBranch.get(item.Account_Number__c);
-            memberFound.add(item.PersonId__c);
-            listMemberBranch.put(item.PersonId__c, branch);
+            string branch = accountMemberBranch.get((string)item.get('Account_Number__c'));
+            memberFound.add((string)item.get('PersonId__c'));
+            listMemberBranch.put((string)item.get('PersonId__c'), branch);            
         }
         
     }
@@ -53,7 +47,6 @@ global class UpdateAccountMemberBranch implements Database.Batchable<sObject>{
         for(Integer i=0;i<branchList.size();i++)
         {
             String branchName = branchList[i].Name;
-            
             if (existingBranch.contains(branchName))
             {
                 acc.Member_Branch__c = memberBranch;

@@ -18,13 +18,16 @@
         
         .loadingDiv {
             position: absolute;
-            z-index: 100;
+            z-index: 1000;
             background: rgba(255, 255, 255, 0.8);
             width: 100%;
             height: 70%;
             top: 100px;
         }
-        
+        .otpModalpopup{
+        	height: 300px;
+    	overflow-y: auto;
+        }
         #createCasePopup {
             max-width: 80rem;
             width: 70%;
@@ -67,6 +70,13 @@
         <lightning:progressStep value="2"  />
         <lightning:progressStep value="3"  />
     </lightning:progressIndicator>-->
+    <header class="slds-modal__header" id="OTPVerification" >
+       <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse" title="Close" onclick="">
+			<span data-aura-rendered-by="47:1615;a" class="lightningPrimitiveIcon" data-aura-class="lightningPrimitiveIcon"><lightning:icon iconName="{#v.closeIcon}" size="small" variant="inverse" /></span>
+            <span class="slds-assistive-text">Close</span>
+        </button>
+       <h2 id="modal-heading-01" class="slds-text-heading_medium slds-hyphenate">OTP</h2> 
+    </header>
     <h2 id="modal-heading-01" class="slds-text-heading_medium slds-hyphenate" style="font-size:22px; margin-bottom:15px; text-align: center;">Member Verification</h2>
     <div id="smartwizard" class="sw-theme-arrows">
 	  <ul class="step-anchor" currentStep="{!v.currentStep}">
@@ -225,7 +235,7 @@
   </div>
 </aura:if>
 
-    <footer class="slds-modal__footer" id="OTPVerificationPageFooter">
+   <footer class="slds-modal__footer" id="OTPVerificationPageFooter">
         <button class="slds-button slds-button_neutral" onclick="{!c.closePopup}">Close</button>       
-    </footer>
+    </footer> 
 </aura:component>

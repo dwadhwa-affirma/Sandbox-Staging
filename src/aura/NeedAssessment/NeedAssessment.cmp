@@ -233,9 +233,7 @@
         }
     </style>
 
-
-
-	<aura:if isTrue="{!(and(and(v.Model.MemberAbove18, v.Model.PrimaryAccountWithAtleastoneTrust), v.Model.ShowData))}">
+	<aura:if isTrue="{! or(and(v.Model.AccountDetails.RecordType.Name == 'Pre Member',v.Model.ShowData),(and(and(v.Model.MemberAbove18, v.Model.PrimaryAccountWithAtleastoneTrust), v.Model.ShowData)))}">
         <div class="needassessmenttabs">
 
             <div class="slds-tabs_default">

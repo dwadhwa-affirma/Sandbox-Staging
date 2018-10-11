@@ -1,4 +1,4 @@
-trigger UpdateHistoryObject on Needs_Assesment__c(after update,before update,before insert)
+trigger UpdateHistoryObject on Needs_Assesment__c(after update,before update,before insert,after insert)
 {
   
     NeedAssessmentHistoryController ctrl = new NeedAssessmentHistoryController();
@@ -914,7 +914,7 @@ trigger UpdateHistoryObject on Needs_Assesment__c(after update,before update,bef
         
         for(Needs_Assesment__c newobj : Trigger.New)
         {
-            Needs_Assesment__c oldobj = Trigger.oldMap.get(newobj.Id);
+          //  Needs_Assesment__c oldobj = Trigger.oldMap.get(newobj.Id);
             Account account = [select Id,BIRTH_DATE__pc, Last_NA_LEHS__c, Last_NA_LEOM__c, NA_LEHS_Complete__c, NA_LEWS_Complete__c, NA_Opt_Out_Updated__c,
                                      NA_LEMP_Complete__c, NA_LECF_Complete__c, NA_LEOM_Complete__c, NA_Opt_Out_Date__c, NA_LESF_Complete__c, NA_LESB_Complete__c,
                                      NA_LEHS_Expired__c, NA_LEOM_Expired__c, NA_Eligibility__c, NA_Opt_Out__c, NA_LECP_Complete__c, NA_LEPT_Complete__c, NA_LEMD_Complete__c,

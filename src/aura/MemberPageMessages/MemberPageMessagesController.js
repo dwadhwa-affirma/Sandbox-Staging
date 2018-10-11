@@ -10,6 +10,7 @@
 	          var data = response.getReturnValue();
                cmp.set('v.ShowData', data.ShowData);
                cmp.set('v.Memberisunder18', data.Memberisunder18);
+               cmp.set('v.RecordTypeName', data.RecordTypeName);
                cmp.set('v.Memberisnotprimary', data.Memberisnotprimary);
                cmp.set('v.Memberhaspartiallycompleted', data.Memberhaspartiallycompleted);
                cmp.set('v.AMemberAssessmentisdue', data.AMemberAssessmentisdue);

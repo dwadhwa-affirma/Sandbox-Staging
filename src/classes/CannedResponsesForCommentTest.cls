@@ -1,9 +1,9 @@
 @isTest
 public class CannedResponsesForCommentTest{
 
-
-    static testmethod void validateStandardController(){
-        string fid ='0000999999'  ;    
+@testSetup static void methodName() 
+{
+	string fid ='0000999999'  ;    
          String uid = UserInfo.getUserId();
          Profile profile = [SELECT Id,Name FROM Profile where Name ='Customer Community Login User' ];
          RecordType recordtype =[SELECT Id,Name FROM RecordType WHERE Name='Person Account'];
@@ -54,7 +54,7 @@ public class CannedResponsesForCommentTest{
             List<Account_Details__c> Account_Details = new List<Account_Details__c>();
             Account_Details__c ad = new Account_Details__c();
             ad.Name = fid;
-            ad.Reference__c = 'BC01';
+            
             Account_Details.add(ad);
             insert Account_Details;
            // Creating  Person_Account__c
@@ -73,7 +73,7 @@ public class CannedResponsesForCommentTest{
             cannedMessageHeader.Chevron_Header__c = 'Dear Member,';
             cannedMessageHeader.Spectrum_Header__c = 'Dear Member,';
             insert cannedMessageHeader;
-            
+             test.startTest();
              Case cas = new Case();
        
         system.runas(u)
@@ -86,6 +86,9 @@ public class CannedResponsesForCommentTest{
              cas.Status ='Open';
              insert cas;
          }
+    
+    
+   
         List<Attachment> AttachmentLst = new List<Attachment>();
         for(integer i=0 ; i <= 5 ; i++){
             Attachment attach=new Attachment();    
@@ -96,8 +99,7 @@ public class CannedResponsesForCommentTest{
             AttachmentLst.add(attach);
         }        
         insert AttachmentLst;
-        
-        Approve_Attachment__c ap = new Approve_Attachment__c();
+    Approve_Attachment__c ap = new Approve_Attachment__c();
         ap.Attachment_Id__c = AttachmentLst[0].id;
         ap.Case_ID__c = cas.id;      
         insert ap;
@@ -107,14 +109,13 @@ public class CannedResponsesForCommentTest{
         ap2.Attachment_Id__c = AttachmentLst[1].id;
         ap2.Case_ID__c = cas.id;
         insert ap2;
+    
+    	
+        
+        
 
              //List<Canned_Responses__c> Canned = new List<Canned_Responses__c>{};
-            List<Member_Comment__c> memberCommentList= new List<Member_Comment__c>();
-            Member_Comment__c memberComment= new Member_Comment__c(Case__c = cas.Id);
-            PageReference pageRef = Page.Canned_Responses_For_Member_Comment;
-            Test.setCurrentPage(pageRef);
-            apexpages.currentpage().getparameters().put('caseId' , cas.id);
-            
+           
             Canned_Responses__c cr = new Canned_Responses__c();
             cr.Brand__c = 'Chevron';
             cr.Primary_Lookup_Text__c = 'CFCU Contact Information';
@@ -122,9 +123,25 @@ public class CannedResponsesForCommentTest{
             cr.Active__c = true;
             cr.Tertiary_Lookup_Text__c = 'Test';
             insert cr;
+}
+
+
+    static testmethod void validateStandardController(){
+        
+		Case cas = [select id from case limit 1];
+        
+   List<Attachment>     AttachmentLst = [select id from Attachment where parentid =: cas.id];
+        
+		Canned_Responses__c cr = [select id from Canned_Responses__c limit 1];
+		
+		 List<Member_Comment__c> memberCommentList= new List<Member_Comment__c>();
+            Member_Comment__c memberComment= new Member_Comment__c(Case__c = cas.Id);
+            PageReference pageRef = Page.Canned_Responses_For_Member_Comment;
+            Test.setCurrentPage(pageRef);
+            apexpages.currentpage().getparameters().put('caseId' , cas.id);
             
-            ApexPages.StandardController sc = new ApexPages.StandardController(memberComment);   
-                 
+            
+            ApexPages.StandardController sc = new ApexPages.StandardController(memberComment);        
             CannedResponsesForComment crc = new CannedResponsesForComment(sc);      
                  
             List<CannedResponsesForComment.attachmentWrapper> wrapList = crc.wrapperLst;
@@ -152,22 +169,10 @@ public class CannedResponsesForCommentTest{
             crc.savenew();
             crc.selectedTertiary = 'Test';
             crc.selectedTitle = cr.id;
-            crc.getTitlesByCategories();
             crc.getSelectedDecription();
-            
+            crc.getTitlesByCategories();
             crc.save();
             crc.cancelall();
-            
-            insert memberComment;
-            
-            apexpages.currentpage().getparameters().put('caseId' , cas.id);
-            ApexPages.StandardController sc1 = new ApexPages.StandardController(memberComment);   
-            CannedResponsesForComment crc1 = new CannedResponsesForComment(sc1); 
-           /* Member_Comment__c m = new Member_Comment__c();
-            m.case__c = cas.id;
-            apexpages.currentpage().getparameters().put('caseId' , cas.id);
-            ApexPages.StandardController sc1 = new ApexPages.StandardController(m);   
-            CannedResponsesForComment crc1 = new CannedResponsesForComment(sc1);   */   
     
       }
    
