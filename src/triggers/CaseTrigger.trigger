@@ -133,10 +133,10 @@ public void updateBranchRegion(List<case> caseList)   {
                     
             for(Integer i=0;i<branchList.size();i++)
             {
-                String branchName = branchList[i].Name;
-                
+                String branchName = branchList[i].Name;               
             
-                if (memberBranch.equals(branchName))
+            	
+                if (memberBranch != null && memberBranch.equals(branchName))
                 {
                     
                     c.Branch_Region__c = branchList[i].Region__c;   
