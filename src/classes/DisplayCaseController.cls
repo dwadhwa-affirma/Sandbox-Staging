@@ -1288,8 +1288,8 @@ global  class DisplayCaseController {
             System.Debug(c);
             Account a = [select PersonEmail from account where id =: c.AccountId];
             Id membercaseid;
-            Member_Comment__c membercomment = new Member_Comment__c();
-            membercomment.Member_Communication__c = comment;
+            Member_Comment__c membercomment = new Member_Comment__c();            
+            membercomment.Member_Communication__c =comment;
             membercomment.Case__c = id;
             membercomment.IsRead__c = true;
             membercomment.Device_Type__c = DeviceType;

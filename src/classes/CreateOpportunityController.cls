@@ -50,7 +50,7 @@ public with sharing class CreateOpportunityController {
 		}       
          listObj.add(leadObject) ;  
          
-         List<Group> listQueue = [select id,Name,Email from Group where Type = 'Queue' and (Email like '%lead.com' or Email like '%opportunity.com')];
+         List<Group> listQueue = [select id,Name,Email from Group where Type = 'Queue' and (Email like '%lead.com' or Email like '%opportunity.com') and Name != 'Products & Services Referral Queue'];
           listObj.add(listQueue);  
                          
         listObj.add(acc.RecordType.Name);  

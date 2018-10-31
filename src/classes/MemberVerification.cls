@@ -186,7 +186,7 @@ public class MemberVerification
                                          accLocal.value = accountLocal.Mobile_Phone__pc;
                                          accLocal.encryptedvalue = encryptPhone(accountLocal.Mobile_Phone__pc);
                                          accLocal.fieldName = 'Mobile_Phone__pc - ' + accountLocal.Id; 
-                                         accLocal.isEnabled = true;
+                                         accLocal.isEnabled = MemberVerificationLightningController.isContactEnabled(accountLocal.Mobile_Phone__pc,'Mobile_Phone__pc',accountLocal.id,listhistory,listhistoryOlder,true);
                                         /* for(accounthistory accounthistoryLocal : listhistory)
                                          { 
                                                                     
@@ -211,7 +211,7 @@ public class MemberVerification
                                          accLocal.value = accountLocal.Home_Phone__pc ;
                                          accLocal.encryptedvalue = encryptPhone(accountLocal.Home_Phone__pc);
                                          accLocal.fieldName = 'Home_Phone__pc - ' + accountLocal.Id;
-                                         accLocal.isEnabled = true;
+                                         accLocal.isEnabled = MemberVerificationLightningController.isContactEnabled(accountLocal.Home_Phone__pc,'Home_Phone__pc',accountLocal.id,listhistory,listhistoryOlder,true);
                                          /*for(accounthistory accounthistoryLocal : listhistory)
                                          { 
                                                                     
@@ -237,7 +237,7 @@ public class MemberVerification
                                          accLocal.value = accountLocal.Work_Phone__pc;
                                          accLocal.encryptedvalue = encryptPhone(accountLocal.Work_Phone__pc);
                                          accLocal.fieldName = 'Work_Phone__pc - ' + accountLocal.Id;
-                                         accLocal.isEnabled = true;
+                                         accLocal.isEnabled = MemberVerificationLightningController.isContactEnabled(accountLocal.Work_Phone__pc,'Work_Phone__pc',accountLocal.id,listhistory,listhistoryOlder,true);
                                         /* for(accounthistory accounthistoryLocal : listhistory)
                                          { 
                                                                     
@@ -262,7 +262,7 @@ public class MemberVerification
                                          accLocal.value = accountLocal.PersonEmail;
                                          accLocal.encryptedvalue = encryptEmail(accountLocal.PersonEmail);
                                          accLocal.fieldName = 'PersonEmail - ' + accountLocal.Id;
-                                         accLocal.isEnabled = true;
+                                         accLocal.isEnabled = MemberVerificationLightningController.isContactEnabled(accountLocal.PersonEmail,'PersonEmail',accountLocal.id,listhistory,listhistoryOlder,false);
                                          /*for(accounthistory accounthistoryLocal : listhistory)
                                          { 
                                                                     
@@ -287,7 +287,7 @@ public class MemberVerification
                                          accLocal.value = accountLocal.Alternate_Email__pc;
                                          accLocal.encryptedvalue = encryptEmail(accountLocal.Alternate_Email__pc);
                                          accLocal.fieldName = 'Alternate_Email__pc - ' + accountLocal.Id;
-                                         accLocal.isEnabled = true;
+                                         accLocal.isEnabled = MemberVerificationLightningController.isContactEnabled(accountLocal.Alternate_Email__pc,'Alternate_Email__pc',accountLocal.id,listhistory,listhistoryOlder,false);
                                         /* for(accounthistory accounthistoryLocal : listhistory)
                                          { 
                                                                     

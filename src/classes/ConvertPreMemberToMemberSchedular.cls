@@ -3,6 +3,14 @@ public class ConvertPreMemberToMemberSchedular implements Schedulable {
     
      public void execute(SchedulableContext obj)
         {
+            List<ReportWrapperClass> EligibleMemberCollection = new List<ReportWrapperClass>();
+            List<ReportWrapperClass> NonEligibleMemberCollection = new List<ReportWrapperClass>();
+     		Boolean IsPhoneMatching = false;
+            Boolean IsEmailMatching = false;
+            Boolean IsStreetMatching = false;
+            Boolean IsCityMatching = false;
+            Boolean IsStateMatching = false;
+            Boolean IsZipcodeMatching = false;
             MemberConversionSetting__c mcs = MemberConversionSetting__c.getValues('PrimaryRecord');
             Integer Days_Automation =0;
             Days_Automation = (Integer)mcs.Automation__c;   
@@ -96,11 +104,13 @@ public class ConvertPreMemberToMemberSchedular implements Schedulable {
             				{
 				                for(Account pma : PreMemberAccount)
 				                {
+				                	
 				                	if(EligiblePreMemberIdSet.contains(pma.id))
 				                        {
 				                        	 continue; 
 				                        }
 				                       
+				                	
 				                	String ma_email_check = '';
 				                    
 				                     if(!string.isBlank(ma.Alternate_Email__pc)){
@@ -125,7 +135,7 @@ public class ConvertPreMemberToMemberSchedular implements Schedulable {
 				                        && ma.LastName.toUpperCase() == pma.LastName.toUpperCase() && ma.FirstName.toUpperCase() == pma.FirstName.toUpperCase()) 
 				                    {
 				                        IsMatching = true;
-				                        
+				                        IsEmailMatching = true;
 				                        system.debug('Ismatching1#' + IsMatching);
 				                    }
 				                        
@@ -139,6 +149,7 @@ public class ConvertPreMemberToMemberSchedular implements Schedulable {
 				                                (!string.isBlank(pma.Mobile_Phone__pc) && ma.Phone_Check__c.Contains(clearPhoneNumber(pma.Mobile_Phone__pc)))) )
 				                    {
 				                        IsMatching = true;
+				                        IsPhoneMatching = true;
 				                        system.debug('Ismatching2#' + IsMatching);
 				                    }
 				                    else if(!string.isBlank(ma.LastName) && !string.isBlank(ma.FirstName) && !string.isBlank(ma.Residential_Street__pc) &&
@@ -147,6 +158,7 @@ public class ConvertPreMemberToMemberSchedular implements Schedulable {
 				                    {
 				                        IsMatching = true;
 				                        system.debug('Ismatching3#' + IsMatching);
+				                       
 				                    }
 				                    else if(!string.isBlank(ma.LastName) && !string.isBlank(ma.Residential_Street__pc) && !string.isBlank(ma.Residential_Zipocde__pc) &&
 				                    !string.isBlank(pma.LastName) && !string.isBlank(pma.Residential_Street__pc) && !string.isBlank(pma.Residential_Zipocde__pc) &&
@@ -155,6 +167,7 @@ public class ConvertPreMemberToMemberSchedular implements Schedulable {
 				                    {
 				                        IsMatching = true;
 				                        system.debug('Ismatching4#' + IsMatching);
+				                       
 				                    }
 				                    
 				                    else if(
@@ -164,16 +177,89 @@ public class ConvertPreMemberToMemberSchedular implements Schedulable {
 				                    {
 				                        IsMatching = true;
 				                        system.debug('Ismatching6#' + IsMatching);
-				                    }
+				                       
+				                    }                    
+				                    
+				                    
 				                    else
 				                    {
 				                        IsMatching = false;
 				                        
-				                    }           
+				                    } 
 				                    
-				                    if(IsMatching == true)
+				                    
+				                    if(!string.isBlank(ma.LastName) && !string.isBlank(ma.FirstName) && !string.isBlank(ma.Residential_Zipocde__pc) &&
+				                    !string.isBlank(pma.LastName) && !string.isBlank(pma.FirstName) && !string.isBlank(pma.Residential_Zipocde__pc) &&
+				                    (ma.LastName == pma.LastName) && (ma.FirstName == pma.FirstName ) && (ma.Residential_Zipocde__pc == pma.Residential_Zipocde__pc) )
 				                    {
 				                        
+				                        IsZipcodeMatching = true;
+				                    }
+				                    if(!string.isBlank(ma.LastName) && !string.isBlank(ma.Residential_Street__pc) && !string.isBlank(ma.Residential_Zipocde__pc) &&
+				                    !string.isBlank(pma.LastName) && !string.isBlank(pma.Residential_Street__pc) && !string.isBlank(pma.Residential_Zipocde__pc) &&
+				                    
+				                    (ma.FirstName == pma.FirstName ) && (ma.Residential_Street__pc == pma.Residential_Street__pc) && (ma.Residential_Zipocde__pc == pma.Residential_Zipocde__pc) )
+				                    {
+				                       
+				                        IsStreetMatching = true;
+				                        IsZipcodeMatching = true;
+				                    }         
+				                    if(!string.isBlank(ma.LastName) && !string.isBlank(ma.FirstName) && !string.isBlank(ma.Residential_Street__pc) &&
+				                    !string.isBlank(pma.LastName) && !string.isBlank(pma.FirstName) && !string.isBlank(pma.Residential_Street__pc) &&
+				                    (ma.LastName == pma.LastName) && (ma.FirstName == pma.FirstName ) && (ma.Residential_Street__pc == pma.Residential_Street__pc))
+				                    {
+				                        
+				                        IsStreetMatching = true;
+				                    }
+				                     if (!string.isBlank(ma.LastName) && !string.isBlank(ma.FirstName) && !string.isBlank(ma.Phone_Check__c)  
+				                         && !string.isBlank(pma.LastName) && !string.isBlank(pma.FirstName) && !string.isBlank(pma.Phone_Check__c)  
+				                        && ma.LastName == pma.LastName && ma.FirstName == pma.FirstName 
+				                        && ( 
+				                        
+				                                (!string.isBlank(pma.Home_Phone__pc) && ma.Phone_Check__c.Contains(clearPhoneNumber(pma.Home_Phone__pc))) || 
+				                                (!string.isBlank(pma.Work_Phone__pc) && ma.Phone_Check__c.Contains(clearPhoneNumber(pma.Work_Phone__pc))) || 
+				                                (!string.isBlank(pma.Mobile_Phone__pc) && ma.Phone_Check__c.Contains(clearPhoneNumber(pma.Mobile_Phone__pc)))) )
+				                    {
+				                        
+				                        IsPhoneMatching = true;
+				                        
+				                    }
+				                    
+				                    if(!string.isBlank(ma_email_check) && !string.isBlank(ma.LastName) && !string.isBlank(ma.FirstName)  
+				                        &&  !string.isBlank(pma.LastName) && !string.isBlank(pma.FirstName)  
+				                        &&  ( (!string.isBlank(pma.Alternate_Email__pc) && ma_email_check.contains(pma.Alternate_Email__pc.toUpperCase())) 
+				                                || (!string.isBlank(pma.Alt_Email_Raw__c) && ma_email_check.contains(pma.Alt_Email_Raw__c.toUpperCase())) 
+				                                || (!string.isBlank(pma.Email_raw__c) && ma_email_check.contains(pma.Email_raw__c.toUpperCase()) ) 
+				                                || (!string.isBlank(pma.PersonEmail) && ma_email_check.contains(pma.PersonEmail.toUpperCase())) ) 
+				                        && ma.LastName.toUpperCase() == pma.LastName.toUpperCase() && ma.FirstName.toUpperCase() == pma.FirstName.toUpperCase()) 
+				                    {
+				                        
+				                        IsEmailMatching = true;
+				                       
+				                    }
+				                     IsStateMatching = false;
+				                     if(!string.isBlank(ma.Residential_State__pc)  && !string.isBlank(pma.Residential_State__pc) && (ma.Residential_State__pc == pma.Residential_State__pc) )
+				                    {
+				                       
+				                        IsStateMatching = true;
+				                       
+				                    } 
+                                    IsCityMatching = false;
+				                   if(!string.isBlank(ma.Residential_City__pc)  &&
+				                    !string.isBlank(pma.Residential_City__pc) && (ma.Residential_City__pc == pma.Residential_City__pc) )
+				                    {
+				                       
+				                        IsCityMatching = true;
+				                       
+				                    } 
+				                    
+				                    
+				                    system.debug(IsStateMatching);
+				                    if(IsMatching == true)
+				                    {
+				                      
+				                      
+				                      system.debug('true');
 				                        ma.NA_Eligibility__c = pma.NA_Eligibility__c;
 				                        ma.NA_LEHS_Complete__c= pma.NA_LEHS_Complete__c;
 				                        ma.NA_LEHS_Update__c = pma.NA_LEHS_Update__c; 
@@ -209,6 +295,11 @@ public class ConvertPreMemberToMemberSchedular implements Schedulable {
 				                        ma.IsConverted__c= true;
 				                        ma.Member__c = pma.Id;
 				                        ma.Converted_On__c = system.today();
+				                        
+				                      
+				                      system.debug('EligibleMemberCollection##' + EligibleMemberCollection); 
+				                        
+				                        
 				                        if(!EligibleMemberIdSet.contains(ma.id))
 				                        {
 				                            MemberAccount1.Add(ma);
@@ -217,6 +308,18 @@ public class ConvertPreMemberToMemberSchedular implements Schedulable {
 				                            {
 				                            	NonEligibleMemberIDSet.remove(ma.id);
 				                            }
+				                             ReportWrapperClass cls = new ReportWrapperClass();
+						                      cls.Ma = ma;
+						                      cls.pma = pma;
+						                      cls.IsPhoneMatching = IsPhoneMatching;
+						                      cls.IsEmailMatching = IsEmailMatching;
+						                      cls.IsStreetMatching = IsStreetMatching;
+		            						  cls.IsCityMatching = IsCityMatching;
+		            						  cls.IsStateMatching = IsStateMatching;
+		            						  cls.IsZipcodeMatching = IsZipcodeMatching;
+		            						  cls.FirstName = ma.FirstName;
+		            						  cls.LastName = ma.LastName;
+						                      EligibleMemberCollection.add(cls); 
 				                            
 				                        }
 				                        break;
@@ -228,7 +331,23 @@ public class ConvertPreMemberToMemberSchedular implements Schedulable {
 				                    		if(!EligibleMemberIdSet.contains(ma.id) && !NonEligibleMemberIDSet.contains(ma.id))
 				                        	{
 				                    			NonEligibleMemberIDSet.Add(ma.Id);
+				                    		  ReportWrapperClass NonElgcls = new ReportWrapperClass();
+						                      NonElgcls.Ma = ma;
+						                      NonElgcls.pma = pma;
+						                      NonElgcls.IsPhoneMatching = IsPhoneMatching;
+						                      NonElgcls.IsEmailMatching = IsEmailMatching;
+						                      NonElgcls.IsStreetMatching = IsStreetMatching;
+		            						  NonElgcls.IsCityMatching = IsCityMatching;
+		            						  NonElgcls.IsStateMatching = IsStateMatching;
+		            						  NonElgcls.IsZipcodeMatching = IsZipcodeMatching;
+		            						  NonElgcls.FirstName = ma.FirstName;
+		            						  NonElgcls.LastName = ma.LastName;
+						                      NonEligibleMemberCollection.add(NonElgcls);  
+					                    			
 				                        	}
+				                        	
+				                          	
+				                        	
 				                    }
 				                }
 				            }
@@ -263,9 +382,12 @@ public class ConvertPreMemberToMemberSchedular implements Schedulable {
 					}
             		
             		system.debug('NonEligibleMemberIDSet call###' + NonEligibleMemberIDSet);
-            		SetMergerReportData(NonEligibleMemberIDSetNotReported, PreMemberNumberMap, false);
+            		system.debug('EligibleMemberCollection call###' + EligibleMemberCollection);
+            		system.debug('NonEligibleMemberCollection call###' + NonEligibleMemberCollection);
+            		
+            		SetMergerReportData(NonEligibleMemberIDSetNotReported, PreMemberNumberMap, false,NonEligibleMemberCollection );
             		system.debug('EligibleMemberIDSet call###' + EligibleMemberIDSet);
-            		SetMergerReportData(EligibleMemberIDSet, PreMemberNumberMap, true);
+            		SetMergerReportData(EligibleMemberIDSet, PreMemberNumberMap, true, EligibleMemberCollection);
             		
             		//NotMatchinglist = [Select Id, Createddate, Member__c, IsMatching__c from Member_Conversion_Report__c where createddate = today and IsMatching__c = false ];
             		if(Matchinglist.size() > 0)
@@ -277,307 +399,7 @@ public class ConvertPreMemberToMemberSchedular implements Schedulable {
             		}
             		
             		// This section create report for member not matched
-            	/* 	if(NonEligibleMemberIDSet.size() > 0)
-            		{ 
-            			System.debug('Non Eligible');
-            			system.debug('NonEligibleMemberIDSet.size()'+ NonEligibleMemberIDSet.size());
-            			system.debug('NonEligibleMemberIDSet'+ NonEligibleMemberIDSet);
-	            		 List<Person_Account__c> peracclist = new List<Person_Account__c>();
-	           			 
-	          			
-	          			 	
-	          			 	peracclist = [SELECT Id,PersonID__c,Account_Number__r.Parent_Account__c, Account_Number__c, Account_Number__r.RecType__c, Account_Number__r.Name,Account_Number__r.Id, PersonId__r.Createddate, Account_Number__r.Created_By_User__c, 
-	          			 					Account_Number__r.Created_By_User_Alias__c, Account_Number__r.Created_By_Episys_User__c, Account_Number__r.Created_By_User_Text__c  FROM Person_Account__c WHERE PersonID__c IN : NonEligibleMemberIDSet order by  Account_Number__r.RecType__c ];
-	          			 	Set<Id> ParentAccountNonACCT = new Set<Id>();
-	          			 	Set<id> noneligibleduplicatecheck = new Set<Id>();
-	          			 	Set<id> idset = new Set<id>();
-	          			 	idset = NonEligibleMemberIDSet.clone();
-	          			 	if(peracclist.size() > 0)
-	           			 		{
-	           			 			for(Person_Account__c pa : peracclist)
-	           			 			{
-	           			 				if(NonEligibleMemberIDSet.contains(pa.PersonID__c))
-	           			 				{
-	           			 						idset.remove(pa.PersonID__c);		
-	           			 				}
-	           			 			}
-	           			 		}
-	           			 		
-	           			 	
-	           			 	 if(idset.size() > 0)
-	           			 	 {
-	           			 	 	List<Account> acclist = new List<Account>();	
-	           			 	 	acclist = [Select Id,ParentId, Name , Createddate,Owner.Name from Account where id IN :idset];
-	           			 	 	if(acclist.size() > 0)
-	           			 	 	{
-	           			 	 		for(Account a : acclist)
-	           			 	 		{
-	           			 	 			Member_Conversion_Report__c report = new Member_Conversion_Report__c();
-							           	report.IsMatching__c = false;
-							           	report.Member_Number__c =  a.id;
-							           	report.Member_Created_Date__c = a.Createddate;
-							           	report.Member__c = a.id ; 
-							        
-							           	report.User_Name__c = a.Owner.Name;
-							      
-							           	system.debug('noneligiblereport##'+report);
-							           	reportlist.Add(report);
-	           			 	 		}
-	           			 	 	}
-	           			 	 
-	           			 	 }
-	          			 	if(peracclist.size() > 0)
-	           			 		{
-	           			 			for(Person_Account__c pa : peracclist)
-	           			 			{
-	           			 				
-					           			 	if(pa.Account_Number__r.RecType__c == 'ACCT' && !noneligibleduplicatecheck.contains(pa.PersonID__c))
-					           			 	{
-						           			 		if(MapIDMatching.size() > 0 && MapIDMatching.containsKey(pa.PersonID__c) )
-						           			 		{
-						           			 			
-						           			 		}
-						           			 		else
-						           			 		{ 
-							           			 		Member_Conversion_Report__c report = new Member_Conversion_Report__c();
-							           			 		report.IsMatching__c = false;
-							           			 		report.Member_Number__c = '';
-							           			 		report.Member_Created_Date__c = pa.PersonId__r.Createddate;
-							           			 		report.Member__c = pa.PersonID__c; 
-							           			 		report.Member_Episys_Alias__c = pa.Account_Number__r.Created_By_User_Alias__c;
-							           			 		report.Member_Episys_Id__c = pa.Account_Number__r.Created_By_User__c;
-							           			 		report.User_Name__c = pa.Account_Number__r.Created_By_User_Text__c;
-							           			 	
-							           			 		report.Member_Account__c = pa.Account_Number__r.Id;
-							           			 		system.debug('noneligiblereport##'+report);
-							           			 		reportlist.Add(report);
-							           			 		noneligibleduplicatecheck.add(pa.PersonID__c);
-						           			 		}
-					           			 		
-					           			 	}
-					           			 	else
-					           			 	{
-					           			 		
-					           			 		
-					           			 		if(pa.Account_Number__r.Parent_Account__c!= null)
-					           			 		{
-					           			 				
-					           			 				if(!noneligibleduplicatecheck.contains(pa.PersonID__c))
-					           			 				{
-						           			 				Member_Conversion_Report__c report = new Member_Conversion_Report__c();
-								           			 		report.IsMatching__c = false;
-								           			 		report.Member_Number__c = '';
-								           			 		report.Member_Created_Date__c = pa.PersonId__r.Createddate;
-								           			 		report.Member__c =  pa.PersonID__c;  
-								           			 		report.Member_Episys_Alias__c = pa.Account_Number__r.Created_By_User_Alias__c;
-								           			 		report.Member_Episys_Id__c = pa.Account_Number__r.Created_By_User__c;
-								           			 		report.User_Name__c = pa.Account_Number__r.Created_By_User_Text__c;
-								           			 	
-								           			 		report.Member_Account__c = pa.Account_Number__r.Parent_Account__c; 
-								           			 		system.debug('noneligiblereport##'+report);
-								           			 		reportlist.Add(report);
-								           			 		noneligibleduplicatecheck.add(pa.PersonID__c);
-								           			 		system.debug('noneligibleduplicatecheck##'+noneligibleduplicatecheck);
-					           			 				}
-					           			 		}
-					           			 		
-					           			 	}
-	           			 			}
-	           			 	           			 		           			 	
-	           			 		}	
-	           			 					
-	           			 
-            		}
-            		
-            		// This section will create report for member matched
-            		
-            			if(EligibleMemberIdSet.size() > 0)
-            		{
-            			System.debug('Eligible');
-            			System.debug('EligibleMemberIdSet'+EligibleMemberIdSet);
-            			List<Person_Account__c> peracclist1 = new List<Person_Account__c>();
-            			
-	          			 					
-	          			 	peracclist1 = [SELECT Id,PersonID__c,Account_Number__r.Parent_Account__c, Account_Number__c, Account_Number__r.RecType__c, Account_Number__r.Name,Account_Number__r.Id, PersonId__r.Createddate, Account_Number__r.Created_By_User__c, 
-	          			 					Account_Number__r.Created_By_User_Alias__c, Account_Number__r.Created_By_Episys_User__c, Account_Number__r.Created_By_User_Text__c  
-	          			 					FROM Person_Account__c WHERE PersonID__c IN : EligibleMemberIdSet order by  Account_Number__r.RecType__c];
-	          			 					
-	          			 					
-	          			 	
-	          			 					
-	          		
-	          			 
-	          			 					
-            			String prememberid ='';
-            			System.debug('peracclist1'+ peracclist1);
-            			Boolean flag;
-            			Set<id> eligibleduplicatecheck = new Set<Id>();
-            			Set<id> idset = new Set<id>();
-	          			idset = EligibleMemberIDSet.clone();
-	          			 	if(peracclist1.size() > 0)
-	           			 		{
-	           			 			for(Person_Account__c pa : peracclist1)
-	           			 			{
-	           			 				if(EligibleMemberIDSet.contains(pa.PersonID__c))
-	           			 				{
-	           			 						idset.remove(pa.PersonID__c);		
-	           			 				}
-	           			 			}
-	           			 		}
-	           			 		
-	           			 	
-	           			 	 if(idset.size() > 0)
-	           			 	 {
-	           			 	 	List<Account> acclist = new List<Account>();	
-	           			 	 	acclist = [Select Id,ParentId, Name , Createddate, Owner.Name from Account where id IN :idset];
-	           			 	 	if(acclist.size() > 0)
-	           			 	 	{
-	           			 	 		for(Account a : acclist)
-	           			 	 		{
-	           			 	 			Member_Conversion_Report__c report = new Member_Conversion_Report__c();
-							           	report.IsMatching__c = false;
-							            report.Member_Created_Date__c = a.Createddate;
-							            report.Member__c = a.id;
-							            report.User_Name__c = a.Owner.Name;
-							            report.Member_Number__c =  a.id;
-							     
-							           	system.debug('eligiblereport##'+report);
-							           	reportlist.Add(report);
-	           			 	 		}
-	           			 	 	}
-	           			 	 
-	           			 	 }
-            			if(peracclist1.size() > 0)
-		           		{
-		           				for(Person_Account__c pa : peracclist1)
-	           			 			{
-				           			 	if(pa.Account_Number__r.RecType__c == 'ACCT' && !eligibleduplicatecheck.contains(pa.PersonID__c))
-					           			 	{
-						           			 		if(MapIDMatching.size() > 0 && MapIDMatching.containsKey(pa.PersonID__c) )
-						           			 		{
-						           			 			 flag = MapIDMatching.get(pa.PersonID__c); 
-						           			 			 if(flag == true)
-						           			 				{
-						           			 			
-						           			 				}
-								           			 		else
-								           			 		{
-								           			 			if(PreMemberNumberMap.containsKey(pa.PersonID__c))
-									           			 		{
-									           			 			prememberid = PreMemberNumberMap.get(pa.PersonID__c);
-									           			 		}
-									           			 		Member_Conversion_Report__c report = new Member_Conversion_Report__c();
-									           			 		report.IsMatching__c = true;
-									           			 		report.Member_Number__c = prememberid;
-									           			 		report.Member_Created_Date__c = pa.PersonId__r.Createddate;
-									           			 		report.Member__c = pa.PersonID__c;
-									           			 		report.Member_Episys_Alias__c = pa.Account_Number__r.Created_By_User_Alias__c;
-									           			 		report.Member_Episys_Id__c = pa.Account_Number__r.Created_By_User__c;
-									           			 		report.User_Name__c = pa.Account_Number__r.Created_By_User_Text__c;
-									           			 		//report.Member_Account_Number__c = pa.Account_Number__r.Name;
-									           			 		report.Member_Account__c = pa.Account_Number__r.Id;
-									           			 		reportlist.Add(report);
-									           			 		eligibleduplicatecheck.add(pa.PersonID__c);
-									           			 		system.debug('report##'+report);
-								           			 		}
-						           			 			 
-						           			 		}
-						           			 		
-						           			 		else
-						           			 		{
-							           			 		if(PreMemberNumberMap.containsKey(pa.PersonID__c))
-							           			 		{
-							           			 			prememberid = PreMemberNumberMap.get(pa.PersonID__c);
-							           			 		}
-							           			 		Member_Conversion_Report__c report = new Member_Conversion_Report__c();
-							           			 		report.IsMatching__c = true;
-							           			 		report.Member_Number__c = prememberid;
-							           			 		report.Member_Created_Date__c = pa.PersonId__r.Createddate;
-							           			 		report.Member__c = pa.PersonID__c;
-							           			 		report.Member_Episys_Alias__c = pa.Account_Number__r.Created_By_User_Alias__c;
-							           			 		report.Member_Episys_Id__c = pa.Account_Number__r.Created_By_User__c;
-							           			 		report.User_Name__c = pa.Account_Number__r.Created_By_User_Text__c;
-							           			 		//report.Member_Account_Number__c = pa.Account_Number__r.Name;
-							           			 		report.Member_Account__c = pa.Account_Number__r.Id;
-							           			 		reportlist.Add(report);
-							           			 		eligibleduplicatecheck.add(pa.PersonID__c);
-							           			 		system.debug('report##'+report);
-						           			 		}
-					           			 	}
-					           			 	
-					           			 	else
-					           			 	{
-					           			 		if(pa.Account_Number__r.Parent_Account__c!= null)
-					           			 		{
-					           			 			
-					           			 				if(!eligibleduplicatecheck.contains(pa.PersonID__c))
-					           			 				{
-									           			 		if(MapIDMatching.size() > 0 && MapIDMatching.containsKey(pa.PersonID__c) )
-										           			 		{
-										           			 			 flag = MapIDMatching.get(pa.PersonID__c); 
-										           			 			 if(flag == true)
-										           			 				{
-										           			 			
-										           			 				}
-												           			 		else
-												           			 		{
-												           			 			if(PreMemberNumberMap.containsKey(pa.PersonID__c))
-													           			 		{
-													           			 			prememberid = PreMemberNumberMap.get(pa.PersonID__c);
-													           			 		}
-													           			 		Member_Conversion_Report__c report = new Member_Conversion_Report__c();
-													           			 		report.IsMatching__c = true;
-													           			 		report.Member_Number__c = prememberid;
-													           			 		report.Member_Created_Date__c = pa.PersonId__r.Createddate;
-													           			 		report.Member__c =  pa.PersonID__c; 
-													           			 		report.Member_Episys_Alias__c = pa.Account_Number__r.Created_By_User_Alias__c;
-													           			 		report.Member_Episys_Id__c = pa.Account_Number__r.Created_By_User__c;
-													           			 		report.User_Name__c = pa.Account_Number__r.Created_By_User_Text__c;
-													           			 		//report.Member_Account_Number__c = pa.Account_Number__r.Name;
-													           			 		report.Member_Account__c = pa.Account_Number__r.Parent_Account__c; 
-													           			 		reportlist.Add(report);
-													           			 		system.debug('report##'+report);
-													           			 		eligibleduplicatecheck.add(pa.PersonID__c);
-													           			 		system.debug('eligibleduplicatecheck##1'+eligibleduplicatecheck);
-												           			 		}
-										           			 			 
-										           			 		}
-										           			 		
-										           			 		else
-										           			 		{
-											           			 		if(PreMemberNumberMap.containsKey(pa.PersonID__c))
-											           			 		{
-											           			 			prememberid = PreMemberNumberMap.get(pa.PersonID__c);
-											           			 		}
-											           			 		Member_Conversion_Report__c report = new Member_Conversion_Report__c();
-											           			 		report.IsMatching__c = true;
-											           			 		report.Member_Number__c = prememberid;
-											           			 		report.Member_Created_Date__c = pa.PersonId__r.Createddate;
-											           			 		report.Member__c =  pa.PersonID__c; 
-											           			 		report.Member_Episys_Alias__c = pa.Account_Number__r.Created_By_User_Alias__c;
-											           			 		report.Member_Episys_Id__c = pa.Account_Number__r.Created_By_User__c;
-											           			 		report.User_Name__c = pa.Account_Number__r.Created_By_User_Text__c;
-											           			 		//report.Member_Account_Number__c = pa.Account_Number__r.Name;
-											           			 		report.Member_Account__c = pa.Account_Number__r.Parent_Account__c; 
-											           			 		reportlist.Add(report);
-											           			 		system.debug('report##'+report);
-											           			 		eligibleduplicatecheck.add(pa.PersonID__c);
-											           			 		system.debug('eligibleduplicatecheck##2'+eligibleduplicatecheck);
-										           			 		}
-					           			 				}
-							           			 	}
-					           			 	}
-			           			 	
-			           			 	
-			           			 	
-			           			 	
-			           			 }
-		           		}
-            			
-            		}
-            		system.debug('reportlist##'+reportlist);
-            		insert reportlist;
-           		*/	
+            	
             //update EligiblePreMember;
             update MemberAccount1;
             
@@ -586,7 +408,7 @@ public class ConvertPreMemberToMemberSchedular implements Schedulable {
             	List<Converted_PreMember__c> cpmlist = new List<Converted_PreMember__c>();
             	for(Account pma: EligiblePreMember){
             		ID mid ;
-            		Converted_PreMember__c cpm = new Converted_PreMember__c();
+            		    Converted_PreMember__c cpm = new Converted_PreMember__c();
             		 	mid = MapofId.get(pma.id);
     					cpm.Member__c = mid;
     					cpm.Pre_Member_Number__c = pma.Pre_Member_Number__c;
@@ -695,6 +517,7 @@ public class ConvertPreMemberToMemberSchedular implements Schedulable {
     					cpmlist.add(cpm);    					
             	}
             	insert cpmlist;
+            	system.debug(cpmlist);
                 TaskForPM = [SELECT AccountId,Id,Status,Subject,Type,WhatId,WhoId FROM Task where WhoId IN: EligiblePreMemberIdSet];
                 EventForPM = [SELECT AccountId,Id,WhatId,WhoId FROM Event where WhoId IN: EligiblePreMemberIdSet ];
                 casesForPM = [SELECT AccountId,Id FROM Case where AccountId IN: EligiblePreMemberIdSet];
@@ -964,44 +787,7 @@ public class ConvertPreMemberToMemberSchedular implements Schedulable {
 								    				insert na;
 								    				naid = na.id;
 								    				system.debug('updateNA##'+ updateNA);
-								    			/*	if(MemberAccount.size() > 0)
-											            {
-											            	if(PreMemberAccount.size() > 0)
-											            	{
-											            				for(Account ma : MemberAccount )
-											            				{
-															                for(Account pma : PreMemberAccount)
-															                {
-															                	if(ma.id == memberid && pma.id == naid)
-															                	{
-															                		ma.NA_Eligibility__c = pma.NA_Eligibility__c;
-															                        ma.NA_LEHS_Complete__c= pma.NA_LEHS_Complete__c;
-															                        ma.NA_LEHS_Update__c = pma.NA_LEHS_Update__c; 
-															                        ma.NA_LEOM_Complete__c = pma.NA_LEOM_Complete__c;
-															                        ma.NA_LEOM_Update__c = pma.NA_LEOM_Update__c;
-															                        ma.NA_Opt_Out__c = pma.NA_Opt_Out__c;
-															                        ma.NA_Opt_Out_Date__c = pma.NA_Opt_Out_Date__c;
-															                        ma.NA_Opt_Out_Updated__c = pma.NA_Opt_Out_Updated__c;
-															                        ma.NA_LEAV_Complete__c = pma.NA_LEAV_Complete__c;
-															                        ma.NA_LECF_Complete__c = pma.NA_LECF_Complete__c;
-															                        ma.NA_LECP_Complete__c = pma.NA_LECP_Complete__c;
-															                        ma.NA_LEEM_Complete__c = pma.NA_LEEM_Complete__c;
-															                        ma.NA_LEMD_Complete__c = pma.NA_LEMD_Complete__c;
-															                        ma.NA_LEMP_Complete__c = pma.NA_LEMP_Complete__c;
-															                        ma.NA_LEMQ_Complete__c = pma.NA_LEMQ_Complete__c;
-															                        ma.NA_LEOL_Complete__c = pma.NA_LEOL_Complete__c;
-															                        ma.NA_LEPT_Complete__c = pma.NA_LEPT_Complete__c;
-															                        ma.NA_LESB_Complete__c = pma.NA_LESB_Complete__c;
-															                        ma.NA_LESF_Complete__c = pma.NA_LESF_Complete__c;
-															                        ma.NA_LEWS_Complete__c = pma.NA_LEWS_Complete__c;
-															                        UpdateMAList.add(ma);
-															                        
-															                	}
-															                	
-															                }
-											            				}
-											            	}
-											            }*/
+								    			
 		
 									    				if(otherExistingLoans.size()> 0)
 									    				{
@@ -1088,7 +874,7 @@ public class ConvertPreMemberToMemberSchedular implements Schedulable {
         }
         
         
-        public void SetMergerReportData(Set<id> listIds, Map<ID,String> PreMemberNumberMap, boolean matching)
+        public void SetMergerReportData(Set<id> listIds, Map<ID,String> PreMemberNumberMap, boolean matching, List<ReportWrapperClass> classcollection)
         {
         	
         	system.debug('listIds###' + listIds);
@@ -1123,50 +909,81 @@ public class ConvertPreMemberToMemberSchedular implements Schedulable {
 	           if(notFound.size() > 0)
    			 	 {
    			 	 	List<Account> acclist =  [Select Id,ParentId, Name , Createddate, Owner.Name from Account where id IN :notFound];
+   			 	 	 system.debug('acclist#'+acclist);
    			 	 	if(acclist.size() > 0)
    			 	 	{
-   			 	 		for(Account a : acclist)
-   			 	 		{
-   			 	 			Member_Conversion_Report__c report = new Member_Conversion_Report__c();
-   			 	 			if(matching)
+   			 	 		
+   			 	 			for(ReportWrapperClass cc: classcollection)
    			 	 			{
-   			 	 				report.Member_Number__c =  PreMemberNumberMap.get(a.id);
+   			 	 				for(Account a : acclist)
+   			 	 				{
+   			 	 					if(cc.ma.id == a.id)
+   			 	 					{
+			   			 	 			Member_Conversion_Report__c report = new Member_Conversion_Report__c();
+			   			 	 			if(matching)
+			   			 	 			{
+			   			 	 				report.Member_Number__c =  PreMemberNumberMap.get(a.id);
+			   			 	 			}
+			   			 	 			report.IsMatching__c = matching;
+							           	report.Member_Created_Date__c = a.Createddate;
+							       		report.User_Name__c = a.Owner.Name;
+							       		report.Member__c = a.id;
+							       		report.Process_Type__c ='Automated';
+					   			 		report.Is_Phone_Matching__c = cc.IsPhoneMatching;
+							       		report.Is_Email_Matching__c = cc.IsEmailMatching;
+							       		report.Is_Street_Matching__c = cc.IsStreetMatching;
+							       		report.Is_City_Matching__c = cc.IsCityMatching;
+							       		report.Is_State_Matching__c = cc.IsStateMatching;
+							       		report.Is_Zipcode_Matching__c = cc.IsZipcodeMatching;
+					   			 		report.First_Name__c = cc.FirstName;
+					   			 		report.Last_Name__c = cc.LastName;
+							           	reportlist.Add(report);
+   			 	 					}
    			 	 			}
-   			 	 			report.IsMatching__c = matching;
-				           	report.Member_Created_Date__c = a.Createddate;
-				       		report.User_Name__c = a.Owner.Name;
-				       		report.Member__c = a.id;
-				           	reportlist.Add(report);
    			 	 		}
    			 	 	}
    			 	 
    			 	 }		 	
    			 	 
    			 	 Set<id> memberiddone = new set<id>();
-	   			 for(Person_Account__c pa : palist){
-	   			 	
-	   			 	if(!memberiddone.contains(pa.PersonID__c))
-	   			 	{
-	   			 	
-							Member_Conversion_Report__c report = new Member_Conversion_Report__c();
-		   			 		report.IsMatching__c = matching;
-		   			 		if(matching)
-		   			 	 			{
-		   			 	 				report.Member_Number__c =  PreMemberNumberMap.get(pa.PersonID__c);
-		   			 	 			}
-		   			 		
-		   			 		report.Member_Created_Date__c = pa.PersonId__r.Createddate;
-		   			 		report.Member__c = pa.PersonID__c;
-		   			 		report.Member_Episys_Alias__c = pa.Account_Number__r.Created_By_User_Alias__c;
-		   			 		report.Member_Episys_Id__c = pa.Account_Number__r.Created_By_User__c;
-		   			 		report.User_Name__c = pa.Account_Number__r.Created_By_User_Text__c;
-		   			 		
-		   			 		report.Member_Account__c = pa.Account_Number__r.id;
-		   			 		system.debug('report###'+ report);
-		   			 		reportlist.Add(report);
-						    memberiddone.add(pa.PersonID__c);
-	   			 	}
-	   			 	
+	   			
+	   			 system.debug('palist#'+palist);
+	   			 	for(ReportWrapperClass cc: classcollection)
+   			 	 			{
+   			 	 				 for(Person_Account__c pa : palist)
+	   							 {
+					   			 	if(!memberiddone.contains(pa.PersonID__c) && cc.ma.id == pa.PersonId__c)
+					   			 	{
+				   			 	
+										Member_Conversion_Report__c report = new Member_Conversion_Report__c();
+					   			 		report.IsMatching__c = matching;
+					   			 		if(matching)
+					   			 	 			{
+					   			 	 				report.Member_Number__c =  PreMemberNumberMap.get(pa.PersonID__c);
+					   			 	 			}
+					   			 		
+					   			 		report.Member_Created_Date__c = pa.PersonId__r.Createddate;
+					   			 		report.Member__c = pa.PersonID__c;
+					   			 		report.Member_Episys_Alias__c = pa.Account_Number__r.Created_By_User_Alias__c;
+					   			 		report.Member_Episys_Id__c = pa.Account_Number__r.Created_By_User__c;
+					   			 		report.User_Name__c = pa.Account_Number__r.Created_By_User_Text__c;
+					   			 		
+					   			 		report.Member_Account__c = pa.Account_Number__r.id;
+					   			 		report.Process_Type__c ='Automated';
+					   			 		report.Is_Phone_Matching__c = cc.IsPhoneMatching;
+							       		report.Is_Email_Matching__c = cc.IsEmailMatching;
+							       		report.Is_Street_Matching__c = cc.IsStreetMatching;
+							       		report.Is_City_Matching__c = cc.IsCityMatching;
+							       		report.Is_State_Matching__c = cc.IsStateMatching;
+							       		report.Is_Zipcode_Matching__c = cc.IsZipcodeMatching;
+					   			 		report.First_Name__c = cc.FirstName;
+					   			 		report.Last_Name__c = cc.LastName;
+					   			 		system.debug('report###'+ report);
+					   			 		reportlist.Add(report);
+									    memberiddone.add(pa.PersonID__c);
+				   			 	}
+				   			 	
+				   			 }
 	   			 }
    			 	system.debug('memberiddone#' + memberiddone);
    			 	system.debug('reportlist#' + reportlist.size());
@@ -1189,5 +1006,24 @@ public class ConvertPreMemberToMemberSchedular implements Schedulable {
         	}
         	return '';
         }
-    
+   
+
+
+public class ReportWrapperClass{
+
+public Account ma {get; set;}
+public Account pma {get;set;}
+public Boolean IsMatching {get;set;}
+public Boolean IsPhoneMatching {get;set;}
+public Boolean IsEmailMatching {get;set;}
+public Boolean IsStreetMatching  {get;set;}
+public Boolean IsCityMatching {get;set;}
+public Boolean IsStateMatching {get;set;}
+public Boolean IsZipcodeMatching {get;set;}
+public String FirstName {get;set;}
+public String LastName {get;set;}
+	
+
+
+}
 }

@@ -5,7 +5,7 @@ private class MemberCommentsControllerTest
 	//Add Logic to Create data required
 	
 	static void SetUp(){
-		test.StartTest();
+		
          Account_Details__c  act = new Account_Details__c(Name = '0000147163', Balance__c = 0.00, Combined_Account_ID__c = '0000147163S0100P0100', ID1__c = '0100', Onboarded__c = true, RecType__c = 'ACCT', TypeTranslate__c = '1-PRIMARY SHARE');
 		Insert act;
         Case caseObj =new Case(Status = 'In Process', Origin = null, Subject = 'Test', ClosedDate = null, IsEscalated = false,Account_Number__c = act.Id, Additional_Documents__c = false, Staff_Escalated__c = false, Five_Day_Flag__c = false, IsMarkDeleted__c = false, IsMarkRead__c = false, IsMarkSaved__c = false, Primary_Category__c = 'Account Maintenance', Secondary_Category__c = 'Account Services', Tertiary_Category__c = 'Extended Check Hold', MaritzCX__Response_Deleted_From_MaritzCX__c = false, SLATemp__c = false);
@@ -52,6 +52,7 @@ private class MemberCommentsControllerTest
         
         Canned_Message_Metadata__c cannedMessageHeader = new Canned_Message_Metadata__c(Name='Metadata' ,Chevron_Footer__c = 'test test', Chevron_Header__c= 'test test', Spectrum_Footer__c= 'test test', Spectrum_Header__c= 'test test'); 
         Insert cannedMessageHeader;
+        test.StartTest();
 	}
 	//Tear Down 
 	//Add Logic to delete data that has been created
@@ -61,7 +62,7 @@ private class MemberCommentsControllerTest
 	
 	// Test Method: getBasicDetails
 	public static testmethod void Test_getBasicDetails(){
-		SetUp();
+		/*SetUp();
         Case caseObj = [select Id from case limit 1];
 		// TODO : Change following Assert Statement
 		System.Assert(MemberCommentsController.getBasicDetails(caseObj.Id) != null);
@@ -88,7 +89,7 @@ private class MemberCommentsControllerTest
 				ca.checkvalue = false;
         }
         MemberCommentsController.saveComment('ttest test', mobj.Id, true, 'test@test.com', JSON.serialize(objAttachmentDetails), true);
-		TearDown();
+		TearDown();*/
 	}
 	
 	// Test Method: getAttachmentDetails

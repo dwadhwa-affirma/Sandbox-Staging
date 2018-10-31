@@ -1,15 +1,15 @@
 public class MemberAuthenticationController{
     
     /* variables without IVR prefix will contain latest value (IVR or entered by user or changed on selection)
-    	variables prefixed with IVR witll contain values returned by IVR and will not be changed.
-    	No need for IVR copy variables
-    	variables with Confirm Suffix are confirmed by agent
+        variables prefixed with IVR witll contain values returned by IVR and will not be changed.
+        No need for IVR copy variables
+        variables with Confirm Suffix are confirmed by agent
     */
     
     /*
-    	1) Basic flow - verify if all parameters have succeeded (3 validations minimum) redirect to member_authenticated and log.
-    	2) IVR entered values + additional information asked by agent
-    	3) Clear all fields and values entered by agent
+        1) Basic flow - verify if all parameters have succeeded (3 validations minimum) redirect to member_authenticated and log.
+        2) IVR entered values + additional information asked by agent
+        3) Clear all fields and values entered by agent
     */
     
   public  Integer clickcount =0;
@@ -39,8 +39,8 @@ public class MemberAuthenticationController{
     public String EnteredMemberNumber{get;set;}
     private String IVREnteredMemberNumber{get;set;}
     public String EnteredMemberNumberRetain{get;set;}
-		
-	public String MemberNumberMatch{get;set;}
+        
+    public String MemberNumberMatch{get;set;}
     private String IVRMemberNumberMatch{get;set;}
     /* Valid - Verified - No Match Found*/
     public string MemberNumberMatchStatus {get;set;}
@@ -52,7 +52,7 @@ public class MemberAuthenticationController{
     public String IVRSSNnumberMatch{get;set;}
     public boolean SSNnumberConfirm{get;set;}{SSNnumberConfirm = false;}
     
-	public string SSNnumberConfirmString{get;set;}{SSNnumberConfirmString = '';}
+    public string SSNnumberConfirmString{get;set;}{SSNnumberConfirmString = '';}
       
     public String SalesforceID{get;set;}
     
@@ -107,16 +107,16 @@ public class MemberAuthenticationController{
     
     // calculated variable
     public integer nameListSize{
-    	get
-    	{
-    		if (NameList != null)
-    			return NameList.size();
-    		else
-    			return 0;
-    	}
-    	
-    	}
-	// not sure    
+        get
+        {
+            if (NameList != null)
+                return NameList.size();
+            else
+                return 0;
+        }
+        
+        }
+    // not sure    
     private String oldFieldToMatch{get; set;}
     
     // internal
@@ -130,8 +130,8 @@ public class MemberAuthenticationController{
    
     public Boolean showloantables {get
     {
-    	if(MemberLoanDetails != null && !MemberLoanDetails.isEmpty())
-    	{       
+        if(MemberLoanDetails != null && !MemberLoanDetails.isEmpty())
+        {       
           return true;      
         }       
         else
@@ -142,12 +142,12 @@ public class MemberAuthenticationController{
     }}
     public boolean showErrorMsgLoanData {get
     {
-    	if (selectedID == '')
-    	{
-    		return false;
-    	}
-    	else if(MemberLoanDetails != null && !MemberLoanDetails.isEmpty())
-    	{       
+        if (selectedID == '')
+        {
+            return false;
+        }
+        else if(MemberLoanDetails != null && !MemberLoanDetails.isEmpty())
+        {       
           return false;      
         }       
         else
@@ -177,13 +177,13 @@ public class MemberAuthenticationController{
     // Additional tokens internal
     public string AdditionalToken1Selection {get;set;}
     public string AdditionalToken1chk {get;set;}
-	public string AdditionalToken1chkString {get;set;}{AdditionalToken1chkString='';}
+    public string AdditionalToken1chkString {get;set;}{AdditionalToken1chkString='';}
     public string AdditionalToken2Selection {get;set;}
     public string AdditionalToken2chk {get;set;}
-	public string AdditionalToken2chkString {get;set;}{AdditionalToken2chkString='';}
+    public string AdditionalToken2chkString {get;set;}{AdditionalToken2chkString='';}
     public string AdditionalToken3Selection {get;set;}
     public string AdditionalToken3chk {get;set;}
-	public string AdditionalToken3chkString {get;set;}{AdditionalToken3chkString='';}
+    public string AdditionalToken3chkString {get;set;}{AdditionalToken3chkString='';}
     public string AdditionalTokenOtherText {get;set;}
     public string AdditionalTokenOtherText1 {get;set;}
     public string AdditionalTokenOtherText2 {get;set;}
@@ -194,9 +194,9 @@ public class MemberAuthenticationController{
     private verifyCaller vc = new verifyCaller();
     public List<SelectOption> AdditionalTokens
     {
-    	get
-    	{
-    		 List<SelectOption> options = new List<SelectOption>();
+        get
+        {
+             List<SelectOption> options = new List<SelectOption>();
             options.add(new SelectOption('','Select'));
             options.add(new SelectOption('ATM/Debit Card','ATM/Debit Card'));
             options.add(new SelectOption('Birth place','Birth place'));
@@ -209,15 +209,15 @@ public class MemberAuthenticationController{
             options.add(new SelectOption('Other','Other'));
             
             return options;
-    		
-    	}
+            
+        }
     }
     
     public List<SelectOption> AdditionalTokensWithOther
     {
-    	get
-    	{
-    		 List<SelectOption> options = new List<SelectOption>();
+        get
+        {
+             List<SelectOption> options = new List<SelectOption>();
             options.add(new SelectOption('','Select'));
             options.add(new SelectOption('ATM/Debit Card','ATM/Debit Card'));
             options.add(new SelectOption('Birth place','Birth place'));
@@ -230,8 +230,8 @@ public class MemberAuthenticationController{
             options.add(new SelectOption('Other','Other'));
             
             return options;
-    		
-    	}
+            
+        }
     }
     
     public MemberAuthenticationController(){
@@ -269,18 +269,18 @@ public class MemberAuthenticationController{
             noOfVerifiedFields = noOfVerifiedFields+1;
         }  
         if(noOfVerifiedFields < 3){
-        	setConfirmationOncheckboxes();
-        	
-        	if(EnteredMemberNumber == null || EnteredMemberNumber == '')
-        	{
-        		fromMarsData = 'True';
-        	}
-        	else
-        	{
-        		fromMarsData = 'False';
-        	}
-        	
-    		pageCalulated = new PageReference('/apex/verifiy');         
+            setConfirmationOncheckboxes();
+            
+            if(EnteredMemberNumber == null || EnteredMemberNumber == '')
+            {
+                fromMarsData = 'True';
+            }
+            else
+            {
+                fromMarsData = 'False';
+            }
+            
+            pageCalulated = new PageReference('/apex/verifiy');         
             pageCalulated.setRedirect(false);
         }
         else
@@ -381,17 +381,17 @@ public class MemberAuthenticationController{
                 LoanSelectedID = '';
                 for(Account_Details__c detail :MemberLoanDetails)
                 {
-                	if(LoanSelectedID == '')
-                	{
-                		LoanSelectedID = LoanSelectedID + detail.id + '# ';	
-                	}
-                	else
-                	{
-                		LoanSelectedID = LoanSelectedID + ';' + detail.id + '# ';
-                		
-                	}
-                	 
-                	
+                    if(LoanSelectedID == '')
+                    {
+                        LoanSelectedID = LoanSelectedID + detail.id + '# '; 
+                    }
+                    else
+                    {
+                        LoanSelectedID = LoanSelectedID + ';' + detail.id + '# ';
+                        
+                    }
+                     
+                    
                 }
                 
                 
@@ -443,7 +443,7 @@ public class MemberAuthenticationController{
         system.debug('DLStateIdPassport= '+ DLStateIdPassport);
         if (EnteredCardNumberFormatted != '' && EnteredCardNumberFormatted != null)
         {
-        	EnteredCardNumber = EnteredCardNumberFormatted;
+            EnteredCardNumber = EnteredCardNumberFormatted;
         }
         
         // On member selection
@@ -452,8 +452,8 @@ public class MemberAuthenticationController{
         }
         else
         { 
-        	// without member selection
-        	VerifyCallerDetailsNoSelection();
+            // without member selection
+            VerifyCallerDetailsNoSelection();
         }
        
        return null;
@@ -463,7 +463,7 @@ public class MemberAuthenticationController{
     // verify details without selected member
     private void verifyCallerDetailsNoSelection()
     {
-    	system.debug('in else');
+        system.debug('in else');
                     String fieldnametocheck = '';
                     verificationObject userEnteredInformation = new verificationObject();
                     system.debug(fieldnametocheck);
@@ -492,24 +492,24 @@ public class MemberAuthenticationController{
                         }
                     }
                     if(!string.isEmpty(EnteredMemberNumber)){
-                    	string finalstring;
-                        	finalstring = EnteredMemberNumber;
- 							if(EnteredMemberNumber.length() <10)
- 							{
-								for(Integer i=0;i<10-EnteredMemberNumber.length();i++)
-								{
-   									finalstring = '0'+finalstring;
-   									system.debug('EnteredMemberNumber--'+EnteredMemberNumber);
-  								} 							        
- 							}		
- 							system.debug('finalstring--'+finalstring);				
- 							system.debug('fieldnametocheck = memberNumber');
-							
-							EnteredMemberNumber = finalstring;
-							userEnteredInformation.memberNumber = EnteredMemberNumber;
-                            fieldnametocheck = 'memberNumber'; 		
-                            							
- 											                                       	                          
+                        string finalstring;
+                            finalstring = EnteredMemberNumber;
+                            if(EnteredMemberNumber.length() <10)
+                            {
+                                for(Integer i=0;i<10-EnteredMemberNumber.length();i++)
+                                {
+                                    finalstring = '0'+finalstring;
+                                    system.debug('EnteredMemberNumber--'+EnteredMemberNumber);
+                                }                                   
+                            }       
+                            system.debug('finalstring--'+finalstring);              
+                            system.debug('fieldnametocheck = memberNumber');
+                            
+                            EnteredMemberNumber = finalstring;
+                            userEnteredInformation.memberNumber = EnteredMemberNumber;
+                            fieldnametocheck = 'memberNumber';      
+                                                        
+                                                                                                              
                         
                     }
                                                       
@@ -662,24 +662,24 @@ public class MemberAuthenticationController{
                         
                         // verify if member number is valid
                         if (userEnteredInformation.memberNumber != '' && userEnteredInformation.memberNumber != null)
-				        {
-				        	boolean memberNumberValidated = vc.validateMemberNumber(userEnteredInformation.memberNumber);
-				        	if (memberNumberValidated == true)
-				        	{
-				        		MemberNumberMatchStatus = 'Valid';
-				        		MemberNumberMatch = 'true';
-				        	}
-				        	else
-				        	{
-				        		MemberNumberMatchStatus = 'No Match Found';
-				        		MemberNumberMatch = 'false';
-				        	}
-				        }
-				        else
-				        {
-				        	MemberNumberMatchStatus = '';
-				        	MemberNumberMatch = '';
-				        }
+                        {
+                            boolean memberNumberValidated = vc.validateMemberNumber(userEnteredInformation.memberNumber);
+                            if (memberNumberValidated == true)
+                            {
+                                MemberNumberMatchStatus = 'Valid';
+                                MemberNumberMatch = 'true';
+                            }
+                            else
+                            {
+                                MemberNumberMatchStatus = 'No Match Found';
+                                MemberNumberMatch = 'false';
+                            }
+                        }
+                        else
+                        {
+                            MemberNumberMatchStatus = '';
+                            MemberNumberMatch = '';
+                        }
                         system.debug(MemberNumberMatch);
                         system.debug(MemberNumberMatchStatus);
                         if(NameList.size()>0){
@@ -831,9 +831,9 @@ public class MemberAuthenticationController{
     
     private void setCardStatus(Account selectedOne)
     {
-    	
-    	/*
-    	 if(EnteredCardNumber != null && EnteredCardNumber != '' && EnteredCardNumber.length() > 4)
+        
+        /*
+         if(EnteredCardNumber != null && EnteredCardNumber != '' && EnteredCardNumber.length() > 4)
                 {
                     //CardNumberMatch = 'false';
                     system.debug('Inside Card Number verfiy');
@@ -856,151 +856,151 @@ public class MemberAuthenticationController{
                 {
                   //  CardNumberMatch = null;
                     
-	                if(EnteredCardNumberLastdigits != null && EnteredCardNumberLastdigits != '' && EnteredCardNumber.length() == 4)
-	                {
-	                    CardNumberMatch = 'false';
-	                    system.debug('Inside Card Number verfiy 2');
-	                    List<Account_Details__c> cardDetails = new List<Account_Details__c>();
-	                    cardDetails = vc.CardNumbersAuth(selectedOne.Id);
-	                    for(Account_Details__c pc : cardDetails)
-	                    {
-	                    	system.debug('LAst 4 diggits 2 :' + pc.Card_Number_Last_4_Digits__c);
-	                        if(EnteredCardNumberLastdigits == pc.Card_Number_Last_4_Digits__c){
-	                            CardNumberMatch = 'true';
-	                            if (IVRCardNumberMatch == 'true')
-	                            {
-	                                CardNumberConfirm = true;
-	                                system.debug('Setting CardNumber confirm to true');
-	                                //break;
-	                            }
-	                        }
-	                    }
-	                }
-	                else 
-	                {
-	                    
-	                    //CardNumberMatch = null;
-	                    
-	                }
+                    if(EnteredCardNumberLastdigits != null && EnteredCardNumberLastdigits != '' && EnteredCardNumber.length() == 4)
+                    {
+                        CardNumberMatch = 'false';
+                        system.debug('Inside Card Number verfiy 2');
+                        List<Account_Details__c> cardDetails = new List<Account_Details__c>();
+                        cardDetails = vc.CardNumbersAuth(selectedOne.Id);
+                        for(Account_Details__c pc : cardDetails)
+                        {
+                            system.debug('LAst 4 diggits 2 :' + pc.Card_Number_Last_4_Digits__c);
+                            if(EnteredCardNumberLastdigits == pc.Card_Number_Last_4_Digits__c){
+                                CardNumberMatch = 'true';
+                                if (IVRCardNumberMatch == 'true')
+                                {
+                                    CardNumberConfirm = true;
+                                    system.debug('Setting CardNumber confirm to true');
+                                    //break;
+                                }
+                            }
+                        }
+                    }
+                    else 
+                    {
+                        
+                        //CardNumberMatch = null;
+                        
+                    }
                 }
                 
                 */
     }
     private void setOtherMatch(Account selectedOne)
     {
-    	// Set SSN number status
+        // Set SSN number status
                 
                 if (ClearAllFlag == true)
                 {
-                	if (selectedOne.SSN_Last_4__pc == null || selectedOne.SSN_Last_4__pc == '')
-                	{
-                		EnteredSSN = '';
-                		SSNNumberMatch = '';
-                	}
-                	else
-                	{
-                    	EnteredSSN = selectedOne.SSN_Last_4__pc;
-                    	SSNnumberMatch = 'true';
-                	}
-	                
-	                
+                    if (selectedOne.SSN_Last_4__pc == null || selectedOne.SSN_Last_4__pc == '')
+                    {
+                        EnteredSSN = '';
+                        SSNNumberMatch = '';
+                    }
+                    else
+                    {
+                        EnteredSSN = selectedOne.SSN_Last_4__pc;
+                        SSNnumberMatch = 'true';
+                    }
+                    
+                    
                 }
                 else
                 {
-                	if (selectedOne.SSN_Last_4__pc == null || selectedOne.SSN_Last_4__pc == '')
-                	{
-                		EnteredSSN = '';
-                		SSNNumberMatch = '';
-                	}
-                	else
-                	{
-                    	EnteredSSN = selectedOne.SSN_Last_4__pc;
-                    	SSNnumberMatch = 'true';
-                	}
-                	/*
-                	// if information recieved from IVR - keep same
-                	if (IVREnteredSSN != null && IVREnteredSSN != '')
-                	{
-                		EnteredSSN = IVREnteredSSN;
-                		SSNnumberMatch =  IVRSSNnumberMatch;
-                		if (IVRSSNnumberMatch == 'true')
-	                    {
-	                     	SSNnumberConfirm = true;
-	                    }
-                	}
-                	else
-                	{
-                		if (selectedOne.SSN_Last_4__pc == null || selectedOne.SSN_Last_4__pc == '')
-	                	{
-	                		EnteredSSN = '';
-	                		SSNNumberMatch = '';
-	                	}
-	                	else
-	                	{
-	                    	EnteredSSN = selectedOne.SSN_Last_4__pc;
-	                    	SSNnumberMatch = 'true';
-	                	}
-		                
-                	}
-                	*/
+                    if (selectedOne.SSN_Last_4__pc == null || selectedOne.SSN_Last_4__pc == '')
+                    {
+                        EnteredSSN = '';
+                        SSNNumberMatch = '';
+                    }
+                    else
+                    {
+                        EnteredSSN = selectedOne.SSN_Last_4__pc;
+                        SSNnumberMatch = 'true';
+                    }
+                    /*
+                    // if information recieved from IVR - keep same
+                    if (IVREnteredSSN != null && IVREnteredSSN != '')
+                    {
+                        EnteredSSN = IVREnteredSSN;
+                        SSNnumberMatch =  IVRSSNnumberMatch;
+                        if (IVRSSNnumberMatch == 'true')
+                        {
+                            SSNnumberConfirm = true;
+                        }
+                    }
+                    else
+                    {
+                        if (selectedOne.SSN_Last_4__pc == null || selectedOne.SSN_Last_4__pc == '')
+                        {
+                            EnteredSSN = '';
+                            SSNNumberMatch = '';
+                        }
+                        else
+                        {
+                            EnteredSSN = selectedOne.SSN_Last_4__pc;
+                            SSNnumberMatch = 'true';
+                        }
+                        
+                    }
+                    */
                 }
                 
                 
                 // Set DOB status
                 if (ClearAllFlag == true)
                 {
-                	if (selectedOne.BIRTH_DATE__pc == null )
-                	{
-                		DOB = '';
-                		DOBMatch = '';
-                	}
-                	else
-                	{
-                		Dob = DateTime.newInstance(selectedOne.BIRTH_DATE__pc.year(),selectedOne.BIRTH_DATE__pc.month(),selectedOne.BIRTH_DATE__pc.day()).format('MM-dd-YYYY');
-                    	//DOB = String.valueof(selectedOne.BIRTH_DATE__pc);
-                    	DOBMatch = 'true';
-                	}
-	                
+                    if (selectedOne.BIRTH_DATE__pc == null )
+                    {
+                        DOB = '';
+                        DOBMatch = '';
+                    }
+                    else
+                    {
+                        Dob = DateTime.newInstance(selectedOne.BIRTH_DATE__pc.year(),selectedOne.BIRTH_DATE__pc.month(),selectedOne.BIRTH_DATE__pc.day()).format('MM-dd-YYYY');
+                        //DOB = String.valueof(selectedOne.BIRTH_DATE__pc);
+                        DOBMatch = 'true';
+                    }
+                    
                 }
                 else
                 {
-                	if (selectedOne.BIRTH_DATE__pc == null )
-                	{
-                		DOB = '';
-                		DOBMatch = '';
-                	}
-                	else
-                	{
-                    	//DOB = String.valueof(selectedOne.BIRTH_DATE__pc);
-                    	Dob = DateTime.newInstance(selectedOne.BIRTH_DATE__pc.year(),selectedOne.BIRTH_DATE__pc.month(),selectedOne.BIRTH_DATE__pc.day()).format('MM-dd-YYYY');
-                    	DOBMatch = 'true';
-                	}
-                	/*
-                	// if information recieved from IVR - keep same
-                	if (IVRDOB != null && IVRDOB != '')
-                	{
-                		DOB = IVRDOB;
-                		DOBMatch =  IVRDOBMatch;
-                		if (IVRDOBMatch == 'true')
-	                    {
-	                     	DOBConfirm = true;
-	                    }
-                	}
-                	else
-                	{
-                		if (selectedOne.BIRTH_DATE__pc == null )
-	                	{
-	                		DOB = '';
-	                		DOBMatch = '';
-	                	}
-	                	else
-	                	{
-	                    	DOB = String.valueof(selectedOne.BIRTH_DATE__pc);
-	                    	DOBMatch = 'true';
-	                	}
-		                
-                	}*/
-                	
+                    if (selectedOne.BIRTH_DATE__pc == null )
+                    {
+                        DOB = '';
+                        DOBMatch = '';
+                    }
+                    else
+                    {
+                        //DOB = String.valueof(selectedOne.BIRTH_DATE__pc);
+                        Dob = DateTime.newInstance(selectedOne.BIRTH_DATE__pc.year(),selectedOne.BIRTH_DATE__pc.month(),selectedOne.BIRTH_DATE__pc.day()).format('MM-dd-YYYY');
+                        DOBMatch = 'true';
+                    }
+                    /*
+                    // if information recieved from IVR - keep same
+                    if (IVRDOB != null && IVRDOB != '')
+                    {
+                        DOB = IVRDOB;
+                        DOBMatch =  IVRDOBMatch;
+                        if (IVRDOBMatch == 'true')
+                        {
+                            DOBConfirm = true;
+                        }
+                    }
+                    else
+                    {
+                        if (selectedOne.BIRTH_DATE__pc == null )
+                        {
+                            DOB = '';
+                            DOBMatch = '';
+                        }
+                        else
+                        {
+                            DOB = String.valueof(selectedOne.BIRTH_DATE__pc);
+                            DOBMatch = 'true';
+                        }
+                        
+                    }*/
+                    
                 }
              
                 
@@ -1008,91 +1008,91 @@ public class MemberAuthenticationController{
                 
                  if (ClearAllFlag == true)
                 {
-                	if (selectedOne.Mothers_Maiden_Name__pc == null || selectedOne.Mothers_Maiden_Name__pc == '')
-                	{
-                		MMN = '';
-                		MMNMatch = '';
-                	}
-                	else
-                	{
-                    	MMN = selectedOne.Mothers_Maiden_Name__pc;
-                    	MMNMatch = 'true';
-                	}
-	                
-	                
+                    if (selectedOne.Mothers_Maiden_Name__pc == null || selectedOne.Mothers_Maiden_Name__pc == '')
+                    {
+                        MMN = '';
+                        MMNMatch = '';
+                    }
+                    else
+                    {
+                        MMN = selectedOne.Mothers_Maiden_Name__pc;
+                        MMNMatch = 'true';
+                    }
+                    
+                    
                 }
                 else
                 {
-					if (selectedOne.Mothers_Maiden_Name__pc == null || selectedOne.Mothers_Maiden_Name__pc == '')
-                	{
-                		MMN = '';
-                		MMNMatch = '';
-                	}
-                	else
-                	{
-                    	MMN = selectedOne.Mothers_Maiden_Name__pc;
-                    	MMNMatch = 'true';
-                	}
-		            
-                	
+                    if (selectedOne.Mothers_Maiden_Name__pc == null || selectedOne.Mothers_Maiden_Name__pc == '')
+                    {
+                        MMN = '';
+                        MMNMatch = '';
+                    }
+                    else
+                    {
+                        MMN = selectedOne.Mothers_Maiden_Name__pc;
+                        MMNMatch = 'true';
+                    }
+                    
+                    
                 }
                 
     }
     
     private void setEmailStatus(Account selectedOne)
     {
-    	                //Set Email Status
+                        //Set Email Status
                  if (ClearAllFlag == true)
                 {
-                	if (selectedOne.PersonEmail == null || selectedOne.PersonEmail == '')
-                	{
-                		Email = '';
-                		EmailMatch = '';
-                	}
-                	else
-                	{
-                    	Email = selectedOne.PersonEmail;
-                    	EmailMatch = 'true';
-                	}
-	                
-	                
+                    if (selectedOne.PersonEmail == null || selectedOne.PersonEmail == '')
+                    {
+                        Email = '';
+                        EmailMatch = '';
+                    }
+                    else
+                    {
+                        Email = selectedOne.PersonEmail;
+                        EmailMatch = 'true';
+                    }
+                    
+                    
                 }
                 else
                 {
-					if (selectedOne.PersonEmail == null || selectedOne.PersonEmail == '')
-                	{
-                		Email = '';
-                		EmailMatch = '';
-                	}
-                	else
-                	{
-                    	Email = selectedOne.PersonEmail;
-                    	EmailMatch = 'true';
-                	}
-		            
-                	
+                    if (selectedOne.PersonEmail == null || selectedOne.PersonEmail == '')
+                    {
+                        Email = '';
+                        EmailMatch = '';
+                    }
+                    else
+                    {
+                        Email = selectedOne.PersonEmail;
+                        EmailMatch = 'true';
+                    }
+                    
+                    
                 }
                 
-    	
+        
     }
     
     private void setMemberNumberMatchStatus(Account selectedOne, List<Account_Details__c> memberDetails)
     {
-    	Set<String> memberDetailsNames = new Set<String>();
-    	// CLEAR ALL FLAG
-    	if (clearAllFlag == true)
-    	{
-    		    
-    		    // SEARCH BASED ON other fields than member number  
+        Set<String> memberDetailsNames = new Set<String>();
+        // CLEAR ALL FLAG
+        if (clearAllFlag == true)
+        {
+                
+                // SEARCH BASED ON other fields than member number  
                 if(EnteredMemberNumber == null || EnteredMemberNumber == '')
                 {
-                	 
+                     
                     MemberNumberMatch = null;
                     for(Account_Details__c acctD : memberDetails)
                     {
                         memberDetailsNames.add(acctD.Name); 
                         System.Debug(acctD);                       
-                	}
+                    }
                     system.debug('memberDetails.size()....'+memberDetails.size());
                     system.debug('memberDetailsNames....'+memberDetailsNames.size());                               
                     
@@ -1100,33 +1100,33 @@ public class MemberAuthenticationController{
                     
                     if(i == 1)
                     { 
-                    	MemberNumberMatchStatus = 'Verified';
-                    	EnteredMemberNumber = memberDetails[0].Name;
+                        MemberNumberMatchStatus = 'Verified';
+                        EnteredMemberNumber = memberDetails[0].Name;
                     }
                     else if (i > 1)
                     {
-                    	EnteredMemberNumber = memberDetails[0].Name;
-                    	MemberNumberMatchStatus = 'Verified';
-                        MultipleMemberNumberAlert = 'This person is related to more than one member number';	
+                        EnteredMemberNumber = memberDetails[0].Name;
+                        MemberNumberMatchStatus = 'Verified';
+                        MultipleMemberNumberAlert = 'This person is related to more than one member number';    
                     }
                     else if(i == 0)
                     {
-                    	MemberNumberMatchStatus = '';
+                        MemberNumberMatchStatus = '';
                         MultipleMemberNumberAlert = 'This person is not related to any member number';
                     }
                                     
                 }
                 else
                 {
-                	// SEARCH BASED ON member number
-                	
+                    // SEARCH BASED ON member number
+                    
                     MultipleMemberNumberAlert = '';
                     //MemberNumberMatchStatus = '';
                     MemberNumberMatch = 'false';
                     EnteredMemberNumber = FormatMemberNumber(EnteredMemberNumber);
                     
                     for(Account_Details__c pc : memberDetails){
-                    	memberDetailsNames.add(pc.Name); 
+                        memberDetailsNames.add(pc.Name); 
                         if(EnteredMemberNumber == pc.Name){
                             MemberNumberMatch = 'true';
                             
@@ -1137,27 +1137,27 @@ public class MemberAuthenticationController{
                     
                     if(i == 1)
                     { 
-                    	MemberNumberMatchStatus = 'Verified';
-                    	//EnteredMemberNumber = memberDetails[0].Name;
+                        MemberNumberMatchStatus = 'Verified';
+                        //EnteredMemberNumber = memberDetails[0].Name;
                     }
                     else if (i > 1)
                     {
-                    	//EnteredMemberNumber = memberDetails[0].Name;
-                    	MemberNumberMatchStatus = 'Verified';
-                        MultipleMemberNumberAlert = 'This person is related to more than one member number';	
+                        //EnteredMemberNumber = memberDetails[0].Name;
+                        MemberNumberMatchStatus = 'Verified';
+                        MultipleMemberNumberAlert = 'This person is related to more than one member number';    
                     }
                     else if(i == 0)
                     {
-                    	MemberNumberMatchStatus = '';
+                        MemberNumberMatchStatus = '';
                         MultipleMemberNumberAlert = 'This person is not related to any member number';
                     }
                                         
                 }
-    		
-    	}
-    	else
-    	{ // Information from IVR (not clear all)
-    		    System.debug(EnteredMemberNumber);
+            
+        }
+        else
+        { // Information from IVR (not clear all)
+                System.debug(EnteredMemberNumber);
                 if(EnteredMemberNumber == null || EnteredMemberNumber == '')
                 { 
                     MemberNumberMatch = null;        
@@ -1170,43 +1170,43 @@ public class MemberAuthenticationController{
                     
                     integer i = memberDetailsNames.size();
                     if(i == 1){
-                    	MultipleMemberNumberAlert = '';
+                        MultipleMemberNumberAlert = '';
                         EnteredMemberNumber = memberDetails[0].Name;
                         MemberNumberMatch = 'true';  
                         if (selectedOne.SSN_Last_4__pc != null && selectedOne.SSN_Last_4__pc != '')
                         {
-                        	MemberNumberMatchStatus = 'Verified';
+                            MemberNumberMatchStatus = 'Verified';
                         }
                         else
                         {
-                        	MemberNumberMatchStatus = 'Verified';
+                            MemberNumberMatchStatus = 'Verified';
                         }
                     }
                     else if(i > 1)
                     { 
-                    	                    	
-                    	EnteredMemberNumber = memberDetails[0].Name;
-                    	MemberNumberMatchStatus = 'Verified';
+                                                
+                        EnteredMemberNumber = memberDetails[0].Name;
+                        MemberNumberMatchStatus = 'Verified';
                         MultipleMemberNumberAlert = 'This person is related to more than one member number';
                     }
                     else if(i == 0)
                     {
-                    	
-                    	MemberNumberMatchStatus = '';
+                        
+                        MemberNumberMatchStatus = '';
                         MultipleMemberNumberAlert = 'This person is not related to any member number';
                     }
                                     
                 }
                 else
                 {
-                	boolean found = false;
+                    boolean found = false;
                     MultipleMemberNumberAlert = '';
                     MemberNumberMatchStatus = 'Verified';
                     //MemberNumberMatch = 'false';
                     EnteredMemberNumber = FormatMemberNumber(EnteredMemberNumber);
                     
                     for(Account_Details__c pc : memberDetails){
-                    	 memberDetailsNames.add(pc.Name); 
+                         memberDetailsNames.add(pc.Name); 
                         if(FormatMemberNumber(IVREnteredMemberNumber) == pc.Name){
                             //MemberNumberMatch = 'true';
                            found = true;
@@ -1216,64 +1216,64 @@ public class MemberAuthenticationController{
                     // when member number is not same as entered by IVR- member selected matched phone number entered
                     if (memberDetailsNames.size() > 0)
                     {
-                    	EnteredMemberNumber = memberDetails[0].Name;
-                    	MemberNumberMatch = 'true';
+                        EnteredMemberNumber = memberDetails[0].Name;
+                        MemberNumberMatch = 'true';
                     }
                     
                     integer i = memberDetailsNames.size();
                     system.debug(memberDetailsNames);
                     if(i == 1){
-                    	MultipleMemberNumberAlert = '';
+                        MultipleMemberNumberAlert = '';
                         if (selectedOne.SSN_Last_4__pc != null && selectedOne.SSN_Last_4__pc != '' && found == true)
                         {
-                        	MemberNumberMatchStatus = 'Verified';
+                            MemberNumberMatchStatus = 'Verified';
                         }
                         else
                         {
-                        	MemberNumberMatchStatus = 'Verified';
+                            MemberNumberMatchStatus = 'Verified';
                         }
                         
                         if (EnteredMemberNumber != FormatMemberNumber(IVREnteredMemberNumber))
-	                    {
-	                    	MemberNumberMatchStatus = 'Valid';
-	                    }
+                        {
+                            MemberNumberMatchStatus = 'Valid';
+                        }
                     }
                     else if(i > 1)
                     { 
-                    	// mima-67
-                    	for (string mid : memberDetailsNames)
-                    	{
-                    		if (mid == IVREnteredMemberNumber)
-                    		{
-                    			EnteredMemberNumber = FormatMemberNumber(IVREnteredMemberNumber);
-                    		}
-                    	}
-                    	MemberNumberMatchStatus = 'Verified';
+                        // mima-67
+                        for (string mid : memberDetailsNames)
+                        {
+                            if (mid == IVREnteredMemberNumber)
+                            {
+                                EnteredMemberNumber = FormatMemberNumber(IVREnteredMemberNumber);
+                            }
+                        }
+                        MemberNumberMatchStatus = 'Verified';
                         MultipleMemberNumberAlert = 'This person is related to more than one member number';
                         
                         if (!found)
-	                    {
-	                    	MemberNumberMatchStatus = 'Valid';
-	                    }
+                        {
+                            MemberNumberMatchStatus = 'Valid';
+                        }
                     }
                     else if (i == 0)
                     {
-                    	//EnteredMemberNumber = '';
-                    	MemberNumberMatchStatus = '';
+                        //EnteredMemberNumber = '';
+                        MemberNumberMatchStatus = '';
                     }
                     
                     
                                         
                 }
-    	}
-    	
-    	// Get member number detail and set member match status
+        }
+        
+        // Get member number detail and set member match status
             
     }
     private void setRelatedMemberDetails(Account selectedOne)
     {
-    	if(!MemberNameDobDetails.isEmpty())
-    	{                        
+        if(!MemberNameDobDetails.isEmpty())
+        {                        
                           
                    string Thisvalue = 'Primary';        
                    Set<id> personId = new Set<id>(); 
@@ -1281,7 +1281,7 @@ public class MemberAuthenticationController{
                         
                    uniqueMembersDetail = new Map <id,Person_Account__c>();      
                    for(Person_Account__c mem : MemberNameDobDetails){  
-                   		
+                        
                        if(!string.isEmpty(mem.TypeTranslate__c)){       
                           
                             if(mem.TypeTranslate__c.contains('Joint Owner') || mem.TypeTranslate__c.contains('Joint Member') || mem.TypeTranslate__c.contains('Member') 
@@ -1290,16 +1290,16 @@ public class MemberAuthenticationController{
                              || mem.TypeTranslate__c.contains('Representative Payee')
                              )
                              {      
-                             	system.debug('###  ### 1 - personId ' + personId);
-                             	system.debug('###  ### 2 - personId ' + mem.personId__c); 
-                             	system.debug('###  ### 2 - personId ' + selectedID);  
+                                system.debug('###  ### 1 - personId ' + personId);
+                                system.debug('###  ### 2 - personId ' + mem.personId__c); 
+                                system.debug('###  ### 2 - personId ' + selectedID);  
                                if(!personId.contains(mem.personId__c) ){
-	                               	if (selectedID != mem.personId__c)
-	                               	{     
-	                                   personId.add(mem.personId__c);       
-	                                   system.debug('not primary');     
-	                                   JTMemberNameDobDetails.add(mem);
-	                               	}             
+                                    if (selectedID != mem.personId__c)
+                                    {     
+                                       personId.add(mem.personId__c);       
+                                       system.debug('not primary');     
+                                       JTMemberNameDobDetails.add(mem);
+                                    }             
                                }                                                                
                            }        
                       }     
@@ -1320,12 +1320,12 @@ public class MemberAuthenticationController{
                             JTwrapperLst.add(JTW);
                             if(JTSelectedID == '')
                             {
-                            	JTSelectedID = JTW.ID + '# # ';
+                                JTSelectedID = JTW.ID + '# # ';
                             }
                             else
                             {
-                            	
-                            	JTSelectedID = JTSelectedID + ';' + JTW.ID + '# # ';
+                                
+                                JTSelectedID = JTSelectedID + ';' + JTW.ID + '# # ';
                             }
                         } 
                                                                                                                                 
@@ -1346,36 +1346,36 @@ public class MemberAuthenticationController{
     }
     private void setIDStatus(Account selectedOne)
     {
-    	
-	    	/*if(!string.isEmpty(selectedOne.ID_1_Number__pc))
-	    	{
-	            IdNumber = selectedOne.ID_1_Number__pc;
-	        }
-	        if(!string.isEmpty(selectedOne.ID_2_Number__pc)){
-	            
-	            if (string.isEmpty(IDNumber))
-	            {
-	                IdNumber = selectedOne.ID_2_Number__pc;
-	            }
-	            else
-	            {
-	                IdNumber += ', ' + selectedOne.ID_2_Number__pc;
-	            }
-	        } 
-	        if(!string.isEmpty(selectedOne.ID_3_Number__pc)){
-	            
-	            if (string.isEmpty(IDNumber))
-	            {
-	                IdNumber = selectedOne.ID_3_Number__pc;
-	            }
-	            else
-	            {
-	                IdNumber += ', ' + selectedOne.ID_3_Number__pc;
-	            }
-	            
-	        }*/
-	        
-			string IDNumberToMatch = '';
+        
+            /*if(!string.isEmpty(selectedOne.ID_1_Number__pc))
+            {
+                IdNumber = selectedOne.ID_1_Number__pc;
+            }
+            if(!string.isEmpty(selectedOne.ID_2_Number__pc)){
+                
+                if (string.isEmpty(IDNumber))
+                {
+                    IdNumber = selectedOne.ID_2_Number__pc;
+                }
+                else
+                {
+                    IdNumber += ', ' + selectedOne.ID_2_Number__pc;
+                }
+            } 
+            if(!string.isEmpty(selectedOne.ID_3_Number__pc)){
+                
+                if (string.isEmpty(IDNumber))
+                {
+                    IdNumber = selectedOne.ID_3_Number__pc;
+                }
+                else
+                {
+                    IdNumber += ', ' + selectedOne.ID_3_Number__pc;
+                }
+                
+            }*/
+            
+            string IDNumberToMatch = '';
            /* IDNumberToMatch = string.isEmpty(selectedOne.ID_1_Number__pc) ? '' : selectedOne.ID_1_Number__pc;
             if (string.isempty(IDNumberToMatch))
             {
@@ -1393,175 +1393,175 @@ public class MemberAuthenticationController{
             {
              IDNumberToMatch += string.isEmpty(selectedOne.ID_3_Number__pc) ? '' : ', ' + selectedOne.ID_3_Number__pc;
             }*/
-	      //  string IDTypeToMatch = '';
-	        string DLStateIdPassportToMatch='';
-	      /*  if(selectedOne.ID_1_Type__c != null){
-	         	DLStateIdPassportToMatch = selectedOne.ID_1_Type__c + ' ' + (selectedOne.ID_1_Number__pc == null? '' : string.valueof(selectedOne.ID_1_Number__pc)) + ' ' + (selectedOne.ID_1_Expiration_Date__pc == null? '' : string.valueof(selectedOne.ID_1_Expiration_Date__pc));	        	
-	        }
-	        if(selectedOne.ID_2_Type__c != null){
-	         	DLStateIdPassportToMatch = DLStateIdPassportToMatch + ', ' + (selectedOne.ID_2_Type__c + ' ' + (selectedOne.ID_2_Number__pc == null? '' : string.valueof(selectedOne.ID_2_Number__pc)) + ' ' + (selectedOne.ID_2_Expiration_Date__pc == null? '' : string.valueof(selectedOne.ID_2_Expiration_Date__pc)));	        	
-	        }
-	        if(selectedOne.ID_3_Type__c != null){
-	         	DLStateIdPassportToMatch = DLStateIdPassportToMatch + ', ' + (selectedOne.ID_3_Type__c + ' ' + (selectedOne.ID_3_Number__pc == null? '' : string.valueof(selectedOne.ID_3_Number__pc)) + ' ' + (selectedOne.ID_3_Expiration_Date__pc == null? '' : string.valueof(selectedOne.ID_3_Expiration_Date__pc)));	        	
-	        }*/
-	       
-	        //IDTypeToMatch = string.isEmpty(selectedOne.ID_1_Type__pc) ? (string.isEmpty(selectedOne.ID_2_Type__pc) ? selectedOne.ID_3_Type__pc : selectedOne.ID_2_Type__pc) :selectedOne.ID_1_Type__pc ;
-	        if(string.isEmpty(DLStateIdPassport)){
-		        if(selectedOne.ID_1_Type__c == null){
-		        	if(selectedOne.ID_2_Type__c != null){
-		        		string ID_1_Type = '';
-		        		if(selectedOne.ID_2_Type__pc == null)
-		        		{
-		        			ID_1_Type = null;
-		        		}
-		        		if(selectedOne.ID_2_Type__pc == 2)
-		        		{
-		        			ID_1_Type = 'DL';
-		        		}
-		        		else if(selectedOne.ID_2_Type__pc == 3)
-		        		{
-		        			ID_1_Type = 'SID';
-		        		}
-		        		else if(selectedOne.ID_2_Type__pc == 4 || selectedOne.ID_2_Type__pc == 5)
-		        		{
-		        			ID_1_Type = 'PSPT'; 
-		        		}
-		        		DLStateIdPassportToMatch = ID_1_Type + ' ' + (selectedOne.ID_2_Number__pc == null? '' :selectedOne.ID_2_Number__pc) + ' ' + (selectedOne.ID_2_Expiration_Date__pc == null? '' : string.valueof(selectedOne.ID_2_Expiration_Date__pc.date()));
-		        	}
-		        	else
-		        	{
-		        		string ID_1_Type = '';
-		        		if(selectedOne.ID_3_Type__pc == null)
-		        		{
-		        			ID_1_Type = null;
-		        		}
-		        		if(selectedOne.ID_3_Type__pc == 2)
-		        		{
-		        			ID_1_Type = 'DL';
-		        		}
-		        		else if(selectedOne.ID_3_Type__pc == 3)
-		        		{
-		        			ID_1_Type = 'SID';
-		        		}
-		        		else if(selectedOne.ID_3_Type__pc == 4 || selectedOne.ID_3_Type__pc == 5)
-		        		{
-		        			ID_1_Type = 'PSPT'; 
-		        		}
-		        		DLStateIdPassportToMatch = ID_1_Type + ' ' + (selectedOne.ID_3_Number__pc == null? '' : selectedOne.ID_3_Number__pc) + ' ' + (selectedOne.ID_3_Expiration_Date__pc == null? '' : string.valueof(selectedOne.ID_3_Expiration_Date__pc.date()));
-		        	}
-		        }
-		        else{
-		        		string ID_1_Type = '';
-		        		if(selectedOne.ID_1_Type__pc == null)
-		        		{
-		        			ID_1_Type = null;
-		        		}
-		        		if(selectedOne.ID_1_Type__pc == 2)
-		        		{
-		        			ID_1_Type = 'DL';
-		        		}
-		        		else if(selectedOne.ID_1_Type__pc == 3)
-		        		{
-		        			ID_1_Type = 'SID';
-		        		}
-		        		else if(selectedOne.ID_1_Type__pc == 4|| selectedOne.ID_1_Type__pc == 5)
-		        		{
-		        			ID_1_Type = 'PSPT'; 
-		        		}
-		        	DLStateIdPassportToMatch = ID_1_Type + ' ' + (selectedOne.ID_1_Number__pc == null? '' : string.valueof(selectedOne.ID_1_Number__pc)) + ' ' + (selectedOne.ID_1_Expiration_Date__pc == null? '' : string.valueof(selectedOne.ID_1_Expiration_Date__pc.date()));
-		        }
-	        }
-	        else
-	        {
-	        	if(selectedOne.ID_1_Number__pc == DLStateIdPassport)
-	        	{
-	        		string ID_1_Type = '';
-		        		if(selectedOne.ID_1_Type__pc == null)
-		        		{
-		        			ID_1_Type = null;
-		        		}
-		        		if(selectedOne.ID_1_Type__pc == 2)
-		        		{
-		        			ID_1_Type = 'DL';
-		        		}
-		        		else if(selectedOne.ID_1_Type__pc == 3)
-		        		{
-		        			ID_1_Type = 'SID';
-		        		}
-		        		else if(selectedOne.ID_1_Type__pc == 4 || selectedOne.ID_1_Type__pc == 5)
-		        		{
-		        			ID_1_Type = 'PSPT'; 
-		        		}
-	        		DLStateIdPassportToMatch = ID_1_Type + ' ' + (selectedOne.ID_1_Number__pc == null? '' : string.valueof(selectedOne.ID_1_Number__pc)) + ' ' + (selectedOne.ID_1_Expiration_Date__pc == null? '' : string.valueof(selectedOne.ID_1_Expiration_Date__pc.date()));
-	        	}
-	        	else if(selectedOne.ID_2_Number__pc == DLStateIdPassport){
-	        		string ID_1_Type = '';
-		        		if(selectedOne.ID_2_Type__pc == null)
-		        		{
-		        			ID_1_Type = null;
-		        		}
-		        		if(selectedOne.ID_2_Type__pc == 2)
-		        		{
-		        			ID_1_Type = 'DL';
-		        		}
-		        		else if(selectedOne.ID_2_Type__pc == 3)
-		        		{
-		        			ID_1_Type = 'SID';
-		        		}
-		        		else if(selectedOne.ID_2_Type__pc == 4 || selectedOne.ID_2_Type__pc == 5)
-		        		{
-		        			ID_1_Type = 'PSPT'; 
-		        		}
-	        		DLStateIdPassportToMatch = ID_1_Type + ' ' + (selectedOne.ID_2_Number__pc == null? '' :selectedOne.ID_2_Number__pc) + ' ' + (selectedOne.ID_2_Expiration_Date__pc == null? '' : string.valueof(selectedOne.ID_2_Expiration_Date__pc.date()));
-	        	}
-	        	else if(selectedOne.ID_3_Number__pc == DLStateIdPassport){
-	        		string ID_1_Type = '';
-		        		if(selectedOne.ID_3_Type__pc == null)
-		        		{
-		        			ID_1_Type = null;
-		        		}
-		        		if(selectedOne.ID_3_Type__pc == 2)
-		        		{
-		        			ID_1_Type = 'DL';
-		        		}
-		        		else if(selectedOne.ID_3_Type__pc == 3)
-		        		{
-		        			ID_1_Type = 'SID';
-		        		}
-		        		else if(selectedOne.ID_3_Type__pc == 4 || selectedOne.ID_3_Type__pc == 5)
-		        		{
-		        			ID_1_Type = 'PSPT'; 
-		        		}
-	        		DLStateIdPassportToMatch = ID_1_Type + ' ' + (selectedOne.ID_3_Number__pc == null? '' : selectedOne.ID_3_Number__pc) + ' ' + (selectedOne.ID_3_Expiration_Date__pc == null? '' : string.valueof(selectedOne.ID_3_Expiration_Date__pc.date()));
-	        	}
-	        }
-	        // Set ID Number Status
-	        system.debug('IdNumber---'+DLStateIdPassportToMatch);
-	        
-	        if (DLStateIdPassportToMatch != '')
+          //  string IDTypeToMatch = '';
+            string DLStateIdPassportToMatch='';
+          /*  if(selectedOne.ID_1_Type__c != null){
+                DLStateIdPassportToMatch = selectedOne.ID_1_Type__c + ' ' + (selectedOne.ID_1_Number__pc == null? '' : string.valueof(selectedOne.ID_1_Number__pc)) + ' ' + (selectedOne.ID_1_Expiration_Date__pc == null? '' : string.valueof(selectedOne.ID_1_Expiration_Date__pc));              
+            }
+            if(selectedOne.ID_2_Type__c != null){
+                DLStateIdPassportToMatch = DLStateIdPassportToMatch + ', ' + (selectedOne.ID_2_Type__c + ' ' + (selectedOne.ID_2_Number__pc == null? '' : string.valueof(selectedOne.ID_2_Number__pc)) + ' ' + (selectedOne.ID_2_Expiration_Date__pc == null? '' : string.valueof(selectedOne.ID_2_Expiration_Date__pc)));              
+            }
+            if(selectedOne.ID_3_Type__c != null){
+                DLStateIdPassportToMatch = DLStateIdPassportToMatch + ', ' + (selectedOne.ID_3_Type__c + ' ' + (selectedOne.ID_3_Number__pc == null? '' : string.valueof(selectedOne.ID_3_Number__pc)) + ' ' + (selectedOne.ID_3_Expiration_Date__pc == null? '' : string.valueof(selectedOne.ID_3_Expiration_Date__pc)));              
+            }*/
+           
+            //IDTypeToMatch = string.isEmpty(selectedOne.ID_1_Type__pc) ? (string.isEmpty(selectedOne.ID_2_Type__pc) ? selectedOne.ID_3_Type__pc : selectedOne.ID_2_Type__pc) :selectedOne.ID_1_Type__pc ;
+            if(string.isEmpty(DLStateIdPassport)){
+                if(selectedOne.ID_1_Type__c == null){
+                    if(selectedOne.ID_2_Type__c != null){
+                        string ID_1_Type = '';
+                        if(selectedOne.ID_2_Type__pc == null)
+                        {
+                            ID_1_Type = null;
+                        }
+                        if(selectedOne.ID_2_Type__pc == 2)
+                        {
+                            ID_1_Type = 'DL';
+                        }
+                        else if(selectedOne.ID_2_Type__pc == 3)
+                        {
+                            ID_1_Type = 'SID';
+                        }
+                        else if(selectedOne.ID_2_Type__pc == 4 || selectedOne.ID_2_Type__pc == 5)
+                        {
+                            ID_1_Type = 'PSPT'; 
+                        }
+                        DLStateIdPassportToMatch = ID_1_Type + ' ' + (selectedOne.ID_2_Number__pc == null? '' :selectedOne.ID_2_Number__pc) + ' ' + (selectedOne.ID_2_Expiration_Date__pc == null? '' : string.valueof(selectedOne.ID_2_Expiration_Date__pc.date()));
+                    }
+                    else
+                    {
+                        string ID_1_Type = '';
+                        if(selectedOne.ID_3_Type__pc == null)
+                        {
+                            ID_1_Type = null;
+                        }
+                        if(selectedOne.ID_3_Type__pc == 2)
+                        {
+                            ID_1_Type = 'DL';
+                        }
+                        else if(selectedOne.ID_3_Type__pc == 3)
+                        {
+                            ID_1_Type = 'SID';
+                        }
+                        else if(selectedOne.ID_3_Type__pc == 4 || selectedOne.ID_3_Type__pc == 5)
+                        {
+                            ID_1_Type = 'PSPT'; 
+                        }
+                        DLStateIdPassportToMatch = ID_1_Type + ' ' + (selectedOne.ID_3_Number__pc == null? '' : selectedOne.ID_3_Number__pc) + ' ' + (selectedOne.ID_3_Expiration_Date__pc == null? '' : string.valueof(selectedOne.ID_3_Expiration_Date__pc.date()));
+                    }
+                }
+                else{
+                        string ID_1_Type = '';
+                        if(selectedOne.ID_1_Type__pc == null)
+                        {
+                            ID_1_Type = null;
+                        }
+                        if(selectedOne.ID_1_Type__pc == 2)
+                        {
+                            ID_1_Type = 'DL';
+                        }
+                        else if(selectedOne.ID_1_Type__pc == 3)
+                        {
+                            ID_1_Type = 'SID';
+                        }
+                        else if(selectedOne.ID_1_Type__pc == 4|| selectedOne.ID_1_Type__pc == 5)
+                        {
+                            ID_1_Type = 'PSPT'; 
+                        }
+                    DLStateIdPassportToMatch = ID_1_Type + ' ' + (selectedOne.ID_1_Number__pc == null? '' : string.valueof(selectedOne.ID_1_Number__pc)) + ' ' + (selectedOne.ID_1_Expiration_Date__pc == null? '' : string.valueof(selectedOne.ID_1_Expiration_Date__pc.date()));
+                }
+            }
+            else
+            {
+                if(selectedOne.ID_1_Number__pc == DLStateIdPassport)
+                {
+                    string ID_1_Type = '';
+                        if(selectedOne.ID_1_Type__pc == null)
+                        {
+                            ID_1_Type = null;
+                        }
+                        if(selectedOne.ID_1_Type__pc == 2)
+                        {
+                            ID_1_Type = 'DL';
+                        }
+                        else if(selectedOne.ID_1_Type__pc == 3)
+                        {
+                            ID_1_Type = 'SID';
+                        }
+                        else if(selectedOne.ID_1_Type__pc == 4 || selectedOne.ID_1_Type__pc == 5)
+                        {
+                            ID_1_Type = 'PSPT'; 
+                        }
+                    DLStateIdPassportToMatch = ID_1_Type + ' ' + (selectedOne.ID_1_Number__pc == null? '' : string.valueof(selectedOne.ID_1_Number__pc)) + ' ' + (selectedOne.ID_1_Expiration_Date__pc == null? '' : string.valueof(selectedOne.ID_1_Expiration_Date__pc.date()));
+                }
+                else if(selectedOne.ID_2_Number__pc == DLStateIdPassport){
+                    string ID_1_Type = '';
+                        if(selectedOne.ID_2_Type__pc == null)
+                        {
+                            ID_1_Type = null;
+                        }
+                        if(selectedOne.ID_2_Type__pc == 2)
+                        {
+                            ID_1_Type = 'DL';
+                        }
+                        else if(selectedOne.ID_2_Type__pc == 3)
+                        {
+                            ID_1_Type = 'SID';
+                        }
+                        else if(selectedOne.ID_2_Type__pc == 4 || selectedOne.ID_2_Type__pc == 5)
+                        {
+                            ID_1_Type = 'PSPT'; 
+                        }
+                    DLStateIdPassportToMatch = ID_1_Type + ' ' + (selectedOne.ID_2_Number__pc == null? '' :selectedOne.ID_2_Number__pc) + ' ' + (selectedOne.ID_2_Expiration_Date__pc == null? '' : string.valueof(selectedOne.ID_2_Expiration_Date__pc.date()));
+                }
+                else if(selectedOne.ID_3_Number__pc == DLStateIdPassport){
+                    string ID_1_Type = '';
+                        if(selectedOne.ID_3_Type__pc == null)
+                        {
+                            ID_1_Type = null;
+                        }
+                        if(selectedOne.ID_3_Type__pc == 2)
+                        {
+                            ID_1_Type = 'DL';
+                        }
+                        else if(selectedOne.ID_3_Type__pc == 3)
+                        {
+                            ID_1_Type = 'SID';
+                        }
+                        else if(selectedOne.ID_3_Type__pc == 4 || selectedOne.ID_3_Type__pc == 5)
+                        {
+                            ID_1_Type = 'PSPT'; 
+                        }
+                    DLStateIdPassportToMatch = ID_1_Type + ' ' + (selectedOne.ID_3_Number__pc == null? '' : selectedOne.ID_3_Number__pc) + ' ' + (selectedOne.ID_3_Expiration_Date__pc == null? '' : string.valueof(selectedOne.ID_3_Expiration_Date__pc.date()));
+                }
+            }
+            // Set ID Number Status
+            system.debug('IdNumber---'+DLStateIdPassportToMatch);
+            
+            if (DLStateIdPassportToMatch != '')
            {
-           		DLStateIdPassport = DLStateIdPassportToMatch;
-           		DLStateIdPassportMatch = 'true';
+                DLStateIdPassport = DLStateIdPassportToMatch;
+                DLStateIdPassportMatch = 'true';
            }
            else
            {
-           		DLStateIdPassport = '';
-           		DLStateIdPassportMatch= '';
+                DLStateIdPassport = '';
+                DLStateIdPassportMatch= '';
            
            }
-	                
+                    
         /*   if (IDNumberToMatch != '')
            {
-           		IdNumber = IDNumberToMatch;
-           		IdNumberMatch = 'true';
+                IdNumber = IDNumberToMatch;
+                IdNumberMatch = 'true';
            }
            else
            {
-           		IdNumber = '';
-           		IdNumberMatch= '';
+                IdNumber = '';
+                IdNumberMatch= '';
            
            }*/
-	        
+            
     }
     
     // called on page load for verify page 
@@ -1570,9 +1570,9 @@ public class MemberAuthenticationController{
         verificationObject verificationObject = new verificationObject();
         if (SalesforceID != null && SalesforceID != '')
         {
-        	Account A =	vc.getAccountByName(SalesforceId);
-        	firstName = A.firstName;
-        	lastname = A.LastName;
+            Account A = vc.getAccountByName(SalesforceId);
+            firstName = A.firstName;
+            lastname = A.LastName;
         }
         
         if(CardNumberMatch == 'true' && MemberNumberMatch == 'true' && SSNnumberMatch == 'true')
@@ -1619,23 +1619,23 @@ public class MemberAuthenticationController{
         
         if (EnteredMemberNumber != '' && EnteredMemberNumber != null)
         {
-        	boolean memberNumberValidated = vc.validateMemberNumber(verificationObject.memberNumber);
-        	
-        	if (memberNumberValidated == true)
-        	{
-        		MemberNumberMatchStatus = 'Valid';
-        		
-        	}
-        	else
-        	{
-        		MemberNumberMatchStatus = 'No Match Found';
-        		MemberNumberMatch = 'false';
-        	}
+            boolean memberNumberValidated = vc.validateMemberNumber(verificationObject.memberNumber);
+            
+            if (memberNumberValidated == true)
+            {
+                MemberNumberMatchStatus = 'Valid';
+                
+            }
+            else
+            {
+                MemberNumberMatchStatus = 'No Match Found';
+                MemberNumberMatch = 'false';
+            }
         }
         else
         {
-        	MemberNumberMatchStatus = '';
-        	MemberNumberMatch = '';
+            MemberNumberMatchStatus = '';
+            MemberNumberMatch = '';
         }
         
         
@@ -1710,15 +1710,15 @@ public class MemberAuthenticationController{
             DOB = '';
             DOBMatch = ''; 
             DOBConfirm = false;
-        	DOBConfirmString =  '';
+            DOBConfirmString =  '';
             IdNumber = '';
             IdNumberMatch = ''; 
             IdNumberConfirm = false;
-        	IdNumberConfirmString = '';
+            IdNumberConfirmString = '';
             MMN = '';
             MMNMatch = ''; 
             MMNConfirm = false;
-			MMNConfirmString = '';
+            MMNConfirmString = '';
             Email = '';
             EmailMatch = ''; 
             EmailConfirm = false;
@@ -1765,24 +1765,24 @@ public class MemberAuthenticationController{
             EnteredCardNumberLastdigits = '';
             
              AdditionalToken1Selection =  '';
-     		 AdditionalToken1chk ='';
-		     AdditionalToken2Selection=''; 
-		     AdditionalToken2chk ='';
-		     AdditionalToken3Selection=''; 
-		     AdditionalToken3chk ='';
-		     
-		     AdditionalTokenOtherText='';
-		     AdditionalTokenOtherText1='';
-		     AdditionalTokenOtherText2='';
-		     
-		     AdditionalToken3chkString='';
-		     AdditionalToken2chkString='';
-		     AdditionalToken1chkString=''; 
+             AdditionalToken1chk ='';
+             AdditionalToken2Selection=''; 
+             AdditionalToken2chk ='';
+             AdditionalToken3Selection=''; 
+             AdditionalToken3chk ='';
+             
+             AdditionalTokenOtherText='';
+             AdditionalTokenOtherText1='';
+             AdditionalTokenOtherText2='';
+             
+             AdditionalToken3chkString='';
+             AdditionalToken2chkString='';
+             AdditionalToken1chkString=''; 
         
-        	  if(fromMarsData == 'True')
-        	  {
-        	  	fromMarsData  = 'False';
-        	  }
+              if(fromMarsData == 'True')
+              {
+                fromMarsData  = 'False';
+              }
            
             return null;
     }
@@ -1804,7 +1804,7 @@ public class MemberAuthenticationController{
         log.Email__c = substring(Email, 50);
         log.EmailMatch__c = substring(EmailMatch,5);
         log.HP_HV__c = substring(HighFlag,5);
-        log.IVR_Code__c = substring(ReasonCode,10);
+        log.IVR_Code__c = substring(ReasonCode,44);
         
         //log.MMN__c = substring(MMN, 50);
         system.debug('Names object----' + Names);
@@ -1813,13 +1813,13 @@ public class MemberAuthenticationController{
         
         if (Names != null)
         {
-        	log.First_Name__c = substring(Names.firstName, 100);
-        	log.Last_Name__c = substring(Names.lastName, 100);
+            log.First_Name__c = substring(Names.firstName, 100);
+            log.Last_Name__c = substring(Names.lastName, 100);
         }
         else
         {
-        	log.First_Name__c = substring(firstName, 100);
-        	log.Last_Name__c = substring(lastName, 100);
+            log.First_Name__c = substring(firstName, 100);
+            log.Last_Name__c = substring(lastName, 100);
         }
         
         log.PhoneNumberMatch__c = substring(IVRPhoneNumberMatch,5) ;
@@ -1835,7 +1835,7 @@ public class MemberAuthenticationController{
            
         RecordType s =[select Id,Name,SobjectType from RecordType where name ='IVR Authentication Log' and SobjectType='Authenticated_Log__c'];
         log.RecordTypeId= s.id;    
-		log.Log_Clear_All_Field__c = clickcount;
+        log.Log_Clear_All_Field__c = clickcount;
         if(ClearAllflag){
             if(MemberNumberConfirm){
                 log.MemberNumberMatch__c = 'true';
@@ -1910,30 +1910,30 @@ public class MemberAuthenticationController{
         if(!MemberLoanDetails.isEmpty()){   
             string LoanDeatil = '';       
             for(Account_Details__c ac : MemberLoanDetails){      
-            	  String[] LoanIds = LoanSelectedID.split(';');
+                  String[] LoanIds = LoanSelectedID.split(';');
 
-		            if (LoanSelectedID != '')
-		            {       
-		            		system.debug(' #### LoanIds' + LoanIds);
-		            		system.debug(' #### ac.Id' + ac.Id);
-		            	     for (string lid : LoanIds)
-                 			 {         
-                 			 	 
-                   				 if(lid.split('#')[0] == (string)ac.Id && lid.split('#')[1] != ' ')   
-                   				 {    
-                   				 	
-					                LoanDeatil += 'Account Number - ' + ac.Name + ',';
-					                LoanDeatil += 'Loan Type - ' + ac.TypeTranslate__c + ',';
-					                LoanDeatil += 'Current Balance - ' + ac.Balance__c + ',' ;
-					                LoanDeatil += 'Close/Maturity Date - ' + ac.Close_Date__c + ',' ;
-					                LoanDeatil += 'Monthly Payment - ' + ac.PAYMENT__c + ',';
-					                LoanDeatil += 'Match - ' + lid.split('#')[1] + '\r\n\n';
-                   				 }
-                 			 }              
-		            }
+                    if (LoanSelectedID != '')
+                    {       
+                            system.debug(' #### LoanIds' + LoanIds);
+                            system.debug(' #### ac.Id' + ac.Id);
+                             for (string lid : LoanIds)
+                             {         
+                                 
+                                 if(lid.split('#')[0] == (string)ac.Id && lid.split('#')[1] != ' ')   
+                                 {    
+                                    
+                                    LoanDeatil += 'Account Number - ' + ac.Name + ',';
+                                    LoanDeatil += 'Loan Type - ' + ac.TypeTranslate__c + ',';
+                                    LoanDeatil += 'Current Balance - ' + ac.Balance__c + ',' ;
+                                    LoanDeatil += 'Close/Maturity Date - ' + ac.Close_Date__c + ',' ;
+                                    LoanDeatil += 'Monthly Payment - ' + ac.PAYMENT__c + ',';
+                                    LoanDeatil += 'Match - ' + lid.split('#')[1] + '\r\n\n';
+                                 }
+                             }              
+                    }
             }
             system.debug('LoanDeatil #' + LoanDeatil);
-        	log.Member_Loan_Detail__c = LoanDeatil;
+            log.Member_Loan_Detail__c = LoanDeatil;
         
             if(LoanDetailConfirm){
                 log.Loan_Detail_Match__c = 'true';
@@ -1953,7 +1953,7 @@ public class MemberAuthenticationController{
                     
                   for (string jid : JTIds)
                   {         
-                  	string[] jidSLIPTED =  jid.split('#');
+                    string[] jidSLIPTED =  jid.split('#');
                     if(jidSLIPTED[0] == (string)pc.PersonID__c && (jidSLIPTED[1] != ' ' || jidSLIPTED[2] != ' '))
                     {                        
                         JTDeatil += 'Member Name - ' + pc.PersonID__r.Name + ' - ' + jidSLIPTED[1] +  ', ';
@@ -1965,7 +1965,7 @@ public class MemberAuthenticationController{
             }
          
          
-             log.Related_Persons__c	 = JTDeatil;
+             log.Related_Persons__c  = JTDeatil;
              
          
          }
@@ -1979,15 +1979,15 @@ public class MemberAuthenticationController{
          System.debug('SalesforceID---' + SalesforceID );
            /*if (AdditionalToken1chk == 'true')
            {
-           		log.Additional_Token_Option1__c = substring(AdditionalToken1Selection,255);
+                log.Additional_Token_Option1__c = substring(AdditionalToken1Selection,255);
            }
            if (AdditionalToken2chk == 'true')
            {
-            	log.Additional_Token_Option2__c = substring(AdditionalToken2Selection,255);
+                log.Additional_Token_Option2__c = substring(AdditionalToken2Selection,255);
            }
            if (AdditionalToken3chk == 'true')
            {
-            	log.Additional_Token_Option3__c = substring(AdditionalToken3Selection,255);
+                log.Additional_Token_Option3__c = substring(AdditionalToken3Selection,255);
            }*/
            
            log.Additional_Token_Option1_Match__c = substring(AdditionalToken1chkString,5);
@@ -1996,15 +1996,15 @@ public class MemberAuthenticationController{
            
            if (AdditionalToken1Selection != null && AdditionalToken1Selection != '')
            {
-           		log.Additional_Token_Option1__c = substring(AdditionalToken1Selection,255);
+                log.Additional_Token_Option1__c = substring(AdditionalToken1Selection,255);
            }
            if (AdditionalToken2Selection != null && AdditionalToken2Selection != '')
            {
-            	log.Additional_Token_Option2__c = substring(AdditionalToken2Selection,255);
+                log.Additional_Token_Option2__c = substring(AdditionalToken2Selection,255);
            }
            if (AdditionalToken3Selection != null && AdditionalToken3Selection != '')
            {
-            	log.Additional_Token_Option3__c = substring(AdditionalToken3Selection,255);
+                log.Additional_Token_Option3__c = substring(AdditionalToken3Selection,255);
            }
            
            log.Additional_Token_Other_Text__c = substring(AdditionalTokenOtherText,255);
@@ -2017,14 +2017,14 @@ public class MemberAuthenticationController{
         //OTPVerified
         if(OTPVerified != '' && OTPVerified != null)
         {
-        	log.IVR_OTP_Result__c = OTPVerified;
-        	Datetime createddate = System.now().addminutes(-5);
-        	List<Authenticated_Log__c> listOTPLog = [select id, OTP_Email__c, OTP_Phone__c from Authenticated_Log__c where SalesforceID__c =: SalesforceID and CreatedDate >: createddate order by CreatedDate desc limit 1 ];
-        	if(listOTPLog.size() > 0)
-        	{
-        		log.OTP_Email__c =listOTPLog[0].OTP_Email__c;
-        		log.OTP_Phone__c =listOTPLog[0].OTP_Phone__c;
-        	}
+            log.IVR_OTP_Result__c = OTPVerified;
+            Datetime createddate = System.now().addminutes(-5);
+            List<Authenticated_Log__c> listOTPLog = [select id, OTP_Email__c, OTP_Phone__c from Authenticated_Log__c where SalesforceID__c =: SalesforceID and CreatedDate >: createddate order by CreatedDate desc limit 1 ];
+            if(listOTPLog.size() > 0)
+            {
+                log.OTP_Email__c =listOTPLog[0].OTP_Email__c;
+                log.OTP_Phone__c =listOTPLog[0].OTP_Phone__c;
+            }
 
         }
         system.debug('log ###' + log);
@@ -2076,7 +2076,7 @@ public class MemberAuthenticationController{
     
      private void getQueryStringData()
     {
-    	// Member Number
+        // Member Number
         PhoneNumber = ApexPages.currentPage().getParameters().get('CallersPhoneNumber');
         EnteredMemberNumber = ApexPages.currentPage().getParameters().get('EnteredMemberNumber');
         IVREnteredMemberNumber = EnteredMemberNumber;
@@ -2086,24 +2086,24 @@ public class MemberAuthenticationController{
         
         if(ReasonCode == null || ReasonCode == '')
         {
-        	ReasonCode = 'Unknown';
+            ReasonCode = 'Unknown';
         }
         
         // special validation for users entering 4# and null
         if(EnteredMemberNumber == null || EnteredMemberNumber == '')
         {
-        	return;
+            return;
         }
         
         string truncatedMNumber = removeInitialZero(EnteredMemberNumber);
         if (truncatedMNumber.length() < 2 ||  EnteredMemberNumber == 'NULL')
         {
-        	EnteredMemberNumber = '';
+            EnteredMemberNumber = '';
         }
         else
         {
-        	EnteredMemberNumber = FormatMemberNumber(EnteredMemberNumber);
-        	
+            EnteredMemberNumber = FormatMemberNumber(EnteredMemberNumber);
+            
         }
         // format member number
         EnteredMemberNumber = FormatMemberNumber(EnteredMemberNumber);
@@ -2123,26 +2123,26 @@ public class MemberAuthenticationController{
         IVREnteredCardNumber = EnteredCardNumber;
         if (EnteredCardNumber == 'NULL' || (EnteredCardNumber.length() != 16 && EnteredCardNumber.length() != 4)   )
         {
-        	EnteredCardNumber = '';
-        	PinString = '';
+            EnteredCardNumber = '';
+            PinString = '';
         }
         else
         {
-        	PinString = '****';
+            PinString = '****';
         }
         
          if(EnteredCardNumber != null && EnteredCardNumber != ''){
-        	system.debug('Entered card not null');
+            system.debug('Entered card not null');
             if(string.isEmpty(EnteredCardNumberLastdigits)){
                 EnteredCardNumberLastdigits = EnteredCardNumber;
                 system.debug('Entered card length' + EnteredCardNumber.length() + '---' + EnteredCardNumber);
                 if (EnteredCardNumber.length() > 4)
                 {  
-                	EnteredCardNumberFormatted = '****-****-****-' + EnteredCardNumber.right(4);
+                    EnteredCardNumberFormatted = '****-****-****-' + EnteredCardNumber.right(4);
                 }
                 else
                 {
-                	EnteredCardNumberFormatted = EnteredCardNumber.right(4);
+                    EnteredCardNumberFormatted = EnteredCardNumber.right(4);
                 }
                 CardNumberMatch = ApexPages.currentPage().getParameters().get('CardNumberMatch');
             }
@@ -2165,7 +2165,7 @@ public class MemberAuthenticationController{
         
         if (EnteredSSN == 'NULL' || (EnteredSSN.length() != 4 && EnteredSSN.length() != 9))
         {
-        	EnteredSSN = '';
+            EnteredSSN = '';
         }
         IVRSSNnumberMatch = ApexPages.currentPage().getParameters().get('SSNnumberMatch');
         
@@ -2183,7 +2183,7 @@ public class MemberAuthenticationController{
         PhoneNumberMatch= ApexPages.currentPage().getParameters().get('PhoneNumberMatch');  
         IVRPhoneNumberMatch = PhoneNumberMatch;
        
-       	// DOB
+        // DOB
         DOB = ApexPages.currentPage().getParameters().get('DOB');  
         IVRDOB = DOB;
         
@@ -2196,34 +2196,34 @@ public class MemberAuthenticationController{
     }
     public string removeInitialZero(string a)
     {
-    	
-		string[] b = a.split('');
-		string joineda = '';
-		boolean f = false;
-		for(string singlea : b)
-		{
-		
-			if (singlea == '0' && f == false)
-				{
-					continue;
-				}
-			else
-			{
-				f = true;
-			}
-		
-			joineda += singlea;
-		}
-		return joineda;
+        
+        string[] b = a.split('');
+        string joineda = '';
+        boolean f = false;
+        for(string singlea : b)
+        {
+        
+            if (singlea == '0' && f == false)
+                {
+                    continue;
+                }
+            else
+            {
+                f = true;
+            }
+        
+            joineda += singlea;
+        }
+        return joineda;
     }   
     
     public static string substring(string val, integer length)
     {
-    	if(val != null && val != '')
-    	{
-    		return val.left(length);
-    	}	
-    	return val;
+        if(val != null && val != '')
+        {
+            return val.left(length);
+        }   
+        return val;
     
     }
     

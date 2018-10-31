@@ -15,16 +15,28 @@ Public class DocuSignCaseCloseAction{
               
             boolean check = false; 
             case c = new case();
-            for(AggregateResult AR : lstAR){
-                
-                if(cs.id == AR.get('csid') ){
-                   
-                    if((Integer)AR.get('pendingDocCount') > 0 || cs.Future_Date__c != null || cs.Secondary_Category__c != 'Onboarding'){
+            if(cs.Future_Date__c != null || cs.Secondary_Category__c == 'Onboarding')
+            {
+                  
+                            c.status = 'DocuSign Voided';
+                            c.OwnerId = cs.Previous_Owner__c;
+                            c.id=cs.id;
+                            check  = true ; 
+            }
+            else
+            {
+            
+                for(AggregateResult AR : lstAR){
+                    
+                    if(cs.id == AR.get('csid') ){
                         
-                        c.status = 'DocuSign Voided';
-                        c.OwnerId = cs.Previous_Owner__c;
-                        c.id=cs.id;
-                        check  = true ; 
+                        if((Integer)AR.get('pendingDocCount') > 0 ){
+                            
+                            c.status = 'DocuSign Voided';
+                            c.OwnerId = cs.Previous_Owner__c;
+                            c.id=cs.id;
+                            check  = true ; 
+                        }
                     }
                 }
             }

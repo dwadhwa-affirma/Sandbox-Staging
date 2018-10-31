@@ -1,9 +1,53 @@
 public without sharing class ManualMemberMergeProcess {
 	
+				
+	            					
 			@AuraEnabled 				
-			public static List<object> GetMemberList()
+			public static List<object> GetMemberList(String membertype)
 			{
-				Set<string> ChildUserAlias = new Set<string>();
+				
+				user gurs = [Select UserRoleId,Email,ForecastEnabled ,Alias, Managerid  from user where id = :UserInfo.getUserId() LIMIT 1];
+				List<User> userlist = new List<User>();
+				Set<String> useridSet = new Set<String>();
+				
+				If(membertype == 'My Members')
+				{
+					userlist.add(gurs);
+				}
+				else if(membertype == 'My Team Members')
+				{
+					System.debug('Manager###'+ gurs.Managerid);
+					if(gurs.Managerid != null)
+                    {
+                    	System.debug('ifuserlist1' );
+						userlist = [SELECT id,  ManagerId, Name, Alias FROM User where (managerid =: gurs.Managerid or managerid = :gurs.id or id=:gurs.Managerid or id=:gurs.id)  and isactive = true];
+						System.debug('userlist1' + userlist); 
+					//User manager = [select id , name, managerid, isactive, Alias from User where id = : gurs.Managerid and isactive = true];
+					//userlist.Add(manager);
+                    }
+                    else
+                    {
+                    	System.debug('elseuserlist1');
+                    	userlist = [SELECT id,  ManagerId, Name, Alias FROM User where  (managerid = :gurs.id or id =: gurs.id)  and isactive = true];
+                    	System.debug('userlist2' + userlist);
+                    }
+				}
+				
+				If(userlist.Size()> 0)
+				{
+					for(User u : userlist)
+					{
+						useridSet.Add(u.Alias);
+						
+					}
+				}
+				else
+				{
+					userlist.Add(gurs);
+				}
+				system.debug(useridSet);
+				
+				/*Set<string> ChildUserAlias = new Set<string>();
 				user gurs = [Select UserRoleId,Email,ForecastEnabled ,Alias from user where id = :UserInfo.getUserId() LIMIT 1];
 			    ChildUserAlias.add(gurs.Alias);
 			    
@@ -16,7 +60,7 @@ public without sharing class ManualMemberMergeProcess {
 				for(User ur: urList) {
 				    ChildUserAlias.add(ur.Alias);
 				}
-				
+				*/
 				
 				List<object> listObj = new List<object>(); 
 				MemberConversionSetting__c mcs = MemberConversionSetting__c.getValues('PrimaryRecord');
@@ -43,12 +87,18 @@ public without sharing class ManualMemberMergeProcess {
     			
     			list<string> listPAIds = new List<string>();
 		    	boolean userGroup = CheckMembership();
+		    	
 		    	List<Person_account__c> listOfAllNonBenificaries = new List<Person_account__c>();
 		    	Set<Id> listAccountId_Qualified = new Set<Id>();
+		    	
+		    	System.debug(listAccountIds_ToFilter);
+		    	
+		    	
+		    	
 		    	if(userGroup)
 		    	{
 		    		listOfAllNonBenificaries = [SELECT PersonID__c FROM Person_Account__c 
-		    															WHERE PersonID__c in: listAccountIds_ToFilter  and (not TypeTranslate__c like '%Beneficiary%') and (Account_Number__r.Created_By_User_Alias__c in: ChildUserAlias or Account_Number__r.Created_By_User_Alias__c = null or Account_Number__r.Created_By_User_Alias__c = '') order by Account_Number__r.RecType__c];
+		    															WHERE PersonID__c in: listAccountIds_ToFilter  and (not TypeTranslate__c like '%Beneficiary%') and (Account_Number__r.Created_By_User_Alias__c in: useridSet or Account_Number__r.Created_By_User_Alias__c = null or Account_Number__r.Created_By_User_Alias__c = '') order by Account_Number__r.RecType__c];
 		    		for(Person_Account__c item : listOfAllNonBenificaries) 
 		    			{
 		    				if(!listAccountId_Qualified.contains(item.PersonId__c))
@@ -56,11 +106,11 @@ public without sharing class ManualMemberMergeProcess {
 				 					listAccountId_Qualified.add(item.PersonId__c);
 				 				}
 		    			}
-		    			
+		    			system.debug('listAccountId_Qualified1' + listAccountId_Qualified);
 		    	}
 		    	else
 		    	{
-		    		listOfAllNonBenificaries = [SELECT PersonID__c FROM Person_Account__c WHERE PersonID__c in: listAccountIds_ToFilter and  (not TypeTranslate__c like '%Beneficiary%')  and Account_Number__r.Created_By_User_Alias__c in: ChildUserAlias order by Account_Number__r.RecType__c];		    		
+		    		listOfAllNonBenificaries = [SELECT PersonID__c FROM Person_Account__c WHERE PersonID__c in: listAccountIds_ToFilter and  (not TypeTranslate__c like '%Beneficiary%')  and Account_Number__r.Created_By_User_Alias__c in: useridSet order by Account_Number__r.RecType__c];		    		
 		    			for(Person_Account__c item : listOfAllNonBenificaries) 
 		    			{
 		    				if(!listAccountId_Qualified.contains(item.PersonId__c))
@@ -68,6 +118,8 @@ public without sharing class ManualMemberMergeProcess {
 				 					listAccountId_Qualified.add(item.PersonId__c);
 				 				}
 		    			}
+		    			
+		    			system.debug('listAccountId_Qualified2' + listAccountId_Qualified);
 		    	}
                 /*List<Person_account__c> listOfAllNonBenificaries = [select id,PersonId__c,TypeTranslate__c,CreatedDate from Person_account__c 
 	 												where PersonId__c in:  listAccountIds_ToFilter and (not TypeTranslate__c like '%Beneficiary%')]; 
@@ -79,6 +131,7 @@ public without sharing class ManualMemberMergeProcess {
 	 					listAccountId_Qualified.add(item.PersonId__c);
 	 				}
 	 			}*/
+	 			system.debug('listAccountId_Qualified' + listAccountId_Qualified);
     			accounts =[SELECT Id, FirstName, LastName, Name FROM Account where id in: listAccountId_Qualified order by createddate];
     			//list<Person_Account__c> paList = new list<Person_Account__c>();
 		        //paList = [SELECT Id, Account_Number__c FROM Person_Account__c WHERE PersonID__c =: accounts];
@@ -93,7 +146,8 @@ public without sharing class ManualMemberMergeProcess {
 						Phone_Check__c, Residential_Street__pc ,RecordType.Name,Residential_City__pc,Residential_State__pc, Residential_Zipocde__pc,Residential_Extra_Address__pc, createddate
     		 				 FROM Account where RecordType.Name = 'Pre Member' and IsConverted__c=false ];
     		 	listObj.Add(PreMemberAccount);
-				return listObj;
+    		 	system.debug(listObj);
+    		 	return listObj;
 			}
 			
 		
@@ -126,7 +180,7 @@ public without sharing class ManualMemberMergeProcess {
     			
     		 				 
 			
-			    PreMemberAccount = [SELECT Id, PersonEmail, Email_raw__c, Alt_Email_Raw__c, FirstName,MiddleName,LastName, Name, Salutation ,Suffix,
+			    PreMemberAccount = [SELECT Id, PersonEmail, Email_raw__c, Alt_Email_Raw__c,Alternate_Email__pc, FirstName,MiddleName,LastName, Name, Salutation ,Suffix,
 						Phone_Check__c, Mobile_Phone__pc,Home_Phone__pc, Work_Phone__pc, Residential_Street__pc ,RecordType.Name,Residential_City__pc,Residential_State__pc, Residential_Zipocde__pc,Residential_Extra_Address__pc,createddate
     		 				 FROM Account where RecordType.Name = 'Pre Member' and IsConverted__c=false order by LastName];
 
@@ -139,12 +193,28 @@ public without sharing class ManualMemberMergeProcess {
                 List<Account> listPhoneMatched = new List<Account>(); 
 			    List<Account> listNotMatched = new List<Account>(); 
 			    Map<Account, Integer> finalList = new Map<Account, Integer>();
-			    
+			   
 			    for(Account preMembers : PreMemberAccount)
 			    {
 			    	boolean isadded=false;
 			    	Integer counter=0;
 			    	boolean isphonematched=false;
+			    	String ma_email_check = '';
+			    	
+			    	if(!string.isBlank(ma.Alternate_Email__pc))
+			    	{
+				                        ma_email_check = ma_email_check + ma.Alternate_Email__pc.toUpperCase() + ',';
+			    	}
+				    if(!string.isBlank(ma.Alt_Email_Raw__c)){
+				            ma_email_check = ma_email_check + ma.Alt_Email_Raw__c.toUpperCase() + ',';
+				          }
+				    if(!string.isBlank(ma.PersonEmail)){
+				          ma_email_check = ma_email_check + ma.PersonEmail.toUpperCase() + ',';
+				       }
+				     if(!string.isBlank(ma.Email_raw__c)){
+				          ma_email_check = ma_email_check + ma.Email_raw__c.toUpperCase() + ',';
+				       }
+			    	
 			    	
 			    	 if(!string.isBlank(preMembers.LastName) && preMembers.LastName == ma.LastName)
 			    	{
@@ -162,14 +232,32 @@ public without sharing class ManualMemberMergeProcess {
 			    		}
 			    		counter=counter+1;			    		
 			    	}
-			    	if(!string.isBlank(preMembers.Email_raw__c) && preMembers.Email_raw__c == ma.Email_raw__c)
+			    	
+			    	if(!string.isBlank(ma_email_check) && !string.isBlank(ma.LastName) && !string.isBlank(ma.FirstName)  
+				                        &&  !string.isBlank(preMembers.LastName) && !string.isBlank(preMembers.FirstName)  
+				                        &&  ( (!string.isBlank(preMembers.Alternate_Email__pc) && ma_email_check.contains(preMembers.Alternate_Email__pc.toUpperCase())) 
+				                                || (!string.isBlank(preMembers.Alt_Email_Raw__c) && ma_email_check.contains(preMembers.Alt_Email_Raw__c.toUpperCase())) 
+				                                || (!string.isBlank(preMembers.Email_raw__c) && ma_email_check.contains(preMembers.Email_raw__c.toUpperCase()) ) 
+				                                || (!string.isBlank(preMembers.PersonEmail) && ma_email_check.contains(preMembers.PersonEmail.toUpperCase())) ) 
+				                        && ma.LastName.toUpperCase() == preMembers.LastName.toUpperCase() && ma.FirstName.toUpperCase() == preMembers.FirstName.toUpperCase()) 
+				                    {
+				                       if(!isadded){
+			    							listEmailMatched.add(preMembers);
+			    							isadded=true;
+			    							}
+			    							counter=counter+1;
+				                    }
+			    	
+			    	
+			    	/*if(!string.isBlank(preMembers.Email_raw__c) && preMembers.Email_raw__c == ma.Email_raw__c)
 			    	{
 			    		if(!isadded){
 			    		listEmailMatched.add(preMembers);
 			    		isadded=true;
 			    		}
 			    		counter=counter+1;
-			    	}
+			    		
+			    	}*/
                     /*else if(!string.isBlank(preMembers.Salutation) && preMembers.Salutation == ma.Salutation)
 			    	{
 			    		listInitialNameMatched.add(preMembers);
@@ -181,6 +269,7 @@ public without sharing class ManualMemberMergeProcess {
 			    		isadded=true;
 			    		}
 			    		counter=counter+1;
+			    		
 			    	}
                     if(!string.isBlank(preMembers.Residential_Zipocde__pc) && preMembers.Residential_Zipocde__pc == ma.Residential_Zipocde__pc)
 			    	{
@@ -189,6 +278,7 @@ public without sharing class ManualMemberMergeProcess {
 			    		isadded=true;
 			    		}
 			    		counter=counter+1;
+			    		
 			    	}
 			    	if(!string.isBlank(preMembers.Mobile_Phone__pc) && ((!string.isBlank(ma.Mobile_Phone__pc) &&  ConvertPreMemberToMemberSchedular.clearPhoneNumber(preMembers.Mobile_Phone__pc).contains(ConvertPreMemberToMemberSchedular.clearPhoneNumber(ma.Mobile_Phone__pc)) )|| (!string.isBlank(ma.Home_Phone__pc) && ConvertPreMemberToMemberSchedular.clearPhoneNumber(preMembers.Mobile_Phone__pc).contains(ConvertPreMemberToMemberSchedular.clearPhoneNumber(ma.Home_Phone__pc))) || (!string.isBlank(ma.Work_Phone__pc) &&  ConvertPreMemberToMemberSchedular.clearPhoneNumber(preMembers.Mobile_Phone__pc).contains(ConvertPreMemberToMemberSchedular.clearPhoneNumber(ma.Work_Phone__pc)))))
 			    	{
@@ -198,6 +288,7 @@ public without sharing class ManualMemberMergeProcess {
 			    		isadded=true;
 			    		}
 			    		counter=counter+1;
+			    		
 			    	}
 			    	if(!isphonematched && !string.isBlank(preMembers.Home_Phone__pc) &&  ((!string.isBlank(ma.Mobile_Phone__pc) &&  ConvertPreMemberToMemberSchedular.clearPhoneNumber(preMembers.Home_Phone__pc).contains(ConvertPreMemberToMemberSchedular.clearPhoneNumber(ma.Mobile_Phone__pc)) )||  (!string.isBlank(ma.Home_Phone__pc) && ConvertPreMemberToMemberSchedular.clearPhoneNumber(preMembers.Home_Phone__pc).contains(ConvertPreMemberToMemberSchedular.clearPhoneNumber(ma.Home_Phone__pc))) ||(!string.isBlank(ma.Work_Phone__pc) &&  ConvertPreMemberToMemberSchedular.clearPhoneNumber(preMembers.Home_Phone__pc).contains(ConvertPreMemberToMemberSchedular.clearPhoneNumber(ma.Work_Phone__pc)))))
 			    	{
@@ -210,6 +301,7 @@ public without sharing class ManualMemberMergeProcess {
 			    		}
 			    		if(!isphonematched)
 			    		counter=counter+1;
+			    		
 			    	}
 			    	if(!isphonematched && !string.isBlank(preMembers.Work_Phone__pc) && ((!string.isBlank(ma.Mobile_Phone__pc) &&  ConvertPreMemberToMemberSchedular.clearPhoneNumber(preMembers.Work_Phone__pc).contains(ConvertPreMemberToMemberSchedular.clearPhoneNumber(ma.Mobile_Phone__pc)) )|| (!string.isBlank(ma.Home_Phone__pc) && ConvertPreMemberToMemberSchedular.clearPhoneNumber(preMembers.Work_Phone__pc).contains(ConvertPreMemberToMemberSchedular.clearPhoneNumber(ma.Home_Phone__pc))) ||(!string.isBlank(ma.Work_Phone__pc) &&  ConvertPreMemberToMemberSchedular.clearPhoneNumber(preMembers.Work_Phone__pc).contains(ConvertPreMemberToMemberSchedular.clearPhoneNumber(ma.Work_Phone__pc)))))
 			    	{
@@ -222,7 +314,9 @@ public without sharing class ManualMemberMergeProcess {
 			    		}
 			    		if(!isphonematched)
 			    		counter=counter+1;
+			    		
 			    	}
+			    	
                    /* if(!string.isBlank(preMembers.Mobile_Phone__pc) && 
                     		((!string.isBlank(ma.Mobile_Phone__pc) &&  preMembers.Mobile_Phone__pc.contains(ma.Mobile_Phone__pc) )|| 
                             (!string.isBlank(ma.Home_Phone__pc) && preMembers.Mobile_Phone__pc.contains(ma.Home_Phone__pc)) ||
@@ -774,6 +868,10 @@ public without sharing class ManualMemberMergeProcess {
     					logs.Pre_Member_ID__c = pma.id;
     					
     					insert logs;
+    					
+    					SetMergerReportData(ma, pma);
+    					
+    					
     					//Deleting Premember after conversion
     					delete pma;
     					
@@ -828,7 +926,7 @@ public without sharing class ManualMemberMergeProcess {
 
 
 
- public static Set<ID> getAllSubRoleIds(Set<ID> roleIds) {
+/* public static Set<ID> getAllSubRoleIds(Set<ID> roleIds) {
 
         Set<ID> currentRoleIds = new Set<ID>();
     
@@ -844,7 +942,7 @@ public without sharing class ManualMemberMergeProcess {
         }
     
         return currentRoleIds;
-    }
+    }*/
      public static boolean CheckMembership()
     {
     	
@@ -940,5 +1038,137 @@ public without sharing class ManualMemberMergeProcess {
 		    return showdata;
 		    
     }
+    
+    public static void SetMergerReportData(Account ma, Account pma)
+         {
+	         	  Boolean IsMatching = false;
+	                Boolean IsPhoneMatching = false;
+	                Boolean IsEmailMatching = false;
+	                Boolean IsStreetMatching = false;
+	                Boolean IsCityMatching = false;
+	                Boolean IsStateMatching = false;
+	                Boolean IsZipcodeMatching = false;
+	                String FirstName;
+	                String LastName;
+        			String ma_email_check = '';
+        			 if(!string.isBlank(ma.Alternate_Email__pc)){
+				                        ma_email_check = ma_email_check + ma.Alternate_Email__pc.toUpperCase() + ',';
+				                    }
+				                    if(!string.isBlank(ma.Alt_Email_Raw__c)){
+				                        ma_email_check = ma_email_check + ma.Alt_Email_Raw__c.toUpperCase() + ',';
+				                    }
+				                    if(!string.isBlank(ma.PersonEmail)){
+				                        ma_email_check = ma_email_check + ma.PersonEmail.toUpperCase() + ',';
+				                    }
+				                    if(!string.isBlank(ma.Email_raw__c)){
+				                        ma_email_check = ma_email_check + ma.Email_raw__c.toUpperCase() + ',';
+				                    }
+				                    
+				                    if(!string.isBlank(ma_email_check) && !string.isBlank(ma.LastName) && !string.isBlank(ma.FirstName)  
+				                        &&  !string.isBlank(pma.LastName) && !string.isBlank(pma.FirstName)  
+				                        &&  ( (!string.isBlank(pma.Alternate_Email__pc) && ma_email_check.contains(pma.Alternate_Email__pc.toUpperCase())) 
+				                                || (!string.isBlank(pma.Alt_Email_Raw__c) && ma_email_check.contains(pma.Alt_Email_Raw__c.toUpperCase())) 
+				                                || (!string.isBlank(pma.Email_raw__c) && ma_email_check.contains(pma.Email_raw__c.toUpperCase()) ) 
+				                                || (!string.isBlank(pma.PersonEmail) && ma_email_check.contains(pma.PersonEmail.toUpperCase())) ) 
+				                        && ma.LastName.toUpperCase() == pma.LastName.toUpperCase() && ma.FirstName.toUpperCase() == pma.FirstName.toUpperCase()) 
+				                    {
+				                        
+				                        IsEmailMatching = true;
+				                        
+				                        
+				                    }
+				                        
+				                     if (!string.isBlank(ma.LastName) && !string.isBlank(ma.FirstName) && !string.isBlank(ma.Phone_Check__c)  
+				                         && !string.isBlank(pma.LastName) && !string.isBlank(pma.FirstName) && !string.isBlank(pma.Phone_Check__c)  
+				                        && ma.LastName == pma.LastName && ma.FirstName == pma.FirstName 
+				                        && ( 
+				                        
+				                                (!string.isBlank(pma.Home_Phone__pc) && ma.Phone_Check__c.Contains(ConvertPreMemberToMemberSchedular.clearPhoneNumber(pma.Home_Phone__pc))) || 
+				                                (!string.isBlank(pma.Work_Phone__pc) && ma.Phone_Check__c.Contains(ConvertPreMemberToMemberSchedular.clearPhoneNumber(pma.Work_Phone__pc))) || 
+				                                (!string.isBlank(pma.Mobile_Phone__pc) && ma.Phone_Check__c.Contains(ConvertPreMemberToMemberSchedular.clearPhoneNumber(pma.Mobile_Phone__pc)))) )
+				                    {
+				                        
+				                        IsPhoneMatching = true;
+				                        
+				                    }
+				                     if(!string.isBlank(ma.LastName) && !string.isBlank(ma.FirstName) && !string.isBlank(ma.Residential_Street__pc) &&
+				                    !string.isBlank(pma.LastName) && !string.isBlank(pma.FirstName) && !string.isBlank(pma.Residential_Street__pc) &&
+				                    (ma.LastName == pma.LastName) && (ma.FirstName == pma.FirstName ) && (ma.Residential_Street__pc == pma.Residential_Street__pc))
+				                    {
+				                       
+				                        IsStreetMatching = true;
+				                       
+				                    }
+				                     if(!string.isBlank(ma.LastName) && !string.isBlank(ma.Residential_Street__pc) && !string.isBlank(ma.Residential_Zipocde__pc) &&
+				                    !string.isBlank(pma.LastName) && !string.isBlank(pma.Residential_Street__pc) && !string.isBlank(pma.Residential_Zipocde__pc) &&
+				                    
+				                    (ma.FirstName == pma.FirstName ) && (ma.Residential_Street__pc == pma.Residential_Street__pc) && (ma.Residential_Zipocde__pc == pma.Residential_Zipocde__pc) )
+				                    {
+				                       
+				                        IsStreetMatching = true;
+				                        IsZipcodeMatching = true;
+				                       
+				                    }
+				                    
+				                     if(
+				                    !string.isBlank(ma.LastName) && !string.isBlank(ma.FirstName) && !string.isBlank(ma.Residential_Zipocde__pc) &&
+				                    !string.isBlank(pma.LastName) && !string.isBlank(pma.FirstName) && !string.isBlank(pma.Residential_Zipocde__pc) &&
+				                    (ma.LastName == pma.LastName) && (ma.FirstName == pma.FirstName ) && (ma.Residential_Zipocde__pc == pma.Residential_Zipocde__pc) )
+				                    {
+				                       
+				                        IsZipcodeMatching = true;
+				                        
+				                    }
+				                     if(!string.isBlank(ma.Residential_City__pc)  &&
+				                    !string.isBlank(pma.Residential_City__pc) && (ma.Residential_City__pc == pma.Residential_City__pc) )
+				                    {
+				                       
+				                        IsCityMatching = true;
+				                       
+				                    } 
+				                     if(!string.isBlank(ma.Residential_State__pc)  && !string.isBlank(pma.Residential_State__pc) && (ma.Residential_State__pc == pma.Residential_State__pc) )
+				                    {
+				                       
+				                        IsStateMatching = true;
+				                       
+				                    } 
+		                    FirstName = ma.FirstName;
+		                    LastName = ma.LastName;	
+        					List<Person_Account__c>	pa = [SELECT Id,PersonID__c,Account_Number__r.Parent_Account__c, Account_Number__c, Account_Number__r.RecType__c, 
+	          								Account_Number__r.Name,Account_Number__r.Id, PersonId__r.Createddate, Account_Number__r.Created_By_User__c, 
+	          			 					Account_Number__r.Created_By_User_Alias__c, Account_Number__r.Created_By_Episys_User__c, Account_Number__r.Created_By_User_Text__c  
+	          			 					FROM Person_Account__c WHERE PersonID__c =:  ma.id  order by Account_Number__r.RecType__c LIMIT 1];
+        					
+        					
+        					
+        					Member_Conversion_Report__c report = new Member_Conversion_Report__c();
+		   			 		report.IsMatching__c = true;
+		   			 		report.Process_Type__c ='Manual';
+		   			 		report.Is_Phone_Matching__c = IsPhoneMatching;
+				       		report.Is_Email_Matching__c = IsEmailMatching;
+				       		report.Is_Street_Matching__c = IsStreetMatching;
+				       		report.Is_City_Matching__c = IsCityMatching;
+				       		report.Is_State_Matching__c = IsStateMatching;
+				       		report.Is_Zipcode_Matching__c = IsZipcodeMatching;
+		   			 		report.First_Name__c = FirstName;
+		   			 		report.Last_Name__c = LastName;
+             				if(pa.size() > 0)
+                            {
+                                
+                                report.Member__c = pa[0].PersonID__c;
+                                report.Member_Episys_Alias__c = pa[0].Account_Number__r.Created_By_User_Alias__c;
+                                report.Member_Episys_Id__c = pa[0].Account_Number__r.Created_By_User__c;
+                                report.User_Name__c = pa[0].Account_Number__r.Created_By_User_Text__c;
+                                report.Member_Account__c = pa[0].Account_Number__r.id;
+                            }
+		   			 		
+		   			 		system.debug('ma.FirstName###'+ FirstName);
+		   			 		
+				       		system.debug('ma.FirstName###'+ LastName);
+		   			 		system.debug('report###'+ report);
+    					   insert report;
+    
+     
     		
+			}
 }
