@@ -98,7 +98,7 @@ public without sharing class ManualMemberMergeProcess {
 		    	if(userGroup)
 		    	{
 		    		listOfAllNonBenificaries = [SELECT PersonID__c FROM Person_Account__c 
-		    															WHERE PersonID__c in: listAccountIds_ToFilter  and (not TypeTranslate__c like '%Beneficiary%') and (Account_Number__r.Created_By_User_Alias__c in: useridSet or Account_Number__r.Created_By_User_Alias__c = null or Account_Number__r.Created_By_User_Alias__c = '') order by Account_Number__r.RecType__c];
+		    															WHERE PersonID__c in: listAccountIds_ToFilter  and (not TypeTranslate__c like '%Beneficiary%') order by Account_Number__r.RecType__c];
 		    		for(Person_Account__c item : listOfAllNonBenificaries) 
 		    			{
 		    				if(!listAccountId_Qualified.contains(item.PersonId__c))
