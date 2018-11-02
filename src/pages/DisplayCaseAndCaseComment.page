@@ -321,7 +321,7 @@
                                                                     </div>
                                                                 <p data-bind="html: FullComment , attr:{id: 'fullcomment' + $index()}"></p>
                                                               </div>
-                                                              <a class="toggleComment glyphicon glyphicon-chevron-down" data-bind="attr:{id: 'collapselink' + $index()}" role="button" ></a>
+                                                              <a class="toggleComment glyphicon glyphicon-chevron-down" onclick="clickReadMethod(this);" data-bind="attr:{id: 'collapselink' + $index()}" role="button" ></a>
                                                             </div>
                                                             
                                                          </li>
@@ -350,7 +350,7 @@
                                                                     </div>
                                                                 <p data-bind="html: FullComment , attr:{id: 'fullcomment' + $index()}"></p>
                                                               </div>
-                                                              <a class="toggleComment glyphicon glyphicon-chevron-down" data-bind="attr:{id: 'collapselink' + $index()}" ></a>
+                                                              <a class="toggleComment glyphicon glyphicon-chevron-down" onclick="clickReadMethod(this);"  data-bind="attr:{id: 'collapselink' + $index()}" ></a>
                                                             </div>
                                                             
                                                          </li>
@@ -892,12 +892,20 @@
             var addattachmentglobal;;
             function submitform(addattachment)
             {
+                debugger;
                             casecomment = getRTEValue();
                             //var casecommentcopy = casecomment;
                             var casecommenttext = getRTETextValue();
                             casecommenttext = casecommenttext.replace(/[\u200B-\u200D\uFEFF]/g, '');
-                            if (casecommenttext != '')
+                
+                			 
+                           
+                			if (casecommenttext != '')
                             {
+                                if(casecommenttext.trim() == '' && casecommenttext != '')
+                                {
+                                    casecomment = 'No actual comment by member.';
+                                }
                                 j$('#commenttext').val(casecomment);
                             }
                             else
@@ -1835,7 +1843,22 @@
                    return dtype;
             }
             
+            function clickReadMethod(obj)
+            {
             
+            	
+            	var commentid = ko.dataFor(obj).commentid();
+            	var IsRead = ko.dataFor(obj).IsRead();
+            	//UpdateIsMarkRead
+            	if(!IsRead)
+            	{
+	            	DisplayCaseController.UpdateIsMarkRead(commentid, function(result, event)
+	                {
+	                    ko.dataFor(obj).IsRead(true);
+	                });
+                }
+            	
+            }
             
         </script>
         </html>

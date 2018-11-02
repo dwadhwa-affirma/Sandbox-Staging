@@ -1448,11 +1448,10 @@ function CallLoadCase()
  } 
  function CallUpdateIsMarkRead(obj)
  {
-	  var chk_id = j$(obj).closest('tr').find('.select_item').attr('id');
- 	ShowCasesController.UpdateIsMarkRead(chk_id,function(){
+ 
+	var chk_id = j$(obj).closest('tr').find('.select_item').attr('id');
+ 	window.location.href='{!$Site.CurrentSiteUrl}DisplayCaseAndCaseComment?id=' + chk_id + '&Type=' + TypeOfView + '&SB=' + SortBy + '&SD=' + SortDir;
  	
-     window.location.href='{!$Site.CurrentSiteUrl}DisplayCaseAndCaseComment?id=' + chk_id + '&Type=' + TypeOfView + '&SB=' + SortBy + '&SD=' + SortDir;
- 	});
  }
  
  function CallbackUpdateRead(chk_id)
