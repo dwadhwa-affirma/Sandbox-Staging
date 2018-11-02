@@ -664,7 +664,7 @@ global  class DisplayCaseController {
         @RemoteAction
     global static List<Member_Comment__c> GetCaseComment(string caseid)
     {
-        List<Member_Comment__c> casecommentdata = [SELECT Case__r.Id,ID, Member_Communication__c, CreatedById,CreatedDate FROM Member_Comment__c Where Case__r.Id =: caseid and draft__c != true order by CreatedDate Desc];
+        List<Member_Comment__c> casecommentdata = [SELECT Case__r.Id,ID,IsRead__c, Member_Communication__c, CreatedById,CreatedDate FROM Member_Comment__c Where Case__r.Id =: caseid and draft__c != true order by CreatedDate Desc];
         system.debug('casecommentdata=======' + casecommentdata);
         return  casecommentdata;
         
@@ -794,6 +794,8 @@ global  class DisplayCaseController {
             	system.debug('comments.size()========'+ comments.size());
                 List<FileList> filelists = new List<FileList>();
                 MemberComment mc = new MemberComment();
+                mc.commentid = comments[i].id;
+                mc.IsRead = comments[i].IsRead__c;                
                 mc.CreatedById  = comments[i].CreatedById;
                 mc.CreatedDate = comments[i].CreatedDate;
                 if(comments[i].Member_Communication__c != null || comments[i].Member_Communication__c != '' || !String.isEmpty(comments[i].Member_Communication__c))
@@ -1346,6 +1348,7 @@ global  class DisplayCaseController {
     }
     
     
+    
     @RemoteAction
    
     
@@ -1356,6 +1359,23 @@ global  class DisplayCaseController {
         
     
     }  
+    
+    
+    /* method supports mark as read action*/
+	@RemoteAction
+	global static void UpdateIsMarkRead(string id)
+	{
+		
+		List<Member_Comment__c> membercomments =  [SELECT Case__r.Id,Member_Read_Date_Time__c, CreatedDate,Id,Member_Comment__c,Name, IsRead__c FROM Member_Comment__c Where Id =: id and draft__c != true and IsRead__c != true];
+		
+			for(Member_Comment__c mc:membercomments)
+			{
+				mc.IsRead__c = true;
+				mc.Member_Read_Date_Time__c = System.now();
+				
+			}
+			update membercomments;
+	}
     
      @RemoteAction
     global static String attachBlob(String parentId, String attachmentId, String fileName, String contentType, String base64BlobValue)

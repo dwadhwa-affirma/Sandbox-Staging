@@ -512,7 +512,7 @@ global with sharing  class ShowCasesController {
 	@RemoteAction
 	global static void UpdateIsMarkRead(string id)
 	{
-		List<Case> cdata =[SELECT ID, IsMarkRead__c from case where Id =: id];
+		/*List<Case> cdata =[SELECT ID, IsMarkRead__c from case where Id =: id];
 			for(Case cas:cdata)
 			{
 				cas.IsMarkRead__c = true;
@@ -526,7 +526,7 @@ global with sharing  class ShowCasesController {
 				mc.Member_Read_Date_Time__c = System.now();
 				
 			}
-			update membercomments;
+			update membercomments;*/
 	}
 	/* method supports get message count call*/
 	@RemoteAction
