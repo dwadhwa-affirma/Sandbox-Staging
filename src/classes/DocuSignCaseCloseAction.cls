@@ -7,10 +7,9 @@ Public class DocuSignCaseCloseAction{
         //Case lstcs = [Select Id,Origin,Previous_Owner__c from case where id in: caseId];
         List<AggregateResult> lstAR = [select count(id) pendingDocCount, case__c csid from OnBase_Document__c where 
                                        (document_type__c = '' and (case__c IN: CaseId or Member_Comment__r.Case__C IN: CaseId ) )   group by case__c];
-        
-        
         List<case> UpdateCase = new List<case>();
         User ur = [select id from user where name='MARS System' limit 1];
+        set<id> closecaseid = new set<id>();
         for(case cs :  [Select Id,Origin,Previous_Owner__c,Future_Date__c,CreatedById,Secondary_Category__c from case where id in: caseId]){
               
             boolean check = false; 
@@ -53,14 +52,24 @@ Public class DocuSignCaseCloseAction{
                 }
                 c.status = 'Closed';
                 c.id=cs.id;
+                closecaseid.add(cs.id);
             }
+            
             if(c.id != null){
                 UpdateCase.add(c);
             }
            
             
         }
+         
          update UpdateCase;
+		List<task> Ctsk = new list<task>();
+		for(Task lsttask : [select id,Subject,Status from task where WhatId in : closecaseid and subject != null]) 
+		{
+			lsttask.status = 'Completed';
+			ctsk.add(lsttask);
+		}   
+		update Ctsk;
         
     }
 }
