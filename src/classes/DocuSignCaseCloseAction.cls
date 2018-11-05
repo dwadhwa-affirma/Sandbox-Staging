@@ -61,15 +61,16 @@ Public class DocuSignCaseCloseAction{
            
             
         }
-         
-         update UpdateCase;
-		List<task> Ctsk = new list<task>();
+        List<task> Ctsk = new list<task>();
 		for(Task lsttask : [select id,Subject,Status from task where WhatId in : closecaseid and subject != null]) 
 		{
 			lsttask.status = 'Completed';
 			ctsk.add(lsttask);
 		}   
 		update Ctsk;
+        
+         update UpdateCase;
+		
         
     }
 }
