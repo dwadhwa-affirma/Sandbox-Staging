@@ -10,7 +10,7 @@
 			 var footer = document.getElementById('OTPVerificationPageFooter');
 			 if(footer != null)
 			footer.style = 'display:none';	
-			
+			component.set("v.isTravelNotificationVisible", false);	
 			// cmp1.style = '';
 		}
 		else

@@ -26,6 +26,7 @@ private class ManualMemberMergeProcessTest {
     
     static testMethod void MergeMemberAccountTest() {
         
+      
         MemberConversionSetting__c mcs = new MemberConversionSetting__c();
       
       mcs.Automation__c = 10;
@@ -37,11 +38,12 @@ private class ManualMemberMergeProcessTest {
        RecordType rec = [Select Name, Id From RecordType where sObjectType='Account' and isActive=true and Name='Person Account'];
        
         RecordType rec1 = [Select Name, Id From RecordType where sObjectType='Account' and isActive=true and Name='Pre Member'];
-       Account_Details__c accDetail = new Account_Details__c();
+       
+        Account_Details__c accDetail = new Account_Details__c();
             accDetail.Name = 'Test';
             accDetail.RecType__c = 'ACCT';
         insert accDetail;
-        
+     
         Account act = new Account();
         act.FirstName = 'Test';
         act.LastName = 'Test1';
@@ -285,10 +287,7 @@ private class ManualMemberMergeProcessTest {
         dep1.Needs_Assessment__c = na1.id;
         insert dep1;
         
-         Account_Details__c account_details_Obj = new Account_Details__c(Onboarded__c = false, RecType__c = 'ACCT', TypeTranslate__c = '2-TRUST');
-    			Insert account_details_Obj;
-        Person_Account__c person_account_Obj = new Person_Account__c(Account_Number__c = account_details_Obj.id, PersonID__c = pact4.id, Relationship__c = null, TypeTranslate__c = '0000/Primary');
-    		Insert person_account_Obj;
+        
     		
         Task t = new Task();
         t.Whatid = pact4.id;
@@ -299,16 +298,12 @@ private class ManualMemberMergeProcessTest {
         e.DurationInMinutes = 100;
         e.ActivityDateTime = system.today();
         insert e;
-        
-        
-         
-        
-        
-         Test.startTest();
-        	
-        
-        
-        
+      
+        Test.startTest();
+         Account_Details__c account_details_Obj = new Account_Details__c(Onboarded__c = false, RecType__c = 'ACCT', TypeTranslate__c = '2-TRUST');
+    			Insert account_details_Obj;
+        Person_Account__c person_account_Obj = new Person_Account__c(Account_Number__c = account_details_Obj.id, PersonID__c = pact4.id, Relationship__c = null, TypeTranslate__c = '0000/Primary');
+    		Insert person_account_Obj;
         Set<ID> pactid = new Set<Id>();
         pactid.add(pact.id);
         pactid.add(pact1.id);
@@ -336,7 +331,8 @@ private class ManualMemberMergeProcessTest {
       
     
     static testMethod void MergeMemberAccountTest1() {
-        
+       
+       
         MemberConversionSetting__c mcs = new MemberConversionSetting__c();
       
       mcs.Automation__c = 10;
@@ -589,10 +585,7 @@ private class ManualMemberMergeProcessTest {
         dep1.Needs_Assessment__c = na1.id;
         insert dep1;
         
-         Account_Details__c account_details_Obj = new Account_Details__c(Onboarded__c = false, RecType__c = 'ACCT', TypeTranslate__c = '2-TRUST');
-    			Insert account_details_Obj;
-        Person_Account__c person_account_Obj = new Person_Account__c(Account_Number__c = account_details_Obj.id, PersonID__c = pact4.id, Relationship__c = null, TypeTranslate__c = '0000/Primary');
-    		Insert person_account_Obj;
+       
     		
         Task t = new Task();
         t.Whatid = pact4.id;
@@ -605,9 +598,13 @@ private class ManualMemberMergeProcessTest {
         insert e;
         
         
-         
-          Test.startTest();
-        	ManualMemberMergeProcess.MergeMemberAccount(act2.id , pact4.id);
+         Test.startTest();
+          
+        	 /* Account_Details__c account_details_Obj = new Account_Details__c(Onboarded__c = false, RecType__c = 'ACCT', TypeTranslate__c = '2-TRUST');
+    			Insert account_details_Obj;
+        Person_Account__c person_account_Obj = new Person_Account__c(Account_Number__c = account_details_Obj.id, PersonID__c = pact4.id, Relationship__c = null, TypeTranslate__c = '0000/Primary');
+    		Insert person_account_Obj;
+        	ManualMemberMergeProcess.MergeMemberAccount(act2.id , pact4.id);*/
        
         	Account_Details__c account_details_Obj1 = new Account_Details__c(Onboarded__c = false, RecType__c = 'ACCT', TypeTranslate__c = '2-TRUST');
     			Insert account_details_Obj1;

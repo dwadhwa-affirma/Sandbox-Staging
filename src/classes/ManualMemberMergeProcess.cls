@@ -95,7 +95,7 @@ public without sharing class ManualMemberMergeProcess {
 		    	
 		    	
 		    	
-		    	if(userGroup)
+		    	if(userGroup && membertype == 'All Members')
 		    	{
 		    		listOfAllNonBenificaries = [SELECT PersonID__c FROM Person_Account__c 
 		    															WHERE PersonID__c in: listAccountIds_ToFilter  and (not TypeTranslate__c like '%Beneficiary%') order by Account_Number__r.RecType__c];
@@ -147,6 +147,7 @@ public without sharing class ManualMemberMergeProcess {
     		 				 FROM Account where RecordType.Name = 'Pre Member' and IsConverted__c=false ];
     		 	listObj.Add(PreMemberAccount);
     		 	system.debug(listObj);
+    		 	listObj.Add(userGroup);
     		 	return listObj;
 			}
 			
@@ -413,7 +414,7 @@ public without sharing class ManualMemberMergeProcess {
     					
     					ma.IsConverted__c= true;
     					ma.Member__c = pma.Id;
-    					ma.Converted_On__c = system.today();
+    					ma.Converted_On__c = system.now();
     					update ma;
     					
     					Converted_PreMember__c cpm = new Converted_PreMember__c();

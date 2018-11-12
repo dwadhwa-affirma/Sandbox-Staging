@@ -3521,6 +3521,22 @@ CASE(STATUS__c,
         </filters>
         <label>Secure Email</label>
     </listViews>
+    <listViews>
+        <fullName>X1_Closed_Accounts</fullName>
+        <columns>NAME</columns>
+        <columns>RecType__c</columns>
+        <columns>Balance__c</columns>
+        <columns>ID1__c</columns>
+        <columns>TypeTranslate__c</columns>
+        <columns>Close_Date__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Close_Date__c</field>
+            <operation>lessThan</operation>
+            <value>TODAY</value>
+        </filters>
+        <label>1. Closed Accounts</label>
+    </listViews>
     <nameField>
         <label>Account Number</label>
         <trackHistory>false</trackHistory>

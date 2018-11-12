@@ -2,14 +2,15 @@
 
 	<aura:attribute name="valueToDisplay" type="string"/>
     <aura:attribute name="valueToCompare" type="string" />
+    <aura:attribute name="RecId" type ="Id"/>
     <aura:attribute name="isPhoneNo" type="boolean" />
     <aura:attribute name="IsNeedToHighLight" type="Boolean" />
     <aura:handler value="{!this}" name="init" action="{!c.doInit}" />
 	
 	<aura:if isTrue="{!(v.IsNeedToHighLight == true)}">
-		<span class="slds-truncate truncate heighLightSortedText" title="{!v.valueToDisplay}">	{!v.valueToDisplay}</span>
+		<span class="slds-truncate truncate heighLightSortedText" title="{!v.valueToDisplay}" onclick="{!c.openAccount}" id="{!v.RecId}">	{!v.valueToDisplay}</span>
 		<aura:set attribute="else">
-		<span class="slds-truncate truncate" title="{!v.valueToDisplay}">	{!v.valueToDisplay}</span>
+		<span class="slds-truncate truncate" title="{!v.valueToDisplay}" onclick="{!c.openAccount}" id="{!v.RecId}">	{!v.valueToDisplay}</span>
 		</aura:set>
 	</aura:if>	
 </aura:component>

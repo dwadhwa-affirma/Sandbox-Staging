@@ -25,5 +25,21 @@
 				component.set('v.IsNeedToHighLight',false);
 			}
 		}
-	}
+	},
+	
+		 openAccount: function (component, event, helper) {
+		 
+		var currentId = event.target.id; 
+		
+       if(currentId != undefined && currentId != null && currentId != '')
+		{
+			var navEvt = $A.get("e.force:navigateToSObject");
+	        navEvt.setParams({
+	        	"recordId": currentId
+	        	
+	        });
+	        navEvt.fire();        
+	        component.set("v.loading", false);
+		}
+	 },
 })

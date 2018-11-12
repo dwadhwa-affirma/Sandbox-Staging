@@ -225,6 +225,7 @@
        var ownertypevalue = component.find("ownertype").get("v.value");
        
        var MemAccNumber = component.get('v.selectedAcctNumber');
+       var FutureDate = helper.isvalidFutureDate(component,"FutureDate", helper);
       
         var isValid = true;
         if(StageName == 'Outreach')
@@ -291,7 +292,7 @@
         	inputCmp.set("v.errors", null);
        }
       
-        if(!objProductType || !objOpportunitySource || !objOwnership)
+        if(!objProductType || !objOpportunitySource || !objOwnership || !FutureDate)
         {
         	isValid = false;        	
         }
@@ -364,4 +365,45 @@
         return isValid;
     	
     }, 
+    
+    isvalidFutureDate: function(component, fieldName, helper)
+    {
+    	var inputCmp = component.find(fieldName);
+    	var value = new Date(inputCmp.get("v.value"));
+    	var datevalue = new Date(value.getFullYear(),value.getMonth()+1,value.getDay());
+    	var isValid = true;
+    	var now= new Date();
+    	now = new Date(now.getFullYear(),now.getMonth()+1,now.getDay());
+    	
+    	if(value != '' && datevalue < now ){
+        	
+        	var controlId = fieldName + 'Control';
+        	var control = document.getElementById(controlId);
+        	if(control != null && control != undefined)
+        	{
+	        	control.classList.add('errorForce');
+        	}
+        	var controlErrorId = fieldName + 'Error';
+	        	var controlError = document.getElementById(controlErrorId);
+	        	controlError.style = '';
+        	isValid = false;
+
+        }
+        else
+        {
+        	/*inputCmp.elements[0].classList.remove('errorForce');
+        	if(inputCmp.elements[0].nextSibling != null && inputCmp.elements[0].nextSibling != undefined)
+        	{
+        	 inputCmp.elements[0].nextSibling.remove();
+        	}*/
+        	var controlId = fieldName + 'Control';
+        	var control = document.getElementById(controlId);
+        	control.classList.remove('errorForce');   
+        	var controlErrorId = fieldName + 'Error';     	
+        	var controlError = document.getElementById(controlErrorId);
+        	controlError.style = 'display:none;';
+        }
+        return isValid;
+    	
+    }
 })

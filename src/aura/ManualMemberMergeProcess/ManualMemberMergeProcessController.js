@@ -1,8 +1,10 @@
 ({
 	doInit : function(component, event, helper) {
 	
-    
+		
 		var action = component.get("c.GetMemberList");
+		var membertype = component.get("v.MemberListType");
+		action.setParams({"membertype" : membertype});
 		component.set("v.loading", true);
 		component.set("v.NoMemberSelected", true);
 		action.setCallback(this, function (response) {
@@ -31,8 +33,8 @@
                 {
                 	component.set("v.NoPreMemberAccount", true);
                 	
-                }  
-	            
+                } 
+	            component.set("v.AllMember", result[2]);
 	            component.set("v.loading", false);
 	            component.set("v.Firstloading", false);
 	        }
@@ -196,6 +198,75 @@
 		    $A.util.toggleClass(toggleText, "slds-hide");
 		},
 		
-
+		selectListType : function(component, event)
+		{
+		
+			//var selectedVal = event.getSource().get("v.value");
+			 var Val = component.find("MemberType").get("v.value");   
+			 var selectedVal;   
+			 if(Val== "Created by Me")
+			 {
+				 selectedVal = "My Members";
+			 }
+			 else if(Val == "Created by My Team")
+			 {
+				selectedVal = "My Team Members";
+			 }
+			 else if(Val == "All Members")
+			 {
+				selectedVal = "All Members";
+			 }
+			
+			//component.set("v.MemberListType",selectedVal);
+			var action = component.get("c.GetMemberList");
+			action.setParams({"membertype" : selectedVal});
+			component.set("v.loading", true);
+			component.set("v.NoMemberSelected", true);
+			action.setCallback(this, function (response) {
+			
+				 var status = response.getState();
+				 
+		        if (component.isValid() && status === "SUCCESS") {
+		        	var result =  response.getReturnValue();
+		        	if(result[0].length > 0)
+		        	{            
+		        		component.set("v.accounts", result[0]);
+		        	}
+		        	else
+		        	{
+		        		component.set("v.accounts", []);
+		        	}
+		            
+		            if(result[1].length > 0){
+		            	
+	                   var arrayACC = new Array();
+	                   
+	                   for(var i =0; i< result[1].length; i++)
+	                   {
+	                	   arrayACC.push(result[1][i]);
+	                   }
+	                   
+	                   
+	                	component.set("v.PreMemberAccounts", arrayACC);
+	                	component.set("v.NoPreMemberAccount", false);
+	                	
+	                }
+	                else
+	                {
+	                	component.set("v.NoPreMemberAccount", true);
+	                	
+	                }  
+		            
+		            component.set("v.loading", false);
+		            component.set("v.Firstloading", false);
+		        }
+			      
+		       
+			 });
+			$A.enqueueAction(action);
+			
+			
+			
+		}
 	 
 })

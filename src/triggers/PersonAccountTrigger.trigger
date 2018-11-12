@@ -3,6 +3,7 @@ trigger PersonAccountTrigger on Person_Account__c (after insert) {
         if(Trigger.isInsert){
             PersonAccountTriggerHandler.createCase(trigger.newMap);
             PersonAccountTriggerHandler.UpdateAccountBranch(Trigger.new);
+            PersonAccountTriggerHandler.UpdateAccountEpisysUser(Trigger.new);
         }
     }
 }

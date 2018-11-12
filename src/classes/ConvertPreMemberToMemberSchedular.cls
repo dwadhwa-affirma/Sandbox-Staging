@@ -244,7 +244,7 @@ public class ConvertPreMemberToMemberSchedular implements Schedulable {
 				                        IsStateMatching = true;
 				                       
 				                    } 
-                                    IsCityMatching = false;
+				                     IsCityMatching = false;
 				                   if(!string.isBlank(ma.Residential_City__pc)  &&
 				                    !string.isBlank(pma.Residential_City__pc) && (ma.Residential_City__pc == pma.Residential_City__pc) )
 				                    {
@@ -294,7 +294,7 @@ public class ConvertPreMemberToMemberSchedular implements Schedulable {
 				                      
 				                        ma.IsConverted__c= true;
 				                        ma.Member__c = pma.Id;
-				                        ma.Converted_On__c = system.today();
+				                        ma.Converted_On__c = system.now();
 				                        
 				                      
 				                      system.debug('EligibleMemberCollection##' + EligibleMemberCollection); 

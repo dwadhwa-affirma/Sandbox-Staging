@@ -29,3 +29,7 @@
     border : 2px solid red;
    
 }
+.THIS .uiMenuList--default.uiMenuList{
+	max-width: 100% !important;
+	width: auto !important;
+}

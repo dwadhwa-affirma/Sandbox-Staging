@@ -79,8 +79,8 @@
 		{
 			Draft = false;
 		}
-		
-		if(MemberDescription != undefined && MemberDescription != null && MemberDescription != '')
+		var ReadOnly  = component.get('v.ReadOnly');
+		if(ReadOnly || (MemberDescription != undefined && MemberDescription != null && MemberDescription != ''))
 		{
 			var error  = document.getElementById('DescriptionError');
 			//if(error){

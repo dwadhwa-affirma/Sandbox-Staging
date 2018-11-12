@@ -1244,11 +1244,11 @@ trigger UpdateHistoryObject on Needs_Assesment__c(after update,before update,bef
                  newobj.LEMP_Credit_Card_Usage_Rewards__c || 
                  newobj.LEMP_Credit_Card_Usage_Cash_Back__c || 
                  newobj.LEMP_Credit_Card_Usage_Low_Interest_Rate__c ||
-                 newobj.LEMP_Credit_Card_Usage_Other__c !=null
+                 newobj.LEMP_Credit_Card_Usage_Other_New__c !=null
                 ) 
                 && 
                 newobj.LEMP_Carry_Credit_Card_Balance__c != null && 
-                newobj.LEMP_Credit_Card_You_Use_Often__c != null 
+                newobj.LEMP_Credit_Card_You_Use_Often_New__c != null 
             )
             {
                 account.NA_LEMP_Complete__c = true;

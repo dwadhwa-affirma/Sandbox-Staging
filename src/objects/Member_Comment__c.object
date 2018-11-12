@@ -23,6 +23,13 @@
         <type>Visualforce</type>
     </actionOverrides>
     <actionOverrides>
+        <actionName>Edit</actionName>
+        <content>MemberComments</content>
+        <formFactor>Large</formFactor>
+        <skipRecordTypeSelect>false</skipRecordTypeSelect>
+        <type>LightningComponent</type>
+    </actionOverrides>
+    <actionOverrides>
         <actionName>List</actionName>
         <type>Default</type>
     </actionOverrides>
@@ -46,6 +53,14 @@
     </actionOverrides>
     <allowInChatterGroups>false</allowInChatterGroups>
     <compactLayoutAssignment>SYSTEM</compactLayoutAssignment>
+    <compactLayouts>
+        <fullName>New_Compact_Layout</fullName>
+        <fields>IsRead__c</fields>
+        <fields>CU_Read__c</fields>
+        <fields>Device_Type__c</fields>
+        <fields>Communication_Origin__c</fields>
+        <label>New Compact Layout</label>
+    </compactLayouts>
     <deploymentStatus>Deployed</deploymentStatus>
     <description>Comments intended to be visible to the member</description>
     <enableActivities>true</enableActivities>

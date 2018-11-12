@@ -235,6 +235,15 @@
         </valueSet>
     </fields>
     <fields>
+        <fullName>LEAV_ContactPreferences_New__c</fullName>
+        <externalId>false</externalId>
+        <label>LEAV_ContactPreferences_New</label>
+        <length>32768</length>
+        <trackTrending>false</trackTrending>
+        <type>LongTextArea</type>
+        <visibleLines>3</visibleLines>
+    </fields>
+    <fields>
         <fullName>LEAV_ContactPreferences__c</fullName>
         <externalId>false</externalId>
         <label>LEAV_ContactPreferences</label>
@@ -469,12 +478,30 @@
         <type>Checkbox</type>
     </fields>
     <fields>
+        <fullName>LECF_Comment_New__c</fullName>
+        <externalId>false</externalId>
+        <label>LECF_Comment_New</label>
+        <length>32768</length>
+        <trackTrending>false</trackTrending>
+        <type>LongTextArea</type>
+        <visibleLines>3</visibleLines>
+    </fields>
+    <fields>
         <fullName>LECF_Comment__c</fullName>
         <externalId>false</externalId>
         <label>LECF_Comment</label>
         <required>false</required>
         <trackTrending>false</trackTrending>
         <type>TextArea</type>
+    </fields>
+    <fields>
+        <fullName>LECF_Experience_Improvement_Feedback_New__c</fullName>
+        <externalId>false</externalId>
+        <label>LECF_Experience_Improvement_Feedback_New</label>
+        <length>32768</length>
+        <trackTrending>false</trackTrending>
+        <type>LongTextArea</type>
+        <visibleLines>3</visibleLines>
     </fields>
     <fields>
         <fullName>LECF_Experience_Improvement_Feedback__c</fullName>
@@ -599,6 +626,15 @@
         <label>LECP_Written_Materials_Way_To_Send_Mail</label>
         <trackTrending>false</trackTrending>
         <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>LEEM_Comments_New__c</fullName>
+        <externalId>false</externalId>
+        <label>LEEM_Comments_New</label>
+        <length>32768</length>
+        <trackTrending>false</trackTrending>
+        <type>LongTextArea</type>
+        <visibleLines>3</visibleLines>
     </fields>
     <fields>
         <fullName>LEEM_Comments__c</fullName>
@@ -778,6 +814,15 @@
             <restricted>true</restricted>
             <valueSetName>NA_Recommendation_Status</valueSetName>
         </valueSet>
+    </fields>
+    <fields>
+        <fullName>LEHS_Comment_New__c</fullName>
+        <externalId>false</externalId>
+        <label>LEHS_Comment_New</label>
+        <length>32768</length>
+        <trackTrending>false</trackTrending>
+        <type>LongTextArea</type>
+        <visibleLines>3</visibleLines>
     </fields>
     <fields>
         <fullName>LEHS_Comment__c</fullName>
@@ -1027,12 +1072,30 @@
         <type>Checkbox</type>
     </fields>
     <fields>
+        <fullName>LEMD_CommentsDC_New__c</fullName>
+        <externalId>false</externalId>
+        <label>LEMD_CommentsDC_New</label>
+        <length>32768</length>
+        <trackTrending>false</trackTrending>
+        <type>LongTextArea</type>
+        <visibleLines>3</visibleLines>
+    </fields>
+    <fields>
         <fullName>LEMD_CommentsDC__c</fullName>
         <externalId>false</externalId>
         <label>LEMD_CommentsDC</label>
         <required>false</required>
         <trackTrending>false</trackTrending>
         <type>TextArea</type>
+    </fields>
+    <fields>
+        <fullName>LEMD_CommentsForDD_New__c</fullName>
+        <externalId>false</externalId>
+        <label>LEMD_CommentsForDD_New</label>
+        <length>32768</length>
+        <trackTrending>false</trackTrending>
+        <type>LongTextArea</type>
+        <visibleLines>3</visibleLines>
     </fields>
     <fields>
         <fullName>LEMD_CommentsForDD__c</fullName>
@@ -1126,6 +1189,15 @@
         <type>Checkbox</type>
     </fields>
     <fields>
+        <fullName>LEMP_Credit_Card_Usage_Comments_New__c</fullName>
+        <externalId>false</externalId>
+        <label>LEMP_Credit_Card_Usage_Comments_New</label>
+        <length>32768</length>
+        <trackTrending>false</trackTrending>
+        <type>LongTextArea</type>
+        <visibleLines>3</visibleLines>
+    </fields>
+    <fields>
         <fullName>LEMP_Credit_Card_Usage_Comments__c</fullName>
         <externalId>false</externalId>
         <label>LEMP_Credit_Card_Usage_Comments</label>
@@ -1150,12 +1222,30 @@
         <type>Checkbox</type>
     </fields>
     <fields>
+        <fullName>LEMP_Credit_Card_Usage_Other_New__c</fullName>
+        <externalId>false</externalId>
+        <label>LEMP_Credit_Card_Usage_Other_New</label>
+        <length>32768</length>
+        <trackTrending>false</trackTrending>
+        <type>LongTextArea</type>
+        <visibleLines>3</visibleLines>
+    </fields>
+    <fields>
         <fullName>LEMP_Credit_Card_Usage_Other__c</fullName>
         <externalId>false</externalId>
         <label>LEMP_Credit_Card_Usage_Other</label>
         <required>false</required>
         <trackTrending>false</trackTrending>
         <type>TextArea</type>
+    </fields>
+    <fields>
+        <fullName>LEMP_Credit_Card_Usage_Reason_Comments_N__c</fullName>
+        <externalId>false</externalId>
+        <label>LEMP_Credit_Card_Usage_Reason_Comments_N</label>
+        <length>32768</length>
+        <trackTrending>false</trackTrending>
+        <type>LongTextArea</type>
+        <visibleLines>3</visibleLines>
     </fields>
     <fields>
         <fullName>LEMP_Credit_Card_Usage_Reason_Comments__c</fullName>
@@ -1174,12 +1264,30 @@
         <type>Checkbox</type>
     </fields>
     <fields>
+        <fullName>LEMP_Credit_Card_You_Use_Often_New__c</fullName>
+        <externalId>false</externalId>
+        <label>LEMP_Credit_Card_You_Use_Often_New</label>
+        <length>32768</length>
+        <trackTrending>false</trackTrending>
+        <type>LongTextArea</type>
+        <visibleLines>3</visibleLines>
+    </fields>
+    <fields>
         <fullName>LEMP_Credit_Card_You_Use_Often__c</fullName>
         <externalId>false</externalId>
         <label>LEMP_Credit_Card_You_Use_Often</label>
         <required>false</required>
         <trackTrending>false</trackTrending>
         <type>TextArea</type>
+    </fields>
+    <fields>
+        <fullName>LEMP_Debit_Card_Usage_Comments_New__c</fullName>
+        <externalId>false</externalId>
+        <label>LEMP_Debit_Card_Usage_Comments_New</label>
+        <length>32768</length>
+        <trackTrending>false</trackTrending>
+        <type>LongTextArea</type>
+        <visibleLines>3</visibleLines>
     </fields>
     <fields>
         <fullName>LEMP_Debit_Card_Usage_Comments__c</fullName>
@@ -1228,6 +1336,15 @@
         <label>LEMP_Debit_Card_Usage_Retail</label>
         <trackTrending>false</trackTrending>
         <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>LEMP_International_Transfer_Comments_New__c</fullName>
+        <externalId>false</externalId>
+        <label>LEMP_International_Transfer_Comments_New</label>
+        <length>32768</length>
+        <trackTrending>false</trackTrending>
+        <type>LongTextArea</type>
+        <visibleLines>3</visibleLines>
     </fields>
     <fields>
         <fullName>LEMP_International_Transfer_Comments__c</fullName>
@@ -1461,12 +1578,30 @@
         <type>Checkbox</type>
     </fields>
     <fields>
+        <fullName>LEMP_Payment_Transfer_Comments_New__c</fullName>
+        <externalId>false</externalId>
+        <label>LEMP_Payment_Transfer_Comments_New</label>
+        <length>32768</length>
+        <trackTrending>false</trackTrending>
+        <type>LongTextArea</type>
+        <visibleLines>3</visibleLines>
+    </fields>
+    <fields>
         <fullName>LEMP_Payment_Transfer_Comments__c</fullName>
         <externalId>false</externalId>
         <label>LEMP_Payment_Transfer_Comments</label>
         <required>false</required>
         <trackTrending>false</trackTrending>
         <type>TextArea</type>
+    </fields>
+    <fields>
+        <fullName>LEMP_Transfer_Comments_New__c</fullName>
+        <externalId>false</externalId>
+        <label>LEMP_Transfer_Comments_New</label>
+        <length>32768</length>
+        <trackTrending>false</trackTrending>
+        <type>LongTextArea</type>
+        <visibleLines>3</visibleLines>
     </fields>
     <fields>
         <fullName>LEMP_Transfer_Comments__c</fullName>
@@ -1681,6 +1816,15 @@
         <type>Date</type>
     </fields>
     <fields>
+        <fullName>LEOM_Comments_New__c</fullName>
+        <externalId>false</externalId>
+        <label>LEOM_Comments_New</label>
+        <length>32768</length>
+        <trackTrending>false</trackTrending>
+        <type>LongTextArea</type>
+        <visibleLines>3</visibleLines>
+    </fields>
+    <fields>
         <fullName>LEOM_Comments__c</fullName>
         <externalId>false</externalId>
         <label>LEOM_Comments</label>
@@ -1748,6 +1892,15 @@
         <type>Checkbox</type>
     </fields>
     <fields>
+        <fullName>LEOM_PlanUnforeseen_New__c</fullName>
+        <externalId>false</externalId>
+        <label>LEOM_PlanUnforeseen_New</label>
+        <length>32768</length>
+        <trackTrending>false</trackTrending>
+        <type>LongTextArea</type>
+        <visibleLines>3</visibleLines>
+    </fields>
+    <fields>
         <fullName>LEOM_PlanUnforeseen__c</fullName>
         <externalId>false</externalId>
         <label>LEOM_PlanUnforeseen</label>
@@ -1778,6 +1931,15 @@
         <required>false</required>
         <trackTrending>false</trackTrending>
         <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>LEPT_Comments_New__c</fullName>
+        <externalId>false</externalId>
+        <label>LEPT_Comments_New</label>
+        <length>32768</length>
+        <trackTrending>false</trackTrending>
+        <type>LongTextArea</type>
+        <visibleLines>3</visibleLines>
     </fields>
     <fields>
         <fullName>LEPT_Comments__c</fullName>
@@ -1989,6 +2151,15 @@
         <type>Checkbox</type>
     </fields>
     <fields>
+        <fullName>LESB_SharedBranching_Comments_New__c</fullName>
+        <externalId>false</externalId>
+        <label>LESB_SharedBranching_Comments_New</label>
+        <length>32768</length>
+        <trackTrending>false</trackTrending>
+        <type>LongTextArea</type>
+        <visibleLines>3</visibleLines>
+    </fields>
+    <fields>
         <fullName>LESB_SharedBranching_Comments__c</fullName>
         <externalId>false</externalId>
         <label>Shared Branching Comments</label>
@@ -2057,6 +2228,15 @@
         </valueSet>
     </fields>
     <fields>
+        <fullName>LESF_Comments_New__c</fullName>
+        <externalId>false</externalId>
+        <label>LESF_Comments_New</label>
+        <length>32768</length>
+        <trackTrending>false</trackTrending>
+        <type>LongTextArea</type>
+        <visibleLines>3</visibleLines>
+    </fields>
+    <fields>
         <fullName>LESF_Comments__c</fullName>
         <externalId>false</externalId>
         <label>LESF_Comments</label>
@@ -2088,6 +2268,15 @@
         <label>LEWS_CFCU_ATM</label>
         <trackTrending>false</trackTrending>
         <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>LEWS_Comment_New__c</fullName>
+        <externalId>false</externalId>
+        <label>LEWS_Comment_New</label>
+        <length>32768</length>
+        <trackTrending>false</trackTrending>
+        <type>LongTextArea</type>
+        <visibleLines>3</visibleLines>
     </fields>
     <fields>
         <fullName>LEWS_Comment__c</fullName>
@@ -2694,6 +2883,15 @@
             <restricted>true</restricted>
             <valueSetName>NA_Recommendation_Status</valueSetName>
         </valueSet>
+    </fields>
+    <fields>
+        <fullName>Rec_Comment_New__c</fullName>
+        <externalId>false</externalId>
+        <label>Rec_Comment_New</label>
+        <length>32768</length>
+        <trackTrending>false</trackTrending>
+        <type>LongTextArea</type>
+        <visibleLines>3</visibleLines>
     </fields>
     <fields>
         <fullName>Rec_Comment__c</fullName>

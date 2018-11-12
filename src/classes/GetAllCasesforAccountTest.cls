@@ -27,7 +27,7 @@ static void setupTestData(){
   }
 
     static testMethod void myUnitTest() {
-    	    test.startTest();
+    	    
 		    List<Account_Details__c> account_details_Obj = new List<Account_Details__c>{
 						    new Account_Details__c(Name = '0000147163', Balance__c = 0.00, Combined_Account_ID__c = '0000147163S0100P0100', ID1__c = '0100', Onboarded__c = true, RecType__c = 'ACCT', TypeTranslate__c = '1-PRIMARY SHARE',WARNING_01_CODE__c='ABC',
 WARNING_02_CODE__c='ABC',
@@ -196,7 +196,7 @@ Comment_Block_20__c='ABC'
                          
 			  Insert case_Obj;
               
-		
+		test.startTest();
 		
         Case case1 =[select Id from Case limit 1]; 
       	

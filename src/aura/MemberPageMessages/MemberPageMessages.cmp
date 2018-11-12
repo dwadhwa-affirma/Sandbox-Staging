@@ -19,7 +19,7 @@
 <style>
 table.cMemberPageMessages{position: absolute;
     top: 25px;
-    right: 350px;
+    right: 450px;
     z-index: 100;
     width: auto;
     max-width: 40%;}

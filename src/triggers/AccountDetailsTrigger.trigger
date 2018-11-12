@@ -9,6 +9,7 @@ trigger AccountDetailsTrigger on Account_Details__c (before insert, before updat
             myMethod(Trigger.new);
             myMethod3(Trigger.new);
             updateMemberBranchonMember(Trigger.new);
+            updateMemberEpisysUseronMember(Trigger.new);
         }
     }
    
@@ -219,4 +220,79 @@ public void myMethod3(List<Account_Details__c> accList){
              }
          }    
 } 
+
+public void updateMemberEpisysUseronMember(List<Account_Details__c> accList)
+{
+	
+	List<string> ids = new List<string>();
+	Map<Id,string> accountMemberEpisysUser = new Map<Id,string>(); 
+		for(Account_Details__c acc : accList)
+		{
+			boolean changeEpisysUser = true;
+			
+			if(Trigger.isupdate)
+			{
+				Account_Details__c accOldDetails = Trigger.oldMap.get(acc.Id);	
+				if(accOldDetails.Created_By_User_Alias__c == acc.Created_By_User_Alias__c)
+				{
+					changeEpisysUser = false;
+				}
+			}
+			
+			if(changeEpisysUser && acc.RecType__C == 'ACCT')
+			{
+				ids.add(acc.id);
+				accountMemberEpisysUser.put(acc.id,acc.Created_By_User_Alias__c);
+			}
+		}
+	
+	List<Person_Account__C> listPA = [select id,Account_Number__c,PersonId__c from Person_Account__C where Account_Number__c in : ids];
+	
+	Map<string,string> listMemberEpisysUser = new Map<string,string>();
+	List<string> listMembers = new List<string>();
+	 
+	for(Person_Account__C item : listPA)
+	{
+		listMembers.add(item.PersonId__c);
+		
+	}
+	
+	List<Person_Account__C> listAccMember = [select id,PersonId__c,Account_Number__c from Person_Account__C where PersonId__c in: listMembers and Account_Number__r.RecType__c = 'ACCT'];
+	
+	Set<string> memberFound = new Set<string>(); 
+	
+	for(Person_Account__C item : listAccMember)
+	{
+		if(!memberFound.contains(item.Id))
+		{
+			string episysUser = accountMemberEpisysUser.get(item.Account_Number__c);
+			memberFound.add(item.PersonId__c);
+			listMemberEpisysUser.put(item.PersonId__c, episysUser);
+		}
+		
+	}
+	
+	List<Account> listMainAccount = [select id,Created_By_Episys_User_Alias__c from Account where Id in: memberFound];
+	List<Episys_User__c> episysUserList = [select id,Name, Alias__c from Episys_User__c];
+	Set<String> existingUsers = new Set<String>();
+	
+	for(Account acc: listMainAccount)
+	{
+		string memberUser = listMemberEpisysUser.get(acc.id);
+		existingUsers.add(listMemberEpisysUser.get(acc.id));
+		
+		for(Integer i=0;i<episysUserList.size();i++)
+		{
+			String userAlias = episysUserList[i].Alias__c;
+			
+			if (existingUsers.contains(userAlias))
+    		{
+        		acc.Created_By_Episys_User_Alias__c = memberUser;
+    		}
+    	}
+	}
+	
+	update listMainAccount;
+	 	
+}
 }

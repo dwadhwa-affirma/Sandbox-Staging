@@ -397,6 +397,17 @@ null )</formula>
         <unique>false</unique>
     </fields>
     <fields>
+        <fullName>IVR_OTP_Result__c</fullName>
+        <externalId>false</externalId>
+        <label>IVR OTP Result</label>
+        <length>255</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
         <fullName>IVR_Pin_Match__c</fullName>
         <externalId>false</externalId>
         <label>IVR Pin Match</label>

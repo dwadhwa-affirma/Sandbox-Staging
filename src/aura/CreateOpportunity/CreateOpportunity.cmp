@@ -6,6 +6,10 @@
       .remnove-label label {display:none;}
       .select-queue select {width: 190px;}
       .modal-maincontent{min-height: 375px;max-height: 375px;overflow-y: auto;}
+      .uiMenuList--default.uiMenuList{
+			max-width: 100% !important;
+			width: auto !important;
+		}
    </style>
    <aura:attribute name="loading" type="Boolean" default="false" />
    <aura:handler value="{!this}" name="init" action="{!c.doInit}" />
@@ -81,9 +85,8 @@
                                             <div class="autocompleteWrapper" data-aura-rendered-by="101:1107;a">
                                                 <aura:if isTrue="{! empty(v.selectedAcctNumber) }">
                                                     <input class="default input uiInput uiInputTextForAutocomplete uiInput--default uiInput--input uiInput uiAutocomplete uiInput--default uiInput--lookup" maxlength="500" role="combobox" id="22:1107;a" aria-expanded="true" aria-autocomplete="list" type="text"
-                                                        data-interactive-lib-uid="3" aria-required="true" spellcheck="false" onmouseenter="{!c.onFocusLookup}" onmouseleave="{!c.onBlurLookup}" placeholder="Search Users..." title="Search Users" />
-                                                    <aura:set attribute="else">
-                                                        <span class="slds-pill slds-pill_link fullWidth"> 
+                                                        data-interactive-lib-uid="3" aria-required="true" spellcheck="false" onmouseenter="{!c.onFocusLookup}" onmouseleave="{!c.onBlurLookup}" placeholder="Search..." title="Search..." />
+                                                    <aura:set attribute="else">                                                        <span class="slds-pill slds-pill_link fullWidth"> 
                                                   <a href="javascript:void(0);" 
                                                      class="slds-pill__action slds-p-left_x-small" title="{#v.selItem.text}">
                                                     <lightning:icon iconName="{#v.lookupIcon}" size="x-small"/>
@@ -224,8 +227,11 @@
             <div class="slds-form--stacked slds-p-around--medium slds-m-bottom--x-small">
                <div class="slds-form-element" >
                   <label class="slds-form-element__label" >Future Date</label>
-                  <div class="slds-form-element__control">
-                     <force:inputField value="{!v.simpleRecord.Future_Date__c}"> </force:inputField>
+                  <div class="slds-form-element__control" id="FutureDateControl">
+                     <force:inputField value="{!v.simpleRecord.Future_Date__c}" aura:id="FutureDate"> </force:inputField>
+                      <ul class='has-error uiInputDefaultError uiInput uiInputSelect uiInput--default uiInput--select' id='FutureDateError' style='display:none;'>
+                        <li class="form-element__help" data-aura-rendered-by="45:2084;a">Cannot set the future date to past date</li>
+                     </ul>
                   </div>
                </div>
               <!--   <div class="slds-form-element" >

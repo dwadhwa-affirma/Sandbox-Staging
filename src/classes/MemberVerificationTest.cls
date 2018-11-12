@@ -25,7 +25,7 @@ public class MemberVerificationTest {
     static testMethod void testMethod1(){
     
     	
-    
+     
     	Id rtId = [SELECT Id FROM RecordType WHERE IsPersonType = TRUE AND SObjectType='Account' LIMIT 1].Id;
 		Account acc = new Account();
     	acc.RecordTypeID=rtId;
@@ -49,7 +49,7 @@ public class MemberVerificationTest {
          };
           insert coh;
         
-  
+  		Test.startTest();
         Account_Details__c accDetail = new Account_Details__c();
         accDetail.Name = 'Test123';
         //accDetail.RecType__c = 'ACCT';
@@ -61,7 +61,7 @@ public class MemberVerificationTest {
         pa.PersonID__c = acc.Id;
         pa.Account_Number__c = accDetail.Id;        
         insert pa;
-        
+       Test.stopTest();
         
         Account acc2 = new Account();
     	acc2.RecordTypeID=rtId;
@@ -142,6 +142,8 @@ public class MemberVerificationTest {
         controller.DeclineOTP();
         string otpstring = '896542';
         string email = 'test@123.com';
+        
+      
         
        /* acc2.PersonEmail='test1@yahoo.com';
     	acc2.Home_Phone__pc = '2234567896';

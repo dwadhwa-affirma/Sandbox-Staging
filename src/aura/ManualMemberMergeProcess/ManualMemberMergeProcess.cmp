@@ -14,6 +14,8 @@
     <aura:attribute name="AddressShow" type="Boolean" default="true" /> 	  
 	<aura:attribute name="PersonalShow" type="Boolean" default="true" />
 	<aura:attribute name="PreMemberShow" type="Boolean" default="true" />
+	<aura:attribute name="MemberListType" type="String" default="My Members" />
+	<aura:attribute name="AllMember" type="Boolean" />
     
     <style type="text/css">
 
@@ -88,26 +90,26 @@
 	         </span>
          </div>
             <h3 style="font-size: 19px;">
-            New Members <!-- <button class="slds-icon_container slds-button_icon-small slds-icon-action-info slds-icon_container__circle" onclick="{!c.display}">
+           New Members <!-- <button class="slds-icon_container slds-button_icon-small slds-icon-action-info slds-icon_container__circle" onclick="{!c.display}">
 			    <lightning:icon iconName="utility:help" class="slds-button__icon" size="small" alternativeText="Move this item up" />
 			</button>--> 
 			 <lightning:buttonIcon iconName="utility:help" size="x-small" class="slds-icon_container_circler slds-button_icon-brand" alternativeText="Help" onclick="{!c.display}"/></h3>  
            
-            
-            
-            <aura:iteration items="{!v.accounts}" var="account">
-                <lightning:input aura:id="memberaccount" name="radioButtonGroup" label="{!account.Name}" type="radio" options="{!account.Name}" value="{!account.Id}" onchange="{!c.onRadioClick}"/>
-                <!--	<div class="slds-form-element__control">
-                                      <span class="slds-radio">
-                                        <input type="radio" id="memberaccount" value="{!account.Id}" name="memberaccount" onchange ="{!c.onRadioClick}" />
-                                        <label class="slds-radio__label" for="memberaccount">
-                                          <span class="slds-radio_faux"></span>
-                                          <span class="slds-form-element__label">{!account.FirstName} </span>
-                                <span class="slds-form-element__label"> {!account.LastName}</span>
-                                        </label>
-                                      </span>
-                          </div>  -->
+            <ui:inputSelect  change="{!c.selectListType}" aura:id="MemberType" class="single"  >
+			        <ui:inputSelectOption  text="Created by Me"/>
+					<ui:inputSelectOption  text="Created by My Team"/>
+					<aura:if isTrue="{!v.AllMember}"> 					
+						<ui:inputSelectOption text="All Members"/>
+					</aura:if>
+			  </ui:inputSelect>
+            <aura:if isTrue="{!not(empty(v.accounts))}">
+            <br/>
+         <aura:iteration items="{!v.accounts}" var="account">
+         <div style="margin-bottom: 4px; margin-top:10px;">
+                <lightning:input name="radioButtonGroup"  type="radio"  value="{!account.Id}" onchange="{!c.onRadioClick}"/><span></span> {!account.Name}
+                </div>
             </aura:iteration>
+             </aura:if>
         </div>
 
         <div class="right-content">
@@ -469,8 +471,9 @@
 	                                        </span>
 	                                    </td>
 	                                    <td>
-	                                        <c:ManualMermberMergeHighLightColumn valueToDisplay="{!item.LastName}"  valueToCompare="{!v.accountdetail.LastName}" />
-	                                    </td>
+	                                    <a  _id="{!item.Id}" href="javascript:void(0);" title="{!item.LastName}" > 
+	                                     <c:ManualMermberMergeHighLightColumn valueToDisplay="{!item.LastName}" RecId= "{!item.Id}" valueToCompare="{!v.accountdetail.LastName}" />
+	                                    </a></td>
 	                                    <td>
 	                                        <c:ManualMermberMergeHighLightColumn valueToDisplay="{!item.FirstName}"  valueToCompare="{!v.accountdetail.FirstName}" />                         	
 	                                    </td>

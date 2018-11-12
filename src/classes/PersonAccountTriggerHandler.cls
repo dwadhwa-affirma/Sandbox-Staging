@@ -177,5 +177,63 @@ public with sharing class PersonAccountTriggerHandler {
 	    	}		
 		}
 		update personList;
+    }
+    
+    public static void UpdateAccountEpisysUser(List<Person_Account__c> personAcc){
+    	
+    	set<Id> accDetailIds = new set<Id>();
+    	set<Id> personIds = new set<Id>();
+    	List<Account_Details__c> accDetailMap = new List<Account_Details__c>();
+    	list<Person_Account__c> paList = new list<Person_Account__c>();
+    	Map<Id,string> accountMemberEpisysUser = new Map<Id,string>();
+    	Map<string,string> listMemberEpisysUser = new Map<string,string>();
+    	
+    	for(Person_Account__c pa: personAcc){	
+    		paList.add(pa);
+    		accDetailIds.add(pa.Account_Number__c);
+    		personIds.add(pa.PersonID__c);    			
+    	}
+    	
+    	accDetailMap = [select id,Created_By_User_Alias__c, RecType__c from Account_Details__c where ID in : accDetailIds];
+    	
+    	for(Account_Details__c acc : accDetailMap){
+         	if(acc.RecType__C == 'ACCT'){
+         		accountMemberEpisysUser.put(acc.id,acc.Created_By_User_Alias__c);
+         	}
+    	} 
+    	
+    	for(Person_Account__c pa: personAcc){	
+    		string episysUser = accountMemberEpisysUser.get(pa.Account_Number__c);
+    	  	listMemberEpisysUser.put(pa.PersonId__c, episysUser);
+    	}
+    	
+    	
+    	list<Account> personList = [SELECT Id, Created_By_Episys_User_Alias__c FROM Account WHERE Id IN: personIds];
+    	
+    	List<Episys_User__c> episysUserList = [select id,Name, Alias__c from Episys_User__c];
+		Set<String> existingUsers = new Set<String>();
+	if(personList.size() > 0)
+	{
+    	for(Account acc: personList)
+		{
+			
+			string memberUser = listMemberEpisysUser.get(acc.id);
+			existingUsers.add(listMemberEpisysUser.get(acc.id));
+			
+			if(episysUserList.size() > 0)
+			{
+				for(Integer i=0;i<episysUserList.size();i++)
+				{
+					String userAlias = episysUserList[i].Alias__c;
+					
+					if (existingUsers.contains(userAlias))
+		    		{
+		        		acc.Created_By_Episys_User_Alias__c = memberUser;
+		     		}
+		    	}
+			}		
+		}
+		update personList;
+    }
     }	
 }

@@ -214,8 +214,11 @@
                     </td>
                     <td class="tblAdditionalinfotd"> <ui:inputtext value="{!v.travelDetails.Email__c}" change="{!c.validateEmail}" /></td>
                     <td class="tblAdditionalinfotd">  <ui:inputCheckbox value="{!v.travelDetails.IsEmailPreferred__c}" />     </td>
-                    </tr>
+                    </tr>                    
                     </table>
+                    <br/>
+                    <br/>
+                    <span style="color: red;font-size:14px;padding-top:3%">Note: Updating these fields will not map to the Symitar.</span>
                 </div>            	
             </div>            
             </div>

@@ -23,5 +23,13 @@
         <unique>false</unique>
     </fields>
     <label>WarningCodeMapping</label>
+    <listViews>
+        <fullName>test</fullName>
+        <columns>NAME</columns>
+        <columns>Warning_Code_Number__c</columns>
+        <columns>Warning_Code_Text__c</columns>
+        <filterScope>Everything</filterScope>
+        <label>test</label>
+    </listViews>
     <visibility>Public</visibility>
 </CustomObject>

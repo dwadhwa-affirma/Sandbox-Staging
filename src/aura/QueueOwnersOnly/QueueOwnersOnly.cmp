@@ -104,7 +104,7 @@
                                     <div class="slds-th__action"><span class="slds-truncate" title="Status"><b>Status</b></span></div>
                                 </th>
                                 <th aria-sort="none" class="slds-is-sortable slds-is-resizable slds-text-title_caps" aria-label="Name" scope="col">
-                                    <div class="slds-th__action"><span class="slds-truncate" title="Future Date"><b>Future Date</b></span></div>
+                                    <div class="slds-th__action"><span class="slds-truncate" title="Future Date"><b>Follow-up Date</b></span></div>
                                 </th>
                                 <th aria-sort="none" class="slds-is-sortable slds-is-resizable slds-text-title_caps" aria-label="Name" scope="col">
                                     <div class="slds-th__action"><span class="slds-truncate" title="Date/Time Opened"><b>Date/Time Opened</b></span></div>
@@ -130,7 +130,7 @@
                                         <span class="slds-truncate" title="{!item.CaseModel.Status}">{!item.CaseModel.Status}</span>
                                     </td>
                                     <td>
-                                        <span class="slds-truncate" title="{!item.CaseModel.future_date__c}">{!item.CaseModel.future_date__c}</span>
+                                        <span class="slds-truncate" title="{!item.CaseModel.future_date__c}">{!item.CaseModel.Future_Date__c}</span>
                                     </td>
                                     <td>
                                     	<span class="slds-truncate"><ui:outputDateTime format="MMMM dd, YYYY hh:mm a" value="{!item.CaseModel.CreatedDate}" /></span>                                        
