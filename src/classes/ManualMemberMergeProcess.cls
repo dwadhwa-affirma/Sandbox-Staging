@@ -1049,6 +1049,8 @@ public without sharing class ManualMemberMergeProcess {
 	                Boolean IsCityMatching = false;
 	                Boolean IsStateMatching = false;
 	                Boolean IsZipcodeMatching = false;
+	                Boolean IsFirstNameMatching = false;
+	                Boolean IsLastNameMatching = false;
 	                String FirstName;
 	                String LastName;
         			String ma_email_check = '';
@@ -1133,6 +1135,21 @@ public without sharing class ManualMemberMergeProcess {
 				                        IsStateMatching = true;
 				                       
 				                    } 
+				                     if(!string.isBlank(ma.FirstName)  && !string.isBlank(pma.FirstName) && (ma.FirstName == pma.FirstName) )
+				                    {
+				                       
+				                        IsFirstNameMatching = true;
+				                       
+				                    } 
+				                    if(!string.isBlank(ma.LastName)  && !string.isBlank(pma.LastName) && (ma.LastName == pma.LastName) )
+				                    {
+				                       
+				                        IsLastNameMatching = true;
+				                       
+				                    } 
+				                    system.debug('IsLastNameMatching#'+IsLastNameMatching);
+				                     system.debug('IsFirstNameMatching##'+ IsFirstNameMatching);
+				                    
 		                    FirstName = ma.FirstName;
 		                    LastName = ma.LastName;	
         					List<Person_Account__c>	pa = [SELECT Id,PersonID__c,Account_Number__r.Parent_Account__c, Account_Number__c, Account_Number__r.RecType__c, 
@@ -1153,6 +1170,8 @@ public without sharing class ManualMemberMergeProcess {
 				       		report.Is_Zipcode_Matching__c = IsZipcodeMatching;
 		   			 		report.First_Name__c = FirstName;
 		   			 		report.Last_Name__c = LastName;
+		   			 		report.Is_First_Name_Matching__c = IsFirstNameMatching;
+		   			 		report.Is_Last_Name_Matching__c =  IsLastNameMatching;
              				if(pa.size() > 0)
                             {
                                 

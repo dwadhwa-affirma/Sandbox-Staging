@@ -11,6 +11,8 @@ public class ConvertPreMemberToMemberSchedular implements Schedulable {
             Boolean IsCityMatching = false;
             Boolean IsStateMatching = false;
             Boolean IsZipcodeMatching = false;
+            Boolean IsFirstNameMatching = false;
+            Boolean IsLastNameMatching = false;
             MemberConversionSetting__c mcs = MemberConversionSetting__c.getValues('PrimaryRecord');
             Integer Days_Automation =0;
             Days_Automation = (Integer)mcs.Automation__c;   
@@ -252,7 +254,22 @@ public class ConvertPreMemberToMemberSchedular implements Schedulable {
 				                        IsCityMatching = true;
 				                       
 				                    } 
-				                    
+				                    IsFirstNameMatching = false;
+				                    if(!string.isBlank(ma.FirstName)  &&
+				                    !string.isBlank(pma.FirstName) && (ma.FirstName == pma.FirstName) )
+				                    {
+				                       
+				                        IsFirstNameMatching = true;
+				                       
+				                    } 
+				                    IsLastNameMatching = false;
+				                     if(!string.isBlank(ma.LastName)  &&
+				                    !string.isBlank(pma.LastName) && (ma.LastName == pma.LastName) )
+				                    {
+				                       
+				                        IsLastNameMatching = true;
+				                       
+				                    } 
 				                    
 				                    system.debug(IsStateMatching);
 				                    if(IsMatching == true)
@@ -319,6 +336,8 @@ public class ConvertPreMemberToMemberSchedular implements Schedulable {
 		            						  cls.IsZipcodeMatching = IsZipcodeMatching;
 		            						  cls.FirstName = ma.FirstName;
 		            						  cls.LastName = ma.LastName;
+		            						  cls.IsFirstNameMatching = IsFirstNameMatching;
+		            						  cls.IsLastNameMatching = IsLastNameMatching;
 						                      EligibleMemberCollection.add(cls); 
 				                            
 				                        }
@@ -937,6 +956,8 @@ public class ConvertPreMemberToMemberSchedular implements Schedulable {
 							       		report.Is_Zipcode_Matching__c = cc.IsZipcodeMatching;
 					   			 		report.First_Name__c = cc.FirstName;
 					   			 		report.Last_Name__c = cc.LastName;
+					   			 		report.Is_First_Name_Matching__c = cc.IsFirstNameMatching;
+					   			 		report.Is_Last_Name_Matching__c = cc.IsLastNameMatching;
 							           	reportlist.Add(report);
    			 	 					}
    			 	 			}
@@ -978,6 +999,8 @@ public class ConvertPreMemberToMemberSchedular implements Schedulable {
 							       		report.Is_Zipcode_Matching__c = cc.IsZipcodeMatching;
 					   			 		report.First_Name__c = cc.FirstName;
 					   			 		report.Last_Name__c = cc.LastName;
+					   			 		report.Is_First_Name_Matching__c = cc.IsFirstNameMatching;
+					   			 		report.Is_Last_Name_Matching__c = cc.IsLastNameMatching;
 					   			 		system.debug('report###'+ report);
 					   			 		reportlist.Add(report);
 									    memberiddone.add(pa.PersonID__c);
@@ -1020,6 +1043,8 @@ public Boolean IsStreetMatching  {get;set;}
 public Boolean IsCityMatching {get;set;}
 public Boolean IsStateMatching {get;set;}
 public Boolean IsZipcodeMatching {get;set;}
+public Boolean IsFirstNameMatching {get;set;}
+public Boolean IsLastNameMatching {get;set;}
 public String FirstName {get;set;}
 public String LastName {get;set;}
 	
