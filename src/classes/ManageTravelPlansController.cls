@@ -137,7 +137,7 @@ public class ManageTravelPlansController {
         else if(tempAccount != null && tempAccount.size()> 0){                 
           List<Account> listAccount;
           list<Person_Account__c> paList = [SELECT Id,PersonID__c,
-                             Account_Number__c, Account_Number__r.RecType__c,TypeTranslate__c, Account_Number__r.Name FROM Person_Account__c WHERE (Account_Number__c  =:tempAccount[0].Id or Account_Number__c  =:tempAccount[0].Parent_Account__c)];
+                             Account_Number__c, Account_Number__r.RecType__c,TypeTranslate__c, Account_Number__r.Name FROM Person_Account__c WHERE (Account_Number__c  =:tempAccount[0].Id or Account_Number__c  =:tempAccount[0].Parent_Account__c) and TypeTranslate__c like '%Primary%'];
             
             if(paList.size() > 0){                 
           Account acc = new Account();
@@ -928,7 +928,7 @@ public class ManageTravelPlansController {
                        from case where id =:id];
             system.debug('tempCase===' + tempCase);
            
-            tempAccount = [Select Id, Name from Account_Details__c where Id=:id];
+            tempAccount = [Select Id, Name, Parent_Account__c from Account_Details__c where Id=:id];
                         
             if(tempCase != null && tempCase.Size() > 0)
             {
@@ -1034,7 +1034,7 @@ public class ManageTravelPlansController {
               List<Account> listAccount;    
                 
           list<Person_Account__c> paList = [SELECT Id,PersonID__c,
-                             Account_Number__c, Account_Number__r.RecType__c,TypeTranslate__c, Account_Number__r.Name FROM Person_Account__c WHERE Account_Number__c  =:tempAccount[0].Id];
+                             Account_Number__c, Account_Number__r.RecType__c,TypeTranslate__c, Account_Number__r.Name FROM Person_Account__c WHERE (Account_Number__c  =:tempAccount[0].Id or  Account_Number__c  =:tempAccount[0].Parent_Account__c) and TypeTranslate__c like '%Primary%'];
             
             Account acc = new Account();
             if(paList.size() > 0){               
