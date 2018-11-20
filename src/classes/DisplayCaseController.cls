@@ -329,6 +329,7 @@ global  class DisplayCaseController {
                     {
                        message.LatestCommentBySupport = LoadLatestCommentBySupport(cases[i].Id);
                        string latestCommmentBySupportid= GetLatestCommentBySupportId(cases[i].Id);
+                       UpdateIsMarkRead(latestCommmentBySupportid);
                        system.debug('latestid...' + latestCommmentBySupportid);
                        message.LatestCommentfiles = GetLatestSupportAttachment(latestCommmentBySupportid);
                        //latestCommmentBySupportidd = latestCommmentBySupportid;
