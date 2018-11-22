@@ -1,73 +1,7 @@
 ({
 	doInit : function(component, event, helper) {
 	
-		var action = component.get("c.ConvertLead");
-		var recordid = component.get("v.recordId"); 
-		
-		action.setParams({"leadId": recordid});    
-		component.set("v.loading", true);
-		 
-		  
-		 action.setCallback(this, function (response) {  
-		    	
-            var status = response.getState();            
-	       	    if (component.isValid() && status === "SUCCESS") {
-	               var result = response.getReturnValue(); 
-	               if(result.length == 0)
-	               {
-	            	   var toastEvent = $A.get("e.force:showToast");
-				        toastEvent.setParams({
-				            title : 'Error Message',
-				            message:'You cannot convert Lead with status Closed',
-				            messageTemplate: 'Error Message',
-				            duration:' 5000',
-				            key: 'info_alt',
-				            type: 'error',
-				            mode: 'pester'
-				        });
-				        toastEvent.fire();
-				        $A.get("e.force:closeQuickAction").fire();
-				       /*  var sObectEvent = $A.get("e.force:navigateToSObject");
-                                     sObectEvent .setParams({
-                                     "recordId": component.get("v.recordId"),
-                                        "slideDevName": "detail"
-                                    });
-                                    sObectEvent.fire(); */
-				        
-	               }
-	               
-	               else{
-	               
-				       component.set("v.accId", result[0][0]);
-                            
-                            component.set("v.oppId", result[0][1]);
-                            component.set("v.oppNumber", result[0][2]);
-                            
-                            component.set("v.LeadObject", result[1]);
-                          
-                            
-                            
-                             var sObectEvent = $A.get("e.force:navigateToSObject");
-                                     sObectEvent .setParams({
-                                     "recordId": component.get("v.accId"),
-                                        "slideDevName": "detail"
-                                    });
-                                    sObectEvent.fire(); 
-	              
-                    }
-	              
-	                  
-                    
-               //component.set("v.convertLeadButtonDisabled", isConverted);
-            }
-            else
-            {
-            	 component.set("v.loading", false);
-            }
-        });  
-		
-		
-		$A.enqueueAction(action);
+		//component.set("v.loading", true);
 		
 		
 	/*	 var objLead = component.get("v.LeadObject");
@@ -159,5 +93,89 @@
 		   });
 	    sObectEvent.fire(); 
 	}*/
+	
+	ConvertLead1: function (component, event, helper) {
+		var action = component.get("c.ConvertLead");
+		var recordid = component.get("v.recordId"); 
+		
+		action.setParams({"leadId": recordid});    
+		component.set("v.loading", true);
+		component.set("v.isConversionConfirmed", false);
+		 
+		  
+		 action.setCallback(this, function (response) {  
+		    	
+            var status = response.getState();            
+	       	    if (component.isValid() && status === "SUCCESS") {
+	               var result = response.getReturnValue(); 
+	               if(result.length == 0)
+	               {
+	            	   var toastEvent = $A.get("e.force:showToast");
+				        toastEvent.setParams({
+				            title : 'Error Message',
+				            message:'You cannot convert Lead with status Closed',
+				            messageTemplate: 'Error Message',
+				            duration:' 5000',
+				            key: 'info_alt',
+				            type: 'error',
+				            mode: 'pester'
+				        });
+				        toastEvent.fire();
+				        $A.get("e.force:closeQuickAction").fire();
+				       /*  var sObectEvent = $A.get("e.force:navigateToSObject");
+                                     sObectEvent .setParams({
+                                     "recordId": component.get("v.recordId"),
+                                        "slideDevName": "detail"
+                                    });
+                                    sObectEvent.fire(); */
+				        
+	               }
+	               
+	               else{
+	               
+				       component.set("v.accId", result[0][0]);
+                            
+                            component.set("v.oppId", result[0][1]);
+                            component.set("v.oppNumber", result[0][2]);
+                            
+                            component.set("v.LeadObject", result[1]);
+                          
+                            
+                            
+                             var sObectEvent = $A.get("e.force:navigateToSObject");
+                                     sObectEvent .setParams({
+                                     "recordId": component.get("v.accId"),
+                                        "slideDevName": "detail"
+                                    });
+                                    sObectEvent.fire(); 
+                                    setTimeout(function() { 
+                                    	var ele = document.getElementsByClassName('forceModal')[1];
+                                    	if(ele != undefined){
+                                    		ele.getElementsByClassName('leave')[0].click();
+                                    		}
+                
+                                    	}, 30);
+                                    
+	              
+                    }
+	              
+	                  
+                    
+               //component.set("v.convertLeadButtonDisabled", isConverted);
+            }
+            else
+            {
+            	 component.set("v.loading", false);
+            }
+        });  
+		
+		
+		$A.enqueueAction(action);
+	
+	},
+	
+	CancelLeadConverion: function (component, event, helper){
+		 $A.get("e.force:closeQuickAction").fire();
+	}
     
 })

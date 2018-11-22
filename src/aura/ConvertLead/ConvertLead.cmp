@@ -5,6 +5,7 @@
 	<aura:attribute name="oppId" type="string" default="" />
 	<aura:attribute name="oppNumber" type="string" default="" />
 	<aura:attribute name="success" type="boolean" default="false" />
+	<aura:attribute name="isConversionConfirmed" type="boolean" default="true" />
 	
     
 		<aura:handler value="{!this}" name="init" action="{!c.doInit}" />
@@ -88,9 +89,21 @@
 			display: none;
 		}
 		
-		.slds-p-around_medium, .slds-p-around--medium {
+		/*.slds-p-around_medium, .slds-p-around--medium {
 			padding: 0px !important;
-		}
+		}*/
+		        .cuf-content {
+          padding: 0 0rem !important;
+        }
+        .slds-p-around--medium {
+        padding: 0rem !important;
+        }       
+        .slds-modal__content{
+            overflow-y:hidden !important;
+            height:unset !important;
+            max-height:unset !important;
+        }
+		
 	</style>
 	
 	
@@ -207,8 +220,27 @@
 
     
   	</div>
- 
-    
+ <aura:if isTrue="{!(v.isConversionConfirmed == true)}">
+
+   <div class="modal-header slds-modal__header slds-size_1-of-1">
+        <h4 class="title slds-text-heading--medium" >Convert Lead</h4>
+    </div>
+    <div class="slds-modal__content slds-p-around--x-small slds-size_1-of-1 slds-is-relative" 
+         aura:id="modalbody" id="modalbody" style="min-height: 6rem; max-height: 400px !important; overflow-y: auto !important;">
+        
+        <p>Updated Lead Details(if any) will not be saved after conversion. Are you sure you want to proceed?</p>
+        
+        </div>
+       <div class="modal-footer slds-modal__footer slds-size_1-of-1">
+            <div class="forceChangeRecordTypeFooter">
+            <ui:button class="slds-button slds-button--brand"
+                       label="Yes" press="{!c.ConvertLead1}" />
+                <ui:button class="slds-button slds-button_neutral" label="Cancel" press="{!c.CancelLeadConverion}"  /> 
+                
+            </div>
+        	</div>
+
+ </aura:if>   
          <aura:if isTrue="{!(v.loading == true)}">
          
         <div>
@@ -224,7 +256,7 @@
         </div>
     </aura:if>
     <aura:if isTrue="{!(v.loading == false)}">
-         
+        <aura:if isTrue="{!(v.isConversionConfirmed == false)}"> 
         <div class="align-middle error">
             <ul class='has-error uiInputDefaultError uiInput uiInputSelect uiInput--default uiInput--select' id='LastNameError'>
                 <li class="form-element__help" style="text-align:center;  font-size:16px;  padding-top: 25px;">Error while converting Lead. Please contact your administrator.</li>
@@ -233,6 +265,7 @@
             
             
         </div>
+        </aura:if>
     </aura:if>
       
       
