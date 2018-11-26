@@ -57,7 +57,15 @@ trigger MasterCardTravelTrigger on Mastercard_Travel__c (before delete, after up
 		      }
 		      system.debug('description==='+description);
 		      case casetoUpdate = [Select id, Description from Case where id =: m.Case__c];
-		       casetoUpdate.Description = description;
+		      string finaldesc = description;
+		      if(casetoUpdate.Description != null && casetoUpdate.Description != ''){
+			      string[] SplitDesc = casetoUpdate.Description.split('Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec');
+				  system.debug(SplitDesc[0]);
+				  string originaldesc =SplitDesc[0];
+				  finaldesc = SplitDesc[0] + description;
+					system.debug(finaldesc); 
+		      }
+		       casetoUpdate.Description = finaldesc;
 		       update casetoUpdate;
 	
 			
@@ -106,7 +114,15 @@ trigger MasterCardTravelTrigger on Mastercard_Travel__c (before delete, after up
 		      }
 		      system.debug('description==='+description);
 		      case tempCase = [Select id, Description from Case where id =: m.Case__c];
-		       tempCase.Description = description;
+		      string finaldesc = description;
+		      if(tempCase.Description != null && tempCase.Description != ''){
+			      string[] SplitDesc = tempCase.Description.split('Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec');
+				  system.debug(SplitDesc[0]);
+				  string originaldesc =SplitDesc[0];
+				  finaldesc = SplitDesc[0] + description;
+					system.debug(finaldesc); 
+		      }
+		       tempCase.Description = finaldesc;
 		       update tempCase;
 		      
 			

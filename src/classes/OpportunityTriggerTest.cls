@@ -47,6 +47,7 @@ public  class OpportunityTriggerTest {
             eu.Episys_ID__c = 1;
             eu.Episys_Name__c = 'testname';
             accDetails.SecureEmailAddress__c = 'sample@sample.com';
+            eu.alias__c = usr.alias;
        		insert eu;
 		
 			Group	listQueue = [select id,Name,Email from Group where Type = 'Queue' and (Email like '%lead.com') limit 1];
@@ -79,6 +80,8 @@ public  class OpportunityTriggerTest {
 	     // Opportunity op5 = new Opportunity(Name = 'Name', StageName = 'Open', Product_Type__c = 'Misc', CloseDate = system.today(),  Is_Converted__c = false, Queue_Assigned_Id__c= listQueue.Id,  Opportunity_Source__c = 'Word of mouth', AccountId = pa.id,  Ownership__c = 'Auto Assign');
 	      Opportunity op6 = new Opportunity(Name = 'Name', StageName = 'Open', Product_Type__c = 'Misc', CloseDate = system.today(),  Is_Converted__c = false, Queue_Assigned_Id__c= listQueue.Id,  Opportunity_Source__c = 'Branch Call', AccountId = account_Obj.id,  Ownership__c = 'Auto Assign');
 	      
+        Opportunity op7 = new Opportunity(Name = 'Name', StageName = 'Open', Product_Type__c = 'Misc', CloseDate = system.today(),  Is_Converted__c = false, Queue_Assigned_Id__c= listQueue.Id,  Opportunity_Source__c = 'Event', AccountId = account_Obj.id,  Ownership__c = 'Auto Assign');
+	      
 	      List<Opportunity> insertopp = new List<Opportunity>();
 	      insertopp.Add(op);
 	       insertopp.Add(op1);
@@ -87,6 +90,7 @@ public  class OpportunityTriggerTest {
 	         insertopp.Add(op4);
 	      //   insertopp.Add(op5);
 	         insertopp.Add(op6);
+        insertopp.Add(op7);
 	      
 	      insert insertopp;
 		

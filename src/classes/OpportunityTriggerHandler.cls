@@ -17,8 +17,8 @@ public class OpportunityTriggerHandler {
 			system.debug('Handler Called###');
 		    string uid= UserInfo.getUserId();
 		    User usr = [Select id, name, alias from User where id=:uid];
-		    /*List<Episys_User__c> eusr = [SELECT id, alias__c, Assigned_Branch__c,Episys_ID__c, Branch_Name__c,Default__c from Episys_User__c 
-		                                    where alias__c=:usr.alias order by Default__c desc]; */
+		    List<Episys_User__c> eusr = [SELECT id, alias__c, Assigned_Branch__c,Episys_ID__c, Branch_Name__c,Default__c from Episys_User__c 
+		                                    where alias__c=:usr.alias order by Default__c desc]; 
 		    Set<ID> accountid = new Set<Id>();
 		    Id LoggedinUser = UserInfo.getUserId();
 		    Set<Decimal> Episys_User_ID = new Set<Decimal>(); 
@@ -200,7 +200,7 @@ public class OpportunityTriggerHandler {
 			      				 	}
 			      				 	else
 			      				 	{
-					      				 		system.debug('Condition Product Type###');
+                                            system.debug('Condition Product Type###');
 					      				 	string ProductType = opp.Product_Type__c.replace(' ', '_').replace('-','_').replace('/','_').toLowerCase();
 					      				 	system.debug('ProductType###' + ProductType);
 											for(Group grp : listQueue)
@@ -256,6 +256,57 @@ public class OpportunityTriggerHandler {
 		      			
 		      			
 		      		}
+                  else if(opp.Ownership__c == 'Auto Assign' && opp.Opportunity_Source__c == 'Event'){
+                      		
+                           string BranchQueue='';
+                           groupname='';
+                            if(eusr.size() > 0 && eusr[0].Default__c == true)
+                            {
+                               BranchQueue = eusr[0].Branch_Name__c.replace(' ', '_').replace('-','_').replace('/','_').toLowerCase();
+                            }
+                            else if(eusr.size() > 0 && eusr[0].Default__c == false){
+                                BranchQueue = eusr[0].Branch_Name__c.replace(' ', '_').replace('-','_').replace('/','_').toLowerCase();
+                            }
+                      system.debug('EBranchQueue###' + BranchQueue);
+                      if(BranchQueue != null && BranchQueue != ''){
+                          for(Group grp : listQueue)
+                          { 
+                              if(grp.Email.containsIgnoreCase(BranchQueue))
+                              {
+                                  groupname = grp.Name;
+                                  break;
+                              }
+                              system.debug('groupName###' + groupname);
+                          }
+                      }
+                      if(groupname != null && groupname!=''){
+                          //opp.Opportunity_Owner__c = groupnameid;
+                          opp.Queue_Owner__c = groupName;	
+                          opp.User_Owner__c = null;
+                          opp.Ownership__c ='Keep';
+                          
+                      }
+                      else{
+                          system.debug('Condition Product Type###');
+                          string ProductType = opp.Product_Type__c.replace(' ', '_').replace('-','_').replace('/','_').toLowerCase();                        
+                          for(Group grp : listQueue)
+                          {
+                              if(grp.Email.containsIgnoreCase(ProductType))
+                              {
+                                  groupname = grp.Name;
+                                  break;
+                              }
+                          }
+                          system.debug('groupName###' + groupname);
+                          if(groupname!=null && groupname!='')
+                          {
+                              //Opp.Opportunity_Owner__c = groupnameid;	
+                              opp.Queue_Owner__c = groupName;	
+                              opp.User_Owner__c = null;
+                              opp.Ownership__c ='Keep';
+                          }
+                      }
+                  } 
 		      	//	else if(opp.Ownership__c == 'Auto Assign' && opp.Mortgage_Loan_Officer__c == null && (opp.Opportunity_Source__c != 'Branch Walk in' && opp.Opportunity_Source__c != 'Branch Call')  && opp.Is_Converted__c == false)
 		      		else if(opp.Ownership__c == 'Auto Assign' && (opp.Opportunity_Source__c != 'Branch Walk in' && opp.Opportunity_Source__c != 'Branch Call')  && opp.Is_Converted__c == false)
 		      		{
