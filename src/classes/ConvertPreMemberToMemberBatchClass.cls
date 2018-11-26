@@ -1,33 +1,9 @@
-public class ConvertPreMemberToMemberSchedular implements Schedulable {
-    
-    public void execute(SchedulableContext obj)
-    {
-    	ConvertPreMemberToMemberBatchClass obj1 = new ConvertPreMemberToMemberBatchClass();
-        	Database.executeBatch(obj1, 5);
-    	
-    }
-    public static string clearPhoneNumber(string phoneNumber)
-				        {
-				        	if(phoneNumber != null)
-				        	{
-				        		return phoneNumber.remove(' ').remove('(').remove(')').remove('-');
-				        	}
-				        	return '';
-				        }
-}
-    
-    /* public void execute(SchedulableContext obj)
-        {
-            List<ReportWrapperClass> EligibleMemberCollection = new List<ReportWrapperClass>();
-            List<ReportWrapperClass> NonEligibleMemberCollection = new List<ReportWrapperClass>();
-     		Boolean IsPhoneMatching = false;
-            Boolean IsEmailMatching = false;
-            Boolean IsStreetMatching = false;
-            Boolean IsCityMatching = false;
-            Boolean IsStateMatching = false;
-            Boolean IsZipcodeMatching = false;
-            Boolean IsFirstNameMatching = false;
-            Boolean IsLastNameMatching = false;
+global class ConvertPreMemberToMemberBatchClass implements Database.Batchable<sObject> {
+	
+	
+	global Database.QueryLocator start(Database.BatchableContext BC){
+		
+	
             MemberConversionSetting__c mcs = MemberConversionSetting__c.getValues('PrimaryRecord');
             Integer Days_Automation =0;
             Days_Automation = (Integer)mcs.Automation__c;   
@@ -41,18 +17,14 @@ public class ConvertPreMemberToMemberSchedular implements Schedulable {
 					cutoffdate = system.today().adddays(-1000);
 				}
 				 
-            Boolean IsMatching = false;
-            Set<ID> UpdateMAListIDSet = new Set<ID>();
-            List<Account> UpdateMAList = new List<Account>();
-            Set<ID> NonEligibleMemberIDSet = new Set<ID>();
-            
+           
             Map<ID, Account> MemberAccount1_ToFilter = new Map<ID, Account>([SELECT Id FROM Account where RecordType.Name = 'Person Account' and IsConverted__c=false  and createddate >=: LastNDays and createddate >: cutoffdate]);
             	
  			Set<ID> listAccountIds = MemberAccount1_ToFilter.keySet();
  				
  			List<Person_account__c> listOfAllNonBenificaries = [select id,PersonId__c,TypeTranslate__c,CreatedDate from Person_account__c 
  												where PersonId__c in:  listAccountIds and (not TypeTranslate__c like '%Beneficiary%')]; 
- 			Set<Id> listAccountId_Qualified = new Set<Id>();
+ 			List<String> listAccountId_Qualified = new List<String>();
  			for(Person_account__c item : listOfAllNonBenificaries)
  			{
  				if(!listAccountId_Qualified.contains(item.PersonId__c))
@@ -61,24 +33,47 @@ public class ConvertPreMemberToMemberSchedular implements Schedulable {
  				}
  			}
             
-            List <Account> MemberAccount = [SELECT Id, Pre_Member_Number__c,PersonEmail, FirstName,MiddleName,LastName,Salutation ,Suffix,Phone_Check__c, Residential_Street__pc ,RecordType.Name, Residential_Zipocde__pc, Alternate_Email__pc,
-                                            Alt_Email_Raw__c, AnnualRevenue,Bad_Email__c, BillingCity,BillingCountry,BillingCountryCode,BillingGeocodeAccuracy,BillingLatitude,
-                                            BillingLongitude,BillingPostalCode,BillingState,BillingStateCode,BillingStreet,BIRTH_DATE__pc,IsCustomerPortal,Death_Date__pc,Description,Email_raw__c,
-                                            Employee_Restricted_Access__c,NumberOfEmployees,Employer_Name__pc,Employer_Occupation__pc,Extended_Name__pc,Fax,Home_Phone_Number__c,Home_Phone__pc,
-                                            ID_1_Description__pc,ID_1_Expiration_Date__pc,ID_1_Issuance_Date__pc,ID_1_Number__pc,ID_1_Type__pc,ID_1_Type__c,ID_1_Verification_Date__pc,
-                                            ID_2_Description__pc,ID_2_Expiration_Date__pc,ID_2_Issuance_Date__pc,ID_2_Number__pc,ID_2_Type__pc,ID_2_Verification_Date__pc,ID_3_Description__pc,
-                                            ID_3_Expiration_Date__pc,ID_3_Issuance_Date__pc,ID_3_Number__pc,ID_3_Type__pc,ID_3_Verification_Date__pc,Industry,Initial_Record__pc,
-                                            LastModifiedDate__pc,AccountNumber,Site,AccountSource,Member_Verification_OTP_Invalid_Attempt__c,et4ae5__Mobile_Country_Code__pc,
-                                            et4ae5__HasOptedOutOfMobile__pc,Mobile_Phone__pc,Mothers_Maiden_Name__pc,Multi_Name__pc,MultiAddress__pc,MultiDOB__pc,MultiMMN__pc,MultiSSN__pc,
-                                            NA_Eligibility__c,NA_LEHS_Complete__c,NA_LEHS_Update__c,NA_LEOM_Complete__c,NA_LEOM_Update__c,NA_Opt_Out__c,NA_Opt_Out_Date__c,NA_Opt_Out_Updated__c,
-                                            NA_LEAV_Complete__c,NA_LECF_Complete__c,NA_LECP_Complete__c,NA_LEEM_Complete__c,NA_LEMD_Complete__c,NA_LEMP_Complete__c,NA_LEMQ_Complete__c,NA_LEOL_Complete__c,
-                                            NA_LEPT_Complete__c,NA_LESB_Complete__c,NA_LESF_Complete__c,NA_LEWS_Complete__c,Name_Format__pc,Occupation__pc,Onbase_Drivers_License__c,
-                                            Onbase_Signature_Card__c,Ownership,PersonID__pc,Phone,Phone_Type__pc,Rating,Residential_City__pc,Residential_Country__pc,
-                                            Residential_Country_Code__pc,Residential_Extra_Address__pc,Residential_State__pc,Sex__pc,ShippingCity,ShippingCountry,ShippingCountryCode,
-                                            ShippingGeocodeAccuracy,ShippingLatitude,ShippingLongitude,ShippingPostalCode,ShippingState,ShippingStateCode,ShippingStreet,
-                                            Sic,SicDesc,smagicinteract__SMSOptOut__pc,SSN_Last_4__pc,SSN_TIN_Encrypted__pc,SSN_TIN_Type__pc,TickerSymbol,Type,Website,Work_Phone_Extension__pc,Work_Phone__pc
-                                            FROM Account where id in: listAccountId_Qualified];
-                                            
+            String Query = 'SELECT Id, Pre_Member_Number__c,PersonEmail, FirstName,MiddleName,LastName,Salutation ,Suffix,Phone_Check__c, Residential_Street__pc ,RecordType.Name, Residential_Zipocde__pc, Alternate_Email__pc,' +
+                           'Alt_Email_Raw__c, AnnualRevenue,Bad_Email__c, BillingCity,BillingCountry,BillingCountryCode,BillingGeocodeAccuracy,BillingLatitude,'+
+                           'BillingLongitude,BillingPostalCode,BillingState,BillingStateCode,BillingStreet,BIRTH_DATE__pc,IsCustomerPortal,Death_Date__pc,Description,Email_raw__c,'+
+                           'Employee_Restricted_Access__c,NumberOfEmployees,Employer_Name__pc,Employer_Occupation__pc,Extended_Name__pc,Fax,Home_Phone_Number__c,Home_Phone__pc,'+
+                           'ID_1_Description__pc,ID_1_Expiration_Date__pc,ID_1_Issuance_Date__pc,ID_1_Number__pc,ID_1_Type__pc,ID_1_Type__c,ID_1_Verification_Date__pc,'+
+                           'ID_2_Description__pc,ID_2_Expiration_Date__pc,ID_2_Issuance_Date__pc,ID_2_Number__pc,ID_2_Type__pc,ID_2_Verification_Date__pc,ID_3_Description__pc,'+
+                           'ID_3_Expiration_Date__pc,ID_3_Issuance_Date__pc,ID_3_Number__pc,ID_3_Type__pc,ID_3_Verification_Date__pc,Industry,Initial_Record__pc,'+
+                           'LastModifiedDate__pc,AccountNumber,Site,AccountSource,Member_Verification_OTP_Invalid_Attempt__c,et4ae5__Mobile_Country_Code__pc,'+
+                           'et4ae5__HasOptedOutOfMobile__pc,Mobile_Phone__pc,Mothers_Maiden_Name__pc,Multi_Name__pc,MultiAddress__pc,MultiDOB__pc,MultiMMN__pc,MultiSSN__pc,'+
+                           'NA_Eligibility__c,NA_LEHS_Complete__c,NA_LEHS_Update__c,NA_LEOM_Complete__c,NA_LEOM_Update__c,NA_Opt_Out__c,NA_Opt_Out_Date__c,NA_Opt_Out_Updated__c,'+
+                           'NA_LEAV_Complete__c,NA_LECF_Complete__c,NA_LECP_Complete__c,NA_LEEM_Complete__c,NA_LEMD_Complete__c,NA_LEMP_Complete__c,NA_LEMQ_Complete__c,NA_LEOL_Complete__c,'+
+                           'NA_LEPT_Complete__c,NA_LESB_Complete__c,NA_LESF_Complete__c,NA_LEWS_Complete__c,Name_Format__pc,Occupation__pc,Onbase_Drivers_License__c,'+
+                           'Onbase_Signature_Card__c,Ownership,PersonID__pc,Phone,Phone_Type__pc,Rating,Residential_City__pc,Residential_Country__pc,'+
+                           'Residential_Country_Code__pc,Residential_Extra_Address__pc,Residential_State__pc,Sex__pc,ShippingCity,ShippingCountry,ShippingCountryCode,'+
+                           'ShippingGeocodeAccuracy,ShippingLatitude,ShippingLongitude,ShippingPostalCode,ShippingState,ShippingStateCode,ShippingStreet,'+
+                           'Sic,SicDesc,smagicinteract__SMSOptOut__pc,SSN_Last_4__pc,SSN_TIN_Encrypted__pc,SSN_TIN_Type__pc,TickerSymbol,Type,Website,Work_Phone_Extension__pc,Work_Phone__pc ' +
+                           'FROM Account where id IN (\'' + string.join(listAccountId_Qualified,'\',\'') +  '\')';
+		
+		
+		
+		return Database.getQueryLocator(Query);
+	}
+	
+	
+	global void execute(Database.BatchableContext BC, List<Account> MemberAccount){
+	
+			system.debug('MemberAccount Size##'+ MemberAccount.size());
+			List<ReportWrapperClass> EligibleMemberCollection = new List<ReportWrapperClass>();
+            List<ReportWrapperClass> NonEligibleMemberCollection = new List<ReportWrapperClass>();
+     		Boolean IsPhoneMatching = false;
+            Boolean IsEmailMatching = false;
+            Boolean IsStreetMatching = false;
+            Boolean IsCityMatching = false;
+            Boolean IsStateMatching = false;
+            Boolean IsZipcodeMatching = false;
+            Boolean IsFirstNameMatching = false;
+            Boolean IsLastNameMatching = false;
+            Boolean IsMatching = false;
+            Set<ID> NonEligibleMemberIDSet = new Set<ID>();
+            Set<ID> UpdateMAListIDSet = new Set<ID>();
+            List<Account> UpdateMAList = new List<Account>();
             List <Account> PreMemberAccount = [SELECT Id,Pre_Member_Number__c,Name, PersonEmail,FirstName,MiddleName,LastName,Salutation ,Suffix, Owner.Name,Parent_Lead__c,CreatedDate,Phone_Check__c, Residential_Street__pc, RecordType.Name, Residential_Zipocde__pc, Alternate_Email__pc,
     										  Alt_Email_Raw__c, AnnualRevenue,Bad_Email__c, BillingCity,BillingCountry,BillingCountryCode,BillingGeocodeAccuracy,BillingLatitude,
     										  BillingLongitude,BillingPostalCode,BillingState,BillingStateCode,BillingStreet,BIRTH_DATE__pc,IsCustomerPortal,Death_Date__pc,Description,Email_raw__c,
@@ -96,7 +91,7 @@ public class ConvertPreMemberToMemberSchedular implements Schedulable {
     										  ShippingGeocodeAccuracy,ShippingLatitude,ShippingLongitude,ShippingPostalCode,ShippingState,ShippingStateCode,ShippingStreet,
     										  Employer_Name__pc,PersonMobilePhone, PersonOtherPhone, PersonLeadSource, Last_NA__c, Last_NA_LEHS__c, Converted_On__c,IsConverted__c, PersonDepartment,PersonLastCURequestDate,PersonLastCUUpdateDate,  PersonAssistantName,PersonAssistantPhone,PersonBirthdate,PersonDoNotCall, PersonHasOptedOutOfEmail,PersonHasOptedOutOfFax, Sic,SicDesc,smagicinteract__SMSOptOut__pc,SSN_Last_4__pc,SSN_TIN_Encrypted__pc,SSN_TIN_Type__pc,TickerSymbol,Type,Website,Work_Phone_Extension__pc,Work_Phone__pc
     										  FROM Account where RecordType.Name = 'Pre Member' ];
-                                              
+    
             List<Account> EligiblePreMember = new List<Account>();
             List<Account> MemberAccount1 = new List<Account>(); 
             List<Task> TaskForPM = new List<Task>();
@@ -105,15 +100,12 @@ public class ConvertPreMemberToMemberSchedular implements Schedulable {
             List<Opportunity> OpportunityForPM = new List<Opportunity>();
             List<Needs_Assesment__c> NAForPM = new List<Needs_Assesment__c>();
             List<Needs_Assesment__c> NAForMember = new List<Needs_Assesment__c>();
-            List<Note> NoteForPM = new List<Note>();
-            
+            List<Note> NoteForPM = new List<Note>(); 
             Map<ID,ID> MapofId = new Map<ID,ID>();
             Map<ID,String> PreMemberNumberMap = new Map<ID,String>();
-           
             Set<Id> EligiblePreMemberIdSet = new Set<Id>();
             Set<Id> EligibleMemberIdSet =  new Set<Id>();
-           
-            if(MemberAccount.size() > 0)
+             if(MemberAccount.size() > 0)
             {
             	if(PreMemberAccount.size() > 0)
             	{
@@ -161,9 +153,9 @@ public class ConvertPreMemberToMemberSchedular implements Schedulable {
 				                        && ma.LastName == pma.LastName && ma.FirstName == pma.FirstName 
 				                        && ( 
 				                        
-				                                (!string.isBlank(pma.Home_Phone__pc) && ma.Phone_Check__c.Contains(clearPhoneNumber(pma.Home_Phone__pc))) || 
-				                                (!string.isBlank(pma.Work_Phone__pc) && ma.Phone_Check__c.Contains(clearPhoneNumber(pma.Work_Phone__pc))) || 
-				                                (!string.isBlank(pma.Mobile_Phone__pc) && ma.Phone_Check__c.Contains(clearPhoneNumber(pma.Mobile_Phone__pc)))) )
+				                                (!string.isBlank(pma.Home_Phone__pc) && ma.Phone_Check__c.Contains(ConvertPreMemberToMemberSchedular.clearPhoneNumber(pma.Home_Phone__pc))) || 
+				                                (!string.isBlank(pma.Work_Phone__pc) && ma.Phone_Check__c.Contains(ConvertPreMemberToMemberSchedular.clearPhoneNumber(pma.Work_Phone__pc))) || 
+				                                (!string.isBlank(pma.Mobile_Phone__pc) && ma.Phone_Check__c.Contains(ConvertPreMemberToMemberSchedular.clearPhoneNumber(pma.Mobile_Phone__pc)))) )
 				                    {
 				                        IsMatching = true;
 				                        IsPhoneMatching = true;
@@ -233,9 +225,9 @@ public class ConvertPreMemberToMemberSchedular implements Schedulable {
 				                        && ma.LastName == pma.LastName && ma.FirstName == pma.FirstName 
 				                        && ( 
 				                        
-				                                (!string.isBlank(pma.Home_Phone__pc) && ma.Phone_Check__c.Contains(clearPhoneNumber(pma.Home_Phone__pc))) || 
-				                                (!string.isBlank(pma.Work_Phone__pc) && ma.Phone_Check__c.Contains(clearPhoneNumber(pma.Work_Phone__pc))) || 
-				                                (!string.isBlank(pma.Mobile_Phone__pc) && ma.Phone_Check__c.Contains(clearPhoneNumber(pma.Mobile_Phone__pc)))) )
+				                                (!string.isBlank(pma.Home_Phone__pc) && ma.Phone_Check__c.Contains(ConvertPreMemberToMemberSchedular.clearPhoneNumber(pma.Home_Phone__pc))) || 
+				                                (!string.isBlank(pma.Work_Phone__pc) && ma.Phone_Check__c.Contains(ConvertPreMemberToMemberSchedular.clearPhoneNumber(pma.Work_Phone__pc))) || 
+				                                (!string.isBlank(pma.Mobile_Phone__pc) && ma.Phone_Check__c.Contains(ConvertPreMemberToMemberSchedular.clearPhoneNumber(pma.Mobile_Phone__pc)))) )
 				                    {
 				                        
 				                        IsPhoneMatching = true;
@@ -388,8 +380,8 @@ public class ConvertPreMemberToMemberSchedular implements Schedulable {
 				                }
 				            }
             	}
-            }          
-            		List<Member_Conversion_Report__c> reportlist = new List<Member_Conversion_Report__c>();
+            } 
+           			List<Member_Conversion_Report__c> reportlist = new List<Member_Conversion_Report__c>();
             		List<Member_Conversion_Report__c> Matchinglist = new List<Member_Conversion_Report__c>();
             		List<Member_Conversion_Report__c> NotMatchinglist = new List<Member_Conversion_Report__c>();
             		Map<ID,Boolean> MapIDMatching = new Map<ID,Boolean>();
@@ -416,8 +408,7 @@ public class ConvertPreMemberToMemberSchedular implements Schedulable {
 	            		}
 	            		
 					}
-            		
-            		system.debug('NonEligibleMemberIDSet call###' + NonEligibleMemberIDSet);
+					system.debug('NonEligibleMemberIDSet call###' + NonEligibleMemberIDSet);
             		system.debug('EligibleMemberCollection call###' + EligibleMemberCollection);
             		system.debug('NonEligibleMemberCollection call###' + NonEligibleMemberCollection);
             		
@@ -433,13 +424,8 @@ public class ConvertPreMemberToMemberSchedular implements Schedulable {
             				MapIDMatching.put(m.Member__c,m.IsMatching__c);
             			}
             		}
-            		
-            		// This section create report for member not matched
-            	
-            //update EligiblePreMember;
-            update MemberAccount1;
-            
-            if(EligiblePreMemberIdSet.Size() > 0)
+            		update MemberAccount1;
+            		if(EligiblePreMemberIdSet.Size() > 0)
             {
             	List<Converted_PreMember__c> cpmlist = new List<Converted_PreMember__c>();
             	for(Account pma: EligiblePreMember){
@@ -750,7 +736,11 @@ public class ConvertPreMemberToMemberSchedular implements Schedulable {
 			    	    				opp.StageName = 'Closed Won' ;
 			    	    							    	
 			    				}
-	    				
+	    				/*if (opp.StageName == 'Closed Won' || opp.StageName == 'Closed Lost' || opp.IsMemberOpportunity__c == false)
+	    					{			    	    				
+		    	    				opp.Allow_Error__c = true;
+		    	    							    	
+		    				}*/
                         updateopp.add(opp);
                         
                     }
@@ -758,7 +748,18 @@ public class ConvertPreMemberToMemberSchedular implements Schedulable {
                     update updateopp;
                     
                 }
-            
+             /*   if(NAForPm.Size() > 0)
+		    	{
+		    		for(Converted_PreMember__c cpm :cpmlist){
+		    				for(Needs_Assesment__c na : NAForPM)
+		    				{
+		    					na.id = null;
+						    	na.Member__c = cpm.Id;
+		    					NAForCPM.add(na);
+		    				}
+		    				update NAForCPM;
+		    		}
+		    	}*/
                 List<id> lst = new List<id>(EligibleMemberIdSet);
                 ManualMemberMergeProcess.SetOppBranch(lst); 
                	if(NAForPm.Size() > 0)
@@ -875,7 +876,6 @@ public class ConvertPreMemberToMemberSchedular implements Schedulable {
                 }
                 
             }
-            
             List<Logs__c> logslist = new List<Logs__c>();
             for(Account pma : EligiblePreMember)
             {
@@ -892,164 +892,160 @@ public class ConvertPreMemberToMemberSchedular implements Schedulable {
             //Deleting Premember after conversion
             delete EligiblePreMember;
             
-        }
-        
-        
-        public void SetMergerReportData(Set<id> listIds, Map<ID,String> PreMemberNumberMap, boolean matching, List<ReportWrapperClass> classcollection)
-        {
-        	
-        	system.debug('listIds###' + listIds);
-        	List<Member_Conversion_Report__c> reportlist = new List<Member_Conversion_Report__c>();
-        						
-	          	List<Person_Account__c>		 	palist = [SELECT Id,PersonID__c,Account_Number__r.Parent_Account__c, Account_Number__c, Account_Number__r.RecType__c, 
-	          								Account_Number__r.Name,Account_Number__r.Id, PersonId__r.Createddate, Account_Number__r.Created_By_User__c, 
-	          			 					Account_Number__r.Created_By_User_Alias__c, Account_Number__r.Created_By_Episys_User__c, Account_Number__r.Created_By_User_Text__c  
-	          			 					FROM Person_Account__c WHERE PersonID__c IN : listIds  order by Account_Number__r.RecType__c];
-	          			 					
-	           set<id> notFound  = new set<id>(); 
-	          	
-	          	
-	          	for(id notfoundid : listIds)
-	          	{
-	          		boolean flag = false;
-	          	   for(Person_Account__c pa : palist){
-			          	if(pa.PersonID__c == notfoundid && !notFound.contains(notfoundid))
-			          	{
-			          		flag = true;
-			          	}
-		          }
-		          
-		          if(!flag)
-		          {
-		          	notFound.add(notfoundid);
-		          }
-	          	}
-	          
-	           system.debug('notFound#'+notFound);
-	          
-	           if(notFound.size() > 0)
-   			 	 {
-   			 	 	List<Account> acclist =  [Select Id,ParentId, Name , Createddate, Owner.Name from Account where id IN :notFound];
-   			 	 	 system.debug('acclist#'+acclist);
-   			 	 	if(acclist.size() > 0)
-   			 	 	{
-   			 	 		
-   			 	 			for(ReportWrapperClass cc: classcollection)
-   			 	 			{
-   			 	 				for(Account a : acclist)
-   			 	 				{
-   			 	 					if(cc.ma.id == a.id)
-   			 	 					{
-			   			 	 			Member_Conversion_Report__c report = new Member_Conversion_Report__c();
-			   			 	 			if(matching)
-			   			 	 			{
-			   			 	 				report.Member_Number__c =  PreMemberNumberMap.get(a.id);
-			   			 	 			}
-			   			 	 			report.IsMatching__c = matching;
-							           	report.Member_Created_Date__c = a.Createddate;
-							       		report.User_Name__c = a.Owner.Name;
-							       		report.Member__c = a.id;
-							       		report.Process_Type__c ='Automated';
-					   			 		report.Is_Phone_Matching__c = cc.IsPhoneMatching;
-							       		report.Is_Email_Matching__c = cc.IsEmailMatching;
-							       		report.Is_Street_Matching__c = cc.IsStreetMatching;
-							       		report.Is_City_Matching__c = cc.IsCityMatching;
-							       		report.Is_State_Matching__c = cc.IsStateMatching;
-							       		report.Is_Zipcode_Matching__c = cc.IsZipcodeMatching;
-					   			 		report.First_Name__c = cc.FirstName;
-					   			 		report.Last_Name__c = cc.LastName;
-					   			 		report.Is_First_Name_Matching__c = cc.IsFirstNameMatching;
-					   			 		report.Is_Last_Name_Matching__c = cc.IsLastNameMatching;
-							           	reportlist.Add(report);
-   			 	 					}
-   			 	 			}
-   			 	 		}
-   			 	 	}
-   			 	 
-   			 	 }		 	
-   			 	 
-   			 	 Set<id> memberiddone = new set<id>();
-	   			
-	   			 system.debug('palist#'+palist);
-	   			 	for(ReportWrapperClass cc: classcollection)
-   			 	 			{
-   			 	 				 for(Person_Account__c pa : palist)
-	   							 {
-					   			 	if(!memberiddone.contains(pa.PersonID__c) && cc.ma.id == pa.PersonId__c)
-					   			 	{
-				   			 	
-										Member_Conversion_Report__c report = new Member_Conversion_Report__c();
-					   			 		report.IsMatching__c = matching;
-					   			 		if(matching)
-					   			 	 			{
-					   			 	 				report.Member_Number__c =  PreMemberNumberMap.get(pa.PersonID__c);
-					   			 	 			}
-					   			 		
-					   			 		report.Member_Created_Date__c = pa.PersonId__r.Createddate;
-					   			 		report.Member__c = pa.PersonID__c;
-					   			 		report.Member_Episys_Alias__c = pa.Account_Number__r.Created_By_User_Alias__c;
-					   			 		report.Member_Episys_Id__c = pa.Account_Number__r.Created_By_User__c;
-					   			 		report.User_Name__c = pa.Account_Number__r.Created_By_User_Text__c;
-					   			 		
-					   			 		report.Member_Account__c = pa.Account_Number__r.id;
-					   			 		report.Process_Type__c ='Automated';
-					   			 		report.Is_Phone_Matching__c = cc.IsPhoneMatching;
-							       		report.Is_Email_Matching__c = cc.IsEmailMatching;
-							       		report.Is_Street_Matching__c = cc.IsStreetMatching;
-							       		report.Is_City_Matching__c = cc.IsCityMatching;
-							       		report.Is_State_Matching__c = cc.IsStateMatching;
-							       		report.Is_Zipcode_Matching__c = cc.IsZipcodeMatching;
-					   			 		report.First_Name__c = cc.FirstName;
-					   			 		report.Last_Name__c = cc.LastName;
-					   			 		report.Is_First_Name_Matching__c = cc.IsFirstNameMatching;
-					   			 		report.Is_Last_Name_Matching__c = cc.IsLastNameMatching;
-					   			 		system.debug('report###'+ report);
-					   			 		reportlist.Add(report);
-									    memberiddone.add(pa.PersonID__c);
-				   			 	}
-				   			 	
-				   			 }
-	   			 }
-   			 	system.debug('memberiddone#' + memberiddone);
-   			 	system.debug('reportlist#' + reportlist.size());
-   			 	
-   			 	insert reportlist;
-   			 	 
-				//				
-				
-			
-	          					
-	          			 						
-        
-        }
-        
-        public static string clearPhoneNumber(string phoneNumber)
-        {
-        	if(phoneNumber != null)
-        	{
-        		return phoneNumber.remove(' ').remove('(').remove(')').remove('-');
-        	}
-        	return '';
-        }
-   
-
-
-public class ReportWrapperClass{
-
-public Account ma {get; set;}
-public Account pma {get;set;}
-public Boolean IsMatching {get;set;}
-public Boolean IsPhoneMatching {get;set;}
-public Boolean IsEmailMatching {get;set;}
-public Boolean IsStreetMatching  {get;set;}
-public Boolean IsCityMatching {get;set;}
-public Boolean IsStateMatching {get;set;}
-public Boolean IsZipcodeMatching {get;set;}
-public Boolean IsFirstNameMatching {get;set;}
-public Boolean IsLastNameMatching {get;set;}
-public String FirstName {get;set;}
-public String LastName {get;set;}
+            
 	
-
-
-}*/
+	}
+	
+	 global void finish(Database.BatchableContext BC){
+   }
+   
+  						public class ReportWrapperClass
+  						{
+  								public Account ma {get; set;}
+								public Account pma {get;set;}
+								public Boolean IsMatching {get;set;}
+								public Boolean IsPhoneMatching {get;set;}
+								public Boolean IsEmailMatching {get;set;}
+								public Boolean IsStreetMatching  {get;set;}
+								public Boolean IsCityMatching {get;set;}
+								public Boolean IsStateMatching {get;set;}
+								public Boolean IsZipcodeMatching {get;set;}
+								public Boolean IsFirstNameMatching {get;set;}
+								public Boolean IsLastNameMatching {get;set;}
+								public String FirstName {get;set;}
+								public String LastName {get;set;}
+						}
+						/*public static string clearPhoneNumber(string phoneNumber)
+				        {
+				        	if(phoneNumber != null)
+				        	{
+				        		return phoneNumber.remove(' ').remove('(').remove(')').remove('-');
+				        	}
+				        	return '';
+				        }*/
+				        
+				        public void SetMergerReportData(Set<id> listIds, Map<ID,String> PreMemberNumberMap, boolean matching, List<ReportWrapperClass> classcollection)
+        				{
+        	
+					        	system.debug('listIds###' + listIds);
+					        	List<Member_Conversion_Report__c> reportlist = new List<Member_Conversion_Report__c>();
+					        						
+						          	List<Person_Account__c>		 	palist = [SELECT Id,PersonID__c,Account_Number__r.Parent_Account__c, Account_Number__c, Account_Number__r.RecType__c, 
+						          								Account_Number__r.Name,Account_Number__r.Id, PersonId__r.Createddate, Account_Number__r.Created_By_User__c, 
+						          			 					Account_Number__r.Created_By_User_Alias__c, Account_Number__r.Created_By_Episys_User__c, Account_Number__r.Created_By_User_Text__c  
+						          			 					FROM Person_Account__c WHERE PersonID__c IN : listIds  order by Account_Number__r.RecType__c];
+						          			 					
+						           set<id> notFound  = new set<id>(); 
+	          	
+	          	
+						          	for(id notfoundid : listIds)
+						          	{
+						          		boolean flag = false;
+						          	   for(Person_Account__c pa : palist){
+								          	if(pa.PersonID__c == notfoundid && !notFound.contains(notfoundid))
+								          	{
+								          		flag = true;
+								          	}
+							          }
+							          
+							          if(!flag)
+							          {
+							          	notFound.add(notfoundid);
+							          }
+						          	}
+	          
+	          						system.debug('notFound#'+notFound);
+	          
+						           if(notFound.size() > 0)
+					   			 	 {
+					   			 	 	List<Account> acclist =  [Select Id,ParentId, Name , Createddate, Owner.Name from Account where id IN :notFound];
+					   			 	 	 system.debug('acclist#'+acclist);
+					   			 	 	if(acclist.size() > 0)
+					   			 	 	{
+					   			 	 		
+					   			 	 			for(ReportWrapperClass cc: classcollection)
+					   			 	 			{
+					   			 	 				for(Account a : acclist)
+					   			 	 				{
+					   			 	 					if(cc.ma.id == a.id)
+					   			 	 					{
+								   			 	 			Member_Conversion_Report__c report = new Member_Conversion_Report__c();
+								   			 	 			if(matching)
+								   			 	 			{
+								   			 	 				report.Member_Number__c =  PreMemberNumberMap.get(a.id);
+								   			 	 			}
+								   			 	 			report.IsMatching__c = matching;
+												           	report.Member_Created_Date__c = a.Createddate;
+												       		report.User_Name__c = a.Owner.Name;
+												       		report.Member__c = a.id;
+												       		report.Process_Type__c ='Automated';
+										   			 		report.Is_Phone_Matching__c = cc.IsPhoneMatching;
+												       		report.Is_Email_Matching__c = cc.IsEmailMatching;
+												       		report.Is_Street_Matching__c = cc.IsStreetMatching;
+												       		report.Is_City_Matching__c = cc.IsCityMatching;
+												       		report.Is_State_Matching__c = cc.IsStateMatching;
+												       		report.Is_Zipcode_Matching__c = cc.IsZipcodeMatching;
+										   			 		report.First_Name__c = cc.FirstName;
+										   			 		report.Last_Name__c = cc.LastName;
+										   			 		report.Is_First_Name_Matching__c = cc.IsFirstNameMatching;
+										   			 		report.Is_Last_Name_Matching__c = cc.IsLastNameMatching;
+												           	reportlist.Add(report);
+					   			 	 					}
+					   			 	 			}
+					   			 	 		}
+					   			 	 	}
+					   			 	 
+					   			 	 }		 	
+   			 	 
+					   			 	 Set<id> memberiddone = new set<id>();
+						   			
+						   			 system.debug('palist#'+palist);
+						   			 	for(ReportWrapperClass cc: classcollection)
+					   			 	 			{
+					   			 	 				 for(Person_Account__c pa : palist)
+						   							 {
+										   			 	if(!memberiddone.contains(pa.PersonID__c) && cc.ma.id == pa.PersonId__c)
+										   			 	{
+									   			 	
+															Member_Conversion_Report__c report = new Member_Conversion_Report__c();
+										   			 		report.IsMatching__c = matching;
+										   			 		if(matching)
+										   			 	 			{
+										   			 	 				report.Member_Number__c =  PreMemberNumberMap.get(pa.PersonID__c);
+										   			 	 			}
+										   			 		
+										   			 		report.Member_Created_Date__c = pa.PersonId__r.Createddate;
+										   			 		report.Member__c = pa.PersonID__c;
+										   			 		report.Member_Episys_Alias__c = pa.Account_Number__r.Created_By_User_Alias__c;
+										   			 		report.Member_Episys_Id__c = pa.Account_Number__r.Created_By_User__c;
+										   			 		report.User_Name__c = pa.Account_Number__r.Created_By_User_Text__c;
+										   			 		
+										   			 		report.Member_Account__c = pa.Account_Number__r.id;
+										   			 		report.Process_Type__c ='Automated';
+										   			 		report.Is_Phone_Matching__c = cc.IsPhoneMatching;
+												       		report.Is_Email_Matching__c = cc.IsEmailMatching;
+												       		report.Is_Street_Matching__c = cc.IsStreetMatching;
+												       		report.Is_City_Matching__c = cc.IsCityMatching;
+												       		report.Is_State_Matching__c = cc.IsStateMatching;
+												       		report.Is_Zipcode_Matching__c = cc.IsZipcodeMatching;
+										   			 		report.First_Name__c = cc.FirstName;
+										   			 		report.Last_Name__c = cc.LastName;
+										   			 		report.Is_First_Name_Matching__c = cc.IsFirstNameMatching;
+										   			 		report.Is_Last_Name_Matching__c = cc.IsLastNameMatching;
+										   			 		system.debug('report###'+ report);
+										   			 		reportlist.Add(report);
+														    memberiddone.add(pa.PersonID__c);
+									   			 	}
+									   			 	
+									   			 }
+						   			 }
+					   			 	system.debug('memberiddone#' + memberiddone);
+					   			 	system.debug('reportlist#' + reportlist.size());
+					   			 	
+						   			 	insert reportlist;
+		          			 						
+        
+       					 }
+   
+    
+}

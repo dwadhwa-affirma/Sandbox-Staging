@@ -924,7 +924,7 @@ public class ManageTravelPlansController {
     string[] res = result.split('\\;');
 
       
-      tempCase = [select id,Brand__c, ContactId, Account_Number__c, AccountId, CreatedBy.Email,Primary_Category__c, Secondary_Category__c ,Tertiary_Category__c
+      tempCase = [select id,Brand__c, Description, ContactId, Account_Number__c, AccountId, CreatedBy.Email,Primary_Category__c, Secondary_Category__c ,Tertiary_Category__c
                        from case where id =:id];
             system.debug('tempCase===' + tempCase);
            
@@ -932,7 +932,7 @@ public class ManageTravelPlansController {
                         
             if(tempCase != null && tempCase.Size() > 0)
             {
-              
+              string originalDescription = tempCase[0].Description;
              List<Account> listAccount = new List<Account>();                    
             Account acc = new Account();
             listAccount = [select Id,FirstName,LastName,home_phone__pc,Mobile_Phone__pc,Work_Phone__pc,PersonEmail,Alternate_Email__pc, Email_raw__c from Account where ID =:tempCase[0].AccountId];
@@ -984,7 +984,7 @@ public class ManageTravelPlansController {
                         }
                       caseDescription = caseDescription + ' America/Los_Angeles ' + cardString + '\n';
                   
-                  tempCase[0].Description =caseDescription;
+                  tempCase[0].Description = caseDescription;
                   isupdate =true;
                     Mastercard_Travel__c finaltraveldetails = new Mastercard_Travel__c();
                    finaltraveldetails.Case__c =  id;//caseobj.id;
@@ -1022,8 +1022,20 @@ public class ManageTravelPlansController {
                    tempCase[0].OwnerId = QueueID.Queue.Id;
            }               
              try{
-                 if(isupdate)
-                update tempCase[0];
+                 if(isupdate){
+	                 system.debug('originalDescription==='+originalDescription);
+	                 system.debug(' tempCase[0].Description==='+ tempCase[0].Description);
+	                 if(originalDescription!=null && originalDescription != ''){
+	                 tempCase[0].Description = originalDescription + '\n' + tempCase[0].Description; 
+	                 }
+	                 else
+	                 {
+	                 	tempCase[0].Description = tempCase[0].Description;
+	                 	system.debug(' tempCase[0].Description==='+ tempCase[0].Description); 
+	                 }
+	                                 
+	               	 update tempCase[0];
+               	 }
                  }
                 catch(Exception e){
                     System.debug('Exception: ' + e);
@@ -1467,8 +1479,8 @@ public class ManageTravelPlansController {
     {
       string body='';
       try{
-        list<Person_Account__c> paList = [SELECT Id,Brand__c,
-                               Account_Number__c, Account_Number__r.RecType__c,TypeTranslate__c, Account_Number__r.Name FROM Person_Account__c WHERE PersonID__c =:acc.Id];
+	        list<Person_Account__c> paList = [SELECT Id,Brand__c,
+	                               Account_Number__c, Account_Number__r.RecType__c,TypeTranslate__c, Account_Number__r.Name FROM Person_Account__c WHERE PersonID__c =:acc.Id and TypeTranslate__c like '%Primary%'];
           List<Messaging.SingleEmailMessage> mails = new List<Messaging.SingleEmailMessage>();
           Messaging.SingleEmailMessage mail = new Messaging.SingleEmailMessage();
           List<String> sendTo = new List<String>();
@@ -1485,8 +1497,8 @@ public class ManageTravelPlansController {
           mail.setSubject(listEmailTemplate[0].Subject);
           
           
-        /*  string emailadd;
-          if(Brand == 'Spectrum')
+          string emailadd;
+          if(paList[0].Brand__c == 'Spectrum')
           {
             emailadd = 'noreply@spectrumcu.org';
           }
@@ -1495,7 +1507,7 @@ public class ManageTravelPlansController {
             emailadd = 'noreply@chevronfcu.org';
           }
           
-          List<OrgWideEmailAddress> listAdd = [select Id,Address,DisplayName  from OrgWideEmailAddress where Address =: emailadd];*/
+          List<OrgWideEmailAddress> listAdd = [select Id,Address,DisplayName  from OrgWideEmailAddress where Address =: emailadd];
           Datetime fdt = datetime.newInstance(FromDate.year(), FromDate.month(),FromDate.day());
           String fdateStr =  fdt.format('MM/dd/yy');
           Datetime tdt = datetime.newInstance(ToDate.year(), ToDate.month(),ToDate.day());
@@ -1503,7 +1515,7 @@ public class ManageTravelPlansController {
           body = listEmailTemplate[0].body.replace('$MemberName', acc.FirstName + ' '  + acc.LastName).replace('$StartDate', fdateStr).replace('$EndDate', tdateStr);
   
           mail.setPlainTextBody(body);
-         // mail.setOrgWideEmailAddressId(listAdd[0].Id);
+          mail.setOrgWideEmailAddressId(listAdd[0].Id);
           mails.add(mail);
           
           Messaging.sendEmail(mails);

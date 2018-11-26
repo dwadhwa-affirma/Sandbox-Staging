@@ -41,8 +41,11 @@ private class ConvertPreMemberToMemberSchedularTest {
         act.LastName = 'Test1';
         act.PersonEmail = 'test@test.com';
         act.Alternate_Email__pc = 'test1@gmail.com';
+        act.Alt_Email_Raw__c ='test2@gmail.com';
+        act.Email_raw__c ='test3@gmail.com';
         act.RecordtypeId = rec.Id;
         act.Residential_Street__pc = '11';
+        act.Home_Phone__pc ='011-11111';
         insert act;
         
         Account pact = new Account();
@@ -51,6 +54,7 @@ private class ConvertPreMemberToMemberSchedularTest {
         pact.PersonEmail = 'test@test.com';
         pact.RecordtypeId = rec1.Id;
         pact.Residential_Street__pc ='11';
+        pact.Home_Phone__pc ='011-11111';
         insert pact;
         
         opportunity opp = new Opportunity();
@@ -96,6 +100,12 @@ private class ConvertPreMemberToMemberSchedularTest {
         act1.Residential_Street__pc = '11';
         act1.BIRTH_DATE__pc = system.Today().addyears(20);
         insert act1;
+        
+         Account_Details__c account_details_Obj1 = new Account_Details__c(Onboarded__c = false, RecType__c = 'ACCT', TypeTranslate__c = '2-TRUST');
+    			Insert account_details_Obj1;
+        Person_Account__c person_account_Obj1 = new Person_Account__c(Account_Number__c = account_details_Obj1.id, PersonID__c = act1.id, Relationship__c = null, TypeTranslate__c = '0000/Primary');
+    		Insert person_account_Obj1;
+        
         Account act2 = new Account();
         act2.FirstName = 'Test2';
         act2.LastName = 'Testl2';
@@ -119,10 +129,18 @@ private class ConvertPreMemberToMemberSchedularTest {
         pact1.BIRTH_DATE__pc = system.Today().addyears(20);
         insert pact1;
         
+         Account act12 = new Account();
+        act12.FirstName = 'Test2';
+        act12.LastName = 'Test2';
+        act12.RecordtypeId = rec.Id;
+        act12.Residential_Street__pc ='11';
+        act12.BIRTH_DATE__pc = system.Today().addyears(20);
+        act12.Residential_Zipocde__pc ='112233';
+        insert act12;
+        
         Account pact2 = new Account();
         pact2.FirstName = 'Test2';
         pact2.LastName = 'Test2';
-        pact2.Email_raw__c = 'test2@test.com';
         pact2.RecordtypeId = rec1.Id;
         pact2.Residential_Street__pc ='11';
         pact2.BIRTH_DATE__pc = system.Today().addyears(20);
@@ -136,7 +154,6 @@ private class ConvertPreMemberToMemberSchedularTest {
         pact3.Alternate_Email__pc ='test1@gmail.com';
         pact3.Alt_Email_Raw__c = 'test2@gmail.com';
         pact3.RecordtypeId = rec1.Id;
-        pact3.Residential_Street__pc ='33';
         pact3.BIRTH_DATE__pc = system.Today().addyears(20);
         pact3.Residential_Zipocde__pc ='112233';
         insert pact3;
@@ -153,6 +170,73 @@ private class ConvertPreMemberToMemberSchedularTest {
         pact4.Work_Phone__pc ='787878';
         insert pact4;
         
+        Account act5 = new Account();
+        act5.FirstName = 'Test5';
+        act5.LastName = 'LTest5';
+        act5.Email_raw__c = 'test3@test.com';
+        act5.RecordtypeId = rec.Id;
+        insert act5;
+        
+        Account pact5 = new Account();
+        pact5.FirstName = 'Test5';
+        pact5.LastName = 'LTest51';
+        pact5.Email_raw__c = 'test31@test.com';
+        pact5.RecordtypeId = rec1.Id;
+        insert pact5;
+        
+        
+         Account act6 = new Account();
+        act6.FirstName = 'Test6';
+        act6.LastName = 'LTest6';
+        act6.RecordtypeId = rec.Id;
+        act6.Residential_City__pc='ct';
+        insert act6;
+        
+        Account pact6 = new Account();
+        pact6.FirstName = 'Test61';
+        pact6.LastName = 'LTest61';
+        pact6.RecordtypeId = rec1.Id;
+        pact6.Residential_City__pc='ct';
+        insert pact6;
+        
+        Account pact7 = new Account();
+        pact7.FirstName = 'Test7';
+        pact7.LastName = 'Test7';
+        pact7.Email_raw__c = 'test7@test.com';
+        pact7.RecordtypeId = rec1.Id;
+        pact7.Residential_Street__pc ='33';
+        pact7.BIRTH_DATE__pc = system.Today().addyears(20);
+        pact7.Residential_Zipocde__pc ='112233';
+        pact7.Mobile_Phone__pc ='989898';
+        pact7.Home_Phone__pc ='010101';
+        pact7.Work_Phone__pc ='787878';
+        insert pact7;
+        
+        
+          Account act8 = new Account();
+        act8.FirstName = 'Test8';
+        act8.LastName = 'LTest8';
+        act8.Residential_Street__pc = 's8';
+        act8.RecordtypeId = rec.Id;
+        
+        insert act8;
+        
+        Account pact8 = new Account();
+        pact8.FirstName = 'Test8';
+        pact8.LastName = 'LTest8';
+        pact8.RecordtypeId = rec1.Id;
+        pact8.Residential_Street__pc = 's8';
+        insert pact8;
+        
+          Account act9 = new Account();
+        act9.FirstName = 'NonEle';
+        act9.LastName = 'LNonEle';
+        act9.Residential_Street__pc = 'NonEle';
+        act9.RecordtypeId = rec.Id;
+        
+        insert act9;
+        
+          
         
         Set<ID> pactid = new Set<Id>();
         pactid.add(pact.id);
@@ -160,6 +244,10 @@ private class ConvertPreMemberToMemberSchedularTest {
         pactid.add(pact2.id);
         pactid.add(pact3.id);
         pactid.add(pact4.id);
+        pactid.add(pact5.id);
+        pactid.add(pact6.id);
+        pactid.add(pact7.id);
+         pactid.add(pact8.id);
          List<Account> PreMemberAccount = [SELECT Id, PersonEmail, Email_raw__c, Alt_Email_Raw__c, FirstName,MiddleName,LastName, Name, Salutation ,Suffix,
 						Phone_Check__c, Mobile_Phone__pc, Residential_Street__pc ,RecordType.Name,Residential_City__pc,Residential_State__pc, Residential_Zipocde__pc,Residential_Extra_Address__pc,createddate
     		 				 FROM Account where RecordType.Name = 'Pre Member' and IsConverted__c=false and id IN: pactid];
@@ -169,11 +257,23 @@ private class ConvertPreMemberToMemberSchedularTest {
          
         Test.startTest();
        		
+       		Account_Details__c account_details_Obj9 = new Account_Details__c(Onboarded__c = false, RecType__c = 'ACCT', TypeTranslate__c = '2-TRUST');
+    			Insert account_details_Obj9;
+        Person_Account__c person_account_Obj9 = new Person_Account__c(Account_Number__c = account_details_Obj9.id, PersonID__c = act9.id, Relationship__c = null, TypeTranslate__c = '0000/Primary');
+    		Insert person_account_Obj9;
+    		
+    		Account_Details__c account_details_Obj12 = new Account_Details__c(Onboarded__c = false, RecType__c = 'ACCT', TypeTranslate__c = '2-TRUST');
+    			Insert account_details_Obj12;
+        Person_Account__c person_account_Obj12 = new Person_Account__c(Account_Number__c = account_details_Obj12.id, PersonID__c = act12.id, Relationship__c = null, TypeTranslate__c = '0000/Primary');
+    		Insert person_account_Obj12;
+    		
+    		
             String jobId = System.schedule('ScheduleApexClassTest',  CRON_EXP, new ConvertPreMemberToMemberSchedular());
             CronTrigger ct = [SELECT Id, CronExpression, TimesTriggered, NextFireTime FROM CronTrigger WHERE id = :jobId];
             System.assertEquals(CRON_EXP, ct.CronExpression);
             System.assertEquals(0, ct.TimesTriggered);
-            
+            ConvertPreMemberToMemberSchedular.clearPhoneNumber('011 7373737');
+             ConvertPreMemberToMemberSchedular.clearPhoneNumber(' ');
            Test.stopTest();
         
     }
