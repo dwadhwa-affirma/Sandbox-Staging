@@ -282,12 +282,13 @@ Comment_Block_20__c='ABC'
     static testmethod void testmethod1(){
            
          SetUp();  
+         test.startTest();
         PageReference pageRef = Page.UsersAccountDetails;
         Test.setCurrentPage(pageRef);    
         Account account_Obj = [select Id from account limit 1];        
         Account account_Obj1 = [select Id from account limit 1];
         
-        Test.startTest();
+       
         ApexPages.currentPage().getParameters().put('ID', account_Obj.Id);
         UsersAccountDetailsController controller = new UsersAccountDetailsController(new ApexPages.StandardController(account_Obj));
         

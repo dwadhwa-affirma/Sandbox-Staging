@@ -31,23 +31,23 @@ public class LeadBusinessHoursTriggerTest {
             
          Lead newlead = new Lead(LastName = 'LastName268', Status = 'New', HasOptedOutOfEmail = false, IsConverted = false, IsUnreadByOwner = false, 
                        smagicinteract__SMSOptOut__c = false, Escalated__c = false, Membership_Required_old__c = false, Keep__c = false, et4ae5__HasOptedOutOfMobile__c = false, Episys_Flag__c = false,
-                                temp__c = false, Episys_User_ID__c= 1,LeadSource = 'Other', Product_Type__c ='Cards');
+                                temp__c = false, Episys_User_ID__c= 1,LeadSource = 'Other', Product_Type__c ='Cards', Product_Subtype__c = 'Credit Cards');
          Lead newlead1 = new Lead(LastName = 'LastName268', Status = 'New', HasOptedOutOfEmail = false, IsConverted = false, IsUnreadByOwner = false, 
                        smagicinteract__SMSOptOut__c = false, Escalated__c = false, Membership_Required_old__c = false, Keep__c = false, et4ae5__HasOptedOutOfMobile__c = false, Episys_Flag__c = false,
-                                temp__c = false, Episys_User_ID__c= 1,LeadSource = 'Branch Walk in', Product_Type__c ='Cards');
+                                temp__c = false, Episys_User_ID__c= 1,LeadSource = 'Branch Walk in', Product_Type__c ='Cards',Product_Subtype__c = 'Credit Cards');
         Lead newlead2 = new Lead(LastName = 'LastName269', Status = 'Prospect Considering', HasOptedOutOfEmail = false, IsConverted = false, IsUnreadByOwner = false, 
                        smagicinteract__SMSOptOut__c = false, Escalated__c = false, Membership_Required_old__c = false, Keep__c = false, et4ae5__HasOptedOutOfMobile__c = false, Episys_Flag__c = false,
-                                temp__c = false, Episys_User_ID__c= 1,LeadSource = 'Branch Walk in', Product_Type__c ='Cards');
+                                temp__c = false, Episys_User_ID__c= 1,LeadSource = 'Branch Walk in', Product_Type__c ='Cards',Product_Subtype__c = 'Credit Cards');
          Lead newlead3 = new Lead(LastName = 'LastName268', Status = 'Prospect Considering', HasOptedOutOfEmail = false, IsConverted = false, IsUnreadByOwner = false, 
                        smagicinteract__SMSOptOut__c = false, Escalated__c = false, Membership_Required_old__c = false, Keep__c = false, et4ae5__HasOptedOutOfMobile__c = false, Episys_Flag__c = false,
-                                temp__c = false, Episys_User_ID__c= 1033,LeadSource = 'Branch Walk in', Product_Type__c ='Cards');
+                                temp__c = false, Episys_User_ID__c= 1033,LeadSource = 'Branch Walk in', Product_Type__c ='Cards',Product_Subtype__c = 'Credit Cards');
          Lead newlead4 = new Lead(LastName = 'LastName270', Status = 'Closed - Converted', HasOptedOutOfEmail = false, IsConverted = false, IsUnreadByOwner = false, 
                        smagicinteract__SMSOptOut__c = false, Escalated__c = false, Membership_Required_old__c = false, Keep__c = false, et4ae5__HasOptedOutOfMobile__c = false, Episys_Flag__c = false,
-                                temp__c = false, Episys_User_ID__c= 1033, LeadSource = 'Branch Walk in', Product_Type__c ='Cards');
+                                temp__c = false, Episys_User_ID__c= 1033, LeadSource = 'Branch Walk in', Product_Type__c ='Cards',Product_Subtype__c = 'Credit Cards');
         
         Lead newlead5 = new Lead(LastName = 'LastName270', Status = 'new', HasOptedOutOfEmail = false, IsConverted = false, IsUnreadByOwner = false, 
                        smagicinteract__SMSOptOut__c = false, Escalated__c = false, Membership_Required_old__c = false, Keep__c = false, et4ae5__HasOptedOutOfMobile__c = false, Episys_Flag__c = false,
-                                temp__c = false, LeadSource = 'Event', Product_Type__c ='Cards');
+                                temp__c = false, LeadSource = 'Event', Product_Type__c ='Cards',Product_Subtype__c = 'Credit Cards');
         test.StartTest();
 		
     	Insert newlead; 
@@ -88,7 +88,7 @@ public class LeadBusinessHoursTriggerTest {
         
         Lead newlead5 = new Lead(LastName = 'LastName270', Status = 'new', HasOptedOutOfEmail = false, IsConverted = false, IsUnreadByOwner = false, 
                        smagicinteract__SMSOptOut__c = false, Escalated__c = false, Membership_Required_old__c = false, Keep__c = false, et4ae5__HasOptedOutOfMobile__c = false, Episys_Flag__c = false,
-                                temp__c = false,  LeadSource = 'Event', Product_Type__c ='Accounts/Shares');
+                                temp__c = false,  LeadSource = 'Event', Product_Type__c ='Accounts/Shares', Product_Subtype__c = 'IRA');
         Insert newlead5;
        
 		

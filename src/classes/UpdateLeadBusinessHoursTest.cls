@@ -4,7 +4,7 @@ public class UpdateLeadBusinessHoursTest
 	static testMethod void UpdateLeadBusinessHoursTest1(){
 		test.StartTest();
 		
-		Lead newlead = new Lead(LastName = 'LastName268', Status = 'Open', HasOptedOutOfEmail = false, IsConverted = false, IsUnreadByOwner = false, 
+		Lead newlead = new Lead(LastName = 'LastName268', Product_Type__c = 'Card',Product_Subtype__c = 'Credit Cards', Status = 'Open', HasOptedOutOfEmail = false, IsConverted = false, IsUnreadByOwner = false, 
                        smagicinteract__SMSOptOut__c = false, Escalated__c = false, Membership_Required_old__c = false, Keep__c = false, et4ae5__HasOptedOutOfMobile__c = false, Episys_Flag__c = false, temp__c = false);
     	Insert newlead; 
     	system.debug('lstLeads1===' + newlead);

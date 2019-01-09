@@ -920,6 +920,7 @@ public class ManageTravelPlansController {
     List<case> CasestoClose = new List<case>();       
     List<Mastercard_Travel__c> ListMastercardObj = new List<Mastercard_Travel__c>();   
     string Timezone = 'America/Los_Angeles';
+    string MemberAccountIdforEmail='';
     
     string[] res = result.split('\\;');
 
@@ -932,6 +933,9 @@ public class ManageTravelPlansController {
                         
             if(tempCase != null && tempCase.Size() > 0)
             {
+            	if(tempCase[0].Account_Number__c != null){
+            		MemberAccountIdforEmail = tempCase[0].Account_Number__c;
+            	}
               string originalDescription = tempCase[0].Description;
              List<Account> listAccount = new List<Account>();                    
             Account acc = new Account();
@@ -1043,6 +1047,7 @@ public class ManageTravelPlansController {
             }  
             
             else if(tempAccount != null && tempAccount.Size() > 0){
+            	MemberAccountIdforEmail = tempAccount[0].Id;
               List<Account> listAccount;    
                 
           list<Person_Account__c> paList = [SELECT Id,PersonID__c,
@@ -1363,10 +1368,10 @@ public class ManageTravelPlansController {
              if(ListMastercardObj.size() > 0){         
                
                if(ListMastercardObj[0].IsEmailPreferred__c){
-                   SendTravelNotificationEmail(accq, minFromdate, maxTodate, ListMastercardObj);  
+                   SendTravelNotificationEmail(accq, minFromdate, maxTodate, ListMastercardObj, MemberAccountIdforEmail);  
                }
                if(ListMastercardObj[0].IsPhonePreferred__c){                 
-                 SendTravelNotificationSMS(accq, minFromdate, maxTodate, ListMastercardObj);                   
+                 SendTravelNotificationSMS(accq, minFromdate, maxTodate, ListMastercardObj, MemberAccountIdforEmail);                   
                }
              }
                 
@@ -1475,12 +1480,18 @@ public class ManageTravelPlansController {
   
   }
     
-    private static void SendTravelNotificationEmail(Account acc, date FromDate, date ToDate,List<Mastercard_Travel__c> successAPIList)
+    private static void SendTravelNotificationEmail(Account acc, date FromDate, date ToDate,List<Mastercard_Travel__c> successAPIList, string MemberAccountIdforEmail)
     {
       string body='';
       try{
 	        list<Person_Account__c> paList = [SELECT Id,Brand__c,
 	                               Account_Number__c, Account_Number__r.RecType__c,TypeTranslate__c, Account_Number__r.Name FROM Person_Account__c WHERE PersonID__c =:acc.Id and TypeTranslate__c like '%Primary%'];
+	         
+	        Account_Details__c memberaccount = new Account_Details__c();                      
+	        if(MemberAccountIdforEmail != '' && MemberAccountIdforEmail != null){
+	        	memberaccount = [select id, Brand__c from Account_Details__c where id =: MemberAccountIdforEmail];
+	        } 
+	                             
           List<Messaging.SingleEmailMessage> mails = new List<Messaging.SingleEmailMessage>();
           Messaging.SingleEmailMessage mail = new Messaging.SingleEmailMessage();
           List<String> sendTo = new List<String>();
@@ -1488,24 +1499,48 @@ public class ManageTravelPlansController {
           sendTo.add(successAPIList[0].Email__c);
           mail.setToAddresses(sendTo);
           string templatenAME = '';
-          if(paList[0].Brand__c == 'Spectrum')
-            templatenAME ='Spectrum Travel Notification';
-          else
-            templatenAME ='CFCU Travel Notification';
+          if(memberaccount != null){
+          	if(memberaccount.Brand__c == 'Spectrum'){
+          		templatenAME ='Spectrum Travel Notification';
+          	}
+          	else
+          	{
+          		templatenAME ='CFCU Travel Notification';
+          	}
+          }
+          else{
+          	templatenAME ='CFCU Travel Notification';
+          }
+         // if(paList[0].Brand__c == 'Spectrum')
+          //  templatenAME ='Spectrum Travel Notification';
+         // else
+         //   templatenAME ='CFCU Travel Notification';
           List<EmailTemplate> listEmailTemplate =  [select Id,Name,Body,Subject from EmailTemplate where Name =: templatenAME];
           
           mail.setSubject(listEmailTemplate[0].Subject);
           
           
           string emailadd;
-          if(paList[0].Brand__c == 'Spectrum')
+          if(memberaccount != null){
+          	if(memberaccount.Brand__c == 'Spectrum'){
+          		emailadd ='noreply@spectrumcu.org';
+          	}
+          	else
+          	{
+          		emailadd ='noreply@chevronfcu.org';
+          	}
+          }
+          else{
+          	templatenAME ='CFCU Travel Notification';
+          }
+         /* if(paList[0].Brand__c == 'Spectrum')
           {
             emailadd = 'noreply@spectrumcu.org';
           }
           else
           {
             emailadd = 'noreply@chevronfcu.org';
-          }
+          }*/
           
           List<OrgWideEmailAddress> listAdd = [select Id,Address,DisplayName  from OrgWideEmailAddress where Address =: emailadd];
           Datetime fdt = datetime.newInstance(FromDate.year(), FromDate.month(),FromDate.day());
@@ -1994,7 +2029,7 @@ public class ManageTravelPlansController {
                   
     }
     
-    public static void SendTravelNotificationSMS(Account acc, date FromDate, date ToDate,List<Mastercard_Travel__c> successAPIList )
+    public static void SendTravelNotificationSMS(Account acc, date FromDate, date ToDate,List<Mastercard_Travel__c> successAPIList, string MemberAccountIdforEmail )
     {
       string smstext='';
       try{
@@ -2005,11 +2040,27 @@ public class ManageTravelPlansController {
             string emailadd;
             list<Person_Account__c> paList = [SELECT Id,Brand__c,
                              Account_Number__c, Account_Number__r.RecType__c,TypeTranslate__c, Account_Number__r.Name FROM Person_Account__c WHERE PersonID__c =:acc.Id];
-       
-            if(paList[0].Brand__c == 'Spectrum')
+           Account_Details__c memberaccount = new Account_Details__c();                      
+	        if(MemberAccountIdforEmail != '' && MemberAccountIdforEmail != null){
+	        	memberaccount = [select id, Brand__c from Account_Details__c where id =: MemberAccountIdforEmail];
+	        } 
+	        if(memberaccount != null){
+	        	if(memberaccount.Brand__c == 'Spectrum'){
+	        		emailadd ='SpectrumTravelNoticeSMS';
+	        	}
+	        	else
+	        	{
+	        		emailadd ='CFCUTravelNoticeSMS';
+	        	}
+	        }
+	        else{
+	        	emailadd ='CFCUTravelNoticeSMS';
+	        }
+	        
+          /*  if(paList[0].Brand__c == 'Spectrum')
               emailadd ='SpectrumTravelNoticeSMS';
           else
-              emailadd ='CFCUTravelNoticeSMS';
+              emailadd ='CFCUTravelNoticeSMS';*/
           Datetime fdt = datetime.newInstance(FromDate.year(), FromDate.month(),FromDate.day());
           String fdateStr =  fdt.format('MM/dd/yy');
           Datetime tdt = datetime.newInstance(ToDate.year(), ToDate.month(),ToDate.day());

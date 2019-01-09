@@ -45,6 +45,7 @@ public class SetRecordTypeAccountDetailsCtrlTest {
            cc.ParentId = cRec.Id;
         insert cc;
         
+        test.starttest();
         PageReference pageRef = Page.SetRecordTypeAccountDetails;
         Test.setCurrentPage(pageRef);
         ApexPages.currentPage().getParameters().put('firstPage', 'true');
@@ -62,6 +63,7 @@ public class SetRecordTypeAccountDetailsCtrlTest {
         controller.change();
         controller.nextPage();
         controller.process();
+         test.stoptest();
     }
     
     static testmethod void testmethod2(){
@@ -263,6 +265,7 @@ public class SetRecordTypeAccountDetailsCtrlTest {
            cc.ParentId = cRec.Id;
         insert cc;
         
+         test.starttest();
         PageReference pageRef = Page.SetRecordTypeAccountDetails;
         Test.setCurrentPage(pageRef);
         ApexPages.currentPage().getParameters().put('firstPage', 'true');
@@ -278,6 +281,7 @@ public class SetRecordTypeAccountDetailsCtrlTest {
         controller.tcOptions();
         controller.tcValue = 'test3';
         controller.process1();
+         test.stoptest();
     }
     
     static testMethod void testMethod11(){

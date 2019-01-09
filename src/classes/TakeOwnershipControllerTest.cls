@@ -26,7 +26,7 @@ private class TakeOwnershipControllerTest {
 		
 		Case caseObj =new Case(Status = 'In Process', Description='test description', Phone_Number__c='', CaseComments__c ='new comment',  Brand__c = 'CFCU', Primary_Category__c = 'Marketing', ContactId = contact_Obj.id, Origin = null, Subject = 'Test', ClosedDate = null, IsEscalated = false,Account_Number__c = account_Details_Obj.Id, Additional_Documents__c = false, Staff_Escalated__c = false, Five_Day_Flag__c = false, IsMarkDeleted__c = false, IsMarkRead__c = false, IsMarkSaved__c = false, Secondary_Category__c = 'Account Services', Tertiary_Category__c = 'Extended Check Hold', MaritzCX__Response_Deleted_From_MaritzCX__c = false, SLATemp__c = false);
        		Insert caseObj;
-     Lead ld = new Lead (LastName = 'Test',Product_Type__c = 'Card',Brand__c = 'CFCU',FirstName = 'test',MiddleName = 'New', Description = 'New',
+     Lead ld = new Lead (LastName = 'Test',Product_Type__c = 'Card',Product_Subtype__c = 'Credit Cards', Brand__c = 'CFCU',FirstName = 'test',MiddleName = 'New', Description = 'New',
     						Salutation = 'MR.',Suffix = 'MR',Status = 'New',Phone= '1234567890',Email='test@test.com',MobilePhone='1234567892',How_did_you_hear_about_us__c='Website',Event_Source__c='Event-Reston-Open House-04/20/18',
    							 LeadSource='BDO-Realtor Referral' , Street_Address_1__c='Address 1',State__c= 'NY',Zip_Code__c= '12345',City__c='NYC',Country__c ='USA');
     	insert ld; 	

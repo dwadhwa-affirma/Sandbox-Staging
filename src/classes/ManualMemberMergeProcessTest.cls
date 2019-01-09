@@ -38,11 +38,18 @@ private class ManualMemberMergeProcessTest {
        RecordType rec = [Select Name, Id From RecordType where sObjectType='Account' and isActive=true and Name='Person Account'];
        
         RecordType rec1 = [Select Name, Id From RecordType where sObjectType='Account' and isActive=true and Name='Pre Member'];
+      
+       List<Account_Details__c> listaccdetail = new List<Account_Details__c>();
+       List<Account> listact = new List<Account>();
+       List<Person_Account__c> listperacct = new List<Person_Account__c>();
+       List<Opportunity> listopp = new List<Opportunity>();
+       List<Case> listcase = new List <Case>();
        
         Account_Details__c accDetail = new Account_Details__c();
             accDetail.Name = 'Test';
             accDetail.RecType__c = 'ACCT';
-        insert accDetail;
+            listaccdetail.add(accDetail);
+       // insert accDetail;
      
         Account act = new Account();
         act.FirstName = 'Test';
@@ -51,11 +58,13 @@ private class ManualMemberMergeProcessTest {
         act.RecordtypeId = rec.Id;
         act.Residential_Street__pc = '11';
         act.BIRTH_DATE__pc = system.Today().addyears(-20);
-        insert act;
+        listact.add(act);
+       // insert act;
         Person_Account__c pa = new Person_Account__c();
         pa.PersonID__c = act.Id;
         pa.Account_Number__c = accDetail.Id;
-        insert pa;
+        listperacct.add(pa);
+       // insert pa;
         Account pact = new Account();
         pact.FirstName = 'Test';
         pact.LastName = 'Test1';
@@ -84,8 +93,8 @@ private class ManualMemberMergeProcessTest {
 		pact.NA_LESB_Complete__c= true;
 		pact.NA_LESF_Complete__c= true;
 		pact.NA_LEWS_Complete__c= true;
-        insert pact;
-        
+      //  insert pact;
+         listact.add(pact);
         
         Account act1 = new Account();
         act1.FirstName = 'Test1';
@@ -97,8 +106,8 @@ private class ManualMemberMergeProcessTest {
         act1.Home_Phone__pc ='010101';
         act1.Work_Phone__pc ='787878';
         act1.BIRTH_DATE__pc = system.Today().addyears(-20);
-        insert act1;
-        
+      //  insert act1;
+         listact.add(act1);
        
         Account pact1 = new Account();
         pact1.FirstName = 'Test1';
@@ -107,8 +116,8 @@ private class ManualMemberMergeProcessTest {
         pact1.RecordtypeId = rec1.Id;
         pact1.Residential_Street__pc ='11';
         pact1.BIRTH_DATE__pc = system.Today().addyears(-20);
-        insert pact1;
-        
+        //insert pact1;
+         listact.add(pact1);
          
         
         Account act2 = new Account();
@@ -143,7 +152,8 @@ private class ManualMemberMergeProcessTest {
 		act2.NA_LESB_Complete__c= true;
 		act2.NA_LESF_Complete__c= true;
 		act2.NA_LEWS_Complete__c= true;
-        insert act2;
+       // insert act2;
+        listact.add(act2);
         
        
         
@@ -155,8 +165,8 @@ private class ManualMemberMergeProcessTest {
         pact2.Residential_Street__pc ='11';
         pact2.BIRTH_DATE__pc = system.Today().addyears(-20);
         pact2.Residential_Zipocde__pc ='112233';
-        insert pact2;
-        
+       // insert pact2;
+         listact.add(pact2);
         Account pact3 = new Account();
         pact3.FirstName = 'Test3';
         pact3.LastName = 'Test3';
@@ -165,8 +175,8 @@ private class ManualMemberMergeProcessTest {
         pact3.Residential_Street__pc ='33';
         pact3.BIRTH_DATE__pc = system.Today().addyears(-20);
         pact3.Residential_Zipocde__pc ='112233';
-        insert pact3;
-        
+        //insert pact3;
+         listact.add(pact3);
         Account pact4 = new Account();
         pact4.FirstName = 'Test3';
         pact4.LastName = 'Test3';
@@ -199,8 +209,8 @@ private class ManualMemberMergeProcessTest {
 		pact4.NA_LESB_Complete__c= true;
 		pact4.NA_LESF_Complete__c= true;
 		pact4.NA_LEWS_Complete__c= true;
-        insert pact4;
-        
+      //  insert pact4;
+         listact.add(pact4);
         Account pact5 = new Account();
         pact5.FirstName = 'Test3';
         pact5.LastName = 'Test3';
@@ -223,8 +233,17 @@ private class ManualMemberMergeProcessTest {
 		pact5.NA_Opt_Out_Updated__c= system.Today();
 		pact5.NA_LEAV_Complete__c= true;
 	
-        insert pact5;
-        
+      //  insert pact5;
+         listact.add(pact5);
+          Account_Details__c account_details_Obj = new Account_Details__c(Onboarded__c = false, RecType__c = 'ACCT', TypeTranslate__c = '2-TRUST');
+    		//	Insert account_details_Obj;
+    		listaccdetail.add(account_details_Obj);
+        Person_Account__c person_account_Obj = new Person_Account__c(Account_Number__c = account_details_Obj.id, PersonID__c = pact4.id, Relationship__c = null, TypeTranslate__c = '0000/Primary');
+    		//Insert person_account_Obj;
+         listperacct.add(person_account_Obj);
+         
+         
+         
          opportunity opp = new Opportunity();
         opp.Accountid = pact4.id;
         opp.Name = 'Name';
@@ -233,7 +252,8 @@ private class ManualMemberMergeProcessTest {
         opp.Is_Converted__c = true;
         opp.Opportunity_Source__c = 'Word of mouth';
          
-        insert opp;
+      //  insert opp;
+       listopp.add(opp);
         
         opportunity opp1 = new Opportunity();
         opp1.Accountid = pact.id;
@@ -242,68 +262,32 @@ private class ManualMemberMergeProcessTest {
         opp1.CloseDate = system.today();
         opp1.Is_Converted__c = true;
         opp1.Opportunity_Source__c = 'Word of mouth';
-         
-        insert opp1;
+         listopp.add(opp1);
+      //  insert opp1;
         
         Case cas = new Case();
         cas.Accountid = pact4.id;
         cas.Brand__c ='Chevron';
-        insert cas;
+        //insert cas;
+        listcase.add(cas);
         Case cas1 = new Case();
         cas1.Accountid = pact.id;
         cas1.Brand__c ='Chevron';
-        insert cas1;
-        
-        Needs_Assesment__c na = new Needs_Assesment__c();
-        na.Member__c = pact4.id;
-        insert na;
-        
-        Needs_Assesment__c na1 = new Needs_Assesment__c();
-        na1.Member__c = pact.id;
-        insert na1;
-        
-        
-        NA_Other_Existing_Loans__c nao = new NA_Other_Existing_Loans__c();
-        nao.Needs_Assessment__c = na.id;
-        insert nao;
-        
-         NA_Other_Existing_Loans__c nao1 = new NA_Other_Existing_Loans__c();
-        nao1.Needs_Assessment__c = na1.id;
-        insert nao1;
-        
-        NA_Membership_Referral_Questions__c nq = new NA_Membership_Referral_Questions__c();
-        nq.Needs_Assessment__c = na.id;
-        insert nq;
-        
-         NA_Membership_Referral_Questions__c nq1 = new NA_Membership_Referral_Questions__c();
-        nq1.Needs_Assessment__c = na1.id;
-        insert nq1;
-        
-        NA_Deposit__c dep = new NA_Deposit__c();
-        dep.Needs_Assessment__c = na.id;
-        insert dep;
-        
-        NA_Deposit__c dep1 = new NA_Deposit__c();
-        dep1.Needs_Assessment__c = na1.id;
-        insert dep1;
-        
-        
-    		
-        Task t = new Task();
-        t.Whatid = pact4.id;
-        insert t;
-        
-        Event e = new Event();
-        e.Whatid = pact4.id;
-        e.DurationInMinutes = 100;
-        e.ActivityDateTime = system.today();
-        insert e;
+        //insert cas1;
+         listcase.add(cas1);
       
+      	
+      	
         Test.startTest();
-         Account_Details__c account_details_Obj = new Account_Details__c(Onboarded__c = false, RecType__c = 'ACCT', TypeTranslate__c = '2-TRUST');
-    			Insert account_details_Obj;
-        Person_Account__c person_account_Obj = new Person_Account__c(Account_Number__c = account_details_Obj.id, PersonID__c = pact4.id, Relationship__c = null, TypeTranslate__c = '0000/Primary');
-    		Insert person_account_Obj;
+	       	 insert listact;
+	         insert listaccdetail;
+	         insert listperacct;
+	         insert listopp;
+	         insert listcase;
+         	
+    		
+	      
+         
         Set<ID> pactid = new Set<Id>();
         pactid.add(pact.id);
         pactid.add(pact1.id);
@@ -331,17 +315,22 @@ private class ManualMemberMergeProcessTest {
       
     
     static testMethod void MergeMemberAccountTest1() {
-       
-       
+        
+        List<Account> listact1 = new List<Account>();
+        List<Account_Details__c> listaccdetail = new List<Account_Details__c>();      
+        List<Person_Account__c> listperacct = new List<Person_Account__c>();
+        List<Opportunity> listopp = new List<Opportunity>();
+        List<Case> listcase = new List <Case>();
+        
         MemberConversionSetting__c mcs = new MemberConversionSetting__c();
       
-      mcs.Automation__c = 10;
-      mcs.Manual__c = 10;
-       mcs.Unmerge__c = 10;
-      mcs.Name = 'PrimaryRecord';
-      insert mcs;
+	      mcs.Automation__c = 10;
+	      mcs.Manual__c = 10;
+	      mcs.Unmerge__c = 10;
+	      mcs.Name = 'PrimaryRecord';
+	      insert mcs;
       
-       RecordType rec = [Select Name, Id From RecordType where sObjectType='Account' and isActive=true and Name='Person Account'];
+        RecordType rec = [Select Name, Id From RecordType where sObjectType='Account' and isActive=true and Name='Person Account'];
        
         RecordType rec1 = [Select Name, Id From RecordType where sObjectType='Account' and isActive=true and Name='Pre Member'];
        
@@ -352,7 +341,8 @@ private class ManualMemberMergeProcessTest {
         act.RecordtypeId = rec.Id;
         act.Residential_Street__pc = '11';
         act.BIRTH_DATE__pc = system.Today().addyears(-20);
-        insert act;
+      
+        listact1.add(act);
         
         Account pact = new Account();
         pact.FirstName = 'Test';
@@ -382,8 +372,8 @@ private class ManualMemberMergeProcessTest {
 		pact.NA_LESB_Complete__c= true;
 		pact.NA_LESF_Complete__c= true;
 		pact.NA_LEWS_Complete__c= true;
-        insert pact;
         
+        listact1.add(pact);
         
         Account act1 = new Account();
         act1.FirstName = 'Test1';
@@ -395,8 +385,8 @@ private class ManualMemberMergeProcessTest {
         act1.Home_Phone__pc ='010101';
         act1.Work_Phone__pc ='787878';
         act1.BIRTH_DATE__pc = system.Today().addyears(-20);
-        insert act1;
-        
+       
+        listact1.add(act1);
        
         Account pact1 = new Account();
         pact1.FirstName = 'Test1';
@@ -405,9 +395,8 @@ private class ManualMemberMergeProcessTest {
         pact1.RecordtypeId = rec1.Id;
         pact1.Residential_Street__pc ='11';
         pact1.BIRTH_DATE__pc = system.Today().addyears(-20);
-        insert pact1;
-        
-         
+      
+        listact1.add(pact1);
         
         Account act2 = new Account();
         act2.FirstName = 'Test2';
@@ -441,8 +430,8 @@ private class ManualMemberMergeProcessTest {
 		act2.NA_LESB_Complete__c= true;
 		act2.NA_LESF_Complete__c= true;
 		act2.NA_LEWS_Complete__c= true;
-        insert act2;
-        
+       
+        listact1.add(act2);
        
         
         Account pact2 = new Account();
@@ -453,8 +442,8 @@ private class ManualMemberMergeProcessTest {
         pact2.Residential_Street__pc ='11';
         pact2.BIRTH_DATE__pc = system.Today().addyears(-20);
         pact2.Residential_Zipocde__pc ='112233';
-        insert pact2;
-        
+       
+         listact1.add(pact2);
         Account pact3 = new Account();
         pact3.FirstName = 'Test3';
         pact3.LastName = 'Test3';
@@ -463,8 +452,9 @@ private class ManualMemberMergeProcessTest {
         pact3.Residential_Street__pc ='33';
         pact3.BIRTH_DATE__pc = system.Today().addyears(-20);
         pact3.Residential_Zipocde__pc ='112233';
-        insert pact3;
-        
+      
+         listact1.add(pact3);
+         
         Account pact4 = new Account();
         pact4.FirstName = 'Test3';
         pact4.LastName = 'Test3';
@@ -497,8 +487,9 @@ private class ManualMemberMergeProcessTest {
 		pact4.NA_LESB_Complete__c= true;
 		pact4.NA_LESF_Complete__c= true;
 		pact4.NA_LEWS_Complete__c= true;
-        insert pact4;
-        
+    
+        listact1.add(pact4);
+         
         Account pact5 = new Account();
         pact5.FirstName = 'Test3';
         pact5.LastName = 'Test3';
@@ -521,17 +512,24 @@ private class ManualMemberMergeProcessTest {
 		pact5.NA_Opt_Out_Updated__c= system.Today();
 		pact5.NA_LEAV_Complete__c= true;
 	
-        insert pact5;
+        listact1.add(pact5);
         
-         opportunity opp = new Opportunity();
+        Account_Details__c account_details_Obj1 = new Account_Details__c(Onboarded__c = false, RecType__c = 'ACCT', TypeTranslate__c = '2-TRUST');
+    	listaccdetail.add(account_details_Obj1);
+    	
+        Person_Account__c person_account_Obj1 = new Person_Account__c(Account_Number__c = account_details_Obj1.id, PersonID__c = pact.id, Relationship__c = null, TypeTranslate__c = '0000/Primary');
+    	listperacct.add(person_account_Obj1);
+       
+       
+        opportunity opp = new Opportunity();
         opp.Accountid = pact4.id;
         opp.Name = 'Name';
         opp.StageName = 'Closed Won';
         opp.CloseDate = system.today();
         opp.Is_Converted__c = true;
         opp.Opportunity_Source__c = 'Word of mouth';
-         
-        insert opp;
+        
+        listopp.add(opp);
         
         opportunity opp1 = new Opportunity();
         opp1.Accountid = pact.id;
@@ -540,83 +538,32 @@ private class ManualMemberMergeProcessTest {
         opp1.CloseDate = system.today();
         opp1.Is_Converted__c = true;
         opp1.Opportunity_Source__c = 'Word of mouth';
-         
-        insert opp1;
+        
+        listopp.add(opp1);
         
         Case cas = new Case();
         cas.Accountid = pact4.id;
         cas.Brand__c ='Chevron';
-        insert cas;
+       
+        listcase.add(cas);
+        
         Case cas1 = new Case();
         cas1.Accountid = pact.id;
         cas1.Brand__c ='Chevron';
-        insert cas1;
-        
-        Needs_Assesment__c na = new Needs_Assesment__c();
-        na.Member__c = pact4.id;
-        insert na;
-        
-        Needs_Assesment__c na1 = new Needs_Assesment__c();
-        na1.Member__c = pact.id;
-        insert na1;
-        
-        
-        NA_Other_Existing_Loans__c nao = new NA_Other_Existing_Loans__c();
-        nao.Needs_Assessment__c = na.id;
-        insert nao;
-        
-         NA_Other_Existing_Loans__c nao1 = new NA_Other_Existing_Loans__c();
-        nao1.Needs_Assessment__c = na1.id;
-        insert nao1;
-        
-        NA_Membership_Referral_Questions__c nq = new NA_Membership_Referral_Questions__c();
-        nq.Needs_Assessment__c = na.id;
-        insert nq;
-        
-         NA_Membership_Referral_Questions__c nq1 = new NA_Membership_Referral_Questions__c();
-        nq1.Needs_Assessment__c = na1.id;
-        insert nq1;
-        
-        NA_Deposit__c dep = new NA_Deposit__c();
-        dep.Needs_Assessment__c = na.id;
-        insert dep;
-        
-        NA_Deposit__c dep1 = new NA_Deposit__c();
-        dep1.Needs_Assessment__c = na1.id;
-        insert dep1;
-        
        
-    		
-        Task t = new Task();
-        t.Whatid = pact4.id;
-        insert t;
-        
-        Event e = new Event();
-        e.Whatid = pact4.id;
-        e.DurationInMinutes = 100;
-        e.ActivityDateTime = system.today();
-        insert e;
-        
+        listcase.add(cas1);
+   
         
          Test.startTest();
-          
-        	 /* Account_Details__c account_details_Obj = new Account_Details__c(Onboarded__c = false, RecType__c = 'ACCT', TypeTranslate__c = '2-TRUST');
-    			Insert account_details_Obj;
-        Person_Account__c person_account_Obj = new Person_Account__c(Account_Number__c = account_details_Obj.id, PersonID__c = pact4.id, Relationship__c = null, TypeTranslate__c = '0000/Primary');
-    		Insert person_account_Obj;
-        	ManualMemberMergeProcess.MergeMemberAccount(act2.id , pact4.id);*/
-       
-        	Account_Details__c account_details_Obj1 = new Account_Details__c(Onboarded__c = false, RecType__c = 'ACCT', TypeTranslate__c = '2-TRUST');
-    			Insert account_details_Obj1;
-        	Person_Account__c person_account_Obj1 = new Person_Account__c(Account_Number__c = account_details_Obj1.id, PersonID__c = pact.id, Relationship__c = null, TypeTranslate__c = '0000/Primary');
-    		Insert person_account_Obj1;
+            insert listact1;
+       		insert listaccdetail;
+	        insert listperacct;
+	        insert listopp;
+	        insert listcase;
+        	
         	ManualMemberMergeProcess.MergeMemberAccount(act.id , pact.id);
-        	 UnmergeMemberProcess.UnMergeMemberAccount(act.id);
+        	UnmergeMemberProcess.UnMergeMemberAccount(act.id);
        
-        
-        
-        
-
          Test.stopTest();
         
          
@@ -625,13 +572,17 @@ private class ManualMemberMergeProcessTest {
     
     
     static testMethod void MergeMemberAccountTestPhone() {
-    
-		MemberConversionSetting__c mcs = new MemberConversionSetting__c();
-  
-	  mcs.Automation__c = 10;
-	  mcs.Manual__c = 10;
-	  mcs.Name = 'PrimaryRecord';
-	  insert mcs;
+     	 List<Account> listact = new List<Account>();
+		 List<Account_Details__c> listaccdetail = new List<Account_Details__c>();      
+         List<Person_Account__c> listperacct = new List<Person_Account__c>();
+         List<Opportunity> listopp = new List<Opportunity>();
+         List<Case> listcase = new List <Case>();
+		 
+		 MemberConversionSetting__c mcs = new MemberConversionSetting__c();
+     	  mcs.Automation__c = 10;
+		  mcs.Manual__c = 10;
+		  mcs.Name = 'PrimaryRecord';
+	      insert mcs;
 			  
 	  	RecordType rec = [Select Name, Id From RecordType where sObjectType='Account' and isActive=true and Name='Person Account'];
 	   
@@ -644,7 +595,8 @@ private class ManualMemberMergeProcessTest {
 	    act.RecordtypeId = rec.Id;
 	    act.Residential_Street__pc = '11';
 	    act.BIRTH_DATE__pc = system.Today().addyears(-20);
-	    insert act;
+	 
+        listact.add(act);
         
         Account pact = new Account();
         pact.FirstName = 'Test';
@@ -674,9 +626,9 @@ private class ManualMemberMergeProcessTest {
 		pact.NA_LESB_Complete__c= true;
 		pact.NA_LESF_Complete__c= true;
 		pact.NA_LEWS_Complete__c= true;
-        insert pact;
-        
-        
+      
+         listact.add(pact);
+       
         Account act1 = new Account();
         act1.FirstName = 'Test1';
         act1.LastName = 'Test11';
@@ -687,10 +639,9 @@ private class ManualMemberMergeProcessTest {
         act1.Home_Phone__pc ='010101';
         act1.Work_Phone__pc ='787878';
         act1.BIRTH_DATE__pc = system.Today().addyears(-20);
-        insert act1;
-        
+  
+         listact.add(act1);
          
-        
         Account act2 = new Account();
         act2.FirstName = 'Test2';
         act2.LastName = 'Testl2';
@@ -723,9 +674,9 @@ private class ManualMemberMergeProcessTest {
 		act2.NA_LESB_Complete__c= true;
 		act2.NA_LESF_Complete__c= true;
 		act2.NA_LEWS_Complete__c= true;
-        insert act2;
-        
        
+        listact.add(act2);
+        
         Account pact4 = new Account();
         pact4.FirstName = 'Test3';
         pact4.LastName = 'Test3';
@@ -758,7 +709,8 @@ private class ManualMemberMergeProcessTest {
 		pact4.NA_LESB_Complete__c= true;
 		pact4.NA_LESF_Complete__c= true;
 		pact4.NA_LEWS_Complete__c= true;
-        insert pact4;
+      
+        listact.add(pact4);
         
         Account pact5 = new Account();
         pact5.FirstName = 'Test3';
@@ -781,8 +733,23 @@ private class ManualMemberMergeProcessTest {
 		pact5.NA_Opt_Out_Date__c= system.Today();
 		pact5.NA_Opt_Out_Updated__c= system.Today();
 		pact5.NA_LEAV_Complete__c= true;
-	
-        insert pact5;
+		listact.add(pact5);       
+        
+      	Account_Details__c account_details_Obj = new Account_Details__c(Onboarded__c = false, RecType__c = 'ACCT', TypeTranslate__c = 'TRUST',Created_At_Branch__c=304);
+    	
+    			listaccdetail.add(account_details_Obj);
+    			
+        Person_Account__c person_account_Obj = new Person_Account__c(Account_Number__c = account_details_Obj.id, PersonID__c = act.id, Relationship__c = null, TypeTranslate__c = '0000/PRIMARY');
+    	
+    		listperacct.add(person_account_Obj);
+    	
+        Account_Details__c account_details_Obj1 = new Account_Details__c(Onboarded__c = false, RecType__c = 'ACCT', TypeTranslate__c = '2-TRUST');
+        
+    			listaccdetail.add(account_details_Obj1);
+    			
+        Person_Account__c person_account_Obj1 = new Person_Account__c(Account_Number__c = account_details_Obj1.id, PersonID__c = pact.id, Relationship__c = null, TypeTranslate__c = '0000/Primary');
+        
+    		listperacct.add(person_account_Obj1);
         
         opportunity opp = new Opportunity();
         opp.Accountid = pact4.id;
@@ -792,7 +759,7 @@ private class ManualMemberMergeProcessTest {
         opp.Is_Converted__c = true;
         opp.Opportunity_Source__c = 'Word of mouth';
          
-        insert opp;
+        listopp.add(opp);
         
         opportunity opp1 = new Opportunity();
         opp1.Accountid = pact.id;
@@ -802,55 +769,40 @@ private class ManualMemberMergeProcessTest {
         opp1.Is_Converted__c = true;
         opp1.Opportunity_Source__c = 'Word of mouth';
          
-        insert opp1;
+        listopp.add(opp1);
         
-        Needs_Assesment__c na = new Needs_Assesment__c();
-        na.Member__c = pact.id;
-        insert na;
+        
        
        
       
         
-        Account_Details__c account_details_Obj = new Account_Details__c(Onboarded__c = false, RecType__c = 'ACCT', TypeTranslate__c = 'TRUST',Created_At_Branch__c=304);
-    			Insert account_details_Obj;
-        Person_Account__c person_account_Obj = new Person_Account__c(Account_Number__c = account_details_Obj.id, PersonID__c = act.id, Relationship__c = null, TypeTranslate__c = '0000/PRIMARY');
-    		Insert person_account_Obj;
-    		
-        Task t = new Task();
-        t.Whatid = pact4.id;
-        insert t;
-        
-        Event e = new Event();
-        e.Whatid = pact4.id;
-        e.DurationInMinutes = 100;
-        e.ActivityDateTime = system.today();
-        insert e;
         
         
          
         Test.startTest();
+        	  insert listact;
+        	  insert listaccdetail;
+        	  insert listperacct;
+        	  insert listopp;
+        	  
+        	   
         	ManualMemberMergeProcess.MergeMemberAccount(act2.id , pact4.id);
-        	Account_Details__c account_details_Obj1 = new Account_Details__c(Onboarded__c = false, RecType__c = 'ACCT', TypeTranslate__c = '2-TRUST');
-    			Insert account_details_Obj1;
-        	Person_Account__c person_account_Obj1 = new Person_Account__c(Account_Number__c = account_details_Obj1.id, PersonID__c = pact.id, Relationship__c = null, TypeTranslate__c = '0000/Primary');
-    		Insert person_account_Obj1;
-        	ManualMemberMergeProcess.MergeMemberAccount(act.id , pact.id);
-        Test.stopTest();
-        
-        
-        
-        Set<ID> pactid = new Set<Id>();
-        pactid.add(pact.id);
-        pactid.add(pact4.id);
-        pactid.add(pact5.id);
-         List<Account> PreMemberAccount = [SELECT Id, PersonEmail, Email_raw__c, Alt_Email_Raw__c, FirstName,MiddleName,LastName, Name, Salutation ,Suffix,
-						Phone_Check__c, Mobile_Phone__pc, Residential_Street__pc ,RecordType.Name,Residential_City__pc,Residential_State__pc, Residential_Zipocde__pc,Residential_Extra_Address__pc,createddate
-    		 				 FROM Account where RecordType.Name = 'Pre Member' and IsConverted__c=false and id IN: pactid];
-        
-        ManualMemberMergeProcess.GetMemberAccountDetail(act1.id);
-        ManualMemberMergeProcess.GetMemberAccountDetail(act2.id);
-        ManualMemberMergeProcess.GetMemberList('My Team Members');
-        
+           	ManualMemberMergeProcess.MergeMemberAccount(act.id , pact.id);
+       
+	        Set<ID> pactid = new Set<Id>();
+	        pactid.add(pact.id);
+	        pactid.add(pact4.id);
+	        pactid.add(pact5.id);
+	         List<Account> PreMemberAccount = [SELECT Id, PersonEmail, Email_raw__c, Alt_Email_Raw__c, FirstName,MiddleName,LastName, Name, Salutation ,Suffix,
+							Phone_Check__c, Mobile_Phone__pc, Residential_Street__pc ,RecordType.Name,Residential_City__pc,Residential_State__pc, Residential_Zipocde__pc,Residential_Extra_Address__pc,createddate
+	    		 				 FROM Account where RecordType.Name = 'Pre Member' and IsConverted__c=false and id IN: pactid];
+	       
+       		 
+	        ManualMemberMergeProcess.GetMemberAccountDetail(act1.id);
+	        ManualMemberMergeProcess.GetMemberAccountDetail(act2.id);
+	        ManualMemberMergeProcess.GetMemberList('My Team Members');
+	         ManualMemberMergeProcess.GetMemberList('All Members'); 
+         Test.stopTest();
        
         
          

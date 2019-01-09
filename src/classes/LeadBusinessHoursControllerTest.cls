@@ -7,6 +7,7 @@ private class LeadBusinessHoursControllerTest
 	led.lastname= 'test';
 	led.status= 'open';
 	led.Product_Type__c= 'cards';
+    led.Product_Subtype__c = 'Credit Cards';   
 	led.Brand__c= 'CFCU';
 	led.Lead_Type__c='Business';
 	insert led;

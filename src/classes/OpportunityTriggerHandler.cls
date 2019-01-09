@@ -349,7 +349,7 @@ public class OpportunityTriggerHandler {
 	
 	public void OnBeforeUpdate(Opportunity[] Opportunities, Map<ID, Opportunity> OpportunityNewMap, Map<ID, Opportunity> OpportunityOldMap)
 	{
- system.debug('----------------------------Limit'+Limits.getQueries());
+ 		system.debug('----------------------------Limit'+Limits.getQueries());
 		string uid= UserInfo.getUserId();
 		    User usr = [Select id, name, alias from User where id=:uid];
 		 /*   List<Episys_User__c> eusr = [SELECT id, alias__c, Assigned_Branch__c,Episys_ID__c, Branch_Name__c,Default__c from Episys_User__c 
@@ -377,7 +377,7 @@ public class OpportunityTriggerHandler {
 	      	
 		for(Opportunity opp: Opportunities)
 	    {
-	    	opp.Branch_of_Lead_creator__c =   '';
+	    	// opp.Branch_of_Lead_creator__c =   ''; // This is commented out by Deepika for PMI2-69 fix
 	    	for(Episys_User__c episysid : euser)
 	    	{
 	    		if(episysid.Episys_ID__c == opp.Episys_User_ID__c)
@@ -389,22 +389,33 @@ public class OpportunityTriggerHandler {
 	    	
 	    	}
 	    }
-	      	
-	      /*	 if(euser.size() > 0){
-			              opp.Branch_of_Lead_creator__c =   euser[0].Branch_Name__c;
-			              //opp.Member_Branch__c =   euser[0].Branch_Name__c;
-			              
-			          }	
-			  else
-			  {
-			  	opp.Branch_of_Lead_creator__c =   '';
-			  	//opp.Member_Branch__c =   '';
-			  }
-		  //  if(opp.Mortgage_Loan_Officer__c == null && opp.Episys_User_ID__c != null)
-		  	if(opp.Episys_User_ID__c != null)
+	      
+	      
+	    /* Code for CRM-1384 Begin*/
+	    
+	    Map<Id, Task> taskMap = new Map<Id, Task>();
+	    List<Task> taskList = [SELECT Id, WhatId FROM Task WHERE IsClosed=false AND WhatId IN :OpportunityNewMap.keySet()]; 
+	    System.debug('tskList###'+taskList);
+	     for(Task t : taskList)
+         {
+            taskMap.put(t.WhatId, t);
+         } 
+	      System.debug('taskmap###'+taskMap);
+	      for(Opportunity oppt: Opportunities)
 		    {
-					Episys_User_ID.Add(opp.Episys_User_ID__c);
-		    }*/
+		    	if(oppt.StageName == 'Closed Won' || oppt.StageName == 'Closed Lost')
+		    	{
+		    		if(taskMap.containsKey(oppt.Id))
+                    {
+                		oppt.addError('All tasks associated with an opportunity must be close/completed before an opportunity closed.');
+		    		}
+                }
+		    	
+		    } 
+	     /* Code for CRM-1384 Ends here*/ 	
+	     
+	    
+
 	                
         
         List<Group> listQueue = [select id,Name,Email from Group where Type = 'Queue' and (Email like '%lead.com' or Email like '%opportunity.com')];

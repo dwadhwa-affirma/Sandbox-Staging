@@ -804,6 +804,7 @@ global class ConvertPreMemberToMemberBatchClass implements Database.Batchable<sO
 				    						   if(NAForMember.size() == 0)
 				    						     {
 				    								Id naid ;
+                                                     Id preNAID = na.id;
 								    				na.id = null;
 								    				na.Member__c = memberid;
 								    				insert na;
@@ -813,12 +814,15 @@ global class ConvertPreMemberToMemberBatchClass implements Database.Batchable<sO
 		
 									    				if(otherExistingLoans.size()> 0)
 									    				{
+                                                            InsertotherExistingLoans.clear();
 									    					for(NA_Other_Existing_Loans__c exloan :otherExistingLoans )	
 									    					{
-									    						exloan.id = null;
-									    						exloan.Needs_Assessment__c = naid;
-									    						InsertotherExistingLoans.add(exloan);
-									    						
+                                                                if(exloan.Needs_Assessment__c == preNAID)
+                                                                {
+									    							exloan.id = null;
+									    							exloan.Needs_Assessment__c = naid;
+									    							InsertotherExistingLoans.add(exloan);
+                                                                }
 									    					}
 									    					
 									    					insert InsertotherExistingLoans;
@@ -826,11 +830,16 @@ global class ConvertPreMemberToMemberBatchClass implements Database.Batchable<sO
 								    				
 									    				if(loans.size() > 0)
 									    				{
+                                                            Insertloans.clear();
 									    					for(NA_Membership_Referral_Questions__c refques :loans )	
 									    					{
-									    						refques.id = null;
-									    						refques.Needs_Assessment__c = naid;
-									    						Insertloans.Add(refques);
+                                                                
+                                                                if(refques.Needs_Assessment__c == preNAID)
+                                                                {
+                                                                    refques.id = null;
+                                                                    refques.Needs_Assessment__c = naid;
+                                                                    Insertloans.Add(refques);
+                                                                }
 									    					}
 									    					
 									    					insert Insertloans;
@@ -838,11 +847,15 @@ global class ConvertPreMemberToMemberBatchClass implements Database.Batchable<sO
 								    				
 									    				if(deposits.size() > 0)
 									    				{
+                                                            Insertdeposits.clear();
 									    					for(NA_Deposit__c dep :deposits )	
 									    					{
-									    						dep.id = null;
-									    						dep.Needs_Assessment__c = naid;
-									    						Insertdeposits.Add(dep);
+                                                                if(dep.Needs_Assessment__c == preNAID)
+                                                                {
+                                                                    dep.id = null;
+                                                                    dep.Needs_Assessment__c = naid;
+                                                                    Insertdeposits.Add(dep);
+                                                                }
 									    					}
 									    					
 									    					insert Insertdeposits;

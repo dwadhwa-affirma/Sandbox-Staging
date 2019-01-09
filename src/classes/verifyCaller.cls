@@ -45,9 +45,24 @@ public class verifyCaller{
             phoneNumber = phoneNumber.remove(' ');
             phoneNumber = phoneNumber.remove('-');
         }
-        phoneNumber1 = phoneNumber.substring(0,3);
-        phoneNumber2 = phoneNumber.substring(3,6);
-        phoneNumber3 = phoneNumber.substring(6,10);
+        if(phoneNumber.Length()>=3){
+        	phoneNumber1 = phoneNumber.substring(0,3);
+        }
+        else{
+        	phoneNumber1 = '';
+        }
+        if(phoneNumber.Length()>=6){
+        	phoneNumber2 = phoneNumber.substring(3,6);
+        }
+        else{
+        	phoneNumber2 = '';
+        }
+        if(phoneNumber.Length()>=10){
+        	phoneNumber3 = phoneNumber.substring(6,10);
+        }
+        else{
+        	phoneNumber3 = '';
+        }  
         
         phoneNumber = '('+phoneNumber1+')'+' '+phoneNumber2+'-'+phoneNumber3;
         system.debug('phoneNumber....'+phoneNumber);
@@ -64,9 +79,24 @@ public class verifyCaller{
             phoneNumber = phoneNumber.remove(' ');
             phoneNumber = phoneNumber.remove('-');
         }
-        phoneNumber1 = phoneNumber.substring(0,3);
-        phoneNumber2 = phoneNumber.substring(3,6);
-        phoneNumber3 = phoneNumber.substring(6,10);
+        if(phoneNumber.Length()>=3){
+        	phoneNumber1 = phoneNumber.substring(0,3);
+        }
+        else{
+        	phoneNumber1 = '';
+        }
+        if(phoneNumber.Length()>=6){
+        	phoneNumber2 = phoneNumber.substring(3,6);
+        }
+        else{
+        	phoneNumber2 = '';
+        }
+        if(phoneNumber.Length()>=10){
+        	phoneNumber3 = phoneNumber.substring(6,10);
+        }
+        else{
+        	phoneNumber3 = '';
+        }  
         
         phoneNumber = phoneNumber1+'-'+phoneNumber2+'-'+phoneNumber3;
         system.debug('phoneNumber....'+phoneNumber);

@@ -28,7 +28,7 @@ public class CreateCaseMemberPageController {
        
         list<Person_Account__c> paList = new list<Person_Account__c>();
             paList = [SELECT Id,
-                             Account_Number__c, Account_Number__r.RecType__c, Account_Number__r.Name FROM Person_Account__c WHERE PersonID__c =:accoutid];
+                             Account_Number__c, Account_Number__r.RecType__c, Account_Number__r.Name, TypeTranslate__c  FROM Person_Account__c WHERE PersonID__c =:accoutid and (NOT TypeTranslate__c like '%Beneficiary%')];
                              
 		 set<String> accountNumberSet = new set<String>();
         set<Id> accIdset = new set<Id>();
