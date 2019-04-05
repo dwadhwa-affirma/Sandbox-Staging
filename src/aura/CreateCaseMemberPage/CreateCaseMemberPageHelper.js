@@ -82,11 +82,57 @@
             if(selItem){
                component.set("v.selectedAcctNumber",selItem);
                component.set('v.showDorpDown', 'false');
+               var a= component.get('v.accList');
+               for(var i=0;i<a.length;i++){
+            	   if(a[i].Id == selItem.Id){
+            		   a[i].isShow=false;
+            	   }
+               }
+               component.set('v.accList', a);
                //component.set("v.last_ServerResult",serverResult);
             } 
            // component.set("v.accList",null); 
         } 
 	}, 
+	
+	itemSelectedAdditional : function(component, event, helper) {
+        var target = event.target;   
+        var SelIndexid = helper.getIndexFrmParent(target,helper,"data-class");  
+        var SelIndex = helper.getIndexFrmParent(target,helper,"data-selectedIndexId");  
+        if(SelIndex){
+            var serverResult = component.get("v.accList");
+            var selItem = serverResult[SelIndex];
+             var acc = component.get("v.AccountObjectlist");
+          
+            if(selItem){
+            	  for (var len = 0; len < acc.length; len++) { 
+            		   if(acc[len].Id== null && len == SelIndexid )
+            		   {
+            			   acc[len] = selItem;
+            			   break;
+            		   }
+            		   
+            		  
+            	  }
+            	 
+               component.set("v.AccountObjectlist",acc);
+                var a= component.get('v.accList');
+               for(var i=0;i<a.length;i++){
+            	   if(a[i].Id == selItem.Id){
+            		   a[i].isShow=false;
+            	   }
+               }
+               component.set('v.accList', a);
+              
+              }
+           
+              document.getElementById('MemberAccountPicker' + SelIndexid).style = '';  
+           // component.set("v.accList",null); 
+        }
+         
+	}, 
+	
+	
 	itemMemberSelected  : function(component, event, helper) {
         var target = event.target;   
         var SelIndex = helper.getIndexFrmParent(target,helper,"data-selectedindex");  
@@ -100,8 +146,45 @@
         } 
 	}, 
 	clearSelection: function(component, event, helper){
-        component.set("v.selectedAcctNumber",null);
+       
+         var acc = component.get("v.selectedAcctNumber");
+         var a= component.get('v.accList');
+               for(var i=0;i<a.length;i++){
+            	   if(a[i].Id == acc.Id){
+            		   a[i].isShow=true;
+            	   }
+               }
+               component.set('v.accList', a);
+          component.set("v.selectedAcctNumber",null);
         //component.set("v.accList",null);
+	},
+	
+	clearSelectionAdditional: function(component, event, helper){
+      
+       var acc = component.get("v.AccountObjectlist");
+        var target = event.target;   
+     // var accountval =  target.parentNode.parentNode.parentNode.parentNode.firstElementChild.title;
+       //var serverResult = component.get("v.accList");
+       
+        var SelIndex = helper.getIndexFrmParent(target,helper,"data-account");  
+        if(SelIndex){
+            var serverResult = component.get("v.accList");
+          //  var selItem = serverResult[SelIndex];
+            var selItem = acc[SelIndex];
+            	acc[SelIndex]= [{'Account_Details__c': '','Id':null}];
+            	 var a= component.get('v.accList');
+               for(var i=0;i<a.length;i++){
+            	   if(a[i].Id == selItem.Id){
+            		   a[i].isShow=true;
+            	   }
+               }
+               component.set('v.accList', a);
+       
+            }
+            
+             component.set("v.AccountObjectlist",acc);
+            
+            
 	},
 	clearMemberSelection: function(component, event, helper){
         component.set("v.selectedMemberNumber",null);
@@ -123,9 +206,18 @@
 		var selectedActNumber = component.get("v.selectedAcctNumber");
 		var selectedMemberNumber = component.get("v.selectedMemberNumber");
 		var memObject = component.get("v.memObject");
+		var AccountObjectlist = component.get("v.AccountObjectlist");
+		for (var len = 0; len < AccountObjectlist.length; len++)
+		 { 
+            		   if(AccountObjectlist[len].Id== null || AccountObjectlist[len].Id =="" )
+            		   {
+            			   AccountObjectlist.splice(len,1);
+            			   len= len-1;            			  
+            		   }
+        }
 		var action;
 		var parameters;
-	   if(selectedActNumber == undefined)
+		if(selectedActNumber == undefined)
 	   {
 		   if(selectedMemberNumber != undefined)
 		   {
@@ -141,7 +233,7 @@
 	   else
 	   {
 		   action = component.get("c.saveData");
-		   parameters = {"caseObject": caseModel, "accObject" : actModel, "selectedAcctNumber" : selectedActNumber };		   
+		   parameters = {"caseObject": caseModel, "accObject" : actModel, "selectedAcctNumber" : selectedActNumber,"AccountObjectlist":AccountObjectlist};		   
 	   }
 	   action.setParams(parameters);
 	   action.setCallback(this, function(response){
@@ -177,13 +269,25 @@
                     }
                     else
                     {
-                    	$A.get('e.force:closeQuickAction').fire();
-                    	    var navEvt = $A.get("e.force:navigateToSObject");
-						    navEvt.setParams({
-						      "recordId": result.CaseId,
-						      "slideDevName": "related"
-						    });
-						    navEvt.fire();
+                    	var varIsSaveandNew;
+                    		varIsSaveandNew = component.get('v.IsSaveandNewPressed');
+                    		if(!varIsSaveandNew)
+                    			{
+			                    	$A.get('e.force:closeQuickAction').fire();
+			                    	    var navEvt = $A.get("e.force:navigateToSObject");
+									    navEvt.setParams({
+									      "recordId": result.CaseId,
+									      "slideDevName": "related"
+									    });
+									    navEvt.fire();
+                    			}
+                    			else if(varIsSaveandNew)
+                    			{
+                    				
+	                                helper.OpenCreateCase(component, event, helper);
+                    			
+                    			}
+                    			
                     }    
         		}
         		else
@@ -320,5 +424,146 @@
     	
     },
     
+     OpenCreateCase : function(component, event, helper)
+     { 
+    	 	  
+    	 	 component.set("v.caseObject.Future_Date__c", "");
+			if(component.get("v.selectedAcctNumber.Name")!=null && component.get("v.selectedAcctNumber.Name")!="" ){  		component.set("v.selectedAcctNumber",null);}
+	 		component.set("v.searchField","");
+	 		component.set("v.caseObject.CaseComments__c", "");
+	    	component.set("v.caseObject.LTK__c", "");
+	 		component.set("v.caseObject.Follow_up_Text__c","");
+	 	
+	 		component.set('v.caseObject.Status','Open');
+	 		component.set('v.caseObject.Ownership__c','Auto Assign'); 
+            component.set('v.selectedMemberNumber ',null);  
+            component.set('v.optionsList', null);
+            component.set('v.caseObject.Subject', "");
+            var scOptions = [{'Text': '--- None ---','Value': ''}];
+            component.set('v.scOptions', scOptions);
+            component.set('v.tcOptions', scOptions);
+            component.set('v.caseObject.Primary_Category__c', '--- None ---');
+            component.set('v.caseObject.Secondary_Category__c', '--- None ---');
+            component.set('v.caseObject.Tertiary_Category__c', '--- None ---');
+            
+            component.set('v.caseObject.Status','Open');
+            component.set('v.caseObject.Ownership__c','Auto Assign');
+            
+            component.set('v.isFileUpload',false);
+            component.set("v.IsSaveandNewPressed", false);
+            component.set("v.isFileUploadComponent", false);
+          
+            var acc =  component.get('v.AccountObjectlist');
+            var length =   component.get("v.accountCount");
+            acc.splice(0,parseInt(length));
+           
+            component.set('v.AccountObjectlist', acc);
+            component.set("v.accountCount",0);
+           if(document.getElementsByClassName('modal-maincontent')[0] != undefined){          
+        				document.getElementsByClassName('modal-maincontent')[0].style.minHeight = '518px';
+						document.getElementsByClassName('modal-maincontent')[0].style.height = null;
+						document.getElementsByClassName('modal-maincontent')[0].parentElement.parentElement.parentElement.parentElement.parentElement.parentElement.style.minHeight  = '641px';
+						document.getElementsByClassName('modal-maincontent')[0].parentElement.parentElement.parentElement.parentElement.parentElement.parentElement.style.height = null;
+				} 
+            
+	         
+                var a= component.get('v.accList');
+               for(var i=0;i<a.length;i++){            	  
+            		   a[i].isShow=true;            	   
+               }
+               component.set('v.accList', a);   
+               
+               var searchbox = document.getElementById('SearchFieldText');
+               searchbox.value= "";                   
+			   /*var action = component.get("c.getData");
+			   var recordid = component.get("v.recordId");
+			   var accountId = component.get("v.accountDetailId");
+			   if(recordid == undefined && accountId == "")
+				   component.set('v.isStandalone',true);
+			   var isStandAlone = component.get("v.isStandalone");
+			   var isAccountDetails = component.get("v.isAccountDetails");
+			   if(!isStandAlone && !isAccountDetails)
+			   {
+				   var parameters = {"accoutid": recordid };
+				   action.setParams(parameters);
+				   action.setCallback(this, function(response){
+				   		var status = response.getState();
+			        	if(component.isValid() && status === "SUCCESS")
+			        	{
+			        		var result =  response.getReturnValue();  	
+			        		component.set('v.accObject', result.accountDetails);
+			        		
+			        		component.set('v.accList', result.accList);
+								        		
+			        		component.set('v.loading',false);	
+			        		component.set("v.caseObject.Future_Date__c", "");
+			        		component.set("v.selectedAcctNumber",null);
+                            //if(component.get("v.accObject.Name")!=""){  		component.set("v.accObject.Name","");} 
+					 		component.set("v.searchField","");
+					 		component.set("v.caseObject.CaseComments__c", "");
+					    	component.set("v.caseObject.LTK__c", "");
+					    	component.set("v.isFileUpload",false);
+					 		component.set("v.caseObject.Follow_up_Text__c","");
+					 		component.set("v.caseObject.Subject", "");
+					 		component.set('v.caseObject.Status','Open');
+					 		component.set('v.caseObject.Ownership__c','Auto Assign');
+					 		 component.set('v.selectedMemberNumber ',null);  
+					 		 component.set('v.optionsList', null);
+			        		var scOptions = [{'Text': '--- None ---','Value': ''}];
+			        			component.set('v.scOptions', scOptions);
+			        			component.set('v.tcOptions', scOptions);
+			        			component.set('v.caseObject.Status','Open');
+			        			component.set('v.caseObject.Ownership__c','Auto Assign'); 		
+			        	}            	
+			       });
+				   $A.enqueueAction(action);
+    		
+    		
+			   }
+			    if(isAccountDetails)
+			       {    	   
+			    	   action = component.get("c.getAccountDetailsData");
+			    	   var parameters = {"accoutid": accountId };
+					   action.setParams(parameters);
+					   action.setCallback(this, function(response){
+					   		var status = response.getState();
+				        	if(component.isValid() && status === "SUCCESS")
+				        	{
+				        		var result =  response.getReturnValue();  	
+				        		component.set('v.memObject', result.accountDetails);
+				        		component.set('v.memberList', result.accList);
+												        		
+				        		component.set('v.loading',false);	 
+				        		component.set("v.caseObject.Future_Date__c", "");
+				        		component.set("v.selectedAcctNumber",null);
+						 		component.set("v.searchField","");
+						 		component.set("v.caseObject.CaseComments__c", "");
+						    	component.set("v.caseObject.LTK__c", "");
+						    	component.set("v.isFileUpload",false);
+						 		component.set("v.caseObject.Follow_up_Text__c","");
+                           
+						 		component.set("v.caseObject.Subject", "");   
+						 		component.set('v.caseObject.Status','Open');
+						 		component.set('v.caseObject.Ownership__c','Auto Assign');
+						 		 component.set('v.selectedMemberNumber ',null);
+						 		 component.set('v.optionsList', null); 
+						 		 var scOptions = [{'Text': '--- None ---','Value': ''}];
+						 		component.set('v.scOptions', scOptions);
+						 		component.set('v.tcOptions', scOptions);
+						 		component.set('v.caseObject.Status','Open');
+						 		component.set('v.caseObject.Ownership__c','Auto Assign');     		
+				        	}            	
+				       });
+					   $A.enqueueAction(action);
+					   }
+					   
+					   helper.fetchPicklistFields(component);		
+            
+            
+					
+			 		if(isStandAlone)
+			 			component.set('v.loading',false);*/
+    	 
+     },
     
 })

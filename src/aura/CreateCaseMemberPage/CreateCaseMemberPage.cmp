@@ -1,11 +1,15 @@
 <aura:component implements="flexipage:availableForAllPageTypes,force:appHostable,force:hasRecordId,force:lightningQuickActionWithoutHeader,lightning:actionOverride" controller="CreateCaseMemberPageController">
+    <aura:attribute name="AccountObjectlist" type="Account_Details__c[]" />
+   <aura:attribute name="accountCount" type="Integer"  />
+    <aura:attribute type="Aura.Component[]" name="inputboxPanel" />
     <aura:attribute name="isStandalone" type="boolean" description="Is StandAlone Case" default="false" />
     <aura:handler name="init" value="{!this}" action="{!c.doInit}" />
     <aura:attribute name="picklistFields" type="Map" default="{}" />
-
+	
+	
     <aura:attribute name="optionsList" type="string[]" />
-
-<aura:handler name="ClosePopup" event="c:SaveNeedAssessmentEvent" action="{!c.closePopupAfterUpload}" />
+	
+	<aura:handler name="ClosePopup" event="c:SaveNeedAssessmentEvent" action="{!c.closePopupAfterUpload}" />
 
 
     <aura:attribute name="SelectedCategory" type="string" />
@@ -34,6 +38,7 @@
     <aura:attribute name="isFileUploadComponent" type="boolean" access="public" default="false" />
     <aura:attribute name="caseId" type="String" access="public" />
     <aura:attribute name="loading" type="Boolean" default="false" />
+    <aura:attribute name="IsSaveandNewPressed" type="Boolean" default="false" />
 
     <aura:attribute name="fileRequired" type="boolean" default="false" />
     <aura:attribute name="fileExceedsSize" type="boolean" default="false" />
@@ -43,6 +48,7 @@
     <aura:attribute name="selectedMemberNumber" type="object" access="public" description="This attribute can be used by parent component to read selected member account number" />
     <aura:attribute name="memberList" type="Person_Account__c[]" />
     <aura:attribute name="memObject" type="Account_Details__c" default="{'sobjectType':'Account_Details__c'}" />
+    
     
     <style>
         /* Loading Style*/
@@ -58,17 +64,19 @@
         
         #createCasePopup {
             max-width: 80rem;
-            width: 70%;
+            max-height: 80rem;
+            
         }
         .slds-modal__container{
        max-width: 80rem !important;
        width:70% !important;
+     
 
 }
 .forceChatterBasePublisher :not(.PHONE) .cuf-content{padding:0px !important;}
 .slds-p-around_medium, .slds-p-around--medium{padding:0px !important;}
 .cCreateCaseMemberPage{padding:15px;}
-.modal-maincontent{min-height: 695px;max-height: 695px;overflow-y: auto; padding-bottom:0px;}
+.modal-maincontent.cCreateCaseMemberPage {min-height: 518px !important;max-height: 691px;overflow-y: auto; padding-bottom:0px;}
 .slds-medium-size_1-of-2, .slds-medium-size--1-of-2{padding:10px;}
         .loadingDiv .demo-only {
             z-index: 101;
@@ -78,11 +86,19 @@
             position: relative;
         }
         
+        
+        
         .cCreateCaseMemberPage.loadingDiv {
             top: 0;
             left: 0;
             height: 100%;
         }
+        
+        .modal-body.scrollable.slds-modal__content.slds-p-around--medium
+        {
+        	min-height: 641px;
+        }
+        
         /* Loading Style End*/
     </style>
 	<header class="slds-modal__header" id="CreateCaseMemberPageHeader" style="{!(v.isStandalone? 'display:none;' : '')}">
@@ -111,8 +127,8 @@
                             <!-- <div class="slds-form-element" style="{!((v.accObject.PersonID__c == null) || (v.accObject.PersonID__c == '') ? 'display:none;' : '')}"> -->
                             <div class="slds-form-element">
                                 <label class="slds-form-element__label"><span class="required " data-aura-rendered-by="2242:0">*</span>Account Number</label>
-                                <div class="slds-form-element__control">
-
+                                <div class="divouter slds-form-element__control">
+										
                                     <div class="slds-form-element__control" data-aura-rendered-by="16:1107;a">
                                         <div data-aura-rendered-by="26:1107;a" class="uiInput forceSearchInputLookupDesktop uiInput--default forceInputField" data-aura-class="uiInput forceSearchInputLookupDesktop uiInput--default forceInputField">
                                             <div class="contentWrapper slds-box--border" id="MemberPicker">
@@ -166,6 +182,7 @@
                                                             <div class="listContent" data-aura-rendered-by="4060:0">
                                                                 <ul class="lookup__list  visible" role="presentation" data-aura-rendered-by="4055:0">
                                                                     <aura:iteration items="{!v.accList}" var="itemOption" indexVar="i">
+                                                                        <aura:if isTrue="{!(itemOption.isShow)}">
                                                                         <li class="lookup__item  default uiAutocompleteOption forceSearchInputLookupDesktopOption" role="presentation" data-aura-class="uiAutocompleteOption forceSearchInputLookupDesktopOption" data-interactive-uid="7" onclick="{!c.itemSelected}" data-selectedIndex="{#i}">
                                                                             <span style="cursor: pointer;">
                                                                         <div class="mruIcon slds-icon slds-icon--small slds-float--left slds-m-vertical--xx-small slds-m-left--xx-small slds-media__figure forceEntityIcon" style="background-color: #7f8de1" data-aura-rendered-by="5:3148;a" data-aura-class="forceEntityIcon">
@@ -185,7 +202,7 @@
                                                             </span>
                                                             </li>
 
-
+													</aura:if>
                                                             </aura:iteration>
 
 
@@ -196,21 +213,144 @@
 
                                                     </div>
                                                     <!--    </aura:if> -->
+                                                    
+                                                   
                                                 </div>
+                                                
+                                                
+                                                
                                             </div>
 
                                         </div>
                                         <ul class="has-error uiInputDefaultError uiInput uiInputSelect uiInput--default uiInput--select" style="display:none;" id="MemberPickerError">
                                             <li class="form-element__help">Complete this field</li>
                                         </ul>
+                                      
 
                                     </div>
+                                       
+                                    <div style="width:0%;cursor: pointer; position:absolute;top:0;right:0" class="addMemberAccountcls">
+                                  		  <span style="font-size: 30px;" onclick="{!c.addMemberAccount}">+</span>
+                                    </div>
+                                    
                                 </div>
-
+                                <!-- Below code Added by Deepika for CRM-1400  -->
+                                <h3 class="slds-section-title--divider">Add More Members</h3>
+                              <aura:iteration items="{!v.AccountObjectlist}" var="item" indexVar="indexNumber">
+                                <div class="slds-form-element__control">
+                                	<div class="slds-form-element__control" data-aura-rendered-by="16:1107;a">
+                                    	<div data-aura-rendered-by="26:1107;a" class="uiInput forceSearchInputLookupDesktop uiInput--default forceInputField" data-aura-class="uiInput forceSearchInputLookupDesktop uiInput--default forceInputField">
+                                        <div class="contentWrapper slds-box--border" id="{!('MemberAccountPicker' + indexNumber)}">
+                               					 <div class="inputWrapper" data-aura-rendered-by="28:1107;a" style="position: relative;">
+				                                                    <span class="slds-icon_container slds-icon-utility-search inputLookupIcon slds-float--right slds-input-has-icon slds-p-top--xx-small slds-p-right--small" data-aura-rendered-by="33:1107;a">
+				                                            <span data-aura-rendered-by="36:1107;a" class="lightningPrimitiveIcon" data-aura-class="lightningPrimitiveIcon">
+				
+				                                            </span>
+				                                                    </span>
+				                                                    <aura:if isTrue="{! empty(item.Name) }">
+				                                                        <div class="entityMenu slds-align-middle slds-p-vertical--xx-small slds-p-left--xxx-small slds-float--left uiMenu" data-aura-rendered-by="99:1107;a" data-aura-class="uiMenu">
+				                                                            <div id="42:1107;a" data-aura-rendered-by="64:1107;a" class="uiPopupTrigger" data-aura-class="uiPopupTrigger" data-interactive-uid="11">
+				                                                                <div data-aura-rendered-by="66:1107;a">
+				                                                                    <div data-aura-rendered-by="59:1107;a">
+				                                                                        <a class="entityMenuTrigger slds-button slds-button--icon slds-shrink-none slds-m-vertical--xxx-small slds-m-left--xx-small " aria-disabled="false" aria-haspopup="true" tabindex="0" role="button" title="" href="javascript:void(0);" data-aura-rendered-by="60:1107;a">
+				                                                                            <div class="entityIcon slds-icon slds-icon--small slds-float--left forceEntityIcon" style="background-color: #7f8de1" data-aura-rendered-by="45:1107;a" data-aura-class="forceEntityIcon">
+				                                                                                <span data-aura-rendered-by="48:1107;a" class="uiImage" data-aura-class="uiImage">
+				                                                                    <img data-aura-rendered-by="46:1107;a" src="https://chevronfcu--ltgdev.cs13.my.salesforce.com/img/icon/t4v35/standard/person_account_120.png" class="icon " alt="Users" title="Users" />
+				                                                                </span>
+				                                                                            </div>
+				
+				                                                                        </a>
+				                                                                    </div>
+				                                                                </div>
+				                                                            </div>
+				
+				                                                        </div>
+				                                                    </aura:if>
+				                                                    <div class="autocompleteWrapper" data-aura-rendered-by="101:1107;a">
+				                                                        <aura:if isTrue="{! empty(item.Name) }">
+				                                                            <input class="default input uiInput uiInputTextForAutocomplete uiInput--default uiInput--input uiInput uiAutocomplete uiInput--default uiInput--lookup"
+				                                                            	 maxlength="500" role="combobox" id="22:1107;a" aria-expanded="true" aria-autocomplete="list" type="text"
+				                                                            	 data-class="{!indexNumber}"
+				                                                                data-interactive-lib-uid="3" aria-required="true" spellcheck="false" onmouseenter="{!c.onFocusLookupAdditional}" onmouseleave="{!c.onBlurLookupAdditional}" placeholder="Search..." title="Search" />
+				                                                                 
+				                                                            <aura:set attribute="else">
+				                                                                <span class="slds-pill slds-pill_link fullWidth" data-account="{!indexNumber}"> 
+				                                                  <a href="javascript:void(0);" 
+				                                                     class="slds-pill__action slds-p-left_x-small" title="{#v.selectedAcctNumber.Name}">
+				                                                    <lightning:icon iconName="{#v.lookupIcon}" size="x-small"/>
+				                                                    <span class="slds-pill__label slds-p-left_x-small" >{!item.Name}</span>
+				                                                                </a>
+				                                                                <button onclick="{!c.clearSelectionAdditional}" class="slds-button slds-button_icon slds-button_icon slds-pill__remove" title="Remove" id="{!('remove' + indexNumber)}">
+				                                                    <lightning:icon iconName="utility:close" size="small" 
+				                                                                    alternativeText="Press delete or backspace to remove"/>
+				                                                    <span class="slds-assistive-text" >Remove</span>
+				                                                  </button>
+				                                                                </span>
+				                                                            </aura:set>
+				                                                        </aura:if>
+				                                                        <!-- <aura:if isTrue=""> -->
+				                                                        <div class="undefined lookup__menu uiAbstractList uiAutocompleteList uiInput uiAutocomplete uiInput--default uiInput--lookup dropdownadditionaaccount" role="listbox"  data-class="{!indexNumber}" id="{!('autocompleteDiv' + indexNumber)}" onmouseenter="{!c.onFocusLookupAdditional}" onmouseleave="{!c.onBlurLookupAdditional}" style="width: 100%; left: 1px;height:200px;overflow-y:auto;display:none;">
+				                                                            <div class="listContent" data-aura-rendered-by="4060:0">
+				                                                                <ul class="lookup__list  visible" role="presentation" data-aura-rendered-by="4055:0">
+				                                                                    <aura:iteration items="{!v.accList}" var="itemOption" indexVar="i">
+				                                                                      <aura:if isTrue="{!(itemOption.isShow)}">
+				                                                                        <li class="lookup__item  default uiAutocompleteOption forceSearchInputLookupDesktopOption" role="presentation" data-aura-class="uiAutocompleteOption forceSearchInputLookupDesktopOption" data-interactive-uid="7" onclick="{!c.itemSelectedAdditional}" data-selectedIndexId="{#i}">
+				                                                                            <span style="cursor: pointer;">
+				                                                                        <div class="mruIcon slds-icon slds-icon--small slds-float--left slds-m-vertical--xx-small slds-m-left--xx-small slds-media__figure forceEntityIcon" style="background-color: #7f8de1" data-aura-rendered-by="5:3148;a" data-aura-class="forceEntityIcon">
+				                                                                            <span data-aura-rendered-by="8:3148;a" class="uiImage" data-aura-class="uiImage">
+					                                                                        <img data-aura-rendered-by="6:3148;a" src="https://chevronfcu--ltgdev.cs13.my.salesforce.com/img/icon/t4v35/standard/person_account_120.png" class="icon " alt="User" title="User" />
+					                                                                    </span>
+				                                                            </div>
+				                                                            <div class="slds-m-left--smalllabels slds-truncate slds-media__body" data-aura-rendered-by="9:3148;a">
+				                                                                <div class="primaryLabel slds-truncate slds-lookup__result-text" title="{!itemOption.Name}" data-aura-rendered-by="54:3148;a">
+				                                                                    {!itemOption.Name}
+				                                                                    <!--render facet: 55:3148;a-->
+				                                                                </div>
+				                                                                <div class="slds-lookup__result-meta secondaryLabel slds-truncate slds-text-body--small" title="{!itemOption.RecType__c + ' | '  + itemOption.TypeTranslate__c + ' | ' + itemOption.Brand__c}" data-aura-rendered-by="56:3148;a">
+				                                                                    {!itemOption.RecType__c} | {!itemOption.TypeTranslate__c} | {!itemOption.Brand__c}
+				                                                                </div>
+				                                                                
+				                                                                
+				                                                            </div>
+				                                                            </span>
+				                                                            </li>
+																			
+																		</aura:if>
+				                                                            </aura:iteration>
+				
+				
+				
+				                                                            </ul>
+				
+				                                                        </div>
+				
+				                                                    </div>
+				                                                    <!--    </aura:if> -->
+				                                                    
+				                                                   
+				                                                </div>
+				                                                
+				                                                <div style="width:0%;float: right;margin-top: -9%;cursor: pointer;" class="removeMemberAccountcls">
+				                                  								  <span id="{!(indexNumber)}" style="font-size: 40px;padding-left:3px;" onclick="{!c.removeMemberAccount}">-</span>
+				                                   							 </div>
+				                                                
+				                                            </div>
+				                                           </div>
+				                                         </div>
+				                                     </div>
+				                                 </div>
+				                                         
+				                                            
+                               </aura:iteration> 
+								 <!-- Below code Ends here for CRM-1400 Deepika  -->
                             </div>
+                             
                         </div>
+                         
                     </div>
+                     
             </div>
+                    
             </aura:if>
             <aura:if isTrue="{!(v.isAccountDetails == true)}">
                 <div class="slds-col slds-small-size--1-of-2 slds-medium-size--1-of-2">
@@ -361,7 +501,7 @@
                     <label class="slds-form-element__label">Search Field</label>
 
                     <div class="slds-form-element__control">
-                        <input class="input uiInput uiInputText uiInput--default uiInput--input" value="{!v.searchField}" onkeyup="{!c.searchEvents}" />
+                        <input class="input uiInput uiInputText uiInput--default uiInput--input" value="{!v.searchField}" onkeyup="{!c.searchEvents}" id="SearchFieldText"/>
 
 
                     </div>
@@ -411,7 +551,7 @@
                 </div>
 
                 <div class="slds-form-element">
-                    <label class="slds-form-element__label"><span class="required " data-aura-rendered-by="2242:0">*</span>Teritiary Category</label>
+                    <label class="slds-form-element__label"><span class="required " data-aura-rendered-by="2242:0">*</span>Tertiary Category</label>
                     <div class="slds-form-element__control">
 
                         <ui:inputSelect aura:id="Tertiary_Category__c" value="{!v.caseObject.Tertiary_Category__c}" required="true">
@@ -487,7 +627,7 @@
     </div>
 
     <div>
-        <div style="{!(v.isFileUploadComponent ? 'padding:15px;' : 'display:none;')}" id="Filecontainer">
+        <div style="{!(v.isFileUploadComponent ? 'padding:15px;height:100%' : 'display:none;')}" id="Filecontainer">
             <b>Please attach file for case ({!v.CaseNumber}):</b> <br/><br/>
             
             <c:fileUpload parentId="{!v.caseId}" />
@@ -512,7 +652,20 @@
 
     <footer class="slds-modal__footer" id="CreateCaseMemberPageFooter">
         <button class="slds-button slds-button_neutral" onclick="{!c.closePopup}">Cancel</button>
-        <button class="slds-button slds-button_brand" onclick="{!c.saveCase}" style="{!(v.isFileUpload ? 'display:none;' : '')}">Save</button>
-        <button class="slds-button slds-button_brand" onclick="{!c.saveCase}" style="{!(v.isFileUpload &amp;&amp; v.isFileUploadComponent == false? '' : 'display:none;')}">Next</button>        
+   <!--  <button class="slds-button slds-button_brand" onclick="{!c.saveCase}" style="{!(v.isFileUpload ? 'display:none;' : '')}">Save</button> --> 
+   
+    <aura:if isTrue="{!(v.isFileUpload == false)}">
+     		 <lightning:button aura:id="Save" class="slds-button slds-button_brand" onclick="{!c.saveCase}" label="Save" />
+     		   <lightning:button aura:id="SaveandNew" class="slds-button slds-button_brand" label="Save &amp; New" onclick="{!c.saveCase}"/>
+     		   <aura:set attribute="else">
+                   <aura:if isTrue="{!(v.isFileUploadComponent == false)}">
+     		   		<lightning:button aura:id="Next" class="slds-button slds-button_brand" onclick="{!c.saveCase}" label="Next" />
+                    <!--   <aura:set attribute="else">
+                         <lightning:button aura:id="CreateNew" class="slds-button slds-button_brand" onclick="{!c.CreateNew}" label="Create New" />
+                       </aura:set>-->
+                   </aura:if>    
+     		   </aura:set>
+     </aura:if>
+             
     </footer>
 </aura:component>

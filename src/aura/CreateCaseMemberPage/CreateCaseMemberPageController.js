@@ -1,11 +1,12 @@
 ({
 	doInit : function(component, event, helper) {
 		/*helper.fetchPicklistFields(component);*/
-		
+		component.set("v.accountCount",0);
 		component.set('v.loading',true);
 	   var action = component.get("c.getData");
 	   var recordid = component.get("v.recordId");
 	   var accountId = component.get("v.accountDetailId");
+	   
 	   if(recordid == undefined && accountId == "")
 		   component.set('v.isStandalone',true);
 	   var isStandAlone = component.get("v.isStandalone");
@@ -18,24 +19,15 @@
 		   		var status = response.getState();
 	        	if(component.isValid() && status === "SUCCESS")
 	        	{
-	        		var result =  response.getReturnValue();  	
+	        		var result =  response.getReturnValue(); 	        		
 	        		component.set('v.accObject', result.accountDetails);
-	        		
-	        		component.set('v.accList', result.accList);
-					/*var footer = document.getElementById('CreateCaseMemberPageFooter');
-	        		
-	        		footer.parentElement.parentElement.parentElement.parentElement.parentElement.parentElement.parentElement.append(footer);
-	        		footer.style.display = '';
-	        	
-	        		var header = document.getElementById('CreateCaseMemberPageHeader');
-	        		header.parentElement.parentElement.parentElement.parentElement.parentElement.parentElement.parentElement.prepend(header);
-	        		header.style.display = '';
-	        		
-	        		header.parentNode.removeChild(header.nextSibling);
-	        		
-	        		header.parentNode.setAttribute('id','createCasePopup'); */
-	        		
-	        		component.set('v.loading',false);	        		
+	        		var aList = result.accList; 
+	        		aList.map((obj) => {   
+					obj.isShow = true;
+					})   	
+	        		component.set('v.accList', aList);
+					component.set('v.loading',false);	
+					     		
 	        	}            	
 	       });
 		   $A.enqueueAction(action);
@@ -55,20 +47,7 @@
 	        		component.set('v.memObject', result.accountDetails);
 	        		
 	        		component.set('v.memberList', result.accList);
-					/*var footer = document.getElementById('CreateCaseMemberPageFooter');
-	        		
-	        		footer.parentElement.parentElement.parentElement.parentElement.parentElement.parentElement.parentElement.append(footer);
-	        		footer.style.display = '';
-	        	
-	        		var header = document.getElementById('CreateCaseMemberPageHeader');
-	        		header.parentElement.parentElement.parentElement.parentElement.parentElement.parentElement.parentElement.prepend(header);
-	        		header.style.display = '';
-	        		
-	        		header.parentNode.removeChild(header.nextSibling.nextSibling);
-	        		
-	        		header.parentNode.setAttribute('id','createCasePopup'); */
-	        		
-	        		component.set('v.loading',false);	        		
+					component.set('v.loading',false);	        		
 	        	}            	
 	       });
 		   $A.enqueueAction(action);
@@ -88,15 +67,22 @@
 	
 	closePopupAfterUpload: function(component, event, helper) {
     	var caseId = component.get("v.caseId");
-		
+		var section = event.getParam("SectionName");
+		if(section == 'DetailPage')
+		{
 	
-	 $A.get('e.force:closeQuickAction').fire();
+				$A.get('e.force:closeQuickAction').fire();
                     	    var navEvt = $A.get("e.force:navigateToSObject");
 						    navEvt.setParams({
 						      "recordId": caseId
 						    });
 						    navEvt.fire();
-		
+		}
+		else if(section == 'CasePage')
+		{
+			 	 	   
+			helper.OpenCreateCase(component, event, helper);
+		}
 	 // window.location ='/lightning/r/Case/' +  currId + '/view' ;
    } ,
 		
@@ -215,18 +201,62 @@
    {
 	   component.set('v.showDorpDown', 'true');	   
    },
+   
+   onFocusLookupAdditional: function(component, event, helper)
+   {
+	   //component.set('v.showDorpDown', 'true');	   
+	   
+		var index = parseInt( event.target.getAttribute("data-class") );
+		var autodiv = document.getElementById('autocompleteDiv' + index);
+		autodiv.style.display = '';
+   },
+   
    onBlurLookup: function(component, event, helper)
    {
 	   component.set('v.showDorpDown', 'false');
    },
+   
+    onBlurLookupAdditional: function(component, event, helper)
+   {
+	   //component.set('v.showDorpDown', 'false');
+	   
+	var index = parseInt( event.target.getAttribute("data-class") );
+	var autodiv = document.getElementById('autocompleteDiv' + index);
+	autodiv.style.display = 'none';
+   },
+   
+   
+   
    itemSelected : function(component, event, helper) {
 		helper.itemSelected(component, event, helper);
 		document.getElementById('MemberPicker').style = '';        
 	},
+	
+	
+	itemSelectedAdditional : function(component, event, helper) {
+		helper.itemSelectedAdditional(component, event, helper);
+		
+		      
+	},
+	
     clearSelection : function(component, event, helper){
         helper.clearSelection(component, event, helper);
     },
+     clearSelectionAdditional : function(component, event, helper){
+        helper.clearSelectionAdditional(component, event, helper);
+    },
+    
     saveCase: function(component,event,helper){
+	    var btnid = event.getSource().getLocalId();
+	   // alert(btnid);
+	    if (btnid == "SaveandNew")
+	    {
+	    	component.set('v.IsSaveandNewPressed',true);
+	    }
+	    else if(btnid == "Save")
+	    {
+	    	component.set("v.IsSaveandNewPressed", false);
+	    }
     	var isValid = helper.handleError(component,event,helper);
     	
     	if(isValid)
@@ -288,7 +318,93 @@
 						      "slideDevName": "related"
 						    });
 			navEvt.fire();
+    },
+    removeMemberAccount : function (component, event){
+    	 var target = event.target.id;     
+    	 var AccountObjectlist =  component.get("v.AccountObjectlist");
+    	 var a= component.get('v.accList');
+               for(var i=0;i<a.length;i++){
+            	   if(a[i].Id == AccountObjectlist[target].Id){
+            		   a[i].isShow=true;
+            	   }
+               }
+               component.set('v.accList', a);
+        
+    	 AccountObjectlist.splice(parseInt(target),1);
+    	 //AccountObjectlist.splice(target.replace('span', ''),1);
+       	 component.set("v.AccountObjectlist", AccountObjectlist);
+       	 var count = component.get("v.accountCount");
+       	 count = count - 1;
+    	 component.set("v.accountCount",count);
+    },
+    addMemberAccount: function (component, event) {
+    var count = component.get("v.accountCount");
+    if(count < 9)
+    {
+    			var AccountObjectlist =  component.get("v.AccountObjectlist");    	
+    			AccountObjectlist.push({'Account_Details__c': '','Id':null});
+    			component.set("v.AccountObjectlist", AccountObjectlist);
+    			count = count + 1;
+    			component.set("v.accountCount",count);
     }
-     
+    	 
+
+    },
     
+  /*  addMemberAccount: function (component, event) {
+    	var count = component.get("v.accountCount");
+    	if(count < 9)
+    	{
+    		 $A.createComponents([
+    			 [ "lightning:input",
+		            {
+		                "aura:id": "membername"+count,
+		                "label": "Account Number",
+		                "type": "text",
+		                "placeholder":"Search...",
+		                "onmouseenter": component.getReference("c.onFocusLookup"),
+		                "onmouseleave" : component.getReference("c.onBlurLookup"),
+		                "class" : "default input uiInput uiInputTextForAutocomplete uiInput--default uiInput--input uiInput uiAutocomplete uiInput--default uiInput--lookup",
+		                "maxlength": "500"
+		                
+		               
+		            }],
+		            	[ "lightning:button",
+		            	{
+			                "aura:id": "remove"+count,
+			                "label": "-",
+			                "class":"slds-button",
+			                "onclick": component.getReference("c.removePress")
+		            	}]
+		     ],
+            function(newcomponents, status, errorMessage){
+            		var inputboxPanel = component.get("v.inputboxPanel");
+                    inputboxPanel.push(newcomponents[0]);
+                    inputboxPanel.push(newcomponents[1]);
+                    
+                    component.set("v.inputboxPanel", inputboxPanel);
+            });
+    	}
+    	count = count + 1;
+    	component.set("v.accountCount",count);
+    },
+    
+    removePress: function (component, event) {
+    
+    	 var target = event.getSource().getLocalId();
+    	var memberid = target.replace('remove', 'membername');
+    	alert(memberid);
+    	var loc = target.replace('remove', '');
+    		alert(loc);
+    	var body = component.get("v.inputboxPanel");
+    	body.splice(loc,1);
+    	body.splice(loc,1);
+    	//body.splice(target.replace('membername', ''),1);
+    	
+    	component.set("v.inputboxPanel", body);
+    	var count = component.get("v.accountCount");
+    	count = count-1;
+    	 component.set("v.accountCount",count);   	 
+       
+      },*/
 })
