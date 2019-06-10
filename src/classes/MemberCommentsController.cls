@@ -69,16 +69,39 @@ public without sharing class MemberCommentsController {
 	public static object getAttachmentDetails(string caseId)
 	{		     
 		string membercommentid = '';
+		List<Attachment> MemberCommentsAttachmentLst = new List<Attachment>();
+		List<Attachment> CRAttachmentLst = new List<Attachment>();
+		List<Attachment> FinalCRAttachmentLst = new List<Attachment>();
+		
 		List<Case> tempCase = [select id,Account_Number__c, AccountId, CreatedBy.Email from case where id =:caseId];
+		set<string> MemberCommentsAttachmentNames = new set<string>();
 		if(tempCase == null || tempCase.Size() == 0)
 		{
-			Member_Comment__c memberComment = [select id, case__c, Draft__c from Member_Comment__c where id =:caseId];
+			Member_Comment__c memberComment = [select id, case__c, Draft__c, Canned_Response__c from Member_Comment__c where id =:caseId];
 			caseid = memberComment.case__c;
 			membercommentid = memberComment.id;
+			
+			
+			system.debug('memberComment.Canned_Response__c=='+memberComment.Canned_Response__c);
+			MemberCommentsAttachmentLst =  [SELECT Id, Name, Parentid, ContentType FROM Attachment WHERE Parentid =:memberComment.id];
+			CRAttachmentLst =  [SELECT Id, Name, Parentid, ContentType FROM Attachment WHERE Parentid =:memberComment.Canned_Response__c];
+			
+			system.debug('MemberCommentsAttachmentLst=='+MemberCommentsAttachmentLst);
+			system.debug('CRAttachmentLst=='+CRAttachmentLst);
+			
+			for(Attachment a: CRAttachmentLst){
+				for(Attachment b: MemberCommentsAttachmentLst){
+					if(a.Name == b.Name){
+						FinalCRAttachmentLst.add(a);
+					}
+				}
+			}
 		}
 		
+		system.debug('FinalCRAttachmentLst=='+FinalCRAttachmentLst);
 		publishMemberAttachments.caseAttachments objCaseAttach = new publishMemberAttachments.caseAttachments();
 		objCaseAttach = publishMemberAttachments.getAttachmentData(caseId);		
+		
 		
 		
 		List<publishMemberAttachments.attachmentWrapper> objCheckedCaseAttach = new List<publishMemberAttachments.attachmentWrapper>();
@@ -87,8 +110,13 @@ public without sharing class MemberCommentsController {
 			if(objCaseAttach.approvalids.contains(ca.attachmentobj.id)){
 				ca.checkvalue = false;
 				objCheckedCaseAttach.add(ca);
-			}            
+				 system.debug('ca=='+ca);
+			}  
+			
+			MemberCommentsAttachmentNames.add(ca.attachmentobj.Name);          
         }
+        
+       
         if(membercommentid != '')
         {
         	List<Attachment> CaseAttachmentLst = [SELECT Id, Name,  ContentType FROM Attachment WHERE Parentid =:membercommentid AND createdby.Profile.UserLicense.LicenseDefinitionKey = 'SFDC'];
@@ -111,6 +139,28 @@ public without sharing class MemberCommentsController {
         		}
         		
         	}
+        	system.debug('MemberCommentsAttachmentIds=='+MemberCommentsAttachmentNames);
+        		List<publishMemberAttachments.attachmentWrapper> awObjList = new List<publishMemberAttachments.attachmentWrapper>();
+	   		
+	   		
+			   	for(Attachment a: FinalCRAttachmentLst){
+			   		   		
+				   		if(!MemberCommentsAttachmentNames.contains(a.Name)){
+					   		publishMemberAttachments.combinedAttachments nca = new publishMemberAttachments.combinedAttachments();
+					   		nca.Id = a.id;
+					   		nca.Name=a.Name;
+					   		nca.ContentType = a.ContentType;
+					        nca.isContentDocument = false;
+					        nca.downloadLink = '/servlet/servlet.FileDownload?file='+ string.valueOf(a.id) +'&operationContext=S1';	   	
+					   		
+					   		publishMemberAttachments.attachmentWrapper awObj = new publishMemberAttachments.attachmentWrapper();
+					   		awObj.attachmentobj =nca;
+					   		awObj.checkvalue = true;
+					   		objCheckedCaseAttach.add(awObj);
+				   		}
+			 
+        }
+	  
         	
         	
         
@@ -254,8 +304,10 @@ public without sharing class MemberCommentsController {
     
 	
 	@AuraEnabled
-	public static void saveComment(string MemberDescription, string CaseId, boolean Draft, string secureEmailAddress, string Attachments, boolean CURead){        
+	public static void saveComment(string MemberDescription, string CaseId, boolean Draft, string secureEmailAddress, string Attachments, boolean CURead, string CRAttachments, string selectedCannedResponse){        
         system.debug('Method Called===');       
+         system.debug('Attachments==='+Attachments);    
+           system.debug('selectedCannedResponse==='+selectedCannedResponse);      
         List <string> aId;
         Id mid;
         List<Member_Comment__c> MemberLst; 
@@ -292,6 +344,7 @@ public without sharing class MemberCommentsController {
                     mbobj.Member_Email__c = secureEmailAddress;
                 }
                 mbobj.Case_Creator_Email__c = Email;
+                mbobj.Canned_Response__c = selectedCannedResponse;
 
                     MemberLst.add(mbobj);
                     system.debug('Azhar MemberLst 1st--'+MemberLst);
@@ -303,11 +356,79 @@ public without sharing class MemberCommentsController {
                 
                 
                 List<publishMemberAttachments.attachmentWrapper> caseAttachments = (List<publishMemberAttachments.attachmentWrapper>)JSON.deserialize(Attachments, List<publishMemberAttachments.attachmentWrapper>.class);
+                List<publishMemberAttachments.attachmentWrapper> caseCRAttachments = (List<publishMemberAttachments.attachmentWrapper>)JSON.deserialize(CRAttachments, List<publishMemberAttachments.attachmentWrapper>.class);
                                 
                 system.debug('caseAttachments--'+caseAttachments);
                 if(!caseAttachments.isEmpty()){
                 	
                     for(publishMemberAttachments.attachmentWrapper a : caseAttachments)
+                    {
+                    	system.debug('caseattach--'+a);
+                    	
+                    	if(a.checkvalue)
+                    	{             
+                    		system.debug('a.attachmentobj'+a.attachmentobj);
+                    		       		
+	                        if(a.attachmentobj.isContentDocument)
+	                        {	         
+	                        	
+	                        	list<ContentVersion> MbContentDocumentLst = new list<ContentVersion>();
+          						list<ContentDocumentLink> cls = new list<ContentDocumentLink>();
+          						
+						        cls = [select id,ContentDocumentId,ShareType from ContentDocumentLink where Id =: a.attachmentobj.Id];						        
+						        
+						        set<id> ids = new set<id>();
+						          for(ContentDocumentLink ls : cls)
+						          {
+						          		ids.add(ls.ContentDocumentId);
+						          }
+								
+									                     
+						          MbContentDocumentLst = [select versionData,title,pathOnClient  FROM ContentVersion where ContentDocumentId  IN : ids];
+						           lIST<ContentVersion> listContentVersionToInsert = new lIST<ContentVersion>();
+						          for (ContentVersion ac : MbContentDocumentLst) {          	              
+						  			ContentVersion v = new ContentVersion();
+									v.versionData = ac.versionData;
+									v.title  = ac.title;
+									v.pathOnClient = ac.pathOnClient;			
+									listContentVersionToInsert.add(v);									
+						          }
+						          system.debug('listContentVersionToInsert++'+ listContentVersionToInsert);
+						          insert listContentVersionToInsert;
+						             lIST<ContentDocumentLink> listContentDocumentToInsert = new lIST<ContentDocumentLink>();
+						          for(ContentVersion ls  :listContentVersionToInsert){
+						          	  ContentDocumentLink cdList = new ContentDocumentLink();
+						          	  cdList.ContentDocumentId = [SELECT Id, ContentDocumentId FROM ContentVersion WHERE Id =: ls.Id].ContentDocumentId;
+										cdList.LinkedEntityId = MemberLst[0].id; // you can use objectId,GroupId etc			
+										cdList.ShareType = 'V';			
+										cdList.Visibility = 'AllUsers';		
+										listContentDocumentToInsert.add(cdList);		
+						          }
+						          system.debug('listContentDocumentToInsert++'+ listContentDocumentToInsert);
+						          insert listContentDocumentToInsert;
+						          
+						        
+										
+						          
+	                        }
+	                        else
+	                        {	
+	                        	Attachment oldAttachment = new Attachment();
+	                        	oldAttachment = [select Id, body from Attachment where Id =: a.attachmentobj.Id limit 1];
+	                        	
+	                        	Attachment att = new Attachment();
+		                        att.name = a.attachmentobj.name;		                        
+		                        att.ContentType  = a.attachmentobj.ContentType;
+		                        att.body = oldAttachment.body;
+		                        att.parentid = MemberLst[0].id;
+	                        	insert att;
+	                        }
+                    	}
+                    }                    
+                }
+                if(!caseCRAttachments.isEmpty()){
+                	
+                    for(publishMemberAttachments.attachmentWrapper a : caseCRAttachments)
                     {
                     	system.debug('caseattach--'+a);
                     	
@@ -388,6 +509,8 @@ public without sharing class MemberCommentsController {
                     mbobj.Member_Email__c = secureEmailAddress;
                 }
                 mbobj.Case_Creator_Email__c = Email;
+                if(selectedCannedResponse != null)
+                 mbobj.Canned_Response__c = selectedCannedResponse;
 
                 // MemberLst.add(mbobj);
                 system.debug('Dhwani MemberLst 1st--'+mbobj);
@@ -407,7 +530,8 @@ public without sharing class MemberCommentsController {
 				delete lstattach;
 				
                 List<publishMemberAttachments.attachmentWrapper> caseAttachments = (List<publishMemberAttachments.attachmentWrapper>)JSON.deserialize(Attachments, List<publishMemberAttachments.attachmentWrapper>.class);
-                                
+                  List<publishMemberAttachments.attachmentWrapper> caseCRAttachments = (List<publishMemberAttachments.attachmentWrapper>)JSON.deserialize(CRAttachments, List<publishMemberAttachments.attachmentWrapper>.class);
+                                 
                 system.debug('caseAttachments--'+caseAttachments);
                 if(!caseAttachments.isEmpty()){
                 	
@@ -479,63 +603,96 @@ public without sharing class MemberCommentsController {
 	                        {	                        
 	                        	Attachment oldAttachment = new Attachment();
 	                        	oldAttachment = [select Id, body, parentid from Attachment where Id =: a.attachmentobj.Id limit 1];
+	                        	
 	                        	system.debug('oldAttachment' + oldAttachment);
-	                        	if(oldAttachment.parentid != mbobj.id){
-			                        	Attachment att = new Attachment();
-				                        att.name = a.attachmentobj.name;		                        
-				                        att.ContentType  = a.attachmentobj.ContentType;
-				                        att.body = oldAttachment.body;
-				                        system.debug('mid==>>' + mid);
-				                        att.parentid = mid;
-			                        	insert att;
-	                        	}	                        	
+	                        	if(oldAttachment != null){
+		                        	if(oldAttachment.parentid != mbobj.id){
+				                        	Attachment att = new Attachment();
+					                        att.name = a.attachmentobj.name;		                        
+					                        att.ContentType  = a.attachmentobj.ContentType;
+					                        att.body = oldAttachment.body;
+					                        system.debug('mid==>>' + mid);
+					                        att.parentid = mid;
+				                        	insert att;
+		                        	}	
+	                        	} 
+	                        	                  	
 	                        }
                     	}
-                    	/*else
-                    	{
-                    		if(a.attachmentobj.isContentDocument)
+                    	
+                    }                    
+                } 
+                if(!caseCRAttachments.isEmpty()){
+                	
+                    for(publishMemberAttachments.attachmentWrapper a : caseCRAttachments)
+                    {
+                    	system.debug('caseattach--'+a);
+                    	
+                    	if(a.checkvalue)
+                    	{             
+                    		system.debug('a.attachmentobj'+a.attachmentobj);
+                    		       		
+	                        if(a.attachmentobj.isContentDocument)
 	                        {	         
 	                        	
 	                        	list<ContentVersion> MbContentDocumentLst = new list<ContentVersion>();
           						list<ContentDocumentLink> cls = new list<ContentDocumentLink>();
           						
 						        cls = [select LinkedEntityId, ContentDocumentId,ShareType from ContentDocumentLink where Id =: a.attachmentobj.Id];						        
-						        
+						        system.debug('cls' + cls);
 						        set<id> ids = new set<id>();
 						          for(ContentDocumentLink ls : cls)
-						          {
-						          	boolean ifExist =false;
-						          	list<ContentDocumentLink> cls1 = [select id,LinkedEntityId, ContentDocumentId,ShareType from ContentDocumentLink where ContentDocumentId =: ls.ContentDocumentId];
-						          	for(ContentDocumentLink ls1 : cls1){
-						          		if(ls1.LinkedEntityId == mbobj.id)
-						          		{
-						          			ifExist=true;
-						          			break;
-						          		}
-						          	}
-						          	system.debug('ifExist'+ ifExist);
-						          	
-						          	if(ifExist){
-						          		ids.add(ls.ContentDocumentId);
-						          		ContentDocumentLink cls2 = 	[select id,LinkedEntityId, ContentDocumentId,ShareType from ContentDocumentLink where ContentDocumentId =: ls.ContentDocumentId and LinkedEntityId =: mbobj.id];
-						          		delete cls2;
-						          	}	
+						          {						          	
+						          			ids.add(ls.ContentDocumentId);						          	
 						          }
-								
-									                     
-						         
+						          
+						          MbContentDocumentLst = [select versionData,title,pathOnClient  FROM ContentVersion where ContentDocumentId  IN : ids];
+						           lIST<ContentVersion> listContentVersionToInsert = new lIST<ContentVersion>();
+						          for (ContentVersion ac : MbContentDocumentLst) {          	              
+						  			ContentVersion v = new ContentVersion();
+									v.versionData = ac.versionData;
+									v.title  = ac.title;
+									v.pathOnClient = ac.pathOnClient;			
+									listContentVersionToInsert.add(v);									
+						          }
+						          system.debug('listContentVersionToInsert' + listContentVersionToInsert);
+						          insert listContentVersionToInsert;
+						             lIST<ContentDocumentLink> listContentDocumentToInsert = new lIST<ContentDocumentLink>();
+						          for(ContentVersion ls  :listContentVersionToInsert){
+						          	  ContentDocumentLink cdList = new ContentDocumentLink();
+						          	  cdList.ContentDocumentId = [SELECT Id, ContentDocumentId FROM ContentVersion WHERE Id =: ls.Id].ContentDocumentId;
+										cdList.LinkedEntityId = mid; // you can use objectId,GroupId etc			
+										cdList.ShareType = 'V';			
+										   cdList.Visibility = 'AllUsers';       		
+										listContentDocumentToInsert.add(cdList);		
+						          }
+						          system.debug('listContentDocumentToInsert' + listContentDocumentToInsert);
+						          insert listContentDocumentToInsert;
 	                        }
 	                        else
-	                        {	
+	                        {	                        
 	                        	Attachment oldAttachment = new Attachment();
-	                        	oldAttachment = [select Id, body from Attachment where Id =: a.attachmentobj.Id limit 1];
-	                        	if(oldAttachment.parentid == mbobj.id){
-			                        	delete oldAttachment;
-	                        	}	                        	
+	                        	oldAttachment = [select Id, body, parentid from Attachment where Id =: a.attachmentobj.Id limit 1];
+	                        	
+	                        	system.debug('oldAttachment' + oldAttachment);
+	                        	if(oldAttachment != null){
+		                        	if(oldAttachment.parentid != mbobj.id){
+				                        	Attachment att = new Attachment();
+					                        att.name = a.attachmentobj.name;		                        
+					                        att.ContentType  = a.attachmentobj.ContentType;
+					                        att.body = oldAttachment.body;
+					                        system.debug('mid==>>' + mid);
+					                        att.parentid = mid;
+				                        	insert att;
+		                        	}	
+	                        	} 
+	                        	                  	
 	                        }
-                    	}*/
+                    	}
+                    	
                     }                    
-                } 
+                }
+                
 				}  
               else{
                     	 mbobj.CU_Read__c = CURead;
@@ -546,6 +703,41 @@ public without sharing class MemberCommentsController {
         catch(exception e){
             system.debug('e---'+e);
         }       
+    }
+    
+    @AuraEnabled
+	public static object getSelectedAttachments(string CategoryId, string Brand)	
+	{
+		
+		Canned_Responses__c c = new Canned_Responses__c(); 
+		
+		system.debug('CategoryId==='+CategoryId);
+		c = [Select id, Description__c,Canned_Response_Title__c,Brand__c from Canned_Responses__c where Id =: CategoryId];
+		            
+	   	List<Attachment> CRAttachmentLst = [SELECT Id, Name,  ContentType 
+	   				FROM Attachment WHERE Parentid =:CategoryId];
+	   	system.debug('CRAttachmentLst==='+CRAttachmentLst);
+	   	
+	   	
+	   	List<publishMemberAttachments.attachmentWrapper> awObjList = new List<publishMemberAttachments.attachmentWrapper>();
+	   	
+	   	for(Attachment a: CRAttachmentLst){
+	   		publishMemberAttachments.combinedAttachments nca = new publishMemberAttachments.combinedAttachments();
+	   		nca.Id = a.id;
+	   		nca.Name=a.Name;
+	   		nca.ContentType = a.ContentType;
+	        nca.isContentDocument = false;
+	        nca.downloadLink = '/servlet/servlet.FileDownload?file='+ string.valueOf(a.id) +'&operationContext=S1';
+	   	
+	   		
+	   		publishMemberAttachments.attachmentWrapper awObj = new publishMemberAttachments.attachmentWrapper();
+	   		awObj.attachmentobj =nca;
+	   		awObj.checkvalue = false;
+	   		awObjList.add(awObj);
+	   	}
+	   	system.debug('awObjList==='+awObjList);
+        
+        return awObjList;   
     }
     
      public class wrapperObject

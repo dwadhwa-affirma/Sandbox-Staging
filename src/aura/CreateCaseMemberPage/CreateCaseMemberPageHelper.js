@@ -426,7 +426,7 @@
     
      OpenCreateCase : function(component, event, helper)
      { 
-    	 	  
+    	 	 var Speedcase = component.get("v.TopTenCases");
     	 	 component.set("v.caseObject.Future_Date__c", "");
 			if(component.get("v.selectedAcctNumber.Name")!=null && component.get("v.selectedAcctNumber.Name")!="" ){  		component.set("v.selectedAcctNumber",null);}
 	 		component.set("v.searchField","");
@@ -445,7 +445,12 @@
             component.set('v.caseObject.Primary_Category__c', '--- None ---');
             component.set('v.caseObject.Secondary_Category__c', '--- None ---');
             component.set('v.caseObject.Tertiary_Category__c', '--- None ---');
-            
+			
+         	component.set('v.TopTenCases', '--- None ---');
+         	component.set('v.selectedTopCategoryValue','--- None ---');
+         	component.set('v.TopTenCases', Speedcase); 
+      
+                  
             component.set('v.caseObject.Status','Open');
             component.set('v.caseObject.Ownership__c','Auto Assign');
             
@@ -565,5 +570,7 @@
 			 			component.set('v.loading',false);*/
     	 
      },
+     
+    
     
 })

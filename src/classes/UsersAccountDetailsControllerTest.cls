@@ -169,7 +169,7 @@ Comment_Block_20__c='ABC'
               case_Obj.Add(cs4);*/
                          
               Insert case_Obj;
-              
+           test.startTest();     
         List<CaseComment> CaseComment_Obj = new List<CaseComment>{       
                         new CaseComment(CommentBody='test', IsPublished = true,ParentId=case_Obj[0].Id),
                         new CaseComment(CommentBody='test1', IsPublished = true,ParentId=case_Obj[0].Id),
@@ -272,17 +272,17 @@ Comment_Block_20__c='ABC'
                                 
                         };
             insert task_Obj1;*/   
-            
+              test.stopTest();
             
     }
     
     static void TearDown(){
-        test.StopTest();
+       // test.StopTest();
     }
     static testmethod void testmethod1(){
            
          SetUp();  
-         test.startTest();
+        
         PageReference pageRef = Page.UsersAccountDetails;
         Test.setCurrentPage(pageRef);    
         Account account_Obj = [select Id from account limit 1];        
@@ -294,12 +294,13 @@ Comment_Block_20__c='ABC'
         
         ApexPages.currentPage().getParameters().put('ID', account_Obj1.Id);
         controller = new UsersAccountDetailsController(new ApexPages.StandardController(account_Obj1));
+         
         TearDown();
    }
     
     static testmethod void testmethod2(){
         
-        
+        test.startTest();
         String RecTypeId= [select Id from RecordType where (Name='Person Account') and (SobjectType='Account')].Id;
         
         Account acc = new Account(
@@ -326,8 +327,7 @@ Comment_Block_20__c='ABC'
         ApexPages.currentPage().getParameters().put('ID', acc.Id);
         
         map<string,Id> docMap = new map<string,Id>();
-        
-        Test.StartTest();      
+           
         UsersAccountDetailsController controller = new UsersAccountDetailsController(new ApexPages.StandardController(acc));
         UsersAccountDetailsController.warningStringWrapper wrp=new UsersAccountDetailsController.warningStringWrapper(accDetail.Id,'test2', Date.newInstance(2016, 5, 3), 'test3','test4','test5', docMap,'ACCT','Warning Code');
         Test.StopTest();

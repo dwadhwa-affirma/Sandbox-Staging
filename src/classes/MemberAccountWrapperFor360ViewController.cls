@@ -271,7 +271,7 @@ public class MemberAccountWrapperFor360ViewController {
 	}
 	
 	private static object GetContactDetails(String accRecName, Integer PageNo, Integer PageSize, string SortBy, string SortDir,string SearchText)
-	{
+	{		
         Integer PageSize_Local = Integer.Valueof( PageSize);
         Integer PageNo_Local = Integer.Valueof( PageNo);
         string SOQLQuery = '';
@@ -366,6 +366,7 @@ public class MemberAccountWrapperFor360ViewController {
                            'Owner.Name,' +
                            'Status,' +
                            'Category__c,' +
+                           'Account_Number__c,' +
                            'Primary_Category__c,' +
                            'Tertiary_Category__c,' +
                            'Secondary_Category__c,' +
@@ -376,7 +377,8 @@ public class MemberAccountWrapperFor360ViewController {
                            'Subject,' +
                            'CreatedDate,' +
                            'Origin,' +
-                           'ClosedDate FROM case WHERE Account_Number__r.Name = \'' + accRecName +  '\'  AND Status != \'Closed\' ' + searchquery + ' ' +  orderString +  '   LIMIT  ' + string.valueOf( PageSize_Local) + ' OFFSET ' +  offset;
+                           'Parent.CaseNumber,' +
+                           'ClosedDate FROM case WHERE Account_Number__r.Name = \'' + accRecName +  '\'  AND Status != \'Closed\' ' + searchquery + ' ' +  orderString;
        	
        	 
        	if(searchquery.length() > 0)
@@ -392,10 +394,240 @@ public class MemberAccountWrapperFor360ViewController {
         }
        	system.debug('SOQLQuery Active Cases ---' + SOQLQuery);
 		List<sObject> caseList = Database.query(SOQLQuery);
+		
+		//Start: CRM-1400: Get Multiple Accounts added to case - DB
+        
+
+		List<CaseAccountMemberDetail__c> camd = new List<CaseAccountMemberDetail__c>();
+		List<CaseAccountMemberDetail__c> finalcamd = new List<CaseAccountMemberDetail__c>();
+		 map<id, case> casemap = new map<id, case>();
+		 set<id> caseIdsfromMultiple = new set<id>();
+		 
+        camd = [select id,Case__c, MemberAccountid__c,  case__r.CaseNumber,case__r.OwnerId,
+        				case__r.Owner.Name , case__r.Status, case__r.Category__c,
+        				case__r.Primary_Category__c, case__r.Tertiary_Category__c,case__r.Secondary_Category__c,
+        				case__r.Account.Name,
+        				Account_Name__c, 
+        				case__r.Subject, case__r.Origin,case__r.Parent.CaseNumber, case__r.ClosedDate
+        				 from CaseAccountMemberDetail__c where Account_Name__c =: accRecName AND case__r.Status != 'Closed'];//and MemberAccountid__c not in: lMemberIds
+          system.debug('camd=='+camd);	
+          
+       	 
+        
+         map<id, string> caseAccountmap = new map<id, string>();
+            map<id, string> caseMemberAccountNamemap = new map<id, string>();
+            map<id, string> caseMemberAccountBrandmap = new map<id, string>();
+            set<string> memberAccountIds = new set<string>();
+             List<account_details__c> memberAccountList = new List<account_details__c>();
+           
+            
+         for(sObject so:caseList){
+         	caseAccountmap.put(so.id, (string)so.get('Account_Number__c'));
+         	casemap.put(so.id, (case)so);  
+         	memberAccountIds.add((string)so.get('Account_Number__c'));   
+         	
+         }
+         
+          for(CaseAccountMemberDetail__c so:camd){         	
+         	caseIdsfromMultiple.add(so.case__c);         	
+         	
+         }
+         
+          List<case> caseMemberAccountList = [select id, casenumber, Account_Number__c,Category__c, Status , Subject, Account.Name,
+          									  ParentId, Origin, CreatedDate, Account_Number__r.Brand__c, Owner.Name, Parent.CaseNumber, AccountId
+          										 from case where Id in: caseIdsfromMultiple];	
+           
+           for(case so:caseMemberAccountList){         	
+         		casemap.put(so.id, so);           	
+         		caseAccountmap.put(so.id, so.Account_Number__c);
+         } 
+            
+         memberAccountList = [select id, name, Brand__c from account_details__c where id in: memberAccountIds];
+         
+         for(account_details__c i: memberAccountList){
+         	caseMemberAccountNamemap.put(i.id,i.Name);
+         	caseMemberAccountBrandmap.put(i.id,i.Brand__c);
+         }
+         
+         for(CaseAccountMemberDetail__c a:camd){   
+         	system.debug('a.case__r.casenumber ===' +a.case__r.casenumber);       
+         	system.debug('caseAccountmap.get(a.case__c)===' +caseAccountmap.get(a.case__c));       	
+         	if(caseAccountmap.get(a.case__c) != null){
+         		string maid = caseAccountmap.get(a.case__c);
+         		if(maid != a.MemberAccountid__c){
+         			finalcamd.add(a);
+         			system.debug('finalcamd===' +a.case__r.casenumber ); 
+         		}
+         	}
+         	else{
+         		finalcamd.add(a);
+         		system.debug('finalcamdelse===' +a.case__r.casenumber ); 
+         	}
+         		
+         }
+         
+         Schema.DescribeFieldResult fieldResult = Case.parentId.getDescribe();
+		Schema.SObjectField field = fieldResult.getSObjectField();
+          system.debug('finalcamd=='+finalcamd);	
+          
+          List<CaseModel> finalCaseList = new List<CaseModel>();
+           List<CaseModel> finalCaseListwithPageSize = new List<CaseModel>();
+           List<CaseModel> finalCaseListwithPageSizeSorted = new List<CaseModel>();
+          
+         for(sObject so:caseList){
+         	CaseModel Tempcase = new CaseModel();
+         	Tempcase.Id = so.id;
+         	Tempcase.CaseNumber = (string)so.get('CaseNumber');
+         	Tempcase.Category = (string)so.get('Category__c');
+         	Tempcase.Status = (string)so.get('Status');
+         	Tempcase.AccountNumber = (string)so.get('Account_Number__c');
+         	Tempcase.AccountName = caseMemberAccountNamemap.get((string)so.get('Account_Number__c'));
+         	Tempcase.Subject = (string)so.get('Subject');
+         	if(so.getSobject('Account') != null)
+         	Tempcase.MemberName = (string)so.getSobject('Account').get('Name');
+         	Tempcase.ParentId = (string)so.get('ParentId');
+         	 if((Case)so.getSObject(field) != null)
+         	Tempcase.ParentCaseNumber = (string)so.getSObject(field).get('CaseNumber');
+         	Tempcase.Origin = (string)so.get('Origin');
+         	Tempcase.CreatedDate = (datetime)so.get('CreatedDate');
+         	Tempcase.Brand =  caseMemberAccountBrandmap.get((string)so.get('Account_Number__c'));
+         	if(so.getSobject('Owner') != null)
+         	Tempcase.OwnerName = (string)so.getSobject('Owner').get('Name');
+         		if(so.getSobject('Account') != null)
+         	Tempcase.AccountId = (string)so.getSobject('Account').get('Id');
+         	finalCaseList.add(Tempcase);
+         
+         }
+         
+          
+         for(CaseAccountMemberDetail__c so:finalcamd){
+         	case c = new case();
+        	c = casemap.get(so.case__c);
+         	CaseModel Tempcase = new CaseModel();
+         	Tempcase.Id = c.id;
+         	Tempcase.CaseNumber = c.CaseNumber;
+         	Tempcase.Category = c.Category__c;
+         	Tempcase.Status = c.Status;
+         	Tempcase.AccountNumber = so.MemberAccountid__c;
+         	Tempcase.AccountName = so.Account_Name__c;
+         	Tempcase.Subject = c.Subject;
+         	Tempcase.MemberName = c.Account.Name;
+         	Tempcase.ParentId =  c.ParentId;
+         	Tempcase.Origin = c.Origin;
+         	Tempcase.CreatedDate = c.CreatedDate;
+         	Tempcase.Brand = c.Account_Number__r.Brand__c;
+         	Tempcase.OwnerName = c.Owner.Name;
+            Tempcase.ParentCaseNumber = c.Parent.CaseNumber;
+            Tempcase.AccountId = c.AccountId;
+         	finalCaseList.add(Tempcase);
+         		
+         }
+        system.debug('finalCaseList=='+finalCaseList) ;
+        
+        integer counter = ((PageNo_Local - 1 ) * PageSize_Local);
+        integer PageSize_LocaltoLimit = PageSize_Local+counter;
+        
+         system.debug('counter=='+counter) ;
+          system.debug('PageSize_LocaltoLimit=='+PageSize_LocaltoLimit) ;
+          
+      /*  if(finalCaseList.size() > 0){
+	        for(integer i=counter;i<PageSize_LocaltoLimit;i++){
+	        	if(i < finalCaseList.size() && finalCaseList[i] != null)
+	        	finalCaseListwithPageSize.add(finalCaseList[i]);
+	        }
+        }   */  
+         
+         //Start: CRM-1501 - Sorting related changes
+        
+        CaseModelWrapper[] casewrapperList = new CaseModelWrapper[0];
+			    for(CaseModel key: finalCaseList) {
+            		casewrapperList.add(new CaseModelWrapper(key));
+        		}
+        		
+        if(SortBy == 'CreatedDate'){
+        	  SORT_BY = OpenDate_SORT;
+        }        
+       	
+       	else if(SortBy == 'CaseNumber'){
+        	  SORT_BY = CaseNumber_SORT;
+        } 
+        
+        else if(SortBy == 'Parent.CaseNumber'){
+        	  SORT_BY = ParentCase_SORT;
+        }
+        
+        else if(SortBy == 'Account_Number__r.Name'){
+        	  SORT_BY = AccountNo_SORT;
+        } 
+        
+        else if(SortBy == 'Account.Name'){
+        	  SORT_BY = MemberName_SORT;
+        } 
+        
+        else if(SortBy == 'Category__c'){
+        	  SORT_BY = CaseCategory_SORT;
+        } 
+        
+        else if(SortBy == 'Subject'){
+        	  SORT_BY = CaseSubject_SORT;
+        } 
+        
+        else if(SortBy == 'Origin'){
+        	  SORT_BY = CaseOrigin_SORT;
+        } 
+        
+        else if(SortBy == 'Account_Number__r.Brand__c'){
+        	  SORT_BY = Brand_SORT;
+        } 
+        
+        else if(SortBy == 'Status'){
+        	  SORT_BY = Status_SORT;
+        } 
+        
+        else if(SortBy == 'Owner.Name'){
+        	  SORT_BY = Owner_SORT;
+        }  
+        else{
+        	  SORT_BY = OpenDate_SORT;
+        }
+      
+        casewrapperList.sort();
+        system.debug('casewrapperList==='+casewrapperList);
+        
+         system.debug('SortDir==='+SortDir);
+        
+         system.debug('SortBy==='+SortBy);
+        
+        
+        if(SortDir.contains('Desc') || (SortDir == '' && SortBy == '')){
+	        for(Integer i = casewrapperList.size()-1; i>=0;i--) {
+	            		finalCaseListwithPageSizeSorted.Add(casewrapperList[i].casemodel);
+	        		}
+        }
+       else{
+	        for(Integer i = 0; i<casewrapperList.size();i++) {
+	            		finalCaseListwithPageSizeSorted.Add(casewrapperList[i].casemodel);
+	        		}
+        }
+        system.debug('finalCaseListwithPageSizeSorted==='+finalCaseListwithPageSizeSorted);
+       // system.debug('casewrapperListcasemodel==='+casewrapperList.casemodel);
+        
+         if(finalCaseListwithPageSizeSorted.size() > 0){
+	        for(integer i=counter;i<PageSize_LocaltoLimit;i++){
+	        	if(i < finalCaseListwithPageSizeSorted.size() && finalCaseListwithPageSizeSorted[i] != null)
+	        	finalCaseListwithPageSize.add(finalCaseListwithPageSizeSorted[i]);
+	        }
+        }
+        //End: CRM-1501 - Sorting related changes  
+        
+      
+		
        	Member360View lstCase = new Member360View();
-        lstCase.accList = caseList;
-        lstCase.totalrecords = Integer.Valueof(ARs[0].get('cnt'));
-       return lstCase;
+        lstCase.accList = finalCaseListwithPageSize;
+        lstCase.totalrecords =finalCaseList.size(); //Integer.Valueof(ARs[0].get('cnt')) + caseList.size();
+         //End: CRM-1400: Get Multiple Accounts added to case - DB
+         
+        return lstCase;
     }
     
     
@@ -440,6 +672,7 @@ public class MemberAccountWrapperFor360ViewController {
                            'Owner.Name,' +
                            'Status,' +
                            'Category__c,' +
+                            'Account_Number__c,' +
                            'Primary_Category__c,' +
                            'Tertiary_Category__c,' +
                            'Secondary_Category__c,' +
@@ -451,7 +684,8 @@ public class MemberAccountWrapperFor360ViewController {
                            'Subject,' +
                            'CreatedDate,' +
                            'Origin,' +
-                           'ClosedDate FROM case WHERE Account_Number__r.Name = \'' + accRecName +  '\' AND Status = \'Closed\' ' + searchquery + ' ' +  orderString +  '   LIMIT  ' + string.valueOf( PageSize_Local) + ' OFFSET ' +  offset;
+                           'Parent.CaseNumber,' +
+                           'ClosedDate FROM case WHERE Account_Number__r.Name = \'' + accRecName +  '\' AND Status = \'Closed\' ' + searchquery + ' ' +  orderString;
 		
 		if(searchquery.length() > 0)
         {
@@ -468,9 +702,158 @@ public class MemberAccountWrapperFor360ViewController {
 		
 		system.debug('SOQLQuery---' + SOQLQuery);
 		List<sObject> caseList = Database.query(SOQLQuery);
-		Member360View lstCase = new Member360View();
-        lstCase.accList = caseList;
-        lstCase.totalrecords = Integer.Valueof(ARs[0].get('cnt'));
+		
+		//Start: CRM-1400: Get Multiple Accounts added to case - DB
+        
+
+		List<CaseAccountMemberDetail__c> camd = new List<CaseAccountMemberDetail__c>();
+		List<CaseAccountMemberDetail__c> finalcamd = new List<CaseAccountMemberDetail__c>();
+		 map<id, case> casemap = new map<id, case>();
+		 set<id> caseIdsfromMultiple = new set<id>();
+		 
+        camd = [select id,Case__c, MemberAccountid__c,  case__r.CaseNumber,case__r.OwnerId,
+        				case__r.Owner.Name , case__r.Status, case__r.Category__c,
+        				case__r.Primary_Category__c, case__r.Tertiary_Category__c,case__r.Secondary_Category__c,
+        				case__r.Account.Name,
+        				Account_Name__c, 
+        				case__r.Subject, case__r.Origin,case__r.Parent.CaseNumber, case__r.ClosedDate
+        				 from CaseAccountMemberDetail__c where Account_Name__c =: accRecName AND case__r.Status = 'Closed'];//and MemberAccountid__c not in: lMemberIds
+          system.debug('camd=='+camd);	
+          
+       	 
+        
+         map<id, string> caseAccountmap = new map<id, string>();
+            map<id, string> caseMemberAccountNamemap = new map<id, string>();
+            map<id, string> caseMemberAccountBrandmap = new map<id, string>();
+            set<string> memberAccountIds = new set<string>();
+             List<account_details__c> memberAccountList = new List<account_details__c>();
+           
+            
+         for(sObject so:caseList){
+         	caseAccountmap.put(so.id, (string)so.get('Account_Number__c'));
+         	casemap.put(so.id, (case)so);  
+         	memberAccountIds.add((string)so.get('Account_Number__c'));   
+         	
+         }
+         
+          for(CaseAccountMemberDetail__c so:camd){         	
+         	caseIdsfromMultiple.add(so.case__c);         	
+         	
+         }
+         
+          List<case> caseMemberAccountList = [select id, casenumber, Account_Number__c,Category__c, Status , Subject, Account.Name,
+          									  ParentId, Origin, CreatedDate, Account_Number__r.Brand__c, Owner.Name, Parent.CaseNumber, AccountId
+          										 from case where Id in: caseIdsfromMultiple];	
+           
+           for(case so:caseMemberAccountList){         	
+         		casemap.put(so.id, so);           	
+         		caseAccountmap.put(so.id, so.Account_Number__c);
+         } 
+            
+         memberAccountList = [select id, name, Brand__c from account_details__c where id in: memberAccountIds];
+         
+         for(account_details__c i: memberAccountList){
+         	caseMemberAccountNamemap.put(i.id,i.Name);
+         	caseMemberAccountBrandmap.put(i.id,i.Brand__c);
+         }
+         
+         for(CaseAccountMemberDetail__c a:camd){   
+         	system.debug('a.case__r.casenumber ===' +a.case__r.casenumber);       
+         	system.debug('caseAccountmap.get(a.case__c)===' +caseAccountmap.get(a.case__c));       	
+         	if(caseAccountmap.get(a.case__c) != null){
+         		string maid = caseAccountmap.get(a.case__c);
+         		if(maid != a.MemberAccountid__c){
+         			finalcamd.add(a);
+         			system.debug('finalcamd===' +a.case__r.casenumber ); 
+         		}
+         	}
+         	else{
+         		finalcamd.add(a);
+         		system.debug('finalcamdelse===' +a.case__r.casenumber ); 
+         	}
+         		
+         }
+         
+         Schema.DescribeFieldResult fieldResult = Case.parentId.getDescribe();
+		Schema.SObjectField field = fieldResult.getSObjectField();
+          system.debug('finalcamd=='+finalcamd);	
+          
+          List<CaseModel> finalCaseList = new List<CaseModel>();
+           List<CaseModel> finalCaseListwithPageSize = new List<CaseModel>();
+          
+         for(sObject so:caseList){
+         	CaseModel Tempcase = new CaseModel();
+         	Tempcase.Id = so.id;
+         	Tempcase.CaseNumber = (string)so.get('CaseNumber');
+         	Tempcase.Category = (string)so.get('Category__c');
+         	Tempcase.Status = (string)so.get('Status');
+         	Tempcase.AccountNumber = (string)so.get('Account_Number__c');
+         	Tempcase.AccountName = caseMemberAccountNamemap.get((string)so.get('Account_Number__c'));
+         	Tempcase.Subject = (string)so.get('Subject');
+         	if(so.getSobject('Account') != null)
+         	Tempcase.MemberName = (string)so.getSobject('Account').get('Name');
+         	Tempcase.ParentId = (string)so.get('ParentId');
+         	 if((Case)so.getSObject(field) != null)
+         	Tempcase.ParentCaseNumber = (string)so.getSObject(field).get('CaseNumber');
+         	Tempcase.Origin = (string)so.get('Origin');
+         	Tempcase.CreatedDate = (datetime)so.get('CreatedDate');
+         	Tempcase.Brand =  caseMemberAccountBrandmap.get((string)so.get('Account_Number__c'));
+         	if(so.getSobject('Owner') != null)
+         	Tempcase.OwnerName = (string)so.getSobject('Owner').get('Name');
+         		if(so.getSobject('Account') != null)
+         	Tempcase.AccountId = (string)so.getSobject('Account').get('Id');
+         	finalCaseList.add(Tempcase);
+         
+         }
+         
+          
+         for(CaseAccountMemberDetail__c so:finalcamd){
+         	case c = new case();
+        	c = casemap.get(so.case__c);
+         	CaseModel Tempcase = new CaseModel();
+         	Tempcase.Id = c.id;
+         	Tempcase.CaseNumber = c.CaseNumber;
+         	Tempcase.Category = c.Category__c;
+         	Tempcase.Status = c.Status;
+         	Tempcase.AccountNumber = so.MemberAccountid__c;
+         	Tempcase.AccountName = so.Account_Name__c;
+         	Tempcase.Subject = c.Subject;
+         	Tempcase.MemberName = c.Account.Name;
+         	Tempcase.ParentId =  c.ParentId;
+         	Tempcase.Origin = c.Origin;
+         	Tempcase.CreatedDate = c.CreatedDate;
+         	Tempcase.Brand = c.Account_Number__r.Brand__c;
+         	Tempcase.OwnerName = c.Owner.Name;
+            Tempcase.ParentCaseNumber = c.Parent.CaseNumber;
+            Tempcase.AccountId = c.AccountId;
+         	finalCaseList.add(Tempcase);
+         		
+         }
+        system.debug('finalCaseList=='+finalCaseList) ;
+        
+        integer counter = ((PageNo_Local - 1 ) * PageSize_Local);
+        integer PageSize_LocaltoLimit = PageSize_Local+counter;
+        
+         system.debug('counter=='+counter) ;
+          system.debug('PageSize_LocaltoLimit=='+PageSize_LocaltoLimit) ;
+          
+        if(finalCaseList.size() > 0){
+	        for(integer i=counter;i<PageSize_LocaltoLimit;i++){
+	        	if(i < finalCaseList.size() && finalCaseList[i] != null)
+	        	finalCaseListwithPageSize.add(finalCaseList[i]);
+	        }
+        }     
+         
+        
+        
+      
+		
+       	Member360View lstCase = new Member360View();
+        lstCase.accList = finalCaseListwithPageSize;
+        lstCase.totalrecords =finalCaseList.size(); //Integer.Valueof(ARs[0].get('cnt')) + caseList.size();
+         //End: CRM-1400: Get Multiple Accounts added to case - DB
+		
+		
 		return lstCase;        
     }
 	
@@ -984,7 +1367,7 @@ public class MemberAccountWrapperFor360ViewController {
 		public object accList {get;set;}
 		@AuraEnabled
 		public integer totalrecords {get;set;}
-	}
+	}	
 	
 	 public class warningStringWrapper {
 	 	@AuraEnabled
@@ -1095,4 +1478,313 @@ public class MemberAccountWrapperFor360ViewController {
 			Subject = sub;
 		}
     }
+    
+      //Start: CRM-1400 - DB
+    
+    public class CaseModel {
+        @AuraEnabled
+        public string Id {get; set;}
+        
+        @AuraEnabled
+        public String CaseNumber {get; set;}
+        
+        @AuraEnabled
+        public String Category {get; set;}
+        
+        @AuraEnabled
+        public String Status {get; set;}
+        
+        @AuraEnabled
+        public String AccountNumber {get; set;}
+        
+        @AuraEnabled
+        public String AccountName {get; set;}
+        
+        @AuraEnabled
+        public String Subject {get; set;}
+        
+         @AuraEnabled
+        public String MemberName {get; set;}
+        
+         @AuraEnabled
+        public String AccountId {get; set;}
+        
+        @AuraEnabled
+        public String ParentId {get; set;}
+        
+         @AuraEnabled
+        public String ParentCaseNumber {get; set;}
+        
+        @AuraEnabled
+        public String Origin {get; set;}
+        
+        @AuraEnabled
+        public datetime CreatedDate {get; set;}
+        
+        @AuraEnabled
+        public string Brand {get; set;}
+        
+        @AuraEnabled
+        public string OwnerName {get; set;}
+            
+       
+    }
+    
+     //End: CRM-1400 - DB
+     
+      //Start: CRM-1501 - DB
+     
+  
+	    /** The literal for sorting by Case Number */
+	    public static String CaseNumber_SORT = 'casenumber';
+	
+	    /** The literal for sorting by Parent Case */
+	    public static String ParentCase_SORT = 'parentcase';
+	
+	    /** The literal for sorting by Account No */
+	    public static  String AccountNo_SORT = 'accountno';
+	
+	    /** The literal for sorting by Member Name */
+	    public static String MemberName_SORT = 'membername';
+	    
+	     /** The literal for sorting by Case Category */
+	    public static String CaseCategory_SORT = 'category';    
+	    
+	     /** The literal for sorting by Case Subject */
+	    public static String CaseSubject_SORT = 'subject';
+	    
+	     /** The literal for sorting by Case Origin */
+	    public static String CaseOrigin_SORT = 'origin';
+	    
+	     /** The literal for sorting by Open Date */
+	    public static String OpenDate_SORT = 'opendate';
+	    
+	    /** The literal for sorting by Brand */
+	    public static String Brand_SORT = 'brand';
+	    
+	    /** The literal for sorting by Status */
+	    public static String Status_SORT = 'status';
+	    
+	    /** The literal for sorting by Owner */
+	    public static String Owner_SORT = 'owner';
+	
+	    /** What we are sorting by */
+	    public static String SORT_BY = OpenDate_SORT;
+     
+
+    /** A wrapper class to make casemodel sortable */
+    public class CaseModelWrapper implements Comparable {    
+    	
+    	 public CaseModel casemodel;     
+
+        
+        /**
+        * A generic constructor
+        */
+        public CaseModelWrapper() {}
+
+        /**
+        * Constructor based on an employee record
+        *
+        * @param employee The employee to use
+        */
+        public CaseModelWrapper(CaseModel casemodel) {         
+            this.casemodel =  casemodel; 
+          
+        }
+
+        private Integer sortByCaseNumber(CaseModelWrapper casemodel) {
+            if (this.casemodel.CaseNumber > casemodel.casemodel.CaseNumber) {
+                return 1;
+            }
+
+            if (this.casemodel.CaseNumber == casemodel.casemodel.CaseNumber) {
+                return 0;
+            }
+
+            return -1;
+        }
+        
+         private Integer sortByParentCase(CaseModelWrapper casemodel) {
+            if (this.casemodel.ParentCaseNumber > casemodel.casemodel.ParentCaseNumber) {
+                return 1;
+            }
+
+            if (this.casemodel.ParentCaseNumber == casemodel.casemodel.ParentCaseNumber) {
+                return 0;
+            }
+
+            return -1;
+        }
+		
+		 private Integer sortByAccountNo(CaseModelWrapper casemodel) {
+            if (this.casemodel.AccountNumber > casemodel.casemodel.AccountNumber) {
+                return 1;
+            }
+
+            if (this.casemodel.AccountNumber == casemodel.casemodel.AccountNumber) {
+                return 0;
+            }
+
+            return -1;
+        }
+		
+       
+        private Integer sortByMemberName(CaseModelWrapper casemodel) {
+            if (this.casemodel.membername > casemodel.casemodel.membername) {
+                return 1;
+            }
+
+            if (this.casemodel.membername == casemodel.casemodel.membername) {
+                return 0;
+            }
+
+            return -1;
+        }
+        
+        private Integer sortByCaseCategory(CaseModelWrapper casemodel) {
+            if (this.casemodel.Category > casemodel.casemodel.Category) {
+                return 1;
+            }
+
+            if (this.casemodel.Category == casemodel.casemodel.Category) {
+                return 0;
+            }
+
+            return -1;
+        }
+        
+         private Integer sortByCaseSubject(CaseModelWrapper casemodel) {
+            if (this.casemodel.Subject > casemodel.casemodel.Subject) {
+                return 1;
+            }
+
+            if (this.casemodel.Subject == casemodel.casemodel.Subject) {
+                return 0;
+            }
+
+            return -1;
+        }
+        
+        private Integer sortByCaseOrigin(CaseModelWrapper casemodel) {
+            if (this.casemodel.origin > casemodel.casemodel.origin) {
+                return 1;
+            }
+
+            if (this.casemodel.origin == casemodel.casemodel.origin) {
+                return 0;
+            }
+
+            return -1;
+        }
+        
+        private Integer sortByOpenDate(CaseModelWrapper casemodel) {
+            if (this.casemodel.CreatedDate > casemodel.casemodel.CreatedDate) {
+                return 1;
+            }
+
+            if (this.casemodel.CreatedDate == casemodel.casemodel.CreatedDate) {
+                return 0;
+            }
+
+            return -1;
+        }
+        
+         private Integer sortByBrand(CaseModelWrapper casemodel) {
+            if (this.casemodel.brand > casemodel.casemodel.brand) {
+                return 1;
+            }
+
+            if (this.casemodel.brand == casemodel.casemodel.brand) {
+                return 0;
+            }
+
+            return -1;
+        }
+        
+          private Integer sortByStatus(CaseModelWrapper casemodel) {
+            if (this.casemodel.status > casemodel.casemodel.Status) {
+                return 1;
+            }
+
+            if (this.casemodel.status == casemodel.casemodel.Status) {
+                return 0;
+            }
+
+            return -1;
+        }
+        
+          private Integer sortByOwner(CaseModelWrapper casemodel) {
+            if (this.casemodel.OwnerName > casemodel.casemodel.OwnerName) {
+                return 1;
+            }
+
+            if (this.casemodel.OwnerName == casemodel.casemodel.OwnerName) {
+                return 0;
+            }
+
+            return -1;
+          }
+
+      
+
+        /**
+        * The comparator method used in sorting
+        * 
+        * @param obj The object to compare to
+        * @return the integer value of the comparison between the objects
+        */
+        public Integer compareTo(Object obj) {
+            CaseModelWrapper casemodel = (CaseModelWrapper)(obj);
+
+            if (SORT_BY == CaseNumber_SORT) {
+                return sortByCaseNumber(casemodel);
+            }
+            
+             if (SORT_BY == ParentCase_SORT) {
+                return sortByParentCase(casemodel);
+            }
+            
+             if (SORT_BY == AccountNo_SORT) {
+                return sortByAccountNo(casemodel);
+            }
+            
+             if (SORT_BY == MemberName_SORT) {
+                return sortByMemberName(casemodel);
+            }
+            
+             if (SORT_BY == CaseCategory_SORT) {
+                return sortByCaseCategory(casemodel);
+            }
+            
+             if (SORT_BY == CaseSubject_SORT) {
+                return sortByCaseSubject(casemodel);
+            }
+            
+             if (SORT_BY == CaseOrigin_SORT) {
+                return sortByCaseOrigin(casemodel);
+            }
+            
+             if (SORT_BY == OpenDate_SORT) {
+                return sortByOpenDate(casemodel);
+            }
+            
+             if (SORT_BY == Brand_SORT) {
+                return sortByBrand(casemodel);
+            }
+            
+             if (SORT_BY == Status_SORT) {
+                return sortByStatus(casemodel);
+            }
+            
+             if (SORT_BY == Owner_SORT) {
+                return sortByOwner(casemodel);
+            }
+
+           
+            // If we don't have a know sort by, let's just return that they are all equal
+            return 0;
+        }
+    }
+       //End: CRM-1501 - DB 
 }

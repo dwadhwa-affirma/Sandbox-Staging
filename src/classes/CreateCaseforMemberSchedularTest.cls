@@ -63,7 +63,7 @@ private class CreateCaseforMemberSchedularTest {
     	  Test.startTest();
     	  
        		    		
-            String jobId = System.schedule('ScheduleApexClassTest',  CRON_EXP, new CreateCaseForNonMatchedMemberSchedular());
+            String jobId = System.schedule('ScheduleApexClassTest',  CRON_EXP, new CreateAlertForNonMatchedMemberSchedular());
             CronTrigger ct = [SELECT Id, CronExpression, TimesTriggered, NextFireTime FROM CronTrigger WHERE id = :jobId];
             System.assertEquals(CRON_EXP, ct.CronExpression);
             System.assertEquals(0, ct.TimesTriggered);

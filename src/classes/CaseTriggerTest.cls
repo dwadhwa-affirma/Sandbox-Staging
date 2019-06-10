@@ -112,8 +112,8 @@ public class CaseTriggerTest {
          
         insert cs1;
         
-        cs1.Account_Number__c = accDetail1.Id;
-        update cs1; 
+      //  cs1.Account_Number__c = accDetail1.Id;
+      //  update cs1; 
     } 
     
     static testMethod void testMethod7(){

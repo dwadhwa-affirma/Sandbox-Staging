@@ -1,4 +1,4 @@
-trigger AttachmentNameUpdate on Attachment (after update,after delete,after insert, before insert) {
+trigger AttachmentNameUpdate on Attachment (after update,after delete,after insert, before insert,before delete) {
 
     List<Approve_Attachment__c> toupdateApproveAttachment  = new List<Approve_Attachment__c>();
     
@@ -95,6 +95,8 @@ trigger AttachmentNameUpdate on Attachment (after update,after delete,after inse
         List<string> Caseids = new List<string>();
         List<string> memberCommentids = new List<string>();
         
+   
+        
          List<string> listCasesComment = new List<string>(); 
          for(Attachment a : Trigger.New){
             Schema.SObjectType objType = a.ParentId.getsobjecttype();
@@ -179,13 +181,20 @@ trigger AttachmentNameUpdate on Attachment (after update,after delete,after inse
         }
         
         
-        List<Case> listCasetoReopened = [select id from case where Status = 'Closed' and Id in: Caseids];
+        List<Case> listCasetoReopened = [select id,status,Count_Attachment__c from case where  Id in: Caseids];
         
         
         
         for(Case itemCase : listCasetoReopened)
         {
-            itemCase.Status = 'Re Opened';
+            if(itemCase.Status == 'Closed')
+                itemCase.Status = 'Re Opened';
+            if(itemCase.Count_Attachment__c == null|| itemCase.Count_Attachment__c == 0){
+               itemCase.Count_Attachment__c = 1;
+            }
+            else{
+                itemCase.Count_Attachment__c ++;
+            }
         }
         update listCasetoReopened;
         insert (onbaseAttachmentsList);
@@ -231,17 +240,42 @@ trigger AttachmentNameUpdate on Attachment (after update,after delete,after inse
     
        
     if(Trigger.isDelete && Trigger.isBefore){
+            
+            List<string> Caseids = new List<string>();
             for(Attachment a : Trigger.old){
-              List<lead> l = new List<lead>();
-             l = [select id, Status from lead where id =: a.ParentId];
-             if(l.size() != 0)
-                  {
+                List<lead> l = new List<lead>();
+                l = [select id, Status from lead where id =: a.ParentId];
+                if(l.size() != 0)
+                {
                     if(l[0].Status == 'Closed - Not Converted' || l[0].Status == 'Closed - Converted')
                     {
                       a.Adderror('You can not Delete files for Closed Leads');
                     }
-                  }                  
-          }
+                }     
+                Schema.SObjectType objType = a.ParentId.getsobjecttype();   
+                if(objType == Case.sObjectType)
+                    {
+                        Caseids.add(a.ParentId);
+                    }
+                               
+                  }
+                  
+               List<Case> listCasetoReCount = [select id,Count_Attachment__c from case where  Id in: Caseids];
+               system.debug('---------------'+listCasetoReCount);
+               for(Case itemCase : listCasetoReCount)
+                    {
+                        
+                        if(itemCase.Count_Attachment__c == null|| itemCase.Count_Attachment__c == 0){
+                           itemCase.Count_Attachment__c = 0;
+                        }
+                        else if( itemCase.Count_Attachment__c > 0 ){
+                            itemCase.Count_Attachment__c --;
+                        }
+                    }
+                system.debug('---------------'+listCasetoReCount);
+                update listCasetoReCount;
+        
+        
         }
       
       if(Trigger.isInsert && Trigger.isBefore){
@@ -258,6 +292,48 @@ trigger AttachmentNameUpdate on Attachment (after update,after delete,after inse
           }
         }
  
+        // New Attachment Notification--DR
+    
+     Map<id,Attachment> NewAttachmentAlert = new Map<id,Attachment>();
+     Set<id> parentCase = new Set<id>();
+     if(Trigger.isInsert && Trigger.isAfter){   
+        for(Attachment a : Trigger.New){
+         NewAttachmentAlert.put(a.id,a);
+         parentCase.add(a.ParentId);
+   
+        }
+        
+        List<Case> AlertCase = [Select ID,  IsNewAttachment__c from case where id in: parentCase];
+        
+        for(Case c: AlertCase){
+         c.IsNewAttachment__c = True;
+         
+        }
+        
+        Update AlertCase;
+        
+     }
+   
+     Set<id> parentCase1 = new Set<id>();
+   
+     if(Trigger.isDelete && Trigger.isAfter){   
+        for(Attachment a : Trigger.old){
+             parentCase1.add(a.ParentId);
+         }
+        
+        List<Case> AlertCase1 = [Select ID,  IsNewAttachment__c from case where id in: parentCase1];
+        
+        for(Case c: AlertCase1){
+         c.IsNewAttachment__c = False;
+         
+        }
+        
+        Update AlertCase1;
+        
+     }
+   
+   // End of alert notification
+
        
  
 }

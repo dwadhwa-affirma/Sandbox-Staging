@@ -6,10 +6,6 @@
     </types>
     <types>
         <members>*</members>
-        <name>AuraDefinitionBundle</name>
-    </types>
-    <types>
-        <members>*</members>
         <name>ApexComponent</name>
     </types>
     <types>
@@ -19,6 +15,10 @@
     <types>
         <members>*</members>
         <name>ApexTrigger</name>
+    </types>
+    <types>
+        <members>*</members>
+        <name>AuraDefinitionBundle</name>
     </types>
     <version>38.0</version>
 </Package>

@@ -40,8 +40,9 @@ public class CreateCaseMemberPageController {
         }
         list<Account_Details__c> accList = new list<Account_Details__c>();
         
-        
-        if(acctypeSet.contains('ACCT')){
+        	system.debug('acctypeSet=='+acctypeSet);
+        	system.debug('accIdSet=='+accIdSet);
+        if(acctypeSet.contains('ACCT')){        
             accList = [SELECT Id,
                               Name,
                               RecType__c,
@@ -49,8 +50,8 @@ public class CreateCaseMemberPageController {
                               ID1__c,
                               Balance__c,
                               Reference__c,
-                              Brand__c FROM Account_Details__c Where Name IN:accountNumberSet ORDER BY Name asc, RecType__c asc];
-        }else{
+                              Brand__c FROM Account_Details__c Where Name IN:accountNumberSet and (RecType__c = 'ACCT' or (RecType__c = 'SHAR' and TypeTranslate__c ='1-PRIMARY SHARE')) ORDER BY Name asc, RecType__c asc];
+        }else{        
             accList = [SELECT Id,
                               Name,
                               RecType__c,
@@ -58,17 +59,32 @@ public class CreateCaseMemberPageController {
                               ID1__c,
                               Balance__c,
                               Reference__c,
-                              Brand__c  FROM Account_Details__c Where Id IN:accIdSet ORDER BY Name asc, RecType__c asc];
+                              Brand__c  FROM Account_Details__c Where Id IN:accIdSet and (RecType__c = 'ACCT' or (RecType__c = 'SHAR' and TypeTranslate__c ='1-PRIMARY SHARE')) ORDER BY Name asc, RecType__c asc];
         }
         
         mapList.put('accList', accList);
-       
-       
-       
+        
+      /*  List<Top_10_Case_Types__c> ctList= new List<Top_10_Case_Types__c>();    
+    	ctList = [select id, Case_Type__c, Internal_Comments__c, Primary_Category__c, Secondary_Category__c, Subject__c, Tertiary_Category__c  from Top_10_Case_Types__c order by Case_Type__c];
+    	
+    	
+    	mapList.put('toptencategories', ctList); 	*/
        return mapList;
     	
     }
     
+     @auraenabled
+     
+     public static Map<string,object> getTop10Cases()
+     {
+     	 List<Top_10_Case_Types__c> ctList= new List<Top_10_Case_Types__c>();    
+    	ctList = [select id, Case_Type__c, Internal_Comments__c, Primary_Category__c, Secondary_Category__c, Subject__c, Tertiary_Category__c  from Top_10_Case_Types__c order by Case_Type__c];
+    	
+    	Map<string,object> mapList = new Map<string,object>();
+    	mapList.put('toptencategories', ctList); 	
+       return mapList;
+     } 
+     
     @auraenabled
     public static  Map<string,object> getAccountDetailsData(string accoutid)
     {
@@ -86,7 +102,7 @@ public class CreateCaseMemberPageController {
        
         list<Person_Account__c> paList = new list<Person_Account__c>();
         if(acc[0].RecordType.Name == 'Membership'){
-            paList = [SELECT Id,Account_Number__c, PersonID__c, Account_Number__r.RecType__c,Account_Number__r.Name,PersonID__r.Name,TypeTranslate__c FROM Person_Account__c WHERE Account_Number__c =:accoutid];
+            paList = [SELECT Id,Account_Number__c, PersonID__c, Account_Number__r.RecType__c,Account_Number__r.Name,PersonID__r.Name,TypeTranslate__c FROM Person_Account__c WHERE Account_Number__c =:accoutid and TypeTranslate__c !=: '0004/Beneficiary'];
         }
         else
         {
@@ -100,7 +116,7 @@ public class CreateCaseMemberPageController {
                              Account_Number__r.Name,
                              PersonID__r.Name,
                              RecType__c,
-                             TypeTranslate__c FROM Person_Account__c WHERE Account_Number__c =:accoutid OR Account_Number__c =:accId1];
+                             TypeTranslate__c FROM Person_Account__c WHERE (Account_Number__c =:accoutid OR Account_Number__c =:accId1) and TypeTranslate__c !=: '0004/Beneficiary'];
             }else{
             	paList = [SELECT Id,
                              Account_Number__c, 
@@ -109,7 +125,7 @@ public class CreateCaseMemberPageController {
                              Account_Number__r.Name,
                              PersonID__r.Name,
                              RecType__c,
-                             TypeTranslate__c FROM Person_Account__c WHERE Account_Number__c =:accoutid];
+                             TypeTranslate__c FROM Person_Account__c WHERE Account_Number__c =:accoutid and TypeTranslate__c !=: '0004/Beneficiary'];
             }
         
             
@@ -162,7 +178,11 @@ public class CreateCaseMemberPageController {
         
         mapList.put('accList', paList);
        
-       
+    /*    List<Top_10_Case_Types__c> ctList= new List<Top_10_Case_Types__c>();    
+    	ctList = [select id, Case_Type__c, Internal_Comments__c, Primary_Category__c, Secondary_Category__c, Subject__c, Tertiary_Category__c  from Top_10_Case_Types__c order by Case_Type__c];
+    	
+    	
+    	mapList.put('toptencategories', ctList); */
        
        return mapList;
     	
@@ -277,7 +297,7 @@ public class CreateCaseMemberPageController {
     }
     
     @AuraEnabled
-    public static Map<string,string> saveData(Case caseObject, Account accObject, Account_Details__c selectedAcctNumber)
+    public static Map<string,string> saveData(Case caseObject, Account accObject, Account_Details__c selectedAcctNumber,  List<Account_Details__c> AccountObjectlist)
     {
     	string returnvalue = '';
     	Map<string, string> mapresult = new Map<string,string>();
@@ -399,6 +419,41 @@ public class CreateCaseMemberPageController {
             mapresult.put('CaseId', string.valueOf(cs.Id));
 			Case caseFinal = [select CaseNumber from Case where Id =: cs.Id];
             mapresult.put('CaseNumber', string.valueOf(caseFinal.CaseNumber));
+             
+            Integer mSize = AccountObjectlist.size();
+            System.debug('AccountObjectlist##' + AccountObjectlist);
+            List<CaseAccountMemberDetail__c> CaseAccountMemberDetailList = new List<CaseAccountMemberDetail__c>();
+            
+            CaseAccountMemberDetail__c camd1 = new CaseAccountMemberDetail__c();
+	       	camd1.Case__c = cs.Id;
+	       	camd1.MemberAccountid__c = selectedAcctNumber.Id ;
+	       	camd1.Account_Name__c = selectedAcctNumber.Name;
+	        CaseAccountMemberDetailList.add(camd1);	
+	                    		
+            System.debug('AccountObjectlistarray##' + AccountObjectlist);
+            if(mSize > 0 )
+            {
+            	for(Account_Details__c accd : AccountObjectlist )
+            	{
+            		system.debug('accd##'+ accd);
+            		if(accd.Id != null)
+            		{
+	            		CaseAccountMemberDetail__c camd = new CaseAccountMemberDetail__c();
+	            		camd.Case__c = cs.Id;
+	            		camd.MemberAccountid__c = accd.Id ;
+	            		camd.Account_Name__c = accd.Name;
+	            		CaseAccountMemberDetailList.add(camd);
+            		}
+            		
+            	}
+            }
+            System.debug('CaseAccountMemberDetailList##' + CaseAccountMemberDetailList);
+            If(!CaseAccountMemberDetailList.IsEmpty())
+            {
+            	insert CaseAccountMemberDetailList;
+            }
+            
+            
             return mapresult;    	
     }
     
@@ -522,7 +577,7 @@ public class CreateCaseMemberPageController {
     
     
      @AuraEnabled
-    public static Map<string,string> saveDataForAccountDetails(Case caseObject, Account_Details__c memObject, Person_Account__c selectedMemberNumber)
+    public static Map<string,string> saveDataForAccountDetails(Case caseObject, Account_Details__c memObject, Person_Account__c selectedMemberNumber )
     {
     	string returnvalue = '';
     	Map<string, string> mapresult = new Map<string,string>();
@@ -665,6 +720,29 @@ public class CreateCaseMemberPageController {
             mapresult.put('Message', returnvalue);
             mapresult.put('CaseId', string.valueOf(cs.Id));
             mapresult.put('CaseNumber', string.valueOf(caseFinal.CaseNumber));
+           
+          
+            
             return mapresult;    	
+    }
+    
+       @AuraEnabled
+    public static Map<string, object> selectCaseCategoriesforTopTenTypes(string PrimaryText, string SecondaryText)
+    {
+    	Map<string,object> mapList = new Map<string,object>();
+    	
+    	
+    	//List<String> splits = selectedText.split(' / ');
+    	
+    	List<KeyValuePairModel> scOptions =  getscOptions(PrimaryText);
+    	List<KeyValuePairModel> tcOptions =  gettcOptions(SecondaryText);
+    	
+    	
+    	
+        mapList.put('scOptions', scOptions);
+        mapList.put('tcOptions', tcOptions);
+    	
+    	return mapList;
+    	
     }
 }

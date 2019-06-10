@@ -26,6 +26,22 @@ public class MasterCardTravelTriggerTest {
 		        accDetail1.Card_Name__c = 'MINDY O RIGA';
 		        accDetail1.TypeTranslate__c = '15-CHEVRON DEBIT CARD';
 		        insert accDetail1;
+		        
+		        Master_Card_Configurations__c cs = new Master_Card_Configurations__c();	 	
+		    	cs.Card_Type__c = '11, 12';	
+		    	cs.Name = 'ATM'; 
+		    	insert cs; 
+		    	
+		    	cs = new Master_Card_Configurations__c();	 	
+		    	cs.Card_Type__c = '13, 14, 15, 18';	
+		    	cs.Name = 'DEBIT'; 
+		    	insert cs;
+		    	
+		    	cs = new Master_Card_Configurations__c();	 	
+		    	cs.Card_Type__c = '16, 17';	
+		    	cs.Name = 'HSA'; 
+		    	  	
+		    	insert cs;
 			  	
 			  	List<Case> case_Obj = new List<Case>{
 			    new Case(Status = 'In Process',description='Original Desc', Origin = null, Subject = 'Test', ClosedDate = null, IsEscalated = false, AccountId = acc.Id, Account_Number__c = accDetail.Id, Additional_Documents__c = false, Staff_Escalated__c = false, Five_Day_Flag__c = false, IsMarkDeleted__c = false, IsMarkRead__c = false, IsMarkSaved__c = false, Primary_Category__c = 'Card services', Secondary_Category__c = 'ATM/Debit', Tertiary_Category__c = 'Travel notification', MaritzCX__Response_Deleted_From_MaritzCX__c = false, SLATemp__c = false)	};

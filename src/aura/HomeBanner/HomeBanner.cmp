@@ -33,7 +33,7 @@
 	<div class="homeHomeCard currentCard">
 	<article class="slds-card slds-card_boundary forceBaseCard">	
 		
-		<p style="background-color: yellow"><b>{!v.bannerTitle} &nbsp;{!v.bannerText}</b>&nbsp;<a target="_blank"  href="{!v.BannerLink}" title="{!v.BannerLinkHover}">{!v.bannerLinkText}</a></p>		
+		<p style="background-color: Yellow"><b>{!v.bannerTitle} &nbsp;{!v.bannerText}</b>&nbsp;<a target="_blank"  href="{!v.BannerLink}" title="{!v.BannerLinkHover}">{!v.bannerLinkText}</a></p>		
 	
 	</article>
 	</div>

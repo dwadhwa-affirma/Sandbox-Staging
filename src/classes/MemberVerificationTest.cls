@@ -191,13 +191,14 @@ public class MemberVerificationTest {
     }
     
     static testMethod void testMethod2(){
-    	
+    	List<Account> alist = new List<Account>();
     	Id rtId = [SELECT Id FROM RecordType WHERE IsPersonType = TRUE AND SObjectType='Account' LIMIT 1].Id;
 		Account acc = new Account();
     	acc.RecordTypeID=rtId;
     	acc.FirstName='Test FName';
-        acc.LastName='Test LName';    	
-        insert acc;
+        acc.LastName='Test LName';   
+        alist.add(acc);
+        //insert acc;
   
         Account_Details__c accDetail = new Account_Details__c();
         accDetail.Name = 'Test123';
@@ -216,9 +217,10 @@ public class MemberVerificationTest {
     	acc2.RecordTypeID=rtId;
     	acc2.FirstName='Test FName';
         acc2.LastName='Test LName';
-        insert acc2;
-        
-		
+         alist.add(acc2);
+       // insert acc2;
+        insert alist;
+	
 		
         
         Person_Account__c pa2 = new Person_Account__c();

@@ -26,6 +26,8 @@
      <aura:attribute name="isObjectAccess" access="global" Type="boolean" default="true"/>
       <aura:attribute name="isError" access="global" Type="boolean" default="false"/>
        <aura:attribute name="isCUReadEditable" access="global" Type="boolean" default="false"/>
+       
+        <aura:attribute name="CRAttachments" access="global" Type="Object" />
     
     <aura:attribute name="record" type="Case"/>  
 <aura:attribute name="simpleRecord" type="Case"/>
@@ -241,6 +243,19 @@
                         </thead>
                         <tbody>
                             <aura:iteration items="{!v.Attachments}" var="item" indexVar="index">
+                                <tr>
+                                    <td>
+                                        {!item.attachmentobj.Name}
+                                    </td>
+                                    <td>
+                                    	<a target="_blank" href="{!item.attachmentobj.downloadLink}">Download</a>                                    	
+                                    </td>
+                                    <td>
+                                        <ui:inputCheckbox class="chkAttachment" value="{!item.checkvalue}" disabled="{!v.ReadOnly}" />
+                                    </td>                                    
+                                </tr>
+                            </aura:iteration>
+                             <aura:iteration items="{!v.CRAttachments}" var="item" indexVar="index">
                                 <tr>
                                     <td>
                                         {!item.attachmentobj.Name}

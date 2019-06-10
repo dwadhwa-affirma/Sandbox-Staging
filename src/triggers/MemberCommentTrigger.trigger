@@ -1,4 +1,6 @@
 trigger MemberCommentTrigger on Member_Comment__c (before insert, before update) {
+
+     
     if(Trigger.isBefore){
         
         for(Member_Comment__c mc: Trigger.new){ 
@@ -90,4 +92,6 @@ trigger MemberCommentTrigger on Member_Comment__c (before insert, before update)
             
         }
    }
+   
+    
 }

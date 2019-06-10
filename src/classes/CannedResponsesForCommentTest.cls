@@ -123,11 +123,12 @@ public class CannedResponsesForCommentTest{
             cr.Active__c = true;
             cr.Tertiary_Lookup_Text__c = 'Test';
             insert cr;
+    test.stoptest();
 }
 
 
     static testmethod void validateStandardController(){
-        
+        test.startTest();
 		Case cas = [select id from case limit 1];
         
    List<Attachment>     AttachmentLst = [select id from Attachment where parentid =: cas.id];
@@ -173,7 +174,7 @@ public class CannedResponsesForCommentTest{
             crc.getTitlesByCategories();
             crc.save();
             crc.cancelall();
-    
+    test.stopTest();
       }
    
  }

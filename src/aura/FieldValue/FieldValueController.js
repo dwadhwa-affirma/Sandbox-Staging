@@ -54,13 +54,18 @@
 	        {
 	        	value = helper.formatDate("MM/dd/yyyy hh:mm t",datetime);
 	        	
-	        	var localTime = datetime.getTime();
+	        	var usaTime = new Date(value).toLocaleString("en-US", {timeZone: "America/Los_Angeles"});
+	        	usaTime = new Date(usaTime);
+	        	var result = usaTime.toLocaleString();
+				//console.log('USA time: '+usaTime.toLocaleString())
+	        	
+	        	/*var localTime = datetime.getTime();
 	        	var localOffset = datetime.getTimezoneOffset() * 60000;
 	        	var utc = localTime + localOffset;
 	        	var offset = -8.0;   
 	        	var convered = utc + (3600000*offset);
-	        	datetime = new Date(convered); 
-	        	value = helper.formatDate("MM/dd/yyyy hh:mm t",datetime);
+	        	datetime = new Date(convered); */
+	        	value = helper.formatDate("MM/dd/yyyy hh:mm t",new Date(result));
 	        }	       
 	        component.set("v.FieldValue", value);
 	       

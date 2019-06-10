@@ -21,6 +21,7 @@
 	        	{
 	        		var result =  response.getReturnValue(); 	        		
 	        		component.set('v.accObject', result.accountDetails);
+	        		//component.set('v.TopTenCases', result.toptencategories);
 	        		var aList = result.accList; 
 	        		aList.map((obj) => {   
 					obj.isShow = true;
@@ -33,7 +34,20 @@
 		   $A.enqueueAction(action);
        }
        
+      
        
+       var action1 = component.get("c.getTop10Cases");
+        action1.setCallback(this, function(response){
+        	var status = response.getState();
+        	if(component.isValid() && status === "SUCCESS")
+	        	{
+	        		var result =  response.getReturnValue(); 
+	        		component.set('v.TopTenCases', result.toptencategories);
+	        	}
+        	
+        });
+         $A.enqueueAction(action1);
+        
        if(isAccountDetails)
        {    	   
     	   action = component.get("c.getAccountDetailsData");
@@ -45,7 +59,7 @@
 	        	{
 	        		var result =  response.getReturnValue();  	
 	        		component.set('v.memObject', result.accountDetails);
-	        		
+	        		//component.set('v.TopTenCases', result.toptencategories);
 	        		component.set('v.memberList', result.accList);
 					component.set('v.loading',false);	        		
 	        	}            	
@@ -350,6 +364,60 @@
     	 
 
     },
+    
+    changeTopTenCase: function (component, event){
+    			var caseObject = component.get('v.caseObject');
+		        caseObject.Primary_Category__c = '';
+		        caseObject.Secondary_Category__c = '';
+		        caseObject.Tertiary_Category__c = '';
+		        caseObject.Subject = '';
+		        caseObject.CaseComments__c = '';
+		       component.set('v.caseObject', caseObject);
+		       	
+    var stc= component.get('v.selectedTopCategoryValue');//event.getSource().elements[0].value;
+   //  component.set('v.selectedTopCategoryValue',stc);
+    
+       var alltoptencategories = component.get("v.TopTenCases");
+        for(var i=0; i< alltoptencategories.length ; i++){
+            if(alltoptencategories[i].Case_Type__c === stc){
+                var pc= alltoptencategories[i].Primary_Category__c;
+                 var sc= alltoptencategories[i].Secondary_Category__c;
+                 var tc= alltoptencategories[i].Tertiary_Category__c;
+                 var subject= alltoptencategories[i].Subject__c;
+                 var internalcomment= alltoptencategories[i].Internal_Comments__c;            
+                component.set('v.loading',true);
+			    var action = component.get("c.selectCaseCategoriesforTopTenTypes");
+			    
+			    
+			    var parameters = {"PrimaryText": pc , "SecondaryText": sc};
+			     action.setParams(parameters);
+			    action.setCallback(this, function(response){
+			    	var status = response.getState();
+		        	if(component.isValid() && status === "SUCCESS")
+		        	{
+		        		var result =  response.getReturnValue();  	
+		        		component.set('v.scOptions', result.scOptions);
+		        		component.set('v.tcOptions', result.tcOptions);		        		
+		        	
+		        		var caseObject = component.get('v.caseObject');
+		        		caseObject.Primary_Category__c = pc;
+		        		caseObject.Secondary_Category__c = sc;
+		        		caseObject.Tertiary_Category__c = tc;
+		        		caseObject.Subject = subject;
+		        		caseObject.CaseComments__c = internalcomment;
+		        		component.set('v.caseObject', caseObject);	
+		        		// var selectedLC = component.find("selectedtopcategory").get("v.value");      
+		        		 //component.set("v.lcselect", selectedLC.toString());            		
+		        		component.set('v.loading',false);
+		        	}            	
+			   	});
+		        $A.enqueueAction(action);
+              
+            }
+            
+        }
+    
+    }
     
   /*  addMemberAccount: function (component, event) {
     	var count = component.get("v.accountCount");

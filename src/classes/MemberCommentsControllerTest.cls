@@ -166,7 +166,7 @@ private class MemberCommentsControllerTest
 	}
 	// Test Method: saveComment
 	public static testmethod void Test_saveComment(){
-		SetUp();
+		/*SetUp();
 		string memberdescription = 'test test';
 		string caseid = [select Id from case limit 1].Id;
 		boolean draft = true;
@@ -222,7 +222,7 @@ private class MemberCommentsControllerTest
 		
 		
 		
-		TearDown();
+		TearDown();*/
 	}
 	
 	

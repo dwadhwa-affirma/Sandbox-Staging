@@ -36,7 +36,7 @@
         this.processNextFile(component, this);
         }
      
-      
+        
     },
  
  
@@ -69,8 +69,8 @@
 	      {
 	    	  component.set("v.showLoadingSpinner", false);
 	    	   $A.get('e.force:refreshView').fire();
-	    	    var dismissActionPanel = $A.get("e.force:closeQuickAction");
-	    	    dismissActionPanel.fire();
+	    	  /*  var dismissActionPanel = $A.get("e.force:closeQuickAction");
+	    	    dismissActionPanel.fire();*/
 	    	    
 	    	   var toastEvent = $A.get("e.force:showToast");
 	        
@@ -82,7 +82,19 @@
 		            mode: 'pester'
 		        });
 		        toastEvent.fire();	
-		        var updateEvent = component.getEvent("ClosePopup");
+		        var varIsUploadandNew;
+                	varIsUploadandNew = component.get('v.IsUploadandNewPressed');
+                	 var updateEvent = component.getEvent("ClosePopup");
+                	if(!varIsUploadandNew)
+                	{ updateEvent.setParams({ "SectionName": 'DetailPage'});}
+                	else
+                	{
+                		updateEvent.setParams({ "SectionName": 'CasePage'});
+                		var fileNames = new Array();
+                		component.set("v.fileNames", fileNames);
+                	}
+		       
+		         
 			updateEvent.fire();
 	      }
     

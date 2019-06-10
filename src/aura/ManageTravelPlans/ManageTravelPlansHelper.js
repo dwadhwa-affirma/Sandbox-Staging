@@ -33,15 +33,15 @@
 				 if(res.isTravelCard != false){
 					var cardlist = res.accList;	
 					var finalcardlist = [];
-					cardlist.map((obj) => {   
-					obj.CardType = "";
-					})	
+					//cardlist.cardDetails.map((obj) => {   
+					//obj.CardType = "";
+					//})	
 					for(var i=0;i<cardlist.length;i++){
-						var cardtype=cardlist[i].TypeTranslate__c.substring(0, 2); 
+						/*var cardtype=cardlist[i].cardClassification; 
 						if(cardtype == "11" || cardtype =="12"){
 							cardlist[i].CardType = "ATM";
 						}
-						else if(cardtype == "13" || cardtype =="14" || cardtype =="15"){
+						else if(cardtype == "13" || cardtype =="14" || cardtype =="15" || cardtype =="18"){
 							cardlist[i].CardType = "DEBIT";
 						}
 						else if(cardtype == "16" || cardtype =="17"){
@@ -50,19 +50,21 @@
 						else
 						{	
 							cardlist[i].CardType = "NA";
+						}*/	
+						var iobj = 	cardlist[i].cardDetails;				
+						iobj.CardType = cardlist[i].cardClassification;
+						if(iobj.Card_Name__c == '' || iobj.Card_Name__c == undefined){
+							iobj.Card_Name__c = '(No Name Record Exists)';
 						}
-						if(cardlist[i].Card_Name__c == '' || cardlist[i].Card_Name__c == undefined){
-							cardlist[i].Card_Name__c = '(No Name Record Exists)';
-						}
-						if(cardlist[i].Card_Number__c == undefined){
+						if(iobj.Card_Number__c == undefined){
 							
 						}
-						else if(cardlist[i].Card_Number__c == null || cardlist[i].Card_Number__c.length != 16){
+						else if(iobj.Card_Number__c == null || iobj.Card_Number__c.length != 16){
 							
 						}
 						else
 						{
-							finalcardlist.push(cardlist[i]);
+							finalcardlist.push(iobj);
 						}
 						
 					}	

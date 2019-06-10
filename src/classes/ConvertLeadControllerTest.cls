@@ -2,7 +2,17 @@
 private class ConvertLeadControllerTest{
    
   static testmethod void setupTestData(){
-   
+      
+    Amount_On_Lead_Opportunity__c mcs = new Amount_On_Lead_Opportunity__c();
+      
+      mcs.Amount__c = 264000.00;
+      mcs.Product_Sub_Type__c = 'Purchase';
+      mcs.Product_Type__c = 'Mortgage';
+      mcs.Name = 'Mortgage-Purchase';
+      insert mcs;
+
+      
+      
     Lead ld = new Lead ();
     ld.LastName = 'Test';
     ld.Email = 'test@gmail.com';
@@ -27,7 +37,7 @@ private class ConvertLeadControllerTest{
     ld.State__c= 'NY';
     ld.Zip_Code__c= '12345';
     ld.City__c='NYC';
-    ld.Country__c ='USA';
+    ld.Country__c ='USA';    
     insert ld;
  
 

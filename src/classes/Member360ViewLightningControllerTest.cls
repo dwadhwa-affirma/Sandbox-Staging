@@ -156,7 +156,15 @@ Comment_Block_20__c='ABC'
 		    new Case(Status = 'In Process', Origin = null, Subject = 'Test', ClosedDate = null, IsEscalated = false, AccountId = account_Obj.Id, Account_Number__c = account_details_Obj[0].Id, Additional_Documents__c = false, Staff_Escalated__c = false, Five_Day_Flag__c = false, IsMarkDeleted__c = false, IsMarkRead__c = false, IsMarkSaved__c = false, Primary_Category__c = 'Account Maintenance', Secondary_Category__c = 'Account Services', Tertiary_Category__c = 'Extended Check Hold', MaritzCX__Response_Deleted_From_MaritzCX__c = false, SLATemp__c = false),
 		    new Case(Status = 'In Process', Origin = null, Subject = 'Test', ClosedDate = null, IsEscalated = false,AccountId = account_Obj.Id,  Account_Number__c = account_details_Obj[0].Id, Additional_Documents__c = false, Staff_Escalated__c = false, Five_Day_Flag__c = false, IsMarkDeleted__c = false, IsMarkRead__c = false, IsMarkSaved__c = false, Primary_Category__c = 'Account Maintenance', Secondary_Category__c = 'Account Services', Tertiary_Category__c = 'Extended Check Hold', MaritzCX__Response_Deleted_From_MaritzCX__c = false, SLATemp__c = false)
 		    
-                }; 
+                };                     
+           
+        
+         /*CaseAccountMemberDetail__c camd2 = new CaseAccountMemberDetail__c();
+        camd1.Account_Name__c = account_details_Obj[1].Name;
+        camd1.Case__c = case_Obj[0].id;
+        camd1.MemberAccountid__c = account_details_Obj[1].Id;
+        
+        insert camd2;*/
              /* List<Case> case_Obj = new List<Case>();
               
               Case cs1 = new Case(Status = 'In Process', Origin = null, Subject = 'Test', ClosedDate = null, IsEscalated = false, AccountId = account_Obj.Id, Account_Number__c = account_details_Obj[0].Id, Additional_Documents__c = false, Staff_Escalated__c = false, Five_Day_Flag__c = false, IsMarkDeleted__c = false, IsMarkRead__c = false, IsMarkSaved__c = false, Primary_Category__c = 'Account Maintenance', Secondary_Category__c = 'Account Services', Tertiary_Category__c = 'Extended Check Hold', MaritzCX__Response_Deleted_From_MaritzCX__c = false, SLATemp__c = false);
@@ -170,6 +178,13 @@ Comment_Block_20__c='ABC'
               case_Obj.Add(cs4);*/
                          
 			  Insert case_Obj;
+              
+              /*    CaseAccountMemberDetail__c camd1 = new CaseAccountMemberDetail__c();
+                camd1.Account_Name__c = account_details_Obj[1].Name;
+                camd1.Case__c = case_Obj[0].id;
+                camd1.MemberAccountid__c = account_details_Obj[1].Id;
+                
+                insert camd1;*/
               
 		List<CaseComment> CaseComment_Obj = new List<CaseComment>{		 
 						new CaseComment(CommentBody='test', IsPublished = true,ParentId=case_Obj[0].Id),
@@ -198,6 +213,7 @@ Comment_Block_20__c='ABC'
               CaseComment_Obj.Add(cm5);
               CaseComment_Obj.Add(cm6);
               */
+                            TEst.starttest();
 			insert CaseComment_Obj;
 	
 			List<Task> task_Obj = new List<Task>{		 
@@ -273,7 +289,7 @@ Comment_Block_20__c='ABC'
 							    
 						};
 			insert task_Obj1;*/
-			
+			TEst.stoptest();	
 		    
   }
  static testMethod void GetAllDataTest() {
@@ -281,7 +297,7 @@ Comment_Block_20__c='ABC'
  	List<Account> obj = [select id from Account limit 2];
  	Memeber360ViewLightningController.GetAllData(obj[0].Id);
  	Memeber360ViewLightningController.GetAllData(obj[1].Id);
- 	TEst.stoptest();
+ TEst.stoptest();
  }   
  
  static testmethod void GetAccountPaggingDataTest()
@@ -311,9 +327,9 @@ Comment_Block_20__c='ABC'
  
   static testmethod void GetCasesPaggingDataTest()
   {
-  	TEst.starttest();
+  	Test.starttest();
   	List<Account> obj = [select Id from Account limit 2];
-  	
+  		
   	Memeber360ViewLightningController.GetPagingData(obj[0].Id,1,10,'active cases','','','test');
  	Memeber360ViewLightningController.GetPagingData(obj[0].Id,1,10,'active cases','CaseNumber','ASC','08/08/2012');
      
@@ -324,15 +340,15 @@ Comment_Block_20__c='ABC'
  	Memeber360ViewLightningController.GetPagingData(obj[0].Id,1,10,'Case Comments','AccountName','ASC','08/08/2012');
  	
  	
- 	Memeber360ViewLightningController.GetPagingData(obj[1].Id,1,10,'active cases','','','test');
+ 	//Memeber360ViewLightningController.GetPagingData(obj[1].Id,1,10,'active cases','','','test');
  	Memeber360ViewLightningController.GetPagingData(obj[1].Id,1,10,'active cases','CaseNumber','ASC','08/08/2012');
      
-	Memeber360ViewLightningController.GetPagingData(obj[1].Id,1,10,'close cases','','','test');
+	//Memeber360ViewLightningController.GetPagingData(obj[1].Id,1,10,'close cases','','','test');
  	Memeber360ViewLightningController.GetPagingData(obj[1].Id,1,10,'close cases','CaseNumber','ASC','08/08/2012');
      
 	Memeber360ViewLightningController.GetPagingData(obj[1].Id,1,10,'Case Comments','AccountNumberName','Desc','test');
 	TEst.stoptest();
- //
+
   }
   
   static testmethod void GetTasksPaggingDataTest()

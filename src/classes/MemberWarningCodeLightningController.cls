@@ -3,7 +3,7 @@ public class MemberWarningCodeLightningController {
     public static list<string> getData(string accoutid)
     {
     	list<string> rwcwList = new list<string>();
-    	 list<Person_Account__c> paList = [SELECT Id,Account_Number__c, Account_Number__r.RecType__c, Account_Number__r.Name FROM Person_Account__c WHERE PersonID__c =:accoutid];
+    	 list<Person_Account__c> paList = [SELECT Id,Account_Number__c, Account_Number__r.RecType__c, Account_Number__r.Name FROM Person_Account__c WHERE PersonID__c =:accoutid and TypeTranslate__c !=: '0004/Beneficiary'];
     	 set<String> accountNumberSet = new set<String>();
         set<Id> accIdset = new set<Id>();
         set<String> acctypeSet = new set<String>();

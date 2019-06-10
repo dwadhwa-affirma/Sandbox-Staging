@@ -21,11 +21,19 @@ global class CreateCaseForNonMatchedMemberBatch implements Database.Batchable<sO
 			DateTime dt1 = businessdays3.addSeconds(tz.getOffset(businessdays3) / 1000);
             
             Datetime dt = BusinessHours.add(bh.id, System.now(), -3600000 * businessduration );
-return Database.getQueryLocator('SELECT Id, Owner.Name, Ownerid, Is_Case_Created__c, Created_By_Episys_User_Alias__c FROM Account ' + 
+      System.debug('Start method called');
+     System.debug('Start query called' +  Database.getQueryLocator('SELECT Id, Owner.Name, FirstName,LastName, Ownerid, Is_Case_Created__c, Created_By_Episys_User_Alias__c FROM Account ' + 
+                                      	' where RecordType.Name = \'Person Account\' and IsConverted__c=false and Is_Case_Created__c = false ' +
+            					  ' and createddate >= ' + string.valueof(dt1).replace(' ','T') + '.000+0000 and  createddate <= ' + string.valueof(dt).replace(' ','T') + '.000+0000'));
+     
+		return Database.getQueryLocator('SELECT Id, Owner.Name, FirstName,LastName, Ownerid, Is_Case_Created__c, Created_By_Episys_User_Alias__c FROM Account ' + 
                                       	' where RecordType.Name = \'Person Account\' and IsConverted__c=false and Is_Case_Created__c = false ' +
             					  ' and createddate >= ' + string.valueof(dt1).replace(' ','T') + '.000+0000 and  createddate <= ' + string.valueof(dt).replace(' ','T') + '.000+0000');
+    
+      
    }
     global void execute(Database.BatchableContext BC, List<Account> acclist){
+       system.debug('acclist##' + acclist);
         Set<ID> accountIds = new Set<Id>();
         Set<String> aliaslist = new Set<String>();
         Map<Id, String> accaliasmap = new Map<Id, String>();
@@ -43,9 +51,10 @@ return Database.getQueryLocator('SELECT Id, Owner.Name, Ownerid, Is_Case_Created
          system.debug('accountIds##'+ accountIds);
         if(accountIds.size() > 0)
         {
-             List<Case> caselist = new List<Case>(); 
+           //  List<Case> caselist = new List<Case>(); 
+             List<FeedItem> FeedItemlist = new List<FeedItem>(); 
              List<Account> updateacclist = new List<Account>();
-             List<Person_Account__c> paList = [SELECT Id,PersonID__c, Account_Number__c,Account_Number__r.Created_By_User_Alias__c FROM Person_Account__c WHERE 
+             List<Person_Account__c> paList = [SELECT Id,Ownerid, PersonID__c, Account_Number__c,Account_Number__r.Created_By_User_Alias__c FROM Person_Account__c WHERE 
                                                       PersonID__c =: accountIds  Order by Account_Number__r.RecType__c];
             
             Set<string> listUserAlias = new Set<string>();
@@ -56,7 +65,9 @@ return Database.getQueryLocator('SELECT Id, Owner.Name, Ownerid, Is_Case_Created
             for(Account acc : acclist)
             {
             	 System.debug('inside');
-                Case c = new Case();
+            	 
+            	 // Changes done for MVAN-8 Begin
+             /*   Case c = new Case();
                 c.Primary_Category__c = 'Account Maintenance';
                 c.Secondary_Category__c = 'Pre Member Conversion';
                 c.Tertiary_Category__c = 'Failed';
@@ -72,36 +83,40 @@ return Database.getQueryLocator('SELECT Id, Owner.Name, Ownerid, Is_Case_Created
                     }
                 }
                             
+                */
                 
-                if(paList.size() > 0)
+          //   User MarsUser =   [select id, name from user where name ='MARS System'];
+			  
+                 for(user u : listUser)
                 {
-                    for(Person_Account__c pa : paList)
+                     System.debug('insideuser');
+                    if(u.alias == acc.Created_By_Episys_User_Alias__c)
                     {
-                        if(pa.PersonID__c == acc.id)
-                        {
-                            
-                            c.Account_Number__c = pa.Account_Number__c;
-                            break;
-                        }
+                        FeedItem post = new FeedItem();
+			 			//post.Body = 'Failed Pre Member Conversion';
+			 			String fullURL = URL.getSalesforceBaseUrl().toExternalForm()+ '/lightning/n/Pre_Member_Conversion';      
+			 			system.debug('fullURL==='+fullURL); 
+                        //post.Body = 'Failed Pre Member Conversion. Click here to convert Pre Member: ' + fullURL; 
+			 			post.Body = 'Failed Pre Member Conversion for ' + acc.FirstName + ' ' + acc.LastName + ' Click here to convert Pre Member: ' + fullURL; 
+			 			post.LinkUrl = fullURL;			 			
+			 			post.ParentId = u.id;			 			
+                        FeedItemlist.Add(post);
                     }
                     
                 }
-                if(c.Account_Number__c == null)
-                {
-                    continue;
-                }
-                
-                caselist.Add(c);
+               
+               // FeedItemlist.Add(post);
                 acc.Is_Case_Created__c = true;
                 updateacclist.add(acc);
-                
+                  
             }
 	        		
-            if(!caselist.IsEmpty()) insert caselist;
-            System.debug('caselist##' + caselist.size());
-             System.debug('caselist##' + caselist);
+            if(!FeedItemlist.IsEmpty()) insert FeedItemlist;
+            System.debug('FeedItemlist##' + FeedItemlist.size());
+             System.debug('FeedItemlist##' + FeedItemlist);
             if(!updateacclist.IsEmpty()) update updateacclist;
-	        		
+	       
+	        // Changes done for MVAN-8 Ends here		
              
              
         }

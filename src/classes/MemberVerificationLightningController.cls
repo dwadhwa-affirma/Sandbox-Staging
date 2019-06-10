@@ -2,11 +2,13 @@ public class MemberVerificationLightningController
 {
 
 
-    private static Account GetAccount(string accID)
+    private Account GetAccount(string accID)
     {
+    	 system.debug('Account Id from GetAccount---' + accID);
         List<Account> listAccount;
 
         listAccount = [select Id,Member_Verification_OTP_Invalid_Attempt__c, FirstName, LastName, home_phone__pc, Mobile_Phone__pc, Work_Phone__pc, PersonEmail, Alternate_Email__pc from Account where ID =:accID];
+        system.debug('listAccount---' + listAccount);
         if (listAccount.size() > 0)
         {
             Account acc = listAccount[0];
@@ -73,7 +75,7 @@ public class MemberVerificationLightningController
 
                               Account_Number__c, personId__c
 
-                               From Person_Account__c WHERE Account_Number__r.Name IN: accName];
+                               From Person_Account__c WHERE Account_Number__r.Name IN: accName and (NOT TypeTranslate__c like '%Beneficiary%')]; //  and (NOT TypeTranslate__c like '%Beneficiary%')
         list<string> accids = new list<string>();
 
         for (Person_Account__c var: ContactList)
@@ -143,7 +145,7 @@ public class MemberVerificationLightningController
 
                               Account_Number__c, personId__c
 
-                               From Person_Account__c WHERE Account_Number__r.Name IN: accName];
+                               From Person_Account__c WHERE Account_Number__r.Name IN: accName]; // and (NOT TypeTranslate__c like '%Beneficiary%')
 
 
         for (Person_Account__c var: ContactList)
@@ -215,7 +217,8 @@ public class MemberVerificationLightningController
     {
         system.debug('accid---' + accid);
         string Brand;
-        Account acc = GetAccount(accID);
+        MemberVerificationLightningController objMVLC = new MemberVerificationLightningController();
+        Account acc = objMVLC.GetAccount(accID);
         List<string> allRelatedAccounts = GetRelatedAccountsPopulated(accid, acc);
         List<wrapperAccount> listWrapperAccount = new List<wrapperAccount>();
         system.debug('allRelatedAccounts 4---' + allRelatedAccounts);
@@ -682,7 +685,8 @@ public class MemberVerificationLightningController
     @auraenabled
       public static void DeclineOTPAtFirstStep(string accid)
     {
-        Account acc = GetAccount(accid);
+    	MemberVerificationLightningController objMVLC = new MemberVerificationLightningController();
+        Account acc = objMVLC.GetAccount(accid);
 
         Authenticated_Log__c log = new Authenticated_Log__c();
         log.SalesforceID__c = acc.Id;
@@ -754,7 +758,7 @@ public class MemberVerificationLightningController
     public static KeyValuePairModel GenerateRandomOTP(string fieldName, string BrandName, string resend, string accid)
      {
 
-
+		system.debug('AccountId in GenerateRandomOTP---' + accid);
         List<String> listStr = fieldName.split(' - ');
         string field = listStr[0];
         string accountid = listStr[1];
@@ -797,8 +801,9 @@ public class MemberVerificationLightningController
 
        string RandomNumber = String.valueOf(Math.random());
          RandomNumber= RandomNumber.substring(2,8);
-		Account acc = GetAccount(accid);
-		
+         MemberVerificationLightningController objMVLC = new MemberVerificationLightningController();
+		Account acc = objMVLC.GetAccount(accid);
+		system.debug('Account in GenerateRandomOTP from GetAccount---' + acc);
         if(IsEmail)
         {
         	        
@@ -814,9 +819,11 @@ public class MemberVerificationLightningController
         KeyValuePairModel keyvaluemodel = new KeyValuePairModel();
         system.debug('keyvaluemodel2---' + keyvaluemodel ); 
         keyvaluemodel.Text = EncryptString(RandomNumber);
-        keyvaluemodel.Value = EncryptString(string.valueof( system.now()));
+        keyvaluemodel.Value = EncryptString(string.valueof( system.now()));		
 		
         system.debug('keyvaluemodel3---' + keyvaluemodel );
+        system.debug('Firstname in GenerateRandomOTP ---' + acc.FirstName);
+		system.debug('Lastname in GenerateRandomOTP ---' + acc.LastName);
          Authenticated_Log__c log = new Authenticated_Log__c();
          log.SalesforceID__c = acc.Id;
          log.First_Name__c = acc.FirstName;
@@ -841,6 +848,7 @@ public class MemberVerificationLightningController
          {
              log.Decision__c = 'OTP – Code Sent';
          }
+         system.debug('Log to be inserted in GenerateRandomOTP---' + log);
        insert log;
        system.debug('keyvaluemodel4---' + keyvaluemodel );
 		return keyvaluemodel;
@@ -851,6 +859,7 @@ public class MemberVerificationLightningController
 	@auraenabled
     public static string verifyOTP(string accid, string EnteredOTP, string fieldName, string model)
     {
+    	system.debug('AccountId in verifyOTP---' + accid);
     	system.debug('--verify OTP start--');
     	string fieldValue = fieldName;
     	List<String> listStr = fieldValue.split(' - ');
@@ -904,7 +913,11 @@ public class MemberVerificationLightningController
     	system.debug('DencryptString--- LastOTPSent' + LastOTPSent);
     	string RandomNumber = DencryptString(newmodel.Text);
     	system.debug('DencryptString--- RandomNumber' + RandomNumber);
-    	Account  acc =	GetAccount(accid);
+    	MemberVerificationLightningController objMVLC = new MemberVerificationLightningController();
+    	Account  acc =	objMVLC.GetAccount(accid);
+    	system.debug('Account in verifyOTP from GetAccount---' + acc);
+    	system.debug('Firstname in verifyOTP ---' + acc.FirstName);
+		system.debug('Lastname in verifyOTP ---' + acc.LastName);
         Long startTime = LastOTPSent.getTime();
         Long endTime = System.Now().getTime();
         Long milliseconds = endTime - startTime;
@@ -946,6 +959,8 @@ public class MemberVerificationLightningController
             log.Decision__c = 'OTP – Code Failed';
             Verified = 'Invalid';
         }
+        
+        system.debug('Log to be inserted in verifyOTP---' + log);
         insert log;
         return Verified;
         

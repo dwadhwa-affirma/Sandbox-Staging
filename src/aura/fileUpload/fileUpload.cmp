@@ -7,8 +7,7 @@
    <aura:attribute name="fileName" type="String" default="No File Selected.." />
     <aura:registerEvent name="ClosePopup" type="c:SaveNeedAssessmentEvent"/>
     <aura:attribute name="fileNames" type="String[]"  />
-    
-    
+    <aura:attribute name="IsUploadandNewPressed" type="Boolean" default="false" />
     <aura:attribute name="fileProcessed" type="integer"  />
     
     <aura:attribute name="currentFile" type="string"  />
@@ -32,7 +31,11 @@
    
  <br/>
  <aura:if isTrue="{!(v.showLoadingSpinner == false)}">
-   <button class="slds-button slds-button_brand" onclick="{!c.doSave}">Upload Attachment</button>
+  <!--  <button class="slds-button slds-button_brand" onclick="{!c.doSave}">Upload Attachment</button>
+   <button class="slds-button slds-button_brand" onclick="{!c.HandleFileUpload}">Upload Attachment &amp; Create New Case</button> -->
+   
+   <lightning:button aura:id="Upload" class="slds-button slds-button_brand" onclick="{!c.doSave}" label="Upload Attachment" />
+   <lightning:button aura:id="UploadandNew" class="slds-button slds-button_brand" onclick="{!c.doSave}" label="Upload Attachment &amp; Create New Case" />
      </aura:if>
    
 </aura:component>

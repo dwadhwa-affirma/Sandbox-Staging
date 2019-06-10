@@ -28,28 +28,33 @@ public class Accounts360ViewControllerTest {
         pa.Account_Number__c = accDetails.Id;        
         insert pa;
         
+         
         Case c = new Case();
         c.AccountId = acc.Id;
         c.State__c = 'Open';
         c.Brand__c = 'Chevron';
         c.Account_Number__c = accDetails.Id;
         insert c;
-        
+         test.startTest();
         CaseComment cc = new CaseComment();
         cc.ParentId = c.Id;
         insert cc;
+        
         
         Task t = new Task();
         t.WhatId = c.Id;
         insert t;
         
+      
         PageReference pageRef = Page.Accounts360View;
         Test.setCurrentPage(pageRef);
         ApexPages.currentPage().getParameters().put('Id', accDetails.Id);        
-        Accounts360ViewController controller = new Accounts360ViewController(new ApexPages.StandardController(accDetails));
+       Accounts360ViewController controller = new Accounts360ViewController(new ApexPages.StandardController(accDetails));
+        test.stopTest();
     }
     
     static testMethod void testMethod2(){
+         test.startTest();
         Account_Details__c accDetails = new Account_Details__c();
         accDetails.Name = 'Test';
         accDetails.RecType__c = 'ACCT';
@@ -62,5 +67,6 @@ public class Accounts360ViewControllerTest {
         ApexPages.currentPage().getParameters().put('Id', accDetails.Id);        
         Accounts360ViewController controller = new Accounts360ViewController(new ApexPages.StandardController(accDetails));
         Accounts360ViewController.warningStringWrapper wrp = new Accounts360ViewController.warningStringWrapper(accDetails.Id,'test2', Date.newInstance(2015, 2, 1), 'test3','test4','test5', 'test6', docMap,'Warning Code');
+        test.stopTest();
     }
 }

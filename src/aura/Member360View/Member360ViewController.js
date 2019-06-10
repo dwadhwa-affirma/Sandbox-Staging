@@ -44,8 +44,31 @@
         		else
         		{
         			component.set("v.cardListIsHidden", false);
-        		}		
-        		component.set("v.activecaseList", result.activecaseList.accList);
+        		}	
+        		 //Start: CRM-1400 - DB	
+        		var ActiveCaseList = result.activecaseList.accList;
+        		for(var i=0; i< ActiveCaseList.length;i++){
+        			ActiveCaseList.map((obj) => {   
+					obj.Category__c = "";
+					obj.Account_Number__c = "";
+					obj.Account = "";
+					obj.Parent = "";
+					obj.Account_Number__r = "";
+					obj.Owner = "";
+					});					
+        		}
+        		for(var i=0;i<ActiveCaseList.length;i++){
+        			ActiveCaseList[i].Category__c = ActiveCaseList[i].Category;
+        			ActiveCaseList[i].Account_Number__c = ActiveCaseList[i].AccountNumber;
+        			ActiveCaseList[i].Name = ActiveCaseList[i].AccountName;
+        			
+        			helper.set(ActiveCaseList[i],'Account_Number__r.Name', ActiveCaseList[i].AccountName);
+        			helper.set(ActiveCaseList[i],'Parent.CaseNumber', ActiveCaseList[i].ParentCaseNumber);
+        			helper.set(ActiveCaseList[i],'Account.Name', ActiveCaseList[i].MemberName);
+        			helper.set(ActiveCaseList[i],'Account_Number__r.Brand__c', ActiveCaseList[i].Brand);
+        			helper.set(ActiveCaseList[i],'Owner.Name', ActiveCaseList[i].OwnerName);
+        		}
+        		component.set("v.activecaseList", ActiveCaseList);
         		component.set("v.activecaseListtotalrecords", result.activecaseList.totalrecords);
         		if(result.activecaseList.totalrecords == 0)
         		{
@@ -56,7 +79,31 @@
         			component.set("v.activecaseListIsHidden", false);
         		}
         		component.set("v.totalactivecases", result.activecaseList.totalrecords);
-        		component.set("v.closecaseList", result.closecaseList.accList);
+        		var CloaseCaseList = result.closecaseList.accList;
+        		for(var i=0; i< CloaseCaseList.length;i++){
+        			CloaseCaseList.map((obj) => {   
+					obj.Category__c = "";
+					obj.Account_Number__c = "";
+					obj.Account = "";
+					obj.Parent = "";
+					obj.Account_Number__r = "";
+					obj.Owner = "";
+					});					
+        		}
+        		for(var i=0;i<CloaseCaseList.length;i++){
+        			CloaseCaseList[i].Category__c = CloaseCaseList[i].Category;
+        			CloaseCaseList[i].Account_Number__c = CloaseCaseList[i].AccountNumber;
+        			CloaseCaseList[i].Name = CloaseCaseList[i].AccountName;
+        			
+        			helper.set(CloaseCaseList[i],'Account_Number__r.Name', CloaseCaseList[i].AccountName);
+        			helper.set(CloaseCaseList[i],'Parent.CaseNumber', CloaseCaseList[i].ParentCaseNumber);
+        			helper.set(CloaseCaseList[i],'Account.Name', CloaseCaseList[i].MemberName);
+        			helper.set(CloaseCaseList[i],'Account_Number__r.Brand__c', CloaseCaseList[i].Brand);
+        			helper.set(CloaseCaseList[i],'Owner.Name', CloaseCaseList[i].OwnerName);
+        		}
+        		component.set("v.closecaseList", CloaseCaseList);
+        		//component.set("v.closecaseList", result.closecaseList.accList);
+        		 //End: CRM-1400 - DB	
         		component.set("v.closecaseListtotalrecords", result.closecaseList.totalrecords);
         		if(result.closecaseList.totalrecords == 0)
         		{

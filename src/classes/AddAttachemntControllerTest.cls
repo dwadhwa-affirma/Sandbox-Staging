@@ -158,7 +158,7 @@ public class AddAttachemntControllerTest {
         ApexPages.currentPage().getParameters().put('SB',SB);
         ApexPages.currentPage().getParameters().put('SD',SD);        
         ApexPages.currentPage().getParameters().put('entityType',entityType);
-        
+         test.startTest();
         AddAttachemntController controller = new AddAttachemntController();
         controller.attachments  = AttachmentLst;
         
@@ -180,7 +180,7 @@ public class AddAttachemntControllerTest {
             users.add(u);
             insert users;
             string aid = AttachmentLst[0].id;
-            
+           
             ApexPages.CurrentPage().getParameters().put('id',aid+'='+aid);
             controller.RemoveFile();
             
@@ -195,6 +195,7 @@ public class AddAttachemntControllerTest {
              userAccount.fedid = fid;
              controller.PageLoad();
             }
+        test.stopTest();
         
         
     }

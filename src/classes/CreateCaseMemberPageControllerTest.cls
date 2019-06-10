@@ -73,13 +73,13 @@ private class CreateCaseMemberPageControllerTest
 			Description, Ownership__c,OwnerId,Future_Date__c,Follow_up_Text__c ,
 			Id, Brand__c, LTK__c, CaseComments__c,Phone_Number__c, Status, Primary_Category__c , ContactId, Subject, IsEscalated ,Account_Number__c, Additional_Documents__c , Staff_Escalated__c , Five_Day_Flag__c, IsMarkDeleted__c, IsMarkRead__c , IsMarkSaved__c, Secondary_Category__c, Tertiary_Category__c, MaritzCX__Response_Deleted_From_MaritzCX__c, SLATemp__c
 		 from Case limit 1];
-				
+			List<Account_Details__c> acclist = new List<Account_Details__c>();	
 		// TODO : Change following Assert Statement
-		System.Assert(CreateCaseMemberPageController.saveData(case_Obj, account_Obj, account_Details_Obj) != null);	
-		System.Assert(CreateCaseMemberPageController.saveData(case_Obj, account_Obj, null) != null);
+		System.Assert(CreateCaseMemberPageController.saveData(case_Obj, account_Obj, account_Details_Obj, acclist) != null);	
+		System.Assert(CreateCaseMemberPageController.saveData(case_Obj, account_Obj, null, acclist) != null);
 		
 		case_Obj.Primary_Category__c = null;
-		System.Assert(CreateCaseMemberPageController.saveData(case_Obj, account_Obj, account_Details_Obj) != null);
+		System.Assert(CreateCaseMemberPageController.saveData(case_Obj, account_Obj, account_Details_Obj, acclist) != null);
 		
 	}
 	
@@ -90,7 +90,7 @@ private class CreateCaseMemberPageControllerTest
 		Account_Details__c account_Details_Obj = [select 
 			Id, Parent_Account__c,  Name, RecordTypeId ,CreatedDate, LastModifiedDate, Onboarded__c , RecType__c, Reference__c
 		 from Account_Details__c order by CreatedDate desc limit 1];
-		 
+		 List<Account_Details__c> acclist = new List<Account_Details__c>();	
 		Account account_Obj = [select id, PersonEmail, Email_raw__c,PersonHomePhone, FirstName, LastName, Residential_Street__pc, Residential_Extra_Address__pc, Residential_City__pc,  Residential_State__pc, Residential_Country__pc, Residential_Zipocde__pc from Account limit 1];
 		Case case_Obj = [select
 			Description, Ownership__c,OwnerId,Future_Date__c,Follow_up_Text__c ,
@@ -99,7 +99,7 @@ private class CreateCaseMemberPageControllerTest
 		
 		
 		case_Obj.Secondary_Category__c = null;
-		System.Assert(CreateCaseMemberPageController.saveData(case_Obj, account_Obj, account_Details_Obj) != null);
+		System.Assert(CreateCaseMemberPageController.saveData(case_Obj, account_Obj, account_Details_Obj,acclist) != null);
 	}
 	
 	// Test Method: saveData
@@ -115,10 +115,10 @@ private class CreateCaseMemberPageControllerTest
 			Description, Ownership__c,OwnerId,Future_Date__c,Follow_up_Text__c ,
 			Id, Brand__c, LTK__c, CaseComments__c,Phone_Number__c, Status, Primary_Category__c , ContactId, Subject, IsEscalated ,Account_Number__c, Additional_Documents__c , Staff_Escalated__c , Five_Day_Flag__c, IsMarkDeleted__c, IsMarkRead__c , IsMarkSaved__c, Secondary_Category__c, Tertiary_Category__c, MaritzCX__Response_Deleted_From_MaritzCX__c, SLATemp__c
 		 from Case limit 1];		
-		
+		List<Account_Details__c> acclist = new List<Account_Details__c>();	
 		case_Obj.Tertiary_Category__c = null;
 		case_Obj.Secondary_Category__c = 'Test Category';	
-		System.Assert(CreateCaseMemberPageController.saveData(case_Obj, account_Obj, account_Details_Obj) != null);		
+		System.Assert(CreateCaseMemberPageController.saveData(case_Obj, account_Obj, account_Details_Obj,acclist) != null);		
 	}
 	
 	// Test Method: saveStandAloneData

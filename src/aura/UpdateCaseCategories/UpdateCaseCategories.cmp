@@ -1,0 +1,165 @@
+<aura:component implements="flexipage:availableForAllPageTypes,force:appHostable,force:hasRecordId,force:lightningQuickActionWithoutHeader,lightning:actionOverride" controller="UpdateCaseCategoriesController">
+ <aura:attribute name="loading" type="Boolean" default="false" />   
+   <aura:handler name="init" value="{!this}" action="{!c.doInit}" /> 
+   <aura:attribute name="picklistFields" type="Map" default="{}" />
+	
+    <aura:attribute name="optionsList" type="string[]" />
+  
+  <aura:attribute name="scOptions" type="KeyValuePairModel[]" />
+    <aura:attribute name="tcOptions" type="KeyValuePairModel[]" />
+    <aura:attribute name="hasAccess" type="Boolean" default="true" /> 
+    
+      <aura:attribute name="caseObject" type="Case" default="{'sobjectType':'Case'}" />
+<aura:attribute name="depnedentFieldMap" type="map" description="store controller(key)--> dependent(values) picklist value as a map." />
+<aura:attribute name="depnedentFieldMapSecondaryCategory" type="map" description="store controller(key)--> dependent(values) picklist value as a map." />
+     
+    <style>
+        /* Loading Style*/
+        
+        .loadingDiv {
+            position: absolute;
+            z-index: 100;
+            background: rgba(255, 255, 255, 0.8);
+            width: 100%;
+            height: 100%;
+            top: 100px;
+        }      
+       	.slds-modal__container{
+       			max-width: 40rem !important;
+       			width:40% !important;   
+		}
+.forceChatterBasePublisher :not(.PHONE) .cuf-content{padding:0px !important;}
+.slds-p-around_medium, .slds-p-around--medium{padding:0px !important;}
+.cUpdateCaseCategories{padding:20px;}
+.slds-medium-size_1-of-2, .slds-medium-size--1-of-2{padding:10px;}
+        .loadingDiv .demo-only {
+            z-index: 101;
+        }
+        
+        .modal-body {
+            position: relative;
+        }
+        
+        
+        
+        .cUpdateCaseCategories.loadingDiv {
+            top: 0;
+            left: 0;
+            height: 100%;
+        }
+        
+        .modal-body.scrollable.slds-modal__content.slds-p-around--medium
+        {
+        	min-height: 410px;
+        }
+        
+        .noaccess{
+		 padding-left:25%;
+		 padding-top: 15%;
+		    font-size: 13px;
+    		font-weight: normal !important;
+		}
+		.accessdenied
+		{
+		    font-size: 18px;
+    		color: red;
+    		padding-left: 17%;
+		}
+        
+        /* Loading Style End*/
+    </style>
+	<header class="slds-modal__header" id="UpdateCaseCategoriesHeader">
+        <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse" title="Close" onclick="{!c.closePopup}">
+			<span data-aura-rendered-by="47:1615;a" class="lightningPrimitiveIcon" data-aura-class="lightningPrimitiveIcon"><lightning:icon iconName="{#v.closeIcon}" size="small" variant="inverse" /></span>
+            <span class="slds-assistive-text">Close</span>
+        </button>
+        <h2 id="modal-heading-01" class="slds-text-heading_medium slds-hyphenate">Update Categories</h2>
+    </header>
+    <aura:if isTrue="{!v.hasAccess}">
+
+    <div class="modal-maincontent">
+    <h3 class="slds-section-title--divider">Please select appropriate case categories</h3>
+
+    <div class="slds-grid">
+        <div class="slds-col slds-small-size--1-of-1 slds-medium-size--1-of-1"  style="padding-bottom:0px;">
+            <div class="slds-form--stacked slds-p-around--medium slds-m-bottom--x-small" style="margin-bottom: 0px;">
+
+                <div class="slds-form-element">
+                    <label class="slds-form-element__label"><span class="required " data-aura-rendered-by="2242:0">*</span>Primary Category</label>
+                    <div class="slds-form-element__control">
+                        <ui:inputSelect aura:id="Primary_Category__c" required="true" value="{!v.caseObject.Primary_Category__c}" change="{!c.changePrimaryCategory}" />
+
+
+                    </div>
+                </div>
+
+
+                <div class="slds-form-element">
+                    <label class="slds-form-element__label"><span class="required " data-aura-rendered-by="2242:0">*</span>Secondary Category</label>
+                    <div class="slds-form-element__control">
+
+
+                        <ui:inputSelect required="true" aura:id="Secondary_Category__c" value="{!v.caseObject.Secondary_Category__c}" change="{!c.changeSecondaryCategory}">
+                            <!--   <aura:iteration items="{!v.scOptions}" var="itemOption">
+                                <ui:inputSelectOption text="{!itemOption.Text}" label="{!itemOption.Value}" />
+                            </aura:iteration> --> 
+                        </ui:inputSelect>
+
+
+                    </div>
+                </div>
+
+                <div class="slds-form-element">
+                    <label class="slds-form-element__label"><span class="required " data-aura-rendered-by="2242:0">*</span>Teritiary Category</label>
+                    <div class="slds-form-element__control">
+
+                        <ui:inputSelect aura:id="Tertiary_Category__c" value="{!v.caseObject.Tertiary_Category__c}" required="true">
+                          <!--  <aura:iteration items="{!v.tcOptions}" var="itemOption">
+                                <ui:inputSelectOption text="{!itemOption.Text}" label="{!itemOption.Value}" />
+                            </aura:iteration> --> 
+                        </ui:inputSelect>
+
+
+
+                    </div>
+                </div>
+
+
+
+
+
+            </div>
+        </div>
+	</div>
+    </div>
+
+	<aura:set attribute="else">
+	<div class="modal-maincontent noaccess" style="height:265px; !important">
+    <h3 class="accessdenied">Access Denied</h3>
+    	
+    	</div>
+    	<footer class="slds-modal__footer" id="MemberCommentFooter">
+		<button class="slds-button slds-button--neutral uiButton forceActionButton" onclick="{!c.closePopup}">Cancel</button> 
+  	</footer>
+	</aura:set>
+    </aura:if>
+    <aura:if isTrue="{!(v.loading == true)}">
+        <div class="loadingDiv">
+            <div class="demo-only" style='height: 6rem; '>
+                <div role="status" class="slds-spinner slds-spinner_medium">
+                    <div class="slds-spinner__dot-a"></div>
+                    <div class="slds-spinner__dot-b"></div>
+                </div>
+            </div>
+        </div>
+    </aura:if>
+    
+<aura:if isTrue="{!v.hasAccess}">
+    <footer class="slds-modal__footer" id="UpdateCaseCategoriesFooter">
+        <button class="slds-button slds-button_neutral" onclick="{!c.closePopup}">Cancel</button>   
+        <lightning:button aura:id="Save" class="slds-button slds-button_brand" onclick="{!c.SaveCategories}" label="Save" />
+     		  
+             
+    </footer>
+    </aura:if>
+</aura:component>

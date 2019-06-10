@@ -9,7 +9,10 @@ global class OTPAuthLogUpdateSMSStatusBatch implements Database.Batchable<sObjec
    		set<string> setPhoneNumber = new set<string>();   	
 		set<string> setFormattedPhoneNumber = new set<string>();   	
    		map<id, string> mapFinalStatus=new map<id, string>();
-   		
+   		OTP_SMS_Status_Settings__c oss = OTP_SMS_Status_Settings__c.getValues('Primary Record');
+        Integer Minutes_to_Subtract = (Integer)oss.Minutes_to_sub__c; 
+       	Integer Minutes_to_Add = (Integer)oss.Minutes_to_Add__c;   
+            
    		for(Authenticated_Log__c al: scope){
    			setFormattedPhoneNumber.add(al.OTP_Phone__c.replace('-',''));	
             setPhoneNumber.add(al.OTP_Phone__c);	
@@ -20,13 +23,12 @@ global class OTPAuthLogUpdateSMSStatusBatch implements Database.Batchable<sObjec
     	List<Authenticated_Log__c> authenticationLogFinalList= new List<Authenticated_Log__c>();
     	
     	for(Authenticated_Log__c al: scope){	
-    		datetime createddatetocheckUpper = al.created_del1__c.addMinutes(3);	
-            datetime createddatetocheckLower = al.created_del1__c.addMinutes(-1);	
+    		datetime createddatetocheckUpper = al.created_del1__c.addMinutes(Minutes_to_Add);	
+            datetime createddatetocheckLower = al.created_del1__c.addMinutes(Minutes_to_Subtract*(-1));	
            // system.debug('createddatetocheck==' + createddatetocheck);
         	for(smagicinteract__smsMagic__c sms: smsHistoryList){     
             //    system.debug('sms.smagicinteract__CreatedOn__c=='+sms.smagicinteract__CreatedOn__c);
-        		if(al.OTP_Phone__c.replace('-','') == sms.smagicinteract__PhoneNumber__c.replace('-','') && sms.smagicinteract__CreatedOn__c >= al.created_del1__c){
-        		//(sms.smagicinteract__CreatedOn__c >= createddatetocheckLower && sms.smagicinteract__CreatedOn__c <= createddatetocheckUpper)){                   
+        		if(al.OTP_Phone__c.replace('-','') == sms.smagicinteract__PhoneNumber__c.replace('-','') && (sms.smagicinteract__CreatedOn__c >= createddatetocheckLower && sms.smagicinteract__CreatedOn__c <= createddatetocheckUpper)){                   
         			if(sms.smagicinteract__sentStatus__c == 'Submitted'){
         				al.OTP_Status__c ='Success';                       
                         break;

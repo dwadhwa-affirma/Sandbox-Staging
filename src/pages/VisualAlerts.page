@@ -1,0 +1,25 @@
+<apex:page standardController="Case" extensions="VisualAlertsController" sidebar="false" showHeader="false" standardStylesheets="true" >
+
+        
+<!--apex:pageBlock -->
+ 
+ <apex:form >
+  <!-- Command buttons for new case comment alerts   -->
+    <apex:commandbutton image="{!URLFOR($Resource.Case_CommentAlert)}"  rendered="{!CaseComment}" 
+       action="{!removeCaseComment}"   disabled="{IF(CS.isNewCaseComment__c==true,true,false)}" />﻿ 
+    
+    <!-- Command buttons for new case Attachment alerts   -->   
+       <apex:commandbutton image="{!URLFOR($Resource.Case_AttachmentAlert)}"  rendered="{!Attach}" 
+       action="{!removeAttach}"   disabled="{IF(CS.IsNewAttachment__c==true,true,false)}" />﻿ 
+       
+      <!-- Command buttons for new member comment alerts   -->   
+       <apex:commandbutton image="{!URLFOR($Resource.New_MemberComment)}"  rendered="{!MemberComment}" 
+       action="{!removeMemberComment}"   disabled="{IF(CS.isNewMemberComment__c==true,true,false)}" />﻿ 
+
+
+ </apex:form>
+
+<!-- /apex:pageBlock -->
+ 
+
+</apex:page>

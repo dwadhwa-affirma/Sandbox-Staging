@@ -49,7 +49,9 @@
     <aura:attribute name="memberList" type="Person_Account__c[]" />
     <aura:attribute name="memObject" type="Account_Details__c" default="{'sobjectType':'Account_Details__c'}" />
     
-    
+       <aura:attribute name="TopTenCases" type="object" />
+        <aura:attribute name="selectedTopCategoryValue" type="string" default="" />
+   
     <style>
         /* Loading Style*/
         
@@ -235,7 +237,7 @@
                                     
                                 </div>
                                 <!-- Below code Added by Deepika for CRM-1400  -->
-                                <h3 class="slds-section-title--divider">Add More Members</h3>
+                                <h3 class="slds-section-title--divider">Add more accounts</h3>
                               <aura:iteration items="{!v.AccountObjectlist}" var="item" indexVar="indexNumber">
                                 <div class="slds-form-element__control">
                                 	<div class="slds-form-element__control" data-aura-rendered-by="16:1107;a">
@@ -521,6 +523,26 @@
 
                     </div>
                 </div>
+                   <!--   <aura:if isTrue="{!(v.isAccountDetails == false)}">-->
+                 <div class="slds-form-element">
+                    <!--<label class="slds-form-element__label">Speed Cases</label>-->
+                    <div class="slds-form-element__control">
+                     <!--  <ui:inputSelect change="{!c.changeTopTenCase}" aura:id="selectedtopcategory" value="{!v.selectedTopCategoryValue}"  class="slds-input">   
+                       
+                            <aura:iteration items="{!v.TopTenCases}" var="itemOption">
+                                <ui:inputSelectOption text="{!itemOption.id}" label="{!itemOption.Case_Type__c}" />
+                            </aura:iteration>
+                        </ui:inputSelect>-->  
+                        
+                        <lightning:select aura:id="selectedtopcategory" value="{!v.selectedTopCategoryValue}" onchange="{!c.changeTopTenCase}" name="picklist1" label="Quick Cases"  >
+                        <option value="">--- None ----</option>
+                        <aura:iteration items="{!v.TopTenCases}" var="itemOption">
+                            <option value="{!itemOption.Case_Type__c}" text="{!itemOption.Case_Type__c}"></option>
+                        </aura:iteration>
+                    </lightning:select>
+                    </div>
+                </div>
+                <!--  </aura:if>-->
 
                 <div class="slds-form-element" style="text-align: center;">
                     <label class="slds-form-element__label">--------- Or ---------</label>

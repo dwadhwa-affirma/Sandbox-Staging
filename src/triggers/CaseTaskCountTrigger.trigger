@@ -1,86 +1,137 @@
 trigger CaseTaskCountTrigger on Task (after insert, after update,after delete) {
     if(!Trigger.isdelete)
     {
-        list<string> Ids = new list<string>();
-        List<Case> listCaseOpen = new List<Case>();  
-         for(Task t:Trigger.New){
-                
-            
-               if(t.whatId != null && t.whatId.getsObjectType() == Case.sObjectType){
-                    Ids.add(t.whatId);
-                    }
-                }   
-                listCaseOpen = [select id from Case where id in: Ids and Status != 'Closed'];
-                
-            
-                   AggregateResult[] groupedResults = [select whatId,Count(Id) from Task where whatid in: Ids and status = 'Open' group by whatId /* select id from Task where whatId=:t.whatId and status='Open'*/];
-                   
-                   
-                   List<Case> listCase = new List<Case>();                           
-                  for (AggregateResult ar : groupedResults)  {
-                        Case c = new Case();
-                        c.id = (id)ar.get('whatId');
-                        c.Open_Task_Count__c = (decimal)ar.get('expr0');
-                        //found in 
-                        boolean foundInOpenCase = false;
-                        for(Case caseOpened : listCaseOpen)
-                        {
-                            if(caseOpened.Id ==c.id)
-                            {
-                                foundInOpenCase = true;
-                                
-                            }
-                            
-                        }
-                        if(foundInOpenCase)
-                        {
-                            listCase.add(c);
-                        }
+       /*  for(Task t:Trigger.New){
+       if(t.whatId != null && t.whatId.getsObjectType() == Case.sObjectType){
+             List<Case> cList2= [select id, Open_Task_Count__c from Case where id=:t.whatId]; 
+                   List<Task> listTask= [select id from Task where whatId=:t.whatId and status='Open'];                          
                   
-                  }
-                     
-                         update listCase;
-             
+                     cList2[0].Open_Task_Count__c  = listTask.Size();
+                         update cList2;
+             }
+            }*/
+    if(Trigger.isInsert && Trigger.isAfter)
+    {
+    	system.debug('After Insert....');
+        Set<Id> parentCase=new Set<Id>();
+			Map<Id,Case> mapCase=new Map<Id,Case>();
+			Map<id,integer> mapCaseActivityCount=new Map<id,integer>();
+			Map<id,integer> mapCaseEventCount=new Map<id,integer>();
+			
+			for (task t: Trigger.new){
+				if(t.whatId != null)
+				parentCase.add(t.whatId);
+			}	
+			
+			system.debug('parentCase==='+parentCase);		
+			
+			aggregateResult[] groupedEventResults = [select count(id)eventCount, whatId from event where whatId in: parentCase and whatId != null group by whatId];
+			aggregateResult[] groupedTaskResults = [select count(id)taskCount, whatId from Task where whatId in: parentCase and whatId != null group by whatId];
+			
+			system.debug('groupedEventResults==='+groupedEventResults);		
+			system.debug('groupedTaskResults==='+groupedTaskResults);	
+				
+			for(AggregateResult item : groupedEventResults){
+				mapCaseEventCount.put((string)item.get('whatId'), (Integer)item.get('eventCount'));
+			}
+			
+			system.debug('mapCaseEventCount==='+mapCaseEventCount);
+			
+			for(AggregateResult item : groupedTaskResults){
+				integer eventcount=0;
+				if(mapCaseEventCount.get((string)item.get('whatId')) != null){
+					system.debug('mapCaseEventCount.get((string)item.get(\'whatId\'))==='+mapCaseEventCount.get((string)item.get('whatId')));
+					eventcount = mapCaseEventCount.get((string)item.get('whatId'));
+				}
+				integer totalcount = eventcount + (Integer)item.get('taskCount');
+    			mapCaseActivityCount.put((string)item.get('whatId'), totalcount);
+			}
+			
+			system.debug('mapCaseActivityCount==='+mapCaseActivityCount);
+			
+			List<Case> lstCase=[Select Id,Case_Activity_Count__c from case where Id in: parentCase ];
+			for(case c : lstCase)
+			{
+				if(mapCaseActivityCount.containskey(c.id)){
+					c.Case_Activity_Count__c = mapCaseActivityCount.get(c.id);
+				}
+                else{
+                    c.Case_Activity_Count__c = 0;
+                }
+			}
+			
+			system.debug('lstCase==='+lstCase);
+			
+			update lstCase;
+    }
     }
     else
     {
-        
-        list<string> Ids = new list<string>();
-        List<Case> listCaseOpen = new List<Case>();  
-         for(Task t:Trigger.old){
-               if(t.whatId != null && t.whatId.getsObjectType() == Case.sObjectType){
-                    Ids.add(t.whatId);
-                    }
-                }   
-                listCaseOpen = [select id from Case where id in: Ids and Status != 'Closed'];
-            
-                   AggregateResult[] groupedResults = [select whatId,Count(Id) from Task where whatid in: Ids and status = 'Open' group by whatId /* select id from Task where whatId=:t.whatId and status='Open'*/];
-                   List<Case> listCase = new List<Case>();                           
-                  for (AggregateResult ar : groupedResults)  {
-                        Case c = new Case();
-                        c.id = (id)ar.get('whatId');
-                        c.Open_Task_Count__c = (decimal)ar.get('expr0');
-                        //found in 
-                        boolean foundInOpenCase = false;
-                        for(Case caseOpened : listCaseOpen)
-                        {
-                            if(caseOpened.Id ==c.id)
-                            {
-                                foundInOpenCase = true;
-                                
-                            }
-                            
-                        }
-                        if(foundInOpenCase)
-                        {
-                            listCase.add(c);
-                        }
+        /*for(Task t:Trigger.old){
+              if(t.whatId != null && t.whatId.getsObjectType() == Case.sObjectType){
+             List<Case> cList2= [select id, Open_Task_Count__c from Case where id=:t.whatId]; 
+                   List<Task> listTask= [select id from Task where whatId=:t.whatId and status='Open'];                          
                   
-                  }
-                     
-                     
-                         update listCase;
-        }
+                     cList2[0].Open_Task_Count__c  = listTask.Size();
+                         update cList2;
+              }
+        }*/
         
-    
+     if(Trigger.isDelete && Trigger.isAfter)
+    	{
+    		
+    		system.debug('After Delete....');
+        Set<Id> parentCase=new Set<Id>();
+			Map<Id,Case> mapCase=new Map<Id,Case>();
+			Map<id,integer> mapCaseActivityCount=new Map<id,integer>();
+			Map<id,integer> mapCaseEventCount=new Map<id,integer>();
+			
+			for (Task t: Trigger.old){
+				if(t.whatId != null)
+				parentCase.add(t.whatId);
+			}			
+			
+			system.debug('parentCase==='+parentCase);		
+			
+			aggregateResult[] groupedEventResults = [select count(id)eventCount, whatId from event where whatId in: parentCase and whatId != null group by whatId];
+			aggregateResult[] groupedTaskResults = [select count(id)taskCount, whatId from Task where whatId in: parentCase and whatId != null group by whatId];
+			
+			system.debug('groupedEventResults==='+groupedEventResults);		
+			system.debug('groupedTaskResults==='+groupedTaskResults);
+			
+			for(AggregateResult item : groupedEventResults){
+				mapCaseEventCount.put((string)item.get('whatId'), (Integer)item.get('eventCount'));
+			}
+			
+			system.debug('mapCaseEventCount==='+mapCaseEventCount);
+			
+			for(AggregateResult item : groupedTaskResults){
+				integer eventcount=0;
+				if(mapCaseEventCount.get((string)item.get('whatId')) != null){
+					system.debug('mapCaseEventCount.get((string)item.get(\'whatId\'))==='+mapCaseEventCount.get((string)item.get('whatId')));
+					eventcount = mapCaseEventCount.get((string)item.get('whatId'));
+				}
+				integer totalcount = eventcount + (Integer)item.get('taskCount');
+    			mapCaseActivityCount.put((string)item.get('whatId'), totalcount);
+			}
+			
+			system.debug('mapCaseActivityCount==='+mapCaseActivityCount);
+			
+			List<Case> lstCase=[Select Id,Case_Activity_Count__c from case where Id in: parentCase ];
+			for(case c : lstCase)
+			{
+				if(mapCaseActivityCount.containskey(c.id)){
+					c.Case_Activity_Count__c = mapCaseActivityCount.get(c.id);
+				}
+                else{
+                    c.Case_Activity_Count__c = 0;
+                }
+			}
+			
+			system.debug('lstCase==='+lstCase);
+			
+			update lstCase;
+    }
+        
+    }
 }

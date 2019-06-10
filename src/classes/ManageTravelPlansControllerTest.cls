@@ -17,6 +17,7 @@ public class ManageTravelPlansControllerTest {
 		        accDetail.Name = '0000147163';
 		        accDetail.RecType__c = 'ACCT';
 		        accDetail.TypeTranslate__c = '1-PERSONAL';
+		         accDetail.Brand_Code__c = 'BC01';
 		        insert accDetail;
 		        
 		        Account_Details__c accDetail1 = new Account_Details__c();
@@ -27,7 +28,24 @@ public class ManageTravelPlansControllerTest {
 		        accDetail1.Card_Number__c= '5165967021121165';
 		        accDetail1.Card_Name__c = 'MINDY O RIGA';
 		        accDetail1.TypeTranslate__c = '15-CHEVRON DEBIT CARD';
+		         accDetail.Brand_Code__c = 'BC02';
 		        insert accDetail1;
+		        
+		        Master_Card_Configurations__c cs = new Master_Card_Configurations__c();	 	
+		    	cs.Card_Type__c = '11, 12';	
+		    	cs.Name = 'ATM'; 
+		    	insert cs; 
+		    	
+		    	cs = new Master_Card_Configurations__c();	 	
+		    	cs.Card_Type__c = '13, 14, 15, 18';	
+		    	cs.Name = 'DEBIT'; 
+		    	insert cs;
+		    	
+		    	cs = new Master_Card_Configurations__c();	 	
+		    	cs.Card_Type__c = '16, 17';	
+		    	cs.Name = 'HSA'; 
+		    	  	
+		    	insert cs;
 		        
 		        List<Account_Details__c> obj = [select id from Account_Details__c where id =: accDetail.id limit 1];
     
@@ -37,10 +55,10 @@ public class ManageTravelPlansControllerTest {
 		     	Insert person_obj;
 		        
 				List<Case> case_Obj = new List<Case>{
-			    new Case(Status = 'In Process',Description = 'Orginal Desc', Origin = null, Subject = 'Test', ClosedDate = null, IsEscalated = false, AccountId = acc.Id, Account_Number__c = accDetail.Id, Additional_Documents__c = false, Staff_Escalated__c = false, Five_Day_Flag__c = false, IsMarkDeleted__c = false, IsMarkRead__c = false, IsMarkSaved__c = false, Primary_Category__c = 'Card services', Secondary_Category__c = 'ATM/Debit', Tertiary_Category__c = 'Travel notification', MaritzCX__Response_Deleted_From_MaritzCX__c = false, SLATemp__c = false),
-			    new Case(Status = 'In Process',Description = 'Orginal Desc', Origin = null, Subject = 'Test', ClosedDate = null, IsEscalated = false, AccountId = acc.Id, Account_Number__c = accDetail.Id, Additional_Documents__c = false, Staff_Escalated__c = false, Five_Day_Flag__c = false, IsMarkDeleted__c = false, IsMarkRead__c = false, IsMarkSaved__c = false, Primary_Category__c = 'Card services', Secondary_Category__c = 'ATM/Debit', Tertiary_Category__c = 'Travel notification', MaritzCX__Response_Deleted_From_MaritzCX__c = false, SLATemp__c = false),
-			    new Case(Status = 'In Process',Description = 'Orginal Desc', Origin = null, Subject = 'Test', ClosedDate = null, IsEscalated = false, AccountId = acc.Id, Account_Number__c = accDetail.Id, Additional_Documents__c = false, Staff_Escalated__c = false, Five_Day_Flag__c = false, IsMarkDeleted__c = false, IsMarkRead__c = false, IsMarkSaved__c = false, Primary_Category__c = 'Card services', Secondary_Category__c = 'ATM/Debit', Tertiary_Category__c = 'Travel notification', MaritzCX__Response_Deleted_From_MaritzCX__c = false, SLATemp__c = false),
-			    new Case(Status = 'In Process', Description = 'Orginal Desc', Origin = null, Subject = 'Test', ClosedDate = null, IsEscalated = false,AccountId = acc.Id,  Account_Number__c = accDetail.Id, Additional_Documents__c = false, Staff_Escalated__c = false, Five_Day_Flag__c = false, IsMarkDeleted__c = false, IsMarkRead__c = false, IsMarkSaved__c = false, Primary_Category__c = 'Account Maintenance', Secondary_Category__c = 'Account Services', Tertiary_Category__c = 'Extended Check Hold', MaritzCX__Response_Deleted_From_MaritzCX__c = false, SLATemp__c = false)
+			    new Case(Status = 'In Process',Brand__c='Spectrum',Description = 'Orginal Desc', Origin = null, Subject = 'Test', ClosedDate = null, IsEscalated = false, AccountId = acc.Id, Account_Number__c = accDetail.Id, Additional_Documents__c = false, Staff_Escalated__c = false, Five_Day_Flag__c = false, IsMarkDeleted__c = false, IsMarkRead__c = false, IsMarkSaved__c = false, Primary_Category__c = 'Card services', Secondary_Category__c = 'ATM/Debit', Tertiary_Category__c = 'Travel notification', MaritzCX__Response_Deleted_From_MaritzCX__c = false, SLATemp__c = false),
+			    new Case(Status = 'In Process',Brand__c='CFCU',Description = 'Orginal Desc', Origin = null, Subject = 'Test', ClosedDate = null, IsEscalated = false, AccountId = acc.Id, Account_Number__c = accDetail.Id, Additional_Documents__c = false, Staff_Escalated__c = false, Five_Day_Flag__c = false, IsMarkDeleted__c = false, IsMarkRead__c = false, IsMarkSaved__c = false, Primary_Category__c = 'Card services', Secondary_Category__c = 'ATM/Debit', Tertiary_Category__c = 'Travel notification', MaritzCX__Response_Deleted_From_MaritzCX__c = false, SLATemp__c = false),
+			    new Case(Status = 'In Process',Brand__c='CFCU',Description = 'Orginal Desc', Origin = null, Subject = 'Test', ClosedDate = null, IsEscalated = false, AccountId = acc.Id, Account_Number__c = accDetail.Id, Additional_Documents__c = false, Staff_Escalated__c = false, Five_Day_Flag__c = false, IsMarkDeleted__c = false, IsMarkRead__c = false, IsMarkSaved__c = false, Primary_Category__c = 'Card services', Secondary_Category__c = 'ATM/Debit', Tertiary_Category__c = 'Travel notification', MaritzCX__Response_Deleted_From_MaritzCX__c = false, SLATemp__c = false),
+			    new Case(Status = 'In Process',Brand__c='Spectrum', Description = 'Orginal Desc', Origin = null, Subject = 'Test', ClosedDate = null, IsEscalated = false,AccountId = acc.Id,  Account_Number__c = accDetail.Id, Additional_Documents__c = false, Staff_Escalated__c = false, Five_Day_Flag__c = false, IsMarkDeleted__c = false, IsMarkRead__c = false, IsMarkSaved__c = false, Primary_Category__c = 'Account Maintenance', Secondary_Category__c = 'Account Services', Tertiary_Category__c = 'Extended Check Hold', MaritzCX__Response_Deleted_From_MaritzCX__c = false, SLATemp__c = false)
 		    	}; 
 		    	
 				Insert case_Obj;
@@ -159,10 +177,12 @@ public class ManageTravelPlansControllerTest {
       
       @isTest static  void testsaveCaseCallouts() {
       			List<Account_Details__c> objAccountDetails = [select id from Account_Details__c limit 2];
-				List<Case> objCase = [select id, Description from Case limit 4];
+				List<Case> objCase = [select id,Account_Number__c, Description from Case limit 4];
 				Test.startTest();	   	
 		     	Test.setMock(HttpCalloutMock.class, new MockHttpAddResponseGenerator());
 		        List<String> err = ManageTravelPlansController.MCAPICallout(objCase[0].Id,'["' + objAccountDetails[0].Id + '"]','[{"Country__c":"AUSTRALIA","Departure_Date__c":"2018-09-03","Destination__c":"International","Return_Date__c":"2018-09-04","State__c":"","Email__c":"dbhavsar@affirma.com","IsEmailPreferred__c":true,"US_Mobile_Number__c":"555-763-4140"}]');
+		        system.debug('objCase[0].Id==='+objCase[0].Id);
+		         system.debug('objCase[0].Account_Number__c==='+objCase[0].Account_Number__c);
 		        ManageTravelPlansController.saveTravelNotification(objCase[0].Id,'["' + objAccountDetails[0].Id + '"]','[{"Country__c":"AUSTRALIA","Departure_Date__c":"2018-09-03","Destination__c":"International","Return_Date__c":"2018-09-04","State__c":"","Email__c":"dbhavsar@affirma.com","IsEmailPreferred__c":true,"US_Mobile_Number__c":"555-763-4140"}]', '5165967021121165,AUSTRALIA|');
 		       // List<String> err1 = ManageTravelPlansController.MCAPICallout(objCase[1].Id,'["' + objAccountDetails[1].Id + '"]','[{"Country__c":"AUSTRALIA","Departure_Date__c":"2018-09-03","Destination__c":"International","Return_Date__c":"2018-09-04","State__c":"","Email__c":"dbhavsar@affirma.com","IsEmailPreferred__c":true,"US_Mobile_Number__c":"555-763-4140"}]');
 		      	//ManageTravelPlansController.saveTravelNotification(objCase[1].Id,'["' + objAccountDetails[1].Id + '"]','[{"Country__c":"AUSTRALIA","Departure_Date__c":"2018-09-03","Destination__c":"International","Return_Date__c":"2018-09-04","State__c":"","Email__c":"dbhavsar@affirma.com","IsEmailPreferred__c":true,"US_Mobile_Number__c":"555-763-4140"}]', '5165967021121165,AUSTRALIA|');  
@@ -171,12 +191,14 @@ public class ManageTravelPlansControllerTest {
       
       @isTest static  void testsaveCaseCallouts1() {
       			List<Account_Details__c> objAccountDetails = [select id from Account_Details__c limit 2];
-				List<Case> objCase = [select id, Description from Case limit 4];
+				List<Case> objCase = [select id,Account_Number__c, Description from Case limit 4];
 				Test.startTest();	   	
 		     	Test.setMock(HttpCalloutMock.class, new MockHttpAddResponseGenerator());
 		        
 		        List<String> err1 = ManageTravelPlansController.MCAPICallout(objCase[0].Id,'["' + objAccountDetails[1].Id + '"]','[{"Country__c":"AUSTRALIA","Departure_Date__c":"2018-09-03","Destination__c":"International","Return_Date__c":"2018-09-04","State__c":"","Email__c":"dbhavsar@affirma.com","IsEmailPreferred__c":true,"US_Mobile_Number__c":"555-763-4140"}]');
-		      	ManageTravelPlansController.saveTravelNotification(objCase[0].Id,'["' + objAccountDetails[1].Id + '"]','[{"Country__c":"AUSTRALIA","Departure_Date__c":"2018-09-03","Destination__c":"International","Return_Date__c":"2018-09-04","State__c":"","Email__c":"dbhavsar@affirma.com","IsEmailPreferred__c":true,"US_Mobile_Number__c":"555-763-4140"}]', '5165967021121165,AUSTRALIA|');  
+		      	system.debug('objCase[0].Id==='+objCase[0].Id);
+		      	 system.debug('objCase[0].Account_Number__c==='+objCase[0].Account_Number__c);
+		      	ManageTravelPlansController.saveTravelNotification(objCase[1].Id,'["' + objAccountDetails[1].Id + '"]','[{"Country__c":"AUSTRALIA","Departure_Date__c":"2018-09-03","Destination__c":"International","Return_Date__c":"2018-09-04","State__c":"","Email__c":"dbhavsar@affirma.com","IsEmailPreferred__c":true,"US_Mobile_Number__c":"555-763-4140"}]', '5165967021121165,AUSTRALIA|');  
 		       Test.stopTest();        
       }
       

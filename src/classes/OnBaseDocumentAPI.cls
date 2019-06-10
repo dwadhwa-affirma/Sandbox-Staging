@@ -11,6 +11,24 @@ global with sharing class OnBaseDocumentAPI {
                                     and (Case__c != null or (Member_Comment__c!=null and Member_Comment__r.CreatedBy.Profile.Name = 'Messaging center Customers'))];
             //system.debug('onbaseDocuemntList :: ' + onbaseDocuemntList[0].case__r);
             //system.debug('Account_Number__r :: ' + onbaseDocuemntList[0].case__r.Account_Number__r.Name);
+            set<string> caseids = new set<string>();
+            map<string, OnBaseDocumentAPIResopnse> caseAccounts = new  map<string, OnBaseDocumentAPIResopnse>();
+            set<string> accountsAdded = new set<string>();
+           
+            
+             for(OnBase_Document__c OnBaseObj : onbaseDocuemntList){
+             	caseids.add(OnBaseObj.case__c);
+             }
+             
+             
+             List<CaseAccountMemberDetail__c> camd = new List<CaseAccountMemberDetail__c>();
+        	camd = [select id,Case__c, MemberAccountid__c,  case__r.CaseNumber,case__r.OwnerId,
+        				case__r.Owner.Name , case__r.Status, case__r.Category__c,
+        				case__r.Primary_Category__c, case__r.Tertiary_Category__c,case__r.Secondary_Category__c,
+        				case__r.Account.Name,
+        				Account_Name__c, 
+        				case__r.Subject, case__r.Origin,case__r.Parent.CaseNumber, case__r.ClosedDate
+        				 from CaseAccountMemberDetail__c where Case__c IN: caseids];
                         
             List<OnBaseDocumentAPIResopnse> responseObjList = new List<OnBaseDocumentAPIResopnse>();
             List<OnBase_Supported_Extensions__c> mcs = OnBase_Supported_Extensions__c.getall().values();
@@ -28,6 +46,8 @@ global with sharing class OnBaseDocumentAPI {
                     {
                     respObj.AccountNumber = (OnBaseObj.case__r.Account_Number__r==null)?'N/A':String.valueOf(Integer.valueOf(OnBaseObj.case__r.Account_Number__r.Name));
                                     responseObjList.add(respObj);
+                                    caseAccounts.put(OnBaseObj.Attachment_Id__c, respObj);
+                                    accountsAdded.add(respObj.AccountNumber);
                     }
                 }
                 else
@@ -36,7 +56,9 @@ global with sharing class OnBaseDocumentAPI {
                     if(OnBaseObj.Member_Comment__r.case__r.Account_Number__r != null)
                     {      
                     respObj.AccountNumber = (OnBaseObj.Member_Comment__r.case__r.Account_Number__r== null)?'N/A':String.valueOf(Integer.valueOf(OnBaseObj.Member_Comment__r.case__r.Account_Number__r.Name));  
-                                    responseObjList.add(respObj);                 
+                                    responseObjList.add(respObj);   
+                                    caseAccounts.put(OnBaseObj.Attachment_Id__c, respObj);
+                                    accountsAdded.add(respObj.AccountNumber);              
                     }
                 }
                 for (OnBase_Supported_Extensions__c item : mcs)
@@ -56,6 +78,40 @@ global with sharing class OnBaseDocumentAPI {
                 
                 
             }
+            
+            for(OnBase_Document__c OnBaseObj : onbaseDocuemntList)
+            { 
+            	if(OnBaseObj.case__c != null && OnBaseObj.case__r.Account_Number__r!=null){
+		           for(CaseAccountMemberDetail__c c: camd){
+		           		OnBaseDocumentAPIResopnse res = caseAccounts.get(OnBaseObj.Attachment_Id__c);
+		           		 system.debug('c===' + c.Account_Name__c);
+		           		  system.debug('res.AccountNumber===' + res.AccountNumber);
+		           		   system.debug('OnBaseObj.case__c===' + OnBaseObj.case__c);
+		           		if(OnBaseObj.case__c == c.case__c && OnBaseObj.case__r.Account_Number__r.Name != c.Account_Name__c){
+		           			 OnBaseDocumentAPIResopnse respObj = new OnBaseDocumentAPIResopnse();
+		           			 respObj.Name = (OnBaseObj.Document_Name__c!=null)?OnBaseObj.Document_Name__c:OnBaseObj.Name;
+                			 respObj.AttachmentID = OnBaseObj.Attachment_Id__c;
+                			 respObj.CaseNumber = String.valueOf(Integer.valueOf(OnBaseObj.case__r.CaseNumber));
+                			 respObj.AccountNumber = c.Account_Name__c;
+                			 for (OnBase_Supported_Extensions__c item : mcs)
+				                {
+				                    if(OnBaseObj.Document_Name__c.toLowerCase().endsWith('.' + item.Name.toLowerCase()))
+				                    {				                        
+				                        respObj.ExtensionNumber = item.Value__c.format();
+				                    }
+				                }
+				                if(respObj.ExtensionNumber == null || respObj.ExtensionNumber == '')
+				                {
+				                    respObj.ExtensionNumber = 'Other';
+				                }
+				               respObj.DocumentType = OnBaseObj.Document_Type__c;
+				               responseObjList.add(respObj);
+		           		}
+		           	
+		           }
+	           }
+            }
+            system.debug('responseObjList===' + responseObjList);
             return responseObjList;
       }
       

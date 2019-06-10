@@ -686,6 +686,7 @@ trigger UpdateHistoryObject on Needs_Assesment__c(after update,before update,bef
             //Contact Preference
              if (newobj.LECP_Written_Materials_Way_To_Send_Email__c!= oldobj.LECP_Written_Materials_Way_To_Send_Email__c)
             {
+            	system.debug('Contact Email###');
                 ctrl.InsertDataHistoryTable(string.valueOf(newobj.LECP_Written_Materials_Way_To_Send_Email__c), string.valueOf(oldobj.LECP_Written_Materials_Way_To_Send_Email__c), 'LECP_Written_Materials_Way_To_Send_Email__c', '' + newobj.Id);
             }
              if (newobj.LECP_Written_Materials_Way_To_Send_Mail__c!= oldobj.LECP_Written_Materials_Way_To_Send_Mail__c)
@@ -878,7 +879,189 @@ trigger UpdateHistoryObject on Needs_Assesment__c(after update,before update,bef
                 ctrl.InsertDataHistoryTable(newobj.LESF_Comments__c, oldobj.LESF_Comments__c, 'LESF_Comments__c', '' + newobj.Id);
             }
             
-            
+            /*CRM-1485 Begin here*/
+			 if (newobj.LEHS_Type_of_Mortgage__c != oldobj.LEHS_Type_of_Mortgage__c )
+            {
+            	system.debug('Home Mortgage###');
+                ctrl.InsertDataHistoryTable(string.valueOf(newobj.LEHS_Type_of_Mortgage__c), string.valueOf(oldobj.LEHS_Type_of_Mortgage__c), 'LEHS_Type_of_Mortgage__c', '' + newobj.Id);
+            } 
+             if (newobj.LEHS_Comment_New__c != oldobj.LEHS_Comment_New__c )
+            {
+                ctrl.InsertDataHistoryTable(string.valueOf(newobj.LEHS_Comment_New__c), string.valueOf(oldobj.LEHS_Comment_New__c), 'LEHS_Comment_New__c', '' + newobj.Id);
+            }
+			if (newobj.LECF_Experience_Improvement_Feedback_New__c != oldobj.LECF_Experience_Improvement_Feedback_New__c )
+            {
+                ctrl.InsertDataHistoryTable(string.valueOf(newobj.LECF_Experience_Improvement_Feedback_New__c), string.valueOf(oldobj.LECF_Experience_Improvement_Feedback_New__c), 'LECF_Experience_Improvement_Feedback_New__c', '' + newobj.Id);
+            }
+			if (newobj.LECF_Comment_New__c != oldobj.LECF_Comment_New__c )
+            {
+                ctrl.InsertDataHistoryTable(string.valueOf(newobj.LECF_Comment_New__c), string.valueOf(oldobj.LECF_Comment_New__c), 'LECF_Comment_New__c', '' + newobj.Id);
+            }
+			if (newobj.LEAV_ContactPreferences_New__c != oldobj.LEAV_ContactPreferences_New__c )
+            {
+                ctrl.InsertDataHistoryTable(string.valueOf(newobj.LEAV_ContactPreferences_New__c), string.valueOf(oldobj.LEAV_ContactPreferences_New__c), 'LEAV_ContactPreferences_New__c', '' + newobj.Id);
+            }
+			if (newobj.LEOL_Other_Existing_Loans__c != oldobj.LEOL_Other_Existing_Loans__c )
+            {
+                ctrl.InsertDataHistoryTable(string.valueOf(newobj.LEOL_Other_Existing_Loans__c), string.valueOf(oldobj.LEOL_Other_Existing_Loans__c), 'LEOL_Other_Existing_Loans__c', '' + newobj.Id);
+            }
+			if (newobj.LEOM_Comments_New__c != oldobj.LEOM_Comments_New__c )
+            {
+                ctrl.InsertDataHistoryTable(string.valueOf(newobj.LEOM_Comments_New__c), string.valueOf(oldobj.LEOM_Comments_New__c), 'LEOM_Comments_New__c', '' + newobj.Id);
+            }
+			if (newobj.Retirement_New__c != oldobj.Retirement_New__c )
+            {
+                ctrl.InsertDataHistoryTable(string.valueOf(newobj.Retirement_New__c), string.valueOf(oldobj.Retirement_New__c), 'Retirement_New__c', '' + newobj.Id);
+            }
+			if (newobj.LEOM_PlanUnforeseen_New__c != oldobj.LEOM_PlanUnforeseen_New__c )
+            {
+                ctrl.InsertDataHistoryTable(string.valueOf(newobj.LEOM_PlanUnforeseen_New__c), string.valueOf(oldobj.LEOM_PlanUnforeseen_New__c), 'LEOM_PlanUnforeseen_New__c', '' + newobj.Id);
+            }
+			if (newobj.LEMP_Payment_Transfer_Comments_New__c != oldobj.LEMP_Payment_Transfer_Comments_New__c )
+            {
+                ctrl.InsertDataHistoryTable(string.valueOf(newobj.LEMP_Payment_Transfer_Comments_New__c), string.valueOf(oldobj.LEMP_Payment_Transfer_Comments_New__c), 'LEMP_Payment_Transfer_Comments_New__c', '' + newobj.Id);
+            }
+			if (newobj.LEMP_Transfer_Comments_New__c != oldobj.LEMP_Transfer_Comments_New__c )
+            {
+                ctrl.InsertDataHistoryTable(string.valueOf(newobj.LEMP_Transfer_Comments_New__c), string.valueOf(oldobj.LEMP_Transfer_Comments_New__c), 'LEMP_Transfer_Comments_New__c', '' + newobj.Id);
+            }
+			if (newobj.LEMP_International_Transfer_Comments_New__c != oldobj.LEMP_International_Transfer_Comments_New__c )
+            {
+                ctrl.InsertDataHistoryTable(string.valueOf(newobj.LEMP_International_Transfer_Comments_New__c), string.valueOf(oldobj.LEMP_International_Transfer_Comments_New__c), 'LEMP_International_Transfer_Comments_New__c', '' + newobj.Id);
+            }
+			if (newobj.LEMP_Debit_Card_Usage_Comments_New__c != oldobj.LEMP_Debit_Card_Usage_Comments_New__c )
+            {
+                ctrl.InsertDataHistoryTable(string.valueOf(newobj.LEMP_Debit_Card_Usage_Comments_New__c), string.valueOf(oldobj.LEMP_Debit_Card_Usage_Comments_New__c), 'LEMP_Debit_Card_Usage_Comments_New__c', '' + newobj.Id);
+            }
+			if (newobj.LEMP_Credit_Card_Usage_Other_New__c != oldobj.LEMP_Credit_Card_Usage_Other_New__c )
+            {
+                ctrl.InsertDataHistoryTable(string.valueOf(newobj.LEMP_Credit_Card_Usage_Other_New__c), string.valueOf(oldobj.LEMP_Credit_Card_Usage_Other_New__c), 'LEMP_Credit_Card_Usage_Other_New__c', '' + newobj.Id);
+            }
+			if (newobj.LEMP_Credit_Card_You_Use_Often_New__c != oldobj.LEMP_Credit_Card_You_Use_Often_New__c )
+            {
+                ctrl.InsertDataHistoryTable(string.valueOf(newobj.LEMP_Credit_Card_You_Use_Often_New__c), string.valueOf(oldobj.LEMP_Credit_Card_You_Use_Often_New__c), 'LEMP_Credit_Card_You_Use_Often_New__c', '' + newobj.Id);
+            }
+			if (newobj.LEMP_Credit_Card_Usage_Reason_Comments_N__c != oldobj.LEMP_Credit_Card_Usage_Reason_Comments_N__c )
+            {
+                ctrl.InsertDataHistoryTable(string.valueOf(newobj.LEMP_Credit_Card_Usage_Reason_Comments_N__c), string.valueOf(oldobj.LEMP_Credit_Card_Usage_Reason_Comments_N__c), 'LEMP_Credit_Card_Usage_Reason_Comments_N__c', '' + newobj.Id);
+            }
+			if (newobj.LEMP_Credit_Card_Usage_Comments_New__c != oldobj.LEMP_Credit_Card_Usage_Comments_New__c )
+            {
+                ctrl.InsertDataHistoryTable(string.valueOf(newobj.LEMP_Credit_Card_Usage_Comments_New__c), string.valueOf(oldobj.LEMP_Credit_Card_Usage_Comments_New__c), 'LEMP_Credit_Card_Usage_Comments_New__c', '' + newobj.Id);
+            }
+			if (newobj.LEMD_CFCU_Spectrum_YesNo__c != oldobj.LEMD_CFCU_Spectrum_YesNo__c )
+            {
+                ctrl.InsertDataHistoryTable(string.valueOf(newobj.LEMD_CFCU_Spectrum_YesNo__c), string.valueOf(oldobj.LEMD_CFCU_Spectrum_YesNo__c), 'LEMD_CFCU_Spectrum_YesNo__c', '' + newobj.Id);
+            }
+			if (newobj.LEMD_At_another_financial_insti_YesNo__c != oldobj.LEMD_At_another_financial_insti_YesNo__c )
+            {
+                ctrl.InsertDataHistoryTable(string.valueOf(newobj.LEMD_At_another_financial_insti_YesNo__c), string.valueOf(oldobj.LEMD_At_another_financial_insti_YesNo__c), 'LEMD_At_another_financial_insti_YesNo__c', '' + newobj.Id);
+            }
+			if (newobj.LEMD_CommentsForDD_New__c != oldobj.LEMD_CommentsForDD_New__c )
+            {
+                ctrl.InsertDataHistoryTable(string.valueOf(newobj.LEMD_CommentsForDD_New__c), string.valueOf(oldobj.LEMD_CommentsForDD_New__c), 'LEMD_CommentsForDD_New__c', '' + newobj.Id);
+            }
+			if (newobj.LEMD_CommentsDC_New__c != oldobj.LEMD_CommentsDC_New__c )
+            {
+                ctrl.InsertDataHistoryTable(string.valueOf(newobj.LEMD_CommentsDC_New__c), string.valueOf(oldobj.LEMD_CommentsDC_New__c), 'LEMD_CommentsDC_New__c', '' + newobj.Id);
+            }
+			if (newobj.LEWS_Comment_New__c != oldobj.LEWS_Comment_New__c )
+            {
+                ctrl.InsertDataHistoryTable(string.valueOf(newobj.LEWS_Comment_New__c), string.valueOf(oldobj.LEWS_Comment_New__c), 'LEWS_Comment_New__c', '' + newobj.Id);
+            }
+			if (newobj.LESB_SharedBranching_Comments_New__c != oldobj.LESB_SharedBranching_Comments_New__c )
+            {
+                ctrl.InsertDataHistoryTable(string.valueOf(newobj.LESB_SharedBranching_Comments_New__c), string.valueOf(oldobj.LESB_SharedBranching_Comments_New__c), 'LESB_SharedBranching_Comments_New__c', '' + newobj.Id);
+            }
+			/*if (newobj.ESF_Aware_ATM_Network_YesNo__c != oldobj.ESF_Aware_ATM_Network_YesNo__c )
+            {
+                ctrl.InsertDataHistoryTable(string.valueOf(newobj.ESF_Aware_ATM_Network_YesNo__c), string.valueOf(oldobj.ESF_Aware_ATM_Network_YesNo__c), 'ESF_Aware_ATM_Network_YesNo__c', '' + newobj.Id);
+            }*/
+			if (newobj.LESF_ATM_Location_YesNo__c != oldobj.LESF_ATM_Location_YesNo__c )
+            {
+                ctrl.InsertDataHistoryTable(string.valueOf(newobj.LESF_ATM_Location_YesNo__c), string.valueOf(oldobj.LESF_ATM_Location_YesNo__c), 'LESF_ATM_Location_YesNo__c', '' + newobj.Id);
+            }
+			if (newobj.LESF_Comments_New__c != oldobj.LESF_Comments_New__c )
+            {
+                ctrl.InsertDataHistoryTable(string.valueOf(newobj.LESF_Comments_New__c), string.valueOf(oldobj.LESF_Comments_New__c), 'LESF_Comments_New__c', '' + newobj.Id);
+            }
+			if (newobj.LEPT_Comments_New__c != oldobj.LEPT_Comments_New__c )
+            {
+                ctrl.InsertDataHistoryTable(string.valueOf(newobj.LEPT_Comments_New__c), string.valueOf(oldobj.LEPT_Comments_New__c), 'LEPT_Comments_New__c', '' + newobj.Id);
+            }
+			if (newobj.LEEM_Money_In_Primary_Account__c != oldobj.LEEM_Money_In_Primary_Account__c )
+            {
+                ctrl.InsertDataHistoryTable(string.valueOf(newobj.LEEM_Money_In_Primary_Account__c), string.valueOf(oldobj.LEEM_Money_In_Primary_Account__c), 'LEEM_Money_In_Primary_Account__c', '' + newobj.Id);
+            }
+			if (newobj.LEEM_Savings_For_Retirement_401__c != oldobj.LEEM_Savings_For_Retirement_401__c )
+            {
+                ctrl.InsertDataHistoryTable(string.valueOf(newobj.LEEM_Savings_For_Retirement_401__c), string.valueOf(oldobj.LEEM_Savings_For_Retirement_401__c), 'LEEM_Savings_For_Retirement_401__c', '' + newobj.Id);
+            }
+			if (newobj.LEEM_Savings_For_Retirement_IRA__c != oldobj.LEEM_Savings_For_Retirement_IRA__c )
+            {
+                ctrl.InsertDataHistoryTable(string.valueOf(newobj.LEEM_Savings_For_Retirement_IRA__c), string.valueOf(oldobj.LEEM_Savings_For_Retirement_IRA__c), 'LEEM_Savings_For_Retirement_IRA__c', '' + newobj.Id);
+            }
+			if (newobj.LEEM_Savings_For_Retirement_O_R_Account__c != oldobj.LEEM_Savings_For_Retirement_O_R_Account__c )
+            {
+                ctrl.InsertDataHistoryTable(string.valueOf(newobj.LEEM_Savings_For_Retirement_O_R_Account__c), string.valueOf(oldobj.LEEM_Savings_For_Retirement_O_R_Account__c), 'LEEM_Savings_For_Retirement_O_R_Account__c', '' + newobj.Id);
+            }
+			if (newobj.LEEM_Savings_For_Retirement_O_Account__c != oldobj.LEEM_Savings_For_Retirement_O_Account__c )
+            {
+                ctrl.InsertDataHistoryTable(string.valueOf(newobj.LEEM_Savings_For_Retirement_O_Account__c), string.valueOf(oldobj.LEEM_Savings_For_Retirement_O_Account__c), 'LEEM_Savings_For_Retirement_O_Account__c', '' + newobj.Id);
+            }
+			if (newobj.LEEM_Comments_New__c != oldobj.LEEM_Comments_New__c )
+            {
+                ctrl.InsertDataHistoryTable(string.valueOf(newobj.LEEM_Comments_New__c), string.valueOf(oldobj.LEEM_Comments_New__c), 'LEEM_Comments_New__c', '' + newobj.Id);
+            }
+			if (newobj.LEEM_Deductible_Plan__c != oldobj.LEEM_Deductible_Plan__c )
+            {
+                ctrl.InsertDataHistoryTable(string.valueOf(newobj.LEEM_Deductible_Plan__c), string.valueOf(oldobj.LEEM_Deductible_Plan__c), 'LEEM_Deductible_Plan__c', '' + newobj.Id);
+            }
+			if (newobj.LEEM_Health_Savings_Account__c != oldobj.LEEM_Health_Savings_Account__c )
+            {
+                ctrl.InsertDataHistoryTable(string.valueOf(newobj.LEEM_Health_Savings_Account__c), string.valueOf(oldobj.LEEM_Health_Savings_Account__c), 'LEEM_Health_Savings_Account__c', '' + newobj.Id);
+            }
+			/*if (newobj.Needs_Assesment__c.Type__c != oldobj.Needs_Assesment__c.Type__c )
+            {
+                ctrl.InsertDataHistoryTable(string.valueOf(newobj.NA_Deposit__r.Type__c), string.valueOf(oldobj.NA_Deposit__r.Type__c), 'Type__c', '' + newobj.Id);
+            }
+			if (newobj.Financial_Instituition__c != oldobj.Financial_Instituition__c )
+            {
+                ctrl.InsertDataHistoryTable(string.valueOf(newobj.Financial_Instituition__c), string.valueOf(oldobj.Financial_Instituition__c), 'Financial_Instituition__c', '' + newobj.Id);
+            }
+			if (newobj.Balance__c != oldobj.Balance__c )
+            {
+                ctrl.InsertDataHistoryTable(string.valueOf(newobj.Balance__c), string.valueOf(oldobj.Balance__c), 'Balance__c', '' + newobj.Id);
+            }
+			if (newobj.Rate__c != oldobj.Rate__c )
+            {
+                ctrl.InsertDataHistoryTable(string.valueOf(newobj.Rate__c), string.valueOf(oldobj.Rate__c), 'Rate__c', '' + newobj.Id);
+            }
+			if (newobj.Financial_Institution__c != oldobj.Financial_Institution__c )
+            {
+                ctrl.InsertDataHistoryTable(string.valueOf(newobj.Financial_Institution__c), string.valueOf(oldobj.Financial_Institution__c), 'Financial_Institution__c', '' + newobj.Id);
+            }
+			if (newobj.Type_of_Loan__c != oldobj.Type_of_Loan__c )
+            {
+                ctrl.InsertDataHistoryTable(string.valueOf(newobj.Type_of_Loan__c), string.valueOf(oldobj.Type_of_Loan__c), 'Type_of_Loan__c', '' + newobj.Id);
+            }
+			if (newobj.End_Date__c != oldobj.End_Date__c )
+            {
+                ctrl.InsertDataHistoryTable(string.valueOf(newobj.End_Date__c), string.valueOf(oldobj.End_Date__c), 'End_Date__c', '' + newobj.Id);
+            }
+			if (newobj.Name__c != oldobj.Name__c )
+            {
+                ctrl.InsertDataHistoryTable(string.valueOf(newobj.Name__c), string.valueOf(oldobj.Name__c), 'Name__c', '' + newobj.Id);
+            }
+			if (newobj.Age__c != oldobj.Age__c )
+            {
+                ctrl.InsertDataHistoryTable(string.valueOf(newobj.Age__c), string.valueOf(oldobj.Age__c), 'Age__c', '' + newobj.Id);
+            }
+			if (newobj.Want_to_Refer_Membership__c != oldobj.Want_to_Refer_Membership__c )
+            {
+                ctrl.InsertDataHistoryTable(string.valueOf(newobj.Want_to_Refer_Membership__c), string.valueOf(oldobj.Want_to_Refer_Membership__c), 'Want_to_Refer_Membership__c', '' + newobj.Id);
+            }*/
+            /*CRM-1485 Ends here*/
             
             
                       
@@ -928,7 +1111,7 @@ trigger UpdateHistoryObject on Needs_Assesment__c(after update,before update,bef
            
            system.debug('newobj.LEOL_Other_Existing_Loans__c---' + newobj.LEOL_Other_Existing_Loans__c);
            
-           
+            system.debug('newobj.LECP_Partially_Completed__c---' + newobj.LECP_Partially_Completed__c);
            
            
            if (newobj.LEOL_Other_Existing_Loans__c != null)
@@ -1001,6 +1184,7 @@ trigger UpdateHistoryObject on Needs_Assesment__c(after update,before update,bef
             //LEAV  Auto / Vehicle
             if (    (newobj.LEAV_Current__c == 'No' || 
                      newobj.LEAV_Current__c == 'Prefer Not to Answer' || 
+                     newobj.LEAV_Current__c == 'Yes' || 
                          (newobj.LEAV_Current__c == 'Yes' && 
                           newobj.LEAV_CurrentLoanProvider__c != null && 
                           newobj.LEAV_CurrentRate__c != null)
@@ -1008,6 +1192,7 @@ trigger UpdateHistoryObject on Needs_Assesment__c(after update,before update,bef
                     && 
                     (newobj.LEAV_PlanningToBuy__c == 'Prefer Not to Answer' || 
                      newobj.LEAV_PlanningToBuy__c == 'No' || 
+                     newobj.LEAV_PlanningToBuy__c == 'Yes' || 
                          (newobj.LEAV_PlanningToBuy__c == 'Yes' && 
                           newobj.LEAV_PlanDate__c != null && 
                           newobj.LEAV_AnticipateFinance__c != null  ) 
@@ -1258,8 +1443,60 @@ trigger UpdateHistoryObject on Needs_Assesment__c(after update,before update,bef
             {
                 account.NA_LEMP_Complete__c = false;
             }
+           
+            
 
             update account;
+            
+             Needs_Assesment__c  NAObj = [select id, name, LEAV_Partially_Completed__c, LECF_Partially_Completed__c,
+              LECP_Partially_Completed__c, LEEM_Partially_Completed__c, LEHS_Partially_Completed__c, 
+              LEMD_Partially_Completed__c, LEMP_Partially_Completed__c, LEMQ_Partially_Completed__c, 
+              LEOL_Partially_Completed__c, LEOM_Partially_Completed__c, LEPT_Partially_Completed__c, 
+              LESB_Partially_Completed__c, LESF_Partially_Completed__c, LEWS_Partially_Completed__c 
+              from Needs_Assesment__c  where id =: newobj.id];
+            
+            system.debug('NAObj.LECP_Partially_Completed__c=='+NAObj.LECP_Partially_Completed__c);
+            
+             system.debug('NAObj.LEAV_Partially_Completed__c=='+NAObj.LEAV_Partially_Completed__c);
+              system.debug('NAObj.LECF_Partially_Completed__c=='+NAObj.LECF_Partially_Completed__c);
+                system.debug('NAObj.LECP_Partially_Completed__c=='+NAObj.LECP_Partially_Completed__c);
+                  system.debug('NAObj.LEEM_Partially_Completed__c=='+NAObj.LEEM_Partially_Completed__c);
+                    system.debug('NAObj.LEHS_Partially_Completed__c=='+NAObj.LEHS_Partially_Completed__c);
+                      system.debug('NAObj.LEMD_Partially_Completed__c'+NAObj.LEMD_Partially_Completed__c);
+                        system.debug('NAObj.LEMP_Partially_Completed__c'+NAObj.LEMP_Partially_Completed__c);
+                          system.debug('NAObj.LEMQ_Partially_Completed__c'+NAObj.LEMQ_Partially_Completed__c);
+                            system.debug('NAObj.LEOL_Partially_Completed__c'+NAObj.LEOL_Partially_Completed__c);
+                              system.debug('NAObj.LEOM_Partially_Completed__c'+NAObj.LEOM_Partially_Completed__c);
+                                system.debug('NAObj.LEPT_Partially_Completed__c'+NAObj.LEPT_Partially_Completed__c);
+                                  system.debug(' NAObj.LESB_Partially_Completed__c'+ NAObj.LESB_Partially_Completed__c);
+                                    system.debug(' NAObj.LESF_Partially_Completed__c '+ NAObj.LESF_Partially_Completed__c );
+                                      system.debug('NAObj.LEWS_Partially_Completed__c'+NAObj.LEWS_Partially_Completed__c);
+                                      
+            if(NAObj.LEAV_Partially_Completed__c ||
+            NAObj.LECF_Partially_Completed__c ||
+            NAObj.LECP_Partially_Completed__c ||
+            NAObj.LEEM_Partially_Completed__c ||
+            NAObj.LEHS_Partially_Completed__c ||
+            NAObj.LEMD_Partially_Completed__c ||
+            NAObj.LEMP_Partially_Completed__c ||
+            NAObj.LEMQ_Partially_Completed__c ||
+            NAObj.LEOL_Partially_Completed__c ||
+            NAObj.LEOM_Partially_Completed__c ||
+            NAObj.LEPT_Partially_Completed__c ||
+            NAObj.LESB_Partially_Completed__c ||
+            NAObj.LESF_Partially_Completed__c ||
+            NAObj.LEWS_Partially_Completed__c){            	
+            	account.NA_Partial__c = true;
+            }
+            else
+            {            	
+            	account.NA_Partial__c = false;
+            }
+                                    
+             update account;
+            
+           
+             
         }
     
     }

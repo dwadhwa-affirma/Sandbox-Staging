@@ -24,7 +24,7 @@ private class ConvertPreMemberToMemberSchedularTest {
 
     static testMethod void myUnitTest() {
      
-   MemberConversionSetting__c mcs = new MemberConversionSetting__c();
+   	MemberConversionSetting__c mcs = new MemberConversionSetting__c();
       
       mcs.Automation__c = 10;
       mcs.Manual__c = 10;
@@ -86,7 +86,7 @@ private class ConvertPreMemberToMemberSchedularTest {
         NA_Deposit__c dep = new NA_Deposit__c();
         dep.Needs_Assessment__c = na.id;
         insert dep;
-        
+     
          Account_Details__c account_details_Obj = new Account_Details__c(Onboarded__c = false, RecType__c = 'ACCT', TypeTranslate__c = '2-TRUST');
     			Insert account_details_Obj;
         Person_Account__c person_account_Obj = new Person_Account__c(Account_Number__c = account_details_Obj.id, PersonID__c = act.id, Relationship__c = null, TypeTranslate__c = '0000/Primary');
@@ -100,7 +100,7 @@ private class ConvertPreMemberToMemberSchedularTest {
         act1.Residential_Street__pc = '11';
         act1.BIRTH_DATE__pc = system.Today().addyears(20);
         insert act1;
-        
+          Test.startTest();
          Account_Details__c account_details_Obj1 = new Account_Details__c(Onboarded__c = false, RecType__c = 'ACCT', TypeTranslate__c = '2-TRUST');
     			Insert account_details_Obj1;
         Person_Account__c person_account_Obj1 = new Person_Account__c(Account_Number__c = account_details_Obj1.id, PersonID__c = act1.id, Relationship__c = null, TypeTranslate__c = '0000/Primary');
@@ -255,7 +255,7 @@ private class ConvertPreMemberToMemberSchedularTest {
         
          String CRON_EXP = '0 0 0 15 3 ? *';
          
-        Test.startTest();
+       
        		
        		Account_Details__c account_details_Obj9 = new Account_Details__c(Onboarded__c = false, RecType__c = 'ACCT', TypeTranslate__c = '2-TRUST');
     			Insert account_details_Obj9;
@@ -272,8 +272,9 @@ private class ConvertPreMemberToMemberSchedularTest {
             CronTrigger ct = [SELECT Id, CronExpression, TimesTriggered, NextFireTime FROM CronTrigger WHERE id = :jobId];
             System.assertEquals(CRON_EXP, ct.CronExpression);
             System.assertEquals(0, ct.TimesTriggered);
-            ConvertPreMemberToMemberSchedular.clearPhoneNumber('011 7373737');
-             ConvertPreMemberToMemberSchedular.clearPhoneNumber(' ');
+       
+          //  ConvertPreMemberToMemberSchedular.clearPhoneNumber('011 7373737');           
+            // ConvertPreMemberToMemberSchedular.clearPhoneNumber(' ');
            Test.stopTest();
         
     }

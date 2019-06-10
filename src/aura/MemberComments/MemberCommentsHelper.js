@@ -8,7 +8,7 @@
 		
 		if(recordId == undefined)
 		{
-			recordId = this.getParameterByName('id');
+			recordId = this.getParameterByName('c__id');
 		}
 		
 		action.setParams({
@@ -99,7 +99,7 @@
 		
 		if(recordId == undefined)
 		{
-			recordId = this.getParameterByName('id');
+			recordId = this.getParameterByName('c__id');
 		}
 		
 		component.set("v.loading", true);
@@ -296,7 +296,7 @@
 		}
 	},
 	
-	saveComment: function(component, MemberDescription, CaseId, Draft, secureEmailAddress, Attachments, CURead){			     
+	saveComment: function(component, MemberDescription, CaseId, Draft, secureEmailAddress, Attachments, CURead, CRAttachments, selectedCannedResponse){			     
 		var action = component.get("c.saveComment");
 		component.set("v.loading", true);
 		action.setParams({
@@ -305,7 +305,9 @@
 			"Draft": Draft,
 			"secureEmailAddress": secureEmailAddress,
 			"Attachments" : JSON.stringify(Attachments),
-			"CURead" : CURead
+			"CURead" : CURead,
+			"CRAttachments" : JSON.stringify(CRAttachments),
+			"selectedCannedResponse" : selectedCannedResponse
 		});	
 				
 		action.setCallback(this, function(resp) {
@@ -344,6 +346,7 @@
 				}
 				
 				component.set("v.Attachments", Attachments);
+				component.set("v.CRAttachments", CRAttachments);
 				var savenew = component.get("v.SaveNew");
 				if(!savenew)
 				{				    
@@ -355,7 +358,13 @@
 		   					 "recordId": MemberComment.Case__c,
 		    				 "slideDevName": "detail"
 		   					});
-	    					sObectEvent.fire(); 
+	    					sObectEvent.fire();
+                       /*  var relatedListEvent = $A.get("e.force:navigateToRelatedList");
+                        relatedListEvent.setParams({
+                            "relatedListId": "Member_Comments__r",
+                            "parentRecordId": MemberComment.Case__c
+                        });
+                        relatedListEvent.fire();*/
 				    }
 				    else
 				    {
@@ -365,9 +374,10 @@
 		   					 "recordId": CaseId,
 		    				 "slideDevName": "detail"
 		   					});
-	    					sObectEvent.fire(); 
+	    					sObectEvent.fire();                     
 				    }
-					location.reload();	
+					//location.reload();
+					$A.get('e.force:refreshView').fire();	
 				}
 				else
 				{
@@ -450,5 +460,53 @@
 	    if (!results) return null;
 	    if (!results[2]) return '';
 	    return decodeURIComponent(results[2].replace(/\+/g, " "));
-	   }
+	   },
+	   
+	   
+	 fetchCRAttachments : function(component, CategoryId){
+	 component.set("v.CRAttachments", null);	
+		var brand = component.get("v.Model");
+		if(brand != null && brand != undefined)
+		{
+			component.set("v.loading", true);				     
+			var action = component.get("c.getSelectedAttachments");
+			
+			action.setParams({
+				"CategoryId" : CategoryId,
+				"Brand": brand.Brand__c
+			});	
+					
+			action.setCallback(this, function(resp) {
+				component.set("v.loading", false);
+				var state=resp.getState();			
+				if(state === "SUCCESS"){			
+					var res = resp.getReturnValue();
+					console.log(res);					
+					component.set("v.CRAttachments", res);					
+					//var caseAttachments = component.get("v.Attachments");
+					//var allattachments = [];
+					
+					//for(var i=0; i<caseAttachments.length ; i++){
+					//	allattachments.push(caseAttachments[i]);
+					//}
+					
+					//for(var i=0; i<res.length ; i++){
+					//	allattachments.push(res[i]);
+					//}
+					
+					
+					//component.set("v.Attachments", allattachments); 
+					
+					  
+					if(res.length > 0){
+						component.set("v.ShowAttachmentTable",true);
+					}
+				
+					
+				}
+			});
+			
+			$A.enqueueAction(action);
+		}
+	}
 })

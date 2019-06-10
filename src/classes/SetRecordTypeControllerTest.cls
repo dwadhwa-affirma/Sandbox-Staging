@@ -2,6 +2,7 @@
 public class SetRecordTypeControllerTest {
     
     static testmethod void testmethod1(){
+        
         String RecTypeId= [select Id from RecordType where (Name='Person Account') and (SobjectType='Account')].Id;
         
         Account acc = new Account(
@@ -31,7 +32,7 @@ public class SetRecordTypeControllerTest {
         crt.Teritiary_Category__c = 'test3';
         crt.Name = '1';
         insert crt; 
-        
+       
         Case cRec = new Case();
            cRec.Brand__c = 'CFCU';
            cRec.CaseComments__c = 'test comments';
@@ -44,7 +45,8 @@ public class SetRecordTypeControllerTest {
         PageReference pageRef = Page.SetRecordType;
         Test.setCurrentPage(pageRef);
         ApexPages.currentPage().getParameters().put('firstPage', 'true');
-        ApexPages.currentPage().getParameters().put('acctId', acc.Id);        
+        ApexPages.currentPage().getParameters().put('acctId', acc.Id);  
+         test.startTest();
         SetRecordTypeController controller = new SetRecordTypeController(new ApexPages.StandardController(cRec)); 
         
         controller.accountName = acc.Id;        
@@ -58,6 +60,7 @@ public class SetRecordTypeControllerTest {
         controller.change();
         controller.nextPage();
         controller.process();
+        test.stopTest();
     }
     
     static testmethod void testmethod2(){
@@ -314,6 +317,7 @@ public class SetRecordTypeControllerTest {
     } 
     
     static testmethod void testmethod10(){
+      
         String RecTypeId= [select Id from RecordType where (Name='Person Account') and (SobjectType='Account')].Id;
         
         Account acc = new Account(
@@ -343,7 +347,7 @@ public class SetRecordTypeControllerTest {
         crt.Teritiary_Category__c = 'test3';
         crt.Name = '000';
         insert crt; 
-        
+         
         Case cRec = new Case();
            cRec.Brand__c = 'CFCU';
            cRec.CaseComments__c = 'test comments';
@@ -367,7 +371,9 @@ public class SetRecordTypeControllerTest {
         controller.scValue = 'test2';
         controller.tcOptions();
         controller.tcValue = 'test3';
+         test.startTest();
         controller.process1();
+        test.stopTest();
     }
     
     static testMethod void testMethod11(){

@@ -158,7 +158,9 @@ Comment_Block_20__c='ABC'
 		    test.stopTest();
   }
  static testMethod void GetAllDataTest() {
+ 	
  	Account_Details__c obj = [select id from Account_Details__c limit 1];
+ 	 test.startTest();
  	MemberAccountWrapperFor360ViewController.GetAllData(obj.Id);
  	
  	MemberAccountWrapperFor360ViewController.GetPagingData(obj.Id,1,10,'accList','','','test');
@@ -187,7 +189,7 @@ Comment_Block_20__c='ABC'
 	MemberAccountWrapperFor360ViewController.GetPagingData(obj.Id,1,10,'Warning/Comments','shareNo','asc','Comments');
  	MemberAccountWrapperFor360ViewController.GetPagingData(obj.Id,1,10,'Warning/Comments','recTpe','asc','08/08/2012');
    
-         
+         test.stopTest();  
  	
  }   
 }

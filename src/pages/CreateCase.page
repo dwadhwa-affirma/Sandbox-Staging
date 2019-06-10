@@ -644,7 +644,7 @@ j$(document).ready(function()
     
     function submitform(addattachment)
     {
-        	
+       debugger; 	
     	casecomment = getRTEValue();
     	// replace zero with space characters
     	//casecomment = casecomment.replace(/<br>/g, '\r\n');

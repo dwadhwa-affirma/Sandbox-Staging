@@ -1,0 +1,82 @@
+<aura:component implements="flexipage:availableForAllPageTypes,force:appHostable,force:hasRecordId,force:hasSObjectName,force:hasSObjectName,force:lightningQuickAction" controller="AccountServiceMenuController">
+<aura:handler value="{!this}" name="init" action="{!c.doInit}"/>
+<aura:attribute name="Menu" type="string[]"/>
+<aura:attribute name="SubMenu" type="Object"/>
+<aura:attribute name="LoadSubMenu" type="Object"/>
+<aura:attribute name="componentToOpen" type="string"/>
+<aura:attribute name="SearchText" type="string"/>
+
+
+<style>
+ .modal-maincontent{
+ 	/*max-height: 476px;
+    min-height: 476px;*/}
+    
+    	.cuf-content{padding: 0px !important;}
+		.slds-p-around_medium, .slds-p-around--medium{padding:0px !important;}
+
+		.slds-medium-size_1-of-2, .slds-medium-size--1-of-2{padding:10px;}
+		
+		 .modal-body{position:relative;}
+		 
+.slds-modal__header {
+    position: inherit;
+	}
+
+		.slds-modal__container{max-width: 70rem !important; width:60% !important;}
+		.divAccountServiceMenu{
+		margin-left: 70px;
+    	line-height: 40px;
+    	margin-top: 20px;
+    	    font-size: 15px;
+    	     width:50%;
+    	     float:left;
+		}
+		.tblAccountServiceMenu{
+			margin-top: 0.8rem;
+		    font-size: 15px;
+		    margin-left: 10%;
+		    line-height: 30px;
+		}
+		
+		a.visited{
+		color:red;
+		}
+
+ </style>
+ <div style="width:40%">
+ <table style="margin-left: 20%;" id="tblSearch">
+ <tr>
+ <td><lightning:input type="search" placeholder="Search..." id="txtSearch" value="{!v.SearchText}"/></td>
+ <td style="vertical-align: bottom;"><button id='btnSearch' class="slds-button slds-button_brand" onclick="{!c.SearchMenu}">Search</button></td>
+ </tr>
+ </table>
+	
+</div>
+<table class="tblAccountServiceMenu" id="tblAccountServiceMenu">
+
+	<tr>
+		<td style="width: 40%;">
+			<div id="divAccountServiceMenu">
+				<ul style="list-style-type: disc;">	
+				<aura:iteration items="{!v.Menu}" var="itemOption" indexVar="i">			
+					<li class="clsMenu"><a onclick="{!c.loadSubMenu}">{!itemOption}</a></li>					
+				</aura:iteration>
+				</ul>
+			</div>
+		</td>
+		<td style="width: 60%;vertical-align:top;">
+			<div id="divAccountServiceSubMenu" style="display:none;">
+				<ul style="list-style-type: disc;">
+				<aura:iteration items="{!v.LoadSubMenu}" var="submenu" indexVar="i">
+					<li class="clsSubMenu"><a onclick="{!c.loadComponent}">{!submenu.Function__c}</a></li>					
+				</aura:iteration>
+				</ul>
+			  </div>
+		</td>
+	</tr>
+</table>
+
+<div aura:id="ModalDialogPlaceholder" />
+
+</aura:component>

@@ -206,10 +206,10 @@
                         </aura:iteration>
                         <aura:set attribute="else">
                             <aura:iteration items="{!v.ListObject}" var="item">
-                                <tr style="{!('background-color:' + (((v.SectionName == 'Warning/Comments' &amp;&amp; item.CloseDate != null) || (v.SectionName == 'accList' &amp;&amp; item.Close_Date__c != null) || (v.SectionName == cardList &amp;&amp; item.Expiration_Date__c != null)) ? '#cccccc' : ''))}">
-                                	<aura:if isTrue="{!v.SectionName == 'Warning/Comments'}">
+                                <tr style="{!('background-color:' + (((v.SectionName == 'Warning/Comments' &amp;&amp; item.CloseDate != null) || (v.SectionName == 'accList' &amp;&amp; item.Close_Date__c != null) || (v.SectionName == 'cardList' &amp;&amp; item.Close_Date__c != null)) ? '#cccccc' : ''))}">
+                                	<aura:if isTrue="{!(v.SectionName == 'Warning/Comments') || (v.SectionName == 'accList')}">
                                 		<aura:iteration items="{!v.HeaderColumnArray}" var="col" indexVar="number">
-                                				<aura:if isTrue="{!(col == 'WarningCode')}">
+                                				<aura:if isTrue="{!(col == 'WarningCode') }">
                                 					<aura:if isTrue="{!(item.Descriptn == 'Warning Code')}">
                                 						<c:FieldValue ItemObject="{!item}" FieldName="{!col}" ColumnType="{!v.ColumnType}" ColumnIndex="{!number}" setcolor='true' color='red' />
                                 						<aura:set attribute="else">
@@ -217,7 +217,17 @@
                                 						</aura:set>
                                 					</aura:if>
                                 					<aura:set attribute="else">
+                                					<aura:if isTrue="{!(col == 'Emp_Balance__c') }">
+                                						<aura:if isTrue="{!lessthan(item.Balance__c,0)}">
+                                								<c:FieldValue ItemObject="{!item}" FieldName="{!col}" ColumnType="{!v.ColumnType}" ColumnIndex="{!number}" setcolor='true' color='red'/>
+                                						<aura:set attribute="else">
+                                								<c:FieldValue ItemObject="{!item}" FieldName="{!col}" ColumnType="{!v.ColumnType}" ColumnIndex="{!number}" />
+                                						</aura:set>
+                                						</aura:if>
+                                					<aura:set attribute="else">
                                 						<c:FieldValue ItemObject="{!item}" FieldName="{!col}" ColumnType="{!v.ColumnType}" ColumnIndex="{!number}" />
+                                					</aura:set>
+                                					</aura:if>
                                 					</aura:set>
                                 				</aura:if>
                                                 

@@ -11,7 +11,7 @@ public class ManageTravelPlansController {
     @AuraEnabled
     public string Email {get;set;}
     @AuraEnabled
-    public boolean isTravelCard {get;set;}
+    public boolean isTravelCard {get;set;}    
   }
   
   public class AccountList360
@@ -87,12 +87,26 @@ public class ManageTravelPlansController {
       @AuraEnabled
       public Mastercard_Travel__c MasterCardSFObj {get;set;}
     }
+    
+     public class CardListObject
+    {
+        @AuraEnabled
+        public object cardDetails {get;set;}
+        @AuraEnabled
+        public string cardType {get;set;}
+        @AuraEnabled
+        public string cardClassification {get;set;}
+    }
 
     public static string USPhone {get;set;}  
   public static string Email {get;set;}
   public static boolean isTravelCard {get;set;}
   public static Blob key = EncodingUtil.base64Decode('mRMjHmlC1C+1L/Dkz8EJuw==');
   public static Blob IV = Blob.valueof('Mcapipr of IV786');
+  
+  public static Master_Card_Configurations__c csATM = Master_Card_Configurations__c.getValues('ATM');
+  public static Master_Card_Configurations__c csDebit = Master_Card_Configurations__c.getValues('DEBIT');
+  public static Master_Card_Configurations__c csHSA = Master_Card_Configurations__c.getValues('HSA');
 
     /*@AuraEnabled
      public static List<Case> getDetails(string caseId){
@@ -231,24 +245,25 @@ public class ManageTravelPlansController {
        for(MCOriginalDataWrapper MW : oppyList){
             mcorgdataLst.add(MW.obj);
         }
+         string validTypesATM = csATM.Card_Type__c;
+         List<string> validcardtypesATM =  validTypesATM.split(',');	
+         
+          string validTypesDebit = csDebit.Card_Type__c;
+         List<string> validcardtypesDebit =  validTypesDebit.split(',');	
+         
+          string validTypesHSA = csHSA.Card_Type__c;
+         List<string> validcardtypesHSA =  validTypesHSA.split(',');	
+         
         for(Mastercard_Travel__c mc : ListMastercardObj){                        
           
-          /*if(mc.Country__c != '' && mc.Country__c != null)
-          {
-            mc.Destination__c = mc.Country__c;
-          }
-          else
-          {
-            mc.Destination__c = mc.State__c;
-          }   */
           string cardtype= mc.CardId__r.TypeTranslate__c.substring(0, 2);
-          if(cardtype == '11' || cardtype == '12'){
+          if(validcardtypesATM.contains(cardtype)){
             mc.CardId__r.TypeTranslate__c = 'ATM';
           }
-          else if(cardtype == '13' || cardtype =='14' || cardtype =='15'){
+          else if(validcardtypesDebit.contains(cardtype)){
             mc.CardId__r.TypeTranslate__c = 'DEBIT';
           }
-          else if(cardtype == '16' || cardtype =='17'){
+          else if(validcardtypesHSA.contains(cardtype)){
              mc.CardId__r.TypeTranslate__c = 'HSA';
           }           
           
@@ -293,13 +308,9 @@ public class ManageTravelPlansController {
          Blob getdata = Blob.valueof('cardnumber=' + s);
          Blob getencrypted = Crypto.encrypt('AES128', key, Iv, getdata);
          string URL = 'https://mcapi.chevronfcu.org/Home/getsegmentation?data=' + EncodingUtil.base64Encode(getencrypted).replace('=',',').replace('/','_').replace('+','-');
-         //string URL= 'https://mcapi.chevronfcu.org/Home/index?cardnumber=' + s +'&actionName=get';
+        
           system.debug('URL====' + URL); 
-          
-         // Blob data = Blob.valueof(URL);
-         // Blob encrypted = Crypto.encrypt('AES128', key, Iv, data);
-          //String encodedCipherText = EncodingUtil.base64Encode(encrypted);
-          //system.debug('encodedCipherText====' + encodedCipherText); 
+       
            
          Http http = new Http();
       HttpRequest request = new HttpRequest();
@@ -361,7 +372,9 @@ public class ManageTravelPlansController {
         List<Case> tempCase = new List<Case>(); 
         List<Account_Details__c> tempAccount = new List<Account_Details__c>();  
         isTravelCard = true;      
-         Object cardList;
+         Object cardList;         
+         List<CardListObject> finalCardList = new List<CardListObject>();
+         
         tempCase = [select id,Account_Number__c, AccountId, CreatedBy.Email,Secure_Email__c, category__c, Tertiary_Category__c from case where id =: accid];
         system.debug('tempCase' + tempCase);        
         
@@ -470,9 +483,53 @@ public class ManageTravelPlansController {
 
        
         cardList = GetCardList(accountNumberSetWOBeneficiary,accIdSetWOBeneficiary,acctypeSet,accountNumberSet,accIdset,PageNo,PageSize, '', '', '');
-        }       
+        }   
+        
+       // Master_Card_Configurations__c csATM = Master_Card_Configurations__c.getValues('ATM');
+       // Master_Card_Configurations__c csDebit = Master_Card_Configurations__c.getValues('DEBIT');
+      //  Master_Card_Configurations__c csHSA = Master_Card_Configurations__c.getValues('HSA');
+        map<string, string> validcardtypesMap = new  map<string, string>();
+    
+         string validTypes = csATM.Card_Type__c;
+         List<string> validcardtypes =  validTypes.split(',');	
          
-       
+         for(string s: validcardtypes){
+         	validcardtypesMap.put(s.trim(), 'ATM');
+         }
+         
+         validTypes = csDebit.Card_Type__c;
+         validcardtypes =  validTypes.split(',');
+         
+          for(string s: validcardtypes){
+         	validcardtypesMap.put(s.trim(), 'DEBIT');
+         }
+         
+         validTypes = csHSA.Card_Type__c;
+         validcardtypes =  validTypes.split(',');
+         
+          for(string s: validcardtypes){
+         	validcardtypesMap.put(s.trim(), 'HSA');
+         }
+         
+        system.debug('validcardtypes==' +validcardtypesMap);
+        
+        Member360View cl =(Member360View)cardList;        
+        List<Account_Details__c> la =  (List<Account_Details__c>)cl.accList;
+        for(Account_Details__c a : la){
+        	string cardtype =  a.TypeTranslate__c.substring(0, 2).trim();
+        	   system.debug('cardtype==' +cardtype);
+        	if(validcardtypesMap.containsKey(cardtype)){
+        		system.debug('came');
+	        	CardListObject obj = new CardListObject();
+	        	obj.cardDetails = a;
+	        	obj.cardType = a.TypeTranslate__c.substring(0, 2);   
+	        	obj.cardClassification = validcardtypesMap.get(cardtype);
+	        	finalCardList.add(obj);
+	         } 	
+        	
+        }
+        cl.accList = finalCardList;
+       system.debug('finalCardList==='+cardList);
         return cardList;
      }
       
@@ -947,6 +1004,14 @@ public class ManageTravelPlansController {
                //accq = [select id, FirstName, LastName from account where id =: id];
                list<string> scards = (list<string>)JSON.deserialize(selectedCards, list<string>.class);
                boolean isupdate =false;
+               string validTypesATM = csATM.Card_Type__c;
+         List<string> validcardtypesATM =  validTypesATM.split(',');	
+         
+          string validTypesDebit = csDebit.Card_Type__c;
+         List<string> validcardtypesDebit =  validTypesDebit.split(',');	
+         
+          string validTypesHSA = csHSA.Card_Type__c;
+         List<string> validcardtypesHSA =  validTypesHSA.split(',');
               for(string str: scards)              
                {        
                  string caseDescription='';
@@ -955,13 +1020,13 @@ public class ManageTravelPlansController {
                   if(ac != null){                  
                     
                       string cardtype= ac.TypeTranslate__c.substring(0, 2);
-                    if(cardtype == '11' || cardtype == '12'){
+                    if(validcardtypesATM.contains(cardtype)){
                       cardString = 'ATM';
                     }
-                    else if(cardtype == '13' || cardtype =='14' || cardtype =='15'){
+                    else if(validcardtypesDebit.contains(cardtype)){
                       cardString = 'DEBIT';
                     }
-                    else if(cardtype == '16' || cardtype =='17'){
+                    else if(validcardtypesHSA.contains(cardtype)){
                        cardString = 'HSA';
                     }  
                     cardString = cardString + ' - ' +  (ac.Card_Number_Last_4_Digits__c);
@@ -1087,18 +1152,25 @@ public class ManageTravelPlansController {
                 caseobj.Tertiary_Category__c = 'Travel notification';
                 string caseDescription='';
                 string cardString = '';
-                
+                string validTypesATM = csATM.Card_Type__c;
+        		 List<string> validcardtypesATM =  validTypesATM.split(',');	
+         
+		          string validTypesDebit = csDebit.Card_Type__c;
+		         List<string> validcardtypesDebit =  validTypesDebit.split(',');	
+		         
+		          string validTypesHSA = csHSA.Card_Type__c;
+		         List<string> validcardtypesHSA =  validTypesHSA.split(',');
                 
                 if(ac != null){                  
                 
                   string cardtype= ac.TypeTranslate__c.substring(0, 2);
-                if(cardtype == '11' || cardtype == '12'){
+                if(validcardtypesATM.contains(cardtype)){
                   cardString = 'ATM';
                 }
-                else if(cardtype == '13' || cardtype =='14' || cardtype =='15'){
+                else if(validcardtypesDebit.contains(cardtype)){
                   cardString = 'DEBIT';
                 }
-                else if(cardtype == '16' || cardtype =='17'){
+                else if(validcardtypesHSA.contains(cardtype)){
                    cardString = 'HSA';
                 }  
                 cardString = cardString + ' - ' +  (ac.Card_Number_Last_4_Digits__c);
@@ -1235,18 +1307,25 @@ public class ManageTravelPlansController {
                 caseobj.Tertiary_Category__c = 'Travel notification';
                 string caseDescription='';
                 string cardString = '';
-                
+                string validTypesATM = csATM.Card_Type__c;
+        		 List<string> validcardtypesATM =  validTypesATM.split(',');	
+         
+		          string validTypesDebit = csDebit.Card_Type__c;
+		         List<string> validcardtypesDebit =  validTypesDebit.split(',');	
+		         
+		          string validTypesHSA = csHSA.Card_Type__c;
+		         List<string> validcardtypesHSA =  validTypesHSA.split(',');
                 
                 if(ac != null){                  
                 
                   string cardtype= ac.TypeTranslate__c.substring(0, 2);
-                if(cardtype == '11' || cardtype == '12'){
+                if(validcardtypesATM.contains(cardtype)){
                   cardString = 'ATM';
                 }
-                else if(cardtype == '13' || cardtype =='14' || cardtype =='15'){
+                else if(validcardtypesDebit.contains(cardtype)){
                   cardString = 'DEBIT';
                 }
-                else if(cardtype == '16' || cardtype =='17'){
+                else if(validcardtypesHSA.contains(cardtype)){
                    cardString = 'HSA';
                 }  
                 cardString = cardString + ' - ' +  (ac.Card_Number_Last_4_Digits__c);

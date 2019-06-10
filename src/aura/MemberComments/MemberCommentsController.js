@@ -45,8 +45,10 @@
 	},	
 	
 	changeDescription : function(component, event, helper) {
-		var categoryId = event.target.value;		
+		var categoryId = event.target.value;
+		component.set("v.SelectedCategory", categoryId);		
 		helper.fetchDescription(component, categoryId);
+		helper.fetchCRAttachments(component, categoryId);
 	}, 	 
 	
 	saveAndNewMemberCommentClick : function(component, event, helper) {
@@ -69,10 +71,37 @@
 		var secureEmailAddress = component.get('v.Secure_Email_Address');	
 		var Attachments = component.get('v.Attachments');	
 		var CURead = component.get('v.ModelMemberComment.CU_Read__c');
+		var CRAttachments = component.get('v.CRAttachments');
+		var selectedCannedResponse = component.get("v.SelectedCategory");
+		
+		
+		var len = 0;
+		
+		if(Attachments != null){
+			for(var i = 0; i< Attachments.length; i++){
+					if(Attachments[i].checkvalue == true){
+						len = len+1;
+					}
+			}
+		}
+		
+		if(CRAttachments != null){
+			for(var i = 0; i< CRAttachments.length; i++){
+					if(CRAttachments[i].checkvalue == true){
+						len = len+1;
+					}
+			}
+		}
+		
+		if(len > 5){
+			alert('Exceeded Maximum Attachments(5)');
+			return false;
+		}
+		
 		
 		if(CaseId == undefined)
 		{
-			CaseId = helper.getParameterByName('id');
+			CaseId = helper.getParameterByName('c__id');
 		}	
 		
 		if(Draft == undefined || Draft == null || Draft == '')
@@ -80,7 +109,7 @@
 			Draft = false;
 		}
 		var ReadOnly  = component.get('v.ReadOnly');
-		if(ReadOnly || (MemberDescription != undefined && MemberDescription != null && MemberDescription != ''))
+		if(ReadOnly || (MemberDescription != undefined && MemberDescription != null && MemberDescription != ''))		
 		{
 			var error  = document.getElementById('DescriptionError');
 			//if(error){
@@ -88,7 +117,7 @@
 				component.set("v.isError", false);
 			//	}
 			
-			helper.saveComment(component, MemberDescription, CaseId, Draft, secureEmailAddress, Attachments, CURead);	
+			helper.saveComment(component, MemberDescription, CaseId, Draft, secureEmailAddress, Attachments, CURead, CRAttachments, selectedCannedResponse);	
 			 	
 		}			
 		else
@@ -118,7 +147,7 @@
 	
 	if(CaseId == undefined)
 		{
-			CaseId = helper.getParameterByName('id');
+			CaseId = helper.getParameterByName('c__id');
 		}	
 	  var MemberComment = component.get('v.ModelMemberComment');
 				    var isedit = component.get('v.isEdit');
@@ -129,6 +158,7 @@
 		    				 "slideDevName": "detail"
 		   					});
 	    					sObectEvent.fire(); 
+                       
 				    }
 				    else
 				    {
@@ -137,10 +167,10 @@
 		   					 "recordId": CaseId,
 		    				 "slideDevName": "detail"
 		   					});
-	    					sObectEvent.fire(); 
+	    					sObectEvent.fire();                        
 				    }
 	
-                 location.reload();	
+               //  location.reload();	
                $A.get('e.force:closeQuickAction').fire();
                $A.get('e.force:refreshView').fire();
    },    

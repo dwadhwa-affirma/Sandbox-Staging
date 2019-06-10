@@ -2,12 +2,16 @@ trigger CaseTrigger on Case (before insert, before update, after insert, after u
 
     Id loggedInUserId;
     if(Trigger.isBefore && Trigger.isDelete){
-      case tempCase = [select id, Subject from case where Subject =: 'This is a test Case to Upload Attachment.' and status ='In Process'];
+      List<case> tempCase = [select id, Subject from case where (Subject = 'This is a test Case to Upload Attachment.' and status ='In Process') or (Subject = 'MC Automated Test' and status ='Closed')];
       system.debug(tempCase);
+      set<Id> cid = new set<id>();
+      for(case c: tempCase){
+      		cid.add(c.id);
+      }
       for(case c: Trigger.old){
         system.debug('c====' + c);
       
-          if(c.id == tempCase.id)
+          if(cid.contains(c.id))
           {          
              c.addError('You can not delete this case');
           }
@@ -23,7 +27,8 @@ trigger CaseTrigger on Case (before insert, before update, after insert, after u
             updateEmailtoSend(Trigger.new);
             updateAccountNumberfromSubject(Trigger.new);
             updateSurveyCase(Trigger.new); 
-            updateBranchRegion(Trigger.new);   
+            updateBranchRegion(Trigger.new);  
+           
         }
         if (Trigger.isUpdate) {
           if(IsOtherThanTaskCountFieldUpdated())
@@ -39,9 +44,30 @@ trigger CaseTrigger on Case (before insert, before update, after insert, after u
             updateMemberInfo(Trigger.New, Trigger.Old);  
             
             updateownershipLog(Trigger.New);    
-           
+           	if(!Test.isRunningTest()){
+           	for (Case c : Trigger.new) {
+				Case oldCase = Trigger.oldMap.get(c.Id);
+				if((oldCase.Primary_Category__c != c.Primary_Category__c) || (oldCase.Secondary_Category__c != c.Secondary_Category__c) || (oldCase.Tertiary_Category__c != c.Tertiary_Category__c)){
+					if(c.Primary_Category__c == NULL || c.Primary_Category__c == '-None-'){
+						c.addError('Please select Primary Category');
+						
+					}
+					else if(c.Secondary_Category__c == NULL || c.Secondary_Category__c == '-None-'){
+						c.addError('Please select Secondary Category');
+						
+					}
+					else if(c.Tertiary_Category__c == NULL || c.Tertiary_Category__c == '-None-'){
+						c.addError('Please select Tertiary Category');
+					}
+					boolean isValidMember = verifyGroupMember();
+					boolean isSecureEmailCase = c.Created_by_Portal_Member__c;
+					if((!isValidMember && !isSecureEmailCase) || (!isValidMember && isSecureEmailCase && ((oldCase.Primary_Category__c != null && oldCase.Primary_Category__c != '-None-') && (oldCase.Secondary_Category__c != null && oldCase.Secondary_Category__c != '-None-') && (oldCase.Tertiary_Category__c != null && oldCase.Tertiary_Category__c != '-None-')))){
+						c.addError('Access Denied');
+					}
+				}				
+			}
             
-            
+          }
                
           }  
         }
@@ -81,7 +107,7 @@ trigger CaseTrigger on Case (before insert, before update, after insert, after u
          }
           }
         
-        
+         updateSLAField(Trigger.new);   
     }
         
     if(Trigger.isAfter){
@@ -89,6 +115,7 @@ trigger CaseTrigger on Case (before insert, before update, after insert, after u
             
             insertCaseTask(Trigger.new);
             CaseAssign(Trigger.new);
+             updateSLAField(Trigger.new);   
             
         }
         if(Trigger.isUpdate){
@@ -96,6 +123,12 @@ trigger CaseTrigger on Case (before insert, before update, after insert, after u
         //   updateSurveyCase(Trigger.new);    
              
 //            CaseAssign(Trigger.new);
+		for (Case c : Trigger.new) {
+				Case oldCase = Trigger.oldMap.get(c.Id);
+				if((oldCase.Primary_Category__c != c.Primary_Category__c) || (oldCase.Secondary_Category__c != c.Secondary_Category__c) || (oldCase.Tertiary_Category__c != c.Tertiary_Category__c)){
+					updateCaseRecordType(c);
+				}
+			}
         }  
     }
 
@@ -135,7 +168,7 @@ public void updateBranchRegion(List<case> caseList)   {
             {
                 String branchName = branchList[i].Name;               
             
-            	
+              
                 if (memberBranch != null && memberBranch.equals(branchName))
                 {
                     
@@ -870,7 +903,201 @@ private boolean IsOtherThanTaskCountFieldUpdated()
         
         return true;
 }
-    
+public void updateCaseRecordType(Case caseObject) {
+	list<CaseRecordType__c> scList = [SELECT Id,
+                                                 Primary_Category__c,
+                                                 Secondary_Category__c,
+                                                 Teritiary_Category__c,
+                                                 Record_Type_Name__c,
+                                                 RecordTypeId__c FROM CaseRecordType__c WHERE Primary_Category__c =:caseObject.Primary_Category__c AND Secondary_Category__c=:caseObject.Secondary_Category__c AND Teritiary_Category__c=:caseObject.Tertiary_Category__c LIMIT 1];
+      
+       Case cs = [select id from case where id =: caseObject.id];
+		//for(CaseRecordType__c crt : scList){
+		if(scList.size() > 0)
+		{
+			cs.RecordTypeId = scList[0].RecordTypeId__c;
+		}
+            
+            cs.Primary_Category__c = caseObject.Primary_Category__c;
+            cs.Secondary_Category__c = caseObject.Secondary_Category__c;
+            cs.Tertiary_Category__c = caseObject.Tertiary_Category__c; 
+            //}
+           
+       try{ 
+           		update cs;                   
+           }
+           catch (exception e)  
+           {           
+           		System.debug('An error occured while updating case :' + e);                  
+           }
+}
 
-    
+private boolean verifyGroupMember() {
+	
+		boolean showData1 = false;		
+		 Set<Id> results = new Set<Id>();		
+		Map<Id,Id> grRoleMap = new Map<Id,Id>();			
+			for(Group gr : [select id,relatedid,name from Group])
+			{
+				grRoleMap.put(gr.relatedId,gr.id);
+			}
+			
+			Set<Id> groupwithUser = new Set<Id>();			
+			
+			for(GroupMember  u :[select groupId from GroupMember where UserOrGroupId=:UserInfo.getUserId() and (Group.Type = 'Regular' OR Group.Type='Role' OR Group.Type='RoleAndSubordinates')])
+			{
+				groupwithUser.add(u.groupId);
+			}
+		
+			for(User  u :[select UserRoleId from User where id=:UserInfo.getUserId()])
+			{
+				if(grRoleMap.containsKey(u.UserRoleId))
+				{
+					results.add(grRoleMap.get(u.UserRoleId));
+				}
+			}
+			
+			results.addAll(groupwithUser);
+			
+			Map<Id,Id> grMap = new Map<Id,Id>();
+			for(GroupMember gr : [select id,UserOrGroupId,Groupid from GroupMember where
+			        (Group.Type = 'Regular' OR Group.Type='Role' OR Group.Type='RoleAndSubordinates')])
+			{
+				grMap.put(gr.UserOrGroupId,gr.Groupid);
+			}
+			for(Id i :results)
+			{
+				if(grMap.containsKey(i))
+				{
+					results.add(grMap.get(i));
+				}
+			}
+			
+			
+			system.debug('########' + results);
+			  
+        	showData1 = false;
+  		
+  		
+		list<GroupMember> listNamegroup =	[select group.developerName from GroupMember where UserOrGroupId in: results];
+		set<string> listName = new set<string>();
+			for(GroupMember i :listNamegroup)
+			{
+				
+					listName.add(i.group.developerName );
+				
+			}
+			
+			system.debug('########' + listName);
+		   
+		      if (listName.contains('Update_Case_Category')) {
+		           showData1 = true;
+		      }
+		     
+		     
+		     
+		     Set<String> groupNames = new Set<String>();
+		   for (GroupMember gm : [select 
+		                             group.name,
+		                             group.DeveloperName 
+		                          from GroupMember 
+		                          where UserOrGroupId = :UserInfo.getUserId()]) {
+		       groupNames.add(gm.group.DeveloperName);
+		   }
+			
+			system.debug('groupNames---' + groupNames);
+		   
+		      if (groupNames.contains('Update_Case_Category')) {
+		           showData1 = true;
+		      }
+		 return showData1;
+	}
+	
+	
+	/* Start: CRM-1456 and MVAN-8 Changes related to Yellow flag*/
+	
+	
+	public void updateSLAField(List<Case> newCaseList) {
+		 BusinessHours stdBusinessHours = [select id from businesshours where isDefault = true];
+		if(trigger.isBefore){	        
+	      	
+			if(trigger.isinsert)
+			  {
+				  	for (Case c : newCaseList) {	   
+			        	datetime FD;      	
+			            if ((c.SLA__c != NULL) && (stdBusinessHours != NULL)) {
+			            	if(c.Future_Date__c != null)
+			            	FD = datetime.newInstance(c.Future_Date__c.year(), c.Future_Date__c.month(),c.Future_Date__c.day());	            	 
+			            	else if(c.createdDate != null)
+			            	FD = c.createdDate;	
+			            	if(FD != null)            	 
+			            	c.SLA_Yellow_Start_Time__c = BusinessHours.addgmt(stdBusinessHours.id, FD , (Long)(c.SLA__c-1) * 3600000);
+			            }
+		      		}
+			    for(Case c: newCaseList){  
+			    	if(c.Status_SLA__c.contains('SLARed')){
+			    		c.isSLABreached__c = true;
+			    	}
+			    	
+			    	/*Hot Fix Related Changes*/ 
+			    	if(c.SLATest__c.contains('SLARed')){
+			    		c.isSLABreached__c = true;
+			    	}
+			    }
+			    
+			  }
+			else{
+						
+						
+						for(Case c: newCaseList){  
+				    		Case oldCase = Trigger.oldMap.get(c.Id);
+				    		system.debug('oldCase.Status_SLA__c=='+oldCase.Status_SLA__c);
+				    		system.debug('c.Status_SLA__c=='+c.Status_SLA__c);
+				    		
+				    		/*Hot Fix Related Changes*/ 
+							if((oldCase.IsEscalated != c.IsEscalated) && (c.IsEscalated == true && (c.isSLABreached__c == false))){
+								c.isSLABreached__c = true;
+							}  
+							
+							/*Hot Fix Related Changes*/ 
+							if((oldCase.IsEscalated != c.IsEscalated) && (c.IsEscalated == true && (c.isSLABreached__c == false))){
+								c.isSLABreached__c = true;
+							} 						 
+	    			}
+	    			
+	    			for (Case c : newCaseList) {							
+							if(c.isSLABreached__c == false){
+				        		datetime FD;      	
+					            if ((c.SLA__c != NULL) && (stdBusinessHours != NULL)) {
+					            	if(c.Future_Date__c != null)
+					            	FD = datetime.newInstance(c.Future_Date__c.year(), c.Future_Date__c.month(),c.Future_Date__c.day());	            	 
+					            	else if(c.createdDate != null)
+					            	FD = c.createdDate;	
+					            	if(FD != null)            	 
+					            	c.SLA_Yellow_Start_Time__c = BusinessHours.addgmt(stdBusinessHours.id, FD , (Long)(c.SLA__c-1) * 3600000);
+					            }
+							}
+		      			}
+			}
+		}
+		if(trigger.isAfter && trigger.isinsert){
+				set<Id> CaseIds = new set<Id>();
+				for (Case c : newCaseList) {
+					 if ((c.SLA__c != NULL) && (stdBusinessHours != NULL) && c.Future_Date__c == null) {	
+						CaseIds.add(c.id);
+					 }				
+				}
+			List<Case> casestoUpdate = [select id,CreatedDate,SLA__c, Future_Date__c  from case where id IN: CaseIds];
+			for (Case c : casestoUpdate) {	       	  
+	            if ((c.SLA__c != NULL) && (stdBusinessHours != NULL) && c.Future_Date__c == null) {
+	            	datetime FD = c.CreatedDate;	            	
+	            	c.SLA_Yellow_Start_Time__c = BusinessHours.addgmt(stdBusinessHours.id, FD , (Long)(c.SLA__c-1) * 3600000);
+	            }
+	      	}
+	      	update casestoUpdate;
+		}
+
+	}
+	
+		/*End: CRM-1456 and MVAN-8 Changes related to Yellow flag*/
 }

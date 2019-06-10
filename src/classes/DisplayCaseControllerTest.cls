@@ -471,12 +471,13 @@
                   //DisplayCaseController.ButtonReply_Click(ids,'TestComment','Desktop');
                   //DisplayCaseController.ButtonReply_Click(ids,'TestComment');
                   //DisplayCaseController.ButtonSave_Click(ids);
-                  
+                   Case caseList= [select Id from case where id =: ids2 limit 1];
                   //string LatestcommentBySupport = DisplayCaseController.LoadLatestCommentBySupport(ids);
+                  Test.startTest(); 
                   Member_Comment__c mc = new Member_Comment__c();
                   mc.Member_Comment__c ='test';
                   mc.Member_Communication__c ='test';
-                  mc.Case__c = ids2;
+                  mc.Case__c = caseList.id;
                   mc.draft__c = false;
                   insert mc; 
                   string mcid = mc.Id;
@@ -487,13 +488,13 @@
                   FileList fl = new FileList();
                 string xblob = 'abc';
                 Blob myBlob = Blob.valueof(xblob);
-                
+                 
                 Attachment att = new  Attachment();
                 att.Parentid = mcid;
                 att.Name = 'Excel.ppt';
                 att.Body = myBlob;
                 insert att; 
-               Test.startTest(); 
+              
                 List<Attachment> attl = null; 
                
                 System.assertEquals(1, 1); 
@@ -576,7 +577,7 @@
              memberComments.add(mc2);
              
              insert memberComments;
-
+	Test.startTest(); 
              Attachment att = new  Attachment();
             att.Parentid = memberComments[0].id;
             att.Name = 'Excel.ppt';
@@ -588,7 +589,7 @@
                 mc5.CreatedById  = mc5.CreatedById;
                 mc5.CreatedDate = system.now();     
                 
-                Test.startTest(); 
+                
                 System.assertEquals(1, 1);            
         system.runas(u)
             {

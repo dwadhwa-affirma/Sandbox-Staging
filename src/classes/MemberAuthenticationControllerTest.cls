@@ -12,11 +12,14 @@ public class MemberAuthenticationControllerTest {
         acobj.BIRTH_DATE__pc = date.parse('04/04/1963');
         acobj.Employee_Restricted_Access__c = 1234;
         acobj.Home_Phone__pc = '9169954478';
+         acobj.Email_raw__c = 'test@test.com';
         insert acobj;
         
          ma.selectedID = acobj.id;          
          verifyCaller vc = new verifyCaller();
          ma.Names = vc.getAccountByName(acobj.id);
+        // ma.firstname='U';
+       //  ma.lastName='D';
         
         MemberAuthenticationController.JTMemberNameDoBWrapper objWrapper = new MemberAuthenticationController.JTMemberNameDoBWrapper();
         objWrapper.AccountNumber = '123245';
@@ -51,7 +54,7 @@ public class MemberAuthenticationControllerTest {
         ac.Name = '00001';
         ac.TypeTranslate__c = '1-PERSONAL';
         ac.Balance__c = 5000;
-        ac.RecType__c = 'LOAN';
+        ac.RecType__c = 'LOAN';       
         insert ac;
         
         Account acobj = new Account();
@@ -61,6 +64,7 @@ public class MemberAuthenticationControllerTest {
         acobj.BIRTH_DATE__pc = date.parse('04/04/1963');
         acobj.Employee_Restricted_Access__c = 1234;
         acobj.Home_Phone__pc = '9169954478';
+        acobj.Email_raw__c = 'test@test.com';
         insert acobj;
         
         Person_Account__c pc2 = new Person_Account__c();

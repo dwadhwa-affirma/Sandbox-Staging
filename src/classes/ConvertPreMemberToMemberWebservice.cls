@@ -4,7 +4,7 @@ global class ConvertPreMemberToMemberWebservice {
         obj.Execute(null);
     }
     webservice static void CreateCaseForNonMatchedMember() {
-        CreateCaseForNonMatchedMemberSchedular obj1 = new CreateCaseForNonMatchedMemberSchedular();
+        CreateAlertForNonMatchedMemberSchedular obj1 = new CreateAlertForNonMatchedMemberSchedular();
         	obj1.Execute(null);
     }
     /*webservice static void MaturingCDTriggeredOpportunity() {

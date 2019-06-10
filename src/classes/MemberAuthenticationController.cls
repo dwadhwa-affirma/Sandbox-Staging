@@ -2027,7 +2027,7 @@ public class MemberAuthenticationController{
             }
 
         }
-        system.debug('log ###' + log);
+        system.debug('log ###' + log);       
         insert log;
         return SalesforceID;
     }
