@@ -124,7 +124,15 @@
                          
                             <ui:inputRadio label="" name="memberverification" value="false" class="{!stage.Text}" change="{!c.onRadioSelect}" disabled="{!stage.isEnabled}"/>
                            
-                            <span>{!stage.Value}</span>
+                           		<aura:if isTrue="{!stage.isEnabled}">
+                                   <span style="background-color: grey;">{!stage.Value}</span>
+                                    <aura:set attribute="else">
+                                        <span >{!stage.Value}</span>
+                                    </aura:set>
+                            	</aura:if>
+                            	
+                            
+                            
                             </div>
                         </aura:iteration>
 	                </div>
@@ -136,8 +144,15 @@
 	                           <div class="radlist">
 	                           
 	                            <ui:inputRadio label="" name="memberverification" value="false" class="{!stage.Text}" change="{!c.onRadioSelect}" disabled="{!stage.isEnabled}"/>
-	                            
-	                            <span>{!stage.Value}</span>
+	                           
+	                            <aura:if isTrue="{!stage.isEnabled}">
+                                   <span style="background-color: grey;">{!stage.Value}</span>
+                                    <aura:set attribute="else">
+                                        <span >{!stage.Value}</span>
+                                    </aura:set>
+                            	</aura:if>
+                            		
+                          		 
 	                            </div>
 	                        </aura:iteration>
 	                    	</div>
