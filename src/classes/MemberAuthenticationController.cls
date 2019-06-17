@@ -444,16 +444,19 @@ public class MemberAuthenticationController{
         if (EnteredCardNumberFormatted != '' && EnteredCardNumberFormatted != null)
         {
             EnteredCardNumber = EnteredCardNumberFormatted;
+            System.debug('system1');
         }
         
         // On member selection
         if(selectedID != null && selectedID != ''){
             verifySelectedCallerDetails();
+            System.debug('system2');
         }
         else
         { 
             // without member selection
             VerifyCallerDetailsNoSelection();
+            System.debug('system3');
         }
        
        return null;
@@ -514,11 +517,16 @@ public class MemberAuthenticationController{
                     }
                                                       
                     if(SSNnumberMatch == 'true'){
-                        if(EnteredSSN == null || EnteredSSN == ''){SSNnumberMatch = '';}
+                    	if(EnteredSSN == null || EnteredSSN == ''){
+                        	SSNnumberMatch = '';
+                        }
                         userEnteredInformation.SSN = EnteredSSN;
                     }else{
+                    	System.debug('SSNnumberMatch'+SSNnumberMatch);
+                    	System.debug('EnteredSSN'+EnteredSSN);
                         if((SSNnumberMatch == null || SSNnumberMatch == '') && (EnteredSSN != null && EnteredSSN != '')){
                             userEnteredInformation.SSN = EnteredSSN;
+                            System.debug('EnteredSSN'+EnteredSSN);
                             fieldnametocheck = 'SSNNumber';
                             system.debug('fieldnametocheck = SSNNumber');
                         }else if(EnteredSSN == null || EnteredSSN == ''){
@@ -901,6 +909,7 @@ public class MemberAuthenticationController{
                     {
                         EnteredSSN = selectedOne.SSN_Last_4__pc;
                         SSNnumberMatch = 'true';
+                        System.debug('SSNRJ' + EnteredSSN);
                     }
                     
                     
@@ -916,6 +925,7 @@ public class MemberAuthenticationController{
                     {
                         EnteredSSN = selectedOne.SSN_Last_4__pc;
                         SSNnumberMatch = 'true';
+                        System.debug('SSNRJ1' + EnteredSSN);
                     }
                     /*
                     // if information recieved from IVR - keep same
@@ -1426,7 +1436,7 @@ public class MemberAuthenticationController{
                         {
                             ID_1_Type = 'PSPT'; 
                         }
-                        DLStateIdPassportToMatch = ID_1_Type + ' ' + (selectedOne.ID_2_Number__pc == null? '' :selectedOne.ID_2_Number__pc) + ' ' + (selectedOne.ID_2_Expiration_Date__pc == null? '' : string.valueof(selectedOne.ID_2_Expiration_Date__pc.date()));
+                        DLStateIdPassportToMatch = (ID_1_Type == ''? '' : string.valueof(ID_1_Type) + ' | ') + selectedOne.ID_2_Description__pc	 + ' | ' + (selectedOne.ID_2_Number__pc == null? '' :selectedOne.ID_2_Number__pc) + ' | ' + (selectedOne.ID_2_Expiration_Date__pc == null? '' : string.valueof(selectedOne.ID_2_Expiration_Date__pc.date()));
                     }
                     else
                     {
@@ -1447,7 +1457,7 @@ public class MemberAuthenticationController{
                         {
                             ID_1_Type = 'PSPT'; 
                         }
-                        DLStateIdPassportToMatch = ID_1_Type + ' ' + (selectedOne.ID_3_Number__pc == null? '' : selectedOne.ID_3_Number__pc) + ' ' + (selectedOne.ID_3_Expiration_Date__pc == null? '' : string.valueof(selectedOne.ID_3_Expiration_Date__pc.date()));
+                        DLStateIdPassportToMatch = (ID_1_Type == ''? '' : string.valueof(ID_1_Type) + ' | ') + selectedOne.ID_3_Description__pc	 + ' | ' + (selectedOne.ID_3_Number__pc == null? '' : selectedOne.ID_3_Number__pc) + ' | ' + (selectedOne.ID_3_Expiration_Date__pc == null? '' : string.valueof(selectedOne.ID_3_Expiration_Date__pc.date()));
                     }
                 }
                 else{
@@ -1468,7 +1478,7 @@ public class MemberAuthenticationController{
                         {
                             ID_1_Type = 'PSPT'; 
                         }
-                    DLStateIdPassportToMatch = ID_1_Type + ' ' + (selectedOne.ID_1_Number__pc == null? '' : string.valueof(selectedOne.ID_1_Number__pc)) + ' ' + (selectedOne.ID_1_Expiration_Date__pc == null? '' : string.valueof(selectedOne.ID_1_Expiration_Date__pc.date()));
+                    DLStateIdPassportToMatch =  (ID_1_Type == ''? '' : string.valueof(ID_1_Type) + ' | ') + selectedOne.ID_1_Description__pc	 + ' | ' + (selectedOne.ID_1_Number__pc == null? '' : string.valueof(selectedOne.ID_1_Number__pc)) + ' | ' + (selectedOne.ID_1_Expiration_Date__pc == null? '' : string.valueof(selectedOne.ID_1_Expiration_Date__pc.date()));
                 }
             }
             else
@@ -1492,7 +1502,7 @@ public class MemberAuthenticationController{
                         {
                             ID_1_Type = 'PSPT'; 
                         }
-                    DLStateIdPassportToMatch = ID_1_Type + ' ' + (selectedOne.ID_1_Number__pc == null? '' : string.valueof(selectedOne.ID_1_Number__pc)) + ' ' + (selectedOne.ID_1_Expiration_Date__pc == null? '' : string.valueof(selectedOne.ID_1_Expiration_Date__pc.date()));
+                    DLStateIdPassportToMatch = (ID_1_Type == ''? '' : string.valueof(ID_1_Type) + ' | ') + selectedOne.ID_1_Description__pc	 + ' | ' + (selectedOne.ID_1_Number__pc == null? '' : string.valueof(selectedOne.ID_1_Number__pc)) + ' | ' + (selectedOne.ID_1_Expiration_Date__pc == null? '' : string.valueof(selectedOne.ID_1_Expiration_Date__pc.date()));
                 }
                 else if(selectedOne.ID_2_Number__pc == DLStateIdPassport){
                     string ID_1_Type = '';
@@ -1512,7 +1522,7 @@ public class MemberAuthenticationController{
                         {
                             ID_1_Type = 'PSPT'; 
                         }
-                    DLStateIdPassportToMatch = ID_1_Type + ' ' + (selectedOne.ID_2_Number__pc == null? '' :selectedOne.ID_2_Number__pc) + ' ' + (selectedOne.ID_2_Expiration_Date__pc == null? '' : string.valueof(selectedOne.ID_2_Expiration_Date__pc.date()));
+                    DLStateIdPassportToMatch = (ID_1_Type == ''? '' : string.valueof(ID_1_Type) + ' | ') + selectedOne.ID_2_Description__pc	 + ' | ' + (selectedOne.ID_2_Number__pc == null? '' :selectedOne.ID_2_Number__pc) + ' | ' + (selectedOne.ID_2_Expiration_Date__pc == null? '' : string.valueof(selectedOne.ID_2_Expiration_Date__pc.date()));
                 }
                 else if(selectedOne.ID_3_Number__pc == DLStateIdPassport){
                     string ID_1_Type = '';
@@ -1532,7 +1542,7 @@ public class MemberAuthenticationController{
                         {
                             ID_1_Type = 'PSPT'; 
                         }
-                    DLStateIdPassportToMatch = ID_1_Type + ' ' + (selectedOne.ID_3_Number__pc == null? '' : selectedOne.ID_3_Number__pc) + ' ' + (selectedOne.ID_3_Expiration_Date__pc == null? '' : string.valueof(selectedOne.ID_3_Expiration_Date__pc.date()));
+                    DLStateIdPassportToMatch = (ID_1_Type == ''? '' : string.valueof(ID_1_Type) + ' | ') + selectedOne.ID_3_Description__pc	 + ' | ' + (selectedOne.ID_3_Number__pc == null? '' : selectedOne.ID_3_Number__pc) + ' | ' + (selectedOne.ID_3_Expiration_Date__pc == null? '' : string.valueof(selectedOne.ID_3_Expiration_Date__pc.date()));
                 }
             }
             // Set ID Number Status
