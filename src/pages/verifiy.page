@@ -220,28 +220,12 @@
 								<div class="col-sm-12 no-padding">
 									<apex:outputText rendered="{!ClearAllflag == false}" styleClass="form-control inputcan"  id="DOBOut" value="{!DOB}" >
 									</apex:outputText>
-									<apex:inputText rendered="{!ClearAllflag == true}" styleClass="form-control inputcan" html-placeholder="MM-DD-YYYY" id="DOB" value="{!DOB}" onkeypress="return onenterDOB(event)">
+									<apex:inputText rendered="{!ClearAllflag == true}" styleClass="form-control inputcan" html-placeholder="MMDDYYYY" id="DOB" value="{!DOB}" onkeypress="return onenterDOB(event)">
 									</apex:inputText>
 									<div class="validateDOB" style="display:none"></div>
 								</div>
 								<div class="col-sm-12 no-padding">
-									 <div class="checkbox">
-										<apex:inputCheckbox id="DOBC" style="display:none;" styleclass="confirm newconfirm" label="Select Checkbox to Confirm" rendered="{!DOBMatch=='true' && SelectedID != ''}" selected="{!DOBConfirm}"><span style="display:none;" class="no-label">Select Checkbox to Confirm</span></apex:inputcheckbox>
-										
-										 <apex:outputpanel styleclass="newconfirmRadio"  id="DOBCNew" rendered="{!DOBMatch=='true' && SelectedID != ''}">
-										 	<span class="chkAligned">
-												<input type="checkbox" name="DOBCNewPass" id="DOBCNewPass" value="Pass"/>
-											
-												<label for="DOBCNewPass">Pass</label>
-											</span>
-											<span class="chkAligned">
-												<input type="checkbox" name="DOBCNewFail" id="DOBCNewFail"  value="Fail"/>
-												<label for="DOBCNewFail">Fail</label>
-											</span>
-										</apex:outputpanel> 
-										
-										<apex:outputText rendered="{!DOBMatch=='false'}"><span class="error"><i aria-hidden="true" class="fa fa-close"></i>  &nbsp; No Matches Found</span></apex:outputText>
-									</div> 
+									<apex:outputText rendered="{!DOBMatch=='false'}"><span class="error"><i aria-hidden="true" class="fa fa-close"></i>  &nbsp; No Matches Found</span></apex:outputText>
 								</div>
 								</apex:outputPanel>
 							</div>
@@ -2012,8 +1996,11 @@
                 if(!$('[id$=DOB]').hasClass('valiationerror'))
                 {
                     $('[id$=DOB]').addClass('valiationerror');
-                    $('.validateDOB').after("<p class='messageClass cardpin' id="+'__DOB'+"> Please enter a valid date YYYY-MM-DD </p>");                    
+                    alert('firstmonth');
+                    $('.validateDOB').after("<p class='messageClass cardpin' id="+'__DOB'+"> Please enter a valid date MMDDYYYY </p>");
+                                        
                 }
+                
             }     
              return false;            
                          
@@ -2029,30 +2016,33 @@
             return '';
         }        
         var strlength = str.length; 
-        var pos = str.indexOf("-");
-        var Year = str.slice(0,pos);
-        var yearlength = Year.length;
-        var d = new Date();
-        var n = d.getFullYear();
         var message = '';
-        if(yearlength != 4 || Year>n){
-            message = 'please enter correct year';
-        }    
-        str = str.slice(pos+1,strlength);
-        pos = str.indexOf("-");
-        strlength = str.length;
-        var Month = str.slice(0,pos);
+        var Month = str.slice(0,2);
         var Monthlength = Month.length;
         if(Monthlength<0 || Monthlength > 2 || (Month <1 || Month >12)){
+        	alert('month');
             message = 'please enter correct month';
         }
-        var subString2 = str.slice(pos+1,strlength);
-        strlength = subString2.length;
-        var date = subString2.slice(0,strlength);
+		
+	    var subString2 = str.slice(2,4);
+        var date = subString2;
         var datelength = date.length;
         if(datelength < 0 || datelength > 2 || date < 1 || date >31){
+        	alert('date');
             message = 'please enter correct date';
         }
+        var d = new Date();
+        var n = d.getFullYear();
+        
+		var year = str.slice(4,str);
+		var yearlength = year.length;
+		if(yearlength != 4 || year>n){
+			alert('year');
+            message = 'please enter correct year';
+        }
+        var newDate = Month + '-' + date + '-' + year;
+	    alert(newDate);
+	    $('[id$=DOB]').val(newDate);
         return message;
     }
     
