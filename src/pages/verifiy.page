@@ -110,9 +110,9 @@
             <!--<h2><i aria-hidden="true" class="{!if(NameList!=null,'fa fa-check-circle-o','fa fa-exclamation-triangle')}"></i> Verification Required (<span class="count">0</span>/3)</h2>-->
             <div class="headingval">
             	<h2 class="float-left">
-	            	<label class="fa fa-check-circle-o" style="display:{!if(NameList!=null,'block','none')};">
+	            	<!--  <label class="fa fa-check-circle-o" style="display:{!if(NameList!=null,'block','none')};">
 	                 	<b> Verification Required (<span class="count">0</span>/3) </b>
-	                </label> 
+	                </label> -->
 	                 <label class="fa fa-exclamation-triangle" style="display:{!if(NameList!=null,'none','block')};">
 	                 	<b> No Member Found </b>
 	                 </label>
@@ -180,6 +180,8 @@
                                          <apex:inputText styleClass="form-control inputcan memnumin" rendered="{!ClearAllflag == true}" html-placeholder="Select to type" maxlength="10" id="MemberNumberThis" value="{!EnteredMemberNumber}" onkeypress="return onenterforMember(event)">
                                          </apex:inputText>
                                     </div>
+                                    
+                                    
                                     <div class="col-sm-12 no-padding" id="MemberNoDiv">
                                     	<div class="checkbox">
                                             <!--<apex:inputCheckbox id="MemberNum" styleclass="confirm newconfirm" rendered="{!MemberNumberMatch=='true'}" selected="{!MemberNumberConfirm}"><label for="Checkbox1"><span>Select Checkbox to Confirm</span></label></apex:inputcheckbox> -->
@@ -189,7 +191,7 @@
                                        </div>
                                     </div>
                                     </apex:outputPanel>
-                               
+	                               
                             <apex:commandButton id="ivrbutton1" styleClass="ivrbutton1" action="{!NoIVRInformation}" style="display:none"></apex:commandButton> 
                             </div>
                               
@@ -222,10 +224,10 @@
                         </apex:actionFunction>-->
                     
                     <div class="col-lg-10 col-md-9 col-sm-12 col-xs-12 white-bg">
-                        <h4>Confirm any three items</h4>
+                    <!--    <h4>Confirm any three items</h4> -->  
                         
                         <div class="form-right" id="parentdiv">
-                                <div class="row ss cardpinwrap">
+                                <!-- <div class="row ss cardpinwrap">
                                   <div class="col-md-5 pr0"  style="width:54%">
                                     <div class="form-group">
                                     <apex:outputLabel for="#" styleclass="col-xs-12 control-label">Card Number 
@@ -264,7 +266,7 @@
                                 </div>
                                   </div>
                                 </div>
-                                
+                                 -->
                                 <div class="row">
                                 	<div class="col-md-5" style="width:54%">
                                 		<div class="form-group">
@@ -281,11 +283,7 @@
 											<div class="col-sm-6 col-xs-6">
 												 <div class="checkbox">
 													<apex:inputCheckbox id="SSNnumber"  style="display:none;" styleclass="confirm newconfirm" label="Select Checkbox to Confirm" rendered="{!SSNnumberMatch=='true'  && SelectedID != ''}" selected="{!SSNnumberConfirm}" ><span style="display:none;" class="no-label">Select Checkbox to Confirm</span></apex:inputcheckbox>
-													<!--  <apex:selectRadio styleclass="newconfirmRadio" id="SSNnumberNew" value="{!SSNnumberConfirmString}" rendered="{!SSNnumberMatch=='true'  && SelectedID != ''}"  layout="lineDirection">
-													  <apex:selectOption itemLabel="Not Asked" id="SSNnumberNew1" itemValue="NA"></apex:selectOption>
-													  <apex:selectOption itemLabel="Pass" id="SSNnumberNew2" itemValue="Pass"></apex:selectOption>
-													  <apex:selectOption itemLabel="Fail" id="SSNnumberNew3" itemValue="Fail"></apex:selectOption>
-													</apex:selectRadio>  -->
+													
 													 <apex:outputpanel styleclass="newconfirmRadio"  id="SSNnumberNew" rendered="{!SSNnumberMatch=='true'  && SelectedID != ''}">
 													 	<span class="chkAligned">
 															<input type="checkbox" name="SSNnumberNewPass" id="SSNnumberNewPass" value="Pass"/>
@@ -331,13 +329,6 @@
 															<label for="DOBCNewFail">Fail</label>
 														</span>
 													</apex:outputpanel> 
-													
-												<!--  	<apex:selectRadio styleclass="newconfirmRadio" id="DOBCNew" rendered="{!DOBMatch=='true' && SelectedID != ''}" value="{!DOBConfirmString}"  layout="lineDirection">
-													  <apex:selectOption itemLabel="Not Asked" id="DOBCNew1" itemValue="NA"></apex:selectOption>
-													  <apex:selectOption itemLabel="Pass" id="DOBCNew2" itemValue="Pass"></apex:selectOption>
-													  <apex:selectOption itemLabel="Fail" id="DOBCNew3" itemValue="Fail"></apex:selectOption>
-													</apex:selectRadio>-->
-													
 													
 													<apex:outputText rendered="{!DOBMatch=='false'}"><span class="error"><i aria-hidden="true" class="fa fa-close"></i>  &nbsp; No Matches Found</span></apex:outputText>
 												</div> 
