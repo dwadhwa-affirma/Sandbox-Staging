@@ -13,7 +13,7 @@
 	{
 		color:#000;
 	}     
-	
+	 
 	.chervon .form-right .checkbox span{padding-left: 15px;}	
 		.txtforother{border-top:0px dotted #ccc;margin-top: 15px; width: 100%;}
 		.txtforother td{border: 0; padding-top: 15px;}
@@ -194,8 +194,79 @@
 	                               
                             <apex:commandButton id="ivrbutton1" styleClass="ivrbutton1" action="{!NoIVRInformation}" style="display:none"></apex:commandButton> 
                             </div>
-                              
+                            
+                            <div class="form-group">
+								<apex:outputPanel >
+								<apex:outputLabel for="#" styleclass="col-sm-12 col-xs-4 control-label">Last 4 SSN 
+									<span class="pull-left"><i aria-hidden="true" class="fa fa-hashtag"></i></span>
+								</apex:outputLabel>
+								<div class="col-sm-12 no-padding">
+									 <apex:OutputText styleClass="form-control inputcan" rendered="{!ClearAllflag == false}"   id="SSNOut1" value="{!EnteredSSN}">
+									 </apex:OutputText>
+									 <apex:inputText styleClass="form-control inputcan" rendered="{! ClearAllflag == true}" html-placeholder="Select to type"  maxlength="4" id="SSN1" value="{!EnteredSSN}" onkeypress="return onenterForSSN(event,this.value)">
+									 </apex:inputText>
+								</div>
+								<div class="col-sm-12 no-padding">
+									 <div class="checkbox">
+										<apex:inputCheckbox id="SSNnumber1"  style="display:none;" styleclass="confirm newconfirm" label="Select Checkbox to Confirm" rendered="{!SSNnumberMatch=='true'  && SelectedID != ''}" selected="{!SSNnumberConfirm}" ><span style="display:none;" class="no-label">Select Checkbox to Confirm</span></apex:inputcheckbox>
+										
+										 <apex:outputpanel styleclass="newconfirmRadio"  id="SSNnumberNew1" rendered="{!SSNnumberMatch=='true'  && SelectedID != ''}">
+										 	<span class="chkAligned">
+												<input type="checkbox" name="SSNnumberNewPass" id="SSNnumberNewPass1" value="Pass"/>
+											
+												<label for="SSNnumberNewPass">Pass</label>
+											</span>
+											<span class="chkAligned">
+												<input type="checkbox" name="SSNnumberNewFail" id="SSNnumberNewFail1"  value="Fail"/>
+												<label for="SSNnumberNewFail">Fail</label>
+											</span>
+										</apex:outputpanel> 
+										
+										
+										<apex:outputText rendered="{!SSNnumberMatch=='false'}"><span class="error"><i aria-hidden="true" class="fa fa-close"></i>  &nbsp; No Matches Found</span></apex:outputText>
+									</div>                                        
+								</div>
+								</apex:outputPanel>
+							</div>   
+							
+							<div class="form-group">
+								<apex:outputPanel >
+								<apex:outputLabel for="#" styleclass="col-sm-12 col-xs-4 control-label">DOB 
+									<span class="pull-left"><i aria-hidden="true" class="fa fa-calendar-check-o"></i></span>
+								</apex:outputLabel>
+								<div class="col-sm-12 no-padding">
+									<apex:outputText rendered="{!ClearAllflag == false}" styleClass="form-control inputcan"  id="DOBOut" value="{!DOB}" >
+									</apex:outputText>
+									<apex:inputText rendered="{!ClearAllflag == true}" styleClass="form-control inputcan" html-placeholder="MM-DD-YYYY" id="DOB" value="{!DOB}" onkeypress="return onenterDOB(event)">
+									</apex:inputText>
+									<div class="validateDOB" style="display:none"></div>
+								</div>
+								<div class="col-sm-12 no-padding">
+									 <div class="checkbox">
+										<apex:inputCheckbox id="DOBC" style="display:none;" styleclass="confirm newconfirm" label="Select Checkbox to Confirm" rendered="{!DOBMatch=='true' && SelectedID != ''}" selected="{!DOBConfirm}"><span style="display:none;" class="no-label">Select Checkbox to Confirm</span></apex:inputcheckbox>
+										
+										 <apex:outputpanel styleclass="newconfirmRadio"  id="DOBCNew" rendered="{!DOBMatch=='true' && SelectedID != ''}">
+										 	<span class="chkAligned">
+												<input type="checkbox" name="DOBCNewPass" id="DOBCNewPass" value="Pass"/>
+											
+												<label for="DOBCNewPass">Pass</label>
+											</span>
+											<span class="chkAligned">
+												<input type="checkbox" name="DOBCNewFail" id="DOBCNewFail"  value="Fail"/>
+												<label for="DOBCNewFail">Fail</label>
+											</span>
+										</apex:outputpanel> 
+										
+										<apex:outputText rendered="{!DOBMatch=='false'}"><span class="error"><i aria-hidden="true" class="fa fa-close"></i>  &nbsp; No Matches Found</span></apex:outputText>
+									</div> 
+								</div>
+								</apex:outputPanel>
+							</div>
+							
+							<apex:commandButton id="ivrbutton2" styleClass="ivrbutton2" action="{!NoIVRInformation}" style="display:none"></apex:commandButton>
+												
                             </apex:form>
+                            
                         </div>
                         <div class="left-panel">
                             <h4>Ask which Member is Calling</h4>
@@ -270,73 +341,6 @@
                                 <div class="row">
                                 	<div class="col-md-5" style="width:54%">
                                 		<div class="form-group">
-											<apex:outputPanel >
-											<apex:outputLabel for="#" styleclass="col-sm-12 col-xs-4 control-label">Last 4 SSN 
-												<span class="pull-left"><i aria-hidden="true" class="fa fa-hashtag"></i></span>
-											</apex:outputLabel>
-											<div class="col-sm-6 col-xs-6 no-padding">
-												 <apex:OutputText styleClass="form-control inputcan" rendered="{!ClearAllflag == false}"   id="SSNOut" value="{!EnteredSSN}">
-												 </apex:OutputText>
-												 <apex:inputText styleClass="form-control inputcan" rendered="{! ClearAllflag == true}" html-placeholder="Select to type"  maxlength="4" id="SSN" value="{!EnteredSSN}" onkeypress="return onenterForSSN(event,this.value)">
-												 </apex:inputText>
-											</div>
-											<div class="col-sm-6 col-xs-6">
-												 <div class="checkbox">
-													<apex:inputCheckbox id="SSNnumber"  style="display:none;" styleclass="confirm newconfirm" label="Select Checkbox to Confirm" rendered="{!SSNnumberMatch=='true'  && SelectedID != ''}" selected="{!SSNnumberConfirm}" ><span style="display:none;" class="no-label">Select Checkbox to Confirm</span></apex:inputcheckbox>
-													
-													 <apex:outputpanel styleclass="newconfirmRadio"  id="SSNnumberNew" rendered="{!SSNnumberMatch=='true'  && SelectedID != ''}">
-													 	<span class="chkAligned">
-															<input type="checkbox" name="SSNnumberNewPass" id="SSNnumberNewPass" value="Pass"/>
-														
-															<label for="SSNnumberNewPass">Pass</label>
-														</span>
-														<span class="chkAligned">
-															<input type="checkbox" name="SSNnumberNewFail" id="SSNnumberNewFail"  value="Fail"/>
-															<label for="SSNnumberNewFail">Fail</label>
-														</span>
-													</apex:outputpanel> 
-													
-													
-													<apex:outputText rendered="{!SSNnumberMatch=='false'}"><span class="error"><i aria-hidden="true" class="fa fa-close"></i>  &nbsp; No Matches Found</span></apex:outputText>
-												</div>                                        
-											</div>
-											</apex:outputPanel>
-										</div>    
-										<div class="form-group">
-											<apex:outputPanel >
-											<apex:outputLabel for="#" styleclass="col-sm-12 col-xs-4 control-label">DOB 
-												<span class="pull-left"><i aria-hidden="true" class="fa fa-calendar-check-o"></i></span>
-											</apex:outputLabel>
-											<div class="col-sm-6 col-xs-6 no-padding">
-												<apex:outputText rendered="{!ClearAllflag == false}" styleClass="form-control inputcan"  id="DOBOut" value="{!DOB}" >
-												</apex:outputText>
-												<apex:inputText rendered="{!ClearAllflag == true}" styleClass="form-control inputcan" html-placeholder="MM-DD-YYYY" id="DOB" value="{!DOB}" onkeypress="return onenterDOB(event)">
-												</apex:inputText>
-												<div class="validateDOB" style="display:none"></div>
-											</div>
-											<div class="col-sm-6 col-xs-6">
-												 <div class="checkbox">
-													<apex:inputCheckbox id="DOBC" style="display:none;" styleclass="confirm newconfirm" label="Select Checkbox to Confirm" rendered="{!DOBMatch=='true' && SelectedID != ''}" selected="{!DOBConfirm}"><span style="display:none;" class="no-label">Select Checkbox to Confirm</span></apex:inputcheckbox>
-													
-													 <apex:outputpanel styleclass="newconfirmRadio"  id="DOBCNew" rendered="{!DOBMatch=='true' && SelectedID != ''}">
-													 	<span class="chkAligned">
-															<input type="checkbox" name="DOBCNewPass" id="DOBCNewPass" value="Pass"/>
-														
-															<label for="DOBCNewPass">Pass</label>
-														</span>
-														<span class="chkAligned">
-															<input type="checkbox" name="DOBCNewFail" id="DOBCNewFail"  value="Fail"/>
-															<label for="DOBCNewFail">Fail</label>
-														</span>
-													</apex:outputpanel> 
-													
-													<apex:outputText rendered="{!DOBMatch=='false'}"><span class="error"><i aria-hidden="true" class="fa fa-close"></i>  &nbsp; No Matches Found</span></apex:outputText>
-												</div> 
-											</div>
-											</apex:outputPanel>
-										</div>        
-										
-										<div class="form-group">
 											<apex:outputLabel for="#" styleclass="col-sm-12 col-xs-4 control-label">DL/STATE ID/PASSPORT 
 											   <span class="pull-left"><i aria-hidden="true" class="fa fa-wpforms"></i></span> 
 											</apex:outputLabel>
@@ -1961,7 +1965,8 @@
             //callActionFunction(); 
             //var SSNNum = $('[id$=SSN]').val();      
             if(SSNNumber != '7777'){
-                $('.ivrbutton').click();
+               // $('.ivrbutton').click();
+                $('.ivrbutton2').click();
                 return false;
             }
             else if(SSNNumber == '7777'){
@@ -2018,7 +2023,8 @@
                      $('[id$=DOB]').removeClass('valiationerror');
                      $('[id$=__DOB]' ).remove();
                  }
-                 $('.ivrbutton').click();
+                 //$('.ivrbutton').click();
+                 $('.ivrbutton2').click();
             }else{  
                 if(!$('[id$=DOB]').hasClass('valiationerror'))
                 {
