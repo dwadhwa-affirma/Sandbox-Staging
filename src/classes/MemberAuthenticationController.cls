@@ -59,6 +59,7 @@ public class MemberAuthenticationController{
     public string fromMarsData {get;set;}
      
     public String DOB{get;set;}
+    
     public string IVRDOB{get;set;}
     public String DOBMatch{get;set;}
     public String IVRDOBMatch{get;set;}
@@ -563,8 +564,11 @@ public class MemberAuthenticationController{
                         if(DOB == null || DOB == ''){DOBMatch = '';}               
                         userEnteredInformation.DOB = DOB;
                     }else{
-                            if(DOB !=null && DOB != '' && (DOBMatch == null || DOBMatch == '')){                
-                            userEnteredInformation.DOB = DOB;
+                            if(DOB !=null && DOB != '' && (DOBMatch == null || DOBMatch == '')){   
+                            String[] dobparse = DOB.split('-');
+                           	userEnteredInformation.DOB = string.ValueOf(dobparse[2]) + '-'+ String.valueOf(dobparse[0])+ '-' + String.valueOf(dobparse[1]);	             
+                            //userEnteredInformation.DOB = DOB;
+                            System.debug('DOB'+DOB);
                             fieldnametocheck = 'DOB';
                             }else if(DOB == null || DOB == ''){
                                 DOBMatch = '';
