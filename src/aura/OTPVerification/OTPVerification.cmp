@@ -1,4 +1,4 @@
-<aura:component implements="flexipage:availableForAllPageTypes,force:appHostable,force:hasRecordId,force:lightningQuickAction" controller="MemberVerificationLightningController" access="global">
+<aura:component implements="flexipage:availableForAllPageTypes,force:appHostable,force:hasRecordId,force:lightningQuickAction,lightning:isUrlAddressable" controller="MemberVerificationLightningController" access="global">
 
 
 
