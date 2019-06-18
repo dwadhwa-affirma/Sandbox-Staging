@@ -1996,7 +1996,6 @@
                 if(!$('[id$=DOB]').hasClass('valiationerror'))
                 {
                     $('[id$=DOB]').addClass('valiationerror');
-                    alert('firstmonth');
                     $('.validateDOB').after("<p class='messageClass cardpin' id="+'__DOB'+"> Please enter a valid date MMDDYYYY </p>");
                                         
                 }
@@ -2020,7 +2019,6 @@
         var Month = str.slice(0,2);
         var Monthlength = Month.length;
         if(Monthlength<0 || Monthlength > 2 || (Month <1 || Month >12)){
-        	alert('month');
             message = 'please enter correct month';
         }
 		
@@ -2028,7 +2026,7 @@
         var date = subString2;
         var datelength = date.length;
         if(datelength < 0 || datelength > 2 || date < 1 || date >31){
-        	alert('date');
+        	
             message = 'please enter correct date';
         }
         var d = new Date();
@@ -2037,11 +2035,11 @@
 		var year = str.slice(4,str);
 		var yearlength = year.length;
 		if(yearlength != 4 || year>n){
-			alert('year');
+			
             message = 'please enter correct year';
         }
         var newDate = Month + '-' + date + '-' + year;
-	    alert(newDate);
+	   
 	    $('[id$=DOB]').val(newDate);
         return message;
     }
