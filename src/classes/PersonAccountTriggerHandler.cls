@@ -14,7 +14,7 @@ public with sharing class PersonAccountTriggerHandler {
         for(Person_Account__c pa: newMap.values()){
             if(pa.Name_Type__c == 0){
               //CRM-1090 only add person whose open date is within 7 days
-              if (pa.Open_Date__c != null && pa.Open_Date__c.daysBetween(date.today()) <= 7)
+              if ((pa.Open_Date__c != null && pa.Open_Date__c.daysBetween(date.today()) <= 7) )
               {
                 System.debug('adding person account with open date..' + pa.Open_Date__c);
                 System.debug('adding person account with Account ID..' + pa.AccountID__c);
@@ -31,6 +31,46 @@ public with sharing class PersonAccountTriggerHandler {
             }
         }
         
+       /* for(Person_Account__c pa: newMap.values()){
+            if(pa.Name_Type__c == 0){
+            	system.debug('pa.Name_Type__c##' + pa.Name_Type__c);
+            	system.debug('pa.Account_Number__c##' + pa.Account_Number__c);
+		
+            	
+            	system.debug('pa.Account_Number__r.RecType__c##' + pa.Account_Number__r.RecType__c);
+            	system.debug('pa.TypeTranslate__c##' + pa.TypeTranslate__c);
+            	            
+	            if(pa.Account_Number__r.RecType__c == 'ACCT' && pa.TypeTranslate__c.contains('Primary') )
+	            {	
+	              		System.debug('Not adding person account with ACCT..' + pa.Account_Number__r.RecType__c);
+		                System.debug('Not adding person account with TypeTranslate__c..' + pa.Account_Number__r.TypeTranslate__c);
+	             
+	            }
+	            else if(pa.Account_Number__r.RecType__c == 'ACCT' && (pa.TypeTranslate__c.contains('Beneficiary') || pa.TypeTranslate__c.contains('Joint') ))
+	            {
+	            	system.debug('pa.TypeTranslate__c##' + pa.TypeTranslate__c);
+	            		            	
+	            	//CRM-1090 only add person whose open date is within 7 days
+		              if ((pa.Open_Date__c != null && pa.Open_Date__c.daysBetween(date.today()) <= 7) )
+		              {
+		                System.debug('adding person account with open date..' + pa.Open_Date__c);
+		                System.debug('adding person account with Account ID..' + pa.AccountID__c);
+		                  paList.add(pa); 
+		                  personIds.add(pa.PersonID__c);
+		                  accDetailIds.add(pa.Account_Number__c);
+		              }
+		              else
+		              {
+		                System.debug('Not adding person account with open date..' + pa.Open_Date__c);
+		                System.debug('Not adding person account with Account ID..' + pa.AccountID__c);
+		                  
+		              } 
+	            }
+	            
+	                            
+            }
+        }*/
+        
         list<Account> personList = [SELECT Id,firstname, Lastname, PersonHomePhone, 
                                     PersonEmail, Residential_Street__pc, Residential_City__pc, 
                                     Residential_State__pc, Residential_Zipocde__pc FROM Account WHERE Id IN: personIds];
@@ -40,7 +80,7 @@ public with sharing class PersonAccountTriggerHandler {
             perId.add(pl.Id);
         }
         
-        list<Account_Details__c> accDetailList = [SELECT Id, Open_Date__c, Created_By_User__c, OnBoarded__c, Created_By_User_Text__c, Created_By_User_Alias__c FROM Account_Details__c WHERE Id IN: accDetailIds];
+        list<Account_Details__c> accDetailList = [SELECT Id, Open_Date__c, Created_By_User__c, OnBoarded__c, Created_By_User_Text__c, Created_By_User_Alias__c, RecType__c, TypeTranslate__c FROM Account_Details__c WHERE Id IN: accDetailIds];
         for(Account_Details__c adl: accDetailList){
             accDetailMap.put(adl.Id, adl);
         }
@@ -74,46 +114,55 @@ public with sharing class PersonAccountTriggerHandler {
 
         for(Person_Account__c var: paList){
             
-            if(accDetailMap.get(var.Account_Number__c).OnBoarded__c == true){
-            Case c = new Case();
-                c.RecordTypeId = Schema.Sobjecttype.Case.getRecordTypeInfosByName().get('Onboarding').getRecordTypeId();
-                c.Primary_Category__c = 'Account Maintenance';
-                c.Secondary_Category__c = 'OnBoarding';
-                c.Tertiary_Category__c = 'None';
-                c.Status = 'Open';
-                c.Account_Number__c = var.Account_Number__c;
-               // c.AccountId = personMap.get(var.PersonID__c).Id;
-                c.AccountId = var.PersonID__c;
-                if(c.ContactId == NULL){
-                    c.ContactId = conMap.get(var.PersonID__c);
-                }
-                c.First_Name__c = personMap.get(var.PersonID__c).firstname;
-                c.Last_Name__c = personMap.get(var.PersonID__c).lastname;
-                c.Phone_Number__c = personMap.get(var.PersonID__c).PersonHomePhone;
-                c.Email_Address__c = personMap.get(var.PersonID__c).PersonEmail;
-                c.Street_Address_1__c = personMap.get(var.PersonID__c).Residential_Street__pc;
-                c.City__c = personMap.get(var.PersonID__c).Residential_City__pc;
-                c.State__c = personMap.get(var.PersonID__c).Residential_State__pc;
-                c.Zip_Code__c = personMap.get(var.PersonID__c).Residential_Zipocde__pc;
-                c.Membership_account_created_date__c = accDetailMap.get(var.Account_Number__c).OPEN_DATE__c;
-                             
-                system.debug('accdetailmap ..' + accDetailMap);
-                system.debug('var.accounnumber ' + var.Account_Number__c);
-                system.debug('check for user..' + userAliasMap.get(accDetailMap.get(var.Account_Number__c).Created_By_User_Alias__c));
-                
-                if(userAliasMap.get(accDetailMap.get(var.Account_Number__c).Created_By_User_Alias__c)!= null){
-                  system.debug('###Inside  assigning owner' + userAliasMap.get(accDetailMap.get(var.Account_Number__c).Created_By_User_Alias__c));
-               // if(userMap1.get(accDetailMap.get(var.Account_Number__c).Created_By_User_Text__c) != null){
-                    c.OwnerId = userAliasMap.get((accDetailMap.get(var.Account_Number__c).Created_By_User_Alias__c).toupperCase());
-                }else if(userAliasMap.get(accDetailMap.get(var.Account_Number__c).Created_By_User_Alias__c) == null || accDetailMap.get(var.Account_Number__c).Created_By_User__c == NULL 
-                   || uList != NULL){
-                    system.debug('Inside assigning eBranch queue');
-                    c.OwnerId = queueGroupId;
-                }
-            
-            caseList.add(c);
-        }            
-        }
+            	if(accDetailMap.get(var.Account_Number__c).RecType__c == 'ACCT' && var.TypeTranslate__c.contains('Primary'))
+            	{
+            		system.debug('Donot create case for Primary');
+            	}
+            	else if(accDetailMap.get(var.Account_Number__c).RecType__c == 'ACCT' &&  (var.TypeTranslate__c.contains('Beneficiary') || var.TypeTranslate__c.contains('Joint') ))
+            	{
+            		system.debug('create case for Ben/Joint');
+	           		 if(accDetailMap.get(var.Account_Number__c).OnBoarded__c == true) {
+		           		 Case c = new Case();
+		                c.RecordTypeId = Schema.Sobjecttype.Case.getRecordTypeInfosByName().get('Onboarding').getRecordTypeId();
+		                c.Primary_Category__c = 'Account Maintenance';
+		                c.Secondary_Category__c = 'OnBoarding';
+		                c.Tertiary_Category__c = 'None';
+		                c.Status = 'Open';
+		                c.Account_Number__c = var.Account_Number__c;
+		               // c.AccountId = personMap.get(var.PersonID__c).Id;
+		                c.AccountId = var.PersonID__c;
+		                if(c.ContactId == NULL){
+		                    c.ContactId = conMap.get(var.PersonID__c);
+		                }
+		                c.First_Name__c = personMap.get(var.PersonID__c).firstname;
+		                c.Last_Name__c = personMap.get(var.PersonID__c).lastname;
+		                c.Phone_Number__c = personMap.get(var.PersonID__c).PersonHomePhone;
+		                c.Email_Address__c = personMap.get(var.PersonID__c).PersonEmail;
+		                c.Street_Address_1__c = personMap.get(var.PersonID__c).Residential_Street__pc;
+		                c.City__c = personMap.get(var.PersonID__c).Residential_City__pc;
+		                c.State__c = personMap.get(var.PersonID__c).Residential_State__pc;
+		                c.Zip_Code__c = personMap.get(var.PersonID__c).Residential_Zipocde__pc;
+		                c.Membership_account_created_date__c = accDetailMap.get(var.Account_Number__c).OPEN_DATE__c;
+		                             
+		                system.debug('accdetailmap ..' + accDetailMap);
+		                system.debug('var.accounnumber ' + var.Account_Number__c);
+		                system.debug('check for user..' + userAliasMap.get(accDetailMap.get(var.Account_Number__c).Created_By_User_Alias__c));
+		                
+		                if(userAliasMap.get(accDetailMap.get(var.Account_Number__c).Created_By_User_Alias__c)!= null){
+		                  system.debug('###Inside  assigning owner' + userAliasMap.get(accDetailMap.get(var.Account_Number__c).Created_By_User_Alias__c));
+		               // if(userMap1.get(accDetailMap.get(var.Account_Number__c).Created_By_User_Text__c) != null){
+		                    c.OwnerId = userAliasMap.get((accDetailMap.get(var.Account_Number__c).Created_By_User_Alias__c).toupperCase());
+		                }else if(userAliasMap.get(accDetailMap.get(var.Account_Number__c).Created_By_User_Alias__c) == null || accDetailMap.get(var.Account_Number__c).Created_By_User__c == NULL 
+		                   || uList != NULL){
+		                    system.debug('Inside assigning eBranch queue');
+		                    c.OwnerId = queueGroupId;
+		                }
+		            
+		            	caseList.add(c);
+		        	}
+            	}
+	        }            
+        
         
         try{
             insert caseList;
