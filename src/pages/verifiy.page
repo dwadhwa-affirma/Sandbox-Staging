@@ -305,8 +305,10 @@
                                   </div>
                                 </div>
                                  -->
+                            
                                 <div class="row">
                                 	<div class="col-md-5" style="width:54%">
+                                	 <apex:pageBlock rendered="{!IF(selectedID != null && selectedID != '', true, false) }" title="Right Panel">
                                 		<div class="form-group">
 											<apex:outputLabel for="#" styleclass="col-sm-12 col-xs-4 control-label">DL/STATE ID/PASSPORT 
 											   <span class="pull-left"><i aria-hidden="true" class="fa fa-wpforms"></i></span> 
@@ -346,6 +348,7 @@
 												</div>
 											</div>
 										</div>
+										
 										<div class="form-group">
 											<apex:outputLabel for="#" styleclass="col-sm-12 col-xs-4 control-label">Account Password/MMN 
 												<span class="pull-left"><i aria-hidden="true" class="fa fa-users"></i></span>
@@ -424,8 +427,11 @@
 													<apex:outputText rendered="{!EmailMatch=='false'}"><span class="error" ><i aria-hidden="true" class="fa fa-close"></i>  &nbsp; No Matches Found</span></apex:outputText>
 												</div>
 											</div>
+											
 										</div>
+										</apex:pageBlock>
                                 	</div>
+                                	
                                 	<div class="col-md-7" style="width:46%">
                                 		<div class="table-responsive urv-g additionalTokenContainer">
 											 <apex:pageBlock rendered="{!IF(selectedID != null && selectedID != '', true, false) }" title="Additional Tokens">
@@ -630,7 +636,7 @@
                              
                             <div class="col-sm-12 col-xs-4 no-padding">                                                         
                                 <div class="table-responsive urv-g">                                                                   
-                                <apex:outputText id="MemberNoErrorText" rendered="{!showErrorMsgLoanData}"><span class="errorForTable"><i aria-hidden="true" class="fa fa-close"></i> &nbsp; Loan Data Not Available</span></apex:outputText>
+                                <apex:outputText id="MemberNoErrorText" rendered="{!IF(selectedID != null && selectedID != '' && showErrorMsgLoanData, true, false) }"><span class="errorForTable"><i aria-hidden="true" class="fa fa-close"></i> &nbsp; Loan Data Not Available</span></apex:outputText>
                                    <apex:pageBlock title="Loan Accounts" rendered="{!IF(MemberLoanDetails.size >0, true, false) }">
                                     <apex:pageBlockTable value="{!MemberLoanDetails}" var="obj"  id="MemberLoanData" styleClass="table" >
                                         <apex:column headerValue="Account Number" style="background-color:{!IF(obj.Close_Date__c!=null,"LightGray",'')}">
@@ -2296,6 +2302,7 @@ $('#OTPResultPass').prop('disabled', 'disabled');
                 var x = screen.width/2 - 700/2;
                 var y = screen.height/2 - 450/2;
                 windowObject = window.open('/apex/SecureOTPAuthenticationIVR?id={!selectedID}','OpenedWindow', 'width=700,height=500,left='+x+',top='+y );
+                //windowObject = window.open('lightning/cmp/c__OTPVerification','OpenedWindow', 'width=700,height=500,left='+x+',top='+y );
             }
     </script>
     <script>
