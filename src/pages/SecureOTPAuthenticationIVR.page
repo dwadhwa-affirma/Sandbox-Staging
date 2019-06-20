@@ -16,6 +16,8 @@
         <div class="container">
 <apex:form >
 <c:MemberVerificationIVR accountId="{!Account.Id}" />
+
+
 </apex:form>
 </div>
 </section>

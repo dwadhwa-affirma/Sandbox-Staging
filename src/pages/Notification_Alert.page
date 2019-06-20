@@ -1,0 +1,14 @@
+<apex:page controller="IntegrationAlertController"> 
+
+<apex:pageBlock rendered="{!NOT(showList.empty)}">
+        <apex:pageBlockTable value="{!showList}" id="Id" var="a1">
+             <apex:column headerValue="Alert" value="{!a1.Alert__c }"/>   
+            <apex:column headerValue="Description" value="{!a1.Description__c}"/>
+            <apex:column headerValue="Link" value="{!a1.Link__c}"/> 
+        </apex:pageBlockTable>
+    </apex:pageBlock>
+    
+<apex:outputText style="font-size:10px; font-weight:bold; color:red;" rendered="{!(showList.empty)}" value="No Alerts Today"/>
+
+    
+</apex:page>
