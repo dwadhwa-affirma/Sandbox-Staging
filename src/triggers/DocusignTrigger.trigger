@@ -9,13 +9,19 @@ trigger DocusignTrigger on dsfs__DocuSign_Status__c (after insert, after update)
     
   //  List<Case> cs = [Select Id from Case where Id =:docList];
     List<Case> cs = [Select Id, Previous_Owner__c from Case where Id IN:docMap.keySet()];
-    
+    Id LoggedinUser = UserInfo.getUserId();
     for(Case c : cs){
         //c.Docusign_Envelope_Status__c = Trigger.new[0].dsfs__Envelope_Status__c;
         if(docMap.get(c.Id) == 'Completed'){
        // c.Docusign_Envelope_Status__c = docMap.get(c.Id);
-           if(c.Previous_Owner__c == null||c.Previous_Owner__c == ''){
-           } else {
+           if(c.Previous_Owner__c == null||c.Previous_Owner__c == ''){}
+          else if((c.Previous_Owner__c != null || c.Previous_Owner__c != '') && string.valueOf(c.Previous_Owner__c).startsWith('00G') )
+           {
+           	   system.debug('Queue1##');
+              // c.OwnerId = LoggedinUser;
+           }       
+           else
+           {
                 c.OwnerId = Id.valueOf(c.Previous_Owner__c);
            }
            c.Docusign_Envelope_Status__c = 'Completed';
@@ -28,15 +34,24 @@ trigger DocusignTrigger on dsfs__DocuSign_Status__c (after insert, after update)
         }
         if(docMap.get(c.Id) == 'Declined'){
            c.Docusign_Envelope_Status__c = 'Declined';
-           if(c.Previous_Owner__c == null||c.Previous_Owner__c == ''){
-           } else {
+           if(c.Previous_Owner__c == null||c.Previous_Owner__c == ''){    } 
+           else if((c.Previous_Owner__c != null || c.Previous_Owner__c != '') && string.valueOf(c.Previous_Owner__c).startsWith('00G') )
+           {
+           	  system.debug('Queue2##');
+              // c.OwnerId = LoggedinUser;
+           }
+           else {
                 c.OwnerId = Id.valueOf(c.Previous_Owner__c);
            }
         }
         if(docMap.get(c.Id) == 'Authentication Failed'){
            c.Docusign_Envelope_Status__c = 'Authentication Failed';
-           if(c.Previous_Owner__c == null||c.Previous_Owner__c == ''){
-           } else {
+           if(c.Previous_Owner__c == null||c.Previous_Owner__c == ''){ }
+           
+          else if((c.Previous_Owner__c != null || c.Previous_Owner__c != '') && string.valueOf(c.Previous_Owner__c).startsWith('00G') ) {
+           	  system.debug('Queue3##');	
+           //   c.OwnerId = LoggedinUser;
+           	 } else {
                 c.OwnerId = Id.valueOf(c.Previous_Owner__c);
            }
         }
