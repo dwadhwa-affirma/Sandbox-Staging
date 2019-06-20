@@ -2,10 +2,12 @@ public with sharing class PersonAccountTriggerHandler {
    // 
     public static void createCase(map<Id,Person_Account__c> newMap){
         list<Person_Account__c> paList = new list<Person_Account__c>();
+        list<Person_Account__c> PrimaryPAList = new list<Person_Account__c>();
         set<Id> personIds = new set<Id>();
         set<Id> accDetailIds = new set<Id>();
         map<Id,Account> personMap = new map<Id,Account>();
         map<Id,Account_Details__c> accDetailMap = new map<Id,Account_Details__c>();
+        map<Id,Person_Account__c> PrimaryPAMap = new map<Id,Person_Account__c>();
         list<Case> caseList = new list<Case>();
       //  map<double,Id> userMap = new map<double,Id>();
         map<String,Id> userMap1 = new map<String,Id>();
@@ -31,45 +33,7 @@ public with sharing class PersonAccountTriggerHandler {
             }
         }
         
-       /* for(Person_Account__c pa: newMap.values()){
-            if(pa.Name_Type__c == 0){
-            	system.debug('pa.Name_Type__c##' + pa.Name_Type__c);
-            	system.debug('pa.Account_Number__c##' + pa.Account_Number__c);
-		
-            	
-            	system.debug('pa.Account_Number__r.RecType__c##' + pa.Account_Number__r.RecType__c);
-            	system.debug('pa.TypeTranslate__c##' + pa.TypeTranslate__c);
-            	            
-	            if(pa.Account_Number__r.RecType__c == 'ACCT' && pa.TypeTranslate__c.contains('Primary') )
-	            {	
-	              		System.debug('Not adding person account with ACCT..' + pa.Account_Number__r.RecType__c);
-		                System.debug('Not adding person account with TypeTranslate__c..' + pa.Account_Number__r.TypeTranslate__c);
-	             
-	            }
-	            else if(pa.Account_Number__r.RecType__c == 'ACCT' && (pa.TypeTranslate__c.contains('Beneficiary') || pa.TypeTranslate__c.contains('Joint') ))
-	            {
-	            	system.debug('pa.TypeTranslate__c##' + pa.TypeTranslate__c);
-	            		            	
-	            	//CRM-1090 only add person whose open date is within 7 days
-		              if ((pa.Open_Date__c != null && pa.Open_Date__c.daysBetween(date.today()) <= 7) )
-		              {
-		                System.debug('adding person account with open date..' + pa.Open_Date__c);
-		                System.debug('adding person account with Account ID..' + pa.AccountID__c);
-		                  paList.add(pa); 
-		                  personIds.add(pa.PersonID__c);
-		                  accDetailIds.add(pa.Account_Number__c);
-		              }
-		              else
-		              {
-		                System.debug('Not adding person account with open date..' + pa.Open_Date__c);
-		                System.debug('Not adding person account with Account ID..' + pa.AccountID__c);
-		                  
-		              } 
-	            }
-	            
-	                            
-            }
-        }*/
+     
         
         list<Account> personList = [SELECT Id,firstname, Lastname, PersonHomePhone, 
                                     PersonEmail, Residential_Street__pc, Residential_City__pc, 
@@ -84,6 +48,15 @@ public with sharing class PersonAccountTriggerHandler {
         for(Account_Details__c adl: accDetailList){
             accDetailMap.put(adl.Id, adl);
         }
+        
+        PrimaryPAList = [SELECT Account_Number__c, Name, Name_Type__c,Open_Date__c, Account_Type__c, Id, Relationship__c, TypeTranslate__c FROM Person_Account__c where Account_Number__c IN : accDetailIds and TypeTranslate__c like '%Primary%' limit 1];
+        for(Person_Account__c p: PrimaryPAList)
+        {
+        	PrimaryPAMap.put(p.Account_Number__c, p);
+        }
+        
+        
+        
         
         List<Contact> con = [Select Id, Name, AccountId from Contact where Contact.AccountId =:perId];
         Map<Id,Id> conMap = new Map<Id,Id>();
@@ -114,11 +87,11 @@ public with sharing class PersonAccountTriggerHandler {
 
         for(Person_Account__c var: paList){
             
-            	if(accDetailMap.get(var.Account_Number__c).RecType__c == 'ACCT' && var.TypeTranslate__c.contains('Primary'))
+            	if(accDetailMap.get(var.Account_Number__c).RecType__c == 'ACCT' && PrimaryPAMap.containsKey(var.Account_Number__c)== true)
             	{
             		system.debug('Donot create case for Primary');
             	}
-            	else if(accDetailMap.get(var.Account_Number__c).RecType__c == 'ACCT' &&  (var.TypeTranslate__c.contains('Beneficiary') || var.TypeTranslate__c.contains('Joint') ))
+            	else if(accDetailMap.get(var.Account_Number__c).RecType__c == 'ACCT' &&  PrimaryPAMap.containsKey(var.Account_Number__c) == false)
             	{
             		system.debug('create case for Ben/Joint');
 	           		 if(accDetailMap.get(var.Account_Number__c).OnBoarded__c == true) {
