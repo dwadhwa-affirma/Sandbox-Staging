@@ -801,7 +801,7 @@ private class ManualMemberMergeProcessTest {
 	        ManualMemberMergeProcess.GetMemberAccountDetail(act1.id);
 	        ManualMemberMergeProcess.GetMemberAccountDetail(act2.id);
 	        ManualMemberMergeProcess.GetMemberList('My Team Members');
-	         ManualMemberMergeProcess.GetMemberList('All Members'); 
+	     //    ManualMemberMergeProcess.GetMemberList('All Members'); 
          Test.stopTest();
        
         
