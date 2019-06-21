@@ -581,10 +581,10 @@
 												
 												
 													<tr class="dataRow even  last">
-													<td class="but-area">
+													<!-- <td class="but-area">
 													<input type="submit" style="margin-top:0px; margin-right:60px;" class="btn btn-primary pull-right" onclick="IsIneligibleComplete(); return false;" value="OTP" />
 									 				
-													</td>
+													</td>-->
 													<td class="addtcol2"> <div class="tblchkbx pb5">
 															 <div class="checkbox">
 															  
@@ -832,6 +832,10 @@
                                     <apex:commandButton id="NewLead" styleClass="btn btn-primary pull-right" action="{!NewLeadPage}" value="New Lead"></apex:commandButton>
                                     <apex:commandButton styleClass="btn btn-primary pull-right btnClearAll" id="ClearInvalidFields" value="Clear All Fields" action="{!clearFields}"></apex:commandButton>
                                     
+									 <apex:pageBlock rendered="{!IF(selectedID != null && selectedID != '', true, false) }" >
+										<input type="submit"  class="btn btn-primary pull-right btnClearAll" onclick="IsIneligibleComplete(); return false;" value="OTP" />
+									 </apex:pageBlock>				
+											
                                 </div>
                             </div>
                         </div>
