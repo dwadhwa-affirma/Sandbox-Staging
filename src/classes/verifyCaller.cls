@@ -377,12 +377,12 @@ public class verifyCaller{
             String additionalformat = getAdditionalPhoneNumber(input.phoneNumber);          
             String additionalformat1 = getAdditionalPhoneNumber1(input.phoneNumber);
 
-            phoneQuery = phoneQuery+ '(PersonHomePhone =\''+input.phoneNumber+'\' OR PersonMobilePhone=\''+input.phoneNumber+'\' OR  PersonOtherPhone =\''+input.phoneNumber+'\' OR Phone =\''+input.phoneNumber+'\' OR PersonAssistantPhone =\''+input.phoneNumber+
+            phoneQuery = phoneQuery+ 'PersonHomePhone =\''+input.phoneNumber+'\' OR PersonMobilePhone=\''+input.phoneNumber+'\' OR  PersonOtherPhone =\''+input.phoneNumber+'\' OR Phone =\''+input.phoneNumber+'\' OR PersonAssistantPhone =\''+input.phoneNumber+
                            '\' OR PersonHomePhone =\''+additionalformat1+'\' OR PersonMobilePhone=\''+additionalformat1+'\' OR  PersonOtherPhone =\''+additionalformat1+'\' OR Phone =\''+additionalformat1+'\' OR PersonAssistantPhone =\''+additionalformat1+
                            '\' OR Home_Phone__pc =\''+additionalformat+'\' OR Mobile_Phone__pc =\''+additionalformat+'\' OR  Work_Phone__pc =\''+additionalformat+
                            '\' OR Home_Phone__pc =\''+additionalformat1+'\' OR Mobile_Phone__pc =\''+additionalformat1+'\' OR  Work_Phone__pc =\''+additionalformat1+
                            '\' OR Home_Phone__pc =\''+input.phoneNumber+'\' OR Mobile_Phone__pc =\''+input.phoneNumber+'\' OR  Work_Phone__pc =\''+input.phoneNumber+
-                            '\' OR PersonHomePhone =\''+additionalformat+'\' OR PersonMobilePhone=\''+additionalformat+'\' OR  PersonOtherPhone =\''+additionalformat+'\' OR Phone =\''+additionalformat+'\' OR PersonAssistantPhone =\''+additionalformat+'\' )';
+                            '\' OR PersonHomePhone =\''+additionalformat+'\' OR PersonMobilePhone=\''+additionalformat+'\' OR  PersonOtherPhone =\''+additionalformat+'\' OR Phone =\''+additionalformat+'\' OR PersonAssistantPhone =\''+additionalformat+'\'';
             check = '0';
         }
       

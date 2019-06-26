@@ -574,6 +574,20 @@ public class MemberAuthenticationController{
                                 DOBMatch = '';
                             }
                     }
+                    if(PhoneNumberMatch == 'true'){ 
+                        if(PhoneNumber == null || PhoneNumber == ''){PhoneNumberMatch = '';}               
+                        	userEnteredInformation.PhoneNumber = PhoneNumber;
+                    }else{
+                            if(PhoneNumber !=null && PhoneNumber != '' && (PhoneNumberMatch == null ||PhoneNumberMatch == '')){   
+                            //String[] dobparse = DOB.split('-');
+                           	userEnteredInformation.PhoneNumber = PhoneNumber;	             
+                            //userEnteredInformation.DOB = DOB;
+                            System.debug('PhoneNumber'+PhoneNumber);
+                            fieldnametocheck = 'PhoneNumber';
+                            }else if(PhoneNumber == null || PhoneNumber == ''){
+                                PhoneNumberMatch = '';
+                            }
+                    }
                     if(DLStateIdPassportMatch == 'true'){
                         if(DLStateIdPassport == null || DLStateIdPassport == ''){DLStateIdPassportMatch = '';}     
                         userEnteredInformation.ICardNumber = DLStateIdPassport;
@@ -642,6 +656,10 @@ public class MemberAuthenticationController{
                             }
                             if(oldFieldToMatch == 'DOB'){
                                 userEnteredInformation.DOB = DOB;
+                                fieldnametocheck = oldFieldToMatch;
+                            }
+                            if(oldFieldToMatch == 'PhoneNumber'){
+                                userEnteredInformation.PhoneNumber = PhoneNumber;
                                 fieldnametocheck = oldFieldToMatch;
                             }
                             if(oldFieldToMatch == 'IdNumber'){
