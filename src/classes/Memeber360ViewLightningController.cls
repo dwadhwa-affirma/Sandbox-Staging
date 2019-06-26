@@ -30,7 +30,7 @@ public  class Memeber360ViewLightningController {
     {
         Integer PageNo = 1,  PageSize = 10;
         list<Person_Account__c> paList = [SELECT Id,
-                             Account_Number__c, Account_Number__r.RecType__c,TypeTranslate__c, Account_Number__r.Name FROM Person_Account__c WHERE PersonID__c =:accId];
+                             Account_Number__c, Account_Number__r.RecType__c,TypeTranslate__c, Account_Number__r.Name FROM Person_Account__c WHERE PersonID__c =:accId order by TypeTranslate__c desc ];
         
         
         
@@ -45,6 +45,7 @@ public  class Memeber360ViewLightningController {
             accIdSet.add(var.Account_Number__c);
             listRelationships.put(var.Account_Number__c,var.TypeTranslate__c);
             listRelationshipsName.put(var.Account_Number__r.Name,var.TypeTranslate__c);
+            system.debug('listRelationshipsName##' + listRelationshipsName);
         }
         
        
@@ -73,7 +74,7 @@ public  class Memeber360ViewLightningController {
         }
 		
 
-        Object accList1 =  GetAccList(listRelationships,listRelationshipsName,acctypeSet, accountNumberSet, accIdset, PageNo, PageSize, '', '', '');
+        Object accList1 =  GetAccList(listRelationships,listRelationshipsName,acctypeSet, accountNumberSet, accIdset, PageNo, PageSize, 'TypeTranslate__c', 'asc', '');
         m.put('accList', accList1);
         Object cardList = GetCardList(accountNumberSetWOBeneficiary,accIdSetWOBeneficiary,acctypeSet,accountNumberSet,accIdset,PageNo,PageSize, '', '', '');
         m.put('cardList', cardList);
@@ -368,7 +369,7 @@ public  class Memeber360ViewLightningController {
             obj.Available_Balance = acc.Available_Balance__c;
             if(true){
                 
-                obj.Relationship = listRelationshipsName.get(obj.Name);         
+               	 obj.Relationship = listRelationshipsName.get(obj.Name);         
                  System.debug('obj.Relationship1' + obj.Relationship);
             }
             else
