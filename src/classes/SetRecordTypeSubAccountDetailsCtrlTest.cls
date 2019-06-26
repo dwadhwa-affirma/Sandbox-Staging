@@ -1,7 +1,7 @@
 @isTest
 public class SetRecordTypeSubAccountDetailsCtrlTest {
     
-    static testmethod void testmethod1(){
+   /* static testmethod void testmethod1(){
         String RecTypeId= [select Id from RecordType where (Name='Person Account') and (SobjectType='Account')].Id;
         
         Account acc = new Account(
@@ -64,7 +64,7 @@ public class SetRecordTypeSubAccountDetailsCtrlTest {
         controller.nextPage();
         controller.process();
         test.stoptest();
-    }
+    }*/
     
     static testmethod void testmethod2(){
 
@@ -221,7 +221,7 @@ public class SetRecordTypeSubAccountDetailsCtrlTest {
        System.assertEquals(ApexPages.getMessages()[0].getSummary(), 'Please select Tertiary Category');
     } 
     
-    static testmethod void testmethod10(){
+  /*  static testmethod void testmethod10(){
         String RecTypeId= [select Id from RecordType where (Name='Person Account') and (SobjectType='Account')].Id;
         
         Account acc = new Account(
@@ -283,7 +283,7 @@ public class SetRecordTypeSubAccountDetailsCtrlTest {
         controller.process1();
          test.StopTest();
     }
-    
+    */
     static testMethod void testMethod11(){
         String RecTypeId= [select Id from RecordType where (Name='Person Account') and (SobjectType='Account')].Id;
         
