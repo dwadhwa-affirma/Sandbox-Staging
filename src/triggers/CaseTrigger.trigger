@@ -123,6 +123,81 @@ trigger CaseTrigger on Case (before insert, before update, after insert, after u
         //   updateSurveyCase(Trigger.new);    
              
 //            CaseAssign(Trigger.new);
+		set<Id> caseidset = new Set<Id>();
+		for (Case c : Trigger.new)
+		{
+			caseidset.add(c.id);
+		}
+		
+		system.debug('caseidset##'+ caseidset);
+		DateTime timeNow = System.now(); 
+		DateTime MinutesAgo5 = timeNow.addMinutes(-5); 
+		Map<Id,CaseHistory> casehistorymap = new Map<Id,CaseHistory>();
+		//list<CaseHistory> casehistorylist  = [SELECT Field,Id,NewValue,OldValue, Caseid , createddate FROM CaseHistory where Field ='IsEscalated' and createdDate <:timeNow AND createdDate >:MinutesAgo5] ;
+		list<CaseHistory> casehistorylist  = [SELECT Field,Id,NewValue,OldValue, Caseid , createddate FROM CaseHistory where Field ='IsEscalated' and caseid IN: caseidset order by createddate desc] ;
+		
+				
+            system.debug('casehistorylistsize##'+ casehistorylist.size());
+              system.debug('casehistorylist##'+ casehistorylist);
+            
+		list<Case> caselistforbreached = new List<Case>();
+		
+		if(casehistorylist.size() > 0)
+		{
+			for(Casehistory ch : casehistorylist)
+			{
+				casehistorymap.put(ch.Caseid, ch);
+			}
+			
+			system.debug('casehistorymap##'+ casehistorymap);
+			for (Case c : Trigger.new)
+			{
+				if(casehistorymap.containsKey(c.id))
+				{
+					Case oldCase = Trigger.oldMap.get(c.Id);
+					system.debug('oldcase##'+ oldCase);
+					system.debug('oldcaseid##'+ oldCase.id);
+					system.debug('SLABreached'+ oldCase.isSLABreached__c);
+					if(oldCase.id == casehistorymap.get(c.id).caseid && casehistorymap.get(c.id).NewValue == true && oldCase.isSLABreached__c == false)
+					{
+									system.debug('case##'+ oldCase);
+									caselistforbreached.add(c);
+					}
+				}
+			}
+			
+			
+			UpdateCaseSLABreached(caselistforbreached);
+		}
+		/*if(casehistorylist.size() > 0)
+		{
+			for(Casehistory ch : casehistorylist)
+			{
+				casehistorymap.put(ch.Caseid, ch);
+				
+					for (Case c : Trigger.new)
+					{
+						
+							system.debug('case##'+ c);
+							Case oldCase = Trigger.oldMap.get(c.Id);
+							system.debug('oldcase##'+ oldCase);
+							system.debug('oldcaseid##'+ oldCase.id);
+							system.debug('ch.caseid ##'+ ch.caseid );
+							system.debug('ch.NewValue##'+ ch.NewValue);
+							system.debug('SLABreached'+ oldCase.isSLABreached__c);
+							if(oldCase.id == ch.caseid && ch.NewValue == true && oldCase.isSLABreached__c == false)
+							{
+								system.debug('case##'+ oldCase);
+								caselistforbreached.add(c);
+							}
+						
+					}
+				
+			}
+			
+			UpdateCaseSLABreached(caselistforbreached);
+		}*/
+
 		for (Case c : Trigger.new) {
 				Case oldCase = Trigger.oldMap.get(c.Id);
 				if((oldCase.Primary_Category__c != c.Primary_Category__c) || (oldCase.Secondary_Category__c != c.Secondary_Category__c) || (oldCase.Tertiary_Category__c != c.Tertiary_Category__c)){
@@ -131,6 +206,7 @@ trigger CaseTrigger on Case (before insert, before update, after insert, after u
 			}
         }  
     }
+
 
     
 public void updateBranchRegion(List<case> caseList)   { 
@@ -1036,12 +1112,12 @@ private boolean verifyGroupMember() {
 		      		}
 			    for(Case c: newCaseList){  
 			    	if(c.Status_SLA__c.contains('SLARed')){
-			    		c.isSLABreached__c = true;
+			    		//c.isSLABreached__c = true;
 			    	}
 			    	
 			    	/*Hot Fix Related Changes*/ 
 			    	if(c.SLATest__c.contains('SLARed')){
-			    		c.isSLABreached__c = true;
+			    		//c.isSLABreached__c = true;
 			    	}
 			    }
 			    
@@ -1056,12 +1132,12 @@ private boolean verifyGroupMember() {
 				    		
 				    		/*Hot Fix Related Changes*/ 
 							if((oldCase.IsEscalated != c.IsEscalated) && (c.IsEscalated == true && (c.isSLABreached__c == false))){
-								c.isSLABreached__c = true;
+								//c.isSLABreached__c = true;
 							}  
 							
 							/*Hot Fix Related Changes*/ 
 							if((oldCase.IsEscalated != c.IsEscalated) && (c.IsEscalated == true && (c.isSLABreached__c == false))){
-								c.isSLABreached__c = true;
+								//c.isSLABreached__c = true;
 							} 						 
 	    			}
 	    			
@@ -1097,6 +1173,28 @@ private boolean verifyGroupMember() {
 	      	update casestoUpdate;
 		}
 
+	}
+	
+	public void UpdateCaseSLABreached(List<Case> caselist)
+	{
+		system.debug('caselist##'+ caselist);
+		set<Id> caseid = new Set<Id>();
+		for(Case c : caselist)
+		{
+			caseid.add(c.id);
+		}
+		list<Case> ListToUpdate = new List<Case>();
+		list<Case> caselist1 = new List<Case>();
+		caselist1 = [Select id,isSLABreached__c from case where id IN: caseid ];
+		for(Case c: caseList1){
+			
+			c.isSLABreached__c = true;
+			
+			ListToUpdate.add(c);
+		}
+		
+		update ListToUpdate;
+		system.debug('ListToUpdate'+ ListToUpdate);
 	}
 	
 		/*End: CRM-1456 and MVAN-8 Changes related to Yellow flag*/
