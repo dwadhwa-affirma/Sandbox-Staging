@@ -2,11 +2,12 @@ public with sharing class PersonAccountTriggerHandler {
    // 
     public static void createCase(map<Id,Person_Account__c> newMap){
         list<Person_Account__c> paList = new list<Person_Account__c>();
-        list<Person_Account__c> PrimaryPAList = new list<Person_Account__c>();
+        list<Person_Account__c> OnboardPAList = new list<Person_Account__c>();
         set<Id> personIds = new set<Id>();
         set<Id> accDetailIds = new set<Id>();
         map<Id,Account> personMap = new map<Id,Account>();
         map<Id,Account_Details__c> accDetailMap = new map<Id,Account_Details__c>();
+        Set<Id> PersonAccountIdSet = new Set<Id>();
         map<Id,Person_Account__c> PrimaryPAMap = new map<Id,Person_Account__c>();
         list<Case> caseList = new list<Case>();
       //  map<double,Id> userMap = new map<double,Id>();
@@ -23,6 +24,7 @@ public with sharing class PersonAccountTriggerHandler {
                   paList.add(pa); 
                   personIds.add(pa.PersonID__c);
                   accDetailIds.add(pa.Account_Number__c);
+                  PersonAccountIdSet.add(pa.id);
               }
               else
               {
@@ -33,6 +35,7 @@ public with sharing class PersonAccountTriggerHandler {
             }
         }
         
+     
      
         
         list<Account> personList = [SELECT Id,firstname, Lastname, PersonHomePhone, 
@@ -47,15 +50,38 @@ public with sharing class PersonAccountTriggerHandler {
         list<Account_Details__c> accDetailList = [SELECT Id, Open_Date__c, Created_By_User__c, OnBoarded__c, Created_By_User_Text__c, Created_By_User_Alias__c, RecType__c, TypeTranslate__c FROM Account_Details__c WHERE Id IN: accDetailIds];
         for(Account_Details__c adl: accDetailList){
             accDetailMap.put(adl.Id, adl);
+            
+            
         }
         
-        PrimaryPAList = [SELECT Account_Number__c, Name, Name_Type__c,Open_Date__c, Account_Type__c, Id, Relationship__c, TypeTranslate__c FROM Person_Account__c where Account_Number__c IN : accDetailIds and TypeTranslate__c like '%Primary%' limit 1];
-        for(Person_Account__c p: PrimaryPAList)
-        {
-        	PrimaryPAMap.put(p.Account_Number__c, p);
-        }
+       OnboardPAList = [SELECT AccountID__c,Account_Number__c,Account_Type__c,Id,Name,PersonAccount__c,PersonID__c,Person_ID_Number__c,Relationship__c, Account_Number__r.OnBoarded__c, Account_Number__r.RecType__c
+        					 FROM Person_Account__c where Account_Number__r.OnBoarded__c = true and Account_Number__r.RecType__c = 'ACCT' and Id IN : PersonAccountIdSet];
+        Set<Id> PeraccId = new Set<Id>();
+         Set<Id> PersonId = new Set<Id>();
+         
+       if(OnboardPAList.size() > 0)
+       {  
+	        for(Person_Account__c pa : OnboardPAList)
+	        {
+	        	PeraccId.add(pa.Id);
+	        	PersonId.add(pa.PersonID__c);
+	        }
+	        
+	        if(PersonId.size() > 0)
+	        {
+	        	list<Person_Account__c> PrimaryPAList = [Select id, Typetranslate__c,PersonID__c from Person_Account__c where Typetranslate__c like '%Primary%' and PersonID__c IN : PersonId];
+	        	
+	        	for(Person_Account__c pa: PrimaryPAList)
+	        	{
+	        		PrimaryPAMap.put(pa.PersonID__c, pa);
+	        	}
+	        	
+	        }
+	        					
+	        
+	        
         
-        
+       } 
         
         
         List<Contact> con = [Select Id, Name, AccountId from Contact where Contact.AccountId =:perId];
@@ -87,11 +113,11 @@ public with sharing class PersonAccountTriggerHandler {
 
         for(Person_Account__c var: paList){
             
-            	if(accDetailMap.get(var.Account_Number__c).RecType__c == 'ACCT' && PrimaryPAMap.containsKey(var.Account_Number__c)== true)
+            	if(PrimaryPAMap.containsKey(var.PersonID__c)== true)
             	{
             		system.debug('Donot create case for Primary');
             	}
-            	else if(accDetailMap.get(var.Account_Number__c).RecType__c == 'ACCT' &&  PrimaryPAMap.containsKey(var.Account_Number__c) == false)
+            	else 
             	{
             		system.debug('create case for Ben/Joint');
 	           		 if(accDetailMap.get(var.Account_Number__c).OnBoarded__c == true) {
