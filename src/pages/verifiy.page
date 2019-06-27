@@ -160,7 +160,7 @@
 								<div class="col-sm-12 no-padding">
 									<apex:outputText rendered="{!ClearAllflag == false}" styleClass="form-control inputcan"  id="PhoneOut" value="{!PhoneNumber}" >
 									</apex:outputText>
-									<apex:inputText rendered="{!ClearAllflag == true}" styleClass="form-control inputcan" html-placeholder="**********" id="Phone" value="{!PhoneNumber}" onkeypress="return onenterPhone(event)">
+									<apex:inputText rendered="{!ClearAllflag == true}" styleClass="form-control inputcan" html-placeholder="xxx-xxx-xxxx " id="Phone" value="{!PhoneNumber}" onkeypress="return onenterPhone(event)">
 									</apex:inputText>
 									<div class="validatePhone" style="display:none"></div>
 								</div>
@@ -2067,21 +2067,24 @@
         }          
     }  
     function myPhoneFunction() {
-        var str = $('[id$=Phone]').val();
+        var str = $('[id$=Phone]').val().replace(/-/g,'');;
         if (str == '')
         {
             return '';
-        }        
+        }    
+        
         var strlength = str.length; 
         var message = '';
         if(strlength != 10){
         	 message = 'please enter correct 10 digit phone number';
+        	 return message;
         }
         
         var newPhone = str.slice(0,3) + '-' + str.slice(3,6) + '-' + str.slice(6,10);
 	   
 	    $('[id$=Phone]').val(newPhone);
-        return message;
+	     return '';
+        
     }
     function myDOBFunction() {
         var str = $('[id$=DOB]').val();
