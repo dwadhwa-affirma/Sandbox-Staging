@@ -372,26 +372,32 @@ public class verifyCaller{
         }
         if(input.phoneNumber != null && input.phoneNumber != ''){
             if(check == '0'){
-                phoneQuery = phoneQuery+ ' OR ';
+                phoneQuery = phoneQuery+ ') OR (';
             }
             String additionalformat = getAdditionalPhoneNumber(input.phoneNumber);          
             String additionalformat1 = getAdditionalPhoneNumber1(input.phoneNumber);
 
-            phoneQuery = phoneQuery+ 'PersonHomePhone =\''+input.phoneNumber+'\' OR PersonMobilePhone=\''+input.phoneNumber+'\' OR  PersonOtherPhone =\''+input.phoneNumber+'\' OR Phone =\''+input.phoneNumber+'\' OR PersonAssistantPhone =\''+input.phoneNumber+
+           /* phoneQuery = phoneQuery+ 'PersonHomePhone =\''+input.phoneNumber+'\' OR PersonMobilePhone=\''+input.phoneNumber+'\' OR  PersonOtherPhone =\''+input.phoneNumber+'\' OR Phone =\''+input.phoneNumber+'\' OR PersonAssistantPhone =\''+input.phoneNumber+
                            '\' OR PersonHomePhone =\''+additionalformat1+'\' OR PersonMobilePhone=\''+additionalformat1+'\' OR  PersonOtherPhone =\''+additionalformat1+'\' OR Phone =\''+additionalformat1+'\' OR PersonAssistantPhone =\''+additionalformat1+
                            '\' OR Home_Phone__pc =\''+additionalformat+'\' OR Mobile_Phone__pc =\''+additionalformat+'\' OR  Work_Phone__pc =\''+additionalformat+
                            '\' OR Home_Phone__pc =\''+additionalformat1+'\' OR Mobile_Phone__pc =\''+additionalformat1+'\' OR  Work_Phone__pc =\''+additionalformat1+
                            '\' OR Home_Phone__pc =\''+input.phoneNumber+'\' OR Mobile_Phone__pc =\''+input.phoneNumber+'\' OR  Work_Phone__pc =\''+input.phoneNumber+
-                            '\' OR PersonHomePhone =\''+additionalformat+'\' OR PersonMobilePhone=\''+additionalformat+'\' OR  PersonOtherPhone =\''+additionalformat+'\' OR Phone =\''+additionalformat+'\' OR PersonAssistantPhone =\''+additionalformat+'\'';
-            check = '0';
+                            '\' OR PersonHomePhone =\''+additionalformat+'\' OR PersonMobilePhone=\''+additionalformat+'\' OR  PersonOtherPhone =\''+additionalformat+'\' OR Phone =\''+additionalformat+'\' OR PersonAssistantPhone =\''+additionalformat+'\')';*/
+                            
+            phoneQuery = phoneQuery+ 'Mobile_Phone__pc =\''+additionalformat+'\' OR Mobile_Phone__pc =\''+additionalformat+'\' OR  Work_Phone__pc =\''+additionalformat+
+                           '\' OR Home_Phone__pc =\''+additionalformat1+'\' OR Mobile_Phone__pc =\''+additionalformat1+'\' OR  Work_Phone__pc =\''+additionalformat1+
+                           '\' OR Home_Phone__pc =\''+input.phoneNumber+'\' OR Mobile_Phone__pc =\''+input.phoneNumber+'\' OR  Work_Phone__pc =\''+input.phoneNumber+'\'';
+                                         
+            
+            check ='0';
         }
-      
-        queryString = queryString+additionalConditions+conditions+' ) '+phoneQuery;
-        system.debug('queryString....'+queryString);
+         system.debug('..'+queryString+additionalConditions+conditions);
+         queryString = queryString+additionalConditions+conditions+phoneQuery+')';
+         system.debug('..'+phoneQuery+')');
         try{
             ListofNames = Database.query(queryString);
         }Catch(QueryException e){
-            
+             system.debug('e..'+e);
         }
         
         system.debug('ListofNames ......'+ListofNames);

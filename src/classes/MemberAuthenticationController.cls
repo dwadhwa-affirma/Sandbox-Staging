@@ -1790,6 +1790,9 @@ public class MemberAuthenticationController{
         
             DOB = '';
             DOBMatch = ''; 
+            PhoneNumber = '';
+            PhoneNumberMatch='';
+            DOBMatch = '';
             DOBConfirm = false;
             DOBConfirmString =  '';
             IdNumber = '';
