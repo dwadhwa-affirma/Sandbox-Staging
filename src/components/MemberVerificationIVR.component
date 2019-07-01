@@ -62,12 +62,23 @@
 	.otpModal .stepgph{margin-top: 20px;}
 	.otpModal .stepgph span{border: 1px solid #ccc; background: #fff;height: 5px; width: 90px; margin-right: 4px; display: inline-block;}
 	.otpModal .stepgph span.active{border:1px solid #337ab7; background:#337ab7;}	
-	.otpModal .optwrap{display: table;width:80%; margin:30px auto;}
-	.otpModal .optwrap .col-md-6{display: table-cell; padding-right: 20px; text-align:left;}
+	.otpModal .optwrap{display: table;width:100%;}
+	.otpModal .optwrap .col-md-6{display: table-cell; text-align:left;}
 	.otpModal .sec2frm .form-control{max-width: 60%; display: inline-block;}
 	.otpModal .redcol{color: red;}
 	.otpModal .greencol{color: forestgreen;}
 	.otpModal .bluecol{color: dodgerblue;}
+	
+	input[type="radio"][disabled] + label 
+	 {
+	     background-color: gray;
+	 } 
+	 .col-md-6
+	 {
+	 	width:33.33%;
+	 	padding-right: 0px;
+       padding-left: 0px; 
+	 }
 </style>
 <style>
               .verifyInput{
@@ -132,35 +143,48 @@
           <div id="section1" class="otpsecs">
               <h3 class="subtitle">Please select a delivery method</h3>
                <apex:outputText value="Recently Updated items are disabled"  style="color:Red" />
-              <div class="row optwrap">
-                  <div class="col-md-6">
-                      <apex:outputpanel id="EmailPanel" rendered="{!If(EmailsList_Options.empty == false, true, false)}">
-                          <p><b>Email</b></p>
-                          <apex:selectRadio value="{!selectedID}" id="EmailCheck" layout="pageDirection"> 
-                               <apex:selectOptions value="{!EmailsList_Options}" id="EmaillistRadio"/> 
-                               
-                            </apex:selectRadio> 
-                           
-                           
-                            	
-                            </apex:outputpanel>
-                      
-                  </div>
-                  <div class="col-md-6">
-                       <apex:outputpanel id="PhonePanel" rendered="{!IF(PhoneList_Options.empty == false,true, false)}">
-                          <p><b>Phone</b></p>
-                            <apex:selectRadio value="{!selectedID}" id="PhoneCheck" layout="pageDirection"> 
-                              <apex:selectOptions value="{!PhoneList_Options}" id="PhonelistRadio"/>
-                              
-                            </apex:selectRadio> 
-                           
-                            
-                            </apex:outputpanel>
-                      
-                  </div>
-                  
-                  
-              </div>
+              <div class="row optwrap" style=" margin-top: 3%;">
+             
+               <div class="col-md-6">
+               		<p><b>Member</b></p>
+               </div>
+               <div class="col-md-6">
+               		<p><b>Email</b></p>
+               </div>
+               <div class="col-md-6">
+               		<p><b>Phone</b></p>
+               </div>
+               </div>
+               
+               <apex:repeat value="{!WrapperMemOptions}" var="Mem" id="theRepeat">
+               <div class="row optwrap">
+               <div class="col-md-6">
+                 
+					 <apex:outputText value="{!Mem.MemberName}"/>
+						
+				</div>
+							 
+					<div class="col-md-6">
+			 			 <apex:repeat value="{!Mem.LstEmail}" var="Email">
+							 <apex:selectRadio value="{!selectedID}"  layout="pageDirection" id="EmailCheck"> 
+							 
+							    <apex:selectOption  itemValue="{!Email.fieldName}" itemlabel="{!Email.encryptedvalue}" itemDisabled="{!NOT(Email.isEnabled)}" id="EmaillistRadio"/> 										
+							   
+							 </apex:selectRadio> 
+						   </apex:repeat> 
+					</div>
+					<div class="col-md-6">				   
+									   <apex:repeat value="{!Mem.LstPhone}" var="Phone">
+										  <apex:selectRadio value="{!selectedID}"  layout="pageDirection" id="PhoneCheck"> 
+				                              <apex:selectOption  itemValue="{!Phone.fieldName}" itemlabel="{!Phone.encryptedvalue}" itemDisabled="{!NOT(Phone.isEnabled)}"  id="PhonelistRadio"/>
+				                              
+				                            </apex:selectRadio> 
+									   </apex:repeat> 
+				   </div>
+				   </div>
+				   	</apex:repeat> 
+			
+              
               <div class="actionbtns clearfix">
                   <button type="button" class="btn btn-danger" onclick="DeclineOTP(); return false;">Unconfirmed</button>
                   <button type="button" class="btn btn-primary defaultbtnVerify" onclick="clickGenerateRandomOTP(); return false;">Next</button>
@@ -300,6 +324,7 @@
         	}
         	
         	$(document).ready(function(){
+        	debugger;
         		$('.modal-body').find('input:radio').attr('name', 'memberverification');
         	});
         	
