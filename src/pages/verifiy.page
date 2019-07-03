@@ -13,7 +13,7 @@
 	{
 		color:#000;
 	}     
-	 
+	
 	.chervon .form-right .checkbox span{padding-left: 15px;}	
 		.txtforother{border-top:0px dotted #ccc;margin-top: 15px; width: 100%;}
 		.txtforother td{border: 0; padding-top: 15px;}
@@ -110,9 +110,9 @@
             <!--<h2><i aria-hidden="true" class="{!if(NameList!=null,'fa fa-check-circle-o','fa fa-exclamation-triangle')}"></i> Verification Required (<span class="count">0</span>/3)</h2>-->
             <div class="headingval">
             	<h2 class="float-left">
-	            	<!--  <label class="fa fa-check-circle-o" style="display:{!if(NameList!=null,'block','none')};">
+	            	<label class="fa fa-check-circle-o" style="display:{!if(NameList!=null,'block','none')};">
 	                 	<b> Verification Required (<span class="count">0</span>/3) </b>
-	                </label> -->
+	                </label> 
 	                 <label class="fa fa-exclamation-triangle" style="display:{!if(NameList!=null,'none','block')};">
 	                 	<b> No Member Found </b>
 	                 </label>
@@ -137,14 +137,12 @@
                                                          
                              <h4>Caller Information</h4>  
                              <div class="form-group">                                                       
-                                <!--  old code - before AUTH-70
-                                 
                                 <apex:outputLabel for="Phone" styleclass="col-sm-12 control-label">Phone Number 
                                     <span class="pull-right"><i aria-hidden="true" class="fa fa-phone"></i></span>
                                 </apex:outputLabel>
                                 <div class="col-sm-12 no-padding">
                                     <apex:outputText styleClass="form-control " html-placeholder="Select to type" id="PhoneNumber" value="{!PhoneNumber}">
-                                         <apex:actionSupport event="onchange" action="{!NoIVRInformation}"/> 
+                                   <!--      <apex:actionSupport event="onchange" action="{!NoIVRInformation}"/> -->
                                     </apex:outputText>
                                 </div>    
                                 <div class="col-sm-12 no-padding">
@@ -152,22 +150,7 @@
                                         <apex:outputText rendered="{!PhoneNumberMatch=='true'}"><span class="confirm"><i aria-hidden="true" class="fa fa-check"></i> &nbsp; Valid</span></apex:outputText> 
                                         <apex:outputText rendered="{!PhoneNumberMatch=='false'}"><span class="error"><i aria-hidden="true" class="fa fa-close"></i> &nbsp; No Match Found</span></apex:outputText>
                                     </div>
-                                </div>   -->
-                                <apex:outputPanel >   
-                                <apex:outputLabel for="#" styleclass="col-sm-12 col-xs-4 control-label">Phone Number 
-									<span class="pull-left"><i aria-hidden="true" class="fa fa-phone"></i></span>
-								</apex:outputLabel>
-								<div class="col-sm-12 no-padding">
-									<apex:outputText rendered="{!ClearAllflag == false}" styleClass="form-control inputcan"  id="PhoneOut" value="{!PhoneNumber}" >
-									</apex:outputText>
-									<apex:inputText rendered="{!ClearAllflag == true}" styleClass="form-control inputcan" html-placeholder="xxx-xxx-xxxx " id="Phone" value="{!PhoneNumber}" onkeypress="return onenterPhone(event)">
-									</apex:inputText>
-									<div class="validatePhone" style="display:none"></div>
-								</div>
-								<div class="col-sm-12 no-padding">
-									<apex:outputText rendered="{!PhoneNumberMatch=='false'}"><span class="error"><i aria-hidden="true" class="fa fa-close"></i>  &nbsp; No Matches Found</span></apex:outputText>
-								</div>
-								</apex:outputPanel> 
+                                </div>     
                             </div>
                             
                             <div class="form-group">
@@ -197,8 +180,6 @@
                                          <apex:inputText styleClass="form-control inputcan memnumin" rendered="{!ClearAllflag == true}" html-placeholder="Select to type" maxlength="10" id="MemberNumberThis" value="{!EnteredMemberNumber}" onkeypress="return onenterforMember(event)">
                                          </apex:inputText>
                                     </div>
-                                    
-                                    
                                     <div class="col-sm-12 no-padding" id="MemberNoDiv">
                                     	<div class="checkbox">
                                             <!--<apex:inputCheckbox id="MemberNum" styleclass="confirm newconfirm" rendered="{!MemberNumberMatch=='true'}" selected="{!MemberNumberConfirm}"><label for="Checkbox1"><span>Select Checkbox to Confirm</span></label></apex:inputcheckbox> -->
@@ -208,49 +189,11 @@
                                        </div>
                                     </div>
                                     </apex:outputPanel>
-	                               
+                               
                             <apex:commandButton id="ivrbutton1" styleClass="ivrbutton1" action="{!NoIVRInformation}" style="display:none"></apex:commandButton> 
                             </div>
-                            
-                            <div class="form-group">
-								<apex:outputPanel >
-								<apex:outputLabel for="#" styleclass="col-sm-12 col-xs-4 control-label">Last 4 SSN 
-									<span class="pull-left"><i aria-hidden="true" class="fa fa-hashtag"></i></span>
-								</apex:outputLabel>
-								<div class="col-sm-12 no-padding">
-									 <apex:OutputText styleClass="form-control inputcan" rendered="{!ClearAllflag == false}"   id="SSNOut1" value="{!EnteredSSN}">
-									 </apex:OutputText>
-									 <apex:inputText styleClass="form-control inputcan" rendered="{! ClearAllflag == true}" html-placeholder="Select to type"  maxlength="4" id="SSN1" value="{!EnteredSSN}" onkeypress="return onenterForSSN(event,this.value)">
-									 </apex:inputText>
-								</div>
-								<div class="col-sm-12 no-padding">
-									<apex:outputText rendered="{!SSNnumberMatch=='false'}"><span class="error"><i aria-hidden="true" class="fa fa-close"></i>  &nbsp; No Matches Found</span></apex:outputText>
-								</div>
-								</apex:outputPanel>
-							</div>   
-							
-							<div class="form-group">
-								<apex:outputPanel >
-								<apex:outputLabel for="#" styleclass="col-sm-12 col-xs-4 control-label">DOB 
-									<span class="pull-left"><i aria-hidden="true" class="fa fa-calendar-check-o"></i></span>
-								</apex:outputLabel>
-								<div class="col-sm-12 no-padding">
-									<apex:outputText rendered="{!ClearAllflag == false}" styleClass="form-control inputcan"  id="DOBOut" value="{!DOB}" >
-									</apex:outputText>
-									<apex:inputText rendered="{!ClearAllflag == true}" styleClass="form-control inputcan" html-placeholder="MMDDYYYY" id="DOB" value="{!DOB}" onkeypress="return onenterDOB(event)">
-									</apex:inputText>
-									<div class="validateDOB" style="display:none"></div>
-								</div>
-								<div class="col-sm-12 no-padding">
-									<apex:outputText rendered="{!DOBMatch=='false'}"><span class="error"><i aria-hidden="true" class="fa fa-close"></i>  &nbsp; No Matches Found</span></apex:outputText>
-								</div>
-								</apex:outputPanel>
-							</div>
-							
-							<apex:commandButton id="ivrbutton2" styleClass="ivrbutton2" action="{!NoIVRInformation}" style="display:none"></apex:commandButton>
-												
+                              
                             </apex:form>
-                            
                         </div>
                         <div class="left-panel">
                             <h4>Ask which Member is Calling</h4>
@@ -279,10 +222,10 @@
                         </apex:actionFunction>-->
                     
                     <div class="col-lg-10 col-md-9 col-sm-12 col-xs-12 white-bg">
-                    <!--    <h4>Confirm any three items</h4> -->  
+                        <h4>Confirm any three items</h4>
                         
                         <div class="form-right" id="parentdiv">
-                                <!-- <div class="row ss cardpinwrap">
+                                <div class="row ss cardpinwrap">
                                   <div class="col-md-5 pr0"  style="width:54%">
                                     <div class="form-group">
                                     <apex:outputLabel for="#" styleclass="col-xs-12 control-label">Card Number 
@@ -321,12 +264,88 @@
                                 </div>
                                   </div>
                                 </div>
-                                 -->
-                            
+                                
                                 <div class="row">
                                 	<div class="col-md-5" style="width:54%">
-                                	 <apex:pageBlock rendered="{!IF(selectedID != null && selectedID != '', true, false) }" title="Right Panel">
                                 		<div class="form-group">
+											<apex:outputPanel >
+											<apex:outputLabel for="#" styleclass="col-sm-12 col-xs-4 control-label">Last 4 SSN 
+												<span class="pull-left"><i aria-hidden="true" class="fa fa-hashtag"></i></span>
+											</apex:outputLabel>
+											<div class="col-sm-6 col-xs-6 no-padding">
+												 <apex:OutputText styleClass="form-control inputcan" rendered="{!ClearAllflag == false}"   id="SSNOut" value="{!EnteredSSN}">
+												 </apex:OutputText>
+												 <apex:inputText styleClass="form-control inputcan" rendered="{! ClearAllflag == true}" html-placeholder="Select to type"  maxlength="4" id="SSN" value="{!EnteredSSN}" onkeypress="return onenterForSSN(event,this.value)">
+												 </apex:inputText>
+											</div>
+											<div class="col-sm-6 col-xs-6">
+												 <div class="checkbox">
+													<apex:inputCheckbox id="SSNnumber"  style="display:none;" styleclass="confirm newconfirm" label="Select Checkbox to Confirm" rendered="{!SSNnumberMatch=='true'  && SelectedID != ''}" selected="{!SSNnumberConfirm}" ><span style="display:none;" class="no-label">Select Checkbox to Confirm</span></apex:inputcheckbox>
+													<!--  <apex:selectRadio styleclass="newconfirmRadio" id="SSNnumberNew" value="{!SSNnumberConfirmString}" rendered="{!SSNnumberMatch=='true'  && SelectedID != ''}"  layout="lineDirection">
+													  <apex:selectOption itemLabel="Not Asked" id="SSNnumberNew1" itemValue="NA"></apex:selectOption>
+													  <apex:selectOption itemLabel="Pass" id="SSNnumberNew2" itemValue="Pass"></apex:selectOption>
+													  <apex:selectOption itemLabel="Fail" id="SSNnumberNew3" itemValue="Fail"></apex:selectOption>
+													</apex:selectRadio>  -->
+													 <apex:outputpanel styleclass="newconfirmRadio"  id="SSNnumberNew" rendered="{!SSNnumberMatch=='true'  && SelectedID != ''}">
+													 	<span class="chkAligned">
+															<input type="checkbox" name="SSNnumberNewPass" id="SSNnumberNewPass" value="Pass"/>
+														
+															<label for="SSNnumberNewPass">Pass</label>
+														</span>
+														<span class="chkAligned">
+															<input type="checkbox" name="SSNnumberNewFail" id="SSNnumberNewFail"  value="Fail"/>
+															<label for="SSNnumberNewFail">Fail</label>
+														</span>
+													</apex:outputpanel> 
+													
+													
+													<apex:outputText rendered="{!SSNnumberMatch=='false'}"><span class="error"><i aria-hidden="true" class="fa fa-close"></i>  &nbsp; No Matches Found</span></apex:outputText>
+												</div>                                        
+											</div>
+											</apex:outputPanel>
+										</div>    
+										<div class="form-group">
+											<apex:outputPanel >
+											<apex:outputLabel for="#" styleclass="col-sm-12 col-xs-4 control-label">DOB 
+												<span class="pull-left"><i aria-hidden="true" class="fa fa-calendar-check-o"></i></span>
+											</apex:outputLabel>
+											<div class="col-sm-6 col-xs-6 no-padding">
+												<apex:outputText rendered="{!ClearAllflag == false}" styleClass="form-control inputcan"  id="DOBOut" value="{!DOB}" >
+												</apex:outputText>
+												<apex:inputText rendered="{!ClearAllflag == true}" styleClass="form-control inputcan" html-placeholder="MM-DD-YYYY" id="DOB" value="{!DOB}" onkeypress="return onenterDOB(event)">
+												</apex:inputText>
+												<div class="validateDOB" style="display:none"></div>
+											</div>
+											<div class="col-sm-6 col-xs-6">
+												 <div class="checkbox">
+													<apex:inputCheckbox id="DOBC" style="display:none;" styleclass="confirm newconfirm" label="Select Checkbox to Confirm" rendered="{!DOBMatch=='true' && SelectedID != ''}" selected="{!DOBConfirm}"><span style="display:none;" class="no-label">Select Checkbox to Confirm</span></apex:inputcheckbox>
+													
+													 <apex:outputpanel styleclass="newconfirmRadio"  id="DOBCNew" rendered="{!DOBMatch=='true' && SelectedID != ''}">
+													 	<span class="chkAligned">
+															<input type="checkbox" name="DOBCNewPass" id="DOBCNewPass" value="Pass"/>
+														
+															<label for="DOBCNewPass">Pass</label>
+														</span>
+														<span class="chkAligned">
+															<input type="checkbox" name="DOBCNewFail" id="DOBCNewFail"  value="Fail"/>
+															<label for="DOBCNewFail">Fail</label>
+														</span>
+													</apex:outputpanel> 
+													
+												<!--  	<apex:selectRadio styleclass="newconfirmRadio" id="DOBCNew" rendered="{!DOBMatch=='true' && SelectedID != ''}" value="{!DOBConfirmString}"  layout="lineDirection">
+													  <apex:selectOption itemLabel="Not Asked" id="DOBCNew1" itemValue="NA"></apex:selectOption>
+													  <apex:selectOption itemLabel="Pass" id="DOBCNew2" itemValue="Pass"></apex:selectOption>
+													  <apex:selectOption itemLabel="Fail" id="DOBCNew3" itemValue="Fail"></apex:selectOption>
+													</apex:selectRadio>-->
+													
+													
+													<apex:outputText rendered="{!DOBMatch=='false'}"><span class="error"><i aria-hidden="true" class="fa fa-close"></i>  &nbsp; No Matches Found</span></apex:outputText>
+												</div> 
+											</div>
+											</apex:outputPanel>
+										</div>        
+										
+										<div class="form-group">
 											<apex:outputLabel for="#" styleclass="col-sm-12 col-xs-4 control-label">DL/STATE ID/PASSPORT 
 											   <span class="pull-left"><i aria-hidden="true" class="fa fa-wpforms"></i></span> 
 											</apex:outputLabel>
@@ -365,7 +384,6 @@
 												</div>
 											</div>
 										</div>
-										
 										<div class="form-group">
 											<apex:outputLabel for="#" styleclass="col-sm-12 col-xs-4 control-label">Account Password/MMN 
 												<span class="pull-left"><i aria-hidden="true" class="fa fa-users"></i></span>
@@ -444,11 +462,8 @@
 													<apex:outputText rendered="{!EmailMatch=='false'}"><span class="error" ><i aria-hidden="true" class="fa fa-close"></i>  &nbsp; No Matches Found</span></apex:outputText>
 												</div>
 											</div>
-											
 										</div>
-										</apex:pageBlock>
                                 	</div>
-                                	
                                 	<div class="col-md-7" style="width:46%">
                                 		<div class="table-responsive urv-g additionalTokenContainer">
 											 <apex:pageBlock rendered="{!IF(selectedID != null && selectedID != '', true, false) }" title="Additional Tokens">
@@ -598,10 +613,10 @@
 												
 												
 													<tr class="dataRow even  last">
-													<!-- <td class="but-area">
+													<td class="but-area">
 													<input type="submit" style="margin-top:0px; margin-right:60px;" class="btn btn-primary pull-right" onclick="IsIneligibleComplete(); return false;" value="OTP" />
 									 				
-													</td>-->
+													</td>
 													<td class="addtcol2"> <div class="tblchkbx pb5">
 															 <div class="checkbox">
 															  
@@ -653,7 +668,7 @@
                              
                             <div class="col-sm-12 col-xs-4 no-padding">                                                         
                                 <div class="table-responsive urv-g">                                                                   
-                                <apex:outputText id="MemberNoErrorText" rendered="{!IF(selectedID != null && selectedID != '' && showErrorMsgLoanData, true, false) }"><span class="errorForTable"><i aria-hidden="true" class="fa fa-close"></i> &nbsp; Loan Data Not Available</span></apex:outputText>
+                                <apex:outputText id="MemberNoErrorText" rendered="{!showErrorMsgLoanData}"><span class="errorForTable"><i aria-hidden="true" class="fa fa-close"></i> &nbsp; Loan Data Not Available</span></apex:outputText>
                                    <apex:pageBlock title="Loan Accounts" rendered="{!IF(MemberLoanDetails.size >0, true, false) }">
                                     <apex:pageBlockTable value="{!MemberLoanDetails}" var="obj"  id="MemberLoanData" styleClass="table" >
                                         <apex:column headerValue="Account Number" style="background-color:{!IF(obj.Close_Date__c!=null,"LightGray",'')}">
@@ -849,10 +864,6 @@
                                     <apex:commandButton id="NewLead" styleClass="btn btn-primary pull-right" action="{!NewLeadPage}" value="New Lead"></apex:commandButton>
                                     <apex:commandButton styleClass="btn btn-primary pull-right btnClearAll" id="ClearInvalidFields" value="Clear All Fields" action="{!clearFields}"></apex:commandButton>
                                     
-									 <apex:pageBlock rendered="{!IF(selectedID != null && selectedID != '', true, false) }" >
-										<input type="submit"  class="btn btn-primary pull-right btnClearAll" onclick="IsIneligibleComplete(); return false;" value="OTP" />
-									 </apex:pageBlock>				
-											
                                 </div>
                             </div>
                         </div>
@@ -1959,8 +1970,7 @@
             //callActionFunction(); 
             //var SSNNum = $('[id$=SSN]').val();      
             if(SSNNumber != '7777'){
-               // $('.ivrbutton').click();
-                $('.ivrbutton2').click();
+                $('.ivrbutton').click();
                 return false;
             }
             else if(SSNNumber == '7777'){
@@ -2017,16 +2027,13 @@
                      $('[id$=DOB]').removeClass('valiationerror');
                      $('[id$=__DOB]' ).remove();
                  }
-                 //$('.ivrbutton').click();
-                 $('.ivrbutton2').click();
+                 $('.ivrbutton').click();
             }else{  
                 if(!$('[id$=DOB]').hasClass('valiationerror'))
                 {
                     $('[id$=DOB]').addClass('valiationerror');
-                    $('.validateDOB').after("<p class='messageClass cardpin' id="+'__DOB'+"> Please enter a valid date MMDDYYYY </p>");
-                                        
+                    $('.validateDOB').after("<p class='messageClass cardpin' id="+'__DOB'+"> Please enter a valid date YYYY-MM-DD </p>");                    
                 }
-                
             }     
              return false;            
                          
@@ -2034,58 +2041,7 @@
             return true;               
         }          
     }  
-     function onenterPhone(e){ 
-                      
-        if(window.event){                    
-            key = window.event.keyCode;     //IE               
-        } 
-        else{                    
-            key = e.which;     //firefox               
-        }               
-        if(key == 13) { 
-            var error = myPhoneFunction();   
-            if(error == ''){            
-                if($('[id$=Phone]').hasClass('valiationerror')){
-                     $('[id$=Phone]').removeClass('valiationerror');
-                     $('[id$=__Phone]' ).remove();
-                 }
-                 //$('.ivrbutton').click();
-                 $('.ivrbutton2').click();
-            }else{  
-                if(!$('[id$=Phone]').hasClass('valiationerror'))
-                {
-                    $('[id$=Phone]').addClass('valiationerror');
-                    $('.validatePhone').after("<p class='messageClass cardpin' id="+'__DOB'+"> Please enter 10 digit phone number </p>");
-                                        
-                }
-                
-            }     
-             return false;            
-                         
-        } else{                    
-            return true;               
-        }          
-    }  
-    function myPhoneFunction() {
-        var str = $('[id$=Phone]').val().replace(/-/g,'');;
-        if (str == '')
-        {
-            return '';
-        }    
-        
-        var strlength = str.length; 
-        var message = '';
-        if(strlength != 10){
-        	 message = 'please enter correct 10 digit phone number';
-        	 return message;
-        }
-        
-        var newPhone = str.slice(0,3) + '-' + str.slice(3,6) + '-' + str.slice(6,10);
-	   
-	    $('[id$=Phone]').val(newPhone);
-	     return '';
-        
-    }
+    
     function myDOBFunction() {
         var str = $('[id$=DOB]').val();
         if (str == '')
@@ -2093,32 +2049,30 @@
             return '';
         }        
         var strlength = str.length; 
+        var pos = str.indexOf("-");
+        var Year = str.slice(0,pos);
+        var yearlength = Year.length;
+        var d = new Date();
+        var n = d.getFullYear();
         var message = '';
-        var Month = str.slice(0,2);
+        if(yearlength != 4 || Year>n){
+            message = 'please enter correct year';
+        }    
+        str = str.slice(pos+1,strlength);
+        pos = str.indexOf("-");
+        strlength = str.length;
+        var Month = str.slice(0,pos);
         var Monthlength = Month.length;
         if(Monthlength<0 || Monthlength > 2 || (Month <1 || Month >12)){
             message = 'please enter correct month';
         }
-		
-	    var subString2 = str.slice(2,4);
-        var date = subString2;
+        var subString2 = str.slice(pos+1,strlength);
+        strlength = subString2.length;
+        var date = subString2.slice(0,strlength);
         var datelength = date.length;
         if(datelength < 0 || datelength > 2 || date < 1 || date >31){
-        	
             message = 'please enter correct date';
         }
-        var d = new Date();
-        var n = d.getFullYear();
-        
-		var year = str.slice(4,str);
-		var yearlength = year.length;
-		if(yearlength != 4 || year>n){
-			
-            message = 'please enter correct year';
-        }
-        var newDate = Month + '-' + date + '-' + year;
-	   
-	    $('[id$=DOB]').val(newDate);
         return message;
     }
     
@@ -2374,7 +2328,6 @@ $('#OTPResultPass').prop('disabled', 'disabled');
                 var x = screen.width/2 - 700/2;
                 var y = screen.height/2 - 450/2;
                 windowObject = window.open('/apex/SecureOTPAuthenticationIVR?id={!selectedID}','OpenedWindow', 'width=700,height=500,left='+x+',top='+y );
-                //windowObject = window.open('lightning/cmp/c__OTPVerification','OpenedWindow', 'width=700,height=500,left='+x+',top='+y );
             }
     </script>
     <script>
