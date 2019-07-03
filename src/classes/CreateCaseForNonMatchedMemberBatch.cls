@@ -96,11 +96,12 @@ global class CreateCaseForNonMatchedMemberBatch implements Database.Batchable<sO
 			 			//post.Body = 'Failed Pre Member Conversion';
 			 			String fullURL = URL.getSalesforceBaseUrl().toExternalForm()+ '/lightning/n/Pre_Member_Conversion';      
 			 			system.debug('fullURL==='+fullURL); 
-                        //post.Body = 'Failed Pre Member Conversion. Click here to convert Pre Member: ' + fullURL; 
-			 			post.Body = 'Failed Pre Member Conversion for ' + acc.FirstName + ' ' + acc.LastName + ' Click here to convert Pre Member: ' + fullURL; 
+                        post.Body = 'Failed Pre Member Conversion for ' + acc.FirstName + ' ' + acc.LastName + ' Click here to convert Pre Member: ' + fullURL; 
+                        //post.Body = 'Failed Pre Member Conversion for ' + acc.FirstName + ' ' + acc.LastName + '<a href="'+ fullURL +'">Click here</a>'; 
 			 			post.LinkUrl = fullURL;			 			
 			 			post.ParentId = u.id;			 			
                         FeedItemlist.Add(post);
+                        system.debug('User Alias##'+ acc.Created_By_Episys_User_Alias__c);
                     }
                     
                 }

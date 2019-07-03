@@ -3,6 +3,8 @@
    <aura:attribute name="accountCount" type="Integer"  />
     <aura:attribute type="Aura.Component[]" name="inputboxPanel" />
     <aura:attribute name="isStandalone" type="boolean" description="Is StandAlone Case" default="false" />
+     <aura:attribute name="isSavePressed" type="boolean" description=" " default="false" />
+     <aura:attribute name="isNextPressed" type="boolean" description=" " default="false" />
     <aura:handler name="init" value="{!this}" action="{!c.doInit}" />
     <aura:attribute name="picklistFields" type="Map" default="{}" />
 	
@@ -677,11 +679,27 @@
    <!--  <button class="slds-button slds-button_brand" onclick="{!c.saveCase}" style="{!(v.isFileUpload ? 'display:none;' : '')}">Save</button> --> 
    
     <aura:if isTrue="{!(v.isFileUpload == false)}">
-     		 <lightning:button aura:id="Save" class="slds-button slds-button_brand" onclick="{!c.saveCase}" label="Save" />
-     		   <lightning:button aura:id="SaveandNew" class="slds-button slds-button_brand" label="Save &amp; New" onclick="{!c.saveCase}"/>
+    			<aura:if isTrue="{!and(v.isSavePressed == false , v.IsSaveandNewPressed==false)}">
+     		 				<lightning:button aura:id="Save" class="slds-button slds-button_brand" onclick="{!c.saveCase}" label="Save" />
+     		 				 <lightning:button aura:id="SaveandNew" class="slds-button slds-button_brand" label="Save &amp; New" onclick="{!c.saveCase}"/>
+     		 	</aura:if>
+     		 	
+     		     <aura:if isTrue="{!and(v.isSavePressed == true , v.IsSaveandNewPressed==false)}">
+     		   		 <lightning:button aura:id="Saving" class="slds-button slds-button_brand"  label="Saving" />
+     			</aura:if>	
+     			<aura:if isTrue="{!and(v.isSavePressed == false ,v.IsSaveandNewPressed==true)}">
+     		   		 <lightning:button aura:id="Saving" class="slds-button slds-button_brand"  label="Saving" />
+     			</aura:if>
+     		  
      		   <aura:set attribute="else">
                    <aura:if isTrue="{!(v.isFileUploadComponent == false)}">
-     		   		<lightning:button aura:id="Next" class="slds-button slds-button_brand" onclick="{!c.saveCase}" label="Next" />
+                   		<aura:if isTrue="{!(v.isNextPressed == false)}">
+     		   					<lightning:button aura:id="Next" class="slds-button slds-button_brand" onclick="{!c.saveCase}" label="Next" />
+     		   			</aura:if>
+     		   			<aura:if isTrue="{!(v.isNextPressed == true)}">
+     		   					<lightning:button aura:id="Next1" class="slds-button slds-button_brand" label="Next" />
+     		   			</aura:if>
+     		   			
                     <!--   <aura:set attribute="else">
                          <lightning:button aura:id="CreateNew" class="slds-button slds-button_brand" onclick="{!c.CreateNew}" label="Create New" />
                        </aura:set>-->

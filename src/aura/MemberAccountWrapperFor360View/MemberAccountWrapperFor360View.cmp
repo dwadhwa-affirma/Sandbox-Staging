@@ -85,8 +85,8 @@
       </ul>
       <div style="{!(v.accListIsHidden ? 'display:none;' : '')}" id="tab-default-1" class="{!('slds-tabs_default__content tabOne tabAccount' + (v.currentTab == '1' ? '  slds-show'  : '  slds-hide'))}" role="tabpanel" aria-labelledby="tab-default-1__item">
          <c:Pagination ListObject="{!v.accList}" SectionName="accList" 
-                HeaderTitleString="Acct #,Rec Type,Brand,Type Translate,ID,Loan Number,Available Balance,Balance,Open Date,Close Date"
-                HeaderColumnString="Id|Name,RecType__c,Brand__c,TypeTranslate__c,ID1__c,Loan_Number__c,Emp_Available_Balance__c,Emp_Balance__c,OPEN_DATE__c,Close_Date__c"
+                HeaderTitleString="Acct #,Rec Type,Brand,Type Translate,ID,Loan Number,Available Balance,Balance,Open Date, Close Date"
+                HeaderColumnString="Id|Name,RecType__c,Brand__c,TypeTranslate__c,ID1__c,Loan_Number__c,Emp_Available_Balance__c,Emp_Balance__c,Open_Date_PST__c,Close_Date__c"
                 TotalRecords="{!v.accListtotalrecords}" ColumnType="link,string,string,string,number,number,currency,currency,date,date"
                 />
       </div>

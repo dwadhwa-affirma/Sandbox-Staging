@@ -260,6 +260,7 @@
 			        var isFileUpload = component.get('v.isFileUpload');
                     if(isFileUpload){
         				component.set("v.isFileUploadComponent", true); 
+        				component.set("v.isNextPressed", false); 
         				if(document.getElementsByClassName('modal-maincontent')[0] != undefined){          
         				document.getElementsByClassName('modal-maincontent')[0].style.minHeight = '350px';
 						document.getElementsByClassName('modal-maincontent')[0].style.height = '350px';

@@ -8,7 +8,7 @@
         </apex:pageBlockTable>
     </apex:pageBlock>
     
-<apex:outputText style="font-size:10px; font-weight:bold; color:red;" rendered="{!(showList.empty)}" value="No Alerts Today"/>
+<apex:outputText style="font-size:10px; font-weight:bold; color:red;" rendered="{!(showList.empty)}" value="No System Alerts Today"/>
 
     
 </apex:page>

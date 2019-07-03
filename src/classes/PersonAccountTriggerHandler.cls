@@ -69,7 +69,7 @@ public with sharing class PersonAccountTriggerHandler {
 	        
 	        if(PersonId.size() > 0)
 	        {
-	        	list<Person_Account__c> PrimaryPAList = [Select id, Typetranslate__c,PersonID__c from Person_Account__c where Typetranslate__c like '%Primary%' and PersonID__c IN : PersonId];
+	        	list<Person_Account__c> PrimaryPAList = [Select id, Typetranslate__c,PersonID__c from Person_Account__c where Typetranslate__c like '%Primary%' and PersonID__c IN : PersonId and Id not IN : PersonAccountIdSet];
 	        	
 	        	for(Person_Account__c pa: PrimaryPAList)
 	        	{
@@ -117,7 +117,7 @@ public with sharing class PersonAccountTriggerHandler {
             	{
             		system.debug('Donot create case for Primary');
             	}
-            	else 
+            	else if(PrimaryPAMap.containsKey(var.PersonID__c)== false)
             	{
             		system.debug('create case for Ben/Joint');
 	           		 if(accDetailMap.get(var.Account_Number__c).OnBoarded__c == true) {

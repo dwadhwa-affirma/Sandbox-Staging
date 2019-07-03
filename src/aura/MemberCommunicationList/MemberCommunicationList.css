@@ -1,0 +1,56 @@
+.THIS {
+    background-color: white; 
+
+}
+
+.THIS.exampleHolder{
+    position: relative;
+    display: inline-block;
+    margin-left: 15px;
+    width: 55px;
+    vertical-align: middle;
+    white-space: nowrap;
+}
+.THIS .slds-modal__container {
+width: 80% !important;   
+}
+.THIS .slds-card__header1 {
+    padding: 0rem .75rem 0;
+    margin: 0 0 0.75rem;}     
+.THIS .slds-card__body {
+    margin-bottom: 0rem; 
+}
+.THIS .cashAccountIcon svg {
+ 
+   fill: #fff;
+}
+.THIS .slds-notify_toast{
+	    padding: 0.4rem;
+}
+
+.THIS .uiInput--datetime .datePicker-openIcon {
+	    bottom: 10px;
+}
+
+.THIS .BorderRight{
+	
+	border-right: 1px solid rgb(221, 219, 218);
+}
+.THIS .SearchText{
+	
+	font-style: italic;
+    color: gray;
+}
+.THIS .searchIcon svg {
+ 
+   fill: gray;
+}
+
+.THIS .slds-button_icon-bare{
+	display:none;
+
+	
+	}
+.THIS #dt1 table thead th > span {   
+   background-color:red;
+}

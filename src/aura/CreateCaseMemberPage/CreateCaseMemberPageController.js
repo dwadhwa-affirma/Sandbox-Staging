@@ -265,18 +265,42 @@
 	   // alert(btnid);
 	    if (btnid == "SaveandNew")
 	    {
+	    	component.set("v.isSavePressed",true);
 	    	component.set('v.IsSaveandNewPressed',true);
 	    }
 	    else if(btnid == "Save")
 	    {
+	    	component.set("v.isSavePressed",true);
 	    	component.set("v.IsSaveandNewPressed", false);
+	    	
+	    }
+	    else if(btnid == "Next")
+	    {
+	    	component.set("v.isNextPressed",true);
 	    }
     	var isValid = helper.handleError(component,event,helper);
     	
     	if(isValid)
     	{
     		helper.saveNewCase(component,event,helper);
+    		
     	}
+    	else
+    	{
+    		component.set("v.isSavePressed",false);
+    		component.set("v.isNextPressed",false);
+    		component.set("v.IsSaveandNewPressed", false);
+    	}
+    	
+    	if(component.get("v.IsSaveandNewPressed"))
+    	{
+    		component.set("v.isSavePressed",false);
+    	}
+    	
+    	/*if(component.get("v.isFileUploadComponent"))
+    	{
+    		component.set("v.isNextPressed",false);
+    	}*/
     },
     selectfileupload: function(component,event,helper){    	
     	var value = event.target.checked;
