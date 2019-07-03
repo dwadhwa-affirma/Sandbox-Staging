@@ -168,7 +168,7 @@
 			 			 <apex:repeat value="{!Mem.LstEmail}" var="Email">
 							 <apex:selectRadio value="{!selectedID}"  layout="pageDirection" id="EmailCheck"> 
 							 
-							    <apex:selectOption  itemValue="{!Email.fieldName}" itemlabel="{!Email.encryptedvalue}" itemDisabled="{!NOT(Email.isEnabled)}" id="EmaillistRadio"/> 										
+							    <apex:selectOption itemValue="{!Email.fieldName}" itemlabel="{!Email.encryptedvalue}" itemDisabled="{!NOT(Email.isEnabled)}" id="EmaillistRadio"/> 										
 							   
 							 </apex:selectRadio> 
 						   </apex:repeat> 
@@ -176,7 +176,7 @@
 					<div class="col-md-6">				   
 									   <apex:repeat value="{!Mem.LstPhone}" var="Phone">
 										  <apex:selectRadio value="{!selectedID}"  layout="pageDirection" id="PhoneCheck"> 
-				                              <apex:selectOption  itemValue="{!Phone.fieldName}" itemlabel="{!Phone.encryptedvalue}" itemDisabled="{!NOT(Phone.isEnabled)}"  id="PhonelistRadio"/>
+				                              <apex:selectOption itemValue="{!Phone.fieldName}" itemlabel="{!Phone.encryptedvalue}" itemDisabled="{!NOT(Phone.isEnabled)}"  id="PhonelistRadio"/>
 				                              
 				                            </apex:selectRadio> 
 									   </apex:repeat> 
