@@ -1,4 +1,4 @@
-<aura:component implements="flexipage:availableForAllPageTypes,force:appHostable,force:hasRecordId,force:lightningQuickAction,lightning:isUrlAddressable" controller="MemberVerificationLightningController" access="global">
+<aura:component implements="flexipage:availableForAllPageTypes,force:appHostable,force:hasRecordId,force:lightningQuickAction" controller="MemberVerificationLightningController" access="global">
 
 
 
@@ -117,15 +117,6 @@
              <span style="color:red">Recently Updated items are disabled</span>
             <div class="optwrap" id="optwrap">
             	<div class="row">
-            	<div class="col-md-6">                    
-                        <p><b>Member</b></p>
-                        <aura:iteration items="{!v.Model.EmailsList_Options}" var="stage">
-                            <div class="radlist">
-                         
-                          	{!stage.Value}
-                            </div>
-                        </aura:iteration>
-	                </div>
             		<div class="col-md-6">                    
                         <p><b>Email</b></p>
                         <aura:iteration items="{!v.Model.EmailsList_Options}" var="stage">
@@ -133,15 +124,7 @@
                          
                             <ui:inputRadio label="" name="memberverification" value="false" class="{!stage.Text}" change="{!c.onRadioSelect}" disabled="{!stage.isEnabled}"/>
                            
-                           		<aura:if isTrue="{!stage.isEnabled}">
-                                   <span style="background-color: grey;">{!stage.Value}</span>
-                                    <aura:set attribute="else">
-                                        <span >{!stage.Value}</span>
-                                    </aura:set>
-                            	</aura:if>
-                            	
-                            
-                            
+                            <span>{!stage.Value}</span>
                             </div>
                         </aura:iteration>
 	                </div>
@@ -153,15 +136,8 @@
 	                           <div class="radlist">
 	                           
 	                            <ui:inputRadio label="" name="memberverification" value="false" class="{!stage.Text}" change="{!c.onRadioSelect}" disabled="{!stage.isEnabled}"/>
-	                           
-	                            <aura:if isTrue="{!stage.isEnabled}">
-                                   <span style="background-color: grey;">{!stage.Value}</span>
-                                    <aura:set attribute="else">
-                                        <span >{!stage.Value}</span>
-                                    </aura:set>
-                            	</aura:if>
-                            		
-                          		 
+	                            
+	                            <span>{!stage.Value}</span>
 	                            </div>
 	                        </aura:iteration>
 	                    	</div>
