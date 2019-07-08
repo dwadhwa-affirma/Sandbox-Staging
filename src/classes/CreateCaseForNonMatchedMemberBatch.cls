@@ -98,7 +98,7 @@ global class CreateCaseForNonMatchedMemberBatch implements Database.Batchable<sO
 			 			system.debug('fullURL==='+fullURL); 
                         post.Body = 'Failed Pre Member Conversion for ' + acc.FirstName + ' ' + acc.LastName + ' Click here to convert Pre Member: ' + fullURL; 
                         //post.Body = 'Failed Pre Member Conversion for ' + acc.FirstName + ' ' + acc.LastName + '<a href="'+ fullURL +'">Click here</a>'; 
-			 			post.LinkUrl = fullURL;			 			
+			 		//	post.LinkUrl = fullURL;			 			
 			 			post.ParentId = u.id;			 			
                         FeedItemlist.Add(post);
                         system.debug('User Alias##'+ acc.Created_By_Episys_User_Alias__c);
