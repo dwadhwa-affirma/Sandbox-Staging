@@ -68,7 +68,7 @@
 				}
 				else if(SectionName == 'close cases')
 	            {	 
-		            var CloaseCaseList = accList.accList;
+		            var CloaseCaseList = result.accList.accList;
 						for(var i=0; i< CloaseCaseList.length;i++){
 		        			CloaseCaseList.map((obj) => {   
 							obj.Category__c = "";

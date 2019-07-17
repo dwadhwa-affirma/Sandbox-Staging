@@ -28,6 +28,14 @@
 			        	   	arrTabs[i].parentElement.className += " heightLight";
 			        	}
 			        }
+			        
+			        var arrTabsTitle = document.getElementsByClassName("title");
+			        for(var i = 0; i < arrTabsTitle.length; i++){
+			        	if (arrTabsTitle[i].textContent == "Accounts 360 View"){
+			        		//component.set("v.tabIndex", i+1);
+			        		arrTabsTitle[i].parentElement.parentElement.parentElement.className += " heightLight";
+			        	}
+			        }
 	        	}
 	        }
 	    });

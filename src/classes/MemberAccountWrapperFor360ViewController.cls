@@ -139,6 +139,7 @@ public class MemberAccountWrapperFor360ViewController {
                               ' Close_Date__c, ' +
                               ' Card_Number_Last_4_Digits__c, ' +
                               ' OPEN_DATE__c, ' +
+                              ' Open_Date_PST__c, '+
                               ' Expiration_Date__c, ' +
                               ' Issue_Date__c, ' +
                               ' Emp_Balance__c, ' +
@@ -164,6 +165,7 @@ public class MemberAccountWrapperFor360ViewController {
                               ' Close_Date__c, ' +
                               ' Card_Number_Last_4_Digits__c, ' +
                               ' OPEN_DATE__c, ' +
+                              ' Open_Date_PST__c, '+
                               ' Expiration_Date__c, ' +
                               ' Issue_Date__c, ' +
                               ' Emp_Balance__c, ' +
@@ -548,6 +550,10 @@ public class MemberAccountWrapperFor360ViewController {
         	  SORT_BY = OpenDate_SORT;
         }        
        	
+       	else if(SortBy == 'ClosedDate'){
+        	  SORT_BY = ClosedDate_SORT;
+        } 
+       	
        	else if(SortBy == 'CaseNumber'){
         	  SORT_BY = CaseNumber_SORT;
         } 
@@ -586,7 +592,8 @@ public class MemberAccountWrapperFor360ViewController {
         
         else if(SortBy == 'Owner.Name'){
         	  SORT_BY = Owner_SORT;
-        }  
+        } 
+          
         else{
         	  SORT_BY = OpenDate_SORT;
         }
@@ -797,6 +804,7 @@ public class MemberAccountWrapperFor360ViewController {
          	Tempcase.ParentCaseNumber = (string)so.getSObject(field).get('CaseNumber');
          	Tempcase.Origin = (string)so.get('Origin');
          	Tempcase.CreatedDate = (datetime)so.get('CreatedDate');
+         	Tempcase.ClosedDate = (datetime)so.get('ClosedDate');
          	Tempcase.Brand =  caseMemberAccountBrandmap.get((string)so.get('Account_Number__c'));
          	if(so.getSobject('Owner') != null)
          	Tempcase.OwnerName = (string)so.getSobject('Owner').get('Name');
@@ -822,6 +830,7 @@ public class MemberAccountWrapperFor360ViewController {
          	Tempcase.ParentId =  c.ParentId;
          	Tempcase.Origin = c.Origin;
          	Tempcase.CreatedDate = c.CreatedDate;
+         	Tempcase.ClosedDate = c.ClosedDate;
          	Tempcase.Brand = c.Account_Number__r.Brand__c;
          	Tempcase.OwnerName = c.Owner.Name;
             Tempcase.ParentCaseNumber = c.Parent.CaseNumber;
@@ -1522,6 +1531,9 @@ public class MemberAccountWrapperFor360ViewController {
         public datetime CreatedDate {get; set;}
         
         @AuraEnabled
+        public datetime ClosedDate {get; set;}
+        
+        @AuraEnabled
         public string Brand {get; set;}
         
         @AuraEnabled
@@ -1558,6 +1570,8 @@ public class MemberAccountWrapperFor360ViewController {
 	    
 	     /** The literal for sorting by Open Date */
 	    public static String OpenDate_SORT = 'opendate';
+	    
+	    public static String ClosedDate_SORT = 'closeddate';
 	    
 	    /** The literal for sorting by Brand */
 	    public static String Brand_SORT = 'brand';
@@ -1690,6 +1704,18 @@ public class MemberAccountWrapperFor360ViewController {
             return -1;
         }
         
+         private Integer sortByClosedDate(CaseModelWrapper casemodel) {
+            if (this.casemodel.ClosedDate > casemodel.casemodel.ClosedDate) {
+                return 1;
+            }
+
+            if (this.casemodel.ClosedDate == casemodel.casemodel.ClosedDate) {
+                return 0;
+            }
+
+            return -1;
+        }
+        
          private Integer sortByBrand(CaseModelWrapper casemodel) {
             if (this.casemodel.brand > casemodel.casemodel.brand) {
                 return 1;
@@ -1767,6 +1793,10 @@ public class MemberAccountWrapperFor360ViewController {
             
              if (SORT_BY == OpenDate_SORT) {
                 return sortByOpenDate(casemodel);
+            }
+            
+            if (SORT_BY == ClosedDate_SORT) {
+                return sortByClosedDate(casemodel);
             }
             
              if (SORT_BY == Brand_SORT) {
