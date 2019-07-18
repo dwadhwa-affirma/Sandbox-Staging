@@ -30,7 +30,8 @@ public  class Memeber360ViewLightningController {
     {
         Integer PageNo = 1,  PageSize = 10;
         list<Person_Account__c> paList = [SELECT Id,
-                             Account_Number__c, Account_Number__r.RecType__c,TypeTranslate__c, Account_Number__r.Name FROM Person_Account__c WHERE PersonID__c =:accId order by TypeTranslate__c desc ];
+                             Account_Number__c, Account_Number__r.RecType__c,TypeTranslate__c, Account_Number__r.Name FROM Person_Account__c
+                             WHERE  PersonID__c =:accId and TypeTranslate__c IN ('0000/Primary','0001/Joint Owner','0005/Custodian','0006/Trustee','0009/Authorized Signer','0008/Power of Attorney','0014/Representative Payee','0016/Guarantor','0019/Trustor') order by TypeTranslate__c desc];
         
         
         
