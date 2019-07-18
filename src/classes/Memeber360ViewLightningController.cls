@@ -30,8 +30,7 @@ public  class Memeber360ViewLightningController {
     {
         Integer PageNo = 1,  PageSize = 10;
         list<Person_Account__c> paList = [SELECT Id,
-                             Account_Number__c, Account_Number__r.RecType__c,TypeTranslate__c, Account_Number__r.Name FROM Person_Account__c
-                             WHERE  PersonID__c =:accId and TypeTranslate__c IN ('0000/Primary','0001/Joint Owner','0005/Custodian','0006/Trustee','0009/Authorized Signer','0008/Power of Attorney','0014/Representative Payee','0016/Guarantor','0019/Trustor') order by TypeTranslate__c desc];
+                             Account_Number__c, Account_Number__r.RecType__c,TypeTranslate__c, Account_Number__r.Name FROM Person_Account__c WHERE PersonID__c =:accId];
         
         
         
@@ -46,8 +45,7 @@ public  class Memeber360ViewLightningController {
             accIdSet.add(var.Account_Number__c);
             listRelationships.put(var.Account_Number__c,var.TypeTranslate__c);
             listRelationshipsName.put(var.Account_Number__r.Name,var.TypeTranslate__c);
-            system.debug('listRelationshipsName##' + listRelationshipsName);
-        }
+            }
         
        
        
@@ -75,7 +73,7 @@ public  class Memeber360ViewLightningController {
         }
 		
 
-        Object accList1 =  GetAccList(listRelationships,listRelationshipsName,acctypeSet, accountNumberSet, accIdset, PageNo, PageSize, 'TypeTranslate__c', 'asc', '');
+        Object accList1 =  GetAccList(listRelationships,listRelationshipsName,acctypeSet, accountNumberSet, accIdset, PageNo, PageSize, '', '', '');
         m.put('accList', accList1);
         Object cardList = GetCardList(accountNumberSetWOBeneficiary,accIdSetWOBeneficiary,acctypeSet,accountNumberSet,accIdset,PageNo,PageSize, '', '', '');
         m.put('cardList', cardList);
@@ -125,7 +123,7 @@ public  class Memeber360ViewLightningController {
         }
         
         Object accList =  GetAccList(listRelationships,listRelationshipsName,acctypeSet, accountNumberSet, accIdset, 1, 1500, '', '','');
-        system.debug('accList##' + accList);
+        
 		system.debug('listRelationships++ GetPagingData++' + listRelationships);
         system.debug('listRelationshipsName++ GetPagingData++' + listRelationshipsName);
         system.debug('acctypeSet++ GetPagingData++' + acctypeSet);
@@ -224,7 +222,7 @@ public  class Memeber360ViewLightningController {
                 
                 searchquery +=  '(Name LIKE \'%' + SearchText + '%\' or RecType__c LIKE \'%' + SearchText + '%\' or Brand__c LIKE \'%' + SearchText + '%\' or TypeTranslate__c LIKE \'%' + SearchText + '%\' or ID1__c LIKE \'%' + SearchText + '%\' or Loan_Number__c LIKE \'%' + SearchText + '%\' or Emp_Available_Balance__c LIKE  \'%' + SearchText + '%\' or Emp_Balance__c LIKE \'%' + SearchText + '%\' or Close_Date__c = '+SearchText+' or  OPEN_DATE__c = '+ SearchText+')';
                 isDate = true;
-                system.debug('searchquery' + searchquery);
+                
             }
             catch(Exception ex){
                 searchquery += '(Name LIKE \'%' + SearchText + '%\' or RecType__c LIKE \'%' + SearchText + '%\' or Brand__c LIKE \'%' + SearchText + '%\' or TypeTranslate__c LIKE \'%' + SearchText + '%\' or ID1__c LIKE \'%' + SearchText + '%\' or Loan_Number__c LIKE \'%' + SearchText + '%\' or Emp_Available_Balance__c LIKE  \'%' + SearchText + '%\' or Emp_Balance__c LIKE \'%' + SearchText + '%\')';
@@ -247,7 +245,6 @@ public  class Memeber360ViewLightningController {
                               ' Close_Date__c, ' +
                               ' Card_Number_Last_4_Digits__c, ' +
                               ' OPEN_DATE__c, ' +
-                              ' Open_Date_PST__c, '+
                               ' Expiration_Date__c, ' +
                               ' Issue_Date__c, ' +
                               ' Emp_Balance__c, ' +
@@ -257,7 +254,7 @@ public  class Memeber360ViewLightningController {
                   ARs = [SELECT Count(Id)  cnt FROM Account_Details__c WHERE Name IN:accountNumberSet and RecType__c != 'CARD' and (Name LIKE : temp or RecType__c LIKE : temp  or Brand__c LIKE : temp  or TypeTranslate__c LIKE : temp  or ID1__c LIKE : temp  or Loan_Number__c LIKE : temp or Emp_Available_Balance__c LIKE : temp or Emp_Balance__c LIKE : temp)];
                   if(isDate)
                     ARs = [SELECT Count(Id)  cnt FROM Account_Details__c WHERE Name IN:accountNumberSet and RecType__c != 'CARD' and (Name LIKE : temp or RecType__c LIKE : temp  or Brand__c LIKE : temp  or TypeTranslate__c LIKE : temp  or ID1__c LIKE : temp  or Loan_Number__c LIKE : temp or Emp_Available_Balance__c LIKE : temp or Emp_Balance__c LIKE : temp or Close_Date__c =: dtSearchText or OPEN_DATE__c =: dtSearchText)];
-            System.debug('SOQLQuery1'+ SOQLQuery);
+            
             }
             else
             {
@@ -273,14 +270,13 @@ public  class Memeber360ViewLightningController {
                               ' Close_Date__c, ' +
                               ' Card_Number_Last_4_Digits__c, ' +
                               ' OPEN_DATE__c, ' +
-                              ' Open_Date_PST__c, '+
                               ' Expiration_Date__c, ' +
                               ' Issue_Date__c, ' +
                               ' Emp_Balance__c, ' +
                               ' Emp_Available_Balance__c, ' +
                               ' Available_Balance__c FROM Account_Details__c WHERE Name IN (\'' + string.join(accountNumberSet,'\',\'') +  '\') and RecType__c != \'CARD\' ' +  orderString;
                 ARs = [SELECT Count(Id)  cnt FROM Account_Details__c WHERE Name IN:accountNumberSet and RecType__c != 'CARD'];
-                System.debug('SOQLQuery2'+ SOQLQuery);
+                
             }
             
         }else{
@@ -299,7 +295,6 @@ public  class Memeber360ViewLightningController {
                               ' Close_Date__c, ' +
                               ' Card_Number_Last_4_Digits__c, ' +
                               ' OPEN_DATE__c, ' +
-                              ' Open_Date_PST__c, '+
                               ' Expiration_Date__c, ' +
                               ' Issue_Date__c, ' +
                               ' Emp_Balance__c, ' +
@@ -310,7 +305,7 @@ public  class Memeber360ViewLightningController {
                 ARs  = [SELECT Count(id) cnt FROM Account_Details__c Where Id IN:accIdSet and RecType__c != 'CARD' and (Name LIKE : temp or RecType__c LIKE : temp  or Brand__c LIKE : temp  or TypeTranslate__c LIKE : temp  or ID1__c LIKE : temp  or Loan_Number__c LIKE : temp or Emp_Available_Balance__c LIKE : temp or Emp_Balance__c LIKE : temp)];
                 if(isDate)
                     ARs = [SELECT Count(Id)  cnt FROM Account_Details__c WHERE Name IN:accountNumberSet and RecType__c != 'CARD' and (Name LIKE : temp or RecType__c LIKE : temp  or Brand__c LIKE : temp  or TypeTranslate__c LIKE : temp  or ID1__c LIKE : temp  or Loan_Number__c LIKE : temp or Emp_Available_Balance__c LIKE : temp or Emp_Balance__c LIKE : temp or Close_Date__c =: dtSearchText or OPEN_DATE__c =: dtSearchText)];
-            System.debug('SOQLQuery3'+ SOQLQuery);
+           
             }
             else
             {
@@ -326,7 +321,6 @@ public  class Memeber360ViewLightningController {
                               ' Close_Date__c, ' +
                               ' Card_Number_Last_4_Digits__c, ' +
                               ' OPEN_DATE__c, ' +
-                              ' Open_Date_PST__c, '+
                               ' Expiration_Date__c, ' +
                               ' Issue_Date__c, ' +
                               ' Emp_Balance__c, ' +
@@ -334,7 +328,7 @@ public  class Memeber360ViewLightningController {
                               ' Available_Balance__c FROM Account_Details__c Where Id IN (\'' + string.join(accIdSet,'\',\'') +  '\') and RecType__c != \'CARD\' ' +  orderString;
                                 
                 ARs  = [SELECT Count(id) cnt FROM Account_Details__c Where Id IN:accIdSet and RecType__c != 'CARD'];
-           System.debug('SOQLQuery4'+ SOQLQuery);
+           
             }
             
         }
@@ -348,7 +342,7 @@ public  class Memeber360ViewLightningController {
         
         for(sObject acc1 : sobjList)
         {
-           System.debug('forloopbegin');
+           
             Account_Details__c acc = (Account_Details__c)acc1;
             
             AccountList360 obj = new AccountList360();
@@ -375,22 +369,22 @@ public  class Memeber360ViewLightningController {
             if(true){
                 
                	 obj.Relationship = listRelationshipsName.get(obj.Name);         
-                 System.debug('obj.Relationship1' + obj.Relationship);
+                 
             }
             else
             {
                 obj.Relationship = listRelationships.get(obj.Id);
-                System.debug('obj.Relationship2' + obj.Relationship);
+                
             }
             
             
             if(obj.Relationship != null && !obj.Relationship.contains('Beneficiary'))
             {
-                System.debug('ifconditionbegin');
+               
                 listAccountList360.add(obj);
                 AccountListIdSet.Add(obj.Id);   
                 accList.add(acc);
-                 System.debug('accListsize##'+ accList.size());
+                
             }    
         
         }
@@ -412,7 +406,6 @@ public  class Memeber360ViewLightningController {
                               ' Close_Date__c, ' +
                               ' Card_Number_Last_4_Digits__c, ' +
                               ' OPEN_DATE__c, ' +
-                              ' Open_Date_PST__c, '+
                               ' Expiration_Date__c, ' +
                               ' Issue_Date__c, ' +
                               ' Card_Name__c, ' +
@@ -421,7 +414,7 @@ public  class Memeber360ViewLightningController {
                               ' Available_Balance__c FROM Account_Details__c Where Id IN (\'' + string.join(AccountListIdSet,'\',\'') +  '\') ' +  orderString + ' LIMIT  ' + string.valueOf( PageSize_Local) + ' OFFSET ' +  offset;
                                 
               sobjList = Database.query(SOQLQuery);
-                System.debug('SOQLQuery5'+ SOQLQuery);
+               
                 for(sObject acc : sobjList)
                 {
                      Account_Details__c acc1 = (Account_Details__c)acc;
@@ -440,7 +433,7 @@ public  class Memeber360ViewLightningController {
                 Member360View test = new Member360View();
                 test.accList = sobjList;
                 test.totalrecords = AccountListIdSet.size();
-          system.debug('test1' + test);      
+                
           return test;
      
       } 
@@ -451,7 +444,7 @@ public  class Memeber360ViewLightningController {
             
             
                 test.totalrecords = 0;
-          		system.debug('test2' + test);
+          		
                 return test;
         
       }
@@ -1142,7 +1135,7 @@ public  class Memeber360ViewLightningController {
         List<CaseAccountMemberDetail__c> camd = new List<CaseAccountMemberDetail__c>();
 		List<CaseAccountMemberDetail__c> finalcamd = new List<CaseAccountMemberDetail__c>();
 		 map<id, case> casemap = new map<id, case>();
-		  system.debug('caseList=='+caseList);	
+		 
 		 
         camd = [select id,Case__c, MemberAccountid__c,  case__r.CaseNumber,case__r.OwnerId,
         				case__r.Owner.Name , case__r.Status, case__r.Category__c,
