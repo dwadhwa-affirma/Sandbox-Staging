@@ -245,6 +245,7 @@ public  class Memeber360ViewLightningController {
                               ' Close_Date__c, ' +
                               ' Card_Number_Last_4_Digits__c, ' +
                               ' OPEN_DATE__c, ' +
+                              ' Open_Date_PST__c, '+
                               ' Expiration_Date__c, ' +
                               ' Issue_Date__c, ' +
                               ' Emp_Balance__c, ' +
@@ -270,6 +271,7 @@ public  class Memeber360ViewLightningController {
                               ' Close_Date__c, ' +
                               ' Card_Number_Last_4_Digits__c, ' +
                               ' OPEN_DATE__c, ' +
+                              ' Open_Date_PST__c, '+
                               ' Expiration_Date__c, ' +
                               ' Issue_Date__c, ' +
                               ' Emp_Balance__c, ' +
@@ -295,6 +297,7 @@ public  class Memeber360ViewLightningController {
                               ' Close_Date__c, ' +
                               ' Card_Number_Last_4_Digits__c, ' +
                               ' OPEN_DATE__c, ' +
+                              ' Open_Date_PST__c, '+
                               ' Expiration_Date__c, ' +
                               ' Issue_Date__c, ' +
                               ' Emp_Balance__c, ' +
@@ -321,6 +324,7 @@ public  class Memeber360ViewLightningController {
                               ' Close_Date__c, ' +
                               ' Card_Number_Last_4_Digits__c, ' +
                               ' OPEN_DATE__c, ' +
+                              ' Open_Date_PST__c, '+
                               ' Expiration_Date__c, ' +
                               ' Issue_Date__c, ' +
                               ' Emp_Balance__c, ' +
@@ -406,6 +410,7 @@ public  class Memeber360ViewLightningController {
                               ' Close_Date__c, ' +
                               ' Card_Number_Last_4_Digits__c, ' +
                               ' OPEN_DATE__c, ' +
+                              ' Open_Date_PST__c, '+
                               ' Expiration_Date__c, ' +
                               ' Issue_Date__c, ' +
                               ' Card_Name__c, ' +
@@ -637,7 +642,7 @@ public  class Memeber360ViewLightningController {
         {
             searchquery += 'and (PersonID__r.Name LIKE \'%' + SearchText + '%\' or Account_Number__r.Name LIKE \'%' + SearchText + '%\' or TypeTranslate__c LIKE \'%' + SearchText + '%\' or Account_Number__r.Brand__c LIKE \'%' + SearchText + '%\' or Account_Number__r.TypeTranslate__c LIKE \'%' + SearchText + '%\' or Account_Type__c LIKE \'%' + SearchText + '%\')';
         }
-     
+       
         SOQLQuery = 'Select Id,' +
                               'personId__c,' +
                               'Account_Number__c,' +
