@@ -30,7 +30,7 @@ public  class Memeber360ViewLightningController {
     {
         Integer PageNo = 1,  PageSize = 10;
         list<Person_Account__c> paList = [SELECT Id,
-                             Account_Number__c, Account_Number__r.RecType__c,TypeTranslate__c, Account_Number__r.Name FROM Person_Account__c WHERE PersonID__c =:accId];
+                             Account_Number__c, Account_Number__r.RecType__c,TypeTranslate__c, Account_Number__r.Name FROM Person_Account__c WHERE PersonID__c =:accId order by TypeTranslate__c desc];
         
         
         
@@ -40,11 +40,12 @@ public  class Memeber360ViewLightningController {
         Map<string,string> listRelationships = new  Map<string,string>(); 
         Map<string,string> listRelationshipsName = new  Map<string,string>();
         for(Person_Account__c var: paList){
-            accountNumberSet.add(var.Account_Number__r.Name);
-            acctypeSet.add(var.Account_Number__r.RecType__c);
-            accIdSet.add(var.Account_Number__c);
-            listRelationships.put(var.Account_Number__c,var.TypeTranslate__c);
-            listRelationshipsName.put(var.Account_Number__r.Name,var.TypeTranslate__c);
+           			accountNumberSet.add(var.Account_Number__r.Name);
+	         		acctypeSet.add(var.Account_Number__r.RecType__c);
+           			accIdSet.add(var.Account_Number__c);
+		            listRelationships.put(var.Account_Number__c,var.TypeTranslate__c);
+		            listRelationshipsName.put(var.Account_Number__r.Name,var.TypeTranslate__c);
+	         	
             }
         
        
@@ -71,16 +72,19 @@ public  class Memeber360ViewLightningController {
             accIdSetWOBeneficiary.add(item.id);
             
         }
-		
+		system.debug('listACCList++' + listACCList);
+		system.debug('accountNumberSetWOBeneficiary++' + accountNumberSetWOBeneficiary);
+        system.debug('accIdSetWOBeneficiary++' + accIdSetWOBeneficiary);
 
-        Object accList1 =  GetAccList(listRelationships,listRelationshipsName,acctypeSet, accountNumberSet, accIdset, PageNo, PageSize, '', '', '');
+        Object accList1 =  GetAccList(listRelationships,listRelationshipsName,acctypeSet, accountNumberSet, accIdset, PageNo, PageSize, 'TypeTranslate__c', 'asc', '');
         m.put('accList', accList1);
+        system.debug('accList1##' + accList1);
         Object cardList = GetCardList(accountNumberSetWOBeneficiary,accIdSetWOBeneficiary,acctypeSet,accountNumberSet,accIdset,PageNo,PageSize, '', '', '');
         m.put('cardList', cardList);
 
         Object contactlist = GetContactDetails(accountNumberSetWOBeneficiary,accIdSetWOBeneficiary,accid,acctypeSet,accountNumberSet,accIdset,PageNo,PageSize, '', '', '');
         m.put('contactList', contactlist);
- 
+ 		 system.debug('contactList##' + contactlist);
         Object activecaselist = GetActiveCaseDetails(accountNumberSetWOBeneficiary,accIdSetWOBeneficiary,acctypeSet,accountNumberSet,accIdset,PageNo,PageSize, '', '', '');
         m.put('activecaseList', activecaselist);
     
@@ -255,6 +259,8 @@ public  class Memeber360ViewLightningController {
                   ARs = [SELECT Count(Id)  cnt FROM Account_Details__c WHERE Name IN:accountNumberSet and RecType__c != 'CARD' and (Name LIKE : temp or RecType__c LIKE : temp  or Brand__c LIKE : temp  or TypeTranslate__c LIKE : temp  or ID1__c LIKE : temp  or Loan_Number__c LIKE : temp or Emp_Available_Balance__c LIKE : temp or Emp_Balance__c LIKE : temp)];
                   if(isDate)
                     ARs = [SELECT Count(Id)  cnt FROM Account_Details__c WHERE Name IN:accountNumberSet and RecType__c != 'CARD' and (Name LIKE : temp or RecType__c LIKE : temp  or Brand__c LIKE : temp  or TypeTranslate__c LIKE : temp  or ID1__c LIKE : temp  or Loan_Number__c LIKE : temp or Emp_Available_Balance__c LIKE : temp or Emp_Balance__c LIKE : temp or Close_Date__c =: dtSearchText or OPEN_DATE__c =: dtSearchText)];
+                    
+                    system.debug('SOQLQuery1##' + SOQLQuery);
             
             }
             else
@@ -278,7 +284,7 @@ public  class Memeber360ViewLightningController {
                               ' Emp_Available_Balance__c, ' +
                               ' Available_Balance__c FROM Account_Details__c WHERE Name IN (\'' + string.join(accountNumberSet,'\',\'') +  '\') and RecType__c != \'CARD\' ' +  orderString;
                 ARs = [SELECT Count(Id)  cnt FROM Account_Details__c WHERE Name IN:accountNumberSet and RecType__c != 'CARD'];
-                
+                 system.debug('SOQLQuery2##' + SOQLQuery);
             }
             
         }else{
@@ -308,7 +314,7 @@ public  class Memeber360ViewLightningController {
                 ARs  = [SELECT Count(id) cnt FROM Account_Details__c Where Id IN:accIdSet and RecType__c != 'CARD' and (Name LIKE : temp or RecType__c LIKE : temp  or Brand__c LIKE : temp  or TypeTranslate__c LIKE : temp  or ID1__c LIKE : temp  or Loan_Number__c LIKE : temp or Emp_Available_Balance__c LIKE : temp or Emp_Balance__c LIKE : temp)];
                 if(isDate)
                     ARs = [SELECT Count(Id)  cnt FROM Account_Details__c WHERE Name IN:accountNumberSet and RecType__c != 'CARD' and (Name LIKE : temp or RecType__c LIKE : temp  or Brand__c LIKE : temp  or TypeTranslate__c LIKE : temp  or ID1__c LIKE : temp  or Loan_Number__c LIKE : temp or Emp_Available_Balance__c LIKE : temp or Emp_Balance__c LIKE : temp or Close_Date__c =: dtSearchText or OPEN_DATE__c =: dtSearchText)];
-           
+            system.debug('SOQLQuery3##' + SOQLQuery);
             }
             else
             {
@@ -332,7 +338,7 @@ public  class Memeber360ViewLightningController {
                               ' Available_Balance__c FROM Account_Details__c Where Id IN (\'' + string.join(accIdSet,'\',\'') +  '\') and RecType__c != \'CARD\' ' +  orderString;
                                 
                 ARs  = [SELECT Count(id) cnt FROM Account_Details__c Where Id IN:accIdSet and RecType__c != 'CARD'];
-           
+           		 system.debug('SOQLQuery4##' + SOQLQuery);
             }
             
         }
@@ -396,7 +402,7 @@ public  class Memeber360ViewLightningController {
       
       if(AccountListIdSet.size() > 0)
       {  
-      
+      			system.debug('AccountListIdSet##' + AccountListIdSet);
                 SOQLQuery = ' SELECT Id, ' +
                               ' Name, ' +
                               '  RecType__c, ' +
@@ -417,7 +423,7 @@ public  class Memeber360ViewLightningController {
                               ' Emp_Balance__c, ' +
                               ' Emp_Available_Balance__c, ' +
                               ' Available_Balance__c FROM Account_Details__c Where Id IN (\'' + string.join(AccountListIdSet,'\',\'') +  '\') ' +  orderString + ' LIMIT  ' + string.valueOf( PageSize_Local) + ' OFFSET ' +  offset;
-                                
+                     system.debug('SOQLQuery5##' + SOQLQuery);            
               sobjList = Database.query(SOQLQuery);
                
                 for(sObject acc : sobjList)
@@ -668,7 +674,7 @@ public  class Memeber360ViewLightningController {
                     ARs  = [SELECT Count(id) cnt FROM Person_Account__c Where Account_Number__r.Name IN :accName];
                 }
                 
-       
+       system.debug('SOQLQuery7##' + SOQLQuery);
        
         List<sObject> ContactList = Database.query(SOQLQuery);
        Member360View lstcontact = new Member360View();
