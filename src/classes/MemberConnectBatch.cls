@@ -1,8 +1,10 @@
 global class MemberConnectBatch implements Database.Batchable<SObject>{
     global Iterable<SObject> start(Database.BatchableContext BC)
     {
+        Member_Connect_Report__c mc = Member_Connect_Report__c.getValues('Primary');
+		integer day = Integer.valueOf(mc.Days__c);
         String query = 'select id, name, role_name__c, lastmodifieddate, createddate,lastmodifiedByid, createdByid, createdby.Name, LastModifiedby.Name,LastModifiedby.UserRole.Name'+ 
-            ' from Needs_Assesment__c where CreatedDate = LAST_N_DAYS:60 or lastmodifieddate = LAST_N_DAYS:60';
+            ' from Needs_Assesment__c where CreatedDate = LAST_N_DAYS:'+day+' or lastmodifieddate = LAST_N_DAYS:'+day;
         system.debug('--'+query);
         return Database.getQueryLocator(query);
     }
