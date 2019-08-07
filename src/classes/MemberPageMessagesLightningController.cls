@@ -1,12 +1,5 @@
 public class MemberPageMessagesLightningController {
 	
-    
-    
-   
-    
-   
-    
-    
     private static boolean IsShowData()
     {
     	
@@ -203,13 +196,14 @@ public class MemberPageMessagesLightningController {
                                      NA_LEOL_Complete__c,NA_LEAV_Complete__c,NA_LEEM_Complete__c,NA_LEMQ_Complete__c, Member_Verification_OTP_Invalid_Attempt__c from Account where id =: actId limit 1];
         	Map<string, string> m = new Map<string, string>();
         	
+        	List<Needs_Assesment__c> na = [select id,Is_Member_Connect_Year_Old__c,LEEM_Last_Updated_On__c, LEMQ_Last_Updated_On__c,LEOM_Last_Updated_On__c,LEAV_Last_Updated_On__c ,LESF_Last_Updated_On__c, LESB_Last_Updated_On__c, LEMD_Last_Updated_On__c, LECP_Last_Updated_On__c, LEHS_Last_Updated_On__c, LEOL_Last_Updated_On__c, LECF_Last_Updated_On__c, LEWS_Last_Updated_On__c, LEMP_Last_Updated_On__c, LEPT_Last_Updated_On__c  from Needs_Assesment__c where Member__c =: actId limit 1];
+        	
+            if (na.size()>0)
+        		System.debug('test'+na[0]);
         	
         	Boolean PrimaryAccountWithAtleastoneTrust = false;
         	///////////////////////
-        	
-        	
-    
-    	 
+        	   	 
         
         PrimaryAccountWithAtleastoneTrust = false;
         List<Person_Account__c> paList1 =     [SELECT Id, Account_Number__c, Account_Number__r.RecType__c, Relationship__c, Account_Number__r.TypeTranslate__c, TypeTranslate__c,
@@ -232,7 +226,8 @@ public class MemberPageMessagesLightningController {
 		}
 		boolean IsShowData = IsShowData();
         boolean IsExpired = IsExpired(actId, account[0]);
-		m.put('Memberisunder18',string.valueof( MemberAbove18 == false));
+        
+		m.put('Memberisunder18',string.valueof(MemberAbove18 == false));
 		m.put('Memberisnotprimary',string.valueof(MemberAbove18 && PrimaryAccountWithAtleastoneTrust == false));
 		system.debug('Memberhaspartiallycompleted condition--1');
 		m.put('Memberhaspartiallycompleted', string.valueof(MemberAbove18 == TRUE && PrimaryAccountWithAtleastoneTrust == TRUE && account[0].NA_Opt_Out__c == FALSE && IsExpired == FALSE && account[0].NA_Complete__c == FALSE));
@@ -241,7 +236,11 @@ public class MemberPageMessagesLightningController {
 		system.debug('Before condition--2');
 		m.put('MemberOptOut', string.valueof(account[0].NA_Opt_Out_Date__c != NULL && account[0].NA_Opt_Out_Date__c > system.today()));
         system.debug('Before condition--3');
-        	system.debug('account[0].NA_Opt_Out_Date__c' + account[0].NA_Opt_Out_Date__c);
+        if (na.size()>0)
+        	m.put('MemberRefreshNeeded',string.valueof(na[0].Is_Member_Connect_Year_Old__c == True && MemberAbove18 == TRUE && PrimaryAccountWithAtleastoneTrust == TRUE && account[0].NA_Opt_Out__c == FALSE && IsExpired == FALSE));
+        else
+            m.put('MemberRefreshNeeded', 'false');
+        system.debug('account[0].NA_Opt_Out_Date__c' + account[0].NA_Opt_Out_Date__c);
         if(account[0].NA_Opt_Out_Date__c != null)
         {
         	Datetime dtTIme = datetime.newInstance( account[0].NA_Opt_Out_Date__c.year(),account[0].NA_Opt_Out_Date__c.month(),account[0].NA_Opt_Out_Date__c.day(), 0,0,0);
