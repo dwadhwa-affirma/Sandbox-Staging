@@ -1,6 +1,7 @@
 ({
 	doInit : function(component, event, helper) {		
-		 helper.getAccountServiceMenuData(component, event);			
+		 helper.getAccountServiceMenuData(component, event);	
+         
 	},
 	
 	loadSubMenu : function(component, event, helper) {	
@@ -8,6 +9,7 @@
 		 var submenu = component.get("v.SubMenu");
 		 var clicked = event.target.text;
 		 event.target.classList.add("visited");
+       
 		  var object = component.get("v.sObjectName");		
 		 
 		 var menu = document.getElementsByClassName("clsMenu")
@@ -25,13 +27,13 @@
 		 finalSubMenu.sort(function(a, b) {
 			 return parseFloat(a.Order__c) - parseFloat(b.Order__c);
 		 });
-		  if(object == 'Account'){
+		 /* if(object == 'Account'){
 			  for(var i=0; i<finalSubMenu.length;i++){
 				 if (finalSubMenu[i].Function__c == 'Travel Notices') {
 					 	finalSubMenu.splice(i, 1); 
 				 	}
 			  }
-		  }
+		  }*/
 		 
 		 component.set("v.LoadSubMenu",finalSubMenu);
 		 var ele = document.getElementById('divAccountServiceSubMenu');
@@ -41,57 +43,71 @@
 	loadComponent : function(component, event, helper) {		
 		 var submenu = component.get("v.SubMenu");
 		 var clicked = event.target.text;
-		 event.target.classList.add("visited");
-		 
-		 var submenus = document.getElementsByClassName("clsSubMenu")
-		 for(var i=0; i<submenus.length;i++){		
-			 if(submenus[i].innerText != clicked){
-				 submenus[i].children[0].classList.remove("visited");
-			 }
-		 }
-		 
-		 var Component='';
-		 for(var i=0; i<submenu.length;i++){
-			 if(submenu[i].Function__c == clicked){
-			 if(submenu[i].Command__c != undefined){
-				 Component = "c:" + (submenu[i].Command__c);
-				break;
+			 event.target.classList.add("visited");
+			   event.target.parentElement.classList.add("visited");
+			 var submenus = document.getElementsByClassName("clsSubMenu")
+			 for(var i=0; i<submenus.length;i++){		
+				 if(submenus[i].innerText != clicked){
+					 submenus[i].children[0].classList.remove("visited");
+	                 submenus[i].children[0].parentElement.classList.remove("visited");
 				 }
-				
 			 }
-		 }
-		 
-		 component.set("v.componentToOpen",Component);
-		 if(Component != ''){
-			 var cmp = document.getElementById('tblAccountServiceMenu');
-			 cmp.style = 'display:none';
-			 var cmp1 = document.getElementById('tblSearch');
-			 cmp1.style = 'display:none';
-			 var header = document.getElementsByClassName('slds-modal__header');
-			 if(header != null){
-				 header[0].style="display:none"
+			 
+			 var Component='';
+			 var Url = '';
+			 for(var i=0; i<submenu.length;i++){
+				 if(submenu[i].Function__c == clicked){
+					 if(submenu[i].Command__c != undefined){
+						 Component = "c:" + (submenu[i].Command__c);
+						 break;
+		 			 }
+		 			 if(submenu[i].URL__c != undefined){
+						 Url = submenu[i].URL__c;
+					     break;
+		 			 }
+				 }
 			 }
-	         var footer = document.getElementsByClassName('slds-modal__footer');
-	          if(footer != null){
-				 footer[0].style="display:none"
+			 
+			 component.set("v.componentToOpen",Component);
+			 	
+			 	if(Url != ''){
+			 		window.open(Url);
+			 	}
+			 	if(Component != ''){
+				 var cmp = document.getElementsByClassName('divMenu');
+				 cmp.style = 'display:none';
+	             for(var i=0; i<cmp.length; i++){
+	                 cmp[i].style='display:none';                 
+	             }
+				 //var cmp1 = document.getElementById('tblSearch');
+				 //cmp1.style = 'display:none';
+				 var header = document.getElementsByClassName('slds-modal__header');
+				 if(header != null){
+					  for(var i=0; i<header.length; i++){
+	                 	header[i].style='display:none';                 
+	            	 }
+				 }
+		         var footer = document.getElementsByClassName('slds-modal__footer');
+		          if(footer != null){
+					 footer[0].style="display:none"
+				 }
+				 $A.createComponent(
+		            component.get("v.componentToOpen"),
+		            {
+		                "recordId": component.get("v.recordId")  ,
+		                "sObjectName": component.get("v.sObjectName")              
+		            },
+		            function(msgBox){                
+		                if (component.isValid()) {
+		                    var targetCmp = component.find('ModalDialogPlaceholder');
+		                    var body = targetCmp.get("v.body");
+		                    body.push(msgBox);
+		                    targetCmp.set("v.body", body); 
+		                }
+		            }
+		        );
 			 }
-			 $A.createComponent(
-	            component.get("v.componentToOpen"),
-	            {
-	                "recordId": component.get("v.recordId")  ,
-	                "sObjectName": component.get("v.sObjectName")              
-	            },
-	            function(msgBox){                
-	                if (component.isValid()) {
-	                    var targetCmp = component.find('ModalDialogPlaceholder');
-	                    var body = targetCmp.get("v.body");
-	                    body.push(msgBox);
-	                    targetCmp.set("v.body", body); 
-	                }
-	            }
-	        );
-		 }
-		 
+
 		 //var evt = $A.get("e.force:navigateToComponent");
 		// evt.setParams({
 		//componentDef : Component,
@@ -129,5 +145,25 @@
 		}*/
 		
 		
+	},
+	
+	expandMenu: function(component, event, helper) {	
+	     var submenu = component.get("v.SubMenu");
+		 var clicked = event.target.text;
+		 
+		 var index =  event.target.parentElement.id
+		//  event.target.classList.add("visited");
+		// component.set("v.LoadSubMenu",finalSubMenu);
+		 var ele = document.getElementById('divAccountServiceSubMenu'+index);
+		 if(ele.style.display == ''){
+			 ele.style.display = 'none';
+			 event.target.parentElement.firstChild.innerHTML='&#9658;'
+		 }
+		 else{
+			 ele.style.display = '';
+			 event.target.parentElement.firstChild.innerHTML='&#9660;'
+		 }
+		// ele.style = '';
+	
 	}
 })
