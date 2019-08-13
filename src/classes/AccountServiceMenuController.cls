@@ -4,7 +4,7 @@ public class AccountServiceMenuController {
     public static Map<string, object> getAccountServiceMenuData(string recordId){
     	List<Master_Card_Menu_Settings__c> mcList= new List<Master_Card_Menu_Settings__c>();
     	Map<string, object> result = new Map<string, object>();
-    	mcList = [select id, Command__c, Function__c, Menu__c, Order__c, Status__c from Master_Card_Menu_Settings__c order by name];
+    	mcList = [select id, Command__c, Function__c, Menu__c, Order__c, URL__c,Status__c, isVisibleonCase__c, isVisibleonMember__c, isVisibleonMemberAccount__c  from Master_Card_Menu_Settings__c order by name];
     	Set<string> menu = new Set<string>();
     	for(Master_Card_Menu_Settings__c m:mcList){
     		menu.add(m.Menu__c);
