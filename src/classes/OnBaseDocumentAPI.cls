@@ -45,6 +45,8 @@ global with sharing class OnBaseDocumentAPI {
                     if(OnBaseObj.case__r.Account_Number__r!=null)
                     {
                     respObj.AccountNumber = (OnBaseObj.case__r.Account_Number__r==null)?'N/A':String.valueOf(Integer.valueOf(OnBaseObj.case__r.Account_Number__r.Name));
+                     respObj.AccountNumber = respObj.AccountNumber.replaceFirst('^0+','');
+                     system.debug('AccountNumber##'+ respObj.AccountNumber);
                                     responseObjList.add(respObj);
                                     caseAccounts.put(OnBaseObj.Attachment_Id__c, respObj);
                                     accountsAdded.add(respObj.AccountNumber);
@@ -55,7 +57,9 @@ global with sharing class OnBaseDocumentAPI {
                     respObj.CaseNumber = String.valueOf(Integer.valueOf(OnBaseObj.Member_Comment__r.Case__r.CaseNumber)); 
                     if(OnBaseObj.Member_Comment__r.case__r.Account_Number__r != null)
                     {      
-                    respObj.AccountNumber = (OnBaseObj.Member_Comment__r.case__r.Account_Number__r== null)?'N/A':String.valueOf(Integer.valueOf(OnBaseObj.Member_Comment__r.case__r.Account_Number__r.Name));  
+                   		 respObj.AccountNumber = (OnBaseObj.Member_Comment__r.case__r.Account_Number__r== null)?'N/A':String.valueOf(Integer.valueOf(OnBaseObj.Member_Comment__r.case__r.Account_Number__r.Name));
+                   		 respObj.AccountNumber = respObj.AccountNumber.replaceFirst('^0+','');
+                   		 system.debug('AccountNumber##' + respObj.AccountNumber);  
                                     responseObjList.add(respObj);   
                                     caseAccounts.put(OnBaseObj.Attachment_Id__c, respObj);
                                     accountsAdded.add(respObj.AccountNumber);              
@@ -93,6 +97,7 @@ global with sharing class OnBaseDocumentAPI {
                 			 respObj.AttachmentID = OnBaseObj.Attachment_Id__c;
                 			 respObj.CaseNumber = String.valueOf(Integer.valueOf(OnBaseObj.case__r.CaseNumber));
                 			 respObj.AccountNumber = c.Account_Name__c;
+                			 respObj.AccountNumber = respObj.AccountNumber.replaceFirst('^0+','');
                 			 for (OnBase_Supported_Extensions__c item : mcs)
 				                {
 				                    if(OnBaseObj.Document_Name__c.toLowerCase().endsWith('.' + item.Name.toLowerCase()))
@@ -111,7 +116,8 @@ global with sharing class OnBaseDocumentAPI {
 		           }
 	           }
             }
-            system.debug('responseObjList===' + responseObjList);
+                     
+            
             return responseObjList;
       }
       
@@ -124,6 +130,7 @@ global with sharing class OnBaseDocumentAPI {
             List<OnBase_Document__c> onbaseDocuemntList = new List<OnBase_Document__c>();
             List<OnBase_Document__c> memberCommentOnbaseDocuemntList = new List<OnBase_Document__c>();
             List<OnBase_Document__c> memberCommentOnbaseDocuemntListToUpdate = new List<OnBase_Document__c>();
+            system.debug('IdsList##'+ IdsList);
             onbaseDocuemntList = [select Id, Name,Document_Name__c, Attachment_Id__c, IsMovedToOnBase__c, Case__c, Case__r.CaseNumber 
                                     from OnBase_Document__c 
                                     where Attachment_Id__c IN: IdsList or ContentDocumentLinkId__c IN: IdsList];
