@@ -85,6 +85,9 @@ public  class Memeber360ViewLightningController {
         Object contactlist = GetContactDetails(accountNumberSetWOBeneficiary,accIdSetWOBeneficiary,accid,acctypeSet,accountNumberSet,accIdset,PageNo,PageSize, '', '', '');
         m.put('contactList', contactlist);
  		 system.debug('contactList##' + contactlist);
+ 		// system.debug('contactList##' + contactlist.get(acclist[0]));
+ 		 
+ 		 
         Object activecaselist = GetActiveCaseDetails(accountNumberSetWOBeneficiary,accIdSetWOBeneficiary,acctypeSet,accountNumberSet,accIdset,PageNo,PageSize, '', '', '');
         m.put('activecaseList', activecaselist);
     
@@ -631,19 +634,28 @@ public  class Memeber360ViewLightningController {
             
         
         if(true){
-            accList = [SELECT Id, Name FROM Account_Details__c WHERE Name IN:accountNumberSetWOBeneficiary and RecType__c != 'CARD'];
+            accList = [SELECT Id, Name,TypeTranslate__c FROM Account_Details__c WHERE Name IN:accountNumberSetWOBeneficiary and RecType__c != 'CARD'];
         }else{
-            accList = [SELECT Id, Name FROM Account_Details__c Where Id IN:accIdSetWOBeneficiary and RecType__c != 'CARD'];
+            accList = [SELECT Id, Name,TypeTranslate__c FROM Account_Details__c Where Id IN:accIdSetWOBeneficiary and RecType__c != 'CARD'];
         
         }
         
         List<string> accName = new List<string>();
+        List<string> tt = new List<string>();
         
         for(Account_Details__c var: accList){
             accName.add(var.Name);
+            tt.add(var.TypeTranslate__c);
         }
         
-         string searchquery = '';
+        List<string> typeList = new List<string>();
+        for(TypeTranslate__c t : TypeTranslate__c.getAll().values()){
+        	if(t.IsExcluded__c == true)
+        		typeList.add(t.name);	
+        }
+        
+        system.debug('tt' + tt);
+        string searchquery = '';
         if(SearchText != '')
         {
             searchquery += 'and (PersonID__r.Name LIKE \'%' + SearchText + '%\' or Account_Number__r.Name LIKE \'%' + SearchText + '%\' or TypeTranslate__c LIKE \'%' + SearchText + '%\' or Account_Number__r.Brand__c LIKE \'%' + SearchText + '%\' or Account_Number__r.TypeTranslate__c LIKE \'%' + SearchText + '%\' or Account_Type__c LIKE \'%' + SearchText + '%\')';
@@ -663,7 +675,7 @@ public  class Memeber360ViewLightningController {
                               'PersonID__r.FirstName,' +
                               'PersonID__r.LastName,' +
                               'PersonID__r.Name,' +
-                              'Account_Number__r.Brand__c From Person_Account__c WHERE personId__c != \''  + accid +  '\' and Account_Number__r.Name IN (\'' + string.join(accName,'\',\'') +  '\') ' + searchquery + ' ' +  orderString +  '   LIMIT  ' + string.valueOf( PageSize_Local) + ' OFFSET ' +  offset ;        
+                              'Account_Number__r.Brand__c From Person_Account__c WHERE TypeTranslate__c NOT IN (\'' + string.join(typeList,'\',\'') +  '\') and personId__c != \''  + accid +  '\' and Account_Number__r.Name IN (\'' + string.join(accName,'\',\'') +  '\') ' + searchquery + ' ' +  orderString +  '   LIMIT  ' + string.valueOf( PageSize_Local) + ' OFFSET ' +  offset ;        
                 if(searchquery.length() > 0)
                 {
                     string temp = '%' + SearchText + '%';
@@ -673,6 +685,7 @@ public  class Memeber360ViewLightningController {
                 {
                     ARs  = [SELECT Count(id) cnt FROM Person_Account__c Where Account_Number__r.Name IN :accName];
                 }
+                system.debug('accName##' + accName); 
                 
        system.debug('SOQLQuery7##' + SOQLQuery);
        
