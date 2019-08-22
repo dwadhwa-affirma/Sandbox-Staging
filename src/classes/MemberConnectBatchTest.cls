@@ -56,16 +56,16 @@ public class MemberConnectBatchTest {
 			needs_assesment_Obj1.CDs__c = true;
             update needs_assesment_Obj1;             
          }
-        Member_Connect_Report__c mc = new Member_Connect_Report__c();        
+       /* Member_Connect_Report__c mc = new Member_Connect_Report__c();        
         mc.name ='Primary';
         mc.Days__c = 60.0;
-      
+        
         insert mc;
-       Member_Connect_Report__c mc1 = new Member_Connect_Report__c();        
+        Member_Connect_Report__c mc1 = new Member_Connect_Report__c();        
         mc1.name ='Week';
         mc1.Days__c = 365;
-      
-        insert mc1;
+        
+        insert mc1;*/
         
         MemberConnectBatch b = new MemberConnectBatch ();
         Id batchId = database.executebatch(b);
