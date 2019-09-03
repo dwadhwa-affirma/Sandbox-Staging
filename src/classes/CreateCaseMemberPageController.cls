@@ -388,6 +388,7 @@ public class CreateCaseMemberPageController {
             if(selectedAcctNumber != null)
             	cs.Account_Number__c = selectedAcctNumber.Id;
             cs.Status = caseObject.Status;
+            cs.Special_Reporting_Number__c = caseObject.Special_Reporting_Number__c;
             cs.LTK__c = caseObject.LTK__c;
             cs.Description = caseObject.Description;
             cs.CaseComments__c = caseObject.CaseComments__c;            
@@ -540,6 +541,7 @@ public class CreateCaseMemberPageController {
             cs.Tertiary_Category__c = scList[0].Teritiary_Category__c; }
             cs.Brand__c = 'CFCU';                     
             cs.Status = caseObject.Status;
+            cs.Special_Reporting_Number__c = caseObject.Special_Reporting_Number__c;
             cs.LTK__c = caseObject.LTK__c;
             cs.Description = caseObject.Description;
             cs.CaseComments__c = caseObject.CaseComments__c;            
@@ -689,6 +691,7 @@ public class CreateCaseMemberPageController {
 	            cs.Zip_Code__c = pa[0].PersonId__r.Residential_Zipocde__pc;    
             }
             cs.Status = caseObject.Status;
+            cs.Special_Reporting_Number__c = caseObject.Special_Reporting_Number__c;
             cs.LTK__c = caseObject.LTK__c;
             cs.Subject = caseObject.Subject;
             cs.CaseComments__c = caseObject.CaseComments__c;

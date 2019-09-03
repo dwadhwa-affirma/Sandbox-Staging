@@ -51,12 +51,14 @@ global class MemberConnectBatch implements Database.Batchable<SObject>, Database
                 for(integer i = 0 ; i < countlstWeek.size(); i++){
                     if( na.CreatedById == countlstWeek[i].UserId__c){
                         countlstWeek[i].Total_Count__c+= 1; 
+                        countlstWeek[i].Member_Connect_Name__c += na.name +',';
                         flag=true;
+                        
                     }
                 }
                 if(!flag){                	
                     countlstWeek.add(new Count_Member_Connect__c(Branch_Name__c=na.role_name__c,Total_Count__c=1,User_Name__c=na.CreatedBy.name,
-                                                             UserId__c=na.CreatedById,date__c = system.today()-Thisweekday+1,	is_Week__c = true));
+                                                             UserId__c=na.CreatedById,date__c = system.today()-Thisweekday+1,	is_Week__c = true,Member_Connect_Name__c=na.name+','	));
                     flag = true;
                 }
             }
@@ -65,12 +67,13 @@ global class MemberConnectBatch implements Database.Batchable<SObject>, Database
                for(integer i = 0 ; i < countlstWeek.size(); i++){
                     if( na.LastModifiedById == countlstWeek[i].UserId__c){
                         countlstWeek[i].Total_Count__c+= 1; 
+                        countlstWeek[i].Member_Connect_Name__c += na.name +',';
                         flag1=true;
                     }
                 }   
                 if(!flag1){                	
                         countlstWeek.add(new Count_Member_Connect__c(Branch_Name__c=na.LastModifiedBy.UserRole.name,Total_Count__c=1,User_Name__c=na.LastModifiedBy.name,
-                                                                 UserId__c=na.LastModifiedById,date__c = system.today()-Thisweekday+1,is_Week__c = true));
+                                                                 UserId__c=na.LastModifiedById,date__c = system.today()-Thisweekday+1,is_Week__c = true,Member_Connect_Name__c=na.name+','));
                     }
             }
              
@@ -87,13 +90,14 @@ global class MemberConnectBatch implements Database.Batchable<SObject>, Database
                 for(integer i = 0 ; i < countlstMonth.size(); i++){
                     if( na.CreatedById == countlstMonth[i].UserId__c){
                         countlstMonth[i].Total_Count__c+= 1; 
+                        countlstMonth[i].Member_Connect_Name__c += na.name +',';
                         flag=true;
                     }
                 }
                 if(!flag){  
                      
                     countlstMonth.add(new Count_Member_Connect__c(Branch_Name__c=na.role_name__c,Total_Count__c=1,User_Name__c=na.CreatedBy.name,
-                                                             UserId__c=na.CreatedById,date__c = lastMonthday,	is_MOnth__c = true));
+                                                             UserId__c=na.CreatedById,date__c = lastMonthday,	is_MOnth__c = true,Member_Connect_Name__c=na.name+','));
                     flag = true;
                 }
             }
@@ -103,13 +107,14 @@ global class MemberConnectBatch implements Database.Batchable<SObject>, Database
                for(integer i = 0 ; i < countlstMonth.size(); i++){
                     if( na.LastModifiedById == countlstMonth[i].UserId__c){
                         countlstMonth[i].Total_Count__c+= 1; 
+                        countlstMonth[i].Member_Connect_Name__c += na.name +',';
                         flag1=true;
                     }
                 }   
                 if(!flag1){    
                        
                         countlstMonth.add(new Count_Member_Connect__c(Branch_Name__c=na.LastModifiedBy.UserRole.name,Total_Count__c=1,User_Name__c=na.LastModifiedBy.name,
-                                                                 UserId__c=na.LastModifiedById,date__c = lastMonthday,is_Month__c = true));
+                                                                 UserId__c=na.LastModifiedById,date__c = lastMonthday,is_Month__c = true,Member_Connect_Name__c=na.name+','));
                     }
             }
              
@@ -135,13 +140,14 @@ global class MemberConnectBatch implements Database.Batchable<SObject>, Database
                 for(integer i = 0 ; i < countlstQurterly.size(); i++){
                     if( na.CreatedById == countlstQurterly[i].UserId__c){
                         countlstQurterly[i].Total_Count__c+= 1; 
+                        countlstQurterly[i].Member_Connect_Name__c += na.name +',';
                         flag=true;
                     }
                 }
                 if(!flag){  
                      
                     countlstQurterly.add(new Count_Member_Connect__c(Branch_Name__c=na.role_name__c,Total_Count__c=1,User_Name__c=na.CreatedBy.name,
-                                                             UserId__c=na.CreatedById,date__c = lastQurterly,	Is_Quarter__c  = true));
+                                                             UserId__c=na.CreatedById,date__c = lastQurterly,	Is_Quarter__c  = true,Member_Connect_Name__c=na.name+','));
                     flag = true;
                 }
             }
@@ -151,13 +157,14 @@ global class MemberConnectBatch implements Database.Batchable<SObject>, Database
                for(integer i = 0 ; i < countlstQurterly.size(); i++){
                     if( na.LastModifiedById == countlstQurterly[i].UserId__c){
                         countlstQurterly[i].Total_Count__c+= 1; 
+                         countlstQurterly[i].Member_Connect_Name__c += na.name +',';
                         flag1=true;
                     }
                 }   
                 if(!flag1){    
                        
                         countlstQurterly.add(new Count_Member_Connect__c(Branch_Name__c=na.LastModifiedBy.UserRole.name,Total_Count__c=1,User_Name__c=na.LastModifiedBy.name,
-                                                                 UserId__c=na.LastModifiedById,date__c = lastQurterly,Is_Quarter__c  = true));
+                                                                 UserId__c=na.LastModifiedById,date__c = lastQurterly,Is_Quarter__c  = true,Member_Connect_Name__c=na.name+','));
                     }
             }
              
