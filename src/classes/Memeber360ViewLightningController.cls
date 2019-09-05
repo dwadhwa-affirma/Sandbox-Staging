@@ -649,10 +649,9 @@ public  class Memeber360ViewLightningController {
         }
         
         List<string> typeList = new List<string>();
-        for(TypeTranslate__c t : TypeTranslate__c.getAll().values()){
-        	if(t.IsExcluded__c == true)
-        		typeList.add(t.name);	
-        }
+        for(Member360_TypeTranslate__c t : Member360_TypeTranslate__c.getAll().values()){
+        	typeList.add(t.name);	
+        } 
         
         system.debug('tt' + tt);
         string searchquery = '';
@@ -675,7 +674,7 @@ public  class Memeber360ViewLightningController {
                               'PersonID__r.FirstName,' +
                               'PersonID__r.LastName,' +
                               'PersonID__r.Name,' +
-                              'Account_Number__r.Brand__c From Person_Account__c WHERE TypeTranslate__c NOT IN (\'' + string.join(typeList,'\',\'') +  '\') and personId__c != \''  + accid +  '\' and Account_Number__r.Name IN (\'' + string.join(accName,'\',\'') +  '\') ' + searchquery + ' ' +  orderString +  '   LIMIT  ' + string.valueOf( PageSize_Local) + ' OFFSET ' +  offset ;        
+                              'Account_Number__r.Brand__c From Person_Account__c WHERE TypeTranslate__c IN (\'' + string.join(typeList,'\',\'') +  '\') and personId__c != \''  + accid +  '\' and Account_Number__r.Name IN (\'' + string.join(accName,'\',\'') +  '\') ' + searchquery + ' ' +  orderString +  '   LIMIT  ' + string.valueOf( PageSize_Local) + ' OFFSET ' +  offset ;        
                 if(searchquery.length() > 0)
                 {
                     string temp = '%' + SearchText + '%';
