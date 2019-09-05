@@ -47,18 +47,37 @@
                          return parseFloat(a.Order__c) - parseFloat(b.Order__c);
                      });
                 
-					if(object == 'Account'){
+					/*if(object == 'Account'){
                           for(var i=0; i<finalSubMenu.length;i++){
                              if (finalSubMenu[i].isVisibleonMember__c == false) {
-                                   	 finalSubMenu.splice(i, 1); 
+                            	 	 finalSubMenu.splice(i, 1); 
                                 }
+                          }
+                      }*/
+                       var j = 0;
+                       var length = finalSubMenu.length;
+                      if(object == 'Account'){
+                          for(var i=0; i< length;i++){
+                        	 
+                             if (finalSubMenu[j].isVisibleonMember__c == false) {
+                            	 	 finalSubMenu.splice(j, 1); 
+                            	 	 
+                                }
+							else
+							{
+									j++;			
+							}							
                           }
                       }
                     else if(object == 'Account_Details__c'){
-                    	 for(var i=0; i<finalSubMenu.length;i++){
-                             if (finalSubMenu[i].isVisibleonMemberAccount__c == false) {
-                                   	 finalSubMenu.splice(i, 1); 
+                    	 for(var i=0; i< length;i++){
+                             if (finalSubMenu[j].isVisibleonMemberAccount__c == false) {
+                                   	 finalSubMenu.splice(j, 1); 
                                 }
+                                else
+								{
+										j++;			
+								}
                           }
                     } 
                     else if(object == 'Case'){

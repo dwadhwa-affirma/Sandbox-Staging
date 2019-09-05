@@ -34,7 +34,6 @@
 				 	}
 			  }
 		  }*/
-		 
 		 component.set("v.LoadSubMenu",finalSubMenu);
 		 var ele = document.getElementById('divAccountServiceSubMenu');
 		 ele.style = '';
