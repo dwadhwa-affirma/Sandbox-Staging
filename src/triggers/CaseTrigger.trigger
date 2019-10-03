@@ -810,11 +810,7 @@ System.Debug('Calling the CaseAssign method');
             
                  List<String> splitted = scList[0].Subject.split(':'); // Split email subject on the vertical bar to get branch/dept and member# and survey type
                  splitSize = splitted.size();
-                 System.debug('Debug- Subject split size = ' +splitSize);
-                 System.debug('Debug- Name - splitted[0] = '+splitted[0]); 
-                 System.debug('Debug- branch/dept # - splitted[1] = '+splitted[1]); 
-                 System.debug('Debug- account # -splitted[2] = '+splitted[2]);
-                 
+                
                  surveyType = 'Branch';
                  if(splitted[0].contains('Relationship')){
                       surveyType = 'Relationship';
@@ -832,10 +828,10 @@ System.Debug('Calling the CaseAssign method');
                   
   
                  if(splitted.size()>0 && splitted.size()<=1){
-                      scList[0].Code_Number__c = splitted[1].trim().left(10); 
+                      scList[0].Code_Number__c = splitted[0].trim().left(10); 
                  }
         
-       //         if(splitSize==3){  
+                 if(splitted.size() == 3){  
                      scList[0].Code_Number__c = splitted[1].trim().left(10);
                      System.debug('Debug- scList[0].Code_Number__c is:::'+scList[0].Code_Number__c);
                      scList[0].Member_Number__c = splitted[2];
@@ -844,7 +840,7 @@ System.Debug('Calling the CaseAssign method');
                      for(i=membersize; i<10;i++){
                          scList[0].Member_Number__c = '0'+scList[0].Member_Number__c;                          
                      }                         
-       //          }
+                }
 
                  integer codesize = scList[0].Code_Number__c.length();
                  if(codesize < 1 || codesize > 3){
@@ -949,9 +945,12 @@ System.Debug('Calling the CaseAssign method');
                    if(sccList.size()>0 || !sccList.isEmpty()){
                         c.Primary_Category__c = sccList[0].Primary_Category__c;
                         c.Secondary_Category__c = surveyType ; //sccList[0].Secondary_Category__c;
-                        c.Tertiary_Category__c = sccList[0].Tertiary_Category__c;   
-                        c.RecordTypeId = crtList[0].RecordTypeId__c; 
-                        c.Ownerid = queList[0].id;
+                        if(sccList.size() >0 )
+                        c.Tertiary_Category__c = sccList[0].Tertiary_Category__c; 
+                        if(crtList.size() >0 )
+                        	c.RecordTypeId = crtList[0].RecordTypeId__c; 
+                        if(queList.size() >0 )
+                        	c.Ownerid = queList[0].id ;
                         
                    }           
                }    
