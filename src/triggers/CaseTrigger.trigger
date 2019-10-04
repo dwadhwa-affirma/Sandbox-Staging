@@ -654,7 +654,8 @@ System.Debug('Calling the CaseAssign method');
         if(conList.size() > 0){
 	        for(Case incomingCase : Trigger.new){
 	            if(incomingCase.AccountId != NULL && incomingCase.ContactId == NULL && (incomingCase.Secondary_Category__c != 'Onboarding' || incomingCase.Origin != 'Email')){
-	               incomingCase.ContactId = conList[0].Id;
+	               if(conList.size() > 0)
+	               		incomingCase.ContactId = conList[0].Id;
 	                
 	            }
 	        }
