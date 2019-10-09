@@ -1,4 +1,7 @@
 ({
+
+	
+	
 	getAccountServiceMenuData : function(component) {
 	debugger;
 		var action = component.get("c.getAccountServiceMenuData");
@@ -12,10 +15,16 @@
 				var res = resp.getReturnValue();
 				console.log(res);
                 var submenu = res['SubMenu'];
+                var userstatus = res['UserStatus'];
+                component.set("v.IsUserInGroup",userstatus);
+               
 				var menu = res['Menu'];  
 				var LeftMenu = [];
 				var RightMenu= [];             
 				 component.set("v.Menu",menu);
+				
+			
+				 
 				for(var i=0; i<menu.length;i++){
 					if((menu.length/2) > i){
 						LeftMenu.push(menu[i]);
@@ -24,10 +33,18 @@
 						RightMenu.push(menu[i]);
 					}
 				}
-                 component.set("v.halfLength",(menu.length/2)+1);                
+                 component.set("v.halfLength",(menu.length/2)+1);  
+                           
 				 component.set("v.LeftMenu",LeftMenu);
 				  component.set("v.RightMenu",RightMenu);
 				 component.set("v.SubMenu",submenu);
+				 
+				 var oowMainIndex = RightMenu.indexOf('OOW'); 
+				  var halflength = component.get("v.halfLength");
+                 oowIndex = parseFloat(oowMainIndex) + parseFloat(halflength);  
+                  component.set("v.OOWIndex",oowIndex); 
+				 
+				 
                 var object = component.get("v.sObjectName");
                  var finalSubMenu = [];
                 	for(var i=0;i<menu.length; i++){
@@ -80,17 +97,35 @@
 								}
                           }
                     } 
+                    
                     else if(object == 'Case'){
+                    	for(var i=0; i< length;i++){
+                             if (finalSubMenu[j].isVisibleonCase__c == false) {
+                                   	 finalSubMenu.splice(j, 1); 
+                                }
+                                else
+								{
+										j++;			
+								}
+                          }
+                                
+                    }
+                    
+                    /*else if(object == 'Case'){
                     	if (finalSubMenu[i].isVisibleonCase__c == false) {
                                    	 finalSubMenu.splice(i, 1); 
                                 }
                                 
-                    }                   
+                    }   */                
                      component.set("v.LoadSubMenu",finalSubMenu);
+                     
+                    
                      
 				}
 			});
 		$A.enqueueAction(action);
+		
+		
 	},
 	
 	getMenuData : function(component) {

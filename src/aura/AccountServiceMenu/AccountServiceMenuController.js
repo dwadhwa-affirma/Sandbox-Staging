@@ -1,7 +1,9 @@
 ({
 	doInit : function(component, event, helper) {		
-		 helper.getAccountServiceMenuData(component, event);	
-         
+		
+		
+		 helper.getAccountServiceMenuData(component, event);
+		
 	},
 	
 	loadSubMenu : function(component, event, helper) {	
