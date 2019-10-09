@@ -1,0 +1,28 @@
+<apex:page standardController="Case" extensions="OnbaseApiServiceController"  >
+   
+ <div id="InnternalDiv" style="height:650px; width:800px;" >
+    <apex:form >
+  <apex:pageBlock title="Onbase Documents " >
+      <apex:pageBlockSection >
+          <apex:outputField value="{!cs.Case_Number_Escalated__c}"/>
+         
+      </apex:pageBlockSection>
+      <apex:pageBlockTable value="{!lstWI}" var="w">
+              
+      <apex:column headervalue="Case number" value="{!w.caseNum}"/>
+           <apex:column headervalue="Document Name" value="{!w.docName}"/>
+           <apex:column headervalue="Document Number" value="{!w.docNumber}"/>
+          <apex:column headervalue="Document Type" value="{!w.docType}"/>
+         
+          <apex:column headerValue="PopDocUrl" >
+                   
+                     <apex:outputLink value="{!w.PopDocUrl}" >View Document</apex:outputLink>
+                </apex:column>
+          
+      </apex:pageBlockTable>
+     
+     </apex:pageBlock> 
+    
+ </apex:form>
+</div>
+</apex:page>

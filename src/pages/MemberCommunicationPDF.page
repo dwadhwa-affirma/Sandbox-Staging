@@ -1,0 +1,5 @@
+<apex:page controller="MemberCommunicationData"  doctype="html-5.0">
+    <apex:outputPanel id="benefit" >
+		<iframe src="data:application/pdf;base64,{!BlobText}" style="position: absolute; height: 100%; border: none ;" align="top" scrolling="yes" width="100%"></iframe>
+    </apex:outputPanel>
+</apex:page>
