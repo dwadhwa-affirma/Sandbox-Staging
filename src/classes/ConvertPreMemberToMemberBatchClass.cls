@@ -434,6 +434,7 @@ global class ConvertPreMemberToMemberBatchClass implements Database.Batchable<sO
             		 	mid = MapofId.get(pma.id);
     					cpm.Member__c = mid;
     					cpm.Pre_Member_Number__c = pma.Pre_Member_Number__c;
+    					cpm.Parent_Lead__c = pma.Parent_Lead__c;
     					cpm.Alt_E_Mail_Address__c= pma.Alternate_Email__pc;
     					cpm.Alternate_Email__c = pma.Alt_Email_Raw__c;
     					cpm.Annual_Revenue__c = pma.AnnualRevenue;

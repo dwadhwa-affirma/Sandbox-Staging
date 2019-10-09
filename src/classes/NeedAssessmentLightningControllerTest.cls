@@ -261,7 +261,7 @@ public class NeedAssessmentLightningControllerTest
   
   private static List<Needs_Assesment__c> getAssessment()
   {
-		List<Needs_Assesment__c> na = [select Id,LEEM_Last_Updated_On__c,LEMQ_Last_Updated_On__c,LEOM_Last_Updated_On__c,LEAV_Last_Updated_On__c ,LESF_Last_Updated_On__c, LESB_Last_Updated_On__c, LEMD_Last_Updated_On__c, LECP_Last_Updated_On__c, LEHS_Last_Updated_On__c, LEOL_Last_Updated_On__c, LECF_Last_Updated_On__c, LEWS_Last_Updated_On__c,LECP_Written_Materials_Way_To_Send_Email__c,LECP_Written_Materials_Way_To_Send_Mail__c,Do_you_Rent_or_Own__c,
+		List<Needs_Assesment__c> na = [select Id, Purchase_Auto_Vehicle_Timeframe__c , LEEM_Last_Updated_On__c,LEMQ_Last_Updated_On__c,LEOM_Last_Updated_On__c,LEAV_Last_Updated_On__c ,LESF_Last_Updated_On__c, LESB_Last_Updated_On__c, LEMD_Last_Updated_On__c, LECP_Last_Updated_On__c, LEHS_Last_Updated_On__c, LEOL_Last_Updated_On__c, LECF_Last_Updated_On__c, LEWS_Last_Updated_On__c,LECP_Written_Materials_Way_To_Send_Email__c,LECP_Written_Materials_Way_To_Send_Mail__c,Do_you_Rent_or_Own__c,
     	  		LEHS_Current_Lender__c, LEHS_Type_of_Mortgage__c,LEHS_Rate__c,LEHS_Current_Balance__c,LEHS_End_Year__c,LEHS_Planning_to_Purchase__c,LEHS_Purchase_When__c, LEHS_Have_Realtor__c,
     	  		LEHS_Comment_New__c,Rec_LEHS_1__c,Rec_LEHS_2__c, LECF_800__c,LECF_Experience_Improvement_Feedback_New__c, LECF_Online_banking__c, LECF_Mobile_banking__c, LECF_ATM__c, LECF_Comment_New__c,
     	  		LEMP_Last_Updated_On__c, LEPT_Last_Updated_On__c, LECF_Branch__c,LESB_Aware_SharedBranching__c,LESB_Aware_ConvBranching__c,LESB_SharedBranching_Comments_New__c,REC_LEMD_3__c,

@@ -139,6 +139,7 @@ public class MemberAccountWrapperFor360ViewController {
                               ' Close_Date__c, ' +
                               ' Card_Number_Last_4_Digits__c, ' +
                               ' OPEN_DATE__c, ' +
+                              ' Open_Date_PST__c, '+
                               ' Expiration_Date__c, ' +
                               ' Issue_Date__c, ' +
                               ' Emp_Balance__c, ' +
@@ -164,6 +165,7 @@ public class MemberAccountWrapperFor360ViewController {
                               ' Close_Date__c, ' +
                               ' Card_Number_Last_4_Digits__c, ' +
                               ' OPEN_DATE__c, ' +
+                              ' Open_Date_PST__c, '+
                               ' Expiration_Date__c, ' +
                               ' Issue_Date__c, ' +
                               ' Emp_Balance__c, ' +

@@ -3,7 +3,42 @@
         
     },
     doInit : function(component, event, helper) {        
-     
+    	 var action = component.get('c.SNAILSetting'); 
+    	
+    	 action.setCallback(this, function(a){
+            var state = a.getState(); // get the response state
+           
+            if(state == 'SUCCESS') {
+            var res = a.getReturnValue();
+            var objsetting = res['SnailSetting'];
+            var userstatus = res['UserStatus'];
+            component.set("v.IsUserInGroup",userstatus);
+             for(var i = 0 ; i < objsetting.length;i++){
+             
+                 if(objsetting[i].Name == 'BDI' && objsetting[i].Hidden__c == false){
+                     
+                	 component.set('v.ischk1',true);
+                 }
+            	 if(objsetting[i].Name == 'Salesforce' && objsetting[i].Hidden__c == false){
+                	 component.set('v.ischk2',true);
+                 }
+                 if(objsetting[i].Name == 'Onbase' && objsetting[i].Hidden__c == false){
+                	 component.set('v.ischk3',true);
+                 }
+                 if(objsetting[i].Name == 'Other' && objsetting[i].Hidden__c == false){
+                	 component.set('v.ischk4',true);
+                 }
+                 if(objsetting[i].Name == 'OOW' && objsetting[i].Hidden__c == false){
+                	 component.set('v.ischk5',true);
+                 }
+            	 
+            	
+             }
+            	
+            	
+            }
+        });
+        $A.enqueueAction(action);
     },
     
     handleNext : function(component, event, helper) { 
@@ -39,8 +74,23 @@
     },
     
     BtnFetchData:function(component, event, helper) {
+        var todate=component.get('v.todate');
+        var fromdate=component.get('v.fromdate');
+        var keyword =component.get('v.keyword');
+        var today = $A.localizationService.formatDate(new Date(), "YYYY-MM-DD");
         
-        helper.fetchAllData(component,event,helper);
+        component.set('v.dateinvalid',false);
+        if(keyword == 'Date Range' && (fromdate == "" || fromdate == null) && (todate == "" || todate == null)){
+        	component.set('v.dateinvalid',true);
+        }
+        else if(keyword == 'Date Range' && fromdate > todate && fromdate > today){
+        	component.set('v.dateinvalid',true);
+        }
+        
+        else{
+        	 helper.fetchAllData(component,event,helper);
+        }
+       
        
     },
     BtnMergeData :function(component, event, helper) {

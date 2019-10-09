@@ -69,28 +69,26 @@
         cmp.set('v.columns', [
         	{label: 'Source',fieldName: 'DataSource',type:'text',initialWidth: 130},
             {label: 'Description', fieldName: 'dateDesc',type:'text',sortable : true,initialWidth: 400},
-            {label: 'Date', fieldName: 'documentDate',type:'date',sortable : true,initialWidth: 150,typeAttributes: {
-                day: '2-digit',
+            {label: 'Date', fieldName: 'documentDate',type:'date',sortable : true,initialWidth: 150,typeAttributes: {day: '2-digit',
                 month: '2-digit',
                 year: 'numeric',
-                hour: '2-digit',  
-                minute: '2-digit',  
-                hour12: false
-                
-            },},
+               }},
             {label: 'Member', fieldName: '',type:'text',sortable : true,initialWidth: 200},
-           
-            {label: 'Account # ',fieldName: 'Account',type:'text',initialWidth: 150},
+            {label: 'Account # ',fieldName: 'Account',type:'text',sortable : true,initialWidth: 150},
+            
             {label: 'Case #' ,fieldName: '',type:'text',initialWidth: 150},
             {label: 'Link', fieldName: 'hyperlinkPDF',type: 'url', typeAttributes: { label: 'Download'}},
             
         ]);
+        debugger;
             cmp.set('v.loadchk1', false);
             cmp.set('v.loadchk2', false);
             cmp.set('v.loadchk3', false);
+            cmp.set('v.loadchk5', false);
              cmp.set('v.nochk1', false);
             cmp.set('v.nochk2', false);
             cmp.set('v.nochk3', false);
+            cmp.set('v.nochk5', false);
             var paramVal=cmp.get('v.selectedCheckBoxes');
             var todate=cmp.get('v.todate');
             var fromdate=cmp.get('v.fromdate');
@@ -113,92 +111,121 @@
             {
             recid =cmp.get('v.recordId');
             }
-                       
-            if(cmp.find('chk1').get("v.checked")){ 
-                    cmp.set('v.progchk1', true );
-                 	var action = cmp.get('c.GetMemberCommData'); 
-			        action.setParams({
-			            source : paramVal,
-			            fromdate : fromdate,
-			            todate : todate,
-			            recid:recid,
-			            keyword:keyword
-			        });     
-			        action.setCallback(this, function(a){
-			            var state = a.getState(); // get the response state
-			              
-			            if(state == 'SUCCESS') {
-			            
-			            /*    var obj = a.getReturnValue();
-			                var jsonString = JSON.parse(JSON.stringify(obj));
-			                if(jsonString != null && jsonString != ''){
-				                cmp.set('v.Alldata',jsonString );                  
-				                
-				                cmp.set('v.loadchk1', true); 
-				                
-				                }         
-			               else{
-			                cmp.set('v.nochk1', true); 
-			                
-			               }
-			               helper.getData(cmp, event, helper);    
-			               cmp.set('v.Approve', true);   
-			               cmp.set('v.progchk1', false);   */
-			               
-			                var obj = a.getReturnValue();
-			                var alldata = cmp.get('v.Alldata');
-			                var result = JSON.parse(JSON.stringify(obj));
-			                    if(result != null && result != ''){
-				            		if(alldata != null){
-				                        var x = parseInt(alldata.length);
-				                        for(var a in result){
-				                            x += 1;
-				                            alldata.push(result[a]);
-				    					}
-				                        cmp.set('v.Alldata',alldata ); 
+            
+            if(cmp.get('v.ischk1')){
+	            if(cmp.find('chk1').get("v.checked")){ 
+	                    cmp.set('v.progchk1', true );
+	                 	var action = cmp.get('c.GetMemberCommData'); 
+				        action.setParams({
+				            source : paramVal,
+				            fromdate : fromdate,
+				            todate : todate,
+				            recid:recid,
+				            keyword:keyword
+				        });     
+				        action.setCallback(this, function(a){
+				            var state = a.getState(); // get the response state
+				              
+				            if(state == 'SUCCESS') {
+				                var obj = a.getReturnValue();
+				                var alldata = cmp.get('v.Alldata');
+				                var result = JSON.parse(JSON.stringify(obj));
+				                    if(result != null && result != ''){
+					            		if(alldata != null){
+					                        var x = parseInt(alldata.length);
+					                        for(var a in result){
+					                            x += 1;
+					                            alldata.push(result[a]);
+					    					}
+					                        cmp.set('v.Alldata',alldata ); 
+										}
+										else {
+										
+										    cmp.set('v.Alldata',result );
+										}
+										cmp.set('v.loadchk1',true);
 									}
-									else {
-									
-									    cmp.set('v.Alldata',result );
+									else{
+										cmp.set('v.nochk1', true); 
 									}
-									cmp.set('v.loadchk1',true);
-								}
-								else{
-									cmp.set('v.nochk1', true); 
-								}
-								helper.getData(cmp, event, helper);
-								cmp.set('v.Approve', true);
-								cmp.set('v.progchk1', false );
-			            }
-			        });
-			            
-			        $A.enqueueAction(action);                
+									helper.getData(cmp, event, helper);
+									cmp.set('v.Approve', true);
+									cmp.set('v.progchk1', false );
+				            }
+				        });
+				            
+				        $A.enqueueAction(action);                
+	            }
             }
-			if(cmp.find('chk3').get("v.checked") && cmp.find('chk1').get("v.checked") ){
-			      cmp.set('v.progchk3', true );
-				    setTimeout(function(){
-	                	helper.fetchchk3(cmp, event, helper,paramVal,fromdate,todate,recid,keyword); 
-	                },5);
-				 
+            if(cmp.get('v.ischk1') && cmp.get('v.ischk3')){
+				if(cmp.find('chk3').get("v.checked") && cmp.find('chk1').get("v.checked") ){
+				      cmp.set('v.progchk3', true );
+					    setTimeout(function(){
+		                	helper.fetchchk3(cmp, event, helper,paramVal,fromdate,todate,recid,keyword); 
+		                },5);
+					 
+				}
+				else if(cmp.find('chk3').get("v.checked") && !cmp.find('chk1').get("v.checked")){
+					 cmp.set('v.progchk3', true );				   
+		             helper.fetchchk3(cmp, event, helper,paramVal,fromdate,todate,recid,keyword);  
+				}
 			}
-			if(cmp.find('chk3').get("v.checked") && !cmp.find('chk1').get("v.checked") ){
-			      cmp.set('v.progchk3', true );				   
-	              helper.fetchchk3(cmp, event, helper,paramVal,fromdate,todate,recid,keyword);  
+			else if(cmp.get('v.ischk3')){
+				if(cmp.find('chk3').get("v.checked")){
+				      cmp.set('v.progchk3', true );				   
+		              helper.fetchchk3(cmp, event, helper,paramVal,fromdate,todate,recid,keyword);  
+				}
 			}
-			if(cmp.find('chk2').get("v.checked") && (cmp.find('chk1').get("v.checked") || cmp.find('chk3').get("v.checked"))){
-                
-                cmp.set('v.progchk2', true );
-                setTimeout(function(){
-
-                	helper.fetchchk2(cmp, event, helper,paramVal,fromdate,todate,recid,keyword); 
-                },10);
-               
+			if(cmp.get('v.ischk2') && cmp.get('v.ischk3')){
+				if(cmp.find('chk2').get("v.checked") &&  cmp.find('chk3').get("v.checked")){
+	                
+	                cmp.set('v.progchk2', true );
+	                setTimeout(function(){
+	
+	                	helper.fetchchk2(cmp, event, helper,paramVal,fromdate,todate,recid,keyword); 
+	                },10);
+	               
+	            }
+	            else if(cmp.find('chk2').get("v.checked") &&  !cmp.find('chk3').get("v.checked")){
+	                
+	                cmp.set('v.progchk2', true );
+	                helper.fetchchk2(cmp, event, helper,paramVal,fromdate,todate,recid,keyword); 
+	               
+	            }
             }
-            else if(cmp.find('chk2').get("v.checked") && !cmp.find('chk1').get("v.checked") && !cmp.find('chk3').get("v.checked")){          
-            	cmp.set('v.progchk2', true );
-                helper.fetchchk2(cmp, event, helper,paramVal,fromdate,todate,recid,keyword);    
-                
-            } 
+            else if(cmp.get('v.ischk2') && cmp.get('v.ischk1')){
+            	if(cmp.find('chk2').get("v.checked") && cmp.find('chk1').get("v.checked") ){
+	                
+	                cmp.set('v.progchk2', true );
+	                setTimeout(function(){
+	
+	                	helper.fetchchk2(cmp, event, helper,paramVal,fromdate,todate,recid,keyword); 
+	                },10);
+	               
+	            }
+	            else if(cmp.find('chk2').get("v.checked") &&  !cmp.find('chk1').get("v.checked")){
+	                
+	                cmp.set('v.progchk2', true );
+	                helper.fetchchk2(cmp, event, helper,paramVal,fromdate,todate,recid,keyword); 
+	               
+	            }
+            }
+            else if(cmp.get('v.ischk2')){
+	             if(cmp.find('chk2').get("v.checked")){          
+	            	cmp.set('v.progchk2', true );
+	                helper.fetchchk2(cmp, event, helper,paramVal,fromdate,todate,recid,keyword);    
+	                
+	            } 
+            }
+             if(cmp.get('v.ischk5'))
+             {
+            	  if(cmp.find('chk5').get("v.checked")){          
+	            	cmp.set('v.progchk5', true );
+	                helper.fetchchk5(cmp, event, helper,paramVal,fromdate,todate,recid,keyword);    
+	                
+	            } 
+             }
+            
 	} ,  
     MergeData: function ( cmp, event, helper){
       
@@ -326,6 +353,51 @@
 					helper.getData(cmp, event, helper);
 					cmp.set('v.Approve', true);
 					cmp.set('v.progchk2', false );
+					
+				}
+                
+                }); 
+			$A.enqueueAction(action);
+               
+            
+	},
+	
+	fetchchk5: function (cmp, event, helper,paramVal,fromdate,todate,recid,keyword) {
+		var action = cmp.get('c.GetOOWData'); 
+        action.setParams({
+            fromdate : fromdate,
+            todate : todate,
+            keyword:keyword,
+            recid:recid,
+        });        
+      	action.setCallback(this, function(a){       
+       	var state = a.getState(); // get the response state          
+           	if(state == 'SUCCESS') {
+            
+                var obj = a.getReturnValue();
+                var alldata = cmp.get('v.Alldata');
+                var result = JSON.parse(JSON.stringify(obj));
+                    if(result != null && result != ''){
+	            		if(alldata != null){
+	                        var x = parseInt(alldata.length);
+	                        for(var a in result){
+	                            x += 1;
+	                            alldata.push(result[a]);
+	    					}
+	                        cmp.set('v.Alldata',alldata ); 
+						}
+						else {
+						
+						    cmp.set('v.Alldata',result );
+						}
+						cmp.set('v.loadchk5',true);
+					}
+					else{
+						cmp.set('v.nochk5', true); 
+					}
+					helper.getData(cmp, event, helper);
+					cmp.set('v.Approve', true);
+					cmp.set('v.progchk5', false );
 					
 				}
                 

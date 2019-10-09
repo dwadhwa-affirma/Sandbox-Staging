@@ -14,6 +14,23 @@ public class AccountServiceMenuController {
     	result.put('Menu', menuList);
     	result.put('SubMenu', mcList);
     	
+    	
+    		Boolean IsUserInGroup;
+    		Group grp = [SELECT DeveloperName,Email,Id,Name,RelatedId,Type FROM Group where DeveloperName ='OOW_Execute' Limit 1];
+ 	
+		 	GroupMember[] gm  = [SELECT GroupId,Id,UserOrGroupId FROM GroupMember where GroupId =: grp.id and UserOrGroupId =: UserInfo.getUserId() ];
+		 	
+		 	if(gm.size() > 0)
+		 	{
+		 		IsUserInGroup = true;
+		 	}
+		 	else 
+		 	{
+		 		IsUserInGroup = false;
+		 	}
+    	
+ 			result.put('UserStatus', IsUserInGroup);
+    	
     	return result;
     }
     
@@ -23,4 +40,8 @@ public class AccountServiceMenuController {
 		  for(integer i=0; i < input.size(); i++) input[i] = input[i].substring( input[i].length() / 2 );
 		  return input;
 }
+
+ 
+
+
 }

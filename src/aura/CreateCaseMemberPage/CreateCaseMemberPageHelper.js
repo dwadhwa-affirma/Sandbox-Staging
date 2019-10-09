@@ -436,6 +436,7 @@
 	 		component.set("v.caseObject.Follow_up_Text__c","");
 	 	
 	 		component.set('v.caseObject.Status','Open');
+	 		component.set('v.caseObject.Special_Reporting_Number__c','---None---');
 	 		component.set('v.caseObject.Ownership__c','Auto Assign'); 
             component.set('v.selectedMemberNumber ',null);  
             component.set('v.optionsList', null);

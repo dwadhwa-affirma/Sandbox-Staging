@@ -75,6 +75,7 @@
  		component.set('v.tcOptions', scOptions);
  		component.set('v.caseObject.Status','Open');
  		component.set('v.caseObject.Ownership__c','Auto Assign');
+ 		component.set('v.caseObject.Special_Reporting_Number__c','---None---');
  		if(isStandAlone)
  			component.set('v.loading',false);
 	},	

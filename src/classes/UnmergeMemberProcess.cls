@@ -19,7 +19,7 @@ public class UnmergeMemberProcess {
     
     @AuraEnabled			
     public static string UnMergeMemberAccount(Id mid){
-    	 Converted_PreMember__c cpm = [SELECT First_Name__c, Middle_Name__c,Last_Name__c,Alternate_Email__c,Alt_E_Mail_Address__c,Annual_Revenue__c,Assistant__c,
+    	 Converted_PreMember__c cpm = [SELECT First_Name__c, Middle_Name__c,Last_Name__c,Alternate_Email__c,Alt_E_Mail_Address__c,Annual_Revenue__c,Assistant__c,Parent_Lead__c,
 								    	 ID_1_Type__c, Email_raw__c,Asst_Phone__c,Birthdate__c,Birth_Date__c,Converted_On__c,CreatedById,CreatedDate,Death_Date__c,
 								    	 Department__c,Description__c,Do_Not_Call__c,Email_Opt_Out__c,Employees__c,Employee_Restricted_Access__c,
 								    	 Employer_Name__c,Employer_Occupation__c,Extended_Name__c,E_Mail_Address__c,Fax_Opt_Out__c,Fax__c,
@@ -58,6 +58,7 @@ public class UnmergeMemberProcess {
 
     	pma.Member__c = null;
     	pma.Pre_Member_Number__c = cpm.Pre_Member_Number__c;
+    	pma.Parent_Lead__c = cpm.Parent_Lead__c;
     	pma.Alternate_Email__pc= cpm.Alt_E_Mail_Address__c;
     	pma.Alt_Email_Raw__c =cpm.Alternate_Email__c;
     	pma.AnnualRevenue = cpm.Annual_Revenue__c;

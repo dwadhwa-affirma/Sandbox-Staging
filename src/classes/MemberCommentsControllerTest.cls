@@ -8,15 +8,18 @@ private class MemberCommentsControllerTest
 		
          Account_Details__c  act = new Account_Details__c(Name = '0000147163', Balance__c = 0.00, Combined_Account_ID__c = '0000147163S0100P0100', ID1__c = '0100', Onboarded__c = true, RecType__c = 'ACCT', TypeTranslate__c = '1-PRIMARY SHARE');
 		Insert act;
+		 test.StartTest();
         Case caseObj =new Case(Status = 'In Process', Origin = null, Subject = 'Test', ClosedDate = null, IsEscalated = false,Account_Number__c = act.Id, Additional_Documents__c = false, Staff_Escalated__c = false, Five_Day_Flag__c = false, IsMarkDeleted__c = false, IsMarkRead__c = false, IsMarkSaved__c = false, Primary_Category__c = 'Account Maintenance', Secondary_Category__c = 'Account Services', Tertiary_Category__c = 'Extended Check Hold', MaritzCX__Response_Deleted_From_MaritzCX__c = false, SLATemp__c = false);
       	Insert caseObj;
+      	 Attachment objAt = new Attachment(Name ='NewFile.jpg',body = blob.valueof('TWFuIGlzIGRpc3Rpg'),parentId = caseObj.Id, ContentType = 'JPG');
+        Insert objAt;
       	Member_Comment__c mobj = new Member_Comment__c(Case__c = caseObj.Id, Draft__c = true, Member_Communication__c= 'test', Member_Email__c= 'sshah@affirma.com');
       	insert mobj;
         List<Canned_Responses__c> Canned_primary = new List<Canned_Responses__c>{new Canned_Responses__c(Primary_Lookup_Text__c = 'ABC', Active__c = true, Brand__c ='chevron',Secondary_Lookup_Text__c= 'ABC2', Tertiary_Lookup_Text__c = 'ABC4',Description__c = 'test test test',Canned_Response_Title__c= 'test title'), new Canned_Responses__c(Primary_Lookup_Text__c = 'ABC1', Active__c = true, Brand__c = 'spectrum',Secondary_Lookup_Text__c= 'ABC3', Tertiary_Lookup_Text__c = 'ABC5',Description__c = 'test test test',Canned_Response_Title__c= 'test title1')};
 		//Canned_Message_Metadata__c = new Canned_Message_Metadata__c(Chevron_Footer__c = 'test test', Chevron_Header__c = 'test test',Spectrum_Footer__c = 'test test',Spectrum_Header__c = 'test test');
 		Insert Canned_primary;
-       Attachment objAt = new Attachment(Name ='NewFile.jpg',body = blob.valueof('TWFuIGlzIGRpc3Rpg'),parentId = caseObj.Id, ContentType = 'JPG');
-        Insert objAt;
+		  
+      
         
          ContentVersion contentVersion = new ContentVersion(
 		      Title = 'Penguins',
@@ -52,7 +55,7 @@ private class MemberCommentsControllerTest
         
         Canned_Message_Metadata__c cannedMessageHeader = new Canned_Message_Metadata__c(Name='Metadata' ,Chevron_Footer__c = 'test test', Chevron_Header__c= 'test test', Spectrum_Footer__c= 'test test', Spectrum_Header__c= 'test test'); 
         Insert cannedMessageHeader;
-        test.StartTest();
+     
 	}
 	//Tear Down 
 	//Add Logic to delete data that has been created
@@ -166,13 +169,14 @@ private class MemberCommentsControllerTest
 	}
 	// Test Method: saveComment
 	public static testmethod void Test_saveComment(){
-		/*SetUp();
+		SetUp();
+       
 		string memberdescription = 'test test';
 		string caseid = [select Id from case limit 1].Id;
 		boolean draft = true;
 		string secureemailaddress = 'test@test.com';
 		string attachments = 'TWFuIGlzIGRpc3Rpg';
-        
+       
         Attachment attachContent = [select Id,Name,ContentType from Attachment limit 1];
         publishMemberAttachments.combinedAttachments obj = new publishMemberAttachments.combinedAttachments();
             	obj.Id = attachContent.id;
@@ -186,8 +190,8 @@ private class MemberCommentsControllerTest
          wrapper.checkvalue = true;
         lstwrapper.add(wrapper);
 		// TODO : Add extra code to validate the method call
-		MemberCommentsController.saveComment(memberdescription, caseid, draft, secureemailaddress, JSON.serialize(lstwrapper), true);
-		MemberCommentsController.saveComment(memberdescription, caseid, draft, secureemailaddress, JSON.serialize(lstwrapper), true);
+		MemberCommentsController.saveComment(memberdescription, caseid, draft, secureemailaddress, JSON.serialize(lstwrapper), true, 'test','test');
+		MemberCommentsController.saveComment(memberdescription, caseid, draft, secureemailaddress, JSON.serialize(lstwrapper), true, 'test', 'test');
 		
 		
 		 Attachment attachContent1 = [select Id,Name,ContentType from Attachment limit 1];
@@ -202,8 +206,8 @@ private class MemberCommentsControllerTest
       wrapper1.attachmentobj = obj1;
          wrapper1.checkvalue = true;
         lstwrapper1.add(wrapper1);
-		MemberCommentsController.saveComment(memberdescription, caseid, draft, secureemailaddress, JSON.serialize(lstwrapper1), true);
-		MemberCommentsController.saveComment(memberdescription, caseid, draft, secureemailaddress, JSON.serialize(lstwrapper1), true);
+		MemberCommentsController.saveComment(memberdescription, caseid, draft, secureemailaddress, JSON.serialize(lstwrapper1), true,'test', 'test1');
+		MemberCommentsController.saveComment(memberdescription, caseid, draft, secureemailaddress, JSON.serialize(lstwrapper1), true,'test', 'test1');
 		
 		 attachContent1 = [select Id,Name,ContentType from Attachment limit 1];       
             	obj1.Id = attachContent1.id;
@@ -216,13 +220,13 @@ private class MemberCommentsControllerTest
       wrapper1.attachmentobj = obj1;
          wrapper1.checkvalue = false;
         lstwrapper1.add(wrapper1);
-		MemberCommentsController.saveComment(memberdescription, caseid, draft, secureemailaddress, JSON.serialize(lstwrapper1), true);
-		MemberCommentsController.saveComment(memberdescription, caseid, draft, secureemailaddress, JSON.serialize(lstwrapper1), true);
+		MemberCommentsController.saveComment(memberdescription, caseid, draft, secureemailaddress, JSON.serialize(lstwrapper1), true,'test','test1');
+		MemberCommentsController.saveComment(memberdescription, caseid, draft, secureemailaddress, JSON.serialize(lstwrapper1), true,'test','test1');
 		
 		
 		
 		
-		TearDown();*/
+		TearDown();
 	}
 	
 	

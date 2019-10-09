@@ -65,12 +65,20 @@
                                 </td>
                             </tr>
 
-                            <tr>
+                          <!--    <tr>
                                 <td class="subQuestion" width="200">&nbsp; If Yes, when?</td>
                                 <td>
                                     <ui:inputDate value="{!v.Model.LEAV_PlanDate__c}" aura:id="planDate" keyup="{!c.changeDate}"  keypress="{!c.changeDate}" displayDatePicker="true"/>
                                 </td>
-                            </tr>                            
+                            </tr>  --> 
+                            
+                            <tr>
+                                <td class="subQuestion" width="200">&nbsp; If yes, what is your timeframe?</td>
+                                <td>
+                                    <ui:inputSelect aura:id="Needs_Assesment__c.Purchase_Auto_Vehicle_Timeframe__c" value="{!v.Model.Purchase_Auto_Vehicle_Timeframe__c}" />
+                                </td>
+                            </tr>
+                                                     
                             <tr>
                                 <td class="subQuestion" width="200">&nbsp; If yes, do you anticipate needing financing?
                                 </td>

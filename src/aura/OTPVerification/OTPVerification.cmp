@@ -1,46 +1,46 @@
-<aura:component implements="flexipage:availableForAllPageTypes,force:appHostable,force:hasRecordId,force:lightningQuickAction" controller="MemberVerificationLightningController" access="global">
-
-
-
+<aura:component implements="flexipage:availableForAllPageTypes,force:appHostable,force:hasRecordId,force:lightningQuickAction,lightning:isUrlAddressable" controller="MemberVerificationLightningController" access="global">
+    
+    
+    
     <aura:handler value="{!this}" name="init" action="{!c.doInit}" />
     <aura:attribute name="currentStep" type="string" default="1" />
     <aura:attribute name="Model" type="OTPVerificationModel" />
     <aura:attribute name="EnteredOTP" type="String" />
-	<aura:attribute name="selectedValue" type="String" />
-	<aura:attribute name="keyModel" type="KeyValuePairModel" />
-	<aura:attribute name="loading" type="boolean" default="false" />
-	<aura:attribute name="verified" type="string" />
-	<aura:attribute name="optionRequired" type="boolean" default="false" />
-	<aura:attribute name="InputRequired" type="boolean" default="false" />
-	
-<style>
+    <aura:attribute name="selectedValue" type="String" />
+    <aura:attribute name="keyModel" type="KeyValuePairModel" />
+    <aura:attribute name="loading" type="boolean" default="false" />
+    <aura:attribute name="verified" type="string" />
+    <aura:attribute name="optionRequired" type="boolean" default="false" />
+    <aura:attribute name="InputRequired" type="boolean" default="false" />
+    <aura:attribute name="LstMemid" type="map" />	
+    <style>
         /* Loading Style*/
         
         .loadingDiv {
-            position: absolute;
-            z-index: 1000;
-            background: rgba(255, 255, 255, 0.8);
-            width: 100%;
-            height: 70%;
-            top: 100px;
+        position: absolute;
+        z-index: 1000;
+        background: rgba(255, 255, 255, 0.8);
+        width: 100%;
+        height: 70%;
+        top: 100px;
         }
         .otpModalpopup{
-        	height: 300px;
-    	overflow-y: auto;
+        height: 300px;
+        overflow-y: auto;
         }
         #createCasePopup {
-            max-width: 80rem;
-            width: 70%;
+        max-width: 80rem;
+        width: 70%;
         }
         
         .loadingDiv .demo-only {
-            z-index: 101;
+        z-index: 101;
         }
         /* Loading Style End*/
         
         .modal-body{position:relative;}
         .modal-body .loadingDiv.cOTPVerification {
-        	left: 0;top: 0;height: 100%;
+        left: 0;top: 0;height: 100%;
         }
         .Inputerror input{padding: 5px; display: inline-block; border: 1px solid rgb(194, 57, 52); box-shadow: rgb(194, 57, 52) 0px 0px 0px 1px inset;border-radius:3px;-webkit-border-radius:3px;}
         #OTPVerificationPopup {max-width: 80rem; width: 50%;}
@@ -48,22 +48,22 @@
         .slds-modal__close {visibility: hidden;}
         /*Progressbar wizard*/
         .sw-theme-arrows { border: 1px solid rgb(221, 219, 218); border-radius: 100%; display: block; margin: 0 0 15px 0; padding: 0; position: relative; }
-.sw-theme-arrows > ul.step-anchor { background: rgb(236, 235, 234); border: 0; border-radius: 30px; display: block; list-style: none; margin-bottom: 0; margin-top: 0; overflow: hidden; padding: 0px; }
-.sw-theme-arrows > ul.step-anchor>li { display: block; float: left; margin-bottom: -1px; position: relative; width: 33%; }
-.sw-theme-arrows > ul.step-anchor > li.active > a { background: rgb(0, 112, 210) !important; border-color: #5bc0de !important; color: #fff !important; }
-.sw-theme-arrows > ul.step-anchor > li > a, .sw-theme-arrows > ul.step-anchor > li > a:hover { border: 0 !important; border-radius: 0; color: #bbb; display: block; outline-style: none; padding: 10px 0 10px 45px; position: relative; text-decoration: none; }
-.sw-theme-arrows > ul.step-anchor > li > a:hover { background: rgb(221, 219, 218); }
-.sw-theme-arrows > ul.step-anchor>li>a { line-height: 3px; margin-right: 2px; }
-.sw-theme-arrows > ul.step-anchor > li > a:before { border-bottom: 50px solid transparent; border-left: 30px solid #ffffff; border-top: 50px solid transparent; content: " "; display: block; height: 0; left: 100%; margin-left: 1px; margin-top: -50px; position: absolute; top: 50%; width: 0; z-index: 1; }
-.sw-theme-arrows > ul.step-anchor > li.active > a:after { border-left: 27px solid rgb(0, 112, 210) !important; }
-.sw-theme-arrows > ul.step-anchor > li > a:after { border-bottom: 50px solid transparent; border-left: 27px solid rgb(236, 235, 234); border-top: 50px solid transparent; content: " "; display: block; height: 0; left: 100%; margin-top: -50px; position: absolute; top: 50%; width: 0; z-index: 2; }
-.sw-theme-arrows > ul.step-anchor > li > a:hover:after { border-left: 27px solid rgb(221, 219, 218); }
+        .sw-theme-arrows > ul.step-anchor { background: rgb(236, 235, 234); border: 0; border-radius: 30px; display: block; list-style: none; margin-bottom: 0; margin-top: 0; overflow: hidden; padding: 0px; }
+        .sw-theme-arrows > ul.step-anchor>li { display: block; float: left; margin-bottom: -1px; position: relative; width: 33%; }
+        .sw-theme-arrows > ul.step-anchor > li.active > a { background: rgb(0, 112, 210) !important; border-color: #5bc0de !important; color: #fff !important; }
+        .sw-theme-arrows > ul.step-anchor > li > a, .sw-theme-arrows > ul.step-anchor > li > a:hover { border: 0 !important; border-radius: 0; color: #bbb; display: block; outline-style: none; padding: 10px 0 10px 45px; position: relative; text-decoration: none; }
+        .sw-theme-arrows > ul.step-anchor > li > a:hover { background: rgb(221, 219, 218); }
+        .sw-theme-arrows > ul.step-anchor>li>a { line-height: 3px; margin-right: 2px; }
+        .sw-theme-arrows > ul.step-anchor > li > a:before { border-bottom: 50px solid transparent; border-left: 30px solid #ffffff; border-top: 50px solid transparent; content: " "; display: block; height: 0; left: 100%; margin-left: 1px; margin-top: -50px; position: absolute; top: 50%; width: 0; z-index: 1; }
+        .sw-theme-arrows > ul.step-anchor > li.active > a:after { border-left: 27px solid rgb(0, 112, 210) !important; }
+        .sw-theme-arrows > ul.step-anchor > li > a:after { border-bottom: 50px solid transparent; border-left: 27px solid rgb(236, 235, 234); border-top: 50px solid transparent; content: " "; display: block; height: 0; left: 100%; margin-top: -50px; position: absolute; top: 50%; width: 0; z-index: 2; }
+        .sw-theme-arrows > ul.step-anchor > li > a:hover:after { border-left: 27px solid rgb(221, 219, 218); }
         
     </style>
     
-
-
-        
+    
+    
+    
     <!--lightning progressIndicator start
     <lightning:progressIndicator currentStep="{!v.currentStep}" type="path">
         <lightning:progressStep value="1" />
@@ -71,35 +71,35 @@
         <lightning:progressStep value="3"  />
     </lightning:progressIndicator>-->
     <header class="slds-modal__header" id="OTPVerification" >
-       <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse" title="Close" onclick="">
-			<span data-aura-rendered-by="47:1615;a" class="lightningPrimitiveIcon" data-aura-class="lightningPrimitiveIcon"><lightning:icon iconName="{#v.closeIcon}" size="small" variant="inverse" /></span>
+        <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse" title="Close" onclick="">
+            <span data-aura-rendered-by="47:1615;a" class="lightningPrimitiveIcon" data-aura-class="lightningPrimitiveIcon"><lightning:icon iconName="{#v.closeIcon}" size="small" variant="inverse" /></span>
             <span class="slds-assistive-text">Close</span>
         </button>
-       <h2 id="modal-heading-01" class="slds-text-heading_medium slds-hyphenate">OTP</h2> 
+        <h2 id="modal-heading-01" class="slds-text-heading_medium slds-hyphenate">OTP</h2> 
     </header>
     <h2 id="modal-heading-01" class="slds-text-heading_medium slds-hyphenate" style="font-size:22px; margin-bottom:15px; text-align: center;">Member Verification</h2>
     <div id="smartwizard" class="sw-theme-arrows">
-	  <ul class="step-anchor" currentStep="{!v.currentStep}">
-	  	<aura:if isTrue="{!(v.currentStep == '1')}">
-	    	<li class="active"><a href="#step-1">&nbsp;</a></li>
-	    	<li><a href="#step-2">&nbsp;</a></li>
-	    	<li><a href="#step-3">&nbsp;</a></li>
-	    </aura:if>
-	    <aura:if isTrue="{!(v.currentStep == '2')}">
-	    	<li class="active"><a href="#step-1">&nbsp;</a></li>
-	    	<li class="active"><a href="#step-2">&nbsp;</a></li>
-	    	<li><a href="#step-3">&nbsp;</a></li>
-	    </aura:if>
-	    <aura:if isTrue="{!(v.currentStep == '3')}">
-	    	<li class="active"><a href="#step-1">&nbsp;</a></li>
-	    	<li class="active"><a href="#step-2">&nbsp;</a></li>
-	    	<li class="active"><a href="#step-3">&nbsp;</a></li>
-	    </aura:if>
-	  </ul>
-	</div>
-
-<aura:if isTrue="{!(v.loading == 'true')}">
-<div class="loadingDiv">
+        <ul class="step-anchor" currentStep="{!v.currentStep}">
+            <aura:if isTrue="{!(v.currentStep == '1')}">
+                <li class="active"><a href="#step-1">&nbsp;</a></li>
+                <li><a href="#step-2">&nbsp;</a></li>
+                <li><a href="#step-3">&nbsp;</a></li>
+            </aura:if>
+            <aura:if isTrue="{!(v.currentStep == '2')}">
+                <li class="active"><a href="#step-1">&nbsp;</a></li>
+                <li class="active"><a href="#step-2">&nbsp;</a></li>
+                <li><a href="#step-3">&nbsp;</a></li>
+            </aura:if>
+            <aura:if isTrue="{!(v.currentStep == '3')}">
+                <li class="active"><a href="#step-1">&nbsp;</a></li>
+                <li class="active"><a href="#step-2">&nbsp;</a></li>
+                <li class="active"><a href="#step-3">&nbsp;</a></li>
+            </aura:if>
+        </ul>
+    </div>
+    
+    <aura:if isTrue="{!(v.loading == 'true')}">
+        <div class="loadingDiv">
             <div class="demo-only" style='height: 6rem; '>
                 <div role="status" class="slds-spinner slds-spinner_medium">
                     <div class="slds-spinner__dot-a"></div>
@@ -107,135 +107,168 @@
                 </div>
             </div>
         </div>
-</aura:if>
+    </aura:if>
     
-<aura:if isTrue="{!(v.loading == 'false')}">
-    <div class="otpModalpopup">
-        <!--showing 3 screens based on progress indicator steps-->
-        <div class="{!v.currentStep == '1' ? 'slds-show' : 'slds-hide'}">
-            <h3 style="font-size:18px; text-align: center;">Please select a delivery method</h3>
-             <span style="color:red">Recently Updated items are disabled</span>
-            <div class="optwrap" id="optwrap">
-            	<div class="row">
-            		<div class="col-md-6">                    
-                        <p><b>Email</b></p>
-                        <aura:iteration items="{!v.Model.EmailsList_Options}" var="stage">
-                            <div class="radlist">
-                         
-                            <ui:inputRadio label="" name="memberverification" value="false" class="{!stage.Text}" change="{!c.onRadioSelect}" disabled="{!stage.isEnabled}"/>
-                           
-                            <span>{!stage.Value}</span>
+    <aura:if isTrue="{!(v.loading == 'false')}">
+        <div class="otpModalpopup">
+            <!--showing 3 screens based on progress indicator steps-->
+            <div class="{!v.currentStep == '1' ? 'slds-show' : 'slds-hide'}">
+                <h3 style="font-size:18px; text-align: center;">Please select a delivery method</h3>
+                <span style="color:red">Recently Updated items are disabled</span>
+                <div  id="optwrap" class="optwrap">
+                    <div class="slds-grid">
+                        <div class="slds-col slds-size_4-of-12">                    
+                            <p><b>Member</b></p>
+                        </div>
+                        <div class="slds-col slds-size_4-of-12">                    
+                            <p><b>Email</b></p>
+                        </div>
+                        <div class="slds-col slds-size_4-of-12">                    
+                            <p><b>Phone</b></p>
+                        </div>
+                    </div> 
+               
+                    <aura:iteration items="{!v.Model.LstMemid}" var="stage" >
+                     <div class="slds-grid">
+                            <div class="slds-col slds-size_4-of-12">  
+                               
+                                    {!stage.Value}
+                               
                             </div>
-                        </aura:iteration>
-	                </div>
-	                <div class="col-md-6">
-	                	<aura:if isTrue="{!v.Model.PhoneList_Options.length > 0}">
-	                		 <div>
-	                        <p><b>Phone</b></p>
-	                        <aura:iteration items="{!v.Model.PhoneList_Options}" var="stage">
-	                           <div class="radlist">
-	                           
-	                            <ui:inputRadio label="" name="memberverification" value="false" class="{!stage.Text}" change="{!c.onRadioSelect}" disabled="{!stage.isEnabled}"/>
-	                            
-	                            <span>{!stage.Value}</span>
-	                            </div>
-	                        </aura:iteration>
-	                    	</div>
-	                	</aura:if>
-	                   
-	                </div>        
-            	</div>                       
-            	 <aura:if isTrue="{!(v.optionRequired == true)}">
-					<ul class="has-error uiInputDefaultError uiInput uiInputSelect uiInput--default uiInput--select">								
-						<li class="form-element__help" data-aura-rendered-by="45:2084;a">Please select a delivery method.</li>					   			
-					</ul>
-				</aura:if>
+                            
+                            <div class="slds-col slds-size_4-of-12">                    
+                                
+                                <aura:iteration items="{!v.Model.EmailsList_Options}" var="estage">
+                                    
+                                 <div>
+                                        <aura:if isTrue="{!estage.memId == stage.Text}">
+                                            <ui:inputRadio label="" name="memberverification" value="false" class="{!estage.Text}" change="{!c.onRadioSelect}" disabled="{!estage.isEnabled}"/>
+                                            
+                                            <aura:if isTrue="{!estage.isEnabled}">
+                                                <span style="background-color: grey;">{!estage.Value}</span>
+                                                <aura:set attribute="else">
+                                                    <span >{!estage.Value}</span>
+                                                </aura:set>
+                                            </aura:if>
+                                        </aura:if>
+                                   </div>
+                                    
+                                </aura:iteration>
+                            </div>
+                            <div class="slds-col slds-size_4-of-12">
+                                <aura:if isTrue="{!v.Model.PhoneList_Options.length > 0}">
+                                    <aura:iteration items="{!v.Model.PhoneList_Options}" var="pstage">
+                                            
+                                         <div>
+                                                <aura:if isTrue="{!pstage.memId == stage.Text}">
+                                                    <ui:inputRadio label="" name="memberverification" value="false" class="{!pstage.Text}" change="{!c.onRadioSelect}" disabled="{!pstage.isEnabled}"/>
+                                                    
+                                                    <aura:if isTrue="{!pstage.isEnabled}">
+                                                        <span style="background-color: grey;">{!pstage.Value}</span>
+                                                        <aura:set attribute="else">
+                                                            <span >{!pstage.Value}</span>
+                                                        </aura:set>
+                                                    </aura:if>
+                                                </aura:if>
+                                        </div>
+                                        </aura:iteration>
+                                  
+                                </aura:if>
+                            </div>        
+                        </div>    
+                    </aura:iteration>
+                    
+                    <aura:if isTrue="{!(v.optionRequired == true)}">
+                        <ul class="has-error uiInputDefaultError uiInput uiInputSelect uiInput--default uiInput--select">								
+                            <li class="form-element__help" data-aura-rendered-by="45:2084;a">Please select a delivery method.</li>					   			
+                        </ul>
+                    </aura:if>
+                </div>
+                
+            </div>
+            <div class="{!v.currentStep == '2' ? 'slds-show' : 'slds-hide'}">
+                <div class="otpsecs dispone text-center section2" id="section2">
+                    <h3 class="subtitle">Please enter 6-digit OTP</h3>
+                    
+                    <p class="subtitledes">OTP has been sent.</p>
+                    
+                    
+                    <div class="sec2frm" id="verifytxt">
+                        <ui:inputText class="form-control verifyInput" value="{!v.EnteredOTP}" />
+                        <button class="slds-button slds-button--brand" style="margin-left: 10px;" onclick="{!c.clickverifyOTP}">Verify</button>              			 
+                    </div>
+                    <aura:if isTrue="{!(v.InputRequired == true)}">
+                        <ul class="has-error uiInputDefaultError uiInput uiInputSelect uiInput--default uiInput--select">								
+                            <li class="form-element__help" data-aura-rendered-by="45:2084;a">Please Enter Verification code.</li>					   			
+                        </ul>
+                    </aura:if>
+                    <p class="subtitledes" style="padding-right:40px;"><br/>Didn't receive the OTP? 
+                        <button class="slds-button slds-button--brand" style="margin-left: 10px;" onclick="{!c.resendOTP}">Resend</button>
+                    </p>
+                    <div class="text-center clearfix">                  
+                        <ui:button aura:id="button" buttonTitle="Cancel" class="slds-button slds-button--brand btn-danger" label="Cancel" press="{!c.CancelVerification}"/>
+                    </div>
+                </div>
+            </div>
+            <div class="{!v.currentStep == '3' ? 'slds-show' : 'slds-hide'}" style="color:blue">
+                <aura:if isTrue="{!(v.verified == 'Expired')}">
+                    <div id="divexpired">
+                        <h3 class="subtitle redcol"><i class="ion-ios-close-outline"></i><br/>Expired</h3>
+                        <p class="subtitledes redcol">OTP code that you entered has expired.</p><br/>
+                    </div>
+                </aura:if>
+                <aura:if isTrue="{!(v.verified == 'Declined')}">
+                    <div id="divunconfirmed">
+                        <h3 class="subtitle bluecol"><i class="ion-ios-minus-outline"></i><br />Unconfirmed Contact</h3>
+                        <p class="subtitledes bluecol">Member unable to provide contact information</p>      		
+                    </div>
+                </aura:if>
+                <aura:if isTrue="{!(v.verified == 'NoContactInfo')}">
+                    <div id="divnocontactinfo">
+                        <h3 class="subtitle bluecol"><i class="ion-ios-minus-outline"></i><br />No contact info</h3>
+                        <p class="subtitledes bluecol">No contact information found for the member</p>     		
+                    </div>
+                </aura:if>
+                <aura:if isTrue="{!(v.verified == 'Changed')}">
+                    <div id="divIsIneligible">
+                        <h3 class="subtitle bluecol"><i class="ion-ios-minus-outline"></i><br/>Member is not eligible for OTP authentication</h3>
+                        <p class="subtitledes bluecol">TELEPHONE/EMAIL CHANGED WITHIN 60 DAYS</p><br/>      		
+                    </div>
+                </aura:if>
+                <aura:if isTrue="{!(v.verified == 'Valid')}">
+                    <div id="divauthenticated">
+                        <h3 class="subtitle greencol"><i class="ion-ios-checkmark-outline"></i><br/>Authenticated</h3>
+                        <p class="subtitledes greencol">OTP authentication was successful.</p><br/>
+                    </div>
+                </aura:if>
+                <aura:if isTrue="{!(v.verified == 'Invalid')}">
+                    <div id="divfailed">
+                        <h3 class="subtitle redcol"><i class="ion-ios-close-outline"></i><br/>Failed</h3>
+                        <p class="subtitledes redcol">OTP authentication failed.</p><br/>
+                    </div>
+                </aura:if>
+                <aura:if isTrue="{!(v.verified == 'Cancelled')}">
+                    <div id="divcanceled">
+                        <h3 class="subtitle bluecol"><i class="ion-ios-minus-outline"></i><br/>Cancelled</h3>
+                        <p class="subtitledes bluecol">Member unable to provide OTP code</p><br/>
+                    </div>
+                </aura:if>			
             </div>
             
-        </div>
-        <div class="{!v.currentStep == '2' ? 'slds-show' : 'slds-hide'}">
-            <div class="otpsecs dispone text-center section2" id="section2">
-              <h3 class="subtitle">Please enter 6-digit OTP</h3>
-              
-              <p class="subtitledes">OTP has been sent.</p>
-              
-              
-              <div class="sec2frm" id="verifytxt">
-              			<ui:inputText class="form-control verifyInput" value="{!v.EnteredOTP}" />
-              			<button class="slds-button slds-button--brand" style="margin-left: 10px;" onclick="{!c.clickverifyOTP}">Verify</button>              			 
-              </div>
-              <aura:if isTrue="{!(v.InputRequired == true)}">
-							<ul class="has-error uiInputDefaultError uiInput uiInputSelect uiInput--default uiInput--select">								
-								<li class="form-element__help" data-aura-rendered-by="45:2084;a">Please Enter Verification code.</li>					   			
-							</ul>
-				</aura:if>
-                <p class="subtitledes" style="padding-right:40px;"><br/>Didn't receive the OTP? 
-                    <button class="slds-button slds-button--brand" style="margin-left: 10px;" onclick="{!c.resendOTP}">Resend</button>
-                </p>
-                <div class="text-center clearfix">                  
-                  <ui:button aura:id="button" buttonTitle="Cancel" class="slds-button slds-button--brand btn-danger" label="Cancel" press="{!c.CancelVerification}"/>
+            
+            <!--###### MODAL BOX FOOTER Part Start From Here ######-->
+            
+            
+            <aura:if isTrue="{!v.currentStep == '1'}">
+                <div id="divunconfirmedbutton" style="padding-top: 15px;">
+                    <ui:button aura:id="button" buttonTitle="Unconfirmed" class="slds-button slds-button--brand btn btn-danger" label="Unconfirmed" press="{!c.declineAtFirstStep}"/>
+                    <button class="slds-button slds-button--brand" onclick="{!c.moveNext}">Next</button>     
                 </div>
-          </div>
-        </div>
-        <div class="{!v.currentStep == '3' ? 'slds-show' : 'slds-hide'}" style="color:blue">
-        	<aura:if isTrue="{!(v.verified == 'Expired')}">
-        		<div id="divexpired">
-					<h3 class="subtitle redcol"><i class="ion-ios-close-outline"></i><br/>Expired</h3>
-					<p class="subtitledes redcol">OTP code that you entered has expired.</p><br/>
-				</div>
-        	</aura:if>
-        	<aura:if isTrue="{!(v.verified == 'Declined')}">
-        	 	<div id="divunconfirmed">
-	               <h3 class="subtitle bluecol"><i class="ion-ios-minus-outline"></i><br />Unconfirmed Contact</h3>
-	                <p class="subtitledes bluecol">Member unable to provide contact information</p>      		
-	            </div>
-        	</aura:if>
-            <aura:if isTrue="{!(v.verified == 'NoContactInfo')}">
-            	<div id="divnocontactinfo">
-	                <h3 class="subtitle bluecol"><i class="ion-ios-minus-outline"></i><br />No contact info</h3>
-	                <p class="subtitledes bluecol">No contact information found for the member</p>     		
-	            </div>
             </aura:if>
-            <aura:if isTrue="{!(v.verified == 'Changed')}">
-            	<div id="divIsIneligible">
-                  <h3 class="subtitle bluecol"><i class="ion-ios-minus-outline"></i><br/>Member is not eligible for OTP authentication</h3>
-			      <p class="subtitledes bluecol">TELEPHONE/EMAIL CHANGED WITHIN 60 DAYS</p><br/>      		
-            	</div>
-            </aura:if>
-            <aura:if isTrue="{!(v.verified == 'Valid')}">
-            	<div id="divauthenticated">
-				  <h3 class="subtitle greencol"><i class="ion-ios-checkmark-outline"></i><br/>Authenticated</h3>
-				  <p class="subtitledes greencol">OTP authentication was successful.</p><br/>
-				</div>
-            </aura:if>
-            <aura:if isTrue="{!(v.verified == 'Invalid')}">
-            	<div id="divfailed">
-				  <h3 class="subtitle redcol"><i class="ion-ios-close-outline"></i><br/>Failed</h3>
-				  <p class="subtitledes redcol">OTP authentication failed.</p><br/>
-				</div>
-            </aura:if>
-			<aura:if isTrue="{!(v.verified == 'Cancelled')}">
-				<div id="divcanceled">
-			      <h3 class="subtitle bluecol"><i class="ion-ios-minus-outline"></i><br/>Cancelled</h3>
-			      <p class="subtitledes bluecol">Member unable to provide OTP code</p><br/>
-				</div>
-			</aura:if>			
-        </div>
-   
-
-    <!--###### MODAL BOX FOOTER Part Start From Here ######-->
-
-
-    <aura:if isTrue="{!v.currentStep == '1'}">
-        <div id="divunconfirmedbutton">
-        	<ui:button aura:id="button" buttonTitle="Unconfirmed" class="slds-button slds-button--brand btn btn-danger" label="Unconfirmed" press="{!c.declineAtFirstStep}"/>
-            <button class="slds-button slds-button--brand" onclick="{!c.moveNext}">Next</button>     
         </div>
     </aura:if>
-  </div>
-</aura:if>
-
-   <footer class="slds-modal__footer" id="OTPVerificationPageFooter">
+    
+    <footer class="slds-modal__footer" id="OTPVerificationPageFooter">
         <button class="slds-button slds-button_neutral" onclick="{!c.closePopup}">Close</button>       
     </footer> 
 </aura:component>

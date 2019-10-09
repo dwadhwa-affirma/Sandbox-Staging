@@ -118,6 +118,7 @@
 			if(component.isValid() && status === "SUCCESS")
 			{
 				var result =  response.getReturnValue();
+                debugger;
 				component.set("v.Model", result);
 				if(result.IsIneligible == 'true')
 				{

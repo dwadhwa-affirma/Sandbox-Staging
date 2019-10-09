@@ -7,12 +7,20 @@
     <aura:attribute name="loadchk1" type="Boolean" default="false" />
     <aura:attribute name="loadchk2" type="Boolean" default="false" />
     <aura:attribute name="loadchk3" type="Boolean" default="false" />
+     <aura:attribute name="loadchk5" type="Boolean" default="false" />
     <aura:attribute name="nochk1" type="Boolean" default="false" />
     <aura:attribute name="nochk2" type="Boolean" default="false" />
     <aura:attribute name="nochk3" type="Boolean" default="false" />
+    <aura:attribute name="nochk5" type="Boolean" default="false" />
     <aura:attribute name="progchk1" type="Boolean" default="false" />
     <aura:attribute name="progchk2" type="Boolean" default="false" />
     <aura:attribute name="progchk3" type="Boolean" default="false" />
+     <aura:attribute name="progchk5" type="Boolean" default="false" />
+    <aura:attribute name="ischk1" type="Boolean" default="false" />
+    <aura:attribute name="ischk2" type="Boolean" default="false" />
+    <aura:attribute name="ischk3" type="Boolean" default="false" />
+    <aura:attribute name="ischk4" type="Boolean" default="false" />
+     <aura:attribute name="ischk5" type="Boolean" default="false" />
     <aura:attribute name="nodata" type="Boolean" default="false" />
     <aura:attribute name="isfromto" type="Boolean" default="false" />
     <aura:attribute name="dateinvalid" type="Boolean" default="false" />
@@ -21,7 +29,7 @@
     <aura:attribute name="columns" type="List"/>
     <aura:attribute type="List" name="selectedCheckBoxes" default="[]" />
     <aura:attribute name="pageNumber" type="Integer" default="1"/>
-    <aura:attribute name="pageSize" type="Integer" default="100"/>
+    <aura:attribute name="pageSize" type="Integer" default="50"/>
     <aura:attribute name="isLastPage" type="Boolean" default="false"/>
     <aura:attribute name="dataSize" type="Integer" default="0"/> 
     <aura:attribute name="tempdata" type="String" default="test"/> 
@@ -31,6 +39,8 @@
     <aura:attribute name="isSalesforce" type="Boolean" default="false"/>
      <aura:attribute name="sortedBy" type="String"/>
      <aura:attribute name="sortedDirection" type="String"/>
+    <aura:attribute name="SNAILsetting" type="List"/>
+    <aura:attribute name="IsUserInGroup" type="Boolean"/>
     <!-- handlers-->
     <aura:handler name="init" value="{! this }" action="{! c.doInit }"/>
     <div >
@@ -46,7 +56,7 @@
                     
                     <div class="slds-media__body">
                         <h2 class="slds-card__header-title">
-                            <span>Member Communication Source Search</span>
+                            <span>Member Communication Source Search {!v.SNAILsetting}</span>
                             
                         </h2>
                     </div>
@@ -67,8 +77,9 @@
                                     </div>
                                 </header>
                             </div>
-                            <div class="slds-card__body slds-card__body_inner">
+                           <div class="slds-card__body slds-card__body_inner">
                                 <div class="slds-form-element__control  ">
+                                	 <aura:if isTrue="{!v.ischk1}">
                                     <div class="slds-checkbox">
                                         <div class="slds-clearfix">
                                             <div class="slds-float_left">
@@ -91,7 +102,11 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="slds-checkbox">
+                                    </aura:if>
+                                     <aura:if isTrue="{!v.ischk2}">
+                                     
+                                    <div class="slds-checkbox" >
+                                    
                                         <div class="slds-clearfix">
                                             <div class="slds-float_left">
                                                 <p><lightning:input type="checkbox" label="Salesforce"   aura:id="chk2"  value="Salesforce" onchange="{!c.callCheckboxMethod}"  /></p>
@@ -113,6 +128,8 @@
                                         </div>
                                         
                                     </div>
+                                    </aura:if>
+                                     <aura:if isTrue="{!v.ischk3}">
                                     <div class="slds-checkbox">
                                         <div class="slds-clearfix">
                                             <div class="slds-float_left">
@@ -136,11 +153,45 @@
                                         </div>
                                        
                                     </div>
+                                    </aura:if>
+                                     <aura:if isTrue="{!v.ischk4}">
                                     <div class="slds-checkbox">
                                         <lightning:input type="checkbox" label="Other"  aura:id="chk4"  value="Other" onchange="{!c.callCheckboxMethod}"  />
                                     </div>
+                                    </aura:if>
+                                    
+                                  <!-- OOW  -->  
+                                  
+                                      <aura:if isTrue="{!v.ischk5}">
+                                    <div class="slds-checkbox">
+                                        <div class="slds-clearfix">
+                                            <div class="slds-float_left">
+                                                <p><lightning:input type="checkbox" label="OOW"   aura:id="chk5"  value="OOW" onchange="{!c.callCheckboxMethod}"  disabled ="{!not(v.IsUserInGroup)}" /></p>
+                                            </div>
+                                            <div class="slds-float_right">
+                                                <p class="SearchText"><aura:if isTrue="{! v.loadchk5 }"> 
+                                                		<lightning:icon iconName="utility:check" size="xx-small" alternativeText="Approved" />
+                                                		Result Showing
+                                                    </aura:if>
+                                                     <aura:if isTrue="{! v.progchk5 }"> 
+                                                        <lightning:icon iconName="utility:loop" size="xx-small" alternativeText="Approved" />
+                                                        Searching...
+                                                        
+                                                    </aura:if>
+                                                    <aura:if isTrue="{! v.nochk5  }"> <lightning:icon iconName="utility:close" size="xx-small" alternativeText="No Result" />
+                                                		No Result
+                                               	    </aura:if>
+                                                </p>
+                                            </div>
+                                        </div>
+                                       
+                                    </div>
+                                    </aura:if>
+                                    
+                                    
                                 </div>
                             </div>
+							
                         </article>
                         
                     </div>
@@ -182,7 +233,7 @@
 	                               </aura:if>
                                 
                                
-	                                <aura:if isTrue="{!dateinvalid}">
+	                                <aura:if isTrue="{!v.dateinvalid}">
 		                                <div style="color:red">
 										    Invalid Date
 										    

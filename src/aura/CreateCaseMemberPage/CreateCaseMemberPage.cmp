@@ -631,6 +631,13 @@
                         <force:inputField value="{!v.caseObject.CaseComments__c}"> </force:inputField>
                     </div>
                 </div>
+                
+                <div class="slds-form-element">
+                    <label class="slds-form-element__label">Special Reporting Number</label>
+                    <div class="slds-form-element__control">
+                        <force:inputField value="{!v.caseObject.Special_Reporting_Number__c}"> </force:inputField>
+                    </div>
+                </div>
 
                 <div class="slds-form-element">
                     <label class="slds-form-element__label">Ticket #</label>

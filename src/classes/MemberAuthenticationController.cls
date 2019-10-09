@@ -59,6 +59,7 @@ public class MemberAuthenticationController{
     public string fromMarsData {get;set;}
      
     public String DOB{get;set;}
+    
     public string IVRDOB{get;set;}
     public String DOBMatch{get;set;}
     public String IVRDOBMatch{get;set;}
@@ -86,6 +87,7 @@ public class MemberAuthenticationController{
     
     
     public String Email{get;set;}
+    public List<selectOption> LstEmail{get;set;}
     public String EmailMatch{get;set;} 
     public boolean EmailConfirm{get;set;}{EmailConfirm = false;}
     public string EmailConfirmString{get;set;}{EmailConfirmString = '';}
@@ -117,7 +119,7 @@ public class MemberAuthenticationController{
         
         }
     // not sure    
-    private String oldFieldToMatch{get; set;}
+    @TestVisible private String oldFieldToMatch{get; set;}
     
     // internal
     private String firstName{get; set;}
@@ -444,16 +446,19 @@ public class MemberAuthenticationController{
         if (EnteredCardNumberFormatted != '' && EnteredCardNumberFormatted != null)
         {
             EnteredCardNumber = EnteredCardNumberFormatted;
+            System.debug('system1');
         }
         
         // On member selection
         if(selectedID != null && selectedID != ''){
             verifySelectedCallerDetails();
+            System.debug('system2');
         }
         else
         { 
             // without member selection
             VerifyCallerDetailsNoSelection();
+            System.debug('system3');
         }
        
        return null;
@@ -514,11 +519,16 @@ public class MemberAuthenticationController{
                     }
                                                       
                     if(SSNnumberMatch == 'true'){
-                        if(EnteredSSN == null || EnteredSSN == ''){SSNnumberMatch = '';}
+                    	if(EnteredSSN == null || EnteredSSN == ''){
+                        	SSNnumberMatch = '';
+                        }
                         userEnteredInformation.SSN = EnteredSSN;
                     }else{
+                    	System.debug('SSNnumberMatch'+SSNnumberMatch);
+                    	System.debug('EnteredSSN'+EnteredSSN);
                         if((SSNnumberMatch == null || SSNnumberMatch == '') && (EnteredSSN != null && EnteredSSN != '')){
                             userEnteredInformation.SSN = EnteredSSN;
+                            System.debug('EnteredSSN'+EnteredSSN);
                             fieldnametocheck = 'SSNNumber';
                             system.debug('fieldnametocheck = SSNNumber');
                         }else if(EnteredSSN == null || EnteredSSN == ''){
@@ -550,16 +560,36 @@ public class MemberAuthenticationController{
                          fieldnametocheck = 'CardNumber';
                     }
                     
-                    
+                    System.debug('DOBMatch-if'+DOBMatch);
                     if(DOBMatch == 'true'){ 
-                        if(DOB == null || DOB == ''){DOBMatch = '';}               
-                        userEnteredInformation.DOB = DOB;
+                        if(DOB == null || DOB == '')
+                        {DOBMatch = '';}       
+                         String[] dobparse = DOB.split('-');
+                         userEnteredInformation.DOB = string.ValueOf(dobparse[2]) + '-'+ String.valueOf(dobparse[0])+ '-' + String.valueOf(dobparse[1]);	
+                    	 System.debug('DOB---if'+DOB);
                     }else{
-                            if(DOB !=null && DOB != '' && (DOBMatch == null || DOBMatch == '')){                
-                            userEnteredInformation.DOB = DOB;
+                            if(DOB !=null && DOB != ''){   
+                            String[] dobparse = DOB.split('-');
+                           	userEnteredInformation.DOB = string.ValueOf(dobparse[2]) + '-'+ String.valueOf(dobparse[0])+ '-' + String.valueOf(dobparse[1]);	             
+                            //userEnteredInformation.DOB = DOB;
+                            System.debug('DOB---else'+DOB);
                             fieldnametocheck = 'DOB';
                             }else if(DOB == null || DOB == ''){
                                 DOBMatch = '';
+                            }
+                    }
+                    if(PhoneNumberMatch == 'true'){ 
+                        if(PhoneNumber == null || PhoneNumber == ''){PhoneNumberMatch = '';}               
+                        	userEnteredInformation.PhoneNumber = PhoneNumber;
+                    }else{
+                            if(PhoneNumber !=null && PhoneNumber != '' && (PhoneNumberMatch == null ||PhoneNumberMatch == '')){   
+                            //String[] dobparse = DOB.split('-');
+                           	userEnteredInformation.PhoneNumber = PhoneNumber;	             
+                            //userEnteredInformation.DOB = DOB;
+                            System.debug('PhoneNumber'+PhoneNumber);
+                            fieldnametocheck = 'PhoneNumber';
+                            }else if(PhoneNumber == null || PhoneNumber == ''){
+                                PhoneNumberMatch = '';
                             }
                     }
                     if(DLStateIdPassportMatch == 'true'){
@@ -597,7 +627,7 @@ public class MemberAuthenticationController{
                     }
                     //Krunal
                     if(EmailMatch == 'true'){
-                        if(Email == null || Email== ''){EmailMatch = '';} 
+                        if(Email == null || Email== ''){EmailMatch = '';LstEmail = new List<SelectOption>(); } 
                         userEnteredInformation.Email = Email;
                     }else{
                         if(Email !=null && Email != '' && (EmailMatch == null || EmailMatch == '')){
@@ -630,6 +660,10 @@ public class MemberAuthenticationController{
                             }
                             if(oldFieldToMatch == 'DOB'){
                                 userEnteredInformation.DOB = DOB;
+                                fieldnametocheck = oldFieldToMatch;
+                            }
+                            if(oldFieldToMatch == 'PhoneNumber'){
+                                userEnteredInformation.PhoneNumber = PhoneNumber;
                                 fieldnametocheck = oldFieldToMatch;
                             }
                             if(oldFieldToMatch == 'IdNumber'){
@@ -901,6 +935,7 @@ public class MemberAuthenticationController{
                     {
                         EnteredSSN = selectedOne.SSN_Last_4__pc;
                         SSNnumberMatch = 'true';
+                        System.debug('SSNRJ' + EnteredSSN);
                     }
                     
                     
@@ -916,6 +951,7 @@ public class MemberAuthenticationController{
                     {
                         EnteredSSN = selectedOne.SSN_Last_4__pc;
                         SSNnumberMatch = 'true';
+                        System.debug('SSNRJ1' + EnteredSSN);
                     }
                     /*
                     // if information recieved from IVR - keep same
@@ -1047,11 +1083,13 @@ public class MemberAuthenticationController{
                     if (selectedOne.PersonEmail == null || selectedOne.PersonEmail == '')
                     {
                         Email = '';
+                        LstEmail = new List<SelectOption>();
                         EmailMatch = '';
                     }
                     else
                     {
                         Email = selectedOne.PersonEmail;
+                        GetEmailLst(selectedOne.id);
                         EmailMatch = 'true';
                     }
                     
@@ -1062,11 +1100,13 @@ public class MemberAuthenticationController{
                     if (selectedOne.PersonEmail == null || selectedOne.PersonEmail == '')
                     {
                         Email = '';
+                        LstEmail = new List<SelectOption>();
                         EmailMatch = '';
                     }
                     else
                     {
-                        Email = selectedOne.PersonEmail;
+                        Email = selectedOne.PersonEmail;                        
+                        GetEmailLst(selectedOne.id);
                         EmailMatch = 'true';
                     }
                     
@@ -1075,7 +1115,54 @@ public class MemberAuthenticationController{
                 
         
     }
-    
+    public void GetEmailLst(string accountid){
+        LstEmail = new List<SelectOption>();
+        MemberVerification mv = new MemberVerification();
+        mv.accId = accountid;
+        mv.GetRelatedAccountsPopulated();
+        List<string> acclstid = mv.allRelatedAccounts;
+        List<Account> listAccount = [select Id,Member_Verification_OTP_Invalid_Attempt__c,FirstName,LastName,PersonEmail,Alternate_Email__pc from Account where ID in :acclstid and (PersonEmail != null OR Alternate_Email__pc != null)];
+        List<accounthistory> listhistory = [Select accountid,field,OldValue, NewValue, CreatedDate From accounthistory where accountid in :acclstid and ( field = 'PersonEmail' or field = 'Alternate_Email__pc') Order by CreatedDate DESC Limit 1];
+  		set<string> listContacts = new set<string>();
+        boolean flag = false;
+            for(Account acc:listAccount){
+                for(accounthistory ah : listhistory ){
+                    if(acc.id == ah.accountid && ah.field == 'PersonEmail' && acc.PersonEmail !=null){
+                        LstEmail.add(new SelectOption(acc.PersonEmail,acc.PersonEmail, false)); 
+                        Email = acc.PersonEmail;
+                        flag = true;
+                    }
+                    if(acc.id == ah.accountid && ah.field == 'Alternate_Email__pc' && acc.Alternate_Email__pc !=null){
+                        LstEmail.add(new SelectOption(acc.Alternate_Email__pc,acc.Alternate_Email__pc, false));  
+                        Email = acc.Alternate_Email__pc;
+                        flag = true;
+                    }
+                }
+            }
+        if(flag){
+            for(Account acc:listAccount){
+                	if(Email != acc.PersonEmail && acc.PersonEmail != null && acc.PersonEmail != ''){
+                            LstEmail.add(new SelectOption(acc.PersonEmail,acc.PersonEmail, false));    
+                        }
+                        if(Email != acc.Alternate_Email__pc && acc.Alternate_Email__pc != null && acc.Alternate_Email__pc != ''){
+                            LstEmail.add(new SelectOption(acc.Alternate_Email__pc,acc.Alternate_Email__pc, false));    
+                        }  
+                    }
+        }
+        else{
+             for(Account acc:listAccount){              
+                     if(acc.PersonEmail != null && acc.PersonEmail != ''){
+                            LstEmail.add(new SelectOption(acc.PersonEmail,acc.PersonEmail, false));    
+                        }
+                        if( acc.Alternate_Email__pc != null && acc.Alternate_Email__pc != ''){
+                            LstEmail.add(new SelectOption(acc.Alternate_Email__pc,acc.Alternate_Email__pc, false));    
+                        }  
+            }
+            
+        }
+                
+    }
+   
     private void setMemberNumberMatchStatus(Account selectedOne, List<Account_Details__c> memberDetails)
     {
         Set<String> memberDetailsNames = new Set<String>();
@@ -1426,7 +1513,18 @@ public class MemberAuthenticationController{
                         {
                             ID_1_Type = 'PSPT'; 
                         }
-                        DLStateIdPassportToMatch = ID_1_Type + ' ' + (selectedOne.ID_2_Number__pc == null? '' :selectedOne.ID_2_Number__pc) + ' ' + (selectedOne.ID_2_Expiration_Date__pc == null? '' : string.valueof(selectedOne.ID_2_Expiration_Date__pc.date()));
+                        
+                        List<String> valuesToJoin = new List<String>();
+                        
+                        
+                        selectedOne.ID_2_Description__pc = (selectedOne.ID_2_Description__pc == '' || selectedOne.ID_2_Description__pc == null) ? '' : string.valueof(selectedOne.ID_2_Description__pc) + ' | ';
+                        
+                        DLStateIdPassportToMatch = ((ID_1_Type == '' || ID_1_Type == null) ? '' : string.valueof(ID_1_Type) + ' | ') + selectedOne.ID_2_Description__pc	 + '' + (selectedOne.ID_2_Number__pc == null? '' : string.valueof(selectedOne.ID_2_Number__pc)+ ' | ') + '' + (selectedOne.ID_2_Expiration_Date__pc == null? '' : string.valueof(selectedOne.ID_2_Expiration_Date__pc.date()));
+                        
+						if(DLStateIdPassportToMatch.endsWith(' | '))
+						{
+							DLStateIdPassportToMatch = DLStateIdPassportToMatch.substring(0,DLStateIdPassportToMatch.lastIndexOf(' | '));
+						}                        
                     }
                     else
                     {
@@ -1447,7 +1545,15 @@ public class MemberAuthenticationController{
                         {
                             ID_1_Type = 'PSPT'; 
                         }
-                        DLStateIdPassportToMatch = ID_1_Type + ' ' + (selectedOne.ID_3_Number__pc == null? '' : selectedOne.ID_3_Number__pc) + ' ' + (selectedOne.ID_3_Expiration_Date__pc == null? '' : string.valueof(selectedOne.ID_3_Expiration_Date__pc.date()));
+                        
+                        selectedOne.ID_3_Description__pc = (selectedOne.ID_3_Description__pc == '' || selectedOne.ID_3_Description__pc == null) ? '' : string.valueof(selectedOne.ID_3_Description__pc) + ' | ';
+                        
+                        DLStateIdPassportToMatch = ((ID_1_Type == '' || ID_1_Type == null) ? '' : string.valueof(ID_1_Type) + ' | ') + selectedOne.ID_3_Description__pc	 + '' + (selectedOne.ID_3_Number__pc == null? '' : string.valueOf(selectedOne.ID_3_Number__pc) +' | ') + '' + (selectedOne.ID_3_Expiration_Date__pc == null? '' : string.valueof(selectedOne.ID_3_Expiration_Date__pc.date()));
+                        
+                        if(DLStateIdPassportToMatch.endsWith(' | '))
+						{
+							DLStateIdPassportToMatch = DLStateIdPassportToMatch.substring(0,DLStateIdPassportToMatch.lastIndexOf(' | '));
+						}
                     }
                 }
                 else{
@@ -1468,7 +1574,15 @@ public class MemberAuthenticationController{
                         {
                             ID_1_Type = 'PSPT'; 
                         }
-                    DLStateIdPassportToMatch = ID_1_Type + ' ' + (selectedOne.ID_1_Number__pc == null? '' : string.valueof(selectedOne.ID_1_Number__pc)) + ' ' + (selectedOne.ID_1_Expiration_Date__pc == null? '' : string.valueof(selectedOne.ID_1_Expiration_Date__pc.date()));
+                        
+                        selectedOne.ID_1_Description__pc = (selectedOne.ID_1_Description__pc == '' || selectedOne.ID_1_Description__pc == null) ? '' : string.valueof(selectedOne.ID_1_Description__pc) + ' | ';
+                        
+                    	DLStateIdPassportToMatch =  ((ID_1_Type == '' || ID_1_Type == null) ? '' : string.valueof(ID_1_Type) + ' | ') + selectedOne.ID_1_Description__pc  +''+ (selectedOne.ID_1_Number__pc == null ? '' : string.valueof(selectedOne.ID_1_Number__pc) + ' | ') + '' + (selectedOne.ID_1_Expiration_Date__pc == null? '' : string.valueof(selectedOne.ID_1_Expiration_Date__pc.date()));
+                    	
+                    	if(DLStateIdPassportToMatch.endsWith(' | '))
+						{
+							DLStateIdPassportToMatch = DLStateIdPassportToMatch.substring(0,DLStateIdPassportToMatch.lastIndexOf(' | '));
+						}
                 }
             }
             else
@@ -1492,7 +1606,15 @@ public class MemberAuthenticationController{
                         {
                             ID_1_Type = 'PSPT'; 
                         }
-                    DLStateIdPassportToMatch = ID_1_Type + ' ' + (selectedOne.ID_1_Number__pc == null? '' : string.valueof(selectedOne.ID_1_Number__pc)) + ' ' + (selectedOne.ID_1_Expiration_Date__pc == null? '' : string.valueof(selectedOne.ID_1_Expiration_Date__pc.date()));
+                    
+                    selectedOne.ID_1_Description__pc = (selectedOne.ID_1_Description__pc == '' || selectedOne.ID_1_Description__pc == null) ? '' : string.valueof(selectedOne.ID_1_Description__pc) + ' | ';
+                    
+                    DLStateIdPassportToMatch = ((ID_1_Type == '' || ID_1_Type == null) ? '' : string.valueof(ID_1_Type) + ' | ') + selectedOne.ID_1_Description__pc	 + '' + (selectedOne.ID_1_Number__pc == null? '' : string.valueof(selectedOne.ID_1_Number__pc)+ ' | ') + '' + (selectedOne.ID_1_Expiration_Date__pc == null? '' : string.valueof(selectedOne.ID_1_Expiration_Date__pc.date()));
+                    
+                    if(DLStateIdPassportToMatch.endsWith(' | '))
+					{
+						DLStateIdPassportToMatch = DLStateIdPassportToMatch.substring(0,DLStateIdPassportToMatch.lastIndexOf(' | '));
+					}
                 }
                 else if(selectedOne.ID_2_Number__pc == DLStateIdPassport){
                     string ID_1_Type = '';
@@ -1512,7 +1634,14 @@ public class MemberAuthenticationController{
                         {
                             ID_1_Type = 'PSPT'; 
                         }
-                    DLStateIdPassportToMatch = ID_1_Type + ' ' + (selectedOne.ID_2_Number__pc == null? '' :selectedOne.ID_2_Number__pc) + ' ' + (selectedOne.ID_2_Expiration_Date__pc == null? '' : string.valueof(selectedOne.ID_2_Expiration_Date__pc.date()));
+                    selectedOne.ID_2_Description__pc = (selectedOne.ID_2_Description__pc == '' || selectedOne.ID_2_Description__pc == null) ? '' : string.valueof(selectedOne.ID_2_Description__pc) + ' | ';
+                    
+                    DLStateIdPassportToMatch = ((ID_1_Type == '' || ID_1_Type == null) ? '' : string.valueof(ID_1_Type) + ' | ') + selectedOne.ID_2_Description__pc	 + '' + (selectedOne.ID_2_Number__pc == null? '' : string.valueOf(selectedOne.ID_2_Number__pc) + ' | ') + '' + (selectedOne.ID_2_Expiration_Date__pc == null? '' : string.valueof(selectedOne.ID_2_Expiration_Date__pc.date()));
+                    
+                    if(DLStateIdPassportToMatch.endsWith(' | '))
+					{
+						DLStateIdPassportToMatch = DLStateIdPassportToMatch.substring(0,DLStateIdPassportToMatch.lastIndexOf(' | '));
+					}
                 }
                 else if(selectedOne.ID_3_Number__pc == DLStateIdPassport){
                     string ID_1_Type = '';
@@ -1532,7 +1661,14 @@ public class MemberAuthenticationController{
                         {
                             ID_1_Type = 'PSPT'; 
                         }
-                    DLStateIdPassportToMatch = ID_1_Type + ' ' + (selectedOne.ID_3_Number__pc == null? '' : selectedOne.ID_3_Number__pc) + ' ' + (selectedOne.ID_3_Expiration_Date__pc == null? '' : string.valueof(selectedOne.ID_3_Expiration_Date__pc.date()));
+                    selectedOne.ID_3_Description__pc = (selectedOne.ID_3_Description__pc == '' || selectedOne.ID_3_Description__pc == null) ? '' : string.valueof(selectedOne.ID_3_Description__pc) + ' | ';
+                    
+                    DLStateIdPassportToMatch = ((ID_1_Type == '' || ID_1_Type == null) ? '' : string.valueof(ID_1_Type) + ' | ') + selectedOne.ID_3_Description__pc	 + '' + (selectedOne.ID_3_Number__pc == null? '' : string.valueOf(selectedOne.ID_3_Number__pc) + ' | ' ) + '' + (selectedOne.ID_3_Expiration_Date__pc == null? '' : string.valueof(selectedOne.ID_3_Expiration_Date__pc.date()));
+                    
+                    if(DLStateIdPassportToMatch.endsWith(' | '))
+					{
+						DLStateIdPassportToMatch = DLStateIdPassportToMatch.substring(0,DLStateIdPassportToMatch.lastIndexOf(' | '));
+					}
                 }
             }
             // Set ID Number Status
@@ -1709,6 +1845,9 @@ public class MemberAuthenticationController{
         
             DOB = '';
             DOBMatch = ''; 
+            PhoneNumber = '';
+            PhoneNumberMatch='';
+            DOBMatch = '';
             DOBConfirm = false;
             DOBConfirmString =  '';
             IdNumber = '';
@@ -1720,6 +1859,7 @@ public class MemberAuthenticationController{
             MMNConfirm = false;
             MMNConfirmString = '';
             Email = '';
+            LstEmail = new List<SelectOption>();
             EmailMatch = ''; 
             EmailConfirm = false;
             EmailConfirmString = '';

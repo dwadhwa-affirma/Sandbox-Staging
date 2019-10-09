@@ -50,7 +50,7 @@ public with sharing class CreateOpportunityController {
 		}       
          listObj.add(leadObject) ;  
          
-         List<Group> listQueue = [select id,Name,Email from Group where Type = 'Queue' and (Email like '%lead.com' or Email like '%opportunity.com') and Name != 'Products & Services Referral Queue'];
+         List<Group> listQueue = [select id,Name,Email from Group where Type = 'Queue' and (Email like '%lead.com' or Email like '%opportunity.com') and Name != 'Products & Services Referral Queue' order by Name asc];
           listObj.add(listQueue);  
                          
         listObj.add(acc.RecordType.Name);  
@@ -105,7 +105,7 @@ public with sharing class CreateOpportunityController {
                               Balance__c,                              
                               Combined_Account_ID__c,
                               Reference__c,
-                              Brand__c FROM Account_Details__c Where Name IN:accountNumberSet ORDER BY Name asc, RecType__c asc];
+                              Brand__c FROM Account_Details__c Where Name IN:accountNumberSet and (RecType__c = 'ACCT' or (RecType__c = 'SHAR' and TypeTranslate__c ='1-PRIMARY SHARE')) ORDER BY Name asc, RecType__c asc];
         }else{
             accList = [SELECT Id,
                               Name,
@@ -116,7 +116,7 @@ public with sharing class CreateOpportunityController {
                               
                               Combined_Account_ID__c,
                               Reference__c,
-                              Brand__c  FROM Account_Details__c Where Id IN:accIdSet ORDER BY Name asc, RecType__c asc];
+                              Brand__c  FROM Account_Details__c Where Id IN:accIdSet  and (RecType__c = 'ACCT' or (RecType__c = 'SHAR' and TypeTranslate__c ='1-PRIMARY SHARE')) ORDER BY Name asc, RecType__c asc];
         }
         return accList;
     }	
@@ -150,7 +150,7 @@ public with sharing class CreateOpportunityController {
        	}
        	else if(opportunityObject.Ownership__c == 'Assign' && opportunityObject.Queue_Assigned_Id__c!= null && opportunityObject.Queue_Assigned_Id__c!= '')
        	{
-       		Group gp = [Select Name from Group where id =:opportunityObject.Queue_Assigned_Id__c];
+       		Group gp = [Select Name from Group where id =:opportunityObject.Queue_Assigned_Id__c order by Name asc];
        	//	opportunityObject.User_Owner__r=null; 
        		opportunityObject.Queue_Owner__c = gp.Name;
             opportunityObject.StageName='New';

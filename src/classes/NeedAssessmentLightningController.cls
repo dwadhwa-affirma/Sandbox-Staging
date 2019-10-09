@@ -31,15 +31,16 @@ public class NeedAssessmentLightningController {
 				obj.MemberAbove18 =	acc.BIRTH_DATE__pc.addyears(18) < System.Today();
 			}
 		
+    	
     	 
-    	  List<Needs_Assesment__c> na = [select id,LEEM_Last_Updated_On__c,LEMQ_Last_Updated_On__c,LEOM_Last_Updated_On__c,LEAV_Last_Updated_On__c ,LESF_Last_Updated_On__c, LESB_Last_Updated_On__c, LEMD_Last_Updated_On__c, LECP_Last_Updated_On__c, LEHS_Last_Updated_On__c, LEOL_Last_Updated_On__c, LECF_Last_Updated_On__c, LEWS_Last_Updated_On__c,LECP_Written_Materials_Way_To_Send_Email__c,LECP_Written_Materials_Way_To_Send_Mail__c,Do_you_Rent_or_Own__c,
+    	  List<Needs_Assesment__c> na = [select id,  LEEM_Last_Updated_On__c,LEMQ_Last_Updated_On__c,LEOM_Last_Updated_On__c,LEAV_Last_Updated_On__c ,LESF_Last_Updated_On__c, LESB_Last_Updated_On__c, LEMD_Last_Updated_On__c, LECP_Last_Updated_On__c, LEHS_Last_Updated_On__c, LEOL_Last_Updated_On__c, LECF_Last_Updated_On__c, LEWS_Last_Updated_On__c,LECP_Written_Materials_Way_To_Send_Email__c,LECP_Written_Materials_Way_To_Send_Mail__c,Do_you_Rent_or_Own__c,
     	  		LEHS_Current_Lender__c, LEHS_Type_of_Mortgage__c,LEHS_Rate__c,LEHS_Current_Balance__c,LEHS_End_Year__c,LEHS_Planning_to_Purchase__c,LEHS_Purchase_When__c, LEHS_Have_Realtor__c,
     	  		LEHS_Comment_New__c,Rec_LEHS_1__c,Rec_LEHS_2__c, LECF_800__c,LECF_Experience_Improvement_Feedback_New__c, LECF_Online_banking__c, LECF_Mobile_banking__c, LECF_ATM__c, LECF_Comment_New__c,
     	  		LEMP_Last_Updated_On__c, LEPT_Last_Updated_On__c, LECF_Branch__c,LESB_Aware_SharedBranching__c,LESB_Aware_ConvBranching__c,LESB_SharedBranching_Comments_New__c,REC_LEMD_3__c,
     	  		LEAV_Current__c, LEAV_CurrentLoanProvider__c, LEAV_CurrentRate__c, LEAV_CurrentBalance__c, LEAV_EndDateLoan__c,LEMP_Credit_Card_Usage_Reason_Comments_N__c,
     	  		LEAV_PlanningToBuy__c, LEAV_PlanDate__c, LEAV_AnticipateFinance__c, LEAV_ContactPreferences_New__c,REC_LEAV_1__c, REC_LECF_4__c, REC_LECF_3__c, REC_LECF_2__c, REC_LECF_1__c, LEWS_Comment_New__c, LEWS_InPerson__c, LEWS_Other_ATM__c, LEWS_Shared_ATM__c, LEWS_CFCU_ATM__c,    	  		
     	  		Home_Improvement__c, Home_Improvement_Timeframe__c, Home_Improvement_Plan__c, College__c, College_Timeframe__c, College_Plan__c,
-				Medical__c, Medical_Timeframe__c, Medical_Plan__c, Purchase_RV_Boat__c, Purchase_RV_Boat_Timeframe__c, Purchase_RV_Boat_Plan__c, Retirement_New__c, Retirement_Timeframe__c, 
+				Medical__c, Medical_Timeframe__c, Medical_Plan__c, Purchase_RV_Boat__c, Purchase_RV_Boat_Timeframe__c, Purchase_Auto_Vehicle_Timeframe__c, Purchase_RV_Boat_Plan__c, Retirement_New__c, Retirement_Timeframe__c, 
 				Retirement_Plan__c, Travel__c, Travel_Timeframe__c, Travel_Plan__c, Life_Events__c, Life_Events_Timeframe__c, Life_Events_Plan__c, Other__c, Other_Timeframe__c, Other_Plan__c,
 				Rec_LEOM_1__c,Rec_LEOM_2__c,Rec_LEOM_3__c,Rec_LEOM_4__c,Rec_LEOM_5__c,Rec_LEOM_6__c,LEOM_PlanUnforeseen_New__c,LEOM_Comments_New__c,LEMP_Credit_Card_You_Use_Often_New__c,
 				LEOM_Home_Update__c,LEOM_College_Update__c, LEOM_Medical_Update__c, LEOM_RV_Boat_Update__c, LEOM_Retirement_Update__c, REC_LEEM_1__c,REC_LEMP_1__c, REC_LEMP_2__c, REC_LEMP_3__c, REC_LEMP_4__c, REC_LEMP_5__c, REC_LEMP_6__c, REC_LEMP_7__c, REC_LEMP_8__c,
@@ -78,6 +79,7 @@ public class NeedAssessmentLightningController {
     	  	objNeedsAssessment.LECP_Written_Materials_Way_To_Send_Mail__c = false;
     	  }
     	  
+    	
 
     	  obj.TabButttonColors.ContactPreferenceTabClass = GetTabColor(objNeedsAssessment.LECP_Last_Updated_On__c,acc.NA_LECP_Complete__c, 
     	  				integer.valueOf(GracePeriod__c.getValues('Contact Preference').ExpiresInDays__c), acc.NA_Opt_Out__c);
@@ -91,13 +93,15 @@ public class NeedAssessmentLightningController {
           
                         
 		 Set<string> listTab = new Set<string>();
-		    listTab.add(obj.TabButttonColors.ContactPreferenceTabClass);
+		  
+		   //  listTab.add(obj.TabButttonColors.ContactPreferenceTabClass);
+		     
 		    listTab.add(obj.TabButttonColors.CurrentFeedbackTabClass);
             
             
 		  obj.RadioButttonColors.FeedBackAboutCurrentExperience = GetTabPaelColor(listTab);
 		  
-		  
+		   system.debug('listTab1##' + listTab);
 		  
 		  obj.TabButttonColors.HousingTabClass = GetTabColor(objNeedsAssessment.LEHS_Last_Updated_On__c,acc.NA_LEHS_Complete__c, 
     	  				integer.valueOf(GracePeriod__c.getValues('Housing').ExpiresInDays__c), acc.NA_Opt_Out__c);
@@ -115,7 +119,8 @@ public class NeedAssessmentLightningController {
             
 		  
 		  listTab = new Set<string>();
-		    listTab.add(obj.TabButttonColors.ContactPreferenceTabClass);
+		  
+		  //  listTab.add(obj.TabButttonColors.ContactPreferenceTabClass);
 		    listTab.add(obj.TabButttonColors.HousingTabClass);
 		    listTab.add(obj.TabButttonColors.OtherLoanTabClass);
             listTab.add(obj.TabButttonColors.OtherTabClass);
@@ -123,7 +128,7 @@ public class NeedAssessmentLightningController {
 		    
 		    
             obj.RadioButttonColors.FinanceKeyFileEvent = GetTabPaelColor(listTab);
-		  
+		  	  system.debug('listTab2##' + listTab);
 		    obj.objNeedsAssessment = objNeedsAssessment;
             obj.TabButttonColors.MoveYourMoneyTabClass = GetTabColor(objNeedsAssessment.LEMP_Last_Updated_On__c,acc.NA_LEMP_Complete__c, 
                         integer.valueOf(GracePeriod__c.getValues('Move Your Money').ExpiresInDays__c), acc.NA_Opt_Out__c);
@@ -151,14 +156,15 @@ public class NeedAssessmentLightningController {
             
             
             listTab = new Set<string>();
-            listTab.add(obj.TabButttonColors.ContactPreferenceTabClass);
+          
+           // listTab.add(obj.TabButttonColors.ContactPreferenceTabClass);
             listTab.add(obj.TabButttonColors.MoveYourMoneyTabClass);
             listTab.add(obj.TabButttonColors.MakingDepositsTabClass);
             listTab.add(obj.TabButttonColors.WidthdrawalTabClass);
             listTab.add(obj.TabButttonColors.SharedBranchingTabClass);
             listTab.add(obj.TabButttonColors.SFATMNetworkTabClass);
             listTab.add(obj.TabButttonColors.PrimaryTransactionTabClass);           
-            
+            system.debug('listTab3##' + listTab);
             obj.RadioButttonColors.OptimizeMoveYourMoney = GetTabPaelColor(listTab);
             
             
@@ -166,20 +172,22 @@ public class NeedAssessmentLightningController {
                         integer.valueOf(GracePeriod__c.getValues('Earn More').ExpiresInDays__c), acc.NA_Opt_Out__c);
                         
             listTab = new Set<string>();
-            listTab.add(obj.TabButttonColors.ContactPreferenceTabClass);
+            
+           // listTab.add(obj.TabButttonColors.ContactPreferenceTabClass);
             listTab.add(obj.TabButttonColors.EarnMoreTabClass);
             obj.RadioButttonColors.EarnMore = GetTabPaelColor(listTab);
-            
+               system.debug('listTab4##' + listTab);
 
             obj.TabButttonColors.ExtendBenifitsTabClass = GetTabColor(objNeedsAssessment.LEMQ_Last_Updated_On__c,acc.NA_LEMQ_Complete__c, 
                         integer.valueOf(GracePeriod__c.getValues('Extend Benifits').ExpiresInDays__c), acc.NA_Opt_Out__c);
                         
             
             listTab = new Set<string>();
-            listTab.add(obj.TabButttonColors.ContactPreferenceTabClass);
+            
+          //  listTab.add(obj.TabButttonColors.ContactPreferenceTabClass);
             listTab.add(obj.TabButttonColors.ExtendBenifitsTabClass);
             obj.RadioButttonColors.ExtendBenifits = GetTabPaelColor(listTab);
-            
+             system.debug('listTab5##' + listTab);
 		    
 		    list<NA_Other_Existing_Loans__c> otherExistingLoans = new list<NA_Other_Existing_Loans__c>();
 				otherExistingLoans = [select id, Balance__c, End_Date__c, Financial_Institution__c, Needs_Assessment__c, Rate__c, Type_of_Loan__c 
@@ -356,7 +364,7 @@ public class NeedAssessmentLightningController {
             
             nao_tobeinserted.LECP_Written_Materials_Way_To_Send_Email__c= objNeedsAssesment.LECP_Written_Materials_Way_To_Send_Email__c;
             nao_tobeinserted.LECP_Written_Materials_Way_To_Send_Mail__c= objNeedsAssesment.LECP_Written_Materials_Way_To_Send_Mail__c;
-            
+           
 
             if (nao_tobeinserted.Id == null)
             {
@@ -403,7 +411,7 @@ public class NeedAssessmentLightningController {
                     nao_tobeinserted.LEAV_CurrentLoanProvider__c = objNeedsAssesment.LEAV_CurrentLoanProvider__c;
                     nao_tobeinserted.LEAV_CurrentRate__c = objNeedsAssesment.LEAV_CurrentRate__c;
                     nao_tobeinserted.LEAV_EndDateLoan__c = objNeedsAssesment.LEAV_EndDateLoan__c;
-                    
+                    nao_tobeinserted.Purchase_Auto_Vehicle_Timeframe__c  = objNeedsAssesment.Purchase_Auto_Vehicle_Timeframe__c ;
                     nao_tobeinserted.LEAV_PlanDate__c = objNeedsAssesment.LEAV_PlanDate__c;
                     nao_tobeinserted.LEAV_PlanningToBuy__c = objNeedsAssesment.LEAV_PlanningToBuy__c;
                     nao_tobeinserted.REC_LEAV_1__c = objNeedsAssesment.REC_LEAV_1__c;
@@ -981,7 +989,7 @@ nao_tobeinserted.LEMP_Credit_Card_Usage_Low_Interest_Rate__c = objNeedsAssesment
 	{
 		
 		 string radioColor = GetLowestColor(listColors);
-		    
+		  system.debug('radioColor##'+ radioColor);  
 		 string URLButton = GetResourceURL(radioColor);
 		 
 		 return URLButton;
@@ -1053,7 +1061,7 @@ nao_tobeinserted.LEMP_Credit_Card_Usage_Low_Interest_Rate__c = objNeedsAssesment
     
     
     
-	private static string GetLowestColor(Set<string> listColors)
+	/*private static string GetLowestColor(Set<string> listColors)
 	{
 	    if (listColors.contains(''))
 	    {
@@ -1078,6 +1086,44 @@ nao_tobeinserted.LEMP_Credit_Card_Usage_Low_Interest_Rate__c = objNeedsAssesment
 	    return '';
 	}
 	
+	*/
+	/* Modified function for CRM-1549*/
+	private static string GetLowestColor(Set<string> listColors)
+	{
+	    if (listColors.contains(''))
+	    {
+	        return 'naButtonGray';
+	    }
+	    else if (listColors.contains('optOutTab'))
+	    {
+	        return 'naButtonGray';
+	    }
+	    else if (listColors.contains('expiredTab') && listColors.contains('partialTab') )
+	    {
+	        return 'naButtonYellow';
+	    }
+	    else if (listColors.contains('expiredTab') && (! (listColors.contains('partialTab')|| listColors.contains('completeTab') ) ))
+	    {
+	        return 'naButtonRed';
+	    }
+	    else if (listColors.contains('partialTab') && listColors.contains('completeTab'))
+	    {
+	        return 'naButtonYellow';
+	    }
+	    else if (listColors.contains('completeTab') && (!(listColors.contains('partialTab')|| listColors.contains('expiredTab') )))
+	    {
+	        return 'naButtonGreen';
+	    }
+	    else if (listColors.contains('completeTab') && listColors.contains('expiredTab') )
+	    {
+	        return 'naButtonYellow';
+	    }
+	    else if (listColors.contains('partialTab') && (!(listColors.contains('expiredTab')|| listColors.contains('completeTab') )))
+	    {
+	        return 'naButtonYellow';
+	    }
+	    return '';
+	}
 	
 	private static String GetResourceURL(String resourceName)
     {

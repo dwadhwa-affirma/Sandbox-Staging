@@ -420,6 +420,7 @@ public without sharing class ManualMemberMergeProcess {
     					Converted_PreMember__c cpm = new Converted_PreMember__c();
     					cpm.Member__c = ma.Id;
     					cpm.Pre_Member_Number__c = pma.Pre_Member_Number__c;
+    					cpm.Parent_Lead__c = pma.Parent_Lead__c;
     					cpm.Alt_E_Mail_Address__c= pma.Alternate_Email__pc;
     					cpm.Alternate_Email__c = pma.Alt_Email_Raw__c;
     					cpm.Annual_Revenue__c = pma.AnnualRevenue;
