@@ -75,7 +75,6 @@ global with sharing class MemberCommunicationData {
             }
             Http http = new Http(); 
             HttpRequest request = new HttpRequest();
-            request.setEndpoint(apiURL);
             request.setMethod('GET');
             request.setClientCertificateName('salesforce');
             String str=keyword+'%';
@@ -405,38 +404,74 @@ return results;
         
        RecordType rec = [select Id,Name,SobjectType from RecordType where Name ='OOW Execution Log' and SobjectType='Authenticated_Log__c'];
        Id CurrentUserId = UserInfo.getUserId();
+      
+       //--------------------------------------------------------------------------------------------------------//
+       set<String> accList = new set<String>();
+       set<string> typeList = new set<string>();
        
-        Person_Account__c p = [SELECT Id, Account_Number__c,  PersonID__c, Account_Number__r.RecType__c, TypeTranslate__c, Account_Number__r.Name
-                FROM Person_Account__c where PersonID__c =:recid and Account_Number__r.RecType__c ='ACCT' limit 1];
-       string AccountNumber = p.Account_Number__r.Name;
+       for(Member360_TypeTranslate__c t : Member360_TypeTranslate__c.getAll().values()){
+       		typeList.add(t.name);	
+       }
+       
+       list<Person_Account__c> paList = [SELECT Id, Account_Number__c,  PersonID__c, Account_Number__r.RecType__c, TypeTranslate__c, Account_Number__r.Name
+                FROM Person_Account__c where PersonID__c =:recid and TypeTranslate__c IN:typeList and Account_Number__r.RecType__c IN('ACCT', 'SHAR') order by  Account_Number__r.RecType__c asc];
+       
+       for(Person_Account__c p : paList){
+       		accList.add(p.Account_Number__r.Name);	
+       }
+       
+       //--------------------------------------------------------------------------------------------------------//
+       
+       /*Person_Account__c p = [SELECT Id, Account_Number__c,  PersonID__c, Account_Number__r.RecType__c, TypeTranslate__c, Account_Number__r.Name
+                FROM Person_Account__c where PersonID__c =:recid and Account_Number__r.RecType__c IN('ACCT', 'SHAR') order by  Account_Number__r.RecType__c asc  limit 1];
+       string AccountNumber = p.Account_Number__r.Name; */
        
         List<MemberCommunicationData.documents> results=new List<MemberCommunicationData.documents>();
         String str='%'+keyword+'%';
         
         List<Authenticated_Log__c> al = new List<Authenticated_Log__c>();
         if( fromdate != null && todate == null && keyword == 'Date Range')
-            al = [select id,name, RecordTypeId, CreatedById,CreatedDate,OOW_Member_Number__c,OOW_Notes__c,OOW_Reason__c,OOW_Status__c from Authenticated_Log__c
-            		 where   createdDate  >= :fromdate and RecordTypeId = :rec.Id and OOW_Member_Number__c =:AccountNumber ];
+            al = [select id,name,Member_Name__c , RecordTypeId, CreatedById,CreatedDate,Created_Date_PST__c,OOW_Member_Number__c,OOW_Notes__c,OOW_Reason__c,OOW_Status__c from Authenticated_Log__c
+            		 where   createdDate  >= :fromdate and RecordTypeId = :rec.Id and OOW_Member_Number__c IN:accList order by CreatedDate desc ];
         else if(fromdate != null && todate != null  && fromdate < todate && keyword == 'Date Range')
-            al = [select id,name, RecordTypeId, CreatedById,CreatedDate,OOW_Member_Number__c,OOW_Notes__c,OOW_Reason__c,OOW_Status__c from Authenticated_Log__c
-            		 where  ( createdDate  >= :fromdate and createdDate  <= :todate) and  RecordTypeId = :rec.Id and OOW_Member_Number__c =:AccountNumber ];
+            al = [select id,name, Member_Name__c , RecordTypeId, CreatedById,CreatedDate,Created_Date_PST__c,OOW_Member_Number__c,OOW_Notes__c,OOW_Reason__c,OOW_Status__c from Authenticated_Log__c
+            		 where  ( createdDate  >= :fromdate and createdDate  <= :todate) and  RecordTypeId = :rec.Id and OOW_Member_Number__c IN:accList order by CreatedDate desc ];
         else if(fromdate == null && todate == null && keyword == null)
-            al = [select id,name, RecordTypeId, CreatedById,CreatedDate,OOW_Member_Number__c,OOW_Notes__c,OOW_Reason__c,OOW_Status__c from Authenticated_Log__c
-            		 where RecordTypeId = :rec.Id and OOW_Member_Number__c =:AccountNumber 	];
+            al = [select id,name, Member_Name__c , RecordTypeId, CreatedById,CreatedDate,Created_Date_PST__c,OOW_Member_Number__c,OOW_Notes__c,OOW_Reason__c,OOW_Status__c from Authenticated_Log__c
+            		 where RecordTypeId = :rec.Id and OOW_Member_Number__c IN:accList order by CreatedDate desc	];
         else if( keyword != 'Date Range'){
             Date d = System.today() - Integer.ValueOf(keyword);
-            al = [select id,name, RecordTypeId, CreatedById,CreatedDate,OOW_Member_Number__c,OOW_Notes__c,OOW_Reason__c,OOW_Status__c from Authenticated_Log__c
-            	  where createdDate >= :d and RecordTypeId = :rec.Id and OOW_Member_Number__c =:AccountNumber ] ;
+            al = [select id,name, Member_Name__c , RecordTypeId, CreatedById,CreatedDate,Created_Date_PST__c,OOW_Member_Number__c,OOW_Notes__c,OOW_Reason__c,OOW_Status__c from Authenticated_Log__c
+            	  where createdDate >= :d and RecordTypeId = :rec.Id and OOW_Member_Number__c IN:accList order by CreatedDate desc] ;
         }
+        string baseUrl;
+        String prefix = URL.getSalesforceBaseURL().toExternalForm().replace('https://', '').split('\\.')[0];
+        prefix = prefix.removeEnd('--c');
+        baseUrl = 'https://' + prefix.toLowerCase() + '.lightning.force.com';
+        system.debug('https://' + prefix.toLowerCase() + '.lightning.force.com');
+        string notes;
         for(Authenticated_Log__c ld : al ){
+            system.debug(ld);
             MemberCommunicationData.documents doc = new MemberCommunicationData.documents();
-            doc.id= ld.id;               
-            doc.dateDesc=ld.OOW_Reason__c;
-            doc.documentDate=Date.valueOf(ld.createdDate);
+            doc.id= ld.id; 
+            if(ld.OOW_Notes__c != null) notes = ld.OOW_Notes__c;
+            else notes ='';
+            if(ld.OOW_Reason__c !=null)
+            {
+            doc.dateDesc=ld.OOW_Reason__c + '/' + '('+ ld.OOW_Status__c.capitalize()+ ')' + ' /' + notes ;
+            }
+            else
+            {
+                doc.dateDesc=ld.OOW_Reason__c;
+            }
+            doc.documentDate=Date.valueOf(ld.Created_Date_PST__c);
             //doc.documentDateText = doc.documentDate.format() + ' 00:00';
             doc.Account = ld.OOW_Member_Number__c;
             doc.userID =ld.CreatedById;
             doc.DataSource='OOW';
+            doc.hyperlinkPDF = baseUrl + '/lightning/r/Authenticated_Log__c/'  + ld.id + '/view';
+            doc.MemberName = ld.Member_Name__c;
+                //https://chevronfcu--staging2.lightning.force.com/lightning/r/Authenticated_Log__c/a0S3F000001IfdGUAS/view
             results.add(doc);
         }
         
@@ -508,7 +543,8 @@ return results;
         public string userID{get;set;}
         @AuraEnabled
         public string Account{get;set;}
-        
+        @AuraEnabled
+        public string MemberName{get;set;}
         
     }
     
