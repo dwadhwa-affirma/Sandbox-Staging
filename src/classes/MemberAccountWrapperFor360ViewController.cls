@@ -690,9 +690,9 @@ public class MemberAccountWrapperFor360ViewController {
                            'ParentId,' +
                            'Subject,' +
                            'CreatedDate,' +
-                           'Origin,' +
+                           'ClosedDate,' +
                            'Parent.CaseNumber,' +
-                           'ClosedDate FROM case WHERE Account_Number__r.Name = \'' + accRecName +  '\' AND Status = \'Closed\' ' + searchquery + ' ' +  orderString;
+                           'Origin FROM case WHERE Account_Number__r.Name = \'' + accRecName +  '\' AND Status = \'Closed\' ' + searchquery + ' ' +  orderString;
 		
 		if(searchquery.length() > 0)
         {
@@ -712,7 +712,7 @@ public class MemberAccountWrapperFor360ViewController {
 		
 		//Start: CRM-1400: Get Multiple Accounts added to case - DB
         
-
+		system.debug('caseList---' + caseList);
 		List<CaseAccountMemberDetail__c> camd = new List<CaseAccountMemberDetail__c>();
 		List<CaseAccountMemberDetail__c> finalcamd = new List<CaseAccountMemberDetail__c>();
 		 map<id, case> casemap = new map<id, case>();
@@ -748,7 +748,7 @@ public class MemberAccountWrapperFor360ViewController {
          	
          }
          
-          List<case> caseMemberAccountList = [select id, casenumber, Account_Number__c,Category__c, Status , Subject, Account.Name,
+          List<case> caseMemberAccountList = [select id, casenumber, Account_Number__c,Category__c, Status , Subject, Account.Name, ClosedDate,
           									  ParentId, Origin, CreatedDate, Account_Number__r.Brand__c, Owner.Name, Parent.CaseNumber, AccountId
           										 from case where Id in: caseIdsfromMultiple];	
            
@@ -814,10 +814,13 @@ public class MemberAccountWrapperFor360ViewController {
          
          }
          
-          
+          system.debug('finalcamd---' + finalcamd);
+           system.debug('casemap---' + casemap);
          for(CaseAccountMemberDetail__c so:finalcamd){
          	case c = new case();
+         	system.debug('case__c--'+ so.case__c);
         	c = casemap.get(so.case__c);
+        	system.debug('c--'+ c);
          	CaseModel Tempcase = new CaseModel();
          	Tempcase.Id = c.id;
          	Tempcase.CaseNumber = c.CaseNumber;
