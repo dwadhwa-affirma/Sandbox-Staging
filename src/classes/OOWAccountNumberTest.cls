@@ -8,6 +8,15 @@ public with sharing class OOWAccountNumberTest {
         Account account_Obj1 = new Account(LastName = 'BANDATest1', FirstName = 'MARIATest1', Type = 'null', PersonHasOptedOutOfEmail = false, NA_Eligibility__c = false, NA_LEAV_Complete__c = true, NA_LECF_Complete__c = true, NA_LECP_Complete__c = true, NA_LEEM_Complete__c = true, NA_LEHS_Complete__c = true, NA_LEMD_Complete__c = false, NA_LEMP_Complete__c = false, NA_LEMQ_Complete__c = true, NA_LEOL_Complete__c = true, NA_LEOM_Complete__c = true, NA_LEPT_Complete__c = true, NA_LESB_Complete__c = false, NA_LESF_Complete__c = true, NA_LEWS_Complete__c = true, NA_Opt_Out__c = false, smagicinteract__SMSOptOut__pc = false, et4ae5__HasOptedOutOfMobile__pc = false);
         Insert account_Obj1; 
         
+         OOW_Flow_URL__c oowf = new OOW_Flow_URL__c();
+        oowf.Name = 'OOW Boomi Flow URL';
+        oowf.URL__c = 'www.google.com';
+        insert oowf;
+        
+        Member360_TypeTranslate__c t= new Member360_TypeTranslate__c();
+	 	t.name='0000/Primary';
+	 	insert t;
+        
         List<Account_Details__c> account_details_Obj = new List<Account_Details__c>{
             new Account_Details__c(Name = '0000147163', Balance__c = 0.00, Combined_Account_ID__c = '0000147163S0100P0100', ID1__c = '0100', Onboarded__c = true, RecType__c = 'ACCT', TypeTranslate__c = '1-PRIMARY SHARE',WARNING_01_CODE__c='ABC',
                                    WARNING_02_CODE__c='ABC',
@@ -72,9 +81,9 @@ public with sharing class OOWAccountNumberTest {
         
         List<Account> obj = [select id, Name from Account limit 1];
         List<Account_Details__c> objd = [select id,Name from Account_Details__c limit 1];
-        OOWAccountNumber.SaveLogData('pass',objd[0].Name,'Test', 'Test');
-        string r1 = OOWAccountNumber.GetAccountNumber(objd[0].id,'Account_Details__c');
-        string r2 = OOWAccountNumber.GetAccountNumber(obj[0].id,'Account');
+        OOWAccountNumber.SaveLogData('pass',objd[0].Name,'Test', 'Test','Test Test');
+        Map<string,string> r1 = OOWAccountNumber.GetAccountNumber(objd[0].id,'Account_Details__c');
+        Map<string,string> r2 = OOWAccountNumber.GetAccountNumber(obj[0].id,'Account');
          TEst.stoptest();
     } 
 }

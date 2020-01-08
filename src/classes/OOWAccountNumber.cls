@@ -16,6 +16,12 @@ public with sharing class OOWAccountNumber {
 			FlowURL = oowf.URL__C;
 		}
 		
+		set<string> typeList = new set<string>();
+       
+       for(Member360_TypeTranslate__c t : Member360_TypeTranslate__c.getAll().values()){
+       		typeList.add(t.name);	
+       }
+       
         if(sobjecttype == 'Account_Details__c')
         {
             Account_Details__c accdetailList = [select id, Name from Account_Details__c where id=:accdetailid];
@@ -30,7 +36,7 @@ public with sharing class OOWAccountNumber {
         else
         {
             Person_Account__c p = [SELECT Id, PersonID__r.Name, Account_Number__c, PersonID__r.FirstName,PersonID__r.LastName, PersonID__c, Account_Number__r.RecType__c, TypeTranslate__c, Account_Number__r.Name
-                FROM Person_Account__c where PersonID__c =:accdetailid and Account_Number__r.RecType__c IN('ACCT','SHAR')  order by Account_Number__r.RecType__c asc limit 1 ];
+                FROM Person_Account__c where PersonID__c =:accdetailid and Account_Number__r.RecType__c IN('ACCT','SHAR') and TypeTranslate__c IN: typeList order by Account_Number__r.RecType__c asc limit 1 ];
             AccountNumber = p.Account_Number__r.Name;
             MemberName =  p.PersonID__r.Name;
             source = 'member';
