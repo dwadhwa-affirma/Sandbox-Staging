@@ -17,6 +17,11 @@
         customsetting.List_of_Blocked_Extensions__c = 'css';
         insert customsetting;
         
+        Excluded_Categories_in_Portal__c cs = new Excluded_Categories_in_Portal__c();	 	
+		cs.Categories__c = 'Complaint,';	
+		cs.Name = 'Primary'; 
+		insert cs; 
+        
 		string fid ='0000999999'	;		
 		 String uid = UserInfo.getUserId();
 		 Profile profile = [SELECT Id,Name FROM Profile where Name ='Customer Community Login User' ];
