@@ -360,8 +360,18 @@ public class CreateCaseMemberPageController {
        List<Contact> clist = [SELECT Id, Name FROM Contact WHERE Contact.AccountId =:accObject.Id];
         AssignmentRule AR = new AssignmentRule(); 
         AR = [SELECT Id FROM AssignmentRule WHERE SobjectType = 'Case' AND Active = True LIMIT 1];
-       List<Group> gp = [select Id, Name from Group where Type = 'Queue' and Name = 'Complaint Management Queue' Limit 1];
-            
+        List<Group> gp = [select Id, Name from Group where Type = 'Queue' and Name = 'Complaint Management Queue' Limit 1];
+        List<Group> ARQ = [select Id, Name from Group where Type = 'Queue' and Name = 'Asset Recovery Complaints Queue' Limit 1];
+		List<Group> SQ = [select Id, Name from Group where Type = 'Queue' and Name = 'Servicing Complaints Queue' Limit 1];
+		List<Group> PQ = [select Id, Name from Group where Type = 'Queue' and Name = 'Product Complaints Queue' Limit 1];
+		List<Group> ALQ = [select Id, Name from Group where Type = 'Queue' and Name = 'Auto Loans Complaints Queue' Limit 1];
+		List<Group> SLQ = [select Id, Name from Group where Type = 'Queue' and Name = 'Solar Loans Complaints Queue' Limit 1];
+		List<Group> FQ = [select Id, Name from Group where Type = 'Queue' and Name = 'Fraud Complaints Queue' Limit 1];
+		List<Group> DBQ = [select Id, Name from Group where Type = 'Queue' and Name = 'Digital Banking Complaints Queue' Limit 1];
+		List<Group> MQ = [select Id, Name from Group where Type = 'Queue' and Name = 'Marketing Complaints Queue' Limit 1];
+		List<Group> MLQ = [select Id, Name from Group where Type = 'Queue' and Name = 'Mortgage Lending Complaints Queue' Limit 1];
+		List<Group> PSQ = [select Id, Name from Group where Type = 'Queue' and Name = 'Payment Services Complaints Queue' Limit 1]; 
+		    
         Database.DMLOptions dmlOpts = new Database.DMLOptions(); 
         dmlOpts.assignmentRuleHeader.assignmentRuleId= AR.id;   
        
@@ -372,10 +382,66 @@ public class CreateCaseMemberPageController {
 	            cs.Primary_Category__c = scList[0].Primary_Category__c;
 	            cs.Secondary_Category__c = scList[0].Secondary_Category__c;
 	            cs.Tertiary_Category__c = scList[0].Teritiary_Category__c;
-	            if(scList[0].Record_Type_Name__c =='Complaint Case Status'){
+	            
+	            //----------------------------------------KX11043-26 and KX11043-27---------------------------------------------//
+	            
+	            if(scList[0].Primary_Category__c =='Complaint' && scList[0].Teritiary_Category__c == 'Asset Recovery'){
+	            	
+	            	 cs.OwnerId = ARQ[0].id;
+	            	 cs.Status = 'In Process';
+	            }
+	            if(scList[0].Primary_Category__c =='Complaint' && scList[0].Teritiary_Category__c == 'Servicing'){
+	            	
+	            	 cs.OwnerId = SQ[0].id;
+	            	 cs.Status = 'In Process';
+	            }
+	            if(scList[0].Primary_Category__c =='Complaint' && scList[0].Teritiary_Category__c == 'Product'){
+	            	
+	            	 cs.OwnerId = PQ[0].id;
+	            	 cs.Status = 'In Process';
+	            }
+	            if(scList[0].Primary_Category__c =='Complaint' && scList[0].Teritiary_Category__c == 'Auto Loans'){
+	            	
+	            	 cs.OwnerId = ALQ[0].id;
+	            	 cs.Status = 'In Process';
+	            }
+	            if(scList[0].Primary_Category__c =='Complaint' && scList[0].Teritiary_Category__c == 'Solar Loan'){
+	            	
+	            	 cs.OwnerId = SLQ[0].id;
+	            	 cs.Status = 'In Process';
+	            }
+	            if(scList[0].Primary_Category__c =='Complaint' && scList[0].Teritiary_Category__c == 'Others'){
 	            	
 	            	 cs.OwnerId = gp[0].id;
-	            }    
+	            	 cs.Status = 'In Process';
+	            } 
+	            if(scList[0].Primary_Category__c =='Complaint' && scList[0].Teritiary_Category__c == 'Fraud'){
+	            	
+	            	 cs.OwnerId = FQ[0].id;
+	            	 cs.Status = 'In Process';
+	            }
+	            if(scList[0].Primary_Category__c =='Complaint' && scList[0].Teritiary_Category__c == 'Digital Banking'){
+	            	
+	            	 cs.OwnerId = DBQ[0].id;
+	            	 cs.Status = 'In Process';
+	            }
+	            if(scList[0].Primary_Category__c =='Complaint' && scList[0].Teritiary_Category__c == 'Marketing'){
+	            	
+	            	 cs.OwnerId = MQ[0].id;
+	            	 cs.Status = 'In Process';
+	            }
+	            if(scList[0].Primary_Category__c =='Complaint' && scList[0].Teritiary_Category__c == 'Mortgage Lending'){
+	            	
+	            	 cs.OwnerId = MLQ[0].id;
+	            	 cs.Status = 'In Process';
+	            }
+	            if(scList[0].Primary_Category__c =='Complaint' && scList[0].Teritiary_Category__c == 'Payment Services'){
+	            	
+	            	 cs.OwnerId = PSQ[0].id;
+	            	 cs.Status = 'In Process';
+	            }
+	            
+	           //----------------------------------------KX11043-26 and KX11043-27------------------------------------------------------//   
             }
             cs.Brand__c = caseObject.Brand__c;
             cs.Brand__c = 'CFCU';
@@ -395,13 +461,13 @@ public class CreateCaseMemberPageController {
             cs.State__c = accObject.Residential_State__pc;
             cs.Country__c = accObject.Residential_Country__pc;
             cs.Zip_Code__c = accObject.Residential_Zipocde__pc;
-             if(caseObject.Status != '---None---'){
+            /*if(caseObject.Status != '---None---'){
              	
-             	cs.Status = caseObject.Status;
-             }
-         	 else{
+            	cs.Status = caseObject.Status;
+            }
+         	else{
          	 	cs.Status = '';
-         	 }
+         	}*/
          	 
             if(selectedAcctNumber != null)
             	cs.Account_Number__c = selectedAcctNumber.Id;
@@ -546,7 +612,18 @@ public class CreateCaseMemberPageController {
      
         AssignmentRule AR = new AssignmentRule(); 
         AR = [SELECT Id FROM AssignmentRule WHERE SobjectType = 'Case' AND Active = True LIMIT 1];
-        List<Group> gp = [select Id, Name from Group where Type = 'Queue' and Name = 'Complaint Management Queue' Limit 1];    
+        List<Group> gp = [select Id, Name from Group where Type = 'Queue' and Name = 'Complaint Management Queue' Limit 1];
+        List<Group> ARQ = [select Id, Name from Group where Type = 'Queue' and Name = 'Asset Recovery Complaints Queue' Limit 1];
+		List<Group> SQ = [select Id, Name from Group where Type = 'Queue' and Name = 'Servicing Complaints Queue' Limit 1];
+		List<Group> PQ = [select Id, Name from Group where Type = 'Queue' and Name = 'Product Complaints Queue' Limit 1];
+		List<Group> ALQ = [select Id, Name from Group where Type = 'Queue' and Name = 'Auto Loans Complaints Queue' Limit 1];
+		List<Group> SLQ = [select Id, Name from Group where Type = 'Queue' and Name = 'Solar Loans Complaints Queue' Limit 1];
+		List<Group> FQ = [select Id, Name from Group where Type = 'Queue' and Name = 'Fraud Complaints Queue' Limit 1];
+		List<Group> DBQ = [select Id, Name from Group where Type = 'Queue' and Name = 'Digital Banking Complaints Queue' Limit 1];
+		List<Group> MQ = [select Id, Name from Group where Type = 'Queue' and Name = 'Marketing Complaints Queue' Limit 1];
+		List<Group> MLQ = [select Id, Name from Group where Type = 'Queue' and Name = 'Mortgage Lending Complaints Queue' Limit 1];
+		List<Group> PSQ = [select Id, Name from Group where Type = 'Queue' and Name = 'Payment Services Complaints Queue' Limit 1];
+		    
         Database.DMLOptions dmlOpts = new Database.DMLOptions(); 
         dmlOpts.assignmentRuleHeader.assignmentRuleId= AR.id;   
        
@@ -558,23 +635,77 @@ public class CreateCaseMemberPageController {
 		            cs.Primary_Category__c = scList[0].Primary_Category__c;
 		            cs.Secondary_Category__c = scList[0].Secondary_Category__c;
 		            cs.Tertiary_Category__c = scList[0].Teritiary_Category__c;
-		             if(scList[0].Record_Type_Name__c =='Complaint Case Status'){
-	            		 cs.OwnerId = gp[0].id;
-	            		 }
-		            else{
-		            	cs.OwnerId = caseObject.OwnerId;
+		            
+		            //----------------------------------------KX11043-26 and KX11043-27---------------------------------------------//
+		            
+		            if(scList[0].Primary_Category__c =='Complaint' && scList[0].Teritiary_Category__c == 'Asset Recovery'){
+	            	
+	            		cs.OwnerId = ARQ[0].id;
+	            		cs.Status = 'In Process';
+	            	}
+		            if(scList[0].Primary_Category__c =='Complaint' && scList[0].Teritiary_Category__c == 'Servicing'){
+		            	
+		            	 cs.OwnerId = SQ[0].id;
+		            	 cs.Status = 'In Process';
 		            }
-	            }
+		            if(scList[0].Primary_Category__c =='Complaint' && scList[0].Teritiary_Category__c == 'Product'){
+		            	
+		            	 cs.OwnerId = PQ[0].id;
+		            	 cs.Status = 'In Process';
+		            }
+		            if(scList[0].Primary_Category__c =='Complaint' && scList[0].Teritiary_Category__c == 'Auto Loans'){
+		            	
+		            	 cs.OwnerId = ALQ[0].id;
+		            	 cs.Status = 'In Process';
+		            }
+		            if(scList[0].Primary_Category__c =='Complaint' && scList[0].Teritiary_Category__c == 'Solar Loan'){
+		            	
+		            	 cs.OwnerId = SLQ[0].id;
+		            	 cs.Status = 'In Process';
+		            }
+		            if(scList[0].Primary_Category__c =='Complaint' && scList[0].Teritiary_Category__c == 'Others'){
+		            	
+		            	 cs.OwnerId = gp[0].id;
+		            	 cs.Status = 'In Process';
+		            } 
+		            if(scList[0].Primary_Category__c =='Complaint' && scList[0].Teritiary_Category__c == 'Fraud'){
+		            	
+		            	 cs.OwnerId = FQ[0].id;
+		            	 cs.Status = 'In Process';
+		            }
+		            if(scList[0].Primary_Category__c =='Complaint' && scList[0].Teritiary_Category__c == 'Digital Banking'){
+		            	
+		            	 cs.OwnerId = DBQ[0].id;
+		            	 cs.Status = 'In Process';
+		            }
+		            if(scList[0].Primary_Category__c =='Complaint' && scList[0].Teritiary_Category__c == 'Marketing'){
+		            	
+		            	 cs.OwnerId = MQ[0].id;
+		            	 cs.Status = 'In Process';
+		            }
+		            if(scList[0].Primary_Category__c =='Complaint' && scList[0].Teritiary_Category__c == 'Mortgage Lending'){
+		            	
+		            	 cs.OwnerId = MLQ[0].id;
+		            	 cs.Status = 'In Process';
+		            }
+		            if(scList[0].Primary_Category__c =='Complaint' && scList[0].Teritiary_Category__c == 'Payment Services'){
+		            	
+		            	 cs.OwnerId = PSQ[0].id;
+		            	 cs.Status = 'In Process';
+		            }
+		            
+		            //----------------------------------------KX11043-26 and KX11043-27---------------------------------------------//
+	        }
             cs.Brand__c = 'CFCU';                     
             
             cs.Special_Reporting_Number__c = caseObject.Special_Reporting_Number__c;
-             if(caseObject.Status != '---None---'){
+            /*if(caseObject.Status != '---None---'){
              	
              	cs.Status = caseObject.Status;
-             }
-         	 else{
+            }
+         	else{
          	 	cs.Status = '';
-         	 }
+         	}*/
          	 
          	 
             cs.LTK__c = caseObject.LTK__c;
@@ -693,32 +824,100 @@ public class CreateCaseMemberPageController {
        List<Contact> clist = [SELECT Id, Name FROM Contact WHERE Contact.AccountId =:selectedMemberNumber.PersonID__c];
         AssignmentRule AR = new AssignmentRule(); 
         AR = [SELECT Id FROM AssignmentRule WHERE SobjectType = 'Case' AND Active = True LIMIT 1];
-         List<Group> gp = [select Id, Name from Group where Type = 'Queue' and Name = 'Complaint Management Queue' Limit 1];       
+        List<Group> gp = [select Id, Name from Group where Type = 'Queue' and Name = 'Complaint Management Queue' Limit 1];
+        List<Group> ARQ = [select Id, Name from Group where Type = 'Queue' and Name = 'Asset Recovery Complaints Queue' Limit 1];
+		List<Group> SQ = [select Id, Name from Group where Type = 'Queue' and Name = 'Servicing Complaints Queue' Limit 1];
+		List<Group> PQ = [select Id, Name from Group where Type = 'Queue' and Name = 'Product Complaints Queue' Limit 1];
+		List<Group> ALQ = [select Id, Name from Group where Type = 'Queue' and Name = 'Auto Loans Complaints Queue' Limit 1];
+		List<Group> SLQ = [select Id, Name from Group where Type = 'Queue' and Name = 'Solar Loans Complaints Queue' Limit 1];
+		List<Group> FQ = [select Id, Name from Group where Type = 'Queue' and Name = 'Fraud Complaints Queue' Limit 1];
+		List<Group> DBQ = [select Id, Name from Group where Type = 'Queue' and Name = 'Digital Banking Complaints Queue' Limit 1];
+		List<Group> MQ = [select Id, Name from Group where Type = 'Queue' and Name = 'Marketing Complaints Queue' Limit 1];
+		List<Group> MLQ = [select Id, Name from Group where Type = 'Queue' and Name = 'Mortgage Lending Complaints Queue' Limit 1];
+		List<Group> PSQ = [select Id, Name from Group where Type = 'Queue' and Name = 'Payment Services Complaints Queue' Limit 1];
+		       
         Database.DMLOptions dmlOpts = new Database.DMLOptions(); 
         dmlOpts.assignmentRuleHeader.assignmentRuleId= AR.id;   
        
-        Case cs = new case();            
+        	Case cs = new case();            
             cs.setOptions(dmlOpts);
             for(CaseRecordType__c crt : scList){
-            cs.RecordTypeId = scList[0].RecordTypeId__c;
-            cs.Primary_Category__c = scList[0].Primary_Category__c;
-            cs.Secondary_Category__c = scList[0].Secondary_Category__c;
-            cs.Tertiary_Category__c = scList[0].Teritiary_Category__c; 
-             if(scList[0].Record_Type_Name__c =='Complaint Case Status'){
+            	
+	            cs.RecordTypeId = scList[0].RecordTypeId__c;
+	            cs.Primary_Category__c = scList[0].Primary_Category__c;
+	            cs.Secondary_Category__c = scList[0].Secondary_Category__c;
+	            cs.Tertiary_Category__c = scList[0].Teritiary_Category__c; 
+            	
+            	//----------------------------------------KX11043-26 and KX11043-27---------------------------------------------//
+            	
+            	if(scList[0].Primary_Category__c =='Complaint' && scList[0].Teritiary_Category__c == 'Asset Recovery'){
+	            	
+	            	 cs.OwnerId = ARQ[0].id;
+	            	 cs.Status = 'In Process';
+	            }
+	            if(scList[0].Primary_Category__c =='Complaint' && scList[0].Teritiary_Category__c == 'Servicing'){
+	            	
+	            	 cs.OwnerId = SQ[0].id;
+	            	 cs.Status = 'In Process';
+	            }
+	            if(scList[0].Primary_Category__c =='Complaint' && scList[0].Teritiary_Category__c == 'Product'){
+	            	
+	            	 cs.OwnerId = PQ[0].id;
+	            	 cs.Status = 'In Process';
+	            }
+	            if(scList[0].Primary_Category__c =='Complaint' && scList[0].Teritiary_Category__c == 'Auto Loans'){
+	            	
+	            	 cs.OwnerId = ALQ[0].id;
+	            	 cs.Status = 'In Process';
+	            }
+	            if(scList[0].Primary_Category__c =='Complaint' && scList[0].Teritiary_Category__c == 'Solar Loan'){
+	            	
+	            	 cs.OwnerId = SLQ[0].id;
+	            	 cs.Status = 'In Process';
+	            }
+	            if(scList[0].Primary_Category__c =='Complaint' && scList[0].Teritiary_Category__c == 'Others'){
 	            	
 	            	 cs.OwnerId = gp[0].id;
+	            	 cs.Status = 'In Process';
+	            } 
+	            if(scList[0].Primary_Category__c =='Complaint' && scList[0].Teritiary_Category__c == 'Fraud'){
+	            	
+	            	 cs.OwnerId = FQ[0].id;
+	            	 cs.Status = 'In Process';
 	            }
+	            if(scList[0].Primary_Category__c =='Complaint' && scList[0].Teritiary_Category__c == 'Digital Banking'){
+	            	
+	            	 cs.OwnerId = DBQ[0].id;
+	            	 cs.Status = 'In Process';
+	            }
+	            if(scList[0].Primary_Category__c =='Complaint' && scList[0].Teritiary_Category__c == 'Marketing'){
+	            	
+	            	 cs.OwnerId = MQ[0].id;
+	            	 cs.Status = 'In Process';
+	            }
+	            if(scList[0].Primary_Category__c =='Complaint' && scList[0].Teritiary_Category__c == 'Mortgage Lending'){
+	            	
+	            	 cs.OwnerId = MLQ[0].id;
+	            	 cs.Status = 'In Process';
+	            }
+	            if(scList[0].Primary_Category__c =='Complaint' && scList[0].Teritiary_Category__c == 'Payment Services'){
+	            	
+	            	 cs.OwnerId = PSQ[0].id;
+	            	 cs.Status = 'In Process';
+	            }
+	            
+	            //----------------------------------------KX11043-26 and KX11043-27---------------------------------------------//
             }
             cs.Account_Number__c = memObject.Id;
             cs.Brand__c = 'CFCU';
             cs.AccountId = selectedMemberNumber.PersonID__c;
-             if(caseObject.Status != '---None---'){
+            /*if(caseObject.Status != '---None---'){
              	
              	cs.Status = caseObject.Status;
-             }
-         	 else{
+            }
+         	else{
          	 	cs.Status = '';
-         	 }
+         	}*/
          	 
             if(cList.size() > 0)
             	cs.ContactId = cList[0].Id;
