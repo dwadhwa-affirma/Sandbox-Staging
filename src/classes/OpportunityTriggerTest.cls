@@ -57,7 +57,7 @@ public  class OpportunityTriggerTest {
 			
 			
 			
-	    	Lead ld = new Lead (LastName = 'Test',Product_Type__c = 'Card', Product_Subtype__c = 'Credit Cards' , Brand__c = 'CFCU',FirstName = 'test',MiddleName = 'New', Description = 'New',
+	    	Lead ld = new Lead (LastName = 'Test',Product_Type__c = 'Card',Brand__c = 'CFCU',FirstName = 'test',MiddleName = 'New', Description = 'New',
 	    						Salutation = 'MR.',Suffix = 'MR',Status = 'New',Phone= '1234567890',Email='test@test.com',MobilePhone='1234567892',How_did_you_hear_about_us__c='Website',Event_Source__c='Event-Reston-Open House-04/20/18',
 	   							 LeadSource='BDO-Realtor Referral' , Ownership__c='Queue', OwnerId = listQueue.Id, Street_Address_1__c='Address 1',State__c= 'NY',Zip_Code__c= '12345',City__c='NYC',Country__c ='USA');
 	    	insert ld;

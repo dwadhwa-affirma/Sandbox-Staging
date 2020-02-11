@@ -3,7 +3,31 @@ public class MCTravelPlanCloseCaseTest {
     
     public static testmethod void test1(){
     	
-    	Account_Details__c accDetail = new Account_Details__c();
+    	Create_SLA__c cl = new Create_SLA__c();
+        cl.Status__c = 'Open';
+        cl.Name = 'Open';
+        cl.hours__c = 8;
+        insert cl;
+        
+        Create_SLA__c cl1 = new Create_SLA__c();
+        cl1.Status__c = 'In Process';
+        cl1.Name = 'In Process';
+        cl1.hours__c = 20;
+        insert cl1;
+        
+        Create_SLA__c cl2 = new Create_SLA__c();
+        cl2.Status__c = 'Resolution';
+        cl2.Name = 'Resolution';
+        cl2.hours__c = 20;
+        insert cl2;
+        
+        Create_SLA__c cl3 = new Create_SLA__c();
+        cl3.Status__c = 'Closed';
+        cl3.Name = 'Closed';
+        cl3.hours__c = 2;
+        insert cl3;
+        
+        Account_Details__c accDetail = new Account_Details__c();
 		        accDetail.Name = '0000147163';
 		        accDetail.RecType__c = 'ACCT';
 		        accDetail.TypeTranslate__c = '1-PERSONAL';

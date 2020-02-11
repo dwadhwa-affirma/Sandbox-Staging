@@ -1,0 +1,90 @@
+<apex:page standardController="Xpress_Refi__c" extensions="XpressRefi_Controller">
+    <div id="InnternalDiv" style="height:350px; width:800px;" >
+  
+  <apex:pageBlock title="Select the Loan">
+        <apex:form >
+  
+    <apex:pageBlockSection title="Select the Loan" collapsible="True">         
+       <apex:pageBlockTable value="{!acList}" var="ac">
+           <apex:column headervalue="Name" value="{!ac.Name}"/>
+           <apex:column headervalue="Loan Number" value="{!ac.Loan_Number__c}"/>
+           <apex:column headervalue="Account Type / Share Type" value="{!ac.TypeTranslate__c}"/>
+           <apex:column headervalue="Account Number" >
+             <apex:commandLink value="{!ac.name}" action="{!SelectLoan}" reRender="out">
+                        <apex:param value="{!ac.id}" name="acid"/>
+              </apex:commandLink>
+            </apex:column>
+           </apex:pageBlockTable>
+   </apex:pageBlockSection>         
+   
+          
+<apex:outputPanel id="out">
+        <apex:outputLabel value="{!SelectedLoan}"> This is test</apex:outputLabel>
+        
+    </apex:outputPanel>
+     </apex:form>          
+     </apex:pageBlock>        
+     
+        <apex:pageblock >
+        
+       <apex:form id="out"> 
+        
+     <apex:pageBlockSection title="Applicants Information" columns="2">
+         
+         <apex:inputField value="{!xprs.name}"/>
+         <apex:inputField value="{!xprs.Member_Number__c}"/>
+         <apex:inputField value="{!xprs.Loan_Number__c}"/>
+         <apex:inputField value="{!xprs.Borrower_1_Name__c}"/>
+         <apex:inputField value="{!xprs.Borrower_2_Name__c}"/>
+         <apex:inputField value="{!xprs.Property_Address__c}"/>
+         <apex:inputField value="{!Xpress_Refi__c.City__c}"/>
+         <apex:inputField value="{!Xpress_Refi__c.State__c}"/>
+         <apex:inputField value="{!Xpress_Refi__c.Zip_Code__c}"/>
+         <apex:inputField value="{!Xpress_Refi__c.Member_Phone__c}"/>
+         <apex:inputField value="{!Xpress_Refi__c.Member_Email__c}"/>
+         <apex:inputField value="{!Xpress_Refi__c.Mailing_address_if_different__c}"/>
+       
+             </apex:pageBlockSection>
+         
+   <apex:pageBlockSection > 
+       <apex:outputPanel > 
+       <apex:outputLabel value="Conforming">
+           <apex:inputField value="{!Xpress_Refi__c.Conforming__c}"/>
+           </apex:outputLabel>
+          <apex:outputLabel value="Jumbo">
+             <apex:inputField value="{!Xpress_Refi__c.Jumbo__c}"/>
+              </apex:outputLabel>
+            <apex:outputLabel value="RELO">
+             <apex:inputField value="{!Xpress_Refi__c.RELO__c}"/>
+           </apex:outputLabel>
+            </apex:outputPanel>
+         </apex:pageBlockSection>
+  
+      
+     
+      
+      <apex:pageBlockSection title="Applicants Information" columns="2">
+       <apex:inputField value="{!Xpress_Refi__c.name}"/>
+      <apex:inputField value="{!Xpress_Refi__c.Member_Number__c}"/>
+         <apex:inputField value="{!Xpress_Refi__c.Loan_Number__c}"/>
+      <apex:inputField value="{!Xpress_Refi__c.Borrower_1_Name__c}"/>
+         <apex:inputField value="{!Xpress_Refi__c.Borrower_2_Name__c}"/>
+      <apex:inputField value="{!Xpress_Refi__c.Property_Address__c}"/>
+         <apex:inputField value="{!Xpress_Refi__c.City__c}"/>
+      <apex:inputField value="{!Xpress_Refi__c.State__c}"/>
+          <apex:inputField value="{!Xpress_Refi__c.Zip_Code__c}"/>
+      <apex:inputField value="{!Xpress_Refi__c.Member_Phone__c}"/>
+            <apex:inputField value="{!Xpress_Refi__c.Member_Email__c}"/>
+            <apex:inputField value="{!Xpress_Refi__c.Mailing_address_if_different__c}"/>
+      </apex:pageBlockSection>
+            
+            <apex:pageBlockSection >
+              <apex:inputField value="{!Xpress_Refi__c.Current_Principal_and_Interest_Payment__c}"/>
+              <apex:inputField value="{!Xpress_Refi__c.Current_Balance__c}"/>
+            </apex:pageBlockSection>
+            </apex:form>
+    </apex:pageblock>
+
+</div>
+    
+</apex:page>

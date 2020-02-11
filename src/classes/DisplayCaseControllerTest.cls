@@ -4,7 +4,25 @@
  
    @testsetup public static void setup()
    {
-      
+        Create_SLA__c cl = new Create_SLA__c();
+        cl.Status__c = 'Open';
+        cl.Name = 'Open';
+        cl.hours__c = 8;
+        insert cl;
+        
+        Create_SLA__c cl1 = new Create_SLA__c();
+        cl1.Status__c = 'In Process';
+        cl1.Name = 'In Process';
+        cl1.hours__c = 20;
+        insert cl1;
+        
+        Create_SLA__c cl2 = new Create_SLA__c();
+        cl2.Status__c = 'Resolution';
+        cl2.Name = 'Resolution';
+        cl2.hours__c = 20;
+        insert cl2;
+       
+       
        SecureEmailSetting__c customsetting;
       customsetting = new SecureEmailSetting__c();
         customsetting.Name ='Secure Email Setting';
@@ -471,13 +489,12 @@
                   //DisplayCaseController.ButtonReply_Click(ids,'TestComment','Desktop');
                   //DisplayCaseController.ButtonReply_Click(ids,'TestComment');
                   //DisplayCaseController.ButtonSave_Click(ids);
-                   Case caseList= [select Id from case where id =: ids2 limit 1];
+                  
                   //string LatestcommentBySupport = DisplayCaseController.LoadLatestCommentBySupport(ids);
-                  Test.startTest(); 
                   Member_Comment__c mc = new Member_Comment__c();
                   mc.Member_Comment__c ='test';
                   mc.Member_Communication__c ='test';
-                  mc.Case__c = caseList.id;
+                  mc.Case__c = ids2;
                   mc.draft__c = false;
                   insert mc; 
                   string mcid = mc.Id;
@@ -488,13 +505,13 @@
                   FileList fl = new FileList();
                 string xblob = 'abc';
                 Blob myBlob = Blob.valueof(xblob);
-                 
+                
                 Attachment att = new  Attachment();
                 att.Parentid = mcid;
                 att.Name = 'Excel.ppt';
                 att.Body = myBlob;
                 insert att; 
-              
+               Test.startTest(); 
                 List<Attachment> attl = null; 
                
                 System.assertEquals(1, 1); 
@@ -577,7 +594,7 @@
              memberComments.add(mc2);
              
              insert memberComments;
-	Test.startTest(); 
+
              Attachment att = new  Attachment();
             att.Parentid = memberComments[0].id;
             att.Name = 'Excel.ppt';
@@ -589,7 +606,7 @@
                 mc5.CreatedById  = mc5.CreatedById;
                 mc5.CreatedDate = system.now();     
                 
-                
+                Test.startTest(); 
                 System.assertEquals(1, 1);            
         system.runas(u)
             {

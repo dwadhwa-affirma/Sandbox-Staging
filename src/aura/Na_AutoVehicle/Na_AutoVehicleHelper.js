@@ -2,7 +2,7 @@
 	fetchPicklistFields: function(component) {
 		var picklistFields = component.get("v.picklistFields");
 		 
-		var NAFields = ["LEAV_Current__c", "LEAV_CurrentLoanProvider__c", "LEAV_PlanningToBuy__c", "LEAV_AnticipateFinance__c","Purchase_Auto_Vehicle_Timeframe__c"];
+		var NAFields = ["LEAV_Current__c", "LEAV_CurrentLoanProvider__c", "LEAV_PlanningToBuy__c", "LEAV_AnticipateFinance__c", "LEAV_AnticipateFinance__c","Purchase_Auto_Vehicle_Timeframe__c"];
 		picklistFields['Needs_Assesment__c'] = NAFields;
 		 
 		this.getPicklistValues(component,picklistFields);

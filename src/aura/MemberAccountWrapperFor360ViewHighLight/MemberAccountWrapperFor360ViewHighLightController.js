@@ -19,21 +19,13 @@
 	        if (state === "SUCCESS") {
 	        	var result =  response.getReturnValue();
 	        	if(result.accList.totalrecords >0 ){
-	        		component.set("v.IsThereCases", true);	        		
-	        		var arrTabs = document.getElementsByClassName("slds-tabs_default__link");
+	        		component.set("v.IsThereCases", true);
+	        		
+	        		var arrTabs = document.getElementsByClassName("title");
 			        for(var i = 0; i < arrTabs.length; i++){
-			        
-			        	if (arrTabs[i].innerHTML == "Accounts 360 View"){
+			        	if (arrTabs[i].textContent == "Accounts 360 View"){
 			        		//component.set("v.tabIndex", i+1);
-			        	   	arrTabs[i].parentElement.className += " heightLight";
-			        	}
-			        }
-			        
-			        var arrTabsTitle = document.getElementsByClassName("title");
-			        for(var i = 0; i < arrTabsTitle.length; i++){
-			        	if (arrTabsTitle[i].textContent == "Accounts 360 View"){
-			        		//component.set("v.tabIndex", i+1);
-			        		arrTabsTitle[i].parentElement.parentElement.parentElement.className += " heightLight";
+			        		arrTabs[i].parentElement.parentElement.parentElement.className += " heightLight";
 			        	}
 			        }
 	        	}

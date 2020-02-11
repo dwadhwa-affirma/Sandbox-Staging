@@ -65,7 +65,25 @@ private class OnBaseTest{
   }
   static testMethod void test_GetCaseAttachments_UseCase1(){
       
-    List<Case> listCase  =  [SELECT Id,status from Case limit 1];
+    Create_SLA__c cl = new Create_SLA__c();
+      cl.Status__c = 'Open';
+      cl.Name = 'Open';
+      cl.hours__c = 8;
+      insert cl;
+      
+      Create_SLA__c cl1 = new Create_SLA__c();
+      cl1.Status__c = 'In Process';
+      cl1.Name = 'In Process';
+      cl1.hours__c = 20;
+      insert cl1;
+      
+      Create_SLA__c cl2 = new Create_SLA__c();
+      cl2.Status__c = 'Resolution';
+      cl2.Name = 'Resolution';
+      cl2.hours__c = 200;
+      insert cl2;
+      
+      List<Case> listCase  =  [SELECT Id,status from Case limit 1];
       
   GetCaseAttachments.GetCaseAttachments(listCase[0].Id);
   OnBaseDocumentController.caseAttachments objcaseAttachment =  OnBaseDocumentController.getAttachmentData(listCase[0].Id);
@@ -95,7 +113,7 @@ private class OnBaseTest{
   docSetting.Days__c = 0;
   docSetting.Name = 'DeleteAttachments';
   insert docSetting;
-  listCase[0].status = 'Closed';
+  listCase[0].status = 'Resolution';
   update listCase;
   OnBaseDocumentDeleteAttachments obj = new OnBaseDocumentDeleteAttachments();
   obj.execute(null);

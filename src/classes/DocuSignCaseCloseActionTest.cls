@@ -4,6 +4,30 @@ public class DocuSignCaseCloseActionTest {
     static testMethod void testMethod1(){
         Profile[] p1 = [select Id from Profile where Name = 'CFCU Admin' limit 1];
         
+        Create_SLA__c cl = new Create_SLA__c();
+        cl.Status__c = 'Open';
+        cl.Name = 'Open';
+        cl.hours__c = 8;
+        insert cl;
+        
+        Create_SLA__c cl1 = new Create_SLA__c();
+        cl1.Status__c = 'In Process';
+        cl1.Name = 'In Process';
+        cl1.hours__c = 20;
+        insert cl1;
+        
+        Create_SLA__c cl2 = new Create_SLA__c();
+        cl2.Status__c = 'Resolution';
+        cl2.Name = 'Resolution';
+        cl2.hours__c = 20;
+        insert cl2;
+        
+        Create_SLA__c cl3 = new Create_SLA__c();
+        cl3.Status__c = 'Closed';
+        cl3.Name = 'Closed';
+        cl3.hours__c = 2;
+        insert cl3;
+        
         User user1 = new User(alias = 'u1',lastname='test999', languagelocalekey='en_US', 
                               email='User1@avfg.com', emailencodingkey='UTF-8', 
                               localesidkey='en_US', profileId = p1[0].id, timezonesidkey='America/Los_Angeles', 

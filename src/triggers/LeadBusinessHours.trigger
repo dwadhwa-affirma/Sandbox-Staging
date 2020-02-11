@@ -296,8 +296,7 @@ trigger LeadBusinessHours on Lead (after insert, before insert, before update, a
             	 for(Lead ld: trigger.New){
             	 	Lead oldlead = trigger.oldMap.get(ld.Id);
             	 	
-            	   system.debug('oldstatus##'+ oldlead.Status);
-                    system.debug('ldstatus##'+ ld.Status); 
+            	   
             	 	
             	 	if(SetLead.contains(ld.id) && ld.Status == 'Closed - Not Converted'){
             	 		ld.Adderror('Queue owned leads cannot be closed.');

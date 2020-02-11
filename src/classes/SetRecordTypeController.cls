@@ -47,7 +47,6 @@ public class SetRecordTypeController {
                           Residential_Street__pc,
                           Residential_Zipocde__pc,
                           PersonHomePhone,
-                          PersonID__c,
                           Email_raw__c FROM Account Where Id =:accId];
             
             System.debug('Raw email check:::'+acc);
@@ -132,7 +131,7 @@ public class SetRecordTypeController {
     } 
     
     public pageReference nextPage(){
-        if(acc.PersonID__c != null && acc.PersonID__c != '' &&  String.isBlank(accountName)){
+        if(String.isBlank(accountName)){
             ApexPages.Message msgs = new ApexPages.Message(ApexPages.Severity.ERROR, 'Please select Account Number');
             ApexPages.addMessage(msgs);
             return null;
@@ -249,7 +248,7 @@ public class SetRecordTypeController {
     
     public pageReference process1(){
         
-        if(acc.PersonID__c != null && acc.PersonID__c != '' &&  String.isBlank(accountName)){
+        if(String.isBlank(accountName)){
             ApexPages.Message msgs = new ApexPages.Message(ApexPages.Severity.ERROR, 'Please select Account Number');
             ApexPages.addMessage(msgs);
             return null;
@@ -319,7 +318,8 @@ public class SetRecordTypeController {
             cs.ContactId = cList[0].Id;
             if(acc.PersonEmail != null){
                   cs.Email_Address__c = acc.PersonEmail;
-              }/*else{
+              }
+              /*else{
                   cs.Email_Address__c = acc.Email_raw__c;
              }*/
             cs.Phone_Number__c = acc.PersonHomePhone;

@@ -3,7 +3,7 @@ public class CannedResponsesForCommentTest{
 
 @testSetup static void methodName() 
 {
-	string fid ='0000999999'  ;    
+  string fid ='0000999999'  ;    
          String uid = UserInfo.getUserId();
          Profile profile = [SELECT Id,Name FROM Profile where Name ='Customer Community Login User' ];
          RecordType recordtype =[SELECT Id,Name FROM RecordType WHERE Name='Person Account'];
@@ -78,6 +78,24 @@ public class CannedResponsesForCommentTest{
        
         system.runas(u)
           {
+             Create_SLA__c cl = new Create_SLA__c();
+            cl.Status__c = 'Open';
+            cl.Name = 'Open';
+            cl.hours__c = 8;
+            insert cl;
+            
+            Create_SLA__c cl1 = new Create_SLA__c();
+            cl1.Status__c = 'In Process';
+            cl1.Name = 'In Process';
+            cl1.hours__c = 20;
+            insert cl1;
+            
+            Create_SLA__c cl2 = new Create_SLA__c();
+            cl2.Status__c = 'Resolution';
+            cl2.Name = 'Resolution';
+            cl2.hours__c = 20;
+            insert cl2;
+              
              cas.Subject = 'Test Subject Inquires';
              cas.Description = 'Test Description Inquires';
              cas.Account_Number__c = pa.Account_Number__c;
@@ -110,7 +128,7 @@ public class CannedResponsesForCommentTest{
         ap2.Case_ID__c = cas.id;
         insert ap2;
     
-    	
+      
         
         
 
@@ -129,13 +147,13 @@ public class CannedResponsesForCommentTest{
 
     static testmethod void validateStandardController(){
         test.startTest();
-		Case cas = [select id from case limit 1];
+    Case cas = [select id from case limit 1];
         
    List<Attachment>     AttachmentLst = [select id from Attachment where parentid =: cas.id];
         
-		Canned_Responses__c cr = [select id from Canned_Responses__c limit 1];
-		
-		 List<Member_Comment__c> memberCommentList= new List<Member_Comment__c>();
+    Canned_Responses__c cr = [select id from Canned_Responses__c limit 1];
+    
+     List<Member_Comment__c> memberCommentList= new List<Member_Comment__c>();
             Member_Comment__c memberComment= new Member_Comment__c(Case__c = cas.Id);
             PageReference pageRef = Page.Canned_Responses_For_Member_Comment;
             Test.setCurrentPage(pageRef);

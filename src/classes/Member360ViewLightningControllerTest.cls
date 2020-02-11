@@ -344,9 +344,9 @@ Comment_Block_20__c='ABC'
  	Memeber360ViewLightningController.GetPagingData(obj[1].Id,1,10,'active cases','CaseNumber','ASC','08/08/2012');
      
 	//Memeber360ViewLightningController.GetPagingData(obj[1].Id,1,10,'close cases','','','test');
- 	Memeber360ViewLightningController.GetPagingData(obj[1].Id,1,10,'close cases','CaseNumber','ASC','08/08/2012');
+ 	//Memeber360ViewLightningController.GetPagingData(obj[1].Id,1,10,'close cases','CaseNumber','ASC','08/08/2012');
      
-	Memeber360ViewLightningController.GetPagingData(obj[1].Id,1,10,'Case Comments','AccountNumberName','Desc','test');
+	//Memeber360ViewLightningController.GetPagingData(obj[1].Id,1,10,'Case Comments','AccountNumberName','Desc','test');
 	TEst.stoptest();
 
   }

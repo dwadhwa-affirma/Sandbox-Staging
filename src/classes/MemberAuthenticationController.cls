@@ -18,7 +18,8 @@ public class MemberAuthenticationController{
     public String IVRPhoneNumberMatch;
     public String ReasonCode{get;set;}
     public String HighFlag{get;set;}
-    
+    public String MemberType{get;set;}
+        
     public String OTPVerified {get;set;}
     
     
@@ -270,28 +271,30 @@ public class MemberAuthenticationController{
         if(CONST_TRUE.equalsIgnoreCase(MemberNumberMatch)){
             noOfVerifiedFields = noOfVerifiedFields+1;
         }  
-        if(noOfVerifiedFields < 3){
-            setConfirmationOncheckboxes();
-            
-            if(EnteredMemberNumber == null || EnteredMemberNumber == '')
-            {
-                fromMarsData = 'True';
-            }
-            else
-            {
-                fromMarsData = 'False';
-            }
-            
-            pageCalulated = new PageReference('/apex/verifiy');         
-            pageCalulated.setRedirect(false);
+        //if(noOfVerifiedFields < 3){
+        setConfirmationOncheckboxes();
+        
+        if(EnteredMemberNumber == null || EnteredMemberNumber == '')
+        {
+            fromMarsData = 'True';
         }
         else
         {
-            integer i = EnteredCardNumber.length();            
-            EnteredCardNumberLastdigits = '****_****_****_'+EnteredCardNumber.substring(i-4,i);            
-            Names = vc.getAccountByName(SalesforceID);
+            fromMarsData = 'False';
         }
-               
+        
+        //pageCalulated = new PageReference('/apex/verifiy');  
+        pageCalulated = new PageReference('/lightning/cmp/c__LightningVerification?c__EnteredSSN='+ EnteredSSN+'&c__EnteredMemberNumber='+EnteredMemberNumber+'&c__CallersPhoneNumber='+PhoneNumber+'&c__PINMatch='+PINMatch);         
+        pageCalulated.setRedirect(false);
+       // }
+      
+       system.debug('EnteredCardNumber##'+ EnteredCardNumber);
+        if(EnteredCardNumber != null && EnteredCardNumber !='' ){
+        	integer i = EnteredCardNumber.length();            
+        	EnteredCardNumberLastdigits = '****_****_****_'+EnteredCardNumber.substring(i-4,i);            
+        	Names = vc.getAccountByName(SalesforceID);	
+        }
+             
         setConfirmationOncheckboxes();
         return pageCalulated;
     }
@@ -1494,6 +1497,7 @@ public class MemberAuthenticationController{
            
             //IDTypeToMatch = string.isEmpty(selectedOne.ID_1_Type__pc) ? (string.isEmpty(selectedOne.ID_2_Type__pc) ? selectedOne.ID_3_Type__pc : selectedOne.ID_2_Type__pc) :selectedOne.ID_1_Type__pc ;
             if(string.isEmpty(DLStateIdPassport)){
+            	system.debug('test');
                 if(selectedOne.ID_1_Type__c == null){
                     if(selectedOne.ID_2_Type__c != null){
                         string ID_1_Type = '';
@@ -1677,6 +1681,7 @@ public class MemberAuthenticationController{
             if (DLStateIdPassportToMatch != '')
            {
                 DLStateIdPassport = DLStateIdPassportToMatch;
+                system.debug('ttt'+DLStateIdPassport);
                 DLStateIdPassportMatch = 'true';
            }
            else
@@ -2222,6 +2227,7 @@ public class MemberAuthenticationController{
         IVREnteredMemberNumber = EnteredMemberNumber;
         ReasonCode = ApexPages.currentPage().getParameters().get('Reason');
         HighFlag = ApexPages.currentPage().getParameters().get('HighValueFlag');
+        MemberType = ApexPages.currentPage().getParameters().get('MemberType');        
         
         
         if(ReasonCode == null || ReasonCode == '')

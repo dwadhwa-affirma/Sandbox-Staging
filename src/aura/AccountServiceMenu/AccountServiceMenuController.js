@@ -88,7 +88,7 @@
 	                 	header[i].style='display:none';                 
 	            	 }
 				 }
-		         var footer = document.getElementsByClassName('slds-modal__footer');
+		         var footer = document.getElementsByClassName('modal-footer');
 		          if(footer != null){
 					 footer[0].style="display:none"
 				 }

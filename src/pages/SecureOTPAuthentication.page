@@ -15,7 +15,6 @@
  <section class="chervon">
         <div class="container">
 <apex:form >
-Test
 <c:MemberVerification accountId="{!Account.Id}" />
 </apex:form>
 </div>

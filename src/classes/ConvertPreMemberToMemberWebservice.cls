@@ -11,8 +11,8 @@ global class ConvertPreMemberToMemberWebservice {
         MaturingCDCreateOpportunitySchedular obj2 = new MaturingCDCreateOpportunitySchedular();
         obj2.Execute(null);
     } */
-    webservice static void ImpendingDormancyTriggeredOpportunity() {
+    /*webservice static void ImpendingDormancyTriggeredOpportunity() {
         DormancyCreateOpportunitySchedular obj3 = new DormancyCreateOpportunitySchedular();
         obj3.Execute(null);
-    }
+    }*/
 }

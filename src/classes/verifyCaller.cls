@@ -199,7 +199,7 @@ public class verifyCaller{
             relatedIds.add(p.Account_Number__c);
         }
         System.debug(relatedIds);
-        MemberNumberAuth = [Select Name,Card_Number_Last_4_Digits__c,Card_Number__c , id from  Account_Details__c where (Parent_Account__c in :relatedIds Or id in :relatedIds) and status1__c = '1 Issued'];
+        MemberNumberAuth = [Select Name,Card_Name__c,TypeTranslate__c,Card_Number_Last_4_Digits__c,Card_Number__c , id from  Account_Details__c where (Parent_Account__c in :relatedIds Or id in :relatedIds) and status1__c = '1 Issued'];
         return MemberNumberAuth;
     }
     
@@ -226,7 +226,7 @@ public class verifyCaller{
     
     public List<Account> queryByParametersAvailable(verificationObject input, boolean onlyQueryParameters){
         String check = '';
-        String queryString = 'select FirstName , LastName , ID, SSN_Last_4__pc, BIRTH_DATE__pc,Mothers_Maiden_Name__pc, PersonEmail,  ID_1_Description__pc,ID_2_Description__pc,ID_3_Description__pc, ID_1_Number__pc ,ID_2_Number__pc, ID_3_Number__pc, ID_1_Type__pc, ID_2_Type__pc, ID_3_Type__pc, ID_1_Expiration_Date__pc, ID_2_Expiration_Date__pc, ID_3_Expiration_Date__pc, ID_1_Type__c, ID_2_Type__c, ID_3_Type__c from Account where (';
+        String queryString = 'select Name,FirstName , LastName , ID, SSN_Last_4__pc, BIRTH_DATE__pc,Mothers_Maiden_Name__pc, PersonEmail,  ID_1_Description__pc,ID_2_Description__pc,ID_3_Description__pc, ID_1_Number__pc ,ID_2_Number__pc, ID_3_Number__pc, ID_1_Type__pc, ID_2_Type__pc, ID_3_Type__pc, ID_1_Expiration_Date__pc, ID_2_Expiration_Date__pc, ID_3_Expiration_Date__pc, ID_1_Type__c, ID_2_Type__c, ID_3_Type__c from Account where (';
         String conditions = '';
         String additionalConditions = ''; 
         String phoneQuery = '';

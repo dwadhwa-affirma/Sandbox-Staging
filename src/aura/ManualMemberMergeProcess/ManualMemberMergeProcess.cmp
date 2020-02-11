@@ -471,9 +471,8 @@
 	                                        </span>
 	                                    </td>
 	                                    <td>
-	                                    <a  _id="{!item.Id}" href="javascript:void(0);" title="{!item.LastName}" > 
-	                                     <c:ManualMermberMergeHighLightColumn valueToDisplay="{!item.LastName}" RecId= "{!item.Id}" valueToCompare="{!v.accountdetail.LastName}" />
-	                                    </a></td>
+	                                        <c:ManualMermberMergeHighLightColumn valueToDisplay="{!item.LastName}"  valueToCompare="{!v.accountdetail.LastName}" />
+	                                    </td>
 	                                    <td>
 	                                        <c:ManualMermberMergeHighLightColumn valueToDisplay="{!item.FirstName}"  valueToCompare="{!v.accountdetail.FirstName}" />                         	
 	                                    </td>

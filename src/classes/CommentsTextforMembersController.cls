@@ -96,7 +96,7 @@ public class CommentsTextforMembersController {
 	             	
 	             }
              }
-             if (found || (isTest != null && isTest == true))
+             if (found || isTest)
              {
             if(var.Comment_Block_01__c != NULL || var.Comment_Block_01__c != ''){
                 warningCodeWrapper wcw1 =new warningCodeWrapper(var.Comment_Block_01__c);

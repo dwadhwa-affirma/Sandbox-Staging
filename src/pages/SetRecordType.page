@@ -41,14 +41,14 @@
             <apex:pageBlockSection columns="2" title="Account Details" id="pbs">
 
                 <apex:pageBlockSectionItem >
-                    <apex:outputLabel Value="{!If(acc.PersonID__c = null || acc.PersonID__c = '','Pre Member','Member')}" for="accName"/>
+                    <apex:outputLabel Value="Member" for="accName" />
                     <apex:outputField value="{!acc.Name}" id="accName" />
                 </apex:pageBlockSectionItem>
                 <apex:pageBlockSectionItem >
                     <apex:outputLabel Value="E-mail Address" for="emailID" />
                     <apex:outputField value="{!acc.PersonEmail}" id="emailID" />
                 </apex:pageBlockSectionItem>
-                <apex:pageBlockSectionitem id="pbsi" rendered="{!If(acc.PersonID__c = null || acc.PersonID__c = '',false,true)}">
+                <apex:pageBlockSectionitem id="pbsi">
                     <apex:outputLabel value="Account Number" />
                     <apex:outputPanel styleClass="requiredInput" layout="block" id="op">
                         <apex:outputPanel styleClass="requiredBlock" layout="block" />
@@ -56,10 +56,6 @@
                         <!--  <apex:inputText size="35" value="{!accountName}" id="targetName" onFocus="this.blur()" disabled="false"/> <a href="#" onclick="openLookupPopup('{!accId}'); return false">Lookup</a>-->
                         <apex:inputText size="35" value="{!accountName}" id="targetName" styleClass="accountName"  onFocus="this.blur()" disabled="false" /> <img src="/s.gif" onclick="openLookupPopup('{!accId}', '{!accountId}'); return false" class="lookupIcon" onmouseout="this.className='lookupIcon';" alt="Account Name Lookup (New Window)" onmouseover="this.className='lookupIconOn';" />
                     </apex:outputPanel>
-                </apex:pageBlockSectionitem>
-                
-                
-                 <apex:pageBlockSectionitem id="pbsi1" rendered="{!If(acc.PersonID__c = null || acc.PersonID__c = '',true,false)}">
                 </apex:pageBlockSectionitem>
                 <apex:pageBlockSectionItem >
                     <apex:outputLabel value="Ownership" for="ownr" />

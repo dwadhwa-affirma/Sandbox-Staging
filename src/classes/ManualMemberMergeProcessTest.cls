@@ -26,7 +26,24 @@ private class ManualMemberMergeProcessTest {
     
     static testMethod void MergeMemberAccountTest() {
         
-      
+      Create_SLA__c cl = new Create_SLA__c();
+        cl.Status__c = 'Open';
+        cl.Name = 'Open';
+        cl.hours__c = 8;
+        insert cl;
+        
+        Create_SLA__c cl1 = new Create_SLA__c();
+        cl1.Status__c = 'In Process';
+        cl1.Name = 'In Process';
+        cl1.hours__c = 20;
+        insert cl1;
+        
+        Create_SLA__c cl2 = new Create_SLA__c();
+        cl2.Status__c = 'Resolution';
+        cl2.Name = 'Resolution';
+        cl2.hours__c = 20;
+        insert cl2;
+        
         MemberConversionSetting__c mcs = new MemberConversionSetting__c();
       
       mcs.Automation__c = 10;
@@ -315,6 +332,24 @@ private class ManualMemberMergeProcessTest {
       
     
     static testMethod void MergeMemberAccountTest1() {
+        
+        Create_SLA__c cl = new Create_SLA__c();
+        cl.Status__c = 'Open';
+        cl.Name = 'Open';
+        cl.hours__c = 8;
+        insert cl;
+        
+        Create_SLA__c cl1 = new Create_SLA__c();
+        cl1.Status__c = 'In Process';
+        cl1.Name = 'In Process';
+        cl1.hours__c = 20;
+        insert cl1;
+        
+        Create_SLA__c cl2 = new Create_SLA__c();
+        cl2.Status__c = 'Resolution';
+        cl2.Name = 'Resolution';
+        cl2.hours__c = 20;
+        insert cl2;
         
         List<Account> listact1 = new List<Account>();
         List<Account_Details__c> listaccdetail = new List<Account_Details__c>();      
@@ -801,7 +836,7 @@ private class ManualMemberMergeProcessTest {
 	        ManualMemberMergeProcess.GetMemberAccountDetail(act1.id);
 	        ManualMemberMergeProcess.GetMemberAccountDetail(act2.id);
 	        ManualMemberMergeProcess.GetMemberList('My Team Members');
-	     //    ManualMemberMergeProcess.GetMemberList('All Members'); 
+	      //   ManualMemberMergeProcess.GetMemberList('All Members'); 
          Test.stopTest();
        
         

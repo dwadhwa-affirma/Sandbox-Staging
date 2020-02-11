@@ -3,6 +3,9 @@
 	<aura:attribute name="tabIndex" type="integer" description="Check if there is Case or not" /> -->
 	<aura:handler name="init" value="{!this}" action="{!c.doInit}" />
 	
+	
+	
+
 		<style>
  			.uiTabBar > ul.heightLight li.uiTabItem:nth-child(2){
 				background:#EDB547;
@@ -10,15 +13,10 @@
 			.uiTabBar > ul.heightLight li.uiTabItem:nth-child(2) span{
 				color:white;
 			} 
-			.heightLight{
-				background:#EDB547;
-				color:white !important;
-			} 
-			.heightLight .slds-tabs_default__item.slds-is-active > .slds-tabs_default__link{
-				color:white !important;
-			}
 			
 		</style>
 		<div>
 		</div>
+
+	
 </aura:component>

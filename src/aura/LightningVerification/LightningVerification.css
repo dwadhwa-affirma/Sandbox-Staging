@@ -1,0 +1,543 @@
+.THIS {
+	
+	
+}
+
+
+
+.THIS .buttonOrange {
+    background-color: #ff8c00;
+    border-color:#ff8c00;
+}
+
+.THIS .MarginTop10px{
+	
+	margin-top: 10px;
+}
+
+.THIS .leftBox{
+	background-color: #F7F9FB;
+	width:250px;
+    font-family: Segoe UI,SalesforceSans-Regular, Arial, sans-serif;
+    font-size: 13px;      
+    color: #54698D;   
+	line-height: 17px;
+}
+.THIS .alignRight{
+ text-align:right;
+}
+.THIS .MessageBgGrey{
+	
+	background-color: #cccccc;
+}
+.THIS .MessageBgBlue{
+	
+	color: #144bd9;
+	background-color: #cccccc;
+	font-size: 90%;
+}
+.THIS .slds-tabs_default__nav, .THIS .slds-tabs--default__nav{
+	align-items: normal;
+    margin-top: 20px;
+}
+
+.THIS .footerButton{
+	
+	background-color: #3895D3;
+	margin-right: 10px;
+	margin-left: 10px;
+	
+	
+}
+
+.THIS .messageClass
+{
+	
+}
+
+.THIS .hidden
+{
+	display:none;
+}
+
+.THIS .show
+{
+	display:block;
+}
+
+.THIS .error{
+		color:red;
+		font-size:12px !important;
+		
+	}
+	
+.THIS .confirm{
+		color:green;
+		font-size:12px !important;
+		
+	}
+
+.THIS .tblrow:after{
+	content:""; clear:both; 
+	display:table;
+}
+
+.THIS .tblrow .leftBox{
+	float:left; 
+	width:18%;
+	height:900px;
+}
+.THIS .slds-select_container:after{
+	border-top: 5px solid #061C3F;
+}
+.THIS .slds-select_container:before {
+    border-bottom:  5px solid #061C3F;
+}
+.THIS .tblrow .rightBox{
+	float:left; 
+	width:81%; 
+	margin-left:0;
+    border: none;
+    border-radius: 0;
+    padding: 0;
+}
+.THIS .tblrow .rightBox.authQuestions{
+	padding: 0 0px;
+}
+.THIS .tblrow .rightBox.authQuestions .c-container{
+	width: 100%;
+}
+.THIS .tblrow .rightBox .slds-tabs_default__item, 
+.THIS .tblrow .rightBox .slds-tabs--default__item{
+    border: 0;
+    margin-right:45px;
+    padding: 0 0px 0 0;
+}
+	
+.THIS .tblrow .rightBox .red, .THIS .tblrow .rightBox .red a {
+	color: #C23934 !important;
+	fill: #C23934 !important;
+}
+
+
+.THIS .tblrow .rightBox .green, .THIS .tblrow .rightBox .green a{
+	color: #00AD53 !important;
+    fill: #00AD53 !important;
+}
+.THIS .tblrow .rightBox .green.slds-tabs_default__item:after, .THIS .tblrow .rightBox .red.slds-tabs--default__item:after {    
+    bottom: 1px;    
+    height: 3px;
+    background: #0070D2;
+}
+
+.THIS .tblrow .rightBox .grey,
+.THIS .tblrow .rightBox .slds-is-active{
+	/*background: #ccc;*/
+	background: transparent;
+} 
+
+.THIS .tblrow .rightBox .slds-is-active{
+	font-weight: normal;
+} 
+.THIS .OOWsession{
+	margin-top: 13px;
+}
+
+.THIS .TabDisabled{
+  cursor: not-allowed;
+  text-decoration: none;
+  pointer-events: none;   
+}
+.THIS.c-container {
+    border: 1px solid #d8dde6;
+    margin: 10px 0 20px 0;
+}
+.THIS .header-column {
+    padding: -1px 2rem;
+}
+.THIS .header-column p {
+    font-size: 14px;
+    line-height: 20px;
+    color: #16325C;
+    
+}
+.THIS p.field-title {
+    font-size: 12px;
+    line-height: 16px;
+    color: #16325C;
+    margin-bottom: .25rem;	
+    font-weight: normal;
+}
+.THIS .rightBox p.field-header{
+	font-size: 12px;
+	letter-spacing: 1px;
+	color: #54698D;
+	margin-bottom: 10px;
+}
+.THIS .rightBox p.authQuestion{
+	margin-bottom: 20px;
+}
+.THIS .cLightningVerification .field-header {
+    font-size: 12px;
+    line-height: 12px;
+    color: #54698D;
+    margin-bottom: .75rem;
+    letter-spacing: 1px;
+}
+.THIS .groupbtn-parent{
+    position: fixed;
+    bottom: 40px;
+    width: 100%;
+    height: 60px;
+    text-align: center;
+    background: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-top: 1px solid #ccc;
+}
+.THIS .slds-button_neutral,.THIS .slds-button_brand {
+	margin-right: 10px;
+}
+
+.THIS lightning-icon.slds-icon-utility-close > lightning-primitive-icon > svg > use{
+     fill: rgb(255, 0, 0);
+    width: var(--lwc-squareIconXxSmallContent,.875rem);
+    height: var(--lwc-squareIconXxSmallContent,.875rem);
+    line-height: var(--lwc-lineHeightReset,1);
+}
+
+.THIS lightning-icon.slds-icon-utility-check > lightning-primitive-icon > svg > use{
+   fill: rgb(75, 202, 129);
+    width: var(--lwc-squareIconXxSmallContent,.875rem);
+    height: var(--lwc-squareIconXxSmallContent,.875rem);
+    line-height: var(--lwc-lineHeightReset,1);
+}
+.THIS lightning-icon.slds-icon-utility-help > lightning-primitive-icon > svg{
+   
+    width: var(--lwc-squareIconXxSmallContent,.875rem) !important;
+    height: var(--lwc-squareIconXxSmallContent,.875rem) !important;
+    line-height: var(--lwc-lineHeightReset,1) !important;
+}
+.THIS lightning-icon.slds-icon-utility-check > lightning-primitive-icon > svg{
+   
+    width: var(--lwc-squareIconXxSmallContent,.875rem) !important;
+    height: var(--lwc-squareIconXxSmallContent,.875rem) !important;
+    line-height: var(--lwc-lineHeightReset,1) !important;
+}
+.THIS lightning-icon.slds-icon-utility-close > lightning-primitive-icon > svg{
+   
+    width: var(--lwc-squareIconXxSmallContent,.875rem) !important;
+    height: var(--lwc-squareIconXxSmallContent,.875rem) !important;
+    line-height: var(--lwc-lineHeightReset,1) !important;
+}
+.THIS lightning-icon.slds-icon-utility-ban > lightning-primitive-icon > svg{
+   
+    width: var(--lwc-squareIconXxSmallContent,.875rem) !important;
+    height: var(--lwc-squareIconXxSmallContent,.875rem) !important;
+    line-height: var(--lwc-lineHeightReset,1) !important;
+}
+.THIS .slds-tabs_default__item.slds-is-active .slds-tabs_default__link, .THIS .slds-tabs_default__item .slds-tabs_default__link  {
+	font-weight: normal;
+	font-size: 14px;
+    height: auto;
+    text-align: center;
+    line-height: 20px;
+    margin-bottom: 15px;
+	text-decoration: none;
+	color: #16325C;
+}   
+.THIS .tblrow .leftBox .caller-info-title {
+	font-size: var(--lwc-fontSize6,1.125rem);
+    font-weight: 300;
+	font-size: 20px;      
+    color: #203146;   
+	line-height: 24px;
+    margin-bottom: 10px;
+}       
+.THIS .tblrow .leftBox svg{
+    fill: #54698D;
+}          
+.THIS .tblrow .leftBox label.slds-form-element__label, .THIS .tblrow .leftBox .slds-radio .slds-form-element__label {
+    padding-left: 5px;
+    padding-top: 5px;	
+	font-size: 13px;      
+    color: #54698D;   
+	line-height: 17px;                                                                                                          
+}      
+.THIS .tblrow .leftBox .slds-form-element__legend{
+	font-weight: normal;
+	font-size: 13px;      
+    color: #54698D;   
+	margin-top: 15px;
+}    
+
+.THIS .tblrow .leftBox .slds-input, .THIS .tblrow .leftBox .slds-input::placeholder, .THIS .tblrow .leftBox .slds-input:focus, .THIS .tblrow .leftBox .slds-input:active{
+	font-size: 14px;      
+    color: #16325C; 	
+}                                                                                                           
+.THIS .slds-tabs_default__item.slds-is-active .slds-tabs_default__link span svg, .THIS .slds-tabs_default__item .slds-tabs_default__link span svg{  
+	color: #16325C;
+	fill: #16325C;
+}                                                                                     
+                                                                                                
+.THIS .tblrow .rightBox .grey{
+	color: rgb(169, 169, 169);
+}
+.THIS .tblrow .rightBox header {
+    border-bottom: 1px solid rgb(221, 219, 218);
+    margin: 8px 15px 8px 0;
+    padding-bottom: 5px;
+    padding-left:15px;
+}
+.THIS .tblrow .rightBox .cCFCUWallet header {
+	padding-left: 0;
+    margin: 8px 0px;
+}
+.THIS .tblrow .rightBox header .slds-p-around_small {
+    padding: 12px 12px 8px 0;
+    margin-right: 15px;
+    margin-bottom: 11px;
+}
+.THIS .tblrow .rightBox header .slds-p-around_small:first-child {
+    padding: 12px 15px 8px 0;
+    border-right: 1px solid rgb(221, 219, 218);
+    margin-right: 15px;
+    margin-bottom: 11px;
+    text-align: right;
+    width: 137px;
+    font-weight: bold;
+    line-height: 1;
+    letter-spacing: 1px;
+    color: #54698d;
+}
+.THIS .cCFCUWallet header .slds-p-around_small:first-child{
+	width: inherit !important;
+    border: 0 !important;
+    text-align: left !important;
+	font-weight: normal !important;
+}
+
+.THIS .tblrow .rightBox header p.field-header button {
+    border: none;
+    color: #F2B614;
+    width: 15px;
+    height: auto;
+    padding: 0 0px 3px 8px;
+}
+.THIS #viewhistoryDiv {
+    margin: 0 auto;
+    width: 100%;
+    max-width: 100rem;
+    min-width: 20rem;
+}
+
+.THIS .alignCenter {
+   text-align: center;
+}
+.THIS .LabelSize{
+	font-size: 1rem !important;
+    font-weight: bold;	
+}
+
+/*.THIS.slds-spinner_container {  
+  z-index: 10000;
+  position: fixed;   
+}*/
+
+.THIS .cPublicWallet .InnerDiv:last-child{
+	padding-bottom: 0px
+}
+.THIS .cPublicWallet .CenterDiv.mb-50{
+	margin: 0px;
+}
+.THIS .cPublicWallet .leftDiv{
+	font-size: 14px;
+	line-height: 19px;
+    color: #16325C;
+	font-family: Segoe UI,SalesforceSans-Regular, Arial, sans-serif;
+}  
+.THIS .cPublicWallet .leftDiv span.labeltxt, .THIS .cPublicWallet .leftDiv label span, .THIS .cCFCUWallet .leftDiv span{
+	font-size: 12px;
+	line-height: 16px;
+    color: #54698d;
+	font-weight: normal;
+	height: 21px;
+    display: inline-block;
+}   
+.THIS .cPublicWallet .BtnOne, .THIS .cCFCUWallet .BtnOne{
+    border-bottom-right-radius: 0;
+    border-top-right-radius: 0;
+}
+.THIS .cPublicWallet .BtnTwo, .THIS .cCFCUWallet .BtnTwo{
+    border-bottom-left-radius: 0;
+    border-top-left-radius: 0;
+}
+
+.THIS .slds-button_success, .THIS .slds-button--success, .THIS .slds-button_success:hover, .THIS .slds-button_success:focus, .THIS .slds-button--success:hover, .THIS .slds-button--success:focus {
+    background-color: #00AD53;
+    border-color: #00AD53;
+    color: var(--lwc-colorTextInverse,rgb(255, 255, 255));
+}    
+.THIS .slds-button_destructive, .THIS .slds-button--destructive, .THIS .slds-button_destructive:hover, .THIS .slds-button_destructive:focus, .THIS .slds-button--destructive:hover, .THIS .slds-button--destructive:focus {
+    background-color: #C23934;
+    color: var(--lwc-colorTextInverse,rgb(255, 255, 255));
+}
+
+.THIS .cCFCUWallet .vl {
+    /*border-left: 1px solid #dddbda;
+    padding-left: 35px;*/
+border: 0px;
+	font-size: 14px;
+    line-height: 19px;
+    color: #16325C;
+}
+.THIS .cCFCUWallet .mr-20 {
+    margin: 20px auto;
+    border-top: 1px solid #dddbda;
+    background: #fff;
+}
+.THIS .cCFCUWallet .MainDiv.mb-50 {
+    margin-bottom: 0px;
+}
+.THIS .cCFCUWallet .leftDiv{
+	font-size: 14px;
+	line-height: 19px;
+    color: #16325C;
+	font-family: Segoe UI,SalesforceSans-Regular, Arial, sans-serif;
+}  
+                                                                                                
+@media screen and (max-width: 1600px) {    
+	.THIS .cCFCUWallet .InnerDiv {
+        padding: 20px 10px 20px 0px;
+        display: flex;
+    }
+    .THIS .cCFCUWallet .leftDiv {
+        display: inline;
+        width: 50%;
+    }
+    .THIS .cCFCUWallet .RightDiv {
+        display: inline-block;
+        margin-left: 5px;
+        margin-top: 2px;
+    }
+	.THIS .cCFCUWallet .RightDiv .slds-button{
+		padding: 0px 7px;
+	}
+}
+@media screen and (max-width: 1440px) {
+	.THIS .cPublicWallet .btnAlign.btn-submit {
+		margin-left: 88px;
+	}
+	.THIS .tblrow .leftBox {
+		width: 20%;
+	}
+	.THIS .tblrow .rightBox {
+		width: 79%;                                                                                              
+	}
+}
+@media screen and (max-width: 1280px) {
+	.THIS .cPublicWallet .btnAlign.btn-submit {
+		margin-left: 82px;
+	}    
+}
+@media screen and (max-width: 1024px) {
+	.THIS .cPublicWallet .InnerDiv {
+		padding: 0 0 20px 0;
+	}
+	.THIS .cPublicWallet .btnAlign {
+		margin-left: 0px;
+	}
+	.THIS .cPublicWallet .btnAlign.btn-submit {
+		margin-left: 62px;
+	}
+	.THIS .cPublicWallet .leftDiv {
+      width: 400px;
+    }                                                                                                    
+}
+@media screen and (max-width: 992px) {
+	.THIS .tblrow .leftBox {
+		width: 25%;
+	}
+	.THIS .tblrow .rightBox {
+		width: 74%;
+	}
+	.THIS .cPublicWallet .btnAlign.btn-submit {
+		margin-left: 60px;
+	}    
+}
+@media screen and (max-width: 768px) {	
+	.THIS .cPublicWallet .btnAlign {
+		display: block;
+		margin-left: 0;
+		width: 100%;
+	}
+	.THIS .cPublicWallet .leftDiv {
+      width: 500px;
+    }                                                                                                      
+	.THIS .cPublicWallet .btnAlign.btn-submit {
+		margin-left: 0px;
+	}
+    .THIS .groupbtn-parent .slds-button_neutral, .THIS .groupbtn-parent .slds-button_brand {
+        margin-right: 10px;
+        padding: 5px;
+        line-height: 16px;
+        font-size: 12px;
+	}                                                                                                    
+}
+@media screen and (max-width: 767px) {
+	.THIS .cPublicWallet .InnerDiv {
+        display: block;
+    }
+	.THIS .cPublicWallet .leftDiv {
+		width: 100%;
+		display: block;
+		margin: 10px 0;
+	}   
+	.THIS .rightBox .slds-grid {
+        display: initial;
+    }                  
+ 	.THIS .rightBox .slds-p-around_small p.alignCenter{
+		text-align: left !important;
+	}                                                                                                    
+	.THIS .tblrow .leftBox {
+		float: none;
+		width: 100%;
+		height: auto;
+	}
+	.THIS .tblrow .rightBox {
+		float: none;
+		width: 100%;
+		margin: 10px 0;
+	}
+    .THIS .cPublicWallet .CenterDiv.mb-50 {
+        text-align: left;
+        margin-left: 62px;
+    }
+    .THIS .cPublicWallet .InnerDiv:last-child .leftDiv{
+        padding: 0px;
+		margin: 0px;
+		height: 0px;
+    }
+    .THIS .groupbtn-parent {
+		display: block;
+		height: auto;
+        padding: 5px 0 5px;
+	}
+	.THIS .groupbtn-parent .slds-button_neutral, .THIS .groupbtn-parent .slds-button_brand {
+        margin-right: 5px;
+        padding: 2px;
+        line-height: 15px;
+        font-size: 11px;
+    }
+    .THIS .tblrow .rightBox .slds-tabs_default__item, .THIS .tblrow .rightBox .slds-tabs--default__item {    
+        margin-right: 50px;
+	}
+	.THIS #viewDescriptionDiv {
+    margin: 0 auto;
+    width: 80%;
+    max-width: 100rem;
+    min-width: 20rem;
+}
+	
+}

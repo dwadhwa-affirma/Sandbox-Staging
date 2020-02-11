@@ -3,6 +3,24 @@ Public class ShareDocumentControllerTest{
 
      public static testMethod void checkAttachmentTest(){
        
+         Create_SLA__c cl = new Create_SLA__c();
+         cl.Status__c = 'Open';
+         cl.Name = 'Open';
+         cl.hours__c = 8;
+         insert cl;
+         
+         Create_SLA__c cl1 = new Create_SLA__c();
+         cl1.Status__c = 'In Process';
+         cl1.Name = 'In Process';
+         cl1.hours__c = 20;
+         insert cl1;
+         
+         Create_SLA__c cl2 = new Create_SLA__c();
+         cl2.Status__c = 'Resolution';
+         cl2.Name = 'Resolution';
+         cl2.hours__c = 200;
+         insert cl2;
+         
         string fid ='0000999999' ;    
         String uid = UserInfo.getUserId();
         User currentUser = [SELECT LocaleSidKey, LanguageLocaleKey, TimeZoneSidKey, EmailEncodingKey FROM User WHERE Id=:uid];

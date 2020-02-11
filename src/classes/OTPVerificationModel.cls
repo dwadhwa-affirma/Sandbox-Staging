@@ -12,6 +12,8 @@ public class OTPVerificationModel {
     
     @auraenabled
     public string Brand {get;set;}
+    
+    @auraenabled
+    public Boolean emailToShow {get;set;}
    
-
 }

@@ -1249,7 +1249,7 @@ ctrl.InsertDataHistoryTable(string.valueOf(newobj.Want_to_Refer_Membership__c), 
             
             
             //LEHS Housing
-            if ((newobj.Do_you_Rent_or_Own__c == 'Prefer Not to Answer' || 
+          /*  if ((newobj.Do_you_Rent_or_Own__c == 'Prefer Not to Answer' || 
                     newobj.Do_you_Rent_or_Own__c == 'Rent' ||
                     newobj.Do_you_Rent_or_Own__c == 'Live with Relatives' || 
                     newobj.Do_you_Rent_or_Own__c == 'Own - Paid Off' ||
@@ -1273,12 +1273,44 @@ ctrl.InsertDataHistoryTable(string.valueOf(newobj.Want_to_Refer_Membership__c), 
                         newobj.Do_you_Rent_or_Own__c != 'Own - Paid Off' &&
                         newobj.LEHS_Planning_to_Purchase__c == 'Yes' && 
                         newobj.LEHS_Purchase_When__c != null && 
-                        /*  newobj.LEHS_Have_Realtor__c != null  &&*/
+                        
                         newobj.LEHS_Type_of_Mortgage__c != null && 
                         newobj.LEHS_End_Year__c != null
                     )
                 )
-            )
+            )*/
+            // Below is the new logic as per crm-1463
+            if (((newobj.Do_you_Rent_or_Own__c == 'Own') && ((newobj.LEHS_Current_Lender__c != null && newobj.LEHS_Rate__c != null)  ||
+												(newobj.LEHS_Current_Lender__c != null && newobj.LEHS_Current_Balance__c != null) ||
+												(newobj.LEHS_Current_Lender__c != null && newobj.LEHS_Type_of_Mortgage__c != null) || 
+												(newobj.LEHS_Current_Lender__c != null && newobj.LEHS_End_Year__c != null)
+												
+												||
+												(newobj.LEHS_Rate__c != null && newobj.LEHS_Current_Balance__c != null )||
+												(newobj.LEHS_Rate__c != null && newobj.LEHS_Type_of_Mortgage__c != null )||
+												(newobj.LEHS_Rate__c != null && newobj.LEHS_End_Year__c != null )
+												||
+												
+												(newobj.LEHS_Current_Balance__c != null && newobj.LEHS_Type_of_Mortgage__c != null) ||
+												(newobj.LEHS_Current_Balance__c != null && newobj.LEHS_End_Year__c != null) 
+												
+												||
+												(newobj.LEHS_Type_of_Mortgage__c != null && newobj.LEHS_End_Year__c != null)))
+
+												|| 
+												(newobj.LEHS_Planning_to_Purchase__c == 'No')
+												
+												||
+												(newobj.Do_you_Rent_or_Own__c == 'Live with Relatives')
+												
+												|| 
+												(newobj.Do_you_Rent_or_Own__c == 'Prefer Not to Answer')
+												
+												||
+												(newobj.LEHS_Planning_to_Purchase__c == 'Prefer Not to Answer')
+												
+												||
+												(newobj.LEHS_Planning_to_Purchase__c == 'Yes' && newobj.LEHS_Purchase_When__c != null ))
             {
                 ///newobj.member.NA LEHS Complete = true;
                 if(mcs.containsKey('Housing') && !account.NA_LEHS_Complete__c){

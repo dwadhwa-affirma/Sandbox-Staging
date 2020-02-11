@@ -45,6 +45,32 @@ public class OpportunityTriggerHandler {
 		            }         
 		    }
 		    
+		    //CRM-1640: Update Description for Marketing Cloud Opprtunities
+		    for(Opportunity opp: newOpportunities)
+		     {
+		     	
+		     	system.debug('Description=='+opp.DESCRIPTION);
+		     	if(opp.OPPORTUNITY_SOURCE__C == 'Campaign Outreach' && opp.DESCRIPTION != null){
+		     		system.debug('Description1=='+opp.DESCRIPTION);
+		     		if(opp.DESCRIPTION.containsIgnoreCase('Relevant Member Number')){
+		     			opp.DESCRIPTION = opp.DESCRIPTION.replace('Relevant Member Number','\n \n Relevant Member Number');
+		     			system.debug('Description2=='+opp.DESCRIPTION);
+		     		}
+		     		if(opp.DESCRIPTION.containsIgnoreCase('Last Activity Date')){
+		     			opp.DESCRIPTION = opp.DESCRIPTION.replace('Last Activity Date','\n Last Activity Date');
+		     		}
+		     		if(opp.DESCRIPTION.containsIgnoreCase('Dormant Date')){
+		     			opp.DESCRIPTION = opp.DESCRIPTION.replace('Dormant Date','\n Dormant Date');
+		     		}
+		     		if(opp.DESCRIPTION.containsIgnoreCase('High Value/High Potential')){
+		     			opp.DESCRIPTION = opp.DESCRIPTION.replace('High Value/High Potential','\n High Value/High Potential');
+		     		}
+		     		if(opp.DESCRIPTION.containsIgnoreCase('Script Link')){
+		     			opp.DESCRIPTION = opp.DESCRIPTION.replace('Script Link','\n \n Script Link');
+		     		}
+		     	}
+		     }
+		    
 		    List<Account> accName = [Select Name, Id from Account where Id IN:accountid ];
         	for(Opportunity opp: newOpportunities)
             {

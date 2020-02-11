@@ -260,10 +260,22 @@
                                                 </table>
                                             </td>
                                         </tr>
+                                        
+                                        
                                         <tr>
                                             <b>Do you typically carry a credit card balance?</b>
                                             <br/>
                                             <ui:inputSelect aura:id="Needs_Assesment__c.LEMP_Carry_Credit_Card_Balance__c" value="{!v.Model.LEMP_Carry_Credit_Card_Balance__c}" />
+                                        </tr>
+                                         <tr>
+                                            <b>Do you know your current rate?</b>
+                                            <br/>
+                                            <ui:inputNumber format=".00" value="{!v.Model.LEMP_Your_Current_Rate__c}" />
+                                        </tr>
+                                         <tr>
+                                            <b>How many credit cards do you have that you typically carry a balance?</b>
+                                            <br/>
+                                            <ui:inputNumber format=".00" value="{!v.Model.LEMP_Number_of_Credit_Card__c}"  />
                                         </tr>
                                         <tr>
                                             <b>What credit card do you use most often?</b>

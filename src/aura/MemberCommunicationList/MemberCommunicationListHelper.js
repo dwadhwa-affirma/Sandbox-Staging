@@ -66,6 +66,17 @@
        
         cmp.set("v.pageNumber", 1);
         cmp.set('v.Alldata', null );
+        var linklabel ;
+        
+        if(cmp.get('v.selectedCheckBoxes')== 'OOW')
+        {
+        	linklabel = 'Log';
+        }
+        else
+        {
+        	linklabel= 'Download';
+        }
+        
         cmp.set('v.columns', [
         	{label: 'Source',fieldName: 'DataSource',type:'text',initialWidth: 130},
             {label: 'Description', fieldName: 'dateDesc',type:'text',sortable : true,initialWidth: 400},
@@ -73,11 +84,11 @@
                 month: '2-digit',
                 year: 'numeric',
                }},
-            {label: 'Member', fieldName: '',type:'text',sortable : true,initialWidth: 200},
+            {label: 'Member', fieldName: 'MemberName',type:'text',sortable : true,initialWidth: 200},
             {label: 'Account # ',fieldName: 'Account',type:'text',sortable : true,initialWidth: 150},
             
             {label: 'Case #' ,fieldName: '',type:'text',initialWidth: 150},
-            {label: 'Link', fieldName: 'hyperlinkPDF',type: 'url', typeAttributes: { label: 'Download'}},
+            {label: 'Link', fieldName: 'hyperlinkPDF',type: 'url', typeAttributes: { label: linklabel, target:'_blank'}},
             
         ]);
         debugger;

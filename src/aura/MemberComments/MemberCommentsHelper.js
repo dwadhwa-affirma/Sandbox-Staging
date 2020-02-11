@@ -8,7 +8,7 @@
 		
 		if(recordId == undefined)
 		{
-			recordId = this.getParameterByName('c__id');
+			recordId = this.getParameterByName('id');
 		}
 		
 		action.setParams({
@@ -99,7 +99,7 @@
 		
 		if(recordId == undefined)
 		{
-			recordId = this.getParameterByName('c__id');
+			recordId = this.getParameterByName('id');
 		}
 		
 		component.set("v.loading", true);

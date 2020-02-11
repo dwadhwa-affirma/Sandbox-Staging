@@ -17,8 +17,7 @@
                 var submenu = res['SubMenu'];
                 var userstatus = res['UserStatus'];
                 component.set("v.IsUserInGroup",userstatus);
-               
-				var menu = res['Menu'];  
+                var menu = res['Menu'];  
 				var LeftMenu = [];
 				var RightMenu= [];             
 				 component.set("v.Menu",menu);
@@ -39,10 +38,13 @@
 				  component.set("v.RightMenu",RightMenu);
 				 component.set("v.SubMenu",submenu);
 				 
-				 var oowMainIndex = RightMenu.indexOf('OOW'); 
-				  var halflength = component.get("v.halfLength");
+				 var oowMainIndex = RightMenu.indexOf('Member Authentication'); 
+				 var halflength = component.get("v.halfLength");
+				  
+				  
                  oowIndex = parseFloat(oowMainIndex) + parseFloat(halflength);  
                   component.set("v.OOWIndex",oowIndex); 
+                 
 				 
 				 
                 var object = component.get("v.sObjectName");

@@ -4,7 +4,25 @@ public class SetRecordTypeStandAloneCaseCtrlTest {
     static testmethod void testmethod1(){
 
         RecordType recTpe = [Select Id, Name from RecordType where SobjectType='Case' AND Name = 'Account Servicing' Limit 1];
-  
+ 
+        Create_SLA__c cl = new Create_SLA__c();
+        cl.Status__c = 'Open';
+        cl.Name = 'Open';
+        cl.hours__c = 8;
+        insert cl;
+        
+        Create_SLA__c cl1 = new Create_SLA__c();
+        cl1.Status__c = 'In Process';
+        cl1.Name = 'In Process';
+        cl1.hours__c = 20;
+        insert cl1;
+        
+        Create_SLA__c cl2 = new Create_SLA__c();
+        cl2.Status__c = 'Resolution';
+        cl2.Name = 'Resolution';
+        cl2.hours__c = 20;
+        insert cl2;
+        
         CaseRecordType__c crt = new CaseRecordType__c();
         crt.RecordTypeId__c = recTpe.Id;
         crt.Primary_Category__c = 'test1';
@@ -12,7 +30,8 @@ public class SetRecordTypeStandAloneCaseCtrlTest {
         crt.Teritiary_Category__c = 'test3';
         crt.Name = '000';
         insert crt; 
-      test.startTest();
+        
+        Test.startTest(); 
         Case cRec = new Case();
            cRec.Brand__c = 'CFCU';
            cRec.CaseComments__c = 'test comments';
@@ -21,20 +40,20 @@ public class SetRecordTypeStandAloneCaseCtrlTest {
         CaseComment cc = new CaseComment();
            cc.ParentId = cRec.Id;
         insert cc;
+        Test.stopTest();
         
         PageReference pageRef = Page.SetRecordTypeStandAloneCase;
         Test.setCurrentPage(pageRef);      
         SetRecordTypeStandAloneCaseController controller = new SetRecordTypeStandAloneCaseController(new ApexPages.StandardController(cRec)); 
 
-        //controller.pcOptions();
-        //controller.pcValue = 'test1';
-//        controller.scOptions();
-       // controller.scValue = 'test2';
-       // controller.tcOptions();
-       // controller.tcValue = 'test3';
-       // controller.change();
-       // controller.nextPage();
-         
+        controller.pcOptions();
+        controller.pcValue = 'test1';
+        controller.scOptions();
+        controller.scValue = 'test2';
+        controller.tcOptions();
+        controller.tcValue = 'test3';
+        controller.change();
+        controller.nextPage();
         Attachment attach=new Attachment();    
         attach.Name='Unit Test Attachment';
         Blob file = Blob.valueOf('Unit Test Attachment Body');
@@ -43,7 +62,6 @@ public class SetRecordTypeStandAloneCaseCtrlTest {
         attach.parentId= cRec.id;
         insert attach;
         controller.process();
-        test.stopTest();
     }
    
     
@@ -93,6 +111,24 @@ public class SetRecordTypeStandAloneCaseCtrlTest {
     */
     static testmethod void testmethod6(){
 
+        Create_SLA__c cl = new Create_SLA__c();
+        cl.Status__c = 'Open';
+        cl.Name = 'Open';
+        cl.hours__c = 8;
+        insert cl;
+        
+        Create_SLA__c cl1 = new Create_SLA__c();
+        cl1.Status__c = 'In Process';
+        cl1.Name = 'In Process';
+        cl1.hours__c = 20;
+        insert cl1;
+        
+        Create_SLA__c cl2 = new Create_SLA__c();
+        cl2.Status__c = 'Resolution';
+        cl2.Name = 'Resolution';
+        cl2.hours__c = 20;
+        insert cl2;
+        
         Case cRec = new Case();
         
         PageReference pageRef = Page.SetRecordTypeStandAloneCase;
@@ -107,7 +143,25 @@ public class SetRecordTypeStandAloneCaseCtrlTest {
     
      static testMethod void testMethod8(){
 
-       Case cRec = new Case();
+       Create_SLA__c cl = new Create_SLA__c();
+        cl.Status__c = 'Open';
+        cl.Name = 'Open';
+        cl.hours__c = 8;
+        insert cl;
+        
+        Create_SLA__c cl1 = new Create_SLA__c();
+        cl1.Status__c = 'In Process';
+        cl1.Name = 'In Process';
+        cl1.hours__c = 20;
+        insert cl1;
+        
+        Create_SLA__c cl2 = new Create_SLA__c();
+        cl2.Status__c = 'Resolution';
+        cl2.Name = 'Resolution';
+        cl2.hours__c = 20;
+        insert cl2;
+         
+         Case cRec = new Case();
        
        PageReference pageRef = Page.SetRecordTypeStandAloneCase;
        Test.setCurrentPage(pageRef);        
@@ -120,7 +174,25 @@ public class SetRecordTypeStandAloneCaseCtrlTest {
     
     static testMethod void testMethod9(){
 
-       Case cRec = new Case();
+       Create_SLA__c cl = new Create_SLA__c();
+        cl.Status__c = 'Open';
+        cl.Name = 'Open';
+        cl.hours__c = 8;
+        insert cl;
+        
+        Create_SLA__c cl1 = new Create_SLA__c();
+        cl1.Status__c = 'In Process';
+        cl1.Name = 'In Process';
+        cl1.hours__c = 20;
+        insert cl1;
+        
+        Create_SLA__c cl2 = new Create_SLA__c();
+        cl2.Status__c = 'Resolution';
+        cl2.Name = 'Resolution';
+        cl2.hours__c = 20;
+        insert cl2;
+        
+        Case cRec = new Case();
               
        PageReference pageRef = Page.SetRecordTypeStandAloneCase;
        Test.setCurrentPage(pageRef);       
@@ -136,6 +208,24 @@ public class SetRecordTypeStandAloneCaseCtrlTest {
     
     static testmethod void testmethod10(){
 
+        Create_SLA__c cl = new Create_SLA__c();
+        cl.Status__c = 'Open';
+        cl.Name = 'Open';
+        cl.hours__c = 8;
+        insert cl;
+        
+        Create_SLA__c cl1 = new Create_SLA__c();
+        cl1.Status__c = 'In Process';
+        cl1.Name = 'In Process';
+        cl1.hours__c = 20;
+        insert cl1;
+        
+        Create_SLA__c cl2 = new Create_SLA__c();
+        cl2.Status__c = 'Resolution';
+        cl2.Name = 'Resolution';
+        cl2.hours__c = 20;
+        insert cl2;
+        
         List<RecordType> recTpe = [Select Id, Name from RecordType where SobjectType='Case' AND Name = 'Account Servicing'];
         if(recTpe.size()>0){
         CaseRecordType__c crt = new CaseRecordType__c();
@@ -146,12 +236,14 @@ public class SetRecordTypeStandAloneCaseCtrlTest {
         crt.Name = '000';
         insert crt; 
         }
-        test.startTest();
+        
+        Test.startTest();
         Case cRec = new Case();
            cRec.Brand__c = 'CFCU';
            cRec.CaseComments__c = 'test comments';
         insert cRec;
         
+        Test.stopTest();
         CaseComment cc = new CaseComment();
            cc.ParentId = cRec.Id;
         insert cc;
@@ -166,7 +258,7 @@ public class SetRecordTypeStandAloneCaseCtrlTest {
         controller.scValue = 'test2';
         controller.tcOptions();
         controller.tcValue = 'test3';
-        //controller.process1();
+        controller.process1();
         
         controller.pcOptions();
         controller.pcValue = '-None-';
@@ -175,7 +267,7 @@ public class SetRecordTypeStandAloneCaseCtrlTest {
         controller.tcOptions();
         controller.tcValue = '-None-';
         controller.process1();
-        test.stopTest();
+        
     }
     
     static testMethod void testMethod11(){
@@ -201,6 +293,24 @@ public class SetRecordTypeStandAloneCaseCtrlTest {
     
     static testMethod void testMethod12(){
         
+        Create_SLA__c cl = new Create_SLA__c();
+        cl.Status__c = 'Open';
+        cl.Name = 'Open';
+        cl.hours__c = 8;
+        insert cl;
+        
+        Create_SLA__c cl1 = new Create_SLA__c();
+        cl1.Status__c = 'In Process';
+        cl1.Name = 'In Process';
+        cl1.hours__c = 20;
+        insert cl1;
+        
+        Create_SLA__c cl2 = new Create_SLA__c();
+        cl2.Status__c = 'Resolution';
+        cl2.Name = 'Resolution';
+        cl2.hours__c = 20;
+        insert cl2;
+        
         Case c = new Case();
            c.Brand__c = 'CFCU';
         insert c;
@@ -213,7 +323,25 @@ public class SetRecordTypeStandAloneCaseCtrlTest {
     
     static testMethod void TestMethodSearchTertiary()
     {
-    	Case c = new Case();
+    	Create_SLA__c cl = new Create_SLA__c();
+        cl.Status__c = 'Open';
+        cl.Name = 'Open';
+        cl.hours__c = 8;
+        insert cl;
+        
+        Create_SLA__c cl1 = new Create_SLA__c();
+        cl1.Status__c = 'In Process';
+        cl1.Name = 'In Process';
+        cl1.hours__c = 20;
+        insert cl1;
+        
+        Create_SLA__c cl2 = new Create_SLA__c();
+        cl2.Status__c = 'Resolution';
+        cl2.Name = 'Resolution';
+        cl2.hours__c = 20;
+        insert cl2;
+        
+        Case c = new Case();
         c.Brand__c = 'CFCU';
         insert c;
     	SetRecordTypeStandAloneCaseController controller = new SetRecordTypeStandAloneCaseController(new ApexPages.StandardController(c));
@@ -226,6 +354,24 @@ public class SetRecordTypeStandAloneCaseCtrlTest {
     {
     	 RecordType recTpe = [Select Id, Name from RecordType where SobjectType='Case' AND Name = 'Account Servicing' Limit 1];
  
+        Create_SLA__c cl = new Create_SLA__c();
+        cl.Status__c = 'Open';
+        cl.Name = 'Open';
+        cl.hours__c = 8;
+        insert cl;
+        
+        Create_SLA__c cl1 = new Create_SLA__c();
+        cl1.Status__c = 'In Process';
+        cl1.Name = 'In Process';
+        cl1.hours__c = 20;
+        insert cl1;
+        
+        Create_SLA__c cl2 = new Create_SLA__c();
+        cl2.Status__c = 'Resolution';
+        cl2.Name = 'Resolution';
+        cl2.hours__c = 20;
+        insert cl2;
+        
         CaseRecordType__c crt = new CaseRecordType__c();
         crt.RecordTypeId__c = recTpe.Id;
         crt.Primary_Category__c = 'test1';

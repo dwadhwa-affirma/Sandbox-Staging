@@ -41,7 +41,6 @@ public class CreateNewLeadControllerTest
         
                controller.save();       
         controller.leadObject.Product_Type__c = 'Cards';
-        controller.leadObject.Product_Subtype__c = 'Credit Cards';
                controller.save();
         controller.leadObject.Brand__c = 'CFCU';
         

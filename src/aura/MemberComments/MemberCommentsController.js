@@ -101,7 +101,7 @@
 		
 		if(CaseId == undefined)
 		{
-			CaseId = helper.getParameterByName('c__id');
+			CaseId = helper.getParameterByName('id');
 		}	
 		
 		if(Draft == undefined || Draft == null || Draft == '')
@@ -147,7 +147,7 @@
 	
 	if(CaseId == undefined)
 		{
-			CaseId = helper.getParameterByName('c__id');
+			CaseId = helper.getParameterByName('id');
 		}	
 	  var MemberComment = component.get('v.ModelMemberComment');
 				    var isedit = component.get('v.isEdit');

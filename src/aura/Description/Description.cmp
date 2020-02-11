@@ -1,0 +1,82 @@
+<aura:component>
+	<div>
+    	<div class="slds-text-align_center slds-text-heading_medium"><b>Authentication Level Disclosures</b></div>
+        <div>
+        	
+            <lightning:layout horizontalAlign="spread">
+            	<lightning:layoutItem padding="around-small" class="LeftWidth">
+                    <div class="header-column mr-80">
+                        <p class="FontSize" title=""><b>Level 2 Authentication</b> </p>
+                       
+                    </div>
+                     <div class="header-column mr-80">
+                        <p class="field-title" title=""><b>Description</b></p>
+                         <p style="color: black;">Level 2 Authentication applies when the member wants to discuss general account information, including the type of information that is available in telephone banking including balance, direct deposit, and cleared items. A representative will not disclose Personal Identifiable Information (PII).
+                        </p>
+                       	
+                    </div>
+                    </lightning:layoutItem>
+                	<lightning:layoutItem padding="around-small" class="LeftWidth">
+                     <div class="header-column mr-80">
+                        <p class="FontSize" title=""></p>
+                       
+                    </div>
+                    <div class="header-column mr-80" style="margin-top: 15px;" >
+                        <p class="field-title" title=""><b>Applies to the transaction such as:</b></p>
+                       	<p>	<ul style="list-style-type:disc; color: black; font-size:12px;">
+                       			<li>Fee reversal</li>
+								<li>Share to Share transfer, Share to Loan transfer</li>
+								<li>Credit card payment</li>
+								<li>Member to member transfers up to $10k (limits controlled in Episys)</li>
+								<li>Wires verification up to $50k (pending new wire process)</li>
+								<li>Examples of questions (representation can answer yes or no):</li>
+									&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Did my wire come in? <br/>
+									&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Is the beneficiary on my account John Smith?
+                        	</ul>
+                        </p>
+                    </div>
+				</lightning:layoutItem>
+                </lightning:layout>
+            <lightning:layout horizontalAlign="spread">
+            	<lightning:layoutItem padding="around-small" class="LeftWidth">
+                    <div class="header-column mr-80">
+                        <p class="FontSize" title=""><b>Level 3 Authentication</b> </p>
+                       
+                    </div>
+                     <div class="header-column mr-80">
+                        <p class="field-title" title=""><b>Description</b></p>
+                         <p style="color: black;">Level 3 Authentication applies when the member wants to discuss specific and detailed account information and when the Member wants to access Personal Identifiable Information (PII)
+                        </p>
+                       	
+                    </div>
+                    </lightning:layoutItem>
+                	<lightning:layoutItem padding="around-small" class="LeftWidth">
+                    <div class="header-column mr-80">
+                        <p class="FontSize" title=""></p>
+                       
+                    </div>
+                    
+                    <div class="header-column mr-80" style="margin-top: 15px;" >
+                    	
+                        <p class="field-title" title=""><b>Applies to the transaction such as:</b></p>
+                       	<p><ul style="list-style-type:disc; color: black; font-size:12px;"><li>Member to member transfers >$10k (Limits controlled in Symitar)</li>
+								<li>Allowing money to leave the Credit Union via official check, HELOC/PLOC advances >$10k</li>
+								<li>Order checks to alternate name or address on file</li>
+								<li>Contact information change: address, phone or email</li>
+								<li>Different Members = high risk</li>
+								<li>Fraud dispute</li>
+								<li>Travel notifications</li>
+								<li>Loan application process</li>
+								<li>Giving access to accounts = PC Access, Mobile Banking, Activate Dormant Account, provide account/MICR</li>
+								<li>Wire Verification up >$50K (until new wire process is introduced)</li>
+
+
+                        	</ul>
+                        </p>
+                    </div>
+				</lightning:layoutItem>
+                </lightning:layout>
+        
+        </div>	
+    </div>
+</aura:component>

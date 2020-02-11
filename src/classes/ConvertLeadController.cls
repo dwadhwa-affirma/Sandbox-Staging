@@ -111,11 +111,11 @@ public with sharing class ConvertLeadController {
 			    	listObj.add(leadObject);
 			    	/*Lead obj = new Lead();
 			    	leadObject.*/
-			    	AttachActivity(opp, leadObject);	
+			    	AttachActivity(opp, leadObject);
 			   
 			    	if (leadObject.Product_Type__c== 'Accounts/Shares' && leadObject.Product_Subtype__c== 'Membership'){
 			    	    
-			    		AttachActivity(opp, leadObject);
+			    		
 			    	}
 			    	else
 			    	{
@@ -171,7 +171,7 @@ public with sharing class ConvertLeadController {
 			    			}
 			    			opp1.Branch_of_Lead_creator__c = leadObject.Branch_of_Lead_creator__c ;
 					    	insert opp1;
-					    		    			
+					    			    			
 			    	}
 			    	leadObject.Status = 'Closed - Converted';
 			    	if(SetLead.contains(leadId)){
@@ -204,7 +204,7 @@ public with sharing class ConvertLeadController {
 			    	List<Note> nt = [SELECT id,Body, Title,  ParentId FROM Note where parentid =: leadObject.Id];
 			    	List<Task> task = [SELECT id,WhatId, ActivityDate, CallDisposition, CallDurationInSeconds, CallObject, CallType, Description, IsRecurrence, IsReminderSet, IsVisibleInSelfService, Priority, RecurrenceDayOfMonth, RecurrenceDayOfWeekMask, RecurrenceEndDateOnly, RecurrenceInstance, RecurrenceInterval, RecurrenceMonthOfYear, RecurrenceRegeneratedType, RecurrenceStartDateOnly, RecurrenceTimeZoneSidKey, RecurrenceType, ReminderDateTime, Status, Subject, TaskSubtype, Type, WhoId  FROM Task WHERE WhoId =: leadObject.Id];
 					List<Event> event =	[SELECT id,ActivityDate, ActivityDateTime, Description, DurationInMinutes, EndDateTime, EventSubtype, IsAllDayEvent, IsPrivate, IsRecurrence, IsReminderSet, IsVisibleInSelfService, Location, OwnerId, RecurrenceDayOfMonth, RecurrenceDayOfWeekMask, RecurrenceEndDateOnly, RecurrenceInstance, RecurrenceInterval, RecurrenceMonthOfYear, RecurrenceStartDateTime, RecurrenceTimeZoneSidKey, RecurrenceType, ReminderDateTime, ShowAs, StartDateTime, Subject, Type, WhoId, WhatId FROM Event WHERE WhoId =: leadObject.Id]; 
-			       	if(cdl.size() > 0){
+			    	if(cdl.size() > 0){
 			    		for(ContentDocumentLink ls : cdl){
 			    			ContentDocumentLink cDe = new ContentDocumentLink();
 			    			cde.LinkedEntityId = opp.id;
@@ -300,8 +300,6 @@ public with sharing class ConvertLeadController {
 			 			   	}
 			    		
 			    	}
-			    	
-			    	
    	}
     
 }

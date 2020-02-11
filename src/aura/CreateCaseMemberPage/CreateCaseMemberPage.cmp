@@ -41,7 +41,7 @@
     <aura:attribute name="caseId" type="String" access="public" />
     <aura:attribute name="loading" type="Boolean" default="false" />
     <aura:attribute name="IsSaveandNewPressed" type="Boolean" default="false" />
-
+	
     <aura:attribute name="fileRequired" type="boolean" default="false" />
     <aura:attribute name="fileExceedsSize" type="boolean" default="false" />
     <aura:attribute name="closeIcon" type="String" access="public" default="utility:close" />
@@ -52,8 +52,12 @@
     <aura:attribute name="memObject" type="Account_Details__c" default="{'sobjectType':'Account_Details__c'}" />
     
        <aura:attribute name="TopTenCases" type="object" />
-        <aura:attribute name="selectedTopCategoryValue" type="string" default="" />
-   
+       <aura:attribute name="selectedTopCategoryValue" type="string" default="" />
+       <aura:attribute name="subStatus" type="List" default="['a','b']"/>
+       <aura:attribute name="statusDependencyMap" type="map"/>
+       <aura:attribute name="statusValues" type="List" default="['a','b']"/>
+        <aura:attribute name="isSubStatusVisible" type="boolean" default="false" />
+   		
     <style>
         /* Loading Style*/
         
@@ -600,11 +604,15 @@
                 <div class="slds-form-element">
                     <label class="slds-form-element__label">Status</label>
                     <div class="slds-form-element__control">
-                        <force:inputField value="{!v.caseObject.Status}"> </force:inputField>
+                        <ui:inputSelect aura:id="Case.Status" value="{!v.caseObject.Status}" change="{!c.getSubStatus}" >
+                            <ui:inputSelectOption text="---None---" value="true"/> 
+                             <aura:iteration items="{!v.statusValues}" var="status">
+                                     <ui:inputSelectOption text="{!status}" />
+                            </aura:iteration>
+                        </ui:inputSelect>
                     </div>
                 </div>
-
-
+                
                 <div class="slds-form-element">
                     <label class="slds-form-element__label">Subject</label>
                     <div class="slds-form-element__control">

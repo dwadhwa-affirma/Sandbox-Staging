@@ -232,9 +232,12 @@ public class MemberVerificationLightningController
     }
 
     @auraenabled
-    public static OTPVerificationModel ListOfEmailsAndPhoneNumbers(string accid)
+    public static OTPVerificationModel ListOfEmailsAndPhoneNumbers(string accid, Boolean IsAuth)
     {
         system.debug('accid---' + accid);
+        Person_Account__c p = [SELECT Id, Account_Number__c,  PersonID__c, Account_Number__r.RecType__c, TypeTranslate__c, Account_Number__r.Name
+                FROM Person_Account__c where PersonID__c =:accid  limit 1];
+          string  AccountNumber = p.Account_Number__r.Name;
         string Brand;
         MemberVerificationLightningController objMVLC = new MemberVerificationLightningController();
         Account acc = objMVLC.GetAccount(accID);
@@ -251,8 +254,8 @@ public class MemberVerificationLightningController
         {
 
             listAccount = [select Id, Member_Verification_OTP_Invalid_Attempt__c, Home_Phone__pc, FirstName, LastName, Mobile_Phone__pc, Work_Phone__pc, PersonEmail, Alternate_Email__pc from Account where ID in :allRelatedAccounts];
-            listhistory = [Select accountid,field,OldValue, NewValue, CreatedDate From accounthistory where accountid in :allRelatedAccounts and createddate >: (date.TODAY() - 60)];
-            List<accounthistory> listhistoryOlder = [Select accountid,field,OldValue, NewValue, CreatedDate From accounthistory where accountid in :allRelatedAccounts and createddate <=: (date.TODAY() - 60)];
+            listhistory = [Select accountid,field,OldValue, NewValue, CreatedDate From accounthistory where accountid in :allRelatedAccounts and createddate >: (date.TODAY() - 30)];
+            List<accounthistory> listhistoryOlder = [Select accountid,field,OldValue, NewValue, CreatedDate From accounthistory where accountid in :allRelatedAccounts and createddate <=: (date.TODAY() - 30)];
             listWrapperAccount = new List<wrapperAccount>();
             set<string> listContacts = new set<string>();
 
@@ -269,7 +272,13 @@ public class MemberVerificationLightningController
 						accLocal.Memberid= accountLocal.id;
                         accLocal.fieldType = 'P';
                         accLocal.value = accountLocal.Mobile_Phone__pc;
-                        accLocal.encryptedvalue = encryptPhone(accountLocal.Mobile_Phone__pc);
+                        if(IsAuth == true){
+                        	accLocal.encryptedvalue = accountLocal.Mobile_Phone__pc;	
+                        }
+                        else{
+                        	accLocal.encryptedvalue = encryptPhone(accountLocal.Mobile_Phone__pc);
+                        }
+                        
                         accLocal.fieldName = 'Mobile_Phone__pc - ' + accountLocal.Id;
                         accLocal.isEnabled = isContactEnabled(accountLocal.Mobile_Phone__pc,'Mobile_Phone__pc',accountLocal.id,listhistory,listhistoryOlder,true);                       
                                        /*  for(accounthistory accounthistoryLocal : listhistory)
@@ -293,7 +302,14 @@ public class MemberVerificationLightningController
 						accLocal.MemberName=accountLocal.FirstName+ ' '+accountLocal.LastName;
                         accLocal.fieldType = 'P';
                         accLocal.value = accountLocal.Home_Phone__pc;
-                        accLocal.encryptedvalue = encryptPhone(accountLocal.Home_Phone__pc);
+                        
+                        if(IsAuth == true){
+                        	accLocal.encryptedvalue = accountLocal.Home_Phone__pc;	
+                        }
+                        else{
+                        	accLocal.encryptedvalue = encryptPhone(accountLocal.Home_Phone__pc);
+                        }
+                        
                         accLocal.fieldName = 'Home_Phone__pc - ' + accountLocal.Id;
                         accLocal.isEnabled = isContactEnabled(accountLocal.Home_Phone__pc,'Home_Phone__pc',accountLocal.id,listhistory,listhistoryOlder,true);
                                        /*   for(accounthistory accounthistoryLocal : listhistory)
@@ -318,7 +334,14 @@ public class MemberVerificationLightningController
                         accLocal.Memberid= accountLocal.id;
                         accLocal.fieldType = 'P';
                         accLocal.value = accountLocal.Work_Phone__pc;
-                        accLocal.encryptedvalue = encryptPhone(accountLocal.Work_Phone__pc);
+                        
+                        if(IsAuth == true){
+                        	accLocal.encryptedvalue = accountLocal.Work_Phone__pc;	
+                        }
+                        else{
+                        	accLocal.encryptedvalue = encryptPhone(accountLocal.Work_Phone__pc);
+                        }
+                       
                         accLocal.fieldName = 'Work_Phone__pc - ' + accountLocal.Id;
                         accLocal.isEnabled = isContactEnabled(accountLocal.Work_Phone__pc,'Work_Phone__pc',accountLocal.id,listhistory,listhistoryOlder,true);
                                        /*   for(accounthistory accounthistoryLocal : listhistory)
@@ -342,7 +365,14 @@ public class MemberVerificationLightningController
                         accLocal.Memberid= accountLocal.id;
                         accLocal.fieldType = 'E';
                         accLocal.value = accountLocal.PersonEmail;
-                        accLocal.encryptedvalue = encryptEmail(accountLocal.PersonEmail);
+                        
+                        if(IsAuth == true){
+                        	accLocal.encryptedvalue = accountLocal.PersonEmail;	
+                        }
+                        else{
+                        	accLocal.encryptedvalue = encryptEmail(accountLocal.PersonEmail);
+                        }
+                        
                         accLocal.fieldName = 'PersonEmail - ' + accountLocal.Id;
                         accLocal.isEnabled = isContactEnabled(accountLocal.PersonEmail,'PersonEmail',accountLocal.id,listhistory,listhistoryOlder,false);
                                        /*  for(accounthistory accounthistoryLocal : listhistory)
@@ -366,7 +396,14 @@ public class MemberVerificationLightningController
                         accLocal.Memberid= accountLocal.id;
                         accLocal.fieldType = 'E';
                         accLocal.value = accountLocal.Alternate_Email__pc;
-                        accLocal.encryptedvalue = encryptEmail(accountLocal.Alternate_Email__pc);
+                        
+                        if(IsAuth == true){
+                        	accLocal.encryptedvalue = accountLocal.Alternate_Email__pc;	
+                        }
+                        else{
+                        	accLocal.encryptedvalue = encryptEmail(accountLocal.Alternate_Email__pc);
+                        }
+                        
                         accLocal.fieldName = 'Alternate_Email__pc - ' + accountLocal.Id;
                         accLocal.isEnabled = isContactEnabled(accountLocal.Alternate_Email__pc,'Alternate_Email__pc',accountLocal.id,listhistory,listhistoryOlder,false);
                                    /*      for(accounthistory accounthistoryLocal : listhistory)
@@ -395,7 +432,14 @@ public class MemberVerificationLightningController
 						accLocal.Memberid= accountLocal.id;
                         accLocal.fieldType = 'P';
                         accLocal.value = accountLocal.Mobile_Phone__pc;
-                        accLocal.encryptedvalue = encryptPhone(accountLocal.Mobile_Phone__pc);
+                        
+                        if(IsAuth == true){
+                        	accLocal.encryptedvalue = accountLocal.Mobile_Phone__pc;	
+                        }
+                        else{
+                        	accLocal.encryptedvalue = encryptPhone(accountLocal.Mobile_Phone__pc);
+                        }
+                        
                         accLocal.fieldName = 'Mobile_Phone__pc - ' + accountLocal.Id;
                         accLocal.isEnabled = isContactEnabled(accountLocal.Mobile_Phone__pc,'Mobile_Phone__pc',accountLocal.id,listhistory,listhistoryOlder,true);
                                          /*for(accounthistory accounthistoryLocal : listhistory)
@@ -419,7 +463,14 @@ public class MemberVerificationLightningController
                         accLocal.Memberid= accountLocal.id;
                         accLocal.fieldType = 'P';
                         accLocal.value = accountLocal.Home_Phone__pc;
-                        accLocal.encryptedvalue = encryptPhone(accountLocal.Home_Phone__pc);
+                        
+                        if(IsAuth == true){
+                        	accLocal.encryptedvalue = accountLocal.Home_Phone__pc;	
+                        }
+                        else{
+                        	accLocal.encryptedvalue = encryptPhone(accountLocal.Home_Phone__pc);
+                        }
+                       
                         accLocal.fieldName = 'Home_Phone__pc - ' + accountLocal.Id;
                         accLocal.isEnabled = isContactEnabled(accountLocal.Home_Phone__pc,'Home_Phone__pc',accountLocal.id,listhistory,listhistoryOlder,true);
                                          /*for(accounthistory accounthistoryLocal : listhistory)
@@ -444,7 +495,14 @@ public class MemberVerificationLightningController
                         accLocal.Memberid= accountLocal.id;
                         accLocal.fieldType = 'P';
                         accLocal.value = accountLocal.Work_Phone__pc;
-                        accLocal.encryptedvalue = encryptPhone(accountLocal.Work_Phone__pc);
+                        
+                        if(IsAuth == true){
+                        	accLocal.encryptedvalue = accountLocal.Work_Phone__pc;	
+                        }
+                        else{
+                        	accLocal.encryptedvalue = encryptPhone(accountLocal.Work_Phone__pc);
+                        }
+                        
                         accLocal.fieldName = 'Work_Phone__pc - ' + accountLocal.Id;
                         accLocal.isEnabled = isContactEnabled(accountLocal.Work_Phone__pc,'Work_Phone__pc',accountLocal.id,listhistory,listhistoryOlder,true);
                                          /*for(accounthistory accounthistoryLocal : listhistory)
@@ -468,7 +526,14 @@ public class MemberVerificationLightningController
                         accLocal.Memberid= accountLocal.id;
                         accLocal.fieldType = 'E';
                         accLocal.value = accountLocal.PersonEmail;
-                        accLocal.encryptedvalue = encryptEmail(accountLocal.PersonEmail);
+                        
+                        if(IsAuth == true){
+                        	accLocal.encryptedvalue = accountLocal.PersonEmail;	
+                        }
+                        else{
+                        	accLocal.encryptedvalue = encryptEmail(accountLocal.PersonEmail);
+                        }
+                      
                         accLocal.fieldName = 'PersonEmail - ' + accountLocal.Id;
                         accLocal.isEnabled = isContactEnabled(accountLocal.PersonEmail,'PersonEmail',accountLocal.id,listhistory,listhistoryOlder,false);
                                          /*for(accounthistory accounthistoryLocal : listhistory)
@@ -492,7 +557,14 @@ public class MemberVerificationLightningController
                         accLocal.Memberid= accountLocal.id;
                         accLocal.fieldType = 'E';
                         accLocal.value = accountLocal.Alternate_Email__pc;
-                        accLocal.encryptedvalue = encryptEmail(accountLocal.Alternate_Email__pc);
+                        
+                        if(IsAuth == true){
+                        	accLocal.encryptedvalue = accountLocal.Alternate_Email__pc;	
+                        }
+                        else{
+                        	accLocal.encryptedvalue = encryptEmail(accountLocal.Alternate_Email__pc);
+                        }
+                        
                         accLocal.fieldName = 'Alternate_Email__pc - ' + accountLocal.Id;
                         accLocal.isEnabled = isContactEnabled(accountLocal.Alternate_Email__pc,'Alternate_Email__pc',accountLocal.id,listhistory,listhistoryOlder,false);
                                         /* for(accounthistory accounthistoryLocal : listhistory)
@@ -666,10 +738,12 @@ public class MemberVerificationLightningController
 
                             Authenticated_Log__c log = new Authenticated_Log__c();
                             log.SalesforceID__c = acc.Id;
+                            log.Member__c = acc.Id;
                             log.First_Name__c = acc.FirstName;
                             log.Last_Name__c = acc.LastName;
                             log.Staff_Name__c = UserInfo.getName();
                             log.Decision__c = 'OTP – Not Eligible';
+                            log.Member_Number__c = AccountNumber;
                             insert log;
                             acc.Member_Verification_OTP_Invalid_Attempt__c = system.now();
                             update acc;
@@ -690,8 +764,19 @@ public class MemberVerificationLightningController
         obj.IsIneligible = 'false';
         obj.Brand = Brand;
         obj.PhoneList_Options = GetPhoneList_Options(listWrapperAccount);
-
+		system.debug('obj.PhoneList_Options'+obj.PhoneList_Options);
         obj.EmailsList_Options = GetEmailsList_Options(listWrapperAccount);
+        system.debug('obj.PhoneList_Options'+obj.EmailsList_Options);
+        
+        for(KeyValuePairModelWithBit value: obj.EmailsList_Options){
+        	if(value.isEnabled == false){
+       			obj.emailToShow = true;
+       			break; 		
+        	}	
+        	else{
+        		obj.emailToShow = false;
+        	}
+        }
         obj.LstMemid = GetMemList_Options(memid);
 		system.debug('obj---' + obj);
         return obj;
@@ -703,30 +788,40 @@ public class MemberVerificationLightningController
     {
     	MemberVerificationLightningController objMVLC = new MemberVerificationLightningController();
         Account acc = objMVLC.GetAccount(accid);
-
+		 Person_Account__c p = [SELECT Id, Account_Number__c,  PersonID__c, Account_Number__r.RecType__c, TypeTranslate__c, Account_Number__r.Name
+                FROM Person_Account__c where PersonID__c =:accid  limit 1];
+          string  AccountNumber = p.Account_Number__r.Name;
         Authenticated_Log__c log = new Authenticated_Log__c();
         log.SalesforceID__c = acc.Id;
-
+		log.Member__c = acc.Id;
         log.First_Name__c = acc.FirstName;
         log.Last_Name__c = acc.LastName;
 
         log.Staff_Name__c = UserInfo.getName();
         log.Decision__c = 'OTP – Contact Unconfirmed';
+        log.Member_Number__c = AccountNumber;
         insert log;
         acc.Member_Verification_OTP_Invalid_Attempt__c = system.now();
         update acc;
     }
     private static void SaveNoContactInfoLog(Account acc)
     {
+         Person_Account__c p = [SELECT Id, Account_Number__c,  PersonID__c, Account_Number__r.RecType__c, TypeTranslate__c, Account_Number__r.Name
+                FROM Person_Account__c where PersonID__c =:acc.id  limit 1];
+          string  AccountNumber = p.Account_Number__r.Name;
+          
         Authenticated_Log__c log = new Authenticated_Log__c();
         system.debug('SalesForceID =' + acc.Id);
         log.SalesforceID__c = acc.Id;
+        log.Member__c = acc.Id;
 
         log.First_Name__c = acc.FirstName;
         log.Last_Name__c = acc.LastName;
         log.Staff_Name__c = UserInfo.getName();
+        log.Member_Number__c = AccountNumber;
         System.debug('log No Contact Info ' + log);
-
+       
+		
         upsert log;
         log.Decision__c = 'OTP - No Contact Info';
         update log;
@@ -784,6 +879,9 @@ public class MemberVerificationLightningController
         string email = '';
         boolean IsEmail = false;
         Account accEmailTOSend = [select Id, Member_Verification_OTP_Invalid_Attempt__c, Home_Phone__pc, FirstName, LastName, Mobile_Phone__pc, Work_Phone__pc, PersonEmail, Alternate_Email__pc from Account where ID =: accountid];
+        Person_Account__c p = [SELECT Id, Account_Number__c,  PersonID__c, Account_Number__r.RecType__c, TypeTranslate__c, Account_Number__r.Name
+                FROM Person_Account__c where PersonID__c =:accid limit 1];
+          string  AccountNumber = p.Account_Number__r.Name;
 
         if (field == 'Home_Phone__pc')
 
@@ -844,9 +942,12 @@ public class MemberVerificationLightningController
 		system.debug('Lastname in GenerateRandomOTP ---' + acc.LastName);
          Authenticated_Log__c log = new Authenticated_Log__c();
          log.SalesforceID__c = acc.Id;
+         log.Member__c = acc.Id;
          log.First_Name__c = acc.FirstName;
          log.Last_Name__c = acc.LastName;
          log.Staff_Name__c = UserInfo.getName();
+        
+         log.Member_Number__c = AccountNumber;
          if(IsEmail)
          {
            log.OTP_Email__c = email;
@@ -887,6 +988,9 @@ public class MemberVerificationLightningController
         string email = '';
         boolean IsEmail = false;
         Account accEmailTOSend = [select Id, Member_Verification_OTP_Invalid_Attempt__c, Home_Phone__pc, FirstName, LastName, Mobile_Phone__pc, Work_Phone__pc, PersonEmail, Alternate_Email__pc from Account where ID =: accountid];
+        Person_Account__c p = [SELECT Id, Account_Number__c,  PersonID__c, Account_Number__r.RecType__c, TypeTranslate__c, Account_Number__r.Name
+                FROM Person_Account__c where PersonID__c =:accountid limit 1];
+          string  AccountNumber = p.Account_Number__r.Name;
 		system.debug('field - ' + field);
 		
         if (field == 'Home_Phone__pc')
@@ -942,8 +1046,11 @@ public class MemberVerificationLightningController
         Long seconds = milliseconds / 1000;
         Authenticated_Log__c log = new Authenticated_Log__c();
         log.SalesforceID__c = acc.Id;
+        log.Member__c = acc.Id;
         log.First_Name__c = acc.FirstName;
         log.Last_Name__c = acc.LastName;
+       
+        log.Member_Number__c = AccountNumber;
         if(IsEmail)
         {
           log.OTP_Email__c = email;
@@ -961,6 +1068,7 @@ public class MemberVerificationLightningController
             acc.Member_Verification_OTP_Invalid_Attempt__c = system.now();
             update acc;
             log.Decision__c = 'OTP – Code Expired';
+            log.OTP_Status__c = 'failed';
         
         }
         else if(EnteredOTP == RandomNumber)
@@ -968,6 +1076,7 @@ public class MemberVerificationLightningController
             //acc.Member_Verification_OTP_Invalid_Attempt__c = null;
             //update acc;
             log.Decision__c = 'OTP – Code valid';
+            log.OTP_Status__c = 'passed';
             Verified = 'Valid';
         }
         else
@@ -975,6 +1084,7 @@ public class MemberVerificationLightningController
             acc.Member_Verification_OTP_Invalid_Attempt__c = system.now();
             update acc;
             log.Decision__c = 'OTP – Code Failed';
+            log.OTP_Status__c = 'failed';
             Verified = 'Invalid';
         }
         
@@ -987,10 +1097,12 @@ public class MemberVerificationLightningController
 	  
 	  
     private static void SendOTPEmail(string OTP, string ToEmail, string Brand, Account acc)
-    {
+    { 
+    	system.debug('SendOTPEmail Called##');
         List<Messaging.SingleEmailMessage> mails = new List<Messaging.SingleEmailMessage>();
         Messaging.SingleEmailMessage mail = new Messaging.SingleEmailMessage();
         List<String> sendTo = new List<String>();
+        system.debug('ToEmail##'+ToEmail);
         sendTo.add(ToEmail);
         mail.setToAddresses(sendTo);
         string templatenAME = Brand + ' OTP Email';
@@ -1015,8 +1127,10 @@ public class MemberVerificationLightningController
         mail.setPlainTextBody(body);
         mail.setOrgWideEmailAddressId(listAdd[0].Id);
         mails.add(mail);
-        
+        system.debug('EMAIL##'+ listAdd[0].Id);
+         system.debug('EMAILBODY##'+ body);
         Messaging.sendEmail(mails);
+        system.debug('OTPmails##'+ mails);
         
     }
 
@@ -1177,6 +1291,9 @@ public class MemberVerificationLightningController
 	public static void CancelOTP(string accid, string fieldName)
 	{
 		Account acc = [select Id, Member_Verification_OTP_Invalid_Attempt__c, Home_Phone__pc, FirstName, LastName, Mobile_Phone__pc, Work_Phone__pc, PersonEmail, Alternate_Email__pc from Account where ID =: accid];
+		Person_Account__c p = [SELECT Id, Account_Number__c,  PersonID__c, Account_Number__r.RecType__c, TypeTranslate__c, Account_Number__r.Name
+                FROM Person_Account__c where PersonID__c =:accid limit 1];
+          string  AccountNumber = p.Account_Number__r.Name;
 		string fieldValue = fieldName;
 		string field = '';
 		string accountid ='';
@@ -1217,6 +1334,7 @@ public class MemberVerificationLightningController
 		
 		Authenticated_Log__c log = new Authenticated_Log__c();
         log.SalesforceID__c = acc.Id;
+        log.Member__c = acc.Id;
         log.First_Name__c = acc.FirstName;
         log.Last_Name__c = acc.LastName;
         if(IsEmail)
@@ -1229,6 +1347,8 @@ public class MemberVerificationLightningController
         }
         log.Staff_Name__c = UserInfo.getName();
 		log.Decision__c = 'OTP – Code not provided';
+		
+		log.Member_Number__c = AccountNumber;
 		insert log;			
 		acc.Member_Verification_OTP_Invalid_Attempt__c = system.now();
         update acc;

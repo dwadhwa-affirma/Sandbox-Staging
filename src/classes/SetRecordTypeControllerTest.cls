@@ -1,7 +1,25 @@
 @isTest
 public class SetRecordTypeControllerTest {
     
-   /* static testmethod void testmethod1(){
+    static testmethod void testmethod1(){
+        
+      Create_SLA__c cl = new Create_SLA__c();
+      cl.Status__c = 'Open';
+      cl.Name = 'Open';
+      cl.hours__c = 8;
+      insert cl;
+      
+      Create_SLA__c cl1 = new Create_SLA__c();
+      cl1.Status__c = 'In Process';
+      cl1.Name = 'In Process';
+      cl1.hours__c = 20;
+      insert cl1;
+      
+      Create_SLA__c cl2 = new Create_SLA__c();
+      cl2.Status__c = 'Resolution';
+      cl2.Name = 'Resolution';
+      cl2.hours__c = 200;
+      insert cl2;
         
         String RecTypeId= [select Id from RecordType where (Name='Person Account') and (SobjectType='Account')].Id;
         
@@ -45,8 +63,7 @@ public class SetRecordTypeControllerTest {
         PageReference pageRef = Page.SetRecordType;
         Test.setCurrentPage(pageRef);
         ApexPages.currentPage().getParameters().put('firstPage', 'true');
-        ApexPages.currentPage().getParameters().put('acctId', acc.Id);  
-        
+        ApexPages.currentPage().getParameters().put('acctId', acc.Id);        
         SetRecordTypeController controller = new SetRecordTypeController(new ApexPages.StandardController(cRec)); 
         
         controller.accountName = acc.Id;        
@@ -58,7 +75,7 @@ public class SetRecordTypeControllerTest {
         controller.tcOptions();
         controller.tcValue = 'test3';
         controller.change();
-      //  controller.nextPage();
+     //   controller.nextPage();
         controller.process();
         test.stopTest();
     }
@@ -98,7 +115,7 @@ public class SetRecordTypeControllerTest {
         controller.process1();
         System.assertEquals(ApexPages.getMessages()[0].getSummary(), 'Please select Secondary Category') ;
     }
-    */
+    
     static testMethod void testMethod3(){
 
        String RecTypeId= [select Id from RecordType where (Name='Person Account') and (SobjectType='Account')].Id;
@@ -316,8 +333,26 @@ public class SetRecordTypeControllerTest {
        System.assertEquals(ApexPages.getMessages()[0].getSummary(), 'Please select Tertiary Category');
     } 
     
-  /*  static testmethod void testmethod10(){
+    static testmethod void testmethod10(){
+     
+      Create_SLA__c cl = new Create_SLA__c();
+      cl.Status__c = 'Open';
+      cl.Name = 'Open';
+      cl.hours__c = 8;
+      insert cl;
       
+      Create_SLA__c cl1 = new Create_SLA__c();
+      cl1.Status__c = 'In Process';
+      cl1.Name = 'In Process';
+      cl1.hours__c = 20;
+      insert cl1;
+      
+      Create_SLA__c cl2 = new Create_SLA__c();
+      cl2.Status__c = 'Resolution';
+      cl2.Name = 'Resolution';
+      cl2.hours__c = 200;
+      insert cl2;
+        
         String RecTypeId= [select Id from RecordType where (Name='Person Account') and (SobjectType='Account')].Id;
         
         Account acc = new Account(
@@ -347,7 +382,7 @@ public class SetRecordTypeControllerTest {
         crt.Teritiary_Category__c = 'test3';
         crt.Name = '000';
         insert crt; 
-         
+          
         Case cRec = new Case();
            cRec.Brand__c = 'CFCU';
            cRec.CaseComments__c = 'test comments';
@@ -375,8 +410,9 @@ public class SetRecordTypeControllerTest {
         controller.process1();
         test.stopTest();
     }
-    */
+    
     static testMethod void testMethod11(){
+     
         String RecTypeId= [select Id from RecordType where (Name='Person Account') and (SobjectType='Account')].Id;
         
         Account acc = new Account(
@@ -419,6 +455,24 @@ public class SetRecordTypeControllerTest {
     }
     
     static testMethod void testMethod12(){
+        
+      Create_SLA__c cl = new Create_SLA__c();
+      cl.Status__c = 'Open';
+      cl.Name = 'Open';
+      cl.hours__c = 8;
+      insert cl;
+      
+      Create_SLA__c cl1 = new Create_SLA__c();
+      cl1.Status__c = 'In Process';
+      cl1.Name = 'In Process';
+      cl1.hours__c = 20;
+      insert cl1;
+      
+      Create_SLA__c cl2 = new Create_SLA__c();
+      cl2.Status__c = 'Resolution';
+      cl2.Name = 'Resolution';
+      cl2.hours__c = 200;
+      insert cl2;
         
         Case c = new Case();
            c.Brand__c = 'CFCU';

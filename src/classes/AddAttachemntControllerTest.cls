@@ -4,6 +4,24 @@ public class AddAttachemntControllerTest {
         
     public static testMethod void checkAttachmentTest(){
        
+        Create_SLA__c cl = new Create_SLA__c();
+        cl.Status__c = 'Open';
+        cl.Name = 'Open';
+        cl.hours__c = 8;
+        insert cl;
+        
+        Create_SLA__c cl1 = new Create_SLA__c();
+        cl1.Status__c = 'In Process';
+        cl1.Name = 'In Process';
+        cl1.hours__c = 20;
+        insert cl1;
+        
+        Create_SLA__c cl2 = new Create_SLA__c();
+        cl2.Status__c = 'Resolution';
+        cl2.Name = 'Resolution';
+        cl2.hours__c = 20;
+        insert cl2;
+        
         string fid ='0000999999' ;    
         String uid = UserInfo.getUserId();
         User currentUser = [SELECT LocaleSidKey, LanguageLocaleKey, TimeZoneSidKey, EmailEncodingKey FROM User WHERE Id=:uid];
@@ -95,7 +113,25 @@ public class AddAttachemntControllerTest {
     public static testMethod void checkAttachmentTest2(){
        
 
-         Profile profile = [SELECT Id,Name FROM Profile where Name ='Customer Community Login User' ];
+        Create_SLA__c cl = new Create_SLA__c();
+        cl.Status__c = 'Open';
+        cl.Name = 'Open';
+        cl.hours__c = 8;
+        insert cl;
+        
+        Create_SLA__c cl1 = new Create_SLA__c();
+        cl1.Status__c = 'In Process';
+        cl1.Name = 'In Process';
+        cl1.hours__c = 20;
+        insert cl1;
+        
+        Create_SLA__c cl2 = new Create_SLA__c();
+        cl2.Status__c = 'Resolution';
+        cl2.Name = 'Resolution';
+        cl2.hours__c = 20;
+        insert cl2;
+        
+        Profile profile = [SELECT Id,Name FROM Profile where Name ='Customer Community Login User' ];
         //RecordType recordtype =[SELECT Id,Name FROM RecordType WHERE Name='Person Account'];
         //User currentUser = [SELECT LocaleSidKey, LanguageLocaleKey, TimeZoneSidKey, EmailEncodingKey FROM User WHERE Id=:uid];
             string fid ='0000999999' ;    
@@ -158,9 +194,12 @@ public class AddAttachemntControllerTest {
         ApexPages.currentPage().getParameters().put('SB',SB);
         ApexPages.currentPage().getParameters().put('SD',SD);        
         ApexPages.currentPage().getParameters().put('entityType',entityType);
-         test.startTest();
+        
+        test.startTest();
+        
         AddAttachemntController controller = new AddAttachemntController();
         controller.attachments  = AttachmentLst;
+       
         
          List<User> users = new List<User>();
             user u = new user();
@@ -180,7 +219,8 @@ public class AddAttachemntControllerTest {
             users.add(u);
             insert users;
             string aid = AttachmentLst[0].id;
-           
+            
+       
             ApexPages.CurrentPage().getParameters().put('id',aid+'='+aid);
             controller.RemoveFile();
             
@@ -195,8 +235,7 @@ public class AddAttachemntControllerTest {
              userAccount.fedid = fid;
              controller.PageLoad();
             }
-        test.stopTest();
-        
+         test.stopTest();
         
     }
 }

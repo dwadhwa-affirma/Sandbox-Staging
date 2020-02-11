@@ -43,7 +43,7 @@
 
 
                             <tr>
-                                <td class="subQuestion" width="200">&nbsp; If yes, what is your monthly payment?</td>
+                                <td class="subQuestion" width="200">&nbsp; If yes, what is your current payment &amp; frequency?</td>
                                 <td>
                                     <ui:inputNumber value="{!v.Model.LEAV_CurrentBalance__c}" />
                                 </td>

@@ -13,7 +13,7 @@
     <aura:attribute name="BannerLinkHover" access="global" Type="String" default="" />
     <aura:attribute name="bannerLinkText" access="global" Type="String" default="" />
     <aura:attribute name="bannerExpirationFlag" access="global" Type="Boolean" default="false" />    
-
+	<aura:attribute name="UserProfile" access="global" Type="String" default="" />
 
     <style>
         /* Loading Style*/

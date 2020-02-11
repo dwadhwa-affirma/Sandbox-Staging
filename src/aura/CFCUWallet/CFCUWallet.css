@@ -1,0 +1,79 @@
+.THIS {
+}
+
+.THIS .leftDiv {
+    width: 330px;
+    display: inline-block;
+}
+
+.THIS .RightDiv {
+    display: inline-block;
+    margin-left: 20px;
+}
+
+.THIS .Hide {
+   display:none;
+}
+
+.THIS .Show {
+   display:block;
+}
+
+.THIS .customRadioCls .slds-form-element__control .slds-radio {
+    display : inline-block !important;
+}
+
+.THIS .MainDiv {
+   /*height:400px;*/
+height: auto;
+}
+
+.THIS .InnerDiv {
+   padding: 15px 0;
+   display: flex;
+  
+}
+
+
+.THIS .BtnOne {
+   margin-right:0px;
+}
+.THIS .BtnTwo {
+   margin-left:0px;
+}
+.THIS .TableMargin {
+   margin-Top:10px;
+   margin-left:30px;
+}
+.THIS .CenterDiv {
+    text-align: center;
+   
+}
+.THIS .mb-50{
+	margin-bottom:50px;
+}
+.THIS .mr-20{
+	margin:20px auto;
+}
+.THIS .mr-80{
+	margin-right:80px;
+}
+.THIS .select-auto-width > .slds-form-element__control > .slds-select_container{
+    display: inline-block;
+}
+.THIS .vl {
+  border-left: 3px solid grey;
+  height: 400px;
+  /*width: 60%;
+  float:right;*/
+width: 100%;
+float:none;
+}
+
+.THIS .mr-left10 {
+  margin-left:0px;
+}
+.THIS .InnerDivContainer{
+	border-bottom: 1px solid rgb(221, 219, 218);
+    margin-bottom: 15px;
+}

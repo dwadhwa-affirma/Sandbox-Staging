@@ -23,13 +23,9 @@ public class Accounts360ViewController {
     public map<String, Id> docMap;
      public integer cM_date5=0;
      public integer cABal=0;
-         public boolean CaseComentComments {get;set;}
-        public boolean TaskCommentsShow {get;set;}
 
     public Accounts360ViewController(ApexPages.StandardController controller){
      // this.accRec = (Account_Details__c)Controller.getRecord();
-      CaseComentComments = false;
-        TaskCommentsShow = false;
       accId = System.currentPageReference().getParameters().get('Id');
      Account_Details__c accDRec = [Select Id, Name from Account_Details__c where Id=:accId Limit 1];
         System.debug('Parent Account Id is::::'+accDRec); 
@@ -183,7 +179,7 @@ public class Accounts360ViewController {
                    }         
                    System.debug('Case Comments are:::::'+ mccomm);  
         
-       CaseComentComments = !mccomm.IsEmpty();
+       
         tskList = [Select Id, Subject, whatId, Type, What.Name, Status, Priority, Description from Task where What.Type='Case' AND WhatId IN :caseList order by LastModifieddate DESC NULLS LAST]; 
         
                tsks = new Map<String, list<Task>>(); 
@@ -204,7 +200,7 @@ public class Accounts360ViewController {
                  }           
                } 
              System.debug('Case Tasks are:::::'+ tsks);
-        TaskCommentsShow = !tsks.IsEmpty();
+        
              AccountDetails(accRecName);         
           }
     

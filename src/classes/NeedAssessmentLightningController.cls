@@ -56,7 +56,7 @@ public class NeedAssessmentLightningController {
 				Rec_LEHS_Outcome_2__c, Rec_LECF_Outcome_1__c, Rec_LECF_Outcome_2__c, Rec_LECF_Outcome_3__c, Rec_LECF_Outcome_4__c, 
 				REC_LEMP_Outcome_1__c, REC_LEMP_Outcome_2__c, REC_LEMP_Outcome_3__c, REC_LEMP_Outcome_4__c, REC_LEMP_Outcome_5__c, 
 				REC_LEMP_Outcome_6__c, REC_LEMP_Outcome_7__c, REC_LEMP_Outcome_8__c, REC_LEPT_Outcome_1__c, REC_LEMD_Outcome_3__c, 
-				REC_LEMQ_Outcome_1__c, Rec_Comment__c
+				REC_LEMQ_Outcome_1__c, Rec_Comment_New__c,LEMP_Number_of_Credit_Card__c,LEMP_Your_Current_Rate__c
     	  		from Needs_Assesment__c where Member__c =: accountid limit 1];
      	  	 	    	  		
     	  if(na.size() == 0)
@@ -483,6 +483,8 @@ nao_tobeinserted.LEMP_Credit_Card_Usage_Low_Interest_Rate__c = objNeedsAssesment
             nao_tobeinserted.LEMP_Credit_Card_Usage_Other_New__c = objNeedsAssesment.LEMP_Credit_Card_Usage_Other_New__c;
           nao_tobeinserted.LEMP_Carry_Credit_Card_Balance__c = objNeedsAssesment.LEMP_Carry_Credit_Card_Balance__c;
           nao_tobeinserted.LEMP_Credit_Card_You_Use_Often_New__c = objNeedsAssesment.LEMP_Credit_Card_You_Use_Often_New__c;
+ 		nao_tobeinserted.LEMP_Your_Current_Rate__c = objNeedsAssesment.LEMP_Your_Current_Rate__c;
+ 		nao_tobeinserted.LEMP_Number_of_Credit_Card__c = objNeedsAssesment.LEMP_Number_of_Credit_Card__c;
   nao_tobeinserted.LEMP_Credit_Card_Usage_Reason_Comments_N__c = objNeedsAssesment.LEMP_Credit_Card_Usage_Reason_Comments_N__c;
          nao_tobeinserted.LEMP_Credit_Card_Usage_Comments_New__c = objNeedsAssesment.LEMP_Credit_Card_Usage_Comments_New__c;
                               nao_tobeinserted.REC_LEMP_1__c = objNeedsAssesment.REC_LEMP_1__c;
@@ -687,7 +689,20 @@ nao_tobeinserted.LEMP_Credit_Card_Usage_Low_Interest_Rate__c = objNeedsAssesment
         	
             Needs_Assesment__c nao_tobeinserted = new Needs_Assesment__c();
                         nao_tobeinserted.Id = objNeedsAssesment.Id;
-                                    
+              
+            if(otherExistingLoans != null)
+            {
+            	for(NA_Other_Existing_Loans__c oEL : otherExistingLoans)
+	        	{
+	        		if(oEL.Needs_Assessment__c == null)
+	        		{
+	        			oEL.Needs_Assessment__c = nao_tobeinserted.id;
+	        		}
+	        	}
+            }
+            
+
+            upsert otherExistingLoans;                        
 			nao_tobeinserted.LEOL_Other_Existing_Loans__c = objNeedsAssesment.LEOL_Other_Existing_Loans__c;
 			nao_tobeinserted.Rec_LEOL_1__c = objNeedsAssesment.Rec_LEOL_1__c;
 			nao_tobeinserted.Rec_LEOL_2__c = objNeedsAssesment.Rec_LEOL_2__c;
@@ -702,20 +717,7 @@ nao_tobeinserted.LEMP_Credit_Card_Usage_Low_Interest_Rate__c = objNeedsAssesment
 			upsert nao_tobeinserted;			
 			
             system.debug('nao_tobeinserted.id----' + nao_tobeinserted.id);
-            
-            if(otherExistingLoans != null)
-            {
-            	for(NA_Other_Existing_Loans__c oEL : otherExistingLoans)
-	        	{
-	        		if(oEL.Needs_Assessment__c == null)
-	        		{
-	        			oEL.Needs_Assessment__c = nao_tobeinserted.id;
-	        		}
-	        	}
-            }
-            
-
-            upsert otherExistingLoans;
+          
             
             if(deletedItems != null)
             {

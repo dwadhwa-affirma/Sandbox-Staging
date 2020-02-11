@@ -3,6 +3,24 @@ private class QueueOwnersControllerTest{
   @testSetup
   static void setupTestData(){
     test.startTest();
+      Create_SLA__c cl = new Create_SLA__c();
+      cl.Status__c = 'Open';
+      cl.Name = 'Open';
+      cl.hours__c = 8;
+      insert cl;
+      
+      Create_SLA__c cl1 = new Create_SLA__c();
+      cl1.Status__c = 'In Process';
+      cl1.Name = 'In Process';
+      cl1.hours__c = 20;
+      insert cl1;
+      
+      Create_SLA__c cl2 = new Create_SLA__c();
+      cl2.Status__c = 'Resolution';
+      cl2.Name = 'Resolution';
+      cl2.hours__c = 200;
+      insert cl2;
+      
     Account account_Obj = new Account(Name='Saumil',Website = 'null', CreatedDate = Date.ValueOf('2017-12-05 21:21:23'), LastModifiedDate = Date.ValueOf('2017-12-06 00:58:53'), PersonHasOptedOutOfEmail = false, NA_Eligibility__c = false, NA_LEAV_Complete__c = false, NA_LECF_Complete__c = false, NA_LECP_Complete__c = false, NA_LEEM_Complete__c = false, NA_LEHS_Complete__c = false, NA_LEMD_Complete__c = false, NA_LEMP_Complete__c = false, NA_LEMQ_Complete__c = false, NA_LEOL_Complete__c = false, NA_LEOM_Complete__c = false, NA_LEPT_Complete__c = false, NA_LESB_Complete__c = false, NA_LESF_Complete__c = false, NA_LEWS_Complete__c = false, NA_Opt_Out__c = false);
     Insert account_Obj; 
     Contact contact_Obj = new Contact(AccountId = account_Obj.id, LastName = 'DILTZ', MailingCity = ' ', MailingState = ' ', MailingPostalCode =  ' ',MailingCountryCode = 'US', HasOptedOutOfEmail = false, CreatedDate = Date.ValueOf('2017-12-05 21:21:23'),  LastModifiedDate = Date.ValueOf('2017-12-06 00:58:53'), smagicinteract__SMSOptOut__c = false, et4ae5__HasOptedOutOfMobile__c = false);

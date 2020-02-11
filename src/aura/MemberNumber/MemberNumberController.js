@@ -57,7 +57,7 @@
 				table.style = '';
 	},
     
-	selectMember : function(component, event, helper) {
+	/*selectMember : function(component, event, helper) {
 		component.set("v.loading", true);
 		var currentId = event.target._id;
 		if(currentId != undefined && currentId != null && currentId != '')
@@ -70,5 +70,46 @@
 	        navEvt.fire();        
 	        component.set("v.loading", false);
 		}
+	}*/
+	selectMember : function(component, event, helper) {
+		
+		var UserProfile = component.get("v.UserProfile");
+		if(UserProfile == 'Call Center'){
+				var evt = $A.get("e.force:navigateToComponent");
+		        console.log('Event '+evt);
+		        var currentId = event.target._id;
+		        var AccountNumber = component.get("v.searchText");
+		        evt.setParams({
+		            componentDef  : "c:LightningVerification" ,
+		            componentAttributes : {
+		                MemberIdFromHomePage : currentId,
+		                AccountNumberFromHomePage: AccountNumber,
+		                IspageOpenFromHomePage: true
+		            }
+		        
+		        });
+      
+		        evt.fire();
+            }
+            else{
+            	
+            		component.set("v.loading", true);
+					var currentId = event.target._id;
+					if(currentId != undefined && currentId != null && currentId != '')
+					{
+						var navEvt = $A.get("e.force:navigateToSObject");
+				        navEvt.setParams({
+				        	"recordId": currentId,
+				        	"slideDevName": "related"
+				        });
+				        navEvt.fire();        
+				        component.set("v.loading", false);
+					}
+            
+            }
+            
+        
+
+        
 	}
 })

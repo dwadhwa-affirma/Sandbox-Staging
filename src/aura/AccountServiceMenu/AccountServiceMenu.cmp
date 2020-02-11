@@ -137,8 +137,7 @@
                     <aura:if isTrue="{!and((itemOption == sm.Menu__c), (sm.Status__c == '1'))}">
                         
                            
-                           
-                            <aura:if isTrue="{!and(v.IsUserInGroup==false, i+v.halfLength==v.OOWIndex )}">
+                            <aura:if isTrue="{!and(v.IsUserInGroup==false, sm.Function__c=='OOW')}">
                              <ul style="list-style-type: disc;">	
                             	<li class="clsSubMenu"><a onclick="{!c.loadComponent}" id="{!('anchor' + (i+v.halfLength))}" style="pointer-events: none; cursor: default; text-decoration: none; color: grey;">{!sm.Function__c}</a></li>
                              </ul>

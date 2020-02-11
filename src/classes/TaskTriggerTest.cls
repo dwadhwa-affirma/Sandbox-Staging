@@ -2,19 +2,38 @@
 public class TaskTriggerTest{
      
   public static testMethod void testInsert(){
-  String ProfileId = UserInfo.getProfileId(); 
-  String UserId = UserInfo.getUserId();
-    List<Profile> profiles = [Select id from Profile where name = 'CFCU Admin'];
-  case cs = new case();
-  cs.Status = 'inProcess';
-  cs.Ownership__c = 'Keep';
-  cs.OwnerId = UserId;
-  cs.Primary_category__c = 'Account Maintenance';
-  cs.Secondary_category__c = 'Account Services';
-  cs.Tertiary_category__c = 'Check Orders';
-  cs.Subject = 'testcase for task @@';
-  cs.Brand__c = 'Chevron';
-  insert cs;
+  
+  	  Create_SLA__c cl = new Create_SLA__c();
+      cl.Status__c = 'Open';
+      cl.Name = 'Open';
+      cl.hours__c = 8;
+      insert cl;
+      
+      Create_SLA__c cl1 = new Create_SLA__c();
+      cl1.Status__c = 'In Process';
+      cl1.Name = 'In Process';
+      cl1.hours__c = 20;
+      insert cl1;
+      
+      Create_SLA__c cl2 = new Create_SLA__c();
+      cl2.Status__c = 'Resolution';
+      cl2.Name = 'Resolution';
+      cl2.hours__c = 200;
+      insert cl2;
+      
+      String ProfileId = UserInfo.getProfileId(); 
+  	 String UserId = UserInfo.getUserId();
+     List<Profile> profiles = [Select id from Profile where name = 'CFCU Admin'];
+      case cs = new case();
+      cs.Status = 'In Process';
+      cs.Ownership__c = 'Keep';
+      cs.OwnerId = UserId;
+      cs.Primary_category__c = 'Account Maintenance';
+      cs.Secondary_category__c = 'Account Services';
+      cs.Tertiary_category__c = 'Check Orders';
+      cs.Subject = 'testcase for task @@';
+      cs.Brand__c = 'Chevron';
+      insert cs;
  // List<case> cs1 = [Select id, status from case where Subject =:'testcase for task @@']; 
    Task nt = new Task();
      nt.Subject = 'Call';
@@ -43,7 +62,7 @@ public class TaskTriggerTest{
      
      
     try{
-           cs.Status='Closed';
+           cs.Status='In Process';
             Update cs;
     
        Task nt1 = new Task();
@@ -62,8 +81,29 @@ public class TaskTriggerTest{
 
   @testSetup
   static void setupTestData(){
-    Case case_Obj = new Case(IsEscalated = false, Additional_Documents__c = false,Brand__c='CFCU',  Primary_Category__c = 'Account Maintenance', Secondary_Category__c = 'A2A/P2P', Tertiary_Category__c = 'A2A/P2P', SLATemp__c = false);
-    Insert case_Obj; 
+     
+      Create_SLA__c cl = new Create_SLA__c();
+      cl.Status__c = 'Open';
+      cl.Name = 'Open';
+      cl.hours__c = 8;
+      insert cl;
+      
+      Create_SLA__c cl1 = new Create_SLA__c();
+      cl1.Status__c = 'In Process';
+      cl1.Name = 'In Process';
+      cl1.hours__c = 20;
+      insert cl1;
+      
+      Create_SLA__c cl2 = new Create_SLA__c();
+      cl2.Status__c = 'Resolution';
+      cl2.Name = 'Resolution';
+      cl2.hours__c = 200;
+      insert cl2;
+      Test.startTest();
+    
+      Case case_Obj = new Case(IsEscalated = false, status = 'Open', Additional_Documents__c = false,Brand__c='CFCU',  Primary_Category__c = 'Account Maintenance', Secondary_Category__c = 'A2A/P2P', Tertiary_Category__c = 'A2A/P2P', SLATemp__c = false);
+      Insert case_Obj; 
+      Test.stopTest();
 
   }
   static testMethod void test_TaskTrigger(){

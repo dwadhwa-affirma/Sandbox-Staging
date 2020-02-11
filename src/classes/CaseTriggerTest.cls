@@ -5,6 +5,24 @@ public class CaseTriggerTest {
              
         RecordType recTpe = [Select Id, Name from RecordType where Name='Brand Details' Limit 1];
         
+        Create_SLA__c cl = new Create_SLA__c();
+        cl.Status__c = 'Open';
+        cl.Name = 'Open';
+        cl.hours__c = 8;
+        insert cl;
+        
+        Create_SLA__c cl1 = new Create_SLA__c();
+        cl1.Status__c = 'In Process';
+        cl1.Name = 'In Process';
+        cl1.hours__c = 20;
+        insert cl1;
+        
+        Create_SLA__c cl2 = new Create_SLA__c();
+        cl2.Status__c = 'Resolution';
+        cl2.Name = 'Resolution';
+        cl2.hours__c = 20;
+        insert cl2;
+        
         Mapping__c mapg = new Mapping__c();
           mapg.RecordTypeId = recTpe.Id;
           mapg.Object_Name__c = 'Case';
@@ -26,6 +44,24 @@ public class CaseTriggerTest {
     
     static testMethod void testMethod2(){
         
+        Create_SLA__c cl = new Create_SLA__c();
+        cl.Status__c = 'Open';
+        cl.Name = 'Open';
+        cl.hours__c = 8;
+        insert cl;
+        
+        Create_SLA__c cl1 = new Create_SLA__c();
+        cl1.Status__c = 'In Process';
+        cl1.Name = 'In Process';
+        cl1.hours__c = 20;
+        insert cl1;
+        
+        Create_SLA__c cl2 = new Create_SLA__c();
+        cl2.Status__c = 'Resolution';
+        cl2.Name = 'Resolution';
+        cl2.hours__c = 20;
+        insert cl2;
+        
         Case cs = new Case();
            cs.Brand__c = 'CFCU';
            cs.Primary_Category__c = 'Shared Branch';
@@ -36,7 +72,7 @@ public class CaseTriggerTest {
         insert tk;
         
         try{
-            cs.Status = 'Closed';
+            cs.Status = 'Resolution';
             update cs;
         }catch (DmlException ex) {
             System.assertEquals('All Tasks associated with a Case must be close/completed before the Case can be closed.', ex.getDmlMessage(0));   
@@ -45,6 +81,24 @@ public class CaseTriggerTest {
     
   
     static testMethod void testMethod3(){
+        
+        Create_SLA__c cl = new Create_SLA__c();
+        cl.Status__c = 'Open';
+        cl.Name = 'Open';
+        cl.hours__c = 8;
+        insert cl;
+        
+        Create_SLA__c cl1 = new Create_SLA__c();
+        cl1.Status__c = 'In Process';
+        cl1.Name = 'In Process';
+        cl1.hours__c = 20;
+        insert cl1;
+        
+        Create_SLA__c cl2 = new Create_SLA__c();
+        cl2.Status__c = 'Resolution';
+        cl2.Name = 'Resolution';
+        cl2.hours__c = 20;
+        insert cl2;
         
         Account_Details__c accDetail = new Account_Details__c();
           accDetail.Name = 'Test';
@@ -58,6 +112,24 @@ public class CaseTriggerTest {
     } 
     
     static testMethod void testMethod4(){
+        
+        Create_SLA__c cl = new Create_SLA__c();
+        cl.Status__c = 'Open';
+        cl.Name = 'Open';
+        cl.hours__c = 8;
+        insert cl;
+        
+        Create_SLA__c cl1 = new Create_SLA__c();
+        cl1.Status__c = 'In Process';
+        cl1.Name = 'In Process';
+        cl1.hours__c = 20;
+        insert cl1;
+        
+        Create_SLA__c cl2 = new Create_SLA__c();
+        cl2.Status__c = 'Resolution';
+        cl2.Name = 'Resolution';
+        cl2.hours__c = 20;
+        insert cl2;
         
         Case cs = new Case();
           cs.Brand__c = '';
@@ -94,7 +166,23 @@ public class CaseTriggerTest {
     
     static testMethod void testMethod6(){
         
+        Create_SLA__c cl = new Create_SLA__c();
+        cl.Status__c = 'Open';
+        cl.Name = 'Open';
+        cl.hours__c = 8;
+        insert cl;
         
+        Create_SLA__c cl1 = new Create_SLA__c();
+        cl1.Status__c = 'In Process';
+        cl1.Name = 'In Process';
+        cl1.hours__c = 20;
+        insert cl1;
+        
+        Create_SLA__c cl2 = new Create_SLA__c();
+        cl2.Status__c = 'Resolution';
+        cl2.Name = 'Resolution';
+        cl2.hours__c = 20;
+        insert cl2;
    
         Account_Details__c accDetail = new Account_Details__c();
         accDetail.Name = 'Test';
@@ -117,6 +205,24 @@ public class CaseTriggerTest {
     } 
     
     static testMethod void testMethod7(){
+        
+        Create_SLA__c cl = new Create_SLA__c();
+        cl.Status__c = 'Open';
+        cl.Name = 'Open';
+        cl.hours__c = 8;
+        insert cl;
+        
+        Create_SLA__c cl1 = new Create_SLA__c();
+        cl1.Status__c = 'In Process';
+        cl1.Name = 'In Process';
+        cl1.hours__c = 20;
+        insert cl1;
+        
+        Create_SLA__c cl2 = new Create_SLA__c();
+        cl2.Status__c = 'Resolution';
+        cl2.Name = 'Resolution';
+        cl2.hours__c = 20;
+        insert cl2;
         
         Profile[] p1 = [select Id from Profile where Name = 'System Administrator' limit 1];
         
@@ -141,6 +247,24 @@ public class CaseTriggerTest {
     } 
     
     static testMethod void testMethod8(){
+        
+        Create_SLA__c cl = new Create_SLA__c();
+        cl.Status__c = 'Open';
+        cl.Name = 'Open';
+        cl.hours__c = 8;
+        insert cl;
+        
+        Create_SLA__c cl1 = new Create_SLA__c();
+        cl1.Status__c = 'In Process';
+        cl1.Name = 'In Process';
+        cl1.hours__c = 20;
+        insert cl1;
+        
+        Create_SLA__c cl2 = new Create_SLA__c();
+        cl2.Status__c = 'Resolution';
+        cl2.Name = 'Resolution';
+        cl2.hours__c = 20;
+        insert cl2;
         
         RecordType recTpe = [Select Id, Name from RecordType where Name='Brand Details' Limit 1];
         
@@ -168,6 +292,24 @@ public class CaseTriggerTest {
     
     static testMethod void testMethod9(){
         
+        Create_SLA__c cl = new Create_SLA__c();
+        cl.Status__c = 'Open';
+        cl.Name = 'Open';
+        cl.hours__c = 8;
+        insert cl;
+        
+        Create_SLA__c cl1 = new Create_SLA__c();
+        cl1.Status__c = 'In Process';
+        cl1.Name = 'In Process';
+        cl1.hours__c = 20;
+        insert cl1;
+        
+        Create_SLA__c cl2 = new Create_SLA__c();
+        cl2.Status__c = 'Resolution';
+        cl2.Name = 'Resolution';
+        cl2.hours__c = 20;
+        insert cl2;
+        
         Profile[] p1 = [select Id from Profile where Name = 'CFCU Admin' limit 1];
         
         User user1 = new User(alias = 'u1',lastname='test999', languagelocalekey='en_US', 
@@ -183,14 +325,32 @@ public class CaseTriggerTest {
            cs.Brand__c = 'Specturm';
         insert cs;
        
-       cs.Status = 'Closed';
+       cs.Status = 'Resolution';
        cs.OwnerId = user1.Id; 
        update cs;     
     }  
     
     static testMethod void testMethod10(){
-
-CaseRecordType__c crt = new CaseRecordType__c();
+		
+        Create_SLA__c cl = new Create_SLA__c();
+        cl.Status__c = 'Open';
+        cl.Name = 'Open';
+        cl.hours__c = 8;
+        insert cl;
+        
+        Create_SLA__c cl1 = new Create_SLA__c();
+        cl1.Status__c = 'In Process';
+        cl1.Name = 'In Process';
+        cl1.hours__c = 20;
+        insert cl1;
+        
+        Create_SLA__c cl2 = new Create_SLA__c();
+        cl2.Status__c = 'Resolution';
+        cl2.Name = 'Resolution';
+        cl2.hours__c = 20;
+        insert cl2;
+        
+		CaseRecordType__c crt = new CaseRecordType__c();
         crt.Primary_Category__c = 'AAA';
         crt.Secondary_Category__c = 'BBB';
         crt.Teritiary_Category__c = 'CCC';
@@ -312,6 +472,24 @@ CaseRecordType__c crt = new CaseRecordType__c();
     
     static testMethod void testMethod11(){
 
+        Create_SLA__c cl = new Create_SLA__c();
+        cl.Status__c = 'Open';
+        cl.Name = 'Open';
+        cl.hours__c = 8;
+        insert cl;
+        
+        Create_SLA__c cl1 = new Create_SLA__c();
+        cl1.Status__c = 'In Process';
+        cl1.Name = 'In Process';
+        cl1.hours__c = 20;
+        insert cl1;
+        
+        Create_SLA__c cl2 = new Create_SLA__c();
+        cl2.Status__c = 'Resolution';
+        cl2.Name = 'Resolution';
+        cl2.hours__c = 20;
+        insert cl2;
+        
         Case cs = new Case();
           cs.Brand__c = 'Specturm';
           cs.Origin = 'Email';
@@ -321,6 +499,24 @@ CaseRecordType__c crt = new CaseRecordType__c();
     
     static testMethod void testMethod12(){
 
+        Create_SLA__c cl = new Create_SLA__c();
+        cl.Status__c = 'Open';
+        cl.Name = 'Open';
+        cl.hours__c = 8;
+        insert cl;
+        
+        Create_SLA__c cl1 = new Create_SLA__c();
+        cl1.Status__c = 'In Process';
+        cl1.Name = 'In Process';
+        cl1.hours__c = 20;
+        insert cl1;
+        
+        Create_SLA__c cl2 = new Create_SLA__c();
+        cl2.Status__c = 'Resolution';
+        cl2.Name = 'Resolution';
+        cl2.hours__c = 20;
+        insert cl2;
+        
         Case cs = new Case();
           cs.Brand__c = 'Specturm';
           cs.Origin = 'Email';

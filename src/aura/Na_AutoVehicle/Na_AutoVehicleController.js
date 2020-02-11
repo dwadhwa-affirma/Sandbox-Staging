@@ -1,6 +1,7 @@
 ({
 	doInit : function(component, event, helper) {			
-			helper.fetchPicklistFields(component);			
+			helper.fetchPicklistFields(component);	
+        	debugger;
 	},
 	 saveAutoVehicleClick: function(component, event) {		
         var assessmentData = component.get("v.Model");

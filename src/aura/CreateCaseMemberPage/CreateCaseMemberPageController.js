@@ -76,10 +76,35 @@
  		component.set('v.caseObject.Status','Open');
  		component.set('v.caseObject.Ownership__c','Auto Assign');
  		component.set('v.caseObject.Special_Reporting_Number__c','---None---');
- 		if(isStandAlone)
- 			component.set('v.loading',false);
+ 		if(isStandAlone){
+ 				component.set('v.loading',false);
+ 			}
+ 		
+ 		var action2 = component.get("c.getDependentMap");
+        var parameters = {"contrfieldApiName": 'Status',"depfieldApiName":'Sub_Status__c' };
+		   action2.setParams(parameters);
+		   action2.setCallback(this, function(response){
+		   		var status = response.getState();
+	        	if(component.isValid() && status === "SUCCESS")
+	        	{
+	        		
+                    component.set('v.statusDependencyMap',response.getReturnValue());
+                    
+                    var status = [];
+                    for(var key in response.getReturnValue()){
+                        status.push(key)
+                    }
+                    component.set('v.statusValues',status);
+                    component.set('v.caseObject.Status','Open');
+	        		component.set('v.loading',false);	 
+	        		component.set('v.subStatus',component.get('v.statusDependencyMap')[component.get('v.caseObject.Status')]);       		
+	        	}            	
+	       });
+		   $A.enqueueAction(action2); 
 	},	
-	
+	getSubStatus: function(component, event, helper) {
+    	component.set('v.subStatus',component.get('v.statusDependencyMap')[component.get('v.caseObject.Status')]);
+    } ,
 	closePopupAfterUpload: function(component, event, helper) {
     	var caseId = component.get("v.caseId");
 		var section = event.getParam("SectionName");
@@ -170,6 +195,13 @@
    changePrimaryCategory: function(component, event, helper) {
 	   component.set('v.loading',true);
 	   var pcValue = component.get('v.caseObject').Primary_Category__c;
+	  if(pcValue == 'Complaint'){
+		  component.set("v.isSubStatusVisible",true);
+	  }
+	  else
+	  {
+		  component.set("v.isSubStatusVisible",false);
+	  }
 	   var action = component.get("c.getscOptions");
 	    
 	    var parameters = {"pcValue": pcValue};

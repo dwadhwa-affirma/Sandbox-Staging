@@ -51,7 +51,7 @@
         </script>
         
         <apex:tabPanel switchType="client" tabClass="activeTab" inactiveTabClass="inactiveTab">           
-            <apex:tab label="Account Details" reRender="ad" labelWidth="120"  rendered="{!accountsList.size > 0}">
+            <apex:tab label="Account Details" reRender="ad" labelWidth="120">
                 <apex:pageBlock >                
                   <apex:pageBlockSection columns="1" id="ad">
                    <apex:pageBlockTable value="{!accountsList}" var="var" id="accTable">
@@ -75,7 +75,7 @@
                 </apex:pageBlock>
             </apex:tab> 
             
-        <apex:tab label="Related Persons" reRender="ud" labelWidth="120"  rendered="{!ContactList.size > 0}">
+        <apex:tab label="Related Persons" reRender="ud" labelWidth="120">
         <apex:pageBlock >
         <apex:pageBlockSection columns="1" id="ud">
                  <apex:pageBlockTable value="{!ContactList}" var="var" id="ContactTable" >
@@ -94,7 +94,7 @@
             </apex:pageBlock>
             </apex:tab>
             
-            <apex:tab label="Card Details" reRender="crd" labelWidth="120"  rendered="{!cardList.size > 0}">
+            <apex:tab label="Card Details" reRender="crd" labelWidth="120">
             <apex:pageBlock >                
             <apex:pageBlockSection columns="1" id="crd">
                <apex:pageBlockTable value="{!cardList}" var="var" id="cardTable">
@@ -113,7 +113,32 @@
             </apex:pageBlock>
             </apex:tab>
             
-               
+            <apex:tab label="Active Cases" rendered="{! caseList.size < 1}" reRender="cd" labelWidth="120">
+            <apex:pageBlock >
+            <apex:pageBlockSection columns="1" id="cd" >
+                <apex:pageBlockTable value="{!caseList}" var="var" id="CaseTable" >
+                    <apex:column headerValue="Case Number">
+                    <apex:outputLink value="/{!var.Id}" target="_parent">{!var.casenumber}</apex:outputLink>
+                    </apex:column>
+                    <apex:column headerValue="Acct #">
+                    <apex:outputLink value="/{!var.Account_Number__c}" target="_parent">{!var.Account_Number__r.Name}</apex:outputLink>
+                    </apex:column>
+                    <apex:column headerValue="Case Owner">
+                    <apex:outputText value="{!var.Owner.Name}"/>
+                    </apex:column>
+                    <apex:column headerValue="Case Category" value="{!var.Category__c}"/> 
+                    <apex:column headerValue="Case Subject" value="{!var.Subject}"/> 
+                    <apex:column headerValue="Case Status" value="{!var.Status}"/>
+                    <apex:column headerValue="Brand" value="{!var.Account_Number__r.Brand__c}"/>
+                    <apex:column headerValue="Member Name">
+                    <apex:outputLink value="/{!var.Account}" target="_parent">{!var.Account.Name}</apex:outputLink>
+                    </apex:column>
+                    <apex:column headerValue="Case Origin" value="{!var.Origin}"/>
+                    <apex:column headerValue="Open Date" value="{!var.CreatedDate}"/>
+                </apex:pageBlockTable>
+            </apex:pageBlockSection>
+            </apex:pageBlock>
+            </apex:tab>           
             
             <apex:tab label="Active Cases ({!caseList.size})" rendered="{! caseList.size >= 1}" reRender="cd" labelWidth="120" styleClass="caseTab">
             <apex:pageBlock >
@@ -142,7 +167,7 @@
             </apex:pageBlock>
             </apex:tab>
           
-            <apex:tab label="Closed Cases" reRender="clc" labelWidth="120" rendered="{!caseList1.size >=1 }">
+            <apex:tab label="Closed Cases" reRender="clc" labelWidth="120">
             <apex:pageBlock >
             <apex:pageBlockSection columns="1" id="clc" >
                 <apex:pageBlockTable value="{!caseList1}" var="var" id="ClosedCasesTable" >
@@ -169,9 +194,35 @@
             </apex:pageBlockSection>
         </apex:pageBlock>
        </apex:tab>
+            
+            <apex:tab label="Active Tasks" rendered="{! tskList.size <1 }" reRender="ctasks" labelWidth="120">
+            <apex:pageBlock >
+            <apex:pageBlockSection columns="1" id="ctasks" >
+                <apex:pageBlockTable value="{!tsks}" var="var" id="CaseTasks" >
+                    <apex:column headerValue="Case Number" style="vertical-align:top; text-align:center;">                     
+                    <apex:outputLink value="/{!cnum_by_id1[var]}" target="_parent">{!var}</apex:outputLink> 
+                    </apex:column>
+                    <apex:column headerValue="Acct #" value="{!cnum_by_id5[var]}" style="vertical-align:top; text-align:center;"/>
+                    <apex:column headerValue="Member Name" value="{!cnum_by_id6[var]}" style="vertical-align:top; text-align:center;"/>
+                    <apex:column headerValue="Case Category" style="vertical-align:top; text-align:center;">
+                      <apex:outputText value="{!cnum_by_id2[var]}" /> 
+                    </apex:column>
+                     <apex:column headerValue="Case Status" value="{!cnum_by_id3[var]}" style="vertical-align:top; text-align:center;"/>
+                    <apex:column headerValue="Tasks" style="vertical-align:top; text-align:left;"> 
+                    <apex:repeat value="{!tsks[var]}" var="tasks">                       
+                       <apex:pageBlockSectionItem >
+                           <font color="#bcbd23">Status:</font> {!tasks.Status} <br/> <font color="#bcbd23">Subject:</font> {!tasks.Subject} <br/> <font color="#bcbd23">Comments:</font> {!tasks.Description}
+                           <br/>
+                           <br/>
+                       </apex:pageBlockSectionItem>
+                    </apex:repeat>
+                    </apex:column>                    
+                </apex:pageBlockTable>
+            </apex:pageBlockSection>
+            </apex:pageBlock>
+            </apex:tab>
 
-
-            <apex:tab label="Active Tasks ({!tskList.size})" rendered="{!TaskCommentsShow}" reRender="ctasks" labelWidth="120" styleClass="taskTab">
+            <apex:tab label="Active Tasks ({!tskList.size})" rendered="{! tskList.size >=1 }" reRender="ctasks" labelWidth="120" styleClass="taskTab">
             <apex:pageBlock >
             <apex:pageBlockSection columns="1" id="ctasks" >
                 <apex:pageBlockTable value="{!tsks}" var="var" id="CaseTasks" >
@@ -198,7 +249,7 @@
             </apex:pageBlock>
             </apex:tab>
             
-           <apex:tab label="Case Comments" reRender="ccom" labelWidth="120"  rendered="{!CaseComentComments}">
+           <apex:tab label="Case Comments" reRender="ccom" labelWidth="120">
             <apex:pageBlock >
             <apex:pageBlockSection columns="1" id="ccom" >
                 <apex:pageBlockTable value="{!mccomm}" var="var" id="CaseComments" >
@@ -227,7 +278,7 @@
         </apex:pageBlock>
        </apex:tab> 
                     
-            <apex:tab label="Warning/Comments" reRender="wc" labelWidth="120"  rendered="{!CaseComentComments}">
+            <apex:tab label="Warning/Comments" reRender="wc" labelWidth="120">
             <apex:pageBlock >
             <apex:pageBlockSection columns="1" id="wc">               
                 <apex:pageBlockTable value="{!wsWrapperList}" var="var" id="WarningCodesTable">

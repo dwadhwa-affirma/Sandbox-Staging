@@ -1,8 +1,26 @@
 @isTest
 public class SetRecordTypeSubAccountDetailsCtrlTest {
     
-   /* static testmethod void testmethod1(){
+    static testmethod void testmethod1(){
         String RecTypeId= [select Id from RecordType where (Name='Person Account') and (SobjectType='Account')].Id;
+        
+      Create_SLA__c cl = new Create_SLA__c();
+      cl.Status__c = 'Open';
+      cl.Name = 'Open';
+      cl.hours__c = 8;
+      insert cl;
+      
+      Create_SLA__c cl1 = new Create_SLA__c();
+      cl1.Status__c = 'In Process';
+      cl1.Name = 'In Process';
+      cl1.hours__c = 20;
+      insert cl1;
+      
+      Create_SLA__c cl2 = new Create_SLA__c();
+      cl2.Status__c = 'Resolution';
+      cl2.Name = 'Resolution';
+      cl2.hours__c = 200;
+      insert cl2;
         
         Account acc = new Account(
            RecordTypeID=RecTypeId,
@@ -64,7 +82,7 @@ public class SetRecordTypeSubAccountDetailsCtrlTest {
         controller.nextPage();
         controller.process();
         test.stoptest();
-    }*/
+    }
     
     static testmethod void testmethod2(){
 
@@ -221,7 +239,26 @@ public class SetRecordTypeSubAccountDetailsCtrlTest {
        System.assertEquals(ApexPages.getMessages()[0].getSummary(), 'Please select Tertiary Category');
     } 
     
-  /*  static testmethod void testmethod10(){
+    static testmethod void testmethod10(){
+      
+      Create_SLA__c cl = new Create_SLA__c();
+      cl.Status__c = 'Open';
+      cl.Name = 'Open';
+      cl.hours__c = 8;
+      insert cl;
+      
+      Create_SLA__c cl1 = new Create_SLA__c();
+      cl1.Status__c = 'In Process';
+      cl1.Name = 'In Process';
+      cl1.hours__c = 20;
+      insert cl1;
+      
+      Create_SLA__c cl2 = new Create_SLA__c();
+      cl2.Status__c = 'Resolution';
+      cl2.Name = 'Resolution';
+      cl2.hours__c = 200;
+      insert cl2;
+        
         String RecTypeId= [select Id from RecordType where (Name='Person Account') and (SobjectType='Account')].Id;
         
         Account acc = new Account(
@@ -283,7 +320,7 @@ public class SetRecordTypeSubAccountDetailsCtrlTest {
         controller.process1();
          test.StopTest();
     }
-    */
+    
     static testMethod void testMethod11(){
         String RecTypeId= [select Id from RecordType where (Name='Person Account') and (SobjectType='Account')].Id;
         
@@ -326,6 +363,24 @@ public class SetRecordTypeSubAccountDetailsCtrlTest {
     }
     
     static testMethod void testMethod12(){
+        
+      Create_SLA__c cl = new Create_SLA__c();
+      cl.Status__c = 'Open';
+      cl.Name = 'Open';
+      cl.hours__c = 8;
+      insert cl;
+      
+      Create_SLA__c cl1 = new Create_SLA__c();
+      cl1.Status__c = 'In Process';
+      cl1.Name = 'In Process';
+      cl1.hours__c = 20;
+      insert cl1;
+      
+      Create_SLA__c cl2 = new Create_SLA__c();
+      cl2.Status__c = 'Resolution';
+      cl2.Name = 'Resolution';
+      cl2.hours__c = 200;
+      insert cl2;
         
         Case c = new Case();
            c.Brand__c = 'CFCU';

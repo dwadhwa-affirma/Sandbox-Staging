@@ -794,7 +794,7 @@
         <tr>
             <td>Recommendation Comments</td>
             <td>
-                <ui:inputTextArea value="{!v.Model.Rec_Comment__c}" />
+                <ui:inputTextArea value="{!v.Model.Rec_Comment_New__c}" />
             </td>
         </tr>
         <tr>
