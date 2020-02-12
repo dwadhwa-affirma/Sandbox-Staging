@@ -166,7 +166,6 @@
 			if(eventParam == "Authenticated" && aElement.id =='OTPTab__item'){
 				liElement[i].classList.add("green");
 				component.set('v.OTPIconName','utility:check');
-	  			liElement[i].classList.remove("slds-is-active");
 	  			PointsObtained = parseInt(PointsObtained) + parseInt(ScoreModelPositiveScore);
 	  			component.set("v.PointObtained",PointsObtained);
 	  			IsOTPAvailable = false;
@@ -178,7 +177,6 @@
 			if(eventParam == "Valid" && aElement.id =='OTPTab__item'){
 				liElement[i].classList.add("green");
 				component.set('v.OTPIconName','utility:check');
-	  			liElement[i].classList.remove("slds-is-active");
 	  			PointsObtained = parseInt(PointsObtained) + parseInt(ScoreModelPositiveScore);
 	  			component.set("v.PointObtained",PointsObtained);
 	  			IsOTPAvailable = false;
@@ -189,7 +187,6 @@
 			}
 			if(eventParam == "Declined" && aElement.id =='OTPTab__item'){
 				liElement[i].classList.add("red");
-	  			liElement[i].classList.remove("slds-is-active");
 	  			component.set('v.OTPIconName','utility:close');	  			
 	  			MaximumPointsAvailable = parseInt(MaximumPointsAvailable) - parseInt(ScoreModelNegativeScore);
 	  			IsOTPAvailable = false;
@@ -199,7 +196,6 @@
 			}
 			if(eventParam == "Changed" && aElement.id =='OTPTab__item'){
 				liElement[i].classList.add("red");
-	  			liElement[i].classList.remove("slds-is-active");
 	  			component.set('v.OTPIconName','utility:close');
 	  			MaximumPointsAvailable = parseInt(MaximumPointsAvailable) - parseInt(ScoreModelNegativeScore);
 	  			IsOTPAvailable = false;
@@ -209,7 +205,6 @@
 			}
 			if(eventParam == "Invalid" && aElement.id =='OTPTab__item'){
 				liElement[i].classList.add("red");
-	  			liElement[i].classList.remove("slds-is-active");
 	  			component.set('v.OTPIconName','utility:close');	  			
 	  			MaximumPointsAvailable = parseInt(MaximumPointsAvailable) - parseInt(ScoreModelNegativeScore);
 	  			IsOTPAvailable = false;
@@ -220,7 +215,6 @@
 			if(KYMeventParam == "SUCCESS" && aElement.id =='KYMTab__item'){
 			 
 				liElement[i].classList.add("green");
-	  			liElement[i].classList.remove("slds-is-active");
 	  			component.set('v.KYMIconName','utility:check');
 	  			PointsObtained = parseInt(PointsObtained) + parseInt(ScoreModelPositiveScore);
 	  			component.set("v.PointObtained",PointsObtained);
@@ -233,7 +227,6 @@
 			 if(KYMeventParam == "FAIL" && aElement.id =='KYMTab__item')
 			 {
 				 liElement[i].classList.add("red");
-	  			 liElement[i].classList.remove("slds-is-active");
 	  			 component.set('v.KYMIconName','utility:close');
 	  			 MaximumPointsAvailable = parseInt(MaximumPointsAvailable) - parseInt(ScoreModelNegativeScore);
 	  			 IsKYMAvailable = false;
@@ -247,8 +240,6 @@
 				 	component.set("v.PublicWalletColor",'Green');
 				 	liElement[i].classList.add("green");
 				 	liElement[i].classList.remove("red");
-	  				liElement[i].classList.remove("slds-is-active");
-	  				component.set('v.PWIconName','utility:check');
 	  				PointsObtained = parseInt(PointsObtained) + parseInt(ScoreModelPositiveScore);
 	  				component.set("v.PointObtained",PointsObtained);
 	  				IsPublicWalletAvailable = false;
@@ -262,7 +253,6 @@
 				 component.set("v.PublicWalletColor",'Red');
 				 liElement[i].classList.add("red");
 				 liElement[i].classList.remove("green");
-	  			 liElement[i].classList.remove("slds-is-active");
 	  			 component.set('v.PWIconName','utility:close');
 	  			 MaximumPointsAvailable = parseInt(MaximumPointsAvailable) - parseInt(ScoreModelNegativeScore);
 	  			 IsPublicWalletAvailable = false;
@@ -274,7 +264,6 @@
 			 {
 				 	liElement[i].classList.add("green");
 				 	liElement[i].classList.remove("red");
-	  				liElement[i].classList.remove("slds-is-active");
 	  				component.set('v.CFCUIconName','utility:check');
 	  				PointsObtained = parseInt(PointsObtained) + parseInt(ScoreModelPositiveScore);
 	  				component.set("v.PointObtained",PointsObtained);
@@ -283,12 +272,12 @@
 	  				component.set("v.CFCUWalletStatusForDay", true);
 	  				helper.GetNextAuthenticationType(component, event, helper, memberid, MemberType, MaximumPointsAvailable, PointsObtained, IsKYMAvailable, IsOTPAvailable, IsDebitPinAvailable, IsOOWAvailable, IsPublicWalletAvailable, IsCFCUWalletAvailable);
 	  				
+	  				
 			 }
 			 if((parseInt(CFCUWalletScore) <= 2 || parseInt(CFCUWalletFailedCount) > 1 ) && aElement.id =='CFCUWalletTab__item')
 			 {
 				 liElement[i].classList.add("red");
 				 liElement[i].classList.remove("green");
-	  			 liElement[i].classList.remove("slds-is-active");
 	  			 component.set('v.CFCUIconName','utility:close');
 	  			 MaximumPointsAvailable = parseInt(MaximumPointsAvailable) - parseInt(ScoreModelNegativeScore);
 	  			 IsCFCUWalletAvailable = false;

@@ -124,7 +124,7 @@
 	color: #00AD53 !important;
     fill: #00AD53 !important;
 }
-.THIS .tblrow .rightBox .green.slds-tabs_default__item:after, .THIS .tblrow .rightBox .red.slds-tabs--default__item:after {    
+.THIS .tblrow .rightBox .green.slds-is-active:after, .THIS .tblrow .rightBox .red.slds-tabs--default__item:after {    
     bottom: 1px;    
     height: 3px;
     background: #0070D2;

@@ -4,6 +4,16 @@
 		var memberId = component.get("v.recordId");
 		var PublicWalletStatusForDay = component.get("v.PublicWalletStatusForDay");
 		helper.getDLStateIdPassport(component, event, memberId);
+        component.find('DobPassButton').set("v.variant", "neutral");
+        component.find('DobFailButton').set("v.variant", "neutral");
+        component.find('DLPassButton').set("v.variant", "neutral");
+        component.find('DLFailButton').set("v.variant", "neutral");
+        component.find('MothersMaidenNamePassButton').set("v.variant", "neutral");
+        component.find('MothersMaidenNameFailButton').set("v.variant", "neutral");
+        component.find('EmailPassButton').set("v.variant", "neutral");
+        component.find('EmailFailButton').set("v.variant", "neutral");
+        component.find('TokenPassButton1').set("v.variant", "neutral");
+        component.find('TokenFailButton1').set("v.variant", "neutral");
 		
 	},
 	executeMethod : function (component, event, helper) {
@@ -38,7 +48,7 @@
 					component.set("v.IsSubmitClicked",true);
 			}
 			
-        	component.find('DobPassButton').set("v.variant", "neutral");
+        	/*component.find('DobPassButton').set("v.variant", "neutral");
         	component.find('DobFailButton').set("v.variant", "neutral");
         	component.find('DLPassButton').set("v.variant", "neutral");
         	component.find('DLFailButton').set("v.variant", "neutral");
@@ -47,7 +57,7 @@
         	component.find('EmailPassButton').set("v.variant", "neutral");
         	component.find('EmailFailButton').set("v.variant", "neutral");
         	component.find('TokenPassButton1').set("v.variant", "neutral");
-        	component.find('TokenFailButton1').set("v.variant", "neutral");
+        	component.find('TokenFailButton1').set("v.variant", "neutral");*/
 		}
 	},
     

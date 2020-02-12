@@ -318,7 +318,7 @@
 					   	$A.enqueueAction(action);	
 				   	}
 				   	
-				   	component.find('BeneficiaryPassButton').set("v.variant", "neutral");
+				   /*	component.find('BeneficiaryPassButton').set("v.variant", "neutral");
                 	component.find('BeneficiaryFailButton').set("v.variant", "neutral");
                 	component.find('JointPassButton').set("v.variant", "neutral");
                 	component.find('JointFailButton').set("v.variant", "neutral");
@@ -331,8 +331,8 @@
                 	component.find('TokenPassButton1').set("v.variant", "neutral");
                 	component.find('TokenFailButton1').set("v.variant", "neutral");
                 	component.find('TokenPassButton2').set("v.variant", "neutral");
-                	component.find('TokenFailButton2').set("v.variant", "neutral");
-				   	
+                	component.find('TokenFailButton2').set("v.variant", "neutral");*/
+                	
 			   	}
         }
  		 

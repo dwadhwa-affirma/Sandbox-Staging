@@ -49,7 +49,7 @@
        			</div>	
        			<div class="InnerDiv">
        				<div class="leftDiv">
-	       				<span class="labeltxt">Account Password/Mother's Maiden Name: </span>
+	       				<span class="labeltxt">Password/Mother's Maiden Name: </span>
 	       				<div>
                             <ui:outputText aura:id="MothersMaidenName" value="{!v.MothersMaidenName}"/>
        					</div>
