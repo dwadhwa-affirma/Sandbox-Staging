@@ -72,7 +72,8 @@ trigger CaseTrigger on Case (before insert, before update, after insert, after u
                
           } 
           
-          // Code added by Mehul Parmar to escalate the case when specific hours after case stage updates based on custom setting - Start 
+          // --------------------- Insert "Hours" from "Custom Setting"  by passing case "Status" i.e Open, In-Progress and Resolution..................//
+           
             List<Case> casesToUpdate = new List<Case>();
             for(Case c : Trigger.NEW){
                 if(Trigger.NEWMAP.get(c.Id).Status != null && Trigger.NEWMAP.get(c.Id).Primary_Category__c =='Complaint' && Trigger.OLDMAP.get(c.Id).Status != Trigger.NEWMAP.get(c.Id).Status){
@@ -84,7 +85,8 @@ trigger CaseTrigger on Case (before insert, before update, after insert, after u
             }
             
             
-            // Code added by Mehul Parmar to escalate the case when specific hours after case stage updates based on custom setting - End  
+            // --------------------- Insert "Hours" from "Custom Setting"  by passing case "Status" i.e Open, In-Progress and Resolution..................//
+              
         }
         
         if(IsOtherThanTaskCountFieldUpdated())
@@ -223,6 +225,7 @@ trigger CaseTrigger on Case (before insert, before update, after insert, after u
         }  
     }
 
+// --------------------- Insert "Hours" from "Custom Setting"  by passing case "Status" i.e Open, In-Progress and Resolution..................//
 
 public void updateEscalateAt(List<case> caseList)   {
 
@@ -237,8 +240,11 @@ public void updateEscalateAt(List<case> caseList)   {
         EscalateCaseController.checkAndEscalate(casesToUpdate);
     }
 
+}
 
-}    
+// --------------------- Insert "Hours" from "Custom Setting"  by passing case "Status" i.e Open, In-Progress and Resolution..................//
+
+    
 public void updateBranchRegion(List<case> caseList)   { 
     
     set<Id> accDetailIds = new set<Id>();

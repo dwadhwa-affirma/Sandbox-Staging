@@ -360,7 +360,7 @@ public class CreateCaseMemberPageController {
        List<Contact> clist = [SELECT Id, Name FROM Contact WHERE Contact.AccountId =:accObject.Id];
         AssignmentRule AR = new AssignmentRule(); 
         AR = [SELECT Id FROM AssignmentRule WHERE SobjectType = 'Case' AND Active = True LIMIT 1];
-        List<Group> gp = [select Id, Name from Group where Type = 'Queue' and Name = 'Complaint Management Queue' Limit 1];
+        /*List<Group> gp = [select Id, Name from Group where Type = 'Queue' and Name = 'Complaint Management Queue' Limit 1];
         List<Group> ARQ = [select Id, Name from Group where Type = 'Queue' and Name = 'Asset Recovery Complaints Queue' Limit 1];
         List<Group> SQ = [select Id, Name from Group where Type = 'Queue' and Name = 'Servicing Complaints Queue' Limit 1];
         List<Group> PQ = [select Id, Name from Group where Type = 'Queue' and Name = 'Product Complaints Queue' Limit 1];
@@ -370,7 +370,7 @@ public class CreateCaseMemberPageController {
         List<Group> DBQ = [select Id, Name from Group where Type = 'Queue' and Name = 'Digital Banking Complaints Queue' Limit 1];
         List<Group> MQ = [select Id, Name from Group where Type = 'Queue' and Name = 'Marketing Complaints Queue' Limit 1];
         List<Group> MLQ = [select Id, Name from Group where Type = 'Queue' and Name = 'Mortgage Lending Complaints Queue' Limit 1];
-        List<Group> PSQ = [select Id, Name from Group where Type = 'Queue' and Name = 'Payment Services Complaints Queue' Limit 1]; 
+        List<Group> PSQ = [select Id, Name from Group where Type = 'Queue' and Name = 'Payment Services Complaints Queue' Limit 1]; */
             
         Database.DMLOptions dmlOpts = new Database.DMLOptions(); 
         dmlOpts.assignmentRuleHeader.assignmentRuleId= AR.id;   
@@ -385,7 +385,7 @@ public class CreateCaseMemberPageController {
                 
                 //----------------------------------------KX11043-26 and KX11043-27---------------------------------------------//
                 
-                if(scList[0].Primary_Category__c =='Complaint' && scList[0].Teritiary_Category__c == 'Asset Recovery'){
+                /* if(scList[0].Primary_Category__c =='Complaint' && scList[0].Teritiary_Category__c == 'Asset Recovery'){
                     
                      cs.OwnerId = ARQ[0].id;
                 }
@@ -428,7 +428,7 @@ public class CreateCaseMemberPageController {
                 if(scList[0].Primary_Category__c =='Complaint' && scList[0].Teritiary_Category__c == 'Payment Services'){
                     
                      cs.OwnerId = PSQ[0].id;
-        		}
+        		} */
                 
                //----------------------------------------KX11043-26 and KX11043-27------------------------------------------------------//   
             }
@@ -601,7 +601,7 @@ public class CreateCaseMemberPageController {
      
         AssignmentRule AR = new AssignmentRule(); 
         AR = [SELECT Id FROM AssignmentRule WHERE SobjectType = 'Case' AND Active = True LIMIT 1];
-        List<Group> gp = [select Id, Name from Group where Type = 'Queue' and Name = 'Complaint Management Queue' Limit 1];
+        /*List<Group> gp = [select Id, Name from Group where Type = 'Queue' and Name = 'Complaint Management Queue' Limit 1];
         List<Group> ARQ = [select Id, Name from Group where Type = 'Queue' and Name = 'Asset Recovery Complaints Queue' Limit 1];
         List<Group> SQ = [select Id, Name from Group where Type = 'Queue' and Name = 'Servicing Complaints Queue' Limit 1];
         List<Group> PQ = [select Id, Name from Group where Type = 'Queue' and Name = 'Product Complaints Queue' Limit 1];
@@ -611,7 +611,7 @@ public class CreateCaseMemberPageController {
         List<Group> DBQ = [select Id, Name from Group where Type = 'Queue' and Name = 'Digital Banking Complaints Queue' Limit 1];
         List<Group> MQ = [select Id, Name from Group where Type = 'Queue' and Name = 'Marketing Complaints Queue' Limit 1];
         List<Group> MLQ = [select Id, Name from Group where Type = 'Queue' and Name = 'Mortgage Lending Complaints Queue' Limit 1];
-        List<Group> PSQ = [select Id, Name from Group where Type = 'Queue' and Name = 'Payment Services Complaints Queue' Limit 1];
+        List<Group> PSQ = [select Id, Name from Group where Type = 'Queue' and Name = 'Payment Services Complaints Queue' Limit 1];*/
             
         Database.DMLOptions dmlOpts = new Database.DMLOptions(); 
         dmlOpts.assignmentRuleHeader.assignmentRuleId= AR.id;   
@@ -627,7 +627,7 @@ public class CreateCaseMemberPageController {
                     
                     //----------------------------------------KX11043-26 and KX11043-27---------------------------------------------//
                     
-                    if(scList[0].Primary_Category__c =='Complaint' && scList[0].Teritiary_Category__c == 'Asset Recovery'){
+                    /*if(scList[0].Primary_Category__c =='Complaint' && scList[0].Teritiary_Category__c == 'Asset Recovery'){
                     
                         cs.OwnerId = ARQ[0].id;
 					}
@@ -670,7 +670,7 @@ public class CreateCaseMemberPageController {
                     if(scList[0].Primary_Category__c =='Complaint' && scList[0].Teritiary_Category__c == 'Payment Services'){
                         
                          cs.OwnerId = PSQ[0].id;
-                    }
+                    } */
                     
                     //----------------------------------------KX11043-26 and KX11043-27---------------------------------------------//
             }
@@ -802,7 +802,7 @@ public class CreateCaseMemberPageController {
        List<Contact> clist = [SELECT Id, Name FROM Contact WHERE Contact.AccountId =:selectedMemberNumber.PersonID__c];
         AssignmentRule AR = new AssignmentRule(); 
         AR = [SELECT Id FROM AssignmentRule WHERE SobjectType = 'Case' AND Active = True LIMIT 1];
-        List<Group> gp = [select Id, Name from Group where Type = 'Queue' and Name = 'Complaint Management Queue' Limit 1];
+        /*List<Group> gp = [select Id, Name from Group where Type = 'Queue' and Name = 'Complaint Management Queue' Limit 1];
         List<Group> ARQ = [select Id, Name from Group where Type = 'Queue' and Name = 'Asset Recovery Complaints Queue' Limit 1];
         List<Group> SQ = [select Id, Name from Group where Type = 'Queue' and Name = 'Servicing Complaints Queue' Limit 1];
         List<Group> PQ = [select Id, Name from Group where Type = 'Queue' and Name = 'Product Complaints Queue' Limit 1];
@@ -812,7 +812,7 @@ public class CreateCaseMemberPageController {
         List<Group> DBQ = [select Id, Name from Group where Type = 'Queue' and Name = 'Digital Banking Complaints Queue' Limit 1];
         List<Group> MQ = [select Id, Name from Group where Type = 'Queue' and Name = 'Marketing Complaints Queue' Limit 1];
         List<Group> MLQ = [select Id, Name from Group where Type = 'Queue' and Name = 'Mortgage Lending Complaints Queue' Limit 1];
-        List<Group> PSQ = [select Id, Name from Group where Type = 'Queue' and Name = 'Payment Services Complaints Queue' Limit 1];
+        List<Group> PSQ = [select Id, Name from Group where Type = 'Queue' and Name = 'Payment Services Complaints Queue' Limit 1];*/
                
         Database.DMLOptions dmlOpts = new Database.DMLOptions(); 
         dmlOpts.assignmentRuleHeader.assignmentRuleId= AR.id;   
@@ -828,7 +828,7 @@ public class CreateCaseMemberPageController {
                 
                 //----------------------------------------KX11043-26 and KX11043-27---------------------------------------------//
                 
-                if(scList[0].Primary_Category__c =='Complaint' && scList[0].Teritiary_Category__c == 'Asset Recovery'){
+                /*if(scList[0].Primary_Category__c =='Complaint' && scList[0].Teritiary_Category__c == 'Asset Recovery'){
                     
                      cs.OwnerId = ARQ[0].id;
                 }
@@ -871,7 +871,7 @@ public class CreateCaseMemberPageController {
                 if(scList[0].Primary_Category__c =='Complaint' && scList[0].Teritiary_Category__c == 'Payment Services'){
                     
                      cs.OwnerId = PSQ[0].id;
-                }
+                } */
                 
                 //----------------------------------------KX11043-26 and KX11043-27---------------------------------------------//
             }
