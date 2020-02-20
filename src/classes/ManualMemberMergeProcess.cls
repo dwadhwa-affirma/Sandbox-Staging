@@ -89,55 +89,89 @@ public without sharing class ManualMemberMergeProcess {
 		    	boolean userGroup = CheckMembership();
 		    	
 		    	List<Person_account__c> listOfAllNonBenificaries = new List<Person_account__c>();
-		    	Set<Id> listAccountId_Qualified = new Set<Id>();
-		    	
+				List<Person_account__c> listOfAllPrimaries = new List<Person_account__c>();
+				
+				Set<Id> listAccountId_Qualified1 = new Set<Id>();
+				Set<Id> listAccountId_Qualified2 = new Set<Id>();
+				Set<Id> listAccountId_Qualified3 = new Set<Id>();
+						    	
 		    	System.debug(listAccountIds_ToFilter);
-		    	
-		    	
 		    	
 		    	if(userGroup && membertype == 'All Members')
 		    	{
+		    		
+		    		// ------------------------------------------------ Checking Beneficiary ------------------------------------------------------------//
+		    		
 		    		listOfAllNonBenificaries = [SELECT PersonID__c FROM Person_Account__c 
 		    															WHERE PersonID__c in: listAccountIds_ToFilter  and (not TypeTranslate__c like '%Beneficiary%') order by Account_Number__r.RecType__c];
-		    		for(Person_Account__c item : listOfAllNonBenificaries) 
-		    			{
-		    				if(!listAccountId_Qualified.contains(item.PersonId__c))
-				 				{
-				 					listAccountId_Qualified.add(item.PersonId__c);
-				 				}
-		    			}
-		    			system.debug('listAccountId_Qualified1' + listAccountId_Qualified);
+		    		for(Person_Account__c item : listOfAllNonBenificaries){ 
+		    		
+		    			if(!listAccountId_Qualified1.contains(item.PersonId__c)){
+				 			listAccountId_Qualified1.add(item.PersonId__c);
+		 				}
+	    			}
+		    		
+		    		// ------------------------------------------------ Checking Primary ------------------------------------------------------------//
+		    		
+		    		listOfAllPrimaries = [SELECT PersonID__c FROM Person_Account__c 
+                         											WHERE PersonID__c in: listAccountIds_ToFilter  and TypeTranslate__c like '%Primary%' order by Account_Number__r.RecType__c];         
+		    	
+		    		for(Person_Account__c item1 : listOfAllPrimaries){ 
+    
+					    if(!listAccountId_Qualified2.contains(item1.PersonId__c)){
+					        listAccountId_Qualified2.add(item1.PersonId__c);
+					    }
+					}
+					
+					// -------------------------------------------------Comparing both list ---------------------------------------------------------//
+					
+					for(ID id1 : listAccountId_Qualified1){
+    				    
+    				    if(!listAccountId_Qualified2.contains(id1)){
+					        listAccountId_Qualified3.add(id1);
+					    }
+					}
+					system.debug('listAccountId_Qualified3'+ listAccountId_Qualified3);
+					
+							
 		    	}
 		    	else
 		    	{
+		    		// ------------------------------------------------ Checking Beneficiary ------------------------------------------------------------//
+		    		
 		    		listOfAllNonBenificaries = [SELECT PersonID__c FROM Person_Account__c WHERE PersonID__c in: listAccountIds_ToFilter and  (not TypeTranslate__c like '%Beneficiary%')  and Account_Number__r.Created_By_User_Alias__c in: useridSet order by Account_Number__r.RecType__c];		    		
-		    			for(Person_Account__c item : listOfAllNonBenificaries) 
-		    			{
-		    				if(!listAccountId_Qualified.contains(item.PersonId__c))
-				 				{
-				 					listAccountId_Qualified.add(item.PersonId__c);
-				 				}
-		    			}
+	    			for(Person_Account__c item : listOfAllNonBenificaries){ 
+	    				
+	    				if(!listAccountId_Qualified1.contains(item.PersonId__c)){
+			 				listAccountId_Qualified1.add(item.PersonId__c);
+		 				}
+	    			}
 		    			
-		    			system.debug('listAccountId_Qualified2' + listAccountId_Qualified);
+		    		// ------------------------------------------------ Checking Primary ------------------------------------------------------------//
+		    		
+		    		listOfAllPrimaries = [SELECT PersonID__c FROM Person_Account__c WHERE PersonID__c in: listAccountIds_ToFilter and  TypeTranslate__c like '%Primary%'  and Account_Number__r.Created_By_User_Alias__c in: useridSet order by Account_Number__r.RecType__c];		    		
+		    			
+		    			for(Person_Account__c item1 : listOfAllPrimaries){ 
+		    				
+		    				if(!listAccountId_Qualified2.contains(item1.PersonId__c)){
+				 				listAccountId_Qualified2.add(item1.PersonId__c);
+			 				}
+		    			}
+		    		
+		    		// -------------------------------------------------Comparing both list ---------------------------------------------------------//
+					
+					for(ID id1 : listAccountId_Qualified1){
+    				    
+    				    if(!listAccountId_Qualified2.contains(id1)){
+					        listAccountId_Qualified3.add(id1);
+					    }
+					}
+					system.debug('listAccountId_Qualified3'+ listAccountId_Qualified3);		
 		    	}
-                /*List<Person_account__c> listOfAllNonBenificaries = [select id,PersonId__c,TypeTranslate__c,CreatedDate from Person_account__c 
-	 												where PersonId__c in:  listAccountIds_ToFilter and (not TypeTranslate__c like '%Beneficiary%')]; 
-                Set<Id> listAccountId_Qualified = new Set<Id>();
-                for(Person_account__c item : listOfAllNonBenificaries)
-	 			{
-	 				if(!listAccountId_Qualified.contains(item.PersonId__c))
-	 				{
-	 					listAccountId_Qualified.add(item.PersonId__c);
-	 				}
-	 			}*/
-	 			system.debug('listAccountId_Qualified' + listAccountId_Qualified);
-    			accounts =[SELECT Id, FirstName, LastName, Name FROM Account where id in: listAccountId_Qualified order by createddate];
-    			//list<Person_Account__c> paList = new list<Person_Account__c>();
-		        //paList = [SELECT Id, Account_Number__c FROM Person_Account__c WHERE PersonID__c =: accounts];
-		        
-		        
-		        //List<Account_Details__c> AccDet = [SELECT id,Created_By_User_Alias__c from Account_Details__c where ]
+               
+               
+    			accounts =[SELECT Id, FirstName, LastName, Name FROM Account where id in: listAccountId_Qualified3 order by createddate];
+    			
 		        
     			listObj.Add(accounts);
 				
