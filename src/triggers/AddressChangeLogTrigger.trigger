@@ -1,34 +1,38 @@
-trigger AddressChangeLogTrigger on AddressChangeLog__c (before insert, after insert) {
+ // ---------------------Created By: Dhwani - AddressChangeLogTrigger..................//       
+/* ---------------------This trigger will be executed before insert of address change log. 
+ 						It creates a case with addresschange details in description field. 
+ 						It also sends Email and SMS notifications.................*/  
+     
+trigger AddressChangeLogTrigger on AddressChangeLog__c (before insert) {
     
      if(trigger.isbefore && trigger.isInsert){
             for(AddressChangeLog__c objAddressChange: trigger.New)
             {
-                          //string accountNumber =  objAddressChange.Member_Number__c;
-           
-                           
                           string memberemail = objAddressChange.Email__c;
                           string phone = objAddressChange.MobilePhone__c; 
+                          boolean SendEmail=false, SendSMS=false;
                           
                           String emailRegex = '([a-zA-Z0-9_\\-\\.]+)@((\\[a-z]{1,3}\\.[a-z]{1,3}\\.[a-z]{1,3}\\.)|(([a-zA-Z0-9\\-]+\\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})';
                           Pattern MyPattern = Pattern.compile(emailRegex);     
-        
-                        
-                            if (memberemail == null || !MyPattern.matcher(memberemail).matches()) {
-                           
-                            }
-                            else
-                            {
-                              system.debug('memberemail=='+memberemail);
-                              //SendOTPEmail(memberemail); 
-                            }
-                            
-                            if(phone != null)
-                            {
-                                system.debug('memberPhone=='+phone);
-                                //SendSMS(phone);                       
-                            }
-                            
-                //string description='';
+                          
+                          // ---------------------Updated by Dhwani: Send Email/SMS Notifications..................//   
+                           AddressChangeConfigurations__c accf = AddressChangeConfigurations__c.getValues('Primary');
+		
+							SendEmail = accf.SendEmail__c;
+							SendSMS = accf.SendSMS__c;
+						    if(SendEmail && memberemail != null && (MyPattern.matcher(memberemail).matches()))
+						    {	                         
+	                              system.debug('memberemail=='+memberemail);
+	                              SendEmail(memberemail);	                            
+						    }
+	                        if(SendSMS && phone != null)
+	                        {
+	                        	    system.debug('memberPhone=='+phone);
+	                                SendSMS(phone);                       
+	                         }
+						   
+                          // ---------------------  Send Email/SMS Notifications..................//       
+               
                 String accountstring = objAddressChange.AccountNumbersString__c;
                 List<String> listAccountNumber = new List<String>();
                 if(accountstring.contains(',')){
@@ -54,6 +58,7 @@ trigger AddressChangeLogTrigger on AddressChangeLog__c (before insert, after ins
                 	mapAccountNumber.put(acc.name, acc.id);
                 }               
                
+                 // ---------------------Updated by Dhwani:  Create Case for AddressChange..................//
                 
                  list<CaseRecordType__c> scList = [SELECT Id,
                                                    Primary_Category__c,
@@ -72,7 +77,14 @@ trigger AddressChangeLogTrigger on AddressChangeLog__c (before insert, after ins
                 caseobj.Secondary_Category__c = scList[0].Secondary_Category__c;
                 caseobj.Tertiary_Category__c = scList[0].Teritiary_Category__c; 
                 
+                if(!String.IsBlank(objAddressChange.Address2_New__c) && String.IsBlank(objAddressChange.Address_New__c)){
+                	objAddressChange.Address_New__c = objAddressChange.Address2_New__c;
+                	objAddressChange.Address2_New__c = '';
+                }
+                
                 if(objAddressChange.Update_Type__c =='Residential Address'){
+                	objAddressChange.Email_Old__c ='';
+                	objAddressChange.MobilePhone_Old__c ='';
                     caseobj.Subject = 'Address Change';
                 caseobj.Description = 'Update Type:' + objAddressChange.Update_Type__c //+ '\n' +'Account Number:' + objAddressChange.AccountNumber__c
                  + '\n' +'Old Address1:' + (objAddressChange.Address_Old__c == null ? '' :objAddressChange.Address_Old__c) 
@@ -86,12 +98,13 @@ trigger AddressChangeLogTrigger on AddressChangeLog__c (before insert, after ins
                             'Old Zip5:' + (objAddressChange.Zip_Old__c == null ? '' :objAddressChange.Zip_Old__c)
                             + '\n'+ 'New Zip5:' + (objAddressChange.Zip_New__c == null ? '' :objAddressChange.Zip_New__c) + '\n' +
                             'Old Zip4:' + (objAddressChange.Zip4_Old__c == null ? '' :objAddressChange.Zip4_Old__c)
-                            + '\n'+ 'New Zip4:' + (objAddressChange.Zip4_New__c == null ? '' :objAddressChange.Zip4_New__c) ;
+                            + '\n'+ 'New Zip4:' + (objAddressChange.Zip4_New__c == null ? '' :objAddressChange.Zip4_New__c) +'\n'
+                            +'Record Type Updated:' + 'Name Records'+ '\n'
+                            +'Names:' + objAddressChange.Names__c;
                 }   
                 else if(objAddressChange.Update_Type__c =='Contact Info'){
                     caseobj.Subject = 'Contact Info Change';
-                caseobj.Description = 'Update Type:' + objAddressChange.Update_Type__c + '\n' 
-                            //'Account Number:' + objAddressChange.AccountNumber__c + '\n' 
+                caseobj.Description = 'Update Type:' + objAddressChange.Update_Type__c + '\n'  
                             +'Old HomePhone:' + (objAddressChange.HomePhone_Old__c == null ? '' :objAddressChange.HomePhone_Old__c) + '\n'
                             + 'New HomePhone:' + (objAddressChange.HomePhone_New__c == null ? '' :objAddressChange.HomePhone_New__c) + '\n'
                             +'Old MobilePhone:' + (objAddressChange.MobilePhone_Old__c == null ? '' :objAddressChange.MobilePhone_Old__c) + '\n'
@@ -103,7 +116,9 @@ trigger AddressChangeLogTrigger on AddressChangeLog__c (before insert, after ins
                             +'Old Email:' + (objAddressChange.Email_Old__c == null ? '' :objAddressChange.Email_Old__c) + '\n'
                             + 'New Email:' + (objAddressChange.Email_New__c == null ? '' :objAddressChange.Email_New__c) + '\n'+
                             +'Old AlternateEmail:' + (objAddressChange.AlternateEmail_Old__c == null ? '' :objAddressChange.AlternateEmail_Old__c) + '\n'
-                            + 'New AlternateEmail:' + (objAddressChange.AlternateEmail_New__c == null ? '' :objAddressChange.AlternateEmail_New__c) + '\n';
+                            + 'New AlternateEmail:' + (objAddressChange.AlternateEmail_New__c == null ? '' :objAddressChange.AlternateEmail_New__c) + '\n'
+                            +'Record Type Updated:' + 'Name Records'  + '\n'
+                            +'Names:' + objAddressChange.Names__c;
                 }  
                 else if(objAddressChange.Update_Type__c =='Card Mailing Address'){
                     caseobj.Subject = 'Card Mailing Address Change';
@@ -117,7 +132,9 @@ trigger AddressChangeLogTrigger on AddressChangeLog__c (before insert, after ins
                             'Old Zip:' + (objAddressChange.Zip_Old__c == null ? '' :objAddressChange.Zip_Old__c)
                             + '\n'+ 'New Zip:' + (objAddressChange.Zip_New__c == null ? '' :objAddressChange.Zip_New__c) + '\n'
                             +'Old Country:' + (objAddressChange.Country_Old__c == null ? '' :objAddressChange.Country_Old__c)
-                            + '\n'+ 'New Country:' + (objAddressChange.Country_New__c == null ? '' :objAddressChange.Country_New__c)  ;
+                            + '\n'+ 'New Country:' + (objAddressChange.Country_New__c == null ? '' :objAddressChange.Country_New__c) +'\n'
+                            +'Record Type Updated:' + 'Card Records'+ '\n'
+                            +'Names:' + objAddressChange.Names__c;
                 }   
                 else if(objAddressChange.Update_Type__c =='Temp Mailing Address'){
                     caseobj.Subject = 'Temp Mailing Address Update';
@@ -133,8 +150,10 @@ trigger AddressChangeLogTrigger on AddressChangeLog__c (before insert, after ins
                             +'Old Expiration Date:' + objAddressChange.ExpirationDate_Old__c
                             + '\n'+ 'New Expiration Date:' + objAddressChange.ExpirationDate_New__c 
                             + '\n' +'Old Active Flag:' + objAddressChange.isActive_Old__c 
-                            + '\n'+ 'New Active Flag:' + objAddressChange.isActive_New__c ;
-                }   
+                            + '\n'+ 'New Active Flag:' + objAddressChange.isActive_New__c +'\n'
+                            +'Record Type Updated:' + 'Mail only Records'+ '\n'
+                            +'Names:' + objAddressChange.Names__c;
+                }
                 else if(objAddressChange.Update_Type__c =='Temp Mailing Address - New'){
                     caseobj.Subject = 'Temp Mailing Address Update';
                 caseobj.Description = 'Update Type:' + objAddressChange.Update_Type__c 
@@ -143,9 +162,11 @@ trigger AddressChangeLogTrigger on AddressChangeLog__c (before insert, after ins
                             + '\n'+ 'New State:' + (objAddressChange.State_New__c == null ? '' :objAddressChange.State_New__c) + '\n'
                             + 'New Zip:' + (objAddressChange.Zip_New__c == null ? '' :objAddressChange.Zip_New__c)                          
                             + '\n'+ 'New Expiration Date:' + objAddressChange.ExpirationDate_New__c                      
-                            + '\n'+ 'New Active Flag:' + objAddressChange.isActive_New__c  ;
+                            + '\n'+ 'New Active Flag:' + objAddressChange.isActive_New__c  +'\n'
+                            +'Record Type Updated:' + 'Mail only Records'+ '\n'
+                            +'Names:' + objAddressChange.Names__c;
                 }
-                else if(objAddressChange.Update_Type__c == 'New Card Mailing Address'){
+                /*else if(objAddressChange.Update_Type__c == 'New Card Mailing Address'){
                 	caseobj.Subject = 'New Card Mailing Address';
                 	caseobj.Description = 'Update Type:' + objAddressChange.Update_Type__c 
                              + '\n' + 'New Address:' + (objAddressChange.Address_New__c == null ? '' :objAddressChange.Address_New__c) + '\n'+                           
@@ -153,8 +174,11 @@ trigger AddressChangeLogTrigger on AddressChangeLog__c (before insert, after ins
                             + '\n'+ 'New State:' + (objAddressChange.State_New__c == null ? '' :objAddressChange.State_New__c) + '\n'
                             + 'New Zip:' + (objAddressChange.Zip_New__c == null ? '' :objAddressChange.Zip_New__c)                          
                             + '\n'+ 'New Expiration Date:' + objAddressChange.ExpirationDate_New__c                      
-                            + '\n'+ 'New Active Flag:' + objAddressChange.isActive_New__c  + '\n'+ 'New Country:' + (objAddressChange.Country_New__c == null ? '' :objAddressChange.Country_New__c);
-                }
+                            + '\n'+ 'New Active Flag:' + objAddressChange.isActive_New__c  + '\n'+ 'New Country:' + (objAddressChange.Country_New__c == null ? '' :objAddressChange.Country_New__c)
+							+'\n'
+                            +'Record Type Updated:' + 'Card Records'+ '\n'
+                            +'Names:' + objAddressChange.Names__c;
+                }*/
                 Id caseid;          
                 try{                
                        insert caseobj;
@@ -165,6 +189,11 @@ trigger AddressChangeLogTrigger on AddressChangeLog__c (before insert, after ins
                    System.debug('An error occured while inserting case :' + e);                 
                   } 
                 
+                
+                 // -------------------- Create Case for AddressChange..................//
+                 
+                 
+                  // --------------------- Attach multiple Accounts with case..................//
                  list<CaseAccountMemberDetail__c> listac = new List<CaseAccountMemberDetail__c>();  
                  objAddressChange.CaseId__c = caseid;
                 
@@ -180,36 +209,14 @@ trigger AddressChangeLogTrigger on AddressChangeLog__c (before insert, after ins
                 }
                 
                 insert listac;
-                     
+                
+                 // --------------------- Attach multiple Accounts with case..................//   
             }
      }
      
-    /* if(trigger.isafter && trigger.isInsert){
-     	for(AddressChangeLog__c objAddressChange: trigger.New)
-            {
-            	String accountstring = objAddressChange.AccountNumbersString__c;
-                List<String> listAccountNumber = accountstring.split('\\,');
-                set<string> setAccountNumbers = new set<string>();
-                list<Address_Change_Account__c> listac = new List<Address_Change_Account__c>();
-                               
-                for(String s: listAccountNumber){
-                	if(!String.isEmpty(s)){
-                		 Address_Change_Account__c objac =  new Address_Change_Account__c();
-                		 objac.Account_Name__c = s; 	
-                		 objac.AddressChangeLogId__c = 	objAddressChange.id;
-                		 listac.add(objac);
-                	}               	
-                	
-                }
-                
-                insert listac;
-            }
-     	
-     }*/
-    
-    
-    
-  /*  private void SendOTPEmail(string ToEmail)
+ // --------------------- Send Email Notification..................//   
+  
+     private void SendEmail(string ToEmail)
     {
         List<Messaging.SingleEmailMessage> mails = new List<Messaging.SingleEmailMessage>();
         Messaging.SingleEmailMessage mail = new Messaging.SingleEmailMessage();
@@ -239,7 +246,9 @@ trigger AddressChangeLogTrigger on AddressChangeLog__c (before insert, after ins
         Messaging.sendEmail(mails);
         
     }
-   
+    // --------------------- Send Email Notification..................//   
+    
+     // --------------------- Send SMS Notification..................//   
     
     private void SendSMS(string phone)
     {
@@ -263,5 +272,7 @@ trigger AddressChangeLogTrigger on AddressChangeLog__c (before insert, after ins
         smsObjectList.add(smsObject);
         Database.insert(smsObjectList, false);
        // LastOTPSent = System.Now();
-}*/
+}
+
+ // --------------------- Send SMS Notification..................//   
 }
