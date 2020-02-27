@@ -72,8 +72,7 @@ trigger CaseTrigger on Case (before insert, before update, after insert, after u
                
           } 
           
-          // --------------------- Insert "Hours" from "Custom Setting"  by passing case "Status" i.e Open, In-Progress and Resolution..................//
-           
+          // Code added by Mehul Parmar to escalate the case when specific hours after case stage updates based on custom setting - Start 
             List<Case> casesToUpdate = new List<Case>();
             for(Case c : Trigger.NEW){
                 if(Trigger.NEWMAP.get(c.Id).Status != null && Trigger.NEWMAP.get(c.Id).Primary_Category__c =='Complaint' && Trigger.OLDMAP.get(c.Id).Status != Trigger.NEWMAP.get(c.Id).Status){
@@ -85,8 +84,7 @@ trigger CaseTrigger on Case (before insert, before update, after insert, after u
             }
             
             
-            // --------------------- Insert "Hours" from "Custom Setting"  by passing case "Status" i.e Open, In-Progress and Resolution..................//
-              
+            // Code added by Mehul Parmar to escalate the case when specific hours after case stage updates based on custom setting - End  
         }
         
         if(IsOtherThanTaskCountFieldUpdated())
@@ -225,11 +223,10 @@ trigger CaseTrigger on Case (before insert, before update, after insert, after u
         }  
     }
 
-// --------------------- Insert "Hours" from "Custom Setting"  by passing case "Status" i.e Open, In-Progress and Resolution..................//
 
 public void updateEscalateAt(List<case> caseList)   {
 
-	List<Case> casesToUpdate = new List<Case>();
+  List<Case> casesToUpdate = new List<Case>();
     for(Case c : caseList){
         if(c.Status != null && c.Primary_Category__c == 'Complaint'){
             casesToUpdate.add(c);
@@ -240,11 +237,8 @@ public void updateEscalateAt(List<case> caseList)   {
         EscalateCaseController.checkAndEscalate(casesToUpdate);
     }
 
-}
 
-// --------------------- Insert "Hours" from "Custom Setting"  by passing case "Status" i.e Open, In-Progress and Resolution..................//
-
-    
+}    
 public void updateBranchRegion(List<case> caseList)   { 
     
     set<Id> accDetailIds = new set<Id>();
