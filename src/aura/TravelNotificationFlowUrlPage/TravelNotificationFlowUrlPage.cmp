@@ -1,0 +1,33 @@
+<aura:component  implements="flexipage:availableForAllPageTypes,force:appHostable,force:hasRecordId,force:lightningQuickActionWithoutHeader,force:hasSObjectName" controller="OOWAccountNumber" >
+	<aura:handler value="{!this}" name="init" action="{!c.doInit}" />
+    <aura:attribute name= "status" type="string" default="In Process"/>
+    <aura:attribute name= "reason" type="string" />
+    <aura:attribute name= "notes" type="string" />
+    <aura:attribute name="sobjecttype" type="String" default="{!v.sObjectName}"/>
+    <aura:attribute name="AccountNumber" type="String" />
+    
+    <header class="slds-modal__header" id="oowServices" >
+       
+        <h2 id="modal-heading-01" class="slds-text-heading_medium slds-hyphenate">Travel Notification Flow Services</h2> 
+    </header>
+    <div style="min-height:80px !important; max-height:200px !important;">
+        <div id='msgdiv'> 
+        
+            <div class="slds"> 
+
+	   				 
+        		</div>
+            
+            
+           
+        
+        </div>
+        <div style="margin-top: 450px;">
+            
+            <footer class="slds-modal__footer" id="OTPVerificationPageFooter">
+                <button class="slds-button slds-button_neutral" onclick="{!c.closePopup}">Close</button>       
+            </footer> 
+        
+        </div>
+   </div>
+</aura:component>
