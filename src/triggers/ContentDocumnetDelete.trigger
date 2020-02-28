@@ -2,9 +2,12 @@ trigger ContentDocumnetDelete on ContentDocument (before delete, before insert) 
     
 	List<Approve_Attachment__c> toupdateApproveAttachment  = new List<Approve_Attachment__c>();    
     Map<id,ContentDocumentLink> attachmentDetails = new Map<id,ContentDocumentLink >();
+    set<Id> attachmentIdsForSolarLoan = new set<Id>();
+    
     if(Trigger.isDelete && Trigger.isBefore){  	
     	system.debug('Content document link delete');
         for(ContentDocument d : Trigger.old){
+        	attachmentIdsForSolarLoan.add(d.id);
             system.debug('Document ID - ' + d.Id);
             system.debug('d - ' + d);
             List<ContentDocumentLink> lstContentDocumentLinks = [select Id,LinkedEntityId, ContentDocumentId, ContentDocument.Title, ContentDocument.FileType from ContentDocumentLink where ContentDocumentId =: d.Id];           
@@ -30,6 +33,15 @@ trigger ContentDocumnetDelete on ContentDocument (before delete, before insert) 
             }
                        
         }
+        
+        // ----------------------------Start Deleting an Attachment detail in "Solar Loan Document" object--------------------------------------------------//
+        
+        List<SolarLoan_Document__c> solarLoanAttachmentsList = [select id from SolarLoan_Document__c where Attachment_Id__c IN : attachmentIdsForSolarLoan];
+         if(!solarLoanAttachmentsList.isEmpty()){
+            system.debug('In If :: ');
+            delete solarLoanAttachmentsList;
+        }
+        // ----------------------------Start Deleting an Attachment detail in "Solar Loan Document" object--------------------------------------------------//
         
         List<Approve_Attachment__c> ApproveAttachment = [select id,Attachment_Name__c,ContentDocumentLinkId__c  from Approve_Attachment__c where ContentDocumentLinkId__c IN : attachmentDetails.keySet()];
         system.debug('Approve Attchment size - ' + ApproveAttachment.size());
