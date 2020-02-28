@@ -22,10 +22,13 @@ trigger AttachmentNameUpdate on Attachment (after update,after delete,after inse
         set<Id> notClosedCaseSet = (new Map<Id,Case>([select id from case where ID IN: parent and status != 'Closed'])).keySet();
         set<Id> notClosedCaseMemberComment = (new Map<Id,Member_Comment__c>([select id from Member_Comment__c where Id IN: parent and Case__r.status != 'Closed'])).keySet();
         set<Id> attachmentIdsForOnbase = new set<Id>();
+        set<Id> attachmentIdsForSolarLoan = new set<Id>();
+        
         for(Attachment a : Trigger.old){
             if(notClosedCaseSet.Contains(a.ParentId) || notClosedCaseMemberComment.Contains(a.ParentId)){
                 attachmentIdsForOnbase.add(a.id);
             }
+            attachmentIdsForSolarLoan.add(a.id);
         }
         
         
@@ -34,10 +37,16 @@ trigger AttachmentNameUpdate on Attachment (after update,after delete,after inse
         
         
         List<OnBase_Document__c> onbaseAttachmentsList = [select id from OnBase_Document__c where Attachment_Id__c IN : attachmentIdsForOnbase];
+        List<SolarLoan_Document__c> solarLoanAttachmentsList = [select id from SolarLoan_Document__c where Attachment_Id__c IN : attachmentIdsForSolarLoan];
+        
         system.debug('onbaseAttachmentsList :: '+onbaseAttachmentsList);
         if(!onbaseAttachmentsList.isEmpty()){
             system.debug('In If :: ');
             delete onbaseAttachmentsList;
+        }
+        if(!solarLoanAttachmentsList.isEmpty()){
+            system.debug('In If :: ');
+            delete solarLoanAttachmentsList;
         }
     }
     
@@ -91,7 +100,9 @@ trigger AttachmentNameUpdate on Attachment (after update,after delete,after inse
     
     
     if(Trigger.isInsert && Trigger.isAfter){
-        List<OnBase_Document__c> onbaseAttachmentsList  = new List<OnBase_Document__c>();   
+        List<OnBase_Document__c> onbaseAttachmentsList  = new List<OnBase_Document__c>();
+        List<SolarLoan_Document__c> solarLoanAttachmentsList  = new List<SolarLoan_Document__c>();
+           
         List<string> Caseids = new List<string>();
         List<string> memberCommentids = new List<string>();
         
@@ -139,6 +150,9 @@ trigger AttachmentNameUpdate on Attachment (after update,after delete,after inse
           
             Schema.SObjectType objType = a.ParentId.getsobjecttype();
             system.debug('a.Parent.Type12 :: '+ a.parentid.getsobjecttype());
+            
+            // ----------------------------Start Adding an Attachment detail in "Onbase Document" object--------------------------------------------------//
+            
             if(objType == Case.sObjectType || objType == Member_Comment__c.sObjectType){
                 OnBase_Document__c onbaseObj = new OnBase_Document__c();
                 onbaseObj.Attachment_Id__c = a.id;
@@ -167,17 +181,32 @@ trigger AttachmentNameUpdate on Attachment (after update,after delete,after inse
                 
                 
                 }
-               
-                //onbaseObj.Name = a.Name;
-             
-                
                 onbaseObj.Attachment_Owner__c = a.OwnerId;
                 onbaseObj.Attachment_Created_On__c = a.CreatedDate;
                 
-                              
-                
                 onbaseAttachmentsList.add(onbaseObj);
             }
+            // ---------------------------- End Adding an Attachment detail in "Onbase Document" object--------------------------------------------------//
+            
+            
+            // ----------------------------Start Adding an Attachment detail in "Solar Loan Document" object--------------------------------------------------//
+            
+            if(objType == Solar_Loans__c.sObjectType){
+	            
+	            SolarLoan_Document__c solarLoanObj = new SolarLoan_Document__c();
+	            solarLoanObj.Attachment_Id__c = a.id;
+	            solarLoanObj.IsMovedToOnBase__c = false;
+	            solarLoanObj.Document_Type__c = 'Solar Loan Documents';
+	            solarLoanObj.Document_Name__c = a.Name;
+                solarLoanObj.Solar_Loans__c = a.ParentId;
+                solarLoanObj.Attachment_Owner__c = a.OwnerId;
+                solarLoanObj.Attachment_Created_On__c = a.CreatedDate;
+            
+            	solarLoanAttachmentsList.add(solarLoanObj);
+            	
+            	}
+            
+            // ---------------------------- End Adding an Attachment detail in "Solar Loan Document" object--------------------------------------------------//
         }
         
         
@@ -198,6 +227,7 @@ trigger AttachmentNameUpdate on Attachment (after update,after delete,after inse
         }
         update listCasetoReopened;
         insert (onbaseAttachmentsList);
+        insert (solarLoanAttachmentsList);
     }
     
     
