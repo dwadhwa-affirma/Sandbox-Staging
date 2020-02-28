@@ -1,3 +1,4 @@
+/* Created by Dhwani Bhavsar to send Travel Notification Emails/SMS if it is created from Boomi Flow*/
 public class CaseTriggerHandler {
 
 	public void AfterUpdateMCSendNotification(Case[] newCases)
@@ -46,7 +47,7 @@ public class CaseTriggerHandler {
 				
 	}
     
-    
+ /* ------------- Send Email Notification ------------------------*/   
     public void SendTravelNotificationEmail(Id accId, date FromDate, date ToDate, string MemberAccountIdforEmail, string Email, string CaseId){
     	system.debug('Inside SendTravelNotificationEmail');
     	system.debug('FromDate:'+ FromDate);
@@ -123,6 +124,8 @@ public class CaseTriggerHandler {
     
     }
     
+    
+     /* ------------- Send SMS Notification ------------------------*/   
     public void SendTravelNotificationSMS(Id accId, date FromDate, date ToDate, string MemberAccountIdforEmail, string PhoneNo, string CaseId)
     {
       string smstext='';
@@ -177,6 +180,8 @@ public class CaseTriggerHandler {
       }     
     }
     
+    
+     /* ------------- Get Travel Dates' range to append in Notification Email/SMS ------------------------*/   
     public map<string,date> getStartEndDates(List<Mastercard_Travel__c> listMCObj){
     	map<string, date> returnDateMap = new map<string,date>();
     	date minFromdate, maxTodate;
@@ -197,6 +202,8 @@ public class CaseTriggerHandler {
     	return returnDateMap;
     }
     
+    
+     /* ------------- Add Notification Confirmation------------------------*/   
     public void addTravelNotificationConfirmation(string CaseId, string Message, string MessageBody, boolean isSuccess){
      	List<Mastercard_Travel__c> listMCObj = [SELECT ID, CardId__c, Case__c, Email__c, US_Mobile_Number__c, IsEmailPreferred__c,IsPhonePreferred__c  from Mastercard_Travel__c where case__c  =: CaseId];
      	
