@@ -28,8 +28,7 @@ trigger CaseTrigger on Case (before insert, before update, after insert, after u
             updateAccountNumberfromSubject(Trigger.new);
             updateSurveyCase(Trigger.new); 
             updateBranchRegion(Trigger.new);
-            updateEscalateAt(Trigger.new);
-           
+   
         }
         if (Trigger.isUpdate) {
           if(IsOtherThanTaskCountFieldUpdated())
@@ -72,19 +71,6 @@ trigger CaseTrigger on Case (before insert, before update, after insert, after u
                
           } 
           
-          // Code added by Mehul Parmar to escalate the case when specific hours after case stage updates based on custom setting - Start 
-            List<Case> casesToUpdate = new List<Case>();
-            for(Case c : Trigger.NEW){
-                if(Trigger.NEWMAP.get(c.Id).Status != null && Trigger.NEWMAP.get(c.Id).Primary_Category__c =='Complaint' && Trigger.OLDMAP.get(c.Id).Status != Trigger.NEWMAP.get(c.Id).Status){
-                    casesToUpdate.add(c);
-                }
-            }
-            if(casesToUpdate.size() > 0){
-                EscalateCaseController.checkAndEscalate(casesToUpdate);
-            }
-            
-            
-            // Code added by Mehul Parmar to escalate the case when specific hours after case stage updates based on custom setting - End  
         }
         
         if(IsOtherThanTaskCountFieldUpdated())
@@ -132,7 +118,8 @@ trigger CaseTrigger on Case (before insert, before update, after insert, after u
             
             insertCaseTask(Trigger.new);
             CaseAssign(Trigger.new);
-             updateSLAField(Trigger.new);   
+             updateSLAField(Trigger.new);           
+             
         }
         if(Trigger.isUpdate){
         //   surveyCaseValidation(Trigger.old);
@@ -184,35 +171,7 @@ trigger CaseTrigger on Case (before insert, before update, after insert, after u
             
             
             UpdateCaseSLABreached(caselistforbreached);
-        }
-        /*if(casehistorylist.size() > 0)
-        {
-            for(Casehistory ch : casehistorylist)
-            {
-                casehistorymap.put(ch.Caseid, ch);
-                
-                    for (Case c : Trigger.new)
-                    {
-                        
-                            system.debug('case##'+ c);
-                            Case oldCase = Trigger.oldMap.get(c.Id);
-                            system.debug('oldcase##'+ oldCase);
-                            system.debug('oldcaseid##'+ oldCase.id);
-                            system.debug('ch.caseid ##'+ ch.caseid );
-                            system.debug('ch.NewValue##'+ ch.NewValue);
-                            system.debug('SLABreached'+ oldCase.isSLABreached__c);
-                            if(oldCase.id == ch.caseid && ch.NewValue == true && oldCase.isSLABreached__c == false)
-                            {
-                                system.debug('case##'+ oldCase);
-                                caselistforbreached.add(c);
-                            }
-                        
-                    }
-                
-            }
-            
-            UpdateCaseSLABreached(caselistforbreached);
-        }*/
+        }       
 
         for (Case c : Trigger.new) {
                 Case oldCase = Trigger.oldMap.get(c.Id);
@@ -220,25 +179,19 @@ trigger CaseTrigger on Case (before insert, before update, after insert, after u
                     updateCaseRecordType(c);
                 }
             }
+             /* Code Added by Dhwani Bhavsar to send Travel Notification Emails/SMS if it is created from Boomi Flow*/
+              for (Case c : Trigger.new){
+              	 Case oldCase = Trigger.oldMap.get(c.Id);              	
+              	if(c.Primary_Category__c == 'Card Services' && c.Secondary_Category__c == 'ATM-Debit' && c.Tertiary_Category__c == 'Travel Notification' && (String.isBlank(oldCase.Description) && !String.isBlank(c.Description))){         		
+    			
+    				CaseTriggerHandler handler = new CaseTriggerHandler();
+    				handler.AfterUpdateMCSendNotification(Trigger.new);
+              	}
+              }
+             /* Code Added by Dhwani Bhavsar to send Travel Notification Emails/SMS if it is created from Boomi Flow*/
         }  
     }
-
-
-public void updateEscalateAt(List<case> caseList)   {
-
-  List<Case> casesToUpdate = new List<Case>();
-    for(Case c : caseList){
-        if(c.Status != null && c.Primary_Category__c == 'Complaint'){
-            casesToUpdate.add(c);
-        }
-    }
-    system.debug('casesToUpdate'+casesToUpdate);
-    if(casesToUpdate.size() > 0){
-        EscalateCaseController.checkAndEscalate(casesToUpdate);
-    }
-
-
-}    
+   
 public void updateBranchRegion(List<case> caseList)   { 
     
     set<Id> accDetailIds = new set<Id>();
