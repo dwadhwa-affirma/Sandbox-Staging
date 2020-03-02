@@ -4,6 +4,8 @@
  * support API 41.0 and above
  */
 ({
+   
+  
    openModel: function(component, event, helper) {
     // for Display Model,set the "isOpen" attribute to "true"*****
       component.set("v.isOpen", true);
@@ -49,14 +51,15 @@
             var action = component.get("c.GenerateRandomOTP");
 	        var recordid = component.get("v.recordId");
 	        var GUID = component.get("v.GUID");
-	        var parameters = {"BrandName": Brand,"fieldName" : selectedOTPSendOption,  "resend" : "false", "accid": recordid, "GUID" : GUID };
+	        var IVRGUIDFromUrl = component.get("v.IVRGUIDFromUrl");
+	        var parameters = {"BrandName": Brand,"fieldName" : selectedOTPSendOption,  "resend" : "false", "accid": recordid, "GUID" : GUID,"IVRGUIDFromUrl": IVRGUIDFromUrl };
             action.setParams(parameters);
             action.setCallback(this, function(response){
             	var status = response.getState();
             	if(component.isValid() && status === "SUCCESS")
             	{
             		var result =  response.getReturnValue();
-            		debugger;
+            		
             		component.set("v.keyModel", result);
             	}
             	component.set("v.currentStep", "2");
@@ -103,62 +106,89 @@
     },
     
     doInit : function(component, event, helper) {
-   
-   window.addEventListener("keydown", function(event) {
+    	debugger;
+    	var params = event.getParam('arguments');
+    	var IsReLoadRequired ;
+		if (params) {
+			IsReLoadRequired =  params.param2;
+			component.set("v.IsReLoadRequired", IsReLoadRequired);
+			}
+    	
+    	var recordid = component.get("v.recordId");
+        var GUID = component.get("v.GUID");
+        var IVRGUIDFromUrl = component.get("v.IVRGUIDFromUrl");
+        var IsCallingfromAuth = component.get("v.IsCallingfromAuth");
+        window.addEventListener("keydown", function(event) {
             var kcode = event.code;
             if(kcode == 'Escape'){
               event.preventDefault();
                 event.stopImmediatePropagation();
             }
         }, true);
-		var action = component.get("c.ListOfEmailsAndPhoneNumbers");
-        var recordid = component.get("v.recordId");
-        var GUID = component.get("v.GUID");
-        var IsCallingfromAuth = component.get("v.IsCallingfromAuth");
-        action.setParams({"accid" : recordid , "IsAuth" : IsCallingfromAuth, "GUID" : GUID});
-		action.setCallback(this, function(response){
+        
+        if(IsReLoadRequired == true)
+    	{
+    		var action = component.get("c.GetOTPLogForReload");
+    		action.setParams({"memberid" : recordid ,"IVRGUIDFromUrl": IVRGUIDFromUrl });
+    		action.setCallback(this, function(response){
             
-			var status = response.getState();
-			if(component.isValid() && status === "SUCCESS")
-			{
-				var result =  response.getReturnValue();
-                debugger;
-				component.set("v.Model", result);
-				if(result.IsIneligible == 'true')
-				{
-					component.set("v.currentStep", "3");
-					component.set("v.verified", "Changed");
-					var compEvent = component.getEvent("statusEvent");
-		            compEvent.setParams({"OTPVarifiedStatus" : "Changed","ActionType": 'OTP'});
-	  			    compEvent.fire();                	
-				}
-                if(result.PhoneList_Options.length == 0 && result.EmailsList_Options.length == 0)
-                {
-                	component.set("v.currentStep", "3");
-                	component.set("v.verified", "NoContactInfo");     
-                	var compEvent = component.getEvent("statusEvent");
-		            compEvent.setParams({"OTPVarifiedStatus" : "NoContactInfo","ActionType": 'OTP'});
-	  			    compEvent.fire();           	
-                } 
-                else
-				{
-                  setTimeout(function(){   var ele = document.getElementsByName("others");
-	               for(var i=0;i<ele.length;i++)
-	                  ele[i].checked = false; }, 3000);
-                }                
-               component.set("v.loading", 'false');
-               debugger;
-               /* var footer = document.getElementById('OTPVerificationPageFooter');
-        		var body = helper.closest(footer,'.modal-container');
-        		body.append(footer);
-        		footer.previousSibling.remove();
-        		footer.parentNode.setAttribute('id','OTPVerificationPopup');*/
-			}
-		});
+    			var status = response.getState();
+    			if(component.isValid() && status === "SUCCESS")
+    			{
+    				var result =  response.getReturnValue();
+    				if(result.Verified != undefined && result.Verified.length > 0)
+    				{
+    					component.set("v.verified", result.Verified);
+    					component.set("v.currentStep", "3");
+    				}
+    			}
+			});
 		 
-		$A.enqueueAction(action);
-		component.set("v.loading", 'true');
-		
+    		$A.enqueueAction(action);
+    	}
+    	else
+    	{
+				var action = component.get("c.ListOfEmailsAndPhoneNumbers");
+		       
+		        action.setParams({"accid" : recordid , "IsAuth" : IsCallingfromAuth, "GUID" : GUID, "IVRGUIDFromUrl": IVRGUIDFromUrl });
+				action.setCallback(this, function(response){
+		            
+					var status = response.getState();
+					if(component.isValid() && status === "SUCCESS")
+					{
+						var result =  response.getReturnValue();
+		               	component.set("v.Model", result);
+						if(result.IsIneligible == 'true')
+						{
+							component.set("v.currentStep", "3");
+							component.set("v.verified", "Changed");
+							var compEvent = component.getEvent("statusEvent");
+				            compEvent.setParams({"OTPVarifiedStatus" : "Changed","ActionType": 'OTP'});
+			  			    compEvent.fire();                	
+						}
+		                if(result.PhoneList_Options.length == 0 && result.EmailsList_Options.length == 0)
+		                {
+		                	component.set("v.currentStep", "3");
+		                	component.set("v.verified", "NoContactInfo");     
+		                	var compEvent = component.getEvent("statusEvent");
+				            compEvent.setParams({"OTPVarifiedStatus" : "NoContactInfo","ActionType": 'OTP'});
+			  			    compEvent.fire();           	
+		                } 
+		                else
+						{
+		                  setTimeout(function(){   var ele = document.getElementsByName("others");
+			               for(var i=0;i<ele.length;i++)
+			                  ele[i].checked = false; }, 3000);
+		                }                
+		               component.set("v.loading", 'false');
+		              
+		               
+					}
+				});
+				 
+				$A.enqueueAction(action);
+				component.set("v.loading", 'true');
+		}
 	},
 	
 	 declineAtFirstStep : function(component, event, helper) {
@@ -166,7 +196,8 @@
 		var action = component.get("c.DeclineOTPAtFirstStep");
         var recordid = component.get("v.recordId");
         var GUID = component.get("v.GUID");
-        action.setParams({"accid" : recordid, "GUID" : GUID});
+        var IVRGUIDFromUrl = component.get("v.IVRGUIDFromUrl");
+        action.setParams({"accid" : recordid, "GUID" : GUID,"IVRGUIDFromUrl": IVRGUIDFromUrl});
 		action.setCallback(this, function(response){
             
 			var status = response.getState();
@@ -189,33 +220,21 @@
 	 resendOTP : function(component, event, helper) {
          component.set("v.currentStep", "1");
          component.set("v.selectedValue", "");
-		 /*var selectedOTPSendOption = component.get("v.selectedValue");
-            var Brand = component.get("v.Model.Brand");
-            
-            var action = component.get("c.GenerateRandomOTP");
-	        var recordid = component.get("v.recordId");
-	        var parameters = {"BrandName": Brand,"fieldName" : selectedOTPSendOption,  "resend" : "true", "accid": recordid };
-            action.setParams(parameters);
-            action.setCallback(this, function(response){
-            	component.set("v.currentStep", "2");
-            	component.set("v.loading", 'false');
-            });
-            
-            $A.enqueueAction(action);
-            component.set("v.loading", 'true');*/
+		
 	},
 	clickverifyOTP:  function(component, event, helper) {
 		var action = component.get("c.verifyOTP");
 		var keyModel = component.get("v.keyModel");		
-		 var recordid = component.get("v.recordId");
-		 var EnteredOTP= component.get("v.EnteredOTP");
-		 var GUID= component.get("v.GUID");
+		var recordid = component.get("v.recordId");
+		var EnteredOTP= component.get("v.EnteredOTP");
+		var GUID= component.get("v.GUID");
+		var IVRGUIDFromUrl = component.get("v.IVRGUIDFromUrl"); 
 		 
 		 if(EnteredOTP)
 		 {
 			  component.set('v.InputRequired',false);
 			 var selectedOTPSendOption = component.get("v.selectedValue");
-			 action.setParams({"accid" : recordid, "EnteredOTP": EnteredOTP,"fieldName": selectedOTPSendOption, "model": JSON.stringify(keyModel), "GUID" : GUID});		 
+			 action.setParams({"accid" : recordid, "EnteredOTP": EnteredOTP,"fieldName": selectedOTPSendOption, "model": JSON.stringify(keyModel), "GUID" : GUID,"IVRGUIDFromUrl": IVRGUIDFromUrl});		 
 			 action.setCallback(this, function(response){
 	            
 				var status = response.getState();
@@ -299,9 +318,10 @@
 	 var selectedOTPSendOption = component.get("v.selectedValue");
 	 var action = component.get("c.CancelOTP");
 	 var GUID = component.get("v.GUID");
+	 var IVRGUIDFromUrl = component.get("v.IVRGUIDFromUrl");  
 	 if(selectedOTPSendOption)
 	 {
-		  action.setParams({"accid" : recordid, "GUID" : GUID, "fieldName": selectedOTPSendOption});
+		  action.setParams({"accid" : recordid, "GUID" : GUID, "fieldName": selectedOTPSendOption,"IVRGUIDFromUrl": IVRGUIDFromUrl});
 	 }
 	 else
 		  action.setParams({"accid" : recordid, "fieldName": ''});

@@ -26,6 +26,7 @@
 			           				<th class="" scope="col"><div class="slds-truncate" title="Decision">Decision</div></th>
 			           				<th class="" scope="col"><div class="slds-truncate" title="Case #">Case #</div></th>
 			           				<th class="" scope="col"><div class="slds-truncate" title="Comment">Comment</div></th>
+			           				<th class="" scope="col"><div class="slds-truncate" title="FDL">Failed Desired Level</div></th>
 			           				<th class="" scope="col"><div class="slds-truncate" title="Override Request Type">Override Request Type</div></th>
 			           				<th class="" scope="col"><div class="slds-truncate" title="Override Requested Supervisor">Override Requested Supervisor</div></th>
 			           				<th class="" scope="col"><div class="slds-truncate" title="Debit/Pin">Debit/Pin</div></th>
@@ -66,7 +67,9 @@
       										<td data-label="Comment">
       											  <div class="slds-truncate" title="Comment">{!item.CaseComment}</div>
       										</td>
-      										
+      										<td data-label="FDL">
+      											  <div class="slds-truncate" title="FDL">{!item.FDL}</div>
+      										</td>
       										<td data-label="OverrideRequestType">
       											  <div class="slds-truncate" title="OverrideRequestType">{!item.OverrideRequestType}</div>
       										</td>

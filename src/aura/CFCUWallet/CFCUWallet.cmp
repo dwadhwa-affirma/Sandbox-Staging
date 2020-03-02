@@ -10,13 +10,22 @@
 	<aura:attribute name="IsRelationshipDataAvailable" type="Boolean" default="false"/>
 	<aura:attribute name="IsCardDetailsAvailable" type="Boolean" default="false"/>
 	<aura:attribute name="GUID" type="string"/>
+	<aura:attribute name="IVRGUIDFromUrl" type="string" />
 	<aura:attribute name="IsCFCUSectionVisible" type="Boolean"/>
 	<aura:attribute name="QuestionAttempt" type="Integer" default="0"/>
 	<aura:attribute name="IsSubmitClicked" type="boolean" default="false"/>
 	<aura:attribute name="CFCUWalletStatusForDay" type="boolean" default="true"/>
-	
-	<aura:method name="CFCUWalletMethod" action="{!c.doInit}" access="PUBLIC"> 
+	<aura:attribute name="BeneficiaryDetailMatch" type="String"/>
+	<aura:attribute name="JointOwnerDetailMatch" type="String"/>
+	<aura:attribute name="CardNumberMatch" type="String"/>
+	<aura:attribute name="AdditionalTokenOption1Match" type="String"/>
+	<aura:attribute name="AdditionalTokenOption2Match" type="String"/>
+	<aura:attribute name="LoanDetailMatch" type="String"/>
+	<aura:attribute name="CFCULastSessionInfo" type="object[]"/>
+	<aura:attribute name="IsReLoadRequired" type="boolean" default="false"/> 
+	<aura:method name="CFCUWalletMethod" action="{!c.executeMethod}" access="PUBLIC"> 
     	<aura:attribute name="param1" type="String"/>  
+    	<aura:attribute name="param2" type="boolean"/> 
 	</aura:method>
 	<aura:registerEvent name="statusEvent" type="c:MemberIdEvent" />
 	 
@@ -104,7 +113,7 @@
       				</div>		
 			       		<div class="RightDiv">
 				       		<div class="CenterDiv">
-						      	<lightning:button variant="brand" label="Submit Answers" onclick="{! c.ButtonClick }" aura:id="SubmitButton" disabled = "{!v.CFCUWalletStatusForDay == false}"/>
+						      	<lightning:button variant="brand" label="Submit 3 Answers" onclick="{! c.ButtonClick }" aura:id="SubmitButton" disabled = "{!v.CFCUWalletStatusForDay == false}"/>
 				      	 	</div>	
 			      	 	</div>	
 	       			</div>

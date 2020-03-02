@@ -6,13 +6,51 @@
 		var PhoneNumber = component.get("v.PhoneFromURL");
 	    var MemberNumber = component.get("v.MemberNumberFromURL");
 	    var SSNNumber = component.get("v.SSNFromURL");
-	    
-	    helper.getMemberSearch(component, event,PhoneNumber,MemberNumber,SSNNumber,'');
+	    var IVRGUIDFromUrl =  component.get("v.IVRGUIDFromUrl");
+	    helper.getMemberSearch(component, event,PhoneNumber,MemberNumber,SSNNumber,IVRGUIDFromUrl);
 	   
 		},
-
+		
+		onRender : function (component, event, helper) {
+	        
+	        var memberid = component.get("v.ReMemberId");
+	        var IVRGUIDFromUrl =  component.get("v.IVRGUIDFromUrl");
+	        var GUID =  component.get("v.GUID");
+	        var attribute1 = memberid;
+	        var ReLoadRequired = component.get("v.ReLoadRequired");
+	        if(ReLoadRequired != undefined && memberid != undefined && component.get("v.IsReLoaded") ==false){
+	        
+	        	var element = document.getElementById(memberid);
+	        	element.checked = true;
+	        	component.set("v.IsRightDivVisible", true);
+	        	var DebitCardStatus = component.get("v.DebitCardStatus");
+				helper.MemberVerificationAttemptCheck(component, event, helper, memberid, DebitCardStatus, ReLoadRequired);
+				component.set("v.IsReLoaded", true);
+				component.set("v.SelectedmemberId",memberid);
+				
+	        }
+	        
+	        if(ReLoadRequired == true){	
+	        	
+	        	var PublicWalletComponent = component.find('PublicWallet');
+		        if(PublicWalletComponent!=undefined)PublicWalletComponent.PublicWalletMethod(attribute1,ReLoadRequired);
+		            
+		        var CFCUWalletComponent = component.find('CFCUWallet');		        
+		        if(CFCUWalletComponent!=undefined)CFCUWalletComponent.CFCUWalletMethod(attribute1,ReLoadRequired);
+		        
+		        var OTPComponent = component.find('OTPAuthentication');		        
+		        if(OTPComponent!=undefined)OTPComponent.OTPMethod(attribute1,ReLoadRequired); 
+		              	            
+		        helper.GetReloadData(component, event, helper, memberid, GUID, IVRGUIDFromUrl);	
+		    }
+		},
+		
+			
 		MemberCompEvent : function(component, event, helper){
+		var IVRGUIDFromUrl = component.get("v.IVRGUIDFromUrl");
+		var ReLoadRequired = component.get("v.ReLoadRequired");
 		var MaximumPointsAvailable = component.get("v.MaximumPointsAvailable");
+		var PointsObtained = component.get("v.PointObtained");
 		var IsKYMAvailable = component.get("v.IsKYMAvailableOnLoad");
 	    var IsOTPAvailable = component.get("v.IsOTPAvailableOnLoad");
 	    var IsDebitPinAvailable = component.get("v.IsDebitPinAvailableOnLoad");
@@ -102,14 +140,12 @@
     	var RangeEnd = component.get("v.RangeEnd");
     	var CurrentLevelRangeStart = component.get("v.CurrentLevelRangeStart");
     	var CurrentLevelRangeEnd = component.get("v.CurrentLevelRangeEnd");
-    	var PointsObtained = component.get("v.PointObtained");
 		var element = document.getElementsByClassName('demo-only slds-box rightBox');
 		var aElement;
 		var liElement = element[2].getElementsByClassName("slds-tabs_default__item");
 		var GUID = component.get("v.GUID");
 		var OTPCancellAttept;
 		var isDebitPinCalculated = component.get("v.isDebitPinCalculated");
-		
 		if(isDebitPinCalculated == false && DebitCardStatus == 'true' )
 		 {
 				 PointsObtained = parseInt(PointsObtained) + parseInt(DebitPinPositivePoint);
@@ -126,42 +162,8 @@
 		{
 			 aElement = liElement[i].firstElementChild;
 			 if(eventParam == "Cancelled" && aElement.id =='OTPTab__item'){			  
-				component.set("v.OTPMessage",'YES');
-				
-	  			var action = component.get("c.SaveOTPCancelledAttempt");
-	  			action.setParams({"MemberId": memberid, "GUID": GUID});
-	  			action.setCallback(this, function (response) {
-	  				var status = response.getState();            
-	  				if (component.isValid() && status === "SUCCESS") {
-	  					var result = response.getReturnValue();
-                    	                    	
-                  }
-                	
-			});	
-   
-	  			$A.enqueueAction(action); 
-	  			
-	  			helper.MemberVerificationAttemptCheck(component, event, helper, memberid,  DebitCardStatus);
-	  			OTPCancellAttept = component.get("v.OTPCancellAttept");
-	  			if(OTPCancellAttept == 1)
-				{
-					component.set('v.OTPIconName','utility:close');
-					MaximumPointsAvailable = parseInt(MaximumPointsAvailable) - parseInt(ScoreModelPositiveScore);
-					IsOTPAvailable = false;
-	  			}
-	  			else
-	  			{
-	  				component.set('v.OTPIconName','utility:help');
-	  				IsOTPAvailable = true;
-	  			}
-	  			 
-	  			
-	  			
 	  			component.set("v.IsOTPAvailableOnLoad",IsOTPAvailable);
-	  			
 	  			helper.GetNextAuthenticationType(component, event, helper, memberid, MemberType, MaximumPointsAvailable, PointsObtained, IsKYMAvailable, IsOTPAvailable, IsDebitPinAvailable, IsOOWAvailable, IsPublicWalletAvailable, IsCFCUWalletAvailable);
-	  			
-	  			
 			}
 			if(eventParam == "Authenticated" && aElement.id =='OTPTab__item'){
 				liElement[i].classList.add("green");
@@ -172,7 +174,6 @@
 	  			component.set("v.IsOTPAvailableOnLoad",IsOTPAvailable);
 	  			component.set("v.OTPStatusForDay",true);
 	  			helper.GetNextAuthenticationType(component, event, helper, memberid, MemberType, MaximumPointsAvailable, PointsObtained, IsKYMAvailable, IsOTPAvailable, IsDebitPinAvailable, IsOOWAvailable, IsPublicWalletAvailable, IsCFCUWalletAvailable);
-	  			
 			}
 			if(eventParam == "Valid" && aElement.id =='OTPTab__item'){
 				liElement[i].classList.add("green");
@@ -182,7 +183,6 @@
 	  			IsOTPAvailable = false;
 	  			component.set("v.IsOTPAvailableOnLoad",IsOTPAvailable);
 	  			component.set("v.OTPStatusForDay",true);
-	  			
 	  			helper.GetNextAuthenticationType(component, event, helper, memberid, MemberType, MaximumPointsAvailable, PointsObtained, IsKYMAvailable, IsOTPAvailable, IsDebitPinAvailable, IsOOWAvailable, IsPublicWalletAvailable, IsCFCUWalletAvailable);
 			}
 			if(eventParam == "Declined" && aElement.id =='OTPTab__item'){
@@ -192,7 +192,6 @@
 	  			IsOTPAvailable = false;
 	  			component.set("v.IsOTPAvailableOnLoad",IsOTPAvailable);
 	  			helper.GetNextAuthenticationType(component, event, helper, memberid, MemberType, MaximumPointsAvailable, PointsObtained, IsKYMAvailable, IsOTPAvailable, IsDebitPinAvailable, IsOOWAvailable, IsPublicWalletAvailable, IsCFCUWalletAvailable);
-	  			
 			}
 			if(eventParam == "Changed" && aElement.id =='OTPTab__item'){
 				liElement[i].classList.add("red");
@@ -201,7 +200,6 @@
 	  			IsOTPAvailable = false;
 	  			component.set("v.IsOTPAvailableOnLoad",IsOTPAvailable);
 	  			helper.GetNextAuthenticationType(component, event, helper, memberid, MemberType, MaximumPointsAvailable, PointsObtained, IsKYMAvailable, IsOTPAvailable, IsDebitPinAvailable, IsOOWAvailable, IsPublicWalletAvailable, IsCFCUWalletAvailable);
-	  			
 			}
 			if(eventParam == "Invalid" && aElement.id =='OTPTab__item'){
 				liElement[i].classList.add("red");
@@ -209,7 +207,7 @@
 	  			MaximumPointsAvailable = parseInt(MaximumPointsAvailable) - parseInt(ScoreModelNegativeScore);
 	  			IsOTPAvailable = false;
 	  			component.set("v.IsOTPAvailableOnLoad",IsOTPAvailable);
-	  			helper.GetNextAuthenticationType(component, event, helper, memberid, MemberType, MaximumPointsAvailable, PointsObtained, IsKYMAvailable, IsOTPAvailable, IsDebitPinAvailable, IsOOWAvailable, IsPublicWalletAvailable, IsCFCUWalletAvailable); 
+	  			helper.GetNextAuthenticationType(component, event, helper, memberid, MemberType, MaximumPointsAvailable, PointsObtained, IsKYMAvailable, IsOTPAvailable, IsDebitPinAvailable, IsOOWAvailable, IsPublicWalletAvailable, IsCFCUWalletAvailable);
 	  			
 			}
 			if(KYMeventParam == "SUCCESS" && aElement.id =='KYMTab__item'){
@@ -221,7 +219,6 @@
 	  			IsKYMAvailable = false;
 	  			component.set("v.IsKYMAvailableOnLoad",IsKYMAvailable);
 	  			helper.GetNextAuthenticationType(component, event, helper, memberid, MemberType, MaximumPointsAvailable, PointsObtained, IsKYMAvailable, IsOTPAvailable, IsDebitPinAvailable, IsOOWAvailable, IsPublicWalletAvailable, IsCFCUWalletAvailable);
-	  			
 			 }
 			 
 			 if(KYMeventParam == "FAIL" && aElement.id =='KYMTab__item')
@@ -240,13 +237,13 @@
 				 	component.set("v.PublicWalletColor",'Green');
 				 	liElement[i].classList.add("green");
 				 	liElement[i].classList.remove("red");
+				 	component.set('v.PWIconName','utility:check');
 	  				PointsObtained = parseInt(PointsObtained) + parseInt(ScoreModelPositiveScore);
 	  				component.set("v.PointObtained",PointsObtained);
 	  				IsPublicWalletAvailable = false;
 	  				component.set("v.IsPublicWalletAvailableOnLoad",IsPublicWalletAvailable);
                  	component.set("v.PublicWalletStatusForDay", true);
 	  				helper.GetNextAuthenticationType(component, event, helper, memberid, MemberType, MaximumPointsAvailable, PointsObtained, IsKYMAvailable, IsOTPAvailable, IsDebitPinAvailable, IsOOWAvailable, IsPublicWalletAvailable, IsCFCUWalletAvailable);
-	  				
 			 }
 			 if((parseInt(PublicWalletScore) <= 2 || parseInt(PublicWalletFailedCount) > 1) && aElement.id =='PublicWalletTab__item')
 			 {
@@ -272,7 +269,6 @@
 	  				component.set("v.CFCUWalletStatusForDay", true);
 	  				helper.GetNextAuthenticationType(component, event, helper, memberid, MemberType, MaximumPointsAvailable, PointsObtained, IsKYMAvailable, IsOTPAvailable, IsDebitPinAvailable, IsOOWAvailable, IsPublicWalletAvailable, IsCFCUWalletAvailable);
 	  				
-	  				
 			 }
 			 if((parseInt(CFCUWalletScore) <= 2 || parseInt(CFCUWalletFailedCount) > 1 ) && aElement.id =='CFCUWalletTab__item')
 			 {
@@ -289,10 +285,6 @@
 			
 		}
 		
-		
-		
-    
-
 	},
 	
 	
@@ -328,17 +320,13 @@
 		{
 			component.set("v.SSNEntered", value);
 		}
-		else if(id == 'frmDOB')
-		{
-			component.set("v.DOBEntered", value);
-		}
-		  
+		
 	    if(event.keyCode == 13){
 	    
 		    var PhoneNumber = component.get("v.PhoneNumberEntered");
 		    var MemberNumber = component.get("v.MemberNumberEntered");
 		    var SSNNumber = component.get("v.SSNEntered");
-		    var DOBNumber = component.get("v.DOBEntered");
+		    
 		    if(PhoneNumber != undefined && PhoneNumber != '')
 		    {       
 	    		    var str = PhoneNumber.replace(/-/g,'');
@@ -348,71 +336,48 @@
 			       var PhoneNumberMessage = document.getElementById('PhoneNumberMessage'); 
 			        
 			        if(strlength != 10){
-			        	
-			        	 
 			        	 message = 'please enter correct 10 digit phone number';
 			        	 PhoneNumberMessage.firstElementChild.innerText = message;
-			        	 
-			        	
 			        }
 			        else
 			        {		        
 			        	var newPhone = str.slice(0,3) + '-' + str.slice(3,6) + '-' + str.slice(6,10);
 			        	document.getElementById("frmPhoneNumber").value = newPhone;
 			        	PhoneNumberMessage.firstElementChild.innerText = '';
-			        	
-			        	  	 
 				     }
-				        
-				    
-		    
 		    }
 		    
 		    else if(SSNNumber!=undefined && SSNNumber == '7777' && SSNNumber!='')
 	    	{
                 alert('SSN 7777 can not be searched'); 
             }
-            
-            else if(DOBNumber != undefined && DOBNumber !='')
-            {
-            	
-            	var error = helper.myDOBFunction(component, event, DOBNumber);
-            	 var dobmessage = document.getElementById('DOBMessage'); 
-            	if(error!='' && error!=undefined)
-            	{
-            		
-            		 dobmessage.firstElementChild.innerText = error;
-            	}
-            	else
-            	{
-            		dobmessage.firstElementChild.innerText = '';
-            	}
-            	
-            	DOBNumber = document.getElementById("frmDOB").value;
-            	
-            }
-            
-           
-           helper.getMemberSearch(component, event,PhoneNumber,MemberNumber,SSNNumber,DOBNumber);
-        
+           var IVRGUIDFromUrl =  component.get("v.IVRGUIDFromUrl");
+           helper.getMemberSearch(component, event,PhoneNumber,MemberNumber,SSNNumber);
         }
    }, 
 	
 	handleRadioClick : function(component, event, helper){
 		component.set("v.IsRightDivVisible", true);
-		
 		var memberid = event.getSource().get('v.value');
 		var membername = event.getSource().get('v.label');
 		var MemberType = component.get("v.Membertype");
+		var ReLoadRequired = component.get("v.ReLoadRequired");
 		component.set("v.SelectedmemberId",memberid );
 		component.set("v.SelectedmemberName",membername );
 		var DebitCardStatus = component.get("v.DebitCardStatus");
 		var attribute1 = component.get('v.SelectedmemberId');
 		var PublicWalletComponent = component.find('PublicWallet');
-            if(PublicWalletComponent!=undefined)PublicWalletComponent.PublicWalletMethod(attribute1);
+        if(PublicWalletComponent!=undefined){
+        	PublicWalletComponent.PublicWalletMethod(attribute1,ReLoadRequired);
+        }
+        
         var CFCUWalletComponent = component.find('CFCUWallet');
-            if(CFCUWalletComponent!=undefined)CFCUWalletComponent.CFCUWalletMethod(attribute1);
-		helper.MemberVerificationAttemptCheck(component, event, helper, memberid, DebitCardStatus);
+        if(CFCUWalletComponent!=undefined)CFCUWalletComponent.CFCUWalletMethod(attribute1,ReLoadRequired);
+        
+        var OTPComponent = component.find('OTPAuthentication');
+        if(OTPComponent!=undefined)OTPComponent.OTPMethod(attribute1,ReLoadRequired);
+        
+		helper.MemberVerificationAttemptCheck(component, event, helper, memberid, DebitCardStatus, ReLoadRequired);
 	},
 	
 	 handleActive: function (component, event, helper) {
@@ -423,7 +388,8 @@
     	
     	var memberid = component.get("v.SelectedmemberId");
     	var GUID = component.get("v.GUID");
-    	helper.LoadOOWComponent(component, event, helper, memberid, GUID);
+    	var IVRGUIDFromUrl = component.get("v.IVRGUIDFromUrl");
+    	helper.LoadOOWComponent(component, event, helper, memberid, GUID, IVRGUIDFromUrl);
     	
     },
     
@@ -485,6 +451,7 @@
     	var OverrideSupervisor;
     	var errorSpaninput;
     	var GUID = component.get("v.GUID");
+    	var IVRGUIDFromUrl = component.get("v.IVRGUIDFromUrl");
     	var memberid = component.get("v.SelectedmemberId");
     	var FDL = '';
     	if(memberid == undefined){
@@ -493,19 +460,17 @@
     	
     	else{
 		    	if(button == 'ViewHistory'){
-		    		//component.set("v.AuthenticationDecision",'Authentication Passed');
-		    		//decision = component.get("v.AuthenticationDecision");
 		    	}
 		    	else if(button == 'FailedDesiredLevel'){
 		    		component.set("v.AuthenticationDecision",'Failed Desired Level');
 		    		decision = component.get("v.AuthenticationDecision");
 		    		FDL = 'Yes';
-		    		helper.InsertLogData(component, event, helper, memberid, decision, FDL, OverrideType, OverrideSupervisor, GUID);
+		    		helper.InsertLogData(component, event, helper, memberid, decision, FDL, OverrideType, OverrideSupervisor, GUID, IVRGUIDFromUrl );
 		    	}
 		    	else if(button == 'CreateCase'){
 		    		component.set("v.AuthenticationDecision",'Authentication Failed');
 		    		decision = component.get("v.AuthenticationDecision");
-		    		helper.InsertLogData(component, event, helper, memberid, decision, FDL, OverrideType, OverrideSupervisor, GUID);
+		    		helper.InsertLogData(component, event, helper, memberid, decision, FDL, OverrideType, OverrideSupervisor, GUID, IVRGUIDFromUrl);
 		    	}
 		    	else if(button == 'OverrideRequested'){
 		    		component.set("v.AuthenticationDecision",'Override Requested');
@@ -525,7 +490,7 @@
 		    		}
 		    		else{
 		    			component.set("v.isOpen", false);
-		    			helper.InsertLogData(component, event, helper, memberid, decision, FDL, OverrideType, OverrideSupervisor, GUID);
+		    			helper.InsertLogData(component, event, helper, memberid, decision, FDL, OverrideType, OverrideSupervisor, GUID, IVRGUIDFromUrl);
 		    		}
 		    	}		    	
     	}
@@ -543,13 +508,14 @@
 NavigateToMember : function(component , event, helper){
    var memberid = component.get('v.SelectedmemberId');
    var GUID = component.get("v.GUID");
+   var IVRGUIDFromUrl = component.get("v.IVRGUIDFromUrl");
    var LastLevel = component.get("v.CurrentAuthenticationLevel");
    
    if(memberid == undefined){
     		alert('Please search for member');
     	}
     	else{
-    		 helper.LastAcheivableLogs(component, event, memberid, GUID, LastLevel);
+    		 helper.LastAcheivableLogs(component, event, memberid, GUID, LastLevel, IVRGUIDFromUrl);
     		 var urlString = window.location.href;
     		 var baseURL = urlString.substring(0, urlString.indexOf("/n"));
     		 baseURL = baseURL + '/lightning/r/Account/'+ memberid + '/view';
@@ -581,7 +547,8 @@ NavigateToMember : function(component , event, helper){
     	var CaseComment = component.find('CaseComment').get('v.value');
     	var AccountId = component.get("v.AccountId");
     	var GUID = component.get("v.GUID");
-    	helper.SaveCaseWithLogData(component, event, helper, memberid, accountnumber, CaseComment, AccountId, GUID)
+    	var IVRGUIDFromUrl = component.get("v.IVRGUIDFromUrl");
+    	helper.SaveCaseWithLogData(component, event, helper, memberid, accountnumber, CaseComment, AccountId, GUID, IVRGUIDFromUrl)
     	component.set("v.isCaseModelOpen", false);
     },
     
@@ -612,24 +579,16 @@ NavigateToMember : function(component , event, helper){
 	   document.getElementById("frmPhoneNumber").value = '';
 	   document.getElementById("frmMemberNumber").value = '';
 	   document.getElementById("frmSSN").value = '';
-	   document.getElementById("frmDOB").value = '';
 	   var PhoneNumberMessage = document.getElementById('PhoneNumberMessage'); 
 	   PhoneNumberMessage.firstElementChild.innerText = '';
-	   var dobmessage = document.getElementById('DOBMessage');
-	   var DOBDiv = document.getElementById('DOBDiv');
-	   DOBDiv.firstElementChild.classList.add("hidden");
-	   DOBDiv.firstElementChild.classList.remove("show");
 	   var MemberNumberDiv = document.getElementById('MemberNoDiv');						    	
 	   MemberNumberDiv.firstChild.classList.add("hidden");
 	   MemberNumberDiv.firstChild.classList.remove("show");
-	   dobmessage.firstElementChild.innerText = '';
 	   component.set("v.PhoneNumberEntered","");
 	   component.set("v.MemberNumberEntered","");
 	   component.set("v.SSNEntered","");
-	   component.set("v.DOBEntered","");
 	   component.set("v.IsMatchingMemberFound",false);
 	   component.set("v.IsMemberNumberValid",false);
-	   component.set("v.IsDOBValid",false);
 	   component.set("v.accounts",null);
 	   component.set("v.ActiveTabId",'');
 	   component.set("v.ActiveTab",'');
@@ -648,7 +607,6 @@ NavigateToMember : function(component , event, helper){
 	   component.set("v.PositiveScoreObtained",0);
 	   component.set("v.AuthenticationDecision",'');
 	   component.set("v.IsKYMTabVisible", false);
-	   component.set("v.OTPMessage",'No');
 	   component.set("v.Attempts",0);
 	   component.set("v.ShowFailedDesiredLevel",false);
 	   component.set("v.KYMIconName",'utility:help');
@@ -688,6 +646,11 @@ NavigateToMember : function(component , event, helper){
 	   component.set("v.isDebitPinCalculated",false);
 	   component.set("v.isPinChangeCalculated",false);
 	   component.set("v.isFDLogCalculated",false);
+	   component.set("v.IVRGUIDFromUrl",'' );
+	   component.set("v.ReMemberId",'' );
+	   component.set("v.IsOOWTabVisible", true);
+	   component.set("v.IsDebitTabVisible", true);
+	   
    },
 	
 })

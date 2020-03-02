@@ -17,13 +17,15 @@
     }
     if(component.get("v.PhoneFromURL") != undefined){
     	document.getElementById('frmPhoneNumber').value= component.get("v.PhoneFromURL");
-    }	
-    	
+    }
+  
     // interact with the DOM here
 },
 
 rerender : function(component, helper){
     this.superRerender();
+     
+    	
     	if(component.get("v.isDoneRendering") == true){
         	var DebitCardStatus = component.get("v.DebitCardStatus");
 	    	var IsVisible =  component.get("v.Visible");
@@ -165,7 +167,7 @@ rerender : function(component, helper){
 			   component.set("v.OTPColor",'');
 		    }
 		}
+		
 },
 
-    
 })

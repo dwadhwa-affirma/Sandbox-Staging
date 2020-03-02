@@ -3,6 +3,8 @@
     <aura:registerEvent name="statusEvent" type="c:MemberIdEvent" />
     <aura:attribute name="selectedKYMvalue" type="string" default="Select"/>
     <aura:attribute name="GUID" type="string"/>
+    
+    
     <aura:attribute name="IsSubmitClicked" type="boolean" default="false"/>
    <div >
       	 <div class="divwidth">

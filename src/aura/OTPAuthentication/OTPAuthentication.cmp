@@ -15,7 +15,15 @@
     <aura:attribute name="IsCallingfromAuth" type="string" default="false" access="public" />
     <aura:registerEvent name="statusEvent" type="c:MemberIdEvent" />
     <aura:attribute name="GUID" type="string"/>
+    <aura:attribute name="IVRGUIDFromUrl" type="string"/>
+    <aura:attribute name="IsReLoadRequired" type="boolean"/>
+    
     <aura:attribute name="OTPStatusForDay" type="boolean" default="true" />
+    
+    <aura:method name="OTPMethod" action="{!c.doInit}" access="PUBLIC"> 
+   		 <aura:attribute name="param1" type="String"/>
+   		 <aura:attribute name="param2" type="boolean"/> 
+	</aura:method>
     <!--lightning progressIndicator start
     <lightning:progressIndicator currentStep="{!v.currentStep}" type="path">
         <lightning:progressStep value="1" />

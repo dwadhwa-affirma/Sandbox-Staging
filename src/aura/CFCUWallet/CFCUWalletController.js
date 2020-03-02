@@ -3,25 +3,22 @@
 		
 		var memberId = component.get("v.recordId");
 		var CFCUWalletStatusForDay = component.get("v.CFCUWalletStatusForDay");
-		helper.GetJointMemberDetail(component, event, memberId);
-        component.find('BeneficiaryPassButton').set("v.variant", "neutral");
-        component.find('BeneficiaryFailButton').set("v.variant", "neutral");
-        component.find('JointPassButton').set("v.variant", "neutral");
-        component.find('JointFailButton').set("v.variant", "neutral");
-        component.find('LoanPassButton').set("v.variant", "neutral");
-        component.find('LoanFailButton').set("v.variant", "neutral");
-        if(component.get("v.IsCFCUSectionVisible") == true){                	
-            component.find('CardPassButton').set("v.variant", "neutral");
-            component.find('CardFailButton').set("v.variant", "neutral");
-        }
-        component.find('TokenPassButton1').set("v.variant", "neutral");
-        component.find('TokenFailButton1').set("v.variant", "neutral");
-        component.find('TokenPassButton2').set("v.variant", "neutral");
-        component.find('TokenFailButton2').set("v.variant", "neutral");
+		var IVRGUIDFromUrl = component.get("v.IVRGUIDFromUrl");
+		helper.GetJointMemberDetail(component, event,helper, memberId, IVRGUIDFromUrl);
+		component.set("v.IsSubmitClicked",false);
+		component.set("v.ScoreObtained",0 );
+		component.set("v.QuestionAttempt",0 );
+		component.set("v.FailedCount",0 );
 		
 	},
 	
-	
+	executeMethod : function (component, event, helper) {
+        var params = event.getParam('arguments');
+		if (params) {
+			var IsReLoadRequired =  params.param2;
+			component.set("v.IsReLoadRequired", IsReLoadRequired);
+			}
+        },
 	ButtonClick : function(component, event, helper) {
         var ButtonId = event.getSource().getLocalId();
         var Button = event.getSource();

@@ -6,18 +6,67 @@
 		var url= window.location.href;
 		var pageReference = component.get("v.pageReference");
 	
-		component.set("v.SSNFromURL", pageReference.state.c__EnteredSSN);
-		component.set("v.MemberNumberFromURL", pageReference.state.c__EnteredMemberNumber);
-		component.set("v.PhoneFromURL", pageReference.state.c__CallersPhoneNumber);
-		component.set("v.DebitCardStatus", pageReference.state.c__PINMatch);
+		if(pageReference.state.c__EnteredSSN == 'null'){
+			component.set("v.SSNFromURL", '');
+		}
+		else{
+			component.set("v.SSNFromURL", pageReference.state.c__EnteredSSN);
+		}
+		if(pageReference.state.c__EnteredMemberNumber == 'null'){
+			component.set("v.MemberNumberFromURL", '');
+		}
+		else{
+			component.set("v.MemberNumberFromURL", pageReference.state.c__EnteredMemberNumber);
+		}
+		if(pageReference.state.c__CallersPhoneNumber == 'null')
+		{
+			component.set("v.PhoneFromURL", '');
+		}else{
+			component.set("v.PhoneFromURL", pageReference.state.c__CallersPhoneNumber);
+		}
+		if(pageReference.state.c__PINMatch == 'null'){
+			component.set("v.DebitCardStatus", '');
+		}else{		
+			component.set("v.DebitCardStatus", pageReference.state.c__PINMatch);
+		}
+		if(pageReference.state.c__IVRGUID == 'null'){
+		
+			component.set("v.IVRGUIDFromUrl", '');
+		}else{
+			component.set("v.IVRGUIDFromUrl", pageReference.state.c__IVRGUID);
+		}
+		var PINMatchFromURL = pageReference.state.c__PINMatch;
 		var SSNFromURL = component.get("v.SSNFromURL");
 		var MemberNumberFromURL =  component.get("v.AccountNumberFromURL");
 		var PhoneFromURL =  component.get("v.PhoneFromURL");
+		var IVRGUIDFromUrl =  component.get("v.IVRGUIDFromUrl");
 		
 		if(SSNFromURL != undefined || MemberNumberFromURL != undefined || PhoneFromURL != undefined){
 			component.set("v.PageURL", url);
 		}
+		 if(SSNFromURL != undefined || MemberNumberFromURL != undefined || PhoneFromURL != undefined){
+			component.set("v.PageURL", url);
+		}
+		if(SSNFromURL!= undefined && (SSNFromURL == "" || SSNFromURL == null || SSNFromURL == 'null'))
+		{
+			component.set("v.IsOOWTabVisible", false);
+			component.set("v.IsOOWAvailableOnLoad", false);
+		}
+		else
+		{
+			component.set("v.IsOOWTabVisible", true);
+		}
 		
+		if(PINMatchFromURL!= undefined &&(PINMatchFromURL == "" || PINMatchFromURL == null || PINMatchFromURL == 'null' ))
+		{
+			component.set("v.IsDebitTabVisible", false);
+		}
+		else
+		{
+			component.set("v.IsDebitTabVisible", true);
+		}
+		
+	   
 		    
 		// URL Encoding........................................................................................
 		
@@ -26,12 +75,6 @@
 		var IspageOpenFromHomePage = component.get("v.IspageOpenFromHomePage");
 		var AccountNumberFromHomePage = component.get("v.AccountNumberFromHomePage");
 	
-		//var membertype ='Foreign';// this need to replace from url
-	
-		//var membertype ='Domestic';
-		
-		
-		//component.set("v.Membertype",membertype );
 		
 		if(IspageOpenFromHomePage){
 				var len = AccountNumberFromHomePage.length;
@@ -48,8 +91,7 @@
 				}
 				component.set("v.AccountNumberFromHomePage", MemberNumber);
 				
-			//	document.getElementById('frmMemberNumber').value= MemberNumber; 
-				helper.getMemberSearch(component, event,'',MemberNumber,'','');
+				helper.getMemberSearch(component, event,'',MemberNumber,'',IVRGUIDFromUrl );
 		}
 		
 		
@@ -65,10 +107,10 @@
 			}		
 	},
 	
-	LastAcheivableLogs : function(component, event, memberid, GUID, LastLevel)
+	LastAcheivableLogs : function(component, event, memberid, GUID, LastLevel, IVRGUIDFromUrl)
 	{
 		var action = component.get("c.SaveLastAchievableLevelLogs");
-		action.setParams({"MemberId": memberid, "GUID" : GUID, "LastLevel": LastLevel });
+		action.setParams({"MemberId": memberid, "GUID" : GUID, "LastLevel": LastLevel,"IVRGUIDFromUrl":IVRGUIDFromUrl });
 		action.setCallback(this, function (response) {
   		 var status = response.getState();            
                if (component.isValid() && status === "SUCCESS") {
@@ -79,11 +121,15 @@
     	$A.enqueueAction(action);
 	},
 	
-	MemberVerificationAttemptCheck : function(component, event, helper, memberid, DebitCardStatus)
+	MemberVerificationAttemptCheck : function(component, event, helper, memberid, DebitCardStatus,ReLoadRequired)
 	{
 		
 		var GUID = component.get("v.GUID");
+		var IVRGUIDFromUrl = component.get("v.IVRGUIDFromUrl");
 		var action = component.get("c.MemberVerificationAttemptsCheck");
+		if(ReLoadRequired == undefined){
+			ReLoadRequired = false;
+		}
 		
 		var SSNFromURL = component.get("v.SSNFromURL");
 		var MemberNumberFromURL = component.get("v.MemberNumberFromURL");
@@ -91,10 +137,10 @@
 		var PageURL = component.get("v.PageURL");
 		var DebitCardStatus = component.get("v.DebitCardStatus");
 		if(PageURL == undefined){
-			action.setParams({"MemberId": memberid,"GUID": GUID,"DebitCardStatus": DebitCardStatus,"SSNFromURL": ' ',"MemberNumberFromURL": ' ',"PhoneFromURL": ' ', "PageURL" : ' '});
+			action.setParams({"MemberId": memberid,"GUID": GUID,"DebitCardStatus": DebitCardStatus,"SSNFromURL": ' ',"MemberNumberFromURL": ' ',"PhoneFromURL": ' ', "PageURL" : ' ', "IVRGUIDFromUrl": IVRGUIDFromUrl,"ReLoadRequired": ReLoadRequired});
 		}
 		else{
-			action.setParams({"MemberId": memberid,"GUID": GUID,"DebitCardStatus": DebitCardStatus,"SSNFromURL": SSNFromURL,"MemberNumberFromURL":MemberNumberFromURL,"PhoneFromURL":PhoneFromURL,"PageURL":PageURL});
+			action.setParams({"MemberId": memberid,"GUID": GUID,"DebitCardStatus": DebitCardStatus,"SSNFromURL": SSNFromURL,"MemberNumberFromURL":MemberNumberFromURL,"PhoneFromURL":PhoneFromURL,"PageURL":PageURL, "IVRGUIDFromUrl": IVRGUIDFromUrl,"ReLoadRequired":ReLoadRequired});
     	}
     	action.setCallback(this, function (response) {
   		 var status = response.getState();            
@@ -121,7 +167,7 @@
 					   // component.set("v.IsPublicWalletAvailableOnLoad",result.IsPublicWalletAvailable);
 					   // component.set("v.IsCFCUWalletAvailableOnLoad",result.IsCFCUWalletAvailable);
 					    component.set("v.IsOTPAvailableOnLoad",result['OTPStatusForDay']);
-					    component.set("v.IsOOWAvailableOnLoad",result['OOWStatusForDay']);
+					   // component.set("v.IsOOWAvailableOnLoad",result['OOWStatusForDay']);
 					    component.set("v.IsPublicWalletAvailableOnLoad",result['PublicWalletStatusForDay']);
 					    component.set("v.IsCFCUWalletAvailableOnLoad",result['CFCUWalletStatusForDay']);
 					    component.set("v.LastAchievable30day",result.LastAchievableLevel);
@@ -141,19 +187,20 @@
 					    	component.set("v.Likedisable", false);
 					    }
 					    					    
-					    if(result.MemberType == 'Foreign')
+					    if(SSNFromURL!= undefined && SSNFromURL != "" && SSNFromURL != null && SSNFromURL != 'null' )
 					    {
-					    	 component.set("v.IsOOWAvailableOnLoad", false);
+					    	 if(result.MemberType == 'Foreign'){
+					    		 component.set("v.IsOOWAvailableOnLoad", false);
+					    	 }
+					    	 else if(result.MemberType == 'Domestic')
+					    	 {
+					    		 component.set("v.IsOOWAvailableOnLoad", true);
+					    	 }
 					    }
-					    else
-					    {
-					    	component.set("v.IsOOWAvailableOnLoad", true);
-					    }
+					    
+					    
+					    
 		     		    if(result.OTPAttemptCount > 0){
-                			component.set("v.OTPMessage",'YES');
-                		}
-                		else{
-                			component.set("v.OTPMessage",'NO');
                 		}
                 		
                 		if(ScoringModelLength > 0){
@@ -205,11 +252,11 @@
     	
     },
  
-	getMemberSearch : function(component, event,PhoneNumber,MemberNumber,SSNNumber,DOBNumber)
+	getMemberSearch : function(component, event,PhoneNumber,MemberNumber,SSNNumber,IVRGUIDFromUrl)
 	{
 		  
 		   var action = component.get("c.getMemberSearchData");
-		   var parameters = {"PhoneNumber": PhoneNumber,"MemberNumber" : MemberNumber,"SSNNumber" : SSNNumber,"DOBNumber":DOBNumber };
+		   var parameters = {"PhoneNumber": PhoneNumber,"MemberNumber" : MemberNumber,"SSNNumber" : SSNNumber,"IVRGUIDFromUrl":IVRGUIDFromUrl };
 		
 		   action.setParams(parameters);
 		   action.setCallback(this, function(response){
@@ -217,38 +264,19 @@
 		    	if(component.isValid() && status === "SUCCESS"){
 		    	
 						var result =  response.getReturnValue();
-				  //      var ScoringModelLength = result['ScoringModel'].length;
-				        component.set("v.GUID",result.GUID);
-						
-						
+				         component.set("v.GUID",result.GUID);
 					    if(result.Account.length > 0){
 						    
 						    component.set("v.accounts", result['Account']);
 					        component.set("v.IsMatchingMemberFound", true);
-					    	component.set("v.IsDOBValid" , true);
 					    	
-					    	/*if(ScoringModelLength > 0){
-					    		component.set("v.ScoringModel", result['ScoringModel']);
-							}
-							else{
-									component.set("v.ScoringModel",null);						
-							}
-							
-							if(result['LevelModel'].length > 0){
-								component.set("v.LevelModel", result['LevelModel']);
-							}
-							else{
-								component.set("v.LevelModel",null);	
-							}*/
-						}
+					    	}
 						
 						else{						
 								component.set("v.IsMatchingMemberFound", false);
-								component.set("v.IsDOBValid" , false);
 								component.set("v.PhoneNumberEntered","");
 							    component.set("v.MemberNumberEntered","");
 							    component.set("v.SSNEntered","");
-							    component.set("v.DOBEntered","");
 							    component.set("v.accounts", null);
 						}
 						
@@ -275,25 +303,11 @@
 						  else{
 						    	component.set("v.IsMemberNumberValid",false);
 						    }
-						var DOBDiv = document.getElementById('DOBDiv');
-						if((DOBNumber !=undefined && DOBNumber != '') && IsMatchingMemberFound == false){
-							
-						    	DOBDiv.firstElementChild.classList.remove("hidden");
-						    	//DOBDiv.firstElementChild.classList.add("show");
-						    	
-						    	//component.set("v.IsDOBValid",false);
-						    }
-						else if((DOBNumber !=undefined && DOBNumber != '') && IsMatchingMemberFound == true){
-						   
-						    	
-						    	DOBDiv.firstElementChild.classList.add("hidden");
-						    	
-						    	component.set("v.IsDOBValid",true);
-						  }
-						  else {						    
-						    	component.set("v.IsDOBValid",false);
-						  		}
 						
+						component.set("v.ReLoadRequired", result.ReLoadRequired);
+						if(result.ReLoadRequired == true){
+							component.set("v.ReMemberId",result.AuthLog[0].SalesforceID__c);
+						}
 						
 						
 						
@@ -337,7 +351,7 @@
             $A.enqueueAction(action); 
     },
     
-    LoadOOWComponent: function (component, event, helper, memberid, GUID) {
+    LoadOOWComponent: function (component, event, helper, memberid, GUID, IVRGUIDFromUrl) {
     	var win; 
     	var activetabid = component.get("v.ActiveTabId");
     	var tab =  component.get("v.ActiveTab");
@@ -352,6 +366,15 @@
     	var scoringModel = component.get("v.ScoringModel");
     	var LevelModel = component.get("v.LevelModel");
     	var PointsObtained = component.get("v.PointObtained");
+    	var CurrentAuthenticationLevel = component.get("v.CurrentAuthenticationLevel");
+    	if(IVRGUIDFromUrl != undefined && IVRGUIDFromUrl !='')
+    	{
+    		helper.GetScoreDataForReload (component, event, helper,memberid,IVRGUIDFromUrl );
+    		MaximumPointsAvailable = component.get("v.MaximumPointsAvailable");
+    		PointsObtained = component.get("v.PointObtained");
+    		CurrentAuthenticationLevel= component.get("v.CurrentAuthenticationLevel");
+    	}
+    	
     	for(var i=0; i< LevelModel.length; i++)
     	{
 	    	if(LevelModel[i].Tiers__c == component.get("v.HighestAchievableLevel")){
@@ -417,7 +440,7 @@
 		                        var action1 = component.get("c.SaveOOWLogData");
 		  		   					
 		   	      				 var membernumber = result.AccountNumber;
-		                          action1.setParams({"status": status, "MemberNumber": membernumber,"MemberId":memberid, "reason":reason,"notes":notes, "GUID": GUID,"name": name,"Error":Error});
+		                          action1.setParams({"status": status, "MemberNumber": membernumber,"MemberId":memberid, "reason":reason,"notes":notes, "GUID": GUID,"name": name,"Error":Error, "IVRGUIDFromUrl":IVRGUIDFromUrl});
 		          				 action1.setCallback(this, function (response) {
 			       	      		 var status1 = response.getState();            
 		                               if (component.isValid() && status1 === "SUCCESS") {
@@ -518,62 +541,15 @@
     },
     
    
-		
-	  myDOBFunction : function(component, event, dobvalue ) {
-        var str = dobvalue.replace(/-/g,'');
-        if (str == '')
-        {
-            message = 'Please enter correct date.';
-        	return message;
-        }        
-        var strlength = str.length; 
-        var message = '';
-        	if(strlength != 8){
-              message = 'Please enter a valid date MMDDYYYY';
-              return message;
-            }
-            var Month = str.slice(0,2);
-            var Monthlength = Month.length;
-            if(Monthlength<0 || Monthlength > 2 || (Month <1 || Month >12)){
-                message = 'Please enter correct month';
-                return message;
-            }
-            
-            var subString2 = str.slice(2,4);
-            var date = subString2;
-            var datelength = date.length;
-            if(datelength < 0 || datelength > 2 || date < 1 || date >31){
-                
-                message = 'Please enter correct date';
-                return message;
-            }
-            var d = new Date();
-            var n = d.getFullYear();
-            
-            var year = str.slice(4,str);
-            var yearlength = year.length;
-            if(yearlength != 4 || year>n){
-                
-                message = 'Please enter correct year';
-                return message;
-            }
-           
-        var newDate = Month + '-' + date + '-' + year;
-        
-	    document.getElementById("frmDOB").value = newDate;
-	   
-        return message;
-       
-    },
-    InsertLogData: function(component, event,helper, memberid, decision, FDL, OverrideType, OverrideSupervisor, GUID)
+	  
+    InsertLogData: function(component, event,helper, memberid, decision, FDL, OverrideType, OverrideSupervisor, GUID, IVRGUIDFromUrl)
     {
     	var PhoneNumber = component.get("v.PhoneNumberEntered");
     	var MemberNumber = component.get("v.MemberNumberEntered");
     	var SSNNumber = component.get("v.MemberNumberEntered"); 
-    	var DOBEntered = component.get("v.DOBEntered");
     	var action = component.get("c.InsertLogData");
     	var PageUrl='';
-    	action.setParams({"MemberId": memberid,"Decision":decision, "FDL": FDL, "PhoneNumber":PhoneNumber,"EnteredSSN":SSNNumber,"DOB":DOBEntered,"PageUrl":PageUrl, "OverrideType":OverrideType, "OverrideSupervisor":OverrideSupervisor,"GUID": GUID });
+    	action.setParams({"MemberId": memberid,"Decision":decision, "FDL": FDL, "PhoneNumber":PhoneNumber,"EnteredSSN":SSNNumber,"PageUrl":PageUrl, "OverrideType":OverrideType, "OverrideSupervisor":OverrideSupervisor,"GUID": GUID,"IVRGUIDFromUrl": IVRGUIDFromUrl });
     	 action.setCallback(this, function (response) {
 		       	      		 var status = response.getState();            
 	                               if (component.isValid() && status === "SUCCESS") {
@@ -591,10 +567,10 @@
     	
     },
     
-    SaveCaseWithLogData: function(component, event, helper, memberid, accountnumber,CaseComment, AccountId, GUID)
+    SaveCaseWithLogData: function(component, event, helper, memberid, accountnumber,CaseComment, AccountId, GUID, IVRGUIDFromUrl)
     {
     	var action = component.get("c.SaveCaseWithLogData");
-    	action.setParams({"MemberId": memberid,"AccountNumber":accountnumber,"casecomment":CaseComment,"AccountId": AccountId,"GUID":GUID});
+    	action.setParams({"MemberId": memberid,"AccountNumber":accountnumber,"casecomment":CaseComment,"AccountId": AccountId,"GUID":GUID,"IVRGUIDFromUrl":IVRGUIDFromUrl});
     	 action.setCallback(this, function (response) {
 		       	      		 var status = response.getState();            
 	                               if (component.isValid() && status === "SUCCESS") {
@@ -609,10 +585,11 @@
     },
     
     GetNextAuthenticationType: function(component, event, helper, MemberId, MemberType, MaximumPointsAvailable, PointsObtained , IsKYMAvailable, IsOTPAvailable, IsDebitPinAvailable, IsOOWAvailable, IsPublicWalletAvailable, IsCFCUWalletAvailable){
-    	
+    	var IVRGUIDFromUrl = component.get("v.IVRGUIDFromUrl");
+    	if(IVRGUIDFromUrl == undefined){IVRGUIDFromUrl = '';}
     	var action = component.get("c.GetNextAuthenticationType");
     	action.setParams({"MemberId": MemberId,"MemberType":MemberType,"MaximumPointsAvailable":MaximumPointsAvailable,"PointsObtained": PointsObtained, "IsKYMAvailable": IsKYMAvailable, 
-    						"IsOTPAvailable": IsOTPAvailable,"IsDebitPinAvailable":IsDebitPinAvailable,"IsOOWAvailable":IsOOWAvailable,"IsPublicWalletAvailable": IsPublicWalletAvailable,"IsCFCUWalletAvailable": IsCFCUWalletAvailable});
+    						"IsOTPAvailable": IsOTPAvailable,"IsDebitPinAvailable":IsDebitPinAvailable,"IsOOWAvailable":IsOOWAvailable,"IsPublicWalletAvailable": IsPublicWalletAvailable,"IsCFCUWalletAvailable": IsCFCUWalletAvailable,"IVRGUIDFromUrl":IVRGUIDFromUrl});
     	 action.setCallback(this, function (response) {
 		       	      		 var status = response.getState();            
 	                               if (component.isValid() && status === "SUCCESS") {
@@ -646,5 +623,135 @@
 	   	       
 	   $A.enqueueAction(action); 
     },
+	
+	GetReloadData : function(component, event, helper,memberid,GUID,IVRGUIDFromUrl ){
+	
+		var action = component.get("c.getDataForReload");
+		action.setParams({"memberid": memberid,"GUID":GUID,"IVRGUIDFromUrl":IVRGUIDFromUrl});
+    	action.setCallback(this, function (response) {
+		       	      		 var status = response.getState();            
+	                               if (component.isValid() && status === "SUCCESS") {
+	                            
+	                                   var result = response.getReturnValue();
+	                                   if(result.OOWLogData !=undefined){	                                   
+		                                   if(result.OOWLogData.length > 0){
+		                                	   component.set("v.IsOOWAvailableOnLoad",false);
+		                                	   component.set("v.status", result.OOWLogData[0].OOW_Status__c);
+		                                	   component.set("v.reason", result.OOWLogData[0].OOW_Reason__c);
+		                                	   component.set("v.notes", result.OOWLogData[0].OOW_Notes__c);
+		                                	   var OOWSection = document.getElementById('oowComponentdiv');
+		                                	   if(OOWSection !=undefined && OOWSection !=null )
+												{
+													OOWSection.removeAttribute('class')
+													
+												}
+		                                	   
+		                                   }
+	                                   }
+	                                   if(result.PublicLogData !=undefined){
+	                                	   	if(result.PublicLogData.length > 0){
+	                                	   		component.set("v.IsPublicWalletAvailableOnLoad",false);
+	                                	   		if(result.PublicLogData[0].Public_Wallet_Status__c == 'passed'){
+	                                	   			var PublicWalletTab = document.getElementsByClassName('demo-only slds-box rightBox');
+		                                	   			if(PublicWalletTab.length > 2)
+															{
+																var aElement;
+																var liElement = PublicWalletTab[2].getElementsByClassName("slds-tabs_default__item");
+																
+																for(var i=0 ; i < liElement.length; i++)
+																{
+																	aElement = liElement[i].firstElementChild;
+																	if(aElement.id =='PublicWalletTab__item'){
+																		liElement[i].classList.add("green");
+																		liElement[i].classList.remove("red");
+															  			component.set('v.PWIconName','utility:check');
+																	}
+																}                               	   			
+		                                	   			
+															}
+														}
+													}
+												}
+	                                	   		if(result.CFCULogData !=undefined){
+			                                	   	if(result.CFCULogData.length > 0){
+			                                	   		component.set("v.IsCFCUWalletAvailableOnLoad", false);
+			                                	   		if(result.CFCULogData[0].CFCU_Wallet_Status__c == 'passed'){
+			                                	   			var CFCUWalletTab = document.getElementsByClassName('demo-only slds-box rightBox');
+				                                	   			if(CFCUWalletTab.length > 2)
+																	{
+																		var aElement;
+																		var liElement = CFCUWalletTab[2].getElementsByClassName("slds-tabs_default__item");
+																		
+																		for(var i=0 ; i < liElement.length; i++)
+																		{
+																			aElement = liElement[i].firstElementChild;
+																			if(aElement.id =='CFCUWalletTab__item'){
+																				liElement[i].classList.add("green");
+																				liElement[i].classList.remove("red");
+																	  			component.set('v.CFCUIconName','utility:check');
+																			}
+																		}                               	   			
+				                                	   			
+																	}
+																}
+															}
+	                                	   				}
+	                                	   		if(result.OTPLogData !=undefined){
+			                                	   	if(result.OTPLogData.length > 0){
+			                                	   		component.set("v.IsOTPAvailableOnLoad", false);
+			                                	   		if(result.OTPLogData[0].OTP_Status__c == 'passed'){
+			                                	   			var OTPTab = document.getElementsByClassName('demo-only slds-box rightBox');
+				                                	   			if(OTPTab.length > 2)
+																	{
+																		var aElement;
+																		var liElement = OTPTab[2].getElementsByClassName("slds-tabs_default__item");
+																		
+																		for(var i=0 ; i < liElement.length; i++)
+																		{
+																			aElement = liElement[i].firstElementChild;
+																			if(aElement.id =='OTPTab__item'){
+																				liElement[i].classList.add("green");
+																				liElement[i].classList.remove("red");
+																	  			component.set('v.OTPIconName','utility:check');
+																			}
+																		}                               	   			
+				                                	   			
+																	}
+																}
+															}
+	                                	   				}
+	                                	   	if(result.ScopePoints!= undefined){
+			                                	   component.set("v.MaximumPointsAvailable",result.ScopePoints[0].Maximum_Points_Available__c);
+			                                	   component.set("v.PointObtained",result.ScopePoints[0].Points_Obtained__c);
+			                                	   component.set("v.CurrentAuthenticationLevel",result.ScopePoints[0].Current_Authentication_Level__c);
+			                                	   component.set("v.HighestAchievableLevel",result.ScopePoints[0].Highest_Achievable_Level__c);
+			                                	   component.set("v.ToGetHighestLevel",result.ScopePoints[0].Next_Level__c);
+	                                	   		}
+	                             }
+	                                	   	
+	                                   
+	                                
+	   	       		});	
+	   	       
+    	$A.enqueueAction(action); 
+		
+	},
+	
+	/*SaveScoreDataForReload : function(component, event, helper,memberid,IVRGUIDFromUrl, PointsObtained, MaximumPointsAvailable ){
+		CurrentAuthenticationLevel = component.get("v.CurrentAuthenticationLevel");
+		var action = component.get("c.SaveScoringDataForReload");
+		action.setParams({"memberid": memberid,"IVRGUIDFromUrl":IVRGUIDFromUrl, "PointsObtained":PointsObtained, "MaximumPointsAvailable":MaximumPointsAvailable});
+		action.setCallback(this, function (response) {
+		       	      		 var status = response.getState();            
+	                               if (component.isValid() && status === "SUCCESS") {
+	                            
+	                                   var result = response.getReturnValue();                                  
+	                                    
+	                                }
+	   	       				});	
+	   	       
+	   $A.enqueueAction(action); 
+	},
+	*/
 	
 })

@@ -8,14 +8,23 @@
     <aura:attribute name="Emails" type="String" description="list of emails "/>
     <aura:attribute name="MothersMaidenName" type="String"/>
     <aura:attribute name="GUID" type="string"/>
+    <aura:attribute name="IVRGUIDFromUrl" type="string" />
     <aura:attribute name="QuestionAttempt" type="Integer" default="0"/>
     <aura:attribute name="IsSubmitClicked" type="boolean" default="false"/>
     <aura:attribute name="PublicWalletStatusForDay" type="boolean" default="true"/>
     
+	<aura:attribute name="DOBMatch" type="String"/>
+	<aura:attribute name="IdNumberMatch" type="String"/>
+	<aura:attribute name="MMNMatch" type="String"/>
+	<aura:attribute name="EmailMatch" type="String"/>
+	<aura:attribute name="AdditionalTokenOption3Match" type="String"/>
+	<aura:attribute name="IsReLoadRequired" type="boolean" default="false"/>   
+	
     <aura:method name="PublicWalletMethod" action="{!c.doInit}" access="PUBLIC"> 
-   		 <aura:attribute name="param1" type="String"/> 
+   		 <aura:attribute name="param1" type="String"/>
+   		 <aura:attribute name="param2" type="boolean"/> 
 	</aura:method>
-    
+   
 	<aura:registerEvent name="statusEvent" type="c:MemberIdEvent" />
 	
 	 <article class="slds-card">
@@ -97,7 +106,7 @@
       			</div>
        				<div class="btnAlign btn-submit">
        					<div class="CenterDiv mb-50">
-        					<lightning:button variant="brand" label="Submit Answers" onclick="{! c.submit }" aura:id="SubmitButton" disabled = "{!v.PublicWalletStatusForDay == false}" />
+        					<lightning:button variant="brand" label="Submit 3 Answers" onclick="{! c.submit }" aura:id="SubmitButton" disabled = "{!v.PublicWalletStatusForDay == false}" />
      					</div> 	
      				</div>
      			</div>

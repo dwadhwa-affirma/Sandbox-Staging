@@ -11,6 +11,7 @@
 						    element.classList.remove('show');
 						    element.classList.add('hidden');
 						    var GUID = component.get("v.GUID");
+						    var IVRGUIDFromUrl = component.get("v.IVRGUIDFromUrl");
 						    var memberId = component.get("v.recordId");
 					        var compEvent;
 						    action.setParams({"MemberId": memberId,"reason":reason,"otherReason":InputElement,"GUID":GUID });
