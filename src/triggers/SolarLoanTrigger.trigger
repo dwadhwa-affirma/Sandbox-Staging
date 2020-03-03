@@ -2,15 +2,27 @@ trigger SolarLoanTrigger on Solar_Loans__c (after insert, after update) {
     
     Set<Id> SLIds = new Set<Id>();
     
-    for(Integer i=0; i<trigger.new.size(); i++){
-    
-        //------------------------------- Checking if the status is being changed and status = 'ACH Pending'-----------------------------------------------//
+    if(Trigger.isInsert){
+        for(Integer i=0; i<trigger.new.size(); i++){
         
-        if(trigger.new[i].Status__c != trigger.old[i].Status__c && trigger.new[i].Status__c == 'ACH Pending'){
+            //------------------------------- Checking if the status is being changed and status = 'ACH Pending'-----------------------------------------------//
             
-		    SLIds.add(trigger.new[i].id);
-        }
-    } 
+            if(trigger.new[i].Status__c == 'ACH Pending'){
+                SLIds.add(trigger.new[i].id);
+            }
+        } 
+    }
+    
+    if(Trigger.isUpdate){
+        for(Integer i=0; i<trigger.new.size(); i++){
+        
+            //------------------------------- Checking if the status is being changed and status = 'ACH Pending'-----------------------------------------------//
+            
+            if(trigger.old[i].Status__c != 'ACH Pending' && trigger.new[i].Status__c == 'ACH Pending'){
+                SLIds.add(trigger.new[i].id);
+            }
+        } 
+    }
     
     if(SLIds.size() > 0){
         
