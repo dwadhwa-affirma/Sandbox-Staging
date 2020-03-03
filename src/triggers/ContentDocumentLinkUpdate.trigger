@@ -7,6 +7,7 @@ trigger ContentDocumentLinkUpdate on ContentDocumentLink (after update,after del
      set<ID> listCD  = new set<ID>();
      Map<Id, ContentDocument> cs = new Map<Id, ContentDocument>(); 
      Map<id,Solar_Loans__c> sl = new Map<id,Solar_Loans__c >();
+     Map<ID,ID> cv = new Map<ID,ID>();
      
      
      Set<id> parent = new Set<id>();
@@ -34,6 +35,11 @@ trigger ContentDocumentLinkUpdate on ContentDocumentLink (after update,after del
         	sl.put(solarLoan.id, solarLoan);
         }
         
+        For(ContentVersion contentVersion : [select id,ContentDocumentId from ContentVersion where ContentDocumentId in: listCD]){
+        	cv.put(contentVersion.ContentDocumentId,contentVersion.id);
+        }
+        system.debug('test'+cv);
+        
         if(Trigger.isInsert && Trigger.isAfter)
         {
             for(ContentDocumentLink c : Trigger.New){
@@ -45,7 +51,7 @@ trigger ContentDocumentLinkUpdate on ContentDocumentLink (after update,after del
                 if(objType == Solar_Loans__c.sObjectType){
 	            
 		            SolarLoan_Document__c solarLoanObj = new SolarLoan_Document__c();
-		            solarLoanObj.Attachment_Id__c = c.ContentDocumentId;
+		            solarLoanObj.Attachment_Id__c = cv.get(c.ContentDocumentId);
 		            solarLoanObj.Member_Number__c = sl.get(c.LinkedEntityId).Member_Number__c;
 		            solarLoanObj.IsMovedToOnBase__c = false;
 		            solarLoanObj.Document_Type__c = 'Solar Loan Documents';

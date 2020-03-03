@@ -3,11 +3,17 @@ trigger ContentDocumnetDelete on ContentDocument (before delete, before insert) 
 	List<Approve_Attachment__c> toupdateApproveAttachment  = new List<Approve_Attachment__c>();    
     Map<id,ContentDocumentLink> attachmentDetails = new Map<id,ContentDocumentLink >();
     set<Id> attachmentIdsForSolarLoan = new set<Id>();
+    set<Id> ContentVersionIds = new set<ID>();
     
     if(Trigger.isDelete && Trigger.isBefore){  	
     	system.debug('Content document link delete');
         for(ContentDocument d : Trigger.old){
         	attachmentIdsForSolarLoan.add(d.id);
+        	
+        	For(ContentVersion contentVersion : [select id,ContentDocumentId from ContentVersion where ContentDocumentId in: attachmentIdsForSolarLoan]){
+        		ContentVersionIds.add(contentVersion.id);
+        	}
+        
             system.debug('Document ID - ' + d.Id);
             system.debug('d - ' + d);
             List<ContentDocumentLink> lstContentDocumentLinks = [select Id,LinkedEntityId, ContentDocumentId, ContentDocument.Title, ContentDocument.FileType from ContentDocumentLink where ContentDocumentId =: d.Id];           
@@ -36,7 +42,7 @@ trigger ContentDocumnetDelete on ContentDocument (before delete, before insert) 
         
         // ----------------------------Start Deleting an Attachment detail in "Solar Loan Document" object--------------------------------------------------//
         
-        List<SolarLoan_Document__c> solarLoanAttachmentsList = [select id from SolarLoan_Document__c where Attachment_Id__c IN : attachmentIdsForSolarLoan];
+        List<SolarLoan_Document__c> solarLoanAttachmentsList = [select id from SolarLoan_Document__c where Attachment_Id__c IN : ContentVersionIds];
          if(!solarLoanAttachmentsList.isEmpty()){
             system.debug('In If :: ');
             delete solarLoanAttachmentsList;
