@@ -47,8 +47,10 @@ global class SolarLoansToDocuSignBatch implements Database.Batchable<sObject>,Da
 															'My Message',null,null);
             
             myEnvelope = myEnvelope.withRecipients(new List<dfsle.Recipient> { myRecipient });
-		    myEnvelope = dfsle.EnvelopeService.sendEnvelope(myEnvelope, true);
-            
+		    
+            if(!Test.isRunningTest()){
+            	myEnvelope = dfsle.EnvelopeService.sendEnvelope(myEnvelope, true);
+            }
             // ---------------------------- Fetching DocusignId and inserting into Solar Loan record---------------------------------//
             
             DocuSignId = String.valueOf(myEnvelope).substringAfter('docuSignId=');
@@ -61,8 +63,9 @@ global class SolarLoansToDocuSignBatch implements Database.Batchable<sObject>,Da
             
             SolarLoansToUpdate.add(s);
         }
-        
-        update SolarLoansToUpdate;
+        if(SolarLoansToUpdate.size() > 0){
+        	update SolarLoansToUpdate;
+        }
     }
     
     global void finish(Database.BatchableContext BC){

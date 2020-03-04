@@ -40,10 +40,10 @@ global class WiresTransToDocuSignBatch implements Database.Batchable<sObject>,Da
             myTemplateId = dfsle.UUID.parse('5bef4974-2731-4d8b-8f72-4868a961dd60');
             myDocument =dfsle.Document.fromTemplate(myTemplateId,'Wires Template');
             Depositary = new dfsle.CustomField('text','##SFWIRES_Transaction__c',scopeWTIDs.get(i).Id, null,true, true);
-            Auth = new dfsle.Recipient.Authentication('',true,null);
-            myRecipient = myRecipient.withAuthentication(Auth);
+            //Auth = new dfsle.Recipient.Authentication('',true,null);
+            //myRecipient = myRecipient.withAuthentication(Auth);
             myEnvelope = new dfsle.Envelope(null,null, null,null,new List<dfsle.Document> { myDocument },null,new List<dfsle.CustomField> { Depositary },null,
-															'ACH Debits',
+															'Wire Approval',
 															'My Message',null,null);
             
             myEnvelope = myEnvelope.withRecipients(new List<dfsle.Recipient> { myRecipient });
