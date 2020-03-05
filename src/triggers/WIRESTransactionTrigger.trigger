@@ -1,11 +1,31 @@
-trigger WIRESTransactionTrigger on WIRES_Transaction__c (before insert) {
+trigger WIRESTransactionTrigger on WIRES_Transaction__c (before insert, after insert) {
 	
+    //------------------------------------------------------------------After Insert  ------------------------------------------------------------------------------//
+    
+    Set<Id> WTIds = new Set<Id>();
+    
+    if(Trigger.isInsert){
+    	
+    	if(Trigger.isAfter){
+    		
+        	for(Integer i=0; i<trigger.new.size(); i++){
+        	   	
+        	   	WTIds.add(trigger.new[i].id);
+            } 
+    	}
+	}
+    
+    if(WTIds.size() > 0){
+        
+    	Database.executeBatch(new WiresTransToDocuSignBatch(WTIds),1);
+    }
+    
+    //------------------------------------------------------------------Before Insert  ------------------------------------------------------------------------------//
+ if(Trigger.isInsert && Trigger.isBefore){ 
     for(WIRES_Transaction__c objWIRESTransaction: trigger.New)
     {
-    	string AccountNo= objWIRESTransaction.Chevron_Account_Number__c;
-    	
-    	//WIRES_Recipient__c objWIRESRecipient = new WIRES_Recipient__c();
-    	//objWIRESRecipient = [SELECT id from WIRES_Recipient__c where id =: objWIRESTransaction.ToAccoutId__c limit 1];
+    	string AccountNo= objWIRESTransaction.FromAccount__c;    	
+    
     	
     	List<Account_Details__c> listAccountDetails = [select id,Brand__c,OPEN_DATE__c from Account_Details__c where Name =: AccountNo 
     											and ID1__c =: objWIRESTransaction.Share_ID__c limit 1];
@@ -22,9 +42,15 @@ trigger WIRESTransactionTrigger on WIRES_Transaction__c (before insert) {
        for(Member360_TypeTranslate__c t : Member360_TypeTranslate__c.getAll().values()){
        		typeList.add(t.name);	
        }
-    system.debug('TypelIst=='+ typeList);
-     system.debug('AccountNo=='+ AccountNo);
-    	list<Person_Account__c> paList = [SELECT Id,PersonID__c,
+       
+       Person_Account__c paPrimary = [SELECT Id,PersonID__c,
+                             Account_Number__c, Account_Number__r.RecType__c,TypeTranslate__c, Account_Number__r.Name, PersonID__r.Name, PersonID__r.Email_raw__c FROM Person_Account__c 
+                             WHERE Account_Number__r.Name =: AccountNo and TypeTranslate__c  like '%Primary%' limit 1];
+                             
+       objWIRESTransaction.Member_Name__c = paPrimary.PersonID__r.Name;
+       objWIRESTransaction.Member_Email__c = paPrimary.PersonID__r.Email_raw__c;
+           
+       list<Person_Account__c> paList = [SELECT Id,PersonID__c,
                              Account_Number__c, Account_Number__r.RecType__c,TypeTranslate__c, Account_Number__r.Name FROM Person_Account__c 
                              WHERE Account_Number__r.Name =: AccountNo and TypeTranslate__c IN:typeList];
          
@@ -76,17 +102,8 @@ trigger WIRESTransactionTrigger on WIRES_Transaction__c (before insert) {
             allRelatedAccounts.add(var.personId__c);
 
         }
-        system.debug('allRelatedAccounts 3---' + allRelatedAccounts);
-       
-       
-      /* set<String> personIdList = new set<String>();                      
-       for(Person_Account__c p : paList){
-       		personIdList.add(p.PersonID__c);	
-       }   
-       
-        List<Account> relatedAccountList = [select id,name from account where id IN: personIdList];                 
-    	Account acc = GetAccount(accID);
-        List<string> allRelatedAccounts = GetRelatedAccountsPopulated(accID, acc);*/
+        system.debug('allRelatedAccounts 3---' + allRelatedAccounts);       
+     
         
     	List<Account> listAccount;
         List<accounthistory> listhistory;        
@@ -304,7 +321,7 @@ trigger WIRESTransactionTrigger on WIRES_Transaction__c (before insert) {
         
     	
     }     
-    
+ }    
    
     
     
