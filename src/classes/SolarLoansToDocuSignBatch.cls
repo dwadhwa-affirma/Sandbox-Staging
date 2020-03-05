@@ -39,8 +39,9 @@ global class SolarLoansToDocuSignBatch implements Database.Batchable<sObject>,Da
             if(MemberEmail.PersonEmail != null){
             	myRecipient = dfsle.Recipient.fromSource(Name,MemberEmail.PersonEmail,null,'Signer 1',new dfsle.Entity(scopeSLIDs.get(i).Id));
             }
-            myTemplateId = dfsle.UUID.parse('1b9f716c-1fbe-4e69-be6a-5162f91f39d2');
-            myDocument =dfsle.Document.fromTemplate(myTemplateId,'Authorization');
+           // myTemplateId = dfsle.UUID.parse('dc16d8f8-571c-497e-bbf5-42d8b25d4ee1');  //Spectrum
+            myTemplateId = dfsle.UUID.parse('ad01d585-ad0a-4e68-b537-7e75293f0ef8');  //Chevron
+            myDocument =dfsle.Document.fromTemplate(myTemplateId,'Spectrum ACH Debits');
             Depositary = new dfsle.CustomField('text','##SFSolar_Loans__c',scopeSLIDs.get(i).Id, null,true, true);
             myEnvelope = new dfsle.Envelope(null,null, null,null,new List<dfsle.Document> { myDocument },null,new List<dfsle.CustomField> { Depositary },null,
 															'ACH Debits',
