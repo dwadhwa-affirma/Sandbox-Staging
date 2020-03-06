@@ -6,34 +6,75 @@ global class SolarLoanDocumentDeleteAttachments implements Schedulable{
     global static void DeleteAttachments(){
     
     	Map<string, SolarLoan_Document_Settings__c> SolarLoanSetting = SolarLoan_Document_Settings__c.getAll();
-    	Integer daysToDeleteAttachment = (integer) SolarLoanSetting.get('DeleteAttachments').Days__c;
-    	system.debug('daysToDeleteAttachment :: '+ daysToDeleteAttachment);
+    	Integer daysToDeleteAttachmentComplete = (integer) SolarLoanSetting.get('Completed').Days__c;
+        Integer daysToDeleteAttachmentDecline = (integer) SolarLoanSetting.get('Declined').Days__c;
+        Integer daysToDeleteAttachmentExpire = (integer) SolarLoanSetting.get('Expired').Days__c;
     	
-    	Date attchDeleteDateMax = Date.today().addDays(-daysToDeleteAttachment);
-    	Date attchDeleteDateMin = Date.today().addDays(-(daysToDeleteAttachment+30));
-    	system.debug('attchDeleteDate :: '+ attchDeleteDateMin + ' :: ' + attchDeleteDateMax);
+        system.debug('daysToDeleteAttachmentComplete :: '+ daysToDeleteAttachmentComplete);
+    	system.debug('daysToDeleteAttachmentDecline :: '+ daysToDeleteAttachmentDecline);
+        system.debug('daysToDeleteAttachmentExpire :: '+ daysToDeleteAttachmentExpire);
+        
+    	Date attchDeleteDateMaxComplete = Date.today().addDays(-daysToDeleteAttachmentComplete);
+    	Date attchDeleteDateMinComplete = Date.today().addDays(-(daysToDeleteAttachmentComplete+30));
+    	system.debug('attchDeleteDateComplete :: '+ attchDeleteDateMinComplete + ' :: ' + attchDeleteDateMaxComplete);
+        
+        Date attchDeleteDateMaxDecline = Date.today().addDays(-daysToDeleteAttachmentDecline);
+    	Date attchDeleteDateMinDecline = Date.today().addDays(-(daysToDeleteAttachmentDecline+30));
+    	system.debug('attchDeleteDateDecline :: '+ attchDeleteDateMinDecline + ' :: ' + attchDeleteDateMaxDecline);
+        
+        Date attchDeleteDateMaxExpire = Date.today().addDays(-daysToDeleteAttachmentExpire);
+    	Date attchDeleteDateMinExpire = Date.today().addDays(-(daysToDeleteAttachmentExpire+30));
+    	system.debug('attchDeleteDateExpire :: '+ attchDeleteDateMinExpire + ' :: ' + attchDeleteDateMaxExpire);
     	
         List<Solar_Loans__c> SolarLoanList = [Select id from Solar_Loans__c];
        	set<Id> SolarLoanIdSet = (new Map<Id, Solar_Loans__c>(SolarLoanList)).keySet();	
     	
-    	List<SolarLoan_Document__c> SolarLoanAttchList = [select Attachment_Id__c from SolarLoan_Document__c where IsMovedToOnBase__c = true and DAY_ONLY(CreatedDate) <= :attchDeleteDateMax and DAY_ONLY(CreatedDate) >= :attchDeleteDateMin];
-    	
-    	set<string> attchIdSet = new set<string>();
-    	
-    	for(SolarLoan_Document__c SolarLoanObj : SolarLoanAttchList){
-    		attchIdSet.add(SolarLoanObj.Attachment_Id__c);
+    	List<SolarLoan_Document__c> SolarLoanAttchListComplete = [select Attachment_Id__c,Solar_Loans__c,Solar_Loans__r.Status__c from SolarLoan_Document__c where IsMovedToOnBase__c = true and Solar_Loans__r.Status__c = 'Completed' and DAY_ONLY(CreatedDate) <= :attchDeleteDateMaxComplete and DAY_ONLY(CreatedDate) >= :attchDeleteDateMinComplete];
+		List<SolarLoan_Document__c> SolarLoanAttchListDecline = [select Attachment_Id__c,Solar_Loans__c,Solar_Loans__r.Status__c from SolarLoan_Document__c where IsMovedToOnBase__c = true and Solar_Loans__r.Status__c = 'Declined' and DAY_ONLY(CreatedDate) <= :attchDeleteDateMaxDecline and DAY_ONLY(CreatedDate) >= :attchDeleteDateMinDecline];
+        List<SolarLoan_Document__c> SolarLoanAttchListExpire = [select Attachment_Id__c,Solar_Loans__c,Solar_Loans__r.Status__c from SolarLoan_Document__c where IsMovedToOnBase__c = true and Solar_Loans__r.Status__c = 'Expired' and DAY_ONLY(CreatedDate) <= :attchDeleteDateMaxExpire and DAY_ONLY(CreatedDate) >= :attchDeleteDateMinExpire];
+        
+    	set<string> attchIdSetComplete = new set<string>();
+    	set<string> attchIdSetDecline = new set<string>();
+        set<string> attchIdSetExpire = new set<string>();
+        
+    	for(SolarLoan_Document__c SolarLoanObj : SolarLoanAttchListComplete){
+    		attchIdSetComplete.add(SolarLoanObj.Attachment_Id__c);
+    	}
+        
+        for(SolarLoan_Document__c SolarLoanObj : SolarLoanAttchListDecline){
+    		attchIdSetDecline.add(SolarLoanObj.Attachment_Id__c);
+    	}
+        
+        for(SolarLoan_Document__c SolarLoanObj : SolarLoanAttchListExpire){
+    		attchIdSetExpire.add(SolarLoanObj.Attachment_Id__c);
     	}
     	
-    	if(attchIdSet.size() > 0){
-	    	List<Attachment> attachmentList = [select id from Attachment where Id IN: attchIdSet];
-	    	system.debug('SolarLoanAttchList :: '+attachmentList);
+    	if(attchIdSetComplete.size() > 0){
+	    	List<ContentDocument> ContentDocumentListComp = [select id,title,CreatedDate,OwnerId from ContentDocument where id In: attchIdSetComplete];
+	    	system.debug('SolarLoanAttchListComplete :: '+ContentDocumentListComp);
 	    	
-	    	delete attachmentList;
+	    	delete ContentDocumentListComp;
 	    	
     	}
-    	for(Solar_Loans__c SolarObj : SolarLoanList){
-    	//	SolarObj.Attachments_Are_Deleted__c = true;
+        
+        if(attchIdSetDecline.size() > 0){
+	    	List<ContentDocument> ContentDocumentListDecline = [select id,title,CreatedDate,OwnerId from ContentDocument where id In: attchIdSetDecline];
+	    	system.debug('SolarLoanAttchListDecline :: '+ContentDocumentListDecline);
+	    	
+	    	delete ContentDocumentListDecline;
+	    	
     	}
-    	update SolarLoanList;
+        
+        if(attchIdSetExpire.size() > 0){
+	    	List<ContentDocument> ContentDocumentListExpire = [select id,title,CreatedDate,OwnerId from ContentDocument where id In: attchIdSetExpire];
+	    	system.debug('SolarLoanAttchListExpire :: '+ContentDocumentListExpire);
+	    	
+	    	delete ContentDocumentListExpire;
+	    	
+    	}
+    	/*for(Solar_Loans__c SolarObj : SolarLoanList){
+    		SolarObj.Attachments_Are_Deleted__c = true;
+    	}
+    	update SolarLoanList; */
     }
 }
