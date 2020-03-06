@@ -8,7 +8,7 @@ global class SolarLoansToDocuSignBatch implements Database.Batchable<sObject>,Da
 	
     global Database.QueryLocator start(Database.BatchableContext BC){
         
-        return DataBase.getQueryLocator([SELECT Id,Name,Product_Loan_Type__c,Routing_Number__c,Member_Number__c,Primary_First_Name__c,Primary_Last_Name__c FROM Solar_Loans__c WHERE Id IN: SLIdsToSend]);
+        return DataBase.getQueryLocator([SELECT Id,Brand__c,Name,Product_Loan_Type__c,Routing_Number__c,Member_Number__c,Primary_First_Name__c,Primary_Last_Name__c FROM Solar_Loans__c WHERE Id IN: SLIdsToSend]);
     }
     
     global void execute(Database.BatchableContext BC,List<Solar_Loans__c> scopeSLIDs){
@@ -39,8 +39,13 @@ global class SolarLoansToDocuSignBatch implements Database.Batchable<sObject>,Da
             if(MemberEmail.PersonEmail != null){
             	myRecipient = dfsle.Recipient.fromSource(Name,MemberEmail.PersonEmail,null,'Signer 1',new dfsle.Entity(scopeSLIDs.get(i).Id));
             }
-           // myTemplateId = dfsle.UUID.parse('dc16d8f8-571c-497e-bbf5-42d8b25d4ee1');  //Spectrum
-            myTemplateId = dfsle.UUID.parse('ad01d585-ad0a-4e68-b537-7e75293f0ef8');  //Chevron
+            if(scopeSLIDs.get(i).Brand__c == 'Spectrum'){
+            	myTemplateId = dfsle.UUID.parse('dc16d8f8-571c-497e-bbf5-42d8b25d4ee1');  //Spectrum
+            }
+            else{
+            	myTemplateId = dfsle.UUID.parse('ad01d585-ad0a-4e68-b537-7e75293f0ef8');  //Chevron	
+            }
+            
             myDocument =dfsle.Document.fromTemplate(myTemplateId,'Spectrum ACH Debits');
             Depositary = new dfsle.CustomField('text','##SFSolar_Loans__c',scopeSLIDs.get(i).Id, null,true, true);
             myEnvelope = new dfsle.Envelope(null,null, null,null,new List<dfsle.Document> { myDocument },null,new List<dfsle.CustomField> { Depositary },null,
