@@ -2,6 +2,10 @@
 global with sharing class SolarLoanDocumentAPI {
     
       @HttpGET 
+      
+      //---------------------------Method to push the "Solar Loan Documents" data through RESI API-----------------------//
+      
+      
       global static List<SolarLoanDocumentAPIResopnse> getSolarLoanDocuemnts() {
             List<SolarLoan_Document__c> SolarLoanDocumentList = new List<SolarLoan_Document__c>();
             
@@ -30,6 +34,9 @@ global with sharing class SolarLoanDocumentAPI {
       }
       
       @HttpPost
+      
+      //---------------------------Method to update the "Solar Loan Documents" data through RESI API-----------------------//
+      
       global static string updateSolarLoanDocuemnts() {
         
            
@@ -53,6 +60,8 @@ global with sharing class SolarLoanDocumentAPI {
             update UpdateSolarLoanDocumentList;
             return 'Post Received ::' + strAttachmentIds + ' :: Counts ::' + SolarLoanDocumentList.size();
       }
+      
+      //---------------------------Details of "Solar Loan Document" which we are pushing through REST API---------------------//
       
         global class SolarLoanDocumentAPIResopnse{
             @AuraEnabled
