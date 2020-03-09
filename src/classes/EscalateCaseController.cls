@@ -1,7 +1,14 @@
 public class EscalateCaseController {
+    
+    /* 
+    	----------------------------
+    	Below code was being used to update "Escalates At" field of "Case" with Date/Time value by considering "Business hours" and Case "Status".
+    	As we also make this work by using "Escalation Rules", we are commenting below code. 
+    	-------------------------------
+    	
     public static void checkAndEscalate(List<Case> allCases){
       
-	   // --------------------- Fetching "Hours" from "Custom Setting"  by passing case "Status" i.e Open, In-Progress and Resolution..................//
+	
 	   
        BusinessHours businessHours = [SELECT Id, Name, IsActive, IsDefault, SundayStartTime, SundayEndTime, MondayStartTime, MondayEndTime, TuesdayStartTime, TuesdayEndTime, WednesdayStartTime, WednesdayEndTime, ThursdayStartTime, ThursdayEndTime, FridayStartTime, FridayEndTime, SaturdayStartTime, SaturdayEndTime, TimeZoneSidKey, SystemModstamp, CreatedDate, CreatedById, LastModifiedDate, LastModifiedById, LastViewedDate FROM BusinessHours 
                                        WHERE IsDefault = true limit 1];
@@ -29,5 +36,5 @@ public class EscalateCaseController {
                 cs.Escalates_At__c = System.BusinessHours.addGMT(businessHours.Id,dt, 1000 * 60 * 60 * hours);
             }
         }
-    }
+    } */
 }
