@@ -50,7 +50,7 @@ global class SolarLoanDocumentDeleteAttachments implements Schedulable{
         set<string> attchIdSetExpire = new set<string>();
         
         
-        //---------------------Creating new list for AttachmentIds based on differnet "Status ------------------//
+        //---------------------Creating new list for AttachmentIds based on different Status ------------------//
         
     	for(SolarLoan_Document__c SolarLoanObj : SolarLoanAttchListComplete){
     		attchIdSetComplete.add(SolarLoanObj.Attachment_Id__c);
