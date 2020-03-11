@@ -54,7 +54,7 @@ trigger ContentDocumentLinkUpdate on ContentDocumentLink (after update,after del
 		            solarLoanObj.Attachment_Id__c = cv.get(c.ContentDocumentId);
 		            solarLoanObj.Member_Number__c = sl.get(c.LinkedEntityId).Member_Number__c;
 		            solarLoanObj.IsMovedToOnBase__c = false;
-		            solarLoanObj.Document_Type__c = 'Solar Loan Documents';
+		            solarLoanObj.Document_Type__c = 'Solar Loan';
 		            solarLoanObj.Document_Name__c = cs.get(c.ContentDocumentId).title;
 	                solarLoanObj.Solar_Loans__c = c.LinkedEntityId;
 	                solarLoanObj.Attachment_Owner__c = cs.get(c.ContentDocumentId).OwnerId;
