@@ -51,12 +51,13 @@
     <aura:attribute name="memberList" type="Person_Account__c[]" />
     <aura:attribute name="memObject" type="Account_Details__c" default="{'sobjectType':'Account_Details__c'}" />
     
-       <aura:attribute name="TopTenCases" type="object" />
-       <aura:attribute name="selectedTopCategoryValue" type="string" default="" />
-       <aura:attribute name="subStatus" type="List" default="['a','b']"/>
-       <aura:attribute name="statusDependencyMap" type="map"/>
-       <aura:attribute name="statusValues" type="List" default="['a','b']"/>
-        <aura:attribute name="isSubStatusVisible" type="boolean" default="false" />
+    <aura:attribute name="TopTenCases" type="object" />
+    <aura:attribute name="selectedTopCategoryValue" type="string" default="" />
+    <aura:attribute name="subStatus" type="List" default="['a','b']"/>
+    <aura:attribute name="statusDependencyMap" type="map"/>
+    <aura:attribute name="statusValues" type="List" default="['a','b']"/>
+    <aura:attribute name="isSubStatusVisible" type="boolean" default="false" />
+    <aura:attribute name="singleAccountDetail" type="boolean" default="false" />
    		
     <style>
         /* Loading Style*/
@@ -167,25 +168,41 @@
                                                         </div>
                                                     </aura:if>
                                                     <div class="autocompleteWrapper" data-aura-rendered-by="101:1107;a">
-                                                        <aura:if isTrue="{! empty(v.selectedAcctNumber) }">
+                                                        <aura:if isTrue="{! empty(v.selectedAcctNumber)}">
                                                             <input class="default input uiInput uiInputTextForAutocomplete uiInput--default uiInput--input uiInput uiAutocomplete uiInput--default uiInput--lookup" maxlength="500" role="combobox" id="22:1107;a" aria-expanded="true" aria-autocomplete="list" type="text"
                                                                 data-interactive-lib-uid="3" aria-required="true" spellcheck="false" onmouseenter="{!c.onFocusLookup}" onmouseleave="{!c.onBlurLookup}" placeholder="Search..." title="Search" />
-                                                            <aura:set attribute="else">
-                                                                <span class="slds-pill slds-pill_link fullWidth"> 
-                                                  <a href="javascript:void(0);" 
-                                                     class="slds-pill__action slds-p-left_x-small" title="{#v.selectedAcctNumber.Name}">
-                                                    <lightning:icon iconName="{#v.lookupIcon}" size="x-small"/>
-                                                    <span class="slds-pill__label slds-p-left_x-small">{!v.selectedAcctNumber.Name}</span>
-                                                                </a>
-                                                                <button onclick="{!c.clearSelection}" class="slds-button slds-button_icon slds-button_icon slds-pill__remove" title="Remove">
-                                                    <lightning:icon iconName="utility:close" size="small" 
-                                                                    alternativeText="Press delete or backspace to remove"/>
-                                                    <span class="slds-assistive-text" >Remove</span>
-                                                  </button>
-                                                                </span>
-                                                            </aura:set>
-                                                        </aura:if>
-                                                        <!-- <aura:if isTrue=""> -->
+                                                        <aura:set attribute="else">
+                                                            	 <aura:if isTrue="{!v.singleAccountDetail}">
+                                                                     <span class="slds-pill slds-pill_link fullWidth"> 
+                                                                         <a href="javascript:void(0);" 
+                                                                            class="slds-pill__action slds-p-left_x-small" title="{#v.selectedAcctNumber.Name}">
+                                                                             <lightning:icon iconName="{#v.lookupIcon}" size="x-small"/>
+                                                                             <span class="slds-pill__label slds-p-left_x-small">{!v.selectedAcctNumber.Name}</span>
+                                                                         </a>
+                                                                         <button onclick="{!c.clearSelection}" class="slds-button slds-button_icon slds-button_icon slds-pill__remove" title="Remove">
+                                                                             <lightning:icon iconName="utility:close" size="small" 
+                                                                                             alternativeText="Press delete or backspace to remove"/>
+                                                                             <span class="slds-assistive-text" >Remove</span>
+                                                                         </button>
+                                                                     </span>
+                                                                 <aura:set attribute="else">
+                                                                 	<span class="slds-pill slds-pill_link fullWidth"> 
+                                                                   		<a href="javascript:void(0);" 
+                                                                        	class="slds-pill__action slds-p-left_x-small" title="{#v.selectedAcctNumber.Name}">
+                                                                            <lightning:icon iconName="{#v.lookupIcon}" size="x-small"/>
+                                                                            	<span class="slds-pill__label slds-p-left_x-small">{!v.selectedAcctNumber.Name}</span>
+                                                                        </a>
+                                                                        <button onclick="{!c.clearSelection}" class="slds-button slds-button_icon slds-button_icon slds-pill__remove" title="Remove">
+                                                                        	<lightning:icon iconName="utility:close" size="small" 
+                                                                           		 alternativeText="Press delete or backspace to remove"/>
+                                                                            <span class="slds-assistive-text" >Remove</span>
+                                                                        </button>
+                                                                   	</span>
+                                                                 </aura:set>
+                                                                </aura:if>
+                                                           	</aura:set>
+                                                       	</aura:if>
+                                                       	
                                                         <div class="undefined lookup__menu uiAbstractList uiAutocompleteList uiInput uiAutocomplete uiInput--default uiInput--lookup" role="listbox" onmouseenter="{!c.onFocusLookup}" onmouseleave="{!c.onBlurLookup}" style="{!v.showDorpDown == 'true' ? 'width: 100%; left: 1px;height:200px;overflow-y:auto;' : 'width: 100%; left: 1px;height:200px;overflow-y:auto;display:none;'}">
                                                             <div class="listContent" data-aura-rendered-by="4060:0">
                                                                 <ul class="lookup__list  visible" role="presentation" data-aura-rendered-by="4055:0">
@@ -403,24 +420,40 @@
                                                 <div class="autocompleteWrapper" data-aura-rendered-by="101:1107;a">
                                                     <aura:if isTrue="{! empty(v.selectedMemberNumber) }">
                                                         <input class="default input uiInput uiInputTextForAutocomplete uiInput--default uiInput--input uiInput uiAutocomplete uiInput--default uiInput--lookup" maxlength="500" role="combobox" id="22:1107;a" aria-expanded="true" aria-autocomplete="list" type="text"
-                                                            data-interactive-lib-uid="3" aria-required="true" spellcheck="false" onmouseenter="{!c.onFocusMemberLookup}" onmouseleave="{!c.onBlurMemberLookup}" placeholder="Search..." title="Search"
-                                                        />
+                                                               data-interactive-lib-uid="3" aria-required="true" spellcheck="false" onmouseenter="{!c.onFocusMemberLookup}" onmouseleave="{!c.onBlurMemberLookup}" placeholder="Search..." title="Search"/>
                                                         <aura:set attribute="else">
-                                                            <span class="slds-pill slds-pill_link fullWidth"> 
-                                                  <a href="javascript:void(0);" 
-                                                     class="slds-pill__action slds-p-left_x-small" title="{#v.selItem.text}">
-                                                    <lightning:icon iconName="{#v.lookupIcon}" size="x-small"/>
-                                                    <span class="slds-pill__label slds-p-left_x-small">{!v.selectedMemberNumber.PersonID__r.Name}</span>
-                                                            </a>
-                                                            <button onclick="{!c.clearMemberSelection}" class="slds-button slds-button_icon slds-button_icon slds-pill__remove" title="Remove">
-                                                    <lightning:icon iconName="utility:close" size="small" 
-                                                                    alternativeText="Press delete or backspace to remove"/>
-                                                    <span class="slds-assistive-text" >Remove</span>
-                                                  </button>
-                                                            </span>
+                                                        	<aura:if isTrue="{!v.singleAccountDetail}">    
+                                                            	<span class="slds-pill slds-pill_link fullWidth"> 
+                                                                    <a href="javascript:void(0);" 
+                                                                        class="slds-pill__action slds-p-left_x-small" title="{#v.selItem.text}">
+                                                                        <lightning:icon iconName="{#v.lookupIcon}" size="x-small"/>
+                                                                            <span class="slds-pill__label slds-p-left_x-small">{!v.selectedMemberNumber.PersonID__r.Name}</span>
+                                                                    </a>
+                                                                    <button onclick="{!c.clearMemberSelection}" class="slds-button slds-button_icon slds-button_icon slds-pill__remove" title="Remove">
+                                                                        <lightning:icon iconName="utility:close" size="small" 
+                                                                            alternativeText="Press delete or backspace to remove"/>
+                                                                        <span class="slds-assistive-text" >Remove</span>
+                                                                    </button>
+                                                                </span>
+                                                           
+                                                            <aura:set attribute="else">
+                                                                <span class="slds-pill slds-pill_link fullWidth"> 
+                                                                    <a href="javascript:void(0);" 
+                                                                        class="slds-pill__action slds-p-left_x-small" title="{#v.selItem.text}">
+                                                                        <lightning:icon iconName="{#v.lookupIcon}" size="x-small"/>
+                                                                            <span class="slds-pill__label slds-p-left_x-small">{!v.selectedMemberNumber.PersonID__r.Name}</span>
+                                                                    </a>
+                                                                    <button onclick="{!c.clearMemberSelection}" class="slds-button slds-button_icon slds-button_icon slds-pill__remove" title="Remove">
+                                                                        <lightning:icon iconName="utility:close" size="small" 
+                                                                            alternativeText="Press delete or backspace to remove"/>
+                                                                        <span class="slds-assistive-text" >Remove</span>
+                                                                    </button>
+                                                                </span>
+                                                           	 </aura:set>
+                                                           </aura:if>     
                                                         </aura:set>
                                                     </aura:if>
-                                                    <!-- <aura:if isTrue=""> -->
+                                                    
                                                     <div class="undefined lookup__menu uiAbstractList uiAutocompleteList uiInput uiAutocomplete uiInput--default uiInput--lookup" role="listbox" onmouseenter="{!c.onFocusMemberLookup}" onmouseleave="{!c.onBlurMemberLookup}" style="{!v.showMemberDorpDown == 'true' ? 'width: 100%; left: 1px;height:200px;overflow-y:auto;' : 'width: 100%; left: 1px;height:200px;overflow-y:auto;display:none;'}">
                                                         <div class="listContent" data-aura-rendered-by="4060:0">
                                                             <ul class="lookup__list  visible" role="presentation" data-aura-rendered-by="4055:0">

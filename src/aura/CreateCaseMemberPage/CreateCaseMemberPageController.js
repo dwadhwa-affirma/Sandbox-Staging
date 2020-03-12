@@ -27,7 +27,18 @@
 					obj.isShow = true;
 					})   	
 	        		component.set('v.accList', aList);
-					component.set('v.loading',false);	
+	        		
+	        		if(aList.length != undefined && aList.length == 1){
+	        			component.set('v.singleAccountDetail', true);
+                        var serverResult = component.get("v.accList");
+                        var selItem = serverResult[0];
+                        console.log(selItem);
+                        if(selItem){
+                        	component.set("v.selectedAcctNumber",selItem);
+                    	}	
+                    	
+        			}
+        			component.set('v.loading',false);	
 					     		
 	        	}            	
 	       });
@@ -61,7 +72,18 @@
 	        		component.set('v.memObject', result.accountDetails);
 	        		//component.set('v.TopTenCases', result.toptencategories);
 	        		component.set('v.memberList', result.accList);
-					component.set('v.loading',false);	        		
+                   
+                    if(result.accList.length != undefined && result.accList.length == 1){
+	        			component.set('v.singleMember', true);
+                        var serverResult = component.get("v.memberList");
+                        var selItem = serverResult[0];
+                        console.log(selItem);
+                        if(selItem){
+                        	component.set("v.selectedMemberNumber",selItem);
+                    	}	
+                    	
+        			}
+                 	component.set('v.loading',false);	        		
 	        	}            	
 	       });
 		   $A.enqueueAction(action);
