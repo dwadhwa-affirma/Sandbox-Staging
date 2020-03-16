@@ -38,7 +38,7 @@ trigger ContentDocumnetDelete on ContentDocument (before delete, before insert) 
         
         // ----------------------------Start Deleting an Attachment detail in "Solar Loan Document" object--------------------------------------------------//
         
-        For(ContentVersion contentVersion : [select id,ContentDocumentId from ContentVersion where ContentDocumentId in: attachmentIdsForSolarLoan]){
+       /* For(ContentVersion contentVersion : [select id,ContentDocumentId from ContentVersion where ContentDocumentId in: attachmentIdsForSolarLoan]){
         		ContentVersionIds.add(contentVersion.id);
     	}
         	
@@ -46,7 +46,7 @@ trigger ContentDocumnetDelete on ContentDocument (before delete, before insert) 
          if(!solarLoanAttachmentsList.isEmpty()){
             system.debug('In If :: ');
             delete solarLoanAttachmentsList;
-        }
+        } */
         // ----------------------------End Deleting an Attachment detail in "Solar Loan Document" object--------------------------------------------------//
         
         List<Approve_Attachment__c> ApproveAttachment = [select id,Attachment_Name__c,ContentDocumentLinkId__c  from Approve_Attachment__c where ContentDocumentLinkId__c IN : attachmentDetails.keySet()];
