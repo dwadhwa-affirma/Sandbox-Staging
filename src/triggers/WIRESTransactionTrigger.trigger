@@ -8,8 +8,8 @@ trigger WIRESTransactionTrigger on WIRES_Transaction__c (before insert, after in
     	
     	if(Trigger.isAfter){
     		
-        	for(Integer i=0; i<trigger.new.size(); i++){
-        	   	
+        	for(Integer i=0; i<trigger.new.size(); i++){        	
+        	   if(trigger.new[i].ParentTransaction__c == null)	
         	   	WTIds.add(trigger.new[i].id);
             } 
     	}
@@ -25,7 +25,10 @@ trigger WIRESTransactionTrigger on WIRES_Transaction__c (before insert, after in
     for(WIRES_Transaction__c objWIRESTransaction: trigger.New)
     {
     	string AccountNo= objWIRESTransaction.FromAccount__c;    	
-    
+    	
+    	if(objWIRESTransaction.Frequency__c == 'Recurring'){
+			objWIRESTransaction.SendOn__c = null;    	
+    	}
     	
     	List<Account_Details__c> listAccountDetails = [select id,Brand__c,OPEN_DATE__c from Account_Details__c where Name =: AccountNo 
     											and ID1__c =: objWIRESTransaction.Share_ID__c limit 1];
@@ -44,11 +47,14 @@ trigger WIRESTransactionTrigger on WIRES_Transaction__c (before insert, after in
        }
        
        Person_Account__c paPrimary = [SELECT Id,PersonID__c,
-                             Account_Number__c, Account_Number__r.RecType__c,TypeTranslate__c, Account_Number__r.Name, PersonID__r.Name, PersonID__r.Email_raw__c FROM Person_Account__c 
+                             Account_Number__c, Account_Number__r.RecType__c,TypeTranslate__c, Account_Number__r.Name, PersonID__r.Home_Phone__pc,PersonID__r.Residential_City__pc,PersonID__r.Residential_State__pc, PersonID__r.Residential_Street__pc, PersonID__r.Residential_Zipocde__pc, PersonID__r.Name, PersonID__r.Email_raw__c FROM Person_Account__c 
                              WHERE Account_Number__r.Name =: AccountNo and TypeTranslate__c  like '%Primary%' limit 1];
                              
        objWIRESTransaction.Member_Name__c = paPrimary.PersonID__r.Name;
        objWIRESTransaction.Member_Email__c = paPrimary.PersonID__r.Email_raw__c;
+       objWIRESTransaction.Member_Home_Phone__c =  paPrimary.PersonID__r.Home_Phone__pc;
+       objWIRESTransaction.Member_Address__c = paPrimary.PersonID__r.Residential_Street__pc;
+       objWIRESTransaction.Member_City_State_Zip__c = paPrimary.PersonID__r.Residential_City__pc + ' '+ paPrimary.PersonID__r.Residential_State__pc + ' '+ paPrimary.PersonID__r.Residential_Zipocde__pc ;
            
        list<Person_Account__c> paList = [SELECT Id,PersonID__c,
                              Account_Number__c, Account_Number__r.RecType__c,TypeTranslate__c, Account_Number__r.Name FROM Person_Account__c 
