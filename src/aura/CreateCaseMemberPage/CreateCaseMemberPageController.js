@@ -28,17 +28,20 @@
 					})   	
 	        		component.set('v.accList', aList);
 	        		
-	        		if(aList.length != undefined && aList.length == 1){
-	        			component.set('v.singleAccountDetail', true);
-                        var serverResult = component.get("v.accList");
-                        var selItem = serverResult[0];
-                        console.log(selItem);
-                        if(selItem){
-                        	component.set("v.selectedAcctNumber",selItem);
-                    	}	
-                    	
-        			}
-        			component.set('v.loading',false);	
+	        		if(aList.length == 2 ){
+		        		for(var i = 0; i < aList.length; i++){
+		        			if(aList[i].RecType__c == 'ACCT'){
+		        				component.set('v.singleAccountDetail', true);
+		                        var serverResult = component.get("v.accList");
+		                        var selItem = serverResult[0];
+		                        console.log(selItem);
+		                        if(selItem){
+		                        	component.set("v.selectedAcctNumber",selItem);
+		                    	}
+		        			}
+		        		}
+	        		}
+	        		component.set('v.loading',false);	
 					     		
 	        	}            	
 	       });
@@ -72,9 +75,8 @@
 	        		component.set('v.memObject', result.accountDetails);
 	        		//component.set('v.TopTenCases', result.toptencategories);
 	        		component.set('v.memberList', result.accList);
-                   
-                    if(result.accList.length != undefined && result.accList.length == 1){
-	        			component.set('v.singleMember', true);
+	        	    if(result.accList.length != undefined && result.accList.length == 1){
+                    	component.set('v.singleMember', true);
                         var serverResult = component.get("v.memberList");
                         var selItem = serverResult[0];
                         console.log(selItem);

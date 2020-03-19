@@ -58,6 +58,7 @@
     <aura:attribute name="statusValues" type="List" default="['a','b']"/>
     <aura:attribute name="isSubStatusVisible" type="boolean" default="false" />
     <aura:attribute name="singleAccountDetail" type="boolean" default="false" />
+    <aura:attribute name="singleMember" type="boolean" default="false" />
    		
     <style>
         /* Loading Style*/
@@ -422,7 +423,7 @@
                                                         <input class="default input uiInput uiInputTextForAutocomplete uiInput--default uiInput--input uiInput uiAutocomplete uiInput--default uiInput--lookup" maxlength="500" role="combobox" id="22:1107;a" aria-expanded="true" aria-autocomplete="list" type="text"
                                                                data-interactive-lib-uid="3" aria-required="true" spellcheck="false" onmouseenter="{!c.onFocusMemberLookup}" onmouseleave="{!c.onBlurMemberLookup}" placeholder="Search..." title="Search"/>
                                                         <aura:set attribute="else">
-                                                        	<aura:if isTrue="{!v.singleAccountDetail}">    
+                                                        	<aura:if isTrue="{!v.singleMember}">    
                                                             	<span class="slds-pill slds-pill_link fullWidth"> 
                                                                     <a href="javascript:void(0);" 
                                                                         class="slds-pill__action slds-p-left_x-small" title="{#v.selItem.text}">
