@@ -1,8 +1,17 @@
 ({
 	doInit : function(component, event, helper) {
 		/*helper.fetchPicklistFields(component);*/
-		component.set("v.accountCount",0);
-		component.set('v.loading',true);
+        var btnid = event.getSource().getLocalId();
+        if(btnid == "SaveandNew"){
+            component.set("v.isSavePressed",true);
+            component.set('v.IsSaveandNewPressed',true);  
+            var isValid = helper.handleError(component,event,helper);
+            if(isValid){
+                helper.saveNewCase(component,event,helper);
+            } 
+        } 
+       component.set("v.accountCount",0);
+	   component.set('v.loading',true);
 	   var action = component.get("c.getData");
 	   var recordid = component.get("v.recordId");
 	   var accountId = component.get("v.accountDetailId");
@@ -125,6 +134,9 @@
 	        	}            	
 	       });
 		   $A.enqueueAction(action2); 
+           if(component.get("v.IsSaveandNewPressed")){
+    	  		component.set("v.isSavePressed",false);
+    	   }       
 	},	
 	getSubStatus: function(component, event, helper) {
     	component.set('v.subStatus',component.get('v.statusDependencyMap')[component.get('v.caseObject.Status')]);
@@ -319,8 +331,7 @@
     
     saveCase: function(component,event,helper){
 	    var btnid = event.getSource().getLocalId();
-	   // alert(btnid);
-	    if (btnid == "SaveandNew")
+        if (btnid == "SaveandNew")
 	    {
 	    	component.set("v.isSavePressed",true);
 	    	component.set('v.IsSaveandNewPressed',true);
