@@ -14,6 +14,15 @@ global class SolarLoansToDocuSignBatch implements Database.Batchable<sObject>,Da
     global void execute(Database.BatchableContext BC,List<Solar_Loans__c> scopeSLIDs){
         
   		List<Solar_Loans__c> SolarLoansToUpdate = new List<Solar_Loans__c>();
+  		String Email;
+        List<string> EmailList = new List<String>();
+     
+  		SolarLoan_Docusign_Emails__c sde = SolarLoan_Docusign_Emails__c.getValues('Email For Testing');
+        
+        if(sde.Emails__c != null){
+            Email = sde.Emails__c;
+        }    
+        EmailList = Email.split(',');
         
         for(Integer i=0;i<scopeSLIDs.size();i++){
         	
@@ -22,7 +31,7 @@ global class SolarLoansToDocuSignBatch implements Database.Batchable<sObject>,Da
             dfsle.Document myDocument;
             dfsle.CustomField Depositary;
             dfsle.Envelope myEnvelope;
-            Account MemberEmail;
+            //Account MemberEmail;
 			String Name;
             String DocuSignId;
             
@@ -32,34 +41,44 @@ global class SolarLoansToDocuSignBatch implements Database.Batchable<sObject>,Da
             else if(scopeSLIDs.get(i).Primary_Last_Name__c != null){
             	Name = scopeSLIDs.get(i).Primary_Last_Name__c;
             }
-            if(Name != null){
+            /*if(Name != null){
             	MemberEmail = [select id, name, PersonEmail from account where name =:Name Limit 1];
-            }
+            }*/
             
-            if(MemberEmail.PersonEmail != null){
+            /*if(MemberEmail.PersonEmail != null){
             	myRecipient = dfsle.Recipient.fromSource(Name,MemberEmail.PersonEmail,null,'Signer 1',new dfsle.Entity(scopeSLIDs.get(i).Id));
-            }
-            if(scopeSLIDs.get(i).Brand__c == 'Spectrum'){
-            	myTemplateId = dfsle.UUID.parse('dc16d8f8-571c-497e-bbf5-42d8b25d4ee1');  //Spectrum
-            }
-            else{
-            	myTemplateId = dfsle.UUID.parse('ad01d585-ad0a-4e68-b537-7e75293f0ef8');  //Chevron	
-            }
+            }*/
             
-            myDocument =dfsle.Document.fromTemplate(myTemplateId,'Spectrum ACH Debits');
-            Depositary = new dfsle.CustomField('text','##SFSolar_Loans__c',scopeSLIDs.get(i).Id, null,true, true);
-            myEnvelope = new dfsle.Envelope(null,null, null,null,new List<dfsle.Document> { myDocument },null,new List<dfsle.CustomField> { Depositary },null,
+            if(EmailList.size() > 0){
+	            
+	            for(String emailToSend: EmailList){
+	            		
+	            	myRecipient = dfsle.Recipient.fromSource(Name,emailToSend,null,'Signer 1',new dfsle.Entity(scopeSLIDs.get(i).Id));
+	            	
+	            	if(scopeSLIDs.get(i).Brand__c == 'Spectrum'){
+		            	myTemplateId = dfsle.UUID.parse('dc16d8f8-571c-497e-bbf5-42d8b25d4ee1');  //Spectrum
+		            }
+		            else{
+		            	myTemplateId = dfsle.UUID.parse('ad01d585-ad0a-4e68-b537-7e75293f0ef8');  //Chevron	
+		            }
+		            
+		            myDocument =dfsle.Document.fromTemplate(myTemplateId,'Spectrum ACH Debits');
+       			    Depositary = new dfsle.CustomField('text','##SFSolar_Loans__c',scopeSLIDs.get(i).Id, null,true, true);
+        		    myEnvelope = new dfsle.Envelope(null,null, null,null,new List<dfsle.Document> { myDocument },null,new List<dfsle.CustomField> { Depositary },null,
 															'ACH Debits',
 															'My Message',null,null);
+					 myEnvelope = myEnvelope.withRecipients(new List<dfsle.Recipient> { myRecipient });
+					 
+					 if(!Test.isRunningTest()){
+            			myEnvelope = dfsle.EnvelopeService.sendEnvelope(myEnvelope, true);
+            		 }
+	            }	         	   
+            }	
             
-            myEnvelope = myEnvelope.withRecipients(new List<dfsle.Recipient> { myRecipient });
-		    
-            if(!Test.isRunningTest()){
-            	myEnvelope = dfsle.EnvelopeService.sendEnvelope(myEnvelope, true);
-            }
+            
             // ---------------------------- Fetching DocusignId and inserting into Solar Loan record---------------------------------//
             
-            DocuSignId = String.valueOf(myEnvelope).substringAfter('docuSignId=');
+            /*DocuSignId = String.valueOf(myEnvelope).substringAfter('docuSignId=');
             DocuSignId = String.valueOf(DocuSignId).substringBefore(',');
             system.debug('tttt1'+DocuSignId);
             
@@ -67,11 +86,12 @@ global class SolarLoansToDocuSignBatch implements Database.Batchable<sObject>,Da
             s.id = scopeSLIDs.get(i).Id;
             s.DocuSignId__c = DocuSignId.toUpperCase();
             
-            SolarLoansToUpdate.add(s);
+            SolarLoansToUpdate.add(s);*/
         }
-        if(SolarLoansToUpdate.size() > 0){
+        
+        /*if(SolarLoansToUpdate.size() > 0){
         	update SolarLoansToUpdate;
-        }
+        }*/
     }
     
     global void finish(Database.BatchableContext BC){
