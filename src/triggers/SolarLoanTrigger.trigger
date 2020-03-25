@@ -38,11 +38,15 @@ trigger SolarLoanTrigger on Solar_Loans__c (after insert, after update) {
             	SLForBranchIds.put(trigger.new[i].id, trigger.new[i]);
                  SLMemberNumber.add(trigger.new[i].Member_Number__c);
             }
+            if(trigger.new[i].Four_Digit_Share_Loan_Type__c == null){ 
+            	SLForBranchIds.put(trigger.new[i].id, trigger.new[i]);
+                 SLMemberNumber.add(trigger.new[i].Member_Number__c);
+            }
         } 
     }
     
     
-    List<Account_Details__c> adList = [select id, Name, Brand__c, TypeTranslate__c,RecType__c from Account_Details__c where Name in:SLMemberNumber and Brand__c != null and RecType__c = 'ACCT'];
+    List<Account_Details__c> adList = [select id, Name, Brand__c, ID1__c, TypeTranslate__c,RecType__c from Account_Details__c where Name in:SLMemberNumber and Brand__c != null and RecType__c = 'LOAN' and TypeTranslate__c = '75-SECURED SOLAR'];
     
 	for(Solar_Loans__c sl : SLForBranchIds.values()){
 	
@@ -53,6 +57,7 @@ trigger SolarLoanTrigger on Solar_Loans__c (after insert, after update) {
 	    		Solar_Loans__c s = new Solar_Loans__c();
 	    		s.id = SLForBranchIds.get(sl.id).id;
 	    		s.Brand__c = a.Brand__c;
+	    		s.Four_Digit_Share_Loan_Type__c = a.ID1__c;
 	    		SLToUpdates.add(s);
 	    	}
 	    }
