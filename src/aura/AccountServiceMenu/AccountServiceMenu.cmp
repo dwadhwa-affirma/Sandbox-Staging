@@ -1,4 +1,4 @@
-<aura:component implements="flexipage:availableForAllPageTypes,force:appHostable,force:hasRecordId,force:hasSObjectName,force:hasSObjectName,force:lightningQuickAction" controller="AccountServiceMenuController">
+<aura:component implements="flexipage:availableForAllPageTypes,force:appHostable,lightning:isUrlAddressable,force:hasRecordId,force:hasSObjectName,force:hasSObjectName,force:lightningQuickAction" controller="AccountServiceMenuController">
 <aura:handler value="{!this}" name="init" action="{!c.doInit}"/>
 <aura:attribute name="Menu" type="string[]"/>
 <aura:attribute name="SubMenu" type="Object"/>
@@ -151,6 +151,7 @@
                        
                     </aura:if>
                     </aura:iteration>
+                    
                      </div>
                 </li>	
             </ul>
@@ -160,8 +161,11 @@
 	</tr>
 	
 	</aura:iteration>
-
-	
+	<div style="margin-left: 10%;" >	
+		<ul style="list-style-type: disc;">					
+	    	<li class="clsSubMenu"><a onclick="{!c.xpressRefiPageCall}" id="xpressRefi" style="">XpressRefi</a></li>
+		</ul>
+	</div>
 </table>
 </div>
 

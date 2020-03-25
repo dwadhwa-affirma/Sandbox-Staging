@@ -41,6 +41,16 @@
 		 ele.style = '';
 	},
 	
+	xpressRefiPageCall : function (component, event, helper) {
+        
+        var recordId = component.get("v.recordId");
+        var x = screen.width/2 - 900/2;
+        var y = screen.height/2 - 600/2;
+        var url = '/apex/xpressRefi?MemberId=' + recordId;
+        window.open(url, '_blank', 'height=500,width=900,left='+x+',top='+y);
+       
+	},
+ 
 	loadComponent : function(component, event, helper) {		
 		 var submenu = component.get("v.SubMenu");
 		 var clicked = event.target.text;
