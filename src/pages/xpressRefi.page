@@ -60,7 +60,9 @@
               <apex:inputField value="{!Xpress_Refi__c.Current_Principal_and_Interest_Payment__c}"/>
               <apex:inputField value="{!Xpress_Refi__c.Current_Balance__c}"/>
             </apex:pageBlockSection>
-            <apex:commandButton rendered="{!acList.size>0}" value="save"  action="{!Save}"/>
+            <apex:commandButton style="position:relative;left:325px;" rendered="{!acList.size>0}" value="save"  action="{!Save}"/>
+            <apex:commandButton style="position:relative;left:325px;" value="Cancel" onclick="window.close();"/>
+            
             </apex:form>
        
     </apex:pageblock>
