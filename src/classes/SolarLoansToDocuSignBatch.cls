@@ -78,7 +78,7 @@ global class SolarLoansToDocuSignBatch implements Database.Batchable<sObject>,Da
             
             // ---------------------------- Fetching DocusignId and inserting into Solar Loan record---------------------------------//
             
-            /*DocuSignId = String.valueOf(myEnvelope).substringAfter('docuSignId=');
+            DocuSignId = String.valueOf(myEnvelope).substringAfter('docuSignId=');
             DocuSignId = String.valueOf(DocuSignId).substringBefore(',');
             system.debug('tttt1'+DocuSignId);
             
@@ -86,12 +86,12 @@ global class SolarLoansToDocuSignBatch implements Database.Batchable<sObject>,Da
             s.id = scopeSLIDs.get(i).Id;
             s.DocuSignId__c = DocuSignId.toUpperCase();
             
-            SolarLoansToUpdate.add(s);*/
+            SolarLoansToUpdate.add(s);
         }
         
-        /*if(SolarLoansToUpdate.size() > 0){
+        if(SolarLoansToUpdate.size() > 0){
         	update SolarLoansToUpdate;
-        }*/
+        }
     }
     
     global void finish(Database.BatchableContext BC){
