@@ -1,22 +1,32 @@
-trigger ContentDocumnetDelete on ContentDocument (before delete, before insert) {
+trigger ContentDocumnetDelete on ContentDocument (before delete, before insert, after delete) {
     
 	List<Approve_Attachment__c> toupdateApproveAttachment  = new List<Approve_Attachment__c>();    
     Map<id,ContentDocumentLink> attachmentDetails = new Map<id,ContentDocumentLink >();
     set<Id> attachmentIdsForSolarLoan = new set<Id>();
     set<Id> ContentVersionIds = new set<ID>();
+    Set<id> parent = new Set<id>();
+    List<Solar_Loans__c> slcountUpdate = new List<Solar_Loans__c>();
     
-    if(Trigger.isDelete && Trigger.isBefore){  	
+    if(Trigger.isDelete){  	
     	system.debug('Content document link delete');
+        
         for(ContentDocument d : Trigger.old){
         	attachmentIdsForSolarLoan.add(d.id);
         	
+        	
             system.debug('Document ID - ' + d.Id);
             system.debug('d - ' + d);
-            List<ContentDocumentLink> lstContentDocumentLinks = [select Id,LinkedEntityId, ContentDocumentId, ContentDocument.Title, ContentDocument.FileType from ContentDocumentLink where ContentDocumentId =: d.Id];           
+            List<ContentDocumentLink> lstContentDocumentLinks = [select Id,LinkedEntityId, ContentDocumentId, ContentDocument.Title, ContentDocument.FileType from ContentDocumentLink where ContentDocumentId =: d.Id ALL ROWS];           
         	if(!lstContentDocumentLinks.isEmpty())
             {
                 for(ContentDocumentLink a : lstContentDocumentLinks)
                 {
+                	 Schema.SObjectType objType = a.LinkedEntityId.getsobjecttype();
+                	 if(objType == Solar_Loans__c.sObjectType){
+                	 	parent.add(a.LinkedEntityId);
+                	 }
+                	 system.debug('parent'+parent);
+                	 
                 	 List<lead> l = new List<lead>();
 	    			 l = [select id, Status from lead where id =: a.LinkedEntityId];
 	    			 if(l.size() != 0)
@@ -36,6 +46,20 @@ trigger ContentDocumnetDelete on ContentDocument (before delete, before insert) 
                        
         }
         
+        
+      	// ----------------------------Decreasing count of attachments under "Solar Loans" record--------------------------------//
+      	
+	    for (Solar_Loans__c sl : [select Id, count__c ,(SELECT Id FROM ContentDocumentLinks)  from Solar_Loans__c where Id IN :parent]){
+			Solar_Loans__c s = new Solar_Loans__c();
+	    	s.id = sl.id;
+	    	s.count__c = String.valueof(sl.ContentDocumentLinks.size());
+	    	slcountUpdate.add(s);
+	    	system.debug('ttt');
+	   	}
+	   	system.debug('slcountUpdate'+slcountUpdate);
+	    if(slcountUpdate.size() > 0)	
+	 		update slcountUpdate;
+       
         // ----------------------------Start Deleting an Attachment detail in "Solar Loan Document" object--------------------------------------------------//
         
        /* For(ContentVersion contentVersion : [select id,ContentDocumentId from ContentVersion where ContentDocumentId in: attachmentIdsForSolarLoan]){

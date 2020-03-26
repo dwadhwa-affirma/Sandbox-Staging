@@ -8,6 +8,8 @@ trigger ContentDocumentLinkUpdate on ContentDocumentLink (after update,after del
      Map<Id, ContentDocument> cs = new Map<Id, ContentDocument>(); 
      Map<id,Solar_Loans__c> sl = new Map<id,Solar_Loans__c >();
      Map<ID,ID> cv = new Map<ID,ID>();
+     Map<Id,ContentVersion> cvNewFile = new Map<ID,ContentVersion>();
+     List<Solar_Loans__c> slcountUpdate = new List<Solar_Loans__c>();
      
      
      Set<id> parent = new Set<id>();
@@ -26,7 +28,7 @@ trigger ContentDocumentLinkUpdate on ContentDocumentLink (after update,after del
          		parent.add(c.LinkedEntityId);
          	}
         }
-        
+              
         For(ContentDocument cd : [select id,title,CreatedDate,OwnerId from ContentDocument where id in: listCD]){
         	cs.put(cd.id,cd);
         }
@@ -35,8 +37,9 @@ trigger ContentDocumentLinkUpdate on ContentDocumentLink (after update,after del
         	sl.put(solarLoan.id, solarLoan);
         }
         
-        For(ContentVersion contentVersion : [select id,ContentDocumentId from ContentVersion where ContentDocumentId in: listCD]){
+        For(ContentVersion contentVersion : [select id,NewFile__c,ContentDocumentId from ContentVersion where ContentDocumentId in: listCD]){
         	cv.put(contentVersion.ContentDocumentId,contentVersion.id);
+        	cvNewFile.put(contentVersion.ContentDocumentId,contentVersion);
         }
         system.debug('test'+cv);
         
@@ -52,6 +55,7 @@ trigger ContentDocumentLinkUpdate on ContentDocumentLink (after update,after del
 	            
 		            SolarLoan_Document__c solarLoanObj = new SolarLoan_Document__c();
 		            solarLoanObj.Attachment_Id__c = cv.get(c.ContentDocumentId);
+		            solarLoanObj.Name = cs.get(c.ContentDocumentId).title;
 		            solarLoanObj.Member_Number__c = sl.get(c.LinkedEntityId).Member_Number__c;
 		            solarLoanObj.IsMovedToOnBase__c = false;
 		            solarLoanObj.Document_Type__c = 'Solar Loan';
@@ -59,6 +63,7 @@ trigger ContentDocumentLinkUpdate on ContentDocumentLink (after update,after del
 	                solarLoanObj.Solar_Loans__c = c.LinkedEntityId;
 	                solarLoanObj.Attachment_Owner__c = cs.get(c.ContentDocumentId).OwnerId;
 	                solarLoanObj.Attachment_Created_On__c = cs.get(c.ContentDocumentId).CreatedDate;
+	                solarLoanObj.NewFile__c = cvNewFile.get(c.ContentDocumentId).NewFile__c;
 	            	
 	            	solarLoanAttachmentsList.add(solarLoanObj);
 	            	
@@ -83,6 +88,20 @@ trigger ContentDocumentLinkUpdate on ContentDocumentLink (after update,after del
         mem.Attachment_Number__c = mem.ContentDocumentLinks.size() + mem.Attachments.size();
         MemberlsttoUpdate.add(mem);
        
+    }
+    
+    // ----------------------------Start Counting number Attachments for Solar Loan record--------------------------------------//
+    
+    for (Solar_Loans__c sl : [select Id, count__c ,(SELECT Id FROM ContentDocumentLinks)  from Solar_Loans__c where Id IN :parent])
+    {
+        Solar_Loans__c s = new Solar_Loans__c();
+        s.id = sl.id;
+        s.count__c = String.valueof(sl.ContentDocumentLinks.size());
+        slcountUpdate.add(s);
+       
     }    
-     update MemberlsttoUpdate;
+     if(MemberlsttoUpdate.size() > 0)
+     	update MemberlsttoUpdate;
+     if(slcountUpdate.size() > 0)	
+     	update slcountUpdate;
 }
