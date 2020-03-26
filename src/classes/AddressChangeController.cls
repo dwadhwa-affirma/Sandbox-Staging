@@ -18,6 +18,7 @@ public class AddressChangeController {
 		}
 		       
         strMap.put('FlowURL',FlowURL);
+        strMap.put('UserId',UserInfo.getUserId());
         return strMap; 
     }
        // --------------------- Get Flow URL from Custom Settings..................//       	
