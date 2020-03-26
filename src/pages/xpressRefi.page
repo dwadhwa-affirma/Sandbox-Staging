@@ -1,5 +1,5 @@
 <apex:page standardController="Xpress_Refi__c" extensions="XpressRefi_Controller">
-    <div id="InnternalDiv" style="height:550px; width:800px; position:relative;left:75px;" >
+    <div id="InnternalDiv" style="height:550px; width:800px; position:relative;left:50px;" >
   
   <apex:pageBlock title="Select the Loan">
     <apex:form >
@@ -27,6 +27,7 @@
        	 
     <apex:pageblock >
        <apex:form id="out"> 
+       <apex:pageMessages ></apex:pageMessages>
                 <apex:pageBlockSection title="Applicants Information" id="test"  rendered="{!acList.size>0}" columns="2">
                    	  <apex:inputField value="{!xprs.name}"/>
                  	  <apex:inputField value="{!xprs.Member_Number__c}"/>
