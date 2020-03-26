@@ -1,4 +1,4 @@
-<aura:component  implements="flexipage:availableForAllPageTypes,force:appHostable,force:hasRecordId,force:lightningQuickActionWithoutHeader,force:hasSObjectName" controller="OOWAccountNumber" >
+<aura:component  implements="flexipage:availableForAllPageTypes,force:appHostable,force:hasRecordId,force:lightningQuickActionWithoutHeader,force:hasSObjectName" controller="" >
 	<aura:handler value="{!this}" name="init" action="{!c.doInit}" />
     <aura:attribute name= "status" type="string" default="In Process"/>
     <aura:attribute name= "reason" type="string" />
