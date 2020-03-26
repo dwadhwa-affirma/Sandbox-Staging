@@ -179,16 +179,16 @@ trigger CaseTrigger on Case (before insert, before update, after insert, after u
                     updateCaseRecordType(c);
                 }
             }
-             /* Code Added by Dhwani Bhavsar to send Travel Notification Emails/SMS if it is created from Boomi Flow*/
+             // Code Added by Dhwani Bhavsar to send Travel Notification Emails/SMS if it is created from Boomi Flow
               for (Case c : Trigger.new){
-              	 Case oldCase = Trigger.oldMap.get(c.Id);              	
-              	if(c.Primary_Category__c == 'Card Services' && c.Secondary_Category__c == 'ATM-Debit' && c.Tertiary_Category__c == 'Travel Notification' && (String.isBlank(oldCase.Description) && !String.isBlank(c.Description))){         		
-    			
-    				CaseTriggerHandler handler = new CaseTriggerHandler();
-    				handler.AfterUpdateMCSendNotification(Trigger.new);
-              	}
+                 Case oldCase = Trigger.oldMap.get(c.Id);               
+                if(c.Primary_Category__c == 'Card Services' && c.Secondary_Category__c == 'ATM-Debit' && c.Tertiary_Category__c == 'Travel Notification' && (String.isBlank(oldCase.Description) && !String.isBlank(c.Description))){               
+                
+                    CaseTriggerHandler handler = new CaseTriggerHandler();
+                    handler.AfterUpdateMCSendNotification(Trigger.new);
+                }
               }
-             /* Code Added by Dhwani Bhavsar to send Travel Notification Emails/SMS if it is created from Boomi Flow*/
+             // Code Added by Dhwani Bhavsar to send Travel Notification Emails/SMS if it is created from Boomi Flow
         }  
     }
    
