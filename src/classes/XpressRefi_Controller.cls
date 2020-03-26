@@ -133,7 +133,13 @@ public class XpressRefi_Controller {
         if(ListXpressToInsert.size() > 0){
         	
         	insert ListXpressToInsert;	
-        }	
+        }
+        else{
+        	ApexPages.addmessage(new ApexPages.message(ApexPages.severity.WARNING,'Please enter values'));
+	    	return null;
+		} 
+        
+        	
     	return null;
     }
     
