@@ -76,6 +76,8 @@ trigger AddressChangeLogTrigger on AddressChangeLog__c (before insert) {
                 caseobj.Primary_Category__c = scList[0].Primary_Category__c;
                 caseobj.Secondary_Category__c = scList[0].Secondary_Category__c;
                 caseobj.Tertiary_Category__c = scList[0].Teritiary_Category__c; 
+                system.debug('user++++'+objAddressChange.Updated_By__c);
+                caseobj.CreatedById= objAddressChange.Updated_By__c;
                 
                 if(!String.IsBlank(objAddressChange.Address2_New__c) && String.IsBlank(objAddressChange.Address_New__c)){
                 	objAddressChange.Address_New__c = objAddressChange.Address2_New__c;
@@ -190,7 +192,7 @@ trigger AddressChangeLogTrigger on AddressChangeLog__c (before insert) {
                   } 
                 
                 
-                 // -------------------- Create Case for AddressChange..................//
+                 // --------------------End: Create Case for AddressChange..................//
                  
                  
                   // --------------------- Attach multiple Accounts with case..................//
