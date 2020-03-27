@@ -133,14 +133,16 @@ public class XpressRefi_Controller {
         if(ListXpressToInsert.size() > 0){
         	
         	insert ListXpressToInsert;	
+        	PageReference pageRef = new PageReference('/' + ListXpressToInsert[0].id);
+			pageRef.setredirect(true);
+			return pageRef;
         }
         else{
         	ApexPages.addmessage(new ApexPages.message(ApexPages.severity.WARNING,'Please enter values'));
 	    	return null;
 		} 
         
-        	
-    	return null;
+       
     }
     
   }
