@@ -1,9 +1,12 @@
-trigger SolarLoanTrigger on Solar_Loans__c (after insert, after update) {
+trigger SolarLoanTrigger on Solar_Loans__c (after insert, after update, before update) {
     
     Set<Id> SLIds = new Set<Id>();
+    Set<Id> SLIdsForRouting = new Set<Id>();
     Map<Id, Solar_Loans__c> SLForBranchIds = new Map<Id, Solar_Loans__c>();
     List<Solar_Loans__c> SLToUpdates = new List<Solar_Loans__c>();
+    List<Solar_Loans__c> SLToUpdatesForRouting = new List<Solar_Loans__c>();
     List<String> SLMemberNumber = new List<String>();
+    
     
     if(Trigger.isInsert){
         for(Integer i=0; i<trigger.new.size(); i++){
@@ -23,7 +26,21 @@ trigger SolarLoanTrigger on Solar_Loans__c (after insert, after update) {
         } 
     }
     
-    if(Trigger.isUpdate){
+    
+    //------------------------------- Checking if the status 'Completed' and Routing Number is 'Changed' ------------------------//
+    	
+    if(Trigger.isBefore && Trigger.isUpdate){
+        
+        for(Integer i=0; i<trigger.new.size(); i++){
+			if(trigger.new[i].Routing_Number__c != trigger.old[i].Routing_Number__c && trigger.new[i].Routing_Number__c != null && trigger.new[i].Status__c == 'Completed'){
+    			trigger.new[i].Review_needed__c = true;
+    		}
+        }
+              
+    }
+    		
+    if(Trigger.isAfter && Trigger.isUpdate){
+    	
         for(Integer i=0; i<trigger.new.size(); i++){
         
             //------------------------------- Checking if the status is being changed and status = 'ACH Pending'-----------------------------------------------//
@@ -42,32 +59,36 @@ trigger SolarLoanTrigger on Solar_Loans__c (after insert, after update) {
             	SLForBranchIds.put(trigger.new[i].id, trigger.new[i]);
                  SLMemberNumber.add(trigger.new[i].Member_Number__c);
             }
-        } 
-    }
-    
-    
-    List<Account_Details__c> adList = [select id, Name, Brand__c, ID1__c, TypeTranslate__c,RecType__c from Account_Details__c where Name in:SLMemberNumber and Brand__c != null and RecType__c = 'LOAN' and TypeTranslate__c = '75-SECURED SOLAR'];
-    
-	for(Solar_Loans__c sl : SLForBranchIds.values()){
-	
-	    for(Account_Details__c a : adList){
-	    	
-	    	if(a.Name == sl.Member_Number__c){
-	    		
-	    		Solar_Loans__c s = new Solar_Loans__c();
-	    		s.id = SLForBranchIds.get(sl.id).id;
-	    		s.Brand__c = a.Brand__c;
-	    		s.Four_Digit_Share_Loan_Type__c = a.ID1__c;
-	    		SLToUpdates.add(s);
-	    	}
+            
+            
+	    } 
+	    	        
+	    //--------------------------Updating "Brand" and "Four Digit Share Loan Type" from "Account Details" record------------------//
+	    
+	    
+	    List<Account_Details__c> adList = [select id, Name, Brand__c, ID1__c, TypeTranslate__c,RecType__c from Account_Details__c where Name in:SLMemberNumber and Brand__c != null and RecType__c = 'LOAN' and TypeTranslate__c = '75-SECURED SOLAR'];
+	    
+		for(Solar_Loans__c sl : SLForBranchIds.values()){
+		
+		    for(Account_Details__c a : adList){
+		    	
+		    	if(a.Name == sl.Member_Number__c){
+		    		
+		    		Solar_Loans__c s = new Solar_Loans__c();
+		    		s.id = SLForBranchIds.get(sl.id).id;
+		    		s.Brand__c = a.Brand__c;
+		    		s.Four_Digit_Share_Loan_Type__c = a.ID1__c;
+		    		SLToUpdates.add(s);
+		    	}
+		    }
+		}
+	     
+	    if(SLToUpdates.size() > 0){
+	    
+	    	update SLToUpdates;	
 	    }
 	}
-    
-    if(SLToUpdates.size() > 0){
-    
-    	update SLToUpdates;	
-    }
-    
+        
     if(SLIds.size() > 0){
         
         //------------------------------- Calling Batch class with list of "Solar Loans" id to send a Docusign email---------------------------------------//
