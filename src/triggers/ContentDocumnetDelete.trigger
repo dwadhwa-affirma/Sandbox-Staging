@@ -52,7 +52,10 @@ trigger ContentDocumnetDelete on ContentDocument (before delete, before insert, 
 	    for (Solar_Loans__c sl : [select Id, count__c ,(SELECT Id FROM ContentDocumentLinks)  from Solar_Loans__c where Id IN :parent]){
 			Solar_Loans__c s = new Solar_Loans__c();
 	    	s.id = sl.id;
-	    	s.count__c = String.valueof(sl.ContentDocumentLinks.size());
+	    	if(sl.count__c == null)
+	    		s.count__c = String.valueof(sl.ContentDocumentLinks.size());
+	    	else	
+	    		s.count__c = String.valueOf(Integer.valueOf(sl.count__c) - 1) ;
 	    	slcountUpdate.add(s);
 	    	system.debug('ttt');
 	   	}

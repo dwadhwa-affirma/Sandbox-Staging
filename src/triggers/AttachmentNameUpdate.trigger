@@ -42,55 +42,112 @@ trigger AttachmentNameUpdate on Attachment (after update,after delete,after inse
     }
     
     if(Trigger.isInsert && Trigger.isBefore){
-    if(!Test.isRunningTest()){
-        system.debug('Rename called');
-         List<string> listAttachmentForCaseIds = new List<string>();
-         List<string> listAttachmentIds = new List<string>(); 
-         for(Attachment a : Trigger.New)
-         {
-            Schema.SObjectType objType = a.ParentId.getsobjecttype();
-            if(objType == Case.sObjectType && a.CreatedBy.Profile.Name != 'Messaging center Customers')
-            {
-              listAttachmentForCaseIds.add(a.parentId);
-            }
-            
-            listAttachmentIds.add(a.Id);
-         }
-         system.debug('Rename called 1' + listAttachmentIds);
-         List<Attachment> mapValues = [SELECT Id,ParentId,Name FROM Attachment where ParentId =: listAttachmentForCaseIds and Id not in:  listAttachmentIds];
-         system.debug('Rename called 2' + mapValues);
-         for(Attachment a : Trigger.New)
-         {
-            for(Attachment caseAttachment : mapValues)
-            {
-                if(a.ParentId == caseAttachment.parentId && a.Name == caseAttachment.Name)
-                {
-                    string s = string.valueOf(system.now()).replace(' ' ,'-').replace(':','-');
-                    
-                    String[] arrayFileName =  a.Name.split('\\.');
-                    string fileName = '';
-                    system.debug('arrayFileName' + arrayFileName);
-                    for (Integer i = 0; i < arrayFileName.size()-1; i++) {
-                        fileName = fileName + arrayFileName[i] + '.';
-                    }
-
-                    fileName = fileName +  ' - ' + s + '.' + arrayFileName[arrayFileName.size()-1];
-                    system.debug(fileName);
-                    
-                    
-                    a.Name = fileName;
-                    
-                    break;
-                    
-                }
-            }
-            
-         }
+    	
+        if(!Test.isRunningTest()){
+	        system.debug('Rename called');
+	         List<string> listAttachmentForCaseIds = new List<string>();
+	         List<string> listAttachmentIds = new List<string>(); 
+	         for(Attachment a : Trigger.New)
+	         {
+	            Schema.SObjectType objType = a.ParentId.getsobjecttype();
+	            if(objType == Case.sObjectType && a.CreatedBy.Profile.Name != 'Messaging center Customers')
+	            {
+	              listAttachmentForCaseIds.add(a.parentId);
+	            }
+	            
+	            listAttachmentIds.add(a.Id);
+	         }
+	         system.debug('Rename called 1' + listAttachmentIds);
+	         List<Attachment> mapValues = [SELECT Id,ParentId,Name FROM Attachment where ParentId =: listAttachmentForCaseIds and Id not in:  listAttachmentIds];
+	         system.debug('Rename called 2' + mapValues);
+	         for(Attachment a : Trigger.New)
+	         {
+	            for(Attachment caseAttachment : mapValues)
+	            {
+	                if(a.ParentId == caseAttachment.parentId && a.Name == caseAttachment.Name)
+	                {
+	                    string s = string.valueOf(system.now()).replace(' ' ,'-').replace(':','-');
+	                    
+	                    String[] arrayFileName =  a.Name.split('\\.');
+	                    string fileName = '';
+	                    system.debug('arrayFileName' + arrayFileName);
+	                    for (Integer i = 0; i < arrayFileName.size()-1; i++) {
+	                        fileName = fileName + arrayFileName[i] + '.';
+	                    }
+	
+	                    fileName = fileName +  ' - ' + s + '.' + arrayFileName[arrayFileName.size()-1];
+	                    system.debug(fileName);
+	                    
+	                    
+	                    a.Name = fileName;
+	                    
+	                    break;
+	                    
+	                }
+	            }
+	            
+	         }
          }
     }
     
     
     if(Trigger.isInsert && Trigger.isAfter){
+    	
+    	//-------------------------------Start Creating "Solar Loan Document" with appropriate "AttachmentId"--------------------//
+    	
+    	List<SolarLoan_Document__c> solarLoanAttachmentsList  = new List<SolarLoan_Document__c>();
+    	Map<id,Solar_Loans__c> sl = new Map<id,Solar_Loans__c >();
+    	Set<Id> parent = new Set<Id>();
+    	List<Solar_Loans__c> slcountUpdate = new List<Solar_Loans__c>();
+    	
+    	for(Attachment a : Trigger.New){
+        	parent.add(a.ParentId);
+     	}
+      
+    	For(Solar_Loans__c solarLoan : [select id, Member_Number__c from Solar_Loans__c where id in: parent]){
+        	sl.put(solarLoan.id, solarLoan);
+        }
+        
+    	for(Attachment a : Trigger.New){
+            Schema.SObjectType objType = a.ParentId.getsobjecttype();
+    		if(objType == Solar_Loans__c.sObjectType){
+    			
+    			SolarLoan_Document__c solarLoanObj = new SolarLoan_Document__c();
+	            solarLoanObj.Attachment_Id__c = a.id;
+	            solarLoanObj.Name = a.name;
+	            solarLoanObj.Member_Number__c = sl.get(a.ParentId).Member_Number__c;
+	            solarLoanObj.IsMovedToOnBase__c = false;
+	            solarLoanObj.Document_Type__c = 'Solar Loan';
+	            solarLoanObj.Document_Name__c =a.name;
+                solarLoanObj.Solar_Loans__c = a.ParentId;
+                solarLoanObj.Attachment_Owner__c = a.OwnerId;
+                solarLoanObj.Attachment_Created_On__c = a.CreatedDate;
+              
+            	solarLoanAttachmentsList.add(solarLoanObj);
+    		}
+    	}
+    	
+    	if(solarLoanAttachmentsList.size() > 0){
+    		insert solarLoanAttachmentsList;
+    	}
+    	
+    	for (Solar_Loans__c sl1 : [select Id, count__c ,(SELECT Id FROM Attachments)  from Solar_Loans__c where Id IN :parent]){
+    	
+	        Solar_Loans__c s = new Solar_Loans__c();
+	        s.id = sl1.id;
+	        if(sl1.count__c == null)
+	        	s.count__c = String.valueof(sl1.Attachments.size());
+	        else
+	        	s.count__c = String.valueof(sl1.Attachments.size() + 1 ) ;
+	        	
+	        slcountUpdate.add(s);
+        } 
+    	
+    	if(slcountUpdate.size() > 0)	
+     		update slcountUpdate;
+     	
+    	//-------------------------------End Creating "Solar Loan Document" with appropriate "AttachmentId"--------------------//
+    	
         List<OnBase_Document__c> onbaseAttachmentsList  = new List<OnBase_Document__c>();   
         List<string> Caseids = new List<string>();
         List<string> memberCommentids = new List<string>();
@@ -241,6 +298,30 @@ trigger AttachmentNameUpdate on Attachment (after update,after delete,after inse
        
     if(Trigger.isDelete && Trigger.isBefore){
             
+        //------------------------------------------Start Decreasing Count of attachments from "Solar Loan" record--------------//
+    	
+    	List<Solar_Loans__c> slcountUpdate = new List<Solar_Loans__c>();
+    	
+    	for(Attachment a : Trigger.old){
+        	parent.add(a.ParentId);
+     	}
+     	
+    	for (Solar_Loans__c sl1 : [select Id, count__c ,(SELECT Id FROM Attachments)  from Solar_Loans__c where Id IN :parent]){
+    	
+	        Solar_Loans__c s = new Solar_Loans__c();
+	        s.id = sl1.id;
+	        if(sl1.count__c == null)
+	        	s.count__c = String.valueof(sl1.Attachments.size());
+	        else
+	        	s.count__c = String.valueOf(Integer.valueOf(sl1.count__c) - 1) ;
+	        slcountUpdate.add(s);
+        } 
+    	
+    	if(slcountUpdate.size() > 0)	
+     		update slcountUpdate;
+    	
+    	//-----------------------------------------End Decreasing Count of attachments from "Solar Loan" record---------------//
+    	
             List<string> Caseids = new List<string>();
             for(Attachment a : Trigger.old){
                 List<lead> l = new List<lead>();

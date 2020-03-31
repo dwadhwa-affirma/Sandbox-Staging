@@ -96,7 +96,11 @@ trigger ContentDocumentLinkUpdate on ContentDocumentLink (after update,after del
     {
         Solar_Loans__c s = new Solar_Loans__c();
         s.id = sl.id;
-        s.count__c = String.valueof(sl.ContentDocumentLinks.size());
+        if(sl1.count__c == null)
+        	s.count__c = String.valueof(sl.ContentDocumentLinks.size());
+    	else 
+    		s.count__c = String.valueof(sl.ContentDocumentLinks.size() + 1);
+    		
         slcountUpdate.add(s);
        
     }    
