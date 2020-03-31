@@ -7,6 +7,10 @@ trigger SolarLoanTrigger on Solar_Loans__c (after insert, after update, before u
     List<Solar_Loans__c> SLToUpdatesForRouting = new List<Solar_Loans__c>();
     List<String> SLMemberNumber = new List<String>();
     
+    List<Solar_Loans__c> SLForMemberName = new List<Solar_Loans__c>();
+    List<String> SLMemberFirstName = new List<String>();
+    List<String> SLMemberLastName = new List<String>();
+    List<Solar_Loans__c> SLNameUpdate = new List<Solar_Loans__c>();
     
     if(Trigger.isInsert){
         for(Integer i=0; i<trigger.new.size(); i++){
@@ -23,7 +27,44 @@ trigger SolarLoanTrigger on Solar_Loans__c (after insert, after update, before u
             	SLForBranchIds.put(trigger.new[i].id, trigger.new[i]);
                 SLMemberNumber.add(trigger.new[i].Member_Number__c);
             }
-        } 
+            
+            //------------------------------- Link "Member" record with "Solar Loan" record -------------------------------------------//
+            
+             
+        	SLForMemberName.add(trigger.new[i]);
+            SLMemberFirstName.add(trigger.new[i].Primary_First_Name__c);
+            SLMemberLastName.add(trigger.new[i].Primary_Last_Name__c );
+            
+        }
+        
+        //--------------------------Updating "Member Name" based on "Name" field from Solar Loan record ---------------------------//
+    	
+		if(SLMemberFirstName.size() > 0 && SLMemberLastName.size() > 0){
+			
+			List<Account> memberList = [select id, Name, FirstName, LastName from Account where FirstName in:SLMemberFirstName and LastName in:SLMemberLastName];
+			
+			for(Solar_Loans__c slName : SLForMemberName){
+				
+				for(Account member : memberList){
+					
+					if(member.FirstName == slName.Primary_First_Name__c && member.LastName == slName.Primary_Last_Name__c){
+					
+						Solar_Loans__c sName = new Solar_Loans__c();
+			    		sName.id = slName.id;
+			    		sName.Member_Name__c = member.id;
+			    		SLNameUpdate.add(sName);
+		    			
+					}
+				}
+			}
+			
+			if(SLNameUpdate.size() > 0){
+	    
+	    		update SLNameUpdate;	
+    		}
+		}
+        
+         
     }
     
     
@@ -55,6 +96,11 @@ trigger SolarLoanTrigger on Solar_Loans__c (after insert, after update, before u
             	SLForBranchIds.put(trigger.new[i].id, trigger.new[i]);
                  SLMemberNumber.add(trigger.new[i].Member_Number__c);
             }
+            if(trigger.old[i].Name__c != trigger.new[i].Name__c && trigger.new[i].Name__c != null){ 
+            	SLForMemberName.add(trigger.new[i]);
+                SLMemberFirstName.add(trigger.new[i].Primary_First_Name__c);
+                SLMemberLastName.add(trigger.new[i].Primary_Last_Name__c );
+            }
             if(trigger.new[i].Four_Digit_Share_Loan_Type__c == null){ 
             	SLForBranchIds.put(trigger.new[i].id, trigger.new[i]);
                  SLMemberNumber.add(trigger.new[i].Member_Number__c);
@@ -63,6 +109,33 @@ trigger SolarLoanTrigger on Solar_Loans__c (after insert, after update, before u
             
 	    } 
 	    	        
+    	//--------------------------Updating "Member Name" based on "Name" field from Solar Loan record ---------------------------//
+    	
+		if(SLMemberFirstName.size() > 0 && SLMemberLastName.size() > 0){
+			
+			List<Account> memberList = [select id, Name, FirstName, LastName from Account where FirstName in:SLMemberFirstName and LastName in:SLMemberLastName];
+			
+			for(Solar_Loans__c slName : SLForMemberName){
+				
+				for(Account member : memberList){
+					
+					if(member.FirstName == slName.Primary_First_Name__c && member.LastName == slName.Primary_Last_Name__c){
+					
+						Solar_Loans__c sName = new Solar_Loans__c();
+			    		sName.id = slName.id;
+			    		sName.Member_Name__c = member.id;
+			    		SLNameUpdate.add(sName);
+		    			
+					}
+				}
+			}
+			
+			if(SLNameUpdate.size() > 0){
+	    
+	    		update SLNameUpdate;	
+    		}
+		}
+		    	
 	    //--------------------------Updating "Brand" and "Four Digit Share Loan Type" from "Account Details" record------------------//
 	    
 	    
@@ -77,6 +150,7 @@ trigger SolarLoanTrigger on Solar_Loans__c (after insert, after update, before u
 		    		Solar_Loans__c s = new Solar_Loans__c();
 		    		s.id = SLForBranchIds.get(sl.id).id;
 		    		s.Brand__c = a.Brand__c;
+		    		s.Account_Number__c = a.id;
 		    		s.Four_Digit_Share_Loan_Type__c = a.ID1__c;
 		    		SLToUpdates.add(s);
 		    	}
