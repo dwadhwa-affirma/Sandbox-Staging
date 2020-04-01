@@ -84,23 +84,29 @@ trigger SolarLoanTrigger on Solar_Loans__c (after insert, after update, before u
     	
         for(Integer i=0; i<trigger.new.size(); i++){
         
-            //------------------------------- Checking if the status is being changed and status = 'ACH Pending'-----------------------------------------------//
+            //------------------------------- Checking if the status is being changed and status = 'ACH Pending'-----------------//
             
             if(trigger.old[i].Status__c != 'ACH Pending' && trigger.new[i].Status__c == 'ACH Pending'){
                 SLIds.add(trigger.new[i].id);
             }
             
-            //------------------------------- Adding ids if the Member Number field is not null---------------------------------------------------------------//
+            //------------------------------- Adding ids if the Member Number field is not null----------------------------------//
             
-            if(trigger.old[i].Member_Number__c != trigger.new[i].Member_Number__c && trigger.new[i].Member_Number__c != null){ 
+            if(trigger.old[i].Member_Number__c != trigger.new[i].Member_Number__c || trigger.new[i].Account_Number__c == null){ 
             	SLForBranchIds.put(trigger.new[i].id, trigger.new[i]);
                  SLMemberNumber.add(trigger.new[i].Member_Number__c);
             }
-            if(trigger.old[i].Name__c != trigger.new[i].Name__c && trigger.new[i].Name__c != null){ 
+            
+            //------------------------------- Link "Member" record with "Solar Loan" record--------------------------------------//
+            
+            if(trigger.old[i].Name__c != trigger.new[i].Name__c || trigger.new[i].Member_Name__c == null){ 
             	SLForMemberName.add(trigger.new[i]);
                 SLMemberFirstName.add(trigger.new[i].Primary_First_Name__c);
                 SLMemberLastName.add(trigger.new[i].Primary_Last_Name__c );
             }
+            
+            //------------------------------- Update "Four Digit share/loan type" in "Solar Loan" record------------------------//
+            
             if(trigger.new[i].Four_Digit_Share_Loan_Type__c == null){ 
             	SLForBranchIds.put(trigger.new[i].id, trigger.new[i]);
                  SLMemberNumber.add(trigger.new[i].Member_Number__c);
@@ -109,7 +115,7 @@ trigger SolarLoanTrigger on Solar_Loans__c (after insert, after update, before u
             
 	    } 
 	    	        
-    	//--------------------------Updating "Member Name" based on "Name" field from Solar Loan record ---------------------------//
+    	//--------------------------Updating "Member Name" based on "Name" field from Solar Loan record -----------------------//
     	
 		if(SLMemberFirstName.size() > 0 && SLMemberLastName.size() > 0){
 			
