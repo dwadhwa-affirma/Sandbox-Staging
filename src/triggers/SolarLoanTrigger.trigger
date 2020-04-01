@@ -5,12 +5,13 @@ trigger SolarLoanTrigger on Solar_Loans__c (after insert, after update, before u
     Map<Id, Solar_Loans__c> SLForBranchIds = new Map<Id, Solar_Loans__c>();
     List<Solar_Loans__c> SLToUpdates = new List<Solar_Loans__c>();
     List<Solar_Loans__c> SLToUpdatesForRouting = new List<Solar_Loans__c>();
-    List<String> SLMemberNumber = new List<String>();
+    Set<String> SLMemberNumber = new Set<String>();
     
     List<Solar_Loans__c> SLForMemberName = new List<Solar_Loans__c>();
-    List<String> SLMemberFirstName = new List<String>();
-    List<String> SLMemberLastName = new List<String>();
-    List<Solar_Loans__c> SLNameUpdate = new List<Solar_Loans__c>();
+    Set<String> SLMemberFirstName = new Set<String>();
+    Set<String> SLMemberLastName = new Set<String>();
+    
+    Map<Id,Solar_Loans__c> SolarLoanMap =new Map<Id,Solar_Loans__c>();
     
     if(Trigger.isInsert){
         for(Integer i=0; i<trigger.new.size(); i++){
@@ -52,15 +53,14 @@ trigger SolarLoanTrigger on Solar_Loans__c (after insert, after update, before u
 						Solar_Loans__c sName = new Solar_Loans__c();
 			    		sName.id = slName.id;
 			    		sName.Member_Name__c = member.id;
-			    		SLNameUpdate.add(sName);
-		    			
+			    		SLNameUpdateSet.add(sName);
+		    			SolarLoanMap.put(slName.id,sName);
 					}
 				}
 			}
-			
-			if(SLNameUpdate.size() > 0){
+			if(SolarLoanMap.size() > 0){
 	    
-	    		update SLNameUpdate;	
+	    		update SolarLoanMap.values();	
     		}
 		}
         
@@ -130,15 +130,16 @@ trigger SolarLoanTrigger on Solar_Loans__c (after insert, after update, before u
 						Solar_Loans__c sName = new Solar_Loans__c();
 			    		sName.id = slName.id;
 			    		sName.Member_Name__c = member.id;
-			    		SLNameUpdate.add(sName);
-		    			
-					}
+			    		//SLNameUpdateSet.add(sName);
+			    		SolarLoanMap.put(slName.id,sName);
+			    	}
 				}
 			}
 			
-			if(SLNameUpdate.size() > 0){
+			
+			if(SolarLoanMap.size() > 0){
 	    
-	    		update SLNameUpdate;	
+	    		update SolarLoanMap.values();	
     		}
 		}
 		    	
