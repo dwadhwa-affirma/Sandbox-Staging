@@ -81,7 +81,9 @@ public class SolarLoanToSymitar {
                 Reference = sl.Bank_Account_Number__c ;
                 MatchID3 = sl.ABA_Bank_Name__c;    
                 AccountNumber = sl.Member_Number__c;
-                req.setEndpoint('https://brscsymx.ctxcu.org/dev/EFT/CreateEft');
+                //req.setEndpoint('https://brscsymx.ctxcu.org/dev/EFT/CreateEft');
+                req.setEndpoint('https://symxapi.chevronfcu.org/dev/EFT/CreateEft');
+                req.setClientCertificateName('brscmcapi');
                 req.setMethod('POST');
                 req.setHeader('Content-Type', 'application/json');
                 req.setHeader('Accept', 'application/json');

@@ -1,14 +1,14 @@
 @isTest
-private class SolarLoanTest{
-  @testSetup
-  static void setupTestData(){
+private class SolarLoanDocTest{
+    
+ static testMethod void SolarLoanDocTestData(){
    
      //---------------------------------------- Creating Account Details record-----------------------------------//
      
      
      List<Account_Details__c> account_details_Obj = new List<Account_Details__c>{
                 new Account_Details__c(Name = '0000147163', Balance__c = 0.00, Combined_Account_ID__c = '0000147163S0100P0100', ID1__c = '0100', 
-                Onboarded__c = true, Reference__c = 'BC02',RecType__c = 'LOAN', TypeTranslate__c = '75-SECURED SOLAR')};
+                Onboarded__c = true, RecType__c = 'ACCT', TypeTranslate__c = '1-PRIMARY SHARE')};
     
      insert account_details_Obj;
     
@@ -44,22 +44,21 @@ private class SolarLoanTest{
      //---------------------------------------- Creating Solar Loan record---------------------------------------------//
      
      List<Solar_Loans__c> SolarLoan_Obj = new List<Solar_Loans__c>{
-        new Solar_Loans__c(Member_Number__c = '0000147163', Status__c = 'Completed', Brand__c = 'Spectrum', Primary_First_Name__c = 'Tania', Primary_Last_Name__c = 'Cabrera')};
+        new Solar_Loans__c(Member_Number__c = '0000265418', Status__c = 'Completed', Brand__c = 'Spectrum', Primary_First_Name__c = 'Tania', Primary_Last_Name__c = 'Cabrera')};
      Insert SolarLoan_Obj;
-      
-     Solar_Loans__c sl = new Solar_Loans__c();
-     sl.id =  SolarLoan_Obj[0].id;
-     sl.Four_Digit_Share_Loan_Type__c = ''; 
-     sl.Member_Number__c = '0000147165';
-     //sl.Status__c = 'ACH Pending';
-     update sl; 
      
      //---------------------------------------- Creating Solar Loan Document record-----------------------------------//
      
      List<SolarLoan_Document__c> SolarLoanDocList = new List<SolarLoan_Document__c>{
-         new SolarLoan_Document__c(Name = 'Test Document', Solar_Loans__c = SolarLoan_Obj[0].id)};      
+         new SolarLoan_Document__c(Name = 'Test Document', NewFile__c = true,Solar_Loans__c = SolarLoan_Obj[0].id)};      
      insert SolarLoanDocList;
-           
+     
+	SolarLoan_Document__c sd = new SolarLoan_Document__c();
+    sd.id =  SolarLoanDocList[0].id;
+    sd.NewFile__c = false;
+     
+    update sd;  
+   
      test.startTest();
      
      //---------------------------------------- Creating Content Version Record for Attachment---------------------------------------------//
@@ -77,57 +76,6 @@ private class SolarLoanTest{
      insert ListCDL;
       
      test.stopTest();
-  }
-  static testMethod void test_GetCaseAttachments_UseCase1(){
-    
-    test.startTest();  
-    
-    // ---------------------------Fetching Solar Loan record from test set up data -----------------------------------//
-  	List<Solar_Loans__c> listSolarLoan  =  [SELECT Id from Solar_Loans__c limit 1];
-  	
-  	// ---------------------------Fetching Cotent Document record from test set up data ------------------------------//
-  	List<ContentDocument> cdList = [SELECT Id, Title, LatestPublishedVersionId FROM ContentDocument limit 1];
-  	
-  	// ---------------------------Fetching Solar Loan document record from test set up data -------------------------//
-    List<SolarLoan_Document__c> SolarLoanDocList = [SELECT id from SolarLoan_Document__c limit 1];  
-      
-    // --------------------------------Calling non static method of SolarLoanAPI class------------------------------//  
-    
-  	List<SolarLoanDocumentAPI.SolarLoanDocumentAPIResopnse> listApiResponse = SolarLoanDocumentAPI.getSolarLoanDocuemnts();
-  	RestRequest req = new RestRequest();
-  	req.requestURI = '/services/apexrest/SolarLoanDocumentAPI';
-      
-  	req.requestBody = blob.valueof(listApiResponse[1].AttachmentID /*+ ',' + listApiResponse[1].AttachmentID*/);
-  	req.httpMethod = 'post';
-  	RestContext.request = req;
-  	
-  	// --------------------------------Calling static method from SolarLoanAPI class---------------------------------//
-  	
- 	SolarLoanDocumentAPI.updateSolarLoanDocuemnts();
-  	
-	//--------------------------------- Creating Custom setting data --------------------------------------------------//
-	SolarLoan_Document_Settings__c docSetting1 = new SolarLoan_Document_Settings__c();
-  	docSetting1.Days__c = 120;
-  	docSetting1.Name = 'Completed';
-  	insert docSetting1;
-  	
-  	SolarLoan_Document_Settings__c docSetting2 = new SolarLoan_Document_Settings__c();
-  	docSetting2.Days__c = 120;
-  	docSetting2.Name = 'Declined';
-  	insert docSetting2;
-  	
-  	SolarLoan_Document_Settings__c docSetting3 = new SolarLoan_Document_Settings__c();
-  	docSetting3.Days__c = 120;
-  	docSetting3.Name = 'Expired';
-  	insert docSetting3;
-  	
-  	//---------------------------------Calling SolarLoanDeleteAttachment class-------------------------------------//
-  	
-  	SolarLoanDocumentDeleteAttachments obj = new SolarLoanDocumentDeleteAttachments();
-  	obj.execute(null);
-  
-  	test.stopTest();
- 
   }
   
 }
