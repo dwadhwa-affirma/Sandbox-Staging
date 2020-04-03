@@ -53,8 +53,7 @@ trigger SolarLoanTrigger on Solar_Loans__c (after insert, after update, before u
 						Solar_Loans__c sName = new Solar_Loans__c();
 			    		sName.id = slName.id;
 			    		sName.Member_Name__c = member.id;
-			    		SLNameUpdateSet.add(sName);
-		    			SolarLoanMap.put(slName.id,sName);
+			    		SolarLoanMap.put(slName.id,sName);
 					}
 				}
 			}
