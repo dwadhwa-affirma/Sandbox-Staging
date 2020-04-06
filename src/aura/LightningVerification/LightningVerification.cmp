@@ -1,7 +1,9 @@
 <aura:component implements="flexipage:availableForAllPageTypes,force:appHostable,force:hasRecordId,lightning:isUrlAddressable" access="global" controller="MemberAuthenticationControllerLightning" >
+
 <aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
 <aura:handler name="render" value="{!this}" action="{!c.onRender}"/> 
 <aura:handler name="statusEvent" event="c:MemberIdEvent" action="{!c.MemberCompEvent}"/>
+
 <aura:attribute name="CurrentUrl" type="string" description="to store current url"/>
 <aura:attribute name="PhoneNumberEntered" type="string" description="to search from Phone Number "/>
 <aura:attribute name="MemberNumberEntered" type="string" description="to search from Member Number "/>
@@ -15,6 +17,7 @@
 <aura:attribute name="ActiveTab" type="string" description="store Active tab "/>
 <aura:attribute name="SelectedmemberId" type="string" description="store Selected Member id"/>
 <aura:attribute name="AccountNumber" type="String" />
+
 <aura:attribute name="IsRightDivVisible" type="boolean" default="false" description="to make right div visible on radio button selected"/>
 <aura:attribute name="Likedisable" type="Boolean" default="false" />
 <aura:attribute name="IsAuth" type="string" description="" default="true"/>
@@ -22,13 +25,12 @@
 <aura:attribute name= "reason" type="string" description="oowsReason" />
 <aura:attribute name= "notes" type="string" description="oowNotes" />
 <aura:attribute name= "Membertype" type="string" description="Foreign or Domestic Flag" />
-<aura:attribute name= "ScoringModel" type="object[]" description="Custom setting data" />
-<aura:attribute name="ScoreModelNegativeScore" type="integer" default="0" />
-<aura:attribute name="ScoreModelPositiveScore" type="integer" default="0" />
+
+<aura:attribute name="IsLevel1Achieved" type="Boolean" default="false" />
+<aura:attribute name="IsLevel2Achieved" type="Boolean" default="false" />
+<aura:attribute name="IsLevel3Achieved" type="Boolean" default="false" />
+
 <aura:attribute name="OTPValidStatus" type="string" default="" />
-<aura:attribute name="MaximumScore" type="integer" default="" />
-<aura:attribute name="NegativeScoreObtained" type="integer" default="0" />
-<aura:attribute name="PositiveScoreObtained" type="integer" default="0" />
 <aura:attribute name="AuthenticationDecision" type="string"/>
 <aura:attribute name="IsKYMTabVisible" type="Boolean" default="false" />
 <aura:attribute name="IsOOWTabVisible" type="Boolean" default="true" />
@@ -61,13 +63,25 @@
 <aura:attribute name="SelectedmemberName" type="string" />
 <aura:attribute name="AccountId" type="string" />
 <aura:attribute name="isViewHistoryModelOpen" type="boolean" default="false"/>
+
+<aura:attribute name="MaximumScore" type="integer" default="" />
+<aura:attribute name="NegativeScoreObtained" type="integer" default="0" />
+<aura:attribute name="PositiveScoreObtained" type="integer" default="0" />
 <aura:attribute name="CurrentAuthenticationLevel" type="string" default="Level 1"/>
 <aura:attribute name= "LevelModel" type="object[]" description="Custom setting data" />
 <aura:attribute name= "HighestAchievableLevel" type="string" description="" />
 <aura:attribute name= "ToGetHighestLevel" type="string" description="" />
 <aura:attribute name="RangeStart" type="Integer" default="0"/>
 <aura:attribute name="RangeEnd" type="Integer" default="0"/>
+<aura:attribute name= "ScoringModel" type="object[]" description="Custom setting data" />
+<aura:attribute name="ScoreModelNegativeScore" type="integer" default="0" />
+<aura:attribute name="ScoreModelPositiveScore" type="integer" default="0" />
 <aura:attribute name="MaximumPointsAvailable" type="Integer" default="0"/>
+<aura:attribute name="PointObtained" type="Integer" default="0"/>
+<aura:attribute name="TotalScoreRequiredToAchieveLevel" type="Integer" default="0"/>
+<aura:attribute name="CurrentScore" type="Integer" default="0"/>
+<aura:attribute name="NextTabLevel2" type="string[]" description=""/>
+<aura:attribute name="NextTabLevel3" type="string[]" description=""/>
 <aura:attribute name="IsKYMAvailableOnLoad" type="boolean" default="false"/>
 <aura:attribute name="IsOTPAvailableOnLoad" type="boolean" default="false"/>
 <aura:attribute name="IsDebitPinAvailableOnLoad" type="boolean" default="false"/>
@@ -75,13 +89,16 @@
 <aura:attribute name="IsPublicWalletAvailableOnLoad" type="boolean" default="false"/>
 <aura:attribute name="IsCFCUWalletAvailableOnLoad" type="boolean" default="false"/>
 <aura:attribute name="IsCFCUSectionVisible" type="boolean" default="true"/>
-<aura:attribute name="PointObtained" type="Integer" default="0"/>
+
 <aura:attribute name= "GUID" type="string" description="" />
 <aura:attribute name="PageURL" type="string" description="URL"/>
 <aura:attribute name="SSNFromURL" type="string" description="store SSN from URL"/>
 <aura:attribute name="MemberNumberFromURL" type="string" description="store Member Number from URL"/>
 <aura:attribute name="PhoneFromURL" type="string" description="store Phone Number from URL"/>
-<aura:attribute name="IVRGUIDFromUrl" type="string" />
+<aura:attribute name="IVRGUIDFromUrl" type="string"/>
+<aura:attribute name= "ReasonCodeFromURL" type="string" description="store from URL" />
+<aura:attribute name="HighFlagFromUrl" type="string" description="store from URL"/>
+
 <aura:attribute name="LastAchievable30day" type="string" description="" />
 <aura:attribute name="Supervisor" type="List" description="" />
 <aura:attribute name="isViewDescriptionModelOpen" type="boolean" default="false"/>
@@ -101,7 +118,9 @@
 <aura:attribute name="ReLoadRequired" type="boolean" default="false" />
 <aura:attribute name="ReMemberId" type="string" />
 <aura:attribute name="IsReLoaded" type="boolean" default="false" />
-
+<aura:attribute name="isFailedDesiredLevelModelOpen" type="boolean" default="false"/>
+<aura:attribute name="ManagerCallbackComments" type="string" />
+<aura:attribute name="IsGetReloadDataCalled" type="boolean" default="false"/>
     <article class="slds-card">
         <div class="slds-card__body slds-card__body_inner tblrow">
             <div class="demo-only slds-box leftBox">
@@ -195,10 +214,25 @@
 			<div >	
 				<aura:if isTrue ="{!v.IsRightDivVisible}">
 		            	<div class="demo-only slds-box rightBox">
+                            <lightning:layoutItem padding="around-small">
+		            						<div class="header-column">
+                                        		<div class="field-title field-reason"  title="Reason">
+                                        			<aura:if isTrue="{!not(empty(v.HighFlagFromUrl))}">
+                                        				<div class="field-reason-section">
+                                        				<span>{!v.HighFlagFromUrl}</span>
+                                       					</div>
+                                       				</aura:if> 
+                                       				<div class="field-reason-section">
+                                       				Reason:<span>{!v.ReasonCodeFromURL}</span>
+                                       				</div>
+                                      			</div>
+		                					</div>
+		        						</lightning:layoutItem>
 		     				<header class="slds-media slds-media_center slds-has-flexi-truncate">
-		         				<div class="c-container">
+		         				
+                                <div class="c-container">
 		        					<lightning:layout horizontalAlign="spread" >
-										<lightning:layoutItem padding="around-small">			
+										<lightning:layoutItem padding="around-small" class="warning-container">			
 											<p class="field-header"  title="WARNINGS">WARNINGS 
 		               				 			<lightning:icon iconName="utility:warning" alternativeText="Warning!" size="x-small" variant="warning"/>
 		               				 		</p>
@@ -226,40 +260,67 @@
                          							</aura:if>
 		           							</div>
 		        						</lightning:layoutItem>
+		   							
+		   							
 		   							</lightning:layout>
+		   							
+		   							
 								</div>
 		    				</header>
 		    			</div>
 		    			<div class="demo-only slds-box rightBox">
 			    			<header class="slds-media slds-media_center slds-has-flexi-truncate">
-			         			<div class="c-container">
-			               			
-			    						<lightning:layout horizontalAlign="spread">
+			         			<div class="c-container maap-questions">
+			               			<lightning:layout horizontalAlign="spread">
                                             <lightning:layoutItem padding="around-small">
                                             	<p class="field-header" title="AUTHINFO">MAAP LEVEL</p>
                                             </lightning:layoutItem>
-			    							<lightning:layoutItem padding="around-small">
-			        							<div class="header-column">
-			        								 
-			                						<p class="field-title" title="CurrentMAAPLevel">Current MAAP Level 
-			                							<lightning:buttonIcon iconName="utility:info" variant="bare" onclick="{! c.OpenDescription }" alternativeText="info" /> </p>
-			                							<p>{!v.CurrentAuthenticationLevel}</p>
-			                         			</div>
-			                         			
-			        						</lightning:layoutItem>
-			        						<lightning:layoutItem padding="around-small">
-			            						<div class="header-column">
-			                						<p class="field-title" title="HighAchievableLevel">Highest Achievable Level </p>
-			                						<p>{!v.HighestAchievableLevel}</p>
-			            						</div>
-			        						</lightning:layoutItem>
-			        					<lightning:layoutItem padding="around-small">
-			            					<div class="header-column">
-			                					<p class="field-title" title="LastAchievable30days">To Get to Highest Level</p>
-			                					<p>{!v.ToGetHighestLevel}</p>
-			            					</div>
-			        					</lightning:layoutItem>
-			        				</lightning:layout>
+                                            <div class="step-container">
+                                                <ul class="progressbar">
+                                                    <li class="active" >
+                                                    	<lightning:layoutItem>
+	                                                    	<div class="header-column">
+	                                                    		<p class="field-title show">Level 1</p>
+	                                                            <div class="step-indicator-content">
+	                                                            	<p>Level Reached</p>
+	                                                            </div>
+	                                                        </div>
+                                                        </lightning:layoutItem>
+                                                    </li>
+                                                    <li id="Step2" class="two">
+                                                    	<lightning:layoutItem>
+                                                            <div class="header-column">
+                                                                <p class="field-title show" title="HighAchievableLevel" id="Level2IndicatorLabel">To Get to Level 2 </p>
+                                                                <aura:if isTrue="{!or(v.CurrentAuthenticationLevel == 'Level 2',v.CurrentAuthenticationLevel == 'Level 3')}">
+                                                                	<p class="field-title show" title="Level2ReachedLabel" id="Level2ReachedLabel">Level 2 </p>
+                                                                </aura:if>
+                                                                 <div class="step-indicator-content">
+                                                                     <aura:iteration items="{!v.NextTabLevel2}" var="l2" indexVar="index">
+                                                                        <p>{!l2}</p>
+                                                                    </aura:iteration>
+                                                                 </div>
+                                                            </div>
+                                                        </lightning:layoutItem>
+                                                    </li>
+                                                    <li id="Step3" class="two">
+                                                    	<lightning:layoutItem>
+                                                            <div class="header-column">
+                                                                <p class="field-title show" title="LastAchievable30days" id="Level3IndicatorLabel">To Get to Level 3</p>
+                                                                <aura:if isTrue="{!v.CurrentAuthenticationLevel == 'Level 3'}">
+                                                                	<p class="field-title show" title="Level3ReachedLabel" id="Level3ReachedLabel">Level 3 </p>
+                                                                </aura:if>
+                                                                
+                                                                <div class="step-indicator-content">
+                                                                	<aura:iteration items="{!v.NextTabLevel3}" var="l3" indexVar="index">
+                                                                        <p>{!l3}</p>
+                                                                 	</aura:iteration>
+                                                                </div> 
+                                                            </div>
+                                                        </lightning:layoutItem>
+                                                    </li>
+                                                </ul>
+                                            </div>
+			    					</lightning:layout>
 								</div>
 			    			</header>
 						</div>	
@@ -333,7 +394,7 @@
 			<lightning:button variant="Neutral" label="Clear All" title="Clear All" onclick="{! c.clearAll }"/>
 			<lightning:button variant="brand" label="Convert to Lead" title="Convert to Lead" onclick="{!c.ConvertToLead}" />
 			<lightning:button aura:id="CreateCase" variant="brand" label="Unusual Activity Create Case" title="Unusual Activity Create Case" onclick="{! c.openCaseModel }"/>
-			<lightning:button aura:id="FailedDesiredLevel" variant="brand" label="Failed Desired Level" title="Failed Desired Level" onclick="{! c.AuthenticatedLog }"/>
+			<lightning:button aura:id="FailedDesiredLevel" variant="brand" label="Failed Desired Level" title="Failed Desired Level" onclick="{! c.openFailedDesiredLevelModel }"/>
 			<lightning:button aura:id="OverrideRequested" variant="brand" label="Override Requested" title="Override Requested" onclick="{! c.openModel}"/>
 			<lightning:button variant="brand" label="Save &amp; Go to Member Page" title="Save &amp; Go to Member Page" onclick="{!c.NavigateToMember}"/>
 		</div>
@@ -359,7 +420,10 @@
 	                        	
 							    <aura:iteration items="{!v.stages}" var="stage">
 							   		 <lightning:input aura:id= "requestType" name="radioGroup" label="{!stage}" value="{!stage}" type="radio"  onchange="{!c.onChange}"/>
-							    </aura:iteration>                         
+							    </aura:iteration> 
+							    <lightning:input aura:id= "ManagerComments" name="ManagerComments" label="Comments" class="hidden MarginTop" maxlength="40" messageWhenTooLong="Your entry must be at max 40 characters." />
+								<span  id ="errorSpaninputOne" class="error hidden">Please enter valid comments</span>                        
+							    
 							    <span  id ="errorSpaninput" class="error hidden">Please Select An Override Request Type </span>                       
 	                            <lightning:select aura:id= "Supervisor" class="hidden" name="Supervisor"  label="Override Request Supervisor" required="true" onchange="{!c.onChangeSupervior}" >
 	                            	<option value="Select">Select</option>
@@ -441,7 +505,7 @@
 	                                              alternativeText="close"
 	                                              variant="bare-inverse"
 	                                              class="slds-modal__close"/>
-	                        <h2 id="modal-heading-01" class="slds-text-heading_medium slds-hyphenate">View History</h2>
+	                        <h2 id="modal-heading-01" class="slds-text-heading_medium slds-hyphenate">MAAP History</h2>
 	                    </header>
 	                    <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-1">
 	                        
@@ -459,6 +523,34 @@
 	            <div class="slds-backdrop slds-backdrop_open"></div>
 	        </aura:if>
    		 </div>   
+         
+         <div class="slds-m-around_xx-large">
+            <aura:if isTrue="{!v.isFailedDesiredLevelModelOpen}">
+	            
+	            <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true" aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open">
+	                <div class="slds-modal__container" id="viewFDLDiv">
+	                    
+	                    <header class="slds-modal__header">
+	                        <lightning:buttonIcon iconName="utility:close"
+	                                              onclick="{! c.closeFailedDesiredLevelModel }"
+	                                              alternativeText="close"
+	                                              variant="bare-inverse"
+	                                              class="slds-modal__close"/>
+	                        <h2 id="modal-heading-01" class="slds-text-heading_medium slds-hyphenate">Desired Level</h2>
+	                    </header>
+	                    <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-1">
+	                        
+	                        	<div> <c:FailedDesiredLevel  recordId="{!v.SelectedmemberId}" GUID="{!v.GUID}" aura:id ="FailedDesiredLevel" /> </div>
+	                   			
+	                    
+               			</div>
+	                   
+	                </div>
+	               
+	            </section>
+	            <div class="slds-backdrop slds-backdrop_open"></div>
+	        </aura:if>
+   		 </div>
          
          <div class="slds-m-around_xx-large">
             <aura:if isTrue="{!v.isViewDescriptionModelOpen}">
@@ -482,7 +574,7 @@
                			</div>
 	                    <footer class="slds-modal__footer">
 	                        <lightning:button variant="neutral" label="Cancel" title="Cancel" onclick="{!c.closeViewDedcriptionModel }"/>
-	                                                    
+	                       	                             
 	                    </footer>
 	                </div>
 	               

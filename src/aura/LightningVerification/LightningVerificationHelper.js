@@ -35,6 +35,25 @@
 		}else{
 			component.set("v.IVRGUIDFromUrl", pageReference.state.c__IVRGUID);
 		}
+		if(pageReference.state.c__Reason == 'null' || pageReference.state.c__Reason == undefined || pageReference.state.c__Reason == '')
+		{
+			component.set("v.ReasonCodeFromURL", 'Unknown');
+		}else{
+			component.set("v.ReasonCodeFromURL", pageReference.state.c__Reason);
+		}
+		if(pageReference.state.c__HighValueFlag == 'null' || pageReference.state.c__HighValueFlag == undefined)
+		{
+			component.set("v.HighFlagFromUrl", '');
+			
+		}else if(pageReference.state.c__HighValueFlag == '1'){
+		
+			component.set("v.HighFlagFromUrl", 'HV');
+			
+		}else if(pageReference.state.c__HighValueFlag == '2'){
+		
+			component.set("v.HighFlagFromUrl", 'HP');
+		}
+		
 		var PINMatchFromURL = pageReference.state.c__PINMatch;
 		var SSNFromURL = component.get("v.SSNFromURL");
 		var MemberNumberFromURL =  component.get("v.AccountNumberFromURL");
@@ -121,12 +140,13 @@
     	$A.enqueueAction(action);
 	},
 	
-	MemberVerificationAttemptCheck : function(component, event, helper, memberid, DebitCardStatus,ReLoadRequired)
+	MemberVerificationAttemptCheck : function(component, event, helper, memberid, DebitCardStatus,ReLoadRequired, PointsObtained)
 	{
 		
 		var GUID = component.get("v.GUID");
 		var IVRGUIDFromUrl = component.get("v.IVRGUIDFromUrl");
 		var action = component.get("c.MemberVerificationAttemptsCheck");
+		
 		if(ReLoadRequired == undefined){
 			ReLoadRequired = false;
 		}
@@ -136,11 +156,14 @@
 		var PhoneFromURL = component.get("v.PhoneFromURL");
 		var PageURL = component.get("v.PageURL");
 		var DebitCardStatus = component.get("v.DebitCardStatus");
+		var ReasonCodeFromURL = component.get("v.ReasonCodeFromURL");
+		var HighFlagFromUrl = component.get("v.HighFlagFromUrl");
+		
 		if(PageURL == undefined){
-			action.setParams({"MemberId": memberid,"GUID": GUID,"DebitCardStatus": DebitCardStatus,"SSNFromURL": ' ',"MemberNumberFromURL": ' ',"PhoneFromURL": ' ', "PageURL" : ' ', "IVRGUIDFromUrl": IVRGUIDFromUrl,"ReLoadRequired": ReLoadRequired});
+			action.setParams({"MemberId": memberid,"GUID": GUID,"DebitCardStatus": DebitCardStatus,"SSNFromURL": ' ',"MemberNumberFromURL": ' ',"PhoneFromURL": ' ', "PageURL" : ' ', "IVRGUIDFromUrl": IVRGUIDFromUrl,"ReLoadRequired": ReLoadRequired, "ReasonCodeFromURL": ReasonCodeFromURL,"HighFlagFromUrl":HighFlagFromUrl, "PointsObtained":PointsObtained});
 		}
 		else{
-			action.setParams({"MemberId": memberid,"GUID": GUID,"DebitCardStatus": DebitCardStatus,"SSNFromURL": SSNFromURL,"MemberNumberFromURL":MemberNumberFromURL,"PhoneFromURL":PhoneFromURL,"PageURL":PageURL, "IVRGUIDFromUrl": IVRGUIDFromUrl,"ReLoadRequired":ReLoadRequired});
+			action.setParams({"MemberId": memberid,"GUID": GUID,"DebitCardStatus": DebitCardStatus,"SSNFromURL": SSNFromURL,"MemberNumberFromURL":MemberNumberFromURL,"PhoneFromURL":PhoneFromURL,"PageURL":PageURL, "IVRGUIDFromUrl": IVRGUIDFromUrl,"ReLoadRequired":ReLoadRequired,"ReasonCodeFromURL": ReasonCodeFromURL,"HighFlagFromUrl":HighFlagFromUrl, "PointsObtained":PointsObtained});
     	}
     	action.setCallback(this, function (response) {
   		 var status = response.getState();            
@@ -151,8 +174,8 @@
                     	component.set("v.Attempts", result['Attempts']);
                     	component.set("v.CFCUWalletStatusForDay",result['CFCUWalletStatusForDay']);
                     	component.set("v.PublicWalletStatusForDay",result['PublicWalletStatusForDay']);
-                    	component.set("v.OTPStatusForDay",result['OTPStatusForDay']);
-                    	component.set("v.OOWStatusForDay",result['OOWStatusForDay']);
+                    	component.set("v.OTPStatusForDay",result.IsOOWAvailable);
+                    	//component.set("v.OOWStatusForDay",result['OOWStatusForDay']);
                     	component.set("v.ShowFailedDesiredLevel",true);
                     	component.set("v.ShowFailedDesiredLevelCount",result['Show Failed Desired Level']);
                     	component.set("v.AccountNumber", result['AccountNumber']);
@@ -178,7 +201,12 @@
 					    component.set("v.CFCUWalletColor", result.CWColor);
 					    component.set("v.OOWColor", result.OOWColor);
 					    component.set("v.OTPColor", result.OTPColor);
-					    component.set("v.CurrentAuthenticationLevel", result.CurrentAuthenticationLevel);
+					    //component.set("v.CurrentAuthenticationLevel", result.LastAchievableLevel);
+					    component.set("v.NextTabLevel2", result.NextTabLevel2);
+					    component.set("v.NextTabLevel3", result.NextTabLevel3);
+					    component.set("v.IsLevel1Achieved", result.IsLevel1Achieved); 
+	                    component.set("v.IsLevel2Achieved", result.IsLevel2Achieved); 
+	                    component.set("v.IsLevel3Achieved", result.IsLevel3Achieved); 
 					    if(result['OOWStatusForDay'] == false)
 					    {
 					    	component.set("v.Likedisable", true);
@@ -198,7 +226,48 @@
 					    	 }
 					    }
 					    
-					    
+					    var ProgressBarStep2 = document.getElementById('Step2');
+                        var Level2IndicatorLabel =  document.getElementById('Level2IndicatorLabel');
+                        
+                        if(result.IsLevel2Achieved == true && result.NextTabLevel2 == 'Level Reached')
+                        {
+                        	ProgressBarStep2.classList.add('active');
+                        	Level2IndicatorLabel.classList.add('hidden');
+                        	Level2IndicatorLabel.classList.remove('show');
+                        	component.set("v.CurrentAuthenticationLevel", 'Level 2');
+                        }
+                        else if(result.IsLevel2Achieved == false && result.NextTabLevel2 == 'Not Achievable' )
+                        {
+                        	ProgressBarStep2.classList.add('three');
+                        	Level2IndicatorLabel.classList.add('hidden');
+                        	Level2IndicatorLabel.classList.remove('show');
+                        }
+                        else 
+                        {
+                        	ProgressBarStep2.classList.add('two');
+                        	
+                        }
+                      
+                        var ProgressBarStep3 = document.getElementById('Step3');
+                        var Level3IndicatorLabel =  document.getElementById('Level3IndicatorLabel');
+                        if(result.IsLevel3Achieved == true && result.NextTabLevel3 == 'Level Reached')
+                        {
+                        	ProgressBarStep3.classList.add('active');
+                        	Level3IndicatorLabel.classList.add('hidden');
+                        	Level3IndicatorLabel.classList.remove('show');
+                        	component.set("v.CurrentAuthenticationLevel", 'Level 3');
+                        }
+                        else if(result.IsLevel3Achieved == false && result.NextTabLevel3 == 'Not Achievable')
+                        {
+                        	ProgressBarStep3.classList.add('three');
+                        	Level3IndicatorLabel.classList.add('hidden');
+                        	Level3IndicatorLabel.classList.remove('show');
+                        }
+                        else 
+                        {
+                        	ProgressBarStep3.classList.add('two');
+                        	
+                        }
 					    
 		     		    if(result.OTPAttemptCount > 0){
                 		}
@@ -359,7 +428,7 @@
 		var IsKYMAvailable = component.get("v.IsKYMAvailableOnLoad");
 	    var IsOTPAvailable = component.get("v.IsOTPAvailableOnLoad");
 	    var IsDebitPinAvailable = component.get("v.IsDebitPinAvailableOnLoad");
-	    var IsOOWAvailable = component.get("v.IsOOWAvailableOnLoad");
+	    var IsOOWAvailable = component.get("v.OOWStatusForDay");
 	    var IsPublicWalletAvailable = component.get("v.IsPublicWalletAvailableOnLoad");
 	    var IsCFCUWalletAvailable =   component.get("v.IsCFCUWalletAvailableOnLoad");
 		var MemberType = component.get("v.Membertype");
@@ -369,7 +438,7 @@
     	var CurrentAuthenticationLevel = component.get("v.CurrentAuthenticationLevel");
     	if(IVRGUIDFromUrl != undefined && IVRGUIDFromUrl !='')
     	{
-    		helper.GetScoreDataForReload (component, event, helper,memberid,IVRGUIDFromUrl );
+    		//helper.GetScoreDataForReload (component, event, helper,memberid,IVRGUIDFromUrl );
     		MaximumPointsAvailable = component.get("v.MaximumPointsAvailable");
     		PointsObtained = component.get("v.PointObtained");
     		CurrentAuthenticationLevel= component.get("v.CurrentAuthenticationLevel");
@@ -462,21 +531,22 @@
 		  							MaximumPointsAvailable = parseInt(MaximumPointsAvailable) - parseInt(ScoreModelPositiveScore);
 		  							PointsObtained = parseInt(PointsObtained) + parseInt(ScoreModelPositiveScore);
 		  							IsOOWAvailable = false;
-		  							//component.set("v.OOWStatusForDay", true);
+		  							component.set("v.OOWStatusForDay", false);
 		  							helper.GetNextAuthenticationType(component, event, helper, memberid, MemberType, MaximumPointsAvailable, PointsObtained, IsKYMAvailable, IsOTPAvailable, IsDebitPinAvailable, IsOOWAvailable, IsPublicWalletAvailable, IsCFCUWalletAvailable);
-		  							
+		  							component.set("v.Likedisable",true);
 		  							
 		  						}
-		  						else{
+		  						else if(status == 'failed'){
 		  						
 		  							MaximumPointsAvailable = parseInt(MaximumPointsAvailable) -parseInt(ScoreModelNegativeScore);
 		  							IsOOWAvailable = false;
+		  							component.set("v.OOWStatusForDay", false);
 		  							helper.GetNextAuthenticationType(component, event, helper, memberid, MemberType, MaximumPointsAvailable, PointsObtained, IsKYMAvailable, IsOTPAvailable, IsDebitPinAvailable, IsOOWAvailable, IsPublicWalletAvailable, IsCFCUWalletAvailable);
-		  							
+		  							component.set("v.Likedisable",true);
 		  						}
 		  						
 		  						component.set("v.MaximumPointsAvailable",MaximumPointsAvailable );
-		  						component.set("v.PointsObtained",PointsObtained );
+		  						component.set("v.PointsObtained",PointsObtained);
 		  						 
 		  						var element = document.getElementsByClassName('demo-only slds-box rightBox');
 		  						var aElement;
@@ -504,7 +574,7 @@
 								};  
 	                       
 	                        
-	                        setTimeout(function () { 
+	                      /*  setTimeout(function () { 
 	                        			if(win.closed){
 	                        				//if(component.get("v.status") == 'passed' && component.get("v.status") != 'failed' && (component.get("v.status") == 'Cancelled' && Error !=null))
 	                        				if(component.get("v.status") == 'In Process')
@@ -521,7 +591,7 @@
 	                        	45000
 	                        	
 	                        	);
-	                        
+	                        */
 	                        
 			               }
 		               }
@@ -535,7 +605,7 @@
     		
     		
     	}
-    	component.set("v.Likedisable",true);
+    //	component.set("v.Likedisable",true);
     	
     
     },
@@ -548,8 +618,9 @@
     	var MemberNumber = component.get("v.MemberNumberEntered");
     	var SSNNumber = component.get("v.MemberNumberEntered"); 
     	var action = component.get("c.InsertLogData");
+    	var ManagerCallbackComments = component.get("v.ManagerCallbackComments");
     	var PageUrl='';
-    	action.setParams({"MemberId": memberid,"Decision":decision, "FDL": FDL, "PhoneNumber":PhoneNumber,"EnteredSSN":SSNNumber,"PageUrl":PageUrl, "OverrideType":OverrideType, "OverrideSupervisor":OverrideSupervisor,"GUID": GUID,"IVRGUIDFromUrl": IVRGUIDFromUrl });
+    	action.setParams({"MemberId": memberid,"Decision":decision, "FDL": FDL, "PhoneNumber":PhoneNumber,"EnteredSSN":SSNNumber,"PageUrl":PageUrl, "OverrideType":OverrideType, "OverrideSupervisor":OverrideSupervisor,"ManagerCallbackComments" : ManagerCallbackComments, "GUID": GUID,"IVRGUIDFromUrl": IVRGUIDFromUrl });
     	 action.setCallback(this, function (response) {
 		       	      		 var status = response.getState();            
 	                               if (component.isValid() && status === "SUCCESS") {
@@ -600,10 +671,56 @@
 	                                   }else{
 	                                	   component.set("v.ToGetHighestLevel",'Level Achieved');
 	                                   }
-	                                    
+	                                    component.set("v.NextTabLevel2", result.NextTabLevel2);
+	                                    component.set("v.NextTabLevel3", result.NextTabLevel3); 
+	                                    component.set("v.IsLevel2Achieved", result.IsLevel2Achieved); 
+	                                    component.set("v.IsLevel3Achieved", result.IsLevel3Achieved); 
 	                                   	component.set("v.HighestAchievableLevel", result.LevelofAuthentication);
-	                                   // component.set("v.MaximumPointsAvailable", MaximumPointsAvailable);
-	                                    component.set("v.CurrentAuthenticationLevel", result.CurrentAuthenticationLevel);
+	                                    
+	                                    
+	                                    
+	                                    var ProgressBarStep2 = document.getElementById('Step2');
+	                                    var Level2IndicatorLabel =  document.getElementById('Level2IndicatorLabel');
+	                                    
+	                                    if(result.IsLevel2Achieved == true && result.NextTabLevel2 == 'Level Reached')
+	                                    {
+	                                    	ProgressBarStep2.classList.add('active');
+	                                    	Level2IndicatorLabel.classList.add('hidden');
+	                                    	Level2IndicatorLabel.classList.remove('show');
+	                                    	component.set("v.CurrentAuthenticationLevel", 'Level 2');
+	                                    }
+	                                    else if(result.IsLevel2Achieved == false && result.NextTabLevel2 == 'Not Achievable' )
+	                                    {
+	                                    	ProgressBarStep2.classList.add('three');
+	                                    	Level2IndicatorLabel.classList.add('hidden');
+	                                    	Level2IndicatorLabel.classList.remove('show');
+	                                    }
+	                                    else 
+	                                    {
+	                                    	ProgressBarStep2.classList.add('two');
+	                                    	
+	                                    }
+	                                  
+	                                    var ProgressBarStep3 = document.getElementById('Step3');
+	                                    var Level3IndicatorLabel =  document.getElementById('Level3IndicatorLabel');
+	                                    if(result.IsLevel3Achieved == true && result.NextTabLevel3 == 'Level Reached')
+	                                    {
+	                                    	ProgressBarStep3.classList.add('active');
+	                                    	Level3IndicatorLabel.classList.add('hidden');
+	                                    	Level3IndicatorLabel.classList.remove('show');
+	                                    	component.set("v.CurrentAuthenticationLevel", 'Level 3');
+	                                    }
+	                                    else if(result.IsLevel3Achieved == false && result.NextTabLevel3 == 'Not Achievable')
+	                                    {
+	                                    	ProgressBarStep3.classList.add('three');
+	                                    	Level3IndicatorLabel.classList.add('hidden');
+	                                    	Level3IndicatorLabel.classList.remove('show');
+	                                    }
+	                                    else 
+	                                    {
+	                                    	ProgressBarStep3.classList.add('two');
+	                                    	
+	                                    }
 	                                }
 	   	       				});	
 	   	       
@@ -626,8 +743,9 @@
 	
 	GetReloadData : function(component, event, helper,memberid,GUID,IVRGUIDFromUrl ){
 	
+		var DebitCardStatus = component.get("v.DebitCardStatus");
 		var action = component.get("c.getDataForReload");
-		action.setParams({"memberid": memberid,"GUID":GUID,"IVRGUIDFromUrl":IVRGUIDFromUrl});
+		action.setParams({"memberid": memberid,"GUID":GUID,"IVRGUIDFromUrl":IVRGUIDFromUrl,"DebitCardStatus" : DebitCardStatus});
     	action.setCallback(this, function (response) {
 		       	      		 var status = response.getState();            
 	                               if (component.isValid() && status === "SUCCESS") {
@@ -635,7 +753,7 @@
 	                                   var result = response.getReturnValue();
 	                                   if(result.OOWLogData !=undefined){	                                   
 		                                   if(result.OOWLogData.length > 0){
-		                                	   component.set("v.IsOOWAvailableOnLoad",false);
+		                                	   component.set("v.IsOOWAvailableOnLoad",true);
 		                                	   component.set("v.status", result.OOWLogData[0].OOW_Status__c);
 		                                	   component.set("v.reason", result.OOWLogData[0].OOW_Reason__c);
 		                                	   component.set("v.notes", result.OOWLogData[0].OOW_Notes__c);
@@ -720,13 +838,55 @@
 																}
 															}
 	                                	   				}
-	                                	   	if(result.ScopePoints!= undefined){
-			                                	   component.set("v.MaximumPointsAvailable",result.ScopePoints[0].Maximum_Points_Available__c);
-			                                	   component.set("v.PointObtained",result.ScopePoints[0].Points_Obtained__c);
-			                                	   component.set("v.CurrentAuthenticationLevel",result.ScopePoints[0].Current_Authentication_Level__c);
-			                                	   component.set("v.HighestAchievableLevel",result.ScopePoints[0].Highest_Achievable_Level__c);
-			                                	   component.set("v.ToGetHighestLevel",result.ScopePoints[0].Next_Level__c);
+	                                	   	if(result.ScorePoints!= undefined){
+			                                	   component.set("v.MaximumPointsAvailable",result.ScorePoints[0].Maximum_Points_Available__c);
+			                                	   component.set("v.PointObtained",result.ScorePoints[0].Points_Obtained__c);
+			                                	   component.set("v.CurrentAuthenticationLevel",result.ScorePoints[0].Current_Authentication_Level__c);
+			                                	   component.set("v.HighestAchievableLevel",result.ScorePoints[0].Highest_Achievable_Level__c);
+			                                	   component.set("v.ToGetHighestLevel",result.ScorePoints[0].Next_Level__c);
 	                                	   		}
+	                                	   		component.set("v.NextTabLevel2", result.NextTabLevel2);
+	                                	   		component.set("v.NextTabLevel3", result.NextTabLevel3); 
+	                                	   		component.set("v.IsLevel2Achieved", result.IsLevel2Achieved); 
+	                                	   		var ProgressBarStep2 = document.getElementById('Step2');
+			                                    var Level2IndicatorLabel =  document.getElementById('Level2IndicatorLabel');
+			                                   
+	                                            if(result.IsLevel2Achieved == true && result.NextTabLevel2 == 'Level Reached')
+			                                    {
+			                                    	ProgressBarStep2.classList.add('active');
+			                                    	Level2IndicatorLabel.classList.add('hidden');
+			                                    	Level2IndicatorLabel.classList.remove('show');
+			                                    }
+			                                    else if(result.IsLevel2Achieved == false && result.NextTabLevel2 == 'Not Achievable' )
+			                                    {
+			                                    	ProgressBarStep2.classList.add('three');
+			                                    	Level2IndicatorLabel.classList.add('hidden');
+			                                    	Level2IndicatorLabel.classList.remove('show');
+			                                    }
+			                                    else 
+			                                    {
+			                                    	ProgressBarStep2.classList.add('two');
+			                                    	
+			                                    }
+			                                  
+			                                    var ProgressBarStep3 = document.getElementById('Step3');
+			                                    var Level3IndicatorLabel =  document.getElementById('Level3IndicatorLabel');
+			                                    if(result.IsLevel3Achieved == true && result.NextTabLevel3 == 'Level Reached')
+			                                    {
+			                                    	ProgressBarStep3.classList.add('active');
+			                                    	Level3IndicatorLabel.classList.add('hidden');
+			                                    	Level3IndicatorLabel.classList.remove('show');
+			                                    }
+			                                    else if(result.IsLevel3Achieved == false && result.NextTabLevel3 == 'Not Achievable')
+			                                    {
+			                                    	ProgressBarStep3.classList.add('three');
+			                                    	Level3IndicatorLabel.classList.add('hidden');
+			                                    	Level3IndicatorLabel.classList.remove('show');
+			                                    }
+			                                    else 
+			                                    {
+			                                    	ProgressBarStep3.classList.add('two');
+			                                    }
 	                             }
 	                                	   	
 	                                   
@@ -736,7 +896,22 @@
     	$A.enqueueAction(action); 
 		
 	},
-	
+	SaveFailedDesiredLevel: function(component, event, helper, memberid, FDLEventParam,GUID,IVRGUIDFromUrl){
+		
+		var action = component.get("c.SaveFailedDesiredLevelLog");
+		action.setParams({"MemberId": memberid,"Decision": 'Failed Desired Level', "FDL":FDLEventParam, "GUID":GUID, "IVRGUIDFromUrl":IVRGUIDFromUrl });
+		action.setCallback(this, function (response) {
+		       	      		 var status = response.getState();            
+	                               if (component.isValid() && status === "SUCCESS") {
+	                            
+	                                   var result = response.getReturnValue();                                  
+	                                    helper.GetFailedDesiredLevelLog(component,event,memberid); 
+	                                }
+	   	       				});	
+	   	       
+			$A.enqueueAction(action); 
+		
+	}
 	/*SaveScoreDataForReload : function(component, event, helper,memberid,IVRGUIDFromUrl, PointsObtained, MaximumPointsAvailable ){
 		CurrentAuthenticationLevel = component.get("v.CurrentAuthenticationLevel");
 		var action = component.get("c.SaveScoringDataForReload");

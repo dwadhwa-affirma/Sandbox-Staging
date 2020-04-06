@@ -12,7 +12,7 @@
     <aura:attribute name="QuestionAttempt" type="Integer" default="0"/>
     <aura:attribute name="IsSubmitClicked" type="boolean" default="false"/>
     <aura:attribute name="PublicWalletStatusForDay" type="boolean" default="true"/>
-    
+    <aura:attribute name="IsButtonDisabled" type="boolean" default="true"/>
 	<aura:attribute name="DOBMatch" type="String"/>
 	<aura:attribute name="IdNumberMatch" type="String"/>
 	<aura:attribute name="MMNMatch" type="String"/>
@@ -101,12 +101,12 @@
        				</div>
      			</div>
      	
-       			<div class="InnerDiv">
-       				<div class="leftDiv">&nbsp;
+       			<div class="InnerDiv submitButton">
+       				<div class="leftDiv submitButtonLabel">Submit Authentication Questions
       			</div>
        				<div class="btnAlign btn-submit">
        					<div class="CenterDiv mb-50">
-        					<lightning:button variant="brand" label="Submit 3 Answers" onclick="{! c.submit }" aura:id="SubmitButton" disabled = "{!v.PublicWalletStatusForDay == false}" />
+        					<lightning:button variant="brand" label="Submit Answers" onclick="{! c.submit }" aura:id="SubmitButton" disabled = "{!v.IsButtonDisabled}" />
      					</div> 	
      				</div>
      			</div>

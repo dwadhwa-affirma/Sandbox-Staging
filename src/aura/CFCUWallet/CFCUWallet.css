@@ -2,13 +2,13 @@
 }
 
 .THIS .leftDiv {
-    width: 330px;
-    display: inline-block;
+    width: 100%;
+    display: block;
 }
 
 .THIS .RightDiv {
-    display: inline-block;
-    margin-left: 20px;
+    display: block;
+     width: 100%;
 }
 
 .THIS .Hide {
@@ -30,11 +30,9 @@ height: auto;
 
 .THIS .InnerDiv {
    padding: 15px 0;
-   display: flex;
+   display: block;
   
 }
-
-
 .THIS .BtnOne {
    margin-right:0px;
 }
@@ -56,24 +54,47 @@ height: auto;
 	margin:20px auto;
 }
 .THIS .mr-80{
-	margin-right:80px;
+	padding: 5px;
+    padding-right: 40px;
+}
+.THIS .pr-40{
+	padding: 5px;
+    padding-right: 40px;
 }
 .THIS .select-auto-width > .slds-form-element__control > .slds-select_container{
     display: inline-block;
 }
 .THIS .vl {
   border-left: 3px solid grey;
-  height: 400px;
+  height: auto;
   /*width: 60%;
   float:right;*/
-width: 100%;
-float:none;
+width: 70%;
+float:left;
+    min-height: 200px;
+    background-color: #fbfbfc;
+    padding: 15px;
 }
 
 .THIS .mr-left10 {
   margin-left:0px;
 }
-.THIS .InnerDivContainer{
-	border-bottom: 1px solid rgb(221, 219, 218);
-    margin-bottom: 15px;
+.THIS .InnerDivContainer {float:left; width: 30%; padding-left:10px;}
+.THIS .InnerDiv {padding: 10px 10px 10px 0 !important;}
+.THIS .submitButton {background: #e3e6eb; padding: 15px 25px!important;}
+.THIS .clearfix::after {content: "";  clear: both;  display: table;}
+.THIS .header-column-title {width:300px !important;}
+.THIS .header-column-title .slds-truncate,.THIS .header-column p {font-size: 14px; line-height: 18px;}
+.THIS .MainDiv.MainField {border-bottom: 1px solid #d8dde6; margin-bottom: 0;}
+.THIS .rightBox p.field-header {text-transform : uppercase;}
+.THIS .CardDetails .vl {min-height: 340px;} 
+@media screen and (max-width: 1600px){
+    .THIS .InnerDiv {display:block !important;}
+    .THIS .leftDiv,.THIS .RightDiv {width:100% !important; display: block !important;}
+    .THIS .leftDiv.submitButtonLabel, .THIS .submitButton .RightDiv {width: 40% !important; display: inline-block !important;}
+   
+}
+
+@mediascreen and (max-width: 767px) {
+    .THIS .BtnOne {margin-bottom: 10px;}
 }

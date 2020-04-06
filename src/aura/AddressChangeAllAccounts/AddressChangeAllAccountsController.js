@@ -33,7 +33,7 @@
     		
     		//var URL = 'https://' + hostname + '/apex/flow?flow-id=04d6f632-1d3b-4b35-a0cd-6694169978a6&object-id=' + stracc + '&fullname=' + membername;
     		//var URL = 'https://' + hostname + '/apex/flow?flow-id=32853ba9-fabc-4943-99f7-344c8e187b0d&accountid=001j000000y6s29AAA';
-    		var URL = result.FlowURL + '&accountid='+recordid + '&UserId=' + result.UserId;
+    		var URL = result.FlowURL + '&accountid='+recordid + '&UserId=' + result.UserId + '&MemberName=' + result.MemberName;
     		//window.location.href = URL
     		window.open(URL,'_blank');
             

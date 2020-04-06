@@ -7,4 +7,6 @@
 	<aura:attribute name="CFCUWalletScoreObtained" type="Integer"/>
 	<aura:attribute name="CFCUWalletFailedCount" type="Integer"/>
 	<aura:attribute name="ActionType" type="String"/>
+	<aura:attribute name="FDLSelectedLevel" type="String"/>
+	<aura:attribute name="FDLShowPopup" type="boolean"/>
 </aura:event>

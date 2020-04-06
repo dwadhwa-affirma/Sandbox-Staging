@@ -8,7 +8,7 @@
 		 
 		this.getPicklistValues(component,picklistFields);
 	},	
-	 
+		
 	getPicklistValues : function(component, sobjFieldsmap) {		
 		var action = component.get("c.getPicklistValues");
 		

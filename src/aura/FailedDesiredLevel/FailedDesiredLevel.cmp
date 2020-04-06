@@ -1,0 +1,18 @@
+<aura:component implements="flexipage:availableForAllPageTypes,force:appHostable,force:hasRecordId,force:lightningQuickAction" access="global" controller="MemberAuthenticationControllerLightning">
+	
+	<aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
+	<aura:attribute name="memberId" type="string" default=""/>
+	<aura:attribute name="GUID" type="string" default=""/>
+	<aura:attribute name="LevelData" type="object[]" />
+	<aura:attribute name="SelectedLevel" type="string" default=""/>
+	 <aura:registerEvent name="statusEvent" type="c:MemberIdEvent" />
+	 <aura:iteration items="{!v.LevelData}" var="stage">
+		 <lightning:input aura:id= "requestType" name="radioGroup" label="{!stage.Name}" value="{!stage.Name}" type="radio"  onchange="{!c.onChange}" required="true"/>
+	</aura:iteration> 
+	 <span  id ="errorSpaninput" class="error hidden">Please Select Desired Level </span>
+	 <footer class="slds-modal__footer">
+	    <lightning:button variant="neutral" label="Cancel" title="Cancel" onclick="{!c.closeFailedDesiredLevelModel }"/>
+	    <lightning:button aura:id="FDLSaveClose" variant="brand"  label="Save and Close" title="Save and Close" onclick="{!c.FDLSaveClose}"/>                           
+	 </footer>
+	
+</aura:component>

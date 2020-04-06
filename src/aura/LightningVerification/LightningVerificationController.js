@@ -18,18 +18,22 @@
 	        var GUID =  component.get("v.GUID");
 	        var attribute1 = memberid;
 	        var ReLoadRequired = component.get("v.ReLoadRequired");
-	        if(ReLoadRequired != undefined && memberid != undefined && component.get("v.IsReLoaded") ==false){
+	        var PointsObtained = component.get("v.PointObtained");
+	        
+	        if(ReLoadRequired != undefined && (memberid != undefined && memberid != '') && component.get("v.IsReLoaded") ==false){
 	        
 	        	var element = document.getElementById(memberid);
-	        	element.checked = true;
+	        	if(element != undefined)
+	        		element.checked = true;
+	        		
 	        	component.set("v.IsRightDivVisible", true);
 	        	var DebitCardStatus = component.get("v.DebitCardStatus");
-				helper.MemberVerificationAttemptCheck(component, event, helper, memberid, DebitCardStatus, ReLoadRequired);
+				helper.MemberVerificationAttemptCheck(component, event, helper, memberid, DebitCardStatus, ReLoadRequired, PointsObtained);
 				component.set("v.IsReLoaded", true);
 				component.set("v.SelectedmemberId",memberid);
 				
 	        }
-	        
+	        var IsGetReloadDataCalled = component.get("v.IsGetReloadDataCalled");
 	        if(ReLoadRequired == true){	
 	        	
 	        	var PublicWalletComponent = component.find('PublicWallet');
@@ -40,8 +44,10 @@
 		        
 		        var OTPComponent = component.find('OTPAuthentication');		        
 		        if(OTPComponent!=undefined)OTPComponent.OTPMethod(attribute1,ReLoadRequired); 
-		              	            
-		        helper.GetReloadData(component, event, helper, memberid, GUID, IVRGUIDFromUrl);	
+		        if(IsGetReloadDataCalled == false){      	            
+		        	helper.GetReloadData(component, event, helper, memberid, GUID, IVRGUIDFromUrl);	
+		        	component.set("v.IsGetReloadDataCalled", true);
+		        }
 		    }
 		},
 		
@@ -53,8 +59,9 @@
 		var PointsObtained = component.get("v.PointObtained");
 		var IsKYMAvailable = component.get("v.IsKYMAvailableOnLoad");
 	    var IsOTPAvailable = component.get("v.IsOTPAvailableOnLoad");
-	    var IsDebitPinAvailable = component.get("v.IsDebitPinAvailableOnLoad");
-	    var IsOOWAvailable = component.get("v.IsOOWAvailableOnLoad");
+	    var DebitCardStatus = component.get("v.DebitCardStatus");
+	    //var IsDebitPinAvailable = component.get("v.IsDebitPinAvailableOnLoad");
+	    var IsOOWAvailable = component.get("v.OOWStatusForDay");
 	    var IsPublicWalletAvailable = component.get("v.IsPublicWalletAvailableOnLoad");
 	    var IsCFCUWalletAvailable =   component.get("v.IsCFCUWalletAvailableOnLoad");
 		var memberid = component.get("v.SelectedmemberId");
@@ -77,7 +84,21 @@
     	var FDLogPreviousDayNegativePoint =  parseInt(0);
     	var isFDLogCalculated = component.get("v.isFDLogCalculated");
     	var isPinChangeCalculated = component.get("v.isPinChangeCalculated");
-    	
+    	var FDLEventParam = event.getParam("FDLSelectedLevel");
+    	var FDLShowPopup = event.getParam("FDLShowPopup");
+    	var NegativeScoreObtained = component.get("v.NegativeScoreObtained");
+    	var TotalScoreRequiredToAchieveLevel = component.get("v.TotalScoreRequiredToAchieveLevel");
+    	var CurrentScore = component.get("v.CurrentScore");
+    	var IsDebitPinAvailable;
+	    if(DebitCardStatus =='true')
+	    {	IsDebitPinAvailable = true;
+	    }else
+	    {
+	    	IsDebitPinAvailable = false;
+	    }
+	    
+	    
+    	component.set("v.isFailedDesiredLevelModelOpen",FDLShowPopup);
     	for(var i=0; i< LevelModel.length; i++)
     	{
 	    	if(LevelModel[i].Tiers__c == component.get("v.HighestAchievableLevel")){
@@ -91,7 +112,6 @@
 	             component.set("v.CurrentLevelRangeEnd", LevelModel[i].Range_End__c);
 	    	}
     	}
-    	
     	var DebitPinPositivePoint;
     	var DebitPinNegativePoint;
     	for(var i=0; i< scoringModel.length; i++)
@@ -118,21 +138,7 @@
 	    	}
 	    	
     	}
-    	//---------------------------For checking MC Pin Change and Failed desired level score -----------//
     	
-    	
-    	if(isFDLogCalculated == false && isFDLogPreviousDay == true )
-		 {
-			MaximumPointsAvailable = parseInt(MaximumPointsAvailable) - parseInt(FDLogPreviousDayNegativePoint);	
-			component.set("v.isFDLogCalculated",true);
-		 }
-		if(isPinChangeCalculated == false && isPINChange == true )
-		 {
-			MaximumPointsAvailable = parseInt(MaximumPointsAvailable) - parseInt(PINChangeNegativePoint);
-			component.set("v.isPinChangeCalculated",true);
-		 }
-    	    	
-    	//---------------------------For checking MC Pin Change and Failed desired level score -----------//
     	  	
     	var ScoreModelNegativeScore = component.get("v.ScoreModelNegativeScore");
     	var ScoreModelPositiveScore = component.get("v.ScoreModelPositiveScore");
@@ -146,10 +152,31 @@
 		var GUID = component.get("v.GUID");
 		var OTPCancellAttept;
 		var isDebitPinCalculated = component.get("v.isDebitPinCalculated");
-		if(isDebitPinCalculated == false && DebitCardStatus == 'true' )
+		TotalScoreRequiredToAchieveLevel = RangeStart;
+		
+		//---------------------------For checking MC Pin Change and Failed desired level score -----------//
+    	
+    	
+    	if(isFDLogCalculated == false && isFDLogPreviousDay == true )
+		 {
+			MaximumPointsAvailable = parseInt(MaximumPointsAvailable) - parseInt(FDLogPreviousDayNegativePoint);	
+			component.set("v.isFDLogCalculated",true);
+		 }
+		/*if(isPinChangeCalculated == false && isPINChange == true )
+		 {
+			
+			MaximumPointsAvailable = parseInt(MaximumPointsAvailable) - parseInt(PINChangeNegativePoint);
+			component.set("v.isPinChangeCalculated",true);
+		 }
+    	    	*/
+    	//---------------------------For checking MC Pin Change and Failed desired level score -----------//
+		
+		
+		/*if(isDebitPinCalculated == false && DebitCardStatus == 'true' )
 		 {
 				 PointsObtained = parseInt(PointsObtained) + parseInt(DebitPinPositivePoint);
-				 component.set("v.PointObtained",PointsObtained );
+				  component.set("v.PointObtained",PointsObtained );
+				  CurrentScore = parseInt(CurrentScore) +  parseInt(DebitPinPositivePoint);
 				  MaximumPointsAvailable = parseInt(MaximumPointsAvailable) + parseInt(DebitPinPositivePoint);
 				 component.set("v.isDebitPinCalculated",true);
 		 }
@@ -157,7 +184,10 @@
 		 {
 				 MaximumPointsAvailable = parseInt(MaximumPointsAvailable) - parseInt(DebitPinNegativePoint);
 				 component.set("v.isDebitPinCalculated",true);
-		 }
+				 NegativeScoreObtained = parseInt(NegativeScoreObtained) + parseInt(DebitPinNegativePoint);
+				 CurrentScore = parseInt(CurrentScore) -  parseInt(DebitPinNegativePoint);
+				 TotalScoreRequiredToAchieveLevel = parseInt(TotalScoreRequiredToAchieveLevel) +  parseInt(NegativeScoreObtained);
+		 }*/
 		for(var i=0 ; i < liElement.length; i++)
 		{
 			 aElement = liElement[i].firstElementChild;
@@ -169,6 +199,7 @@
 				liElement[i].classList.add("green");
 				component.set('v.OTPIconName','utility:check');
 	  			PointsObtained = parseInt(PointsObtained) + parseInt(ScoreModelPositiveScore);
+	  			CurrentScore = parseInt(CurrentScore) +  parseInt(ScoreModelPositiveScore);
 	  			component.set("v.PointObtained",PointsObtained);
 	  			IsOTPAvailable = false;
 	  			component.set("v.IsOTPAvailableOnLoad",IsOTPAvailable);
@@ -179,6 +210,7 @@
 				liElement[i].classList.add("green");
 				component.set('v.OTPIconName','utility:check');
 	  			PointsObtained = parseInt(PointsObtained) + parseInt(ScoreModelPositiveScore);
+	  			CurrentScore = parseInt(CurrentScore) +  parseInt(ScoreModelPositiveScore);
 	  			component.set("v.PointObtained",PointsObtained);
 	  			IsOTPAvailable = false;
 	  			component.set("v.IsOTPAvailableOnLoad",IsOTPAvailable);
@@ -189,6 +221,9 @@
 				liElement[i].classList.add("red");
 	  			component.set('v.OTPIconName','utility:close');	  			
 	  			MaximumPointsAvailable = parseInt(MaximumPointsAvailable) - parseInt(ScoreModelNegativeScore);
+	  			NegativeScoreObtained = parseInt(NegativeScoreObtained) + parseInt(ScoreModelNegativeScore);
+	  			CurrentScore = parseInt(CurrentScore) -  parseInt(ScoreModelNegativeScore);
+				TotalScoreRequiredToAchieveLevel = parseInt(TotalScoreRequiredToAchieveLevel) +  parseInt(NegativeScoreObtained);
 	  			IsOTPAvailable = false;
 	  			component.set("v.IsOTPAvailableOnLoad",IsOTPAvailable);
 	  			helper.GetNextAuthenticationType(component, event, helper, memberid, MemberType, MaximumPointsAvailable, PointsObtained, IsKYMAvailable, IsOTPAvailable, IsDebitPinAvailable, IsOOWAvailable, IsPublicWalletAvailable, IsCFCUWalletAvailable);
@@ -197,6 +232,9 @@
 				liElement[i].classList.add("red");
 	  			component.set('v.OTPIconName','utility:close');
 	  			MaximumPointsAvailable = parseInt(MaximumPointsAvailable) - parseInt(ScoreModelNegativeScore);
+	  			NegativeScoreObtained = parseInt(NegativeScoreObtained) + parseInt(ScoreModelNegativeScore);
+	  			CurrentScore = parseInt(CurrentScore) -  parseInt(ScoreModelNegativeScore);
+				TotalScoreRequiredToAchieveLevel = parseInt(TotalScoreRequiredToAchieveLevel) +  parseInt(NegativeScoreObtained);
 	  			IsOTPAvailable = false;
 	  			component.set("v.IsOTPAvailableOnLoad",IsOTPAvailable);
 	  			helper.GetNextAuthenticationType(component, event, helper, memberid, MemberType, MaximumPointsAvailable, PointsObtained, IsKYMAvailable, IsOTPAvailable, IsDebitPinAvailable, IsOOWAvailable, IsPublicWalletAvailable, IsCFCUWalletAvailable);
@@ -205,6 +243,9 @@
 				liElement[i].classList.add("red");
 	  			component.set('v.OTPIconName','utility:close');	  			
 	  			MaximumPointsAvailable = parseInt(MaximumPointsAvailable) - parseInt(ScoreModelNegativeScore);
+	  			NegativeScoreObtained = parseInt(NegativeScoreObtained) + parseInt(ScoreModelNegativeScore);
+	  			CurrentScore = parseInt(CurrentScore) -  parseInt(ScoreModelNegativeScore);
+				TotalScoreRequiredToAchieveLevel = parseInt(TotalScoreRequiredToAchieveLevel) +  parseInt(NegativeScoreObtained);
 	  			IsOTPAvailable = false;
 	  			component.set("v.IsOTPAvailableOnLoad",IsOTPAvailable);
 	  			helper.GetNextAuthenticationType(component, event, helper, memberid, MemberType, MaximumPointsAvailable, PointsObtained, IsKYMAvailable, IsOTPAvailable, IsDebitPinAvailable, IsOOWAvailable, IsPublicWalletAvailable, IsCFCUWalletAvailable);
@@ -215,6 +256,7 @@
 				liElement[i].classList.add("green");
 	  			component.set('v.KYMIconName','utility:check');
 	  			PointsObtained = parseInt(PointsObtained) + parseInt(ScoreModelPositiveScore);
+	  			CurrentScore = parseInt(CurrentScore) +  parseInt(ScoreModelPositiveScore);
 	  			component.set("v.PointObtained",PointsObtained);
 	  			IsKYMAvailable = false;
 	  			component.set("v.IsKYMAvailableOnLoad",IsKYMAvailable);
@@ -226,6 +268,9 @@
 				 liElement[i].classList.add("red");
 	  			 component.set('v.KYMIconName','utility:close');
 	  			 MaximumPointsAvailable = parseInt(MaximumPointsAvailable) - parseInt(ScoreModelNegativeScore);
+	  			 NegativeScoreObtained = parseInt(NegativeScoreObtained) + parseInt(ScoreModelNegativeScore);
+	  			 CurrentScore = parseInt(CurrentScore) -  parseInt(ScoreModelNegativeScore);
+				 TotalScoreRequiredToAchieveLevel = parseInt(TotalScoreRequiredToAchieveLevel) +  parseInt(NegativeScoreObtained);
 	  			 IsKYMAvailable = false;
 	  			 component.set("v.IsKYMAvailableOnLoad",IsKYMAvailable);
 	  			 helper.GetNextAuthenticationType(component, event, helper, memberid, MemberType, MaximumPointsAvailable, PointsObtained, IsKYMAvailable, IsOTPAvailable, IsDebitPinAvailable, IsOOWAvailable, IsPublicWalletAvailable, IsCFCUWalletAvailable);
@@ -239,6 +284,7 @@
 				 	liElement[i].classList.remove("red");
 				 	component.set('v.PWIconName','utility:check');
 	  				PointsObtained = parseInt(PointsObtained) + parseInt(ScoreModelPositiveScore);
+	  				CurrentScore = parseInt(CurrentScore) +  parseInt(ScoreModelPositiveScore);
 	  				component.set("v.PointObtained",PointsObtained);
 	  				IsPublicWalletAvailable = false;
 	  				component.set("v.IsPublicWalletAvailableOnLoad",IsPublicWalletAvailable);
@@ -252,6 +298,9 @@
 				 liElement[i].classList.remove("green");
 	  			 component.set('v.PWIconName','utility:close');
 	  			 MaximumPointsAvailable = parseInt(MaximumPointsAvailable) - parseInt(ScoreModelNegativeScore);
+	  			 NegativeScoreObtained = parseInt(NegativeScoreObtained) + parseInt(ScoreModelNegativeScore);
+	  			 CurrentScore = parseInt(CurrentScore) -  parseInt(ScoreModelNegativeScore);
+				 TotalScoreRequiredToAchieveLevel = parseInt(TotalScoreRequiredToAchieveLevel) +  parseInt(NegativeScoreObtained);
 	  			 IsPublicWalletAvailable = false;
 	  			 component.set("v.IsPublicWalletAvailableOnLoad",IsPublicWalletAvailable);
 	  			 helper.GetNextAuthenticationType(component, event, helper, memberid, MemberType, MaximumPointsAvailable, PointsObtained, IsKYMAvailable, IsOTPAvailable, IsDebitPinAvailable, IsOOWAvailable, IsPublicWalletAvailable, IsCFCUWalletAvailable);
@@ -263,6 +312,7 @@
 				 	liElement[i].classList.remove("red");
 	  				component.set('v.CFCUIconName','utility:check');
 	  				PointsObtained = parseInt(PointsObtained) + parseInt(ScoreModelPositiveScore);
+	  				CurrentScore = parseInt(CurrentScore) +  parseInt(ScoreModelPositiveScore);
 	  				component.set("v.PointObtained",PointsObtained);
 	  				IsCFCUWalletAvailable = false;
 	  				component.set("v.IsCFCUWalletAvailableOnLoad",IsCFCUWalletAvailable);
@@ -276,14 +326,25 @@
 				 liElement[i].classList.remove("green");
 	  			 component.set('v.CFCUIconName','utility:close');
 	  			 MaximumPointsAvailable = parseInt(MaximumPointsAvailable) - parseInt(ScoreModelNegativeScore);
+	  			 NegativeScoreObtained = parseInt(NegativeScoreObtained) + parseInt(ScoreModelNegativeScore);
+	  			 CurrentScore = parseInt(CurrentScore) -  parseInt(ScoreModelNegativeScore);
+				 TotalScoreRequiredToAchieveLevel = parseInt(TotalScoreRequiredToAchieveLevel) +  parseInt(NegativeScoreObtained);
 	  			 IsCFCUWalletAvailable = false;
 	  			 component.set("v.IsCFCUWalletAvailableOnLoad",IsCFCUWalletAvailable);
 	  			 helper.GetNextAuthenticationType(component, event, helper, memberid, MemberType, MaximumPointsAvailable, PointsObtained, IsKYMAvailable, IsOTPAvailable, IsDebitPinAvailable, IsOOWAvailable, IsPublicWalletAvailable, IsCFCUWalletAvailable);
 			 }
+			 
+			 
 			
 			 component.set("v.MaximumPointsAvailable", MaximumPointsAvailable);
 			
 		}
+		if(FDLEventParam !=undefined)
+		{
+				 helper.SaveFailedDesiredLevel(component, event, helper, memberid, FDLEventParam,GUID,IVRGUIDFromUrl);
+				
+		}
+		
 		
 	},
 	
@@ -362,12 +423,14 @@
 		var membername = event.getSource().get('v.label');
 		var MemberType = component.get("v.Membertype");
 		var ReLoadRequired = component.get("v.ReLoadRequired");
+		var PointsObtained = component.get("v.PointObtained");
 		component.set("v.SelectedmemberId",memberid );
 		component.set("v.SelectedmemberName",membername );
 		var DebitCardStatus = component.get("v.DebitCardStatus");
 		var attribute1 = component.get('v.SelectedmemberId');
 		var PublicWalletComponent = component.find('PublicWallet');
-        if(PublicWalletComponent!=undefined){
+		
+	    if(PublicWalletComponent!=undefined){
         	PublicWalletComponent.PublicWalletMethod(attribute1,ReLoadRequired);
         }
         
@@ -376,8 +439,7 @@
         
         var OTPComponent = component.find('OTPAuthentication');
         if(OTPComponent!=undefined)OTPComponent.OTPMethod(attribute1,ReLoadRequired);
-        
-		helper.MemberVerificationAttemptCheck(component, event, helper, memberid, DebitCardStatus, ReLoadRequired);
+       helper.MemberVerificationAttemptCheck(component, event, helper, memberid, DebitCardStatus, ReLoadRequired, PointsObtained);
 	},
 	
 	 handleActive: function (component, event, helper) {
@@ -417,20 +479,49 @@
        component.find('Supervisor').set("v.value", 'Select');
        var element; 
        element = component.find("Supervisor");
+       
+       var elementOne;
+       elementOne = component.find("ManagerComments");
+
        if(selectedoverrideType == 'Verbal'){       
-       		$A.util.addClass(element, 'show');
-       		$A.util.removeClass(element, 'hidden');
-       		errorSpaninput.classList.remove('show');
-       		errorSpaninput.classList.add('hidden');
-        }
-        else{
-        	$A.util.removeClass(element, 'show');
-        	$A.util.addClass(element, 'hidden');
-        	errorSpaninput.classList.remove('show');
-		    errorSpaninput.classList.add('hidden');
-		    errorSpan.classList.remove('show');
-		    errorSpan.classList.add('hidden');
-        }
+			$A.util.addClass(element, 'show');
+			$A.util.removeClass(element, 'hidden');
+			errorSpaninput.classList.remove('show');
+			errorSpaninput.classList.add('hidden');
+			
+			$A.util.removeClass(elementOne, 'show');
+			$A.util.addClass(elementOne, 'hidden');
+			errorSpaninputOne.classList.remove('show');
+			errorSpaninputOne.classList.add('hidden');
+			
+		}
+		else if(selectedoverrideType == 'Manager Callback'){ 
+		
+			$A.util.addClass(elementOne, 'show');
+			$A.util.removeClass(elementOne, 'hidden');
+			errorSpaninput.classList.remove('show');
+			errorSpaninput.classList.add('hidden');
+			
+			$A.util.removeClass(element, 'show');
+			$A.util.addClass(element, 'hidden');
+			errorSpan.classList.remove('show');
+			errorSpan.classList.add('hidden');
+		
+		}
+		else{
+			$A.util.removeClass(element, 'show');
+			$A.util.addClass(element, 'hidden');
+			errorSpaninput.classList.remove('show');
+			errorSpaninput.classList.add('hidden');
+			errorSpan.classList.remove('show');
+			errorSpan.classList.add('hidden');
+			
+			$A.util.removeClass(elementOne, 'show');
+			$A.util.addClass(elementOne, 'hidden');
+			errorSpaninputOne.classList.remove('show');
+			errorSpaninputOne.classList.add('hidden');
+			
+		}
     },   
     
     onChangeSupervior: function (component, event, helper) {
@@ -456,17 +547,10 @@
     	var FDL = '';
     	if(memberid == undefined){
     		alert('Please search for member');
-    	}
-    	
-    	else{
+    	}else{
 		    	if(button == 'ViewHistory'){
 		    	}
-		    	else if(button == 'FailedDesiredLevel'){
-		    		component.set("v.AuthenticationDecision",'Failed Desired Level');
-		    		decision = component.get("v.AuthenticationDecision");
-		    		FDL = 'Yes';
-		    		helper.InsertLogData(component, event, helper, memberid, decision, FDL, OverrideType, OverrideSupervisor, GUID, IVRGUIDFromUrl );
-		    	}
+		    	
 		    	else if(button == 'CreateCase'){
 		    		component.set("v.AuthenticationDecision",'Authentication Failed');
 		    		decision = component.get("v.AuthenticationDecision");
@@ -480,10 +564,25 @@
 		    		OverrideSupervisor = component.find('Supervisor').get('v.value');
 		    		OverrideType = component.get('v.overrideType');
 		    		
-		    	  if(OverrideType == undefined || OverrideType == ' '){
+		    		if(OverrideType == undefined || OverrideType == ' '){
 		    			errorSpaninput.classList.add('show');
 		    			errorSpaninput.classList.remove('hidden');
 		    		}
+		    		else if(OverrideType == 'Manager Callback'){
+						InputElement = component.find("ManagerComments").get("v.value");	  		
+						var errorSpaninputOne = document.getElementById('errorSpaninputOne');
+						if(InputElement == ''){
+							errorSpaninputOne.classList.add('show');
+							errorSpaninputOne.classList.remove('hidden');
+						}
+						else{
+							errorSpaninputOne.classList.remove('show');
+							errorSpaninputOne.classList.add('hidden');
+							component.set("v.isOpen", false);
+							component.set("v.ManagerCallbackComments", InputElement);
+							helper.InsertLogData(component, event, helper, memberid, decision, FDL, OverrideType, OverrideSupervisor, GUID, IVRGUIDFromUrl);
+						}
+					}
 		    		else if(OverrideType == 'Verbal' && OverrideSupervisor == 'Select'){
 		    			errorSpan.classList.add('show');
 		    			errorSpan.classList.remove('hidden');
@@ -510,7 +609,6 @@ NavigateToMember : function(component , event, helper){
    var GUID = component.get("v.GUID");
    var IVRGUIDFromUrl = component.get("v.IVRGUIDFromUrl");
    var LastLevel = component.get("v.CurrentAuthenticationLevel");
-   
    if(memberid == undefined){
     		alert('Please search for member');
     	}
@@ -574,6 +672,23 @@ NavigateToMember : function(component , event, helper){
     closeViewDedcriptionModel : function(component, event, helper) {
     	component.set("v.isViewDescriptionModelOpen", false);
     },
+    
+    openFailedDesiredLevelModel : function(component, event, helper) {
+    	
+	    	var memberid = component.get("v.SelectedmemberId");
+	    	if(memberid == undefined || memberid==null ){
+	    		alert('Please search for member');
+	    	}
+	    	else{
+	    		component.set("v.isFailedDesiredLevelModelOpen", true);
+	    		
+			} 
+    	},
+     closeFailedDesiredLevelModel: function(component, event, helper) {
+    	component.set("v.isFailedDesiredLevelModelOpen", false);
+    },
+   
+    
     clearAll : function(component, event){
 	   
 	   document.getElementById("frmPhoneNumber").value = '';
@@ -650,7 +765,13 @@ NavigateToMember : function(component , event, helper){
 	   component.set("v.ReMemberId",'' );
 	   component.set("v.IsOOWTabVisible", true);
 	   component.set("v.IsDebitTabVisible", true);
-	   
+	   component.set("v.ReasonCodeFromUrl",'');
+	   component.set("v.HighFlagFromUrl",'');
+	   component.set("v.ManagerCallbackComments",'');
+	   component.set("v.IsGetReloadDataCalled",false);
+	   component.set("v.ReLoadRequired",false);
+	   component.set("v.IsReLoaded",false);
+	    
    },
 	
 })

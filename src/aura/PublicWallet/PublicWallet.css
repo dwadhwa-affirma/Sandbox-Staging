@@ -60,3 +60,5 @@
     font-size: 0.85rem !important;
     font-weight: Bold;
 }
+.cPublicWallet .submitButton {background: #f7f9fc; padding: 15px 25px!important;}
+.cPublicWallet .leftDiv.submitButtonLabel, .cPublicWallet .submitButton .RightDiv {width: 40% !important; display: inline-block !important;}

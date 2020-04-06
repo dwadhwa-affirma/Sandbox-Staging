@@ -10,7 +10,7 @@
 	</aura:method>
 	
 									<div class="header-column mr-80">
-                        				<p  style="font-size: 17px;" align="center"><b>Log Details : </b> <b>{!v.LogNumber}</b></p><br></br>
+                        				<p  style="font-size: 17px;" align="center"><b>MAAP History Details : </b> <b>{!v.LogNumber}</b></p><br></br>
                         			 </div>
 	<table class="slds-table slds-table_cell-buffer slds-table_bordered slds-table_col-bordered">           						           			
 	           				
@@ -21,15 +21,13 @@
 			           				<th class="" scope="col"><div class="slds-truncate" title="Log">Log#</div></th>
 			           				<th class="" scope="col"><div class="slds-truncate" title="User">User</div></th>
 			           				<th class="" scope="col"><div class="slds-truncate" title="Member">Member #</div></th>
-			           				<th class="" scope="col"><div class="slds-truncate" title="Caller Phone Number">Caller Phone Number</div></th>
 			           				<th class="" scope="col"><div class="slds-truncate" title="Authentication type">Authentication type</div></th>
 			           				<th class="" scope="col"><div class="slds-truncate" title="Decision">Decision</div></th>
 			           				<th class="" scope="col"><div class="slds-truncate" title="Case #">Case #</div></th>
-			           				<th class="" scope="col"><div class="slds-truncate" title="Comment">Comment</div></th>
-			           				<th class="" scope="col"><div class="slds-truncate" title="FDL">Failed Desired Level</div></th>
+			           				<th class="" scope="col"><div class="slds-truncate" title="FDL">Desired Level</div></th>
 			           				<th class="" scope="col"><div class="slds-truncate" title="Override Request Type">Override Request Type</div></th>
 			           				<th class="" scope="col"><div class="slds-truncate" title="Override Requested Supervisor">Override Requested Supervisor</div></th>
-			           				<th class="" scope="col"><div class="slds-truncate" title="Debit/Pin">Debit/Pin</div></th>
+			           				
 		           				</tr>
 	           				</thead>
 	           				 <tbody>          	
@@ -52,9 +50,6 @@
       										<td data-label="MemberNumber">
       											  <div class="slds-truncate" title="MemberNumber">{!item.MemberNumber}</div>
       										</td>
-      										<td data-label="PhoneNumber">
-      											  <div class="slds-truncate" title="PhoneNumber">{!item.PhoneNumber}</div>
-      										</td>
       										<td data-label="AuthenticationType">
       											  <div class="slds-truncate" title="AuthenticationType">{!item.AuthenticationType}</div>
       										</td>
@@ -63,9 +58,6 @@
       										</td>
       										<td data-label="CaseNumber">
       											  <div class="slds-truncate" title="CaseNumber">{!item.CaseNumber}</div>
-      										</td>
-      										<td data-label="Comment">
-      											  <div class="slds-truncate" title="Comment">{!item.CaseComment}</div>
       										</td>
       										<td data-label="FDL">
       											  <div class="slds-truncate" title="FDL">{!item.FDL}</div>
@@ -76,9 +68,7 @@
       										<td data-label="OverrideRequestedSupervisor">
       											  <div class="slds-truncate" title="OverrideRequestedSupervisor">{!item.OverrideRequestedSupervisor}</div>
       										</td>
-							        		<td data-label="DebitPin">
-      											  <div class="slds-truncate" title="Debit/Pin">{!item.DebitPin}</div>
-      										</td>
+							        		
 							        	</tr>
 					        	</aura:iteration> 
 					        	

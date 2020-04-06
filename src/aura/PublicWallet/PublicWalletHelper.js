@@ -32,7 +32,7 @@
 					}
 				}
 				if(result.PublicWalletStatus != undefined){
-					if(result.PublicWalletStatus =='failed' && component.get("v.IsReLoadRequired") == false)
+					if(result.PublicWalletStatus =='Failed' && component.get("v.IsReLoadRequired") == false)
 					{
 							if(result.DOBMatch != undefined)
 							{
@@ -105,7 +105,7 @@
 								
 							}
 					}
-					else if(result.PublicWalletStatus =='passed' && component.get("v.IsReLoadRequired") == false)
+					else if(result.PublicWalletStatus =='Passed' && component.get("v.IsReLoadRequired") == false)
 					{
 						helper.buttonOnLoad(component, event, helper);
 					}
@@ -182,7 +182,7 @@
 							}
 							
 						}
-						component.set("v.PublicWalletStatusForDay",false);
+						//component.set("v.PublicWalletStatusForDay",false);
 				}
 				
 				

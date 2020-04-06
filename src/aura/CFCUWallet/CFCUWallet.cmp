@@ -23,254 +23,312 @@
 	<aura:attribute name="LoanDetailMatch" type="String"/>
 	<aura:attribute name="CFCULastSessionInfo" type="object[]"/>
 	<aura:attribute name="IsReLoadRequired" type="boolean" default="false"/> 
-	<aura:method name="CFCUWalletMethod" action="{!c.executeMethod}" access="PUBLIC"> 
+	<aura:attribute name="IsButtonDisabled" type="boolean" default="true"/>
+   <aura:method name="CFCUWalletMethod" action="{!c.doInit}" access="PUBLIC"> 
     	<aura:attribute name="param1" type="String"/>  
     	<aura:attribute name="param2" type="boolean"/> 
 	</aura:method>
 	<aura:registerEvent name="statusEvent" type="c:MemberIdEvent" />
 	 
 	 <article class="slds-card slds-border">
-       
-         <div class="MainDiv slds-scrollable_y mb-50">
-       		  			<div class="InnerDivContainer">
-		       			<div class="InnerDiv">
-		       				<div class="leftDiv">
-			       				<span>Beneficiary's Name </span>
-		       				</div>
-		       				<div class="RightDiv">
-		       					
-		                        <lightning:button variant="neutral" label="Passed" onclick="{! c.ButtonClick }" iconName="utility:check" aura:id="BeneficiaryPassButton" class="BtnOne"/>
-		       					<lightning:button variant="neutral" label="Failed" onclick="{! c.ButtonClick }" iconName="utility:close" aura:id="BeneficiaryFailButton" class="BtnTwo"/>
-		       				</div>
-		       			</div> 
-		       			<div class="InnerDiv">
-		       				<div class="leftDiv">
-			       				<span>Joint Name </span>
-		       				</div>
-		       				<div class="RightDiv">
-		       					
-		       					<lightning:button variant="neutral" label="Passed" onclick="{! c.ButtonClick }" iconName="utility:check" aura:id="JointPassButton" class="BtnOne"/>
-		       					<lightning:button variant="neutral" label="Failed" onclick="{! c.ButtonClick }" iconName="utility:close" aura:id="JointFailButton" class="BtnTwo"/>
-		       				</div>
-		       			</div>	
-		       			<div class="InnerDiv">
-		       				<div class="leftDiv">
-			       				<span>Share/Loan Types on Membership </span>
-		       				</div>
-		       				<div class="RightDiv">
-		       					
-		       					<lightning:button variant="neutral" label="Passed" onclick="{! c.ButtonClick }" iconName="utility:check" aura:id="LoanPassButton" class="BtnOne"/>
-		       					<lightning:button variant="neutral" label="Failed" onclick="{! c.ButtonClick }" iconName="utility:close" aura:id="LoanFailButton" class="BtnTwo"/>
-		       				</div>
-		       			</div>
-		       			<aura:if isTrue="{!v.IsCFCUSectionVisible}">
-			       			<div class="InnerDiv">
-			       				<div class="leftDiv">
-				       				<span>Card Number Last 4 Digits</span>
-			       				</div>
-			       				<div class="RightDiv">
-			       					
-			       					<lightning:button variant="neutral" label="Passed" onclick="{! c.ButtonClick }" iconName="utility:check" aura:id="CardPassButton" class="BtnOne"/>
-			       					<lightning:button variant="neutral" label="Failed" onclick="{! c.ButtonClick }" iconName="utility:close" aura:id="CardFailButton" class="BtnTwo"/>
-			       				</div>
-			       			</div>
-		       			</aura:if>
-		       			<div class="InnerDiv">
-		       				<div class="leftDiv">
-			       				<lightning:select name="AdditionalToken1" label="Additional Token"  aura:id="AdditionalToken1" class="select-auto-width">
-							        <option value="Select">---Select---</option>
-							        <option value="Transaction History">Transaction History</option>
-							        <option value="Red Herring">Red Herring</option>
-							        <option value="Online banking username">Online Banking Username</option>
-							    </lightning:select>
-		       				</div>
-		       				<div class="RightDiv">
-		       					<div style="margin-top:22px;">
-			       					<lightning:button variant="neutral" label="Passed" onclick="{! c.ButtonClick }" iconName="utility:check" aura:id="TokenPassButton1" class="BtnOne"/>
-			       					<lightning:button variant="neutral" label="Failed" onclick="{! c.ButtonClick }" iconName="utility:close" aura:id="TokenFailButton1" class="BtnTwo"/>
-			   					</div>
-		       				</div>
-		       			</div>
-		       			
-		       			<div class="InnerDiv">
-		       				<div class="leftDiv">
-			       				<lightning:select name="AdditionalToken2" label="Additional Token"  aura:id="AdditionalToken2" class="select-auto-width">
-							        <option value="Select">---Select---</option>
-							        <option value="Transaction History">Transaction History</option>
-							        <option value="Red Herring">Red Herring</option>
-							        <option value="Online banking username">Online Banking Username</option>
-							    </lightning:select>
-		       				</div>
-		       				<div class="RightDiv">
-		       					<div style="margin-top:22px;">
-			       					<lightning:button variant="neutral" label="Passed" onclick="{! c.ButtonClick }" iconName="utility:check" aura:id="TokenPassButton2" class="BtnOne"/>
-			       					<lightning:button variant="neutral" label="Failed" onclick="{! c.ButtonClick }" iconName="utility:close" aura:id="TokenFailButton2" class="BtnTwo"/>
-			   					</div>
-		       				</div>
-		       			</div>
-		       		<div class="InnerDiv">
-       					<div class="leftDiv">&nbsp;
-      				</div>		
+       	
+         <div class="MainDiv slds-scrollable_y clearfix MainField">
+             <div class="InnerDivContainer">
+                  <p class="field-title" title="MAAP QUESTIONS">MAAP QUESTIONS </p>
+                  <div class="InnerDiv">
+                      <div class="leftDiv">
+                          <span>Beneficiary's Name </span>
+                      </div>
+                      <div class="RightDiv">
+                          
+                          <lightning:button variant="neutral" label="Passed" onclick="{! c.ButtonClick }" iconName="utility:check" aura:id="BeneficiaryPassButton" class="BtnOne"/>
+                          <lightning:button variant="neutral" label="Failed" onclick="{! c.ButtonClick }" iconName="utility:close" aura:id="BeneficiaryFailButton" class="BtnTwo"/>
+                      </div>
+                  </div> 
+                  <div class="InnerDiv">
+                      <div class="leftDiv">
+                          <span>Joint Name </span>
+                      </div>
+                      <div class="RightDiv">
+                          
+                          <lightning:button variant="neutral" label="Passed" onclick="{! c.ButtonClick }" iconName="utility:check" aura:id="JointPassButton" class="BtnOne"/>
+                          <lightning:button variant="neutral" label="Failed" onclick="{! c.ButtonClick }" iconName="utility:close" aura:id="JointFailButton" class="BtnTwo"/>
+                      </div>
+                  </div>	
+             </div>
+             <div class="vl cfcuHeaderContainer">
+                 <p class="field-header" title="MAAP ANSWERS">MAAP ANSWERS</p>
+                 <p class="field-header" title="RP">Related Persons</p>
+                 <div class="mr-left10">
+                     <aura:if isTrue="{!v.IsRelationshipDataAvailable}">
+                         <div class="MidDiv">
+                             <div class="slds-media slds-media_center slds-has-flexi-truncate">
+                                 <div class="c-container">
+                                     
+                                     <lightning:layout horizontalAlign="spread">
+                                         <lightning:layoutItem>
+                                             <div class="header-column mr-80">
+                                                 <p class="field-title" title="NumberOfCallsToday">Account Number </p>
+                                                 <aura:iteration items="{!v.JointAccount}" var="item">
+                                                     <div class="slds-truncate" title="{!item.AccountNumber}">{!item.AccountNumber}</div>
+                                                 </aura:iteration>
+                                             </div>
+                                         </lightning:layoutItem>
+                                         
+                                         <lightning:layoutItem padding="around-small">
+                                             <div class="header-column mr-80">
+                                                 <p class="field-title" title="NumberOfCallsToday">Name </p>
+                                                 <aura:iteration items="{!v.JointAccount}" var="item">
+                                                     
+                                                     <div class="slds-truncate" title="{!item.JointMembername}">{!item.JointMembername}</div>
+                                                 </aura:iteration>
+                                             </div>
+                                         </lightning:layoutItem>
+                                         
+                                         <lightning:layoutItem padding="around-small">
+                                             <div class="header-column mr-80">
+                                                 <p class="field-title" title="NumberOfCallsToday">Relationship </p>
+                                                 <aura:iteration items="{!v.JointAccount}" var="item">
+                                                     <div class="slds-truncate" title="{!item.RelationShip}">{!item.RelationShip}</div>
+                                                 </aura:iteration>
+                                                 <br></br>
+                                             </div>
+                                         </lightning:layoutItem>
+                                     </lightning:layout>
+                                 </div>
+                             </div>
+                         </div>	
+                         <aura:set attribute="else">                                             
+                             <div class="MidDiv">
+                                 <header class="slds-media slds-media_center slds-has-flexi-truncate">
+                                     <div class="c-container">
+                                         <div class="slds-p-around_small">
+                                             <h3>Related Person data not available</h3>
+                                         </div>
+                                     </div>
+                                 </header>
+                             </div>
+                         </aura:set>
+                     </aura:if>
+                 </div> 
+	       	 </div>
+         </div>
+         <div class="MainDiv slds-scrollable_y clearfix MainField">
+             <div class="InnerDivContainer">
+                 <div class="InnerDiv">
+                     <div class="leftDiv">
+                         <span>Share/Loan Types on Membership </span>
+                     </div>
+                     <div class="RightDiv">
+                         
+                         <lightning:button variant="neutral" label="Passed" onclick="{! c.ButtonClick }" iconName="utility:check" aura:id="LoanPassButton" class="BtnOne"/>
+                         <lightning:button variant="neutral" label="Failed" onclick="{! c.ButtonClick }" iconName="utility:close" aura:id="LoanFailButton" class="BtnTwo"/>
+                     </div>
+                  </div>
+            </div>
+            <div class="vl cfcuHeaderContainer">
+                <div class="mr-left10">
+                    <p class="field-header" title="RP">Share/Loan Types on Membership</p> 		
+                    <aura:if isTrue="{!v.IsLoanDataAvailable}">
+                        <div class="MidDiv">
+                            <div class="slds-media slds-media_center slds-has-flexi-truncate">
+                                <div class="c-container">
+                                    <lightning:layout horizontalAlign="spread" >
+                                        <table>
+                                        	<tr>
+                                            	<th>
+                                                    <lightning:layoutItem>
+                                                        <div class="" >
+                                                            <p class="field-title" title="NumberOfCallsToday">Type </p>
+                                                        </div>
+                                                    </lightning:layoutItem>
+                                                </th>
+                                                <th>
+                                                    <lightning:layoutItem>
+                                                        <div>
+                                                            <p class="field-title" title="NumberOfCallsToday">Monthly Payment </p>
+                                                        </div>
+                                                    </lightning:layoutItem>
+                                                </th>
+                                            </tr>
+                                            <tr>
+                                            	<td>
+                                                	<lightning:layoutItem>
+                                                        <div>
+                                                            <aura:iteration items="{!v.LoanAccount}" var="item">
+                                                                <aura:if isTrue="{!item.Close_Date__c != undefined}">	
+                                                                    <div style="background-color:LightGray" class="slds-truncate" title="{!item.TypeTranslate__c}" >{!item.TypeTranslate__c}</div>
+                                                                    <aura:set attribute="else">
+                                                                        <div class="slds-truncate" title="{!item.TypeTranslate__c}" >{!item.TypeTranslate__c}</div>
+                                                                    </aura:set> 
+                                                                </aura:if>
+                                                            </aura:iteration>
+                                                        </div>
+                                                    </lightning:layoutItem>
+                                                </td>
+                                                <td>
+                                                <lightning:layoutItem>
+                                                    <div>
+                                                        <aura:iteration items="{!v.LoanAccount}" var="item">
+                                                            <aura:if isTrue="{!item.Close_Date__c != undefined}">	
+                                                                <div style="background-color:LightGray">
+                                                                    <aura:if isTrue="{!item.PAYMENT__c != undefined}">
+                                                                        <p><lightning:formattedNumber class="slds-truncate" value="{!item.PAYMENT__c}" minimumFractionDigits="2" maximumFractionDigits="2"/></p>
+                                                                        <aura:set attribute ="else">
+                                                                            <div class="slds-truncate" title="0.00"> - </div>
+                                                                        </aura:set>
+                                                                    </aura:if>
+                                                                </div>
+                                                                <aura:set attribute="else">
+                                                                    <aura:if isTrue="{!item.PAYMENT__c != undefined}">
+                                                                        <p><lightning:formattedNumber class="slds-truncate" value="{!item.PAYMENT__c}" minimumFractionDigits="2" maximumFractionDigits="2"/></p>
+                                                                        <aura:set attribute ="else">
+                                                                            <div class="slds-truncate" title = "0.00"> - </div>
+                                                                        </aura:set>
+                                                                    </aura:if>
+                                                                </aura:set>
+                                                            </aura:if>    
+                                                        </aura:iteration>
+                                                    </div>
+                                                </lightning:layoutItem>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </lightning:layout>
+                                </div>
+                            </div>
+                        </div>	
+                        <aura:set attribute="else">
+                            <div class="MidDiv">
+                                <div class="slds-media slds-media_center slds-has-flexi-truncate">
+                                    <div class="c-container">
+                                        <div class="slds-p-around_small">
+                                            <h3>Data not available</h3>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                        </aura:set>
+                    </aura:if>
+                </div>
+		 	 </div>
+         </div>
+         <div class="MainDiv slds-scrollable_y clearfix MainField CardDetails">
+       		 <div class="InnerDivContainer">
+                  <aura:if isTrue="{!v.IsCFCUSectionVisible}">
+                      <div class="InnerDiv">
+                          <div class="leftDiv">
+                              <span>Card Number Last 4 Digits</span>
+                          </div>
+                          <div class="RightDiv">
+                              
+                              <lightning:button variant="neutral" label="Passed" onclick="{! c.ButtonClick }" iconName="utility:check" aura:id="CardPassButton" class="BtnOne"/>
+                              <lightning:button variant="neutral" label="Failed" onclick="{! c.ButtonClick }" iconName="utility:close" aura:id="CardFailButton" class="BtnTwo"/>
+                          </div>
+                      </div>
+                  </aura:if>
+                  <div class="InnerDiv">
+                      <div class="leftDiv">
+                          <lightning:select name="AdditionalToken1" label="Additional Token"  aura:id="AdditionalToken1" class="select-auto-width">
+                              <option value="Select">---Select---</option>
+                              <option value="Transaction History">Transaction History</option>
+                              <option value="Red Herring">Red Herring</option>
+                              <option value="Online banking username">Online Banking Username</option>
+                          </lightning:select>
+                      </div>
+                      <div class="RightDiv">
+                          <div style="margin-top:15px;">
+                              <lightning:button variant="neutral" label="Passed" onclick="{! c.ButtonClick }" iconName="utility:check" aura:id="TokenPassButton1" class="BtnOne"/>
+                              <lightning:button variant="neutral" label="Failed" onclick="{! c.ButtonClick }" iconName="utility:close" aura:id="TokenFailButton1" class="BtnTwo"/>
+                          </div>
+                      </div>
+                  </div>
+                  
+                  <div class="InnerDiv">
+                      <div class="leftDiv">
+                          <lightning:select name="AdditionalToken2" label="Additional Token"  aura:id="AdditionalToken2" class="select-auto-width">
+                              <option value="Select">---Select---</option>
+                              <option value="Transaction History">Transaction History</option>
+                              <option value="Red Herring">Red Herring</option>
+                              <option value="Online banking username">Online Banking Username</option>
+                          </lightning:select>
+                      </div>
+                      <div class="RightDiv">
+                          <div style="margin-top:15px;">
+                              <lightning:button variant="neutral" label="Passed" onclick="{! c.ButtonClick }" iconName="utility:check" aura:id="TokenPassButton2" class="BtnOne"/>
+                              <lightning:button variant="neutral" label="Failed" onclick="{! c.ButtonClick }" iconName="utility:close" aura:id="TokenFailButton2" class="BtnTwo"/>
+                          </div>
+                      </div>
+                  </div>
+             </div>
+     		 <div class="vl cfcuHeaderContainer">
+                 <aura:if isTrue="{!v.IsCFCUSectionVisible}">
+                     <div class="mr-left10">
+                         <p class="field-header" title="RP">Card Details</p>
+                         <aura:if isTrue="{!v.IsCardDetailsAvailable}">
+                             <div class="MidDiv">
+                                 <div class="slds-media slds-media_center slds-has-flexi-truncate">
+                                     <div class="c-container">
+                                         
+                                         <lightning:layout horizontalAlign="spread">
+                                             <lightning:layoutItem>
+                                                 <div class="header-column mr-80">
+                                                     <p class="field-title" title="NumberOfCallsToday">Name </p>
+                                                     <aura:iteration items="{!v.Card}" var="item">
+                                                         <div class="slds-truncate" title="{!item.Name}">{!item.Card_Name__c}</div>
+                                                     </aura:iteration>
+                                                 </div>
+                                             </lightning:layoutItem>
+                                             
+                                             <lightning:layoutItem>
+                                                 <div class="header-column mr-80">
+                                                     <p class="field-title" title="NumberOfCallsToday">Type Translate </p>
+                                                     <aura:iteration items="{!v.Card}" var="item">
+                                                         
+                                                         <div class="slds-truncate" title="{!item.TypeTranslate__c}">{!item.TypeTranslate__c}</div>
+                                                     </aura:iteration>
+                                                 </div>
+                                             </lightning:layoutItem>
+                                             
+                                             <lightning:layoutItem>
+                                                 <div class="header-column mr-80">
+                                                     <p class="field-title" title="NumberOfCallsToday">Card Number </p>
+                                                     <aura:iteration items="{!v.Card}" var="item">
+                                                         
+                                                         <div class="slds-truncate" title="{!item.Card_Number_Last_4_Digits__c}">{!item.Card_Number_Last_4_Digits__c}</div>
+                                                     </aura:iteration>
+                                                     <br></br>
+                                                 </div>
+                                             </lightning:layoutItem>
+                                         </lightning:layout>
+                                     </div>
+                                 </div>
+                             </div>	
+                             <aura:set attribute="else">
+                                 <div class="MidDiv">
+                                     <div class="slds-media slds-media_center slds-has-flexi-truncate">
+                                         <div class="c-container">
+                                             <div>
+                                                 <h3>Card details are not available</h3>
+                                             </div>
+                                         </div>
+                                     </div>
+                                 </div>
+                             </aura:set>
+                         </aura:if>
+                     </div>
+                 </aura:if>	
+             </div>
+       	</div>
+         <div class="InnerDiv submitButton">
+       					<div class="leftDiv submitButtonLabel">Submit Authentication Questions</div>		
 			       		<div class="RightDiv">
 				       		<div class="CenterDiv">
-						      	<lightning:button variant="brand" label="Submit 3 Answers" onclick="{! c.ButtonClick }" aura:id="SubmitButton" disabled = "{!v.CFCUWalletStatusForDay == false}"/>
+						      	<lightning:button variant="brand" label="Submit Answers" onclick="{! c.ButtonClick }" aura:id="SubmitButton" disabled = "{!v.IsButtonDisabled}"/>
 				      	 	</div>	
 			      	 	</div>	
 	       			</div>
-	       			
-	       			
-       		</div>
-     
-	       			<div class="vl cfcuHeaderContainer">
-	       				<div class="mr-left10">
-			    			<p class="field-header" title="RP">Related Persons</p>
-				      		<aura:if isTrue="{!v.IsRelationshipDataAvailable}">
-				   				<div class="MidDiv">
-									<header class="slds-media slds-media_center slds-has-flexi-truncate">
-										<div class="c-container">
-										
-											<lightning:layout horizontalAlign="spread">
-												<lightning:layoutItem padding="around-small">
-													<div class="header-column mr-80">
-														<p class="field-title" title="NumberOfCallsToday">Account Number </p>
-														<aura:iteration items="{!v.JointAccount}" var="item">
-															<div class="slds-truncate" title="{!item.AccountNumber}">{!item.AccountNumber}</div>
-														</aura:iteration>
-													</div>
-												</lightning:layoutItem>
-												
-												<lightning:layoutItem padding="around-small">
-													<div class="header-column mr-80">
-														<p class="field-title" title="NumberOfCallsToday">Name </p>
-														<aura:iteration items="{!v.JointAccount}" var="item">
-														
-															<div class="slds-truncate" title="{!item.JointMembername}">{!item.JointMembername}</div>
-														</aura:iteration>
-													</div>
-												</lightning:layoutItem>
-												
-												<lightning:layoutItem padding="around-small">
-													<div class="header-column mr-80">
-														<p class="field-title" title="NumberOfCallsToday">Relationship </p>
-														<aura:iteration items="{!v.JointAccount}" var="item">
-														
-															<div class="slds-truncate" title="{!item.RelationShip}">{!item.RelationShip}</div>
-														</aura:iteration>
-	                                                    <br></br>
-													</div>
-												</lightning:layoutItem>
-											</lightning:layout>
-										</div>
-									</header>
-								</div>	
-					   			<aura:set attribute="else">                                             
-                                             <div class="MidDiv">
-                                                <header class="slds-media slds-media_center slds-has-flexi-truncate">
-                                                    <div class="c-container">
-                                                        <div class="slds-p-around_small">
-                                                            <h3>Related Person data not available</h3>
-                                                     </div>
-                                                     </div>
-                                                     </header>
-                                                     </div>
-			 					</aura:set>
-			   				</aura:if>
-			 			</div> 
-	       			  	<div class="mr-left10">
-		  					<p class="field-header" title="RP">Share/Loan Types on Membership</p> 		
-		      				<aura:if isTrue="{!v.IsLoanDataAvailable}">
-								<div class="MidDiv">
-									<header class="slds-media slds-media_center slds-has-flexi-truncate">
-										<div class="c-container">
-											<lightning:layout >
-												<lightning:layoutItem padding="around-small">
-													<div class="header-column">
-														<aura:iteration items="{!v.LoanAccount}" var="item">
-															<div class="slds-truncate" title="{!item.TypeTranslate__c}">{!item.TypeTranslate__c}</div>
-														</aura:iteration>
-													</div>
-												</lightning:layoutItem>
-										</lightning:layout>
-									</div>
-								</header>
-							</div>	
-							<aura:set attribute="else">
-                                <div class="MidDiv">
-                                    <header class="slds-media slds-media_center slds-has-flexi-truncate">
-                                        <div class="c-container">
-                                            <div class="slds-p-around_small">
-                                            <h3>Loan data not available</h3>
-                                            </div>
-                                         </div>
-                                         </header>
-                                         </div>
-								
-						    </aura:set>
-						</aura:if>
-		 	 		</div>
-		 	 		
-		 	 		<aura:if isTrue="{!v.IsCFCUSectionVisible}">
-				 	 		<div class="mr-left10">
-				 	 				<p class="field-header" title="RP">Card Details</p>
-						      		<aura:if isTrue="{!v.IsCardDetailsAvailable}">
-						   				<div class="MidDiv">
-											<header class="slds-media slds-media_center slds-has-flexi-truncate">
-												<div class="c-container">
-												
-													<lightning:layout horizontalAlign="spread">
-														<lightning:layoutItem padding="around-small">
-															<div class="header-column mr-80">
-																<p class="field-title" title="NumberOfCallsToday">Name </p>
-																<aura:iteration items="{!v.Card}" var="item">
-																	<div class="slds-truncate" title="{!item.Name}">{!item.Card_Name__c}</div>
-																</aura:iteration>
-															</div>
-														</lightning:layoutItem>
-														
-														<lightning:layoutItem padding="around-small">
-															<div class="header-column mr-80">
-																<p class="field-title" title="NumberOfCallsToday">Type Translate </p>
-																<aura:iteration items="{!v.Card}" var="item">
-																
-																	<div class="slds-truncate" title="{!item.TypeTranslate__c}">{!item.TypeTranslate__c}</div>
-																</aura:iteration>
-															</div>
-														</lightning:layoutItem>
-														
-														<lightning:layoutItem padding="around-small">
-															<div class="header-column mr-80">
-																<p class="field-title" title="NumberOfCallsToday">Card Number </p>
-																<aura:iteration items="{!v.Card}" var="item">
-																
-																	<div class="slds-truncate" title="{!item.Card_Number_Last_4_Digits__c}">{!item.Card_Number_Last_4_Digits__c}</div>
-																</aura:iteration>
-			                                                    <br></br>
-															</div>
-														</lightning:layoutItem>
-													</lightning:layout>
-												</div>
-											</header>
-										</div>	
-							   			<aura:set attribute="else">
-		                                    <div class="MidDiv">
-		                                        <header class="slds-media slds-media_center slds-has-flexi-truncate">
-		                                            <div class="c-container">
-		                                                <div class="slds-p-around_small">
-		                                             <h3>Card details are not available</h3>
-		                                             </div>
-		                                             </div>
-		                                             </header>
-		                                             </div>
-					 					</aura:set>
-					   				</aura:if>
-				 	 		</div>
-		 	 			</aura:if>	
-       				</div>
-       			       	
-       		
-       		
-       		</div>
-         
          
      </article>
 	
