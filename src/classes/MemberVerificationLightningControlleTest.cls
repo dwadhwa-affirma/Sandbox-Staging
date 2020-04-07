@@ -99,7 +99,7 @@ private class MemberVerificationLightningControlleTest
        
         MemberVerificationLightningController.ListOfEmailsAndPhoneNumbers(lstAccount[0].Id, true);
          test.StopTest();
-        MemberOTPVerificationLightningController.ListOfEmailsAndPhoneNumbers(lstAccount[0].Id, true,'tqrq-3hhh-8982-8888');
+        MemberOTPVerificationLightningController.ListOfEmailsAndPhoneNumbers(lstAccount[0].Id, true,'tqrq-3hhh-8982-8888','abc-123');
         
     }
     
@@ -109,7 +109,7 @@ private class MemberVerificationLightningControlleTest
         List<Account> lstAccount = [select Id from Account limit 2];	
         MemberVerificationLightningController.ListOfEmailsAndPhoneNumbers(lstAccount[1].Id, true);
           test.StopTest();
-        MemberOTPVerificationLightningController.ListOfEmailsAndPhoneNumbers(lstAccount[1].Id, true,'tqrq-3hhh-8982-8888');
+        MemberOTPVerificationLightningController.ListOfEmailsAndPhoneNumbers(lstAccount[1].Id, true,'tqrq-3hhh-8982-8888', 'abc-123');
        
     }
     
@@ -119,7 +119,7 @@ private class MemberVerificationLightningControlleTest
     {
         Account obj_Account = [select Id from Account limit 1];	
         MemberVerificationLightningController.DeclineOTPAtFirstStep(obj_Account.Id);
-        MemberOTPVerificationLightningController.DeclineOTPAtFirstStep(obj_Account.Id,'tqrq-3hhh-8982-8888');
+        MemberOTPVerificationLightningController.DeclineOTPAtFirstStep(obj_Account.Id,'tqrq-3hhh-8982-8888', 'abc-123');
     }
     
     // Test Method: GenerateRandomOTP
@@ -132,27 +132,27 @@ private class MemberVerificationLightningControlleTest
         string resend = '';
         string accid = obj_Account.Id;
         MemberVerificationLightningController.GenerateRandomOTP(fieldname, brandname, resend, accid);
-        MemberOTPVerificationLightningController.GenerateRandomOTP(fieldname, brandname, resend, accid,'tqrq-3hhh-8982-8888');
+        MemberOTPVerificationLightningController.GenerateRandomOTP(fieldname, brandname, resend, accid,'tqrq-3hhh-8982-8888', 'abc-123');
         
         fieldname = 'Mobile_Phone__pc - ' + obj_Account.Id;
         brandname = 'Chevron';
         MemberVerificationLightningController.GenerateRandomOTP(fieldname, brandname, resend, accid);
-         MemberOTPVerificationLightningController.GenerateRandomOTP(fieldname, brandname, resend, accid,'tqrq-3hhh-8982-8888');
+         MemberOTPVerificationLightningController.GenerateRandomOTP(fieldname, brandname, resend, accid,'tqrq-3hhh-8982-8888', 'abc-123');
         
         fieldname = 'Work_Phone__pc - ' + obj_Account.Id;
         brandname = 'Spectrum';
         MemberVerificationLightningController.GenerateRandomOTP(fieldname, brandname, resend, accid);
-         MemberOTPVerificationLightningController.GenerateRandomOTP(fieldname, brandname, resend, accid,'tqrq-3hhh-8982-8888');
+         MemberOTPVerificationLightningController.GenerateRandomOTP(fieldname, brandname, resend, accid,'tqrq-3hhh-8982-8888', 'abc-123');
         
         fieldname = 'PersonEmail - ' + obj_Account.Id;
         brandname = 'Chevron';
         MemberVerificationLightningController.GenerateRandomOTP(fieldname, brandname, resend, accid);
-         MemberOTPVerificationLightningController.GenerateRandomOTP(fieldname, brandname, resend, accid,'tqrq-3hhh-8982-8888');
+         MemberOTPVerificationLightningController.GenerateRandomOTP(fieldname, brandname, resend, accid,'tqrq-3hhh-8982-8888', 'abc-123');
         
         fieldname = 'Alternate_Email__pc - ' + obj_Account.Id;
         brandname = 'Chevron';
         MemberVerificationLightningController.GenerateRandomOTP(fieldname, brandname, resend, accid);
-         MemberOTPVerificationLightningController.GenerateRandomOTP(fieldname, brandname, resend, accid,'tqrq-3hhh-8982-8888');
+         MemberOTPVerificationLightningController.GenerateRandomOTP(fieldname, brandname, resend, accid,'tqrq-3hhh-8982-8888', 'abc-123');
     }
     // Test Method: verifyOTP
     public static testmethod void Test_verifyOTP()
@@ -167,20 +167,20 @@ private class MemberVerificationLightningControlleTest
         string model = JSON.serialize(model1);
         
         MemberVerificationLightningController.verifyOTP(accid, enteredotp, fieldname, model);
-        MemberOTPVerificationLightningController.verifyOTP(accid, enteredotp, fieldname, model,'tqrq-3hhh-8982-8888');
+        MemberOTPVerificationLightningController.verifyOTP(accid, enteredotp, fieldname, model,'tqrq-3hhh-8982-8888', 'abc-123');
         
         fieldname = 'Mobile_Phone__pc - ' + obj_Account.Id;
         MemberVerificationLightningController.verifyOTP(accid, enteredotp, fieldname, model);
-		MemberOTPVerificationLightningController.verifyOTP(accid, enteredotp, fieldname, model,'tqrq-3hhh-8982-8888');        
+		MemberOTPVerificationLightningController.verifyOTP(accid, enteredotp, fieldname, model,'tqrq-3hhh-8982-8888', 'abc-123');        
         fieldname = 'Work_Phone__pc - ' + obj_Account.Id;
         MemberVerificationLightningController.verifyOTP(accid, enteredotp, fieldname, model);
-        MemberOTPVerificationLightningController.verifyOTP(accid, enteredotp, fieldname, model,'tqrq-3hhh-8982-8888');
+        MemberOTPVerificationLightningController.verifyOTP(accid, enteredotp, fieldname, model,'tqrq-3hhh-8982-8888', 'abc-123');
         fieldname = 'PersonEmail - ' + obj_Account.Id;
         MemberVerificationLightningController.verifyOTP(accid, enteredotp, fieldname, model);
-        MemberOTPVerificationLightningController.verifyOTP(accid, enteredotp, fieldname, model,'tqrq-3hhh-8982-8888');
+        MemberOTPVerificationLightningController.verifyOTP(accid, enteredotp, fieldname, model,'tqrq-3hhh-8982-8888', 'abc-123');
         fieldname = 'Alternate_Email__pc - ' + obj_Account.Id;
         MemberVerificationLightningController.verifyOTP(accid, enteredotp, fieldname, model);
-        MemberOTPVerificationLightningController.verifyOTP(accid, enteredotp, fieldname, model,'tqrq-3hhh-8982-8888');
+        MemberOTPVerificationLightningController.verifyOTP(accid, enteredotp, fieldname, model,'tqrq-3hhh-8982-8888', 'abc-123');
     }
     // Test Method: CancelOTP
     public static testmethod void Test_CancelOTP()
@@ -193,23 +193,23 @@ private class MemberVerificationLightningControlleTest
         MemberVerificationLightningController.CancelOTP(accid, fieldname);	
         Test.stopTest();
         
-        MemberOTPVerificationLightningController.CancelOTP(accid,'tqrq-3hhh-8982-8888', fieldname);	
+        MemberOTPVerificationLightningController.CancelOTP(accid,'tqrq-3hhh-8982-8888', fieldname, 'abc-123');	
         
         fieldname = 'Home_Phone__pc - ' + obj_Account.Id;
         MemberVerificationLightningController.CancelOTP(accid, fieldname);	
-        MemberOTPVerificationLightningController.CancelOTP(accid,'tqrq-3hhh-8982-8888', fieldname);	
+        MemberOTPVerificationLightningController.CancelOTP(accid,'tqrq-3hhh-8982-8888', fieldname, 'abc-123');	
         fieldname = 'Mobile_Phone__pc - ' + obj_Account.Id;	
         MemberVerificationLightningController.CancelOTP(accid, fieldname);	
-        MemberOTPVerificationLightningController.CancelOTP(accid,'tqrq-3hhh-8982-8888', fieldname);	
+        MemberOTPVerificationLightningController.CancelOTP(accid,'tqrq-3hhh-8982-8888', fieldname, 'abc-123');	
         fieldname = 'Work_Phone__pc - ' + obj_Account.Id;	
         MemberVerificationLightningController.CancelOTP(accid, fieldname);
-        MemberOTPVerificationLightningController.CancelOTP(accid,'tqrq-3hhh-8982-8888', fieldname);	
+        MemberOTPVerificationLightningController.CancelOTP(accid,'tqrq-3hhh-8982-8888', fieldname, 'abc-123');	
         fieldname = 'PersonEmail - ' + obj_Account.Id;	
         MemberVerificationLightningController.CancelOTP(accid, fieldname);
-        MemberOTPVerificationLightningController.CancelOTP(accid,'tqrq-3hhh-8982-8888', fieldname);	
+        MemberOTPVerificationLightningController.CancelOTP(accid,'tqrq-3hhh-8982-8888', fieldname, 'abc-123');	
         fieldname = 'Alternate_Email__pc - ' + obj_Account.Id;	
         MemberVerificationLightningController.CancelOTP(accid, fieldname);	
-        MemberOTPVerificationLightningController.CancelOTP(accid,'tqrq-3hhh-8982-8888', fieldname);	
+        MemberOTPVerificationLightningController.CancelOTP(accid,'tqrq-3hhh-8982-8888', fieldname, 'abc-123');	
     }
     
     private static string EncryptString(string plaindata)

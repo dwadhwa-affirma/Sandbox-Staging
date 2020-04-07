@@ -32,7 +32,7 @@ public class SolarLoanTriggerTest {
         System.runAs(u){
             Solar_Loans__c s = [select id,Status__c,DocuSignId__c from Solar_Loans__c where Status__c = 'Pending'];
             s.Status__c = 'ACH Pending';    
-            update s; 
+            //update s; 
         }
     }
 

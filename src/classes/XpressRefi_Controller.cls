@@ -8,6 +8,7 @@ public class XpressRefi_Controller {
     public Boolean loan{get; set;}
     public String SelectedLoan{get;set;}
     public Xpress_Refi__c xprs {get; set;}
+    public Xpress_Refi__c xprs1 {get; set;}
     public String currentRecordId {get;set;}
     public List<Xpress_Refi__c> ListXpressToInsert = new List<Xpress_Refi__c>();
     
@@ -19,6 +20,9 @@ public class XpressRefi_Controller {
         system.debug('currentRecordId'+currentRecordId);
         memberId = controller.getRecord().Id; // getting the id of the current member
         Set<String> NameSet = new Set<String>();
+        
+       
+        
         List<Account_Details__c> accList = new List<Account_Details__c>();
     
         List<Person_Account__c> prsn = [SELECT Id, Account_Number__c, Account_Number__r.RecType__c,
@@ -50,12 +54,14 @@ public class XpressRefi_Controller {
         //UpdateXprs(SelectedLoan);
           mortg = [SELECT Id,  Name,  RecType__c,  TypeTranslate__c, Brand__c,  Loan_Number__c, Mortgage_Name_1__c, Mortgage_Name_2__c,
                               Emp_Available_Balance__c, Available_Balance__c, Balance__c, PROPERTY_ADDRESS__c, Property_City__c,
-                   Property_State__c, Property_Zip__c  FROM Account_Details__c WHERE id =:SelectedLoan limit 1]; 
-                   
+                   Property_State__c, Property_Zip__c FROM Account_Details__c WHERE id =:SelectedLoan limit 1]; 
+           
+             
+        
         for(Account_Details__c a : mortg){
         	
-        	xprs = new Xpress_Refi__c();
-        	xprs.Loan_Number__c = a.Loan_Number__c;
+        	 xprs = new Xpress_Refi__c();
+           	xprs.Loan_Number__c = a.Loan_Number__c;
         	xprs.Borrower_1_Name__c = a.Mortgage_Name_1__c;
         	xprs.Borrower_2_Name__c = a.Mortgage_Name_2__c;
         	xprs.Property_Address__c = a.PROPERTY_ADDRESS__c;
@@ -63,13 +69,21 @@ public class XpressRefi_Controller {
         	if(a.Property_Zip__c != null)
         		xprs.Zip_Code__c = Decimal.valueOf(a.Property_Zip__c);
         	xprs.State__c = a.Property_State__c;
-        	//xprs.Member_Phone__c =
+        	xprs.Member_Number1__c =a.Name;
         	//xprs.Member_Email__c =
         	//xprs.Mailing_address_if_different__c =
         	xprs.Current_Balance__c = a.Available_Balance__c;
         	//xprs.Current_Principal_and_Interest_Payment__c =
         }
         
+        
+        
+         List<Account> act = [Select Mobile_Phone__pc, PersonEmail from account where id =:currentRecordId limit 1];
+           for(Account ac : act){
+               xprs1 = new Xpress_Refi__c();
+        	   //xprs1.Member_Number__c = ac.Mobile_Phone__pc;
+               xprs1.Member_Email__c = ac.PersonEmail;
+           }
        
        // xprs  = [select id, Name,City__c,State__c,Zip_Code__c,Member_Number__c,Loan_Number__c,Borrower_1_Name__c,Borrower_2_Name__c,Member_Phone__c,Member_Email__c,
        //           Property_Address__c,Mailing_address_if_different__c from Xpress_Refi__c where Member_Number__r.id =:SelectedLoan];
@@ -133,16 +147,14 @@ public class XpressRefi_Controller {
         if(ListXpressToInsert.size() > 0){
         	
         	insert ListXpressToInsert;	
-        	PageReference pageRef = new PageReference('/' + ListXpressToInsert[0].id);
-			pageRef.setredirect(true);
-			return pageRef;
         }
         else{
         	ApexPages.addmessage(new ApexPages.message(ApexPages.severity.WARNING,'Please enter values'));
 	    	return null;
 		} 
         
-       
+        	
+    	return null;
     }
     
   }

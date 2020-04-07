@@ -1808,6 +1808,7 @@ public class ManageTravelPlansController {
         }
         else
         {
+         system.debug('cardnumber='+ mcObj.MCOriginalDataObj.CardNo + ',fromdate=' + FormatdateTime(mcObj.MCOriginalDataObj.FromDateTime) + ',todate=' + FormatdateTime(mcObj.MCOriginalDataObj.ToDateTime) + ',s=' + segmentationname + ',t=' +  mcObj.MCOriginalDataObj.TimeZone  +',n=' + Formatdate(mcObj.MasterCardSFObj.Departure_Date__c) + ',w=' + Formatdate(mcObj.MasterCardSFObj.Return_Date__c) );
           Blob updatedata = Blob.valueof('cardnumber='+ mcObj.MCOriginalDataObj.CardNo + ',fromdate=' + FormatdateTime(mcObj.MCOriginalDataObj.FromDateTime) + ',todate=' + FormatdateTime(mcObj.MCOriginalDataObj.ToDateTime) + ',s=' + segmentationname + ',t=' +  mcObj.MCOriginalDataObj.TimeZone  +',n=' + Formatdate(mcObj.MasterCardSFObj.Departure_Date__c) + ',w=' + Formatdate(mcObj.MasterCardSFObj.Return_Date__c) );
           Blob updateencrypted = Crypto.encrypt('AES128', key, Iv, updatedata);
           string URL = 'https://mcapi.chevronfcu.org/Home/updatesegmentation?data=' + EncodingUtil.base64Encode(updateencrypted).replace('=',',').replace('/','_').replace('+','-');
@@ -1891,6 +1892,8 @@ public class ManageTravelPlansController {
          }
         }
         
+         system.debug('Segentation==='+mcObj.MCOriginalDataObj.SegmentName);
+          system.debug('Segentation1==='+'cardnumber='+ mcObj.MCOriginalDataObj.CardNo + ',fromdate=' + FormatdateTime(mcObj.MCOriginalDataObj.FromDateTime) + ',todate=' + FormatdateTime(mcObj.MCOriginalDataObj.ToDateTime) + ',SegmentationName=' + mcObj.MCOriginalDataObj.SegmentName + ',TimeZone=' +  mcObj.MCOriginalDataObj.TimeZone);
          
          Blob deletedata = Blob.valueof('cardnumber='+ mcObj.MCOriginalDataObj.CardNo + ',fromdate=' + FormatdateTime(mcObj.MCOriginalDataObj.FromDateTime) + ',todate=' + FormatdateTime(mcObj.MCOriginalDataObj.ToDateTime) + ',SegmentationName=' + mcObj.MCOriginalDataObj.SegmentName + ',TimeZone=' +  mcObj.MCOriginalDataObj.TimeZone);
        Blob deleteencrypted = Crypto.encrypt('AES128', key, Iv, deletedata);

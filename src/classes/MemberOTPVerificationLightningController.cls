@@ -231,8 +231,8 @@ public class MemberOTPVerificationLightningController
 
     }
 
-    @auraenabled
-    public static OTPVerificationModel ListOfEmailsAndPhoneNumbers(string accid, Boolean IsAuth, String GUID)
+  @auraenabled
+    public static OTPVerificationModel ListOfEmailsAndPhoneNumbers(string accid, Boolean IsAuth, String GUID, string IVRGUIDFromUrl )
     {
         system.debug('accid---' + accid);
          string  AccountNumber;
@@ -271,7 +271,16 @@ public class MemberOTPVerificationLightningController
                     if (!listContacts.contains(accountLocal.Mobile_Phone__pc) && accountLocal.id == acc.id)
                     {
                         wrapperAccount accLocal = new wrapperAccount();
-                        memid.put(accountLocal.id,accountLocal.FirstName+ ' '+accountLocal.LastName);
+                        system.debug('FirstName##' + accountLocal.FirstName);
+                        if(accountLocal.FirstName == null &&  accountLocal.LastName != null){                        
+                            memid.put(accountLocal.id,accountLocal.LastName);
+                        }
+                        if(accountLocal.FirstName != null &&  accountLocal.LastName == null){
+                            memid.put(accountLocal.id,accountLocal.FirstName);
+                        }
+                        if(accountLocal.FirstName != null &&  accountLocal.LastName != null){
+                            memid.put(accountLocal.id,accountLocal.FirstName+ ' '+accountLocal.LastName);
+                        }
 						accLocal.Memberid= accountLocal.id;
                         accLocal.fieldType = 'P';
                         accLocal.value = accountLocal.Mobile_Phone__pc;
@@ -333,7 +342,16 @@ public class MemberOTPVerificationLightningController
                     if (!listContacts.contains(accountLocal.Work_Phone__pc) && accountLocal.id == acc.id)
                     {
                         wrapperAccount accLocal = new wrapperAccount();
-                        memid.put(accountLocal.id,accountLocal.FirstName+ ' '+accountLocal.LastName);
+                        system.debug('FirstName##' + accountLocal.FirstName);
+                        if(accountLocal.FirstName == null &&  accountLocal.LastName != null){                        
+                            memid.put(accountLocal.id,accountLocal.LastName);
+                        }
+                        if(accountLocal.FirstName != null &&  accountLocal.LastName == null){
+                            memid.put(accountLocal.id,accountLocal.FirstName);
+                        }
+                        if(accountLocal.FirstName != null &&  accountLocal.LastName != null){
+                            memid.put(accountLocal.id,accountLocal.FirstName+ ' '+accountLocal.LastName);
+                        }
                         accLocal.Memberid= accountLocal.id;
                         accLocal.fieldType = 'P';
                         accLocal.value = accountLocal.Work_Phone__pc;
@@ -364,7 +382,17 @@ public class MemberOTPVerificationLightningController
                     if (!listContacts.contains(accountLocal.PersonEmail) && accountLocal.id == acc.id)
                     {
                         wrapperAccount accLocal = new wrapperAccount();
-                        memid.put(accountLocal.id,accountLocal.FirstName+ ' '+accountLocal.LastName);
+                        system.debug('FirstName##' + accountLocal.FirstName);
+                        if(accountLocal.FirstName == null &&  accountLocal.LastName != null){                        
+                            memid.put(accountLocal.id,accountLocal.LastName);
+                        }
+                        if(accountLocal.FirstName != null &&  accountLocal.LastName == null){
+                            memid.put(accountLocal.id,accountLocal.FirstName);
+                        }
+                        if(accountLocal.FirstName != null &&  accountLocal.LastName != null){
+                            memid.put(accountLocal.id,accountLocal.FirstName+ ' '+accountLocal.LastName);
+                        }
+                        
                         accLocal.Memberid= accountLocal.id;
                         accLocal.fieldType = 'E';
                         accLocal.value = accountLocal.PersonEmail;
@@ -395,7 +423,16 @@ public class MemberOTPVerificationLightningController
                     if (!listContacts.contains(accountLocal.Alternate_Email__pc) && accountLocal.id == acc.id)
                     {
                         wrapperAccount accLocal = new wrapperAccount();
-                        memid.put(accountLocal.id,accountLocal.FirstName+ ' '+accountLocal.LastName);
+                        system.debug('FirstName##' + accountLocal.FirstName);
+                        if(accountLocal.FirstName == null &&  accountLocal.LastName != null){                        
+                            memid.put(accountLocal.id,accountLocal.LastName);
+                        }
+                        if(accountLocal.FirstName != null &&  accountLocal.LastName == null){
+                            memid.put(accountLocal.id,accountLocal.FirstName);
+                        }
+                        if(accountLocal.FirstName != null &&  accountLocal.LastName != null){
+                            memid.put(accountLocal.id,accountLocal.FirstName+ ' '+accountLocal.LastName);
+                        }
                         accLocal.Memberid= accountLocal.id;
                         accLocal.fieldType = 'E';
                         accLocal.value = accountLocal.Alternate_Email__pc;
@@ -431,7 +468,16 @@ public class MemberOTPVerificationLightningController
                     if (!listContacts.contains(accountLocal.Mobile_Phone__pc) && accountLocal.id != acc.id)
                     {
                         wrapperAccount accLocal = new wrapperAccount();
-                        memid.put(accountLocal.id,accountLocal.FirstName+ ' '+accountLocal.LastName);
+                        system.debug('FirstName##' + accountLocal.FirstName);
+                       if(accountLocal.FirstName == null &&  accountLocal.LastName != null){                        
+                            memid.put(accountLocal.id,accountLocal.LastName);
+                        }
+                        if(accountLocal.FirstName != null &&  accountLocal.LastName == null){
+                            memid.put(accountLocal.id,accountLocal.FirstName);
+                        }
+                        if(accountLocal.FirstName != null &&  accountLocal.LastName != null){
+                            memid.put(accountLocal.id,accountLocal.FirstName+ ' '+accountLocal.LastName);
+                        }
 						accLocal.Memberid= accountLocal.id;
                         accLocal.fieldType = 'P';
                         accLocal.value = accountLocal.Mobile_Phone__pc;
@@ -462,7 +508,16 @@ public class MemberOTPVerificationLightningController
                     if (!listContacts.contains(accountLocal.Home_Phone__pc) && accountLocal.id != acc.id)
                     {
                         wrapperAccount accLocal = new wrapperAccount();
-                        memid.put(accountLocal.id,accountLocal.FirstName+ ' '+accountLocal.LastName);
+                        system.debug('FirstName##' + accountLocal.FirstName);
+                       if(accountLocal.FirstName == null &&  accountLocal.LastName != null){                        
+                            memid.put(accountLocal.id,accountLocal.LastName);
+                        }
+                        if(accountLocal.FirstName != null &&  accountLocal.LastName == null){
+                            memid.put(accountLocal.id,accountLocal.FirstName);
+                        }
+                        if(accountLocal.FirstName != null &&  accountLocal.LastName != null){
+                            memid.put(accountLocal.id,accountLocal.FirstName+ ' '+accountLocal.LastName);
+                        }
                         accLocal.Memberid= accountLocal.id;
                         accLocal.fieldType = 'P';
                         accLocal.value = accountLocal.Home_Phone__pc;
@@ -494,7 +549,16 @@ public class MemberOTPVerificationLightningController
                     if (!listContacts.contains(accountLocal.Work_Phone__pc) && accountLocal.id != acc.id)
                     {
                         wrapperAccount accLocal = new wrapperAccount();
-                        memid.put(accountLocal.id,accountLocal.FirstName+ ' '+accountLocal.LastName);
+                        system.debug('FirstName##' + accountLocal.FirstName);
+                        if(accountLocal.FirstName == null &&  accountLocal.LastName != null){                        
+                            memid.put(accountLocal.id,accountLocal.LastName);
+                        }
+                        if(accountLocal.FirstName != null &&  accountLocal.LastName == null){
+                            memid.put(accountLocal.id,accountLocal.FirstName);
+                        }
+                        if(accountLocal.FirstName != null &&  accountLocal.LastName != null){
+                            memid.put(accountLocal.id,accountLocal.FirstName+ ' '+accountLocal.LastName);
+                        }
                         accLocal.Memberid= accountLocal.id;
                         accLocal.fieldType = 'P';
                         accLocal.value = accountLocal.Work_Phone__pc;
@@ -525,7 +589,16 @@ public class MemberOTPVerificationLightningController
                     if (!listContacts.contains(accountLocal.PersonEmail) && accountLocal.id != acc.id)
                     {
                         wrapperAccount accLocal = new wrapperAccount();
-                        memid.put(accountLocal.id,accountLocal.FirstName+ ' '+accountLocal.LastName);
+                        system.debug('FirstName##' + accountLocal.FirstName);
+                        if(accountLocal.FirstName == null &&  accountLocal.LastName != null){                        
+                            memid.put(accountLocal.id,accountLocal.LastName);
+                        }
+                        if(accountLocal.FirstName != null &&  accountLocal.LastName == null){
+                            memid.put(accountLocal.id,accountLocal.FirstName);
+                        }
+                        if(accountLocal.FirstName != null &&  accountLocal.LastName != null){
+                            memid.put(accountLocal.id,accountLocal.FirstName+ ' '+accountLocal.LastName);
+                        }
                         accLocal.Memberid= accountLocal.id;
                         accLocal.fieldType = 'E';
                         accLocal.value = accountLocal.PersonEmail;
@@ -556,7 +629,16 @@ public class MemberOTPVerificationLightningController
                     if (!listContacts.contains(accountLocal.Alternate_Email__pc) && accountLocal.id != acc.id)
                     {
                         wrapperAccount accLocal = new wrapperAccount();
-                        memid.put(accountLocal.id,accountLocal.FirstName+ ' '+accountLocal.LastName);
+                        system.debug('FirstName##' + accountLocal.FirstName);
+                       if(accountLocal.FirstName == null &&  accountLocal.LastName != null){                        
+                            memid.put(accountLocal.id,accountLocal.LastName);
+                        }
+                        if(accountLocal.FirstName != null &&  accountLocal.LastName == null){
+                            memid.put(accountLocal.id,accountLocal.FirstName);
+                        }
+                        if(accountLocal.FirstName != null &&  accountLocal.LastName != null){
+                            memid.put(accountLocal.id,accountLocal.FirstName+ ' '+accountLocal.LastName);
+                        }
                         accLocal.Memberid= accountLocal.id;
                         accLocal.fieldType = 'E';
                         accLocal.value = accountLocal.Alternate_Email__pc;
@@ -748,6 +830,7 @@ public class MemberOTPVerificationLightningController
                             log.Decision__c = 'OTP – Not Eligible';
                             log.Member_Number__c = AccountNumber;
                             log.GUID__c = GUID;
+                            log.IVR_GUID__c = IVRGUIDFromUrl;
                             insert log;
                             acc.Member_Verification_OTP_Invalid_Attempt__c = system.now();
                             update acc;
@@ -788,7 +871,7 @@ public class MemberOTPVerificationLightningController
 
     }
     @auraenabled
-      public static void DeclineOTPAtFirstStep(string accid, String GUID)
+      public static void DeclineOTPAtFirstStep(string accid, String GUID, string IVRGUIDFromUrl)
     {
     	MemberOTPVerificationLightningController objMVLC = new MemberOTPVerificationLightningController();
         Account acc = objMVLC.GetAccount(accid);
@@ -806,9 +889,10 @@ public class MemberOTPVerificationLightningController
 
         log.Staff_Name__c = UserInfo.getName();
         log.Decision__c = 'OTP – Contact Unconfirmed';
-        log.OTP_Status__c = 'failed';
+        log.OTP_Status__c = 'Failed';
         log.Member_Number__c = AccountNumber;
         log.GUID__c = GUID;
+        log.IVR_GUID__c = IVRGUIDFromUrl;
         insert log;
         acc.Member_Verification_OTP_Invalid_Attempt__c = system.now();
         update acc;
@@ -881,7 +965,7 @@ public class MemberOTPVerificationLightningController
     }
 
     @auraenabled
-    public static KeyValuePairModel GenerateRandomOTP(string fieldName, string BrandName, string resend, string accid, String GUID)
+    public static KeyValuePairModel GenerateRandomOTP(string fieldName, string BrandName, string resend, string accid, String GUID, string IVRGUIDFromUrl)
      {
 
 		system.debug('AccountId in GenerateRandomOTP---' + accid);
@@ -963,7 +1047,7 @@ public class MemberOTPVerificationLightningController
          log.Last_Name__c = acc.LastName;
          log.Staff_Name__c = UserInfo.getName();
          log.GUID__c = GUID;
-        
+         log.IVR_GUID__c = IVRGUIDFromUrl;
          log.Member_Number__c = AccountNumber;
          if(IsEmail)
          {
@@ -993,7 +1077,7 @@ public class MemberOTPVerificationLightningController
 
 	  
 	@auraenabled
-    public static string verifyOTP(string accid, string EnteredOTP, string fieldName, string model, String GUID)
+    public static string verifyOTP(string accid, string EnteredOTP, string fieldName, string model, String GUID,string IVRGUIDFromUrl)
     {
     	system.debug('AccountId in verifyOTP---' + accid);
     	system.debug('--verify OTP start--');
@@ -1071,7 +1155,7 @@ public class MemberOTPVerificationLightningController
         log.First_Name__c = acc.FirstName;
         log.Last_Name__c = acc.LastName;
         log.GUID__c = GUID;
-       
+        log.IVR_GUID__c = IVRGUIDFromUrl;
         log.Member_Number__c = AccountNumber;
         if(IsEmail)
         {
@@ -1098,7 +1182,7 @@ public class MemberOTPVerificationLightningController
             //acc.Member_Verification_OTP_Invalid_Attempt__c = null;
             //update acc;
             log.Decision__c = 'OTP – Code valid';
-            log.OTP_Status__c = 'passed';
+            log.OTP_Status__c = 'Passed';
             Verified = 'Valid';
         }
         else
@@ -1106,7 +1190,7 @@ public class MemberOTPVerificationLightningController
             acc.Member_Verification_OTP_Invalid_Attempt__c = system.now();
             update acc;
             log.Decision__c = 'OTP – Code Failed';
-            log.OTP_Status__c = 'failed';
+            log.OTP_Status__c = 'Failed';
             Verified = 'Invalid';
         }
         
@@ -1310,7 +1394,7 @@ public class MemberOTPVerificationLightningController
     } 
 	
 	@auraenabled
-	public static double CancelOTP(string accid, String GUID, string fieldName)
+	public static double CancelOTP(string accid, String GUID, string fieldName, string IVRGUIDFromUrl)
 	{
 		 Double OTPAttemptCount;
 		 List<Member_Verification_Attempt__c> mt1 = [Select id,Member_Name__c,Authentication_Type__c,OTP_Cancelled_Attempt__c, Member_Salesforce_Id__c, Number_of_Attempts__c
@@ -1382,7 +1466,8 @@ public class MemberOTPVerificationLightningController
         }
         log.Staff_Name__c = UserInfo.getName();
 		log.Decision__c = 'OTP – Code not provided';
-		log.GUID__c = GUID; 
+		log.GUID__c = GUID;
+		log.IVR_GUID__c = IVRGUIDFromUrl; 
 		log.Member_Number__c = AccountNumber;
 		insert log;			
 		acc.Member_Verification_OTP_Invalid_Attempt__c = system.now();
@@ -1390,7 +1475,53 @@ public class MemberOTPVerificationLightningController
         
         return OTPAttemptCount; 
 	}
-
-
+	@AuraEnabled
+    
+     public static integer GetMemberAuthenticationSessionTime()
+     {
+     	List<Member_Authentication_Session_Time__c> custSetting = new List<Member_Authentication_Session_Time__c>();
+       	custSetting = [Select id, Name, Session_Time__c from Member_Authentication_Session_Time__c];
+	    integer minutes=0;
+	    if(custSetting.size() > 0){        	
+	       	minutes =  custSetting[0].Session_Time__c.intValue();        	        	
+	    }
+		minutes = minutes * (-1);
+		return minutes;
+     }
+	
+	@AuraEnabled
+    
+     public static map<string,object> GetOTPLogForReload(string memberid, string IVRGUIDFromUrl)
+     {
+     	map<string,object> resultLog = new map<string,object>();
+     	integer minutes = GetMemberAuthenticationSessionTime();
+     	string Verified;
+     	RecordType OTPRec = [select Id,Name,SobjectType from RecordType where Name ='OTP Authentication Log' and SobjectType='Authenticated_Log__c' limit 1];
+     	
+     	List<Authenticated_Log__c> OTPLogData = [SELECT ID, Decision__c, OTP_Email__c,OTP_Phone__c,OTP_Status__c
+					 FROM Authenticated_Log__c where SalesforceID__c =:memberid AND CreatedDate >=: Datetime.now().addMinutes(minutes) and IVR_GUID__c =:IVRGUIDFromUrl and RecordTypeId=: OTPRec.Id];
+	        for(Authenticated_Log__c log: OTPLogData)
+	        {
+	        	if(log.Decision__c == 'OTP – Code Expired')
+	        	{
+	        		Verified = 'Expired';
+	        	}
+	        	if( log.Decision__c == 'OTP – Code valid')
+	        	{
+	        		 Verified = 'Valid';
+	        	}
+	        	if(log.Decision__c == 'OTP – Code Failed')
+	        	{
+	        		Verified = 'Invalid';
+	        	}
+	        }
+	        resultLog.put('Verified', Verified);
+          			  
+     	return resultLog;
+     }
+     
+     
+     
+	
 
 }

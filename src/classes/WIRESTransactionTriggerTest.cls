@@ -42,6 +42,7 @@ public class WIRESTransactionTriggerTest {
 	 	objWC.Fees__c = 30.0;
 	 	objWC.Chevron_Account_Number__c = '0000000123';
 	 	objWC.Share_ID__c ='001';
+        objWC.FromAccount__c = '0000000123';
 	 	//objWC.Mobile_Phone__c = '1234567890';
 	 	
 	 	insert objWC;

@@ -34,6 +34,7 @@ public class MemberAuthenticationController{
     
     
     public String PINMatch{get;set;}
+    public String IVRGUID{get;set;}
     private String IVRPINMatch{get;set;}
     
     
@@ -283,8 +284,13 @@ public class MemberAuthenticationController{
             fromMarsData = 'False';
         }
         
-        //pageCalulated = new PageReference('/apex/verifiy');  
-        pageCalulated = new PageReference('/lightning/cmp/c__LightningVerification?c__EnteredSSN='+ EnteredSSN+'&c__EnteredMemberNumber='+EnteredMemberNumber+'&c__CallersPhoneNumber='+PhoneNumber+'&c__PINMatch='+PINMatch);         
+        //pageCalulated = new PageReference('/apex/verifiy');
+        
+       
+        pageCalulated = new PageReference('/lightning/cmp/c__LightningVerification?c__EnteredSSN='+ EnteredSSN+'&c__EnteredMemberNumber='+EnteredMemberNumber+'&c__CallersPhoneNumber='+PhoneNumber+'&c__PINMatch='+PINMatch+'&c__IVRGUID='+IVRGUID+'&c__Reason=' + ReasonCode+ '&c__HighValueFlag=' + HighFlag);
+        
+          
+                
         pageCalulated.setRedirect(false);
        // }
       
@@ -2158,6 +2164,7 @@ public class MemberAuthenticationController{
             
               
         log.SalesforceID__c = SalesforceID;
+        log.Member__c = SalesforceID;
         log.Decision__c = substring(decision,100);
         //OTPVerified
         if(OTPVerified != '' && OTPVerified != null)
@@ -2303,6 +2310,8 @@ public class MemberAuthenticationController{
         PINMatch = ApexPages.currentPage().getParameters().get('PINMatch');
         IVRPINMatch = PINMatch;
         
+        IVRGUID = ApexPages.currentPage().getParameters().get('IVRGUID');
+      	
         
         // SSN
         

@@ -16,9 +16,13 @@ public class AddressChangeController {
 		if(acc.FlowURL__c != null){
 			FlowURL = acc.FlowURL__c;			
 		}
+		
+		Account acct = [SELECT id, Name, SSN_TIN_Encrypted__pc from Account where id =: accid limit 1];
 		       
         strMap.put('FlowURL',FlowURL);
         strMap.put('UserId',UserInfo.getUserId());
+        strMap.put('MemberName',acct.Name);
+        strMap.put('SSN',acct.SSN_TIN_Encrypted__pc);
         return strMap; 
     }
        // --------------------- Get Flow URL from Custom Settings..................//       	
