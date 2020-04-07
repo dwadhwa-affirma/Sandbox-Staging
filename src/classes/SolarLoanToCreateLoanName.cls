@@ -44,7 +44,13 @@ public class SolarLoanToCreateLoanName {
                 City = sl.Joint_City__c;
                 State = sl.Joint_State__c;
                 ZipCode = sl.Joint_Zip_Code__c;
-                BirthDate =  sl.Joint_DOB__c;
+                if(sl.Joint_DOB__c != null){
+                	BirthDate =  String.valueOf(sl.Joint_DOB__c);	
+                }
+                else{
+                	BirthDate =  ' ';
+                }
+                
                 SSN = sl.Joint_SSN__c;
                 LoanId = '0';
                 AccountNumber = '0';
