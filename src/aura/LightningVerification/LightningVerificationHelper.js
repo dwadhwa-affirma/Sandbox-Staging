@@ -856,6 +856,7 @@
 			                                    	ProgressBarStep2.classList.add('active');
 			                                    	Level2IndicatorLabel.classList.add('hidden');
 			                                    	Level2IndicatorLabel.classList.remove('show');
+			                                    	component.set("v.CurrentAuthenticationLevel", 'Level 2');
 			                                    }
 			                                    else if(result.IsLevel2Achieved == false && result.NextTabLevel2 == 'Not Achievable' )
 			                                    {
@@ -876,6 +877,7 @@
 			                                    	ProgressBarStep3.classList.add('active');
 			                                    	Level3IndicatorLabel.classList.add('hidden');
 			                                    	Level3IndicatorLabel.classList.remove('show');
+			                                    	component.set("v.CurrentAuthenticationLevel", 'Level 3');
 			                                    }
 			                                    else if(result.IsLevel3Achieved == false && result.NextTabLevel3 == 'Not Achievable')
 			                                    {
