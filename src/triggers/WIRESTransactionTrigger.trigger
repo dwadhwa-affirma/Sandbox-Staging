@@ -30,9 +30,9 @@ trigger WIRESTransactionTrigger on WIRES_Transaction__c (before insert, after in
 			objWIRESTransaction.SendOn__c = null;    	
     	}
     	
-    	List<Account_Details__c> listAccountDetails = [select id,Brand__c,OPEN_DATE__c from Account_Details__c where Name =: AccountNo 
+    	List<Account_Details__c> listAccountDetails = [select id,Brand__c,ID1__c,OPEN_DATE__c from Account_Details__c where Name =: AccountNo 
     											and ID1__c =: objWIRESTransaction.Share_ID__c limit 1];
-
+		system.debug('listAccountDetails'+listAccountDetails);
 		Integer numberofDays = listAccountDetails[0].OPEN_DATE__c.daysBetween(Date.today());
     	if(numberofDays >=45){
     		objWIRESTransaction.FlagAccountOpenfor45Days__c = true;
