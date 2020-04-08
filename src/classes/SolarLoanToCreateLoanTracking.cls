@@ -24,7 +24,7 @@ public class SolarLoanToCreateLoanTracking {
     public static HttpRequest req = new HttpRequest();
     
     @future(callout=true)
-    public static void insertSolarLoans(List<id> ids){
+    public static void createSolarLoanTracking(Set<id> ids){
     	
     List<Solar_Loans__c> Solanloanlist = new List<Solar_Loans__c>();         
     List<Solar_Loans__c> solarloans = [SELECT id,ABA_Bank_Name__c,ACH__c,Additional_Amount__c,Application_Date__c,
