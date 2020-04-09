@@ -43,27 +43,53 @@ public class SolarLoanToCreateLoanTracking {
     
     		for(Solar_Loans__c sl : solarloans){
                 
-            	Type = '0';
-                UserChar11 = 'FNINUMBER';
-                UserChar1 = 'Installer';
-                UserChar2 = 'InstallerNum';
-                UserChar3 = 'Product';
-                UserChar4 = 'Module';
-                UserChar5 = 'Inverter';
-                UserChar10 = 'CreditAttri';
-                UserChar20 = 'SiteUUID';
-                UserAmount1 = 'LoanAmount';
-                UserAmount2 = 'OIDFee';
-                UserAmount3 = 'MEMFEE';
-                UserAmount11 = 'MortBal';
-                UserAmount12 = 'NewPayAmt';
-                UserAmount13 = 'FinalPayAmt';
-                UserCode1 = 'JointFICOScore';
-                LoanId = sl.Loan_Id__c;
-                AccountNumber = '123';
+            	Type = '33';
+                UserChar11 = sl.FNI__c;
+                UserChar1 = sl.Installer__c;
+                UserChar2 = sl.Installer_Number__c;
+                UserChar3 = sl.Product__c;
+                UserChar4 = sl.Module__c;
+                UserChar5 = sl.Inverter__c;
+                UserChar10 = sl.Credit_Attributes__c;
+                UserChar20 = sl.Site_UUID__c;
+                if(sl.Loan_Amount__c != null)
+                	UserAmount1 = String.ValueOf(sl.Loan_Amount__c);
+            	else
+            		UserAmount1 = '0';
+            		
+            	if(sl.OID_Fee__c != null)	
+                	UserAmount2 = string.ValueOF(sl.OID_Fee__c);
+                else
+                	UserAmount2 = '0';
+                	
+                if(sl.Membership_Fee__c != null)	
+                	UserAmount3 = string.ValueOF(sl.Membership_Fee__c);
+                else
+                	UserAmount3 = '0';
+                		
+                if(sl.Mortgage_Balance__c != null)	
+                	UserAmount11 = string.ValueOF(sl.Mortgage_Balance__c);
+                else
+                	UserAmount11 = '0';
+                	
                 
-                 req.setEndpoint('https://brscsymx.ctxcu.org/dev/EFT/CreateLoanTracking');
-                //req.setEndpoint('https://symxapi.chevronfcu.org/dev/EFT/CreateEft');
+                UserAmount12 = 'NewPayAmt';
+                
+                if(sl.Final_Payment_Amount__c != null)	
+                	UserAmount13 = string.ValueOF(sl.Final_Payment_Amount__c);
+                else
+                	UserAmount13 = '0';
+                	
+                if(sl.Joint_FICO_Score__c != null)	
+                	UserCode1 = string.ValueOF(sl.Joint_FICO_Score__c);
+                else
+                	UserCode1 = '0';
+                		
+                LoanId = sl.Loan_Id__c;
+                AccountNumber = sl.Member_Number__c;
+                
+                //req.setEndpoint('https://brscsymx.ctxcu.org/dev/EFT/CreateLoanTracking');
+                req.setEndpoint('https://symxapi.chevronfcu.org/devclient/EFT/CreateLoanTracking');
                 req.setClientCertificateName('brscmcapi');
                 req.setMethod('POST');
                 req.setHeader('Content-Type', 'application/json');

@@ -53,7 +53,7 @@ public class SolarLoanToCreateLoan {
                 CollateralCode = '4';
                 ApprovalCode = '9002';
                 OriginalBalance = string.valueOf(sl.Net_Funding_Amount__c);
-                ApprovalDate = 'APPROVAL DATE';
+                ApprovalDate = '2020-04-06';
                 if(sl.Maturity_Date__c != null){
                 	MaturityDate = String.valueOf(sl.Maturity_Date__c);
                 }
@@ -78,9 +78,9 @@ public class SolarLoanToCreateLoan {
             		DueDay1 = '0';
             	}
             	
-                Payment = 'TempPayAmt';
-                CouponCode = 'LoanCouponCode';
-                PaymentMethod = 'LoanPayMethod';
+                Payment = '10';
+                CouponCode = '10';
+                PaymentMethod = '10';
                 Description = 'SECURED SOLAR';
                 InterestRate = string.valueof(sl.Interest_Rate__c);
                 UserAmount1 = string.valueof(sl.Debt_Ratio__c);
@@ -90,8 +90,8 @@ public class SolarLoanToCreateLoan {
                 PaymentFrequency = '04';
                 
                 
-                 req.setEndpoint('https://brscsymx.ctxcu.org/dev/EFT/CreateLoanName');
-                //req.setEndpoint('https://symxapi.chevronfcu.org/dev/EFT/CreateEft');
+                //req.setEndpoint('https://brscsymx.ctxcu.org/dev/EFT/CreateLoan');
+                req.setEndpoint('https://symxapi.chevronfcu.org/devclient/EFT/CreateLoan');
                 req.setClientCertificateName('brscmcapi');
                 req.setMethod('POST');
                 req.setHeader('Content-Type', 'application/json');

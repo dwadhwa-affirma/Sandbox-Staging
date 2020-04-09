@@ -36,7 +36,7 @@ public class SolarLoanToCreateLoanName {
     
     		for(Solar_Loans__c sl : solarloans){
                 
-            	Type = '01';
+            	Type = '1';
                 Last = sl.Joint_Last_Name__c;
                 First = sl.Joint_First_Name__c;
                 Street = sl.Joint_Address_1__c;
@@ -53,12 +53,12 @@ public class SolarLoanToCreateLoanName {
                 
                 SSN = sl.Joint_SSN__c;
                 LoanId = sl.Loan_Id__c;
-                AccountNumber = '0';
+                AccountNumber = sl.Member_Number__c;
                
                 
                 
-                 req.setEndpoint('https://brscsymx.ctxcu.org/dev/EFT/CreateLoan');
-                //req.setEndpoint('https://symxapi.chevronfcu.org/dev/EFT/CreateEft');
+                //req.setEndpoint('https://brscsymx.ctxcu.org/dev/EFT/CreateLoanName');
+                req.setEndpoint('https://symxapi.chevronfcu.org/devclient/EFT/CreateLoanName');
                 req.setClientCertificateName('brscmcapi');
                 req.setMethod('POST');
                 req.setHeader('Content-Type', 'application/json');
