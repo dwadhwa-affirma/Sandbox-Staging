@@ -1,7 +1,8 @@
 trigger SolarLoanTrigger on Solar_Loans__c (after insert, after update, before update) {
     
     Set<Id> SLIds = new Set<Id>();
-    Set<Id> SLIdsForLoanTracking = new Set<Id>();
+    Set<Id> SLIdsToCreateLoan = new Set<Id>();
+    Set<Id> SLIdsForLoanNameTracking = new Set<Id>();
     Set<Id> SLIdsForEFT = new Set<Id>();
     
     Set<Id> SLIdsForRouting = new Set<Id>();
@@ -28,7 +29,14 @@ trigger SolarLoanTrigger on Solar_Loans__c (after insert, after update, before u
             //------------------------------- Checking if the status is being changed and status = 'Approved'-----------------------------------------------//
                 
             if(trigger.new[i].Status__c == 'Approved'){
-                SLIdsForLoanTracking.add(trigger.new[i].id);
+                SLIdsToCreateLoan.add(trigger.new[i].id);
+            }
+            
+            
+            //------------------------------- Checking if LoanID != null---------------------------------------------------------------//
+                
+            if(trigger.new[i].Loan_Id__c != null){
+                SLIdsForLoanNameTracking.add(trigger.new[i].id);
             }
             
             //------------------------------- Checking if the status is being changed and status = 'Completed'-----------------------------------------------//
@@ -107,7 +115,13 @@ trigger SolarLoanTrigger on Solar_Loans__c (after insert, after update, before u
             //------------------------------- Checking if the status is being changed and status = 'Approved'-----------------//
             
             if(trigger.old[i].Status__c != 'Approved' && trigger.new[i].Status__c == 'Approved'){
-                SLIdsForLoanTracking.add(trigger.new[i].id);
+                SLIdsToCreateLoan.add(trigger.new[i].id);
+            }
+            
+            //------------------------------- Checking if the LoanId != null ---------------------------------------------------//
+            
+            if(trigger.old[i].Loan_Id__c != trigger.new[i].Loan_Id__c && trigger.new[i].Loan_Id__c != null){
+                SLIdsForLoanNameTracking.add(trigger.new[i].id);
             }
             
              //------------------------------- Checking if the status is being changed and status = 'Completed'-----------------//
@@ -196,28 +210,30 @@ trigger SolarLoanTrigger on Solar_Loans__c (after insert, after update, before u
 	    }
 	}
         
+    //------------------------------- Calling Batch class with list of "Solar Loans" id to send a Docusign email---------------------------------------//    
     if(SLIds.size() > 0){
         
-        //------------------------------- Calling Batch class with list of "Solar Loans" id to send a Docusign email---------------------------------------//
-       
         Database.executeBatch(new SolarLoansToDocuSignBatch(SLIds),1);
     }
     
-    if(SLIdsForLoanTracking.size() > 0){
-        
-        //------------------------------- Creating "Loan" and "Tracking" record if the status = "Approved"-------------------------//
+    //------------------------------- Creating "Loan" if the status = "Approved"------------------------------------------------//
+    
+    if(SLIdsToCreateLoan.size() > 0){
        
-        //SolarLoanToCreateLoan.createSolarLoans(SLIdsForLoanTracking);
-        //SolarLoanToCreateLoanTracking.createSolarLoanTracking(SLIdsForLoanTracking);
-        //SolarLoanToCreateLoanName.createSolarLoanNames(SLIdsForLoanTracking);
-        
+        //SolarLoanToCreateLoan.createSolarLoans(SLIdsToCreateLoan);
     }
     
+    //------------------------------- Creating "Loan Name" and "Loan Tracking" record if the "LoanID != null -------------------//
+    if(SLIdsForLoanNameTracking.size() > 0){
+        
+         //SolarLoanToCreateLoanTracking.createSolarLoanTracking(SLIdsForLoanNameTracking);
+        //SolarLoanToCreateLoanName.createSolarLoanNames(SLIdsForLoanNameTracking);  
+    }
+    
+    //------------------------------- Creating "EFT" record if the status = "Completed"------------------------------------------//
     if(SLIdsForEFT.size() > 0){
         
-        //------------------------------- Creating "EFT" record if the status = "Completed"-------------------------//
-       
-        //SolarLoanToSymitar.insertSolarLoans(SLIdsForEFT);
+         //SolarLoanToSymitar.insertSolarLoans(SLIdsForEFT);
     }
     
     
