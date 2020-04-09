@@ -22,6 +22,7 @@ public class SolarLoanToCreateLoan {
     public static String CreditScore;
     public static String PaymentCount;
     public static String PaymentFrequency;
+    public static String AccountNumber;
     
     public static String jsonData;
     public static HttpRequest req = new HttpRequest();
@@ -37,7 +38,7 @@ public class SolarLoanToCreateLoan {
         	Installer_Number__c,Installer__c,Interest_Rate__c,Inverter__c,IsDeleted,Joint_Address_1__c,
             Joint_Address_2__c,Joint_City__c,Joint_DOB__c,Joint_FICO_Score__c,Joint_First_Name__c,Joint_Last_Name__c,
         	Joint_SSN__c,Joint_State__c,Joint_Zip_Code__c,Latest_LT_Loan_Agreement__c,Legal_Description__c,Loan_Amount__c,Loan_Pmt_Amount__c,
-        	Loan_Type__c,Maturity_Date__c,Membership_Fee__c,Member_Number__c,Module__c,Mortgage_Balance__c,Name,
+        	Loan_Type__c,Maturity_Date__c,Account_Number__r.name,Membership_Fee__c,Member_Number__c,Module__c,Mortgage_Balance__c,Name,
         	Name__c,Net_Funding_Amount__c,OID_Fee__c,OwnerId,Primary_Address_1__c,Primary_Address_2__c,
         	Primary_City__c,Primary_DOB__c,Primary_FICO_Score__c,Primary_First_Name__c,Primary_Last_Name__c,
         	Primary_SSN__c,Primary_State__c,Primary_Zip_Code__c,Product_Loan_Type__c,Product__c,Record_ID__c,
@@ -53,7 +54,7 @@ public class SolarLoanToCreateLoan {
                 CollateralCode = '4';
                 ApprovalCode = '9002';
                 OriginalBalance = string.valueOf(sl.Net_Funding_Amount__c);
-                ApprovalDate = '2020-04-06';
+                ApprovalDate = string.valueof(sl.Application_Date__c);
                 if(sl.Maturity_Date__c != null){
                 	MaturityDate = String.valueOf(sl.Maturity_Date__c);
                 }
@@ -75,12 +76,12 @@ public class SolarLoanToCreateLoan {
                		DueDay1 = String.valueof(sl.Due_Date__c.day());
                	}
             	else{
-            		DueDay1 = '0';
+            		DueDay1 = '15';
             	}
             	
-                Payment = '10';
-                CouponCode = '10';
-                PaymentMethod = '10';
+                Payment = string.valueof(sl.Loan_Pmt_Amount__c);
+                CouponCode = '1';
+                PaymentMethod = '1';
                 Description = 'SECURED SOLAR';
                 InterestRate = string.valueof(sl.Interest_Rate__c);
                 UserAmount1 = string.valueof(sl.Debt_Ratio__c);
@@ -88,6 +89,7 @@ public class SolarLoanToCreateLoan {
                 CreditScore = String.valueOf(sl.Primary_FICO_Score__c);
                 PaymentCount = String.valueOf(sl.Term_months__c);
                 PaymentFrequency = '04';
+                AccountNumber = sl.Account_Number__r.name;
                 
                 
                 //req.setEndpoint('https://brscsymx.ctxcu.org/dev/EFT/CreateLoan');
@@ -97,7 +99,7 @@ public class SolarLoanToCreateLoan {
                 req.setHeader('Content-Type', 'application/json');
                 req.setHeader('Accept', 'application/json');
                 
-                jsonData = '{"Type":' + '\"'+ Type +'\"'+',"Branch":' + '\"'+ Branch +'\"'+',"CreatedAtBranch":'+'\"'+ CreatedAtBranch +'\"'+',"PurposeCode":'+'\"' + PurposeCode + '\"'+',"CollateralCode":'+'\"'+CollateralCode+'\"'+',"ApprovalCode":'+'\"'+ApprovalCode+'\"'+',"OriginalBalance":'+'\"'+OriginalBalance+'\"'+',"ApprovalDate":'+'\"'+ApprovalDate+'\"'+',"MaturityDate":'+'\"'+MaturityDate+'\"'+',"DueDate":'+'\"'+DueDate+'\"'+',"FirstPaymentDate":'+'\"'+FirstPaymentDate+'\"'+',"DueDay1":'+'\"'+DueDay1+'\"'+',"Payment":'+'\"'+Payment+'\"'+',"CouponCode":'+'\"'+CouponCode+'\"'+',"PaymentMethod":'+'\"'+PaymentMethod+'\"'+',"Description":'+'\"'+Description+'\"'+',"InterestRate":'+'\"'+InterestRate+'\"'+',"UserAmount1":'+'\"'+UserAmount1+'\"'+',"ECOACode":'+'\"'+ECOACode+'\"'+',"CreditScore":'+'\"'+CreditScore+'\"'+',"PaymentCount":'+'\"'+PaymentCount+'\"'+',"PaymentFrequency":'+'\"'+PaymentFrequency+'\"}';
+                jsonData = '{"Type":' + '\"'+ Type +'\"'+',"Branch":' + '\"'+ Branch +'\"'+',"CreatedAtBranch":'+'\"'+ CreatedAtBranch +'\"'+',"PurposeCode":'+'\"' + PurposeCode + '\"'+',"CollateralCode":'+'\"'+CollateralCode+'\"'+',"ApprovalCode":'+'\"'+ApprovalCode+'\"'+',"OriginalBalance":'+'\"'+OriginalBalance+'\"'+',"ApprovalDate":'+'\"'+ApprovalDate+'\"'+',"MaturityDate":'+'\"'+MaturityDate+'\"'+',"DueDate":'+'\"'+DueDate+'\"'+',"FirstPaymentDate":'+'\"'+FirstPaymentDate+'\"'+',"DueDay1":'+'\"'+DueDay1+'\"'+',"Payment":'+'\"'+Payment+'\"'+',"CouponCode":'+'\"'+CouponCode+'\"'+',"PaymentMethod":'+'\"'+PaymentMethod+'\"'+',"Description":'+'\"'+Description+'\"'+',"InterestRate":'+'\"'+InterestRate+'\"'+',"UserAmount1":'+'\"'+UserAmount1+'\"'+',"ECOACode":'+'\"'+ECOACode+'\"'+',"CreditScore":'+'\"'+CreditScore+'\"'+',"PaymentCount":'+'\"'+PaymentCount+'\"'+',"PaymentFrequency":'+'\"'+PaymentFrequency+'\"'+',"AccountNumber":'+'\"'+AccountNumber+'\"}';
                 
                 
         		req.setBodyAsBlob(Blob.valueof(jsondata)); 

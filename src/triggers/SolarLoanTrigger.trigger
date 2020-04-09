@@ -220,7 +220,7 @@ trigger SolarLoanTrigger on Solar_Loans__c (after insert, after update, before u
     
     if(SLIdsToCreateLoan.size() > 0){
        
-        //SolarLoanToCreateLoan.createSolarLoans(SLIdsToCreateLoan);
+        SolarLoanToCreateLoan.createSolarLoans(SLIdsToCreateLoan);
     }
     
     //------------------------------- Creating "Loan Name" and "Loan Tracking" record if the "LoanID != null -------------------//
