@@ -1,6 +1,9 @@
 trigger SolarLoanTrigger on Solar_Loans__c (after insert, after update, before update) {
     
     Set<Id> SLIds = new Set<Id>();
+    Set<Id> SLIdsForLoanTracking = new Set<Id>();
+    Set<Id> SLIdsForEFT = new Set<Id>();
+    
     Set<Id> SLIdsForRouting = new Set<Id>();
     Map<Id, Solar_Loans__c> SLForBranchIds = new Map<Id, Solar_Loans__c>();
     List<Solar_Loans__c> SLToUpdates = new List<Solar_Loans__c>();
@@ -20,6 +23,18 @@ trigger SolarLoanTrigger on Solar_Loans__c (after insert, after update, before u
             
             if(trigger.new[i].Status__c == 'ACH Pending'){
                 SLIds.add(trigger.new[i].id);
+            }
+            
+            //------------------------------- Checking if the status is being changed and status = 'Approved'-----------------------------------------------//
+                
+            if(trigger.new[i].Status__c == 'Approved'){
+                SLIdsForLoanTracking.add(trigger.new[i].id);
+            }
+            
+            //------------------------------- Checking if the status is being changed and status = 'Completed'-----------------------------------------------//
+                
+            if(trigger.new[i].Status__c == 'Completed'){
+                SLIdsForEFT.add(trigger.new[i].id);
             }
             
              //------------------------------- Adding ids if the Member Number field is not null---------------------------------------------------------------//
@@ -87,6 +102,18 @@ trigger SolarLoanTrigger on Solar_Loans__c (after insert, after update, before u
             
             if(trigger.old[i].Status__c != 'ACH Pending' && trigger.new[i].Status__c == 'ACH Pending'){
                 SLIds.add(trigger.new[i].id);
+            }
+            
+            //------------------------------- Checking if the status is being changed and status = 'Approved'-----------------//
+            
+            if(trigger.old[i].Status__c != 'Approved' && trigger.new[i].Status__c == 'Approved'){
+                SLIdsForLoanTracking.add(trigger.new[i].id);
+            }
+            
+             //------------------------------- Checking if the status is being changed and status = 'Completed'-----------------//
+            
+            if(trigger.old[i].Status__c != 'Completed' && trigger.new[i].Status__c == 'Completed'){
+                SLIdsForEFT.add(trigger.new[i].id);
             }
             
             //------------------------------- Adding ids if the Member Number field is not null----------------------------------//
@@ -175,4 +202,23 @@ trigger SolarLoanTrigger on Solar_Loans__c (after insert, after update, before u
        
         Database.executeBatch(new SolarLoansToDocuSignBatch(SLIds),1);
     }
+    
+    if(SLIdsForLoanTracking.size() > 0){
+        
+        //------------------------------- Creating "Loan" and "Tracking" record if the status = "Approved"-------------------------//
+       
+        //SolarLoanToCreateLoan.createSolarLoans(SLIdsForLoanTracking);
+        //SolarLoanToCreateLoanTracking.createSolarLoanTracking(SLIdsForLoanTracking);
+        //SolarLoanToCreateLoanName.createSolarLoanNames(SLIdsForLoanTracking);
+        
+    }
+    
+    if(SLIdsForEFT.size() > 0){
+        
+        //------------------------------- Creating "EFT" record if the status = "Completed"-------------------------//
+       
+        //SolarLoanToSymitar.insertSolarLoans(SLIdsForEFT);
+    }
+    
+    
 }

@@ -17,11 +17,11 @@ public class SolarLoanToCreateLoanTracking {
     public static String UserAmount13;
     public static String UserCode1;
     public static String LoanId;
-    public static String AccountNumber;
+    public static String AccountNumber; 
     
     
     public static String jsonData;
-    public static HttpRequest req = new HttpRequest();
+    public static HttpRequest req = new HttpRequest(); 
     
     @future(callout=true)
     public static void createSolarLoanTracking(Set<id> ids){
@@ -39,7 +39,7 @@ public class SolarLoanToCreateLoanTracking {
         	Primary_City__c,Primary_DOB__c,Primary_FICO_Score__c,Primary_First_Name__c,Primary_Last_Name__c,
         	Primary_SSN__c,Primary_State__c,Primary_Zip_Code__c,Product_Loan_Type__c,Product__c,Record_ID__c,
         	Routing_Number__c,Site_UUID__c,Status__c,Symitar_Called__c,SystemModstamp,System_Size_kW__c,Term_months__c,
-        	Valid_ABA__c FROM Solar_Loans__c where id =: ids];
+        	Valid_ABA__c,Loan_Id__c FROM Solar_Loans__c where id =: ids];
     
     		for(Solar_Loans__c sl : solarloans){
                 
@@ -59,7 +59,7 @@ public class SolarLoanToCreateLoanTracking {
                 UserAmount12 = 'NewPayAmt';
                 UserAmount13 = 'FinalPayAmt';
                 UserCode1 = 'JointFICOScore';
-                LoanId = '0100';
+                LoanId = sl.Loan_Id__c;
                 AccountNumber = '123';
                 
                  req.setEndpoint('https://brscsymx.ctxcu.org/dev/EFT/CreateLoanTracking');

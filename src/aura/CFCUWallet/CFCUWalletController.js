@@ -9,6 +9,8 @@
 		component.set("v.ScoreObtained",0 );
 		component.set("v.QuestionAttempt",0 );
 		component.set("v.FailedCount",0 );
+        component.set("v.IsButtonDisabled", true);
+        helper.buttonOnLoad(component, event, helper);
 		var params = event.getParam('arguments');
 		if (params) {
 			var IsReLoadRequired =  params.param2;

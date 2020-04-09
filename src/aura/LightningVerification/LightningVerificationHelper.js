@@ -175,7 +175,7 @@
                     	component.set("v.CFCUWalletStatusForDay",result['CFCUWalletStatusForDay']);
                     	component.set("v.PublicWalletStatusForDay",result['PublicWalletStatusForDay']);
                     	component.set("v.OTPStatusForDay",result.IsOOWAvailable);
-                    	//component.set("v.OOWStatusForDay",result['OOWStatusForDay']);
+                    	component.set("v.OOWStatusForDay",result['OOWStatusForDay']);
                     	component.set("v.ShowFailedDesiredLevel",true);
                     	component.set("v.ShowFailedDesiredLevelCount",result['Show Failed Desired Level']);
                     	component.set("v.AccountNumber", result['AccountNumber']);
