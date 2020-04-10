@@ -85,7 +85,7 @@ float:left;
 .THIS .clearfix::after {content: "";  clear: both;  display: table;}
 .THIS .header-column-title {width:300px !important;}
 .THIS .header-column-title .slds-truncate,.THIS .header-column p {font-size: 14px; line-height: 18px;}
-.THIS .MainDiv.MainField {border-bottom: 1px solid #d8dde6; margin-bottom: 0;}
+.THIS .MainDiv.MainField {border-bottom: 3px solid #637697; margin-bottom: 0;}
 .THIS .rightBox p.field-header {text-transform : uppercase;}
 .THIS .CardDetails .vl {min-height: 340px;} 
 @media screen and (max-width: 1600px){
