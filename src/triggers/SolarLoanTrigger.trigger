@@ -2,7 +2,7 @@ trigger SolarLoanTrigger on Solar_Loans__c (after insert, after update, before u
     
     Set<Id> SLIds = new Set<Id>();
     Set<Id> SLIdsToCreateLoan = new Set<Id>();
-    Set<Id> SLIdsForLoanNameTracking = new Set<Id>();
+    Set<Id> UpdateStatus = new Set<Id>();
     Set<Id> SLIdsForEFT = new Set<Id>();
     
     Set<Id> SLIdsForRouting = new Set<Id>();
@@ -30,13 +30,6 @@ trigger SolarLoanTrigger on Solar_Loans__c (after insert, after update, before u
                 
             if(trigger.new[i].Status__c == 'Approved'){
                 SLIdsToCreateLoan.add(trigger.new[i].id);
-            }
-            
-            
-            //------------------------------- Checking if LoanID != null---------------------------------------------------------------//
-                
-            if(trigger.new[i].Loan_Id__c != null){
-                SLIdsForLoanNameTracking.add(trigger.new[i].id);
             }
             
             //------------------------------- Checking if the status is being changed and status = 'Completed'-----------------------------------------------//
@@ -98,6 +91,14 @@ trigger SolarLoanTrigger on Solar_Loans__c (after insert, after update, before u
 			if(trigger.new[i].Routing_Number__c != trigger.old[i].Routing_Number__c && trigger.new[i].Routing_Number__c != null && trigger.new[i].Status__c == 'Completed'){
     			trigger.new[i].Review_needed__c = true;
     		}
+    		
+    		//------------------------------- Checking if the LoanId != null ---------------------------------------------------//
+            
+            if((trigger.old[i].Loan_Id__c != trigger.new[i].Loan_Id__c && trigger.new[i].Loan_Id__c != null) ||
+            	(trigger.old[i].Loan_Name_Locator__c != trigger.new[i].Loan_Name_Locator__c && trigger.new[i].Loan_Name_Locator__c != null) ||
+            	(trigger.old[i].Loan_Tracking_Locator__c != trigger.new[i].Loan_Tracking_Locator__c && trigger.new[i].Loan_Tracking_Locator__c != null)){
+                trigger.new[i].Status__c = 'Loan Record Created';
+            }
         }
               
     }
@@ -118,11 +119,8 @@ trigger SolarLoanTrigger on Solar_Loans__c (after insert, after update, before u
                 SLIdsToCreateLoan.add(trigger.new[i].id);
             }
             
-            //------------------------------- Checking if the LoanId != null ---------------------------------------------------//
             
-            if(trigger.old[i].Loan_Id__c != trigger.new[i].Loan_Id__c && trigger.new[i].Loan_Id__c != null){
-                SLIdsForLoanNameTracking.add(trigger.new[i].id);
-            }
+            
             
              //------------------------------- Checking if the status is being changed and status = 'Completed'-----------------//
             
@@ -221,13 +219,6 @@ trigger SolarLoanTrigger on Solar_Loans__c (after insert, after update, before u
     if(SLIdsToCreateLoan.size() > 0){
        
         SolarLoanToCreateLoan.createSolarLoans(SLIdsToCreateLoan);
-    }
-    
-    //------------------------------- Creating "Loan Name" and "Loan Tracking" record if the "LoanID != null -------------------//
-    if(SLIdsForLoanNameTracking.size() > 0){
-        
-         //SolarLoanToCreateLoanTracking.createSolarLoanTracking(SLIdsForLoanNameTracking);
-        //SolarLoanToCreateLoanName.createSolarLoanNames(SLIdsForLoanNameTracking);  
     }
     
     //------------------------------- Creating "EFT" record if the status = "Completed"------------------------------------------//

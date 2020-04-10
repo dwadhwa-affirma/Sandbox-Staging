@@ -19,7 +19,8 @@ public class SolarLoanToCreateLoanTracking {
     public static String LoanId;
     public static String AccountNumber; 
     
-    
+    public static String result;
+    public static List<Solar_Loans__c> SolarLoanToUpdate = new List<Solar_Loans__c>();
     public static String jsonData;
     public static HttpRequest req = new HttpRequest(); 
     
@@ -39,7 +40,7 @@ public class SolarLoanToCreateLoanTracking {
         	Primary_City__c,Primary_DOB__c,Primary_FICO_Score__c,Primary_First_Name__c,Primary_Last_Name__c,
         	Primary_SSN__c,Primary_State__c,Primary_Zip_Code__c,Product_Loan_Type__c,Product__c,Record_ID__c,
         	Routing_Number__c,Site_UUID__c,Status__c,Symitar_Called__c,SystemModstamp,System_Size_kW__c,Term_months__c,
-        	Valid_ABA__c,Loan_Id__c,Account_Number__r.name FROM Solar_Loans__c where id =: ids];
+        	Valid_ABA__c,Loan_Id__c,Account_Number__r.name,Loan_Name_Locator__c,Loan_Tracking_Locator__c FROM Solar_Loans__c where id =: ids];
     
     		for(Solar_Loans__c sl : solarloans){
                 
@@ -73,8 +74,11 @@ public class SolarLoanToCreateLoanTracking {
                 	UserAmount11 = '0';
                 	
                 
-                UserAmount12 = 'Loan_Pmt_Amount__c';
-                
+                if(sl.Loan_Pmt_Amount__c != null)
+                	UserAmount12 = string.ValueOF(sl.Loan_Pmt_Amount__c);
+                else
+                	UserAmount12 = '0';
+                	
                 if(sl.Final_Payment_Amount__c != null)	
                 	UserAmount13 = string.ValueOF(sl.Final_Payment_Amount__c);
                 else
@@ -85,7 +89,7 @@ public class SolarLoanToCreateLoanTracking {
                 else
                 	UserCode1 = '0';
                 		
-                LoanId = '7604';
+                LoanId = sl.Loan_Id__c;
                 AccountNumber = sl.Account_Number__r.name;
                 
                 //req.setEndpoint('https://brscsymx.ctxcu.org/dev/EFT/CreateLoanTracking');
@@ -109,7 +113,7 @@ public class SolarLoanToCreateLoanTracking {
                 if(!Test.isRunningTest()){                       
                     res = http.send(req);
                     responseBody = res.getBody();
-                    System.debug('Response Body::'+res.getBody());    
+                    System.debug('Response Body SolarLoan Tracking::'+res.getBody());    
                 }else{
                     responseBody = '{"Type":"3","UserChar11":"27","UserChar1":"1","UserChar2":"1","UserChar3":"100","UserChar4":"4","UserChar5":"1","UserChar10":"01-01-2019","UserChar20":"01-01-2019","UserAmount1":"100.00","UserAmount2":"322271627","UserAmount3":"42006986568","UserAmount11":"BANK OF AMERICA","UserAmount12":"123","UserAmount13" : "UserAmount13","UserCode1" : "UserCode1", "LoanId" : "LoanId", "AccountNumber" : "AccountNumber"}';
                 }

@@ -2337,13 +2337,13 @@ public class MemberAuthenticationControllerLightning{
 					}
 					lw.OverrideRequestType= log.Override_Request_Type__c;
 					lw.OverrideRequestedSupervisor = log.Override_Request_Supervisor__c;
-					if(log.Failed_Desired_Level__c =='Level 1 Authentication' || log.Last_Achievable_Level__c =='Level 1'){
+					if(log.Failed_Desired_Level__c =='Level 1' || log.Last_Achievable_Level__c =='Level 1'){
 						lw.FDL = 'Level 1';
 					}
-					else if(log.Failed_Desired_Level__c =='Level 2 Authentication' || log.Last_Achievable_Level__c =='Level 2'){
+					else if(log.Failed_Desired_Level__c =='Level 2' || log.Last_Achievable_Level__c =='Level 2'){
 						lw.FDL = 'Level 2';
 					}
-					else if(log.Failed_Desired_Level__c =='Level 3 Authentication' || log.Last_Achievable_Level__c =='Level 3'){
+					else if(log.Failed_Desired_Level__c =='Level 3' || log.Last_Achievable_Level__c =='Level 3'){
 						lw.FDL = 'Level 3';
 					}
 					else{
@@ -2447,13 +2447,13 @@ public class MemberAuthenticationControllerLightning{
 				lw.OverrideRequestType= log.Override_Request_Type__c;
 				lw.OverrideRequestedSupervisor = log.Override_Request_Supervisor__c;
 				
-				if(log.Failed_Desired_Level__c =='Level 1 Authentication' || log.Last_Achievable_Level__c =='Level 1'){
+				if(log.Failed_Desired_Level__c =='Level 1' || log.Last_Achievable_Level__c =='Level 1'){
 					lw.FDL = 'Level 1';
 				}
-				else if(log.Failed_Desired_Level__c =='Level 2 Authentication' || log.Last_Achievable_Level__c =='Level 2'){
+				else if(log.Failed_Desired_Level__c =='Level 2' || log.Last_Achievable_Level__c =='Level 2'){
 					lw.FDL = 'Level 2';
 				}
-				else if(log.Failed_Desired_Level__c =='Level 3 Authentication' || log.Last_Achievable_Level__c =='Level 3'){
+				else if(log.Failed_Desired_Level__c =='Level 3' || log.Last_Achievable_Level__c =='Level 3'){
 					lw.FDL = 'Level 3';
 				}
 				else{

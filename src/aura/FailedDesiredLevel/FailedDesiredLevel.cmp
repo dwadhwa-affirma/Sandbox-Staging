@@ -7,7 +7,7 @@
 	<aura:attribute name="SelectedLevel" type="string" default=""/>
 	 <aura:registerEvent name="statusEvent" type="c:MemberIdEvent" />
 	 <aura:iteration items="{!v.LevelData}" var="stage">
-		 <lightning:input aura:id= "requestType" name="radioGroup" label="{!stage.Name}" value="{!stage.Name}" type="radio"  onchange="{!c.onChange}" required="true"/>
+		 <lightning:input aura:id= "requestType" name="radioGroup" label="{!stage.Tiers__c}" value="{!stage.Tiers__c}" type="radio"  onchange="{!c.onChange}" required="true"/>
 	</aura:iteration> 
 	 <span  id ="errorSpaninput" class="error hidden">Please Select Desired Level </span>
 	 <footer class="slds-modal__footer">

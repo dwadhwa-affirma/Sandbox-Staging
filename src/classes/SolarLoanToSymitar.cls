@@ -34,7 +34,7 @@ public class SolarLoanToSymitar {
         	Primary_City__c,Primary_DOB__c,Primary_FICO_Score__c,Primary_First_Name__c,Primary_Last_Name__c,
         	Primary_SSN__c,Primary_State__c,Primary_Zip_Code__c,Product_Loan_Type__c,Product__c,Record_ID__c,
         	Routing_Number__c,Site_UUID__c,Status__c,Symitar_Called__c,SystemModstamp,System_Size_kW__c,Term_months__c,
-        	Valid_ABA__c,Loan_Id__c FROM Solar_Loans__c where id =: ids];
+        	Valid_ABA__c,Loan_Id__c,Account_Number__r.name,Loan_Name_Locator__c,Loan_Tracking_Locator__c FROM Solar_Loans__c where id =: ids];
     
     		for(Solar_Loans__c sl : solarloans){
                 
@@ -80,7 +80,7 @@ public class SolarLoanToSymitar {
                 Payee = sl.Routing_Number__c;
                 Reference = sl.Bank_Account_Number__c ;
                 MatchID3 = sl.ABA_Bank_Name__c;    
-                AccountNumber = sl.Member_Number__c;
+                AccountNumber = sl.Account_Number__r.name;
                 //req.setEndpoint('https://brscsymx.ctxcu.org/dev/EFT/CreateEft');
                 req.setEndpoint('https://symxapi.chevronfcu.org/devclient/EFT/CreateEft');
                 req.setClientCertificateName('brscmcapi');

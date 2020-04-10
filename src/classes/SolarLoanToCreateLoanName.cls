@@ -13,6 +13,8 @@ public class SolarLoanToCreateLoanName {
     public static String LoanId;
     public static String AccountNumber;
     
+    public static String result;
+    public static List<Solar_Loans__c> SolarLoanToUpdate = new List<Solar_Loans__c>();
     public static String jsonData;
     public static HttpRequest req = new HttpRequest();
     
@@ -32,7 +34,7 @@ public class SolarLoanToCreateLoanName {
         	Primary_City__c,Primary_DOB__c,Primary_FICO_Score__c,Primary_First_Name__c,Primary_Last_Name__c,
         	Primary_SSN__c,Primary_State__c,Primary_Zip_Code__c,Product_Loan_Type__c,Product__c,Record_ID__c,
         	Routing_Number__c,Site_UUID__c,Status__c,Symitar_Called__c,SystemModstamp,System_Size_kW__c,Term_months__c,
-        	Valid_ABA__c,Loan_Id__c,Account_Number__r.name FROM Solar_Loans__c where id =: ids];
+        	Valid_ABA__c,Loan_Id__c,Account_Number__r.name,Loan_Name_Locator__c,Loan_Tracking_Locator__c FROM Solar_Loans__c where id =: ids];
     
     		for(Solar_Loans__c sl : solarloans){
                 
@@ -52,7 +54,7 @@ public class SolarLoanToCreateLoanName {
                 }
                 
                 SSN = sl.Joint_SSN__c;
-                LoanId = '7604';
+                LoanId = sl.Loan_Id__c;
                 AccountNumber = sl.Account_Number__r.name;
                
                 
@@ -77,18 +79,27 @@ public class SolarLoanToCreateLoanName {
                 if(!Test.isRunningTest()){                       
                     res = http.send(req);
                     responseBody = res.getBody();
-                    System.debug('Response Body::'+res.getBody());    
+                    System.debug('Response Body SolarLoan Name::'+res.getBody());    
                 }else{
                     responseBody = '{"Type":"3","Last":"27","First":"1","Street":"1","ExtraAddress":"100","City":"Chicago","State":"IL","ZipCode":"0012345,"BirthDate":"01-01-2019","SSN":"1345","LoanId":"322271627","AccountNumber":"00000123456"}';
                     
                 }
                 
-                String result;
-    
-        		// JSon parse for Id                            
-        		JSONParser parser = JSON.createParser(responseBody);    
+            	// JSon parse for Id                            
+        		JSONParser parser = JSON.createParser(responseBody);
+        		result = String.valueOf(responseBody).substringAfter('LoanId":"');
+            	result = String.valueOf(result).substringBefore('",');
+            	if(result != null && result != ''){
+	            	Solar_Loans__c s = new Solar_Loans__c();         
+	                s.Loan_Name_Locator__c = result;  
+	                s.id = sl.Id;                      
+	                SolarLoanToUpdate.add(s);  
+            	}    
                 
             }
-    
+            
+    	if(SolarLoanToUpdate.size() > 0){
+    		//update SolarLoanToUpdate;
+    	}
 	}
 }
