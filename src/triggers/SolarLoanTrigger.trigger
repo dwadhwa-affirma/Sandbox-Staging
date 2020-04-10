@@ -97,7 +97,11 @@ trigger SolarLoanTrigger on Solar_Loans__c (after insert, after update, before u
             if((trigger.old[i].Loan_Id__c != trigger.new[i].Loan_Id__c && trigger.new[i].Loan_Id__c != null) ||
             	(trigger.old[i].Loan_Name_Locator__c != trigger.new[i].Loan_Name_Locator__c && trigger.new[i].Loan_Name_Locator__c != null) ||
             	(trigger.old[i].Loan_Tracking_Locator__c != trigger.new[i].Loan_Tracking_Locator__c && trigger.new[i].Loan_Tracking_Locator__c != null)){
-                trigger.new[i].Status__c = 'Loan Record Created';
+            	trigger.new[i].Status__c = 'Loan Record Created';
+            }
+            
+            if(trigger.old[i].EftLocator__c != trigger.new[i].EftLocator__c && trigger.new[i].EftLocator__c != null){
+            	trigger.new[i].Status__c = 'EFT Record Created';
             }
         }
               

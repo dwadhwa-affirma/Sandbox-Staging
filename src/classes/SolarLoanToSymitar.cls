@@ -17,6 +17,8 @@ public class SolarLoanToSymitar {
     
     public static String jsonData;  
     public static HttpRequest req = new HttpRequest();
+    public static String result;
+    public static List<Solar_Loans__c> SolarLoanToUpdate = new List<Solar_Loans__c>();
     
     @future(callout=true)
     public static void insertSolarLoans(Set<id> ids){
@@ -34,7 +36,8 @@ public class SolarLoanToSymitar {
         	Primary_City__c,Primary_DOB__c,Primary_FICO_Score__c,Primary_First_Name__c,Primary_Last_Name__c,
         	Primary_SSN__c,Primary_State__c,Primary_Zip_Code__c,Product_Loan_Type__c,Product__c,Record_ID__c,
         	Routing_Number__c,Site_UUID__c,Status__c,Symitar_Called__c,SystemModstamp,System_Size_kW__c,Term_months__c,
-        	Valid_ABA__c,Loan_Id__c,Account_Number__r.name,Loan_Name_Locator__c,Loan_Tracking_Locator__c FROM Solar_Loans__c where id =: ids];
+        	Valid_ABA__c,Loan_Id__c,Account_Number__r.name,Loan_Name_Locator__c,Loan_Tracking_Locator__c, 
+        	EftLocator__c FROM Solar_Loans__c where id =: ids];
     
     		for(Solar_Loans__c sl : solarloans){
                 
@@ -53,12 +56,12 @@ public class SolarLoanToSymitar {
                	else
                     GroupNumber = ' ';
                
-              	IDType = '1';
+              	IDType = '0';
                 ID = sl.Product_Loan_Type__c;
                	Frequency = '4';
                	
                	if(sl.Due_Date__c != null){
-               		Day1 = String.valueof(sl.Due_Date__c.day());
+               		Day1 = '0'; //String.valueof(sl.Due_Date__c.day());
                	}
             	else{
             		Day1 = '0';
@@ -72,7 +75,7 @@ public class SolarLoanToSymitar {
             		NextDate = null;
             		EffectiveDate = null;
             	}
-            	system.debug('ggg'+sl.Due_Date__c);
+            	
                 if(sl.Additional_Amount__c != null)
                 	PostAmount = String.ValueOf(sl.Additional_Amount__c);
                 else
@@ -81,6 +84,7 @@ public class SolarLoanToSymitar {
                 Reference = sl.Bank_Account_Number__c ;
                 MatchID3 = sl.ABA_Bank_Name__c;    
                 AccountNumber = sl.Account_Number__r.name;
+                
                 //req.setEndpoint('https://brscsymx.ctxcu.org/dev/EFT/CreateEft');
                 req.setEndpoint('https://symxapi.chevronfcu.org/devclient/EFT/CreateEft');
                 req.setClientCertificateName('brscmcapi');
@@ -90,9 +94,7 @@ public class SolarLoanToSymitar {
                 
                 jsonData = '{"EFTType":' + '\"'+ EFTType +'\"'+',"AmountCode":' + '\"'+ AmountCode +'\"'+',"GroupNumber":'+'\"'+ GroupNumber +'\"'+',"IdType":'+'\"' + IDType + '\"'+',"ID":'+'\"'+ID+'\"'+',"Frequency":'+'\"'+Frequency+'\"'+',"Day1":'+'\"'+Day1+'\"'+',"NextDate":'+'\"'+NextDate+'\"'+',"EffectiveDate":'+'\"'+EffectiveDate+'\"'+',"PostAmount":'+'\"'+PostAmount+'\"'+',"Payee":'+'\"'+Payee+'\"'+',"Reference":'+'\"'+Reference+'\"'+',"MatchId3":'+'\"'+MatchID3+'\"'+',"AccountNumber":'+'\"'+AccountNumber+'\"}';
                 //jsonData = '{"EFTType": 3,"AmountCode": 27,"GroupNumber": "000001","IdType": 0, "ID": "0100", "Frequency": 4,"Day1": 0,"NextDate": "2019-01-08","EffectiveDate": "2019-01-09","PostAmount": "100.00", "Payee": "0322271627","Reference": "42006986568","MatchId3": "BANK OF AMERICA, N.A.","AccountNumber": "123"}';
-                
-        		req.setBodyAsBlob(Blob.valueof(jsondata)); 
-                
+                req.setBodyAsBlob(Blob.valueof(jsondata)); 
                 system.debug('test'+jsonData);
                 
                 Http http = new Http();  
@@ -111,9 +113,20 @@ public class SolarLoanToSymitar {
     
         		// JSon parse for Id                            
         		JSONParser parser = JSON.createParser(responseBody);    
+        		result = String.valueOf(responseBody).substringAfter('EftLocator":"');
+		    	result = String.valueOf(result).substringBefore('",');
+		    	System.debug('EFTLocator' + result);
+		    	
+		    	if(result != null && result != ''){
+	            	Solar_Loans__c s = new Solar_Loans__c();         
+	                s.EftLocator__c = result;
+	                s.id = sl.Id;                      
+	                SolarLoanToUpdate.add(s);  
+            	}
                 
             }
-    
+        if(SolarLoanToUpdate.size() > 0){
+			update SolarLoanToUpdate;
+		}
 	}
-
 }
