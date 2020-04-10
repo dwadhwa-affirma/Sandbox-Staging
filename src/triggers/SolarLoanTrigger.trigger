@@ -212,13 +212,13 @@ trigger SolarLoanTrigger on Solar_Loans__c (after insert, after update, before u
 	    }
 	}
         
-    //------------------------------- Calling Batch class with list of "Solar Loans" id to send a Docusign email---------------------------------------//    
+    //------------------------------- Calling Batch class with list of "Solar Loans" id to send a Docusign email-----------------//    
     if(SLIds.size() > 0){
         
         Database.executeBatch(new SolarLoansToDocuSignBatch(SLIds),1);
     }
     
-    //------------------------------- Creating "Loan" if the status = "Approved"------------------------------------------------//
+    //------------------------------- Creating "Loan/LoanName/LoanTracking" if the status = "Approved"---------------------------//
     
     if(SLIdsToCreateLoan.size() > 0){
        
