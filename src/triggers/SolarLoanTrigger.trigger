@@ -228,7 +228,7 @@ trigger SolarLoanTrigger on Solar_Loans__c (after insert, after update, before u
     //------------------------------- Creating "EFT" record if the status = "Completed"------------------------------------------//
     if(SLIdsForEFT.size() > 0){
         
-         //SolarLoanToSymitar.insertSolarLoans(SLIdsForEFT);
+         SolarLoanToSymitar.insertSolarLoans(SLIdsForEFT);
     }
     
     
