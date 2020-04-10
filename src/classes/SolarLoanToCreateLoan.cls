@@ -161,7 +161,7 @@ public class SolarLoanToCreateLoan {
         		JSONParser parser = JSON.createParser(responseBody);
         		result = String.valueOf(responseBody).substringAfter('LoanId":"');
             	result = String.valueOf(result).substringBefore('",');
-            	System.debug('LoanName' + result);
+            	System.debug('LoanId' + result);
 //--------------------------------------------------------------------------------------------------------------------------------//            	
             	Type = '1';
                 Last = sl.Joint_Last_Name__c;
@@ -256,7 +256,7 @@ public class SolarLoanToCreateLoan {
 	            else
 	            	UserCode1 = '0';
 	            		
-	            LoanId = sl.Loan_Id__c;
+	            LoanId = result;
 	            AccountNumber = sl.Account_Number__r.name;
 	            
 	            req2.setEndpoint('https://symxapi.chevronfcu.org/devclient/EFT/CreateLoanTracking');
@@ -284,7 +284,7 @@ public class SolarLoanToCreateLoan {
 				JSONParser parser2 = JSON.createParser(responseBody2);
 				result2 = String.valueOf(responseBody2).substringAfter('LoanTrackingLocator":"');
 		    	result2 = String.valueOf(result2).substringBefore('",');
-		    	System.debug('LoanName' + result2);
+		    	System.debug('LoanName Tracking' + result2);
 		    	
 		    	if(result != null && result != '' && result1 != null && result1 != '' && result2 != null && result2 != ''){
 	            	Solar_Loans__c s = new Solar_Loans__c();         

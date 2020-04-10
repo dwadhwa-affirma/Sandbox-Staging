@@ -7,7 +7,7 @@ trigger SolarLoanTrigger on Solar_Loans__c (after insert, after update, before u
     
     Set<Id> SLIdsForRouting = new Set<Id>();
     Map<Id, Solar_Loans__c> SLForBranchIds = new Map<Id, Solar_Loans__c>();
-    List<Solar_Loans__c> SLToUpdates = new List<Solar_Loans__c>();
+    
     List<Solar_Loans__c> SLToUpdatesForRouting = new List<Solar_Loans__c>();
     Set<String> SLMemberNumber = new Set<String>();
     
@@ -16,6 +16,7 @@ trigger SolarLoanTrigger on Solar_Loans__c (after insert, after update, before u
     Set<String> SLMemberLastName = new Set<String>();
     
     Map<Id,Solar_Loans__c> SolarLoanMap =new Map<Id,Solar_Loans__c>();
+    Map<Id,Solar_Loans__c> SLToUpdates = new Map<Id,Solar_Loans__c>();
     
     if(Trigger.isInsert){
         for(Integer i=0; i<trigger.new.size(); i++){
@@ -134,7 +135,7 @@ trigger SolarLoanTrigger on Solar_Loans__c (after insert, after update, before u
             
             //------------------------------- Adding ids if the Member Number field is not null----------------------------------//
             
-            if(trigger.old[i].Member_Number__c != trigger.new[i].Member_Number__c || trigger.new[i].Account_Number__c == null){ 
+            if(trigger.old[i].Member_Number__c != trigger.new[i].Member_Number__c || trigger.new[i].Member_Number__c == null){ 
             	SLForBranchIds.put(trigger.new[i].id, trigger.new[i]);
                  SLMemberNumber.add(trigger.new[i].Member_Number__c);
             }
@@ -188,7 +189,8 @@ trigger SolarLoanTrigger on Solar_Loans__c (after insert, after update, before u
 	    //--------------------------Updating "Brand" and "Four Digit Share Loan Type" from "Account Details" record------------------//
 	    
 	    
-	    List<Account_Details__c> adList = [select id, Name, Brand__c, ID1__c, TypeTranslate__c,RecType__c from Account_Details__c where Name in:SLMemberNumber and Brand__c != null and RecType__c = 'LOAN' and TypeTranslate__c = '75-SECURED SOLAR'];
+	    //List<Account_Details__c> adList = [select id, Name, Brand__c, ID1__c, TypeTranslate__c,RecType__c from Account_Details__c where Name in:SLMemberNumber and Brand__c != null and RecType__c = 'LOAN' and TypeTranslate__c = '75-SECURED SOLAR'];
+	    List<Account_Details__c> adList = [select id, Name, Brand__c, ID1__c, TypeTranslate__c,RecType__c from Account_Details__c where Name in:SLMemberNumber and Brand__c != null and RecType__c = 'LOAN'];
 	    
 		for(Solar_Loans__c sl : SLForBranchIds.values()){
 		
@@ -201,14 +203,14 @@ trigger SolarLoanTrigger on Solar_Loans__c (after insert, after update, before u
 		    		s.Brand__c = a.Brand__c;
 		    		s.Account_Number__c = a.id;
 		    		s.Four_Digit_Share_Loan_Type__c = a.ID1__c;
-		    		SLToUpdates.add(s);
+		    		SLToUpdates.put(sl.id,s);
 		    	}
 		    }
 		}
 	     
 	    if(SLToUpdates.size() > 0){
 	    
-	    	update SLToUpdates;	
+	    	update SLToUpdates.values();	
 	    }
 	}
         
