@@ -57,7 +57,7 @@ public class SolarLoanToSymitar {
                     GroupNumber = ' ';
                
               	IDType = '0';
-                ID = sl.Product_Loan_Type__c;
+                ID = sl.Loan_Id__C;
                	Frequency = '4';
                	
                	if(sl.Due_Date__c != null){
