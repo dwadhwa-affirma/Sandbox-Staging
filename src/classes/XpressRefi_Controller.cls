@@ -50,7 +50,7 @@ public class XpressRefi_Controller {
         //UpdateXprs(SelectedLoan);
           mortg = [SELECT Id,  Name,  RecType__c,  TypeTranslate__c, Brand__c,  Loan_Number__c, Mortgage_Name_1__c, Mortgage_Name_2__c,
                               Emp_Available_Balance__c, Available_Balance__c, Balance__c, PROPERTY_ADDRESS__c, Property_City__c,
-                   Property_State__c, Property_Zip__c FROM Account_Details__c WHERE id =:SelectedLoan limit 1]; 
+                   Property_State__c, Property_Zip__c, Interest_Rate__c, Maturity_Date__c FROM Account_Details__c WHERE id =:SelectedLoan limit 1]; 
            
              
          for(Account acc : [Select Mobile_Phone__pc, PersonEmail from account where id =:currentRecordId limit 1]){
@@ -58,7 +58,8 @@ public class XpressRefi_Controller {
 	        for(Account_Details__c a : mortg){
 	        	
 	        	xprs = new Xpress_Refi__c();
-	           	xprs.Loan_Number__c = a.Loan_Number__c;
+                xprs.Member_Number1__c = a.Name;
+                xprs.Loan_Number__c = a.Loan_Number__c;
 	        	xprs.Borrower_1_Name__c = a.Mortgage_Name_1__c;
 	        	xprs.Borrower_2_Name__c = a.Mortgage_Name_2__c;
 	        	xprs.Property_Address__c = a.PROPERTY_ADDRESS__c;
@@ -66,12 +67,14 @@ public class XpressRefi_Controller {
 	        	if(a.Property_Zip__c != null)
 	        		xprs.Zip_Code__c = Decimal.valueOf(a.Property_Zip__c);
 	        	xprs.State__c = a.Property_State__c;
-	        	xprs.Member_Number1__c = a.Name;
+	        	
 	        	if(acc.Mobile_Phone__pc != null)
 	            	xprs.Member_Phone__c = acc.Mobile_Phone__pc;
 	            if(acc.PersonEmail != null)	
                 	xprs.Member_Email__c = acc.PersonEmail;
-                xprs.Current_Balance__c = a.Available_Balance__c;
+                xprs.Current_Balance__c = a.Balance__c;
+                xprs.Current_Rate__c = a.Interest_Rate__c;
+                xprs.Maturity_Date__c = a.Maturity_Date__c;
 	        	
 	        }
          }
@@ -87,6 +90,7 @@ public class XpressRefi_Controller {
     public PageReference LoanProgram(){
     	
     	Xpress_Refi__c xprs1 = new Xpress_Refi__c();
+         xprs1.Member_Number1__c =  xprs.Member_Number1__c;
     	xprs1.Loan_Number__c = xprs.Loan_Number__c;
     	xprs1.Borrower_1_Name__c = xprs.Borrower_1_Name__c;
     	xprs1.Borrower_2_Name__c = xprs.Borrower_2_Name__c;
@@ -96,9 +100,10 @@ public class XpressRefi_Controller {
     	xprs1.State__c = xprs.State__c;
     	xprs1.Member_Phone__c = xprs.Member_Phone__c;
     	xprs1.Member_Email__c = xprs.Member_Email__c;
-    	//xprs.Mailing_address_if_different__c =
+    	xprs1.Current_Rate__c = xprs.Current_Rate__c;
+        xprs1.Maturity_Date__c = xprs.Maturity_Date__c;
     	xprs1.Current_Balance__c = xprs.Current_Balance__c;
-    	//xprs1.Current_Principal_and_Interest_Payment__c =
+    	
     	xprs1.Current_Loan_Program__c = 'Test';
     	xprs1.Rate_Sheet_Date__c = System.Today();
     	xprs1.RecordTypeID = LoanRT;
@@ -120,6 +125,7 @@ public class XpressRefi_Controller {
     public PageReference InterestRate(){
     	
     	Xpress_Refi__c xprs1 = new Xpress_Refi__c();
+         xprs1.Member_Number1__c =  xprs.Member_Number1__c;
     	xprs1.Loan_Number__c = xprs.Loan_Number__c;
     	xprs1.Borrower_1_Name__c = xprs.Borrower_1_Name__c;
     	xprs1.Borrower_2_Name__c = xprs.Borrower_2_Name__c;
@@ -129,9 +135,9 @@ public class XpressRefi_Controller {
     	xprs1.State__c = xprs.State__c;
     	xprs1.Member_Phone__c = xprs.Member_Phone__c;
     	xprs1.Member_Email__c = xprs.Member_Email__c;
-    	//xprs.Mailing_address_if_different__c =
     	xprs1.Current_Balance__c = xprs.Current_Balance__c;
-    	//xprs1.Current_Principal_and_Interest_Payment__c =
+    	xprs1.Current_Rate__c = xprs.Current_Rate__c;
+        xprs1.Maturity_Date__c = xprs.Maturity_Date__c;
     	xprs1.Current_Loan_Program__c = 'Test';
     	xprs1.RecordTypeID = InterestRT;
     	xprs1.Rate_Sheet_Date__c = System.Today();

@@ -100,7 +100,10 @@ public class SolarLoanToCreateLoan {
                 PurposeCode = '16';
                 CollateralCode = '4';
                 ApprovalCode = '9002';
-                OriginalBalance = string.valueOf(sl.Net_Funding_Amount__c);
+                if(sl.Net_Funding_Amount__c != null)
+                	OriginalBalance = string.valueOf(sl.Net_Funding_Amount__c);
+                else
+                	OriginalBalance = '0.00';
                 ApprovalDate = string.valueof(sl.Application_Date__c);
                 if(sl.Maturity_Date__c != null){
                 	MaturityDate = String.valueOf(sl.Maturity_Date__c);
@@ -148,7 +151,7 @@ public class SolarLoanToCreateLoan {
                 
                 jsonData = '{"Type":' + '\"'+ Type +'\"'+',"Branch":' + '\"'+ Branch +'\"'+',"CreatedAtBranch":'+'\"'+ CreatedAtBranch +'\"'+',"PurposeCode":'+'\"' + PurposeCode + '\"'+',"CollateralCode":'+'\"'+CollateralCode+'\"'+',"ApprovalCode":'+'\"'+ApprovalCode+'\"'+',"OriginalBalance":'+'\"'+OriginalBalance+'\"'+',"ApprovalDate":'+'\"'+ApprovalDate+'\"'+',"MaturityDate":'+'\"'+MaturityDate+'\"'+',"DueDate":'+'\"'+DueDate+'\"'+',"FirstPaymentDate":'+'\"'+FirstPaymentDate+'\"'+',"DueDay1":'+'\"'+DueDay1+'\"'+',"Payment":'+'\"'+Payment+'\"'+',"CouponCode":'+'\"'+CouponCode+'\"'+',"PaymentMethod":'+'\"'+PaymentMethod+'\"'+',"Description":'+'\"'+Description+'\"'+',"InterestRate":'+'\"'+InterestRate+'\"'+',"UserAmount1":'+'\"'+UserAmount1+'\"'+',"ECOACode":'+'\"'+ECOACode+'\"'+',"CreditScore":'+'\"'+CreditScore+'\"'+',"PaymentCount":'+'\"'+PaymentCount+'\"'+',"PaymentFrequency":'+'\"'+PaymentFrequency+'\"'+',"AccountNumber":'+'\"'+AccountNumber+'\"}';
                 req.setBodyAsBlob(Blob.valueof(jsondata)); 
-                //system.debug('test'+jsonData);
+                system.debug('test'+jsonData);
                 
                 Http http = new Http();  
                 req.setTimeout(60000);
