@@ -2,6 +2,9 @@ public class SolarLoanToCreateLoan {
 
     
     public static List<Solar_Loans__c> SolarLoanToUpdate = new List<Solar_Loans__c>();  
+    public static String ErrorLoanLocator;
+    public static String ErrorLoanNameLocator;
+    public static String ErrorLoanTrackingLocator;
     
     //------------------------------------------------Solar Loan Parameters-----------------------------------------------------//
     public static String Type;
@@ -85,7 +88,9 @@ public class SolarLoanToCreateLoan {
         	Primary_City__c,Primary_DOB__c,Primary_FICO_Score__c,Primary_First_Name__c,Primary_Last_Name__c,
         	Primary_SSN__c,Primary_State__c,Primary_Zip_Code__c,Product_Loan_Type__c,Product__c,Record_ID__c,
         	Routing_Number__c,Site_UUID__c,Status__c,Symitar_Called__c,SystemModstamp,System_Size_kW__c,Term_months__c,
-        	Valid_ABA__c, Loan_Id__c,Loan_Name_Locator__c,Loan_Tracking_Locator__c,EftLocator__c FROM Solar_Loans__c where id =: ids];
+        	Valid_ABA__c, Loan_Id__c,Loan_Name_Locator__c,Loan_Tracking_Locator__c,EftLocator__c,
+        	Error_EftLocator__c,Error_Loan_Locator__c,Error_Loan_Name_Locator__c,Error_Loan_Tracking_Locator__c
+        	FROM Solar_Loans__c where id =: ids];
     
     		for(Solar_Loans__c sl : solarloans){
                 
@@ -161,54 +166,72 @@ public class SolarLoanToCreateLoan {
         		JSONParser parser = JSON.createParser(responseBody);
         		result = String.valueOf(responseBody).substringAfter('LoanId":"');
             	result = String.valueOf(result).substringBefore('",');
+            	
             	System.debug('LoanId' + result);
+            	if(result == null || result == ''){
+            		
+            		ErrorLoanLocator = String.valueOf(responseBody).substringAfter('[MessageId=TESTING] ');
+            		ErrorLoanLocator = String.valueOf(ErrorLoanLocator).substringBefore('","ErrorDetails"');
+            		system.debug('ErrorLoanLocator' + ErrorLoanLocator);
+            	}
+            	
 //--------------------------------------------------------------------------------------------------------------------------------//            	
-            	Type = '1';
-                Last = sl.Joint_Last_Name__c;
-                First = sl.Joint_First_Name__c;
-                Street = sl.Joint_Address_1__c;
-                ExtraAddress = sl.Joint_Address_2__c;
-                City = sl.Joint_City__c;
-                State = sl.Joint_State__c;
-                ZipCode = sl.Joint_Zip_Code__c;
-                if(sl.Joint_DOB__c != null){
-                	BirthDate =  String.valueOf(sl.Joint_DOB__c);	
-                }
-                else{
-                	BirthDate =  ' ';
-                }
-                
-                SSN = sl.Joint_SSN__c;
-                LoanId = result;
-                AccountNumber = sl.Account_Number__r.name;
-                
-                req1.setEndpoint('https://symxapi.chevronfcu.org/devclient/EFT/CreateLoanName');
-                req1.setClientCertificateName('brscmcapi');
-                req1.setMethod('POST');
-                req1.setHeader('Content-Type', 'application/json');
-                req1.setHeader('Accept', 'application/json');
-                
-                jsonData1 = '{"Type":' + '\"'+ Type +'\"'+',"Last":' + '\"'+ Last +'\"'+',"First":'+'\"'+ First +'\"'+',"Street":'+'\"' + Street + '\"'+',"ExtraAddress":'+'\"'+ExtraAddress+'\"'+',"City":'+'\"'+City+'\"'+',"State":'+'\"'+State+'\"'+',"ZipCode":'+'\"'+ZipCode+'\"'+',"BirthDate":'+'\"'+BirthDate+'\"'+',"SSN":'+'\"'+SSN+'\"'+',"LoanId":'+'\"'+LoanId+'\"'+',"AccountNumber":'+'\"'+AccountNumber+'\"}';
-                req1.setBodyAsBlob(Blob.valueof(jsondata1)); 
-               //system.debug('test'+jsonData);
-                
-                Http http1 = new Http();  
-                req1.setTimeout(60000);
-                HttpResponse res1;
-                String responseBody1;
-                if(!Test.isRunningTest()){                       
-                    res1 = http1.send(req1);
-                    responseBody1 = res1.getBody();
-                    System.debug('Response Body SolarLoan Name::'+res1.getBody());    
-                }else{
-                    responseBody1 = '{"Type":"3","Last":"27","First":"1","Street":"1","ExtraAddress":"100","City":"Chicago","State":"IL","ZipCode":"0012345,"BirthDate":"01-01-2019","SSN":"1345","LoanId":"322271627","AccountNumber":"00000123456"}';
-                    
-                }
-            	// JSon parse for Id                            
-        		JSONParser parser1 = JSON.createParser(responseBody1);
-        		result1 = String.valueOf(responseBody1).substringAfter('LoanNameLocator":"');
-            	result1 = String.valueOf(result1).substringBefore('",');
-            	System.debug('LoanName' + result1);
+            	if(sl.Joint_SSN__c != null){
+            		
+	            	Type = '1';
+	                Last = sl.Joint_Last_Name__c;
+	                First = sl.Joint_First_Name__c;
+	                Street = sl.Joint_Address_1__c;
+	                ExtraAddress = sl.Joint_Address_2__c;
+	                City = sl.Joint_City__c;
+	                State = sl.Joint_State__c;
+	                ZipCode = sl.Joint_Zip_Code__c;
+	                if(sl.Joint_DOB__c != null){
+	                	BirthDate =  String.valueOf(sl.Joint_DOB__c);	
+	                }
+	                else{
+	                	BirthDate =  ' ';
+	                }
+	                
+	                SSN = sl.Joint_SSN__c;
+	                LoanId = result;
+	                AccountNumber = sl.Account_Number__r.name;
+	                
+	                req1.setEndpoint('https://symxapi.chevronfcu.org/devclient/EFT/CreateLoanName');
+	                req1.setClientCertificateName('brscmcapi');
+	                req1.setMethod('POST');
+	                req1.setHeader('Content-Type', 'application/json');
+	                req1.setHeader('Accept', 'application/json');
+	                
+	                jsonData1 = '{"Type":' + '\"'+ Type +'\"'+',"Last":' + '\"'+ Last +'\"'+',"First":'+'\"'+ First +'\"'+',"Street":'+'\"' + Street + '\"'+',"ExtraAddress":'+'\"'+ExtraAddress+'\"'+',"City":'+'\"'+City+'\"'+',"State":'+'\"'+State+'\"'+',"ZipCode":'+'\"'+ZipCode+'\"'+',"BirthDate":'+'\"'+BirthDate+'\"'+',"SSN":'+'\"'+SSN+'\"'+',"LoanId":'+'\"'+LoanId+'\"'+',"AccountNumber":'+'\"'+AccountNumber+'\"}';
+	                req1.setBodyAsBlob(Blob.valueof(jsondata1)); 
+	               //system.debug('test'+jsonData);
+	                
+	                Http http1 = new Http();  
+	                req1.setTimeout(60000);
+	                HttpResponse res1;
+	                String responseBody1;
+	                if(!Test.isRunningTest()){                       
+	                    res1 = http1.send(req1);
+	                    responseBody1 = res1.getBody();
+	                    System.debug('Response Body SolarLoan Name::'+res1.getBody());    
+	                }else{
+	                    responseBody1 = '{"Type":"3","Last":"27","First":"1","Street":"1","ExtraAddress":"100","City":"Chicago","State":"IL","ZipCode":"0012345,"BirthDate":"01-01-2019","SSN":"1345","LoanId":"322271627","AccountNumber":"00000123456"}';
+	                    
+	                }
+	            	// JSon parse for Id                            
+	        		JSONParser parser1 = JSON.createParser(responseBody1);
+	        		result1 = String.valueOf(responseBody1).substringAfter('LoanNameLocator":"');
+	            	result1 = String.valueOf(result1).substringBefore('",');
+	            	System.debug('LoanName' + result1);
+	            	
+	            	if(result1 == null || result1 == ''){
+	            		
+	            		ErrorLoanNameLocator = String.valueOf(responseBody1).substringAfter('[MessageId=TESTING] ');
+	            		ErrorLoanNameLocator = String.valueOf(ErrorLoanNameLocator).substringBefore('","ErrorDetails"');
+	            		system.debug('ErrorLoanNameLocator' + ErrorLoanNameLocator);
+	            	}
+            	}
 //--------------------------------------------------------------------------------------------------------------------------------//    	
     		
 	    		Type = '33';
@@ -286,14 +309,42 @@ public class SolarLoanToCreateLoan {
 		    	result2 = String.valueOf(result2).substringBefore('",');
 		    	System.debug('LoanName Tracking' + result2);
 		    	
-		    	if(result != null && result != '' && result1 != null && result1 != '' && result2 != null && result2 != ''){
-	            	Solar_Loans__c s = new Solar_Loans__c();         
-	                s.Loan_Id__c = result;
-	                s.Loan_Name_Locator__c = result1;
-	                s.Loan_Tracking_Locator__c = result2;  
-	                s.id = sl.Id;                      
-	                SolarLoanToUpdate.add(s);  
-            	} 
+		    	if(result2 == null || result2 == ''){
+	            		
+	        		ErrorLoanTrackingLocator = String.valueOf(responseBody2).substringAfter('[MessageId=TESTING] ');
+	        		ErrorLoanTrackingLocator = String.valueOf(ErrorLoanTrackingLocator).substringBefore('","ErrorDetails"');
+	        		system.debug('ErrorLoanTrackingLocator' + ErrorLoanTrackingLocator);
+	        	}
+	            	
+		    	
+            	Solar_Loans__c s = new Solar_Loans__c();         
+                if(result != null && result != '')
+                	s.Loan_Id__c = result;
+                	
+                if(result1 != null && result1 != '')	
+                	s.Loan_Name_Locator__c = result1;
+                	
+                if(result2 != null && result2 != '')
+                	s.Loan_Tracking_Locator__c = result2;
+                	  
+                if(ErrorLoanLocator != null && ErrorLoanLocator != '')
+                	s.Error_Loan_Locator__c	= ErrorLoanLocator;
+                else
+                	sl.Error_Loan_Locator__c = '';
+                	
+                if(ErrorLoanNameLocator != null && ErrorLoanNameLocator != '')
+                	s.Error_Loan_Name_Locator__c = ErrorLoanNameLocator;
+                else
+                	sl.Error_Loan_Name_Locator__c = '';
+                		
+                if(ErrorLoanTrackingLocator != null && ErrorLoanTrackingLocator != '')
+                	s.Error_Loan_Tracking_Locator__c = ErrorLoanTrackingLocator;
+                else
+                	sl.Error_Loan_Tracking_Locator__c = '';
+                			 
+                s.id = sl.Id;                      
+                SolarLoanToUpdate.add(s);  
+            	
     		}
     		
 		if(SolarLoanToUpdate.size() > 0){

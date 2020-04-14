@@ -14,6 +14,7 @@ public class SolarLoanToSymitar {
     public static String Reference;
     public static String MatchID3;
     public static String AccountNumber;
+    public static String ErrorEFTLocator;
     
     public static String jsonData;  
     public static HttpRequest req = new HttpRequest();
@@ -37,6 +38,7 @@ public class SolarLoanToSymitar {
         	Primary_SSN__c,Primary_State__c,Primary_Zip_Code__c,Product_Loan_Type__c,Product__c,Record_ID__c,
         	Routing_Number__c,Site_UUID__c,Status__c,Symitar_Called__c,SystemModstamp,System_Size_kW__c,Term_months__c,
         	Valid_ABA__c,Loan_Id__c,Account_Number__r.name,Loan_Name_Locator__c,Loan_Tracking_Locator__c, 
+        	Error_EftLocator__c,Error_Loan_Locator__c,Error_Loan_Name_Locator__c,Error_Loan_Tracking_Locator__c,
         	EftLocator__c FROM Solar_Loans__c where id =: ids];
     
     		for(Solar_Loans__c sl : solarloans){
@@ -44,10 +46,10 @@ public class SolarLoanToSymitar {
             	EFTType = '3';
                 if(sl.Loan_Type__c == 'Savings Account')
                 	AmountCode = '37' ;
-               	else if(sl.Loan_Type__c == 'Checking Account')
-               		AmountCode = '27';
+               //	else if(sl.Loan_Type__c == 'Checking Account')
+               //		AmountCode = '27';
                 else
-                    AmountCode = ' ';
+                    AmountCode = '27';
                		
                	if(sl.Brand__c == 'Spectrum')
                 	GroupNumber = '000006' ;
@@ -56,7 +58,7 @@ public class SolarLoanToSymitar {
                	else
                     GroupNumber = ' ';
                
-              	IDType = '0';
+              	IDType = '1';
                 ID = sl.Loan_Id__C;
                	Frequency = '4';
                	
@@ -79,7 +81,7 @@ public class SolarLoanToSymitar {
                 if(sl.Additional_Amount__c != null)
                 	PostAmount = String.ValueOf(sl.Additional_Amount__c);
                 else
-                	PostAmount = ' ';
+                	PostAmount = '0.00';
                 Payee = sl.Routing_Number__c;
                 Reference = sl.Bank_Account_Number__c ;
                 MatchID3 = sl.ABA_Bank_Name__c;    
@@ -117,12 +119,25 @@ public class SolarLoanToSymitar {
 		    	result = String.valueOf(result).substringBefore('",');
 		    	System.debug('EFTLocator' + result);
 		    	
-		    	if(result != null && result != ''){
-	            	Solar_Loans__c s = new Solar_Loans__c();         
-	                s.EftLocator__c = result;
-	                s.id = sl.Id;                      
-	                SolarLoanToUpdate.add(s);  
-            	}
+		    	if(result == null || result == ''){
+	            		
+	        		ErrorEFTLocator = String.valueOf(responseBody).substringAfter('[MessageId=TESTING] ');
+	        		ErrorEFTLocator = String.valueOf(ErrorEFTLocator).substringBefore('","ErrorDetails"');
+	        		system.debug('ErrorEFTLocator' + ErrorEFTLocator);
+	        	}
+		    	
+            	Solar_Loans__c s = new Solar_Loans__c();         
+                
+                if(result != null && result != '')
+                	s.EftLocator__c = result;
+                
+                if(ErrorEFTLocator != null && ErrorEFTLocator != '')
+                	s.Error_EftLocator__c = ErrorEFTLocator;
+                else
+                	s.Error_EftLocator__c = '';	
+                s.id = sl.Id;                      
+                SolarLoanToUpdate.add(s);  
+            	
                 
             }
         if(SolarLoanToUpdate.size() > 0){
