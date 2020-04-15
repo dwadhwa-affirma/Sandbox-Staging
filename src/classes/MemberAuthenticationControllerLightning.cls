@@ -715,577 +715,595 @@ public class MemberAuthenticationControllerLightning{
 		
 	}
 	@AuraEnabled
-	
-	public static Map<string,object> MemberVerificationAttemptsCheck(string MemberId, string GUID, string DebitCardStatus, String SSNFromURL, String MemberNumberFromURL,String PhoneFromURL, String PageURL, string IVRGUIDFromUrl, boolean ReLoadRequired, string ReasonCodeFromURL, string HighFlagFromUrl, integer PointsObtained)
-	{
-		Boolean visible;
-		Double attempt;
-		Boolean OOW = true;
-		Boolean OTP = true;
-		Boolean PublicWallet = true;
-		Boolean CFCUWallet = true;
-		string PWColor ='Grey' ;
-		string CWColor ='Grey' ;
-		string OOWColor ='Grey';
-		string OTPColor ='Grey';
-		Map<string,object> result = new  Map<string,object>();
-		Boolean FailedDesiredLevelCount;
-		List<MC_PIN_Change__c> PC = new List<MC_PIN_Change__c>();
-		List<Authenticated_Log__c> FDLog = new List<Authenticated_Log__c>();
-		boolean IsPinChanged;
-		string  AccountNumber;
-		List<Person_Account__c> p = [SELECT Id, Account_Number__c, PersonID__r.Name, PersonID__c, Account_Number__r.RecType__c, TypeTranslate__c, Account_Number__r.Name
-				FROM Person_Account__c where PersonID__c =:MemberId limit 1];
-		if(p.size() > 0) {
-			
-			AccountNumber = p[0].Account_Number__r.Name;
-			pc = [select id,Transmission_Date__c,CreatedDate,Member_Number__c,Function__c from MC_PIN_Change__c where Member_Number__c =: AccountNumber and CreatedDate = LAST_N_DAYS:30 and Function__c = 'PIN Change'];
-			if(pc.size() > 0){
-				IsPinChanged = true;
-				result.put('PINChange',IsPinChanged);
-			}
-			else{
-				IsPinChanged = false;
-				result.put('PINChange',IsPinChanged);
-			}
-		}
-		
-		FDLog = [select id,createddate ,Decision__c from Authenticated_Log__c where createddate = yesterday 
-					and SalesforceID__c =:MemberId and RecordType.name = 'IVR Authentication Log' and Decision__c='Failed Desired Level'];
-		
-		if(FDLog.size() > 0){
-				
-			result.put('FDLogPreviousDay',true);
-		}
-		else{
-			result.put('FDLogPreviousDay',false);
-		}			 
-		
-		List<Account> accList = [select id, PersonID__c from Account where id= : MemberId];
-		string PersonID;
-		string MemberType;
-		if(accList.size()> 0)
-		{
-			PersonID = accList[0].PersonID__c;
-		}
-		if(PersonID.startsWith('C'))
-		{
-			MemberType ='Foreign';
-		}
-		else
-		{
-			MemberType ='Domestic';
-		}
-		
-		result.put('MemberType',MemberType);
-	    
-	    
-		    List<Member_Verification_Attempt__c> mt = [Select id,Member_Name__c, Member_Salesforce_Id__c, Number_of_Attempts__c from Member_Verification_Attempt__c where Member_Salesforce_Id__c =:MemberId and Authentication_Type__c != 'OTP' and CreatedDate = Today limit 1];
-		     system.debug('MemberId##'+ MemberId); 
-		     system.debug('ReLoadRequired##'+ ReLoadRequired);  
-		    if(mt.size() > 0 && ReLoadRequired == false ){
-		    	
-		    	mt[0].Number_of_Attempts__c = mt[0].Number_of_Attempts__c + 1;
-		    	attempt = mt[0].Number_of_Attempts__c;
-		    	update mt;
-		    }
-		    else if(mt.size() == 0 && ReLoadRequired == false){
-		    	
-		    	Member_Verification_Attempt__c mva = new Member_Verification_Attempt__c();
-		    	mva.Member_Salesforce_Id__c = MemberId;
-		    	mva.Member_Name__c = AccountNumber;
-		    	mva.Number_of_Attempts__c = 1;
-		    	attempt = 1;
-		    	insert mva;
-		    }
-		    else if(mt.size() > 0 && ReLoadRequired == true)
-		    {
-		    	attempt = mt[0].Number_of_Attempts__c;
-		    } 
-	   //--------------------------------------------- OTP color ----------------------------------------------------------------//
-		
-		for(Authenticated_Log__c OTPlog : [select id,createddate, GUID__c,Decision__c,OOW_Status__c,OTP_Status__c,CFCU_Wallet_Status__c,Public_Wallet_Status__c,Member__c, RecordType.name from Authenticated_Log__c where createddate = Today and  OTP_Status__c != null and SalesforceID__c =:MemberId and RecordType.name = 'OTP Authentication Log' order by RecordType.name, createddate desc limit 1]){
-			
-			if(OTPlog.OTP_Status__c == 'Failed' ){
-				OTP = false;
-				OTPColor ='Red';
-			}
-			if(OTPlog.OTP_Status__c == 'Passed' ){
-				OTPColor ='Grey';
-			}
-		}
-		result.put('OTPColor', OTPColor);
-		
-		
-		
-		//--------------------------------------------- OOW color ----------------------------------------------------------------//
-		
-		for(Authenticated_Log__c OOWlog : [select id,createddate ,GUID__c, Decision__c,OOW_Status__c,OTP_Status__c,CFCU_Wallet_Status__c,Public_Wallet_Status__c,Member__c, RecordType.name from Authenticated_Log__c where createddate = Today and SalesforceID__c =:MemberId and RecordType.name = 'OOW Execution Log' order by RecordType.name, createddate desc limit 1]){
-			
-			if(OOWlog.OOW_Status__c == 'Failed'){
-				OOW = false;
-				OOWColor ='Red';
-			}
-			
-			if(OOWlog.OOW_Status__c == 'Passed'){
-				OOWColor ='Grey';
-			}
-		}
-		result.put('OOWColor', OOWColor);
-		
-		//--------------------------------------------- Public Wallet color ----------------------------------------------------------------//
-		
-		for(Authenticated_Log__c Publiclog : [select id,createddate ,GUID__c, Decision__c,OOW_Status__c,OTP_Status__c,CFCU_Wallet_Status__c,Public_Wallet_Status__c,Member__c, RecordType.name from Authenticated_Log__c where createddate = Today and SalesforceID__c =:MemberId and RecordType.name = 'Public Wallet Log' order by RecordType.name, createddate desc limit 1]){
-		
-			if(Publiclog.Public_Wallet_Status__c == 'Failed'){
-				PublicWallet = false;
-				PWColor ='Red';
-			}
-			if(Publiclog.Public_Wallet_Status__c == 'Passed'){
-				PWColor ='Grey';
-			}
-		}
-		 
-		result.put('PWColor', PWColor);
-		
-		//--------------------------------------------- CFCU Wallet color ----------------------------------------------------------------//
-		 
-		for(Authenticated_Log__c CFCUlog : [select id,createddate ,GUID__c, Decision__c,OOW_Status__c,OTP_Status__c,CFCU_Wallet_Status__c,Public_Wallet_Status__c,Member__c, RecordType.name from Authenticated_Log__c where createddate = Today and SalesforceID__c =:MemberId and RecordType.name = 'CFCU Wallet Log' order by RecordType.name, createddate desc limit 1]){
-			
-			if(CFCUlog.CFCU_Wallet_Status__c == 'Failed'){
-				CFCUWallet = false;
-				CWColor ='Red';
-			}
-			if(CFCUlog.CFCU_Wallet_Status__c == 'Passed'){
-				CWColor ='Grey';
-			}
-		}
-		result.put('CWColor', CWColor);
-		if(OOW == false && OTP == false && (PublicWallet == false || CFCUWallet == false)){
-			visible = false;
-		} 		
-		else{
-			visible = true;	
-		}
-								
-		system.debug('ttt'+visible)  ;
-		result.put('Visible',visible); 
-		result.put('Attempts',attempt);
-		result.put('OOWStatusForDay',OOW);
-		result.put('OTPStatusForDay',OTP);
-		result.put('PublicWalletStatusForDay',PublicWallet) ;
-		result.put('CFCUWalletStatusForDay',CFCUWallet);
-		result.put('AccountNumber',AccountNumber);
-		List<Authenticated_Log__c> authlog = new List<Authenticated_Log__c>();	
-		authlog = [select id,createddate ,Decision__c from Authenticated_Log__c where createddate = Last_n_days:7 
-					and SalesforceID__c =:MemberId and RecordType.name = 'IVR Authentication Log' and Decision__c='Failed Desired Level'];
-		
-		if(authlog.size() > 0){
-			FailedDesiredLevelCount = true;
-		}
-		else{
-			FailedDesiredLevelCount = false;
-		}
-		result.put('Show Failed Desired Level',authlog.size());
-				
+  
+  public static Map<string,object> MemberVerificationAttemptsCheck(string MemberId, string GUID, string DebitCardStatus, String SSNFromURL, String MemberNumberFromURL,String PhoneFromURL, String PageURL, string IVRGUIDFromUrl, boolean ReLoadRequired, string ReasonCodeFromURL, string HighFlagFromUrl, integer PointsObtained, boolean IsOOWTabVisible)
+  {
+    Boolean visible;
+    Double attempt;
+    Boolean OOW = true;
+    Boolean OTP = true;
+    Boolean PublicWallet = true;
+    Boolean CFCUWallet = true;
+    string PWColor ='Grey' ;
+    string CWColor ='Grey' ;
+    string OOWColor ='Grey';
+    string OTPColor ='Grey';
+    Map<string,object> result = new  Map<string,object>();
+    Boolean FailedDesiredLevelCount;
+    List<MC_PIN_Change__c> PC = new List<MC_PIN_Change__c>();
+    List<Authenticated_Log__c> FDLog = new List<Authenticated_Log__c>();
+    boolean IsPinChanged;
+    string  AccountNumber;
+    List<Person_Account__c> p = [SELECT Id, Account_Number__c, PersonID__r.Name, PersonID__c, Account_Number__r.RecType__c, TypeTranslate__c, Account_Number__r.Name
+        FROM Person_Account__c where PersonID__c =:MemberId limit 1];
+    if(p.size() > 0) {
+      
+      AccountNumber = p[0].Account_Number__r.Name;
+      pc = [select id,Transmission_Date__c,CreatedDate,Member_Number__c,Function__c from MC_PIN_Change__c where Member_Number__c =: AccountNumber and CreatedDate = LAST_N_DAYS:30 and Function__c = 'PIN Change'];
+      if(pc.size() > 0){
+        IsPinChanged = true;
+        result.put('PINChange',IsPinChanged);
+      }
+      else{
+        IsPinChanged = false;
+        result.put('PINChange',IsPinChanged);
+      }
+    }
+    
+    FDLog = [select id,createddate ,Decision__c from Authenticated_Log__c where createddate = yesterday 
+          and SalesforceID__c =:MemberId and RecordType.name = 'IVR Authentication Log' and Decision__c='Failed Desired Level'];
+    
+    if(FDLog.size() > 0){
+        
+      result.put('FDLogPreviousDay',true);
+    }
+    else{
+      result.put('FDLogPreviousDay',false);
+    }       
+    
+    List<Account> accList = [select id, PersonID__c from Account where id= : MemberId];
+    string PersonID;
+    string MemberType;
+    if(accList.size()> 0)
+    {
+      PersonID = accList[0].PersonID__c;
+    }
+    if(PersonID.startsWith('C'))
+    {
+      MemberType ='Foreign';
+    }
+    else
+    {
+      MemberType ='Domestic';
+    }
+    
+    result.put('MemberType',MemberType);
+      
+      
+        List<Member_Verification_Attempt__c> mt = [Select id,Member_Name__c, Member_Salesforce_Id__c, Number_of_Attempts__c from Member_Verification_Attempt__c where Member_Salesforce_Id__c =:MemberId and Authentication_Type__c != 'OTP' and CreatedDate = Today limit 1];
+         system.debug('MemberId##'+ MemberId); 
+         system.debug('ReLoadRequired##'+ ReLoadRequired);  
+        if(mt.size() > 0 && ReLoadRequired == false ){
+          
+          mt[0].Number_of_Attempts__c = mt[0].Number_of_Attempts__c + 1;
+          attempt = mt[0].Number_of_Attempts__c;
+          update mt;
+        }
+        else if(mt.size() == 0 && ReLoadRequired == false){
+          
+          Member_Verification_Attempt__c mva = new Member_Verification_Attempt__c();
+          mva.Member_Salesforce_Id__c = MemberId;
+          mva.Member_Name__c = AccountNumber;
+          mva.Number_of_Attempts__c = 1;
+          attempt = 1;
+          insert mva;
+        }
+        else if(mt.size() > 0 && ReLoadRequired == true)
+        {
+          attempt = mt[0].Number_of_Attempts__c;
+        } 
+     //--------------------------------------------- OTP color ----------------------------------------------------------------//
+    
+    for(Authenticated_Log__c OTPlog : [select id,createddate, GUID__c,Decision__c,OOW_Status__c,OTP_Status__c,CFCU_Wallet_Status__c,Public_Wallet_Status__c,Member__c, RecordType.name from Authenticated_Log__c where createddate = Today and  OTP_Status__c != null and SalesforceID__c =:MemberId and RecordType.name = 'OTP Authentication Log' order by RecordType.name, createddate desc limit 1]){
+      
+      if(OTPlog.OTP_Status__c == 'Failed' ){
+        OTP = false;
+        OTPColor ='Red';
+      }
+      if(OTPlog.OTP_Status__c == 'Passed' ){
+        OTPColor ='Grey';
+      }
+    }
+    result.put('OTPColor', OTPColor);
+    
+    
+    
+    //--------------------------------------------- OOW color ----------------------------------------------------------------//
+    
+    for(Authenticated_Log__c OOWlog : [select id,createddate ,GUID__c, Decision__c,OOW_Status__c,OTP_Status__c,CFCU_Wallet_Status__c,Public_Wallet_Status__c,Member__c, RecordType.name from Authenticated_Log__c where createddate = Today and SalesforceID__c =:MemberId and RecordType.name = 'OOW Execution Log' order by RecordType.name, createddate desc limit 1]){
+      
+      if(OOWlog.OOW_Status__c == 'Failed'){
+        OOW = false;
+        OOWColor ='Red';
+      }
+      
+      if(OOWlog.OOW_Status__c == 'Passed'){
+        OOWColor ='Grey';
+      }
+    }
+    result.put('OOWColor', OOWColor);
+    
+    //--------------------------------------------- Public Wallet color ----------------------------------------------------------------//
+    
+    for(Authenticated_Log__c Publiclog : [select id,createddate ,GUID__c, Decision__c,OOW_Status__c,OTP_Status__c,CFCU_Wallet_Status__c,Public_Wallet_Status__c,Member__c, RecordType.name from Authenticated_Log__c where createddate = Today and SalesforceID__c =:MemberId and RecordType.name = 'Public Wallet Log' order by RecordType.name, createddate desc limit 1]){
+    
+      if(Publiclog.Public_Wallet_Status__c == 'Failed'){
+        PublicWallet = false;
+        PWColor ='Red';
+      }
+      if(Publiclog.Public_Wallet_Status__c == 'Passed'){
+        PWColor ='Grey';
+      }
+    }
+     
+    result.put('PWColor', PWColor);
+    
+    //--------------------------------------------- CFCU Wallet color ----------------------------------------------------------------//
+     
+    for(Authenticated_Log__c CFCUlog : [select id,createddate ,GUID__c, Decision__c,OOW_Status__c,OTP_Status__c,CFCU_Wallet_Status__c,Public_Wallet_Status__c,Member__c, RecordType.name from Authenticated_Log__c where createddate = Today and SalesforceID__c =:MemberId and RecordType.name = 'CFCU Wallet Log' order by RecordType.name, createddate desc limit 1]){
+      
+      if(CFCUlog.CFCU_Wallet_Status__c == 'Failed'){
+        CFCUWallet = false;
+        CWColor ='Red';
+      }
+      if(CFCUlog.CFCU_Wallet_Status__c == 'Passed'){
+        CWColor ='Grey';
+      }
+    }
+    result.put('CWColor', CWColor);
+    if(OOW == false && OTP == false && (PublicWallet == false || CFCUWallet == false)){
+      visible = false;
+    }     
+    else{
+      visible = true;  
+    }
+                
+    system.debug('ttt'+visible)  ;
+    result.put('Visible',visible); 
+    result.put('Attempts',attempt);
+    result.put('OOWStatusForDay',OOW);
+    result.put('OTPStatusForDay',OTP);
+    result.put('PublicWalletStatusForDay',PublicWallet) ;
+    result.put('CFCUWalletStatusForDay',CFCUWallet);
+    result.put('AccountNumber',AccountNumber);
+    List<Authenticated_Log__c> authlog = new List<Authenticated_Log__c>();  
+    authlog = [select id,createddate ,Decision__c from Authenticated_Log__c where createddate = Last_n_days:7 
+          and SalesforceID__c =:MemberId and RecordType.name = 'IVR Authentication Log' and Decision__c='Failed Desired Level'];
+    
+    if(authlog.size() > 0){
+      FailedDesiredLevelCount = true;
+    }
+    else{
+      FailedDesiredLevelCount = false;
+    }
+    result.put('Show Failed Desired Level',authlog.size());
+        
 // Implementation to achieve level of authentication based on Open tab
-				
-	    List<Member_Authentication_Level_Model__c> LevelModel = new List<Member_Authentication_Level_Model__c>();
-		
-		List<Member_Authentication_Scoring_Model__c> ScoringModel = new List<Member_Authentication_Scoring_Model__c>();
-		
-		LevelModel = GetMemberAuthenticationLevel();
-		ScoringModel = GetScoringModelData(MemberType);
-		
-		Double TotalScore=0;
-		
-		map<string,Integer> scoremap = new map<string,Integer>();
-		set<Integer> scoreset = new set<Integer>();
-		double ScoreRequired;
+        
+      List<Member_Authentication_Level_Model__c> LevelModel = new List<Member_Authentication_Level_Model__c>();
+    
+    List<Member_Authentication_Scoring_Model__c> ScoringModel = new List<Member_Authentication_Scoring_Model__c>();
+    
+    LevelModel = GetMemberAuthenticationLevel();
+    ScoringModel = GetScoringModelData(MemberType);
+    
+    Double TotalScore=0;
+    
+    map<string,Integer> scoremap = new map<string,Integer>();
+    set<Integer> scoreset = new set<Integer>();
+    double ScoreRequired;
 // check for KYM tab
-		Boolean IsKYMAvailable = false;
-		Id profileId=userinfo.getProfileId();
-      	Profile UserProfile = [Select Id,Name from Profile where Id=:profileId];
-		system.debug('ProfileName'+UserProfile);
-		if(UserProfile.Name == 'Branch'){
-			IsKYMAvailable = true;
-			
-		}
-		else{
-			IsKYMAvailable = false;
-		}
-		
-		
+    Boolean IsKYMAvailable = false;
+    Id profileId=userinfo.getProfileId();
+        Profile UserProfile = [Select Id,Name from Profile where Id=:profileId];
+    system.debug('ProfileName'+UserProfile);
+    if(UserProfile.Name == 'Branch'){
+      IsKYMAvailable = true;
+      
+    }
+    else{
+      IsKYMAvailable = false;
+    }
+    
+    
 // check for OPT tab based on cancelled attempt
-		Boolean IsOTPAvailable = true;
-		
-		
-//	check based on Debit card 
+    Boolean IsOTPAvailable = true;
+    
+    
+//  check based on Debit card 
 
-	Boolean IsDebitPinAvailable = false;
-	if(DebitCardStatus == 'true'){
-		IsDebitPinAvailable = true;
-	}else{
-		IsDebitPinAvailable = false;
-	}	
-		
+  Boolean IsDebitPinAvailable = false;
+  if(DebitCardStatus == 'true'){
+    IsDebitPinAvailable = true;
+  }else{
+    IsDebitPinAvailable = false;
+  }  
+    
 // check based on combination of OOW/OTP/Public and CFCU Wallet
-	
-	Boolean IsPublicWalletAvailable = false;
-	Boolean IsOOWAvailable = false;
-	Boolean IsCFCUWalletAvailable = false;
-	 if(visible == false && PublicWallet == true )
-	{
-		IsPublicWalletAvailable = true;
-	}
-	if(visible == false && CFCUWallet == true )
-	{
-		IsCFCUWalletAvailable = true;
-	}
-	if(visible == false && OOW == true)
-	{
-		IsOOWAvailable = true;
-	}
-	
-	if(visible == true)
-	{
-		IsPublicWalletAvailable = true;
-		IsOOWAvailable = true;
-		IsCFCUWalletAvailable = true;
-	}
-	
-	string DebitPinStatus='';
-	if(DebitCardStatus =='true'){
-		DebitPinStatus ='Pass';
-	}
-	else if(DebitCardStatus =='false'){
-		DebitPinStatus ='Fail';
-	}
-	
-	if(ReLoadRequired == true)
- 	{
- 		Map<string,object> AutLogDataMap =  getDataForReload(memberid, GUID, IVRGUIDFromUrl,DebitPinStatus);
- 		if(AutLogDataMap.get('IsOOWAvailable') == true)
- 		{
- 			OOW = true;
- 		}
- 		else
- 		{
- 			OOW = false;
- 		}
- 		if(AutLogDataMap.get('IsPublicWalletAvailable') == true)
- 		{
- 			PublicWallet = true;
- 		}
- 		else
- 		{
- 			PublicWallet = false;
- 		}
- 		if(AutLogDataMap.get('IsCFCUWalletAvailable') == true)
- 		{
- 			CFCUWallet = true;
- 		}
- 		else
- 		{
- 			CFCUWallet = false;
- 		}
- 		if(AutLogDataMap.get('IsOTPAvailable') == true)
- 		{
- 			OTP = true;
- 		}
- 		else
- 		{
- 			OTP = false;
- 		}
- 	}
-	
-	
-// calculation for total score available 	
-	if(IsKYMAvailable == true)
-	{
-		for(Member_Authentication_Scoring_Model__c sm: ScoringModel)
-		{
-			if(sm.Authentication_Type__c == 'KYM')
-			{
-				TotalScore = TotalScore + sm.Positive_Point_Value__c;
-				scoremap.put(sm.Authentication_Type__c,sm.Positive_Point_Value__c.intValue());
-				scoreset.add(sm.Positive_Point_Value__c.intValue());
-			}
-			else
-			{
-				TotalScore = TotalScore;
-			}
-		}
-	}
-	
-	system.debug('KYM' + IsKYMAvailable);
-	system.debug('TotalScore KYM' + TotalScore);
-	if(OTP == true)
-	{
-		for(Member_Authentication_Scoring_Model__c sm: ScoringModel)
-		{
-			if(sm.Authentication_Type__c == 'OTP')
-			{
-				TotalScore = TotalScore + sm.Positive_Point_Value__c;
-				scoremap.put(sm.Authentication_Type__c,sm.Positive_Point_Value__c.intValue());
-				scoreset.add(sm.Positive_Point_Value__c.intValue());
-			}
-			else
-			{
-				TotalScore = TotalScore;
-			}
-		}
-	}
-	system.debug('OTP' + IsOTPAvailable);
-	system.debug('TotalScore OTP' + TotalScore);
-	double DebitPinScore =0;
-	if(DebitCardStatus == 'true'){
-		for(Member_Authentication_Scoring_Model__c sm: ScoringModel)
-		{
-			if(sm.Authentication_Type__c == 'Debit Pin')
-			{
-				DebitPinScore =  sm.Positive_Point_Value__c;
-				
-			}
-			
-		}
-	}
-	
-	system.debug('DEBIT PIN' + IsDebitPinAvailable);
-	system.debug('TotalScore Debit' + TotalScore);
-	
-	if(MemberType =='Foreign')
-	{
-		IsOOWAvailable = false;
-	}
-	else
-	{
-		IsOOWAvailable = true;
-	}
-	
-	if(OOW == true){
-		for(Member_Authentication_Scoring_Model__c sm: ScoringModel)
-		{
-			if(sm.Authentication_Type__c == 'OOW')
-			{
-				TotalScore = TotalScore + sm.Positive_Point_Value__c;
-				scoremap.put(sm.Authentication_Type__c,sm.Positive_Point_Value__c.intValue());
-				scoreset.add(sm.Positive_Point_Value__c.intValue());
-			}
-			else
-			{
-				TotalScore = TotalScore;
-			}
-		}
-	}
-	
-	system.debug('OOW' + IsOOWAvailable);
-	system.debug('TotalScore OOW' + TotalScore);
-	
-	if(PublicWallet == true){
-		for(Member_Authentication_Scoring_Model__c sm: ScoringModel)
-		{
-			if(sm.Authentication_Type__c == 'Public Wallet')
-			{
-				TotalScore = TotalScore + sm.Positive_Point_Value__c;
-				scoremap.put(sm.Authentication_Type__c,sm.Positive_Point_Value__c.intValue());
-				scoreset.add(sm.Positive_Point_Value__c.intValue());
-			}
-			else
-			{
-				TotalScore = TotalScore;
-			}
-		}
-	}
-	
-	system.debug('Public' + IsPublicWalletAvailable);
-	system.debug('TotalScore Public' + TotalScore);
-	
-	
-	if(CFCUWallet == true){
-		for(Member_Authentication_Scoring_Model__c sm: ScoringModel)
-		{
-			if(sm.Authentication_Type__c == 'CFCU Wallet')
-			{
-				TotalScore = TotalScore + sm.Positive_Point_Value__c;
-				scoremap.put(sm.Authentication_Type__c,sm.Positive_Point_Value__c.intValue());
-				scoreset.add(sm.Positive_Point_Value__c.intValue());
-			}
-			else
-			{
-				TotalScore = TotalScore;
-			}
-		}
-	}
-	system.debug('Cfcu' + IsCFCUWalletAvailable );
-	system.debug('TotalScore Public' + TotalScore);
-	
-	
-	List<Integer> scorelist = new list<Integer>(scoreset);
-	scorelist.sort();
-	List<Integer> finalList = new List<Integer>();
-	for(Integer i = scorelist.size()-1; i>=0;i--)
-	{
-	    finalList.add(scorelist.get(i));
-	}
-	
-	
-	system.debug('Size##'+ scorelist.size());
-	system.debug('scorelist##'+ scorelist);
-	system.debug('finalList##'+ finalList);
-	
-	
-	// ------------------Inserting log while user came from URL ----------------------------------//
-		
-		if(ReLoadRequired == false){
-			if(PageURL != null || PageURL != ' '){
-				RecordType rec =[select Id,Name,SobjectType from RecordType where name ='IVR Authentication Log' and SobjectType='Authenticated_Log__c'];
-				Authenticated_Log__c log = new Authenticated_Log__c();
-		        log.IVR_Sent_URL__c = PageURL;
-		        log.CallerPhoneNumber__c = PhoneFromURL;
-		        log.EnteredMemberNumber__c = MemberNumberFromURL;
-		        log.EnteredSSN__c = SSNFromURL;
-		        log.Staff_Name__c = UserInfo.getName();
-		        log.Member_Number__c = AccountNumber;
-		        log.GUID__c = GUID;
-		        log.IVR_GUID__c = IVRGUIDFromUrl;
-		        if(DebitCardStatus == 'true'){
-		        	log.IVR_Pin_Match__c = 'Pass';
-		        	log.PINMatch__c = 'Pass';
-		        }
-		        if(DebitCardStatus == 'false'){
-		        	log.IVR_Pin_Match__c = 'Fail';
-		        	log.PINMatch__c = 'Fail';
-		        }
-		        
-		        log.RecordtypeId = rec.Id; 
-		        log.SalesforceID__c = MemberId;
-		        log.Member__c = MemberId;
-		        log.HP_HV__c = HighFlagFromUrl;
-        		log.IVR_Code__c = ReasonCodeFromURL;
-		        insert log;
-		        system.debug('log##' + log);
-		        RecordType rec1 =[select Id,Name,SobjectType from RecordType where name ='Debit Pin Log' and SobjectType='Authenticated_Log__c'];
+  
+  Boolean IsPublicWalletAvailable = false;
+  Boolean IsOOWAvailable = false;
+  Boolean IsCFCUWalletAvailable = false;
+   if(visible == false && PublicWallet == true )
+  {
+    IsPublicWalletAvailable = true;
+  }
+  if(visible == false && CFCUWallet == true )
+  {
+    IsCFCUWalletAvailable = true;
+  }
+  if(visible == false && OOW == true)
+  {
+    IsOOWAvailable = true;
+  }
+  
+  if(visible == true)
+  {
+    IsPublicWalletAvailable = true;
+    IsOOWAvailable = true;
+    IsCFCUWalletAvailable = true;
+  }
+  
+  string DebitPinStatus='';
+  if(DebitCardStatus =='true'){
+    DebitPinStatus ='Pass';
+  }
+  else if(DebitCardStatus =='false'){
+    DebitPinStatus ='Fail';
+  }
+  
+  if(ReLoadRequired == true)
+   {
+     Map<string,object> AutLogDataMap =  getDataForReload(memberid, GUID, IVRGUIDFromUrl,DebitPinStatus, IsOOWTabVisible);
+     if(AutLogDataMap.get('IsOOWAvailable') == true)
+     {
+       OOW = true;
+     }
+     else
+     {
+       OOW = false;
+     }
+     if(AutLogDataMap.get('IsPublicWalletAvailable') == true)
+     {
+
+       PublicWallet = true;
+     //  IsPublicWalletAvailable = true;
+       system.debug('IsPublicWalletAvailable'+ IsPublicWalletAvailable);   
+     }
+     else
+     {
+       PublicWallet = false;
+     //  IsPublicWalletAvailable = false;
+       system.debug('IsPublicWalletAvailable'+ IsPublicWalletAvailable);   
+     }
+     if(AutLogDataMap.get('IsCFCUWalletAvailable') == true)
+     {
+       CFCUWallet = true;
+     }
+     else
+     {
+       CFCUWallet = false;
+     }
+     if(AutLogDataMap.get('IsOTPAvailable') == true)
+     {
+       OTP = true;
+     }
+     else
+     {
+       OTP = false;
+     }
+   }
+  
+  
+// calculation for total score available   
+  if(IsKYMAvailable == true)
+  {
+    for(Member_Authentication_Scoring_Model__c sm: ScoringModel)
+    {
+      if(sm.Authentication_Type__c == 'KYM')
+      {
+        TotalScore = TotalScore + sm.Positive_Point_Value__c;
+        scoremap.put(sm.Authentication_Type__c,sm.Positive_Point_Value__c.intValue());
+        scoreset.add(sm.Positive_Point_Value__c.intValue());
+      }
+      else
+      {
+        TotalScore = TotalScore;
+      }
+    }
+  }
+  
+  system.debug('KYM' + IsKYMAvailable);
+  system.debug('TotalScore KYM' + TotalScore);
+  if(OTP == true)
+  {
+    for(Member_Authentication_Scoring_Model__c sm: ScoringModel)
+    {
+      if(sm.Authentication_Type__c == 'OTP')
+      {
+        TotalScore = TotalScore + sm.Positive_Point_Value__c;
+        scoremap.put(sm.Authentication_Type__c,sm.Positive_Point_Value__c.intValue());
+        scoreset.add(sm.Positive_Point_Value__c.intValue());
+      }
+      else
+      {
+        TotalScore = TotalScore;
+      }
+    }
+  }
+  system.debug('OTP' + IsOTPAvailable);
+  system.debug('TotalScore OTP' + TotalScore);
+  double DebitPinScore =0;
+  if(DebitCardStatus == 'true'){
+    for(Member_Authentication_Scoring_Model__c sm: ScoringModel)
+    {
+      if(sm.Authentication_Type__c == 'Debit Pin')
+      {
+        DebitPinScore =  sm.Positive_Point_Value__c;
+        
+      }
+      
+    }
+  }
+  
+  system.debug('DEBIT PIN' + IsDebitPinAvailable);
+  system.debug('TotalScore Debit' + TotalScore);
+  
+  if(MemberType =='Foreign')
+  {
+    IsOOWAvailable = false;
+  }
+  else
+  {
+    IsOOWAvailable = true;
+  }
+  
+  if(OOW == true){
+    for(Member_Authentication_Scoring_Model__c sm: ScoringModel)
+    {
+      if(sm.Authentication_Type__c == 'OOW')
+      {
+        TotalScore = TotalScore + sm.Positive_Point_Value__c;
+        scoremap.put(sm.Authentication_Type__c,sm.Positive_Point_Value__c.intValue());
+        scoreset.add(sm.Positive_Point_Value__c.intValue());
+      }
+      else
+      {
+        TotalScore = TotalScore;
+      }
+    }
+  }
+  
+  system.debug('OOW' + IsOOWAvailable);
+  system.debug('TotalScore OOW' + TotalScore);
+  
+  if(PublicWallet == true){
+    for(Member_Authentication_Scoring_Model__c sm: ScoringModel)
+    {
+      if(sm.Authentication_Type__c == 'Public Wallet')
+      {
+        TotalScore = TotalScore + sm.Positive_Point_Value__c;
+        scoremap.put(sm.Authentication_Type__c,sm.Positive_Point_Value__c.intValue());
+        scoreset.add(sm.Positive_Point_Value__c.intValue());
+      }
+      else
+      {
+        TotalScore = TotalScore;
+      }
+    }
+  }
+  
+  system.debug('Public' + IsPublicWalletAvailable);
+  system.debug('TotalScore Public' + TotalScore);
+  
+  
+  if(CFCUWallet == true){
+    for(Member_Authentication_Scoring_Model__c sm: ScoringModel)
+    {
+      if(sm.Authentication_Type__c == 'CFCU Wallet')
+      {
+        TotalScore = TotalScore + sm.Positive_Point_Value__c;
+        scoremap.put(sm.Authentication_Type__c,sm.Positive_Point_Value__c.intValue());
+        scoreset.add(sm.Positive_Point_Value__c.intValue());
+      }
+      else
+      {
+        TotalScore = TotalScore;
+      }
+    }
+  }
+  system.debug('Cfcu' + IsCFCUWalletAvailable );
+  system.debug('TotalScore Public' + TotalScore);
+  
+  
+  List<Integer> scorelist = new list<Integer>(scoreset);
+  scorelist.sort();
+  List<Integer> finalList = new List<Integer>();
+  for(Integer i = scorelist.size()-1; i>=0;i--)
+  {
+      finalList.add(scorelist.get(i));
+  }
+  
+  
+  system.debug('Size##'+ scorelist.size());
+  system.debug('scorelist##'+ scorelist);
+  system.debug('finalList##'+ finalList);
+  
+  
+  // ------------------Inserting log while user came from URL ----------------------------------//
+    
+    if(ReLoadRequired == false){
+      if(PageURL != null || PageURL != ' '){
+        RecordType rec =[select Id,Name,SobjectType from RecordType where name ='IVR Authentication Log' and SobjectType='Authenticated_Log__c'];
+        Authenticated_Log__c log = new Authenticated_Log__c();
+            log.IVR_Sent_URL__c = PageURL;
+            log.CallerPhoneNumber__c = PhoneFromURL;
+            log.EnteredMemberNumber__c = MemberNumberFromURL;
+            log.EnteredSSN__c = SSNFromURL;
+            log.Staff_Name__c = UserInfo.getName();
+            log.Member_Number__c = AccountNumber;
+            log.GUID__c = GUID;
+            log.IVR_GUID__c = IVRGUIDFromUrl;
+            if(DebitCardStatus == 'true'){
+              log.IVR_Pin_Match__c = 'Pass';
+              log.PINMatch__c = 'Pass';
+            }
+            if(DebitCardStatus == 'false'){
+              log.IVR_Pin_Match__c = 'Fail';
+              log.PINMatch__c = 'Fail';
+            }
+            
+            log.RecordtypeId = rec.Id; 
+            log.SalesforceID__c = MemberId;
+            log.Member__c = MemberId;
+            log.HP_HV__c = HighFlagFromUrl;
+            log.IVR_Code__c = ReasonCodeFromURL;
+            insert log;
+            system.debug('log##' + log);
+            RecordType rec1 =[select Id,Name,SobjectType from RecordType where name ='Debit Pin Log' and SobjectType='Authenticated_Log__c'];
                 Authenticated_Log__c log1 = new Authenticated_Log__c();
-		        log1.IVR_Sent_URL__c = PageURL;
+            log1.IVR_Sent_URL__c = PageURL;
                 if(DebitCardStatus == 'true'){
-		        	log1.IVR_Pin_Match__c = 'Pass';
-		        	log1.PINMatch__c = 'Pass';
+              log1.IVR_Pin_Match__c = 'Pass';
+              log1.PINMatch__c = 'Pass';
                     log1.Decision__c = 'Pass';
-		        }
-		        if(DebitCardStatus == 'false'){
-		        	log1.IVR_Pin_Match__c = 'Fail';
-		        	log1.PINMatch__c = 'Fail';
+            }
+            if(DebitCardStatus == 'false'){
+              log1.IVR_Pin_Match__c = 'Fail';
+              log1.PINMatch__c = 'Fail';
                     log1.Decision__c = 'Fail';
-		        }
-		        log1.GUID__c = GUID;
-		        log1.Staff_Name__c = UserInfo.getName();
-		        log1.Member_Number__c = AccountNumber;
-		        log1.RecordtypeId = rec1.Id; 
-		        log1.SalesforceID__c = MemberId;
-		        log1.Member__c = MemberId;
-		        insert log1;
-		        system.debug('log1##' + log1);
-			}
-		}
-		// ------------------Inserting log while user came from URL ----------------------------------//
-		
-		//------------------- Fetching Auth Logs for last 30 days achievable level--------------------//
-		
-		List<Authenticated_Log__c> LastAchieveLogs = new List<Authenticated_Log__c>();
-		LastAchieveLogs = [select id,Last_Achievable_Level__c, GUID__c from Authenticated_Log__c where createdDate = Last_n_days:30 and SalesforceID__c =:MemberId and RecordType.name = 'IVR Authentication Log' and Last_Achievable_Level__c != null order by CreatedDate desc Limit 1];
-		String level = ' ';
-		if(LastAchieveLogs.size() > 0){
-			result.put('LastAchievableLevel',LastAchieveLogs[0].Last_Achievable_Level__c);
-		}
-		
-		//------------------- Fetching Auth Logs for last 30 days achievable level ends here--------------------//
-		
-		//---------------------To Get Which level is achieved on load and what would be the next achievable level based on Debitcard status--------------------------//
-			//Aut-190 implementation starts here
-			integer OTPAvailable = 0;
-			integer PublicWalletAvailable = 0;
-			integer CFCUWalletAvailable = 0;
-			integer OOWAvailable = 0;
-			integer CurrentScore = 0;
-			boolean IsLevel1Achieved = false;
-			boolean IsLevel2Achieved = false;
-			boolean IsLevel3Achieved = false;
-			
-			if(IsOTPAvailable == true){OTPAvailable=1;}
-			if(IsPublicWalletAvailable == true){PublicWalletAvailable=1;}
-			if(IsCFCUWalletAvailable == true){CFCUWalletAvailable=1;}
-			if(IsOOWAvailable == true){OOWAvailable=1;}
-			map<string, List<string>> NextTabToAchieveLevelMap =  GetTabsToAchieveNextLevel(LevelModel, ScoringModel, MemberType, DebitPinStatus, IsPinChanged, OTPAvailable, PublicWalletAvailable, CFCUWalletAvailable,OOWAvailable, CurrentScore);
-			List<string>  NextTabLevel2 = NextTabToAchieveLevelMap.get('NextTabLevel2');
-        	List<string>  NextTabLevel3 = NextTabToAchieveLevelMap.get('NextTabLevel3');
-        	List<string> EachLevelStatus = NextTabToAchieveLevelMap.get('EachLevelStatus');
-        	if(NextTabLevel2.size() > 0)
-        	{
-        		string NextTabLevel2LastString = NextTabLevel2.get(NextTabLevel2.size()-1);
-        		NextTabLevel2LastString = NextTabLevel2LastString.removeEnd('or');
-        		NextTabLevel2.remove((NextTabLevel2.size()-1));
-        		NextTabLevel2.add(NextTabLevel2LastString);
-        		system.debug('NextTabLevel2LastString#'+ NextTabLevel2LastString);
-        	}
-			if(NextTabLevel3.size() > 0){
-				string NextTabLevel3LastString = NextTabLevel3.get(NextTabLevel3.size()-1);			
-				NextTabLevel3LastString = NextTabLevel3LastString.removeEnd('or');			
-				NextTabLevel3.remove((NextTabLevel3.size()-1));			
-				NextTabLevel3.add(NextTabLevel3LastString);
-				system.debug('NextTabLevel3LastString#'+ NextTabLevel3LastString);
-			}
-								
-			system.debug('NextTabLevel2List#'+ NextTabLevel2);
-			system.debug('NextTabLevel3List#'+ NextTabLevel3);
-			
-			if(EachLevelStatus.size() >0)
-			{
-				for(string s: EachLevelStatus){
-					
-					if(s == 'Level 2 Achieved'){
-						IsLevel2Achieved = true;
-					}
-					if(s == 'Level 3 Achieved'){
-						IsLevel3Achieved = true;
-					}
-				}
-			}
-			
-			if(IsLevel2Achieved == true){
-        		result.put('NextTabLevel2', 'Level Reached');
-        	}
-        	else
-        	{
-        		result.put('NextTabLevel2', NextTabLevel2);
-        	}
-        	if(IsLevel3Achieved == true){
-        		result.put('NextTabLevel3', 'Level Reached');
-        	}
-        	else{
-        		result.put('NextTabLevel3', NextTabLevel3);
-        	}
-			result.put('IsLevel1Achieved',IsLevel1Achieved);
-			result.put('IsLevel2Achieved',IsLevel2Achieved);
-			result.put('IsLevel3Achieved',IsLevel3Achieved);
-			
-			system.debug('NextTabLevel2List#'+ NextTabLevel2);
-			system.debug('NextTabLevel3List#'+ NextTabLevel3);
-		//----------------------To Get Which level is achieved on load and what would be the next achievable level based on Debitcard status----------------------------------------------------//
-		
-			result.put('IsKYMAvailable',IsKYMAvailable);
-			result.put('IsOTPAvailable',IsOTPAvailable);
-			result.put('IsDebitPinAvailable',IsDebitPinAvailable);
-			result.put('IsOOWAvailable',IsOOWAvailable);
-			result.put('IsPublicWalletAvailable',IsPublicWalletAvailable);
-			result.put('IsCFCUWalletAvailable',IsCFCUWalletAvailable);
-			
-			result.put('MaximumPointsAvailable',TotalScore);
-			result.put('LevelModel', LevelModel);
-			result.put('ScoringModel', ScoringModel);
-		
-			return result;
-	}
+            }
+            log1.GUID__c = GUID;
+            log1.Staff_Name__c = UserInfo.getName();
+            log1.Member_Number__c = AccountNumber;
+            log1.RecordtypeId = rec1.Id; 
+            log1.SalesforceID__c = MemberId;
+            log1.Member__c = MemberId;
+            insert log1;
+            system.debug('log1##' + log1);
+      }
+    }
+    // ------------------Inserting log while user came from URL ----------------------------------//
+    
+    //------------------- Fetching Auth Logs for last 30 days achievable level--------------------//
+    
+    List<Authenticated_Log__c> LastAchieveLogs = new List<Authenticated_Log__c>();
+    LastAchieveLogs = [select id,Last_Achievable_Level__c, GUID__c from Authenticated_Log__c where createdDate = Last_n_days:30 and SalesforceID__c =:MemberId and RecordType.name = 'IVR Authentication Log' and Last_Achievable_Level__c != null order by CreatedDate desc Limit 1];
+    String level = ' ';
+    if(LastAchieveLogs.size() > 0){
+      result.put('LastAchievableLevel',LastAchieveLogs[0].Last_Achievable_Level__c);
+    }
+    
+    //------------------- Fetching Auth Logs for last 30 days achievable level ends here--------------------//
+    
+    //---------------------To Get Which level is achieved on load and what would be the next achievable level based on Debitcard status--------------------------//
+      //Aut-190 implementation starts here
+      integer OTPAvailable = 0;
+      integer PublicWalletAvailable = 0;
+      integer CFCUWalletAvailable = 0;
+      integer OOWAvailable = 0;
+      integer CurrentScore = 0;
+      boolean IsLevel1Achieved = false;
+      boolean IsLevel2Achieved = false;
+      boolean IsLevel3Achieved = false;
+      
+      if(IsOTPAvailable == true){OTPAvailable=1;}
+      if(IsPublicWalletAvailable == true){PublicWalletAvailable=1;}
+      if(IsCFCUWalletAvailable == true){CFCUWalletAvailable=1;}
+     if(IsOOWTabVisible == true){
+          if(IsOOWAvailable == true){
+              OOWAvailable=1;
+          }
+          else
+          {
+              OOWAvailable=0;
+          }
+      }
+      else
+      {
+          OOWAvailable=0;
+      }
+      
+      map<string, List<string>> NextTabToAchieveLevelMap =  GetTabsToAchieveNextLevel(LevelModel, ScoringModel, MemberType, DebitPinStatus, IsPinChanged, OTPAvailable, PublicWalletAvailable, CFCUWalletAvailable,OOWAvailable, CurrentScore);
+      List<string>  NextTabLevel2 = NextTabToAchieveLevelMap.get('NextTabLevel2');
+          List<string>  NextTabLevel3 = NextTabToAchieveLevelMap.get('NextTabLevel3');
+          List<string> EachLevelStatus = NextTabToAchieveLevelMap.get('EachLevelStatus');
+          if(NextTabLevel2.size() > 0)
+          {
+            string NextTabLevel2LastString = NextTabLevel2.get(NextTabLevel2.size()-1);
+            NextTabLevel2LastString = NextTabLevel2LastString.removeEnd('or');
+            NextTabLevel2.remove((NextTabLevel2.size()-1));
+            NextTabLevel2.add(NextTabLevel2LastString);
+            system.debug('NextTabLevel2LastString#'+ NextTabLevel2LastString);
+          }
+      if(NextTabLevel3.size() > 0){
+        string NextTabLevel3LastString = NextTabLevel3.get(NextTabLevel3.size()-1);      
+        NextTabLevel3LastString = NextTabLevel3LastString.removeEnd('or');      
+        NextTabLevel3.remove((NextTabLevel3.size()-1));      
+        NextTabLevel3.add(NextTabLevel3LastString);
+        system.debug('NextTabLevel3LastString#'+ NextTabLevel3LastString);
+      }
+                
+      system.debug('NextTabLevel2List#'+ NextTabLevel2);
+      system.debug('NextTabLevel3List#'+ NextTabLevel3);
+      
+      if(EachLevelStatus.size() >0)
+      {
+        for(string s: EachLevelStatus){
+          
+          if(s == 'Level 2 Achieved'){
+            IsLevel2Achieved = true;
+          }
+          if(s == 'Level 3 Achieved'){
+            IsLevel3Achieved = true;
+          }
+        }
+      }
+      
+      if(IsLevel2Achieved == true){
+            result.put('NextTabLevel2', 'Level Reached');
+          }
+          else
+          {
+            result.put('NextTabLevel2', NextTabLevel2);
+          }
+          if(IsLevel3Achieved == true){
+            result.put('NextTabLevel3', 'Level Reached');
+          }
+          else{
+            result.put('NextTabLevel3', NextTabLevel3);
+          }
+      result.put('IsLevel1Achieved',IsLevel1Achieved);
+      result.put('IsLevel2Achieved',IsLevel2Achieved);
+      result.put('IsLevel3Achieved',IsLevel3Achieved);
+      
+      system.debug('NextTabLevel2List#'+ NextTabLevel2);
+      system.debug('NextTabLevel3List#'+ NextTabLevel3);
+    //----------------------To Get Which level is achieved on load and what would be the next achievable level based on Debitcard status----------------------------------------------------//
+    
+      result.put('IsKYMAvailable',IsKYMAvailable);
+      result.put('IsOTPAvailable',IsOTPAvailable);
+      result.put('IsDebitPinAvailable',IsDebitPinAvailable);
+      result.put('IsOOWAvailable',IsOOWAvailable);
+      result.put('IsPublicWalletAvailable',IsPublicWalletAvailable);
+      result.put('IsCFCUWalletAvailable',IsCFCUWalletAvailable);
+      
+      result.put('MaximumPointsAvailable',TotalScore);
+      result.put('LevelModel', LevelModel);
+      result.put('ScoringModel', ScoringModel);
+    
+      return result;
+  }
 	
 	
 	@AuraEnabled
@@ -1391,7 +1409,10 @@ public class MemberAuthenticationControllerLightning{
                               NextTabLevel2.add('CFCU Wallet or');
 		
 		}
-		
+		system.debug('IsOTPAvailable##' + IsOTPAvailable);
+		system.debug('Level2Limit##' + Level2Limit);
+		system.debug('CurrentScore##' + CurrentScore);
+		system.debug('OTPScore##' + OTPScore);
 		If(IsOTPAvailable == 1 && Level2Limit > CurrentScore && (((IsOTPAvailable * OTPScore) + CurrentScore) >= Level2Limit)){
               
                              NextTabLevel2.add('OTP or');
@@ -2543,7 +2564,7 @@ public class MemberAuthenticationControllerLightning{
      }
     
 	@AuraEnabled
-    public static Map<string,object> getDataForReload(string memberid, string GUID, string IVRGUIDFromUrl, string DebitCardStatus )
+    public static Map<string,object> getDataForReload(string memberid, string GUID, string IVRGUIDFromUrl, string DebitCardStatus, boolean IsOOWTabVisible )
     { 
 		integer OTPAvailable = 0;
 		integer PublicWalletAvailable = 0;
@@ -2587,15 +2608,16 @@ public class MemberAuthenticationControllerLightning{
         List<Authenticated_Log__c> OOWLogData = [SELECT ID, Decision__c, Member_Name__c,Member__c,Name,Staff_Name__c,Member_Number__c,
 					OOW_Member_Number__c,OOW_Notes__c,OOW_Reason__c,OOW_Status__c,IVR_GUID__c,GUID__c
 					 FROM Authenticated_Log__c where SalesforceID__c =:memberid AND CreatedDate >=: Datetime.now().addMinutes(minutes) and IVR_GUID__c =:IVRGUIDFromUrl and RecordTypeId=: OOWRec.Id Limit 1];    
-        if(OOWLogData.size() > 0){
-       		AuthLogMap.put('OOWLogData',OOWLogData);
-       		AuthLogMap.put('IsOOWAvailable',false);
+        if(IsOOWTabVisible == true){
+            if(OOWLogData.size() > 0){
+                AuthLogMap.put('OOWLogData',OOWLogData);
+                AuthLogMap.put('IsOOWAvailable',false);
+            }
+            else{
+                AuthLogMap.put('IsOOWAvailable',true);
+                OOWAvailable = 1;
+            }
         }
-        else{
-        	AuthLogMap.put('IsOOWAvailable',true);
-        	OOWAvailable = 1;
-        }
-        
         RecordType PublicRec = [select Id,Name,SobjectType from RecordType where Name ='Public Wallet Log' and SobjectType='Authenticated_Log__c' limit 1];
         List<Authenticated_Log__c> PublicLogData = new List<Authenticated_Log__c>();	
 		PublicLogData = [Select Id,SalesforceID__c,Member__c,Public_Wallet_Status__c,DOBMatch__c,IdNumberMatch__c,MMNMatch__c,EmailMatch__c,Additional_Token_Option3_Match__c
