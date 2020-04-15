@@ -1,0 +1,29 @@
+<aura:component controller="SolarLoanController" implements="flexipage:availableForAllPageTypes,force:appHostable,force:hasRecordId,lightning:isUrlAddressable" access="global" >
+    
+    <aura:registerEvent name="statusEvent" type="c:SolarLoanStatusEvent" />
+    <aura:handler name="init" action="{!c.doInit}" value="{!this}" access="global" />
+    
+    <aura:attribute name="ButtonLabelName" type="String" default="Mark Stage 1 Complete"/>
+    <aura:attribute name="StageName" type="String" default="Stage 1: Application"/>
+    <aura:attribute name="CurrentStage" type="String"/>
+    
+    <div class="groupbtn-parent" style="position: fixed;
+    bottom: 6%;
+    width: 99.5%;
+    height: 60px;
+    text-align: center;
+    background: #fff;
+    display: flex;
+    align-items: center;
+    padding-left: 9px;
+    border-top: 1px solid #ccc;
+    z-index: 10;">
+		       
+		<p class="field-title show">{!v.StageName}</p>		
+        <div style="margin-left: auto;">
+        	<lightning:button variant="brand" label="{!v.ButtonLabelName}" aura:id="SubmitButton" onclick="{!c.submit }" />
+        </div>
+        
+		</div>
+	
+</aura:component>

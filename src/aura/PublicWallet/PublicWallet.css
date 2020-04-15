@@ -26,7 +26,7 @@
 }
 
 .THIS .MainDiv {
-   height:400px;
+   height:350px;
 }
 
 .THIS .InnerDiv {
@@ -60,5 +60,7 @@
     font-size: 0.85rem !important;
     font-weight: Bold;
 }
-.cPublicWallet .submitButton {background: #f7f9fc; padding: 15px 25px!important;}
+.THIS .CenterDiv {text-align: center;}
+.THIS .MainDiv.MainField {border-bottom: 3px solid #637697;margin-bottom:0;}
+.cPublicWallet .submitButton { padding: 15px 25px!important; display: block;}
 .cPublicWallet .leftDiv.submitButtonLabel, .cPublicWallet .submitButton .RightDiv {width: 40% !important; display: inline-block !important;}

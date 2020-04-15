@@ -279,9 +279,9 @@
                                                 <ul class="progressbar">
                                                     <li class="active" >
                                                     	<lightning:layoutItem>
-	                                                    	<div class="header-column">
+	                                                    	<div class="header-column step-indicator-content">
 	                                                    		<p class="field-title show">Level 1</p>
-	                                                            <div class="step-indicator-content">
+	                                                            <div>
 	                                                            	<p>Level Reached</p>
 	                                                            </div>
 	                                                        </div>
@@ -289,12 +289,12 @@
                                                     </li>
                                                     <li id="Step2" class="two">
                                                     	<lightning:layoutItem>
-                                                            <div class="header-column">
+                                                            <div class="header-column step-indicator-content">
                                                                 <p class="field-title show" title="HighAchievableLevel" id="Level2IndicatorLabel">To Get to Level 2 </p>
                                                                 <aura:if isTrue="{!or(v.CurrentAuthenticationLevel == 'Level 2',v.CurrentAuthenticationLevel == 'Level 3')}">
                                                                 	<p class="field-title show" title="Level2ReachedLabel" id="Level2ReachedLabel">Level 2 </p>
                                                                 </aura:if>
-                                                                 <div class="step-indicator-content">
+                                                                 <div>
                                                                      <aura:iteration items="{!v.NextTabLevel2}" var="l2" indexVar="index">
                                                                         <p>{!l2}</p>
                                                                     </aura:iteration>
@@ -304,13 +304,13 @@
                                                     </li>
                                                     <li id="Step3" class="two">
                                                     	<lightning:layoutItem>
-                                                            <div class="header-column">
+                                                            <div class="header-column step-indicator-content">
                                                                 <p class="field-title show" title="LastAchievable30days" id="Level3IndicatorLabel">To Get to Level 3</p>
                                                                 <aura:if isTrue="{!v.CurrentAuthenticationLevel == 'Level 3'}">
                                                                 	<p class="field-title show" title="Level3ReachedLabel" id="Level3ReachedLabel">Level 3 </p>
                                                                 </aura:if>
                                                                 
-                                                                <div class="step-indicator-content">
+                                                                <div>
                                                                 	<aura:iteration items="{!v.NextTabLevel3}" var="l3" indexVar="index">
                                                                         <p>{!l3}</p>
                                                                  	</aura:iteration>

@@ -81,7 +81,7 @@ float:left;
 }
 .THIS .InnerDivContainer {float:left; width: 30%; padding-left:10px;}
 .THIS .InnerDiv {padding: 10px 10px 10px 0 !important;}
-.THIS .submitButton {background: #e3e6eb; padding: 15px 25px!important;}
+.THIS .submitButton { padding: 15px 25px!important;}
 .THIS .clearfix::after {content: "";  clear: both;  display: table;}
 .THIS .header-column-title {width:300px !important;}
 .THIS .header-column-title .slds-truncate,.THIS .header-column p {font-size: 14px; line-height: 18px;}

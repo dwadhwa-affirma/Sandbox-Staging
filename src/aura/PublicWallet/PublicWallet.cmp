@@ -29,7 +29,7 @@
 	
 	 <article class="slds-card">
        
-         <div class="MainDiv slds-scrollable_y">
+         <div class="MainDiv slds-scrollable_y MainField">
        		
        			<div class="InnerDiv">
        				<div class="leftDiv">
@@ -101,17 +101,13 @@
        				</div>
      			</div>
      	
-       			<div class="InnerDiv submitButton">
-       				<div class="leftDiv submitButtonLabel">Submit Authentication Questions
-      			</div>
-       				<div class="btnAlign btn-submit">
-       					<div class="CenterDiv mb-50">
-        					<lightning:button variant="brand" label="Submit Answers" onclick="{! c.submit }" aura:id="SubmitButton" disabled = "{!v.IsButtonDisabled}" />
-     					</div> 	
-     				</div>
-     			</div>
+       			
        	</div>
-        
+        <div class="InnerDiv submitButton">
+            <div class="CenterDiv">
+                <lightning:button variant="brand" label="Submit Answers" onclick="{! c.submit }" aura:id="SubmitButton" disabled = "{!v.IsButtonDisabled}" />
+            </div> 	
+         </div>
      </article>
 	
 </aura:component>

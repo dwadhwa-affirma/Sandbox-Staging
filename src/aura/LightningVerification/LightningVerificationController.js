@@ -61,7 +61,8 @@
 	    var IsOTPAvailable = component.get("v.IsOTPAvailableOnLoad");
 	    var DebitCardStatus = component.get("v.DebitCardStatus");
 	    //var IsDebitPinAvailable = component.get("v.IsDebitPinAvailableOnLoad");
-	    var IsOOWAvailable = component.get("v.OOWStatusForDay");
+	   // var IsOOWAvailable = component.get("v.OOWStatusForDay");
+	    var IsOOWAvailable = component.get("v.IsOOWAvailableOnLoad"); 
 	    var IsPublicWalletAvailable = component.get("v.IsPublicWalletAvailableOnLoad");
 	    var IsCFCUWalletAvailable =   component.get("v.IsCFCUWalletAvailableOnLoad");
 		var memberid = component.get("v.SelectedmemberId");

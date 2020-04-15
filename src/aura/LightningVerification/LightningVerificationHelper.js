@@ -160,10 +160,10 @@
 		var HighFlagFromUrl = component.get("v.HighFlagFromUrl");
 		
 		if(PageURL == undefined){
-			action.setParams({"MemberId": memberid,"GUID": GUID,"DebitCardStatus": DebitCardStatus,"SSNFromURL": ' ',"MemberNumberFromURL": ' ',"PhoneFromURL": ' ', "PageURL" : ' ', "IVRGUIDFromUrl": IVRGUIDFromUrl,"ReLoadRequired": ReLoadRequired, "ReasonCodeFromURL": ReasonCodeFromURL,"HighFlagFromUrl":HighFlagFromUrl, "PointsObtained":PointsObtained});
+			action.setParams({"MemberId": memberid,"GUID": GUID,"DebitCardStatus": DebitCardStatus,"SSNFromURL": ' ',"MemberNumberFromURL": ' ',"PhoneFromURL": ' ', "PageURL" : ' ', "IVRGUIDFromUrl": IVRGUIDFromUrl,"ReLoadRequired": ReLoadRequired, "ReasonCodeFromURL": ReasonCodeFromURL,"HighFlagFromUrl":HighFlagFromUrl, "PointsObtained":PointsObtained,  "IsOOWTabVisible":component.get("v.IsOOWTabVisible")});
 		}
 		else{
-			action.setParams({"MemberId": memberid,"GUID": GUID,"DebitCardStatus": DebitCardStatus,"SSNFromURL": SSNFromURL,"MemberNumberFromURL":MemberNumberFromURL,"PhoneFromURL":PhoneFromURL,"PageURL":PageURL, "IVRGUIDFromUrl": IVRGUIDFromUrl,"ReLoadRequired":ReLoadRequired,"ReasonCodeFromURL": ReasonCodeFromURL,"HighFlagFromUrl":HighFlagFromUrl, "PointsObtained":PointsObtained});
+			action.setParams({"MemberId": memberid,"GUID": GUID,"DebitCardStatus": DebitCardStatus,"SSNFromURL": SSNFromURL,"MemberNumberFromURL":MemberNumberFromURL,"PhoneFromURL":PhoneFromURL,"PageURL":PageURL, "IVRGUIDFromUrl": IVRGUIDFromUrl,"ReLoadRequired":ReLoadRequired,"ReasonCodeFromURL": ReasonCodeFromURL,"HighFlagFromUrl":HighFlagFromUrl, "PointsObtained":PointsObtained,  "IsOOWTabVisible":component.get("v.IsOOWTabVisible") });
     	}
     	action.setCallback(this, function (response) {
   		 var status = response.getState();            
@@ -174,7 +174,7 @@
                     	component.set("v.Attempts", result['Attempts']);
                     	component.set("v.CFCUWalletStatusForDay",result['CFCUWalletStatusForDay']);
                     	component.set("v.PublicWalletStatusForDay",result['PublicWalletStatusForDay']);
-                    	component.set("v.OTPStatusForDay",result.IsOOWAvailable);
+                    	component.set("v.OTPStatusForDay",result.IsOTPAvailable);
                     	component.set("v.OOWStatusForDay",result['OOWStatusForDay']);
                     	component.set("v.ShowFailedDesiredLevel",true);
                     	component.set("v.ShowFailedDesiredLevelCount",result['Show Failed Desired Level']);
@@ -215,15 +215,21 @@
 					    	component.set("v.Likedisable", false);
 					    }
 					    					    
-					    if(SSNFromURL!= undefined && SSNFromURL != "" && SSNFromURL != null && SSNFromURL != 'null' )
-					    {
-					    	 if(result.MemberType == 'Foreign'){
-					    		 component.set("v.IsOOWAvailableOnLoad", false);
-					    	 }
-					    	 else if(result.MemberType == 'Domestic')
-					    	 {
-					    		 component.set("v.IsOOWAvailableOnLoad", true);
-					    	 }
+					   if(component.get("v.IsOOWTabVisible") == true)
+					   {
+						  //  if(SSNFromURL!= undefined && SSNFromURL != "" && SSNFromURL != null && SSNFromURL != 'null' )
+						  //  {
+						    	 if(result.MemberType == 'Foreign'){
+						    		 component.set("v.IsOOWAvailableOnLoad", false);
+						    	 }
+						    	 else if(result.MemberType == 'Domestic')
+						    	 {
+						    		 component.set("v.IsOOWAvailableOnLoad", true);
+						    	 }
+						   // }
+					    }
+					    else{
+					    	component.set("v.IsOOWAvailableOnLoad", false);
 					    }
 					    
 					    var ProgressBarStep2 = document.getElementById('Step2');
@@ -325,7 +331,7 @@
 	{
 		  
 		   var action = component.get("c.getMemberSearchData");
-		   var parameters = {"PhoneNumber": PhoneNumber,"MemberNumber" : MemberNumber,"SSNNumber" : SSNNumber,"IVRGUIDFromUrl":IVRGUIDFromUrl };
+		   var parameters = {"PhoneNumber": PhoneNumber,"MemberNumber" : MemberNumber,"SSNNumber" : SSNNumber,"IVRGUIDFromUrl":IVRGUIDFromUrl};
 		
 		   action.setParams(parameters);
 		   action.setCallback(this, function(response){
@@ -745,7 +751,7 @@
 	
 		var DebitCardStatus = component.get("v.DebitCardStatus");
 		var action = component.get("c.getDataForReload");
-		action.setParams({"memberid": memberid,"GUID":GUID,"IVRGUIDFromUrl":IVRGUIDFromUrl,"DebitCardStatus" : DebitCardStatus});
+		action.setParams({"memberid": memberid,"GUID":GUID,"IVRGUIDFromUrl":IVRGUIDFromUrl,"DebitCardStatus" : DebitCardStatus, "IsOOWTabVisible":component.get("v.IsOOWTabVisible")});
     	action.setCallback(this, function (response) {
 		       	      		 var status = response.getState();            
 	                               if (component.isValid() && status === "SUCCESS") {

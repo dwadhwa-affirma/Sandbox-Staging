@@ -322,13 +322,11 @@
              </div>
        	</div>
          <div class="InnerDiv submitButton">
-       					<div class="leftDiv submitButtonLabel">Submit Authentication Questions</div>		
-			       		<div class="RightDiv">
-				       		<div class="CenterDiv">
-						      	<lightning:button variant="brand" label="Submit Answers" onclick="{! c.ButtonClick }" aura:id="SubmitButton" disabled = "{!v.IsButtonDisabled}"/>
-				      	 	</div>	
-			      	 	</div>	
-	       			</div>
+       		<div class="CenterDiv">
+                 <lightning:button variant="brand" label="Submit Answers" onclick="{! c.ButtonClick }" aura:id="SubmitButton" disabled = "{!v.IsButtonDisabled}"/>
+             </div>	
+			      	 		
+	      </div>
          
      </article>
 	

@@ -2,8 +2,8 @@
 	 doInit : function (component, event) {        
        
       
-        if( window.MemberAuthInitialized == undefined)
-        {
+      //  if( window.MemberAuthInitialized == undefined)
+     //   {
            
               var utilityBarAPI = component.find("utilitybar");
           var eventHandler = function(response){
@@ -49,13 +49,13 @@
 		        });
       
 		        evt.fire();
-                window.MemberAuthInitialized = true;
+             //   window.MemberAuthInitialized = true;
                 var dismissActionPanel = $A.get("e.force:closeQuickAction");   
                 dismissActionPanel.fire();
             }).catch(function(error){
                 
             });
-        }
+       // }
                 
         
 		       
