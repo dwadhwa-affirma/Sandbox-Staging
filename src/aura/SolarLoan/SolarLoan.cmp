@@ -1,7 +1,17 @@
 <aura:component controller="SolarLoanController" implements="flexipage:availableForAllPageTypes,force:appHostable,force:hasRecordId,lightning:isUrlAddressable" access="global" >
 
-<aura:handler name="statusEvent" event="c:SolarLoanStatusEvent" action="{!c.MemberSolarStatusEvent}"/>
 <aura:handler name="init" action="{!c.doInit}" value="{!this}" access="global" />
+<aura:handler event="c:SolarLoanStatusEvent" action="{!c.MemberSolarStatusEvent}"/>
+
+<aura:attribute name="StagePassed" type="String"/>
+<aura:attribute name="Stage1" type="String" default="Needs Review"/>
+<aura:attribute name="Stage2" type="String" default="Waiting on Stage 1"/>
+<aura:attribute name="Stage3" type="String" default="Waiting on Stage 2"/>
+<aura:attribute name="Stage4" type="String" default="Waiting on Stage 3"/>
+<aura:attribute name="Stage5" type="String" default="Waiting on Stage 4"/>
+<aura:attribute name="Stage6" type="String" default="Waiting on Stage 5"/>
+<aura:attribute name="Stage7" type="String" default="Waiting on Stage 6"/>
+
     
 <div class="demo-only slds-box rightBox" style="background: white;">
 			    	<header class="slds-media_center slds-has-flexi-truncate">
@@ -14,7 +24,7 @@
 	                                                    	<div class="header-column">
 	                                                    		<p class="field-title show" id="Level1IndicatorLabel">Application</p>
 	                                                            <div class="step-indicator-content">
-	                                                            	<p>Needs Review</p>
+	                                                            	<b><p>{!v.Stage1}</p></b>
 	                                                            </div>
 	                                                        </div>
                                                         </lightning:layoutItem>
@@ -24,7 +34,7 @@
 	                                                    	<div class="header-column">
 	                                                    		<p class="field-title show" id="Level2IndicatorLabel">Documents</p>
 	                                                            <div class="step-indicator-content">
-	                                                            	<p>Waiting on Stage 1</p>
+	                                                            	<b><p>{!v.Stage2}</p></b>
 	                                                            </div>
 	                                                        </div>
                                                         </lightning:layoutItem>
@@ -34,7 +44,7 @@
 	                                                    	<div class="header-column">
 	                                                    		<p class="field-title show" id="Level3IndicatorLabel">Loan Records</p>
 	                                                            <div class="step-indicator-content">
-	                                                            	<p>Waiting on Stage 2</p>
+	                                                            	<b><p>{!v.Stage3}</p></b>
 	                                                            </div>
 	                                                        </div>
                                                         </lightning:layoutItem>
@@ -44,7 +54,7 @@
 	                                                    	<div class="header-column">
 	                                                    		<p class="field-title show" id="Level4IndicatorLabel">ACH Info</p>
 	                                                            <div class="step-indicator-content">
-	                                                            	<p>Waiting on Stage 3</p>
+	                                                            	<b><p>{!v.Stage4}</p></b>
 	                                                            </div>
 	                                                        </div>
                                                         </lightning:layoutItem>
@@ -54,7 +64,7 @@
 	                                                    	<div class="header-column">
 	                                                    		<p class="field-title show" id="Level5IndicatorLabel">ACH Document</p>
 	                                                            <div class="step-indicator-content">
-	                                                            	<p>Waiting on Stage 4</p>
+	                                                            	<b><p>{!v.Stage5}</p></b>
 	                                                            </div>
 	                                                        </div>
                                                         </lightning:layoutItem>
@@ -64,7 +74,7 @@
 	                                                    	<div class="header-column">
 	                                                    		<p class="field-title show" id="Level6IndicatorLabel">EFT Record</p>
 	                                                            <div class="step-indicator-content">
-	                                                            	<p>Waiting on Stage 5</p>
+	                                                            	<b><p>{!v.Stage6}</p></b>
 	                                                            </div>
 	                                                        </div>
                                                         </lightning:layoutItem>
@@ -74,7 +84,7 @@
 	                                                    	<div class="header-column">
 	                                                    		<p class="field-title show" id="Level7IndicatorLabel">Ticket Status</p>
 	                                                            <div class="step-indicator-content">
-	                                                            	<p>Waiting on Stage 6</p>
+	                                                            	<b><p>{!v.Stage7}</p></b>
 	                                                            </div>
 	                                                        </div>
                                                         </lightning:layoutItem>

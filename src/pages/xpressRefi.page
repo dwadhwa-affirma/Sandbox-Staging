@@ -41,6 +41,9 @@
 			          <apex:inputField value="{!xprs.Member_Email__c}"/>
        				  <apex:inputField value="{!xprs.Mailing_address_if_different__c}"/>
        				  <apex:inputField value="{!xprs.Member_Phone__c}"/>
+                      <apex:inputField value="{!xprs.Current_Balance__c}"/>
+                      <apex:inputField value="{!xprs.Current_Rate__c}"/>
+                      <apex:inputField value="{!xprs.Maturity_Date__c}"/>
      			      <apex:inputField value="{!Xpress_Refi__c.Conforming_Jumbo__c}"/>
                      <apex:inputField value="{!Xpress_Refi__c.Redraw_Fee__c}"/>
                  </apex:pageBlockSection>

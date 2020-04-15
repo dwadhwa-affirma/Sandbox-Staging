@@ -1,4 +1,4 @@
 <aura:event type="APPLICATION" description="Event template">
-    <aura:attribute name="SelectedMemberId" type="String"/>
-	<aura:attribute name="Status" type="String"/>   
+    <aura:attribute name="SolarLoanRecordId" type="String"/>
+	<aura:attribute name="Stage" type="String"/>   
 </aura:event>

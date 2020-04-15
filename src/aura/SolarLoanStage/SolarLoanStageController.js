@@ -10,7 +10,9 @@
 	submit: function(component, event, helper) {
 		
         var action = component.get("c.getMemberData");
+        var checkCurrentStage;
         var SolarLoanRecordId = component.get("v.recordId");
+       	
         var CurrentStage;
         	if(component.get("v.ButtonLabelName") == 'Mark Stage 1 Complete')
                 CurrentStage = 'Stage 2';
@@ -33,7 +35,7 @@
                 var result = response.getReturnValue();
                 
                 if(result.SolarCurrentStage != undefined){
-		       	    var checkCurrentStage = result.SolarCurrentStage;
+		       	    checkCurrentStage = result.SolarCurrentStage;
                     component.set("v.CurrentStage",result.SolarCurrentStage);
                 }
             }
@@ -61,10 +63,16 @@
             if(checkCurrentStage == 'Stage 7'){
                 component.set("v.ButtonLabelName", "Close Ticket");
                 component.set("v.StageName", "Stage 7: Close Ticket");
+                component.set("v.IsButtonDisabled", true);
             }
+             
+             var compEvent = $A.get("e.c:SolarLoanStatusEvent"); 
+             compEvent.setParams({"Stage" : checkCurrentStage});
+			 compEvent.fire();
         });	
         	
         
+		
         $A.enqueueAction(action);
 		
 	}
