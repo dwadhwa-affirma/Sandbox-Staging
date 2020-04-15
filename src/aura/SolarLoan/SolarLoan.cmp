@@ -4,7 +4,7 @@
 <aura:handler name="init" action="{!c.doInit}" value="{!this}" access="global" />
     
 <div class="demo-only slds-box rightBox" style="background: white;">
-			    	<header class="slds-media slds-media_center slds-has-flexi-truncate">
+			    	<header class="slds-media_center slds-has-flexi-truncate">
 			         			<div class="c-container maap-questions">
 			               			<lightning:layout horizontalAlign="spread">                                            
                                             <div class="step-container">
