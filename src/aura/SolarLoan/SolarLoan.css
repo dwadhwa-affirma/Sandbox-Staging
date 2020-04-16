@@ -10,7 +10,8 @@
 .THIS .progressbar li.active + li:after {background-color: #00ad53;}  
 .THIS .progressbar li .step-indicator-content {width: 85%; margin: 0 auto; text-align:center;}                  
 .THIS .progressbar li.halFactive:before,.THIS .progressbar li.active.three:before {background-color: #16325c;}
-.THIS .progressbar li.halFactive + li:after {background-color: #16325c;}  
+.THIS .progressbar li.halFactive + li:after {background-color: #a8b7c7;}
+  
 
 .THIS .demo-only {    background: white !important;}
 .THIS .region-main {width: 40% !important;}
