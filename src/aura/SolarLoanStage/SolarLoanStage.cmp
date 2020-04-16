@@ -4,7 +4,7 @@
     <aura:registerEvent name="statusEvent" type="c:SolarLoanStatusEvent" />
     
     <aura:attribute name="ButtonLabelName" type="String" default="Mark Stage 1 Complete"/>
-    <aura:attribute name="StageName" type="String" default="Stage 1: Application"/>
+    <aura:attribute name="StageName" type="String" default="Stage 1: Review Application"/>
     <aura:attribute name="CurrentStage" type="String"/>
     <aura:attribute name="IsButtonDisabled" type="boolean" default="false"/>
     

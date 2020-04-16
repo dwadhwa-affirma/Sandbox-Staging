@@ -35,7 +35,7 @@
 			var ProgressBarStep7 = document.getElementById('Step7');
         
             if(stage == 'Stage 2'){
-				component.set("v.Stage1", "Review Complete");
+				component.set("v.Stage1", "Review Completed");
 				component.set("v.Stage2", "Needs Review");
 				ProgressBarStep1.classList.remove('halFactive');
 				ProgressBarStep1.classList.add('active');
@@ -43,8 +43,8 @@
 				
 			}
 			if(stage == 'Stage 3'){
-				component.set("v.Stage1", "Review Complete");
-				component.set("v.Stage2", "Review Complete");
+				component.set("v.Stage1", "Review Completed");
+				component.set("v.Stage2", "Review Completed");
 				component.set("v.Stage3", "Create Records");
                 ProgressBarStep1.classList.remove('halFactive');
 				ProgressBarStep1.classList.add('active');
@@ -53,8 +53,8 @@
 				ProgressBarStep3.classList.add('halFactive');
 			}
 			if(stage == 'Stage 4'){
-				component.set("v.Stage1", "Review Complete");
-				component.set("v.Stage2", "Review Complete");
+				component.set("v.Stage1", "Review Completed");
+				component.set("v.Stage2", "Review Completed");
 				component.set("v.Stage3", "Records Created");
 				component.set("v.Stage4", "Needs Review");
                 ProgressBarStep1.classList.remove('halFactive');
@@ -65,10 +65,10 @@
 				ProgressBarStep4.classList.add('halFactive');
 			}
 			if(stage == 'Stage 5'){
-				component.set("v.Stage1", "Review Complete");
-				component.set("v.Stage2", "Review Complete");
+				component.set("v.Stage1", "Review Completed");
+				component.set("v.Stage2", "Review Completed");
 				component.set("v.Stage3", "Records Created");
-				component.set("v.Stage4", "Review Complete");
+				component.set("v.Stage4", "Review Completed");
 				component.set("v.Stage5", "Send For Signature");
                 ProgressBarStep1.classList.remove('halFactive');
 				ProgressBarStep1.classList.add('active');
@@ -79,10 +79,10 @@
 				ProgressBarStep5.classList.add('halFactive');
 			}
 			if(stage == 'Stage 6'){
-				component.set("v.Stage1", "Review Complete");
-				component.set("v.Stage2", "Review Complete");
+				component.set("v.Stage1", "Review Completed");
+				component.set("v.Stage2", "Review Completed");
 				component.set("v.Stage3", "Records Created");
-				component.set("v.Stage4", "Review Complete");
+				component.set("v.Stage4", "Review Completed");
 				component.set("v.Stage5", "Document Signed");
 				component.set("v.Stage6", "ACH EFT Not Used");
                 ProgressBarStep1.classList.remove('halFactive');
@@ -95,10 +95,10 @@
 				ProgressBarStep6.classList.add('halFactive');
 			}
 			if(stage == 'Stage 7'){
-				component.set("v.Stage1", "Review Complete");
-				component.set("v.Stage2", "Review Complete");
+				component.set("v.Stage1", "Review Completed");
+				component.set("v.Stage2", "Review Completed");
 				component.set("v.Stage3", "Records Created");
-				component.set("v.Stage4", "Review Complete");
+				component.set("v.Stage4", "Review Completed");
 				component.set("v.Stage5", "Document Signed");
 				component.set("v.Stage6", "Record Created");
 				component.set("v.Stage7", "Close Ticket");
