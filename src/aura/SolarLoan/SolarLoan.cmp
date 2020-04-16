@@ -14,7 +14,7 @@
 
     
 <div class="demo-only slds-box rightBox" style="background: white;">
-			    	<header class="slds-media_center slds-has-flexi-truncate">
+			    	<header class="slds-media_center slds-has-flexi-truncate" style = "width: 108%;">
 			         			<div class="c-container maap-questions">
 			               			<lightning:layout horizontalAlign="spread">                                            
                                             <div class="step-container">
