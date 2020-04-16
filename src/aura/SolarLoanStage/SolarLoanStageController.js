@@ -11,6 +11,7 @@
 		
         var action = component.get("c.getMemberData");
         var checkCurrentStage;
+        var buttonStatus;
         var SolarLoanRecordId = component.get("v.recordId");
        	
         var CurrentStage;
@@ -38,6 +39,9 @@
 		       	    checkCurrentStage = result.SolarCurrentStage;
                     component.set("v.CurrentStage",result.SolarCurrentStage);
                 }
+                if(result.Stage3LoanCheck != undefined && result.Stage3LoanCheck != null){
+		       	    buttonStatus = result.Stage3LoanCheck;
+                }
             }
             
             if(checkCurrentStage == 'Stage 2'){
@@ -47,6 +51,9 @@
             if(checkCurrentStage == 'Stage 3'){
                 component.set("v.ButtonLabelName", "Create Loan Records");
                 component.set("v.StageName", "Stage 3: Loan Records");
+                if(buttonStatus == 'True'){
+                	component.set("v.IsButtonDisabled", true);
+                }
             }
             if(checkCurrentStage == 'Stage 4'){
             	component.set("v.ButtonLabelName", "Mark Stage 4 Complete");
@@ -66,8 +73,11 @@
                 component.set("v.IsButtonDisabled", true);
             }
              
+             var buttonDisabled = component.get("v.IsButtonDisabled");
+             
              var compEvent = $A.get("e.c:SolarLoanStatusEvent"); 
-             compEvent.setParams({"Stage" : checkCurrentStage});
+             compEvent.setParams({"Stage" : checkCurrentStage,
+             					  "IsSubmitButtonDisabled" : buttonDisabled});
 			 compEvent.fire();
         });	
         	

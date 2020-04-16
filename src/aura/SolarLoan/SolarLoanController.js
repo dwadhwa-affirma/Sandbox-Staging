@@ -16,6 +16,7 @@
 		var ProgressBarStep7 = document.getElementById('Step7');
 		
 		var stage = event.getParam("Stage");
+		var buttonDisabled = event.getParam("IsSubmitButtonDisabled");
 		
 		if(stage == 'Stage 2'){
 			component.set("v.Stage1", "Review Complete");

@@ -8,6 +8,7 @@
     getSolarLoanData : function(component, event,recordId){
 	
 		var SolarLoanRecordId = component.get("v.recordId");
+		var buttonStatus;
 		var stage;
 		
 		var action = component.get("c.getMemberData");
@@ -22,6 +23,9 @@
                 if(result.SolarCurrentStage != undefined){
 		       	    stage = result.SolarCurrentStage;
 		        }
+		        if(result.Stage3LoanCheck != undefined && result.Stage3LoanCheck != null){
+		       	    buttonStatus = result.Stage3LoanCheck;
+                }
             }
             
         	if(stage == 'Stage 2'){
@@ -31,6 +35,9 @@
             if(stage == 'Stage 3'){
                 component.set("v.ButtonLabelName", "Create Loan Records");
                 component.set("v.StageName", "Stage 3: Loan Records");
+                if(buttonStatus == 'True'){
+                	component.set("v.IsButtonDisabled", true);
+                }
             }
             if(stage == 'Stage 4'){
             	component.set("v.ButtonLabelName", "Mark Stage 4 Complete");
