@@ -1,8 +1,8 @@
 ({
 	doInit : function(component, event, helper) {
 		
-	var SolarLoanRecordId = component.get("v.recordId");
-	
+		var SolarLoanRecordId = component.get("v.recordId");
+		helper.doInit(component, event,helper);
 	
 	},
 	

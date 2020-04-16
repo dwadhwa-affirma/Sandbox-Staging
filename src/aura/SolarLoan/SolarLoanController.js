@@ -2,6 +2,7 @@
 	doInit : function(component, event, helper) {
 		
 		var recordId = component.get("v.recordId");
+		helper.doInit(component, event,helper);
 	},
 	
 	MemberSolarStatusEvent : function(component, event, helper){
@@ -28,7 +29,7 @@
 			component.set("v.Stage1", "Review Complete");
 			component.set("v.Stage2", "Review Complete");
 			component.set("v.Stage3", "Create Records");
-			ProgressBarStep1.classList.add('active');
+            ProgressBarStep1.classList.add('active');
 			ProgressBarStep2.classList.remove('halFactive');
 			ProgressBarStep2.classList.add('active');
 			ProgressBarStep3.classList.add('halFactive');
@@ -38,7 +39,7 @@
 			component.set("v.Stage2", "Review Complete");
 			component.set("v.Stage3", "Records Created");
 			component.set("v.Stage4", "Needs Review");
-			ProgressBarStep1.classList.add('active');
+         	ProgressBarStep1.classList.add('active');
 			ProgressBarStep2.classList.add('active');
 			ProgressBarStep3.classList.remove('halFactive');
 			ProgressBarStep3.classList.add('active');
@@ -50,7 +51,7 @@
 			component.set("v.Stage3", "Records Created");
 			component.set("v.Stage4", "Review Complete");
 			component.set("v.Stage5", "Send For Signature");
-			ProgressBarStep1.classList.add('active');
+            ProgressBarStep1.classList.add('active');
 			ProgressBarStep2.classList.add('active');
 			ProgressBarStep3.classList.add('active');
 			ProgressBarStep4.classList.remove('halFactive');
@@ -64,7 +65,7 @@
 			component.set("v.Stage4", "Review Complete");
 			component.set("v.Stage5", "Document Signed");
 			component.set("v.Stage6", "ACH EFT Not Used");
-			ProgressBarStep1.classList.add('active');
+            ProgressBarStep1.classList.add('active');
 			ProgressBarStep2.classList.add('active');
 			ProgressBarStep3.classList.add('active');
 			ProgressBarStep4.classList.add('active');
@@ -80,7 +81,7 @@
 			component.set("v.Stage5", "Document Signed");
 			component.set("v.Stage6", "Record Created");
 			component.set("v.Stage7", "Close Ticket");
-			ProgressBarStep1.classList.add('active');
+            ProgressBarStep1.classList.add('active');
 			ProgressBarStep2.classList.add('active');
 			ProgressBarStep3.classList.add('active');
 			ProgressBarStep4.classList.add('active');
@@ -90,4 +91,4 @@
 			ProgressBarStep7.classList.add('halFactive');
 		}
 	}
-}) 
+})

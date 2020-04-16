@@ -10,13 +10,20 @@ public class SolarLoanController {
     List<Solar_Loans__c> SolarLoanList = [Select id,Current_Solar_Loan_Stage__c from Solar_Loans__c where id =:SolarLoanRecordId limit 1];
 	
     if(SolarLoanList.size() > 0){
-        SolarLoanList[0].Current_Solar_Loan_Stage__c = CurrentStage; 
-        update SolarLoanList;
+    	
+    	if(CurrentStage != null && CurrentStage != ' '){
+        
+        	system.debug('t');
+            SolarLoanList[0].Current_Solar_Loan_Stage__c = CurrentStage; 
+            update SolarLoanList;
+    	}
         SolarCurrentStage = SolarLoanList[0].Current_Solar_Loan_Stage__c;
         
     }
+    
     system.debug('SolarCurrentStage'+SolarCurrentStage);
     strMap.put('SolarCurrentStage',SolarCurrentStage);    
-    return strMap;    
+    return strMap;  
+      
     }
 }
