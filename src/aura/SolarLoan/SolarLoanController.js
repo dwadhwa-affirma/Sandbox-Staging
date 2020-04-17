@@ -87,9 +87,10 @@
 			}
 			else{
 				component.set("v.Stage4", "Review Completed");
+				component.set("v.Stage5", "Document Signed");
+				component.set("v.Stage6", "Record Created");
 			}
-			component.set("v.Stage5", "Document Signed");
-			component.set("v.Stage6", "Record Created");
+		
 			component.set("v.Stage7", "Close Ticket");
             ProgressBarStep1.classList.add('active');
 			ProgressBarStep2.classList.add('active');
