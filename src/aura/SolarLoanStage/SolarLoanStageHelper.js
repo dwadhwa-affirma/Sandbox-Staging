@@ -10,6 +10,7 @@
 		var SolarLoanRecordId = component.get("v.recordId");
 		var buttonStatus;
 		var stage;
+		var Stage4ACHCheck;
 		
 		var action = component.get("c.getMemberData");
 		action.setParams({"SolarLoanRecordId": SolarLoanRecordId,
@@ -25,6 +26,12 @@
 		        }
 		        if(result.Stage3LoanCheck != undefined && result.Stage3LoanCheck != null){
 		       	    buttonStatus = result.Stage3LoanCheck;
+                }
+                if(result.Stage4ACHCheck == 'False'){
+		       	    Stage4ACHCheck = result.Stage4ACHCheck;
+                }
+                else{
+                	Stage4ACHCheck = 'True';
                 }
             }
             
@@ -44,8 +51,10 @@
                 component.set("v.StageName", "Stage 4: ACH Information");
             }
             if(stage == 'Stage 5'){
-                component.set("v.ButtonLabelName", "Mark Stage 5 Complete");
-                component.set("v.StageName", "Stage 5: ACH Form");
+                if(Stage4ACHCheck == 'True'){
+            		component.set("v.ButtonLabelName", "Send ACH Document");
+            	}
+                component.set("v.StageName", "Stage 5: Send ACH Document");
             }
             if(stage == 'Stage 6'){
             	component.set("v.ButtonLabelName", "Create EFT Record");

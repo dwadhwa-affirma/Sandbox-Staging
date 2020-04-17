@@ -11,6 +11,7 @@
 	
 		var SolarLoanRecordId = component.get("v.recordId");
 		var stage;
+		var Stage4ACHCheck;
 		
 		var action = component.get("c.getMemberData");
 		action.setParams({"SolarLoanRecordId": SolarLoanRecordId,
@@ -24,6 +25,12 @@
                 if(result.SolarCurrentStage != undefined){
 		       	    stage = result.SolarCurrentStage;
 		        }
+		        if(result.Stage4ACHCheck == 'False'){
+		       	    Stage4ACHCheck = result.Stage4ACHCheck;
+                }
+                else{
+                	Stage4ACHCheck = 'True';
+                }
             }
         	   
         	var ProgressBarStep1 = document.getElementById('Step1');
@@ -69,9 +76,10 @@
 				component.set("v.Stage2", "Review Completed");
 				component.set("v.Stage3", "Records Created");
 				component.set("v.Stage4", "Review Completed");
-				component.set("v.Stage5", "Send For Signature");
-                ProgressBarStep1.classList.remove('halFactive');
-				ProgressBarStep1.classList.add('active');
+				if(Stage4ACHCheck == 'True')
+					component.set("v.Stage5", "Send ACH Document");
+				ProgressBarStep1.classList.remove('halFactive');
+	            ProgressBarStep1.classList.add('active');
 				ProgressBarStep2.classList.add('active');
 				ProgressBarStep3.classList.add('active');
 				ProgressBarStep4.classList.remove('halFactive');
@@ -98,17 +106,26 @@
 				component.set("v.Stage1", "Review Completed");
 				component.set("v.Stage2", "Review Completed");
 				component.set("v.Stage3", "Records Created");
-				component.set("v.Stage4", "Review Completed");
-				component.set("v.Stage5", "Document Signed");
-				component.set("v.Stage6", "Record Created");
+				if(Stage4ACHCheck == 'False'){
+					component.set("v.Stage4", "ACH Not Used");
+					component.set("v.Stage5", "ACH Not Used");
+					component.set("v.Stage6", "ACH EFT Not Used");
+				}
+				else{
+					component.set("v.Stage4", "Review Completed");
+					component.set("v.Stage5", "Document Signed");
+					component.set("v.Stage6", "Record Created");
+				}
+			
 				component.set("v.Stage7", "Close Ticket");
-                ProgressBarStep1.classList.remove('halFactive');
-				ProgressBarStep1.classList.add('active');
+				ProgressBarStep1.classList.remove('halFactive');
+	            ProgressBarStep1.classList.add('active');
 				ProgressBarStep2.classList.add('active');
+				ProgressBarStep3.classList.remove('halFactive');
 				ProgressBarStep3.classList.add('active');
 				ProgressBarStep4.classList.add('active');
 				ProgressBarStep5.classList.add('active');
-				ProgressBarStep6.classList.remove('halFactive');
+				ProgressBarStep6.classList.remove('half');
 				ProgressBarStep6.classList.add('active');
 				ProgressBarStep7.classList.add('halFactive');
 			}            
