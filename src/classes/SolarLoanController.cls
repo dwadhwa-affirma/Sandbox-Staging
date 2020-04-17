@@ -49,6 +49,14 @@ public class SolarLoanController {
 	    	}
 	    }
 	    
+	    //------------------------------------Stage-6 Chaging status to "ACH Pending----------------------------------//
+	    
+	    if(solarLoanList[0].Current_Solar_Loan_Stage__c == 'Stage 6'){
+	    	solarLoanList[0].Status__c = 'ACH Pending';
+	    	update SolarLoanList;
+	    	
+	    }
+	    
     	//------------------------------------Skipping stages upto "Stage 7" if ACH = False------------------------//
     	
     	if(Stage4ACHCheck == 'False'){

@@ -24,7 +24,7 @@
                 CurrentStage = 'Stage 4';
             if(component.get("v.ButtonLabelName") == 'Mark Stage 4 Complete')
             	CurrentStage = 'Stage 5';
-            if(component.get("v.ButtonLabelName") == 'Mark Stage 5 Complete')
+            if(component.get("v.ButtonLabelName") == 'Send ACH Document')
                 CurrentStage = 'Stage 6';
         	if(component.get("v.ButtonLabelName") == 'Create EFT Record')
                 CurrentStage = 'Stage 7';
@@ -67,7 +67,9 @@
                 component.set("v.StageName", "Stage 4: Review ACH Info");
             }
             if(checkCurrentStage == 'Stage 5'){
-                component.set("v.ButtonLabelName", "Mark Stage 5 Complete");
+            	if(Stage4ACHCheck == 'True'){
+            		component.set("v.ButtonLabelName", "Send ACH Document");
+            	}
                 component.set("v.StageName", "Stage 5: Send ACH Document");
             }
             if(checkCurrentStage == 'Stage 6'){

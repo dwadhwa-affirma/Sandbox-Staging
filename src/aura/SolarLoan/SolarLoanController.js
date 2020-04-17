@@ -52,7 +52,8 @@
 			component.set("v.Stage2", "Review Completed");
 			component.set("v.Stage3", "Records Created");
 			component.set("v.Stage4", "Review Completed");
-			component.set("v.Stage5", "Send For Signature");
+			if(Stage4ACHCheck == 'True')
+				component.set("v.Stage5", "Send ACH Document");
             ProgressBarStep1.classList.add('active');
 			ProgressBarStep2.classList.add('active');
 			ProgressBarStep3.classList.add('active');
