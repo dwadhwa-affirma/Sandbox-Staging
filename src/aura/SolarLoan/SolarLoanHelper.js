@@ -100,7 +100,7 @@
 				ProgressBarStep4.classList.add('active');
 				ProgressBarStep5.classList.remove('halFactive');
 				ProgressBarStep5.classList.add('active');
-				ProgressBarStep6.classList.add('halFactive');
+				ProgressBarStep6.classList.add('half');
 			}
 			if(stage == 'Stage 7'){
 				component.set("v.Stage1", "Review Completed");
