@@ -52,12 +52,12 @@ public class SolarLoanController {
 	    //------------------------------------Stage-6 Chaging status to "ACH Pending----------------------------------//
 	    
 	    if(solarLoanList[0].Current_Solar_Loan_Stage__c == 'Stage 6'){
-	    	solarLoanList[0].Status__c = 'ACH Pending';
+	    	solarLoanList[0].Status__c = 'Pending';
 	    	update SolarLoanList;
 	    	
 	    }
 	    
-	    //------------------------------------Stage-7 Chaging status to "EFT Record Created"----------------------------------//
+	    //------------------------------------Stage-7 Chaging status to "EFT Record Created"-------------------------//
 	    
 	    if(solarLoanList[0].Current_Solar_Loan_Stage__c == 'Stage 7'){
 	    	solarLoanList[0].Status__c = 'EFT Record Created';
@@ -65,7 +65,7 @@ public class SolarLoanController {
 	    	
 	    }
 	    
-    	//------------------------------------Skipping stages upto "Stage 7" if ACH = False------------------------//
+    	//------------------------------------Skipping stages upto "Stage 7" if ACH = False-------------------------//
     	
     	if(Stage4ACHCheck == 'False'){
     	
@@ -75,7 +75,7 @@ public class SolarLoanController {
     	}
         else
         	SolarCurrentStage = SolarLoanList[0].Current_Solar_Loan_Stage__c;
-        
+       
     }
     
     system.debug('SolarCurrentStage'+SolarCurrentStage);
