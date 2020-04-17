@@ -57,6 +57,14 @@ public class SolarLoanController {
 	    	
 	    }
 	    
+	    //------------------------------------Stage-7 Chaging status to "EFT Record Created"----------------------------------//
+	    
+	    if(solarLoanList[0].Current_Solar_Loan_Stage__c == 'Stage 7'){
+	    	solarLoanList[0].Status__c = 'EFT Record Created';
+	    	update SolarLoanList;
+	    	
+	    }
+	    
     	//------------------------------------Skipping stages upto "Stage 7" if ACH = False------------------------//
     	
     	if(Stage4ACHCheck == 'False'){

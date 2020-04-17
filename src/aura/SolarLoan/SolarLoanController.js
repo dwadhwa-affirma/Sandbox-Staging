@@ -74,7 +74,7 @@
 			ProgressBarStep4.classList.add('active');
 			ProgressBarStep5.classList.remove('halFactive');
 			ProgressBarStep5.classList.add('active');
-			ProgressBarStep6.classList.add('halFactive');
+			ProgressBarStep6.classList.add('half');
 		}
 		if(stage == 'Stage 7'){
 			component.set("v.Stage1", "Review Completed");
@@ -82,6 +82,8 @@
 			component.set("v.Stage3", "Records Created");
 			if(Stage4ACHCheck == 'False'){
 				component.set("v.Stage4", "ACH Not Used");
+				component.set("v.Stage5", "ACH Not Used");
+				component.set("v.Stage6", "ACH EFT Not Used");
 			}
 			else{
 				component.set("v.Stage4", "Review Completed");
@@ -95,7 +97,7 @@
 			ProgressBarStep3.classList.add('active');
 			ProgressBarStep4.classList.add('active');
 			ProgressBarStep5.classList.add('active');
-			ProgressBarStep6.classList.remove('halFactive');
+			ProgressBarStep6.classList.remove('half');
 			ProgressBarStep6.classList.add('active');
 			ProgressBarStep7.classList.add('halFactive');
 		}
