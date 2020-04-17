@@ -5,6 +5,7 @@ public class SolarLoanController {
     
     String SolarCurrentStage;
     String Stage3LoanCheck;
+    String Stage4ACHCheck;
     
     system.debug('SolarLoanRecordId'+SolarLoanRecordId);     
     system.debug('CurrentStage'+CurrentStage);
@@ -35,13 +36,36 @@ public class SolarLoanController {
     	if(SolarLoanList[0].Loan_Id__c == null || SolarLoanList[0].Loan_Id__c == ''){
     		Stage3LoanCheck = 'True';
     	}
-        SolarCurrentStage = SolarLoanList[0].Current_Solar_Loan_Stage__c;
+    	//------------------------------------Checking if ACH = False/True------------------------------------------//
+    	
+	    if(solarLoanList[0].Current_Solar_Loan_Stage__c == 'Stage 4'){
+	    	
+	    	if((SolarLoanList[0].ACH__c != null || SolarLoanList[0].ACH__c == 'True' || SolarLoanList[0].ACH__c == 'true') && 
+	    		(SolarLoanList[0].ACH__c != 'false' || SolarLoanList[0].ACH__c != 'False')){
+	    		Stage4ACHCheck = 'True';
+	    	}
+	    	else{
+	    		Stage4ACHCheck = 'False';
+	    	}
+	    }
+	    
+    	//------------------------------------Skipping stages upto "Stage 7" if ACH = False------------------------//
+    	
+    	if(Stage4ACHCheck == 'False'){
+    	
+    		SolarCurrentStage = 'Stage 7';
+    		SolarLoanList[0].Current_Solar_Loan_Stage__c = 'Stage 7'; 
+            update SolarLoanList;
+    	}
+        else
+        	SolarCurrentStage = SolarLoanList[0].Current_Solar_Loan_Stage__c;
         
     }
     
     system.debug('SolarCurrentStage'+SolarCurrentStage);
     strMap.put('SolarCurrentStage',SolarCurrentStage);  
-    strMap.put('Stage3LoanCheck',Stage3LoanCheck);    
+    strMap.put('Stage3LoanCheck',Stage3LoanCheck);
+    strMap.put('Stage4ACHCheck',Stage4ACHCheck);    
     return strMap;  
       
     }

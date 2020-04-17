@@ -12,6 +12,7 @@
         var action = component.get("c.getMemberData");
         var checkCurrentStage;
         var buttonStatus;
+        var Stage4ACHCheck;
         var SolarLoanRecordId = component.get("v.recordId");
        	
         var CurrentStage;
@@ -41,6 +42,12 @@
                 }
                 if(result.Stage3LoanCheck != undefined && result.Stage3LoanCheck != null){
 		       	    buttonStatus = result.Stage3LoanCheck;
+                }
+                if(result.Stage4ACHCheck == 'False'){
+		       	    Stage4ACHCheck = result.Stage4ACHCheck;
+                }
+                else{
+                	Stage4ACHCheck = 'True';
                 }
             }
             
@@ -77,7 +84,8 @@
              
              var compEvent = $A.get("e.c:SolarLoanStatusEvent"); 
              compEvent.setParams({"Stage" : checkCurrentStage,
-             					  "IsSubmitButtonDisabled" : buttonDisabled});
+             					  "IsSubmitButtonDisabled" : buttonDisabled,
+             					  "Stage4ACHCheck" : Stage4ACHCheck});
 			 compEvent.fire();
         });	
         	
