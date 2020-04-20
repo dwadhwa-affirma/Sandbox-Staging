@@ -2,14 +2,16 @@ public class MemberAuthenticationControllerLightning{
          
     @AuraEnabled
     
-    public static  Map<string,object> getMemberSearchData(string PhoneNumber, string MemberNumber, string SSNNumber,string IVRGUIDFromUrl)
+    public static  Map<string,object> getMemberSearchData(string PhoneNumber, string MemberNumber, string SSNNumber,string IVRGUIDFromUrl, boolean IsUserSessionLoaded)
     {
+    	/*This method brings member data based on values passed in url and also based on values pass during manual search for member */
       	Boolean visible;
       	Boolean OOW;
       	Boolean OTP;
       	Boolean PubCFCU;
       	
       	Id profileId=userinfo.getProfileId();
+      	Id CurrentUser = userinfo.getUserId();
       	Profile UserProfile = [Select Id,Name from Profile where Id=:profileId];
 		system.debug('ProfileName'+UserProfile);
 		
@@ -24,12 +26,12 @@ public class MemberAuthenticationControllerLightning{
 	      userEnteredInformation.memberNumber = MemberNumber;
 	      userEnteredInformation.SSN = SSNNumber;
 	      
-	      
+	      /*NameList contains Member data entered by user*/
 	      NameList = vc.queryByParametersAvailable(userEnteredInformation, false); 
 	      
 	      Map<string,object> result = new  Map<string,object>();
 	      result.put('Account', NameList);
-	   
+	       /*GetMemberAuthenticationLevel() function bring data from custom setting*/
 	      LevelModel = GetMemberAuthenticationLevel();
 	      result.put('Profile',UserProfile);
 			
@@ -45,19 +47,34 @@ public class MemberAuthenticationControllerLightning{
 	        List<Authenticated_Log__c> AuthLog = new List<Authenticated_Log__c>();
 	        system.debug('IVRGUIDFromUrl##'+ IVRGUIDFromUrl);
 	        
-	        if(IVRGUIDFromUrl != null && IVRGUIDFromUrl !=''){	        	
+	       
 	        
-		        AuthLog = [Select id , Guid__c, SalesforceID__c, IVR_GUID__c from Authenticated_Log__c where IVR_GUID__c =: IVRGUIDFromUrl and createddate >=: Datetime.now().addMinutes(minutes) Limit 1] ;
-		        system.debug('AuthLogSize##'+ AuthLog.size());
-		        
+	        if(IsUserSessionLoaded == true)
+	        {
+	        	AuthLog = [Select id ,Current_User__c, Guid__c, SalesforceID__c, IVR_GUID__c from Authenticated_Log__c where IVR_GUID__c =: IVRGUIDFromUrl and Current_User__c =: CurrentUser order by createddate desc Limit 1] ;
+	        	system.debug('AuthLogSize##'+ AuthLog.size());
 		        if(AuthLog.size() > 0 ){
-		        	
-		        	result.put('ReLoadRequired', true);
 		        	result.put('AuthLog', AuthLog);
-		        }
-		        else{
 		        	result.put('ReLoadRequired', false);
 		        }
+		        
+	        }
+	        else
+	        {
+		        	 if(IVRGUIDFromUrl != null && IVRGUIDFromUrl !=''){	        	
+		        
+					        AuthLog = [Select id ,Current_User__c, Guid__c, SalesforceID__c, IVR_GUID__c from Authenticated_Log__c where IVR_GUID__c =: IVRGUIDFromUrl and createddate >=: Datetime.now().addMinutes(minutes) Limit 1] ;
+					        system.debug('AuthLogSize##'+ AuthLog.size());
+					        
+					        if(AuthLog.size() > 0 ){
+					        	
+					        	result.put('ReLoadRequired', true);
+					        	result.put('AuthLog', AuthLog);
+					        }
+				      		else{
+				        		result.put('ReLoadRequired', false);
+				       	 	}
+	        	}
 	        }
 	        
 			//-----------Code for ReLoad End------------------------------------------------------------------
@@ -67,9 +84,9 @@ public class MemberAuthenticationControllerLightning{
     }
     
      @AuraEnabled
-    public static Map<string,string> GetAccountNumber(string accdetailid)/* This is for OOW tab*/
+    public static Map<string,string> GetAccountNumber(string accdetailid)
     {
-      
+      /* This method is for  OOW tab which returns AccountNumber, MemberName , read flow url from customsetting and Accountid */
             string AccountNumber;
          	string MemberName;
          	string FlowURL;
@@ -103,6 +120,7 @@ public class MemberAuthenticationControllerLightning{
     @AuraEnabled
     public static void SaveOOWLogData(string status, string MemberNumber, string MemberId, string reason, string notes, string GUID, string name, string Error, string IVRGUIDFromUrl)/*This is to save OOW log*/
     {
+      /*This methos save OOW log data in MAAP Log object*/
       RecordType rec = [select Id,Name,SobjectType from RecordType where Name ='OOW Execution Log' and SobjectType='Authenticated_Log__c'];
       
        String[] sp2 ;
@@ -157,6 +175,7 @@ public class MemberAuthenticationControllerLightning{
     @AuraEnabled
     public static void KYMSaveLogData(string MemberId, string reason, string otherReason, string GUID)/*This is to save OOW log*/
     {
+     /*This method save KYM log data in MAAP Log object*/
       RecordType rec = [select Id,Name,SobjectType from RecordType where Name ='KYM Log' and SobjectType='Authenticated_Log__c'];
        string  AccountNumber;
       List<Person_Account__c> p = [SELECT Id, Account_Number__c,  PersonID__c, Account_Number__r.RecType__c, TypeTranslate__c, Account_Number__r.Name
@@ -176,6 +195,7 @@ public class MemberAuthenticationControllerLightning{
       log.SalesforceID__c = MemberId;
       log.Member__c = MemberId;
       log.Staff_Name__c = UserInfo.getName();
+      log.Current_User__c = Userinfo.getuserid();
       log.Member_Number__c = AccountNumber;
       log.Member__c = MemberId;
       log.GUID__c = GUID;
@@ -189,6 +209,7 @@ public class MemberAuthenticationControllerLightning{
     @AuraEnabled
     public static void PublicWalletSaveLogData(string MemberId, string Status, string GUID, string DOBMatch, string IdNumberMatch, String MMNMatch, string EmailMatch, string AdditionalTokenOption3Match, string IVRGUIDFromUrl)
     {
+    	 /*This method save Public Wallet log data in MAAP Log object*/
       RecordType rec = [select Id,Name,SobjectType from RecordType where Name ='Public Wallet Log' and SobjectType='Authenticated_Log__c'];
        string  AccountNumber;
       List<Person_Account__c> p = [SELECT Id, Account_Number__c,  PersonID__c, Account_Number__r.RecType__c, TypeTranslate__c, Account_Number__r.Name
@@ -203,6 +224,7 @@ public class MemberAuthenticationControllerLightning{
       log.SalesforceID__c = MemberId;
       log.Member__c = MemberId;
       log.Staff_Name__c = UserInfo.getName();
+      log.Current_User__c = Userinfo.getuserid();
       log.Decision__c = status;
       log.Member_Number__c = AccountNumber;
       log.GUID__c = GUID;
@@ -220,6 +242,7 @@ public class MemberAuthenticationControllerLightning{
     @AuraEnabled
     public static void CFCUWalletSaveLogData(string MemberId, string Status, string GUID, string BeneficiaryDetailMatch, string JointOwnerDetailMatch, string CardNumberMatch, string AdditionalTokenOption1Match, string AdditionalTokenOption2Match, string LoanDetailMatch, string IVRGUIDFromUrl)
     {
+    	 /*This method save CFCU Wallet log data in MAAP Log object*/
       string  AccountNumber;
       RecordType rec = [select Id,Name,SobjectType from RecordType where Name ='CFCU Wallet Log' and SobjectType='Authenticated_Log__c'];
       List<Person_Account__c> p = [SELECT Id, Account_Number__c,  PersonID__c, Account_Number__r.RecType__c, TypeTranslate__c, Account_Number__r.Name
@@ -234,6 +257,7 @@ public class MemberAuthenticationControllerLightning{
       log.Member__c = MemberId;
       log.Decision__c = status;
       log.Staff_Name__c = UserInfo.getName();
+      log.Current_User__c = Userinfo.getuserid();
       log.Member_Number__c = AccountNumber;
       log.GUID__c = GUID;
       log.IVR_GUID__c = IVRGUIDFromUrl;
@@ -253,6 +277,7 @@ public class MemberAuthenticationControllerLightning{
     @AuraEnabled
     public static void InsertLogData(string MemberId, string Decision, string FDL, string PhoneNumber, string EnteredSSN, string PageUrl, string OverrideType, String OverrideSupervisor, String ManagerCallbackComments, string GUID, string IVRGUIDFromUrl)
     {
+        /*This method save log data in MAAP Log object*/
        string  AccountNumber;
        string AccountId;
        
@@ -266,8 +291,7 @@ public class MemberAuthenticationControllerLightning{
        }
           system.debug('test'+MemberId);
       
-      //Account_Details__c accDetail = [select id,name from Account_Details__c where name =:AccountNumber and RecType__c = 'ACCT' limit 1];
-          
+       //---Saving Log data for Override Request button--// 
       Authenticated_Log__c log = new Authenticated_Log__c();
         log.RecordTypeId= rec.id;
         log.IVR_Sent_URL__c = substring(PageUrl, 1000);
@@ -287,6 +311,7 @@ public class MemberAuthenticationControllerLightning{
         }
         log.Member__c = MemberId;
         log.Staff_Name__c =UserInfo.getName();
+        log.Current_User__c = Userinfo.getuserid();
         log.Member_Number__c = AccountNumber;
         log.GUID__c = GUID;
         log.IVR_GUID__c = IVRGUIDFromUrl;
@@ -294,7 +319,7 @@ public class MemberAuthenticationControllerLightning{
       insert log;
       
      //--------------------------------------------Aut-205--------------------------------------------------------------------//
-     
+      //---Saving Log data for Unusual Activity Create Case button--// 
      list<CaseRecordType__c> scList = [SELECT Id,Primary_Category__c,
                                                  Secondary_Category__c,
                                                  Teritiary_Category__c,
@@ -331,7 +356,8 @@ public class MemberAuthenticationControllerLightning{
   	//--------------------------------------------Aut-205--------------------------------------------------------------------//
   		
     }
-        
+     
+     //--- Created string function-------------//   
     public static string substring(string val, integer length)
     {
         if(val != null && val != '')
@@ -346,6 +372,8 @@ public class MemberAuthenticationControllerLightning{
     @AuraEnabled    
     public static Map<string,List<object>> GetCFCUWalletInfo(String selectedID, string IVRGUIDFromUrl)
     {
+    	/*--------------------------When Same member data is reloded we need to maintain the state of  CFCU Wallet Tab. 
+    								This function read data from MAAP log object and display accordingly  -----*/
     	
     	Map<string,List<object>> resultmap = new Map<string,List<object>>();
 		Map <id,Person_Account__c> uniqueMembersDetail = new  Map <id,Person_Account__c>();
@@ -458,7 +486,7 @@ public class MemberAuthenticationControllerLightning{
 					//--------------------------Code to maintain state of Pass/ Fail Button within a day------------------------------------
 					RecordType rec = [select Id,Name,SobjectType from RecordType where Name ='CFCU Wallet Log' and SobjectType='Authenticated_Log__c' limit 1];
 					List<Authenticated_Log__c> authlog = new List<Authenticated_Log__c>();	
-					authlog = [Select Id,SalesforceID__c,Member__c,Decision__c,CFCU_Wallet_Status__c,Staff_Name__c,GUID__c,BeneficiaryDetailMatch__c,Joint_OwnerDetailsMatch__c,
+					authlog = [Select Id,SalesforceID__c,Current_User__c,Member__c,Decision__c,CFCU_Wallet_Status__c,Staff_Name__c,GUID__c,BeneficiaryDetailMatch__c,Joint_OwnerDetailsMatch__c,
 								CardNumberMatch__c,Additional_Token_Option1_Match__c,Additional_Token_Option2_Match__c,Loan_Detail_Match__c
 								From Authenticated_Log__c where createddate = Today and RecordTypeId= : rec.id and SalesforceID__c = : selectedID order by createddate desc Limit 1];					
 					
@@ -484,6 +512,8 @@ public class MemberAuthenticationControllerLightning{
     @AuraEnabled        
     public static Map<string,string> getPublicWalletInfo(String MemberId, string IVRGUIDFromUrl )
     {
+	   /*--------------------------When Same member data is reloded we need to maintain the state of  Public  Wallet Tab. 
+    								This function read data from MAAP log object and display accordingly  -----*/
 	    string IDNumberToMatch = '';
 	    string DLStateIdPassportToMatch='';
 	    String[] dobparse;
@@ -661,7 +691,7 @@ public class MemberAuthenticationControllerLightning{
            //--------------------------Code to maintain state of Pass/ Fail Button within a day------------------------------------
 					RecordType rec = [select Id,Name,SobjectType from RecordType where Name ='Public Wallet Log' and SobjectType='Authenticated_Log__c' limit 1];
 					List<Authenticated_Log__c> authlog = new List<Authenticated_Log__c>();	
-					authlog = [Select Id,SalesforceID__c,Member__c,Public_Wallet_Status__c,DOBMatch__c,IdNumberMatch__c,MMNMatch__c,EmailMatch__c,Additional_Token_Option3_Match__c
+					authlog = [Select Id,SalesforceID__c,Current_User__c,Member__c,Public_Wallet_Status__c,DOBMatch__c,IdNumberMatch__c,MMNMatch__c,EmailMatch__c,Additional_Token_Option3_Match__c
 								From Authenticated_Log__c where createddate = Today and RecordTypeId= : rec.id and SalesforceID__c = : MemberId order by createddate desc Limit 1];					
 					if(authlog.size() > 0)
 					{
@@ -678,7 +708,7 @@ public class MemberAuthenticationControllerLightning{
            				integer minutes = GetMemberAuthenticationSessionTime();
 						
 						List<Authenticated_Log__c> ReLoadAuthlog = new List<Authenticated_Log__c>();	
-						ReLoadAuthlog = [Select Id,SalesforceID__c,Member__c,Public_Wallet_Status__c,DOBMatch__c,IdNumberMatch__c,MMNMatch__c,EmailMatch__c,Additional_Token_Option3_Match__c
+						ReLoadAuthlog = [Select Id,SalesforceID__c,Current_User__c,Member__c,Public_Wallet_Status__c,DOBMatch__c,IdNumberMatch__c,MMNMatch__c,EmailMatch__c,Additional_Token_Option3_Match__c
 									From Authenticated_Log__c where createddate = Today and RecordTypeId= : rec.id and SalesforceID__c = : MemberId AND CreatedDate >=: Datetime.now().addMinutes(minutes) and IVR_GUID__c =:IVRGUIDFromUrl];					
 					if(ReLoadAuthlog.size() > 0)
 					{
@@ -697,6 +727,7 @@ public class MemberAuthenticationControllerLightning{
     @AuraEnabled
 	public static Map<string,object> GetFailedDesiredLevelLog(string MemberId)
 	{
+		/* This method is to display count of 'Failed desired level Within 7 days' warning */
 		Boolean IsFailedDesiredLevel;
 		 Map<string,object> result = new  Map<string,object>();
 		List<Authenticated_Log__c> authlog = new List<Authenticated_Log__c>();	
@@ -716,8 +747,14 @@ public class MemberAuthenticationControllerLightning{
 	}
 	@AuraEnabled
   
-  public static Map<string,object> MemberVerificationAttemptsCheck(string MemberId, string GUID, string DebitCardStatus, String SSNFromURL, String MemberNumberFromURL,String PhoneFromURL, String PageURL, string IVRGUIDFromUrl, boolean ReLoadRequired, string ReasonCodeFromURL, string HighFlagFromUrl, integer PointsObtained, boolean IsOOWTabVisible)
+  public static Map<string,object> MemberVerificationAttemptsCheck(string MemberId, string GUID, string DebitCardStatus, String SSNFromURL, String MemberNumberFromURL,String PhoneFromURL, String PageURL, string IVRGUIDFromUrl, boolean ReLoadRequired, string ReasonCodeFromURL, string HighFlagFromUrl, integer PointsObtained, boolean IsOOWTabVisible, boolean IsUserSessionLoaded)
   {
+  	/* 1. This method calls when member is selected from radio button
+  	   2. For reload of same window based on IVRGUID and time set under custom setting with ReLoadRequired flag
+  	   3. For reload of data based on current logged in user with IsUserSessionLoaded flag value   
+  	*/
+  	system.debug('MemberVerificationAttemptsCheck Called-------');
+  	system.debug('DebitCardStatus##'+ DebitCardStatus);
     Boolean visible;
     Double attempt;
     Boolean OOW = true;
@@ -779,7 +816,7 @@ public class MemberAuthenticationControllerLightning{
     
     result.put('MemberType',MemberType);
       
-      
+      //------------------------ Code for  # Of Calls Same Member/KYM Today Begin-----------------------------------------------------//
         List<Member_Verification_Attempt__c> mt = [Select id,Member_Name__c, Member_Salesforce_Id__c, Number_of_Attempts__c from Member_Verification_Attempt__c where Member_Salesforce_Id__c =:MemberId and Authentication_Type__c != 'OTP' and CreatedDate = Today limit 1];
          system.debug('MemberId##'+ MemberId); 
          system.debug('ReLoadRequired##'+ ReLoadRequired);  
@@ -802,7 +839,9 @@ public class MemberAuthenticationControllerLightning{
         {
           attempt = mt[0].Number_of_Attempts__c;
         } 
-     //--------------------------------------------- OTP color ----------------------------------------------------------------//
+        
+        // //------------------------ Code for  # Of Calls Same Member/KYM Today End -----------------------------------------------------//
+     //--------------------------------------------- Identify OTP Tab color  ----------------------------------------------------------------//
     
     for(Authenticated_Log__c OTPlog : [select id,createddate, GUID__c,Decision__c,OOW_Status__c,OTP_Status__c,CFCU_Wallet_Status__c,Public_Wallet_Status__c,Member__c, RecordType.name from Authenticated_Log__c where createddate = Today and  OTP_Status__c != null and SalesforceID__c =:MemberId and RecordType.name = 'OTP Authentication Log' order by RecordType.name, createddate desc limit 1]){
       
@@ -818,7 +857,7 @@ public class MemberAuthenticationControllerLightning{
     
     
     
-    //--------------------------------------------- OOW color ----------------------------------------------------------------//
+    //--------------------------------------------- Identify OOW Tab color ----------------------------------------------------------------//
     
     for(Authenticated_Log__c OOWlog : [select id,createddate ,GUID__c, Decision__c,OOW_Status__c,OTP_Status__c,CFCU_Wallet_Status__c,Public_Wallet_Status__c,Member__c, RecordType.name from Authenticated_Log__c where createddate = Today and SalesforceID__c =:MemberId and RecordType.name = 'OOW Execution Log' order by RecordType.name, createddate desc limit 1]){
       
@@ -833,7 +872,7 @@ public class MemberAuthenticationControllerLightning{
     }
     result.put('OOWColor', OOWColor);
     
-    //--------------------------------------------- Public Wallet color ----------------------------------------------------------------//
+    //--------------------------------------------- Identify Public Wallet Tab color ----------------------------------------------------------------//
     
     for(Authenticated_Log__c Publiclog : [select id,createddate ,GUID__c, Decision__c,OOW_Status__c,OTP_Status__c,CFCU_Wallet_Status__c,Public_Wallet_Status__c,Member__c, RecordType.name from Authenticated_Log__c where createddate = Today and SalesforceID__c =:MemberId and RecordType.name = 'Public Wallet Log' order by RecordType.name, createddate desc limit 1]){
     
@@ -848,7 +887,7 @@ public class MemberAuthenticationControllerLightning{
      
     result.put('PWColor', PWColor);
     
-    //--------------------------------------------- CFCU Wallet color ----------------------------------------------------------------//
+    //--------------------------------------------- Identify CFCU Wallet Tab color ----------------------------------------------------------------//
      
     for(Authenticated_Log__c CFCUlog : [select id,createddate ,GUID__c, Decision__c,OOW_Status__c,OTP_Status__c,CFCU_Wallet_Status__c,Public_Wallet_Status__c,Member__c, RecordType.name from Authenticated_Log__c where createddate = Today and SalesforceID__c =:MemberId and RecordType.name = 'CFCU Wallet Log' order by RecordType.name, createddate desc limit 1]){
       
@@ -961,10 +1000,11 @@ public class MemberAuthenticationControllerLightning{
   else if(DebitCardStatus =='false'){
     DebitPinStatus ='Fail';
   }
-  
-  if(ReLoadRequired == true)
+  system.debug('IsUserSessionLoaded##' + IsUserSessionLoaded);
+  if(ReLoadRequired == true && IsUserSessionLoaded == false)
    {
-     Map<string,object> AutLogDataMap =  getDataForReload(memberid, GUID, IVRGUIDFromUrl,DebitPinStatus, IsOOWTabVisible);
+   	system.debug('MemberVerificationAttemptsCheck getDataForReload Called for ReLoadRequired == true && IsUserSessionLoaded == false-------');
+     Map<string,object> AutLogDataMap =  getDataForReload(memberid, GUID, IVRGUIDFromUrl,DebitPinStatus, IsOOWTabVisible, IsUserSessionLoaded);
      if(AutLogDataMap.get('IsOOWAvailable') == true)
      {
        OOW = true;
@@ -975,16 +1015,11 @@ public class MemberAuthenticationControllerLightning{
      }
      if(AutLogDataMap.get('IsPublicWalletAvailable') == true)
      {
-
        PublicWallet = true;
-     //  IsPublicWalletAvailable = true;
-       system.debug('IsPublicWalletAvailable'+ IsPublicWalletAvailable);   
      }
      else
      {
        PublicWallet = false;
-     //  IsPublicWalletAvailable = false;
-       system.debug('IsPublicWalletAvailable'+ IsPublicWalletAvailable);   
      }
      if(AutLogDataMap.get('IsCFCUWalletAvailable') == true)
      {
@@ -997,10 +1032,12 @@ public class MemberAuthenticationControllerLightning{
      if(AutLogDataMap.get('IsOTPAvailable') == true)
      {
        OTP = true;
+       
      }
      else
      {
        OTP = false;
+       IsOTPAvailable = false;
      }
    }
   
@@ -1151,6 +1188,7 @@ public class MemberAuthenticationControllerLightning{
             log.EnteredMemberNumber__c = MemberNumberFromURL;
             log.EnteredSSN__c = SSNFromURL;
             log.Staff_Name__c = UserInfo.getName();
+            log.Current_User__c = Userinfo.getuserid();
             log.Member_Number__c = AccountNumber;
             log.GUID__c = GUID;
             log.IVR_GUID__c = IVRGUIDFromUrl;
@@ -1189,11 +1227,14 @@ public class MemberAuthenticationControllerLightning{
             log1.RecordtypeId = rec1.Id; 
             log1.SalesforceID__c = MemberId;
             log1.Member__c = MemberId;
+            log1.IVR_GUID__c = IVRGUIDFromUrl;
+            log1.Staff_Name__c = UserInfo.getName();
+     		log1.Current_User__c = Userinfo.getuserid();
             insert log1;
             system.debug('log1##' + log1);
       }
     }
-    // ------------------Inserting log while user came from URL ----------------------------------//
+    // ------------------Inserting log while user came from URL Ends----------------------------------//
     
     //------------------- Fetching Auth Logs for last 30 days achievable level--------------------//
     
@@ -1206,101 +1247,112 @@ public class MemberAuthenticationControllerLightning{
     
     //------------------- Fetching Auth Logs for last 30 days achievable level ends here--------------------//
     
-    //---------------------To Get Which level is achieved on load and what would be the next achievable level based on Debitcard status--------------------------//
+    //---------------------To Get Which level is achieved on load and what would be the next achievable level based on Debitcard status begin--------------------------//
       //Aut-190 implementation starts here
-      integer OTPAvailable = 0;
-      integer PublicWalletAvailable = 0;
-      integer CFCUWalletAvailable = 0;
-      integer OOWAvailable = 0;
-      integer CurrentScore = 0;
-      boolean IsLevel1Achieved = false;
-      boolean IsLevel2Achieved = false;
-      boolean IsLevel3Achieved = false;
-      
-      if(IsOTPAvailable == true){OTPAvailable=1;}
-      if(IsPublicWalletAvailable == true){PublicWalletAvailable=1;}
-      if(IsCFCUWalletAvailable == true){CFCUWalletAvailable=1;}
-     if(IsOOWTabVisible == true){
-          if(IsOOWAvailable == true){
-              OOWAvailable=1;
-          }
-          else
-          {
-              OOWAvailable=0;
-          }
-      }
-      else
-      {
-          OOWAvailable=0;
-      }
-      
-      map<string, List<string>> NextTabToAchieveLevelMap =  GetTabsToAchieveNextLevel(LevelModel, ScoringModel, MemberType, DebitPinStatus, IsPinChanged, OTPAvailable, PublicWalletAvailable, CFCUWalletAvailable,OOWAvailable, CurrentScore);
-      List<string>  NextTabLevel2 = NextTabToAchieveLevelMap.get('NextTabLevel2');
-          List<string>  NextTabLevel3 = NextTabToAchieveLevelMap.get('NextTabLevel3');
-          List<string> EachLevelStatus = NextTabToAchieveLevelMap.get('EachLevelStatus');
-          if(NextTabLevel2.size() > 0)
-          {
-            string NextTabLevel2LastString = NextTabLevel2.get(NextTabLevel2.size()-1);
-            NextTabLevel2LastString = NextTabLevel2LastString.removeEnd('or');
-            NextTabLevel2.remove((NextTabLevel2.size()-1));
-            NextTabLevel2.add(NextTabLevel2LastString);
-            system.debug('NextTabLevel2LastString#'+ NextTabLevel2LastString);
-          }
-      if(NextTabLevel3.size() > 0){
-        string NextTabLevel3LastString = NextTabLevel3.get(NextTabLevel3.size()-1);      
-        NextTabLevel3LastString = NextTabLevel3LastString.removeEnd('or');      
-        NextTabLevel3.remove((NextTabLevel3.size()-1));      
-        NextTabLevel3.add(NextTabLevel3LastString);
-        system.debug('NextTabLevel3LastString#'+ NextTabLevel3LastString);
-      }
-                
-      system.debug('NextTabLevel2List#'+ NextTabLevel2);
-      system.debug('NextTabLevel3List#'+ NextTabLevel3);
-      
-      if(EachLevelStatus.size() >0)
-      {
-        for(string s: EachLevelStatus){
-          
-          if(s == 'Level 2 Achieved'){
-            IsLevel2Achieved = true;
-          }
-          if(s == 'Level 3 Achieved'){
-            IsLevel3Achieved = true;
-          }
-        }
-      }
-      
-      if(IsLevel2Achieved == true){
-            result.put('NextTabLevel2', 'Level Reached');
-          }
-          else
-          {
-            result.put('NextTabLevel2', NextTabLevel2);
-          }
-          if(IsLevel3Achieved == true){
-            result.put('NextTabLevel3', 'Level Reached');
-          }
-          else{
-            result.put('NextTabLevel3', NextTabLevel3);
-          }
-      result.put('IsLevel1Achieved',IsLevel1Achieved);
-      result.put('IsLevel2Achieved',IsLevel2Achieved);
-      result.put('IsLevel3Achieved',IsLevel3Achieved);
-      
-      system.debug('NextTabLevel2List#'+ NextTabLevel2);
-      system.debug('NextTabLevel3List#'+ NextTabLevel3);
-    //----------------------To Get Which level is achieved on load and what would be the next achievable level based on Debitcard status----------------------------------------------------//
+    if(ReLoadRequired == false && IsUserSessionLoaded == false)
+   	{
+		        	system.debug('MemberVerificationAttemptsCheck GetTabsToAchieveNextLevel Called for ReLoadRequired == false && IsUserSessionLoaded == false-------');
+		     
+		      integer OTPAvailable = 0;
+		      integer PublicWalletAvailable = 0;
+		      integer CFCUWalletAvailable = 0;
+		      integer OOWAvailable = 0;
+		      integer CurrentScore = 0;
+		      boolean IsLevel1Achieved = false;
+		      boolean IsLevel2Achieved = false;
+		      boolean IsLevel3Achieved = false;
+		      
+		     // if(IsOTPAvailable == true){OTPAvailable=1;}
+		     // if(IsPublicWalletAvailable == true){PublicWalletAvailable=1;}
+		     // if(IsCFCUWalletAvailable == true){CFCUWalletAvailable=1;}
+		     if(OTP == true){OTPAvailable=1;}
+		     if(PublicWallet == true){PublicWalletAvailable=1;}
+		     if(CFCUWallet == true){CFCUWalletAvailable=1;}
+		      if(IsOOWTabVisible == true){
+		          if(IsOOWAvailable == true){
+		              OOWAvailable=1;
+		          }
+		          else
+		          {
+		              OOWAvailable=0;
+		          }
+		      }
+		      else
+		      {
+		          OOWAvailable=0;
+		      }
+		      system.debug('IsOOWTabVisible#'+ IsOOWTabVisible);
+		      system.debug('PublicWalletAvailable#'+ PublicWalletAvailable);
+		      system.debug('CFCUWalletAvailable#'+ CFCUWalletAvailable);
+		      system.debug('OOWAvailable#'+ OOWAvailable);
+		      map<string, List<string>> NextTabToAchieveLevelMap =  GetTabsToAchieveNextLevel(LevelModel, ScoringModel, MemberType, DebitPinStatus, IsPinChanged, OTPAvailable, PublicWalletAvailable, CFCUWalletAvailable,OOWAvailable, CurrentScore);
+		      List<string>  NextTabLevel2 = NextTabToAchieveLevelMap.get('NextTabLevel2');
+		          List<string>  NextTabLevel3 = NextTabToAchieveLevelMap.get('NextTabLevel3');
+		          List<string> EachLevelStatus = NextTabToAchieveLevelMap.get('EachLevelStatus');
+		          if(NextTabLevel2.size() > 0)
+		          {
+		            string NextTabLevel2LastString = NextTabLevel2.get(NextTabLevel2.size()-1);
+		            NextTabLevel2LastString = NextTabLevel2LastString.removeEnd('or');
+		            NextTabLevel2.remove((NextTabLevel2.size()-1));
+		            NextTabLevel2.add(NextTabLevel2LastString);
+		            system.debug('NextTabLevel2LastString#'+ NextTabLevel2LastString);
+		          }
+			      if(NextTabLevel3.size() > 0){
+			        string NextTabLevel3LastString = NextTabLevel3.get(NextTabLevel3.size()-1);      
+			        NextTabLevel3LastString = NextTabLevel3LastString.removeEnd('or');      
+			        NextTabLevel3.remove((NextTabLevel3.size()-1));      
+			        NextTabLevel3.add(NextTabLevel3LastString);
+			        system.debug('NextTabLevel3LastString#'+ NextTabLevel3LastString);
+			      }
+		                
+		      		system.debug('NextTabLevel2List#'+ NextTabLevel2);
+		     		 system.debug('NextTabLevel3List#'+ NextTabLevel3);
+		      
+				      if(EachLevelStatus.size() >0)
+				      {
+				        for(string s: EachLevelStatus){
+				          
+				          if(s == 'Level 2 Achieved'){
+				            IsLevel2Achieved = true;
+				          }
+				          if(s == 'Level 3 Achieved'){
+				            IsLevel3Achieved = true;
+				          }
+				        }
+				      }
+		      
+				      if(IsLevel2Achieved == true){
+				            result.put('NextTabLevel2', 'Level Reached');
+				          }
+				          else
+				          {
+				            result.put('NextTabLevel2', NextTabLevel2);
+				          }
+				          if(IsLevel3Achieved == true){
+				            result.put('NextTabLevel3', 'Level Reached');
+				          }
+				          else{
+				            result.put('NextTabLevel3', NextTabLevel3);
+				          }
+					      result.put('IsLevel1Achieved',IsLevel1Achieved);
+					      result.put('IsLevel2Achieved',IsLevel2Achieved);
+					      result.put('IsLevel3Achieved',IsLevel3Achieved);
+					      
+					      system.debug('NextTabLevel2List#'+ NextTabLevel2);
+					      system.debug('NextTabLevel3List#'+ NextTabLevel3);
+   	}
+    //----------------------To Get Which level is achieved on load and what would be the next achievable level based on Debitcard status ends----------------------------------------------------//
     
-      result.put('IsKYMAvailable',IsKYMAvailable);
-      result.put('IsOTPAvailable',IsOTPAvailable);
-      result.put('IsDebitPinAvailable',IsDebitPinAvailable);
-      result.put('IsOOWAvailable',IsOOWAvailable);
-      result.put('IsPublicWalletAvailable',IsPublicWalletAvailable);
-      result.put('IsCFCUWalletAvailable',IsCFCUWalletAvailable);
-      
-      result.put('MaximumPointsAvailable',TotalScore);
-      result.put('LevelModel', LevelModel);
-      result.put('ScoringModel', ScoringModel);
+			      result.put('IsKYMAvailable',IsKYMAvailable);
+			      result.put('IsOTPAvailable',IsOTPAvailable);
+			      result.put('IsDebitPinAvailable',IsDebitPinAvailable);
+			      result.put('IsOOWAvailable',IsOOWAvailable);
+			      result.put('IsPublicWalletAvailable',IsPublicWalletAvailable);
+			      result.put('IsCFCUWalletAvailable',IsCFCUWalletAvailable);
+			      
+			      result.put('MaximumPointsAvailable',TotalScore);
+			      result.put('LevelModel', LevelModel);
+			      result.put('ScoringModel', ScoringModel);
     
       return result;
   }
@@ -1310,6 +1362,7 @@ public class MemberAuthenticationControllerLightning{
 	
 	public static map<string, List<string>> GetTabsToAchieveNextLevel(List<Member_Authentication_Level_Model__c> LevelModel, List<Member_Authentication_Scoring_Model__c> ScoringModel, string MemberType, string DebitPinStatus, boolean IsPinChanged, integer IsOTPAvailable, integer IsPublicWalletAvailable,integer IsCFCUWalletAvailable,integer IsOOWAvailable, integer CurrentScore)
 	{
+		/* This method tells the journey path*/ 
 		system.debug('CurrentScore##'+ CurrentScore);
 		map<string, List<string>> resultMap = new map<string, List<string>>();
 		Decimal DebitPinPositiveScore;
@@ -1326,6 +1379,7 @@ public class MemberAuthenticationControllerLightning{
         List<string>  NextTabLevel3 = new List<string>();
         List<string>  EachLevelStatus = new List<string>();
         system.debug('ScoringModel##'+ ScoringModel);
+        // reading the data from custom setting and assining points value into variables begin-----------------
         for(Member_Authentication_Scoring_Model__c sm : ScoringModel  )
 		{
 			if(sm.Authentication_Type__c == 'Public Wallet')
@@ -1357,13 +1411,14 @@ public class MemberAuthenticationControllerLightning{
 			}
 			
 		}
+		
 		system.debug('DebitPinStatus##'+ DebitPinStatus);	
 		system.debug('CurrentScorePre##'+ CurrentScore);
 		system.debug('DebitPinNegativeScore##'+ DebitPinNegativeScore);
-        if(DebitPinStatus == 'Fail'){
+        if(DebitPinStatus == 'Fail' || DebitPinStatus =='false'){
         	CurrentScore = CurrentScore - DebitPinNegativeScore.intValue();
         }
-        else if(DebitPinStatus == 'Pass')
+        else if(DebitPinStatus == 'Pass' || DebitPinStatus =='true')
         {
         	CurrentScore = CurrentScore + DebitPinPositiveScore.intValue();
         }
@@ -1377,6 +1432,10 @@ public class MemberAuthenticationControllerLightning{
         	CurrentScore = CurrentScore + PINChangePositiveScore.intValue();
         }
         system.debug('CurrentScorePost2##' + CurrentScore);
+        
+        // reading the data from custom setting and assining points value into variables Ends-----------------
+        
+        // reading the data from custom setting for level and assining start range value of levels into variables begins-----------------
         for(Member_Authentication_Level_Model__c lm :LevelModel )
 			{
 					
@@ -1397,7 +1456,11 @@ public class MemberAuthenticationControllerLightning{
 						}						
 					}
 			}
+        // reading the data from custom setting for level and assining start range value of levels into variables Ends-----------------
         
+        // Calculation logic is written below to get the journey path-----------------------------------------
+        
+       /*-------------------------------------------------------------------Level 2 combination of 1 Tab-------------------------------------------------------------------------------------------*/
         If(IsPublicWalletAvailable == 1 && Level2Limit > CurrentScore && (((IsPublicWalletAvailable * PublicWalletScore) + CurrentScore) >= Level2Limit)){
               
                              NextTabLevel2.add('Pub Wallet or');
@@ -1428,7 +1491,12 @@ public class MemberAuthenticationControllerLightning{
 		
 		}
 		
-        /*--------------------------------------------------------------------------------------------------------------------------------------------------------------*/
+        /*-------------------------------------------------------------------Level 2 combination of 2 Tabs-------------------------------------------------------------------------------------------*/
+        system.debug('IsPublicWalletAvailable##'+ IsPublicWalletAvailable);
+        system.debug('IsCFCUWalletAvailable##'+ IsCFCUWalletAvailable);
+        system.debug('CFCUWalletScore##'+ CFCUWalletScore);
+        system.debug('PublicWalletScore##'+ PublicWalletScore);
+         
         if((CurrentScore < Level2Limit) &&  (((IsPublicWalletAvailable * IsCFCUWalletAvailable) *	(PublicWalletScore + CFCUWalletScore + CurrentScore)) >= Level2Limit) && 
 			((CFCUWalletScore + CurrentScore ) < Level2Limit ) &&
 			((PublicWalletScore + CurrentScore ) < Level2Limit )
@@ -1480,7 +1548,7 @@ public class MemberAuthenticationControllerLightning{
 			{					
 				NextTabLevel2.add('(OOW + OTP) or');
 			}
-		/*--------------------------------------------------------------------------------------------------------------------------------------------------------------*/
+		/*--------------------------------------------------------------------Level 2 Combination of 3------------------------------------------------------------------------------------------*/
 		if((CurrentScore < Level2Limit) &&  (((IsCFCUWalletAvailable * IsOOWAvailable * IsOTPAvailable) *	(CFCUWalletScore + OOWScore +OTPScore + CurrentScore)) >= Level2Limit) && 
 			((OOWScore + CurrentScore ) < Level2Limit ) &&
 			((OTPScore + CurrentScore ) < Level2Limit ) &&
@@ -1541,7 +1609,7 @@ public class MemberAuthenticationControllerLightning{
 		resultMap.put('NextTabLevel2', NextTabLevel2);
 		
 		
-        /*---------------------------------------------------------------Level 3----------------------------------------------------------------------------------------------------*/
+        /*---------------------------------------------------------------Level 3 for 1 Tab----------------------------------------------------------------------------------------------------*/
         If(IsPublicWalletAvailable == 1 && Level3Limit > CurrentScore && (((IsPublicWalletAvailable * PublicWalletScore) + CurrentScore) >= Level3Limit)){
               
                              NextTabLevel3.add('Pub Wallet or');
@@ -1566,7 +1634,7 @@ public class MemberAuthenticationControllerLightning{
 		
 		}
 		
-        /*--------------------------------------------------------------------------------------------------------------------------------------------------------------*/
+        /*--------------------------------------------------------------------Level 3 for Combination of 2 Tabs------------------------------------------------------------------------------------------*/
         if((CurrentScore < Level3Limit) &&  (((IsPublicWalletAvailable * IsCFCUWalletAvailable) *	(PublicWalletScore + CFCUWalletScore + CurrentScore)) >= Level3Limit) && 
 			((CFCUWalletScore + CurrentScore ) < Level3Limit ) &&
 			((PublicWalletScore + CurrentScore ) < Level3Limit )
@@ -1623,7 +1691,7 @@ public class MemberAuthenticationControllerLightning{
 				NextTabLevel3.add('(OOW + OTP) or');
 			}
 			
-		/*--------------------------------------------------------------------------------------------------------------------------------------------------------------*/
+		/*----------------------------------------------------------------------------------Level 3 for Combination of 3 Tabs----------------------------------------------------------------------------*/
 		if((CurrentScore < Level3Limit) &&  (((IsCFCUWalletAvailable * IsOOWAvailable * IsOTPAvailable) *	(CFCUWalletScore + OOWScore +OTPScore + CurrentScore)) >= Level3Limit) && 
 			((OOWScore + CurrentScore ) < Level3Limit ) &&
 			((OTPScore + CurrentScore ) < Level3Limit ) &&
@@ -1695,6 +1763,8 @@ public class MemberAuthenticationControllerLightning{
 	 @AuraEnabled    
      public static List<Member_Authentication_Level_Model__c> GetMemberAuthenticationLevel()
      {
+     	// Bringing data from custom setting for Levels 
+     	
      	List<Member_Authentication_Level_Model__c> LevelModel = new List<Member_Authentication_Level_Model__c>();
         LevelModel = [Select id, Name, Tiers__c, Description__c,Range_Start__c, Range_End__c from Member_Authentication_Level_Model__c order by Name];
 	   
@@ -1703,6 +1773,7 @@ public class MemberAuthenticationControllerLightning{
       @AuraEnabled    
      public static List<Member_Authentication_Scoring_Model__c> GetScoringModelData(string MemberType)
      {
+     	// Bringing data from custom setting for Score vlues 
      	List<Member_Authentication_Scoring_Model__c> ScoringModel = new List<Member_Authentication_Scoring_Model__c>();
         
         if(MemberType!= null)
@@ -1724,7 +1795,7 @@ public class MemberAuthenticationControllerLightning{
      }
      
 	@AuraEnabled
-	public static Map<string,object> GetNextAuthenticationType(string MemberId, string MemberType, Integer MaximumPointsAvailable,Integer PointsObtained, boolean IsKYMAvailable, boolean IsOTPAvailable, boolean IsDebitPinAvailable, boolean IsOOWAvailable, boolean IsPublicWalletAvailable, boolean IsCFCUWalletAvailable, string IVRGUIDFromUrl)
+	public static Map<string,object> GetNextAuthenticationType(string MemberId, string MemberType, Integer MaximumPointsAvailable,Integer PointsObtained, boolean IsKYMAvailable, boolean IsOTPAvailable, string IsDebitPinAvailable, boolean IsOOWAvailable, boolean IsPublicWalletAvailable, boolean IsCFCUWalletAvailable, string IVRGUIDFromUrl)
 	{
 		
 		//---------------------------------Aut-190 implementation starts here------------------------------------------------------------------------
@@ -1768,18 +1839,23 @@ public class MemberAuthenticationControllerLightning{
 			integer CFCUWalletAvailable = 0;
 			integer OOWAvailable = 0;
 			integer CurrentScore = 0;
-			string DebitCardStatus = 'false';
+			string DebitCardStatus = '';
 			if(IsOTPAvailable == true){OTPAvailable=1;}
 			if(IsPublicWalletAvailable == true){PublicWalletAvailable=1;}
 			if(IsCFCUWalletAvailable == true){CFCUWalletAvailable=1;}
 			if(IsOOWAvailable == true){OOWAvailable=1;}
-			if(IsOOWAvailable == true){OOWAvailable=1;}
-			if(IsDebitPinAvailable == true ){
+			if(IsDebitPinAvailable == 'true' ){
 				DebitCardStatus = 'Pass';
-			}else{
+			}else if(IsDebitPinAvailable == 'false'){
 				DebitCardStatus = 'Fail';
 			}
+			
 			system.debug('PointsObtained1##'+ PointsObtained);
+			system.debug('OOWAvailable##'+ OOWAvailable);
+			system.debug('OTPAvailable##'+ OTPAvailable);
+			system.debug('PublicWalletAvailable##'+ PublicWalletAvailable);
+			
+			
 			map<string, List<string>> NextTabToAchieveLevelMap =  GetTabsToAchieveNextLevel(LevelModel, ScoringModel, MemberType, DebitCardStatus, IsPinChanged, OTPAvailable, PublicWalletAvailable, CFCUWalletAvailable,OOWAvailable, PointsObtained);
 			List<string>  NextTabLevel2 = NextTabToAchieveLevelMap.get('NextTabLevel2');
         	List<string>  NextTabLevel3 = NextTabToAchieveLevelMap.get('NextTabLevel3');
@@ -1919,247 +1995,7 @@ public class MemberAuthenticationControllerLightning{
 		return result;
 	}
 	
-	/* @AuraEnabled
-	public static Map<string,object> GetNextAuthenticationType(string MemberId, string MemberType, Integer MaximumPointsAvailable,Integer PointsObtained, boolean IsKYMAvailable, boolean IsOTPAvailable, boolean IsDebitPinAvailable, boolean IsOOWAvailable, boolean IsPublicWalletAvailable, boolean IsCFCUWalletAvailable, string IVRGUIDFromUrl)
-	{
-		Map<string,object> result = new  Map<string,object>();
-		List<Member_Authentication_Level_Model__c> LevelModel = new List<Member_Authentication_Level_Model__c>();
-		
-		List<Member_Authentication_Scoring_Model__c> ScoringModel = new List<Member_Authentication_Scoring_Model__c>();
-		
-		if(MemberType!= null)
-	      {
-	        if(MemberType == 'Foreign'){
-	        
-	          ScoringModel =[select id, Name, Authentication_Type__c,Foreign_Domestic_Flag__c,IsDomestic__c,IsForeign__c,IsPass__c,Negative_Point_Value__c,Positive_Point_Value__c
-	                from Member_Authentication_Scoring_Model__c where IsForeign__c =true];
-	        }
-	        else if(MemberType == 'Domestic')
-	        {
-	          ScoringModel =[select id, Name, Authentication_Type__c,Foreign_Domestic_Flag__c,IsDomestic__c,IsForeign__c,IsPass__c,Negative_Point_Value__c,Positive_Point_Value__c
-	                from Member_Authentication_Scoring_Model__c where IsDomestic__c =true];
-	        }
-	        
-	      }
-	      
-		LevelModel = [Select id, Name, Tiers__c, Description__c,Range_Start__c, Range_End__c from Member_Authentication_Level_Model__c];
-		
-		string LevelofAuthentication;
-		string CurrentAuthenticationLevel;
-		map<string,Integer> scoremap = new map<string,Integer>();
-		set<Integer> scoreset = new set<Integer>();
-		integer ScoreRequired;
-		
-		if(IsKYMAvailable == true){
-			for(Member_Authentication_Scoring_Model__c sm: ScoringModel)
-			{
-				if(sm.Authentication_Type__c == 'KYM')
-				{
-					scoremap.put(sm.Authentication_Type__c,sm.Positive_Point_Value__c.intValue());
-					scoreset.add(sm.Positive_Point_Value__c.intValue());
-				}
-				
-			}
-	 	}
 	
-	system.debug('KYM' + IsKYMAvailable);
-	
-	if(IsOTPAvailable == true){
-			for(Member_Authentication_Scoring_Model__c sm: ScoringModel)
-			{
-				if(sm.Authentication_Type__c == 'OTP')
-				{
-					scoremap.put(sm.Authentication_Type__c,sm.Positive_Point_Value__c.intValue());
-					scoreset.add(sm.Positive_Point_Value__c.intValue());
-				}
-				
-			}
-		}
-	system.debug('OTP' + IsOTPAvailable);
-	system.debug('DEBIT PIN' + IsDebitPinAvailable);
-	
-	
-	if(IsOOWAvailable == true){
-		for(Member_Authentication_Scoring_Model__c sm: ScoringModel)
-		{
-			if(sm.Authentication_Type__c == 'OOW'){
-				scoremap.put(sm.Authentication_Type__c,sm.Positive_Point_Value__c.intValue());
-				scoreset.add(sm.Positive_Point_Value__c.intValue());
-			}
-			
-		}
-	}
-	
-	system.debug('OOW' + IsOOWAvailable);
-	
-	if(IsPublicWalletAvailable == true){
-		for(Member_Authentication_Scoring_Model__c sm: ScoringModel){
-			if(sm.Authentication_Type__c == 'Public Wallet')
-			{
-				scoremap.put(sm.Authentication_Type__c,sm.Positive_Point_Value__c.intValue());
-				scoreset.add(sm.Positive_Point_Value__c.intValue());
-			}
-			
-		}
-	}
-	
-	system.debug('Public' + IsPublicWalletAvailable);
-	if(IsCFCUWalletAvailable == true){
-		for(Member_Authentication_Scoring_Model__c sm: ScoringModel){
-			if(sm.Authentication_Type__c == 'CFCU Wallet')
-			{
-				scoremap.put(sm.Authentication_Type__c,sm.Positive_Point_Value__c.intValue());
-				scoreset.add(sm.Positive_Point_Value__c.intValue());
-			}
-			
-		}
-	}
-	system.debug('Cfcu' + IsCFCUWalletAvailable );
-	
-	for(Member_Authentication_Level_Model__c lm :LevelModel )
-	{
-		if(lm.Tiers__c == 'Level 1' && MaximumPointsAvailable >= lm.Range_Start__c && MaximumPointsAvailable <= lm.Range_End__c )
-		{
-			LevelofAuthentication = lm.Tiers__c;
-			ScoreRequired = lm.Range_Start__c.intValue();
-		}
-		else if(lm.Tiers__c == 'Level 2' && MaximumPointsAvailable >= lm.Range_Start__c && MaximumPointsAvailable <= lm.Range_End__c)
-		{
-			LevelofAuthentication = lm.Tiers__c;
-			ScoreRequired = lm.Range_Start__c.intValue();
-		}
-		else if(lm.Tiers__c == 'Level 3' && MaximumPointsAvailable >= lm.Range_Start__c)
-		{
-			LevelofAuthentication = lm.Tiers__c;
-			ScoreRequired = lm.Range_Start__c.intValue();
-		}
-		
-	}
-	for(Member_Authentication_Level_Model__c lm :LevelModel )
-	{
-		if(lm.Tiers__c == 'Level 1' && PointsObtained >= lm.Range_Start__c && PointsObtained <= lm.Range_End__c )
-		{
-			CurrentAuthenticationLevel = lm.Tiers__c;
-		}
-		else if(lm.Tiers__c == 'Level 2' && PointsObtained >= lm.Range_Start__c && PointsObtained <= lm.Range_End__c)
-		{
-			CurrentAuthenticationLevel = lm.Tiers__c;
-			
-		}
-		else if(lm.Tiers__c == 'Level 3' && PointsObtained >= lm.Range_Start__c)
-		{
-			CurrentAuthenticationLevel = lm.Tiers__c;
-			
-		}
-		
-	}
-	
-	List<Integer> scorelist = new list<Integer>(scoreset);
-	scorelist.sort();
-	List<Integer> finalList = new List<Integer>();
-	for(Integer i = scorelist.size()-1; i>=0;i--)
-	{
-	    finalList.add(scorelist.get(i));
-	}
-	
-	
-	system.debug('Size##'+ scorelist.size());
-	system.debug('scorelist##'+ scorelist);
-	system.debug('finalList##'+ finalList);
-	integer scoreobtained;
-	integer j =0;
-	string ToGetHighestLevel='';
-	if(IsOTPAvailable == true){
-		ToGetHighestLevel='OTP';
-	}
-	else{
-			if(ScoreRequired > PointsObtained)
-			{
-				for(integer i=0; i< finalList.size(); i++){
-					
-					if(j==0){
-						
-						if(finalList[i] < ScoreRequired){
-							scoreobtained = finalList[i];
-							system.debug('scoreobtained1##' + scoreobtained);
-							j++;
-						}
-						else{ 
-							if(finalList.size() != (i+1)){	
-								if(finalList[i] >= ScoreRequired && finalList[i+1] <= ScoreRequired){
-									if(ScoreRequired == finalList[i+1]){
-										scoreobtained = finalList[i+1];
-										system.debug('scoreobtained2##' + scoreobtained);
-										j++;
-									}
-									else{
-										scoreobtained = finalList[i];
-										system.debug('scoreobtained3##' + scoreobtained);
-										j++;
-									}
-								}
-							}
-							else{
-								scoreobtained = finalList[i];	
-							}
-						}
-					}												
-				}
-				
-				for (string key : scoremap.keySet()){
-					if(scoremap.get(key) == scoreobtained){
-				    	system.debug('Authenticate##' +  key);
-				    	ToGetHighestLevel = key;
-				    }
-				    
-				}
-			}
-	}
-		
-		
-		system.debug('scoreobtained4##' + scoreobtained);
-		
-		
-	//}	
-		
-		
-		result.put('LevelofAuthentication',LevelofAuthentication);
-		result.put('NextLevel',ToGetHighestLevel);
-		result.put('CurrentAuthenticationLevel',CurrentAuthenticationLevel);
-		result.put('ScoreRequired',ScoreRequired );
-		
-		if(IVRGUIDFromUrl !='' && IVRGUIDFromUrl !=null ){
-				integer minutes = GetMemberAuthenticationSessionTime();
-		     	list<Member_Verification_Attempt__c> mva = new List<Member_Verification_Attempt__c>();
-		     	mva = [Select id, IVR_GUID__c, Member_Salesforce_Id__c, Points_Obtained__c, Maximum_Points_Available__c,Current_Authentication_Level__c,Highest_Achievable_Level__c, Next_Level__c from Member_Verification_Attempt__c where IVR_GUID__c=:IVRGUIDFromUrl and Member_Salesforce_Id__c =: memberid AND CreatedDate >=: Datetime.now().addMinutes(minutes) limit 1];
-		     	if(mva.size() > 0)
-		     	{
-		     		mva[0].Current_Authentication_Level__c = CurrentAuthenticationLevel; 
-		     		mva[0].Highest_Achievable_Level__c = LevelofAuthentication; 
-		     		mva[0].Next_Level__c = ToGetHighestLevel; 
-		     		mva[0].Points_Obtained__c = PointsObtained;
-     				mva[0].Maximum_Points_Available__c = MaximumPointsAvailable;
-		     		update mva;
-		     	}else if(mva.size() == 0)
-		     	{
-		     		Member_Verification_Attempt__c mv = new Member_Verification_Attempt__c();
-		     		mv.Member_Salesforce_Id__c = memberid;
-		     		mv.IVR_GUID__c = IVRGUIDFromUrl;
-		     		mv.Current_Authentication_Level__c = CurrentAuthenticationLevel;
-		     		mv.Highest_Achievable_Level__c = LevelofAuthentication;
-		     		mv.Next_Level__c = ToGetHighestLevel;
-		     		mv.Points_Obtained__c = PointsObtained;
-     				mv.Maximum_Points_Available__c = MaximumPointsAvailable;
-		     		insert mv;	
-		     		
-		     	}
-		}
-		
-		
-		return result;
-				
-	}
-*/	
 	@AuraEnabled
 	public static void SaveOTPCancelledAttempt(string MemberId, string GUID, string IVRGUIDFromUrl)
 	{
@@ -2181,6 +2017,7 @@ public class MemberAuthenticationControllerLightning{
 	        log.Decision__c = 'OTP - Cancelled';
 	        log.Member__c = MemberId;
 	        log.Staff_Name__c = UserInfo.getName();
+	        log.Current_User__c = Userinfo.getuserid();
 	        log.Member_Number__c = AccountNumber;
 	        log.GUID__c = GUID;
 	        log.IVR_GUID__c = IVRGUIDFromUrl;
@@ -2212,6 +2049,7 @@ public class MemberAuthenticationControllerLightning{
         log.Member__c = MemberId;
         log.Member_Number__c = AccountNumber;
         log.Staff_Name__c = UserInfo.getName();
+        log.Current_User__c = Userinfo.getuserid();
         log.GUID__c = GUID;
         log.IVR_GUID__c = IVRGUIDFromUrl;
         log.Decision__c = 'Level Achieved';
@@ -2263,6 +2101,7 @@ public class MemberAuthenticationControllerLightning{
         log.Decision__c = 'Unusual Activity-Authentication Failed';
         log.Member__c = MemberId;
         log.Staff_Name__c = UserInfo.getName();
+        log.Current_User__c = Userinfo.getuserid();
         log.Member_Number__c = AccountNumber;
         log.Case__c = cs.id;
         log.GUID__c = GUID;
@@ -2272,17 +2111,10 @@ public class MemberAuthenticationControllerLightning{
     	    			
 	}
 	
-	/*@AuraEnabled
-	public static List<Member_Verification_Attempt__c> GetOTPCancelledAttempt(string MemberId)
-	{
-			
-				List<Member_Verification_Attempt__c> mt = [Select id,Member_Name__c,Authentication_Type__c,OTP_Cancelled_Attempt__c, Member_Salesforce_Id__c, Number_of_Attempts__c
-						 from Member_Verification_Attempt__c where Member_Salesforce_Id__c =:MemberId and CreatedDate = Today limit 1];
-	    return mt;   
-	}*/
 	@AuraEnabled
 	public static List<AuthenticationLogWrapper> GetLogHistoryDetailData(string MemberId, string GUID, string IVRGUIDFromUrl)
 	{
+		// this is to bring detail data on the view History screen on click of expand button 
 		system.debug('MemberId#'+ MemberId);
 		system.debug('GUID#'+ GUID);
 		List<AuthenticationLogWrapper> logWrapper =  new List<AuthenticationLogWrapper>();
@@ -2311,6 +2143,7 @@ public class MemberAuthenticationControllerLightning{
 					'Public_Wallet_Status__c,' + 
 					'CreatedDate,' +
 					'RecordType.Name, ' + 
+					'Current_User__c, ' +
 					'IVR_Sent_URL__c, ' +
 					'CallerPhoneNumber__c, ' + 
 					'Failed_Desired_Level__c, '+
@@ -2385,6 +2218,7 @@ public class MemberAuthenticationControllerLightning{
 	@AuraEnabled
 	public static List<AuthenticationLogWrapper> GetLogHistoryData(string MemberId, Integer Days, string GUID)
 	{
+		// this is to bring data on the click of view History button 
 		
 		List<AuthenticationLogWrapper> logWrapper =  new List<AuthenticationLogWrapper>();
 		string SOQLQuery = '';
@@ -2405,6 +2239,7 @@ public class MemberAuthenticationControllerLightning{
 					'Case__r.CaseComments__c , ' +
 					'OOW_Member_Number__c, ' + 
 					'OOW_Notes__c,' + 
+					'Current_User__c, ' +
 					'OOW_Reason__c, '+
 					'OOW_Status__c, ' +
 					'OTP_Status__c, ' + 
@@ -2500,7 +2335,7 @@ public class MemberAuthenticationControllerLightning{
 	@AuraEnabled
 	public static List<User> GetSupervisor(string MemberId, Integer Days, string GUID)
 	{
-		
+		// This is to bring list of supervisor from public group 'Manager Override Supervisor'
 		set<ID> UserIdSet = new set<ID>();
 		List<User> UserList = new List<User>();
 		List<Group> grp = [select Id, Name from Group where Name = 'Manager Override Supervisor'];
@@ -2557,6 +2392,7 @@ public class MemberAuthenticationControllerLightning{
 	    log.Member__c = MemberId;
 	    log.Member_Number__c = AccountNumber;
 	    log.Staff_Name__c =UserInfo.getName();
+	    log.Current_User__c = Userinfo.getuserid();
 	    log.GUID__c = GUID;
 	    log.IVR_GUID__c = IVRGUIDFromUrl;
 	    insert log;
@@ -2564,8 +2400,16 @@ public class MemberAuthenticationControllerLightning{
      }
     
 	@AuraEnabled
-    public static Map<string,object> getDataForReload(string memberid, string GUID, string IVRGUIDFromUrl, string DebitCardStatus, boolean IsOOWTabVisible )
+    public static Map<string,object> getDataForReload(string memberid, string GUID, string IVRGUIDFromUrl, string DebitCardStatus, boolean IsOOWTabVisible, boolean IsUserSessionLoaded )
     { 
+    	/* This function is to reload user data. 
+    		If 'IsUserSessionLoaded' parameter value is false its brings the data based on time value mentioned in custom setting 
+    		If 'IsUserSessionLoaded' parameter value is true its brings the data based on the current user loggedin and its last ivr interaction Id, THis is for our new button on utility bar  
+    	*/
+    	system.debug('getDataForReload  called-------##' );
+    	system.debug('IsUserSessionLoaded##' + IsUserSessionLoaded);
+    	system.debug('memberid##' + memberid);
+    	String CurrentUser = UserInfo.getUserId();
 		integer OTPAvailable = 0;
 		integer PublicWalletAvailable = 0;
 		integer CFCUWalletAvailable = 0;
@@ -2577,6 +2421,10 @@ public class MemberAuthenticationControllerLightning{
 		boolean IsLevel1Achieved = false;
 		boolean IsLevel2Achieved = false;
 		boolean IsLevel3Achieved = false;
+		List<Authenticated_Log__c> OOWLogData = new List<Authenticated_Log__c> ();
+		List<Authenticated_Log__c> PublicLogData = new  List<Authenticated_Log__c>();
+		List<Authenticated_Log__c> CFCULogData = new List<Authenticated_Log__c>();	
+		List<Authenticated_Log__c> OTPLogData = new List<Authenticated_Log__c>();
 		List<MC_PIN_Change__c> PC = new List<MC_PIN_Change__c>();
 		List<Member_Authentication_Level_Model__c> LevelModel = new List<Member_Authentication_Level_Model__c>();		
 		List<Member_Authentication_Scoring_Model__c> ScoringModel = new List<Member_Authentication_Scoring_Model__c>();
@@ -2605,23 +2453,40 @@ public class MemberAuthenticationControllerLightning{
         system.debug('ScoringModel##'+ ScoringModel);
         
         RecordType OOWRec = [select Id,Name,SobjectType from RecordType where Name ='OOW Execution Log' and SobjectType='Authenticated_Log__c'];
-        List<Authenticated_Log__c> OOWLogData = [SELECT ID, Decision__c, Member_Name__c,Member__c,Name,Staff_Name__c,Member_Number__c,
-					OOW_Member_Number__c,OOW_Notes__c,OOW_Reason__c,OOW_Status__c,IVR_GUID__c,GUID__c
-					 FROM Authenticated_Log__c where SalesforceID__c =:memberid AND CreatedDate >=: Datetime.now().addMinutes(minutes) and IVR_GUID__c =:IVRGUIDFromUrl and RecordTypeId=: OOWRec.Id Limit 1];    
+        if(IsUserSessionLoaded == true){
+        	
+        	OOWLogData = [SELECT ID, Decision__c, Member_Name__c,Member__c,Name,Staff_Name__c,Member_Number__c,
+							OOW_Member_Number__c,OOW_Notes__c,OOW_Reason__c,OOW_Status__c,IVR_GUID__c,GUID__c
+							FROM Authenticated_Log__c where SalesforceID__c =:memberid and  IVR_GUID__c =:IVRGUIDFromUrl and Current_User__c =:CurrentUser and RecordTypeId=: OOWRec.Id order by CreatedDate desc Limit 1];
+        } else if(IsUserSessionLoaded == false){
+        	
+        	OOWLogData = [SELECT ID, Decision__c, Member_Name__c,Member__c,Name,Staff_Name__c,Member_Number__c,
+							OOW_Member_Number__c,OOW_Notes__c,OOW_Reason__c,OOW_Status__c,IVR_GUID__c,GUID__c
+							FROM Authenticated_Log__c where SalesforceID__c =:memberid AND CreatedDate >=: Datetime.now().addMinutes(minutes) and IVR_GUID__c =:IVRGUIDFromUrl and RecordTypeId=: OOWRec.Id Limit 1];
+        } 
+            
         if(IsOOWTabVisible == true){
-            if(OOWLogData.size() > 0){
-                AuthLogMap.put('OOWLogData',OOWLogData);
-                AuthLogMap.put('IsOOWAvailable',false);
-            }
-            else{
-                AuthLogMap.put('IsOOWAvailable',true);
-                OOWAvailable = 1;
-            }
+	        if(OOWLogData.size() > 0){
+	       		AuthLogMap.put('OOWLogData',OOWLogData);
+	       		AuthLogMap.put('IsOOWAvailable',false);
+	        }
+	        else{
+	        	AuthLogMap.put('IsOOWAvailable',true);
+	        	OOWAvailable = 1;
+	        }
         }
         RecordType PublicRec = [select Id,Name,SobjectType from RecordType where Name ='Public Wallet Log' and SobjectType='Authenticated_Log__c' limit 1];
-        List<Authenticated_Log__c> PublicLogData = new List<Authenticated_Log__c>();	
-		PublicLogData = [Select Id,SalesforceID__c,Member__c,Public_Wallet_Status__c,DOBMatch__c,IdNumberMatch__c,MMNMatch__c,EmailMatch__c,Additional_Token_Option3_Match__c
-							From Authenticated_Log__c where createddate = Today and RecordTypeId= : PublicRec.id and SalesforceID__c = : MemberId AND CreatedDate >=: Datetime.now().addMinutes(minutes) and IVR_GUID__c =:IVRGUIDFromUrl];
+        	
+		if(IsUserSessionLoaded == true){
+			
+			PublicLogData = [Select Id,SalesforceID__c,Member__c,Public_Wallet_Status__c,DOBMatch__c,IdNumberMatch__c,MMNMatch__c,EmailMatch__c,Additional_Token_Option3_Match__c
+								From Authenticated_Log__c where RecordTypeId= : PublicRec.id and SalesforceID__c = : MemberId AND  Current_User__c =:CurrentUser and IVR_GUID__c =:IVRGUIDFromUrl order by CreatedDate desc];
+			
+		}else if(IsUserSessionLoaded == false){
+				PublicLogData = [Select Id,SalesforceID__c,Member__c,Public_Wallet_Status__c,DOBMatch__c,IdNumberMatch__c,MMNMatch__c,EmailMatch__c,Additional_Token_Option3_Match__c
+								From Authenticated_Log__c where createddate = Today and RecordTypeId= : PublicRec.id and SalesforceID__c = : MemberId AND CreatedDate >=: Datetime.now().addMinutes(minutes) and IVR_GUID__c =:IVRGUIDFromUrl];
+		}
+		system.debug('PublicLogData##' + PublicLogData);
          if(PublicLogData.size() > 0){
        		AuthLogMap.put('PublicLogData',PublicLogData);
        		AuthLogMap.put('IsPublicWalletAvailable',false);
@@ -2633,9 +2498,15 @@ public class MemberAuthenticationControllerLightning{
         
         
         RecordType CFCURec = [select Id,Name,SobjectType from RecordType where Name ='CFCU Wallet Log' and SobjectType='Authenticated_Log__c' limit 1];
-        List<Authenticated_Log__c> CFCULogData = new List<Authenticated_Log__c>();	
-		CFCULogData = [Select Id,SalesforceID__c,Member__c,CFCU_Wallet_Status__c,BeneficiaryDetailMatch__c,Joint_OwnerDetailsMatch__c,CardNumberMatch__c,Additional_Token_Option1_Match__c,Additional_Token_Option2_Match__c, Loan_Detail_Match__c
+        if(IsUserSessionLoaded == true){
+        	CFCULogData = [Select Id,SalesforceID__c,Member__c,CFCU_Wallet_Status__c,BeneficiaryDetailMatch__c,Joint_OwnerDetailsMatch__c,CardNumberMatch__c,Additional_Token_Option1_Match__c,Additional_Token_Option2_Match__c, Loan_Detail_Match__c
+							From Authenticated_Log__c where  RecordTypeId= : CFCURec.id and SalesforceID__c = : MemberId AND Current_User__c =:CurrentUser and IVR_GUID__c =:IVRGUIDFromUrl order by CreatedDate desc];
+        }
+        else if(IsUserSessionLoaded == false){
+        	CFCULogData = [Select Id,SalesforceID__c,Member__c,CFCU_Wallet_Status__c,BeneficiaryDetailMatch__c,Joint_OwnerDetailsMatch__c,CardNumberMatch__c,Additional_Token_Option1_Match__c,Additional_Token_Option2_Match__c, Loan_Detail_Match__c
 							From Authenticated_Log__c where createddate = Today and RecordTypeId= : CFCURec.id and SalesforceID__c = : MemberId AND CreatedDate >=: Datetime.now().addMinutes(minutes) and IVR_GUID__c =:IVRGUIDFromUrl];
+        }
+		system.debug('CFCULogData##' + CFCULogData);
          if(CFCULogData.size() > 0){
        		AuthLogMap.put('CFCULogData',CFCULogData);
        		AuthLogMap.put('IsCFCUWalletAvailable',false);
@@ -2646,12 +2517,22 @@ public class MemberAuthenticationControllerLightning{
         	}
         
         RecordType OTPRec = [select Id,Name,SobjectType from RecordType where Name ='OTP Authentication Log' and SobjectType='Authenticated_Log__c' limit 1];
-     	
-     	List<Authenticated_Log__c> OTPLogData = [SELECT ID, Decision__c, OTP_Email__c,OTP_Phone__c,OTP_Status__c
-					 FROM Authenticated_Log__c where OTP_Status__c != null and  SalesforceID__c =:memberid AND CreatedDate >=: Datetime.now().addMinutes(minutes) and IVR_GUID__c =:IVRGUIDFromUrl and RecordTypeId=: OTPRec.Id limit 1];
+     	if(IsUserSessionLoaded == true){
+     		OTPLogData = [SELECT ID, Decision__c, OTP_Email__c,OTP_Phone__c,OTP_Status__c
+					 FROM Authenticated_Log__c where OTP_Status__c != null and  SalesforceID__c =:memberid AND Current_User__c =:CurrentUser and IVR_GUID__c =:IVRGUIDFromUrl and RecordTypeId=: OTPRec.Id order by CreatedDate desc limit 1];
+     	} else if(IsUserSessionLoaded == false){     	
+     			OTPLogData = [SELECT ID, Decision__c, OTP_Email__c,OTP_Phone__c,OTP_Status__c
+							 FROM Authenticated_Log__c where OTP_Status__c != null and  SalesforceID__c =:memberid AND CreatedDate >=: Datetime.now().addMinutes(minutes) and IVR_GUID__c =:IVRGUIDFromUrl and RecordTypeId=: OTPRec.Id limit 1];
+     	}
 		if(OTPLogData.size() > 0){
 			AuthLogMap.put('OTPLogData',OTPLogData);
-			AuthLogMap.put('IsOTPAvailable',false);
+			if(OTPLogData[0].OTP_Status__c == 'Failed')
+			{
+				AuthLogMap.put('IsOTPAvailable',false);
+			}
+			else{
+				AuthLogMap.put('IsOTPAvailable',true);
+			}
 		}
 		else
 		{
@@ -2660,8 +2541,13 @@ public class MemberAuthenticationControllerLightning{
 		}
 				
 		list<Member_Verification_Attempt__c> mva = new List<Member_Verification_Attempt__c>();
-     	mva = [Select id, IVR_GUID__c, Member_Salesforce_Id__c, Points_Obtained__c, Maximum_Points_Available__c, Current_Authentication_Level__c, Highest_Achievable_Level__c, Next_Level__c from Member_Verification_Attempt__c where IVR_GUID__c=:IVRGUIDFromUrl and Member_Salesforce_Id__c =: memberid AND CreatedDate >=: Datetime.now().addMinutes(minutes) limit 1];
-       
+     	if(IsUserSessionLoaded == true){
+     		mva =  [Select id, IVR_GUID__c, Member_Salesforce_Id__c, Points_Obtained__c, Maximum_Points_Available__c, Current_Authentication_Level__c, Highest_Achievable_Level__c, Next_Level__c from Member_Verification_Attempt__c where IVR_GUID__c=:IVRGUIDFromUrl and Member_Salesforce_Id__c =: memberid order by createddate desc limit 1];
+     			
+     	}else if(IsUserSessionLoaded == false){
+     		mva = [Select id, IVR_GUID__c, Member_Salesforce_Id__c, Points_Obtained__c, Maximum_Points_Available__c, Current_Authentication_Level__c, Highest_Achievable_Level__c, Next_Level__c from Member_Verification_Attempt__c where IVR_GUID__c=:IVRGUIDFromUrl and Member_Salesforce_Id__c =: memberid AND CreatedDate >=: Datetime.now().addMinutes(minutes) limit 1];
+     	}
+       system.debug('mva##'+ mva);
      	if(mva.size() > 0)
      	{
      		AuthLogMap.put('ScorePoints',mva);
@@ -2684,22 +2570,19 @@ public class MemberAuthenticationControllerLightning{
 				
 			}
 		}
-     		
-     	
 		
-		
-		
-		
-		if(DebitCardStatus =='true'){
-			DebitPinStatus ='Pass';
-		}
-		else if(DebitCardStatus =='false'){
+		/*if(DebitCardStatus =='Fail'){
 			DebitPinStatus ='Fail';
 		}
+		else if(DebitCardStatus =='Pass'){
+			DebitPinStatus ='Pass';
+		}
+		system.debug('DebitCardStatus##' + DebitCardStatus);*/
+		
 		system.debug('CurrentScore##' + CurrentScore);
 		system.debug('OOWAvailable##'+ OOWAvailable);
 		
-     	map<string, List<string>> NextTabToAchieveLevelMap =  GetTabsToAchieveNextLevel(LevelModel, ScoringModel, MemberType, DebitPinStatus, IsPinChanged, OTPAvailable, PublicWalletAvailable, CFCUWalletAvailable,OOWAvailable, CurrentScore);
+     	map<string, List<string>> NextTabToAchieveLevelMap =  GetTabsToAchieveNextLevel(LevelModel, ScoringModel, MemberType, DebitCardStatus, IsPinChanged, OTPAvailable, PublicWalletAvailable, CFCUWalletAvailable,OOWAvailable, CurrentScore);
 		List<string>  NextTabLevel2 = NextTabToAchieveLevelMap.get('NextTabLevel2');
     	List<string>  NextTabLevel3 = NextTabToAchieveLevelMap.get('NextTabLevel3');
     	List<string> EachLevelStatus = NextTabToAchieveLevelMap.get('EachLevelStatus');
@@ -2731,25 +2614,34 @@ public class MemberAuthenticationControllerLightning{
 				if(s == 'Level 2 Achieved'){
 					IsLevel2Achieved = true;
 				}
-				if(s == 'Level 2 Achieved'){
-					IsLevel2Achieved = true;
+				if(s == 'Level 3 Achieved'){
+					IsLevel3Achieved = true;
 				}
 			}
 		}
+		 
+		 if(IsLevel2Achieved == true){
+        		AuthLogMap.put('NextTabLevel2', 'Level Reached');
+        	}
+        	else if(IsLevel2Achieved == false && NextTabLevel2.size()==0){
+        		AuthLogMap.put('NextTabLevel2', 'Not Achievable');
+        		
+        	}
+			else if(IsLevel2Achieved == false && NextTabLevel2.size()> 0){
+				AuthLogMap.put('NextTabLevel2', NextTabLevel2);
+			}
+        	if(IsLevel3Achieved == true){
+        		AuthLogMap.put('NextTabLevel3', 'Level Reached');
+        	}
+        	else if(IsLevel3Achieved == false && NextTabLevel3.size()==0){
+        		AuthLogMap.put('NextTabLevel3', 'Not Achievable');
+        		
+        	}
+			else if(IsLevel3Achieved == false && NextTabLevel3.size()> 0){
+				AuthLogMap.put('NextTabLevel3', NextTabLevel3);
+			}
+		 
 		
-		if(IsLevel2Achieved == true){
-    		AuthLogMap.put('NextTabLevel2', 'Level Reached');
-    	}
-    	else
-    	{
-    		AuthLogMap.put('NextTabLevel2', NextTabLevel2);
-    	}
-    	if(IsLevel3Achieved == true){
-    		AuthLogMap.put('NextTabLevel3', 'Level Reached');
-    	}
-    	else{
-    		AuthLogMap.put('NextTabLevel3', NextTabLevel3);
-    	}
 		AuthLogMap.put('IsLevel1Achieved',IsLevel1Achieved);
 		AuthLogMap.put('IsLevel2Achieved',IsLevel2Achieved);
 		AuthLogMap.put('IsLevel3Achieved',IsLevel3Achieved);

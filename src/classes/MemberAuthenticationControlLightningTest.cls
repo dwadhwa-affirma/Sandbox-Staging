@@ -120,8 +120,8 @@ private class MemberAuthenticationControlLightningTest {
         Jointwrapper.ID = acc.id;
         
         Accountnumber = MemberAuthenticationControllerLightning.GetAccountNumber(acc.id);
-        MemberVerificationNumber = MemberAuthenticationControllerLightning.MemberVerificationAttemptsCheck(acc.id,'gewwwsegv-sewswrw-2eqed-qrq', 'Pass','1234','0000084','123-4567-765','www.googgle.com','IVRgewwwsegv-sewswrw-2eqed-qrq',true,'aa','ss',3, true);
-        MemberVerificationNumber = MemberAuthenticationControllerLightning.MemberVerificationAttemptsCheck(acc.id, 'gewwwsegv-sewswrw-2eqed-qrq', 'True','1234','0000084','123-4567-765','www.googgle.com','IVRgewwwsegv-sewswrw-2eqed-qrq',true,'aa','ss',3, false);
+        MemberVerificationNumber = MemberAuthenticationControllerLightning.MemberVerificationAttemptsCheck(acc.id,'gewwwsegv-sewswrw-2eqed-qrq', 'Pass','1234','0000084','123-4567-765','www.googgle.com','IVRgewwwsegv-sewswrw-2eqed-qrq',true,'aa','ss',3, true,false);
+        MemberVerificationNumber = MemberAuthenticationControllerLightning.MemberVerificationAttemptsCheck(acc.id, 'gewwwsegv-sewswrw-2eqed-qrq', 'True','1234','0000084','123-4567-765','www.googgle.com','IVRgewwwsegv-sewswrw-2eqed-qrq',true,'aa','ss',3, false, true);
         
         Test.startTest();
         CFCUWalletInfo = MemberAuthenticationControllerLightning.GetCFCUWalletInfo(acc.id,'IVRgewwwsegv-sewswrw-2eqed-qrq');
@@ -157,15 +157,15 @@ private class MemberAuthenticationControlLightningTest {
          User u = [select id , name from user where Firstname = 'Deepika' limit 1]; 
          Map<string,Object> NextAuthenticationType = new Map<string,Object>();
          Test.startTest();
-         NextAuthenticationType = MemberAuthenticationControllerLightning.GetNextAuthenticationType(acc.id, 'Domestic', 3,2, True, True, True, True,True, True,'IVRgewwwsegv-sewswrw-2eqed-qrq');
+         NextAuthenticationType = MemberAuthenticationControllerLightning.GetNextAuthenticationType(acc.id, 'Domestic', 3,2, True, True, 'True', True,True, True,'IVRgewwwsegv-sewswrw-2eqed-qrq');
          MemberAuthenticationControllerLightning.InsertLogData(acc.id,'failed','Level 1','654555555','1715','http:test.com','Verbal',u.name,'Test','gewwwsegv-sewswrw-2eqed-qrq','IVRgewwwsegv-sewswrw-2eqed-qrq');
         Test.stopTest(); 
     }
    static testMethod void getMemberSearchDataTest(){
    	
    		Map<string,object> objmap = new Map<string,object>();
-   		objmap = MemberAuthenticationControllerLightning.getMemberSearchData('9169954478', '00002', '1715', '04-04-1963');
-   		objmap = MemberAuthenticationControllerLightning.getMemberSearchData('9169954478', '00002', '1715', '04-04-1963');
+   		objmap = MemberAuthenticationControllerLightning.getMemberSearchData('9169954478', '00002', '1715', '04-04-1963', true);
+   		objmap = MemberAuthenticationControllerLightning.getMemberSearchData('9169954478', '00002', '1715', '04-04-1963', false);
    	
    }
     

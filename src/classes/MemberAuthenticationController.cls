@@ -248,8 +248,86 @@ public class MemberAuthenticationController{
        PageURL = ApexPages.currentPage().getUrl();
        
     }
-   
-   
+   // method called from MemberAuthenticatedUtility page to load data based on current logged in user
+   public PageReference GetCurrentUserData(){   
+        
+        //Current_User__c
+        String CurrentUser = UserInfo.getUserId();
+        Boolean IsUserSessionLoaded = true;
+        Id MemberId;
+        List<Authenticated_Log__c> AuthList = [Select id ,RecordType.Name , CallerPhoneNumber__c,EnteredMemberNumber__c,
+        							EnteredSSN__c,SalesforceID__c, Current_User__c, PINMatch__c,HP_HV__c, IVR_Code__c, IVR_Sent_URL__c, IVR_GUID__c
+        							From Authenticated_Log__c where Current_User__c =:CurrentUser and IVR_GUID__c != null and RecordType.Name='IVR Authentication Log' order by createddate desc Limit 1 ]; 
+       system.debug('AuthList##' + AuthList);
+        if(AuthList.size() > 0)
+        {
+        	EnteredSSN = AuthList[0].EnteredSSN__c;
+        	EnteredMemberNumber = AuthList[0].EnteredMemberNumber__c;
+        	PhoneNumber = AuthList[0].CallerPhoneNumber__c;
+        	if(AuthList[0].PINMatch__c == 'Fail')
+        	{
+        		PINMatch = 'false';
+        	}else if(AuthList[0].PINMatch__c == 'Pass')
+        	{
+        		PINMatch = 'true';
+        	}
+        	else{
+        		PINMatch = AuthList[0].PINMatch__c;
+        	}
+        	
+        	IVRGUID = AuthList[0].IVR_GUID__c;
+        	ReasonCode = AuthList[0].IVR_Code__c;
+        	HighFlag = AuthList[0].HP_HV__c;
+        	MemberId = AuthList[0].SalesforceID__c;
+        }
+        
+        PageReference pageCalulated = null;        
+        integer noOfVerifiedFields = 0;
+        
+               
+        if(CONST_TRUE.equalsIgnoreCase(CardNumberMatch) && CONST_TRUE.equalsIgnoreCase(PinMatch)){
+         //&& CONST_TRUE.equalsIgnoreCase(pinMatch)
+            noOfVerifiedFields = noOfVerifiedFields+1;
+        }
+        // SSN should not be counted as valid authentication
+        if(CONST_TRUE.equalsIgnoreCase(SSNnumberMatch)){
+            noOfVerifiedFields = noOfVerifiedFields+1;
+        }
+        if(CONST_TRUE.equalsIgnoreCase(MemberNumberMatch)){
+            noOfVerifiedFields = noOfVerifiedFields+1;
+        }  
+        //if(noOfVerifiedFields < 3){
+        setConfirmationOncheckboxes();
+        
+        if(EnteredMemberNumber == null || EnteredMemberNumber == '')
+        {
+            fromMarsData = 'True';
+        }
+        else
+        {
+            fromMarsData = 'False';
+        }
+        
+        //pageCalulated = new PageReference('/apex/verifiy');
+        
+       
+        pageCalulated = new PageReference('/lightning/cmp/c__LightningVerification?c__EnteredSSN='+ EnteredSSN+'&c__EnteredMemberNumber='+EnteredMemberNumber+'&c__CallersPhoneNumber='+PhoneNumber+'&c__PINMatch='+PINMatch+'&c__IVRGUID='+IVRGUID+'&c__Reason=' + ReasonCode+ '&c__HighValueFlag=' + HighFlag + '&c__IsUserSessionLoaded=' + IsUserSessionLoaded +'&c__MemberId='+ MemberId);
+        
+          
+                
+        pageCalulated.setRedirect(false);
+       // }
+      
+       system.debug('EnteredCardNumber##'+ EnteredCardNumber);
+        if(EnteredCardNumber != null && EnteredCardNumber !='' ){
+        	integer i = EnteredCardNumber.length();            
+        	EnteredCardNumberLastdigits = '****_****_****_'+EnteredCardNumber.substring(i-4,i);            
+        	Names = vc.getAccountByName(SalesforceID);	
+        }
+             
+        setConfirmationOncheckboxes();
+        return pageCalulated;
+    }
      
     // method called from member authenticated page (basic authentication)
     public PageReference CheckIfMemberValidated(){   

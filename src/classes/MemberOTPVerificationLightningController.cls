@@ -827,6 +827,7 @@ public class MemberOTPVerificationLightningController
                             log.First_Name__c = acc.FirstName;
                             log.Last_Name__c = acc.LastName;
                             log.Staff_Name__c = UserInfo.getName();
+                            log.Current_User__c = Userinfo.getuserid();
                             log.Decision__c = 'OTP – Not Eligible';
                             log.Member_Number__c = AccountNumber;
                             log.GUID__c = GUID;
@@ -888,6 +889,7 @@ public class MemberOTPVerificationLightningController
         log.Last_Name__c = acc.LastName;
 
         log.Staff_Name__c = UserInfo.getName();
+        log.Current_User__c = Userinfo.getuserid();
         log.Decision__c = 'OTP – Contact Unconfirmed';
         log.OTP_Status__c = 'Failed';
         log.Member_Number__c = AccountNumber;
@@ -1046,6 +1048,7 @@ public class MemberOTPVerificationLightningController
          log.First_Name__c = acc.FirstName;
          log.Last_Name__c = acc.LastName;
          log.Staff_Name__c = UserInfo.getName();
+         log.Current_User__c = Userinfo.getuserid();
          log.GUID__c = GUID;
          log.IVR_GUID__c = IVRGUIDFromUrl;
          log.Member_Number__c = AccountNumber;
@@ -1166,6 +1169,7 @@ public class MemberOTPVerificationLightningController
             log.OTP_Phone__c = phone;
         }
         log.Staff_Name__c = UserInfo.getName();
+        log.Current_User__c = Userinfo.getuserid();
         system.debug('seconds ---' + seconds);
         system.debug('OTPExpiresAfterSeconds ---' + OTPExpiresAfterSeconds);
         if(seconds >= OTPExpiresAfterSeconds)
@@ -1465,6 +1469,7 @@ public class MemberOTPVerificationLightningController
             log.OTP_Phone__c = phone;
         }
         log.Staff_Name__c = UserInfo.getName();
+        log.Current_User__c = Userinfo.getuserid();
 		log.Decision__c = 'OTP – Code not provided';
 		log.GUID__c = GUID;
 		log.IVR_GUID__c = IVRGUIDFromUrl; 
@@ -1491,15 +1496,22 @@ public class MemberOTPVerificationLightningController
 	
 	@AuraEnabled
     
-     public static map<string,object> GetOTPLogForReload(string memberid, string IVRGUIDFromUrl)
+     public static map<string,object> GetOTPLogForReload(string memberid, string IVRGUIDFromUrl, boolean IsUserSessionLoaded)
      {
      	map<string,object> resultLog = new map<string,object>();
      	integer minutes = GetMemberAuthenticationSessionTime();
      	string Verified;
+     	String CurrentUser = UserInfo.getUserId();
      	RecordType OTPRec = [select Id,Name,SobjectType from RecordType where Name ='OTP Authentication Log' and SobjectType='Authenticated_Log__c' limit 1];
-     	
-     	List<Authenticated_Log__c> OTPLogData = [SELECT ID, Decision__c, OTP_Email__c,OTP_Phone__c,OTP_Status__c
+     	List<Authenticated_Log__c> OTPLogData = new List<Authenticated_Log__c>();
+     	if(IsUserSessionLoaded == true){
+     		OTPLogData = [SELECT ID, Decision__c, OTP_Email__c,OTP_Phone__c,OTP_Status__c
+					 FROM Authenticated_Log__c where SalesforceID__c =:memberid AND Current_User__c=: CurrentUser AND  IVR_GUID__c =:IVRGUIDFromUrl and RecordTypeId=: OTPRec.Id order by createddate desc];
+     		
+     	}else if(IsUserSessionLoaded == false){
+     				 OTPLogData = [SELECT ID, Decision__c, OTP_Email__c,OTP_Phone__c,OTP_Status__c
 					 FROM Authenticated_Log__c where SalesforceID__c =:memberid AND CreatedDate >=: Datetime.now().addMinutes(minutes) and IVR_GUID__c =:IVRGUIDFromUrl and RecordTypeId=: OTPRec.Id];
+     	}
 	        for(Authenticated_Log__c log: OTPLogData)
 	        {
 	        	if(log.Decision__c == 'OTP – Code Expired')
