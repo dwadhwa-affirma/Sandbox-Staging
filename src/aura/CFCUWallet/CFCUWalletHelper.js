@@ -30,6 +30,93 @@
 			    else{
 			    	component.set("v.IsCardDetailsAvailable", false);
 		    	}
+		    	if(result.CFCULastSessionInfo.length > 0 && result.CFCULastSessionInfo[0].CFCU_Wallet_Status__c != undefined && component.get("v.IsUserSessionLoaded") == true){
+		    		component.set("v.CFCULastSessionInfo", result.CFCULastSessionInfo);
+		    		if(result.CFCULastSessionInfo[0].BeneficiaryDetailMatch__c == undefined){
+		    			component.find('BeneficiaryPassButton').set("v.variant", "neutral");
+		    			component.find('BeneficiaryFailButton').set("v.variant", "neutral");
+		    		}		    		
+		    		if(result.CFCULastSessionInfo[0].BeneficiaryDetailMatch__c == 'Pass'){
+		    			component.find('BeneficiaryPassButton').set("v.variant", "success");
+		    			component.find('BeneficiaryFailButton').set("v.variant", "neutral");
+		    		}
+		    		if(result.CFCULastSessionInfo[0].BeneficiaryDetailMatch__c == 'Fail'){
+		    			component.find('BeneficiaryFailButton').set("v.variant", "destructive");
+		    			component.find('BeneficiaryPassButton').set("v.variant", "neutral");
+		    		}
+		    		
+		    		
+		    		if(result.CFCULastSessionInfo[0].Joint_OwnerDetailsMatch__c == undefined){
+		    			component.find('JointPassButton').set("v.variant", "neutral");
+		    			component.find('JointFailButton').set("v.variant", "neutral");
+		    		}
+		    		if(result.CFCULastSessionInfo[0].Joint_OwnerDetailsMatch__c == 'Pass'){
+		    			component.find('JointPassButton').set("v.variant", "success");
+		    			component.find('JointFailButton').set("v.variant", "neutral");
+		    		}
+		    		if(result.CFCULastSessionInfo[0].Joint_OwnerDetailsMatch__c == 'Fail'){
+		    			component.find('JointFailButton').set("v.variant", "destructive");
+		    			component.find('JointPassButton').set("v.variant", "neutral");
+		    		}
+		    		
+		    		
+		    		if(result.CFCULastSessionInfo[0].Loan_Detail_Match__c == undefined){
+		    			component.find('LoanPassButton').set("v.variant", "neutral");
+		    			component.find('LoanFailButton').set("v.variant", "neutral");
+		    		}
+		    		if(result.CFCULastSessionInfo[0].Loan_Detail_Match__c == 'Pass'){
+		    			component.find('LoanPassButton').set("v.variant", "success");
+		    			component.find('LoanFailButton').set("v.variant", "neutral");
+		    		}
+		    		if(result.CFCULastSessionInfo[0].Loan_Detail_Match__c == 'Fail'){
+		    			component.find('LoanFailButton').set("v.variant", "destructive");
+		    			component.find('LoanPassButton').set("v.variant", "neutral");
+		    		}
+		    		
+		    		
+		    		if(component.get("v.IsCFCUSectionVisible") == true){ 
+		    			if(result.CFCULastSessionInfo[0].CardNumberMatch__c == undefined){
+		    			component.find('CardPassButton').set("v.variant", "neutral");
+		    			component.find('CardFailButton').set("v.variant", "neutral");
+		    			}
+		    			if(result.CFCULastSessionInfo[0].CardNumberMatch__c == 'Pass'){
+		    			component.find('CardPassButton').set("v.variant", "success");
+		    			component.find('CardFailButton').set("v.variant", "neutral");
+		    			}
+		    			if(result.CFCULastSessionInfo[0].CardNumberMatch__c == 'Fail'){
+		    			component.find('CardFailButton').set("v.variant", "destructive");
+		    			component.find('CardPassButton').set("v.variant", "neutral");
+		    			}
+		    		}
+		    		
+		    		if(result.CFCULastSessionInfo[0].Additional_Token_Option1_Match__c == undefined){
+		    			component.find('TokenPassButton1').set("v.variant", "neutral");
+		    			component.find('TokenFailButton1').set("v.variant", "neutral");
+		    		}		    		
+		    		if(result.CFCULastSessionInfo[0].Additional_Token_Option1_Match__c == 'Pass'){
+		    			component.find('TokenPassButton1').set("v.variant", "success");
+		    			component.find('TokenFailButton1').set("v.variant", "neutral");
+		    		}
+		    		if(result.CFCULastSessionInfo[0].Additional_Token_Option1_Match__c == 'Fail'){
+		    			component.find('TokenFailButton1').set("v.variant", "destructive");
+		    			component.find('TokenPassButton1').set("v.variant", "neutral");
+		    		}
+		    		
+		    		if(result.CFCULastSessionInfo[0].Additional_Token_Option2_Match__c == undefined){
+		    			component.find('TokenPassButton2').set("v.variant", "neutral");
+		    			component.find('TokenFailButton2').set("v.variant", "neutral");
+		    		}
+		    		if(result.CFCULastSessionInfo[0].Additional_Token_Option2_Match__c == 'Pass'){
+		    			component.find('TokenPassButton2').set("v.variant", "success");
+		    			component.find('TokenFailButton2').set("v.variant", "neutral");
+		    		}
+		    		if(result.CFCULastSessionInfo[0].Additional_Token_Option2_Match__c == 'Fail'){
+		    			component.find('TokenFailButton2').set("v.variant", "destructive");
+		    			component.find('TokenPassButton2').set("v.variant", "neutral");
+		    		}
+		    				    		
+		    	}
+		    	
 		    	if(result.CFCULastSessionInfo.length > 0 && result.CFCULastSessionInfo[0].CFCU_Wallet_Status__c =='Failed' && component.get("v.IsReLoadRequired") == false){
 		    		component.set("v.CFCULastSessionInfo", result.CFCULastSessionInfo);
 		    		if(result.CFCULastSessionInfo[0].BeneficiaryDetailMatch__c == undefined){
@@ -116,7 +203,7 @@
 		    		}
 		    				    		
 		    	}
-		    	else if(result.CFCULastSessionInfo.length > 0 && result.CFCULastSessionInfo[0].CFCU_Wallet_Status__c == 'Passed' && component.get("v.IsReLoadRequired") == false){
+		    	else if(result.CFCULastSessionInfo.length > 0 && result.CFCULastSessionInfo[0].CFCU_Wallet_Status__c == 'Passed' && component.get("v.IsReLoadRequired") == false && component.get("v.IsUserSessionLoaded") == false){
 		    		helper.buttonOnLoad(component, event, helper);
 		    	}
 		    	else if(result.CFCUReloadInfo != undefined && result.CFCUReloadInfo.length > 0 && component.get("v.IsReLoadRequired") == true){
@@ -601,5 +688,6 @@
 	    	component.find('TokenPassButton2').set("v.variant", "neutral");
 	    	component.find('TokenFailButton2').set("v.variant", "neutral");
 	 },
+	
 	
 })

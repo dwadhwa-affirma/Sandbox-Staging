@@ -37,18 +37,18 @@
             
         	if(stage == 'Stage 2'){
                 component.set("v.ButtonLabelName", "Mark Stage 2 Complete");
-                component.set("v.StageName", "Stage 2: Loan Documents");
+                component.set("v.StageName", "Stage 2: Review Documents");
             }
             if(stage == 'Stage 3'){
                 component.set("v.ButtonLabelName", "Create Loan Records");
-                component.set("v.StageName", "Stage 3: Loan Records");
+                component.set("v.StageName", "Stage 3: Create Loan Records");
                 if(buttonStatus == 'True'){
                 	component.set("v.IsButtonDisabled", true);
                 }
             }
             if(stage == 'Stage 4'){
             	component.set("v.ButtonLabelName", "Mark Stage 4 Complete");
-                component.set("v.StageName", "Stage 4: ACH Information");
+                component.set("v.StageName", "Stage 4: Review ACH Info");
             }
             if(stage == 'Stage 5'){
                 if(Stage4ACHCheck == 'True'){
@@ -58,7 +58,7 @@
             }
             if(stage == 'Stage 6'){
             	component.set("v.ButtonLabelName", "Create EFT Record");
-                component.set("v.StageName", "Stage 6: EFT Record");
+                component.set("v.StageName", "Stage 6: Create EFT Record");
             }
             if(stage == 'Stage 7'){
                 component.set("v.ButtonLabelName", "Close Ticket");

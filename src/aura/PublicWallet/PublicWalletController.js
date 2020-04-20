@@ -15,7 +15,9 @@
 		var params = event.getParam('arguments');
 		if (params) {
 			var IsReLoadRequired =  params.param2;
+			var IsUserSessionLoaded = params.param3;
 			component.set("v.IsReLoadRequired", IsReLoadRequired);
+			component.set("v.IsUserSessionLoaded", IsUserSessionLoaded);
 			}
 	},
 	

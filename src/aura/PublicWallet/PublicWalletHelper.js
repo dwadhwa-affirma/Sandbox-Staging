@@ -32,6 +32,83 @@
 					}
 				}
 				if(result.PublicWalletStatus != undefined){
+				
+					if(component.get("v.IsUserSessionLoaded") == true)
+					{
+							if(result.DOBMatch != undefined)
+							{
+								if(result.DOBMatch.length > 0){
+									if(result.DOBMatch == 'Pass'){
+											component.find('DobPassButton').set("v.variant", "success");
+											component.find('DobFailButton').set("v.variant", "neutral");
+									}
+									else{
+											component.find('DobFailButton').set("v.variant", "destructive");
+											component.find('DobPassButton').set("v.variant", "neutral");
+									}
+								}
+								
+							}
+							if(result.IdNumberMatch != undefined)
+							{	
+								if(result.IdNumberMatch.length > 0){
+									if(result.IdNumberMatch == 'Pass'){
+											component.find('DLPassButton').set("v.variant", "success");
+											component.find('DLFailButton').set("v.variant", "neutral");
+									}
+									else{
+											component.find('DLFailButton').set("v.variant", "destructive");
+											component.find('DLPassButton').set("v.variant", "neutral");
+									}
+								}
+								
+							}
+							if(result.MMNMatch != undefined)
+							{				
+									if(result.MMNMatch.length > 0){
+										if(result.MMNMatch == 'Pass'){
+												component.find('MothersMaidenNamePassButton').set("v.variant", "success");
+												component.find('MothersMaidenNameFailButton').set("v.variant", "neutral");
+										}
+										else{
+												component.find('MothersMaidenNameFailButton').set("v.variant", "destructive");
+												component.find('MothersMaidenNamePassButton').set("v.variant", "neutral");
+										}
+									}
+									
+							}
+							if(result.EmailMatch != undefined)
+							{
+								if(result.EmailMatch.length > 0){
+									if(result.EmailMatch == 'Pass'){
+											component.find('EmailPassButton').set("v.variant", "success");
+											component.find('EmailFailButton').set("v.variant", "neutral");
+									}
+									else{
+											component.find('EmailFailButton').set("v.variant", "destructive");
+											component.find('EmailPassButton').set("v.variant", "neutral");
+									}
+								}
+								
+							}
+							if(result.AdditionalTokenMatch != undefined)
+							{
+								if(result.AdditionalTokenMatch.length > 0){
+									if(result.AdditionalTokenMatch == 'Pass'){
+											component.find('TokenPassButton1').set("v.variant", "success");
+											component.find('TokenFailButton1').set("v.variant", "neutral");
+									}
+									else{
+											component.find('TokenFailButton1').set("v.variant", "destructive");
+											component.find('TokenPassButton1').set("v.variant", "neutral");
+									}
+								}
+								
+							}
+						
+					}
+				
+				
 					if(result.PublicWalletStatus =='Failed' && component.get("v.IsReLoadRequired") == false)
 					{
 							if(result.DOBMatch != undefined)
@@ -105,7 +182,7 @@
 								
 							}
 					}
-					else if(result.PublicWalletStatus =='Passed' && component.get("v.IsReLoadRequired") == false)
+					else if(result.PublicWalletStatus =='Passed' && component.get("v.IsReLoadRequired") == false && component.get("v.IsUserSessionLoaded") == false)
 					{
 						helper.buttonOnLoad(component, event, helper);
 					}

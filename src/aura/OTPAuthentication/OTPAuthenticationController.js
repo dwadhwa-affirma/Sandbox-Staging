@@ -109,9 +109,12 @@
     	debugger;
     	var params = event.getParam('arguments');
     	var IsReLoadRequired ;
+    	var IsUserSessionLoaded;
 		if (params) {
 			IsReLoadRequired =  params.param2;
+			IsUserSessionLoaded = params.param3;
 			component.set("v.IsReLoadRequired", IsReLoadRequired);
+			component.set("v.IsUserSessionLoaded", IsUserSessionLoaded);
 			}
     	
     	var recordid = component.get("v.recordId");
@@ -126,10 +129,10 @@
             }
         }, true);
         
-        if(IsReLoadRequired == true)
+        if((IsReLoadRequired == undefined && IsUserSessionLoaded == false) ||(IsReLoadRequired == true && IsUserSessionLoaded == false) || (IsReLoadRequired == false && IsUserSessionLoaded == true))
     	{
     		var action = component.get("c.GetOTPLogForReload");
-    		action.setParams({"memberid" : recordid ,"IVRGUIDFromUrl": IVRGUIDFromUrl });
+    		action.setParams({"memberid" : recordid ,"IVRGUIDFromUrl": IVRGUIDFromUrl , "IsUserSessionLoaded": IsUserSessionLoaded});
     		action.setCallback(this, function(response){
             
     			var status = response.getState();
@@ -145,7 +148,7 @@
 			});
 		 
     		$A.enqueueAction(action);
-    	}
+    	} 
     	else
     	{
 				var action = component.get("c.ListOfEmailsAndPhoneNumbers");

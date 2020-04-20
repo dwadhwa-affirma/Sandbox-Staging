@@ -121,6 +121,9 @@
 <aura:attribute name="isFailedDesiredLevelModelOpen" type="boolean" default="false"/>
 <aura:attribute name="ManagerCallbackComments" type="string" />
 <aura:attribute name="IsGetReloadDataCalled" type="boolean" default="false"/>
+<aura:attribute name="IsUserSessionLoaded" type="boolean" default="false"/>
+
+
     <article class="slds-card">
         <div class="slds-card__body slds-card__body_inner tblrow">
             <div class="demo-only slds-box leftBox">

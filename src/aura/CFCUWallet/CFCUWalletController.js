@@ -4,7 +4,7 @@
 		var memberId = component.get("v.recordId");
 		//var CFCUWalletStatusForDay = component.get("v.CFCUWalletStatusForDay");
 		var IVRGUIDFromUrl = component.get("v.IVRGUIDFromUrl");
-		helper.GetJointMemberDetail(component, event,helper, memberId, IVRGUIDFromUrl);
+		
 		component.set("v.IsSubmitClicked",false);
 		component.set("v.ScoreObtained",0 );
 		component.set("v.QuestionAttempt",0 );
@@ -14,9 +14,11 @@
 		var params = event.getParam('arguments');
 		if (params) {
 			var IsReLoadRequired =  params.param2;
+			var IsUserSessionLoaded = params.param3;
 			component.set("v.IsReLoadRequired", IsReLoadRequired);
+			component.set("v.IsUserSessionLoaded", IsUserSessionLoaded);
 		}
-		
+		helper.GetJointMemberDetail(component, event,helper, memberId, IVRGUIDFromUrl);
 	},
 	
 	ButtonClick : function(component, event, helper) {

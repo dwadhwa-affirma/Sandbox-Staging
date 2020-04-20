@@ -19,8 +19,8 @@
 	        var attribute1 = memberid;
 	        var ReLoadRequired = component.get("v.ReLoadRequired");
 	        var PointsObtained = component.get("v.PointObtained");
-	        
-	        if(ReLoadRequired != undefined && (memberid != undefined && memberid != '') && component.get("v.IsReLoaded") ==false){
+	        var IsUserSessionLoaded = component.get("v.IsUserSessionLoaded");
+	        if(ReLoadRequired != undefined && (memberid != undefined && memberid != '') && component.get("v.IsReLoaded") ==false && IVRGUIDFromUrl != ''){
 	        
 	        	var element = document.getElementById(memberid);
 	        	if(element != undefined)
@@ -34,21 +34,39 @@
 				
 	        }
 	        var IsGetReloadDataCalled = component.get("v.IsGetReloadDataCalled");
-	        if(ReLoadRequired == true){	
+	        if(ReLoadRequired == true && (memberid != undefined && memberid != '')){	
 	        	
 	        	var PublicWalletComponent = component.find('PublicWallet');
-		        if(PublicWalletComponent!=undefined)PublicWalletComponent.PublicWalletMethod(attribute1,ReLoadRequired);
+		        if(PublicWalletComponent!=undefined)PublicWalletComponent.PublicWalletMethod(attribute1,ReLoadRequired,IsUserSessionLoaded);
 		            
-		        var CFCUWalletComponent = component.find('CFCUWallet');		        
-		        if(CFCUWalletComponent!=undefined)CFCUWalletComponent.CFCUWalletMethod(attribute1,ReLoadRequired);
+		        /*var CFCUWalletComponent = component.find('CFCUWallet');		        
+		        if(CFCUWalletComponent!=undefined)CFCUWalletComponent.CFCUWalletMethod(attribute1,ReLoadRequired,IsUserSessionLoaded);
 		        
 		        var OTPComponent = component.find('OTPAuthentication');		        
-		        if(OTPComponent!=undefined)OTPComponent.OTPMethod(attribute1,ReLoadRequired); 
-		        if(IsGetReloadDataCalled == false){      	            
+		        if(OTPComponent!=undefined)OTPComponent.OTPMethod(attribute1,ReLoadRequired); */
+		        if(IsGetReloadDataCalled == false ){      	            
 		        	helper.GetReloadData(component, event, helper, memberid, GUID, IVRGUIDFromUrl);	
 		        	component.set("v.IsGetReloadDataCalled", true);
 		        }
 		    }
+		    if(IsUserSessionLoaded == true && (memberid != undefined && memberid != ''))
+		    {
+		    	var PublicWalletComponent = component.find('PublicWallet');
+		        if(PublicWalletComponent!=undefined)PublicWalletComponent.PublicWalletMethod(attribute1,ReLoadRequired,IsUserSessionLoaded);
+		            
+		       /* var CFCUWalletComponent = component.find('CFCUWallet');		        
+		        if(CFCUWalletComponent!=undefined)CFCUWalletComponent.CFCUWalletMethod(attribute1,ReLoadRequired, IsUserSessionLoaded);
+		        
+		        var OTPComponent = component.find('OTPAuthentication');		        
+		        if(OTPComponent!=undefined)OTPComponent.OTPMethod(attribute1,ReLoadRequired); */
+		        if(IsGetReloadDataCalled == false ){      	            
+		        	helper.GetReloadData(component, event, helper, memberid, GUID, IVRGUIDFromUrl);	
+		        	component.set("v.IsGetReloadDataCalled", true);
+		        }
+		    	
+		    }
+		    
+		    
 		},
 		
 			
@@ -59,7 +77,6 @@
 		var PointsObtained = component.get("v.PointObtained");
 		var IsKYMAvailable = component.get("v.IsKYMAvailableOnLoad");
 	    var IsOTPAvailable = component.get("v.IsOTPAvailableOnLoad");
-	    var DebitCardStatus = component.get("v.DebitCardStatus");
 	    //var IsDebitPinAvailable = component.get("v.IsDebitPinAvailableOnLoad");
 	   // var IsOOWAvailable = component.get("v.OOWStatusForDay");
 	    var IsOOWAvailable = component.get("v.IsOOWAvailableOnLoad"); 
@@ -90,13 +107,13 @@
     	var NegativeScoreObtained = component.get("v.NegativeScoreObtained");
     	var TotalScoreRequiredToAchieveLevel = component.get("v.TotalScoreRequiredToAchieveLevel");
     	var CurrentScore = component.get("v.CurrentScore");
-    	var IsDebitPinAvailable;
+    	/*var IsDebitPinAvailable;
 	    if(DebitCardStatus =='true')
 	    {	IsDebitPinAvailable = true;
-	    }else
+	    }else if(DebitCardStatus =='false')
 	    {
 	    	IsDebitPinAvailable = false;
-	    }
+	    }*/
 	    
 	    
     	component.set("v.isFailedDesiredLevelModelOpen",FDLShowPopup);
@@ -194,7 +211,7 @@
 			 aElement = liElement[i].firstElementChild;
 			 if(eventParam == "Cancelled" && aElement.id =='OTPTab__item'){			  
 	  			component.set("v.IsOTPAvailableOnLoad",IsOTPAvailable);
-	  			helper.GetNextAuthenticationType(component, event, helper, memberid, MemberType, MaximumPointsAvailable, PointsObtained, IsKYMAvailable, IsOTPAvailable, IsDebitPinAvailable, IsOOWAvailable, IsPublicWalletAvailable, IsCFCUWalletAvailable);
+	  			helper.GetNextAuthenticationType(component, event, helper, memberid, MemberType, MaximumPointsAvailable, PointsObtained, IsKYMAvailable, IsOTPAvailable, DebitCardStatus, IsOOWAvailable, IsPublicWalletAvailable, IsCFCUWalletAvailable);
 			}
 			if(eventParam == "Authenticated" && aElement.id =='OTPTab__item'){
 				liElement[i].classList.add("green");
@@ -205,7 +222,7 @@
 	  			IsOTPAvailable = false;
 	  			component.set("v.IsOTPAvailableOnLoad",IsOTPAvailable);
 	  			component.set("v.OTPStatusForDay",true);
-	  			helper.GetNextAuthenticationType(component, event, helper, memberid, MemberType, MaximumPointsAvailable, PointsObtained, IsKYMAvailable, IsOTPAvailable, IsDebitPinAvailable, IsOOWAvailable, IsPublicWalletAvailable, IsCFCUWalletAvailable);
+	  			helper.GetNextAuthenticationType(component, event, helper, memberid, MemberType, MaximumPointsAvailable, PointsObtained, IsKYMAvailable, IsOTPAvailable, DebitCardStatus, IsOOWAvailable, IsPublicWalletAvailable, IsCFCUWalletAvailable);
 			}
 			if(eventParam == "Valid" && aElement.id =='OTPTab__item'){
 				liElement[i].classList.add("green");
@@ -216,7 +233,7 @@
 	  			IsOTPAvailable = false;
 	  			component.set("v.IsOTPAvailableOnLoad",IsOTPAvailable);
 	  			component.set("v.OTPStatusForDay",true);
-	  			helper.GetNextAuthenticationType(component, event, helper, memberid, MemberType, MaximumPointsAvailable, PointsObtained, IsKYMAvailable, IsOTPAvailable, IsDebitPinAvailable, IsOOWAvailable, IsPublicWalletAvailable, IsCFCUWalletAvailable);
+	  			helper.GetNextAuthenticationType(component, event, helper, memberid, MemberType, MaximumPointsAvailable, PointsObtained, IsKYMAvailable, IsOTPAvailable, DebitCardStatus, IsOOWAvailable, IsPublicWalletAvailable, IsCFCUWalletAvailable);
 			}
 			if(eventParam == "Declined" && aElement.id =='OTPTab__item'){
 				liElement[i].classList.add("red");
@@ -227,7 +244,8 @@
 				TotalScoreRequiredToAchieveLevel = parseInt(TotalScoreRequiredToAchieveLevel) +  parseInt(NegativeScoreObtained);
 	  			IsOTPAvailable = false;
 	  			component.set("v.IsOTPAvailableOnLoad",IsOTPAvailable);
-	  			helper.GetNextAuthenticationType(component, event, helper, memberid, MemberType, MaximumPointsAvailable, PointsObtained, IsKYMAvailable, IsOTPAvailable, IsDebitPinAvailable, IsOOWAvailable, IsPublicWalletAvailable, IsCFCUWalletAvailable);
+	  			
+	  			helper.GetNextAuthenticationType(component, event, helper, memberid, MemberType, MaximumPointsAvailable, PointsObtained, IsKYMAvailable, IsOTPAvailable, DebitCardStatus, IsOOWAvailable, IsPublicWalletAvailable, IsCFCUWalletAvailable);
 			}
 			if(eventParam == "Changed" && aElement.id =='OTPTab__item'){
 				liElement[i].classList.add("red");
@@ -238,7 +256,7 @@
 				TotalScoreRequiredToAchieveLevel = parseInt(TotalScoreRequiredToAchieveLevel) +  parseInt(NegativeScoreObtained);
 	  			IsOTPAvailable = false;
 	  			component.set("v.IsOTPAvailableOnLoad",IsOTPAvailable);
-	  			helper.GetNextAuthenticationType(component, event, helper, memberid, MemberType, MaximumPointsAvailable, PointsObtained, IsKYMAvailable, IsOTPAvailable, IsDebitPinAvailable, IsOOWAvailable, IsPublicWalletAvailable, IsCFCUWalletAvailable);
+	  			helper.GetNextAuthenticationType(component, event, helper, memberid, MemberType, MaximumPointsAvailable, PointsObtained, IsKYMAvailable, IsOTPAvailable, DebitCardStatus, IsOOWAvailable, IsPublicWalletAvailable, IsCFCUWalletAvailable);
 			}
 			if(eventParam == "Invalid" && aElement.id =='OTPTab__item'){
 				liElement[i].classList.add("red");
@@ -249,7 +267,7 @@
 				TotalScoreRequiredToAchieveLevel = parseInt(TotalScoreRequiredToAchieveLevel) +  parseInt(NegativeScoreObtained);
 	  			IsOTPAvailable = false;
 	  			component.set("v.IsOTPAvailableOnLoad",IsOTPAvailable);
-	  			helper.GetNextAuthenticationType(component, event, helper, memberid, MemberType, MaximumPointsAvailable, PointsObtained, IsKYMAvailable, IsOTPAvailable, IsDebitPinAvailable, IsOOWAvailable, IsPublicWalletAvailable, IsCFCUWalletAvailable);
+	  			helper.GetNextAuthenticationType(component, event, helper, memberid, MemberType, MaximumPointsAvailable, PointsObtained, IsKYMAvailable, IsOTPAvailable, DebitCardStatus, IsOOWAvailable, IsPublicWalletAvailable, IsCFCUWalletAvailable);
 	  			
 			}
 			if(KYMeventParam == "SUCCESS" && aElement.id =='KYMTab__item'){
@@ -261,7 +279,7 @@
 	  			component.set("v.PointObtained",PointsObtained);
 	  			IsKYMAvailable = false;
 	  			component.set("v.IsKYMAvailableOnLoad",IsKYMAvailable);
-	  			helper.GetNextAuthenticationType(component, event, helper, memberid, MemberType, MaximumPointsAvailable, PointsObtained, IsKYMAvailable, IsOTPAvailable, IsDebitPinAvailable, IsOOWAvailable, IsPublicWalletAvailable, IsCFCUWalletAvailable);
+	  			helper.GetNextAuthenticationType(component, event, helper, memberid, MemberType, MaximumPointsAvailable, PointsObtained, IsKYMAvailable, IsOTPAvailable, DebitCardStatus, IsOOWAvailable, IsPublicWalletAvailable, IsCFCUWalletAvailable);
 			 }
 			 
 			 if(KYMeventParam == "FAIL" && aElement.id =='KYMTab__item')
@@ -274,7 +292,7 @@
 				 TotalScoreRequiredToAchieveLevel = parseInt(TotalScoreRequiredToAchieveLevel) +  parseInt(NegativeScoreObtained);
 	  			 IsKYMAvailable = false;
 	  			 component.set("v.IsKYMAvailableOnLoad",IsKYMAvailable);
-	  			 helper.GetNextAuthenticationType(component, event, helper, memberid, MemberType, MaximumPointsAvailable, PointsObtained, IsKYMAvailable, IsOTPAvailable, IsDebitPinAvailable, IsOOWAvailable, IsPublicWalletAvailable, IsCFCUWalletAvailable);
+	  			 helper.GetNextAuthenticationType(component, event, helper, memberid, MemberType, MaximumPointsAvailable, PointsObtained, IsKYMAvailable, IsOTPAvailable, DebitCardStatus, IsOOWAvailable, IsPublicWalletAvailable, IsCFCUWalletAvailable);
 			 }
 			 
 			 
@@ -290,7 +308,7 @@
 	  				IsPublicWalletAvailable = false;
 	  				component.set("v.IsPublicWalletAvailableOnLoad",IsPublicWalletAvailable);
                  	component.set("v.PublicWalletStatusForDay", true);
-	  				helper.GetNextAuthenticationType(component, event, helper, memberid, MemberType, MaximumPointsAvailable, PointsObtained, IsKYMAvailable, IsOTPAvailable, IsDebitPinAvailable, IsOOWAvailable, IsPublicWalletAvailable, IsCFCUWalletAvailable);
+	  				helper.GetNextAuthenticationType(component, event, helper, memberid, MemberType, MaximumPointsAvailable, PointsObtained, IsKYMAvailable, IsOTPAvailable, DebitCardStatus, IsOOWAvailable, IsPublicWalletAvailable, IsCFCUWalletAvailable);
 			 }
 			 if((parseInt(PublicWalletScore) <= 2 || parseInt(PublicWalletFailedCount) > 1) && aElement.id =='PublicWalletTab__item')
 			 {
@@ -304,7 +322,7 @@
 				 TotalScoreRequiredToAchieveLevel = parseInt(TotalScoreRequiredToAchieveLevel) +  parseInt(NegativeScoreObtained);
 	  			 IsPublicWalletAvailable = false;
 	  			 component.set("v.IsPublicWalletAvailableOnLoad",IsPublicWalletAvailable);
-	  			 helper.GetNextAuthenticationType(component, event, helper, memberid, MemberType, MaximumPointsAvailable, PointsObtained, IsKYMAvailable, IsOTPAvailable, IsDebitPinAvailable, IsOOWAvailable, IsPublicWalletAvailable, IsCFCUWalletAvailable);
+	  			 helper.GetNextAuthenticationType(component, event, helper, memberid, MemberType, MaximumPointsAvailable, PointsObtained, IsKYMAvailable, IsOTPAvailable, DebitCardStatus, IsOOWAvailable, IsPublicWalletAvailable, IsCFCUWalletAvailable);
 	  			 
 			 }			 
 			 if(parseInt(CFCUWalletScore) > 2 && parseInt(CFCUWalletFailedCount) <=1 && aElement.id =='CFCUWalletTab__item')
@@ -318,7 +336,7 @@
 	  				IsCFCUWalletAvailable = false;
 	  				component.set("v.IsCFCUWalletAvailableOnLoad",IsCFCUWalletAvailable);
 	  				component.set("v.CFCUWalletStatusForDay", true);
-	  				helper.GetNextAuthenticationType(component, event, helper, memberid, MemberType, MaximumPointsAvailable, PointsObtained, IsKYMAvailable, IsOTPAvailable, IsDebitPinAvailable, IsOOWAvailable, IsPublicWalletAvailable, IsCFCUWalletAvailable);
+	  				helper.GetNextAuthenticationType(component, event, helper, memberid, MemberType, MaximumPointsAvailable, PointsObtained, IsKYMAvailable, IsOTPAvailable, DebitCardStatus, IsOOWAvailable, IsPublicWalletAvailable, IsCFCUWalletAvailable);
 	  				
 			 }
 			 if((parseInt(CFCUWalletScore) <= 2 || parseInt(CFCUWalletFailedCount) > 1 ) && aElement.id =='CFCUWalletTab__item')
@@ -332,7 +350,7 @@
 				 TotalScoreRequiredToAchieveLevel = parseInt(TotalScoreRequiredToAchieveLevel) +  parseInt(NegativeScoreObtained);
 	  			 IsCFCUWalletAvailable = false;
 	  			 component.set("v.IsCFCUWalletAvailableOnLoad",IsCFCUWalletAvailable);
-	  			 helper.GetNextAuthenticationType(component, event, helper, memberid, MemberType, MaximumPointsAvailable, PointsObtained, IsKYMAvailable, IsOTPAvailable, IsDebitPinAvailable, IsOOWAvailable, IsPublicWalletAvailable, IsCFCUWalletAvailable);
+	  			 helper.GetNextAuthenticationType(component, event, helper, memberid, MemberType, MaximumPointsAvailable, PointsObtained, IsKYMAvailable, IsOTPAvailable, DebitCardStatus, IsOOWAvailable, IsPublicWalletAvailable, IsCFCUWalletAvailable);
 			 }
 			 
 			 
@@ -430,16 +448,16 @@
 		var DebitCardStatus = component.get("v.DebitCardStatus");
 		var attribute1 = component.get('v.SelectedmemberId');
 		var PublicWalletComponent = component.find('PublicWallet');
-		
+		 var IsUserSessionLoaded = component.get("v.IsUserSessionLoaded");
 	    if(PublicWalletComponent!=undefined){
-        	PublicWalletComponent.PublicWalletMethod(attribute1,ReLoadRequired);
+        	PublicWalletComponent.PublicWalletMethod(attribute1,ReLoadRequired, IsUserSessionLoaded);
         }
         
-        var CFCUWalletComponent = component.find('CFCUWallet');
-        if(CFCUWalletComponent!=undefined)CFCUWalletComponent.CFCUWalletMethod(attribute1,ReLoadRequired);
+       /* var CFCUWalletComponent = component.find('CFCUWallet');
+        if(CFCUWalletComponent!=undefined)CFCUWalletComponent.CFCUWalletMethod(attribute1,ReLoadRequired, IsUserSessionLoaded);
         
         var OTPComponent = component.find('OTPAuthentication');
-        if(OTPComponent!=undefined)OTPComponent.OTPMethod(attribute1,ReLoadRequired);
+        if(OTPComponent!=undefined)OTPComponent.OTPMethod(attribute1,ReLoadRequired);*/
        helper.MemberVerificationAttemptCheck(component, event, helper, memberid, DebitCardStatus, ReLoadRequired, PointsObtained);
 	},
 	
@@ -772,6 +790,8 @@ NavigateToMember : function(component , event, helper){
 	   component.set("v.IsGetReloadDataCalled",false);
 	   component.set("v.ReLoadRequired",false);
 	   component.set("v.IsReLoaded",false);
+	   component.set("v.IsUserSessionLoaded",false);
+	   
 	    
    },
 	

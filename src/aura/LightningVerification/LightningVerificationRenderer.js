@@ -31,10 +31,10 @@ rerender : function(component, helper){
 	    	var IsVisible =  component.get("v.Visible");
 	    	var CFCUWalletStatusForDay = component.get("v.CFCUWalletStatusForDay");
 	    	var PublicWalletStatusForDay = component.get("v.PublicWalletStatusForDay");
-	    	var OTPStatusForDay = component.get("v.OTPStatusForDay");
+	    	var OTPStatusForDay = component.get("v.IsOTPAvailableOnLoad");
 	    	var OOWStatusForDay = component.get("v.OOWStatusForDay");
 		    var element = document.getElementsByClassName('demo-only slds-box rightBox');
-		    
+		    var IsUserSessionLoaded = component.get("v.IsUserSessionLoaded");
 			if(element.length > 2)
 			{
 				var aElement;
@@ -113,6 +113,7 @@ rerender : function(component, helper){
 			  			liElement[i].classList.remove("slds-is-active");
 			  			component.set('v.OTPIconName','utility:ban');
 					}
+					
 					
 					//----------------------------------OOW -----------------------------------//
 					

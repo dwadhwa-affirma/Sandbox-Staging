@@ -18,11 +18,13 @@
 	<aura:attribute name="MMNMatch" type="String"/>
 	<aura:attribute name="EmailMatch" type="String"/>
 	<aura:attribute name="AdditionalTokenOption3Match" type="String"/>
-	<aura:attribute name="IsReLoadRequired" type="boolean" default="false"/>   
+	<aura:attribute name="IsReLoadRequired" type="boolean" default="false"/>
+	<aura:attribute name="IsUserSessionLoaded" type="boolean" default="false"/>      
 	
     <aura:method name="PublicWalletMethod" action="{!c.doInit}" access="PUBLIC"> 
    		 <aura:attribute name="param1" type="String"/>
    		 <aura:attribute name="param2" type="boolean"/> 
+   		 <aura:attribute name="param3" type="boolean"/>
 	</aura:method>
    
 	<aura:registerEvent name="statusEvent" type="c:MemberIdEvent" />
