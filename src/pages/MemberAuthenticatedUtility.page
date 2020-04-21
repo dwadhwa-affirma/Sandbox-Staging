@@ -1,0 +1,91 @@
+<apex:page standardStylesheets="false" controller="MemberAuthenticationController" action="{!GetCurrentUserData}">
+
+  <style>
+    .headingval:after{display:table; content:''; clear:both}
+  .headingval .float-left{float:left; margin-right:15px; width:auto !important;}
+  .headingval .float-left > span{padding: 15px; height: auto; border: 0; display: block;}
+  .headingval .float-right{float:right; margin-right:15px; width:auto !important;}
+  .headingval .float-right > span{padding: 15px; height: auto; border: 0; display: block;}
+ 
+  </style>
+  <apex:stylesheet value="{!$Resource.style_c}" /> 
+  <apex:stylesheet value="{!$Resource.bootstrap}" />
+  <head>
+        <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" />
+    </head>
+  <section class="chervon">
+  <div class="container">
+   <div class="headingval">
+    <h2 class="float-left">
+      <label aria-hidden="true" class="fa fa-key float-left">
+                     <b> Basic Authentication Confirmed </b>
+        </label> 
+    </h2>
+    
+         <div class="float-right">
+               <apex:image value="{!If(HighFlag == "2", $Resource.HighPotential,'')}"  rendered="{!IF(HighFlag != "0", true, false)}"/>
+                <apex:image value="{!If(HighFlag == "1", $Resource.HighValue,'')}"  rendered="{!IF(HighFlag != "0", true, false)}"/>
+             </div>
+             <div class="float-right">
+               <apex:outputText style="font-weight: bold;font-size: 16px;" id="ReasonCode"  value="Reason: {!ReasonCode}"/>
+             </div>
+    </div>
+    
+    <div class="seperator-confirm"></div>
+    <h4>{!Names.FirstName} {!Names.LastName}</h4>
+    <div class="row">
+      <div class="col-md-6 col-sm-6 col-xs-12">
+        <div class="row">
+          <div class="member-aut">
+            <div class="col-md-5 col-sm-6 col-xs-6"><i aria-hidden="true" class="{!if(PhoneNumberMatch=='true','fa fa-check-circle','fa fa-close error')}"></i> Phone #</div>
+                <div class="col-md-5 col-sm-6 col-xs-6">
+                <apex:outputText id="phone" value="{!PhoneNumber}"/>
+            </div>
+          </div>
+         <apex:outputPanel rendered="{!MemberNumberMatch}">
+          <div class="member-aut">
+            <div class="col-md-5 col-sm-6 col-xs-6"><i aria-hidden="true" class="fa fa-check-circle"></i> Member #</div>
+            <div class="col-md-5 col-sm-6 col-xs-6">
+                <apex:outputText id="MemberNumber" value="{!EnteredMemberNumber}"/> 
+            </div>
+          </div>
+          </apex:outputPanel>
+          <apex:outputPanel rendered="{!SSNnumberMatch}">
+          <div class="member-aut">
+            <div class="col-md-5 col-sm-6 col-xs-6"><i aria-hidden="true" class="fa fa-check-circle"></i> Last 4 of SSN </div>
+            <div class="col-md-5 col-sm-6 col-xs-6"> 
+            <apex:outputText id="SSN" value="{!EnteredSSN}" />
+            </div>
+          </div>
+          </apex:outputPanel>
+          <apex:outputPanel rendered="{!CardNumberMatch}">
+          <div class="member-aut">
+            <div class="col-md-5 col-sm-6 col-xs-6"><i aria-hidden="true" class="fa fa-check-circle"></i> Card #</div>
+            <div class="col-md-5 col-sm-6 col-xs-6"> 
+                <apex:outputText id="CardNumber" value="{!EnteredCardNumberLastdigits}"/>
+            </div>
+          </div>
+          </apex:outputPanel>
+          <apex:outputPanel rendered="{!PINMatch}">
+          <div class="member-aut">
+            <div class="col-md-5 col-sm-6 col-xs-6"><i aria-hidden="true" class="fa fa-check-circle"></i> PIN </div>
+            <div class="col-md-5 col-sm-6 col-xs-6"> ****</div>
+          </div>
+          </apex:outputPanel>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<div class="but-area">
+    <div class="container">
+        <div class="row">
+        <apex:form > 
+            <div class="col-md-12 col-sm-12 col-xs-12">
+                <apex:commandButton styleClass="btn btn-primary pull-right" id="AuthenticatedButton" value="Authenticated" action="{!DetailsPage}" immediate="true"></apex:commandButton>
+            </div>
+         </apex:form> 
+        </div>
+    </div>
+</div>
+</apex:page>

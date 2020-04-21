@@ -256,8 +256,8 @@ public class MemberAuthenticationController{
         Boolean IsUserSessionLoaded = true;
         Id MemberId;
         List<Authenticated_Log__c> AuthList = [Select id ,RecordType.Name , CallerPhoneNumber__c,EnteredMemberNumber__c,
-        							EnteredSSN__c,SalesforceID__c, Current_User__c, PINMatch__c,HP_HV__c, IVR_Code__c, IVR_Sent_URL__c, IVR_GUID__c
-        							From Authenticated_Log__c where Current_User__c =:CurrentUser and IVR_GUID__c != null and RecordType.Name='IVR Authentication Log' order by createddate desc Limit 1 ]; 
+        							EnteredSSN__c,SalesforceID__c, Current_User__c, PINMatch__c,HP_HV__c, IVR_Code__c, IVR_Sent_URL__c, IVR_GUID__c, Decision__c
+        							From Authenticated_Log__c where Current_User__c =:CurrentUser and IVR_GUID__c != null and Decision__c != 'Level Achieved' and RecordType.Name='IVR Authentication Log' order by createddate desc Limit 1 ]; 
        system.debug('AuthList##' + AuthList);
         if(AuthList.size() > 0)
         {
@@ -277,7 +277,13 @@ public class MemberAuthenticationController{
         	
         	IVRGUID = AuthList[0].IVR_GUID__c;
         	ReasonCode = AuthList[0].IVR_Code__c;
-        	HighFlag = AuthList[0].HP_HV__c;
+        	if(AuthList[0].HP_HV__c == 'HP'){
+        		HighFlag = '2';
+        	}
+        	else if(AuthList[0].HP_HV__c == 'HV')
+        	{
+        		HighFlag = '1';
+        	}
         	MemberId = AuthList[0].SalesforceID__c;
         }
         

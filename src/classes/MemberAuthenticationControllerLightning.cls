@@ -154,6 +154,7 @@ public class MemberAuthenticationControllerLightning{
       log.SalesforceID__c = MemberId;
       log.Member__c = MemberId;
       log.Staff_Name__c = UserInfo.getName();
+      log.Current_User__c = Userinfo.getuserid();
       log.Member_Number__c = MemberNumber;
       log.GUID__c = GUID;
       log.IVR_GUID__c = IVRGUIDFromUrl;
@@ -1179,7 +1180,7 @@ public class MemberAuthenticationControllerLightning{
   
   // ------------------Inserting log while user came from URL ----------------------------------//
     
-    if(ReLoadRequired == false){
+    if(ReLoadRequired == false && IsUserSessionLoaded == false){
       if(PageURL != null || PageURL != ' '){
         RecordType rec =[select Id,Name,SobjectType from RecordType where name ='IVR Authentication Log' and SobjectType='Authenticated_Log__c'];
         Authenticated_Log__c log = new Authenticated_Log__c();
@@ -1799,6 +1800,7 @@ public class MemberAuthenticationControllerLightning{
 	{
 		
 		//---------------------------------Aut-190 implementation starts here------------------------------------------------------------------------
+		System.debug('GetNextAuthenticationType method called-------------------');
 		system.debug('PointsObtained##'+ PointsObtained);
 		boolean IsLevel1Achieved = false;
 		boolean IsLevel2Achieved = false;
@@ -2457,14 +2459,16 @@ public class MemberAuthenticationControllerLightning{
         	
         	OOWLogData = [SELECT ID, Decision__c, Member_Name__c,Member__c,Name,Staff_Name__c,Member_Number__c,
 							OOW_Member_Number__c,OOW_Notes__c,OOW_Reason__c,OOW_Status__c,IVR_GUID__c,GUID__c
-							FROM Authenticated_Log__c where SalesforceID__c =:memberid and  IVR_GUID__c =:IVRGUIDFromUrl and Current_User__c =:CurrentUser and RecordTypeId=: OOWRec.Id order by CreatedDate desc Limit 1];
+							FROM Authenticated_Log__c where SalesforceID__c =:memberid and  IVR_GUID__c =:IVRGUIDFromUrl and Current_User__c =:CurrentUser and RecordTypeId=: OOWRec.Id order by CreatedDate desc];
         } else if(IsUserSessionLoaded == false){
         	
         	OOWLogData = [SELECT ID, Decision__c, Member_Name__c,Member__c,Name,Staff_Name__c,Member_Number__c,
 							OOW_Member_Number__c,OOW_Notes__c,OOW_Reason__c,OOW_Status__c,IVR_GUID__c,GUID__c
-							FROM Authenticated_Log__c where SalesforceID__c =:memberid AND CreatedDate >=: Datetime.now().addMinutes(minutes) and IVR_GUID__c =:IVRGUIDFromUrl and RecordTypeId=: OOWRec.Id Limit 1];
+							FROM Authenticated_Log__c where SalesforceID__c =:memberid AND CreatedDate >=: Datetime.now().addMinutes(minutes) and IVR_GUID__c =:IVRGUIDFromUrl and RecordTypeId=: OOWRec.Id ];
         } 
-            
+         system.debug('IsOOWTabVisible##' + IsOOWTabVisible); 
+         system.debug(' OOWLogData.size()##' +  OOWLogData.size());     
+        
         if(IsOOWTabVisible == true){
 	        if(OOWLogData.size() > 0){
 	       		AuthLogMap.put('OOWLogData',OOWLogData);
@@ -2475,6 +2479,7 @@ public class MemberAuthenticationControllerLightning{
 	        	OOWAvailable = 1;
 	        }
         }
+        system.debug('OOWAvailable##' +  OOWAvailable);    
         RecordType PublicRec = [select Id,Name,SobjectType from RecordType where Name ='Public Wallet Log' and SobjectType='Authenticated_Log__c' limit 1];
         	
 		if(IsUserSessionLoaded == true){
