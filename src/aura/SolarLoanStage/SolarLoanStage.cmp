@@ -8,21 +8,12 @@
     <aura:attribute name="CurrentStage" type="String"/>
     <aura:attribute name="IsButtonDisabled" type="boolean" default="false"/>
     
-    <div class="groupbtn-parent" style="position: fixed;
-    bottom: 6%;
-    width: 99.5%;
-    height: 60px;
-    text-align: center;
-    background: #fff;
-    display: flex;
-    align-items: center;
-    padding-left: 9px;
-    border-top: 1px solid #ccc;
-    z-index: 10;">
+    <div class="groupbtn-parent solarloanstagebar">
 		       
 		<b><p class="field-title show">{!v.StageName}</p></b>		
         <div style="margin-left: auto;">
-        	<lightning:button variant="brand" label="{!v.ButtonLabelName}" aura:id="SubmitButton" onclick="{!c.submit }" disabled = "{!v.IsButtonDisabled}"/>
+        	<!-- <lightning:button variant="brand" label="{!v.ButtonLabelName}" aura:id="SubmitButton" onclick="{!c.submit }" disabled = "{!v.IsButtonDisabled}"/> -->
+        	<lightning:button variant="brand" label="{!v.ButtonLabelName}" aura:id="SubmitButton" disabled = "{!v.IsButtonDisabled}"/>
         </div>
         
 		</div>

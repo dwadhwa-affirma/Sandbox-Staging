@@ -78,8 +78,8 @@
 		var IsKYMAvailable = component.get("v.IsKYMAvailableOnLoad");
 	    var IsOTPAvailable = component.get("v.IsOTPAvailableOnLoad");
 	    //var IsDebitPinAvailable = component.get("v.IsDebitPinAvailableOnLoad");
-	   // var IsOOWAvailable = component.get("v.OOWStatusForDay");
-	    var IsOOWAvailable = component.get("v.IsOOWAvailableOnLoad"); 
+	    var IsOOWAvailable = component.get("v.OOWStatusForDay");
+	  //  var IsOOWAvailable = component.get("v.IsOOWAvailableOnLoad"); 
 	    var IsPublicWalletAvailable = component.get("v.IsPublicWalletAvailableOnLoad");
 	    var IsCFCUWalletAvailable =   component.get("v.IsCFCUWalletAvailableOnLoad");
 		var memberid = component.get("v.SelectedmemberId");
@@ -634,9 +634,15 @@ NavigateToMember : function(component , event, helper){
     	else{
     		 helper.LastAcheivableLogs(component, event, memberid, GUID, LastLevel, IVRGUIDFromUrl);
     		 var urlString = window.location.href;
-    		 var baseURL = urlString.substring(0, urlString.indexOf("/n"));
+    		 if(IVRGUIDFromUrl == undefined){
+    			 var baseURL = urlString.substring(0, urlString.indexOf("/one"));
+    		 }
+    		 else
+    		 {
+    			 var baseURL = urlString.substring(0, urlString.indexOf("/lightning"));
+    		 }
     		 baseURL = baseURL + '/lightning/r/Account/'+ memberid + '/view';
-    		 window.open(baseURL,"_blank");  
+    		 window.open(baseURL,"_self");  
     	}
     
    

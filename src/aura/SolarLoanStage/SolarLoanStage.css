@@ -12,6 +12,9 @@
     z-index: 10;
 }
 
+.THIS.solarloanstagebar{position: fixed;bottom: 40px; width: 100%;height: 60px; text-align: center; background: #fff; display: flex;
+    align-items: center; padding: 20px 30px 20px 20px; border-top: 1px solid #ccc;z-index: 10;}
+
 @media screen and (max-width: 768px) {	
 	
     .THIS .groupbtn-parent .slds-button_neutral, .THIS .groupbtn-parent .slds-button_brand {
