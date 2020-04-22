@@ -7,7 +7,7 @@
             component.set('v.IsSaveandNewPressed',true);  
             var isValid = helper.handleError(component,event,helper);
             if(isValid){
-                helper.saveNewCase(component,event,helper);
+                helper.saveNewCase(component,event,helper);               
             } 
         } 
        component.set("v.accountCount",0);

@@ -450,6 +450,7 @@ public class CreateCaseMemberPageController {
             cs.State__c = accObject.Residential_State__pc;
             cs.Country__c = accObject.Residential_Country__pc;
             cs.Zip_Code__c = accObject.Residential_Zipocde__pc;
+        system.debug('caseObject.Status=='+caseObject.Status);
             if(caseObject.Status != '---None---'){
                 
                 cs.Status = caseObject.Status;
@@ -473,6 +474,7 @@ public class CreateCaseMemberPageController {
             cs.Future_Date__c = caseObject.Future_Date__c;  
             cs.Follow_up_Text__c = caseObject.Follow_up_Text__c; 
        try{ 
+             system.debug('cs.Status=='+cs.Status);
            insert cs;
            if(Test.isRunningTest()){
                Integer x=1/0;}            

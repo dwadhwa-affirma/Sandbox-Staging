@@ -730,7 +730,7 @@
     <aura:if isTrue="{!(v.isFileUpload == false)}">
     			<aura:if isTrue="{!and(v.isSavePressed == false , v.IsSaveandNewPressed==false)}">
      		 				<lightning:button aura:id="Save" class="slds-button slds-button_brand" onclick="{!c.saveCase}" label="Save" />
-     		 				 <lightning:button aura:id="SaveandNew" class="slds-button slds-button_brand" label="Save &amp; New" onclick="{!c.doInit}"/>
+     		 				 <lightning:button aura:id="SaveandNew" class="slds-button slds-button_brand" label="Save &amp; New" onclick="{!c.saveCase}"/>
      		 	</aura:if>
      		 	
      		     <aura:if isTrue="{!and(v.isSavePressed == true , v.IsSaveandNewPressed==false)}">
