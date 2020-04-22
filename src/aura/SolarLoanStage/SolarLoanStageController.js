@@ -66,7 +66,6 @@
             if(checkCurrentStage == 'Stage 4'){
             	component.set("v.ButtonLabelName", "Mark Stage 4 Complete");
                 component.set("v.StageName", "Stage 4: Review ACH Info");
-                component.set("v.IsButtonDisabled", true);
             }
             if(checkCurrentStage == 'Stage 5'){
             	if(Stage4ACHCheck == 'True'){
