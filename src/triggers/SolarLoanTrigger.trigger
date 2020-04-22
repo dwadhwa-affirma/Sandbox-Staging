@@ -104,6 +104,7 @@ trigger SolarLoanTrigger on Solar_Loans__c (after insert, after update, before u
             
             if(trigger.old[i].EftLocator__c != trigger.new[i].EftLocator__c && trigger.new[i].EftLocator__c != null){
             	trigger.new[i].Status__c = 'EFT Record Created';
+            	trigger.new[i].Current_Solar_Loan_Stage__c = 'Stage 7';
             }
             
             if(trigger.old[i].Status__c != trigger.new[i].Status__c && trigger.new[i].Status__c ==  'Declined'){

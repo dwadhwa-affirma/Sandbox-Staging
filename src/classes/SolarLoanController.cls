@@ -31,7 +31,7 @@ public class SolarLoanController {
     	
     	if(CurrentStage != null && CurrentStage != ' '){
     		
-    		if(CurrentStage != 'Stage 4'){
+    		if(CurrentStage != 'Stage 4' && CurrentStage != 'Stage 7'){
     			SolarLoanList[0].Current_Solar_Loan_Stage__c = CurrentStage; 
             	update SolarLoanList;
             	SolarCurrentStage = SolarLoanList[0].Current_Solar_Loan_Stage__c;
@@ -56,7 +56,6 @@ public class SolarLoanController {
     	
 	    if(solarLoanList[0].Current_Solar_Loan_Stage__c == 'Stage 4'){
 	    	
-	    	SolarCurrentStage = SolarLoanList[0].Current_Solar_Loan_Stage__c;
 	    	if((SolarLoanList[0].ACH__c != null || SolarLoanList[0].ACH__c == 'True' || SolarLoanList[0].ACH__c == 'true') && 
 	    		(SolarLoanList[0].ACH__c != 'false' || SolarLoanList[0].ACH__c != 'False')){
 	    		Stage4ACHCheck = 'True';
@@ -68,16 +67,19 @@ public class SolarLoanController {
 	    
 	    //------------------------------------Stage-6 Chaging status to "ACH Pending----------------------------------//
 	    
-	    if(solarLoanList[0].Current_Solar_Loan_Stage__c == 'Stage 6'){
-	    	solarLoanList[0].Status__c = 'Pending';
-	    	update SolarLoanList;
+	    //if(CurrentStage == 'Stage 6'){
+	    	//solarLoanList[0].Status__c = 'Pending';
+	    	//update SolarLoanList;
 	    	
-	    }
+	    //}
+	    
+	    if(SolarLoanList[0].Current_Solar_Loan_Stage__c == 'Stage 6')
+        	SolarCurrentStage = SolarLoanList[0].Current_Solar_Loan_Stage__c;
 	    
 	    //------------------------------------Stage-7 Chaging status to "EFT Record Created"-------------------------//
 	    
-	    if(solarLoanList[0].Current_Solar_Loan_Stage__c == 'Stage 7'){
-	    	solarLoanList[0].Status__c = 'EFT Record Created';
+	    if(CurrentStage == 'Stage 7'){
+	    	solarLoanList[0].Status__c = 'Completed';
 	    	update SolarLoanList;
 	    	
 	    }
@@ -89,10 +91,12 @@ public class SolarLoanController {
     		SolarCurrentStage = 'Stage 7';
     		SolarLoanList[0].Current_Solar_Loan_Stage__c = 'Stage 7'; 
             update SolarLoanList;
+            SolarCurrentStage = SolarLoanList[0].Current_Solar_Loan_Stage__c;
     	}
-        //else
-        	//SolarCurrentStage = SolarLoanList[0].Current_Solar_Loan_Stage__c;
-       
+          	
+        if(SolarLoanList[0].Current_Solar_Loan_Stage__c == 'Stage 7')
+        	SolarCurrentStage = SolarLoanList[0].Current_Solar_Loan_Stage__c;
+               
     }
     
     system.debug('SolarCurrentStage'+SolarCurrentStage);

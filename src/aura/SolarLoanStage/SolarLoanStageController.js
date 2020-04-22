@@ -49,7 +49,7 @@
                 else{
                 	Stage4ACHCheck = 'True';
                 }
-            }
+            
             
             if(checkCurrentStage == 'Stage 2'){
                 component.set("v.ButtonLabelName", "Mark Stage 2 Complete");
@@ -89,7 +89,10 @@
              					  "IsSubmitButtonDisabled" : buttonDisabled,
              					  "Stage4ACHCheck" : Stage4ACHCheck});
 			 compEvent.fire();
-        });	
+			 
+			 $A.get('e.force:refreshView').fire();
+		 }
+    });	
         	
         
 		
