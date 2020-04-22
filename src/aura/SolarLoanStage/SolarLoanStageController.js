@@ -9,6 +9,7 @@
 	
 	submit: function(component, event, helper) {
 		
+        helper.showSpinner(component);
         var action = component.get("c.getMemberData");
         var checkCurrentStage;
         var buttonStatus;
@@ -65,6 +66,7 @@
             if(checkCurrentStage == 'Stage 4'){
             	component.set("v.ButtonLabelName", "Mark Stage 4 Complete");
                 component.set("v.StageName", "Stage 4: Review ACH Info");
+                component.set("v.IsButtonDisabled", true);
             }
             if(checkCurrentStage == 'Stage 5'){
             	if(Stage4ACHCheck == 'True'){
@@ -90,7 +92,9 @@
              					  "Stage4ACHCheck" : Stage4ACHCheck});
 			 compEvent.fire();
 			 
+			 helper.hideSpinner(component);
 			 $A.get('e.force:refreshView').fire();
+			 
 		 }
     });	
         	

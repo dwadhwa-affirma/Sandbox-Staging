@@ -5,6 +5,16 @@
     	helper.getSolarLoanData(component, event,helper,recordId); 	
 	},
     
+    showSpinner: function(component) {
+		var spinnerMain =  component.find("Spinner");
+		$A.util.removeClass(spinnerMain, "slds-hide");
+	},
+ 
+	hideSpinner : function(component) {
+		var spinnerMain =  component.find("Spinner");
+		$A.util.addClass(spinnerMain, "slds-hide");
+	},
+	
     getSolarLoanData : function(component, event,recordId){
 	
 		var SolarLoanRecordId = component.get("v.recordId");
@@ -49,6 +59,7 @@
             if(stage == 'Stage 4'){
             	component.set("v.ButtonLabelName", "Mark Stage 4 Complete");
                 component.set("v.StageName", "Stage 4: Review ACH Info");
+                component.set("v.IsButtonDisabled", true);
             }
             if(stage == 'Stage 5'){
                 if(Stage4ACHCheck == 'True'){

@@ -34,10 +34,9 @@ public class SolarLoanController {
     		if(CurrentStage != 'Stage 4' && CurrentStage != 'Stage 7'){
     			SolarLoanList[0].Current_Solar_Loan_Stage__c = CurrentStage; 
             	update SolarLoanList;
-            	SolarCurrentStage = SolarLoanList[0].Current_Solar_Loan_Stage__c;
-    		}
-            	
+            }        	
     	}
+    	SolarCurrentStage = SolarLoanList[0].Current_Solar_Loan_Stage__c;
     	
     	//if(SolarLoanList[0].Loan_Id__c == null || SolarLoanList[0].Loan_Id__c == ''){
     	//	Stage3LoanCheck = 'True';
@@ -64,6 +63,11 @@ public class SolarLoanController {
 	    		Stage4ACHCheck = 'False';
 	    	}
 	    }
+	    
+	    if(solarLoanList[0].Current_Solar_Loan_Stage__c == 'Stage 4' && (CurrentStage == null || CurrentStage == ' ')){
+	    	SolarCurrentStage = SolarLoanList[0].Current_Solar_Loan_Stage__c;
+	    }
+	    
 	    
 	    //------------------------------------Stage-6 Chaging status to "ACH Pending----------------------------------//
 	    

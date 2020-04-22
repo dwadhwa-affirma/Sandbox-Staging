@@ -14,6 +14,7 @@
         <div style="margin-left: auto;">
         	<lightning:button variant="brand" label="{!v.ButtonLabelName}" aura:id="SubmitButton" onclick="{!c.submit }" disabled = "{!v.IsButtonDisabled}"/>
         	<!-- <lightning:button variant="brand" label="{!v.ButtonLabelName}" aura:id="SubmitButton" disabled = "{!v.IsButtonDisabled}"/>-->
+        	<lightning:spinner aura:id="Spinner" alternativeText="Loading" size="medium" variant="brand" class="slds-hide spin"/>
         </div>
         
 		</div>
