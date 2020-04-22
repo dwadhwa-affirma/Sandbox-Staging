@@ -48,8 +48,7 @@ public class SolarLoanController {
 	    	
 	    	solarLoanList[0].Status__c = 'Approved';
 	    	update SolarLoanList;
-    	
-    	}
+	 	}
     	
     	//------------------------------------Stage-4 Checking if ACH = False/True------------------------------------//
     	
@@ -58,6 +57,7 @@ public class SolarLoanController {
 	    	if((SolarLoanList[0].ACH__c != null || SolarLoanList[0].ACH__c == 'True' || SolarLoanList[0].ACH__c == 'true') && 
 	    		(SolarLoanList[0].ACH__c != 'false' || SolarLoanList[0].ACH__c != 'False')){
 	    		Stage4ACHCheck = 'True';
+	    		SolarCurrentStage = SolarLoanList[0].Current_Solar_Loan_Stage__c;
 	    	}
 	    	else{
 	    		Stage4ACHCheck = 'False';
@@ -72,8 +72,8 @@ public class SolarLoanController {
 	    //------------------------------------Stage-6 Chaging status to "ACH Pending----------------------------------//
 	    
 	    //if(CurrentStage == 'Stage 6'){
-	    	//solarLoanList[0].Status__c = 'Pending';
-	    	//update SolarLoanList;
+	    //	solarLoanList[0].Status__c = 'ACH Pending';
+	    //	update SolarLoanList;
 	    	
 	    //}
 	    
