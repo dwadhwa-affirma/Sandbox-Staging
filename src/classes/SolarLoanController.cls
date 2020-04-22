@@ -30,16 +30,33 @@ public class SolarLoanController {
     if(SolarLoanList.size() > 0){
     	
     	if(CurrentStage != null && CurrentStage != ' '){
-            SolarLoanList[0].Current_Solar_Loan_Stage__c = CurrentStage; 
-            update SolarLoanList;
+    		
+    		if(CurrentStage != 'Stage 4'){
+    			SolarLoanList[0].Current_Solar_Loan_Stage__c = CurrentStage; 
+            	update SolarLoanList;
+            	SolarCurrentStage = SolarLoanList[0].Current_Solar_Loan_Stage__c;
+    		}
+            	
     	}
-    	if(SolarLoanList[0].Loan_Id__c == null || SolarLoanList[0].Loan_Id__c == ''){
-    		Stage3LoanCheck = 'True';
+    	
+    	//if(SolarLoanList[0].Loan_Id__c == null || SolarLoanList[0].Loan_Id__c == ''){
+    	//	Stage3LoanCheck = 'True';
+    	//}
+    	
+    	//------------------------------------Stage-4  Creating Loan Records -----------------------------------------//
+    	
+    	if(CurrentStage == 'Stage 4'){
+	    	
+	    	solarLoanList[0].Status__c = 'Approved';
+	    	update SolarLoanList;
+    	
     	}
-    	//------------------------------------Checking if ACH = False/True------------------------------------------//
+    	
+    	//------------------------------------Stage-4 Checking if ACH = False/True------------------------------------//
     	
 	    if(solarLoanList[0].Current_Solar_Loan_Stage__c == 'Stage 4'){
 	    	
+	    	SolarCurrentStage = SolarLoanList[0].Current_Solar_Loan_Stage__c;
 	    	if((SolarLoanList[0].ACH__c != null || SolarLoanList[0].ACH__c == 'True' || SolarLoanList[0].ACH__c == 'true') && 
 	    		(SolarLoanList[0].ACH__c != 'false' || SolarLoanList[0].ACH__c != 'False')){
 	    		Stage4ACHCheck = 'True';
@@ -73,8 +90,8 @@ public class SolarLoanController {
     		SolarLoanList[0].Current_Solar_Loan_Stage__c = 'Stage 7'; 
             update SolarLoanList;
     	}
-        else
-        	SolarCurrentStage = SolarLoanList[0].Current_Solar_Loan_Stage__c;
+        //else
+        	//SolarCurrentStage = SolarLoanList[0].Current_Solar_Loan_Stage__c;
        
     }
     

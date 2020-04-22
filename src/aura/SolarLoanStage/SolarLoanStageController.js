@@ -21,7 +21,7 @@
         	if(component.get("v.ButtonLabelName") == 'Mark Stage 2 Complete')
                 CurrentStage = 'Stage 3';
         	if(component.get("v.ButtonLabelName") == 'Create Loan Records')
-                CurrentStage = 'Stage 4';
+                CurrentStage = 'Stage 4'; 
             if(component.get("v.ButtonLabelName") == 'Mark Stage 4 Complete')
             	CurrentStage = 'Stage 5';
             if(component.get("v.ButtonLabelName") == 'Send ACH Document')
