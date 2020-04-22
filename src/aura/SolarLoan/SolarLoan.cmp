@@ -12,7 +12,6 @@
 <aura:attribute name="Stage6" type="String" default="Waiting on Stage 5"/>
 <aura:attribute name="Stage7" type="String" default="Waiting on Stage 6"/>
 
-    
 <div class="demo-only slds-box rightBox" style="background: white;">
 			    	<header class="slds-media_center slds-has-flexi-truncate" style = "width: 102%;">
 			         			<div class="c-container maap-questions">

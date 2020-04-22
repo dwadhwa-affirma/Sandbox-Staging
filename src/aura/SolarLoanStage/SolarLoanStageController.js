@@ -59,9 +59,6 @@
             if(checkCurrentStage == 'Stage 3'){
                 component.set("v.ButtonLabelName", "Create Loan Records");
                 component.set("v.StageName", "Stage 3: Create Loan Records");
-                if(buttonStatus == 'True'){
-                	component.set("v.IsButtonDisabled", true);
-                }
             }
             if(checkCurrentStage == 'Stage 4'){
             	component.set("v.ButtonLabelName", "Mark Stage 4 Complete");
@@ -91,15 +88,20 @@
              					  "Stage4ACHCheck" : Stage4ACHCheck});
 			 compEvent.fire();
 			 
-			 helper.hideSpinner(component);
-			 $A.get('e.force:refreshView').fire();
+			 window.setTimeout(
+			    $A.getCallback(function() {
+			       helper.hideSpinner(component,helper)
+			    }), 5000
+			 );
+             window.setTimeout(
+			    $A.getCallback(function() {
+			      helper.getSolarLoanData(component,helper)
+			    }), 4000
+			 );   
 			 
 		 }
     });	
-        	
-        
-		
-        $A.enqueueAction(action);
+       $A.enqueueAction(action);
 		
 	}
 })

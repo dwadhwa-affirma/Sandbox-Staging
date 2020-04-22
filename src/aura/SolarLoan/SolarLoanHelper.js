@@ -6,8 +6,8 @@
     	
     	
 	},
-	
-	getSolarLoanData : function(component, event,recordId){
+    
+   getSolarLoanData : function(component, event,recordId){
 	
 		var SolarLoanRecordId = component.get("v.recordId");
 		var stage;
@@ -77,7 +77,7 @@
 				component.set("v.Stage3", "Records Created");
 				component.set("v.Stage4", "Review Completed");
 				if(Stage4ACHCheck == 'True')
-					component.set("v.Stage5", "Send ACH Document");
+					component.set("v.Stage5", "Send For Signature");
 				ProgressBarStep1.classList.remove('halFactive');
 	            ProgressBarStep1.classList.add('active');
 				ProgressBarStep2.classList.add('active');
@@ -91,7 +91,7 @@
 				component.set("v.Stage2", "Review Completed");
 				component.set("v.Stage3", "Records Created");
 				component.set("v.Stage4", "Review Completed");
-				component.set("v.Stage5", "Document Signed");
+				component.set("v.Stage5", "Send For Signature");
 				component.set("v.Stage6", "Create EFT Record");
                 ProgressBarStep1.classList.remove('halFactive');
 				ProgressBarStep1.classList.add('active');
@@ -129,7 +129,7 @@
 				ProgressBarStep6.classList.add('active');
 				ProgressBarStep7.classList.add('halFactive');
 			}            
-            
+            $A.get('e.force:refreshView').fire();
         });	
        $A.enqueueAction(action);
 	

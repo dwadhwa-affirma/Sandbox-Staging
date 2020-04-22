@@ -52,9 +52,6 @@
             if(stage == 'Stage 3'){
                 component.set("v.ButtonLabelName", "Create Loan Records");
                 component.set("v.StageName", "Stage 3: Create Loan Records");
-                if(buttonStatus == 'True'){
-                	component.set("v.IsButtonDisabled", true);
-                }
             }
             if(stage == 'Stage 4'){
             	component.set("v.ButtonLabelName", "Mark Stage 4 Complete");
