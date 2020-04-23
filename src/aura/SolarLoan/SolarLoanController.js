@@ -76,7 +76,7 @@
 			ProgressBarStep5.classList.add('active');
 			ProgressBarStep6.classList.add('half');
 		}
-		if(stage == 'Stage 7'){
+		if(stage == 'Stage 7' || stage == 'Stage 8'){
 			component.set("v.Stage1", "Review Completed");
 			component.set("v.Stage2", "Review Completed");
 			component.set("v.Stage3", "Records Created");
@@ -88,10 +88,10 @@
 			else{
 				component.set("v.Stage4", "Review Completed");
 				component.set("v.Stage5", "Document Signed");
-				component.set("v.Stage6", "EFT Created");
+				component.set("v.Stage6", "EFT Record Created");
 			}
 		
-			component.set("v.Stage7", "Close Ticket");
+			component.set("v.Stage7", "Ticket Closed");
             ProgressBarStep1.classList.add('active');
 			ProgressBarStep2.classList.add('active');
 			ProgressBarStep3.classList.remove('halFactive');
@@ -100,8 +100,9 @@
 			ProgressBarStep5.classList.add('active');
 			ProgressBarStep6.classList.remove('half');
 			ProgressBarStep6.classList.add('active');
-			ProgressBarStep7.classList.add('halFactive');
+			ProgressBarStep7.classList.add('active');
 		}
+		
 		window.setTimeout(
 		    $A.getCallback(function() {
 		       helper.getSolarLoanData(component,helper)

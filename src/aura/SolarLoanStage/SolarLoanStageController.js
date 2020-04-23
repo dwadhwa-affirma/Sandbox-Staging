@@ -29,6 +29,8 @@
                 CurrentStage = 'Stage 6';
         	if(component.get("v.ButtonLabelName") == 'Create EFT Record')
                 CurrentStage = 'Stage 7';
+            if(component.get("v.ButtonLabelName") == 'Close Ticket')
+                CurrentStage = 'Stage 8';    
         
         action.setParams({"SolarLoanRecordId": SolarLoanRecordId,
                           "CurrentStage": CurrentStage });
@@ -77,9 +79,12 @@
             if(checkCurrentStage == 'Stage 7'){
                 component.set("v.ButtonLabelName", "Close Ticket");
                 component.set("v.StageName", "Stage 7: Close Ticket");
-                component.set("v.IsButtonDisabled", true);
             }
-             
+            if(checkCurrentStage == 'Stage 8'){
+                component.set("v.ButtonLabelName", "Close Ticket");
+                component.set("v.StageName", "Stage 7: Closed");
+                component.set("v.IsButtonDisabled", true);
+            } 
              var buttonDisabled = component.get("v.IsButtonDisabled");
              
              var compEvent = $A.get("e.c:SolarLoanStatusEvent"); 

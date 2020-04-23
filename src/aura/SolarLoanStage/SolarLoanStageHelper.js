@@ -70,6 +70,10 @@
             if(stage == 'Stage 7'){
                 component.set("v.ButtonLabelName", "Close Ticket");
                 component.set("v.StageName", "Stage 7: Close Ticket");
+            }
+            if(stage == 'Stage 8'){
+                component.set("v.ButtonLabelName", "Close Ticket");
+                component.set("v.StageName", "Stage 7: Closed");
                 component.set("v.IsButtonDisabled", true);
             }   
         	
