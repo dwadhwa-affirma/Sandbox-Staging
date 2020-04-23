@@ -243,7 +243,15 @@ public class SolarLoanToCreateLoan {
 	            UserChar2 = sl.Installer_Number__c;
 	            UserChar3 = sl.Product__c;
 	            UserChar4 = sl.Module__c;
-	            UserChar5 = sl.Inverter__c;
+	            
+	            if(sl.Inverter__c != null){
+                	UserChar5 = sl.Inverter__c;
+                	if(UserChar5.length() > 40){
+                		UserChar5 = UserChar5.left(39);
+                	}
+                }
+                system.debug('UserChar5'+UserChar5);
+                
 	            UserChar10 = sl.Credit_Attributes__c;
 	            UserChar20 = sl.Site_UUID__c;
 	            if(sl.Loan_Amount__c != null)

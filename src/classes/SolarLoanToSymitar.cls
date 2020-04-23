@@ -84,7 +84,13 @@ public class SolarLoanToSymitar {
                 	PostAmount = '0.00';
                 Payee = sl.Routing_Number__c;
                 Reference = sl.Bank_Account_Number__c ;
-                MatchID3 = sl.ABA_Bank_Name__c;    
+                if(sl.ABA_Bank_Name__c != null){
+                	MatchID3 = sl.ABA_Bank_Name__c;
+                	if(MatchID3.length() > 22){
+                		MatchID3 = MatchID3.left(20);
+                	}
+                }
+                system.debug('MatchID3'+MatchID3);    
                 AccountNumber = sl.Account_Number__r.name;
                 
                 //req.setEndpoint('https://brscsymx.ctxcu.org/dev/EFT/CreateEft');
