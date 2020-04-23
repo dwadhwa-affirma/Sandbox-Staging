@@ -87,7 +87,7 @@ public class SolarLoanToSymitar {
                 if(sl.ABA_Bank_Name__c != null){
                 	MatchID3 = sl.ABA_Bank_Name__c;
                 	if(MatchID3.length() > 22){
-                		MatchID3 = MatchID3.left(20);
+                		MatchID3 = MatchID3.left(21);
                 	}
                 }
                 system.debug('MatchID3'+MatchID3);    
