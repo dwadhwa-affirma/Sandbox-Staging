@@ -12,7 +12,7 @@
 .THIS .progressbar li.halFactive:before,.THIS .progressbar li.active.three:before {background-color: #16325c;}
 .THIS .progressbar li.halFactive + li:after {background-color: #a8b7c7;}
 .THIS .progressbar li.half:before,.THIS .progressbar li.active.three:before {background-color: #f3b731;}
-  
+.THIS .progressbar li.half + li:after {background-color: #f3b731;}
 .THIS .demo-only {    background: white !important;}
 .THIS .region-main {width: 40% !important;}
 
