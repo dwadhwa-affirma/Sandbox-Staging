@@ -426,7 +426,7 @@
     },
     
      OpenCreateCase : function(component, event, helper)
-     { 
+     {     	 
     	 	 var Speedcase = component.get("v.TopTenCases");
     	 	 component.set("v.caseObject.Future_Date__c", "");
 			if(component.get("v.selectedAcctNumber.Name")!=null && component.get("v.selectedAcctNumber.Name")!="" ){  		component.set("v.selectedAcctNumber",null);}
@@ -482,7 +482,7 @@
                
                var searchbox = document.getElementById('SearchFieldText');
                searchbox.value= "";                   
-			   /*var action = component.get("c.getData");
+			   var action = component.get("c.getData");
 			   var recordid = component.get("v.recordId");
 			   var accountId = component.get("v.accountDetailId");
 			   if(recordid == undefined && accountId == "")
@@ -504,7 +504,21 @@
 								        		
 			        		component.set('v.loading',false);	
 			        		component.set("v.caseObject.Future_Date__c", "");
-			        		component.set("v.selectedAcctNumber",null);
+			        		//component.set("v.selectedAcctNumber",null);
+			        		var aList = result.accList; 
+			        		if(aList.length == 2 ){
+				        		for(var i = 0; i < aList.length; i++){
+				        			if(aList[i].RecType__c == 'ACCT'){
+				        				component.set('v.singleAccountDetail', true);
+				                        var serverResult = component.get("v.accList");
+				                        var selItem = serverResult[0];
+				                        console.log(selItem);
+				                        if(selItem){
+				                        	component.set("v.selectedAcctNumber",selItem);
+				                    	}
+				        			}
+				        		}
+			        		}
                             //if(component.get("v.accObject.Name")!=""){  		component.set("v.accObject.Name","");} 
 					 		component.set("v.searchField","");
 					 		component.set("v.caseObject.CaseComments__c", "");
@@ -569,7 +583,7 @@
             
 					
 			 		if(isStandAlone)
-			 			component.set('v.loading',false);*/
+			 			component.set('v.loading',false);
     	 
      },
      

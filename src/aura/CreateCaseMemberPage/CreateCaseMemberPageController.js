@@ -1,7 +1,7 @@
 ({
 	doInit : function(component, event, helper) {
 		/*helper.fetchPicklistFields(component);*/
-        var btnid = event.getSource().getLocalId();
+       /* var btnid = event.getSource().getLocalId();
         if(btnid == "SaveandNew"){
             component.set("v.isSavePressed",true);
             component.set('v.IsSaveandNewPressed',true);  
@@ -9,7 +9,7 @@
             if(isValid){
                 helper.saveNewCase(component,event,helper);               
             } 
-        } 
+        } */
        component.set("v.accountCount",0);
 	   component.set('v.loading',true);
 	   var action = component.get("c.getData");
