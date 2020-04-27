@@ -16,6 +16,7 @@
 		var ProgressBarStep7 = document.getElementById('Step7');
 		
 		var stage = event.getParam("Stage");
+		
 		var buttonDisabled = event.getParam("IsSubmitButtonDisabled");
 		var Stage4ACHCheck = event.getParam("Stage4ACHCheck");
 		

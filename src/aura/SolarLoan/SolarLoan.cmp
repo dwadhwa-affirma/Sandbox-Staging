@@ -18,7 +18,7 @@
 			               			<lightning:layout horizontalAlign="spread">                                            
                                             <div class="step-container">
                                                 <ul class="progressbar">
-                                                    <li id="Step1" class="one halFactive">
+                                                    <li id="Step1" class="one">
                                                     	<lightning:layoutItem>
 	                                                    	<div class="header-column">
 	                                                    		<p class="field-title show" id="Level1IndicatorLabel">Application</p>

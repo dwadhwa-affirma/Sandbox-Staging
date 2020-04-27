@@ -40,7 +40,9 @@
 			var ProgressBarStep5 = document.getElementById('Step5');
           	var ProgressBarStep6 = document.getElementById('Step6');
 			var ProgressBarStep7 = document.getElementById('Step7');
-        
+			
+			ProgressBarStep1.classList.add('halFactive');
+			
             if(stage == 'Stage 2'){
 				component.set("v.Stage1", "Review Completed");
 				component.set("v.Stage2", "Needs Review");
