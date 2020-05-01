@@ -109,7 +109,7 @@
 					}
 				
 				
-					if(result.PublicWalletStatus =='Failed' && component.get("v.IsReLoadRequired") == false)
+					if(result.PublicWalletStatus =='Fail' && component.get("v.IsUserSessionLoaded") == false)
 					{
 							if(result.DOBMatch != undefined)
 							{
@@ -182,7 +182,7 @@
 								
 							}
 					}
-					else if(result.PublicWalletStatus =='Passed' && component.get("v.IsReLoadRequired") == false && component.get("v.IsUserSessionLoaded") == false)
+					else if(result.PublicWalletStatus =='Pass' && component.get("v.IsReLoadRequired") == false && component.get("v.IsUserSessionLoaded") == false)
 					{
 						helper.buttonOnLoad(component, event, helper);
 					}

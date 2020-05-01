@@ -24,16 +24,16 @@
 		}else{
 			component.set("v.PhoneFromURL", pageReference.state.c__CallersPhoneNumber);
 		}
-		if(pageReference.state.c__PINMatch == 'null'){
+		if(pageReference.state.c__PINMatch != undefined && pageReference.state.c__PINMatch.toLowerCase() == 'null'){
 			component.set("v.DebitCardStatus", '');
-		}else{		
-			component.set("v.DebitCardStatus", pageReference.state.c__PINMatch);
+		}else if(pageReference.state.c__PINMatch != undefined ){		
+			component.set("v.DebitCardStatus", pageReference.state.c__PINMatch.toLowerCase());
 		}
-		if(pageReference.state.c__IVRGUID == 'null'){
+		if(pageReference.state.c__InteractionId == 'null'){
 		
 			component.set("v.IVRGUIDFromUrl", '');
 		}else{
-			component.set("v.IVRGUIDFromUrl", pageReference.state.c__IVRGUID);
+			component.set("v.IVRGUIDFromUrl", pageReference.state.c__InteractionId);
 		}
 		if(pageReference.state.c__Reason == 'null' || pageReference.state.c__Reason == undefined || pageReference.state.c__Reason == '')
 		{
@@ -53,8 +53,9 @@
 		
 			component.set("v.HighFlagFromUrl", 'HP');
 		}
-		
-		var PINMatchFromURL = pageReference.state.c__PINMatch;
+		if(pageReference.state.c__PINMatch != undefined){
+			var PINMatchFromURL = pageReference.state.c__PINMatch.toLowerCase();
+		}
 		var SSNFromURL = component.get("v.SSNFromURL");
 		var MemberNumberFromURL =  component.get("v.AccountNumberFromURL");
 		var PhoneFromURL =  component.get("v.PhoneFromURL");
@@ -80,6 +81,9 @@
 		{
 			component.set("v.IsDebitTabVisible", false);
 		}
+		else if(PINMatchFromURL== undefined){
+			component.set("v.IsDebitTabVisible", false);			
+		}
 		else
 		{
 			component.set("v.IsDebitTabVisible", true);
@@ -91,8 +95,13 @@
 		}else{
 			component.set("v.IsUserSessionLoaded", false );
 		}
-	    
-		    
+	    component.set("v.EnteredCardNumber", pageReference.state.c__EnteredCardNumber);
+	    component.set("v.CardNumberMatch", pageReference.state.c__CardNumberMatch);
+		component.set("v.PhoneNumberMatch", pageReference.state.c__PhoneNumberMatch);
+		component.set("v.MemberNumberMatch", pageReference.state.c__MemberNumberMatch);       
+		component.set("v.SSNnumberMatch", pageReference.state.c__SSNnumberMatch); 
+		component.set("v.PINMatch", pageReference.state.c__PINMatch);   
+		 
 		// URL Encoding........................................................................................
 		
 		component.set("v.IsRightDivVisible", false);
@@ -169,12 +178,25 @@
 		var DebitCardStatus = component.get("v.DebitCardStatus");
 		var ReasonCodeFromURL = component.get("v.ReasonCodeFromURL");
 		var HighFlagFromUrl = component.get("v.HighFlagFromUrl");
-		
+		var EnteredCardNumber = component.get("v.EnteredCardNumber");
+	    var CardNumberMatch = component.get("v.CardNumberMatch");
+		var PhoneNumberMatch = component.get("v.PhoneNumberMatch");
+		var MemberNumberMatch = component.get("v.MemberNumberMatch");       
+		var SSNnumberMatch = component.get("v.SSNnumberMatch");   
+		var PINMatch = component.get("v.PINMatch"); 
 		if(PageURL == undefined){
-			action.setParams({"MemberId": memberid,"GUID": GUID,"DebitCardStatus": DebitCardStatus,"SSNFromURL": ' ',"MemberNumberFromURL": ' ',"PhoneFromURL": ' ', "PageURL" : ' ', "IVRGUIDFromUrl": IVRGUIDFromUrl,"ReLoadRequired": ReLoadRequired, "ReasonCodeFromURL": ReasonCodeFromURL,"HighFlagFromUrl":HighFlagFromUrl, "PointsObtained":PointsObtained,  "IsOOWTabVisible": component.get("v.IsOOWTabVisible"), "IsUserSessionLoaded": component.get("v.IsUserSessionLoaded") });
+			component.set("v.IsDebitTabVisible", false);
+			action.setParams({"MemberId": memberid,"GUID": GUID,"DebitCardStatus": DebitCardStatus,"SSNFromURL": ' ',"MemberNumberFromURL": ' ',"PhoneFromURL": ' ', "PageURL" : ' ', "IVRGUIDFromUrl": IVRGUIDFromUrl,
+								"ReLoadRequired": ReLoadRequired, "ReasonCodeFromURL": ReasonCodeFromURL,"HighFlagFromUrl":HighFlagFromUrl, "PointsObtained":PointsObtained, 
+								"IsOOWTabVisible": component.get("v.IsOOWTabVisible"), "IsUserSessionLoaded": component.get("v.IsUserSessionLoaded"),
+								"EnteredCardNumber": ' ', "CardNumberMatch": ' ', "PhoneNumberMatch": ' ', "MemberNumberMatch" : ' ', "SSNnumberMatch" : ' ', "PINMatch" : ' '});
 		}
 		else{
-			action.setParams({"MemberId": memberid,"GUID": GUID,"DebitCardStatus": DebitCardStatus,"SSNFromURL": SSNFromURL,"MemberNumberFromURL":MemberNumberFromURL,"PhoneFromURL":PhoneFromURL,"PageURL":PageURL, "IVRGUIDFromUrl": IVRGUIDFromUrl,"ReLoadRequired":ReLoadRequired,"ReasonCodeFromURL": ReasonCodeFromURL,"HighFlagFromUrl":HighFlagFromUrl, "PointsObtained":PointsObtained,  "IsOOWTabVisible": component.get("v.IsOOWTabVisible"), "IsUserSessionLoaded": component.get("v.IsUserSessionLoaded") });
+			action.setParams({"MemberId": memberid,"GUID": GUID,"DebitCardStatus": DebitCardStatus,"SSNFromURL": SSNFromURL,"MemberNumberFromURL":MemberNumberFromURL,
+								"PhoneFromURL":PhoneFromURL,"PageURL":PageURL, "IVRGUIDFromUrl": IVRGUIDFromUrl,"ReLoadRequired":ReLoadRequired,"ReasonCodeFromURL": ReasonCodeFromURL,
+								"HighFlagFromUrl":HighFlagFromUrl, "PointsObtained":PointsObtained,  "IsOOWTabVisible": component.get("v.IsOOWTabVisible"), "IsUserSessionLoaded": component.get("v.IsUserSessionLoaded"),
+								"EnteredCardNumber": EnteredCardNumber, "CardNumberMatch":CardNumberMatch, "PhoneNumberMatch": PhoneNumberMatch, "MemberNumberMatch" : MemberNumberMatch, "SSNnumberMatch" : SSNnumberMatch,"PINMatch":PINMatch
+								 });
     	}
     	action.setCallback(this, function (response) {
   		 var status = response.getState();            
@@ -226,6 +248,14 @@
 					    	component.set("v.Likedisable", false);
 					    }
 					    					    
+					    if(result.MemberType == 'Foreign')
+					    {
+					    	component.set("v.IsOOWTabVisible", false);
+					    }
+					    else
+					    {
+					    	component.set("v.IsOOWTabVisible", true);
+					    }
 					   if(component.get("v.IsOOWTabVisible") == true)
 					   {
 						  //  if(SSNFromURL!= undefined && SSNFromURL != "" && SSNFromURL != null && SSNFromURL != 'null' )
@@ -259,6 +289,7 @@
                         	Level2IndicatorLabel.classList.add('hidden');
                         	Level2IndicatorLabel.classList.remove('show');
                         }
+                       
                         else 
                         {
                         	ProgressBarStep2.classList.add('two');
@@ -280,6 +311,7 @@
                         	Level3IndicatorLabel.classList.add('hidden');
                         	Level3IndicatorLabel.classList.remove('show');
                         }
+                        
                         else 
                         {
                         	ProgressBarStep3.classList.add('two');
@@ -417,6 +449,9 @@
         var ReLoadRequired = component.get("v.ReLoadRequired");
         var IsUserSessionLoaded = component.get("v.IsUserSessionLoaded");
         var CFCUWalletComponent = component.find('CFCUWallet');
+        if(ReLoadRequired == undefined){
+			ReLoadRequired = false;
+		}
         if(CFCUWalletComponent!=undefined)CFCUWalletComponent.CFCUWalletMethod(attribute1,ReLoadRequired, IsUserSessionLoaded);
         
         var OTPComponent = component.find('OTPAuthentication');
@@ -554,21 +589,26 @@
 		  						component.set("v.status", status);
 		  						component.set("v.reason", reason);
 		  						component.set("v.notes", notes);
+		  						
 		  						if(status == 'passed'){
 		  						
 		  							MaximumPointsAvailable = parseInt(MaximumPointsAvailable) - parseInt(ScoreModelPositiveScore);
 		  							PointsObtained = parseInt(PointsObtained) + parseInt(ScoreModelPositiveScore);
 		  							IsOOWAvailable = false;
 		  							component.set("v.OOWStatusForDay", false);
+									component.set("v.MaximumPointsAvailable",MaximumPointsAvailable);
+		  							component.set("v.PointObtained", PointsObtained);
 		  							helper.GetNextAuthenticationType(component, event, helper, memberid, MemberType, MaximumPointsAvailable, PointsObtained, IsKYMAvailable, IsOTPAvailable, DebitCardStatus, IsOOWAvailable, IsPublicWalletAvailable, IsCFCUWalletAvailable);
 		  							component.set("v.Likedisable",true);
 		  							
 		  						}
 		  						else if(status == 'failed'){
 		  						
-		  							MaximumPointsAvailable = parseInt(MaximumPointsAvailable) -parseInt(ScoreModelNegativeScore);
+		  							MaximumPointsAvailable = parseInt(MaximumPointsAvailable) - parseInt(ScoreModelNegativeScore);
 		  							IsOOWAvailable = false;
 		  							component.set("v.OOWStatusForDay", false);
+									component.set("v.MaximumPointsAvailable",MaximumPointsAvailable);
+		  							component.set("v.PointObtained", PointsObtained);
 		  							helper.GetNextAuthenticationType(component, event, helper, memberid, MemberType, MaximumPointsAvailable, PointsObtained, IsKYMAvailable, IsOTPAvailable, DebitCardStatus, IsOOWAvailable, IsPublicWalletAvailable, IsCFCUWalletAvailable);
 		  							component.set("v.Likedisable",true);
 		  						}
@@ -773,7 +813,7 @@
 	
 		var DebitCardStatus = component.get("v.DebitCardStatus");
 		var action = component.get("c.getDataForReload");
-		action.setParams({"memberid": memberid,"GUID":GUID,"IVRGUIDFromUrl":IVRGUIDFromUrl,"DebitCardStatus" : DebitCardStatus,"IsOOWTabVisible": component.get("v.IsOOWTabVisible"), "IsUserSessionLoaded": component.get("v.IsUserSessionLoaded")});
+		action.setParams({"memberid": memberid,"GUID":GUID,"IVRGUIDFromUrl":IVRGUIDFromUrl,"DebitCardStatus" : DebitCardStatus, "IsUserSessionLoaded": component.get("v.IsUserSessionLoaded")});
     	action.setCallback(this, function (response) {
 		       	      		 var status = response.getState();            
 	                               if (component.isValid() && status === "SUCCESS") {
@@ -797,7 +837,7 @@
 	                                   if(result.PublicLogData !=undefined){
 	                                	   	if(result.PublicLogData.length > 0){
 	                                	   		component.set("v.IsPublicWalletAvailableOnLoad",false);
-	                                	   		if(result.PublicLogData[0].Public_Wallet_Status__c == 'Passed'){
+	                                	   		if(result.PublicLogData[0].Public_Wallet_Status__c == 'Pass'){
 	                                	   			var PublicWalletTab = document.getElementsByClassName('demo-only slds-box rightBox');
 		                                	   			if(PublicWalletTab.length > 2)
 															{
@@ -821,7 +861,7 @@
 	                                	   		if(result.CFCULogData !=undefined){
 			                                	   	if(result.CFCULogData.length > 0){
 			                                	   		component.set("v.IsCFCUWalletAvailableOnLoad", false);
-			                                	   		if(result.CFCULogData[0].CFCU_Wallet_Status__c == 'Passed'){
+			                                	   		if(result.CFCULogData[0].CFCU_Wallet_Status__c == 'Pass'){
 			                                	   			var CFCUWalletTab = document.getElementsByClassName('demo-only slds-box rightBox');
 				                                	   			if(CFCUWalletTab.length > 2)
 																	{
@@ -845,7 +885,7 @@
 	                                	   		if(result.OTPLogData !=undefined){
 			                                	   	if(result.OTPLogData.length > 0){
 			                                	   		component.set("v.IsOTPAvailableOnLoad", false);
-			                                	   		if(result.OTPLogData[0].OTP_Status__c == 'Passed'){
+			                                	   		if(result.OTPLogData[0].OTP_Status__c == 'Pass'){
 			                                	   			var OTPTab = document.getElementsByClassName('demo-only slds-box rightBox');
 				                                	   			if(OTPTab.length > 2)
 																	{

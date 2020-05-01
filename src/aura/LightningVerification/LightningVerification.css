@@ -438,8 +438,7 @@ border: 0px;
 .THIS .progressbar li.active:before,.THIS .progressbar li.active.three:before {background-color: #00ad53;} 
 .THIS .progressbar li.active + li:after {background-color: #16325c;}  
 .THIS .progressbar li .step-indicator-content {width: 60%; margin: 0 auto 0 43%; text-align:left;}     
-.THIS .progressbar li:first-child .step-indicator-content {margin-left:43%;}  
-
+.THIS .progressbar li:first-child .step-indicator-content {margin-left:43%;}                                                                                                                   
 @media screen and (max-width: 1600px) {    
 	.THIS .cCFCUWallet .InnerDiv {
         padding: 20px 10px 20px 0px;

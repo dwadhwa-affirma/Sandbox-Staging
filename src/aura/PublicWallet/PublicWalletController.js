@@ -40,9 +40,9 @@
 					compEvent.setParams({"PublicWalletScoreObtained" : ScoreObtained,"PublicWalletFailedCount" : FailedCount, "ActionType": 'Public Wallet'});
 				  	compEvent.fire();
 				    if(ScoreObtained >= 3 && FailedCount <= 1)
-			            status = "Passed";
+			            status = "Pass";
 			        else
-			            status = "Failed";
+			            status = "Fail";
 					helper.saveMethod(component, event, memberId, status);
 					component.set("v.IsSubmitClicked",true);
 					component.set("v.IsButtonDisabled",true);

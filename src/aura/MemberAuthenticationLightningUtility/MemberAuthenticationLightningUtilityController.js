@@ -12,7 +12,7 @@
               var utilityBarAPI = component.find("utilitybar");
           var eventHandler = function(response){
             
-                  window.open("/apex/MemberAuthenticatedUtility");
+                  document.location.href = "/apex/MemberAuthenticatedUtility";
             
                 // To Close or Hide a Global Quick Action Lightning Component popup 
                 //window.location.reload();
@@ -26,7 +26,7 @@
                 eventHandler: eventHandler 
             }).then(function(result){
                
-                window.open("/apex/MemberAuthenticatedUtility");
+                document.location.href = "/apex/MemberAuthenticatedUtility";
                 
                 window.MemberAuthInitialized = true;
                 var dismissActionPanel = $A.get("e.force:closeQuickAction");   

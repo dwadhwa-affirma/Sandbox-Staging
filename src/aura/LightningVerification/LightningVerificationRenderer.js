@@ -63,7 +63,12 @@ rerender : function(component, helper){
 						liElement[i].classList.add("grey");				
 			  			component.set('v.PWIconName','utility:help');
 					}
-					
+					/*if(aElement.id =='PublicWalletTab__item' && PublicWalletStatusForDay==true && component.get("v.PublicWalletColor") == 'Grey' && component.get("v.IsUserSessionLoaded") == true ){
+						liElement[i].classList.remove("red");
+						liElement[i].classList.remove("green");	
+						liElement[i].classList.add("grey");				
+			  			component.set('v.PWIconName','utility:help');
+					}*/
 					
 					//----------------------------------CFCU wallet -----------------------------------//
 					
@@ -83,7 +88,12 @@ rerender : function(component, helper){
 						liElement[i].classList.add("grey");				
 			  			component.set('v.CFCUIconName','utility:help');
 					}
-					
+					/*if(aElement.id =='CFCUWalletTab__item' && CFCUWalletStatusForDay==true && component.get("v.CFCUWalletColor") == 'Grey' && component.get("v.IsUserSessionLoaded") == true){
+						liElement[i].classList.remove("red");
+						liElement[i].classList.add("green");	
+						liElement[i].classList.remove("grey");				
+			  			component.set('v.CFCUIconName','utility:check');
+					}*/
 					
 					
 					//----------------------------------OTP -----------------------------------//
@@ -104,7 +114,12 @@ rerender : function(component, helper){
 						liElement[i].classList.add("grey");	
 			  			component.set('v.OTPIconName','utility:help');
 					}
-					
+					/*if(aElement.id =='OTPTab__item' && OOWStatusForDay == true && component.get("v.OTPColor") == 'Grey' && component.get("v.IsUserSessionLoaded") == true){
+						liElement[i].classList.remove("red");
+						liElement[i].classList.add("green");
+						liElement[i].classList.remove("grey");	
+			  			component.set('v.OTPIconName','utility:check');
+					}*/
 					
 					if(aElement.id =='OTPTab__item' && component.get("v.OTPMessage") == 'YES' && component.get("v.OTPCancellAttept") > 1){
 						liElement[i].classList.add("grey");
@@ -133,32 +148,40 @@ rerender : function(component, helper){
 						liElement[i].classList.add("grey");	
 			  			component.set('v.OOWIconName','utility:help');
 					}
-					
+					/*if(aElement.id =='OOWTab__item' && OOWStatusForDay == true && component.get("v.OOWColor") == 'Grey' && component.get("v.IsUserSessionLoaded") == true){
+						liElement[i].classList.remove("red");
+						liElement[i].classList.add("green");
+						liElement[i].classList.remove("grey");	
+			  			component.set('v.OOWIconName','utility:check');
+					}*/
 					
 					//----------------------------------Debit Card Pin -----------------------------------//
 					
-					if(DebitCardStatus =='false' && aElement.id =='DebitCardTab__item'){
-						 liElement[i].classList.add("red");
-						 liElement[i].classList.remove("slds-is-active");
-			  			 component.set("v.DebitCardMessage", 'Member has failed the debit card authentication' );
-			  			 component.set('v.DebitIconName','utility:close');
-			  			 
-					 }
-					 if(DebitCardStatus =='true' && aElement.id =='DebitCardTab__item'){
-						  liElement[i].classList.add("green");
-						  liElement[i].firstChild.classList.remove("TabDisabled");
-			  			  liElement[i].classList.remove("slds-is-active");
-			  			  component.set("v.DebitCardMessage", 'Member has passed the debit card authentication' );
-			  			  component.set('v.DebitIconName','utility:check');
-			  			  
-					 }
-					  if((DebitCardStatus == undefined || DebitCardStatus == '') && aElement.id =='DebitCardTab__item'){
-						  liElement[i].classList.add("grey");
-						  liElement[i].classList.add("TabDisabled");
-			  			  liElement[i].classList.remove("slds-is-active");
-			  			  component.set("v.DebitCardMessage", 'Member has passed the debit card authentication' );
-			  			  component.set('v.DebitIconName','utility:ban');
-			  			 
+					if(component.get("v.IsDebitTabVisible") == true)
+					{
+						if(DebitCardStatus =='false' && aElement.id =='DebitCardTab__item'){
+							 liElement[i].classList.add("red");
+							 liElement[i].classList.remove("slds-is-active");
+				  			 component.set("v.DebitCardMessage", 'Member has failed the debit card authentication' );
+				  			 component.set('v.DebitIconName','utility:close');
+				  			 
+						 }
+						 if(DebitCardStatus =='true' && aElement.id =='DebitCardTab__item'){
+							  liElement[i].classList.add("green");
+							  liElement[i].firstChild.classList.remove("TabDisabled");
+				  			  liElement[i].classList.remove("slds-is-active");
+				  			  component.set("v.DebitCardMessage", 'Member has passed the debit card authentication' );
+				  			  component.set('v.DebitIconName','utility:check');
+				  			  
+						 }
+						  if((DebitCardStatus == undefined || DebitCardStatus == '') && aElement.id =='DebitCardTab__item'){
+							  liElement[i].classList.add("grey");
+							  liElement[i].classList.add("TabDisabled");
+				  			  liElement[i].classList.remove("slds-is-active");
+				  			  component.set("v.DebitCardMessage", 'Member has passed the debit card authentication' );
+				  			  component.set('v.DebitIconName','utility:ban');
+				  			 
+						 }
 					 }
 				}
 				

@@ -117,7 +117,7 @@
 		    				    		
 		    	}
 		    	
-		    	if(result.CFCULastSessionInfo.length > 0 && result.CFCULastSessionInfo[0].CFCU_Wallet_Status__c =='Failed' && component.get("v.IsReLoadRequired") == false){
+		    	if(result.CFCULastSessionInfo.length > 0 && result.CFCULastSessionInfo[0].CFCU_Wallet_Status__c =='Fail' && component.get("v.IsUserSessionLoaded") == false){
 		    		component.set("v.CFCULastSessionInfo", result.CFCULastSessionInfo);
 		    		if(result.CFCULastSessionInfo[0].BeneficiaryDetailMatch__c == undefined){
 		    			component.find('BeneficiaryPassButton').set("v.variant", "neutral");
@@ -203,7 +203,7 @@
 		    		}
 		    				    		
 		    	}
-		    	else if(result.CFCULastSessionInfo.length > 0 && result.CFCULastSessionInfo[0].CFCU_Wallet_Status__c == 'Passed' && component.get("v.IsReLoadRequired") == false && component.get("v.IsUserSessionLoaded") == false){
+		    	else if(result.CFCULastSessionInfo.length > 0 && result.CFCULastSessionInfo[0].CFCU_Wallet_Status__c == 'Pass' && component.get("v.IsReLoadRequired") == false && component.get("v.IsUserSessionLoaded") == false){
 		    		helper.buttonOnLoad(component, event, helper);
 		    	}
 		    	else if(result.CFCUReloadInfo != undefined && result.CFCUReloadInfo.length > 0 && component.get("v.IsReLoadRequired") == true){
@@ -634,9 +634,9 @@
 					            compEvent.setParams({"CFCUWalletScoreObtained" : ScoreObtained,"CFCUWalletFailedCount" : FailedCount, "ActionType": 'CFCU Wallet'});
 							    compEvent.fire();
 							    if(ScoreObtained >= 3 && FailedCount <= 1)
-						  			status = "Passed";
+						  			status = "Pass";
 						        else
-						            status = "Failed";
+						            status = "Fail";
 						  		var action = component.get("c.CFCUWalletSaveLogData");
 						  		var GUID = component.get("v.GUID");
 						  		var IVRGUIDFromUrl = component.get("v.IVRGUIDFromUrl");

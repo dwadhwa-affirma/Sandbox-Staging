@@ -11,6 +11,14 @@
 	   
 		},
 		
+		/*LocationUpdate : function(component, event, helper) {
+        var PhoneNumber = component.get("v.PhoneFromURL");
+	    var MemberNumber = component.get("v.MemberNumberFromURL");
+	    var SSNNumber = component.get("v.SSNFromURL");
+	    var IVRGUIDFromUrl =  component.get("v.IVRGUIDFromUrl");
+	    helper.getMemberSearch(component, event,PhoneNumber,MemberNumber,SSNNumber,IVRGUIDFromUrl);
+		},
+		*/
 		onRender : function (component, event, helper) {
 	        
 	        var memberid = component.get("v.ReMemberId");
@@ -78,7 +86,15 @@
 		var IsKYMAvailable = component.get("v.IsKYMAvailableOnLoad");
 	    var IsOTPAvailable = component.get("v.IsOTPAvailableOnLoad");
 	    //var IsDebitPinAvailable = component.get("v.IsDebitPinAvailableOnLoad");
-	    var IsOOWAvailable = component.get("v.OOWStatusForDay");
+	    var IsOOWAvailable;
+	    if(component.get("v.IsOOWTabVisible") == true)
+	    {
+	    	IsOOWAvailable = component.get("v.OOWStatusForDay");
+	    }
+	    else if(component.get("v.IsOOWTabVisible") == false)
+	    {
+	    	IsOOWAvailable = false;
+	    }
 	  //  var IsOOWAvailable = component.get("v.IsOOWAvailableOnLoad"); 
 	    var IsPublicWalletAvailable = component.get("v.IsPublicWalletAvailableOnLoad");
 	    var IsCFCUWalletAvailable =   component.get("v.IsCFCUWalletAvailableOnLoad");
@@ -448,16 +464,19 @@
 		var DebitCardStatus = component.get("v.DebitCardStatus");
 		var attribute1 = component.get('v.SelectedmemberId');
 		var PublicWalletComponent = component.find('PublicWallet');
-		 var IsUserSessionLoaded = component.get("v.IsUserSessionLoaded");
+		var IsUserSessionLoaded = component.get("v.IsUserSessionLoaded");
+		if(ReLoadRequired == undefined){
+			ReLoadRequired = false;
+		}
 	    if(PublicWalletComponent!=undefined){
         	PublicWalletComponent.PublicWalletMethod(attribute1,ReLoadRequired, IsUserSessionLoaded);
         }
         
-       /* var CFCUWalletComponent = component.find('CFCUWallet');
+        var CFCUWalletComponent = component.find('CFCUWallet');
         if(CFCUWalletComponent!=undefined)CFCUWalletComponent.CFCUWalletMethod(attribute1,ReLoadRequired, IsUserSessionLoaded);
         
         var OTPComponent = component.find('OTPAuthentication');
-        if(OTPComponent!=undefined)OTPComponent.OTPMethod(attribute1,ReLoadRequired);*/
+        if(OTPComponent!=undefined)OTPComponent.OTPMethod(attribute1,ReLoadRequired);
        helper.MemberVerificationAttemptCheck(component, event, helper, memberid, DebitCardStatus, ReLoadRequired, PointsObtained);
 	},
 	
@@ -797,6 +816,13 @@ NavigateToMember : function(component , event, helper){
 	   component.set("v.ReLoadRequired",false);
 	   component.set("v.IsReLoaded",false);
 	   component.set("v.IsUserSessionLoaded",false);
+	   component.set("v.EnteredCardNumber",'');
+	   component.set("v.CardNumberMatch",'');
+	   component.set("v.MemberNumberMatch",'');
+	   component.set("v.PhoneNumberMatch",'');
+	   component.set("v.SSNnumberMatch",'');
+	   component.set("v.PINMatch",'');
+	   
 	   
 	    
    },

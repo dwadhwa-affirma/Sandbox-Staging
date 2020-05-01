@@ -3,7 +3,7 @@
 <aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
 <aura:handler name="render" value="{!this}" action="{!c.onRender}"/> 
 <aura:handler name="statusEvent" event="c:MemberIdEvent" action="{!c.MemberCompEvent}"/>
-
+<!-- <aura:handler event="aura:locationChange" action="{!c.LocationUpdate}"/> -->
 <aura:attribute name="CurrentUrl" type="string" description="to store current url"/>
 <aura:attribute name="PhoneNumberEntered" type="string" description="to search from Phone Number "/>
 <aura:attribute name="MemberNumberEntered" type="string" description="to search from Member Number "/>
@@ -122,7 +122,12 @@
 <aura:attribute name="ManagerCallbackComments" type="string" />
 <aura:attribute name="IsGetReloadDataCalled" type="boolean" default="false"/>
 <aura:attribute name="IsUserSessionLoaded" type="boolean" default="false"/>
-
+<aura:attribute name="EnteredCardNumber" type="string" />
+<aura:attribute name="CardNumberMatch" type="string" />
+<aura:attribute name="MemberNumberMatch" type="string" />
+<aura:attribute name="PhoneNumberMatch" type="string" />
+<aura:attribute name="SSNnumberMatch" type="string" />
+<aura:attribute name="PINMatch" type="string" />
 
     <article class="slds-card">
         <div class="slds-card__body slds-card__body_inner tblrow">
@@ -343,11 +348,11 @@
 								    </aura:if>
 											         
 								        <lightning:tab label="Public Wallet" id="PublicWalletTab" onactive="{! c.handleActive }" iconName="{!v.PWIconName}">
-											<aura:if isTrue="{!(v.Visible == true)}">
+											
 												<div class=" " id="cmpPublicWallet">
 									  				<c:PublicWallet recordId="{!v.SelectedmemberId}" aura:id="PublicWallet" GUID="{!v.GUID}" PublicWalletStatusForDay ="{!v.PublicWalletStatusForDay}" IVRGUIDFromUrl="{!v.IVRGUIDFromUrl}"  />
 												</div>
-											</aura:if>	
+											
 										</lightning:tab>
 															        	
 										<lightning:tab label="CFCU Wallet" id="CFCUWalletTab" onactive="{! c.handleActive }" iconName="{!v.CFCUIconName}" >
@@ -357,7 +362,7 @@
 							          	<aura:if isTrue="{!(v.IsOOWTabVisible == true)}">
 								          	<aura:if isTrue="{!(v.IsOOWAvailableOnLoad == true)}">
 									        	<lightning:tab label="OOW" id="OOWTab" onactive="{! c.handleActive }" iconName="{!v.OOWIconName}" >
-												<aura:if isTrue="{!(v.Visible == true)}">
+												
 													<div>
 												 		<lightning:button aura:id="OOWsession" variant="brand" label="Start OOW Session" title="Start OOW Session" onclick="{! c.OpenOOWComponent }" disabled="{!v.Likedisable}" />
 														<!--  <button aura:id="OOWsession" disabled="{!v.Likedisable}" class="slds-button slds-button_brand OOWsession" onclick="{! c.OpenOOWComponent}">Start OOW Session</button>-->
@@ -365,15 +370,15 @@
 												  	<div class="hidden" id="oowComponentdiv">
 												  		<c:OOWFlowExecution recordId="{!v.SelectedmemberId}" status="{!v.status}" reason="{!v.reason}" notes="{!v.notes}" />
 												 	</div>
-												</aura:if>
+												
 										   	 </lightning:tab>
 										  	</aura:if>
 										</aura:if>						       
 							        <lightning:tab label="OTP" id="OTPTab" onactive="{!c.handleActive }" iconName="{!v.OTPIconName}">
 						            	<div class=" " id="cmpOTPVerification">
-											<aura:if isTrue="{!v.Visible == true}">
+											
 												<c:OTPAuthentication aura:id="OTPAuthentication" recordId="{!v.SelectedmemberId}" IsCallingfromAuth="{!v.IsAuth}" GUID="{!v.GUID}" OTPStatusForDay="{!v.OTPStatusForDay}" IVRGUIDFromUrl="{!v.IVRGUIDFromUrl}"  />
-				                        	</aura:if>
+				                        	
 											
 											
 										</div>

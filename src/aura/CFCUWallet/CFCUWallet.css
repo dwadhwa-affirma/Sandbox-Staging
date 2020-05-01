@@ -88,6 +88,9 @@ float:left;
 .THIS .MainDiv.MainField {border-bottom: 3px solid #637697; margin-bottom: 0;}
 .THIS .rightBox p.field-header {text-transform : uppercase;}
 .THIS .CardDetails .vl {min-height: 340px;} 
+.THIS .maap-answers .slds-p-around_small {margin-right:0 !important;}
+.THIS .maap-answers .slds-p-around_small:first-child{border: none !important; margin-right:0 !important; text-align: left !important; min-width: 150px !important;}
+.THIS .maap-answers .slds-p-around_small:first-child .mr-80 {padding-right:0;}
 @media screen and (max-width: 1600px){
     .THIS .InnerDiv {display:block !important;}
     .THIS .leftDiv,.THIS .RightDiv {width:100% !important; display: block !important;}

@@ -65,10 +65,10 @@
                      <aura:if isTrue="{!v.IsRelationshipDataAvailable}">
                          <div class="MidDiv">
                              <div class="slds-media slds-media_center slds-has-flexi-truncate">
-                                 <div class="c-container">
+                                 <div class="c-container maap-answers">
                                      
                                      <lightning:layout horizontalAlign="spread">
-                                         <lightning:layoutItem>
+                                         <lightning:layoutItem padding="around-small">
                                              <div class="header-column mr-80">
                                                  <p class="field-title" title="NumberOfCallsToday">Account Number </p>
                                                  <aura:iteration items="{!v.JointAccount}" var="item">
