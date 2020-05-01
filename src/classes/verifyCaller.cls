@@ -226,7 +226,8 @@ public class verifyCaller{
     
     public List<Account> queryByParametersAvailable(verificationObject input, boolean onlyQueryParameters){
         String check = '';
-        String queryString = 'select Name,FirstName , LastName , ID, SSN_Last_4__pc, BIRTH_DATE__pc,Mothers_Maiden_Name__pc, PersonEmail,  ID_1_Description__pc,ID_2_Description__pc,ID_3_Description__pc, ID_1_Number__pc ,ID_2_Number__pc, ID_3_Number__pc, ID_1_Type__pc, ID_2_Type__pc, ID_3_Type__pc, ID_1_Expiration_Date__pc, ID_2_Expiration_Date__pc, ID_3_Expiration_Date__pc, ID_1_Type__c, ID_2_Type__c, ID_3_Type__c from Account where (';
+      //  String queryString = 'select Name,FirstName , LastName , ID, SSN_Last_4__pc, Personid__pc  , BIRTH_DATE__pc,Mothers_Maiden_Name__pc, PersonEmail,  ID_1_Description__pc,ID_2_Description__pc,ID_3_Description__pc, ID_1_Number__pc ,ID_2_Number__pc, ID_3_Number__pc, ID_1_Type__pc, ID_2_Type__pc, ID_3_Type__pc, ID_1_Expiration_Date__pc, ID_2_Expiration_Date__pc, ID_3_Expiration_Date__pc, ID_1_Type__c, ID_2_Type__c, ID_3_Type__c from Account where (';
+        String queryString = 'select Name,FirstName , LastName , ID, SSN_Last_4__pc, Personid__pc  , BIRTH_DATE__pc,Mothers_Maiden_Name__pc, PersonEmail  from Account where (';
         String conditions = '';
         String additionalConditions = ''; 
         String phoneQuery = '';
@@ -258,12 +259,28 @@ public class verifyCaller{
             check = '0';*/
             
         }
+        system.debug('SSN##' + input.SSN);
         if(input.SSN != null && input.SSN != ''){
             if(check == '0'){
                 queryString = queryString+ ' And ';
             }
-            queryString = queryString+ 'SSN_Last_4__pc = \''+input.SSN+'\'';
-            check = '0';
+             /*queryString = queryString+ 'SSN_Last_4__pc = \''+input.SSN+'\'';
+           		 check = '0';*/
+            if(input.SSN.length() > 4)
+            {	
+            	string lastNine;
+            	lastNine = input.SSN.right(9);
+            	 queryString = queryString+ 'Personid__pc Like \''+ '%' +lastNine+'\'';
+            	 system.debug('queryString##' + queryString);
+            	  check = '0';
+            }
+            else if(input.SSN.length() > 0 && input.SSN.length() <= 4 ){
+            	 queryString = queryString+ 'SSN_Last_4__pc = \''+input.SSN+'\'';
+           		 check = '0';
+           		 system.debug('queryString##' + queryString);
+            }
+            
+           
         }
         if(input.CardNumber != null && input.CardNumber != ''){         
             List<Account_Details__c> temp = new List<Account_Details__c>();
@@ -393,6 +410,7 @@ public class verifyCaller{
         }
          system.debug('..'+queryString+additionalConditions+conditions);
          queryString = queryString+additionalConditions+conditions+phoneQuery+')';
+        system.debug('queryString##' + queryString);
          system.debug('..'+phoneQuery+')');
         try{
             ListofNames = Database.query(queryString);

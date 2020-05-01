@@ -120,8 +120,8 @@ private class MemberAuthenticationControlLightningTest {
         Jointwrapper.ID = acc.id;
         
         Accountnumber = MemberAuthenticationControllerLightning.GetAccountNumber(acc.id);
-        MemberVerificationNumber = MemberAuthenticationControllerLightning.MemberVerificationAttemptsCheck(acc.id,'gewwwsegv-sewswrw-2eqed-qrq', 'Pass','1234','0000084','123-4567-765','www.googgle.com','IVRgewwwsegv-sewswrw-2eqed-qrq',true,'aa','ss',3, true,false);
-        MemberVerificationNumber = MemberAuthenticationControllerLightning.MemberVerificationAttemptsCheck(acc.id, 'gewwwsegv-sewswrw-2eqed-qrq', 'True','1234','0000084','123-4567-765','www.googgle.com','IVRgewwwsegv-sewswrw-2eqed-qrq',true,'aa','ss',3, false, true);
+        MemberVerificationNumber = MemberAuthenticationControllerLightning.MemberVerificationAttemptsCheck(acc.id,'gewwwsegv-sewswrw-2eqed-qrq', 'Pass','1234','0000084','123-4567-765','www.googgle.com','IVRgewwwsegv-sewswrw-2eqed-qrq',true,'aa','ss',3, true,false,'','','','','','');
+        MemberVerificationNumber = MemberAuthenticationControllerLightning.MemberVerificationAttemptsCheck(acc.id, 'gewwwsegv-sewswrw-2eqed-qrq', 'True','1234','0000084','123-4567-765','www.googgle.com','IVRgewwwsegv-sewswrw-2eqed-qrq',true,'aa','ss',3, false, true, '','','','','','');
         
         Test.startTest();
         CFCUWalletInfo = MemberAuthenticationControllerLightning.GetCFCUWalletInfo(acc.id,'IVRgewwwsegv-sewswrw-2eqed-qrq');

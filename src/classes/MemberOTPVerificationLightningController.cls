@@ -891,7 +891,7 @@ public class MemberOTPVerificationLightningController
         log.Staff_Name__c = UserInfo.getName();
         log.Current_User__c = Userinfo.getuserid();
         log.Decision__c = 'OTP – Contact Unconfirmed';
-        log.OTP_Status__c = 'Failed';
+        log.OTP_Status__c = 'Fail';
         log.Member_Number__c = AccountNumber;
         log.GUID__c = GUID;
         log.IVR_GUID__c = IVRGUIDFromUrl;
@@ -1185,8 +1185,8 @@ public class MemberOTPVerificationLightningController
         {
             //acc.Member_Verification_OTP_Invalid_Attempt__c = null;
             //update acc;
-            log.Decision__c = 'OTP – Code valid';
-            log.OTP_Status__c = 'Passed';
+            log.Decision__c = 'OTP – Code Valid';
+            log.OTP_Status__c = 'Pass';
             Verified = 'Valid';
         }
         else
@@ -1194,7 +1194,7 @@ public class MemberOTPVerificationLightningController
             acc.Member_Verification_OTP_Invalid_Attempt__c = system.now();
             update acc;
             log.Decision__c = 'OTP – Code Failed';
-            log.OTP_Status__c = 'Failed';
+            log.OTP_Status__c = 'Fail';
             Verified = 'Invalid';
         }
         
@@ -1470,7 +1470,7 @@ public class MemberOTPVerificationLightningController
         }
         log.Staff_Name__c = UserInfo.getName();
         log.Current_User__c = Userinfo.getuserid();
-		log.Decision__c = 'OTP – Code not provided';
+		log.Decision__c = 'OTP – Code Not Provided';
 		log.GUID__c = GUID;
 		log.IVR_GUID__c = IVRGUIDFromUrl; 
 		log.Member_Number__c = AccountNumber;
@@ -1518,7 +1518,7 @@ public class MemberOTPVerificationLightningController
 	        	{
 	        		Verified = 'Expired';
 	        	}
-	        	if( log.Decision__c == 'OTP – Code valid')
+	        	if( log.Decision__c == 'OTP – Code Valid')
 	        	{
 	        		 Verified = 'Valid';
 	        	}
