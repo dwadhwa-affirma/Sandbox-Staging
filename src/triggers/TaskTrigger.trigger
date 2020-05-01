@@ -33,7 +33,7 @@ trigger TaskTrigger on Task (before delete, before insert,after insert, after up
      	 		
      	 	}
      	 }
-     
+     	AssignOnboardingTasks(Trigger.new);
      }
      
      
@@ -89,6 +89,54 @@ trigger TaskTrigger on Task (before delete, before insert,after insert, after up
 	              }
 	                 
 	                     update listCase;
+     }
+     
+     public void AssignOnboardingTasks(List<Task> listTasks){
+     	list<string> Ids = new list<string>();
+		List<Case> listOnboardingEbranchCase = new List<Case>();
+		List<Case> listOnboardingSolarCase = new List<Case>();		
+		Profile p = [Select Name from Profile where Id =: userinfo.getProfileid()];
+		String pname = p.name;
+		string eBranchOnboardingQueue  = [select Id, Name, DeveloperName from Group where Type = 'Queue' and DeveloperName = 'eBranch_Onboarding_Queue' Limit 1].id;
+		string SolarOnboardingQueue  = [select Id, Name, DeveloperName from Group where Type = 'Queue' and DeveloperName = 'Call_Center_Solar_Onboarding_Queue' Limit 1].id;
+
+	    for(Task t:listTasks){
+	    	if(t.whatId != null && t.whatId.getsObjectType() == Case.sObjectType){
+			   		Ids.add(t.whatId);
+			   		}
+			}	
+	    listOnboardingEbranchCase = [select id from Case where id in: Ids and Status != 'Closed' and Secondary_Category__c =: 'Onboarding'];
+	    listOnboardingSolarCase = [select id from Case where id in: Ids and Status != 'Closed' and Secondary_Category__c =: 'Onboarding' and Promo_Code__c	 = '2166'];   	
+	        
+	   if(pname == 'eBranch'){
+		   for(Task t:listTasks){
+	     	 	for(Case c : listOnboardingEbranchCase)
+	     	 	{
+	     	 		if(c.Id == t.whatid)
+	     	 		{
+	     	 			t.OwnerId = eBranchOnboardingQueue;
+	     	 			
+	     	 		}
+	     	 		
+	     	 	}
+	     	 }
+	   }
+     	 
+     	 for(Task t:listTasks){
+     	 	for(Case c : listOnboardingEbranchCase)
+     	 	{
+     	 		if(c.Id == t.whatid)
+     	 		{
+     	 			t.OwnerId = SolarOnboardingQueue;
+     	 			
+     	 		}
+     	 		
+     	 	}
+     	 }
+	               
+	               
+	              
+     
      }
      
   }
