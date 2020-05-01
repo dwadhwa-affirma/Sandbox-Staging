@@ -1,6 +1,9 @@
-<apex:page standardStylesheets="false" controller="MemberAuthenticationController" action="{!CheckIfMemberValidated}">
-
-  <style>
+<apex:page standardStylesheets="false" controller="MemberAuthenticationController" action="{!CheckIfMemberValidated}" cache="false">
+ 
+<script type="text/javascript" >
+					window.location.href = '{!RedirectToURL}';
+ 	</script>
+<!--   <style>
     .headingval:after{display:table; content:''; clear:both}
   .headingval .float-left{float:left; margin-right:15px; width:auto !important;}
   .headingval .float-left > span{padding: 15px; height: auto; border: 0; display: block;}
@@ -8,6 +11,7 @@
   .headingval .float-right > span{padding: 15px; height: auto; border: 0; display: block;}
  
   </style>
+ 
   <apex:stylesheet value="{!$Resource.style_c}" /> 
   <apex:stylesheet value="{!$Resource.bootstrap}" />
   <head>
@@ -84,8 +88,13 @@
             <div class="col-md-12 col-sm-12 col-xs-12">
                 <apex:commandButton styleClass="btn btn-primary pull-right" id="AuthenticatedButton" value="Authenticated" action="{!DetailsPage}" immediate="true"></apex:commandButton>
             </div>
+            
+            
+            
+            
          </apex:form> 
         </div>
     </div>
-</div>
+</div>--> 
+ 
 </apex:page>

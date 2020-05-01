@@ -1,6 +1,10 @@
-<apex:page standardStylesheets="false" controller="MemberAuthenticationController" action="{!GetCurrentUserData}">
+<apex:page standardStylesheets="false" controller="MemberAuthenticationController" action="{!GetCurrentUserData}" cache="false">
 
-  <style>
+<script type="text/javascript" >
+					window.location.href = '{!RedirectToURL}';
+ 	</script>
+
+  <!--  <style>
     .headingval:after{display:table; content:''; clear:both}
   .headingval .float-left{float:left; margin-right:15px; width:auto !important;}
   .headingval .float-left > span{padding: 15px; height: auto; border: 0; display: block;}
@@ -87,5 +91,5 @@
          </apex:form> 
         </div>
     </div>
-</div>
+</div>-->
 </apex:page>
