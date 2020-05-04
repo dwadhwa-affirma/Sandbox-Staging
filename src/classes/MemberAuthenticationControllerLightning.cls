@@ -1264,7 +1264,7 @@ public class MemberAuthenticationControllerLightning{
             
             system.debug('log##' + log);
             
-            RecordType rec1 =[select Id,Name,SobjectType from RecordType where name ='Debit Pin Log' and SobjectType='Authenticated_Log__c'];
+            RecordType rec1 =[select Id,Name,SobjectType from RecordType where name ='Debit PIN Log' and SobjectType='Authenticated_Log__c'];
                 Authenticated_Log__c log1 = new Authenticated_Log__c();
             log1.IVR_Sent_URL__c = PageURL;
                 if(DebitCardStatus == 'true'){
