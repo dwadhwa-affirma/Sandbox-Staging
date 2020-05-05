@@ -822,7 +822,7 @@ NavigateToMember : function(component , event, helper){
 	   component.set("v.PhoneNumberMatch",'');
 	   component.set("v.SSNnumberMatch",'');
 	   component.set("v.PINMatch",'');
-	   
+	  // window.location.href = '/lightning/cmp/c__LightningVerification';
 	   
 	    
    },

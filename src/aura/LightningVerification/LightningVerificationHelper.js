@@ -148,8 +148,25 @@
 	
 	LastAcheivableLogs : function(component, event, memberid, GUID, LastLevel, IVRGUIDFromUrl)
 	{
+		var PhoneFromURL = component.get("v.PhoneFromURL");
+		var MemberNumberFromURL = component.get("v.MemberNumberFromURL");
+		var EnteredCardNumber = component.get("v.EnteredCardNumber");
+		var CardNumberMatch = component.get("v.CardNumberMatch");
+		var PhoneNumberMatch = component.get("v.PhoneNumberMatch");
+		var MemberNumberMatch = component.get("v.MemberNumberMatch"); 
+		var SSNnumberMatch = component.get("v.SSNnumberMatch");   
+		var HighFlagFromUrl = component.get("v.HighFlagFromUrl");
+		var ReasonCodeFromURL = component.get("v.ReasonCodeFromURL");
+		var PINMatch = component.get("v.PINMatch"); 
+		var SSNFromURL = component.get("v.SSNFromURL");
+		var DebitCardStatus = component.get("v.DebitCardStatus");
+		
 		var action = component.get("c.SaveLastAchievableLevelLogs");
-		action.setParams({"MemberId": memberid, "GUID" : GUID, "LastLevel": LastLevel,"IVRGUIDFromUrl":IVRGUIDFromUrl });
+		action.setParams({"MemberId": memberid, "GUID" : GUID, "LastLevel": LastLevel,"IVRGUIDFromUrl":IVRGUIDFromUrl, 
+						"PhoneFromURL": PhoneFromURL, "MemberNumberFromURL" : MemberNumberFromURL, "EnteredCardNumber": EnteredCardNumber,"CardNumberMatch":CardNumberMatch,
+						"PhoneNumberMatch": PhoneNumberMatch, "MemberNumberMatch" : MemberNumberMatch, "SSNnumberMatch": SSNnumberMatch,"HighFlagFromUrl":HighFlagFromUrl,
+						"ReasonCodeFromURL": ReasonCodeFromURL, "PINMatch" : PINMatch, "SSNFromURL": SSNFromURL,"DebitCardStatus":DebitCardStatus});
+						
 		action.setCallback(this, function (response) {
   		 var status = response.getState();            
                if (component.isValid() && status === "SUCCESS") {
