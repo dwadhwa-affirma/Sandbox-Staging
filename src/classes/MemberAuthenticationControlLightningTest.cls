@@ -144,7 +144,7 @@ private class MemberAuthenticationControlLightningTest {
         MemberAuthenticationControllerLightning.SaveCaseWithLogData(acc.id,'00002','casecomment',ad.id,'gewwwsegv-sewswrw-2eqed-qrq','IVRgewwwsegv-sewswrw-2eqed-qrq');
         Test.stopTest(); 
         MemberAuthenticationControllerLightning.getPublicWalletInfo(acc.id,'IVRgewwwsegv-sewswrw-2eqed-qrq');
-        MemberAuthenticationControllerLightning.SaveLastAchievableLevelLogs(acc.id,'gewwwsegv-sewswrw-2eqed-qrq','Level 1','IVRgewwwsegv-sewswrw-2eqed-qrq');
+        MemberAuthenticationControllerLightning.SaveLastAchievableLevelLogs(acc.id,'gewwwsegv-sewswrw-2eqed-qrq','Level 1','IVRgewwwsegv-sewswrw-2eqed-qrq','123-4567-765','0000084','123455','True','True','True','True','Test','1','True','1234','True');
         MemberAuthenticationControllerLightning.GetSupervisor(acc.id,10,'gewwwsegv-sewswrw-2eqed-qrq');
         string str = MemberAuthenticationControllerLightning.substring('reason',2);
        

@@ -1006,17 +1006,19 @@ public class MemberAuthenticationControllerLightning{
   {
     IsCFCUWalletAvailable = true;
   }
+  system.debug('test1');
   if(visible == false && OOW == true)
   {
     IsOOWAvailable = true;
+    system.debug('test1');
   }
   
-  if(visible == true)
+  /*if(visible == true)
   {
     IsPublicWalletAvailable = true;
     IsOOWAvailable = true;
     IsCFCUWalletAvailable = true;
-  }
+  }*/
   
   string DebitPinStatus='';
   if(DebitCardStatus =='true'){
@@ -1305,6 +1307,7 @@ public class MemberAuthenticationControllerLightning{
     
     //---------------------To Get Which level is achieved on load and what would be the next achievable level based on Debitcard status begin--------------------------//
       //Aut-190 implementation starts here
+    
     if(ReLoadRequired == false && IsUserSessionLoaded == false)
    	{
 		        	system.debug('MemberVerificationAttemptsCheck GetTabsToAchieveNextLevel Called for ReLoadRequired == false && IsUserSessionLoaded == false-------');
@@ -1325,7 +1328,7 @@ public class MemberAuthenticationControllerLightning{
 		     if(PublicWallet == true){PublicWalletAvailable=1;}
 		     if(CFCUWallet == true){CFCUWalletAvailable=1;}
 		      if(IsOOWTabVisible == true){
-		          if(IsOOWAvailable == true){
+		          if(OOW == true){
 		              OOWAvailable=1;
 		          }
 		          else
@@ -2108,7 +2111,7 @@ public class MemberAuthenticationControllerLightning{
 	}
 	
 	@AuraEnabled
-	public static void SaveLastAchievableLevelLogs(string MemberId, string GUID, String LastLevel, string IVRGUIDFromUrl)
+	public static void SaveLastAchievableLevelLogs(string MemberId, string GUID, String LastLevel, string IVRGUIDFromUrl,string PhoneFromURL, String MemberNumberFromURL,String EnteredCardNumber, string CardNumberMatch, string PhoneNumberMatch,string MemberNumberMatch, string SSNnumberMatch, string HighFlagFromUrl,string ReasonCodeFromURL, string PINMatch, string SSNFromURL,string DebitCardStatus)
 	{
 		string  AccountNumber;
 		List<Person_Account__c> p = [SELECT Id, Account_Number__c, PersonID__r.Name, PersonID__c, Account_Number__r.RecType__c, TypeTranslate__c, Account_Number__r.Name
@@ -2121,6 +2124,39 @@ public class MemberAuthenticationControllerLightning{
 		RecordType rec =[select Id,Name,SobjectType from RecordType where name ='IVR Authentication Log' and SobjectType='Authenticated_Log__c'];
 		
 		Authenticated_Log__c log = new Authenticated_Log__c();
+        
+        log.CallerPhoneNumber__c = PhoneFromURL;
+        log.EnteredMemberNumber__c = MemberNumberFromURL;
+        log.EnteredCardNumber__c = EnteredCardNumber;
+        log.CardNumberMatch__c = CardNumberMatch;
+        log.PhoneNumberMatch__c = PhoneNumberMatch;
+        log.MemberNumberMatch__c = MemberNumberMatch;
+        log.SSNnumberMatch__c = SSNnumberMatch;
+        log.HP_HV__c = HighFlagFromUrl;
+        log.IVR_Code__c = ReasonCodeFromURL;
+        log.PINMatch__c = PINMatch;
+        
+        if(SSNFromURL.length() > 4){
+        	log.EnteredSSN__c = SSNFromURL.right(4);
+        	log.IVR_SSN__c = SSNFromURL;
+        }
+        else{
+        	log.EnteredSSN__c = SSNFromURL;
+        	log.IVR_SSN__c = SSNFromURL;
+        }
+        
+        log.IVR_Card_Number__c = EnteredCardNumber;
+        log.IVR_Member_Number__c = MemberNumberFromURL;
+        log.IVR_Member_Number_Match__c = MemberNumberMatch;
+        log.IVR_SSN_Match__c = SSNnumberMatch;
+        log.IVR_Card_Match__c = CardNumberMatch;
+        
+        
+        if(DebitCardStatus == 'true')
+        	log.IVR_Pin_Match__c = 'Pass';
+        if(DebitCardStatus == 'false')
+        	log.IVR_Pin_Match__c = 'Fail'; 
+            	    
         log.RecordTypeId= rec.id;
         log.SalesforceID__c = MemberId;
         log.Last_Achievable_Level__c = LastLevel;
@@ -2132,7 +2168,7 @@ public class MemberAuthenticationControllerLightning{
         log.IVR_GUID__c = IVRGUIDFromUrl;
         log.Decision__c = 'Level Achieved';
         insert log;
-				
+ 				
 	}
 	
 	@AuraEnabled
@@ -2644,6 +2680,7 @@ public class MemberAuthenticationControllerLightning{
 			}
 			else{
 				AuthLogMap.put('IsOTPAvailable',true);
+				OTPAvailable = 1;
 			}
 		}
 		else
@@ -2658,6 +2695,7 @@ public class MemberAuthenticationControllerLightning{
 					}
 					else{
 						AuthLogMap.put('IsOTPAvailable',true);
+						OTPAvailable = 1;
 					}
 			}else{
 				
