@@ -9,8 +9,14 @@
 				var result = response.getReturnValue();
 	        
 				if(result.DLcode != undefined){
-					component.set("v.DLStateIdPassport",result['DLcode']);
+					if(result.DLcode.length > 0 ){
+						component.set("v.DLStateIdPassport",result['DLcode']);
+					}
 				}
+				else{
+					component.set("v.DLStateIdPassport",undefined);
+				}
+				
 				if(result.BDate !=undefined){
 					if(result.BDate.length > 0 ){
 						component.set("v.BirthDate",result['BDate']);
