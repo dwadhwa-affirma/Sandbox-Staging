@@ -2589,7 +2589,7 @@ public class MemberAuthenticationControllerLightning{
 	        else{	        	
 	        		OOWLogData = [SELECT ID, Decision__c, Member_Name__c,Member__c,Name,Staff_Name__c,Member_Number__c,
 							OOW_Member_Number__c,OOW_Notes__c,OOW_Reason__c,OOW_Status__c,IVR_GUID__c,GUID__c
-							FROM Authenticated_Log__c where SalesforceID__c =:memberid  and RecordTypeId=: OOWRec.Id ];
+							FROM Authenticated_Log__c where SalesforceID__c =:memberid  and RecordTypeId=: OOWRec.Id and IVR_GUID__c =:IVRGUIDFromUrl ];
 				 if(OOWLogData.size() > 0)
 				 {
 				 	AuthLogMap.put('OOWLogData',OOWLogData);
