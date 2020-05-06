@@ -2266,7 +2266,7 @@ public class MemberAuthenticationControllerLightning{
 					'Override_Request_Supervisor__c, ' +
 					'GUID__c '  + 
 					' FROM Authenticated_Log__c where SalesforceID__c =  \'' +  MemberId  +  '\''  +
-					'  and GUID__c = \'' +  GUID  +  '\' order by createddate desc'  ;
+					'  and GUID__c = \'' +  GUID  +  '\' order by createddate asc'  ;
 		
 		
 		
