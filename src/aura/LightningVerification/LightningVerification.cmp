@@ -338,8 +338,11 @@
 							<div class="c-container">	
                                 <lightning:layout horizontalAlign="spread">
                                             <lightning:layoutItem padding="around-small">
-												<p class="field-header authQuestion" title="AuthQuestions">MAAP QUESTIONS</p>                            
-                                   			</lightning:layoutItem>								
+												<p class="field-header authQuestion" title="AuthQuestions">MAAP QUESTIONS
+													<lightning:buttonIcon iconName="utility:info" variant="bare" onclick="{! c.OpenDescription }" alternativeText="info" />
+												</p>													                            
+                                   			</lightning:layoutItem>
+                                   										
 								<lightning:tabset>
 					    		   	<aura:if isTrue ="{!v.IsKYMTabVisible}">
 										<lightning:tab label="KYM" id="KYMTab" onactive="{! c.handleActive }" iconName="{!v.KYMIconName}">
