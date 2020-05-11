@@ -1,0 +1,20 @@
+<aura:component implements="force:appHostable,force:lightningQuickActionWithoutHeader,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,force:hasSObjectName" access="global" controller="EFTController">
+    <aura:attribute name="actions" type="List" default="[{'label': 'Create a new EFT record', 'value': '1'},
+                                                   {'label': 'Access/Update existing EFT records', 'value': '2'}]"/>                                         
+                                                   
+<aura:attribute name="childActions" type="List" default="[{'label': 'View EFT Details', 'value': '3'},
+                                                   		{'label': 'Update EFT Record', 'value': '4'},
+                                                        {'label': 'Cancel/Expire EFT Record', 'value': '5'}]"/>  
+<aura:attribute name="ActionDisabled" type="Boolean" default="true"/> 
+  <div id = "stage4" class = "align">
+            <div>
+                <p class = "fontstyle">Provide the Funding FI information</p>
+                <lightning:radioGroup name="FITypes"
+                                      class ="radioAlign"
+                            	  options="{! v.FITypes}"
+                            	  value="{! v.actionValue }"
+                            	  onchange="{! c.onRadioChange }"
+                            	  type="radio"/>
+            </div>
+       </div>
+</aura:component>

@@ -1,0 +1,149 @@
+<aura:component implements="force:appHostable,force:lightningQuickActionWithoutHeader,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,force:hasSObjectName" access="global" controller="EFTController">
+    <aura:attribute name="actions" type="List" default="[{'label': 'Create a new EFT record', 'value': '1'},
+                                                   {'label': 'Access/Update existing EFT records', 'value': '2'}]"/>                                         
+                                                   
+<aura:attribute name="childActions" type="List" default="[{'label': 'View EFT Details', 'value': '3'},
+                                                   		{'label': 'Update EFT Record', 'value': '4'},
+                                                        {'label': 'Cancel/Expire EFT Record', 'value': '5'}]"/>  
+<aura:attribute name="ActionDisabled" type="Boolean" default="true"/> 
+ <div id = "stage3" class = "align">
+            <div>
+                <p class = "fontstyle">Select a share or loan for this EFT record</p>
+                    <table aria-multiselectable="true" class="slds-table slds-table_header-hidden slds-table_edit slds-tree slds-table_tree" role="treegrid">
+                          <thead>
+                              <tr class="slds-line-height_reset">
+                                  <th class="slds-text-align_right" scope="col" style="width:3.25rem">
+                                      <span id="column-group-header" class="slds-assistive-text">Choose a row</span>
+                                      <div class="slds-th__action slds-th__action_form">
+                                          
+                                      </div>
+                                  </th>
+                                  <th aria-label="Share/Loan">
+                                      <a class="slds-th__action slds-text-link_reset" tabindex="-1">
+                                          <span class="slds-assistive-text">Sort by: </span>
+                                          <div class="slds-grid slds-grid_vertical-align-center slds-has-flexi-truncate">
+                                              <span class="slds-truncate" title="Share/Loan">Share/Loan</span>
+                                          </div>
+                                      </a>
+                                  </th>
+                                  <th aria-label="Description " aria-sort="none" class="slds-has-button-menu" scope="col">
+                                      <a class="slds-th__action slds-text-link_reset" href="javascript:void(0);" role="button" tabindex="-1">
+                                          <span class="slds-assistive-text">Sort by: </span>
+                                          <div class="slds-grid slds-grid_vertical-align-center slds-has-flexi-truncate">
+                                              <span class="slds-truncate" title="Description ">Description</span>
+                                              <span class="slds-icon_container slds-icon-utility-arrowdown">
+                                                  
+                                              </span>
+                                          </div>
+                                      </a>
+                                  </th>
+                              </tr>
+                           </thead>
+                      <tbody>
+                        <tr aria-expanded="true" aria-level="1" aria-posinset="2" aria-selected="false" aria-setsize="4" class="slds-hint-parent">
+                          <td class="slds-text-align_right" role="gridcell" style="width:3.25rem">
+                            <div class="slds-checkbox">
+                              <input type="checkbox" name="options" id="checkbox-0180" value="checkbox-0180" aria-labelledby="check-button-label-0180 column-group-header" checked="" />
+                              <label class="slds-checkbox__label" for="checkbox-0180" id="check-button-label-0180">
+                                <span class="slds-checkbox_faux"></span>
+                                <span class="slds-form-element__label slds-assistive-text">Select item 180</span>
+                              </label>
+                            </div>
+                          </td>
+                          <th class="slds-tree__item" style = "padding-left: 0.5rem;" data-label="Account Name" scope="row">
+                            <button class="slds-button slds-button_icon slds-button_icon slds-button_icon-x-small slds-m-right_x-small" aria-hidden="true" tabindex="-1" title="Expand Acme Corporation">
+                              <lightning:icon iconName="utility:add" size="x-small"/>
+                              <span class="slds-assistive-text">Collapse 100</span>
+                            </button>
+                            <div class="slds-truncate" title="100">
+                              <a href="javascript:void(0);" tabindex="-1">100</a>
+                            </div>
+                          </th>
+                            <td data-label="Employees" role="gridcell">
+                                <div class="slds-truncate" title="Primary Share">Primary Share</div>
+                            </td>
+                        </tr>
+                        <tr aria-expanded="false" aria-level="1" aria-posinset="3" aria-selected="false" aria-setsize="4" class="slds-hint-parent">
+                          <td class="slds-text-align_right" role="gridcell" style="width:3.25rem">
+                            <div class="slds-checkbox">
+                              <input type="checkbox" name="options" id="checkbox-0181" value="checkbox-0181" aria-labelledby="check-button-label-0181 column-group-header" />
+                              <label class="slds-checkbox__label" for="checkbox-0181" id="check-button-label-0181">
+                                <span class="slds-checkbox_faux"></span>
+                                <span class="slds-form-element__label slds-assistive-text">Select item 181</span>
+                              </label>
+                            </div>
+                          </td>
+                          <th class="slds-tree__item" style = "padding-left: 0.5rem;" data-label="Account Name" scope="row">
+                            <button class="slds-button slds-button_icon slds-button_icon slds-button_icon-x-small slds-m-right_x-small" aria-hidden="true" tabindex="-1" title="Expand Rohde Enterprises">
+                              <lightning:icon iconName="utility:add" size="x-small"/>
+                              <span class="slds-assistive-text">Collapse 900</span>
+                            </button>
+                            <div class="slds-truncate" title="900">
+                              <a href="javascript:void(0);" tabindex="-1">900</a>
+                            </div>
+                          </th>
+                            <td data-label="Employees" role="gridcell">
+                                <div class="slds-truncate" title="Checking">Checking</div>
+                            </td>
+                        </tr>
+                        <tr aria-expanded="false" aria-level="1" aria-posinset="3" aria-selected="false" aria-setsize="4" class="slds-hint-parent">
+                          <td class="slds-text-align_right" role="gridcell" style="width:3.25rem">
+                            <div class="slds-checkbox">
+                              <input type="checkbox" name="options" id="checkbox-0182" value="checkbox-0182" aria-labelledby="check-button-label-0181 column-group-header" />
+                              <label class="slds-checkbox__label" for="checkbox-0182" id="check-button-label-0182">
+                                <span class="slds-checkbox_faux"></span>
+                                <span class="slds-form-element__label slds-assistive-text">Select item 182</span>
+                              </label>
+                            </div>
+                          </td>
+                          <th class="slds-tree__item" style = "padding-left: 0.5rem;" data-label="Account Name" scope="row">
+                            <button class="slds-button slds-button_icon slds-button_icon slds-button_icon-x-small slds-m-right_x-small" aria-hidden="true" tabindex="-1" title="Expand Rohde Enterprises">
+                              <lightning:icon iconName="utility:add" size="x-small"/>
+                              <span class="slds-assistive-text">Collapse 901</span>
+                            </button>
+                            <div class="slds-truncate" title="901">
+                              <a href="javascript:void(0);" tabindex="-1">901</a>
+                            </div>
+                          </th>
+                            <td data-label="Employees" role="gridcell">
+                                <div class="slds-truncate" title="Checking">Checking</div>
+                            </td>
+                        </tr>  
+                        <tr aria-expanded="false" aria-level="1" aria-posinset="3" aria-selected="false" aria-setsize="4" class="slds-hint-parent">
+                          <td class="slds-text-align_right" role="gridcell" style="width:3.25rem">
+                            <div class="slds-checkbox">
+                              <input type="checkbox" name="options" id="checkbox-0183" value="checkbox-0183" aria-labelledby="check-button-label-0181 column-group-header" />
+                              <label class="slds-checkbox__label" for="checkbox-0183" id="check-button-label-0183">
+                                <span class="slds-checkbox_faux"></span>
+                                <span class="slds-form-element__label slds-assistive-text">Select item 183</span>
+                              </label>
+                            </div>
+                          </td>
+                          <th class="slds-tree__item" style = "padding-left: 0.5rem;" data-label="Account Name" scope="row">
+                            <button class="slds-button slds-button_icon slds-button_icon slds-button_icon-x-small slds-m-right_x-small" aria-hidden="true" tabindex="-1" title="Expand Rohde Enterprises">
+                              <lightning:icon iconName="utility:add" size="x-small"/>
+                              <span class="slds-assistive-text">Collapse 5000</span>
+                            </button>
+                            <div class="slds-truncate" title="5000">
+                              <a href="javascript:void(0);" tabindex="-1">5000</a>
+                            </div>
+                          </th>
+                            <td data-label="Employees" role="gridcell">
+                                <div class="slds-truncate" title="New Auto">New Auto</div>
+                            </td>
+                        </tr>
+                          <tr aria-level="2" aria-posinset="1" aria-selected="false" aria-setsize="1" class="slds-hint-parent">
+                              <td class="slds-text-align_right" role="gridcell" style="width:3.25rem">
+                              </td>
+                              <th class="slds-tree__item" data-label="Account Name" scope="row">
+                                
+                              </th>
+                              <td data-label="Employees" role="gridcell">
+                                <div class="slds-truncate" title="2018 Chevrolet Silverado"> 2018 Chevrolet Silverado </div>
+                              </td>
+                          </tr>  
+                      </tbody>
+                </table>
+            </div>
+       </div>
+</aura:component>

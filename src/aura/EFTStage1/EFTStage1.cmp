@@ -1,0 +1,33 @@
+<aura:component implements="force:appHostable,force:lightningQuickActionWithoutHeader,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,force:hasSObjectName" access="global" controller="EFTController">
+    <aura:attribute name="actions" type="List" default="[{'label': 'Create a new EFT record', 'value': '1'},
+                                                   {'label': 'Access/Update existing EFT records', 'value': '2'}]"/>                                         
+                                                   
+<aura:attribute name="childActions" type="List" default="[{'label': 'View EFT Details', 'value': '3'},
+                                                   		{'label': 'Update EFT Record', 'value': '4'},
+                                                        {'label': 'Cancel/Expire EFT Record', 'value': '5'}]"/>  
+<aura:attribute name="ActionDisabled" type="Boolean" default="true"/> 
+<aura:handler name="EFTEvent" event="c:EFTEvent" action="{!c.handleEvent}"/>
+    
+    
+    
+    <div id = "stage1" class = "align show">
+            <div>
+                <p class = "fontstyle">Select an action</p>
+                <lightning:radioGroup name="myActions"
+                                      class ="radioAlign"
+                            	  options="{! v.actions}"
+                            	  value=""
+                            	  onchange="{! c.onRadioChange }"
+                            	  type="radio"/>
+            </div>
+            <div id = "childRadio" class = "disable">
+                <p class = "fontstyle">Select the operation you wish to perform</p>
+                <lightning:radioGroup class ="radioAlign"
+                                      name="myChildActions" 
+                              		options="{! v.childActions}"
+                              		value=""
+                              		type="radio"
+                              		disabled="{!v.ActionDisabled}"/>
+            </div>
+        </div>	
+</aura:component>
