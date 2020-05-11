@@ -7,15 +7,11 @@
                                                         {'label': 'Cancel/Expire EFT Record', 'value': '5'}]"/>  
 <aura:attribute name="ActionDisabled" type="Boolean" default="true"/> 
   <div id = "stage6" class = "align hidden">
-            <div>
-                <p class = "fontstyle">EFT Request Status</p>
-               
-            </div>
+       <div>
+           <p class = "fontstyle">EFT Request Status</p>
+          
        </div>
-		<div class ="footer">
-            <lightning:button class ="exit" aura:id="Exit" label="Exit" title="Exit" onclick="{!c.cancelAction}"/>
-            <lightning:button class ="exit" label="Back" disabled="{!v.backButton}" title="Back" onclick="{!c.back}"/>
-            <lightning:button variant="brand" class="continue" label="Continue" title="Continue" onclick="{!c.next}"/>
-        </div>       
+  </div>
+	
     
 </aura:component>

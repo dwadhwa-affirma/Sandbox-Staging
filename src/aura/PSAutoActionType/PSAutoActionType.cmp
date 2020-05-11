@@ -154,13 +154,13 @@
                                 
 				<tr aria-expanded="false" aria-level="1" aria-posinset="3" aria-selected="false" aria-setsize="4" class="slds-hint-parent">
 					<td class="slds-text-align_right" role="gridcell" style="width:3.25rem">
-						<div class="slds-checkbox">
-					   		<input type="checkbox" name="options" id="checkbox-0182" value="checkbox-0182" aria-labelledby="check-button-label-0181 column-group-header" />
-					  		<label class="slds-checkbox__label" for="checkbox-0182" id="check-button-label-0182">
-					     		<span class="slds-checkbox_faux"></span>
-					      		<span class="slds-form-element__label slds-assistive-text">Select item 182</span>
-					    	</label>
-					  	</div>
+						<span class="slds-radio">
+                          <input type="radio" id="radio-43" value="radio-43" name="default" checked="" />
+                          <label class="slds-radio__label" for="radio-43">
+                            <span class="slds-radio_faux"></span>
+                            <span class="slds-form-element__label"></span>
+                          </label>
+                        </span>
 					</td>
 					<th class="slds-tree__item" style = "padding-left: 0.5rem;" data-label="Account Name" scope="row">
 						<button class="slds-button slds-button_icon slds-button_icon slds-button_icon-x-small slds-m-right_x-small" aria-hidden="true" tabindex="-1" title="Expand Rohde Enterprises">
@@ -229,13 +229,13 @@
                       <tbody>
                         <tr aria-expanded="true" aria-level="1" aria-posinset="2" aria-selected="false" aria-setsize="4" class="slds-hint-parent">
                           <td class="slds-text-align_right" role="gridcell" style="width:3.25rem">
-                            <div class="slds-checkbox">
-                              <input type="checkbox" name="options" id="checkbox-0180" value="checkbox-0180" aria-labelledby="check-button-label-0180 column-group-header" checked="" />
-                              <label class="slds-checkbox__label" for="checkbox-0180" id="check-button-label-0180">
-                                <span class="slds-checkbox_faux"></span>
-                                <span class="slds-form-element__label slds-assistive-text">Select item 180</span>
+                            <span class="slds-radio">
+                              <input type="radio" id="radio-1" value="radio-1" name="default1" checked="" />
+                              <label class="slds-radio__label" for="radio-1">
+                                <span class="slds-radio_faux"></span>
+                                <span class="slds-form-element__label"></span>
                               </label>
-                            </div>
+                            </span>
                           </td>
                           <th class="slds-tree__item" style = "padding-left: 0.5rem;" data-label="Account Name" scope="row">
                             <button class="slds-button slds-button_icon slds-button_icon slds-button_icon-x-small slds-m-right_x-small" aria-hidden="true" tabindex="-1" title="Expand Acme Corporation">
@@ -252,13 +252,13 @@
                         </tr>
                         <tr aria-expanded="false" aria-level="1" aria-posinset="3" aria-selected="false" aria-setsize="4" class="slds-hint-parent">
                           <td class="slds-text-align_right" role="gridcell" style="width:3.25rem">
-                            <div class="slds-checkbox">
-                              <input type="checkbox" name="options" id="checkbox-0181" value="checkbox-0181" aria-labelledby="check-button-label-0181 column-group-header" />
-                              <label class="slds-checkbox__label" for="checkbox-0181" id="check-button-label-0181">
-                                <span class="slds-checkbox_faux"></span>
-                                <span class="slds-form-element__label slds-assistive-text">Select item 181</span>
+                            <span class="slds-radio">
+                              <input type="radio" id="radio-2" value="radio-2" name="default1" checked="" />
+                              <label class="slds-radio__label" for="radio-2">
+                                <span class="slds-radio_faux"></span>
+                                <span class="slds-form-element__label"></span>
                               </label>
-                            </div>
+                            </span>
                           </td>
                           <th class="slds-tree__item" style = "padding-left: 0.5rem;" data-label="Account Name" scope="row">
                             <button class="slds-button slds-button_icon slds-button_icon slds-button_icon-x-small slds-m-right_x-small" aria-hidden="true" tabindex="-1" title="Expand Rohde Enterprises">
@@ -275,13 +275,13 @@
                         </tr>
                         <tr aria-expanded="false" aria-level="1" aria-posinset="3" aria-selected="false" aria-setsize="4" class="slds-hint-parent">
                           <td class="slds-text-align_right" role="gridcell" style="width:3.25rem">
-                            <div class="slds-checkbox">
-                              <input type="checkbox" name="options" id="checkbox-0182" value="checkbox-0182" aria-labelledby="check-button-label-0181 column-group-header" />
-                              <label class="slds-checkbox__label" for="checkbox-0182" id="check-button-label-0182">
-                                <span class="slds-checkbox_faux"></span>
-                                <span class="slds-form-element__label slds-assistive-text">Select item 182</span>
+                            <span class="slds-radio">
+                              <input type="radio" id="radio-3" value="radio-3" name="default1" checked="" />
+                              <label class="slds-radio__label" for="radio-3">
+                                <span class="slds-radio_faux"></span>
+                                <span class="slds-form-element__label"></span>
                               </label>
-                            </div>
+                            </span>
                           </td>
                           <th class="slds-tree__item" style = "padding-left: 0.5rem;" data-label="Account Name" scope="row">
                             <button class="slds-button slds-button_icon slds-button_icon slds-button_icon-x-small slds-m-right_x-small" aria-hidden="true" tabindex="-1" title="Expand Rohde Enterprises">
@@ -298,13 +298,13 @@
                         </tr>  
                         <tr aria-expanded="false" aria-level="1" aria-posinset="3" aria-selected="false" aria-setsize="4" class="slds-hint-parent">
                           <td class="slds-text-align_right" role="gridcell" style="width:3.25rem">
-                            <div class="slds-checkbox">
-                              <input type="checkbox" name="options" id="checkbox-0183" value="checkbox-0183" aria-labelledby="check-button-label-0181 column-group-header" />
-                              <label class="slds-checkbox__label" for="checkbox-0183" id="check-button-label-0183">
-                                <span class="slds-checkbox_faux"></span>
-                                <span class="slds-form-element__label slds-assistive-text">Select item 183</span>
+                            <span class="slds-radio">
+                              <input type="radio" id="radio-4" value="radio-4" name="default1" checked="" />
+                              <label class="slds-radio__label" for="radio-4">
+                                <span class="slds-radio_faux"></span>
+                                <span class="slds-form-element__label"></span>
                               </label>
-                            </div>
+                            </span>
                           </td>
                           <th class="slds-tree__item" style = "padding-left: 0.5rem;" data-label="Account Name" scope="row">
                             <button class="slds-button slds-button_icon slds-button_icon slds-button_icon-x-small slds-m-right_x-small" aria-hidden="true" tabindex="-1" title="Expand Rohde Enterprises">

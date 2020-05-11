@@ -1,2 +1,11 @@
 .THIS {
 }
+.THIS .hidden
+{
+	display:none;
+}
+
+.THIS .show
+{
+	display:block;
+}
