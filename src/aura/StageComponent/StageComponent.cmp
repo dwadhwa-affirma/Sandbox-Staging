@@ -1,0 +1,49 @@
+<aura:component implements="force:appHostable,force:lightningQuickActionWithoutHeader,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,force:hasSObjectName" access="global" controller="EFTController">
+<aura:handler name="init" action="{!c.doInit}" value="{!this}" access="global" />
+<aura:attribute name="EFTStageDetails" type="EFT_Stages__c[]" />
+<aura:attribute name="EFTStageComponents" type="String[]" />                                     
+<aura:attribute name="sobjecttype" type="String" default="{!v.sObjectName}"/>  
+<aura:attribute name="ActiveStepIndex" type="String"  />
+
+<aura:registerEvent name="EFTEvent" type="c:EFTEvent"/>
+<aura:attribute name="EFTRecord" type="EFT__c" default="{
+		'sobjectType': 'EFT__c',
+                'Stage__c': ''}"/>  
+
+    
+        <header class="slds-media_center slds-has-flexi-truncate" style = "width: 124%;margin-top: 5%;">
+            
+            <div class="c-container">
+                <lightning:layout horizontalAlign="spread">                                            
+                    <div class="step-container">
+                        <ul class="progressbar">
+                            <aura:iteration items="{!v.EFTStageDetails}" var="itemOption" indexVar="i">
+                            	 <li  id="{!itemOption.StepId__c}" class="{!v.ActiveStepIndex == (i) ? 'active' : 'halFactive'}">
+                                    <lightning:layoutItem>
+                                        <div class="header-column">
+                                            <p class="field-title show" id="Level1IndicatorLabel">{!itemOption.Stage_Label__c}</p>
+                                            <div class="step-indicator-content">
+                                                    <b><p>{!itemOption.Stage_Action__c}</p></b>
+                                            </div>
+                                        </div>
+                                    </lightning:layoutItem>
+                                    
+                            	</li>   
+                            
+                            
+                            </aura:iteration>                                                   
+                        </ul>
+                    </div>
+                </lightning:layout>
+            </div>
+        </header>
+<div style="height: 380px">
+<div aura:id="ModalDialogPlaceholder" />
+</div>
+    
+<div class ="footer">
+            <lightning:button class ="exit" aura:id="Exit" label="Exit" title="Exit" onclick="{!c.cancelAction}"/>
+            <lightning:button class ="exit" label="Back" disabled="{!v.backButton}" title="Back" onclick="{!c.back}"/>
+            <lightning:button variant="brand" class="continue" label="Continue" title="Continue" onclick="{!c.Continue}"/>
+        </div> 
+</aura:component>
