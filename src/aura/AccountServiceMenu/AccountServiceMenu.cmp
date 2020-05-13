@@ -13,6 +13,7 @@
 
 
 <style>
+    .slds-modal__content{overflow-y:hidden;}
  .modal-maincontent{
  	/*max-height: 476px;
     min-height: 476px;*/}

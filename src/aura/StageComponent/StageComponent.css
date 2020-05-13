@@ -1,7 +1,8 @@
-.THIS .step-container {width: 100%;}
+.THIS .step-container {width: 100%; padding-top:1rem;}
 .THIS .progressbar {counter-reset:step;}                                                                                                                         
-.THIS .progressbar li {list-style-type: none; float: left; width: 13.33%; position: relative; text-align: center;}
-.THIS .progressbar li:before {content: counter(step); counter-increment: step; width: 36px; height: 34px; line-height: 35px; border: none; display: block; text-align: center; margin: 0 auto 10px auto; border-radius: 50%; background-color: #a0a2a5; color: #fff; font-size: 20px; font-weight: bold;}
+.THIS .progressbar li {list-style-type: none; float: left; width: 16.33%; position: relative; text-align: center;}
+.THIS .progressbar li:before {content: counter(step); counter-increment: step; width: 36px; height: 34px; line-height: 35px; border: none; display: block; text-align: center; margin: 0 auto 10px auto; border-radius: 50%; background-color: #a0a2a5; color: #fff; 
+    font-size: 16px; font-family: open sans;}
 .THIS .progressbar li:after {content:''; position: absolute; width: 63%; height: 5px; background-color: #a8b7c7; top: 15px; left: -31.5%; z-index: 1;}
 .THIS .progressbar li:first-child:after {content: none;}    
 .THIS .progressbar li.three:before {background-color: #c23934;}                                                                                                                             
@@ -57,16 +58,12 @@
 	line-height: 2;
     margin-bottom: 16%;
 }
-.THIS .exit
-{
-    margin-right: 39px;
-    font-weight: bolder;
-    color: black;
-    background-color: #dcd6d0;
-}
+
 .THIS .continue
 {
    margin: 0px 300px;
    margin-inline-end: auto;
    font-weight: bolder;
 }
+.THIS.modalbody{overflow-y:auto !important;}
+.THIS.slds-modal__footer{position:absolute; bottom:0;width:100%;}

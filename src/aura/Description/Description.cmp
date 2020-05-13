@@ -68,7 +68,7 @@
 								<li>HELOC/PLOC advances ≤$5k</li>
 								<li>Transfers
 									<ul style="list-style-type:circle; color: black; font-size:12px;">
-      									<li>BShare-to-share or share-to-loan transfers within the same membership</li>
+      									<li>Share-to-share or share-to-loan transfers within the same membership</li>
       									<li>Member-to-member transfers for the same member (any amount)</li>
       									<li>Member-to-member transfers to a different member ≤$5k</li>
     								</ul>
@@ -113,7 +113,7 @@
                     
                     <div class="header-column mr-80" style="margin-top: 0px;" >
                     	
-                        <p class="field-title" title=""><b>Personal Identifiable Information (PII) may be dis-closed at this level.</b></p>
+                        <p class="field-title" title=""><b>Personal Identifiable Information (PII) may be disclosed at this level.</b></p>
                        	<p><ul style="list-style-type:disc; color: black; font-size:12px;">
                        			<li>Wire verifications>$50k</li>
 								<li>Member-to-member transfers to a different member >$5k</li>

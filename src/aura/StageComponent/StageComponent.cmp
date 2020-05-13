@@ -9,10 +9,14 @@
 <aura:attribute name="EFTRecord" type="EFT__c" default="{
 		'sobjectType': 'EFT__c',
                 'Stage__c': ''}"/>  
-
     
-        <header class="slds-media_center slds-has-flexi-truncate" style = "width: 124%;margin-top: 5%;">
-            
+   
+
+        <header class="slds-media_center slds-has-flexi-truncate slds-modal__header">
+          <button class="slds-button slds-button_icon slds-modal__close closeIcon slds-button_icon-bare slds-button_icon-inverse" type="button" title="Close this window" data-aura-rendered-by="10328:0">
+              <lightning:icon class="icon_label1" iconName="utility:close" size="small" alternativeText="Close Modal"/>
+              <span class="slds-assistive-text" data-aura-rendered-by="10331:0">Close this window</span>
+          </button>  
             <div class="c-container">
                 <lightning:layout horizontalAlign="spread">                                            
                     <div class="step-container">
@@ -37,13 +41,14 @@
                 </lightning:layout>
             </div>
         </header>
-<div style="height: 380px">
+<div class="modalbody slds-p-around_medium" id="modal-content-id-1">
 <div aura:id="ModalDialogPlaceholder" />
 </div>
     
-<div class ="footer">
-            <lightning:button class ="exit" aura:id="Exit" label="Exit" title="Exit" onclick="{!c.cancelAction}"/>
-            <lightning:button class ="exit" label="Back" disabled="{!v.backButton}" title="Back" onclick="{!c.back}"/>
-            <lightning:button variant="brand" class="continue" label="Continue" title="Continue" onclick="{!c.Continue}"/>
-        </div> 
+ <footer class="slds-modal__footer slds-modal__footer_directional">
+            <lightning:button aura:id="Exit" label="Exit" title="Exit" onclick="{!c.cancelAction}"/>
+            <lightning:button label="Back" disabled="{!v.backButton}" title="Back" onclick="{!c.back}"/>
+            <lightning:button variant="brand" label="Continue" title="Continue" onclick="{!c.Continue}"/>
+        </footer> 
+
 </aura:component>
