@@ -15,10 +15,14 @@ public class AccountServiceMenuController {
     	result.put('SubMenu', mcList);
     	
     	
-    		Boolean IsUserInGroup;
+    		Boolean IsUserInGroup,IsUserInEFTGroup ;
     		Group grp = [SELECT DeveloperName,Email,Id,Name,RelatedId,Type FROM Group where DeveloperName ='OOW_Execute' Limit 1];
+        	Group grpEFT = [SELECT DeveloperName,Email,Id,Name,RelatedId,Type FROM Group where DeveloperName ='EFT_Tool' Limit 1];
  	
+ 	
+ 		/*------------ EFT Tool Group --------------------*/
 		 	GroupMember[] gm  = [SELECT GroupId,Id,UserOrGroupId FROM GroupMember where GroupId =: grp.id and UserOrGroupId =: UserInfo.getUserId() ];
+        	GroupMember[] gmEFT  = [SELECT GroupId,Id,UserOrGroupId FROM GroupMember where GroupId =: grpEFT.id and UserOrGroupId =: UserInfo.getUserId() ];
 		 	
 		 	if(gm.size() > 0)
 		 	{
@@ -28,8 +32,21 @@ public class AccountServiceMenuController {
 		 	{
 		 		IsUserInGroup = false;
 		 	}
+        	
+        	/*------------ EFT Tool Group --------------------*/
+        	if(gmEFT.size() > 0)
+		 	{
+		 		IsUserInEFTGroup = true;
+		 	}
+		 	else 
+		 	{
+		 		IsUserInEFTGroup = false;
+		 	}
+        
+        	system.debug('IsUserInEFTGroup=='+IsUserInEFTGroup);
     	
  			result.put('UserStatus', IsUserInGroup);
+        	result.put('UserStatusEFT', IsUserInEFTGroup);
     	
     	return result;
     }
