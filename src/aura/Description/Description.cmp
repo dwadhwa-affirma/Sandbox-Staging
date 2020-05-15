@@ -3,6 +3,12 @@
     	<div class="slds-text-align_center slds-text-heading_medium"><b>Authentication Level Disclosures</b></div>
         <div style="margin-top: 20px;">
         	
+        	<lightning:layout horizontalAlign="spread">
+            	<lightning:layoutItem padding="around-small">
+            	<p><b>MAAP is a four-level authentication platform.</b> </p>
+            	</lightning:layoutItem>
+           	</lightning:layout>
+           	
             <lightning:layout horizontalAlign="spread">
             	<lightning:layoutItem padding="around-small" class="LeftWidth">
                     <div class="header-column mr-80">
@@ -24,7 +30,7 @@
                     <div class="header-column mr-80" style="margin-top: 1px;" >
                        	<p class="field-title" title=""><b>Information available at Level 1 includes publically available information such as:</b></p>
                        	<p>	<ul style="list-style-type:disc; color: black; font-size:12px;">
-                       			<li>Branch hours and locations</li>
+                       			<li>Branch locations and directions</li>
 								<li>Branch and staff phone numbers</li>
 								<li>Membership requirements</li>
 								<li>Products and services</li>
@@ -43,7 +49,7 @@
                     </div>
                      <div class="header-column mr-80">
                       <br></br>
-                         <p style="color: black;">Level 2 Authentication is required for low risk transactions and to discuss general account information including the type of information available through telephone.
+                         <p style="color: black;">Level 2 Authentication is required for low risk transactions and to discuss general account information including the type of information available through telephone banking.
                         </p>
                        	
                     </div>
@@ -54,7 +60,7 @@
                        
                     </div>
                     <div class="header-column mr-80" style="margin-top: 0px;" >
-                        <p class="field-title" title=""><b>Personal Identifiable Information (PII) is not disclosed at this level.</b></p>
+                        <p class="field-title" title=""><b>Representatives do not disclose Personal Identifiable Information (PII) at this level.</b></p>
                        	<p>	<ul style="list-style-type:disc; color: black; font-size:12px;">
                        			<li>Verifications
                        				<ul style="list-style-type:circle; color: black; font-size:12px;">
@@ -63,27 +69,32 @@
     								</ul>
                        			</li>
 								<li>Fee reversals, fraud disputes, loan applications</li>
+								<li>Share-to-share transfers and share-to-loan transfers within same membership</li>
 								<li>Credit card payments</li>
-								<li>Check by Phone</li>
 								<li>HELOC/PLOC advances ≤$5k</li>
-								<li>Transfers
+								<li>Member–to-member transfers
 									<ul style="list-style-type:circle; color: black; font-size:12px;">
-      									<li>Share-to-share or share-to-loan transfers within the same membership</li>
-      									<li>Member-to-member transfers for the same member (any amount)</li>
-      									<li>Member-to-member transfers to a different member ≤$5k</li>
+      									<li>Transfers between memberships for the same member (any amount)</li>
+      									<li>Transfers to a different member ≤$5k</li>
     								</ul>
                        			</li>
-								<li>Issuing items to a name/address already on file:
+								<li>Items issued to a name and address already on file:
 									<ul style="list-style-type:circle; color: black; font-size:12px;">
       									<li>Official Checks</li>
       									<li>Check orders</li>
-      									<li>ATM/debit card orders</li>
+      									<li>ATM and debit cards</li>
     								</ul>
     							</li>	
-								<li>Limit increases
+								<li>Limit increases:
 									<ul style="list-style-type:circle; color: black; font-size:12px;">
       									<li>ATM and debit card transactions ≤$5k</li>
       									<li>Shared Branch transactions ≤$5k</li>
+      								</ul>
+								</li>
+								<li>Examples of questions (representative can answer yes or no):
+									<ul style="list-style-type:circle; color: black; font-size:12px;">
+      									<li>Did my wire come in?</li>
+      									<li>Is the beneficiary on my account John Smith?</li>
       								</ul>
 								</li>
 								
@@ -100,7 +111,7 @@
                     </div>
                      <div class="header-column mr-80">
                         <br></br>
-                         <p style="color: black;">Requests for specific, detailed account information and high risk transactions require Level 3 Authentication.
+                         <p style="color: black;">Requests for specific, detailed account information, access to Personal Identifiable Information (PII), and high risk transactions require Level 3 Authentication:
                         </p>
                        	
                     </div>
@@ -113,39 +124,72 @@
                     
                     <div class="header-column mr-80" style="margin-top: 0px;" >
                     	
-                        <p class="field-title" title=""><b>Personal Identifiable Information (PII) may be disclosed at this level.</b></p>
+                        <!-- <p class="field-title" title=""><b>Personal Identifiable Information (PII) may be disclosed at this level.</b></p>-->
                        	<p><ul style="list-style-type:disc; color: black; font-size:12px;">
-                       			<li>Wire verifications>$50k</li>
+                       			<li>Wire transfer verification >$50K</li>
 								<li>Member-to-member transfers to a different member >$5k</li>
-								<li>Issuing items to alternate address or a name not on the membership:
+								<li>Items issued to a name not on file or to an alternate address:
 									<ul style="list-style-type:circle; color: black; font-size:12px;">
       									<li>Official checks</li>
       									<li>Check orders</li>
-      									<li>ATM/debit card orders</li>
+      									<li>ATM and debit cards</li>
     								</ul>
 								</li>
 								<li>HELOC/PLOC advances >$5k</li>
 								<li>Limit increases
 									<ul style="list-style-type:circle; color: black; font-size:12px;">
-      									<li>ATM and debit card >$5k</li>
-      									<li>Shared Branch transaction >$5k</li>
+      									<li>ATM and debit card transactions >$5k</li>
+      									<li>Shared Branch transactions >$5k</li>
       								</ul>
 								</li>
+								<li>Contact information updates: address, phone, or email</li>
 								<li>Travel notifications</li>
-								<li>Changes to contact information: address, phone, or email</li>
-								<li>Changes to account access including:
-									<ul style="list-style-type:circle; color: black; font-size:12px;">
-      									<li>PCAccess</li>
-      									<li>Mobile Banking</li>
-      									<li>A2A</li>
-      								</ul>
-								</li>
+								<li>Changes to account access including PC Access (Online Banking) and Mobile Banking</li>
 								<li>Dormant account activation</li>
-								<li>Sharing account and MICR numbers</li>
-
-
+								<li>Sharing  account and MICR numbers</li>
                         	</ul>
                         </p>
+                    </div>
+				</lightning:layoutItem>
+                </lightning:layout>
+                <lightning:layout horizontalAlign="spread">
+            	<lightning:layoutItem padding="around-small" class="LeftWidth">
+                    <div class="header-column mr-80">
+                        <p class="FontSize" title=""><b>Failed Authentication</b> </p>
+                       
+                    </div>
+                     <div class="header-column mr-80">
+                        <br></br>
+                         <p style="color: black;">When authentication fails:
+                        </p>
+                       	
+                    </div>
+                    </lightning:layoutItem>
+                	<lightning:layoutItem padding="around-small" class="LeftWidth">
+                    <div class="header-column mr-80">
+                        <p class="FontSize" title=""></p>
+                       
+                    </div>
+                    
+                    <div class="header-column mr-80" style="margin-top: 0px;" >
+                    	
+                       	<p><ul style="list-style-type:disc; color: black; font-size:12px;">
+                       			<li>Caller requests may be sent:
+									<ul style="list-style-type:circle; color: black; font-size:12px;">
+      									<li>Through Secure Mail (PC Access or Mobile Banking)</li>
+      									<li>Through DocuSign</li>
+      									<li>By faxing the request with a copy of ID</li>
+    								</ul>
+								</li>
+								<li>The caller can:
+									<ul style="list-style-type:circle; color: black; font-size:12px;">
+      									<li>Complete the request through PC Access or Mobile Banking (self-serve)</li>
+      									<li>Visit a Branch or Shared Branch</li>
+      								</ul>
+								</li>
+		                	</ul>
+		                </p><br></br>
+		                If there is no feasible alternate solution, escalate the call to a supervisor.
                     </div>
 				</lightning:layoutItem>
                 </lightning:layout>
