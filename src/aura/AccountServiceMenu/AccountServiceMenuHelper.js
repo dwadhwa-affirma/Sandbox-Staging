@@ -16,7 +16,9 @@
 				console.log(res);
                 var submenu = res['SubMenu'];
                 var userstatus = res['UserStatus'];
+                var userstatusEFT = res['UserStatusEFT'];
                 component.set("v.IsUserInGroup",userstatus);
+                component.set("v.IsUserInEFTGroup",userstatusEFT);
                 var menu = res['Menu'];  
 				var LeftMenu = [];
 				var RightMenu= [];             
