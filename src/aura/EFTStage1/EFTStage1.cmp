@@ -6,10 +6,10 @@
                                                    		{'label': 'Update EFT Record', 'value': '4'},
                                                         {'label': 'Cancel/Expire EFT Record', 'value': '5'}]"/>  
 <aura:attribute name="ActionDisabled" type="Boolean" default="true"/> 
-<aura:handler name="EFTEvent" event="c:EFTEvent" action="{!c.handleEvent}"/>
-    
-    
-    
+
+<aura:attribute name="Action" type="String"  />
+    <aura:registerEvent name="EFTEvent" type="c:EFTEvent"/>
+   
     <div id = "stage1" class = "show">
             <div>
                 <p class = "fontstyle">Select an action</p>
