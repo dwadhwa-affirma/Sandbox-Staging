@@ -1,5 +1,5 @@
 <aura:component implements="force:appHostable,force:lightningQuickActionWithoutHeader,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,force:hasSObjectName" access="global" controller="EFTController">
- 
+ <aura:handler name="init" action="{!c.doInit}" value="{!this}" access="global" />
  
  <aura:attribute name="actions" type="List" default="[{'label': 'Create a new EFT record', 'value': '1'},
                                                    {'label': 'Access/Update existing EFT records', 'value': '2'}]"/>                                         
