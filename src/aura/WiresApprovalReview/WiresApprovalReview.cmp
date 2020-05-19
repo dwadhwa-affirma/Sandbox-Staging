@@ -1,0 +1,127 @@
+<aura:component implements="flexipage:availableForAllPageTypes,force:appHostable,force:hasRecordId,lightning:isUrlAddressable" access="global" controller="WiresTransactionApprovalController">
+ <aura:handler value="{!this}" name="init" action="{!c.doInit}"/> 
+<aura:attribute name="WiresBalance" type="String"/> 
+<aura:attribute name="WiresCount" type="String"/>
+<aura:attribute name="isReasonRequired" type="boolean" default="false"/> 
+<aura:attribute name="WiresObject" type="WIRES_Transaction__c"/> 
+<aura:attribute name="isApproveDisabled" type="boolean" default="true"/>    
+ <div>
+     <aura:html tag="style">
+    .slds-modal__container {
+     	width: 35%;
+    }
+</aura:html>   
+<aura:if isTrue="{!(v.WiresObject.Approval_Status__c == 'Pending for Approval')}">
+ <table>
+     <tr class="trReview">
+        <td><ui:inputCheckbox class="checkbox" value="{!v.WiresObject.AccountStableReview__c}" change="{!c.onCheck}"/></td>           
+        <td>Account Open for 45 Days</td><td><aura:unescapedHtml value="{!v.WiresObject.IsAccountOpenfor45Days__c}"/> </td>
+     </tr>
+     
+ 
+     <tr class="trReview">
+        <td><ui:inputCheckbox class="checkbox" value="{!v.WiresObject.EmailStableReview__c}" change="{!c.onCheck}"/></td>            
+        <td>Email Stable</td><td><aura:unescapedHtml value="{!v.WiresObject.IsEmailStable__c}"/> </td>        
+     </tr>
+     
+     <tr class="trReview">
+        <td><ui:inputCheckbox class="checkbox" value="{!v.WiresObject.Home_Phone_Stable_Review__c}" change="{!c.onCheck}"/></td>       
+        <td>HomePhone Stable</td><td><aura:unescapedHtml value="{!v.WiresObject.IsHomePhoneStable__c}"/> </td>     
+	</tr>
+     
+     <tr class="trReview">
+        <td><ui:inputCheckbox class="checkbox" value="{!v.WiresObject.Work_Phone_Stable_Review__c}" change="{!c.onCheck}"/></td>        
+        <td>WorkPhone Stable</td><td><aura:unescapedHtml value="{!v.WiresObject.IsWorkPhoneStable__c}"/> </td>      
+     </tr>
+     
+     <tr class="trReview">
+        <td><ui:inputCheckbox class="checkbox" value="{!v.WiresObject.Mobile_Phone_Stable_Review__c}" change="{!c.onCheck}"/></td>              
+        <td>MobilePhone Stable</td><td><aura:unescapedHtml value="{!v.WiresObject.IsMobilePhoneStable__c}"/> </td>        
+     </tr>
+     
+     <tr class="trReview">
+     <td><ui:inputCheckbox class="checkbox" value="{!v.WiresObject.ID_Verification_Review__c}" change="{!c.onCheck}"/></td>
+     <td>Identity Verification Used</td><td>{!v.WiresObject.Identity_Verification_Used__c}</td>
+     </tr>
+     
+     <tr class="trReview">
+     <td><ui:inputCheckbox class="checkbox" value="{!v.WiresObject.Available_Balance_Review__c}" change="{!c.onCheck}"/></td>
+     <td>Available Balance</td><td class="tblNumber">{!v.WiresBalance}</td>
+     </tr>    
+     
+     <tr class="trReview">
+      <td><ui:inputCheckbox class="checkbox" value="{!v.WiresObject.Previous_Wires_Review__c}" change="{!c.onCheck}"/></td>
+     <td>Number of Previous Wires</td><td class="tblNumber">{!v.WiresCount}</td></tr>
+     
+     <aura:if isTrue="{!(v.isReasonRequired)}">
+         <tr>
+         <td></td>
+         <td>Specify Reason if Red:</td>
+         <td><lightning:textarea name="reason" placeholder="Reason..." value="{!v.WiresObject.Review_Reason__c}" onchange="{!c.onCheck}" /></td>
+         </tr>
+     </aura:if>
+ </table>
+ </aura:if>
+<aura:if isTrue="{!(v.WiresObject.Approval_Status__c == 'Pending for Second Approval')}">
+ <table>
+     <tr class="trReview">
+        <td><ui:inputCheckbox class="checkbox" value="{!v.WiresObject.Account_Stable_2nd_Review__c}" change="{!c.onCheck}"/></td>           
+        <td>Account Open for 45 Days</td><td><aura:unescapedHtml value="{!v.WiresObject.IsAccountOpenfor45Days__c}"/> </td>
+     </tr>
+     
+ 
+     <tr class="trReview">
+        <td><ui:inputCheckbox class="checkbox" value="{!v.WiresObject.Email_Stable_2nd_Review__c}" change="{!c.onCheck}"/></td>            
+        <td>Email Stable</td><td><aura:unescapedHtml value="{!v.WiresObject.IsEmailStable__c}"/> </td>        
+     </tr>
+     
+     <tr class="trReview">
+        <td><ui:inputCheckbox class="checkbox" value="{!v.WiresObject.Home_Phone_Stable_2nd_Review__c}" change="{!c.onCheck}"/></td>       
+        <td>HomePhone Stable</td><td><aura:unescapedHtml value="{!v.WiresObject.IsHomePhoneStable__c}"/> </td>     
+	</tr>
+     
+     <tr class="trReview">
+        <td><ui:inputCheckbox class="checkbox" value="{!v.WiresObject.Work_Phone_Stable_2nd_Review__c}" change="{!c.onCheck}"/></td>        
+        <td>WorkPhone Stable</td><td><aura:unescapedHtml value="{!v.WiresObject.IsWorkPhoneStable__c}"/> </td>      
+     </tr>
+     
+     <tr class="trReview">
+        <td><ui:inputCheckbox class="checkbox" value="{!v.WiresObject.Mobile_Phone_Stable_2nd_Review__c}" change="{!c.onCheck}"/></td>              
+        <td>MobilePhone Stable</td><td><aura:unescapedHtml value="{!v.WiresObject.IsMobilePhoneStable__c}"/> </td>        
+     </tr>
+     
+     <tr class="trReview">
+     <td><ui:inputCheckbox class="checkbox" value="{!v.WiresObject.ID_Verification_2nd_Review__c}" change="{!c.onCheck}"/></td>
+     <td>Identity Verification Used</td><td>{!v.WiresObject.Identity_Verification_Used__c}</td>
+     </tr>
+     
+     <tr class="trReview">
+     <td><ui:inputCheckbox class="checkbox" value="{!v.WiresObject.Available_Balance_2nd_Review__c}" change="{!c.onCheck}"/></td>
+     <td>Available Balance</td><td class="tblNumber">{!v.WiresBalance}</td>
+     </tr>    
+     
+     <tr class="trReview">
+      <td><ui:inputCheckbox class="checkbox" value="{!v.WiresObject.Previous_Wires_2nd_Review__c}" change="{!c.onCheck}"/></td>
+     <td>Number of Previous Wires</td><td class="tblNumber">{!v.WiresCount}</td></tr>
+     
+     <aura:if isTrue="{!(v.isReasonRequired)}">
+         <tr>
+         <td></td>
+         <td>Specify Reason if Red:</td>
+         <td><lightning:textarea name="reason" placeholder="Reason..." value="{!v.WiresObject.Second_Approval_Review_Reason__c}" onchange="{!c.onCheck}" /></td>
+         </tr>
+     </aura:if>
+ </table>
+ </aura:if>
+ </div>
+ <div style="margin-top: 10px;">
+            
+            <footer class="slds-modal__footer" id="WiresApprovalReviewPageFooter">
+                <lightning:button variant="brand" label="Approve" onclick="{!c.ApproveTransactions}" disabled="{!v.isApproveDisabled}"/>
+                <lightning:button variant="brand" label="Reject" onclick="{!c.RejectTransaction}" />
+                
+                
+            </footer> 
+        
+        </div>
+</aura:component>
