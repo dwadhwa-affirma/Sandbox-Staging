@@ -8,17 +8,18 @@
 <aura:attribute name="ActionDisabled" type="Boolean" default="true"/> 
 <aura:attribute name="eftObject" type="EFT__c" default="{'sobjectType':'EFT__c'}" />
 <aura:attribute name="RoutingBankName" type="string" />
+<aura:attribute name="RoutingNumber" type="string" />
 
 	  <div id = "stage4">
         	<p class = "fontstyle">Provide the Funding FI information</p><br></br>
             <div class="slds-form">
   				<div class="slds-form-element slds-form-element_horizontal">
     				<b><label class="slds-form-element__label" for="horizontal-input-id-01">ABA/Routing#:</label></b>
-    					<lightning:input name="accountnumber" onblur="{!c.LoadBankName}"/>
+    					<lightning:input name="accountnumber" value="{!v.RoutingNumber}" onblur="{!c.LoadBankName}"/>
     			</div>
   				<div class="slds-form-element slds-form-element_horizontal">
     				<b><label class="slds-form-element__label" for="horizontal-input-id-02">Bank Name</label></b>
-    					<lightning:input name="bankname" value="{!v.RoutingBankName}"/>
+    					<lightning:input name="bankname" value="{!v.RoutingBankName}" disabled="true"/>
     			</div>
   				<div class="slds-form-element slds-form-element_horizontal">
     				<b><label class="slds-form-element__label" for="horizontal-input-id-03">Account#:</label></b>
