@@ -46,11 +46,11 @@ public class EFTController {
     }
     
     @AuraEnabled
-    public static void routingInfo(String RoutingNumber){
+    public static string routingInfo(String RoutingNumber){
       
     	String jsonData;  
     	HttpRequest req = new HttpRequest();
-    	String result;
+    	String BankName;
     	String RoutingNum = '122105155';
     	
     	req.setEndpoint('https://www.routingnumbers.info/api/data.json?rn='+RoutingNum);
@@ -70,10 +70,11 @@ public class EFTController {
             responseBody = '{"office_code": "O", "telephone": "800-937-6310", "change_date": "061109", "rn": "122105155", "state": "MN", "zip": "55107-1419", "data_view_code": "1", "message": "OK", "address": "EP-MN-WN1A", "customer_name": "US BANK NA", "city": "ST. PAUL"}';
         }
                 
-		result = String.valueOf(responseBody).substringAfter('customer_name": "');
-		result = String.valueOf(result).substringBefore('",');
-		System.debug('Bank Name:' + result);
+		BankName = String.valueOf(responseBody).substringAfter('customer_name": "');
+		BankName = String.valueOf(BankName).substringBefore('",');
+		System.debug('Bank Name:' + BankName);
            	                
+        return BankName; 
     }
     
     @AuraEnabled
