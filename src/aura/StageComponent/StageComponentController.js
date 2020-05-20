@@ -1,5 +1,6 @@
 ({
 	doInit : function(component, event, helper) {
+	
         var recordId = component.get("v.recordId");	
 		var action = component.get("c.getStageData");	
         var sobjecttype = component.get("v.sobjecttype");
@@ -22,7 +23,7 @@
                 }
                
 				Stages.sort(helper.Sort);
-               
+				component.set("v.ActiveStepIndex", (0));
                 component.set("v.EFTStageDetails", Stages);
                 component.set("v.MemberAccount", result.MemberAccount);
                 var EFTRecordStage  =  component.get("v.EFTRecord[0].Stage__c");
@@ -31,9 +32,9 @@
                     
                     if(EFTRecordStage != undefined && Stages[i].Stage_Label__c == EFTRecordStage){
                         var ActiveStage= document.getElementById(Stages[i].StepId__c);                        
-                        component.set("v.ActiveStepIndex", (i));
+                       // component.set("v.ActiveStepIndex", (i));
                        // if(ActiveStage != undefined){
-                            $A.createComponent("c:"+Stages[i].Stage_Component__c,{},
+                            $A.createComponent("c:"+Stages[i].Stage_Component__c,{recordId: component.get("v.recordId")},
                             function(msgBox){                
                                  if (component.isValid()) {                                    
                                      var targetCmp = component.find('ModalDialogPlaceholder');
@@ -51,7 +52,7 @@
                     }
                      else if(EFTRecordStage == undefined){
                         
-                         $A.createComponent("c:"+Stages[0].Stage_Component__c,{},
+                         $A.createComponent("c:"+Stages[0].Stage_Component__c,{recordId: component.get("v.recordId")},
                             function(msgBox){                
                                  if (component.isValid()) {                                    
                                      var targetCmp = component.find('ModalDialogPlaceholder');
@@ -90,15 +91,22 @@
                 document.getElementById('Step'+(i+1)).classList.remove('half');
                 document.getElementById('Step'+(i+1)).classList.add('active');
                 document.getElementById('Step'+(i+2)).classList.add('half');
+                
            		//component.find("ModalDialogPlaceholder").destroy();
-                if(i==0){
+               /* if(i==0){
                    var AccountId = component.get("v.MemberAccount.Id");
                    component.set("v.EFTRecord.Action_Type__c", 'Create');
                    component.set("v.EFTRecord.Stage__c", 'Share/Loan');
                    component.set("v.EFTRecord.Member_Account__c", AccountId);
                    helper.SaveStageValues(component, event, component.get("v.EFTRecord")); 
                 }
-                  $A.createComponent("c:"+stages[i+1].Stage_Component__c,{},
+                if(i==0){
+                	 var stages2 = [];
+                	 stages2 = component.get("v.EFTStageDetails"); 
+                	stages2[0].Stage_Action__c = component.get("v.Action");
+                	//component.set("v.EFTStageDetails", stages2);
+                }*/
+                  $A.createComponent("c:"+stages[i+1].Stage_Component__c,{recordId: component.get("v.recordId")},
                                 function(msgBox){                
                                      if (component.isValid()) {
                                         
@@ -111,8 +119,8 @@
                                     }
                                 }
                              );
-            
-            	return;
+                 
+            	break;
                 
             }
             else{
@@ -122,6 +130,8 @@
                 }
             }
         }  
+        
+        
        	
        
         
@@ -134,13 +144,13 @@
        stages = component.get("v.EFTStageDetails"); 
         for(var i=0; i<stages.length;i++){
             var ProgressBarStepClass = document.getElementById('Step'+(i+1)).classList;   
-            if(ProgressBarStepClass[0] == "halFactive"){
+            if(ProgressBarStepClass[0] == "half"){
                  
                 document.getElementById('Step'+(i)).classList.remove('active');
-                document.getElementById('Step'+(i)).classList.add('halFactive');
-                document.getElementById('Step'+(i+1)).classList.remove('halFactive');
+                document.getElementById('Step'+(i)).classList.add('half');
+                document.getElementById('Step'+(i+1)).classList.remove('half');
                 
-                  $A.createComponent("c:"+stages[i-1].Stage_Component__c,{},
+                  $A.createComponent("c:"+stages[i-1].Stage_Component__c,{recordId: component.get("v.recordId")},
                                 function(msgBox){                
                                      if (component.isValid()) {
                                         
