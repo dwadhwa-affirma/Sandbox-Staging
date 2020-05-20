@@ -78,10 +78,14 @@ public class EFTController {
     }
     
     @AuraEnabled
-    public static void getShareAccounts(string AccountNumber){
+    public static List<ShareLoanWrapperObject> getShareLoanAccounts(string recordId){
+    		system.debug('recordId=='+recordId);
+        	Account_Details__c MemberAccount = [select id,name from Account_Details__c where id=:recordId limit 1];
+        	String AccountNumber = MemberAccount.name;
+        	List<ShareLoanWrapperObject> resultList = new List<ShareLoanWrapperObject>();
         	
         	httpRequest requestparam = new httpRequest(); 
-	        requestparam.setEndpoint('https://symxapi.chevronfcu.org/devclient/PsAuto/GetLoansSelectFields?AccountNumber=' + AccountNumber + '&userchar2=abc');
+	        requestparam.setEndpoint('https://symxapi.chevronfcu.org/devclient/PsAuto/GetShares?AccountNumber=' + AccountNumber + '&userchar2=abc');
 	        requestparam.setMethod('GET');      
 	          
 	       
@@ -91,8 +95,53 @@ public class EFTController {
 	        String strStatus = response.getStatus();
 	        String strBody = response.getBody();
         	
-         	System.debug('Service response is ....' + strStatus);
-        	System.debug('Service response is ....' + strBody);
+         	System.debug('strStatus ....' + strStatus);
+        	System.debug('strBody ....' + strBody);
+        
+        	
+        	
+        	if(strBody!=''){        
+       			List<Object> results = (List<Object>) JSON.deserializeUntyped(response.getBody());      
+         		System.debug('Service response is ....' + results);
+                
+                //List<wrapperAccountBalance> resultList = List<wrapperAccountBalance>results;
+                 for(Object t : results){
+                   			ShareLoanWrapperObject temp = new ShareLoanWrapperObject();
+                       		map<string, object> localAcc = (map<string, object>)t;
+                       		/*string LoanId = (string)localAcc.get('LoanId');
+       						System.debug('Service response is ....' + localAcc);
+	                       if(LoanId != '0'){
+	                               temp.ShareLoanID =  LoanId; 
+	                               temp.Description =   (string)localAcc.get('Description');  
+	                               temp.TypeTranslate =  (string)localAcc.get('Description'); 
+	                               resultList.add(temp);  
+	                       }*/
+       				}
+            }
+            
+            List<ShareLoanWrapperObject> LoanList = getLoanAccounts(AccountNumber);
+            resultList.addall(LoanList);
+            system.debug('resultList=='+resultList);
+            return resultList;
+       // return '$ '+	AvailableBalance;
+    }
+    
+    public static List<ShareLoanWrapperObject> getLoanAccounts(string AccountNumber){
+    		List<ShareLoanWrapperObject> resultList = new List<ShareLoanWrapperObject>();
+    		
+    		httpRequest requestparam = new httpRequest(); 
+	        requestparam.setEndpoint('https://symxapi.chevronfcu.org/devclient/PsAuto/GetLoansSelectFields?AccountNumber=' + AccountNumber);
+	        requestparam.setMethod('GET');      
+	          
+	       
+	        http httpParam = new http();
+	        httpResponse response = httpParam.send(requestparam);
+	        
+	        String strStatus = response.getStatus();
+	        String strBody = response.getBody();
+        	
+         	System.debug('strStatus ....' + strStatus);
+        	System.debug('strBody ....' + strBody);
         
         	
         	
@@ -102,18 +151,34 @@ public class EFTController {
                 
                 //List<wrapperAccountBalance> resultList = List<wrapperAccountBalance>results;
                 if(results.size() > 0){
+                	
                    for(Object t : results){
+                   			ShareLoanWrapperObject temp = new ShareLoanWrapperObject();
                        		map<string, object> localAcc = (map<string, object>)t;
-                       		//string shrid = (string)localAcc.get('Id');
+                       		Integer LoanId = (Integer)localAcc.get('LoanId');
        						System.debug('Service response is ....' + localAcc);
-                      /* if(shrid == ShareID){
-                              AvailableBalance = (string)localAcc.get('AvailableBalance');                
-                       }*/
+	                       if(LoanId != 0){
+	                               temp.ShareLoanID =  LoanId; 
+	                               temp.Description =   (string)localAcc.get('Description');  
+	                               temp.TypeTranslate =  (string)localAcc.get('Description'); 
+	                               resultList.add(temp);  
+	                       }
        				}
                     
                 }
             }
-       // return '$ '+	AvailableBalance;
+            
+        return resultList;
+    }
+    
+    public class ShareLoanWrapperObject
+    {
+      @AuraEnabled
+      public Integer ShareLoanID {get;set;}
+      @AuraEnabled
+      public string Description {get;set;}
+      @AuraEnabled
+      public string TypeTranslate {get;set;}
     }
 
 }
