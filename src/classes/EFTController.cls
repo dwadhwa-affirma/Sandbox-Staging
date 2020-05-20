@@ -46,6 +46,35 @@ public class EFTController {
     }
     
     @AuraEnabled
+    public static void createCase(EFT__c EFTRecord){
+        list<CaseRecordType__c> scList = [SELECT Id,
+                                                 Primary_Category__c,
+                                                 Secondary_Category__c,
+                                                 Teritiary_Category__c,
+                                                 Record_Type_Name__c,
+                                                 SLA__c,
+                                                 RecordTypeId__c FROM CaseRecordType__c WHERE Primary_Category__c = 'Account Maintenance' AND Secondary_Category__c='Special Situations' AND Teritiary_Category__c='Unusual Activity' LIMIT 1];
+       
+    		Group gp = [select Id, Name from Group where  Type = 'Queue' AND NAME = 'Authentication Failed – Unusual Activity'];
+			case cs = new case();
+			 for(CaseRecordType__c crt : scList){
+		            cs.RecordTypeId = scList[0].RecordTypeId__c;
+		            cs.Primary_Category__c = scList[0].Primary_Category__c;
+		            cs.Secondary_Category__c = scList[0].Secondary_Category__c;
+		            cs.Tertiary_Category__c = scList[0].Teritiary_Category__c;
+		            cs.Sla__c = scList[0].SLA__c;
+	            
+             	}    
+				//cs.AccountId = EFTRecord.Member_Account__c;
+				cs.Status = 'Open';
+				cs.Subject = 'EFT Recorcd';
+				cs.ownerid = gp.id;
+				//cs.CaseComments__c = casecomment;
+				cs.Account_Number__c = EFTRecord.Member_Account__c;
+				insert cs;
+    }
+    
+    @AuraEnabled
     public static void sendACHDocument(List<EFT__c> recordId){
     	
     	List<EFT__c> EFTToUpdate = new List<EFT__c>();
@@ -132,13 +161,13 @@ public class EFTController {
     
     @AuraEnabled
     public static string routingInfo(String RoutingNumber){
-      
+      	system.debug('RoutingNumber=='+RoutingNumber);
     	String jsonData;  
     	HttpRequest req = new HttpRequest();
     	String BankName;
-    	String RoutingNum = '122105155';
+    	//String RoutingNum = '122105155';
     	
-    	req.setEndpoint('https://www.routingnumbers.info/api/data.json?rn='+RoutingNum);
+    	req.setEndpoint('https://www.routingnumbers.info/api/data.json?rn='+RoutingNumber);
         req.setMethod('POST');
         req.setHeader('Content-Type', 'application/json');
         req.setHeader('Accept', 'application/json');
@@ -154,9 +183,25 @@ public class EFTController {
         }else{
             responseBody = '{"office_code": "O", "telephone": "800-937-6310", "change_date": "061109", "rn": "122105155", "state": "MN", "zip": "55107-1419", "data_view_code": "1", "message": "OK", "address": "EP-MN-WN1A", "customer_name": "US BANK NA", "city": "ST. PAUL"}';
         }
+        
+        if(responseBody!=''){        
+       			Map<String,Object> results = (Map<String,Object>) JSON.deserializeUntyped(responseBody);      
+         		System.debug('Service response is ....' + results);
                 
-		BankName = String.valueOf(responseBody).substringAfter('customer_name": "');
-		BankName = String.valueOf(BankName).substringBefore('",');
+                //List<wrapperAccountBalance> resultList = List<wrapperAccountBalance>results;
+                if(results.size() > 0){
+                	
+                   for(String key : results.keySet()){                   			
+                       	if(key == 'customer_name'){
+                       		BankName = (string)results.get(key);
+                       	}
+       				}
+                    
+                }
+            }
+                
+		//BankName = String.valueOf(responseBody).substringAfter('customer_name": "');
+		//BankName = String.valueOf(BankName).substringBefore('",');
 		System.debug('Bank Name:' + BankName);
            	                
         return BankName; 
