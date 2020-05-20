@@ -6,12 +6,52 @@
                                                    		{'label': 'Update EFT Record', 'value': '4'},
                                                         {'label': 'Cancel/Expire EFT Record', 'value': '5'}]"/>  
 <aura:attribute name="ActionDisabled" type="Boolean" default="true"/> 
-  <div id = "stage6" class = "align hidden">
-       <div>
-           <p class = "fontstyle">EFT Request Status</p>
-          
+  		<div id = "stage6">
+            <div>
+                <p class = "fontstyle">EFT Request Status</p><br></br>
+               	<lightning:layout>
+                    <table class="toptbl">
+                    	<tr>
+                        	<td>
+                            	<lightning:icon class="icon_label1" iconName="utility:record" size="medium" alternativeText="Indicates approval"/>
+                            </td>
+                            <td>
+                            	Your EFT{Create/Update/Expire} request has successfully completed. The details of your request are in Mars case(686930). When the member completes the DocuSign ACH verification form, the EFT record will be created in Episys.
+                            </td>
+                        </tr>
+                    </table>
+                </lightning:layout>
+                <table class="bottomtbl">
+                	<tr>
+                    	<td>Member Number:</td>
+                        <td>247286</td>
+                    </tr>
+                    <tr>
+                    	<td>Share/Loan:</td>
+                        <td>5000<br />New Auto 2018<br />Chevrolet Silverado</td>
+                    </tr>
+                    <tr>
+                    	<td>Funding FI:</td>
+                        <td>Pawtucket CU</td>
+                    </tr>
+                    <tr>
+                    	<td>Payment:</td><td>$287.50</td> 
+                    </tr>
+                    <tr>
+                		<td>Effective Date:</td>
+                        <td>04/23/2020</td> 
+                    </tr>
+                    <tr>
+                		<td>Frequency:</td>
+                        <td>Monthly</td> 
+                    </tr>
+                    <tr>
+                		<td>Day of Month:</td>
+                        <td>15</td>
+                    </tr>
+                </table>
+
+            </div>
        </div>
-  </div>
-	
     
 </aura:component>

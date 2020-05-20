@@ -1,2 +1,26 @@
-.THIS {
+.THIS#stage4 {width:60%; font-size:.875rem; margin:0 auto;}
+
+.THIS#stage4 .slds-form-element__label{width:120px;max-width:unset;}
+
+.THIS#stage4 .slds-form-element__control{padding-left:120px;}
+
+.THIS#stage4 .fontstyle{word-break:break-word;}
+
+.THIS#stage4 .uiPicklistLabel-hidden{display:none !important;}
+
+.THIS#stage4 .uiInput--select .select, 
+.THIS#stage4 .uiInput--input.input,
+.THIS#stage4 .slds-input{min-height:unset; height:32px;}
+
+.THIS#stage4 label.slds-form-element__label.slds-no-flex{display:none; width:0;}
+
+@media (max-width:1250px){
+    .THIS#stage4 {width:90%;}
+}
+@media (max-width:600px){
+    .THIS#stage4 {width:100%;}
+}
+@media (max-width:767px){
+    .THIS#stage4 .slds-form-element__label{float:left;}
+	.THIS#stage4 .slds-form-element_horizontal .slds-form-element__control{clear:none;}
 }

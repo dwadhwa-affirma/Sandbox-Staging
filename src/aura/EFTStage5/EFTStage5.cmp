@@ -5,11 +5,47 @@
 <aura:attribute name="childActions" type="List" default="[{'label': 'View EFT Details', 'value': '3'},
                                                    		{'label': 'Update EFT Record', 'value': '4'},
                                                         {'label': 'Cancel/Expire EFT Record', 'value': '5'}]"/>  
-<aura:attribute name="ActionDisabled" type="Boolean" default="true"/> 
-    <div id = "stage5" class = "align">
-            <div>
-                <p class = "fontstyle">Provide the payment information</p>
-               
-            </div>
-       </div>
+<aura:attribute name="ActionDisabled" type="Boolean" default="true"/>
+<aura:attribute name="eftObject2" type="EFT__c" default="{'sobjectType':'EFT__c'}" /> 
+   		 <div id = "stage5">
+        	<p class = "fontstyle">Provide the payment information</p><br></br>
+                <div class="slds-form">
+  				<div class="slds-form-element slds-form-element_horizontal">
+    				<b><label class="slds-form-element__label" for="horizontal-input-id-01">Payment Amt:</label></b>
+    				<div class="slds-form-element__control">
+      					<force:inputField value="{!v.eftObject2.Payment_Amount__c}"> </force:inputField>
+    				</div>
+  				</div>
+  				<div class="slds-form-element slds-form-element_horizontal">
+    				<b><label class="slds-form-element__label" for="horizontal-input-id-02">Alternate Amt:</label></b>
+    				<div class="slds-form-element__control">
+      					<force:inputField value="{!v.eftObject2.Alternate_Amount__c}"> </force:inputField>
+    				</div>
+  				</div>
+  				<div class="slds-form-element slds-form-element_horizontal">
+    				<b><label class="slds-form-element__label" for="horizontal-input-id-03">Effective Date:</label></b>
+                    <div class="slds-form-element__control">
+    					<force:inputField value="{!v.eftObject2.Effective_Date__c}"> </force:inputField>
+                    </div>
+  				</div>
+  				<div class="slds-form-element slds-form-element_horizontal">
+    				<b><label class="slds-form-element__label">Frequency:</label></b>
+    				<div class="slds-form-element__control">
+	    				<force:inputField value="{!v.eftObject2.Frequency__c}"> </force:inputField>
+	    				 <ul class='has-error uiInputDefaultError uiInput uiInputSelect uiInput--default uiInput--select' id='FrequencyError' style='display:none;'>
+							<li class="form-element__help" data-aura-rendered-by="45:2084;a">Complete this field</li>
+						</ul>
+	                </div>
+  				</div>
+  				<div class="slds-form-element slds-form-element_horizontal">
+    				<b><label class="slds-form-element__label">Day of Month:</label></b>
+    				<div class="slds-form-element__control">
+    					<force:inputField value="{!v.eftObject2.Day_of_Month__c}"> </force:inputField>
+    					 <ul class='has-error uiInputDefaultError uiInput uiInputSelect uiInput--default uiInput--select' id='DayOfMonthError' style='display:none;'>
+							<li class="form-element__help" data-aura-rendered-by="45:2084;a">Complete this field</li>
+						</ul>
+	                </div>
+  				</div>
+       		</div>
+         </div>
 </aura:component>

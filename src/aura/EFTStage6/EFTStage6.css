@@ -1,2 +1,22 @@
-.THIS {
+.THIS#stage6{width:80%; font-size:.875rem; margin:0 auto;}
+.THIS#stage6 .toptbl {width:100%; margin-bottom:1rem;}
+.THIS#stage6 .toptbl td{word-break: break-word; vertical-align:top;}
+.THIS#stage6 .toptbl td svg{fill:#00ad53;}
+.THIS#stage6 .toptbl td:nth-child(1){width:60px;}
+
+.THIS#stage6 .bottomtbl td{vertical-align:top; padding:.2rem 0;}
+.THIS#stage6 .bottomtbl td:nth-child(1){width:60px;}
+.THIS#stage6 .bottomtbl td:nth-child(2){width:120px; font-weight:bold;}
+
+
+.THIS#stage6 .uiInput--select, 
+.THIS#stage6 .slds-input{min-height:unset; height:32px;}
+
+.THIS#stage6 label.slds-form-element__label.slds-no-flex{display:none; width:0;}
+
+@media (max-width:1250px){
+    .THIS#stage6 {width:90%;}
+}
+@media (max-width:600px){
+    .THIS#stage6 {width:100%;}
 }

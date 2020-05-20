@@ -1,6 +1,6 @@
 .THIS .step-container {width: 100%; padding-top:1rem;}
 .THIS .progressbar {counter-reset:step;}                                                                                                                         
-.THIS .progressbar li {list-style-type: none; float: left; width: 16.33%; position: relative; text-align: center;}
+.THIS .progressbar li {list-style-type: none; float: left; width: 20%; position: relative; text-align: center;}
 .THIS .progressbar li:before {content: counter(step); counter-increment: step; width: 36px; height: 34px; line-height: 35px; border: none; display: block; text-align: center; margin: 0 auto 10px auto; border-radius: 50%; background-color: #a0a2a5; color: #fff; 
     font-size: 16px; font-family: open sans;position: relative;
     z-index: 10;}
@@ -13,9 +13,9 @@
 .THIS .progressbar li .step-indicator-content {width: 85%; margin: 0 auto; text-align:center;}                  
 .THIS .progressbar li.halFactive:before,.THIS .progressbar li.active.three:before {background-color: #16325c;}
 .THIS .progressbar li.halFactive + li:after {background-color: #a8b7c7;}
-.THIS .progressbar li.half:before,.THIS .progressbar li.active.three:before {background-color: #f3b731;}
-.THIS .progressbar li.half + li:after {background-color: #f3b731;}
-.THIS .demo-only {    background: white !important;}
+.THIS .progressbar li.half:before,.THIS .progressbar li.active.three:before {background-color: #0070bf;}
+.THIS .progressbar li.half + li:after {background-color: #0070bf;}
+.THIS .demo-only {background: white !important;}
 .THIS .region-main {width: 40% !important;}
 
 .THIS .hidden

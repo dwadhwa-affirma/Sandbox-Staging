@@ -1,2 +1,14 @@
-.THIS#stage1{font-size:.875rem;}
+.THIS#stage1{font-size:.875rem; width:80%; margin:0 auto;}
 .THIS#stage1 .radioAlign {margin-bottom:2rem !important;}
+
+.THIS#stage1 .uiInput--select, 
+.THIS#stage1 .slds-input{min-height:unset; height:32px;}
+
+.THIS#stage1 label.slds-form-element__label.slds-no-flex{display:none; width:0;}
+
+@media (max-width:1250px){
+    .THIS#stage1 {width:90%;}
+}
+@media (max-width:600px){
+    .THIS#stage1 {width:100%;}
+}

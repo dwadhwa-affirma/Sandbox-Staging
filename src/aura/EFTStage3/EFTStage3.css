@@ -1,11 +1,23 @@
-.THIS {
-}
+.THIS#stage3{width:80%; font-size:.875rem; margin:0 auto;}
 .THIS .hidden
 {
-	display:none;
+	display:none; 
 }
 
 .THIS .show
 {
 	display:block;
+}
+.THIS.stage3 .slds-table .loanth{width:200px;}
+
+.THIS#stage3 .uiInput--select, 
+.THIS#stage3 .slds-input{min-height:unset; height:32px;}
+
+.THIS#stage3 label.slds-form-element__label.slds-no-flex{display:none; width:0;}
+
+@media (max-width:1250px){
+    .THIS#stage4 {width:90%;}
+}
+@media (max-width:600px){
+    .THIS#stage4 {width:100%;}
 }

@@ -10,7 +10,7 @@
 		action.setCallback(this, function(resp) {
 			var state=resp.getState();			
 			if(state === "SUCCESS"){
-				alert('d');
+				//alert('d');
 							
 			}
 		});
