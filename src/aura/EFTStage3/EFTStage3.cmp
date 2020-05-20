@@ -9,6 +9,8 @@
 <aura:attribute name="AddIconName" type="string" default="utility:add" description="To change icon on Tab"/>
                                                           
 <aura:attribute name="ActionDisabled" type="Boolean" default="true"/> 
+
+<aura:attribute name="ShareLoanMap" type="List" />
  <div id = "stage3" class = "stage3">
             <div>
                 <p class = "fontstyle">Select a share or loan for this EFT record</p><br />
@@ -43,42 +45,42 @@
                               </tr>
                            </thead>
                       <tbody>
+                       <aura:iteration items="{!v.ShareLoanMap}" var="itemOption" indexVar="i">
                        
-                        <tr aria-expanded="false" aria-level="1" aria-posinset="3" aria-selected="false" aria-setsize="4" class="slds-hint-parent">
+                       <tr aria-expanded="false" aria-level="1" aria-posinset="3" aria-selected="false" aria-setsize="4" class="slds-hint-parent">
                           <td class="slds-text-align_right" role="gridcell" style="width:3.25rem">
                             <div class="slds-radio">
                               <span class="slds-radio">
-	                          <input type="radio" name="options" id="radio-43" value="radio-043" />
-		                          <label class="slds-radio__label" for="radio-43">
-		                            <span class="slds-radio_faux"></span>
-		                            <span class="slds-form-element__label"></span>
-		                          </label>
+	                          <lightning:input type="radio" name="select" value="{!itemOption.ShareLoanID}"/>
 	                        </span>
                             </div>
                           </td>
                           <th class="slds-tree__item" style = "padding-left: 0.5rem;" data-label="Account Name" scope="row">
-                            <button class="slds-button slds-button_icon slds-button_icon slds-button_icon-x-small slds-m-right_x-small" aria-hidden="true" tabindex="-1" title="Expand Rohde Enterprises">
+                            <button class="slds-button slds-button_icon slds-button_icon slds-button_icon-x-small slds-m-right_x-small" aria-hidden="true" tabindex="-1" title="Expand" id="{!'btn' +i}" data-row-index="{!i}">
                               <lightning:buttonIcon iconName="{!v.AddIconName}" size="x-small"  onclick="{!c.expand}"/>
-                              <span class="slds-assistive-text">Collapse 5000</span>
+                              <span class="slds-assistive-text">Collapse</span>
                             </button>
-                            <div class="slds-truncate" title="5000">
-                              <a href="javascript:void(0);" tabindex="-1">5000</a>
+                            <div class="slds-truncate" title="{!itemOption.LoanId}">
+                              <a href="javascript:void(0);" tabindex="-1">{!itemOption.ShareLoanID}</a>
                             </div>
                           </th>
-                            <td data-label="Employees" role="gridcell">
-                                <div class="slds-truncate" title="New Auto">New Auto</div>
+                            <td role="gridcell">
+                                <div class="slds-truncate" title="{!itemOption.Description}">{!itemOption.TypeTranslate}</div>
                             </td>
                         </tr>
-                          <tr aria-level="2" aria-posinset="1" aria-selected="false" aria-setsize="1" class="container hide slds-hint-parent" aura:id="containerCollapsable">
+                          <tr aria-level="2" aria-posinset="1" aria-selected="false" aria-setsize="1" class="container hide slds-hint-parent" id="{!'trDesc' +i}" data-row-index="{!i}">
                               <td class="slds-text-align_right" role="gridcell" style="width:3.25rem">
                               </td>
                               <th class="slds-tree__item" data-label="Account Name" scope="row">
                                 
                               </th>
-                              <td data-label="Employees" role="gridcell">
-                                <div class="slds-truncate" title="2018 Chevrolet Silverado"> 2018 Chevrolet Silverado </div>
+                              <td role="gridcell">
+                                <div class="slds-truncate" title="{!itemOption.Description}">{!itemOption.Description}</div>
                               </td>
-                          </tr>  
+                          </tr>
+                       
+                       </aura:iteration>
+                          
                       </tbody>
                 </table>
             </div>
