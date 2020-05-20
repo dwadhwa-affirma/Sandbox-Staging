@@ -94,17 +94,20 @@
                              <ul style="list-style-type: disc;">	
                             	<li class="clsSubMenu"><a onclick="{!c.loadComponent}" id="{!('anchor' + (i+v.halfLength))}" style="pointer-events: none; cursor: default; text-decoration: none; color: grey;">{!sm.Function__c}</a></li>
                              </ul>
-                        </aura:if>
+                         <aura:set attribute="else">
                             <aura:if isTrue="{!and(v.IsUserInEFTGroup==false, sm.Function__c=='EFT')}">
                             	<ul style="list-style-type: disc;">	
                             	<li class="clsSubMenu"><a onclick="{!c.loadComponent}" id="{!('anchor' + (i+v.halfLength))}" style="pointer-events: none; cursor: default; text-decoration: none; color: grey;">{!sm.Function__c}</a></li>
-                             </ul>                                
+                             </ul>
+                                
                              <aura:set attribute="else">	
                              <ul style="list-style-type: disc;">					
                                 <li class="clsSubMenu"><a onclick="{!c.loadComponent}" id="{!('anchor' + (i+v.halfLength))}" style="">{!sm.Function__c}</a></li>
                                  </ul>
                             </aura:set>	
-                            </aura:if>
+                            </aura:if> 
+                            </aura:set>
+                            </aura:if> 
                         </aura:if>
                     </aura:iteration>
                      </div>
@@ -138,7 +141,7 @@
                              <ul style="list-style-type: disc;">	
                             	<li class="clsSubMenu"><a onclick="{!c.loadComponent}" id="{!('anchor' + (i+v.halfLength))}" style="pointer-events: none; cursor: default; text-decoration: none; color: grey;">{!sm.Function__c}</a></li>
                              </ul>
-                        </aura:if>
+                         <aura:set attribute="else">
                             <aura:if isTrue="{!and(v.IsUserInEFTGroup==false, sm.Function__c=='EFT')}">
                             	<ul style="list-style-type: disc;">	
                             	<li class="clsSubMenu"><a onclick="{!c.loadComponent}" id="{!('anchor' + (i+v.halfLength))}" style="pointer-events: none; cursor: default; text-decoration: none; color: grey;">{!sm.Function__c}</a></li>
@@ -149,7 +152,9 @@
                                 <li class="clsSubMenu"><a onclick="{!c.loadComponent}" id="{!('anchor' + (i+v.halfLength))}" style="">{!sm.Function__c}</a></li>
                                  </ul>
                             </aura:set>	
-                            </aura:if>                       	 
+                            </aura:if> 
+                            </aura:set>
+                            </aura:if>                      	 
                     </aura:if>
                     </aura:iteration>
                     
