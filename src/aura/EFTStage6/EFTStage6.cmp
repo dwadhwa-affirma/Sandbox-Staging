@@ -6,6 +6,9 @@
                                                    		{'label': 'Update EFT Record', 'value': '4'},
                                                         {'label': 'Cancel/Expire EFT Record', 'value': '5'}]"/>  
 <aura:attribute name="ActionDisabled" type="Boolean" default="true"/> 
+ <aura:handler name="init" action="{!c.doInit}" value="{!this}" access="global" />
+ <aura:attribute name="EFT" type="EFT__c" />    
+    
   		<div id = "stage6">
             <div>
                 <p class = "fontstyle">EFT Request Status</p><br></br>
@@ -15,8 +18,10 @@
                         	<td>
                             	<lightning:icon class="icon_label1" iconName="utility:record" size="medium" alternativeText="Indicates approval"/>
                             </td>
-                            <td>
-                            	Your EFT{Create/Update/Expire} request has successfully completed. The details of your request are in Mars case(686930). When the member completes the DocuSign ACH verification form, the EFT record will be created in Episys.
+                            <td><p>Your EFT Create request has been successfully completed. The details of your request are in Mars case. When the member completes the DocuSign ACH verification form, the EFT record will be created in Episys.
+                               
+                                
+                                </p>                            	
                             </td>
                         </tr>
                     </table>
@@ -24,30 +29,30 @@
                 <table class="bottomtbl">
                 	<tr>
                     	<td>Member Number:</td>
-                        <td>247286</td>
+                        <td>{!v.EFT.Member_Account__r.Name}</td>
                     </tr>
                     <tr>
                     	<td>Share/Loan:</td>
-                        <td>5000<br />New Auto 2018<br />Chevrolet Silverado</td>
+                        <td>{!v.EFT.Share_Loan_Id__c}<br />New Auto 2018<br />Chevrolet Silverado</td>
                     </tr>
                     <tr>
                     	<td>Funding FI:</td>
-                        <td>Pawtucket CU</td>
+                        <td>{!v.EFT.Bank_Name__c}</td>
                     </tr>
                     <tr>
-                    	<td>Payment:</td><td>$287.50</td> 
+                    	<td>Payment:</td><td>{!v.EFT.Payment_Amount__c}</td> 
                     </tr>
                     <tr>
                 		<td>Effective Date:</td>
-                        <td>04/23/2020</td> 
+                        <td>{!v.EFT.Effective_Date__c}</td> 
                     </tr>
                     <tr>
                 		<td>Frequency:</td>
-                        <td>Monthly</td> 
+                        <td>{!v.EFT.Frequency__c}</td> 
                     </tr>
                     <tr>
                 		<td>Day of Month:</td>
-                        <td>15</td>
+                        <td>{!v.EFT.Day_of_Month__c}</td>
                     </tr>
                 </table>
 
