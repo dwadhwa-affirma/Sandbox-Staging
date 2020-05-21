@@ -16,6 +16,7 @@
   				<div class="slds-form-element slds-form-element_horizontal">
     				<b><label class="slds-form-element__label" for="horizontal-input-id-01">ABA/Routing#:</label></b>
     					<lightning:input name="accountnumber" value="{!v.RoutingNumber}" onblur="{!c.LoadBankName}"/>
+    					<lightning:spinner aura:id="Spinner" alternativeText="Loading" size="medium" variant="brand" class="slds-hide spin"/>
     			</div>
   				<div class="slds-form-element slds-form-element_horizontal">
     				<b><label class="slds-form-element__label" for="horizontal-input-id-02">Bank Name</label></b>

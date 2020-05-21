@@ -4,6 +4,7 @@
 	},
 	
 	LoadBankName : function(component, event, helper) {
+	helper.showSpinner(component);
 	var action = component.get("c.routingInfo");
         action.setParams({
             "RoutingNumber": component.get("v.RoutingNumber")
@@ -16,6 +17,7 @@
 					component.set("v.RoutingBankName", result);
                 
             }
+            helper.hideSpinner(component,helper);
         });
  
         $A.enqueueAction(action);
