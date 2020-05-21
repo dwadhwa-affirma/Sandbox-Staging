@@ -11,6 +11,9 @@
 <aura:attribute name="ActionDisabled" type="Boolean" default="true"/> 
 
 <aura:attribute name="ShareLoanMap" type="List" />
+<aura:attribute name="SelectedShareLoan" type="String" />
+<aura:registerEvent name="EFTEvent" type="c:EFTEvent"/>
+
  <div id = "stage3" class = "stage3">
             <div>
                 <p class = "fontstyle">Select a share or loan for this EFT record</p><br />
@@ -51,13 +54,13 @@
                           <td class="slds-text-align_right" role="gridcell" style="width:3.25rem">
                             <div class="slds-radio">
                               <span class="slds-radio">
-	                          <lightning:input type="radio" name="select" value="{!itemOption.ShareLoanID}"/>
+	                          <lightning:input type="radio" name="select" value="{!itemOption.ShareLoanID + ',' + itemOption.Type}" onchange="{!c.onRadioChange}"/>
 	                        </span>
                             </div>
                           </td>
                           <th class="slds-tree__item" style = "padding-left: 0.5rem;" data-label="Account Name" scope="row">
                             <button class="slds-button slds-button_icon slds-button_icon slds-button_icon-x-small slds-m-right_x-small" aria-hidden="true" tabindex="-1" title="Expand" id="{!'btn' +i}" data-row-index="{!i}">
-                              <lightning:buttonIcon iconName="{!v.AddIconName}" size="x-small"  onclick="{!c.expand}"/>
+                              <lightning:buttonIcon iconName="{!v.AddIconName}" size="x-small"  onclick="{!c.expand}" class="{!'icon' +i}" name="{!'icon' +i}"/>
                               <span class="slds-assistive-text">Collapse</span>
                             </button>
                             <div class="slds-truncate" title="{!itemOption.LoanId}">

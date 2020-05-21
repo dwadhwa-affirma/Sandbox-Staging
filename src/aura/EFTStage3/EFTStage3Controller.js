@@ -30,6 +30,8 @@
         var index = event.target.getAttribute('data-row-index');
         var rowId = 'trDesc' + index ;
         var rowEle = document.getElementById(rowId); 
+		var btncion = document.getElementsByClassName('icon' + index);
+        
         
        // var container = component.find("containerCollapsable") ;
         if(icon == 'utility:add'){
@@ -43,5 +45,15 @@
             component.set('v.AddIconName','utility:add');
         }
        
+    },
+    
+    onRadioChange : function(component, event, helper) {
+    	var evt = $A.get("e.c:EFTEvent");
+        var SelectedShareLoan = event.getSource().get('v.value');
+        
+		if(SelectedShareLoan != undefined){
+            evt.setParams({ "SelectedShareLoan": SelectedShareLoan});
+            evt.fire();
+        }
     }
 })
