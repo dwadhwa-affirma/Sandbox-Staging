@@ -5,7 +5,16 @@
 <aura:attribute name="childActions" type="List" default="[{'label': 'View EFT Details', 'value': '3'},
                                                    		{'label': 'Update EFT Record', 'value': '4'},
                                                         {'label': 'Cancel/Expire EFT Record', 'value': '5'}]"/>  
-<aura:attribute name="ActionDisabled" type="Boolean" default="true"/>
+<aura:attribute name="isLoan" type="Boolean" default="true"/>
+<aura:attribute name="ShareLoanType" type="String" />
+<aura:attribute name="PaymentAmt" type="string" />
+<aura:attribute name="AlternateAmt" type="string" />
+<aura:attribute name="EffectiveDate" type="string" />
+<aura:attribute name="Frequency" type="string" />
+<aura:attribute name="MonthDay" type="string" />    
+<aura:handler name="init" action="{!c.doInit}" value="{!this}" access="global" />  
+  <aura:registerEvent name="EFTEvent" type="c:EFTEvent"/>
+    
 <aura:attribute name="eftObject2" type="EFT__c" default="{'sobjectType':'EFT__c'}" /> 
    		 <div id = "stage5">
         	<p class = "fontstyle">Provide the payment information</p><br></br>
@@ -16,12 +25,14 @@
       					<force:inputField value="{!v.eftObject2.Payment_Amount__c}"> </force:inputField>
     				</div>
   				</div>
+                <aura:if isTrue="{!v.isLoan}">
   				<div class="slds-form-element slds-form-element_horizontal">
     				<b><label class="slds-form-element__label" for="horizontal-input-id-02">Alternate Amt:</label></b>
     				<div class="slds-form-element__control">
       					<force:inputField value="{!v.eftObject2.Alternate_Amount__c}"> </force:inputField>
     				</div>
   				</div>
+                </aura:if>
   				<div class="slds-form-element slds-form-element_horizontal">
     				<b><label class="slds-form-element__label" for="horizontal-input-id-03">Effective Date:</label></b>
                     <div class="slds-form-element__control">
@@ -40,7 +51,7 @@
   				<div class="slds-form-element slds-form-element_horizontal">
     				<b><label class="slds-form-element__label">Day of Month:</label></b>
     				<div class="slds-form-element__control">
-    					<force:inputField value="{!v.eftObject2.Day_of_Month__c}"> </force:inputField>
+    					<force:inputField value="{!v.eftObject2.Day_of_Month__c}" change="{!c.onMonthChange}"> </force:inputField>
     					 <ul class='has-error uiInputDefaultError uiInput uiInputSelect uiInput--default uiInput--select' id='DayOfMonthError' style='display:none;'>
 							<li class="form-element__help" data-aura-rendered-by="45:2084;a">Complete this field</li>
 						</ul>
