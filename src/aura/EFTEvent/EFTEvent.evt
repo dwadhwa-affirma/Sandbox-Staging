@@ -1,3 +1,13 @@
 <aura:event type="APPLICATION">
-    <aura:attribute name="Action" type="String"/>  
+    <aura:attribute name="Action" type="String"/>
+    <aura:attribute name="SelectedShareLoan" type="String" />
+    <aura:attribute name="RoutingBankName" type="string" />
+<aura:attribute name="RoutingNumber" type="string" />
+<aura:attribute name="AccountNumber" type="string" />
+<aura:attribute name="Type" type="string" />
+    <aura:attribute name="PaymentAmt" type="string" />
+<aura:attribute name="AlternateAmt" type="string" />
+<aura:attribute name="EffectiveDate" type="string" />
+<aura:attribute name="Frequency" type="string" />
+<aura:attribute name="MonthDay" type="string" />
 </aura:event>
