@@ -9,6 +9,9 @@
 <aura:attribute name="eftObject" type="EFT__c" default="{'sobjectType':'EFT__c'}" />
 <aura:attribute name="RoutingBankName" type="string" />
 <aura:attribute name="RoutingNumber" type="string" />
+<aura:attribute name="AccountNumber" type="string" />
+<aura:attribute name="Type" type="string" />
+ <aura:registerEvent name="EFTEvent" type="c:EFTEvent"/>
 
 	  <div id = "stage4">
         	<p class = "fontstyle">Provide the Funding FI information</p><br></br>
@@ -31,7 +34,7 @@
   				<div class="slds-form-element slds-form-element_horizontal">
     				<b><label class="slds-form-element__label">Type:</label></b>
     				<div class="slds-form-element__control">
-	    				<force:inputField value="{!v.eftObject.Type__c}"> </force:inputField>
+	    				<force:inputField value="{!v.eftObject.Type__c}" change="{!c.onTypeChange}"> </force:inputField>
 	                </div>
   				</div>
        		</div>

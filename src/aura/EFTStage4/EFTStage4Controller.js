@@ -21,5 +21,23 @@
         });
  
         $A.enqueueAction(action);
+    },
+    
+    onTypeChange : function(component, event, helper) {
+        debugger;
+        var evt = $A.get("e.c:EFTEvent");
+        var RoutingNumber = component.get("v.RoutingNumber");
+        var RoutingBankName = component.get("v.RoutingBankName");
+        var AccountNumber = component.get("v.eftObject.Account_Number__c");
+        var Type = event.getSource().get('v.value');
+        
+		if(Type != undefined){
+            evt.setParams({ "RoutingNumber": RoutingNumber , 
+                          "RoutingBankName": RoutingBankName,
+                          "AccountNumber": AccountNumber,
+                          "Type": Type});
+            evt.fire();
+        }
+        
     }
 })
