@@ -1,4 +1,4 @@
-.THIS#stage3{width:80%; font-size:.875rem; margin:0 auto;}
+.THIS#stage3{width:70%; font-size:.8125rem; margin:0 auto;}
 .THIS .hidden
 {
 	display:none; 
@@ -8,7 +8,12 @@
 {
 	display:block;
 }
-.THIS.stage3 .slds-table .loanth{width:200px;}
+.THIS.stage3{overflow-x:auto;}
+.THIS.stage3 .slds-table .loanth{width:130px;}
+.THIS.stage3 .slds-table th.slds-tree__item{display:table-cell; vertical-align:top;}
+.THIS.stage3 .slds-table th.slds-tree__item .slds-truncate{display:inline;}
+.THIS.stage3 .slds-table td .slds-truncate{white-space:normal;display:inline-block;}
+.THIS.stage3 .slds-table td{vertical-align:top;}
 
 .THIS#stage3 .uiInput--select, 
 .THIS#stage3 .slds-input{min-height:unset; height:32px;}
@@ -16,8 +21,10 @@
 .THIS#stage3 label.slds-form-element__label.slds-no-flex{display:none; width:0;}
 
 @media (max-width:1250px){
-    .THIS#stage4 {width:90%;}
+    .THIS#stage3 {width:90%;}
 }
 @media (max-width:600px){
-    .THIS#stage4 {width:100%;}
+    .THIS#stage3 {width:100%;}
 }
+
+.THIS.stage3 .slds-table{font-size:var(--lwc-fontSize3,0.8125rem); min-width:400px;}
