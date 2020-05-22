@@ -1,4 +1,4 @@
-.THIS#stage4 {width:60%; font-size:.875rem; margin:0 auto;}
+.THIS#stage4 {width:70%; font-size:.8125rem; margin:0 auto;}
 
 .THIS#stage4 .slds-form-element__label{width:120px;max-width:unset;}
 
@@ -23,4 +23,8 @@
 @media (max-width:767px){
     .THIS#stage4 .slds-form-element__label{float:left;}
 	.THIS#stage4 .slds-form-element_horizontal .slds-form-element__control{clear:none;}
+}
+@media (max-width:480px){
+    .THIS#stage4 .slds-form-element__label{clear:both;}
+	.THIS#stage4 .slds-form-element_horizontal .slds-form-element__control{clear:both; padding-left:0;}
 }
