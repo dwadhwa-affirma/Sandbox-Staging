@@ -13,7 +13,17 @@
 		'sobjectType': 'EFT__c',
                 'Stage__c': ''}"/>  
 <aura:handler event="c:EFTEvent" action="{!c.getActionValue}"/>  
-    
+<aura:attribute name="SelectedShareLoan" type="String" /> 
+    <aura:attribute name="resultList" type="List" />
+<aura:attribute name="RoutingBankName" type="string" />
+<aura:attribute name="RoutingNumber" type="string" />
+<aura:attribute name="AccountNumber" type="string" />
+<aura:attribute name="Type" type="string" />
+<aura:attribute name="PaymentAmt" type="string" />
+<aura:attribute name="AlternateAmt" type="string" />
+<aura:attribute name="EffectiveDate" type="string" />
+<aura:attribute name="Frequency" type="string" />
+<aura:attribute name="MonthDay" type="string" />
 
         <header class="slds-media_center slds-has-flexi-truncate slds-modal__header">
           <button class="slds-button slds-button_icon slds-modal__close closeIcon slds-button_icon-bare slds-button_icon-inverse" type="button" title="Close this window" data-aura-rendered-by="10328:0">
@@ -47,7 +57,7 @@
 <div class="modalbody slds-p-around_medium" id="modal-content-id-1">
 <div aura:id="ModalDialogPlaceholder" />
 </div>
-    
+    <lightning:spinner aura:id="Spinner" alternativeText="Loading" size="medium" variant="brand" class="slds-hide spin"/>
  <footer class="slds-modal__footer slds-modal__footer_directional">
             <lightning:button aura:id="Exit" label="Exit" title="Exit" onclick="{!c.cancelAction}"/>
             <lightning:button variant="brand" label="Back" disabled="{!v.backButton}" title="Back" onclick="{!c.back}"/>
