@@ -71,6 +71,18 @@
 .THIS.slds-modal__footer .slds-button{text-transform:uppercase; letter-spacing:1px;}
 .THIS.slds-modal__footer .slds-button:nth-child(2){float:left;}
 
-@media screen and ( max-height: 650px ){
+@media screen and (max-height: 634px ){
     .THIS.modalbody{max-height:300px;}
+}
+@media screen and (max-height: 603px ){
+    .THIS.modalbody{max-height:263px;}
+}
+@media screen and (max-width: 400px ){
+    .THIS .progressbar li .header-column{font-size:.68rem;}
+    .THIS .progressbar li:before{font-size: 14px; width: 30px;height: 30px; line-height: 30px;}
+    .THIS .progressbar li:after{top: 12px;}
+    .THIS .fontstyle{font-size:medium;}
+}
+@media screen and (max-width: 350px ){
+    .THIS.modalbody{padding: 1rem 1.2rem!important;}
 }
