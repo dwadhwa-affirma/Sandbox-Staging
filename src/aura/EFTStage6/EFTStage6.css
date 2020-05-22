@@ -1,12 +1,14 @@
-.THIS#stage6{width:80%; font-size:.875rem; margin:0 auto;}
-.THIS#stage6 .toptbl {width:100%; margin-bottom:1rem;}
+.THIS#stage6{width:70%; font-size:.8125rem; margin:0 auto;}
+.THIS#stage6 .toptbl {width:100%; margin-bottom:2rem;}
 .THIS#stage6 .toptbl td{word-break: break-word; vertical-align:top;}
 .THIS#stage6 .toptbl td svg{fill:#00ad53;}
-.THIS#stage6 .toptbl td:nth-child(1){width:60px;}
+.THIS#stage6 .toptbl td:nth-child(1){width:40px;}
 
+.THIS#stage6 .bottomtbl{margin-left:40px;}
 .THIS#stage6 .bottomtbl td{vertical-align:top; padding:.2rem 0;}
-.THIS#stage6 .bottomtbl td:nth-child(1){width:60px;}
-.THIS#stage6 .bottomtbl td:nth-child(2){width:120px; font-weight:bold;}
+.THIS#stage6 .bottomtbl td:nth-child(1){width:125px;}
+.THIS#stage6 .bottomtbl td:nth-child(2){font-weight:bold;}
+.THIS#stage6 .bottomtbl td.sloan span{display:block;}
 
 
 .THIS#stage6 .uiInput--select, 
@@ -19,4 +21,7 @@
 }
 @media (max-width:600px){
     .THIS#stage6 {width:100%;}
+}
+@media (max-width:600px){
+.THIS#stage6 .bottomtbl{margin-left:0;}
 }

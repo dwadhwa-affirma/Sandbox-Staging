@@ -18,10 +18,7 @@
                         	<td>
                             	<lightning:icon class="icon_label1" iconName="utility:record" size="medium" alternativeText="Indicates approval"/>
                             </td>
-                            <td><p>Your EFT Create request has been successfully completed. The details of your request are in Mars case. When the member completes the DocuSign ACH verification form, the EFT record will be created in Episys.
-                               
-                                
-                                </p>                            	
+                            <td><p>Your EFT Create request has been successfully completed. The details of your request are in Mars cse. When the member completes the DocuSign ACH verification form, the EFT record will be created in Episys.</p>                            	
                             </td>
                         </tr>
                     </table>
@@ -33,7 +30,7 @@
                     </tr>
                     <tr>
                     	<td>Share/Loan:</td>
-                        <td>{!v.EFT.Share_Loan_Id__c}<br />New Auto 2018<br />Chevrolet Silverado</td>
+                        <td class="sloan">{!v.EFT.Share_Loan_Id__c}<span>New Auto 2018<br />Chevrolet Silverado</span></td>
                     </tr>
                     <tr>
                     	<td>Funding FI:</td>
