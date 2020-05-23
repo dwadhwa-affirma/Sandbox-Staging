@@ -6,11 +6,11 @@
                                                    		{'label': 'Update EFT Record', 'value': '4'},
                                                         {'label': 'Cancel/Expire EFT Record', 'value': '5'}]"/>  
 <aura:attribute name="ActionDisabled" type="Boolean" default="true"/> 
-<aura:attribute name="eftObject" type="EFT__c" default="{'sobjectType':'EFT__c'}" />
-<aura:attribute name="RoutingBankName" type="string" />
+<aura:attribute name="EFTRecord" type="EFT__c" />
+<!--<aura:attribute name="RoutingBankName" type="string" />
 <aura:attribute name="RoutingNumber" type="string" />
 <aura:attribute name="AccountNumber" type="string" />
-<aura:attribute name="Type" type="string" />
+<aura:attribute name="Type" type="string" />-->
  <aura:registerEvent name="EFTEvent" type="c:EFTEvent"/>
 
 	  <div id = "stage4">
@@ -18,23 +18,23 @@
             <div class="slds-form">
   				<div class="slds-form-element slds-form-element_horizontal">
     				<b><label class="slds-form-element__label" for="horizontal-input-id-01">ABA/Routing#:</label></b>
-    					<lightning:input name="accountnumber" value="{!v.RoutingNumber}" onblur="{!c.LoadBankName}"/>
+    					<lightning:input name="accountnumber" value="{!v.EFTRecord.Routing_Number__c}" onblur="{!c.LoadBankName}"/>
     					<lightning:spinner aura:id="Spinner" alternativeText="Loading" size="medium" variant="brand" class="slds-hide spin"/>
     			</div>
   				<div class="slds-form-element slds-form-element_horizontal">
     				<b><label class="slds-form-element__label" for="horizontal-input-id-02">Bank Name</label></b>
-    					<lightning:input name="bankname" value="{!v.RoutingBankName}" disabled="true"/>
+    					<lightning:input name="bankname" value="{!v.EFTRecord.Bank_Name__c}" disabled="true"/>
     			</div>
   				<div class="slds-form-element slds-form-element_horizontal">
     				<b><label class="slds-form-element__label" for="horizontal-input-id-03">Account#:</label></b>
     				<div class="slds-form-element__control">
-      					<force:inputField value="{!v.eftObject.Account_Number__c}"> </force:inputField>
+      					<force:inputField value="{!v.EFTRecord.Account_Number__c}"> </force:inputField>
     				</div>
   				</div>
   				<div class="slds-form-element slds-form-element_horizontal">
     				<b><label class="slds-form-element__label">Type:</label></b>
     				<div class="slds-form-element__control">
-	    				<force:inputField value="{!v.eftObject.Type__c}" change="{!c.onTypeChange}"> </force:inputField>
+	    				<force:inputField value="{!v.EFTRecord.Type__c}" change="{!c.onTypeChange}"> </force:inputField>
 	                </div>
   				</div>
        		</div>
