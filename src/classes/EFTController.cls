@@ -36,12 +36,12 @@ public class EFTController {
         return resultMap;
     }
     
-    @AuraEnabled
+  /*  @AuraEnabled
     public static List<EFT__c> getEFTDetails(string recordId){
         system.debug('recordId1=='+recordId);
-        List<EFT__c> EFTRecordList = [select id, name, Member_Account__c, Stage__c, Action_Type__c, Share_Loan_Id__c, Type__c	,
+        List<EFT__c> EFTRecordList = [select id, name, Member_Account__c, Stage__c, Action_Type__c, Share_Loan_Id__c, Type__c	,Share_Loan_Type__c, Share_Loan_Description__c,
                                       Routing_Number__c, Bank_Name__c, Account_Number__c, Alternate_Amount__c,Effective_Date__c,
-                                      Frequency__c, Payment_Amount__c, Day_of_Month__c, Member_Account__r.name, Case__c, Case__r.CaseNumber
+                                      Frequency__c, Payment_Amount__c, Day_of_Month__c, Member_Account__r.name, Case__c, Case__r.CaseNumber, Case__r.Status	
                                       from EFT__c where Member_Account__c =: recordId limit 1];
         
         
@@ -53,21 +53,25 @@ public class EFTController {
         	//sendACHDocument(EFTRecordList);
         }
         
-        
+        system.debug('case==='+EFTRecordList[0].Case__r.CaseNumber);
         return EFTRecordList;
-    }
+    }*/
     
     
     @AuraEnabled
-    public static void saveStageData(EFT__c EFTRecord){
-        system.debug('EFTRecord=='+EFTRecord.Member_Account__c);
-        List<EFT__c> EFTRecordList = [Select id, name, Member_Account__c, Stage__c, Action_Type__c from EFT__c where Member_Account__c =:EFTRecord.Member_Account__c limit 1];
+    public static EFT__c saveStageData(EFT__c EFTRecord){
+        system.debug('EFTRecord=='+EFTRecord.Id);
+        List<EFT__c> EFTRecordList = [Select id, name, Member_Account__c, Stage__c, Action_Type__c from EFT__c where id =:EFTRecord.id limit 1];
         
         if(EFTRecordList.size() == 0){
             insert EFTRecord;
+            return EFTRecord;
         }
         else{
-           EFTRecordList[0].Share_Loan_Id__c =  EFTRecord.Share_Loan_Id__c;
+            EFTRecordList[0].Share_Loan_Id__c =  EFTRecord.Share_Loan_Id__c;
+            EFTRecordList[0].Share_Loan_Type__c =  EFTRecord.Share_Loan_Type__c;
+            EFTRecordList[0].Share_Loan_Description__c =  EFTRecord.Share_Loan_Description__c;
+            EFTRecordList[0].EFT_ID_Type__c =  EFTRecord.EFT_ID_Type__c;
             EFTRecordList[0].Routing_Number__c =  EFTRecord.Routing_Number__c;
             EFTRecordList[0].Bank_Name__c =  EFTRecord.Bank_Name__c;
             EFTRecordList[0].Account_Number__c =  EFTRecord.Account_Number__c;
@@ -78,12 +82,14 @@ public class EFTController {
             EFTRecordList[0].Effective_Date__c  =  EFTRecord.Effective_Date__c;
             EFTRecordList[0].Day_of_Month__c  =  EFTRecord.Day_of_Month__c;
             update EFTRecordList;
+            return EFTRecordList[0];
         }
           
     }
     
     @AuraEnabled
-    public static Id createCase(EFT__c EFTRecord){
+    public static EFT__c createCase(EFT__c EFTRecord){
+        system.debug('EFTID==='+EFTRecord.id);
         list<CaseRecordType__c> scList = [SELECT Id,
                                                  Primary_Category__c,
                                                  Secondary_Category__c,
@@ -110,7 +116,17 @@ public class EFTController {
 				cs.Account_Number__c = EFTRecord.Member_Account__c;
 				insert cs;
         		id caseId = cs.id;
-        		return caseId;
+        		
+        		EFTRecord.Case__c = caseId;
+        		update EFTRecord;
+        		
+        		EFT__c ResultEFTRecord = [select id, name, Member_Account__c, Stage__c, Action_Type__c, Share_Loan_Id__c, Type__c	,Share_Loan_Type__c, Share_Loan_Description__c,
+                                      Routing_Number__c, Bank_Name__c, Account_Number__c, Alternate_Amount__c,Effective_Date__c,
+                                      Frequency__c, Payment_Amount__c, Day_of_Month__c, Member_Account__r.name, Case__c, Case__r.CaseNumber, Case__r.Status	
+                                      from EFT__c where id =: EFTRecord.id limit 1];
+        		
+        		 system.debug('case==='+ResultEFTRecord.Case__r.CaseNumber);
+        		return ResultEFTRecord;
     }
     
     @AuraEnabled
