@@ -9,7 +9,7 @@
 
 <aura:attribute name="Action" type="String"  />
     <aura:registerEvent name="EFTEvent" type="c:EFTEvent"/>
-   
+    <aura:attribute name="EFTRecord" type="EFT__c"/>     
     <div id = "stage1" class = "show">
             <div>
                 <p class = "fontstyle">Select an action</p>
