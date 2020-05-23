@@ -13,6 +13,7 @@
 <aura:attribute name="ShareLoanMap" type="List" />
 <aura:attribute name="SelectedShareLoan" type="String" />
 <aura:registerEvent name="EFTEvent" type="c:EFTEvent"/>
+<aura:attribute name="EFTRecord" type="EFT__c" />   
 
  <div id = "stage3" class = "stage3">
             <div>
@@ -54,7 +55,7 @@
                           <td class="slds-text-align_right" role="gridcell" style="width:3.25rem">
                             <div class="slds-radio">
                               <span class="slds-radio">
-	                          <lightning:input type="radio" name="select" value="{!itemOption.ShareLoanID + ',' + itemOption.Type}" onchange="{!c.onRadioChange}"/>
+	                          <lightning:input type="radio" name="select" value="{!itemOption.ShareLoanID + ',' + itemOption.Type + ',' + itemOption.TypeTranslate + ',' + itemOption.Description}" onchange="{!c.onRadioChange}"/>
 	                        </span>
                             </div>
                           </td>
