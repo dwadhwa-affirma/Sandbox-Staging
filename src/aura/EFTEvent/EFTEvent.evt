@@ -10,4 +10,5 @@
 <aura:attribute name="EffectiveDate" type="string" />
 <aura:attribute name="Frequency" type="string" />
 <aura:attribute name="MonthDay" type="string" />
+    <aura:attribute name="EFTRecord" type="EFT__c"/>  
 </aura:event>
