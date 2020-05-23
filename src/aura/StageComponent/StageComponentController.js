@@ -18,14 +18,15 @@
                 Stages=result.EFTStages;
                 var EFT =[];
                 EFT = result.EFT;
-                if(EFT != undefined){
+                /*if(EFT != undefined){
                     component.set("v.EFTRecord", EFT);
-                }
+                }*/
                
 				Stages.sort(helper.Sort);
 				component.set("v.ActiveStepIndex", (0));
                 component.set("v.EFTStageDetails", Stages);
                 component.set("v.MemberAccount", result.MemberAccount);
+                component.set("v.EFTRecord.Member_Account__c", result.MemberAccount.Id);
                 var EFTRecordStage  =  component.get("v.EFTRecord[0].Stage__c");
                 var modalBody;
                 for(var i=0;i<Stages.length;i++){
@@ -70,7 +71,7 @@
                     }
                      else if(EFTRecordStage == undefined){
                         
-                         $A.createComponent("c:"+Stages[0].Stage_Component__c,{recordId: component.get("v.recordId")},
+                         $A.createComponent("c:"+Stages[0].Stage_Component__c,{recordId: component.get("v.recordId"),EFTRecord: component.get("v.EFTRecord")},
                             function(msgBox){                
                                  if (component.isValid()) {                                    
                                      var targetCmp = component.find('ModalDialogPlaceholder');
@@ -117,16 +118,16 @@
                 }
                 
            		//component.find("ModalDialogPlaceholder").destroy();
-                if(i==0){
-                   var AccountId = component.get("v.MemberAccount.Id");
+              //  if(i==0){
+                  // var AccountId = component.get("v.MemberAccount.Id");
                   // component.set("v.EFTRecord.Action_Type__c", 'Create');
                    //component.set("v.EFTRecord.Stage__c", 'Share/Loan');
-                   component.set("v.EFTRecord.Member_Account__c", AccountId);
-                   helper.SaveStageValues(component, event, component.get("v.EFTRecord")); 
-                }
-                else if(i==1){
-                   var SelectedShareLoan = component.get("v.SelectedShareLoan");
-                   component.set("v.EFTRecord.Share_Loan_Id__c", SelectedShareLoan.split(',')[0]);
+                   //component.set("v.EFTRecord.Member_Account__c", AccountId);
+                   helper.SaveStageValues(component, event, component.get("v.EFTRecord"), i, stages); 
+               // }
+               /* else if(i==1){
+                   //var SelectedShareLoan = component.get("v.SelectedShareLoan");
+                   //component.set("v.EFTRecord.Share_Loan_Id__c", SelectedShareLoan.split(',')[0]);
                    //component.set("v.EFTRecord.Share_Loan_Type__c", 'Share/Loan');
                    //component.set("v.EFTRecord.Share_Loan_Description__c", AccountId);
                    helper.SaveStageValues(component, event, component.get("v.EFTRecord")); 
@@ -149,29 +150,15 @@
                     component.set("v.EFTRecord.Frequency__c	", component.get("v.Frequency"));
                    component.set("v.EFTRecord.Day_of_Month__c	", component.get("v.MonthDay"));
                    helper.SaveStageValues(component, event, component.get("v.EFTRecord")); 
-                }
+                }*/
                 /*if(i==0){
                 	 var stages2 = [];
                 	 stages2 = component.get("v.EFTStageDetails"); 
                 	stages2[0].Stage_Action__c = component.get("v.Action");
                 	//component.set("v.EFTStageDetails", stages2);
                 }*/
-                if(i != 2 && i !=4){
-                  $A.createComponent("c:"+stages[i+1].Stage_Component__c,{recordId: component.get("v.recordId")},
-                                function(msgBox){                
-                                     if (component.isValid()) {
-                                        
-                                         var targetCmp = component.find('ModalDialogPlaceholder');
-                                        var body = targetCmp.get("v.body");
-                                        //body.push(msgBox);
-                                        body.splice(0, 1, msgBox);
-                                        targetCmp.set("v.body", body); 
-                   
-                                    }
-                                }
-                                    );
-            }
-            if(i == 2 ){
+                
+           /* if(i == 2 ){
                 $A.createComponent("c:"+stages[i+1].Stage_Component__c,{recordId: component.get("v.recordId"), ShareLoanType: component.get("v.SelectedShareLoan")},
                                 function(msgBox){                
                                      if (component.isValid()) {
@@ -185,7 +172,7 @@
                                     }
                                 }
                                     );
-            }
+            }*/
                  
             	break;
                 
@@ -197,7 +184,7 @@
                 }
             }
         }  
-        helper.hideSpinner(component,helper);
+       // helper.hideSpinner(component,helper);
         
        	
        
@@ -216,8 +203,8 @@
                 document.getElementById('Step'+(i)).classList.remove('active');
                 document.getElementById('Step'+(i)).classList.add('half');
                 document.getElementById('Step'+(i+1)).classList.remove('half');
-                if(i !=4){
-                    $A.createComponent("c:"+stages[i-1].Stage_Component__c,{recordId: component.get("v.recordId")},
+               // if(i !=4){
+                    $A.createComponent("c:"+stages[i-1].Stage_Component__c,{recordId: component.get("v.recordId"), EFTRecord: component.get("v.EFTRecord")},
                                 function(msgBox){                
                                      if (component.isValid()) {
                                         
@@ -230,8 +217,8 @@
                                     }
                                 }
                              );
-                }
-                if(i == 4){
+              //  }
+             /*   if(i == 4){
                     $A.createComponent("c:"+stages[i-1].Stage_Component__c,{recordId: component.get("v.recordId"), ShareLoanType: component.get("v.SelectedShareLoan")},
                                 function(msgBox){                
                                      if (component.isValid()) {
@@ -245,7 +232,7 @@
                                     }
                                 }
                                     );
-                } 
+                } */
             
             	return;
                 
@@ -256,7 +243,9 @@
     },
     
    getActionValue : function(component, event) {
-        var action = event.getParam("Action");
+	   var EFT = event.getParam("EFTRecord");
+	   component.set("v.EFTRecord", EFT);
+       /* var action = event.getParam("Action");
          var SelectedShareLoan = event.getParam("SelectedShareLoan");
        
        	var RoutingNumber = event.getParam("RoutingNumber");
@@ -303,7 +292,7 @@
                 component.set("v.isError", true); 
              
            }
-       }
+       }*/
        
         
         

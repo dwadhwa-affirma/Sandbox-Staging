@@ -19,7 +19,7 @@
 		$A.util.addClass(spinnerMain, "slds-hide");
 	},
     
-    SaveStageValues: function(component, event, EFTRecord){
+    SaveStageValues: function(component, event, EFTRecord, i, stages){
         var action = component.get("c.saveStageData");
 		
        
@@ -34,12 +34,31 @@
 		action.setCallback(this, function(resp) {
 			var state=resp.getState();			
 			if(state === "SUCCESS"){
-				
-							
+				var result = resp.getReturnValue();   
+				component.set('v.EFTRecord', result);
+                
+                if(i !=4){
+                    $A.createComponent("c:"+stages[i+1].Stage_Component__c,{recordId: component.get("v.recordId"), EFTRecord: component.get("v.EFTRecord")},
+                                function(msgBox){                
+                                     if (component.isValid()) {
+                                        
+                                         var targetCmp = component.find('ModalDialogPlaceholder');
+                                        var body = targetCmp.get("v.body");
+                                        //body.push(msgBox);
+                                        body.splice(0, 1, msgBox);
+                                        targetCmp.set("v.body", body); 
+                   						
+                                    }
+                                }
+                                    );
+            }
+               
 			}
+            this.hideSpinner(component);
 		});
-		
+		 
 		$A.enqueueAction(action);
+        
     }	
     
     
