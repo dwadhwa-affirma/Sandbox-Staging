@@ -29,7 +29,18 @@
                 component.set("v.EFTRecord.Member_Account__c", result.MemberAccount.Id);
                 var EFTRecordStage  =  component.get("v.EFTRecord[0].Stage__c");
                 var modalBody;
-                for(var i=0;i<Stages.length;i++){
+                $A.createComponent("c:"+Stages[0].Stage_Component__c,{recordId: component.get("v.recordId"),EFTRecord: component.get("v.EFTRecord")},
+                            function(msgBox){                
+                                 if (component.isValid()) {                                    
+                                     var targetCmp = component.find('ModalDialogPlaceholder');
+                                    var body = targetCmp.get("v.body");
+                                    body.push(msgBox);
+                                    targetCmp.set("v.body", body); 
+               
+                                }
+                            }
+		       			 ); 
+                /*for(var i=0;i<Stages.length;i++){
                     
                     if(EFTRecordStage != undefined && Stages[i].Stage_Label__c == EFTRecordStage){
                         var ActiveStage= document.getElementById(Stages[i].StepId__c);                        
@@ -85,7 +96,7 @@
                          return;
                         }
                     
-                }
+                }*/
             }            
         	
             
@@ -107,7 +118,8 @@
         for(var i=0; i<stages.length;i++){
             var ProgressBarStepClass = document.getElementById('Step'+(i+1)).classList;   
             if((ProgressBarStepClass[0] == undefined || ProgressBarStepClass[0] == 'half')){
-                if(i !=4){
+            component.set("v.ActiveStepIndex", (i+1));
+              /*  if(i !=4){
                      document.getElementById('Step'+(i+1)).classList.remove('half');
                 document.getElementById('Step'+(i+1)).classList.add('active');
                 document.getElementById('Step'+(i+2)).classList.add('half');
@@ -115,7 +127,7 @@
                 else{
                     document.getElementById('Step'+(i+1)).classList.remove('half');
                 document.getElementById('Step'+(i+1)).classList.add('active');
-                }
+                }*/
                 
            		//component.find("ModalDialogPlaceholder").destroy();
               //  if(i==0){
@@ -199,10 +211,10 @@
         for(var i=0; i<stages.length;i++){
             var ProgressBarStepClass = document.getElementById('Step'+(i+1)).classList;   
             if(ProgressBarStepClass[0] == "half"){
-                 
-                document.getElementById('Step'+(i)).classList.remove('active');
+                component.set("v.ActiveStepIndex", (i-1)); 
+               /* document.getElementById('Step'+(i)).classList.remove('active');
                 document.getElementById('Step'+(i)).classList.add('half');
-                document.getElementById('Step'+(i+1)).classList.remove('half');
+                document.getElementById('Step'+(i+1)).classList.remove('half');*/
                // if(i !=4){
                     $A.createComponent("c:"+stages[i-1].Stage_Component__c,{recordId: component.get("v.recordId"), EFTRecord: component.get("v.EFTRecord")},
                                 function(msgBox){                

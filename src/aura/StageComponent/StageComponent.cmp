@@ -59,9 +59,14 @@
 </div>
     <lightning:spinner aura:id="Spinner" alternativeText="Loading" size="medium" variant="brand" class="slds-hide spin"/>
  <footer class="slds-modal__footer slds-modal__footer_directional">
+ <aura:if isTrue="{!(v.ActiveStepIndex != 4)}">
             <lightning:button aura:id="Exit" label="Exit" title="Exit" onclick="{!c.cancelAction}"/>
-            <lightning:button variant="brand" label="Back" disabled="{!v.backButton}" title="Back" onclick="{!c.back}"/>
+            <lightning:button variant="brand" label="Back" disabled="{!v.backButton}" title="Back" onclick="{!c.back}"/> 
             <lightning:button variant="brand" label="{!v.ContinueButtonName}" title="Continue" onclick="{!c.Continue}"/>
-        </footer> 
+  <aura:set attribute="else">  
+  <lightning:button class="btnClose" variant="brand" label="Close" title="Close" onclick="{!c.cancelAction}"/>
+  </aura:set>  
+  </aura:if>
+  </footer> 
 
 </aura:component>

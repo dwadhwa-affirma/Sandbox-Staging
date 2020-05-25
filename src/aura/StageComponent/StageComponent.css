@@ -17,6 +17,7 @@
 .THIS .progressbar li.half + li:after {background-color: #0070bf;}
 .THIS .demo-only {background: white !important;}
 .THIS .region-main {width: 40% !important;}
+.THIS .btnClose{float:right !important;}
 
 .THIS .hidden
 {
