@@ -12,6 +12,7 @@ public class MemberWarningCodeLightningController {
             acctypeSet.add(var.Account_Number__r.RecType__c);
             accIdSet.add(var.Account_Number__c);
         }
+        
         list<Account_Details__c> accList = new list<Account_Details__c>();
         if(acctypeSet.contains('ACCT')){
             accList = [SELECT Id,

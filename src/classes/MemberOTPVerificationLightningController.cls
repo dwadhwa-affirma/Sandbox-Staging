@@ -1496,6 +1496,7 @@ public class MemberOTPVerificationLightningController
 	
 	@AuraEnabled
     
+   
      public static map<string,object> GetOTPLogForReload(string memberid, string IVRGUIDFromUrl, boolean IsUserSessionLoaded)
      {
      	map<string,object> resultLog = new map<string,object>();
