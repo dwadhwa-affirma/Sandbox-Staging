@@ -4,6 +4,7 @@ trigger SolarLoanTrigger on Solar_Loans__c (after insert, after update, before u
     Set<Id> SLIdsToCreateLoan = new Set<Id>();
     Set<Id> UpdateStatus = new Set<Id>();
     Set<Id> SLIdsForEFT = new Set<Id>();
+    Set<Id> SLIdsForABABank = new Set<Id>();
     
     Set<Id> SLIdsForRouting = new Set<Id>();
     Map<Id, Solar_Loans__c> SLForBranchIds = new Map<Id, Solar_Loans__c>();
@@ -44,6 +45,12 @@ trigger SolarLoanTrigger on Solar_Loans__c (after insert, after update, before u
             if(trigger.new[i].Member_Number__c != null){ 
             	SLForBranchIds.put(trigger.new[i].id, trigger.new[i]);
                 SLMemberNumber.add(trigger.new[i].Member_Number__c);
+            }
+            
+            //------------------------------- ABA Bank look up'----------------------------------------------------------//
+                
+            if(trigger.new[i].Routing_Number__c != null){
+                SLIdsForABABank.add(trigger.new[i].id);
             }
             
             //------------------------------- Link "Member" record with "Solar Loan" record -------------------------------------------//
@@ -133,10 +140,7 @@ trigger SolarLoanTrigger on Solar_Loans__c (after insert, after update, before u
                 SLIdsToCreateLoan.add(trigger.new[i].id);
             }
             
-            
-            
-            
-             //------------------------------- Checking if the status is being changed and status = 'Completed'-----------------//
+            //------------------------------- Checking if the status is being changed and status = 'Completed'-----------------//
             
             if(trigger.old[i].Status__c != 'Completed' && trigger.new[i].Status__c == 'Completed'){
                 SLIdsForEFT.add(trigger.new[i].id);
@@ -162,6 +166,12 @@ trigger SolarLoanTrigger on Solar_Loans__c (after insert, after update, before u
             if(trigger.new[i].Four_Digit_Share_Loan_Type__c == null){ 
             	SLForBranchIds.put(trigger.new[i].id, trigger.new[i]);
                  SLMemberNumber.add(trigger.new[i].Member_Number__c);
+            }
+            
+             //------------------------------- ABA Bank look up'----------------------------------------------------------//
+                
+           if(trigger.old[i].Routing_Number__c != trigger.new[i].Routing_Number__c && trigger.new[i].Routing_Number__c != null){             	
+                SLIdsForABABank.add(trigger.new[i].id);
             }
             
             
@@ -240,6 +250,10 @@ trigger SolarLoanTrigger on Solar_Loans__c (after insert, after update, before u
     if(SLIdsForEFT.size() > 0){
         
          SolarLoanToSymitar.insertSolarLoans(SLIdsForEFT);
+    }
+    
+    if(SLIdsForABABank.size() > 0){
+    	SolarLoanRoutingInfo.getABABankName(SLIdsForABABank);
     }
     
     
