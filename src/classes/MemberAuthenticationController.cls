@@ -260,7 +260,7 @@ public class MemberAuthenticationController{
         Id MemberId;
         List<Authenticated_Log__c> AuthList = [Select id ,RecordType.Name , CallerPhoneNumber__c,EnteredMemberNumber__c,
         							EnteredSSN__c,IVR_SSN__c,SalesforceID__c, Current_User__c, PINMatch__c,HP_HV__c, IVR_Code__c, IVR_Sent_URL__c, IVR_GUID__c, Decision__c
-        							From Authenticated_Log__c where Current_User__c =:CurrentUser and IVR_GUID__c != null  order by createddate desc Limit 1 ]; 
+        							From Authenticated_Log__c where Current_User__c =:CurrentUser and IVR_GUID__c != null and  RecordType.Name !='Master Authentication Log' order by createddate desc Limit 1 ]; 
        system.debug('AuthList##' + AuthList);
        String IVRInteractionId;
         if(AuthList.size() > 0)

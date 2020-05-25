@@ -4,7 +4,101 @@
  * support API 41.0 and above
  */
 ({
-   
+   doInit : function(component, event, helper) {
+    	debugger;
+    	component.set("v.currentStep", "1");
+    	component.set("v.IsEmailVisible", false);
+    	component.set("v.loading", false);
+    	var params = event.getParam('arguments');
+    	var IsReLoadRequired ;
+    	var IsUserSessionLoaded;
+		if (params) {
+			IsReLoadRequired =  params.param2;
+			IsUserSessionLoaded = params.param3;
+			component.set("v.IsReLoadRequired", IsReLoadRequired);
+			component.set("v.IsUserSessionLoaded", IsUserSessionLoaded);
+			}
+    	
+    	var recordid = component.get("v.recordId");
+        var GUID = component.get("v.GUID");
+        var IVRGUIDFromUrl = component.get("v.IVRGUIDFromUrl");
+        var IsCallingfromAuth = component.get("v.IsCallingfromAuth");
+        window.addEventListener("keydown", function(event) {
+            var kcode = event.code;
+            if(kcode == 'Escape'){
+              event.preventDefault();
+                event.stopImmediatePropagation();
+            }
+        }, true);
+        
+       
+    		var action = component.get("c.GetOTPLogForReload");
+    		if(IsReLoadRequired == undefined){IsReLoadRequired = false}
+    		if(IsUserSessionLoaded == undefined){IsUserSessionLoaded = false} 
+    		action.setParams({"memberid" : recordid ,"IVRGUIDFromUrl": IVRGUIDFromUrl , "IsUserSessionLoaded": IsUserSessionLoaded,"IsReLoadRequired": IsReLoadRequired});
+    		action.setCallback(this, function(response){
+            
+    			var status = response.getState();
+    			if(component.isValid() && status === "SUCCESS")
+    			{
+    				var result =  response.getReturnValue();
+    				if(result.Verified != undefined && result.Verified.length > 0 && result.Verified!=null)
+    				{
+    					component.set("v.verified", result.Verified);
+    					component.set("v.currentStep", "3");
+    					component.set("v.IsEmailVisible", false);
+    					
+    				}else{
+									var action = component.get("c.ListOfEmailsAndPhoneNumbers");
+							       
+							        action.setParams({"accid" : recordid , "IsAuth" : IsCallingfromAuth, "GUID" : GUID, "IVRGUIDFromUrl": IVRGUIDFromUrl });
+									action.setCallback(this, function(response){
+							            
+										var status = response.getState();
+										if(component.isValid() && status === "SUCCESS")
+										{
+											var result =  response.getReturnValue();
+							               	component.set("v.Model", result);
+							               	component.set("v.IsEmailVisible", true);
+											if(result.IsIneligible == 'true')
+											{
+												component.set("v.currentStep", "3");
+												component.set("v.verified", "Changed");
+												var compEvent = component.getEvent("statusEvent");
+									            compEvent.setParams({"OTPVarifiedStatus" : "Changed","ActionType": 'OTP'});
+								  			    compEvent.fire();                	
+											}
+							                if(result.PhoneList_Options.length == 0 && result.EmailsList_Options.length == 0)
+							                {
+							                	component.set("v.currentStep", "3");
+							                	component.set("v.verified", "NoContactInfo");     
+							                	var compEvent = component.getEvent("statusEvent");
+									            compEvent.setParams({"OTPVarifiedStatus" : "NoContactInfo","ActionType": 'OTP'});
+								  			    compEvent.fire();           	
+							                } 
+							                else
+											{
+							                  setTimeout(function(){   var ele = document.getElementsByName("others");
+								               for(var i=0;i<ele.length;i++)
+								                  ele[i].checked = false; }, 3000);
+							                }                
+							               component.set("v.loading", 'false');
+							              
+							               
+										}
+									});
+									 
+									$A.enqueueAction(action);
+									component.set("v.loading", 'true');
+							}
+    				
+    			}
+			});
+		 
+    		$A.enqueueAction(action);
+    	
+    	
+	},
   
    openModel: function(component, event, helper) {
     // for Display Model,set the "isOpen" attribute to "true"*****
@@ -105,7 +199,7 @@
         component.set("v.currentStep", "3");
     },
     
-    doInit : function(component, event, helper) {
+  /*  doInit : function(component, event, helper) {
     	debugger;
     	var params = event.getParam('arguments');
     	var IsReLoadRequired ;
@@ -193,7 +287,7 @@
 				component.set("v.loading", 'true');
 		}
 	},
-	
+	*/
 	 declineAtFirstStep : function(component, event, helper) {
          
 		var action = component.get("c.DeclineOTPAtFirstStep");

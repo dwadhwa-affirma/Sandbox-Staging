@@ -19,6 +19,7 @@
     <aura:attribute name="IsReLoadRequired" type="boolean"/>
     <aura:attribute name="IsUserSessionLoaded" type="boolean" default="false"/>
     <aura:attribute name="OTPStatusForDay" type="boolean" default="true" />
+    <aura:attribute name="IsEmailVisible" type="boolean" default="false" />
     
     <aura:method name="OTPMethod" action="{!c.doInit}" access="PUBLIC"> 
    		 <aura:attribute name="param1" type="String"/>
@@ -235,7 +236,56 @@
     
     		<!--###### Visible only for Auth ######-->
     		
-    <aura:if isTrue="{!and(and(v.loading == 'false',v.Model.emailToShow == true),v.IsCallingfromAuth == 'true')}">
+    <aura:if isTrue="{!and(v.loading == false, v.IsEmailVisible == false ,v.IsCallingfromAuth == true)}">
+    		
+    	 <div class="{!v.currentStep == '3' ? 'slds-show' : 'slds-hide'}" style="color:red" id="OTPStep3">
+                <aura:if isTrue="{!(v.verified == 'Expired')}">
+                    <div id="divexpired">
+                        <h3 class="subtitle redcol"><i class="ion-ios-close-outline"></i><br/>Expired</h3>
+                        <p class="subtitledes redcol">OTP code that you entered has expired.</p><br/>
+                    </div>
+                </aura:if>
+                <aura:if isTrue="{!(v.verified == 'Declined')}">
+                    <div id="divunconfirmed">
+                        <h3 class="subtitle bluecol"><i class="ion-ios-minus-outline"></i><br />Unconfirmed Contact</h3>
+                        <p class="subtitledes bluecol">Member unable to provide contact information</p>      		
+                    </div>
+                </aura:if>
+                <aura:if isTrue="{!(v.verified == 'NoContactInfo')}">
+                    <div id="divnocontactinfo">
+                        <h3 class="subtitle bluecol"><i class="ion-ios-minus-outline"></i><br />No contact info</h3>
+                        <p class="subtitledes bluecol">No contact information found for the member</p>     		
+                    </div>
+                </aura:if>
+                <aura:if isTrue="{!(v.verified == 'Changed')}">
+                    <div id="divIsIneligible">
+                        <h3 class="subtitle bluecol"><i class="ion-ios-minus-outline"></i><br/>Member is not eligible for OTP authentication</h3>
+                        <p class="subtitledes bluecol">TELEPHONE/EMAIL CHANGED WITHIN 60 DAYS</p><br/>      		
+                    </div>
+                </aura:if>
+                <aura:if isTrue="{!(v.verified == 'Valid')}">
+                    <div id="divauthenticated">
+                        <h3 class="subtitle greencol"><i class="ion-ios-checkmark-outline"></i><br/>Authenticated</h3>
+                        <p class="subtitledes greencol">OTP authentication was successful.</p><br/>
+                    </div>
+                </aura:if>
+                <aura:if isTrue="{!(v.verified == 'Invalid')}">
+                    <div id="divfailed">
+                        <h3 class="subtitle redcol"><i class="ion-ios-close-outline"></i><br/>Failed</h3>
+                        <p class="subtitledes redcol">OTP authentication failed.</p><br/>
+                    </div>
+                </aura:if>
+                <aura:if isTrue="{!and(v.verified == 'Cancelled', v.CancelledAttempt == 1)}">
+                    <div id="divcanceled">
+                        <h3 class="subtitle bluecol"><i class="ion-ios-minus-outline"></i><br/>Cancelled</h3>
+                        <p class="subtitledes bluecol">Member unable to provide OTP code</p><br/>
+                    </div>
+                </aura:if>			
+            </div>
+    </aura:if>
+    
+    		
+    <aura:if isTrue="{!and(and(v.loading == 'false',v.IsEmailVisible == true),v.IsCallingfromAuth == 'true')}">
         <div class="otpModalpopup">
             <!--showing 3 screens based on progress indicator steps-->
             <div class="{!v.currentStep == '1' ? 'slds-show' : 'slds-hide'}">

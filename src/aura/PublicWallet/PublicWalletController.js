@@ -274,7 +274,7 @@
 		        		alert('Please select Additional Token');
 		        	}
 		        	else{
-			        
+		        		component.set("v.AdditionalTokenOption3",token1);
 			        	ScoreObtained = parseInt(ScoreObtained) + 1;
 			        	component.set("v.ScoreObtained",ScoreObtained);
 			        	findOtherButton = component.find('TokenFailButton1');
@@ -303,6 +303,7 @@
 		        		alert('Please select Additional Token');
 		        	}
 		        	else{
+		        		component.set("v.AdditionalTokenOption3",token1);
 		        		FailedCount = parseInt(FailedCount) + 1;
 		        		component.set("v.FailedCount",FailedCount);
 		        		findOtherButton = component.find('TokenPassButton1');

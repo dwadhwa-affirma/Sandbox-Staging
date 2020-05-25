@@ -4,8 +4,12 @@
 	<aura:attribute name="ScoreObtained" type="Integer" default="0"/>
 	<aura:attribute name="FailedCount" type="Integer" default="0"/>
 	<aura:attribute name="JointAccount" type="object[]"/>
+	<aura:attribute name="JointAccountOnly" type="object[]"/>
+	<aura:attribute name="BeneficiaryAccountOnly" type="object[]"/>
 	<aura:attribute name="LoanAccount" type="object[]"/>
 	<aura:attribute name="Card" type="object[]"/>
+	<aura:attribute name="AdditionalTokenOption1" type="String"/>
+	<aura:attribute name="AdditionalTokenOption2" type="String"/>
 	<aura:attribute name="IsLoanDataAvailable" type="Boolean" default="false"/>
 	<aura:attribute name="IsRelationshipDataAvailable" type="Boolean" default="false"/>
 	<aura:attribute name="IsCardDetailsAvailable" type="Boolean" default="false"/>
@@ -25,10 +29,15 @@
 	<aura:attribute name="IsReLoadRequired" type="boolean" default="false"/> 
 	<aura:attribute name="IsButtonDisabled" type="boolean" default="true"/>
 	<aura:attribute name="IsUserSessionLoaded" type="boolean" default="false"/>
+	<aura:attribute name="IsMemberManualSearched" type="boolean" default="false"/>
+	<aura:attribute name="IsCFCUFailForTheDay" type="string" default="pass"/>
+	<aura:attribute name="IsCFCUFailOnReload" type="string" default="pass"/>
+	
    <aura:method name="CFCUWalletMethod" action="{!c.doInit}" access="PUBLIC"> 
     	<aura:attribute name="param1" type="String"/>  
     	<aura:attribute name="param2" type="boolean"/> 
     	<aura:attribute name="param3" type="boolean"/>
+    	<aura:attribute name="param4" type="boolean"/>
 	</aura:method>
 	<aura:registerEvent name="statusEvent" type="c:MemberIdEvent" />
 	 

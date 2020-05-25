@@ -129,15 +129,22 @@ private class MemberAuthenticationControlLightningTest {
         AuthwrapperList =  MemberAuthenticationControllerLightning.GetLogHistoryData(acc.id, 12, 'gewwwsegv-sewswrw-2eqed-qrq');
         getAuthLEvel = MemberAuthenticationControllerLightning.getLevel(acc.id);
     }
+    static testMethod void LogDataFunctionsTest2() {
+        Test.startTest();
+        Account acc = [Select id from Account where FirstName='U' limit 1 ];
+        MemberAuthenticationControllerLightning.GetSupervisor(acc.id,10,'gewwwsegv-sewswrw-2eqed-qrq');
+        Test.stopTest();
+    }
      static testMethod void LogDataFunctionsTest() {
+     	list<object> obj = new List<object>();
      	
         Account acc = [Select id from Account where FirstName='U' limit 1 ];
         Account_Details__c ad = [select id from Account_Details__c where name = '00001' limit 1];
         User u = [select id , name from user where Firstname = 'Deepika' limit 1]; 
         MemberAuthenticationControllerLightning.SaveOOWLogData('passed','00002',acc.id,'reason','Test1','gewwwsegv-sewswrw-2eqed-qrq', 'Test Test1','Error','IVRgewwwsegv-sewswrw-2eqed-qrq');
         MemberAuthenticationControllerLightning.KYMSaveLogData(acc.id,'reason','Test1','gewwwsegv-sewswrw-2eqed-qrq');
-        MemberAuthenticationControllerLightning.PublicWalletSaveLogData(acc.id,'reason','gewwwsegv-sewswrw-2eqed-qrq','Pass','Pass','Pass','Pass','Pass','IVRgewwwsegv-sewswrw-2eqed-qrq');
-        MemberAuthenticationControllerLightning.CFCUWalletSaveLogData(acc.id,'reason','gewwwsegv-sewswrw-2eqed-qrq','Pass','Pass','Pass','Pass','Pass','Pass','IVRgewwwsegv-sewswrw-2eqed-qrq');
+        MemberAuthenticationControllerLightning.PublicWalletSaveLogData(acc.id,'reason','gewwwsegv-sewswrw-2eqed-qrq','Pass','Pass','Pass','Pass','Pass','IVRgewwwsegv-sewswrw-2eqed-qrq','test1','test2','test3', 'test4', 'test5');
+        MemberAuthenticationControllerLightning.CFCUWalletSaveLogData(acc.id,'reason','gewwwsegv-sewswrw-2eqed-qrq','Pass','Pass','Pass','Pass','Pass','Pass','IVRgewwwsegv-sewswrw-2eqed-qrq',obj, obj,obj,obj,'test1', 'test2');
         MemberAuthenticationControllerLightning.GetFailedDesiredLevelLog(acc.id);
 	    MemberAuthenticationControllerLightning.SaveOTPCancelledAttempt(acc.id,'gewwwsegv-sewswrw-2eqed-qrq','IVRgewwwsegv-sewswrw-2eqed-qrq');
         Test.startTest();
@@ -145,7 +152,7 @@ private class MemberAuthenticationControlLightningTest {
         Test.stopTest(); 
         MemberAuthenticationControllerLightning.getPublicWalletInfo(acc.id,'IVRgewwwsegv-sewswrw-2eqed-qrq');
         MemberAuthenticationControllerLightning.SaveLastAchievableLevelLogs(acc.id,'gewwwsegv-sewswrw-2eqed-qrq','Level 1','IVRgewwwsegv-sewswrw-2eqed-qrq','123-4567-765','0000084','123455','True','True','True','True','Test','1','True','1234','True');
-        MemberAuthenticationControllerLightning.GetSupervisor(acc.id,10,'gewwwsegv-sewswrw-2eqed-qrq');
+       
         string str = MemberAuthenticationControllerLightning.substring('reason',2);
        
         
@@ -164,8 +171,8 @@ private class MemberAuthenticationControlLightningTest {
    static testMethod void getMemberSearchDataTest(){
    	
    		Map<string,object> objmap = new Map<string,object>();
-   		objmap = MemberAuthenticationControllerLightning.getMemberSearchData('9169954478', '00002', '1715', '04-04-1963', true);
-   		objmap = MemberAuthenticationControllerLightning.getMemberSearchData('9169954478', '00002', '1715', '04-04-1963', false);
+   		objmap = MemberAuthenticationControllerLightning.getMemberSearchData('9169954478', '00002', '1715', '04-04-1963', true,'true');
+   		objmap = MemberAuthenticationControllerLightning.getMemberSearchData('9169954478', '00002', '1715', '04-04-1963', true,'false');
    	
    }
     

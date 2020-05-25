@@ -391,7 +391,8 @@
 	{
 		  
 		   var action = component.get("c.getMemberSearchData");
-		   var parameters = {"PhoneNumber": PhoneNumber,"MemberNumber" : MemberNumber,"SSNNumber" : SSNNumber,"IVRGUIDFromUrl":IVRGUIDFromUrl, "IsUserSessionLoaded": component.get("v.IsUserSessionLoaded")};
+		   var SSNMatch = component.get("v.SSNnumberMatch");
+		   var parameters = {"PhoneNumber": PhoneNumber,"MemberNumber" : MemberNumber,"SSNNumber" : SSNNumber,"IVRGUIDFromUrl":IVRGUIDFromUrl, "IsUserSessionLoaded": component.get("v.IsUserSessionLoaded"), "SSNMatch" : SSNMatch};
 		
 		   action.setParams(parameters);
 		   action.setCallback(this, function(response){
@@ -550,6 +551,9 @@
     		var Error;
     		var element = document.getElementById('oowComponentdiv');
     		element.removeAttribute('class');
+    		
+    		var IsMemberNumberValid = component.get("v.IsMemberNumberValid");
+    	
     		var action = component.get("c.GetAccountNumber");
     		action.setParams({"accdetailid": memberid});  
 		
@@ -564,10 +568,18 @@
 			               if(result.AccountNumber.length > 0)
 			               {
 		                       var MemberName = result.MemberName;
-	                               component.set("v.AccountNumber",result.AccountNumber);
+		                       var AccountNumber = result.AccountNumber;
+		                       var Source = '';
+		                       
+		                       if(IsMemberNumberValid == true){
+		                    	   	AccountNumber = component.get("v.MemberNumberEntered");
+		                    	   	Source = "&source=member";
+		                       }
+    		
+	                           component.set("v.AccountNumber",result.AccountNumber);
 	                                                          
-	                               win = window.open(result.FlowURL+"&accountnumber=" + result.AccountNumber + "&firstname=allow" + MemberName);
-		                      window.onmessage = function (e) {
+	                           win = window.open(result.FlowURL+"&accountnumber=" + AccountNumber + "&firstname=allow" + MemberName + Source);
+		                       window.onmessage = function (e) {
 							
 		                      	 var output;
 	                                                                   

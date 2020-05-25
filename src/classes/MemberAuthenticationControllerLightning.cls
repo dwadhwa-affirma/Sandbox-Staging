@@ -1,15 +1,37 @@
 public class MemberAuthenticationControllerLightning{
          
+    
+    @AuraEnabled
+     public static RecordType GetRecordTypeData(string sobjecttype, string RecordTypeName )
+     {
+     	RecordType rec = [Select id, Name, sobjecttype from RecordType where sobjecttype=: sobjecttype and Name=:RecordTypeName];
+     	return rec;
+     }
+    @AuraEnabled
+     public static List<Authenticated_Log__c> GetDataForMasterAuthenticationLog(string IVRGuid, Id RecordTypeId )
+     {
+     	List<Authenticated_Log__c> AuthLog = [Select Id, Name, RecordTypeId, IVR_Sent_URL__c,CallerPhoneNumber__c,EnteredMemberNumber__c,EnteredSSN__c, Failed_Desired_Level__c,
+     	EnteredCardNumber__c,CardNumberMatch__c,PhoneNumberMatch__c, MemberNumberMatch__c, SSNnumberMatch__c,
+		IVR_SSN__c,IVR_Card_Number__c,IVR_Member_Number__c,IVR_Member_Number_Match__c,IVR_SSN_Match__c,IVR_Card_Match__c,
+		IVR_Pin_Match__c,PINMatch__c,HP_HV__c,IVR_Code__c,
+     	Override_Request_Supervisor__c,Override_Supervisor__c,Override_Request_Type__c,Manager_Override_Case__c,
+     	OOW_Status__c,OOW_Member_Number__c,OOW_Reason__c,OOW_Notes__c,First_Name__c,Last_Name__c,
+     	Public_Wallet_Status__c,DOBMatch__c,IdNumberMatch__c,MMNMatch__c,EmailMatch__c,Additional_Token_Option3_Match__c,
+     	CFCU_Wallet_Status__c,BeneficiaryDetailMatch__c,Joint_OwnerDetailsMatch__c,Additional_Token_Option1_Match__c,Additional_Token_Option2_Match__c,Loan_Detail_Match__c,
+     	Decision__c,SalesforceID__c,Member__c,Member_Number__c,Staff_Name__c,Current_User__c,GUID__c,IVR_GUID__c,Last_Achievable_Level__c from Authenticated_Log__c where IVR_GUID__c= :IVRGuid and RecordTypeId=:RecordTypeId];
+     	return AuthLog;
+     } 
+     
     @AuraEnabled(cacheable = false )
     
-    public static  Map<string,object> getMemberSearchData(string PhoneNumber, string MemberNumber, string SSNNumber,string IVRGUIDFromUrl, boolean IsUserSessionLoaded)
+   public static  Map<string,object> getMemberSearchData(string PhoneNumber, string MemberNumber, string SSNNumber,string IVRGUIDFromUrl, boolean IsUserSessionLoaded, String SSNMatch)
     {
     	/*This method brings member data based on values passed in url and also based on values pass during manual search for member */
       	Boolean visible;
       	Boolean OOW;
       	Boolean OTP;
       	Boolean PubCFCU;
-      	
+      	Map<string,object> result = new  Map<string,object>();
       	Id profileId=userinfo.getProfileId();
       	Id CurrentUser = userinfo.getUserId();
       	Profile UserProfile = [Select Id,Name from Profile where Id=:profileId];
@@ -25,11 +47,70 @@ public class MemberAuthenticationControllerLightning{
 	      userEnteredInformation.phoneNumber = PhoneNumber;
 	      userEnteredInformation.memberNumber = MemberNumber;
 	      userEnteredInformation.SSN = SSNNumber;
-	      
+	      userEnteredInformation.SSNMatch = SSNMatch;
 	      /*NameList contains Member data entered by user*/
 	      NameList = vc.queryByParametersAvailable(userEnteredInformation, false); 
 	      
-	      Map<string,object> result = new  Map<string,object>();
+	      /* Code for Aut-267 begin to display message on member number search when one member is associated with multiple member account*/
+	/*       List<Account_Details__c> memberDetails = new List<Account_Details__c>();
+	       Set<String> memberDetailsNames = new Set<String>();
+	       string MultipleMemberNumberAlert='';
+	      for(Account selectedOne: NameList){
+		             system.debug('---NameList for 1--'+NameList);
+		              memberDetails = vc.AccountNumbersAuth(selectedOne.Id);
+		               if(memberDetails.size() > 1)
+             		 	{
+                 	 		break;
+              		 	}	                
+	      }
+	      System.Debug('memberDetails##'+ memberDetails);   
+	       if(MemberNumber != null || MemberNumber != '')
+                {
+                     
+                   
+                    for(Account_Details__c acctD : memberDetails)
+                    {
+                        memberDetailsNames.add(acctD.Name); 
+                        System.Debug('accD##' + acctD);                       
+                    }
+                    system.debug('memberDetails.size()....'+memberDetails.size());
+                    system.debug('memberDetailsNames....'+memberDetailsNames.size());                               
+                    system.debug('memberDetailsNames##'+ memberDetailsNames);
+                    integer i = memberDetailsNames.size();                   
+                    if (i > 1)
+                    {
+                        MultipleMemberNumberAlert = 'This person is related to more than one member number';    
+                    }
+                    else if(i == 0)
+                    {
+                        MultipleMemberNumberAlert = 'This person is not related to any member number';
+                    }
+                                    
+                }
+                else if(SSNNumber != null ||  SSNNumber !='')
+                {
+                	 for(Account_Details__c acctD : memberDetails)
+                    {
+                        memberDetailsNames.add(acctD.Name); 
+                        System.Debug('accD##' + acctD);                       
+                    }
+                    system.debug('memberDetails.size()....'+memberDetails.size());
+                    system.debug('memberDetailsNames....'+memberDetailsNames.size());                               
+                    system.debug('memberDetailsNames##'+ memberDetailsNames);
+                    integer i = memberDetailsNames.size();                   
+                    if (i > 1)
+                    {
+                        MultipleMemberNumberAlert = 'This person is related to more than one member number';    
+                    }
+                    else if(i == 0)
+                    {
+                        MultipleMemberNumberAlert = 'This person is not related to any member number';
+                    }
+                }
+	      
+	      
+	       result.put('MultipleMemberNumberAlert', MultipleMemberNumberAlert); */
+	     
 	      result.put('Account', NameList);
 	       /*GetMemberAuthenticationLevel() function bring data from custom setting*/
 	      LevelModel = GetMemberAuthenticationLevel();
@@ -51,7 +132,7 @@ public class MemberAuthenticationControllerLightning{
 	        
 	        if(IsUserSessionLoaded == true)
 	        {
-	        	AuthLog = [Select id ,Current_User__c, Guid__c, SalesforceID__c, IVR_GUID__c from Authenticated_Log__c where IVR_GUID__c =: IVRGUIDFromUrl  order by createddate desc Limit 1] ;
+	        	AuthLog = [Select id ,Current_User__c, Guid__c, SalesforceID__c, IVR_GUID__c from Authenticated_Log__c where IVR_GUID__c =: IVRGUIDFromUrl and Recordtype.name!='Master Authentication Log'  order by createddate desc Limit 1] ;
 	        	system.debug('AuthLogSize##'+ AuthLog.size());
 		        if(AuthLog.size() > 0 ){
 		        	result.put('AuthLog', AuthLog);
@@ -63,7 +144,7 @@ public class MemberAuthenticationControllerLightning{
 	        {
 		        	 if(IVRGUIDFromUrl != null && IVRGUIDFromUrl !=''){	        	
 		        
-					        AuthLog = [Select id ,Current_User__c, Guid__c, SalesforceID__c, IVR_GUID__c from Authenticated_Log__c where IVR_GUID__c =: IVRGUIDFromUrl and createddate >=: Datetime.now().addMinutes(minutes) Limit 1] ;
+					        AuthLog = [Select id ,Current_User__c, Guid__c, SalesforceID__c, IVR_GUID__c from Authenticated_Log__c where IVR_GUID__c =: IVRGUIDFromUrl and Recordtype.name!='Master Authentication Log'and createddate >=: Datetime.now().addMinutes(minutes) Limit 1] ;
 					        system.debug('AuthLogSize##'+ AuthLog.size());
 					        
 					        if(AuthLog.size() > 0 ){
@@ -97,6 +178,7 @@ public class MemberAuthenticationControllerLightning{
 				FlowURL = oowf.URL__C;
 			}
 			 
+			 
         	Map<string,string> strMap = new  Map<string,string>();
             List<Person_Account__c> p = [SELECT Id, Account_Number__c,PersonID__r.Name, PersonID__r.FirstName,PersonID__r.LastName, PersonID__c, Account_Number__r.RecType__c, TypeTranslate__c, Account_Number__r.Name
                 FROM Person_Account__c where PersonID__c =:accdetailid  limit 1];
@@ -121,7 +203,7 @@ public class MemberAuthenticationControllerLightning{
     public static void SaveOOWLogData(string status, string MemberNumber, string MemberId, string reason, string notes, string GUID, string name, string Error, string IVRGUIDFromUrl)/*This is to save OOW log*/
     {
       /*This methos save OOW log data in MAAP Log object*/
-      RecordType rec = [select Id,Name,SobjectType from RecordType where Name ='OOW Execution Log' and SobjectType='Authenticated_Log__c'];
+      RecordType rec = GetRecordTypeData('Authenticated_Log__c', 'OOW Execution Log');
       
        String[] sp2 ;
     	if(name != null && name != '' ){
@@ -171,13 +253,103 @@ public class MemberAuthenticationControllerLightning{
       
       system.debug('log##'+ log);
       
+      
+      /* The below code is to create or update Master log data*/
+      
+       RecordType rec1 = GetRecordTypeData('Authenticated_Log__c', 'Master Authentication Log');
+       
+       List<Authenticated_Log__c> MasterAuthenticationLog = GetDataForMasterAuthenticationLog(IVRGUIDFromUrl, rec1.id);
+       if(MasterAuthenticationLog.size() == 0)
+       {
+       		
+			     Authenticated_Log__c log2 = new Authenticated_Log__c();
+			      log2.RecordTypeId= rec1.id;
+			      If(status == 'failed')
+			      	log2.OOW_Status__c = 'Fail';
+			      If(status == 'passed')
+			      	log2.OOW_Status__c = 'Pass';	
+			      log2.OOW_Member_Number__c = MemberNumber;
+			      if(reason == ''){
+			         	log2.OOW_Reason__c = 'N/A';
+			    	}else{
+			         	log2.OOW_Reason__c = reason;
+			     	}
+			     if(Error != null && Error != ''){
+			     	log2.OOW_Notes__c = notes + ' Error:' + Error;
+			     }
+			     else{
+			     	log2.OOW_Notes__c = notes;
+			     }			      
+			     
+			     log2.SalesforceID__c = MemberId;
+			     log2.Member__c = MemberId;
+			     log2.Staff_Name__c = UserInfo.getName();
+			     log2.Current_User__c = Userinfo.getuserid();
+			     log2.Member_Number__c = MemberNumber;
+			     log2.GUID__c = GUID;
+			     log2.IVR_GUID__c = IVRGUIDFromUrl;
+			      If(status == 'failed')
+			      	log2.Decision__c = 'Fail';
+			      If(status == 'passed')
+			      	log2.Decision__c = 'Pass';
+			      system.debug('sp2##'+ sp2);
+			      if(sp2.size() > 0)log2.First_Name__c = sp2[0];
+			      if(sp2.size() > 2) log2.Last_Name__c = sp2[2];
+			      else if(sp2.size() > 0)log2.Last_Name__c = sp2[1];
+			      
+			      insert log2;
+			      
+			      system.debug('log2##'+ log2);
+       }else{
+       	
+       		
+       			 
+			      If(status == 'failed')
+			      	MasterAuthenticationLog[0].OOW_Status__c = 'Fail';
+			      If(status == 'passed')
+			      	MasterAuthenticationLog[0].OOW_Status__c = 'Pass';	
+			      MasterAuthenticationLog[0].OOW_Member_Number__c = MemberNumber;
+			      if(reason == ''){
+			         	MasterAuthenticationLog[0].OOW_Reason__c = 'N/A';
+			    	}else{
+			         	MasterAuthenticationLog[0].OOW_Reason__c = reason;
+			     	}
+			     if(Error != null && Error != ''){
+			     	MasterAuthenticationLog[0].OOW_Notes__c = notes + ' Error:' + Error;
+			     }
+			     else{
+			     	MasterAuthenticationLog[0].OOW_Notes__c = notes;
+			     }			      
+			     
+			     MasterAuthenticationLog[0].SalesforceID__c = MemberId;
+			     MasterAuthenticationLog[0].Member__c = MemberId;
+			     MasterAuthenticationLog[0].Staff_Name__c = UserInfo.getName();
+			     MasterAuthenticationLog[0].Current_User__c = Userinfo.getuserid();
+			     MasterAuthenticationLog[0].Member_Number__c = MemberNumber;
+			     MasterAuthenticationLog[0].GUID__c = GUID;
+			      If(status == 'failed')
+			      	MasterAuthenticationLog[0].Decision__c = 'Fail';
+			      If(status == 'passed')
+			      	MasterAuthenticationLog[0].Decision__c = 'Pass';
+			      system.debug('sp2##'+ sp2);
+			      if(sp2.size() > 0)MasterAuthenticationLog[0].First_Name__c = sp2[0];
+			      if(sp2.size() > 2) MasterAuthenticationLog[0].Last_Name__c = sp2[2];
+			      else if(sp2.size() > 0)MasterAuthenticationLog[0].Last_Name__c = sp2[1];
+			      
+			      update MasterAuthenticationLog[0];
+       		
+       	
+       }
+       
+      
     }
     
     @AuraEnabled
+    
     public static void KYMSaveLogData(string MemberId, string reason, string otherReason, string GUID)/*This is to save OOW log*/
     {
      /*This method save KYM log data in MAAP Log object*/
-      RecordType rec = [select Id,Name,SobjectType from RecordType where Name ='KYM Log' and SobjectType='Authenticated_Log__c'];
+       RecordType rec = GetRecordTypeData('Authenticated_Log__c', 'KYM Log'); 
        string  AccountNumber;
       List<Person_Account__c> p = [SELECT Id, Account_Number__c,  PersonID__c, Account_Number__r.RecType__c, TypeTranslate__c, Account_Number__r.Name
                 FROM Person_Account__c where PersonID__c =:MemberId limit 1];
@@ -204,14 +376,16 @@ public class MemberAuthenticationControllerLightning{
       insert log;
       
       system.debug('log##'+ log);
-      
+       
     }
     
     @AuraEnabled
-    public static void PublicWalletSaveLogData(string MemberId, string Status, string GUID, string DOBMatch, string IdNumberMatch, String MMNMatch, string EmailMatch, string AdditionalTokenOption3Match, string IVRGUIDFromUrl)
+    public static void PublicWalletSaveLogData(string MemberId, string Status, string GUID, string DOBMatch, string IdNumberMatch, String MMNMatch, string EmailMatch, string AdditionalTokenOption3Match, string IVRGUIDFromUrl, string DOB,string IdNumber,string MMN, string Email, string AdditionalTokenOption3)
     {
     	 /*This method save Public Wallet log data in MAAP Log object*/
-      RecordType rec = [select Id,Name,SobjectType from RecordType where Name ='Public Wallet Log' and SobjectType='Authenticated_Log__c'];
+     system.debug('Email##' + Email );
+      RecordType rec = GetRecordTypeData('Authenticated_Log__c', 'Public Wallet Log'); 
+     
        string  AccountNumber;
       List<Person_Account__c> p = [SELECT Id, Account_Number__c,  PersonID__c, Account_Number__r.RecType__c, TypeTranslate__c, Account_Number__r.Name
                 FROM Person_Account__c where PersonID__c =:MemberId  limit 1];
@@ -235,17 +409,79 @@ public class MemberAuthenticationControllerLightning{
       log.MMNMatch__c = MMNMatch ;
       log.EmailMatch__c = EmailMatch ;
       log.Additional_Token_Option3_Match__c = AdditionalTokenOption3Match ;
+      log.DOB__c = DOB;
+      log.ICardNumber__c = IdNumber;
+      log.MMN__c = MMN;
+      log.PW_Email__c = Email;
+      log.Additional_Token_Option3__c = AdditionalTokenOption3;
+      
       insert log;
-      
-      
+       /* The below code is to create or update Master log data*/
+     	 RecordType rec1 = GetRecordTypeData('Authenticated_Log__c', 'Master Authentication Log');
+       
+        List<Authenticated_Log__c> MasterAuthenticationLog = GetDataForMasterAuthenticationLog(IVRGUIDFromUrl, rec1.id);
+       if(MasterAuthenticationLog.size() == 0)
+       {
+       		  Authenticated_Log__c log2 = new Authenticated_Log__c();
+		      log2.RecordTypeId= rec1.id;
+		      log2.Public_Wallet_Status__c = status;
+		      log2.SalesforceID__c = MemberId;
+		      log2.Member__c = MemberId;
+		      log2.Staff_Name__c = UserInfo.getName();
+		      log2.Current_User__c = Userinfo.getuserid();
+		      log2.Decision__c = status;
+		      log2.Member_Number__c = AccountNumber;
+		      log2.GUID__c = GUID;
+		      log2.IVR_GUID__c = IVRGUIDFromUrl;
+		      log2.DOBMatch__c = DOBMatch ;
+		      log2.IdNumberMatch__c =  IdNumberMatch ;
+		      log2.MMNMatch__c = MMNMatch ;
+		      log2.EmailMatch__c = EmailMatch ;
+		      log2.Additional_Token_Option3_Match__c = AdditionalTokenOption3Match ;
+		      log2.DOB__c = DOB;
+		      log2.ICardNumber__c = IdNumber;
+		      log2.MMN__c = MMN;
+		      log2.PW_Email__c = Email;
+		      log2.Additional_Token_Option3__c = AdditionalTokenOption3;
+		      insert log2;	
+       }
+       else{
+       		
+			      MasterAuthenticationLog[0].Public_Wallet_Status__c = status;
+			      MasterAuthenticationLog[0].SalesforceID__c = MemberId;
+			      MasterAuthenticationLog[0].Member__c = MemberId;
+			      MasterAuthenticationLog[0].Staff_Name__c = UserInfo.getName();
+			      MasterAuthenticationLog[0].Current_User__c = Userinfo.getuserid();
+			      MasterAuthenticationLog[0].Decision__c = status;
+			      MasterAuthenticationLog[0].Member_Number__c = AccountNumber;
+			      MasterAuthenticationLog[0].GUID__c = GUID;
+			      MasterAuthenticationLog[0].DOBMatch__c = DOBMatch ;
+			      MasterAuthenticationLog[0].IdNumberMatch__c =  IdNumberMatch ;
+			      MasterAuthenticationLog[0].MMNMatch__c = MMNMatch ;
+			      MasterAuthenticationLog[0].EmailMatch__c = EmailMatch ;
+			      MasterAuthenticationLog[0].Additional_Token_Option3_Match__c = AdditionalTokenOption3Match ;
+			      MasterAuthenticationLog[0].DOB__c = DOB;
+			      MasterAuthenticationLog[0].ICardNumber__c = IdNumber;
+			      MasterAuthenticationLog[0].MMN__c = MMN;
+			      MasterAuthenticationLog[0].PW_Email__c = Email;
+			      MasterAuthenticationLog[0].Additional_Token_Option3__c = AdditionalTokenOption3;
+			      update MasterAuthenticationLog[0];	
+       		
+       }
+       
     }
     
     @AuraEnabled
-    public static void CFCUWalletSaveLogData(string MemberId, string Status, string GUID, string BeneficiaryDetailMatch, string JointOwnerDetailMatch, string CardNumberMatch, string AdditionalTokenOption1Match, string AdditionalTokenOption2Match, string LoanDetailMatch, string IVRGUIDFromUrl)
+    public static void CFCUWalletSaveLogData(string MemberId, string Status, string GUID, string BeneficiaryDetailMatch, string JointOwnerDetailMatch, string CardNumberMatch, string AdditionalTokenOption1Match,
+     string AdditionalTokenOption2Match, string LoanDetailMatch, string IVRGUIDFromUrl, List<object> BeneficiaryAccount, List<object> JointAccount, List<object> LoanAccount,  List<object> Card, string AdditionalTokenOption1, string AdditionalTokenOption2)
     {
     	 /*This method save CFCU Wallet log data in MAAP Log object*/
       string  AccountNumber;
-      RecordType rec = [select Id,Name,SobjectType from RecordType where Name ='CFCU Wallet Log' and SobjectType='Authenticated_Log__c'];
+      string BA = '';
+      string JA = '';
+      string LA = '';
+      string CardDetail = '';
+      RecordType rec = GetRecordTypeData('Authenticated_Log__c', 'CFCU Wallet Log');
       List<Person_Account__c> p = [SELECT Id, Account_Number__c,  PersonID__c, Account_Number__r.RecType__c, TypeTranslate__c, Account_Number__r.Name
                 FROM Person_Account__c where PersonID__c =:MemberId  limit 1];
       if(p.size() > 0){
@@ -268,9 +504,156 @@ public class MemberAuthenticationControllerLightning{
       log.Additional_Token_Option1_Match__c = AdditionalTokenOption1Match;
       log.Additional_Token_Option2_Match__c = AdditionalTokenOption2Match;
       log.Loan_Detail_Match__c = LoanDetailMatch;
+      if(BeneficiaryAccount.size() > 0){
+	      for(object obj :BeneficiaryAccount)
+	      {
+	      	BA = BA + obj + ',';
+	      }	
+      	 log.Beneficiary_Details__c = BA;
+      }
+      
+      if(JointAccount.size() > 0){
+	      for(object obj1 :JointAccount)
+	      {
+	      	JA = JA + obj1 + ',';
+	      }	
+      	 log.JointOwner_Details__c = JA;
+      }
        
+       if(LoanAccount.size() > 0){
+	      for(object obj2 :LoanAccount)
+	      {
+	      	LA = LA + obj2 + ',';
+	      }	
+      	  log.Member_Loan_Detail__c = LA;
+      }
+      
+      if(Card.size() > 0){
+	      for(object obj3 :Card)
+	      {
+	      	CardDetail = CardDetail + obj3 + ',';
+	      }	
+      	  log.CFCU_Card_Number__c = CardDetail;
+      }
+      log.Additional_Token_Option1__c = AdditionalTokenOption1;
+      log.Additional_Token_Option2__c = AdditionalTokenOption2;
       
       insert log;
+       
+      /* The below code is to create or update Master log data*/
+      RecordType rec1 = GetRecordTypeData('Authenticated_Log__c', 'Master Authentication Log');
+       
+      List<Authenticated_Log__c> MasterAuthenticationLog = GetDataForMasterAuthenticationLog(IVRGUIDFromUrl, rec1.id);
+       if(MasterAuthenticationLog.size() == 0)
+       {
+       		  Authenticated_Log__c log2 = new Authenticated_Log__c();
+		      log2.RecordTypeId= rec1.id;
+		      log2.CFCU_Wallet_Status__c = status;
+		      log2.SalesforceID__c = MemberId;
+		      log2.Member__c = MemberId;
+		      log2.Decision__c = status;
+		      log2.Staff_Name__c = UserInfo.getName();
+		      log2.Current_User__c = Userinfo.getuserid();
+		      log2.Member_Number__c = AccountNumber;
+		      log2.GUID__c = GUID;
+		      log2.IVR_GUID__c = IVRGUIDFromUrl;
+		      log2.BeneficiaryDetailMatch__c = BeneficiaryDetailMatch;
+		      log2.Joint_OwnerDetailsMatch__c = JointOwnerDetailMatch;
+		      log2.CardNumberMatch__c = CardNumberMatch;
+		      log2.Additional_Token_Option1_Match__c = AdditionalTokenOption1Match;
+		      log2.Additional_Token_Option2_Match__c = AdditionalTokenOption2Match;
+		      log2.Loan_Detail_Match__c = LoanDetailMatch;
+		      if(BeneficiaryAccount.size() > 0){
+			      for(object obj :BeneficiaryAccount)
+			      {
+			      	BA = BA + obj + ',';
+			      }	
+		      	 log2.Beneficiary_Details__c = BA;
+		      }
+		      if(JointAccount.size() > 0){
+			      for(object obj1 :JointAccount)
+			      {
+			      	JA = JA + obj1 + ',';
+			      }	
+		      	 log2.JointOwner_Details__c = JA;
+		      }
+		       
+		       if(LoanAccount.size() > 0){
+			      for(object obj2 :LoanAccount)
+			      {
+			      	LA = LA + obj2 + ',';
+			      }	
+		      	  log2.Member_Loan_Detail__c = LA;
+		      }
+		      
+		      if(Card.size() > 0){
+			      for(object obj3 :Card)
+			      {
+			      	CardDetail = CardDetail + obj3 + ',';
+			      }	
+		      	  log2.CFCU_Card_Number__c = CardDetail;
+		      }
+		      log2.Additional_Token_Option1__c = AdditionalTokenOption1;
+		      log2.Additional_Token_Option2__c = AdditionalTokenOption2;
+		      
+		      insert log2;
+       }
+       else{
+       			  MasterAuthenticationLog[0].CFCU_Wallet_Status__c = status;
+			      MasterAuthenticationLog[0].SalesforceID__c = MemberId;
+			      MasterAuthenticationLog[0].Member__c = MemberId;
+			      MasterAuthenticationLog[0].Decision__c = status;
+			      MasterAuthenticationLog[0].Staff_Name__c = UserInfo.getName();
+			      MasterAuthenticationLog[0].Current_User__c = Userinfo.getuserid();
+			      MasterAuthenticationLog[0].Member_Number__c = AccountNumber;
+			      MasterAuthenticationLog[0].GUID__c = GUID;
+			      MasterAuthenticationLog[0].IVR_GUID__c = IVRGUIDFromUrl;
+			      MasterAuthenticationLog[0].BeneficiaryDetailMatch__c = BeneficiaryDetailMatch;
+			      MasterAuthenticationLog[0].Joint_OwnerDetailsMatch__c = JointOwnerDetailMatch;
+			      MasterAuthenticationLog[0].CardNumberMatch__c = CardNumberMatch;
+			      MasterAuthenticationLog[0].Additional_Token_Option1_Match__c = AdditionalTokenOption1Match;
+			      MasterAuthenticationLog[0].Additional_Token_Option2_Match__c = AdditionalTokenOption2Match;
+			      MasterAuthenticationLog[0].Loan_Detail_Match__c = LoanDetailMatch;
+			      if(BeneficiaryAccount.size() > 0){
+				      for(object obj :BeneficiaryAccount)
+				      {
+				      	BA = BA + obj + ',';
+				      }	
+			      	 	MasterAuthenticationLog[0].Beneficiary_Details__c = BA;
+		      	}
+		      
+		      if(JointAccount.size() > 0){
+			      for(object obj1 :JointAccount)
+			      {
+			      	JA = JA + obj1 + ',';
+			      }	
+		      	 MasterAuthenticationLog[0].JointOwner_Details__c = JA;
+		      }
+		       
+		       if(LoanAccount.size() > 0){
+			      for(object obj2 :LoanAccount)
+			      {
+			      	LA = LA + obj2 + ',';
+			      }	
+		      	  MasterAuthenticationLog[0].Member_Loan_Detail__c = LA;
+		      }
+		      
+		      if(Card.size() > 0){
+			      for(object obj3 :Card)
+			      {
+			      	CardDetail = CardDetail + obj3 + ',';
+			      }	
+		      	  MasterAuthenticationLog[0].CFCU_Card_Number__c = CardDetail;
+		      }
+		      MasterAuthenticationLog[0].Additional_Token_Option1__c = AdditionalTokenOption1;
+		      MasterAuthenticationLog[0].Additional_Token_Option2__c = AdditionalTokenOption2;
+			      
+			      update MasterAuthenticationLog[0];
+       		
+       }
+       
+      
+     
       
       
     }
@@ -282,7 +665,7 @@ public class MemberAuthenticationControllerLightning{
        string  AccountNumber;
        string AccountId;
        
-       RecordType rec =[select Id,Name,SobjectType from RecordType where name ='IVR Authentication Log' and SobjectType='Authenticated_Log__c'];
+       RecordType rec = GetRecordTypeData('Authenticated_Log__c', 'IVR Authentication Log'); 
        List<Person_Account__c> p = [SELECT Id, Account_Number__c,  PersonID__c, Account_Number__r.RecType__c, TypeTranslate__c, Account_Number__r.Name
                 FROM Person_Account__c where PersonID__c =:MemberId  limit 1];
        if(p.size() > 0)
@@ -297,13 +680,13 @@ public class MemberAuthenticationControllerLightning{
    		
    		Authenticated_Log__c log = new Authenticated_Log__c();
         log.RecordTypeId= rec.id;
-        log.IVR_Sent_URL__c = substring(PageUrl, 1000);
+        //log.IVR_Sent_URL__c = substring(PageUrl, 1000);
         log.CallerPhoneNumber__c = substring(PhoneNumber, 16);
         log.EnteredMemberNumber__c = substring(AccountNumber, 15);
         log.EnteredSSN__c = substring(EnteredSSN, 4);
         log.SalesforceID__c = MemberId;
         log.Decision__c = Decision;
-        log.Failed_Desired_Level__c= FDL;
+      //  log.Failed_Desired_Level__c= FDL;
         if(OverrideSupervisor != null && OverrideSupervisor != 'Select'){
         	User u = [select id, name from user where name =:OverrideSupervisor limit 1];
         	log.Override_Request_Supervisor__c = OverrideSupervisor;
@@ -354,10 +737,67 @@ public class MemberAuthenticationControllerLightning{
     		insert cc;	
         } 	
         
-        log.Case__c = cs.id;
+        log.Manager_Override_Case__c = cs.id;
         update log;
   	//--------------------------------------------End Aut-205 (Manager CallBack)--------------------------------------------------------------------//
   		
+  		
+  		 /* The below code is to create or update Master log data*/
+      
+       RecordType rec1 = GetRecordTypeData('Authenticated_Log__c', 'Master Authentication Log');       
+       List<Authenticated_Log__c> MasterAuthenticationLog = GetDataForMasterAuthenticationLog(IVRGUIDFromUrl, rec1.id);
+       if(MasterAuthenticationLog.size() == 0)
+       {
+       	
+       		Authenticated_Log__c log2 = new Authenticated_Log__c();
+	        log2.RecordTypeId= rec1.id;
+	      //  log2.IVR_Sent_URL__c = substring(PageUrl, 1000);
+	        log2.CallerPhoneNumber__c = substring(PhoneNumber, 16);
+	        log2.EnteredMemberNumber__c = substring(AccountNumber, 15);
+	        log2.EnteredSSN__c = substring(EnteredSSN, 4);
+	        log2.SalesforceID__c = MemberId;
+	        log2.Decision__c = Decision;
+	     //   log2.Failed_Desired_Level__c= FDL;
+	        if(OverrideSupervisor != null && OverrideSupervisor != 'Select'){
+	        	User u = [select id, name from user where name =:OverrideSupervisor limit 1];
+	        	log2.Override_Request_Supervisor__c = OverrideSupervisor;
+	        	log2.Override_Supervisor__c = u.id;
+	    	}
+	        if(OverrideType != null){	
+	        	log2.Override_Request_Type__c = OverrideType;
+	        }
+	        log2.Member__c = MemberId;
+	        log2.Staff_Name__c =UserInfo.getName();
+	        log2.Current_User__c = Userinfo.getuserid();
+	        log2.Member_Number__c = AccountNumber;
+	        log2.GUID__c = GUID;
+	        log2.IVR_GUID__c = IVRGUIDFromUrl;
+      		log2.Manager_Override_Case__c = cs.id;
+       		insert log2;
+       }else{
+	        //MasterAuthenticationLog[0].IVR_Sent_URL__c = substring(PageUrl, 1000);
+	        MasterAuthenticationLog[0].CallerPhoneNumber__c = substring(PhoneNumber, 16);
+	        MasterAuthenticationLog[0].EnteredMemberNumber__c = substring(AccountNumber, 15);
+	        MasterAuthenticationLog[0].EnteredSSN__c = substring(EnteredSSN, 4);
+	        MasterAuthenticationLog[0].SalesforceID__c = MemberId;
+	        MasterAuthenticationLog[0].Decision__c = Decision;
+	     //   MasterAuthenticationLog[0].Failed_Desired_Level__c= FDL;
+	        if(OverrideSupervisor != null && OverrideSupervisor != 'Select'){
+	        	User u = [select id, name from user where name =:OverrideSupervisor limit 1];
+	        	MasterAuthenticationLog[0].Override_Request_Supervisor__c = OverrideSupervisor;
+	        	MasterAuthenticationLog[0].Override_Supervisor__c = u.id;
+	    	}
+	        if(OverrideType != null){	
+	        	MasterAuthenticationLog[0].Override_Request_Type__c = OverrideType;
+	        }
+	        MasterAuthenticationLog[0].Member__c = MemberId;
+	        MasterAuthenticationLog[0].Staff_Name__c =UserInfo.getName();
+	        MasterAuthenticationLog[0].Current_User__c = Userinfo.getuserid();
+	        MasterAuthenticationLog[0].Member_Number__c = AccountNumber;
+	        MasterAuthenticationLog[0].GUID__c = GUID;
+      		MasterAuthenticationLog[0].Manager_Override_Case__c = cs.id;
+       		update MasterAuthenticationLog[0];
+       }
     }
      
      //--- Created string function-------------//   
@@ -368,8 +808,6 @@ public class MemberAuthenticationControllerLightning{
             return val.left(length);
         }   
         return val;
-        
-    
     }
     
     @AuraEnabled    
@@ -377,7 +815,7 @@ public class MemberAuthenticationControllerLightning{
     {
     	/*--------------------------When Same member data is reloded we need to maintain the state of  CFCU Wallet Tab. 
     								This function read data from MAAP log object and display accordingly  -----*/
-    	
+    	system.debug('GetCFCUWalletInfo Called##');
     	Map<string,List<object>> resultmap = new Map<string,List<object>>();
 		Map <id,Person_Account__c> uniqueMembersDetail = new  Map <id,Person_Account__c>();
 		List<Account_Details__c> MemberNumberLoanDetail = new List<Account_Details__c>();
@@ -487,27 +925,97 @@ public class MemberAuthenticationControllerLightning{
 					resultmap.put('LoanData',MemberNumberLoanDetail);
 					resultmap.put('CardDetails',cardDetails);
 					//--------------------------Code to maintain state of Pass/ Fail Button within a day------------------------------------
-					RecordType rec = [select Id,Name,SobjectType from RecordType where Name ='CFCU Wallet Log' and SobjectType='Authenticated_Log__c' limit 1];
-					List<Authenticated_Log__c> authlog = new List<Authenticated_Log__c>();	
-					authlog = [Select Id,SalesforceID__c,Current_User__c,Member__c,Decision__c,CFCU_Wallet_Status__c,Staff_Name__c,GUID__c,BeneficiaryDetailMatch__c,Joint_OwnerDetailsMatch__c,
-								CardNumberMatch__c,Additional_Token_Option1_Match__c,Additional_Token_Option2_Match__c,Loan_Detail_Match__c
-								From Authenticated_Log__c where createddate = Today and RecordTypeId= : rec.id and SalesforceID__c = : selectedID order by createddate desc Limit 1];					
 					
+					/*authlog List is to maintain the state of button when user comes multiple times within same day.We need to maintain Fail state within same businessday if user is coming multiple times. 
+					
+					This query is working for Relaunch MAAP feature as well*/
+					 RecordType rec = GetRecordTypeData('Authenticated_Log__c', 'CFCU Wallet Log');
+					 List<Authenticated_Log__c> authlog = new List<Authenticated_Log__c>();	
+					 authlog = [Select Id,SalesforceID__c,Current_User__c,Member__c,Decision__c,CFCU_Wallet_Status__c,Staff_Name__c,GUID__c,BeneficiaryDetailMatch__c,Joint_OwnerDetailsMatch__c,
+								CardNumberMatch__c,Additional_Token_Option1_Match__c,Additional_Token_Option2_Match__c,Loan_Detail_Match__c
+								From Authenticated_Log__c where createddate = Today and RecordTypeId= : rec.id and SalesforceID__c = : selectedID and IVR_GUID__c = :IVRGUIDFromUrl order by createddate desc Limit 1];					
+						system.debug('authlog##' + authlog);
+					if(authlog.size() == 0){
+						authlog = [Select Id,SalesforceID__c,Current_User__c,Member__c,Decision__c,CFCU_Wallet_Status__c,Staff_Name__c,GUID__c,BeneficiaryDetailMatch__c,Joint_OwnerDetailsMatch__c,
+								CardNumberMatch__c,Additional_Token_Option1_Match__c,Additional_Token_Option2_Match__c,Loan_Detail_Match__c
+								From Authenticated_Log__c where createddate = Today and RecordTypeId= : rec.id and SalesforceID__c = : selectedID and IVR_GUID__c != :IVRGUIDFromUrl  order by createddate desc Limit 1];
+						if(authlog.size() > 0){
+							
+							if(authlog[0].CFCU_Wallet_Status__c == 'Fail'){
+								resultmap.put('CFCULastSessionInfo',authlog);
+							}
+							
+						}
+					}
+					else{
 						resultmap.put('CFCULastSessionInfo',authlog);
+					}
+						
+						
 					
 					//--------------------------Code to maintain state of Pass/ Fail Button within a day-----------------------------------
 					 //--------------------------Code to maintain state of Pass/ Fail Button on Reload------------------------------------
            				integer minutes = GetMemberAuthenticationSessionTime();
 						
-						List<Authenticated_Log__c> ReLoadAuthlog = new List<Authenticated_Log__c>();	
+						List<Authenticated_Log__c> ReLoadAuthlog = new List<Authenticated_Log__c>();
+						List<Authenticated_Log__c> ReLoadManualSession = new List<Authenticated_Log__c>();		
+						system.debug('IVRGUIDFromUrl##' + IVRGUIDFromUrl);
+						system.debug('selectedID##' + selectedID);
+						system.debug('Recordid##' + rec.Id);
+						system.debug('minutes##' + minutes);
+						Datetime cd = Datetime.now().addMinutes(minutes);
+						system.debug('CD##' + cd);
+						system.debug('Now##' + Datetime.now());
+						
+						/*ReLoadAuthlog List is for reload functinality (or call transfer functionality) when we need to maintain the state of buttons as per the minutes mention in our custom setting.*/
+						
 						ReLoadAuthlog = [Select Id,SalesforceID__c,Member__c,Decision__c,CFCU_Wallet_Status__c,Staff_Name__c,GUID__c,BeneficiaryDetailMatch__c,Joint_OwnerDetailsMatch__c,
 								CardNumberMatch__c,Additional_Token_Option1_Match__c,Additional_Token_Option2_Match__c,Loan_Detail_Match__c
-									From Authenticated_Log__c where createddate = Today and RecordTypeId= : rec.id and SalesforceID__c = : selectedID AND CreatedDate >=: Datetime.now().addMinutes(minutes) and IVR_GUID__c =:IVRGUIDFromUrl];					
+									From Authenticated_Log__c where createddate = Today and RecordTypeId= : rec.id and SalesforceID__c = : selectedID AND CreatedDate >=: Datetime.now().addMinutes(minutes) and IVR_GUID__c =:IVRGUIDFromUrl  order by createddate desc Limit 1];
+									
 					if(ReLoadAuthlog.size() > 0)
 					{
 						resultmap.put('CFCUReloadInfo',ReLoadAuthlog);
+					}else{
+						ReLoadAuthlog = [Select Id,SalesforceID__c,Member__c,Decision__c,CFCU_Wallet_Status__c,Staff_Name__c,GUID__c,BeneficiaryDetailMatch__c,Joint_OwnerDetailsMatch__c,
+								CardNumberMatch__c,Additional_Token_Option1_Match__c,Additional_Token_Option2_Match__c,Loan_Detail_Match__c
+									From Authenticated_Log__c where createddate = Today and RecordTypeId= : rec.id and SalesforceID__c = : selectedID AND CreatedDate >=: Datetime.now().addMinutes(minutes)   order by createddate desc Limit 1];
+								if(ReLoadAuthlog.size() > 0)
+								{
+									resultmap.put('CFCUReloadInfo',ReLoadAuthlog);
+								}	
 					}
+												
+					/*ReLoadManualSession list is to load data when user is doing manual search, in first query we have given the intervel of 2 minuts on tab switch for Status = Pass.
+					 within same day on tab switch as we don't need to maintain state of buttons when for "Pass" entry within 24 days.
+						
+					*/
+						ReLoadManualSession = [Select Id,SalesforceID__c,Member__c,Decision__c,CFCU_Wallet_Status__c,Staff_Name__c,GUID__c,BeneficiaryDetailMatch__c,Joint_OwnerDetailsMatch__c,
+								CardNumberMatch__c,Additional_Token_Option1_Match__c,Additional_Token_Option2_Match__c,Loan_Detail_Match__c
+									From Authenticated_Log__c where createddate = Today and CFCU_Wallet_Status__c='Pass' and RecordTypeId= : rec.id and SalesforceID__c = : selectedID AND CreatedDate >=: Datetime.now().addMinutes(-2)  order by createddate desc Limit 1];
+					/*
+					 ReLoadManualSession list is to load data when user is doing manual search if the result of above query is blank, we are searching data for Status ="Fail" as we need to maintain state of buttons within same day for Fail state
+						
+					*/
+					if(ReLoadManualSession.size() == 0)
+					{
+						ReLoadManualSession = [Select Id,SalesforceID__c,Member__c,Decision__c,CFCU_Wallet_Status__c,Staff_Name__c,GUID__c,BeneficiaryDetailMatch__c,Joint_OwnerDetailsMatch__c,
+								CardNumberMatch__c,Additional_Token_Option1_Match__c,Additional_Token_Option2_Match__c,Loan_Detail_Match__c
+									From Authenticated_Log__c where createddate = Today and CFCU_Wallet_Status__c='Fail' and RecordTypeId= : rec.id and SalesforceID__c = : selectedID AND CreatedDate >=: Datetime.now().addMinutes(minutes) order by createddate desc Limit 1];
+						
+						
+						resultmap.put('CFCUReloadManulSessionInfo',ReLoadManualSession);
+					}
+					else{
+						resultmap.put('CFCUReloadManulSessionInfo',ReLoadManualSession);
+					}
+					
+					
+					
+					
+					
 					//--------------------------Code to maintain state of Pass/ Fail Button on Reload-----------------------------------
+					system.debug('resultmap##' + resultmap);
 					return resultmap;
     	
     }
@@ -692,7 +1200,7 @@ public class MemberAuthenticationControllerLightning{
                 result.put('DLcode', DLcode);
            }
            //--------------------------Code to maintain state of Pass/ Fail Button within a day------------------------------------
-					RecordType rec = [select Id,Name,SobjectType from RecordType where Name ='Public Wallet Log' and SobjectType='Authenticated_Log__c' limit 1];
+					RecordType rec = GetRecordTypeData('Authenticated_Log__c', 'Public Wallet Log');
 					List<Authenticated_Log__c> authlog = new List<Authenticated_Log__c>();	
 					authlog = [Select Id,SalesforceID__c,Current_User__c,Member__c,Public_Wallet_Status__c,DOBMatch__c,IdNumberMatch__c,MMNMatch__c,EmailMatch__c,Additional_Token_Option3_Match__c
 								From Authenticated_Log__c where createddate = Today and RecordTypeId= : rec.id and SalesforceID__c = : MemberId order by createddate desc Limit 1];					
@@ -1219,8 +1727,9 @@ public class MemberAuthenticationControllerLightning{
   // ------------------Inserting log while user came from URL ----------------------------------//
     
     if(ReLoadRequired == false && IsUserSessionLoaded == false){
+    	system.debug('PageURL' + PageURL);
       if(PageURL != null || PageURL != ' '){
-        RecordType rec =[select Id,Name,SobjectType from RecordType where name ='IVR Authentication Log' and SobjectType='Authenticated_Log__c'];
+        RecordType rec = GetRecordTypeData('Authenticated_Log__c', 'IVR Authentication Log');
         Authenticated_Log__c log = new Authenticated_Log__c();
             log.IVR_Sent_URL__c = PageURL;
             log.CallerPhoneNumber__c = PhoneFromURL;
@@ -1266,8 +1775,8 @@ public class MemberAuthenticationControllerLightning{
             
             system.debug('log##' + log);
             
-            RecordType rec1 =[select Id,Name,SobjectType from RecordType where name ='Debit PIN Log' and SobjectType='Authenticated_Log__c'];
-                Authenticated_Log__c log1 = new Authenticated_Log__c();
+            RecordType rec1 = GetRecordTypeData('Authenticated_Log__c', 'Debit PIN Log');
+            Authenticated_Log__c log1 = new Authenticated_Log__c();
             log1.IVR_Sent_URL__c = PageURL;
                 if(DebitCardStatus == 'true'){
               log1.IVR_Pin_Match__c = 'Pass';
@@ -1290,6 +1799,126 @@ public class MemberAuthenticationControllerLightning{
      		log1.Current_User__c = Userinfo.getuserid();
             insert log1;
             system.debug('log1##' + log1);
+            
+              /* The below code is to create or update Master log data*/
+            RecordType rec2 = GetRecordTypeData('Authenticated_Log__c', 'Master Authentication Log');       
+       		List<Authenticated_Log__c> MasterAuthenticationLog = GetDataForMasterAuthenticationLog(IVRGUIDFromUrl, rec1.id);
+	       if(MasterAuthenticationLog.size() == 0)
+	       {
+	       	
+	       		Authenticated_Log__c log2 = new Authenticated_Log__c();
+	            log2.IVR_Sent_URL__c = PageURL;
+	            log2.CallerPhoneNumber__c = PhoneFromURL;
+	            log2.EnteredMemberNumber__c = MemberNumberFromURL;
+	            log2.EnteredCardNumber__c = EnteredCardNumber;
+	            log2.CardNumberMatch__c = CardNumberMatch;
+	            log2.PhoneNumberMatch__c = PhoneNumberMatch;
+	            log2.MemberNumberMatch__c = MemberNumberMatch;
+	            log2.SSNnumberMatch__c = SSNnumberMatch;
+	             
+	            if(SSNFromURL.length() > 4){
+	            	log2.EnteredSSN__c = SSNFromURL.right(4);
+	            	log2.IVR_SSN__c = SSNFromURL;
+	            }
+	            else
+	            {
+	            	log2.EnteredSSN__c = SSNFromURL;
+	            	log2.IVR_SSN__c = SSNFromURL;
+	            }
+	            log2.IVR_Card_Number__c = EnteredCardNumber;
+	            log2.IVR_Member_Number__c = MemberNumberFromURL;
+	            log2.IVR_Member_Number_Match__c = MemberNumberMatch;
+	            log2.IVR_SSN_Match__c = SSNnumberMatch;
+	            log2.IVR_Card_Match__c = CardNumberMatch;
+	           
+	            if(DebitCardStatus == 'true')
+	            	log.IVR_Pin_Match__c = 'Pass';
+	            if(DebitCardStatus == 'false')
+	            	log.IVR_Pin_Match__c = 'Fail';
+	            	
+	            log2.Staff_Name__c = UserInfo.getName();
+	            log2.Current_User__c = Userinfo.getuserid();
+	            log2.Member_Number__c = AccountNumber;
+	            log2.GUID__c = GUID;
+	            log2.IVR_GUID__c = IVRGUIDFromUrl;
+	            log2.PINMatch__c = PINMatch;
+	            log2.RecordtypeId = rec.Id; 
+	            log2.SalesforceID__c = MemberId;
+	            log2.Member__c = MemberId;
+	            log2.HP_HV__c = HighFlagFromUrl;
+	            log2.IVR_Code__c = ReasonCodeFromURL;
+	            if(DebitCardStatus == 'true'){
+	              log2.IVR_Pin_Match__c = 'Pass';
+	              log2.PINMatch__c = 'Pass';
+	              log2.Decision__c = 'Pass';
+	            }
+	            if(DebitCardStatus == 'false'){
+	              log2.IVR_Pin_Match__c = 'Fail';
+	              log2.PINMatch__c = 'Fail';
+	                    log2.Decision__c = 'Fail';
+	            }
+	            log2.RecordtypeId = rec2.Id; 
+	            insert log2;
+	            system.debug('log1##' + log2);
+	       	
+	       	
+	       }else{
+	       	
+	       		MasterAuthenticationLog[0].IVR_Sent_URL__c = PageURL;
+	            MasterAuthenticationLog[0].CallerPhoneNumber__c = PhoneFromURL;
+	            MasterAuthenticationLog[0].EnteredMemberNumber__c = MemberNumberFromURL;
+	            MasterAuthenticationLog[0].EnteredCardNumber__c = EnteredCardNumber;
+	            MasterAuthenticationLog[0].CardNumberMatch__c = CardNumberMatch;
+	            MasterAuthenticationLog[0].PhoneNumberMatch__c = PhoneNumberMatch;
+	            MasterAuthenticationLog[0].MemberNumberMatch__c = MemberNumberMatch;
+	            MasterAuthenticationLog[0].SSNnumberMatch__c = SSNnumberMatch;
+	             
+	            if(SSNFromURL.length() > 4){
+	            	MasterAuthenticationLog[0].EnteredSSN__c = SSNFromURL.right(4);
+	            	MasterAuthenticationLog[0].IVR_SSN__c = SSNFromURL;
+	            }
+	            else
+	            {
+	            	MasterAuthenticationLog[0].EnteredSSN__c = SSNFromURL;
+	            	MasterAuthenticationLog[0].IVR_SSN__c = SSNFromURL;
+	            }
+	            MasterAuthenticationLog[0].IVR_Card_Number__c = EnteredCardNumber;
+	            MasterAuthenticationLog[0].IVR_Member_Number__c = MemberNumberFromURL;
+	            MasterAuthenticationLog[0].IVR_Member_Number_Match__c = MemberNumberMatch;
+	            MasterAuthenticationLog[0].IVR_SSN_Match__c = SSNnumberMatch;
+	            MasterAuthenticationLog[0].IVR_Card_Match__c = CardNumberMatch;
+	           
+	            if(DebitCardStatus == 'true')
+	            	MasterAuthenticationLog[0].IVR_Pin_Match__c = 'Pass';
+	            if(DebitCardStatus == 'false')
+	            	MasterAuthenticationLog[0].IVR_Pin_Match__c = 'Fail';
+	            	
+	            MasterAuthenticationLog[0].Staff_Name__c = UserInfo.getName();
+	            MasterAuthenticationLog[0].Current_User__c = Userinfo.getuserid();
+	            MasterAuthenticationLog[0].Member_Number__c = AccountNumber;
+	            MasterAuthenticationLog[0].GUID__c = GUID;
+	            MasterAuthenticationLog[0].IVR_GUID__c = IVRGUIDFromUrl;
+	            MasterAuthenticationLog[0].PINMatch__c = PINMatch;
+	            MasterAuthenticationLog[0].RecordtypeId = rec.Id; 
+	            MasterAuthenticationLog[0].SalesforceID__c = MemberId;
+	            MasterAuthenticationLog[0].Member__c = MemberId;
+	            MasterAuthenticationLog[0].HP_HV__c = HighFlagFromUrl;
+	            MasterAuthenticationLog[0].IVR_Code__c = ReasonCodeFromURL;
+	            if(DebitCardStatus == 'true'){
+	              MasterAuthenticationLog[0].IVR_Pin_Match__c = 'Pass';
+	              MasterAuthenticationLog[0].PINMatch__c = 'Pass';
+	              MasterAuthenticationLog[0].Decision__c = 'Pass';
+	            }
+	            if(DebitCardStatus == 'false'){
+	              MasterAuthenticationLog[0].IVR_Pin_Match__c = 'Fail';
+	              MasterAuthenticationLog[0].PINMatch__c = 'Fail';
+	                    MasterAuthenticationLog[0].Decision__c = 'Fail';
+	            }
+	            MasterAuthenticationLog[0].RecordtypeId = rec2.Id; 
+	       		update MasterAuthenticationLog[0];
+	       }
+            
+            
       }
     }
     // ------------------Inserting log while user came from URL Ends----------------------------------//
@@ -1307,7 +1936,6 @@ public class MemberAuthenticationControllerLightning{
     
     //---------------------To Get Which level is achieved on load and what would be the next achievable level based on Debitcard status begin--------------------------//
       //Aut-190 implementation starts here
-    
     if(ReLoadRequired == false && IsUserSessionLoaded == false)
    	{
 		        	system.debug('MemberVerificationAttemptsCheck GetTabsToAchieveNextLevel Called for ReLoadRequired == false && IsUserSessionLoaded == false-------');
@@ -1421,7 +2049,66 @@ public class MemberAuthenticationControllerLightning{
 					      system.debug('NextTabLevel2List#'+ NextTabLevel2);
 					      system.debug('NextTabLevel3List#'+ NextTabLevel3);
    	}
+   	
+   	
+   	
     //----------------------To Get Which level is achieved on load and what would be the next achievable level based on Debitcard status ends----------------------------------------------------//
+    
+    /* Code for Aut-267 begin to display message on member number search when one member is associated with multiple member account*/
+	        verifyCaller vc = new verifyCaller();
+	       List<Account_Details__c> memberDetails = new List<Account_Details__c>();
+	       Set<String> memberDetailsNames = new Set<String>();
+	       string MultipleMemberNumberAlert='';
+           memberDetails = vc.AccountNumbersAuth(MemberId);
+	       System.Debug('memberDetails##'+ memberDetails);   
+	       if(MemberNumberFromURL != null || MemberNumberFromURL != '')
+                {
+                     
+                   
+                    for(Account_Details__c acctD : memberDetails)
+                    {
+                        memberDetailsNames.add(acctD.Name); 
+                        System.Debug('accD##' + acctD);                       
+                    }
+                    system.debug('memberDetails.size()....'+memberDetails.size());
+                    system.debug('memberDetailsNames....'+memberDetailsNames.size());                               
+                    system.debug('memberDetailsNames##'+ memberDetailsNames);
+                    integer i = memberDetailsNames.size();                   
+                    if (i > 1)
+                    {
+                        MultipleMemberNumberAlert = 'This person is related to more than one member number';    
+                    }
+                    else if(i == 0)
+                    {
+                        MultipleMemberNumberAlert = 'This person is not related to any member number';
+                    }
+                                    
+                }
+                else if(SSNFromURL != null ||  SSNFromURL !='')
+                {
+                	 for(Account_Details__c acctD : memberDetails)
+                    {
+                        memberDetailsNames.add(acctD.Name); 
+                        System.Debug('accD##' + acctD);                       
+                    }
+                    system.debug('memberDetails.size()....'+memberDetails.size());
+                    system.debug('memberDetailsNames....'+memberDetailsNames.size());                               
+                    system.debug('memberDetailsNames##'+ memberDetailsNames);
+                    integer i = memberDetailsNames.size();                   
+                    if (i > 1)
+                    {
+                        MultipleMemberNumberAlert = 'This person is related to more than one member number';    
+                    }
+                    else if(i == 0)
+                    {
+                        MultipleMemberNumberAlert = 'This person is not related to any member number';
+                    }
+                }
+	      
+	      
+	       result.put('MultipleMemberNumberAlert', MultipleMemberNumberAlert);
+	       
+    
     
 			      result.put('IsKYMAvailable',IsKYMAvailable);
 			      result.put('IsOTPAvailable',IsOTPAvailable);
@@ -2088,14 +2775,12 @@ public class MemberAuthenticationControllerLightning{
 					AccountNumber = p[0].Account_Number__r.Name;
 				}
 				
-	    	 RecordType rec =[select Id,Name,SobjectType from RecordType where name ='OTP Authentication Log' and SobjectType='Authenticated_Log__c'];
-	     
-	   
-	    	
+           	RecordType rec = GetRecordTypeData('Authenticated_Log__c', 'OTP Authentication Log');
 	      	Authenticated_Log__c log = new Authenticated_Log__c();
 	        log.RecordTypeId= rec.id;
 	        log.SalesforceID__c = MemberId;
 	        log.Decision__c = 'OTP - Cancelled';
+	        log.OTP_Decision__c = 'OTP - Cancelled';
 	        log.Member__c = MemberId;
 	        log.Staff_Name__c = UserInfo.getName();
 	        log.Current_User__c = Userinfo.getuserid();
@@ -2104,8 +2789,38 @@ public class MemberAuthenticationControllerLightning{
 	        log.IVR_GUID__c = IVRGUIDFromUrl;
 	     	insert log;
             system.debug('OTP-Log##' + log.Id);
-	    
-				
+	         /* The below code is to create or update Master log data*/
+     		 RecordType rec1 = GetRecordTypeData('Authenticated_Log__c', 'Master Authentication Log');
+       
+		     List<Authenticated_Log__c> MasterAuthenticationLog = GetDataForMasterAuthenticationLog(IVRGUIDFromUrl, rec1.id);
+		     if(MasterAuthenticationLog.size() == 0)
+		     {
+		     	Authenticated_Log__c log2 = new Authenticated_Log__c();
+		        log2.RecordTypeId= rec.id;
+		        log2.SalesforceID__c = MemberId;
+		        log2.Decision__c = 'OTP - Cancelled';
+		        log2.OTP_Decision__c = 'OTP - Cancelled';
+		        log2.Member__c = MemberId;
+		        log2.Staff_Name__c = UserInfo.getName();
+		        log2.Current_User__c = Userinfo.getuserid();
+		        log2.Member_Number__c = AccountNumber;
+		        log2.GUID__c = GUID;
+		        log2.IVR_GUID__c = IVRGUIDFromUrl;
+		     	insert log2;
+		     }
+		     else{
+		     	
+		     	MasterAuthenticationLog[0].SalesforceID__c = MemberId;
+		        MasterAuthenticationLog[0].Decision__c = 'OTP - Cancelled';
+		        MasterAuthenticationLog[0].OTP_Decision__c = 'OTP - Cancelled';
+		        MasterAuthenticationLog[0].Member__c = MemberId;
+		        MasterAuthenticationLog[0].Staff_Name__c = UserInfo.getName();
+		        MasterAuthenticationLog[0].Current_User__c = Userinfo.getuserid();
+		        MasterAuthenticationLog[0].Member_Number__c = AccountNumber;
+		        MasterAuthenticationLog[0].GUID__c = GUID;
+		     	update MasterAuthenticationLog[0];
+		     	
+		     }
 			
 		
 	}
@@ -2121,10 +2836,8 @@ public class MemberAuthenticationControllerLightning{
 			AccountNumber = p[0].Account_Number__r.Name;
 		}
 				
-		RecordType rec =[select Id,Name,SobjectType from RecordType where name ='IVR Authentication Log' and SobjectType='Authenticated_Log__c'];
-		
+		RecordType rec = GetRecordTypeData('Authenticated_Log__c', 'IVR Authentication Log');
 		Authenticated_Log__c log = new Authenticated_Log__c();
-        
         log.CallerPhoneNumber__c = PhoneFromURL;
         log.EnteredMemberNumber__c = MemberNumberFromURL;
         log.EnteredCardNumber__c = EnteredCardNumber;
@@ -2135,15 +2848,18 @@ public class MemberAuthenticationControllerLightning{
         log.HP_HV__c = HighFlagFromUrl;
         log.IVR_Code__c = ReasonCodeFromURL;
         log.PINMatch__c = PINMatch;
-        
-        if(SSNFromURL.length() > 4){
+        system.debug('SSNFromURL##'+ SSNFromURL);
+        if(SSNFromURL != 'null' && SSNFromURL != null ){
+        	if(SSNFromURL.length() > 4){
         	log.EnteredSSN__c = SSNFromURL.right(4);
         	log.IVR_SSN__c = SSNFromURL;
+        	}
+        	else{
+	        	log.EnteredSSN__c = SSNFromURL;
+	        	log.IVR_SSN__c = SSNFromURL;
+       		 }
         }
-        else{
-        	log.EnteredSSN__c = SSNFromURL;
-        	log.IVR_SSN__c = SSNFromURL;
-        }
+        
         
         log.IVR_Card_Number__c = EnteredCardNumber;
         log.IVR_Member_Number__c = MemberNumberFromURL;
@@ -2168,6 +2884,111 @@ public class MemberAuthenticationControllerLightning{
         log.IVR_GUID__c = IVRGUIDFromUrl;
         log.Decision__c = 'Level Achieved';
         insert log;
+        system.debug('log##' + log);
+        /* The below code is to create or update Master log data*/
+     		 RecordType rec1 = GetRecordTypeData('Authenticated_Log__c', 'Master Authentication Log');
+       
+		     List<Authenticated_Log__c> MasterAuthenticationLog = GetDataForMasterAuthenticationLog(IVRGUIDFromUrl, rec1.id);
+		     if(MasterAuthenticationLog.size() == 0)
+		     {
+		     	Authenticated_Log__c log2 = new Authenticated_Log__c();
+		        log2.CallerPhoneNumber__c = PhoneFromURL;
+		        log2.EnteredMemberNumber__c = MemberNumberFromURL;
+		        log2.EnteredCardNumber__c = EnteredCardNumber;
+		        log2.CardNumberMatch__c = CardNumberMatch;
+		        log2.PhoneNumberMatch__c = PhoneNumberMatch;
+		        log2.MemberNumberMatch__c = MemberNumberMatch;
+		        log2.SSNnumberMatch__c = SSNnumberMatch;
+		        log2.HP_HV__c = HighFlagFromUrl;
+		        log2.IVR_Code__c = ReasonCodeFromURL;
+		        log2.PINMatch__c = PINMatch;
+		        
+		        if(SSNFromURL != 'null' && SSNFromURL != null ){
+		        	if(SSNFromURL.length() > 4){
+		        	log.EnteredSSN__c = SSNFromURL.right(4);
+		        	log.IVR_SSN__c = SSNFromURL;
+		        	}
+		        	else{
+			        	log.EnteredSSN__c = SSNFromURL;
+			        	log.IVR_SSN__c = SSNFromURL;
+		       		 }
+		        }
+		        
+		        log2.IVR_Card_Number__c = EnteredCardNumber;
+		        log2.IVR_Member_Number__c = MemberNumberFromURL;
+		        log2.IVR_Member_Number_Match__c = MemberNumberMatch;
+		        log2.IVR_SSN_Match__c = SSNnumberMatch;
+		        log2.IVR_Card_Match__c = CardNumberMatch;
+		        
+		        
+		        if(DebitCardStatus == 'true')
+		        	log2.IVR_Pin_Match__c = 'Pass';
+		        if(DebitCardStatus == 'false')
+		        	log2.IVR_Pin_Match__c = 'Fail'; 
+		            	    
+		        log2.RecordTypeId= rec1.id;
+		        log2.SalesforceID__c = MemberId;
+		        log2.Last_Achievable_Level__c = LastLevel;
+		        log2.Member__c = MemberId;
+		        log2.Member_Number__c = AccountNumber;
+		        log2.Staff_Name__c = UserInfo.getName();
+		        log2.Current_User__c = Userinfo.getuserid();
+		        log2.GUID__c = GUID;
+		        log2.Decision__c = 'Level Achieved';
+		        insert log2;
+		     	
+		     }else
+		     {
+		     	
+		     	MasterAuthenticationLog[0].CallerPhoneNumber__c = PhoneFromURL;
+		        MasterAuthenticationLog[0].EnteredMemberNumber__c = MemberNumberFromURL;
+		        MasterAuthenticationLog[0].EnteredCardNumber__c = EnteredCardNumber;
+		        MasterAuthenticationLog[0].CardNumberMatch__c = CardNumberMatch;
+		        MasterAuthenticationLog[0].PhoneNumberMatch__c = PhoneNumberMatch;
+		        MasterAuthenticationLog[0].MemberNumberMatch__c = MemberNumberMatch;
+		        MasterAuthenticationLog[0].SSNnumberMatch__c = SSNnumberMatch;
+		        MasterAuthenticationLog[0].HP_HV__c = HighFlagFromUrl;
+		        MasterAuthenticationLog[0].IVR_Code__c = ReasonCodeFromURL;
+		        MasterAuthenticationLog[0].PINMatch__c = PINMatch;
+		        
+		        if(SSNFromURL != 'null' && SSNFromURL != null ){
+			        	if(SSNFromURL.length() > 4){
+			        	log.EnteredSSN__c = SSNFromURL.right(4);
+			        	log.IVR_SSN__c = SSNFromURL;
+			        	}
+			        	else{
+				        	log.EnteredSSN__c = SSNFromURL;
+				        	log.IVR_SSN__c = SSNFromURL;
+			       		 }
+       			 }
+		        
+		        MasterAuthenticationLog[0].IVR_Card_Number__c = EnteredCardNumber;
+		        MasterAuthenticationLog[0].IVR_Member_Number__c = MemberNumberFromURL;
+		        MasterAuthenticationLog[0].IVR_Member_Number_Match__c = MemberNumberMatch;
+		        MasterAuthenticationLog[0].IVR_SSN_Match__c = SSNnumberMatch;
+		        MasterAuthenticationLog[0].IVR_Card_Match__c = CardNumberMatch;
+		        
+		        
+		        if(DebitCardStatus == 'true')
+		        	MasterAuthenticationLog[0].IVR_Pin_Match__c = 'Pass';
+		        if(DebitCardStatus == 'false')
+		        	MasterAuthenticationLog[0].IVR_Pin_Match__c = 'Fail'; 
+		            	    
+		        MasterAuthenticationLog[0].SalesforceID__c = MemberId;
+		        MasterAuthenticationLog[0].Last_Achievable_Level__c = LastLevel;
+		        MasterAuthenticationLog[0].Member__c = MemberId;
+		        MasterAuthenticationLog[0].Member_Number__c = AccountNumber;
+		        MasterAuthenticationLog[0].Staff_Name__c = UserInfo.getName();
+		        MasterAuthenticationLog[0].Current_User__c = Userinfo.getuserid();
+		        MasterAuthenticationLog[0].GUID__c = GUID;
+		        MasterAuthenticationLog[0].Decision__c = 'Level Achieved';
+		        update MasterAuthenticationLog[0];
+		     }
+        
+        
+        
+        
+        
  				
 	}
 	
@@ -2206,22 +3027,53 @@ public class MemberAuthenticationControllerLightning{
     		cc.CommentBody =  casecomment;
     		insert cc;	
         }
-          			
-        RecordType rec =[select Id,Name,SobjectType from RecordType where name ='IVR Authentication Log' and SobjectType='Authenticated_Log__c'];
-           
-      	Authenticated_Log__c log = new Authenticated_Log__c();
-        log.RecordTypeId= rec.id;
-        log.SalesforceID__c = MemberId;
-        log.Decision__c = 'Unusual Activity-Authentication Failed';
-        log.Member__c = MemberId;
-        log.Staff_Name__c = UserInfo.getName();
-        log.Current_User__c = Userinfo.getuserid();
-        log.Member_Number__c = AccountNumber;
-        log.Case__c = cs.id;
-        log.GUID__c = GUID;
-        log.IVR_GUID__c = IVRGUIDFromUrl;
-     	insert log;
-     	
+         RecordType rec = GetRecordTypeData('Authenticated_Log__c', 'IVR Authentication Log');			
+                
+	      	Authenticated_Log__c log = new Authenticated_Log__c();
+	        log.RecordTypeId= rec.id;
+	        log.SalesforceID__c = MemberId;
+	        log.Decision__c = 'Unusual Activity-Authentication Failed';
+	        log.Member__c = MemberId;
+	        log.Staff_Name__c = UserInfo.getName();
+	        log.Current_User__c = Userinfo.getuserid();
+	        log.Member_Number__c = AccountNumber;
+	        log.Case__c = cs.id;
+	        log.GUID__c = GUID;
+	        log.IVR_GUID__c = IVRGUIDFromUrl;
+	     	insert log;
+     	 /* The below code is to create or update Master log data*/
+     		 RecordType rec1 = GetRecordTypeData('Authenticated_Log__c', 'Master Authentication Log');
+       
+		     List<Authenticated_Log__c> MasterAuthenticationLog = GetDataForMasterAuthenticationLog(IVRGUIDFromUrl, rec1.id);
+		     if(MasterAuthenticationLog.size() == 0)
+		     {
+		     		Authenticated_Log__c log2 = new Authenticated_Log__c();
+			        log2.RecordTypeId= rec1.id;
+			        log2.SalesforceID__c = MemberId;
+			        log2.Decision__c = 'Unusual Activity-Authentication Failed';
+			        log2.Member__c = MemberId;
+			        log2.Staff_Name__c = UserInfo.getName();
+			        log2.Current_User__c = Userinfo.getuserid();
+			        log2.Member_Number__c = AccountNumber;
+			        log2.Case__c = cs.id;
+			        log2.GUID__c = GUID;
+			        log2.IVR_GUID__c = IVRGUIDFromUrl;
+			     	insert log2;
+		     }
+		     else{
+		     	
+			        MasterAuthenticationLog[0].SalesforceID__c = MemberId;
+			        MasterAuthenticationLog[0].Decision__c = 'Unusual Activity-Authentication Failed';
+			        MasterAuthenticationLog[0].Member__c = MemberId;
+			        MasterAuthenticationLog[0].Staff_Name__c = UserInfo.getName();
+			        MasterAuthenticationLog[0].Current_User__c = Userinfo.getuserid();
+			        MasterAuthenticationLog[0].Member_Number__c = AccountNumber;
+			        MasterAuthenticationLog[0].Case__c = cs.id;
+			        MasterAuthenticationLog[0].GUID__c = GUID;
+			        MasterAuthenticationLog[0].IVR_GUID__c = IVRGUIDFromUrl;
+			     	update MasterAuthenticationLog[0];
+		     	
+		     }
     	    			
 	}
 	
@@ -2231,6 +3083,8 @@ public class MemberAuthenticationControllerLightning{
 		// this is to bring detail data on the view History screen on click of expand button 
 		system.debug('MemberId#'+ MemberId);
 		system.debug('GUID#'+ GUID);
+		String rec = 'Master Authentication Log';
+		Timezone tz = Timezone.getTimeZone('America/Los_Angeles');
 		List<AuthenticationLogWrapper> logWrapper =  new List<AuthenticationLogWrapper>();
 		string SOQLQuery = '';
 		SOQLQuery = 'SELECT ' +
@@ -2266,7 +3120,7 @@ public class MemberAuthenticationControllerLightning{
 					'Override_Request_Supervisor__c, ' +
 					'GUID__c '  + 
 					' FROM Authenticated_Log__c where SalesforceID__c =  \'' +  MemberId  +  '\''  +
-					'  and GUID__c = \'' +  GUID  +  '\' order by createddate asc'  ;
+					' and RecordType.Name != \'' + rec  +  '\''  + ' and   GUID__c = \'' +  GUID  +  '\'  order by createddate asc'  ;
 		
 		
 		
@@ -2279,11 +3133,14 @@ public class MemberAuthenticationControllerLightning{
 		{
 			for(Authenticated_Log__c log: LogList)
 				{
+					Datetime dt;
 					AuthenticationLogWrapper lw = new AuthenticationLogWrapper();
 					lw.GUID = log.GUID__c;
 					log.IVR_GUID__c = IVRGUIDFromUrl;
 					lw.DebitPin = log.PinMatch__c;
-					lw.CreatedDate = log.CreatedDate.formatGMT('MM-dd-yyyy HH:mm:ss');
+					//lw.CreatedDate = log.CreatedDate.formatGMT('MM-dd-yyyy HH:mm:ss');
+					dt = DateTime.newInstance(log.CreatedDate.getTime() + tz.getOffset(log.CreatedDate));
+					lw.CreatedDate = dt.formatGMT('MM-dd-yyyy HH:mm:ss');
 					lw.LogNumber = log.Name;
 					lw.UserName = log.Staff_Name__c;
 					lw.MemberNumber = log.Member_Number__c;
@@ -2333,8 +3190,9 @@ public class MemberAuthenticationControllerLightning{
 	public static List<AuthenticationLogWrapper> GetLogHistoryData(string MemberId, Integer Days, string GUID)
 	{
 		// this is to bring data on the click of view History button 
-		
+		Timezone tz = Timezone.getTimeZone('America/Los_Angeles');
 		List<AuthenticationLogWrapper> logWrapper =  new List<AuthenticationLogWrapper>();
+		String rec = 'Master Authentication Log';
 		string SOQLQuery = '';
 		SOQLQuery = 'SELECT ' +
 					'CFCU_Wallet_Status__c, ' + 
@@ -2369,7 +3227,7 @@ public class MemberAuthenticationControllerLightning{
 					'Override_Request_Supervisor__c, ' +
 					'GUID__c '  + 
 					' FROM Authenticated_Log__c where SalesforceID__c =  \'' +  MemberId  +  '\''  +
-					'  and createddate = LAST_N_DAYS:' + Days + ' order by createddate desc , RecordType.Name' ;
+					' and RecordType.Name != \'' + rec  +  '\''  +   'and createddate = LAST_N_DAYS:' + Days + ' order by createddate desc , RecordType.Name' ;
 		
 		
 		
@@ -2395,12 +3253,14 @@ public class MemberAuthenticationControllerLightning{
 		{
 			for(Authenticated_Log__c log:guidmap.values())
 			{
+				Datetime dt;
 				AuthenticationLogWrapper lw = new AuthenticationLogWrapper();
 				lw.GUID = log.GUID__c;
 				lw.DebitPin = log.PinMatch__c;
 				
-				lw.CreatedDate = log.CreatedDate.formatGMT('MM-dd-yyyy HH:mm:ss');
-				
+				//lw.CreatedDate = log.CreatedDate.formatGMT('MM-dd-yyyy HH:mm:ss');
+				dt = DateTime.newInstance(log.CreatedDate.getTime() + tz.getOffset(log.CreatedDate));
+			    lw.CreatedDate = dt.formatGMT('MM-dd-yyyy HH:mm:ss');
 				lw.LogNumber = log.Name;
 				lw.UserName = log.Staff_Name__c;
 				lw.MemberNumber = log.Member_Number__c;
@@ -2479,7 +3339,7 @@ public class MemberAuthenticationControllerLightning{
         List<Authenticated_Log__c> LastLog = [SELECT CFCU_Wallet_Status__c, Decision__c, Id,KYM_Member_Number__c,KYM_Other_Reason__c,KYM_Reason__c,Member_Name__c,Member__c,Name,Staff_Name__c,Member_Number__c,
 					Last_Achievable_Level__c,OOW_Member_Number__c,OOW_Notes__c,OOW_Reason__c,OOW_Status__c,OTP_Status__c,SalesforceID__c,Public_Wallet_Status__c,
 					CreatedDate,RecordType.Name,IVR_Sent_URL__c,CallerPhoneNumber__c,Failed_Desired_Level__c,Override_Request_Type__c,Override_Request_Supervisor__c,
-					GUID__c FROM Authenticated_Log__c where SalesforceID__c =:accoutid AND CreatedDate = Today AND Last_Achievable_Level__c != null order by CreatedDate desc LIMIT 1];    
+					GUID__c FROM Authenticated_Log__c where SalesforceID__c =:accoutid AND CreatedDate = Today AND Last_Achievable_Level__c != null and recordtype.name !='Master Authentication Log' order by CreatedDate desc LIMIT 1];    
         
         if(LastLog.size() > 0){
         	result.put('Level',LastLog[0].Last_Achievable_Level__c);
@@ -2497,7 +3357,7 @@ public class MemberAuthenticationControllerLightning{
 	    	AccountNumber = p[0].Account_Number__r.Name;
 	    }
 		      
- 		RecordType rec =[select Id,Name,SobjectType from RecordType where name ='IVR Authentication Log' and SobjectType='Authenticated_Log__c'];
+ 		RecordType rec = GetRecordTypeData('Authenticated_Log__c', 'IVR Authentication Log');	
  		Authenticated_Log__c log = new Authenticated_Log__c();
 	    log.RecordTypeId= rec.id;
 	    log.SalesforceID__c = MemberId;
@@ -2510,6 +3370,40 @@ public class MemberAuthenticationControllerLightning{
 	    log.GUID__c = GUID;
 	    log.IVR_GUID__c = IVRGUIDFromUrl;
 	    insert log;
+	     RecordType rec1 = GetRecordTypeData('Authenticated_Log__c', 'Master Authentication Log');
+       
+	     List<Authenticated_Log__c> MasterAuthenticationLog = GetDataForMasterAuthenticationLog(IVRGUIDFromUrl, rec1.id);
+	     if(MasterAuthenticationLog.size() == 0)
+	     {
+	     	system.debug('FDL##'+ FDL);
+	     	Authenticated_Log__c log2 = new Authenticated_Log__c();
+		    log2.RecordTypeId= rec1.id;
+		    log2.SalesforceID__c = MemberId;
+		    log2.Decision__c = Decision;
+		    log2.Failed_Desired_Level__c= FDL;
+		    log2.Member__c = MemberId;
+		    log2.Member_Number__c = AccountNumber;
+		    log2.Staff_Name__c =UserInfo.getName();
+		    log2.Current_User__c = Userinfo.getuserid();
+		    log2.GUID__c = GUID;
+		    log2.IVR_GUID__c = IVRGUIDFromUrl;
+		    insert log2;
+	     }else{
+	     	system.debug('FDL2##'+ FDL);
+		    MasterAuthenticationLog[0].RecordTypeId= rec1.id;
+		    MasterAuthenticationLog[0].SalesforceID__c = MemberId;
+		    MasterAuthenticationLog[0].Decision__c = Decision;
+		    MasterAuthenticationLog[0].Failed_Desired_Level__c= FDL;
+		    MasterAuthenticationLog[0].Member__c = MemberId;
+		    MasterAuthenticationLog[0].Member_Number__c = AccountNumber;
+		    MasterAuthenticationLog[0].Staff_Name__c =UserInfo.getName();
+		    MasterAuthenticationLog[0].Current_User__c = Userinfo.getuserid();
+		    MasterAuthenticationLog[0].GUID__c = GUID;
+		    update MasterAuthenticationLog[0];
+	     	
+	     	
+	     }
+	    
      	
      }
     
@@ -2566,7 +3460,8 @@ public class MemberAuthenticationControllerLightning{
 		ScoringModel = GetScoringModelData(MemberType);
         system.debug('ScoringModel##'+ ScoringModel);
         
-        RecordType OOWRec = [select Id,Name,SobjectType from RecordType where Name ='OOW Execution Log' and SobjectType='Authenticated_Log__c'];
+        
+         RecordType OOWRec = GetRecordTypeData('Authenticated_Log__c', 'OOW Execution Log');	
         if(IsUserSessionLoaded == true){
         	
         	OOWLogData = [SELECT ID, Decision__c, Member_Name__c,Member__c,Name,Staff_Name__c,Member_Number__c,
@@ -2589,7 +3484,7 @@ public class MemberAuthenticationControllerLightning{
 	        else{	        	
 	        		OOWLogData = [SELECT ID, Decision__c, Member_Name__c,Member__c,Name,Staff_Name__c,Member_Number__c,
 							OOW_Member_Number__c,OOW_Notes__c,OOW_Reason__c,OOW_Status__c,IVR_GUID__c,GUID__c
-							FROM Authenticated_Log__c where SalesforceID__c =:memberid  and RecordTypeId=: OOWRec.Id and IVR_GUID__c =:IVRGUIDFromUrl ];
+							FROM Authenticated_Log__c where SalesforceID__c =:memberid  and RecordTypeId=: OOWRec.Id and createddate = Today and Decision__c ='Fail'];
 				 if(OOWLogData.size() > 0)
 				 {
 				 	AuthLogMap.put('OOWLogData',OOWLogData);
@@ -2603,8 +3498,8 @@ public class MemberAuthenticationControllerLightning{
 	        }
         }
         system.debug('OOWAvailable##' +  OOWAvailable);    
-        RecordType PublicRec = [select Id,Name,SobjectType from RecordType where Name ='Public Wallet Log' and SobjectType='Authenticated_Log__c' limit 1];
-        	
+       
+         RecordType PublicRec = GetRecordTypeData('Authenticated_Log__c', 'Public Wallet Log');	
 		if(IsUserSessionLoaded == true){
 			
 			PublicLogData = [Select Id,SalesforceID__c,Member__c,Public_Wallet_Status__c,DOBMatch__c,IdNumberMatch__c,MMNMatch__c,EmailMatch__c,Additional_Token_Option3_Match__c
@@ -2621,7 +3516,7 @@ public class MemberAuthenticationControllerLightning{
         }
         else{
         		PublicLogData = [Select Id,SalesforceID__c,Member__c,Public_Wallet_Status__c,DOBMatch__c,IdNumberMatch__c,MMNMatch__c,EmailMatch__c,Additional_Token_Option3_Match__c
-								From Authenticated_Log__c where createddate = Today and RecordTypeId= : PublicRec.id and SalesforceID__c = : MemberId];
+								From Authenticated_Log__c where createddate = Today and RecordTypeId= : PublicRec.id and SalesforceID__c = : MemberId and Decision__c ='Fail'];
 				system.debug('PublicLogData1##' + PublicLogData);
         	if(PublicLogData.size() > 0)
         	{
@@ -2636,8 +3531,7 @@ public class MemberAuthenticationControllerLightning{
         	}
         }
         
-        
-        RecordType CFCURec = [select Id,Name,SobjectType from RecordType where Name ='CFCU Wallet Log' and SobjectType='Authenticated_Log__c' limit 1];
+        RecordType CFCURec = GetRecordTypeData('Authenticated_Log__c', 'CFCU Wallet Log');
         if(IsUserSessionLoaded == true){
         	CFCULogData = [Select Id,SalesforceID__c,Member__c,CFCU_Wallet_Status__c,BeneficiaryDetailMatch__c,Joint_OwnerDetailsMatch__c,CardNumberMatch__c,Additional_Token_Option1_Match__c,Additional_Token_Option2_Match__c, Loan_Detail_Match__c
 							From Authenticated_Log__c where  RecordTypeId= : CFCURec.id and SalesforceID__c = : MemberId  and IVR_GUID__c =:IVRGUIDFromUrl order by CreatedDate desc];
@@ -2653,7 +3547,7 @@ public class MemberAuthenticationControllerLightning{
         }
         else{
         		CFCULogData = [Select Id,SalesforceID__c,Member__c,CFCU_Wallet_Status__c,BeneficiaryDetailMatch__c,Joint_OwnerDetailsMatch__c,CardNumberMatch__c,Additional_Token_Option1_Match__c,Additional_Token_Option2_Match__c, Loan_Detail_Match__c
-							From Authenticated_Log__c where createddate = Today and RecordTypeId= : CFCURec.id and SalesforceID__c = : MemberId ];
+							From Authenticated_Log__c where createddate = Today and RecordTypeId= : CFCURec.id and SalesforceID__c = : MemberId and Decision__c ='Fail' ];
 				if(CFCULogData.size() > 0){
 					AuthLogMap.put('CFCULogData',CFCULogData);
        				AuthLogMap.put('IsCFCUWalletAvailable',false);
@@ -2664,7 +3558,7 @@ public class MemberAuthenticationControllerLightning{
 				}
         	}
         
-        RecordType OTPRec = [select Id,Name,SobjectType from RecordType where Name ='OTP Authentication Log' and SobjectType='Authenticated_Log__c' limit 1];
+         RecordType OTPRec = GetRecordTypeData('Authenticated_Log__c', 'OTP Authentication Log');
      	if(IsUserSessionLoaded == true){
      		OTPLogData = [SELECT ID, Decision__c, OTP_Email__c,OTP_Phone__c,OTP_Status__c
 					 FROM Authenticated_Log__c where OTP_Status__c != null and  SalesforceID__c =:memberid and IVR_GUID__c =:IVRGUIDFromUrl and RecordTypeId=: OTPRec.Id order by CreatedDate desc limit 1];
@@ -2686,7 +3580,7 @@ public class MemberAuthenticationControllerLightning{
 		else
 		{
 			OTPLogData = [SELECT ID, Decision__c, OTP_Email__c,OTP_Phone__c,OTP_Status__c
-							 FROM Authenticated_Log__c where OTP_Status__c != null and  SalesforceID__c =:memberid and RecordTypeId=: OTPRec.Id limit 1];
+							 FROM Authenticated_Log__c where OTP_Status__c != null and  SalesforceID__c =:memberid and  createddate = Today and RecordTypeId=: OTPRec.Id and Decision__c = 'OTP – Code Failed' limit 1 ];
 			if(OTPLogData.size() > 0){
 				AuthLogMap.put('OTPLogData',OTPLogData);
 					if(OTPLogData[0].OTP_Status__c == 'Fail')
@@ -2832,7 +3726,22 @@ public class MemberAuthenticationControllerLightning{
 		return minutes;
      }
     
-    
+     @AuraEnabled
+     public static List<Authenticated_Log__c> GetMAAPLogData(string MemberId )
+     {
+     	List<Authenticated_Log__c> AuthLog = [Select Id, Name,CreatedDate,Created_Date__c, RecordTypeId,RecordType.Name, IVR_Sent_URL__c,CallerPhoneNumber__c,EnteredMemberNumber__c,EnteredSSN__c, Failed_Desired_Level__c,
+     	EnteredCardNumber__c,CardNumberMatch__c,PhoneNumberMatch__c, MemberNumberMatch__c, SSNnumberMatch__c,
+		IVR_SSN__c,IVR_Card_Number__c,IVR_Member_Number__c,IVR_Member_Number_Match__c,IVR_SSN_Match__c,IVR_Card_Match__c,
+		IVR_Pin_Match__c,PINMatch__c,HP_HV__c,IVR_Code__c,Last_Achievable_Level__c,
+     	Override_Request_Supervisor__c,Override_Supervisor__c,Override_Request_Type__c,Manager_Override_Case__c,Manager_Override_Case_Id__c,
+     	OOW_Status__c,OOW_Member_Number__c,OOW_Reason__c,OOW_Notes__c,First_Name__c,Last_Name__c,
+     	Public_Wallet_Status__c,DOBMatch__c,IdNumberMatch__c,MMNMatch__c,EmailMatch__c,Additional_Token_Option3_Match__c,Case__r.CaseNumber,Manager_Override_Case__r.CaseNumber,
+     	CFCU_Wallet_Status__c,BeneficiaryDetailMatch__c,Joint_OwnerDetailsMatch__c,Additional_Token_Option1_Match__c,Additional_Token_Option2_Match__c,Loan_Detail_Match__c,
+     	Decision__c,SalesforceID__c,Member__c,Member_Number__c,Staff_Name__c,Current_User__c,GUID__c,IVR_GUID__c,Unusual_activity__c from Authenticated_Log__c where SalesforceID__c= :MemberId and Recordtype.name='Master Authentication Log' order by createddate desc];
+     	system.debug('AuthLog##'+ AuthLog);
+     	return AuthLog;
+     } 
+     
     
 	public class AuthenticationLogWrapper{
       

@@ -2,12 +2,12 @@
 		doInit : function(component, event, helper) {
 			
 		helper.doInit(component, event,helper);
-		
 		var PhoneNumber = component.get("v.PhoneFromURL");
 	    var MemberNumber = component.get("v.MemberNumberFromURL");
 	    var SSNNumber = component.get("v.SSNFromURL");
 	    var IVRGUIDFromUrl =  component.get("v.IVRGUIDFromUrl");
 	    helper.getMemberSearch(component, event,PhoneNumber,MemberNumber,SSNNumber,IVRGUIDFromUrl);
+	  
 	   
 		},
 		

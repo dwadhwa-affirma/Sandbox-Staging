@@ -89,7 +89,7 @@ float:left;
 .THIS .rightBox p.field-header {text-transform : uppercase;}
 .THIS .CardDetails .vl {min-height: 340px;} 
 .THIS .maap-answers .slds-p-around_small {margin-right:0 !important;}
-.THIS .maap-answers .slds-p-around_small:first-child{border: none !important; margin-right:0 !important; text-align: left !important; min-width: 150px !important;}
+.THIS .maap-answers .slds-p-around_small:first-child{border: none !important; margin-right:0 !important; text-align: left !important; min-width: 150px !important; padding: 12px 12px 8px 0 !important;}
 .THIS .maap-answers .slds-p-around_small:first-child .mr-80 {padding-right:0;}
 @media screen and (max-width: 1600px){
     .THIS .InnerDiv {display:block !important;}

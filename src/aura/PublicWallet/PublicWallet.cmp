@@ -7,6 +7,7 @@
     <aura:attribute name="ZipCode" type="String"/>
     <aura:attribute name="Emails" type="String" description="list of emails "/>
     <aura:attribute name="MothersMaidenName" type="String"/>
+    <aura:attribute name="AdditionalTokenOption3" type="String"/>
     <aura:attribute name="GUID" type="string"/>
     <aura:attribute name="IVRGUIDFromUrl" type="string" />
     <aura:attribute name="QuestionAttempt" type="Integer" default="0"/>

@@ -1,6 +1,8 @@
 <apex:page standardStylesheets="false" controller="MemberAuthenticationController" action="{!CheckIfMemberValidated}" cache="false">
  
 <script type="text/javascript" >
+					var url = '{!RedirectToURL}';
+					//alert(url);
 					window.location.href = '{!RedirectToURL}';
  	</script>
 <!--   <style>

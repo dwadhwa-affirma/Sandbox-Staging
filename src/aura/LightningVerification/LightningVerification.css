@@ -172,7 +172,7 @@
     font-weight: normal;
 }
 .THIS .rightBox p.field-header{
-	font-size: 12px;
+	font-size: 11px;
 	letter-spacing: 1px;
 	color: #54698D;
 	margin-bottom: 10px;
@@ -303,7 +303,7 @@
     margin-bottom: 11px;
 }
 .THIS .tblrow .rightBox header .slds-p-around_small:first-child {
-    padding: 12px 15px 8px 0;
+    padding: 20px 5px 8px 0;
     border-right: 1px solid #a09f9f;
     margin-right: 6px;
     margin-bottom: 11px;
@@ -327,7 +327,9 @@
     color: #F2B614;
     width: 15px;
     height: auto;
-    padding: 0 0px 3px 8px;
+    padding: 0;
+    float: right;
+    margin-top: -2px;                                                                                                        
 }
 .THIS #viewhistoryDiv {
     margin: 0 auto;
@@ -410,22 +412,23 @@ border: 0px;
     color: #16325C;
 	font-family: Segoe UI,SalesforceSans-Regular, Arial, sans-serif;
 }  
-.cLightningVerification .slds-tabs_default__nav, .cLightningVerification .slds-tabs--default__nav{border-bottom: 3px solid #637697;} 
-.cLightningVerification .slds-tabs_default__item.slds-is-active .slds-tabs_default__link, .cLightningVerification .slds-tabs_default__item .slds-tabs_default__link{margin-bottom:0; padding:18px 15px;}
-.cLightningVerification .slds-tabs_default__link, .cLightningVerification .slds-tabs--default__link{border:1px solid #c4cfd9; border-bottom:none;}
-.cLightningVerification .slds-tabs_default__item.slds-active .slds-tabs_default__link, .cLightningVerification .slds-tabs_default__item.slds-active .slds-tabs--default__link,.cLightningVerification .slds-tabs_default__item.slds-is-active .slds-tabs_default__link, .cLightningVerification .slds-tabs_default__item.slds-is-active .slds-tabs--default__link, .cLightningVerification .slds-tabs--default__item.slds-active .slds-tabs_default__link, .cLightningVerification .slds-tabs--default__item.slds-active .slds-tabs--default__link, .cLightningVerification .slds-tabs--default__item.slds-is-active .slds-tabs_default__link,.cLightningVerification .slds-tabs--default__item.slds-is-active .slds-tabs--default__link{border-bottom: transparent;} 
-.cLightningVerification .slds-tabs_default__item.slds-active:after, .cLightningVerification .slds-tabs_default__item.slds-is-active:after, .cLightningVerification .slds-tabs--default__item.slds-active:after, .cLightningVerification .slds-tabs--default__item.slds-is-active:after {height: 4px; bottom: -3px; background-color:#fff;}     
-.cLightningVerification .slds-tabs_default__item:hover:after, .cLightningVerification .slds-tabs--default__item:hover:after{display: none;}
-.cLightningVerification .field-reason{position:absolute; top: 0; right:0;}                                                                                                                        
-.cLightningVerification .field-reason .field-reason-section{color: black !important; padding: 5px !important; display:inline-block; margin-right: 2px; font-size: 16px; font-weight: bold;}
-.cLightningVerification .field-reason .field-reason-section:last-child {margin-right:0;}
-.cLightningVerification .field-reason span{ font-size: 16px;}
-.cLightningVerification .tblrow .rightBox .slds-tabs_default__item.slds-is-active{ background:#ffffff;}
-.cLightningVerification .slds-tabs_default__item.slds-is-active:hover:after, .cLightningVerification .slds-tabs--default__item.slds-is-active:hover:after {background-color: #fff; display: block;}
-.cLightningVerification .tblrow .rightBox .green.slds-is-active:after, .cLightningVerification .tblrow .rightBox .red.slds-tabs--default__item:after { background-color:transparent;}
-.cLightningVerification .tblrow .rightBox header .maap-questions {width: 100%;}                                                                                                                        
-.cLightningVerification .authQuestions .slds-p-around_small:first-child, .cLightningVerification .tblrow .rightBox header .maap-questions .slds-p-around_small:first-child {width: 160px !important;}
- 
+.THIS .slds-tabs_default__nav, .THIS .slds-tabs--default__nav{border-bottom: 3px solid #637697;} 
+.THIS .slds-tabs_default__item.slds-is-active .slds-tabs_default__link, .THIS .slds-tabs_default__item .slds-tabs_default__link{margin-bottom:0; padding:18px 15px;}
+.THIS .slds-tabs_default__link, .THIS .slds-tabs--default__link{border:1px solid #c4cfd9; border-bottom:none;}
+.THIS .slds-tabs_default__item.slds-active .slds-tabs_default__link, .THIS .slds-tabs_default__item.slds-active .slds-tabs--default__link,.THIS .slds-tabs_default__item.slds-is-active .slds-tabs_default__link, .THIS .slds-tabs_default__item.slds-is-active .slds-tabs--default__link, .THIS .slds-tabs--default__item.slds-active .slds-tabs_default__link, .THIS .slds-tabs--default__item.slds-active .slds-tabs--default__link, .THIS .slds-tabs--default__item.slds-is-active .slds-tabs_default__link,.THIS .slds-tabs--default__item.slds-is-active .slds-tabs--default__link{border-bottom: transparent;} 
+.THIS .slds-tabs_default__item.slds-active:after, .THIS .slds-tabs_default__item.slds-is-active:after, .THIS .slds-tabs--default__item.slds-active:after, .THIS .slds-tabs--default__item.slds-is-active:after {height: 4px; bottom: -3px; background-color:#fff;}     
+.THIS .slds-tabs_default__item:hover:after, .THIS .slds-tabs--default__item:hover:after{display: none;}
+.THIS .field-reason{position:absolute; top: 0; right:0;}                                                                                                                        
+.THIS .field-reason .field-reason-section{color: black !important; padding: 5px !important; display:inline-block; margin-right: 2px; font-size: 16px; font-weight: bold;}
+.THIS .field-reason .field-reason-section:last-child {margin-right:0;}
+.THIS .field-reason span{ font-size: 16px;}
+.THIS .tblrow .rightBox .slds-tabs_default__item.slds-is-active{ background:#ffffff;}
+.THIS .slds-tabs_default__item.slds-is-active:hover:after, .THIS .slds-tabs--default__item.slds-is-active:hover:after {background-color: #fff; display: block;}
+.THIS .tblrow .rightBox .green.slds-is-active:after, .THIS .tblrow .rightBox .red.slds-tabs--default__item:after { background-color:transparent;}
+.THIS .tblrow .rightBox header .maap-questions {width: 100%;}                                                                                                                        
+.THIS .authQuestions .slds-p-around_small:first-child, .THIS .tblrow .rightBox header .maap-questions .slds-p-around_small:first-child {width: 160px !important;}
+.THIS ul li ul {padding-left: 18px;} 
+                                                                                                                        
 /* Step indicator css */                                                                                                                        
 .THIS .step-container {width: 100%;}
 .THIS .progressbar {counter-reset:step;}                                                                                                                        

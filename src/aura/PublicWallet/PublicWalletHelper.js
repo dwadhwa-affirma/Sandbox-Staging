@@ -22,21 +22,37 @@
 						component.set("v.BirthDate",result['BDate']);
 					}
 				}
+				else{
+					component.set("v.BirthDate",undefined);
+				}
+				
 				if(result.ZCode !=undefined){
 					if(result.ZCode.length > 0){
 						component.set("v.ZipCode",result['ZCode']);
 					}
 				}
+				else{
+					component.set("v.ZipCode",undefined);
+				}
+				
 				if(result.Emails !=undefined){
 					if(result.Emails.length > 0){
 						component.set("v.Emails",result['Emails']);
 					}
 				}
+				else{
+					component.set("v.Emails",undefined);
+				}
+				
 				if(result.MothersMaidenName !=undefined){
 					if(result.MothersMaidenName.length > 0 && result.MothersMaidenName !=undefined){
 						component.set("v.MothersMaidenName", result.MothersMaidenName);
 					}
 				}
+				else{
+					component.set("v.MothersMaidenName",undefined);
+				}
+				
 				if(result.PublicWalletStatus != undefined){
 				
 					if(component.get("v.IsUserSessionLoaded") == true)

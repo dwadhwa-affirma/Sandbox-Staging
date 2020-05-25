@@ -1,0 +1,103 @@
+<aura:component implements="flexipage:availableForRecordHome,force:hasRecordId" access="global" controller="MemberAuthenticationControllerLightning" >
+	<aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
+	<aura:attribute name="Memberid" type="string" />
+	<aura:attribute name="LogData" type="object"/>
+	<div class="header-column mr-80">
+                        				<p  style="font-size: 17px;" align="left"><b>MAAP Log </b></p><br></br>
+                        			 </div>
+				
+				<div style="overflow-x: scroll;">
+						<table class="slds-table slds-table_cell-buffer slds-table_bordered slds-table_col-bordered">           						           			
+	           				
+	           				<thead>
+		           				<tr class="slds-line-height_reset">
+		           				<th class="" scope="col"><div class="slds-truncate" title=""></div></th>
+		           					<th class="" scope="col"><div class="slds-truncate" title="MAAP Log Number">MAAP Log Number</div></th>
+			           				<th class="" scope="col"><div class="slds-truncate" title="Created Date">Created Date</div></th>
+			           				<th class="" scope="col"><div class="slds-truncate" title="Staff Name">Staff Name</div></th>           			
+			           				<th class="" scope="col"><div class="slds-truncate" title="Member Number">Member Number</div></th>
+			           				<th class="" scope="col"><div class="slds-truncate" title="Record Type">Record Type</div></th>
+			           				<th class="" scope="col"><div class="slds-truncate" title="Last Achievable Level">Last Achievable Level</div></th>
+			           				<th class="" scope="col"><div class="slds-truncate" title="Unusual Activity Case">Unusual Activity Case</div></th>
+			           				<th class="" scope="col"><div class="slds-truncate" title="FDL">Failed Desired Level</div></th>
+			           				<th class="" scope="col"><div class="slds-truncate" title="Override Request">Override Request</div></th>
+			           				<th class="" scope="col"><div class="slds-truncate" title="Override Requested Supervisor">Override Requested Supervisor</div></th>
+			           				<th class="" scope="col"><div class="slds-truncate" title="Override Requested Supervisor">Manager Override Case</div></th>
+		           				</tr>
+	           				</thead>
+	           				 <tbody>          	
+					       		 <aura:iteration items="{!v.LogData}" var="item" indexVar="indexNumber">
+									<tr data-auraId="LogSection" id="{!('TRRowIndex' + indexNumber)}">
+											<td data-label="">
+												 {!indexNumber + 1}
+												  
+		            						</td>		 
+									
+											<td data-label="MAAP Log Number">
+      											  <div class="slds-truncate" title="MAAP Log Number"><a data-logid="{!item.Id}" onclick="{!c.naviteToMAAPRecord}">
+															{!item.Name}
+												</a></div>
+      										</td>
+      										
+      										<td data-label="Staff Name">
+      											  <div class="slds-truncate" title="Staff Name">{!item.Created_Date__c}</div>
+      										</td>
+      										<td data-label="Staff Name">
+      											  <div class="slds-truncate" title="Staff Name">{!item.Staff_Name__c}</div>
+      										</td>
+      										<td data-label="Member Number">
+      											  <div class="slds-truncate" title="Member Number">{!item.Member_Number__c}</div>
+      										</td>
+      										<td data-label="Record Type">
+      											  <div class="slds-truncate" title="Record Type">{!item.RecordType.Name}</div>
+      										</td>
+      										<td data-label="Last Achievable Level">
+      											  <div class="slds-truncate" title="Last Achievable Level">{!item.Last_Achievable_Level__c}</div>
+      										</td>
+      										<td data-label="Unusual Activity Case">
+      											  <div class="slds-truncate" title="Unusual Activity Case">
+	      											  	<a data-logid="{!item.Case__c}" onclick="{!c.naviteToMAAPRecord}">
+																{!item.Case__r.CaseNumber}
+														</a>
+												   </div>
+												
+												  <aura:if isTrue="{!item.Case__c.length > 0}">
+																 <div style="float: right; margin-top: -20px; margin-right: 80px;"><img src="/img/msg_icons/error16.png"></img>
+																 </div>
+												  </aura:if> 
+      										</td>
+      										<td data-label="FDL">
+      											  <div class="slds-truncate" title="FDL">{!item.Failed_Desired_Level__c}</div>
+      										</td>
+      										
+      										<td data-label="OverrideRequestType">
+      											  <div class="slds-truncate" title="OverrideRequest">{!item.Override_Request_Type__c}</div>
+      										</td>
+      										<td data-label="OverrideRequestedSupervisor">
+      											  <div class="slds-truncate" title="OverrideRequestedSupervisor">{!item.Override_Request_Supervisor__c}</div>
+      										</td>
+      										<td data-label="Manager Override Case">
+      											  <div class="slds-truncate" title="Manager Override Case">
+      											  		<a data-logid="{!item.Manager_Override_Case__c}" onclick="{!c.naviteToMAAPRecord}">
+															{!item.Manager_Override_Case__r.CaseNumber}
+														</a>
+												 </div>
+												
+												<aura:if isTrue="{!item.Manager_Override_Case__c.length > 0}">
+												
+															<div style="float: right; margin-top: -20px; margin-right: 80px;">
+																<img src="/img/msg_icons/error16.png"></img>
+															 </div>
+												</aura:if> 
+      										</td>
+							        		
+							        	</tr>
+					        	</aura:iteration> 
+					        	
+					     </tbody>   	
+				        	
+				  </table>
+	
+	</div>
+	
+</aura:component>

@@ -226,200 +226,230 @@ public class verifyCaller{
     
     public List<Account> queryByParametersAvailable(verificationObject input, boolean onlyQueryParameters){
         String check = '';
-      //  String queryString = 'select Name,FirstName , LastName , ID, SSN_Last_4__pc, Personid__pc  , BIRTH_DATE__pc,Mothers_Maiden_Name__pc, PersonEmail,  ID_1_Description__pc,ID_2_Description__pc,ID_3_Description__pc, ID_1_Number__pc ,ID_2_Number__pc, ID_3_Number__pc, ID_1_Type__pc, ID_2_Type__pc, ID_3_Type__pc, ID_1_Expiration_Date__pc, ID_2_Expiration_Date__pc, ID_3_Expiration_Date__pc, ID_1_Type__c, ID_2_Type__c, ID_3_Type__c from Account where (';
-        String queryString = 'select Name,FirstName , LastName , ID, SSN_Last_4__pc, Personid__pc  , BIRTH_DATE__pc,Mothers_Maiden_Name__pc, PersonEmail  from Account where (';
+        String queryString = 'select Name,FirstName , LastName , ID, SSN_Last_4__pc, Personid__pc  , BIRTH_DATE__pc,Mothers_Maiden_Name__pc, PersonEmail,  ID_1_Description__pc,ID_2_Description__pc,ID_3_Description__pc, ID_1_Number__pc ,ID_2_Number__pc, ID_3_Number__pc, ID_1_Type__pc, ID_2_Type__pc, ID_3_Type__pc, ID_1_Expiration_Date__pc, ID_2_Expiration_Date__pc, ID_3_Expiration_Date__pc, ID_1_Type__c, ID_2_Type__c, ID_3_Type__c from Account where (';
+        //String queryString = 'select Name,FirstName , LastName , ID, SSN_Last_4__pc, Personid__pc  , BIRTH_DATE__pc,Mothers_Maiden_Name__pc, PersonEmail  from Account where (';
         String conditions = '';
         String additionalConditions = ''; 
         String phoneQuery = '';
         List<id> ids = new List<id>();
         List<Account> ListofNames = new List<Account>(); 
         system.debug('input---'+input);   
-        system.debug('memberNumber---'+input.memberNumber );
-        if(input.memberNumber != null && input.memberNumber != ''){
-            List<Person_Account__c> memberLists = [select id,PersonID__c from Person_Account__c where 
-            TypeTranslate__C != '0004/Beneficiary' and 
-            Account_Number__r.name =: input.memberNumber];
-            system.debug('memberLists---'+memberLists);
-            
-            if(memberLists.size()>0){
-                    for(Person_Account__c pa : memberLists){
-                            ids.add(pa.PersonID__c);
-                    }
-            }else{
-                if(input.fieldnametocheck == 'memberNumber'){
-                    return ListofNames;
-                }
-            }
-                /*
-            if(check == '0'){
-                queryString = queryString+ ' And ';
-            }
-            String ids = queryMemberNumber(input.memberNumber);
-            queryString = queryString+ 'id in '+ids;
-            check = '0';*/
-            
-        }
+        system.debug('SSN##' + input.SSNMatch);
         system.debug('SSN##' + input.SSN);
-        if(input.SSN != null && input.SSN != ''){
-            if(check == '0'){
-                queryString = queryString+ ' And ';
+        
+        if((input.SSNMatch == 'TRUE' || input.SSNMatch == 'true') && input.SSN.length() > 4){
+        	
+        	if(check == '0'){
+	        	queryString = queryString+ ' And ';
             }
              /*queryString = queryString+ 'SSN_Last_4__pc = \''+input.SSN+'\'';
            		 check = '0';*/
-            if(input.SSN.length() > 4)
-            {	
+            if(input.SSN.length() > 4){
+           
             	string lastNine;
             	lastNine = input.SSN.right(9);
-            	 queryString = queryString+ 'Personid__pc Like \''+ '%' +lastNine+'\'';
-            	 system.debug('queryString##' + queryString);
-            	  check = '0';
-            }
-            else if(input.SSN.length() > 0 && input.SSN.length() <= 4 ){
-            	 queryString = queryString+ 'SSN_Last_4__pc = \''+input.SSN+'\'';
-           		 check = '0';
-           		 system.debug('queryString##' + queryString);
+            	queryString = queryString+ 'Personid__pc Like \''+ '%' +lastNine+'\')';
+            	system.debug('queryString##' + queryString);
+            	check = '0';
             }
             
-           
-        }
-        if(input.CardNumber != null && input.CardNumber != ''){         
-            List<Account_Details__c> temp = new List<Account_Details__c>();
-            //temp = [select Id, Parent_Account__c from Account_Details__c where Card_Number_Last_4_Digits__c =:input.CardNumber];
-            temp = [select Id, Parent_Account__c from Account_Details__c where Card_Number__c like :'%'+input.CardNumber];
-            String addOr = '';
-            if(temp.size()>0){
-            list<id> tempIds = new List<Id>();
-                for(Account_Details__c single: temp){
-                    /*if(addOr == '0'){
-                        conditions = conditions+' OR';
-                    }
-                    conditions = conditions+' id =\''+single.Parent_Account__c+'\'';
-                    addOr = '0';*/
-                    tempIds.add(single.Parent_Account__c);
-                } /*
-                if(check == '0'){
-                    queryString = queryString+ ' And ';
-                }           
-                conditions  = '('+conditions+')'; */
-                List<Person_Account__c> persons = new List<Person_Account__c>();
-                persons = [select PersonID__c from Person_Account__c where 
-                TypeTranslate__C != '0004/Beneficiary' and
-                 Account_Number__c in :tempIds];
-                system.debug('input.fieldnametocheck....'+input.fieldnametocheck);
-                if(input.fieldnametocheck == 'CardNumber'){
-                    system.debug('persons.size()...'+persons.size());
-                    system.debug('persons.size()...'+persons);
-                    if(persons.size() < 1){
-                        return ListofNames;
-                    }else{
-                        if(ids.size()>0){
-                            boolean flagForId = false;
-                            for(id inc : ids){
-                                for(Person_Account__c p: persons){
-                                    if(p.PersonID__c == inc){
-                                        flagForId = true;
-                                    }
-                                }                            
-                            }
-                            if(flagForId){
-                                for(Person_Account__c p: persons){                    
-                                    Ids.add(p.PersonID__c);
-                                } 
-                            }else{
-                                return ListofNames;
-                            }
-                        }else{
-                            for(Person_Account__c p: persons){                    
-                                Ids.add(p.PersonID__c);
-                            } 
-                        }
-                    }
-                }else{
-                    system.debug('ummmmmmmmm');
-                    if(persons.size()>0 && input.fieldnametocheck != 'memberNumber'){
-                        for(Person_Account__c p: persons){                    
-                            Ids.add(p.PersonID__c);
-                        } 
-                    }else if(persons.size()>0 && input.fieldnametocheck == 'memberNumber'){
-                        boolean flagForId = false;
-                            for(id inc : ids){
-                                for(Person_Account__c p: persons){
-                                    if(p.PersonID__c == inc){
-                                        flagForId = true;
-                                    }
-                                }                            
-                            }
-                            if(flagForId){
-                                for(Person_Account__c p: persons){                    
-                                    Ids.add(p.PersonID__c);
-                                } 
-                            }
-                    }else if(persons.size()>0){
-                        for(Person_Account__c p: persons){                    
-                            Ids.add(p.PersonID__c);
-                        } 
-                    }
-                }
-            }else{
-                return ListofNames;
-            }
-            
-        }
-        if(!onlyQueryParameters){
-            wrapper wrap = new wrapper();
-            wrap = getNamesList(input,check);
-            additionalConditions = wrap.queryString;
-            check = wrap.check;
-            
-        }
-        if(ids.size()>0){
-            if(check == '0'){
-                conditions = ' And ';
-            }
-            conditions = conditions+'id in (';
-            for(id i : ids){
-                conditions = conditions+'\''+i+'\',';
-            }
-            integer x = conditions.length();
-            if(x>2){
-                conditions = conditions.substring(0,x-1);
-                conditions = conditions+')';
-            }
-            check = '0';
-        }
-        if(input.phoneNumber != null && input.phoneNumber != ''){
-            if(check == '0'){
-                phoneQuery = phoneQuery+ ') OR (';
-            }
-            String additionalformat = getAdditionalPhoneNumber(input.phoneNumber);          
-            String additionalformat1 = getAdditionalPhoneNumber1(input.phoneNumber);
-
-           /* phoneQuery = phoneQuery+ 'PersonHomePhone =\''+input.phoneNumber+'\' OR PersonMobilePhone=\''+input.phoneNumber+'\' OR  PersonOtherPhone =\''+input.phoneNumber+'\' OR Phone =\''+input.phoneNumber+'\' OR PersonAssistantPhone =\''+input.phoneNumber+
-                           '\' OR PersonHomePhone =\''+additionalformat1+'\' OR PersonMobilePhone=\''+additionalformat1+'\' OR  PersonOtherPhone =\''+additionalformat1+'\' OR Phone =\''+additionalformat1+'\' OR PersonAssistantPhone =\''+additionalformat1+
-                           '\' OR Home_Phone__pc =\''+additionalformat+'\' OR Mobile_Phone__pc =\''+additionalformat+'\' OR  Work_Phone__pc =\''+additionalformat+
-                           '\' OR Home_Phone__pc =\''+additionalformat1+'\' OR Mobile_Phone__pc =\''+additionalformat1+'\' OR  Work_Phone__pc =\''+additionalformat1+
-                           '\' OR Home_Phone__pc =\''+input.phoneNumber+'\' OR Mobile_Phone__pc =\''+input.phoneNumber+'\' OR  Work_Phone__pc =\''+input.phoneNumber+
-                            '\' OR PersonHomePhone =\''+additionalformat+'\' OR PersonMobilePhone=\''+additionalformat+'\' OR  PersonOtherPhone =\''+additionalformat+'\' OR Phone =\''+additionalformat+'\' OR PersonAssistantPhone =\''+additionalformat+'\')';*/
-                            
-            phoneQuery = phoneQuery+ 'Mobile_Phone__pc =\''+additionalformat+'\' OR Mobile_Phone__pc =\''+additionalformat+'\' OR  Work_Phone__pc =\''+additionalformat+
-                           '\' OR Home_Phone__pc =\''+additionalformat1+'\' OR Mobile_Phone__pc =\''+additionalformat1+'\' OR  Work_Phone__pc =\''+additionalformat1+
-                           '\' OR Home_Phone__pc =\''+input.phoneNumber+'\' OR Mobile_Phone__pc =\''+input.phoneNumber+'\' OR  Work_Phone__pc =\''+input.phoneNumber+'\'';
-                                         
-            
-            check ='0';
-        }
-         system.debug('..'+queryString+additionalConditions+conditions);
-         queryString = queryString+additionalConditions+conditions+phoneQuery+')';
-        system.debug('queryString##' + queryString);
-         system.debug('..'+phoneQuery+')');
-        try{
-            ListofNames = Database.query(queryString);
-        }Catch(QueryException e){
-             system.debug('e..'+e);
-        }
+            try{
+            	ListofNames = Database.query(queryString);
+        	}Catch(QueryException e){
+            	system.debug('e..'+e);
+        	}
         
-        system.debug('ListofNames ......'+ListofNames);
-        return (ListofNames);
+        	system.debug('ListofNames ......'+ListofNames);
+        	return (ListofNames);
+	    }
+        else{
+        	
+	        if(input.SSN != null && input.SSN != ''){
+	        	
+	        	if(check == '0'){
+		        	queryString = queryString+ ' And ';
+	            }
+		        
+		        if(input.SSN.length() > 4){
+           
+            		string lastNine;
+            		lastNine = input.SSN.right(9);
+            		queryString = queryString+ 'Personid__pc Like \''+ '%' +lastNine+'\'';
+            		system.debug('queryString##' + queryString);
+            		check = '0';
+            	}    
+	    		else if(input.SSN.length() > 0 && input.SSN.length() <= 4 ){
+		        	 queryString = queryString+ 'SSN_Last_4__pc = \''+input.SSN+'\'';
+		       		 check = '0';
+		       		 system.debug('queryString##' + queryString);
+	        	}
+	        }
+	        
+	        system.debug('memberNumber---'+input.memberNumber );
+	        if(input.memberNumber != null && input.memberNumber != ''){
+	            List<Person_Account__c> memberLists = [select id,PersonID__c from Person_Account__c where 
+	            TypeTranslate__C != '0004/Beneficiary' and 
+	            Account_Number__r.name =: input.memberNumber];
+	            system.debug('memberLists---'+memberLists);
+	            
+	            if(memberLists.size()>0){
+	                    for(Person_Account__c pa : memberLists){
+	                            ids.add(pa.PersonID__c);
+	                    }
+	            }else{
+	                if(input.fieldnametocheck == 'memberNumber'){
+	                    return ListofNames;
+	                }
+	            }
+	                /*
+	            if(check == '0'){
+	                queryString = queryString+ ' And ';
+	            }
+	            String ids = queryMemberNumber(input.memberNumber);
+	            queryString = queryString+ 'id in '+ids;
+	            check = '0';*/
+	            
+	        }
+	        
+	        if(input.CardNumber != null && input.CardNumber != ''){         
+	            List<Account_Details__c> temp = new List<Account_Details__c>();
+	            //temp = [select Id, Parent_Account__c from Account_Details__c where Card_Number_Last_4_Digits__c =:input.CardNumber];
+	            temp = [select Id, Parent_Account__c from Account_Details__c where Card_Number__c like :'%'+input.CardNumber];
+	            String addOr = '';
+	            if(temp.size()>0){
+	            list<id> tempIds = new List<Id>();
+	                for(Account_Details__c single: temp){
+	                    /*if(addOr == '0'){
+	                        conditions = conditions+' OR';
+	                    }
+	                    conditions = conditions+' id =\''+single.Parent_Account__c+'\'';
+	                    addOr = '0';*/
+	                    tempIds.add(single.Parent_Account__c);
+	                } /*
+	                if(check == '0'){
+	                    queryString = queryString+ ' And ';
+	                }           
+	                conditions  = '('+conditions+')'; */
+	                List<Person_Account__c> persons = new List<Person_Account__c>();
+	                persons = [select PersonID__c from Person_Account__c where 
+	                TypeTranslate__C != '0004/Beneficiary' and
+	                 Account_Number__c in :tempIds];
+	                system.debug('input.fieldnametocheck....'+input.fieldnametocheck);
+	                if(input.fieldnametocheck == 'CardNumber'){
+	                    system.debug('persons.size()...'+persons.size());
+	                    system.debug('persons.size()...'+persons);
+	                    if(persons.size() < 1){
+	                        return ListofNames;
+	                    }else{
+	                        if(ids.size()>0){
+	                            boolean flagForId = false;
+	                            for(id inc : ids){
+	                                for(Person_Account__c p: persons){
+	                                    if(p.PersonID__c == inc){
+	                                        flagForId = true;
+	                                    }
+	                                }                            
+	                            }
+	                            if(flagForId){
+	                                for(Person_Account__c p: persons){                    
+	                                    Ids.add(p.PersonID__c);
+	                                } 
+	                            }else{
+	                                return ListofNames;
+	                            }
+	                        }else{
+	                            for(Person_Account__c p: persons){                    
+	                                Ids.add(p.PersonID__c);
+	                            } 
+	                        }
+	                    }
+	                }else{
+	                    system.debug('ummmmmmmmm');
+	                    if(persons.size()>0 && input.fieldnametocheck != 'memberNumber'){
+	                        for(Person_Account__c p: persons){                    
+	                            Ids.add(p.PersonID__c);
+	                        } 
+	                    }else if(persons.size()>0 && input.fieldnametocheck == 'memberNumber'){
+	                        boolean flagForId = false;
+	                            for(id inc : ids){
+	                                for(Person_Account__c p: persons){
+	                                    if(p.PersonID__c == inc){
+	                                        flagForId = true;
+	                                    }
+	                                }                            
+	                            }
+	                            if(flagForId){
+	                                for(Person_Account__c p: persons){                    
+	                                    Ids.add(p.PersonID__c);
+	                                } 
+	                            }
+	                    }else if(persons.size()>0){
+	                        for(Person_Account__c p: persons){                    
+	                            Ids.add(p.PersonID__c);
+	                        } 
+	                    }
+	                }
+	            }else{
+	                return ListofNames;
+	            }
+	            
+	        }
+	        if(!onlyQueryParameters){
+	            wrapper wrap = new wrapper();
+	            wrap = getNamesList(input,check);
+	            additionalConditions = wrap.queryString;
+	            check = wrap.check;
+	            
+	        }
+	        if(ids.size()>0){
+	            if(check == '0'){
+	                conditions = ' And ';
+	            }
+	            conditions = conditions+'id in (';
+	            for(id i : ids){
+	                conditions = conditions+'\''+i+'\',';
+	            }
+	            integer x = conditions.length();
+	            if(x>2){
+	                conditions = conditions.substring(0,x-1);
+	                conditions = conditions+')';
+	            }
+	            check = '0';
+	        }
+	        if(input.phoneNumber != null && input.phoneNumber != ''){
+	            if(check == '0'){
+	                phoneQuery = phoneQuery+ ') OR (';
+	            }
+	            String additionalformat = getAdditionalPhoneNumber(input.phoneNumber);          
+	            String additionalformat1 = getAdditionalPhoneNumber1(input.phoneNumber);
+	
+	           /* phoneQuery = phoneQuery+ 'PersonHomePhone =\''+input.phoneNumber+'\' OR PersonMobilePhone=\''+input.phoneNumber+'\' OR  PersonOtherPhone =\''+input.phoneNumber+'\' OR Phone =\''+input.phoneNumber+'\' OR PersonAssistantPhone =\''+input.phoneNumber+
+	                           '\' OR PersonHomePhone =\''+additionalformat1+'\' OR PersonMobilePhone=\''+additionalformat1+'\' OR  PersonOtherPhone =\''+additionalformat1+'\' OR Phone =\''+additionalformat1+'\' OR PersonAssistantPhone =\''+additionalformat1+
+	                           '\' OR Home_Phone__pc =\''+additionalformat+'\' OR Mobile_Phone__pc =\''+additionalformat+'\' OR  Work_Phone__pc =\''+additionalformat+
+	                           '\' OR Home_Phone__pc =\''+additionalformat1+'\' OR Mobile_Phone__pc =\''+additionalformat1+'\' OR  Work_Phone__pc =\''+additionalformat1+
+	                           '\' OR Home_Phone__pc =\''+input.phoneNumber+'\' OR Mobile_Phone__pc =\''+input.phoneNumber+'\' OR  Work_Phone__pc =\''+input.phoneNumber+
+	                            '\' OR PersonHomePhone =\''+additionalformat+'\' OR PersonMobilePhone=\''+additionalformat+'\' OR  PersonOtherPhone =\''+additionalformat+'\' OR Phone =\''+additionalformat+'\' OR PersonAssistantPhone =\''+additionalformat+'\')';*/
+	                            
+	            phoneQuery = phoneQuery+ 'Mobile_Phone__pc =\''+additionalformat+'\' OR Mobile_Phone__pc =\''+additionalformat+'\' OR  Work_Phone__pc =\''+additionalformat+
+	                           '\' OR Home_Phone__pc =\''+additionalformat1+'\' OR Mobile_Phone__pc =\''+additionalformat1+'\' OR  Work_Phone__pc =\''+additionalformat1+
+	                           '\' OR Home_Phone__pc =\''+input.phoneNumber+'\' OR Mobile_Phone__pc =\''+input.phoneNumber+'\' OR  Work_Phone__pc =\''+input.phoneNumber+'\'';
+	                                         
+	            
+	            check ='0';
+	        }
+	         system.debug('..'+queryString+additionalConditions+conditions);
+	         queryString = queryString+additionalConditions+conditions+phoneQuery+')';
+	        system.debug('queryString##' + queryString);
+	         system.debug('..'+phoneQuery+')');
+	        try{
+	            ListofNames = Database.query(queryString);
+	        }Catch(QueryException e){
+	             system.debug('e..'+e);
+	        }
+	        
+	        system.debug('ListofNames ......'+ListofNames);
+	        return (ListofNames);
+    	}
     }
     
     

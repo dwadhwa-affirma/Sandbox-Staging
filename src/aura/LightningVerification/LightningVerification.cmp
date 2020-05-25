@@ -281,9 +281,7 @@
 			         			<div class="c-container maap-questions">
 			               			<lightning:layout horizontalAlign="spread">
                                             <lightning:layoutItem padding="around-small">
-                                            	<p class="field-header" title="AUTHINFO">MAAP LEVEL
-                                            		<lightning:buttonIcon iconName="utility:info" variant="bare" onclick="{! c.OpenDescription }" alternativeText="info" />
-                                            	</p>
+                                            	<p class="field-header" title="AUTHINFO">MAAP LEVEL</p>
                                             </lightning:layoutItem>
                                             <div class="step-container">
                                                 <ul class="progressbar">
@@ -340,8 +338,10 @@
 							<div class="c-container">	
                                 <lightning:layout horizontalAlign="spread">
                                             <lightning:layoutItem padding="around-small">
-												<p class="field-header authQuestion" title="AuthQuestions">MAAP QUESTIONS</p>
-											</lightning:layoutItem>
+												<p class="field-header authQuestion" title="AuthQuestions">MAAP QUESTIONS
+													<lightning:buttonIcon iconName="utility:info" variant="bare" onclick="{! c.OpenDescription }" alternativeText="info" />
+												</p>													                            
+                                   			</lightning:layoutItem>
                                    										
 								<lightning:tabset>
 					    		   	<aura:if isTrue ="{!v.IsKYMTabVisible}">
@@ -432,7 +432,7 @@
 							    <aura:iteration items="{!v.stages}" var="stage">
 							   		 <lightning:input aura:id= "requestType" name="radioGroup" label="{!stage}" value="{!stage}" type="radio"  onchange="{!c.onChange}"/>
 							    </aura:iteration> 
-							    <lightning:input aura:id= "ManagerComments" name="ManagerComments" label="Comments" class="hidden MarginTop" maxlength="300" messageWhenTooLong="Your entry must be at max 40 characters." />
+							    <lightning:input aura:id= "ManagerComments" name="ManagerComments" label="Comments" class="hidden MarginTop" maxlength="40" messageWhenTooLong="Your entry must be at max 40 characters." />
 								<span  id ="errorSpaninputOne" class="error hidden">Please enter valid comments</span>                        
 							    
 							    <span  id ="errorSpaninput" class="error hidden">Please Select An Override Request Type </span>                       
