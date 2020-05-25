@@ -30,6 +30,7 @@
         var RoutingBankName = component.get("v.EFTRecord.Bank_Name__c");
         var AccountNumber = component.get("v.EFTRecord.Account_Number__c");
         var Type = event.getSource().get('v.value');
+        component.set("v.EFTRecord.Stage__c",'FI');
         
 		if(Type != undefined){
             evt.setParams({ "EFTRecord": component.get("v.EFTRecord")});
