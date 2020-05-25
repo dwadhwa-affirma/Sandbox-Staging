@@ -13,7 +13,8 @@
 <aura:attribute name="ShareLoanMap" type="List" />
 <aura:attribute name="SelectedShareLoan" type="String" />
 <aura:registerEvent name="EFTEvent" type="c:EFTEvent"/>
-<aura:attribute name="EFTRecord" type="EFT__c" />   
+<aura:attribute name="EFTRecord" type="EFT__c" /> 
+  
 
  <div id = "stage3" class = "stage3">
             <div>
@@ -60,8 +61,8 @@
                             </div>
                           </td>
                           <th class="slds-tree__item" style = "padding-left: 0.5rem;" data-label="Account Name" scope="row">
-                            <button class="slds-button slds-button_icon slds-button_icon slds-button_icon-x-small slds-m-right_x-small" aria-hidden="true" tabindex="-1" title="Expand" id="{!'btn' +i}" data-row-index="{!i}">
-                              <lightning:buttonIcon iconName="{!v.AddIconName}" size="x-small"  onclick="{!c.expand}" class="{!'icon' +i}" name="{!'icon' +i}"/>
+                            <button class="slds-button slds-button_icon slds-button_icon slds-button_icon-x-small slds-m-right_x-small add" aria-hidden="true" tabindex="-1" title="Expand" id="{!'btn' +i}" data-row-index="{!i}">
+                              <lightning:buttonIcon iconName="{!itemOption.UtilityIcon}" size="x-small"  onclick="{!c.expand}" iconClass="{!'icon' +i}" name="{!'icon' +i}"/>
                               <span class="slds-assistive-text">Collapse</span>
                             </button>
                             <div class="slds-truncate" title="{!itemOption.LoanId}">
