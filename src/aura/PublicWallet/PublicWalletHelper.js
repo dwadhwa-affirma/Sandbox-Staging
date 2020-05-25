@@ -306,9 +306,35 @@
         	var MMNMatch = component.get("v.MMNMatch");
         	var EmailMatch = component.get("v.EmailMatch");
         	var AdditionalTokenOption3Match = component.get("v.AdditionalTokenOption3Match");
-		        	
+		    var DOB = component.get("v.BirthDate");
+		    if(DOBMatch == undefined){
+		    	DOB = '';
+		    }
+		   
+		    var IdNumber =  component.get("v.DLStateIdPassport");
+		    if(IdNumberMatch == undefined){
+		    	IdNumber = '';
+		    }
+		    
+		    var MMN = component.get("v.MothersMaidenName");
+		    if(MMNMatch == undefined){
+		    	
+		    	MMN = '';
+		    }
+		    
+		    var Email = component.get("v.Emails");
+		    if(EmailMatch == undefined){
+		    	Email = '';
+		    }
+		    
+		    var AdditionalTokenOption3 = component.get("v.AdditionalTokenOption3");
+		    if(AdditionalTokenOption3Match == undefined){
+		    	AdditionalTokenOption3Match ='';
+		    }
+		   
 	        action.setParams({"MemberId": memberId, "Status": status, "GUID" : GUID, "DOBMatch" : DOBMatch, "IdNumberMatch" : IdNumberMatch, "MMNMatch" : MMNMatch, "EmailMatch" : EmailMatch, 
-	        							             "AdditionalTokenOption3Match" : AdditionalTokenOption3Match, "IVRGUIDFromUrl" : IVRGUIDFromUrl});
+	        							             "AdditionalTokenOption3Match" : AdditionalTokenOption3Match, "IVRGUIDFromUrl" : IVRGUIDFromUrl,
+	        							              "DOB": DOB,"IdNumber": IdNumber, "MMN": MMN,"Email": Email,"AdditionalTokenOption3": AdditionalTokenOption3});
 	        action.setCallback(this, function (response) {
 			var status = response.getState();            
 		    if (component.isValid() && status === "SUCCESS") {

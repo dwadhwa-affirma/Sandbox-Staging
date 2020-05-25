@@ -29,11 +29,13 @@
 		}else if(pageReference.state.c__PINMatch != undefined ){		
 			component.set("v.DebitCardStatus", pageReference.state.c__PINMatch.toLowerCase());
 		}
-		if(pageReference.state.c__InteractionId == 'null'){
+		if(pageReference.state.c__InteractionId == 'null' || pageReference.state.c__InteractionId == undefined){
 		
 			component.set("v.IVRGUIDFromUrl", '');
+			component.set("v.IsMemberManualSearched",true);
 		}else{
 			component.set("v.IVRGUIDFromUrl", pageReference.state.c__InteractionId);
+			component.set("v.IsMemberManualSearched",false);
 		}
 		if(pageReference.state.c__Reason == 'null' || pageReference.state.c__Reason == undefined || pageReference.state.c__Reason == '')
 		{
@@ -182,6 +184,11 @@
 		
 		var GUID = component.get("v.GUID");
 		var IVRGUIDFromUrl = component.get("v.IVRGUIDFromUrl");
+		if(IVRGUIDFromUrl =='' || IVRGUIDFromUrl == undefined )
+		{
+			component.set("v.IVRGUIDFromUrl",GUID);
+			IVRGUIDFromUrl = GUID;
+		}
 		var action = component.get("c.MemberVerificationAttemptsCheck");
 		
 		if(ReLoadRequired == undefined){
@@ -201,9 +208,12 @@
 		var MemberNumberMatch = component.get("v.MemberNumberMatch");       
 		var SSNnumberMatch = component.get("v.SSNnumberMatch");   
 		var PINMatch = component.get("v.PINMatch"); 
+		var SSNSearched = component.get("v.SSNEntered");
+		var PhoneSearched = component.get("v.PhoneNumberEntered");
+		var MemberSearched = component.get("v.MemberNumberEntered");
 		if(PageURL == undefined){
 			component.set("v.IsDebitTabVisible", false);
-			action.setParams({"MemberId": memberid,"GUID": GUID,"DebitCardStatus": DebitCardStatus,"SSNFromURL": ' ',"MemberNumberFromURL": ' ',"PhoneFromURL": ' ', "PageURL" : ' ', "IVRGUIDFromUrl": IVRGUIDFromUrl,
+			action.setParams({"MemberId": memberid,"GUID": GUID,"DebitCardStatus": DebitCardStatus,"SSNFromURL": SSNSearched,"MemberNumberFromURL": MemberSearched,"PhoneFromURL": PhoneSearched, "PageURL" : ' ', "IVRGUIDFromUrl": IVRGUIDFromUrl,
 								"ReLoadRequired": ReLoadRequired, "ReasonCodeFromURL": ReasonCodeFromURL,"HighFlagFromUrl":HighFlagFromUrl, "PointsObtained":PointsObtained, 
 								"IsOOWTabVisible": component.get("v.IsOOWTabVisible"), "IsUserSessionLoaded": component.get("v.IsUserSessionLoaded"),
 								"EnteredCardNumber": ' ', "CardNumberMatch": ' ', "PhoneNumberMatch": ' ', "MemberNumberMatch" : ' ', "SSNnumberMatch" : ' ', "PINMatch" : ' '});
@@ -257,6 +267,7 @@
 					    component.set("v.IsLevel1Achieved", result.IsLevel1Achieved); 
 	                    component.set("v.IsLevel2Achieved", result.IsLevel2Achieved); 
 	                    component.set("v.IsLevel3Achieved", result.IsLevel3Achieved); 
+	                    component.set("v.MultipleMemberNumberAlert",result.MultipleMemberNumberAlert);
 					    if(result['OOWStatusForDay'] == false)
 					    {
 					    	component.set("v.Likedisable", true);
@@ -309,6 +320,8 @@
                        
                         else 
                         {
+                        	ProgressBarStep2.classList.remove('three');
+                        	ProgressBarStep2.classList.remove('active');
                         	ProgressBarStep2.classList.add('two');
                         	
                         }
@@ -331,6 +344,8 @@
                         
                         else 
                         {
+                        	ProgressBarStep3.classList.remove('three');
+                        	ProgressBarStep3.classList.remove('active');
                         	ProgressBarStep3.classList.add('two');
                         	
                         }
@@ -352,7 +367,7 @@
 								component.set("v.LevelModel",null);	
 							}
 						
-						
+						document.getElementById('frmMemberNumber').value = result['AccountNumber']; 
 						component.set("v.isDoneRendering",true);
 	              	
                   }
@@ -391,8 +406,7 @@
 	{
 		  
 		   var action = component.get("c.getMemberSearchData");
-		   var SSNMatch = component.get("v.SSNnumberMatch");
-		   var parameters = {"PhoneNumber": PhoneNumber,"MemberNumber" : MemberNumber,"SSNNumber" : SSNNumber,"IVRGUIDFromUrl":IVRGUIDFromUrl, "IsUserSessionLoaded": component.get("v.IsUserSessionLoaded"), "SSNMatch" : SSNMatch};
+		   var parameters = {"PhoneNumber": PhoneNumber,"MemberNumber" : MemberNumber,"SSNNumber" : SSNNumber,"IVRGUIDFromUrl":IVRGUIDFromUrl, "IsUserSessionLoaded": component.get("v.IsUserSessionLoaded")};
 		
 		   action.setParams(parameters);
 		   action.setCallback(this, function(response){
@@ -427,7 +441,7 @@
 						   var IsMatchingMemberFound; 
 						   IsMatchingMemberFound = component.get("v.IsMatchingMemberFound");
             		
-	            	    if((MemberNumber !=undefined && MemberNumber !='') && IsMatchingMemberFound == false) {						   
+	            	   if((MemberNumber !=undefined && MemberNumber !='') && IsMatchingMemberFound == false) {						   
 	            			 	component.set("v.IsMemberNumberValid",false);
 						    	var MemberNumberDiv = document.getElementById('MemberNoDiv');
 						    	//MemberNumberDiv.className.replace("hidden"," ");
@@ -436,9 +450,17 @@
 						  else if((MemberNumber !=undefined && MemberNumber !='') && IsMatchingMemberFound == true){						    
 						    		component.set("v.IsMemberNumberValid",true);
 						  		}
-						  else{
-						    	component.set("v.IsMemberNumberValid",false);
-						    }
+						 
+						
+                    	if((SSNNumber !=undefined && SSNNumber !='') && IsMatchingMemberFound == false) {						   
+	            			 	component.set("v.IsMemberNumberValid",false);
+						    	var MemberNumberDiv = document.getElementById('MemberNoDiv');
+						    	//MemberNumberDiv.className.replace("hidden"," ");
+						    	MemberNumberDiv.firstChild.removeAttribute('class');
+						  }
+						  else if((SSNNumber !=undefined && SSNNumber !='') && IsMatchingMemberFound == true){						    
+						    		component.set("v.IsMemberNumberValid",true);
+						  }
 						
 						component.set("v.ReLoadRequired", result.ReLoadRequired);
 						if(result.ReLoadRequired == true){
@@ -467,14 +489,17 @@
         var ReLoadRequired = component.get("v.ReLoadRequired");
         var IsUserSessionLoaded = component.get("v.IsUserSessionLoaded");
         var CFCUWalletComponent = component.find('CFCUWallet');
-        if(ReLoadRequired == undefined){
+        var IsMemberManualSearched = component.get("v.IsMemberManualSearched");
+        /*if(ReLoadRequired == undefined){
 			ReLoadRequired = false;
-		}
-        if(CFCUWalletComponent!=undefined)CFCUWalletComponent.CFCUWalletMethod(attribute1,ReLoadRequired, IsUserSessionLoaded);
-        
+		}*/
+        if(tabid == 'CFCUWalletTab'){
+        	//if(CFCUWalletComponent!=undefined)CFCUWalletComponent.CFCUWalletMethod(attribute1,ReLoadRequired, IsUserSessionLoaded, IsMemberManualSearched);
+        }
+        if(tabid == 'OTPTab'){
         var OTPComponent = component.find('OTPAuthentication');
-        if(OTPComponent!=undefined)OTPComponent.OTPMethod(attribute1,ReLoadRequired,IsUserSessionLoaded);
-        
+        //if(OTPComponent!=undefined)OTPComponent.OTPMethod(attribute1,ReLoadRequired,IsUserSessionLoaded);
+        }
     },
     
     GetAccountNumber : function (component, event, helper, memberid)
@@ -487,7 +512,7 @@
 	       	    if (component.isValid() && status === "SUCCESS") {
 	       	    	var result = response.getReturnValue(); 
                     
-		               if(result.AccountNumber.length > 0)
+		               if(result.AccountNumber != undefined && result.AccountNumber.length > 0)
 		               {
 	                       var MemberName = result.MemberName;
                                component.set("v.AccountNumber",result.AccountNumber);
@@ -572,7 +597,10 @@
 		                       var Source = '';
 		                       
 		                       if(IsMemberNumberValid == true){
-		                    	   	AccountNumber = component.get("v.MemberNumberEntered");
+		                    	   AccountNumber = component.get("v.MemberNumberEntered");
+                                   if(AccountNumber == undefined){
+                                       AccountNumber = component.get("v.MemberNumberFromURL");
+                                   }
 		                    	   	Source = "&source=member";
 		                       }
     		
@@ -794,6 +822,8 @@
 	                                    }
 	                                    else 
 	                                    {
+	                                    	ProgressBarStep2.classList.remove('three');
+	                                    	ProgressBarStep2.classList.remove('active');
 	                                    	ProgressBarStep2.classList.add('two');
 	                                    	
 	                                    }
@@ -815,6 +845,8 @@
 	                                    }
 	                                    else 
 	                                    {
+	                                    	ProgressBarStep3.classList.remove('three');
+	                                    	ProgressBarStep3.classList.remove('active');
 	                                    	ProgressBarStep3.classList.add('two');
 	                                    	
 	                                    }
@@ -963,6 +995,8 @@
 			                                    }
 			                                    else 
 			                                    {
+			                                    	ProgressBarStep2.classList.remove('three');
+			                                    	ProgressBarStep2.classList.remove('active');
 			                                    	ProgressBarStep2.classList.add('two');
 			                                    	
 			                                    }
@@ -984,6 +1018,8 @@
 			                                    }
 			                                    else 
 			                                    {
+			                                    	ProgressBarStep3.classList.remove('three');
+			                                    	ProgressBarStep3.classList.remove('active');
 			                                    	ProgressBarStep3.classList.add('two');
 			                                    }
 	                             }

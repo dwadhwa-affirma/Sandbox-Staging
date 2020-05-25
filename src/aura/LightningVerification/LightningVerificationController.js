@@ -1,14 +1,13 @@
 ({
 		doInit : function(component, event, helper) {
-			
+		component.set("v.CurrentAuthenticationLevel","Level 1");	
 		helper.doInit(component, event,helper);
 		var PhoneNumber = component.get("v.PhoneFromURL");
 	    var MemberNumber = component.get("v.MemberNumberFromURL");
 	    var SSNNumber = component.get("v.SSNFromURL");
 	    var IVRGUIDFromUrl =  component.get("v.IVRGUIDFromUrl");
 	    helper.getMemberSearch(component, event,PhoneNumber,MemberNumber,SSNNumber,IVRGUIDFromUrl);
-	  
-	   
+	    
 		},
 		
 		/*LocationUpdate : function(component, event, helper) {
@@ -465,9 +464,9 @@
 		var attribute1 = component.get('v.SelectedmemberId');
 		var PublicWalletComponent = component.find('PublicWallet');
 		var IsUserSessionLoaded = component.get("v.IsUserSessionLoaded");
-		if(ReLoadRequired == undefined){
+		/*if(ReLoadRequired == undefined){
 			ReLoadRequired = false;
-		}
+		}*/
 	    if(PublicWalletComponent!=undefined){
         	PublicWalletComponent.PublicWalletMethod(attribute1,ReLoadRequired, IsUserSessionLoaded);
         }
@@ -822,6 +821,8 @@ NavigateToMember : function(component , event, helper){
 	   component.set("v.PhoneNumberMatch",'');
 	   component.set("v.SSNnumberMatch",'');
 	   component.set("v.PINMatch",'');
+	   component.set("v.IsMemberManualSearched",false);
+	   component.set("v.MultipleMemberNumberAlert",'');
 	  // window.location.href = '/lightning/cmp/c__LightningVerification';
 	   
 	    
