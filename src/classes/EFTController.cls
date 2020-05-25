@@ -17,12 +17,12 @@ public class EFTController {
                     	activeStageIndex = (integer)eftstage.Order__c;
                 	}
                 }
-                for(EFT_Stages__c eftstage:EFTStages){
+               /* for(EFT_Stages__c eftstage:EFTStages){
                     if(eftstage.Order__c < activeStageIndex){
                         string dynamiclabel = eftstage.Stage_Action_Placeholder__c.replace('{{Action}}',EFTRecord[0].Action_Type__c);
                 		eftstage.Stage_Action__c = dynamiclabel;
                     }
-                }
+                }*/
                 
                 resultMap.put('EFT', EFTRecord);
                 
@@ -68,6 +68,7 @@ public class EFTController {
             return EFTRecord;
         }
         else{
+        	EFTRecordList[0].Stage__c =  EFTRecord.Stage__c;
             EFTRecordList[0].Share_Loan_Id__c =  EFTRecord.Share_Loan_Id__c;
             EFTRecordList[0].Share_Loan_Type__c =  EFTRecord.Share_Loan_Type__c;
             EFTRecordList[0].Share_Loan_Description__c =  EFTRecord.Share_Loan_Description__c;
