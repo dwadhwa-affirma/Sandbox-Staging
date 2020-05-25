@@ -3,7 +3,8 @@
     <aura:handler name="init" action="{!c.doInit}" value="{!this}" access="global" />
 	<aura:attribute name= "isApprovalVisible" type="string" />
     <aura:attribute name= "ApprovalStatus" type="string" />
-	<aura:attribute name="WiresBalance" type="String"/> 
+	<aura:attribute name="BalanceStatusCode" type="String"/> 
+	<aura:attribute name="BalanceRGLines" type="String"/>
 	<aura:attribute name="WiresCount" type="String"/> 
     <aura:attribute name= "AccountOpenfor45Days" type="string" />
     <aura:attribute name="IdentificationUsed" type="String"/>
@@ -13,7 +14,7 @@
     <aura:attribute name= "MobilePhoneStable" type="string" />
     <aura:attribute name="WiresObject" type="WIRES_Transaction__c"/> 
     
-  <aura:if isTrue="{!(v.isApprovalVisible == 'true')}">  
+    <aura:if isTrue="{!(v.isApprovalVisible == 'true')}">  
      <lightning:overlayLibrary aura:id="overlayLib"/>
     <div class="groupbtn-parent stagebar">		       
 		
@@ -24,5 +25,6 @@
         </div>
         
 		</div>
-    </aura:if>
+     </aura:if>    
+   
 </aura:component>

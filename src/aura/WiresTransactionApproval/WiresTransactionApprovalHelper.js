@@ -18,7 +18,8 @@
                component.set("v.isApprovalVisible",result.isApprovalVisible);
                component.set("v.ApprovalStatus",result.ApprovalStatus);
               // component.set("v.AccountOpenfor45Days",result.AccountOpenfor45Days);
-               component.set("v.WiresBalance",result.WiresBalance);
+               component.set("v.BalanceStatusCode",result.WiresBalance.StatusCode);
+                component.set("v.BalanceRGLines",result.WiresBalance.RGLines.trim());
 		       component.set("v.WiresCount",result.WiresCount); 
              //  component.set("v.IdentificationUsed",result.IdentificationUsed); 
              //  component.set("v.EmailStable",result.EmailStable); 
@@ -42,9 +43,10 @@
         var recId= component.get('v.recordId');       
         
         $A.createComponent("c:WiresApprovalReview", {recordId:recordId, AccountOpenfor45Days : component.get('v.AccountOpenfor45Days'),
-             					  WiresBalance : component.get('v.WiresBalance'),
+             					  BalanceStatusCode : component.get('v.BalanceStatusCode'),
+             					  BalanceRGLines : component.get('v.BalanceRGLines'),
              					  WiresCount : component.get('v.WiresCount'),
-                                                     WiresObject : component.get('v.WiresObject')},
+                                  WiresObject : component.get('v.WiresObject')},
                                                      
                                   //IdentificationUsed : component.get('v.IdentificationUsed'),
                                   //EmailStable : component.get('v.EmailStable'),
