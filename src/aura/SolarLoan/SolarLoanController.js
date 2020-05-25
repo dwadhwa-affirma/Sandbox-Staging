@@ -3,6 +3,10 @@
 		
 		var recordId = component.get("v.recordId");
 		helper.doInit(component, event,helper);
+		if(!window.location.hash){ 
+		   	window.location = window.location + '#loaded';
+		   	window.location.reload();
+		}
 	},
 	
 	MemberSolarStatusEvent : function(component, event, helper){

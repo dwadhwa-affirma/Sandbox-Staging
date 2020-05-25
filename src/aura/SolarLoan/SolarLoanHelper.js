@@ -4,7 +4,6 @@
     	var recordId = component.get("v.recordId");
     	helper.getSolarLoanData(component, event,helper,recordId);
     	
-    	
 	},
     
    getSolarLoanData : function(component, event,recordId){
@@ -20,6 +19,7 @@
 		action.setCallback(this, function (response) {
         	var status = response.getState();            
             if (component.isValid() && status === "SUCCESS") {
+            	
                 var result = response.getReturnValue();
                 
                 if(result.SolarCurrentStage != undefined){
@@ -31,8 +31,7 @@
                 else{
                 	Stage4ACHCheck = 'True';
                 }
-            }
-        	   
+              
         	var ProgressBarStep1 = document.getElementById('Step1');
         	var ProgressBarStep2 = document.getElementById('Step2');
 			var ProgressBarStep3 = document.getElementById('Step3');
@@ -132,11 +131,11 @@
 				ProgressBarStep6.classList.add('active');
 				ProgressBarStep7.classList.add('active');
 			}
-			            
-            $A.get('e.force:refreshView').fire();
-        });	
-       $A.enqueueAction(action);
-	
+		    $A.get('e.force:refreshView').fire();
+		  
+        }
+    });	
+    $A.enqueueAction(action);
 	
 	}
 })
