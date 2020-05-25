@@ -14,6 +14,7 @@
         	component.set("v.ActionDisabled",true);    
             childRadio.classList.add('disable');
             component.set("v.EFTRecord.Action_Type__c",'Create');
+            component.set("v.EFTRecord.Stage__c",'Action');
         }
         
         var evt = $A.get("e.c:EFTEvent");
