@@ -46,7 +46,7 @@
                          <aura:if isTrue="{!v.isLoan}">
 	    					<force:inputField value="{!v.EFTRecord.Frequency__c}"> </force:inputField>
                          <aura:set attribute="else">
-                         <lightning:input value="Monthly" readonly="true" />
+                         <lightning:input value="{!v.EFTRecord.Frequency__c}" disabled="true" />
                         </aura:set>
                         </aura:if>
 	    				 <ul class='has-error uiInputDefaultError uiInput uiInputSelect uiInput--default uiInput--select' id='FrequencyError' style='display:none;'>
