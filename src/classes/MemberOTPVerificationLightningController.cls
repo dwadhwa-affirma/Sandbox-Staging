@@ -814,6 +814,7 @@ public class MemberOTPVerificationLightningController
                         wcwList.add(var.Comment_Block_20__c);
                     }
                 }
+                RecordType rec = GetRecordTypeData('Authenticated_Log__c', 'OTP Authentication Log');
                 if (wcwList.size() > 0)
                 {
                     for (string str : wcwList)
@@ -829,16 +830,59 @@ public class MemberOTPVerificationLightningController
                             log.Staff_Name__c = UserInfo.getName();
                             log.Current_User__c = Userinfo.getuserid();
                             log.Decision__c = 'OTP – Not Eligible';
+                            log.OTP_Decision__c = 'OTP – Not Eligible';
                             log.Member_Number__c = AccountNumber;
                             log.GUID__c = GUID;
                             log.IVR_GUID__c = IVRGUIDFromUrl;
+                            log.RecordTypeId= rec.id;
                             insert log;
                             acc.Member_Verification_OTP_Invalid_Attempt__c = system.now();
                             update acc;
                             System.Debug('not eligible---' + acc.id);
 
                             IsIneligibleLocal = 'true';
-
+							
+							RecordType rec1 = GetRecordTypeData('Authenticated_Log__c', 'Master Authentication Log');
+       
+						     List<Authenticated_Log__c> MasterAuthenticationLog = GetDataForMasterAuthenticationLog(IVRGUIDFromUrl, rec1.id);
+						     if(MasterAuthenticationLog.size() == 0)
+						     {
+						     	
+						     	 Authenticated_Log__c log2 = new Authenticated_Log__c();
+	                            log2.SalesforceID__c = acc.Id;
+	                            log2.Member__c = acc.Id;
+	                            log2.First_Name__c = acc.FirstName;
+	                            log2.Last_Name__c = acc.LastName;
+	                            log2.Staff_Name__c = UserInfo.getName();
+	                            log2.Current_User__c = Userinfo.getuserid();
+	                            log2.Decision__c = 'OTP – Not Eligible';
+	                            log2.OTP_Decision__c = 'OTP – Not Eligible';
+	                            log2.Member_Number__c = AccountNumber;
+	                            log2.GUID__c = GUID;
+	                            log2.IVR_GUID__c = IVRGUIDFromUrl;
+	                            log2.RecordtypeId = rec1.id;
+	                            insert log;
+	                           						     	
+						     }
+						     else{
+						     	
+						     	MasterAuthenticationLog[0].SalesforceID__c = acc.Id;
+	                            MasterAuthenticationLog[0].Member__c = acc.Id;
+	                            MasterAuthenticationLog[0].First_Name__c = acc.FirstName;
+	                            MasterAuthenticationLog[0].Last_Name__c = acc.LastName;
+	                            MasterAuthenticationLog[0].Staff_Name__c = UserInfo.getName();
+	                            MasterAuthenticationLog[0].Current_User__c = Userinfo.getuserid();
+	                            MasterAuthenticationLog[0].Decision__c = 'OTP – Not Eligible';
+	                            MasterAuthenticationLog[0].OTP_Decision__c = 'OTP – Not Eligible';
+	                            MasterAuthenticationLog[0].Member_Number__c = AccountNumber;
+	                            MasterAuthenticationLog[0].GUID__c = GUID;
+	                            update MasterAuthenticationLog[0];
+						     	
+						     }
+							
+							
+							
+							
                         }
                     }
                 }
@@ -874,6 +918,7 @@ public class MemberOTPVerificationLightningController
     @auraenabled
       public static void DeclineOTPAtFirstStep(string accid, String GUID, string IVRGUIDFromUrl)
     {
+    	RecordType rec = GetRecordTypeData('Authenticated_Log__c', 'OTP Authentication Log');
     	MemberOTPVerificationLightningController objMVLC = new MemberOTPVerificationLightningController();
         Account acc = objMVLC.GetAccount(accid);
         string  AccountNumber;
@@ -887,10 +932,11 @@ public class MemberOTPVerificationLightningController
 		log.Member__c = acc.Id;
         log.First_Name__c = acc.FirstName;
         log.Last_Name__c = acc.LastName;
-
+		log.RecordTypeId= rec.id;
         log.Staff_Name__c = UserInfo.getName();
         log.Current_User__c = Userinfo.getuserid();
         log.Decision__c = 'OTP – Contact Unconfirmed';
+        log.OTP_Decision__c = 'OTP – Contact Unconfirmed';
         log.OTP_Status__c = 'Fail';
         log.Member_Number__c = AccountNumber;
         log.GUID__c = GUID;
@@ -898,6 +944,43 @@ public class MemberOTPVerificationLightningController
         insert log;
         acc.Member_Verification_OTP_Invalid_Attempt__c = system.now();
         update acc;
+        RecordType rec1 = GetRecordTypeData('Authenticated_Log__c', 'Master Authentication Log');
+       
+		 List<Authenticated_Log__c> MasterAuthenticationLog = GetDataForMasterAuthenticationLog(IVRGUIDFromUrl, rec1.id);
+		 if(MasterAuthenticationLog.size() == 0)
+		 {
+		 	Authenticated_Log__c log2 = new Authenticated_Log__c();
+	        log2.SalesforceID__c = acc.Id;
+	        log2.RecordTypeid = rec1.id;
+			log2.Member__c = acc.Id;
+	        log2.First_Name__c = acc.FirstName;
+	        log2.Last_Name__c = acc.LastName;
+	        log2.Staff_Name__c = UserInfo.getName();
+	        log2.Current_User__c = Userinfo.getuserid();
+	        log2.Decision__c = 'OTP – Contact Unconfirmed';
+	        log2.OTP_Decision__c = 'OTP – Contact Unconfirmed';
+	        log2.OTP_Status__c = 'Fail';
+	        log2.Member_Number__c = AccountNumber;
+	        log2.GUID__c = GUID;
+	        log2.IVR_GUID__c = IVRGUIDFromUrl;
+	        insert log2;
+		 }else{
+			 	MasterAuthenticationLog[0].SalesforceID__c = acc.Id;
+				MasterAuthenticationLog[0].Member__c = acc.Id;
+		        MasterAuthenticationLog[0].First_Name__c = acc.FirstName;
+		        MasterAuthenticationLog[0].Last_Name__c = acc.LastName;
+		        MasterAuthenticationLog[0].Staff_Name__c = UserInfo.getName();
+		        MasterAuthenticationLog[0].Current_User__c = Userinfo.getuserid();
+		        MasterAuthenticationLog[0].Decision__c = 'OTP – Contact Unconfirmed';
+		        MasterAuthenticationLog[0].OTP_Decision__c = 'OTP – Contact Unconfirmed';
+		        MasterAuthenticationLog[0].OTP_Status__c = 'Fail';
+		        MasterAuthenticationLog[0].Member_Number__c = AccountNumber;
+		        MasterAuthenticationLog[0].GUID__c = GUID;
+		        update MasterAuthenticationLog[0];
+		 }
+        
+        
+        
     }
     private static void SaveNoContactInfoLog(Account acc)
     {
@@ -922,7 +1005,7 @@ public class MemberOTPVerificationLightningController
 		
         upsert log;
         log.Decision__c = 'OTP - No Contact Info';
-       
+        log.OTP_Decision__c = 'OTP - No Contact Info';
         update log;
 
 
@@ -969,7 +1052,7 @@ public class MemberOTPVerificationLightningController
     @auraenabled
     public static KeyValuePairModel GenerateRandomOTP(string fieldName, string BrandName, string resend, string accid, String GUID, string IVRGUIDFromUrl)
      {
-
+	    RecordType rec = GetRecordTypeData('Authenticated_Log__c', 'OTP Authentication Log');
 		system.debug('AccountId in GenerateRandomOTP---' + accid);
         List<String> listStr = fieldName.split(' - ');
         string field = listStr[0];
@@ -1044,6 +1127,7 @@ public class MemberOTPVerificationLightningController
 		system.debug('Lastname in GenerateRandomOTP ---' + acc.LastName);
          Authenticated_Log__c log = new Authenticated_Log__c();
          log.SalesforceID__c = acc.Id;
+         log.RecordTypeId= rec.id;
          log.Member__c = acc.Id;
          log.First_Name__c = acc.FirstName;
          log.Last_Name__c = acc.LastName;
@@ -1064,15 +1148,92 @@ public class MemberOTPVerificationLightningController
          {
 
              log.Decision__c = 'OTP – Code Resent';
-
+			 log.OTP_Decision__c = 'OTP – Code Resent';
 
          }
          else
          {
              log.Decision__c = 'OTP – Code Sent';
+             log.OTP_Decision__c = 'OTP – Code Sent';
          }
          system.debug('Log to be inserted in GenerateRandomOTP---' + log);
        insert log;
+        RecordType rec1 = GetRecordTypeData('Authenticated_Log__c', 'Master Authentication Log');
+       
+		 List<Authenticated_Log__c> MasterAuthenticationLog = GetDataForMasterAuthenticationLog(IVRGUIDFromUrl, rec1.id);
+		 if(MasterAuthenticationLog.size() == 0)
+		 {
+		 		Authenticated_Log__c log2 = new Authenticated_Log__c();
+		         log2.SalesforceID__c = acc.Id;
+		         log2.RecordTypeId= rec1.id;
+		         log2.Member__c = acc.Id;
+		         log2.First_Name__c = acc.FirstName;
+		         log2.Last_Name__c = acc.LastName;
+		         log2.Staff_Name__c = UserInfo.getName();
+		         log2.Current_User__c = Userinfo.getuserid();
+		         log2.GUID__c = GUID;
+		         log2.IVR_GUID__c = IVRGUIDFromUrl;
+		         log2.Member_Number__c = AccountNumber;
+		         if(IsEmail)
+		         {
+		           log2.OTP_Email__c = email;
+		         }
+		         else
+		         {
+		             log2.OTP_Phone__c = phone;
+		         }
+		         if(resend == 'true')
+		         {
+		
+		             log2.Decision__c = 'OTP – Code Resent';
+					 log2.OTP_Decision__c = 'OTP – Code Resent';
+		
+		         }
+		         else
+		         {
+		             log2.Decision__c = 'OTP – Code Sent';
+		             log2.OTP_Decision__c = 'OTP – Code Sent';
+		         }
+		         system.debug('Log to be inserted in GenerateRandomOTP---' + log2);
+		       insert log2;
+		 	
+		 }else{
+		 	
+		 	
+		 		 MasterAuthenticationLog[0].SalesforceID__c = acc.Id;
+		         MasterAuthenticationLog[0].RecordTypeId= rec1.id;
+		         MasterAuthenticationLog[0].Member__c = acc.Id;
+		         MasterAuthenticationLog[0].First_Name__c = acc.FirstName;
+		         MasterAuthenticationLog[0].Last_Name__c = acc.LastName;
+		         MasterAuthenticationLog[0].Staff_Name__c = UserInfo.getName();
+		         MasterAuthenticationLog[0].Current_User__c = Userinfo.getuserid();
+		         MasterAuthenticationLog[0].GUID__c = GUID;
+		         MasterAuthenticationLog[0].IVR_GUID__c = IVRGUIDFromUrl;
+		         MasterAuthenticationLog[0].Member_Number__c = AccountNumber;
+		         if(IsEmail)
+		         {
+		           MasterAuthenticationLog[0].OTP_Email__c = email;
+		         }
+		         else
+		         {
+		             MasterAuthenticationLog[0].OTP_Phone__c = phone;
+		         }
+		         if(resend == 'true')
+		         {
+		
+		             MasterAuthenticationLog[0].Decision__c = 'OTP – Code Resent';
+					 MasterAuthenticationLog[0].OTP_Decision__c = 'OTP – Code Resent';
+		
+		         }
+		         else
+		         {
+		             MasterAuthenticationLog[0].Decision__c = 'OTP – Code Sent';
+		             MasterAuthenticationLog[0].OTP_Decision__c = 'OTP – Code Sent';
+		         }
+		 		update MasterAuthenticationLog[0];
+		 }
+       
+       
        system.debug('keyvaluemodel4---' + keyvaluemodel );
 		return keyvaluemodel;
 
@@ -1082,6 +1243,7 @@ public class MemberOTPVerificationLightningController
 	@auraenabled
     public static string verifyOTP(string accid, string EnteredOTP, string fieldName, string model, String GUID,string IVRGUIDFromUrl)
     {
+    	RecordType rec = GetRecordTypeData('Authenticated_Log__c', 'OTP Authentication Log');
     	system.debug('AccountId in verifyOTP---' + accid);
     	system.debug('--verify OTP start--');
     	string fieldValue = fieldName;
@@ -1154,6 +1316,7 @@ public class MemberOTPVerificationLightningController
         Long seconds = milliseconds / 1000;
         Authenticated_Log__c log = new Authenticated_Log__c();
         log.SalesforceID__c = acc.Id;
+        log.RecordTypeId =  rec.id;
         log.Member__c = acc.Id;
         log.First_Name__c = acc.FirstName;
         log.Last_Name__c = acc.LastName;
@@ -1178,7 +1341,7 @@ public class MemberOTPVerificationLightningController
             acc.Member_Verification_OTP_Invalid_Attempt__c = system.now();
             update acc;
             log.Decision__c = 'OTP – Code Expired';
-           
+            log.OTP_Decision__c = 'OTP – Code Expired';
         
         }
         else if(EnteredOTP == RandomNumber)
@@ -1186,6 +1349,7 @@ public class MemberOTPVerificationLightningController
             //acc.Member_Verification_OTP_Invalid_Attempt__c = null;
             //update acc;
             log.Decision__c = 'OTP – Code Valid';
+            log.OTP_Decision__c = 'OTP – Code Valid';
             log.OTP_Status__c = 'Pass';
             Verified = 'Valid';
         }
@@ -1194,12 +1358,104 @@ public class MemberOTPVerificationLightningController
             acc.Member_Verification_OTP_Invalid_Attempt__c = system.now();
             update acc;
             log.Decision__c = 'OTP – Code Failed';
+            log.OTP_Decision__c = 'OTP – Code Failed';
             log.OTP_Status__c = 'Fail';
             Verified = 'Invalid';
         }
         
         system.debug('Log to be inserted in verifyOTP---' + log);
         insert log;
+        
+         RecordType rec1 = GetRecordTypeData('Authenticated_Log__c', 'Master Authentication Log');
+       
+		 List<Authenticated_Log__c> MasterAuthenticationLog = GetDataForMasterAuthenticationLog(IVRGUIDFromUrl, rec1.id);
+		 if(MasterAuthenticationLog.size() == 0)
+		 {
+		 	  	Authenticated_Log__c log2 = new Authenticated_Log__c();
+		        log2.SalesforceID__c = acc.Id;
+		        log2.RecordTypeId =  rec1.id;
+		        log2.Member__c = acc.Id;
+		        log2.First_Name__c = acc.FirstName;
+		        log2.Last_Name__c = acc.LastName;
+		        log2.GUID__c = GUID;
+		        log2.IVR_GUID__c = IVRGUIDFromUrl;
+		        log2.Member_Number__c = AccountNumber;
+		        if(IsEmail)
+		        {
+		          log2.OTP_Email__c = email;
+		        }
+		        else
+		        {
+		            log2.OTP_Phone__c = phone;
+		        }
+		        log2.Staff_Name__c = UserInfo.getName();
+		        log2.Current_User__c = Userinfo.getuserid();
+		        if(seconds >= OTPExpiresAfterSeconds)
+		        {
+		            log2.Decision__c = 'OTP – Code Expired';
+		            log2.OTP_Decision__c = 'OTP – Code Expired';
+		        
+		        }
+		        else if(EnteredOTP == RandomNumber)
+		        {
+		            log2.Decision__c = 'OTP – Code Valid';
+		            log2.OTP_Decision__c = 'OTP – Code Valid';
+		            log2.OTP_Status__c = 'Pass';
+		        }
+		        else
+		        {
+		            log2.Decision__c = 'OTP – Code Failed';
+		            log2.OTP_Decision__c = 'OTP – Code Failed';
+		            log2.OTP_Status__c = 'Fail';
+		        }
+		        
+		        system.debug('Log to be inserted in verifyOTP---' + log);
+		        insert log2;
+		 }else{
+		 	
+		 		MasterAuthenticationLog[0].SalesforceID__c = acc.Id;
+		        MasterAuthenticationLog[0].Member__c = acc.Id;
+		        MasterAuthenticationLog[0].First_Name__c = acc.FirstName;
+		        MasterAuthenticationLog[0].Last_Name__c = acc.LastName;
+		        MasterAuthenticationLog[0].GUID__c = GUID;
+		        MasterAuthenticationLog[0].Member_Number__c = AccountNumber;
+		        if(IsEmail)
+		        {
+		          MasterAuthenticationLog[0].OTP_Email__c = email;
+		        }
+		        else
+		        {
+		            MasterAuthenticationLog[0].OTP_Phone__c = phone;
+		        }
+		        MasterAuthenticationLog[0].Staff_Name__c = UserInfo.getName();
+		        MasterAuthenticationLog[0].Current_User__c = Userinfo.getuserid();
+		        if(seconds >= OTPExpiresAfterSeconds)
+		        {
+		            MasterAuthenticationLog[0].Decision__c = 'OTP – Code Expired';
+		            MasterAuthenticationLog[0].OTP_Decision__c = 'OTP – Code Expired';
+		        
+		        }
+		        else if(EnteredOTP == RandomNumber)
+		        {
+		            MasterAuthenticationLog[0].Decision__c = 'OTP – Code Valid';
+		            MasterAuthenticationLog[0].OTP_Decision__c = 'OTP – Code Valid';
+		            MasterAuthenticationLog[0].OTP_Status__c = 'Pass';
+		        }
+		        else
+		        {
+		            MasterAuthenticationLog[0].Decision__c = 'OTP – Code Failed';
+		            MasterAuthenticationLog[0].OTP_Decision__c = 'OTP – Code Failed';
+		            MasterAuthenticationLog[0].OTP_Status__c = 'Fail';
+		        }
+		        
+		        system.debug('Log to be inserted in verifyOTP---' + log);
+		        update MasterAuthenticationLog[0];
+		 }
+        
+        
+        
+        
+        
         return Verified;
         
     }
@@ -1454,9 +1710,10 @@ public class MemberOTPVerificationLightningController
             email = acc.Alternate_Email__pc;
             IsEmail = true;
         }		
-		
+		RecordType rec = GetRecordTypeData('Authenticated_Log__c', 'OTP Authentication Log');
 		Authenticated_Log__c log = new Authenticated_Log__c();
         log.SalesforceID__c = acc.Id;
+        log.RecordtypeId = rec.Id;
         log.Member__c = acc.Id;
         log.First_Name__c = acc.FirstName;
         log.Last_Name__c = acc.LastName;
@@ -1471,12 +1728,65 @@ public class MemberOTPVerificationLightningController
         log.Staff_Name__c = UserInfo.getName();
         log.Current_User__c = Userinfo.getuserid();
 		log.Decision__c = 'OTP – Code Not Provided';
+		log.OTP_Decision__c = 'OTP – Code Not Provided';
 		log.GUID__c = GUID;
 		log.IVR_GUID__c = IVRGUIDFromUrl; 
 		log.Member_Number__c = AccountNumber;
 		insert log;			
 		acc.Member_Verification_OTP_Invalid_Attempt__c = system.now();
         update acc;
+        RecordType rec1 = GetRecordTypeData('Authenticated_Log__c', 'Master Authentication Log');
+       
+		 List<Authenticated_Log__c> MasterAuthenticationLog = GetDataForMasterAuthenticationLog(IVRGUIDFromUrl, rec1.id);
+		 if(MasterAuthenticationLog.size() == 0)
+		 {
+		 	Authenticated_Log__c log2 = new Authenticated_Log__c();
+	        log2.SalesforceID__c = acc.Id;
+	        log2.recordTypeId = rec1.id;
+	        log2.Member__c = acc.Id;
+	        log2.First_Name__c = acc.FirstName;
+	        log2.Last_Name__c = acc.LastName;
+	        if(IsEmail)
+	        {
+	          log2.OTP_Email__c = email;
+	        }
+	        else
+	        {
+	            log2.OTP_Phone__c = phone;
+	        }
+	        log2.Staff_Name__c = UserInfo.getName();
+	        log2.Current_User__c = Userinfo.getuserid();
+			log2.Decision__c = 'OTP – Code Not Provided';
+			log2.OTP_Decision__c = 'OTP – Code Not Provided';
+			log2.GUID__c = GUID;
+			log2.IVR_GUID__c = IVRGUIDFromUrl; 
+			log2.Member_Number__c = AccountNumber;
+			insert log2;	
+		 }else
+		 {
+		 	MasterAuthenticationLog[0].SalesforceID__c = acc.Id;
+	        MasterAuthenticationLog[0].recordTypeId = rec1.id;
+	        MasterAuthenticationLog[0].Member__c = acc.Id;
+	        MasterAuthenticationLog[0].First_Name__c = acc.FirstName;
+	        MasterAuthenticationLog[0].Last_Name__c = acc.LastName;
+	        if(IsEmail)
+	        {
+	          MasterAuthenticationLog[0].OTP_Email__c = email;
+	        }
+	        else
+	        {
+	            MasterAuthenticationLog[0].OTP_Phone__c = phone;
+	        }
+	        MasterAuthenticationLog[0].Staff_Name__c = UserInfo.getName();
+	        MasterAuthenticationLog[0].Current_User__c = Userinfo.getuserid();
+			MasterAuthenticationLog[0].Decision__c = 'OTP – Code Not Provided';
+			MasterAuthenticationLog[0].OTP_Decision__c = 'OTP – Code Not Provided';
+			MasterAuthenticationLog[0].GUID__c = GUID;
+			MasterAuthenticationLog[0].IVR_GUID__c = IVRGUIDFromUrl; 
+			MasterAuthenticationLog[0].Member_Number__c = AccountNumber;
+		 	update MasterAuthenticationLog[0];
+		 }
+        
         
         return OTPAttemptCount; 
 	}
@@ -1497,44 +1807,116 @@ public class MemberOTPVerificationLightningController
 	@AuraEnabled
     
    
-     public static map<string,object> GetOTPLogForReload(string memberid, string IVRGUIDFromUrl, boolean IsUserSessionLoaded)
+     public static map<string,object> GetOTPLogForReload(string memberid, string IVRGUIDFromUrl, boolean IsUserSessionLoaded, boolean IsReLoadRequired)
      {
+     	system.debug('IVRGUIDFromUrl##' + IVRGUIDFromUrl);
+     	system.debug('IsUserSessionLoaded##' + IsUserSessionLoaded);
+     	system.debug('IsReLoadRequired##' + IsReLoadRequired);
      	map<string,object> resultLog = new map<string,object>();
      	integer minutes = GetMemberAuthenticationSessionTime();
      	string Verified;
      	String CurrentUser = UserInfo.getUserId();
      	RecordType OTPRec = [select Id,Name,SobjectType from RecordType where Name ='OTP Authentication Log' and SobjectType='Authenticated_Log__c' limit 1];
      	List<Authenticated_Log__c> OTPLogData = new List<Authenticated_Log__c>();
-     	if(IsUserSessionLoaded == true){
-     		OTPLogData = [SELECT ID, Decision__c, OTP_Email__c,OTP_Phone__c,OTP_Status__c
-					 FROM Authenticated_Log__c where SalesforceID__c =:memberid AND Current_User__c=: CurrentUser AND  IVR_GUID__c =:IVRGUIDFromUrl and RecordTypeId=: OTPRec.Id order by createddate desc];
+     	OTPLogData = [SELECT ID, Decision__c, OTP_Email__c,OTP_Phone__c,OTP_Status__c
+							 FROM Authenticated_Log__c where SalesforceID__c =:memberid and RecordTypeId=: OTPRec.Id and createddate =today];
+     	system.debug('OTPLogDataSize##' + OTPLogData.size());
+     	if(OTPLogData.size() == 0)
+     	{
+     		//return resultLog;
+     	}else{
      		
-     	}else if(IsUserSessionLoaded == false){
-     				 OTPLogData = [SELECT ID, Decision__c, OTP_Email__c,OTP_Phone__c,OTP_Status__c
-					 FROM Authenticated_Log__c where SalesforceID__c =:memberid AND CreatedDate >=: Datetime.now().addMinutes(minutes) and IVR_GUID__c =:IVRGUIDFromUrl and RecordTypeId=: OTPRec.Id];
+     		if(IsUserSessionLoaded == false && IsReLoadRequired == false)
+     		{
+     			OTPLogData = [SELECT ID, Decision__c, OTP_Email__c,OTP_Phone__c,OTP_Status__c
+					 FROM Authenticated_Log__c where SalesforceID__c =:memberid AND CreatedDate = today  and RecordTypeId=: OTPRec.Id and Decision__c = 'OTP – Code Failed'];
+				for(Authenticated_Log__c log: OTPLogData)
+		        {	        	
+		        	if(log.Decision__c == 'OTP – Code Failed')
+		        	{
+		        		Verified = 'Invalid';
+		        	}
+		        }
+		        resultLog.put('Verified', Verified);          			  
+	     		
+     		}
+     		else if(IsUserSessionLoaded == true && IsReLoadRequired == false){
+     			
+     				OTPLogData = [SELECT ID, Decision__c, OTP_Email__c,OTP_Phone__c,OTP_Status__c
+							 FROM Authenticated_Log__c where SalesforceID__c =:memberid AND Current_User__c=: CurrentUser AND  IVR_GUID__c =:IVRGUIDFromUrl and RecordTypeId=: OTPRec.Id order by createddate desc];
+							 system.debug('OTPLogData1##' + OTPLogData);
+					for(Authenticated_Log__c log: OTPLogData)
+			        {
+			        	if(log.Decision__c == 'OTP – Code Expired')
+			        	{
+			        		Verified = 'Expired';
+			        	}
+			        	if( log.Decision__c == 'OTP – Code Valid')
+			        	{
+			        		 Verified = 'Valid';
+			        	}
+			        	if(log.Decision__c == 'OTP – Code Failed')
+			        	{
+			        		Verified = 'Invalid';
+			        	}
+			        }
+			        resultLog.put('Verified', Verified);
+		            system.debug('OTPLogData2##' + OTPLogData);		  
+		     		
+     		}
+     		else if(IsUserSessionLoaded == false && IsReLoadRequired == true){
+     			 	OTPLogData = [SELECT ID, Decision__c, OTP_Email__c,OTP_Phone__c,OTP_Status__c
+							 FROM Authenticated_Log__c where SalesforceID__c =:memberid AND CreatedDate >=: Datetime.now().addMinutes(minutes) and IVR_GUID__c =:IVRGUIDFromUrl and RecordTypeId=: OTPRec.Id];
+					if(OTPLogData.size()==0)
+					{
+						OTPLogData = [SELECT ID, Decision__c, OTP_Email__c,OTP_Phone__c,OTP_Status__c
+							 FROM Authenticated_Log__c where SalesforceID__c =:memberid AND CreatedDate >=: Datetime.now().addMinutes(minutes) and RecordTypeId=: OTPRec.Id];
+					}
+					for(Authenticated_Log__c log: OTPLogData)
+				        {
+				        	if(log.Decision__c == 'OTP – Code Expired')
+				        	{
+				        		Verified = 'Expired';
+				        	}
+				        	if( log.Decision__c == 'OTP – Code Valid')
+				        	{
+				        		 Verified = 'Valid';
+				        	}
+				        	if(log.Decision__c == 'OTP – Code Failed')
+				        	{
+				        		Verified = 'Invalid';
+				        	}
+				        }
+				        resultLog.put('Verified', Verified);
+			          	 system.debug('OTPLogData3##' + OTPLogData);		  
+			     		
+     		}
+     		system.debug('resultLog##' + resultLog);
+     		//return resultLog; 
      	}
-	        for(Authenticated_Log__c log: OTPLogData)
-	        {
-	        	if(log.Decision__c == 'OTP – Code Expired')
-	        	{
-	        		Verified = 'Expired';
-	        	}
-	        	if( log.Decision__c == 'OTP – Code Valid')
-	        	{
-	        		 Verified = 'Valid';
-	        	}
-	        	if(log.Decision__c == 'OTP – Code Failed')
-	        	{
-	        		Verified = 'Invalid';
-	        	}
-	        }
-	        resultLog.put('Verified', Verified);
-          			  
-     	return resultLog;
+     	system.debug('resultLog##' + resultLog);
+    	return resultLog;
      }
-     
-     
-     
 	
-
+ 	@AuraEnabled
+ 	
+     public static RecordType GetRecordTypeData(string sobjecttype, string RecordTypeName )
+     {
+     	RecordType rec = [Select id, Name, sobjecttype from RecordType where sobjecttype=: sobjecttype and Name=:RecordTypeName];
+     	return rec;
+     }
+    @AuraEnabled
+     public static List<Authenticated_Log__c> GetDataForMasterAuthenticationLog(string IVRGuid, Id RecordTypeId )
+     {
+     	List<Authenticated_Log__c> AuthLog = [Select Id, Name, RecordTypeId, IVR_Sent_URL__c,CallerPhoneNumber__c,EnteredMemberNumber__c,EnteredSSN__c, Failed_Desired_Level__c,
+     	EnteredCardNumber__c,CardNumberMatch__c,PhoneNumberMatch__c, MemberNumberMatch__c, SSNnumberMatch__c,
+		IVR_SSN__c,IVR_Card_Number__c,IVR_Member_Number__c,IVR_Member_Number_Match__c,IVR_SSN_Match__c,IVR_Card_Match__c,
+		IVR_Pin_Match__c,PINMatch__c,HP_HV__c,IVR_Code__c,
+     	Override_Request_Supervisor__c,Override_Supervisor__c,Override_Request_Type__c,
+     	OOW_Status__c,OOW_Member_Number__c,OOW_Reason__c,OOW_Notes__c,First_Name__c,Last_Name__c,
+     	Public_Wallet_Status__c,DOBMatch__c,IdNumberMatch__c,MMNMatch__c,EmailMatch__c,Additional_Token_Option3_Match__c,
+     	CFCU_Wallet_Status__c,BeneficiaryDetailMatch__c,Joint_OwnerDetailsMatch__c,Additional_Token_Option1_Match__c,Additional_Token_Option2_Match__c,Loan_Detail_Match__c,
+     	Decision__c,SalesforceID__c,Member__c,Member_Number__c,Staff_Name__c,Current_User__c,GUID__c,IVR_GUID__c from Authenticated_Log__c where IVR_GUID__c= :IVRGuid and RecordTypeId=:RecordTypeId];
+     	return AuthLog;
+     } 
 }
