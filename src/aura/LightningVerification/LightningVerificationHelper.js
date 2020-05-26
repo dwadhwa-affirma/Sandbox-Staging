@@ -366,8 +366,9 @@
 							else{
 								component.set("v.LevelModel",null);	
 							}
-						
-						document.getElementById('frmMemberNumber').value = result['AccountNumber']; 
+						if(result['AccountNumber'] != undefined){
+							document.getElementById('frmMemberNumber').value = result['AccountNumber']; 
+						}
 						component.set("v.isDoneRendering",true);
 	              	
                   }
