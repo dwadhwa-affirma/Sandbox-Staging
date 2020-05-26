@@ -19,7 +19,7 @@ public class EFTToSyimtar {
     public static String jsonData;  
     public static HttpRequest req = new HttpRequest();
     public static String result;
-    public static List<EFT__c> SolarLoanToUpdate = new List<EFT__c>();
+    public static List<EFT__c> EFTRecordsToUpdate = new List<EFT__c>();
     
     @future(callout=true)
     public static void insertEFTs(Set<id> ids){
@@ -27,27 +27,30 @@ public class EFTToSyimtar {
     List<EFT__c> EFTlist = new List<EFT__c>();         
     List<EFT__c> EFTs = [SELECT Account_Number__c,Action_Type__c,Alternate_Amount__c,Bank_Name__c,
                          CreatedById,CreatedDate,Day_of_Month__c,DocuSignId__c,Effective_Date__c,
-                         Frequency__c,Id,IsDeleted,LastViewedDate,Member_Account__c,Member__c,Name,
+                         Frequency__c,Id,IsDeleted,LastViewedDate,Member_Account__c,Member_Account__r.Brand__c,Member__c,Name,
                          OwnerId,Payment_Amount__c,Routing_Number__c,Share_Loan_Id__c,Stage__c,
-                         Status__c,Type__c FROM EFT__c where id =: ids];
+                         Status__c,Type__c, EFT_ID_Type__c FROM EFT__c where id =: ids];
     
     		for(EFT__c e : EFTs){
                 
             	EFTType = '3';
-                if(e.Type__c == 'Savings Account')
+                if(e.Type__c == 'Savings')
                 	AmountCode = '37' ;
                 else
                     AmountCode = '27';
                		
-               /*	if(e.Brand__c == 'Spectrum')
+               	if(e.Member_Account__r.Brand__c == 'Spectrum')
                 	GroupNumber = '000006' ;
-               	else if(e.Brand__c == 'Chevron')
+               	else if(e.Member_Account__r.Brand__c == 'Chevron')
                		GroupNumber = '000001';
                	else
-                    GroupNumber = ' '; */
+                    GroupNumber = ' '; 
                
-              	IDType = '1';
-                //ID = e.Loan_Id__C;
+              	if(e.EFT_ID_Type__c == 'Share')
+              		IDType = '0';
+              	else if(e.EFT_ID_Type__c == 'Loan')
+              		IDType = '1';
+                ID = e.Share_Loan_Id__c;
                	Frequency = '4';
                	
                	if(e.Effective_Date__c != null){
@@ -67,11 +70,11 @@ public class EFTToSyimtar {
             	}
             	
                 if(e.Alternate_Amount__c != null)
-                	PostAmount = String.ValueOf(e.Alternate_Amount__c);
+                	PostAmount = String.ValueOf(e.Payment_Amount__c);
                 else
                 	PostAmount = '0.00';
-                Payee = e.Routing_Number__c;
-                Reference = e.Routing_Number__c ;
+                Payee = e.Routing_Number__c.leftPad(10,'0');
+                Reference = e.Account_Number__c ;
                 if(e.Bank_Name__c != null){
                 	MatchID3 = e.Bank_Name__c;
                 	if(MatchID3.length() > 22){
@@ -112,27 +115,28 @@ public class EFTToSyimtar {
 		    	result = String.valueOf(result).substringBefore('",');
 		    	System.debug('EFTLocator' + result);
 		    	
-		    	/*if(result == null || result == ''){
+		    	if(result == null || result == ''){
 	            		
 	        		ErrorEFTLocator = String.valueOf(responseBody).substringAfter('[MessageId=TESTING] ');
 	        		ErrorEFTLocator = String.valueOf(ErrorEFTLocator).substringBefore('","ErrorDetails"');
 	        		system.debug('ErrorEFTLocator' + ErrorEFTLocator);
 	        	}
 		    	
-            	EFT__c s = new EFT__c();         
+            	//EFT__c s = new EFT__c();         
                 
                 if(result != null && result != '')
-                	s.EftLocator__c = result;
+                	e.EftLocator__c = result;
                 
                 if(ErrorEFTLocator != null && ErrorEFTLocator != '')
-                	s.Error_EftLocator__c = ErrorEFTLocator;
+                	e.Error_EftLocator__c = ErrorEFTLocator;
                 else
-                	s.Error_EftLocator__c = '';	
-                s.id = sl.Id;                      
-                SolarLoanToUpdate.add(s);  */
+                	e.Error_EftLocator__c = '';	
+               // s.id = sl.Id;                      
+                EFTRecordsToUpdate.add(e);  
             	
                 
             }
+            update EFTRecordsToUpdate;
      
 	}
 }
