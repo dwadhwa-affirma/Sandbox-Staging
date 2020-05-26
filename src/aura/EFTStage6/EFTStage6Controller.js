@@ -11,6 +11,7 @@
 			if(state === "SUCCESS"){				
 				var res = resp.getReturnValue();
                 component.set("v.EFTRecord",res);
+                helper.sendACHDocument(component, event, helper);
 				/*var eft =[];
 				eft=res;
                 component.set("v.EFTRecord",eft[0]);
@@ -19,5 +20,7 @@
 				}
 			});
         $A.enqueueAction(action);
-	}
+	},
+	
+	
 })

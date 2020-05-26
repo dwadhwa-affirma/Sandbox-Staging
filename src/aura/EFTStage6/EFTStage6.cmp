@@ -10,7 +10,8 @@
  <aura:attribute name="EFTRecord" type="EFT__c" />    
   <aura:attribute name="CaseId" type="string" />   
   		<div id = "stage6">
-            <div>
+  		<aura:if isTrue="{!(v.EFTRecord.Action_Type__c == 'Create')}">
+            <div class="eftreqstatus">
                 <p class = "fontstyle">EFT Request Status</p><br></br>
                	<lightning:layout>
                     <table class="toptbl">
@@ -52,8 +53,85 @@
                         <td>{!v.EFTRecord.Day_of_Month__c}</td>
                     </tr>
                 </table>
-
             </div>
+            
+         </aura:if>
+         <aura:if isTrue="{!(v.EFTRecord.Action_Type__c == 'View')}">
+            <div class="eftrecorddetail1">
+                <p class = "fontstyle">EFT Record Details</p><br></br>
+               	<table class="bottomtbl">
+                	<tr>
+                    	<td>Member Number:</td>
+                        <td>247286</td>
+                    </tr>
+                    <tr>
+                    	<td>Share/Loan:</td>
+                        <td class="sloan">5000<span>New Auto<br />2018 Chevrolet Silverado</span></td>
+                    </tr>
+                    <tr>
+                    	<td>Funding FI:</td>
+                        <td>Pawtucket CU</td>
+                    </tr>
+                    <tr>
+                    	<td>ABA/Routing#:</td>
+                        <td>2115900260</td>
+                    </tr>
+                    <tr>
+                    	<td>Account#:</td>
+                        <td>123456789 </td>
+                    </tr>
+                    <tr>
+                    	<td>Type:</td>
+                        <td>Checking</td>
+                    </tr>
+                    <tr>
+                    	<td>Payment:</td><td>$287.50</td> 
+                    </tr>
+                    <tr>
+                		<td>Effective Date:</td>
+                        <td>04/23/2020</td> 
+                    </tr>
+                    <tr>
+                		<td>Frequency:</td>
+                        <td>Monthly</td> 
+                    </tr>
+                    <tr>
+                		<td>Day of Month:</td>
+                        <td>15</td>
+                    </tr>
+                </table>
+            </div>
+           
+          </aura:if>
+          
+          <aura:if isTrue="{!(v.EFTRecord.Action_Type__c == 'Update')}"> 
+            <div class="eftrecorddetail2">
+                <p class = "fontstyle">EFT Record Details</p><br></br>
+               	<table class="bottomtbl">
+                    <tr>
+                    	<td colspan="2"><p>Select the “Expire” button to cancel/expire this EFT record</p></td>
+                    </tr>
+                	<tr>
+                    	<td>Share/Loan:</td>
+                        <td class="sloan">5000<span>New Auto<br />2018 Chevrolet Silverado</span></td>
+                    </tr>
+                    <tr>
+                    	<td>Funding FI:</td>
+                        <td>Pawtucket CU</td>
+                    </tr>
+                    <tr>
+                    	<td>Account#:</td>
+                        <td>123456789 </td>
+                    </tr>
+                    <tr>
+                    	<td>Type:</td>
+                        <td>Checking</td>
+                    </tr>
+                    <tr>
+                    	<td>Payment:</td><td>$287.50</td> 
+                    </tr>
+                </table>
+            </div>
+           </aura:if>
        </div>
-    
 </aura:component>
