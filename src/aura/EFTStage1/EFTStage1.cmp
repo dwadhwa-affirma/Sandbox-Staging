@@ -7,16 +7,22 @@
                                                         {'label': 'Cancel/Expire EFT Record', 'value': '5'}]"/>  
 <aura:attribute name="ActionDisabled" type="Boolean" default="true"/> 
 
+
 <aura:attribute name="Action" type="String"  />
-    <aura:registerEvent name="EFTEvent" type="c:EFTEvent"/>
-    <aura:attribute name="EFTRecord" type="EFT__c"/>     
+<aura:registerEvent name="EFTEvent" type="c:EFTEvent"/>
+<aura:attribute name="EFTRecord" type="EFT__c"/> 
+<aura:attribute name="selectedAction" type="String"/> 
+<aura:attribute name="selectedChildAction" type="String"/> 
+    
+    
+        
     <div id = "stage1" class = "show">
             <div>
                 <p class = "fontstyle">Select an action</p>
                 <lightning:radioGroup name="myActions"
                                       class ="radioAlign"
                             	  options="{! v.actions}"
-                            	  value=""
+                            	  value="{!v.selectedAction}"
                             	  onchange="{! c.onRadioChange }"
                             	  type="radio"/>
             </div>
@@ -25,8 +31,9 @@
                 <lightning:radioGroup class ="radioAlign"
                                       name="myChildActions" 
                               		options="{! v.childActions}"
-                              		value=""
+                              		value="{!v.selectedChildAction}"
                               		type="radio"
+                              		onchange="{!c.onOperationSelect}"
                               		disabled="{!v.ActionDisabled}"/>
             </div>
         </div>	
