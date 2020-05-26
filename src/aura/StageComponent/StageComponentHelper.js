@@ -52,29 +52,8 @@
                                 }
                                     );
             }
-           var stages2 = [];
-           stages2 = component.get("v.EFTStageDetails");
-           var dynamicText;
-           if(i==0){
-        	   		dynamicText = component.get("v.EFTRecord.Action_Type__c");                	
-                }
-            if(i==1){
-            		dynamicText = component.get("v.EFTRecord.Share_Loan_Id__c");                	
-                }
-             if(i==2){
-            		dynamicText = component.get("v.EFTRecord.Bank_Name__c"); 
-                 	component.set("v.ContinueButtonName", 'Send ACH Document');
-                }
-             if(i==3){
-            		dynamicText = component.get("v.EFTRecord.Payment_Amount__c"); 
-            		stages2[i+1].Stage_Action__c = 'Pending Verification';               	
-                }
-             stages2[i].Stage_Action__c = dynamicText;
-             component.set("v.EFTStageDetails", stages2);
-             
-               
-			}
-            this.hideSpinner(component);
+           }
+           
 		});
 		 
 		$A.enqueueAction(action);
