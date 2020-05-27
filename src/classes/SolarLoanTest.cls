@@ -51,6 +51,7 @@ private class SolarLoanTest{
      sl.id =  SolarLoan_Obj[0].id;
      sl.Four_Digit_Share_Loan_Type__c = ''; 
      sl.Member_Number__c = '0000147165';
+     sl.Routing_Number__c = '284084350';
      //sl.Status__c = 'ACH Pending';
      update sl; 
      

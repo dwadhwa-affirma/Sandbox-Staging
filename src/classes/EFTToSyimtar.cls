@@ -27,7 +27,7 @@ public class EFTToSyimtar {
     List<EFT__c> EFTlist = new List<EFT__c>();         
     List<EFT__c> EFTs = [SELECT Account_Number__c,Action_Type__c,Alternate_Amount__c,Bank_Name__c,
                          CreatedById,CreatedDate,Day_of_Month__c,DocuSignId__c,Effective_Date__c,
-                         Frequency__c,Id,IsDeleted,LastViewedDate,Member_Account__c,Member_Account__r.Brand__c,Member__c,Name,
+                         Frequency__c,Id,Member_Account__c,Member_Account__r.Brand__c,Member__c,Name,
                          OwnerId,Payment_Amount__c,Routing_Number__c,Share_Loan_Id__c,Stage__c,
                          Status__c,Type__c, EFT_ID_Type__c FROM EFT__c where id =: ids];
     
