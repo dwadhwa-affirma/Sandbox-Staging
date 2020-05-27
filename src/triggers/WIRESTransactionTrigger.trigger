@@ -9,7 +9,7 @@ trigger WIRESTransactionTrigger on WIRES_Transaction__c (before insert, after in
     	if(Trigger.isAfter){
     		
         	for(Integer i=0; i<trigger.new.size(); i++){        	
-        	   if(trigger.new[i].ParentTransaction__c == null)	
+        	   if(trigger.new[i].ParentTransaction__c == null && trigger.new[i].Source__c != 'Branch')	
         	   	WTIds.add(trigger.new[i].id);
             } 
     	}
