@@ -337,32 +337,113 @@
 <!-- ++++++++++++++++++++++++++++++++++++++Stage 4 +++++++++++++++++++++++++++++++++++++++ -->     
         
         <div id = "stage4" class = "align hidden">
-            <div>
-                <p class = "fontstyle">Provide the Funding FI information</p>
-                <lightning:radioGroup name="FITypes"
-                                      class ="radioAlign"
-                            	  options="{! v.FITypes}"
-                            	  value="{! v.actionValue }"
-                            	  onchange="{! c.onRadioChange }"
-                            	  type="radio"/>
-            </div>
-       </div>
+        	<p class = "fontstyle">Provide the Funding FI information</p><br></br>
+            <div class="slds-form">
+  				<div class="slds-form-element slds-form-element_horizontal">
+    				<b><label class="slds-form-element__label" for="horizontal-input-id-01">ABA/Routing#:</label></b>
+    				<div class="slds-form-element__control">
+      					<input type="text" id="horizontal-input-id-01" class="slds-input" />
+    				</div>
+  				</div>
+  				<div class="slds-form-element slds-form-element_horizontal">
+    				<b><label class="slds-form-element__label" for="horizontal-input-id-02">Bank Name</label></b>
+    				<div class="slds-form-element__control">
+      					<input type="text" id="horizontal-input-id-02" class="slds-input" />
+    				</div>
+  				</div>
+  				<div class="slds-form-element slds-form-element_horizontal">
+    				<b><label class="slds-form-element__label" for="horizontal-input-id-03">Account#:</label></b>
+    				<div class="slds-form-element__control">
+      					<input type="text" id="horizontal-input-id-03" class="slds-input" />
+    				</div>
+  				</div>
+  				<div class="slds-form-element slds-form-element_horizontal">
+    				<b><label class="slds-form-element__label">Type:</label></b>
+    				<div class="slds-form-element__control">
+    				<ui:inputSelect>
+	                	<ui:inputSelectOption text="Saving"/>
+            			<ui:inputSelectOption text="Checking" value="true"/>
+	                </ui:inputSelect>
+	                </div>
+  				</div>
+       		</div>
+     	</div>	
+    	
+       				
 
 <!-- ++++++++++++++++++++++++++++++++++++++Stage 5 +++++++++++++++++++++++++++++++++++++++ -->     
         
         <div id = "stage5" class = "align hidden">
-            <div>
-                <p class = "fontstyle">Provide the payment information</p>
-               
-            </div>
-       </div>
+        	<p class = "fontstyle">Provide the payment information</p><br></br>
+                <div class="slds-form">
+  				<div class="slds-form-element slds-form-element_horizontal">
+    				<b><label class="slds-form-element__label" for="horizontal-input-id-01">Payment Amt:</label></b>
+    				<div class="slds-form-element__control">
+      					<input type="text" id="horizontal-input-id-01" class="slds-input" />
+    				</div>
+  				</div>
+  				<div class="slds-form-element slds-form-element_horizontal">
+    				<b><label class="slds-form-element__label" for="horizontal-input-id-02">Alternate Amt:</label></b>
+    				<div class="slds-form-element__control">
+      					<input type="text" id="horizontal-input-id-02" class="slds-input" />
+    				</div>
+  				</div>
+  				<div class="slds-form-element slds-form-element_horizontal">
+    				<b><label class="slds-form-element__label" for="horizontal-input-id-03">Effective Date:</label></b>
+    				<div class="slds-form-element__control">
+      					 <ui:inputDate aura:id="AppointmentDate" 
+                           class="slds-input"
+                           displayDatePicker="true" />
+    				</div>
+  				</div>
+  				<div class="slds-form-element slds-form-element_horizontal">
+    				<b><label class="slds-form-element__label">Frequency:</label></b>
+    				<div class="slds-form-element__control">
+    				<ui:inputSelect>
+	                	<ui:inputSelectOption text="Yearly"/>
+            			<ui:inputSelectOption text="Monthly" value="true"/>
+	                </ui:inputSelect>
+	                </div>
+  				</div>
+  				<div class="slds-form-element slds-form-element_horizontal">
+    				<b><label class="slds-form-element__label">Type:</label></b>
+    				<div class="slds-form-element__control">
+    				<ui:inputSelect>
+	                	<ui:inputSelectOption text="Saving"/>
+            			<ui:inputSelectOption text="Checking" value="true"/>
+	                </ui:inputSelect>
+	                </div>
+  				</div>
+       		</div>
+         </div>
 
 <!-- ++++++++++++++++++++++++++++++++++++++Stage 6 +++++++++++++++++++++++++++++++++++++++ -->     
         
         <div id = "stage6" class = "align hidden">
             <div>
-                <p class = "fontstyle">EFT Request Status</p>
-               
+                <p class = "fontstyle">EFT Request Status</p><br></br>
+               	<lightning:layout>
+               	<ul class="progressbar">
+                            <li class="active">
+                                <lightning:layoutItem>
+                                    <div class="header-column">
+                                    </div>
+                                </lightning:layoutItem>
+                            </li>
+                     </ul>
+                     Your EFT{Create/Update/Expire} request has successfully completed. The details of your <br></br>request are in Mars case(686930). When the member completes the DocuSign ACH <br></br>verification form, the EFT record will be created in Episys.<br></br><br></br>
+                </lightning:layout>
+
+               	Member Number:  247286<br></br> 
+               	Share/Loan:  5000  
+               				New Auto 2018 
+               				Chevrolet Silverado <br></br>
+                Funding FI: Pawtucket CU <br></br>
+                Payment: $287.50 <br></br>
+                Effective Date: 04/23/2020 <br></br>
+                Frequency: Monthly <br></br> 
+                Day of Month: 15
+               	
             </div>
        </div>
 		<div class ="footer">
