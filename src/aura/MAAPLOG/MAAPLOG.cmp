@@ -55,14 +55,14 @@
       											  <div class="slds-truncate" title="Last Achievable Level">{!item.Last_Achievable_Level__c}</div>
       										</td>
       										<td data-label="Unusual Activity Case">
-      											  <div class="slds-truncate" title="Unusual Activity Case">
+      											  <div class="slds-truncate" style="float: left;" title="Unusual Activity Case">
 	      											  	<a data-logid="{!item.Case__c}" onclick="{!c.naviteToMAAPRecord}">
 																{!item.Case__r.CaseNumber}
 														</a>
 												   </div>
 												
 												  <aura:if isTrue="{!item.Case__c.length > 0}">
-																 <div style="float: right; margin-top: -20px; margin-right: 80px;"><img src="/img/msg_icons/error16.png"></img>
+																<div style="float: left; margin-top: -2px; margin-left: 10px;"><img src="/img/msg_icons/error16.png"></img>
 																 </div>
 												  </aura:if> 
       										</td>
@@ -77,7 +77,7 @@
       											  <div class="slds-truncate" title="OverrideRequestedSupervisor">{!item.Override_Request_Supervisor__c}</div>
       										</td>
       										<td data-label="Manager Override Case">
-      											  <div class="slds-truncate" title="Manager Override Case">
+      											  <div class="slds-truncate" style="float: left;" title="Manager Override Case">
       											  		<a data-logid="{!item.Manager_Override_Case__c}" onclick="{!c.naviteToMAAPRecord}">
 															{!item.Manager_Override_Case__r.CaseNumber}
 														</a>
@@ -85,7 +85,7 @@
 												
 												<aura:if isTrue="{!item.Manager_Override_Case__c.length > 0}">
 												
-															<div style="float: right; margin-top: -20px; margin-right: 80px;">
+															<div style="float: left; margin-top: -2px; margin-left: 10px;">
 																<img src="/img/msg_icons/error16.png"></img>
 															 </div>
 												</aura:if> 
