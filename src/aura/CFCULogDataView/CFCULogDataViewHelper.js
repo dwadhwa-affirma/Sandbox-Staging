@@ -10,23 +10,20 @@
                     
 					     if(result !=undefined && result.length > 0){ 
 					    					    	
-                                     if(result[0].Beneficiary_Details__c != undefined && result[0].Beneficiary_Details__c != '')
+                                     if(result[0].Beneficiary_Details__c != undefined && result[0].Beneficiary_Details__c != '' && result[0].Beneficiary_Details__c.length > 1)
                                      {
                                          component.set("v.IsBeneficiaryAccountVisible", true);
                                      }
-                                     if(result[0].JointOwner_Details__c != undefined && result[0].JointOwner_Details__c != '')
+                                     if(result[0].JointOwner_Details__c != undefined && result[0].JointOwner_Details__c != '' && result[0].JointOwner_Details__c.length > 1)
                                      {
                                          component.set("v.IsJointAccountVisible", true);
                                      }
-                                     if(result[0].CFCU_Card_Number__c != undefined && result[0].CFCU_Card_Number__c != '')
+                                     if(result[0].CFCU_Card_Number__c != undefined && result[0].CFCU_Card_Number__c != '' && result[0].CFCU_Card_Number__c.length > 1)
                                      {
                                          component.set("v.IsCardVisible", true);
                                      }
-                                     if(result[0].CFCU_Card_Number__c != undefined && result[0].CFCU_Card_Number__c != '')
-                                     {
-                                         component.set("v.IsCardVisible", true);
-                                     }
-                                     if(result[0].Member_Loan_Detail__c != undefined && result[0].Member_Loan_Detail__c != '')
+                                    
+                                     if(result[0].Member_Loan_Detail__c != undefined && result[0].Member_Loan_Detail__c != '' && result[0].Member_Loan_Detail__c.length > 1 )
                                      {
                                          component.set("v.IsLoanAccountVisible", true);
                                      }

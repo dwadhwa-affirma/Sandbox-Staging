@@ -771,35 +771,35 @@
 					        	LoanDetailMatch = component.get("v.LoanDetailMatch");
 					        	
 					        	var BeneficiaryAccount = component.get("v.BeneficiaryAccountOnly");
-					        	if(BeneficiaryDetailMatch == undefined)
+					        	if(BeneficiaryDetailMatch == undefined || BeneficiaryDetailMatch == '')
 					        	{
 					        		BeneficiaryAccount = '';
 					        	}
 					        	
 					        	var JointAccount = component.get("v.JointAccountOnly");
-					        	if(JointOwnerDetailMatch == undefined){
+					        	if(JointOwnerDetailMatch == undefined || JointOwnerDetailMatch == ''){
 					        		JointAccount = '';
 					        	}
 					        	
 					        						        	
 					        	var LoanAccount = component.get("v.LoanAccount") ;
-					        	if(LoanDetailMatch == undefined)
+					        	if(LoanDetailMatch == undefined || LoanDetailMatch == '')
 					        	{
 					        		LoanAccount = '';
 					        	}
 					        	
 					        	var Card = component.get("v.Card") ;
-					        	if(CardNumberMatch == undefined){
+					        	if(CardNumberMatch == undefined || CardNumberMatch == '' ){
 					        		Card ='';
 					        	}
 					        	
 					        	var AdditionalTokenOption1 =  component.get("v.AdditionalTokenOption1");
-					        	if(AdditionalTokenOption1Match == undefined){
+					        	if(AdditionalTokenOption1Match == undefined || AdditionalTokenOption1Match == ''){
 					        		AdditionalTokenOption1 ='';
 					        	}
 					        	
 					        	var AdditionalTokenOption2 =  component.get("v.AdditionalTokenOption2");
-					        	if(AdditionalTokenOption2Match == undefined){
+					        	if(AdditionalTokenOption2Match == undefined || AdditionalTokenOption2Match == ''){
 					        		AdditionalTokenOption2 ='';
 					        	}
 					        	 
