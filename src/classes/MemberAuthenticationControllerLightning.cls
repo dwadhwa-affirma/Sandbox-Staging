@@ -598,7 +598,10 @@ public class MemberAuthenticationControllerLightning{
 		      
 		      insert log2;
        }
-       else{
+       else{	BA = '';
+       			JA ='';	
+       			LA = '';
+       			CardDetail ='';
        			  MasterAuthenticationLog[0].CFCU_Wallet_Status__c = status;
 			      MasterAuthenticationLog[0].SalesforceID__c = MemberId;
 			      MasterAuthenticationLog[0].Member__c = MemberId;
@@ -3742,6 +3745,15 @@ public class MemberAuthenticationControllerLightning{
      	return AuthLog;
      } 
      
+      @AuraEnabled
+     public static List<Authenticated_Log__c> GetMasterLogData(string LogId )
+     {
+     	List<Authenticated_Log__c> AuthLog = [Select Id, Name,CreatedDate,Created_Date__c, SalesforceID__c, RecordTypeId,RecordType.Name,
+     	CardNumberMatch__c,CFCU_Card_Number__c,Beneficiary_Details__c, BeneficiaryDetailMatch__c,JointOwner_Details__c,Joint_OwnerDetailsMatch__c,Member_Loan_Detail__c, Loan_Detail_Match__c
+     	from Authenticated_Log__c where Id= :LogId and Recordtype.name='Master Authentication Log' order by createddate desc];
+     	system.debug('AuthLog##'+ AuthLog);
+     	return AuthLog;
+     } 
     
 	public class AuthenticationLogWrapper{
       
