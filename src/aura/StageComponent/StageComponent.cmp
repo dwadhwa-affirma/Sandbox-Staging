@@ -59,13 +59,27 @@
 </div>
     <lightning:spinner aura:id="Spinner" alternativeText="Loading" size="medium" variant="brand" class="slds-hide spin"/>
  <footer class="slds-modal__footer slds-modal__footer_directional">
- <aura:if isTrue="{!(v.ActiveStepIndex != 4)}">
+ <aura:if isTrue="{!and(v.ActiveStepIndex != 4,v.ActiveStepIndex != 5)}">
             <lightning:button aura:id="Exit" label="Exit" title="Exit" onclick="{!c.cancelAction}"/>
             <lightning:button variant="brand" label="Back" disabled="{!v.backButton}" title="Back" onclick="{!c.back}"/> 
             <lightning:button variant="brand" label="{!v.ContinueButtonName}" title="Continue" onclick="{!c.Continue}"/>
-  <aura:set attribute="else">  
-  <lightning:button class="btnClose" variant="brand" label="Close" title="Close" onclick="{!c.cancelAction}"/>
-  </aura:set>  
+  <aura:set attribute="else">
+      <aura:if isTrue="{!(v.ActiveStepIndex == 5)}">
+      	<lightning:button aura:id="Exit" label="Exit" title="Exit" onclick="{!c.cancelAction}"/>
+        <lightning:button variant="brand" label="Back" disabled="{!v.backButton}" title="Back" onclick="{!c.backView}"/> 
+    <aura:set attribute="else">
+        <aura:if isTrue="{!and(v.ActiveStepIndex == 4,v.EFTRecord.Action_Type__c == 'Expire' )}">
+        <lightning:button aura:id="Exit" label="Exit" title="Exit" onclick="{!c.cancelAction}"/>
+        <lightning:button variant="brand" label="Back" disabled="{!v.backButton}" title="Back" onclick="{!c.backView}"/> 
+        <lightning:button variant="brand" label="Expire" title="Expire" onclick="{!c.ExpireEFT}"/>
+        <aura:set attribute="else">
+            <lightning:button class="btnClose" variant="brand" label="Close" title="Close" onclick="{!c.cancelAction}"/>
+       </aura:set>
+        </aura:if>
+  	
+          </aura:set>
+          </aura:if>
+      </aura:set>  
   </aura:if>
   </footer> 
 

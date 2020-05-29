@@ -68,10 +68,16 @@
 		           stages2 = component.get("v.EFTStageDetails");
 		           var dynamicText;
 		           if(i==0){
-		        	   		dynamicText = component.get("v.EFTRecord.Action_Type__c");                	
-		                }
+                        if(component.get("v.EFTRecord.Action_Type__c") == "Expire"){
+                        dynamicText = "Update";
+                    	}
+                       else{
+                           dynamicText = component.get("v.EFTRecord.Action_Type__c");
+                       }		        	   		                	
+		             }
 		           else if(i==1){
-		            		dynamicText = component.get("v.EFTRecord.Share_Loan_Id__c");                	
+		            		dynamicText = component.get("v.EFTRecord.Share_Loan_Id__c"); 
+                       		
 		                }
 		           else if(i==2){
 		            		dynamicText = component.get("v.EFTRecord.Bank_Name__c"); 
@@ -88,10 +94,54 @@
 		             component.set("v.EFTStageDetails", stages2);
 		             
 		             
-		             if(i==3)
-		            	 helper.SaveStageValues(component, event, component.get("v.EFTRecord"), i, stages);
-		             else{		            
-		            	 $A.createComponent("c:"+stages[i+1].Stage_Component__c,{recordId: component.get("v.recordId"), EFTRecord: component.get("v.EFTRecord")},
+                if(i==3){
+                    if(component.get("v.EFTRecord.Action_Type__c") == "Expire"){
+                        component.set("v.EFTRecord.Action_Type__c","Update")
+                    }
+                    helper.SaveStageValues(component, event, component.get("v.EFTRecord"), i, stages);
+                }
+		            	 
+		             else{
+                         if(i==1 && component.get("v.EFTRecord.Action_Type__c") == "View"){
+                             component.set("v.ActiveStepIndex", 5);
+                             stages2[4].Stage_Action__c = 'Existing'; 
+                             stages2[3].Stage_Action__c = component.get("v.EFTRecord.Payment_Amount__c");
+                             stages2[2].Stage_Action__c = component.get("v.EFTRecord.Bank_Name__c");
+                             $A.createComponent("c:"+stages[4].Stage_Component__c,{recordId: component.get("v.recordId"), EFTRecord: component.get("v.EFTRecord")},
+                                function(msgBox){                
+                                     if (component.isValid()) {
+                                        
+                                         var targetCmp = component.find('ModalDialogPlaceholder');
+                                        var body = targetCmp.get("v.body");
+                                        //body.push(msgBox);
+                                        body.splice(0, 1, msgBox);
+                                        targetCmp.set("v.body", body); 
+                   						
+                                    }
+                                }
+                                    ); 
+                         }
+                         else if(i==1 && component.get("v.EFTRecord.Action_Type__c") == "Expire"){
+                             component.set("v.ActiveStepIndex", 4);
+                             stages2[4].Stage_Action__c = 'Existing'; 
+                             stages2[3].Stage_Action__c = component.get("v.EFTRecord.Payment_Amount__c");
+                             stages2[2].Stage_Action__c = component.get("v.EFTRecord.Bank_Name__c");
+                             $A.createComponent("c:"+stages[4].Stage_Component__c,{recordId: component.get("v.recordId"), EFTRecord: component.get("v.EFTRecord")},
+                                function(msgBox){                
+                                     if (component.isValid()) {
+                                        
+                                         var targetCmp = component.find('ModalDialogPlaceholder');
+                                        var body = targetCmp.get("v.body");
+                                        //body.push(msgBox);
+                                        body.splice(0, 1, msgBox);
+                                        targetCmp.set("v.body", body); 
+                   						
+                                    }
+                                }
+                                    ); 
+                         }
+                         else{
+                            $A.createComponent("c:"+stages[i+1].Stage_Component__c,{recordId: component.get("v.recordId"), EFTRecord: component.get("v.EFTRecord")},
                                 function(msgBox){                
                                      if (component.isValid()) {
                                         
@@ -104,6 +154,9 @@
                                     }
                                 }
                                     );
+                             
+                         }
+		            	
             
 		             
 		             }
@@ -128,7 +181,9 @@
             var ProgressBarStepClass = document.getElementById('Step'+(i+1)).classList;   
             if(ProgressBarStepClass[0] == "half"){
                 component.set("v.ActiveStepIndex", (i-1)); 
-             
+             	 if(i !=2 && component.get("v.ContinueButtonName") == 'Send ACH Document'){
+		            	 component.set("v.ContinueButtonName", 'Continue');
+		             }
                     $A.createComponent("c:"+stages[i-1].Stage_Component__c,{recordId: component.get("v.recordId"), EFTRecord: component.get("v.EFTRecord")},
                                 function(msgBox){                
                                      if (component.isValid()) {
@@ -167,5 +222,41 @@
        
         
         
+    },
+    
+    backView:function (component, event, helper) {  
+    		component.set("v.ActiveStepIndex", (1));         
+              var stages = [];
+       		  stages = component.get("v.EFTStageDetails");
+        		var stages2 = [];
+		       stages2 = component.get("v.EFTStageDetails");
+        	  stages2[4].Stage_Action__c = 'Waiting';
+        		stages2[3].Stage_Action__c = 'Waiting';
+        		stages2[2].Stage_Action__c = 'Waiting';
+        		stages2[1].Stage_Action__c = 'Waiting';
+        		component.set("v.EFTStageDetails", stages2);
+                    $A.createComponent("c:"+stages[1].Stage_Component__c,{recordId: component.get("v.recordId"), EFTRecord: component.get("v.EFTRecord")},
+                                function(msgBox){                
+                                     if (component.isValid()) {
+                                        
+                                         var targetCmp = component.find('ModalDialogPlaceholder');
+                                        var body = targetCmp.get("v.body");
+                                        //body.push(msgBox);
+                                        body.splice(0, 1, msgBox);
+                                        targetCmp.set("v.body", body); 
+                   
+                                    }
+                                }
+                             );
+    
+    },
+    
+    
+    ExpireEFT: function (component, event, helper) { 
+         if(component.get("v.EFTRecord.Action_Type__c") == "Expire"){
+                        component.set("v.EFTRecord.Action_Type__c","Update")
+                    }
+    	helper.ExpireEFT(component, event, component.get("v.EFTRecord"));
+    
     }
 })
