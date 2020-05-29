@@ -42,7 +42,7 @@
         	component.set("v.selectedChildAction",'4');              
         }
          if(changeValue == '5'){        	 
-        	component.set("v.EFTRecord.Action_Type__c",'Update');
+        	component.set("v.EFTRecord.Action_Type__c",'Expire');
         	component.set("v.selectedChildAction",'5');              
         }
         component.set("v.EFTRecord.Stage__c",'Action');       
