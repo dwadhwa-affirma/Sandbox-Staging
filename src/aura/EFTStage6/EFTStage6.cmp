@@ -9,6 +9,8 @@
  <aura:handler name="init" action="{!c.doInit}" value="{!this}" access="global" />
  <aura:attribute name="EFTRecord" type="EFT__c" />    
   <aura:attribute name="CaseId" type="string" />   
+    <aura:attribute name="UpdateText" type="string" default="Update"/> 
+    
   		<div id = "stage6">
   		<aura:if isTrue="{!(v.EFTRecord.Action_Type__c == 'Create')}">
             <div class="eftreqstatus">
@@ -19,7 +21,7 @@
                         	<td>
                             	<lightning:icon class="icon_label1" iconName="utility:record" size="medium" alternativeText="Indicates approval"/>
                             </td>
-                            <td><p>Your EFT Create request has been successfully completed. The details of your request are in Mars case({!v.EFTRecord.Case__r.CaseNumber}). When the member completes the DocuSign ACH verification form, the EFT record will be created in Episys.</p>                            	
+                            <td><p>Your EFT Create request has been successfully completed. The details of your request are in Mars case(<a href="{!('/one/one.app?#/sObject/'+ v.EFTRecord.Case__c + '/view')}" target="_blank">{!v.EFTRecord.Case__r.CaseNumber}</a>). When the member completes the DocuSign ACH verification form, the EFT record will be created in Episys.</p>                            	
                             </td>
                         </tr>
                     </table>
@@ -62,49 +64,49 @@
                	<table class="bottomtbl">
                 	<tr>
                     	<td>Member Number:</td>
-                        <td>247286</td>
+                        <td>{!v.EFTRecord.Member_Account__r.Name}</td>
                     </tr>
                     <tr>
                     	<td>Share/Loan:</td>
-                        <td class="sloan">5000<span>New Auto<br />2018 Chevrolet Silverado</span></td>
+                        <td class="sloan">{!v.EFTRecord.Share_Loan_Id__c}<span>{!v.EFTRecord.Share_Loan_Type__c}<br />{!v.EFTRecord.Share_Loan_Description__c}</span></td>
                     </tr>
                     <tr>
                     	<td>Funding FI:</td>
-                        <td>Pawtucket CU</td>
+                        <td>{!v.EFTRecord.Bank_Name__c}</td>
                     </tr>
                     <tr>
                     	<td>ABA/Routing#:</td>
-                        <td>2115900260</td>
+                        <td>{!v.EFTRecord.Routing_Number__c}</td>
                     </tr>
                     <tr>
                     	<td>Account#:</td>
-                        <td>123456789 </td>
+                        <td>{!v.EFTRecord.Account_Number__c}</td>
                     </tr>
                     <tr>
                     	<td>Type:</td>
-                        <td>Checking</td>
+                        <td>{!v.EFTRecord.Type__c}</td>
                     </tr>
                     <tr>
-                    	<td>Payment:</td><td>$287.50</td> 
+                    	<td>Payment:</td><td>{!v.EFTRecord.Payment_Amount__c}</td> 
                     </tr>
                     <tr>
                 		<td>Effective Date:</td>
-                        <td>04/23/2020</td> 
+                        <td>{!v.EFTRecord.Effective_Date__c}</td> 
                     </tr>
                     <tr>
                 		<td>Frequency:</td>
-                        <td>Monthly</td> 
+                        <td>{!v.EFTRecord.Frequency__c}</td> 
                     </tr>
                     <tr>
                 		<td>Day of Month:</td>
-                        <td>15</td>
+                        <td>{!v.EFTRecord.Day_of_Month__c}</td>
                     </tr>
                 </table>
             </div>
            
           </aura:if>
           
-          <aura:if isTrue="{!(v.EFTRecord.Action_Type__c == 'Update')}"> 
+          <aura:if isTrue="{!(v.EFTRecord.Action_Type__c == 'Expire')}"> 
             <div class="eftrecorddetail2">
                 <p class = "fontstyle">EFT Record Details</p><br></br>
                	<table class="bottomtbl">
@@ -113,22 +115,68 @@
                     </tr>
                 	<tr>
                     	<td>Share/Loan:</td>
-                        <td class="sloan">5000<span>New Auto<br />2018 Chevrolet Silverado</span></td>
+                        <td class="sloan">{!v.EFTRecord.Share_Loan_Id__c}<span>{!v.EFTRecord.Share_Loan_Type__c}<br />{!v.EFTRecord.Share_Loan_Description__c}</span></td>
                     </tr>
                     <tr>
                     	<td>Funding FI:</td>
-                        <td>Pawtucket CU</td>
+                        <td>{!v.EFTRecord.Bank_Name__c}</td>
                     </tr>
                     <tr>
                     	<td>Account#:</td>
-                        <td>123456789 </td>
+                        <td>{!v.EFTRecord.Account_Number__c}</td>
                     </tr>
                     <tr>
                     	<td>Type:</td>
-                        <td>Checking</td>
+                        <td>{!v.EFTRecord.Type__c}</td>
                     </tr>
                     <tr>
-                    	<td>Payment:</td><td>$287.50</td> 
+                    	<td>Payment:</td><td>{!v.EFTRecord.Payment_Amount__c}</td> 
+                    </tr>
+                </table>
+            </div>
+           </aura:if>
+            
+           <aura:if isTrue="{!or(v.EFTRecord.Action_Type__c == 'Update',v.EFTRecord.Expired__c )}"> 
+            <div class="eftrecorddetail2">
+                <p class = "fontstyle">EFT Record Details</p><br></br>
+                <lightning:layout>
+                    <table class="toptbl">
+                    	<tr>
+                        	<td>
+                            	<lightning:icon class="icon_label1" iconName="utility:record" size="medium" alternativeText="Indicates approval"/>
+                            </td>
+                            <td><p>Your EFT {!v.UpdateText} request has been successfully completed. The details of your request are in Mars case(<a href="{!('/one/one.app?#/sObject/'+ v.EFTRecord.Case__c + '/view')}" target="_blank">{!v.EFTRecord.Case__r.CaseNumber}</a>).</p>                            	
+                            </td>
+                        </tr>
+                    </table>
+                </lightning:layout>
+               	<table class="bottomtbl">                   
+                	<tr>
+                    	<td>Member Number:</td>
+                        <td>{!v.EFTRecord.Member_Account__r.Name}</td>
+                    </tr>
+                    <tr>
+                    	<td>Share/Loan:</td>
+                        <td class="sloan">{!v.EFTRecord.Share_Loan_Id__c}<span>{!v.EFTRecord.Share_Loan_Type__c}<br />{!v.EFTRecord.Share_Loan_Description__c}</span></td>
+                    </tr>
+                    <tr>
+                    	<td>Funding FI:</td>
+                        <td>{!v.EFTRecord.Bank_Name__c}</td>
+                    </tr>
+                    <tr>
+                    	<td>Payment:</td><td>{!v.EFTRecord.Payment_Amount__c}</td> 
+                    </tr>
+                    <tr>
+                		<td>Effective Date:</td>
+                        <td>{!v.EFTRecord.Effective_Date__c}</td> 
+                    </tr>
+                    <tr>
+                		<td>Frequency:</td>
+                        <td>{!v.EFTRecord.Frequency__c}</td> 
+                    </tr>
+                    <tr>
+                		<td>Day of Month:</td>
+                        <td>{!v.EFTRecord.Day_of_Month__c}</td>
                     </tr>
                 </table>
             </div>
