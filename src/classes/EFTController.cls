@@ -1,5 +1,6 @@
 public class EFTController {
     
+     //------------------------------- Getting Stage Details and Member Account Details-----------------------------------------------//
     @AuraEnabled
     public static map<string,object> getStageData(string recordId, string sObjectType){
         map<string,object> resultMap = new map<string,object>();
@@ -8,7 +9,7 @@ public class EFTController {
         EFTStages = [SELECT id, name, isActive__c, Order__c, Stage_Action__c,Stage_Action_Placeholder__c, Stage_Component__c, Stage_Label__c, StepId__c from EFT_Stages__c where isActive__c = true]; //where isActive__c = true;      //EFT_Stages__c.getall().values();
         resultMap.put('EFTStages', EFTStages);
         system.debug('sObjectType=='+sObjectType);
-        //if(sObjectType == 'Account_Details__c'){
+       
             List<EFT__c> EFTRecord = [Select id, name, Member_Account__c, Stage__c, Action_Type__c from EFT__c where Member_Account__c =:recordId limit 1];
             integer activeStageIndex = 0;
             if(EFTRecord.size() >0){               
@@ -17,52 +18,35 @@ public class EFTController {
                     	activeStageIndex = (integer)eftstage.Order__c;
                 	}
                 }
-               /* for(EFT_Stages__c eftstage:EFTStages){
-                    if(eftstage.Order__c < activeStageIndex){
-                        string dynamiclabel = eftstage.Stage_Action_Placeholder__c.replace('{{Action}}',EFTRecord[0].Action_Type__c);
-                		eftstage.Stage_Action__c = dynamiclabel;
-                    }
-                }*/
-                
+                              
                 resultMap.put('EFT', EFTRecord);
                 
             }
             Account_Details__c MemberAccount = [select id,name from Account_Details__c where id=:recordId limit 1];
             resultMap.put('MemberAccount', MemberAccount);
-        //}
-       // if(activeStageIndex == 2){
-       //     getShareAccounts(MemberAccount.name);            
-        //}
+       
         return resultMap;
     }
     
-  /*  @AuraEnabled
-    public static List<EFT__c> getEFTDetails(string recordId){
-        system.debug('recordId1=='+recordId);
-        List<EFT__c> EFTRecordList = [select id, name, Member_Account__c, Stage__c, Action_Type__c, Share_Loan_Id__c, Type__c	,Share_Loan_Type__c, Share_Loan_Description__c,
+    @AuraEnabled
+    public static EFT__c getEFT(EFT__c EFTRecord){
+        EFT__c ResultEFTRecord = [select id, name, Member_Account__c, Stage__c, Action_Type__c, Share_Loan_Id__c, Type__c	,Share_Loan_Type__c, Share_Loan_Description__c,
                                       Routing_Number__c, Bank_Name__c, Account_Number__c, Alternate_Amount__c,Effective_Date__c,
                                       Frequency__c, Payment_Amount__c, Day_of_Month__c, Member_Account__r.name, Case__c, Case__r.CaseNumber, Case__r.Status	
-                                      from EFT__c where Member_Account__c =: recordId limit 1];
+                                      from EFT__c where id =: EFTRecord.id limit 1];
         
+        return ResultEFTRecord;
         
-        if(EFTRecordList.size() > 0){
-            id caseId = createCase(EFTRecordList[0]);
-        	EFTRecordList[0].Case__c = caseId;
-        	update EFTRecordList[0];
-        
-        	//sendACHDocument(EFTRecordList);
-        }
-        
-        system.debug('case==='+EFTRecordList[0].Case__r.CaseNumber);
-        return EFTRecordList;
-    }*/
-    
-    
+    }
+   
+   
+    //------------------------------- Saving EFT data to Salesforce-----------------------------------------------//
     @AuraEnabled
     public static EFT__c saveStageData(EFT__c EFTRecord){
         system.debug('EFTRecord=='+EFTRecord.Id);
         List<EFT__c> EFTRecordList = [Select id, name, Member_Account__c, Stage__c, Action_Type__c from EFT__c where id =:EFTRecord.id limit 1];
         
+        system.debug('EFTRecordList.size=='+EFTRecordList.size());
         if(EFTRecordList.size() == 0){
             insert EFTRecord;
             return EFTRecord;
@@ -88,6 +72,24 @@ public class EFTController {
           
     }
     
+    @AuraEnabled
+    public static EFT__c expireEFT(EFT__c EFTRecord){
+       // system.debug('EFTRecordString=='+EFTRecordString);
+        //EFT__c EFTRecord = (EFT__c) System.JSON.deserialize(EFTRecordString, EFT__c.Class);
+        system.debug('EFTRecordId=='+EFTRecord.Action_Type__c);
+        EFT__c EFTRecordList = [Select id, name, Member_Account__c, Stage__c, Action_Type__c, Expired__c from EFT__c where id =:EFTRecord.Id limit 1];
+        
+        system.debug('EFTRecordList.size=='+EFTRecordList);
+        if(EFTRecordList != null){            
+            EFTRecordList.Expired__c  =  true;
+            update EFTRecordList;
+        }
+        
+		return EFTRecordList;        
+    }
+    
+    
+     //------------------------------- Createing Case-----------------------------------------------//    
     @AuraEnabled
     public static EFT__c createCase(EFT__c EFTRecord){
         system.debug('EFTID==='+EFTRecord.id);
@@ -121,17 +123,25 @@ public class EFTController {
         		EFTRecord.Case__c = caseId;
         		update EFTRecord;
         		
+        		
+        		
         		EFT__c ResultEFTRecord = [select id, name, Member_Account__c, Stage__c, Action_Type__c, Share_Loan_Id__c, Type__c	,Share_Loan_Type__c, Share_Loan_Description__c,
                                       Routing_Number__c, Bank_Name__c, Account_Number__c, Alternate_Amount__c,Effective_Date__c,
                                       Frequency__c, Payment_Amount__c, Day_of_Month__c, Member_Account__r.name, Case__c, Case__r.CaseNumber, Case__r.Status	
                                       from EFT__c where id =: EFTRecord.id limit 1];
+                                      
+                List<EFT__c> EFTToSendACHDoc = new List<EFT__c>();
+                EFTToSendACHDoc.add(ResultEFTRecord);                      
+              	//sendACHDocument(EFTToSendACHDoc);
         		
-        		 system.debug('case==='+ResultEFTRecord.Case__r.CaseNumber);
+        		system.debug('case==='+ResultEFTRecord.Case__r.CaseNumber);
         		return ResultEFTRecord;
     }
     
+    
+     //-------------------------------Send ACH Document-----------------------------------------------//
     @AuraEnabled
-    public static void sendACHDocument(List<EFT__c> recordId){
+    public static void sendACHDocument(EFT__c recordId){
     	
     	List<EFT__c> EFTToUpdate = new List<EFT__c>();
   		String Email;
@@ -144,7 +154,7 @@ public class EFTController {
         }    
         EmailList = Email.split(',');
         
-        for(Integer i=0;i<recordId.size();i++){
+       // for(Integer i=0;i<recordId.size();i++){
         	
             dfsle.Recipient myRecipient;
             dfsle.UUID myTemplateId;
@@ -169,11 +179,17 @@ public class EFTController {
             	myRecipient = dfsle.Recipient.fromSource(Name,MemberEmail.PersonEmail,null,'Signer 1',new dfsle.Entity(recordId.get(i).Id));
             }*/
             
+            Person_Account__c paPrimary = [SELECT Id,PersonID__c,
+                             Account_Number__c, Account_Number__r.RecType__c,TypeTranslate__c, Account_Number__r.Name, PersonID__r.Home_Phone__pc,PersonID__r.Residential_City__pc,PersonID__r.Residential_State__pc, PersonID__r.Residential_Street__pc, PersonID__r.Residential_Zipocde__pc, PersonID__r.Name, PersonID__r.Email_raw__c FROM Person_Account__c 
+                             WHERE Account_Number__c =: recordId.Member_Account__c and TypeTranslate__c  like '%Primary%' limit 1];
+                             
+      		Name = paPrimary.PersonID__r.Name;
+            
             if(EmailList.size() > 0){
 	            
 	            for(String emailToSend: EmailList){
 	            		
-	            	myRecipient = dfsle.Recipient.fromSource(Name,emailToSend,null,'Signer 1',new dfsle.Entity(recordId.get(i).Id));
+	            	myRecipient = dfsle.Recipient.fromSource(Name,emailToSend,null,'Signer 1',new dfsle.Entity(recordId.Id));
 	            	
 	            	//if(recordId.get(i).Brand__c == 'Spectrum'){
 		            //	myTemplateId = dfsle.UUID.parse('dc16d8f8-571c-497e-bbf5-42d8b25d4ee1');  //Spectrum
@@ -183,7 +199,7 @@ public class EFTController {
 		            //}
 		            
 		            myDocument =dfsle.Document.fromTemplate(myTemplateId,'Spectrum ACH Debits');
-       			    Depositary = new dfsle.CustomField('text','##SFEFT__c',recordId.get(i).Id, null,true, true);
+       			    Depositary = new dfsle.CustomField('text','##SFEFT__c',recordId.Id, null,true, true);
         		    myEnvelope = new dfsle.Envelope(null,null, null,null,new List<dfsle.Document> { myDocument },null,new List<dfsle.CustomField> { Depositary },null,
 															'ACH Debits',
 															'My Message',null,null);
@@ -203,11 +219,11 @@ public class EFTController {
             system.debug('tttt1'+DocuSignId);
             
             EFT__c e = new EFT__c();
-            e.id = recordId.get(i).Id;
+            e.id = recordId.Id;
             e.DocuSignId__c = DocuSignId.toUpperCase();
             
             EFTToUpdate.add(e);
-        }
+        //}
         
         if(EFTToUpdate.size() > 0){
         	update EFTToUpdate;
@@ -215,6 +231,8 @@ public class EFTController {
     
     }
     
+    
+     //-------------------------------Getting BankName from Entered Routing No-----------------------------------------------//
     @AuraEnabled
     public static string routingInfo(String RoutingNumber){
       	system.debug('RoutingNumber=='+RoutingNumber);
@@ -244,7 +262,7 @@ public class EFTController {
        			Map<String,Object> results = (Map<String,Object>) JSON.deserializeUntyped(responseBody);      
          		System.debug('Service response is ....' + results);
                 
-                //List<wrapperAccountBalance> resultList = List<wrapperAccountBalance>results;
+               
                 if(results.size() > 0){
                 	
                    for(String key : results.keySet()){                   			
@@ -255,14 +273,13 @@ public class EFTController {
                     
                 }
             }
-                
-		//BankName = String.valueOf(responseBody).substringAfter('customer_name": "');
-		//BankName = String.valueOf(BankName).substringBefore('",');
+        
 		System.debug('Bank Name:' + BankName);
            	                
         return BankName; 
     }
     
+    //-------------------------------Getting Share Accounts from Episys----------------------------------------------//
     @AuraEnabled
     public static List<ShareLoanWrapperObject> getShareLoanAccounts(string recordId){
     		system.debug('recordId=='+recordId);
@@ -290,7 +307,7 @@ public class EFTController {
        			List<Object> results = (List<Object>) JSON.deserializeUntyped(response.getBody());      
          		System.debug('Service response is ....' + results);
                 
-                //List<wrapperAccountBalance> resultList = List<wrapperAccountBalance>results;
+                
                  for(Object t : results){
                    			ShareLoanWrapperObject temp = new ShareLoanWrapperObject();
                        		map<string, object> localAcc = (map<string, object>)t;                       		
@@ -311,9 +328,10 @@ public class EFTController {
             resultList.addall(LoanList);
             system.debug('resultList=='+resultList);
             return resultList;
-       // return '$ '+	AvailableBalance;
+      
     }
     
+    //-------------------------------Getting Loan Accounts from Episys----------------------------------------------//
     public static List<ShareLoanWrapperObject> getLoanAccounts(string AccountNumber){
     		List<ShareLoanWrapperObject> resultList = new List<ShareLoanWrapperObject>();
     		
@@ -337,7 +355,7 @@ public class EFTController {
        			List<Object> results = (List<Object>) JSON.deserializeUntyped(response.getBody());      
          		System.debug('Service response is ....' + results);
                 
-                //List<wrapperAccountBalance> resultList = List<wrapperAccountBalance>results;
+              
                 if(results.size() > 0){
                 	
                    for(Object t : results){
@@ -378,6 +396,51 @@ public class EFTController {
         return resultList;
     }
     
+    @AuraEnabled
+    public static List<EFT__c> getEFTRecordsEpisys(string recordId){
+    		system.debug('recordId=='+recordId);
+        	Account_Details__c MemberAccount = [select id,name from Account_Details__c where id=:recordId limit 1];
+        	String AccountNumber = MemberAccount.name;
+        	
+        	
+        	httpRequest requestparam = new httpRequest(); 
+	        requestparam.setEndpoint('https://symxapi.chevronfcu.org/devclient/EFT/GetEftRecords?accountNumber=' + AccountNumber);
+	        requestparam.setMethod('GET');      
+	          
+	       
+	        http httpParam = new http();
+	        httpResponse response = httpParam.send(requestparam);
+	        
+	        String strStatus = response.getStatus();
+	        String strBody = response.getBody();
+        	
+         	System.debug('strStatus ....' + strStatus);
+        	System.debug('strBody ....' + strBody);
+        
+        	set<string> EFTLocatorsSet = new set<string>();
+        	
+        	if(strBody!=''){        
+       			List<Object> results = (List<Object>) JSON.deserializeUntyped(response.getBody());      
+         		System.debug('Service response is ....' + results);
+                
+                
+                 for(Object t : results){
+                      System.debug('T ....' + T);
+                   			EFTWrapperObject temp = new EFTWrapperObject();
+                       		map<string, object> localAcc = (map<string, object>)t;                       		
+                       		string locator = String.valueOf(localAcc.get('EftLocator'));                       		
+                       		EFTLocatorsSet.add(locator);
+       				}
+            }
+            System.debug('EFTLocatorsSet ....' + EFTLocatorsSet);
+            List<EFT__c> EFTList = [select id, name, Member_Account__c, Stage__c, Action_Type__c, Share_Loan_Id__c, Type__c	,Share_Loan_Type__c, 	
+                                    Share_Loan_Description__c, Routing_Number__c, Bank_Name__c, Account_Number__c, Alternate_Amount__c,Effective_Date__c,
+                                      Frequency__c, Payment_Amount__c, Day_of_Month__c, Member_Account__r.name, Case__c, Case__r.CaseNumber
+                                      from EFT__c where Member_Account__c =: recordId and EftLocator__c in: EFTLocatorsSet];
+            
+            return EFTList;       
+    }
+    
     public class ShareLoanWrapperObject
     {
       @AuraEnabled
@@ -388,6 +451,37 @@ public class EFTController {
       public string TypeTranslate {get;set;}
       @AuraEnabled
       public string Type {get;set;}
+    }
+    
+     public class EFTWrapperObject
+    {
+      @AuraEnabled
+      public Integer EftLocator {get;set;}
+      @AuraEnabled
+      public string AccountNumber {get;set;}
+      @AuraEnabled
+      public string AmountCode {get;set;}
+      @AuraEnabled
+      public string Amount {get;set;}
+        @AuraEnabled
+      public string FinancialInstitution {get;set;}
+        @AuraEnabled
+      public string Payee {get;set;}
+        @AuraEnabled
+      public string Reference {get;set;}
+        @AuraEnabled
+      public string EffectiveDate {get;set;}
+         @AuraEnabled
+      public string Day1 {get;set;}
+         @AuraEnabled
+      public string Frequency {get;set;}
+         @AuraEnabled
+      public string Status {get;set;}
+         @AuraEnabled
+      public string Error {get;set;}
+         @AuraEnabled
+      public string ErrorDetails {get;set;}
+        
     }
     
     
