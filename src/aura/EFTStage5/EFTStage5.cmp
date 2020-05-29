@@ -23,28 +23,28 @@
   				<div class="slds-form-element slds-form-element_horizontal">
     				<b><label class="slds-form-element__label" for="horizontal-input-id-01">Payment Amt:</label></b>
     				<div class="slds-form-element__control">
-      					<force:inputField value="{!v.EFTRecord.Payment_Amount__c}"> </force:inputField>
+      					<force:inputField value="{!v.EFTRecord.Payment_Amount__c}" change="{!c.onMonthChange}"> </force:inputField>
     				</div>
   				</div>
                 <aura:if isTrue="{!v.isLoan}">
   				<div class="slds-form-element slds-form-element_horizontal">
     				<b><label class="slds-form-element__label" for="horizontal-input-id-02">Alternate Amt:</label></b>
     				<div class="slds-form-element__control">
-      					<force:inputField value="{!v.EFTRecord.Alternate_Amount__c}"> </force:inputField>
+      					<force:inputField value="{!v.EFTRecord.Alternate_Amount__c}" change="{!c.onMonthChange}"> </force:inputField>
     				</div>
   				</div>
                 </aura:if>
   				<div class="slds-form-element slds-form-element_horizontal">
     				<b><label class="slds-form-element__label" for="horizontal-input-id-03">Effective Date:</label></b>
                     <div class="slds-form-element__control">
-    					<force:inputField value="{!v.EFTRecord.Effective_Date__c}"> </force:inputField>
+    					<force:inputField value="{!v.EFTRecord.Effective_Date__c}" change="{!c.onMonthChange}"> </force:inputField>
                     </div>
   				</div>
   				<div class="slds-form-element slds-form-element_horizontal">
     				<b><label class="slds-form-element__label">Frequency:</label></b>
     				<div class="slds-form-element__control">
                          <aura:if isTrue="{!v.isLoan}">
-	    					<force:inputField value="{!v.EFTRecord.Frequency__c}"> </force:inputField>
+	    					<force:inputField value="{!v.EFTRecord.Frequency__c}" change="{!c.onMonthChange}"> </force:inputField>
                          <aura:set attribute="else">
                          <lightning:input value="{!v.EFTRecord.Frequency__c}" disabled="true" />
                         </aura:set>
