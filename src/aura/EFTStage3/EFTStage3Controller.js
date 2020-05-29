@@ -1,11 +1,13 @@
 ({
     doInit : function(component, event, helper) {
     debugger;
-        var action = component.get("c.getShareLoanAccounts");
-        var recordId = component.get("v.recordId");   
-        //var EFTRecord = component.get("v.EFTRecord");       
-       
-        action.setParams({
+        var selectedaction=component.get("v.EFTRecord.Action_Type__c");
+        var action;
+        var recordId = component.get("v.recordId");
+        if(selectedaction == 'Create'){
+            action = component.get("c.getShareLoanAccounts");        	
+        
+        	action.setParams({
             recordId: recordId
         });           
         action.setCallback(this, function(resp) {
@@ -21,7 +23,26 @@
                 //alert('d');
                            
             }
-        });
+        });	
+        }
+       else{
+            action = component.get("c.getEFTRecordsEpisys");
+			action.setParams({
+            	recordId: recordId
+        	});           
+        action.setCallback(this, function(resp) {
+            var state=resp.getState();           
+            if(state === "SUCCESS"){            	
+            	var result=[];
+            	result = resp.getReturnValue();
+                component.set('v.EFTRecordsList', result);
+            	
+                           
+            }
+        });	      
+                    
+       }
+        										
        
         $A.enqueueAction(action);
        
@@ -83,5 +104,37 @@
             evt.setParams({ "EFTRecord": component.get("v.EFTRecord")});
             evt.fire();
         }
-    }
+    },
+        
+        onEFTSelect: function(component, event, helper) {
+            var evt = $A.get("e.c:EFTEvent");
+        	var SelectedShareLoan = event.getSource().get('v.value');
+            var EFTList=[];
+            EFTList = component.get('v.EFTRecordsList');
+            
+            for(var i=0;i<EFTList.length;i++){
+                if(EFTList[i].Id==SelectedShareLoan){
+                    component.set("v.EFTRecord.Share_Loan_Id__c",EFTList[i].Share_Loan_Id__c);
+                    component.set("v.EFTRecord.Member_Account__c",EFTList[i].Member_Account__c);
+                    //component.set("v.EFTRecord.Member_Account__r.Name",EFTList[i].Member_Account__r.Name);
+                    component.set("v.EFTRecord.Share_Loan_Description__c",EFTList[i].Share_Loan_Description__c);
+                    component.set("v.EFTRecord.Share_Loan_Type__c",EFTList[i].Share_Loan_Type__c);
+                    component.set("v.EFTRecord.Account_Number__c",EFTList[i].Account_Number__c);
+                    component.set("v.EFTRecord.Bank_Name__c",EFTList[i].Bank_Name__c);
+                    component.set("v.EFTRecord.Routing_Number__c",EFTList[i].Routing_Number__c);
+                    component.set("v.EFTRecord.Type__c",EFTList[i].Type__c);
+                    component.set("v.EFTRecord.Payment_Amount__c",EFTList[i].Payment_Amount__c);
+                    component.set("v.EFTRecord.Effective_Date__c",EFTList[i].Effective_Date__c);
+                    component.set("v.EFTRecord.Frequency__c",EFTList[i].Frequency__c);
+                    component.set("v.EFTRecord.Day_of_Month__c",EFTList[i].Day_of_Month__c);
+                     component.set("v.EFTRecord.Id",EFTList[i].Id);
+                    
+                    break;
+                }
+            }
+            evt.setParams({ "EFTRecord": component.get("v.EFTRecord")});
+            evt.fire();
+           
+            
+        }
 })

@@ -14,9 +14,10 @@
 <aura:attribute name="SelectedShareLoan" type="String" />
 <aura:registerEvent name="EFTEvent" type="c:EFTEvent"/>
 <aura:attribute name="EFTRecord" type="EFT__c" /> 
-  
+<aura:attribute name="EFTRecordsList" type="List" />   
 
  <div id = "stage3" class = "stage3">
+ <aura:if isTrue="{!(v.EFTRecord.Action_Type__c == 'Create')}">
             <div>
                 <p class = "fontstyle">Select a share or loan for this EFT record</p><br />
                     <table aria-multiselectable="true" class="slds-table slds-table_header-hidden slds-table_edit slds-tree slds-table_tree" role="treegrid">
@@ -89,5 +90,84 @@
                       </tbody>
                 </table>
             </div>
-       </div>
+ <aura:set attribute="else">
+    <div class="eftrecord">
+                <p class = "fontstyle">Select an EFT record</p><br />
+        <table aria-multiselectable="true" class="slds-table slds-table_header-hidden slds-table_edit slds-tree slds-table_tree" role="treegrid">
+                          <thead>
+                              <tr class="slds-line-height_reset">
+                                  <th class="slds-text-align_right" scope="col" style="width:3.25rem">
+                                      <span id="column-group-header" class="slds-assistive-text">Choose a row</span>
+                                      <div class="slds-th__action slds-th__action_form">
+                                          
+                                      </div>
+                                  </th>
+                                  <th aria-label="MemberNumber" class="loanth">
+                                      <a class="slds-th__action slds-text-link_reset" tabindex="-1">
+                                          <span class="slds-assistive-text">Sort by: </span>
+                                          <div class="slds-grid slds-grid_vertical-align-center slds-has-flexi-truncate">
+                                              <span class="slds-truncate" title="Member Number">Member Number</span>
+                                          </div>
+                                      </a>
+                                  </th>
+                                  <th aria-label="Share/Loan" class="loanth">
+                                      <a class="slds-th__action slds-text-link_reset" tabindex="-1">
+                                          <span class="slds-assistive-text">Sort by: </span>
+                                          <div class="slds-grid slds-grid_vertical-align-center slds-has-flexi-truncate">
+                                              <span class="slds-truncate" title="Share/Loan">Share/Loan</span>
+                                          </div>
+                                      </a>
+                                  </th>
+                                 <th aria-label="Amount" class="loanth">
+                                      <a class="slds-th__action slds-text-link_reset" tabindex="-1">
+                                          <span class="slds-assistive-text">Sort by: </span>
+                                          <div class="slds-grid slds-grid_vertical-align-center slds-has-flexi-truncate">
+                                              <span class="slds-truncate" title="Amount">Amount</span>
+                                          </div>
+                                      </a>
+                                  </th>
+                                  <th aria-label="Financial Institution" class="loanth">
+                                      <a class="slds-th__action slds-text-link_reset" tabindex="-1">
+                                          <span class="slds-assistive-text">Sort by: </span>
+                                          <div class="slds-grid slds-grid_vertical-align-center slds-has-flexi-truncate">
+                                              <span class="slds-truncate" title="Financial Institution">Financial Institution</span>
+                                          </div>
+                                      </a>
+                                  </th>    
+                              </tr>
+                           </thead>
+                      <tbody>
+                       <aura:iteration items="{!v.EFTRecordsList}" var="itemOption" indexVar="i">
+                       
+                       <tr aria-expanded="false" aria-level="1" aria-posinset="3" aria-selected="false" aria-setsize="4" class="slds-hint-parent">
+                          <td class="slds-text-align_right" role="gridcell" style="width:3.25rem">
+                            <div class="slds-radio">
+                              <span class="slds-radio">
+	                          <lightning:input type="radio" name="select" value="{!itemOption.Id}" onchange="{!c.onEFTSelect}"/>
+	                        </span>
+                            </div>
+                          </td>
+                          <td class="slds-text-align_right" role="gridcell" style="width:3.25rem">
+                            <div class="slds-truncate" title="{!itemOption.Member_Account__r.Name}">{!itemOption.Member_Account__r.Name}</div>
+                          </td>
+                          <td class="slds-text-align_right" role="gridcell" style="width:3.25rem">
+                            <div class="slds-truncate" title="{!itemOption.Share_Loan_Id__c}">{!itemOption.Share_Loan_Id__c}</div>
+                          </td>
+                         <td class="slds-text-align_right" role="gridcell" style="width:3.25rem">
+                            <div class="slds-truncate" title="{!itemOption.Payment_Amount__c}">{!itemOption.Payment_Amount__c}</div>
+                          </td>
+                          <td class="slds-text-align_right" role="gridcell" style="width:3.25rem">
+                            <div class="slds-truncate" title="{!itemOption.Bank_Name__c}">{!itemOption.Bank_Name__c}</div>
+                          </td>
+                        </tr>
+                         
+                       
+                       </aura:iteration>
+                          
+                      </tbody>
+                </table>
+     </div> 
+</aura:set>
+</aura:if>
+ </div>
 </aura:component>
