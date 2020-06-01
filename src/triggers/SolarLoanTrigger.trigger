@@ -114,13 +114,25 @@ trigger SolarLoanTrigger on Solar_Loans__c (after insert, after update, before u
                 trigger.new[i].Current_Solar_Loan_Stage__c = 'Stage 8';
             }
             
+            //----------------------------- Start - Updating DocuSign Document Status -----------------------------------//
+            
+            if(trigger.old[i].Status__c != trigger.new[i].Status__c && trigger.new[i].Status__c ==  'ACH Pending'){
+            	trigger.new[i].DocuSign_Document_Status__c = 'Sent';
+            }
+            
+            if(trigger.old[i].Status__c != trigger.new[i].Status__c && trigger.new[i].Status__c ==  'Completed'){
+            	trigger.new[i].DocuSign_Document_Status__c = 'Received';
+            }
+            
+            //----------------------------- End - Updating DocuSign Document Status -----------------------------------//
+            
             if(trigger.old[i].Status__c != trigger.new[i].Status__c && trigger.new[i].Status__c ==  'Declined'){
             	trigger.new[i].Current_Solar_Loan_Stage__c = 'Stage 5';
             }
             if(trigger.old[i].Status__c != trigger.new[i].Status__c && trigger.new[i].Status__c ==  'Expired'){
             	trigger.new[i].Current_Solar_Loan_Stage__c = 'Stage 5';
             }
-        }
+        } 
               
     }
     		
@@ -209,7 +221,7 @@ trigger SolarLoanTrigger on Solar_Loans__c (after insert, after update, before u
 	    
 	    
 	    //List<Account_Details__c> adList = [select id, Name, Brand__c, ID1__c, TypeTranslate__c,RecType__c from Account_Details__c where Name in:SLMemberNumber and Brand__c != null and RecType__c = 'LOAN' and TypeTranslate__c = '75-SECURED SOLAR'];
-	    List<Account_Details__c> adList = [select id, Name, Brand__c, ID1__c, TypeTranslate__c,RecType__c from Account_Details__c where Name in:SLMemberNumber and Brand__c != null and RecType__c = 'LOAN'];
+	    List<Account_Details__c> adList = [select id, Name, Brand__c, ID1__c, TypeTranslate__c,RecType__c from Account_Details__c where Name in:SLMemberNumber and Brand__c != null];
 	    
 		for(Solar_Loans__c sl : SLForBranchIds.values()){
 		
