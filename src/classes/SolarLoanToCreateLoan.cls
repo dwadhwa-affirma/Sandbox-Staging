@@ -117,7 +117,7 @@ public class SolarLoanToCreateLoan {
                //----------------------------------------------------------------// 
                 if(sl.Due_Date__c != null){
                 	
-                    DueDate = string.valueof(sl.Due_Date__c + 1);
+                    DueDate = string.valueof(sl.Due_Date__c);
                 	FirstPaymentDate = string.valueof(sl.Due_Date__c + 1);
                 }
             	else{
