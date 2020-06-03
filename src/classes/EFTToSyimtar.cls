@@ -23,6 +23,7 @@ public class EFTToSyimtar {
     public static HttpRequest req = new HttpRequest();
     public static String result;
     public static List<EFT__c> EFTRecordsToUpdate = new List<EFT__c>();
+   
     
     @future(callout=true)
     public static void insertEFTs(Set<id> ids){
@@ -73,7 +74,7 @@ public class EFTToSyimtar {
             		EffectiveDate = null;
             	}
             	
-                if(e.Alternate_Amount__c != null)
+                if(e.Payment_Amount__c != null)
                 	PostAmount = String.ValueOf(e.Payment_Amount__c);
                 else
                 	PostAmount = '0.00';
@@ -191,7 +192,7 @@ public class EFTToSyimtar {
             		EffectiveDate = null;
             	}
             	
-                if(e.Alternate_Amount__c != null)
+                if(e.Payment_Amount__c != null)
                 	PostAmount = String.ValueOf(e.Payment_Amount__c);
                 else
                 	PostAmount = '0.00';
@@ -234,17 +235,18 @@ public class EFTToSyimtar {
                 String result;
     
         		// JSon parse for Id                            
-        		result = String.valueOf(responseBody).substringAfter('EftLocator":"');
+        		result = String.valueOf(responseBody).substringAfter('Status":"');
 		    	result = String.valueOf(result).substringBefore('",');
 		    	System.debug('EFTLocator' + result);
 		    	
-		    	if(result == null || result == ''){
+		    	if(result != 'OK'){
 	            		
 	        		ErrorEFTLocator = String.valueOf(responseBody).substringAfter('[MessageId=TESTING] ');
 	        		ErrorEFTLocator = String.valueOf(ErrorEFTLocator).substringBefore('","ErrorDetails"');
 	        		system.debug('ErrorEFTLocator' + ErrorEFTLocator);
 	        	}
-		    	
+                
+               
             	//EFT__c s = new EFT__c();         
                 
                
@@ -252,7 +254,9 @@ public class EFTToSyimtar {
                 	e.Error_EftLocator__c = ErrorEFTLocator;
                 else
                 	e.Error_EftLocator__c = '';	
-               // s.id = sl.Id;                      
+               // s.id = sl.Id;    
+                 
+                               
                 EFTRecordsToUpdate.add(e);  
             	
                 
@@ -260,6 +264,7 @@ public class EFTToSyimtar {
         //}
             update EFTRecordsToUpdate;
         
+        	
         
     }
 }
