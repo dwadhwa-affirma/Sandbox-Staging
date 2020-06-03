@@ -37,3 +37,4 @@
 }
 
 .THIS.stage3 .slds-table{font-size:var(--lwc-fontSize3,0.8125rem); min-width:400px;}
+        .THIS .expired{color: red;}

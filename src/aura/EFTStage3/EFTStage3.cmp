@@ -139,7 +139,7 @@
                       <tbody>
                        <aura:iteration items="{!v.EFTRecordsList}" var="itemOption" indexVar="i">
                        
-                       <tr aria-expanded="false" aria-level="1" aria-posinset="3" aria-selected="false" aria-setsize="4" class="slds-hint-parent">
+                       <tr aria-expanded="false" aria-level="1" aria-posinset="3" aria-selected="false" aria-setsize="4" class="{!itemOption.Expired__c ? 'slds-hint-parent expired': 'slds-hint-parent'}">
                           <td class="slds-text-align_right" role="gridcell" style="width:3.25rem">
                             <div class="slds-radio">
                               <span class="slds-radio">
@@ -154,7 +154,7 @@
                             <div class="slds-truncate" title="{!itemOption.Share_Loan_Id__c}">{!itemOption.Share_Loan_Id__c}</div>
                           </td>
                          <td class="slds-text-align_right" role="gridcell" style="width:3.25rem">
-                            <div class="slds-truncate" title="{!itemOption.Payment_Amount__c}">{!itemOption.Payment_Amount__c}</div>
+                            <div class="slds-truncate" title="{!itemOption.Payment_Amount__c}"><lightning:formattedNumber value="{!itemOption.Payment_Amount__c}" style="currency" currencyCode="USD"/></div>
                           </td>
                           <td class="slds-text-align_right" role="gridcell" style="width:3.25rem">
                             <div class="slds-truncate" title="{!itemOption.Bank_Name__c}">{!itemOption.Bank_Name__c}</div>
