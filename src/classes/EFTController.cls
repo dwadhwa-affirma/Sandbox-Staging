@@ -66,6 +66,7 @@ public class EFTController {
             EFTRecordList[0].Frequency__c  =  EFTRecord.Frequency__c;
             EFTRecordList[0].Effective_Date__c  =  EFTRecord.Effective_Date__c;
             EFTRecordList[0].Day_of_Month__c  =  EFTRecord.Day_of_Month__c;
+            EFTRecordList[0].Action_Type__c  =  EFTRecord.Action_Type__c;
             update EFTRecordList;
             return EFTRecordList[0];
         }
@@ -99,7 +100,7 @@ public class EFTController {
                                                  Teritiary_Category__c,
                                                  Record_Type_Name__c,
                                                  SLA__c,
-                                                 RecordTypeId__c FROM CaseRecordType__c WHERE Primary_Category__c = 'Account Maintenance' AND Secondary_Category__c='Special Situations' AND Teritiary_Category__c='Unusual Activity' LIMIT 1];
+                                                 RecordTypeId__c FROM CaseRecordType__c WHERE Primary_Category__c = 'Account Maintenance' AND Secondary_Category__c='Account Services' AND Teritiary_Category__c='ACH - Authorization for Debit' LIMIT 1];
        
     		Group gp = [select Id, Name from Group where  Type = 'Queue' AND NAME = 'Authentication Failed – Unusual Activity'];
 			case cs = new case();
@@ -114,9 +115,18 @@ public class EFTController {
 				//cs.AccountId = EFTRecord.Member_Account__c;
 				cs.Status = 'Open';
 				cs.Subject = 'EFT Recorcd';
-				cs.ownerid = gp.id;
+				cs.ownerid = '005j000000DCwXHAA1';
 				//cs.CaseComments__c = casecomment;
 				cs.Account_Number__c = EFTRecord.Member_Account__c;
+        		cs.Description = 'Share/Loan:' + EFTRecord.Share_Loan_Id__c 
+                                    + '\n' + 'ABA/Routing#:' + EFTRecord.Routing_Number__c 
+                                     + '\n' +'Funding FI:' + EFTRecord.Bank_Name__c
+                                     + '\n' +'Account Number:' + EFTRecord.Account_Number__c
+                                     + '\n' +'Type:' + EFTRecord.Type__c
+                                     + '\n' +'Payment Amount:' + EFTRecord.Payment_Amount__c				 
+                                     + '\n' +'Effective Date:' + EFTRecord.Effective_Date__c
+                                     + '\n' +'Frequency:' + EFTRecord.Frequency__c
+                                     + '\n' +'Day of Month:' + EFTRecord.Day_of_Month__c;
 				insert cs;
         		id caseId = cs.id;
         		
@@ -127,7 +137,7 @@ public class EFTController {
         		
         		EFT__c ResultEFTRecord = [select id, name, Member_Account__c, Stage__c, Action_Type__c, Share_Loan_Id__c, Type__c	,Share_Loan_Type__c, Share_Loan_Description__c,
                                       Routing_Number__c, Bank_Name__c, Account_Number__c, Alternate_Amount__c,Effective_Date__c,
-                                      Frequency__c, Payment_Amount__c, Day_of_Month__c, Member_Account__r.name, Case__c, Case__r.CaseNumber, Case__r.Status	
+                                      Frequency__c, Payment_Amount__c, Day_of_Month__c, Member_Account__r.name, Case__c, Case__r.CaseNumber, Case__r.Status	, Expired__c
                                       from EFT__c where id =: EFTRecord.id limit 1];
                                       
                 List<EFT__c> EFTToSendACHDoc = new List<EFT__c>();
@@ -142,6 +152,8 @@ public class EFTController {
      //-------------------------------Send ACH Document-----------------------------------------------//
     @AuraEnabled
     public static void sendACHDocument(EFT__c recordId){
+        
+        String action = recordId.Action_Type__c	;
     	
     	List<EFT__c> EFTToUpdate = new List<EFT__c>();
   		String Email;
@@ -178,7 +190,7 @@ public class EFTController {
             /*if(MemberEmail.PersonEmail != null){
             	myRecipient = dfsle.Recipient.fromSource(Name,MemberEmail.PersonEmail,null,'Signer 1',new dfsle.Entity(recordId.get(i).Id));
             }*/
-            
+            system.debug(recordId.Member_Account__c);
             Person_Account__c paPrimary = [SELECT Id,PersonID__c,
                              Account_Number__c, Account_Number__r.RecType__c,TypeTranslate__c, Account_Number__r.Name, PersonID__r.Home_Phone__pc,PersonID__r.Residential_City__pc,PersonID__r.Residential_State__pc, PersonID__r.Residential_Street__pc, PersonID__r.Residential_Zipocde__pc, PersonID__r.Name, PersonID__r.Email_raw__c FROM Person_Account__c 
                              WHERE Account_Number__c =: recordId.Member_Account__c and TypeTranslate__c  like '%Primary%' limit 1];
@@ -195,10 +207,24 @@ public class EFTController {
 		            //	myTemplateId = dfsle.UUID.parse('dc16d8f8-571c-497e-bbf5-42d8b25d4ee1');  //Spectrum
 		            //}
 		            //else{
-		            	myTemplateId = dfsle.UUID.parse('ad01d585-ad0a-4e68-b537-7e75293f0ef8');  //Chevron	
+		            //Create EFT
+                    if(action == 'Create'){
+		            	myTemplateId = dfsle.UUID.parse('5658c430-8e5d-4f53-b910-4d9e939e52ee');  //Create EFT
+                    	myDocument =dfsle.Document.fromTemplate(myTemplateId,'Chevron ACH Debits - EFT');
+                    }
+                    //Expire EFT
+                    else if(action == 'Update' && recordId.Expired__c){
+		            	myTemplateId = dfsle.UUID.parse('5658c430-8e5d-4f53-b910-4d9e939e52ee'); //Expire EFT
+                        myDocument =dfsle.Document.fromTemplate(myTemplateId,'Chevron ACH Debits - EFT');
+                    }
+                    //Update EFT
+                    else if(action == 'Update' && !recordId.Expired__c){
+		            	myTemplateId = dfsle.UUID.parse('5658c430-8e5d-4f53-b910-4d9e939e52ee'); //Update EFT
+                        myDocument =dfsle.Document.fromTemplate(myTemplateId,'Spectrum ACH Debits');
+                    }
 		            //}
 		            
-		            myDocument =dfsle.Document.fromTemplate(myTemplateId,'Spectrum ACH Debits');
+		           // myDocument =dfsle.Document.fromTemplate(myTemplateId,'Spectrum ACH Debits');
        			    Depositary = new dfsle.CustomField('text','##SFEFT__c',recordId.Id, null,true, true);
         		    myEnvelope = new dfsle.Envelope(null,null, null,null,new List<dfsle.Document> { myDocument },null,new List<dfsle.CustomField> { Depositary },null,
 															'ACH Debits',
@@ -218,10 +244,13 @@ public class EFTController {
             DocuSignId = String.valueOf(DocuSignId).substringBefore(',');
             system.debug('tttt1'+DocuSignId);
             
-            EFT__c e = new EFT__c();
+            EFT__c e = new EFT__c();        	
             e.id = recordId.Id;
+        	if(action == 'Create')
             e.DocuSignId__c = DocuSignId.toUpperCase();
-            
+            else if(action == 'Update' && !recordId.Expired__c)
+            e.Update_DocuSignId__c = DocuSignId.toUpperCase();
+                
             EFTToUpdate.add(e);
         //}
         
@@ -433,9 +462,9 @@ public class EFTController {
        				}
             }
             System.debug('EFTLocatorsSet ....' + EFTLocatorsSet);
-            List<EFT__c> EFTList = [select id, name, Member_Account__c, Stage__c, Action_Type__c, Share_Loan_Id__c, Type__c	,Share_Loan_Type__c, 	
+            List<EFT__c> EFTList = [select id, name,EFT_ID_Type__c, Member_Account__c, Stage__c, Action_Type__c, Share_Loan_Id__c, Type__c	,Share_Loan_Type__c, 	
                                     Share_Loan_Description__c, Routing_Number__c, Bank_Name__c, Account_Number__c, Alternate_Amount__c,Effective_Date__c,
-                                      Frequency__c, Payment_Amount__c, Day_of_Month__c, Member_Account__r.name, Case__c, Case__r.CaseNumber
+                                      Frequency__c, Payment_Amount__c, Day_of_Month__c, Member_Account__r.name, Case__c, Case__r.CaseNumber, expired__C
                                       from EFT__c where Member_Account__c =: recordId and EftLocator__c in: EFTLocatorsSet];
             
             return EFTList;       
