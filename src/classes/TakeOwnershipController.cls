@@ -17,6 +17,21 @@ public class TakeOwnershipController {
     	
     		update selectedCase[0];
     		return 'true';
+    	}
+    	else if(Solar_Loans__c.sObjectType == objType)
+    	{
+    		
+    	
+	    	Solar_Loans__c selectedSolarLoan = new Solar_Loans__c();
+	    	selectedSolarLoan = [Select Id, OwnerId from Solar_Loans__c Where Id =: caseId limit 1];
+	    	system.debug('Queue##'+selectedSolarLoan);
+	    	
+    		selectedSolarLoan.OwnerId = currentUserId;
+    		
+    		update selectedSolarLoan;
+    		return 'true';
+	    	  	
+    	
     	}    	
     	else if(Lead.sObjectType == objType)
     	{
