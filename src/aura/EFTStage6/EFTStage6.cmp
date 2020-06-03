@@ -40,7 +40,7 @@
                         <td>{!v.EFTRecord.Bank_Name__c}</td>
                     </tr>
                     <tr>
-                    	<td>Payment:</td><td>{!v.EFTRecord.Payment_Amount__c}</td> 
+                    	<td>Payment:</td><td><lightning:formattedNumber value="{!v.EFTRecord.Payment_Amount__c}" style="currency" currencyCode="USD"/></td> 
                     </tr>
                     <tr>
                 		<td>Effective Date:</td>
@@ -87,7 +87,7 @@
                         <td>{!v.EFTRecord.Type__c}</td>
                     </tr>
                     <tr>
-                    	<td>Payment:</td><td>{!v.EFTRecord.Payment_Amount__c}</td> 
+                    	<td>Payment:</td><td><lightning:formattedNumber value="{!v.EFTRecord.Payment_Amount__c}" style="currency" currencyCode="USD"/></td> 
                     </tr>
                     <tr>
                 		<td>Effective Date:</td>
@@ -130,7 +130,7 @@
                         <td>{!v.EFTRecord.Type__c}</td>
                     </tr>
                     <tr>
-                    	<td>Payment:</td><td>{!v.EFTRecord.Payment_Amount__c}</td> 
+                    	<td>Payment:</td><td><lightning:formattedNumber value="{!v.EFTRecord.Payment_Amount__c}" style="currency" currencyCode="USD"/></td> 
                     </tr>
                 </table>
             </div>
@@ -164,7 +164,7 @@
                         <td>{!v.EFTRecord.Bank_Name__c}</td>
                     </tr>
                     <tr>
-                    	<td>Payment:</td><td>{!v.EFTRecord.Payment_Amount__c}</td> 
+                    	<td>Payment:</td><td><lightning:formattedNumber value="{!v.EFTRecord.Payment_Amount__c}" style="currency" currencyCode="USD"/></td> 
                     </tr>
                     <tr>
                 		<td>Effective Date:</td>
@@ -182,4 +182,5 @@
             </div>
            </aura:if>
        </div>
+    <lightning:spinner aura:id="Spinner" alternativeText="Loading" size="medium" variant="brand" class="slds-hide spin"/>
 </aura:component>

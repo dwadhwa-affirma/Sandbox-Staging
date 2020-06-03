@@ -1,6 +1,7 @@
 ({
 	doInit : function(component, event, helper) {
         debugger;
+        helper.showSpinner(component);
         if(component.get("v.EFTRecord.Expired__c")){
             component.set("v.UpdateText","Expire");
         }
@@ -17,8 +18,10 @@
 			if(state === "SUCCESS"){				
 				var res = resp.getReturnValue();
                 component.set("v.EFTRecord",res);
-                if(component.get("v.EFTRecord.Action_Type__c") == 'Create')
-                helper.sendACHDocument(component, event, helper);
+                if(component.get("v.EFTRecord.Action_Type__c") == 'Create' || (component.get("v.EFTRecord.Action_Type__c") == 'Update' && !component.get("v.EFTRecord.Expired__c")))
+				{
+                    helper.sendACHDocument(component, event, helper);
+                }
 				/*var eft =[];
 				eft=res;
                 component.set("v.EFTRecord",eft[0]);
@@ -42,7 +45,7 @@
                 
                 component.set("v.EFTRecord",res);
                 component.set("v.EFTRecord.Action_Type__c", "View");
-                
+                helper.hideSpinner(component);
 				}
 			});
         $A.enqueueAction(action);
