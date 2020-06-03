@@ -275,8 +275,8 @@ public class SolarLoanToCreateLoan {
 	            	UserAmount11 = '0';
 	            	
 	            
-	            if(sl.Loan_Pmt_Amount__c != null)
-	            	UserAmount12 = string.ValueOF(sl.Loan_Pmt_Amount__c);
+	            if(sl.Go_To_Payment__c != null)
+	            	UserAmount12 = string.ValueOF(sl.Go_To_Payment__c);
 	            else
 	            	UserAmount12 = '0';
 	            	
