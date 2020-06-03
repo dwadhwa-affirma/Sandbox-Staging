@@ -84,7 +84,7 @@
 		                 	component.set("v.ContinueButtonName", 'Send ACH Document');
 		                }
 		           else if(i==3){
-		            		dynamicText = component.get("v.EFTRecord.Payment_Amount__c"); 
+		            		dynamicText = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(component.get("v.EFTRecord.Payment_Amount__c")); 
 		            		stages2[i+1].Stage_Action__c = 'Pending Verification';               	
 		                }
 		             if(i !=2 && component.get("v.ContinueButtonName") == 'Send ACH Document'){
@@ -105,7 +105,8 @@
                          if(i==1 && component.get("v.EFTRecord.Action_Type__c") == "View"){
                              component.set("v.ActiveStepIndex", 5);
                              stages2[4].Stage_Action__c = 'Existing'; 
-                             stages2[3].Stage_Action__c = component.get("v.EFTRecord.Payment_Amount__c");
+                            // console.log();
+                             stages2[3].Stage_Action__c = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(component.get("v.EFTRecord.Payment_Amount__c"));
                              stages2[2].Stage_Action__c = component.get("v.EFTRecord.Bank_Name__c");
                              $A.createComponent("c:"+stages[4].Stage_Component__c,{recordId: component.get("v.recordId"), EFTRecord: component.get("v.EFTRecord")},
                                 function(msgBox){                
@@ -124,7 +125,7 @@
                          else if(i==1 && component.get("v.EFTRecord.Action_Type__c") == "Expire"){
                              component.set("v.ActiveStepIndex", 4);
                              stages2[4].Stage_Action__c = 'Existing'; 
-                             stages2[3].Stage_Action__c = component.get("v.EFTRecord.Payment_Amount__c");
+                             stages2[3].Stage_Action__c = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(component.get("v.EFTRecord.Payment_Amount__c"));
                              stages2[2].Stage_Action__c = component.get("v.EFTRecord.Bank_Name__c");
                              $A.createComponent("c:"+stages[4].Stage_Component__c,{recordId: component.get("v.recordId"), EFTRecord: component.get("v.EFTRecord")},
                                 function(msgBox){                

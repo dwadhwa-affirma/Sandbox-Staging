@@ -8,7 +8,7 @@
       }
       return 0;
     },
-    
+       
     showSpinner: function(component) {
 		var spinnerMain =  component.find("Spinner");
 		$A.util.removeClass(spinnerMain, "slds-hide");
