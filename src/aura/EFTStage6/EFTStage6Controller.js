@@ -6,7 +6,7 @@
             component.set("v.UpdateText","Expire");
         }
         
-        if(component.get("v.EFTRecord.Action_Type__c") != 'Expire' 
+        if(component.get("v.EFTRecord.Action_Type__c") != 'Expire' && !component.get("v.EFTRecord.Expired__c")
            && component.get("v.EFTRecord.Action_Type__c") != 'View'){
 		var action = component.get("c.createCase");
 		//var recordId = component.get("v.recordId");	
@@ -32,7 +32,7 @@
         $A.enqueueAction(action);
         }
         
-        if(component.get("v.EFTRecord.Action_Type__c") == 'View'){
+        if(component.get("v.EFTRecord.Action_Type__c") == 'View' || component.get("v.EFTRecord.Expired__c")){
 		var action = component.get("c.getEFT");
 		//var recordId = component.get("v.recordId");	
 		action.setParams({
@@ -40,11 +40,16 @@
 		});	
 		action.setCallback(this, function(resp) {			
 			var state=resp.getState();			
-			if(state === "SUCCESS"){				
+			if(state === "SUCCESS"){
+						
 				var res = resp.getReturnValue();
                 
                 component.set("v.EFTRecord",res);
-                component.set("v.EFTRecord.Action_Type__c", "View");
+                if(!component.get("v.EFTRecord.Expired__c")){
+                
+                	component.set("v.EFTRecord.Action_Type__c", "View");
+                	
+                }
                 helper.hideSpinner(component);
 				}
 			});
