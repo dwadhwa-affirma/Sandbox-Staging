@@ -78,6 +78,7 @@
 				var result = resp.getReturnValue();   
                  //component.set("v.ActiveStepIndex", 4);
                  component.set("v.EFTRecord.Expired__c", true);
+                  //component.set("v.EFTRecord.Expiration_Date__c", result.Expiration_Date__c);
                  var stages2 = [];
 		       	stages2 = component.get("v.EFTStageDetails");
                  stages2[4].Stage_Action__c = 'Pending Verification'; 
