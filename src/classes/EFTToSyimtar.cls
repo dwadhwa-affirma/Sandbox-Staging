@@ -168,14 +168,11 @@ public class EFTToSyimtar {
         List<EFT__c> EFTlist = new List<EFT__c>();         
     List<EFT__c> EFTs = [SELECT Account_Number__c,Action_Type__c,Alternate_Amount__c,Bank_Name__c,
                          CreatedById,CreatedDate,Day_of_Month__c,DocuSignId__c,Effective_Date__c,
-                         Frequency__c,Id,Member_Account__c,Member_Account__r.Brand__c,Member_Account__r.Name, Member__c,Name,
-                         OwnerId,Payment_Amount__c,Routing_Number__c,Share_Loan_Id__c,Stage__c,EftLocator__c,
+                         Frequency__c,Id,Member_Account__c,Member_Account__r.Brand__c,Member_Account__r.Name, Member__c,Name,Case__c,
+                         OwnerId,Payment_Amount__c,Routing_Number__c,Share_Loan_Id__c,Stage__c,EftLocator__c,Share_Loan_Description__c,Share_Loan_Type__c,
                          Status__c,Type__c, EFT_ID_Type__c FROM EFT__c where id =: ids];
         
-        /*if(isExpired){
-            
-            
-        }*/
+        map<Id, String> CaseIdsToUpdate = new Map<Id, String>();
         //else{
     
     		for(EFT__c e : EFTs){
@@ -219,7 +216,7 @@ public class EFTToSyimtar {
                 		MatchID3 = MatchID3.left(21);
                 	}
                 }
-                system.debug('MatchID3'+MatchID3);    
+                system.debug('Reference'+Reference);    
                 AccountNumber = e.Member_Account__r.Name;
                 
                 //req.setEndpoint('https://brscsymx.ctxcu.org/dev/EFT/CreateEft');
@@ -248,11 +245,20 @@ public class EFTToSyimtar {
                 }
                 
                 String result;
+                string resultEFTLocator, resultExpDate;
     
         		// JSon parse for Id                            
         		result = String.valueOf(responseBody).substringAfter('Status":"');
 		    	result = String.valueOf(result).substringBefore('",');
-		    	System.debug('EFTLocator' + result);
+		    	System.debug('Status' + result);
+		    	
+		    	resultEFTLocator = String.valueOf(responseBody).substringAfter('EftLoctorId":"');
+		    	resultEFTLocator = String.valueOf(resultEFTLocator).substringBefore('",');
+		    	System.debug('EFTLocator' + resultEFTLocator);
+		    	
+		    	resultExpDate = String.valueOf(responseBody).substringAfter('ExpirationDate":"');
+		    	resultExpDate = String.valueOf(resultExpDate).substringBefore('",');
+		    	System.debug('resultExpDate' + resultExpDate);
 		    	
 		    	if(result != 'OK'){
 	            		
@@ -260,7 +266,41 @@ public class EFTToSyimtar {
 	        		ErrorEFTLocator = String.valueOf(ErrorEFTLocator).substringBefore('","ErrorDetails"');
 	        		system.debug('ErrorEFTLocator' + ErrorEFTLocator);
 	        	}
-                
+	        	
+	        	else if(result == 'OK'){
+	        		if(resultEFTLocator != '' && resultEFTLocator != null && EftLocator != resultEFTLocator){
+	        			e.expired__c = true;
+	        			e.Expiration_Date__c = Date.valueOf(resultExpDate);
+	        			//e.EftLocator__c = resultEFTLocator;
+	        			
+	        			//EFT__c newEFT = new EFT__c();
+	        			EFT__c newEFT = e.clone(false);
+	        			newEFT.expired__c = false;
+	        			newEFT.Expiration_Date__c = null;
+	        			newEFT.EftLocator__c = resultEFTLocator;
+	        			newEFT.Share_Loan_Description__c = e.Share_Loan_Description__c;
+	        			newEFT.Share_Loan_Type__c = e.Share_Loan_Type__c;
+	        			newEFT.Case__c = e.Case__c;
+						insert newEFT;
+	        		}
+	        		if(isExpired){
+	        			e.Expiration_Date__c = Date.valueOf(resultExpDate);
+	        			 Datetime dt = datetime.newInstance(Date.valueOf(resultExpDate).year(), Date.valueOf(resultExpDate).month(),Date.valueOf(resultExpDate).day());
+	        			string operation = 'EFT Record Expired' + '\n' + 'Expiration Date:' + dt.format('MM/dd/yyyy') + '\n' ;
+	        			operation = operation + 'Share/Loan:' + e.Share_Loan_Id__c 
+                                    + '\n' + 'ABA/Routing#:' + e.Routing_Number__c 
+                                     + '\n' +'Funding FI:' + e.Bank_Name__c
+                                     + '\n' +'Account Number:' + e.Account_Number__c
+                                     + '\n' +'Type:' + e.Type__c
+                                     + '\n' +'Payment Amount:' + e.Payment_Amount__c				 
+                                     + '\n' +'Effective Date:' + e.Effective_Date__c
+                                     + '\n' +'Frequency:' + e.Frequency__c
+                                     + '\n' +'Day of Month:' + e.Day_of_Month__c;
+	        			CaseIdsToUpdate.put(e.Case__c, operation);
+	        		}
+	        	}     
+	        	
+	        	         
                
             	//EFT__c s = new EFT__c();         
                 
@@ -278,6 +318,15 @@ public class EFTToSyimtar {
             }
         //}
             update EFTRecordsToUpdate;
+            
+             if(CaseIdsToUpdate.size() > 0){  
+		        List<Case> UpdateCasesList = [select id, status from case where id in: CaseIdsToUpdate.keySet()];
+		        for(Case cs: UpdateCasesList){
+		         	 cs.Description = CaseIdsToUpdate.get(cs.id);
+		        }
+		            update UpdateCasesList;
+		    }
+            
         
         	
         
