@@ -32,7 +32,7 @@ public class EFTController {
     public static EFT__c getEFT(EFT__c EFTRecord){
         EFT__c ResultEFTRecord = [select id, name, Member_Account__c, Stage__c, Action_Type__c, Share_Loan_Id__c, Type__c	,Share_Loan_Type__c, Share_Loan_Description__c,
                                       Routing_Number__c, Bank_Name__c, Account_Number__c, Alternate_Amount__c,Effective_Date__c,
-                                      Frequency__c, Payment_Amount__c, Day_of_Month__c, Member_Account__r.name, Case__c, Case__r.CaseNumber, Case__r.Status	
+                                      Frequency__c, Payment_Amount__c, Day_of_Month__c, Member_Account__r.name, Case__c, Case__r.CaseNumber, Case__r.Status	, Expired__c
                                       from EFT__c where id =: EFTRecord.id limit 1];
         
         return ResultEFTRecord;
@@ -67,6 +67,8 @@ public class EFTController {
             EFTRecordList[0].Effective_Date__c  =  EFTRecord.Effective_Date__c;
             EFTRecordList[0].Day_of_Month__c  =  EFTRecord.Day_of_Month__c;
             EFTRecordList[0].Action_Type__c  =  EFTRecord.Action_Type__c;
+            EFTRecordList[0].Update_DocuSignId__c  =  '';
+            EFTRecordList[0].Update_Docusign_Status__c  =  '';
             update EFTRecordList;
             return EFTRecordList[0];
         }
@@ -75,16 +77,25 @@ public class EFTController {
     
     @AuraEnabled
     public static EFT__c expireEFT(EFT__c EFTRecord){
+    	
        // system.debug('EFTRecordString=='+EFTRecordString);
         //EFT__c EFTRecord = (EFT__c) System.JSON.deserialize(EFTRecordString, EFT__c.Class);
         system.debug('EFTRecordId=='+EFTRecord.Action_Type__c);
-        EFT__c EFTRecordList = [Select id, name, Member_Account__c, Stage__c, Action_Type__c, Expired__c from EFT__c where id =:EFTRecord.Id limit 1];
-        
-        system.debug('EFTRecordList.size=='+EFTRecordList);
+        EFT__c EFTRecordList = [Select Account_Number__c,Action_Type__c,Alternate_Amount__c,Bank_Name__c,
+                         CreatedById,CreatedDate,Day_of_Month__c,DocuSignId__c,Effective_Date__c,Expiration_Date__c,
+                         Frequency__c,Id,Member_Account__c,Member_Account__r.Brand__c,Member_Account__r.Name, Member__c,Name,Case__c,
+                         OwnerId,Payment_Amount__c,Routing_Number__c,Share_Loan_Id__c,Stage__c,EftLocator__c,Share_Loan_Description__c,Share_Loan_Type__c,
+                         Status__c,Type__c, EFT_ID_Type__c, Expired__c from EFT__c where id =:EFTRecord.Id limit 1];
         if(EFTRecordList != null){            
             EFTRecordList.Expired__c  =  true;
+            EFT__c ResultEFTRecord = createCase(EFTRecordList);
+            EFTRecordList.Case__c = ResultEFTRecord.case__c;
             update EFTRecordList;
         }
+        system.debug('EFTRecordList.size=='+EFTRecordList);
+        
+        
+       // EFT__c EFTRecordList1 = [Select id, name, Member_Account__c, Stage__c, Action_Type__c, Expired__c, Expiration_Date__c from EFT__c where id =:EFTRecord.Id limit 1];
         
 		return EFTRecordList;        
     }
@@ -125,6 +136,7 @@ public class EFTController {
 					operation = 'EFT Record Updated'  + '\n';
 				}
 				else if(EFTRecord.Action_Type__c == 'Update' && EFTRecord.Expired__c){
+					
 					operation = 'EFT Record Expired' + '\n' + 'Expiration Date:' + EFTRecord.Expiration_Date__c + '\n' ;
 				}
 				cs.Account_Number__c = EFTRecord.Member_Account__c;
@@ -511,6 +523,7 @@ public class EFTController {
                        		//objEFT.Member_Account__r.Name = String.valueOf(localAcc.get('AccountNumber')); */      		
                        		string locator = String.valueOf(localAcc.get('EftLocator'));                       		
                        		EFTLocatorsSet.add(locator);
+                       		system.debug('EXPDATE=='+String.valueOf(localAcc.get('Reference'))) ; 
                        		//EFTList.add(objEFT);
        				}
        				
