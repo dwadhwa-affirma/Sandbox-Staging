@@ -17,7 +17,9 @@ trigger SolarLoanTrigger on Solar_Loans__c (after insert,before insert, after up
     
     Map<Id,Solar_Loans__c> SolarLoanMap =new Map<Id,Solar_Loans__c>();
     Map<Id,Solar_Loans__c> SLToUpdates = new Map<Id,Solar_Loans__c>();
-    String soqlQuery;
+    String String1;
+    String String2;
+    
     List<Group> queList = [Select id, Name from Group where name = 'Solar Loans Queue' limit 1];
     
     //------------------------------------------------Before Insert ----------------------------------------------//
@@ -71,11 +73,14 @@ trigger SolarLoanTrigger on Solar_Loans__c (after insert,before insert, after up
              
         	SLForMemberName.add(trigger.new[i]);
             SLMemberFirstName.add(trigger.new[i].Primary_First_Name__c);
-            SLMemberLastName.add(trigger.new[i].Primary_Last_Name__c );
+            String1 = trigger.new[i].Primary_Last_Name__c;
+            String2= String1.SubStringBefore(' ');
+            SLMemberLastName.add(String2);
             
         }
         system.debug('SLMemberFirstName'+SLMemberFirstName);
         system.debug('SLMemberLastName'+SLMemberLastName);
+        system.debug('SLForMemberName'+SLForMemberName);
         //--------------------------Updating "Member Name" based on "Name" field from Solar Loan record ---------------------------//
     	
 		if(SLMemberFirstName.size() > 0 && SLMemberLastName.size() > 0){
@@ -87,7 +92,7 @@ trigger SolarLoanTrigger on Solar_Loans__c (after insert,before insert, after up
 				
 				for(Account member : memberList){
 					
-					if(member.FirstName == slName.Primary_First_Name__c && member.LastName == slName.Primary_Last_Name__c){
+					if(member.FirstName == slName.Primary_First_Name__c && member.LastName == String2){
 					
 						Solar_Loans__c sName = new Solar_Loans__c();
 			    		sName.id = slName.id;
@@ -211,7 +216,9 @@ trigger SolarLoanTrigger on Solar_Loans__c (after insert,before insert, after up
             if(trigger.old[i].Name__c != trigger.new[i].Name__c || trigger.new[i].Member_Name__c == null){ 
             	SLForMemberName.add(trigger.new[i]);
                 SLMemberFirstName.add(trigger.new[i].Primary_First_Name__c);
-                SLMemberLastName.add(trigger.new[i].Primary_Last_Name__c );
+                String1 = trigger.new[i].Primary_Last_Name__c;
+            	String2= String1.SubStringBefore(' ');
+            	SLMemberLastName.add(String2);
             }
             
             //------------------------------- Update "Four Digit share/loan type" in "Solar Loan" record------------------------//
@@ -233,7 +240,7 @@ trigger SolarLoanTrigger on Solar_Loans__c (after insert,before insert, after up
 				
 				for(Account member : memberList){
 					
-					if(member.FirstName == slName.Primary_First_Name__c && member.LastName == slName.Primary_Last_Name__c){
+					if(member.FirstName == slName.Primary_First_Name__c && member.LastName == String2){
 					
 						Solar_Loans__c sName = new Solar_Loans__c();
 			    		sName.id = slName.id;
