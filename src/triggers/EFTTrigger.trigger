@@ -9,7 +9,7 @@ trigger EFTTrigger on EFT__c (after insert, after update, before update) {
     Set<Id> EFTIdsForExpireCreate = new Set<Id>();
     public static Set<Id> CaseIdsToUpdate = new Set<Id>();
     
-    if(Trigger.isInsert){
+  /*  if(Trigger.isInsert){
         for(Integer i=0; i<trigger.new.size(); i++){
         
             //------------------------------- Checking if the status is being changed and status = 'Completed'-----------------------------------------------//
@@ -19,7 +19,7 @@ trigger EFTTrigger on EFT__c (after insert, after update, before update) {
                 CaseIdsToUpdate.add(trigger.new[i].Case__c); 
             }   
         }        
-    }
+    }*/
     		
     if(Trigger.isAfter && Trigger.isUpdate){
         
@@ -33,7 +33,7 @@ trigger EFTTrigger on EFT__c (after insert, after update, before update) {
             }
             
              //------------------------------- Checking if only payment information changed-----------------//
-            if((trigger.old[i].Update_Docusign_Status__c != 'Completed' && trigger.new[i].Update_Docusign_Status__c == 'Completed')
+            else if((trigger.old[i].Update_Docusign_Status__c != 'Completed' && trigger.new[i].Update_Docusign_Status__c == 'Completed')
               /* && (trigger.old[i].Routing_Number__c == trigger.new[i].Routing_Number__c
               && trigger.old[i].Account_Number__c == trigger.new[i].Account_Number__c
               && trigger.old[i].Bank_Name__c == trigger.new[i].Bank_Name__c
@@ -60,7 +60,7 @@ trigger EFTTrigger on EFT__c (after insert, after update, before update) {
             
             //------------------------------- Checking if Only Expired-----------------//
             else if((trigger.old[i].Expired__c != trigger.new[i].Expired__c
-              && trigger.new[i].Expired__c == true)){
+              && trigger.new[i].Expired__c == true && trigger.new[i].Expiration_Date__c == null)){
                 EFTIdsForExpire.add(trigger.new[i].id);
                 CaseIdsToUpdate.add(trigger.new[i].Case__c);
             }
@@ -76,6 +76,7 @@ trigger EFTTrigger on EFT__c (after insert, after update, before update) {
      //------------------------------- Update "EFT" record ------------------------------------------//
     if(EFTIdsForUpdate.size() > 0){        
          EFTToSyimtar.UpdateEFT(EFTIdsForUpdate, false);
+         system.debug('EFTIdsForUpdate=='+EFTIdsForUpdate);
     }
     
      //------------------------------- Expire and Create EFT Record------------------------------------------//
@@ -89,7 +90,7 @@ trigger EFTTrigger on EFT__c (after insert, after update, before update) {
          EFTToSyimtar.UpdateEFT(EFTIdsForExpire, true);         
     }
     
-    if(EFTIdsForExpire.size() > 0){  
+    if(CaseIdsToUpdate.size() > 0){  
         List<Case> UpdateCasesList = [select id, status from case where id in: CaseIdsToUpdate];
         for(Case c: UpdateCasesList){
             	c.OwnerId = '005j000000DCwXHAA1';
