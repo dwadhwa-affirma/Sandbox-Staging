@@ -56,14 +56,29 @@ public class EFTToSyimtar {
               	else if(e.EFT_ID_Type__c == 'Loan')
               		IDType = '1';
                 ID = e.Share_Loan_Id__c;
-               	Frequency = '4';
+                
+                /*if(e.Frequency__c != null){
+               		Frequency = String.ValueOf(e.Frequency__c);
+               	}
+            	else{
+            		Frequency = '0';
+            	}*/
+            	Frequency = '4';
+                
+                if(e.Effective_Date__c != null){
+               		Day1 = '0';//String.ValueOf(e.Day_of_Month__c);
+               	}
+            	else{
+            		Day1 = '0';
+            	}
+               
                	
-               	if(e.Effective_Date__c != null){
+               /*	if(e.Effective_Date__c != null){
                		Day1 = '0'; //String.valueof(sl.Due_Date__c.day());
                	}
             	else{
             		Day1 = '0';
-            	}	
+            	}	*/
                 if(e.Effective_Date__c != null){
                 	
                     NextDate = string.valueof(e.Effective_Date__c + 1);
@@ -81,7 +96,7 @@ public class EFTToSyimtar {
                 Payee = e.Routing_Number__c.leftPad(10,'0');
                 Reference = e.Account_Number__c ;
                 if(e.Bank_Name__c != null){
-                	MatchID3 = e.Bank_Name__c;
+                        MatchID3 = e.Bank_Name__c;
                 	if(MatchID3.length() > 22){
                 		MatchID3 = MatchID3.left(21);
                 	}

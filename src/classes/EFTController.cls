@@ -117,8 +117,18 @@ public class EFTController {
 				cs.Subject = 'EFT Recorcd';
 				cs.ownerid = '005j000000DCwXHAA1';
 				//cs.CaseComments__c = casecomment;
+				string operation='';
+				if(EFTRecord.Action_Type__c == 'Create'){
+					operation = 'EFT Record Created' + '\n';
+				}
+				else if(EFTRecord.Action_Type__c == 'Update' && !EFTRecord.Expired__c){
+					operation = 'EFT Record Updated'  + '\n';
+				}
+				else if(EFTRecord.Action_Type__c == 'Update' && EFTRecord.Expired__c){
+					operation = 'EFT Record Expired' + '\n' + 'Expiration Date:' + EFTRecord.Expiration_Date__c + '\n' ;
+				}
 				cs.Account_Number__c = EFTRecord.Member_Account__c;
-        		cs.Description = 'Share/Loan:' + EFTRecord.Share_Loan_Id__c 
+        		cs.Description = operation + 'Share/Loan:' + EFTRecord.Share_Loan_Id__c 
                                     + '\n' + 'ABA/Routing#:' + EFTRecord.Routing_Number__c 
                                      + '\n' +'Funding FI:' + EFTRecord.Bank_Name__c
                                      + '\n' +'Account Number:' + EFTRecord.Account_Number__c
@@ -447,21 +457,68 @@ public class EFTController {
         	System.debug('strBody ....' + strBody);
         
         	set<string> EFTLocatorsSet = new set<string>();
-        	
+        	set<string> MemberNumbers = new set<string>();
+        	//List<EFT__c> EFTList= new List<EFT__c>();
         	if(strBody!=''){        
        			List<Object> results = (List<Object>) JSON.deserializeUntyped(response.getBody());      
          		System.debug('Service response is ....' + results);
                 
+                 for(Object t : results){
+                 	EFTWrapperObject temp = new EFTWrapperObject();
+                    map<string, object> localAcc = (map<string, object>)t; 
+                    MemberNumbers.add(String.valueOf(localAcc.get('AccountNumber')));  
+                 }
+                 
+                 map<string, string> mapAccountIdName= new map<string, string>();
+       				List<account_details__c> MemberAccountsList = [select id, name from account_details__c where name in: MemberNumbers and RecType__c = 'ACCT'];
+       				if(MemberAccountsList.size() > 0){
+       					for(account_details__c s: MemberAccountsList){
+       						mapAccountIdName.put(s.Name, s.Id);
+       					}
+       				}
                 
                  for(Object t : results){
-                      System.debug('T ....' + T);
+                      		System.debug('T ....' + T);
                    			EFTWrapperObject temp = new EFTWrapperObject();
-                       		map<string, object> localAcc = (map<string, object>)t;                       		
+                       		map<string, object> localAcc = (map<string, object>)t;   
+                       		/*EFT__c objEFT = new EFT__c();
+                       		objEFT.Routing_Number__c = String.valueOf(localAcc.get('Payee')); 
+                       		objEFT.Account_Number__c = String.valueOf(localAcc.get('Reference'));
+                       		system.debug('Account_Number__c=='+objEFT.Account_Number__c);
+                       		objEFT.Payment_Amount__c = Decimal.valueOf(String.valueOf(localAcc.get('Amount')));
+                       		if(String.valueOf(localAcc.get('EffectiveDate')) != '' && String.valueOf(localAcc.get('EffectiveDate')) != null)
+                       		objEFT.Effective_Date__c = Date.valueOf(String.valueOf(localAcc.get('EffectiveDate')));
+                       		objEFT.Frequency__c = String.valueOf(localAcc.get('Frequency'));
+                       		objEFT.Day_of_Month__c = String.valueOf(localAcc.get('Day1'));
+                       		objEFT.Bank_Name__c = String.valueOf(localAcc.get('FinancialInstitution'));
+                       		objEFT.Share_Loan_Id__c = String.valueOf(localAcc.get('Id'));
+                       		objEFT.EftLocator__c = String.valueOf(localAcc.get('EftLocator'));
+                       		//objEFT.Member_Account__c = 'a0Of100000GF8xOEAT';
+                       		if(String.valueOf(localAcc.get('AmountCode')) == '37')                       		
+                       			objEFT.Type__c = 'Savings'; 
+                       		else
+                       		    objEFT.Type__c = 'Checking';  
+                       		if(String.valueOf(localAcc.get('ExpirationDate')) != null && String.valueOf(localAcc.get('ExpirationDate')) != ''){
+                       			Date expDate = Date.valueOf(String.valueOf(localAcc.get('ExpirationDate')));
+                       			if(expDate <= Date.today())
+                       				objEFT.expired__c = true;
+                       		}     
+                       		//system.debug('EXPDATE=='+String.valueOf(localAcc.get('ExpirationDate'))) ;      		
+                       		objEFT.EftLocator__c = String.valueOf(localAcc.get('EftLocator__c'));    
+                       		objEFT.Member_Account__r = new account_details__c(id =mapAccountIdName.get(String.valueOf(localAcc.get('AccountNumber'))), Name = String.valueOf(localAcc.get('AccountNumber')));//mapAccountIdName.get(String.valueOf(localAcc.get('AccountNumber')));  
+                       		system.debug('Day1=='+objEFT.Frequency__c);
+                       		system.debug('Freq=='+objEFT.Day_of_Month__c);
+                       		//objEFT.Member_Account__r.Name = String.valueOf(localAcc.get('AccountNumber')); */      		
                        		string locator = String.valueOf(localAcc.get('EftLocator'));                       		
                        		EFTLocatorsSet.add(locator);
+                       		//EFTList.add(objEFT);
        				}
+       				
+       				
+       			
             }
-            System.debug('EFTLocatorsSet ....' + EFTLocatorsSet);
+            
+            //System.debug('EFTLocatorsSet ....' + EFTLocatorsSet);
             List<EFT__c> EFTList = [select id, name,EFT_ID_Type__c, Member_Account__c, Stage__c, Action_Type__c, Share_Loan_Id__c, Type__c	,Share_Loan_Type__c, 	
                                     Share_Loan_Description__c, Routing_Number__c, Bank_Name__c, Account_Number__c, Alternate_Amount__c,Effective_Date__c,
                                       Frequency__c, Payment_Amount__c, Day_of_Month__c, Member_Account__r.name, Case__c, Case__r.CaseNumber, expired__C
@@ -510,6 +567,10 @@ public class EFTController {
       public string Error {get;set;}
          @AuraEnabled
       public string ErrorDetails {get;set;}
+      @AuraEnabled
+      public string ExpirationDate {get;set;}      
+      @AuraEnabled
+      public string Id {get;set;}
         
     }
     
