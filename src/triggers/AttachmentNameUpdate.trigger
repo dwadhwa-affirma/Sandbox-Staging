@@ -109,6 +109,7 @@ trigger AttachmentNameUpdate on Attachment (after update,after delete,after inse
         }
         
     	for(Attachment a : Trigger.New){
+    		system.debug('test'+a);
             Schema.SObjectType objType = a.ParentId.getsobjecttype();
     		if(objType == Solar_Loans__c.sObjectType){
     			
