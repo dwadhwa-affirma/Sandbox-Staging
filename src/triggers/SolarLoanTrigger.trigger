@@ -123,7 +123,6 @@ trigger SolarLoanTrigger on Solar_Loans__c (after insert,before insert, after up
 		    		s.id = SLForBranchIds.get(sl.id).id;
 		    		s.Brand__c = a.Brand__c;
 		    		s.Account_Number__c = a.id;
-		    		s.Four_Digit_Share_Loan_Type__c = a.ID1__c;
 		    		SLToUpdates.put(sl.id,s);
 		    	}
 		    }
@@ -220,13 +219,6 @@ trigger SolarLoanTrigger on Solar_Loans__c (after insert,before insert, after up
             	String2= String1.SubStringBefore(' ');
             	SLMemberLastName.add(String2);
             }
-            
-            //------------------------------- Update "Four Digit share/loan type" in "Solar Loan" record------------------------//
-            
-            if(trigger.new[i].Four_Digit_Share_Loan_Type__c == null){ 
-            	SLForBranchIds.put(trigger.new[i].id, trigger.new[i]);
-                 SLMemberNumber.add(trigger.new[i].Member_Number__c);
-            }
               
 	    } 
 	    	        
@@ -273,7 +265,6 @@ trigger SolarLoanTrigger on Solar_Loans__c (after insert,before insert, after up
 		    		s.id = SLForBranchIds.get(sl.id).id;
 		    		s.Brand__c = a.Brand__c;
 		    		s.Account_Number__c = a.id;
-		    		s.Four_Digit_Share_Loan_Type__c = a.ID1__c;
 		    		SLToUpdates.put(sl.id,s);
 		    	}
 		    }
