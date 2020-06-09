@@ -33,11 +33,11 @@ private class SolarLoanTest{
      //---------------------------------------- Creating Person Account records--------------------------------------//
      
      List<Person_Account__c> person_obj= new List<Person_Account__c>{
-     						   new Person_Account__c(TypeTranslate__c='0000/Primary',Account_Number__c = account_details_Obj[0].id, PersonID__c = account_Obj.Id)};
+                               new Person_Account__c(TypeTranslate__c='0000/Primary',Account_Number__c = account_details_Obj[0].id, PersonID__c = account_Obj.Id)};
      insert person_obj;
       
      List<Person_Account__c> person_obj1= new List<Person_Account__c>{
-     						   new Person_Account__c(TypeTranslate__c='0000/Primary',Account_Number__c = account_details_Obj1[0].id, PersonID__c = account_Obj.Id)};
+                               new Person_Account__c(TypeTranslate__c='0000/Primary',Account_Number__c = account_details_Obj1[0].id, PersonID__c = account_Obj.Id)};
      insert person_obj1;
     
      
@@ -49,7 +49,6 @@ private class SolarLoanTest{
       
      Solar_Loans__c sl = new Solar_Loans__c();
      sl.id =  SolarLoan_Obj[0].id;
-     sl.Four_Digit_Share_Loan_Type__c = ''; 
      sl.Member_Number__c = '0000147165';
      sl.Routing_Number__c = '284084350';
      //sl.Status__c = 'ACH Pending';
@@ -70,11 +69,11 @@ private class SolarLoanTest{
       
      
      List<ContentDocument> cdList = [SELECT Id, Title, LatestPublishedVersionId FROM ContentDocument];
-   	
+    
      //--------------------- Creating Content Document Link with Parent as "Solar Loan" record-----------------------//
      
      List<ContentDocumentLink> ListCDL = new List<ContentDocumentLink>{
-     	new ContentDocumentLink (ContentDocumentId = cdList[0].id, LinkedEntityId = SolarLoan_Obj[0].Id)};
+        new ContentDocumentLink (ContentDocumentId = cdList[0].id, LinkedEntityId = SolarLoan_Obj[0].Id)};
      insert ListCDL;
       
      test.stopTest();
@@ -84,50 +83,50 @@ private class SolarLoanTest{
     test.startTest();  
     
     // ---------------------------Fetching Solar Loan record from test set up data -----------------------------------//
-  	List<Solar_Loans__c> listSolarLoan  =  [SELECT Id from Solar_Loans__c limit 1];
-  	
-  	// ---------------------------Fetching Cotent Document record from test set up data ------------------------------//
-  	List<ContentDocument> cdList = [SELECT Id, Title, LatestPublishedVersionId FROM ContentDocument limit 1];
-  	
-  	// ---------------------------Fetching Solar Loan document record from test set up data -------------------------//
+    List<Solar_Loans__c> listSolarLoan  =  [SELECT Id from Solar_Loans__c limit 1];
+    
+    // ---------------------------Fetching Cotent Document record from test set up data ------------------------------//
+    List<ContentDocument> cdList = [SELECT Id, Title, LatestPublishedVersionId FROM ContentDocument limit 1];
+    
+    // ---------------------------Fetching Solar Loan document record from test set up data -------------------------//
     List<SolarLoan_Document__c> SolarLoanDocList = [SELECT id from SolarLoan_Document__c limit 1];  
       
     // --------------------------------Calling non static method of SolarLoanAPI class------------------------------//  
     
-  	List<SolarLoanDocumentAPI.SolarLoanDocumentAPIResopnse> listApiResponse = SolarLoanDocumentAPI.getSolarLoanDocuemnts();
-  	RestRequest req = new RestRequest();
-  	req.requestURI = '/services/apexrest/SolarLoanDocumentAPI';
+    List<SolarLoanDocumentAPI.SolarLoanDocumentAPIResopnse> listApiResponse = SolarLoanDocumentAPI.getSolarLoanDocuemnts();
+    RestRequest req = new RestRequest();
+    req.requestURI = '/services/apexrest/SolarLoanDocumentAPI';
       
-  	req.requestBody = blob.valueof(listApiResponse[1].AttachmentID /*+ ',' + listApiResponse[1].AttachmentID*/);
-  	req.httpMethod = 'post';
-  	RestContext.request = req;
-  	
-  	// --------------------------------Calling static method from SolarLoanAPI class---------------------------------//
-  	
- 	SolarLoanDocumentAPI.updateSolarLoanDocuemnts();
-  	
-	//--------------------------------- Creating Custom setting data --------------------------------------------------//
-	SolarLoan_Document_Settings__c docSetting1 = new SolarLoan_Document_Settings__c();
-  	docSetting1.Days__c = 120;
-  	docSetting1.Name = 'Completed';
-  	insert docSetting1;
-  	
-  	SolarLoan_Document_Settings__c docSetting2 = new SolarLoan_Document_Settings__c();
-  	docSetting2.Days__c = 120;
-  	docSetting2.Name = 'Declined';
-  	insert docSetting2;
-  	
-  	SolarLoan_Document_Settings__c docSetting3 = new SolarLoan_Document_Settings__c();
-  	docSetting3.Days__c = 120;
-  	docSetting3.Name = 'Expired';
-  	insert docSetting3;
-  	
-  	//---------------------------------Calling SolarLoanDeleteAttachment class-------------------------------------//
-  	
-  	SolarLoanDocumentDeleteAttachments obj = new SolarLoanDocumentDeleteAttachments();
-  	obj.execute(null);
+    req.requestBody = blob.valueof(listApiResponse[1].AttachmentID /*+ ',' + listApiResponse[1].AttachmentID*/);
+    req.httpMethod = 'post';
+    RestContext.request = req;
+    
+    // --------------------------------Calling static method from SolarLoanAPI class---------------------------------//
+    
+    SolarLoanDocumentAPI.updateSolarLoanDocuemnts();
+    
+    //--------------------------------- Creating Custom setting data --------------------------------------------------//
+    SolarLoan_Document_Settings__c docSetting1 = new SolarLoan_Document_Settings__c();
+    docSetting1.Days__c = 120;
+    docSetting1.Name = 'Completed';
+    insert docSetting1;
+    
+    SolarLoan_Document_Settings__c docSetting2 = new SolarLoan_Document_Settings__c();
+    docSetting2.Days__c = 120;
+    docSetting2.Name = 'Declined';
+    insert docSetting2;
+    
+    SolarLoan_Document_Settings__c docSetting3 = new SolarLoan_Document_Settings__c();
+    docSetting3.Days__c = 120;
+    docSetting3.Name = 'Expired';
+    insert docSetting3;
+    
+    //---------------------------------Calling SolarLoanDeleteAttachment class-------------------------------------//
+    
+    SolarLoanDocumentDeleteAttachments obj = new SolarLoanDocumentDeleteAttachments();
+    obj.execute(null);
   
-  	test.stopTest();
+    test.stopTest();
  
   }
   
