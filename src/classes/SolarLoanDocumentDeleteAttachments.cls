@@ -41,7 +41,7 @@ global class SolarLoanDocumentDeleteAttachments implements Schedulable{
     	
     	//---------------------Querying Solar Loan document based on status--------------------------------------//
     	
-        List<SolarLoan_Document__c> SolarLoanAttchListComplete = [select Attachment_Id__c,Solar_Loans__c,Solar_Loans__r.Status__c from SolarLoan_Document__c where IsMovedToOnBase__c = true and Solar_Loans__r.Status__c = 'Completed' and DAY_ONLY(CreatedDate) <= :attchDeleteDateMaxComplete and DAY_ONLY(CreatedDate) >= :attchDeleteDateMinComplete];
+        List<SolarLoan_Document__c> SolarLoanAttchListComplete = [select Attachment_Id__c,Solar_Loans__c,Solar_Loans__r.Status__c from SolarLoan_Document__c where IsMovedToOnBase__c = true and Solar_Loans__r.Status__c = 'Closed' and DAY_ONLY(CreatedDate) <= :attchDeleteDateMaxComplete and DAY_ONLY(CreatedDate) >= :attchDeleteDateMinComplete];
 		List<SolarLoan_Document__c> SolarLoanAttchListDecline = [select Attachment_Id__c,Solar_Loans__c,Solar_Loans__r.Status__c from SolarLoan_Document__c where IsMovedToOnBase__c = true and Solar_Loans__r.Status__c = 'Declined' and DAY_ONLY(CreatedDate) <= :attchDeleteDateMaxDecline and DAY_ONLY(CreatedDate) >= :attchDeleteDateMinDecline];
         List<SolarLoan_Document__c> SolarLoanAttchListExpire = [select Attachment_Id__c,Solar_Loans__c,Solar_Loans__r.Status__c from SolarLoan_Document__c where IsMovedToOnBase__c = true and Solar_Loans__r.Status__c = 'Expired' and DAY_ONLY(CreatedDate) <= :attchDeleteDateMaxExpire and DAY_ONLY(CreatedDate) >= :attchDeleteDateMinExpire];
         
