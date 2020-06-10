@@ -6,6 +6,31 @@
 	
 	},
 	
+	waiting: function(component, event, helper) {
+	
+		 helper.showSpinner(component);
+		 var action = component.get("c.waitingForResponse");
+		 var SolarLoanRecordId = component.get("v.recordId");
+		 action.setParams({"SolarLoanRecordId": SolarLoanRecordId});
+		 
+		 action.setCallback(this, function (response) {
+        	var status = response.getState();            
+            if (component.isValid() && status === "SUCCESS") {
+                var result = response.getReturnValue();
+                component.set("v.IsWaitingDisabled", true);
+            }
+            $A.get('e.force:refreshView').fire();
+            window.setTimeout(
+			    $A.getCallback(function() {
+			       helper.hideSpinner(component,helper)
+			    }), 3000
+			);
+			
+        });	
+		
+		$A.enqueueAction(action);    
+                
+	},
 	
 	submit: function(component, event, helper) {
 		

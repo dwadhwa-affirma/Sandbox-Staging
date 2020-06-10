@@ -34,6 +34,9 @@
                 if(result.SolarCurrentStage != undefined){
 		       	    stage = result.SolarCurrentStage;
 		        }
+		        if(result.SolarCurrentStatus != 'Waiting for Response'){
+		        	component.set("v.IsWaitingDisabled", false);
+		        }
 		        if(result.Stage3LoanCheck != undefined && result.Stage3LoanCheck != null){
 		       	    buttonStatus = result.Stage3LoanCheck;
                 }
