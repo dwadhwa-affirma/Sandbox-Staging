@@ -24,7 +24,7 @@ trigger SolarLoanTrigger on Solar_Loans__c (after insert,before insert, after up
     
     //------------------------------------------------Before Insert ----------------------------------------------//
     
-    /*if(Trigger.isInsert && Trigger.isBefore){
+    if(Trigger.isInsert && Trigger.isBefore){
         
         for(Integer i=0; i<trigger.new.size(); i++){
         
@@ -35,7 +35,7 @@ trigger SolarLoanTrigger on Solar_Loans__c (after insert,before insert, after up
             	trigger.new[i].Ownerid = queList[0].id ;
             }
         }
-    }*/
+    }
     
     //------------------------------------------------After Insert ----------------------------------------------//
     
