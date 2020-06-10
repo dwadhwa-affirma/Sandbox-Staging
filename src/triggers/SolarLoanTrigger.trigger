@@ -150,7 +150,7 @@ trigger SolarLoanTrigger on Solar_Loans__c (after insert,before insert, after up
             if((trigger.old[i].Loan_Id__c != trigger.new[i].Loan_Id__c && trigger.new[i].Loan_Id__c != null) ||
             	(trigger.old[i].Loan_Name_Locator__c != trigger.new[i].Loan_Name_Locator__c && trigger.new[i].Loan_Name_Locator__c != null) ||
             	(trigger.old[i].Loan_Tracking_Locator__c != trigger.new[i].Loan_Tracking_Locator__c && trigger.new[i].Loan_Tracking_Locator__c != null)){
-            	trigger.new[i].Status__c = 'Loan Record Created';
+            	trigger.new[i].Status__c = 'Loan Funded';
             	trigger.new[i].Current_Solar_Loan_Stage__c = 'Stage 4';
             }
             
