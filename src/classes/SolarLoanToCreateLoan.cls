@@ -30,6 +30,7 @@ public class SolarLoanToCreateLoan {
     public static String PaymentCount;
     public static String PaymentFrequency;
     public static String AccountNumber;
+    public static Integer Month;
   
     public static String jsonData;
     public static HttpRequest req = new HttpRequest();
@@ -367,8 +368,16 @@ public class SolarLoanToCreateLoan {
                     s.Error_Loan_Tracking_Locator__c = ErrorLoanTrackingLocator;
                 else
                     sl.Error_Loan_Tracking_Locator__c = '';
+                
                              
-                s.id = sl.Id;                      
+                s.id = sl.Id;       
+                s.Due_Date__c = System.Today() + 60;
+                
+                if(s.Term_months__c != null){
+                	Month = Integer.Valueof(s.Term_months__c);
+                	s.Maturity_Date__c = System.today().addMonths(Month);
+                	s.Maturity_Date__c = System.today().addMonths(-1);                
+                }
                 SolarLoanToUpdate.add(s);  
                 
             }
