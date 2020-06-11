@@ -6,3 +6,6 @@
 .THIS .FontSize{
    font-size: large;
 }
+.THIS .piilist{margin-left:15px;}
+.THIS .piilist:after{content:""; clear:both; display:table;}
+.THIS .piilist li{float:left; width:160px;}
