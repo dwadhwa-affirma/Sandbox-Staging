@@ -357,27 +357,27 @@ public class SolarLoanToCreateLoan {
                 if(ErrorLoanLocator != null && ErrorLoanLocator != '')
                     s.Error_Loan_Locator__c = ErrorLoanLocator;
                 else
-                    sl.Error_Loan_Locator__c = '';
+                    s.Error_Loan_Locator__c = '';
                     
                 if(ErrorLoanNameLocator != null && ErrorLoanNameLocator != '')
                     s.Error_Loan_Name_Locator__c = ErrorLoanNameLocator;
                 else
-                    sl.Error_Loan_Name_Locator__c = '';
+                    s.Error_Loan_Name_Locator__c = '';
                         
                 if(ErrorLoanTrackingLocator != null && ErrorLoanTrackingLocator != '')
                     s.Error_Loan_Tracking_Locator__c = ErrorLoanTrackingLocator;
                 else
-                    sl.Error_Loan_Tracking_Locator__c = '';
+                    s.Error_Loan_Tracking_Locator__c = '';
                 
                              
                 s.id = sl.Id;       
                 s.Due_Date__c = System.Today() + 60;
                 
-                if(s.Term_months__c != null){
-                	Month = Integer.Valueof(s.Term_months__c);
-                	s.Maturity_Date__c = System.today().addMonths(Month);
-                	s.Maturity_Date__c = System.today().addMonths(-1);                
+                if(sl.Term_months__c != null){
+                	Month = Integer.Valueof(sl.Term_months__c) - 1;
+                	s.Maturity_Date__c = s.Due_Date__c.addMonths(Month);
                 }
+                system.debug('s.Maturity_Date__c'+s.Maturity_Date__c);
                 SolarLoanToUpdate.add(s);  
                 
             }
