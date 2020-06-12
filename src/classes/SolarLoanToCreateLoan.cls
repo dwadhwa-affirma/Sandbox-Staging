@@ -292,7 +292,7 @@ public class SolarLoanToCreateLoan {
                     UserAmount13 = '0';
                     
                 if(sl.ITC_Amount__c != null)    
-                    UserAmount14 = string.ValueOF(sl.ITC_Amount__c);
+                    UserAmount14 = String.ValueOF(sl.ITC_Amount__c);
                 else
                     UserAmount14 = '0'; 
                     
@@ -315,9 +315,9 @@ public class SolarLoanToCreateLoan {
                 req2.setHeader('Content-Type', 'application/json');
                 req2.setHeader('Accept', 'application/json');
                 
-                jsonData2 = '{"Type":' + '\"'+ Type +'\"'+',"UserChar11":' + '\"'+ UserChar11 +'\"'+',"UserChar1":'+'\"'+ UserChar1 +'\"'+',"UserChar2":'+'\"' + UserChar2 + '\"'+',"UserChar3":'+'\"'+UserChar3+'\"'+',"UserChar4":'+'\"'+UserChar4+'\"'+',"UserChar5":'+'\"'+UserChar5+'\"'+',"UserChar10":'+'\"'+UserChar10+'\"'+',"UserChar20":'+'\"'+UserChar20+'\"'+',"UserAmount1":'+'\"'+UserAmount1+'\"'+',"UserAmount2":'+'\"'+UserAmount2+'\"'+',"UserAmount3":'+'\"'+UserAmount3+'\"'+',"UserAmount11":'+'\"'+UserAmount11+'\"'+',"UserAmount12":'+'\"'+UserAmount12+'\"'+',"UserAmount13":'+'\"'+UserAmount13+'\"'+',"UserAmount14":'+'\"'+UserAmount14+'\"'+',"UserCode1":'+'\"'+UserCode1+'\"'+',"UserRate1":'+'\"'+UserRate1+'\"'+',"LoanId":'+'\"'+LoanId+'\"'+',"AccountNumber":'+'\"'+AccountNumber+'\"}';
+                jsonData2 = '{"Type":' + '\"'+ Type +'\"'+',"UserChar11":' + '\"'+ UserChar11 +'\"'+',"UserChar1":'+'\"'+ UserChar1 +'\"'+',"UserChar2":'+'\"' + UserChar2 + '\"'+',"UserChar3":'+'\"'+UserChar3+'\"'+',"UserChar4":'+'\"'+UserChar4+'\"'+',"UserChar5":'+'\"'+UserChar5+'\"'+',"UserAmount14":'+'\"'+UserAmount14+'\"'+',"UserRate1":'+'\"'+UserRate1+'\"'+',"UserChar10":'+'\"'+UserChar10+'\"'+',"UserChar20":'+'\"'+UserChar20+'\"'+',"UserAmount1":'+'\"'+UserAmount1+'\"'+',"UserAmount2":'+'\"'+UserAmount2+'\"'+',"UserAmount3":'+'\"'+UserAmount3+'\"'+',"UserAmount11":'+'\"'+UserAmount11+'\"'+',"UserAmount12":'+'\"'+UserAmount12+'\"'+',"UserAmount13":'+'\"'+UserAmount13+'\"'+',"UserCode1":'+'\"'+UserCode1+'\"'+',"UserRate1":'+'\"'+UserRate1+'\"'+',"LoanId":'+'\"'+LoanId+'\"'+',"AccountNumber":'+'\"'+AccountNumber+'\"}';
                 req2.setBodyAsBlob(Blob.valueof(jsondata2)); 
-                //system.debug('test'+jsonData);
+                system.debug('test'+jsonData2);
                 
                 Http http2 = new Http();  
                 req2.setTimeout(60000);
