@@ -44,14 +44,14 @@ private class SolarLoanTest{
      //---------------------------------------- Creating Solar Loan record---------------------------------------------//
      
      List<Solar_Loans__c> SolarLoan_Obj = new List<Solar_Loans__c>{
-        new Solar_Loans__c(Member_Number__c = '0000147163', Status__c = 'Completed', Brand__c = 'Spectrum', Primary_First_Name__c = 'Tania', Primary_Last_Name__c = 'Cabrera')};
+        new Solar_Loans__c(Member_Number__c = '0000147163', Status__c = 'Closed', Brand__c = 'Spectrum', Primary_First_Name__c = 'Tania', Primary_Last_Name__c = 'Cabrera')};
      Insert SolarLoan_Obj;
       
      Solar_Loans__c sl = new Solar_Loans__c();
      sl.id =  SolarLoan_Obj[0].id;
-     sl.Member_Number__c = '0000147165';
-     sl.Routing_Number__c = '284084350';
-     //sl.Status__c = 'ACH Pending';
+     sl.Member_Number__c = '0000147165'; 
+     sl.Routing_Number__c = '284084350'; 
+     //sl.Status__c = 'ACH Pending';  
      update sl; 
      
      //---------------------------------------- Creating Solar Loan Document record-----------------------------------//
