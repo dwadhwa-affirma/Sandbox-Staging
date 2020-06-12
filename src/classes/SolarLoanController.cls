@@ -82,7 +82,7 @@ public class SolarLoanController {
         if(solarLoanList[0].Current_Solar_Loan_Stage__c == 'Stage 4'){
             
             if(SolarLoanList[0].ACH__c == 'True' && SolarLoanList[0].Routing_Number__c != null &&
-            	SolarLoanList[0].ABA_Bank_Name__c != null && SolarLoanList[0].Bank_Account_Number__c != null){    	
+            	SolarLoanList[0].Bank_Name__c != null && SolarLoanList[0].Bank_Account_Number__c != null){    	
                 Stage4ACHCheck = 'True';
                 SolarCurrentStage = SolarLoanList[0].Current_Solar_Loan_Stage__c;
             }
