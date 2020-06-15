@@ -30,7 +30,9 @@ public class SolarLoanToCreateLoan {
     public static String PaymentCount;
     public static String PaymentFrequency;
     public static String AccountNumber;
+    public static string OriginalDate;
     public static Integer Month;
+    
   
     public static String jsonData;
     public static HttpRequest req = new HttpRequest();
@@ -146,7 +148,7 @@ public class SolarLoanToCreateLoan {
                 PaymentCount = String.valueOf(sl.Term_months__c);
                 PaymentFrequency = '04';
                 AccountNumber = sl.Account_Number__r.name;
-                
+                OriginalDate = string.valueOf(System.Today());
                 
                 //req.setEndpoint('https://brscsymx.ctxcu.org/dev/EFT/CreateLoan');
                 req.setEndpoint('https://symxapi.chevronfcu.org/devclient/EFT/CreateLoan');
@@ -155,7 +157,7 @@ public class SolarLoanToCreateLoan {
                 req.setHeader('Content-Type', 'application/json');
                 req.setHeader('Accept', 'application/json');
                 
-                jsonData = '{"Type":' + '\"'+ Type +'\"'+',"Branch":' + '\"'+ Branch +'\"'+',"CreatedAtBranch":'+'\"'+ CreatedAtBranch +'\"'+',"PurposeCode":'+'\"' + PurposeCode + '\"'+',"CollateralCode":'+'\"'+CollateralCode+'\"'+',"ApprovalCode":'+'\"'+ApprovalCode+'\"'+',"OriginalBalance":'+'\"'+OriginalBalance+'\"'+',"ApprovalDate":'+'\"'+ApprovalDate+'\"'+',"MaturityDate":'+'\"'+MaturityDate+'\"'+',"DueDate":'+'\"'+DueDate+'\"'+',"FirstPaymentDate":'+'\"'+FirstPaymentDate+'\"'+',"DueDay1":'+'\"'+DueDay1+'\"'+',"Payment":'+'\"'+Payment+'\"'+',"CouponCode":'+'\"'+CouponCode+'\"'+',"PaymentMethod":'+'\"'+PaymentMethod+'\"'+',"Description":'+'\"'+Description+'\"'+',"InterestRate":'+'\"'+InterestRate+'\"'+',"UserAmount1":'+'\"'+UserAmount1+'\"'+',"ECOACode":'+'\"'+ECOACode+'\"'+',"CreditScore":'+'\"'+CreditScore+'\"'+',"PaymentCount":'+'\"'+PaymentCount+'\"'+',"PaymentFrequency":'+'\"'+PaymentFrequency+'\"'+',"AccountNumber":'+'\"'+AccountNumber+'\"}';
+                jsonData = '{"OriginalDate":' + '\"'+ OriginalDate +'\"'+',"Type":' + '\"'+ Type +'\"'+',"Branch":' + '\"'+ Branch +'\"'+',"CreatedAtBranch":'+'\"'+ CreatedAtBranch +'\"'+',"PurposeCode":'+'\"' + PurposeCode + '\"'+',"CollateralCode":'+'\"'+CollateralCode+'\"'+',"ApprovalCode":'+'\"'+ApprovalCode+'\"'+',"OriginalBalance":'+'\"'+OriginalBalance+'\"'+',"ApprovalDate":'+'\"'+ApprovalDate+'\"'+',"MaturityDate":'+'\"'+MaturityDate+'\"'+',"DueDate":'+'\"'+DueDate+'\"'+',"FirstPaymentDate":'+'\"'+FirstPaymentDate+'\"'+',"DueDay1":'+'\"'+DueDay1+'\"'+',"Payment":'+'\"'+Payment+'\"'+',"CouponCode":'+'\"'+CouponCode+'\"'+',"PaymentMethod":'+'\"'+PaymentMethod+'\"'+',"Description":'+'\"'+Description+'\"'+',"InterestRate":'+'\"'+InterestRate+'\"'+',"UserAmount1":'+'\"'+UserAmount1+'\"'+',"ECOACode":'+'\"'+ECOACode+'\"'+',"CreditScore":'+'\"'+CreditScore+'\"'+',"PaymentCount":'+'\"'+PaymentCount+'\"'+',"PaymentFrequency":'+'\"'+PaymentFrequency+'\"'+',"AccountNumber":'+'\"'+AccountNumber+'\"}';
                 req.setBodyAsBlob(Blob.valueof(jsondata)); 
                 system.debug('test'+jsonData);
                 
