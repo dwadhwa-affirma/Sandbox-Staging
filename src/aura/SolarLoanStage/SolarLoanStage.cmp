@@ -11,7 +11,7 @@
     
     <div class="groupbtn-parent solarloanstagebar">
 		       
-		<!-- <lightning:button class="slds-m-right_small" variant="brand" label="Waiting" aura:id="WaitingButton" onclick="{!c.waiting}" disabled = "{!v.IsWaitingDisabled}"/> -->
+		<lightning:button class="slds-m-right_small" variant="brand" label="Waiting" aura:id="WaitingButton" onclick="{!c.waiting}" disabled = "{!v.IsWaitingDisabled}"/>
 		<b><p class="field-title show">{!v.StageName}</p></b>		
         <div style="margin-left: auto;">
         	<lightning:button variant="brand" label="{!v.ButtonLabelName}" aura:id="SubmitButton" onclick="{!c.submit }" disabled = "{!v.IsButtonDisabled}"/>
