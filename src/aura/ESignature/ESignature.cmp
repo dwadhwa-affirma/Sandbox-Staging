@@ -1,11 +1,10 @@
-<aura:component controller="eSignatureContoller"  implements="force:appHostable,force:hasRecordId,force:lightningQuickActionwithoutheader,flexipage:availableForAllPageTypes">
-    
+<aura:component controller="eSignatureContoller"  implements="force:appHostable,force:hasRecordId,force:lightningQuickAction,flexipage:availableForAllPageTypes">
+  <aura:attribute name="loading" type="Boolean" default="false" />   
     <aura:html tag="style">
         .slds-modal__container{
        max-width: 60rem !important;    
        width:70% !important; }
-         .modal-body{height: 550px !important; max-height:unset !important; overflow:hidden;}
-        .modal-body .modal-body{height: 435px !important; overflow-y:auto;}
+         .modal-body{padding:1rem;}
         
         @media (max-width:992px){
         	.slds-modal__container{max-width: unset !important;width:90% !important;}
@@ -24,32 +23,40 @@
         @media (max-width:580px){
         	.slds-modal__container{max-width: unset !important;width:85% !important;}
             .authwrap td span{display:block;}
-        
+        	
         }
         
-        @media (max-height:580px){
-        .modal-body .modal-body{height: 355px !important;}
+        
+        @media (max-width:400px){
+        	.modal-header .logoimg img{width: 100%; height:auto;}
         }
         
       </aura:html>  
     
+    
     <ltng:require afterScriptsLoaded="{!c.Init}"/>
+    
     <aura:attribute name="saveDisabled" type="Boolean" default="false" />
     <aura:attribute name="wireDetail" type="WIRES_Transaction__c" />
     <aura:attribute name="todayDate" type="String" />
     <aura:attribute name="attachmentId" type="Id" />
     <div class="authwrap" aura:id="authwrap">
-	<div class="modal-header slds-modal__header">
-    	<h1 class="slds-text-heading--medium">Capture Signature</h1>
-    </div>
-	<div class="modal-body scrollable slds-modal__content slds-p-around--medium">    
+ 
+	
+        <div id="signaturePDF">    
     	
-        <div class="logoimg">
-            <img src="{!$Resource.ChevronLogo}" alt="Chevron" />
+        <div class="logohead">
+            <div class="logoimg">
+                <img src="{!$Resource.ChevronLogo}" alt="Chevron" />
+            </div>
+            <h1 class="slds-text-heading--medium">WIRE TRANSFER AUTHORIZATION FORM – DOMESTIC</h1>
         </div>
-        
+        <div class="spinner">
+        <aura:if isTrue="{! v.loading}">            
+                <lightning:spinner alternativeText="Loading" size="medium" variant="brand" class="spin"/>            
+        </aura:if>
+   		 </div>
         <div class="authtitle">
-            <h2 class="slds-text-align_center">WIRE TRANSFER AUTHORIZATION FORM – DOMESTIC </h2><br/>
             <p>The cutoff time for all wire transfer orders is <strong>11 a.m. PT</strong>. Orders received by this time will be processed the same  business day. Certain transactions that require further verification may not be processed until the next business day. </p>
         	<br/>
         </div>
@@ -128,7 +135,7 @@
                     </td>
                 </tr>
                 <tr>
-                    <td>Amount USD $ <span>{!v.wireDetail.TotalFromAccount__c}</span></td>
+                    <td>Amount USD <span>${!v.wireDetail.TotalFromAccount__c}</span></td>
                 </tr>
                 <tr>
                     <td><strong><small>Please write out the dollar amount in words</small></strong></td>
@@ -198,7 +205,7 @@
                 </tr>
                 <tr>
                 	<td class="p0">
-                    	<table class="tblbor0">
+                    	<table class="">
                         	<tr>
                             	<td class="tblborright">Recipient Name <span> </span></td>
                                 <td class="tblborright">Account# <span> </span></td>
@@ -258,13 +265,12 @@
             </table>
         </div>
     
-    
+        
+            
+      
     </div>
-    <div class="modal-footer slds-modal__footer">
-        <button class="slds-button slds-button_brand" type="button">Done</button>
-        <button class="slds-button slds-button_brand" type="button">Cancel</button>
+  
     </div>
-        </div>
     
     <div id="eSignDiv" aura:id="eSignDiv">
     <div style="text-align: center;">
@@ -275,4 +281,6 @@
         <button class="slds-button slds-button_brand" id="btnSave" disabled="{!v.saveDisabled}" onclick="{!c.save}">Save</button>
     </div>
     </div>
+    
+     
 </aura:component>

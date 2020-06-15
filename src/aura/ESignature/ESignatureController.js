@@ -13,7 +13,8 @@
     erase:function(component, event, helper){
         helper.eraseHelper(component, event, helper);
     },
-    save:function(component, event, helper){
+    save:function(component, event, helper){        
+        component.set('v.loading', true);
         component.set("v.saveDisabled",true);
         //event.target.set("v.disabled", true);
         helper.saveHelper(component, event, helper);
@@ -29,5 +30,11 @@
                 $A.util.removeClass(authwrapDiv, 'showdiv');
                 $A.util.addClass(authwrapDiv,'hidediv'); 
         }
+    },
+    handleDoneClick:function(component, event, helper){
+        helper.savePDF(component, event, helper);
+    },
+    cancelAction: function(component, event, helper) {
+        $A.get("e.force:closeQuickAction").fire();
     }
 })

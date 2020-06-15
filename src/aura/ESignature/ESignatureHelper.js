@@ -131,7 +131,7 @@
         });       
         $A.enqueueAction(action);
     },
-    saveHelper:function(component, event, helper){
+    saveHelper:function(component, event, helper){         
         var recordId = component.get("v.recordId");
         var pad=component.find('can').getElement();
         var dataUrl = pad.toDataURL();
@@ -147,7 +147,7 @@
             var response=res.getReturnValue();
             if(state==="SUCCESS"){
                 component.set("v.attachmentId",response);
-                
+                console.log(response);
                 var eSignDiv=component.find("eSignDiv");
                 $A.util.removeClass(eSignDiv, 'showdiv');
                 $A.util.addClass(eSignDiv, 'hidediv');
@@ -157,7 +157,36 @@
                 $A.util.addClass(authwrapDiv,'showdiv');
                 
                 $A.get('e.force:refreshView').fire();
-                //$A.get('e.force:closeQuickAction').fire();
+                $A.get('e.force:closeQuickAction').fire();
+                
+               $A.get('e.force:closeQuickAction').fire(); 
+                
+                var recordId = component.get("v.recordId");
+                if(recordId != undefined)
+               {
+                var url = '/apex/eSignature?id=' + recordId;
+                var urlEvent = $A.get("e.force:navigateToURL");
+                urlEvent.setParams({
+                    "url": url
+                });
+                urlEvent.fire();
+                    }
+             }
+            component.set('v.loading', true);
+        });       
+        $A.enqueueAction(action);
+    },
+     savePDF:function(component, event, helper){ 
+        var recordId = component.get("v.recordId");
+        var action = component.get("c.savePDF");
+        action.setParams({
+            wiresId: recordId
+        });
+        action.setCallback(this,function(res){
+            var state = res.getState();
+            var response=res.getReturnValue();
+            if(state==="SUCCESS"){
+                alert('PDF has been saved');
             }
         });       
         $A.enqueueAction(action);

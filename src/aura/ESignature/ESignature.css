@@ -1,4 +1,10 @@
-.THIS.authwrap{font-size:.8125rem;margin: -16px -32px -16px -32px;}
+.THIS.authwrap .logohead{text-align:center;}
+.THIS.authwrap .logohead h1{text-transform: uppercase;
+    font-size: 1rem;
+    font-weight: 500; margin-top:.5rem;
+    letter-spacing: 1px;}
+
+.THIS.authwrap{font-size:.8125rem;}
 .THIS.authwrap .p0{padding:0 !important;}
 .THIS.authwrap .tblbor0 td{border:0 !important;}
 .THIS.authwrap .tblbor0 td.tblborright{border-right:1px solid #000 !important;}
@@ -19,21 +25,18 @@
 
 .THIS.authwrap .titletbl .whitetd{background:#fff;}
 
-.THIS.authwrap .signtbl{margin-bottom:1rem;}
+.THIS.authwrap .signtbl{}
 .THIS.authwrap .signtbl td{width:50%;}
 .THIS.authwrap .signtbl div{border-bottom:1px solid #000; text-align:center; height:80px; vertical-align:text-bottom;position:relative;}
 .THIS.authwrap .signtbl td:nth-child(1){padding-right:1.5rem;}
 .THIS.authwrap .signtbl td:nth-child(2){padding-left:1.5rem;}
 .THIS.authwrap .signtbl div:before{content:"X";position:absolute; left:0; bottom:3px; }
-.THIS.authwrap .signtbl p{text-align:left;}
+.THIS.authwrap .signtbl p{text-align:left;padding-bottom:1.5rem;}
 .THIS.authwrap .signtbl div img{height:80px; width:auto; max-width:100%;}
 
 .THIS.authwrap .signtbl div.dt {line-height:135px;}
 .THIS.authwrap .signtbl div.dt:before{line-height:normal;}
 
-@media(max-width:767px){
-.THIS.authwrap{margin: -16px;}
-}
 @media(max-width:601px){
     .THIS.authwrap .signtbl td:nth-child(1){padding-right:.7rem;}
 	.THIS.authwrap .signtbl td:nth-child(2){padding-left:.7rem;}
@@ -48,4 +51,8 @@
 }
 .THIS.showdiv {
     display:block;
+}
+.THIS.authwrap .spin{
+    top: 10% !important;
+    bottom: 7% !important;
 }
