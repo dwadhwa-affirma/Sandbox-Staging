@@ -104,8 +104,8 @@ public class SolarLoanToCreateLoan {
                 PurposeCode = '16';
                 CollateralCode = '4';
                 ApprovalCode = '9002';
-                if(sl.Net_Funding_Amount__c != null)
-                    OriginalBalance = string.valueOf(sl.Net_Funding_Amount__c);
+                if(sl.Loan_Amount__c != null)
+                    OriginalBalance = string.valueOf(sl.Loan_Amount__c);
                 else
                     OriginalBalance = '0.00';
                 ApprovalDate = string.valueof(sl.Application_Date__c);
@@ -119,7 +119,7 @@ public class SolarLoanToCreateLoan {
                 if(sl.Due_Date__c != null){
                     
                     DueDate = string.valueof(sl.Due_Date__c);
-                    FirstPaymentDate = string.valueof(sl.Due_Date__c + 1);
+                    FirstPaymentDate = string.valueof(sl.Due_Date__c);
                 }
                 else{
                     DueDate = null;
@@ -260,8 +260,8 @@ public class SolarLoanToCreateLoan {
                 
                 UserChar10 = sl.Credit_Attributes__c;
                 UserChar20 = sl.Site_UUID__c;
-                if(sl.Loan_Amount__c != null)
-                    UserAmount1 = String.ValueOf(sl.Loan_Amount__c);
+                if(sl.Net_Funding_Amount__c != null)
+                    UserAmount1 = String.ValueOf(sl.Net_Funding_Amount__c);
                 else
                     UserAmount1 = '0';
                     
