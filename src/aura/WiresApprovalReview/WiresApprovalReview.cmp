@@ -5,7 +5,7 @@
 <aura:attribute name="isReasonRequired" type="boolean" default="false"/> 
 <aura:attribute name="WiresObject" type="WIRES_Transaction__c"/> 
 <aura:attribute name="isApproveDisabled" type="boolean" default="true"/> 
-	<aura:attribute name="BalanceStatusCode" type="String"/> 
+	<aura:attribute name="BalanceStatusCode" type="integer"/> 
 	<aura:attribute name="BalanceRGLines" type="String"/>   
  <div>
      <aura:html tag="style">
@@ -48,7 +48,7 @@
      
      <tr class="trReview">
      <td><ui:inputCheckbox class="checkbox" value="{!v.WiresObject.Available_Balance_Review__c}" change="{!c.onCheck}"/></td>
-     <td>Is Valid Amount?</td><td class="tblNumber" style="vertical-align: bottom;">{!v.BalanceStatusCode == '-1' ? 'No' : 'Yes' }<br/> {!v.BalanceRGLines} </td>
+     <td>Is Valid Amount?</td><td class="tblNumber" style="vertical-align: bottom;">{!v.BalanceStatusCode le 0 ? 'No' : 'Yes' }<br/> {!v.BalanceRGLines} </td>
      </tr>    
      
      <tr class="trReview">
@@ -99,7 +99,7 @@
      
      <tr class="trReview">
      <td><ui:inputCheckbox class="checkbox" value="{!v.WiresObject.Available_Balance_2nd_Review__c}" change="{!c.onCheck}"/></td>
-     <td>Is Valid Amount?</td><td class="tblNumber" style="vertical-align: bottom;">{!v.BalanceStatusCode == '-1' ? 'No' : 'Yes' }<br/> {!v.BalanceRGLines} </td>
+     <td>Is Valid Amount?</td><td class="tblNumber" style="vertical-align: bottom;">{!v.BalanceStatusCode le 0 ? 'No' : 'Yes' }<br/> {!v.BalanceRGLines} </td>
      </tr>    
      
      <tr class="trReview">
