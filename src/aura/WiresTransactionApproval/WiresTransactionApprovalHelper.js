@@ -19,7 +19,7 @@
                component.set("v.ApprovalStatus",result.ApprovalStatus);
               // component.set("v.AccountOpenfor45Days",result.AccountOpenfor45Days);
                component.set("v.BalanceStatusCode",result.WiresBalance.StatusCode);
-                component.set("v.BalanceRGLines",result.WiresBalance.RGLines.trim());
+                component.set("v.BalanceRGLines",result.WiresBalance.StatusMessage.trim());
 		       component.set("v.WiresCount",result.WiresCount); 
              //  component.set("v.IdentificationUsed",result.IdentificationUsed); 
              //  component.set("v.EmailStable",result.EmailStable); 

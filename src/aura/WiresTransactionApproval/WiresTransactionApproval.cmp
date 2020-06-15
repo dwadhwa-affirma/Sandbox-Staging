@@ -3,7 +3,7 @@
     <aura:handler name="init" action="{!c.doInit}" value="{!this}" access="global" />
 	<aura:attribute name= "isApprovalVisible" type="string" />
     <aura:attribute name= "ApprovalStatus" type="string" />
-	<aura:attribute name="BalanceStatusCode" type="String"/> 
+	<aura:attribute name="BalanceStatusCode" type="integer"/> 
 	<aura:attribute name="BalanceRGLines" type="String"/>
 	<aura:attribute name="WiresCount" type="String"/> 
     <aura:attribute name= "AccountOpenfor45Days" type="string" />
