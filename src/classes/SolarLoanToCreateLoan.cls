@@ -73,6 +73,8 @@ public class SolarLoanToCreateLoan {
     public static String UserAmount14;  
     public static String UserCode1;
     public static String UserRate1;
+    public static string UserCode11;
+    public static string UserDate11;
     
     public static String jsonData2;
     public static HttpRequest req2 = new HttpRequest();
@@ -100,7 +102,7 @@ public class SolarLoanToCreateLoan {
             Routing_Number__c,Site_UUID__c,Status__c,Symitar_Called__c,SystemModstamp,System_Size_kW__c,Term_months__c,
             Valid_ABA__c, Loan_Id__c,Loan_Name_Locator__c,Loan_Tracking_Locator__c,EftLocator__c,
             Error_EftLocator__c,Error_Loan_Locator__c,Error_Loan_Name_Locator__c,Error_Loan_Tracking_Locator__c,
-            ITC_Amount__c, ITC_Rate__c
+            ITC_Amount__c, ITC_Rate__c,ACH_Discount__c
             FROM Solar_Loans__c where id =: ids];
     
             for(Solar_Loans__c sl : solarloans){
@@ -193,7 +195,7 @@ public class SolarLoanToCreateLoan {
                 
 //----------------------------------------------------Creat Loan Funding-------------------------------------------------//                
 				
-				if(result != null){
+				/*if(result != null){
                     
                     LoanId = result;
                     
@@ -211,8 +213,8 @@ public class SolarLoanToCreateLoan {
                     req3.setHeader('Accept', 'application/json');
                     
                     jsonData3 = '{"amount":' + '\"'+ Amount +'\"'+',"loanId":'+'\"'+LoanId+'\"'+',"accountNumber":'+'\"'+AccountNumber+'\"}';
-                    req1.setBodyAsBlob(Blob.valueof(jsondata1)); 
-                   //system.debug('test'+jsonData);
+                    req3.setBodyAsBlob(Blob.valueof(jsondata3)); 
+                   //system.debug('test'+jsonData3);
                     
                     Http http3 = new Http();  
                     req3.setTimeout(60000);
@@ -237,8 +239,8 @@ public class SolarLoanToCreateLoan {
                         ErrorLoanNameLocator = String.valueOf(responseBody1).substringAfter('[MessageId=TESTING] ');
                         ErrorLoanNameLocator = String.valueOf(ErrorLoanNameLocator).substringBefore('","ErrorDetails"');
                         system.debug('ErrorLoanNameLocator' + ErrorLoanNameLocator);
-                    }*/
-                }                
+                    }
+                }         */       
                 
                 
 //----------------------------------------------------Create Loan Name--------------------------------------------------//                
@@ -362,7 +364,17 @@ public class SolarLoanToCreateLoan {
                     UserRate1 = string.ValueOF(sl.ITC_Rate__c);
                 else
                     UserRate1 = '0';    
-                        
+                
+                if(sl.ACH_Discount__c == true)  
+                    UserCode11 = '1';
+                else
+                    UserCode11 = '0';
+                
+                if(sl.ACH_Discount__c == true)  
+                    UserDate11 = string.ValueOf(System.today());
+                else
+                    UserDate11 = ' ';
+                                
                 LoanId = result;
                 AccountNumber = sl.Account_Number__r.name;
                 
@@ -372,7 +384,7 @@ public class SolarLoanToCreateLoan {
                 req2.setHeader('Content-Type', 'application/json');
                 req2.setHeader('Accept', 'application/json');
                 
-                jsonData2 = '{"Type":' + '\"'+ Type +'\"'+',"UserChar11":' + '\"'+ UserChar11 +'\"'+',"UserChar1":'+'\"'+ UserChar1 +'\"'+',"UserChar2":'+'\"' + UserChar2 + '\"'+',"UserChar3":'+'\"'+UserChar3+'\"'+',"UserChar4":'+'\"'+UserChar4+'\"'+',"UserChar5":'+'\"'+UserChar5+'\"'+',"UserAmount14":'+'\"'+UserAmount14+'\"'+',"UserRate1":'+'\"'+UserRate1+'\"'+',"UserChar10":'+'\"'+UserChar10+'\"'+',"UserChar20":'+'\"'+UserChar20+'\"'+',"UserAmount1":'+'\"'+UserAmount1+'\"'+',"UserAmount2":'+'\"'+UserAmount2+'\"'+',"UserAmount3":'+'\"'+UserAmount3+'\"'+',"UserAmount11":'+'\"'+UserAmount11+'\"'+',"UserAmount12":'+'\"'+UserAmount12+'\"'+',"UserAmount13":'+'\"'+UserAmount13+'\"'+',"UserCode1":'+'\"'+UserCode1+'\"'+',"UserRate1":'+'\"'+UserRate1+'\"'+',"LoanId":'+'\"'+LoanId+'\"'+',"AccountNumber":'+'\"'+AccountNumber+'\"}';
+                jsonData2 = '{"UserCode11":' + '\"'+ UserCode11 +'\"'+',"UserDate11":' + '\"'+ UserDate11 +'\"'+',"Type":' + '\"'+ Type +'\"'+',"UserChar11":' + '\"'+ UserChar11 +'\"'+',"UserChar1":'+'\"'+ UserChar1 +'\"'+',"UserChar2":'+'\"' + UserChar2 + '\"'+',"UserChar3":'+'\"'+UserChar3+'\"'+',"UserChar4":'+'\"'+UserChar4+'\"'+',"UserChar5":'+'\"'+UserChar5+'\"'+',"UserAmount14":'+'\"'+UserAmount14+'\"'+',"UserRate1":'+'\"'+UserRate1+'\"'+',"UserChar10":'+'\"'+UserChar10+'\"'+',"UserChar20":'+'\"'+UserChar20+'\"'+',"UserAmount1":'+'\"'+UserAmount1+'\"'+',"UserAmount2":'+'\"'+UserAmount2+'\"'+',"UserAmount3":'+'\"'+UserAmount3+'\"'+',"UserAmount11":'+'\"'+UserAmount11+'\"'+',"UserAmount12":'+'\"'+UserAmount12+'\"'+',"UserAmount13":'+'\"'+UserAmount13+'\"'+',"UserCode1":'+'\"'+UserCode1+'\"'+',"UserRate1":'+'\"'+UserRate1+'\"'+',"LoanId":'+'\"'+LoanId+'\"'+',"AccountNumber":'+'\"'+AccountNumber+'\"}';
                 req2.setBodyAsBlob(Blob.valueof(jsondata2)); 
                 system.debug('test'+jsonData2);
                 
