@@ -193,7 +193,7 @@ trigger SolarLoanTrigger on Solar_Loans__c (after insert,before insert, after up
             
             //------------------------------- Checking if the status is being changed and status = 'Approved'-----------------//
             
-            if(trigger.old[i].Status__c != 'Approved' && trigger.new[i].Status__c == 'Approved'){
+            if(trigger.new[i].Status__c == 'Approved'){
                 SLIdsToCreateLoan.add(trigger.new[i].id);
             }
             
