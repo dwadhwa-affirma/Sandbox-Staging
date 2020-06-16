@@ -368,7 +368,7 @@ public class SolarLoanToCreateLoan {
                 if(sl.ACH_Discount__c == true)  
                     UserCode11 = '1';
                 else
-                    UserCode11 = '0';
+                    UserCode11 = ' ';
                 
                 if(sl.ACH_Discount__c == true)  
                     UserDate11 = string.ValueOf(System.today());
