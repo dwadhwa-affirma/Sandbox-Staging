@@ -130,7 +130,7 @@ public class SolarLoanController {
             
         if(SolarLoanList[0].Current_Solar_Loan_Stage__c == 'Stage 8'){
             SolarCurrentStage = SolarLoanList[0].Current_Solar_Loan_Stage__c;
-            SolarLoanList[0].Status__c = 'Closed';
+            SolarLoanList[0].Status__c = 'Done';
             update SolarLoanList;
         }   
                

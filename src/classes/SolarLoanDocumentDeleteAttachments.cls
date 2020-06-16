@@ -9,7 +9,7 @@ global class SolarLoanDocumentDeleteAttachments implements Schedulable{
     	
     	//---------------------Getting values from custom setting and initializing it as well--------------------//
     	
-    	Integer daysToDeleteAttachmentComplete = (integer) SolarLoanSetting.get('Completed').Days__c;
+    	Integer daysToDeleteAttachmentComplete = (integer) SolarLoanSetting.get('Done').Days__c;
         Integer daysToDeleteAttachmentDecline = (integer) SolarLoanSetting.get('Declined').Days__c;
         Integer daysToDeleteAttachmentExpire = (integer) SolarLoanSetting.get('Expired').Days__c;
         

@@ -10,7 +10,7 @@ global with sharing class SolarLoanDocumentAPI {
             List<SolarLoan_Document__c> SolarLoanDocumentList = new List<SolarLoan_Document__c>();
             
             SolarLoanDocumentList = [select Id, Name,Document_Name__c,Member_Number__c, SolarLoan_Document__c.Solar_Loans__c,Solar_Loans__r.Status__c,Attachment_Id__c,ContentDocumentLinkId__c,Document_Type__c,Move_To_OnBase_Date__c 
-                                    from SolarLoan_Document__c where IsMovedToOnBase__c = false and Solar_Loans__r.Status__c = 'Closed'];
+                                    from SolarLoan_Document__c where IsMovedToOnBase__c = false and Solar_Loans__r.Status__c = 'Done'];
             
             set<string> solarids = new set<string>();
             List<SolarLoanDocumentAPIResopnse> responseObjList = new List<SolarLoanDocumentAPIResopnse>();
