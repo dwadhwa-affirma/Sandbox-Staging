@@ -72,8 +72,21 @@
 		}
 	}*/
 	selectMember : function(component, event, helper) {
-		
-		var UserProfile = component.get("v.UserProfile");
+					component.set("v.loading", true);
+					var currentId = event.target._id;
+					if(currentId != undefined && currentId != null && currentId != '')
+					{
+						var navEvt = $A.get("e.force:navigateToSObject");
+				        navEvt.setParams({
+				        	"recordId": currentId,
+				        	"slideDevName": "related"
+				        });
+				        navEvt.fire();        
+				        component.set("v.loading", false);
+					}
+        
+        
+		/*var UserProfile = component.get("v.UserProfile");
 		if(UserProfile == 'Call Center'){
 				var evt = $A.get("e.force:navigateToComponent");
 		        console.log('Event '+evt);
@@ -106,7 +119,7 @@
 				        component.set("v.loading", false);
 					}
             
-            }
+            }*/
             
         
 

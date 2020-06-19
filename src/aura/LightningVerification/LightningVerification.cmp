@@ -128,6 +128,7 @@
 <aura:attribute name="PhoneNumberMatch" type="string" />
 <aura:attribute name="SSNnumberMatch" type="string" />
 <aura:attribute name="PINMatch" type="string" />
+<aura:attribute name="OOWMemberNumberEntered" type="string" />
 <aura:attribute name="IsMemberManualSearched" type="boolean" default="false"/>
 <aura:attribute name="MultipleMemberNumberAlert" type="string" default=''/>
     <article class="slds-card">
@@ -301,10 +302,10 @@
 	                                                        </div>
                                                         </lightning:layoutItem>
                                                     </li>
-                                                    <li id="Step2" class="two">
+                                                    <li aura:id="step2" class="two">
                                                     	<lightning:layoutItem>
                                                             <div class="header-column step-indicator-content">
-                                                                <p class="field-title show" title="HighAchievableLevel" id="Level2IndicatorLabel">To Get to Level 2 </p>
+                                                                <p class="field-title show" title="HighAchievableLevel" aura:id="Level2IndicatorLabel">To Get to Level 2 </p>
                                                                 <aura:if isTrue="{!or(v.CurrentAuthenticationLevel == 'Level 2',v.CurrentAuthenticationLevel == 'Level 3')}">
                                                                 	<p class="field-title show" title="Level2ReachedLabel" id="Level2ReachedLabel">Level 2 </p>
                                                                 </aura:if>
@@ -316,10 +317,10 @@
                                                             </div>
                                                         </lightning:layoutItem>
                                                     </li>
-                                                    <li id="Step3" class="two">
+                                                    <li aura:id="step3" class="two">
                                                     	<lightning:layoutItem>
                                                             <div class="header-column step-indicator-content">
-                                                                <p class="field-title show" title="LastAchievable30days" id="Level3IndicatorLabel">To Get to Level 3</p>
+                                                                <p class="field-title show" title="LastAchievable30days" aura:id="Level3IndicatorLabel">To Get to Level 3</p>
                                                                 <aura:if isTrue="{!v.CurrentAuthenticationLevel == 'Level 3'}">
                                                                 	<p class="field-title show" title="Level3ReachedLabel" id="Level3ReachedLabel">Level 3 </p>
                                                                 </aura:if>
@@ -354,8 +355,9 @@
 										</lightning:tab>
 								    </aura:if>
 											         
-								        <lightning:tab label="Public Wallet" id="PublicWalletTab" onactive="{! c.handleActive }" iconName="{!v.PWIconName}">
+								        <lightning:tab label="Public Wallet" id="PublicWalletTab" onactive="{! c.handleActive }" iconName="{!v.PWIconName}" >
 											
+												
 												<div class=" " id="cmpPublicWallet">
 									  				<c:PublicWallet recordId="{!v.SelectedmemberId}" aura:id="PublicWallet" GUID="{!v.GUID}" PublicWalletStatusForDay ="{!v.PublicWalletStatusForDay}" IVRGUIDFromUrl="{!v.IVRGUIDFromUrl}"  />
 												</div>
@@ -366,8 +368,8 @@
 				         					<c:CFCUWallet recordId="{!v.SelectedmemberId}" aura:id="CFCUWallet" GUID="{!v.GUID}" IsCFCUSectionVisible="{!v.IsCFCUSectionVisible}" CFCUWalletStatusForDay ="{!v.CFCUWalletStatusForDay}" IVRGUIDFromUrl="{!v.IVRGUIDFromUrl}" />
 							        	</lightning:tab>
 							        							        	
-							          	<aura:if isTrue="{!(v.IsOOWTabVisible == true)}">
-								          	<aura:if isTrue="{!(v.IsOOWAvailableOnLoad == true)}">
+							          	<aura:if isTrue="{!v.IsOOWTabVisible}">
+								          	<aura:if isTrue="{!v.IsOOWAvailableOnLoad}">
 									        	<lightning:tab label="OOW" id="OOWTab" onactive="{! c.handleActive }" iconName="{!v.OOWIconName}" >
 												
 													<div>

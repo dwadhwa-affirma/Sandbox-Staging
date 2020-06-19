@@ -43,7 +43,7 @@
       											  <div class="slds-truncate" title="Staff Name">{!item.Created_Date__c}</div>
       										</td>
       										<td data-label="Staff Name">
-      											  <div class="slds-truncate" title="Staff Name">{!item.Staff_Name__c}</div>
+      											  <div class="slds-truncate" title="Staff Name">{!item.StaffName__c}</div>
       										</td>
       										<td data-label="Member Number">
       											  <div class="slds-truncate" title="Member Number">{!item.Member_Number__c}</div>

@@ -187,6 +187,10 @@
 		var isDebitPinCalculated = component.get("v.isDebitPinCalculated");
 		TotalScoreRequiredToAchieveLevel = RangeStart;
 		
+		
+       
+		 	
+		
 		//---------------------------For checking MC Pin Change and Failed desired level score -----------//
     	
     	
@@ -406,6 +410,7 @@
 				
 			}
 			component.set("v.MemberNumberEntered", finalstring);
+            component.set("v.OOWMemberNumberEntered",finalstring);
 			
 			if(event.keyCode == 13){
 				document.getElementById('frmMemberNumber').value= finalstring; 
@@ -477,6 +482,9 @@
         var OTPComponent = component.find('OTPAuthentication');
         if(OTPComponent!=undefined)OTPComponent.OTPMethod(attribute1,ReLoadRequired);
        helper.MemberVerificationAttemptCheck(component, event, helper, memberid, DebitCardStatus, ReLoadRequired, PointsObtained);
+      
+    
+       
 	},
 	
 	 handleActive: function (component, event, helper) {
@@ -823,6 +831,7 @@ NavigateToMember : function(component , event, helper){
 	   component.set("v.PINMatch",'');
 	   component.set("v.IsMemberManualSearched",false);
 	   component.set("v.MultipleMemberNumberAlert",'');
+       component.set("v.OOWMemberNumberEntered",'');
 	  // window.location.href = '/lightning/cmp/c__LightningVerification';
 	   
 	    

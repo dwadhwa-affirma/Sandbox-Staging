@@ -69,7 +69,7 @@
 		 if(SSNFromURL != undefined || MemberNumberFromURL != undefined || PhoneFromURL != undefined){
 			component.set("v.PageURL", url);
 		}
-		if(SSNFromURL!= undefined && (SSNFromURL == "" || SSNFromURL == null || SSNFromURL == 'null'))
+		/*if(SSNFromURL!= undefined && (SSNFromURL == "" || SSNFromURL == null || SSNFromURL == 'null'))
 		{
 			component.set("v.IsOOWTabVisible", false);
 			component.set("v.IsOOWAvailableOnLoad", false);
@@ -78,7 +78,7 @@
 		{
 			component.set("v.IsOOWTabVisible", true);
 		}
-		
+		*/
 		if(PINMatchFromURL!= undefined &&(PINMatchFromURL == "" || PINMatchFromURL == null || PINMatchFromURL == 'null' ))
 		{
 			component.set("v.IsDebitTabVisible", false);
@@ -301,53 +301,73 @@
 					    	component.set("v.IsOOWAvailableOnLoad", false);
 					    }
 					    
-					    var ProgressBarStep2 = document.getElementById('Step2');
-                        var Level2IndicatorLabel =  document.getElementById('Level2IndicatorLabel');
-                        
+					    //var ProgressBarStep2 = document.getElementById('Step2');
+                       // var Level2IndicatorLabel =  document.getElementById('Level2IndicatorLabel');
+                        var ProgressBarStep2 = component.find('step2');
+                        var Level2IndicatorLabel = component.find('Level2IndicatorLabel');
                         if(result.IsLevel2Achieved == true && result.NextTabLevel2 == 'Level Reached')
                         {
-                        	ProgressBarStep2.classList.add('active');
-                        	Level2IndicatorLabel.classList.add('hidden');
-                        	Level2IndicatorLabel.classList.remove('show');
+                        	$A.util.addClass(ProgressBarStep2, 'active');
+                        	$A.util.addClass(Level2IndicatorLabel, 'hidden');
+                        	$A.util.removeClass(Level2IndicatorLabel, 'show');
+                        	//ProgressBarStep2.classList.add('active');
+                        	//Level2IndicatorLabel.classList.add('hidden');
+                        	//Level2IndicatorLabel.classList.remove('show');
                         	component.set("v.CurrentAuthenticationLevel", 'Level 2');
                         }
                         else if(result.IsLevel2Achieved == false && result.NextTabLevel2 == 'Not Achievable' )
                         {
-                        	ProgressBarStep2.classList.add('three');
-                        	Level2IndicatorLabel.classList.add('hidden');
-                        	Level2IndicatorLabel.classList.remove('show');
+                        	//ProgressBarStep2.classList.add('three');
+                        	//Level2IndicatorLabel.classList.add('hidden');
+                        	//Level2IndicatorLabel.classList.remove('show');
+                        	$A.util.addClass(ProgressBarStep2, 'three');
+                        	$A.util.addClass(Level2IndicatorLabel, 'hidden');
+                        	$A.util.removeClass(Level2IndicatorLabel, 'show');
                         }
                        
                         else 
                         {
-                        	ProgressBarStep2.classList.remove('three');
-                        	ProgressBarStep2.classList.remove('active');
-                        	ProgressBarStep2.classList.add('two');
-                        	
+                        	//ProgressBarStep2.classList.remove('three');
+                        	//ProgressBarStep2.classList.remove('active');
+                        	//ProgressBarStep2.classList.add('two');
+                        	$A.util.removeClass(ProgressBarStep2, 'three');
+                        	$A.util.removeClass(ProgressBarStep2, 'active');
+                        	$A.util.addClass(ProgressBarStep2, 'two');
                         }
                       
-                        var ProgressBarStep3 = document.getElementById('Step3');
-                        var Level3IndicatorLabel =  document.getElementById('Level3IndicatorLabel');
+                        //var ProgressBarStep3 = document.getElementById('Step3');
+                       // var Level3IndicatorLabel =  document.getElementById('Level3IndicatorLabel');
+                        var ProgressBarStep3 = component.find('step3');
+                        var Level3IndicatorLabel = component.find('Level3IndicatorLabel');
                         if(result.IsLevel3Achieved == true && result.NextTabLevel3 == 'Level Reached')
                         {
-                        	ProgressBarStep3.classList.add('active');
-                        	Level3IndicatorLabel.classList.add('hidden');
-                        	Level3IndicatorLabel.classList.remove('show');
+                        	//ProgressBarStep3.classList.add('active');
+                        	//Level3IndicatorLabel.classList.add('hidden');
+                        	//Level3IndicatorLabel.classList.remove('show');
+                        	$A.util.addClass(ProgressBarStep3, 'active');
+                        	$A.util.addClass(Level3IndicatorLabel, 'hidden');
+                        	$A.util.removeClass(Level3IndicatorLabel, 'show');
+                        	
                         	component.set("v.CurrentAuthenticationLevel", 'Level 3');
                         }
                         else if(result.IsLevel3Achieved == false && result.NextTabLevel3 == 'Not Achievable')
                         {
-                        	ProgressBarStep3.classList.add('three');
-                        	Level3IndicatorLabel.classList.add('hidden');
-                        	Level3IndicatorLabel.classList.remove('show');
+                        	//ProgressBarStep3.classList.add('three');
+                        	//Level3IndicatorLabel.classList.add('hidden');
+                        	//Level3IndicatorLabel.classList.remove('show');
+                        	$A.util.addClass(ProgressBarStep3, 'three');
+                        	$A.util.addClass(Level3IndicatorLabel, 'hidden');
+                        	$A.util.removeClass(Level3IndicatorLabel, 'show');
                         }
                         
                         else 
                         {
-                        	ProgressBarStep3.classList.remove('three');
-                        	ProgressBarStep3.classList.remove('active');
-                        	ProgressBarStep3.classList.add('two');
-                        	
+                        	//ProgressBarStep3.classList.remove('three');
+                        	//ProgressBarStep3.classList.remove('active');
+                        	//ProgressBarStep3.classList.add('two');
+                        	$A.util.removeClass(ProgressBarStep3, 'three');
+                        	$A.util.removeClass(ProgressBarStep3, 'active');
+                        	$A.util.addClass(ProgressBarStep3, 'two');
                         }
 					    
 		     		    if(result.OTPAttemptCount > 0){
@@ -368,7 +388,10 @@
 							}
 						if(result['AccountNumber'] != undefined){
 							document.getElementById('frmMemberNumber').value = result['AccountNumber']; 
+                            component.set("v.OOWMemberNumberEntered",result['AccountNumber']);
                         } 
+                        
+                        
 						component.set("v.isDoneRendering",true);
 	              	
                   }
@@ -432,7 +455,8 @@
 						}
 						
 						if(result.Profile.Name =='Branch'){
-							component.set("v.IsKYMTabVisible", true);
+							component.set("v.IsKYMTabVisible", false);
+							//component.set("v.IsKYMTabVisible", true); this change is done for AUT-292
 						}
 						else{
 							
@@ -598,12 +622,17 @@
 		                       var Source = '';
 		                       
 		                       if(IsMemberNumberValid == true){
-		                    	   AccountNumber = component.get("v.MemberNumberEntered");
+                                   
+		                    	   AccountNumber = component.get("v.OOWMemberNumberEntered");
                                    if(AccountNumber == undefined){
                                        AccountNumber = component.get("v.MemberNumberFromURL");
                                    }
 		                    	   	Source = "&source=member";
+                                   
 		                       }
+                               if(component.get("v.OOWMemberNumberEntered")!= undefined && component.get("v.OOWMemberNumberEntered") !=''){
+                                   Source = "&source=member";
+                               }
     		
 	                           component.set("v.AccountNumber",result.AccountNumber);
 	                                                          
@@ -803,54 +832,54 @@
 	                                    component.set("v.IsLevel3Achieved", result.IsLevel3Achieved); 
 	                                   	component.set("v.HighestAchievableLevel", result.LevelofAuthentication);
 	                                    
-	                                    
-	                                    
-	                                    var ProgressBarStep2 = document.getElementById('Step2');
-	                                    var Level2IndicatorLabel =  document.getElementById('Level2IndicatorLabel');
-	                                    
-	                                    if(result.IsLevel2Achieved == true && result.NextTabLevel2 == 'Level Reached')
-	                                    {
-	                                    	ProgressBarStep2.classList.add('active');
-	                                    	Level2IndicatorLabel.classList.add('hidden');
-	                                    	Level2IndicatorLabel.classList.remove('show');
-	                                    	component.set("v.CurrentAuthenticationLevel", 'Level 2');
-	                                    }
+				                        var ProgressBarStep2 = component.find('step2');
+				                        var Level2IndicatorLabel = component.find('Level2IndicatorLabel');
+				                        if(result.IsLevel2Achieved == true && result.NextTabLevel2 == 'Level Reached')
+				                        {
+				                        	$A.util.addClass(ProgressBarStep2, 'active');
+				                        	$A.util.addClass(Level2IndicatorLabel, 'hidden');
+				                        	$A.util.removeClass(Level2IndicatorLabel, 'show');
+				                        	component.set("v.CurrentAuthenticationLevel", 'Level 2');
+				                        }	                                 
 	                                    else if(result.IsLevel2Achieved == false && result.NextTabLevel2 == 'Not Achievable' )
 	                                    {
-	                                    	ProgressBarStep2.classList.add('three');
-	                                    	Level2IndicatorLabel.classList.add('hidden');
-	                                    	Level2IndicatorLabel.classList.remove('show');
+	                                    	$A.util.addClass(ProgressBarStep2, 'three');
+				                        	$A.util.addClass(Level2IndicatorLabel, 'hidden');
+				                        	$A.util.removeClass(Level2IndicatorLabel, 'show');
 	                                    }
 	                                    else 
 	                                    {
-	                                    	ProgressBarStep2.classList.remove('three');
-	                                    	ProgressBarStep2.classList.remove('active');
-	                                    	ProgressBarStep2.classList.add('two');
+	                                    	
+	                                    	$A.util.removeClass(ProgressBarStep2, 'three');
+	                                    	$A.util.removeClass(ProgressBarStep2, 'active');
+	                                    	$A.util.addClass(ProgressBarStep2, 'two');
 	                                    	
 	                                    }
-	                                  
-	                                    var ProgressBarStep3 = document.getElementById('Step3');
-	                                    var Level3IndicatorLabel =  document.getElementById('Level3IndicatorLabel');
-	                                    if(result.IsLevel3Achieved == true && result.NextTabLevel3 == 'Level Reached')
-	                                    {
-	                                    	ProgressBarStep3.classList.add('active');
-	                                    	Level3IndicatorLabel.classList.add('hidden');
-	                                    	Level3IndicatorLabel.classList.remove('show');
-	                                    	component.set("v.CurrentAuthenticationLevel", 'Level 3');
-	                                    }
-	                                    else if(result.IsLevel3Achieved == false && result.NextTabLevel3 == 'Not Achievable')
-	                                    {
-	                                    	ProgressBarStep3.classList.add('three');
-	                                    	Level3IndicatorLabel.classList.add('hidden');
-	                                    	Level3IndicatorLabel.classList.remove('show');
-	                                    }
-	                                    else 
-	                                    {
-	                                    	ProgressBarStep3.classList.remove('three');
-	                                    	ProgressBarStep3.classList.remove('active');
-	                                    	ProgressBarStep3.classList.add('two');
-	                                    	
-	                                    }
+				                        var ProgressBarStep3 = component.find('step3');
+				                        var Level3IndicatorLabel = component.find('Level3IndicatorLabel');
+				                        if(result.IsLevel3Achieved == true && result.NextTabLevel3 == 'Level Reached')
+				                        {
+				                        	$A.util.addClass(ProgressBarStep3, 'active');
+				                        	$A.util.addClass(Level3IndicatorLabel, 'hidden');
+				                        	$A.util.removeClass(Level3IndicatorLabel, 'show');
+				                        	
+				                        	component.set("v.CurrentAuthenticationLevel", 'Level 3');
+				                        }
+				                        else if(result.IsLevel3Achieved == false && result.NextTabLevel3 == 'Not Achievable')
+				                        {
+				                        	$A.util.addClass(ProgressBarStep3, 'three');
+				                        	$A.util.addClass(Level3IndicatorLabel, 'hidden');
+				                        	$A.util.removeClass(Level3IndicatorLabel, 'show');
+				                        }
+				                        
+				                        else 
+				                        {
+				                        	$A.util.removeClass(ProgressBarStep3, 'three');
+				                        	$A.util.removeClass(ProgressBarStep3, 'active');
+				                        	$A.util.addClass(ProgressBarStep3, 'two');
+				                        }
+	                                   
+	                                   
 	                                }
 	   	       				});	
 	   	       
@@ -978,51 +1007,54 @@
 	                                	   		component.set("v.NextTabLevel2", result.NextTabLevel2);
 	                                	   		component.set("v.NextTabLevel3", result.NextTabLevel3); 
 	                                	   		component.set("v.IsLevel2Achieved", result.IsLevel2Achieved); 
-	                                	   		var ProgressBarStep2 = document.getElementById('Step2');
-			                                    var Level2IndicatorLabel =  document.getElementById('Level2IndicatorLabel');
-			                                   
-	                                            if(result.IsLevel2Achieved == true && result.NextTabLevel2 == 'Level Reached')
-			                                    {
-			                                    	ProgressBarStep2.classList.add('active');
-			                                    	Level2IndicatorLabel.classList.add('hidden');
-			                                    	Level2IndicatorLabel.classList.remove('show');
-			                                    	component.set("v.CurrentAuthenticationLevel", 'Level 2');
-			                                    }
+	                                	   		
+			                                	var ProgressBarStep2 = component.find('step2');
+						                        var Level2IndicatorLabel = component.find('Level2IndicatorLabel');
+						                        if(result.IsLevel2Achieved == true && result.NextTabLevel2 == 'Level Reached')
+						                        {
+						                        	$A.util.addClass(ProgressBarStep2, 'active');
+						                        	$A.util.addClass(Level2IndicatorLabel, 'hidden');
+						                        	$A.util.removeClass(Level2IndicatorLabel, 'show');
+						                        	component.set("v.CurrentAuthenticationLevel", 'Level 2');
+						                        }	                                 
 			                                    else if(result.IsLevel2Achieved == false && result.NextTabLevel2 == 'Not Achievable' )
 			                                    {
-			                                    	ProgressBarStep2.classList.add('three');
-			                                    	Level2IndicatorLabel.classList.add('hidden');
-			                                    	Level2IndicatorLabel.classList.remove('show');
+			                                    	$A.util.addClass(ProgressBarStep2, 'three');
+						                        	$A.util.addClass(Level2IndicatorLabel, 'hidden');
+						                        	$A.util.removeClass(Level2IndicatorLabel, 'show');
 			                                    }
 			                                    else 
 			                                    {
-			                                    	ProgressBarStep2.classList.remove('three');
-			                                    	ProgressBarStep2.classList.remove('active');
-			                                    	ProgressBarStep2.classList.add('two');
+			                                    	
+			                                    	$A.util.removeClass(ProgressBarStep2, 'three');
+			                                    	$A.util.removeClass(ProgressBarStep2, 'active');
+			                                    	$A.util.addClass(ProgressBarStep2, 'two');
 			                                    	
 			                                    }
-			                                  
-			                                    var ProgressBarStep3 = document.getElementById('Step3');
-			                                    var Level3IndicatorLabel =  document.getElementById('Level3IndicatorLabel');
-			                                    if(result.IsLevel3Achieved == true && result.NextTabLevel3 == 'Level Reached')
-			                                    {
-			                                    	ProgressBarStep3.classList.add('active');
-			                                    	Level3IndicatorLabel.classList.add('hidden');
-			                                    	Level3IndicatorLabel.classList.remove('show');
-			                                    	component.set("v.CurrentAuthenticationLevel", 'Level 3');
-			                                    }
-			                                    else if(result.IsLevel3Achieved == false && result.NextTabLevel3 == 'Not Achievable')
-			                                    {
-			                                    	ProgressBarStep3.classList.add('three');
-			                                    	Level3IndicatorLabel.classList.add('hidden');
-			                                    	Level3IndicatorLabel.classList.remove('show');
-			                                    }
-			                                    else 
-			                                    {
-			                                    	ProgressBarStep3.classList.remove('three');
-			                                    	ProgressBarStep3.classList.remove('active');
-			                                    	ProgressBarStep3.classList.add('two');
-			                                    }
+						                        var ProgressBarStep3 = component.find('step3');
+						                        var Level3IndicatorLabel = component.find('Level3IndicatorLabel');
+						                        if(result.IsLevel3Achieved == true && result.NextTabLevel3 == 'Level Reached')
+						                        {
+						                        	$A.util.addClass(ProgressBarStep3, 'active');
+						                        	$A.util.addClass(Level3IndicatorLabel, 'hidden');
+						                        	$A.util.removeClass(Level3IndicatorLabel, 'show');
+						                        	
+						                        	component.set("v.CurrentAuthenticationLevel", 'Level 3');
+						                        }
+						                        else if(result.IsLevel3Achieved == false && result.NextTabLevel3 == 'Not Achievable')
+						                        {
+						                        	$A.util.addClass(ProgressBarStep3, 'three');
+						                        	$A.util.addClass(Level3IndicatorLabel, 'hidden');
+						                        	$A.util.removeClass(Level3IndicatorLabel, 'show');
+						                        }
+						                        
+						                        else 
+						                        {
+						                        	$A.util.removeClass(ProgressBarStep3, 'three');
+						                        	$A.util.removeClass(ProgressBarStep3, 'active');
+						                        	$A.util.addClass(ProgressBarStep3, 'two');
+						                        }
+	                                	   		
 	                             }
 	                                	   	
 	                                   

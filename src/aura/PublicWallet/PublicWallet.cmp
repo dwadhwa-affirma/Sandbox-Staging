@@ -75,10 +75,13 @@
        			</div>
        			<div class="InnerDiv">
        				<div class="leftDiv">
-	       				<span class="labeltxt">Email Address: </span> 
+	       				    
+	       				    <span class="labeltxt">Email Address: </span> 
 	       				<div>
                             <ui:outputText aura:id="EmailOutput" value="{!v.Emails}"/>
-       					</div>
+       					</div>				
+       					
+                          
 	       			</div>
        				<div class="btnAlign">
        					<lightning:button variant="neutral" label="Passed" onclick="{! c.ButtonClick }" iconName="utility:check" aura:id="EmailPassButton" class="BtnOne"/>

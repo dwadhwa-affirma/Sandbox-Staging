@@ -187,7 +187,7 @@
                                          <p class="field-header" title="RP">Card Data</p>
                                          <lightning:layout horizontalAlign="spread">
                                              <lightning:layoutItem>
-                                                 <div class="header-column mr-80">
+                                                 <div class="header-column mr-80" style="margin-right:10px;">
                                                      <p class="field-title" title="NumberOfCallsToday">Name </p>
                                                      <aura:iteration items="{!v.Card}" var="item">
                                                          <div class="slds-truncate" title="{!item.Name}">{!item.Card_Name__c}</div>
@@ -196,7 +196,7 @@
                                              </lightning:layoutItem>
                                              
                                              <lightning:layoutItem>
-                                                 <div class="header-column mr-80">
+                                                 <div class="header-column mr-80" style="margin-right:10px;">
                                                      <p class="field-title" title="NumberOfCallsToday">Type Translate </p>
                                                      <aura:iteration items="{!v.Card}" var="item">
                                                          
@@ -206,7 +206,7 @@
                                              </lightning:layoutItem>
                                              
                                              <lightning:layoutItem>
-                                                 <div class="header-column mr-80">
+                                                 <div class="header-column mr-80" style="margin-right:10px;">
                                                      <p class="field-title" title="NumberOfCallsToday">Card Number </p>
                                                      <aura:iteration items="{!v.Card}" var="item">
                                                          
