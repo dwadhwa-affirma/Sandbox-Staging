@@ -3122,7 +3122,8 @@ public class MemberAuthenticationControllerLightning{
 					'Override_Request_Type__c, ' +
 					'Last_Achievable_Level__c, ' +
 					'Override_Request_Supervisor__c, ' +
-					'GUID__c '  + 
+					'GUID__c, '  + 
+					'StaffName__c' +
 					' FROM Authenticated_Log__c where SalesforceID__c =  \'' +  MemberId  +  '\''  +
 					' and RecordType.Name != \'' + rec  +  '\''  + ' and   GUID__c = \'' +  GUID  +  '\'  order by createddate asc'  ;
 		
@@ -3146,7 +3147,7 @@ public class MemberAuthenticationControllerLightning{
 					dt = DateTime.newInstance(log.CreatedDate.getTime() + tz.getOffset(log.CreatedDate));
 					lw.CreatedDate = dt.formatGMT('MM-dd-yyyy HH:mm:ss');
 					lw.LogNumber = log.Name;
-					lw.UserName = log.Staff_Name__c;
+					lw.UserName = log.StaffName__c;
 					lw.MemberNumber = log.Member_Number__c;
 					lw.PhoneNumber= log.CallerPhoneNumber__c;
 					if(log.RecordType.Name == 'IVR Authentication Log'){
@@ -3229,7 +3230,8 @@ public class MemberAuthenticationControllerLightning{
 					'Override_Request_Type__c, ' +
 					'Last_Achievable_Level__c, ' +
 					'Override_Request_Supervisor__c, ' +
-					'GUID__c '  + 
+					'GUID__c, '  + 
+					'StaffName__c' +
 					' FROM Authenticated_Log__c where SalesforceID__c =  \'' +  MemberId  +  '\''  +
 					' and RecordType.Name != \'' + rec  +  '\''  +   'and createddate = LAST_N_DAYS:' + Days + ' order by createddate desc , RecordType.Name' ;
 		
@@ -3266,7 +3268,7 @@ public class MemberAuthenticationControllerLightning{
 				dt = DateTime.newInstance(log.CreatedDate.getTime() + tz.getOffset(log.CreatedDate));
 			    lw.CreatedDate = dt.formatGMT('MM-dd-yyyy HH:mm:ss');
 				lw.LogNumber = log.Name;
-				lw.UserName = log.Staff_Name__c;
+				lw.UserName = log.StaffName__c;
 				lw.MemberNumber = log.Member_Number__c;
 				lw.PhoneNumber= log.CallerPhoneNumber__c;
 				if(log.RecordType.Name == 'IVR Authentication Log'){
@@ -3741,7 +3743,7 @@ public class MemberAuthenticationControllerLightning{
      	OOW_Status__c,OOW_Member_Number__c,OOW_Reason__c,OOW_Notes__c,First_Name__c,Last_Name__c,
      	Public_Wallet_Status__c,DOBMatch__c,IdNumberMatch__c,MMNMatch__c,EmailMatch__c,Additional_Token_Option3_Match__c,Case__r.CaseNumber,Manager_Override_Case__r.CaseNumber,
      	CFCU_Wallet_Status__c,BeneficiaryDetailMatch__c,Joint_OwnerDetailsMatch__c,Additional_Token_Option1_Match__c,Additional_Token_Option2_Match__c,Loan_Detail_Match__c,
-     	Decision__c,SalesforceID__c,Member__c,Member_Number__c,Staff_Name__c,Current_User__c,GUID__c,IVR_GUID__c,Unusual_activity__c from Authenticated_Log__c where SalesforceID__c= :MemberId and Recordtype.name='Master Authentication Log' order by createddate desc];
+     	Decision__c,SalesforceID__c,Member__c,Member_Number__c,Staff_Name__c,Current_User__c,GUID__c,IVR_GUID__c,Unusual_activity__c, StaffName__c from Authenticated_Log__c where SalesforceID__c= :MemberId and Recordtype.name='Master Authentication Log' order by createddate desc];
      	system.debug('AuthLog##'+ AuthLog);
      	return AuthLog;
      } 
