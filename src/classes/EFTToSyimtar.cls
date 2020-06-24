@@ -89,8 +89,8 @@ public class EFTToSyimtar {
             		EffectiveDate = null;
             	}
             	
-                if(e.Payment_Amount__c != null)
-                	PostAmount = String.ValueOf(e.Payment_Amount__c);
+                if(e.Alternate_Amount__c != null)
+                	PostAmount = String.ValueOf(e.Alternate_Amount__c);
                 else
                 	PostAmount = '0.00';
                 Payee = e.Routing_Number__c.leftPad(10,'0');
@@ -169,7 +169,7 @@ public class EFTToSyimtar {
     List<EFT__c> EFTs = [SELECT Account_Number__c,Action_Type__c,Alternate_Amount__c,Bank_Name__c,
                          CreatedById,CreatedDate,Day_of_Month__c,DocuSignId__c,Effective_Date__c,
                          Frequency__c,Id,Member_Account__c,Member_Account__r.Brand__c,Member_Account__r.Name, Member__c,Name,Case__c,
-                         OwnerId,Payment_Amount__c,Routing_Number__c,Share_Loan_Id__c,Stage__c,EftLocator__c,Share_Loan_Description__c,Share_Loan_Type__c,
+                         OwnerId,Payment_Amount__c,Routing_Number__c,Share_Loan_Id__c,Stage__c,EftLocator__c,Share_Loan_Description__c,Share_Loan_Type__c,Member_Name__c,
                          Status__c,Type__c, EFT_ID_Type__c FROM EFT__c where id =: ids];
         
         map<Id, String> CaseIdsToUpdate = new Map<Id, String>();
@@ -204,8 +204,8 @@ public class EFTToSyimtar {
             		EffectiveDate = null;
             	}
             	
-                if(e.Payment_Amount__c != null)
-                	PostAmount = String.ValueOf(e.Payment_Amount__c);
+                if(e.Alternate_Amount__c != null)
+                	PostAmount = String.ValueOf(e.Alternate_Amount__c);
                 else
                 	PostAmount = '0.00';
                 Payee = e.Routing_Number__c.leftPad(10,'0');
@@ -286,13 +286,15 @@ public class EFTToSyimtar {
 	        		if(isExpired){
 	        			e.Expiration_Date__c = Date.valueOf(resultExpDate);
 	        			 Datetime dt = datetime.newInstance(Date.valueOf(resultExpDate).year(), Date.valueOf(resultExpDate).month(),Date.valueOf(resultExpDate).day());
-	        			string operation = 'EFT Record Expired' + '\n' + 'Expiration Date:' + dt.format('MM/dd/yyyy') + '\n' ;
-	        			operation = operation + 'Share/Loan:' + e.Share_Loan_Id__c 
+	        			string operation = 'ACH Record Expired' + '\n' + 'Expiration Date:' + dt.format('MM/dd/yyyy') + '\n' ;
+	        			operation = operation + 'Member Name:' + e.Member_Name__c 
+        							+ '\n' + 'Share/Loan:' + e.Share_Loan_Id__c 
                                     + '\n' + 'ABA/Routing#:' + e.Routing_Number__c 
                                      + '\n' +'Funding FI:' + e.Bank_Name__c
                                      + '\n' +'Account Number:' + e.Account_Number__c
                                      + '\n' +'Type:' + e.Type__c
-                                     + '\n' +'Payment Amount:' + e.Payment_Amount__c				 
+                                     + '\n' +'Payment Amount:' + e.Payment_Amount__c	
+                                     + '\n' +'Alternate Amount:' + (e.Alternate_Amount__c == null ? 0 :e.Alternate_Amount__c)				 
                                      + '\n' +'Effective Date:' + e.Effective_Date__c
                                      + '\n' +'Frequency:' + e.Frequency__c
                                      + '\n' +'Day of Month:' + e.Day_of_Month__c;
