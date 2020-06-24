@@ -1,5 +1,28 @@
 ({
-	myAction : function(component, event, helper) {
+	doInit : function(component, event, helper) {
+	
+		var action = component.get("c.getMembers");
+		var recordId = component.get("v.recordId");
+		//var EFTRecord = component.get("v.EFTRecord");		
+		
+		action.setParams({
+			"recordId": recordId
+		});			
+		action.setCallback(this, function(resp) {
+			var state=resp.getState();			
+			if(state === "SUCCESS"){
+				var result =  resp.getReturnValue();
+				result.sort(helper.Sort);
+				for(var i=0;i<result.length;i++){
+					var tt = result[i].TypeTranslate__c.substring(5);
+					result[i].TypeTranslate__c = tt;
+				}
+				
+	        	component.set('v.paList', result);							
+			}
+		});
+		
+		$A.enqueueAction(action);
 		
 	},
     onRadioChange: function (component, event, helper) {
@@ -21,9 +44,10 @@
         
         var evt = $A.get("e.c:EFTEvent");
         var EFT = component.get("v.EFTRecord");
+         var isMemberSelected = component.get("v.isMemberSelected");
         
 		if(EFT != undefined){
-            evt.setParams({ "EFTRecord": EFT});
+            evt.setParams({ "EFTRecord": EFT , "isMemberSelected": isMemberSelected});
             evt.fire();
         }
         
@@ -50,12 +74,27 @@
         
         var evt = $A.get("e.c:EFTEvent");
         var EFT = component.get("v.EFTRecord");
+        var isMemberSelected = component.get("v.isMemberSelected");
         
 		if(EFT != undefined){
-            evt.setParams({ "EFTRecord": EFT});
+            evt.setParams({ "EFTRecord": EFT, "isMemberSelected": isMemberSelected});
             evt.fire();
         }
     
+    },
+    
+    onMemberChange: function (component, event, helper) {
+    	var MemberName = event.getSource().get('v.value');    
+    	component.set("v.EFTRecord.Member_Name__c",MemberName);
+    	
+    	var evt = $A.get("e.c:EFTEvent");
+        var EFT = component.get("v.EFTRecord");
+        var isMemberSelected = component.get("v.isMemberSelected");
+        
+		if(EFT != undefined){
+            evt.setParams({ "EFTRecord": EFT, "isMemberSelected": isMemberSelected});
+            evt.fire();
+        }
     }
   
 })
