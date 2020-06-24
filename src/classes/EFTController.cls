@@ -29,6 +29,27 @@ public class EFTController {
     }
     
     @AuraEnabled
+    public static list<Person_Account__c> getMembers(string recordId){
+    	list<Person_Account__c> paList = PersonNameLightningController.getData(recordId);
+    	system.debug('result=='+paList);
+    	
+    	list<Person_Account__c> result = new List<Person_Account__c>();
+    	
+    	set<string> typeList = new set<string>();
+        for(Member360_TypeTranslate__c t : Member360_TypeTranslate__c.getAll().values()){
+        	typeList.add(t.name);	
+        } 
+        
+        for(Person_Account__c var: paList){           			
+		         	if(typeList.contains(var.TypeTranslate__c)){
+        				result.add(var);
+        			}    
+        			
+            }
+    	return result;
+    }    
+    
+    @AuraEnabled
     public static EFT__c getEFT(EFT__c EFTRecord){
         EFT__c ResultEFTRecord = [select id, name, Member_Account__c, Stage__c, Action_Type__c, Share_Loan_Id__c, Type__c	,Share_Loan_Type__c, Share_Loan_Description__c,
                                       Routing_Number__c, Bank_Name__c, Account_Number__c, Alternate_Amount__c,Effective_Date__c,
@@ -55,7 +76,7 @@ public class EFTController {
                              Account_Number__c, Account_Number__r.RecType__c,TypeTranslate__c, Account_Number__r.Name, PersonID__r.Home_Phone__pc,PersonID__r.Residential_City__pc,PersonID__r.Residential_State__pc, PersonID__r.Residential_Street__pc, PersonID__r.Residential_Zipocde__pc, PersonID__r.Name, PersonID__r.Email_raw__c FROM Person_Account__c 
                              WHERE (Account_Number__c =: EFTRecord.Member_Account__c OR Account_Number__c =: MemberAccount.Parent_Account__c) and TypeTranslate__c  like '%Primary%' limit 1];
                              
-      		EFTRecord.Member_Name__c = paPrimary.PersonID__r.Name;
+      		//EFTRecord.Member_Name__c = paPrimary.PersonID__r.Name;
             insert EFTRecord;
             return EFTRecord;
         }
@@ -77,6 +98,7 @@ public class EFTController {
             EFTRecordList[0].Action_Type__c  =  EFTRecord.Action_Type__c;
             EFTRecordList[0].Update_DocuSignId__c  =  '';
             EFTRecordList[0].Update_Docusign_Status__c  =  '';
+            EFTRecordList[0].Member_Name__c  =  EFTRecord.Member_Name__c;
             update EFTRecordList;
             return EFTRecordList[0];
         }
@@ -92,10 +114,11 @@ public class EFTController {
         EFT__c EFTRecordList = [Select Account_Number__c,Action_Type__c,Alternate_Amount__c,Bank_Name__c,
                          CreatedById,CreatedDate,Day_of_Month__c,DocuSignId__c,Effective_Date__c,Expiration_Date__c,
                          Frequency__c,Id,Member_Account__c,Member_Account__r.Brand__c,Member_Account__r.Name, Member__c,Name,Case__c,
-                         OwnerId,Payment_Amount__c,Routing_Number__c,Share_Loan_Id__c,Stage__c,EftLocator__c,Share_Loan_Description__c,Share_Loan_Type__c,
+                         OwnerId,Payment_Amount__c,Routing_Number__c,Share_Loan_Id__c,Stage__c,EftLocator__c,Share_Loan_Description__c,Share_Loan_Type__c,Member_Name__c,
                          Status__c,Type__c, EFT_ID_Type__c, Expired__c from EFT__c where id =:EFTRecord.Id limit 1];
         if(EFTRecordList != null){            
             EFTRecordList.Expired__c  =  true;
+            EFTRecordList.Action_Type__c  =  'Update';
             EFT__c ResultEFTRecord = createCase(EFTRecordList);
             EFTRecordList.Case__c = ResultEFTRecord.case__c;
             update EFTRecordList;
@@ -133,27 +156,29 @@ public class EFTController {
              	}    
 				//cs.AccountId = EFTRecord.Member_Account__c;
 				cs.Status = 'Open';
-				cs.Subject = 'EFT Recorcd';
+				cs.Subject = 'ACH Record';
 				cs.ownerid = '005j000000DCwXHAA1';
 				//cs.CaseComments__c = casecomment;
 				string operation='';
 				if(EFTRecord.Action_Type__c == 'Create'){
-					operation = 'EFT Record Created' + '\n';
+					operation = 'ACH Record Created' + '\n';
 				}
 				else if(EFTRecord.Action_Type__c == 'Update' && !EFTRecord.Expired__c){
-					operation = 'EFT Record Updated'  + '\n';
+					operation = 'ACH Record Updated'  + '\n';
 				}
 				else if(EFTRecord.Action_Type__c == 'Update' && EFTRecord.Expired__c){
 					
-					operation = 'EFT Record Expired' + '\n' + 'Expiration Date:' + EFTRecord.Expiration_Date__c + '\n' ;
+					operation = 'ACH Record Expired' + '\n' + 'Expiration Date:' + EFTRecord.Expiration_Date__c + '\n' ;
 				}
 				cs.Account_Number__c = EFTRecord.Member_Account__c;
-        		cs.Description = operation + 'Share/Loan:' + EFTRecord.Share_Loan_Id__c 
+        		cs.Description = operation + 'Member Name:' + EFTRecord.Member_Name__c 
+        							+ '\n' + 'Share/Loan:' + EFTRecord.Share_Loan_Id__c 
                                     + '\n' + 'ABA/Routing#:' + EFTRecord.Routing_Number__c 
                                      + '\n' +'Funding FI:' + EFTRecord.Bank_Name__c
                                      + '\n' +'Account Number:' + EFTRecord.Account_Number__c
                                      + '\n' +'Type:' + EFTRecord.Type__c
-                                     + '\n' +'Payment Amount:' + EFTRecord.Payment_Amount__c				 
+                                     + '\n' +'Payment Amount:' + EFTRecord.Payment_Amount__c
+                                     + '\n' +'Alternate Amount:' + (EFTRecord.Alternate_Amount__c == null ? 0  :EFTRecord.Alternate_Amount__c)				 
                                      + '\n' +'Effective Date:' + EFTRecord.Effective_Date__c
                                      + '\n' +'Frequency:' + EFTRecord.Frequency__c
                                      + '\n' +'Day of Month:' + EFTRecord.Day_of_Month__c;
@@ -371,16 +396,38 @@ public class EFTController {
                    			ShareLoanWrapperObject temp = new ShareLoanWrapperObject();
                        		map<string, object> localAcc = (map<string, object>)t;                       		
                        		string accouttype = (string)localAcc.get('AccountType');                       		
-                       		integer ShareId =  integer.valueof(accouttype.split(' ')[1].replace('#',''));
+                       		string ShareId =  accouttype.split(' ')[1].replace('#','');
        						System.debug('ShareId ....' + ShareId);
-	                       if(ShareId != 0){
+	                       if(ShareId != '0'){//&& ShareId == 2800
 	                               temp.ShareLoanID = ShareId; 
+	                               temp.ShareLoanIDString = 'S' + ShareId;
 	                               temp.Description =   (string)localAcc.get('Description');  
 	                               temp.TypeTranslate =  (string)localAcc.get('Description'); 
 	                               temp.Type =  'Share'; 
 	                               resultList.add(temp);
 	                       }
        				}
+       				
+       				set<string> ShareIds = new set<string>();
+                    map<string,string> LoanIdTypeTranslateMap = new map<string,string>();
+                    for(ShareLoanWrapperObject obj: resultList){
+                        ShareIds.add(obj.ShareLoanID.substring(0, 2).replaceFirst('^0+',''));
+                       // system.debug('sdsf'==string.valueof(obj.ShareLoanID).substring(0, 2));                        
+                    }
+                    system.debug('LoanIds=='+ShareIds);
+                    List<EFT_ShareLoan_TypeTranslate__c> listTT = [select name, Code__c, RecType__c, TypeTranslate__c from EFT_ShareLoan_TypeTranslate__c
+                                                                  where Code__c in: ShareIds and RecType__c = 'SHAR'];
+                    
+                   system.debug('listTT=='+listTT);
+                    for(EFT_ShareLoan_TypeTranslate__c t:listTT){
+                        LoanIdTypeTranslateMap.put(t.Code__c, t.TypeTranslate__c);                        
+                    }
+                    
+                    for(ShareLoanWrapperObject obj: resultList){
+                        string typetrans = LoanIdTypeTranslateMap.get(obj.ShareLoanID.substring(0, 2).replaceFirst('^0+',''));
+                        obj.TypeTranslate = typetrans;
+                        System.debug('typetrans ....' + typetrans);
+                    }
             }
             
             List<ShareLoanWrapperObject> LoanList = getLoanAccounts(AccountNumber);
@@ -420,13 +467,15 @@ public class EFTController {
                    for(Object t : results){
                    			ShareLoanWrapperObject temp = new ShareLoanWrapperObject();
                        		map<string, object> localAcc = (map<string, object>)t;
-                       		Integer LoanId = (Integer)localAcc.get('LoanId');
+                       		string LoanId = string.valueof(localAcc.get('LoanId'));
        						System.debug('Service response is ....' + localAcc);
-	                       if(LoanId != 0){
+	                       if(LoanId != '0'){
 	                               temp.ShareLoanID =  LoanId; 
+	                               temp.ShareLoanIDString = 'L' + LoanId;
 	                               temp.Description =   (string)localAcc.get('Description');  
 	                               //temp.TypeTranslate =  (string)localAcc.get('Description'); 
 	                               temp.Type =  'Loan'; 
+	                               temp.Payment = (decimal)localAcc.get('Payment'); 
 	                               resultList.add(temp);  
 	                       }
        				}
@@ -435,12 +484,13 @@ public class EFTController {
                     map<string,string> LoanIdTypeTranslateMap = new map<string,string>();
                     for(ShareLoanWrapperObject obj: resultList){
                         LoanIds.add(string.valueof(obj.ShareLoanID).substring(0, 2));
-                        system.debug('sdsf'==string.valueof(obj.ShareLoanID).substring(0, 2));                        
+                       // system.debug('sdsf'==string.valueof(obj.ShareLoanID).substring(0, 2));                        
                     }
-                    
+                    system.debug('LoanIds=='+LoanIds);
                     List<EFT_ShareLoan_TypeTranslate__c> listTT = [select name, Code__c, RecType__c, TypeTranslate__c from EFT_ShareLoan_TypeTranslate__c
                                                                   where Code__c in: LoanIds and RecType__c = 'LOAN'];
                     
+                   system.debug('listTT=='+listTT);
                     for(EFT_ShareLoan_TypeTranslate__c t:listTT){
                         LoanIdTypeTranslateMap.put(t.Code__c, t.TypeTranslate__c);                        
                     }
@@ -448,6 +498,7 @@ public class EFTController {
                     for(ShareLoanWrapperObject obj: resultList){
                         string typetrans = LoanIdTypeTranslateMap.get(string.valueof(obj.ShareLoanID).substring(0, 2));
                         obj.TypeTranslate = typetrans;
+                        System.debug('typetrans ....' + typetrans);
                     }
                 }
             }
@@ -551,13 +602,17 @@ public class EFTController {
     public class ShareLoanWrapperObject
     {
       @AuraEnabled
-      public Integer ShareLoanID {get;set;}
+      public String ShareLoanID {get;set;}
       @AuraEnabled
       public string Description {get;set;}
       @AuraEnabled
       public string TypeTranslate {get;set;}
       @AuraEnabled
       public string Type {get;set;}
+      @AuraEnabled
+      public string ShareLoanIDString {get;set;}
+      @AuraEnabled
+      public decimal Payment {get;set;}
     }
     
      public class EFTWrapperObject
