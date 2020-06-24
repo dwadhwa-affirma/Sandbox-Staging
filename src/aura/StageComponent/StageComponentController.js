@@ -55,6 +55,24 @@
        helper.showSpinner(component);
        var stages = [];
        stages = component.get("v.EFTStageDetails"); 
+       if(component.get("v.isMemberSelected") == false && component.get("v.ActiveStepIndex") == 0){
+    	   component.set("v.isMemberSelected", true);
+    	    $A.createComponent("c:"+stages[0].Stage_Component__c,{recordId: component.get("v.recordId"), EFTRecord: component.get("v.EFTRecord"), isMemberSelected: component.get("v.isMemberSelected")},
+                                function(msgBox){                
+                                     if (component.isValid()) {
+                                        
+                                         var targetCmp = component.find('ModalDialogPlaceholder');
+                                        var body = targetCmp.get("v.body");
+                                        //body.push(msgBox);
+                                        body.splice(0, 1, msgBox);
+                                        targetCmp.set("v.body", body); 
+                   						
+                                    }
+                                }
+                                    ); 
+            helper.hideSpinner(component);
+            return;          
+       }
       for(var i=0; i<stages.length;i++){
             var ProgressBarStepClass = document.getElementById('Step'+(i+1)).classList;   
             if((ProgressBarStepClass[0] == undefined || ProgressBarStepClass[0] == 'half')){
@@ -62,6 +80,45 @@
             		alert('Please Select Action');	
             		helper.hideSpinner(component,helper);
             		return;            
+            	}
+            	
+            	if(i==1 && (component.get("v.EFTRecord.Share_Loan_Id__c") == '' || component.get("v.EFTRecord.Share_Loan_Id__c") == undefined)){
+            		alert('Please Select a Loan/Share');	
+            		helper.hideSpinner(component,helper);
+            		return;            
+            	}
+            	
+            	if(i==2 && ((component.get("v.EFTRecord.Routing_Number__c") == '' || component.get("v.EFTRecord.Routing_Number__c") == undefined)
+            			|| (component.get("v.EFTRecord.Bank_Name__c") == '' || component.get("v.EFTRecord.Bank_Name__c") == undefined)
+            			|| (component.get("v.EFTRecord.Account_Number__c") == '' || component.get("v.EFTRecord.Account_Number__c") == undefined)
+            			|| (component.get("v.EFTRecord.Type__c") == '' || component.get("v.EFTRecord.Type__c") == undefined)
+            	)){
+            		var emptystring ="";
+            		if((component.get("v.EFTRecord.Routing_Number__c") == '' || component.get("v.EFTRecord.Routing_Number__c") == undefined)){
+            			emptystring = emptystring + "ABA/Routing#" + "\n";
+            		}
+            		if((component.get("v.EFTRecord.Bank_Name__c") == '' || component.get("v.EFTRecord.Bank_Name__c") == undefined)){
+            			emptystring = emptystring + "Bank Name" + "\n";
+            		}
+            		if((component.get("v.EFTRecord.Account_Number__c") == '' || component.get("v.EFTRecord.Account_Number__c") == undefined)){
+            			emptystring = emptystring + "Account#" + "\n";
+            		}
+            		if((component.get("v.EFTRecord.Type__c") == '' || component.get("v.EFTRecord.Type__c") == undefined)){
+            			emptystring = emptystring + "Type";
+            		}
+            		if (!confirm('The following fields are blank, are you sure you wish to continue? \n' + emptystring)) {
+            				helper.hideSpinner(component,helper);
+            				return;            				
+            			}            	
+            	}
+            	if(i==3 && ((component.get("v.EFTRecord.Payment_Amount__c") == '' || component.get("v.EFTRecord.Payment_Amount__c") == undefined)
+            			|| (component.get("v.EFTRecord.Day_of_Month__c") == '' || component.get("v.EFTRecord.Day_of_Month__c") == undefined)
+            			|| (component.get("v.EFTRecord.Effective_Date__c") == '' || component.get("v.EFTRecord.Effective_Date__c") == undefined)
+            			|| (component.get("v.EFTRecord.Frequency__c") == '' || component.get("v.EFTRecord.Frequency__c") == undefined)
+            	)){
+            		alert('Following fields are mandatory. Please check: \n Payment Amount \n Effective Date \n Frequency \n Day of Month');	
+            		helper.hideSpinner(component,helper);
+            		return;           	
             	}
             	   component.set("v.ActiveStepIndex", (i+1));
             	   var stages2 = [];
@@ -178,6 +235,24 @@
      back: function (component, event, helper) {      
        var stages = [];
        stages = component.get("v.EFTStageDetails"); 
+       if(component.get("v.isMemberSelected") == true && component.get("v.ActiveStepIndex") == 0){
+       component.set("v.isMemberSelected", false);
+    	    $A.createComponent("c:"+stages[0].Stage_Component__c,{recordId: component.get("v.recordId"), EFTRecord: component.get("v.EFTRecord"), isMemberSelected: component.get("v.isMemberSelected")},
+                                function(msgBox){                
+                                     if (component.isValid()) {
+                                        
+                                         var targetCmp = component.find('ModalDialogPlaceholder');
+                                        var body = targetCmp.get("v.body");
+                                        //body.push(msgBox);
+                                        body.splice(0, 1, msgBox);
+                                        targetCmp.set("v.body", body); 
+                   						
+                                    }
+                                }
+                                    ); 
+            //helper.hideSpinner(component);
+            return;          
+       }
         for(var i=0; i<stages.length;i++){
             var ProgressBarStepClass = document.getElementById('Step'+(i+1)).classList;   
             if(ProgressBarStepClass[0] == "half"){
