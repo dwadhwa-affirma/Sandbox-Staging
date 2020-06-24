@@ -19,7 +19,7 @@
  <div id = "stage3" class = "stage3">
  <aura:if isTrue="{!(v.EFTRecord.Action_Type__c == 'Create')}">
             <div>
-                <p class = "fontstyle">Select a share or loan for this EFT record</p><br />
+                <p class = "fontstyle">Select a share or loan for this ACH record</p><br />
                     <table aria-multiselectable="true" class="slds-table slds-table_header-hidden slds-table_edit slds-tree slds-table_tree" role="treegrid">
                           <thead>
                               <tr class="slds-line-height_reset">
@@ -33,7 +33,7 @@
                                       <a class="slds-th__action slds-text-link_reset" tabindex="-1">
                                           <span class="slds-assistive-text">Sort by: </span>
                                           <div class="slds-grid slds-grid_vertical-align-center slds-has-flexi-truncate">
-                                              <span class="slds-truncate" title="Share/Loan">Share/Loan</span>
+                                              <span class="slds-truncate" title="Share/Loan">ID</span>
                                           </div>
                                       </a>
                                   </th>
@@ -57,24 +57,33 @@
                           <td class="slds-text-align_right" role="gridcell" style="width:3.25rem">
                             <div class="slds-radio">
                               <span class="slds-radio">
-	                          <lightning:input type="radio" name="select" value="{!itemOption.ShareLoanID + ',' + itemOption.Type + ',' + itemOption.TypeTranslate + ',' + itemOption.Description}" onchange="{!c.onRadioChange}"/>
+	                          <lightning:input type="radio" name="select" value="{!itemOption.ShareLoanID + ',' + itemOption.Type + ',' + itemOption.TypeTranslate + ',' + itemOption.Description + ',' + itemOption.Payment}" onchange="{!c.onRadioChange}"/>
 	                        </span>
                             </div>
                           </td>
-                          <th class="slds-tree__item" style = "padding-left: 0.5rem;" data-label="Account Name" scope="row">
+                          <td class="slds-text" role="gridcell" style="width:3.25rem">
+                           <div class="slds-truncate" title="{!itemOption.LoanId}">
+                              <a href="javascript:void(0);" tabindex="-1">{!itemOption.ShareLoanIDString}</a>
+                            </div>	                        
+                          </td>
+                           <td role="gridcell">
+                                <div class="slds-truncate" title="{!itemOption.Description}">{!itemOption.TypeTranslate}</div>
+                            </td>
+                          </tr>
+                          <!-- <th class="slds-tree__item" style = "padding-left: 0.5rem;" data-label="Account Name" scope="row">
                             <button class="slds-button slds-button_icon slds-button_icon slds-button_icon-x-small slds-m-right_x-small add" aria-hidden="true" tabindex="-1" title="Expand" id="{!'btn' +i}" data-row-index="{!i}">
                               <lightning:buttonIcon iconName="{!itemOption.UtilityIcon}" size="x-small"  onclick="{!c.expand}" iconClass="{!'icon' +i}" name="{!'icon' +i}"/>
                               <span class="slds-assistive-text">Collapse</span>
-                            </button>
+                            </button> 
                             <div class="slds-truncate" title="{!itemOption.LoanId}">
-                              <a href="javascript:void(0);" tabindex="-1">{!itemOption.ShareLoanID}</a>
+                              <a href="javascript:void(0);" tabindex="-1">{!itemOption.ShareLoanIDString}</a>
                             </div>
                           </th>
                             <td role="gridcell">
                                 <div class="slds-truncate" title="{!itemOption.Description}">{!itemOption.TypeTranslate}</div>
                             </td>
-                        </tr>
-                          <tr aria-level="2" aria-posinset="1" aria-selected="false" aria-setsize="1" class="container hide slds-hint-parent" id="{!'trDesc' +i}" data-row-index="{!i}">
+                        </tr>-->
+                          <tr aria-level="2" aria-posinset="1" aria-selected="false" aria-setsize="1" class="container slds-hint-parent" id="{!'trDesc' +i}" data-row-index="{!i}">
                               <td class="slds-text-align_right" role="gridcell" style="width:3.25rem">
                               </td>
                               <th class="slds-tree__item" data-label="Account Name" scope="row">
@@ -92,7 +101,7 @@
             </div>
  <aura:set attribute="else">
     <div class="eftrecord">
-                <p class = "fontstyle">Select an EFT record</p><br />
+                <p class = "fontstyle">Select an ACH record</p><br />
         <table aria-multiselectable="true" class="slds-table slds-table_header-hidden slds-table_edit slds-tree slds-table_tree" role="treegrid">
                           <thead>
                               <tr class="slds-line-height_reset">

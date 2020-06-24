@@ -85,12 +85,13 @@
     onRadioChange : function(component, event, helper) {
     	var evt = $A.get("e.c:EFTEvent");
         var SelectedShareLoan = event.getSource().get('v.value');
-        var SelectedShareLoanID, SelectedShareLoanType , SelectedShareLoanDesc, SelectedEFTIDType;
+        var SelectedShareLoanID, SelectedShareLoanType , SelectedShareLoanDesc, SelectedEFTIDType, SelectedPayment;
         if(SelectedShareLoan != null && SelectedShareLoan != undefined){
         	SelectedShareLoanID = SelectedShareLoan.split(',')[0];
             SelectedShareLoanType  = SelectedShareLoan.split(',')[2];
        		SelectedShareLoanDesc  = SelectedShareLoan.split(',')[3];
             SelectedEFTIDType  = SelectedShareLoan.split(',')[1];
+            SelectedPayment = SelectedShareLoan.split(',')[4];
         }
         
         
@@ -98,6 +99,7 @@
          component.set("v.EFTRecord.Share_Loan_Type__c",SelectedShareLoanType);
          component.set("v.EFTRecord.Share_Loan_Description__c",SelectedShareLoanDesc);
          component.set("v.EFTRecord.EFT_ID_Type__c",SelectedEFTIDType);
+         component.set("v.EFTRecord.Payment_Amount__c",SelectedPayment);
          component.set("v.EFTRecord.Stage__c",'Share/Loan');
         
 		if(SelectedShareLoanID != undefined){
