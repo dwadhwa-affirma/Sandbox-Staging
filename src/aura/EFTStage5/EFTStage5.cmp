@@ -23,7 +23,8 @@
   				<div class="slds-form-element slds-form-element_horizontal">
     				<b><label class="slds-form-element__label" for="horizontal-input-id-01">Payment Amt:</label></b>
     				<div class="slds-form-element__control">
-      					<force:inputField value="{!v.EFTRecord.Payment_Amount__c}" change="{!c.onMonthChange}"> </force:inputField>
+      					<!-- <force:inputField value="{!v.EFTRecord.Payment_Amount__c}" change="{!c.onMonthChange}"> </force:inputField>-->
+    					<lightning:input value="{!v.EFTRecord.Payment_Amount__c}" disabled="true" />
     				</div>
   				</div>
                 <aura:if isTrue="{!v.isLoan}">
