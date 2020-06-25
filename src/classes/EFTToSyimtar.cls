@@ -7,6 +7,7 @@ public class EFTToSyimtar {
     public static String ID;
     public static String Frequency;
     public static String Day1;
+    public static String Day2;
     public static String NextDate;
     public static String EffectiveDate;
     public static String PostAmount;
@@ -30,7 +31,7 @@ public class EFTToSyimtar {
     	
     List<EFT__c> EFTlist = new List<EFT__c>();         
     List<EFT__c> EFTs = [SELECT Account_Number__c,Action_Type__c,Alternate_Amount__c,Bank_Name__c,
-                         CreatedById,CreatedDate,Day_of_Month__c,DocuSignId__c,Effective_Date__c,
+                         CreatedById,CreatedDate,Day_of_Month__c,Second_Day_of_Month__c,DocuSignId__c,Effective_Date__c,
                          Frequency__c,Id,Member_Account__c,Member_Account__r.Brand__c,Member_Account__r.Name,
                          Member__c,Name,
                          OwnerId,Payment_Amount__c,Routing_Number__c,Share_Loan_Id__c,Stage__c,
@@ -57,19 +58,31 @@ public class EFTToSyimtar {
               		IDType = '1';
                 ID = e.Share_Loan_Id__c;
                 
-                /*if(e.Frequency__c != null){
-               		Frequency = String.ValueOf(e.Frequency__c);
+                if(e.Frequency__c != null){
+                	if(e.Frequency__c == 'Monthly'){
+                		Frequency='4';
+                	}
+               		else if(e.Frequency__c == 'Semi-Monthly'){
+                		Frequency='5';
+                	}
                	}
             	else{
             		Frequency = '0';
-            	}*/
-            	Frequency = '4';
+            	}           	
+            	//Frequency = '4';
                 
                 if(e.Effective_Date__c != null){
                		Day1 = '0';//String.ValueOf(e.Day_of_Month__c);
                	}
             	else{
             		Day1 = '0';
+            	}
+            	
+            	if(e.Second_Day_of_Month__c != null){
+               		Day2 = '0';//String.ValueOf(e.Day_of_Month__c);
+               	}
+            	else{
+            		Day2 = '0';
             	}
                
                	
@@ -167,7 +180,7 @@ public class EFTToSyimtar {
         system.debug('isExpired'+isExpired);
         List<EFT__c> EFTlist = new List<EFT__c>();         
     List<EFT__c> EFTs = [SELECT Account_Number__c,Action_Type__c,Alternate_Amount__c,Bank_Name__c,
-                         CreatedById,CreatedDate,Day_of_Month__c,DocuSignId__c,Effective_Date__c,
+                         CreatedById,CreatedDate,Day_of_Month__c,Second_Day_of_Month__c,DocuSignId__c,Effective_Date__c,
                          Frequency__c,Id,Member_Account__c,Member_Account__r.Brand__c,Member_Account__r.Name, Member__c,Name,Case__c,
                          OwnerId,Payment_Amount__c,Routing_Number__c,Share_Loan_Id__c,Stage__c,EftLocator__c,Share_Loan_Description__c,Share_Loan_Type__c,Member_Name__c,
                          Status__c,Type__c, EFT_ID_Type__c FROM EFT__c where id =: ids];
@@ -186,13 +199,31 @@ public class EFTToSyimtar {
 
               	
                 ID = e.Share_Loan_Id__c;
-               	Frequency = '4';
-               	
-               	if(e.Effective_Date__c != null){
-               		Day1 = '0'; //String.valueof(sl.Due_Date__c.day());
+               	 if(e.Frequency__c != null){
+                	if(e.Frequency__c == 'Monthly'){
+                		Frequency='4';
+                	}
+               		else if(e.Frequency__c == 'Semi-Monthly'){
+                		Frequency='5';
+                	}
+               	}
+            	else{
+            		Frequency = '0';
+            	}           	
+            	//Frequency = '4';
+                
+                if(e.Effective_Date__c != null){
+               		Day1 = '0';//String.ValueOf(e.Day_of_Month__c);
                	}
             	else{
             		Day1 = '0';
+            	}
+            	
+            	if(e.Second_Day_of_Month__c != null){
+               		Day2 = '0';//String.ValueOf(e.Day_of_Month__c);
+               	}
+            	else{
+            		Day2 = '0';
             	}	
                 if(e.Effective_Date__c != null){
                 	
