@@ -54,6 +54,12 @@
                 		<td>Day of Month:</td>
                         <td>{!v.EFTRecord.Day_of_Month__c}</td>
                     </tr>
+                    <aura:if isTrue="{!v.EFTRecord.Frequency__c == 'Semi-Monthly'}">
+                    	 <tr>
+	                		<td>2nd Day of Month:</td>
+	                        <td>{!v.EFTRecord.Second_Day_of_Month__c}</td>
+                   		 </tr>
+                    </aura:if>
                 </table>
             </div>
             
@@ -101,6 +107,12 @@
                 		<td>Day of Month:</td>
                         <td>{!v.EFTRecord.Day_of_Month__c}</td>
                     </tr>
+                    <aura:if isTrue="{!v.EFTRecord.Frequency__c == 'Semi-Monthly'}">
+                    	 <tr>
+	                		<td>2nd Day of Month:</td>
+	                        <td>{!v.EFTRecord.Second_Day_of_Month__c}</td>
+                   		 </tr>
+                    </aura:if>
                 </table>
             </div>
            
@@ -178,6 +190,12 @@
                 		<td>Day of Month:</td>
                         <td>{!v.EFTRecord.Day_of_Month__c}</td>
                     </tr>
+                    <aura:if isTrue="{!v.EFTRecord.Frequency__c == 'Semi-Monthly'}">
+                    	 <tr>
+	                		<td>2nd Day of Month:</td>
+	                        <td>{!v.EFTRecord.Second_Day_of_Month__c}</td>
+                   		 </tr>
+                    </aura:if>
                 </table>
             </div>
            </aura:if>
