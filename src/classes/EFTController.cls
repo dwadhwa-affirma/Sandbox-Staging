@@ -53,7 +53,7 @@ public class EFTController {
     public static EFT__c getEFT(EFT__c EFTRecord){
         EFT__c ResultEFTRecord = [select id, name, Member_Account__c, Stage__c, Action_Type__c, Share_Loan_Id__c, Type__c	,Share_Loan_Type__c, Share_Loan_Description__c,
                                       Routing_Number__c, Bank_Name__c, Account_Number__c, Alternate_Amount__c,Effective_Date__c,
-                                      Frequency__c, Payment_Amount__c, Day_of_Month__c, Member_Account__r.name, Case__c, Case__r.CaseNumber, Case__r.Status	, Expired__c
+                                      Frequency__c, Payment_Amount__c, Day_of_Month__c,Second_Day_of_Month__c, Member_Account__r.name, Case__c, Case__r.CaseNumber, Case__r.Status	, Expired__c
                                       from EFT__c where id =: EFTRecord.id limit 1];
         
         return ResultEFTRecord;
@@ -95,6 +95,7 @@ public class EFTController {
             EFTRecordList[0].Frequency__c  =  EFTRecord.Frequency__c;
             EFTRecordList[0].Effective_Date__c  =  EFTRecord.Effective_Date__c;
             EFTRecordList[0].Day_of_Month__c  =  EFTRecord.Day_of_Month__c;
+            EFTRecordList[0].Second_Day_of_Month__c  =  EFTRecord.Second_Day_of_Month__c;
             EFTRecordList[0].Action_Type__c  =  EFTRecord.Action_Type__c;
             EFTRecordList[0].Update_DocuSignId__c  =  '';
             EFTRecordList[0].Update_Docusign_Status__c  =  '';
@@ -112,7 +113,7 @@ public class EFTController {
         //EFT__c EFTRecord = (EFT__c) System.JSON.deserialize(EFTRecordString, EFT__c.Class);
         system.debug('EFTRecordId=='+EFTRecord.Action_Type__c);
         EFT__c EFTRecordList = [Select Account_Number__c,Action_Type__c,Alternate_Amount__c,Bank_Name__c,
-                         CreatedById,CreatedDate,Day_of_Month__c,DocuSignId__c,Effective_Date__c,Expiration_Date__c,
+                         CreatedById,CreatedDate,Day_of_Month__c,Second_Day_of_Month__c,DocuSignId__c,Effective_Date__c,Expiration_Date__c,
                          Frequency__c,Id,Member_Account__c,Member_Account__r.Brand__c,Member_Account__r.Name, Member__c,Name,Case__c,
                          OwnerId,Payment_Amount__c,Routing_Number__c,Share_Loan_Id__c,Stage__c,EftLocator__c,Share_Loan_Description__c,Share_Loan_Type__c,Member_Name__c,
                          Status__c,Type__c, EFT_ID_Type__c, Expired__c from EFT__c where id =:EFTRecord.Id limit 1];
@@ -192,7 +193,7 @@ public class EFTController {
         		
         		EFT__c ResultEFTRecord = [select id, name, Member_Account__c, Stage__c, Action_Type__c, Share_Loan_Id__c, Type__c	,Share_Loan_Type__c, Share_Loan_Description__c,
                                       Routing_Number__c, Bank_Name__c, Account_Number__c, Alternate_Amount__c,Effective_Date__c,
-                                      Frequency__c, Payment_Amount__c, Day_of_Month__c, Member_Account__r.name, Case__c, Case__r.CaseNumber, Case__r.Status	, Expired__c
+                                      Frequency__c, Payment_Amount__c, Day_of_Month__c,Second_Day_of_Month__c, Member_Account__r.name, Case__c, Case__r.CaseNumber, Case__r.Status	, Expired__c, Member_Name__c
                                       from EFT__c where id =: EFTRecord.id limit 1];
                                       
                 List<EFT__c> EFTToSendACHDoc = new List<EFT__c>();
@@ -246,11 +247,12 @@ public class EFTController {
             	myRecipient = dfsle.Recipient.fromSource(Name,MemberEmail.PersonEmail,null,'Signer 1',new dfsle.Entity(recordId.get(i).Id));
             }*/
             //system.debug(recordId.Member_Account__c);
-            Person_Account__c paPrimary = [SELECT Id,PersonID__c,
-                             Account_Number__c, Account_Number__r.RecType__c,TypeTranslate__c, Account_Number__r.Name, PersonID__r.Home_Phone__pc,PersonID__r.Residential_City__pc,PersonID__r.Residential_State__pc, PersonID__r.Residential_Street__pc, PersonID__r.Residential_Zipocde__pc, PersonID__r.Name, PersonID__r.Email_raw__c FROM Person_Account__c 
-                             WHERE Account_Number__c =: recordId.Member_Account__c and TypeTranslate__c  like '%Primary%' limit 1];
+           // Person_Account__c paPrimary = [SELECT Id,PersonID__c,
+           //                  Account_Number__c, Account_Number__r.RecType__c,TypeTranslate__c, Account_Number__r.Name, PersonID__r.Home_Phone__pc,PersonID__r.Residential_City__pc,PersonID__r.Residential_State__pc, PersonID__r.Residential_Street__pc, PersonID__r.Residential_Zipocde__pc, PersonID__r.Name, PersonID__r.Email_raw__c FROM Person_Account__c 
+           //                  WHERE Account_Number__c =: recordId.Member_Account__c and TypeTranslate__c  like '%Primary%' limit 1];
                              
-      		Name = paPrimary.PersonID__r.Name;
+      		system.debug('member name=='+ recordId.Member_Name__c);
+      		Name = recordId.Member_Name__c;//paPrimary.PersonID__r.Name;
             
             if(EmailList.size() > 0){
 	            
@@ -475,7 +477,10 @@ public class EFTController {
 	                               temp.Description =   (string)localAcc.get('Description');  
 	                               //temp.TypeTranslate =  (string)localAcc.get('Description'); 
 	                               temp.Type =  'Loan'; 
-	                               temp.Payment = (decimal)localAcc.get('Payment'); 
+	                               temp.Payment = (decimal)localAcc.get('Payment');
+	                               temp.EffectiveDate = Date.ValueOf((string)localAcc.get('DueDate'));
+	                               temp.Day1 = (integer)localAcc.get('DueDay1');
+	                               temp.Day2 = (integer)localAcc.get('DueDay2'); 
 	                               resultList.add(temp);  
 	                       }
        				}
@@ -529,7 +534,7 @@ public class EFTController {
         
         	set<string> EFTLocatorsSet = new set<string>();
         	set<string> MemberNumbers = new set<string>();
-        	//List<EFT__c> EFTList= new List<EFT__c>();
+        	List<EFT__c> EFTList= new List<EFT__c>();
         	if(strBody!=''){        
        			List<Object> results = (List<Object>) JSON.deserializeUntyped(response.getBody());      
          		System.debug('Service response is ....' + results);
@@ -552,7 +557,7 @@ public class EFTController {
                       		System.debug('T ....' + T);
                    			EFTWrapperObject temp = new EFTWrapperObject();
                        		map<string, object> localAcc = (map<string, object>)t;   
-                       		/*EFT__c objEFT = new EFT__c();
+                       		EFT__c objEFT = new EFT__c();
                        		objEFT.Routing_Number__c = String.valueOf(localAcc.get('Payee')); 
                        		objEFT.Account_Number__c = String.valueOf(localAcc.get('Reference'));
                        		system.debug('Account_Number__c=='+objEFT.Account_Number__c);
@@ -560,7 +565,8 @@ public class EFTController {
                        		if(String.valueOf(localAcc.get('EffectiveDate')) != '' && String.valueOf(localAcc.get('EffectiveDate')) != null)
                        		objEFT.Effective_Date__c = Date.valueOf(String.valueOf(localAcc.get('EffectiveDate')));
                        		objEFT.Frequency__c = String.valueOf(localAcc.get('Frequency'));
-                       		objEFT.Day_of_Month__c = String.valueOf(localAcc.get('Day1'));
+                       		objEFT.Day_of_Month__c = String.valueOf(localAcc.get('Day1'));                       		
+                       		objEFT.Second_Day_of_Month__c = String.valueOf(localAcc.get('Day2'));
                        		objEFT.Bank_Name__c = String.valueOf(localAcc.get('FinancialInstitution'));
                        		objEFT.Share_Loan_Id__c = String.valueOf(localAcc.get('Id'));
                        		objEFT.EftLocator__c = String.valueOf(localAcc.get('EftLocator'));
@@ -579,11 +585,11 @@ public class EFTController {
                        		objEFT.Member_Account__r = new account_details__c(id =mapAccountIdName.get(String.valueOf(localAcc.get('AccountNumber'))), Name = String.valueOf(localAcc.get('AccountNumber')));//mapAccountIdName.get(String.valueOf(localAcc.get('AccountNumber')));  
                        		system.debug('Day1=='+objEFT.Frequency__c);
                        		system.debug('Freq=='+objEFT.Day_of_Month__c);
-                       		//objEFT.Member_Account__r.Name = String.valueOf(localAcc.get('AccountNumber')); */      		
-                       		string locator = String.valueOf(localAcc.get('EftLocator'));                       		
-                       		EFTLocatorsSet.add(locator);
-                       		system.debug('EXPDATE=='+String.valueOf(localAcc.get('Reference'))) ; 
-                       		//EFTList.add(objEFT);
+                       		//objEFT.Member_Account__r.Name = String.valueOf(localAcc.get('AccountNumber'));     		
+                       		//string locator = String.valueOf(localAcc.get('EftLocator'));                       		
+                       		//EFTLocatorsSet.add(locator);
+                       		//system.debug('EXPDATE=='+String.valueOf(localAcc.get('Reference'))) ; 
+                       		EFTList.add(objEFT);
        				}
        				
        				
@@ -591,10 +597,10 @@ public class EFTController {
             }
             
             //System.debug('EFTLocatorsSet ....' + EFTLocatorsSet);
-            List<EFT__c> EFTList = [select id, name,EFT_ID_Type__c, Member_Account__c, Stage__c, Action_Type__c, Share_Loan_Id__c, Type__c	,Share_Loan_Type__c, 	
+           /* List<EFT__c> EFTList = [select id, name,EFT_ID_Type__c, Member_Account__c, Stage__c, Action_Type__c, Share_Loan_Id__c, Type__c	,Share_Loan_Type__c, 	
                                     Share_Loan_Description__c, Routing_Number__c, Bank_Name__c, Account_Number__c, Alternate_Amount__c,Effective_Date__c,
                                       Frequency__c, Payment_Amount__c, Day_of_Month__c, Member_Account__r.name, Case__c, Case__r.CaseNumber, expired__C
-                                      from EFT__c where Member_Account__c =: recordId and EftLocator__c in: EFTLocatorsSet];
+                                      from EFT__c where Member_Account__c =: recordId and EftLocator__c in: EFTLocatorsSet];*/
             
             return EFTList;       
     }
@@ -613,6 +619,12 @@ public class EFTController {
       public string ShareLoanIDString {get;set;}
       @AuraEnabled
       public decimal Payment {get;set;}
+      @AuraEnabled
+      public Date EffectiveDate {get;set;}
+      @AuraEnabled
+      public integer Day1 {get;set;}
+       @AuraEnabled
+      public integer Day2 {get;set;}
     }
     
      public class EFTWrapperObject
