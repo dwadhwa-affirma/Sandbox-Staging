@@ -57,7 +57,7 @@
                           <td class="slds-text-align_right" role="gridcell" style="width:3.25rem">
                             <div class="slds-radio">
                               <span class="slds-radio">
-	                          <lightning:input type="radio" name="select" value="{!itemOption.ShareLoanID + ',' + itemOption.Type + ',' + itemOption.TypeTranslate + ',' + itemOption.Description + ',' + itemOption.Payment}" onchange="{!c.onRadioChange}"/>
+	                          <lightning:input type="radio" name="select" value="{!itemOption.ShareLoanID}" onchange="{!c.onRadioChange}"/>
 	                        </span>
                             </div>
                           </td>

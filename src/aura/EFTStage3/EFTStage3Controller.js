@@ -85,21 +85,37 @@
     onRadioChange : function(component, event, helper) {
     	var evt = $A.get("e.c:EFTEvent");
         var SelectedShareLoan = event.getSource().get('v.value');
-        var SelectedShareLoanID, SelectedShareLoanType , SelectedShareLoanDesc, SelectedEFTIDType, SelectedPayment;
-        if(SelectedShareLoan != null && SelectedShareLoan != undefined){
+        var SelectedShareLoanID, SelectedShareLoanType , SelectedShareLoanDesc, SelectedEFTIDType, SelectedPayment, SelectedED, SelectedDay1, SelectedDay2;
+      /*  if(SelectedShareLoan != null && SelectedShareLoan != undefined){
         	SelectedShareLoanID = SelectedShareLoan.split(',')[0];
             SelectedShareLoanType  = SelectedShareLoan.split(',')[2];
        		SelectedShareLoanDesc  = SelectedShareLoan.split(',')[3];
             SelectedEFTIDType  = SelectedShareLoan.split(',')[1];
             SelectedPayment = SelectedShareLoan.split(',')[4];
+        }*/
+        var map=component.get('v.ShareLoanMap');
+        for(var i=0;i<map.length;i++){
+        	if(map[i].ShareLoanID==SelectedShareLoan){
+        		SelectedShareLoanID = map[i].ShareLoanID;
+	            SelectedShareLoanType  = map[i].TypeTranslate;
+	       		SelectedShareLoanDesc  = map[i].Description;
+	            SelectedEFTIDType  = map[i].Type;
+	            SelectedPayment = map[i].Payment;
+	            SelectedED = map[i].EffectiveDate;
+	            SelectedDay1 = map[i].Day1;
+	            SelectedDay2 = map[i].Day2;
+	            break;
+        	}
         }
-        
         
          component.set("v.EFTRecord.Share_Loan_Id__c",SelectedShareLoanID);
          component.set("v.EFTRecord.Share_Loan_Type__c",SelectedShareLoanType);
          component.set("v.EFTRecord.Share_Loan_Description__c",SelectedShareLoanDesc);
          component.set("v.EFTRecord.EFT_ID_Type__c",SelectedEFTIDType);
          component.set("v.EFTRecord.Payment_Amount__c",SelectedPayment);
+         component.set("v.EFTRecord.Effective_Date__c",SelectedED);
+         component.set("v.EFTRecord.Day_of_Month__c",SelectedDay1);
+         component.set("v.EFTRecord.Second_Day_of_Month__c",SelectedDay2);
          component.set("v.EFTRecord.Stage__c",'Share/Loan');
         
 		if(SelectedShareLoanID != undefined){
@@ -130,6 +146,7 @@
                     component.set("v.EFTRecord.Effective_Date__c",EFTList[i].Effective_Date__c);
                     component.set("v.EFTRecord.Frequency__c",EFTList[i].Frequency__c);
                     component.set("v.EFTRecord.Day_of_Month__c",EFTList[i].Day_of_Month__c);
+                    component.set("v.EFTRecord.Second_Day_of_Month__c",EFTList[i].Second_Day_of_Month__c);
                      component.set("v.EFTRecord.Id",EFTList[i].Id);
                     
                     break;
