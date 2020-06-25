@@ -62,7 +62,7 @@
  <footer class="slds-modal__footer slds-modal__footer_directional">
  <aura:if isTrue="{!and(v.ActiveStepIndex != 4,v.ActiveStepIndex != 5)}">
             <lightning:button aura:id="Exit" label="Exit" title="Exit" onclick="{!c.cancelAction}"/>
-            <lightning:button variant="brand" label="Back" disabled="{!(v.ActiveStepIndex == (0) ? true : false)}" title="Back" onclick="{!c.back}"/> 
+            <lightning:button variant="brand" label="Back" disabled="{!(and(v.ActiveStepIndex == (0),v.isMemberSelected == false) ? true : false)}" title="Back" onclick="{!c.back}"/> 
             <lightning:button variant="brand" label="{!v.ContinueButtonName}" title="Continue" onclick="{!c.Continue}"/>
   <aura:set attribute="else">
       <aura:if isTrue="{!(v.ActiveStepIndex == 5)}">

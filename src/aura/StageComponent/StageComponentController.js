@@ -236,7 +236,26 @@
        var stages = [];
        stages = component.get("v.EFTStageDetails"); 
        if(component.get("v.isMemberSelected") == true && component.get("v.ActiveStepIndex") == 0){
-       component.set("v.isMemberSelected", false);
+    	   component.set("v.isMemberSelected", false);
+    	    $A.createComponent("c:"+stages[0].Stage_Component__c,{recordId: component.get("v.recordId"), EFTRecord: component.get("v.EFTRecord"), isMemberSelected: component.get("v.isMemberSelected")},
+                                function(msgBox){                
+                                     if (component.isValid()) {
+                                        
+                                         var targetCmp = component.find('ModalDialogPlaceholder');
+                                        var body = targetCmp.get("v.body");
+                                        //body.push(msgBox);
+                                        body.splice(0, 1, msgBox);
+                                        targetCmp.set("v.body", body); 
+                   						
+                                    }
+                                }
+                                    ); 
+            //helper.hideSpinner(component);
+            return;          
+       }
+       if(component.get("v.ActiveStepIndex") == 1){
+    	   component.set("v.isMemberSelected", true);
+    	   component.set("v.ActiveStepIndex",0)
     	    $A.createComponent("c:"+stages[0].Stage_Component__c,{recordId: component.get("v.recordId"), EFTRecord: component.get("v.EFTRecord"), isMemberSelected: component.get("v.isMemberSelected")},
                                 function(msgBox){                
                                      if (component.isValid()) {
@@ -260,6 +279,17 @@
              	 if(i !=2 && component.get("v.ContinueButtonName") == 'Send ACH Document'){
 		            	 component.set("v.ContinueButtonName", 'Continue');
 		             }
+		         if(i == 2){
+		        	 component.set("v.EFTRecord.Share_Loan_Id__c","");		        	 
+			         component.set("v.EFTRecord.Share_Loan_Type__c","");
+			         component.set("v.EFTRecord.Share_Loan_Description__c","");
+			         component.set("v.EFTRecord.EFT_ID_Type__c","");
+			         component.set("v.EFTRecord.Payment_Amount__c","");
+			         component.set("v.EFTRecord.Effective_Date__c","");
+			         component.set("v.EFTRecord.Day_of_Month__c","");
+			         component.set("v.EFTRecord.Second_Day_of_Month__c","");
+			        // component.set("v.EFTRecord.Stage__c",'Share/Loan');
+		         }
                     $A.createComponent("c:"+stages[i-1].Stage_Component__c,{recordId: component.get("v.recordId"), EFTRecord: component.get("v.EFTRecord")},
                                 function(msgBox){                
                                      if (component.isValid()) {
