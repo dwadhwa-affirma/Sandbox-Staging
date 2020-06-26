@@ -32,7 +32,7 @@ public class SolarLoanToCreateLoan {
     public static String AccountNumber;
     public static string OriginalDate;
     public static Integer Month;
-    public static String Amount;
+    public static Integer Amount;
     
   
     public static String jsonData;
@@ -195,26 +195,24 @@ public class SolarLoanToCreateLoan {
                 
 //----------------------------------------------------Creat Loan Funding-------------------------------------------------//                
 				
-				/*if(result != null){
+				if(result != null){
                     
                     LoanId = result;
                     
                     if(sl.Loan_Amount__c != null)
-                    	Amount = string.valueOf(sl.Loan_Amount__c);
+                    	Amount = Integer.valueOf(sl.Loan_Amount__c);
             		else
-                    	Amount = '0.00';
+                    	Amount = 0;
                     	
                     AccountNumber = sl.Account_Number__r.name;
                     
-                    req3.setEndpoint('https://symxapi.chevronfcu.org/devclient/Wires/FundLoan');
+                    req3.setEndpoint('https://symxapi.chevronfcu.org/devclient/Wires/FundLoan?accountNumber='+AccountNumber+'&loanId='+LoanId+'&amount='+Amount);
                     req3.setClientCertificateName('brscmcapi');
-                    req3.setMethod('POST');
+                    req3.setMethod('GET');
                     req3.setHeader('Content-Type', 'application/json');
                     req3.setHeader('Accept', 'application/json');
                     
-                    jsonData3 = '{"amount":' + '\"'+ Amount +'\"'+',"loanId":'+'\"'+LoanId+'\"'+',"accountNumber":'+'\"'+AccountNumber+'\"}';
-                    req3.setBodyAsBlob(Blob.valueof(jsondata3)); 
-                   //system.debug('test'+jsonData3);
+                    system.debug('test'+req3);
                     
                     Http http3 = new Http();  
                     req3.setTimeout(60000);
@@ -223,24 +221,24 @@ public class SolarLoanToCreateLoan {
                     if(!Test.isRunningTest()){                       
                         res3 = http3.send(req3);
                         responseBody3 = res3.getBody();
-                        System.debug('Response Body SolarLoan Name::'+res3.getBody());    
+                        System.debug('Response Body for Fund::'+res3.getBody());    
                     }else{
                         responseBody3 = '{"Type":"3","Last":"27","First":"1","Street":"1","ExtraAddress":"100","City":"Chicago","State":"IL","ZipCode":"0012345,"BirthDate":"01-01-2019","SSN":"1345","LoanId":"322271627","AccountNumber":"00000123456"}';
                         
                     }
                     // JSon parse for Id                            
-                    JSONParser parser3 = JSON.createParser(responseBody3);
+                    /*JSONParser parser3 = JSON.createParser(responseBody3);
                     result3 = String.valueOf(responseBody3).substringAfter('LoanNameLocator":"');
                     result3 = String.valueOf(result3).substringBefore('",');
                     System.debug('LoanFund' + result3);
                     
-                    /*if(result3 == null || result3 == ''){
+                    if(result3 == null || result3 == ''){
                         
                         ErrorLoanNameLocator = String.valueOf(responseBody1).substringAfter('[MessageId=TESTING] ');
                         ErrorLoanNameLocator = String.valueOf(ErrorLoanNameLocator).substringBefore('","ErrorDetails"');
                         system.debug('ErrorLoanNameLocator' + ErrorLoanNameLocator);
-                    }
-                }         */       
+                    }*/
+                }                
                 
                 
 //----------------------------------------------------Create Loan Name--------------------------------------------------//                
