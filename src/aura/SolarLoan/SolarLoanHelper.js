@@ -10,7 +10,8 @@
 	
 		var SolarLoanRecordId = component.get("v.recordId");
 		var stage;
-		var Stage4ACHCheck;
+		var Stage5ACHCheck;
+		var OnLoadCheck;
 		
 		var action = component.get("c.getMemberData");
 		action.setParams({"SolarLoanRecordId": SolarLoanRecordId,
@@ -25,11 +26,11 @@
                 if(result.SolarCurrentStage != undefined){
 		       	    stage = result.SolarCurrentStage;
 		        }
-		        if(result.Stage4ACHCheck == 'False'){
-		       	    Stage4ACHCheck = result.Stage4ACHCheck;
+		        if(result.Stage5ACHCheck == 'False'){
+		       	    Stage5ACHCheck = 'False';
                 }
-                else{
-                	Stage4ACHCheck = 'True';
+                if(result.OnLoadCheck == 'True'){
+		       	    OnLoadCheck = 'True';
                 }
               
         	var ProgressBarStep1 = document.getElementById('Step1');
@@ -43,7 +44,7 @@
 			ProgressBarStep1.classList.add('halFactive');
 			
             if(stage == 'Stage 2'){
-				component.set("v.Stage1", "Review Completed");
+            	component.set("v.Stage1", "Review Completed");
 				component.set("v.Stage2", "Needs Review");
 				ProgressBarStep1.classList.remove('halFactive');
 				ProgressBarStep1.classList.add('active');
@@ -77,7 +78,7 @@
 				component.set("v.Stage2", "Review Completed");
 				component.set("v.Stage3", "Records Created");
 				component.set("v.Stage4", "Review Completed");
-				if(Stage4ACHCheck == 'True')
+				if(Stage5ACHCheck == 'True')
 					component.set("v.Stage5", "Send For Signature");
 				ProgressBarStep1.classList.remove('halFactive');
 	            ProgressBarStep1.classList.add('active');
@@ -107,12 +108,12 @@
 				component.set("v.Stage1", "Review Completed");
 				component.set("v.Stage2", "Review Completed");
 				component.set("v.Stage3", "Records Created");
-				if(Stage4ACHCheck == 'False'){
+				if(Stage5ACHCheck == 'False'){
 					component.set("v.Stage4", "ACH Not Used");
 					component.set("v.Stage5", "ACH Not Used");
 					component.set("v.Stage6", "ACH EFT Not Used");
 				}
-				else{
+				if(OnLoadCheck == 'True'){
 					component.set("v.Stage4", "Review Completed");
 					component.set("v.Stage5", "Document Signed");
 					component.set("v.Stage6", "EFT Record Created");
@@ -124,6 +125,7 @@
 				ProgressBarStep2.classList.add('active');
 				ProgressBarStep3.classList.remove('halFactive');
 				ProgressBarStep3.classList.add('active');
+				ProgressBarStep4.classList.remove('halFactive');
 				ProgressBarStep4.classList.add('active');
 				ProgressBarStep5.classList.remove('half');
 				ProgressBarStep5.classList.add('active');

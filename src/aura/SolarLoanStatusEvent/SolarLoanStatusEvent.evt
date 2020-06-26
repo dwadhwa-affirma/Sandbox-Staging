@@ -2,5 +2,5 @@
     <aura:attribute name="SolarLoanRecordId" type="String"/>
 	<aura:attribute name="Stage" type="String"/>
 	<aura:attribute name="IsSubmitButtonDisabled" type="Boolean"/>
-	<aura:attribute name="Stage4ACHCheck" type="String"/>   
+	<aura:attribute name="Stage5ACHCheck" type="String"/>   
 </aura:event>

@@ -20,7 +20,7 @@
 		var SolarLoanRecordId = component.get("v.recordId");
 		var buttonStatus;
 		var stage;
-		var Stage4ACHCheck;
+		var Stage5ACHCheck;
 		
 		var action = component.get("c.getMemberData");
 		action.setParams({"SolarLoanRecordId": SolarLoanRecordId,
@@ -40,11 +40,11 @@
 		        if(result.Stage3LoanCheck != undefined && result.Stage3LoanCheck != null){
 		       	    buttonStatus = result.Stage3LoanCheck;
                 }
-                if(result.Stage4ACHCheck == 'False'){
-		       	    Stage4ACHCheck = result.Stage4ACHCheck;
+                if(result.Stage5ACHCheck == 'False'){
+		       	    Stage5ACHCheck = result.Stage5ACHCheck;
                 }
                 else{
-                	Stage4ACHCheck = 'True';
+                	Stage5ACHCheck = 'True';
                 }
             }
             
@@ -61,7 +61,7 @@
                 component.set("v.StageName", "Stage 4: Review ACH Info");
             }
             if(stage == 'Stage 5'){
-                if(Stage4ACHCheck == 'True'){
+                if(Stage5ACHCheck == 'True'){
             		component.set("v.ButtonLabelName", "Send ACH Document");
             	}
                 component.set("v.StageName", "Stage 5: Send ACH Document");
