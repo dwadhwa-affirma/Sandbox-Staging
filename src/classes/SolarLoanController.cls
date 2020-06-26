@@ -30,7 +30,8 @@ public class SolarLoanController {
     String SolarCurrentStage;
     String SolarCurrentStatus;
     String Stage3LoanCheck;
-    String Stage4ACHCheck;
+    String Stage5ACHCheck;
+    String OnLoadCheck;
     
     system.debug('SolarLoanRecordId'+SolarLoanRecordId);     
     system.debug('CurrentStage'+CurrentStage);
@@ -58,17 +59,13 @@ public class SolarLoanController {
        
         if(CurrentStage != null && CurrentStage != ' '){
             
-            if(CurrentStage != 'Stage 4' && CurrentStage != 'Stage 7'){
+            if(CurrentStage != 'Stage 5' && CurrentStage != 'Stage 7'){
                 SolarLoanList[0].Current_Solar_Loan_Stage__c = CurrentStage; 
                 update SolarLoanList;
             }           
         }
         SolarCurrentStage = SolarLoanList[0].Current_Solar_Loan_Stage__c;
-        
-        //if(SolarLoanList[0].Loan_Id__c == null || SolarLoanList[0].Loan_Id__c == ''){
-        //  Stage3LoanCheck = 'True';
-        //}
-        
+            
         //------------------------------------Stage-4  Creating Loan Records -----------------------------------------//
         
         if(CurrentStage == 'Stage 4'){
@@ -79,19 +76,27 @@ public class SolarLoanController {
         
         //------------------------------------Stage-4 Checking if ACH = False/True------------------------------------//
         
-        if(solarLoanList[0].Current_Solar_Loan_Stage__c == 'Stage 4'){
+        if(CurrentStage == 'Stage 5'){
             
             if(SolarLoanList[0].ACH__c == 'True' && SolarLoanList[0].Routing_Number__c != null &&
             	SolarLoanList[0].Bank_Name__c != null && SolarLoanList[0].Bank_Account_Number__c != null){    	
-                Stage4ACHCheck = 'True';
-                SolarCurrentStage = SolarLoanList[0].Current_Solar_Loan_Stage__c;
+                Stage5ACHCheck = 'True';
+                SolarLoanList[0].Current_Solar_Loan_Stage__c = CurrentStage;
+                update SolarLoanList;
+              
             }
             else{
-                Stage4ACHCheck = 'False';
+                Stage5ACHCheck = 'False';
             }
         }
         
-        if(solarLoanList[0].Current_Solar_Loan_Stage__c == 'Stage 4' && (CurrentStage == null || CurrentStage == ' ')){
+        //----------------------------------ACH = True/False OnLoan Check---------------------------------------------//
+        
+        if(SolarLoanList[0].ACH__c == 'True' && SolarLoanList[0].Routing_Number__c != null &&
+         	SolarLoanList[0].Bank_Name__c != null && SolarLoanList[0].Bank_Account_Number__c != null){
+        	OnLoadCheck = 'True';    		
+    	}
+        if(solarLoanList[0].Current_Solar_Loan_Stage__c == 'Stage 5' && (CurrentStage == null || CurrentStage == ' ')){
             SolarCurrentStage = SolarLoanList[0].Current_Solar_Loan_Stage__c;
         }
         
@@ -117,14 +122,14 @@ public class SolarLoanController {
         
         //------------------------------------Skipping stages upto "Stage 7" if ACH = False-------------------------//
         
-        if(Stage4ACHCheck == 'False'){
+        if(Stage5ACHCheck == 'False'){
         
             SolarCurrentStage = 'Stage 8';
             SolarLoanList[0].Current_Solar_Loan_Stage__c = 'Stage 8'; 
             update SolarLoanList;
             SolarCurrentStage = SolarLoanList[0].Current_Solar_Loan_Stage__c;
         }
-            
+        system.debug('SolarLoanList[0].Current_Solar_Loan_Stage__c'+SolarLoanList[0].Current_Solar_Loan_Stage__c);    
         if(SolarLoanList[0].Current_Solar_Loan_Stage__c == 'Stage 7')
             SolarCurrentStage = SolarLoanList[0].Current_Solar_Loan_Stage__c;
             
@@ -139,8 +144,10 @@ public class SolarLoanController {
     system.debug('SolarCurrentStage'+SolarCurrentStage);
     strMap.put('SolarCurrentStage',SolarCurrentStage);  
     strMap.put('Stage3LoanCheck',Stage3LoanCheck);
-    strMap.put('Stage4ACHCheck',Stage4ACHCheck); 
-    strMap.put('SolarCurrentStatus',SolarCurrentStatus);   
+    strMap.put('Stage5ACHCheck',Stage5ACHCheck); 
+    strMap.put('SolarCurrentStatus',SolarCurrentStatus);
+    strMap.put('OnLoadCheck',OnLoadCheck);  
+     
     return strMap;  
       
     }
