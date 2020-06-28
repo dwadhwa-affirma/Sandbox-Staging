@@ -2,11 +2,13 @@
 	doInit : function(component, event, helper) {
         debugger;       
 		var type = component.get('v.EFTRecord.EFT_ID_Type__c');//.split(',')[1];
-        if(type != 'Loan'){
+        if(type != 'Loan' && component.get("v.EFTRecord.Action_Type__c") == 'Create'){
             component.set('v.isLoan', false);
             component.set('v.EFTRecord.Frequency__c', 'Monthly');
         }
-         component.find("Day_of_Month__c").set("v.value", component.get('v.EFTRecord.Day_of_Month__c'));
+        //helper.getDaysPicklist(component, event);
+        //component.find("Day_of_Month__c").set("v.value","");
+         //component.find("Day_of_Month__c").set("v.value", component.get('v.EFTRecord.Day_of_Month__c'));
        
 	},
     

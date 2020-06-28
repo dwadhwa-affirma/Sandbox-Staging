@@ -6,6 +6,7 @@
                                                    		{'label': 'Update EFT Record', 'value': '4'},
                                                         {'label': 'Cancel/Expire EFT Record', 'value': '5'}]"/>  
 <aura:attribute name="isLoan" type="Boolean" default="true"/>
+ <aura:attribute name="daysMap" type="Map"/>
 
 <!--<aura:attribute name="ShareLoanType" type="String" />
 <aura:attribute name="PaymentAmt" type="string" />
@@ -58,7 +59,8 @@
   				<div class="slds-form-element slds-form-element_horizontal">
     				<b><label class="slds-form-element__label">Day of Month:</label></b>
     				<div class="slds-form-element__control">
-    					<force:inputField value="{!v.EFTRecord.Day_of_Month__c}" change="{!c.onMonthChange}" aura:id="Day_of_Month__c"> </force:inputField>
+    				 <force:inputField value="{!v.EFTRecord.Day_of_Month__c}" change="{!c.onMonthChange}" aura:id="Day_of_Month__c"> </force:inputField>
+    					
     					 <ul class='has-error uiInputDefaultError uiInput uiInputSelect uiInput--default uiInput--select' id='DayOfMonthError' style='display:none;'>
 							<li class="form-element__help" data-aura-rendered-by="45:2084;a">Complete this field</li>
 						</ul>
