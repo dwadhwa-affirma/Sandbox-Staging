@@ -64,10 +64,12 @@ public class EFTController {
     //------------------------------- Saving EFT data to Salesforce-----------------------------------------------//
     @AuraEnabled
     public static EFT__c saveStageData(EFT__c EFTRecord){
-        system.debug('EFTRecord=='+EFTRecord.Id);
+       // system.debug('EFTRecord=='+EFTRecord.Second_Day_of_Month__c);
         List<EFT__c> EFTRecordList = [Select id, name, Member_Account__c, Stage__c, Action_Type__c from EFT__c where id =:EFTRecord.id limit 1];
         
         system.debug('EFTRecordList.size=='+EFTRecordList.size());
+        //system.debug('EFTRecordList'+EFTRecordList.size());
+      //  system.debug('EFTRecord.Second_Day_of_Month__c=='+EFTRecord.Second_Day_of_Month__c);
         
         if(EFTRecordList.size() == 0){
         	 Account_Details__c MemberAccount = [select id,name, Parent_Account__c from Account_Details__c where id=:EFTRecord.Member_Account__c limit 1];
@@ -215,7 +217,7 @@ public class EFTController {
   		String Email;
         List<string> EmailList = new List<String>();
      
-  		SolarLoan_Docusign_Emails__c sde = SolarLoan_Docusign_Emails__c.getValues('Email For Testing');
+  		ACH_Docusign_Emails__c sde = ACH_Docusign_Emails__c.getValues('Email For Testing');
         
         if(sde.Emails__c != null){
             Email = sde.Emails__c;
@@ -393,7 +395,7 @@ public class EFTController {
        			List<Object> results = (List<Object>) JSON.deserializeUntyped(response.getBody());      
          		System.debug('Service response is ....' + results);
                 
-                
+               if(results != null){ 
                  for(Object t : results){
                    			ShareLoanWrapperObject temp = new ShareLoanWrapperObject();
                        		map<string, object> localAcc = (map<string, object>)t;                       		
@@ -409,6 +411,7 @@ public class EFTController {
 	                               resultList.add(temp);
 	                       }
        				}
+               }
        				
        				set<string> ShareIds = new set<string>();
                     map<string,string> LoanIdTypeTranslateMap = new map<string,string>();
@@ -564,11 +567,15 @@ public class EFTController {
                        		objEFT.Payment_Amount__c = Decimal.valueOf(String.valueOf(localAcc.get('Amount')));
                        		if(String.valueOf(localAcc.get('EffectiveDate')) != '' && String.valueOf(localAcc.get('EffectiveDate')) != null)
                        		objEFT.Effective_Date__c = Date.valueOf(String.valueOf(localAcc.get('EffectiveDate')));
-                       		objEFT.Frequency__c = String.valueOf(localAcc.get('Frequency'));
+                       		if(String.valueOf(localAcc.get('Frequency')) == '5')
+                       			objEFT.Frequency__c = 'Semi-Monthly';
+                       		else
+                       			objEFT.Frequency__c = 'Monthly';
                        		objEFT.Day_of_Month__c = String.valueOf(localAcc.get('Day1'));                       		
                        		objEFT.Second_Day_of_Month__c = String.valueOf(localAcc.get('Day2'));
                        		objEFT.Bank_Name__c = String.valueOf(localAcc.get('FinancialInstitution'));
                        		objEFT.Share_Loan_Id__c = String.valueOf(localAcc.get('Id'));
+                       		system.debug('EftLocator__c=='+String.valueOf(localAcc.get('EftLocator')));
                        		objEFT.EftLocator__c = String.valueOf(localAcc.get('EftLocator'));
                        		//objEFT.Member_Account__c = 'a0Of100000GF8xOEAT';
                        		if(String.valueOf(localAcc.get('AmountCode')) == '37')                       		
@@ -581,10 +588,10 @@ public class EFTController {
                        				objEFT.expired__c = true;
                        		}     
                        		//system.debug('EXPDATE=='+String.valueOf(localAcc.get('ExpirationDate'))) ;      		
-                       		objEFT.EftLocator__c = String.valueOf(localAcc.get('EftLocator__c'));    
+                       		//objEFT.EftLocator__c = String.valueOf(localAcc.get('EftLocator__c'));    
                        		objEFT.Member_Account__r = new account_details__c(id =mapAccountIdName.get(String.valueOf(localAcc.get('AccountNumber'))), Name = String.valueOf(localAcc.get('AccountNumber')));//mapAccountIdName.get(String.valueOf(localAcc.get('AccountNumber')));  
                        		system.debug('Day1=='+objEFT.Frequency__c);
-                       		system.debug('Freq=='+objEFT.Day_of_Month__c);
+                       		system.debug('Member_Account__r=='+objEFT.Member_Account__r);
                        		//objEFT.Member_Account__r.Name = String.valueOf(localAcc.get('AccountNumber'));     		
                        		//string locator = String.valueOf(localAcc.get('EftLocator'));                       		
                        		//EFTLocatorsSet.add(locator);
@@ -603,6 +610,18 @@ public class EFTController {
                                       from EFT__c where Member_Account__c =: recordId and EftLocator__c in: EFTLocatorsSet];*/
             
             return EFTList;       
+    }
+    
+     @AuraEnabled //get Account Industry Picklist Values
+    public static Map<String, String> getDaysofMonth(){
+        Map<String, String> options = new Map<String, String>();
+       
+        Schema.DescribeFieldResult fieldResult = EFT__c.Day_of_Month__c.getDescribe();       
+        List<Schema.PicklistEntry> pList = fieldResult.getPicklistValues();
+        for (Schema.PicklistEntry p: pList) {          
+            options.put(p.getValue(), p.getLabel());
+        }
+        return options;
     }
     
     public class ShareLoanWrapperObject
