@@ -40,7 +40,13 @@
                         <td>{!v.EFTRecord.Bank_Name__c}</td>
                     </tr>
                     <tr>
-                    	<td>Payment:</td><td><lightning:formattedNumber value="{!v.EFTRecord.Payment_Amount__c}" style="currency" currencyCode="USD"/></td> 
+                    	<td>Payment:</td>
+                    	<aura:if isTrue="{!(empty(v.EFTRecord.Alternate_Amount__c))}">
+                    		<td><lightning:formattedNumber value="{!v.EFTRecord.Payment_Amount__c}" style="currency" currencyCode="USD"/></td>
+                    	<aura:set attribute="else">
+                    		<td><lightning:formattedNumber value="{!v.EFTRecord.Alternate_Amount__c}" style="currency" currencyCode="USD"/></td>
+                    	</aura:set>
+                    	</aura:if> 
                     </tr>
                     <tr>
                 		<td>Effective Date:</td>
@@ -93,7 +99,13 @@
                         <td>{!v.EFTRecord.Type__c}</td>
                     </tr>
                     <tr>
-                    	<td>Payment:</td><td><lightning:formattedNumber value="{!v.EFTRecord.Payment_Amount__c}" style="currency" currencyCode="USD"/></td> 
+                    	<td>Payment:</td>
+                    	<aura:if isTrue="{!(empty(v.EFTRecord.Alternate_Amount__c))}">
+                    		<td><lightning:formattedNumber value="{!v.EFTRecord.Payment_Amount__c}" style="currency" currencyCode="USD"/></td>
+                    	<aura:set attribute="else">
+                    		<td><lightning:formattedNumber value="{!v.EFTRecord.Alternate_Amount__c}" style="currency" currencyCode="USD"/></td>
+                    	</aura:set>
+                    	</aura:if>  
                     </tr>
                     <tr>
                 		<td>Effective Date:</td>
@@ -176,7 +188,13 @@
                         <td>{!v.EFTRecord.Bank_Name__c}</td>
                     </tr>
                     <tr>
-                    	<td>Payment:</td><td><lightning:formattedNumber value="{!v.EFTRecord.Payment_Amount__c}" style="currency" currencyCode="USD"/></td> 
+                    	<td>Payment:</td>
+                    	<aura:if isTrue="{!(empty(v.EFTRecord.Alternate_Amount__c))}">
+                    		<td><lightning:formattedNumber value="{!v.EFTRecord.Payment_Amount__c}" style="currency" currencyCode="USD"/></td>
+                    	<aura:set attribute="else">
+                    		<td><lightning:formattedNumber value="{!v.EFTRecord.Alternate_Amount__c}" style="currency" currencyCode="USD"/></td>
+                    	</aura:set>
+                    	</aura:if>  
                     </tr>
                     <tr>
                 		<td>Effective Date:</td>
