@@ -152,7 +152,7 @@
                           <td class="slds-text-align_right" role="gridcell" style="width:3.25rem">
                             <div class="slds-radio">
                               <span class="slds-radio">
-	                          <lightning:input type="radio" name="select" value="{!itemOption.Id}" onchange="{!c.onEFTSelect}"/>
+	                          <lightning:input type="radio" name="select" value="{!itemOption.EftLocator__c}" onchange="{!c.onEFTSelect}"/>
 	                        </span>
                             </div>
                           </td>

@@ -114,8 +114,8 @@
          component.set("v.EFTRecord.EFT_ID_Type__c",SelectedEFTIDType);
          component.set("v.EFTRecord.Payment_Amount__c",SelectedPayment);
          component.set("v.EFTRecord.Effective_Date__c",SelectedED);
-         component.set("v.EFTRecord.Day_of_Month__c",SelectedDay1);
-         component.set("v.EFTRecord.Second_Day_of_Month__c",SelectedDay2);
+       //  component.set("v.EFTRecord.Day_of_Month__c",SelectedDay1);
+       //  component.set("v.EFTRecord.Second_Day_of_Month__c",SelectedDay2);
          component.set("v.EFTRecord.Stage__c",'Share/Loan');
         
 		if(SelectedShareLoanID != undefined){
@@ -131,9 +131,9 @@
             EFTList = component.get('v.EFTRecordsList');
             
             for(var i=0;i<EFTList.length;i++){
-                if(EFTList[i].Id==SelectedShareLoan){
+                if(EFTList[i].EftLocator__c==SelectedShareLoan){
                     component.set("v.EFTRecord.Share_Loan_Id__c",EFTList[i].Share_Loan_Id__c);
-                    component.set("v.EFTRecord.Member_Account__c",EFTList[i].Member_Account__c);
+                    component.set("v.EFTRecord.Member_Account__r",EFTList[i].Member_Account__r);
                     component.set("v.EFTRecord.EFT_ID_Type__c",EFTList[i].EFT_ID_Type__c);
                     component.set("v.EFTRecord.Share_Loan_Description__c",EFTList[i].Share_Loan_Description__c);
                     component.set("v.EFTRecord.Share_Loan_Type__c",EFTList[i].Share_Loan_Type__c);
