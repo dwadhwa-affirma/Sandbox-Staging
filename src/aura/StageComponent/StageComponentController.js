@@ -56,6 +56,11 @@
        var stages = [];
        stages = component.get("v.EFTStageDetails"); 
        if(component.get("v.isMemberSelected") == false && component.get("v.ActiveStepIndex") == 0){
+    	   if(component.get("v.EFTRecord.Member_Name__c") =="" || component.get("v.EFTRecord.Member_Name__c") ==undefined){
+    		   alert('Please Select Member');	
+            		helper.hideSpinner(component,helper);
+            		return;   
+    	   }
     	   component.set("v.isMemberSelected", true);
     	    $A.createComponent("c:"+stages[0].Stage_Component__c,{recordId: component.get("v.recordId"), EFTRecord: component.get("v.EFTRecord"), isMemberSelected: component.get("v.isMemberSelected")},
                                 function(msgBox){                
@@ -82,10 +87,16 @@
             		return;            
             	}
             	
-            	if(i==1 && (component.get("v.EFTRecord.Share_Loan_Id__c") == '' || component.get("v.EFTRecord.Share_Loan_Id__c") == undefined)){
+            	if(i==1 && component.get("v.EFTRecord.Action_Type__c") == 'Create' && (component.get("v.EFTRecord.Share_Loan_Id__c") == '' || component.get("v.EFTRecord.Share_Loan_Id__c") == undefined)){
             		alert('Please Select a Loan/Share');	
             		helper.hideSpinner(component,helper);
             		return;            
+            	}
+            	
+            	else if(i==1 && component.get("v.EFTRecord.Action_Type__c") != 'Create' && (component.get("v.EFTRecord.Share_Loan_Id__c") == '' || component.get("v.EFTRecord.Share_Loan_Id__c") == undefined)){
+            		alert('Please Select an EFT');	
+            		helper.hideSpinner(component,helper);
+            		return;
             	}
             	
             	if(i==2 && ((component.get("v.EFTRecord.Routing_Number__c") == '' || component.get("v.EFTRecord.Routing_Number__c") == undefined)
@@ -141,7 +152,10 @@
 		                 	component.set("v.ContinueButtonName", 'Send ACH Document');
 		                }
 		           else if(i==3){
-		            		dynamicText = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(component.get("v.EFTRecord.Payment_Amount__c")); 
+		        	   		if(component.get("v.EFTRecord.Alternate_Amount__c") == "" || component.get("v.EFTRecord.Alternate_Amount__c") == null || component.get("v.EFTRecord.Alternate_Amount__c") == undefined)
+		        	   			dynamicText = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(component.get("v.EFTRecord.Payment_Amount__c")); 
+		            		else
+		            			dynamicText = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(component.get("v.EFTRecord.Alternate_Amount__c"));
 		            		stages2[i+1].Stage_Action__c = 'Pending Verification';               	
 		                }
 		             if(i !=2 && component.get("v.ContinueButtonName") == 'Send ACH Document'){
@@ -237,6 +251,7 @@
        stages = component.get("v.EFTStageDetails"); 
        if(component.get("v.isMemberSelected") == true && component.get("v.ActiveStepIndex") == 0){
     	   component.set("v.isMemberSelected", false);
+    	   component.set("v.EFTRecord.Member_Name__c","");
     	    $A.createComponent("c:"+stages[0].Stage_Component__c,{recordId: component.get("v.recordId"), EFTRecord: component.get("v.EFTRecord"), isMemberSelected: component.get("v.isMemberSelected")},
                                 function(msgBox){                
                                      if (component.isValid()) {
@@ -255,7 +270,8 @@
        }
        if(component.get("v.ActiveStepIndex") == 1){
     	   component.set("v.isMemberSelected", true);
-    	   component.set("v.ActiveStepIndex",0)
+    	   component.set("v.ActiveStepIndex",0);
+    	   component.set("v.EFTRecord.Action_Type__c","");
     	    $A.createComponent("c:"+stages[0].Stage_Component__c,{recordId: component.get("v.recordId"), EFTRecord: component.get("v.EFTRecord"), isMemberSelected: component.get("v.isMemberSelected")},
                                 function(msgBox){                
                                      if (component.isValid()) {
@@ -279,6 +295,9 @@
              	 if(i !=2 && component.get("v.ContinueButtonName") == 'Send ACH Document'){
 		            	 component.set("v.ContinueButtonName", 'Continue');
 		             }
+		         if(i==1){
+		        	 component.set("v.EFTRecord.Action_Type__c","");	
+		         }
 		         if(i == 2){
 		        	 component.set("v.EFTRecord.Share_Loan_Id__c","");		        	 
 			         component.set("v.EFTRecord.Share_Loan_Type__c","");
@@ -331,7 +350,8 @@
     },
     
     backView:function (component, event, helper) {  
-    		component.set("v.ActiveStepIndex", (1));         
+    		component.set("v.ActiveStepIndex", (1)); 
+    		 component.set("v.EFTRecord.Share_Loan_Id__c","");		        
               var stages = [];
        		  stages = component.get("v.EFTStageDetails");
         		var stages2 = [];
