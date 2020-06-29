@@ -14,7 +14,21 @@ global class WiresTransToDocuSignBatch implements Database.Batchable<sObject>,Da
     global void execute(Database.BatchableContext BC,List<WIRES_Transaction__c> scopeWTIDs){
         
   		List<WIRES_Transaction__c> WireTransactionToUpdate = new List<WIRES_Transaction__c>();
+        String EmailToSend;
+        Wires_Docusign_Emails__c wde = Wires_Docusign_Emails__c.getValues('Email For Testing');
         
+        if(wde.Emails__c != null){
+            EmailToSend = wde.Emails__c;
+        }
+        
+        //--------------------------------Current User Email ------------------------------------------------------//
+        
+        String userName = UserInfo.getUserName();
+		User activeUser = [Select Email From User where Username = : userName limit 1];
+		String userEmail = activeUser.Email;
+ 
+ 		//--------------------------------Current User Email ------------------------------------------------------//
+ 		
         for(Integer i=0;i<scopeWTIDs.size();i++){
         	
             dfsle.Recipient myRecipient;
@@ -35,8 +49,22 @@ global class WiresTransToDocuSignBatch implements Database.Batchable<sObject>,Da
             }
             
             
-            myRecipient = dfsle.Recipient.fromSource(Name,MemberEmail,null,'Signer 1',new dfsle.Entity(scopeWTIDs.get(i).Id));
+            //myRecipient = dfsle.Recipient.fromSource(Name,MemberEmail,null,'Signer 1',new dfsle.Entity(scopeWTIDs.get(i).Id));
             
+            //------------------------------- Sending Docusign Email to Custom setting email---------------------------//
+            
+            if(EmailToSend != null){
+	        
+	        	myRecipient = dfsle.Recipient.fromSource(Name,EmailToSend,null,'Signer 1',new dfsle.Entity(scopeWTIDs.get(i).Id));
+	        }
+	        
+	        //-------------------------------Sending DocuSign Email to Current logged in user-------------------------//
+	        
+            if(EmailToSend == null){
+	        
+	        	myRecipient = dfsle.Recipient.fromSource(Member.Name,userEmail,null,'Signer 1',new dfsle.Entity(scopeSLIDs.get(i).Id));
+	        }
+	        
             myTemplateId = dfsle.UUID.parse('9f83c1b8-23e7-49bb-a05f-fc81b6d0475c');
             myDocument =dfsle.Document.fromTemplate(myTemplateId,'Wire Transfer Authorization');
             Depositary = new dfsle.CustomField('text','##SFWIRES_Transaction__c',scopeWTIDs.get(i).Id, null,true, true);

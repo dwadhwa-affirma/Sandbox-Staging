@@ -16,7 +16,15 @@ global class SolarLoansToDocuSignBatch implements Database.Batchable<sObject>,Da
   		List<Solar_Loans__c> SolarLoansToUpdate = new List<Solar_Loans__c>();
   		String EmailToSend;
         List<string> EmailList = new List<String>();
-     
+        
+        //--------------------------------Current User Email ------------------------------------------------------//
+        
+        String userName = UserInfo.getUserName();
+		User activeUser = [Select Email From User where Username = : userName limit 1];
+		String userEmail = activeUser.Email;
+ 
+ 		//--------------------------------Current User Email ------------------------------------------------------//
+ 		
   		SolarLoan_Docusign_Emails__c sde = SolarLoan_Docusign_Emails__c.getValues('Email For Testing');
         
         if(sde.Emails__c != null){
@@ -40,7 +48,7 @@ global class SolarLoansToDocuSignBatch implements Database.Batchable<sObject>,Da
             }
 	        
 	        //------------------------------- Sending Docusign Email to Member directly--------------------------------//
-	            
+	        
             if(EmailToSend == 'Production' || EmailToSend == 'production'){
             	
 	            system.debug('Member.PersonEmail'+Member.PersonEmail);
@@ -52,10 +60,18 @@ global class SolarLoansToDocuSignBatch implements Database.Batchable<sObject>,Da
            
             //------------------------------- Sending Docusign Email to Custom setting email---------------------------//
             
-	        if(EmailToSend != 'Production' || EmailToSend != 'production'){
+	        if(EmailToSend != null && (EmailToSend != 'Production' || EmailToSend != 'production')){
 	        
 	        	myRecipient = dfsle.Recipient.fromSource(Member.Name,emailToSend,null,'Signer 1',new dfsle.Entity(scopeSLIDs.get(i).Id));
 	        }
+	        
+	        //-------------------------------Sending DocuSign Email to Current logged in user-------------------------//
+	        
+	        if(EmailToSend == null){
+	        
+	        	myRecipient = dfsle.Recipient.fromSource(Member.Name,userEmail,null,'Signer 1',new dfsle.Entity(scopeSLIDs.get(i).Id));
+	        }
+	        
 	        	
         	if(scopeSLIDs.get(i).Brand__c == 'Spectrum'){
             	myTemplateId = dfsle.UUID.parse('dc16d8f8-571c-497e-bbf5-42d8b25d4ee1');  //Spectrum
