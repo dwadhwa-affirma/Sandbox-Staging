@@ -58,16 +58,9 @@ global class SolarLoansToDocuSignBatch implements Database.Batchable<sObject>,Da
 	            }
             } 
            
-            //------------------------------- Sending Docusign Email to Custom setting email---------------------------//
-            
-	        if(EmailToSend != null && (EmailToSend != 'Production' || EmailToSend != 'production')){
+            //-------------------------------Sending DocuSign Email to Current logged in user-------------------------//
 	        
-	        	myRecipient = dfsle.Recipient.fromSource(Member.Name,emailToSend,null,'Signer 1',new dfsle.Entity(scopeSLIDs.get(i).Id));
-	        }
-	        
-	        //-------------------------------Sending DocuSign Email to Current logged in user-------------------------//
-	        
-	        if(EmailToSend == null){
+	        if(EmailToSend != 'Production' || EmailToSend != 'production'){
 	        
 	        	myRecipient = dfsle.Recipient.fromSource(Member.Name,userEmail,null,'Signer 1',new dfsle.Entity(scopeSLIDs.get(i).Id));
 	        }

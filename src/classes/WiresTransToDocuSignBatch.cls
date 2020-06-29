@@ -48,19 +48,16 @@ global class WiresTransToDocuSignBatch implements Database.Batchable<sObject>,Da
             	Name = scopeWTIDs.get(i).Member_Name__c;
             }
             
+            //------------------------------- Sending Docusign Email to Member email---------------------------//
             
-            //myRecipient = dfsle.Recipient.fromSource(Name,MemberEmail,null,'Signer 1',new dfsle.Entity(scopeWTIDs.get(i).Id));
-            
-            //------------------------------- Sending Docusign Email to Custom setting email---------------------------//
-            
-            if(EmailToSend != null){
+            if(EmailToSend == 'Production' || EmailToSend == 'production'){
 	        
-	        	myRecipient = dfsle.Recipient.fromSource(Name,EmailToSend,null,'Signer 1',new dfsle.Entity(scopeWTIDs.get(i).Id));
+	        	myRecipient = dfsle.Recipient.fromSource(Name,MemberEmail,null,'Signer 1',new dfsle.Entity(scopeWTIDs.get(i).Id));myRecipient = dfsle.Recipient.fromSource(Name,EmailToSend,null,'Signer 1',new dfsle.Entity(scopeWTIDs.get(i).Id));
 	        }
 	        
 	        //-------------------------------Sending DocuSign Email to Current logged in user-------------------------//
 	        
-            if(EmailToSend == null){
+            if(EmailToSend != 'Production' || EmailToSend != 'production'){
 	        
 	        	myRecipient = dfsle.Recipient.fromSource(Name,userEmail,null,'Signer 1',new dfsle.Entity(scopeWTIDs.get(i).Id));
 	        }
