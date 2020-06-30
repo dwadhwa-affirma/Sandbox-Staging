@@ -16,12 +16,15 @@ public class EFTToSyimtar {
     public static String MatchID3;
     public static String AccountNumber;
     public static String ErrorEFTLocator;
+    public static String PaymentMethod;
     
     public static String EftLocator;
    
     
     public static String jsonData;  
+    public static String jsonData1;
     public static HttpRequest req = new HttpRequest();
+     public static HttpRequest req1 = new HttpRequest();
     public static String result;
     public static List<EFT__c> EFTRecordsToUpdate = new List<EFT__c>();
    
@@ -154,6 +157,32 @@ public class EFTToSyimtar {
 	        		ErrorEFTLocator = String.valueOf(ErrorEFTLocator).substringBefore('","ErrorDetails"');
 	        		system.debug('ErrorEFTLocator' + ErrorEFTLocator);
 	        	}
+	        	
+	        	if(result != null && result != ''){
+                	
+                	PaymentMethod = '5';
+                	req1.setEndpoint('https://symxapi.chevronfcu.org/devclient/EFT/UpdateLoanById');
+	                req1.setClientCertificateName('brscmcapi');
+	                req1.setMethod('POST');
+	                req1.setHeader('Content-Type', 'application/json');
+	                req1.setHeader('Accept', 'application/json');
+	                
+	                jsonData1 = '{"AccountNumber":'+'\"'+AccountNumber+'\","LoanId":' + '\"'+ ID +'\"'+',"PaymentMethod":'+'\"'+PaymentMethod+'\"}';
+	                req1.setBodyAsBlob(Blob.valueof(jsondata1)); 
+	                system.debug('test'+jsonData1);
+	                
+	                Http http1 = new Http();  
+	                req1.setTimeout(60000);
+	                HttpResponse res1;
+	                String responseBody1;
+	                if(!Test.isRunningTest()){                       
+	                    res1 = http1.send(req1);
+	                    responseBody1 = res1.getBody();
+	                    System.debug('Response Body ACH::'+res1.getBody());    
+	                }else{
+	                    responseBody1 = '{"Type":"3","Branch":"27","CreatedAtBranch":"1","PurposeCode":"1","CollateralCode":"100","ApprovalCode":"4","OriginalBalance":"1","ApprovalDate":"01-01-2019","MaturityDate":"01-01-2019","DueDate":"01-01-2019","FirstPaymentDate":"01-01-2019","DueDay1":"1","Payment":"1234","CouponCode":"123", "PaymentMethod" : "PaymentMethod", "Description" : "Description", "InterestRate" : "2.00", "UserAmount1" : "200.00", "ECOACode" : "778", "CreditScore" : "15", "PaymentCount" : "12", "PaymentFrequency" : "67"}';
+	                }
+                }
 		    	
             	//EFT__c s = new EFT__c();         
                 
