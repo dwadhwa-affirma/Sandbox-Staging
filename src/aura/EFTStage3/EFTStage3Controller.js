@@ -102,8 +102,8 @@
 	            SelectedEFTIDType  = map[i].Type;
 	            SelectedPayment = map[i].Payment;
 	            SelectedED = map[i].EffectiveDate;
-	            SelectedDay1 = map[i].Day1;
-	            SelectedDay2 = map[i].Day2;
+	            SelectedDay1 = map[i].Day1.toString().trim();
+	            SelectedDay2 = map[i].Day2.toString().trim();	            
 	            break;
         	}
         }
@@ -114,10 +114,15 @@
          component.set("v.EFTRecord.EFT_ID_Type__c",SelectedEFTIDType);
          component.set("v.EFTRecord.Payment_Amount__c",SelectedPayment);
          component.set("v.EFTRecord.Effective_Date__c",SelectedED);
-       //  component.set("v.EFTRecord.Day_of_Month__c",SelectedDay1);
-       //  component.set("v.EFTRecord.Second_Day_of_Month__c",SelectedDay2);
+         component.set("v.EFTRecord.Day_of_Month__c",SelectedDay1);
+         component.set("v.EFTRecord.Second_Day_of_Month__c",SelectedDay2);
          component.set("v.EFTRecord.Stage__c",'Share/Loan');
-        
+         if(SelectedDay2 != '0'){
+	           component.set("v.EFTRecord.Frequency__c",'Semi-Monthly'); 
+	     }
+         else{
+        	 component.set("v.EFTRecord.Frequency__c",'Monthly'); 
+         }
 		if(SelectedShareLoanID != undefined){
             evt.setParams({ "EFTRecord": component.get("v.EFTRecord")});
             evt.fire();
