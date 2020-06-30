@@ -64,7 +64,13 @@ public class EFTController {
     //------------------------------- Saving EFT data to Salesforce-----------------------------------------------//
     @AuraEnabled
     public static EFT__c saveStageData(EFT__c EFTRecord){
-       // system.debug('EFTRecord=='+EFTRecord.Second_Day_of_Month__c);
+        system.debug('EFTRecord=='+EFTRecord.Second_Day_of_Month__c);
+        if(EFTRecord.Second_Day_of_Month__c == '0'){
+        	EFTRecord.Second_Day_of_Month__c = '';
+        }
+        if(EFTRecord.Day_of_Month__c == '0'){
+        	EFTRecord.Day_of_Month__c = (string)'0';
+        }
         List<EFT__c> EFTRecordList = [Select id, name, Member_Account__c, Stage__c, Action_Type__c from EFT__c where id =:EFTRecord.id limit 1];
         
         system.debug('EFTRecordList.size=='+EFTRecordList.size());
@@ -216,13 +222,21 @@ public class EFTController {
     	List<EFT__c> EFTToUpdate = new List<EFT__c>();
   		String Email;
         List<string> EmailList = new List<String>();
+        
+         //--------------------------------Current User Email ------------------------------------------------------//
+        
+        String userName = UserInfo.getUserName();
+		User activeUser = [Select Email From User where Username = : userName limit 1];
+		String userEmail = activeUser.Email;
+ 
+ 		//--------------------------------Current User Email ------------------------------------------------------//
      
   		ACH_Docusign_Emails__c sde = ACH_Docusign_Emails__c.getValues('Email For Testing');
         
         if(sde.Emails__c != null){
             Email = sde.Emails__c;
         }    
-        EmailList = Email.split(',');
+       
         
        // for(Integer i=0;i<recordId.size();i++){
         	
@@ -231,42 +245,40 @@ public class EFTController {
             dfsle.Document myDocument;
             dfsle.CustomField Depositary;
             dfsle.Envelope myEnvelope;
-            //Account MemberEmail;
+            String MemberEmail;
 			String Name;
             String DocuSignId;
             
-            //if(recordId.get(i).Primary_First_Name__c != null){
-            //	Name = recordId.get(i).Primary_First_Name__c +' '+recordId.get(i).Primary_Last_Name__c;
-            //}
-            //else if(recordId.get(i).Primary_Last_Name__c != null){
-            //	Name = recordId.get(i).Primary_Last_Name__c;
-            //}
-            /*if(Name != null){
-            	MemberEmail = [select id, name, PersonEmail from account where name =:Name Limit 1];
-            }*/
-            
-            /*if(MemberEmail.PersonEmail != null){
-            	myRecipient = dfsle.Recipient.fromSource(Name,MemberEmail.PersonEmail,null,'Signer 1',new dfsle.Entity(recordId.get(i).Id));
-            }*/
-            //system.debug(recordId.Member_Account__c);
-           // Person_Account__c paPrimary = [SELECT Id,PersonID__c,
-           //                  Account_Number__c, Account_Number__r.RecType__c,TypeTranslate__c, Account_Number__r.Name, PersonID__r.Home_Phone__pc,PersonID__r.Residential_City__pc,PersonID__r.Residential_State__pc, PersonID__r.Residential_Street__pc, PersonID__r.Residential_Zipocde__pc, PersonID__r.Name, PersonID__r.Email_raw__c FROM Person_Account__c 
-           //                  WHERE Account_Number__c =: recordId.Member_Account__c and TypeTranslate__c  like '%Primary%' limit 1];
+            Account_Details__c MemberAccount = [select id,name, Parent_Account__c from Account_Details__c where id=:recordId.Member_Account__c limit 1];
+        	
+        	Person_Account__c paPrimary = [SELECT Id,PersonID__c,PersonID__r.PersonEmail,
+                             Account_Number__c, Account_Number__r.RecType__c,TypeTranslate__c, Account_Number__r.Name, PersonID__r.Home_Phone__pc,PersonID__r.Residential_City__pc,PersonID__r.Residential_State__pc, PersonID__r.Residential_Street__pc, PersonID__r.Residential_Zipocde__pc, PersonID__r.Name, PersonID__r.Email_raw__c
+                             FROM Person_Account__c 
+                             WHERE Account_Number__c =: recordId.Member_Account__c and TypeTranslate__c  like '%Primary%' limit 1];
                              
-      		system.debug('member name=='+ recordId.Member_Name__c);
-      		Name = recordId.Member_Name__c;//paPrimary.PersonID__r.Name;
+      		if(paPrimary.PersonID__r.PersonEmail != null)
+      			MemberEmail = paPrimary.PersonID__r.PersonEmail;
+      		//EFTRecord.Member_Name__c = paPrimary.PersonID__r.Name;
             
-            if(EmailList.size() > 0){
-	            
-	            for(String emailToSend: EmailList){
-	            		
-	            	myRecipient = dfsle.Recipient.fromSource(Name,emailToSend,null,'Signer 1',new dfsle.Entity(recordId.Id));
-	            	
-	            	//if(recordId.get(i).Brand__c == 'Spectrum'){
-		            //	myTemplateId = dfsle.UUID.parse('dc16d8f8-571c-497e-bbf5-42d8b25d4ee1');  //Spectrum
-		            //}
-		            //else{
-		            //Create EFT
+           
+      		Name = recordId.Member_Name__c;//paPrimary.PersonID__r.Name;
+      		
+      		//------------------------------- Sending Docusign Email to Member email---------------------------//
+            
+            if(Email == 'Production' || Email == 'production'){
+	        
+	        	if(MemberEmail != null)
+	        		myRecipient = dfsle.Recipient.fromSource(Name,MemberEmail,null,'Signer 1',new dfsle.Entity(recordId.Id));
+	        }
+	        
+	        //-------------------------------Sending DocuSign Email to Current logged in user-------------------------//
+	        
+            if(Email != 'Production' || Email != 'production'){
+	        
+	        	myRecipient = dfsle.Recipient.fromSource(Name,userEmail,null,'Signer 1',new dfsle.Entity(recordId.Id));
+	        }
+            
+       				//Create EFT
                     if(action == 'Create'){
 		            	myTemplateId = dfsle.UUID.parse('5658c430-8e5d-4f53-b910-4d9e939e52ee');  //Create EFT
                     	myDocument =dfsle.Document.fromTemplate(myTemplateId,'Chevron ACH Debits - EFT');
@@ -281,9 +293,7 @@ public class EFTController {
 		            	myTemplateId = dfsle.UUID.parse('5658c430-8e5d-4f53-b910-4d9e939e52ee'); //Update EFT
                         myDocument =dfsle.Document.fromTemplate(myTemplateId,'Spectrum ACH Debits');
                     }
-		            //}
-		            
-		           // myDocument =dfsle.Document.fromTemplate(myTemplateId,'Spectrum ACH Debits');
+		           
        			    Depositary = new dfsle.CustomField('text','##SFEFT__c',recordId.Id, null,true, true);
         		    myEnvelope = new dfsle.Envelope(null,null, null,null,new List<dfsle.Document> { myDocument },null,new List<dfsle.CustomField> { Depositary },null,
 															'ACH Debits',
@@ -293,10 +303,7 @@ public class EFTController {
 					 if(!Test.isRunningTest()){
             			myEnvelope = dfsle.EnvelopeService.sendEnvelope(myEnvelope, true);
             		 }
-	            }	         	   
-            }	
-            
-            
+	     
             // ---------------------------- Fetching DocusignId and inserting into Solar Loan record---------------------------------//
             
             DocuSignId = String.valueOf(myEnvelope).substringAfter('docuSignId=');
@@ -377,8 +384,13 @@ public class EFTController {
         	
         	httpRequest requestparam = new httpRequest(); 
 	        requestparam.setEndpoint('https://symxapi.chevronfcu.org/devclient/PsAuto/GetShares?AccountNumber=' + AccountNumber + '&userchar2=abc');
-	        requestparam.setMethod('GET');      
-	          
+	        requestparam.setMethod('GET');   
+	        
+	        ACH_Loan_Share_Type_Configuration__c cs = ACH_Loan_Share_Type_Configuration__c.getValues('Share');   
+	       	string shareTypes= (string)cs.Type__c;
+		   	system.debug('shareTypes=='+shareTypes);
+			String[] arrShareTypes = shareTypes.split(',');
+			 
 	       
 	        http httpParam = new http();
 	        httpResponse response = httpParam.send(requestparam);
@@ -402,7 +414,7 @@ public class EFTController {
                        		string accouttype = (string)localAcc.get('AccountType');                       		
                        		string ShareId =  accouttype.split(' ')[1].replace('#','');
        						System.debug('ShareId ....' + ShareId);
-	                       if(ShareId != '0'){//&& ShareId == 2800
+	                       if(ShareId != '0' && arrShareTypes.contains(string.valueof(ShareId).substring(0, 2))){//&& ShareId == 2800
 	                               temp.ShareLoanID = ShareId; 
 	                               temp.ShareLoanIDString = 'S' + ShareId;
 	                               temp.Description =   (string)localAcc.get('Description');  
@@ -448,7 +460,11 @@ public class EFTController {
     		
     		httpRequest requestparam = new httpRequest(); 
 	        requestparam.setEndpoint('https://symxapi.chevronfcu.org/devclient/PsAuto/GetLoansSelectFields?AccountNumber=' + AccountNumber);
-	        requestparam.setMethod('GET');      
+	        requestparam.setMethod('GET');  
+	        
+	        ACH_Loan_Share_Type_Configuration__c cs = ACH_Loan_Share_Type_Configuration__c.getValues('Loan');   
+	       	string loanTypes= (string)cs.Type__c;		  
+			String[] arrLoanTypes = loanTypes.split(',');   
 	          
 	       
 	        http httpParam = new http();
@@ -474,7 +490,7 @@ public class EFTController {
                        		map<string, object> localAcc = (map<string, object>)t;
                        		string LoanId = string.valueof(localAcc.get('LoanId'));
        						System.debug('Service response is ....' + localAcc);
-	                       if(LoanId != '0'){
+	                       if(LoanId != '0' && arrLoanTypes.contains(string.valueof(LoanId).substring(0, 2))){
 	                               temp.ShareLoanID =  LoanId; 
 	                               temp.ShareLoanIDString = 'L' + LoanId;
 	                               temp.Description =   (string)localAcc.get('Description');  
@@ -576,6 +592,7 @@ public class EFTController {
                        		objEFT.Bank_Name__c = String.valueOf(localAcc.get('FinancialInstitution'));
                        		objEFT.Share_Loan_Id__c = String.valueOf(localAcc.get('Id'));
                        		system.debug('EftLocator__c=='+String.valueOf(localAcc.get('EftLocator')));
+                       		
                        		objEFT.EftLocator__c = String.valueOf(localAcc.get('EftLocator'));
                        		//objEFT.Member_Account__c = 'a0Of100000GF8xOEAT';
                        		if(String.valueOf(localAcc.get('AmountCode')) == '37')                       		
@@ -590,8 +607,16 @@ public class EFTController {
                        		//system.debug('EXPDATE=='+String.valueOf(localAcc.get('ExpirationDate'))) ;      		
                        		//objEFT.EftLocator__c = String.valueOf(localAcc.get('EftLocator__c'));    
                        		objEFT.Member_Account__r = new account_details__c(id =mapAccountIdName.get(String.valueOf(localAcc.get('AccountNumber'))), Name = String.valueOf(localAcc.get('AccountNumber')));//mapAccountIdName.get(String.valueOf(localAcc.get('AccountNumber')));  
+                       		system.debug('Member_Account__r=='+objEFT.Member_Account__r.Name);
+                       		List<EFT__c> SFEFT = [Select id from EFT__c where Member_Account__r.Name =:  objEFT.Member_Account__r.Name 
+                       						and EftLocator__c =: String.valueOf(localAcc.get('EftLocator')) limit 1] ;
+                       		
+                       		if(SFEFT.size() > 0){
+                       			objEFT.id = SFEFT[0].id;
+                       		}
+                       		
                        		system.debug('Day1=='+objEFT.Frequency__c);
-                       		system.debug('Member_Account__r=='+objEFT.Member_Account__r);
+                       		
                        		//objEFT.Member_Account__r.Name = String.valueOf(localAcc.get('AccountNumber'));     		
                        		//string locator = String.valueOf(localAcc.get('EftLocator'));                       		
                        		//EFTLocatorsSet.add(locator);
