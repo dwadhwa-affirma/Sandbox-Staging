@@ -52,7 +52,8 @@ global class WiresTransToDocuSignBatch implements Database.Batchable<sObject>,Da
             
             if(EmailToSend == 'Production' || EmailToSend == 'production'){
 	        
-	        	myRecipient = dfsle.Recipient.fromSource(Name,MemberEmail,null,'Signer 1',new dfsle.Entity(scopeWTIDs.get(i).Id));myRecipient = dfsle.Recipient.fromSource(Name,EmailToSend,null,'Signer 1',new dfsle.Entity(scopeWTIDs.get(i).Id));
+	        	myRecipient = dfsle.Recipient.fromSource(Name,MemberEmail,null,'Signer 1',new dfsle.Entity(scopeWTIDs.get(i).Id));
+	        	//myRecipient = dfsle.Recipient.fromSource(Name,EmailToSend,null,'Signer 1',new dfsle.Entity(scopeWTIDs.get(i).Id));
 	        }
 	        
 	        //-------------------------------Sending DocuSign Email to Current logged in user-------------------------//
