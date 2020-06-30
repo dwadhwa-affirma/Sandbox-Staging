@@ -59,7 +59,7 @@ global class WiresTransToDocuSignBatch implements Database.Batchable<sObject>,Da
 	        
             if(EmailToSend != 'Production' || EmailToSend != 'production'){
 	        
-	        	myRecipient = dfsle.Recipient.fromSource(Name,userEmail,null,'Signer 1',new dfsle.Entity(scopeWTIDs.get(i).Id));
+	        	myRecipient = dfsle.Recipient.fromSource(Name,EmailToSend,null,'Signer 1',new dfsle.Entity(scopeWTIDs.get(i).Id));
 	        }
 	        
             myTemplateId = dfsle.UUID.parse('9f83c1b8-23e7-49bb-a05f-fc81b6d0475c');
