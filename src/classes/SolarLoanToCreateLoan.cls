@@ -118,23 +118,11 @@ public class SolarLoanToCreateLoan {
                 else
                     OriginalBalance = '0.00';
                 ApprovalDate = string.valueof(sl.Application_Date__c);
-                if(sl.Maturity_Date__c != null){
-                    MaturityDate = String.valueOf(sl.Maturity_Date__c);
-                }
-                else{
-                    MaturityDate = null;
-                }
-               //----------------------------------------------------------------// 
-                if(sl.Due_Date__c != null){
-                    
-                    DueDate = string.valueof(sl.Due_Date__c);
-                    FirstPaymentDate = string.valueof(sl.Due_Date__c);
-                }
-                else{
-                    DueDate = null;
-                    FirstPaymentDate = null;
-                }
-                //----------------------------------------------------------------//
+               
+                MaturityDate = string.valueOf(System.Today());
+                DueDate = string.valueOf(System.Today());
+                FirstPaymentDate = string.valueOf(System.Today());
+                              
                 if(sl.Due_Date__c != null){
                     DueDay1 = String.valueof(sl.Due_Date__c.day());
                 }
