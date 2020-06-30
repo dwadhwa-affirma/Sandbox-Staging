@@ -473,14 +473,14 @@ public class EFTController {
 	        String strStatus = response.getStatus();
 	        String strBody = response.getBody();
         	
-         	System.debug('strStatus ....' + strStatus);
-        	System.debug('strBody ....' + strBody);
+         	System.debug('strStatus1 ....' + strStatus);
+        	System.debug('strBody1 ....' + strBody);
         
         	
         	
         	if(strBody!=''){        
        			List<Object> results = (List<Object>) JSON.deserializeUntyped(response.getBody());      
-         		System.debug('Service response is ....' + results);
+         		System.debug('Service response is1 ....' + results);
                 
               
                 if(results.size() > 0){
@@ -539,8 +539,15 @@ public class EFTController {
         	
         	httpRequest requestparam = new httpRequest(); 
 	        requestparam.setEndpoint('https://symxapi.chevronfcu.org/devclient/EFT/GetEftRecords?accountNumber=' + AccountNumber);
-	        requestparam.setMethod('GET');      
-	          
+	        requestparam.setMethod('GET');  
+	        
+	         ACH_Loan_Share_Type_Configuration__c cs = ACH_Loan_Share_Type_Configuration__c.getValues('Loan');   
+	       	string loanTypes= (string)cs.Type__c;		  
+			String[] arrLoanTypes = loanTypes.split(',');    
+			
+			ACH_Loan_Share_Type_Configuration__c cs1 = ACH_Loan_Share_Type_Configuration__c.getValues('Share');   
+	       	string shareTypes= (string)cs1.Type__c; 
+	        String[] arrShareTypes = shareTypes.split(','); 
 	       
 	        http httpParam = new http();
 	        httpResponse response = httpParam.send(requestparam);
@@ -573,9 +580,15 @@ public class EFTController {
        				}
                 
                  for(Object t : results){
-                      		System.debug('T ....' + T);
-                   			EFTWrapperObject temp = new EFTWrapperObject();
-                       		map<string, object> localAcc = (map<string, object>)t;   
+                     
+                      map<string, object> localAcc = (map<string, object>)t;
+                       System.debug('localAcc ....' + localAcc.get('Id'));
+                       string lsId = '';
+                       if(localAcc.get('Id') != null && localAcc.get('Id') != ''){
+                       		lsId = String.valueOf(localAcc.get('Id')).substring(0, 2);
+                       }
+                      if(arrShareTypes.contains(lsId) || arrLoanTypes.contains(lsId)){
+                   			EFTWrapperObject temp = new EFTWrapperObject();                       		   
                        		EFT__c objEFT = new EFT__c();
                        		objEFT.Routing_Number__c = String.valueOf(localAcc.get('Payee')); 
                        		objEFT.Account_Number__c = String.valueOf(localAcc.get('Reference'));
@@ -622,7 +635,8 @@ public class EFTController {
                        		//EFTLocatorsSet.add(locator);
                        		//system.debug('EXPDATE=='+String.valueOf(localAcc.get('Reference'))) ; 
                        		EFTList.add(objEFT);
-       				}
+                 }
+       		}
        				
        				
        			
