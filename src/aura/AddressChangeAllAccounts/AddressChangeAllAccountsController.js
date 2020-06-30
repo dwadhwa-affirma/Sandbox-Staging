@@ -36,6 +36,7 @@
     		var URL = result.FlowURL + '&accountid='+recordid + '&UserId=' + result.UserId + '&MemberName=' + result.MemberName;
     		//window.location.href = URL
     		window.open(URL,'_blank');
+    		 $A.get('e.force:closeQuickAction').fire();
             
             
         });
