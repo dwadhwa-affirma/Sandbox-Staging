@@ -181,53 +181,6 @@ public class SolarLoanToCreateLoan {
                     system.debug('ErrorLoanLocator' + ErrorLoanLocator);
                 }
                 
-//----------------------------------------------------Creat Loan Funding-------------------------------------------------//                
-				
-				if(result != null){
-                    
-                    LoanId = result;
-                    
-                    if(sl.Loan_Amount__c != null)
-                    	Amount = Integer.valueOf(sl.Loan_Amount__c);
-            		else
-                    	Amount = 0;
-                    	
-                    AccountNumber = sl.Account_Number__r.name;
-                    
-                    req3.setEndpoint('https://symxapi.chevronfcu.org/devclient/Wires/FundLoan?accountNumber='+AccountNumber+'&loanId='+LoanId+'&amount='+Amount);
-                    req3.setClientCertificateName('brscmcapi');
-                    req3.setMethod('GET');
-                    req3.setHeader('Content-Type', 'application/json');
-                    req3.setHeader('Accept', 'application/json');
-                    
-                    system.debug('test'+req3);
-                    
-                    Http http3 = new Http();  
-                    req3.setTimeout(60000);
-                    HttpResponse res3;
-                    String responseBody3;
-                    if(!Test.isRunningTest()){                       
-                        res3 = http3.send(req3);
-                        responseBody3 = res3.getBody();
-                        System.debug('Response Body for Fund::'+res3.getBody());    
-                    }else{
-                        responseBody3 = '{"Type":"3","Last":"27","First":"1","Street":"1","ExtraAddress":"100","City":"Chicago","State":"IL","ZipCode":"0012345,"BirthDate":"01-01-2019","SSN":"1345","LoanId":"322271627","AccountNumber":"00000123456"}';
-                        
-                    }
-                    // JSon parse for Id                            
-                    /*JSONParser parser3 = JSON.createParser(responseBody3);
-                    result3 = String.valueOf(responseBody3).substringAfter('LoanNameLocator":"');
-                    result3 = String.valueOf(result3).substringBefore('",');
-                    System.debug('LoanFund' + result3);
-                    
-                    if(result3 == null || result3 == ''){
-                        
-                        ErrorLoanNameLocator = String.valueOf(responseBody1).substringAfter('[MessageId=TESTING] ');
-                        ErrorLoanNameLocator = String.valueOf(ErrorLoanNameLocator).substringBefore('","ErrorDetails"');
-                        system.debug('ErrorLoanNameLocator' + ErrorLoanNameLocator);
-                    }*/
-                }                
-                
                 
 //----------------------------------------------------Create Loan Name--------------------------------------------------//                
                 if(sl.Joint_SSN__c != null){
@@ -397,7 +350,55 @@ public class SolarLoanToCreateLoan {
                     ErrorLoanTrackingLocator = String.valueOf(ErrorLoanTrackingLocator).substringBefore('","ErrorDetails"');
                     system.debug('ErrorLoanTrackingLocator' + ErrorLoanTrackingLocator);
                 }
+
+//----------------------------------------------------Creat Loan Funding-------------------------------------------------//                
+				
+				if(result2 != null && result != null){
                     
+                    LoanId = result;
+                    
+                    if(sl.Loan_Amount__c != null)
+                    	Amount = Integer.valueOf(sl.Loan_Amount__c);
+            		else
+                    	Amount = 0;
+                    	
+                    AccountNumber = sl.Account_Number__r.name;
+                    
+                    req3.setEndpoint('https://symxapi.chevronfcu.org/devclient/Wires/FundLoan?accountNumber='+AccountNumber+'&loanId='+LoanId+'&amount='+Amount);
+                    req3.setClientCertificateName('brscmcapi');
+                    req3.setMethod('GET');
+                    req3.setHeader('Content-Type', 'application/json');
+                    req3.setHeader('Accept', 'application/json');
+                    
+                    system.debug('test'+req3);
+                    
+                    Http http3 = new Http();  
+                    req3.setTimeout(60000);
+                    HttpResponse res3;
+                    String responseBody3;
+                    if(!Test.isRunningTest()){                       
+                        res3 = http3.send(req3);
+                        responseBody3 = res3.getBody();
+                        System.debug('Response Body for Fund::'+res3.getBody());    
+                    }else{
+                        responseBody3 = '{"Type":"3","Last":"27","First":"1","Street":"1","ExtraAddress":"100","City":"Chicago","State":"IL","ZipCode":"0012345,"BirthDate":"01-01-2019","SSN":"1345","LoanId":"322271627","AccountNumber":"00000123456"}';
+                        
+                    }
+                    // JSon parse for Id                            
+                    /*JSONParser parser3 = JSON.createParser(responseBody3);
+                    result3 = String.valueOf(responseBody3).substringAfter('LoanNameLocator":"');
+                    result3 = String.valueOf(result3).substringBefore('",');
+                    System.debug('LoanFund' + result3);
+                    
+                    if(result3 == null || result3 == ''){
+                        
+                        ErrorLoanNameLocator = String.valueOf(responseBody1).substringAfter('[MessageId=TESTING] ');
+                        ErrorLoanNameLocator = String.valueOf(ErrorLoanNameLocator).substringBefore('","ErrorDetails"');
+                        system.debug('ErrorLoanNameLocator' + ErrorLoanNameLocator);
+                    }*/
+                }  
+                                    
+//-------------------------------------------------Updating Solar Loan records -----------------------------------------//
                 
                 Solar_Loans__c s = new Solar_Loans__c();         
                 if(result != null && result != '')
