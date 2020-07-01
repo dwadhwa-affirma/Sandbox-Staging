@@ -253,11 +253,11 @@ private class MemberAuthenticationControlLightningTest {
     }
     static testMethod void LogDataFunctionsTest1() {
          Account acc = [Select id from Account where FirstName='U' limit 1 ];
-         Account_Details__c ad = [select id from Account_Details__c where name = '00001' limit 1];
+         Account_Details__c ad = [select id, Name from Account_Details__c where name = '00001' limit 1];
          User u = [select id , name from user where Firstname = 'Deepika' limit 1]; 
          Map<string,Object> NextAuthenticationType = new Map<string,Object>();
          Test.startTest();
-         NextAuthenticationType = MemberAuthenticationControllerLightning.GetNextAuthenticationType(acc.id, 'Domestic', 3,2, True, True, 'True', True,True, True,'abc-123');
+         NextAuthenticationType = MemberAuthenticationControllerLightning.GetNextAuthenticationType(acc.id, 'Domestic', 3,2, True, True, 'True', True,True, True,'abc-123',ad.Name);
          MemberAuthenticationControllerLightning.InsertLogData(acc.id,'failed','Level 1','654555555','1715','http:test.com','Verbal',u.name,'Test','abc-123','abc-123');
          Test.stopTest(); 
     }

@@ -344,7 +344,7 @@ public class MemberAuthenticationController{
        
         //pageCalulated = new PageReference('/lightning/cmp/c__LightningVerification?c__EnteredSSN='+ EnteredSSN+'&c__EnteredMemberNumber='+EnteredMemberNumber+'&c__CallersPhoneNumber='+PhoneNumber+'&c__PINMatch='+PINMatch+'&c__InteractionId='+IVRGUID+'&c__Reason=' + ReasonCode+ '&c__HighValueFlag=' + HighFlag + '&c__IsUserSessionLoaded=' + IsUserSessionLoaded +'&c__MemberId='+ MemberId);
          RedirectToURL = '/lightning/cmp/c__LightningVerification?c__EnteredSSN='+ EnteredSSN+'&c__EnteredMemberNumber='+EnteredMemberNumber+'&c__CallersPhoneNumber='+PhoneNumber+'&c__PINMatch='+PINMatch+'&c__InteractionId='+IVRGUID+'&c__Reason=' + ReasonCode+ '&c__HighValueFlag=' + HighFlag + '&c__IsUserSessionLoaded=' + IsUserSessionLoaded +'&c__MemberId='+ MemberId;
-          
+         system.debug('RedirectToURL#' + RedirectToURL); 
                 
         //pageCalulated.setRedirect(true);
        // }
@@ -398,7 +398,7 @@ public class MemberAuthenticationController{
        
         //pageCalulated = new PageReference('/lightning/cmp/c__LightningVerification?c__EnteredSSN='+ EnteredSSN + '&c__SSNnumberMatch='+SSNnumberMatch+ '&c__EnteredMemberNumber='+EnteredMemberNumber+ '&c__MemberNumberMatch='+MemberNumberMatch+ '&c__EnteredCardNumber='+EnteredCardNumber + '&c__CardNumberMatch='+CardNumberMatch+ '&c__CallersPhoneNumber='+PhoneNumber+ '&c__PhoneNumberMatch='+PhoneNumberMatch+ '&c__PINMatch='+PINMatch+'&c__InteractionId='+IVRGUID+'&c__Reason=' + ReasonCode+ '&c__HighValueFlag=' + HighFlag);
         RedirectToURL = '/lightning/cmp/c__LightningVerification?c__EnteredSSN='+ EnteredSSN + '&c__SSNnumberMatch='+SSNnumberMatch+ '&c__EnteredMemberNumber='+EnteredMemberNumber+ '&c__MemberNumberMatch='+MemberNumberMatch+ '&c__EnteredCardNumber='+EnteredCardNumber + '&c__CardNumberMatch='+CardNumberMatch+ '&c__CallersPhoneNumber='+PhoneNumber+ '&c__PhoneNumberMatch='+PhoneNumberMatch+ '&c__PINMatch='+PINMatch+'&c__InteractionId='+IVRGUID+'&c__Reason=' + ReasonCode+ '&c__HighValueFlag=' + HighFlag;
-          
+        system.debug('RedirectToURL##' + RedirectToURL);  
                 
         //pageCalulated.setRedirect(true);
        // }
@@ -2338,14 +2338,14 @@ public class MemberAuthenticationController{
      private void getQueryStringData()
     {
         // Member Number
+        
         PhoneNumber = ApexPages.currentPage().getParameters().get('CallersPhoneNumber');
         EnteredMemberNumber = ApexPages.currentPage().getParameters().get('EnteredMemberNumber');
         IVREnteredMemberNumber = EnteredMemberNumber;
         ReasonCode = ApexPages.currentPage().getParameters().get('Reason');
         HighFlag = ApexPages.currentPage().getParameters().get('HighValueFlag');
         MemberType = ApexPages.currentPage().getParameters().get('MemberType');        
-        
-        
+               
         if(ReasonCode == null || ReasonCode == '')
         {
             ReasonCode = 'Unknown';
@@ -2354,7 +2354,7 @@ public class MemberAuthenticationController{
         // special validation for users entering 4# and null
         if(EnteredMemberNumber == null || EnteredMemberNumber == '')
         {
-            return;
+            //return;
         }
         
         string truncatedMNumber = removeInitialZero(EnteredMemberNumber);
@@ -2392,7 +2392,7 @@ public class MemberAuthenticationController{
         {
             PinString = '****';
         }
-        
+         system.debug('EnteredCardNumber##' + EnteredCardNumber);
          if(EnteredCardNumber != null && EnteredCardNumber != ''){
             system.debug('Entered card not null');
             if(string.isEmpty(EnteredCardNumberLastdigits)){
@@ -2418,15 +2418,15 @@ public class MemberAuthenticationController{
         
         PINMatch = ApexPages.currentPage().getParameters().get('PINMatch');
         IVRPINMatch = PINMatch;
-        
+        system.debug('IVRPINMatch##' + IVRPINMatch);
         IVRGUID = ApexPages.currentPage().getParameters().get('InteractionId');
-      	
+      	system.debug('IVRGUID##' + IVRGUID);
         
         // SSN
         
         EnteredSSN = ApexPages.currentPage().getParameters().get('EnteredSSN');
         IVREnteredSSN = EnteredSSN;
-        
+        system.debug('EnteredSSN.length##' + EnteredSSN.length());
         if (EnteredSSN == 'NULL' || (EnteredSSN.length() != 4 && EnteredSSN.length() != 9))
         {
             EnteredSSN = '';

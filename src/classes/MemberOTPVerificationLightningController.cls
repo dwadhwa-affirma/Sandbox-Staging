@@ -636,7 +636,7 @@ public class MemberOTPVerificationLightningController
 
                 from Account_Details__c where Id in: accids];
             list<string> wcwList = new list<string>();
-            if (listAccountDetails.Size() > 0)
+             if (listAccountDetails.Size() > 0)
             {
                 Brand = listAccountDetails[0].Brand__c;
 
@@ -746,14 +746,14 @@ public class MemberOTPVerificationLightningController
                     }
                 }
                 RecordType rec = GetRecordTypeData('Authenticated_Log__c', 'OTP Authentication Log');
-                if (wcwList.size() > 0)
+               if (wcwList.size() > 0)
                 {
                     for (string str : wcwList)
                     {
                         if (str != null && str.Contains('TELEPHONE/EMAIL CHANGED WITHIN 60 DAYS'))
                         {
-
-                            Authenticated_Log__c log = new Authenticated_Log__c();
+							// the below log entry is commented for OTP-Not Eligible status not required now
+                           /* Authenticated_Log__c log = new Authenticated_Log__c();
                             log.SalesforceID__c = acc.Id;
                             log.Member__c = acc.Id;
                             log.First_Name__c = acc.FirstName;
@@ -769,14 +769,16 @@ public class MemberOTPVerificationLightningController
                             insert log;
                             acc.Member_Verification_OTP_Invalid_Attempt__c = system.now();
                             update acc;
-                            System.Debug('not eligible---' + acc.id);
+                            System.Debug('not eligible---' + acc.id);*/
 
                             IsIneligibleLocal = 'true';
 							
 							RecordType rec1 = GetRecordTypeData('Authenticated_Log__c', 'Master Authentication Log');
        
 						     List<Authenticated_Log__c> MasterAuthenticationLog = GetDataForMasterAuthenticationLog(IVRGUIDFromUrl, rec1.id);
-						     if(MasterAuthenticationLog.size() == 0)
+						     // the below log entry is commented for OTP-Not Eligible status not required now
+						     
+						     /*if(MasterAuthenticationLog.size() == 0)
 						     {
 						     	
 						     	 Authenticated_Log__c log2 = new Authenticated_Log__c();
@@ -792,7 +794,7 @@ public class MemberOTPVerificationLightningController
 	                            log2.GUID__c = GUID;
 	                            log2.IVR_GUID__c = IVRGUIDFromUrl;
 	                            log2.RecordtypeId = rec1.id;
-	                            insert log;
+	                            insert log; 
 	                           						     	
 						     }
 						     else{
@@ -811,7 +813,7 @@ public class MemberOTPVerificationLightningController
 						     	
 						     }
 							
-							
+							*/
 							
 							
                         }
@@ -820,7 +822,7 @@ public class MemberOTPVerificationLightningController
 
 
             }
-        }
+        } 
         List<KeyValuePairModelWithBit> listPhoneList = GetPhoneList_Options(listWrapperAccount);
         List<KeyValuePairModelWithBit> listEmailList = GetEmailsList_Options(listWrapperAccount);
         OTPVerificationModel obj = new OTPVerificationModel();

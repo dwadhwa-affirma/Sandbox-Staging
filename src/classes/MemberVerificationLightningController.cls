@@ -735,8 +735,8 @@ public class MemberVerificationLightningController
                     {
                         if (str != null && str.Contains('TELEPHONE/EMAIL CHANGED WITHIN 60 DAYS'))
                         {
-
-                            Authenticated_Log__c log = new Authenticated_Log__c();
+							// the below log entry is commented for OTP-Not Eligible status not required now
+                           /* Authenticated_Log__c log = new Authenticated_Log__c();
                             log.SalesforceID__c = acc.Id;
                             log.Member__c = acc.Id;
                             log.First_Name__c = acc.FirstName;
@@ -747,7 +747,7 @@ public class MemberVerificationLightningController
                             insert log;
                             acc.Member_Verification_OTP_Invalid_Attempt__c = system.now();
                             update acc;
-                            System.Debug('not eligible---' + acc.id);
+                            System.Debug('not eligible---' + acc.id);*/
 
                             IsIneligibleLocal = 'true';
 
