@@ -160,7 +160,7 @@
                     
                     
                     <div class="sec2frm" id="verifytxt">
-                        <ui:inputText class="form-control verifyInput" value="{!v.EnteredOTP}" />
+                        <ui:inputText class="form-control verifyInput" value="{!v.EnteredOTP}" aura:id="InputOTPTxt" />
                         <button class="slds-button slds-button--brand" style="margin-left: 10px;" onclick="{!c.clickverifyOTP}">Verify</button>              			 
                     </div>
                     <aura:if isTrue="{!(v.InputRequired == true)}">
@@ -370,7 +370,7 @@
                     
                     
                     <div class="sec2frm" id="verifytxt">
-                        <ui:inputText class="form-control verifyInput" value="{!v.EnteredOTP}" />
+                        <ui:inputText class="form-control verifyInput" value="{!v.EnteredOTP}" aura:id="InputOTPTxt2"/>
                         <button class="slds-button slds-button--brand" style="margin-left: 10px;" onclick="{!c.clickverifyOTP}">Verify</button>              			 
                     </div>
                     <aura:if isTrue="{!(v.InputRequired == true)}">

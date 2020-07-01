@@ -2,10 +2,11 @@
 	doInit : function(component, event,helper) {
 	
 		// URL Encoding........................................................................................
-		
+		console.log('doinit called');
 		var url= window.location.href;
 		var pageReference = component.get("v.pageReference");
-	
+		console.log('pageReference-----' + pageReference);
+		console.log('url-----' + url);
 		if(pageReference.state.c__EnteredSSN == 'null'){
 			component.set("v.SSNFromURL", '');
 		}
@@ -94,9 +95,11 @@
 		{
 			component.set("v.IsUserSessionLoaded", true );
 			
+			
 		}else{
 			component.set("v.IsUserSessionLoaded", false );
 		}
+		console.log('Isusersessionloaded'+ component.get("v.IsUserSessionLoaded"));
 	    component.set("v.EnteredCardNumber", pageReference.state.c__EnteredCardNumber);
 	    component.set("v.CardNumberMatch", pageReference.state.c__CardNumberMatch);
 		component.set("v.PhoneNumberMatch", pageReference.state.c__PhoneNumberMatch);
@@ -150,6 +153,7 @@
 	
 	LastAcheivableLogs : function(component, event, memberid, GUID, LastLevel, IVRGUIDFromUrl)
 	{
+		console.log('LastAcheivableLogs called');
 		var PhoneFromURL = component.get("v.PhoneFromURL");
 		var MemberNumberFromURL = component.get("v.MemberNumberFromURL");
 		var EnteredCardNumber = component.get("v.EnteredCardNumber");
@@ -162,7 +166,7 @@
 		var PINMatch = component.get("v.PINMatch"); 
 		var SSNFromURL = component.get("v.SSNFromURL");
 		var DebitCardStatus = component.get("v.DebitCardStatus");
-		
+		console.log('Helper Line 166---DebitCardStatus' + DebitCardStatus);
 		var action = component.get("c.SaveLastAchievableLevelLogs");
 		action.setParams({"MemberId": memberid, "GUID" : GUID, "LastLevel": LastLevel,"IVRGUIDFromUrl":IVRGUIDFromUrl, 
 						"PhoneFromURL": PhoneFromURL, "MemberNumberFromURL" : MemberNumberFromURL, "EnteredCardNumber": EnteredCardNumber,"CardNumberMatch":CardNumberMatch,
@@ -181,7 +185,7 @@
 	
 	MemberVerificationAttemptCheck : function(component, event, helper, memberid, DebitCardStatus,ReLoadRequired, PointsObtained)
 	{
-		
+		console.log('MemberVerificationAttemptCheck called');
 		var GUID = component.get("v.GUID");
 		var IVRGUIDFromUrl = component.get("v.IVRGUIDFromUrl");
 		if(IVRGUIDFromUrl =='' || IVRGUIDFromUrl == undefined )
@@ -211,6 +215,8 @@
 		var SSNSearched = component.get("v.SSNEntered");
 		var PhoneSearched = component.get("v.PhoneNumberEntered");
 		var MemberSearched = component.get("v.MemberNumberEntered");
+		console.log('Helper Line 215---DebitCardStatus' + DebitCardStatus);
+		console.log('Helper Line 216---PointsObtained' + PointsObtained);
 		if(PageURL == undefined){
 			component.set("v.IsDebitTabVisible", false);
 			action.setParams({"MemberId": memberid,"GUID": GUID,"DebitCardStatus": DebitCardStatus,"SSNFromURL": SSNSearched,"MemberNumberFromURL": MemberSearched,"PhoneFromURL": PhoneSearched, "PageURL" : ' ', "IVRGUIDFromUrl": IVRGUIDFromUrl,
@@ -228,8 +234,9 @@
     	action.setCallback(this, function (response) {
   		 var status = response.getState();            
                if (component.isValid() && status === "SUCCESS") {
-                   var result = response.getReturnValue();
-                        var ScoringModelLength = result['ScoringModel'].length;	
+                   		var result = response.getReturnValue();
+                   		console.log('Helper Line 235---result' + JSON.stringify(result));
+		                var ScoringModelLength = result['ScoringModel'].length;	
                     	component.set("v.Visible", result['Visible']);
                     	component.set("v.Attempts", result['Attempts']);
                     	component.set("v.CFCUWalletStatusForDay",result['CFCUWalletStatusForDay']);
@@ -375,23 +382,22 @@
                 		
                 		if(ScoringModelLength > 0){
 					    		component.set("v.ScoringModel", result['ScoringModel']);
-							}
-							else{
+							}else{
 									component.set("v.ScoringModel",null);						
 							}
 							
-							if(result['LevelModel'].length > 0){
+						if(result['LevelModel'].length > 0){
 								component.set("v.LevelModel", result['LevelModel']);
-							}
-							else{
+						}else{
 								component.set("v.LevelModel",null);	
-							}
+							}										
+							
 						if(result['AccountNumber'] != undefined){
-							document.getElementById('frmMemberNumber').value = result['AccountNumber']; 
-                            component.set("v.OOWMemberNumberEntered",result['AccountNumber']);
-                        } 
-                        
-                        
+								document.getElementById('frmMemberNumber').value = result['AccountNumber'];
+								component.set("v.OOWMemberNumberEntered",result['AccountNumber']);
+								component.set("v.MemberNumberEntered",result['AccountNumber']);
+						 } 
+						
 						component.set("v.isDoneRendering",true);
 	              	
                   }
@@ -428,16 +434,20 @@
  
 	getMemberSearch : function(component, event,PhoneNumber,MemberNumber,SSNNumber,IVRGUIDFromUrl)
 	{
-		  
+		  console.log('getMemberSearch called');
 		   var action = component.get("c.getMemberSearchData");
 		   var parameters = {"PhoneNumber": PhoneNumber,"MemberNumber" : MemberNumber,"SSNNumber" : SSNNumber,"IVRGUIDFromUrl":IVRGUIDFromUrl, "IsUserSessionLoaded": component.get("v.IsUserSessionLoaded")};
-		
+		   console.log('Helper Line 437---PhoneNumber' + PhoneNumber);
+		   console.log('Helper Line 438---MemberNumber' + MemberNumber);
+		   console.log('Helper Line 439---SSNNumber' + SSNNumber);
+		   console.log('Helper Line 440---IVRGUIDFromUrl' + IVRGUIDFromUrl);
 		   action.setParams(parameters);
 		   action.setCallback(this, function(response){
 		   		var status = response.getState();
 		    	if(component.isValid() && status === "SUCCESS"){
 		    	
 						var result =  response.getReturnValue();
+						console.log('Helper Line 447---result ' + JSON.stringify(result));
 				         component.set("v.GUID",result.GUID);
 					    if(result.Account.length > 0){
 						    
@@ -536,7 +546,7 @@
     			var status = response.getState();            
 	       	    if (component.isValid() && status === "SUCCESS") {
 	       	    	var result = response.getReturnValue(); 
-                    
+                     console.log('Helper Line 546---result' + JSON.stringify(result));
 		               if(result.AccountNumber != undefined && result.AccountNumber.length > 0)
 		               {
 	                       var MemberName = result.MemberName;
@@ -551,6 +561,7 @@
     },
     
     LoadOOWComponent: function (component, event, helper, memberid, GUID, IVRGUIDFromUrl) {
+    	console.log('LoadOOWComponent called');
     	var win; 
     	var activetabid = component.get("v.ActiveTabId");
     	var tab =  component.get("v.ActiveTab");
@@ -678,31 +689,36 @@
 		  						component.set("v.notes", notes);
 		  						
 		  						if(status == 'passed'){
-		  						
+		  							console.log('Helper Line 688---ScoreModelPositiveScore' + ScoreModelPositiveScore);
 		  							MaximumPointsAvailable = parseInt(MaximumPointsAvailable) - parseInt(ScoreModelPositiveScore);
 		  							PointsObtained = parseInt(PointsObtained) + parseInt(ScoreModelPositiveScore);
 		  							IsOOWAvailable = false;
 		  							component.set("v.OOWStatusForDay", false);
 									component.set("v.MaximumPointsAvailable",MaximumPointsAvailable);
 		  							component.set("v.PointObtained", PointsObtained);
+		  							console.log('Helper Line 695---PointsObtained' + PointsObtained);
+		  							console.log('Helper Line 696---MaximumPointsAvailable' + MaximumPointsAvailable);
 		  							helper.GetNextAuthenticationType(component, event, helper, memberid, MemberType, MaximumPointsAvailable, PointsObtained, IsKYMAvailable, IsOTPAvailable, DebitCardStatus, IsOOWAvailable, IsPublicWalletAvailable, IsCFCUWalletAvailable);
 		  							component.set("v.Likedisable",true);
 		  							
 		  						}
 		  						else if(status == 'failed'){
-		  						
+		  							console.log('Helper Line 703---ScoreModelNegativeScore' + ScoreModelNegativeScore);
 		  							MaximumPointsAvailable = parseInt(MaximumPointsAvailable) - parseInt(ScoreModelNegativeScore);
 		  							IsOOWAvailable = false;
 		  							component.set("v.OOWStatusForDay", false);
 									component.set("v.MaximumPointsAvailable",MaximumPointsAvailable);
 		  							component.set("v.PointObtained", PointsObtained);
+		  							console.log('Helper Line 708---PointsObtained' + PointsObtained);
+		  							console.log('Helper Line 709---MaximumPointsAvailable' + MaximumPointsAvailable);
 		  							helper.GetNextAuthenticationType(component, event, helper, memberid, MemberType, MaximumPointsAvailable, PointsObtained, IsKYMAvailable, IsOTPAvailable, DebitCardStatus, IsOOWAvailable, IsPublicWalletAvailable, IsCFCUWalletAvailable);
 		  							component.set("v.Likedisable",true);
 		  						}
 		  						
 		  						component.set("v.MaximumPointsAvailable",MaximumPointsAvailable );
 		  						component.set("v.PointsObtained",PointsObtained);
-		  						 
+		  						 console.log('Helper Line 716---PointsObtained' + PointsObtained);
+		  						 console.log('Helper Line 717---MaximumPointsAvailable' + MaximumPointsAvailable);
 		  						var element = document.getElementsByClassName('demo-only slds-box rightBox');
 		  						var aElement;
 		  						var liElement = element[2].getElementsByClassName("slds-tabs_default__item");
@@ -711,17 +727,19 @@
 		  						for(var i=0 ; i < liElement.length; i++){
 		  							aElement = liElement[i].firstElementChild;
 				 
-		  							
+		  							console.log('Helper Line 726---status' + status);
 		  							if(status =='failed' && aElement.id =='OOWTab__item'){
 		  								liElement[i].classList.add("red");
 		  								liElement[i].classList.remove("slds-is-active");
 		  								component.set('v.OOWIconName','utility:close');
+		  								helper.RedrawComponent(liElement[i]);
 		  							}
 		  							
 		  							if(status =='passed' && aElement.id =='OOWTab__item'){
 		  								liElement[i].classList.add("green");
 		  								liElement[i].classList.remove("slds-is-active");
 		  								component.set('v.OOWIconName','utility:check');
+		  								helper.RedrawComponent(liElement[i]);
 		  							}
 				
 		  						}
@@ -811,16 +829,25 @@
     },
     
     GetNextAuthenticationType: function(component, event, helper, MemberId, MemberType, MaximumPointsAvailable, PointsObtained , IsKYMAvailable, IsOTPAvailable, DebitCardStatus, IsOOWAvailable, IsPublicWalletAvailable, IsCFCUWalletAvailable){
+    	console.log('Helper Line 828---MaximumPointsAvailable' + MaximumPointsAvailable);
+    	console.log('Helper Line 829---PointsObtained' + PointsObtained);
+    	console.log('Helper Line 830---IsKYMAvailable' + IsKYMAvailable);
+    	console.log('Helper Line 831---IsOTPAvailable' + IsOTPAvailable);
+    	console.log('Helper Line 832---DebitCardStatus' + DebitCardStatus);
+    	console.log('Helper Line 833---IsOOWAvailable' + IsOOWAvailable);
+    	console.log('Helper Line 834---IsPublicWalletAvailable' + IsPublicWalletAvailable);
+    	console.log('Helper Line 835---IsCFCUWalletAvailable' + IsCFCUWalletAvailable);
     	var IVRGUIDFromUrl = component.get("v.IVRGUIDFromUrl");
     	if(IVRGUIDFromUrl == undefined){IVRGUIDFromUrl = '';}
     	var action = component.get("c.GetNextAuthenticationType");
     	action.setParams({"MemberId": MemberId,"MemberType":MemberType,"MaximumPointsAvailable":MaximumPointsAvailable,"PointsObtained": PointsObtained, "IsKYMAvailable": IsKYMAvailable, 
-    						"IsOTPAvailable": IsOTPAvailable,"IsDebitPinAvailable":DebitCardStatus,"IsOOWAvailable":IsOOWAvailable,"IsPublicWalletAvailable": IsPublicWalletAvailable,"IsCFCUWalletAvailable": IsCFCUWalletAvailable,"IVRGUIDFromUrl":IVRGUIDFromUrl});
+    						"IsOTPAvailable": IsOTPAvailable,"IsDebitPinAvailable":DebitCardStatus,"IsOOWAvailable":IsOOWAvailable,"IsPublicWalletAvailable": IsPublicWalletAvailable,"IsCFCUWalletAvailable": IsCFCUWalletAvailable,"IVRGUIDFromUrl":IVRGUIDFromUrl,"AccountNumberInput":component.get("v.MemberNumberEntered")});
     	 action.setCallback(this, function (response) {
 		       	      		 var status = response.getState();            
 	                               if (component.isValid() && status === "SUCCESS") {
 	                            
 	                                   var result = response.getReturnValue();
+	                                   console.log('Helper Line 846---result' + JSON.stringify(result));
 	                                   if(PointsObtained < result.ScoreRequired){
 	                                	   component.set("v.ToGetHighestLevel",result.NextLevel);
 	                                   }else{
@@ -901,15 +928,17 @@
     },
 	
 	GetReloadData : function(component, event, helper,memberid,GUID,IVRGUIDFromUrl ){
-	
+		console.log('GetReloadData called');
+		console.log('IsUserSessionLoaded' + component.get("v.IsUserSessionLoaded"));
 		var DebitCardStatus = component.get("v.DebitCardStatus");
 		var action = component.get("c.getDataForReload");
-		action.setParams({"memberid": memberid,"GUID":GUID,"IVRGUIDFromUrl":IVRGUIDFromUrl,"DebitCardStatus" : DebitCardStatus, "IsUserSessionLoaded": component.get("v.IsUserSessionLoaded")});
+		action.setParams({"memberid": memberid,"GUID":GUID,"IVRGUIDFromUrl":IVRGUIDFromUrl,"DebitCardStatus" : DebitCardStatus, "IsUserSessionLoaded": component.get("v.IsUserSessionLoaded"),"AccountNumberInput":component.get("v.MemberNumberEntered") });
     	action.setCallback(this, function (response) {
 		       	      		 var status = response.getState();            
 	                               if (component.isValid() && status === "SUCCESS") {
 	                            
 	                                   var result = response.getReturnValue();
+	                                   console.log('Helper Line 936---result' + JSON.stringify(result));
 	                                   if(result.OOWLogData !=undefined){	                                   
 		                                   if(result.OOWLogData.length > 0){
 		                                	   component.set("v.IsOOWAvailableOnLoad",true);
@@ -939,9 +968,11 @@
 																{
 																	aElement = liElement[i].firstElementChild;
 																	if(aElement.id =='PublicWalletTab__item'){
+																		console.log('Helper Line 966---PublicWalletTab__item'+ result.PublicLogData[0].Public_Wallet_Status__c);
 																		liElement[i].classList.add("green");
 																		liElement[i].classList.remove("red");
 															  			component.set('v.PWIconName','utility:check');
+															  			helper.RedrawComponent(liElement[i]);
 																	}
 																}                               	   			
 		                                	   			
@@ -963,9 +994,11 @@
 																		{
 																			aElement = liElement[i].firstElementChild;
 																			if(aElement.id =='CFCUWalletTab__item'){
+																				console.log('Helper Line 993---CFCUWalletTab__item'+ result.CFCULogData[0].CFCU_Wallet_Status__c);
 																				liElement[i].classList.add("green");
 																				liElement[i].classList.remove("red");
 																	  			component.set('v.CFCUIconName','utility:check');
+																	  			 helper.RedrawComponent(liElement[i]);
 																			}
 																		}                               	   			
 				                                	   			
@@ -987,9 +1020,11 @@
 																		{
 																			aElement = liElement[i].firstElementChild;
 																			if(aElement.id =='OTPTab__item'){
+																				console.log('Helper Line 1019---OTPTab__item'+ result.OTPLogData[0].OTP_Status__c);
 																				liElement[i].classList.add("green");
 																				liElement[i].classList.remove("red");
 																	  			component.set('v.OTPIconName','utility:check');
+																	  			helper.RedrawComponent(liElement[i]);
 																			}
 																		}                               	   			
 				                                	   			
@@ -1079,7 +1114,22 @@
 	   	       
 			$A.enqueueAction(action); 
 		
+	},
+	
+	RedrawComponent : function(element)
+	{
+		element.style.display= 'none';
+		console.log('displaynone');
+		
+		window.setTimeout(
+					$A.getCallback(function() {
+						element.style.display= 'block';
+					}), 60
+		);
+		
+		console.log('displayblock');
 	}
+	
 	/*SaveScoreDataForReload : function(component, event, helper,memberid,IVRGUIDFromUrl, PointsObtained, MaximumPointsAvailable ){
 		CurrentAuthenticationLevel = component.get("v.CurrentAuthenticationLevel");
 		var action = component.get("c.SaveScoringDataForReload");

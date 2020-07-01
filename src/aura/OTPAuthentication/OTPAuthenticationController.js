@@ -17,6 +17,7 @@
 			IsUserSessionLoaded = params.param3;
 			component.set("v.IsReLoadRequired", IsReLoadRequired);
 			component.set("v.IsUserSessionLoaded", IsUserSessionLoaded);
+			
 			}
     	
     	var recordid = component.get("v.recordId");
@@ -99,7 +100,7 @@
     	
     	
 	},
-  
+
    openModel: function(component, event, helper) {
     // for Display Model,set the "isOpen" attribute to "true"*****
       component.set("v.isOpen", true);
@@ -130,10 +131,9 @@
    },
     moveNext : function(component,event,helper){
      // control the next button based on 'currentStep' attribute value    
+      
      var getCurrentStep = component.get("v.currentStep");
         if(getCurrentStep == "1"){
-        
-            
             var selectedOTPSendOption = component.get("v.selectedValue");
             if(selectedOTPSendOption == null || selectedOTPSendOption == undefined || selectedOTPSendOption == "")
             {            	         
@@ -168,6 +168,8 @@
         else if(getCurrentStep == 2){
             component.set("v.currentStep", "3");
         }
+        
+        
     },
     
     moveBack : function(component,event,helper){
@@ -354,6 +356,7 @@
 			 
 			$A.enqueueAction(action);
 	            component.set("v.loading", 'true');
+	         component.find('InputOTPTxt2').set("v.value", '');
         }
         else
         {
@@ -361,6 +364,8 @@
         	component.set('v.InputRequired',true);
         	 return false;
         }
+        
+        
 		 
 	},
 	 closePopup: function(component, event, helper) {		

@@ -6,6 +6,7 @@
 	    var MemberNumber = component.get("v.MemberNumberFromURL");
 	    var SSNNumber = component.get("v.SSNFromURL");
 	    var IVRGUIDFromUrl =  component.get("v.IVRGUIDFromUrl");
+	    console.log('IVRGUIDFromUrl'+ IVRGUIDFromUrl);
 	    helper.getMemberSearch(component, event,PhoneNumber,MemberNumber,SSNNumber,IVRGUIDFromUrl);
 	    
 		},
@@ -19,7 +20,7 @@
 		},
 		*/
 		onRender : function (component, event, helper) {
-	        
+	         console.log('onRender called');
 	        var memberid = component.get("v.ReMemberId");
 	        var IVRGUIDFromUrl =  component.get("v.IVRGUIDFromUrl");
 	        var GUID =  component.get("v.GUID");
@@ -61,11 +62,11 @@
 		    	var PublicWalletComponent = component.find('PublicWallet');
 		        if(PublicWalletComponent!=undefined)PublicWalletComponent.PublicWalletMethod(attribute1,ReLoadRequired,IsUserSessionLoaded);
 		            
-		       /* var CFCUWalletComponent = component.find('CFCUWallet');		        
+		       var CFCUWalletComponent = component.find('CFCUWallet');		        
 		        if(CFCUWalletComponent!=undefined)CFCUWalletComponent.CFCUWalletMethod(attribute1,ReLoadRequired, IsUserSessionLoaded);
 		        
-		        var OTPComponent = component.find('OTPAuthentication');		        
-		        if(OTPComponent!=undefined)OTPComponent.OTPMethod(attribute1,ReLoadRequired); */
+		         var OTPComponent = component.find('OTPAuthentication');		        
+		        if(OTPComponent!=undefined)OTPComponent.OTPMethod(attribute1,ReLoadRequired); 
 		        if(IsGetReloadDataCalled == false ){      	            
 		        	helper.GetReloadData(component, event, helper, memberid, GUID, IVRGUIDFromUrl);	
 		        	component.set("v.IsGetReloadDataCalled", true);
@@ -78,6 +79,7 @@
 		
 			
 		MemberCompEvent : function(component, event, helper){
+		console.log('MemberCompEvent called');
 		var IVRGUIDFromUrl = component.get("v.IVRGUIDFromUrl");
 		var ReLoadRequired = component.get("v.ReLoadRequired");
 		var MaximumPointsAvailable = component.get("v.MaximumPointsAvailable");
@@ -186,10 +188,14 @@
 		var OTPCancellAttept;
 		var isDebitPinCalculated = component.get("v.isDebitPinCalculated");
 		TotalScoreRequiredToAchieveLevel = RangeStart;
-		
-		
-       
-		 	
+		console.log('Line 189---MaximumPointsAvailable' + MaximumPointsAvailable);
+		console.log('Line 190---PointsObtained' + PointsObtained);
+		console.log('Line 191---DebitCardStatus' + DebitCardStatus);
+		console.log('Line 192---DebitCardStatus' + CurrentScore);
+		console.log('Line 193---ScoreModelNegativeScore' + ScoreModelNegativeScore);
+		console.log('Line 194---ScoreModelPositiveScore' + ScoreModelPositiveScore);
+		console.log('Line 195---FDLogPreviousDayNegativePoint' + FDLogPreviousDayNegativePoint);
+		console.log('Line 196---IVRGUIDFromUrl' + IVRGUIDFromUrl);
 		
 		//---------------------------For checking MC Pin Change and Failed desired level score -----------//
     	
@@ -241,7 +247,11 @@
 	  			IsOTPAvailable = false;
 	  			component.set("v.IsOTPAvailableOnLoad",IsOTPAvailable);
 	  			component.set("v.OTPStatusForDay",true);
+	  			console.log('Line 248---PointsObtained' + PointsObtained);
+	  			console.log('Line 249---CurrentScore' + CurrentScore);
+	  			console.log('Line 250---ScoreModelPositiveScore' + ScoreModelPositiveScore);	  			
 	  			helper.GetNextAuthenticationType(component, event, helper, memberid, MemberType, MaximumPointsAvailable, PointsObtained, IsKYMAvailable, IsOTPAvailable, DebitCardStatus, IsOOWAvailable, IsPublicWalletAvailable, IsCFCUWalletAvailable);
+	  			helper.RedrawComponent(liElement[i]);
 			}
 			if(eventParam == "Valid" && aElement.id =='OTPTab__item'){
 				liElement[i].classList.add("green");
@@ -252,7 +262,11 @@
 	  			IsOTPAvailable = false;
 	  			component.set("v.IsOTPAvailableOnLoad",IsOTPAvailable);
 	  			component.set("v.OTPStatusForDay",true);
+	  			console.log('Line 263---PointsObtained' + PointsObtained);
+	  			console.log('Line 264---CurrentScore' + CurrentScore);
+	  			console.log('Line 265---ScoreModelPositiveScore' + ScoreModelPositiveScore);	
 	  			helper.GetNextAuthenticationType(component, event, helper, memberid, MemberType, MaximumPointsAvailable, PointsObtained, IsKYMAvailable, IsOTPAvailable, DebitCardStatus, IsOOWAvailable, IsPublicWalletAvailable, IsCFCUWalletAvailable);
+	  			helper.RedrawComponent(liElement[i]);
 			}
 			if(eventParam == "Declined" && aElement.id =='OTPTab__item'){
 				liElement[i].classList.add("red");
@@ -263,8 +277,12 @@
 				TotalScoreRequiredToAchieveLevel = parseInt(TotalScoreRequiredToAchieveLevel) +  parseInt(NegativeScoreObtained);
 	  			IsOTPAvailable = false;
 	  			component.set("v.IsOTPAvailableOnLoad",IsOTPAvailable);
-	  			
+	  			console.log('Line 278---MaximumPointsAvailable' + MaximumPointsAvailable);
+	  			console.log('Line 279---NegativeScoreObtained' + NegativeScoreObtained);
+	  			console.log('Line 280---ScoreModelNegativeScore' + ScoreModelNegativeScore);
+	  			console.log('Line 281---CurrentScore' + CurrentScore);	
 	  			helper.GetNextAuthenticationType(component, event, helper, memberid, MemberType, MaximumPointsAvailable, PointsObtained, IsKYMAvailable, IsOTPAvailable, DebitCardStatus, IsOOWAvailable, IsPublicWalletAvailable, IsCFCUWalletAvailable);
+	  			helper.RedrawComponent(liElement[i]);
 			}
 			if(eventParam == "Changed" && aElement.id =='OTPTab__item'){
 				liElement[i].classList.add("red");
@@ -275,7 +293,12 @@
 				TotalScoreRequiredToAchieveLevel = parseInt(TotalScoreRequiredToAchieveLevel) +  parseInt(NegativeScoreObtained);
 	  			IsOTPAvailable = false;
 	  			component.set("v.IsOTPAvailableOnLoad",IsOTPAvailable);
+	  			console.log('Line 294---MaximumPointsAvailable' + MaximumPointsAvailable);
+	  			console.log('Line 295---NegativeScoreObtained' + NegativeScoreObtained);
+	  			console.log('Line 296---ScoreModelNegativeScore' + ScoreModelNegativeScore);
+	  			console.log('Line 297---CurrentScore' + CurrentScore);	
 	  			helper.GetNextAuthenticationType(component, event, helper, memberid, MemberType, MaximumPointsAvailable, PointsObtained, IsKYMAvailable, IsOTPAvailable, DebitCardStatus, IsOOWAvailable, IsPublicWalletAvailable, IsCFCUWalletAvailable);
+	  			helper.RedrawComponent(liElement[i]);
 			}
 			if(eventParam == "Invalid" && aElement.id =='OTPTab__item'){
 				liElement[i].classList.add("red");
@@ -286,7 +309,12 @@
 				TotalScoreRequiredToAchieveLevel = parseInt(TotalScoreRequiredToAchieveLevel) +  parseInt(NegativeScoreObtained);
 	  			IsOTPAvailable = false;
 	  			component.set("v.IsOTPAvailableOnLoad",IsOTPAvailable);
+	  			console.log('Line 310---MaximumPointsAvailable' + MaximumPointsAvailable);
+	  			console.log('Line 311---NegativeScoreObtained' + NegativeScoreObtained);
+	  			console.log('Line 312---ScoreModelNegativeScore' + ScoreModelNegativeScore);
+	  			console.log('Line 313---CurrentScore' + CurrentScore);	
 	  			helper.GetNextAuthenticationType(component, event, helper, memberid, MemberType, MaximumPointsAvailable, PointsObtained, IsKYMAvailable, IsOTPAvailable, DebitCardStatus, IsOOWAvailable, IsPublicWalletAvailable, IsCFCUWalletAvailable);
+	  			helper.RedrawComponent(liElement[i]);
 	  			
 			}
 			if(KYMeventParam == "SUCCESS" && aElement.id =='KYMTab__item'){
@@ -299,6 +327,7 @@
 	  			IsKYMAvailable = false;
 	  			component.set("v.IsKYMAvailableOnLoad",IsKYMAvailable);
 	  			helper.GetNextAuthenticationType(component, event, helper, memberid, MemberType, MaximumPointsAvailable, PointsObtained, IsKYMAvailable, IsOTPAvailable, DebitCardStatus, IsOOWAvailable, IsPublicWalletAvailable, IsCFCUWalletAvailable);
+	  			helper.RedrawComponent(liElement[i]);
 			 }
 			 
 			 if(KYMeventParam == "FAIL" && aElement.id =='KYMTab__item')
@@ -312,6 +341,7 @@
 	  			 IsKYMAvailable = false;
 	  			 component.set("v.IsKYMAvailableOnLoad",IsKYMAvailable);
 	  			 helper.GetNextAuthenticationType(component, event, helper, memberid, MemberType, MaximumPointsAvailable, PointsObtained, IsKYMAvailable, IsOTPAvailable, DebitCardStatus, IsOOWAvailable, IsPublicWalletAvailable, IsCFCUWalletAvailable);
+	  			 helper.RedrawComponent(liElement[i]);
 			 }
 			 
 			 
@@ -327,7 +357,11 @@
 	  				IsPublicWalletAvailable = false;
 	  				component.set("v.IsPublicWalletAvailableOnLoad",IsPublicWalletAvailable);
                  	component.set("v.PublicWalletStatusForDay", true);
+                 	console.log('Line 358---PointsObtained' + PointsObtained);
+                 	console.log('Line 359---CurrentScore' + CurrentScore);
+                 	console.log('Line 360---ScoreModelPositiveScore' + ScoreModelPositiveScore);
 	  				helper.GetNextAuthenticationType(component, event, helper, memberid, MemberType, MaximumPointsAvailable, PointsObtained, IsKYMAvailable, IsOTPAvailable, DebitCardStatus, IsOOWAvailable, IsPublicWalletAvailable, IsCFCUWalletAvailable);
+	  				helper.RedrawComponent(liElement[i]);
 			 }
 			 if((parseInt(PublicWalletScore) <= 2 || parseInt(PublicWalletFailedCount) > 1) && aElement.id =='PublicWalletTab__item')
 			 {
@@ -341,7 +375,12 @@
 				 TotalScoreRequiredToAchieveLevel = parseInt(TotalScoreRequiredToAchieveLevel) +  parseInt(NegativeScoreObtained);
 	  			 IsPublicWalletAvailable = false;
 	  			 component.set("v.IsPublicWalletAvailableOnLoad",IsPublicWalletAvailable);
+	  			 console.log('Line 376---MaximumPointsAvailable' + MaximumPointsAvailable);
+	  			 console.log('Line 377---NegativeScoreObtained' + NegativeScoreObtained);
+	  			 console.log('Line 378---ScoreModelNegativeScore' + ScoreModelNegativeScore);
+	  			 console.log('Line 379---CurrentScore' + CurrentScore);	
 	  			 helper.GetNextAuthenticationType(component, event, helper, memberid, MemberType, MaximumPointsAvailable, PointsObtained, IsKYMAvailable, IsOTPAvailable, DebitCardStatus, IsOOWAvailable, IsPublicWalletAvailable, IsCFCUWalletAvailable);
+	  			 helper.RedrawComponent(liElement[i]);
 	  			 
 			 }			 
 			 if(parseInt(CFCUWalletScore) > 2 && parseInt(CFCUWalletFailedCount) <=1 && aElement.id =='CFCUWalletTab__item')
@@ -355,8 +394,11 @@
 	  				IsCFCUWalletAvailable = false;
 	  				component.set("v.IsCFCUWalletAvailableOnLoad",IsCFCUWalletAvailable);
 	  				component.set("v.CFCUWalletStatusForDay", true);
+	  				console.log('Line 394---PointsObtained' + PointsObtained);
+                 	console.log('Line 395---CurrentScore' + CurrentScore);
+                 	console.log('Line 396---ScoreModelPositiveScore' + ScoreModelPositiveScore);
 	  				helper.GetNextAuthenticationType(component, event, helper, memberid, MemberType, MaximumPointsAvailable, PointsObtained, IsKYMAvailable, IsOTPAvailable, DebitCardStatus, IsOOWAvailable, IsPublicWalletAvailable, IsCFCUWalletAvailable);
-	  				
+	  				helper.RedrawComponent(liElement[i]);
 			 }
 			 if((parseInt(CFCUWalletScore) <= 2 || parseInt(CFCUWalletFailedCount) > 1 ) && aElement.id =='CFCUWalletTab__item')
 			 {
@@ -369,7 +411,12 @@
 				 TotalScoreRequiredToAchieveLevel = parseInt(TotalScoreRequiredToAchieveLevel) +  parseInt(NegativeScoreObtained);
 	  			 IsCFCUWalletAvailable = false;
 	  			 component.set("v.IsCFCUWalletAvailableOnLoad",IsCFCUWalletAvailable);
+	  			 console.log('Line 412---MaximumPointsAvailable' + MaximumPointsAvailable);
+	  			 console.log('Line 413---NegativeScoreObtained' + NegativeScoreObtained);
+	  			 console.log('Line 414---ScoreModelNegativeScore' + ScoreModelNegativeScore);
+	  			 console.log('Line 415---CurrentScore' + CurrentScore);	
 	  			 helper.GetNextAuthenticationType(component, event, helper, memberid, MemberType, MaximumPointsAvailable, PointsObtained, IsKYMAvailable, IsOTPAvailable, DebitCardStatus, IsOOWAvailable, IsPublicWalletAvailable, IsCFCUWalletAvailable);
+	  			 helper.RedrawComponent(liElement[i]);
 			 }
 			 
 			 
@@ -457,6 +504,7 @@
    }, 
 	
 	handleRadioClick : function(component, event, helper){
+		console.log('handleRadioClick called');
 		component.set("v.IsRightDivVisible", true);
 		var memberid = event.getSource().get('v.value');
 		var membername = event.getSource().get('v.label');
@@ -472,6 +520,8 @@
 		/*if(ReLoadRequired == undefined){
 			ReLoadRequired = false;
 		}*/
+		console.log('Line 520---PointsObtained' + PointsObtained);
+		console.log('Line 521---DebitCardStatus' + DebitCardStatus);
 	    if(PublicWalletComponent!=undefined){
         	PublicWalletComponent.PublicWalletMethod(attribute1,ReLoadRequired, IsUserSessionLoaded);
         }
@@ -481,6 +531,8 @@
         
         var OTPComponent = component.find('OTPAuthentication');
         if(OTPComponent!=undefined)OTPComponent.OTPMethod(attribute1,ReLoadRequired);
+        console.log('Line 531---PointsObtained' + PointsObtained);
+        console.log('Line 532---DebitCardStatus' + DebitCardStatus);
        helper.MemberVerificationAttemptCheck(component, event, helper, memberid, DebitCardStatus, ReLoadRequired, PointsObtained);
       
     
@@ -741,7 +793,7 @@ NavigateToMember : function(component , event, helper){
    
     
     clearAll : function(component, event){
-	   
+	    console.log('Clearall called');
 	   document.getElementById("frmPhoneNumber").value = '';
 	   document.getElementById("frmMemberNumber").value = '';
 	   document.getElementById("frmSSN").value = '';
@@ -832,7 +884,7 @@ NavigateToMember : function(component , event, helper){
 	   component.set("v.IsMemberManualSearched",false);
 	   component.set("v.MultipleMemberNumberAlert",'');
        component.set("v.OOWMemberNumberEntered",'');
-	  // window.location.href = '/lightning/cmp/c__LightningVerification';
+	   window.location.href = '/lightning/cmp/c__LightningVerification';
 	   
 	    
    },

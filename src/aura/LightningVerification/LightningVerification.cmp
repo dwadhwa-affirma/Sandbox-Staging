@@ -6,7 +6,7 @@
 <!-- <aura:handler event="aura:locationChange" action="{!c.LocationUpdate}"/> -->
 <aura:attribute name="CurrentUrl" type="string" description="to store current url"/>
 <aura:attribute name="PhoneNumberEntered" type="string" description="to search from Phone Number "/>
-<aura:attribute name="MemberNumberEntered" type="string" description="to search from Member Number "/>
+<aura:attribute name="MemberNumberEntered" type="string" description="to search from Member Number " default=""/>
 <aura:attribute name="SSNEntered" type="string" description="to search from SSN "/>
 <aura:attribute name="DOBEntered" type="string" description="to search from DOB "/>
 <aura:attribute name="IsMatchingMemberFound" type="boolean" default="false" />
@@ -166,7 +166,7 @@
                                     </div>
                                     <label class="slds-form-element__label" for="form-element-01">Member Number</label>
                                     <div class="slds-form-element__control">
-                                        <input type="text" id="frmMemberNumber" placeholder="Number" class="slds-input" onkeyup="{!c.searchMember}" disabled="{!v.ReLoadRequired}"/>
+                                        <input type="text" id="frmMemberNumber"  placeholder="Number" class="slds-input" onkeyup="{!c.searchMember}" disabled="{!v.ReLoadRequired}"/>
                                     </div>
                                     <div class="" id="MemberNoDiv">
                                     	

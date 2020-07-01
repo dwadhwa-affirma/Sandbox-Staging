@@ -47,7 +47,11 @@
 	    	  if(OtherTrIndex != SelectedTrIndex)
 	    	  {
 	    		   OtherTr.classList.remove("highlight");
-	    		   OtherTr.firstChild.firstChild.firstChild.iconName ="utility:chevronright";
+	    		   try{
+	    			   OtherTr.firstChild.firstChild.firstChild.iconName ="utility:chevronright";
+	    		   }catch(e){
+	    			   
+	    		   }
 	    	  }
 	    	 
 	      }
