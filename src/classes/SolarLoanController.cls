@@ -1,7 +1,7 @@
 public class SolarLoanController {
 
     @AuraEnabled
-    public static void waitingForResponse(string SolarLoanRecordId){
+    public static void waitingForResponse(string SolarLoanRecordId, String status){
     
     List<Solar_Loans__c> SolarLoanList = [SELECT id,ABA_Bank_Name__c,ACH__c,Additional_Amount__c,Application_Date__c,
             Bank_Account_Number__c,Bank_Name__c,Battery__c,Brand__c,Change_Order__c,CreatedById,CreatedDate,
@@ -19,7 +19,7 @@ public class SolarLoanController {
             Error_EftLocator__c,Error_Loan_Locator__c,Error_Loan_Name_Locator__c,Error_Loan_Tracking_Locator__c,
             Current_Solar_Loan_Stage__c FROM Solar_Loans__c where id =: SolarLoanRecordId limit 1];	
     	
-   			SolarLoanList[0].Status__c = 'Waiting for Response'; 
+   			SolarLoanList[0].Status__c = status; 
             update SolarLoanList; 	
     	
     }
