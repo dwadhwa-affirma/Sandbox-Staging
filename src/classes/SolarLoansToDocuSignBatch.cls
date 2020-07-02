@@ -15,6 +15,9 @@ global class SolarLoansToDocuSignBatch implements Database.Batchable<sObject>,Da
         
   		List<Solar_Loans__c> SolarLoansToUpdate = new List<Solar_Loans__c>();
   		String EmailToSend;
+  		String Spectrum;
+  		String Chevron;
+  		
         List<string> EmailList = new List<String>();
         
         //--------------------------------Current User Email ------------------------------------------------------//
@@ -26,10 +29,20 @@ global class SolarLoansToDocuSignBatch implements Database.Batchable<sObject>,Da
  		//--------------------------------Current User Email ------------------------------------------------------//
  		
   		SolarLoan_Docusign_Emails__c sde = SolarLoan_Docusign_Emails__c.getValues('Email For Testing');
-        
+        DocuSign_Templates__c DTSpectrum = DocuSign_Templates__c.getValues('Spectrum');
+        DocuSign_Templates__c DTChevron = DocuSign_Templates__c.getValues('Chevron');
+        	
         if(sde.Emails__c != null){
             EmailToSend = sde.Emails__c;
         }    
+        
+        if(DTSpectrum.TemplateId__c != null){
+            Spectrum = DTSpectrum.TemplateId__c;
+        }  
+        
+        if(DTChevron.TemplateId__c != null){
+            Chevron = DTChevron.TemplateId__c;
+        }  
         
         for(Integer i=0;i<scopeSLIDs.size();i++){
         	
@@ -41,6 +54,7 @@ global class SolarLoansToDocuSignBatch implements Database.Batchable<sObject>,Da
             Account Member;
 			String MemberId;
             String DocuSignId;
+            
             
            
             if(scopeSLIDs.get(i).Member_Name__c != null){
@@ -67,10 +81,10 @@ global class SolarLoansToDocuSignBatch implements Database.Batchable<sObject>,Da
 	        
 	        	
         	if(scopeSLIDs.get(i).Brand__c == 'Spectrum'){
-            	myTemplateId = dfsle.UUID.parse('dc16d8f8-571c-497e-bbf5-42d8b25d4ee1');  //Spectrum
+            	myTemplateId = dfsle.UUID.parse(Spectrum);  //Spectrum
             }
             else{
-            	myTemplateId = dfsle.UUID.parse('ad01d585-ad0a-4e68-b537-7e75293f0ef8');  //Chevron	
+            	myTemplateId = dfsle.UUID.parse(Chevron);  //Chevron	
             }
 	            
             myDocument =dfsle.Document.fromTemplate(myTemplateId,'Spectrum ACH Debits');
