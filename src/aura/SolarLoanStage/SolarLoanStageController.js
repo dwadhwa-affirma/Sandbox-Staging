@@ -8,22 +8,53 @@
 	
 	waiting: function(component, event, helper) {
 	
-		 helper.showSpinner(component);
-		 var action = component.get("c.waitingForResponse");
-		 var SolarLoanRecordId = component.get("v.recordId");
-		 action.setParams({"SolarLoanRecordId": SolarLoanRecordId});
-		 
-		 action.setCallback(this, function (response) {
-        	var status = response.getState();            
-            if (component.isValid() && status === "SUCCESS") {
-                var result = response.getReturnValue();
-                component.set("v.IsWaitingDisabled", true);
+    	helper.showSpinner(component);
+        var status;
+        
+        
+	    var buttonClass = component.find('WaitingButton');
+		if(component.get("v.WaitingButton") == 'Waiting'){
+            component.set("v.WaitingButton", "Continue");
+            $A.util.addClass(buttonClass, 'yellow');
+            component.set("v.IsButtonDisabled", true);
+            status = 'Waiting for Response';
+        }
+        else if(component.get("v.WaitingButton") == 'Continue'){
+           component.set("v.WaitingButton", "Waiting");
+           $A.util.removeClass(buttonClass, 'yellow');
+           component.set("v.IsButtonDisabled", false);
+            if(component.get("v.ButtonLabelName") == 'Mark Stage 1 Complete')
+            	status = 'New';
+        	if(component.get("v.ButtonLabelName") == 'Mark Stage 2 Complete')
+            	status = 'New';
+        	if(component.get("v.ButtonLabelName") == 'Create Loan Records')
+            	status = 'New'; 
+            if(component.get("v.ButtonLabelName") == 'Mark Stage 4 Complete')
+                status = 'Loan Funded';
+            if(component.get("v.ButtonLabelName") == 'Send ACH Document')
+                status = 'Loan Funded';
+            if(component.get("v.ButtonLabelName") == 'Create EFT Record')
+                status = 'ACH Pending';
+            if(component.get("v.ButtonLabelName") == 'Close Ticket')
+                status = 'Done';
             }
-            $A.get('e.force:refreshView').fire();
-            window.setTimeout(
-			    $A.getCallback(function() {
-			       helper.hideSpinner(component,helper)
-			    }), 3000
+		var action = component.get("c.waitingForResponse");
+		var SolarLoanRecordId = component.get("v.recordId");
+		action.setParams({"SolarLoanRecordId": SolarLoanRecordId,
+                         "status": status});
+		
+		action.setCallback(this, function (response) {
+        var status = response.getState();            
+           if (component.isValid() && status === "SUCCESS") {
+               var result = response.getReturnValue();
+               
+           }
+            
+           $A.get('e.force:refreshView').fire();
+           window.setTimeout(
+		 	  $A.getCallback(function() {
+			   	helper.hideSpinner(component,helper)
+			  }), 3000
 			);
 			
         });	
