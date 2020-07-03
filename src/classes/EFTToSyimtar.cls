@@ -35,11 +35,12 @@ public class EFTToSyimtar {
     List<EFT__c> EFTlist = new List<EFT__c>();         
     List<EFT__c> EFTs = [SELECT Account_Number__c,Action_Type__c,Alternate_Amount__c,Bank_Name__c,
                          CreatedById,CreatedDate,Day_of_Month__c,Second_Day_of_Month__c,DocuSignId__c,Effective_Date__c,
-                         Frequency__c,Id,Member_Account__c,Member_Account__r.Brand__c,Member_Account__r.Name,
+                         Frequency__c,Id,Member_Account__c,Member_Account__r.Brand__c,Member_Account__r.Name,Case__c, Case__r.Description,
                          Member__c,Name,
                          OwnerId,Payment_Amount__c,Routing_Number__c,Share_Loan_Id__c,Stage__c,
                          Status__c,Type__c, EFT_ID_Type__c FROM EFT__c where id =: ids];
-    
+     map<Id, String> CaseIdsToUpdate = new Map<Id, String>();
+     
     		for(EFT__c e : EFTs){
                 
             	EFTType = '3';
@@ -182,6 +183,14 @@ public class EFTToSyimtar {
 	                }else{
 	                    responseBody1 = '{"Type":"3","Branch":"27","CreatedAtBranch":"1","PurposeCode":"1","CollateralCode":"100","ApprovalCode":"4","OriginalBalance":"1","ApprovalDate":"01-01-2019","MaturityDate":"01-01-2019","DueDate":"01-01-2019","FirstPaymentDate":"01-01-2019","DueDay1":"1","Payment":"1234","CouponCode":"123", "PaymentMethod" : "PaymentMethod", "Description" : "Description", "InterestRate" : "2.00", "UserAmount1" : "200.00", "ECOACode" : "778", "CreditScore" : "15", "PaymentCount" : "12", "PaymentFrequency" : "67"}';
 	                }
+	                
+	                
+	                string casedesc = e.Case__r.Description + '\n \n ACH DocuSign Values \n Type: ' + e.Type__c 
+	                					+ '\n' + 'Funding FI: ' + e.Bank_Name__c 
+	                					+ '\n' + 'ABA/Routing#: ' + e.Routing_Number__c
+	                					+ '\n' + 'Account Number: '+ e.Account_Number__c
+	                					+ '\n' + 'Alternate Amount: ' + e.Alternate_Amount__c;
+	                CaseIdsToUpdate.put(e.Case__c, casedesc);
                 }
 		    	
             	//EFT__c s = new EFT__c();         
@@ -199,7 +208,14 @@ public class EFTToSyimtar {
                 
             }
             update EFTRecordsToUpdate;
-     
+     		
+     		if(CaseIdsToUpdate.size() > 0){  
+		        List<Case> UpdateCasesList = [select id, status from case where id in: CaseIdsToUpdate.keySet()];
+		        for(Case cs: UpdateCasesList){
+		         	 cs.Description = CaseIdsToUpdate.get(cs.id);
+		        }
+		            update UpdateCasesList;
+		    }
 	}
     
     
