@@ -33,6 +33,7 @@ trigger SolarLoanTrigger on Solar_Loans__c (after insert,before insert, after up
             	//----------------------------------Assigning Queue on record creation----------------------------//
             	
             	trigger.new[i].Ownerid = queList[0].id ;
+            	
             }
         }
     }
@@ -70,7 +71,7 @@ trigger SolarLoanTrigger on Solar_Loans__c (after insert,before insert, after up
             
             //------------------------------- Link "Member" record with "Solar Loan" record -------------------------------------------//
             
-             
+            
         	SLForMemberName.add(trigger.new[i]);
             SLMemberFirstName.add(trigger.new[i].Primary_First_Name__c);
             String1 = trigger.new[i].Primary_Last_Name__c;
@@ -205,7 +206,7 @@ trigger SolarLoanTrigger on Solar_Loans__c (after insert,before insert, after up
             
             //------------------------------- Adding ids if the Member Number field is not null----------------------------------//
             
-            if(trigger.old[i].Member_Number__c != trigger.new[i].Member_Number__c || trigger.new[i].Member_Number__c == null){ 
+            if(trigger.old[i].Member_Number__c != trigger.new[i].Member_Number__c || trigger.new[i].Member_Number__c == null || trigger.new[i].Account_Number__c == null){ 
             	SLForBranchIds.put(trigger.new[i].id, trigger.new[i]);
                  SLMemberNumber.add(trigger.new[i].Member_Number__c);
             }
