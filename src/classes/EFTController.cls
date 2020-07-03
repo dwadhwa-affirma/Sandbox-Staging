@@ -83,7 +83,22 @@ public class EFTController {
         	Person_Account__c paPrimary = [SELECT Id,PersonID__c,
                              Account_Number__c, Account_Number__r.RecType__c,TypeTranslate__c, Account_Number__r.Name, PersonID__r.Home_Phone__pc,PersonID__r.Residential_City__pc,PersonID__r.Residential_State__pc, PersonID__r.Residential_Street__pc, PersonID__r.Residential_Zipocde__pc, PersonID__r.Name, PersonID__r.Email_raw__c FROM Person_Account__c 
                              WHERE (Account_Number__c =: EFTRecord.Member_Account__c OR Account_Number__c =: MemberAccount.Parent_Account__c) and TypeTranslate__c  like '%Primary%' limit 1];
-                             
+            
+          /*  if(EFTRecord.Type__c == 'Checking'){
+               EFTRecord.Docusign_Checking_Type__c = true;
+               EFTRecord.Docusign_Savings_Type__c = false; 
+            }
+            else if(EFTRecord.Type__c == 'Savings'){
+               EFTRecord.Docusign_Checking_Type__c = false;
+               EFTRecord.Docusign_Savings_Type__c = true; 
+            }*/
+            if(EFTRecord.Alternate_Amount__c == null || EFTRecord.Alternate_Amount__c == 0){
+            	EFTRecord.Docusign_is_Additional_Amount__c = false;
+            }
+            else{
+            	EFTRecord.Docusign_is_Additional_Amount__c = true;
+            }
+            
       		//EFTRecord.Member_Name__c = paPrimary.PersonID__r.Name;
             insert EFTRecord;
             return EFTRecord;
@@ -108,6 +123,20 @@ public class EFTController {
             EFTRecordList[0].Update_DocuSignId__c  =  '';
             EFTRecordList[0].Update_Docusign_Status__c  =  '';
             EFTRecordList[0].Member_Name__c  =  EFTRecord.Member_Name__c;
+            if(EFTRecord.Type__c == 'Checking'){
+               EFTRecordList[0].Docusign_Checking_Type__c = true;
+               EFTRecordList[0].Docusign_Savings_Type__c = false; 
+            }
+            else if(EFTRecord.Type__c == 'Savings'){
+               EFTRecordList[0].Docusign_Checking_Type__c = false;
+               EFTRecordList[0].Docusign_Savings_Type__c = true; 
+            }
+            if(EFTRecord.Alternate_Amount__c == null || EFTRecord.Alternate_Amount__c == 0){
+            	EFTRecord.Docusign_is_Additional_Amount__c = false;
+            }
+            else{
+            	EFTRecord.Docusign_is_Additional_Amount__c = true;
+            }
             update EFTRecordList;
             return EFTRecordList[0];
         }

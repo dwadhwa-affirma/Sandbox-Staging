@@ -3,7 +3,7 @@
     <apiVersion>48.0</apiVersion>
     <packageVersions>
         <majorNumber>2</majorNumber>
-        <minorNumber>1</minorNumber>
+        <minorNumber>4</minorNumber>
         <namespace>dfsle</namespace>
     </packageVersions>
     <status>Active</status>
