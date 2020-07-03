@@ -2,6 +2,7 @@
 	doInit : function(component, event, helper) {
         debugger;       
 		var type = component.get('v.EFTRecord.EFT_ID_Type__c');//.split(',')[1];
+		//component.set('v.isLoan', false);
         if(type != 'Loan' && component.get("v.EFTRecord.Action_Type__c") == 'Create'){
             component.set('v.isLoan', false);
             component.set('v.EFTRecord.Frequency__c', 'Monthly');

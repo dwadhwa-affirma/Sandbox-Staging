@@ -46,7 +46,8 @@
     				<b><label class="slds-form-element__label">Frequency:</label></b>
     				<div class="slds-form-element__control">
                          <aura:if isTrue="{!v.isLoan}">
-	    					<force:inputField value="{!v.EFTRecord.Frequency__c}" change="{!c.onMonthChange}"> </force:inputField>
+                         	<lightning:input value="{!v.EFTRecord.Frequency__c}" disabled="true" />
+	    					<!--<force:inputField value="{!v.EFTRecord.Frequency__c}" change="{!c.onMonthChange}"> </force:inputField>-->
                          <aura:set attribute="else">
                          <lightning:input value="{!v.EFTRecord.Frequency__c}" disabled="true" />
                         </aura:set>
