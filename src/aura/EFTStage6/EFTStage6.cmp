@@ -10,9 +10,38 @@
  <aura:attribute name="EFTRecord" type="EFT__c" />    
   <aura:attribute name="CaseId" type="string" />   
     <aura:attribute name="UpdateText" type="string" default="Update"/> 
-    
+<aura:attribute name="isDocusignEmailSelected" type="Boolean" default="false"/>
+<aura:attribute name="EmailIdsList" type="List" />    
+<aura:registerEvent name="EFTEvent" type="c:EFTEvent"/>    
+   
   		<div id = "stage6">
-  		<aura:if isTrue="{!and(v.EFTRecord.Action_Type__c == 'Create', v.EFTRecord.Expired__c == false)}">
+         <aura:if isTrue="{!v.isDocusignEmailSelected == false}">
+ 	 <div class="eftreqstatus">
+                 <div>
+                <p class = "fontstyle">Select Email Address</p>
+                <br/>
+                   <table aria-multiselectable="true" class="slds-table slds-table_header-hidden slds-table_edit slds-tree slds-table_tree" role="treegrid">
+                      
+                  <tbody>
+              <aura:iteration items="{!v.EmailIdsList}" var="itemOption" indexVar="i">                  
+				<tr aria-expanded="false" aria-level="1" aria-posinset="3" aria-selected="false" aria-setsize="4" class="slds-hint-parent">
+					<td class="slds-text-align_right" role="gridcell" style="width:3.25rem">
+						<span class="slds-radio">
+                          <lightning:input type="radio" name="select" value="{!itemOption}" onchange="{!c.onEmailChange}"/>
+                        </span>
+					</td>
+					
+	             	<td data-label="Employees" role="gridcell">
+						<div class="slds-truncate" title="{!itemOption}">{!itemOption}</div>
+					</td>
+		         </tr>
+		        </aura:iteration>
+			 </tbody>
+                </table>
+            </div>
+     </div> 
+   <aura:set attribute="else">
+        <aura:if isTrue="{!and(v.EFTRecord.Action_Type__c == 'Create', v.EFTRecord.Expired__c == false)}">
             <div class="eftreqstatus">
                 <p class = "fontstyle">ACH Request Status</p><br></br>
                	<lightning:layout>
@@ -216,7 +245,10 @@
                     </aura:if>
                 </table>
             </div>
-           </aura:if>
-       </div>
+           </aura:if>     
+  </aura:set>
+ </aura:if> 
+  		
+  </div>
     <lightning:spinner aura:id="Spinner" alternativeText="Loading" size="medium" variant="brand" class="slds-hide spin"/>
 </aura:component>
