@@ -226,7 +226,7 @@ public class EFTToSyimtar {
         List<EFT__c> EFTlist = new List<EFT__c>();         
     List<EFT__c> EFTs = [SELECT Account_Number__c,Action_Type__c,Alternate_Amount__c,Bank_Name__c,
                          CreatedById,CreatedDate,Day_of_Month__c,Second_Day_of_Month__c,DocuSignId__c,Effective_Date__c,
-                         Frequency__c,Id,Member_Account__c,Member_Account__r.Brand__c,Member_Account__r.Name, Member__c,Name,Case__c,
+                         Frequency__c,Id,Member_Account__c,Member_Account__r.Brand__c,Member_Account__r.Name, Member__c,Name,Case__c, Case__r.Description,
                          OwnerId,Payment_Amount__c,Routing_Number__c,Share_Loan_Id__c,Stage__c,EftLocator__c,Share_Loan_Description__c,Share_Loan_Type__c,Member_Name__c,
                          Status__c,Type__c, EFT_ID_Type__c FROM EFT__c where id =: ids];
         
@@ -375,6 +375,15 @@ public class EFTToSyimtar {
                                      + '\n' +'Frequency:' + e.Frequency__c
                                      + '\n' +'Day of Month:' + e.Day_of_Month__c;
 	        			CaseIdsToUpdate.put(e.Case__c, operation);
+	        		}
+	        		else{
+	        			string casedesc = e.Case__r.Description + '\n \n ACH DocuSign Values \n Type: ' + e.Type__c 
+	                					+ '\n' + 'Funding FI: ' + e.Bank_Name__c 
+	                					+ '\n' + 'ABA/Routing#: ' + e.Routing_Number__c
+	                					+ '\n' + 'Account Number: '+ e.Account_Number__c
+	                					+ '\n' + 'Alternate Amount: ' + e.Alternate_Amount__c;
+	                	CaseIdsToUpdate.put(e.Case__c, casedesc);
+	        		
 	        		}
 	        	}     
 	        	
