@@ -152,6 +152,7 @@
                     component.set("v.EFTRecord.Frequency__c",EFTList[i].Frequency__c);
                     component.set("v.EFTRecord.Day_of_Month__c",EFTList[i].Day_of_Month__c);
                     component.set("v.EFTRecord.Second_Day_of_Month__c",EFTList[i].Second_Day_of_Month__c);
+                    component.set("v.EFTRecord.EftLocator__c",EFTList[i].EftLocator__c);
                      component.set("v.EFTRecord.Id",EFTList[i].Id);
                     
                     break;
