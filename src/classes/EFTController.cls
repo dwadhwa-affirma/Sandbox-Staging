@@ -29,9 +29,10 @@ public class EFTController {
     }
     
     @AuraEnabled
-    public static list<Person_Account__c> getMembers(string recordId){
+    public static map<string,object> getMembers(string recordId){
     	list<Person_Account__c> paList = PersonNameLightningController.getData(recordId);
     	system.debug('result=='+paList);
+    	map<string,object> resultmap=new map<string,object>();
     	
     	list<Person_Account__c> result = new List<Person_Account__c>();
     	
@@ -46,17 +47,27 @@ public class EFTController {
         			}    
         			
             }
-    	return result;
+        resultmap.put('PersonList', result);
+        List<EFT__C> existingEFTs = getEFTRecordsEpisys(recordId);
+        if(existingEFTs.size() > 0){
+        	resultmap.put('EFTList', existingEFTs);
+        }
+    	return resultmap;
     }    
     
     @AuraEnabled
     public static EFT__c getEFT(EFT__c EFTRecord){
+    	if(EFTRecord.id != null){
         EFT__c ResultEFTRecord = [select id, name, Member_Account__c, Stage__c, Action_Type__c, Share_Loan_Id__c, Type__c	,Share_Loan_Type__c, Share_Loan_Description__c,
                                       Routing_Number__c, Bank_Name__c, Account_Number__c, Alternate_Amount__c,Effective_Date__c,
                                       Frequency__c, Payment_Amount__c, Day_of_Month__c,Second_Day_of_Month__c, Member_Account__r.name, Case__c, Case__r.CaseNumber, Case__r.Status	, Expired__c
                                       from EFT__c where id =: EFTRecord.id limit 1];
+                                      return ResultEFTRecord;
+    	}
+        else{
+        	return EFTRecord;
+        }
         
-        return ResultEFTRecord;
         
     }
    
@@ -123,6 +134,8 @@ public class EFTController {
             EFTRecordList[0].Update_DocuSignId__c  =  '';
             EFTRecordList[0].Update_Docusign_Status__c  =  '';
             EFTRecordList[0].Member_Name__c  =  EFTRecord.Member_Name__c;
+            EFTRecordList[0].Docusign_Member_Email__c  =  EFTRecord.Docusign_Member_Email__c;
+            EFTRecordList[0].EftLocator__c  =  EFTRecord.EftLocator__c;
             if(EFTRecord.Type__c == 'Checking'){
                EFTRecordList[0].Docusign_Checking_Type__c = true;
                EFTRecordList[0].Docusign_Savings_Type__c = false; 
@@ -148,20 +161,32 @@ public class EFTController {
     	
        // system.debug('EFTRecordString=='+EFTRecordString);
         //EFT__c EFTRecord = (EFT__c) System.JSON.deserialize(EFTRecordString, EFT__c.Class);
-        system.debug('EFTRecordId=='+EFTRecord.Action_Type__c);
-        EFT__c EFTRecordList = [Select Account_Number__c,Action_Type__c,Alternate_Amount__c,Bank_Name__c,
+        system.debug('EFTRecordId=='+EFTRecord.Id);
+        EFT__c EFTRecordList = new EFT__c();
+        if(EFTRecord.Id != null){
+        	EFTRecordList = [Select Account_Number__c,Action_Type__c,Alternate_Amount__c,Bank_Name__c,
                          CreatedById,CreatedDate,Day_of_Month__c,Second_Day_of_Month__c,DocuSignId__c,Effective_Date__c,Expiration_Date__c,
                          Frequency__c,Id,Member_Account__c,Member_Account__r.Brand__c,Member_Account__r.Name, Member__c,Name,Case__c,
                          OwnerId,Payment_Amount__c,Routing_Number__c,Share_Loan_Id__c,Stage__c,EftLocator__c,Share_Loan_Description__c,Share_Loan_Type__c,Member_Name__c,
                          Status__c,Type__c, EFT_ID_Type__c, Expired__c from EFT__c where id =:EFTRecord.Id limit 1];
-        if(EFTRecordList != null){            
-            EFTRecordList.Expired__c  =  true;
-            EFTRecordList.Action_Type__c  =  'Update';
-            EFT__c ResultEFTRecord = createCase(EFTRecordList);
-            EFTRecordList.Case__c = ResultEFTRecord.case__c;
-            update EFTRecordList;
+	        if(EFTRecordList != null){            
+	            EFTRecordList.Expired__c  =  true;
+	            EFTRecordList.Action_Type__c  =  'Update';
+	            EFT__c ResultEFTRecord = createCase(EFTRecordList);
+	            EFTRecordList.Case__c = ResultEFTRecord.case__c;
+	           // update EFTRecordList;
+	        }
         }
-        system.debug('EFTRecordList.size=='+EFTRecordList);
+        else{
+        		 insert EFTRecord;
+        		EFTRecord.Expired__c  =  true;
+	            EFTRecord.Action_Type__c  =  'Update';	             
+	            EFT__c ResultEFTRecord = createCase(EFTRecord);
+	            EFTRecord.Case__c = ResultEFTRecord.case__c;	            
+	            EFTRecordList=EFTRecord;
+        }
+        update EFTRecordList;
+        system.debug('EFTRecordList.size=='+EFTRecordList.id);
         
         
        // EFT__c EFTRecordList1 = [Select id, name, Member_Account__c, Stage__c, Action_Type__c, Expired__c, Expiration_Date__c from EFT__c where id =:EFTRecord.Id limit 1];
@@ -230,7 +255,7 @@ public class EFTController {
         		
         		EFT__c ResultEFTRecord = [select id, name, Member_Account__c, Stage__c, Action_Type__c, Share_Loan_Id__c, Type__c	,Share_Loan_Type__c, Share_Loan_Description__c,
                                       Routing_Number__c, Bank_Name__c, Account_Number__c, Alternate_Amount__c,Effective_Date__c,
-                                      Frequency__c, Payment_Amount__c, Day_of_Month__c,Second_Day_of_Month__c, Member_Account__r.name, Case__c, Case__r.CaseNumber, Case__r.Status	, Expired__c, Member_Name__c
+                                      Frequency__c, Payment_Amount__c, Day_of_Month__c,Second_Day_of_Month__c, Member_Account__r.name, Case__c, Case__r.CaseNumber, Case__r.Status	, Expired__c, Member_Name__c, Docusign_Member_Email__c
                                       from EFT__c where id =: EFTRecord.id limit 1];
                                       
                 List<EFT__c> EFTToSendACHDoc = new List<EFT__c>();
@@ -283,10 +308,9 @@ public class EFTController {
         	Person_Account__c paPrimary = [SELECT Id,PersonID__c,PersonID__r.PersonEmail,
                              Account_Number__c, Account_Number__r.RecType__c,TypeTranslate__c, Account_Number__r.Name, PersonID__r.Home_Phone__pc,PersonID__r.Residential_City__pc,PersonID__r.Residential_State__pc, PersonID__r.Residential_Street__pc, PersonID__r.Residential_Zipocde__pc, PersonID__r.Name, PersonID__r.Email_raw__c
                              FROM Person_Account__c 
-                             WHERE Account_Number__c =: recordId.Member_Account__c and TypeTranslate__c  like '%Primary%' limit 1];
-                             
-      		if(paPrimary.PersonID__r.PersonEmail != null)
-      			MemberEmail = paPrimary.PersonID__r.PersonEmail;
+                             WHERE Account_Number__c =: recordId.Member_Account__c and TypeTranslate__c  like '%Primary%' limit 1];                     
+      	//	if(paPrimary.PersonID__r.PersonEmail != null)
+      			MemberEmail = recordId.Docusign_Member_Email__c;//paPrimary.PersonID__r.PersonEmail;
       		//EFTRecord.Member_Name__c = paPrimary.PersonID__r.Name;
             
            
@@ -526,6 +550,7 @@ public class EFTController {
 	                               //temp.TypeTranslate =  (string)localAcc.get('Description'); 
 	                               temp.Type =  'Loan'; 
 	                               temp.Payment = (decimal)localAcc.get('Payment');
+	                               if((string)localAcc.get('DueDate') != '')
 	                               temp.EffectiveDate = Date.ValueOf((string)localAcc.get('DueDate'));
 	                               temp.Day1 = (integer)localAcc.get('DueDay1');
 	                               temp.Day2 = (integer)localAcc.get('DueDay2'); 
@@ -678,6 +703,61 @@ public class EFTController {
                                       from EFT__c where Member_Account__c =: recordId and EftLocator__c in: EFTLocatorsSet];*/
             
             return EFTList;       
+    }
+    
+    @AuraEnabled
+    public static map<string,object> getEpisysEmailAddresses(string recordId){
+    		system.debug('recordId=='+recordId);
+        	Account_Details__c MemberAccount = [select id,name from Account_Details__c where id=:recordId limit 1];
+        	String AccountNumber = MemberAccount.name;
+        	set<string> setEmailIds = new set<string>();
+        	
+        	Person_Account__c paPrimary = [SELECT Id,PersonID__c,
+                             Account_Number__c, Account_Number__r.RecType__c,TypeTranslate__c, Account_Number__r.Name, PersonID__r.Home_Phone__pc,PersonID__r.Residential_City__pc,PersonID__r.Residential_State__pc, PersonID__r.Residential_Street__pc, PersonID__r.Residential_Zipocde__pc, PersonID__r.Name, PersonID__r.Email_raw__c FROM Person_Account__c 
+                             WHERE Account_Number__c =: recordId and TypeTranslate__c  like '%Primary%' limit 1];
+        	
+        	string primaryName='';
+        	if(paPrimary != null){
+        		primaryName = paPrimary.PersonID__r.Name.replace(' ','%20');
+        	}
+        	system.debug('primaryName=='+ primaryName);
+        	system.debug('AccountNumber=='+ AccountNumber);
+        	httpRequest requestparam = new httpRequest(); 
+	        requestparam.setEndpoint('https://symxapi.chevronfcu.org/devclient/AddressChange/GetAddress?accountNumber=' + AccountNumber +'&FullNameStringList=' + primaryName +'&FullName=' + primaryName);
+	        requestparam.setMethod('GET');  
+	        
+	        	       
+	        http httpParam = new http();
+	        httpResponse response = httpParam.send(requestparam);
+	        
+	        String strStatus = response.getStatus();
+	        String strBody = response.getBody();
+        	
+         	System.debug('strStatus ....' + strStatus);
+        	System.debug('strBody ....' + strBody);
+        
+        	set<string> EFTLocatorsSet = new set<string>();
+        	set<string> MemberNumbers = new set<string>();
+        	List<EFT__c> EFTList= new List<EFT__c>();
+        	if(strBody!=''){        
+       			List<Object> results = (List<Object>) JSON.deserializeUntyped(response.getBody());      
+         		System.debug('Service response is ....' + results);
+                
+                 
+                
+                 for(Object t : results){
+                     
+                      map<string, object> localAcc = (map<string, object>)t;
+                       System.debug('localAcc ....' + localAcc.get('email'));
+                       string emailid = (string)localAcc.get('email');
+                       if(emailid != null && emailid != ''){
+                       		setEmailIds.add(emailid);
+                       }         
+       			}       			
+           }
+            map<string,object> returnmap = new map<string,object>();
+           	returnmap.put('EmailIds',setEmailIds);
+            return returnmap;       
     }
     
      @AuraEnabled //get Account Industry Picklist Values
