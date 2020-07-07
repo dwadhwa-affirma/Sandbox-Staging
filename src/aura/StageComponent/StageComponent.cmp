@@ -25,7 +25,9 @@
 <aura:attribute name="Frequency" type="string" />
 <aura:attribute name="MonthDay" type="string" />
 <aura:attribute name="isMemberSelected" type="Boolean" default="false"/> 
-
+<aura:attribute name="isDocusignEmailSelected" type="Boolean" default="false"/>
+<aura:attribute name="issubmitDisabled" type="Boolean" default="true"/>
+    
         <header class="slds-media_center slds-has-flexi-truncate slds-modal__header">
           <button class="slds-button slds-button_icon slds-modal__close closeIcon slds-button_icon-bare slds-button_icon-inverse" type="button" title="Close this window" data-aura-rendered-by="10328:0">
               <lightning:icon class="icon_label1" iconName="utility:close" size="small" alternativeText="Close Modal"/>
@@ -74,7 +76,15 @@
         <lightning:button variant="brand" label="Back" disabled="{!v.backButton}" title="Back" onclick="{!c.backView}"/> 
         <lightning:button variant="brand" label="Expire" title="Expire" onclick="{!c.ExpireEFT}"/>
         <aura:set attribute="else">
-            <lightning:button class="btnClose" variant="brand" label="Close" title="Close" onclick="{!c.cancelAction}"/>
+          <aura:if isTrue="{!and(v.ActiveStepIndex == 4,v.isDocusignEmailSelected == False )}">
+        	<lightning:button aura:id="Exit" label="Exit" title="Exit" onclick="{!c.cancelAction}"/>
+            <lightning:button variant="brand" label="Back" title="Back" onclick="{!c.backACH}"/> 
+            <lightning:button variant="brand" label="Submit" title="Submit" onclick="{!c.submitACH}" disabled="{!v.issubmitDisabled}"/>
+          <aura:set attribute="else">
+             <lightning:button class="btnClose" variant="brand" label="Close" title="Close" onclick="{!c.cancelAction}"/> 
+          </aura:set>
+          </aura:if>
+            
        </aura:set>
         </aura:if>
   	

@@ -38,7 +38,7 @@
 				component.set('v.EFTRecord', result);
                 
                 if(i !=4){
-                    $A.createComponent("c:"+stages[i+1].Stage_Component__c,{recordId: component.get("v.recordId"), EFTRecord: component.get("v.EFTRecord")},
+                    $A.createComponent("c:"+stages[i+1].Stage_Component__c,{recordId: component.get("v.recordId"), EFTRecord: component.get("v.EFTRecord"), isDocusignEmailSelected : true},
                                 function(msgBox){                
                                      if (component.isValid()) {
                                         
@@ -78,14 +78,18 @@
 				var result = resp.getReturnValue();   
                  //component.set("v.ActiveStepIndex", 4);
                  component.set("v.EFTRecord.Expired__c", true);
+                if(component.get("v.EFTRecord.Id") == undefined){
+                    component.set("v.EFTRecord.Id", result.Id);
+                }
                   //component.set("v.EFTRecord.Expiration_Date__c", result.Expiration_Date__c);
                  var stages2 = [];
 		       	stages2 = component.get("v.EFTStageDetails");
                  stages2[4].Stage_Action__c = 'Pending Verification'; 
                 component.set("v.EFTStageDetails", stages2);
                  var stages = [];
+                component.set("v.isDocusignEmailSelected", true);
        		  stages = component.get("v.EFTStageDetails");
-                $A.createComponent("c:"+stages[4].Stage_Component__c,{recordId: component.get("v.recordId"), EFTRecord: component.get("v.EFTRecord")},
+                $A.createComponent("c:"+stages[4].Stage_Component__c,{recordId: component.get("v.recordId"), EFTRecord: component.get("v.EFTRecord"), isDocusignEmailSelected : true},
                                 function(msgBox){                
                                      if (component.isValid()) {
                                         

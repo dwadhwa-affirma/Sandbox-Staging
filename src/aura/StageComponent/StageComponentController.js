@@ -169,7 +169,25 @@
                     if(component.get("v.EFTRecord.Action_Type__c") == "Expire"){
                         component.set("v.EFTRecord.Action_Type__c","Update")
                     }
-                    helper.SaveStageValues(component, event, component.get("v.EFTRecord"), i, stages);
+                    if(component.get("v.EFTRecord.Action_Type__c") != "Expire" && component.get("v.isDocusignEmailSelected") == false){
+                    		$A.createComponent("c:"+stages[4].Stage_Component__c,{recordId: component.get("v.recordId"), EFTRecord: component.get("v.EFTRecord"), isDocusignEmailSelected : false },
+                                function(msgBox){                
+                                     if (component.isValid()) {
+                                        
+                                         var targetCmp = component.find('ModalDialogPlaceholder');
+                                        var body = targetCmp.get("v.body");
+                                        //body.push(msgBox);
+                                        body.splice(0, 1, msgBox);
+                                        targetCmp.set("v.body", body); 
+                   						
+                                    }
+                                }
+                                    );
+                    }
+                    else{
+                    	helper.SaveStageValues(component, event, component.get("v.EFTRecord"), i, stages);
+                    }
+                    
                 }
 		            	 
 		             else{
@@ -179,7 +197,7 @@
                             // console.log();
                              stages2[3].Stage_Action__c = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(component.get("v.EFTRecord.Payment_Amount__c"));
                              stages2[2].Stage_Action__c = component.get("v.EFTRecord.Bank_Name__c");
-                             $A.createComponent("c:"+stages[4].Stage_Component__c,{recordId: component.get("v.recordId"), EFTRecord: component.get("v.EFTRecord")},
+                             $A.createComponent("c:"+stages[4].Stage_Component__c,{recordId: component.get("v.recordId"), EFTRecord: component.get("v.EFTRecord"), isDocusignEmailSelected : true },
                                 function(msgBox){                
                                      if (component.isValid()) {
                                         
@@ -198,7 +216,7 @@
                              stages2[4].Stage_Action__c = 'Existing'; 
                              stages2[3].Stage_Action__c = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(component.get("v.EFTRecord.Payment_Amount__c"));
                              stages2[2].Stage_Action__c = component.get("v.EFTRecord.Bank_Name__c");
-                             $A.createComponent("c:"+stages[4].Stage_Component__c,{recordId: component.get("v.recordId"), EFTRecord: component.get("v.EFTRecord")},
+                             $A.createComponent("c:"+stages[4].Stage_Component__c,{recordId: component.get("v.recordId"), EFTRecord: component.get("v.EFTRecord"), isDocusignEmailSelected : true },
                                 function(msgBox){                
                                      if (component.isValid()) {
                                         
@@ -334,6 +352,10 @@
 	   var EFT = event.getParam("EFTRecord");
 	   component.set("v.EFTRecord", EFT);
        
+       var isDocusignEmailSelected = event.getParam("isDocusignEmailSelected");
+       if(isDocusignEmailSelected != undefined)
+       component.set("v.issubmitDisabled", !isDocusignEmailSelected);
+       
        /*if(!component.get("v.isExit")){
                if(action != undefined){
                component.set("v.Action", action);
@@ -350,8 +372,8 @@
     },
     
     backView:function (component, event, helper) {  
-    		component.set("v.ActiveStepIndex", (1)); 
-    		 component.set("v.EFTRecord.Share_Loan_Id__c","");		        
+    		component.set("v.ActiveStepIndex", (0)); 
+    		 component.set("v.EFTRecord",{ 'sobjectType': 'EFT__c'});		        
               var stages = [];
        		  stages = component.get("v.EFTStageDetails");
         		var stages2 = [];
@@ -361,7 +383,7 @@
         		stages2[2].Stage_Action__c = 'Waiting';
         		stages2[1].Stage_Action__c = 'Waiting';
         		component.set("v.EFTStageDetails", stages2);
-                    $A.createComponent("c:"+stages[1].Stage_Component__c,{recordId: component.get("v.recordId"), EFTRecord: component.get("v.EFTRecord")},
+        $A.createComponent("c:"+stages[0].Stage_Component__c,{recordId: component.get("v.recordId"), EFTRecord: component.get("v.EFTRecord"), isMemberSelected: true},
                                 function(msgBox){                
                                      if (component.isValid()) {
                                         
@@ -383,6 +405,35 @@
                         component.set("v.EFTRecord.Action_Type__c","Update")
                     }
     	helper.ExpireEFT(component, event, component.get("v.EFTRecord"));
+    
+    },
+    
+    backACH: function (component, event, helper) { 
+        var stages = [];
+        stages = component.get("v.EFTStageDetails");
+        component.set("v.ActiveStepIndex",3);
+        component.set("v.ContinueButtonName", 'Send ACH Document');
+         $A.createComponent("c:"+stages[3].Stage_Component__c,{recordId: component.get("v.recordId"), EFTRecord: component.get("v.EFTRecord")},
+                                function(msgBox){                
+                                     if (component.isValid()) {
+                                        
+                                         var targetCmp = component.find('ModalDialogPlaceholder');
+                                        var body = targetCmp.get("v.body");
+                                        //body.push(msgBox);
+                                        body.splice(0, 1, msgBox);
+                                        targetCmp.set("v.body", body); 
+                   
+                                    }
+                                }
+                             );
+    
+    },
+    
+    submitACH: function (component, event, helper) { 
+        var stages = [];
+        stages = component.get("v.EFTStageDetails");
+        component.set("v.ActiveStepIndex",5);        
+        helper.SaveStageValues(component, event, component.get("v.EFTRecord"), 3, stages);
     
     }
 })
