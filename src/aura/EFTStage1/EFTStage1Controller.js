@@ -12,13 +12,23 @@
 			var state=resp.getState();			
 			if(state === "SUCCESS"){
 				var result =  resp.getReturnValue();
-				result.sort(helper.Sort);
-				for(var i=0;i<result.length;i++){
-					var tt = result[i].TypeTranslate__c.substring(5);
-					result[i].TypeTranslate__c = tt;
+				result.PersonList.sort(helper.Sort);
+				for(var i=0;i<result.PersonList.length;i++){
+					var tt = result.PersonList[i].TypeTranslate__c.substring(5);
+					result.PersonList[i].TypeTranslate__c = tt;
 				}
 				
-	        	component.set('v.paList', result);							
+	        	component.set('v.paList', result.PersonList);
+                if(result.EFTList != undefined){
+                    if(result.EFTList.length <= 0){
+	        		component.set('v.isEFTDisabled', true);	        		
+	        		//component.set('v.actions', actions);
+	        		}
+                }
+                else if(result.EFTList == undefined){
+                    component.set('v.isEFTDisabled', true);	
+                }
+	        							
 			}
 		});
 		
@@ -26,17 +36,17 @@
 		
 	},
     onRadioChange: function (component, event, helper) {
-        var changeValue = event.getParam("value");
+        var changeValue = event.getSource().get("v.value");//event.getParam("value");
         var childRadio = document.getElementById('childRadio');
         if(changeValue == '2'){
-        	component.set("v.ActionDisabled",false);    
-            childRadio.classList.remove('disable');
-            component.set("v.selectedAction",'2');
+        	//component.set("v.ActionDisabled",false);    
+            //childRadio.classList.remove('disable');
+            //component.set("v.selectedAction",'2');
             
         }
         if(changeValue == '1'){
-        	component.set("v.ActionDisabled",true);    
-            childRadio.classList.add('disable');
+        	//component.set("v.ActionDisabled",true);    
+           // childRadio.classList.add('disable');
             component.set("v.EFTRecord.Action_Type__c",'Create');
             component.set("v.EFTRecord.Stage__c",'Action');
             component.set("v.selectedAction",'1');
@@ -55,7 +65,7 @@
     },
     
     onOperationSelect: function (component, event, helper) {
-    	 var changeValue = event.getParam("value");
+    	 var changeValue = event.getSource().get("v.value");//event.getParam("value");
        
         if(changeValue == '3'){        	 
         	component.set("v.EFTRecord.Action_Type__c",'View');
