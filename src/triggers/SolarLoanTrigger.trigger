@@ -51,38 +51,26 @@ trigger SolarLoanTrigger on Solar_Loans__c (after insert,before insert, after up
             	SLMemberNumber.add(trigger.new[i].Member_Number__c);
             }
             
-            //------------------------------- Link "Member" record with "Solar Loan" record -------------------------------------------//
-            
-            
-        	SLForMemberName.add(trigger.new[i]);
-            SLMemberFirstName.add(trigger.new[i].Primary_First_Name__c);
-            String1 = trigger.new[i].Primary_Last_Name__c;
-            String2= String1.SubStringBefore(' ');
-            SLMemberLastName.add(String2);
-            
         }
         system.debug('SLForBranchIds'+SLForBranchIds);
-        system.debug('SLMemberFirstName'+SLMemberFirstName);
-        system.debug('SLMemberLastName'+SLMemberLastName);
-        system.debug('SLForMemberName'+SLForMemberName);
         system.debug('SLMemberNumber'+SLMemberNumber);
         //--------------------------Updating "Member Name" based on "Name" field from Solar Loan record ---------------------------//
     	
-		if(SLMemberFirstName.size() > 0 && SLMemberLastName.size() > 0){
+		if(SLMemberNumber.size() > 0){
 			
-			List<Account> memberList = [select id, Name, FirstName, LastName from Account where FirstName in:SLMemberFirstName and LastName in:SLMemberLastName];
+			List<Person_Account__c > peraccountlist = [select id,PersonID__c,PersonID__r.name,account_number__c,account_number__r.name from Person_Account__c where account_number__r.name in:SLMemberNumber];
 			
-			system.debug('memberList'+memberList);
-			for(Solar_Loans__c slName : SLForMemberName){
+			system.debug('peraccountlist'+peraccountlist);
+			for(Solar_Loans__c solarloan : SLForBranchIds.values()){
 				
-				for(Account member : memberList){
+				for(Person_Account__c personacc : peraccountlist){
 					
-					if(member.FirstName == slName.Primary_First_Name__c && member.LastName == String2){
+					if(personacc.account_number__r.name == solarloan.Member_Number__c){
 					
 						Solar_Loans__c sName = new Solar_Loans__c();
-			    		sName.id = slName.id;
-			    		sName.Member_Name__c = member.id;
-			    		SolarLoanMap.put(slName.id,sName);
+			    		sName.id = solarloan.id;
+			    		sName.Member_Name__c = personacc.PersonID__c;
+			    		SolarLoanMap.put(solarloan.id,sName);
 					}
 				}
 			}
@@ -192,51 +180,40 @@ trigger SolarLoanTrigger on Solar_Loans__c (after insert,before insert, after up
             
             //------------------------------- Adding ids if the Member Number field is not null----------------------------------//
             
-            if(trigger.old[i].Member_Number__c != trigger.new[i].Member_Number__c || trigger.new[i].Member_Number__c == null || trigger.new[i].Account_Number__c == null){ 
+            if(trigger.old[i].Member_Number__c != trigger.new[i].Member_Number__c || trigger.new[i].Member_Number__c == null || trigger.new[i].Account_Number__c == null || trigger.new[i].Member_Name__c == null){ 
             	SLForBranchIds.put(trigger.new[i].id, trigger.new[i]);
-                 SLMemberNumber.add(trigger.new[i].Member_Number__c);
+                SLMemberNumber.add(trigger.new[i].Member_Number__c);
             }
             
-            //------------------------------- Link "Member" record with "Solar Loan" record--------------------------------------//
-            
-            if(trigger.old[i].Name__c != trigger.new[i].Name__c || trigger.new[i].Member_Name__c == null){ 
-            
-            	SLForMemberName.add(trigger.new[i]);
-                SLMemberFirstName.add(trigger.new[i].Primary_First_Name__c);
-                String1 = trigger.new[i].Primary_Last_Name__c;
-            	String2= String1.SubStringBefore(' ');
-            	SLMemberLastName.add(String2);
-            }
-              
-	    } 
+   		} 
 	    	        
     	//--------------------------Updating "Member Name" based on "Name" field from Solar Loan record -----------------------//
     	
-            if(SLMemberFirstName.size() > 0 && SLMemberLastName.size() > 0){
+            if(SLMemberNumber.size() > 0){
                 
-                List<Account> memberList = [select id, Name, FirstName, LastName from Account where FirstName in:SLMemberFirstName and LastName in:SLMemberLastName];
+                List<Person_Account__c > peraccountlist = [select id,PersonID__c,PersonID__r.name,account_number__c,account_number__r.name from Person_Account__c where account_number__r.name in:SLMemberNumber];
                 
-                for(Solar_Loans__c slName : SLForMemberName){
-                    
-                    for(Account member : memberList){
-                        
-                        if(member.FirstName == slName.Primary_First_Name__c && member.LastName == String2){
-                        
-                            Solar_Loans__c sName = new Solar_Loans__c();
-                            sName.id = slName.id;
-                            sName.Member_Name__c = member.id;
-                            //SLNameUpdateSet.add(sName);
-                            SolarLoanMap.put(slName.id,sName);
-                        }
-                    }
-                }
-                
-                
-                if(SolarLoanMap.size() > 0){
-            
-                    update SolarLoanMap.values();	
-                }
-            }
+                system.debug('peraccountlist'+peraccountlist);
+				for(Solar_Loans__c solarloan : SLForBranchIds.values()){
+					
+					for(Person_Account__c personacc : peraccountlist){
+						
+						if(personacc.account_number__r.name == solarloan.Member_Number__c ){
+						
+							Solar_Loans__c sName = new Solar_Loans__c();
+				    		sName.id = solarloan.id;
+				    		sName.Member_Name__c = personacc.PersonID__c;
+				    		SolarLoanMap.put(solarloan.id,sName);
+						}
+					}
+				}
+	                
+	                
+	            if(SolarLoanMap.size() > 0){
+	            	
+	            	update SolarLoanMap.values();	
+	            }
+      	  }
 		    	
 	    //--------------------------Updating "Brand" and "Four Digit Share Loan Type" from "Account Details" record------------------//
 	    
