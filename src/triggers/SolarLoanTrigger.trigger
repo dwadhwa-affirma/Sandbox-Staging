@@ -30,6 +30,11 @@ trigger SolarLoanTrigger on Solar_Loans__c (after insert,before insert, after up
         
      	  	//----------------------------------Assigning Queue on record creation----------------------------//
           	trigger.new[i].Ownerid = queList[0].id ;
+          	Integer MemberNumberLength = (trigger.new[i].Member_Number__c).length();
+          	if(MemberNumberLength == 6){
+        		String s = '0000'+ trigger.new[i].Member_Number__c;
+        		trigger.new[i].Member_Number__c = s;
+        	}
         }
     }
     
@@ -43,7 +48,7 @@ trigger SolarLoanTrigger on Solar_Loans__c (after insert,before insert, after up
              
             if(trigger.new[i].Member_Number__c != null){ 
             	SLForBranchIds.put(trigger.new[i].id, trigger.new[i]);
-                SLMemberNumber.add(trigger.new[i].Member_Number__c);
+            	SLMemberNumber.add(trigger.new[i].Member_Number__c);
             }
             
             //------------------------------- Link "Member" record with "Solar Loan" record -------------------------------------------//
@@ -56,9 +61,11 @@ trigger SolarLoanTrigger on Solar_Loans__c (after insert,before insert, after up
             SLMemberLastName.add(String2);
             
         }
+        system.debug('SLForBranchIds'+SLForBranchIds);
         system.debug('SLMemberFirstName'+SLMemberFirstName);
         system.debug('SLMemberLastName'+SLMemberLastName);
         system.debug('SLForMemberName'+SLForMemberName);
+        system.debug('SLMemberNumber'+SLMemberNumber);
         //--------------------------Updating "Member Name" based on "Name" field from Solar Loan record ---------------------------//
     	
 		if(SLMemberFirstName.size() > 0 && SLMemberLastName.size() > 0){
@@ -91,16 +98,18 @@ trigger SolarLoanTrigger on Solar_Loans__c (after insert,before insert, after up
 	    //List<Account_Details__c> adList = [select id, Name, Brand__c, ID1__c, TypeTranslate__c,RecType__c from Account_Details__c where Name in:SLMemberNumber and Brand__c != null and RecType__c = 'LOAN' and TypeTranslate__c = '75-SECURED SOLAR'];
 	    List<Account_Details__c> adList = [select id, Name, Brand__c, ID1__c, TypeTranslate__c,RecType__c from Account_Details__c where Name in:SLMemberNumber and Brand__c != null];
 	    system.debug('adList'+adList);
+	   
 		for(Solar_Loans__c sl : SLForBranchIds.values()){
-		
+			system.debug('sl'+sl);
 		    for(Account_Details__c a : adList){
-		    	
+		    	system.debug('a'+a);		
 		    	if(a.Name == sl.Member_Number__c){
 		    		
 		    		Solar_Loans__c s = new Solar_Loans__c();
 		    		s.id = SLForBranchIds.get(sl.id).id;
 		    		s.Brand__c = a.Brand__c;
 		    		s.Account_Number__c = a.id;
+		    		system.debug('a.id'+a.id);
 		    		SLToUpdates.put(sl.id,s);
 		    	}
 		    }
