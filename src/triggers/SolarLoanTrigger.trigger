@@ -28,8 +28,8 @@ trigger SolarLoanTrigger on Solar_Loans__c (after insert,before insert, after up
         
         for(Integer i=0; i<trigger.new.size(); i++){
         
-     	  	//----------------------------------Assigning Queue on record creation----------------------------//
-          	trigger.new[i].Ownerid = queList[0].id ;
+     	  	trigger.new[i].Ownerid = queList[0].id ;
+          	trigger.new[i].Current_Solar_Loan_Stage__c = 'Stage 1';
           	if(trigger.new[i].Member_Number__c != null){
 	          	Integer MemberNumberLength = (trigger.new[i].Member_Number__c).length();
 	          	if(MemberNumberLength == 6){
