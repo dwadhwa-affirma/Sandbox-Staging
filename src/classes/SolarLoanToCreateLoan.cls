@@ -33,6 +33,8 @@ public class SolarLoanToCreateLoan {
     public static string OriginalDate;
     public static Integer Month;
     public static Integer Amount;
+    public static String ApplicationFundedBy;
+    public static string ApplicationLoadedBy;
     
   
     public static String jsonData;
@@ -121,7 +123,7 @@ public class SolarLoanToCreateLoan {
                
                 MaturityDate = string.valueOf(System.Today());
                 DueDate = string.valueOf(System.Today());
-                FirstPaymentDate = string.valueOf(System.Today());
+                FirstPaymentDate = string.valueOf(System.Today() + 60);
                               
                 if(sl.Due_Date__c != null){
                     DueDay1 = String.valueof(sl.Due_Date__c.day());
