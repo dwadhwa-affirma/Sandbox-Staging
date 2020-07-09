@@ -30,11 +30,13 @@ trigger SolarLoanTrigger on Solar_Loans__c (after insert,before insert, after up
         
      	  	//----------------------------------Assigning Queue on record creation----------------------------//
           	trigger.new[i].Ownerid = queList[0].id ;
-          	Integer MemberNumberLength = (trigger.new[i].Member_Number__c).length();
-          	if(MemberNumberLength == 6){
-        		String s = '0000'+ trigger.new[i].Member_Number__c;
-        		trigger.new[i].Member_Number__c = s;
-        	}
+          	if(trigger.new[i].Member_Number__c != null){
+	          	Integer MemberNumberLength = (trigger.new[i].Member_Number__c).length();
+	          	if(MemberNumberLength == 6){
+	        		String s = '0000'+ trigger.new[i].Member_Number__c;
+	        		trigger.new[i].Member_Number__c = s;
+	        	}
+          	}
         }
     }
     
@@ -152,6 +154,18 @@ trigger SolarLoanTrigger on Solar_Loans__c (after insert,before insert, after up
             if(trigger.old[i].Status__c != trigger.new[i].Status__c && trigger.new[i].Status__c ==  'Expired'){
             	trigger.new[i].Current_Solar_Loan_Stage__c = 'Stage 5';
             }
+            
+            //----------------------------- Populate valid member number-----------------------------------------------//
+            
+			if(trigger.old[i].Member_Number__c != trigger.new[i].Member_Number__c || trigger.new[i].Member_Number__c !=  null){            	
+                if(trigger.new[i].Member_Number__c != null){
+                    Integer MemberNumberLength = (trigger.new[i].Member_Number__c).length();
+                    if(MemberNumberLength == 6){
+                        String s = '0000'+ trigger.new[i].Member_Number__c;
+                        trigger.new[i].Member_Number__c = s;
+                    }
+                }
+          	}
         } 
               
     }
@@ -180,18 +194,18 @@ trigger SolarLoanTrigger on Solar_Loans__c (after insert,before insert, after up
             
             //------------------------------- Adding ids if the Member Number field is not null----------------------------------//
             
-            if(trigger.old[i].Member_Number__c != trigger.new[i].Member_Number__c || trigger.new[i].Member_Number__c == null || trigger.new[i].Account_Number__c == null || trigger.new[i].Member_Name__c == null){ 
+            if(trigger.old[i].Member_Number__c != trigger.new[i].Member_Number__c && trigger.new[i].Member_Number__c != null){ 
             	SLForBranchIds.put(trigger.new[i].id, trigger.new[i]);
                 SLMemberNumber.add(trigger.new[i].Member_Number__c);
             }
             
    		} 
-	    	        
+	    system.debug('SLMemberNumber'+SLMemberNumber);	        
     	//--------------------------Updating "Member Name" based on "Name" field from Solar Loan record -----------------------//
     	
-            if(SLMemberNumber.size() > 0){
+            if(SLMemberNumber != null){
                 
-                List<Person_Account__c > peraccountlist = [select id,PersonID__c,PersonID__r.name,account_number__c,account_number__r.name from Person_Account__c where account_number__r.name in:SLMemberNumber];
+                List<Person_Account__c > peraccountlist = [select id,PersonID__c,PersonID__r.name,account_number__c,account_number__r.name from Person_Account__c where account_number__r.name in:SLMemberNumber and PersonID__c != null LIMIT 1];
                 
                 system.debug('peraccountlist'+peraccountlist);
 				for(Solar_Loans__c solarloan : SLForBranchIds.values()){
