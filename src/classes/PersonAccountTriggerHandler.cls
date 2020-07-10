@@ -13,6 +13,9 @@ public with sharing class PersonAccountTriggerHandler {
       //  map<double,Id> userMap = new map<double,Id>();
         map<String,Id> userMap1 = new map<String,Id>();
         map<String,Id> userAliasMap = new map<String,Id>();
+         map<String,Id> eBranchUserAliasMap = new map<String,Id>();
+        map<String,Id> eBranchUserMap = new map<String,Id>();
+        
         
         for(Person_Account__c pa: newMap.values()){
             if(pa.Name_Type__c == 0){
@@ -97,13 +100,30 @@ public with sharing class PersonAccountTriggerHandler {
         
         list<User> userList = [SELECT Id, Name, Alias, IsActive FROM User
                                 where (Profile.Name !='Messaging center Customers') and (isActive = True)];
-
         
+        /*---------------------- CRM-1687: eBranch Onboarding Queue ----------------------------------*/
+        Id onboardingQueueGroupId = [SELECT Id FROM Group WHERE Type='Queue' AND DeveloperName= 'eBranch_Onboarding_Queue'].Id;
+
+        list<User> eBranchUserList = [SELECT Id, Name, Alias, IsActive FROM User
+                                where (Profile.Name ='eBranch') and (isActive = True)];
+        
+        List<Episys_User__c> episysUserList = [select id,Name, Alias__c, Episys_ID__c from Episys_User__c];
+        
+        map<decimal,Episys_User__c> episysUserMap = new map<decimal,Episys_User__c>();
         
         for(User u: userList){
             userMap1.put(u.Name.toupperCase(), u.Id);
             userAliasMap.put(u.Alias.toupperCase(), u.Id);
         } 
+        
+        for(User u: eBranchUserList){
+            eBranchUserMap.put(u.Name.toupperCase(), u.Id);
+            eBranchUserAliasMap.put(u.Alias.toupperCase(), u.Id);
+        }
+        
+        for(Episys_User__c u: episysUserList){
+            episysUserMap.put(u.Episys_ID__c, u);
+        }
         
         list<User> userList1 = [SELECT Id, Name, Alias, IsActive FROM User where IsActive = false];
         Set<Id> uList = new Set<Id>();
@@ -147,7 +167,12 @@ public with sharing class PersonAccountTriggerHandler {
 		                system.debug('var.accounnumber ' + var.Account_Number__c);
 		                system.debug('check for user..' + userAliasMap.get(accDetailMap.get(var.Account_Number__c).Created_By_User_Alias__c));
 		                
-		                if(userAliasMap.get(accDetailMap.get(var.Account_Number__c).Created_By_User_Alias__c)!= null){
+                         /*---------------------- CRM-1687: eBranch Onboarding Queue ----------------------------------*/
+                         if(episysUserMap.get((accDetailMap.get(var.Account_Number__c).Created_By_User__c)).Alias__c != null
+                            && eBranchUserAliasMap.get(episysUserMap.get((accDetailMap.get(var.Account_Number__c).Created_By_User__c)).Alias__c.toupperCase()) != null){
+                             c.OwnerId = onboardingQueueGroupId;
+                         }                         
+		                else if(userAliasMap.get(accDetailMap.get(var.Account_Number__c).Created_By_User_Alias__c)!= null){
 		                  system.debug('###Inside  assigning owner' + userAliasMap.get(accDetailMap.get(var.Account_Number__c).Created_By_User_Alias__c));
 		               // if(userMap1.get(accDetailMap.get(var.Account_Number__c).Created_By_User_Text__c) != null){
 		                    c.OwnerId = userAliasMap.get((accDetailMap.get(var.Account_Number__c).Created_By_User_Alias__c).toupperCase());
@@ -156,6 +181,8 @@ public with sharing class PersonAccountTriggerHandler {
 		                    system.debug('Inside assigning eBranch queue');
 		                    c.OwnerId = queueGroupId;
 		                }
+                         
+                        
 		            
 		            	caseList.add(c);
 		        	}
