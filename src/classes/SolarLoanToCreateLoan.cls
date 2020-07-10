@@ -261,8 +261,8 @@ public class SolarLoanToCreateLoan {
                 
                 UserChar10 = sl.Credit_Attributes__c;
                 UserChar20 = sl.Site_UUID__c;
-                if(sl.Net_Funding_Amount__c != null)
-                    UserAmount1 = String.ValueOf(sl.Net_Funding_Amount__c);
+                if(sl.Loan_Amount__c != null)
+                    UserAmount1 = String.ValueOf(sl.Loan_Amount__c);
                 else
                     UserAmount1 = '0';
                     
