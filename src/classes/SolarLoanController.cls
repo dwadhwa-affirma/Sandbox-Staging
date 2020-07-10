@@ -24,6 +24,15 @@ public class SolarLoanController {
     	
     }
     
+   	@AuraEnabled
+    public static  Map<string,string> testDocusignRestAPI(string SolarLoanRecordId){
+    	
+    	List<id> ids = new List<id>();
+    	ids.add(SolarLoanRecordId);
+		SolarLoanToDocuSign.docusignAPIcall(ids);
+    	return null;
+    }
+    
     @AuraEnabled
     public static  Map<string,string> getMemberData(string SolarLoanRecordId, String CurrentStage){
     
@@ -32,6 +41,7 @@ public class SolarLoanController {
     String Stage3LoanCheck;
     String Stage5ACHCheck;
     String OnLoadCheck;
+    String Stage5ErrorCheck;
     
     system.debug('SolarLoanRecordId'+SolarLoanRecordId);     
     system.debug('CurrentStage'+CurrentStage);
@@ -80,12 +90,21 @@ public class SolarLoanController {
             
             if(SolarLoanList[0].ACH__c == 'True' && SolarLoanList[0].Routing_Number__c != null &&
             	SolarLoanList[0].Bank_Name__c != null && SolarLoanList[0].Bank_Account_Number__c != null){    	
+           
                 Stage5ACHCheck = 'True';
                 SolarLoanList[0].Current_Solar_Loan_Stage__c = CurrentStage;
                 update SolarLoanList;
               
             }
-            else{
+            if(SolarLoanList[0].ACH__c == 'True' && (SolarLoanList[0].Routing_Number__c == null ||
+            	SolarLoanList[0].Bank_Name__c == null || SolarLoanList[0].Bank_Account_Number__c == null)){
+            		
+            	Stage5ErrorCheck = 'True';	    	
+            }
+            
+            
+            if(SolarLoanList[0].ACH__c == 'False'){    	
+           
                 Stage5ACHCheck = 'False';
             }
         }
@@ -122,7 +141,7 @@ public class SolarLoanController {
         
         //------------------------------------Skipping stages upto "Stage 7" if ACH = False-------------------------//
         
-        if(Stage5ACHCheck == 'False'){
+        if(Stage5ACHCheck == 'False' && Stage5ErrorCheck != 'True'){
         
             SolarCurrentStage = 'Stage 8';
             SolarLoanList[0].Current_Solar_Loan_Stage__c = 'Stage 8'; 
@@ -147,6 +166,7 @@ public class SolarLoanController {
     strMap.put('Stage5ACHCheck',Stage5ACHCheck); 
     strMap.put('SolarCurrentStatus',SolarCurrentStatus);
     strMap.put('OnLoadCheck',OnLoadCheck);  
+    strMap.put('Stage5ErrorCheck',Stage5ErrorCheck);
      
     return strMap;  
       

@@ -5,7 +5,11 @@ private class SolarLoanTest{
    
      //---------------------------------------- Creating Account Details record-----------------------------------//
      
-     
+     SolarLoan_Document_Settings__c sds = new SolarLoan_Document_Settings__c();
+     sds.Days__c = 10;
+     sds.Name = 'Done';
+     insert sds; 
+   
      List<Account_Details__c> account_details_Obj = new List<Account_Details__c>{
                 new Account_Details__c(Name = '0000147163', Balance__c = 0.00, Combined_Account_ID__c = '0000147163S0100P0100', ID1__c = '0100', 
                 Onboarded__c = true, Reference__c = 'BC02',RecType__c = 'LOAN', TypeTranslate__c = '75-SECURED SOLAR')};
@@ -44,13 +48,17 @@ private class SolarLoanTest{
      //---------------------------------------- Creating Solar Loan record---------------------------------------------//
      
      List<Solar_Loans__c> SolarLoan_Obj = new List<Solar_Loans__c>{
-        new Solar_Loans__c(Member_Number__c = '0000147163', Status__c = 'Closed', Brand__c = 'Spectrum', Primary_First_Name__c = 'Tania', Primary_Last_Name__c = 'Cabrera')};
+        new Solar_Loans__c(Member_Number__c = '0000147163', Status__c = 'Done', Brand__c = 'Spectrum', Primary_First_Name__c = 'Tania', Primary_Last_Name__c = 'Cabrera')};
      Insert SolarLoan_Obj;
       
      Solar_Loans__c sl = new Solar_Loans__c();
      sl.id =  SolarLoan_Obj[0].id;
      sl.Member_Number__c = '0000147165'; 
      sl.Routing_Number__c = '284084350'; 
+     sl.ACH__c = 'false';
+     sl.Routing_Number__c = '122105155';
+     sl.Bank_Name__c = 'US BANK NA';
+     sl.Bank_Account_Number__c = '122105155';
      //sl.Status__c = 'ACH Pending';  
      update sl; 
      
@@ -77,6 +85,18 @@ private class SolarLoanTest{
      insert ListCDL;
       
      test.stopTest();
+  }
+  static testMethod void test_Solarloancontroller(){
+      List<Solar_Loans__c> listSolarLoan  =  [SELECT Id from Solar_Loans__c limit 1];
+      SolarLoanController.waitingForResponse(listSolarLoan[0].id, 'New');
+      SolarLoanController.getMemberData(listSolarLoan[0].id, 'Stage 1');
+      SolarLoanController.routingInfo('122105155');
+      SolarLoanController.getMemberData(listSolarLoan[0].id, 'Stage 5');
+      SolarLoanController.getMemberData(listSolarLoan[0].id, 'Stage 7');
+      test.startTest();
+      SolarLoanController.getMemberData(listSolarLoan[0].id, 'Stage 8');
+      SolarLoanController.saveRoutingInfo(listSolarLoan[0].id,'122105155','Test Bank Name');
+      test.stopTest();
   }
   static testMethod void test_GetCaseAttachments_UseCase1(){
     
