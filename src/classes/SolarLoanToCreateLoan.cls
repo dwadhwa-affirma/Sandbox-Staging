@@ -121,7 +121,7 @@ public class SolarLoanToCreateLoan {
                     OriginalBalance = '0.00';
                 if(sl.Approval_Date__c != null){
                 	ApprovalDate = string.valueof(sl.Approval_Date__c);
-                
+                }
                 MaturityDate = string.valueOf(System.Today());
                 DueDate = string.valueOf(System.Today());
                 FirstPaymentDate = string.valueOf(System.Today() + 60);
