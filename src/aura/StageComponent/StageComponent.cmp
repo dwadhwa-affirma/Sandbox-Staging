@@ -81,6 +81,8 @@
             <lightning:button variant="brand" label="Back" title="Back" onclick="{!c.backACH}"/> 
             <lightning:button variant="brand" label="Submit" title="Submit" onclick="{!c.submitACH}" disabled="{!v.issubmitDisabled}"/>
           <aura:set attribute="else">
+          <lightning:button aura:id="Exit" label="Exit" title="Exit" onclick="{!c.cancelAction}"/>
+        <lightning:button variant="brand" label="Back" disabled="{!v.backButton}" title="Back" onclick="{!c.backView}"/>
              <lightning:button class="btnClose" variant="brand" label="Close" title="Close" onclick="{!c.cancelAction}"/> 
           </aura:set>
           </aura:if>
