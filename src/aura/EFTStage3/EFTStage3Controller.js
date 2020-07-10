@@ -15,10 +15,16 @@
             if(state === "SUCCESS"){            	
             	var result=[];
             	result = resp.getReturnValue();
-            	result.map((obj) => {   
+            	if(result["Exception"] != undefined){
+            		alert('An error occured. Please try again. If the issue persists, contact administrator.');
+            	}
+            	else{
+            		result.ShareLoanList.map((obj) => {   
 					obj.UtilityIcon = "utility:add";
 					})
-            	component.set('v.ShareLoanMap', result);
+            	}
+            	
+            	component.set('v.ShareLoanMap', result.ShareLoanList);
             	
                 //alert('d');
                            

@@ -16,7 +16,9 @@
 <aura:attribute name="EFTRecord" type="EFT__c" /> 
 <aura:attribute name="EFTRecordsList" type="List" />   
 
+
  <div id = "stage3" class = "stage3">
+
  <aura:if isTrue="{!(v.EFTRecord.Action_Type__c == 'Create')}">
             <div>
                 <p class = "fontstyle">Select a share or loan for this ACH record</p><br />
