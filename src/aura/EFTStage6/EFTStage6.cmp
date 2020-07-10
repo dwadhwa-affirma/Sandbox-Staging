@@ -27,12 +27,18 @@
 				<tr aria-expanded="false" aria-level="1" aria-posinset="3" aria-selected="false" aria-setsize="4" class="slds-hint-parent">
 					<td class="slds-text-align_right" role="gridcell" style="width:3.25rem">
 						<span class="slds-radio">
-                          <lightning:input type="radio" name="select" value="{!itemOption}" onchange="{!c.onEmailChange}"/>
+                          <lightning:input type="radio" name="select" value="{!itemOption.EmailId}" onchange="{!c.onEmailChange}"/>
                         </span>
 					</td>
 					
 	             	<td data-label="Employees" role="gridcell">
-						<div class="slds-truncate" title="{!itemOption}">{!itemOption}</div>
+						<div class="slds-truncate" title="{!itemOption.EmailId}">{!itemOption.EmailId}</div>
+					</td>
+					<td data-label="Employees" role="gridcell">
+						<div class="slds-truncate" title="{!itemOption.FullName}">{!itemOption.FullName}</div>
+					</td>
+					<td data-label="Employees" role="gridcell">
+						<div class="slds-truncate" title="{!itemOption.AccountType}">{!itemOption.AccountType}</div>
 					</td>
 		         </tr>
 		        </aura:iteration>
