@@ -429,13 +429,15 @@ public class EFTController {
     
     //-------------------------------Getting Share Accounts from Episys----------------------------------------------//
     @AuraEnabled
-    public static List<ShareLoanWrapperObject> getShareLoanAccounts(string recordId){
+    public static Map<string,List<ShareLoanWrapperObject>> getShareLoanAccounts(string recordId){
     		system.debug('recordId=='+recordId);
         	Account_Details__c MemberAccount = [select id,name from Account_Details__c where id=:recordId limit 1];
         	String AccountNumber = MemberAccount.name;
         	List<ShareLoanWrapperObject> resultList = new List<ShareLoanWrapperObject>();
+        	Map<string,List<ShareLoanWrapperObject>> resultmap = new Map<string,List<ShareLoanWrapperObject>>();
         	
         	httpRequest requestparam = new httpRequest(); 
+        	//requestparam.setTimeout(10); 
 	        requestparam.setEndpoint('https://symxapi.chevronfcu.org/devclient/PsAuto/GetShares?AccountNumber=' + AccountNumber + '&userchar2=abc');
 	        requestparam.setMethod('GET');   
 	        
@@ -444,7 +446,7 @@ public class EFTController {
 		   	system.debug('shareTypes=='+shareTypes);
 			String[] arrShareTypes = shareTypes.split(',');
 			 
-	       
+	       try { 
 	        http httpParam = new http();
 	        httpResponse response = httpParam.send(requestparam);
 	        
@@ -500,18 +502,33 @@ public class EFTController {
                     }
             }
             
-            List<ShareLoanWrapperObject> LoanList = getLoanAccounts(AccountNumber);
-            resultList.addall(LoanList);
-            system.debug('resultList=='+resultList);
-            return resultList;
+            Map<string,List<ShareLoanWrapperObject>> LoanList = getLoanAccounts(AccountNumber);
+            if(!LoanList.ContainsKey('Exception')){
+            	resultList.addall(LoanList.get('LoanList'));
+            	resultmap.put('ShareLoanList',resultList);
+            	system.debug('resultList=='+resultList);
+            }
+            else{
+            	resultmap.put('Exception',resultList);
+            }            
+            
+	       }
+	       catch(System.CalloutException e){
+	       		system.debug('Exception');
+	       		 resultmap.put('Exception',resultList);
+	       }
+            return resultmap;
       
     }
     
     //-------------------------------Getting Loan Accounts from Episys----------------------------------------------//
-    public static List<ShareLoanWrapperObject> getLoanAccounts(string AccountNumber){
+    public static Map<string,List<ShareLoanWrapperObject>> getLoanAccounts(string AccountNumber){
     		List<ShareLoanWrapperObject> resultList = new List<ShareLoanWrapperObject>();
+    		Map<string,List<ShareLoanWrapperObject>> resultmap = new Map<string,List<ShareLoanWrapperObject>>();
     		
+    	try{
     		httpRequest requestparam = new httpRequest(); 
+    		//requestparam.setTimeout(10); 
 	        requestparam.setEndpoint('https://symxapi.chevronfcu.org/devclient/PsAuto/GetLoansSelectFields?AccountNumber=' + AccountNumber);
 	        requestparam.setMethod('GET');  
 	        
@@ -580,8 +597,13 @@ public class EFTController {
                     }
                 }
             }
+            resultmap.put('LoanList',resultList);
+    	}
+    	catch(System.CalloutException e){
+    		resultmap.put('Exception',resultList);
+    	}
             
-        return resultList;
+        return resultmap;
     }
     
     @AuraEnabled
@@ -636,7 +658,7 @@ public class EFTController {
                  for(Object t : results){
                      
                       map<string, object> localAcc = (map<string, object>)t;
-                       System.debug('localAcc ....' + localAcc.get('Id'));
+                      // System.debug('localAcc ....' + localAcc.get('Id'));
                        string lsId = '';
                        if(localAcc.get('Id') != null && localAcc.get('Id') != ''){
                        		lsId = String.valueOf(localAcc.get('Id')).substring(0, 2);
@@ -646,7 +668,7 @@ public class EFTController {
                        		EFT__c objEFT = new EFT__c();
                        		objEFT.Routing_Number__c = String.valueOf(localAcc.get('Payee')); 
                        		objEFT.Account_Number__c = String.valueOf(localAcc.get('Reference'));
-                       		system.debug('Account_Number__c=='+objEFT.Account_Number__c);
+                       		//system.debug('Account_Number__c=='+objEFT.Account_Number__c);
                        		objEFT.Payment_Amount__c = Decimal.valueOf(String.valueOf(localAcc.get('Amount')));
                        		if(String.valueOf(localAcc.get('EffectiveDate')) != '' && String.valueOf(localAcc.get('EffectiveDate')) != null)
                        		objEFT.Effective_Date__c = Date.valueOf(String.valueOf(localAcc.get('EffectiveDate')));
@@ -658,7 +680,7 @@ public class EFTController {
                        		objEFT.Second_Day_of_Month__c = String.valueOf(localAcc.get('Day2'));
                        		objEFT.Bank_Name__c = String.valueOf(localAcc.get('FinancialInstitution'));
                        		objEFT.Share_Loan_Id__c = String.valueOf(localAcc.get('Id'));
-                       		system.debug('EftLocator__c=='+String.valueOf(localAcc.get('EftLocator')));
+                       		//system.debug('EftLocator__c=='+String.valueOf(localAcc.get('EftLocator')));
                        		
                        		objEFT.EftLocator__c = String.valueOf(localAcc.get('EftLocator'));
                        		//objEFT.Member_Account__c = 'a0Of100000GF8xOEAT';
@@ -668,13 +690,13 @@ public class EFTController {
                        		    objEFT.Type__c = 'Checking';  
                        		if(String.valueOf(localAcc.get('ExpirationDate')) != null && String.valueOf(localAcc.get('ExpirationDate')) != ''){
                        			Date expDate = Date.valueOf(String.valueOf(localAcc.get('ExpirationDate')));
-                       			if(expDate <= Date.today())
+                       			//if(expDate <= Date.today())
                        				objEFT.expired__c = true;
                        		}     
-                       		//system.debug('EXPDATE=='+String.valueOf(localAcc.get('ExpirationDate'))) ;      		
+                       		system.debug('EXPDATE=='+String.valueOf(localAcc.get('ExpirationDate'))) ;      		
                        		//objEFT.EftLocator__c = String.valueOf(localAcc.get('EftLocator__c'));    
                        		objEFT.Member_Account__r = new account_details__c(id =mapAccountIdName.get(String.valueOf(localAcc.get('AccountNumber'))), Name = String.valueOf(localAcc.get('AccountNumber')));//mapAccountIdName.get(String.valueOf(localAcc.get('AccountNumber')));  
-                       		system.debug('Member_Account__r=='+objEFT.Member_Account__r.Name);
+                       		//system.debug('Member_Account__r=='+objEFT.Member_Account__r.Name);
                        		List<EFT__c> SFEFT = [Select id from EFT__c where Member_Account__r.Name =:  objEFT.Member_Account__r.Name 
                        						and EftLocator__c =: String.valueOf(localAcc.get('EftLocator')) limit 1] ;
                        		
@@ -682,7 +704,7 @@ public class EFTController {
                        			objEFT.id = SFEFT[0].id;
                        		}
                        		
-                       		system.debug('Day1=='+objEFT.Frequency__c);
+                       		////system.debug('Day1=='+objEFT.Frequency__c);
                        		
                        		//objEFT.Member_Account__r.Name = String.valueOf(localAcc.get('AccountNumber'));     		
                        		//string locator = String.valueOf(localAcc.get('EftLocator'));                       		
@@ -711,6 +733,9 @@ public class EFTController {
         	Account_Details__c MemberAccount = [select id,name from Account_Details__c where id=:recordId limit 1];
         	String AccountNumber = MemberAccount.name;
         	set<string> setEmailIds = new set<string>();
+        	set<string> setEmailNames = new set<string>();
+        	List<EpisysAccountDetailsWrapper> listAccounts = new List<EpisysAccountDetailsWrapper>();
+        	List<EpisysAccountDetailsWrapper> listResultAccounts = new List<EpisysAccountDetailsWrapper>();
         	
         	Person_Account__c paPrimary = [SELECT Id,PersonID__c,
                              Account_Number__c, Account_Number__r.RecType__c,TypeTranslate__c, Account_Number__r.Name, PersonID__r.Home_Phone__pc,PersonID__r.Residential_City__pc,PersonID__r.Residential_State__pc, PersonID__r.Residential_Street__pc, PersonID__r.Residential_Zipocde__pc, PersonID__r.Name, PersonID__r.Email_raw__c FROM Person_Account__c 
@@ -749,14 +774,50 @@ public class EFTController {
                      
                       map<string, object> localAcc = (map<string, object>)t;
                        System.debug('localAcc ....' + localAcc.get('email'));
-                       string emailid = (string)localAcc.get('email');
+                       System.debug('altemail ....' + localAcc.get('altemail'));
+                       string emailid = (string)localAcc.get('email');                       
+                       if(true){//!setEmailIds.contains(emailid) && emailid!= ''
+	                       	setEmailIds.add((string)localAcc.get('email'));
+	                       	if(emailid != '')
+	                       		setEmailNames.add(emailid+ ',' + (string)localAcc.get('fullname'));
+	                       	if((string)localAcc.get('altemail') != '' && (string)localAcc.get('altemail') != null)
+	                       	setEmailNames.add((string)localAcc.get('altemail')+ ',' + (string)localAcc.get('fullname'));
+	                      // 	setEmailIds.add((string)localAcc.get('altemail'));
+	                       	EpisysAccountDetailsWrapper tmp = new EpisysAccountDetailsWrapper();
+	                       tmp.EmailId=(string)localAcc.get('email');
+	                       tmp.AccountType=(string)localAcc.get('accountTypeName');
+	                       tmp.FullName=(string)localAcc.get('fullname');
+	                       tmp.AltEmailId = (string)localAcc.get('altemail');
+	                       listAccounts.add(tmp);
+                       }
+                       
+                       /*
                        if(emailid != null && emailid != ''){
                        		setEmailIds.add(emailid);
-                       }         
+                       }  */       
        			}       			
            }
+         system.debug('setEmailNames==' + setEmailNames);  
+         for(Integer i=0;i<listAccounts.size();i++){
+           		if(setEmailNames.contains(listAccounts[i].EmailId +',' +listAccounts[i].fullname)){
+           				  EpisysAccountDetailsWrapper tmp = new EpisysAccountDetailsWrapper();
+	                       tmp.EmailId=listAccounts[i].EmailId;
+	                       tmp.AccountType=listAccounts[i].AccountType;
+	                       tmp.FullName=listAccounts[i].fullname;
+	                       listResultAccounts.add(tmp);
+           		}
+           		if(setEmailNames.contains(listAccounts[i].AltEmailId +',' +listAccounts[i].fullname)){
+           				  EpisysAccountDetailsWrapper tmp1 = new EpisysAccountDetailsWrapper();
+	                       tmp1.EmailId=listAccounts[i].AltEmailId;
+	                       tmp1.AccountType=listAccounts[i].AccountType;
+	                       tmp1.FullName=listAccounts[i].fullname;
+	                       listResultAccounts.add(tmp1);
+           		}
+         }
+           
+           system.debug('listResultAccounts==' + listResultAccounts);
             map<string,object> returnmap = new map<string,object>();
-           	returnmap.put('EmailIds',setEmailIds);
+           	returnmap.put('EmailIds',listResultAccounts);
             return returnmap;       
     }
     
@@ -829,6 +890,16 @@ public class EFTController {
         
     }
     
-    
+     public class EpisysAccountDetailsWrapper
+    {
+      @AuraEnabled
+      public string EmailId {get;set;}
+      @AuraEnabled
+      public string AccountType {get;set;}
+      @AuraEnabled
+      public string FullName {get;set;}
+      @AuraEnabled
+      public string AltEmailId {get;set;}
+    }
 
 }
