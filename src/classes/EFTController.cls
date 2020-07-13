@@ -350,7 +350,7 @@ public class EFTController {
        			    Depositary = new dfsle.CustomField('text','##SFEFT__c',recordId.Id, null,true, true);
         		    myEnvelope = new dfsle.Envelope(null,null, null,null,new List<dfsle.Document> { myDocument },null,new List<dfsle.CustomField> { Depositary },null,
 															'ACH Debits',
-															'My Message',null,null);
+															'In order for the Credit Union to ensure your ACH loan payment setup is accurate, please review and sign the ACH form.' +'\n\n' +'If changes are needed or you would like to provide additional payments, please update the form and sign.' +'\n\n' + 'If you have any questions, please contact us at 800-782-8782.',null,null);
 					 myEnvelope = myEnvelope.withRecipients(new List<dfsle.Recipient> { myRecipient });
 					 
 					 if(!Test.isRunningTest()){
