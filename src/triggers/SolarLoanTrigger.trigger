@@ -60,7 +60,7 @@ trigger SolarLoanTrigger on Solar_Loans__c (after insert,before insert, after up
     	
 		if(SLMemberNumber.size() > 0){
 			
-			List<Person_Account__c > peraccountlist = [select id,PersonID__c,PersonID__r.name,account_number__c,account_number__r.name from Person_Account__c where account_number__r.name in:SLMemberNumber];
+			List<Person_Account__c > peraccountlist = [select id,PersonID__c,PersonID__r.name,account_number__c,account_number__r.name from Person_Account__c where account_number__r.name in:SLMemberNumber and Name_Type__c = 0];
 			
 			system.debug('peraccountlist'+peraccountlist);
 			for(Solar_Loans__c solarloan : SLForBranchIds.values()){
@@ -205,7 +205,7 @@ trigger SolarLoanTrigger on Solar_Loans__c (after insert,before insert, after up
     	
             if(SLMemberNumber != null){
                 
-                List<Person_Account__c > peraccountlist = [select id,PersonID__c,PersonID__r.name,account_number__c,account_number__r.name from Person_Account__c where account_number__r.name in:SLMemberNumber and PersonID__c != null LIMIT 1];
+                List<Person_Account__c > peraccountlist = [select id,PersonID__c,PersonID__r.name,account_number__c,account_number__r.name from Person_Account__c where account_number__r.name in:SLMemberNumber and PersonID__c != null and Name_Type__c = 0 LIMIT 1];
                 
                 system.debug('peraccountlist'+peraccountlist);
 				for(Solar_Loans__c solarloan : SLForBranchIds.values()){
