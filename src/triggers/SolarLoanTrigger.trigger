@@ -256,7 +256,6 @@ trigger SolarLoanTrigger on Solar_Loans__c (after insert,before insert, after up
         //------------------------------- Calling Batch class with list of "Solar Loans" id to send a Docusign email-----------------//    
         if(SLIds.size() > 0){
             
-            Database.executeBatch(new SolarLoansToDocuSignBatch(SLIds),1);
             SolarLoanToDocuSign.docusignAPIcall(SLIds);
         }
         
