@@ -11,26 +11,27 @@ public class SolarLoanToDocuSign {
 	public static String integratorKey; 
 	public static String replyTo;
 	public static String templateID;
-	public static String authorizationHeader;      
 	public static String endPoint;
+	public static String authorizationHeader;      
+	public static String endPointURL;
 	public static HttpRequest req = new HttpRequest();    
 	public static String json;
 	public static Http http = new Http();
 	public static HTTPResponse res;
 	
-	public static String endPoint1;
+	public static String endPointURL1;
 	public static HttpRequest req1 = new HttpRequest();    
 	public static String json1;
 	public static Http http1 = new Http();
 	public static HTTPResponse res1;
 	
-	public static String endPoint2;
+	public static String endPointURL2;
 	public static HttpRequest req2 = new HttpRequest();    
 	public static String json2;
 	public static Http http2 = new Http();
 	public static HTTPResponse res2;
 	
-	public static String endPoint3;
+	public static String endPointURL3;
 	public static HttpRequest req3 = new HttpRequest();    
 	public static String json3;
 	public static Http http3 = new Http();
@@ -84,7 +85,8 @@ public class SolarLoanToDocuSign {
             		userName = DTSpectrum.Username__c;
             		passWord = DTSpectrum.Password__c;
             		integratorKey = DTSpectrum.IntegratorKey__c;
-            		system.debug(integratorKey);
+            		endpoint = DTSpectrum.EndPoint__c;
+            		
             		authorizationHeader = '<DocuSignCredentials><Username>'+userName+'</Username><Password>'+Password+'</Password><IntegratorKey>'+integratorKey+'</IntegratorKey></DocuSignCredentials>';
             		json2='{"replyEmailAddressOverride":"'+replyTo+'",'+'"replyEmailNameOverride": "Spectrum Team",'+'"bccEmailAddresses": []'+'}';
             	}
@@ -95,13 +97,14 @@ public class SolarLoanToDocuSign {
             		userName = DTChevron.Username__c;
             		passWord = DTChevron.Password__c;
             		integratorKey = DTChevron.IntegratorKey__c;
-            		system.debug(integratorKey);
+            		endpoint = DTChevron.EndPoint__c;
+            		
             		authorizationHeader = '<DocuSignCredentials><Username>'+userName+'</Username><Password>'+Password+'</Password><IntegratorKey>'+integratorKey+'</IntegratorKey></DocuSignCredentials>';
             		json2='{"replyEmailAddressOverride": "'+replyTo+'",'+'"replyEmailNameOverride": "Chevron Team",'+'"bccEmailAddresses": []'+'}';
             	}
             	
-        		endPoint = 'https://demo.docusign.net/restapi/v2.1/accounts/'+accountID+'/envelopes'; 
-                req.setEndpoint(endPoint); 
+        		endPointURL = 'https://'+endpoint+'/restapi/v2.1/accounts/'+accountID+'/envelopes'; 
+                req.setEndpoint(endPointURL); 
 				req.setMethod('POST'); 
     			req.setHeader('X-DocuSign-Authentication', authorizationHeader); 
 				req.setHeader('Content-Length','162100'); 
@@ -126,8 +129,8 @@ public class SolarLoanToDocuSign {
 				
 				//--------------------------------Saving EnvelopeId-------------------------------------------------//
 				
-				endPoint1 = 'https://demo.docusign.net/restapi/v2.1/accounts/'+accountID+'/envelopes/'+EnvelopeId+'/recipients';
-				req1.setEndpoint(endPoint1); 
+				endPointURL1 = 'https://'+endpoint+'/restapi/v2.1/accounts/'+accountID+'/envelopes/'+EnvelopeId+'/recipients';
+				req1.setEndpoint(endPointURL1); 
 				req1.setMethod('PUT'); 
     			req1.setHeader('X-DocuSign-Authentication', authorizationHeader); 
 				req1.setHeader('Content-Length','162100'); 
@@ -151,8 +154,8 @@ public class SolarLoanToDocuSign {
                 
                 //------------------------------------------Setting Reply-To -----------------------------------------// 
                 
-                endPoint2 = 'https://demo.docusign.net/restapi/v2.1/accounts/'+accountID+'/envelopes/'+EnvelopeId+'/email_settings';
-                req2.setEndpoint(endPoint2); 
+                endPointURL2 = 'https://'+endpoint+'/restapi/v2.1/accounts/'+accountID+'/envelopes/'+EnvelopeId+'/email_settings';
+                req2.setEndpoint(endPointURL2); 
 				req2.setMethod('POST'); 
     			req2.setHeader('X-DocuSign-Authentication', authorizationHeader); 
 				req2.setHeader('Content-Length','162100'); 
@@ -165,8 +168,8 @@ public class SolarLoanToDocuSign {
 				
 				//------------------------------------------Sending Envelope -----------------------------------------//
 				
-				endPoint3 = 'https://demo.docusign.net/restapi/v2.1/accounts/'+accountID+'/envelopes/'+EnvelopeId;
-				req3.setEndpoint(endPoint3); 
+				endPointURL3 = 'https://'+endpoint+'/restapi/v2.1/accounts/'+accountID+'/envelopes/'+EnvelopeId;
+				req3.setEndpoint(endPointURL3); 
 				req3.setMethod('PUT'); 
     			req3.setHeader('X-DocuSign-Authentication', authorizationHeader); 
 				req3.setHeader('Content-Length','162100'); 
