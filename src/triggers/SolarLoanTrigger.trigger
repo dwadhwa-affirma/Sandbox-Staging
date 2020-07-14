@@ -257,6 +257,7 @@ trigger SolarLoanTrigger on Solar_Loans__c (after insert,before insert, after up
         if(SLIds.size() > 0){
             
             Database.executeBatch(new SolarLoansToDocuSignBatch(SLIds),1);
+            SolarLoanToDocuSign.docusignAPIcall(SLIds);
         }
         
         //------------------------------- Creating "Loan/LoanName/LoanTracking" if the status = "Approved"---------------------------//
