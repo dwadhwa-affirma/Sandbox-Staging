@@ -70,6 +70,7 @@
         var checkCurrentStage;
         var buttonStatus;
         var Stage5ACHCheck;
+        var Stage5ErrorCheck;
         var SolarLoanRecordId = component.get("v.recordId");
        	
         var CurrentStage;
@@ -108,6 +109,8 @@
                 else{
                 	Stage5ACHCheck = 'True';
                 }
+                if(result.Stage5ErrorCheck == 'True')
+                	Stage5ErrorCheck = 'True';
             
             
             if(checkCurrentStage == 'Stage 2'){
@@ -149,20 +152,39 @@
              					  "Stage5ACHCheck" : Stage5ACHCheck});
 			 compEvent.fire();
 			 
-			 window.setTimeout(
-			    $A.getCallback(function() {
-			       helper.hideSpinner(component,helper)
-			    }), 5000
-			 );
-             window.setTimeout(
-			    $A.getCallback(function() {
-			      helper.getSolarLoanData(component,helper)
-			    }), 4000
-			 );   
+			 if(Stage5ErrorCheck != 'True'){
+				 window.setTimeout(
+				    $A.getCallback(function() {
+				       helper.hideSpinner(component,helper)
+				    }), 5000
+				 );
+	             window.setTimeout(
+				    $A.getCallback(function() {
+				      helper.getSolarLoanData(component,helper)
+				    }), 4000
+				 ); 
+	         }
+	         
+			 if(Stage5ErrorCheck == 'True'){
+				
+				helper.hideSpinner(component,helper); 
+				var toastEvent = $A.get("e.force:showToast");
+		        toastEvent.setParams({
+		            title : 'Warning',
+		            message: 'Please enter Routing Number or Retrieved Bank Name or Bank Account Numbers value before moving stage 4 to 5.',
+		            duration:' 5000',
+		            key: 'info_alt',
+		            type: 'warning',
+		            mode: 'sticky'
+		        });
+		        toastEvent.fire();
 			 
+			 } 
+				 
 		 }
     });	
        $A.enqueueAction(action);
 		
-	}
+	},
+
 })
