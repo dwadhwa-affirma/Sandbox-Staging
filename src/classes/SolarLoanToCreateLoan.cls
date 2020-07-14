@@ -136,7 +136,7 @@ public class SolarLoanToCreateLoan {
                 Payment = string.valueof(sl.Loan_Pmt_Amount__c);
                 CouponCode = '1';
                 
-                PaymentMethod = '0';
+                PaymentMethod = '1';
                 
                 Description = 'SECURED SOLAR';
                 InterestRate = string.valueof(sl.Interest_Rate__c);
