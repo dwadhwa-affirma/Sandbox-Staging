@@ -24,15 +24,6 @@ public class SolarLoanController {
     	
     }
     
-   	@AuraEnabled
-    public static  Map<string,string> testDocusignRestAPI(string SolarLoanRecordId){
-    	
-    	List<id> ids = new List<id>();
-    	ids.add(SolarLoanRecordId);
-		SolarLoanToDocuSign.docusignAPIcall(ids);
-    	return null;
-    }
-    
     @AuraEnabled
     public static  Map<string,string> getMemberData(string SolarLoanRecordId, String CurrentStage){
     
