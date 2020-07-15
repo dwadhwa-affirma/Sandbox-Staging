@@ -1,4 +1,5 @@
 <aura:component implements="flexipage:availableForAllPageTypes,force:appHostable,force:hasRecordId,force:lightningQuickActionWithoutHeader,lightning:actionOverride" controller="CreateCaseMemberPageController">
+    <aura:attribute name="isQuickAction" type="boolean" default="true" />
     <aura:attribute name="AccountObjectlist" type="Account_Details__c[]" />
    <aura:attribute name="accountCount" type="Integer"  />
     <aura:attribute type="Aura.Component[]" name="inputboxPanel" />
@@ -60,7 +61,7 @@
     <aura:attribute name="singleAccountDetail" type="boolean" default="false" />
     <aura:attribute name="singleMember" type="boolean" default="false" />
    		
-    <style>
+     <aura:html tag="style">
         /* Loading Style*/
         
         .loadingDiv {
@@ -110,7 +111,11 @@
         }
         
         /* Loading Style End*/
-    </style>
+ 
+         	</aura:html>  
+      <lightning:overlayLibrary aura:id="overlayLib"/>
+    
+    <aura:if isTrue="{!v.isQuickAction}"> 
 	<header class="slds-modal__header" id="CreateCaseMemberPageHeader" style="{!(v.isStandalone? 'display:none;' : '')}">
         <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse" title="Close" onclick="{!c.closePopup}">
 			<span data-aura-rendered-by="47:1615;a" class="lightningPrimitiveIcon" data-aura-class="lightningPrimitiveIcon"><lightning:icon iconName="{#v.closeIcon}" size="small" variant="inverse" /></span>
@@ -118,6 +123,8 @@
         </button>
         <h2 id="modal-heading-01" class="slds-text-heading_medium slds-hyphenate">Create Case</h2>
     </header>
+    </aura:if> 
+    
     <div class="{!(v.isStandalone? '' : 'modal-maincontent')}" style="{!(v.isStandalone? 'background-color:#fff' : '')}">
         <div style="{!(v.isFileUploadComponent ? 'display:none;' : '')}">
             <h3 class="slds-section-title--divider">Account Details</h3>

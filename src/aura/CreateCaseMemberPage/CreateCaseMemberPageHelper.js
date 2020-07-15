@@ -469,8 +469,8 @@
            if(document.getElementsByClassName('modal-maincontent')[0] != undefined){          
         				document.getElementsByClassName('modal-maincontent')[0].style.minHeight = '518px';
 						document.getElementsByClassName('modal-maincontent')[0].style.height = null;
-						document.getElementsByClassName('modal-maincontent')[0].parentElement.parentElement.parentElement.parentElement.parentElement.parentElement.style.minHeight  = '641px';
-						document.getElementsByClassName('modal-maincontent')[0].parentElement.parentElement.parentElement.parentElement.parentElement.parentElement.style.height = null;
+						//document.getElementsByClassName('modal-maincontent')[0].parentElement.parentElement.parentElement.parentElement.parentElement.parentElement.style.minHeight  = '641px';
+						//document.getElementsByClassName('modal-maincontent')[0].parentElement.parentElement.parentElement.parentElement.parentElement.parentElement.style.height = null;
 				} 
             
 	         
@@ -500,7 +500,12 @@
 			        		var result =  response.getReturnValue();  	
 			        		component.set('v.accObject', result.accountDetails);
 			        		
-			        		component.set('v.accList', result.accList);
+			        		var a= result.accList;
+			               for(var i=0;i<a.length;i++){            	  
+			            		   a[i].isShow=true;            	   
+			               }
+			        		
+			        		component.set('v.accList', a);
 								        		
 			        		component.set('v.loading',false);	
 			        		component.set("v.caseObject.Future_Date__c", "");

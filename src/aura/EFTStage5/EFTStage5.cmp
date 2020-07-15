@@ -30,7 +30,7 @@
   				</div>
                 <aura:if isTrue="{!v.isLoan}">
   				<div class="slds-form-element slds-form-element_horizontal">
-    				<b><label class="slds-form-element__label" for="horizontal-input-id-02">Alternate Amt:</label></b>
+    				<b><label class="slds-form-element__label" for="horizontal-input-id-02">Additional Amt:</label></b>
     				<div class="slds-form-element__control">
       					<force:inputField class="alternateamount" value="{!v.EFTRecord.Alternate_Amount__c}" change="{!c.onMonthChange}"> </force:inputField>
     				</div>

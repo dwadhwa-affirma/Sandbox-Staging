@@ -201,6 +201,10 @@
         window.close();
        }
 	  
+       var isQuickAction = component.get("v.isQuickAction");
+       if(!isQuickAction) {
+           	component.find("overlayLib").notifyClose();
+       }
    },
    changeSelectedCategory: function(component, event, helper) {
 	   component.set('v.loading',true);

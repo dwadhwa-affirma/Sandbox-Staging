@@ -26,19 +26,21 @@
 			component.set('v.bannerExpirationFlag', false);
 		}
 		// Home banner component code end
+		
+        debugger;
+        //Execute Member search if query string has account number
+        var returnValue=helper.getUrlParameter("c__accountNumber");
+        if(returnValue) {
+            component.set("v.searchText",returnValue);
+        	helper.searchRecords(component, event, helper);
+        }
 	},
 	searchRecords : function(component, event, helper) {	
-		helper.fetchrecords(component);
-		var table  = document.getElementById('tblMembernoSearch');
-			if(table)
-				table.style = '';
+		helper.searchRecords(component, event, helper);
 	},
 	searchRecord : function(component, event, helper) {	
 	if(event.getParams().keyCode == 13){	
 		helper.fetchrecords(component);
-		var table  = document.getElementById('tblMembernoSearch');
-			if(table)
-				table.style = '';
 		}
 	},
 	clearSearch : function(component, event, helper) {
