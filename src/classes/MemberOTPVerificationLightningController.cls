@@ -1,7 +1,7 @@
 public class MemberOTPVerificationLightningController
 {
 
-
+	private static OTPVerificationModel OTPVerificationModelOBj {get; set;}
     private Account GetAccount(string accID)
     {
     	 system.debug('Account Id from GetAccount---' + accID);
@@ -231,626 +231,10 @@ public class MemberOTPVerificationLightningController
 
     }
 
-  @auraenabled
-    public static OTPVerificationModel ListOfEmailsAndPhoneNumbers(string accid, Boolean IsAuth, String GUID, string IVRGUIDFromUrl )
-    {
-        system.debug('accid---' + accid);
-         string  AccountNumber;
-       	 List<Person_Account__c> p = [SELECT Id, Account_Number__c,  PersonID__c, Account_Number__r.RecType__c, TypeTranslate__c, Account_Number__r.Name
-                FROM Person_Account__c where PersonID__c =:accid  limit 1];
-         if(p.size() > 0){
-        	AccountNumber = p[0].Account_Number__r.Name;
-         }
-        string Brand;
-        MemberOTPVerificationLightningController objMVLC = new MemberOTPVerificationLightningController();
-        Account acc = objMVLC.GetAccount(accID);
-        List<string> allRelatedAccounts = GetRelatedAccountsPopulated(accid, acc);
-        List<wrapperAccount> listWrapperAccount = new List<wrapperAccount>();
-        system.debug('allRelatedAccounts 4---' + allRelatedAccounts);
-        string IsIneligibleLocal = 'false';
-        string NoContactInfo = 'false';
-        List<Account> listAccount;
-        List<accounthistory> listhistory;
-     	Map<id,string> memid = new Map<id,string>();
-
-        if (allRelatedAccounts != null && allRelatedAccounts.size() > 0)
-        {
-
-            listAccount = [select Id, Member_Verification_OTP_Invalid_Attempt__c, Home_Phone__pc, FirstName, LastName, Mobile_Phone__pc, Work_Phone__pc, PersonEmail, Alternate_Email__pc from Account where ID in :allRelatedAccounts];
-            listhistory = [Select accountid,field,OldValue, NewValue, CreatedDate From accounthistory where accountid in :allRelatedAccounts and createddate >: (date.TODAY() - 30)];
-            List<accounthistory> listhistoryOlder = [Select accountid,field,OldValue, NewValue, CreatedDate From accounthistory where accountid in :allRelatedAccounts and createddate <=: (date.TODAY() - 30)];
-            listWrapperAccount = new List<wrapperAccount>();
-            set<string> listContacts = new set<string>();
-
-
-            for (Account accountLocal : listAccount)
-            {
-            	listContacts = new set<string>();
-                if (accountLocal.Mobile_Phone__pc != null && accountLocal.Mobile_Phone__pc != '')
-                {
-                    if (!listContacts.contains(accountLocal.Mobile_Phone__pc) && accountLocal.id == acc.id)
-                    {
-                        wrapperAccount accLocal = new wrapperAccount();
-                        system.debug('FirstName##' + accountLocal.FirstName);
-                        if(accountLocal.FirstName == null &&  accountLocal.LastName != null){                        
-                            memid.put(accountLocal.id,accountLocal.LastName);
-                        }
-                        if(accountLocal.FirstName != null &&  accountLocal.LastName == null){
-                            memid.put(accountLocal.id,accountLocal.FirstName);
-                        }
-                        if(accountLocal.FirstName != null &&  accountLocal.LastName != null){
-                            memid.put(accountLocal.id,accountLocal.FirstName+ ' '+accountLocal.LastName);
-                        }
-						accLocal.Memberid= accountLocal.id;
-                        accLocal.fieldType = 'P';
-                        accLocal.value = accountLocal.Mobile_Phone__pc;
-                        if(IsAuth == true){
-                        	accLocal.encryptedvalue = accountLocal.Mobile_Phone__pc;	
-                        }
-                        else{
-                        	accLocal.encryptedvalue = encryptPhone(accountLocal.Mobile_Phone__pc);
-                        }
-                        
-                        accLocal.fieldName = 'Mobile_Phone__pc - ' + accountLocal.Id;
-                        accLocal.isEnabled = isContactEnabled(accountLocal.Mobile_Phone__pc,'Mobile_Phone__pc',accountLocal.id,listhistory,listhistoryOlder,true);                       
-                                                                         
-                                         
-                        listWrapperAccount.Add(accLocal);
-                        listContacts.add(accountLocal.Mobile_Phone__pc);
-                    }
-                }
-                if (accountLocal.Home_Phone__pc != null && accountLocal.Home_Phone__pc != '')
-                {
-                    if (!listContacts.contains(accountLocal.Home_Phone__pc) && accountLocal.id == acc.id)
-                    {
-                        wrapperAccount accLocal = new wrapperAccount();
-                        accLocal.Memberid= accountLocal.id;
-						accLocal.MemberName=accountLocal.FirstName+ ' '+accountLocal.LastName;
-                        accLocal.fieldType = 'P';
-                        accLocal.value = accountLocal.Home_Phone__pc;
-                        
-                        if(IsAuth == true){
-                        	accLocal.encryptedvalue = accountLocal.Home_Phone__pc;	
-                        }
-                        else{
-                        	accLocal.encryptedvalue = encryptPhone(accountLocal.Home_Phone__pc);
-                        }
-                        
-                        accLocal.fieldName = 'Home_Phone__pc - ' + accountLocal.Id;
-                        accLocal.isEnabled = isContactEnabled(accountLocal.Home_Phone__pc,'Home_Phone__pc',accountLocal.id,listhistory,listhistoryOlder,true);
-                                       
-                        listWrapperAccount.Add(accLocal);
-                        listContacts.add(accountLocal.Home_Phone__pc);
-                    }
-
-                }
-                if (accountLocal.Work_Phone__pc != null && accountLocal.Work_Phone__pc != '')
-                {
-                    if (!listContacts.contains(accountLocal.Work_Phone__pc) && accountLocal.id == acc.id)
-                    {
-                        wrapperAccount accLocal = new wrapperAccount();
-                        system.debug('FirstName##' + accountLocal.FirstName);
-                        if(accountLocal.FirstName == null &&  accountLocal.LastName != null){                        
-                            memid.put(accountLocal.id,accountLocal.LastName);
-                        }
-                        if(accountLocal.FirstName != null &&  accountLocal.LastName == null){
-                            memid.put(accountLocal.id,accountLocal.FirstName);
-                        }
-                        if(accountLocal.FirstName != null &&  accountLocal.LastName != null){
-                            memid.put(accountLocal.id,accountLocal.FirstName+ ' '+accountLocal.LastName);
-                        }
-                        accLocal.Memberid= accountLocal.id;
-                        accLocal.fieldType = 'P';
-                        accLocal.value = accountLocal.Work_Phone__pc;
-                        
-                        if(IsAuth == true){
-                        	accLocal.encryptedvalue = accountLocal.Work_Phone__pc;	
-                        }
-                        else{
-                        	accLocal.encryptedvalue = encryptPhone(accountLocal.Work_Phone__pc);
-                        }
-                       
-                        accLocal.fieldName = 'Work_Phone__pc - ' + accountLocal.Id;
-                        accLocal.isEnabled = isContactEnabled(accountLocal.Work_Phone__pc,'Work_Phone__pc',accountLocal.id,listhistory,listhistoryOlder,true);
-                                      
-                        listWrapperAccount.Add(accLocal);
-                        listContacts.add(accountLocal.Work_Phone__pc);
-                    }
-                }
-                if (accountLocal.PersonEmail != null && accountLocal.PersonEmail != '')
-                {
-                    if (!listContacts.contains(accountLocal.PersonEmail) && accountLocal.id == acc.id)
-                    {
-                        wrapperAccount accLocal = new wrapperAccount();
-                        system.debug('FirstName##' + accountLocal.FirstName);
-                        if(accountLocal.FirstName == null &&  accountLocal.LastName != null){                        
-                            memid.put(accountLocal.id,accountLocal.LastName);
-                        }
-                        if(accountLocal.FirstName != null &&  accountLocal.LastName == null){
-                            memid.put(accountLocal.id,accountLocal.FirstName);
-                        }
-                        if(accountLocal.FirstName != null &&  accountLocal.LastName != null){
-                            memid.put(accountLocal.id,accountLocal.FirstName+ ' '+accountLocal.LastName);
-                        }
-                        
-                        accLocal.Memberid= accountLocal.id;
-                        accLocal.fieldType = 'E';
-                        accLocal.value = accountLocal.PersonEmail;
-                        
-                        if(IsAuth == true){
-                        	accLocal.encryptedvalue = accountLocal.PersonEmail;	
-                        }
-                        else{
-                        	accLocal.encryptedvalue = encryptEmail(accountLocal.PersonEmail);
-                        }
-                        
-                        accLocal.fieldName = 'PersonEmail - ' + accountLocal.Id;
-                        accLocal.isEnabled = isContactEnabled(accountLocal.PersonEmail,'PersonEmail',accountLocal.id,listhistory,listhistoryOlder,false);
-                                      
-                        listWrapperAccount.Add(accLocal);
-                        listContacts.add(accountLocal.PersonEmail);
-                    }
-                }
-                if (accountLocal.Alternate_Email__pc != null && accountLocal.Alternate_Email__pc != '')
-                {
-                    if (!listContacts.contains(accountLocal.Alternate_Email__pc) && accountLocal.id == acc.id)
-                    {
-                        wrapperAccount accLocal = new wrapperAccount();
-                        system.debug('FirstName##' + accountLocal.FirstName);
-                        if(accountLocal.FirstName == null &&  accountLocal.LastName != null){                        
-                            memid.put(accountLocal.id,accountLocal.LastName);
-                        }
-                        if(accountLocal.FirstName != null &&  accountLocal.LastName == null){
-                            memid.put(accountLocal.id,accountLocal.FirstName);
-                        }
-                        if(accountLocal.FirstName != null &&  accountLocal.LastName != null){
-                            memid.put(accountLocal.id,accountLocal.FirstName+ ' '+accountLocal.LastName);
-                        }
-                        accLocal.Memberid= accountLocal.id;
-                        accLocal.fieldType = 'E';
-                        accLocal.value = accountLocal.Alternate_Email__pc;
-                        
-                        if(IsAuth == true){
-                        	accLocal.encryptedvalue = accountLocal.Alternate_Email__pc;	
-                        }
-                        else{
-                        	accLocal.encryptedvalue = encryptEmail(accountLocal.Alternate_Email__pc);
-                        }
-                        
-                        accLocal.fieldName = 'Alternate_Email__pc - ' + accountLocal.Id;
-                        accLocal.isEnabled = isContactEnabled(accountLocal.Alternate_Email__pc,'Alternate_Email__pc',accountLocal.id,listhistory,listhistoryOlder,false);
-                                  
-                        listWrapperAccount.Add(accLocal);
-                        listContacts.Add(accountLocal.Alternate_Email__pc);
-                    }
-                }
-            }
-
-            for (Account accountLocal : listAccount)
-            {
-            	listContacts = new set<string>();
-                if (accountLocal.Mobile_Phone__pc != null && accountLocal.Mobile_Phone__pc != '')
-                {
-                    if (!listContacts.contains(accountLocal.Mobile_Phone__pc) && accountLocal.id != acc.id)
-                    {
-                        wrapperAccount accLocal = new wrapperAccount();
-                        system.debug('FirstName##' + accountLocal.FirstName);
-                       if(accountLocal.FirstName == null &&  accountLocal.LastName != null){                        
-                            memid.put(accountLocal.id,accountLocal.LastName);
-                        }
-                        if(accountLocal.FirstName != null &&  accountLocal.LastName == null){
-                            memid.put(accountLocal.id,accountLocal.FirstName);
-                        }
-                        if(accountLocal.FirstName != null &&  accountLocal.LastName != null){
-                            memid.put(accountLocal.id,accountLocal.FirstName+ ' '+accountLocal.LastName);
-                        }
-						accLocal.Memberid= accountLocal.id;
-                        accLocal.fieldType = 'P';
-                        accLocal.value = accountLocal.Mobile_Phone__pc;
-                        
-                        if(IsAuth == true){
-                        	accLocal.encryptedvalue = accountLocal.Mobile_Phone__pc;	
-                        }
-                        else{
-                        	accLocal.encryptedvalue = encryptPhone(accountLocal.Mobile_Phone__pc);
-                        }
-                        
-                        accLocal.fieldName = 'Mobile_Phone__pc - ' + accountLocal.Id;
-                        accLocal.isEnabled = isContactEnabled(accountLocal.Mobile_Phone__pc,'Mobile_Phone__pc',accountLocal.id,listhistory,listhistoryOlder,true);
-                                        
-                        listWrapperAccount.Add(accLocal);
-                        listContacts.add(accountLocal.Mobile_Phone__pc);
-                    }
-                }
-                if (accountLocal.Home_Phone__pc != null && accountLocal.Home_Phone__pc != '')
-                {
-                    if (!listContacts.contains(accountLocal.Home_Phone__pc) && accountLocal.id != acc.id)
-                    {
-                        wrapperAccount accLocal = new wrapperAccount();
-                        system.debug('FirstName##' + accountLocal.FirstName);
-                       if(accountLocal.FirstName == null &&  accountLocal.LastName != null){                        
-                            memid.put(accountLocal.id,accountLocal.LastName);
-                        }
-                        if(accountLocal.FirstName != null &&  accountLocal.LastName == null){
-                            memid.put(accountLocal.id,accountLocal.FirstName);
-                        }
-                        if(accountLocal.FirstName != null &&  accountLocal.LastName != null){
-                            memid.put(accountLocal.id,accountLocal.FirstName+ ' '+accountLocal.LastName);
-                        }
-                        accLocal.Memberid= accountLocal.id;
-                        accLocal.fieldType = 'P';
-                        accLocal.value = accountLocal.Home_Phone__pc;
-                        
-                        if(IsAuth == true){
-                        	accLocal.encryptedvalue = accountLocal.Home_Phone__pc;	
-                        }
-                        else{
-                        	accLocal.encryptedvalue = encryptPhone(accountLocal.Home_Phone__pc);
-                        }
-                       
-                        accLocal.fieldName = 'Home_Phone__pc - ' + accountLocal.Id;
-                        accLocal.isEnabled = isContactEnabled(accountLocal.Home_Phone__pc,'Home_Phone__pc',accountLocal.id,listhistory,listhistoryOlder,true);
-                                        
-                        listWrapperAccount.Add(accLocal);
-                        listContacts.add(accountLocal.Home_Phone__pc);
-                    }
-
-                }
-                if (accountLocal.Work_Phone__pc != null && accountLocal.Work_Phone__pc != '')
-                {
-                    if (!listContacts.contains(accountLocal.Work_Phone__pc) && accountLocal.id != acc.id)
-                    {
-                        wrapperAccount accLocal = new wrapperAccount();
-                        system.debug('FirstName##' + accountLocal.FirstName);
-                        if(accountLocal.FirstName == null &&  accountLocal.LastName != null){                        
-                            memid.put(accountLocal.id,accountLocal.LastName);
-                        }
-                        if(accountLocal.FirstName != null &&  accountLocal.LastName == null){
-                            memid.put(accountLocal.id,accountLocal.FirstName);
-                        }
-                        if(accountLocal.FirstName != null &&  accountLocal.LastName != null){
-                            memid.put(accountLocal.id,accountLocal.FirstName+ ' '+accountLocal.LastName);
-                        }
-                        accLocal.Memberid= accountLocal.id;
-                        accLocal.fieldType = 'P';
-                        accLocal.value = accountLocal.Work_Phone__pc;
-                        
-                        if(IsAuth == true){
-                        	accLocal.encryptedvalue = accountLocal.Work_Phone__pc;	
-                        }
-                        else{
-                        	accLocal.encryptedvalue = encryptPhone(accountLocal.Work_Phone__pc);
-                        }
-                        
-                        accLocal.fieldName = 'Work_Phone__pc - ' + accountLocal.Id;
-                        accLocal.isEnabled = isContactEnabled(accountLocal.Work_Phone__pc,'Work_Phone__pc',accountLocal.id,listhistory,listhistoryOlder,true);
-                                        
-                        listWrapperAccount.Add(accLocal);
-                        listContacts.add(accountLocal.Work_Phone__pc);
-                    }
-                }
-                if (accountLocal.PersonEmail != null && accountLocal.PersonEmail != '')
-                {
-                    if (!listContacts.contains(accountLocal.PersonEmail) && accountLocal.id != acc.id)
-                    {
-                        wrapperAccount accLocal = new wrapperAccount();
-                        system.debug('FirstName##' + accountLocal.FirstName);
-                        if(accountLocal.FirstName == null &&  accountLocal.LastName != null){                        
-                            memid.put(accountLocal.id,accountLocal.LastName);
-                        }
-                        if(accountLocal.FirstName != null &&  accountLocal.LastName == null){
-                            memid.put(accountLocal.id,accountLocal.FirstName);
-                        }
-                        if(accountLocal.FirstName != null &&  accountLocal.LastName != null){
-                            memid.put(accountLocal.id,accountLocal.FirstName+ ' '+accountLocal.LastName);
-                        }
-                        accLocal.Memberid= accountLocal.id;
-                        accLocal.fieldType = 'E';
-                        accLocal.value = accountLocal.PersonEmail;
-                        
-                        if(IsAuth == true){
-                        	accLocal.encryptedvalue = accountLocal.PersonEmail;	
-                        }
-                        else{
-                        	accLocal.encryptedvalue = encryptEmail(accountLocal.PersonEmail);
-                        }
-                      
-                        accLocal.fieldName = 'PersonEmail - ' + accountLocal.Id;
-                        accLocal.isEnabled = isContactEnabled(accountLocal.PersonEmail,'PersonEmail',accountLocal.id,listhistory,listhistoryOlder,false);
-                                        
-                        listWrapperAccount.Add(accLocal);
-                        listContacts.add(accountLocal.PersonEmail);
-                    }
-                }
-                if (accountLocal.Alternate_Email__pc != null && accountLocal.Alternate_Email__pc != '')
-                {
-                    if (!listContacts.contains(accountLocal.Alternate_Email__pc) && accountLocal.id != acc.id)
-                    {
-                        wrapperAccount accLocal = new wrapperAccount();
-                        system.debug('FirstName##' + accountLocal.FirstName);
-                       if(accountLocal.FirstName == null &&  accountLocal.LastName != null){                        
-                            memid.put(accountLocal.id,accountLocal.LastName);
-                        }
-                        if(accountLocal.FirstName != null &&  accountLocal.LastName == null){
-                            memid.put(accountLocal.id,accountLocal.FirstName);
-                        }
-                        if(accountLocal.FirstName != null &&  accountLocal.LastName != null){
-                            memid.put(accountLocal.id,accountLocal.FirstName+ ' '+accountLocal.LastName);
-                        }
-                        accLocal.Memberid= accountLocal.id;
-                        accLocal.fieldType = 'E';
-                        accLocal.value = accountLocal.Alternate_Email__pc;
-                        
-                        if(IsAuth == true){
-                        	accLocal.encryptedvalue = accountLocal.Alternate_Email__pc;	
-                        }
-                        else{
-                        	accLocal.encryptedvalue = encryptEmail(accountLocal.Alternate_Email__pc);
-                        }
-                        
-                        accLocal.fieldName = 'Alternate_Email__pc - ' + accountLocal.Id;
-                        accLocal.isEnabled = isContactEnabled(accountLocal.Alternate_Email__pc,'Alternate_Email__pc',accountLocal.id,listhistory,listhistoryOlder,false);
-                                       
-                        listWrapperAccount.Add(accLocal);
-                        listContacts.Add(accountLocal.Alternate_Email__pc);
-                    }
-                }
-            }
-            
-        }
-
-
-        if (listWrapperAccount.size() == 0)
-        {
-            SaveNoContactInfoLog(acc);
-
-        }
-        else
-        {
-            list<string> accids = GetAccIdsPopulated(accID, acc);
-            system.debug('accids---' + accids);
-            list<Account_Details__c> listAccountDetails = [select Id, Comments_Block__c,
-               Brand__c,
-                Comment_Block_01__c,
-                                 Comment_Block_02__c,
-                                 Comment_Block_03__c,
-                                 Comment_Block_04__c,
-                                 Comment_Block_05__c,
-                                 Comment_Block_06__c,
-                                 Comment_Block_07__c,
-                                 Comment_Block_08__c,
-                                 Comment_Block_09__c,
-                                 Comment_Block_10__c,
-                                 Comment_Block_11__c,
-                                 Comment_Block_12__c,
-                                 Comment_Block_13__c,
-                                 Comment_Block_14__c,
-                                 Comment_Block_15__c,
-                                 Comment_Block_16__c,
-                                 Comment_Block_17__c,
-                                 Comment_Block_18__c,
-                                 Comment_Block_19__c,
-                                 Comment_Block_20__c
-
-
-
-                from Account_Details__c where Id in: accids];
-            list<string> wcwList = new list<string>();
-             if (listAccountDetails.Size() > 0)
-            {
-                Brand = listAccountDetails[0].Brand__c;
-
-
-                for (Account_Details__c var: listAccountDetails)
-                {
-
-                    if (var.Comment_Block_01__c != NULL || var.Comment_Block_01__c != '')
-                    {
-
-                        wcwList.add(var.Comment_Block_01__c);
-                    }
-                    if (var.Comment_Block_02__c != NULL || var.Comment_Block_02__c != '')
-                    {
-
-                        wcwList.add(var.Comment_Block_02__c);
-                    }
-                    if (var.Comment_Block_03__c != NULL || var.Comment_Block_03__c != '')
-                    {
-
-                        wcwList.add(var.Comment_Block_03__c);
-                    }
-                    if (var.Comment_Block_04__c != NULL || var.Comment_Block_04__c != '')
-                    {
-
-                        wcwList.add(var.Comment_Block_04__c);
-                    }
-                    if (var.Comment_Block_05__c != NULL || var.Comment_Block_05__c != '')
-                    {
-
-                        wcwList.add(var.Comment_Block_05__c);
-                    }
-                    if (var.Comment_Block_06__c != NULL || var.Comment_Block_06__c != '')
-                    {
-
-                        wcwList.add(var.Comment_Block_06__c);
-                    }
-                    if (var.Comment_Block_07__c != NULL || var.Comment_Block_07__c != '')
-                    {
-
-                        wcwList.add(var.Comment_Block_07__c);
-                    }
-                    if (var.Comment_Block_08__c != NULL || var.Comment_Block_08__c != '')
-                    {
-
-                        wcwList.add(var.Comment_Block_08__c);
-                    }
-                    if (var.Comment_Block_09__c != NULL || var.Comment_Block_09__c != '')
-                    {
-
-                        wcwList.add(var.Comment_Block_09__c);
-                    }
-                    if (var.Comment_Block_10__c != NULL || var.Comment_Block_10__c != '')
-                    {
-
-                        wcwList.add(var.Comment_Block_10__c);
-                    }
-                    if (var.Comment_Block_11__c != NULL || var.Comment_Block_11__c != '')
-                    {
-
-                        wcwList.add(var.Comment_Block_11__c);
-                    }
-                    if (var.Comment_Block_12__c != NULL || var.Comment_Block_12__c != '')
-                    {
-
-                        wcwList.add(var.Comment_Block_12__c);
-                    }
-                    if (var.Comment_Block_13__c != NULL || var.Comment_Block_13__c != '')
-                    {
-
-                        wcwList.add(var.Comment_Block_13__c);
-                    }
-                    if (var.Comment_Block_14__c != NULL || var.Comment_Block_14__c != '')
-                    {
-
-                        wcwList.add(var.Comment_Block_14__c);
-                    }
-                    if (var.Comment_Block_15__c != NULL || var.Comment_Block_15__c != '')
-                    {
-
-                        wcwList.add(var.Comment_Block_15__c);
-                    }
-                    if (var.Comment_Block_16__c != NULL || var.Comment_Block_16__c != '')
-                    {
-
-                        wcwList.add(var.Comment_Block_16__c);
-                    }
-                    if (var.Comment_Block_17__c != NULL || var.Comment_Block_17__c != '')
-                    {
-
-                        wcwList.add(var.Comment_Block_17__c);
-                    }
-                    if (var.Comment_Block_18__c != NULL || var.Comment_Block_18__c != '')
-                    {
-
-                        wcwList.add(var.Comment_Block_18__c);
-                    }
-                    if (var.Comment_Block_19__c != NULL || var.Comment_Block_19__c != '')
-                    {
-
-                        wcwList.add(var.Comment_Block_19__c);
-                    }
-                    if (var.Comment_Block_20__c != NULL || var.Comment_Block_20__c != '')
-                    {
-
-                        wcwList.add(var.Comment_Block_20__c);
-                    }
-                }
-                RecordType rec = GetRecordTypeData('Authenticated_Log__c', 'OTP Authentication Log');
-               if (wcwList.size() > 0)
-                {
-                    for (string str : wcwList)
-                    {
-                        if (str != null && str.Contains('TELEPHONE/EMAIL CHANGED WITHIN 60 DAYS'))
-                        {
-							// the below log entry is commented for OTP-Not Eligible status not required now
-                           /* Authenticated_Log__c log = new Authenticated_Log__c();
-                            log.SalesforceID__c = acc.Id;
-                            log.Member__c = acc.Id;
-                            log.First_Name__c = acc.FirstName;
-                            log.Last_Name__c = acc.LastName;
-                            log.Staff_Name__c = UserInfo.getName();
-                            log.Current_User__c = Userinfo.getuserid();
-                            log.Decision__c = 'OTP – Not Eligible';
-                            log.OTP_Decision__c = 'OTP – Not Eligible';
-                            log.Member_Number__c = AccountNumber;
-                            log.GUID__c = GUID;
-                            log.IVR_GUID__c = IVRGUIDFromUrl;
-                            log.RecordTypeId= rec.id;
-                            insert log;
-                            acc.Member_Verification_OTP_Invalid_Attempt__c = system.now();
-                            update acc;
-                            System.Debug('not eligible---' + acc.id);*/
-
-                            IsIneligibleLocal = 'true';
-							
-							RecordType rec1 = GetRecordTypeData('Authenticated_Log__c', 'Master Authentication Log');
-       
-						     List<Authenticated_Log__c> MasterAuthenticationLog = GetDataForMasterAuthenticationLog(IVRGUIDFromUrl, rec1.id);
-						     // the below log entry is commented for OTP-Not Eligible status not required now
-						     
-						     /*if(MasterAuthenticationLog.size() == 0)
-						     {
-						     	
-						     	 Authenticated_Log__c log2 = new Authenticated_Log__c();
-	                            log2.SalesforceID__c = acc.Id;
-	                            log2.Member__c = acc.Id;
-	                            log2.First_Name__c = acc.FirstName;
-	                            log2.Last_Name__c = acc.LastName;
-	                            log2.Staff_Name__c = UserInfo.getName();
-	                            log2.Current_User__c = Userinfo.getuserid();
-	                            log2.Decision__c = 'OTP – Not Eligible';
-	                            log2.OTP_Decision__c = 'OTP – Not Eligible';
-	                            log2.Member_Number__c = AccountNumber;
-	                            log2.GUID__c = GUID;
-	                            log2.IVR_GUID__c = IVRGUIDFromUrl;
-	                            log2.RecordtypeId = rec1.id;
-	                            insert log; 
-	                           						     	
-						     }
-						     else{
-						     	
-						     	MasterAuthenticationLog[0].SalesforceID__c = acc.Id;
-	                            MasterAuthenticationLog[0].Member__c = acc.Id;
-	                            MasterAuthenticationLog[0].First_Name__c = acc.FirstName;
-	                            MasterAuthenticationLog[0].Last_Name__c = acc.LastName;
-	                            MasterAuthenticationLog[0].Staff_Name__c = UserInfo.getName();
-	                            MasterAuthenticationLog[0].Current_User__c = Userinfo.getuserid();
-	                            MasterAuthenticationLog[0].Decision__c = 'OTP – Not Eligible';
-	                            MasterAuthenticationLog[0].OTP_Decision__c = 'OTP – Not Eligible';
-	                            MasterAuthenticationLog[0].Member_Number__c = AccountNumber;
-	                            MasterAuthenticationLog[0].GUID__c = GUID;
-	                            update MasterAuthenticationLog[0];
-						     	
-						     }
-							
-							*/
-							
-							
-                        }
-                    }
-                }
-
-
-            }
-        } 
-        List<KeyValuePairModelWithBit> listPhoneList = GetPhoneList_Options(listWrapperAccount);
-        List<KeyValuePairModelWithBit> listEmailList = GetEmailsList_Options(listWrapperAccount);
-        OTPVerificationModel obj = new OTPVerificationModel();
-        obj.IsIneligible = 'false';
-        obj.Brand = Brand;
-        obj.PhoneList_Options = GetPhoneList_Options(listWrapperAccount);
-		system.debug('obj.PhoneList_Options'+obj.PhoneList_Options);
-        obj.EmailsList_Options = GetEmailsList_Options(listWrapperAccount);
-        system.debug('obj.PhoneList_Options'+obj.EmailsList_Options);
-        
-        for(KeyValuePairModelWithBit value: obj.EmailsList_Options){
-        	if(value.isEnabled == false){
-       			obj.emailToShow = true;
-       			break; 		
-        	}	
-        	else{
-        		obj.emailToShow = false;
-        	}
-        }
-        obj.LstMemid = GetMemList_Options(memid);
-		system.debug('obj---' + obj);
-        return obj;
-
-
-    }
+ 
     
-    /*
-    // The below function is for Aut-200 
+    
+    // The below function is to bring list of email and phone number for selected member in the list
      @auraenabled
     public static OTPVerificationModel ListOfEmailsAndPhoneNumbers(string accid, Boolean IsAuth, String GUID, string IVRGUIDFromUrl )
     {
@@ -875,7 +259,7 @@ public class MemberOTPVerificationLightningController
         {
 
             
-            listhistory = [Select accountid,field,OldValue, NewValue, CreatedDate From accounthistory where accountid =:accid and createddate >: (date.TODAY() - 30)];
+            listhistory = [Select accountid,field,OldValue, NewValue, CreatedDate From accounthistory where accountid =:accid and createddate >: (date.TODAY() -30 )];
             List<accounthistory> listhistoryOlder = [Select accountid,field,OldValue, NewValue, CreatedDate From accounthistory where accountid = :accid and createddate <=: (date.TODAY() - 30)];
             listWrapperAccount = new List<wrapperAccount>();
             set<string> listContacts = new set<string>();
@@ -1370,8 +754,8 @@ public class MemberOTPVerificationLightningController
                     {
                         if (str != null && str.Contains('TELEPHONE/EMAIL CHANGED WITHIN 60 DAYS'))
                         {
-
-                            Authenticated_Log__c log = new Authenticated_Log__c();
+							// the below log entry is commented for OTP-Not Eligible status not required now
+                          /*  Authenticated_Log__c log = new Authenticated_Log__c();
                             log.SalesforceID__c = acc.Id;
                             log.Member__c = acc.Id;
                             log.First_Name__c = acc.FirstName;
@@ -1387,16 +771,16 @@ public class MemberOTPVerificationLightningController
                             insert log;
                             acc.Member_Verification_OTP_Invalid_Attempt__c = system.now();
                             update acc;
-                            System.Debug('not eligible---' + acc.id);
+                            System.Debug('not eligible---' + acc.id);*/
 
                             IsIneligibleLocal = 'true';
 							
 							RecordType rec1 = GetRecordTypeData('Authenticated_Log__c', 'Master Authentication Log');
        
 						     List<Authenticated_Log__c> MasterAuthenticationLog = GetDataForMasterAuthenticationLog(IVRGUIDFromUrl, rec1.id);
-						     if(MasterAuthenticationLog.size() == 0)
+						    /* if(MasterAuthenticationLog.size() == 0)
 						     {
-						     	
+						     	// the below log entry is commented for OTP-Not Eligible status not required now
 						     	 Authenticated_Log__c log2 = new Authenticated_Log__c();
 	                            log2.SalesforceID__c = acc.Id;
 	                            log2.Member__c = acc.Id;
@@ -1427,9 +811,8 @@ public class MemberOTPVerificationLightningController
 	                            MasterAuthenticationLog[0].GUID__c = GUID;
 	                            update MasterAuthenticationLog[0];
 						     	
-						     }
-							
-							
+						     }							
+							*/
 							
 							
                         }
@@ -1460,11 +843,14 @@ public class MemberOTPVerificationLightningController
         }
         obj.LstMemid = GetMemList_Options(memid);
 		system.debug('obj---' + obj);
+		system.debug('obj.LstMemid---' + obj.LstMemid);
+		MemberOTPVerificationLightningController.OTPVerificationModelOBj  = obj;
+		system.debug('OTPVerificationModelOBj---' + OTPVerificationModelOBj);
         return obj;
 
 
     }
-   */ 
+    
     
     @auraenabled
       public static void DeclineOTPAtFirstStep(string accid, String GUID, string IVRGUIDFromUrl)
@@ -2205,16 +1591,18 @@ public class MemberOTPVerificationLightningController
     } 
 	
 	@auraenabled
-	public static double CancelOTP(string accid, String GUID, string fieldName, string IVRGUIDFromUrl)
+	public static Map<string,object> CancelOTP(string accid, String GUID, string fieldName, string IVRGUIDFromUrl)
 	{
-		 Double OTPAttemptCount;
-		 List<Member_Verification_Attempt__c> mt1 = [Select id,Member_Name__c,Authentication_Type__c,OTP_Cancelled_Attempt__c, Member_Salesforce_Id__c, Number_of_Attempts__c
+		// Double OTPAttemptCount;
+		 Double OTPCancelAttempt=0;
+		/* List<Member_Verification_Attempt__c> mt1 = [Select id,Member_Name__c,Authentication_Type__c,OTP_Cancelled_Attempt__c, Member_Salesforce_Id__c, Number_of_Attempts__c
 						 from Member_Verification_Attempt__c where Member_Salesforce_Id__c =:accid and CreatedDate = Today limit 1];
 	    if(mt1.size() > 0)
 	    {
 	    	OTPAttemptCount = mt1[0].OTP_Cancelled_Attempt__c;
 	    }
 	    else{OTPAttemptCount=0;}
+		*/
 		
 		Account acc = [select Id, Member_Verification_OTP_Invalid_Attempt__c, Home_Phone__pc, FirstName, LastName, Mobile_Phone__pc, Work_Phone__pc, PersonEmail, Alternate_Email__pc from Account where ID =: accid];
 		 string  AccountNumber;
@@ -2337,12 +1725,56 @@ public class MemberOTPVerificationLightningController
 			MasterAuthenticationLog[0].Member_Number__c = AccountNumber;
 		 	update MasterAuthenticationLog[0];
 		 }
-        
-        
-        return OTPAttemptCount; 
+		 /*------------- the below code is written to crm-1742 "OTP Allow No more than 2x for each phone number or email check" ------------------*/
+		 system.debug('IVRGUIDFromUrl##'+ IVRGUIDFromUrl);
+		 Map<string,object> result = new Map<string,object>();
+		 List<String> PhoneandEmailCountList = new List<String>();
+		 PhoneandEmailCountList = Get2XCodeSentData(IVRGUIDFromUrl);
+		
+        result.put('PhoneAndEmailList',PhoneandEmailCountList);  
+        return result;
+       // return PhoneandEmailCountMap; 
 	}
+	
+	private static List<String> Get2XCodeSentData(String IVRGUIDFromUrl){
+		 AggregateResult[] groupedEmailResults = [Select OTP_Email__c, count(Id) from Authenticated_Log__c where IVR_GUID__c=: IVRGUIDFromUrl and Decision__c ='OTP – Code Sent' and  RecordType.Name ='OTP Authentication Log' and OTP_Email__c != null GROUP BY OTP_Email__c];
+		 AggregateResult[] groupedPhoneResults = [Select OTP_Phone__c, count(Id) from Authenticated_Log__c where IVR_GUID__c=: IVRGUIDFromUrl and Decision__c ='OTP – Code Sent' and  RecordType.Name ='OTP Authentication Log' and OTP_Phone__c != null GROUP BY OTP_Phone__c];
+		 List<String> PhoneandEmailCountList = new List<String>();
+		 for (AggregateResult ar : groupedEmailResults)  {
+			    
+			    System.debug('Email Count' + ar.get('expr0'));
+			    if(Integer.valueOf(ar.get('expr0')) >=2){
+			      PhoneandEmailCountList.add(string.valueOf(ar.get('OTP_Email__c')));
+			    }
+			}
+		 for (AggregateResult ar : groupedPhoneResults)  {
+			    
+			    System.debug('Phone Count' + ar.get('expr0'));
+			    if(Integer.valueOf(ar.get('expr0')) >=2){
+			      PhoneandEmailCountList.add(string.valueOf(ar.get('OTP_Phone__c')));
+			    }
+			}
+		 
+		 
+		
+		system.debug('PhoneandEmailCountMap##' + PhoneandEmailCountList);
+		return 	PhoneandEmailCountList;
+		
+	} 
+	
 	@AuraEnabled
-    
+		
+	public static Map<string,object> OTPResend(String IVRGUIDFromUrl){
+		
+		 Map<string,object> result = new Map<string,object>();
+		 List<String> PhoneandEmailCountList = new List<String>();
+		 PhoneandEmailCountList = Get2XCodeSentData(IVRGUIDFromUrl);
+		
+        result.put('PhoneAndEmailList',PhoneandEmailCountList);  
+        return result;
+	}
+	
+	@AuraEnabled    
      public static integer GetMemberAuthenticationSessionTime()
      {
      	List<Member_Authentication_Session_Time__c> custSetting = new List<Member_Authentication_Session_Time__c>();

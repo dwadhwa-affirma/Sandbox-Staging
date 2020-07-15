@@ -474,78 +474,78 @@ public class MemberAuthenticationController{
         List<Account_Details__c> MemberNameDobDetails1 = new List<Account_Details__c>();  
         MemberNameDobDetails = new List<Person_Account__c>();   
         JTMemberNameDobDetails = new List<Person_Account__c>();     
-        
-        for(Account selectedOne: NameList){
-             
-             system.debug('---NameList for 1--'+NameList);
-            if(selectedOne.ID == selectedID){
-            
-                JTwrapperLst = new List<JTMemberNameDoBWrapper>();
-                system.debug('NameList.selectedOne.ID_1_Number__pc'+selectedOne.ID_1_Number__pc);
-                
-                // for display
-                SalesforceID = selectedID;
-                Names = selectedOne;
-                firstName = selectedOne.FirstName;
-                lastName = selectedOne.LastName;
-                
-                system.debug('ID.............'+selectedID);
-                  
-                // get all related account details for selected member
-                List<Account_Details__c> memberDetails = new List<Account_Details__c>();
-                memberDetails = vc.AccountNumbersAuth(selectedOne.Id); 
-                
-                // get loan detals
-                MemberLoanDetails = vc.MemberLoanDetails(selectedOne.Id);
-                
-                LoanSelectedID = '';
-                for(Account_Details__c detail :MemberLoanDetails)
-                {
-                    if(LoanSelectedID == '')
-                    {
-                        LoanSelectedID = LoanSelectedID + detail.id + '# '; 
-                    }
-                    else
-                    {
-                        LoanSelectedID = LoanSelectedID + ';' + detail.id + '# ';
-                        
-                    }
-                     
+        if(NameList != null ) {
+            for(Account selectedOne: NameList){
+                 
+                     system.debug('---NameList for 1--'+NameList);
+                     if(selectedOne.ID == selectedID){
                     
-                }
-                
-                
-                // get DOB details for all related members with related accounts   
-                
-                MemberNameDobDetails1 = vc.MemberDetailsDOB(selectedOne.Id);
-                
-                if(!MemberNameDobDetails1.isEmpty()){
-                    MemberNameDobDetails = vc.MemebersNameDobDetails(MemberNameDobDetails1);
-                }
-                
-                
-                // DL/STATE ID/PASSPORT     
-                setIDStatus(selectedOne);   
+                        JTwrapperLst = new List<JTMemberNameDoBWrapper>();
+                        system.debug('NameList.selectedOne.ID_1_Number__pc'+selectedOne.ID_1_Number__pc);
                         
-                // create related member details for UI        
-                setRelatedMemberDetails(selectedOne);
-                
-                // set Membermatch status
-                setMemberNumberMatchStatus(selectedOne, memberDetails);
-                
-                
-                // set SSN/MMN/DOB Status
-                setOtherMatch(selectedOne);
+                        // for display
+                        SalesforceID = selectedID;
+                        Names = selectedOne;
+                        firstName = selectedOne.FirstName;
+                        lastName = selectedOne.LastName;
+                        
+                        system.debug('ID.............'+selectedID);
+                          
+                        // get all related account details for selected member
+                        List<Account_Details__c> memberDetails = new List<Account_Details__c>();
+                        memberDetails = vc.AccountNumbersAuth(selectedOne.Id); 
+                        
+                        // get loan detals
+                        MemberLoanDetails = vc.MemberLoanDetails(selectedOne.Id);
+                        
+                        LoanSelectedID = '';
+                        for(Account_Details__c detail :MemberLoanDetails)
+                        {
+                            if(LoanSelectedID == '')
+                            {
+                                LoanSelectedID = LoanSelectedID + detail.id + '# '; 
+                            }
+                            else
+                            {
+                                LoanSelectedID = LoanSelectedID + ';' + detail.id + '# ';
                                 
-                // Set Card Number Status
-               setCardStatus(selectedOne);
-               
-               // Set Email  Status
-               setEmailStatus(selectedOne); 
-                
-            }
-        }
-        
+                            }
+                             
+                            
+                        }
+                        
+                        
+                        // get DOB details for all related members with related accounts   
+                        
+                        MemberNameDobDetails1 = vc.MemberDetailsDOB(selectedOne.Id);
+                        
+                        if(!MemberNameDobDetails1.isEmpty()){
+                            MemberNameDobDetails = vc.MemebersNameDobDetails(MemberNameDobDetails1);
+                        }
+                        
+                        
+                        // DL/STATE ID/PASSPORT     
+                        setIDStatus(selectedOne);   
+                                
+                        // create related member details for UI        
+                        setRelatedMemberDetails(selectedOne);
+                        
+                        // set Membermatch status
+                        setMemberNumberMatchStatus(selectedOne, memberDetails);
+                        
+                        
+                        // set SSN/MMN/DOB Status
+                        setOtherMatch(selectedOne);
+                                        
+                        // Set Card Number Status
+                       setCardStatus(selectedOne);
+                       
+                       // Set Email  Status
+                       setEmailStatus(selectedOne); 
+                        
+                    }
+       		 }
+    }    
         system.debug('flags---'+DOBMatch+'--'+MMNMatch+'--'+SSNnumberMatch+'---'+IdNumberMatch + '----' + CardNumberConfirm  + '-----' + CardNumberMatch);
         
         //setConfirmationOncheckboxes();
@@ -683,8 +683,11 @@ public class MemberAuthenticationController{
                         if(DOB == null || DOB == '')
                         {DOBMatch = '';}       
                          String[] dobparse = DOB.split('-');
+                        System.debug('userEnteredInformation##'+userEnteredInformation.DOB);
                          userEnteredInformation.DOB = string.ValueOf(dobparse[2]) + '-'+ String.valueOf(dobparse[0])+ '-' + String.valueOf(dobparse[1]);	
                     	 System.debug('DOB---if'+DOB);
+                         
+                         	
                     }else{
                             if(DOB !=null && DOB != ''){   
                             String[] dobparse = DOB.split('-');

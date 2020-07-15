@@ -164,7 +164,7 @@ verificationObject.Pin = 'test1234';   */
         ma.SSNnumberMatch = 'false';
         ma.PhoneNumber = '9169954478';
         ma.EnteredMemberNumber = '';
-        ma.EnteredCardNumber = '';
+        ma.EnteredCardNumber = '123456789';
         ma.EnteredSSN = '';
         ma.VerifyCallerDetails();
         //ma.verifySelectedCallerDetails();
@@ -186,11 +186,11 @@ verificationObject.Pin = 'test1234';   */
         String EnteredMemberNumber = '0000214414';
         String SSNnumberMatch = '';
         String PhoneNumber = '9169954478';
-        String EnteredCardNumber = '5116';
+        String EnteredCardNumber = '1234';
         String EnteredSSN = '8120';
         String MMN = '';
         String MMNMatch = 'true';
-        String DOB='';
+        String DOB='1963-04-30';
         String DOBMatch = 'true';
         String IdNumber = 'N9482108';
         String IdNumberMatch = 'true';

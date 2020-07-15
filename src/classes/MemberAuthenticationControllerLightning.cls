@@ -211,10 +211,14 @@ public class MemberAuthenticationControllerLightning{
       
       Authenticated_Log__c log = new Authenticated_Log__c();
       log.RecordTypeId= rec.id;
-      If(status == 'failed')
-      	log.OOW_Status__c = 'Fail';
-      If(status == 'passed')
-      	log.OOW_Status__c = 'Pass';	
+        If(status == 'failed'){
+      		log.OOW_Status__c = 'Fail';
+        }else if(status == 'passed'){
+            log.OOW_Status__c = 'Pass';	
+        }else{
+            log.OOW_Status__c = status;	
+        }
+      	
       log.OOW_Member_Number__c = MemberNumber;
       if(reason == '')
      {
@@ -240,10 +244,13 @@ public class MemberAuthenticationControllerLightning{
       log.Member_Number__c = MemberNumber;
       log.GUID__c = GUID;
       log.IVR_GUID__c = IVRGUIDFromUrl;
-      If(status == 'failed')
-      	log.Decision__c = 'Fail';
-      If(status == 'passed')
-      	log.Decision__c = 'Pass';
+        If(status == 'failed'){
+      		log.Decision__c = 'Fail';
+        }else If(status == 'passed'){
+      		log.Decision__c = 'Pass';
+        }else{
+         	log.Decision__c = status;   
+	     }
       system.debug('sp2##'+ sp2);
       if(sp2.size() > 0)log.First_Name__c = sp2[0];
       if(sp2.size() > 2) log.Last_Name__c = sp2[2];
@@ -264,10 +271,13 @@ public class MemberAuthenticationControllerLightning{
        		
 			     Authenticated_Log__c log2 = new Authenticated_Log__c();
 			      log2.RecordTypeId= rec1.id;
-			      If(status == 'failed')
-			      	log2.OOW_Status__c = 'Fail';
-			      If(status == 'passed')
-			      	log2.OOW_Status__c = 'Pass';	
+			      If(status == 'failed'){
+                        log2.OOW_Status__c = 'Fail';
+                    }else if(status == 'passed'){
+                        log2.OOW_Status__c = 'Pass';	
+                    }else{
+                        log2.OOW_Status__c = status;	
+                    }
 			      log2.OOW_Member_Number__c = MemberNumber;
 			      if(reason == ''){
 			         	log2.OOW_Reason__c = 'N/A';
@@ -288,10 +298,13 @@ public class MemberAuthenticationControllerLightning{
 			     log2.Member_Number__c = MemberNumber;
 			     log2.GUID__c = GUID;
 			     log2.IVR_GUID__c = IVRGUIDFromUrl;
-			      If(status == 'failed')
-			      	log2.Decision__c = 'Fail';
-			      If(status == 'passed')
-			      	log2.Decision__c = 'Pass';
+			      If(status == 'failed'){
+                        log2.Decision__c = 'Fail';
+                    }else If(status == 'passed'){
+                        log2.Decision__c = 'Pass';
+                    }else{
+                        log2.Decision__c = status;   
+                     }
 			      system.debug('sp2##'+ sp2);
 			      if(sp2.size() > 0)log2.First_Name__c = sp2[0];
 			      if(sp2.size() > 2) log2.Last_Name__c = sp2[2];
@@ -304,10 +317,13 @@ public class MemberAuthenticationControllerLightning{
        	
        		
        			 
-			      If(status == 'failed')
-			      	MasterAuthenticationLog[0].OOW_Status__c = 'Fail';
-			      If(status == 'passed')
-			      	MasterAuthenticationLog[0].OOW_Status__c = 'Pass';	
+           			If(status == 'failed'){
+			      		MasterAuthenticationLog[0].OOW_Status__c = 'Fail';
+                    }else If(status == 'passed'){
+			      		MasterAuthenticationLog[0].OOW_Status__c = 'Pass';	
+                    }else {
+                        MasterAuthenticationLog[0].OOW_Status__c = status;
+                    }
 			      MasterAuthenticationLog[0].OOW_Member_Number__c = MemberNumber;
 			      if(reason == ''){
 			         	MasterAuthenticationLog[0].OOW_Reason__c = 'N/A';
@@ -327,10 +343,13 @@ public class MemberAuthenticationControllerLightning{
 			     MasterAuthenticationLog[0].Current_User__c = Userinfo.getuserid();
 			     MasterAuthenticationLog[0].Member_Number__c = MemberNumber;
 			     MasterAuthenticationLog[0].GUID__c = GUID;
-			      If(status == 'failed')
+           		If(status == 'failed'){	
 			      	MasterAuthenticationLog[0].Decision__c = 'Fail';
-			      If(status == 'passed')
+                }else If(status == 'passed'){
 			      	MasterAuthenticationLog[0].Decision__c = 'Pass';
+                }else{
+                    MasterAuthenticationLog[0].Decision__c = status;
+                }
 			      system.debug('sp2##'+ sp2);
 			      if(sp2.size() > 0)MasterAuthenticationLog[0].First_Name__c = sp2[0];
 			      if(sp2.size() > 2) MasterAuthenticationLog[0].Last_Name__c = sp2[2];
@@ -1039,7 +1058,82 @@ public class MemberAuthenticationControllerLightning{
         String MothersMaidenName;
         String EmailList = '';
         Set<String> EmailSet = new Set<String>();
+        Set<Id> NonBenificiaryIdSet = new Set<Id>(); 
+        List<Account> ListofNonBenificiaryAccount = new List<Account>(); 
+        List<Account> listAccount;
+        List<accounthistory> listhistory;
+		listAccount = [select Id, FirstName, LastName, Email_raw__c, Alternate_Email__pc, PersonEmail from Account where ID =:MemberId];
+		list<string> AllRelatedAccounts = GetRelatedAccountsPopulated(MemberId,listAccount[0] );
+		system.debug('RelatedAccounts##' + AllRelatedAccounts); 
+		String DefaultEmailInList='';
+		/*-------------------------------------------Aut-196 implementaion begin----------------------------------------------*/
+		//---------------this is to bring all email address including related members in 360 view---------------------------------------------
+		if (AllRelatedAccounts != null && AllRelatedAccounts.size() > 0)
+        {
+
+            listAccount = [select Id, Member_Verification_OTP_Invalid_Attempt__c, Home_Phone__pc, FirstName, LastName, Mobile_Phone__pc, Work_Phone__pc, PersonEmail, Alternate_Email__pc, Email_raw__c,Alt_Email_Raw__c  from Account where ID in :allRelatedAccounts];
+            listhistory = [Select accountid,field,OldValue, NewValue, CreatedDate From accounthistory where accountid in :AllRelatedAccounts and field in('PersonEmail','Alternate_Email__pc','Email_raw__c','Alt_Email_Raw__c') order by CreatedDate desc Limit 1];
+            if(listhistory.size() > 0){
+            	if(listhistory[0].NewValue != null){
+            		DefaultEmailInList = String.valueof(listhistory[0].NewValue);	
+             		EmailSet.add(DefaultEmailInList.toLowercase());
+            	}
+             	
+            }
+            
+           if(listAccount.size() > 0)
+           {
+           	 for(Account acc: listAccount)
+           	 {
+           	 	if(acc.PersonEmail != null){
+            	
+            	EmailSet.add(acc.PersonEmail.toLowercase());
+            
+           		 }
+	            if(acc.Alternate_Email__pc != null){
+	            	
+	            	EmailSet.add(acc.Alternate_Email__pc.toLowercase());
+	            }
+            
+	            if(acc.Email_raw__c  != null){
+	            	
+	            	EmailSet.add(acc.Email_raw__c.toLowercase());
+	         	}
+	         	if(acc.Alt_Email_Raw__c  != null){
+	            	
+	            	EmailSet.add(acc.Alt_Email_Raw__c.toLowercase());
+	         	}
+           	 }
+           		
+           	
+           }
+            
+        	
+        	system.debug('EmailSet'+EmailSet);
+        	
+        	if(EmailSet.size() > 0){
+        		for(String s : EmailSet){
+        			
+        			if(EmailList != ''){
+        				EmailList = EmailList + ' , ' + s;
+        			}
+        			else{
+        				EmailList = s;
+        			}
+        		}	
+        	}
+        	
+        	result.put('DefaultEmailInList', DefaultEmailInList);
+        	result.put('Emails',EmailList);
+        	
+           system.debug('EmailList##' +EmailList);
+        }
          
+       /*-------------------------------------------Aut-196 implementaion Ends----------------------------------------------*/  
+         
+       
+		
+		 
         for(Account selectedOne : [select Name,FirstName ,Email_raw__c , Alternate_Email__pc,Residential_Zipocde__pc,  LastName , ID, SSN_Last_4__pc, BIRTH_DATE__pc,Mothers_Maiden_Name__pc, PersonEmail,  ID_1_Description__pc,ID_2_Description__pc,ID_3_Description__pc, ID_1_Number__pc ,ID_2_Number__pc, ID_3_Number__pc, ID_1_Type__pc, ID_2_Type__pc, ID_3_Type__pc, ID_1_Expiration_Date__pc, ID_2_Expiration_Date__pc, ID_3_Expiration_Date__pc, ID_1_Type__c, ID_2_Type__c, ID_3_Type__c from Account where id =:MemberId]){   
             
             if(selectedOne.BIRTH_DATE__pc != null){
@@ -1072,7 +1166,7 @@ public class MemberAuthenticationControllerLightning{
               result.put('MothersMaidenName','');
             }
             
-            if(selectedOne.PersonEmail != null){
+          /*  if(selectedOne.PersonEmail != null){
               
               EmailSet.add(selectedOne.PersonEmail.toLowercase());
             
@@ -1101,7 +1195,7 @@ public class MemberAuthenticationControllerLightning{
             }  
           }
           
-          result.put('Emails',EmailList);
+          result.put('Emails',EmailList);*/
           
             if(selectedOne.ID_1_Type__c == null){ 
                 if(selectedOne.ID_2_Type__c != null){
@@ -1130,10 +1224,10 @@ public class MemberAuthenticationControllerLightning{
                     
                     DLStateIdPassportToMatch = ((ID_1_Type == '' || ID_1_Type == null) ? '' : string.valueof(ID_1_Type) + ' | ') + selectedOne.ID_2_Description__pc   + '' + (selectedOne.ID_2_Number__pc == null? '' : string.valueof(selectedOne.ID_2_Number__pc)+ ' | ') + '' + (selectedOne.ID_2_Expiration_Date__pc == null? '' : string.valueof(selectedOne.ID_2_Expiration_Date__pc.date()));
                     
-          if(DLStateIdPassportToMatch.endsWith(' | '))
-          {
-            DLStateIdPassportToMatch = DLStateIdPassportToMatch.substring(0,DLStateIdPassportToMatch.lastIndexOf(' | '));
-          }                        
+          			if(DLStateIdPassportToMatch.endsWith(' | '))
+         		 	{
+           			 	DLStateIdPassportToMatch = DLStateIdPassportToMatch.substring(0,DLStateIdPassportToMatch.lastIndexOf(' | '));
+         		 	}                        
                 }
                 else
                 {
@@ -1160,9 +1254,9 @@ public class MemberAuthenticationControllerLightning{
                     DLStateIdPassportToMatch = ((ID_1_Type == '' || ID_1_Type == null) ? '' : string.valueof(ID_1_Type) + ' | ') + selectedOne.ID_3_Description__pc   + '' + (selectedOne.ID_3_Number__pc == null? '' : string.valueOf(selectedOne.ID_3_Number__pc) +' | ') + '' + (selectedOne.ID_3_Expiration_Date__pc == null? '' : string.valueof(selectedOne.ID_3_Expiration_Date__pc.date()));
                     
                     if(DLStateIdPassportToMatch.endsWith(' | '))
-          {
-            DLStateIdPassportToMatch = DLStateIdPassportToMatch.substring(0,DLStateIdPassportToMatch.lastIndexOf(' | '));
-          }
+          			{
+           				 DLStateIdPassportToMatch = DLStateIdPassportToMatch.substring(0,DLStateIdPassportToMatch.lastIndexOf(' | '));
+         			}
                 }
             }
             else{
@@ -1189,9 +1283,9 @@ public class MemberAuthenticationControllerLightning{
                   DLStateIdPassportToMatch =  ((ID_1_Type == '' || ID_1_Type == null) ? '' : string.valueof(ID_1_Type) + ' | ') + selectedOne.ID_1_Description__pc  +''+ (selectedOne.ID_1_Number__pc == null ? '' : string.valueof(selectedOne.ID_1_Number__pc) + ' | ') + '' + (selectedOne.ID_1_Expiration_Date__pc == null? '' : string.valueof(selectedOne.ID_1_Expiration_Date__pc.date()));
                   
                   if(DLStateIdPassportToMatch.endsWith(' | '))
-          {
-            DLStateIdPassportToMatch = DLStateIdPassportToMatch.substring(0,DLStateIdPassportToMatch.lastIndexOf(' | '));
-          }
+          			{
+           				 DLStateIdPassportToMatch = DLStateIdPassportToMatch.substring(0,DLStateIdPassportToMatch.lastIndexOf(' | '));
+          			}
             }
             
             // Set ID Number Status 
@@ -3991,6 +4085,79 @@ public class MemberAuthenticationControllerLightning{
         public Id ID {get;set;}
      
       }
+      
+      public static list<string> GetRelatedAccountsPopulated(string accID, account acc)
+    	{
+
+		 set<string> typeList = new set<string>();
+		 for(Member360_TypeTranslate__c t : Member360_TypeTranslate__c.getAll().values()){
+			   	typeList.add(t.name);	
+			}
+        list<string> allRelatedAccounts = new list<string>();
+        allRelatedAccounts.add(accID);
+		
+
+        system.debug('allRelatedAccounts 1---' + allRelatedAccounts);
+
+
+
+
+
+
+        list<Person_Account__c> paList = new list<Person_Account__c>();
+        paList = [SELECT Id,
+                         Account_Number__c, Account_Number__r.RecType__c, Account_Number__r.Name FROM Person_Account__c WHERE PersonID__c =:acc.Id and TypeTranslate__c IN:typeList];
+        set<String> accountNumberSet = new set<String>();
+        set<Id> accIdset = new set<Id>();
+        set<String> acctypeSet = new set<String>();
+        for (Person_Account__c var: paList)
+        {
+            accountNumberSet.add(var.Account_Number__r.Name);
+            acctypeSet.add(var.Account_Number__r.RecType__c);
+            accIdSet.add(var.Account_Number__c);
+        }
+
+        list<Account_Details__c> accList = new list<Account_Details__c>();
+        if (acctypeSet.contains('ACCT'))
+        {
+            accList = [SELECT Id,
+                              Name FROM Account_Details__c WHERE Name IN: accountNumberSet and RecType__c != 'CARD'];
+        }
+        else
+        {
+            accList = [SELECT Id,
+                              Name
+
+                               FROM Account_Details__c Where Id IN: accIdSet and RecType__c != 'CARD'];
+        }
+        system.debug('allRelatedAccounts 2---' + allRelatedAccounts);
+
+        set<String> accName = new Set<String>();
+
+        for (Account_Details__c var: accList)
+        {
+            accName.add(var.Name);
+        }
+
+        list<Person_Account__c> ContactList = new list<Person_Account__c>();
+        ContactList = [Select
+
+                              Account_Number__c, personId__c
+
+                               From Person_Account__c WHERE Account_Number__r.Name IN: accName and TypeTranslate__c IN:typeList]; //  and (NOT TypeTranslate__c like '%Beneficiary%')
+        list<string> accids = new list<string>();
+
+        for (Person_Account__c var: ContactList)
+        {
+            accids.add(var.Account_Number__c);
+            allRelatedAccounts.add(var.personId__c);
+
+        }
+        system.debug('allRelatedAccounts 3---' + allRelatedAccounts);
+
+        return allRelatedAccounts;
+
+    }
       
     
     
