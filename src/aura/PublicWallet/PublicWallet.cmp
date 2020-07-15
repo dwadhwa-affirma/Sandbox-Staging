@@ -21,7 +21,9 @@
 	<aura:attribute name="AdditionalTokenOption3Match" type="String"/>
 	<aura:attribute name="IsReLoadRequired" type="boolean" default="false"/>
 	<aura:attribute name="IsUserSessionLoaded" type="boolean" default="false"/>      
-	
+	<aura:attribute name="EmailList" type="String[]" description="list of emails "/>
+    <aura:attribute name="DefaultEmailSelected" type="String" description="Default Email Selected in dropdown"/>
+    
     <aura:method name="PublicWalletMethod" action="{!c.doInit}" access="PUBLIC"> 
    		 <aura:attribute name="param1" type="String"/>
    		 <aura:attribute name="param2" type="boolean"/> 
@@ -76,10 +78,11 @@
        			<div class="InnerDiv">
        				<div class="leftDiv">
 	       				    
-	       				    <span class="labeltxt">Email Address: </span> 
-	       				<div>
-                            <ui:outputText aura:id="EmailOutput" value="{!v.Emails}"/>
-       					</div>				
+	       				  <lightning:select name="Email"  aura:id="EmailId" value="{!v.DefaultEmailSelected}" class="select-auto-width" label="Email Address:">
+							        <aura:iteration items="{!v.EmailList}" var="Email">
+							            <option text="{!Email}" value="{!Email}" selected="{!Email.selected}"/>
+							        </aura:iteration>
+							  </lightning:select>		
        					
                           
 	       			</div>

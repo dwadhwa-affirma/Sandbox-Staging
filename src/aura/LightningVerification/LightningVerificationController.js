@@ -124,6 +124,7 @@
     	var NegativeScoreObtained = component.get("v.NegativeScoreObtained");
     	var TotalScoreRequiredToAchieveLevel = component.get("v.TotalScoreRequiredToAchieveLevel");
     	var CurrentScore = component.get("v.CurrentScore");
+    	var IsAllEmailandPhoneExhausted = event.getParam("IsAllEmailandPhoneExhausted");
     	/*var IsDebitPinAvailable;
 	    if(DebitCardStatus =='true')
 	    {	IsDebitPinAvailable = true;
@@ -234,7 +235,10 @@
 		for(var i=0 ; i < liElement.length; i++)
 		{
 			 aElement = liElement[i].firstElementChild;
-			 if(eventParam == "Cancelled" && aElement.id =='OTPTab__item'){			  
+			 if(eventParam == "Cancelled" && aElement.id =='OTPTab__item'){
+	  			if(IsAllEmailandPhoneExhausted == true){
+	  				IsOTPAvailable = false;
+	  			}
 	  			component.set("v.IsOTPAvailableOnLoad",IsOTPAvailable);
 	  			helper.GetNextAuthenticationType(component, event, helper, memberid, MemberType, MaximumPointsAvailable, PointsObtained, IsKYMAvailable, IsOTPAvailable, DebitCardStatus, IsOOWAvailable, IsPublicWalletAvailable, IsCFCUWalletAvailable);
 			}

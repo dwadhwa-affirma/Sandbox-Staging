@@ -667,6 +667,7 @@
 		                        {
 		                            notes = '';
 		                        }
+                               
 		                        var action1 = component.get("c.SaveOOWLogData");
 		  		   					
 		   	      				 var membernumber = result.AccountNumber;

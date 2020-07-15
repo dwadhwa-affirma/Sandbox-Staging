@@ -46,7 +46,7 @@
 }
 .THIS .select-auto-width > .slds-form-element__control > .slds-select_container{
     display: inline-block;
-    width: 200px;
+   width: 230px;
 }
 .THIS .btnAlign{
 	display: inline-block;

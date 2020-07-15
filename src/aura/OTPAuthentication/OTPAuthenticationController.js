@@ -316,11 +316,7 @@
 		component.set("v.loading", 'true');
 	},
 	
-	 resendOTP : function(component, event, helper) {
-         component.set("v.currentStep", "1");
-         component.set("v.selectedValue", "");
-		
-	},
+	
 	clickverifyOTP:  function(component, event, helper) {
 		var action = component.get("c.verifyOTP");
 		var keyModel = component.get("v.keyModel");		
@@ -420,7 +416,20 @@
 	 var selectedOTPSendOption = component.get("v.selectedValue");
 	 var action = component.get("c.CancelOTP");
 	 var GUID = component.get("v.GUID");
-	 var IVRGUIDFromUrl = component.get("v.IVRGUIDFromUrl");  
+	 var IVRGUIDFromUrl = component.get("v.IVRGUIDFromUrl");
+	 var EmailandPhoneModelCount = parseInt(component.get("v.Model.EmailsList_Options.length")) + parseInt(component.get("v.Model.PhoneList_Options.length"));
+     var emailArray =[];
+     var phoneArray =[];
+     var emailLength = parseInt(component.get("v.Model.EmailsList_Options.length")) ;
+     var phoneLength = parseInt(component.get("v.Model.PhoneList_Options.length")) ;  
+     for(var i=0 ; i < emailLength; i++)
+      {
+      	 emailArray.push(component.get("v.Model.EmailsList_Options")[i]);
+      }
+      for(var i=0 ; i < phoneLength; i++)
+      {
+      	 phoneArray.push(component.get("v.Model.PhoneList_Options")[i]);
+      }  
 	 if(selectedOTPSendOption)
 	 {
 		  action.setParams({"accid" : recordid, "GUID" : GUID, "fieldName": selectedOTPSendOption,"IVRGUIDFromUrl": IVRGUIDFromUrl});
@@ -431,19 +440,78 @@
 	  action.setCallback(this, function(response){
 		  var status = response.getState();
 		  var result =  response.getReturnValue();
-		  component.set("v.CancelledAttempt", result);
+		  
 		  if(status === "SUCCESS")
 		  {
-			  component.set("v.verified", "Cancelled");
-			  if(result > 0){
-				  component.set("v.currentStep", "3");
+			  
+			  	component.set("v.verified", "Cancelled");
+			   
+			  if(result.PhoneAndEmailList != undefined && result.PhoneAndEmailList.length > 0){
+					 
+                  var resultLength = parseInt(result.PhoneAndEmailList.length);
+                  if(emailLength  > 0 ){
+                      
+                      for(var i =0 ; i < emailLength; i++){
+                          
+                          for(var j= 0 ; j < resultLength;  j++ )
+                          {
+                               	var objIndex = emailArray.findIndex((obj => obj.Value == result.PhoneAndEmailList[j]));
+                              if(objIndex >=0){emailArray[objIndex].isEnabled = true;}
+
+                              
+                          }
+                                                    	
+                      }
+                      
+                      component.set("v.Model.EmailsList_Options", emailArray);
+                      var emailDisableCount = 0;
+                      for(var i =0 ; i < emailArray.length; i++)
+                      {
+                          if(emailArray[i].isEnabled == false){
+                              emailDisableCount = parseInt(emailDisableCount) + 1; 
+                          }
+                      }
+                  }
+                  if(phoneLength  > 0 ){
+                      
+                      for(var i =0 ; i < phoneLength; i++){
+                          
+                          for(var j= 0 ; j < resultLength;  j++ )
+                          {
+                               	var objIndex = phoneArray.findIndex((obj => obj.Value == result.PhoneAndEmailList[j]));
+                                 
+                              if(objIndex >=0){phoneArray[objIndex].isEnabled = true;}
+
+                              
+                          }
+                                                    	
+                      }
+                      
+                      component.set("v.Model.PhoneList_Options", phoneArray);
+                      var phoneDisableCount = 0;
+                      for(var i =0 ; i < phoneArray.length; i++)
+                      {
+                          if(phoneArray[i].isEnabled == false){
+                              phoneDisableCount = parseInt(phoneDisableCount) + 1; 
+                          }
+                      }
+                  }		
+					//  component.set("v.IsCanceledCalled", true);
+					  component.set("v.currentStep", "1");
+                  	  component.set("v.selectedValue", "");	
+					  if(phoneDisableCount == 0 &&  emailDisableCount == 0){
+						  component.set("v.IsAllEmailandPhoneExhausted" , true);
+						  component.set("v.currentStep", "3");
+					  }
 			  }
 			  else
 			  {
 				   component.set("v.currentStep", "1");
 			  }
+			  
+			  
 			  var compEvent = component.getEvent("statusEvent");
-			  compEvent.setParams({"OTPVarifiedStatus" : "Cancelled","ActionType": 'OTP'});
+			  compEvent.setParams({"OTPVarifiedStatus" : "Cancelled","ActionType": 'OTP',"IsAllEmailandPhoneExhausted":component.get("v.IsAllEmailandPhoneExhausted")});
 			  compEvent.fire();
 		  }
 		  else if (status === "ERROR") {
@@ -455,5 +523,96 @@
 	  $A.enqueueAction(action);
 	  component.set("v.loading", 'false');
 	  
-   }
+   },
+   resendOTP : function(component, event, helper) {
+         
+         var IVRGUIDFromUrl = component.get("v.IVRGUIDFromUrl");
+		 var EmailandPhoneModelCount = parseInt(component.get("v.Model.EmailsList_Options.length")) + parseInt(component.get("v.Model.PhoneList_Options.length"));
+	     var emailArray =[];
+	     var phoneArray =[];
+	     var emailLength = parseInt(component.get("v.Model.EmailsList_Options.length")) ;
+	     var phoneLength = parseInt(component.get("v.Model.PhoneList_Options.length")) ;  
+	     for(var i=0 ; i < emailLength; i++)
+	      {
+	      	 emailArray.push(component.get("v.Model.EmailsList_Options")[i]);
+	      }
+	      for(var i=0 ; i < phoneLength; i++)
+	      {
+	      	 phoneArray.push(component.get("v.Model.PhoneList_Options")[i]);
+	      } 
+		
+		 var action = component.get("c.OTPResend");
+		 action.setParams({"IVRGUIDFromUrl": IVRGUIDFromUrl});
+		 action.setCallback(this, function(response){
+		  var status = response.getState();
+		  var result =  response.getReturnValue();
+		  
+			  if(status === "SUCCESS")
+			  {
+				  if(result.PhoneAndEmailList != undefined && result.PhoneAndEmailList.length > 0){
+		                  var resultLength = parseInt(result.PhoneAndEmailList.length);
+		                  if(emailLength  > 0 ){
+		                      
+		                      for(var i =0 ; i < emailLength; i++){
+		                          
+		                          for(var j= 0 ; j < resultLength;  j++ )
+		                          {
+		                               	var objIndex = emailArray.findIndex((obj => obj.Value == result.PhoneAndEmailList[j]));
+		                              if(objIndex >=0){emailArray[objIndex].isEnabled = true;}
+		
+		                              
+		                          }
+		                                                    	
+		                      }
+		                      
+		                      component.set("v.Model.EmailsList_Options", emailArray);
+                              var emailDisableCount = 0;
+                              for(var i =0 ; i < emailArray.length; i++)
+                              {
+                                  if(emailArray[i].isEnabled == false){
+                                      emailDisableCount = parseInt(emailDisableCount) + 1; 
+                                  }
+                              }
+		                  }
+		                  if(phoneLength  > 0 ){
+		                      
+		                      for(var i =0 ; i < phoneLength; i++){
+		                          
+		                          for(var j= 0 ; j < resultLength;  j++ )
+		                          {
+		                               	var objIndex = phoneArray.findIndex((obj => obj.Value == result.PhoneAndEmailList[j]));
+		                                 
+		                              if(objIndex >=0){phoneArray[objIndex].isEnabled = true;}
+		
+		                              
+		                          }
+		                                                    	
+		                      }
+	                      
+                              component.set("v.Model.PhoneList_Options", phoneArray);
+                              var phoneDisableCount = 0;
+                              for(var i =0 ; i < phoneArray.length; i++)
+                              {
+                                  if(phoneArray[i].isEnabled == false){
+                                      phoneDisableCount = parseInt(phoneDisableCount) + 1; 
+                                  }
+                              }
+		                  }
+				  	}
+				 	component.set("v.currentStep", "1");
+				 	component.set("v.selectedValue", "");
+					if(emailDisableCount == 0 && phoneDisableCount ==0){
+							  component.set("v.IsAllEmailandPhoneExhausted" , true);
+							 
+					 }
+				  
+				  	 var compEvent = component.getEvent("statusEvent");
+				  	 compEvent.setParams({"OTPVarifiedStatus" : "Cancelled","ActionType": 'OTP',"IsAllEmailandPhoneExhausted":component.get("v.IsAllEmailandPhoneExhausted")});
+				  	 compEvent.fire();
+				  
+			  }
+		  });
+		 $A.enqueueAction(action);
+		 
+	},
 })

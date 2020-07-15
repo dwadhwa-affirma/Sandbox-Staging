@@ -38,6 +38,8 @@
 				if(result.Emails !=undefined){
 					if(result.Emails.length > 0){
 						component.set("v.Emails",result['Emails']);
+						var nameArr = result['Emails'].split(',');
+						component.set("v.EmailList",nameArr);
 					}
 				}
 				else{
@@ -53,6 +55,9 @@
 					component.set("v.MothersMaidenName",undefined);
 				}
 				
+				if(result.DefaultEmailInList != undefined){
+					component.set("v.DefaultEmailSelected", result.DefaultEmailInList);
+				}
 				if(result.PublicWalletStatus != undefined){
 				
 					if(component.get("v.IsUserSessionLoaded") == true)

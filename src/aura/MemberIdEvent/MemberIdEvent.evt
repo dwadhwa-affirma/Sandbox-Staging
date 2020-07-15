@@ -9,4 +9,5 @@
 	<aura:attribute name="ActionType" type="String"/>
 	<aura:attribute name="FDLSelectedLevel" type="String"/>
 	<aura:attribute name="FDLShowPopup" type="boolean"/>
+	<aura:attribute name="IsAllEmailandPhoneExhausted" type="boolean"/>
 </aura:event>

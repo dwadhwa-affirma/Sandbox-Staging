@@ -286,7 +286,7 @@
 			         			<div class="c-container maap-questions">
 			               			<lightning:layout horizontalAlign="spread">
                                             <lightning:layoutItem padding="around-small">
-                                            	<p class="field-header" title="AUTHINFO">MAAP LEVEL
+                                            	<p class="field-header" title="AUTHINFO">MAAP LEVELS
                                             		<lightning:buttonIcon iconName="utility:info" variant="bare" onclick="{! c.OpenDescription }" alternativeText="info" />
                                             	</p>
                                             </lightning:layoutItem>
