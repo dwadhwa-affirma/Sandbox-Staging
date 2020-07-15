@@ -19,7 +19,7 @@ public class SolarLoanController {
             Error_EftLocator__c,Error_Loan_Locator__c,Error_Loan_Name_Locator__c,Error_Loan_Tracking_Locator__c,
             Current_Solar_Loan_Stage__c FROM Solar_Loans__c where id =: SolarLoanRecordId limit 1];	
     	
-   			SolarLoanList[0].Status__c = status; 
+   			SolarLoanList[0].Status__c = status;  
             update SolarLoanList; 	
     	
     }
@@ -73,13 +73,58 @@ public class SolarLoanController {
 	stage2RequireFields.add('FNI__c');
 	stage2RequireFields.add('Member_Number__c');
 	
+	List<String> stage2RequireFields2 = new List<String>();
+	stage2RequireFields2.add('Primary_First_Name__c');
+	stage2RequireFields2.add('Primary_Last_Name__c');
+	stage2RequireFields2.add('Primary_DOB__c');
+	stage2RequireFields2.add('Primary_SSN__c');
+	stage2RequireFields2.add('Primary_Address_1__c');
+	stage2RequireFields2.add('Primary_FICO_Score__c');
+	stage2RequireFields2.add('Primary_City__c');
+	stage2RequireFields2.add('Primary_State__c');
+	stage2RequireFields2.add('Primary_Zip_Code__c');
+	stage2RequireFields2.add('Legal_Description__c');
+	stage2RequireFields2.add('Product__c');
+	stage2RequireFields2.add('Module__c');
+	stage2RequireFields2.add('Installer_Number__c');
+	stage2RequireFields2.add('Inverter__c');
+	stage2RequireFields2.add('System_Size_kW__c');
+	stage2RequireFields2.add('Battery__c');
+	stage2RequireFields2.add('Installer__c');
+	stage2RequireFields2.add('Application_Date__c');
+	stage2RequireFields2.add('Mortgage_Balance__c');
+	stage2RequireFields2.add('Final_Payment_Amount__c');
+	stage2RequireFields2.add('Go_To_Payment__c');
+	stage2RequireFields2.add('Membership_Fee__c');
+	stage2RequireFields2.add('Net_Funding_Amount__c');
+	stage2RequireFields2.add('Loan_Amount__c');
+	stage2RequireFields2.add('Loan_Pmt_Amount__c');
+	stage2RequireFields2.add('Credit_Exception__c');
+	stage2RequireFields2.add('ITC_Rate__c');
+	stage2RequireFields2.add('ITC_Amount__c');
+	stage2RequireFields2.add('Term_months__c');
+	stage2RequireFields2.add('OID_Fee__c');
+	stage2RequireFields2.add('Approval_Date__c');
+	stage2RequireFields2.add('Name__c');
+	stage2RequireFields2.add('ECOA_Code__c');
+	stage2RequireFields2.add('Site_UUID__c');
+	stage2RequireFields2.add('FNI__c');
+	stage2RequireFields2.add('Member_Number__c');
+	
     String SolarCurrentStage;
     String SolarCurrentStatus;
     String Stage3LoanCheck;
     String Stage5ACHCheck;
     String OnLoadCheck;
     String Stage2ErrorCheck;
+    String Stage2MissingFields;
     String Stage5ErrorCheck;
+    
+    
+    String type='Solar_Loans__c';
+    Map<String, Schema.SObjectType> schemaMap = Schema.getGlobalDescribe();
+    Schema.SObjectType solarloan = schemaMap.get(type);
+    Map<String, Schema.SObjectField> fieldMap = solarloan.getDescribe().fields.getMap();
     
     system.debug('SolarLoanRecordId'+SolarLoanRecordId);     
     system.debug('CurrentStage'+CurrentStage);
@@ -116,58 +161,44 @@ public class SolarLoanController {
             
         
         //------------------------------------Stage-2 Member Info validation-----------------------------------------//
+        String missingFields = '';
         
         if(CurrentStage == 'Stage 2'){
             
             if(SolarLoanList[0].ECOA_Code__c == '2'){
             	
                 for(String fieldName : stage2RequireFields){	
-	            	
+	            	System.debug(fieldName +' - '+SolarLoanList[0].get(fieldName));
 	            	if(SolarLoanList[0].get(fieldName) == null || SolarLoanList[0].get(fieldName) ==''){	
 	            		
+	            		missingFields += fieldMap.get(fieldName).getDescribe().getLabel() + ', ';
 	            		Stage2ErrorCheck = 'True';
 	            	}
-	            	else{
-	        		
-	        			Stage2ErrorCheck = 'false';
-	        		}	
 	        	}
-	        	
-            }
-            
-            if(SolarLoanList[0].ECOA_Code__c != '2'){
+	        	if(Stage2ErrorCheck != 'True'){
+	        		Stage2ErrorCheck = 'False';
+	        	}
+	        	Stage2MissingFields = 'Please complete required fields. Missing Fields:  '+ missingFields + '.';
+	        }
+	        
+	        if(SolarLoanList[0].ECOA_Code__c != '2'){
             	
-                if(SolarLoanList[0].Primary_First_Name__c == null || SolarLoanList[0].Primary_Last_Name__c == null 
-	            	|| SolarLoanList[0].Primary_DOB__c == null || SolarLoanList[0].Primary_SSN__c == null
-	            	|| SolarLoanList[0].Primary_Address_1__c == null || SolarLoanList[0].Primary_FICO_Score__c == null
-	            	|| SolarLoanList[0].Primary_City__c == null || SolarLoanList[0].Primary_State__c == null
-	            	|| SolarLoanList[0].Primary_Zip_Code__c == null || SolarLoanList[0].Legal_Description__c == null
-	            	
-	            	|| SolarLoanList[0].Product__c == null || SolarLoanList[0].Module__c == null || SolarLoanList[0].Installer_Number__c == null
-	            	|| SolarLoanList[0].Inverter__c == null || SolarLoanList[0].System_Size_kW__c == null
-	            	|| SolarLoanList[0].Battery__c == null || SolarLoanList[0].Installer__c == null
-	            	
-	            	|| SolarLoanList[0].Application_Date__c == null || SolarLoanList[0].Mortgage_Balance__c == null || SolarLoanList[0].Debt_Ratio__c == null
-	            	|| SolarLoanList[0].Final_Payment_Amount__c == null || SolarLoanList[0].Go_To_Payment__c == null
-	            	|| SolarLoanList[0].Membership_Fee__c == null || SolarLoanList[0].Net_Funding_Amount__c == null
-	            	|| SolarLoanList[0].Loan_Amount__c == null || SolarLoanList[0].Loan_Pmt_Amount__c == null
-	            	|| SolarLoanList[0].Credit_Exception__c == null || SolarLoanList[0].ITC_Rate__c == null
-	            	|| SolarLoanList[0].ITC_Amount__c == null || SolarLoanList[0].Term_months__c == null
-	            	|| SolarLoanList[0].OID_Fee__c == null || SolarLoanList[0].Approval_Date__c == null
-	            	
-	            	|| SolarLoanList[0].Name__c == null || SolarLoanList[0].ECOA_Code__c == null
-	            	|| SolarLoanList[0].Site_UUID__c == null || SolarLoanList[0].FNI__c == null || SolarLoanList[0].Member_Number__c == null){	
-	            	
+                for(String fieldName : stage2RequireFields2){	
+	            	System.debug(fieldName +' - '+SolarLoanList[0].get(fieldName));
+	            	if(SolarLoanList[0].get(fieldName) == null || SolarLoanList[0].get(fieldName) ==''){	
 	            		
-	            	Stage2ErrorCheck = 'True';	
-	            		
+	            		missingFields += fieldMap.get(fieldName).getDescribe().getLabel() + ', ';
+	            		Stage2ErrorCheck = 'True';
+	            	}
 	        	}
-	        	else{
-	        		Stage2ErrorCheck = 'false';
+	        	if(Stage2ErrorCheck != 'True'){
+	        		Stage2ErrorCheck = 'False';
 	        	}
-            }
+	        	Stage2MissingFields = 'Please complete required fields. Missing Fields:  '+ missingFields + '.';
+	        }
+            
         }
-        
+        system.debug('Stage2MissingFields'+Stage2MissingFields);
         if(Stage2ErrorCheck == 'False'){
         	SolarLoanList[0].Current_Solar_Loan_Stage__c = CurrentStage; 
             update SolarLoanList;
@@ -266,6 +297,8 @@ public class SolarLoanController {
     strMap.put('OnLoadCheck',OnLoadCheck);  
     strMap.put('Stage5ErrorCheck',Stage5ErrorCheck);
     strMap.put('Stage2ErrorCheck',Stage2ErrorCheck);
+    strMap.put('Stage2MissingFields',Stage2MissingFields);
+    
      
     return strMap;  
       
