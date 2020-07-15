@@ -34,7 +34,8 @@ public class SolarLoanToCreateLoan {
     public static Integer Month;
     public static Integer Amount;
     public static String ApplicationFundedBy;
-    public static string ApplicationLoadedBy;
+    public static String ApplicationLoadedBy;
+    public static String operatorid;
     
   
     public static String jsonData;
@@ -88,6 +89,24 @@ public class SolarLoanToCreateLoan {
     
     @future(callout=true)
     public static void createSolarLoans(Set<id> ids){
+    
+    List<Episys_User__c> epu =  [select id,Alias__c,Episys_ID__c,Episys_Name__c from Episys_User__c where Episys_Name__c =: userinfo.getName()];
+    system.debug('Episys User' + epu);
+    if(epu != null){
+		if(epu.size() > 1){
+			for(Episys_User__c eu : epu){
+				if(eu.Alias__c != null){
+					operatorid = string.ValueOf(epu[0].Episys_ID__c);
+					system.debug('operatorid'+operatorid);
+				}
+			}
+		
+		}
+		if(epu.size() == 1){
+			operatorid = string.ValueOf(epu[0].Episys_ID__c);
+			system.debug('operatorid'+operatorid);
+		}
+    }
         
     List<Solar_Loans__c> Solanloanlist = new List<Solar_Loans__c>();         
     List<Solar_Loans__c> solarloans = [SELECT id,ABA_Bank_Name__c,ACH__c,Additional_Amount__c,Application_Date__c,
@@ -148,6 +167,9 @@ public class SolarLoanToCreateLoan {
                 AccountNumber = sl.Account_Number__r.name;
                 OriginalDate = string.valueOf(System.Today());
                 
+                ApplicationFundedBy = operatorid;
+                ApplicationLoadedBy = operatorid;
+                
                 //req.setEndpoint('https://brscsymx.ctxcu.org/dev/EFT/CreateLoan');
                 req.setEndpoint('https://symxapi.chevronfcu.org/devclient/EFT/CreateLoan');
                 req.setClientCertificateName('brscmcapi');
@@ -155,7 +177,7 @@ public class SolarLoanToCreateLoan {
                 req.setHeader('Content-Type', 'application/json');
                 req.setHeader('Accept', 'application/json');
                 
-                jsonData = '{"OriginalDate":' + '\"'+ OriginalDate +'\"'+',"Type":' + '\"'+ Type +'\"'+',"Branch":' + '\"'+ Branch +'\"'+',"CreatedAtBranch":'+'\"'+ CreatedAtBranch +'\"'+',"PurposeCode":'+'\"' + PurposeCode + '\"'+',"CollateralCode":'+'\"'+CollateralCode+'\"'+',"ApprovalCode":'+'\"'+ApprovalCode+'\"'+',"OriginalBalance":'+'\"'+OriginalBalance+'\"'+',"ApprovalDate":'+'\"'+ApprovalDate+'\"'+',"MaturityDate":'+'\"'+MaturityDate+'\"'+',"DueDate":'+'\"'+DueDate+'\"'+',"FirstPaymentDate":'+'\"'+FirstPaymentDate+'\"'+',"DueDay1":'+'\"'+DueDay1+'\"'+',"Payment":'+'\"'+Payment+'\"'+',"CouponCode":'+'\"'+CouponCode+'\"'+',"PaymentMethod":'+'\"'+PaymentMethod+'\"'+',"Description":'+'\"'+Description+'\"'+',"InterestRate":'+'\"'+InterestRate+'\"'+',"UserAmount1":'+'\"'+UserAmount1+'\"'+',"ECOACode":'+'\"'+ECOACode+'\"'+',"CreditScore":'+'\"'+CreditScore+'\"'+',"PaymentCount":'+'\"'+PaymentCount+'\"'+',"PaymentFrequency":'+'\"'+PaymentFrequency+'\"'+',"AccountNumber":'+'\"'+AccountNumber+'\"}';
+                jsonData = '{"UserChar4":' + '\"'+ ApplicationLoadedBy +'\"'+',"UserChar3":' + '\"'+ ApplicationFundedBy +'\"'+',"OriginalDate":' + '\"'+ OriginalDate +'\"'+',"Type":' + '\"'+ Type +'\"'+',"Branch":' + '\"'+ Branch +'\"'+',"CreatedAtBranch":'+'\"'+ CreatedAtBranch +'\"'+',"PurposeCode":'+'\"' + PurposeCode + '\"'+',"CollateralCode":'+'\"'+CollateralCode+'\"'+',"ApprovalCode":'+'\"'+ApprovalCode+'\"'+',"OriginalBalance":'+'\"'+OriginalBalance+'\"'+',"ApprovalDate":'+'\"'+ApprovalDate+'\"'+',"MaturityDate":'+'\"'+MaturityDate+'\"'+',"DueDate":'+'\"'+DueDate+'\"'+',"FirstPaymentDate":'+'\"'+FirstPaymentDate+'\"'+',"DueDay1":'+'\"'+DueDay1+'\"'+',"Payment":'+'\"'+Payment+'\"'+',"CouponCode":'+'\"'+CouponCode+'\"'+',"PaymentMethod":'+'\"'+PaymentMethod+'\"'+',"Description":'+'\"'+Description+'\"'+',"InterestRate":'+'\"'+InterestRate+'\"'+',"UserAmount1":'+'\"'+UserAmount1+'\"'+',"ECOACode":'+'\"'+ECOACode+'\"'+',"CreditScore":'+'\"'+CreditScore+'\"'+',"PaymentCount":'+'\"'+PaymentCount+'\"'+',"PaymentFrequency":'+'\"'+PaymentFrequency+'\"'+',"AccountNumber":'+'\"'+AccountNumber+'\"}';
                 req.setBodyAsBlob(Blob.valueof(jsondata)); 
                 system.debug('test'+jsonData);
                 
