@@ -3090,14 +3090,14 @@ public class MemberAuthenticationControllerLightning{
 	@AuraEnabled
 	public static void SaveLastAchievableLevelLogs(string MemberId, string GUID, String LastLevel, string IVRGUIDFromUrl,string PhoneFromURL, String MemberNumberFromURL,String EnteredCardNumber, string CardNumberMatch, string PhoneNumberMatch,string MemberNumberMatch, string SSNnumberMatch, string HighFlagFromUrl,string ReasonCodeFromURL, string PINMatch, string SSNFromURL,string DebitCardStatus)
 	{
-		string  AccountNumber;
+		/*string  AccountNumber;
 		List<Person_Account__c> p = [SELECT Id, Account_Number__c, PersonID__r.Name, PersonID__c, Account_Number__r.RecType__c, TypeTranslate__c, Account_Number__r.Name
 									FROM Person_Account__c where PersonID__c =:MemberId limit 1];
 		if(p.size() > 0)
 		{
 			AccountNumber = p[0].Account_Number__r.Name;
 		}
-				
+		*/
 		RecordType rec = GetRecordTypeData('Authenticated_Log__c', 'IVR Authentication Log');
 		Authenticated_Log__c log = new Authenticated_Log__c();
         log.CallerPhoneNumber__c = PhoneFromURL;
@@ -3139,7 +3139,7 @@ public class MemberAuthenticationControllerLightning{
         log.SalesforceID__c = MemberId;
         log.Last_Achievable_Level__c = LastLevel;
         log.Member__c = MemberId;
-        log.Member_Number__c = AccountNumber;
+        log.Member_Number__c = MemberNumberFromURL;
         log.Staff_Name__c = UserInfo.getName();
         log.Current_User__c = Userinfo.getuserid();
         log.GUID__c = GUID;
@@ -3192,7 +3192,7 @@ public class MemberAuthenticationControllerLightning{
 		        log2.SalesforceID__c = MemberId;
 		        log2.Last_Achievable_Level__c = LastLevel;
 		        log2.Member__c = MemberId;
-		        log2.Member_Number__c = AccountNumber;
+		        log2.Member_Number__c = MemberNumberFromURL;
 		        log2.Staff_Name__c = UserInfo.getName();
 		        log2.Current_User__c = Userinfo.getuserid();
 		        log2.GUID__c = GUID;
@@ -3239,7 +3239,7 @@ public class MemberAuthenticationControllerLightning{
 		        MasterAuthenticationLog[0].SalesforceID__c = MemberId;
 		        MasterAuthenticationLog[0].Last_Achievable_Level__c = LastLevel;
 		        MasterAuthenticationLog[0].Member__c = MemberId;
-		        MasterAuthenticationLog[0].Member_Number__c = AccountNumber;
+		        MasterAuthenticationLog[0].Member_Number__c = MemberNumberFromURL;
 		        MasterAuthenticationLog[0].Staff_Name__c = UserInfo.getName();
 		        MasterAuthenticationLog[0].Current_User__c = Userinfo.getuserid();
 		        MasterAuthenticationLog[0].GUID__c = GUID;
