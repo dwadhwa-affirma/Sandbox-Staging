@@ -75,7 +75,7 @@ public class EFTController {
     //------------------------------- Saving EFT data to Salesforce-----------------------------------------------//
     @AuraEnabled
     public static EFT__c saveStageData(EFT__c EFTRecord){
-        system.debug('EFTRecord=='+EFTRecord.Second_Day_of_Month__c);
+        system.debug('EFTRecord=='+EFTRecord.Id);
         if(EFTRecord.Second_Day_of_Month__c == '0'){
         	EFTRecord.Second_Day_of_Month__c = '';
         }
@@ -162,6 +162,7 @@ public class EFTController {
        // system.debug('EFTRecordString=='+EFTRecordString);
         //EFT__c EFTRecord = (EFT__c) System.JSON.deserialize(EFTRecordString, EFT__c.Class);
         system.debug('EFTRecordId=='+EFTRecord.Id);
+        system.debug('EFTRecordId=='+EFTRecord.EftLocator__c);
         EFT__c EFTRecordList = new EFT__c();
         if(EFTRecord.Id != null){
         	EFTRecordList = [Select Account_Number__c,Action_Type__c,Alternate_Amount__c,Bank_Name__c,
@@ -178,6 +179,7 @@ public class EFTController {
 	        }
         }
         else{
+        	 system.debug('Insert=='+EFTRecord.EftLocator__c);
         		 insert EFTRecord;
         		EFTRecord.Expired__c  =  true;
 	            EFTRecord.Action_Type__c  =  'Update';	             
@@ -199,6 +201,8 @@ public class EFTController {
     @AuraEnabled
     public static EFT__c createCase(EFT__c EFTRecord){
         system.debug('EFTID==='+EFTRecord.id);
+        system.debug('Member_Account__c==='+EFTRecord.Member_Account__c);
+        system.debug('Member_Account__r==='+EFTRecord.Member_Account__r.Id);
         list<CaseRecordType__c> scList = [SELECT Id,
                                                  Primary_Category__c,
                                                  Secondary_Category__c,
@@ -233,7 +237,10 @@ public class EFTController {
 					
 					operation = 'ACH Record Expired' + '\n' + 'Expiration Date:' + EFTRecord.Expiration_Date__c + '\n' ;
 				}
-				cs.Account_Number__c = EFTRecord.Member_Account__c;
+				if(EFTRecord.Member_Account__c != null)
+					cs.Account_Number__c = EFTRecord.Member_Account__c;
+				else
+					cs.Account_Number__c = EFTRecord.Member_Account__r.Id;
         		cs.Description = operation + 'Member Name:' + EFTRecord.Member_Name__c 
         							+ '\n' + 'Share/Loan:' + EFTRecord.Share_Loan_Id__c 
                                     + '\n' + 'ABA/Routing#:' + EFTRecord.Routing_Number__c 

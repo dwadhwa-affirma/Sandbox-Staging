@@ -17,6 +17,7 @@ public class EFTToSyimtar {
     public static String AccountNumber;
     public static String ErrorEFTLocator;
     public static String PaymentMethod;
+    public static String AlternatePayment = '';
     
     public static String EftLocator;
    
@@ -110,6 +111,11 @@ public class EFTToSyimtar {
                 	PostAmount = String.ValueOf(e.Alternate_Amount__c);
                 else
                 	PostAmount = '0.00';
+                
+                if(e.Alternate_Amount__c != null && e.Alternate_Amount__c != 0.0){
+                	AlternatePayment = String.ValueOf(e.Alternate_Amount__c + e.Payment_Amount__c);
+                }
+                
                 Payee = e.Routing_Number__c.leftPad(10,'0');
                 Reference = e.Account_Number__c ;
                 if(e.Bank_Name__c != null){
@@ -168,7 +174,13 @@ public class EFTToSyimtar {
 	                req1.setHeader('Content-Type', 'application/json');
 	                req1.setHeader('Accept', 'application/json');
 	                
-	                jsonData1 = '{"AccountNumber":'+'\"'+AccountNumber+'\","LoanId":' + '\"'+ ID +'\"'+',"PaymentMethod":'+'\"'+PaymentMethod+'\"}';
+	                if(AlternatePayment != ''){
+	                	jsonData1 = '{"AccountNumber":'+'\"'+AccountNumber+'\","LoanId":' + '\"'+ ID +'\"'+',"PaymentMethod":'+'\"'+PaymentMethod+ '\"'+',"AlternatePayment":'+'\"'+AlternatePayment+'\"}';
+	                }
+	                else{
+	                	jsonData1 = '{"AccountNumber":'+'\"'+AccountNumber+'\","LoanId":' + '\"'+ ID +'\"'+',"PaymentMethod":'+'\"'+PaymentMethod+ '\"}';
+	                }
+	                
 	                req1.setBodyAsBlob(Blob.valueof(jsondata1)); 
 	                system.debug('test'+jsonData1);
 	                
@@ -284,6 +296,11 @@ public class EFTToSyimtar {
                 	PostAmount = String.ValueOf(e.Alternate_Amount__c);
                 else
                 	PostAmount = '0.00';
+                	
+                if(e.Alternate_Amount__c != null && e.Alternate_Amount__c != 0.0){
+                	AlternatePayment = String.ValueOf(e.Alternate_Amount__c + e.Payment_Amount__c);
+                }
+                
                 Payee = e.Routing_Number__c.leftPad(10,'0');
                 Reference = e.Account_Number__c ;
                 if(e.Bank_Name__c != null){
@@ -359,6 +376,33 @@ public class EFTToSyimtar {
 	        			newEFT.Case__c = e.Case__c;
 						insert newEFT;
 	        		}
+	        		
+                	req1.setEndpoint('https://symxapi.chevronfcu.org/devclient/EFT/UpdateLoanById');
+	                req1.setClientCertificateName('brscmcapi');
+	                req1.setMethod('POST');
+	                req1.setHeader('Content-Type', 'application/json');
+	                req1.setHeader('Accept', 'application/json');
+	                
+	                if(AlternatePayment != '' && !isExpired){
+	                	jsonData1 = '{"AccountNumber":'+'\"'+AccountNumber+'\","LoanId":' + '\"'+ ID +'\"' +',"AlternatePayment":'+'\"'+AlternatePayment+'\"}';
+	                	 req1.setBodyAsBlob(Blob.valueof(jsondata1)); 
+		                system.debug('test'+jsonData1);
+		                
+		                Http http1 = new Http();  
+		                req1.setTimeout(60000);
+		                HttpResponse res1;
+		                String responseBody1;
+		                if(!Test.isRunningTest()){                       
+		                    res1 = http1.send(req1);
+		                    responseBody1 = res1.getBody();
+		                    System.debug('Response Body ACH::'+res1.getBody());    
+		                }else{
+		                    responseBody1 = '{"Type":"3","Branch":"27","CreatedAtBranch":"1","PurposeCode":"1","CollateralCode":"100","ApprovalCode":"4","OriginalBalance":"1","ApprovalDate":"01-01-2019","MaturityDate":"01-01-2019","DueDate":"01-01-2019","FirstPaymentDate":"01-01-2019","DueDay1":"1","Payment":"1234","CouponCode":"123", "PaymentMethod" : "PaymentMethod", "Description" : "Description", "InterestRate" : "2.00", "UserAmount1" : "200.00", "ECOACode" : "778", "CreditScore" : "15", "PaymentCount" : "12", "PaymentFrequency" : "67"}';
+		                }
+	                }
+	               
+	                
+	               
 	        		if(isExpired){
 	        			e.Expiration_Date__c = Date.valueOf(resultExpDate);
 	        			 Datetime dt = datetime.newInstance(Date.valueOf(resultExpDate).year(), Date.valueOf(resultExpDate).month(),Date.valueOf(resultExpDate).day());

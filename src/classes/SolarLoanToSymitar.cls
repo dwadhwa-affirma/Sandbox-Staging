@@ -16,6 +16,7 @@ public class SolarLoanToSymitar {
     public static String AccountNumber;
     public static String ErrorEFTLocator;
     
+    
     public static String PaymentMethod;
     
     public static String jsonData;
@@ -94,6 +95,7 @@ public class SolarLoanToSymitar {
                         MatchID3 = MatchID3.left(21);
                     }
                 }
+                
                 system.debug('MatchID3'+MatchID3);    
                 AccountNumber = sl.Account_Number__r.name;
                 

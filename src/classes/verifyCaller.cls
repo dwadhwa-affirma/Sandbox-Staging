@@ -227,7 +227,7 @@ public class verifyCaller{
     public List<Account> queryByParametersAvailable(verificationObject input, boolean onlyQueryParameters){
         String check = '';
         String queryString = 'select Name,FirstName , LastName , ID, SSN_Last_4__pc, Personid__pc  , BIRTH_DATE__pc,Mothers_Maiden_Name__pc, PersonEmail,  ID_1_Description__pc,ID_2_Description__pc,ID_3_Description__pc, ID_1_Number__pc ,ID_2_Number__pc, ID_3_Number__pc, ID_1_Type__pc, ID_2_Type__pc, ID_3_Type__pc, ID_1_Expiration_Date__pc, ID_2_Expiration_Date__pc, ID_3_Expiration_Date__pc, ID_1_Type__c, ID_2_Type__c, ID_3_Type__c from Account where (';
-        //String queryString = 'select Name,FirstName , LastName , ID, SSN_Last_4__pc, Personid__pc  , BIRTH_DATE__pc,Mothers_Maiden_Name__pc, PersonEmail  from Account where (';
+       // String queryString = 'select Name,FirstName , LastName , ID, SSN_Last_4__pc, Personid__pc  , BIRTH_DATE__pc,Mothers_Maiden_Name__pc, PersonEmail  from Account where (';
         String conditions = '';
         String additionalConditions = ''; 
         String phoneQuery = '';
@@ -236,7 +236,7 @@ public class verifyCaller{
         system.debug('input---'+input);   
         system.debug('SSN##' + input.SSNMatch);
         system.debug('SSN##' + input.SSN);
-        
+        system.debug('queryString##' + queryString);
         if((input.SSNMatch == 'TRUE' || input.SSNMatch == 'true') && input.SSN.length() > 4){
         	
         	if(check == '0'){
@@ -448,7 +448,45 @@ public class verifyCaller{
 	        }
 	        
 	        system.debug('ListofNames ......'+ListofNames);
-	        return (ListofNames);
+	        Set<Id> MemberIdSet = new  Set<Id>();
+	      	set<string> typeList = new set<string>();
+	      	Set<Id> NonBenificiaryIdSet = new Set<Id>(); 
+	        List<Account> ListofNonBenificiaryAccount = new List<Account>(); 
+	        for(Member360_TypeTranslate__c t : Member360_TypeTranslate__c.getAll().values()){
+			   	typeList.add(t.name);	
+			  }
+	        if(ListofNames.size() > 0){
+			      for(Account acc : ListofNames){
+			      		MemberIdSet.add(acc.ID);
+			      }
+			      if(MemberIdSet.size() > 0){
+				   		List<Person_Account__c> PAccount = [SELECT Id,  Account_Number__c, PersonID__r.Name, PersonID__c, Account_Number__r.RecType__c, TypeTranslate__c, Account_Number__r.Name 
+				        FROM Person_Account__c where PersonID__c IN: MemberIdSet and TypeTranslate__c IN:typeList order by TypeTranslate__c asc];
+				       	if(PAccount.size() > 0){ 
+				       		for(Person_Account__c pa:PAccount){
+				       			 NonBenificiaryIdSet.add(pa.PersonID__c);
+				       		}
+				       		if(NonBenificiaryIdSet.size() > 0){
+				       			
+				       			for(Id aid: NonBenificiaryIdSet){
+				       				
+				       				for(Account acc: ListofNames )
+				       				{
+				       					if(aid == acc.id){
+				       						
+				       						ListofNonBenificiaryAccount.add(acc);
+				       					}
+				       				}
+				       			}
+				       			
+				       		}
+				       	}
+				  }
+		      
+	       }
+	       system.debug('ListofNonBenificiaryAccount ......'+ListofNonBenificiaryAccount);
+	      return ListofNonBenificiaryAccount;
+	      //  return (ListofNames);
     	}
     }
     
