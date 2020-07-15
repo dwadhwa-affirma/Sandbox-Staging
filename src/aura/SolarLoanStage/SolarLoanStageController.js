@@ -72,6 +72,7 @@
         var Stage5ACHCheck;
         var Stage5ErrorCheck;
         var Stage2ErrorCheck;
+        var Stage2MissingFields;
         var SolarLoanRecordId = component.get("v.recordId");
        	
         var CurrentStage;
@@ -114,9 +115,11 @@
                 }
                 //---------------------Validation for Stage-2 -------------------------------//
                 
-                if(result.Stage2ErrorCheck == 'True')
+                if(result.Stage2ErrorCheck == 'True'){
                 	Stage2ErrorCheck = 'True';
+                	Stage2MissingFields = result.Stage2MissingFields;
                 	
+                }	
                 //---------------------Validation for Stage-5 -------------------------------//
                 	
                 if(result.Stage5ErrorCheck == 'True')
@@ -183,7 +186,7 @@
 				var toastEvent = $A.get("e.force:showToast");
 		        toastEvent.setParams({
 		            title : 'Warning',
-		            message: 'Please fill out all the details in Member Info, Product Info, Loan Info and Misc info section before moving to Stage-2.',
+		            message: Stage2MissingFields,
 		            duration:' 5000',
 		            key: 'info_alt',
 		            type: 'warning',
