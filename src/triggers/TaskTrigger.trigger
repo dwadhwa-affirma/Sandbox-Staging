@@ -108,7 +108,7 @@ trigger TaskTrigger on Task (before delete, before insert,after insert, after up
 	    listOnboardingEbranchCase = [select id from Case where id in: Ids and Status != 'Closed' and Secondary_Category__c =: 'Onboarding'];
 	    listOnboardingSolarCase = [select id from Case where id in: Ids and Status != 'Closed' and Secondary_Category__c =: 'Onboarding' and Promo_Code__c	 = '2166'];   	
 	        
-	   if(pname == 'eBranch'){
+	 //  if(pname == 'eBranch'){
 		   for(Task t:listTasks){
 	     	 	for(Case c : listOnboardingEbranchCase)
 	     	 	{
@@ -120,10 +120,10 @@ trigger TaskTrigger on Task (before delete, before insert,after insert, after up
 	     	 		
 	     	 	}
 	     	 }
-	   }
+	   //}
      	 
      	 for(Task t:listTasks){
-     	 	for(Case c : listOnboardingEbranchCase)
+     	 	for(Case c : listOnboardingSolarCase)
      	 	{
      	 		if(c.Id == t.whatid)
      	 		{
