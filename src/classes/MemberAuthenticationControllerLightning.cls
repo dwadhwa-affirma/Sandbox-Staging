@@ -1356,7 +1356,7 @@ public class MemberAuthenticationControllerLightning{
 	}
 	@AuraEnabled
   
-  public static Map<string,object> MemberVerificationAttemptsCheck(string MemberId, string GUID, string DebitCardStatus, String SSNFromURL, String MemberNumberFromURL,String PhoneFromURL, String PageURL, string IVRGUIDFromUrl, boolean ReLoadRequired, string ReasonCodeFromURL, string HighFlagFromUrl, integer PointsObtained, boolean IsOOWTabVisible, boolean IsUserSessionLoaded, string EnteredCardNumber, string CardNumberMatch, string PhoneNumberMatch, string MemberNumberMatch, string SSNnumberMatch, string PINMatch)
+  public static Map<string,object> MemberVerificationAttemptsCheck(string MemberId, string GUID, string DebitCardStatus, String SSNFromURL, String MemberNumberFromURL,String PhoneFromURL, String PageURL, string IVRGUIDFromUrl, boolean ReLoadRequired, string ReasonCodeFromURL, string HighFlagFromUrl, integer PointsObtained, boolean IsOOWTabVisible, boolean IsUserSessionLoaded, string EnteredCardNumber, string CardNumberMatch, string PhoneNumberMatch, string MemberNumberMatch, string SSNnumberMatch, string PINMatch, boolean IsPinChangedCalculationExecuted )
   {
   	/* 1. This method calls when member is selected from radio button
   	   2. For reload of same window based on IVRGUID and time set under custom setting with ReLoadRequired flag
@@ -1379,7 +1379,7 @@ public class MemberAuthenticationControllerLightning{
   	system.debug('SSNnumberMatch##' + SSNnumberMatch);
   	system.debug('PINMatch##' + PINMatch);
   	system.debug('IsUserSessionLoaded##' + IsUserSessionLoaded);
-  	
+  	system.debug('IsPinChangedCalculationExecuted##' + IsPinChangedCalculationExecuted);
     Boolean visible;
     Double attempt=0;
     Boolean OOW = true;
@@ -1694,7 +1694,7 @@ public class MemberAuthenticationControllerLightning{
         
 // Implementation to achieve level of authentication based on Open tab
         
-      List<Member_Authentication_Level_Model__c> LevelModel = new List<Member_Authentication_Level_Model__c>();
+    List<Member_Authentication_Level_Model__c> LevelModel = new List<Member_Authentication_Level_Model__c>();
     
     List<Member_Authentication_Scoring_Model__c> ScoringModel = new List<Member_Authentication_Scoring_Model__c>();
     
@@ -1789,7 +1789,7 @@ public class MemberAuthenticationControllerLightning{
    {
    	system.debug('MemberVerificationAttemptsCheck getDataForReload Called for ReLoadRequired == true && IsUserSessionLoaded == false-------');
      system.debug('getDataForReload Parameters##'+ IVRGUIDFromUrl + '#' +  DebitPinStatus + '#' + '#' + IsUserSessionLoaded +  AccountNumber );
-     Map<string,object> AutLogDataMap =  getDataForReload(memberid, GUID, IVRGUIDFromUrl,DebitPinStatus, IsUserSessionLoaded, AccountNumber);
+     Map<string,object> AutLogDataMap =  getDataForReload(memberid, GUID, IVRGUIDFromUrl,DebitPinStatus, IsUserSessionLoaded, AccountNumber, IsPinChangedCalculationExecuted);
      if(AutLogDataMap.get('IsOOWAvailable') == true)
      {
        OOW = true;
@@ -2221,10 +2221,13 @@ public class MemberAuthenticationControllerLightning{
 		      system.debug('CFCUWalletAvailable#'+ CFCUWalletAvailable);
 		      system.debug('OOWAvailable#'+ OOWAvailable);
 		      system.debug('GetTabsToAchieveNextLevel Parameters##'+ MemberType + 'DebitPinStatus#' +  DebitPinStatus + 'IsPinChanged#' + IsPinChanged + 'OTPAvailable#' + OTPAvailable + 'PublicWalletAvailable#' + PublicWalletAvailable + 'CFCUWalletAvailable#'+ CFCUWalletAvailable + 'OOWAvailable#' + OOWAvailable + 'CurrentScore#'+ CurrentScore);
-		      map<string, List<string>> NextTabToAchieveLevelMap =  GetTabsToAchieveNextLevel(LevelModel, ScoringModel, MemberType, DebitPinStatus, IsPinChanged, OTPAvailable, PublicWalletAvailable, CFCUWalletAvailable,OOWAvailable, CurrentScore);
+		      map<string, List<string>> NextTabToAchieveLevelMap =  GetTabsToAchieveNextLevel(LevelModel, ScoringModel, MemberType, DebitPinStatus, IsPinChanged, OTPAvailable, PublicWalletAvailable, CFCUWalletAvailable,OOWAvailable, CurrentScore, IsPinChangedCalculationExecuted);
 		      List<string>  NextTabLevel2 = NextTabToAchieveLevelMap.get('NextTabLevel2');
 		          List<string>  NextTabLevel3 = NextTabToAchieveLevelMap.get('NextTabLevel3');
 		          List<string> EachLevelStatus = NextTabToAchieveLevelMap.get('EachLevelStatus');
+        		  List<String> PinChangedExecutionResultList = NextTabToAchieveLevelMap.get('PinChangedExecutionResult');
+        		  boolean PinChangedExecutionResult = PinChangedExecutionResultList[0] == 'True' ? true: false;
+        		  result.put('PinChangedExecutionResult', PinChangedExecutionResult);	
 		          if(NextTabLevel2.size() > 0)
 		          {
 		            string NextTabLevel2LastString = NextTabLevel2.get(NextTabLevel2.size()-1);
@@ -2376,11 +2379,12 @@ public class MemberAuthenticationControllerLightning{
 	
 	@AuraEnabled
 	
-	public static map<string, List<string>> GetTabsToAchieveNextLevel(List<Member_Authentication_Level_Model__c> LevelModel, List<Member_Authentication_Scoring_Model__c> ScoringModel, string MemberType, string DebitPinStatus, boolean IsPinChanged, integer IsOTPAvailable, integer IsPublicWalletAvailable,integer IsCFCUWalletAvailable,integer IsOOWAvailable, integer CurrentScore)
+	public static map<string, List<string>> GetTabsToAchieveNextLevel(List<Member_Authentication_Level_Model__c> LevelModel, List<Member_Authentication_Scoring_Model__c> ScoringModel, string MemberType, string DebitPinStatus, boolean IsPinChanged, integer IsOTPAvailable, integer IsPublicWalletAvailable,integer IsCFCUWalletAvailable,integer IsOOWAvailable, integer CurrentScore, boolean IsPinChangedCalculationExecuted)
 	{
 		/* This method tells the journey path*/ 
 		system.debug('GetTabsToAchieveNextLevel Param received##'+ MemberType + 'DebitPinStatus#' + DebitPinStatus + 'IsPinChanged#' + IsPinChanged + 'IsOTPAvailable#' + IsOTPAvailable +  'IsPublicWalletAvailable#' + IsPublicWalletAvailable + 'IsCFCUWalletAvailable#' +IsCFCUWalletAvailable +  'IsOOWAvailable' + IsOOWAvailable +  'CurrentScore#'+ CurrentScore );
 		system.debug('CurrentScore##'+ CurrentScore);
+        system.debug('IsPinChangedCalculationExecuted##'+ IsPinChangedCalculationExecuted);
 		map<string, List<string>> resultMap = new map<string, List<string>>();
 		Decimal DebitPinPositiveScore;
 		Decimal DebitPinNegativeScore;
@@ -2441,15 +2445,16 @@ public class MemberAuthenticationControllerLightning{
         }
         system.debug('CurrentScorePost1##' + CurrentScore);
         system.debug('IsPinChanged##' + IsPinChanged);
-        if(IsPinChanged == true){
+        if(IsPinChanged == true ){
         	CurrentScore = CurrentScore - PINChangeNegativeScore.intValue();
+            IsPinChangedCalculationExecuted = true;
         }
-        else if(IsPinChanged == false){
+        else if(IsPinChanged == false ){
         	
         	CurrentScore = CurrentScore + PINChangePositiveScore.intValue();
         }
         system.debug('CurrentScorePost2##' + CurrentScore);
-        
+        system.debug('IsPinChangedCalculationExecuted##' + IsPinChangedCalculationExecuted);
         // reading the data from custom setting and assining points value into variables Ends-----------------
         
         // reading the data from custom setting for level and assining start range value of levels into variables begins-----------------
@@ -2779,6 +2784,12 @@ public class MemberAuthenticationControllerLightning{
       	 
         resultMap.put('NextTabLevel3', NextTabLevel3);
         resultMap.put('EachLevelStatus', EachLevelStatus);
+        List<String> PinChangedExecutionResult = new List<String>();
+        
+        if(IsPinChangedCalculationExecuted == true){
+            PinChangedExecutionResult.add('True');
+        }else{PinChangedExecutionResult.add('False');}
+        resultMap.put('PinChangedExecutionResult', PinChangedExecutionResult);
         system.debug('resultMap#'+ resultMap);
         return resultMap;
 	}
@@ -2818,12 +2829,12 @@ public class MemberAuthenticationControllerLightning{
      }
      
 	@AuraEnabled
-	public static Map<string,object> GetNextAuthenticationType(string MemberId, string MemberType, Integer MaximumPointsAvailable,Integer PointsObtained, boolean IsKYMAvailable, boolean IsOTPAvailable, string IsDebitPinAvailable, boolean IsOOWAvailable, boolean IsPublicWalletAvailable, boolean IsCFCUWalletAvailable, string IVRGUIDFromUrl, string AccountNumberInput)
+	public static Map<string,object> GetNextAuthenticationType(string MemberId, string MemberType, Integer MaximumPointsAvailable,Integer PointsObtained, boolean IsKYMAvailable, boolean IsOTPAvailable, string IsDebitPinAvailable, boolean IsOOWAvailable, boolean IsPublicWalletAvailable, boolean IsCFCUWalletAvailable, string IVRGUIDFromUrl, string AccountNumberInput, boolean IsPinChangedCalculationExecuted)
 	{
 		
 		//---------------------------------Aut-190 implementation starts here------------------------------------------------------------------------
 		System.debug('GetNextAuthenticationType method called-------------------');
-		system.debug('GetNextAuthenticationType param received' + 'PointsObtained##'+ PointsObtained + 'MemberType#' + MemberType + 'MaximumPointsAvailable#' + MaximumPointsAvailable + 'IsOTPAvailable#' + IsOTPAvailable + 'IsKYMAvailable#' + IsKYMAvailable + 'IsDebitPinAvailable#' + IsDebitPinAvailable + 'IsOOWAvailable#' + IsOOWAvailable + 'IsPublicWalletAvailable#' + IsPublicWalletAvailable + 'IsCFCUWalletAvailable#' + IsCFCUWalletAvailable + 'AccountNumberInput#' + AccountNumberInput);
+		system.debug('GetNextAuthenticationType param received' + 'PointsObtained##'+ PointsObtained + 'MemberType#' + MemberType + 'MaximumPointsAvailable#' + MaximumPointsAvailable + 'IsOTPAvailable#' + IsOTPAvailable + 'IsKYMAvailable#' + IsKYMAvailable + 'IsDebitPinAvailable#' + IsDebitPinAvailable + 'IsOOWAvailable#' + IsOOWAvailable + 'IsPublicWalletAvailable#' + IsPublicWalletAvailable + 'IsCFCUWalletAvailable#' + IsCFCUWalletAvailable + 'AccountNumberInput#' + AccountNumberInput + 'IsPinChangedCalculationExecuted#'+ IsPinChangedCalculationExecuted);
 		if(PointsObtained == null){
 			PointsObtained = 0;
 			
@@ -2886,11 +2897,13 @@ public class MemberAuthenticationControllerLightning{
 			system.debug('PublicWalletAvailable##'+ PublicWalletAvailable);
 			
 			
-			map<string, List<string>> NextTabToAchieveLevelMap =  GetTabsToAchieveNextLevel(LevelModel, ScoringModel, MemberType, DebitCardStatus, IsPinChanged, OTPAvailable, PublicWalletAvailable, CFCUWalletAvailable,OOWAvailable, PointsObtained);
+			map<string, List<string>> NextTabToAchieveLevelMap =  GetTabsToAchieveNextLevel(LevelModel, ScoringModel, MemberType, DebitCardStatus, IsPinChanged, OTPAvailable, PublicWalletAvailable, CFCUWalletAvailable,OOWAvailable, PointsObtained, IsPinChangedCalculationExecuted);
 			List<string>  NextTabLevel2 = NextTabToAchieveLevelMap.get('NextTabLevel2');
         	List<string>  NextTabLevel3 = NextTabToAchieveLevelMap.get('NextTabLevel3');
         	List<string> EachLevelStatus = NextTabToAchieveLevelMap.get('EachLevelStatus');
-        	
+        	List<String> PinChangedExecutionResultList = NextTabToAchieveLevelMap.get('PinChangedExecutionResult');
+        	boolean PinChangedExecutionResult = PinChangedExecutionResultList[0] == 'True' ? true: false;
+        	result.put('PinChangedExecutionResult', PinChangedExecutionResult);
         	if(NextTabLevel2.size() > 0)
         	{
         		string NextTabLevel2LastString = NextTabLevel2.get(NextTabLevel2.size()-1);
@@ -3672,7 +3685,7 @@ public class MemberAuthenticationControllerLightning{
      }
     
 	@AuraEnabled
-    public static Map<string,object> getDataForReload(string memberid, string GUID, string IVRGUIDFromUrl, string DebitCardStatus,  boolean IsUserSessionLoaded, string AccountNumberInput )
+    public static Map<string,object> getDataForReload(string memberid, string GUID, string IVRGUIDFromUrl, string DebitCardStatus,  boolean IsUserSessionLoaded, string AccountNumberInput, boolean IsPinChangedCalculationExecuted )
     { 
     	/* This function is to reload user data. 
     		If 'IsUserSessionLoaded' parameter value is false its brings the data based on time value mentioned in custom setting 
@@ -3910,10 +3923,13 @@ public class MemberAuthenticationControllerLightning{
 		system.debug('CurrentScore##' + CurrentScore);
 		system.debug('OOWAvailable##'+ OOWAvailable);
 		
-     	map<string, List<string>> NextTabToAchieveLevelMap =  GetTabsToAchieveNextLevel(LevelModel, ScoringModel, MemberType, DebitCardStatus, IsPinChanged, OTPAvailable, PublicWalletAvailable, CFCUWalletAvailable,OOWAvailable, CurrentScore);
+     	map<string, List<string>> NextTabToAchieveLevelMap =  GetTabsToAchieveNextLevel(LevelModel, ScoringModel, MemberType, DebitCardStatus, IsPinChanged, OTPAvailable, PublicWalletAvailable, CFCUWalletAvailable,OOWAvailable, CurrentScore, IsPinChangedCalculationExecuted);
 		List<string>  NextTabLevel2 = NextTabToAchieveLevelMap.get('NextTabLevel2');
     	List<string>  NextTabLevel3 = NextTabToAchieveLevelMap.get('NextTabLevel3');
     	List<string> EachLevelStatus = NextTabToAchieveLevelMap.get('EachLevelStatus');
+        List<String> PinChangedExecutionResultList = NextTabToAchieveLevelMap.get('PinChangedExecutionResult');
+        boolean PinChangedExecutionResult = PinChangedExecutionResultList[0] == 'True' ? true: false;
+        AuthLogMap.put('PinChangedExecutionResult', PinChangedExecutionResult);
     	if(NextTabLevel2.size() > 0)
         	{
         		string NextTabLevel2LastString = NextTabLevel2.get(NextTabLevel2.size()-1);

@@ -39,7 +39,7 @@ trigger AddressChangeLogTrigger on AddressChangeLog__c (before insert) {
 	                        if(SendSMS && phone != null)
 	                        {
 	                        	    system.debug('memberPhone=='+phone);
-	                                SendSMS(phone);                       
+	                                //SendSMS(phone);                       
 	                         }
 						   
                           // ---------------------  Send Email/SMS Notifications..................//       
@@ -89,19 +89,30 @@ trigger AddressChangeLogTrigger on AddressChangeLog__c (before insert) {
                 caseobj.Tertiary_Category__c = scList[0].Teritiary_Category__c; 
                 system.debug('user++++'+objAddressChange.Updated_By__c);
                 caseobj.CreatedById= objAddressChange.Updated_By__c;
+                caseobj.OwnerId = objAddressChange.Updated_By__c;
                 
                 if(!String.IsBlank(objAddressChange.Address2_New__c) && String.IsBlank(objAddressChange.Address_New__c)){
                 	objAddressChange.Address_New__c = objAddressChange.Address2_New__c;
                 	objAddressChange.Address2_New__c = '';
                 }
-                        
+                
+                string intakemethod='';
+                
+                if(objAddressChange.Clean_Up_Intake_Method__c == 'Clean Up - Report Date'){
+                    Datetime dt = datetime.newInstance(Date.valueOf(objAddressChange.Clean_Up_Report_Date__c).year(), Date.valueOf(objAddressChange.Clean_Up_Report_Date__c).month(),Date.valueOf(objAddressChange.Clean_Up_Report_Date__c).day());
+                    intakemethod = 'Intake Method:' + objAddressChange.Clean_Up_Intake_Method__c + '\n'
+                        			+ 'Clean Up Report Date:' + dt.format('MM/dd/yyyy') + '\n'; 
+                }
+                else{
+                    intakemethod = 'Intake Method:' + objAddressChange.Clean_Up_Intake_Method__c + '\n';                        			
+                }
                 
                 String MemberName = objMap.get(objAddressChange.Member__c).Name;
                 if(objAddressChange.Update_Type__c =='Residential Address'){
                 	objAddressChange.Email_Old__c ='';
                 	objAddressChange.MobilePhone_Old__c ='';
                     caseobj.Subject = 'Address Change';
-                caseobj.Description = 'Update Type:' + objAddressChange.Update_Type__c 
+                caseobj.Description = intakemethod + 'Update Type:' + objAddressChange.Update_Type__c 
                 + '\n' +'Member Name:' + MemberName
                  + '\n' +'Old Address1:' + (objAddressChange.Address_Old__c == null ? '' :objAddressChange.Address_Old__c) 
                  + '\n'+ 'New Address1:' + (objAddressChange.Address_New__c == null ? '' :objAddressChange.Address_New__c) + '\n'+
@@ -120,7 +131,7 @@ trigger AddressChangeLogTrigger on AddressChangeLog__c (before insert) {
                 }   
                 else if(objAddressChange.Update_Type__c =='Contact Info'){
                     caseobj.Subject = 'Contact Info Change';
-                caseobj.Description = 'Update Type:' + objAddressChange.Update_Type__c 
+                caseobj.Description = intakemethod + 'Update Type:' + objAddressChange.Update_Type__c 
                 			 + '\n' +'Member Name:' + MemberName 
                             + '\n' +'Old HomePhone:' + (objAddressChange.HomePhone_Old__c == null ? '' :objAddressChange.HomePhone_Old__c) + '\n'
                             + 'New HomePhone:' + (objAddressChange.HomePhone_New__c == null ? '' :objAddressChange.HomePhone_New__c) + '\n'
@@ -139,7 +150,7 @@ trigger AddressChangeLogTrigger on AddressChangeLog__c (before insert) {
                 }  
                 else if(objAddressChange.Update_Type__c =='Card Mailing Address'){
                     caseobj.Subject = 'Card Mailing Address Change';
-                caseobj.Description = 'Update Type:' + objAddressChange.Update_Type__c 
+                caseobj.Description = intakemethod + 'Update Type:' + objAddressChange.Update_Type__c 
                 			 + '\n' +'Member Name:' + MemberName
                              + '\n' +'Old Address:' + (objAddressChange.Address_Old__c == null ? '' :objAddressChange.Address_Old__c) 
                				 + '\n'+ 'New Address:' + (objAddressChange.Address_New__c == null ? '' :objAddressChange.Address_New__c) + '\n'+
@@ -156,7 +167,7 @@ trigger AddressChangeLogTrigger on AddressChangeLog__c (before insert) {
                 }   
                 else if(objAddressChange.Update_Type__c =='Temp Mailing Address'){
                     caseobj.Subject = 'Temp Mailing Address Update';
-                caseobj.Description = 'Update Type:' + (objAddressChange.Update_Type__c  + ' - Update') 
+                caseobj.Description = intakemethod + 'Update Type:' + (objAddressChange.Update_Type__c  + ' - Update') 
                 			 + '\n' +'Member Name:' + MemberName
                              + '\n' +'Old Address:' + (objAddressChange.Address_Old__c == null ? '' :objAddressChange.Address_Old__c) 
                				 + '\n'+ 'New Address:' + (objAddressChange.Address_New__c == null ? '' :objAddressChange.Address_New__c) + '\n'+
@@ -175,7 +186,7 @@ trigger AddressChangeLogTrigger on AddressChangeLog__c (before insert) {
                 }
                 else if(objAddressChange.Update_Type__c =='Temp Mailing Address - New'){
                     caseobj.Subject = 'Temp Mailing Address Update';
-                caseobj.Description = 'Update Type:' + objAddressChange.Update_Type__c 
+                caseobj.Description = intakemethod + 'Update Type:' + objAddressChange.Update_Type__c 
                 			 + '\n' +'Member Name:' + MemberName
                              + '\n' + 'New Address:' + (objAddressChange.Address_New__c == null ? '' :objAddressChange.Address_New__c) + '\n'+                           
                             'New City:' + (objAddressChange.City_New__c == null ? '' :objAddressChange.City_New__c) 
