@@ -13,7 +13,7 @@ global class WiresTransToDocuSignBatch implements Database.Batchable<sObject>,Da
     
     global void execute(Database.BatchableContext BC,List<WIRES_Transaction__c> scopeWTIDs){
         
-  		List<WIRES_Transaction__c> WireTransactionToUpdate = new List<WIRES_Transaction__c>();
+  		/*List<WIRES_Transaction__c> WireTransactionToUpdate = new List<WIRES_Transaction__c>();
         String EmailToSend;
         Wires_Docusign_Emails__c wde = Wires_Docusign_Emails__c.getValues('Email For Testing');
         
@@ -90,7 +90,7 @@ global class WiresTransToDocuSignBatch implements Database.Batchable<sObject>,Da
         }
         if(WireTransactionToUpdate.size() > 0){
         	update WireTransactionToUpdate;
-        }
+        } */
     }
     
     global void finish(Database.BatchableContext BC){
