@@ -10,6 +10,7 @@ trigger SolarLoanTrigger on Solar_Loans__c (after insert,before insert, after up
     
     List<Solar_Loans__c> SLToUpdatesForRouting = new List<Solar_Loans__c>();
     Set<String> SLMemberNumber = new Set<String>();
+    Set<String> SLMemberNumberForName = new Set<String>();
     
     List<Solar_Loans__c> SLForMemberName = new List<Solar_Loans__c>();
     Set<String> SLMemberFirstName = new Set<String>();
@@ -85,7 +86,6 @@ trigger SolarLoanTrigger on Solar_Loans__c (after insert,before insert, after up
 		//--------------------------Updating "Brand" and "Four Digit Share Loan Type" from "Account Details" record------------------//
 	    
 	    
-	    //List<Account_Details__c> adList = [select id, Name, Brand__c, ID1__c, TypeTranslate__c,RecType__c from Account_Details__c where Name in:SLMemberNumber and Brand__c != null and RecType__c = 'LOAN' and TypeTranslate__c = '75-SECURED SOLAR'];
 	    List<Account_Details__c> adList = [select id, Name, Brand__c, ID1__c, TypeTranslate__c,RecType__c from Account_Details__c where Name in:SLMemberNumber and Brand__c != null];
 	    system.debug('adList'+adList);
 	   
@@ -194,18 +194,25 @@ trigger SolarLoanTrigger on Solar_Loans__c (after insert,before insert, after up
             
             //------------------------------- Adding ids if the Member Number field is not null----------------------------------//
             
-            if(trigger.old[i].Member_Number__c != trigger.new[i].Member_Number__c && trigger.new[i].Member_Number__c != null){ 
+            if((trigger.old[i].Member_Number__c != trigger.new[i].Member_Number__c || trigger.new[i].Member_Number__c != null) && trigger.new[i].Member_Name__c == null){ 
+            	SLForBranchIds.put(trigger.new[i].id, trigger.new[i]);
+                SLMemberNumberForName.add(trigger.new[i].Member_Number__c);
+            }
+            
+            if((trigger.old[i].Member_Number__c != trigger.new[i].Member_Number__c || trigger.new[i].Member_Number__c != null) && trigger.new[i].Account_Number__c == null){ 
             	SLForBranchIds.put(trigger.new[i].id, trigger.new[i]);
                 SLMemberNumber.add(trigger.new[i].Member_Number__c);
             }
             
    		} 
-	    system.debug('SLMemberNumber'+SLMemberNumber);	        
+	    system.debug('SLMemberNumberForName'+SLMemberNumberForName);
+	    system.debug('SLMemberNumber'+SLMemberNumber);
+	    	        
     	//--------------------------Updating "Member Name" based on "Name" field from Solar Loan record -----------------------//
     	
-            if(SLMemberNumber != null){
+            if(SLMemberNumberForName != null){
                 
-                List<Person_Account__c > peraccountlist = [select id,PersonID__c,PersonID__r.name,account_number__c,account_number__r.name from Person_Account__c where account_number__r.name in:SLMemberNumber and PersonID__c != null and Name_Type__c = 0 LIMIT 1];
+                List<Person_Account__c > peraccountlist = [select id,PersonID__c,PersonID__r.name,account_number__c,account_number__r.name from Person_Account__c where account_number__r.name in:SLMemberNumberForName and PersonID__c != null and Name_Type__c = 0 LIMIT 1];
                 
                 system.debug('peraccountlist'+peraccountlist);
 				for(Solar_Loans__c solarloan : SLForBranchIds.values()){
