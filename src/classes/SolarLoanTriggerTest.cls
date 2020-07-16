@@ -6,6 +6,30 @@ public class SolarLoanTriggerTest {
     	 
         User u = [SELECT Id,Email,username FROM User WHERE Email ='drana@chevronfcu.org'];
 		
+        DocuSign_User_Details__c DTChevron = new DocuSign_User_Details__c();
+        DTChevron.TemplateId__c = 'dc16d8f8-57ec-497e-bbf5-42d8b25d4ee1';
+        DTChevron.ReplyTo__c = 'noreply@chevron.org';
+        DTChevron.AccountId__c = '2e80de6b-16cf-4202-bf90-dfa029c5949f';
+        DTChevron.Username__c = '524ecc2e-873e-4590-b094-a079ad9a65a2';
+        DTChevron.Password__c = '!DocusignApi';
+        DTChevron.IntegratorKey__c = 	'12u7957a-484f-4fec-b6b3-461ec9b666aa';
+        DTChevron.EndPoint__c = 'demo.docusign.net';
+        DTChevron.Name = 'Chevron';
+        
+        insert DTChevron;
+        
+        DocuSign_User_Details__c DTSpectrum = new DocuSign_User_Details__c();
+        DTSpectrum.TemplateId__c = 'dc16d8f8-571c-497e-bbf5-42d8b25d4ee1';
+        DTSpectrum.ReplyTo__c = 'noreply@spectrum.org';
+        DTSpectrum.AccountId__c = '2e80db6b-16cf-4202-bf90-dfa029c5949f';
+        DTSpectrum.Username__c = '524ecc26-873e-4590-b094-a079ad9a65a2';
+        DTSpectrum.Password__c = '!DocusignApi';
+        DTSpectrum.IntegratorKey__c = 	'12c7957a-484f-4fec-b6b3-461ec9b666aa';
+        DTSpectrum.EndPoint__c = 'demo.docusign.net';
+        DTSpectrum.Name = 'Spectrum';
+        
+        insert DTSpectrum;
+        
         Account ac = new Account();
         ac.FirstName = 'Jeff';
         ac.LastName = 'Franklin';
@@ -37,17 +61,50 @@ public class SolarLoanTriggerTest {
         
 		System.runAs(u){        
             Solar_Loans__c sl = new Solar_Loans__c();
-            sl.Status__c = 'New';
-            sl.Primary_First_Name__c = 'Tom';
+            sl.Joint_First_Name__c ='Tom';
+            sl.Joint_Last_Name__c = 'Jerry';
+            sl.Joint_DOB__c = System.today();
+            sl.Joint_SSN__c =  '1715';
+            sl.Joint_FICO_Score__c = 12.00;
+            sl.Joint_City__c = 'city';
+            sl.Joint_State__c = 'PA';
+            sl.Joint_Zip_Code__c =  '12345';
+            sl.Primary_First_Name__c ='Tom';
             sl.Primary_Last_Name__c = 'Jerry';
-            sl.Joint_SSN__c = '1715';
-            sl.ACH__c = 'True';
-            sl.Brand__c = 'Chevron';
-            sl.Due_Date__c = System.today();
-            sl.Additional_Amount__c = 10000.00;
-            sl.ABA_Bank_Name__c = 'US BANK NA';
-            sl.Member_Name__c = ac.id;
+            sl.Primary_DOB__c = System.today();
+            sl.Primary_SSN__c =  '1715';
+            sl.Primary_Address_1__c = 'Add';
+            sl.Primary_FICO_Score__c = 12.00;
+            sl.Primary_City__c = 'city';
+            sl.Primary_State__c = 'PA';
+            sl.Primary_Zip_Code__c =  '12345';
+            sl.Legal_Description__c = 'test';
+            sl.Product__c = 'product';
+            sl.Module__c = 'module';
+            sl.Installer_Number__c = '12';
+            sl.Inverter__c = 'inverter';
+            sl.System_Size_kW__c = 12.00;
+            sl.Battery__c = 'barary';
+            sl.Installer__c = 'intealer';
+            sl.Application_Date__c = system.today();
+            sl.Mortgage_Balance__c = 1299.00;
+            sl.Final_Payment_Amount__c = 111.00;
+            sl.Go_To_Payment__c = 1252.00;
+            sl.Membership_Fee__c = 126.00;
+            sl.Net_Funding_Amount__c = 1213.00;
+            sl.Loan_Amount__c = 1211.00;
+            sl.Loan_Pmt_Amount__c = 1245.00;
+            sl.Credit_Exception__c = 'cr';
+            sl.ITC_Rate__c = 2.00;
+            sl.ITC_Amount__c = 1245.88;
+            sl.Term_months__c = 12;
+            sl.OID_Fee__c = 11;
+            sl.Approval_Date__c = system.today();
+            sl.ECOA_Code__c = '1';
+            sl.Site_UUID__c = '11';
+            sl.FNI__c = '12';
             sl.Member_Number__c = '269355';
+            sl.Status__c = 'New';
             insert sl;
         	
             sl.Member_Number__c = '247286';

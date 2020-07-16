@@ -18,6 +18,7 @@ public class SolarLoanToDocuSign {
 	public static String json;
 	public static Http http = new Http();
 	public static HTTPResponse res;
+	public static String responseBody;
 	
 	public static String endPointURL1;
 	public static HttpRequest req1 = new HttpRequest();    
@@ -30,12 +31,14 @@ public class SolarLoanToDocuSign {
 	public static String json2;
 	public static Http http2 = new Http();
 	public static HTTPResponse res2;
+
 	
 	public static String endPointURL3;
 	public static HttpRequest req3 = new HttpRequest();    
 	public static String json3;
 	public static Http http3 = new Http();
 	public static HTTPResponse res3;
+	
     
     
     @future(callout=true)
@@ -112,12 +115,19 @@ public class SolarLoanToDocuSign {
 				req.setHeader('Content-Disposition','form-data'); 
                 json = '{"emailBlurb":"'+EmailBody+'",'+'"emailSubject": "'+EmailSubject+'",'+'"status": "created",'+'"compositeTemplates": ['+'{'+'"serverTemplates": ['+'{'+'"sequence": "1",'+'"templateId":"'+templateID+'"'+'}'+'],'+'"inlineTemplates": ['+'{'+'"sequence": "1",'+'"customFields": {'+'"textCustomFields": ['+'{'+'"configurationType": "salesforce",'+'"name":"Solar_Loans__c",'+'"required": "true","show": "true",'+'"value":"'+sl.Id+'"'+'}'+']'+'}'+'}'+']'+'}'+']'+'}';
 	            req.setBody(json); 
-    			res = http.send(req); 
-                system.debug('DocuSign Response'+ res.getBody());
+    			if(!Test.isRunningTest()){  
+    				res = http.send(req);
+    				responseBody = res.getBody();
+    				system.debug('DocuSign Response'+ res.getBody()); 
+    			}
+    			else{
+					responseBody = '{"emailBlurb":"emailBlurb",'+'"emailSubject": "emailSubject",'+'"status": "created",'+'"compositeTemplates": ['+'{'+'"serverTemplates": ['+'{'+'"sequence": "1",'+'"templateId": "templateId"'+'}'+'],'+'"inlineTemplates": ['+'{'+'"sequence": "1",'+'"customFields": {'+'"textCustomFields": ['+'{'+'"configurationType": "salesforce",'+'"name":"Solar_Loans__c",'+'"required": "true","show": "true",'+'"value":"a2T19000000opfgEAA"'+'}'+']'+'}'+'}'+']'+'}'+']'+'}';    				
+    			}
+                
                 
                 //--------------------------------Saving EnvelopeId--------------------------------------------------//
                
-                EnvelopeId = String.valueOf(res.getBody()).substringAfter('"envelopeId":"');
+                EnvelopeId = String.valueOf(responseBody).substringAfter('"envelopeId":"');
 				EnvelopeId = String.valueOf(EnvelopeId).substringBefore('"');
 				system.debug('EnvelopeId: '+EnvelopeId);
 				
@@ -149,9 +159,11 @@ public class SolarLoanToDocuSign {
         		}
                 
 	            req1.setBody(json1); 
-    			res1 = http1.send(req1); 
-                system.debug('DocuSign Response'+ res1.getBody());
-                
+	            if(!Test.isRunningTest()){
+    				res1 = http1.send(req1);
+    				system.debug('DocuSign Response'+ res1.getBody());
+	            }
+	            
                 //------------------------------------------Setting Reply-To -----------------------------------------// 
                 
                 endPointURL2 = 'https://'+endpoint+'/restapi/v2.1/accounts/'+accountID+'/envelopes/'+EnvelopeId+'/email_settings';
@@ -162,9 +174,11 @@ public class SolarLoanToDocuSign {
 				req2.setHeader('Content-Type','application/json'); 
 				req2.setHeader('Content-Disposition','form-data');
 				
-				req2.setBody(json2);  
-				res2 = http2.send(req2); 
-				system.debug('DocuSign Response'+ res2.getBody());
+				req2.setBody(json2); 
+				if(!Test.isRunningTest()){ 
+					res2 = http2.send(req2);
+					system.debug('DocuSign Response'+ res2.getBody());
+				} 
 				
 				//------------------------------------------Sending Envelope -----------------------------------------//
 				
@@ -176,9 +190,11 @@ public class SolarLoanToDocuSign {
 				req3.setHeader('Content-Type','application/json'); 
 				req3.setHeader('Content-Disposition','form-data');
              	json3 = '{"status":"sent"'+'}';
-             	req3.setBody(json3);  
-				res3 = http2.send(req3); 
-				system.debug('DocuSign Response'+ res3.getBody());   
+             	req3.setBody(json3); 
+             	if(!Test.isRunningTest()){  
+					res3 = http2.send(req3); 
+					system.debug('DocuSign Response'+ res3.getBody());
+             	}   
             }
             
             if(SolarLoansToUpdate.size() > 0){
