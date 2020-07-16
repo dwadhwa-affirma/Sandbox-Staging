@@ -73,6 +73,7 @@
         var Stage5ErrorCheck;
         var Stage2ErrorCheck;
         var Stage2MissingFields;
+        var Stage5MissingFields
         var SolarLoanRecordId = component.get("v.recordId");
        	
         var CurrentStage;
@@ -122,9 +123,10 @@
                 }	
                 //---------------------Validation for Stage-5 -------------------------------//
                 	
-                if(result.Stage5ErrorCheck == 'True')
+                if(result.Stage5ErrorCheck == 'True'){
                 	Stage5ErrorCheck = 'True';
-                
+                	Stage5MissingFields = result.Stage5MissingFields;
+                }
             
             if(checkCurrentStage == 'Stage 2'){
                 component.set("v.ButtonLabelName", "Mark Stage 2 Complete");
@@ -204,7 +206,7 @@
 				var toastEvent = $A.get("e.force:showToast");
 		        toastEvent.setParams({
 		            title : 'Warning',
-		            message: 'Please enter Routing Number or Retrieved Bank Name or Bank Account Numbers value before moving stage 4 to 5.',
+		            message: Stage5MissingFields,
 		            duration:' 5000',
 		            key: 'info_alt',
 		            type: 'warning',
