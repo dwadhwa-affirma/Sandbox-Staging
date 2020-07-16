@@ -6,7 +6,7 @@ public class EFTToDocuSign {
 	public static String EmailBody = 'In order for the Credit Union to ensure your solar loan automatic payment setup is accurate, please review and sign the ACH form.' +'\n\n' +'If changes are needed or you would like to provide additional payments, please update the form and sign.' +'\n\n' + 'If you have any questions, please contact us at 800-782-8782 ext. 5200.';
 	public static String EmailSubject = 'ACH Debits';    
 	public static String accountID = '2e80db6b-16cf-4202-bf90-dfa029c5949f'; 
-	public static String userName = 'cc0ace2f-a6a7-44ae-852d-3c7432552ebb'; 
+	public static String userId = 'cc0ace2f-a6a7-44ae-852d-3c7432552ebb'; 
 	public static String passWord = 'Affirm@123' ;
 	public static String integratorKey = '12c7957a-484f-4fec-b6b3-461ec9b666aa' ; 
 	public static String replyTo = 'noreply@chevronfcu.org';
@@ -78,7 +78,7 @@ public class EFTToDocuSign {
         		
                 action = eft.Action_Type__c;
                
-            	authorizationHeader = '<DocuSignCredentials><Username>'+userName+'</Username><Password>'+Password+'</Password><IntegratorKey>'+integratorKey+'</IntegratorKey></DocuSignCredentials>';
+            	authorizationHeader = '<DocuSignCredentials><Username>'+userId+'</Username><Password>'+Password+'</Password><IntegratorKey>'+integratorKey+'</IntegratorKey></DocuSignCredentials>';
         		endPointURL = 'https://'+endpoint+'/restapi/v2.1/accounts/'+accountID+'/envelopes'; 
                 req.setEndpoint(endPointURL); 
 				req.setMethod('POST'); 
