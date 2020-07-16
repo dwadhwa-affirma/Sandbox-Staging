@@ -6,7 +6,7 @@ public class SolarLoanToDocuSign {
 	public static String EmailBody = 'In order for the Credit Union to ensure your solar loan automatic payment setup is accurate, please review and sign the ACH form.' +'\n\n' +'If changes are needed or you would like to provide additional payments, please update the form and sign.' +'\n\n' + 'If you have any questions, please contact us at 800-782-8782 ext. 5200.';
 	public static String EmailSubject = 'ACH Debits';    
 	public static String accountID; 
-	public static String userName; 
+	public static String userId; 
 	public static String passWord;
 	public static String integratorKey; 
 	public static String replyTo;
@@ -58,8 +58,6 @@ public class SolarLoanToDocuSign {
             EmailToSend = sde.Emails__c;
         }
         
-        
-        
         //----------------------------End - DocuSign Templates from Custom setting------------------------------------//
        
         List<Solar_Loans__c> Solanloanlist = new List<Solar_Loans__c>();         
@@ -85,24 +83,24 @@ public class SolarLoanToDocuSign {
             		templateID = DTSpectrum.TemplateId__c;
             		replyTo = DTSpectrum.ReplyTo__c;
             		accountID = DTSpectrum.AccountId__c;
-            		userName = DTSpectrum.Username__c;
+            		userId = DTSpectrum.Username__c;
             		passWord = DTSpectrum.Password__c;
             		integratorKey = DTSpectrum.IntegratorKey__c;
             		endpoint = DTSpectrum.EndPoint__c;
             		
-            		authorizationHeader = '<DocuSignCredentials><Username>'+userName+'</Username><Password>'+Password+'</Password><IntegratorKey>'+integratorKey+'</IntegratorKey></DocuSignCredentials>';
+            		authorizationHeader = '<DocuSignCredentials><Username>'+userId+'</Username><Password>'+Password+'</Password><IntegratorKey>'+integratorKey+'</IntegratorKey></DocuSignCredentials>';
             		json2='{"replyEmailAddressOverride":"'+replyTo+'",'+'"replyEmailNameOverride": "Spectrum Team",'+'"bccEmailAddresses": []'+'}';
             	}
             	else{
             		templateID = DTChevron.TemplateId__c;
             		replyTo = DTChevron.ReplyTo__c;
             		accountID = DTChevron.AccountId__c;
-            		userName = DTChevron.Username__c;
+            		userId = DTChevron.Username__c;
             		passWord = DTChevron.Password__c;
             		integratorKey = DTChevron.IntegratorKey__c;
             		endpoint = DTChevron.EndPoint__c;
             		
-            		authorizationHeader = '<DocuSignCredentials><Username>'+userName+'</Username><Password>'+Password+'</Password><IntegratorKey>'+integratorKey+'</IntegratorKey></DocuSignCredentials>';
+            		authorizationHeader = '<DocuSignCredentials><Username>'+userId+'</Username><Password>'+Password+'</Password><IntegratorKey>'+integratorKey+'</IntegratorKey></DocuSignCredentials>';
             		json2='{"replyEmailAddressOverride": "'+replyTo+'",'+'"replyEmailNameOverride": "Chevron Team",'+'"bccEmailAddresses": []'+'}';
             	}
             	
