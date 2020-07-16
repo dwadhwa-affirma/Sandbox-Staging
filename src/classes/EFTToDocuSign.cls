@@ -44,7 +44,7 @@ public class EFTToDocuSign {
     
     @future(callout=true)
     public static void docusignAPIcall(Set<ID> ids){   
-    	
+    	system.debug('ids =='+ids);
         //----------------------------Start - DocuSign Templates from Custom setting---------------------------------//
         SolarLoan_Docusign_Emails__c sde = SolarLoan_Docusign_Emails__c.getValues('Email For Testing');
         DocuSign_User_Details__c DTSpectrum = DocuSign_User_Details__c.getValues('Spectrum');
@@ -86,7 +86,8 @@ public class EFTToDocuSign {
 				req.setHeader('Content-Length','162100'); 
 				req.setHeader('Content-Type','application/json'); 
 				req.setHeader('Content-Disposition','form-data'); 
-                json = '{"emailBlurb":"'+EmailBody+'",'+'"emailSubject": "'+EmailSubject+'",'+'"status": "created",'+'"compositeTemplates": ['+'{'+'"serverTemplates": ['+'{'+'"sequence": "1",'+'"templateId":"'+templateID+'"'+'}'+'],'+'"inlineTemplates": ['+'{'+'"sequence": "1",'+'"customFields": {'+'"textCustomFields": ['+'{'+'"configurationType": "salesforce",'+'"name":"Solar_Loans__c",'+'"required": "true","show": "true",'+'"value":"'+eft.Id+'"'+'}'+']'+'}'+'}'+']'+'}'+']'+'}';
+                system.debug('EFTID =='+eft.Id);
+                json = '{"emailBlurb":"'+EmailBody+'",'+'"emailSubject": "'+EmailSubject+'",'+'"status": "created",'+'"compositeTemplates": ['+'{'+'"serverTemplates": ['+'{'+'"sequence": "1",'+'"templateId":"'+templateID+'"'+'}'+'],'+'"inlineTemplates": ['+'{'+'"sequence": "1",'+'"customFields": {'+'"textCustomFields": ['+'{'+'"configurationType": "salesforce",'+'"name":"EFT__c",'+'"required": "true","show": "true",'+'"value":"'+eft.Id+'"'+'}'+']'+'}'+'}'+']'+'}'+']'+'}';
 	            req.setBody(json); 
     			if(!Test.isRunningTest()){  
     				res = http.send(req);
@@ -94,7 +95,7 @@ public class EFTToDocuSign {
     				system.debug('DocuSign Response'+ res.getBody()); 
     			}
     			else{
-					responseBody = '{"emailBlurb":"emailBlurb",'+'"emailSubject": "emailSubject",'+'"status": "created",'+'"compositeTemplates": ['+'{'+'"serverTemplates": ['+'{'+'"sequence": "1",'+'"templateId": "templateId"'+'}'+'],'+'"inlineTemplates": ['+'{'+'"sequence": "1",'+'"customFields": {'+'"textCustomFields": ['+'{'+'"configurationType": "salesforce",'+'"name":"Solar_Loans__c",'+'"required": "true","show": "true",'+'"value":"a2T19000000opfgEAA"'+'}'+']'+'}'+'}'+']'+'}'+']'+'}';    				
+					responseBody = '{"emailBlurb":"emailBlurb",'+'"emailSubject": "emailSubject",'+'"status": "created",'+'"compositeTemplates": ['+'{'+'"serverTemplates": ['+'{'+'"sequence": "1",'+'"templateId": "templateId"'+'}'+'],'+'"inlineTemplates": ['+'{'+'"sequence": "1",'+'"customFields": {'+'"textCustomFields": ['+'{'+'"configurationType": "salesforce",'+'"name":"EFT__c",'+'"required": "true","show": "true",'+'"value":"a2T19000000opfgEAA"'+'}'+']'+'}'+'}'+']'+'}'+']'+'}';    				
     			}
                 
                 
