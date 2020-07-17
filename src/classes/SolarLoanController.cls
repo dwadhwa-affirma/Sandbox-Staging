@@ -214,10 +214,11 @@ public class SolarLoanController {
               
             	}
             
+            	
             	for(String fieldName : stage5RequireFields){
             
 	            	System.debug(fieldName +' - '+SolarLoanList[0].get(fieldName));
-	            	if(SolarLoanList[0].get(fieldName) == null || SolarLoanList[0].get(fieldName) ==''){
+	            	if(SolarLoanList[0].ACH__c == 'True' && (SolarLoanList[0].get(fieldName) == null || SolarLoanList[0].get(fieldName) =='')){
 	            	
 	            		missingFields += fieldMap.get(fieldName).getDescribe().getLabel() + ', ';
 		            	Stage5ErrorCheck = 'True';
