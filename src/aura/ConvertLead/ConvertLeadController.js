@@ -12,8 +12,22 @@
 		    	
             var status = response.getState();            
 	       	    if (component.isValid() && status === "SUCCESS") {
-	               var result = response.getReturnValue(); 
-	               if(result.length == 0)
+	               var result = response.getReturnValue();
+                    if(result.ExistingMember != undefined){
+                        var toastEvent = $A.get("e.force:showToast");
+				        toastEvent.setParams({
+				            title : 'Error Message',
+				            message:'You cannot convert Existing Member',
+				            messageTemplate: 'Error Message',
+				            duration:' 5000',
+				            key: 'info_alt',
+				            type: 'error',
+				            mode: 'pester'
+				        });
+				        toastEvent.fire();
+				        $A.get("e.force:closeQuickAction").fire();
+                    } 
+	               else if(result.ClosedLead != undefined)
 	               {
 	            	   var toastEvent = $A.get("e.force:showToast");
 				        toastEvent.setParams({
@@ -35,15 +49,15 @@
                                     sObectEvent.fire(); */
 				        
 	               }
-	               
+                  
 	               else{
 	               
-				       component.set("v.accId", result[0][0]);
+				       component.set("v.accId", result.listObj[0][0]);
                             
-                            component.set("v.oppId", result[0][1]);
-                            component.set("v.oppNumber", result[0][2]);
+                            component.set("v.oppId", result.listObj[0][1]);
+                            component.set("v.oppNumber", result.listObj[0][2]);
                             
-                            component.set("v.LeadObject", result[1]);
+                            component.set("v.LeadObject", result.listObj[1]);
                           
                             
                             

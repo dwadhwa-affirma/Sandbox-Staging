@@ -17,7 +17,8 @@ trigger WIRESTransactionTrigger on WIRES_Transaction__c (before insert, after in
     system.debug('WTIds.size()=='+WTIds.size());
     if(WTIds.size() > 0){
         
-    	Database.executeBatch(new WiresTransToDocuSignBatch(WTIds),1);
+    	//Database.executeBatch(new WiresTransToDocuSignBatch(WTIds),1);
+        WiresTransToDocuSign.docusignAPIcall(WTIds);
     }
     
     //------------------------------------------------------------------Before Insert  ------------------------------------------------------------------------------//

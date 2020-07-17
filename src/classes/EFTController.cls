@@ -56,10 +56,12 @@ public class EFTController {
     
     @AuraEnabled
     public static EFT__c getEFT(EFT__c EFTRecord){
+        system.debug('EFTRecord.id=='+EFTRecord.id);
+        system.debug('EFTRecord.Id=='+EFTRecord.Id);
     	if(EFTRecord.id != null){
         EFT__c ResultEFTRecord = [select id, name, Member_Account__c, Stage__c, Action_Type__c, Share_Loan_Id__c, Type__c	,Share_Loan_Type__c, Share_Loan_Description__c,
                                       Routing_Number__c, Bank_Name__c, Account_Number__c, Alternate_Amount__c,Effective_Date__c,
-                                      Frequency__c, Payment_Amount__c, Day_of_Month__c,Second_Day_of_Month__c, Member_Account__r.name, Case__c, Case__r.CaseNumber, Case__r.Status	, Expired__c
+                                      Frequency__c, Payment_Amount__c, Day_of_Month__c,Second_Day_of_Month__c, Member_Account__r.name, Case__c, Case__r.CaseNumber, Case__r.Status	, Expired__c, Member_Name__c
                                       from EFT__c where id =: EFTRecord.id limit 1];
                                       return ResultEFTRecord;
     	}
@@ -179,7 +181,13 @@ public class EFTController {
         }
         else{
         	 system.debug('Insert=='+EFTRecord.EftLocator__c);
-        		 insert EFTRecord;
+            system.debug('Member_Account__c=='+EFTRecord.Member_Account__c);
+            system.debug('Member_Account__r.Id=='+EFTRecord.Member_Account__r.Id);
+            system.debug('Member_Account__r.Name=='+EFTRecord.Member_Account__r.Name);
+            if(EFTRecord.Member_Account__c == null){
+                EFTRecord.Member_Account__c = EFTRecord.Member_Account__r.Id;
+            }
+            insert EFTRecord;
         		EFTRecord.Expired__c  =  true;
 	            EFTRecord.Action_Type__c  =  'Update';	             
 	            EFT__c ResultEFTRecord = createCase(EFTRecord);
@@ -202,6 +210,7 @@ public class EFTController {
         system.debug('EFTID==='+EFTRecord.id);
         system.debug('Member_Account__c==='+EFTRecord.Member_Account__c);
         system.debug('Member_Account__r==='+EFTRecord.Member_Account__r.Id);
+        system.debug('Member_Name__c==='+EFTRecord.Member_Name__c);
         list<CaseRecordType__c> scList = [SELECT Id,
                                                  Primary_Category__c,
                                                  Secondary_Category__c,
@@ -607,12 +616,6 @@ public class EFTController {
                        			objEFT.id = SFEFT[0].id;
                        		}
                        		
-                       		////system.debug('Day1=='+objEFT.Frequency__c);
-                       		
-                       		//objEFT.Member_Account__r.Name = String.valueOf(localAcc.get('AccountNumber'));     		
-                       		//string locator = String.valueOf(localAcc.get('EftLocator'));                       		
-                       		//EFTLocatorsSet.add(locator);
-                       		//system.debug('EXPDATE=='+String.valueOf(localAcc.get('Reference'))) ; 
                        		EFTList.add(objEFT);
                  }
        		}

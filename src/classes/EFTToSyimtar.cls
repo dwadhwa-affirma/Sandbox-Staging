@@ -404,6 +404,7 @@ public class EFTToSyimtar {
 	                
 	               
 	        		if(isExpired){
+                        system.debug('e.Member_Name__c==='+e.Member_Name__c);
 	        			e.Expiration_Date__c = Date.valueOf(resultExpDate);
 	        			 Datetime dt = datetime.newInstance(Date.valueOf(resultExpDate).year(), Date.valueOf(resultExpDate).month(),Date.valueOf(resultExpDate).day());
 	        			string operation = 'ACH Record Expired' + '\n' + 'Expiration Date:' + dt.format('MM/dd/yyyy') + '\n' ;

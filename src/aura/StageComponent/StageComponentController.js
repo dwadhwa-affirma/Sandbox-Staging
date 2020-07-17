@@ -269,7 +269,7 @@
        stages = component.get("v.EFTStageDetails"); 
        if(component.get("v.isMemberSelected") == true && component.get("v.ActiveStepIndex") == 0){
     	   component.set("v.isMemberSelected", false);
-    	   component.set("v.EFTRecord.Member_Name__c","");
+    	   //component.set("v.EFTRecord.Member_Name__c","");
     	    $A.createComponent("c:"+stages[0].Stage_Component__c,{recordId: component.get("v.recordId"), EFTRecord: component.get("v.EFTRecord"), isMemberSelected: component.get("v.isMemberSelected")},
                                 function(msgBox){                
                                      if (component.isValid()) {
