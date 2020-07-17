@@ -1,12 +1,12 @@
 public with sharing class ConvertLeadController {
     
      @AuraEnabled   
-    public static List<object> ConvertLead(Id leadId)
+    public static map<string,List<object>> ConvertLead(Id leadId)
     {
     	
     	Lead leadObject = [select id,FirstName,LastName,MiddleName,Mortgage_Loan_Officer__r.id, Lead_Number__c,Other_Phone__c,Episys_User_ID__c,Description,Salutation,Suffix,Name,Status,Phone,Email,MobilePhone,Home_Phone__c,Owner.Name,OwnerId,How_did_you_hear_about_us__c,Event_Source__c,Mortgage_Loan_Officer__c,
     						/*Member_Branch__c,*/ Brand__c,LeadSource,Product_Type__c,Product_Subtype__c,CreatedById,CreatedDate, Street_Address_1__c, Street_Address_2__c,Best_Time_To_Call__c,Branch_of_Lead_creator__c,
-    						State__c,Zip_Code__c,City__c,Country__c,Future_Date__c, I_m_interested_in__c, UID__c, Property_City__c, Property_Zip__c,Property_Address__c,Property_State__c,UnbounceSubmissionDate__c,UnbounceSubmissionTime__c, Timeframe__c,Estimate_Value__c, Loan_Amount__c, Sub_Status__c from Lead where Id =: leadId];
+    						State__c,Zip_Code__c,City__c,Country__c,Future_Date__c, I_m_interested_in__c, UID__c, Property_City__c, Property_Zip__c,Property_Address__c,Property_State__c,UnbounceSubmissionDate__c,UnbounceSubmissionTime__c, Timeframe__c,Estimate_Value__c, Loan_Amount__c, Sub_Status__c,Existing_Member__c  from Lead where Id =: leadId];
     						
     	
     	set<id> setlead = new Set<id>();
@@ -16,8 +16,13 @@ public with sharing class ConvertLeadController {
 		 }					
     	system.debug('###leadObject' + leadObject);
     	List<object> listObj = new List<object>(); 
+        map<string,List<object>> resultList=new map<string,List<object>>();
     	Id LoggedinUser = UserInfo.getUserId();
-    			if(leadObject.Status !='Closed - Converted' && leadObject.Status !='Closed - Not Converted')
+        if(leadObject.Existing_Member__c == 'True'){
+            resultList.put('ExistingMember',listObj);
+            return resultList;
+        }
+    			else if(leadObject.Status !='Closed - Converted' && leadObject.Status !='Closed - Not Converted')
     			{
     				
 			    	Account acc = new Account();
@@ -179,11 +184,13 @@ public with sharing class ConvertLeadController {
 				    	leadObject.Ownerid = u.Id;
 			    	}
 			    	update leadObject;
-			    	return listObj;
+                    resultList.put('listObj', listObj);
+			    	return resultList;
     				
     			}
     			
-    			return listObj;
+    	resultList.put('ClosedLead',listObj);            	
+        return resultList;
     			
     			
     	   	

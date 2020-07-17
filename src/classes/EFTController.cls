@@ -1,5 +1,4 @@
-public class EFTController {
-    
+public class EFTController {   
      //------------------------------- Getting Stage Details and Member Account Details-----------------------------------------------//
     @AuraEnabled
     public static map<string,object> getStageData(string recordId, string sObjectType){
@@ -277,113 +276,10 @@ public class EFTController {
      //-------------------------------Send ACH Document-----------------------------------------------//
     @AuraEnabled
     public static void sendACHDocument(EFT__c recordId){
-        
-        String action = recordId.Action_Type__c	;
-    	
-    	List<EFT__c> EFTToUpdate = new List<EFT__c>();
-  		String Email;
-        List<string> EmailList = new List<String>();
-        
-         //--------------------------------Current User Email ------------------------------------------------------//
-        
-        String userName = UserInfo.getUserName();
-		User activeUser = [Select Email From User where Username = : userName limit 1];
-		String userEmail = activeUser.Email;
- 
- 		//--------------------------------Current User Email ------------------------------------------------------//
-     
-  		ACH_Docusign_Emails__c sde = ACH_Docusign_Emails__c.getValues('Email For Testing');
-        
-        if(sde.Emails__c != null){
-            Email = sde.Emails__c;
-        }    
-       
-        
-       // for(Integer i=0;i<recordId.size();i++){
-        	
-            dfsle.Recipient myRecipient;
-            dfsle.UUID myTemplateId;
-            dfsle.Document myDocument;
-            dfsle.CustomField Depositary;
-            dfsle.Envelope myEnvelope;
-            String MemberEmail;
-			String Name;
-            String DocuSignId;
-            
-            Account_Details__c MemberAccount = [select id,name, Parent_Account__c from Account_Details__c where id=:recordId.Member_Account__c limit 1];
-        	
-        	Person_Account__c paPrimary = [SELECT Id,PersonID__c,PersonID__r.PersonEmail,
-                             Account_Number__c, Account_Number__r.RecType__c,TypeTranslate__c, Account_Number__r.Name, PersonID__r.Home_Phone__pc,PersonID__r.Residential_City__pc,PersonID__r.Residential_State__pc, PersonID__r.Residential_Street__pc, PersonID__r.Residential_Zipocde__pc, PersonID__r.Name, PersonID__r.Email_raw__c
-                             FROM Person_Account__c 
-                             WHERE Account_Number__c =: recordId.Member_Account__c and TypeTranslate__c  like '%Primary%' limit 1];                     
-      	//	if(paPrimary.PersonID__r.PersonEmail != null)
-      			MemberEmail = recordId.Docusign_Member_Email__c;//paPrimary.PersonID__r.PersonEmail;
-      		//EFTRecord.Member_Name__c = paPrimary.PersonID__r.Name;
-            
+        set<Id> Ids = new Set<Id>();
+        Ids.add(recordId.Id);
+        EFTToDocuSign.docusignAPIcall(Ids);
            
-      		Name = recordId.Member_Name__c;//paPrimary.PersonID__r.Name;
-      		
-      		//------------------------------- Sending Docusign Email to Member email---------------------------//
-            
-            if(Email == 'Production' || Email == 'production'){
-	        
-	        	if(MemberEmail != null)
-	        		myRecipient = dfsle.Recipient.fromSource(Name,MemberEmail,null,'Signer 1',new dfsle.Entity(recordId.Id));
-	        }
-	        
-	        //-------------------------------Sending DocuSign Email to Current logged in user-------------------------//
-	        
-            if(Email != 'Production' || Email != 'production'){
-	        
-	        	myRecipient = dfsle.Recipient.fromSource(Name,userEmail,null,'Signer 1',new dfsle.Entity(recordId.Id));
-	        }
-            
-       				//Create EFT
-                    if(action == 'Create'){
-		            	myTemplateId = dfsle.UUID.parse('5658c430-8e5d-4f53-b910-4d9e939e52ee');  //Create EFT
-                    	myDocument =dfsle.Document.fromTemplate(myTemplateId,'Chevron ACH Debits - EFT');
-                    }
-                    //Expire EFT
-                    else if(action == 'Update' && recordId.Expired__c){
-		            	myTemplateId = dfsle.UUID.parse('5658c430-8e5d-4f53-b910-4d9e939e52ee'); //Expire EFT
-                        myDocument =dfsle.Document.fromTemplate(myTemplateId,'Chevron ACH Debits - EFT');
-                    }
-                    //Update EFT
-                    else if(action == 'Update' && !recordId.Expired__c){
-		            	myTemplateId = dfsle.UUID.parse('5658c430-8e5d-4f53-b910-4d9e939e52ee'); //Update EFT
-                        myDocument =dfsle.Document.fromTemplate(myTemplateId,'Spectrum ACH Debits');
-                    }
-		           
-       			    Depositary = new dfsle.CustomField('text','##SFEFT__c',recordId.Id, null,true, true);
-        		    myEnvelope = new dfsle.Envelope(null,null, null,null,new List<dfsle.Document> { myDocument },null,new List<dfsle.CustomField> { Depositary },null,
-															'ACH Debits',
-															'In order for the Credit Union to ensure your ACH loan payment setup is accurate, please review and sign the ACH form.' +'\n\n' +'If changes are needed or you would like to provide additional payments, please update the form and sign.' +'\n\n' + 'If you have any questions, please contact us at 800-782-8782.',null,null);
-					 myEnvelope = myEnvelope.withRecipients(new List<dfsle.Recipient> { myRecipient });
-					 
-					 if(!Test.isRunningTest()){
-            			myEnvelope = dfsle.EnvelopeService.sendEnvelope(myEnvelope, true);
-            		 }
-	     
-            // ---------------------------- Fetching DocusignId and inserting into Solar Loan record---------------------------------//
-            
-            DocuSignId = String.valueOf(myEnvelope).substringAfter('docuSignId=');
-            DocuSignId = String.valueOf(DocuSignId).substringBefore(',');
-            system.debug('tttt1'+DocuSignId);
-            
-            EFT__c e = new EFT__c();        	
-            e.id = recordId.Id;
-        	if(action == 'Create')
-            e.DocuSignId__c = DocuSignId.toUpperCase();
-            else if(action == 'Update' && !recordId.Expired__c)
-            e.Update_DocuSignId__c = DocuSignId.toUpperCase();
-                
-            EFTToUpdate.add(e);
-        //}
-        
-        if(EFTToUpdate.size() > 0){
-        	update EFTToUpdate;
-        }
-    
     }
     
     
