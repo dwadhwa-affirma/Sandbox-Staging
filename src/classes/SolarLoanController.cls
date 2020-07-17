@@ -162,11 +162,27 @@ public class SolarLoanController {
 	
 			}
 			
+			if(SolarLoanList[0].Primary_SSN__c != null && SolarLoanList[0].Primary_SSN__c.length() != 9 && Stage2ErrorCheck != 'True'){
+								
+				Stage2MissingFields = 'The length of the member’s SSN is not correct';
+				Stage2ErrorCheck = 'True';
+				
+			}
+			else if(SolarLoanList[0].ECOA_Code__c == '2' && SolarLoanList[0].Joint_SSN__c != null && SolarLoanList[0].Joint_SSN__c.length() != 9 && Stage2ErrorCheck != 'True'){
+				
+				Stage2MissingFields = 'The length of the member’s Joint SSN is not correct';
+				Stage2ErrorCheck = 'True';
+			}
+			else{
+	
+				Stage2MissingFields = 'The following fields are required:  '+ missingFields + '.';	
+			}
+			
         	if(Stage2ErrorCheck != 'True'){
         		Stage2ErrorCheck = 'False';
         	}
         	
-        	Stage2MissingFields = 'The following fields are required:  '+ missingFields + '.';
+        	
 	        
         }
         
