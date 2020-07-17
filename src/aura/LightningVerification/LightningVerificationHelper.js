@@ -185,8 +185,7 @@
 	
 	MemberVerificationAttemptCheck : function(component, event, helper, memberid, DebitCardStatus,ReLoadRequired, PointsObtained)
 	{
-		alert('MemberVerificationAttemptCheck called');
-        console.log('MemberVerificationAttemptCheck called');
+		console.log('MemberVerificationAttemptCheck called');
         var GUID = component.get("v.GUID");
 		var IVRGUIDFromUrl = component.get("v.IVRGUIDFromUrl");
 		if(IVRGUIDFromUrl =='' || IVRGUIDFromUrl == undefined )
@@ -199,8 +198,6 @@
 		if(ReLoadRequired == undefined){
 			ReLoadRequired = false;
 		}
-		var IsPinChangedCalculationExecuted = component.get("v.IsPinChangedCalculationExecuted");
-        console.log('Controller line---202----IsPinChangedCalculationExecuted##'+ component.get("v.IsPinChangedCalculationExecuted"));
 		var SSNFromURL = component.get("v.SSNFromURL");
 		var MemberNumberFromURL = component.get("v.MemberNumberFromURL");
 		var PhoneFromURL = component.get("v.PhoneFromURL");
@@ -225,14 +222,14 @@
 								"ReLoadRequired": ReLoadRequired, "ReasonCodeFromURL": ReasonCodeFromURL,"HighFlagFromUrl":HighFlagFromUrl, "PointsObtained":PointsObtained, 
 								"IsOOWTabVisible": component.get("v.IsOOWTabVisible"), "IsUserSessionLoaded": component.get("v.IsUserSessionLoaded"),
 								"EnteredCardNumber": ' ', "CardNumberMatch": ' ',
-                              "PhoneNumberMatch": ' ', "MemberNumberMatch" : ' ', "SSNnumberMatch" : ' ', "PINMatch" : ' ', "IsPinChangedCalculationExecuted": IsPinChangedCalculationExecuted });
+                              "PhoneNumberMatch": ' ', "MemberNumberMatch" : ' ', "SSNnumberMatch" : ' ', "PINMatch" : ' ' });
 		}
 		else{
 			action.setParams({"MemberId": memberid,"GUID": GUID,"DebitCardStatus": DebitCardStatus,"SSNFromURL": SSNFromURL,"MemberNumberFromURL":MemberNumberFromURL,
 								"PhoneFromURL":PhoneFromURL,"PageURL":PageURL, "IVRGUIDFromUrl": IVRGUIDFromUrl,"ReLoadRequired":ReLoadRequired,"ReasonCodeFromURL": ReasonCodeFromURL,
 								"HighFlagFromUrl":HighFlagFromUrl, "PointsObtained":PointsObtained,  "IsOOWTabVisible": component.get("v.IsOOWTabVisible"), "IsUserSessionLoaded": component.get("v.IsUserSessionLoaded"),
 								"EnteredCardNumber": EnteredCardNumber, "CardNumberMatch":CardNumberMatch, "PhoneNumberMatch": PhoneNumberMatch, 
-                                "MemberNumberMatch" : MemberNumberMatch, "SSNnumberMatch" : SSNnumberMatch,"PINMatch":PINMatch, "IsPinChangedCalculationExecuted": IsPinChangedCalculationExecuted
+                                "MemberNumberMatch" : MemberNumberMatch, "SSNnumberMatch" : SSNnumberMatch,"PINMatch":PINMatch
 								 });
     	}
     	action.setCallback(this, function (response) {
@@ -279,7 +276,8 @@
 	                    component.set("v.IsLevel2Achieved", result.IsLevel2Achieved); 
 	                    component.set("v.IsLevel3Achieved", result.IsLevel3Achieved); 
 	                    component.set("v.MultipleMemberNumberAlert",result.MultipleMemberNumberAlert);
-                   		component.set("v.IsPinChangedCalculationExecuted", result.PinChangedExecutionResult);
+						component.set("v.PointObtained", result.CurrentScore);   
+						component.set("v.CurrentScore", result.CurrentScore);
 					    if(result['OOWStatusForDay'] == false)
 					    {
 					    	component.set("v.Likedisable", true);
@@ -843,15 +841,14 @@
     	console.log('Helper Line 833---IsOOWAvailable' + IsOOWAvailable);
     	console.log('Helper Line 834---IsPublicWalletAvailable' + IsPublicWalletAvailable);
     	console.log('Helper Line 835---IsCFCUWalletAvailable' + IsCFCUWalletAvailable);
-        var IsPinChangedCalculationExecuted = component.get("v.IsPinChangedCalculationExecuted");
-        console.log('Helper Line 846---IsPinChangedCalculationExecuted' + IsPinChangedCalculationExecuted);
+        
     	var IVRGUIDFromUrl = component.get("v.IVRGUIDFromUrl");
     	if(IVRGUIDFromUrl == undefined){IVRGUIDFromUrl = '';}
     	var action = component.get("c.GetNextAuthenticationType");
     	action.setParams({"MemberId": MemberId,"MemberType":MemberType,"MaximumPointsAvailable":MaximumPointsAvailable,"PointsObtained": PointsObtained, "IsKYMAvailable": IsKYMAvailable, 
     						"IsOTPAvailable": IsOTPAvailable,"IsDebitPinAvailable":DebitCardStatus,"IsOOWAvailable":IsOOWAvailable,"IsPublicWalletAvailable": IsPublicWalletAvailable,
-                            "IsCFCUWalletAvailable": IsCFCUWalletAvailable,"IVRGUIDFromUrl":IVRGUIDFromUrl,"AccountNumberInput":component.get("v.MemberNumberEntered"),
-                            "IsPinChangedCalculationExecuted": IsPinChangedCalculationExecuted});
+                            "IsCFCUWalletAvailable": IsCFCUWalletAvailable,"IVRGUIDFromUrl":IVRGUIDFromUrl,"AccountNumberInput":component.get("v.MemberNumberEntered")
+                        });
     	 action.setCallback(this, function (response) {
 		       	      		 var status = response.getState();            
 	                               if (component.isValid() && status === "SUCCESS") {
@@ -868,8 +865,7 @@
 	                                    component.set("v.IsLevel2Achieved", result.IsLevel2Achieved); 
 	                                    component.set("v.IsLevel3Achieved", result.IsLevel3Achieved); 
 	                                   	component.set("v.HighestAchievableLevel", result.LevelofAuthentication);
-	                                    component.set("v.IsPinChangedCalculationExecuted",result.PinChangedExecutionResult);
-				                        var ProgressBarStep2 = component.find('step2');
+	                                    var ProgressBarStep2 = component.find('step2');
 				                        var Level2IndicatorLabel = component.find('Level2IndicatorLabel');
 				                        if(result.IsLevel2Achieved == true && result.NextTabLevel2 == 'Level Reached')
 				                        {
@@ -940,11 +936,9 @@
 	GetReloadData : function(component, event, helper,memberid,GUID,IVRGUIDFromUrl ){
 		console.log('GetReloadData called');
 		console.log('IsUserSessionLoaded' + component.get("v.IsUserSessionLoaded"));
-        var IsPinChangedCalculationExecuted = component.get("v.IsPinChangedCalculationExecuted");
-        console.log('IsPinChangedCalculationExecuted##' + IsPinChangedCalculationExecuted);
-		var DebitCardStatus = component.get("v.DebitCardStatus");
+       	var DebitCardStatus = component.get("v.DebitCardStatus");
 		var action = component.get("c.getDataForReload");
-        action.setParams({"memberid": memberid,"GUID":GUID,"IVRGUIDFromUrl":IVRGUIDFromUrl,"DebitCardStatus" : DebitCardStatus, "IsUserSessionLoaded": component.get("v.IsUserSessionLoaded"),"AccountNumberInput":component.get("v.MemberNumberEntered"),"IsPinChangedCalculationExecuted": IsPinChangedCalculationExecuted });
+        action.setParams({"memberid": memberid,"GUID":GUID,"IVRGUIDFromUrl":IVRGUIDFromUrl,"DebitCardStatus" : DebitCardStatus, "IsUserSessionLoaded": component.get("v.IsUserSessionLoaded"),"AccountNumberInput":component.get("v.MemberNumberEntered") });
     	action.setCallback(this, function (response) {
 		       	      		 var status = response.getState();            
 	                               if (component.isValid() && status === "SUCCESS") {
@@ -1054,8 +1048,7 @@
 	                                	   		component.set("v.NextTabLevel2", result.NextTabLevel2);
 	                                	   		component.set("v.NextTabLevel3", result.NextTabLevel3); 
 	                                	   		component.set("v.IsLevel2Achieved", result.IsLevel2Achieved); 
-	                                	   		component.set("v.IsPinChangedCalculationExecuted", result.PinChangedExecutionResult);
-			                                	var ProgressBarStep2 = component.find('step2');
+	                                	   		var ProgressBarStep2 = component.find('step2');
 						                        var Level2IndicatorLabel = component.find('Level2IndicatorLabel');
 						                        if(result.IsLevel2Achieved == true && result.NextTabLevel2 == 'Level Reached')
 						                        {

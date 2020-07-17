@@ -887,7 +887,7 @@ NavigateToMember : function(component , event, helper){
 	   component.set("v.PINMatch",'');
 	   component.set("v.IsMemberManualSearched",false);
 	   component.set("v.MultipleMemberNumberAlert",'');
-       component.set("v.OOWMemberNumberEntered",'');
+	   component.set("v.OOWMemberNumberEntered",'');
 	   window.location.href = '/lightning/cmp/c__LightningVerification';
 	   
 	    
