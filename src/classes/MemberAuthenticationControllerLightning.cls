@@ -1356,7 +1356,7 @@ public class MemberAuthenticationControllerLightning{
 	}
 	@AuraEnabled
   
-  public static Map<string,object> MemberVerificationAttemptsCheck(string MemberId, string GUID, string DebitCardStatus, String SSNFromURL, String MemberNumberFromURL,String PhoneFromURL, String PageURL, string IVRGUIDFromUrl, boolean ReLoadRequired, string ReasonCodeFromURL, string HighFlagFromUrl, integer PointsObtained, boolean IsOOWTabVisible, boolean IsUserSessionLoaded, string EnteredCardNumber, string CardNumberMatch, string PhoneNumberMatch, string MemberNumberMatch, string SSNnumberMatch, string PINMatch, boolean IsPinChangedCalculationExecuted )
+  public static Map<string,object> MemberVerificationAttemptsCheck(string MemberId, string GUID, string DebitCardStatus, String SSNFromURL, String MemberNumberFromURL,String PhoneFromURL, String PageURL, string IVRGUIDFromUrl, boolean ReLoadRequired, string ReasonCodeFromURL, string HighFlagFromUrl, integer PointsObtained, boolean IsOOWTabVisible, boolean IsUserSessionLoaded, string EnteredCardNumber, string CardNumberMatch, string PhoneNumberMatch, string MemberNumberMatch, string SSNnumberMatch, string PINMatch )
   {
   	/* 1. This method calls when member is selected from radio button
   	   2. For reload of same window based on IVRGUID and time set under custom setting with ReLoadRequired flag
@@ -1379,8 +1379,7 @@ public class MemberAuthenticationControllerLightning{
   	system.debug('SSNnumberMatch##' + SSNnumberMatch);
   	system.debug('PINMatch##' + PINMatch);
   	system.debug('IsUserSessionLoaded##' + IsUserSessionLoaded);
-  	system.debug('IsPinChangedCalculationExecuted##' + IsPinChangedCalculationExecuted);
-    Boolean visible;
+  	Boolean visible;
     Double attempt=0;
     Boolean OOW = true;
     Boolean OTP = true;
@@ -1539,17 +1538,23 @@ public class MemberAuthenticationControllerLightning{
     
     
     if(IsUserSessionLoaded == true)
-    {
-        	for(Authenticated_Log__c OTPlog : [select id,createddate, GUID__c,Decision__c,OOW_Status__c,OTP_Status__c,CFCU_Wallet_Status__c,Public_Wallet_Status__c,Member__c, RecordType.name from Authenticated_Log__c where createddate = Today and  OTP_Status__c != null and SalesforceID__c =:MemberId and RecordType.name = 'OTP Authentication Log' and IVR_GUID__c = : IVRGUIDFromUrl order by RecordType.name, createddate desc limit 1]){
-      
-		      if(OTPlog.OTP_Status__c == 'Fail' ){
-			        OTP = false;
+    {	
+     		String OTPStatus;
+     		for(Authenticated_Log__c OTPlog : [select id,createddate, GUID__c,Decision__c,OOW_Status__c,OTP_Status__c,CFCU_Wallet_Status__c,Public_Wallet_Status__c,Member__c, RecordType.name from Authenticated_Log__c where createddate = Today and  OTP_Status__c != null and SalesforceID__c =:MemberId and RecordType.name = 'OTP Authentication Log'  order by RecordType.name, createddate desc limit 1]){
+      			OTPStatus = OTPlog.OTP_Status__c;
+            }
+                if(OTPStatus == 'Fail'){
+                    OTP = false;
 			        OTPColor ='Red';
-		      }
-		      if(OTPlog.OTP_Status__c == 'Pass' ){
-		       		OTPColor ='Green';
-		      }
-    		}
+                }
+                if(OTPStatus == 'Pass'){
+                    for(Authenticated_Log__c OTPPasslog : [select id,createddate, GUID__c,Decision__c,OOW_Status__c,OTP_Status__c,CFCU_Wallet_Status__c,Public_Wallet_Status__c,Member__c, RecordType.name from Authenticated_Log__c where createddate = Today and  OTP_Status__c != null and SalesforceID__c =:MemberId and RecordType.name = 'OTP Authentication Log' and IVR_GUID__c = : IVRGUIDFromUrl order by RecordType.name, createddate desc limit 1]){
+                        if(OTPPasslog.OTP_Status__c == 'Pass'){
+                       			 OTPColor = 'Green';
+                            }
+                    }
+                }
+    		
    }else{
    	
 		   	for(Authenticated_Log__c OTPlog : [select id,createddate, GUID__c,Decision__c,OOW_Status__c,OTP_Status__c,CFCU_Wallet_Status__c,Public_Wallet_Status__c,Member__c, RecordType.name from Authenticated_Log__c where createddate = Today and  OTP_Status__c != null and SalesforceID__c =:MemberId and RecordType.name = 'OTP Authentication Log' order by RecordType.name, createddate desc limit 1]){
@@ -1574,18 +1579,24 @@ public class MemberAuthenticationControllerLightning{
     //--------------------------------------------- Identify OOW Tab color ----------------------------------------------------------------//
     
     if(IsUserSessionLoaded == true)
-    {
-    	for(Authenticated_Log__c OOWlog : [select id,createddate ,GUID__c, Decision__c,OOW_Status__c,OTP_Status__c,CFCU_Wallet_Status__c,Public_Wallet_Status__c,Member__c, RecordType.name from Authenticated_Log__c where createddate = Today and SalesforceID__c =:MemberId and RecordType.name = 'OOW Execution Log' and IVR_GUID__c = : IVRGUIDFromUrl order by RecordType.name, createddate desc limit 1]){
-      
-		      if(OOWlog.OOW_Status__c == 'Fail'){
-			        OOW = false;
-			        OOWColor ='Red';
-		      }
-      
-		      if(OOWlog.OOW_Status__c == 'Pass'){
-		       		 OOWColor ='Green';
-		      }
-   		 }
+    {    	
+			String OOWStatus;
+			for(Authenticated_Log__c OOWlog : [select id,createddate ,GUID__c, Decision__c,OOW_Status__c,OTP_Status__c,CFCU_Wallet_Status__c,Public_Wallet_Status__c,Member__c, RecordType.name from Authenticated_Log__c where createddate = Today and SalesforceID__c =:MemberId and RecordType.name = 'OOW Execution Log'  order by RecordType.name, createddate desc limit 1]){
+				OOWStatus = OOWlog.OOW_Status__c;
+				
+			  }
+			  if(OOWStatus == 'Fail'){
+				  OOW = false;
+				  OOWColor = 'Red';
+			  }
+			  if(OOWStatus == 'Pass'){
+				for(Authenticated_Log__c OOWPasslog : [select id,createddate ,GUID__c, Decision__c,OOW_Status__c,OTP_Status__c,CFCU_Wallet_Status__c,Public_Wallet_Status__c,Member__c, RecordType.name from Authenticated_Log__c where createddate = Today and SalesforceID__c =:MemberId and RecordType.name = 'OOW Execution Log' and IVR_GUID__c = : IVRGUIDFromUrl order by RecordType.name, createddate desc limit 1]){
+					if(OOWPasslog.OOW_Status__c == 'Pass'){
+						OOWColor ='Green';
+					}
+				}
+				
+			  }
     	
     }else{
     	
@@ -1609,17 +1620,23 @@ public class MemberAuthenticationControllerLightning{
     //--------------------------------------------- Identify Public Wallet Tab color ----------------------------------------------------------------//
     
     if(IsUserSessionLoaded == true)
-    {
-	    	for(Authenticated_Log__c Publiclog : [select id,createddate ,GUID__c, Decision__c,OOW_Status__c,OTP_Status__c,CFCU_Wallet_Status__c,Public_Wallet_Status__c,Member__c, RecordType.name from Authenticated_Log__c where createddate = Today and SalesforceID__c =:MemberId and RecordType.name = 'Public Wallet Log' and IVR_GUID__c = : IVRGUIDFromUrl order by RecordType.name, createddate desc limit 1]){
-			      if(Publiclog.Public_Wallet_Status__c == 'Fail'){
-			       	 	PublicWallet = false;
-			        	PWColor ='Red';
-			      }
-			      if(Publiclog.Public_Wallet_Status__c == 'Pass'){
-			       		 PWColor ='Green';
-			      }
-				}
-    	
+    {	    	
+            string PWStatus;
+            for(Authenticated_Log__c Publiclog : [select id,createddate ,GUID__c, Decision__c,OOW_Status__c,OTP_Status__c,CFCU_Wallet_Status__c,Public_Wallet_Status__c,Member__c, RecordType.name from Authenticated_Log__c where createddate = Today and SalesforceID__c =:MemberId and RecordType.name = 'Public Wallet Log' order by RecordType.name, createddate desc limit 1]){
+                PWStatus = Publiclog.Public_Wallet_Status__c;
+            }
+            if(PWStatus == 'Fail'){
+                PublicWallet = false;
+                PWColor ='Red';
+            }
+            if(PWStatus == 'Pass'){
+                for(Authenticated_Log__c PublicPasslog : [select id,createddate ,GUID__c, Decision__c,OOW_Status__c,OTP_Status__c,CFCU_Wallet_Status__c,Public_Wallet_Status__c,Member__c, RecordType.name from Authenticated_Log__c where createddate = Today and SalesforceID__c =:MemberId and RecordType.name = 'Public Wallet Log' and IVR_GUID__c = : IVRGUIDFromUrl order by RecordType.name, createddate desc limit 1]){
+                    if(PublicPasslog.Public_Wallet_Status__c =='Pass'){
+                        PWColor ='Green';
+                    }
+                }
+            }
+        
     }else{
 	    	for(Authenticated_Log__c Publiclog : [select id,createddate ,GUID__c, Decision__c,OOW_Status__c,OTP_Status__c,CFCU_Wallet_Status__c,Public_Wallet_Status__c,Member__c, RecordType.name from Authenticated_Log__c where createddate = Today and SalesforceID__c =:MemberId and RecordType.name = 'Public Wallet Log'  order by RecordType.name, createddate desc limit 1]){
 		      if(Publiclog.Public_Wallet_Status__c == 'Fail'){
@@ -1640,15 +1657,22 @@ public class MemberAuthenticationControllerLightning{
     //--------------------------------------------- Identify CFCU Wallet Tab color ----------------------------------------------------------------//
      if(IsUserSessionLoaded == true)
 	    {
-	    	for(Authenticated_Log__c CFCUlog : [select id,createddate ,GUID__c, Decision__c,OOW_Status__c,OTP_Status__c,CFCU_Wallet_Status__c,Public_Wallet_Status__c,Member__c, RecordType.name from Authenticated_Log__c where createddate = Today and SalesforceID__c =:MemberId and RecordType.name = 'CFCU Wallet Log' and IVR_GUID__c = : IVRGUIDFromUrl order by RecordType.name, createddate desc limit 1]){
-		      if(CFCUlog.CFCU_Wallet_Status__c == 'Fail'){
-		       		 CFCUWallet = false;
-		       		 CWColor ='Red';
-		      }
-		      if(CFCUlog.CFCU_Wallet_Status__c == 'Pass'){
-		        	CWColor ='Green';
-		      }
-   			}
+                string CFCUStatus;
+                for(Authenticated_Log__c CFCUlog : [select id,createddate ,GUID__c, Decision__c,OOW_Status__c,OTP_Status__c,CFCU_Wallet_Status__c,Public_Wallet_Status__c,Member__c, RecordType.name from Authenticated_Log__c where createddate = Today and SalesforceID__c =:MemberId and RecordType.name = 'CFCU Wallet Log' order by RecordType.name, createddate desc limit 1]){
+                        CFCUStatus = CFCUlog.CFCU_Wallet_Status__c;
+                   }
+                if(CFCUStatus == 'Fail'){
+                     CFCUWallet = false;
+                     CWColor ='Red';
+                }
+                if(CFCUStatus == 'Pass'){
+                    for(Authenticated_Log__c CFCUPasslog : [select id,createddate ,GUID__c, Decision__c,OOW_Status__c,OTP_Status__c,CFCU_Wallet_Status__c,Public_Wallet_Status__c,Member__c, RecordType.name from Authenticated_Log__c where createddate = Today and SalesforceID__c =:MemberId and RecordType.name = 'CFCU Wallet Log' and IVR_GUID__c = : IVRGUIDFromUrl order by RecordType.name, createddate desc limit 1]){
+                        if(CFCUPasslog.CFCU_Wallet_Status__c == 'Pass')
+                        {
+                            CWColor ='Green';
+                        }
+                    }
+                }
 	    }else{
 	    
 	    	for(Authenticated_Log__c CFCUlog : [select id,createddate ,GUID__c, Decision__c,OOW_Status__c,OTP_Status__c,CFCU_Wallet_Status__c,Public_Wallet_Status__c,Member__c, RecordType.name from Authenticated_Log__c where createddate = Today and SalesforceID__c =:MemberId and RecordType.name = 'CFCU Wallet Log'  order by RecordType.name, createddate desc limit 1]){
@@ -1789,7 +1813,7 @@ public class MemberAuthenticationControllerLightning{
    {
    	system.debug('MemberVerificationAttemptsCheck getDataForReload Called for ReLoadRequired == true && IsUserSessionLoaded == false-------');
      system.debug('getDataForReload Parameters##'+ IVRGUIDFromUrl + '#' +  DebitPinStatus + '#' + '#' + IsUserSessionLoaded +  AccountNumber );
-     Map<string,object> AutLogDataMap =  getDataForReload(memberid, GUID, IVRGUIDFromUrl,DebitPinStatus, IsUserSessionLoaded, AccountNumber, IsPinChangedCalculationExecuted);
+     Map<string,object> AutLogDataMap =  getDataForReload(memberid, GUID, IVRGUIDFromUrl,DebitPinStatus, IsUserSessionLoaded, AccountNumber);
      if(AutLogDataMap.get('IsOOWAvailable') == true)
      {
        OOW = true;
@@ -2216,18 +2240,61 @@ public class MemberAuthenticationControllerLightning{
 		      {
 		          OOWAvailable=0;
 		      }
-		      system.debug('IsOOWTabVisible#'+ IsOOWTabVisible);
-		      system.debug('PublicWalletAvailable#'+ PublicWalletAvailable);
-		      system.debug('CFCUWalletAvailable#'+ CFCUWalletAvailable);
-		      system.debug('OOWAvailable#'+ OOWAvailable);
+                Decimal DebitPinPositiveScore;
+                Decimal DebitPinNegativeScore;
+                Decimal PINChangeNegativeScore;
+                Decimal PINChangePositiveScore;
+                system.debug('IsOOWTabVisible#'+ IsOOWTabVisible);
+                system.debug('PublicWalletAvailable#'+ PublicWalletAvailable);
+                system.debug('CFCUWalletAvailable#'+ CFCUWalletAvailable);
+                system.debug('OOWAvailable#'+ OOWAvailable);
+                system.debug('DebitPinStatus##'+ DebitPinStatus);	
+                system.debug('CurrentScorePre##'+ CurrentScore);
+                system.debug('DebitPinNegativeScore##'+ DebitPinNegativeScore);
+        		for(Member_Authentication_Scoring_Model__c sm : ScoringModel  )
+				{
+                    
+                    if(sm.Authentication_Type__c == 'Debit Pin' )
+                    {
+                        system.debug('sm.Negative_Point_Value__c##'+ sm.Negative_Point_Value__c);
+                        DebitPinPositiveScore = sm.Positive_Point_Value__c;
+                        DebitPinNegativeScore = sm.Negative_Point_Value__c;
+                    }
+                    if(sm.Authentication_Type__c == 'PIN Change'){
+                        
+                        PINChangeNegativeScore = sm.Negative_Point_Value__c;
+                        PINChangePositiveScore = sm.Positive_Point_Value__c;				
+                    }
+			
+				}
+                if(DebitPinStatus == 'Fail' || DebitPinStatus =='false'){
+                    CurrentScore = CurrentScore - DebitPinNegativeScore.intValue();
+                }
+                else if(DebitPinStatus == 'Pass' || DebitPinStatus =='true')
+                {
+                    CurrentScore = CurrentScore + DebitPinPositiveScore.intValue();
+                }
+                system.debug('CurrentScorePost1##' + CurrentScore);
+                system.debug('IsPinChanged##' + IsPinChanged);
+                if(IsPinChanged == true ){
+                    CurrentScore = CurrentScore - PINChangeNegativeScore.intValue();
+                   
+                }
+                else if(IsPinChanged == false ){
+                    
+                    CurrentScore = CurrentScore + PINChangePositiveScore.intValue();
+                }
+                system.debug('CurrentScorePost2##' + CurrentScore);
+               	
+				result.put('CurrentScore', CurrentScore);
+        
 		      system.debug('GetTabsToAchieveNextLevel Parameters##'+ MemberType + 'DebitPinStatus#' +  DebitPinStatus + 'IsPinChanged#' + IsPinChanged + 'OTPAvailable#' + OTPAvailable + 'PublicWalletAvailable#' + PublicWalletAvailable + 'CFCUWalletAvailable#'+ CFCUWalletAvailable + 'OOWAvailable#' + OOWAvailable + 'CurrentScore#'+ CurrentScore);
-		      map<string, List<string>> NextTabToAchieveLevelMap =  GetTabsToAchieveNextLevel(LevelModel, ScoringModel, MemberType, DebitPinStatus, IsPinChanged, OTPAvailable, PublicWalletAvailable, CFCUWalletAvailable,OOWAvailable, CurrentScore, IsPinChangedCalculationExecuted);
+		      map<string, List<string>> NextTabToAchieveLevelMap =  GetTabsToAchieveNextLevel(LevelModel, ScoringModel, MemberType, DebitPinStatus, IsPinChanged, OTPAvailable, PublicWalletAvailable, CFCUWalletAvailable,OOWAvailable, CurrentScore);
 		      List<string>  NextTabLevel2 = NextTabToAchieveLevelMap.get('NextTabLevel2');
 		          List<string>  NextTabLevel3 = NextTabToAchieveLevelMap.get('NextTabLevel3');
 		          List<string> EachLevelStatus = NextTabToAchieveLevelMap.get('EachLevelStatus');
-        		  List<String> PinChangedExecutionResultList = NextTabToAchieveLevelMap.get('PinChangedExecutionResult');
-        		  boolean PinChangedExecutionResult = PinChangedExecutionResultList[0] == 'True' ? true: false;
-        		  result.put('PinChangedExecutionResult', PinChangedExecutionResult);	
+        		  
+        		  
 		          if(NextTabLevel2.size() > 0)
 		          {
 		            string NextTabLevel2LastString = NextTabLevel2.get(NextTabLevel2.size()-1);
@@ -2379,13 +2446,12 @@ public class MemberAuthenticationControllerLightning{
 	
 	@AuraEnabled
 	
-	public static map<string, List<string>> GetTabsToAchieveNextLevel(List<Member_Authentication_Level_Model__c> LevelModel, List<Member_Authentication_Scoring_Model__c> ScoringModel, string MemberType, string DebitPinStatus, boolean IsPinChanged, integer IsOTPAvailable, integer IsPublicWalletAvailable,integer IsCFCUWalletAvailable,integer IsOOWAvailable, integer CurrentScore, boolean IsPinChangedCalculationExecuted)
+	public static map<string, List<string>> GetTabsToAchieveNextLevel(List<Member_Authentication_Level_Model__c> LevelModel, List<Member_Authentication_Scoring_Model__c> ScoringModel, string MemberType, string DebitPinStatus, boolean IsPinChanged, integer IsOTPAvailable, integer IsPublicWalletAvailable,integer IsCFCUWalletAvailable,integer IsOOWAvailable, integer CurrentScore)
 	{
 		/* This method tells the journey path*/ 
 		system.debug('GetTabsToAchieveNextLevel Param received##'+ MemberType + 'DebitPinStatus#' + DebitPinStatus + 'IsPinChanged#' + IsPinChanged + 'IsOTPAvailable#' + IsOTPAvailable +  'IsPublicWalletAvailable#' + IsPublicWalletAvailable + 'IsCFCUWalletAvailable#' +IsCFCUWalletAvailable +  'IsOOWAvailable' + IsOOWAvailable +  'CurrentScore#'+ CurrentScore );
 		system.debug('CurrentScore##'+ CurrentScore);
-        system.debug('IsPinChangedCalculationExecuted##'+ IsPinChangedCalculationExecuted);
-		map<string, List<string>> resultMap = new map<string, List<string>>();
+        map<string, List<string>> resultMap = new map<string, List<string>>();
 		Decimal DebitPinPositiveScore;
 		Decimal DebitPinNegativeScore;
 		Decimal PINChangeNegativeScore;
@@ -2433,7 +2499,7 @@ public class MemberAuthenticationControllerLightning{
 			
 		}
 		
-		system.debug('DebitPinStatus##'+ DebitPinStatus);	
+		/*system.debug('DebitPinStatus##'+ DebitPinStatus);	
 		system.debug('CurrentScorePre##'+ CurrentScore);
 		system.debug('DebitPinNegativeScore##'+ DebitPinNegativeScore);
         if(DebitPinStatus == 'Fail' || DebitPinStatus =='false'){
@@ -2447,14 +2513,14 @@ public class MemberAuthenticationControllerLightning{
         system.debug('IsPinChanged##' + IsPinChanged);
         if(IsPinChanged == true ){
         	CurrentScore = CurrentScore - PINChangeNegativeScore.intValue();
-            IsPinChangedCalculationExecuted = true;
+           
         }
         else if(IsPinChanged == false ){
         	
         	CurrentScore = CurrentScore + PINChangePositiveScore.intValue();
         }
         system.debug('CurrentScorePost2##' + CurrentScore);
-        system.debug('IsPinChangedCalculationExecuted##' + IsPinChangedCalculationExecuted);
+        */
         // reading the data from custom setting and assining points value into variables Ends-----------------
         
         // reading the data from custom setting for level and assining start range value of levels into variables begins-----------------
@@ -2784,12 +2850,6 @@ public class MemberAuthenticationControllerLightning{
       	 
         resultMap.put('NextTabLevel3', NextTabLevel3);
         resultMap.put('EachLevelStatus', EachLevelStatus);
-        List<String> PinChangedExecutionResult = new List<String>();
-        
-        if(IsPinChangedCalculationExecuted == true){
-            PinChangedExecutionResult.add('True');
-        }else{PinChangedExecutionResult.add('False');}
-        resultMap.put('PinChangedExecutionResult', PinChangedExecutionResult);
         system.debug('resultMap#'+ resultMap);
         return resultMap;
 	}
@@ -2829,12 +2889,12 @@ public class MemberAuthenticationControllerLightning{
      }
      
 	@AuraEnabled
-	public static Map<string,object> GetNextAuthenticationType(string MemberId, string MemberType, Integer MaximumPointsAvailable,Integer PointsObtained, boolean IsKYMAvailable, boolean IsOTPAvailable, string IsDebitPinAvailable, boolean IsOOWAvailable, boolean IsPublicWalletAvailable, boolean IsCFCUWalletAvailable, string IVRGUIDFromUrl, string AccountNumberInput, boolean IsPinChangedCalculationExecuted)
+	public static Map<string,object> GetNextAuthenticationType(string MemberId, string MemberType, Integer MaximumPointsAvailable,Integer PointsObtained, boolean IsKYMAvailable, boolean IsOTPAvailable, string IsDebitPinAvailable, boolean IsOOWAvailable, boolean IsPublicWalletAvailable, boolean IsCFCUWalletAvailable, string IVRGUIDFromUrl, string AccountNumberInput)
 	{
 		
 		//---------------------------------Aut-190 implementation starts here------------------------------------------------------------------------
 		System.debug('GetNextAuthenticationType method called-------------------');
-		system.debug('GetNextAuthenticationType param received' + 'PointsObtained##'+ PointsObtained + 'MemberType#' + MemberType + 'MaximumPointsAvailable#' + MaximumPointsAvailable + 'IsOTPAvailable#' + IsOTPAvailable + 'IsKYMAvailable#' + IsKYMAvailable + 'IsDebitPinAvailable#' + IsDebitPinAvailable + 'IsOOWAvailable#' + IsOOWAvailable + 'IsPublicWalletAvailable#' + IsPublicWalletAvailable + 'IsCFCUWalletAvailable#' + IsCFCUWalletAvailable + 'AccountNumberInput#' + AccountNumberInput + 'IsPinChangedCalculationExecuted#'+ IsPinChangedCalculationExecuted);
+		system.debug('GetNextAuthenticationType param received' + 'PointsObtained##'+ PointsObtained + 'MemberType#' + MemberType + 'MaximumPointsAvailable#' + MaximumPointsAvailable + 'IsOTPAvailable#' + IsOTPAvailable + 'IsKYMAvailable#' + IsKYMAvailable + 'IsDebitPinAvailable#' + IsDebitPinAvailable + 'IsOOWAvailable#' + IsOOWAvailable + 'IsPublicWalletAvailable#' + IsPublicWalletAvailable + 'IsCFCUWalletAvailable#' + IsCFCUWalletAvailable + 'AccountNumberInput#' + AccountNumberInput );
 		if(PointsObtained == null){
 			PointsObtained = 0;
 			
@@ -2897,13 +2957,13 @@ public class MemberAuthenticationControllerLightning{
 			system.debug('PublicWalletAvailable##'+ PublicWalletAvailable);
 			
 			
-			map<string, List<string>> NextTabToAchieveLevelMap =  GetTabsToAchieveNextLevel(LevelModel, ScoringModel, MemberType, DebitCardStatus, IsPinChanged, OTPAvailable, PublicWalletAvailable, CFCUWalletAvailable,OOWAvailable, PointsObtained, IsPinChangedCalculationExecuted);
+			map<string, List<string>> NextTabToAchieveLevelMap =  GetTabsToAchieveNextLevel(LevelModel, ScoringModel, MemberType, DebitCardStatus, IsPinChanged, OTPAvailable, PublicWalletAvailable, CFCUWalletAvailable,OOWAvailable, PointsObtained);
 			List<string>  NextTabLevel2 = NextTabToAchieveLevelMap.get('NextTabLevel2');
         	List<string>  NextTabLevel3 = NextTabToAchieveLevelMap.get('NextTabLevel3');
         	List<string> EachLevelStatus = NextTabToAchieveLevelMap.get('EachLevelStatus');
-        	List<String> PinChangedExecutionResultList = NextTabToAchieveLevelMap.get('PinChangedExecutionResult');
+        	/*List<String> PinChangedExecutionResultList = NextTabToAchieveLevelMap.get('PinChangedExecutionResult');
         	boolean PinChangedExecutionResult = PinChangedExecutionResultList[0] == 'True' ? true: false;
-        	result.put('PinChangedExecutionResult', PinChangedExecutionResult);
+        	result.put('PinChangedExecutionResult', PinChangedExecutionResult);*/
         	if(NextTabLevel2.size() > 0)
         	{
         		string NextTabLevel2LastString = NextTabLevel2.get(NextTabLevel2.size()-1);
@@ -3685,7 +3745,7 @@ public class MemberAuthenticationControllerLightning{
      }
     
 	@AuraEnabled
-    public static Map<string,object> getDataForReload(string memberid, string GUID, string IVRGUIDFromUrl, string DebitCardStatus,  boolean IsUserSessionLoaded, string AccountNumberInput, boolean IsPinChangedCalculationExecuted )
+    public static Map<string,object> getDataForReload(string memberid, string GUID, string IVRGUIDFromUrl, string DebitCardStatus,  boolean IsUserSessionLoaded, string AccountNumberInput )
     { 
     	/* This function is to reload user data. 
     		If 'IsUserSessionLoaded' parameter value is false its brings the data based on time value mentioned in custom setting 
@@ -3923,13 +3983,13 @@ public class MemberAuthenticationControllerLightning{
 		system.debug('CurrentScore##' + CurrentScore);
 		system.debug('OOWAvailable##'+ OOWAvailable);
 		
-     	map<string, List<string>> NextTabToAchieveLevelMap =  GetTabsToAchieveNextLevel(LevelModel, ScoringModel, MemberType, DebitCardStatus, IsPinChanged, OTPAvailable, PublicWalletAvailable, CFCUWalletAvailable,OOWAvailable, CurrentScore, IsPinChangedCalculationExecuted);
+     	map<string, List<string>> NextTabToAchieveLevelMap =  GetTabsToAchieveNextLevel(LevelModel, ScoringModel, MemberType, DebitCardStatus, IsPinChanged, OTPAvailable, PublicWalletAvailable, CFCUWalletAvailable,OOWAvailable, CurrentScore);
 		List<string>  NextTabLevel2 = NextTabToAchieveLevelMap.get('NextTabLevel2');
     	List<string>  NextTabLevel3 = NextTabToAchieveLevelMap.get('NextTabLevel3');
     	List<string> EachLevelStatus = NextTabToAchieveLevelMap.get('EachLevelStatus');
-        List<String> PinChangedExecutionResultList = NextTabToAchieveLevelMap.get('PinChangedExecutionResult');
+       /* List<String> PinChangedExecutionResultList = NextTabToAchieveLevelMap.get('PinChangedExecutionResult');
         boolean PinChangedExecutionResult = PinChangedExecutionResultList[0] == 'True' ? true: false;
-        AuthLogMap.put('PinChangedExecutionResult', PinChangedExecutionResult);
+        AuthLogMap.put('PinChangedExecutionResult', PinChangedExecutionResult);*/
     	if(NextTabLevel2.size() > 0)
         	{
         		string NextTabLevel2LastString = NextTabLevel2.get(NextTabLevel2.size()-1);
