@@ -53,9 +53,16 @@ trigger ContentDocumentLinkUpdate on ContentDocumentLink (after update,after del
                 
                 if(objType == Solar_Loans__c.sObjectType){
 	            
+		            String Title;
+		            Title = cs.get(c.ContentDocumentId).title;
 		            SolarLoan_Document__c solarLoanObj = new SolarLoan_Document__c();
 		            solarLoanObj.Attachment_Id__c = cs.get(c.ContentDocumentId).id;
-		            solarLoanObj.Name = cs.get(c.ContentDocumentId).title;
+		            if(Title.length() > 80){
+		            	solarLoanObj.Name = Title.substring(0,80);
+		            }else{
+		            	solarLoanObj.Name = cs.get(c.ContentDocumentId).title;	
+		            }
+		            system.debug(solarLoanObj.Name);
 		            solarLoanObj.Member_Number__c = sl.get(c.LinkedEntityId).Member_Number__c;
 		            solarLoanObj.IsMovedToOnBase__c = false;
 		            solarLoanObj.Document_Type__c = 'Solar Loan';
