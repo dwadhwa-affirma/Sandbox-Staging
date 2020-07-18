@@ -1,3 +1,0 @@
-<aura:component implements="flexipage:availableForAllPageTypes,force:appHostable,force:hasRecordId,force:lightningQuickActionWithoutHeader,lightning:actionOverride">
-	<c:CreateCaseMemberPage accountDetailId="{!v.recordId}" isAccountDetails="true"/>
-</aura:component>

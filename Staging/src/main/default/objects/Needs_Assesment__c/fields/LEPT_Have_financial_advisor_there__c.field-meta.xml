@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
-    <fullName>LEPT_Have_financial_advisor_there__c</fullName>
-    <defaultValue>false</defaultValue>
-    <externalId>false</externalId>
-    <label>LEPT_Have financial advisor there</label>
-    <trackTrending>false</trackTrending>
-    <type>Checkbox</type>
-</CustomField>

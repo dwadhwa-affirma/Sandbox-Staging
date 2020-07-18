@@ -1,9 +1,0 @@
-<apex:component controller="NeedAssessmentHistoryController" allowdml="true">
-  <apex:attribute name="FieldName" type="String" description="Value to format" assignTo="{!HistoryFieldName}"/>
-  <apex:attribute name="NeedAssessmentID" type="String" description="Value to format" assignTo="{!NA_ID}"/>
-  
-  
-
-
-    <apex:outputText value="{!FormattedValue}"/>
-</apex:component>

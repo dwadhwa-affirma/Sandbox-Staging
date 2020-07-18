@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
-    <fullName>OnboardingCaseClosing</fullName>
-    <active>true</active>
-    <description>Prevent on boarding cases from manually being closed prior to the last task creation.</description>
-    <errorConditionFormula>ISPICKVAL(Secondary_Category__c , &quot;Onboarding&quot;) &amp;&amp; NOT(ISPICKVAL(Sub_Status__c, &quot;Day60 Started&quot;)) &amp;&amp; ISPICKVAL(Status , &quot;Closed&quot;)</errorConditionFormula>
-    <errorMessage>New member on boarding day 1 thru day 60 day follow up tasks are automatically created for you. This on boarding case can&apos;t be closed until the day 60 task has been created and completed.</errorMessage>
-</ValidationRule>

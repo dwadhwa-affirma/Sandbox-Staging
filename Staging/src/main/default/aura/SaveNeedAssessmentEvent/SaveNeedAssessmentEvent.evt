@@ -1,8 +1,0 @@
-<aura:event type="COMPONENT" description="Event template">
-	<aura:attribute name="objNeedsAssesment" type="Needs_Assesment__c" />
-	<aura:attribute name="SectionName" type="String" />
-	<aura:attribute name="accountid" type="String" />	
-	<aura:attribute name="SubItems" type="String" />
-	<aura:attribute name="deletedItems" type="String[]" />
-	
-</aura:event>

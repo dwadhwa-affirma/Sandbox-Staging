@@ -1,6 +1,0 @@
-<aura:component implements="flexipage:availableForAllPageTypes,force:appHostable,force:hasRecordId" access="global" controller="MemberAccountWrapperFor360ViewController">
-    
-    
-    <c:Member360View Id="{!v.recordId}" />
-    
-</aura:component>

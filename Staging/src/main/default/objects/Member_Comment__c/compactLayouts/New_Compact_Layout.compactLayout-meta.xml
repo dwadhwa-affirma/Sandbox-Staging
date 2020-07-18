@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<CompactLayout xmlns="http://soap.sforce.com/2006/04/metadata">
-    <fullName>New_Compact_Layout</fullName>
-    <fields>IsRead__c</fields>
-    <fields>CU_Read__c</fields>
-    <fields>Device_Type__c</fields>
-    <fields>Communication_Origin__c</fields>
-    <label>New Compact Layout</label>
-</CompactLayout>

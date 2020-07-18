@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
-    <fullName>LeadClosing</fullName>
-    <active>true</active>
-    <errorConditionFormula>Owner:Queue.QueueName &lt;&gt; NULL &amp;&amp; ISPICKVAL(Status, &quot;Closed&quot;)</errorConditionFormula>
-    <errorMessage>Queue owned leads cannot be closed.</errorMessage>
-</ValidationRule>

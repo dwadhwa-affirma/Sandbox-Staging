@@ -1,3 +1,0 @@
-<aura:event type="APPLICATION" description="Event to remove Loan Item" >
-    <aura:attribute name="indexVar" type="Integer" description="" />
-</aura:event>

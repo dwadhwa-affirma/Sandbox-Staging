@@ -1,6 +1,0 @@
-<aura:component implements="flexipage:availableForAllPageTypes,force:appHostable,force:hasRecordId,force:lightningQuickAction">
-	<aura:handler name="render" value="{!this}" action="{!c.doInit}"/>
-	 <lightning:utilityBarAPI aura:id="MAAPUtilityBar" />
-	 
-   
-</aura:component>

@@ -1,5 +1,0 @@
-<aura:event type="APPLICATION"> 
-    <aura:attribute name="EFTRecord" type="EFT__c"/>  
-    <aura:attribute name="isMemberSelected" type="Boolean" />
-    <aura:attribute name="isDocusignEmailSelected" type="Boolean"/>
-</aura:event>

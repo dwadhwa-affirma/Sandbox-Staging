@@ -1,8 +1,0 @@
-<apex:page standardController="Lead" rendered="{!Lead.Member_Account__c == Null}">
-     <apex:form >
-        <apex:pageBlock >
-            <apex:pageMessage summary="If available, please enter the Member Account Number" severity="warning" strength="1" />
-        <apex:pageMessages />
-        </apex:pageBlock>
-    </apex:form>
-</apex:page>

@@ -1,7 +1,0 @@
-<apex:page controller="SendRequestToRTSSubAccsController" action="{!init}">
-    <apex:form >
-        <apex:outputPanel >
-            
-        </apex:outputPanel>
-    </apex:form>
-</apex:page>

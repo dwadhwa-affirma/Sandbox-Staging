@@ -1,3 +1,0 @@
-<apex:page standardController="Lead" extensions="CustomEditOnLeadController" action="{!updateLead}">
-
-</apex:page>

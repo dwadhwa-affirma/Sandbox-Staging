@@ -1,5 +1,0 @@
-<apex:page sidebar="false" StandardController="Member_Comment__c" showHeader="false">
-    <b><apex:outputText value="Member Comment" /></b>
-    <p></p>
-    <apex:outputText value="{!Member_Comment__c.Member_Communication__c}" escape="false" />    
-</apex:page>

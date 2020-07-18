@@ -1,7 +1,0 @@
-<aura:component implements="flexipage:availableForAllPageTypes,force:appHostable" access="global">
-<style>
-.changeOwnerContentBody .editableOptions{
-	display:none;
-}
-</style>
-</aura:component>

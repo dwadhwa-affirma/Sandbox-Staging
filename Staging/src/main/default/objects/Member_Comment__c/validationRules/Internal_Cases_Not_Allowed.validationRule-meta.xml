@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
-    <fullName>Internal_Cases_Not_Allowed</fullName>
-    <active>false</active>
-    <description>Due to a defect that is being worked on, adding member comments to a case that was not initiated by a member is not allowed at this time.</description>
-    <errorConditionFormula>Case__r.Created_by_Portal_Member__c = FALSE</errorConditionFormula>
-    <errorMessage>Due to a defect that is being worked on, adding member comments to a case that was not initiated by a member is not allowed at this time.</errorMessage>
-</ValidationRule>

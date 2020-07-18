@@ -1,7 +1,0 @@
-<apex:page >
-<script src="/apex/dsfs__DocuSign_JavaScript" />
-<script>
-
-DocuSign_CreateEnvelope();
-</script>
-</apex:page>
