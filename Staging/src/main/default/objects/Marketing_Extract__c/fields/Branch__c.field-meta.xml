@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Branch__c</fullName>
+    <externalId>false</externalId>
+    <formula>CASE(Account_Number__r.Created_At_Branch__c, 
+03, 03,
+04, 04,
+05, 05,
+06, 06,
+09, 09,
+14, 14,
+19, 19,
+20, 20,  
+21, 21,
+23, 23,
+24, 24,
+25, 25,
+28, 28,
+72, 72,
+96, 96,
+201, 201,
+202, 202,
+205, 205,
+206, 206,
+207, 207,
+208, 208,
+NULL)</formula>
+    <label>Branch</label>
+    <precision>18</precision>
+    <required>false</required>
+    <scale>0</scale>
+    <trackTrending>false</trackTrending>
+    <type>Number</type>
+    <unique>false</unique>
+</CustomField>

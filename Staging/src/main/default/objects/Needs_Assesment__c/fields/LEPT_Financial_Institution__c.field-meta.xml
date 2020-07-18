@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>LEPT_Financial_Institution__c</fullName>
+    <externalId>false</externalId>
+    <label>LEPT_Financial_Institution</label>
+    <required>false</required>
+    <trackTrending>false</trackTrending>
+    <type>Picklist</type>
+    <valueSet>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Chevron Federal Credit Union</fullName>
+                <default>false</default>
+            </value>
+            <value>
+                <fullName>Spectrum Credit Union</fullName>
+                <default>false</default>
+            </value>
+            <value>
+                <fullName>Bank of America</fullName>
+                <default>false</default>
+            </value>
+            <value>
+                <fullName>Chase Bank</fullName>
+                <default>false</default>
+            </value>
+            <value>
+                <fullName>Wells Fargo</fullName>
+                <default>false</default>
+            </value>
+            <value>
+                <fullName>Citibank</fullName>
+                <default>false</default>
+            </value>
+            <value>
+                <fullName>US Bank</fullName>
+                <default>false</default>
+            </value>
+            <value>
+                <fullName>Capital One</fullName>
+                <default>false</default>
+            </value>
+            <value>
+                <fullName>Ally</fullName>
+                <default>false</default>
+            </value>
+            <value>
+                <fullName>USAA</fullName>
+                <default>false</default>
+            </value>
+            <value>
+                <fullName>Other Credit Union</fullName>
+                <default>false</default>
+            </value>
+            <value>
+                <fullName>Other Financial Institution</fullName>
+                <default>false</default>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

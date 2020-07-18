@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<WebLink xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Edit_Lead</fullName>
+    <availability>online</availability>
+    <description>&quot;Custom Edit&quot; button created to update the owner on the given case and redirect to the Lead edit page</description>
+    <displayType>button</displayType>
+    <encodingKey>UTF-8</encodingKey>
+    <height>600</height>
+    <linkType>url</linkType>
+    <masterLabel>Edit Lead</masterLabel>
+    <openType>noSidebar</openType>
+    <protected>false</protected>
+    <url>/apex/CustomEditOnLead?id={!Lead.Id}</url>
+</WebLink>

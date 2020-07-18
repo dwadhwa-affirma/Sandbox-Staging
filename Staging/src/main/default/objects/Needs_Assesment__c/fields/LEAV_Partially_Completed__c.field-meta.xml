@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>LEAV_Partially_Completed__c</fullName>
+    <externalId>false</externalId>
+    <formula>If(LEAV_Last_Updated_On__c &gt;= Datetimevalue(&apos;1/1/2000 00:00&apos;), if( Member__r.NA_LEAV_Complete__c = false, true, false), false)</formula>
+    <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+    <label>LEAV_Partially_Completed</label>
+    <trackTrending>false</trackTrending>
+    <type>Checkbox</type>
+</CustomField>

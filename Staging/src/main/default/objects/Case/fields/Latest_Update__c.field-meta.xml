@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Latest_Update__c</fullName>
+    <description>Provides the last update of a case from a user perspective and includes member comments that may be newer than the last case modification date/time.</description>
+    <externalId>false</externalId>
+    <formula>IF(Last_Comment__c &gt; LastModifiedDate, Last_Comment__c, LastModifiedDate)</formula>
+    <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+    <label>Latest Update</label>
+    <required>false</required>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>DateTime</type>
+</CustomField>

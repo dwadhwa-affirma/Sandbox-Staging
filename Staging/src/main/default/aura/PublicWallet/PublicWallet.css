@@ -1,0 +1,66 @@
+.THIS {
+}
+
+.THIS .leftDiv {
+    width: 500px;
+    display: inline-block;
+}
+
+.THIS .RightDiv {
+    width: 250px;
+    float: left;
+}
+.THIS .CenterDiv {
+    text-align: center;
+}
+.THIS .Hide {
+   display:none;
+}
+
+.THIS .Show {
+   display:block;
+}
+
+.THIS .customRadioCls .slds-form-element__control .slds-radio {
+    display : inline-block !important;
+}
+
+.THIS .MainDiv {
+   height:350px;
+}
+
+.THIS .InnerDiv {
+    padding: 10px 0px;
+    display: flex;
+}
+
+.THIS .BtnOne {
+   margin-right:0px;
+}
+.THIS .BtnTwo {
+   margin-left:0px;
+}
+.THIS .mb-50{
+	margin-bottom:50px;
+	margin-top: 11px;
+}
+.THIS .select-auto-width > .slds-form-element__control > .slds-select_container{
+    display: inline-block;
+   width: 230px;
+}
+.THIS .btnAlign{
+	display: inline-block;
+    margin-left: 20px;
+}
+.THIS .btnAlign.btn-submit{
+	margin-left: 78px;
+}
+
+.THIS .slds-form-element__label{
+    font-size: 0.85rem !important;
+    font-weight: Bold;
+}
+.THIS .CenterDiv {text-align: center;}
+.THIS .MainDiv.MainField {border-bottom: 3px solid #637697;margin-bottom:0;}
+.cPublicWallet .submitButton { padding: 15px 25px!important; display: block;}
+.cPublicWallet .leftDiv.submitButtonLabel, .cPublicWallet .submitButton .RightDiv {width: 40% !important; display: inline-block !important;}

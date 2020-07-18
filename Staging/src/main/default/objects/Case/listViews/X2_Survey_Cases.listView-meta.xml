@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ListView xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>X2_Survey_Cases</fullName>
+    <columns>CASES.CASE_NUMBER</columns>
+    <columns>Category__c</columns>
+    <columns>CASES.SUBJECT</columns>
+    <columns>CASES.CREATED_DATE</columns>
+    <columns>OWNER_NAME</columns>
+    <columns>Code_Number__c</columns>
+    <columns>ACCOUNT.NAME</columns>
+    <columns>Account_Number__c</columns>
+    <columns>MaritzCX__Survey_Response_Id__c</columns>
+    <filterScope>Everything</filterScope>
+    <filters>
+        <field>CASES.RECORDTYPE</field>
+        <operation>equals</operation>
+        <value>Case.Survey_Cases</value>
+    </filters>
+    <label>2. Survey Cases</label>
+    <sharedTo>
+        <group>Demo_Users</group>
+        <roleAndSubordinatesInternal>Regional_Manager_Southern_California</roleAndSubordinatesInternal>
+    </sharedTo>
+</ListView>

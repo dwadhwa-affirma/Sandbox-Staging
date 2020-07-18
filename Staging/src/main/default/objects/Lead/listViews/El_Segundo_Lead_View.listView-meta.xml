@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ListView xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>El_Segundo_Lead_View</fullName>
+    <columns>lead_number_link__c</columns>
+    <columns>Person__c</columns>
+    <columns>LEAD.CREATED_DATE</columns>
+    <columns>CORE.USERS.ALIAS</columns>
+    <columns>CREATEDBY_USER.ALIAS</columns>
+    <columns>LEAD.STATUS</columns>
+    <columns>LEAD.LEAD_SOURCE</columns>
+    <columns>Product_Type__c</columns>
+    <columns>Product_Subtype__c</columns>
+    <columns>LEAD.LAST_UPDATE</columns>
+    <columns>Description__c</columns>
+    <filterScope>Everything</filterScope>
+    <filters>
+        <field>LEAD.STATUS</field>
+        <operation>notContain</operation>
+        <value>Closed</value>
+    </filters>
+    <filters>
+        <field>LEAD.LEAD_SOURCE</field>
+        <operation>contains</operation>
+        <value>segundo</value>
+    </filters>
+    <filters>
+        <field>LEAD.LEAD_SOURCE</field>
+        <operation>contains</operation>
+        <value>event</value>
+    </filters>
+    <filters>
+        <field>Product_Type__c</field>
+        <operation>notContain</operation>
+        <value>thank you</value>
+    </filters>
+    <filters>
+        <field>Product_Subtype__c</field>
+        <operation>notContain</operation>
+        <value>thank you</value>
+    </filters>
+    <label>El Segundo Lead View</label>
+    <sharedTo>
+        <roleAndSubordinatesInternal>Branch_El_Segundo_009</roleAndSubordinatesInternal>
+        <roleAndSubordinatesInternal>Regional_Manager_Southern_California</roleAndSubordinatesInternal>
+    </sharedTo>
+</ListView>

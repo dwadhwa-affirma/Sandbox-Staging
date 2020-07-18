@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Member_Num__c</fullName>
+    <description>Place holder for storing the member number associated with a case.  Used by the process builder to assign a member portal case to the queu and send the member a confirmation email.  This field is used in the body of the email.</description>
+    <externalId>false</externalId>
+    <label>Member Num</label>
+    <length>10</length>
+    <required>false</required>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Text</type>
+    <unique>false</unique>
+</CustomField>

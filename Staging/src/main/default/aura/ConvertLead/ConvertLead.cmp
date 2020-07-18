@@ -1,0 +1,239 @@
+<aura:component implements="flexipage:availableForAllPageTypes,force:appHostable,force:hasRecordId,force:lightningQuickActionWithoutHeader" controller="ConvertLeadController">
+	<aura:attribute name="LeadObject" type="Lead" />
+	<aura:attribute name="loading" type="Boolean" default="false" />
+	<aura:attribute name="accId" type="string" default="" />
+	<aura:attribute name="oppId" type="string" default="" />
+	<aura:attribute name="oppNumber" type="string" default="" />
+	<aura:attribute name="success" type="boolean" default="false" />
+	
+    
+		<aura:handler value="{!this}" name="init" action="{!c.doInit}" />
+	
+		<style>
+		/* Loading Style*/
+		.loadingDiv {
+			position: absolute;
+			z-index: 100;
+			background: rgba(255, 255, 255, 0.8);
+			width: 100%;
+			height: 70%;
+			top: 100px;
+		}
+		
+		.loadingDiv .demo-only {
+			z-index: 101;
+		}
+		/* Loading Style End*/
+		.demo-only .align-middle {
+			text-align: center;
+			position: absolute;
+			left: 0;
+			right: 0;
+			bottom: 30px;
+			font-weight: 600;
+			color: #999;
+		}
+		
+		.Salutation {
+			width: 20%;
+			margin-bottom: 5px;
+		}
+		
+		.modal-body {
+			position: relative;
+		}
+		
+		.cConvertLead.loadingDiv {
+			top: 0;
+			left: 0;
+			height: 100%;
+		}
+		
+		.twoField .forceInputField {
+			width: 80px;
+			display: inline-block;
+		}
+		
+		.twoField .forceInputField .uiPopupTrigger a {
+			height: calc(2.125rem + 2px);
+			line-height: calc(2.125rem + 2px);
+		}
+		
+		.twoField .uiInputText {
+			width: 160px;
+			display: inline-block;
+			margin-left: 7px;
+			vertical-align: top;
+		}
+		
+		.forceChatterBasePublisher :not (.PHONE ) .cuf-content {
+			padding: 0px !important;
+		}
+		
+		.slds-p-around_medium, .slds-p-around--medium {
+			padding: 0px !important;
+		}
+		
+		.cConvertLead {
+			padding: 15px;
+		}
+		
+		.slds-medium-size_1-of-2, .slds-medium-size--1-of-2 {
+			padding: 10px;
+		}
+		
+		
+		
+		.forceActionButton {
+			display: none;
+		}
+		
+		.slds-p-around_medium, .slds-p-around--medium {
+			padding: 0px !important;
+		}
+	</style>
+	
+	
+	
+		<div class="modal-maincontent" style="display:none;" >
+    <!-- <aura:if isTrue="{!(v.success == true)}">
+	   <ui:message title="Confirmation" severity="confirm" closable="true">
+				   		Lead converted successfully.
+				 	</ui:message>
+				 	</aura:if>-->
+	    <div>
+	    
+		        <div class="slds-col slds-small-size--1-of-2 slds-medium-size--1-of-2">
+					 <div class="slds-form--stacked slds-p-around--medium slds-m-bottom--x-small">
+					 	 <h3 class="slds-section-title--divider">Pre Member</h3>
+					 </div>
+					 
+					 <div class="slds-form--stacked slds-p-around--medium slds-m-bottom--x-small">
+		            	
+		                <div class="slds-form-element">
+		                    <label class="slds-form-element__label">Pre Member Name</label>
+		                    <div class="slds-form-element__control">
+		                        {!v.LeadObject.Name}
+		                    </div>
+		                </div>
+		                <div class="slds-form-element">
+		                    <label class="slds-form-element__label">Phone</label>
+		                    <div class="slds-form-element__control">
+		                        {!v.LeadObject.Phone}
+		                    </div>
+		                </div>
+		                <div class="slds-form-element">
+		                    <label class="slds-form-element__label">Email Address</label>
+		                    <div class="slds-form-element__control">
+		                        {!v.LeadObject.Email}
+		                    </div>
+		                </div>
+		                
+		                <div class="slds-form-element">
+		                    <label class="slds-form-element__label">Mobile</label>
+		                    <div class="slds-form-element__control">
+		                        {!v.LeadObject.Mobile}
+		                    </div>
+		                </div>
+		                
+		                <div class="slds-form-element">
+		                    <label class="slds-form-element__label">Pre Member Owner</label>
+		                    <div class="slds-form-element__control">
+		                        {!v.LeadObject.Owner.Name}
+		                    </div>
+		                </div>
+		                
+		                <!--  <aura:if isTrue="{!(v.success == true)}">
+			                 <div class="slds-form-element">
+			                   <a style="color:#1b5297" onclick="{!c.navigateToPremember}">Go to Pre Member</a>  
+			                </div>
+		                 	</aura:if> -->
+		                
+					</div>
+				
+				</div>
+		        <div class="slds-col slds-small-size--1-of-2 slds-medium-size--1-of-2">
+			 <div class="slds-form--stacked slds-p-around--medium slds-m-bottom--x-small">
+			 	 <h3 class="slds-section-title--divider">Opportunity</h3>
+			 </div>
+			 
+			 <div class="slds-form--stacked slds-p-around--medium slds-m-bottom--x-small">
+            	 <div class="slds-form-element">
+                    <label class="slds-form-element__label">Opportunity Number</label>
+                    <div class="slds-form-element__control">
+                        {!v.oppNumber}
+                    </div>
+                </div>
+            	
+                <div class="slds-form-element">
+                    <label class="slds-form-element__label">Pre Member Name</label>
+                    <div class="slds-form-element__control">
+                        {!v.LeadObject.Name}
+                    </div>
+                </div>
+                <div class="slds-form-element">
+                    <label class="slds-form-element__label">Product Type</label>
+                    <div class="slds-form-element__control">
+                        {!v.LeadObject.Product_Type__c}
+                    </div>
+                </div>
+                <div class="slds-form-element">
+                    <label class="slds-form-element__label">Product Sub Type</label>
+                    <div class="slds-form-element__control">
+                        {!v.LeadObject.Product_Subtype__c}
+                    </div>
+                </div>
+                
+                
+                <div class="slds-form-element">
+                    <label class="slds-form-element__label">Opportunity Owner</label>
+                    <div class="slds-form-element__control">
+                        {!v.LeadObject.Owner.Name}
+                    </div>
+                </div>
+                
+               <!-- <aura:if isTrue="{!(v.success == true)}">
+			                 <div class="slds-form-element">
+			                 
+			                  <button class="slds-button slds-button_brand" onclick="{!c.navigateToOpportunity}">Go to Opportunity</button>
+			                </div>
+		                 	</aura:if>-->
+                
+			</div>
+        </div>
+        
+    			</div>
+
+
+    
+  	</div>
+ 
+    
+         <aura:if isTrue="{!(v.loading == true)}">
+         
+        <div>
+            <div class="demo-only" style='height: 6rem; '> 
+                
+                <div role="status" class="slds-spinner slds-spinner_medium" style="background: rgb(0, 95, 178);">
+                    <div class="slds-spinner__dot-a"></div>
+                    <div class="slds-spinner__dot-b"></div>
+                    
+                </div>
+                <div class="align-middle">Please wait... Lead is converting</div>
+            </div>
+        </div>
+    </aura:if>
+    <aura:if isTrue="{!(v.loading == false)}">
+         
+        <div class="align-middle error">
+            <ul class='has-error uiInputDefaultError uiInput uiInputSelect uiInput--default uiInput--select' id='LastNameError'>
+                <li class="form-element__help" style="text-align:center;  font-size:16px;  padding-top: 25px;">Error while converting Lead. Please contact your administrator.</li>
+            </ul>
+            
+            
+            
+        </div>
+    </aura:if>
+      
+      
+</aura:component>

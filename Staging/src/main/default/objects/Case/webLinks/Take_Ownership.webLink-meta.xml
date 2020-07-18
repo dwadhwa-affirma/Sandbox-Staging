@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<WebLink xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Take_Ownership</fullName>
+    <availability>online</availability>
+    <displayType>button</displayType>
+    <linkType>javascript</linkType>
+    <masterLabel>Take Ownership</masterLabel>
+    <openType>onClickJavaScript</openType>
+    <protected>false</protected>
+    <url>{!REQUIRESCRIPT(&apos;/soap/ajax/33.0/connection.js&apos;)}
+{!REQUIRESCRIPT(&quot;/soap/ajax/33.0/apex.js&quot;)}
+
+
+var caseObj = new sforce.SObject(&quot;Case&quot;); 
+
+caseObj.Id = &apos;{!Case.Id}&apos;;
+caseObj.OwnerId = &apos;{!$User.Id}&apos;;
+
+sforce.connection.update([caseObj]);
+
+window.location.reload();
+//window.location.href=window.location.href;</url>
+</WebLink>

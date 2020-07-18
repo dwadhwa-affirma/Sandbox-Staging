@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ListView xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Ruby_Leads</fullName>
+    <booleanFilter>1 AND (2 or 3 or 4 or 5)</booleanFilter>
+    <columns>lead_number_link__c</columns>
+    <columns>FULL_NAME</columns>
+    <columns>Member_Account__c</columns>
+    <columns>LEAD.STATUS</columns>
+    <columns>LEAD.CREATED_DATE</columns>
+    <columns>CORE.USERS.ALIAS</columns>
+    <columns>CREATEDBY_USER.ALIAS</columns>
+    <columns>Description__c</columns>
+    <columns>LEAD.LEAD_SOURCE</columns>
+    <filterScope>Everything</filterScope>
+    <filters>
+        <field>LEAD.STATUS</field>
+        <operation>notEqual</operation>
+        <value>Closed</value>
+    </filters>
+    <filters>
+        <field>CORE.USERS.ALIAS</field>
+        <operation>equals</operation>
+        <value>mwat,mvin,aves,rvau,jtuc,ltel,rste,esmi,mrod,spoh,rort,anwa,bmax,jmar,cmag,lisl</value>
+    </filters>
+    <filters>
+        <field>CORE.USERS.ALIAS</field>
+        <operation>equals</operation>
+        <value>tjon,pjog,mivy,sgul,cgon,juja,lewg,bedr,jdon,cdav,dcur,pcha,mbuc,tbas</value>
+    </filters>
+    <filters>
+        <field>CREATEDBY_USER.ALIAS</field>
+        <operation>equals</operation>
+        <value>mwat,mvin,aves,rvau,jtuc,ltel,rste,esmi,mrod,spoh,rort,anwa,bmax,jmar,cmag,lisl</value>
+    </filters>
+    <filters>
+        <field>CREATEDBY_USER.ALIAS</field>
+        <operation>equals</operation>
+        <value>tjon,pjog,mivy,sgul,cgon,juja,lewg,bedr,jdon,cdav,dcur,pcha,mbuc,tbas</value>
+    </filters>
+    <label>Call Center Leads</label>
+    <sharedTo>
+        <group>Call_Center_Managers</group>
+        <roleAndSubordinatesInternal>eBranch_Manager</roleAndSubordinatesInternal>
+    </sharedTo>
+</ListView>

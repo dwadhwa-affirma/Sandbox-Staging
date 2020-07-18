@@ -1,0 +1,13 @@
+<aura:event type="COMPONENT" description="Event template" >
+	<aura:attribute name="SelectedMemberId" type="String"/>
+	<aura:attribute name="OTPVarifiedStatus" type="String"/>
+	<aura:attribute name="KYMVarifiedStatus" type="String"/>
+	<aura:attribute name="PublicWalletScoreObtained" type="Integer"/>
+	<aura:attribute name="PublicWalletFailedCount" type="Integer"/>
+	<aura:attribute name="CFCUWalletScoreObtained" type="Integer"/>
+	<aura:attribute name="CFCUWalletFailedCount" type="Integer"/>
+	<aura:attribute name="ActionType" type="String"/>
+	<aura:attribute name="FDLSelectedLevel" type="String"/>
+	<aura:attribute name="FDLShowPopup" type="boolean"/>
+	<aura:attribute name="IsAllEmailandPhoneExhausted" type="boolean"/>
+</aura:event>

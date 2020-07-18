@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ListView xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>test2</fullName>
+    <columns>ACCOUNT.NAME</columns>
+    <columns>PersonID__c</columns>
+    <columns>PersonID__pc</columns>
+    <filterScope>Everything</filterScope>
+    <label>1 - PersonID Changes</label>
+    <sharedTo>
+        <role>IT</role>
+    </sharedTo>
+</ListView>

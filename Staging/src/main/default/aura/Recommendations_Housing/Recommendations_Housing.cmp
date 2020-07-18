@@ -1,0 +1,79 @@
+<aura:component controller="CollectionsInLightningCls"
+	implements="flexipage:availableForAllPageTypes,force:appHostable,force:hasRecordId"
+	access="global">
+	<aura:attribute name="Model" access="global" Type="Needs_Assesment__c" />
+	<table>
+		<tr>
+			<td colspan="2">
+				<h2>Housing</h2>
+			</td>
+		</tr>
+
+		<aura:if isTrue="{!(v.Model.Do_you_Rent_or_Own__c != null)}">
+			<tr class="bottombor">
+				<td class="subQuestion">Do you rent or own?</td>
+				<td>{!v.Model.Do_you_Rent_or_Own__c}</td>
+			</tr>
+		</aura:if>
+		<aura:if isTrue="{!(v.Model.LEHS_Current_Lender__c != null)}">
+			<tr class="bottombor">
+				<td class="subQuestion">If own, who is your current lender?</td>
+				<td>{!v.Model.LEHS_Current_Lender__c}</td>
+			</tr>
+		</aura:if>
+		<aura:if isTrue="{!(v.Model.LEHS_Type_of_Mortgage__c != null)}">
+			<tr class="bottombor">
+				<td class="subQuestion">If own, what type of mortgage do you
+					have?</td>
+				<td>{!v.Model.LEHS_Type_of_Mortgage__c}</td>
+			</tr>
+		</aura:if>
+		<aura:if isTrue="{!(v.Model.LEHS_Rate__c != null)}">
+			<tr class="bottombor">
+				<td class="subQuestion">If own, what is your current rate?</td>
+				<td>{!v.Model.LEHS_Rate__c}</td>
+			</tr>
+		</aura:if>
+		<aura:if isTrue="{!(v.Model.LEHS_Current_Balance__c != null)}">
+			<tr class="bottombor">
+				<td class="subQuestion">If own, what is your current balance?</td>
+				<td>{!v.Model.LEHS_Current_Balance__c}</td>
+			</tr>
+		</aura:if>
+		
+		<aura:if isTrue="{!(and(v.Model.LEHS_End_Year__c != null, v.Model.LEHS_End_Year__c > 0))}">
+			<tr class="bottombor">
+				<td class="subQuestion">If own, what is mortgage end date?</td>
+				<td>{!v.Model.LEHS_End_Year__c}</td>
+			</tr>
+		</aura:if>
+
+		<aura:if isTrue="{!(!(v.Model.LEHS_Planning_to_Purchase__c == null || v.Model.LEHS_Planning_to_Purchase__c == 'Prefer Not to Answer'))}">
+			<tr class="bottombor">
+				<td class="subQuestion">Are you planning to purchase?</td>
+				<td>{!v.Model.LEHS_Planning_to_Purchase__c}</td>
+			</tr>
+		</aura:if>
+		<aura:if isTrue="{!(v.Model.LEHS_Purchase_When__c != null)}">
+			<tr class="bottombor">
+				<td class="subQuestion">If Yes, when?</td>
+				<td>{!v.Model.LEHS_Purchase_When__c}</td>
+			</tr>
+		</aura:if>
+		<aura:if isTrue="{!(v.Model.LEHS_Have_Realtor__c != null)}">
+			<tr class="bottombor">
+				<td class="subQuestion">If Yes, do you have a realtor?</td>
+				<td>{!v.Model.LEHS_Have_Realtor__c}</td>
+			</tr>
+		</aura:if>
+
+		<aura:if isTrue="{!(v.Model.LEHS_Comment__c != null)}">
+			<tr>
+				<td class="subQuestion">Comments</td>
+				<td>{!v.Model.LEHS_Comment__c}</td>
+			</tr>
+		</aura:if>
+	</table>
+
+
+</aura:component>

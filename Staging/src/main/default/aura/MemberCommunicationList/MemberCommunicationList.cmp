@@ -1,0 +1,360 @@
+<aura:component access="global"  implements="force:hasRecordId,flexipage:availableForAllPageTypes,force:appHostable,force:lightningQuickActionWithoutHeader,lightning:isUrlAddressable" controller="MemberCommunicationData" >
+    <!-- attributes -->
+    <aura:attribute name="id" type="String" />
+    <aura:attribute name="recordId" type="String" />
+    <aura:attribute name="loaded" type="Boolean" default="false"/>
+    <aura:attribute name="Approve" type="Boolean" default="false" />
+    <aura:attribute name="loadchk1" type="Boolean" default="false" />
+    <aura:attribute name="loadchk2" type="Boolean" default="false" />
+    <aura:attribute name="loadchk3" type="Boolean" default="false" />
+     <aura:attribute name="loadchk5" type="Boolean" default="false" />
+    <aura:attribute name="nochk1" type="Boolean" default="false" />
+    <aura:attribute name="nochk2" type="Boolean" default="false" />
+    <aura:attribute name="nochk3" type="Boolean" default="false" />
+    <aura:attribute name="nochk5" type="Boolean" default="false" />
+    <aura:attribute name="progchk1" type="Boolean" default="false" />
+    <aura:attribute name="progchk2" type="Boolean" default="false" />
+    <aura:attribute name="progchk3" type="Boolean" default="false" />
+     <aura:attribute name="progchk5" type="Boolean" default="false" />
+    <aura:attribute name="ischk1" type="Boolean" default="false" />
+    <aura:attribute name="ischk2" type="Boolean" default="false" />
+    <aura:attribute name="ischk3" type="Boolean" default="false" />
+    <aura:attribute name="ischk4" type="Boolean" default="false" />
+     <aura:attribute name="ischk5" type="Boolean" default="false" />
+    <aura:attribute name="nodata" type="Boolean" default="false" />
+    <aura:attribute name="isfromto" type="Boolean" default="false" />
+    <aura:attribute name="dateinvalid" type="Boolean" default="false" />
+    <aura:attribute name="data" type="Object"/>
+    <aura:attribute name="Alldata" type="Object"/>
+    <aura:attribute name="columns" type="List"/>
+    <aura:attribute type="List" name="selectedCheckBoxes" default="[]" />
+    <aura:attribute name="pageNumber" type="Integer" default="1"/>
+    <aura:attribute name="pageSize" type="Integer" default="50"/>
+    <aura:attribute name="isLastPage" type="Boolean" default="false"/>
+    <aura:attribute name="dataSize" type="Integer" default="0"/> 
+    <aura:attribute name="tempdata" type="String" default="test"/> 
+    <aura:attribute name="fromdate" type="Date"/> 
+    <aura:attribute name="todate" type="Date"/> 
+    <aura:attribute name="keyword" type="string"/> 
+    <aura:attribute name="isSalesforce" type="Boolean" default="false"/>
+     <aura:attribute name="sortedBy" type="String"/>
+     <aura:attribute name="sortedDirection" type="String"/>
+    <aura:attribute name="SNAILsetting" type="List"/>
+    <aura:attribute name="IsUserInGroup" type="Boolean"/>
+    <!-- handlers-->
+    <aura:handler name="init" value="{! this }" action="{! c.doInit }"/>
+    <div >
+      <aura:if isTrue="{! v.loaded }">
+        
+             <lightning:spinner alternativeText="Loading" size="small" />
+         
+     </aura:if>
+      
+        <article class="slds-card slds-card_boundary">
+            <div class="slds-card__header slds-grid">
+                <header class="slds-media slds-media_center slds-has-flexi-truncate">
+                    
+                    <div class="slds-media__body">
+                        <h2 class="slds-card__header-title">
+                            <span>Member Communication Source Search {!v.SNAILsetting}</span>
+                            
+                        </h2>
+                    </div>
+                    
+                </header>
+            </div>
+            <div class="slds-card__body slds-m-around_large">
+                <div class="slds-grid">
+                    <div class="slds-size_3-of-12 BorderRight">
+                        <article class="slds-card slds-m-right_x-small">
+                            <div class="slds-card__header1 slds-grid">
+                                <header class="slds-media slds-media_center slds-has-flexi-truncate">
+                                    <div class="slds-media__body">
+                                        <h2 class="slds-card__header-title">
+                                            <span>Source</span>
+                                            
+                                        </h2>
+                                    </div>
+                                </header>
+                            </div>
+                           <div class="slds-card__body slds-card__body_inner">
+                                <div class="slds-form-element__control  ">
+                                	 <aura:if isTrue="{!v.ischk1}">
+                                    <div class="slds-checkbox">
+                                        <div class="slds-clearfix">
+                                            <div class="slds-float_left">
+                                                <p><lightning:input type="checkbox" label="BDI"  aura:id="chk1" value="BDI" onchange="{!c.callCheckboxMethod}"  /></p>
+                                            </div>
+                                            <div class="slds-float_right">
+                                                <p class="SearchText">
+                                                <aura:if isTrue="{! v.loadchk1 }"> <lightning:icon iconName="utility:check" size="xx-small" alternativeText="Result" />
+                                                	Result Showing
+                                               	</aura:if>
+                                               	 <aura:if isTrue="{! v.progchk1 }"> 
+                                                        <lightning:icon iconName="utility:loop" size="xx-small" alternativeText="Approved" />
+                                                        Searching...
+                                                        
+                                                 </aura:if>
+                                               	<aura:if isTrue="{! v.nochk1 }"> <lightning:icon iconName="utility:close" size="xx-small" alternativeText="No Result" />
+                                                	No Result
+                                               	</aura:if>
+                                               	</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    </aura:if>
+                                     <aura:if isTrue="{!v.ischk2}">
+                                     
+                                    <div class="slds-checkbox" >
+                                    
+                                        <div class="slds-clearfix">
+                                            <div class="slds-float_left">
+                                                <p><lightning:input type="checkbox" label="Salesforce"   aura:id="chk2"  value="Salesforce" onchange="{!c.callCheckboxMethod}"  /></p>
+                                            </div>
+                                            <div class="slds-float_right">
+                                                <p class="SearchText"><aura:if isTrue="{! v.loadchk2 }"> <lightning:icon iconName="utility:check" size="xx-small" alternativeText="Approved" />
+                                                		Result Showing 
+                                                	</aura:if>
+                                                    <aura:if isTrue="{! v.progchk2 }"> 
+                                                        <lightning:icon iconName="utility:loop" size="xx-small" alternativeText="Approved" />
+                                                        Searching...
+                                                        
+                                                    </aura:if>
+                                                    <aura:if isTrue="{! v.nochk2 }"> <lightning:icon iconName="utility:close" size="xx-small" alternativeText="No Result" />
+                                                		No Result
+                                               	    </aura:if>
+                                                </p>
+                                            </div>
+                                        </div>
+                                        
+                                    </div>
+                                    </aura:if>
+                                     <aura:if isTrue="{!v.ischk3}">
+                                    <div class="slds-checkbox">
+                                        <div class="slds-clearfix">
+                                            <div class="slds-float_left">
+                                                <p><lightning:input type="checkbox" label="Onbase"   aura:id="chk3"  value="Onbase" onchange="{!c.callCheckboxMethod}"  /></p>
+                                            </div>
+                                            <div class="slds-float_right">
+                                                <p class="SearchText"><aura:if isTrue="{! v.loadchk3 }"> 
+                                                		<lightning:icon iconName="utility:check" size="xx-small" alternativeText="Approved" />
+                                                		Result Showing
+                                                    </aura:if>
+                                                     <aura:if isTrue="{! v.progchk3 }"> 
+                                                        <lightning:icon iconName="utility:loop" size="xx-small" alternativeText="Approved" />
+                                                        Searching...
+                                                        
+                                                    </aura:if>
+                                                    <aura:if isTrue="{! v.nochk3  }"> <lightning:icon iconName="utility:close" size="xx-small" alternativeText="No Result" />
+                                                		No Result
+                                               	    </aura:if>
+                                                </p>
+                                            </div>
+                                        </div>
+                                       
+                                    </div>
+                                    </aura:if>
+                                     <aura:if isTrue="{!v.ischk4}">
+                                    <div class="slds-checkbox">
+                                        <lightning:input type="checkbox" label="Other"  aura:id="chk4"  value="Other" onchange="{!c.callCheckboxMethod}"  />
+                                    </div>
+                                    </aura:if>
+                                    
+                                  <!-- OOW  -->  
+                                  
+                                      <aura:if isTrue="{!v.ischk5}">
+                                    <div class="slds-checkbox">
+                                        <div class="slds-clearfix">
+                                            <div class="slds-float_left">
+                                                <p><lightning:input type="checkbox" label="OOW"   aura:id="chk5"  value="OOW" onchange="{!c.callCheckboxMethod}"  disabled ="{!not(v.IsUserInGroup)}" /></p>
+                                            </div>
+                                            <div class="slds-float_right">
+                                                <p class="SearchText"><aura:if isTrue="{! v.loadchk5 }"> 
+                                                		<lightning:icon iconName="utility:check" size="xx-small" alternativeText="Approved" />
+                                                		Result Showing
+                                                    </aura:if>
+                                                     <aura:if isTrue="{! v.progchk5 }"> 
+                                                        <lightning:icon iconName="utility:loop" size="xx-small" alternativeText="Approved" />
+                                                        Searching...
+                                                        
+                                                    </aura:if>
+                                                    <aura:if isTrue="{! v.nochk5  }"> <lightning:icon iconName="utility:close" size="xx-small" alternativeText="No Result" />
+                                                		No Result
+                                               	    </aura:if>
+                                                </p>
+                                            </div>
+                                        </div>
+                                       
+                                    </div>
+                                    </aura:if>
+                                    
+                                    
+                                </div>
+                            </div>
+							
+                        </article>
+                        
+                    </div>
+                    <div class="slds-size_3-of-12 BorderRight" >
+                        <article class="slds-card  slds-m-left_x-small">
+                            <div class="slds-card__header1 slds-grid">
+                                <header class="slds-media slds-media_center slds-has-flexi-truncate">
+                                    <div class="slds-media__body">
+                                        <h2 class="slds-card__header-title">
+                                            <span>Date</span>
+                                            
+                                        </h2>
+                                    </div>
+                                </header>
+                            </div> 
+                            <div class="slds-card__body slds-card__body_inner">
+	                                <div class="slds-grid slds-gutters">
+		                                 <div class="slds-col slds-size_12-of-12" >
+		                                        <ui:inputSelect class="single" value="{!v.keyword}" aura:id="InputSelectSingle" change="{!c.onSingleSelectChange}">
+												    <ui:inputSelectOption text="30" label="Last 30 Days " value="true"/>
+												    <ui:inputSelectOption text="90" label="Last 90 Days"/>
+												    <ui:inputSelectOption text="180" label="Last 180 Days "/>
+												    <ui:inputSelectOption text="Date Range" label="Date Range"/>
+												</ui:inputSelect>
+		                                    </div>
+	                                 </div>
+                               
+	                                <aura:if isTrue="{!v.isfromto}">
+	                                	<div class="slds-grid slds-gutters">
+		                                    <div class="slds-col slds-size_6-of-12">
+		                                        <ui:inputDate aura:id="fromdate" value="{!v.fromdate}" displayDatePicker="true" format="M/dd/yyyy" label="from"/>
+		                                        
+		                                    </div>
+		                                    <div class="slds-col slds-size_6-of-12">
+		                                        <ui:inputDate aura:id="todate" value="{!v.todate}" displayDatePicker="true" format="M/dd/yyyy" label="to"/>
+		                                        
+		                                    </div>
+	                                    </div>
+	                               </aura:if>
+                                
+                               
+	                                <aura:if isTrue="{!v.dateinvalid}">
+		                                <div style="color:red">
+										    Invalid Date
+										    
+										</div>
+									</aura:if>
+								</div>
+                          
+                        </article>
+                    </div>
+                   <!--   <div class="slds-size_2-of-12">
+                        <article class="slds-card  slds-m-left_x-small">
+                            <div class="slds-card__header1 slds-grid">
+                                <header class="slds-media slds-media_center slds-has-flexi-truncate">
+                                    <div class="slds-media__body">
+                                        <h2 class="slds-card__header-title">
+                                            <span>Search Activity Type</span>
+                                            
+                                        </h2>
+                                    </div>
+                                </header>
+                            </div> 
+                            <div class="slds-card__body slds-card__body_inner">
+                                
+                                <lightning:input type="Text" name="input2" label="keyword" value="{!v.keyword}" placeholder="Enter Keywords"/>
+                                
+                            </div>
+                            
+                        </article>
+                        
+                    </div>-->
+                </div>
+                
+                
+            </div>
+            <footer class="slds-card__footer">
+                <div class="slds-grid slds-gutters">
+                        <!-- <span style="padding-right: 10px;">
+                             <aura:if isTrue="{! v.Approve }">
+                                <lightning:icon iconName="action:approval" size="xx-small" alternativeText="Approved" />
+                                
+                            </aura:if>
+                        </span>-->
+                        <span style="padding-right: 10px;    padding-left: 1.5rem;">
+                            <button class="slds-button slds-button_brand" onclick="{!c.BtnFetchData}">Search</button>
+                        </span>
+                        <span>
+                            <aura:if isTrue="{! v.isSalesforce }">
+                                <button class="slds-button slds-button_neutral" onclick="{!c.BtnMergeData}">Update Table</button>
+                            </aura:if>
+                        </span>
+                    
+                </div>
+            </footer>
+            
+        </article>
+        <aura:if isTrue="{! v.Approve }">
+            <div class=" slds-gutters slds-grid slds-m-around_xxx-small ">
+                <div class="slds-size_12-of-12   slds-box ">
+              
+	                    <aura:if isTrue="{!v.nodata}">
+		                   
+			                   <div class="slds-box slds-box_x-small" style="background: rgb(221, 219, 218);">
+								  <p>There were no result found.</p>
+								</div>
+							  <!--  <div class="slds-region_narrow slds-is-relative">
+							    <div class="slds-notify slds-notify_toast slds-theme_error" role="status" >
+							      <span class="slds-assistive-text">error</span>
+							      <span class="slds-icon_container slds-icon-utility-error slds-m-right_small slds-no-flex slds-align-top" title="Description of icon when needed">
+							           <lightning:icon class="cashAccountIcon"  iconName="utility:error" alternativeText="Approved" />
+                                
+							      </span>
+							      <div class="slds-notify__content">
+							        <h2 class="slds-text-heading_small ">There were no result found.</h2>
+							      </div>
+							     
+							    </div>
+							  </div>-->
+						<aura:set attribute="else">
+						   <div style="height: 400px" class=" ">
+						 <lightning:datatable
+                                             keyField="id"
+                                             data="{! v.data }"
+                                             columns="{! v.columns }"
+                                             maxRowSelection="{!v.maxRowSelection}"
+                                             selectedRows = "{!v.selectedRowList}"
+                                             hideCheckboxColumn="true"
+                                             sortable="true"
+                                             sortedBy="{! v.sortedBy }"
+                							 sortedDirection="{! v.sortedDirection }"
+                							 onsort="{! c.updateColumnSorting }"
+                                             />
+                    </div>
+                   
+                    <div class="slds-size_12-of-12">
+                        <div class="slds-page-header" role="banner">
+                            <aura:if isTrue="{!v.dataSize > 0}">
+                                <div class="slds-float_right">            
+                                    <lightning:button label="Prev" iconName="utility:chevronleft" iconPosition="left"
+                                                      onclick="{!c.handlePrev}" disabled="{! v.pageNumber == 1}"/>
+                                    <lightning:button label="Next" iconName="utility:chevronright" iconPosition="right"
+                                                      disabled="{! v.isLastPage}" onclick="{!c.handleNext}"/>
+                                </div>
+                                
+                                <p class="slds-page-header__title">Page {!v.pageNumber} | Showing records from {! ((v.pageNumber-1)*v.pageSize+1)} to  <aura:if isTrue="{! v.isLastPage }">{!(v.dataSize)}<aura:set attribute="else">{!(v.pageNumber*v.pageSize)}</aura:set></aura:if>
+                                </p>
+                                
+                            </aura:if> 
+                        </div>
+                    </div>
+				        </aura:set>   	
+						</aura:if>
+                       
+                </div>
+            </div>
+            
+        </aura:if>
+        
+    </div>
+    
+    <!-- the container element determine the height of the datatable -->
+    
+      
+    
+</aura:component>

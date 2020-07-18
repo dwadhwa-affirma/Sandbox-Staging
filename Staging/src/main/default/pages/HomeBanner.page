@@ -1,0 +1,15 @@
+<apex:page >
+<style>.custom1 {background-color: yellow; padding: 2px 10px 2px 10px;}</style>
+   <apex:variable var="curDate"     value="{!YEAR(TODAY())}{!IF(MONTH(TODAY()) < 10,0,'')}{!MONTH(TODAY())}{!IF(DAY(TODAY()) < 10,0,'')}{!DAY(TODAY())}"/>
+   <apex:variable var="renderVal"   value="{!IF(VALUE(curDate) <= VALUE($Label.Notification_Banner_Expiration),true,false)}"/>
+   <apex:pageBlock mode="maindetail" rendered="{!renderVal}" >
+     <apex:outputPanel layout="block" styleClass="custom1">
+        <h1>{!$Label.Notification_Banner_Title}</h1>
+        {!$Label.Notification_Banner_Text} 
+        <apex:outputLink value="{!$Label.Notification_Banner_Link}" 
+             title="{!$Label.Notification_Banner_Link_Hover}" 
+             target="_blank" > {!$Label.Notification_Banner_Link_Text}
+        </apex:outputLink>
+     </apex:outputPanel> 
+   </apex:pageBlock> 
+</apex:page>

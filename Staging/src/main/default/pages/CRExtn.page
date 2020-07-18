@@ -1,0 +1,61 @@
+<apex:page standardController="Canned_Responses__c" extensions="CRExtnController" docType="html-5.0">
+<apex:form >
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+<style>
+.ui-autocomplete span.hl_results {background-color: #ffff66;}
+.ui-autocomplete-loading {} //the object while its loading (in the event of Ajax, in this case would not need this one
+.ui-autocomplete {
+    max-height: 250px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding-right: 5px;
+}
+
+.ui-autocomplete li {font-size: 16px;}
+html .ui-autocomplete {
+    height: 250px;
+}
+</style>
+<apex:pageBlock mode="edit" title="Edit Canned Response">
+            <apex:pageMessages />
+        <apex:pageBlockSection columns="1">
+            <apex:inputField value="{!Canned_Responses__c.Brand__c}" id="Brand" required="true"/>           
+            <apex:inputText value="{!Canned_Responses__c.Primary_Lookup_Text__c}" id="PrimaryLookup" required="true"/>            
+            <apex:inputField value="{!Canned_Responses__c.Secondary_Lookup_Text__c}" id="SecondaryLookup"/>
+            <apex:inputField value="{!Canned_Responses__c.Tertiary_Lookup_Text__c}" id="TertiaryLookup"/>
+            <apex:inputField value="{!canned_Responses__c.Canned_Response_Title__c  }" required="true"/>
+            <apex:inputField value="{!Canned_Responses__c.Description__c}" required="true"/>
+            <apex:inputField value="{!Canned_Responses__c.Active__c}"/>
+            
+        </apex:pageBlockSection>
+        <apex:pageBlockButtons >
+            <apex:commandButton action="{!save}" value="Save"/>
+            <apex:commandButton value="Cancel" onclick="history.go(-1); return false;" immediate="true"/>
+        </apex:pageBlockButtons>
+    </apex:pageBlock>
+    <div>
+    <datalist id="PrimaryLookupOptions">
+            <apex:outputText value="{!PrimaryLookupOptions}" escape="false"/>
+              
+            </datalist>
+            <datalist id="SecondaryLookupOptions">
+              <apex:outputText value="{!SecondaryLookupOptions}" escape="false"/>
+            </datalist>
+            <datalist id="TertiaryLookupOptions">
+            <apex:outputText value="{!TertiaryLookupOptions}" escape="false"/>
+              
+            </datalist>
+            </div>
+    <script>
+ j$=jQuery.noConflict();
+
+j$(document).ready(function(){
+
+j$("input[id$='PrimaryLookup']" ).attr('list','PrimaryLookupOptions');
+j$("input[id$='SecondaryLookup']" ).attr('list','SecondaryLookupOptions');
+j$("input[id$='TertiaryLookup']" ).attr('list','TertiaryLookupOptions');
+
+});
+    </script>
+</apex:form>
+</apex:page>

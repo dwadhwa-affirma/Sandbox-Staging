@@ -1,0 +1,179 @@
+<apex:component controller="Na_PrimaryTransactionController" allowDML="true">
+
+    <apex:attribute name="Account" description="This is the value for the component." type="Account" required="true" assignTo="{!AccountC}" />
+    <apex:attribute name="CTRL" description="This is the value for the component." type="NeedAssessmentController" required="true" assignTo="{!parentController}" />
+
+    <apex:form >
+        <apex:pageBlock title="Optimize how you move your money - Primary Account">
+            <div id="snackbar">Data saved successfully!</div>
+
+            <table border="2">
+                <tr>
+                    <td>
+                        <table border="0">
+                            <tr>
+                                <td></td>
+                                <td class="mainQuestion" align="center" style="text-align: center;">
+                                            	Current As Of<br></br>
+                                                <apex:outputText value="{0, date, MMMM d','  yyyy}">
+                                                          <apex:param value="{!lmm_New.LEPT_Last_Updated_On__c}" />
+                                                </apex:outputText>
+                                </td>
+                            </tr>                            
+                            <tr>
+                                <td class="mainQuestion" width="300">At which financial institution do you keep your "primary" account you use for transactions?</td>
+                                <td><apex:inputField value="{!lmm_New.LEPT_Financial_Institution__c}" /></td>
+                                <!-- 
+                                <td class="lastVal">
+                                    <c:NeedAssessmentHistory fieldName="LEPT_Financial_Institution__c" NeedAssessmentID="{!NA_id}"></c:NeedAssessmentHistory>
+                                </td>
+                                <td class="lastVal">
+                                	<c:NeedAssessmentHistoryLastModifiedDate fieldName="LEPT_Financial_Institution__c" NeedAssessmentID="{!NA_id}"></c:NeedAssessmentHistoryLastModifiedDate>
+                                </td>
+                                -->
+                                
+                            </tr>
+                            <tr>
+                            	<td>
+                            		<p></p>
+                            	</td>
+                            </tr>
+                            <tr>
+                                <td class="mainQuestion" width="200">Why do you use this financial institution?</td>
+                            </tr>
+                            
+                            <tr>
+                                
+                                <td class="subQuestion" width="200">Convenient locations</td>
+                                <td><apex:inputField value="{!lmm_New.LEPT_Convenient_locations__c}" /></td>
+                                <!-- 
+                                <td class="lastVal">
+                                    <c:NeedAssessmentHistory fieldName="LEPT_Convenient_locations__c" NeedAssessmentID="{!NA_id}"></c:NeedAssessmentHistory>
+                                </td>
+                                -->
+                            </tr>
+                            <tr>
+                                <td class="subQuestion">Deposit rates</td>
+                                <td><apex:inputField value="{!lmm_New.LEPT_Deposit_rates__c}" /></td>
+                                <!-- 
+                                <td class="lastVal">
+                                    <c:NeedAssessmentHistory fieldName="LEPT_Deposit_rates__c" NeedAssessmentID="{!NA_id}"></c:NeedAssessmentHistory>
+                                </td>
+                                -->
+                            </tr>
+                            <tr>
+                                <td class="subQuestion">Loan rates</td>
+                                <td><apex:inputField value="{!lmm_New.LEPT_Loan_rates__c}" /></td>
+                                <!-- 
+                                <td class="lastVal">
+                                    <c:NeedAssessmentHistory fieldName="LEPT_Loan_rates__c" NeedAssessmentID="{!NA_id}"></c:NeedAssessmentHistory>
+                                </td>
+                                -->
+                            </tr>
+
+                         
+                            <tr>
+                                <td class="subQuestion">Online/mobile apps</td>
+                                <td><apex:inputField value="{!lmm_New.LEPT_Online_mobile_apps__c}" /></td>
+                                <!-- 
+                                <td class="lastVal">
+                                    <c:NeedAssessmentHistory fieldName="LEPT_Online_mobile_apps__c" NeedAssessmentID="{!NA_id}"></c:NeedAssessmentHistory>
+                                </td>
+                                -->
+                            </tr>
+                            <tr>
+                                <td class="subQuestion">Have financial advisor there</td>
+                                <td><apex:inputField value="{!lmm_New.LEPT_Have_financial_advisor_there__c}" /></td>
+                                <!-- 
+                                <td class="lastVal">
+                                    <c:NeedAssessmentHistory fieldName="LEPT_Have_financial_advisor_there__c" NeedAssessmentID="{!NA_id}"></c:NeedAssessmentHistory>
+                                </td>
+                                -->
+                            </tr>
+                            <tr>
+                                <td class="subQuestion">Other</td>
+                                <td><apex:inputField value="{!lmm_New.LEPT_Other__c}" /></td>
+                                <!-- 
+                                <td class="lastVal">
+                                    <c:NeedAssessmentHistory fieldName="LEPT_Other__c" NeedAssessmentID="{!NA_id}"></c:NeedAssessmentHistory>
+                                </td>
+                                -->
+                            </tr>
+                            <tr>
+                            	<td colspan="2">
+                            		<hr></hr>
+                            	</td>
+                            </tr>
+                            <tr>
+                                <td class="mainQuestion" valign="top">Comments</td>
+                                <td><apex:inputField value="{!lmm_New.LEPT_Comments__c}" style="width: 280px; height: 80px"/></td>
+                                <!-- 
+                                <td class="lastVal">
+                                    <c:NeedAssessmentHistory fieldName="LEPT_Comments__c" NeedAssessmentID="{!NA_id}"></c:NeedAssessmentHistory>
+                                </td>
+                                <td class="lastVal">
+                                   <c:NeedAssessmentHistoryLastModifiedDate fieldName="LEPT_Comments__c" NeedAssessmentID="{!NA_id}"></c:NeedAssessmentHistoryLastModifiedDate>
+                                </td>
+                                -->
+                                
+                            </tr>
+                            
+                        </table>
+                    </td>
+
+                    <td valign="top">
+                        <table border="0">
+                            <tr>
+                                <td class="colHeader">Recommendations</td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    Checking Account
+                                </td>
+                                <td>
+                                    <apex:inputField value="{!lmm_New.REC_LEPT_1__c}" />
+                                </td>
+                            </tr>
+                           
+                        </table>
+                    </td>
+
+                </tr>
+            </table>
+            <p></p>
+            <table>
+                <tr>
+                    <td align="right" width="300">
+
+
+                        <apex:commandButton value="Save" action="{!SubmitFeedbackForm}"  onclick="$(this).hide();$(this).next().show();"  />
+                        
+						<input type="submit" value="Saving..." style="display:none;" disabled="disabled" class="btn"/>
+
+                    </td>
+                </tr>
+            </table>
+            <apex:actionFunction action="{!resetscript}" name="resetscript" rerender="scriptcontainer" />
+            <apex:outputPanel id="scriptcontainer">
+                <input type="text" value="{!script}" id="scriptext" style="visibility:hidden" />
+            </apex:outputPanel>
+
+        </apex:pageBlock> 
+    </apex:form>
+    <script>
+function toastsuccess()
+{
+    if (document.getElementById("scriptext").value == '1')
+    {
+        var x = document.getElementById("snackbar")
+        x.className = "show";
+        setTimeout(function(){ x.className = x.className.replace("show", ""); }, 3000);
+    }
+    resetscript();
+}
+ toastsuccess();
+    </script>
+
+
+</apex:component>

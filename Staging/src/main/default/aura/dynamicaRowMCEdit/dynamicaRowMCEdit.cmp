@@ -1,0 +1,157 @@
+<aura:component controller="ManageTravelPlansController">
+    <aura:handler value="{!this}" name="init" action="{!c.doInit}" />
+      <aura:attribute name="travelDetailsInstance" access="global" type="Object"/>
+      <aura:attribute name="isEditable" type="boolean" default="False"/>
+      <aura:attribute name="options" type="object[]" />
+        <aura:attribute name="ifSFObjExist" access="global" Type="boolean" default="true" />
+        <aura:registerEvent name="RefreshEvt" type="c:refreshTravelPlanEvt"/>
+        <aura:attribute name="popoverMessage" type="String" />
+   <aura:attribute name="loading" type="Boolean" default="false" />
+ 
+ <aura:if isTrue="{!v.loading}">   
+ <div class="loadingDivChild cdynamicRowMCEdit" id="divloadingChild" style="position: absolute;z-index: 100;background: rgba(255, 255, 255, 0.8);width: 100%;height: 300px !important;top: 0 !important;left: 0!important">
+            <div class="demo-onlychild" style='height: 6rem; '>
+                <div role="status" class="slds-spinner slds-spinner_medium">
+                    <div class="slds-spinner__dot-a"></div>
+                    <div class="slds-spinner__dot-b"></div>
+                </div>
+            </div>
+        </div>  
+        </aura:if>
+   <tr>
+                   <td>                  
+                   
+	                   		<!-- {!v.travelDetailsInstance.MCOriginalDataObj.FromDate} -->
+	                   		<lightning:formattedDateTime aura:id="mcFromDate"
+                             value="{!v.travelDetailsInstance.MCOriginalDataObj.FromDate}"
+                             month="short"
+                             day="numeric"
+                             year="numeric"
+                              timeZone="UTC"/>
+	                     	
+                   </td>
+                   <td> 
+                   
+	                   		<!-- {!v.travelDetailsInstance.MCOriginalDataObj.ToDate}  -->
+	                   		<lightning:formattedDateTime aura:id="mcToDate"
+                             value="{!v.travelDetailsInstance.MCOriginalDataObj.ToDate}"
+                             month="short"
+                             day="numeric"
+                             year="numeric"
+                              timeZone="UTC"/>
+	                                 
+                   			   
+                   </td>
+                   <td>
+                   
+                  
+	                   		{!v.travelDetailsInstance.MCOriginalDataObj.SegmentName}    
+	                  
+                   </td>
+                   <td>
+                  
+	                   		{!v.travelDetailsInstance.MCOriginalDataObj.TimeZone}   
+	                  
+                   </td>
+                    <td>
+                    	{!v.travelDetailsInstance.MCOriginalDataObj.Last4Digits} 
+                   </td>
+                    
+                   </tr> 
+   
+   
+   <!-- SF data --> 	
+    <aura:if isTrue="{!(v.ifSFObjExist == True)}">
+      <tr>
+                   <td>
+                   
+                   <aura:if isTrue="{!(v.isEditable == True)}">
+                   		<ui:inputDate value="{!v.travelDetailsInstance.MasterCardSFObj.Departure_Date__c}" displayDatePicker="true" class="txtDate" />
+                   
+	                   <aura:set attribute="else">
+	                   	 	<!-- {!v.travelDetailsInstance.MasterCardSFObj.Departure_Date__c} -->
+	                   	 	<lightning:formattedDateTime aura:id="sfFromDate"
+                             value="{!v.travelDetailsInstance.MasterCardSFObj.Departure_Date__c}"
+                             month="short"
+                             day="numeric"
+                             year="numeric"
+                              timeZone="UTC"/>
+	                   </aura:set> 
+                   	</aura:if>                   	
+                   </td>
+                   <td> 
+                   <aura:if isTrue="{!(v.isEditable == True)}">
+                   		
+                   	<ui:inputDate value="{!v.travelDetailsInstance.MasterCardSFObj.Return_Date__c}" displayDatePicker="true" class="txtDate"/>
+	                   <aura:set attribute="else">
+	                   		<!-- {!v.travelDetailsInstance.MasterCardSFObj.Return_Date__c}  -->
+	                   		<lightning:formattedDateTime aura:id="sfToDate"
+                             value="{!v.travelDetailsInstance.MasterCardSFObj.Return_Date__c}"
+                             month="short"
+                             day="numeric"
+                             year="numeric"
+                             timeZone="UTC"/>
+	                   </aura:set> 
+                   	</aura:if>                      
+                   			   
+                   </td>
+                   <td>
+                    <aura:if isTrue="{!(v.travelDetailsInstance.MasterCardSFObj.Destination__c == 'Domestic')}">
+                   <aura:if isTrue="{!(v.isEditable == True)}">
+                   
+                   		<ui:inputSelect aura:id="InputSelectState" class="selectEdit" value="{!v.travelDetailsInstance.MasterCardSFObj.State__c}"/>
+                   
+	                   <aura:set attribute="else">
+	                   		{!v.travelDetailsInstance.MasterCardSFObj.State__c}    
+	                   </aura:set> 
+                   	</aura:if>
+                   	<aura:set attribute="else">
+                   		<aura:if isTrue="{!(v.isEditable == True)}">
+                    		<ui:inputSelect aura:id="InputSelectCountry" class="selectEdit" value="{!v.travelDetailsInstance.MasterCardSFObj.Country__c}"/>
+                   		
+                   
+	                   <aura:set attribute="else">
+	                   		{!v.travelDetailsInstance.MasterCardSFObj.Country__c}    
+	                   </aura:set> 
+                   	</aura:if>
+                   	
+                   	</aura:set> 
+                   	</aura:if>
+                   			
+                   </td>
+                   <td>
+                  
+	                   		{!v.travelDetailsInstance.MasterCardSFObj.Timezone__c}   
+	                  
+                   			
+                   			    
+                   </td>
+                    <td>
+                    	{!v.travelDetailsInstance.MasterCardSFObj.CardId__r.TypeTranslate__c}  - {!v.travelDetailsInstance.MasterCardSFObj.CardId__r.Card_Number_Last_4_Digits__c}  
+                   </td>
+                    <td>
+                     <span id="popover" aura:id="popover" class="slds-popover slds-nubbin--bottom-right slds-theme--error slds-hide" style="">
+        			<div class="slds-popover__body">
+            			<p>{!v.popoverMessage}</p>
+        			</div>
+          			</span>
+                      <aura:if isTrue="{!(v.isEditable == False)}">
+                    	<a href="javascript:void(0);" onclick="{!c.editDetails}">Edit</a> | 
+                    	<a href="javascript:void(0);" onclick="{!c.deleteDetails}">Delete</a>  
+                    	<aura:set attribute="else">
+	                   		<a href="javascript:void(0);" onclick="{!c.updateDetails}">Save</a> |
+	                   		<a href="javascript:void(0);" onclick="{!c.cancelEdit}">Cancel</a>  
+	                   </aura:set> 
+                   	</aura:if>
+                   			
+                   			    
+                   </td>
+                   </tr>
+                    <tr style="display:none;" id="trdelete"><td><label id="lblDelete">Details Deleted Successfully</label></td></tr> 
+        <tr style="display:none;" id="trUpdate"><td><label id="lblDelete">Details Updated Successfully</label></td></tr>
+                   <tr>
+                   <td colspan="6" style="border-bottom:2px;width:100%"><hr style="margin: 0 0;margin-top:5px;" /></td>
+                   </tr>
+                   
+ 	</aura:if>
+</aura:component>

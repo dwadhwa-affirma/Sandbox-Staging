@@ -1,0 +1,17 @@
+.THIS.btnconvert {
+	display: none;
+}
+
+
+
+
+
+.THIS.cConvertLead .slds-spinner:before, 
+.THIS.cConvertLead .slds-spinner:after, 
+.THIS.cConvertLead .slds-spinner__dot-a:before, 
+.THIS.cConvertLead .slds-spinner__dot-b:before, 
+.THIS.cConvertLead .slds-spinner__dot-a:after, 
+.THIS.cConvertLead .slds-spinner__dot-b:after{
+	
+	background: rgb(0, 95, 178);
+}

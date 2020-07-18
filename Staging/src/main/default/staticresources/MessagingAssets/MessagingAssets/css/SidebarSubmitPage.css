@@ -1,0 +1,37 @@
+	/** Sidebar **/
+.sidebar{}
+.sidebar .action_submit{
+	margin-bottom: 10px;
+}
+.action_submit{}
+.sidebar_nav_list{
+	background: #002a54;
+	padding: 20px 0 20px 10px;
+	
+  -webkit-border-radius: 5px; 
+  -moz-border-radius: 5px;
+  -o-border-radius:5px;
+  -ms-border-radius:5px; 
+  border-radius: 5px;
+	text-align: -webkit-left;
+}
+.sidebar_nav_list .sb_navlist{
+	list-style-type: none;
+	padding-left: 0;
+	margin-bottom: 0;
+	margin-left:16px;
+}
+.sidebar_nav_list .sb_navlist li{
+	/*padding: 5px 0;*/
+	Padding: 0px 0px 20px 0;
+	
+}
+.sidebar_nav_list .sb_navlist li a{
+	color: #ffffff;
+}
+
+.sidebar_nav_list .sb_navlist li:last-child{
+padding-bottom: 0px;
+}
+
+/** Sidebar Ends **/

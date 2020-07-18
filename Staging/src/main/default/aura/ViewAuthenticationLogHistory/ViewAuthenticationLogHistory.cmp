@@ -1,0 +1,116 @@
+<aura:component implements="flexipage:availableForAllPageTypes,force:appHostable,force:hasRecordId,force:lightningQuickAction" access="global" controller="MemberAuthenticationControllerLightning">
+	<aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
+	<aura:attribute name="memberId" type="string" default=""/>
+	<aura:attribute name="DaysSelected" type="Integer" default=""/>
+	<aura:attribute name="LogData" type="object"/>
+	<aura:attribute name="columns" type="List"/>
+	<aura:attribute name="GUID" type="string" default=""/>
+	<aura:attribute name="SelectedGUID" type="string" default=""/>
+	<aura:attribute name="IsLogSectionVisible" type="boolean" default="false"/>
+	<aura:attribute name="BtnLabel" type="string" default="View"/>
+	<aura:attribute name="LastIndex" type="Integer" default="0"/>
+	<div  >
+		
+		
+			<div style="width: 20%" >
+                <lightning:select name="distance" aura:id="DaysPicklist" label="View History For" onchange="{!c.onChange}">
+                            
+                            <option value="7">7 Days</option>
+                            <option value="15">15 Days</option>
+                            <option value="30">30 Days</option>
+                           
+                </lightning:select>
+               
+           </div>
+           
+       		
+			     <div class="slds-scrollable_y slds-scrollable_x TableHeight" >   
+	           		<table class="slds-table slds-table_cell-buffer slds-table_bordered slds-table_col-bordered" >           						           			
+	           				<thead>
+		           				<tr class="slds-line-height_reset">
+		           					<th class="" scope="col"><div class="slds-truncate" title=""></div></th>
+			           				<th class="" scope="col"><div class="slds-truncate" title="Date/Time">Date/Time</div></th>           			
+			           				<th class="" scope="col"><div class="slds-truncate" title="Log">Log#</div></th>
+			           				<th class="" scope="col"><div class="slds-truncate" title="User">User</div></th>
+			           				<th class="" scope="col"><div class="slds-truncate" title="Member">Member #</div></th>
+			           				<th class="" scope="col"><div class="slds-truncate" title="Authentication type">Authentication type</div></th>
+			           				<th class="" scope="col"><div class="slds-truncate" title="Decision">Decision</div></th>
+			           				<th class="" scope="col"><div class="slds-truncate" title="Case #">Case #</div></th>
+			           				<th class="" scope="col"><div class="slds-truncate" title="FDL">Desired Level</div></th>
+			           				<th class="" scope="col"><div class="slds-truncate" title="Override Request Type">Override Request Type</div></th>
+			           				<th class="" scope="col"><div class="slds-truncate" title="Override Requested Supervisor">Override Requested Supervisor</div></th>
+			           				
+		           				</tr>
+	           				</thead>
+	           				 <tbody>          	
+					       		 <aura:iteration items="{!v.LogData}" var="item" indexVar="indexNumber">
+									<tr data-auraId="LogSection" id="{!('TRRowIndex' + indexNumber)}">
+											<td data-label="">
+												 <!--  <lightning:button value="{!item.GUID}" name ="{!('RowIndex' + indexNumber)}" variant="neutral"  label="{!v.BtnLabel}" onclick="{!c.ViewDetail }" onblur="{!c.ViewDetailBlur}"  iconName="utility:check" /> -->
+												  <lightning:buttonIcon value="{!item.GUID}" name ="{!('RowIndex' + indexNumber)}" onclick="{!c.ViewDetail }" iconName="utility:chevronright"  size="large" alternativeText="View More" />
+												   
+		            						</td>		 
+									
+											<td data-label="CreatedDate">
+      											  <div class="slds-truncate" title="CreatedDate">{!item.CreatedDate}</div>
+      										</td>
+      										<td data-label="LogNumber">
+      											  <div class="slds-truncate" title="LogNumber">{!item.LogNumber}</div>
+      										</td>
+      										<td data-label="UserName">
+      											  <div class="slds-truncate" title="UserName">{!item.UserName}</div>
+      										</td>
+      										<td data-label="MemberNumber">
+      											  <div class="slds-truncate" title="MemberNumber">{!item.MemberNumber}</div>
+      										</td>
+      										<td data-label="AuthenticationType">
+      											  <div class="slds-truncate" title="AuthenticationType">{!item.AuthenticationType}</div>
+      										</td>
+      										<td data-label="Decision">
+      											  <div class="slds-truncate" title="Decision">{!item.Decision}</div>
+      										</td>
+      										<td data-label="CaseNumber">
+      											  <div class="slds-truncate" title="CaseNumber">{!item.CaseNumber}</div>
+      										</td>
+      										<td data-label="FDL">
+      											  <div class="slds-truncate" title="FDL">{!item.FDL}</div>
+      										</td>
+      										<td data-label="OverrideRequestType">
+      											  <div class="slds-truncate" title="OverrideRequestType">{!item.OverrideRequestType}</div>
+      										</td>
+      										<td data-label="OverrideRequestedSupervisor">
+      											  <div class="slds-truncate" title="OverrideRequestedSupervisor">{!item.OverrideRequestedSupervisor}</div>
+      										</td>
+							        		
+							        	</tr>
+							        
+					        	</aura:iteration> 
+					        	
+					        	
+					        	
+				        	</tbody>
+				        	
+				  </table>
+  			</div>
+  			<hr style=" border-width: 2px; color:black"></hr>
+			
+			<aura:if isTrue="{!v.IsLogSectionVisible == true}">
+						        	
+				<div  id="LogExpansion" class="slds-scrollable_x">
+	       
+					<div  id="LogList">
+						<c:ViewAuthenticationLogHistoryRow aura:id="LogHistoryRow" /> 
+					</div>
+	    		</div>
+						        	
+		   </aura:if>
+			
+			
+			
+			
+			
+						
+		
+	</div>
+	
+</aura:component>

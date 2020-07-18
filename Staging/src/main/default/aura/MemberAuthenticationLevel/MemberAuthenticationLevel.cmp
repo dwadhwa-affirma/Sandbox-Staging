@@ -1,0 +1,10 @@
+<aura:component implements="flexipage:availableForAllPageTypes,force:appHostable,force:hasRecordId,force:lightningQuickActionWithoutHeader,lightning:actionOverride" controller="MemberAuthenticationControllerLightning">
+	<aura:handler name="init" value="{!this}" action="{!c.doInit}" />
+	<aura:attribute name="recordId" type="String"  />
+    <aura:attribute name="Level" type="string" description="" />
+    
+    <div class="header-column">
+        <p class="field-title" style='color:green;' title="AuthLevel">Current MAAP Level: {!v.Level}</p>
+    </div> 
+    
+</aura:component>

@@ -1,0 +1,4 @@
+<aura:event type="COMPONENT" description="Use to Refresh Travel Plan data">
+ <aura:attribute name="EventType" type="String" description="" />
+ <aura:attribute name="ErrorMessage" type="String" description="" />
+</aura:event>

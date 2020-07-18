@@ -1,0 +1,141 @@
+<apex:page standardController="CFCU_Mastercard_Alerts__c" extensions="CardDetails" tabStyle="Contact"  showHeader="false" sidebar="false" >
+<apex:form styleClass="formClass">
+        <apex:includescript value="//code.jquery.com/jquery-1.11.1.min.js" /> 
+<apex:stylesheet value="//cdn.datatables.net/1.10.7/css/jquery.dataTables.min.css" />
+  <apex:pageBlock title="Master Card Alerts ({!account }/{!card })"  >
+  
+
+  <apex:pageBlockTable value="{!accList}" var="details" styleClass="detailList">
+  
+    <apex:column value="{!details.OdsKey__c}">
+         <apex:facet name="header">ODS Key</apex:facet>
+
+     </apex:column>
+  
+   <apex:column value="{!details.emailAddress__c}">
+         <apex:facet name="header">Email Address</apex:facet>
+
+     </apex:column>
+  
+       <apex:column value="{!details.FirstName__c}">
+         <apex:facet name="header">First Name</apex:facet>
+
+     </apex:column>
+     <apex:column value="{!details.LastName__c}">
+         <apex:facet name="header">Last Name</apex:facet>
+
+     </apex:column>
+     
+      <apex:column value="{!details.merchantname__c}">
+         <apex:facet name="header">Merchant</apex:facet>
+
+     </apex:column>
+      
+    <apex:column value="{!details.transAmount__c}">
+         <apex:facet name="header">Trans Amount</apex:facet>
+
+     </apex:column>
+         <apex:column value="{!details.transAmtAlert__c }">
+         <apex:facet name="header">Trans Amount Alert</apex:facet>
+
+     </apex:column>
+     
+     
+              <apex:column value="{!details.transCountry__c}">
+         <apex:facet name="header">Trans Country</apex:facet>
+
+     </apex:column>
+     
+  </apex:pageBlockTable>
+  <div class="dataTables_paginate paging_simple_numbers">
+   <a  href="#"  class="paginate_button previous"  onclick="previous(); return false;">Previous</a>
+   <span id="spanPaging">
+   	
+   </span>
+   
+   <a  href="#"  class="paginate_button next" onclick="next(); return false;">Next</a>
+  
+  	  <apex:inputText value="{!CurrentPageNumber}" styleClass="currentPage"   /> 
+  	  <apex:inputText value="{!TotalPages}" styleClass="totalPages"     /> 
+  </div>
+  
+  </apex:pageBlock>
+  </apex:form>
+  
+  
+   
+  
+  <script type="text/javascript" >
+
+	j$ = jQuery.noConflict();
+	 j$(document).ready( function () {
+	 	var currentPage = parseInt(j$(".currentPage").val());
+	 	var totalPages =  parseInt(j$(".totalPages").val());
+	 	var stringHTML = '';
+	 	j$(".totalPages").hide();
+	 	j$(".currentPage").hide();
+	 	//alert(j$('.pbBody').length);
+	 	
+	 	j$('.pbBody').addClass('dataTables_wrapper');
+	 	for(var i = 1; i <= totalPages; i++)
+	 	{
+			stringHTML += '<a href="#" class="paginate_button page' + i + '" onclick="setPageNumber(' + i + ');">'  + i  + '</a>';
+	 	}
+	 	j$('#spanPaging').html(stringHTML);
+	 	setPagingSettings();
+	 });
+	 function next()
+	 {
+        var currentPage = parseInt(j$(".currentPage").val());
+	 	var totalPages =  parseInt(j$(".totalPages").val());
+	 	if(currentPage != totalPages)
+	 	{
+	 		setPageNumber(currentPage + 1);
+	 	}
+	 }
+	 function previous()
+	 {
+        var currentPage = parseInt(j$(".currentPage").val());
+	 	var totalPages =  parseInt(j$(".totalPages").val());
+	 	if(currentPage != 1)
+	 	{
+	 		setPageNumber(currentPage - 1);
+	 	}
+	 }
+	 function setPageNumber(currentPage)
+	 {
+	 	j$(".currentPage").val(currentPage);
+	 	submitForm();
+	 }
+	 
+	 function setPagingSettings()
+	 {
+	 	var currentPage = parseInt(j$(".currentPage").val());
+	 	var totalPages =  parseInt(j$(".totalPages").val());
+	 	if(currentPage == totalPages)
+	 	{
+			j$('.next').addClass('disabled');
+	 	}
+	 	else
+	 	{
+	 		j$('.next').removeClass('disabled');
+	 	}
+	 	if(currentPage == 1)
+	 	{
+			j$('.previous').addClass('disabled');
+	 	}
+	 	else
+	 	{
+	 		j$('.previous').removeClass('disabled');
+	 	}
+	 	
+	 	j$('.page' +  currentPage).addClass('current');
+	 }
+	 function submitForm()
+	 {
+	 	j$('.formClass').attr('action', j$('.formClass').attr('action') + '?card={!card}&account={!account}');
+	 	j$('.formClass').submit();
+	 }
+	 
+  </script>
+</apex:page>

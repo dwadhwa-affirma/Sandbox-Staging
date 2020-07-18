@@ -1,0 +1,36 @@
+<aura:component controller="CollectionsInLightningCls" implements="flexipage:availableForAllPageTypes,force:appHostable,force:hasRecordId" access="global">
+    <aura:attribute name="Model" access="global" Type="Needs_Assesment__c" />
+
+    <table>
+        <tr>
+            <td>
+                <h2>Shared Branching</h2>
+            </td>
+        </tr>
+        <aura:if isTrue="{!(v.Model.LESB_Aware_SharedBranching__c)}">
+        <tr class="bottombor">
+            <td class="subQuestion">Are you aware of this shared branch network?</td>
+            <td>
+                {!v.Model.LESB_Aware_SharedBranching__c}
+            </td>
+        </tr>
+        </aura:if>
+        <aura:if isTrue="{!(v.Model.LESB_Aware_ConvBranching__c)}">
+        <tr class="bottombor">
+            <td class="subQuestion">Do you know where the most convenient shared branch locations are for you?</td>
+            <td>
+                {!v.Model.LESB_Aware_ConvBranching__c}
+            </td>
+        </tr>
+		</aura:if>
+		<aura:if isTrue="{!(v.Model.LESB_SharedBranching_Comments__c)}">
+        <tr>
+            <td class="subQuestion">Comments</td>
+            <td>
+                {!v.Model.LESB_SharedBranching_Comments__c}
+            </td>
+        </tr>
+		</aura:if>
+    </table>
+
+</aura:component>

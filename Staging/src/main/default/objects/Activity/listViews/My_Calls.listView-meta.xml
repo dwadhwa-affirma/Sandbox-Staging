@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ListView xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>My_Calls</fullName>
+    <columns>TASK.SUBJECT</columns>
+    <columns>Summary__c</columns>
+    <columns>TASK.WHO_NAME</columns>
+    <columns>TASK.CREATED_DATE</columns>
+    <columns>TASK.WHAT_NAME</columns>
+    <columns>CORE.USERS.FULL_NAME</columns>
+    <columns>TASK.STATUS</columns>
+    <filterScope>Mine</filterScope>
+    <filters>
+        <field>ACTIVITY_SUBTYPE</field>
+        <operation>equals</operation>
+        <value>Call</value>
+    </filters>
+    <label>My Calls</label>
+</ListView>

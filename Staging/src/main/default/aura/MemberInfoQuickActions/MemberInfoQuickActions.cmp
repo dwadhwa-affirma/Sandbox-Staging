@@ -1,0 +1,16 @@
+<aura:component implements="flexipage:availableForAllPageTypes,force:appHostable,force:hasRecordId,lightning:isUrlAddressable" access="global">
+    
+    <lightning:overlayLibrary aura:id="overlayLib"/>
+    <div class="groupbtn-parent stagebar">		       
+        <div style="margin-left: auto;">
+           
+        	<lightning:button variant="brand" label="Create Case" onclick="{!c.handleCreateCase}" />
+            <lightning:button variant="brand" label="Create Opportunity" onclick="{!c.handleCreateOpportunity}" />
+            <lightning:button variant="brand" label="Account Services" onclick="{!c.handleAccountServices}"/>
+            <lightning:button variant="brand" label="Address Change" onclick="{!c.handleAddressChange}"/>
+        	
+        	<lightning:spinner aura:id="Spinner" alternativeText="Loading" size="medium" variant="brand" class="slds-hide spin"/>
+        </div>
+   </div>
+	
+</aura:component>

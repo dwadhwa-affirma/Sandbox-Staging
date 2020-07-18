@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>PAYMENTFREQUENCY1__c</fullName>
+    <externalId>false</externalId>
+    <formula>Text(PAYMENTFREQUENCY__c) &amp; &apos; &apos; &amp; CASE(PAYMENTFREQUENCY__c, 
+00, &apos;Single pay&apos;, 
+01, &apos;Annual&apos;,
+02, &apos;Semiannual&apos;,
+03, &apos;Quarterly&apos;,
+04, &apos;Monthly&apos;,
+05, &apos;Semimonthly&apos;,
+06, &apos;Biweekly skip first&apos;,
+07, &apos;Biweekly skip last&apos;,
+08, &apos;Biweekly&apos;,
+09, &apos;Weekly&apos;,
+10, &apos;Immediate&apos;,
+11, &apos;Weekly skip first&apos;,
+12, &apos;Weekly skip last&apos;,
+13, &apos;Bimonthly&apos;,
+14, &apos;Amortize Schedule&apos;,
+&apos;&apos;)</formula>
+    <label>Payment Frequency</label>
+    <required>false</required>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Text</type>
+    <unique>false</unique>
+</CustomField>

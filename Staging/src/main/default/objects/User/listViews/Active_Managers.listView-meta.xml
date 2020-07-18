@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ListView xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Active_Managers</fullName>
+    <booleanFilter>1 AND (2 OR 3 OR 4 OR 5 OR 6)</booleanFilter>
+    <columns>FULL_NAME</columns>
+    <columns>CORE.USERS.ALIAS</columns>
+    <columns>CORE.USERS.USERNAME</columns>
+    <columns>CORE.USERS.ADDRESS_CITY</columns>
+    <columns>dsfs__DSProSFMembershipStatus__c</columns>
+    <columns>dsfs__DSProSFUsername__c</columns>
+    <columns>CORE.USERS.EMAIL</columns>
+    <columns>CORE.USERS.LAST_LOGIN</columns>
+    <columns>CORE.USER_ROLE.NAME</columns>
+    <columns>CORE.PROFILE.NAME</columns>
+    <columns>CORE.USERS.ACTIVE</columns>
+    <columns>CREATED_DATE</columns>
+    <columns>Mortgage_Loan_Officer__c</columns>
+    <columns>LAST_UPDATE</columns>
+    <columns>UPDATEDBY_USER.NAME</columns>
+    <filterScope>Everything</filterScope>
+    <filters>
+        <field>CORE.USERS.ACTIVE</field>
+        <operation>equals</operation>
+        <value>1</value>
+    </filters>
+    <filters>
+        <field>CORE.USER_ROLE.NAME</field>
+        <operation>contains</operation>
+        <value>Manager</value>
+    </filters>
+    <filters>
+        <field>CORE.USER_ROLE.NAME</field>
+        <operation>contains</operation>
+        <value>VP</value>
+    </filters>
+    <filters>
+        <field>CORE.USER_ROLE.NAME</field>
+        <operation>contains</operation>
+        <value>Supervisor</value>
+    </filters>
+    <filters>
+        <field>CORE.USER_ROLE.NAME</field>
+        <operation>contains</operation>
+        <value>CEO</value>
+    </filters>
+    <filters>
+        <field>CORE.USER_ROLE.NAME</field>
+        <operation>contains</operation>
+        <value>Leader</value>
+    </filters>
+    <label>Active Users (Managers)</label>
+</ListView>

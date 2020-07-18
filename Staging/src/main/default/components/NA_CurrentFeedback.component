@@ -1,0 +1,228 @@
+<apex:component controller="Na_CurrentFeedbackController" allowDML="true">
+
+    <apex:attribute name="Account" description="This is the value for the component." type="Account" required="true" assignTo="{!AccountC}" />
+    <apex:attribute name="CTRL" description="This is the value for the component." type="NeedAssessmentController" required="true" assignTo="{!parentController}" />
+
+    <apex:form >
+        <apex:pageBlock title="FEEDBACK ABOUT YOUR CURRENT EXPERIENCE">
+            <div id="snackbar">Data saved successfully!</div>
+
+            <table border="2">
+                <tr>
+                    <td>
+                        <table border="0">
+                            <tr> 
+                                <td></td>
+                                <td class="colHeader"></td>
+                                <td class="colHeader">Current As Of<br></br>
+                                    <apex:outputText value="{0, date, MMMM d','  yyyy}">
+                                          <apex:param value="{!lcf_New.LECF_Last_Updated_On__c}" />
+                                    </apex:outputText>
+                                </td>
+                                <!-- 
+                                <td class="colHeader">
+                                    <apex:outputText value="Last Response"></apex:outputText><br></br>
+                                    <apex:outputText value="{0, date, MMMM d','  yyyy}">
+                                        <apex:param value="{!lcf_New.LECF_Last_Updated_On__c}" />
+                                    </apex:outputText>
+                                </td>
+                                -->
+                            </tr>
+                              <tr>
+                                <td class="mainQuestion" width="200" colspan="1" valign="top">How is your current experience with us? What can we do to improve your experience?</td>
+                                <td></td>
+                                <td><apex:inputField value="{!lcf_New.LECF_Experience_Improvement_Feedback__c}" style="width: 280px; height: 80px"/>
+                                </td>
+                                <!-- 
+                                <td class="lastVal">
+                                    <c:NeedAssessmentHistory fieldName="LECF_Experience_Improvement_Feedback__c" NeedAssessmentID="{!NA_id}"></c:NeedAssessmentHistory>
+                                </td>
+                                -->
+                                
+                            </tr>
+   							<tr><td><p></p></td></tr>
+                            <tr>
+                            	<td class="mainQuestion" width="200" colspan="4">How do you prefer to do your banking? (check as many that apply)<br></br>
+									 What feedback do you have about any of the following ways you interact with us?</td>
+                            </tr>
+                            <tr>
+                                <td class="subQuestion" width="200">Branch</td>
+                                <td><apex:inputField value="{!lcf_New.LECF_Branch__c}" /></td>
+                                <!-- 
+                                <td class="lastVal">
+                                    <c:NeedAssessmentHistory fieldName="LECF_Branch__c" NeedAssessmentID="{!NA_id}"></c:NeedAssessmentHistory>
+                                </td>    
+                                <td class="mainQuestion">Branch - feedback</td> 
+                                <td><apex:inputField value="{!lcf_New.LECF_Branch_Feedback__c}" /></td>
+                                <td class="lastVal">
+                                    <c:NeedAssessmentHistory fieldName="LECF_Branch_Feedback__c" NeedAssessmentID="{!NA_id}"></c:NeedAssessmentHistory>
+                                </td>
+                                 -->
+                            </tr>
+                            <tr>
+                              
+                            </tr>
+                            <tr>
+                                <td class="subQuestion">800 #</td>
+                                <td><apex:inputField value="{!lcf_New.LECF_800__c}" /></td>
+                                <!-- 
+                                <td class="lastVal">
+                                    <c:NeedAssessmentHistory fieldName="LECF_800__c" NeedAssessmentID="{!NA_id}"></c:NeedAssessmentHistory>
+                                </td>
+                                <td class="mainQuestion">800 # - feedback</td>    
+                                <td><apex:inputField value="{!lcf_New.LECF_800_Feedback__c}" /></td>
+                                <td class="lastVal">
+                                    <c:NeedAssessmentHistory fieldName="LECF_800_Feedback__c" NeedAssessmentID="{!NA_id}"></c:NeedAssessmentHistory>
+                                </td>
+								-->
+                            </tr>
+
+                           
+                            <tr>
+                                <td class="subQuestion">Online banking</td>
+                                <td><apex:inputField value="{!lcf_New.LECF_Online_banking__c}" /></td>
+                          <!--      <td class="lastVal">
+                                    <c:NeedAssessmentHistory fieldName="LECF_Online_banking__c" NeedAssessmentID="{!NA_id}"></c:NeedAssessmentHistory>
+                                </td>
+                                 <td class="mainQuestion">Online banking  - feedback</td>    
+                                <td><apex:inputField value="{!lcf_New.LECF_Online_banking_Feedback__c}" /></td>
+                                <td class="lastVal">
+                                    <c:NeedAssessmentHistory fieldName="LECF_Online_banking_Feedback__c" NeedAssessmentID="{!NA_id}"></c:NeedAssessmentHistory>
+                                </td>
+							-->
+                            </tr>
+                            <tr>
+                               
+                            </tr>
+
+                            <tr>
+                                <td class="subQuestion">Mobile banking</td>
+                                <td><apex:inputField value="{!lcf_New.LECF_Mobile_banking__c}" /></td>
+                          <!--      <td class="lastVal">
+                                    <c:NeedAssessmentHistory fieldName="LECF_Mobile_banking__c" NeedAssessmentID="{!NA_id}"></c:NeedAssessmentHistory>
+                                </td>
+                                 <td class="mainQuestion">Mobile banking - feedback</td> 
+                                <td><apex:inputField value="{!lcf_New.LECF_Mobile_banking_Feedback__c}" /></td>
+                                <td class="lastVal">
+                                    <c:NeedAssessmentHistory fieldName="LECF_Mobile_banking_Feedback__c" NeedAssessmentID="{!NA_id}"></c:NeedAssessmentHistory>
+                                </td>
+							-->
+                            </tr>
+                            <tr>
+                               
+                            </tr>
+                            <tr>
+                                <td class="subQuestion">ATM</td>
+                                <td><apex:inputField value="{!lcf_New.LECF_ATM__c}" /></td>
+                          <!--      <td class="lastVal">
+                                    <c:NeedAssessmentHistory fieldName="LECF_ATM__c" NeedAssessmentID="{!NA_id}"></c:NeedAssessmentHistory>
+                                </td>
+                                 <td class="mainQuestion">ATM - feedback</td>      
+                                <td><apex:inputField value="{!lcf_New.LECF_ATM_Feedback__c}" /></td>
+                                <td class="lastVal">
+                                    <c:NeedAssessmentHistory fieldName="LECF_ATM_Feedback__c" NeedAssessmentID="{!NA_id}"></c:NeedAssessmentHistory>
+                                </td>
+							-->
+                            </tr>
+   							<tr><td><p></p></td></tr>                           
+ <tr>                           
+                                <td class="mainQuestion" valign="top">Member Feedback</td>
+                                <td></td>
+                                <td><apex:inputField value="{!lcf_New.LECF_Comment__c}" style="width: 280px; height: 80px"/></td>
+                                <!-- 
+                                <td class="lastVal">
+                                    <c:NeedAssessmentHistory fieldName="LECF_Comment__c" NeedAssessmentID="{!NA_id}"></c:NeedAssessmentHistory>
+                                </td>
+                                -->
+                            </tr>
+
+                        </table>
+                    </td>
+
+
+
+
+
+                    <td valign="top">
+                        <table border="0">
+                            <tr>
+                                <td class="colHeader">Recommendations</td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    Call Center extended hours
+                                    
+                                </td>
+                                <td>
+                                    <apex:inputField value="{!lcf_New.REC_LECF_1__c}" />
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                   Online Banking
+
+                                </td>
+                                <td>
+                                    <apex:inputField value="{!lcf_New.REC_LECF_2__c}" />
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    Mobile Banking
+
+                                </td>
+                                <td>
+                                    <apex:inputField value="{!lcf_New.REC_LECF_3__c}" />
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    Surcharge-free ATM network
+
+                                </td>
+                                <td>
+                                    <apex:inputField value="{!lcf_New.REC_LECF_4__c}" />
+                                </td>
+                            </tr>
+ 
+                        </table>
+                    </td>
+
+                </tr>
+            </table>
+            <p></p>
+            <table>
+                <tr>
+                    <td align="right" width="300">
+
+
+                        <apex:commandButton value="Save" action="{!SubmitFeedbackForm}"  onclick="$(this).hide();$(this).next().show();"/>
+                         <input type="submit" value="Saving..." style="display:none;" disabled="disabled" class="btn"/>
+
+                    </td>
+                </tr>
+            </table>
+            <apex:actionFunction action="{!resetscript}" name="resetscript" rerender="scriptcontainer" />
+            <apex:outputPanel id="scriptcontainer">
+                <input type="text" value="{!script}" id="scriptext" style="visibility:hidden" />
+            </apex:outputPanel>
+
+        </apex:pageBlock>
+            </apex:form>
+        <script>
+function toastsuccess()
+{
+    if (document.getElementById("scriptext").value == '1')
+    {
+        var x = document.getElementById("snackbar")
+        x.className = "show";
+        setTimeout(function(){ x.className = x.className.replace("show", ""); }, 3000);
+    }
+    resetscript();
+}
+ toastsuccess();
+        </script>
+
+
+</apex:component>

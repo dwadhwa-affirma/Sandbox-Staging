@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>keepEscalated_after72hours</fullName>
+    <active>false</active>
+    <description>Can not turn off escalation after 72 hours</description>
+    <errorConditionFormula>AND(NOW()&gt;(CreatedDate + 3),  NOT(Escalated__c))</errorConditionFormula>
+    <errorDisplayField>Escalated__c</errorDisplayField>
+    <errorMessage>Can not deEscalate Lead after 72 hours</errorMessage>
+</ValidationRule>

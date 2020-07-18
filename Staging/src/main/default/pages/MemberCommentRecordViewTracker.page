@@ -1,0 +1,16 @@
+<apex:page standardController="Member_Comment__c">
+   <apex:includeScript value="/soap/ajax/28.0/connection.js"/>
+   <script type="text/javascript">
+       sforce.connection.sessionId = '{!GETSESSIONID()}';
+
+       var object = new sforce.SObject('Member_Comment__c');
+       object.Id = "{!Member_Comment__c.Id}";
+  <!--     object.CU_View_Count__c = {!Member_Comment__c.CU_View_Count__c} + 1; -->
+
+       var result = sforce.connection.update([object]);
+       
+       if(result[0].success != 'true'){
+       <!--   alert('Could not Update the Record View Tracking Information. \r\nError: ' + result[0].errors.message); --> 
+       }
+   </script>
+</apex:page>

@@ -1,0 +1,76 @@
+<apex:component allowDML="true">
+<apex:attribute name="nao" description="This is the value for the component." type="Needs_Assesment__c" required="true" />
+<apex:attribute name="styleclass" description="This is the value for the component." type="string" required="true" />
+
+            	<apex:attribute name="renderDetails" description="This is the value for the component." type="string" required="true" />
+
+                 <apex:outputpanel rendered="{!renderDetails}">
+                              <tr  class="{!styleclass}" style='display:none;'>  
+                              
+                                <td>
+                                &nbsp;
+                                </td>
+                                <td>
+                                &nbsp;
+                                </td>
+                                     <td colspan="2">
+                                    <table>
+                                        <tr>
+                                            <td>
+                                                <h2>Deposits</h2>
+                                            </td>
+                                        </tr>
+                                          <tr  style="display:{!if((nao.LEMD_CFCU_Spectrum_YesNo__c != null && nao.LEMD_CFCU_Spectrum_YesNo__c !="") || 
+                                          			(nao.LEMD_At_another_financial_insti_YesNo__c != null && nao.LEMD_At_another_financial_insti_YesNo__c !="")
+                                          			, "", "none")}" >
+                                                <td class="subQuestion" width="200">Do you have direct deposit for your primary sources of income?</td>
+                                            </tr>
+                                        <tr  style="display:{!if(nao.LEMD_CFCU_Spectrum_YesNo__c != null && nao.LEMD_CFCU_Spectrum_YesNo__c !="" , "", "none")}">
+                                            <td class="subQuestion">&nbsp;</td>
+                                             <td> <apex:outputlabel value="{!nao.LEMD_CFCU_Spectrum_YesNo__c}" /> - at CFCU/Spectrum</td>
+                                        </tr>
+                                        <tr  style="display:{!if(nao.LEMD_At_another_financial_insti_YesNo__c != null && nao.LEMD_At_another_financial_insti_YesNo__c != ""  , "", "none")}">
+                                              <td class="subQuestion">&nbsp;</td>
+                                               <td> <apex:outputlabel value="{!nao.LEMD_At_another_financial_insti_YesNo__c}" /> - at another financial institution</td>
+                                        </tr>
+                                        
+                                        <tr  style="display:{!if(nao.LEMD_CommentsForDD__c != null , "", "none")}">
+                                              <td class="subQuestion" width="200">Comments</td>
+                                              <td><apex:outputlabel value="{!nao.LEMD_CommentsForDD__c}" /></td>
+                                        </tr>
+                                        <tr style="display:{!if((nao.LEMD_In_person_branch__c != null && nao.LEMD_In_person_branch__c) ||
+                                        	(nao.LEMD_ATM__c != null && nao.LEMD_ATM__c ) ||
+                                        	(nao.LEMD_Online__c != null && nao.LEMD_Online__c ) ||
+                                        	 (nao.LEMD_Mobile__c != null && nao.LEMD_Mobile__c), "", "none")}">
+                                                <td class="subQuestion">How do you prefer to deposit checks?</td>
+                                        </tr>
+                                        
+                                        <tr  style="display:{!if(nao.LEMD_In_person_branch__c != null && nao.LEMD_In_person_branch__c , "", "none")}">
+                                              <td>&nbsp;</td>
+                                               <td class="subQuestion">In person(branch)</td>
+                                        </tr>
+                                        
+                                        <tr  style="display:{!if(nao.LEMD_ATM__c != null && nao.LEMD_ATM__c , "", "none")}">
+                                              <td class="subQuestion">&nbsp;</td>
+                                               <td >ATM</td>
+                                        </tr>
+                                        <tr  style="display:{!if(nao.LEMD_Online__c != null && nao.LEMD_Online__c , "", "none")}">
+                                              <td class="subQuestion">&nbsp;</td>
+                                               <td >Online</td>
+                                        </tr>
+                                        <tr  style="display:{!if(nao.LEMD_Mobile__c != null && nao.LEMD_Mobile__c , "", "none")}">
+                                              <td class="subQuestion">&nbsp;</td>
+                                               <td >Mobile</td>
+                                        </tr>
+                                            <tr  style="display:{!if(nao.LEMD_CommentsDC__c != null , "", "none")}">
+                                              <td class="subQuestion" width="200">Comments</td>
+                                              <td ><apex:outputlabel value="{!nao.LEMD_CommentsDC__c}" /></td>
+                                        </tr>
+                                        
+                                    </table>
+                                 </td>
+                            </tr>
+                            
+                            </apex:outputpanel>
+    
+</apex:component>

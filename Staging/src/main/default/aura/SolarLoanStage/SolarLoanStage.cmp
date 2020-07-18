@@ -1,0 +1,25 @@
+<aura:component controller="SolarLoanController" implements="flexipage:availableForAllPageTypes,force:appHostable,force:hasRecordId,lightning:isUrlAddressable" access="global" >
+    
+    <aura:handler name="init" action="{!c.doInit}" value="{!this}" access="global" />
+    <aura:registerEvent name="statusEvent" type="c:SolarLoanStatusEvent" />
+    
+    <aura:attribute name="ButtonLabelName" type="String" default="Mark Stage 1 Complete"/>
+    <aura:attribute name="WaitingButton" type="String" default="Waiting"/>
+    <aura:attribute name="StageName" type="String" default="Stage 1: Review Application"/>
+    <aura:attribute name="CurrentStage" type="String"/>
+    <aura:attribute name="IsButtonDisabled" type="boolean" default="false"/>
+    <aura:attribute name="IsWaitingDisabled" type="boolean" default="false"/>
+    
+    <div class="groupbtn-parent solarloanstagebar">
+		       
+		<lightning:button class="slds-m-right_small" variant="brand" label="{!v.WaitingButton}" aura:id="WaitingButton" onclick="{!c.waiting}"  disabled = "{!v.IsWaitingDisabled}"/>
+		<b><p class="field-title show">{!v.StageName}</p></b>		
+        <div style="margin-left: auto;">
+        	<lightning:button variant="brand" label="{!v.ButtonLabelName}" aura:id="SubmitButton" onclick="{!c.submit }" disabled = "{!v.IsButtonDisabled}"/>
+        	<!-- <lightning:button variant="brand" label="{!v.ButtonLabelName}" aura:id="SubmitButton" disabled = "{!v.IsButtonDisabled}"/>-->
+        	<lightning:spinner aura:id="Spinner" alternativeText="Loading" size="medium" variant="brand" class="slds-hide spin"/>
+        </div>
+        
+		</div>
+	
+</aura:component>

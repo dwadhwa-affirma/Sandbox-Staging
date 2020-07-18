@@ -1,0 +1,79 @@
+<aura:component controller="GetRelatedAccountsforCase" implements="flexipage:availableForAllPageTypes,force:appHostable,force:hasRecordId,force:lightningQuickActionWithoutHeader">
+<aura:handler name="init" value="{!this}" action="{!c.doInit}" />
+<aura:attribute name="Accounts" access="global" Type="Object" />
+
+
+
+
+<style>
+.tblattachment{
+	    table-layout: auto;
+}
+
+.chkFromMember:checked{
+	    background-color: rgb(21, 137, 238) !important;
+	       
+}
+
+.chkFromMember{
+	 margin-left: 40%;
+}
+</style>
+<article class="slds-card slds-card_boundary forceRelatedListCardDesktop" aria-describedby="header_9:1085;a" data-aura-rendered-by="15:1085;a" data-aura-class="forceRelatedListCardDesktop">
+<div class="slds-card__header slds-grid" data-aura-rendered-by="16:1085;a">
+<header class="slds-media slds-media--center slds-has-flexi-truncate" data-aura-rendered-by="17:1085;a">
+
+<div class="slds-media__body" data-aura-rendered-by="19:1085;a">
+<h2 id="header_9:1085;a" data-aura-rendered-by="20:1085;a">
+<span class="slds-text-heading--small slds-truncate slds-m-right--xx-small" title="Attachment Section" data-aura-rendered-by="22:1085;a">Accounts Related to The Case</span>
+</h2>
+</div></header>
+
+<div class="slds-no-flex" data-aura-rendered-by="27:1085;a">
+<div class="actionsContainer" data-aura-rendered-by="28:1085;a">
+</div></div></div>
+
+<div class="slds-card__body" data-aura-rendered-by="26:1005;a">
+<div class="" data-aura-rendered-by="28:1005;a">
+<div class="previewMode MEDIUM forceRelatedListPreview" data-aura-rendered-by="31:1005;a" data-aura-class="forceRelatedListPreview">
+<div class="" data-aura-rendered-by="33:1005;a">
+<div class="useHeaderBarFix forceBaseListView forceRelatedListPreviewGrid" data-aura-rendered-by="37:1005;a" data-aura-class="forceBaseListView forceRelatedListPreviewGrid">
+<div class="spinnerWrapper hideSpinner hideEl forceComponentSpinner" data-aura-rendered-by="40:1005;a" data-aura-class="forceComponentSpinner">
+<div class="indicator  hideEl forceInlineSpinner" aria-hidden="true" role="alert" data-aura-rendered-by="43:1005;a" data-aura-class="forceInlineSpinner">
+</div></div>
+<div data-aura-rendered-by="55:1005;a" class="hidden forceListViewPlaceholder" data-aura-class="forceListViewPlaceholder"></div>
+<div class="listViewContent" data-aura-rendered-by="56:1005;a">
+<div class="scrollable uiScroller scroller-wrapper scroll-bidirectional native" tabindex="-1" style="" data-aura-rendered-by="71:1005;a" data-aura-class="uiScroller">
+<div data-aura-rendered-by="72:1005;a" class="scroller actionBarPlugin fixedHeaderPlugin">
+
+<table class="tblattachment forceRecordLayout slds-table slds-no-row-hover slds-table_cell-buffer slds-table_fixed-layout uiVirtualDataGrid--default uiVirtualDataGrid" data-aura-rendered-by="62:1005;a" data-aura-class="uiVirtualDataGrid--default uiVirtualDataGrid">
+	<thead data-aura-rendered-by="63:1005;a">
+		<tr data-aura-rendered-by="64:1005;a">
+			<th class="initialSortAsc descending" scope="col" style="" title="Account Number" data-aura-rendered-by="5:1176;a">ACCT #<span class="assistiveText" data-aura-rendered-by="92:1176;a"></span></th>
+			<th scope="col" title="Record Type" data-aura-rendered-by="19:1176;a">REC TYPE<span class="assistiveText" data-aura-rendered-by="24:1176;a"></span></th>
+			<th class="initialSortDesc " scope="col" style="" title="Brand" data-aura-rendered-by="30:1176;a">BRAND<span class="assistiveText" data-aura-rendered-by="95:1176;a"></span></th>
+			<th class="initialSortDesc " scope="col" style="" title="Type Translate" data-aura-rendered-by="44:1176;a">TYPE TRANSLATE<span class="assistiveText" data-aura-rendered-by="98:1176;a"></span></th>			 
+
+		</tr>
+	</thead>
+	<tfoot data-aura-rendered-by="66:1005;a"></tfoot>
+	<tbody data-aura-rendered-by="67:1005;a">
+	 <aura:iteration items="{!v.Accounts}" var="item" indexVar="index">
+		<tr>
+		
+			<td><span data-aura-rendered-by="74:1176;a"><a onclick="{!c.ClickObj}" target="_blank" id="{!item.Id}">{!item.Name}</a></span></td>
+			<td style="max-width:135px"><span titel="{!item.RecType__c}">{!item.RecType__c}</span></td>
+			<td><span class="uiImage uiOutputCheckbox" data-aura-class="uiImage uiOutputCheckbox">{!item.Brand__c}</span></td>
+			<td><span class="uiImage uiOutputCheckbox" data-aura-class="uiImage uiOutputCheckbox">{!item.TypeTranslate__c}</span></td>
+			
+			</tr>
+	 </aura:iteration>
+	
+	</tbody>
+	</table>	
+  
+
+    </div></div></div> </div></div></div></div></div>
+ 
+</article>	
+</aura:component>

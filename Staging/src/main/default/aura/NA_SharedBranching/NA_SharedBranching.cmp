@@ -1,0 +1,86 @@
+<aura:component controller="CollectionsInLightningCls" implements="flexipage:availableForAllPageTypes,force:appHostable,force:hasRecordId" access="global">
+
+    <aura:attribute name="Model" access="global" Type="Needs_Assesment__c" />
+    <aura:attribute name="picklistFields" type="Map" default="{}" />
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}" />
+	
+	<aura:registerEvent name="AssessmentSave" type="c:SaveNeedAssessmentEvent"/>
+    <b style="padding:0 0 5px 0;display:block; font-size : 16px;">Optimize how you move your money - Shared Branching</b>
+    
+    <div style="padding-bottom: 5px">
+        <h3><b>Shared branching enables you to make many transactions for your CFCU/Spectrum account 
+            at a network of participating credit union branches.</b></h3>
+    </div>
+    <table border="1" class="otherTbl" width="100%">
+        <tbody>
+            <tr>
+                <td>
+
+                    <table border="0" width="100%">
+                        <tbody>
+                            <tr>
+                                <td colspan="2"><b>Current As Of <ui:outputDate format="MMMM dd, YYYY" value="{!v.Model.LESB_Last_Updated_On__c}" /></b>
+                                   
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="mainQuestion" width="200"><b>Are you aware of this shared branch network?</b></td>
+                                <td>
+                                    <ui:inputSelect aura:id="Needs_Assesment__c.LESB_Aware_SharedBranching__c" value="{!v.Model.LESB_Aware_SharedBranching__c}" />
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td class="mainQuestion" width="200">
+                         <b>Do you know where the most convenient shared branch locations are for you?</b></td>
+                                <td>
+                                    <ui:inputSelect aura:id="Needs_Assesment__c.LESB_Aware_ConvBranching__c" value="{!v.Model.LESB_Aware_ConvBranching__c}" />
+                                </td>
+                            </tr>                         
+                                                       
+                            <tr>
+                                <td colspan="2">
+                                    <hr />		
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td class="mainQuestion" valign="top" width="200"><b>Comments</b></td>
+                                <td>
+                                    <ui:inputTextArea value="{!v.Model.LESB_SharedBranching_Comments_New__c}" />
+                                </td>
+
+                            </tr>
+
+                        </tbody>
+                    </table>
+                </td>
+                <td valign="top">
+                    <table border="0" class="otherTbl" width="100%">
+                        <tbody>
+                            <tr>
+                                <td class="colHeader"><b>Recommendations</b></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>Shared Branching</td>
+                                <td>
+                                    <ui:inputCheckbox value="{!v.Model.REC_LEMD_3__c}" />
+                                </td>
+                            </tr>
+                                                   
+                        </tbody>
+                    </table>
+                    
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table>
+	 	<tr>
+             <td style="text-align:right; padding-top:5px;">
+                 <button class="slds-button slds-button--brand" onclick="{!c.saveSharedBranchingClick}">Save</button>
+             </td>
+        </tr>
+    </table>
+</aura:component>

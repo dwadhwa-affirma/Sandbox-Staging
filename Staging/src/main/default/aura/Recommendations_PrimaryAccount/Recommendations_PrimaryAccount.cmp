@@ -1,0 +1,57 @@
+<aura:component controller="CollectionsInLightningCls" implements="flexipage:availableForAllPageTypes,force:appHostable,force:hasRecordId" access="global">
+    <aura:attribute name="Model" access="global" Type="Needs_Assesment__c" />
+
+    <table>
+        <tr>
+            <td colspan="2">
+                <h2>Checking Account</h2>
+            </td>
+        </tr>
+		<aura:if isTrue="{!(v.Model.LEPT_Financial_Institution__c != null)}">
+        <tr class="bottombor">
+
+            <td class="subQuestion">
+                At which financial institution do you keep your "primary" account you use for transactions?
+            </td>
+            <td>{!v.Model.LEPT_Financial_Institution__c}</td>
+        </tr>
+		</aura:if>
+		<aura:if isTrue="{!(v.Model.LEPT_Convenient_locations__c || 
+		                            		v.Model.LEPT_Deposit_rates__c ||
+		                            		v.Model.LEPT_Loan_rates__c ||
+		                            		v.Model.LEPT_Online_mobile_apps__c ||
+		                            		v.Model.LEPT_Have_financial_advisor_there__c  ||
+		                            		v.Model.LEPT_Other__c)}">
+        <tr class="bottombor">
+            <td class="subQuestion">Why do you use this financial institution?</td>
+            <td>
+            	<aura:if isTrue="{!(v.Model.LEPT_Convenient_locations__c)}">
+            		Convenient locations <br />
+            	</aura:if>
+            	<aura:if isTrue="{!(v.Model.LEPT_Deposit_rates__c)}">
+            		Deposit rates <br />
+            	</aura:if>
+            	<aura:if isTrue="{!(v.Model.LEPT_Loan_rates__c)}">
+            		Loan rates <br />
+            	</aura:if>
+            	<aura:if isTrue="{!(v.Model.LEPT_Online_mobile_apps__c)}">
+            		Online/mobile apps <br />
+            	</aura:if>
+            	<aura:if isTrue="{!(v.Model.LEPT_Have_financial_advisor_there__c)}">
+            		Have financial advisor there <br />
+            	</aura:if>
+            	<aura:if isTrue="{!(v.Model.LEPT_Other__c)}">
+            		Other <br />
+            	</aura:if>
+            </td>
+        </tr>
+        </aura:if>
+        <aura:if isTrue="{!(!(v.Model.LEPT_Comments__c == null))}">
+        <tr>
+            <td>Comments</td>
+            <td>{!v.Model.LEPT_Comments__c}</td>
+        </tr>
+        </aura:if>
+    </table>
+
+</aura:component>

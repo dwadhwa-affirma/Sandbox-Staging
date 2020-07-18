@@ -1,0 +1,27 @@
+<aura:component controller="CollectionsInLightningCls" implements="force:appHostable,force:hasRecordId" access="global">
+	<aura:registerEvent name="DeleteotherEvt" type="c:DeleteotherEvt"/> 
+    <aura:attribute name="ExistingLoanItem" type="NA_Other_Existing_Loans__c" />﻿         
+    <aura:attribute name="rowIndex" type="String"/>﻿
+    <aura:attribute name="picklistFields" type="Map" default="{}" />
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}" /><tr class="slds-hint-parent">        
+        <td>        	
+        	<ui:inputSelect aura:id="NA_Other_Existing_Loans__c.Financial_Institution__c" value="{!v.ExistingLoanItem.Financial_Institution__c}" />         
+        </td>
+        <td>
+        <ui:inputSelect aura:id="NA_Other_Existing_Loans__c.Type_of_Loan__c" value="{!v.ExistingLoanItem.Type_of_Loan__c}" />        
+        </td>
+        <td>
+        <ui:inputCurrency value="{!v.ExistingLoanItem.Balance__c}" />            
+        </td>
+        <td>
+        <ui:inputText value="{!v.ExistingLoanItem.Rate__c}" />            
+        </td>
+        <td>
+        <ui:inputDate value="{!v.ExistingLoanItem.End_Date__c}"  keyup="{!c.changeDate}"  keypress="{!c.changeDate}" displayDatePicker="true"  />
+        </td>
+        <td style="vertical-align: middle !important;">
+        	<a  onclick="{!c.removeLoanItemRow}" data-id="{!v.ExistingLoanItem.Id}" data-index="{!rowIndex}">                
+                Delete
+            </a>
+        </td> 
+    </tr></aura:component>

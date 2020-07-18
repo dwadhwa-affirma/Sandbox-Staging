@@ -1,0 +1,221 @@
+<apex:component allowDML="true">
+<apex:attribute name="nao" description="This is the value for the component." type="Needs_Assesment__c" required="true" />
+<apex:attribute name="styleclass" description="This is the value for the component." type="string" required="true" />
+<apex:attribute name="renderDetails" description="This is the value for the component." type="string" required="true" />
+<apex:attribute name="sectionName" description="This is the value for the component." type="string" required="true" />
+
+                 <apex:outputpanel rendered="{!renderDetails}">
+                              <tr  class="{!styleclass}" style='display:none;'>  
+                              
+                                <td>
+                                &nbsp;
+                                </td>
+                                <td>
+                                &nbsp;
+                                </td>
+                                <td colspan="2">
+                                    <table>
+                                        <tr>
+                                            <td>
+                                                <h2>Making Payments/Transfers</h2>
+                                                
+                                            </td>
+                                        </tr>
+                                         
+                                      <apex:outputpanel rendered="{!If(sectionName == "payments",true,false)}">    
+                                     <tr style="display:{!if(nao.LEMP_Pay_Recurring_Check__c ||
+                                     	nao.LEMP_Pay_Recurring_BillPay__c ||
+                                     	nao.LEMP_Pay_Recurring_DC__c ||
+                                     	nao.LEMP_Pay_Recurring_CC__c ||
+                                     	nao.LEMP_Pay_Recurring_A2A__c || 
+                                     	nao.LEMP_Pay_Recurring_ACH__c ||
+                                     	nao.LEMP_Pay_Recurring_Other__c  
+                                     		  , "", "none")}">
+											<td class="mainQuestion" width="200" colspan="1">How do you make the recurring payments/transfers?	</td>
+		                                
+		                                <td>
+		                                	<apex:outputlabel value="{!if(nao.LEMP_Pay_Recurring_Check__c== true," Check","")}" />
+		                                	<apex:outputlabel value="{!if(nao.LEMP_Pay_Recurring_BillPay__c == true," Bill Pay ","")}" />
+		                                	<apex:outputlabel value="{!if(nao.LEMP_Pay_Recurring_DC__c == true," Debit Card	","")}" />
+		                                	<apex:outputlabel value="{!if(nao.LEMP_Pay_Recurring_CC__c == true," Credit Card ","")}" />
+		                                	<apex:outputlabel value="{!if(nao.LEMP_Pay_Recurring_A2A__c == true," A2A/P2P ","")}" />
+		                                	<apex:outputlabel value="{!if(nao.LEMP_Pay_Recurring_ACH__c == true," ACH/Wire ","")}" />
+		                                	<apex:outputlabel value="{!if(nao.LEMP_Pay_Recurring_Other__c == true," Other","")}" />
+		                                
+		                                </td> 
+		                              
+		                                
+		                            </tr>
+									<tr style="display:{!if(nao.LEMP_Pay_Individuals_Check__c ||
+										nao.LEMP_Pay_Individuals_BillPay__c ||
+										nao.LEMP_Pay_Individuals_DC__c ||
+										nao.LEMP_Pay_Individuals_CC__c ||
+										nao.LEMP_Pay_Individuals_A2A__c || 
+										nao.LEMP_Pay_Individuals_ACH__c ||
+										nao.LEMP_Pay_Individuals_Other__c
+										
+                                     		  , "", "none")}">
+											<td class="mainQuestion" width="200" colspan="1">How do you make the Individual payments/transfers?	</td>
+		                                
+		                                <td>
+		                                	<apex:outputlabel value="{!if(nao.LEMP_Pay_Individuals_Check__c== true," Check","")}" />
+		                                	<apex:outputlabel value="{!if(nao.LEMP_Pay_Individuals_BillPay__c == true," Bill Pay ","")}" />
+		                                	<apex:outputlabel value="{!if(nao.LEMP_Pay_Individuals_DC__c == true," Debit Card	","")}" />
+		                                	<apex:outputlabel value="{!if(nao.LEMP_Pay_Individuals_CC__c == true," Credit Card ","")}" />
+		                                	<apex:outputlabel value="{!if(nao.LEMP_Pay_Individuals_A2A__c == true," A2A/P2P ","")}" />
+		                                	<apex:outputlabel value="{!if(nao.LEMP_Pay_Individuals_ACH__c == true," ACH/Wire ","")}" />
+		                                	<apex:outputlabel value="{!if(nao.LEMP_Pay_Individuals_Other__c == true," Other","")}" />
+		                                </td> 
+		                            </tr>
+		                            <tr style="display:{!if(nao.LEMP_Pay_MoveMoney_Check__c ||
+										nao.LEMP_Pay_MoveMoney_BillPay__c ||
+										nao.LEMP_Pay_MoveMoney_DC__c ||
+										nao.LEMP_Pay_MoveMoney_CC__c ||
+										nao.LEMP_Pay_MoveMoney_A2A__c || 
+										nao.LEMP_Pay_MoveMoney_ACH__c ||
+										nao.LEMP_Pay_MoveMoney_Other__c
+										
+                                     		  , "", "none")}">
+											<td class="mainQuestion" width="200" colspan="1">How do you move money between accounts at financial institutions?	</td>
+		                                
+		                                <td>
+		                                	<apex:outputlabel value="{!if(nao.LEMP_Pay_MoveMoney_Check__c== true, " Check","")}" />
+		                                	<apex:outputlabel value="{!if(nao.LEMP_Pay_MoveMoney_BillPay__c == true," Bill Pay ","")}" />
+		                                	<apex:outputlabel value="{!if(nao.LEMP_Pay_MoveMoney_DC__c == true, " Debit Card	","")}" />
+		                                	<apex:outputlabel value="{!if(nao.LEMP_Pay_MoveMoney_CC__c == true, " Credit Card ","")}" />
+		                                	<apex:outputlabel value="{!if(nao.LEMP_Pay_MoveMoney_A2A__c == true, " A2A/P2P ","")}" />
+		                                	<apex:outputlabel value="{!if(nao.LEMP_Pay_MoveMoney_ACH__c == true, " ACH/Wire ","")}" />
+		                                	<apex:outputlabel value="{!if(nao.LEMP_Pay_MoveMoney_Other__c == true, " Other","")}" />
+		                                
+		                                </td>
+		                              
+		                                
+		                            </tr>
+		                            <tr style="display:{!if(nao.LEMP_Payment_Transfer_Comments__c != null, "","none") }">
+		                            	<td>
+		                            		Comments
+		                            	</td>
+		                            	<td>
+		                            		<apex:outputlabel value="{!nao.LEMP_Payment_Transfer_Comments__c}" />
+		                            	</td>
+		                            </tr>
+									</apex:outputpanel>
+									<apex:outputpanel rendered="{!If(sectionName == "daytransfer",true,false)}"> 
+ 									<tr style="display:{!if(nao.LEMP_Transfer_Frequency__c != null  , "", "none")}">
+											<td class="subQuestion" width="200" colspan="1">How frequently do you make same day transfers?</td>
+		                                <td>
+			                                 <apex:outputlabel value="{!nao.LEMP_Transfer_Frequency__c}" />
+		                                </td>
+		                            </tr>
+		                             <tr style="display:{!if(nao.LEMP_Transfer_Comments__c != null, "","none") }">
+		                            	<td>
+		                            		Comments
+		                            	</td>
+		                            	<td>
+		                            		<apex:outputlabel value="{!nao.LEMP_Transfer_Comments__c}" />
+		                            	</td>
+		                            </tr>
+		                            
+		                            
+		                            </apex:outputpanel>
+		                            <apex:outputpanel rendered="{!If(sectionName == "foreign",true,false)}"> 
+		                            <tr style="display:{!if(nao.LEMP_International_Transfer_Frequency__c != null  , "", "none")}">
+											<td class="subQuestion" width="200" colspan="1">How frequently do you make International transfers?</td>
+		                                <td>
+			                                 <apex:outputlabel value="{!nao.LEMP_International_Transfer_Frequency__c}" />
+		                                </td>
+		                            </tr>  
+		                            <tr style="display:{!if(nao.LEMP_International_Transfer_Comments__c != null, "","none") }">
+		                            	<td>
+		                            		Comments
+		                            	</td>
+		                            	<td>
+		                            		<apex:outputlabel value="{!nao.LEMP_International_Transfer_Comments__c}" />
+		                            	</td>
+		                            </tr>
+		                            </apex:outputpanel>
+		                            <apex:outputpanel rendered="{!If(sectionName == "dc",true,false)}"> 
+		                            <tr style="display:{!if(nao.LEMP_Debit_Card_Usage_Retail__c||
+		                            	 nao.LEMP_Debit_Card_Usage_Grocries__c ||
+		                            	 nao.LEMP_Debit_Card_Usage_Gasstation__c || 
+		                            	 nao.LEMP_Debit_Card_Usage_Online__c  ||
+		                            	 nao.LEMP_Debit_Card_Usage_Other__c
+		                            	 
+		                            	  , "", "none")}">
+											<td class="subQuestion" width="200" colspan="1">How do you tend to use your debit card</td>
+		                                <td>
+                              				<apex:outputlabel value="{!if(nao.LEMP_Debit_Card_Usage_Retail__c==true, " Retail","")}" />
+		                                	<apex:outputlabel value="{!if(nao.LEMP_Debit_Card_Usage_Grocries__c==true, " Groceries ","")}" />
+		                                	<apex:outputlabel value="{!if(nao.LEMP_Debit_Card_Usage_Gasstation__c==true, " Gas Station	","")}" />
+		                                	<apex:outputlabel value="{!if(nao.LEMP_Debit_Card_Usage_Online__c == true, " Online","")}" />
+		                                	<apex:outputlabel value="{!if(nao.LEMP_Debit_Card_Usage_Other__c==true, " Others ","")}" />
+		                                </td>
+		                            </tr>
+		                             <tr style="display:{!if(nao.LEMP_Debit_Card_Usage_Comments__c != null, "","none") }">
+		                            	<td>
+		                            		Comments
+		                            	</td>
+		                            	<td>
+		                            		<apex:outputlabel value="{!nao.LEMP_Debit_Card_Usage_Comments__c}" />
+		                            	</td>
+		                            </tr>
+		                            </apex:outputpanel>
+		                            <apex:outputpanel rendered="{!If(sectionName == "cc",true,false)}"> 
+		                             <tr style="display:{!if(nao.LEMP_Credit_Card_Usage_No_Annual_Fee__c ||
+		                             	nao.LEMP_Credit_Card_Usage_Rewards__c ||
+		                             	nao.LEMP_Credit_Card_Usage_Cash_Back__c ||
+		                             	nao.LEMP_Credit_Card_Usage_Low_Interest_Rate__c
+		                            	 
+		                            	  , "", "none")}">
+											<td class="subQuestion" width="200" colspan="1">What is important to you in choosing a credit card?</td>
+		                                <td>
+			                                <apex:outputlabel value="{!if(nao.LEMP_Credit_Card_Usage_No_Annual_Fee__c == true, " No Annual Fee	","")}" />
+		                                	<apex:outputlabel value="{!if(nao.LEMP_Credit_Card_Usage_Rewards__c==true, " Rewards ","")}" />
+		                                	<apex:outputlabel value="{!if(nao.LEMP_Credit_Card_Usage_Cash_Back__c==true, " Cash Back		","")}" />
+		                                	<apex:outputlabel value="{!if(nao.LEMP_Credit_Card_Usage_Low_Interest_Rate__c, " Low-Interest Rate	","")}" />
+		                                	
+		                                	<apex:outputlabel value="{!nao.LEMP_Credit_Card_Usage_Other__c}" />
+		                                </td>
+		                            </tr>
+		                            <tr style="display:{!if(nao.LEMP_Carry_Credit_Card_Balance__c != null, "","none") }">
+		                            	<td>
+		                            		Do you typically carry a credit card balance?
+		                            	</td>
+		                            	<td>
+		                            		<apex:outputlabel value="{!nao.LEMP_Carry_Credit_Card_Balance__c}" />
+		                            	</td>
+		                            </tr>
+		                            <tr style="display:{!if(nao.LEMP_Credit_Card_You_Use_Often__c != null, "","none") }">
+		                            	<td>
+		                            		What credit card do you use most often?
+		                            	</td>
+		                            	<td>
+		                            		<apex:outputlabel value="{!nao.LEMP_Credit_Card_You_Use_Often__c}" />
+		                            	</td>
+		                            </tr>  
+		                             <tr style="display:{!if(nao.LEMP_Credit_Card_Usage_Reason_Comments__c != null, "","none") }" >
+		                            	<td>
+		                            		Why do you use this card?
+
+		                            	</td>
+		                            	<td>
+		                            		<apex:outputlabel value="{!nao.LEMP_Credit_Card_Usage_Reason_Comments__c}" />
+		                            	</td>
+		                            </tr>  	 
+		                            <tr style="display:{!if(nao.LEMP_Credit_Card_Usage_Comments__c != null, "","none") }">
+		                            	<td>
+		                            		Comments
+
+		                            	</td>
+		                            	<td>
+		                            		<apex:outputlabel value="{!nao.LEMP_Credit_Card_Usage_Comments__c}" />
+		                            	</td>
+		                            </tr>  	
+		                            </apex:outputpanel> 
+		                                     		                                                                    
+                                    </table>
+                                 </td>
+                            </tr>
+                             
+                            </apex:outputpanel>
+</apex:component>

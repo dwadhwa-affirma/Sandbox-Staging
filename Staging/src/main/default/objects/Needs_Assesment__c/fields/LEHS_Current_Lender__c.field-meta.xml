@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>LEHS_Current_Lender__c</fullName>
+    <description>This field stores the value of &quot;If own, who is your current lender?&quot; on the &quot;Housing&quot; tab.</description>
+    <externalId>false</externalId>
+    <inlineHelpText>If own, who is your current mortgage lender?</inlineHelpText>
+    <label>LEHS Current Lender</label>
+    <required>false</required>
+    <trackTrending>false</trackTrending>
+    <type>Picklist</type>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetName>NA_LEHS_Current_Lender</valueSetName>
+    </valueSet>
+</CustomField>

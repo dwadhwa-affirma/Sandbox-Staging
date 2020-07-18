@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Secondary_Case_Type__c</fullName>
+    <externalId>false</externalId>
+    <label>Secondary Case Type</label>
+    <required>false</required>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Picklist</type>
+    <valueSet>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Inactive Notices &amp; Escheatment</fullName>
+                <default>false</default>
+            </value>
+            <value>
+                <fullName>Ops Other</fullName>
+                <default>false</default>
+            </value>
+            <value>
+                <fullName>Checks</fullName>
+                <default>false</default>
+            </value>
+            <value>
+                <fullName>Tax Forms</fullName>
+                <default>false</default>
+            </value>
+            <value>
+                <fullName>ATM/Debit Cards</fullName>
+                <default>false</default>
+            </value>
+            <value>
+                <fullName>Holds</fullName>
+                <default>false</default>
+            </value>
+            <value>
+                <fullName>EPS Research</fullName>
+                <default>false</default>
+            </value>
+            <value>
+                <fullName>Branch Research</fullName>
+                <default>false</default>
+            </value>
+            <value>
+                <fullName>Call Center Research</fullName>
+                <default>false</default>
+            </value>
+            <value>
+                <fullName>Online Banking</fullName>
+                <default>false</default>
+            </value>
+            <value>
+                <fullName>Mobile Banking</fullName>
+                <default>false</default>
+            </value>
+            <value>
+                <fullName>Wires</fullName>
+                <default>false</default>
+            </value>
+            <value>
+                <fullName>Official Checks</fullName>
+                <default>false</default>
+            </value>
+            <value>
+                <fullName>Levies</fullName>
+                <default>false</default>
+            </value>
+            <value>
+                <fullName>Death Claims</fullName>
+                <default>false</default>
+            </value>
+            <value>
+                <fullName>Address Change</fullName>
+                <default>false</default>
+            </value>
+            <value>
+                <fullName>Close Account</fullName>
+                <default>false</default>
+            </value>
+            <value>
+                <fullName>Membership</fullName>
+                <default>false</default>
+            </value>
+            <value>
+                <fullName>IRA</fullName>
+                <default>false</default>
+            </value>
+            <value>
+                <fullName>HSA</fullName>
+                <default>false</default>
+            </value>
+            <value>
+                <fullName>Shared Certificates</fullName>
+                <default>false</default>
+            </value>
+            <value>
+                <fullName>W8 Forms</fullName>
+                <default>false</default>
+            </value>
+            <value>
+                <fullName>W9 Forms</fullName>
+                <default>false</default>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

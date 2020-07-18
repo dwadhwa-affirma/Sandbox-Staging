@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>LEOL_Partially_Completed__c</fullName>
+    <externalId>false</externalId>
+    <formula>If(LEOL_Last_Updated_On__c &gt;= Date(2000,1,1), if( Member__r.NA_LEOL_Complete__c = false, true, false), false)</formula>
+    <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+    <label>LEOL_Partially_Completed</label>
+    <trackTrending>false</trackTrending>
+    <type>Checkbox</type>
+</CustomField>

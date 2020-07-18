@@ -1,0 +1,117 @@
+<aura:component  implements="force:appHostable,force:hasRecordId,force:hasSObjectName,force:lightningQuickActionWithoutHeader" controller="OpportunityOwnerAssignment" >
+     <style>
+      .slds-modal__container{max-width: 45rem !important; width:45% !important;}
+      .slds-modal__content { padding: 0px; }
+      .cuf-content { padding: 0px !important;}
+      .remnove-label label {display:none;}
+      .select-queue select {width: 190px;}
+      .modal-maincontent{min-height: 190px;max-height: 400px; }
+      
+      
+   </style>
+    
+    
+   <aura:handler value="{!this}" name="init" action="{!c.doInit}" />
+    
+    <aura:attribute name="SelectedType" type="string" default="User" />
+    <aura:attribute name="objLabel" type="String" />    
+    <aura:attribute name="opportunity"  type="Opportunity" default="{ 'sobjectType': 'Opportunity'}" />
+    <aura:attribute name="lead"  type="Lead" default="{ 'sobjectType': 'Lead'}" />
+    <aura:attribute name="loading" type="Boolean" default="false" />
+    <aura:attribute name="popoverMessage" type="String" />
+    
+    <div aura:id="popup" class="slds-hide">
+    <header class="slds-modal__header" id="CreateOpportunityHeader" >
+      <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse" title="Close" onclick="{!c.closePopup}">
+         <span data-aura-rendered-by="47:1615;a" class="lightningPrimitiveIcon" data-aura-class="lightningPrimitiveIcon">
+            <lightning:icon iconName="{#v.closeIcon}" size="small" variant="inverse" />
+         </span>
+         <span class="slds-assistive-text">Close</span>
+      </button>
+      <h2 id="modal-heading-01" class="slds-text-heading_medium slds-hyphenate">Change Owner</h2>
+   </header>
+    
+    
+    <div class="modal-maincontent">
+    <div class="slds-grid">
+	 <div class="slds-col slds-small-size--1-of-1 slds-medium-size--1-of-2">
+      <div class="slds-form--stacked slds-p-around--medium slds-m-bottom--x-small">
+    
+   		<div class="slds-form-element"  >
+                              	
+           <div class="slds-form-element__control remnove-label" >
+			   	 <table>
+			        <tr>
+			        	<td  style="width:25%; vertical-align:top;">
+			                 <lightning:select label="" value="{!v.SelectedType}" onchange="{!c.selectOwnerChange}" aura:id="ownertype" >
+			                     		<option value="Queue" label="Queue"></option>
+			                            <option value="User"  label="User"></option>
+			                     		<option value="Keep"   label="Keep"></option>
+			                    </lightning:select>
+			            </td>
+			          
+			             			<td id="ddluser1">
+			                              <div class="slds-form-element"  style="max-width:90%; margin-left: 15px;" >
+			                            
+			                                 <div class="slds-form-element__control" id="userOwnerControl">
+			                                 
+			                                    <force:inputField value="{!v.opportunity.User_Owner__c}" aura:id="userOwner" > </force:inputField>
+			                                 
+			                                    <ul class='has-error uiInputDefaultError uiInput uiInputSelect uiInput--default uiInput--select' id='userOwnerError' style='display:none;'>
+				                       				 <li class="form-element__help" data-aura-rendered-by="45:2084;a">Complete this field</li>
+				                     			</ul>
+			                                 </div>
+			                              </div>
+			                           </td>
+			                         
+			                           <td id="ddlqueue1" style="display:none;">
+				                              <div class="slds-form-element"  style="max-width:90%; margin-left: 15px;">
+				                                 
+				                                  <div class="slds-form-element__control">
+				                                    <ui:inputSelect aura:id="queuename"   value="{!v.opportunity.Queue_Assigned_Id__c}" class="slds-select" />
+				                                  </div>
+				              				 </div> 
+			            				</td>
+			            				<td style="display:none;" id="ddlkeep1"></td>
+			             
+			        </tr>
+			     
+			        </table>
+			    </div>
+			    </div>
+     
+    
+    
+    
+    <aura:if isTrue="{!(v.loading == true)}">
+         <div class="loadingDiv cCreateLead">
+            <div class="demo-only" style='height: 6rem; '>
+               <div role="status" class="slds-spinner slds-spinner_medium">
+                  <div class="slds-spinner__dot-a"></div>
+                  <div class="slds-spinner__dot-b"></div>
+               </div>
+            </div>
+         </div>
+      </aura:if>
+      
+       </div>
+   </div>
+      
+    </div>
+    
+    </div>
+       <span id="popover" aura:id="popover" class="slds-popover slds-nubbin--bottom-right slds-theme--error slds-hide" style="right: 10%;padding: 0 !important;width: auto;position: absolute;top: 59%;">
+        <div class="slds-popover__body">
+            <p>{!v.popoverMessage}</p>
+        </div>
+          </span>
+    <footer class="slds-modal__footer" id="CreateLeadFooter">
+    
+      <button class="slds-button slds-button--neutral uiButton forceActionButton" onclick="{!c.closePopup}">Cancel</button>
+       <button class="slds-button slds-button_brand" onclick="{!c.ChangeOwner}">Change Owner</button>
+      
+   </footer>
+    
+  </div>
+   
+</aura:component>

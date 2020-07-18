@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ListView xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Secure_Email</fullName>
+    <columns>NAME</columns>
+    <columns>TypeTranslate__c</columns>
+    <columns>Brand__c</columns>
+    <columns>RecType__c</columns>
+    <columns>SecureEmailAddress__c</columns>
+    <columns>LAST_UPDATE</columns>
+    <filterScope>Everything</filterScope>
+    <filters>
+        <field>SecureEmailAddress__c</field>
+        <operation>notEqual</operation>
+    </filters>
+    <label>Secure Email</label>
+</ListView>

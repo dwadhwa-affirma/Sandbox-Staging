@@ -1,0 +1,56 @@
+<aura:component implements="force:appHostable,force:hasRecordId" access="global">
+
+    <aura:attribute name="Model" type="Needs_Assesment__c" access="global" />
+    <aura:registerEvent name="AssessmentSave" type="c:SaveNeedAssessmentEvent" />
+    <b style="padding:15px 0 0 15px;display:block; font-size : 16px;">Verify member's phone #,
+			email address, and physical address. Update via the standard
+			processes.</b>
+
+
+
+    <div class="slds-form--stacked slds-p-around--medium slds-m-bottom--x-small">
+        <div class="slds-form-element">
+            <table border="0" cellpadding="2">
+                <tr>
+                    <td>
+                        <table border="0" cellpadding="2">
+                            <td width="200"><b>Current As Of <ui:outputDate format="MMMM dd, YYYY" value="{!v.Model.LECP_Last_Updated_On__c}" /></b></td>                                
+                            <tr>
+                                <td class="mainQuestion"><b style="padding:15px 0;display:block;"> What is the best way
+										to send you written materials? (check one or both) </b></td>
+
+                            </tr>
+                            <tr><td>
+                            	<table style="width: auto;">
+                            		<tr>	
+                            			<td align="left" style="padding:5px;">Email</td>
+                            			<td class="subQuestion" align="left" style="padding:5px;"><ui:inputCheckbox value="{!v.Model.LECP_Written_Materials_Way_To_Send_Email__c}" /></td>                            			
+                            		</tr>
+                            	</table></td>
+                            </tr>
+                            <tr>
+                            	<td>
+                            	<table style="width: auto;">
+                            	<tr>	
+                            		<td align="left" style="padding:5px;">Mail</td>
+                            		<td class="subQuestion" align="left" style="padding:5px 5px 5px 12px; "><ui:inputCheckbox value="{!v.Model.LECP_Written_Materials_Way_To_Send_Mail__c}" /></td>                            			
+                            		</tr>
+                            	</table></td>
+                            </tr>
+                             
+                      </table>
+
+                    </td>
+                </tr>
+            </table>
+            <table>
+                <tr>
+                    <td style="text-align:right; padding-top:5px;">
+                        <button class="slds-button slds-button--brand" onclick="{!c.saveContactPrefereceClick}">Save</button>
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </div>
+
+</aura:component>

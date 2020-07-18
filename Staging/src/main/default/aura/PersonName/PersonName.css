@@ -1,0 +1,4 @@
+.THIS table.slds-table.slds-table_bordered.slds-table_fixed-layout {
+	width:45%;
+}
+.THIS .slds-table_bordered, .THIS .slds-table--bordered.slds-table_bordered, .THIS .slds-table--bordered{border-left: 1px solid rgb(221,219,218);border-right: 1px solid rgb(221,219,218);}

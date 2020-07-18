@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Additional_Documents__c</fullName>
+    <defaultValue>false</defaultValue>
+    <description>Check this button when you want to send additional documents apart from the pre-configured ones through DocuSign.</description>
+    <externalId>false</externalId>
+    <label>Additional Documents</label>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Checkbox</type>
+</CustomField>

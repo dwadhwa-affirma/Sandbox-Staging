@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Status_Reason__c</fullName>
+    <externalId>false</externalId>
+    <formula>CASE(STATUSREASON__c, 
+0, &apos;000 Retain-No Reason Specified&apos;, 
+1, &apos;001 Retain-Lost&apos;,
+2, &apos;002 Retain-Stolen&apos;,
+3, &apos;003 Retain-Fraud&apos;, 
+4, &apos;004 Retain-Permanent Restraint&apos;,
+5, &apos;005 Retain-Bad Debt&apos;,
+6, &apos;006 Retain-Checking Dormant&apos;, 
+7, &apos;007 Retain-Checking Closed&apos;,
+8, &apos;008 Retain-Checking NSF&apos;,
+9, &apos;009 Retain-Bankruptcy&apos;, 
+10, &apos;010 Retain-Marital Problems&apos;,
+11, &apos;011 Retain-Deceased&apos;,
+12, &apos;012 Retain-Collection&apos;, 
+13, &apos;013 Retain-Collection (Skip)&apos;,
+14, &apos;014 Retain-Collection (Legal Pursuit)&apos;,
+15, &apos;015 Retain-Closed for Cause&apos;,
+16, &apos;016 Retain-Closed per Cardholder&apos;,
+17, &apos;017 Retain-Closed (Duplicate)&apos;, 
+18, &apos;018 Retain-Chargeoff&apos;,
+19, &apos;019 Retain-Excessive PIN Retries&apos;,
+20, &apos;020 Retain-Requested by Network&apos;, 
+100, &apos;100 Return-No Reason Specified&apos;,
+101, &apos;101 Return-Lost&apos;,
+102, &apos;102 Return-Stolen&apos;,
+103, &apos;103 Return-Fraud&apos;,
+104, &apos;104 Return-Permanent Restraint&apos;,
+105, &apos;105 Return-Bad Debt&apos;,
+106, &apos;106 Return-Checking Dormant&apos;,
+107, &apos;107 Return-Checking Closed&apos;,
+108, &apos;108 Return-Checking NSF&apos;,
+109, &apos;109 Return-Bankruptcy&apos;,
+110, &apos;110 Return-Marital Problems&apos;,
+111, &apos;111 Return-Deceased&apos;,
+112, &apos;112 Return-Collection&apos;,
+113, &apos;113 Return-Collection (Skip)&apos;,
+114, &apos;114 Return-Collection (Legal Pursuit)&apos;,
+115, &apos;115 Return-Closed for Cause&apos;,
+116, &apos;116 Return-Closed per Cardholder&apos;,
+117, &apos;117 Return-Closed (Duplicate)&apos;,
+118, &apos;118 Return-Chargeoff&apos;,
+119, &apos;119 Return-Excessive PIN Retries&apos;,
+120, &apos;120 Return-Requested by Network&apos;,
+&apos;&apos;)</formula>
+    <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+    <label>Status Reason</label>
+    <required>false</required>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Text</type>
+    <unique>false</unique>
+</CustomField>

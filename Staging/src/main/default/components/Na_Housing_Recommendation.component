@@ -1,0 +1,73 @@
+<apex:component allowDML="true">
+<apex:attribute name="nao" description="This is the value for the component." type="Needs_Assesment__c" required="true" />
+<apex:attribute name="styleclass" description="This is the value for the component." type="string" required="true" />
+
+                 <apex:attribute name="renderDetails" description="This is the value for the component." type="string" required="true" />
+
+                 <apex:outputpanel rendered="{!renderDetails}">
+                              <tr  class="{!styleclass}" style='display:none;'>  
+                              
+                                <td>
+                                &nbsp;
+                                </td>
+                                <td>
+                                &nbsp;
+                                </td>
+                                
+                                
+                                
+                                     <td colspan="2">
+                                    <table>
+                                        <tr>
+                                            <td>
+                                                <h2>Housing</h2>
+                                            </td>
+                                        </tr>
+                                        <tr  style="display:{!if(nao.Do_you_Rent_or_Own__c != null , "", "none")}">
+                                              <td class="subQuestion" width="200">Do you rent or own?</td>
+                                              <td><apex:outputlabel value="{!nao.Do_you_Rent_or_Own__c}" /></td>
+                                        </tr>
+                                        <tr  style="display:{!if(nao.LEHS_Current_Lender__c != null , "", "none")}">
+                                              <td  class="subQuestion" width="200">If own, who is your current lender?</td>
+                                              <td><apex:outputlabel value="{!nao.LEHS_Current_Lender__c}" /></td>
+                                        </tr>
+                                         <tr  style="display:{!if(nao.LEHS_Type_of_Mortgage__c != null , "", "none")}">
+                                              <td  class="subQuestion" width="200">If own, who is your current lender?</td>
+                                              <td><apex:outputlabel value="{!nao.LEHS_Type_of_Mortgage__c}" /></td>
+                                        </tr>
+                                        <tr  style="display:{!if(nao.LEHS_Rate__c != null , "", "none")}">
+                                              <td class="subQuestion" width="200">If own, what is your current rate?</td>
+                                              <td ><apex:outputlabel value="{!nao.LEHS_Rate__c}" /></td>
+                                        </tr>
+                                        <tr  style="display:{!if(nao.LEHS_Current_Balance__c != null , "", "none")}">
+                                              <td class="subQuestion" width="200">If own, what is your current balance?</td>
+                                              <td ><apex:outputlabel value="{!nao.LEHS_Current_Balance__c}" /></td>
+                                        </tr>
+                                          <tr  style="display:{!if(nao.LEHS_End_Year__c != null , "", "none")}">
+                                              <td  class="subQuestion" width="200">If own, what is mortgage end date?</td>
+                                              <td><apex:outputlabel value="{!nao.LEHS_End_Year__c}" /></td>
+                                        </tr>
+                                        <tr  style="display:{!if(nao.LEHS_Planning_to_Purchase__c == null || nao.LEHS_Planning_to_Purchase__c == 'Prefer Not to Answer' , "none", "")}">
+                                              <td class="subQuestion" width="200">Are you planning to purchase?</td>
+                                              <td><apex:outputlabel value="{!nao.LEHS_Planning_to_Purchase__c}" /></td>
+                                        </tr>
+                                        <tr  style="display:{!if(nao.LEHS_Purchase_When__c != null, "", "none")}">
+                                              <td class="subQuestion" width="200">If Yes, when?</td>
+                                              <td><apex:outputlabel value="{!nao.LEHS_Purchase_When__c}" /></td>
+                                        </tr>
+                                        <tr  style="display:{!if(nao.LEHS_Have_Realtor__c != null , "", "none")}">
+                                              <td class="subQuestion" width="200">If Yes, do you have a realtor?</td>
+                                              <td><apex:outputlabel value="{!nao.LEHS_Have_Realtor__c}" /></td>
+                                        </tr>
+                                        <tr  style="display:{!if(nao.LEHS_Comment__c != null , "", "none")}">
+                                              <td class="subQuestion" width="200">Comments</td>
+                                              <td><apex:outputlabel value="{!nao.LEHS_Comment__c}" /></td>
+                                        </tr>
+                                        
+                                    </table>
+                                 </td>
+                            </tr>
+                            
+                            </apex:outputpanel>
+    
+</apex:component>

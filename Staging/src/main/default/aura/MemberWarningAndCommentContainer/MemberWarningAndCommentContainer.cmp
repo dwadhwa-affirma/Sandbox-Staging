@@ -1,0 +1,31 @@
+<aura:component implements="flexipage:availableForAllPageTypes,force:appHostable,force:hasRecordId,force:lightningQuickActionWithoutHeader,lightning:actionOverride">
+
+<style>
+.cMemberCommentsCode{
+float:left;
+display: flex;
+flex:1;
+}
+.cMemberWarningCode{
+
+
+}
+.tblContainertd{
+width:50%;
+}
+
+</style>
+
+<div class="">
+<table>
+<tr>
+<td class="tblContainertd">
+	 <c:MemberCommentsCode recordId="{#v.recordId}"/>	
+</td>	
+<td class="tblContainertd">	
+	 <c:MemberWarningCode recordId="{#v.recordId}"/>
+</td>
+	 </tr>
+</table>	 
+</div>
+</aura:component>

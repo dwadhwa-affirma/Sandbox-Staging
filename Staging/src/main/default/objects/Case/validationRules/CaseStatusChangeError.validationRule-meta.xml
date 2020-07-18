@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>CaseStatusChangeError</fullName>
+    <active>false</active>
+    <errorConditionFormula>ISPICKVAL(Status, &quot;In Process&quot;) &amp;&amp;  Owner:Queue.QueueName &lt;&gt; NULL</errorConditionFormula>
+    <errorMessage>Cannot change status to &quot;In Process&quot;  when a case is owned by a Queue.</errorMessage>
+</ValidationRule>

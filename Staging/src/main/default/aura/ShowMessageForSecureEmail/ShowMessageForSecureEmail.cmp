@@ -1,0 +1,31 @@
+<aura:component implements="flexipage:availableForAllPageTypes,force:appHostable,force:hasRecordId,force:lightningQuickActionWithoutHeader">
+
+<aura:attribute name="record" type="Case"/>  
+<aura:attribute name="simpleRecord" type="Case"/>
+    <aura:attribute name="recordError" type="String"/>   
+    <style>
+    .recordError{
+ position: absolute;
+    right: 300px;
+    top: 0px;
+    z-index: 100; 
+}
+
+
+    </style> 
+    
+     <force:recordData aura:id="recordLoader"
+      recordId="{!v.recordId}"
+      layoutType="FULL"
+      targetRecord="{!v.record}"
+         targetFields="{!v.simpleRecord}"    
+      />
+          
+    <aura:if isTrue="{! empty(v.simpleRecord.Secure_Email__c)}">
+        <div class="">     
+           
+           <span style="color: red;">Please add email address to member account in order to create a member message.</span>
+        </div>
+    </aura:if>
+	
+</aura:component>

@@ -1,0 +1,375 @@
+<aura:component controller="CollectionsInLightningCls" implements="force:appHostable,force:hasRecordId" access="global">
+
+    <aura:attribute name="Model" access="global" Type="Needs_Assesment__c" />
+    <aura:attribute name="picklistFields" type="Map" default="{}" />
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}" />
+
+    <aura:registerEvent name="AssessmentSave" type="c:SaveNeedAssessmentEvent" />
+    <b style="padding:0 0 5px 0;display:block; font-size : 16px;">Optimize how you move your money - Making Payments/Transfers</b><br />
+
+    <table border="1" class="otherTbl" width="100%">
+        <tbody>
+			<tr>
+				<td colspan="2">
+				<b>Current As Of <ui:outputDate format="MMMM dd, YYYY" value="{!v.Model.LEMP_Last_Updated_On__c}" /></b>
+				</td>
+			</tr>
+            <tr>
+                <td>
+
+                    <table border="0" width="100%" class="slds-table slds-table_bordered slds-no-cell-focus slds-table_edit" role="grid">
+                        <thead>
+                            <tr>
+                                <th><b>How do you make the following payments/transfers?</b></th>
+                                <th><b>Check</b></th>
+                                <th><b>Bill<br></br>Pay</b></th>
+                                <th><b>Debit<br></br>Card</b></th>
+                                <th><b>Credit<br></br>Card</b></th>
+                                <th><b>ACH/<br></br>Wire</b></th>
+                                <th><b>A2A/<br></br>P2P</b></th>
+                                <th><b>Other</b></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Pay recurring/monthly bills</td>
+                                <td>
+                                    <ui:inputCheckbox value="{!v.Model.LEMP_Pay_Recurring_Check__c}" />
+                                </td>
+                                <td>
+                                    <ui:inputCheckbox value="{!v.Model.LEMP_Pay_Recurring_BillPay__c}" />
+                                </td>
+                                <td>
+                                    <ui:inputCheckbox value="{!v.Model.LEMP_Pay_Recurring_DC__c}" />
+                                </td>
+                                <td>
+                                    <ui:inputCheckbox value="{!v.Model.LEMP_Pay_Recurring_CC__c}" />
+                                </td>
+                                <td>
+                                    <ui:inputCheckbox value="{!v.Model.LEMP_Pay_Recurring_ACH__c}" />
+                                </td>
+                                <td>
+                                    <ui:inputCheckbox value="{!v.Model.LEMP_Pay_Recurring_A2A__c}" />
+                                </td>
+                                <td>
+                                    <ui:inputCheckbox value="{!v.Model.LEMP_Pay_Recurring_Other__c}" />
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Pay individuals</td>
+                                <td>
+                                    <ui:inputCheckbox value="{!v.Model.LEMP_Pay_Individuals_Check__c}" />
+                                </td>
+                                <td>
+                                    <ui:inputCheckbox value="{!v.Model.LEMP_Pay_Individuals_BillPay__c}" />
+                                </td>
+                                <td>
+                                    <ui:inputCheckbox value="{!v.Model.LEMP_Pay_Individuals_DC__c}" />
+                                </td>
+                                <td>
+                                    <ui:inputCheckbox value="{!v.Model.LEMP_Pay_Individuals_CC__c}" />
+                                </td>
+                                <td>
+                                    <ui:inputCheckbox value="{!v.Model.LEMP_Pay_Individuals_ACH__c}" />
+                                </td>
+                                <td>
+                                    <ui:inputCheckbox value="{!v.Model.LEMP_Pay_Individuals_A2A__c}" />
+                                </td>
+                                <td>
+                                    <ui:inputCheckbox value="{!v.Model.LEMP_Pay_Individuals_Other__c}" />
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Move money between your accounts at multiple financial institutions</td>
+                                <td>
+                                    <ui:inputCheckbox value="{!v.Model.LEMP_Pay_MoveMoney_Check__c}" />
+                                </td>
+                                <td>
+                                    <ui:inputCheckbox value="{!v.Model.LEMP_Pay_MoveMoney_BillPay__c}" />
+                                </td>
+                                <td>
+                                    <ui:inputCheckbox value="{!v.Model.LEMP_Pay_MoveMoney_DC__c}" />
+                                </td>
+                                <td>
+                                    <ui:inputCheckbox value="{!v.Model.LEMP_Pay_MoveMoney_CC__c}" />
+                                </td>
+                                <td>
+                                    <ui:inputCheckbox value="{!v.Model.LEMP_Pay_MoveMoney_ACH__c}" />
+                                </td>
+                                <td>
+                                    <ui:inputCheckbox value="{!v.Model.LEMP_Pay_MoveMoney_A2A__c}" />
+                                </td>
+                                <td>
+                                    <ui:inputCheckbox value="{!v.Model.LEMP_Pay_MoveMoney_Other__c}" />
+                                </td>
+                            </tr>
+                        </tbody>
+
+
+
+                    </table>
+
+                    <table border="0" width="100%">
+                        <tbody>
+                            <tr>
+                                <td><b>Comments</b><br /></td>
+                                <td align="right" class="mainQuestion" width="200">
+                                    <ui:inputTextArea value="{!v.Model.LEMP_Payment_Transfer_Comments_New__c}" />
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="mainQuestion" width="200">
+                                    <table border="0" width="100%">
+                                        <tr>
+                                            <td>
+                                                <b>How often do you make same day transfers?</b>
+                                                <br/>
+                                                <ui:inputSelect aura:id="Needs_Assesment__c.LEMP_Transfer_Frequency__c" value="{!v.Model.LEMP_Transfer_Frequency__c}" />
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <b>Comments - frequency of using same day transfers</b>
+                                                <br/>
+                                                <ui:inputTextArea value="{!v.Model.LEMP_Transfer_Comments_New__c}" />
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <b>How often do you make international transfers?</b>
+                                                <br/>
+                                                <ui:inputSelect aura:id="Needs_Assesment__c.LEMP_International_Transfer_Frequency__c" value="{!v.Model.LEMP_International_Transfer_Frequency__c}" />
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <b>Comments - frequency of using international transfers</b>
+                                                <br/>
+                                                <ui:inputTextArea value="{!v.Model.LEMP_International_Transfer_Comments_New__c}" />
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <b>How do you tend to use your debit card?</b>
+                                                <br/>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <table>
+                                                    <tr>
+                                                        <td>
+                                                            <td align="left" width="100">Retail</td>
+                                                        </td>
+                                                        <td>
+                                                            <ui:inputCheckbox value="{!v.Model.LEMP_Debit_Card_Usage_Retail__c}" />
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>
+                                                            <td align="left" width="100">Groceries</td>
+                                                        </td>
+                                                        <td>
+                                                            <ui:inputCheckbox value="{!v.Model.LEMP_Debit_Card_Usage_Grocries__c}" />
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>
+                                                            <td align="left" width="100">Gas Station</td>
+                                                        </td>
+                                                        <td>
+                                                            <ui:inputCheckbox value="{!v.Model.LEMP_Debit_Card_Usage_Gasstation__c}" />
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>
+                                                            <td align="left" width="100">Online</td>
+                                                        </td>
+                                                        <td>
+                                                            <ui:inputCheckbox value="{!v.Model.LEMP_Debit_Card_Usage_Online__c}" />
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>
+                                                            <td align="left" width="100">Other</td>
+                                                        </td>
+                                                        <td>
+                                                            <ui:inputCheckbox value="{!v.Model.LEMP_Debit_Card_Usage_Other__c}" />
+                                                        </td>
+                                                    </tr>
+                                                </table>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="mainQuestion" colspan="2" valign="top"><b>Comments about debit card usage</b><br></br>
+                                                <ui:inputTextarea value="{!v.Model.LEMP_Debit_Card_Usage_Comments_New__c}" />
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </td>
+                                <td>
+                                    <table border="0" width="100%">
+                                        <tr>
+                                            <td>
+                                                <b>What is important to you in choosing a credit card?</b><br></br>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <table>
+                                                    <tr>
+                                                        <td>
+                                                            No Annual Fee
+                                                        </td>
+                                                        <td>
+                                                            <ui:inputCheckbox value="{!v.Model.LEMP_Credit_Card_Usage_No_Annual_Fee__c}" />
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>
+                                                            Rewards
+                                                        </td>
+                                                        <td>
+                                                            <ui:inputCheckbox value="{!v.Model.LEMP_Credit_Card_Usage_Rewards__c}" />
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>
+                                                            Cash Back
+                                                        </td>
+                                                        <td>
+                                                            <ui:inputCheckbox value="{!v.Model.LEMP_Credit_Card_Usage_Cash_Back__c}" />
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>
+                                                            Low-Interest Rate
+                                                        </td>
+                                                        <td>
+                                                            <ui:inputCheckbox value="{!v.Model.LEMP_Credit_Card_Usage_Low_Interest_Rate__c}" />
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>
+                                                            Other (specify)
+                                                        </td>
+                                                        <td>
+                                                            <ui:inputTextArea value="{!v.Model.LEMP_Credit_Card_Usage_Other_New__c}" />
+                                                        </td>
+                                                    </tr>
+                                                </table>
+                                            </td>
+                                        </tr>
+                                        
+                                        
+                                        <tr>
+                                            <b>Do you typically carry a credit card balance?</b>
+                                            <br/>
+                                            <ui:inputSelect aura:id="Needs_Assesment__c.LEMP_Carry_Credit_Card_Balance__c" value="{!v.Model.LEMP_Carry_Credit_Card_Balance__c}" />
+                                        </tr>
+                                         <tr>
+                                            <b>Do you know your current rate?</b>
+                                            <br/>
+                                            <ui:inputNumber format=".00" value="{!v.Model.LEMP_Your_Current_Rate__c}" />
+                                        </tr>
+                                         <tr>
+                                            <b>How many credit cards do you have that you typically carry a balance?</b>
+                                            <br/>
+                                            <ui:inputNumber format=".00" value="{!v.Model.LEMP_Number_of_Credit_Card__c}"  />
+                                        </tr>
+                                        <tr>
+                                            <b>What credit card do you use most often?</b>
+                                            <br/>
+                                            <ui:inputTextarea value="{!v.Model.LEMP_Credit_Card_You_Use_Often_New__c}" />
+                                        </tr>
+                                        <tr>
+                                            <b>Why do you use this card?</b>
+                                            <br/>
+                                            <ui:inputTextarea value="{!v.Model.LEMP_Credit_Card_Usage_Reason_Comments_N__c}" />
+                                        </tr>
+                                        <tr>
+                                            <b>Comments</b>
+                                            <br/>
+                                            <ui:inputTextarea value="{!v.Model.LEMP_Credit_Card_Usage_Comments_New__c}" />
+                                        </tr>
+                                    </table>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                </td>
+                <td valign="top">
+                    <table border="0" class="otherTbl" width="100%">
+
+                        <tr>
+                            <td class="colHeader"><b>Recommendations</b></td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td>Sign-up for Bill Pay</td>
+                            <td>
+                                <ui:inputcheckbox value="{!v.Model.REC_LEMP_1__c}" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Debit Card Recurring Payments</td>
+                            <td>
+                                <ui:inputcheckbox value="{!v.Model.REC_LEMP_2__c}" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>P2P Transfers</td>
+                            <td>
+                                <ui:inputcheckbox value="{!v.Model.REC_LEMP_3__c}" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>A2A Transfers</td>
+                            <td>
+                                <ui:inputcheckbox value="{!v.Model.REC_LEMP_4__c}" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>ACH/Wire</td>
+                            <td>
+                                <ui:inputcheckbox value="{!v.Model.REC_LEMP_5__c}" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Foreign Wire</td>
+                            <td>
+                                <ui:inputcheckbox value="{!v.Model.REC_LEMP_6__c}" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Benefits of Debit Card</td>
+                            <td>
+                                <ui:inputcheckbox value="{!v.Model.REC_LEMP_7__c}" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Credit Card</td>
+                            <td>
+                                <ui:inputcheckbox value="{!v.Model.REC_LEMP_8__c}" />
+                            </td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+
+        </tbody>
+
+
+
+    </table>
+
+    <p></p>
+    <table>
+        <tr>
+            <td style="text-align:right; padding-top:5px;">
+                <button class="slds-button slds-button--brand" onclick="{!c.savePaymentsTransfersClick}">Save</button>
+            </td>
+        </tr>
+    </table>
+</aura:component>

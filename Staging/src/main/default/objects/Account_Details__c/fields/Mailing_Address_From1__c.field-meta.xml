@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Mailing_Address_From1__c</fullName>
+    <description>Indicator to show where the address on an ACCT record came from. 
+M = Name Mailing Record 
+P = Primary Name Record</description>
+    <externalId>false</externalId>
+    <formula>CASE( Mailing_Address_From__c, 
+&apos;M&apos;, &apos;Name Mailing Record&apos;, 
+&apos;P&apos;, &apos;Primary Name Record&apos;, 
+&apos;&apos;)</formula>
+    <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+    <inlineHelpText>If found, the address on an ACCT record will come from the&quot;Name Mailing Record&quot;.  If not found the address will come from the &quot;Primary Name Record&quot;.</inlineHelpText>
+    <label>Mailing Address From</label>
+    <required>false</required>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Text</type>
+    <unique>false</unique>
+</CustomField>

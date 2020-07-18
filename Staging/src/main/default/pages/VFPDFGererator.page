@@ -1,0 +1,4 @@
+<apex:page controller="VFPageController" renderAs="pdf">
+ 
+  {!PDFData}
+</apex:page>

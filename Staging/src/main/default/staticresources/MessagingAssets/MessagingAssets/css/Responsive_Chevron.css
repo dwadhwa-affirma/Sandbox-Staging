@@ -1,0 +1,423 @@
+	a, button, input[type="submit"], input[type="button"]{ cursor:pointer;}
+	.fpwrap div.inputfiles{display:inline-block;}
+	.svdellinks .msg_action_item{padding-left:0; margin-bottom:0;}
+	.svdellinks .msg_action_item li{list-style:none; display:inline-block;}
+	.svdellinks .msg_action_item li button{padding:0;}
+	.description-div{max-height:36px !important;}
+	#messageBindDiv .top_nav a{font-weight:bold;}
+	.uploadBox{width:100%;}
+	label[for="attachfile"]{font-size:11px; color:#737373;font-weight:bold;}	
+	.pagination-number {float: left;line-height:24px;margin-right:20px;color:#000;}
+	.pagination-button {float: right;display:table;}
+	.pagination-button .btn-link,.pagination-button .btn-link:active,.pagination-button .btn-link:focus,.pagination-button .btn-link:hover{
+	margin: 0;padding: 0;}
+	.pagination_box{float:right;}
+	.pagination_box, .pagination-number {float: none !important; text-align:center;}
+	.prevnextbtns {display: table-cell; vertical-align: middle;}
+	.prevnextbtns a{font-size:13px;}
+	.prevnextbtns button{color:#737373;}
+	
+	/*.attacimg{float:left;}*/
+	.excel_icon, .pdf_icon, .word_icon, .png_icon, .jpg_icon, .otherfile_icon{background-size:17px !important; background-position:0 10px !important;padding: 11px 0 0 24px !important;}
+	.MailDisplayPg .PMattachments li {display: block; padding: 0 0 0 40px !important;}
+	.MailDisplayPg .PMattachments li a{width:auto !important; height:auto !important; display:inline-block; padding-top:9px !important;}
+  	.MailDisplayPg .PMattachments li.attachimg {float: left; padding: 8px 0 0 0 !important;}
+  	.MailDisplayPg .PMattachments li.attachimg img{width:18px; height:auto;}
+	
+	.description-div{max-height:40px;overflow:hidden;text-overflow:ellipsis;}
+	.doublearrow :before{content: ">>" ;padding-right:3px;margin-left: -20px !important;}
+	.tabular_content .table_action_tool {float: left;width: 100%;margin-bottom: 25px;}
+	.tabular_content .table_action_tool>li {float: left;}
+	table.msg_alert_tble>tbody>tr>td {padding: 12px 8px;}
+	
+	.top_action_btn .topaction_btn_list li a.knowledgelink{margin-right:10px;color: #3493ca !important; font-size: 12px;}
+	.MailDisplayPg .short{height:20px; overflow:hidden;}
+	.input_error{color:red;}
+	a.removebutton{font-size:13px; font-weight:bold;padding:0;margin:0 0 0 10px !important;display:inline-block;}
+	#cke_1_toolbox span:nth-child(3){display:none !important;}
+	.tabular_content .table_action_tool{margin-bottom:15px;}
+    .tabular_content .table_action_tool > li{margin-right:10px;}
+	
+	.header .top_action_btn .topaction_btn_list li:nth-child(2){padding-right:0;}
+	.sidebar .msgstxt{font-style:normal;}
+	.sidebar .msgstxt:before{display:none !important;}
+	.container{width:1280px;}
+		.btn, .btn-primary{font-size:13px; font-weight:bold;}
+		.form-control{border-radius:0;-webkit-border-radius:0;box-shadow:none;-webkit-box-shadow:none; font-size:13px;}
+		.bootstrap-select > .dropdown-toggle {border-radius:0;-webkit-border-radius:0;}
+		
+		.bootstrap-select .caret {display:none !important;}
+		.bootstrap-select .dropdown-toggle, .right_content .btn-group.open .dropdown-toggle{border:1px solid #c5c6c8 !important;color: #9e9e9e !important; font-weight:normal;background:#fff;}
+		.right_content .btn-group.open .dropdown-toggle span{color:#000 !important;}
+		.bootstrap-select .dropdown-toggle:after {content: "\e114"; color:#0076bc; font-family: "Glyphicons Halflings"; font-size:10px; font-weight:normal; position:relative; top:2px;}
+		
+		.sidebar .inqbtn{width:100%;display:block; }
+		.header {padding: 20px 0 0;}
+		.tabular_content .table_action_tool{position:relative; top:-14px;}
+		.last_updated_msg span{color: #c9c9c9;}
+		.description-div{font-size:13px;}
+		
+		.uploadBox .uploadTable td{padding:0;}
+		.right_content .attached_files .adfile span{display:none;}
+		
+		.MailDisplayPg .newmsg_item_list li .toggleComment:hover{text-decoration:none;}
+		.message_content .msg_cont_wrap{padding:0;}
+		.message_content .msg_cont_wrap .newmsg_item_list .comment_item a.toggleComment{right:0; top:20px !important;}
+		.message_info > p{margin-bottom:10px;}
+		
+		.uploadBox{padding-left:0;}
+		.uploadTable{width:100%;}
+		.adfile span.glyphicon{font-size: 14px; font-weight: normal;color:#ccc; transform:rotate(50deg); -webkit-transform:rotate(50deg);}
+		.right_content .attached_files .adfile a#btnAdd{background:none; padding:0;margin:0 0 0 -10px; display:inline-block;}
+		.right_content .attached_files .adfile span{display:inline-block;}
+		.MailDisplayPg .top_nav .msg_action .msg_pagination li a.prev{background:none;}
+		.MailDisplayPg .top_nav .msg_action .msg_pagination li a.next{background:none;}
+		.MailDisplayPg #FileUploadBindDiv #commentinputdiv a.btn{padding:5px 20px;}
+		
+		.MailDisplayPg .recent_msg{margin-top:15px;}
+    	.MailDisplayPg .recent_msg .top_nav_sec h4{color:#000; font-size:18px; display:inline-block;margin:0;padding-top:8px;}
+    	.MailDisplayPg .recent_msg .top_nav_sec a{font-size:13px;}
+    	.MailDisplayPg .recent_msg .top_nav_sec a i{font-style:normal;}
+    	.MailDisplayPg .recent_msg .top_nav_sec a span{display:none;}
+    	.MailDisplayPg .recent_msg .top_nav_sec {border-bottom: 1px solid #cecece;}
+		.MailDisplayPg .newmsg_item_list{padding-left:0; list-style:none;}
+		.MailDisplayPg .newmsg_item_list .comment_detailed_attachment{margin:0 !important; display:block;}
+		.MailDisplayPg .newmsg_item_list .comment_detailed_attachment li, 
+		.MailDisplayPg .newmsg_item_list .comment_detailed_attachment li a, 
+		.MailDisplayPg .newmsg_item_list .comment_detailed_attachment li span{ color: #737373 !important; font-size: 14px !important; padding-bottom:0 !important;}
+		.message_content .msg_cont_wrap .newmsg_item_list li.newaccount_holder span span.beblack{ color: #737373 !important;}
+		
+		.MailDisplayPg .message_content .msg_cont_wrap .newmsg_item_list .comment_item .detailed_view > span,
+		.MailDisplayPg .message_content .msg_cont_wrap .newmsg_item_list .comment_item .detailed_view > p{color:#737373; margin:10px 0 !important;}
+		.MailDisplayPg .message_content .msg_cont_wrap .newmsg_item_list .comment_item .detailed_view > span strong{color:#000;}
+		
+		.MailDisplayPg #bottomMessageBindDiv{border-bottom:0 !important;}
+		.MailDisplayPg #bottomMessageBindDiv a{float:none;}
+		.MailDisplayPg #bottomMessageBindDiv #back-to-top, .MailDisplayPg #bottomMessageBindDiv .back_to_inbox{font-size:13px;font-weight: bold;}
+		.MailDisplayPg #bottomMessageBindDiv .msg_action .msg_pagination,
+		.MailDisplayPg #bottomMessageBindDiv .msg_action .msg_action_item{display:none;}
+		.MailDisplayPg .message_info ul.attachments li{display:inline-block;}
+		.MailDisplayPg #FileUploadBindDiv #commentinputdiv a#btnAdd{margin: 0 0 0 -44px;}
+		 
+		.MailDisplayPg .message_content .msg_cont_wrap{padding:0;}
+    	.MailDisplayPg .newmsg_item_list{padding-left:0; list-style:none;}
+    	.MailDisplayPg .svdellinks{padding:0;}
+    	.MailDisplayPg #messageBindDiv ul.comment_detailed_attachment li{padding:3px 0;}
+    	
+    	#no-more-tables table#tblcase .subject { max-width: 280px; width: auto;}
+		#no-more-tables table#tblcase .subject span {display: block;overflow: hidden;text-overflow: ellipsis;white-space: nowrap; width: 100%;}
+		
+		.last_updated_msg {position: absolute; top:8px; right:15px;}
+		.tabular_content .page_heading, .right_content .page_heading{margin-top:5px;}
+		.footer_area{text-align: left;}
+		
+@media(max-width:1367px){
+.action_close {display:none;}
+}
+	@media(max-width:1280px){
+		.container{width:100% !important;} 
+.select_item:disabled { display:none;}
+
+	}
+	
+	@media(max-width:1200px){
+		.nameContainer{padding:0 15px;}
+.select_item:disabled { display:none;}
+	}
+	@media(min-width:1025px){
+		.inputfiles label, .inputfiles span{display:none !important;}
+	}
+	@media(max-width:1024px){
+		.content_area{padding-bottom:15px;}
+		.uploadBox{width:100%; padding-left:0;}
+		.top_action_btn .topaction_btn_list li {display: inline-block;}
+		.top_action_btn .topaction_btn_list {list-style-type: none;}
+		
+		.pagination_box{text-align:center;}
+		.pagination-button{float:none !important; margin:auto;}
+				
+		.container{width:100%;}
+		.sidebar .inqbtn{position:absolute; right:15px; top:-40px; width:auto;display:inline-block;}
+		.nameContainer{padding:15px;}
+		.top_action_btn .topaction_btn_list{margin-bottom:0;}
+		.top_action_btn {padding-top: 10px;}
+		.header{border-bottom:2px solid #778ea1;}
+		.top_action_btn .topaction_btn_list li{padding: 0;}
+		.nameContainer b{display:inline-block;}
+		.content_area{padding-top:0;}
+		.sidebar{background:#002a54; margin-bottom:18px;}
+		.sidebar .col-xs-12{float:none; width:100% !important;}
+		.sidebar .sidebar_nav_list{padding-right:16px;}
+		.sidebar .sidebar_nav_list .sb_navlist{margin-left:0;}
+		.sidebar .sidebar_nav_list ul li{padding-bottom:0; display:inline-block; width:24%;text-align:center;}
+		.sidebar .sidebar_nav_list ul li a{font-weight:bold;}
+		.sidebar .doublearrow *:before{display:none;}
+		.sidebar_nav_list .sb_navlist li a.doublearrow, .sidebar_nav_list .sb_navlist li a.doublearrow span{border-bottom: 1px solid #fff; padding-bottom: 4px;}
+		
+		.tabular_content .page_heading, .right_content .page_heading{font-size:18px; margin-top:5px;}
+		.tabular_content .col-xs-12{float:none; width:100% !important;}
+		
+		.tabular_content .page_heading, .right_content .page_heading{font-size:17px; margin:5px 0 15px;}
+		label{font-size:13px;}
+		
+		/*File input style*/
+			.CreateCasePg .uploadBox .uploadTable td{vertical-align: middle;}
+    		div.inputfiles{position: relative;padding:5px 0;}
+  			div.inputfiles input {display: block !important; width: 157px !important; height: 57px !important; opacity: 0 !important; overflow: hidden !important;position: absolute; left: 0; z-index: -1;}
+			div.des2{border: 1px solid #b6b8b7; background-color: #fff; padding: 0;}
+  			div.des2 label{height: 100%; color: #6a6a6a; background-color: #cecece; display: inline-block; font-weight:normal; float:right;margin-bottom: 0;padding: 2px 15px;border-left: 1px solid #b6b8b7;cursor:pointer;}
+  			div.des2 span{height:auto; display: inline-block; text-overflow: ellipsis; white-space: nowrap; overflow: hidden;vertical-align: middle;color:#c0c0c0; font-size:11px; font-weight:normal; padding: 4px 0 0 8px;max-width:67%;}
+  			div.des4 label{background: #337ab7; border-radius: 4px; color: #fff; cursor: pointer; display: inline-block; font-weight: normal; min-width: 170px; overflow: hidden; padding: 6px 12px;
+    		text-align: center;margin-bottom:0;}
+    		div.des3 label{position: absolute;opacity: 0;}
+    	/*END*/
+    	
+    	.fpwrap div.des2{width:35%;}
+    	.uploadBox .uploadTable .box{margin-bottom:13px;}		
+		.uploadBox .uploadTable td{padding:0 !important; vertical-align:top;}
+		#no-more-tables table{border:0;}
+		#no-more-tables tr{border:0;border-bottom:1px solid #dbdbdb;}
+		#no-more-tables thead tr{position:static;border-bottom:2px solid #6e879c;}
+		#no-more-tables td{padding-left:10px; border:0 !important;}
+		#no-more-tables td:before{display:none;}
+		#no-more-tables th, #no-more-tables td{display:table-cell;}
+		#no-more-tables table#tblcase thead{ display: table-header-group;}
+		#no-more-tables table#tblcase .subject { max-width: 280px; width: auto;}
+		#no-more-tables table{display:table;} 
+    	#no-more-tables thead, #no-more-tables tbody{display:table-header-group;} 
+    	#no-more-tables th, #no-more-tables td{display:table-cell;} 
+    	#no-more-tables tr{display:table-row;}
+    	#no-more-tables table#tblcase td input[type="checkbox"]{width:14px !important; height:14px !important;}
+    	#no-more-tables.resptbl{margin:0 -15px; overflow:hidden;}
+    	#no-more-tables.resptbl table#tblcase tbody{border-left:30px solid transparent;border-right:30px solid transparent;}
+    	#no-more-tables.resptbl table#tblcase tbody tr:hover a,
+    	#no-more-tables.resptbl table#tblcase tbody tr.selected_row a{color:#2d8cc8;}
+    	#no-more-tables.resptbl table#tblcase th.firstcell{padding-left:15px;}
+    	#no-more-tables.resptbl table#tblcase th.lastcell{padding-right:15px;}
+    	#no-more-tables.resptbl table#tblcase td.firstcell{padding-left:5px; text-align:left;}
+    	#no-more-tables.resptbl table#tblcase td.lastcell{padding-right:5px;}
+    	
+    	.showcasefooter .col-sm-4{text-align:center; margin-top:15px;}
+    	.showcasefooter .label_color_item {height: 9px; margin-right: 6px; width: 9px;}
+    	.showcasefooter .msg_alert_label .label_color li{font-size: 13px;margin-right: 40px;}
+    	.showcasefooter .pagination_box{text-align:center; width:100%;}
+    	
+    	/*Create Case Page*/ 
+    	.CreateCasePg .col-md-4, .CreateCasePg .col-md-8{float:none; width:100% !important;} 
+		.CreateCasePg .col-md-4{padding:0 !important;}
+    	.CreateCasePg .sidebar{ padding: 0 15px;}
+    	.CreateCasePg .uploadTable{margin-left:0;}
+    	
+    	/*Mail Detail Page (Display Case and Case Comment)*/
+    	.msg_pagination > li {display: inline-block;list-style: outside none none;}
+    	#messageBindDiv .top_nav {border-bottom: 1px solid #ccc; margin-bottom: 15px; padding: 15px 0 0;}
+    	.backtotop {font-size:13px;font-weight:bold;} 
+    	.MailDisplayPg .message_info ul.attachments li{display:block;}
+    	
+    	.MailDisplayPg .nameContainer{display:none;}
+    	.MailDisplayPg .back_to_inbox {font-size: 13px; font-weight: bold;}
+    	.MailDisplayPg .msg_pagination span.glyphicon {font-size:10px; font-weight:normal;}
+    	.MailDisplayPg .message_info p{margin-bottom:7px !important;}
+    	.MailDisplayPg .newmsg_item_list li .detailed_view ul.attachments{}
+    	.MailDisplayPg #bottomMessageBindDiv{background:#fff;}
+    	.MailDisplayPg #messageBindDiv .top_nav{padding-bottom:15px;}
+    	.MailDisplayPg #FileUploadBindDiv #commentinputdiv a.removebutton{padding:0 !important;}
+    	.MailDisplayPg .uploadBox .uploadTable td{vertical-align: middle;}
+    	.MailDisplayPg .fpwrap a.removebutton{position:relative; top:14px; float:right;}
+    	
+    	.sidebar .sidebar_nav_list{padding:20px 0 !important;}
+    	.sidebar .sidebar_nav_list ul li{width: 24.5%;}
+    	.sidebar .sidebar_nav_list ul li:nth-child(1){text-align:left;}
+    	.sidebar .sidebar_nav_list ul li:nth-child(2){text-align:left; padding-left:3%;}
+    	.sidebar .sidebar_nav_list ul li:nth-child(3){text-align:left; padding-left:6%;}
+    	.sidebar .sidebar_nav_list ul li:nth-child(4){text-align:right;}
+	}
+	
+	@media(max-width:900px){
+		.sidebar .sidebar_nav_list {padding: 20px 0;}
+		#no-more-tables.resptbl table#tblcase tbody {border-left: 15px solid transparent; border-right: 15px solid transparent;}
+	}
+	@media(max-width:767px){
+		.blockUI.blockMsg h1{font-size:16px !important; font-weight:bold !important;}
+		.sidebar .msgstxt{display:none;}
+		.header .col-xs-12{width:50% !important;}
+		.right_content .bootstrap-select.form-control:not([class*="col-"]){width: 50%;}
+		.last_updated_msg span{display:block;}
+		#no-more-tables table#tblcase .subject { max-width: 200px; width: auto;}
+		.fpwrap a.removebutton{position:relative; top:14px; float:right;}
+		
+		.sidebar .sidebar_nav_list ul li{width: 24.4%;}
+		.sidebar .sidebar_nav_list ul li:nth-child(2){padding-left:6%;}
+    	.sidebar .sidebar_nav_list ul li:nth-child(3){padding-left:10%;}
+    	
+	}
+	@media(max-width:600px){
+		.header .col-sm-7{width:70% !important;}
+		.header .col-sm-5{width:30% !important;}
+	
+		.top_action_btn .topaction_btn_list{padding-left:15px;}
+		.top_action_btn .topaction_btn_list li{float:right;}
+		.top_action_btn .topaction_btn_list li a.knowledgelink{margin-right:0;}
+		.top_action_btn .topaction_btn_list li:nth-child(1) {position: relative;top: 0px;}
+		.top_action_btn .topaction_btn_list li:nth-child(2) {position: relative;top: -20px;}
+		
+		#no-more-tables table#tblcase .subject { max-width: 150px; width: auto;}
+		#no-more-tables table#tblcase .tdCategory{ max-width: 80px;}
+		.sidebar .sidebar_nav_list{font-size:13px;}	
+		.sidebar .sidebar_nav_list ul li{width: 24.3%;}
+	}
+	@media(max-width:549px){
+		#no-more-tables.resptbl{overflow-x:auto;}
+	}
+	
+	@media(max-width:1024px){
+		.header .col-sm-7 {padding-left: 24px !important;}
+		.header .col-sm-5 {padding-right: 24px !important;}
+		.nameContainer{padding: 15px 24px;height:50px;} 
+		.sidebar .col-lg-2{padding:0 24px !important;}
+		.sidebar .inqbtn{right: 24px;}
+		.sidebar .sidebar_nav_list {height: 50px; line-height: 50px; padding: 0 !important;}
+		.tabular_content .col-lg-10{padding:0 24px !important;}
+		#no-more-tables.resptbl{margin: 0 -24px;}
+		#no-more-tables.resptbl table#tblcase th.firstcell{padding-left: 24px !important;}
+		#no-more-tables.resptbl table#tblcase th.lastcell{padding-right: 24px !important;}
+		#no-more-tables.resptbl table#tblcase tbody {border-left: 34px solid transparent;border-right: 34px solid transparent;}
+		.footer_area .col-xs-12{padding:0 24px !important;}
+		.last_updated_msg {position: absolute; top:0; right:24px;}
+		
+		.CreateCasePg .ccrightpart{padding: 0 24px !important;}
+		.CreateCasePg .sidebar{padding: 0 24px !important;}
+		.uploadBox, div.inputfiles{padding:0;}
+		div.inputfiles input{height:auto !important;}
+		div.inputfiles label{margin-bottom:0 !important;} 
+		.fpwrap a.removebutton{top:9px;}
+		label[for="attachfile"]{margin-bottom:12px !important;}
+		.right_content .file_attach_list, .right_content .attached_files{padding-top:6px;}
+		
+		
+		.MailDisplayPg .content_area  .MDParea{padding: 0 24px !important;}
+		.MailDisplayPg #messageBindDiv .top_nav {padding: 18px 0 16px; margin-bottom:0;}
+		.MailDisplayPg .top_nav .msg_action .msg_pagination li{padding:0;margin-left:15px;}
+		.MailDisplayPg .top_nav .msg_action .msg_pagination li a.prev,
+		.MailDisplayPg .top_nav .msg_action .msg_pagination li a.next{width:auto; height:auto;}
+		.MailDisplayPg .svdellinks .msg_action_item li{padding-top:12px;}
+		.MailDisplayPg .message_info p{margin-bottom:8px;}
+		.MailDisplayPg .recent_msg .top_nav_sec h4{padding-top:0;}
+		.MailDisplayPg .message_content .recent_msg .top_nav_sec{padding-bottom:12px;}
+		
+		.MailDisplayPg .newmsg_item_list > li{padding: 12px 0 0;}
+		.MailDisplayPg .newmsg_item_list .comment_item .detailed_view > span, 
+		.MailDisplayPg .newmsg_item_list .comment_item .detailed_view > p{margin-bottom:12px;}
+		
+		.MailDisplayPg .DPfooterlinks{padding:24px 0;}
+		
+		.inputfiles.des4{width: 74%; }
+		.inputfiles.des4 span{max-width:100%; overflow: hidden; text-overflow: ellipsis;
+    white-space: nowrap;padding: 12px 0 0;display:inline-block;}
+   }
+	
+	@media(max-width:500px){
+	.header .col-sm-7 {width:65% !important;}
+		.header .col-sm-5 {width:35% !important;}
+		.top_action_btn .topaction_btn_list li:nth-child(1){top: 0px;}
+		
+		.MailDisplayPg .PMlist .unamedate strong,
+    	.MailDisplayPg .PMlist .unamedate span{display: block;}
+    	.MailDisplayPg .PMlist .unamedate span::before {display: none;}
+	}
+	
+	@media(max-width:481px){
+		.right_content .bootstrap-select.form-control:not([class*="col-"]){width: 100%;}
+		.MailDisplayPg .newmsg_item_list li .detailed_view > span{font-size:13px;}
+		
+		.sidebar .sidebar_nav_list ul li{width: 24.1%;}
+	}
+	@media(max-width:450px){
+		.header .col-sm-7{width:60% !important;}
+		.header .col-sm-5{width:40% !important;}
+	}
+	@media(max-width:430px){
+		.last_updated_msg span{font-size:13px;}
+	}
+	@media(max-width:410px){
+		.inputfiles.des4 { width: 65%;}
+	}
+	@media(max-width:413px){
+		.header .col-xs-12{width:100% !important;}
+		.top_action_btn .topaction_btn_list li{display: inline-block; float:none; padding-right:10px;}
+		.top_action_btn .topaction_btn_list li:nth-child(1), 
+		.top_action_btn .topaction_btn_list li:nth-child(2) {position: static;}
+		.sidebar{margin-top:40px;}
+		.sidebar .sidebar_nav_list ul li{width:49%; padding:10px 0;}
+		.sidebar .sidebar_nav_list{height:auto;line-height:normal;}
+		.nameContainer{text-align:center;}
+		.sidebar .inqbtn{left: 50%;transform: translateX(-50%);-webkit-transform: translateX(-50%);top:-45px; right: auto;}
+		.top_action_btn .topaction_btn_list{text-align:center;}
+		.tabular_content .page_heading, .right_content .page_heading{text-align: center;}
+		.last_updated_msg{position:static; text-align: center;}
+		.last_updated_msg span{display:inline-block;font-size:14px;}
+		.tabular_content .table_action_tool{position:static; margin:10px 0;}
+		
+		.sidebar .sidebar_nav_list ul li{text-align:center !important;}
+		.sidebar .sidebar_nav_list ul li:nth-child(2){padding-left:0;}
+    	.sidebar .sidebar_nav_list ul li:nth-child(3){padding-left:0;}
+    	
+    	.tabular_content .table_action_tool{width: auto;left: 50%;transform: translateX(-50%);-webkit-transform: translateX(-50%); position: relative;}
+    	
+    	.showcasefooter .msg_alert_label, .footer_area{text-align: center;}
+    	.showcasefooter .msg_alert_label li:nth-child(2){margin-right:0;}
+    	.CreateCasePg .sidebar{margin-top:0;}
+    	
+    	.tabular_content .table_action_tool{z-index:1000;}
+	}
+	
+	.MailDisplayPg .PMlist{padding: 0; margin: 0;}
+	.MailDisplayPg .PMlist > li{border-bottom: 1px solid #eeeeee; padding: 12px 20px 0 0 !important; position: relative;}
+	.MailDisplayPg .PMlist .unamedate strong{color: #000;text-transform:capitalize;}
+	.MailDisplayPg .PMlist .unamedate span{color: #737373;}
+	.MailDisplayPg .PMlist .unamedate span:before { content: "|"; padding: 0 5px;}
+	.MailDisplayPg .PMlist .shortdata{padding:12px 0;}
+	.MailDisplayPg .PMlist .shortdata p{margin:0; padding-right: 28px; position: relative; text-overflow: ellipsis;
+	    white-space: nowrap; width: 100%; overflow: hidden;height:20px;}
+	.MailDisplayPg .PMlist .longdata{padding: 12px 0;}
+	.MailDisplayPg .PMlist .longdata p{margin:0}
+	.MailDisplayPg .PMlist a.toggleComment{position: absolute; right: 0; top: 45%;font-size: 11px;}
+	.MailDisplayPg .PMlist > li:hover .unamedate strong,
+    .MailDisplayPg .PMlist > li:hover .shortdata p{color:#0076bc;}
+    .MailDisplayPg .PMlist li .PMattachments .attachimg img{width:16px; height:auto; margin-right:8px;}
+    .MailDisplayPg .PMlist li .PMattachments{padding:0 0 12px 0 !important;margin-top:-5px;}
+    .MailDisplayPg .PMlist .collapsedata p > ul{padding-left:15px;}
+    .MailDisplayPg .PMlist .collapsedata p > ol{padding-left:18px;}
+    .MailDisplayPg .PMlist .collapsedata p > ul li{list-style-type:disc;}
+    
+	
+	.header{padding:20px 0;}
+label{margin-bottom:8px !important;}
+		.form-group{ margin-bottom: 20px !important;}
+		.actbtn{padding-top:4px;}
+		.actbtn a{margin-right:8px;}
+		.tabular_content .table_action_tool{top:0; margin-bottom:20px;}
+		.tabular_content .page_heading, .right_content .page_heading{margin-bottom:12px;}
+		.tabular_content .table_action_tool > li{margin-right: 8px;}
+		.tabular_content .table_action_tool > li#btnDelete{margin-left:0px;}
+	
+	.uploadButton{display:none;}
+	.inputfiles .clearfix{height:0;}
+	
+	.MailDisplayPg .message_content .message_info{padding-top: 24px;padding-bottom: 10px; word-wrap:break-word; border-bottom:1px solid #cecece !important;}
+	.MailDisplayPg .comment_detailed_attachment{margin-bottom:10px;}
+	.MailDisplayPg #FileUploadBindDiv {margin-top: 24px;}
+	
+	.form-group.fglast{margin-bottom:0 !important;}
+	#no-more-tables table#tblcase .tdCaseno {min-width: 65px;}
+	@media (min-width: 414px) and (max-width: 500px)
+{
+#UserName
+{	
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    display: block;
+    overflow: hidden;
+    width: 210px;
+}   	
+}

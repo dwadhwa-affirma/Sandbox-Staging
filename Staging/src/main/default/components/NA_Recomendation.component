@@ -1,0 +1,671 @@
+<apex:component controller="RecomendationController" allowDML="true">
+<apex:attribute name="acc2" description="This is the value for accountid" type="string" required="true" assignTo="{!accId2}" />
+<apex:attribute name="Account" description="This is the value for the component." type="Account" required="true" assignTo="{!AccountC}" />
+<script type="text/javascript">
+var currentState = 'none';
+</script>
+<a href='javascript:expandCollapseAll(currentState)'>Expand / Collapse All</a>  
+<br/><br/>
+  
+   
+      <apex:form >
+           
+           <table border="0">
+                <tr>
+                    <td>
+
+                        <table border="0"> 
+                            <tr style="display:{!if(nao.REC_LECF_1__c == true , "", "none")}">
+                                <td>Call Center extended hours</td>
+                                <td><apex:inputField value="{!nao.REC_LECF_Outcome_1__c}" />
+                                <a href="#" id="aMakingRecomendation" onclick='showhideDetails("MakingRecomendation", this); return false;' 
+                                        style=' text-decoration: none; font-size:24px;'>+</a>
+                                        
+                                </td>
+                            </tr>
+                         <c:NA_CurrentFeedback_Recommendation nao="{!nao}" styleclass="MakingRecomendation" renderDetails="{!nao.REC_LECF_1__c}"></c:NA_CurrentFeedback_Recommendation>
+                            <tr style="display:{!if(nao.REC_LECF_2__c == true , "", "none")}">
+                                <td>Online Banking</td>
+                                <td><apex:inputField value="{!nao.REC_LECF_Outcome_2__c}" />
+                                  <a href="#" id='aOnlineBanking' onclick='showhideDetails("OnlineBanking", this); return false;' 
+                                        style=' text-decoration: none; font-size:24px;'>+</a>
+                                </td> 
+                            </tr>
+                            <c:NA_CurrentFeedback_Recommendation nao="{!nao}" styleclass="OnlineBanking" renderDetails="{!nao.REC_LECF_2__c}"></c:NA_CurrentFeedback_Recommendation>
+                            <tr style="display:{!if(nao.REC_LECF_3__c == true , "", "none")}">
+                                <td>Mobile Banking</td>
+                                <td><apex:inputField value="{!nao.REC_LECF_Outcome_3__c}" />
+                                 <a href="#" id='aMobileBanking' onclick='showhideDetails("MobileBanking", this); return false;' 
+                                        style=' text-decoration: none; font-size:24px;'>+</a>
+                                </td>
+                            </tr>
+                            <c:NA_CurrentFeedback_Recommendation nao="{!nao}" styleclass="MobileBanking" renderDetails="{!nao.REC_LECF_3__c}"></c:NA_CurrentFeedback_Recommendation>
+                            <tr style="display:{!if(nao.REC_LECF_4__c == true , "", "none")}">
+                                <td>Surcharge-free ATM network</td>
+                                <td><apex:inputField value="{!nao.REC_LECF_Outcome_4__c}" />
+                                <a href="#" id='aSurchargefreeATM' onclick='showhideDetails("SurchargefreeATM", this); return false;' 
+                                        style=' text-decoration: none; font-size:24px;'>+</a>
+                                </td> 
+                            </tr>
+                            <c:Na_MakingDeposite_Recommendation nao="{!nao}" styleclass="SurchargefreeATM" renderDetails="{!nao.REC_LECF_4__c}"></c:Na_MakingDeposite_Recommendation>
+                            <c:Na_Widthdrawal_Recommendation nao="{!nao}" styleclass="SurchargefreeATM" renderDetails="{!nao.REC_LECF_4__c}"></c:Na_Widthdrawal_Recommendation>
+                            <c:NA_SFATMNetwork_Recommendation nao="{!nao}" styleclass="SurchargefreeATM" renderDetails="{!nao.REC_LECF_4__c}"></c:NA_SFATMNetwork_Recommendation>
+                            <c:NA_CurrentFeedback_Recommendation nao="{!nao}" styleclass="SurchargefreeATM" renderDetails="{!nao.REC_LECF_4__c}"></c:NA_CurrentFeedback_Recommendation>
+                            
+                            <tr style="display:{!if(nao.Rec_LEOM_1__c == true , "", "none")}">
+                                <td>HELOC</td>
+                                <td><apex:inputField value="{!nao.Rec_LEOM_Outcome_1__c}" />
+                                <a href="#" id='aHELOC' onclick='showhideDetails("HELOC", this); return false;' 
+                                        style=' text-decoration: none; font-size:24px;'>+</a>
+                                </td>
+                            </tr>
+                            <c:NA_OtherMilestone_Recommendation nao="{!nao}" styleclass="HELOC" renderDetails="{!nao.Rec_LEOM_1__c}" 
+                                    sectionName="heloc"></c:NA_OtherMilestone_Recommendation>
+                             
+                            <tr style="display:{!if(nao.Rec_LEOM_2__c == true , "", "none")}">
+                                <td>RV Loan</td>
+                                <td><apex:inputField value="{!nao.Rec_LEOM_Outcome_2__c}" />
+                                <a href="#" id='aRVLOAN' onclick='showhideDetails("RVLOAN", this); return false;' 
+                                        style=' text-decoration: none; font-size:24px;'>+</a>
+                                </td>
+                            </tr>
+                            <c:NA_OtherMilestone_Recommendation nao="{!nao}" styleclass="RVLOAN" renderDetails="{!nao.Rec_LEOM_2__c}" 
+                                    sectionName="rv"></c:NA_OtherMilestone_Recommendation>
+                                    
+                                    
+                            <tr style="display:{!if(nao.REC_LEEM_2__c == true , "", "none")}">
+                                <td>IRA</td>
+                                <td><apex:inputField value="{!nao.Rec_LEEM_Outcome_2__c}" />
+                                <a href="#" id='aIRA' onclick='showhideDetails("IRA", this); return false;' 
+                                        style=' text-decoration: none; font-size:24px;'>+</a>
+                                </td>
+                            </tr>
+                              <c:NA_OtherMilestone_Recommendation nao="{!nao}" styleclass="IRA" renderDetails="{!nao.REC_LEEM_2__c}" 
+                                    sectionName="retiremment"></c:NA_OtherMilestone_Recommendation>
+                            <c:NA_Earn_More_Recommendation nao="{!nao}" styleclass="IRA" renderDetails="{!nao.REC_LEEM_2__c}" 
+                                    sectionName="ira"></c:NA_Earn_More_Recommendation>
+                                            
+                            <tr style="display:{!if(nao.Rec_LEOM_3__c == true , "", "none")}">
+                                <td>Health Savings Account</td>
+                                <td><apex:inputField value="{!nao.Rec_LEOM_Outcome_3__c}" />
+                                <a href="#" id='aSavings' onclick='showhideDetails("Savings", this); return false;' 
+                                        style=' text-decoration: none; font-size:24px;'>+</a>
+                                </td>
+                            </tr>
+                            <c:NA_OtherMilestone_Recommendation nao="{!nao}" styleclass="Savings" renderDetails="{!nao.Rec_LEOM_3__c}" 
+                                    sectionName="medical"></c:NA_OtherMilestone_Recommendation>
+                                    
+                            <c:NA_Earn_More_Recommendation nao="{!nao}" styleclass="Savings" renderDetails="{!nao.Rec_LEOM_3__c}" 
+                                    sectionName="health"></c:NA_Earn_More_Recommendation>
+                            
+                            
+                            
+                             <tr style="display:{!if(nao.Rec_LEOM_4__c == true , "", "none")}">
+                                <td>Personal Line of Credit</td>
+                                <td><apex:inputField value="{!nao.Rec_LEOM_Outcome_4__c}" />
+                                <a href="#" id='aLineCredit' onclick='showhideDetails("LineCredit", this); return false;' 
+                                        style=' text-decoration: none; font-size:24px;'>+</a>
+                                </td>
+                            </tr>
+                            <c:NA_OtherMilestone_Recommendation nao="{!nao}" styleclass="LineCredit" renderDetails="{!nao.Rec_LEOM_4__c}" 
+                                    sectionName="lc"></c:NA_OtherMilestone_Recommendation>
+                            
+                             <tr style="display:{!if(nao.Rec_LEOM_5__c == true , "", "none")}">
+                                <td>Student Loans</td>
+                                <td><apex:inputField value="{!nao.Rec_LEOM_Outcome_5__c}" />
+                                <a href="#" id='aStudent' onclick='showhideDetails("Student", this); return false;' 
+                                        style=' text-decoration: none; font-size:24px;'>+</a>
+                                </td>
+                            </tr> 
+                            <c:NA_OtherMilestone_Recommendation nao="{!nao}" styleclass="Student" renderDetails="{!nao.Rec_LEOM_5__c}" 
+                                    sectionName="college"></c:NA_OtherMilestone_Recommendation>
+                             
+                            <tr style="display:{!if(nao.Rec_LEOL_1__c == true , "", "none")}">
+                                <td>Refinance for Existing Loans</td>
+                                <td><apex:inputField value="{!nao.Rec_LEOL_Outcome_1__c}" />
+                                 <a href="#" onclick='showhideDetails("ExisingLoans", this); return false;' 
+                                        style=' text-decoration: none; font-size:24px;'>+</a>
+                                </td>
+                            </tr>
+                            
+
+
+
+
+
+            <apex:outputpanel rendered="{!nao.Rec_LEOL_1__c}">
+           
+            
+             <tr  class="ExisingLoans" style='display:none;'>
+                  <td>
+                   &nbsp;
+                   </td>
+                   <td>
+                   &nbsp;
+                    
+                   
+                   </td>  
+                   <td colspan="2">
+                        <table>
+                            <tr>
+                                <td>
+                                    <h2>Existing Loans</h2>
+                                </td>
+                            </tr>
+                            <tr  style="display:{!if(nao.LEOL_Other_Existing_Loans__c == null || nao.LEOL_Other_Existing_Loans__c == 'Prefer Not to Answer' , "none", "")}">
+                            
+                                <td class="subQuestion">
+                                Do you have loans with other financial institutions?
+                                </td>
+                                <td><apex:outputlabel value="{!nao.LEOL_Other_Existing_Loans__c}" /></td>
+                                
+                            </tr>
+                            <tr>
+                                <td colspan="2">
+                                <apex:pageblock rendered="{!IF(otherExistingLoans != null && otherExistingLoans.Empty == false, true, false)}">
+                                    <apex:pageBlockTable value="{!otherExistingLoans}" var="loan" id="tblLoan">
+
+
+                                            <apex:column Headervalue="Financial Institution">
+                
+                                                <apex:outputlabel value="{!loan.Financial_Institution__c}" />
+                                            </apex:column>
+                
+                                            <apex:column Headervalue="Type of Loan">
+                
+                                                <apex:outputlabel value="{!loan.Type_of_Loan__c}" />
+                                            </apex:column>
+                
+                
+                                            <apex:column Headervalue="Balance">
+                
+                                                <apex:outputlabel value="{!loan.Balance__c}"  style="width: 80px"/>
+                                            </apex:column>
+                
+                                            <apex:column Headervalue="Rate">
+                
+                                                <apex:outputlabel value="{!loan.Rate__c}"  style="width: 50px"/>
+                                            </apex:column> 
+                
+                                            <apex:column Headervalue="End Date">
+                
+                                                <apex:outputlabel value="{!loan.End_Date__c}" />
+                                            </apex:column>
+                
+                                           
+                        </apex:pageBlockTable>
+                                
+                                </apex:pageblock>
+                                </td>
+                            </tr>
+                            
+                        </table>
+                   </td>
+             </tr>
+             
+        </apex:outputpanel>
+
+
+
+
+
+
+
+
+        <tr style="display:{!if(nao.Rec_LEOL_2__c == true , "", "none")}">
+                                <td>Debt Consolidation </td>
+                                <td>
+                                <apex:inputField value="{!nao.Rec_LEOL_Outcome_2__c}" />
+                                 <a href="#" onclick='showhideDetails("ExisingLoans1", this); return false;' 
+                                      style=' text-decoration: none; font-size:24px;'>+</a>
+                                </td>
+                            </tr>
+
+
+
+
+
+          <apex:outputpanel rendered="{!nao.Rec_LEOL_2__c}">
+         
+          
+         <tr  class="ExisingLoans1" style='display:none;'>
+             <td>
+                   &nbsp;
+                   </td>
+                   <td>
+                   &nbsp;
+                    
+                   
+                   </td>  
+                   <td colspan="2">
+                       <table>
+                          <tr>
+                              <td>
+                                  <h2>Existing Loans</h2>
+                              </td>
+                          </tr>
+                          <tr  style="display:{!if(nao.LEOL_Other_Existing_Loans__c == null || nao.LEOL_Other_Existing_Loans__c == 'Prefer Not to Answer' , "none", "")}">
+                          
+                            <td class="subQuestion">
+                            Do you have loans with other financial institutions?
+                            </td>
+                            <td><apex:outputlabel value="{!nao.LEOL_Other_Existing_Loans__c}" /></td>
+                            
+                          </tr>
+                          <tr>
+                            <td colspan="2">
+                            <apex:pageblock rendered="{!IF(otherExistingLoans != null && otherExistingLoans.Empty == false, true, false)}">
+                              <apex:pageBlockTable value="{!otherExistingLoans}" var="loan" id="tblLoan">
+
+
+                                    <apex:column Headervalue="Financial Institution">
+        
+                                        <apex:outputlabel value="{!loan.Financial_Institution__c}" />
+                                    </apex:column>
+        
+                                    <apex:column Headervalue="Type of Loan">
+        
+                                        <apex:outputlabel value="{!loan.Type_of_Loan__c}" />
+                                    </apex:column>
+        
+        
+                                    <apex:column Headervalue="Balance">
+        
+                                        <apex:outputlabel value="{!loan.Balance__c}"  style="width: 80px"/>
+                                    </apex:column>
+        
+                                    <apex:column Headervalue="Rate">
+        
+                                        <apex:outputlabel value="{!loan.Rate__c}"  style="width: 50px"/>
+                                    </apex:column> 
+        
+                                    <apex:column Headervalue="End Date">
+        
+                                        <apex:outputlabel value="{!loan.End_Date__c}" />
+                                    </apex:column>
+        
+                                   
+                        </apex:pageBlockTable>
+                            
+                            </apex:pageblock>
+                            </td>
+                          </tr>
+                          
+                      </table>
+                   </td>
+         </tr>
+         
+    </apex:outputpanel>
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                            
+                
+
+
+
+
+
+
+
+
+                            
+                            
+                            <tr style="display:{!if(nao.REC_LEAV_1__c == true , "", "none")}">
+                                <td>Auto Loans</td>
+                                <td><apex:inputField value="{!nao.REC_LEAV_Outcome_1__c}" />
+                                <a href="#Mortgages" id="aautoVehicle"  onclick='showhideDetails("autoVehicle", this);' 
+                                        style=' text-decoration: none; font-size:24px;'>+</a>
+                                </td>
+                            </tr>
+                            <c:NA_AutoVehicle_Recommendation nao="{!nao}" styleclass="autoVehicle"  renderDetails="{!nao.REC_LEAV_1__c}"></c:NA_AutoVehicle_Recommendation>
+                            <tr style="display:{!if(nao.Rec_LEHS_1__c == true , "", "none")}">
+                                <td>Mortgages</td>
+                                <td><apex:inputField value="{!nao.Rec_LEHS_1_Outcome__c}" />
+                                  <a href="#Mortgages" id='amortgagesDetails' onclick='showhideDetails("mortgagesDetails", this);' 
+                                        style=' text-decoration: none; font-size:24px;'>+</a>
+                                 </td>
+                            </tr>
+                             <c:Na_Housing_Recommendation nao="{!nao}" styleclass="mortgagesDetails"  renderDetails="{!nao.Rec_LEHS_1__c}"></c:Na_Housing_Recommendation>
+
+                            <tr style="display:{!if(nao.Rec_LEHS_2__c == true , "", "none")}">
+                                <td>Preferred Realtor</td>
+                                <td><apex:inputField value="{!nao.Rec_LEHS_Outcome_2__c}" />
+                                <a href="#Mortgages" id='amortgagesDetails1' onclick='showhideDetails("mortgagesDetails1", this);' 
+                                        style=' text-decoration: none; font-size:24px;'>+</a>
+                                </td>
+                                
+                            </tr>
+                            <c:Na_Housing_Recommendation nao="{!nao}" styleclass="mortgagesDetails1"   renderDetails="{!nao.Rec_LEHS_2__c}"></c:Na_Housing_Recommendation>
+                            
+                                                         
+                            <tr style="display:{!if(nao.REC_LEMD_3__c == true , "", "none")}">
+                                <td>Shared Branching</td>
+                                <td><apex:inputField value="{!nao.REC_LEMD_Outcome_3__c}" />
+                                  <a href="#" id="aSharedBranching"  onclick='showhideDetails("SharedBranching", this); return false;' 
+                                        style=' text-decoration: none; font-size:24px;'>+</a>
+                                </td>
+                            </tr>
+                            <c:Na_SharedBranching_Recommendation nao="{!nao}" styleclass="SharedBranching" renderDetails="{!nao.REC_LEMD_3__c}"></c:Na_SharedBranching_Recommendation>
+                            <c:Na_MakingDeposite_Recommendation nao="{!nao}" styleclass="SharedBranching" renderDetails="{!nao.REC_LEMD_3__c}"></c:Na_MakingDeposite_Recommendation>
+                           
+                            <tr style="display:{!if(nao.REC_LEMD_2__c == true , "", "none")}">
+                                <td>Mobile Deposits</td>
+                                <td><apex:inputField value="{!nao.REC_LEMD_Outcome_2__c}" />
+                                 <a href="#"  id="aMobileDeposits" onclick='showhideDetails("MobileDeposits", this); return false;' 
+                                        style=' text-decoration: none; font-size:24px;'>+</a>
+                                </td>
+                            </tr>
+                           <c:Na_MakingDeposite_Recommendation nao="{!nao}" styleclass="MobileDeposits" renderDetails="{!nao.REC_LEMD_2__c}"></c:Na_MakingDeposite_Recommendation>
+                           
+                           
+                            <tr style="display:{!if(nao.REC_LEMD_1__c == true , "", "none")}">
+                                <td>Direct Deposit</td>
+                                <td><apex:inputField value="{!nao.REC_LEMD_Outcome_1__c}" />
+                                 <a href="#" id="aDirectDeposits"  onclick='showhideDetails("DirectDeposits", this); return false;' 
+                                        style=' text-decoration: none; font-size:24px;'>+</a>
+                                </td>
+                            </tr>
+                           <c:Na_MakingDeposite_Recommendation nao="{!nao}" styleclass="DirectDeposits" renderDetails="{!nao.REC_LEMD_1__c}"></c:Na_MakingDeposite_Recommendation>
+                           
+                            <tr style="display:{!if(nao.REC_LEMP_1__c == true , "", "none")}">
+                                <td>Bill Pay</td>
+                                <td><apex:inputField value="{!nao.REC_LEMP_Outcome_1__c}" />
+                                 <a href="#" id="aBillPay" onclick='showhideDetails("BillPay", this); return false;' 
+                                        style=' text-decoration: none; font-size:24px;'>+</a>
+                                </td>
+                            </tr>
+                            <c:NA_MoneyMovement_Recommendation nao="{!nao}" styleclass="BillPay" renderDetails="{!nao.REC_LEMP_1__c}"
+                                    sectionName="payments"></c:NA_MoneyMovement_Recommendation>
+                            
+                            
+                            
+                            
+                            <tr style="display:{!if(nao.REC_LEMP_2__c == true , "", "none")}">
+                                <td>Debit Card Recurring Payments</td>
+                                <td><apex:inputField value="{!nao.REC_LEMP_Outcome_2__c}" />
+                                 <a href="#" id="aDebitCard"  onclick='showhideDetails("DebitCard", this); return false;' 
+                                        style=' text-decoration: none; font-size:24px;'>+</a>
+                                </td>
+                            </tr>
+                            <c:NA_MoneyMovement_Recommendation nao="{!nao}" styleclass="DebitCard" renderDetails="{!nao.REC_LEMP_2__c}"
+                                    sectionName="payments"></c:NA_MoneyMovement_Recommendation>
+                            
+                            <tr style="display:{!if(nao.REC_LEMP_3__c == true , "", "none")}">
+                                <td>P2P Transfers</td>
+                                
+                                
+                                <td><apex:inputField value="{!nao.REC_LEMP_Outcome_3__c}" />
+                                <a href="#" id="aP2P" onclick='showhideDetails("P2P", this); return false;' 
+                                        style=' text-decoration: none; font-size:24px;'>+</a>
+                                </td>
+                            </tr>
+                            <c:NA_MoneyMovement_Recommendation nao="{!nao}" styleclass="P2P" renderDetails="{!nao.REC_LEMP_3__c}"
+                                    sectionName="payments"></c:NA_MoneyMovement_Recommendation>
+                            
+                            <tr style="display:{!if(nao.REC_LEMP_4__c == true , "", "none")}">
+                                <td>A2A Transfers</td>
+                                <td><apex:inputField value="{!nao.REC_LEMP_Outcome_4__c}" />
+                                <a href="#" id="aA2A" onclick='showhideDetails("A2A", this); return false;' 
+                                        style=' text-decoration: none; font-size:24px;'>+</a>
+                                </td>
+                            </tr> 
+                            <c:NA_MoneyMovement_Recommendation nao="{!nao}" styleclass="A2A" renderDetails="{!nao.REC_LEMP_4__c}"
+                                    sectionName="payments"></c:NA_MoneyMovement_Recommendation>
+                            
+                            <tr style="display:{!if(nao.REC_LEMP_5__c == true , "", "none")}">
+                                <td>ACH/Wire </td>
+                                <td><apex:inputField value="{!nao.REC_LEMP_Outcome_5__c}" />
+                                <a href="#" id="aACH"  onclick='showhideDetails("ACH", this); return false;' 
+                                        style=' text-decoration: none; font-size:24px;'>+</a>
+                                </td>
+                            </tr>
+                            <c:NA_MoneyMovement_Recommendation nao="{!nao}" styleclass="ACH" renderDetails="{!nao.REC_LEMP_5__c}"
+                                    sectionName="daytransfer"></c:NA_MoneyMovement_Recommendation>
+                            
+                            <tr style="display:{!if(nao.REC_LEMP_6__c == true , "", "none")}">
+                                <td>Foreign Wire</td>
+                                <td><apex:inputField value="{!nao.REC_LEMP_Outcome_6__c}" />
+                                <a href="#" id="aForeign" onclick='showhideDetails("Foreign", this); return false;' 
+                                        style=' text-decoration: none; font-size:24px;'>+</a>
+                                </td>
+                            </tr>
+                            <c:NA_MoneyMovement_Recommendation nao="{!nao}" styleclass="Foreign" renderDetails="{!nao.REC_LEMP_6__c}"
+                                    sectionName="foreign"></c:NA_MoneyMovement_Recommendation>
+                             
+                            <tr style="display:{!if(nao.REC_LEMP_7__c == true , "", "none")}">
+                                <td>Benefits of Debit Card</td>
+                                <td><apex:inputField value="{!nao.REC_LEMP_Outcome_7__c}" />
+                                <a href="#" id="aDebit" onclick='showhideDetails("Debit", this); return false;' 
+                                        style=' text-decoration: none; font-size:24px;'>+</a>
+                                </td>
+                            </tr>
+                            <c:NA_MoneyMovement_Recommendation nao="{!nao}" styleclass="Debit" renderDetails="{!nao.REC_LEMP_7__c}"
+                                    sectionName="dc"></c:NA_MoneyMovement_Recommendation>
+                           
+                            <tr style="display:{!if(nao.REC_LEMP_8__c == true , "", "none")}">
+                                <td>Credit Card</td>
+                                <td><apex:inputField value="{!nao.REC_LEMP_Outcome_8__c}" />
+                                <a href="#"  id="aCredit" onclick='showhideDetails("Credit", this); return false;' 
+                                        style=' text-decoration: none; font-size:24px;'>+</a>
+                                </td>
+                            </tr>
+                            <c:NA_MoneyMovement_Recommendation nao="{!nao}" styleclass="Credit" renderDetails="{!nao.REC_LEMP_8__c}"
+                                    sectionName="cc"></c:NA_MoneyMovement_Recommendation>
+                           
+                           
+                            <tr style="display:{!if(nao.REC_LEPT_1__c == true , "", "none")}">
+                                <td>Checking Account</td>
+                                <td><apex:inputField value="{!nao.REC_LEPT_Outcome_1__c}" />
+                                <a href="#"  id="aPrimaryTransaction"  onclick='showhideDetails("PrimaryTransaction", this); return false;' 
+                                        style=' text-decoration: none; font-size:24px;'>+</a>
+                                </td>
+                            </tr>
+                            <c:Na_PrimaryTransaction_Recommendation nao="{!nao}" styleclass="PrimaryTransaction" renderDetails="{!nao.REC_LEPT_1__c}"></c:Na_PrimaryTransaction_Recommendation>
+                            
+                            
+                            
+                            <tr style="display:{!if(nao.REC_LEEM_1__c == true , "", "none")}">
+                                <td>Market Edge and/or CD's</td>
+                                <td><apex:inputField value="{!nao.Rec_LEEM_Outcome_1__c}" />
+                                <a  id="aEarnMore" href="#"  onclick='showhideDetails("EarnMore", this); return false;' 
+                                        style=' text-decoration: none; font-size:24px;'>+</a>
+                                </td>
+                            </tr>
+                            <c:NA_Earn_More_Recommendation nao="{!nao}" 
+                                    styleclass="EarnMore" renderDetails="{!nao.REC_LEEM_1__c}" sectionName="comment"></c:NA_Earn_More_Recommendation>
+                            <c:Na_MakingDeposite_Recommendation nao="{!nao}" styleclass="EarnMore"  renderDetails="{!nao.REC_LEEM_1__c}" ></c:Na_MakingDeposite_Recommendation>
+                            
+                            
+                            <tr style="display:{!if(nao.Rec_LEMQ_1__c == true , "", "none")}">
+                                <td>Refer Related Individuals for Credit Union</td>
+                                <td><apex:inputField value="{!nao.REC_LEMQ_Outcome_1__c}" />
+                                <a href="#"  id="aReferMembers"  onclick='showhideDetails("ReferMembers", this); return false;' 
+                                  		style=' text-decoration: none; font-size:24px;'>+</a>
+                                </td>
+                            </tr>
+                            
+                            
+                             <apex:outputpanel rendered="{!nao.Rec_LEMQ_1__c}">
+    	   
+    	    
+	    	 <tr  class="ReferMembers" style='display:none;'>
+	    	 	  <td>
+                   &nbsp;
+                   </td>
+                   <td>
+                   &nbsp;
+                    
+                   
+                   </td>  
+                   <td colspan="2">
+                        <table>
+                            <tr>
+                                <td>
+                                    <h2>Other Members</h2>
+                                </td>
+                            </tr>
+                           
+                            <tr>
+                                <td colspan="2">
+                                <apex:pageblock rendered="{!IF(otherMembers != null && otherMembers.Empty == false, true, false)}">
+                                    <apex:pageBlockTable value="{!otherMembers}" var="loan" id="tblLoan">
+
+
+                                            <apex:column Headervalue="Name">
+                
+                                                <apex:outputlabel value="{!loan.Name__c}" />
+                                            </apex:column>
+                
+                                            <apex:column Headervalue="Age">
+                
+                                                <apex:outputlabel value="{!loan.Age__c}" />
+                                            </apex:column>
+                
+                <apex:column Headervalue="Want to refer them for Membership?">
+                
+                                                <apex:outputlabel value="{!loan.Want_to_Refer_Membership__c}" />
+                                            </apex:column>
+                                            
+                
+                                           
+                        </apex:pageBlockTable>
+                                
+                                </apex:pageblock>
+                                </td>
+                            </tr>
+                            
+                        </table>
+                   </td>
+             </tr>
+             
+        </apex:outputpanel>
+                            
+                            
+                            
+                            
+                             <tr><td colspan="4"><p></p><hr></hr><p></p></td></tr> 
+                             <tr>
+                             
+                                <td>Recommendation Comments<p></p></td>
+                                <td><apex:inputField value="{!nao.Rec_Comment__c}" style="width: 200px; height: 40px; align: left"/><p></p>
+                          
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan="2"><apex:commandButton value="Save" action="{!SubmitOtherForm}" /></td>
+                            </tr>
+                            
+                          </table>
+                      </td>
+                  </tr>
+              </table>
+         </apex:form>
+           <script type="text/javascript">
+           
+                    function showhideDetailsEx(className, ele)
+                    {
+                        if (currentState == 'block' || currentState == '')
+                        {
+                            for(var i = 0; i < document.getElementsByClassName(className).length; i++)
+                            {
+                                document.getElementsByClassName(className)[i].style.display = 'none';
+                            }
+                            ele.innerHTML = '+';
+                        }
+                        else
+                        {
+                            for(var i = 0; i < document.getElementsByClassName(className).length; i++)
+                            {
+                                document.getElementsByClassName(className)[i].style.display = '';
+                            }
+                            ele.innerHTML = '-';
+                        }
+                    }
+                    
+                    function showhideDetails(className, ele)
+                    {
+                        if (document.getElementsByClassName(className)[0].style.display == '')
+                        {
+                            for(var i = 0; i < document.getElementsByClassName(className).length; i++)
+                            {
+                                document.getElementsByClassName(className)[i].style.display = 'none';
+                            }
+                            ele.innerHTML = '+';
+                        }
+                        else
+                        {
+                            for(var i = 0; i < document.getElementsByClassName(className).length; i++)
+                            {
+                                document.getElementsByClassName(className)[i].style.display = '';
+                            }
+                            ele.innerHTML = '-';
+                        }
+                    }
+                    
+                    function expandCollapseAll(val)
+                    {
+                        
+                        expandCollapseItem('HELOC');
+                        expandCollapseItem('MakingRecomendation');
+                        expandCollapseItem('OnlineBanking');
+                        expandCollapseItem('MobileBanking');
+                        expandCollapseItem('SurchargefreeATM');
+                        expandCollapseItem('RVLOAN');
+                        expandCollapseItem('Savings');
+                        expandCollapseItem('LineCredit');
+                        expandCollapseItem('Student');
+                        expandCollapseItem('autoVehicle');
+                        expandCollapseItem('mortgagesDetails');
+                        expandCollapseItem('mortgagesDetails1');
+                        expandCollapseItem('SharedBranching');
+                        expandCollapseItem('MobileDeposits');
+                        expandCollapseItem('DirectDeposits');
+                        expandCollapseItem('BillPay');
+                        expandCollapseItem('DebitCard');
+                        expandCollapseItem('P2P');
+                        expandCollapseItem('ACH');
+                        expandCollapseItem('A2A');
+                        expandCollapseItem('Foreign');
+                        expandCollapseItem('Credit');
+                        expandCollapseItem('Debit');
+                        expandCollapseItem('ExisingLoans');
+                        expandCollapseItem('PrimaryTransaction');
+                        expandCollapseItem('EarnMore');
+                        expandCollapseItem('IRA');
+                        expandCollapseItem('ReferMembers');
+                        if (val == 'block')
+                        {
+                            currentState = 'none';
+                        }
+                        else
+                        {
+                            currentState = 'block';
+                        }
+                        
+                        
+                    }
+                    
+                    function expandCollapseItem(className)
+                    {
+                        try
+                        {
+                            var elm = document.getElementById('a'+ className );
+                            showhideDetailsEx(className,elm);
+                        }catch(e){}
+                    }
+                    
+                </script>
+</apex:component>

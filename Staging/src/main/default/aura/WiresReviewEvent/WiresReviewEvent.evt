@@ -1,0 +1,6 @@
+<aura:event type="APPLICATION" description="Event template">
+    <aura:attribute name="WiresLoanRecordId" type="String"/>
+	<aura:attribute name="AccountOpenfor45Days" type="String"/>
+	<aura:attribute name="WiresBalance" type="String"/> 
+    <aura:attribute name="WiresCount" type="String"/> 
+</aura:event>

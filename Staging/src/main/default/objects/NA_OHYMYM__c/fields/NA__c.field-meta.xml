@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>NA__c</fullName>
+    <externalId>false</externalId>
+    <label>Needs Assessment</label>
+    <referenceTo>Needs_Assesment__c</referenceTo>
+    <relationshipLabel>NA  Optimize How You Move Your Money</relationshipLabel>
+    <relationshipName>NA_Optimize_How_You_Move_Your_Money</relationshipName>
+    <relationshipOrder>0</relationshipOrder>
+    <reparentableMasterDetail>false</reparentableMasterDetail>
+    <trackTrending>false</trackTrending>
+    <type>MasterDetail</type>
+    <writeRequiresMasterRead>false</writeRequiresMasterRead>
+</CustomField>

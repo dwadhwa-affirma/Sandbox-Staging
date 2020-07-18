@@ -1,0 +1,32 @@
+<aura:component implements="flexipage:availableForAllPageTypes,force:appHostable,force:hasRecordId">
+
+    <aura:attribute name="record" type="Lead"/>
+    <aura:attribute name="simpleRecord" type="Lead"/>
+    <aura:attribute name="recordError" type="String"/>    
+    
+    <style>
+.recordError.cLeadMemberNumberWarning{
+ position: absolute;
+    right: 300px;
+    top: 9px;
+    z-index: 100;
+}
+@media(max-width:950px){.recordError.cLeadMemberNumberWarning{right:auto; left:280px; width:400px;}}
+</style>
+
+    <force:recordData aura:id="recordLoader"
+      recordId="{!v.recordId}"
+      layoutType="FULL"
+      targetRecord="{!v.record}"
+      targetFields="{!v.simpleRecord}"      
+      />
+          
+    <aura:if isTrue="{!v.simpleRecord.Member_Account__c == null}">
+        <div class="recordError">
+            <ui:message title="Error" severity="error" closable="false">
+            If available, please enter the Member Account Number
+
+            </ui:message>
+        </div>
+    </aura:if>
+</aura:component>

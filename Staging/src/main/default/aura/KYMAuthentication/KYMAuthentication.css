@@ -1,0 +1,21 @@
+.THIS {
+}
+
+.THIS .hidden
+{
+	display:none;
+}
+
+.THIS .show
+{
+	display:block;
+}
+
+.THIS .divwidth
+{
+	width: 30%;
+}
+.THIS .MarginTop
+{
+	margin-top: 20px;
+}

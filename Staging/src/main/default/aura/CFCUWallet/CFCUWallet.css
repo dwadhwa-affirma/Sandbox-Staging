@@ -1,0 +1,103 @@
+.THIS {
+}
+
+.THIS .leftDiv {
+    width: 100%;
+    display: block;
+}
+
+.THIS .RightDiv {
+    display: block;
+     width: 100%;
+}
+
+.THIS .Hide {
+   display:none;
+}
+
+.THIS .Show {
+   display:block;
+}
+
+.THIS .customRadioCls .slds-form-element__control .slds-radio {
+    display : inline-block !important;
+}
+
+.THIS .MainDiv {
+   /*height:400px;*/
+height: auto;
+}
+
+.THIS .InnerDiv {
+   padding: 15px 0;
+   display: block;
+  
+}
+.THIS .BtnOne {
+   margin-right:0px;
+}
+.THIS .BtnTwo {
+   margin-left:0px;
+}
+.THIS .TableMargin {
+   margin-Top:10px;
+   margin-left:30px;
+}
+.THIS .CenterDiv {
+    text-align: center;
+   
+}
+.THIS .mb-50{
+	margin-bottom:50px;
+}
+.THIS .mr-20{
+	margin:20px auto;
+}
+.THIS .mr-80{
+	padding: 5px;
+    padding-right: 40px;
+}
+.THIS .pr-40{
+	padding: 5px;
+    padding-right: 40px;
+}
+.THIS .select-auto-width > .slds-form-element__control > .slds-select_container{
+    display: inline-block;
+}
+.THIS .vl {
+  border-left: 3px solid grey;
+  height: auto;
+  /*width: 60%;
+  float:right;*/
+width: 70%;
+float:left;
+    min-height: 200px;
+    background-color: #fbfbfc;
+    padding: 15px;
+}
+
+.THIS .mr-left10 {
+  margin-left:0px;
+}
+.THIS .InnerDivContainer {float:left; width: 30%; padding-left:10px;}
+.THIS .InnerDiv {padding: 10px 10px 10px 0 !important;}
+.THIS .submitButton { padding: 15px 25px!important;}
+.THIS .clearfix::after {content: "";  clear: both;  display: table;}
+.THIS .header-column-title {width:300px !important;}
+.THIS .header-column-title .slds-truncate,.THIS .header-column p {font-size: 14px; line-height: 18px;}
+.THIS .MainDiv.MainField {border-bottom: 3px solid #637697; margin-bottom: 0;}
+.THIS .rightBox p.field-header {text-transform : uppercase;}
+.THIS .CardDetails .vl {min-height: 340px;} 
+.THIS .maap-answers .slds-p-around_small {margin-right:0 !important;}
+.THIS .maap-answers .slds-p-around_small:first-child{border: none !important; margin-right:0 !important; text-align: left !important; min-width: 150px !important; padding: 12px 12px 8px 0 !important;}
+.THIS .maap-answers .slds-p-around_small:first-child .mr-80 {padding-right:0;}
+@media screen and (max-width: 1600px){
+    .THIS .InnerDiv {display:block !important;}
+    .THIS .leftDiv,.THIS .RightDiv {width:100% !important; display: block !important;}
+    .THIS .leftDiv.submitButtonLabel, .THIS .submitButton .RightDiv {width: 40% !important; display: inline-block !important;}
+   
+}
+
+@mediascreen and (max-width: 767px) {
+    .THIS .BtnOne {margin-bottom: 10px;}
+}

@@ -1,0 +1,260 @@
+<aura:component implements="force:appHostable,force:lightningQuickActionWithoutHeader,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,force:hasSObjectName" access="global" controller="EFTController">
+    <aura:attribute name="actions" type="List" default="[{'label': 'Create a new EFT record', 'value': '1'},
+                                                   {'label': 'Access/Update existing EFT records', 'value': '2'}]"/>                                         
+                                                   
+<aura:attribute name="childActions" type="List" default="[{'label': 'View EFT Details', 'value': '3'},
+                                                   		{'label': 'Update EFT Record', 'value': '4'},
+                                                        {'label': 'Cancel/Expire EFT Record', 'value': '5'}]"/>  
+<aura:attribute name="ActionDisabled" type="Boolean" default="true"/> 
+ <aura:handler name="init" action="{!c.doInit}" value="{!this}" access="global" />
+ <aura:attribute name="EFTRecord" type="EFT__c" />    
+  <aura:attribute name="CaseId" type="string" />   
+    <aura:attribute name="UpdateText" type="string" default="Update"/> 
+<aura:attribute name="isDocusignEmailSelected" type="Boolean" default="false"/>
+<aura:attribute name="EmailIdsList" type="List" />    
+<aura:registerEvent name="EFTEvent" type="c:EFTEvent"/>    
+   
+  		<div id = "stage6">
+         <aura:if isTrue="{!v.isDocusignEmailSelected == false}">
+ 	 <div class="eftreqstatus">
+                 <div>
+                <p class = "fontstyle">Select Email Address</p>
+                <br/>
+                   <table aria-multiselectable="true" class="slds-table slds-table_header-hidden slds-table_edit slds-tree slds-table_tree" role="treegrid">
+                      
+                  <tbody>
+              <aura:iteration items="{!v.EmailIdsList}" var="itemOption" indexVar="i">                  
+				<tr aria-expanded="false" aria-level="1" aria-posinset="3" aria-selected="false" aria-setsize="4" class="slds-hint-parent">
+					<td class="slds-text-align_right" role="gridcell" style="width:3.25rem">
+						<span class="slds-radio">
+                          <lightning:input type="radio" name="select" value="{!itemOption.EmailId}" onchange="{!c.onEmailChange}"/>
+                        </span>
+					</td>
+					
+	             	<td data-label="Employees" role="gridcell">
+						<div class="slds-truncate" title="{!itemOption.EmailId}">{!itemOption.EmailId}</div>
+					</td>
+					<td data-label="Employees" role="gridcell">
+						<div class="slds-truncate" title="{!itemOption.FullName}">{!itemOption.FullName}</div>
+					</td>
+					<td data-label="Employees" role="gridcell">
+						<div class="slds-truncate" title="{!itemOption.AccountType}">{!itemOption.AccountType}</div>
+					</td>
+		         </tr>
+		        </aura:iteration>
+			 </tbody>
+                </table>
+            </div>
+     </div> 
+   <aura:set attribute="else">
+        <aura:if isTrue="{!and(v.EFTRecord.Action_Type__c == 'Create', v.EFTRecord.Expired__c == false)}">
+            <div class="eftreqstatus">
+                <p class = "fontstyle">ACH Request Status</p><br></br>
+               	<lightning:layout>
+                    <table class="toptbl">
+                    	<tr>
+                        	<td>
+                            	<lightning:icon class="icon_label1" iconName="utility:record" size="medium" alternativeText="Indicates approval"/>
+                            </td>
+                            <td><p>Your ACH Create request has been successfully completed. The details of your request are in Mars case(<a href="{!('/one/one.app?#/sObject/'+ v.EFTRecord.Case__c + '/view')}" target="_blank">{!v.EFTRecord.Case__r.CaseNumber}</a>). When the member completes the DocuSign ACH verification form, the ACH record will be created in Episys.</p>                            	
+                            </td>
+                        </tr>
+                    </table>
+                </lightning:layout>
+                <table class="bottomtbl">
+                	<tr>
+                    	<td>Member Number:</td>
+                        <td>{!v.EFTRecord.Member_Account__r.Name}</td>
+                    </tr>
+                    <tr>
+                    	<td>Share/Loan:</td>
+                        <td class="sloan">{!v.EFTRecord.Share_Loan_Id__c}<span>{!v.EFTRecord.Share_Loan_Type__c}<br />{!v.EFTRecord.Share_Loan_Description__c}</span></td>
+                    </tr>
+                    <tr>
+                    	<td>Funding FI:</td>
+                        <td>{!v.EFTRecord.Bank_Name__c}</td>
+                    </tr>
+                    <tr>
+                    	<td>Payment:</td>
+                    	<aura:if isTrue="{!(empty(v.EFTRecord.Alternate_Amount__c))}">
+                    		<td><lightning:formattedNumber value="{!v.EFTRecord.Payment_Amount__c}" style="currency" currencyCode="USD"/></td>
+                    	<aura:set attribute="else">
+                    		<td><lightning:formattedNumber value="{!v.EFTRecord.Alternate_Amount__c}" style="currency" currencyCode="USD"/></td>
+                    	</aura:set>
+                    	</aura:if> 
+                    </tr>
+                    <tr>
+                		<td>Effective Date:</td>
+                        <td>{!v.EFTRecord.Effective_Date__c}</td> 
+                    </tr>
+                    <tr>
+                		<td>Frequency:</td>
+                        <td>{!v.EFTRecord.Frequency__c}</td> 
+                    </tr>
+                    <tr>
+                		<td>Day of Month:</td>
+                        <td>{!v.EFTRecord.Day_of_Month__c}</td>
+                    </tr>
+                    <aura:if isTrue="{!v.EFTRecord.Frequency__c == 'Semi-Monthly'}">
+                    	 <tr>
+	                		<td>2nd Day of Month:</td>
+	                        <td>{!v.EFTRecord.Second_Day_of_Month__c}</td>
+                   		 </tr>
+                    </aura:if>
+                </table>
+            </div>
+            
+         </aura:if>
+         <aura:if isTrue="{!(v.EFTRecord.Action_Type__c == 'View')}">
+            <div class="eftrecorddetail1">
+                <p class = "fontstyle">ACH Record Details</p><br></br>
+               	<table class="bottomtbl">
+                	<tr>
+                    	<td>Member Number:</td>
+                        <td>{!v.EFTRecord.Member_Account__r.Name}</td>
+                    </tr>
+                    <tr>
+                    	<td>Share/Loan:</td>
+                        <td class="sloan">{!v.EFTRecord.Share_Loan_Id__c}<span>{!v.EFTRecord.Share_Loan_Type__c}<br />{!v.EFTRecord.Share_Loan_Description__c}</span></td>
+                    </tr>
+                    <tr>
+                    	<td>Funding FI:</td>
+                        <td>{!v.EFTRecord.Bank_Name__c}</td>
+                    </tr>
+                    <tr>
+                    	<td>ABA/Routing#:</td>
+                        <td>{!v.EFTRecord.Routing_Number__c}</td>
+                    </tr>
+                    <tr>
+                    	<td>Account#:</td>
+                        <td>{!v.EFTRecord.Account_Number__c}</td>
+                    </tr>
+                    <tr>
+                    	<td>Type:</td>
+                        <td>{!v.EFTRecord.Type__c}</td>
+                    </tr>
+                    <tr>
+                    	<td>Payment:</td>
+                    	<aura:if isTrue="{!(empty(v.EFTRecord.Alternate_Amount__c))}">
+                    		<td><lightning:formattedNumber value="{!v.EFTRecord.Payment_Amount__c}" style="currency" currencyCode="USD"/></td>
+                    	<aura:set attribute="else">
+                    		<td><lightning:formattedNumber value="{!v.EFTRecord.Alternate_Amount__c}" style="currency" currencyCode="USD"/></td>
+                    	</aura:set>
+                    	</aura:if>  
+                    </tr>
+                    <tr>
+                		<td>Effective Date:</td>
+                        <td>{!v.EFTRecord.Effective_Date__c}</td> 
+                    </tr>
+                    <tr>
+                		<td>Frequency:</td>
+                        <td>{!v.EFTRecord.Frequency__c}</td> 
+                    </tr>
+                    <tr>
+                		<td>Day of Month:</td>
+                        <td>{!v.EFTRecord.Day_of_Month__c}</td>
+                    </tr>
+                    <aura:if isTrue="{!v.EFTRecord.Frequency__c == 'Semi-Monthly'}">
+                    	 <tr>
+	                		<td>2nd Day of Month:</td>
+	                        <td>{!v.EFTRecord.Second_Day_of_Month__c}</td>
+                   		 </tr>
+                    </aura:if>
+                </table>
+            </div>
+           
+          </aura:if>
+          
+          <aura:if isTrue="{!(v.EFTRecord.Action_Type__c == 'Expire')}"> 
+            <div class="eftrecorddetail2">
+                <p class = "fontstyle">ACH Record Details</p><br></br>
+               	<table class="bottomtbl">
+                    <tr>
+                    	<td colspan="2"><p>Select the “Expire” button to cancel/expire this ACH record</p></td>
+                    </tr>
+                	<tr>
+                    	<td>Share/Loan:</td>
+                        <td class="sloan">{!v.EFTRecord.Share_Loan_Id__c}<span>{!v.EFTRecord.Share_Loan_Type__c}<br />{!v.EFTRecord.Share_Loan_Description__c}</span></td>
+                    </tr>
+                    <tr>
+                    	<td>Funding FI:</td>
+                        <td>{!v.EFTRecord.Bank_Name__c}</td>
+                    </tr>
+                    <tr>
+                    	<td>Account#:</td>
+                        <td>{!v.EFTRecord.Account_Number__c}</td>
+                    </tr>
+                    <tr>
+                    	<td>Type:</td>
+                        <td>{!v.EFTRecord.Type__c}</td>
+                    </tr>
+                    <tr>
+                    	<td>Payment:</td><td><lightning:formattedNumber value="{!v.EFTRecord.Payment_Amount__c}" style="currency" currencyCode="USD"/></td> 
+                    </tr>
+                </table>
+            </div>
+           </aura:if>
+            
+           <aura:if isTrue="{!or(v.EFTRecord.Action_Type__c == 'Update',v.EFTRecord.Expired__c )}"> 
+            <div class="eftrecorddetail2">
+                <p class = "fontstyle">ACH Record Details</p><br></br>
+                <lightning:layout>
+                    <table class="toptbl">
+                    	<tr>
+                        	<td>
+                            	<lightning:icon class="icon_label1" iconName="utility:record" size="medium" alternativeText="Indicates approval"/>
+                            </td>
+                            <td><p>Your ACH {!v.UpdateText} request has been successfully completed. The details of your request are in Mars case(<a href="{!('/one/one.app?#/sObject/'+ v.EFTRecord.Case__c + '/view')}" target="_blank">{!v.EFTRecord.Case__r.CaseNumber}</a>).</p>                            	
+                            </td>
+                        </tr>
+                    </table>
+                </lightning:layout>
+               	<table class="bottomtbl">                   
+                	<tr>
+                    	<td>Member Number:</td>
+                        <td>{!v.EFTRecord.Member_Account__r.Name}</td>
+                    </tr>
+                    <tr>
+                    	<td>Share/Loan:</td>
+                        <td class="sloan">{!v.EFTRecord.Share_Loan_Id__c}<span>{!v.EFTRecord.Share_Loan_Type__c}<br />{!v.EFTRecord.Share_Loan_Description__c}</span></td>
+                    </tr>
+                    <tr>
+                    	<td>Funding FI:</td>
+                        <td>{!v.EFTRecord.Bank_Name__c}</td>
+                    </tr>
+                    <tr>
+                    	<td>Payment:</td>
+                    	<aura:if isTrue="{!(empty(v.EFTRecord.Alternate_Amount__c))}">
+                    		<td><lightning:formattedNumber value="{!v.EFTRecord.Payment_Amount__c}" style="currency" currencyCode="USD"/></td>
+                    	<aura:set attribute="else">
+                    		<td><lightning:formattedNumber value="{!v.EFTRecord.Alternate_Amount__c}" style="currency" currencyCode="USD"/></td>
+                    	</aura:set>
+                    	</aura:if>  
+                    </tr>
+                    <tr>
+                		<td>Effective Date:</td>
+                        <td>{!v.EFTRecord.Effective_Date__c}</td> 
+                    </tr>
+                    <tr>
+                		<td>Frequency:</td>
+                        <td>{!v.EFTRecord.Frequency__c}</td> 
+                    </tr>
+                    <tr>
+                		<td>Day of Month:</td>
+                        <td>{!v.EFTRecord.Day_of_Month__c}</td>
+                    </tr>
+                    <aura:if isTrue="{!v.EFTRecord.Frequency__c == 'Semi-Monthly'}">
+                    	 <tr>
+	                		<td>2nd Day of Month:</td>
+	                        <td>{!v.EFTRecord.Second_Day_of_Month__c}</td>
+                   		 </tr>
+                    </aura:if>
+                </table>
+            </div>
+           </aura:if>     
+  </aura:set>
+ </aura:if> 
+  		
+  </div>
+    <lightning:spinner aura:id="Spinner" alternativeText="Loading" size="medium" variant="brand" class="slds-hide spin"/>
+</aura:component>

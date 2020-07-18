@@ -1,0 +1,320 @@
+<aura:component controller="MemberCommentsController" implements="flexipage:availableForAllPageTypes,force:appHostable,force:hasRecordId,force:lightningQuickActionWithoutHeader,lightning:actionOverride" access="global" >
+
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}" />
+    <aura:attribute name="Model" access="global" Type="Account_Details__c" />
+    <aura:attribute name="ModelMemberComment" access="global" Type="Member_Comment__c" />
+    
+    <aura:attribute name="Secure_Email_Address" access="global" Type="string" />    
+<aura:attribute name="Secure_Email_Address_Empty" access="global" Type="string" />    
+    <aura:attribute name="loading" access="global" Type="boolean" />
+    <aura:attribute name="Draft_Checked" access="global" Type="string" /> 
+    <aura:attribute name="ReadOnly" access="global" Type="string" />  
+    <aura:attribute name="isEdit" access="global" Type="string" />   
+     <aura:attribute name="SaveVisible" access="global" Type="string" />  
+    
+    <aura:attribute name="PrimaryValue" access="global" Type="String" />
+    <aura:attribute name="SecondaryValue" access="global" Type="String" />
+    <aura:attribute name="TertiaryValue" access="global" Type="String" />
+    <aura:attribute name="Draft" access="global" Type="String" />
+    <aura:attribute name="MemberDescription" access="global" Type="String" />    
+    <aura:attribute name="SearchText" access="global" Type="String" />
+    <aura:attribute name="response" access="global" Type="Object" />
+    <aura:attribute name="SelectedCategory" access="global" Type="String" />
+    <aura:attribute name="Attachments" access="global" Type="Object" />
+    <aura:attribute name="SaveNew" access="global" Type="boolean" default="false" />
+     <aura:attribute name="ShowAttachmentTable" access="global" Type="boolean" />
+     <aura:attribute name="isObjectAccess" access="global" Type="boolean" default="true"/>
+      <aura:attribute name="isError" access="global" Type="boolean" default="false"/>
+       <aura:attribute name="isCUReadEditable" access="global" Type="boolean" default="false"/>
+       
+        <aura:attribute name="CRAttachments" access="global" Type="Object" />
+    
+    <aura:attribute name="record" type="Case"/>  
+<aura:attribute name="simpleRecord" type="Case"/>
+    
+    
+    <style>
+    	
+    	 /* Loading Style*/
+    	.modal-body{position:relative;}
+        .loadingDiv {
+            position: absolute;
+            z-index: 100;
+            background: rgba(255, 255, 255, 0.8);
+            width: 100%;
+            height: 100%;
+            top: 0;
+        }
+        
+        .loadingDiv .demo-only {
+            z-index: 101;
+        }
+        /* Loading Style End*/ 
+        .uiInput--input.input {
+            min-height: 1.875rem;
+            height: 1.875rem;
+            padding: 0 6px;
+        }
+        
+        .uiInput--select.select {
+            padding: 0 18px 0 6px;
+        }
+        
+        .uiInput--input .input {
+            padding: 0 20px 0 6px;
+            height: 1.875rem;
+            min-height: 1.875rem;
+        }      
+        
+		.selectheight{height:100px !important;} 
+		.dib{display:inline-block !important;}
+		#MemberCommentPopup {
+            max-width: 65rem;
+            width: 75%;
+        }
+        table.otherTbl{
+        	background-color:#fff;
+        }
+        table.otherTbl .otherTbl td{padding:3px 0;} 
+        #DescriptionError{background-color: #cc0000; padding: 8px;border-radius: .25rem;}
+        
+        
+        .forceChatterBasePublisher :not(.PHONE) .cuf-content{padding:0px !important;}
+		.slds-p-around_medium, .slds-p-around--medium{padding:0px !important;}
+		.cMemberComments{padding:15px;background: white !important;}
+	
+		.slds-modal__container{max-width: 80rem !important; width:70% !important;height: 600px;}
+		.modal-maincontent{min-height: 379px;max-height: 379px;overflow-y: auto;}
+		.objectaccsess{
+		 padding-left:35%;
+		 padding-top: 15%;
+		    font-size: 13px;
+    		font-weight: normal !important;
+		}
+		.accessdenied
+		{
+		    font-size: 18px;
+    		color: red;
+    		padding-left: 17%;
+		}
+		.chkAttachment:checked{
+	    background-color: rgb(21, 137, 238) !important;
+	       
+}
+		
+    </style>
+	
+	<aura:if isTrue="{!(v.loading == true)}">
+        <div class="loadingDiv">
+            <div class="demo-only" style='height: 6rem; '>
+                <div role="status" class="slds-spinner slds-spinner_medium">
+                    <span class="slds-assistive-text">Loading</span>
+                    <div class="slds-spinner__dot-a"></div>
+                    <div class="slds-spinner__dot-b"></div>
+                </div>
+            </div>
+        </div>
+    </aura:if>
+    <header class="slds-modal__header" id="CreateMemberCommentHeader" >
+        <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse" title="Close" onclick="{!c.closePopup}">
+			<span data-aura-rendered-by="47:1615;a" class="lightningPrimitiveIcon" data-aura-class="lightningPrimitiveIcon"><lightning:icon iconName="{#v.closeIcon}" size="small" variant="inverse" /></span>
+            <span class="slds-assistive-text">Close</span>
+        </button>
+        <h2 id="modal-heading-01" class="slds-text-heading_medium slds-hyphenate">Member Comments</h2>
+    </header>
+   <aura:if isTrue="{!v.isObjectAccess}">  
+    <div class="modal-maincontent">
+
+					<h3 class="slds-section-title--divider">Member Comments Edit</h3>
+
+  
+    
+    <table border="0" class="otherTbl" width="100%" style="background-color:white" >
+        <tbody>
+         <aura:if isTrue="{!v.isError}">
+        	<tr>
+        		<td colspan="2" id="DescriptionError">
+        			<span style="color:white;font:bold;">Description is Required!</span>
+        		</td>
+        	</tr>
+        	</aura:if>
+            <tr>
+                <td style="vertical-align:top; width:40%; padding: 5px 10px 5px 10px;">
+                    <table border="0" class="otherTbl" width="100%">
+                        <tbody>
+                            <tr>
+                                <td>Search <br/>
+                                    <ui:inputText value="{!v.SearchText}" keyup="{!c.searchText}" disabled="{!v.ReadOnly}" />
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="text-align:center">---- OR ----</td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <ui:inputSelect aura:id="primaryList" value="{!v.PrimaryValue}" change="{!c.changePrimary}" disabled="{!v.ReadOnly}" />
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <ui:inputSelect aura:id="secondaryList" value="{!v.SecondaryValue}" change="{!c.changeSecondary}" disabled="{!v.ReadOnly}" />
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <ui:inputSelect aura:id="tirtiaryList" value="{!v.TertiaryValue}" change="{!c.changeCategories}" disabled="{!v.ReadOnly}" />                                    
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    Select a Response Comment
+                                </td>                                
+                            </tr>
+                            <tr>
+                            	<td>
+                                	<select value="{!v.SelectedCategory}" multiple="multiple" class="input uiInput uiInputText uiInput--default uiInput--input selectheight" onchange="{!c.changeDescription}" disabled="{!v.ReadOnly}">
+		                            <aura:iteration items="{!v.response}" var="itemOption">
+		                                <option value="{!itemOption.Id}">
+		                                    {!itemOption.Canned_Response_Title__c}
+		                                </option>
+		                            </aura:iteration>
+		                        </select>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    Draft? &nbsp;
+                                    <ui:inputCheckbox value="{!v.ModelMemberComment.Draft__c}" class="dib" disabled="{!v.ReadOnly}" />
+                                </td>                         
+						 </tr>
+                        </tbody>
+                    </table>
+
+                </td>
+                
+                  
+                 <td style="vertical-align:top; width:60%;  padding: 5px 10px 5px 0;">
+                    <table border="0" class="otherTbl" width="100%">
+                        <tbody>
+                            <tr>
+                                <td>Member Communication                                    
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="padding-right:10px;">
+										<lightning:inputRichText value="{!v.MemberDescription}" disabled="{!v.ReadOnly}"/>
+								</td>
+                            </tr>
+                             <aura:if isTrue="{!v.isCUReadEditable}">
+                            <tr>
+                                <td>
+                                    CU Read &nbsp;
+                                    
+                                    <ui:inputCheckbox value="{!v.ModelMemberComment.CU_Read__c}" class="dib" />
+                                </td>  
+                                </tr>                         
+						</aura:if>
+                        </tbody>
+                    </table>
+                </td>                
+            </tr>
+              <aura:if isTrue="{!v.ShowAttachmentTable}">
+            <tr>
+            	<td colspan="2" style="padding-left:10px;">
+            		<br/><span class="slds-truncate"><b>Select Attachment to Share :</b></span>
+            	</td>
+            </tr>
+            <tr>
+            	<td colspan="2"  style="padding-left:10px;padding-right:10px;">
+            		 <div class="slds-form-element"><br />
+                    <table border="0" width="100%" class="slds-table slds-table_bordered slds-no-cell-focus slds-table_edit" role="grid">
+                        <thead>
+                            <tr>
+                                <th>
+                                    <span class="slds-truncate" title="Type of deposit"><b>Attachment Name</b></span>
+                                </th>
+                                <th>
+                                    <span class="slds-truncate" title="Download"><b>Download</b></span>
+                                </th>
+                                <th>
+                                    <span class="slds-truncate" title="Select"><b>Select</b></span>
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <aura:iteration items="{!v.Attachments}" var="item" indexVar="index">
+                                <tr>
+                                    <td>
+                                        {!item.attachmentobj.Name}
+                                    </td>
+                                    <td>
+                                    	<a target="_blank" href="{!item.attachmentobj.downloadLink}">Download</a>                                    	
+                                    </td>
+                                    <td>
+                                        <ui:inputCheckbox class="chkAttachment" value="{!item.checkvalue}" disabled="{!v.ReadOnly}" />
+                                    </td>                                    
+                                </tr>
+                            </aura:iteration>
+                             <aura:iteration items="{!v.CRAttachments}" var="item" indexVar="index">
+                                <tr>
+                                    <td>
+                                        {!item.attachmentobj.Name}
+                                    </td>
+                                    <td>
+                                    	<a target="_blank" href="{!item.attachmentobj.downloadLink}">Download</a>                                    	
+                                    </td>
+                                    <td>
+                                        <ui:inputCheckbox class="chkAttachment" value="{!item.checkvalue}" disabled="{!v.ReadOnly}" />
+                                    </td>                                    
+                                </tr>
+                            </aura:iteration>
+                        </tbody>
+                    </table>                    
+                    <br />                    
+                </div>
+            	</td>
+            </tr>
+            	</aura:if>
+        </tbody>
+    </table>
+    
+    </div>
+    <aura:set attribute="else">
+    <div class="modal-maincontent objectaccsess">
+    <h3 class="accessdenied">Access Denied</h3>
+    	<span style="color:red">You do not have access to Create a New Member Comment.</span>
+    	</div>
+    	<footer class="slds-modal__footer" id="MemberCommentFooter">
+      
+
+    			
+    						<button class="slds-button slds-button--neutral uiButton forceActionButton" onclick="{!c.closePopup}">Cancel</button> 
+    					
+    						
+    						
+    			                                  
+    			
+        
+    </footer>
+    </aura:set>       
+    </aura:if>
+    
+     <aura:if isTrue="{!v.isObjectAccess}"> 
+     <footer class="slds-modal__footer" id="MemberCommentFooter">
+      
+        <aura:if isTrue="{!v.Secure_Email_Address_Empty}">
+    				<b style="color:red">Please add Email address to member Account in order to create a member message. &nbsp;</b>
+    				<button class="slds-button slds-button--neutral uiButton forceActionButton" onclick="{!c.closePopup}">Cancel</button>        
+    				<aura:set attribute="else">
+    						<button class="slds-button slds-button--neutral uiButton forceActionButton" onclick="{!c.closePopup}">Cancel</button> 
+    					
+    						<button class="slds-button slds-button--brand" onclick="{!c.saveAndNewMemberCommentClick}" id="btnSaveandNew">Save &amp; New</button>
+    				   		      
+    						<button class="slds-button slds-button--brand" onclick="{!c.saveMemberCommentClick}" id="btnSave">Save</button>&nbsp;
+    						
+    				 		</aura:set>                                       
+    			</aura:if>
+        
+    </footer>
+    </aura:if>
+</aura:component>

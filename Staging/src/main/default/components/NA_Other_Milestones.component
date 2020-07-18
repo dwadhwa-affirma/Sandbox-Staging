@@ -1,0 +1,468 @@
+<apex:component controller="NA_Other_MilestonesController" allowDML="true">
+
+    <apex:attribute name="Account" description="This is the value for the component." type="Account" required="true" assignTo="{!AccountC}" />
+    <apex:attribute name="CTRL" description="This is the value for the component." type="NeedAssessmentController" required="true" assignTo="{!parentController}" />
+
+    <apex:form >
+        <apex:pageBlock title="Financing Your Life Events - Other Milestones">
+            <div id="snackbar">Data saved successfully!</div>
+            <div style="padding-bottom:5px"><h3>We'd like to ask you a few questions about your key life events so we can better anticipate your needs and better serve you.</h3></div>
+            <div>
+            
+            What other major milestones are you anticipating?  Are you saving for these milestones?  Do you need help financing them?<p></p>
+            
+            </div>
+            <table border="2">
+                <tr>
+                    <td valign="top">
+                        <table border="0">
+                            <tr>
+                                <td></td>
+                                <td class="mainQuestion"  align="left" style="text-align: left;">
+                                            	Current As Of 
+                                                <apex:outputText value="{0, date, MMMM d','  yyyy}">
+                                                          <apex:param value="{!nao_New.LEOM_Home_Update__c}" />
+                                                </apex:outputText>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="mainQuestion" width="250">Are you planning any home improvements?</td>
+                                <td><apex:inputField value="{!nao_New.Home_Improvement__c}" /></td>
+                                <!--  
+                                <td class="lastVal">
+                                    <c:NeedAssessmentHistory fieldName="Home_Improvement__c" NeedAssessmentID="{!NA_id}"></c:NeedAssessmentHistory>
+                                </td>
+                                -->
+                            </tr>
+                            <tr>
+                                <td class="subQuestion">If yes, what is your timeframe?</td>
+                                <td><apex:inputField value="{!nao_New.Home_Improvement_Timeframe__c}" /></td>
+                                <!--  
+                                <td class="lastVal">
+                                    <c:NeedAssessmentHistory fieldName="Home_Improvement_Timeframe__c" NeedAssessmentID="{!NA_id}"></c:NeedAssessmentHistory>
+                                </td>
+                                -->
+                            </tr>
+                            <tr>
+                                <td class="subQuestion">If yes, how are you planning to pay?</td>
+                                <td><apex:inputField value="{!nao_New.Home_Improvement_Plan__c}" /></td>
+                                <!--  
+                                <td class="lastVal">
+                                    <c:NeedAssessmentHistory fieldName="Home_Improvement_Plan__c" NeedAssessmentID="{!NA_id}"></c:NeedAssessmentHistory>
+                                </td>
+                                -->
+                            </tr>
+                            <tr>
+                                <td colspan="2">
+                                    <hr>
+                                    </hr>
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td></td>
+                                <td class="mainQuestion"  align="left" style="text-align: left;">
+                                            	Current As Of 
+                                                <apex:outputText value="{0, date, MMMM d','  yyyy}">
+                                                          <apex:param value="{!nao_New.LEOM_College_Update__c}" />
+                                                </apex:outputText>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="mainQuestion">Are you planning for college expenses?</td>
+                                <td><apex:inputField value="{!nao_New.College__c}" /></td>
+                                <!--  
+                                <td class="lastVal">
+                                    <c:NeedAssessmentHistory fieldName="College__c" NeedAssessmentID="{!NA_id}"></c:NeedAssessmentHistory>
+                                </td>
+                                -->
+                            </tr>
+                            <tr>
+                                <td class="subQuestion">If yes, what is your timeframe?</td>
+                                <td><apex:inputField value="{!nao_New.College_Timeframe__c}" /></td>
+                                <!--  
+                                <td class="lastVal">
+                                    <c:NeedAssessmentHistory fieldName="College_Timeframe__c" NeedAssessmentID="{!NA_id}"></c:NeedAssessmentHistory>
+                                </td>
+                                -->
+                            </tr>
+                            <tr>
+                                <td class="subQuestion">If yes, how are you planning to pay?</td>
+                                <td><apex:inputField value="{!nao_New.College_Plan__c}" /></td>
+                                <!--  
+                                <td class="lastVal">
+                                    <c:NeedAssessmentHistory fieldName="College_Plan__c" NeedAssessmentID="{!NA_id}"></c:NeedAssessmentHistory>
+                                </td>
+                                -->
+                            </tr>
+                            <tr><td colspan="2"><hr></hr></td></tr>
+                            <tr>
+                                <td></td>
+                                <td class="mainQuestion"  align="left" style="text-align: left;">
+                                            	Current As Of 
+                                                <apex:outputText value="{0, date, MMMM d','  yyyy}">
+                                                          <apex:param value="{!nao_New.LEOM_Medical_Update__c}" />
+                                                </apex:outputText>
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td class="mainQuestion">Are you planning for medical expenses?</td>
+                                <td><apex:inputField value="{!nao_New.Medical__c}" /></td>
+                                <!--  
+                                <td class="lastVal">
+                                    <c:NeedAssessmentHistory fieldName="Medical__c" NeedAssessmentID="{!NA_id}"></c:NeedAssessmentHistory>
+                                </td>
+                                -->
+                            </tr>
+                            <tr>
+                                <td class="subQuestion">If yes, what is your timeframe?</td>
+                                <td><apex:inputField value="{!nao_New.Medical_Timeframe__c}" /></td>
+                                <!--  
+                                <td class="lastVal">
+                                    <c:NeedAssessmentHistory fieldName="Medical_Timeframe__c" NeedAssessmentID="{!NA_id}"></c:NeedAssessmentHistory>
+                                </td>
+                                -->
+                            </tr>
+                            <tr>
+                                <td class="subQuestion">If yes, how are you planning to pay?</td>
+                                <td><apex:inputField value="{!nao_New.Medical_Plan__c}" /></td>
+                                <!--  
+                                <td class="lastVal">
+                                    <c:NeedAssessmentHistory fieldName="Medical_Plan__c" NeedAssessmentID="{!NA_id}"></c:NeedAssessmentHistory>
+                                </td>
+                                -->
+                            </tr>
+                            <tr><td colspan="2"><hr></hr></td></tr>
+                            <tr>
+                                <td></td>
+                                <td class="mainQuestion"  align="left" style="text-align: left;">
+                                            	Current As Of 
+                                                <apex:outputText value="{0, date, MMMM d','  yyyy}">
+                                                          <apex:param value="{!nao_New.LEOM_RV_Boat_Update__c}" />
+                                                </apex:outputText>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="mainQuestion">Are you planning to purchase a boat or RV?</td>
+                                <td><apex:inputField value="{!nao_New.Purchase_RV_Boat__c}" /></td>
+                                <!--  
+                                <td class="lastVal">
+                                    <c:NeedAssessmentHistory fieldName="Purchase_RV_Boat__c" NeedAssessmentID="{!NA_id}"></c:NeedAssessmentHistory>
+                                </td>
+                                -->
+                            </tr>
+                            <tr>
+                                <td class="subQuestion">If yes, what is your timeframe?</td>
+                                <td><apex:inputField value="{!nao_New.Purchase_RV_Boat_Timeframe__c}" /></td>
+                                <!--  
+                                <td class="lastVal">
+                                    <c:NeedAssessmentHistory fieldName="Purchase_RV_Boat_Timeframe__c" NeedAssessmentID="{!NA_id}"></c:NeedAssessmentHistory>
+                                </td>
+                                -->
+                            </tr>
+                            <tr>
+                                <td class="subQuestion">If yes, how are you planning to pay?</td>
+                                <td><apex:inputField value="{!nao_New.Purchase_RV_Boat_Plan__c}" /></td>
+                                <!--  
+                                <td class="lastVal">
+                                    <c:NeedAssessmentHistory fieldName="Purchase_RV_Boat_Plan__c" NeedAssessmentID="{!NA_id}"></c:NeedAssessmentHistory>
+                                </td>
+                                -->
+                            </tr>
+							<tr><td colspan="2"><hr></hr></td></tr>    
+                            <tr>
+                                <td class="mainQuestion" valign="top">Member Comments</td>
+                                <td><apex:inputField value="{!nao_New.LEOM_Comments__c}" style="width: 230px; height: 40px"/></td>
+                                <!--
+                                <td class="lastVal">
+                                    <c:NeedAssessmentHistory fieldName="LEOM_Comments__c" NeedAssessmentID="{!NA_id}"></c:NeedAssessmentHistory>
+                                </td>
+                                -->
+                            </tr>
+
+                        </table>
+                    </td>
+
+
+
+                    <td valign="top">
+                        <table border="0">
+
+                            <tr>
+                                <td></td>
+                                <td class="mainQuestion"  align="left" style="text-align: left;">
+                                            	Current As Of 
+                                                <apex:outputText value="{0, date, MMMM d','  yyyy}">
+                                                          <apex:param value="{!nao_New.LEOM_Retirement_Update__c}" />
+                                                </apex:outputText>
+                                </td>
+                            </tr>
+
+                           <tr>
+                                <td class="mainQuestion"  width="250">Are you planning for retirement?</td>
+                                <td><apex:inputField value="{!nao_New.Retirement_New__c}" /></td>
+                                <!--
+                                <td class="lastVal">
+                                    <c:NeedAssessmentHistory fieldName="Retirement_New__c" NeedAssessmentID="{!NA_id}"></c:NeedAssessmentHistory>
+                                </td>
+                                -->
+                            </tr>
+                            <tr>
+                                <td class="subQuestion">If yes, what is your timeframe?</td>
+                                <td><apex:inputField value="{!nao_New.Retirement_Timeframe__c}" /></td>
+                                <!--
+                                <td class="lastVal">
+                                    <c:NeedAssessmentHistory fieldName="Retirement_Timeframe__c" NeedAssessmentID="{!NA_id}"></c:NeedAssessmentHistory>
+                                </td>
+                                -->
+                            </tr>
+                            <tr>
+                                <td class="subQuestion">If yes, how are you planning to pay?</td>
+                                <td><apex:inputField value="{!nao_New.Retirement_Plan__c}" /></td>
+                                <!--
+                                <td class="lastVal">
+                                    <c:NeedAssessmentHistory fieldName="Retirement_Plan__c" NeedAssessmentID="{!NA_id}"></c:NeedAssessmentHistory>
+                                </td>
+                                -->
+                            </tr>
+                            <tr><td colspan="2"><hr></hr></td></tr>
+                            <tr>
+                                <td></td>
+                                <td class="mainQuestion"  align="left" style="text-align: left;">
+                                            	Current As Of 
+                                                <apex:outputText value="{0, date, MMMM d','  yyyy}">
+                                                          <apex:param value="{!nao_New.LEOM_Travel_Update__c}" />
+                                                </apex:outputText>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="mainQuestion">Are you planning to travel?</td>
+                                <td><apex:inputField value="{!nao_New.Travel__c}" /></td>
+                                <!--
+                                <td class="lastVal">
+                                    <c:NeedAssessmentHistory fieldName="Travel__c" NeedAssessmentID="{!NA_id}"></c:NeedAssessmentHistory>
+                                </td>
+                                -->
+                            </tr>
+                            <tr>
+                                <td class="subQuestion">If yes, what is your timeframe?</td>
+                                <td><apex:inputField value="{!nao_New.Travel_Timeframe__c}" /></td>
+                                <!--
+                                <td class="lastVal">
+                                    <c:NeedAssessmentHistory fieldName="Travel_Timeframe__c" NeedAssessmentID="{!NA_id}"></c:NeedAssessmentHistory>
+                                </td>
+                                -->
+                            </tr>
+                            <tr>
+                                <td class="subQuestion">If yes, how are you planning to pay?</td>
+                                <td><apex:inputField value="{!nao_New.Travel_Plan__c}" /></td>
+                                <!--
+                                <td class="lastVal">
+                                    <c:NeedAssessmentHistory fieldName="Travel_Plan__c" NeedAssessmentID="{!NA_id}"></c:NeedAssessmentHistory>
+                                </td>
+                                -->
+                            </tr>
+                            <tr><td colspan="2"><hr></hr></td></tr>
+                            <tr>
+                                <td></td>
+                                <td class="mainQuestion"  align="left" style="text-align: left;">
+                                            	Current As Of 
+                                                <apex:outputText value="{0, date, MMMM d','  yyyy}">
+                                                          <apex:param value="{!nao_New.LEOM_Life_Events_Update__c}" />
+                                                </apex:outputText>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="mainQuestion">Are you planning for life events (weddings, etc.)?</td>
+                                <td><apex:inputField value="{!nao_New.Life_Events__c}" /></td>
+                                <!--
+                                <td class="lastVal">
+                                    <c:NeedAssessmentHistory fieldName="Life_Events__c" NeedAssessmentID="{!NA_id}"></c:NeedAssessmentHistory>
+                                </td>
+                                -->
+                            </tr>
+                            <tr>
+                                <td class="subQuestion">If yes, what is your timeframe?</td>
+                                <td><apex:inputField value="{!nao_New.Life_Events_Timeframe__c}" /></td>
+                                <!--
+                                <td class="lastVal">
+                                    <c:NeedAssessmentHistory fieldName="Life_Events_Timeframe__c" NeedAssessmentID="{!NA_id}"></c:NeedAssessmentHistory>
+                                </td>
+                                -->
+                            </tr>
+                            <tr>
+                                <td class="subQuestion">If yes, how are you planning to pay?</td>
+                                <td><apex:inputField value="{!nao_New.Life_Events_Plan__c}" /></td>
+                                <!--
+                                <td class="lastVal">
+                                    <c:NeedAssessmentHistory fieldName="Life_Events_Plan__c" NeedAssessmentID="{!NA_id}"></c:NeedAssessmentHistory>
+                                </td>
+                                -->
+                            </tr>
+                            <tr><td colspan="2"><hr></hr></td></tr>
+                            <tr>
+                                <td></td>
+                                <td class="mainQuestion"  align="left" style="text-align: left;">
+                                            	Current As Of 
+                                                <apex:outputText value="{0, date, MMMM d','  yyyy}">
+                                                          <apex:param value="{!nao_New.LEOM_Other_Expenses_Update__c}" />
+                                                </apex:outputText>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="mainQuestion">Are you planning for other expenses?</td>
+                                <td><apex:inputField value="{!nao_New.Other__c}" /></td>
+                                <!--
+                                <td class="lastVal">
+                                    <c:NeedAssessmentHistory fieldName="Other__c" NeedAssessmentID="{!NA_id}"></c:NeedAssessmentHistory>
+                                </td>
+                                -->
+                            </tr>
+                            <tr>
+                                <td class="subQuestion">If yes, what is your timeframe?</td>
+                                <td><apex:inputField value="{!nao_New.Other_Timeframe__c}" /></td>
+                                <!--
+                                <td class="lastVal">
+                                    <c:NeedAssessmentHistory fieldName="Other_Timeframe__c" NeedAssessmentID="{!NA_id}"></c:NeedAssessmentHistory>
+                                </td>
+                                -->
+                            </tr>
+                            <tr>
+                                <td class="subQuestion">If yes, how are you planning to pay?</td>
+                                <td><apex:inputField value="{!nao_New.Other_Plan__c}" /></td>
+                                <!--
+                                <td class="lastVal">
+                                    <c:NeedAssessmentHistory fieldName="Other_Plan__c" NeedAssessmentID="{!NA_id}"></c:NeedAssessmentHistory>
+                                </td>
+                                -->
+                            </tr>
+                            <tr><td colspan="2"><hr></hr></td></tr>
+                            <tr> 
+                                <td class="mainQuestion" valign="top">How are you planning to pay for unforeseen expenses?</td>
+                                <td><apex:inputField value="{!nao_New.LEOM_PlanUnforeseen__c}" style="width: 230px; height: 40px"/></td>
+                                <!--
+                                <td class="lastVal"> 
+                                    <c:NeedAssessmentHistory fieldName="LEOM_PlanUnforeseen__c" NeedAssessmentID="{!NA_id}"></c:NeedAssessmentHistory>
+                                </td>
+                                -->
+                            </tr>
+
+                        </table>
+                    </td>
+
+                    <td valign="top">
+                        <table border="0">
+                            <tr>
+                                <td class="colHeader">Recommendations</td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    HELOC
+                                </td>
+                                <td>
+                                    <apex:inputField value="{!nao_New.Rec_LEOM_1__c}" />
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    RV loan
+                                </td>
+                                <td>
+                                    <apex:inputField value="{!nao_New.Rec_LEOM_2__c}" />
+                                </td>
+                            </tr>
+                             <tr>
+                                <td>
+                                    IRA
+                                </td>
+                                <td>
+                                    <apex:inputField value="{!nao_New.REC_LEEM_2__c}" />
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    Health Savings Account
+                                </td>
+                                <td>
+                                    <apex:inputField value="{!nao_New.Rec_LEOM_3__c}" />
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    Personal line of credit
+                                </td>
+                                <td>
+                                    <apex:inputField value="{!nao_New.Rec_LEOM_4__c}" />
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    Student loans
+                                </td>
+                                <td>
+                                    <apex:inputField value="{!nao_New.Rec_LEOM_5__c}" />
+                                </td>
+                            </tr>
+<!--  
+                            <tr>
+                                <td>
+                                    CDs
+                                </td>
+                                <td>
+                                    <apex:inputField value="{!nao_New.Rec_LEOM_6__c}" />
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    Money market
+                                </td>
+                                <td>
+                                    <apex:inputField value="{!nao_New.Rec_LEOM_7__c}" />
+                                </td>
+                            </tr>
+-->
+                        </table>
+                    </td>
+
+                </tr>
+            </table>
+            <table>
+                 
+            </table>
+            <p></p>
+            <table width="100%">
+                <tr>
+                    <td align="center" width="200">
+
+
+                        <apex:commandButton value="Save" action="{!SubmitOtherForm}" onclick="$(this).hide();$(this).next().show();"/>
+                        
+                    <input type="submit" value="Saving..." style="display:none;" disabled="disabled" class="btn"/>
+
+                    </td>
+                </tr>
+            </table>
+            <apex:actionFunction action="{!resetscript}" name="resetscript" rerender="scriptcontainer" />
+            <apex:outputPanel id="scriptcontainer">
+                <input type="text" value="{!script}" id="scriptext" style="visibility:hidden" />
+            </apex:outputPanel>
+
+        </apex:pageBlock>
+        <script>
+function toastsuccess()
+{
+    if (document.getElementById("scriptext").value == '1')
+    {
+        var x = document.getElementById("snackbar")
+        x.className = "show";
+        setTimeout(function(){ x.className = x.className.replace("show", ""); }, 3000);
+    }
+    resetscript();
+}
+ toastsuccess();
+        </script>
+    </apex:form>
+
+</apex:component>

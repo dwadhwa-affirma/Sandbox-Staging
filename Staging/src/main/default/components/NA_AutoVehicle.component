@@ -1,0 +1,174 @@
+<apex:component controller="NA_AutoVehicleController" allowDML="true"> 
+    <apex:attribute name="Account" description="This is the value for the component." type="Account" required="true" assignTo="{!AccountC}" />
+    <apex:attribute name="CTRL" description="This is the value for the component." type="NeedAssessmentController" required="true" assignTo="{!parentController}" />
+ 
+    <apex:form >
+    <!--    <apex:pageBlock title="Financing Your Life Events - Auto/Vehicle"> -->
+        <apex:pageBlock >
+        <b>Financing Your Life Events - Auto/Vehicle</b><p></p>
+        <div id="snackbar">Data saved successfully!</div>
+        <div style="padding-bottom:5px"><h3>We'd like to ask you a few questions about your key life events so we can better anticipate your needs and better serve you.</h3></div>
+            <table border="2">
+                <tr>
+                    <td>
+                        <table border="0">
+                            <tr>
+                                <td></td>
+                                <td class="mainQuestion"  align="right" width="200" style="text-align: center;">
+                                            	Current As Of<br></br>
+                                                <apex:outputText value="{0, date, MMMM d','  yyyy}">
+                                                          <apex:param value="{!lnao_New.LEAV_Last_Updated_On__c}" />
+                                                </apex:outputText>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="mainQuestion" width="200">Do you have a current auto/vehicle loan?</td>
+                                <td><apex:inputField value="{!lnao_New.LEAV_Current__c}" /></td>
+                                <!-- 
+                                 <td class="lastVal">
+                                    <c:NeedAssessmentHistory fieldName="LEAV_Current__c"  NeedAssessmentID="{!NA_id}"></c:NeedAssessmentHistory>
+                                </td>
+                                -->
+                            </tr>
+
+                            <tr>
+                                <td class="subQuestion" width="200">If yes, Who is your current auto/vehicle loan provider?</td>
+                                <td><apex:inputField value="{!lnao_New.LEAV_CurrentLoanProvider__c}" /></td>
+                                <!-- 
+                                 <td class="lastVal">
+                                    <c:NeedAssessmentHistory fieldName="LEAV_CurrentLoanProvider__c"  NeedAssessmentID="{!NA_id}"></c:NeedAssessmentHistory>
+                                </td>
+                                -->
+                            </tr>
+
+
+                            <tr>
+                                <td class="subQuestion" width="200">If yes, what is your current rate?</td>
+                                <td><apex:inputField value="{!lnao_New.LEAV_CurrentRate__c}" /></td>
+                                <!-- 
+                                 <td class="lastVal">
+                                    <c:NeedAssessmentHistory fieldName="LEAV_CurrentRate__c"  NeedAssessmentID="{!NA_id}"></c:NeedAssessmentHistory>
+                                </td>
+                                -->
+                            </tr>
+
+                            <tr>
+                                <td class="subQuestion" width="200">If yes, what is your monthly payment?  </td>
+                                <td><apex:inputField value="{!lnao_New.LEAV_CurrentBalance__c}" /></td>
+                                <!-- 
+                                 <td class="lastVal">
+                                    <c:NeedAssessmentHistory fieldName="LEAV_CurrentBalance__c"  NeedAssessmentID="{!NA_id}"></c:NeedAssessmentHistory>
+                                </td>
+                                -->
+                            </tr>
+
+                            <tr>
+                                <td class="subQuestion" width="200">If yes, what is the end date of the loan?   </td>
+                                <td><apex:inputField value="{!lnao_New.LEAV_EndDateLoan__c}" /></td>
+                                <!-- 
+                                 <td class="lastVal">
+                                    <c:NeedAssessmentHistory fieldName="LEAV_EndDateLoan__c"  NeedAssessmentID="{!NA_id}"></c:NeedAssessmentHistory>
+                                </td>
+                                -->
+                            </tr>
+
+                            <tr>
+                                <td class="mainQuestion" width="200">Are you planning to purchase an auto/vehicle?</td>
+                                <td><apex:inputField value="{!lnao_New.LEAV_PlanningToBuy__c}" /></td>
+                                <!-- 
+                                 <td class="lastVal">
+                                    <c:NeedAssessmentHistory fieldName="LEAV_PlanningToBuy__c"  NeedAssessmentID="{!NA_id}"></c:NeedAssessmentHistory>
+                                </td>
+                                -->
+                            </tr>
+
+                            <tr>
+                                <td class="subQuestion" width="200">If Yes, when?</td>
+                                <td><apex:inputField value="{!lnao_New.LEAV_PlanDate__c}"/></td>
+                                <!-- 
+                                 <td class="lastVal">
+                                    <c:NeedAssessmentHistory fieldName="LEAV_PlanDate__c"  NeedAssessmentID="{!NA_id}"></c:NeedAssessmentHistory>
+                                </td>
+                                -->
+                            </tr>
+
+                            <tr>
+                                <td class="subQuestion" width="200">If yes, do you anticipate needing financing?</td>
+                                <td><apex:inputField value="{!lnao_New.LEAV_AnticipateFinance__c}" /></td>
+                                <!-- 
+                                 <td class="lastVal">
+                                    <c:NeedAssessmentHistory fieldName="LEAV_AnticipateFinance__c"  NeedAssessmentID="{!NA_id}"></c:NeedAssessmentHistory>
+                                </td>
+                                -->
+                            </tr>
+                            <tr> 
+                            	<td colspan="2"><hr></hr></td>
+                            </tr>     
+                            <tr>
+                                <td class="subQuestion" width="200" valign="top">Auto/Vehicle Comments</td>
+                                <td><apex:inputField value="{!lnao_New.LEAV_ContactPreferences__c}" style="width: 280px; height: 80px"/></td>
+                                <!-- 
+                                 <td class="lastVal">
+                                    <c:NeedAssessmentHistory fieldName="LEAV_ContactPreferences__c"  NeedAssessmentID="{!NA_id}"></c:NeedAssessmentHistory>
+                                </td>
+                                -->
+                            </tr>
+                            
+                            
+                            
+                        </table>
+                    </td>
+                    <td valign="top">
+                         <table border="0">
+                <tr>
+                    <td class="colHeader">Recommendations</td>
+                    <td>
+
+                    </td>
+                </tr>
+                <tr>
+                                <td>
+                                    Auto Loan
+                                </td>
+                                <td>
+                                    <apex:inputField value="{!lnao_New.REC_LEAV_1__c}" />
+                                </td>
+                            </tr>
+               
+            </table>
+                    </td>
+                </tr>
+            </table>
+            <p></p>
+            <table>
+                <tr>
+                    <td align="right" width="300">
+                        <apex:commandButton value="Save" action="{!SubmitAutoVehicleForm}" onclick="$(this).hide();$(this).next().show();"/>
+                        <input type="submit" value="Saving..." style="display:none;" disabled="disabled" class="btn"/>
+                    </td>
+                </tr>
+            </table>
+
+        </apex:pageBlock>
+  <apex:actionFunction action="{!resetscript}" name="resetscript" rerender="scriptcontainer" />
+    <apex:outputPanel id="scriptcontainer">
+        <input type="text" value="{!script}" id="scriptext" style="visibility:hidden" />
+    </apex:outputPanel>
+    </apex:form>
+  
+    <script>
+function toastsuccess()
+{
+
+    if (document.getElementById("scriptext").value == '1')
+    {
+        var x = document.getElementById("snackbar")
+        x.className = "show";
+        setTimeout(function(){ x.className = x.className.replace("show", ""); }, 3000);
+    }
+    resetscript();
+}
+ toastsuccess();
+</script>
+    
+</apex:component>

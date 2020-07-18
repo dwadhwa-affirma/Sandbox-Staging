@@ -1,0 +1,406 @@
+<aura:component implements="flexipage:availableForAllPageTypes,force:appHostable,force:hasRecordId,force:lightningQuickActionWithoutHeader" controller="CreateOpportunityController">
+   <style>
+      .slds-modal__container{max-width: 65rem !important; width:65% !important;}
+      .slds-modal__content { padding: 0px;}
+      .cuf-content { padding: 0px !important;}
+      .remnove-label label {display:none;}
+      .select-queue select {width: 190px;}
+      .modal-maincontent{min-height: 375px;max-height: 375px;overflow-y: auto;}
+      .uiMenuList--default.uiMenuList{
+			max-width: 100% !important;
+			width: auto !important;
+		}
+   </style>
+   <aura:attribute name="loading" type="Boolean" default="false" />
+   <aura:handler value="{!this}" name="init" action="{!c.doInit}" />
+   <aura:attribute name="SelectedType" type="string" default="User" />
+   <aura:attribute name="simpleRecord" type="Opportunity" default="{'sobjectType':'Opportunity'}"/>
+   <aura:attribute name="recordError" type="String"/>
+   <aura:attribute name="record" type="Object" />
+   <aura:attribute name="leadCreators" type="object"  />
+   <aura:attribute name="LeadObject" type="Case" default="{'sobjectType':'Lead'}" />
+   <aura:attribute name="objInfo" type="string" default="Opportunity" description="store object Info." />
+   <aura:attribute name="depnedentFieldMap" type="map" description="store controller(key)--> dependent(values) picklist value as a map." />
+   <aura:attribute name="isDependentDisable" type="boolean" default="true" description="use for, make disbale depandent field." />
+   <aura:attribute name="group" type="Group" default="{'sobjectType':'Group'}" description="To bind Queue List." />
+   <aura:attribute name="GroupNameSelected" type="String"  />
+   <aura:attribute name="EpisysUser" type="String"  />
+	
+	<aura:attribute name="accDetails" type="Account_Details__c[]"  />
+	<aura:attribute name="showDorpDown" type="boolean" default="false" />
+	<aura:attribute Name="selectedAcctNumber" type="object" access="public" description="This attribute can be used by parent component to read selected account number" />
+	<aura:attribute name="lookupIcon" type="String" access="public" default="standard:account" />
+	<aura:attribute name="RecordTypeName" type="String" access="public" />
+    
+    
+   <header class="slds-modal__header" id="CreateOpportunityHeader" >
+      <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse" title="Close" onclick="{!c.closePopup}">
+         <span data-aura-rendered-by="47:1615;a" class="lightningPrimitiveIcon" data-aura-class="lightningPrimitiveIcon">
+            <lightning:icon iconName="{#v.closeIcon}" size="small" variant="inverse" />
+         </span>
+         <span class="slds-assistive-text">Close</span>
+      </button>
+      <h2 id="modal-heading-01" class="slds-text-heading_medium slds-hyphenate">Create Opportunity</h2>
+   </header>
+   <div class="modal-maincontent">
+      <h3 class="slds-section-title--divider">Opportunity Information</h3>
+      <div class="slds-grid">
+         <div class="slds-col slds-small-size--1-of-2 slds-medium-size--1-of-3">
+            <div class="slds-form--stacked slds-p-around--medium slds-m-bottom--x-small">
+            <aura:if isTrue="{!v.RecordTypeName == 'Person Account' }">
+               <div class="slds-form-element">
+                    <label class="slds-form-element__label"><span data-aura-rendered-by="2242:0"></span>Member Account</label>
+                    <div class="slds-form-element__control">                        
+                        <!-- <force:inputField  value="{!v.LeadObject.Member_Account__c}"> </force:inputField>  --> 
+                        <div class="slds-form-element__control">
+                            <div class="slds-form-element__control" data-aura-rendered-by="16:1107;a">
+                                <div data-aura-rendered-by="26:1107;a" class="uiInput forceSearchInputLookupDesktop uiInput--default forceInputField" data-aura-class="uiInput forceSearchInputLookupDesktop uiInput--default forceInputField">
+                                    <div class="contentWrapper slds-box--border" id="MemberPicker">
+
+                                        <div class="inputWrapper" data-aura-rendered-by="28:1107;a" style="position: relative;">
+                                            <span class="slds-icon_container slds-icon-utility-search inputLookupIcon slds-float--right slds-input-has-icon slds-p-top--xx-small slds-p-right--small" data-aura-rendered-by="33:1107;a">
+                                            <span data-aura-rendered-by="36:1107;a" class="lightningPrimitiveIcon" data-aura-class="lightningPrimitiveIcon">
+
+                                            </span>
+                                            </span>
+                                            <aura:if isTrue="{! empty(v.selectedAcctNumber) }">
+                                                <div class="entityMenu slds-align-middle slds-p-vertical--xx-small slds-p-left--xxx-small slds-float--left uiMenu" data-aura-rendered-by="99:1107;a" data-aura-class="uiMenu">
+                                                    <div id="42:1107;a" data-aura-rendered-by="64:1107;a" class="uiPopupTrigger" data-aura-class="uiPopupTrigger" data-interactive-uid="11">
+                                                        <div data-aura-rendered-by="66:1107;a">
+                                                            <div data-aura-rendered-by="59:1107;a">
+                                                                <a class="entityMenuTrigger slds-button slds-button--icon slds-shrink-none slds-m-vertical--xxx-small slds-m-left--xx-small " aria-disabled="false" aria-haspopup="true" tabindex="0" role="button" title="" href="javascript:void(0);" data-aura-rendered-by="60:1107;a">
+                                                                    <div class="entityIcon slds-icon slds-icon--small slds-float--left forceEntityIcon" style="background-color: #7f8de1" data-aura-rendered-by="45:1107;a" data-aura-class="forceEntityIcon">
+                                                                        <span data-aura-rendered-by="48:1107;a" class="uiImage" data-aura-class="uiImage">
+                                                                    <img data-aura-rendered-by="46:1107;a" src="https://chevronfcu--ltgdev.cs13.my.salesforce.com/img/icon/t4v35/standard/person_account_120.png" class="icon " alt="Users" title="Users" />
+                                                                </span>
+                                                                    </div>
+
+                                                                </a>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                </div>
+                                            </aura:if>
+                                            <div class="autocompleteWrapper" data-aura-rendered-by="101:1107;a">
+                                                <aura:if isTrue="{! empty(v.selectedAcctNumber) }">
+                                                    <input class="default input uiInput uiInputTextForAutocomplete uiInput--default uiInput--input uiInput uiAutocomplete uiInput--default uiInput--lookup" maxlength="500" role="combobox" id="22:1107;a" aria-expanded="true" aria-autocomplete="list" type="text"
+                                                        data-interactive-lib-uid="3" aria-required="true" spellcheck="false" onmouseenter="{!c.onFocusLookup}" onmouseleave="{!c.onBlurLookup}" placeholder="Search..." title="Search..." />
+                                                    <aura:set attribute="else">                                                        <span class="slds-pill slds-pill_link fullWidth"> 
+                                                  <a href="javascript:void(0);" 
+                                                     class="slds-pill__action slds-p-left_x-small" title="{#v.selItem.text}">
+                                                    <lightning:icon iconName="{#v.lookupIcon}" size="x-small"/>
+                                                    <span class="slds-pill__label slds-p-left_x-small">{!v.selectedAcctNumber.Name}</span>
+                                                        </a>
+                                                        <button onclick="{!c.clearSelection}" class="slds-button slds-button_icon slds-button_icon slds-pill__remove" title="Remove">
+                                                    <lightning:icon iconName="utility:close" size="small" 
+                                                                    alternativeText="Press delete or backspace to remove"/>
+                                                    <span class="slds-assistive-text" >Remove</span>
+                                                  </button>
+                                                        </span>
+                                                    </aura:set>
+                                                </aura:if>
+                                                <!-- <aura:if isTrue=""> -->
+                                                <div class="undefined lookup__menu uiAbstractList uiAutocompleteList uiInput uiAutocomplete uiInput--default uiInput--lookup" role="listbox" onmouseenter="{!c.onFocusLookup}" onmouseleave="{!c.onBlurLookup}" style="{!v.showDorpDown == 'true' ? 'width: 100%; left: 1px;height:200px;overflow-y:auto;' : 'width: 100%; left: 1px;height:200px;overflow-y:auto;display:none;'}">
+                                                    <div class="listContent" data-aura-rendered-by="4060:0">
+                                                        <ul class="lookup__list  visible" role="presentation" data-aura-rendered-by="4055:0">
+                                                            <aura:iteration items="{!v.accDetails}" var="itemOption" indexVar="i">
+                                                                <li class="lookup__item  default uiAutocompleteOption forceSearchInputLookupDesktopOption" role="presentation" data-aura-class="uiAutocompleteOption forceSearchInputLookupDesktopOption" data-interactive-uid="7" onclick="{!c.itemSelected}" data-selectedIndex="{#i}">
+                                                                    <span style="cursor: pointer;">
+                                                                        <div class="mruIcon slds-icon slds-icon--small slds-float--left slds-m-vertical--xx-small slds-m-left--xx-small slds-media__figure forceEntityIcon" style="background-color: #7f8de1" data-aura-rendered-by="5:3148;a" data-aura-class="forceEntityIcon">
+                                                                            <span data-aura-rendered-by="8:3148;a" class="uiImage" data-aura-class="uiImage">
+	                                                                        <img data-aura-rendered-by="6:3148;a" src="https://chevronfcu--ltgdev.cs13.my.salesforce.com/img/icon/t4v35/standard/person_account_120.png" class="icon " alt="User" title="User" />
+	                                                                    </span>
+                                                    </div>
+                                                    <div class="slds-m-left--smalllabels slds-truncate slds-media__body" data-aura-rendered-by="9:3148;a">
+                                                        <div class="primaryLabel slds-truncate slds-lookup__result-text" title="{!itemOption.Name}" data-aura-rendered-by="54:3148;a">
+                                                            {!itemOption.Name}
+                                                            <!--render facet: 55:3148;a-->
+                                                        </div>
+                                                        <div class="slds-lookup__result-meta secondaryLabel slds-truncate slds-text-body--small" title="{!itemOption.RecType__c + ' | '  + itemOption.TypeTranslate__c + ' | ' + itemOption.Brand__c}" data-aura-rendered-by="56:3148;a">
+                                                            {!itemOption.RecType__c} | {!itemOption.TypeTranslate__c} | {!itemOption.Brand__c}
+                                                        </div>
+                                                    </div>
+                                                    </span>
+                                                    </li>
+                                                    </aura:iteration>
+                                                    </ul>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <ul class="has-error uiInputDefaultError uiInput uiInputSelect uiInput--default uiInput--select" style="display:none;" id="MemberPickerError">
+                                    <li class="form-element__help">Complete this field</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    </div>
+                </div>
+            </aura:if>   
+               <div class="slds-form-element" >
+                  <label class="slds-form-element__label" ><span class="required " data-aura-rendered-by="2242:0">*</span>Ownership</label>
+                  <div class="slds-form-element__control" id="ownershipControl">
+                   <!--   <force:inputField value="{!v.simpleRecord.Ownership__c}" aura:id="ownership"> </force:inputField>-->
+                    <lightning:select label="" value="{v.simpleRecord.Ownership__c}"  aura:id="ownership" onchange="{!c.selectOwnerTypeChange}">
+                                       <option value="Auto Assign" label="Auto Assign" selected="selected"></option>
+                                       <option value="Keep"  label="Keep"></option>
+                                        <option value="Assign"  label="Assign"></option>
+                                    </lightning:select>
+                     <ul class='has-error uiInputDefaultError uiInput uiInputSelect uiInput--default uiInput--select' id='ownershipError' style='display:none;'>
+                        <li class="form-element__help" data-aura-rendered-by="45:2084;a">Complete this field</li>
+                     </ul>
+                  </div>
+               </div>
+               <br/>	
+                 <div class="slds-form-element" style="{!((v.simpleRecord.Ownership__c == 'Assign') ? '' : 'display:none;')}" id="divAssign">
+                        <label class="slds-form-element__label"><span class="required " data-aura-rendered-by="2242:0">*</span>Opportunity Owner</label>
+                        <div class="slds-form-element__control">
+               <table>
+                  <tr>
+                   
+                           <td style="float:left;">
+                              <div class="slds-form-element"  >
+                              	
+                                 <div class="slds-form-element__control remnove-label" style="width:75px">
+                                    <lightning:select label="" value="{!v.SelectedType}" onchange="{!c.selectOwnerChange}" aura:id="ownertype">
+                                       <option value="Queue" label="Queue"></option>
+                                       <option value="User"  label="User"></option>
+                                    </lightning:select>
+                                    
+                                 </div>
+                                  
+                              </div>
+                           </td>
+                          
+                           <td id="ddluser">
+                              <div class="slds-form-element"  style="max-width:90%; margin-left: 15px;" >
+                            	 
+                                 <div class="slds-form-element__control" id="userOwnerControl">
+                                    <force:inputField value="{!v.simpleRecord.User_Owner__c}" aura:id="userOwner"> </force:inputField>
+                                    <ul class='has-error uiInputDefaultError uiInput uiInputSelect uiInput--default uiInput--select' id='userOwnerError' style='display:none;'>
+				                        <li class="form-element__help" data-aura-rendered-by="45:2084;a">Complete this field</li>
+				                     </ul>
+                                 </div>
+                              </div>
+                           </td>
+                         	
+                           <td id="ddlqueue" style="display:none;">
+                           		
+                           		
+                              <div class="slds-form-element" style="max-width:90%; float:right;" >
+                                  
+                                  <div class="slds-form-element__control" >
+                                    <ui:inputSelect aura:id="queuename" change="{!c.QueueNameChange}"  value="{!v.simpleRecord.Queue_Assigned_Id__c}" class="slds-select" />
+                                    
+                                  </div>
+              				 </div> 
+                               
+                             
+                             
+                              
+                           </td>
+                          
+                       
+                  </tr>
+               </table>
+                </div>
+              </div>
+                     
+              
+               <div class="slds-form-element">
+                  <label class="slds-form-element__label">Episys User ID-Creator</label>
+                  <div class="slds-form-element__control">
+                     <ui:inputSelect aura:id="leadCreator" change="{!c.leadCreatorChange}"  value="{!v.EpisysUser}" />
+                  </div>
+               </div>
+               <div class="slds-form-element">
+                  <label class="slds-form-element__label">Episys User ID-Referrer</label>
+                  <div class="slds-form-element__control">
+                     <ui:inputNumber value="{!v.simpleRecord.Episys_User_ID__c}" maxlength="4"  keyup="{!c.EpisysUserID}" updateOn="keyup"/>
+                  </div>
+               </div>
+            </div>
+         </div>
+         <div class="slds-col slds-small-size--1-of-2 slds-medium-size--1-of-3">
+            <div class="slds-form--stacked slds-p-around--medium slds-m-bottom--x-small">
+               <div class="slds-form-element" >
+                  <label class="slds-form-element__label" >Future Date</label>
+                  <div class="slds-form-element__control" id="FutureDateControl">
+                     <force:inputField value="{!v.simpleRecord.Future_Date__c}" aura:id="FutureDate"> </force:inputField>
+                      <ul class='has-error uiInputDefaultError uiInput uiInputSelect uiInput--default uiInput--select' id='FutureDateError' style='display:none;'>
+                        <li class="form-element__help" data-aura-rendered-by="45:2084;a">Cannot set the future date to past date</li>
+                     </ul>
+                  </div>
+               </div>
+              <!--   <div class="slds-form-element" >
+                  <label class="slds-form-element__label" >Mortgage Relationship Manager</label>
+                  <div class="slds-form-element__control">
+                     <force:inputField value="{!v.simpleRecord.Mortgage_Loan_Officer__c}"> </force:inputField>
+                  </div>
+               </div>-->
+               <div class="slds-form-element" >
+                  <label class="slds-form-element__label" >Event Source</label>
+                  <div class="slds-form-element__control">
+                     <force:inputField value="{!v.simpleRecord.Event_Source__c}"> </force:inputField>
+                  </div>
+               </div>
+                <div class="slds-form-element" >
+                  <label class="slds-form-element__label" >Best Time To Call</label>
+                  <div class="slds-form-element__control">
+                     <force:inputField value="{!v.simpleRecord.Best_Time_To_Call__c}"> </force:inputField>
+                  </div>
+               </div>
+               <div class="slds-form-element" style="width:100%">
+                  <label class="slds-form-element__label" >Description</label>
+                  <div class="slds-form-element__control">
+                     <force:inputField value="{!v.simpleRecord.Description}"> </force:inputField>
+                  </div>
+               </div>
+               
+               
+            </div>
+         </div>
+         <div class="slds-col slds-small-size--1-of-2 slds-medium-size--1-of-3">
+            <div class="slds-form--stacked slds-p-around--medium slds-m-bottom--x-small">
+               <div class="slds-form-element" >
+                  <label class="slds-form-element__label" ><span class="required " data-aura-rendered-by="2242:0">*</span>Product Type</label>
+                  <div class="slds-form-element__control">
+                     <ui:inputSelect aura:id="objProductType" class="slds-select" value="{!v.simpleRecord.Product_Type__c}"  change="{!c.changeProductType}" />
+                     <!-- 	<force:inputField value="{!v.simpleRecord.Product_Type__c}" > </force:inputField>  -->
+                  </div>
+               </div>
+               <div class="slds-form-element" >
+                  <label class="slds-form-element__label" >Product Sub Type</label>
+                  <div class="slds-form-element__control">
+                     <ui:inputSelect aura:id="objProductSubType" disabled="{!v.isDependentDisable}" value="{!v.simpleRecord.Product_Sub__c}" />
+                  </div>
+               </div>
+               <div class="slds-form-element" >
+                  <label class="slds-form-element__label" ><span class="required " data-aura-rendered-by="2242:0">*</span>Opportunity Source</label>
+                  <div class="slds-form-element__control" id="objOpportunitySourceControl">
+                     <force:inputField  aura:id="objOpportunitySource" value="{!v.simpleRecord.Opportunity_Source__c}"> </force:inputField>
+                     <ul class='has-error uiInputDefaultError uiInput uiInputSelect uiInput--default uiInput--select' id='objOpportunitySourceError' style='display:none;'>
+                        <li class="form-element__help" data-aura-rendered-by="45:2084;a">Complete this field</li>
+                     </ul>
+                  </div>
+               </div>
+                <div class="slds-form-element" >
+                  <label class="slds-form-element__label" ><span class="required " data-aura-rendered-by="2242:0">*</span>Status</label>
+                  <div class="slds-form-element__control" id="objOpportunityStagediv">
+                  		<ui:inputSelect aura:id="objOpportunityStage" value="{!v.simpleRecord.StageName}" change="{!c.selectStageChange}" >
+                  			<ui:inputSelectOption text="New"/>
+                  			<ui:inputSelectOption text="Outreach"/>
+                  			<ui:inputSelectOption text="Analyzing Needs"/>
+                  			<ui:inputSelectOption text="Considering"/>
+                  			<!--  <ui:inputSelectOption text="Fulfillment"/>
+                  			<ui:inputSelectOption text="Closed Won"/>
+                  			<ui:inputSelectOption text="Closed Lost"/>-->
+                  		</ui:inputSelect>
+                      
+                  </div>
+                   <ul class='has-error uiInputDefaultError uiInput uiInputSelect uiInput--default uiInput--select' id='objOpportunityStageError' style='display:none;'>
+                        <li class="form-element__help" data-aura-rendered-by="45:2084;a">Complete this field</li>
+                     </ul>
+               </div>
+               <div class="slds-form-element" style="display:none;" id="objSubStatusdiv">
+                  <label class="slds-form-element__label" >Sub Status</label>
+                  <div class="slds-form-element__control" >
+                     <ui:inputSelect aura:id="objSubStatus" value="{!v.simpleRecord.Sub_Status__c}" >
+                  			<ui:inputSelectOption text="--- None ---"/>
+                  			<ui:inputSelectOption text="1st attempt"/>
+                  			<ui:inputSelectOption text="2nd attempt"/>
+                  			<ui:inputSelectOption text="3rd attempt"/>
+                  			<ui:inputSelectOption text="Appointment Set"/>
+                  			<ui:inputSelectOption text="Email sent"/>
+                  			<ui:inputSelectOption text="Follow up Scheduled"/>                 			
+                  		</ui:inputSelect>
+                  </div>
+               </div>
+               
+                
+            </div>
+         </div>
+      </div>
+     <!-- <h3 class="slds-section-title-divider">Marketing Cloud Info</h3>
+      <div class="slds-grid">
+         <div class="slds-col slds-small-size-1-of-2 slds-medium-size-1-of-3">
+            <div class="slds-form-stacked slds-p-around-medium slds-m-bottom-x-small">
+             <div class="slds-form-element" >
+                  <label class="slds-form-element__label" >I'm interested in</label>
+                  <div class="slds-form-element__control">
+                     <force:inputField value="{!v.simpleRecord.I_m_interested_in__c}"> </force:inputField>
+                  </div>
+               </div>
+            
+           
+               
+              <div class="slds-form-element" >
+                  <label class="slds-form-element__label" >Estimate Value</label>
+                  <div class="slds-form-element__control">
+                     <force:inputField value="{!v.simpleRecord.Estimate_Value__c}"> </force:inputField>
+                  </div>
+               </div>
+               
+               <div class="slds-form-element" >
+                  <label class="slds-form-element__label" >Loan Amount</label>
+                  <div class="slds-form-element__control">
+                     <force:inputField value="{!v.simpleRecord.Loan_Amount__c}"> </force:inputField>
+                  </div>
+               </div>
+              
+              
+            </div>
+          </div>
+          <div class="slds-col slds-small-size-1-of-2 slds-medium-size-1-of-3">
+            <div class="slds-form-stacked slds-p-around-medium slds-m-bottom-x-small">
+            	<div class="slds-form-element" >
+                  <label class="slds-form-element__label" >Timeframe</label>
+                  <div class="slds-form-element__control">
+                     <force:inputField value="{!v.simpleRecord.Timeframe__c}"> </force:inputField>
+                  </div>
+               </div>
+               
+               <div class="slds-form-element" >
+                  <label class="slds-form-element__label" >Unbounce Submission Date</label>
+                  <div class="slds-form-element__control">
+                     <force:inputField value="{!v.simpleRecord.Unbounce_Submission_Date__c}"> </force:inputField>
+                  </div>
+               </div>
+            </div>
+            </div>
+           <div class="slds-col slds-small-size-1-of-2 slds-medium-size-1-of-3">
+            <div class="slds-form-stacked slds-p-around-medium slds-m-bottom-x-small">
+            	 <div class="slds-form-element" >
+                  <label class="slds-form-element__label" >UID</label>
+                  <div class="slds-form-element__control">
+                     <force:inputField value="{!v.simpleRecord.UID__c}"> </force:inputField>
+                  </div>
+               </div>
+               
+                <div class="slds-form-element" >
+                  <label class="slds-form-element__label" >Unbounce Submission Time</label>
+                  <div class="slds-form-element__control">
+                     <force:inputField value="{!v.simpleRecord.Unbounce_Submission_Time__c}"> </force:inputField>
+                  </div>
+               </div>
+            </div>
+            </div>
+       </div> -->
+      <aura:if isTrue="{!(v.loading == true)}">
+         <div class="loadingDiv cCreateLead">
+            <div class="demo-only" style='height:492px; '>
+               <div role="status" class="slds-spinner slds-spinner_medium">
+                  <div class="slds-spinner__dot-a"></div>
+                  <div class="slds-spinner__dot-b"></div>
+               </div>
+            </div>
+         </div>
+      </aura:if>
+   </div>
+   <footer class="slds-modal__footer" id="CreateLeadFooter">
+      <button class="slds-button slds-button--neutral uiButton forceActionButton" onclick="{!c.closePopup}">Cancel</button>
+      <button class="slds-button slds-button_brand" onclick="{!c.SaveOpportunity}">Save</button>
+   </footer>
+</aura:component>

@@ -1,0 +1,29 @@
+.THIS#stage5 {width:70%; font-size:.8125rem; margin:0 auto;}
+
+.THIS#stage5 .slds-form-element__control{padding-left:120px;}
+.THIS#stage5 .slds-form-element__control .slds-form-element__control{padding-left:0;}
+.THIS#stage5 .slds-form-element__control .slds-input{min-height:unset; height:32px;}
+.THIS#stage5 .slds-form-element__control .uiInput--datetime .datePicker-openIcon{bottom:8px;}
+
+.THIS#stage5 label.slds-form-element__label.slds-no-flex{display:none; width:0;}
+
+.THIS#stage5 .uiInput--select .select, 
+.THIS#stage5 .uiInput--input.input, .THIS#stage5 .uiInput--input .input,
+.THIS#stage5 .slds-input{min-height:unset; height:32px;}
+
+.THIS#stage5 .uiPicklistLabel{display:none;height:0;}
+
+@media (max-width:1250px){
+    .THIS#stage5 {width:90%;}
+}
+@media (max-width:600px){
+    .THIS#stage5 {width:100%;}
+}
+@media (max-width:767px){
+    .THIS#stage5 .slds-form-element__label{float:left;}
+	.THIS#stage5 .slds-form-element_horizontal .slds-form-element__control{clear:none;}
+}
+@media (max-width:480px){
+    .THIS#stage5 .slds-form-element__label{clear:both;}
+	.THIS#stage5 .slds-form-element_horizontal .slds-form-element__control{clear:both; padding-left:0;}
+}

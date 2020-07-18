@@ -1,0 +1,359 @@
+<aura:component implements="flexipage:availableForAllPageTypes,force:appHostable,force:hasRecordId,force:lightningQuickActionWithoutHeader" controller="ManageTravelPlansController">
+	 <aura:handler value="{!this}" name="init" action="{!c.doInit}"/>
+<aura:attribute name="travelDetails" type="Mastercard_Travel__c[]" />
+ <aura:attribute name="currentStep" type="string" default="1" />
+ <aura:attribute name="currentTab" type="string" default="1" />
+ <aura:attribute name="cardList" type="Object[]" />
+  <aura:attribute name="addedDestinations" type="string[]" />
+   <aura:attribute name="CountryValue" access="global" Type="String" />
+   <aura:attribute name="isDisabled" access="global" Type="boolean" default="true" />
+   <aura:attribute name="checkCard" access="global" Type="boolean" default="false" />
+      <aura:attribute name="checkAllCard" access="global" Type="boolean" default="false" />
+      <aura:attribute name="isTravelCard" access="global" Type="boolean" default="true" />
+<aura:attribute type="List" name="selectedCheckBoxes" default="[]" />
+   <aura:attribute name="DepartureDate" access="global" Type="String" />
+      <aura:attribute name="ReturnDate" access="global" Type="String" />
+      <aura:attribute name="popoverMessage" type="String" />
+      <aura:attribute name="finaltravelDetails" type="Mastercard_Travel__c[]" />
+      
+      <aura:handler name="DeleteRowEvt" event="c:DeleteRowEvt" action="{!c.removeDeletedRow}"/>
+    <aura:handler name="AddRowEvt" event="c:AddNewRowEvt" action="{!c.addNewRow}"/>
+     <aura:handler name="ValidateRequiredEvt" event="c:ValidateRequiredEvt" action="{!c.validateRequiredDetails}"/>
+   <aura:attribute name="travelEditDetails" type="Object[]" access="global"/>
+   <aura:attribute name="isEditClicked" access="global" Type="boolean" default="false" />
+   <aura:attribute name="editIndex" access="global" Type="integer" default="-1" />
+   <aura:handler name="RefreshEvt" event="c:refreshTravelPlanEvt" action="{!c.editTab}"/>
+    <aura:attribute name="loading" type="Boolean" default="false" />
+    <aura:attribute name="isSubmitDisabled" type="Boolean" default="false" />
+    <aura:attribute name="isStartOverVisible" type="Boolean" default="false" />
+     <aura:attribute name="isEmailDisabled" access="global" Type="boolean" default="false" />
+     <aura:attribute name="isPhoneDisabled" access="global" Type="boolean" default="false" />
+   
+ <style>
+ .modal-maincontent{
+   		 height: 400px;
+   		 overflow-y: auto;    
+     
+    }    
+.modal-body{
+     height: auto !important;
+     }
+
+	
+		.cuf-content{padding: 0px !important;}
+		.slds-p-around_medium, .slds-p-around--medium{padding-top: 0px;
+    padding-bottom: 0px;
+    padding-left: 0px;
+    padding-right: 0px;}
+		.cManageTravelPlans{padding:15px;}
+		.slds-medium-size_1-of-2, .slds-medium-size--1-of-2{padding:10px;}
+		 .modal-body{position:relative;}
+	
+	.tblAdditionalinfotd
+	{
+		padding-right: 10%;	
+		    padding-top: 3%;	
+	}
+	
+	.invalidcase{
+		 padding-left:25%;
+		 padding-top: 23%;
+		    font-size: 13px;
+    		font-weight: normal !important;
+		}
+		.accessdenied
+		{
+		    font-size: 18px;
+    		color: red;
+    		padding-left: 17%;
+		}
+		.slds-modal__container{max-width: 70rem !important; width:60% !important;}
+		.tdlabel{
+			padding-right: 1px;
+    		width:2%;
+		}
+		.tdfield{
+			    width: 170px;
+   			 padding-right: 2%;
+		}
+		
+		.uiInputDate {
+		    width: 100px;
+		}
+		 .loadingDiv {
+            position: absolute;
+            z-index: 1000;
+            background: rgba(255, 255, 255, 0.8);
+            width: 100%;
+            height: 70%;
+            top: 100px;
+        }
+        
+        .loadingDiv .demo-only {
+            z-index: 101;
+        }
+        .cManageTravelPlans.loadingDiv{top:0; left:0; height:100%;}
+        .txtDate {min-height: 30px !important;}
+        .errorSave{
+            width: 40% !important;
+            top: 78% !important;
+        }
+        .errorDelete{
+            right: 5% !important;
+            top: 84% !important;
+        }
+        .verifyDepartureDate{
+       	 width: 150px !important;
+        }
+        .slds-modal__content {
+        overflow-y: hidden !important;
+        }
+ </style>
+	<header class="slds-modal__header" id="ManageTravelPlans" >
+        <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse" title="Close" onclick="">
+			<span data-aura-rendered-by="47:1615;a" class="lightningPrimitiveIcon" data-aura-class="lightningPrimitiveIcon"><lightning:icon iconName="{#v.closeIcon}" size="small" variant="inverse" /></span>
+            <span class="slds-assistive-text">Close</span>
+        </button>
+       <h2 id="modal-heading-01" class="slds-text-heading_medium slds-hyphenate">Travel Notification</h2> 
+    </header>
+    
+  
+ <aura:if isTrue="{!v.isTravelCard}">
+ <div class="modal-maincontent">
+  <div class="loadingDiv cManageTravelPlans" style="display:none;position: absolute;z-index: 100;background: rgba(255, 255, 255, 0.8);width: 100%;height: 300px !important;top: 0 !important;left: 0!important" id="divloading">
+            <div class="demo-only" style='height: 6rem; '>
+                <div role="status" class="slds-spinner slds-spinner_medium">
+                    <div class="slds-spinner__dot-a"></div>
+                    <div class="slds-spinner__dot-b"></div>
+                </div>
+            </div>
+        </div>
+ <div class="slds-tabs--scoped">
+      <ul class="slds-tabs--scoped__nav" role="tablist">
+         <li aura:id="detailsTab" class="slds-tabs--scoped__item slds-text-title--caps slds-active customClassForTab" title="Enter Travel Notes" role="presentation" ><a class="slds-tabs--scoped__link" href="javascript:void(0);" onclick="{!c.detailsTab}" role="tab" tabindex="0" aria-selected="false" aria-controls="tab-default-1" id="Details_linking">Enter Travel Notes</a></li>
+         <li aura:id="editTab" class="slds-tabs--scoped__item slds-text-title--caps customClassForTab" title="View Current Travel Notes" role="presentation"><a class="slds-tabs--scoped__link" href="javascript:void(0);" onclick="{!c.editTab}" role="tab" tabindex="-1" aria-selected="true" aria-controls="tab-default-2" id="Edit_linking">View Current Travel Notes</a></li>
+        
+      </ul>
+ 
+<div name="tabdataName" aura:id="detailsTabDataId" id="tab-default-1" class="slds-tabs--scoped__content slds-show customClassForTabData" role="tabpanel" aria-labelledby="Details_linking" style="min-height: 20rem;">
+ <div class="{!v.currentStep == '1' ? 'slds-show' : 'slds-hide'}">
+ <h3 class="slds-section-title--divider">Select Your Cards</h3>
+ <div class="slds-grid" style="max-height: 270px;overflow-y: auto;">
+ 		<div class="slds-col slds-small-size--1-of-1 slds-medium-size--1-of-1">
+            <div class="slds-form--stacked slds-p-around--medium slds-m-bottom--x-small">
+            <div class="slds-form-element">
+            <table style=" margin-top:2%;line-height: 2.9;">
+            <tr>
+            	<td><ui:inputCheckbox value="{!v.checkAllCard}" change="{!c.selectAllCard}"/> </td>
+            	<td style="font-weight:bold;">Select All Cards</td>
+            		</tr>
+            
+                   <aura:iteration items="{!v.cardList}" var="itemOption" indexVar="i">
+                     <aura:if isTrue="{!itemOption.CardType != 'NA'}">
+                   <tr>
+                   <td>
+                   <lightning:input aura:id="chkcards" class="chkCard" name="cardcroup" type="checkbox" value="{!itemOption.Id}" onchange="{!c.selectCard}"/>
+                   	
+                   </td>
+                   <td>                   
+                   		{!itemOption.CardType} - {!itemOption.Card_Number_Last_4_Digits__c} - {!itemOption.Name} - {!itemOption.Card_Name__c}
+                   </td>
+                   </tr>
+                   </aura:if>
+             				
+             		</aura:iteration>
+             </table>
+                </div>
+             
+            </div>
+         </div>
+ </div>
+ </div>
+  <div class="{!v.currentStep == '2' ? 'slds-show' : 'slds-hide'}">
+ <h3 class="slds-section-title--divider">Enter Your Travel Details</h3>
+ <div class="slds-grid" style="margin-top: 10px;">
+ 		<div class="slds-col slds-small-size--1-of-1 slds-medium-size--1-of-1">
+            <div class="slds-form--stacked slds-p-around--medium slds-m-bottom--x-small">
+            <table style="border-collapse: separate;border-spacing: 8px">
+             <aura:iteration items="{!v.travelDetails}" var="item" indexVar="index">
+                <c:dynamicRowDestination travelDetailsInstance="{!item}" rowIndex="{!index}" />
+            </aura:iteration>
+            </table>
+            <div>
+            	 <button class="slds-button slds-button--neutral uiButton forceActionButton" onclick="{!c.addNewRow}">Add Destination</button>
+            </div>
+          	      
+         </div>
+         </div>
+         </div>
+  
+</div>
+<div class="{!v.currentStep == '3' ? 'slds-show' : 'slds-hide'}">
+ <h3 class="slds-section-title--divider">Enter Your Travel Details - cont.</h3>
+ <br/>
+
+ <h3 style="font-size: 15px;"><b>Would you prefer to receive your confirmation notice via text, email or both?</b></h3>
+  	<div class="slds-grid">
+ 		<div class="slds-col slds-small-size--1-of-1 slds-medium-size--1-of-1">
+            <div class="slds-form--stacked slds-p-around--medium slds-m-bottom--x-small">
+             <div class="slds-form-element">                    
+                    <table>
+                    <th></th>
+                    <th style="width: 45%;"></th>
+                    <th>Preferred?</th>
+                    <tr>
+                    <td class="tblAdditionalinfotd">
+                    <span>U.S Mobile Number</span>
+                    </td>
+                    <td class="tblAdditionalinfotd"><ui:inputtext value="{!v.travelDetails.US_Mobile_Number__c}" change="{!c.validatePhone}" /> </td>
+                    <td class="tblAdditionalinfotd">  <ui:inputCheckbox value="{!v.travelDetails.IsPhonePreferred__c}" />     </td>
+                    </tr>                    
+                    <tr>
+                    <td class="tblAdditionalinfotd">
+                    <span>Email</span>
+                    </td>
+                    <td class="tblAdditionalinfotd"> <ui:inputtext value="{!v.travelDetails.Email__c}" change="{!c.validateEmail}" /></td>
+                    <td class="tblAdditionalinfotd">  <ui:inputCheckbox value="{!v.travelDetails.IsEmailPreferred__c}" />     </td>
+                    </tr>                    
+                    </table>
+                    <br/>
+                    <br/>
+                    <span style="color: red;font-size:14px;padding-top:3%">Note: Updating these fields will not map to Symitar.</span>
+                </div>            	
+            </div>            
+            </div>
+         
+            
+		</div>
+ </div>
+ <div class="{!v.currentStep == '4' ? 'slds-show' : 'slds-hide'}" style="overflow-y: auto;height: 90%;">
+ <h3 class="slds-section-title--divider">Verify and Submit Travel Plan</h3>
+ <div class="slds-grid">
+ <div>
+ <table style="width: 100%;border-collapse: separate;border-spacing: 8px;"> 
+ 
+  <aura:iteration items="{!v.travelDetails}" var="item" indexVar="index">
+              <tr>
+              	<td style="padding-top: 10px;">
+              		<span>From Date</span>
+              	</td>
+              	<td style="padding-top: 10px;">
+              		<ui:inputDate value="{!item.Departure_Date__c}" disabled="{!v.isDisabled}" class="verifyDepartureDate"/>
+              	</td>
+              	<td style="padding-top: 10px;">
+              		<span>To Date</span>
+              	</td>
+              	<td style="padding-top: 10px;">
+              		<ui:inputDate value="{!item.Return_Date__c}" disabled="{!v.isDisabled}" class="verifyDepartureDate"/>
+              	</td>
+              </tr>  
+              <tr>
+              	<td>
+              		<span>Traveling To:</span>
+              	</td>
+              	<td>
+              		<aura:if isTrue="{!item.State__c != ''}">
+                		<ui:inputtext value="{!item.State__c}" disabled="{!v.isDisabled}" />
+              		<aura:set attribute="else">
+                  		<ui:inputtext value="{!item.Country__c}" disabled="{!v.isDisabled}" />
+              		</aura:set> 
+            		</aura:if>
+              	</td>
+              </tr>
+   </aura:iteration>
+  
+ 
+ 	
+ 	<tr>
+ 		<td style="padding-top: 20px;"><span>Email</span></td>
+ 		<td colspan="3" style="padding-top: 20px;"><ui:inputtext value="{!v.travelDetails.Email__c}" disabled="{!v.isDisabled}" /></td>
+ 	</tr>
+ 	<tr>
+ 		<td><span>U.S Mobile Number</span></td>
+ 		<td colspan="3"><ui:inputtext value="{!v.travelDetails.US_Mobile_Number__c}" disabled="{!v.isDisabled}"/> 
+ 		</td>
+ 	</tr>
+    
+    
+
+ </table>
+ <!-- <aura:if isTrue="{!v.isStartOverVisible}">
+ <table style="margin-top: 30px;">
+  <tr>
+		<td> <a onclick="{!c.ClearData}"><b>Start Over Again</b></a> to Submit New Travel Notice</td>
+	</tr>
+	<tr>
+		<td> <a onclick="{!c.editTab}"><b>Modify</b></a> Existing Travel Notices</td>
+	</tr>
+ </table>
+</aura:if> -->
+     </div>	
+  </div>
+ </div>
+ </div>
+  <div name="tabdataName" aura:id="editTabDataId" id="tab-default-2" class="slds-tabs--scoped__content slds-hide customClassForTabData" role="tabpanel" aria-labelledby="vegetable_linking" style="overflow-y: auto;min-height: 20rem;">
+          <div class="slds-grid">
+ 			<div class="slds-col slds-small-size--1-of-1 slds-medium-size--1-of-1">
+            <div class="slds-form--stacked slds-p-around--medium slds-m-bottom--x-small">
+            <div class="slds-form-element">
+            	 <table style=" margin-top:2%;line-height: 2.9;">
+            	 <th>From</th>
+            	 <th>To</th>
+            	 <th>Destination</th>
+            	 <th>Timezone</th>
+            	 <th>Cards</th>
+            	 <th>Actions</th>
+                   <aura:iteration items="{!v.travelEditDetails}" var="item" indexVar="i">
+                    
+                    
+                    <c:dynamicaRowMCEdit travelDetailsInstance="{!item}"/>
+                    
+                
+             				
+             		</aura:iteration>
+             </table>            
+            </div>
+           </div>
+          </div>
+          </div>
+      </div>
+ </div>
+ 
+    
+       
+ </div>
+   <span onclick="{!c.hideErrorMessage}" id="popover" aura:id="popover" class="slds-popover slds-nubbin--bottom-right slds-theme--error slds-hide" style="right: 15%;padding: 0 !important;width: auto;position: absolute;top: 81%;">
+        <div class="slds-popover__body">
+            <p>{!v.popoverMessage}</p>
+        </div>
+          </span>
+ <aura:set attribute="else">
+     <div class="modal-maincontent invalidcase">
+    <h3 class="accessdenied">Invalid Case Category</h3>
+    	<!-- <span style="color:red">Travel Notification case category should be: Card services / ATM-Debit / Travel notification or Card Services/Debit/Travel notification</span> -->
+    	</div>
+    	<footer class="slds-modal__footer" id="MemberCommentFooter">
+		<button class="slds-button slds-button--neutral uiButton forceActionButton" onclick="{!c.closePopup}">Cancel</button> 
+  </footer>
+ </aura:set>
+ </aura:if>
+<aura:if isTrue="{!v.isTravelCard}">
+	<footer class="slds-modal__footer" id="ManageTravelPlanFooter" style="margin-right:0px;    position: fixed;width: 100%;    padding-botton: 0;">
+		<aura:if isTrue="{!and(v.currentStep == '4', v.currentTab != '2')}">
+			<button class="slds-button slds-button_brand" onclick="{!c.editInfo}" id="btnEdit">Edit</button>
+			<button class="slds-button slds-button_brand" onclick="{!c.saveTravelNotificationData}" disabled="{!v.isSubmitDisabled}">Submit</button>
+		</aura:if>
+		<aura:if isTrue="{!or(v.currentStep == '2', v.currentStep == '3')}">
+		<aura:if isTrue="{!v.currentTab != '2'}">
+	    	<button class="slds-button slds-button_brand" onclick="{!c.moveBack}" style="float:left !important">Back</button>
+		</aura:if>
+		</aura:if> 
+		<aura:if isTrue="{!and(v.currentStep != '4', v.currentTab != '2')}">
+	    	<button id="btnNext" class="slds-button slds-button_brand" onclick="{!c.moveNext}">Next</button>
+		
+		</aura:if>     
+	    <button class="slds-button slds-button--neutral uiButton forceActionButton" onclick="{!c.closePopup}">Cancel</button>
+		
+	</footer>
+</aura:if>
+</aura:component>

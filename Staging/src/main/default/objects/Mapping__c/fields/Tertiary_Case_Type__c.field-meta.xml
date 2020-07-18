@@ -1,0 +1,315 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Tertiary_Case_Type__c</fullName>
+    <externalId>false</externalId>
+    <label>Tertiary Case Type</label>
+    <required>false</required>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Picklist</type>
+    <valueSet>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Inactive Notices</fullName>
+                <default>false</default>
+            </value>
+            <value>
+                <fullName>W8 Forms</fullName>
+                <default>false</default>
+            </value>
+            <value>
+                <fullName>W9 Forms</fullName>
+                <default>false</default>
+            </value>
+            <value>
+                <fullName>IRA/HAS</fullName>
+                <default>false</default>
+            </value>
+            <value>
+                <fullName>Shared Certificates</fullName>
+                <default>false</default>
+            </value>
+            <value>
+                <fullName>Verification of Deposit</fullName>
+                <default>false</default>
+            </value>
+            <value>
+                <fullName>Stop Payment</fullName>
+                <default>false</default>
+            </value>
+            <value>
+                <fullName>Change of Address</fullName>
+                <default>false</default>
+            </value>
+            <value>
+                <fullName>Close Account</fullName>
+                <default>false</default>
+            </value>
+            <value>
+                <fullName>Signature Cards</fullName>
+                <default>false</default>
+            </value>
+            <value>
+                <fullName>Trustee</fullName>
+                <default>false</default>
+            </value>
+            <value>
+                <fullName>Power of Attorney</fullName>
+                <default>false</default>
+            </value>
+            <value>
+                <fullName>Fiduciary</fullName>
+                <default>false</default>
+            </value>
+            <value>
+                <fullName>Arbitration Opt Out Letters</fullName>
+                <default>false</default>
+            </value>
+            <value>
+                <fullName>Miscellaneous correspondence</fullName>
+                <default>false</default>
+            </value>
+            <value>
+                <fullName>Check Copies</fullName>
+                <default>false</default>
+            </value>
+            <value>
+                <fullName>Statement Copies</fullName>
+                <default>false</default>
+            </value>
+            <value>
+                <fullName>Fee Reversal</fullName>
+                <default>false</default>
+            </value>
+            <value>
+                <fullName>New Order</fullName>
+                <default>false</default>
+            </value>
+            <value>
+                <fullName>Lost Checks</fullName>
+                <default>false</default>
+            </value>
+            <value>
+                <fullName>Subpoenas</fullName>
+                <default>false</default>
+            </value>
+            <value>
+                <fullName>Research</fullName>
+                <default>false</default>
+            </value>
+            <value>
+                <fullName>Amendments</fullName>
+                <default>false</default>
+            </value>
+            <value>
+                <fullName>Duplicates</fullName>
+                <default>false</default>
+            </value>
+            <value>
+                <fullName>New Card</fullName>
+                <default>false</default>
+            </value>
+            <value>
+                <fullName>Replacement</fullName>
+                <default>false</default>
+            </value>
+            <value>
+                <fullName>PIN</fullName>
+                <default>false</default>
+            </value>
+            <value>
+                <fullName>Lost/Stolen</fullName>
+                <default>false</default>
+            </value>
+            <value>
+                <fullName>Bill Pay</fullName>
+                <default>false</default>
+            </value>
+            <value>
+                <fullName>Finance Works</fullName>
+                <default>false</default>
+            </value>
+            <value>
+                <fullName>Quicken</fullName>
+                <default>false</default>
+            </value>
+            <value>
+                <fullName>Purchase Rewards</fullName>
+                <default>false</default>
+            </value>
+            <value>
+                <fullName>eDeposit</fullName>
+                <default>false</default>
+            </value>
+            <value>
+                <fullName>Technical Issue</fullName>
+                <default>false</default>
+            </value>
+            <value>
+                <fullName>A2A/P2P</fullName>
+                <default>false</default>
+            </value>
+            <value>
+                <fullName>Mobile Deposit</fullName>
+                <default>false</default>
+            </value>
+            <value>
+                <fullName>Domestic Wires</fullName>
+                <default>false</default>
+            </value>
+            <value>
+                <fullName>Foreign Wires</fullName>
+                <default>false</default>
+            </value>
+            <value>
+                <fullName>Pull Check</fullName>
+                <default>false</default>
+            </value>
+            <value>
+                <fullName>Issue Check</fullName>
+                <default>false</default>
+            </value>
+            <value>
+                <fullName>Other</fullName>
+                <default>false</default>
+            </value>
+            <value>
+                <fullName>FTB(Franchise Tax Board)</fullName>
+                <default>false</default>
+            </value>
+            <value>
+                <fullName>IRS Levies</fullName>
+                <default>false</default>
+            </value>
+            <value>
+                <fullName>Levy Writ</fullName>
+                <default>false</default>
+            </value>
+            <value>
+                <fullName>California Child Support</fullName>
+                <default>false</default>
+            </value>
+            <value>
+                <fullName>Personal Taxes</fullName>
+                <default>false</default>
+            </value>
+            <value>
+                <fullName>Vehicle Registration collections</fullName>
+                <default>false</default>
+            </value>
+            <value>
+                <fullName>CA Court Ordered Debit Collection</fullName>
+                <default>false</default>
+            </value>
+            <value>
+                <fullName>EDD</fullName>
+                <default>false</default>
+            </value>
+            <value>
+                <fullName>BOE</fullName>
+                <default>false</default>
+            </value>
+            <value>
+                <fullName>Other State Child Support</fullName>
+                <default>false</default>
+            </value>
+            <value>
+                <fullName>Miscellaneous</fullName>
+                <default>false</default>
+            </value>
+            <value>
+                <fullName>CA Levy Writ</fullName>
+                <default>false</default>
+            </value>
+            <value>
+                <fullName>Writ of Garnishment - Utah</fullName>
+                <default>false</default>
+            </value>
+            <value>
+                <fullName>Writ of Garnishment - Maryland</fullName>
+                <default>false</default>
+            </value>
+            <value>
+                <fullName>Writ of Garnishment - Mississippi</fullName>
+                <default>false</default>
+            </value>
+            <value>
+                <fullName>Writ of Garnishment - Louisiana</fullName>
+                <default>false</default>
+            </value>
+            <value>
+                <fullName>Writ of Garnishment - Colorado</fullName>
+                <default>false</default>
+            </value>
+            <value>
+                <fullName>Writ of Garnishment - Texas</fullName>
+                <default>false</default>
+            </value>
+            <value>
+                <fullName>New</fullName>
+                <default>false</default>
+            </value>
+            <value>
+                <fullName>Update</fullName>
+                <default>false</default>
+            </value>
+            <value>
+                <fullName>Close</fullName>
+                <default>false</default>
+            </value>
+            <value>
+                <fullName>Authorized Signer</fullName>
+                <default>false</default>
+            </value>
+            <value>
+                <fullName>Renew</fullName>
+                <default>false</default>
+            </value>
+            <value>
+                <fullName>Dividend Adjustments</fullName>
+                <default>false</default>
+            </value>
+            <value>
+                <fullName>Address Change</fullName>
+                <default>false</default>
+            </value>
+            <value>
+                <fullName>Contact Info</fullName>
+                <default>false</default>
+            </value>
+            <value>
+                <fullName>Address &amp; Contact Info</fullName>
+                <default>false</default>
+            </value>
+            <value>
+                <fullName>Savings</fullName>
+                <default>false</default>
+            </value>
+            <value>
+                <fullName>Checking</fullName>
+                <default>false</default>
+            </value>
+            <value>
+                <fullName>Marketedge</fullName>
+                <default>false</default>
+            </value>
+            <value>
+                <fullName>Update Membership</fullName>
+                <default>false</default>
+            </value>
+            <value>
+                <fullName>New Membership</fullName>
+                <default>false</default>
+            </value>
+            <value>
+                <fullName>W8</fullName>
+                <default>false</default>
+            </value>
+            <value>
+                <fullName>W9</fullName>
+                <default>false</default>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

@@ -1,0 +1,52 @@
+<aura:component controller="CollectionsInLightningCls" implements="flexipage:availableForAllPageTypes,force:appHostable,force:hasRecordId" access="global">
+    <aura:attribute name="Model" access="global" Type="Needs_Assesment__c" />
+ 	<aura:handler name="init" value="{!this}" action="{!c.doInit}" />
+ 	
+ 	<aura:attribute name="MembershipDetails" type="NA_Membership_Referral_Questions__c[]" /> 
+    <table>
+        <tr>
+            <td>
+                <h2>Other Members</h2>
+            </td>
+        </tr>
+
+        <tr>
+            <td colspan="2">
+                <table border="0" width="100%" class="slds-table slds-table_bordered slds-no-cell-focus slds-table_edit" role="grid">
+                    <thead>
+                        <tr>
+                            <th>
+                                <span class="slds-truncate" title="Name">Name</span>
+                            </th>
+                            <th width="80px">
+                                <span class="slds-truncate" title="Age">Age</span>
+                            </th>
+                            <th>
+                                <span class="slds-truncate" title="Rate">Want to refer them for membership?</span>
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <aura:iteration items="{!v.MembershipDetails}" var="item">
+                            <tr class="slds-hint-parent">
+                                <td>
+                                	{!item.Name__c}
+                                </td>
+                                <td>
+                                    {!item.Age__c}
+                                </td>
+                                <td>
+                                    {!item.Want_to_Refer_Membership__c}
+                                </td>
+                            </tr>
+                        </aura:iteration>
+                    </tbody>
+
+
+                </table>
+            </td>
+        </tr>
+
+    </table>
+
+</aura:component>

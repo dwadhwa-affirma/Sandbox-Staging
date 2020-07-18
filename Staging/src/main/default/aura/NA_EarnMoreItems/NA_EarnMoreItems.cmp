@@ -1,0 +1,26 @@
+<aura:component controller="CollectionsInLightningCls" implements="force:appHostable,force:hasRecordId" access="global">
+	<aura:registerEvent name="DeleteotherEvt" type="c:DeleteotherEvt"/> 
+    <aura:attribute name="deposits" type="NA_Deposit__c" />﻿         
+    <aura:attribute name="rowIndex" type="String"/>﻿
+    <aura:attribute name="picklistFields" type="Map" default="{}" />
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}" />
+    <tr class="slds-hint-parent">        
+        <td>        	
+        	<ui:inputSelect aura:id="NA_Deposit__c.Type__c" value="{!v.deposits.Type__c}" />         
+        </td>
+        <td>
+        <ui:inputSelect aura:id="NA_Deposit__c.Financial_Instituition__c" value="{!v.deposits.Financial_Instituition__c}" />        
+        </td>
+        <td>
+        <ui:inputCurrency value="{!v.deposits.Balance__c}" />            
+        </td>
+        <td>
+        <ui:inputCurrency value="{!v.deposits.Rate__c}" />          
+        </td>       
+        <td style="vertical-align: middle !important;">
+            <a  onclick="{!c.removeLoanItemRow}" data-id="{!v.deposits.Id}" data-index="{!rowIndex}">                
+                Delete
+            </a>
+        </td> 
+    </tr>
+</aura:component>

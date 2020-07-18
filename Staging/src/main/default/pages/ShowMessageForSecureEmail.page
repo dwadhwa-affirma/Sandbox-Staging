@@ -1,0 +1,8 @@
+<apex:page standardController="Case" extensions="ShowMessageForSecureEmail" showHeader="false" standardStylesheets="true" tabStyle="Case" >
+    
+    
+<span style="color:red;">
+        {!SecureEmail}
+    
+    </span>
+</apex:page>

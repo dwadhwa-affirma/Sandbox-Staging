@@ -1,0 +1,21 @@
+<apex:page standardController="Case" tabStyle="Case">
+    
+    <apex:includeLightning />
+   
+        <apex:pageBlock title="Member Comments">
+        <apex:pageBlockTable value="{!Case.Member_Comments__r}" var="mc"> <!-- The pageBlockTable iterates the Member Comments Object -->
+            <apex:column value="{!mc.CreatedById}"/> <!--Display the CaseComments information -->
+            <apex:column value="{!mc.CreatedDate}"/>
+            <apex:column value="{!mc.Member_Communication__c}"/>
+        </apex:pageBlockTable>
+        </apex:pageBlock>
+    
+            <apex:pageBlock title="Case Comments" mode="new" > 
+        <apex:pageBlockTable value="{!Case.casecomments}" var="c"> <!-- The pageBlockTable iterates the Case Comments Object -->
+            <apex:column value="{!c.CreatedById}"/> <!--Display the CaseComments information -->
+            <apex:column value="{!c.CreatedDate}"/>
+            <apex:column value="{!c.commentbody}"/>       
+         </apex:pageBlockTable>
+        </apex:pageBlock>
+
+</apex:page>

@@ -1,0 +1,21 @@
+<apex:page controller="IntegrationAlertController"> 
+<style>
+html body.sfdcBody {
+    padding: 10px;
+}
+.headerRow{
+    font-size:13px !important;
+}
+</style>
+<apex:pageBlock rendered="{!NOT(showList.empty)}">
+        <apex:pageBlockTable value="{!showList}" id="Id" var="a1">
+             <apex:column style="font-size:13px;" headerValue="Alert" value="{!a1.Alert__c }"/>   
+            <apex:column style="font-size:13px;" headerValue="Description" value="{!a1.Description__c}"/>
+            <apex:column style="font-size:13px;" headerValue="Link" value="{!a1.Link__c}"/> 
+        </apex:pageBlockTable>
+    </apex:pageBlock>
+    
+<apex:outputText style="font-size:12px; font-weight:bold; color:red;" rendered="{!(showList.empty)}" value="No System Alerts Today"/>
+
+    
+</apex:page>

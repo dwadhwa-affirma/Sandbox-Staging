@@ -1,0 +1,61 @@
+<apex:page standardController="Xpress_Refi__c" extensions="XpressRefi_Controller">
+    <div id="InnternalDiv" style="height:550px; width:800px; position:relative;left:50px;" >
+  
+  <apex:pageBlock title="Select the Loan">
+    <apex:form >
+       <apex:pageBlockSection title="Select the Loan" collapsible="True">         
+        <apex:pageBlockTable value="{!acList}" var="ac" rendered="{!acList.size>0}">
+           <apex:column headervalue="Name" value="{!ac.Name}"/>
+           <apex:column headervalue="Loan Number" value="{!ac.Loan_Number__c}"/>
+           <apex:column headervalue="Account Type / Share Type" value="{!ac.TypeTranslate__c}"/>
+           <apex:column headervalue="Account Number" >
+             <apex:commandLink value="{!ac.name}" action="{!SelectLoan}" reRender="out, test">
+                   <apex:param value="{!ac.id}" name="acid"/>  
+             </apex:commandLink>
+           </apex:column>
+        </apex:pageBlockTable>
+      </apex:pageBlockSection>         
+     </apex:form>          
+     <apex:outputLabel rendered="{!acList.size=0}" style="font-weight:bold;font-size:15px;"> 
+        	<div style="position:relative;left:275px;"> 
+        		Selected user has no Mortgage data. 
+        	</div>
+       	</apex:outputLabel>
+   </apex:pageBlock>    
+       
+    
+       	 
+    <apex:pageblock >
+       <apex:form id="out"> 
+       <apex:pageMessages ></apex:pageMessages>
+                <apex:pageBlockSection title="Applicants Information" id="test"  rendered="{!acList.size>0}" columns="2">
+                   	  <apex:inputField value="{!xprs.name}"/>
+                      <apex:inputField value="{!xprs.Member_Number1__c}"/>
+       				  <apex:inputField value="{!xprs.Loan_Number__c}"/>
+        			  <apex:inputField value="{!xprs.Borrower_1_Name__c}"/>
+         			  <apex:inputField value="{!xprs.Borrower_2_Name__c}"/>
+       				  <apex:inputField value="{!xprs.Property_Address__c}"/>
+     			      <apex:inputField value="{!xprs.City__c}"/>
+    			      <apex:inputField value="{!xprs.State__c}"/>
+    		          <apex:inputField value="{!xprs.Zip_Code__c}"/>
+			          <apex:inputField value="{!xprs.Member_Email__c}"/>
+       				  <apex:inputField value="{!xprs.Mailing_address_if_different__c}"/>
+       				  <apex:inputField value="{!xprs.Member_Phone__c}"/>
+                      <apex:inputField value="{!xprs.Current_Balance__c}"/>
+                      <apex:inputField value="{!xprs.Current_Rate__c}"/>
+                      <apex:inputField value="{!xprs.Maturity_Date__c}"/>
+     			      <apex:inputField value="{!Xpress_Refi__c.Conforming_Jumbo__c}"/>
+                     <apex:inputField value="{!Xpress_Refi__c.Redraw_Fee__c}"/>
+                 </apex:pageBlockSection>
+         
+            <apex:commandButton style="position:relative;left:325px;" rendered="{!acList.size>0}" value="Loan"  action="{!LoanProgram}"/>
+            <apex:commandButton style="position:relative;left:325px;" rendered="{!acList.size>0}" value="Interest"  action="{!InterestRate}"/>
+            <apex:commandButton style="position:relative;left:325px;" value="Cancel" onclick="window.close();"/>
+            
+            </apex:form>
+       
+    </apex:pageblock>
+
+</div>
+    
+</apex:page>

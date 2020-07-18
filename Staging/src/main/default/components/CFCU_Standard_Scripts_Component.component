@@ -1,0 +1,13 @@
+<apex:component layout="none" selfClosing="true" controller="ScriptController" >
+
+
+<script> 
+if ('{!KEEP_ALIVE_URL}' != '')
+{
+ (function (d) { var iframe = d.body.appendChild(d.createElement('iframe')), doc = iframe.contentWindow.document;
+  iframe.style.cssText = "display: none;";
+   doc.open().write('<body onload="setTimeout(function() { window.location=\'{!KEEP_ALIVE_URL}\' }, 300000);">'); doc.close(); })(document);
+   }
+   </script> 
+
+</apex:component>

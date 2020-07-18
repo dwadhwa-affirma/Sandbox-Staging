@@ -1,0 +1,171 @@
+<aura:component controller="GetCaseAttachments" implements="flexipage:availableForAllPageTypes,force:appHostable,force:hasRecordId,force:lightningQuickActionWithoutHeader">
+<aura:handler name="init" value="{!this}" action="{!c.doInit}" />
+<aura:attribute name="Attachments" access="global" Type="Object" />
+<aura:attribute name="AttachmentsCount" access="global" Type="String" />
+<aura:attribute name="CaseDetail" access="global" Type="Object" />
+<aura:handler event="force:refreshView" action="{!c.doInit}" />
+<aura:handler name="ClosePopup" event="c:SaveNeedAssessmentEvent" action="{!c.ClosePopup}" />
+<aura:attribute name="showMemberAttachmentDiv" access="global" Type="boolean" default="false" />
+<aura:attribute name="showUploadAttachmentDiv" access="global" Type="boolean" default="false" />
+<aura:attribute name="showOnBaseAttachmentDiv" access="global" Type="boolean" default="false" />
+
+<style>
+.tblattachment{
+	    table-layout: auto;
+}
+
+.chkFromMember:checked{
+	    background-color: rgb(21, 137, 238) !important;
+	       
+}
+
+.chkFromMember{
+	 margin-left: 40%;
+}
+</style>
+<article class="slds-card slds-card_boundary forceRelatedListCardDesktop" aria-describedby="header_9:1085;a" data-aura-rendered-by="15:1085;a" data-aura-class="forceRelatedListCardDesktop">
+<div class="slds-card__header slds-grid" data-aura-rendered-by="16:1085;a">
+<header class="slds-media slds-media--center slds-has-flexi-truncate" data-aura-rendered-by="17:1085;a">
+
+<div class="slds-media__body" data-aura-rendered-by="19:1085;a">
+<h2 id="header_9:1085;a" data-aura-rendered-by="20:1085;a">
+<span class="slds-text-heading--small slds-truncate slds-m-right--xx-small" title="Attachment Section" data-aura-rendered-by="22:1085;a" style="font-family: 'Salesforce Sans',Arial,sans-serif; font-size: 0.9526rem; font-weight: bold;">Case Attachments ({!v.AttachmentsCount})</span>
+
+<div style="float:right;">
+<aura:if isTrue="{! and(v.CaseDetail != null,v.CaseDetail.Status != 'Closed')}">
+	
+	<span><button class="slds-button slds-button--brand" style="float:right;margin-left:10px;" onclick="{!c.openOnBaseAttachments}" >Index</button></span>
+	
+	<span><button class="slds-button slds-button--brand" style="margin-right:10px;" onclick="{!c.openUploadAttachments}" >Attach</button></span>
+	<span><button class="slds-button slds-button--brand" onclick="{!c.openApproveAttachments}" >Approve</button></span>
+</aura:if>
+<aura:if isTrue="{! and(v.CaseDetail != null,v.CaseDetail.Attachments_Are_Deleted__c == true)}">
+	<span><button class="slds-button slds-button--brand" onclick="" >OnBase Documents</button></span>
+</aura:if>
+</div>
+</h2>
+
+
+</div></header>
+<div class="slds-no-flex" data-aura-rendered-by="27:1085;a">
+<div class="actionsContainer" data-aura-rendered-by="28:1085;a">
+</div></div></div>
+
+<div class="slds-card__body" data-aura-rendered-by="26:1005;a">
+<div class="" data-aura-rendered-by="28:1005;a">
+<div class="previewMode MEDIUM forceRelatedListPreview" data-aura-rendered-by="31:1005;a" data-aura-class="forceRelatedListPreview">
+<div class="" data-aura-rendered-by="33:1005;a">
+<div class="useHeaderBarFix forceBaseListView forceRelatedListPreviewGrid" data-aura-rendered-by="37:1005;a" data-aura-class="forceBaseListView forceRelatedListPreviewGrid">
+<div class="spinnerWrapper hideSpinner hideEl forceComponentSpinner" data-aura-rendered-by="40:1005;a" data-aura-class="forceComponentSpinner">
+<div class="indicator  hideEl forceInlineSpinner" aria-hidden="true" role="alert" data-aura-rendered-by="43:1005;a" data-aura-class="forceInlineSpinner">
+</div></div>
+<div data-aura-rendered-by="55:1005;a" class="hidden forceListViewPlaceholder" data-aura-class="forceListViewPlaceholder"></div>
+<div class="listViewContent" data-aura-rendered-by="56:1005;a">
+<div class="scrollable uiScroller scroller-wrapper scroll-bidirectional native" tabindex="-1" style="" data-aura-rendered-by="71:1005;a" data-aura-class="uiScroller">
+<div data-aura-rendered-by="72:1005;a" class="scroller actionBarPlugin fixedHeaderPlugin">
+
+<aura:if isTrue="{! and(v.CaseDetail != null,v.CaseDetail.Attachments_Are_Deleted__c == false)}">
+	<table class="tblattachment forceRecordLayout slds-table slds-no-row-hover slds-table_cell-buffer slds-table_fixed-layout uiVirtualDataGrid--default uiVirtualDataGrid" data-aura-rendered-by="62:1005;a" data-aura-class="uiVirtualDataGrid--default uiVirtualDataGrid">
+	<thead data-aura-rendered-by="63:1005;a">
+	<tr data-aura-rendered-by="64:1005;a">
+	<th class="initialSortAsc descending" scope="col" style="" title="Number" data-aura-rendered-by="5:1176;a">File Name<span class="assistiveText" data-aura-rendered-by="92:1176;a"></span></th>
+	<th class=" " scope="col" title="Member Communication" data-aura-rendered-by="19:1176;a"> Type <span class="assistiveText" data-aura-rendered-by="24:1176;a"></span></th>
+	<th class="initialSortDesc " scope="col" style="" title="CU Read" data-aura-rendered-by="30:1176;a">Last Modified<span class="assistiveText" data-aura-rendered-by="95:1176;a"></span><!--render facet: 40:1176;a--><!--render facet: 41:1176;a--></th>
+	<th class="initialSortDesc " scope="col" style="" title="Member Read" data-aura-rendered-by="44:1176;a">Uploaded By<span class="assistiveText" data-aura-rendered-by="98:1176;a"></span><!--render facet: 54:1176;a--><!--render facet: 55:1176;a--></th>
+	    <th class="initialSortDesc " scope="col" style="width: 7%; text-align: center;" title="Member Read">Moved To <br />OnBase<span class="assistiveText"></span></th>    
+	<th class="actionColumnHeader " scope="col" style="-webkit-transform: none !important;text-align:center;width: 7%;" data-aura-rendered-by="44:1176;a">Approved<span class="assistiveText" data-aura-rendered-by="63:1176;a"></span><!--render facet: 65:1176;a--><!--render facet: 66:1176;a--></th>
+	    <th class="actionColumnHeader " scope="col" style="-webkit-transform: none !important;    border-collapse: collapse !important; text-align: center;" data-aura-rendered-by="44:1176;a">From <br />Member<span class="assistiveText" data-aura-rendered-by="63:1176;a"></span><!--render facet: 65:1176;a--><!--render facet: 66:1176;a--></th>
+	<aura:if isTrue="{! (v.CaseDetail.Status != 'Closed')}">
+		<th></th>
+	</aura:if>
+	</tr></thead>
+	<tfoot data-aura-rendered-by="66:1005;a"></tfoot>
+	<tbody data-aura-rendered-by="67:1005;a">
+	 <aura:iteration items="{!v.Attachments}" var="item" indexVar="index">
+	<tr>
+	
+	<td><span data-aura-rendered-by="74:1176;a"><a target="_blank" href="{!item.downloadLink}">{!item.Name}</a></span></td>
+	<td style="max-width:135px"><span titel="{!item.DocumentType}">{!item.DocumentType}</span></td>
+	<td><span data-aura-rendered-by="80:1176;a" class="uiImage uiOutputCheckbox" data-aura-class="uiImage uiOutputCheckbox">{!item.LastModifiedDate}</span></td>
+	<td><span data-aura-rendered-by="85:1176;a" class="uiImage uiOutputCheckbox" data-aura-class="uiImage uiOutputCheckbox">{!item.CreatedBy}</span></td>
+	<td style="-webkit-transform: none !important;"><span class="uiImage uiOutputCheckbox" data-aura-class="uiImage uiOutputCheckbox"><ui:inputCheckbox value="{!item.isMovedToOnBase}" disabled="true" class="chkFromMember"/></span></td>    
+	<td style="-webkit-transform: none !important;    border-collapse: separate !important;"><span data-aura-rendered-by="85:1176;a" class="uiImage uiOutputCheckbox" data-aura-class="uiImage uiOutputCheckbox"><ui:inputCheckbox value="{!item.isApproved}" disabled="true" class="chkFromMember"/></span></td>
+	<td style="-webkit-transform: none !important;"><span data-aura-rendered-by="85:1176;a" class="uiImage uiOutputCheckbox" data-aura-class="uiImage uiOutputCheckbox"><ui:inputCheckbox value="{!item.FromMember}" disabled="true" class="chkFromMember"/></span></td>
+	<td style="width: 1%;">
+	<aura:if isTrue="{! and(v.CaseDetail.Status != 'Closed',item.isMovedToOnBase == false)}">
+		
+		
+		<aura:if isTrue="{! item.isApproved == false}">
+		
+			<span><button class="slds-button slds-button--brand" style="padding-left:0.5rem;padding-right:0.5rem" onclick="{!c.deleteAttachment}" data-name="{!item.Name}" id="{!item.attachmentId}">Delete</button></span> 
+		</aura:if>
+	</aura:if>
+	</td>
+	</tr>
+	 </aura:iteration>
+	<aura:if isTrue="{!v.Attachments.length == 0}">                            
+	                            <tr>
+	                            	<td colspan="7">No Attachment found !</td>
+	                            </tr>
+	                            
+	</aura:if>  
+	</tbody>
+	</table>
+	<aura:set attribute="else">
+
+    	<table class="tblattachment forceRecordLayout slds-table slds-no-row-hover slds-table_cell-buffer slds-table_fixed-layout uiVirtualDataGrid--default uiVirtualDataGrid" data-aura-rendered-by="62:1005;a" data-aura-class="uiVirtualDataGrid--default uiVirtualDataGrid">
+		<thead data-aura-rendered-by="63:1005;a">
+			<tr data-aura-rendered-by="64:1005;a">
+				<th class="initialSortAsc descending" scope="col" style="" title="Number">File Name<span class="assistiveText"></span></th>
+				<th class=" " scope="col" title="Type"> Type <span class="assistiveText"></span></th>
+				<th class="initialSortDesc " scope="col" style="width: 10%;text-align: center;" title="Last Modified">Last Modified<span class="assistiveText"></span></th>
+				<th class="initialSortDesc " scope="col" style="width: 10%;text-align: center;" title="Uploaded By">Uploaded By<span class="assistiveText" ></span></th>
+				<th class="initialSortDesc " scope="col" style="width: 7%; text-align: center;" title="Member Read">From<br />OnBase<span class="assistiveText"></span></th>
+			</tr>
+		</thead>
+		<tfoot data-aura-rendered-by="66:1005;a"></tfoot>
+		<tbody data-aura-rendered-by="67:1005;a">
+		 <aura:iteration items="{!v.Attachments}" var="item" indexVar="index">
+			<tr>
+				<aura:if isTrue="{! item.downloadLink != ''}">
+					<td><span data-aura-rendered-by="74:1176;a"><a target="_blank" href="{!item.downloadLink}">{!item.Name}</a></span></td>
+					<aura:set attribute="else">
+						<td><span>{!item.Name}</span></td>	
+					</aura:set>
+				</aura:if>
+				<td style="max-width:135px"><span titel="{!item.DocumentType}">{!item.DocumentType}</span></td>
+				<td style="text-align: center;"><span class="uiImage uiOutputCheckbox" data-aura-class="uiImage uiOutputCheckbox">{!item.LastModifiedDate}</span></td>
+				<td style="text-align: center;"><span class="uiImage uiOutputCheckbox" data-aura-class="uiImage uiOutputCheckbox">{!item.CreatedBy}</span></td>
+				<td style="-webkit-transform: none !important;"><span class="uiImage uiOutputCheckbox" data-aura-class="uiImage uiOutputCheckbox"><ui:inputCheckbox value="{!item.isMovedToOnBase}" disabled="true" class="chkFromMember"/></span></td>
+			</tr>
+		 </aura:iteration>
+			<aura:if isTrue="{!v.Attachments.length == 0}">                            
+	            <tr>
+	            	<td colspan="4">No Attachment found !</td>
+	            </tr>
+			</aura:if>  
+		</tbody>
+		</table>
+    </aura:set>
+	
+</aura:if>
+</div></div></div>
+<div class="emptyContent hidden" data-aura-rendered-by="75:1005;a"><div class="emptyContentInner" data-aura-rendered-by="76:1005;a"><!--render facet: 77:1005;a--></div></div></div></div></div></div></div>
+
+
+
+<aura:if isTrue="{!(v.showMemberAttachmentDiv == true)}">
+<c:PublishMemberAttachments recordId="{!v.recordId}" aura:id="approveAttachmentPopup" />
+  </aura:if>
+  
+  
+<aura:if isTrue="{!(v.showUploadAttachmentDiv == true)}">
+	<c:Multi_Attach recordId="{!v.recordId}" aura:id="uploadAttachmentPopup" />
+</aura:if>
+  <aura:if isTrue="{!(v.showOnBaseAttachmentDiv == true)}">
+		<c:OnBaseDocumentList recordId="{!v.recordId}" aura:id="OnBaseAttachmentPopup" />
+  </aura:if>
+  
+ 
+</article>	
+</aura:component>

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Member_Map_Link__c</fullName>
+    <externalId>false</externalId>
+    <formula>IF(ISBLANK(Residential_Street__pc) , &quot;&quot;, 
+   HYPERLINK(&quot;https://maps.google.com/maps?q=&quot; &amp; 
+              Residential_Street__pc   &amp; &apos;,+&apos; &amp; 
+              Residential_City__pc     &amp; &apos;,+&apos; &amp; 
+              Residential_State__pc    &amp; &apos;,+&apos; &amp; 
+              Residential_Country__pc  &amp; &apos;,+&apos; &amp; 
+              Residential_Zipocde__pc ,
+      &quot;Click for Map&quot;)
+)</formula>
+    <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+    <label>Member Map Link</label>
+    <required>false</required>
+    <trackHistory>false</trackHistory>
+    <type>Text</type>
+    <unique>false</unique>
+</CustomField>

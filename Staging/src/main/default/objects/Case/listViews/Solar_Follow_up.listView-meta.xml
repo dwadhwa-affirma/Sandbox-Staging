@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ListView xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Solar_Follow_up</fullName>
+    <booleanFilter>(1 or 2) and 3 and 4 and 5</booleanFilter>
+    <columns>CASES.CASE_NUMBER</columns>
+    <columns>Account_Number__c</columns>
+    <columns>ACCOUNT.NAME</columns>
+    <columns>CASES.SUBJECT</columns>
+    <columns>CASES.STATUS</columns>
+    <columns>CASES.CREATED_DATE</columns>
+    <columns>CORE.USERS.ALIAS</columns>
+    <columns>CREATEDBY_USER.ALIAS</columns>
+    <columns>Last_Comment__c</columns>
+    <columns>Future_Date__c</columns>
+    <filterScope>Everything</filterScope>
+    <filters>
+        <field>CREATEDBY_USER.ALIAS</field>
+        <operation>equals</operation>
+        <value>aatk,esaa,lthu,cpet</value>
+    </filters>
+    <filters>
+        <field>CORE.USERS.ALIAS</field>
+        <operation>equals</operation>
+        <value>aatk,esaa,lthu,cpet</value>
+    </filters>
+    <filters>
+        <field>CASES.STATUS</field>
+        <operation>notEqual</operation>
+        <value>Closed,Resolved for MCS,Updated for MCS</value>
+    </filters>
+    <filters>
+        <field>CREATEDBY_USER.ALIAS</field>
+        <operation>notEqual</operation>
+        <value>msyst</value>
+    </filters>
+    <filters>
+        <field>CASES.SUBJECT</field>
+        <operation>contains</operation>
+        <value>Solar</value>
+    </filters>
+    <label>Solar Follow-up</label>
+    <sharedTo>
+        <roleAndSubordinatesInternal>Branch_Bountiful_207</roleAndSubordinatesInternal>
+        <roleAndSubordinatesInternal>Branch_SLC_Refinery_028</roleAndSubordinatesInternal>
+        <roleAndSubordinatesInternal>Regional_Manager_Mountain</roleAndSubordinatesInternal>
+    </sharedTo>
+</ListView>

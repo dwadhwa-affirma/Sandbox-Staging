@@ -1,0 +1,28 @@
+<aura:component implements="flexipage:availableForAllPageTypes,force:appHostable,force:hasRecordId,force:lightningQuickActionWithoutHeader" >
+<aura:handler value="{!this}" name="init" action="{!c.doInit}" />
+     <style>
+        /* Loading Style*/
+        
+        .loadingDiv {
+            
+            
+            background: rgba(255, 255, 255, 0.8);
+            
+            height: 70%;
+            
+        }
+        
+       
+    </style>
+	
+    
+    
+     <div class="loadingDiv">
+            <div class="demo-only" >
+                <div role="status" class="slds-spinner slds-spinner_medium">
+                    <div class="slds-spinner__dot-a"></div>
+                    <div class="slds-spinner__dot-b"></div>
+                </div>
+            </div>
+        </div>
+</aura:component>

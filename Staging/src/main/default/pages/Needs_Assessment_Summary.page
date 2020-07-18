@@ -1,0 +1,57 @@
+<apex:page standardController="Account" extensions="NeedAssessmentController"  >
+     <apex:form >      
+        <!--apex:includescript value="//code.jquery.com/jquery-1.11.1.min.js" /--> 
+        <!--apex:includescript value="//cdn.datatables.net/1.10.7/js/jquery.dataTables.min.js" /-->
+        <!--apex:stylesheet value="//cdn.datatables.net/1.10.7/css/jquery.dataTables.min.css" /-->
+        <style>
+            .naTextNorm  {color:      black; 
+                         font-size:   130%; 
+                         font-weight: bold;
+                         text-align:  right;}
+            .naTextAlert {color:      red; 
+                         font-size:   130%;
+                         font-weight: bold;
+                         text-align:  right;}}    
+        </style>
+<apex:outputpanel rendered="{!ShowData}">
+
+     <apex:outputLabel styleClass="naTextNorm"
+           rendered="{!IF(NOT(ISNULL(accountFirst.NA_Opt_Out_Date__c)) && accountFirst.NA_Opt_Out_Date__c > Today(),
+                      'true','false')}">
+           Member has opted out of the Needs Assessment process until 
+           <apex:outputText value="{0, date, MMMM d','  yyyy}"><apex:param value="{!accountFirst.NA_Opt_Out_Date__c}"/></apex:outputText>
+     </apex:outputLabel>                             
+                                    
+     <apex:outputLabel styleClass="naTextNorm"
+           rendered="{!IF(MemberAbove18 == FALSE, 'true','false')}">
+           Member is under 18 and not eligible for a Needs Assessment
+     </apex:outputLabel>
+     
+     <apex:outputLabel styleClass="naTextNorm"
+           rendered="{!IF(MemberAbove18                     == TRUE  &&
+                          PrimaryAccountWithAtleastoneTrust == FALSE,
+                      'true','false' )}">
+           Member is not primary on a qualified account and is not eligible for a Needs Assessment
+     </apex:outputLabel>     
+     
+     <apex:outputLabel styleClass="naTextNorm"
+        rendered="{!IF(MemberAbove18                     == TRUE  && 
+                       PrimaryAccountWithAtleastoneTrust == TRUE  &&
+                       Account.NA_Opt_Out__c             == FALSE &&
+                       Expired             == FALSE && 
+                       Account.NA_Complete__c            == FALSE ,
+                   'true','false' )}">
+          Member has partially completed a Needs Assessment
+     </apex:outputLabel>
+     
+     <apex:outputLabel styleClass="naTextAlert" 
+        rendered="{!IF(Expired             == TRUE  && 
+                       MemberAbove18                     == TRUE  &&
+                       PrimaryAccountWithAtleastoneTrust == TRUE  &&
+                       Account.NA_Opt_Out__c             == FALSE ,
+                   'true','false')}">
+          A Member Assessment is due
+     </apex:outputLabel>
+ </apex:outputpanel>                       
+    </apex:form>
+</apex:page>

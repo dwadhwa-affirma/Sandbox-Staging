@@ -1,0 +1,450 @@
+<apex:component controller="MemberVerification" allowDML="true"> 
+    <apex:attribute name="accountId" description="The ID of the record uploaded attachments will be attached to." assignTo="{!accId}" type="String" required="true"/>
+<!-- Trigger the modal with a button -->
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<link href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css" rel="stylesheet" />
+
+<apex:outputpanel rendered="{!IF(accId == null || accId == '' , false, true)}">
+	  
+</apex:outputpanel>
+
+<apex:outputpanel id="IsIneligibleLocal">
+<span id="spanIsIneligibleLocal">
+<apex:inputHidden value="{!IsIneligibleLocal}"/>
+
+</span>
+<span id="spanNoContactInfo">
+<apex:inputHidden value="{!NoContactInfo}"/>
+</span>
+</apex:outputpanel>
+<style>
+.dispnone{display:none;}
+.modal-title{width:auto; float: none;}
+.otpModal{text-align:center;}
+	.otpModal .modal-header{border-bottom: 0; padding: 15px 25px; padding-bottom: 0;}
+	.otpModal .modal-body{padding: 15px 25px;}
+.otpModal .modal-header .close{position:absolute; right:15px; top:18px;}
+.otpModal .modal-title{padding:0;font-size: 22px;font-family: 'Open Sans', sans-serif; color: #222;font-weight: 500;    float: none;}
+.otpModal .modal-header .steps {background: #1797c0;position:absolute; right:40px; top:14px;padding:5px 15px; color:#fff; font-weight:bold; font-size:13px;border-radius:4px;-webkit-border-radius:4px;}
+.otpModal .subtitle{font-size:18px; font-weight:normal;display:block;margin: 0; color: #444;}
+.otpModal .subtitledes{font-size:13px; color:#666; margin:7px 0 20px;}
+.otpModal table td{padding:2px 0;}
+.otpModal table td label{font-weight:normal;}
+.otpModal table td input[type="radio"]{margin-right:7px;}
+.otpModal .otpsecs{}
+.otpModal .table-border{border: 1px solid #ddd; padding: 15px;}
+.otpModal .actionbtns{ margin-top:15px;}
+.otpModal .actionbtns .btn{margin:0 5px 0 0px; padding: 7px 25px;}
+.otpModal #section2 .input-group{width:70%}
+.otpModal #section2 .form-control {border: 1px solid #ccc;border-radius: 4px;padding: 6px 12px;height: 34px;margin: 0;}
+.otpModal #section2 .input-group-btn{font-size:14px;}
+.otpModal #section2 .btn {
+    background: #1797c0;
+    border-color: #1797c0;
+    color: #fff;
+    padding: 9px 20px 5px 20px !important;
+    margin-left: 2px;
+    margin-top: -2px;
+}
+.otpModal #section2 .btn.resendcode{
+    background: #016c8e;
+    border-color: #016c8e;
+    color: #fff;
+    padding: 5px 15px !important;
+    font-size:11px;
+}
+.otpModal .btn.decline
+{
+		background: #d9534f !important;
+	border-color: #d43f3a !important;
+}
+.otpModal #section3 i{font-size:52px;}
+	.otpModal .stepgph{margin-top: 20px;}
+	.otpModal .stepgph span{border: 1px solid #ccc; background: #fff;height: 5px; width: 90px; margin-right: 4px; display: inline-block;}
+	.otpModal .stepgph span.active{border:1px solid #337ab7; background:#337ab7;}	
+	.otpModal .optwrap{display: table;width:80%; margin:30px auto;}
+	.otpModal .optwrap .col-md-6{display: table-cell; padding-right: 20px; text-align:left;}
+	.otpModal .sec2frm .form-control{max-width: 60%; display: inline-block;}
+	.otpModal .redcol{color: red;}
+	.otpModal .greencol{color: forestgreen;}
+	.otpModal .bluecol{color: dodgerblue;}
+</style>
+<style>
+              .verifyInput{
+              max-width: 40%; display: inline-block;
+              }
+              
+#toast-container > .toast {
+    background-image: none !important;
+}
+
+#toast-container > .toast:before {
+    position: fixed;
+    font-family: FontAwesome;
+    font-size: 24px;
+    line-height: 18px;
+    float: left;
+    color: #FFF;
+    padding-right: 0.5em;
+    margin: auto 0.5em auto -1.5em;
+}        
+#toast-container > .toast-warning:before {
+    content: "\f071";
+}
+#toast-container > .toast-error:before {
+    content: "\f071";
+}
+#toast-container > .toast-info:before {
+    content: "\f005";
+}
+#toast-container > .toast-success:before {
+    content: "\f002";
+}
+              
+              </style>
+
+<!-- Modal -->
+<div class="otpModal" role="dialog" style="display:none;">
+  <div class="modal-dialog">
+    <!-- Modal content-->
+    <div class="">
+      <div class="modal-header">
+        
+        <h4 class="modal-title">Member Verification</h4>
+        <div class="stepgph">
+        	<span id="divStep1" class="active">&nbsp;</span>
+        	<span id="divStep2">&nbsp;</span>
+        	<span  id="divStep3">&nbsp;</span>
+        </div>
+      </div>
+      
+      <div class="modal-body">
+      
+      	  
+      
+      
+      
+      
+      
+      
+     
+      
+          <div id="section1" class="otpsecs">
+              <h3 class="subtitle">Please select a delivery method</h3>
+               <apex:outputText value="Recently Updated items are disabled"  style="color:Red" />
+              <div class="row optwrap">
+                  <div class="col-md-6">
+                      <apex:outputpanel id="EmailPanel" rendered="{!If(EmailsList_Options.empty == false, true, false)}">
+                          <p><b>Email</b></p>
+                          <apex:selectRadio value="{!selectedID}" id="EmailCheck" layout="pageDirection"> 
+                               <apex:selectOptions value="{!EmailsList_Options}" id="EmaillistRadio"/> 
+                               
+                            </apex:selectRadio> 
+                           
+                           
+                            	
+                            </apex:outputpanel>
+                      
+                  </div>
+                  <div class="col-md-6">
+                       <apex:outputpanel id="PhonePanel" rendered="{!IF(PhoneList_Options.empty == false,true, false)}">
+                          <p><b>Phone</b></p>
+                            <apex:selectRadio value="{!selectedID}" id="PhoneCheck" layout="pageDirection"> 
+                              <apex:selectOptions value="{!PhoneList_Options}" id="PhonelistRadio"/>
+                              
+                            </apex:selectRadio> 
+                           
+                            
+                            </apex:outputpanel>
+                      
+                  </div>
+                  
+                  
+              </div>
+              <div class="actionbtns clearfix">
+                  <button type="button" class="btn btn-danger" onclick="DeclineOTP(); return false;">Unconfirmed</button>
+                  <button type="button" class="btn btn-primary defaultbtnVerify" onclick="clickGenerateRandomOTP(); return false;">Next</button>
+                  
+                  <apex:actionFunction name="GenerateRandomOTP" action="{!GenerateRandomOTP}" oncomplete="otpSentComplete();"  rerender="outputpanelMemberVerification" >      
+					             <apex:param name="fieldName"  value=""/> 
+					             <apex:param name="resend"  value=""/> 
+        			</apex:actionFunction> 
+        			 <apex:actionFunction name="ResendOTP" action="{!ResendOTP}" rerender="outputpanelMemberVerification" >      
+					             <apex:param name="fieldName"  value=""/> 
+        			</apex:actionFunction> 
+        		 <apex:actionFunction name="DeclineOTP" action="{!DeclineOTP}" oncomplete="verifyOTPComplete()" rerender="outputpanelMemberVerification" >      
+					             
+        		</apex:actionFunction> 
+        		 <apex:actionFunction name="DeclineOTPFromPage" action="{!DeclineOTP}" oncomplete="DeclineOTPFromPageComplete()" rerender="outputpanelMemberVerification" >      
+					             
+        		</apex:actionFunction> 
+        		
+ 				<apex:actionFunction name="IsIneligibleLocalFunction" action="{!IsIneligible}" oncomplete="IsIneligibleComplete()" rerender="IsIneligibleLocal,outputpanelMemberVerification" />      
+					             
+        		
+              </div>
+          </div>
+          
+          
+           <div class="otpsecs dispone text-center " id="section2">
+              <h3 class="subtitle">Please enter 6-digit OTP</h3>
+              
+              <p class="subtitledes">OTP has been sent.</p>
+              
+              
+              <div class="sec2frm">
+              <apex:inputText styleclass="form-control verifyInput" value="{!EnteredOTP}" />
+              		
+					  <button class="btn btn-primary defaultbtn" style="padding-left: 25px !important; padding-right:25px !important;" onclick="clickverifyOTP()" type="button">Verify</button>
+					  
+              </div>
+                <p class="subtitledes" style="text-align:right; padding-right:40px;"><br/>Didn't receive the OTP? <a href="#" class="btn btn-primary" style="margin-right:34px;" onclick="ResendCode();">Resend</a></p>
+                 <div class="actionbtns text-center clearfix">
+                  <button type="button" class="btn btn-danger decline" onclick="cancelOTP(); return false;">Cancel</button>
+                  <apex:actionFunction name="verifyOTP" action="{!verifyOTP}" oncomplete="verifyOTPComplete()" rerender="outputpanelMemberVerification" >      
+					          
+        			</apex:actionFunction> 
+        			    <apex:actionFunction name="cancelOTP" action="{!cancelOTP}" oncomplete="cancelOTPComplete()" rerender="outputpanelMemberVerification" >      
+					          
+        			</apex:actionFunction> 
+        			
+              </div>
+          </div>
+  
+          <div id="section3" class="otpsecs dispnone">
+              <br />
+              
+             
+              <h3 class="subtitle text-center"> 
+	              <apex:outputpanel id="outputpanelMemberVerification" >
+	      				
+	      				<apex:outputpanel rendered="{!If(Verified=='Expired', true, false)}" >
+		      				 <div>
+							  <h3 class="subtitle redcol"><i class="ion-ios-close-outline"></i><br/>Expired</h3>
+							  <p class="subtitledes redcol">OTP code that you entered has expired.</p><br/>
+				            </div>
+
+	      				</apex:outputpanel>
+	      				
+	      				
+	      				<apex:outputpanel rendered="{!If(Verified=='NoContactInfo', true, false)}">
+		      				<div>
+			             <h3 class="subtitle bluecol"><i class="ion-ios-minus-outline"></i><br/>No contact info</h3>
+			              <p class="subtitledes bluecol">No contact information found for the member</p><br/>
+			              </div>
+
+	      				</apex:outputpanel>
+	      				
+	      				
+	      				
+	      				<apex:outputpanel rendered="{!If(Verified=='Valid', true, false)}" >
+		      				 <div>
+					             <h3 class="subtitle greencol"><i class="ion-ios-checkmark-outline"></i><br/>Authenticated</h3>
+					             <p class="subtitledes greencol">OTP authentication was successful.</p><br/>
+					             </div>
+
+	      				</apex:outputpanel>
+	      				<apex:outputpanel rendered="{!If(Verified=='Invalid', true, false)}" >
+		      				<div>
+				             <h3 class="subtitle redcol"><i class="ion-ios-close-outline"></i><br/>Failed</h3>
+				             <p class="subtitledes redcol">OTP authentication failed.</p><br/>
+				             </div>
+
+	      				</apex:outputpanel>
+	      				<apex:outputpanel rendered="{!If(Verified=='Declined', true, false)}" >
+		      				<div>
+			             <h3 class="subtitle bluecol"><i class="ion-ios-minus-outline"></i><br/>Unconfirmed Contact</h3>
+			              <p class="subtitledes bluecol">Member unable to provide contact information</p><br/>
+			              </div>
+
+	      				</apex:outputpanel>
+	      				<apex:outputpanel rendered="{!If(Verified=='Changed', true, false)}">
+		      				<div>
+			             <h3 class="subtitle bluecol"><i class="ion-ios-minus-outline"></i><br/>Member is not eligible for OTP authentication</h3>
+			              <p class="subtitledes bluecol">TELEPHONE/EMAIL CHANGED WITHIN 60 DAYS</p><br/>
+			              </div>
+
+	      				</apex:outputpanel>
+	      				
+	      				<apex:outputpanel rendered="{!If(Verified=='Cancelled', true, false)}">
+		      				<div>
+			             <h3 class="subtitle bluecol"><i class="ion-ios-minus-outline"></i><br/>Canceled</h3>
+			              <p class="subtitledes bluecol">Member unable to provide OTP code</p><br/>
+			              </div>
+
+	      				</apex:outputpanel>
+	      		</apex:outputpanel>
+      		</h3>
+              
+              <br />
+              <div class="actionbtns clearfix">
+                  <button type="button" class="btn btn-primary" onclick="window.close();">Close</button>
+              </div>
+          </div>
+           
+        	
+      </div>
+  
+  
+    </div>
+
+  </div>
+</div>
+        
+        <script>
+        	
+        	function cancelOTPComplete()
+        	{
+        	verifyOTPComplete();
+        	}
+        	
+        	$(document).ready(function(){
+        		$('.modal-body').find('input:radio').attr('name', 'memberverification');
+        	});
+        	
+        	function otpSentComplete()
+        	{
+        		$("#section2").removeClass('dispnone');
+        		$("#section1").addClass('dispnone');
+        		if(!$("#divStep2").hasClass('active'))
+        		{
+        			$("#divStep2").addClass('active');	
+        		}
+        		
+        	}
+        	function verifyOTPComplete()
+        	{
+        		$("#section3").removeClass('dispnone');
+        		if(!$("#section2").hasClass('dispnone'))
+        		{
+        			$("#section2").addClass('dispnone');	
+        		}
+        		if(!$("#section1").hasClass('dispnone'))
+        		{
+        			$("#section1").addClass('dispnone');	
+        		}
+        		if(!$("#divStep2").hasClass('active'))
+        		{
+        			$("#divStep2").addClass('active');	
+        		}
+        		if(!$("#divStep3").hasClass('active'))
+        		{
+        			$("#divStep3").addClass('active');	
+        		}
+        		
+        	}
+        	function clickverifyOTP()
+        	{
+        		verifyOTP();
+        	}
+        	function DeclineOTPFromPageComplete()
+        	{
+        		alert('Call has been declined.');
+        	}
+        	function openOTPModel()
+        	{	
+        		IsIneligibleLocalFunction();
+        		
+        		
+        	}
+        	
+        	function IsIneligibleComplete()
+        	{
+        		$(".otpModal").show();
+        		if($("#spanIsIneligibleLocal").find("input").val() == 'true' || $("#spanNoContactInfo").find("input").val() == 'true')
+        		{
+        			if(!$("#section2").hasClass('dispnone'))
+	        		{
+	        			$("#section2").addClass('dispnone');	
+	        		}
+	        		if(!$("#section1").hasClass('dispnone'))
+	        		{
+	        			$("#section1").addClass('dispnone');	
+	        		}
+	        		if(!$("#divStep1").hasClass('active'))
+	        		{
+	        			$("#divStep1").addClass('active');	
+	        		}
+	        		if(!$("#divStep2").hasClass('active'))
+	        		{
+	        			$("#divStep2").addClass('active');	
+	        		}
+	        		if(!$("#divStep3").hasClass('active'))
+	        		{
+	        			$("#divStep3").addClass('active');	
+	        		}
+	        		$("#section3").removeClass('dispnone');	
+        		}
+        		
+        		
+        		else
+        		{
+        			if(!$("#section2").hasClass('dispnone'))
+	        		{
+	        			$("#section2").addClass('dispnone');	
+	        		}
+	        		if(!$("#section3").hasClass('dispnone'))
+	        		{
+	        			$("#section3").addClass('dispnone');	
+	        		}
+	        		$("#divStep2").removeClass("active");
+	        		$("#divStep3").removeClass("active");
+	        		$("#section1").removeClass('dispnone');	
+	        		$('.verifyInput').val('');
+	        		$('input[name=memberverification]:checked').prop("checked", false);
+	        	}
+	        	
+        		
+        	}
+        	
+        	function clickGenerateRandomOTP(){
+        		if($('input[name=memberverification]:checked').length == 0)
+        		{
+        			alert('Please select atleast one delivery option');
+        			return;
+        		}
+        		GenerateRandomOTP($('input[name=memberverification]:checked').val(),resend);
+        		//GenerateRandomOTP();
+        		return false;
+        	}
+        	var resend = 'false';
+        	function ResendCode()
+        	{
+        		resend = 'true';
+        		if(!$("#section2").hasClass('dispnone'))
+        		{
+        			$("#section2").addClass('dispnone');	
+        		}
+        		if(!$("#section3").hasClass('dispnone'))
+        		{
+        			$("#section3").addClass('dispnone');	
+        		}
+        		$("#divStep2").removeClass("active");
+        		$("#divStep3").removeClass("active");
+        		$("#section1").removeClass('dispnone');	
+        		$('.verifyInput').val('');
+        		$('input[name=memberverification]:checked').prop("checked", false);
+        	}
+        	$(document).ready(function(){
+        		IsIneligibleLocalFunction();
+        		
+        		$(document).keypress(function(event) {
+      					if (event.charCode ==13)
+      					{
+      						if($(".defaultbtn").is(":visible"))
+      						{
+      							$(".defaultbtn").click();
+      						}
+      						if($(".defaultbtnVerify").is(":visible"))
+      						{
+      							$(".defaultbtnVerify").click();
+      						}
+      						event.preventDefault();
+      					}
+      					
+				});
+        		
+        	});
+        </script>
+        
+</apex:component>

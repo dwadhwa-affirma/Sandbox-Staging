@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>SLA__c</fullName>
+    <externalId>false</externalId>
+    <inlineHelpText>Escalation SLA in hours for a case.  SLA to initiate when the 3 categories are set and will be in effect until the case is closed.</inlineHelpText>
+    <label>SLA (Business Hours)</label>
+    <precision>3</precision>
+    <required>false</required>
+    <scale>0</scale>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Number</type>
+    <unique>false</unique>
+</CustomField>

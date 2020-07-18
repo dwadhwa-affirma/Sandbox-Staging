@@ -1,0 +1,8 @@
+<aura:component implements="flexipage:availableForAllPageTypes,force:appHostable,force:hasRecordId">
+	<style>
+    .slds-notify--toast.slds-theme--info 
+        {
+        display:none;
+        }
+    </style>
+</aura:component>
