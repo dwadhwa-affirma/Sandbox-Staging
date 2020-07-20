@@ -111,7 +111,7 @@ public class SolarLoanToCreateLoan {
     List<Solar_Loans__c> Solanloanlist = new List<Solar_Loans__c>();         
     List<Solar_Loans__c> solarloans = [SELECT id,ABA_Bank_Name__c,ACH__c,Additional_Amount__c,Application_Date__c,
             Bank_Account_Number__c,Bank_Name__c,Battery__c,Brand__c,Change_Order__c,CreatedById,CreatedDate,
-            Credit_Attributes__c,Credit_Exception__c,Debt_Ratio__c,DocuSignId__c,Due_Date__c,
+            Credit_Attributes__c,Credit_Exception__c,Debt_Ratio__c,DocuSignId__c,Due_Date__c,Tracking_Record_33__c,
             ECOA_Code__c,Final_Payment_Amount__c,FNI__c,Go_To_Payment__c,Initial_LT_Loan_Agreement__c,
             Installer_Number__c,Installer__c,Interest_Rate__c,Inverter__c,IsDeleted,Joint_Address_1__c,
             Joint_Address_2__c,Joint_City__c,Joint_DOB__c,Joint_FICO_Score__c,Joint_First_Name__c,Joint_Last_Name__c,
@@ -141,8 +141,19 @@ public class SolarLoanToCreateLoan {
                 if(sl.Approval_Date__c != null){
                 	ApprovalDate = string.valueof(sl.Approval_Date__c);
                 }
-                MaturityDate = string.valueOf(System.Today());
-                DueDate = string.valueOf(System.Today());
+                
+                //-------------------------------------- Maturity Date------------------------------------//
+                
+                sl.Due_Date__c = System.Today() + 60;
+                
+                if(sl.Term_months__c != null){
+                	Month = Integer.Valueof(sl.Term_months__c) - 1;
+                	sl.Maturity_Date__c = sl.Due_Date__c.addMonths(Month);
+                }
+                MaturityDate = string.valueOf(sl.Maturity_Date__c);
+                
+                
+                DueDate = string.valueOf(System.Today()+ 60);
                 FirstPaymentDate = string.valueOf(System.Today() + 60);
                               
                 if(sl.Due_Date__c != null){
@@ -433,7 +444,7 @@ public class SolarLoanToCreateLoan {
                     s.Loan_Name_Locator__c = result1;
                     
                 if(result2 != null && result2 != '')
-                    s.Loan_Tracking_Locator__c = result2;
+                    s.Tracking_Record_33__c = 'Created';
                       
                 if(ErrorLoanLocator != null && ErrorLoanLocator != '')
                     s.Error_Loan_Locator__c = ErrorLoanLocator;
