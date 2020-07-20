@@ -86,15 +86,18 @@ public class EFTController {
         List<EFT__c> EFTRecordList = [Select id, name, Member_Account__c, Stage__c, Action_Type__c from EFT__c where id =:EFTRecord.id limit 1];
         
         system.debug('EFTRecordList.size=='+EFTRecordList.size());
+        system.debug('EFTRecordList.MemberAccount=='+EFTRecord.Member_Account__c);
+         system.debug('EFTRecordList.MemberAccount=='+EFTRecord.Member_Account__r);
         //system.debug('EFTRecordList'+EFTRecordList.size());
       //  system.debug('EFTRecord.Second_Day_of_Month__c=='+EFTRecord.Second_Day_of_Month__c);
         
         if(EFTRecordList.size() == 0){
-        	 Account_Details__c MemberAccount = [select id,name, Parent_Account__c from Account_Details__c where id=:EFTRecord.Member_Account__c limit 1];
+            string MemberAccountID = EFTRecord.Member_Account__c == null ? EFTRecord.Member_Account__r.Id : EFTRecord.Member_Account__c;
+        	 Account_Details__c MemberAccount = [select id,name, Parent_Account__c from Account_Details__c where id=: MemberAccountID limit 1];
         	system.debug('EFTRecord.Member_Account__r.Parent_Account__c=='+MemberAccount.Parent_Account__c);
         	Person_Account__c paPrimary = [SELECT Id,PersonID__c,
                              Account_Number__c, Account_Number__r.RecType__c,TypeTranslate__c, Account_Number__r.Name, PersonID__r.Home_Phone__pc,PersonID__r.Residential_City__pc,PersonID__r.Residential_State__pc, PersonID__r.Residential_Street__pc, PersonID__r.Residential_Zipocde__pc, PersonID__r.Name, PersonID__r.Email_raw__c FROM Person_Account__c 
-                             WHERE (Account_Number__c =: EFTRecord.Member_Account__c OR Account_Number__c =: MemberAccount.Parent_Account__c) and TypeTranslate__c  like '%Primary%' limit 1];
+                             WHERE (Account_Number__c =: MemberAccountID OR Account_Number__c =: MemberAccount.Parent_Account__c) and TypeTranslate__c  like '%Primary%' limit 1];
             
           /*  if(EFTRecord.Type__c == 'Checking'){
                EFTRecord.Docusign_Checking_Type__c = true;
@@ -110,7 +113,9 @@ public class EFTController {
             else{
             	EFTRecord.Docusign_is_Additional_Amount__c = true;
             }
-            
+            if(EFTRecord.Member_Account__c == null){
+                EFTRecord.Member_Account__c = EFTRecord.Member_Account__r.Id;
+            }
       		//EFTRecord.Member_Name__c = paPrimary.PersonID__r.Name;
             insert EFTRecord;
             return EFTRecord;
@@ -277,7 +282,8 @@ public class EFTController {
                 EFTToSendACHDoc.add(ResultEFTRecord);                      
               	//sendACHDocument(EFTToSendACHDoc);
         		
-        		system.debug('case==='+ResultEFTRecord.Case__r.CaseNumber);
+        		system.debug('Member_Account__r.name==='+ResultEFTRecord.Member_Account__r.name);
+        		system.debug('Member_Account__c==='+ResultEFTRecord.Member_Account__c);
         		return ResultEFTRecord;
     }
     

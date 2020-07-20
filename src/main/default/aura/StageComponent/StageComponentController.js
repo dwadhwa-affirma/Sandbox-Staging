@@ -149,7 +149,8 @@
 		                }
 		           else if(i==2){
 		            		dynamicText = component.get("v.EFTRecord.Bank_Name__c"); 
-		                 	component.set("v.ContinueButtonName", 'Send ACH Document');
+		                 	component.set("v.ContinueButtonName", 'Send ACH Document');                       
+                       		component.set("v.isSigninPersonEnabled", true);
 		                }
 		           else if(i==3){
 		        	   		if(component.get("v.EFTRecord.Alternate_Amount__c") == "" || component.get("v.EFTRecord.Alternate_Amount__c") == null || component.get("v.EFTRecord.Alternate_Amount__c") == undefined)
@@ -312,6 +313,7 @@
                 component.set("v.ActiveStepIndex", (i-1)); 
              	 if(i !=2 && component.get("v.ContinueButtonName") == 'Send ACH Document'){
 		            	 component.set("v.ContinueButtonName", 'Continue');
+                     component.set("v.isSigninPersonEnabled", false);
 		             }
 		         if(i==1){
 		        	 component.set("v.EFTRecord.Action_Type__c","");	
@@ -373,7 +375,9 @@
     
     backView:function (component, event, helper) {  
     		component.set("v.ActiveStepIndex", (0)); 
-    		 component.set("v.EFTRecord",{ 'sobjectType': 'EFT__c'});		        
+        	var MemberName= component.get("v.EFTRecord.Member_Name__c");
+        	var Member=component.get("v.EFTRecord.Member_Account__c");
+        component.set("v.EFTRecord",{ 'sobjectType': 'EFT__c' , 'Member_Name__c' : MemberName , 'Member_Account__c' : Member });		        
               var stages = [];
        		  stages = component.get("v.EFTStageDetails");
         		var stages2 = [];
@@ -435,5 +439,9 @@
         component.set("v.ActiveStepIndex",5);        
         helper.SaveStageValues(component, event, component.get("v.EFTRecord"), 3, stages);
     
+    },
+    
+    OpenInPersonSigning : function (component, event, helper) {
+        //alert('sdf');
     }
 })
