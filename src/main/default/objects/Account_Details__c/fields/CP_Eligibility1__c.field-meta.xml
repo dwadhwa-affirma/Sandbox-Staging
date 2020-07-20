@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>CP_Eligibility1__c</fullName>
+    <externalId>false</externalId>
+    <formula>CASE(CP_Eligibility__c, 
+0, &apos;0: Ineligible&apos;,
+1, &apos;1: Eligible&apos;,
+&apos;&apos;)</formula>
+    <label>Current Eligible Status</label>
+    <required>false</required>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Text</type>
+    <unique>false</unique>
+</CustomField>

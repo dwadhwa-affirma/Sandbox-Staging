@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Past_Due__c</fullName>
+    <externalId>false</externalId>
+    <formula>ActivityDate &lt; TODAY()  &amp;&amp;  TEXT(Status)&lt;&gt; &apos;Completed&apos;</formula>
+    <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+    <label>Past Due</label>
+    <type>Checkbox</type>
+</CustomField>

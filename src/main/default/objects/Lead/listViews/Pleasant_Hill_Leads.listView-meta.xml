@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ListView xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Pleasant_Hill_Leads</fullName>
+    <columns>lead_number_link__c</columns>
+    <columns>LEAD.LAST_NAME</columns>
+    <columns>Member_Account__c</columns>
+    <columns>LEAD.CREATED_DATE</columns>
+    <columns>Product_Type__c</columns>
+    <columns>Product_Subtype__c</columns>
+    <columns>CORE.USERS.ALIAS</columns>
+    <columns>LEAD.STATUS</columns>
+    <columns>Description__c</columns>
+    <filterScope>Everything</filterScope>
+    <filters>
+        <field>CORE.USERS.ALIAS</field>
+        <operation>equals</operation>
+        <value>chda,jusb,ldel</value>
+    </filters>
+    <filters>
+        <field>LEAD.LEAD_SOURCE</field>
+        <operation>notContain</operation>
+        <value>event</value>
+    </filters>
+    <filters>
+        <field>LEAD.STATUS</field>
+        <operation>notEqual</operation>
+        <value>Closed</value>
+    </filters>
+    <label>Pleasant Hill Leads</label>
+    <sharedTo>
+        <roleAndSubordinatesInternal>Branch_Pleasant_Hill_206</roleAndSubordinatesInternal>
+        <roleAndSubordinatesInternal>Regional_Manager_Bay_Area</roleAndSubordinatesInternal>
+    </sharedTo>
+</ListView>

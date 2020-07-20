@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Branch_Name__c</fullName>
+    <externalId>false</externalId>
+    <formula>CASE(Branch__c,
+03, &apos;SanRamon&apos;,
+04, &apos;Richmond&apos;,
+05, &apos;Brea&apos;,
+06, &apos;Covington&apos;,
+09, &apos;ElSegundo&apos;,
+14, &apos;1600Smith&apos;,
+19, &apos;Aramco&apos;,
+20, &apos;CaminoMedia&apos;,
+21, &apos;KernRiver&apos;,
+23, &apos;Pascagoula&apos;,
+24, &apos;Bakersfield&apos;,
+25, &apos;PostOak&apos;,
+28, &apos;SaltLakeRefinery&apos;,
+72, &apos;eBranch&apos;,
+96, &apos;Direct Lending&apos;,  
+201, &apos;SanFrancisco&apos;,
+202, &apos;Galleria&apos;,
+205, &apos;Reston&apos;,
+206, &apos;Pleasant Hill&apos;,
+207, &apos;Bountiful&apos;,
+208, &apos;ElPaso&apos;,
+&apos;&apos;)</formula>
+    <label>Branch Name</label>
+    <required>false</required>
+    <trackTrending>false</trackTrending>
+    <type>Text</type>
+    <unique>false</unique>
+</CustomField>

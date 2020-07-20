@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Last_NA_LEOM__c</fullName>
+    <description>The last date that a needs assessment life events section was created for the member.</description>
+    <externalId>false</externalId>
+    <label>Last NA LEOM</label>
+    <summarizedField>Needs_Assesment__c.Last_LEOM__c</summarizedField>
+    <summaryForeignKey>Needs_Assesment__c.Member__c</summaryForeignKey>
+    <summaryOperation>max</summaryOperation>
+    <trackHistory>false</trackHistory>
+    <type>Summary</type>
+</CustomField>

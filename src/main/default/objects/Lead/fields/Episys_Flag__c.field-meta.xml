@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Episys_Flag__c</fullName>
+    <defaultValue>false</defaultValue>
+    <description>Used with the &quot;LeadTrigger2 - Episys User ID&quot; trigger to bulk update existing records</description>
+    <externalId>false</externalId>
+    <label>Episys Flag</label>
+    <trackHistory>false</trackHistory>
+    <type>Checkbox</type>
+</CustomField>

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ListView xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Last_30_Days</fullName>
+    <columns>Process__c</columns>
+    <columns>Start_Time__c</columns>
+    <columns>End_Time__c</columns>
+    <columns>Duration__c</columns>
+    <columns>DB_Count__c</columns>
+    <columns>Error__c</columns>
+    <filterScope>Everything</filterScope>
+    <filters>
+        <field>Start_Time__c</field>
+        <operation>equals</operation>
+        <value>LAST_N_DAYS:30</value>
+    </filters>
+    <label>Last 30 Days</label>
+</ListView>

@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <actionOverrides>
+        <actionName>Accept</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>CancelEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Clone</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Delete</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Edit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>List</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>New</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>SaveEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Tab</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>View</actionName>
+        <comment>Action override created by Lightning App Builder during activation.</comment>
+        <content>All_Notes</content>
+        <formFactor>Large</formFactor>
+        <skipRecordTypeSelect>false</skipRecordTypeSelect>
+        <type>Flexipage</type>
+    </actionOverrides>
+    <allowInChatterGroups>true</allowInChatterGroups>
+    <compactLayoutAssignment>SYSTEM</compactLayoutAssignment>
+    <deploymentStatus>Deployed</deploymentStatus>
+    <description>Legacy notes from Episys</description>
+    <enableActivities>true</enableActivities>
+    <enableBulkApi>true</enableBulkApi>
+    <enableEnhancedLookup>true</enableEnhancedLookup>
+    <enableFeeds>false</enableFeeds>
+    <enableHistory>true</enableHistory>
+    <enableReports>true</enableReports>
+    <enableSearch>true</enableSearch>
+    <enableSharing>true</enableSharing>
+    <enableStreamingApi>true</enableStreamingApi>
+    <label>All Notes</label>
+    <nameField>
+        <displayFormat>AllNote-{000000000}</displayFormat>
+        <label>Note Name</label>
+        <trackHistory>false</trackHistory>
+        <type>AutoNumber</type>
+    </nameField>
+    <pluralLabel>All Notes</pluralLabel>
+    <searchLayouts>
+        <lookupDialogsAdditionalFields>AccountNumber__c</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>RecordChangedDate__c</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>EnterDate__c</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>ExpirationDate__c</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>NoteID__c</lookupDialogsAdditionalFields>
+        <lookupPhoneDialogsAdditionalFields>EnterDate__c</lookupPhoneDialogsAdditionalFields>
+        <lookupPhoneDialogsAdditionalFields>ExpirationDate__c</lookupPhoneDialogsAdditionalFields>
+        <lookupPhoneDialogsAdditionalFields>RecType__c</lookupPhoneDialogsAdditionalFields>
+        <lookupPhoneDialogsAdditionalFields>RecTypeID__c</lookupPhoneDialogsAdditionalFields>
+        <searchResultsAdditionalFields>Account_Number__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>RecordChangedDate__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>EnterDate__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>ExpirationDate__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>RecType__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>RecTypeID__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>NoteText__c</searchResultsAdditionalFields>
+    </searchLayouts>
+    <sharingModel>ReadWrite</sharingModel>
+</CustomObject>

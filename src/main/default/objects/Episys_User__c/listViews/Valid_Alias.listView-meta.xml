@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ListView xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Valid_Alias</fullName>
+    <columns>Episys_ID__c</columns>
+    <columns>Default__c</columns>
+    <columns>Episys_Name__c</columns>
+    <columns>Assigned_Branch__c</columns>
+    <columns>Alias__c</columns>
+    <columns>UPDATEDBY_USER</columns>
+    <filterScope>Everything</filterScope>
+    <filters>
+        <field>Alias__c</field>
+        <operation>notEqual</operation>
+    </filters>
+    <label>Valid Alias</label>
+</ListView>

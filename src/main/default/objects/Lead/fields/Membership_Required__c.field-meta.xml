@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Membership_Required__c</fullName>
+    <externalId>false</externalId>
+    <formula>Person__c  &lt;&gt; null</formula>
+    <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+    <label>Membership Required</label>
+    <trackHistory>false</trackHistory>
+    <type>Checkbox</type>
+</CustomField>

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Unique_Account_Number__c</fullName>
+    <caseSensitive>false</caseSensitive>
+    <description>Unique/External key used to represent a Unique Account Number. It will always be a hidden field used to make sure all the Account Numbers are unique.</description>
+    <externalId>true</externalId>
+    <label>Unique Account Number</label>
+    <length>20</length>
+    <required>false</required>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Text</type>
+    <unique>true</unique>
+</CustomField>

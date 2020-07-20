@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>AccountNameReadOnly</fullName>
+    <active>false</active>
+    <description>Prevent non admin users from editing member(person) records</description>
+    <errorConditionFormula>(ISCHANGED(FirstName) || ISCHANGED(LastName) ||  ISCHANGED(MiddleName) ||  ISCHANGED(Salutation) ||  ISCHANGED(Suffix))</errorConditionFormula>
+    <errorMessage>Member Name cannot be changed.</errorMessage>
+</ValidationRule>

@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ListView xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Eastern_Region_Event_Leads</fullName>
+    <columns>lead_number_link__c</columns>
+    <columns>LEAD.LAST_NAME</columns>
+    <columns>Member_Account__c</columns>
+    <columns>LEAD.CREATED_DATE</columns>
+    <columns>Product_Type__c</columns>
+    <columns>LEAD.LEAD_SOURCE</columns>
+    <columns>LEAD.STATUS</columns>
+    <columns>CORE.USERS.LAST_NAME</columns>
+    <columns>LEAD.LAST_UPDATE</columns>
+    <columns>Description__c</columns>
+    <filterScope>Everything</filterScope>
+    <filters>
+        <field>LEAD.LEAD_SOURCE</field>
+        <operation>contains</operation>
+        <value>pascagoula,covington,reston</value>
+    </filters>
+    <filters>
+        <field>LEAD.STATUS</field>
+        <operation>notEqual</operation>
+        <value>Closed</value>
+    </filters>
+    <filters>
+        <field>Product_Type__c</field>
+        <operation>notContain</operation>
+        <value>thank you</value>
+    </filters>
+    <filters>
+        <field>Product_Subtype__c</field>
+        <operation>notContain</operation>
+        <value>thank you</value>
+    </filters>
+    <filters>
+        <field>LEAD.LEAD_SOURCE</field>
+        <operation>contains</operation>
+        <value>event</value>
+    </filters>
+    <label>Eastern Region Event Leads</label>
+    <sharedTo>
+        <roleAndSubordinates>Branch_Covington_006</roleAndSubordinates>
+        <roleAndSubordinates>Branch_Pascagoula_023</roleAndSubordinates>
+        <roleAndSubordinates>Branch_Reston_205</roleAndSubordinates>
+        <roleAndSubordinates>Regional_Manager_Eastern</roleAndSubordinates>
+    </sharedTo>
+</ListView>

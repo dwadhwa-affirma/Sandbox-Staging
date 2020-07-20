@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Case_Origin__c</fullName>
+    <description>Indication of who initiated/created the case. Member or CU</description>
+    <externalId>false</externalId>
+    <formula>IF(   
+    CONTAINS( Case__r.CreatedBy.Profile.Name , &apos;Messaging&apos;)  || 
+    CONTAINS( Case__r.CreatedBy.Profile.Name , &apos;CU Customer&apos;)   , 
+&apos;Member&apos;, &apos;CU&apos;)</formula>
+    <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+    <label>Case Origin</label>
+    <required>false</required>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Text</type>
+    <unique>false</unique>
+</CustomField>

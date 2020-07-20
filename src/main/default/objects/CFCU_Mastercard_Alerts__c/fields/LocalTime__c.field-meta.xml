@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>LocalTime__c</fullName>
+    <externalId>false</externalId>
+    <formula>If(Value(Left(transLocalTime__c, Find(&quot;:&quot;,transLocalTime__c)-1))&lt;12, Left(transLocalTime__c, LEN(transLocalTime__c)-3) + &quot; AM&quot;, 
+  if( Value(Left(transLocalTime__c, Find(&quot;:&quot;,transLocalTime__c)-1))&lt;13, Left(transLocalTime__c, LEN(transLocalTime__c)-3) + &quot; PM&quot;,
+    if((Value(Left(transLocalTime__c, Find(&quot;:&quot;,transLocalTime__c)-1))-12)&lt;10, 
+      &quot;0&quot; + Text(Value(Left(transLocalTime__c, Find(&quot;:&quot;,transLocalTime__c)-1))-12) + Mid(transLocalTime__c, Find(&quot;:&quot;, transLocalTime__c), 
+                               Find(&quot;:&quot;, Right(transLocalTime__c, len(transLocalTime__c)-Find(&quot;:&quot;,transLocalTime__c)))) + &quot; PM&quot;,
+        Text(Value(Left(transLocalTime__c, Find(&quot;:&quot;,transLocalTime__c)-1))-12) + Mid(transLocalTime__c, Find(&quot;:&quot;, transLocalTime__c), 
+                               Find(&quot;:&quot;, Right(transLocalTime__c, len(transLocalTime__c)-Find(&quot;:&quot;,transLocalTime__c)))) + &quot; PM&quot;)))</formula>
+    <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+    <label>LocalTime</label>
+    <required>false</required>
+    <trackTrending>false</trackTrending>
+    <type>Text</type>
+    <unique>false</unique>
+</CustomField>

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>EBMS_Complete__c</fullName>
+    <defaultValue>false</defaultValue>
+    <description>Indicator to show if the NA Extend the Benefits of your MemberShip section is considered complete (TRUE) or partial (FALSE)</description>
+    <externalId>false</externalId>
+    <label>Complete EBMS</label>
+    <trackTrending>false</trackTrending>
+    <type>Checkbox</type>
+</CustomField>

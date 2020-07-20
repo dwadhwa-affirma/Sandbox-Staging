@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ListView xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>New_Account</fullName>
+    <columns>NAME</columns>
+    <columns>Epysis_User_ID__c</columns>
+    <columns>PersonAccount__c</columns>
+    <columns>Record_Type__c</columns>
+    <columns>Email__c</columns>
+    <columns>Phone__c</columns>
+    <columns>Person_ID_Number__c</columns>
+    <columns>PersonID__c</columns>
+    <columns>Account_Number__c</columns>
+    <columns>AccountID__c</columns>
+    <columns>Brand__c</columns>
+    <columns>Mailing_City__c</columns>
+    <columns>Mailing_State__c</columns>
+    <columns>CREATED_DATE</columns>
+    <filterScope>Everything</filterScope>
+    <filters>
+        <field>Record_Type__c</field>
+        <operation>equals</operation>
+        <value>New Account</value>
+    </filters>
+    <label>New Account</label>
+</ListView>

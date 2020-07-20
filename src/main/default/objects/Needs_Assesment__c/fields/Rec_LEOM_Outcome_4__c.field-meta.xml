@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Rec_LEOM_Outcome_4__c</fullName>
+    <externalId>false</externalId>
+    <label>Personal Line of Credit Outcome</label>
+    <required>false</required>
+    <trackTrending>false</trackTrending>
+    <type>Picklist</type>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetName>Recommendation_Outcome</valueSetName>
+    </valueSet>
+</CustomField>
