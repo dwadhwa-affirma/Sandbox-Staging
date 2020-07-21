@@ -78,7 +78,7 @@ public class SolarLoanToCreateLoan {
     public static String UserRate1;
     public static string UserCode11;
     public static string UserDate11;
-    public static string UserCode2;
+    public static Integer UserCode2;
     public static string UserChar6;
     
     public static String jsonData2;
@@ -358,9 +358,9 @@ public class SolarLoanToCreateLoan {
                     UserChar6  = ' ';    
                 
                 if(sl.Credit_Exception__c != null)  
-                    UserCode2   = string.ValueOf(sl.Credit_Exception__c);
+                    UserCode2   = Integer.ValueOf(sl.Credit_Exception__c);
                 else
-                    UserCode2   = ' ';
+                    UserCode2   = null;
 
                 LoanId = result; 
                 AccountNumber = sl.Account_Number__r.name;
