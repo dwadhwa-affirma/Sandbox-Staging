@@ -376,7 +376,8 @@
     backView:function (component, event, helper) {  
     		component.set("v.ActiveStepIndex", (0)); 
         	var MemberName= component.get("v.EFTRecord.Member_Name__c");
-        	var Member=component.get("v.EFTRecord.Member_Account__c");
+            var Member=component.get("v.EFTRecord.Member_Account__c");
+            component.set("v.isSigninPersonEnabled", false);
         component.set("v.EFTRecord",{ 'sobjectType': 'EFT__c' , 'Member_Name__c' : MemberName , 'Member_Account__c' : Member });		        
               var stages = [];
        		  stages = component.get("v.EFTStageDetails");
@@ -442,6 +443,22 @@
     },
     
     OpenInPersonSigning : function (component, event, helper) {
-        //alert('sdf');
+        var pageReference = {
+            type: 'standard__component',
+            attributes: {
+                componentName: 'c__ACHSigningInPerson',
+                pageName: 'Test'
+            }
+        };
+
+        const navService = component.find('navService');
+        
+        const handleUrl = (url) => {
+            window.open(url);
+        };
+        const handleError = (error) => {
+            console.log(error);
+        };
+        navService.generateUrl(pageReference).then(handleUrl, handleError);
     }
 })
