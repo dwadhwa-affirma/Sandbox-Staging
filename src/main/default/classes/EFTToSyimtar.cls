@@ -201,7 +201,7 @@ public class EFTToSyimtar {
 	                					+ '\n' + 'Funding FI: ' + e.Bank_Name__c 
 	                					+ '\n' + 'ABA/Routing#: ' + e.Routing_Number__c
 	                					+ '\n' + 'Account Number: '+ e.Account_Number__c
-	                					+ '\n' + 'Alternate Amount: ' + e.Alternate_Amount__c;
+	                					+ '\n' + 'Additional Payment Amount: ' + e.Alternate_Amount__c;
 	                CaseIdsToUpdate.put(e.Case__c, casedesc);
                 }
 		    	
@@ -415,7 +415,7 @@ public class EFTToSyimtar {
                                      + '\n' +'Account Number:' + e.Account_Number__c
                                      + '\n' +'Type:' + e.Type__c
                                      + '\n' +'Payment Amount:' + e.Payment_Amount__c	
-                                     + '\n' +'Alternate Amount:' + (e.Alternate_Amount__c == null ? 0 :e.Alternate_Amount__c)				 
+                                     + '\n' +'Additional Payment Amount:' + (e.Alternate_Amount__c == null ? 0 :e.Alternate_Amount__c)				 
                                      + '\n' +'Effective Date:' + e.Effective_Date__c
                                      + '\n' +'Frequency:' + e.Frequency__c
                                      + '\n' +'Day of Month:' + e.Day_of_Month__c;
@@ -426,7 +426,7 @@ public class EFTToSyimtar {
 	                					+ '\n' + 'Funding FI: ' + e.Bank_Name__c 
 	                					+ '\n' + 'ABA/Routing#: ' + e.Routing_Number__c
 	                					+ '\n' + 'Account Number: '+ e.Account_Number__c
-	                					+ '\n' + 'Alternate Amount: ' + e.Alternate_Amount__c;
+	                					+ '\n' + 'Additional Payment Amount: ' + e.Alternate_Amount__c;
 	                	CaseIdsToUpdate.put(e.Case__c, casedesc);
 	        		
 	        		}

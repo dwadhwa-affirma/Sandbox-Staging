@@ -261,7 +261,7 @@ public class EFTController {
                                      + '\n' +'Account Number:' + EFTRecord.Account_Number__c
                                      + '\n' +'Type:' + EFTRecord.Type__c
                                      + '\n' +'Payment Amount:' + EFTRecord.Payment_Amount__c
-                                     + '\n' +'Alternate Amount:' + (EFTRecord.Alternate_Amount__c == null ? 0  :EFTRecord.Alternate_Amount__c)				 
+                                     + '\n' +'Additional Payment Amount:' + (EFTRecord.Alternate_Amount__c == null ? 0  :EFTRecord.Alternate_Amount__c)				 
                                      + '\n' +'Effective Date:' + EFTRecord.Effective_Date__c
                                      + '\n' +'Frequency:' + EFTRecord.Frequency__c
                                      + '\n' +'Day of Month:' + EFTRecord.Day_of_Month__c;
