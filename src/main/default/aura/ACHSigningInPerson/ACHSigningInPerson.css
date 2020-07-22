@@ -1,0 +1,58 @@
+.THIS.authwrap .logohead{text-align:center;}
+.THIS.authwrap .logohead h1{text-transform: uppercase;
+    font-size: 1rem;
+    font-weight: 500; margin-top:.5rem;
+    letter-spacing: 1px;}
+
+.THIS.authwrap{font-size:.8125rem;}
+.THIS.authwrap .p0{padding:0 !important;}
+.THIS.authwrap .tblbor0 td{border:0 !important;}
+.THIS.authwrap .tblbor0 td.tblborright{border-right:1px solid #000 !important;}
+
+.THIS.authwrap .authtitle{margin:1rem;}
+.THIS.authwrap .authtitle h2{text-transform:uppercase; font-size:1rem;font-size:.875rem; font-weight:700; letter-spacing:1px;}
+.THIS.authwrap .chkbx{border:1px solid #000; width:15px; height:15px; margin:0 1rem 0 1rem; display:inline-block; vertical-align:middle;
+	line-height:15px; text-align:center;}
+
+.THIS.authwrap .authform table td{border:1px solid #000;}
+.THIS.authwrap .authform td{padding:.5rem;}
+.THIS.authwrap .authform td.titletbl{background:#ccc;}
+.THIS.authwrap .titletbl td{border:0 !important;}
+.THIS.authwrap .titletbl td h3, 
+.THIS.authwrap .titletbl td.num{text-transform:uppercase; font-size:.875rem; font-weight:700; letter-spacing:1px;}
+.THIS.authwrap .titletbl td.num{ width:50px; text-align:center;}
+.THIS.authwrap td span{font-size:.875rem; text-transform:uppercase;}
+
+.THIS.authwrap .titletbl .whitetd{background:#fff;}
+
+.THIS.authwrap .signtbl{}
+.THIS.authwrap .signtbl td{width:50%;}
+.THIS.authwrap .signtbl div{border-bottom:1px solid #000; text-align:center; height:80px; vertical-align:text-bottom;position:relative;}
+.THIS.authwrap .signtbl td:nth-child(1){padding-right:1.5rem;}
+.THIS.authwrap .signtbl td:nth-child(2){padding-left:1.5rem;}
+.THIS.authwrap .signtbl div:before{content:"X";position:absolute; left:0; bottom:3px; }
+.THIS.authwrap .signtbl p{text-align:left;padding-bottom:1.5rem;}
+.THIS.authwrap .signtbl div img{height:80px; width:auto; max-width:100%;}
+
+.THIS.authwrap .signtbl div.dt {line-height:135px;}
+.THIS.authwrap .signtbl div.dt:before{line-height:normal;}
+
+@media(max-width:601px){
+    .THIS.authwrap .signtbl td:nth-child(1){padding-right:.7rem;}
+	.THIS.authwrap .signtbl td:nth-child(2){padding-left:.7rem;}
+}
+@media(max-width:481px){
+    .THIS.authwrap .signtbl td{display:block; width:100%; padding:0 !important;}
+}
+
+
+.THIS.hidediv {
+    display:none;
+}
+.THIS.showdiv {
+    display:block;
+}
+.THIS.authwrap .spin{
+    top: 10% !important;
+    bottom: 7% !important;
+}

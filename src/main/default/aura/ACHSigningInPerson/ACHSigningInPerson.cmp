@@ -1,0 +1,146 @@
+<aura:component controller="EFTController"  implements="force:appHostable,force:hasRecordId,force:lightningQuickAction,lightning:isUrlAddressable">
+  <aura:attribute name="loading" type="Boolean" default="false" />   
+    <aura:html tag="style">
+        .slds-modal__container{
+       max-width: 60rem !important;    
+       width:70% !important; }
+         .modal-body{padding:1rem;}
+        
+        @media (max-width:992px){
+        	.slds-modal__container{max-width: unset !important;width:90% !important;}
+        }
+        @media (max-width:767px){
+        	.forceChatterBasePublisher :not(.PHONE) .cuf-content{padding:0px !important;}
+        	.slds-modal__container{max-width: unset !important;width:94% !important;}
+        	.authwrap .authform table td{display:block; border:0; border-bottom:1px solid #000;}
+        	.cESignature.authwrap .tblbor0 td.tblborright{border-right:0 !important;border-bottom:1px solid #000 !important;}
+        	.cESignature.authwrap .titletbl .tblbor0 td.tblborright{border-bottom:0 !important;border-right:1px solid #000 !important;}
+        	.cESignature.authwrap .titletbl .tblbor0 td.tblborright + td{border-right:0 !important;border-bottom:0 !important;}
+        	.cESignature.authwrap .titletbl .tblbor0 td.tblborright + td.tblborright{border-bottom:0 !important;}
+        	.authwrap .titletbl td{display:table-cell !important;}
+            .authwrap .chkbx{margin:0 !important;}
+        }
+        @media (max-width:580px){
+        	.slds-modal__container{max-width: unset !important;width:85% !important;}
+            .authwrap td span{display:block;}
+        	
+        }
+        
+        
+        @media (max-width:400px){
+        	.modal-header .logoimg img{width: 100%; height:auto;}
+        }
+        
+      </aura:html>  
+    
+    
+    <ltng:require afterScriptsLoaded="{!c.Init}"/>
+    
+    <aura:attribute name="saveDisabled" type="Boolean" default="false" />
+    <aura:attribute name="EFTDetail" type="EFT__c" />
+    <aura:attribute name="todayDate" type="String" />
+    <aura:attribute name="attachmentId" type="Id" />
+    <aura:attribute name="options" type="List" default="[
+    {'label': 'Checking', 'value': '1'},
+    {'label': 'Savings', 'value': '2'}
+    ]"/>
+
+    <div class="authwrap" aura:id="authwrap">
+ 
+	
+        <div id="signaturePDF">    
+    	
+        <div class="logohead">
+            <div class="logoimg">
+                <img src="{!$Resource.ChevronLogo}" alt="Chevron" />
+            </div>
+            <h1 class="slds-text-heading--medium">CONSUMER AUTHORIZATION FOR DIRECT PAYMENT VIA ACH (ACH DEBITS)</h1>
+        </div>
+        <div class="spinner">
+        <aura:if isTrue="{! v.loading}">            
+                <lightning:spinner alternativeText="Loading" size="medium" variant="brand" class="spin"/>            
+        </aura:if>
+   		 </div>
+       
+        <div class="authtitle">
+        	<br/>            
+            
+            <p>Direct Payment via ACH is the transfer of funds from a consumer account for the purpose of making a payment.</p>
+            <br/>
+            <p>I (we) authorize CHEVRON FEDERAL CREDIT UNION to electronically debit my (our) account for the amount set forth in the loan note and/or monthly billing statement, (and, if necessary, electronically credit my (our) account to correct erroneous debits) as follows:</p>
+            <br/>
+            <p>Select One:</p>
+            <!--<lightning:checkboxGroup name="Checkbox Group" options="{!v.options}"/>-->
+            <br/>
+            <p>at the depository financial institution named below. I (we) agree that ACH transactions I (we) authorize comply with all applicable law.</p>
+            <br/>
+            Depository Name: 
+            <br/>
+            Routing/ABA Number:
+            <br/>
+            Account Number:
+            <br/>
+            <p>Please indicate account or loan where funds should be applied at CHEVRON FEDERAL CREDIT UNION:</p>
+            <br/>
+            Member Name: 
+            <br/>
+            Member Number:
+            <br/>
+            Four-Digit Share/Loan Type:
+            <br/>
+            <p>
+                The amount set forth in the loan note and/or monthly billing statement will be debited on the due date set forth on each monthly billing statement. Note: Amount debited is subject to change based on loan terms.   
+            </p>
+            <br/>
+            Indicate any additional amount to add to monthly payment:
+            <br/>
+            <p>ACH origination will begin on the first payment, 10 days following receipt of this notice.</p>
+            <br/>
+            <p>I (we) understand that this authorization will remain in full force and effect until I (we) notify CHEVRON FEDERAL CREDIT UNION in writing by mail to P.O. Box 2069, Oakland, CA 94607-2069 that I (we) wish to revoke this authorization. I (we) understand that CHEVRON FEDERAL CREDIT UNION requires notice at least three (3) business days prior to the proposed effective date of the termination of authorization. Important Installment Loan Information: This authorization will be terminated and the debit entry will cease once the balance is paid in full.</p>
+        </div>
+        
+        <div class="signtbl">
+            <table>
+                <tr>
+                    <td>
+                        <div class="dt">Test Test</div>
+                        <p><strong>Member Name(s) (Please Print)</strong></p>  
+                    </td>
+                </tr>
+            	<tr>
+                	<td>
+                    	<div onclick="{!c.handleMemberSignatureClick}">
+                             <aura:if isTrue="false">
+   								 <img aura:id="signImg" src="{!'/servlet/servlet.FileDownload?file='+v.attachmentId}"/>
+                              </aura:if> 
+                        </div>
+                        <p><strong>Member Signature</strong>
+                        </p>
+                    </td>
+                    <td>
+                    	<div class="dt">{!v.todayDate}</div>
+                        <p><strong>Date</strong></p>
+                    </td>
+                </tr>
+            </table>
+        </div>
+    
+        
+            
+      
+    </div>
+  
+    </div>
+    
+    <div id="eSignDiv" aura:id="eSignDiv">
+    <div style="text-align: center;">
+        <canvas aura:id="can" style="border:2px solid #ddd;background: transparent;"></canvas>
+    </div>
+    <div style="text-align: center;margin: 7px;">
+        <button class="slds-button slds-button_brand" onclick="{!c.erase}">Clear</button>
+        <button class="slds-button slds-button_brand" id="btnSave" disabled="{!v.saveDisabled}" onclick="{!c.save}">Save</button>
+    </div>
+    </div>
+    
+     
+</aura:component>

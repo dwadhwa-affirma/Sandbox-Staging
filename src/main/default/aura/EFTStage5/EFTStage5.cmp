@@ -8,12 +8,7 @@
 <aura:attribute name="isLoan" type="Boolean" default="true"/>
  <aura:attribute name="daysMap" type="Map"/>
 
-<!--<aura:attribute name="ShareLoanType" type="String" />
-<aura:attribute name="PaymentAmt" type="string" />
-<aura:attribute name="AlternateAmt" type="string" />
-<aura:attribute name="EffectiveDate" type="string" />
-<aura:attribute name="Frequency" type="string" />
-<aura:attribute name="MonthDay" type="string" />    -->
+
 <aura:handler name="init" action="{!c.doInit}" value="{!this}" access="global" />  
   <aura:registerEvent name="EFTEvent" type="c:EFTEvent"/>
     
@@ -77,5 +72,5 @@
   				</div>
   	 	</aura:renderIf> 
        		</div>
-         </div>
-</aura:component>
+		 </div>
+		</aura:component>

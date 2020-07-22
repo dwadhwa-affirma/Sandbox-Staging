@@ -15,7 +15,7 @@
     
     onMonthChange : function(component, event, helper) {
          debugger;
-        if(event.getSource().get("v.class") == "alternateamount"){
+        /*if(event.getSource().get("v.class") == "alternateamount"){
             var PaymentAmount = component.get("v.EFTRecord.Payment_Amount__c");
             var AlternateAmount= event.getSource().get("v.value");
             if(AlternateAmount <= PaymentAmount && AlternateAmount != "" && AlternateAmount != null){
@@ -24,7 +24,7 @@
                 component.set("v.EFTRecord.Alternate_Amount__c","");
                 return;
             }
-        }
+        }*/
         var evt = $A.get("e.c:EFTEvent");
         var PaymentAmt = component.get("v.EFTRecord.Payment_Amount__c");
         var AlternateAmt = component.get("v.EFTRecord.Alternate_Amount__c");
