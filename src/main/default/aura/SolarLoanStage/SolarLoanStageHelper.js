@@ -21,6 +21,7 @@
 		var buttonStatus;
 		var stage;
 		var Stage5ACHCheck;
+        var Stage4ErrorCheck;
 		
 		var action = component.get("c.getMemberData");
 		action.setParams({"SolarLoanRecordId": SolarLoanRecordId,
@@ -34,12 +35,18 @@
                 if(result.SolarCurrentStage != undefined){
 		       	    stage = result.SolarCurrentStage;
 		        }
-		        if(result.SolarCurrentStatus != 'Waiting for Response'){
+                if(result.SolarCurrentStatus != 'Waiting for Response'){
 		        	component.set("v.IsWaitingDisabled", false);
 		        }
 		        if(result.Stage3LoanCheck != undefined && result.Stage3LoanCheck != null){
 		       	    buttonStatus = result.Stage3LoanCheck;
                 }
+                //---------------------Validation for Stage-4 -------------------------------//
+                
+                 if(result.Stage4ErrorCheck == 'True'){
+                	Stage4ErrorCheck = 'True';
+                }
+                
                 if(result.Stage5ACHCheck == 'False'){
 		       	    Stage5ACHCheck = result.Stage5ACHCheck;
                 }
@@ -59,7 +66,7 @@
             if(stage == 'Stage 4'){
             	component.set("v.ButtonLabelName", "Mark Stage 4 Complete");
                 component.set("v.StageName", "Stage 4: Review ACH Info");
-            }
+            } 
             if(stage == 'Stage 5'){
                 if(Stage5ACHCheck == 'True'){
             		component.set("v.ButtonLabelName", "Send ACH Document");
@@ -80,6 +87,21 @@
                 component.set("v.IsButtonDisabled", true);
             }   
         	
+            //------------------------------------------Validation message for Stage-4 -----------------------------//
+	         
+	         if(Stage4ErrorCheck == 'True'){
+				var toastEvent = $A.get("e.force:showToast");
+		        toastEvent.setParams({
+		            title : 'Warning',
+		            message: 'Loan and Tracking records are not created',
+		            duration:' 5000',
+		            key: 'info_alt',
+		            type: 'warning',
+		            mode: 'sticky'
+		        });
+		        toastEvent.fire();
+			 
+             }
         });	
        $A.enqueueAction(action);
 	

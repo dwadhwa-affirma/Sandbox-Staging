@@ -71,8 +71,8 @@
         var buttonStatus;
         var Stage5ACHCheck;
         var Stage5ErrorCheck;
-        var Stage2ErrorCheck;
-        var Stage2MissingFields;
+        var Stage3ErrorCheck;
+        var Stage3MissingFields;
         var Stage5MissingFields
         var SolarLoanRecordId = component.get("v.recordId");
        	
@@ -116,11 +116,11 @@
                 }
                 //---------------------Validation for Stage-2 -------------------------------//
                 
-                if(result.Stage2ErrorCheck == 'True'){
-                	Stage2ErrorCheck = 'True';
-                	Stage2MissingFields = result.Stage2MissingFields;
-                	
-                }	
+                if(result.Stage3ErrorCheck == 'True'){
+                	Stage3ErrorCheck = 'True';
+                	Stage3MissingFields = result.Stage3MissingFields;
+                }
+                
                 //---------------------Validation for Stage-5 -------------------------------//
                 	
                 if(result.Stage5ErrorCheck == 'True'){
@@ -139,6 +139,7 @@
             if(checkCurrentStage == 'Stage 4'){
             	component.set("v.ButtonLabelName", "Mark Stage 4 Complete");
                 component.set("v.StageName", "Stage 4: Review ACH Info");
+                
             }
             if(checkCurrentStage == 'Stage 5'){
             	if(Stage5ACHCheck == 'True'){
@@ -167,7 +168,7 @@
              					  "Stage5ACHCheck" : Stage5ACHCheck});
 			 compEvent.fire();
 			 
-			 if(Stage5ErrorCheck != 'True' && Stage2ErrorCheck != 'True'){
+			 if(Stage5ErrorCheck != 'True' && Stage3ErrorCheck != 'True'){
 				 window.setTimeout(
 				    $A.getCallback(function() {
 				       helper.hideSpinner(component,helper)
@@ -179,16 +180,14 @@
 				    }), 4000
 				 ); 
 	         }
-	         
 	         //------------------------------------------Validation message for Stage-2 -----------------------------//
-	         
-	         if(Stage2ErrorCheck == 'True'){
+	         if(Stage3ErrorCheck == 'True'){
 				
 				helper.hideSpinner(component,helper); 
 				var toastEvent = $A.get("e.force:showToast");
 		        toastEvent.setParams({
 		            title : 'Warning',
-		            message: Stage2MissingFields,
+		            message: Stage3MissingFields,
 		            duration:' 5000',
 		            key: 'info_alt',
 		            type: 'warning',
@@ -196,9 +195,9 @@
 		        });
 		        toastEvent.fire();
 			 
-			 }
-			 
-			 //------------------------------------------Validation message for Stage-5 -----------------------------//
+             }
+             
+             //------------------------------------------Validation message for Stage-5 -----------------------------//
 			 
 			 if(Stage5ErrorCheck == 'True'){
 				
