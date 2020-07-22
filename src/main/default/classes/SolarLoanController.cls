@@ -53,7 +53,7 @@ public class SolarLoanController {
 	stage2RequireFields.add('Net_Funding_Amount__c');
 	stage2RequireFields.add('Loan_Amount__c');
 	stage2RequireFields.add('Loan_Pmt_Amount__c');
-	stage2RequireFields.add('Credit_Exception__c');
+	//stage2RequireFields.add('Credit_Exception__c');
 	stage2RequireFields.add('ITC_Rate__c');
 	stage2RequireFields.add('ITC_Amount__c');
 	stage2RequireFields.add('Term_months__c');

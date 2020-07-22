@@ -78,7 +78,7 @@ public class SolarLoanToCreateLoan {
     public static String UserRate1;
     public static string UserCode11;
     public static string UserDate11;
-    public static Integer UserCode2;
+    public static Integer UserChar7;
     public static string UserChar6;
     
     public static String jsonData2;
@@ -358,9 +358,9 @@ public class SolarLoanToCreateLoan {
                     UserChar6  = ' ';    
                 
                 if(sl.Credit_Exception__c != null)  
-                    UserCode2   = Integer.ValueOf(sl.Credit_Exception__c);
+                    UserChar7   = Integer.ValueOf(sl.Credit_Exception__c);
                 else
-                    UserCode2   = null;
+                    UserChar7   = null;
 
                 LoanId = result; 
                 AccountNumber = sl.Account_Number__r.name;
@@ -371,7 +371,7 @@ public class SolarLoanToCreateLoan {
                 req2.setHeader('Content-Type', 'application/json');
                 req2.setHeader('Accept', 'application/json');
                 
-                jsonData2 = '{"UserChar6":' + '\"'+ UserChar6 +'\"'+',"UserCode2":' + '\"'+ UserCode2 +'\"'+',"UserCode11":' + '\"'+ UserCode11 +'\"'+',"UserDate11":' + '\"'+ UserDate11 +'\"'+',"Type":' + '\"'+ Type +'\"'+',"UserChar11":' + '\"'+ UserChar11 +'\"'+',"UserChar1":'+'\"'+ UserChar1 +'\"'+',"UserChar2":'+'\"' + UserChar2 + '\"'+',"UserChar3":'+'\"'+UserChar3+'\"'+',"UserChar4":'+'\"'+UserChar4+'\"'+',"UserChar5":'+'\"'+UserChar5+'\"'+',"UserAmount14":'+'\"'+UserAmount14+'\"'+',"UserRate1":'+'\"'+UserRate1+'\"'+',"UserChar10":'+'\"'+UserChar10+'\"'+',"UserChar20":'+'\"'+UserChar20+'\"'+',"UserAmount1":'+'\"'+UserAmount1+'\"'+',"UserAmount2":'+'\"'+UserAmount2+'\"'+',"UserAmount3":'+'\"'+UserAmount3+'\"'+',"UserAmount11":'+'\"'+UserAmount11+'\"'+',"UserAmount12":'+'\"'+UserAmount12+'\"'+',"UserAmount13":'+'\"'+UserAmount13+'\"'+',"UserCode1":'+'\"'+UserCode1+'\"'+',"UserRate1":'+'\"'+UserRate1+'\"'+',"LoanId":'+'\"'+LoanId+'\"'+',"AccountNumber":'+'\"'+AccountNumber+'\"}';
+                jsonData2 = '{"UserChar6":' + '\"'+ UserChar6 +'\"'+',"UserChar7":' + '\"'+ UserChar7 +'\"'+',"UserCode11":' + '\"'+ UserCode11 +'\"'+',"UserDate11":' + '\"'+ UserDate11 +'\"'+',"Type":' + '\"'+ Type +'\"'+',"UserChar11":' + '\"'+ UserChar11 +'\"'+',"UserChar1":'+'\"'+ UserChar1 +'\"'+',"UserChar2":'+'\"' + UserChar2 + '\"'+',"UserChar3":'+'\"'+UserChar3+'\"'+',"UserChar4":'+'\"'+UserChar4+'\"'+',"UserChar5":'+'\"'+UserChar5+'\"'+',"UserAmount14":'+'\"'+UserAmount14+'\"'+',"UserRate1":'+'\"'+UserRate1+'\"'+',"UserChar10":'+'\"'+UserChar10+'\"'+',"UserChar20":'+'\"'+UserChar20+'\"'+',"UserAmount1":'+'\"'+UserAmount1+'\"'+',"UserAmount2":'+'\"'+UserAmount2+'\"'+',"UserAmount3":'+'\"'+UserAmount3+'\"'+',"UserAmount11":'+'\"'+UserAmount11+'\"'+',"UserAmount12":'+'\"'+UserAmount12+'\"'+',"UserAmount13":'+'\"'+UserAmount13+'\"'+',"UserCode1":'+'\"'+UserCode1+'\"'+',"UserRate1":'+'\"'+UserRate1+'\"'+',"LoanId":'+'\"'+LoanId+'\"'+',"AccountNumber":'+'\"'+AccountNumber+'\"}';
                 req2.setBodyAsBlob(Blob.valueof(jsondata2)); 
                 system.debug('test'+jsonData2);
                 
