@@ -258,7 +258,7 @@ public class MemberAuthenticationController{
         String CurrentUser = UserInfo.getUserId();
         Boolean IsUserSessionLoaded = true;
         Id MemberId;
-        List<Authenticated_Log__c> AuthList = [Select id ,RecordType.Name , CallerPhoneNumber__c,EnteredMemberNumber__c,
+        List<Authenticated_Log__c> AuthList = [Select id ,RecordType.Name , CallerPhoneNumber__c,EnteredMemberNumber__c,IVR_Card_Number__c,PhoneNumberMatch__c,IVR_Card_Match__c,IVR_SSN_Match__c,IVR_Member_Number_Match__c,
         							EnteredSSN__c,IVR_SSN__c,SalesforceID__c, Current_User__c, PINMatch__c,HP_HV__c, IVR_Code__c, IVR_Sent_URL__c, IVR_GUID__c, Decision__c
         							From Authenticated_Log__c where Current_User__c =:CurrentUser and IVR_GUID__c != null and  RecordType.Name !='Master Authentication Log' order by createddate desc Limit 1 ]; 
        system.debug('AuthList##' + AuthList);
@@ -270,11 +270,12 @@ public class MemberAuthenticationController{
         	{
         		
         		
-        		AuthList = [Select id ,RecordType.Name , CallerPhoneNumber__c,EnteredMemberNumber__c,
+        		AuthList = [Select id ,RecordType.Name , CallerPhoneNumber__c,EnteredMemberNumber__c,IVR_Card_Number__c,PhoneNumberMatch__c,IVR_Card_Match__c,IVR_SSN_Match__c,IVR_Member_Number_Match__c,
         							EnteredSSN__c,IVR_SSN__c,SalesforceID__c, Current_User__c, PINMatch__c,HP_HV__c, IVR_Code__c, IVR_Sent_URL__c, IVR_GUID__c, Decision__c
         							From Authenticated_Log__c where IVR_GUID__c =:IVRInteractionId  and RecordType.Name='IVR Authentication Log' order by createddate desc Limit 1 ]; 
         	}
-        	
+        	 system.debug('AuthList2##' + AuthList);
+            system.debug('IVRInteractionId##' + IVRInteractionId);
         	if(AuthList[0].IVR_SSN__c != null )
         	{
         		EnteredSSN = AuthList[0].IVR_SSN__c;
@@ -286,6 +287,11 @@ public class MemberAuthenticationController{
         	
         	EnteredMemberNumber = AuthList[0].EnteredMemberNumber__c;
         	PhoneNumber = AuthList[0].CallerPhoneNumber__c;
+            PhoneNumberMatch = AuthList[0].PhoneNumberMatch__c;
+            IVREnteredCardNumber = AuthList[0].IVR_Card_Number__c;
+            IVRCardNumberMatch = AuthList[0].IVR_Card_Match__c;
+            IVRSSNnumberMatch = AuthList[0].IVR_SSN_Match__c;
+            IVRMemberNumberMatch = AuthList[0].IVR_Member_Number_Match__c;
         	if(AuthList[0].PINMatch__c == 'Fail')
         	{
         		PINMatch = 'false';
@@ -341,9 +347,9 @@ public class MemberAuthenticationController{
         
         //pageCalulated = new PageReference('/apex/verifiy');
         
-       
+       	system.debug('IVREnteredCardNumber#' + IVREnteredCardNumber); 
         //pageCalulated = new PageReference('/lightning/cmp/c__LightningVerification?c__EnteredSSN='+ EnteredSSN+'&c__EnteredMemberNumber='+EnteredMemberNumber+'&c__CallersPhoneNumber='+PhoneNumber+'&c__PINMatch='+PINMatch+'&c__InteractionId='+IVRGUID+'&c__Reason=' + ReasonCode+ '&c__HighValueFlag=' + HighFlag + '&c__IsUserSessionLoaded=' + IsUserSessionLoaded +'&c__MemberId='+ MemberId);
-         RedirectToURL = '/lightning/cmp/c__LightningVerification?c__EnteredSSN='+ EnteredSSN+'&c__EnteredMemberNumber='+EnteredMemberNumber+'&c__CallersPhoneNumber='+PhoneNumber+'&c__PINMatch='+PINMatch+'&c__InteractionId='+IVRGUID+'&c__Reason=' + ReasonCode+ '&c__HighValueFlag=' + HighFlag + '&c__IsUserSessionLoaded=' + IsUserSessionLoaded +'&c__MemberId='+ MemberId;
+         RedirectToURL = '/lightning/cmp/c__LightningVerification?c__EnteredSSN='+ EnteredSSN+'&c__EnteredMemberNumber='+EnteredMemberNumber+'&c__CallersPhoneNumber='+PhoneNumber+'&c__PINMatch='+PINMatch+'&c__InteractionId='+IVRGUID+'&c__Reason=' + ReasonCode+ '&c__HighValueFlag=' + HighFlag + '&c__IsUserSessionLoaded=' + IsUserSessionLoaded +'&c__MemberId='+ MemberId +'&c__PhoneNumberMatch='+ PhoneNumberMatch +'&c__EnteredCardNumber='+ IVREnteredCardNumber + '&c__CardNumberMatch='+IVRCardNumberMatch + '&c__SSNnumberMatch='+IVRSSNnumberMatch +'&c__MemberNumberMatch='+ IVRMemberNumberMatch;
          system.debug('RedirectToURL#' + RedirectToURL); 
                 
         //pageCalulated.setRedirect(true);

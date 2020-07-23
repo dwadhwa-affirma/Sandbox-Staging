@@ -2903,7 +2903,10 @@ public class MemberAuthenticationControllerLightning{
 		boolean IsLevel1Achieved = false;
 		boolean IsLevel2Achieved = false;
 		boolean IsLevel3Achieved = false;
-		
+		Decimal DebitPinPositiveScore;
+        Decimal DebitPinNegativeScore;
+        Decimal PINChangeNegativeScore;
+        Decimal PINChangePositiveScore;
 		Map<string,object> result = new  Map<string,object>();
 		List<Member_Authentication_Level_Model__c> LevelModel = new List<Member_Authentication_Level_Model__c>();
 		List<Member_Authentication_Scoring_Model__c> ScoringModel = new List<Member_Authentication_Scoring_Model__c>();
@@ -2956,14 +2959,48 @@ public class MemberAuthenticationControllerLightning{
 			system.debug('OTPAvailable##'+ OTPAvailable);
 			system.debug('PublicWalletAvailable##'+ PublicWalletAvailable);
 			
+			for(Member_Authentication_Scoring_Model__c sm : ScoringModel  )
+			{
+					
+					if(sm.Authentication_Type__c == 'Debit Pin' )
+					{
+						system.debug('sm.Negative_Point_Value__c##'+ sm.Negative_Point_Value__c);
+						DebitPinPositiveScore = sm.Positive_Point_Value__c;
+						DebitPinNegativeScore = sm.Negative_Point_Value__c;
+					}
+					if(sm.Authentication_Type__c == 'PIN Change'){
+						
+						PINChangeNegativeScore = sm.Negative_Point_Value__c;
+						PINChangePositiveScore = sm.Positive_Point_Value__c;				
+					}
 			
+			}
+			if(DebitCardStatus == 'Fail' || DebitCardStatus =='false'){
+				CurrentScore = CurrentScore - DebitPinNegativeScore.intValue();
+			}
+			else if(DebitCardStatus == 'Pass' || DebitCardStatus =='true')
+			{
+				CurrentScore = CurrentScore + DebitPinPositiveScore.intValue();
+			}
+			system.debug('CurrentScorePost1##' + CurrentScore);
+			system.debug('IsPinChanged##' + IsPinChanged);
+			if(IsPinChanged == true ){
+				CurrentScore = CurrentScore - PINChangeNegativeScore.intValue();
+				
+			}
+			else if(IsPinChanged == false ){
+				
+				CurrentScore = CurrentScore + PINChangePositiveScore.intValue();
+			}
+			system.debug('CurrentScorePost2##' + CurrentScore);
+		
+			result.put('CurrentScore', CurrentScore);	
+
 			map<string, List<string>> NextTabToAchieveLevelMap =  GetTabsToAchieveNextLevel(LevelModel, ScoringModel, MemberType, DebitCardStatus, IsPinChanged, OTPAvailable, PublicWalletAvailable, CFCUWalletAvailable,OOWAvailable, PointsObtained);
 			List<string>  NextTabLevel2 = NextTabToAchieveLevelMap.get('NextTabLevel2');
         	List<string>  NextTabLevel3 = NextTabToAchieveLevelMap.get('NextTabLevel3');
         	List<string> EachLevelStatus = NextTabToAchieveLevelMap.get('EachLevelStatus');
-        	/*List<String> PinChangedExecutionResultList = NextTabToAchieveLevelMap.get('PinChangedExecutionResult');
-        	boolean PinChangedExecutionResult = PinChangedExecutionResultList[0] == 'True' ? true: false;
-        	result.put('PinChangedExecutionResult', PinChangedExecutionResult);*/
+        	
         	if(NextTabLevel2.size() > 0)
         	{
         		string NextTabLevel2LastString = NextTabLevel2.get(NextTabLevel2.size()-1);
@@ -3953,10 +3990,12 @@ public class MemberAuthenticationControllerLightning{
      		AuthLogMap.put('ScorePoints',mva);
      		if(mva[0].Points_Obtained__c != null){
      			CurrentScore = mva[0].Points_Obtained__c.intValue();
+                
             }
+           system.debug('ScorePoints##'+ mva[0]);
      	}
-     	system.debug('ScorePoints##'+ AuthLogMap);
      	
+     	system.debug('CurrentScore##'+ CurrentScore);
      	List<Person_Account__c> p = [SELECT Id, Account_Number__c, PersonID__r.Name, PersonID__c, Account_Number__r.RecType__c, TypeTranslate__c, Account_Number__r.Name
 				FROM Person_Account__c where PersonID__c =:memberid limit 1];
 			AccountNumber = AccountNumberInput;	
@@ -3982,7 +4021,7 @@ public class MemberAuthenticationControllerLightning{
 		system.debug('CurrentScore##' + CurrentScore);
 		system.debug('OOWAvailable##'+ OOWAvailable);
 		
-		for(Member_Authentication_Scoring_Model__c sm : ScoringModel  )
+	/*	for(Member_Authentication_Scoring_Model__c sm : ScoringModel  )
 		{
 					
 					if(sm.Authentication_Type__c == 'Debit Pin' )
@@ -3998,6 +4037,7 @@ public class MemberAuthenticationControllerLightning{
 					}
 			
 		}
+        system.debug('DebitCardStatus##' + DebitCardStatus);
 		if(DebitCardStatus == 'Fail' || DebitCardStatus =='false'){
 			CurrentScore = CurrentScore - DebitPinNegativeScore.intValue();
 		}
@@ -4018,7 +4058,7 @@ public class MemberAuthenticationControllerLightning{
 		system.debug('CurrentScorePost2##' + CurrentScore);
 		
 		AuthLogMap.put('CurrentScore', CurrentScore);	
-
+*/
 		
      	map<string, List<string>> NextTabToAchieveLevelMap =  GetTabsToAchieveNextLevel(LevelModel, ScoringModel, MemberType, DebitCardStatus, IsPinChanged, OTPAvailable, PublicWalletAvailable, CFCUWalletAvailable,OOWAvailable, CurrentScore);
 		List<string>  NextTabLevel2 = NextTabToAchieveLevelMap.get('NextTabLevel2');

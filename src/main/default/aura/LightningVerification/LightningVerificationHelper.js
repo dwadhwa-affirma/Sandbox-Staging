@@ -155,7 +155,7 @@
 	{
 		console.log('LastAcheivableLogs called');
         var PhoneFromURL = (component.get("v.PhoneFromURL") !=undefined) ? component.get("v.PhoneFromURL") : component.get("v.PhoneNumberEntered");
-        var MemberNumberFromURL = (component.get("v.MemberNumberFromURL") != undefined) ? component.get("v.MemberNumberFromURL") : component.get("v.MemberNumberEntered");
+        var MemberNumberFromURL = (component.get("v.MemberNumberFromURL") != undefined && component.get("v.MemberNumberFromURL") != "" ) ? component.get("v.MemberNumberFromURL") : component.get("v.MemberNumberEntered");
 		var EnteredCardNumber = component.get("v.EnteredCardNumber");
 		var CardNumberMatch = component.get("v.CardNumberMatch");
 		var PhoneNumberMatch = component.get("v.PhoneNumberMatch");
@@ -938,7 +938,7 @@
 		console.log('IsUserSessionLoaded' + component.get("v.IsUserSessionLoaded"));
        	var DebitCardStatus = component.get("v.DebitCardStatus");
 		var action = component.get("c.getDataForReload");
-		var MemberNumberFromURL = (component.get("v.MemberNumberFromURL") != undefined) ? component.get("v.MemberNumberFromURL") : component.get("v.MemberNumberEntered");
+		var MemberNumberFromURL = (component.get("v.MemberNumberFromURL") != undefined && component.get("v.MemberNumberFromURL") !="") ? component.get("v.MemberNumberFromURL") : component.get("v.MemberNumberEntered");
         action.setParams({"memberid": memberid,"GUID":GUID,"IVRGUIDFromUrl":IVRGUIDFromUrl,"DebitCardStatus" : DebitCardStatus, "IsUserSessionLoaded": component.get("v.IsUserSessionLoaded"),"AccountNumberInput":MemberNumberFromURL});
     	action.setCallback(this, function (response) {
 		       	      		 var status = response.getState();            
