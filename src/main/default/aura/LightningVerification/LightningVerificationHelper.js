@@ -938,7 +938,8 @@
 		console.log('IsUserSessionLoaded' + component.get("v.IsUserSessionLoaded"));
        	var DebitCardStatus = component.get("v.DebitCardStatus");
 		var action = component.get("c.getDataForReload");
-        action.setParams({"memberid": memberid,"GUID":GUID,"IVRGUIDFromUrl":IVRGUIDFromUrl,"DebitCardStatus" : DebitCardStatus, "IsUserSessionLoaded": component.get("v.IsUserSessionLoaded"),"AccountNumberInput":component.get("v.MemberNumberEntered") });
+		var MemberNumberFromURL = (component.get("v.MemberNumberFromURL") != undefined) ? component.get("v.MemberNumberFromURL") : component.get("v.MemberNumberEntered");
+        action.setParams({"memberid": memberid,"GUID":GUID,"IVRGUIDFromUrl":IVRGUIDFromUrl,"DebitCardStatus" : DebitCardStatus, "IsUserSessionLoaded": component.get("v.IsUserSessionLoaded"),"AccountNumberInput":MemberNumberFromURL});
     	action.setCallback(this, function (response) {
 		       	      		 var status = response.getState();            
 	                               if (component.isValid() && status === "SUCCESS") {

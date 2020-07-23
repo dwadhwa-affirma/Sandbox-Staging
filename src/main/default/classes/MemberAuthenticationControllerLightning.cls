@@ -3762,7 +3762,6 @@ public class MemberAuthenticationControllerLightning{
 		integer CurrentScore = 0;
 		boolean IsPinChanged;
 		string  AccountNumber;
-		string DebitPinStatus='';
 		boolean IsLevel1Achieved = false;
 		boolean IsLevel2Achieved = false;
 		boolean IsLevel3Achieved = false;
@@ -3774,7 +3773,10 @@ public class MemberAuthenticationControllerLightning{
 		List<Member_Authentication_Level_Model__c> LevelModel = new List<Member_Authentication_Level_Model__c>();		
 		List<Member_Authentication_Scoring_Model__c> ScoringModel = new List<Member_Authentication_Scoring_Model__c>();
     	Map<string,object> AuthLogMap = new  Map<string,object>();
-    	
+    	Decimal DebitPinPositiveScore;
+        Decimal DebitPinNegativeScore;
+        Decimal PINChangeNegativeScore;
+        Decimal PINChangePositiveScore;
         integer minutes = GetMemberAuthenticationSessionTime();
         LevelModel = GetMemberAuthenticationLevel();
         List<Account> accList = [select id, PersonID__c from Account where id= : MemberId];
@@ -3958,10 +3960,14 @@ public class MemberAuthenticationControllerLightning{
      	List<Person_Account__c> p = [SELECT Id, Account_Number__c, PersonID__r.Name, PersonID__c, Account_Number__r.RecType__c, TypeTranslate__c, Account_Number__r.Name
 				FROM Person_Account__c where PersonID__c =:memberid limit 1];
 			AccountNumber = AccountNumberInput;	
+			system.debug('ListSize P#'+ p.size());
 		if(p.size() > 0) {
 			
 			//AccountNumber = p[0].Account_Number__r.Name;
+			system.debug('AccountNumberInput##'+ AccountNumberInput);
+			system.debug('AccountNumber##'+ AccountNumber);
 			pc = [select id,Transmission_Date__c,CreatedDate,Member_Number__c,Function__c from MC_PIN_Change__c where Member_Number__c =: AccountNumber and CreatedDate = LAST_N_DAYS:30 and Function__c = 'PIN Change'];
+			system.debug('ListSize PC#'+ pc.size());
 			if(pc.size() > 0){
 				IsPinChanged = true;
 				
@@ -3972,16 +3978,47 @@ public class MemberAuthenticationControllerLightning{
 			}
 		}
 		
-		/*if(DebitCardStatus =='Fail'){
-			DebitPinStatus ='Fail';
-		}
-		else if(DebitCardStatus =='Pass'){
-			DebitPinStatus ='Pass';
-		}
-		system.debug('DebitCardStatus##' + DebitCardStatus);*/
-		
+			
 		system.debug('CurrentScore##' + CurrentScore);
 		system.debug('OOWAvailable##'+ OOWAvailable);
+		
+		for(Member_Authentication_Scoring_Model__c sm : ScoringModel  )
+		{
+					
+					if(sm.Authentication_Type__c == 'Debit Pin' )
+					{
+						system.debug('sm.Negative_Point_Value__c##'+ sm.Negative_Point_Value__c);
+						DebitPinPositiveScore = sm.Positive_Point_Value__c;
+						DebitPinNegativeScore = sm.Negative_Point_Value__c;
+					}
+					if(sm.Authentication_Type__c == 'PIN Change'){
+						
+						PINChangeNegativeScore = sm.Negative_Point_Value__c;
+						PINChangePositiveScore = sm.Positive_Point_Value__c;				
+					}
+			
+		}
+		if(DebitCardStatus == 'Fail' || DebitCardStatus =='false'){
+			CurrentScore = CurrentScore - DebitPinNegativeScore.intValue();
+		}
+		else if(DebitCardStatus == 'Pass' || DebitCardStatus =='true')
+		{
+			CurrentScore = CurrentScore + DebitPinPositiveScore.intValue();
+		}
+		system.debug('CurrentScorePost1##' + CurrentScore);
+		system.debug('IsPinChanged##' + IsPinChanged);
+		if(IsPinChanged == true ){
+			CurrentScore = CurrentScore - PINChangeNegativeScore.intValue();
+			
+		}
+		else if(IsPinChanged == false ){
+			
+			CurrentScore = CurrentScore + PINChangePositiveScore.intValue();
+		}
+		system.debug('CurrentScorePost2##' + CurrentScore);
+		
+		AuthLogMap.put('CurrentScore', CurrentScore);	
+
 		
      	map<string, List<string>> NextTabToAchieveLevelMap =  GetTabsToAchieveNextLevel(LevelModel, ScoringModel, MemberType, DebitCardStatus, IsPinChanged, OTPAvailable, PublicWalletAvailable, CFCUWalletAvailable,OOWAvailable, CurrentScore);
 		List<string>  NextTabLevel2 = NextTabToAchieveLevelMap.get('NextTabLevel2');
