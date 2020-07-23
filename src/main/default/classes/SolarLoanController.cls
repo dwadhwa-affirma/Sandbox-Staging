@@ -5,7 +5,7 @@ public class SolarLoanController {
     
     List<Solar_Loans__c> SolarLoanList = [SELECT id,ABA_Bank_Name__c,ACH__c,Additional_Amount__c,Application_Date__c,
             Bank_Account_Number__c,Bank_Name__c,Battery__c,Brand__c,Change_Order__c,CreatedById,CreatedDate,
-            Credit_Attributes__c,Credit_Exception__c,Debt_Ratio__c,DocuSignId__c,Due_Date__c,
+            Credit_Attributes__c,Credit_Exception__c,Debt_Ratio__c,DocuSignId__c,Due_Date__c,continue__c,
             ECOA_Code__c,Final_Payment_Amount__c,FNI__c,Go_To_Payment__c,Initial_LT_Loan_Agreement__c,
             Installer_Number__c,Installer__c,Interest_Rate__c,Inverter__c,IsDeleted,Joint_Address_1__c,
             Joint_Address_2__c,Joint_City__c,Joint_DOB__c,Joint_FICO_Score__c,Joint_First_Name__c,Joint_Last_Name__c,
@@ -19,7 +19,10 @@ public class SolarLoanController {
             Error_EftLocator__c,Error_Loan_Locator__c,Error_Loan_Name_Locator__c,Error_Loan_Tracking_Locator__c,
             Current_Solar_Loan_Stage__c FROM Solar_Loans__c where id =: SolarLoanRecordId limit 1];	
     	
-   			SolarLoanList[0].Status__c = status; 
+            SolarLoanList[0].Status__c = status;
+            if(SolarLoanList[0].Status__c != 'Waiting for Response')
+                SolarLoanList[0].continue__c = True; 
+
             update SolarLoanList; 	
     	
     }
@@ -105,7 +108,7 @@ public class SolarLoanController {
   
     List<Solar_Loans__c> SolarLoanList = [SELECT id,ABA_Bank_Name__c,ACH__c,Additional_Amount__c,Application_Date__c,
             Bank_Account_Number__c,Bank_Name__c,Battery__c,Brand__c,Change_Order__c,CreatedById,CreatedDate,
-            Credit_Attributes__c,Credit_Exception__c,Debt_Ratio__c,DocuSignId__c,Due_Date__c,
+            Credit_Attributes__c,Credit_Exception__c,Debt_Ratio__c,DocuSignId__c,Due_Date__c,continue__c,
             ECOA_Code__c,Final_Payment_Amount__c,FNI__c,Go_To_Payment__c,Initial_LT_Loan_Agreement__c,
             Installer_Number__c,Installer__c,Interest_Rate__c,Inverter__c,IsDeleted,Joint_Address_1__c,
             Joint_Address_2__c,Joint_City__c,Joint_DOB__c,Joint_FICO_Score__c,Joint_First_Name__c,Joint_Last_Name__c,
@@ -127,6 +130,7 @@ public class SolarLoanController {
             
             if(CurrentStage != 'Stage 4' && CurrentStage != 'Stage 3' && CurrentStage != 'Stage 5' && CurrentStage != 'Stage 7'){
                 SolarLoanList[0].Current_Solar_Loan_Stage__c = CurrentStage; 
+                SolarLoanList[0].continue__c = false;
                 update SolarLoanList;
             }           
         }
@@ -204,7 +208,8 @@ public class SolarLoanController {
         
         system.debug('Stage3MissingFields'+Stage3MissingFields);
         if(Stage3ErrorCheck == 'False'){
-        	SolarLoanList[0].Current_Solar_Loan_Stage__c = CurrentStage; 
+            SolarLoanList[0].Current_Solar_Loan_Stage__c = CurrentStage; 
+            SolarLoanList[0].continue__c = false;
             update SolarLoanList;
             
         }
@@ -214,6 +219,7 @@ public class SolarLoanController {
         if(CurrentStage == 'Stage 4'){
             
             solarLoanList[0].Status__c = 'Approved';
+            SolarLoanList[0].continue__c = false;
             update SolarLoanList;
         }
         
@@ -226,7 +232,8 @@ public class SolarLoanController {
                                                         && (SolarLoanList[0].Bank_Account_Number__c != null && SolarLoanList[0].Bank_Account_Number__c != '0')){    	
            
                 	Stage5ACHCheck = 'True';
-                	SolarLoanList[0].Current_Solar_Loan_Stage__c = CurrentStage;
+                    SolarLoanList[0].Current_Solar_Loan_Stage__c = CurrentStage;
+                    SolarLoanList[0].continue__c = false;
                 	update SolarLoanList;
               
             	}
@@ -265,6 +272,7 @@ public class SolarLoanController {
         
         if(CurrentStage == 'Stage 6'){
             solarLoanList[0].Status__c = 'ACH Pending';
+            SolarLoanList[0].continue__c = false;
             update SolarLoanList;
         
         }
@@ -276,6 +284,7 @@ public class SolarLoanController {
         
         if(CurrentStage == 'Stage 7'){
             solarLoanList[0].Status__c = 'Completed';
+            SolarLoanList[0].continue__c = false;
             update SolarLoanList;
             
         }
@@ -286,6 +295,7 @@ public class SolarLoanController {
         
             SolarCurrentStage = 'Stage 8';
             SolarLoanList[0].Current_Solar_Loan_Stage__c = 'Stage 8'; 
+            SolarLoanList[0].continue__c = false;
             update SolarLoanList;
             SolarCurrentStage = SolarLoanList[0].Current_Solar_Loan_Stage__c;
         }
