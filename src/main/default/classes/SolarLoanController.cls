@@ -92,6 +92,7 @@ public class SolarLoanController {
     String Stage5ErrorCheck;
     String Stage5MissingFields;
     String missingFields = '';
+    String waitingCheck;
     
     String type='Solar_Loans__c';
     Map<String, Schema.SObjectType> schemaMap = Schema.getGlobalDescribe();
@@ -292,6 +293,11 @@ public class SolarLoanController {
             Stage4ErrorCheck = 'True';
         }
     }
+
+    if(CurrentStage == ' ' && SolarLoanList[0].Status__c == 'Waiting for Response' ){
+            
+        waitingCheck = 'True';
+    }
     system.debug('SolarCurrentStage'+SolarCurrentStage);
     strMap.put('SolarCurrentStage',SolarCurrentStage);  
     strMap.put('Stage3LoanCheck',Stage3LoanCheck);
@@ -303,6 +309,7 @@ public class SolarLoanController {
     strMap.put('Stage3MissingFields',Stage3MissingFields);
     strMap.put('Stage5MissingFields',Stage5MissingFields);
     strMap.put('Stage4ErrorCheck',Stage4ErrorCheck);
+    strMap.put('waitingCheck',waitingCheck);
     
     
      

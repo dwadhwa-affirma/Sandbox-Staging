@@ -22,7 +22,9 @@
 		var stage;
 		var Stage5ACHCheck;
         var Stage4ErrorCheck;
-		
+        var waitingCheck;
+		var buttonClass = component.find('WaitingButton');
+        
 		var action = component.get("c.getMemberData");
 		action.setParams({"SolarLoanRecordId": SolarLoanRecordId,
                           "CurrentStage": ' ' });
@@ -43,16 +45,26 @@
                 }
                 //---------------------Validation for Stage-4 -------------------------------//
                 
-                 if(result.Stage4ErrorCheck == 'True'){
+                if(result.Stage4ErrorCheck == 'True'){
                 	Stage4ErrorCheck = 'True';
                 }
                 
+                //---------------------Validation for Stage-5 -------------------------------//
+              
                 if(result.Stage5ACHCheck == 'False'){
 		       	    Stage5ACHCheck = result.Stage5ACHCheck;
                 }
                 else{
                 	Stage5ACHCheck = 'True';
                 }
+                
+                //---------------------Waiting button check ---------------------------------//
+				
+				if(result.waitingCheck == 'True'){
+                	component.set("v.WaitingButton", "Continue");
+         		   	$A.util.addClass(buttonClass, 'yellow');
+          	   		component.set("v.IsButtonDisabled", true);
+                }	                
             }
             
         	if(stage == 'Stage 2'){
