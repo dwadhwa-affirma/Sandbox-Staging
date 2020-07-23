@@ -162,7 +162,21 @@ public class SolarLoanController {
 					}
 				}
 	
-			}
+            }
+            if(solarLoanList[0].ACH__c == 'True'){
+
+                for(String fieldName : stage5RequireFields){
+                
+                    System.debug(fieldName +' - '+SolarLoanList[0].get(fieldName));
+                    if(SolarLoanList[0].ACH__c == 'True' && (SolarLoanList[0].get(fieldName) == null || 
+                        SolarLoanList[0].get(fieldName) == '' || SolarLoanList[0].get(fieldName) == '0')){
+	            	
+	            		missingFields += fieldMap.get(fieldName).getDescribe().getLabel() + ', ';
+		            	Stage3ErrorCheck = 'True';
+	            	}
+
+                }
+            }
 			
 			if(SolarLoanList[0].Primary_SSN__c != null && SolarLoanList[0].Primary_SSN__c.length() != 9 && Stage3ErrorCheck != 'True'){
 								
@@ -207,8 +221,9 @@ public class SolarLoanController {
         
         if(CurrentStage == 'Stage 5'){
             
-           		if(SolarLoanList[0].ACH__c == 'True' && SolarLoanList[0].Routing_Number__c != null &&
-            	SolarLoanList[0].Bank_Name__c != null && SolarLoanList[0].Bank_Account_Number__c != null){    	
+                   if(SolarLoanList[0].ACH__c == 'True' && (SolarLoanList[0].Routing_Number__c != null && SolarLoanList[0].Routing_Number__c != '0')
+                                                        && (SolarLoanList[0].Bank_Name__c != null && SolarLoanList[0].Bank_Name__c != '0')
+                                                        && (SolarLoanList[0].Bank_Account_Number__c != null && SolarLoanList[0].Bank_Account_Number__c != '0')){    	
            
                 	Stage5ACHCheck = 'True';
                 	SolarLoanList[0].Current_Solar_Loan_Stage__c = CurrentStage;
