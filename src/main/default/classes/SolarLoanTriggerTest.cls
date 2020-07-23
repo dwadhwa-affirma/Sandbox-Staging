@@ -6,6 +6,11 @@ public class SolarLoanTriggerTest {
     	 
         User u = [SELECT Id,Email,username FROM User WHERE Email ='drana@chevronfcu.org'];
 		
+        SolarLoan_To_Episys_API_Details__c api = new SolarLoan_To_Episys_API_Details__c();
+        api.Name = 'ProductionURL';
+        api.URL__c = 'https://symxapi.chevronfcu.org/devclient';
+        insert api;
+        
         DocuSign_User_Details__c DTChevron = new DocuSign_User_Details__c();
         DTChevron.TemplateId__c = 'dc16d8f8-57ec-497e-bbf5-42d8b25d4ee1';
         DTChevron.ReplyTo__c = 'noreply@chevron.org';
