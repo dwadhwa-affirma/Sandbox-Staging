@@ -290,19 +290,21 @@ public class SolarLoanController {
         }
         
         //------------------------------------Skipping stages upto "Stage 7" if ACH = False-------------------------//
-        
+      
         if(Stage5ACHCheck == 'False' && Stage5ErrorCheck != 'True'){
         
-            SolarCurrentStage = 'Stage 8';
-            SolarLoanList[0].Current_Solar_Loan_Stage__c = 'Stage 8'; 
+            SolarCurrentStage = 'Stage 7';
+            SolarLoanList[0].Current_Solar_Loan_Stage__c = 'Stage 7'; 
             SolarLoanList[0].continue__c = false;
             update SolarLoanList;
             SolarCurrentStage = SolarLoanList[0].Current_Solar_Loan_Stage__c;
         }
         system.debug('SolarLoanList[0].Current_Solar_Loan_Stage__c'+SolarLoanList[0].Current_Solar_Loan_Stage__c);    
-        if(SolarLoanList[0].Current_Solar_Loan_Stage__c == 'Stage 7')
+        if(SolarLoanList[0].Current_Solar_Loan_Stage__c == 'Stage 7'){
             SolarCurrentStage = SolarLoanList[0].Current_Solar_Loan_Stage__c;
-            
+            SolarLoanList[0].Status__c = 'Done';
+            update SolarLoanList;
+        }    
         if(SolarLoanList[0].Current_Solar_Loan_Stage__c == 'Stage 8'){
             SolarCurrentStage = SolarLoanList[0].Current_Solar_Loan_Stage__c;
             SolarLoanList[0].Status__c = 'Done';
