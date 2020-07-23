@@ -28,7 +28,7 @@
         	if(component.get("v.ButtonLabelName") == 'Mark Stage 2 Complete')
             	status = 'New';
         	if(component.get("v.ButtonLabelName") == 'Create Loan Records')
-            	status = 'New'; 
+            	status = 'Approved'; 
             if(component.get("v.ButtonLabelName") == 'Mark Stage 4 Complete')
                 status = 'Loan Funded';
             if(component.get("v.ButtonLabelName") == 'Send ACH Document')
