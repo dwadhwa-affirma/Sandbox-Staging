@@ -48,12 +48,15 @@ public class SolarLoanTriggerTest {
         Person_Account__c pa = new Person_Account__c();
         pa.account_number__c = ad.id;
         pa.PersonID__c = ac.id;
+        pa.Name_Type__c = 0;
         insert pa;
         
         Person_Account__c pa1 = new Person_Account__c();
         pa1.account_number__c = ad1.id;
         pa1.PersonID__c = ac.id;
+        pa.Name_Type__c = 0;
         insert pa1;
+        
         SolarLoan_Docusign_Emails__c sde = new SolarLoan_Docusign_Emails__c();
         sde.Name = 'Email For Testing';
         sde.Emails__c = 'drana@chevronfcu.org';
@@ -103,11 +106,11 @@ public class SolarLoanTriggerTest {
             sl.ECOA_Code__c = '1';
             sl.Site_UUID__c = '11';
             sl.FNI__c = '12';
-            sl.Member_Number__c = '269355';
+            sl.Member_Number__c = '0000269355';
             sl.Status__c = 'New';
             insert sl;
         	
-            sl.Member_Number__c = '247286';
+            sl.Member_Number__c = '0000247286';
             update sl;
             
             System.debug('Current User: ' + UserInfo.getUserName());

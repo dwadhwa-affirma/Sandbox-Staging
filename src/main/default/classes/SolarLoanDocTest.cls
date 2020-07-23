@@ -44,7 +44,7 @@ private class SolarLoanDocTest{
      //---------------------------------------- Creating Solar Loan record---------------------------------------------//
      
      List<Solar_Loans__c> SolarLoan_Obj = new List<Solar_Loans__c>{
-        new Solar_Loans__c(Member_Number__c = '0000265418', Status__c = 'Completed', Brand__c = 'Spectrum', Primary_First_Name__c = 'Tania', Primary_Last_Name__c = 'Cabrera')};
+        new Solar_Loans__c(Member_Number__c = '0000265418', Site_UUID__c = '0064M00000XWR42QAH',Status__c = 'Completed', Brand__c = 'Spectrum', Primary_First_Name__c = 'Tania', Primary_Last_Name__c = 'Cabrera')};
      Insert SolarLoan_Obj;
      
      //---------------------------------------- Creating Solar Loan Document record-----------------------------------//

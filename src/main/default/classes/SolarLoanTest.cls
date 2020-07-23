@@ -102,7 +102,7 @@ private class SolarLoanTest{
      sl1.id =  SolarLoan_Obj[0].id;
      sl1.Member_Number__c = '0000147165'; 
      sl1.Routing_Number__c = '284084350'; 
-     sl1.ACH__c = 'false';
+     sl1.ACH__c = 'True';
      sl1.Routing_Number__c = '122105155';
      sl1.Bank_Name__c = 'US BANK NA';
      sl1.Bank_Account_Number__c = '122105155';
@@ -137,6 +137,7 @@ private class SolarLoanTest{
       List<Solar_Loans__c> listSolarLoan  =  [SELECT Id from Solar_Loans__c limit 1];
       SolarLoanController.waitingForResponse(listSolarLoan[0].id, 'New');
       SolarLoanController.getMemberData(listSolarLoan[0].id, 'Stage 1');
+      SolarLoanController.getMemberData(listSolarLoan[0].id, 'Stage 3');
       SolarLoanController.routingInfo('122105155');
       SolarLoanController.getMemberData(listSolarLoan[0].id, 'Stage 5');
       SolarLoanController.getMemberData(listSolarLoan[0].id, 'Stage 7');
