@@ -17,10 +17,10 @@ declare module "@salesforce/apex/MemberAuthenticationControllerLightning.KYMSave
   export default function KYMSaveLogData(param: {MemberId: any, reason: any, otherReason: any, GUID: any}): Promise<any>;
 }
 declare module "@salesforce/apex/MemberAuthenticationControllerLightning.PublicWalletSaveLogData" {
-  export default function PublicWalletSaveLogData(param: {MemberId: any, Status: any, GUID: any, DOBMatch: any, IdNumberMatch: any, MMNMatch: any, EmailMatch: any, AdditionalTokenOption3Match: any, IVRGUIDFromUrl: any, DOB: any, IdNumber: any, MMN: any, Email: any, AdditionalTokenOption3: any}): Promise<any>;
+  export default function PublicWalletSaveLogData(param: {MemberId: any, Status: any, GUID: any, DOBMatch: any, IdNumberMatch: any, MMNMatch: any, EmailMatch: any, AdditionalTokenOption3Match: any, IVRGUIDFromUrl: any, DOB: any, IdNumber: any, MMN: any, Email: any, AdditionalTokenOption3: any, MemberNumber: any}): Promise<any>;
 }
 declare module "@salesforce/apex/MemberAuthenticationControllerLightning.CFCUWalletSaveLogData" {
-  export default function CFCUWalletSaveLogData(param: {MemberId: any, Status: any, GUID: any, BeneficiaryDetailMatch: any, JointOwnerDetailMatch: any, CardNumberMatch: any, AdditionalTokenOption1Match: any, AdditionalTokenOption2Match: any, LoanDetailMatch: any, IVRGUIDFromUrl: any, BeneficiaryAccount: any, JointAccount: any, LoanAccount: any, Card: any, AdditionalTokenOption1: any, AdditionalTokenOption2: any}): Promise<any>;
+  export default function CFCUWalletSaveLogData(param: {MemberId: any, Status: any, GUID: any, BeneficiaryDetailMatch: any, JointOwnerDetailMatch: any, CardNumberMatch: any, AdditionalTokenOption1Match: any, AdditionalTokenOption2Match: any, LoanDetailMatch: any, IVRGUIDFromUrl: any, BeneficiaryAccount: any, JointAccount: any, LoanAccount: any, Card: any, AdditionalTokenOption1: any, AdditionalTokenOption2: any, MemberNumber: any}): Promise<any>;
 }
 declare module "@salesforce/apex/MemberAuthenticationControllerLightning.InsertLogData" {
   export default function InsertLogData(param: {MemberId: any, Decision: any, FDL: any, PhoneNumber: any, EnteredSSN: any, PageUrl: any, OverrideType: any, OverrideSupervisor: any, ManagerCallbackComments: any, GUID: any, IVRGUIDFromUrl: any}): Promise<any>;

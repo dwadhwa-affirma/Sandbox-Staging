@@ -110,8 +110,8 @@
     // for Hide/Close Model,set the "isOpen" attribute to "Fasle" 
 	   var action = component.get("c.CancelOTP");
 	   var recordid = component.get("v.recordId");
-	   
-	   var parameters = {"accid": recordid};
+	   var MemberNumber = (component.get("v.MemberNumberFromURL") != undefined && component.get("v.MemberNumberFromURL") != "" ) ? component.get("v.MemberNumberFromURL") : component.get("v.MemberNumberEntered"); 
+	   var parameters = {"accid": recordid,"MemberNumber": MemberNumber};
        action.setParams(parameters);
 	   action.setCallback(this, function(response){
             	var status = response.getState();
@@ -145,8 +145,9 @@
             var action = component.get("c.GenerateRandomOTP");
 	        var recordid = component.get("v.recordId");
 	        var GUID = component.get("v.GUID");
-	        var IVRGUIDFromUrl = component.get("v.IVRGUIDFromUrl");
-	        var parameters = {"BrandName": Brand,"fieldName" : selectedOTPSendOption,  "resend" : "false", "accid": recordid, "GUID" : GUID,"IVRGUIDFromUrl": IVRGUIDFromUrl };
+			var IVRGUIDFromUrl = component.get("v.IVRGUIDFromUrl");
+			var MemberNumber = (component.get("v.MemberNumberFromURL") != undefined && component.get("v.MemberNumberFromURL") != "" ) ? component.get("v.MemberNumberFromURL") : component.get("v.MemberNumberEntered");
+	        var parameters = {"BrandName": Brand,"fieldName" : selectedOTPSendOption,  "resend" : "false", "accid": recordid, "GUID" : GUID,"IVRGUIDFromUrl": IVRGUIDFromUrl,"MemberNumber": MemberNumber };
             action.setParams(parameters);
             action.setCallback(this, function(response){
             	var status = response.getState();
@@ -295,8 +296,9 @@
 		var action = component.get("c.DeclineOTPAtFirstStep");
         var recordid = component.get("v.recordId");
         var GUID = component.get("v.GUID");
-        var IVRGUIDFromUrl = component.get("v.IVRGUIDFromUrl");
-        action.setParams({"accid" : recordid, "GUID" : GUID,"IVRGUIDFromUrl": IVRGUIDFromUrl});
+		var IVRGUIDFromUrl = component.get("v.IVRGUIDFromUrl");
+		var MemberNumber = (component.get("v.MemberNumberFromURL") != undefined && component.get("v.MemberNumberFromURL") != "" ) ? component.get("v.MemberNumberFromURL") : component.get("v.MemberNumberEntered");
+        action.setParams({"accid" : recordid, "GUID" : GUID,"IVRGUIDFromUrl": IVRGUIDFromUrl,"MemberNumber": MemberNumber});
 		action.setCallback(this, function(response){
             
 			var status = response.getState();
@@ -324,12 +326,12 @@
 		var EnteredOTP= component.get("v.EnteredOTP");
 		var GUID= component.get("v.GUID");
 		var IVRGUIDFromUrl = component.get("v.IVRGUIDFromUrl"); 
-		 
+		var MemberNumber = (component.get("v.MemberNumberFromURL") != undefined && component.get("v.MemberNumberFromURL") != "" ) ? component.get("v.MemberNumberFromURL") : component.get("v.MemberNumberEntered"); 
 		 if(EnteredOTP)
 		 {
 			  component.set('v.InputRequired',false);
 			 var selectedOTPSendOption = component.get("v.selectedValue");
-			 action.setParams({"accid" : recordid, "EnteredOTP": EnteredOTP,"fieldName": selectedOTPSendOption, "model": JSON.stringify(keyModel), "GUID" : GUID,"IVRGUIDFromUrl": IVRGUIDFromUrl});		 
+			 action.setParams({"accid" : recordid, "EnteredOTP": EnteredOTP,"fieldName": selectedOTPSendOption, "model": JSON.stringify(keyModel), "GUID" : GUID,"IVRGUIDFromUrl": IVRGUIDFromUrl,"MemberNumber":MemberNumber});		 
 			 action.setCallback(this, function(response){
 	            
 				var status = response.getState();
@@ -370,13 +372,14 @@
 		 {
 			  var recordid = component.get("v.recordId");
 			  var selectedOTPSendOption = component.get("v.selectedValue");
+			  var MemberNumber = (component.get("v.MemberNumberFromURL") != undefined && component.get("v.MemberNumberFromURL") != "" ) ? component.get("v.MemberNumberFromURL") : component.get("v.MemberNumberEntered"); 
 			  var action = component.get("c.CancelOTP");
 			 if(selectedOTPSendOption)
 			 {
-				  action.setParams({"accid" : recordid, "fieldName": selectedOTPSendOption});
+				  action.setParams({"accid" : recordid, "fieldName": selectedOTPSendOption,"MemberNumber": MemberNumber});
 			 }
 			 else
-				  action.setParams({"accid" : recordid, "fieldName": ''});
+				  action.setParams({"accid" : recordid, "fieldName": '', "MemberNumber": MemberNumber});
 			 
 			  action.setCallback(this, function(response){
 				  var status = response.getState();
@@ -416,6 +419,7 @@
 	 var selectedOTPSendOption = component.get("v.selectedValue");
 	 var action = component.get("c.CancelOTP");
 	 var GUID = component.get("v.GUID");
+	 var MemberNumber = (component.get("v.MemberNumberFromURL") != undefined && component.get("v.MemberNumberFromURL") != "" ) ? component.get("v.MemberNumberFromURL") : component.get("v.MemberNumberEntered"); 
 	 var IVRGUIDFromUrl = component.get("v.IVRGUIDFromUrl");
 	 var EmailandPhoneModelCount = parseInt(component.get("v.Model.EmailsList_Options.length")) + parseInt(component.get("v.Model.PhoneList_Options.length"));
      var emailArray =[];
@@ -432,10 +436,10 @@
       }  
 	 if(selectedOTPSendOption)
 	 {
-		  action.setParams({"accid" : recordid, "GUID" : GUID, "fieldName": selectedOTPSendOption,"IVRGUIDFromUrl": IVRGUIDFromUrl});
+		  action.setParams({"accid" : recordid, "GUID" : GUID, "fieldName": selectedOTPSendOption,"IVRGUIDFromUrl": IVRGUIDFromUrl,"MemberNumber": MemberNumber});
 	 }
 	 else
-		  action.setParams({"accid" : recordid, "fieldName": ''});
+		  action.setParams({"accid" : recordid, "fieldName": '',"IVRGUIDFromUrl": IVRGUIDFromUrl,"MemberNumber": MemberNumber});
 	 
 	  action.setCallback(this, function(response){
 		  var status = response.getState();

@@ -202,8 +202,8 @@ private class MemberAuthenticationControlLightningTest {
         User u = [select id , name from user where Firstname = 'Deepika' limit 1]; 
         MemberAuthenticationControllerLightning.SaveOOWLogData('passed','00002',acc.id,'reason','Test1','abc-123', 'Test Test1','Error','abc-123');
         MemberAuthenticationControllerLightning.KYMSaveLogData(acc.id,'reason','Test1','abc-123');
-        MemberAuthenticationControllerLightning.PublicWalletSaveLogData(acc.id,'reason','abc-123','Pass','Pass','Pass','Pass','Pass','abc-123','test1','test2','test3', 'test4', 'test5');
-        MemberAuthenticationControllerLightning.CFCUWalletSaveLogData(acc.id,'reason','abc-123','Pass','Pass','Pass','Pass','Pass','Pass','abc-123',obj, obj,obj,obj,'test1', 'test2');
+        MemberAuthenticationControllerLightning.PublicWalletSaveLogData(acc.id,'reason','abc-123','Pass','Pass','Pass','Pass','Pass','abc-123','test1','test2','test3', 'test4', 'test5','0000234534');
+        MemberAuthenticationControllerLightning.CFCUWalletSaveLogData(acc.id,'reason','abc-123','Pass','Pass','Pass','Pass','Pass','Pass','abc-123',obj, obj,obj,obj,'test1', 'test2','0000234534');
         MemberAuthenticationControllerLightning.GetFailedDesiredLevelLog(acc.id);
 	    MemberAuthenticationControllerLightning.SaveOTPCancelledAttempt(acc.id,'abc-123','abc-123');
          MemberAuthenticationControllerLightning.SaveOTPCancelledAttempt(acc.id,' ',' ');
@@ -229,18 +229,19 @@ private class MemberAuthenticationControlLightningTest {
         User u = [select id , name from user where Firstname = 'Deepika' limit 1]; 
        
         MemberAuthenticationControllerLightning.SaveOOWLogData('passed','00002',acc.id,'reason','Test1','abc-1234', 'Test Test1','Error','abc-1234'); 
-        MemberAuthenticationControllerLightning.PublicWalletSaveLogData(acc.id,'reason','abc-1234','Pass','Pass','Pass','Pass','Pass','abc-1234','test1','test2','test3', 'test4', 'test5'); 
-        MemberAuthenticationControllerLightning.PublicWalletSaveLogData(acc.id,'reason','','Pass','Pass','Pass','Pass','Pass','','test1','test2','test3', 'test4', 'test5');  
-        MemberAuthenticationControllerLightning.CFCUWalletSaveLogData(acc.id,'reason','','Pass','Pass','Pass','Pass','Pass','Pass','',obj, obj,obj,obj,'test1', 'test2'); 
-        MemberAuthenticationControllerLightning.CFCUWalletSaveLogData(acc.id,'reason','abc-1234','Pass','Pass','Pass','Pass','Pass','Pass','abc-1234',obj, obj,obj,obj,'test1', 'test2'); 
+        MemberAuthenticationControllerLightning.PublicWalletSaveLogData(acc.id,'reason','abc-1234','Pass','Pass','Pass','Pass','Pass','abc-1234','test1','test2','test3', 'test4', 'test5','0000234534'); 
+        MemberAuthenticationControllerLightning.PublicWalletSaveLogData(acc.id,'reason','','Pass','Pass','Pass','Pass','Pass','','test1','test2','test3', 'test4', 'test5','0000234534');  
+        MemberAuthenticationControllerLightning.CFCUWalletSaveLogData(acc.id,'reason','','Pass','Pass','Pass','Pass','Pass','Pass','',obj, obj,obj,obj,'test1', 'test2','0000234534'); 
+        MemberAuthenticationControllerLightning.CFCUWalletSaveLogData(acc.id,'reason','abc-1234','Pass','Pass','Pass','Pass','Pass','Pass','abc-1234',obj, obj,obj,obj,'test1', 'test2','0000234534'); 
         MemberAuthenticationControllerLightning.SaveOTPCancelledAttempt(acc.id,'',''); 
         Test.stopTest();
     }
      static testMethod void LogDataFunctionsTest() {
-     	Test.startTest();
+     	
           Account acc = [Select id from Account where FirstName='U' limit 1 ];
           Account_Details__c ad = [select id from Account_Details__c where name = '00001' limit 1];
-        MemberAuthenticationControllerLightning.SaveCaseWithLogData(acc.id,'00002','casecomment',ad.id,'abc-123','abc-123');
+         Test.startTest();
+        	MemberAuthenticationControllerLightning.SaveCaseWithLogData(acc.id,'00002','casecomment',ad.id,'abc-123','abc-123');
         Test.stopTest(); 
         MemberAuthenticationControllerLightning.getPublicWalletInfo(acc.id,'abc-123');
          MemberAuthenticationControllerLightning.getPublicWalletInfo(acc.id,'abc-1234'); 

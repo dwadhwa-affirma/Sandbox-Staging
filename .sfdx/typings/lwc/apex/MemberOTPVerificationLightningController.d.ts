@@ -2,16 +2,16 @@ declare module "@salesforce/apex/MemberOTPVerificationLightningController.ListOf
   export default function ListOfEmailsAndPhoneNumbers(param: {accid: any, IsAuth: any, GUID: any, IVRGUIDFromUrl: any}): Promise<any>;
 }
 declare module "@salesforce/apex/MemberOTPVerificationLightningController.DeclineOTPAtFirstStep" {
-  export default function DeclineOTPAtFirstStep(param: {accid: any, GUID: any, IVRGUIDFromUrl: any}): Promise<any>;
+  export default function DeclineOTPAtFirstStep(param: {accid: any, GUID: any, IVRGUIDFromUrl: any, MemberNumber: any}): Promise<any>;
 }
 declare module "@salesforce/apex/MemberOTPVerificationLightningController.GenerateRandomOTP" {
-  export default function GenerateRandomOTP(param: {fieldName: any, BrandName: any, resend: any, accid: any, GUID: any, IVRGUIDFromUrl: any}): Promise<any>;
+  export default function GenerateRandomOTP(param: {fieldName: any, BrandName: any, resend: any, accid: any, GUID: any, IVRGUIDFromUrl: any, MemberNumber: any}): Promise<any>;
 }
 declare module "@salesforce/apex/MemberOTPVerificationLightningController.verifyOTP" {
-  export default function verifyOTP(param: {accid: any, EnteredOTP: any, fieldName: any, model: any, GUID: any, IVRGUIDFromUrl: any}): Promise<any>;
+  export default function verifyOTP(param: {accid: any, EnteredOTP: any, fieldName: any, model: any, GUID: any, IVRGUIDFromUrl: any, MemberNumber: any}): Promise<any>;
 }
 declare module "@salesforce/apex/MemberOTPVerificationLightningController.CancelOTP" {
-  export default function CancelOTP(param: {accid: any, GUID: any, fieldName: any, IVRGUIDFromUrl: any}): Promise<any>;
+  export default function CancelOTP(param: {accid: any, GUID: any, fieldName: any, IVRGUIDFromUrl: any, MemberNumber: any}): Promise<any>;
 }
 declare module "@salesforce/apex/MemberOTPVerificationLightningController.OTPResend" {
   export default function OTPResend(param: {IVRGUIDFromUrl: any}): Promise<any>;

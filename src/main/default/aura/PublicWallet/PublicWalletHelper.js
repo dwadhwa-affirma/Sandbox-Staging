@@ -339,10 +339,11 @@
 		    if(AdditionalTokenOption3Match == undefined){
 		    	AdditionalTokenOption3Match ='';
 		    }
-		   
+			var MemberNumber = (component.get("v.MemberNumberFromURL") != undefined && component.get("v.MemberNumberFromURL") != "" ) ? component.get("v.MemberNumberFromURL") : component.get("v.MemberNumberEntered");
+
 	        action.setParams({"MemberId": memberId, "Status": status, "GUID" : GUID, "DOBMatch" : DOBMatch, "IdNumberMatch" : IdNumberMatch, "MMNMatch" : MMNMatch, "EmailMatch" : EmailMatch, 
 	        							             "AdditionalTokenOption3Match" : AdditionalTokenOption3Match, "IVRGUIDFromUrl" : IVRGUIDFromUrl,
-	        							              "DOB": DOB,"IdNumber": IdNumber, "MMN": MMN,"Email": Email,"AdditionalTokenOption3": AdditionalTokenOption3});
+	        							              "DOB": DOB,"IdNumber": IdNumber, "MMN": MMN,"Email": Email,"AdditionalTokenOption3": AdditionalTokenOption3,"MemberNumber": MemberNumber});
 	        action.setCallback(this, function (response) {
 			var status = response.getState();            
 		    if (component.isValid() && status === "SUCCESS") {

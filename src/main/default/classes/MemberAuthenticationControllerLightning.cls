@@ -399,19 +399,11 @@ public class MemberAuthenticationControllerLightning{
     }
     
     @AuraEnabled
-    public static void PublicWalletSaveLogData(string MemberId, string Status, string GUID, string DOBMatch, string IdNumberMatch, String MMNMatch, string EmailMatch, string AdditionalTokenOption3Match, string IVRGUIDFromUrl, string DOB,string IdNumber,string MMN, string Email, string AdditionalTokenOption3)
+    public static void PublicWalletSaveLogData(string MemberId, string Status, string GUID, string DOBMatch, string IdNumberMatch, String MMNMatch, string EmailMatch, string AdditionalTokenOption3Match, string IVRGUIDFromUrl, string DOB,string IdNumber,string MMN, string Email, string AdditionalTokenOption3, string MemberNumber)
     {
     	 /*This method save Public Wallet log data in MAAP Log object*/
      system.debug('Email##' + Email );
-      RecordType rec = GetRecordTypeData('Authenticated_Log__c', 'Public Wallet Log'); 
-     
-       string  AccountNumber;
-      List<Person_Account__c> p = [SELECT Id, Account_Number__c,  PersonID__c, Account_Number__r.RecType__c, TypeTranslate__c, Account_Number__r.Name
-                FROM Person_Account__c where PersonID__c =:MemberId  limit 1];
-      if(p.size() > 0)
-      {
-           AccountNumber = p[0].Account_Number__r.Name;
-      }
+      RecordType rec = GetRecordTypeData('Authenticated_Log__c', 'Public Wallet Log');         
       Authenticated_Log__c log = new Authenticated_Log__c();
       log.RecordTypeId= rec.id;
       log.Public_Wallet_Status__c = status;
@@ -420,7 +412,7 @@ public class MemberAuthenticationControllerLightning{
       log.Staff_Name__c = UserInfo.getName();
       log.Current_User__c = Userinfo.getuserid();
       log.Decision__c = status;
-      log.Member_Number__c = AccountNumber;
+      log.Member_Number__c = MemberNumber;
       log.GUID__c = GUID;
       log.IVR_GUID__c = IVRGUIDFromUrl;
       log.DOBMatch__c = DOBMatch ;
@@ -449,7 +441,7 @@ public class MemberAuthenticationControllerLightning{
 		      log2.Staff_Name__c = UserInfo.getName();
 		      log2.Current_User__c = Userinfo.getuserid();
 		      log2.Decision__c = status;
-		      log2.Member_Number__c = AccountNumber;
+		      log2.Member_Number__c = MemberNumber;
 		      log2.GUID__c = GUID;
 		      log2.IVR_GUID__c = IVRGUIDFromUrl;
 		      log2.DOBMatch__c = DOBMatch ;
@@ -472,7 +464,7 @@ public class MemberAuthenticationControllerLightning{
 			      MasterAuthenticationLog[0].Staff_Name__c = UserInfo.getName();
 			      MasterAuthenticationLog[0].Current_User__c = Userinfo.getuserid();
 			      MasterAuthenticationLog[0].Decision__c = status;
-			      MasterAuthenticationLog[0].Member_Number__c = AccountNumber;
+			      MasterAuthenticationLog[0].Member_Number__c = MemberNumber;
 			      MasterAuthenticationLog[0].GUID__c = GUID;
 			      MasterAuthenticationLog[0].DOBMatch__c = DOBMatch ;
 			      MasterAuthenticationLog[0].IdNumberMatch__c =  IdNumberMatch ;
@@ -492,20 +484,15 @@ public class MemberAuthenticationControllerLightning{
     
     @AuraEnabled
     public static void CFCUWalletSaveLogData(string MemberId, string Status, string GUID, string BeneficiaryDetailMatch, string JointOwnerDetailMatch, string CardNumberMatch, string AdditionalTokenOption1Match,
-     string AdditionalTokenOption2Match, string LoanDetailMatch, string IVRGUIDFromUrl, List<object> BeneficiaryAccount, List<object> JointAccount, List<object> LoanAccount,  List<object> Card, string AdditionalTokenOption1, string AdditionalTokenOption2)
+     string AdditionalTokenOption2Match, string LoanDetailMatch, string IVRGUIDFromUrl, List<object> BeneficiaryAccount, List<object> JointAccount, List<object> LoanAccount,  List<object> Card, string AdditionalTokenOption1, string AdditionalTokenOption2, string MemberNumber)
     {
     	 /*This method save CFCU Wallet log data in MAAP Log object*/
-      string  AccountNumber;
       string BA = '';
       string JA = '';
       string LA = '';
       string CardDetail = '';
       RecordType rec = GetRecordTypeData('Authenticated_Log__c', 'CFCU Wallet Log');
-      List<Person_Account__c> p = [SELECT Id, Account_Number__c,  PersonID__c, Account_Number__r.RecType__c, TypeTranslate__c, Account_Number__r.Name
-                FROM Person_Account__c where PersonID__c =:MemberId  limit 1];
-      if(p.size() > 0){
-     	 AccountNumber = p[0].Account_Number__r.Name;
-      }
+     
       Authenticated_Log__c log = new Authenticated_Log__c();
       log.RecordTypeId= rec.id;
       log.CFCU_Wallet_Status__c = status;
@@ -514,7 +501,7 @@ public class MemberAuthenticationControllerLightning{
       log.Decision__c = status;
       log.Staff_Name__c = UserInfo.getName();
       log.Current_User__c = Userinfo.getuserid();
-      log.Member_Number__c = AccountNumber;
+      log.Member_Number__c = MemberNumber;
       log.GUID__c = GUID;
       log.IVR_GUID__c = IVRGUIDFromUrl;
       log.BeneficiaryDetailMatch__c = BeneficiaryDetailMatch;
@@ -573,7 +560,7 @@ public class MemberAuthenticationControllerLightning{
 		      log2.Decision__c = status;
 		      log2.Staff_Name__c = UserInfo.getName();
 		      log2.Current_User__c = Userinfo.getuserid();
-		      log2.Member_Number__c = AccountNumber;
+		      log2.Member_Number__c = MemberNumber;
 		      log2.GUID__c = GUID;
 		      log2.IVR_GUID__c = IVRGUIDFromUrl;
 		      log2.BeneficiaryDetailMatch__c = BeneficiaryDetailMatch;
@@ -627,7 +614,7 @@ public class MemberAuthenticationControllerLightning{
 			      MasterAuthenticationLog[0].Decision__c = status;
 			      MasterAuthenticationLog[0].Staff_Name__c = UserInfo.getName();
 			      MasterAuthenticationLog[0].Current_User__c = Userinfo.getuserid();
-			      MasterAuthenticationLog[0].Member_Number__c = AccountNumber;
+			      MasterAuthenticationLog[0].Member_Number__c = MemberNumber;
 			      MasterAuthenticationLog[0].GUID__c = GUID;
 			      MasterAuthenticationLog[0].IVR_GUID__c = IVRGUIDFromUrl;
 			      MasterAuthenticationLog[0].BeneficiaryDetailMatch__c = BeneficiaryDetailMatch;
