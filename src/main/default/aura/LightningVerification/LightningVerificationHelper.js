@@ -166,12 +166,15 @@
 		var PINMatch = component.get("v.PINMatch"); 
         var SSNFromURL = (component.get("v.SSNFromURL") !=undefined) ? component.get("v.SSNFromURL") : component.get("v.SSNEntered");
 		var DebitCardStatus = component.get("v.DebitCardStatus");
+		var MaximumPointsAvailable = component.get("v.MaximumPointsAvailable");
+		var PointsObtained = component.get("v.CurrentScore");
 		console.log('Helper Line 166---DebitCardStatus' + DebitCardStatus);
 		var action = component.get("c.SaveLastAchievableLevelLogs");
 		action.setParams({"MemberId": memberid, "GUID" : GUID, "LastLevel": LastLevel,"IVRGUIDFromUrl":IVRGUIDFromUrl, 
 						"PhoneFromURL": PhoneFromURL, "MemberNumberFromURL" : MemberNumberFromURL, "EnteredCardNumber": EnteredCardNumber,"CardNumberMatch":CardNumberMatch,
 						"PhoneNumberMatch": PhoneNumberMatch, "MemberNumberMatch" : MemberNumberMatch, "SSNnumberMatch": SSNnumberMatch,"HighFlagFromUrl":HighFlagFromUrl,
-						"ReasonCodeFromURL": ReasonCodeFromURL, "PINMatch" : PINMatch, "SSNFromURL": SSNFromURL,"DebitCardStatus":DebitCardStatus});
+						"ReasonCodeFromURL": ReasonCodeFromURL, "PINMatch" : PINMatch, "SSNFromURL": SSNFromURL,"DebitCardStatus":DebitCardStatus,
+						"MaximumPointsAvailable":MaximumPointsAvailable,"PointsObtained": PointsObtained});
 						
 		action.setCallback(this, function (response) {
   		 var status = response.getState();            

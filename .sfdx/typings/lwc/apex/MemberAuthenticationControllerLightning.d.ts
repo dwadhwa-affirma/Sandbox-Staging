@@ -53,7 +53,7 @@ declare module "@salesforce/apex/MemberAuthenticationControllerLightning.SaveOTP
   export default function SaveOTPCancelledAttempt(param: {MemberId: any, GUID: any, IVRGUIDFromUrl: any}): Promise<any>;
 }
 declare module "@salesforce/apex/MemberAuthenticationControllerLightning.SaveLastAchievableLevelLogs" {
-  export default function SaveLastAchievableLevelLogs(param: {MemberId: any, GUID: any, LastLevel: any, IVRGUIDFromUrl: any, PhoneFromURL: any, MemberNumberFromURL: any, EnteredCardNumber: any, CardNumberMatch: any, PhoneNumberMatch: any, MemberNumberMatch: any, SSNnumberMatch: any, HighFlagFromUrl: any, ReasonCodeFromURL: any, PINMatch: any, SSNFromURL: any, DebitCardStatus: any}): Promise<any>;
+  export default function SaveLastAchievableLevelLogs(param: {MemberId: any, GUID: any, LastLevel: any, IVRGUIDFromUrl: any, PhoneFromURL: any, MemberNumberFromURL: any, EnteredCardNumber: any, CardNumberMatch: any, PhoneNumberMatch: any, MemberNumberMatch: any, SSNnumberMatch: any, HighFlagFromUrl: any, ReasonCodeFromURL: any, PINMatch: any, SSNFromURL: any, DebitCardStatus: any, MaximumPointsAvailable: any, PointsObtained: any}): Promise<any>;
 }
 declare module "@salesforce/apex/MemberAuthenticationControllerLightning.SaveCaseWithLogData" {
   export default function SaveCaseWithLogData(param: {MemberId: any, AccountNumber: any, casecomment: any, AccountId: any, GUID: any, IVRGUIDFromUrl: any}): Promise<any>;

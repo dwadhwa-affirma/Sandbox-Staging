@@ -49,7 +49,68 @@ public class MemberAuthenticationControllerLightning{
 	      userEnteredInformation.SSN = SSNNumber;
 	      userEnteredInformation.SSNMatch = SSNMatch;
 	      /*NameList contains Member data entered by user*/
-	      NameList = vc.queryByParametersAvailable(userEnteredInformation, false); 	          	     
+	      NameList = vc.queryByParametersAvailable(userEnteredInformation, false); 
+	      
+	      /* Code for Aut-267 begin to display message on member number search when one member is associated with multiple member account*/
+	/*       List<Account_Details__c> memberDetails = new List<Account_Details__c>();
+	       Set<String> memberDetailsNames = new Set<String>();
+	       string MultipleMemberNumberAlert='';
+	      for(Account selectedOne: NameList){
+		             system.debug('---NameList for 1--'+NameList);
+		              memberDetails = vc.AccountNumbersAuth(selectedOne.Id);
+		               if(memberDetails.size() > 1)
+             		 	{
+                 	 		break;
+              		 	}	                
+	      }
+	      System.Debug('memberDetails##'+ memberDetails);   
+	       if(MemberNumber != null || MemberNumber != '')
+                {
+                     
+                   
+                    for(Account_Details__c acctD : memberDetails)
+                    {
+                        memberDetailsNames.add(acctD.Name); 
+                        System.Debug('accD##' + acctD);                       
+                    }
+                    system.debug('memberDetails.size()....'+memberDetails.size());
+                    system.debug('memberDetailsNames....'+memberDetailsNames.size());                               
+                    system.debug('memberDetailsNames##'+ memberDetailsNames);
+                    integer i = memberDetailsNames.size();                   
+                    if (i > 1)
+                    {
+                        MultipleMemberNumberAlert = 'This person is related to more than one member number';    
+                    }
+                    else if(i == 0)
+                    {
+                        MultipleMemberNumberAlert = 'This person is not related to any member number';
+                    }
+                                    
+                }
+                else if(SSNNumber != null ||  SSNNumber !='')
+                {
+                	 for(Account_Details__c acctD : memberDetails)
+                    {
+                        memberDetailsNames.add(acctD.Name); 
+                        System.Debug('accD##' + acctD);                       
+                    }
+                    system.debug('memberDetails.size()....'+memberDetails.size());
+                    system.debug('memberDetailsNames....'+memberDetailsNames.size());                               
+                    system.debug('memberDetailsNames##'+ memberDetailsNames);
+                    integer i = memberDetailsNames.size();                   
+                    if (i > 1)
+                    {
+                        MultipleMemberNumberAlert = 'This person is related to more than one member number';    
+                    }
+                    else if(i == 0)
+                    {
+                        MultipleMemberNumberAlert = 'This person is not related to any member number';
+                    }
+                }
+	      
+	      
+	       result.put('MultipleMemberNumberAlert', MultipleMemberNumberAlert); */
+	     
 	      result.put('Account', NameList);
 	       /*GetMemberAuthenticationLevel() function bring data from custom setting*/
 	      LevelModel = GetMemberAuthenticationLevel();
@@ -65,8 +126,10 @@ public class MemberAuthenticationControllerLightning{
 		 	
 		 	integer minutes = GetMemberAuthenticationSessionTime();
 	        List<Authenticated_Log__c> AuthLog = new List<Authenticated_Log__c>();
-	        system.debug('IVRGUIDFromUrl##'+ IVRGUIDFromUrl);     
-	       	        
+	        system.debug('IVRGUIDFromUrl##'+ IVRGUIDFromUrl);
+	        
+	       
+	        
 	        if(IsUserSessionLoaded == true)
 	        {
 	        	AuthLog = [Select id ,Current_User__c, Guid__c, SalesforceID__c, IVR_GUID__c from Authenticated_Log__c where IVR_GUID__c =: IVRGUIDFromUrl and Recordtype.name!='Master Authentication Log'  order by createddate desc Limit 1] ;
@@ -1101,8 +1164,39 @@ public class MemberAuthenticationControllerLightning{
             else
             {
               result.put('MothersMaidenName','');
-            }            
-                 
+            }
+            
+          /*  if(selectedOne.PersonEmail != null){
+              
+              EmailSet.add(selectedOne.PersonEmail.toLowercase());
+            
+            }
+            if(selectedOne.Alternate_Email__pc != null){
+              
+              EmailSet.add(selectedOne.Alternate_Email__pc.toLowercase());
+            }
+            
+            if(selectedOne.Email_raw__c  != null){
+              
+              EmailSet.add(selectedOne.Email_raw__c.toLowercase());
+           }
+          
+          system.debug('EmailSet'+EmailSet);
+          
+          if(EmailSet.size() > 0){
+            for(String s : EmailSet){
+              
+              if(EmailList != ''){
+                EmailList = EmailList + ' , ' + s;
+              }
+              else{
+                EmailList = s;
+              }
+            }  
+          }
+          
+          result.put('Emails',EmailList);*/
+          
             if(selectedOne.ID_1_Type__c == null){ 
                 if(selectedOne.ID_2_Type__c != null){
                     string ID_1_Type = '';
@@ -1202,7 +1296,6 @@ public class MemberAuthenticationControllerLightning{
                 DLcode = DLStateIdPassportToMatch;
                 result.put('DLcode', DLcode);
            }
-        }
            //--------------------------Code to maintain state of Pass/ Fail Button within a day------------------------------------
           RecordType rec = GetRecordTypeData('Authenticated_Log__c', 'Public Wallet Log');
           List<Authenticated_Log__c> authlog = new List<Authenticated_Log__c>();  
@@ -1235,22 +1328,8 @@ public class MemberAuthenticationControllerLightning{
             result.put('ReAdditionalTokenMatch',ReLoadAuthlog[0].Additional_Token_Option3_Match__c);
           }
           //--------------------------Code to maintain state of Pass/ Fail Button on Reload-----------------------------------
-		
-		  //--------------------------Code to maintain state of Pass/ Fail Button on Relaunch Maap button------------------------------------
-		 List<Authenticated_Log__c> ReLaunchAuthlog = new List<Authenticated_Log__c>();  
-		 ReLaunchAuthlog = [Select Id,SalesforceID__c,Current_User__c,Member__c,Public_Wallet_Status__c,DOBMatch__c,IdNumberMatch__c,MMNMatch__c,EmailMatch__c,Additional_Token_Option3_Match__c
-                From Authenticated_Log__c where createddate = Today and RecordTypeId= : rec.id and SalesforceID__c = : MemberId and IVR_GUID__c =:IVRGUIDFromUrl order by createddate desc Limit 1];  
-
-		  if(ReLaunchAuthlog.size() > 0){
-			result.put('ReLaunchAuthPublicWalletStatus',ReLaunchAuthlog[0].Public_Wallet_Status__c);
-			result.put('ReLaunchAuthDOBMatch',ReLaunchAuthlog[0].DOBMatch__c);
-            result.put('ReLaunchAuthIdNumberMatch',ReLaunchAuthlog[0].IdNumberMatch__c);
-            result.put('ReLaunchAuthMMNMatch',ReLaunchAuthlog[0].MMNMatch__c);
-            result.put('ReLaunchAuthEmailMatch',ReLaunchAuthlog[0].EmailMatch__c);
-            result.put('ReLaunchAuthAdditionalTokenMatch',ReLaunchAuthlog[0].Additional_Token_Option3_Match__c);
-		  }
-
         
+      }  
       return result;
     }
     
@@ -3119,16 +3198,29 @@ public class MemberAuthenticationControllerLightning{
 	}
 	
 	@AuraEnabled
-	public static void SaveLastAchievableLevelLogs(string MemberId, string GUID, String LastLevel, string IVRGUIDFromUrl,string PhoneFromURL, String MemberNumberFromURL,String EnteredCardNumber, string CardNumberMatch, string PhoneNumberMatch,string MemberNumberMatch, string SSNnumberMatch, string HighFlagFromUrl,string ReasonCodeFromURL, string PINMatch, string SSNFromURL,string DebitCardStatus)
+	public static void SaveLastAchievableLevelLogs(string MemberId, string GUID, String LastLevel, string IVRGUIDFromUrl,string PhoneFromURL, String MemberNumberFromURL,String EnteredCardNumber, string CardNumberMatch, string PhoneNumberMatch,string MemberNumberMatch, string SSNnumberMatch, string HighFlagFromUrl,string ReasonCodeFromURL, string PINMatch, string SSNFromURL,string DebitCardStatus, integer MaximumPointsAvailable,integer PointsObtained)
 	{
-		/*string  AccountNumber;
-		List<Person_Account__c> p = [SELECT Id, Account_Number__c, PersonID__r.Name, PersonID__c, Account_Number__r.RecType__c, TypeTranslate__c, Account_Number__r.Name
-									FROM Person_Account__c where PersonID__c =:MemberId limit 1];
-		if(p.size() > 0)
+		integer minutes = GetMemberAuthenticationSessionTime();
+		list<Member_Verification_Attempt__c> mva = new List<Member_Verification_Attempt__c>();
+		mva = [Select id, IVR_GUID__c, Member_Salesforce_Id__c, Points_Obtained__c, Maximum_Points_Available__c,Current_Authentication_Level__c,Highest_Achievable_Level__c, Next_Level__c from Member_Verification_Attempt__c where IVR_GUID__c=:IVRGUIDFromUrl and Member_Salesforce_Id__c =: memberid AND CreatedDate >=: Datetime.now().addMinutes(minutes) limit 1];
+		if(mva.size() > 0)
 		{
-			AccountNumber = p[0].Account_Number__r.Name;
+			mva[0].Current_Authentication_Level__c = LastLevel; 
+			mva[0].Points_Obtained__c = PointsObtained;
+			mva[0].Maximum_Points_Available__c = MaximumPointsAvailable;
+			update mva;
+		}else if(mva.size() == 0)
+		{
+			Member_Verification_Attempt__c mv = new Member_Verification_Attempt__c();
+			mv.Member_Salesforce_Id__c = memberid;
+			mv.IVR_GUID__c = IVRGUIDFromUrl;
+			mv.Current_Authentication_Level__c = LastLevel;			
+			mv.Points_Obtained__c = PointsObtained;
+			mv.Maximum_Points_Available__c = MaximumPointsAvailable;
+			insert mv;	
+			
 		}
-		*/
+
 		RecordType rec = GetRecordTypeData('Authenticated_Log__c', 'IVR Authentication Log');
 		Authenticated_Log__c log = new Authenticated_Log__c();
         log.CallerPhoneNumber__c = PhoneFromURL;
