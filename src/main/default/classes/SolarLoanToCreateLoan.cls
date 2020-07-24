@@ -359,7 +359,7 @@ public class SolarLoanToCreateLoan {
                 if(sl.ACH_Discount__c == true)  
                     UserDate11 = string.ValueOf(System.today());
                 else
-                    UserDate11 = ' ';
+                    UserDate11 = '';
                 
                 if(sl.Product_Loan_Type__c != null)  
                     UserChar6  = string.ValueOf(sl.Product_Loan_Type__c);
