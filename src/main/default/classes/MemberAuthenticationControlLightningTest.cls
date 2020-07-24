@@ -244,8 +244,8 @@ private class MemberAuthenticationControlLightningTest {
         Test.stopTest(); 
         MemberAuthenticationControllerLightning.getPublicWalletInfo(acc.id,'abc-123');
          MemberAuthenticationControllerLightning.getPublicWalletInfo(acc.id,'abc-1234'); 
-        MemberAuthenticationControllerLightning.SaveLastAchievableLevelLogs(acc.id,'abc-123','Level 1','abc-123','123-4567-765','0000084','123455','True','True','True','True','Test','1','True','1234','True');
-       MemberAuthenticationControllerLightning.SaveLastAchievableLevelLogs(acc.id,' ','Level 1',' ','123-4567-765','0000084','123455','True','True','True','True','Test','1','True','1234','True');
+        MemberAuthenticationControllerLightning.SaveLastAchievableLevelLogs(acc.id,'abc-123','Level 1','abc-123','123-4567-765','0000084','123455','True','True','True','True','Test','1','True','1234','True', 5,18);
+       MemberAuthenticationControllerLightning.SaveLastAchievableLevelLogs(acc.id,' ','Level 1',' ','123-4567-765','0000084','123455','True','True','True','True','Test','1','True','1234','True',0,18);
         string str = MemberAuthenticationControllerLightning.substring('reason',2);
        
         
