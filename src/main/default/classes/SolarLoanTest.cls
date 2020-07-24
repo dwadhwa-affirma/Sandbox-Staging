@@ -9,6 +9,11 @@ private class SolarLoanTest{
      sds.Days__c = 10;
      sds.Name = 'Done';
      insert sds; 
+      
+     SolarLoan_To_Episys_API_Details__c api = new SolarLoan_To_Episys_API_Details__c();
+     api.URL__c = 'https://symxapi.chevronfcu.org/devclient';
+     api.Name = 'ProductionURL';
+     insert api;  
    
      List<Account_Details__c> account_details_Obj = new List<Account_Details__c>{
                 new Account_Details__c(Name = '0000147163', Balance__c = 0.00, Combined_Account_ID__c = '0000147163S0100P0100', ID1__c = '0100', 
@@ -138,10 +143,11 @@ private class SolarLoanTest{
       SolarLoanController.waitingForResponse(listSolarLoan[0].id, 'New');
       SolarLoanController.getMemberData(listSolarLoan[0].id, 'Stage 1');
       SolarLoanController.getMemberData(listSolarLoan[0].id, 'Stage 3');
+      SolarLoanController.getMemberData(listSolarLoan[0].id, 'Stage 4');
       SolarLoanController.routingInfo('122105155');
       SolarLoanController.getMemberData(listSolarLoan[0].id, 'Stage 5');
-      SolarLoanController.getMemberData(listSolarLoan[0].id, 'Stage 7');
       test.startTest();
+      SolarLoanController.getMemberData(listSolarLoan[0].id, 'Stage 7');
       SolarLoanController.getMemberData(listSolarLoan[0].id, 'Stage 8');
       SolarLoanController.saveRoutingInfo(listSolarLoan[0].id,'122105155','Test Bank Name');
       test.stopTest();

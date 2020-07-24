@@ -102,7 +102,10 @@ public class SolarLoanController {
     Schema.SObjectType solarloan = schemaMap.get(type);
     Map<String, Schema.SObjectField> fieldMap = solarloan.getDescribe().fields.getMap();
     
-    system.debug('SolarLoanRecordId'+SolarLoanRecordId);     
+    system.debug('SolarLoanRecordId'+SolarLoanRecordId); 
+    Set<Id> SLIdsToCreateLoan = new Set<Id>();
+    
+
     system.debug('CurrentStage'+CurrentStage);
     Map<string,string> strMap = new  Map<string,string>();
   
@@ -208,7 +211,8 @@ public class SolarLoanController {
         
         system.debug('Stage3MissingFields'+Stage3MissingFields);
         if(Stage3ErrorCheck == 'False'){
-            SolarLoanList[0].Current_Solar_Loan_Stage__c = CurrentStage; 
+            SolarLoanList[0].Current_Solar_Loan_Stage__c = CurrentStage;
+            solarLoanList[0].Status__c = 'Approved'; 
             SolarLoanList[0].continue__c = false;
             update SolarLoanList;
             
@@ -218,12 +222,11 @@ public class SolarLoanController {
         
         if(CurrentStage == 'Stage 4'){
             
-            solarLoanList[0].Status__c = 'Approved';
-            SolarLoanList[0].continue__c = false;
-            update SolarLoanList;
+            SLIdsToCreateLoan.add(SolarLoanList[0].id);
+            SolarLoanToCreateLoan.createSolarLoans(SLIdsToCreateLoan);
         }
         
-        //------------------------------------Stage-4 Checking if ACH = False/True------------------------------------//
+        //------------------------------------Stage-5 Checking if ACH = False/True------------------------------------//
         
         if(CurrentStage == 'Stage 5'){
             
@@ -302,6 +305,7 @@ public class SolarLoanController {
         system.debug('SolarLoanList[0].Current_Solar_Loan_Stage__c'+SolarLoanList[0].Current_Solar_Loan_Stage__c);    
         if(SolarLoanList[0].Current_Solar_Loan_Stage__c == 'Stage 7'){
             SolarCurrentStage = SolarLoanList[0].Current_Solar_Loan_Stage__c;
+            SolarLoanList[0].continue__c = false;
             SolarLoanList[0].Status__c = 'Done';
             update SolarLoanList;
         }    
@@ -313,11 +317,14 @@ public class SolarLoanController {
                
     }
 
-    if(CurrentStage == ' ' && SolarLoanList[0].Status__c == 'Approved' ){
+    if(CurrentStage == ' ' && SolarLoanList[0].Current_Solar_Loan_Stage__c == 'Stage 3' &&
+            (SolarLoanList[0].Error_Loan_Locator__c != null || SolarLoanList[0].Error_Loan_Name_Locator__c != null || 
+             SolarLoanList[0].Error_Loan_Tracking_Locator__c != null)){
             
         if(SolarLoanList[0].Loan_Id__c == null || SolarLoanList[0].Loan_Id__c == ''){
 
             Stage4ErrorCheck = 'True';
+            update SolarLoanList;
         }
     }
 

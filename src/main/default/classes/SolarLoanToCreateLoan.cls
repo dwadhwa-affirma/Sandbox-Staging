@@ -457,7 +457,7 @@ public class SolarLoanToCreateLoan {
                                     
 //-------------------------------------------------Updating Solar Loan records -----------------------------------------//
                 
-                Solar_Loans__c s = new Solar_Loans__c();         
+                Solar_Loans__c s = new Solar_Loans__c();          
                 if(result != null && result != '')
                     s.Loan_Id__c = result;
                     
@@ -466,6 +466,11 @@ public class SolarLoanToCreateLoan {
                     
                 if(result2 != null && result2 != '')
                     s.Tracking_Record_33__c = 'Created';
+
+                if(s.Loan_Id__c != null || s.Loan_Name_Locator__c != null || s.Tracking_Record_33__c != null ){
+                    s.Status__c = 'Loan Funded';
+            	    s.Current_Solar_Loan_Stage__c = 'Stage 4';
+                }    
                       
                 if(ErrorLoanLocator != null && ErrorLoanLocator != '')
                     s.Error_Loan_Locator__c = ErrorLoanLocator;
@@ -485,7 +490,8 @@ public class SolarLoanToCreateLoan {
                              
                 s.id = sl.Id;       
                 s.Due_Date__c = System.Today() + 60;
-                
+                s.continue__c = false;
+
                 if(sl.Term_months__c != null){
                 	Month = Integer.Valueof(sl.Term_months__c) - 1;
                 	s.Maturity_Date__c = s.Due_Date__c.addMonths(Month);
