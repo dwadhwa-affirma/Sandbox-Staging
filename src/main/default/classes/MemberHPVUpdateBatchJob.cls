@@ -76,10 +76,14 @@ global class MemberHPVUpdateBatchJob implements Database.Batchable<SObject>{
         List<Member_HP_HV__c> updateHVList = new List<Member_HP_HV__c>();
         List<Member_HP_HV__c> inserHVList = new List<Member_HP_HV__c>();
 
+        System.debug('MemberIdstoUpdateHP=='+MemberIdstoUpdateHV);
+        System.debug('MemberIdstoInsertHP=='+MemberIdstoInsertHV);
+
         updateHVList = [SELECT id,Member__c from Member_HP_HV__c where id in: MemberIdstoUpdateHV.keySet()];
         for(Member_HP_HV__c u: updateHVList){
             u.Total_HV__c = MemberIdstoUpdateHV.get(u.Id);
         }
+        System.debug('updateHVList=='+updateHVList);
         update updateHVList;
 
         for(Id key : MemberIdstoInsertHV.keySet()){
