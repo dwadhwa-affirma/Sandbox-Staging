@@ -7,7 +7,7 @@ global class MemberHPVUpdateBatchJob implements Database.Batchable<SObject>{
     }
 
     global Iterable<SObject> start(Database.BatchableContext BC){
-        String query = 'SELECT Id,Account_Number__c,Account_Number__r.RecType__c, Account_Number__r.Name, PersonID__c, Account_Number__r.High_Value_Flag__c FROM Person_Account__c WHERE PersonID__c IN: AccountIds and TypeTranslate__c in (\'0001/Joint Member\',\'0000/Primary\')';
+        String query = 'SELECT Id,Account_Number__c,Account_Number__r.RecType__c, Account_Number__r.Name, PersonID__c, Account_Number__r.High_Value_Flag__c, Account_Number__r.OPEN_DATE__c FROM Person_Account__c WHERE PersonID__c IN: AccountIds and TypeTranslate__c in (\'0001/Joint Member\',\'0000/Primary\')';
         return Database.getQueryLocator(query); 
 
     }
@@ -22,18 +22,25 @@ global class MemberHPVUpdateBatchJob implements Database.Batchable<SObject>{
 
         map<id, String> mapHPPeronAccountNo = new map<id, String>();
         map<id, String> mapHVPeronAccountNo = new map<id, String>();
+        map<id, Date> mapOpenDate = new map<id, Date>();
         
-		for(Person_Account__c var: listPersonAccount){	
+        
+		for(Person_Account__c var: listPersonAccount){           	
             if(var.Account_Number__r.High_Value_Flag__c == 1 && mapHVPeronAccountNo.get(var.PersonID__c) != var.Account_Number__r.Name){
                 if(mapAccountHVCount.containsKey(var.PersonID__c)){
                     Integer currentCount = mapAccountHVCount.get(var.PersonID__c);
                     mapAccountHVCount.remove(var.PersonID__c);
                     mapAccountHVCount.put(var.PersonID__c,currentCount+1);
                     mapHVPeronAccountNo.put(var.PersonID__c,var.Account_Number__r.Name);
+                    if(mapOpenDate.get(var.PersonID__c) > var.Account_Number__r.OPEN_DATE__c){
+                        mapOpenDate.remove(var.PersonID__c);
+                        mapOpenDate.put(var.PersonID__c,var.Account_Number__r.OPEN_DATE__c);
+                    }
                 }
                 else{
                     mapAccountHVCount.put(var.PersonID__c,1);   
-                    mapHVPeronAccountNo.put(var.PersonID__c,var.Account_Number__r.Name);                 
+                    mapHVPeronAccountNo.put(var.PersonID__c,var.Account_Number__r.Name);
+                    mapOpenDate.put(var.PersonID__c, var.Account_Number__r.OPEN_DATE__c);              
                 }
                 accIdset.add(var.PersonID__c);
             } 
@@ -43,10 +50,15 @@ global class MemberHPVUpdateBatchJob implements Database.Batchable<SObject>{
                     mapAccountHPCount.remove(var.PersonID__c);
                     mapAccountHPCount.put(var.PersonID__c,currentCount+1);
                     mapHPPeronAccountNo.put(var.PersonID__c,var.Account_Number__r.Name);
+                    if(mapOpenDate.get(var.PersonID__c) > var.Account_Number__r.OPEN_DATE__c){
+                        mapOpenDate.remove(var.PersonID__c);
+                        mapOpenDate.put(var.PersonID__c,var.Account_Number__r.OPEN_DATE__c);
+                    }
                 }
                 else{
                     mapAccountHPCount.put(var.PersonID__c,1);
                     mapHPPeronAccountNo.put(var.PersonID__c,var.Account_Number__r.Name);
+                    mapOpenDate.put(var.PersonID__c, var.Account_Number__r.OPEN_DATE__c); 
                 }
                 accIdset.add(var.PersonID__c);
             }    	
@@ -82,6 +94,7 @@ global class MemberHPVUpdateBatchJob implements Database.Batchable<SObject>{
         updateHVList = [SELECT id,Member__c from Member_HP_HV__c where id in: MemberIdstoUpdateHV.keySet()];
         for(Member_HP_HV__c u: updateHVList){
             u.Total_HV__c = MemberIdstoUpdateHV.get(u.Id);
+            u.Oldest_Account_Open_Date__c = mapOpenDate.get(u.Member__c);
         }
         System.debug('updateHVList=='+updateHVList);
         update updateHVList;
@@ -90,6 +103,7 @@ global class MemberHPVUpdateBatchJob implements Database.Batchable<SObject>{
             Member_HP_HV__c temp = new Member_HP_HV__c();
             temp.Member__c = key;
             temp.Total_HV__c = MemberIdstoInsertHV.get(key);
+            temp.Oldest_Account_Open_Date__c = mapOpenDate.get(key);
             inserHVList.add(temp);
         }
         insert inserHVList;
@@ -119,6 +133,7 @@ global class MemberHPVUpdateBatchJob implements Database.Batchable<SObject>{
         System.debug('updateHPList=='+updateHPList);
         for(Member_HP_HV__c u: updateHPList){
             u.Total_HPV__c = MemberIdstoUpdateHP.get(u.Id);
+            u.Oldest_Account_Open_Date__c = mapOpenDate.get(u.Member__c);
             System.debug('u.Total_HPV__c=='+u.Total_HPV__c);
         }
         update updateHPList;        
@@ -127,6 +142,7 @@ global class MemberHPVUpdateBatchJob implements Database.Batchable<SObject>{
             Member_HP_HV__c temp = new Member_HP_HV__c();
             temp.Member__c = key;
             temp.Total_HPV__c = MemberIdstoInsertHP.get(key);
+            temp.Oldest_Account_Open_Date__c = mapOpenDate.get(key);
             inserHPList.add(temp);
         }
 
