@@ -93,7 +93,10 @@ public class SolarLoanToCreateLoan {
     @future(callout=true)
     public static void createSolarLoans(Set<id> ids){
     
-    List<Episys_User__c> epu =  [select id,Alias__c,Episys_ID__c,Episys_Name__c from Episys_User__c where Episys_Name__c =: userinfo.getName()];
+    String userName = UserInfo.getUserName();
+    User activeUser = [Select Email,Alias From User where Username = : userName and Alias != null limit 1];
+
+    List<Episys_User__c> epu =  [select id,Alias__c,Episys_ID__c,Episys_Name__c from Episys_User__c where Alias__c =: activeUser.Alias];
     system.debug('Episys User' + epu);
     if(epu != null){
 		if(epu.size() > 1){
@@ -359,7 +362,7 @@ public class SolarLoanToCreateLoan {
                 if(sl.ACH_Discount__c == true)  
                     UserDate11 = string.ValueOf(System.today());
                 else
-                    UserDate11 = ' ';
+                    UserDate11 = '';
                 
                 if(sl.Product_Loan_Type__c != null)  
                     UserChar6  = string.ValueOf(sl.Product_Loan_Type__c);
