@@ -1,7 +1,21 @@
 ({
     Init : function(component, event, helper) {
+        debugger;
         helper.doInit(component, event, helper);
-        helper.getRecordData(component, event, helper);
+        var action = component.get("c.createCase");
+		//var recordId = component.get("v.recordId");	
+		action.setParams({
+		"EFTRecord": component.get("v.EFTRecord")
+		});	
+		action.setCallback(this, function(resp) {			
+			var state=resp.getState();			
+			if(state === "SUCCESS"){				
+				var res = resp.getReturnValue();
+                component.set("v.EFTRecord",res);
+                				
+				}
+			});
+        $A.enqueueAction(action);
         
         let today = new Date();
         let todayDate= today.getMonth()+1 +'/'+today.getDate()+"/"+today.getFullYear();
