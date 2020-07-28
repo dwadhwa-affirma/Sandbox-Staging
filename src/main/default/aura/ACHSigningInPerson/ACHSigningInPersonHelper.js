@@ -132,7 +132,7 @@
        // $A.enqueueAction(action);
     },
     saveHelper:function(component, event, helper){         
-        var recordId = component.get("v.recordId");
+        var recordId = component.get("v.EFTRecord.Id");
         var pad=component.find('can').getElement();
         var dataUrl = pad.toDataURL();
         console.log('dataUrl:='+dataUrl);
@@ -140,7 +140,7 @@
         var action = component.get("c.saveSignature");
         action.setParams({
             signatureBody : strDataURI,
-            wiresId: recordId
+            EFTId: recordId
         });
         action.setCallback(this,function(res){
             var state = res.getState();

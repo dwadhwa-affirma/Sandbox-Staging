@@ -1,5 +1,7 @@
 <aura:component controller="EFTController"  implements="force:appHostable,force:hasRecordId,force:lightningQuickAction,lightning:isUrlAddressable">
-  <aura:attribute name="loading" type="Boolean" default="false" />   
+  <aura:attribute name="loading" type="Boolean" default="false" /> 
+  <aura:attribute name="EFTRecord" type="EFT__c"/>  
+  
     <aura:html tag="style">
         .slds-modal__container{
        max-width: 60rem !important;    
@@ -41,8 +43,8 @@
     <aura:attribute name="todayDate" type="String" />
     <aura:attribute name="attachmentId" type="Id" />
     <aura:attribute name="options" type="List" default="[
-    {'label': 'Checking', 'value': '1'},
-    {'label': 'Savings', 'value': '2'}
+    {'label': 'Checking', 'value': 'Checking'},
+    {'label': 'Savings', 'value': 'Savings'}
     ]"/>
 
     <div class="authwrap" aura:id="authwrap">
@@ -70,29 +72,32 @@
             <p>I (we) authorize CHEVRON FEDERAL CREDIT UNION to electronically debit my (our) account for the amount set forth in the loan note and/or monthly billing statement, (and, if necessary, electronically credit my (our) account to correct erroneous debits) as follows:</p>
             <br/>
             <p>Select One:</p>
-            <!--<lightning:checkboxGroup name="Checkbox Group" options="{!v.options}"/>-->
+            <lightning:radioGroup name="TyperadioGroup"
+                          value="{!v.EFTRecord.Type__c}" options="{!v.options}"
+                          type="radio"/>
+            
             <br/>
             <p>at the depository financial institution named below. I (we) agree that ACH transactions I (we) authorize comply with all applicable law.</p>
             <br/>
-            Depository Name: 
+            Depository Name: {!v.EFTRecord.Bank_Name__c}
             <br/>
-            Routing/ABA Number:
+            Routing/ABA Number: {!v.EFTRecord.Routing_Number__c}
             <br/>
-            Account Number:
+            Account Number: {!v.EFTRecord.Account_Number__c}
             <br/>
             <p>Please indicate account or loan where funds should be applied at CHEVRON FEDERAL CREDIT UNION:</p>
             <br/>
-            Member Name: 
+            Member Name: {!v.EFTRecord.Member_Name__c}
             <br/>
-            Member Number:
+            Member Number: {!v.EFTRecord.Member_Account__r.Name}
             <br/>
-            Four-Digit Share/Loan Type:
+            Four-Digit Share/Loan Type: {!v.EFTRecord.Share_Loan_Id__c}
             <br/>
             <p>
                 The amount set forth in the loan note and/or monthly billing statement will be debited on the due date set forth on each monthly billing statement. Note: Amount debited is subject to change based on loan terms.   
             </p>
             <br/>
-            Indicate any additional amount to add to monthly payment:
+            <ui:inputCheckbox aura:id="checkbox" />Indicate any additional amount to add to monthly payment: {!v.EFTRecord.Alternate_Amount__c}
             <br/>
             <p>ACH origination will begin on the first payment, 10 days following receipt of this notice.</p>
             <br/>
@@ -103,7 +108,7 @@
             <table>
                 <tr>
                     <td>
-                        <div class="dt">Test Test</div>
+                        <div class="dt">{!v.EFTRecord.Member_Name__c}</div>
                         <p><strong>Member Name(s) (Please Print)</strong></p>  
                     </td>
                 </tr>
