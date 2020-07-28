@@ -360,13 +360,13 @@
 											
 												
 												<div class=" " id="cmpPublicWallet">
-									  				<c:PublicWallet recordId="{!v.SelectedmemberId}" aura:id="PublicWallet" GUID="{!v.GUID}" PublicWalletStatusForDay ="{!v.PublicWalletStatusForDay}" IVRGUIDFromUrl="{!v.IVRGUIDFromUrl}"  />
+									  				<c:PublicWallet recordId="{!v.SelectedmemberId}" aura:id="PublicWallet" GUID="{!v.GUID}" PublicWalletStatusForDay ="{!v.PublicWalletStatusForDay}" IVRGUIDFromUrl="{!v.IVRGUIDFromUrl}" MemberNumberFromURL = "{!v.MemberNumberFromURL}" MemberNumberEntered ="{!v.MemberNumberEntered}"  />
 												</div>
 											
 										</lightning:tab>
 															        	
 										<lightning:tab label="CFCU Wallet" id="CFCUWalletTab" onactive="{! c.handleActive }" iconName="{!v.CFCUIconName}" >
-				         					<c:CFCUWallet recordId="{!v.SelectedmemberId}" aura:id="CFCUWallet" GUID="{!v.GUID}" IsCFCUSectionVisible="{!v.IsCFCUSectionVisible}" CFCUWalletStatusForDay ="{!v.CFCUWalletStatusForDay}" IVRGUIDFromUrl="{!v.IVRGUIDFromUrl}" />
+				         					<c:CFCUWallet recordId="{!v.SelectedmemberId}" aura:id="CFCUWallet" GUID="{!v.GUID}" IsCFCUSectionVisible="{!v.IsCFCUSectionVisible}" CFCUWalletStatusForDay ="{!v.CFCUWalletStatusForDay}" IVRGUIDFromUrl="{!v.IVRGUIDFromUrl}" MemberNumberFromURL = "{!v.MemberNumberFromURL}" MemberNumberEntered ="{!v.MemberNumberEntered}" />
 							        	</lightning:tab>
 							        							        	
 							          	<aura:if isTrue="{!v.IsOOWTabVisible}">
@@ -387,7 +387,7 @@
 							        <lightning:tab label="OTP" id="OTPTab" onactive="{!c.handleActive }" iconName="{!v.OTPIconName}">
 						            	<div class=" " id="cmpOTPVerification">
 											
-												<c:OTPAuthentication aura:id="OTPAuthentication" recordId="{!v.SelectedmemberId}" IsCallingfromAuth="{!v.IsAuth}" GUID="{!v.GUID}" OTPStatusForDay="{!v.OTPStatusForDay}" IVRGUIDFromUrl="{!v.IVRGUIDFromUrl}"  />
+												<c:OTPAuthentication aura:id="OTPAuthentication" recordId="{!v.SelectedmemberId}" IsCallingfromAuth="{!v.IsAuth}" GUID="{!v.GUID}" OTPStatusForDay="{!v.OTPStatusForDay}" IVRGUIDFromUrl="{!v.IVRGUIDFromUrl}" MemberNumberFromURL = "{!v.MemberNumberFromURL}" MemberNumberEntered ="{!v.MemberNumberEntered}" />
 				                        	
 											
 											

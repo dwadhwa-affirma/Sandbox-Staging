@@ -155,7 +155,7 @@
 	{
 		console.log('LastAcheivableLogs called');
         var PhoneFromURL = (component.get("v.PhoneFromURL") !=undefined) ? component.get("v.PhoneFromURL") : component.get("v.PhoneNumberEntered");
-        var MemberNumberFromURL = (component.get("v.MemberNumberFromURL") != undefined) ? component.get("v.MemberNumberFromURL") : component.get("v.MemberNumberEntered");
+        var MemberNumberFromURL = (component.get("v.MemberNumberFromURL") != undefined && component.get("v.MemberNumberFromURL") != "" ) ? component.get("v.MemberNumberFromURL") : component.get("v.MemberNumberEntered");
 		var EnteredCardNumber = component.get("v.EnteredCardNumber");
 		var CardNumberMatch = component.get("v.CardNumberMatch");
 		var PhoneNumberMatch = component.get("v.PhoneNumberMatch");
@@ -166,12 +166,15 @@
 		var PINMatch = component.get("v.PINMatch"); 
         var SSNFromURL = (component.get("v.SSNFromURL") !=undefined) ? component.get("v.SSNFromURL") : component.get("v.SSNEntered");
 		var DebitCardStatus = component.get("v.DebitCardStatus");
+		var MaximumPointsAvailable = component.get("v.MaximumPointsAvailable");
+		var PointsObtained = component.get("v.CurrentScore");
 		console.log('Helper Line 166---DebitCardStatus' + DebitCardStatus);
 		var action = component.get("c.SaveLastAchievableLevelLogs");
 		action.setParams({"MemberId": memberid, "GUID" : GUID, "LastLevel": LastLevel,"IVRGUIDFromUrl":IVRGUIDFromUrl, 
 						"PhoneFromURL": PhoneFromURL, "MemberNumberFromURL" : MemberNumberFromURL, "EnteredCardNumber": EnteredCardNumber,"CardNumberMatch":CardNumberMatch,
 						"PhoneNumberMatch": PhoneNumberMatch, "MemberNumberMatch" : MemberNumberMatch, "SSNnumberMatch": SSNnumberMatch,"HighFlagFromUrl":HighFlagFromUrl,
-						"ReasonCodeFromURL": ReasonCodeFromURL, "PINMatch" : PINMatch, "SSNFromURL": SSNFromURL,"DebitCardStatus":DebitCardStatus});
+						"ReasonCodeFromURL": ReasonCodeFromURL, "PINMatch" : PINMatch, "SSNFromURL": SSNFromURL,"DebitCardStatus":DebitCardStatus,
+						"MaximumPointsAvailable":MaximumPointsAvailable,"PointsObtained": PointsObtained});
 						
 		action.setCallback(this, function (response) {
   		 var status = response.getState();            
@@ -571,7 +574,6 @@
     	var MaximumPointsAvailable = component.get("v.MaximumPointsAvailable");
 		var IsKYMAvailable = component.get("v.IsKYMAvailableOnLoad");
 	    var IsOTPAvailable = component.get("v.IsOTPAvailableOnLoad");
-	    //var IsDebitPinAvailable = component.get("v.IsDebitPinAvailableOnLoad");
 	    var DebitCardStatus = component.get("v.DebitCardStatus");
 	    var IsOOWAvailable = component.get("v.OOWStatusForDay");
 	    var IsPublicWalletAvailable = component.get("v.IsPublicWalletAvailableOnLoad");
@@ -583,7 +585,7 @@
     	var CurrentAuthenticationLevel = component.get("v.CurrentAuthenticationLevel");
     	if(IVRGUIDFromUrl != undefined && IVRGUIDFromUrl !='')
     	{
-    		//helper.GetScoreDataForReload (component, event, helper,memberid,IVRGUIDFromUrl );
+    		
     		MaximumPointsAvailable = component.get("v.MaximumPointsAvailable");
     		PointsObtained = component.get("v.PointObtained");
     		CurrentAuthenticationLevel= component.get("v.CurrentAuthenticationLevel");
@@ -607,8 +609,7 @@
 	    	}
     	}
     	var ScoreModelNegativeScore = component.get("v.ScoreModelNegativeScore");
-    	var ScoreModelPositiveScore = component.get("v.ScoreModelPositiveScore");
-    	
+    	var ScoreModelPositiveScore = component.get("v.ScoreModelPositiveScore");    	
 		
     	if(activetabid == 'OOWTab'){
     		
@@ -632,13 +633,14 @@
 			               if(result.AccountNumber.length > 0)
 			               {
 		                       var MemberName = result.MemberName;
-		                       var AccountNumber = result.AccountNumber;
-		                       var Source = '';
+		                      // var AccountNumber = result.AccountNumber;
+							  var AccountNumber='';  
+							  var Source = '';
 		                       
 		                       if(IsMemberNumberValid == true){
                                    
 		                    	   AccountNumber = component.get("v.OOWMemberNumberEntered");
-                                   if(AccountNumber == undefined){
+                                   if(AccountNumber == ''){
                                        AccountNumber = component.get("v.MemberNumberFromURL");
                                    }
 		                    	   	Source = "&source=member";
@@ -648,7 +650,7 @@
                                    Source = "&source=member";
                                }
     		
-	                           component.set("v.AccountNumber",result.AccountNumber);
+	                           component.set("v.AccountNumber",AccountNumber);
 	                                                          
 	                           win = window.open(result.FlowURL+"&accountnumber=" + AccountNumber + "&firstname=allow" + MemberName + Source);
 		                       window.onmessage = function (e) {
@@ -673,14 +675,13 @@
                                
 		                        var action1 = component.get("c.SaveOOWLogData");
 		  		   					
-		   	      				 var membernumber = result.AccountNumber;
+		   	      				 var membernumber = AccountNumber;
 		                          action1.setParams({"status": status, "MemberNumber": membernumber,"MemberId":memberid, "reason":reason,"notes":notes, "GUID": GUID,"name": name,"Error":Error, "IVRGUIDFromUrl":IVRGUIDFromUrl});
 		          				 action1.setCallback(this, function (response) {
 			       	      		 var status1 = response.getState();            
 		                               if (component.isValid() && status1 === "SUCCESS") {
 		                            
-		                                   var result1 = response.getReturnValue();
-		                            
+		                                   var result1 = response.getReturnValue();	                            
 		                            
 		                                }
 		   	       				});	
@@ -699,7 +700,7 @@
 		  							IsOOWAvailable = false;
 		  							component.set("v.OOWStatusForDay", false);
 									component.set("v.MaximumPointsAvailable",MaximumPointsAvailable);
-		  							component.set("v.PointObtained", PointsObtained);
+									component.set("v.PointObtained", PointsObtained);									
 		  							console.log('Helper Line 695---PointsObtained' + PointsObtained);
 		  							console.log('Helper Line 696---MaximumPointsAvailable' + MaximumPointsAvailable);
 		  							helper.GetNextAuthenticationType(component, event, helper, memberid, MemberType, MaximumPointsAvailable, PointsObtained, IsKYMAvailable, IsOTPAvailable, DebitCardStatus, IsOOWAvailable, IsPublicWalletAvailable, IsCFCUWalletAvailable);
@@ -749,26 +750,6 @@
 		  						}
 		  						
 								};  
-	                       
-	                        
-	                      /*  setTimeout(function () { 
-	                        			if(win.closed){
-	                        				//if(component.get("v.status") == 'passed' && component.get("v.status") != 'failed' && (component.get("v.status") == 'Cancelled' && Error !=null))
-	                        				if(component.get("v.status") == 'In Process')
-	                        				{
-	                        				
-		                        				component.set("v.Likedisable", false);
-		                        				component.set("v.status", 'Cancelled');
-		                        				component.set("v.reason", 'Time out');
-	                        				}
-	                        			}
-	                        			
-	                        	}, 
-	                        	
-	                        	45000
-	                        	
-	                        	);
-	                        */
 	                        
 			               }
 		               }
@@ -782,7 +763,7 @@
     		
     		
     	}
-    //	component.set("v.Likedisable",true);
+    
     	
     
     },
@@ -938,7 +919,8 @@
 		console.log('IsUserSessionLoaded' + component.get("v.IsUserSessionLoaded"));
        	var DebitCardStatus = component.get("v.DebitCardStatus");
 		var action = component.get("c.getDataForReload");
-        action.setParams({"memberid": memberid,"GUID":GUID,"IVRGUIDFromUrl":IVRGUIDFromUrl,"DebitCardStatus" : DebitCardStatus, "IsUserSessionLoaded": component.get("v.IsUserSessionLoaded"),"AccountNumberInput":component.get("v.MemberNumberEntered") });
+		var MemberNumberFromURL = (component.get("v.MemberNumberFromURL") != undefined && component.get("v.MemberNumberFromURL") !="") ? component.get("v.MemberNumberFromURL") : component.get("v.MemberNumberEntered");
+        action.setParams({"memberid": memberid,"GUID":GUID,"IVRGUIDFromUrl":IVRGUIDFromUrl,"DebitCardStatus" : DebitCardStatus, "IsUserSessionLoaded": component.get("v.IsUserSessionLoaded"),"AccountNumberInput":MemberNumberFromURL});
     	action.setCallback(this, function (response) {
 		       	      		 var status = response.getState();            
 	                               if (component.isValid() && status === "SUCCESS") {

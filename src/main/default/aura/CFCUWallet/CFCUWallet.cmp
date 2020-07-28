@@ -32,7 +32,8 @@
 	<aura:attribute name="IsMemberManualSearched" type="boolean" default="false"/>
 	<aura:attribute name="IsCFCUFailForTheDay" type="string" default="pass"/>
 	<aura:attribute name="IsCFCUFailOnReload" type="string" default="pass"/>
-	
+	<aura:attribute name="MemberNumberFromURL" type="String" description="Member number received from IVR call"/>
+	<aura:attribute name="MemberNumberEntered" type="String" description="Member number Entered Manually"/>
    <aura:method name="CFCUWalletMethod" action="{!c.doInit}" access="PUBLIC"> 
     	<aura:attribute name="param1" type="String"/>  
     	<aura:attribute name="param2" type="boolean"/> 

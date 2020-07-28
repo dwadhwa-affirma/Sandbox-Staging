@@ -853,17 +853,12 @@ public class MemberOTPVerificationLightningController
     
     
     @auraenabled
-      public static void DeclineOTPAtFirstStep(string accid, String GUID, string IVRGUIDFromUrl)
+      public static void DeclineOTPAtFirstStep(string accid, String GUID, string IVRGUIDFromUrl, string MemberNumber)
     {
     	RecordType rec = GetRecordTypeData('Authenticated_Log__c', 'OTP Authentication Log');
     	MemberOTPVerificationLightningController objMVLC = new MemberOTPVerificationLightningController();
         Account acc = objMVLC.GetAccount(accid);
-        string  AccountNumber;
-		List<Person_Account__c> p = [SELECT Id, Account_Number__c,  PersonID__c, Account_Number__r.RecType__c, TypeTranslate__c, Account_Number__r.Name
-                FROM Person_Account__c where PersonID__c =:accid  limit 1];
-         if(p.size() > 0){
-        	 AccountNumber = p[0].Account_Number__r.Name;
-         }
+        
         Authenticated_Log__c log = new Authenticated_Log__c();
         log.SalesforceID__c = acc.Id;
 		log.Member__c = acc.Id;
@@ -875,7 +870,7 @@ public class MemberOTPVerificationLightningController
         log.Decision__c = 'OTP – Contact Unconfirmed';
         log.OTP_Decision__c = 'OTP – Contact Unconfirmed';
         log.OTP_Status__c = 'Fail';
-        log.Member_Number__c = AccountNumber;
+        log.Member_Number__c = MemberNumber;
         log.GUID__c = GUID;
         log.IVR_GUID__c = IVRGUIDFromUrl;
         insert log;
@@ -897,7 +892,7 @@ public class MemberOTPVerificationLightningController
 	        log2.Decision__c = 'OTP – Contact Unconfirmed';
 	        log2.OTP_Decision__c = 'OTP – Contact Unconfirmed';
 	        log2.OTP_Status__c = 'Fail';
-	        log2.Member_Number__c = AccountNumber;
+	        log2.Member_Number__c = MemberNumber;
 	        log2.GUID__c = GUID;
 	        log2.IVR_GUID__c = IVRGUIDFromUrl;
 	        insert log2;
@@ -911,7 +906,7 @@ public class MemberOTPVerificationLightningController
 		        MasterAuthenticationLog[0].Decision__c = 'OTP – Contact Unconfirmed';
 		        MasterAuthenticationLog[0].OTP_Decision__c = 'OTP – Contact Unconfirmed';
 		        MasterAuthenticationLog[0].OTP_Status__c = 'Fail';
-		        MasterAuthenticationLog[0].Member_Number__c = AccountNumber;
+		        MasterAuthenticationLog[0].Member_Number__c = MemberNumber;
 		        MasterAuthenticationLog[0].GUID__c = GUID;
 		        update MasterAuthenticationLog[0];
 		 }
@@ -987,7 +982,7 @@ public class MemberOTPVerificationLightningController
     }
 
     @auraenabled
-    public static KeyValuePairModel GenerateRandomOTP(string fieldName, string BrandName, string resend, string accid, String GUID, string IVRGUIDFromUrl)
+    public static KeyValuePairModel GenerateRandomOTP(string fieldName, string BrandName, string resend, string accid, String GUID, string IVRGUIDFromUrl, string MemberNumber)
      {
 	    RecordType rec = GetRecordTypeData('Authenticated_Log__c', 'OTP Authentication Log');
 		system.debug('AccountId in GenerateRandomOTP---' + accid);
@@ -998,12 +993,7 @@ public class MemberOTPVerificationLightningController
         string email = '';
         boolean IsEmail = false;
         Account accEmailTOSend = [select Id, Member_Verification_OTP_Invalid_Attempt__c, Home_Phone__pc, FirstName, LastName, Mobile_Phone__pc, Work_Phone__pc, PersonEmail, Alternate_Email__pc from Account where ID =: accountid];
-        string AccountNumber;
-        List<Person_Account__c> p = [SELECT Id, Account_Number__c,  PersonID__c, Account_Number__r.RecType__c, TypeTranslate__c, Account_Number__r.Name
-                FROM Person_Account__c where PersonID__c =:accid limit 1];
-          if(p.size() > 0){
-        	 AccountNumber = p[0].Account_Number__r.Name;
-         }
+        
 
         if (field == 'Home_Phone__pc')
 
@@ -1072,7 +1062,7 @@ public class MemberOTPVerificationLightningController
          log.Current_User__c = Userinfo.getuserid();
          log.GUID__c = GUID;
          log.IVR_GUID__c = IVRGUIDFromUrl;
-         log.Member_Number__c = AccountNumber;
+         log.Member_Number__c = MemberNumber;
          if(IsEmail)
          {
            log.OTP_Email__c = email;
@@ -1110,7 +1100,7 @@ public class MemberOTPVerificationLightningController
 		         log2.Current_User__c = Userinfo.getuserid();
 		         log2.GUID__c = GUID;
 		         log2.IVR_GUID__c = IVRGUIDFromUrl;
-		         log2.Member_Number__c = AccountNumber;
+		         log2.Member_Number__c = MemberNumber;
 		         if(IsEmail)
 		         {
 		           log2.OTP_Email__c = email;
@@ -1146,7 +1136,7 @@ public class MemberOTPVerificationLightningController
 		         MasterAuthenticationLog[0].Current_User__c = Userinfo.getuserid();
 		         MasterAuthenticationLog[0].GUID__c = GUID;
 		         MasterAuthenticationLog[0].IVR_GUID__c = IVRGUIDFromUrl;
-		         MasterAuthenticationLog[0].Member_Number__c = AccountNumber;
+		         MasterAuthenticationLog[0].Member_Number__c = MemberNumber;
 		         if(IsEmail)
 		         {
 		           MasterAuthenticationLog[0].OTP_Email__c = email;
@@ -1178,7 +1168,7 @@ public class MemberOTPVerificationLightningController
 
 	  
 	@auraenabled
-    public static string verifyOTP(string accid, string EnteredOTP, string fieldName, string model, String GUID,string IVRGUIDFromUrl)
+    public static string verifyOTP(string accid, string EnteredOTP, string fieldName, string model, String GUID,string IVRGUIDFromUrl, string MemberNumber)
     {
     	RecordType rec = GetRecordTypeData('Authenticated_Log__c', 'OTP Authentication Log');
     	system.debug('AccountId in verifyOTP---' + accid);
@@ -1191,13 +1181,7 @@ public class MemberOTPVerificationLightningController
         string email = '';
         boolean IsEmail = false;
         Account accEmailTOSend = [select Id, Member_Verification_OTP_Invalid_Attempt__c, Home_Phone__pc, FirstName, LastName, Mobile_Phone__pc, Work_Phone__pc, PersonEmail, Alternate_Email__pc from Account where ID =: accountid];
-        string  AccountNumber;
-        List<Person_Account__c> p = [SELECT Id, Account_Number__c,  PersonID__c, Account_Number__r.RecType__c, TypeTranslate__c, Account_Number__r.Name
-                FROM Person_Account__c where PersonID__c =:accountid limit 1];
-        if(p.size() > 0)
-        {
-       	 AccountNumber = p[0].Account_Number__r.Name;
-        }
+               
 		system.debug('field - ' + field);
 		
         if (field == 'Home_Phone__pc')
@@ -1259,7 +1243,7 @@ public class MemberOTPVerificationLightningController
         log.Last_Name__c = acc.LastName;
         log.GUID__c = GUID;
         log.IVR_GUID__c = IVRGUIDFromUrl;
-        log.Member_Number__c = AccountNumber;
+        log.Member_Number__c = MemberNumber;
         if(IsEmail)
         {
           log.OTP_Email__c = email;
@@ -1316,7 +1300,7 @@ public class MemberOTPVerificationLightningController
 		        log2.Last_Name__c = acc.LastName;
 		        log2.GUID__c = GUID;
 		        log2.IVR_GUID__c = IVRGUIDFromUrl;
-		        log2.Member_Number__c = AccountNumber;
+		        log2.Member_Number__c = MemberNumber;
 		        if(IsEmail)
 		        {
 		          log2.OTP_Email__c = email;
@@ -1355,7 +1339,7 @@ public class MemberOTPVerificationLightningController
 		        MasterAuthenticationLog[0].First_Name__c = acc.FirstName;
 		        MasterAuthenticationLog[0].Last_Name__c = acc.LastName;
 		        MasterAuthenticationLog[0].GUID__c = GUID;
-		        MasterAuthenticationLog[0].Member_Number__c = AccountNumber;
+		        MasterAuthenticationLog[0].Member_Number__c = MemberNumber;
 		        if(IsEmail)
 		        {
 		          MasterAuthenticationLog[0].OTP_Email__c = email;
@@ -1591,27 +1575,14 @@ public class MemberOTPVerificationLightningController
     } 
 	
 	@auraenabled
-	public static Map<string,object> CancelOTP(string accid, String GUID, string fieldName, string IVRGUIDFromUrl)
+	public static Map<string,object> CancelOTP(string accid, String GUID, string fieldName, string IVRGUIDFromUrl, string MemberNumber)
 	{
 		// Double OTPAttemptCount;
 		 Double OTPCancelAttempt=0;
-		/* List<Member_Verification_Attempt__c> mt1 = [Select id,Member_Name__c,Authentication_Type__c,OTP_Cancelled_Attempt__c, Member_Salesforce_Id__c, Number_of_Attempts__c
-						 from Member_Verification_Attempt__c where Member_Salesforce_Id__c =:accid and CreatedDate = Today limit 1];
-	    if(mt1.size() > 0)
-	    {
-	    	OTPAttemptCount = mt1[0].OTP_Cancelled_Attempt__c;
-	    }
-	    else{OTPAttemptCount=0;}
-		*/
+		
 		
 		Account acc = [select Id, Member_Verification_OTP_Invalid_Attempt__c, Home_Phone__pc, FirstName, LastName, Mobile_Phone__pc, Work_Phone__pc, PersonEmail, Alternate_Email__pc from Account where ID =: accid];
-		 string  AccountNumber;
-		List<Person_Account__c> p = [SELECT Id, Account_Number__c,  PersonID__c, Account_Number__r.RecType__c, TypeTranslate__c, Account_Number__r.Name
-                FROM Person_Account__c where PersonID__c =:accid limit 1];
-        if(p.size() > 0)
-        {
-        	AccountNumber = p[0].Account_Number__r.Name;
-        }
+		
 		string fieldValue = fieldName;
 		string field = '';
 		string accountid ='';
@@ -1670,7 +1641,7 @@ public class MemberOTPVerificationLightningController
 		log.OTP_Decision__c = 'OTP – Code Not Provided';
 		log.GUID__c = GUID;
 		log.IVR_GUID__c = IVRGUIDFromUrl; 
-		log.Member_Number__c = AccountNumber;
+		log.Member_Number__c = MemberNumber;
 		insert log;			
 		acc.Member_Verification_OTP_Invalid_Attempt__c = system.now();
         update acc;
@@ -1699,7 +1670,7 @@ public class MemberOTPVerificationLightningController
 			log2.OTP_Decision__c = 'OTP – Code Not Provided';
 			log2.GUID__c = GUID;
 			log2.IVR_GUID__c = IVRGUIDFromUrl; 
-			log2.Member_Number__c = AccountNumber;
+			log2.Member_Number__c = MemberNumber;
 			insert log2;	
 		 }else
 		 {
@@ -1722,7 +1693,7 @@ public class MemberOTPVerificationLightningController
 			MasterAuthenticationLog[0].OTP_Decision__c = 'OTP – Code Not Provided';
 			MasterAuthenticationLog[0].GUID__c = GUID;
 			MasterAuthenticationLog[0].IVR_GUID__c = IVRGUIDFromUrl; 
-			MasterAuthenticationLog[0].Member_Number__c = AccountNumber;
+			MasterAuthenticationLog[0].Member_Number__c = MemberNumber;
 		 	update MasterAuthenticationLog[0];
 		 }
 		 /*------------- the below code is written to crm-1742 "OTP Allow No more than 2x for each phone number or email check" ------------------*/

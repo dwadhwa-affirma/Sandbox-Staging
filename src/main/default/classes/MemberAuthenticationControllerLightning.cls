@@ -399,19 +399,11 @@ public class MemberAuthenticationControllerLightning{
     }
     
     @AuraEnabled
-    public static void PublicWalletSaveLogData(string MemberId, string Status, string GUID, string DOBMatch, string IdNumberMatch, String MMNMatch, string EmailMatch, string AdditionalTokenOption3Match, string IVRGUIDFromUrl, string DOB,string IdNumber,string MMN, string Email, string AdditionalTokenOption3)
+    public static void PublicWalletSaveLogData(string MemberId, string Status, string GUID, string DOBMatch, string IdNumberMatch, String MMNMatch, string EmailMatch, string AdditionalTokenOption3Match, string IVRGUIDFromUrl, string DOB,string IdNumber,string MMN, string Email, string AdditionalTokenOption3, string MemberNumber)
     {
     	 /*This method save Public Wallet log data in MAAP Log object*/
      system.debug('Email##' + Email );
-      RecordType rec = GetRecordTypeData('Authenticated_Log__c', 'Public Wallet Log'); 
-     
-       string  AccountNumber;
-      List<Person_Account__c> p = [SELECT Id, Account_Number__c,  PersonID__c, Account_Number__r.RecType__c, TypeTranslate__c, Account_Number__r.Name
-                FROM Person_Account__c where PersonID__c =:MemberId  limit 1];
-      if(p.size() > 0)
-      {
-           AccountNumber = p[0].Account_Number__r.Name;
-      }
+      RecordType rec = GetRecordTypeData('Authenticated_Log__c', 'Public Wallet Log');         
       Authenticated_Log__c log = new Authenticated_Log__c();
       log.RecordTypeId= rec.id;
       log.Public_Wallet_Status__c = status;
@@ -420,7 +412,7 @@ public class MemberAuthenticationControllerLightning{
       log.Staff_Name__c = UserInfo.getName();
       log.Current_User__c = Userinfo.getuserid();
       log.Decision__c = status;
-      log.Member_Number__c = AccountNumber;
+      log.Member_Number__c = MemberNumber;
       log.GUID__c = GUID;
       log.IVR_GUID__c = IVRGUIDFromUrl;
       log.DOBMatch__c = DOBMatch ;
@@ -449,7 +441,7 @@ public class MemberAuthenticationControllerLightning{
 		      log2.Staff_Name__c = UserInfo.getName();
 		      log2.Current_User__c = Userinfo.getuserid();
 		      log2.Decision__c = status;
-		      log2.Member_Number__c = AccountNumber;
+		      log2.Member_Number__c = MemberNumber;
 		      log2.GUID__c = GUID;
 		      log2.IVR_GUID__c = IVRGUIDFromUrl;
 		      log2.DOBMatch__c = DOBMatch ;
@@ -472,7 +464,7 @@ public class MemberAuthenticationControllerLightning{
 			      MasterAuthenticationLog[0].Staff_Name__c = UserInfo.getName();
 			      MasterAuthenticationLog[0].Current_User__c = Userinfo.getuserid();
 			      MasterAuthenticationLog[0].Decision__c = status;
-			      MasterAuthenticationLog[0].Member_Number__c = AccountNumber;
+			      MasterAuthenticationLog[0].Member_Number__c = MemberNumber;
 			      MasterAuthenticationLog[0].GUID__c = GUID;
 			      MasterAuthenticationLog[0].DOBMatch__c = DOBMatch ;
 			      MasterAuthenticationLog[0].IdNumberMatch__c =  IdNumberMatch ;
@@ -492,20 +484,15 @@ public class MemberAuthenticationControllerLightning{
     
     @AuraEnabled
     public static void CFCUWalletSaveLogData(string MemberId, string Status, string GUID, string BeneficiaryDetailMatch, string JointOwnerDetailMatch, string CardNumberMatch, string AdditionalTokenOption1Match,
-     string AdditionalTokenOption2Match, string LoanDetailMatch, string IVRGUIDFromUrl, List<object> BeneficiaryAccount, List<object> JointAccount, List<object> LoanAccount,  List<object> Card, string AdditionalTokenOption1, string AdditionalTokenOption2)
+     string AdditionalTokenOption2Match, string LoanDetailMatch, string IVRGUIDFromUrl, List<object> BeneficiaryAccount, List<object> JointAccount, List<object> LoanAccount,  List<object> Card, string AdditionalTokenOption1, string AdditionalTokenOption2, string MemberNumber)
     {
     	 /*This method save CFCU Wallet log data in MAAP Log object*/
-      string  AccountNumber;
       string BA = '';
       string JA = '';
       string LA = '';
       string CardDetail = '';
       RecordType rec = GetRecordTypeData('Authenticated_Log__c', 'CFCU Wallet Log');
-      List<Person_Account__c> p = [SELECT Id, Account_Number__c,  PersonID__c, Account_Number__r.RecType__c, TypeTranslate__c, Account_Number__r.Name
-                FROM Person_Account__c where PersonID__c =:MemberId  limit 1];
-      if(p.size() > 0){
-     	 AccountNumber = p[0].Account_Number__r.Name;
-      }
+     
       Authenticated_Log__c log = new Authenticated_Log__c();
       log.RecordTypeId= rec.id;
       log.CFCU_Wallet_Status__c = status;
@@ -514,7 +501,7 @@ public class MemberAuthenticationControllerLightning{
       log.Decision__c = status;
       log.Staff_Name__c = UserInfo.getName();
       log.Current_User__c = Userinfo.getuserid();
-      log.Member_Number__c = AccountNumber;
+      log.Member_Number__c = MemberNumber;
       log.GUID__c = GUID;
       log.IVR_GUID__c = IVRGUIDFromUrl;
       log.BeneficiaryDetailMatch__c = BeneficiaryDetailMatch;
@@ -573,7 +560,7 @@ public class MemberAuthenticationControllerLightning{
 		      log2.Decision__c = status;
 		      log2.Staff_Name__c = UserInfo.getName();
 		      log2.Current_User__c = Userinfo.getuserid();
-		      log2.Member_Number__c = AccountNumber;
+		      log2.Member_Number__c = MemberNumber;
 		      log2.GUID__c = GUID;
 		      log2.IVR_GUID__c = IVRGUIDFromUrl;
 		      log2.BeneficiaryDetailMatch__c = BeneficiaryDetailMatch;
@@ -627,7 +614,7 @@ public class MemberAuthenticationControllerLightning{
 			      MasterAuthenticationLog[0].Decision__c = status;
 			      MasterAuthenticationLog[0].Staff_Name__c = UserInfo.getName();
 			      MasterAuthenticationLog[0].Current_User__c = Userinfo.getuserid();
-			      MasterAuthenticationLog[0].Member_Number__c = AccountNumber;
+			      MasterAuthenticationLog[0].Member_Number__c = MemberNumber;
 			      MasterAuthenticationLog[0].GUID__c = GUID;
 			      MasterAuthenticationLog[0].IVR_GUID__c = IVRGUIDFromUrl;
 			      MasterAuthenticationLog[0].BeneficiaryDetailMatch__c = BeneficiaryDetailMatch;
@@ -2903,7 +2890,10 @@ public class MemberAuthenticationControllerLightning{
 		boolean IsLevel1Achieved = false;
 		boolean IsLevel2Achieved = false;
 		boolean IsLevel3Achieved = false;
-		
+		Decimal DebitPinPositiveScore;
+        Decimal DebitPinNegativeScore;
+        Decimal PINChangeNegativeScore;
+        Decimal PINChangePositiveScore;
 		Map<string,object> result = new  Map<string,object>();
 		List<Member_Authentication_Level_Model__c> LevelModel = new List<Member_Authentication_Level_Model__c>();
 		List<Member_Authentication_Scoring_Model__c> ScoringModel = new List<Member_Authentication_Scoring_Model__c>();
@@ -2956,14 +2946,48 @@ public class MemberAuthenticationControllerLightning{
 			system.debug('OTPAvailable##'+ OTPAvailable);
 			system.debug('PublicWalletAvailable##'+ PublicWalletAvailable);
 			
+			for(Member_Authentication_Scoring_Model__c sm : ScoringModel  )
+			{
+					
+					if(sm.Authentication_Type__c == 'Debit Pin' )
+					{
+						system.debug('sm.Negative_Point_Value__c##'+ sm.Negative_Point_Value__c);
+						DebitPinPositiveScore = sm.Positive_Point_Value__c;
+						DebitPinNegativeScore = sm.Negative_Point_Value__c;
+					}
+					if(sm.Authentication_Type__c == 'PIN Change'){
+						
+						PINChangeNegativeScore = sm.Negative_Point_Value__c;
+						PINChangePositiveScore = sm.Positive_Point_Value__c;				
+					}
 			
+			}
+			if(DebitCardStatus == 'Fail' || DebitCardStatus =='false'){
+				CurrentScore = CurrentScore - DebitPinNegativeScore.intValue();
+			}
+			else if(DebitCardStatus == 'Pass' || DebitCardStatus =='true')
+			{
+				CurrentScore = CurrentScore + DebitPinPositiveScore.intValue();
+			}
+			system.debug('CurrentScorePost1##' + CurrentScore);
+			system.debug('IsPinChanged##' + IsPinChanged);
+			if(IsPinChanged == true ){
+				CurrentScore = CurrentScore - PINChangeNegativeScore.intValue();
+				
+			}
+			else if(IsPinChanged == false ){
+				
+				CurrentScore = CurrentScore + PINChangePositiveScore.intValue();
+			}
+			system.debug('CurrentScorePost2##' + CurrentScore);
+		
+			result.put('CurrentScore', CurrentScore);	
+
 			map<string, List<string>> NextTabToAchieveLevelMap =  GetTabsToAchieveNextLevel(LevelModel, ScoringModel, MemberType, DebitCardStatus, IsPinChanged, OTPAvailable, PublicWalletAvailable, CFCUWalletAvailable,OOWAvailable, PointsObtained);
 			List<string>  NextTabLevel2 = NextTabToAchieveLevelMap.get('NextTabLevel2');
         	List<string>  NextTabLevel3 = NextTabToAchieveLevelMap.get('NextTabLevel3');
         	List<string> EachLevelStatus = NextTabToAchieveLevelMap.get('EachLevelStatus');
-        	/*List<String> PinChangedExecutionResultList = NextTabToAchieveLevelMap.get('PinChangedExecutionResult');
-        	boolean PinChangedExecutionResult = PinChangedExecutionResultList[0] == 'True' ? true: false;
-        	result.put('PinChangedExecutionResult', PinChangedExecutionResult);*/
+        	
         	if(NextTabLevel2.size() > 0)
         	{
         		string NextTabLevel2LastString = NextTabLevel2.get(NextTabLevel2.size()-1);
@@ -3161,16 +3185,29 @@ public class MemberAuthenticationControllerLightning{
 	}
 	
 	@AuraEnabled
-	public static void SaveLastAchievableLevelLogs(string MemberId, string GUID, String LastLevel, string IVRGUIDFromUrl,string PhoneFromURL, String MemberNumberFromURL,String EnteredCardNumber, string CardNumberMatch, string PhoneNumberMatch,string MemberNumberMatch, string SSNnumberMatch, string HighFlagFromUrl,string ReasonCodeFromURL, string PINMatch, string SSNFromURL,string DebitCardStatus)
+	public static void SaveLastAchievableLevelLogs(string MemberId, string GUID, String LastLevel, string IVRGUIDFromUrl,string PhoneFromURL, String MemberNumberFromURL,String EnteredCardNumber, string CardNumberMatch, string PhoneNumberMatch,string MemberNumberMatch, string SSNnumberMatch, string HighFlagFromUrl,string ReasonCodeFromURL, string PINMatch, string SSNFromURL,string DebitCardStatus, integer MaximumPointsAvailable,integer PointsObtained)
 	{
-		/*string  AccountNumber;
-		List<Person_Account__c> p = [SELECT Id, Account_Number__c, PersonID__r.Name, PersonID__c, Account_Number__r.RecType__c, TypeTranslate__c, Account_Number__r.Name
-									FROM Person_Account__c where PersonID__c =:MemberId limit 1];
-		if(p.size() > 0)
+		integer minutes = GetMemberAuthenticationSessionTime();
+		list<Member_Verification_Attempt__c> mva = new List<Member_Verification_Attempt__c>();
+		mva = [Select id, IVR_GUID__c, Member_Salesforce_Id__c, Points_Obtained__c, Maximum_Points_Available__c,Current_Authentication_Level__c,Highest_Achievable_Level__c, Next_Level__c from Member_Verification_Attempt__c where IVR_GUID__c=:IVRGUIDFromUrl and Member_Salesforce_Id__c =: memberid AND CreatedDate >=: Datetime.now().addMinutes(minutes) limit 1];
+		if(mva.size() > 0)
 		{
-			AccountNumber = p[0].Account_Number__r.Name;
+			mva[0].Current_Authentication_Level__c = LastLevel; 
+			mva[0].Points_Obtained__c = PointsObtained;
+			mva[0].Maximum_Points_Available__c = MaximumPointsAvailable;
+			update mva;
+		}else if(mva.size() == 0)
+		{
+			Member_Verification_Attempt__c mv = new Member_Verification_Attempt__c();
+			mv.Member_Salesforce_Id__c = memberid;
+			mv.IVR_GUID__c = IVRGUIDFromUrl;
+			mv.Current_Authentication_Level__c = LastLevel;			
+			mv.Points_Obtained__c = PointsObtained;
+			mv.Maximum_Points_Available__c = MaximumPointsAvailable;
+			insert mv;	
+			
 		}
-		*/
+
 		RecordType rec = GetRecordTypeData('Authenticated_Log__c', 'IVR Authentication Log');
 		Authenticated_Log__c log = new Authenticated_Log__c();
         log.CallerPhoneNumber__c = PhoneFromURL;
@@ -3762,7 +3799,6 @@ public class MemberAuthenticationControllerLightning{
 		integer CurrentScore = 0;
 		boolean IsPinChanged;
 		string  AccountNumber;
-		string DebitPinStatus='';
 		boolean IsLevel1Achieved = false;
 		boolean IsLevel2Achieved = false;
 		boolean IsLevel3Achieved = false;
@@ -3774,7 +3810,10 @@ public class MemberAuthenticationControllerLightning{
 		List<Member_Authentication_Level_Model__c> LevelModel = new List<Member_Authentication_Level_Model__c>();		
 		List<Member_Authentication_Scoring_Model__c> ScoringModel = new List<Member_Authentication_Scoring_Model__c>();
     	Map<string,object> AuthLogMap = new  Map<string,object>();
-    	
+    	Decimal DebitPinPositiveScore;
+        Decimal DebitPinNegativeScore;
+        Decimal PINChangeNegativeScore;
+        Decimal PINChangePositiveScore;
         integer minutes = GetMemberAuthenticationSessionTime();
         LevelModel = GetMemberAuthenticationLevel();
         List<Account> accList = [select id, PersonID__c from Account where id= : MemberId];
@@ -3951,17 +3990,23 @@ public class MemberAuthenticationControllerLightning{
      		AuthLogMap.put('ScorePoints',mva);
      		if(mva[0].Points_Obtained__c != null){
      			CurrentScore = mva[0].Points_Obtained__c.intValue();
+                
             }
+           system.debug('ScorePoints##'+ mva[0]);
      	}
-     	system.debug('ScorePoints##'+ AuthLogMap);
      	
+     	system.debug('CurrentScore##'+ CurrentScore);
      	List<Person_Account__c> p = [SELECT Id, Account_Number__c, PersonID__r.Name, PersonID__c, Account_Number__r.RecType__c, TypeTranslate__c, Account_Number__r.Name
 				FROM Person_Account__c where PersonID__c =:memberid limit 1];
 			AccountNumber = AccountNumberInput;	
+			system.debug('ListSize P#'+ p.size());
 		if(p.size() > 0) {
 			
 			//AccountNumber = p[0].Account_Number__r.Name;
+			system.debug('AccountNumberInput##'+ AccountNumberInput);
+			system.debug('AccountNumber##'+ AccountNumber);
 			pc = [select id,Transmission_Date__c,CreatedDate,Member_Number__c,Function__c from MC_PIN_Change__c where Member_Number__c =: AccountNumber and CreatedDate = LAST_N_DAYS:30 and Function__c = 'PIN Change'];
+			system.debug('ListSize PC#'+ pc.size());
 			if(pc.size() > 0){
 				IsPinChanged = true;
 				
@@ -3972,16 +4017,48 @@ public class MemberAuthenticationControllerLightning{
 			}
 		}
 		
-		/*if(DebitCardStatus =='Fail'){
-			DebitPinStatus ='Fail';
-		}
-		else if(DebitCardStatus =='Pass'){
-			DebitPinStatus ='Pass';
-		}
-		system.debug('DebitCardStatus##' + DebitCardStatus);*/
-		
+			
 		system.debug('CurrentScore##' + CurrentScore);
 		system.debug('OOWAvailable##'+ OOWAvailable);
+		
+	/*	for(Member_Authentication_Scoring_Model__c sm : ScoringModel  )
+		{
+					
+					if(sm.Authentication_Type__c == 'Debit Pin' )
+					{
+						system.debug('sm.Negative_Point_Value__c##'+ sm.Negative_Point_Value__c);
+						DebitPinPositiveScore = sm.Positive_Point_Value__c;
+						DebitPinNegativeScore = sm.Negative_Point_Value__c;
+					}
+					if(sm.Authentication_Type__c == 'PIN Change'){
+						
+						PINChangeNegativeScore = sm.Negative_Point_Value__c;
+						PINChangePositiveScore = sm.Positive_Point_Value__c;				
+					}
+			
+		}
+        system.debug('DebitCardStatus##' + DebitCardStatus);
+		if(DebitCardStatus == 'Fail' || DebitCardStatus =='false'){
+			CurrentScore = CurrentScore - DebitPinNegativeScore.intValue();
+		}
+		else if(DebitCardStatus == 'Pass' || DebitCardStatus =='true')
+		{
+			CurrentScore = CurrentScore + DebitPinPositiveScore.intValue();
+		}
+		system.debug('CurrentScorePost1##' + CurrentScore);
+		system.debug('IsPinChanged##' + IsPinChanged);
+		if(IsPinChanged == true ){
+			CurrentScore = CurrentScore - PINChangeNegativeScore.intValue();
+			
+		}
+		else if(IsPinChanged == false ){
+			
+			CurrentScore = CurrentScore + PINChangePositiveScore.intValue();
+		}
+		system.debug('CurrentScorePost2##' + CurrentScore);
+		
+		AuthLogMap.put('CurrentScore', CurrentScore);	
+*/
 		
      	map<string, List<string>> NextTabToAchieveLevelMap =  GetTabsToAchieveNextLevel(LevelModel, ScoringModel, MemberType, DebitCardStatus, IsPinChanged, OTPAvailable, PublicWalletAvailable, CFCUWalletAvailable,OOWAvailable, CurrentScore);
 		List<string>  NextTabLevel2 = NextTabToAchieveLevelMap.get('NextTabLevel2');

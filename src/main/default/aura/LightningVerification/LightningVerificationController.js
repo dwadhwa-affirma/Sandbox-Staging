@@ -247,7 +247,8 @@
 				component.set('v.OTPIconName','utility:check');
 	  			PointsObtained = parseInt(PointsObtained) + parseInt(ScoreModelPositiveScore);
 	  			CurrentScore = parseInt(CurrentScore) +  parseInt(ScoreModelPositiveScore);
-	  			component.set("v.PointObtained",PointsObtained);
+				component.set("v.PointObtained",PointsObtained);
+				component.set("v.CurrentScore",CurrentScore);
 	  			IsOTPAvailable = false;
 	  			component.set("v.IsOTPAvailableOnLoad",IsOTPAvailable);
 	  			component.set("v.OTPStatusForDay",true);
@@ -262,7 +263,8 @@
 				component.set('v.OTPIconName','utility:check');
 	  			PointsObtained = parseInt(PointsObtained) + parseInt(ScoreModelPositiveScore);
 	  			CurrentScore = parseInt(CurrentScore) +  parseInt(ScoreModelPositiveScore);
-	  			component.set("v.PointObtained",PointsObtained);
+				component.set("v.PointObtained",PointsObtained);
+				component.set("v.CurrentScore",CurrentScore);
 	  			IsOTPAvailable = false;
 	  			component.set("v.IsOTPAvailableOnLoad",IsOTPAvailable);
 	  			component.set("v.OTPStatusForDay",true);
@@ -279,7 +281,8 @@
 	  			NegativeScoreObtained = parseInt(NegativeScoreObtained) + parseInt(ScoreModelNegativeScore);
 	  			CurrentScore = parseInt(CurrentScore) -  parseInt(ScoreModelNegativeScore);
 				TotalScoreRequiredToAchieveLevel = parseInt(TotalScoreRequiredToAchieveLevel) +  parseInt(NegativeScoreObtained);
-	  			IsOTPAvailable = false;
+				IsOTPAvailable = false;
+				component.set("v.CurrentScore",CurrentScore);
 	  			component.set("v.IsOTPAvailableOnLoad",IsOTPAvailable);
 	  			console.log('Line 278---MaximumPointsAvailable' + MaximumPointsAvailable);
 	  			console.log('Line 279---NegativeScoreObtained' + NegativeScoreObtained);
@@ -293,7 +296,8 @@
 	  			component.set('v.OTPIconName','utility:close');
 	  			MaximumPointsAvailable = parseInt(MaximumPointsAvailable) - parseInt(ScoreModelNegativeScore);
 	  			NegativeScoreObtained = parseInt(NegativeScoreObtained) + parseInt(ScoreModelNegativeScore);
-	  			CurrentScore = parseInt(CurrentScore) -  parseInt(ScoreModelNegativeScore);
+				CurrentScore = parseInt(CurrentScore) -  parseInt(ScoreModelNegativeScore);
+				component.set("v.CurrentScore",CurrentScore);  
 				TotalScoreRequiredToAchieveLevel = parseInt(TotalScoreRequiredToAchieveLevel) +  parseInt(NegativeScoreObtained);
 	  			IsOTPAvailable = false;
 	  			component.set("v.IsOTPAvailableOnLoad",IsOTPAvailable);
@@ -312,7 +316,8 @@
 	  			CurrentScore = parseInt(CurrentScore) -  parseInt(ScoreModelNegativeScore);
 				TotalScoreRequiredToAchieveLevel = parseInt(TotalScoreRequiredToAchieveLevel) +  parseInt(NegativeScoreObtained);
 	  			IsOTPAvailable = false;
-	  			component.set("v.IsOTPAvailableOnLoad",IsOTPAvailable);
+				component.set("v.IsOTPAvailableOnLoad",IsOTPAvailable);
+				component.set("v.CurrentScore",CurrentScore);  
 	  			console.log('Line 310---MaximumPointsAvailable' + MaximumPointsAvailable);
 	  			console.log('Line 311---NegativeScoreObtained' + NegativeScoreObtained);
 	  			console.log('Line 312---ScoreModelNegativeScore' + ScoreModelNegativeScore);
@@ -327,7 +332,8 @@
 	  			component.set('v.KYMIconName','utility:check');
 	  			PointsObtained = parseInt(PointsObtained) + parseInt(ScoreModelPositiveScore);
 	  			CurrentScore = parseInt(CurrentScore) +  parseInt(ScoreModelPositiveScore);
-	  			component.set("v.PointObtained",PointsObtained);
+				component.set("v.PointObtained",PointsObtained);
+				component.set("v.CurrentScore",CurrentScore);  
 	  			IsKYMAvailable = false;
 	  			component.set("v.IsKYMAvailableOnLoad",IsKYMAvailable);
 	  			helper.GetNextAuthenticationType(component, event, helper, memberid, MemberType, MaximumPointsAvailable, PointsObtained, IsKYMAvailable, IsOTPAvailable, DebitCardStatus, IsOOWAvailable, IsPublicWalletAvailable, IsCFCUWalletAvailable);
@@ -340,7 +346,8 @@
 	  			 component.set('v.KYMIconName','utility:close');
 	  			 MaximumPointsAvailable = parseInt(MaximumPointsAvailable) - parseInt(ScoreModelNegativeScore);
 	  			 NegativeScoreObtained = parseInt(NegativeScoreObtained) + parseInt(ScoreModelNegativeScore);
-	  			 CurrentScore = parseInt(CurrentScore) -  parseInt(ScoreModelNegativeScore);
+				 CurrentScore = parseInt(CurrentScore) -  parseInt(ScoreModelNegativeScore);
+				 component.set("v.CurrentScore",CurrentScore);  
 				 TotalScoreRequiredToAchieveLevel = parseInt(TotalScoreRequiredToAchieveLevel) +  parseInt(NegativeScoreObtained);
 	  			 IsKYMAvailable = false;
 	  			 component.set("v.IsKYMAvailableOnLoad",IsKYMAvailable);
@@ -357,7 +364,8 @@
 				 	component.set('v.PWIconName','utility:check');
 	  				PointsObtained = parseInt(PointsObtained) + parseInt(ScoreModelPositiveScore);
 	  				CurrentScore = parseInt(CurrentScore) +  parseInt(ScoreModelPositiveScore);
-	  				component.set("v.PointObtained",PointsObtained);
+					component.set("v.PointObtained",PointsObtained);
+					component.set("v.CurrentScore",CurrentScore);  
 	  				IsPublicWalletAvailable = false;
 	  				component.set("v.IsPublicWalletAvailableOnLoad",IsPublicWalletAvailable);
                  	component.set("v.PublicWalletStatusForDay", true);
@@ -378,7 +386,8 @@
 	  			 CurrentScore = parseInt(CurrentScore) -  parseInt(ScoreModelNegativeScore);
 				 TotalScoreRequiredToAchieveLevel = parseInt(TotalScoreRequiredToAchieveLevel) +  parseInt(NegativeScoreObtained);
 	  			 IsPublicWalletAvailable = false;
-	  			 component.set("v.IsPublicWalletAvailableOnLoad",IsPublicWalletAvailable);
+				 component.set("v.IsPublicWalletAvailableOnLoad",IsPublicWalletAvailable);
+				 component.set("v.CurrentScore",CurrentScore);  
 	  			 console.log('Line 376---MaximumPointsAvailable' + MaximumPointsAvailable);
 	  			 console.log('Line 377---NegativeScoreObtained' + NegativeScoreObtained);
 	  			 console.log('Line 378---ScoreModelNegativeScore' + ScoreModelNegativeScore);
@@ -394,7 +403,8 @@
 	  				component.set('v.CFCUIconName','utility:check');
 	  				PointsObtained = parseInt(PointsObtained) + parseInt(ScoreModelPositiveScore);
 	  				CurrentScore = parseInt(CurrentScore) +  parseInt(ScoreModelPositiveScore);
-	  				component.set("v.PointObtained",PointsObtained);
+					component.set("v.PointObtained",PointsObtained);
+					component.set("v.CurrentScore",CurrentScore);  
 	  				IsCFCUWalletAvailable = false;
 	  				component.set("v.IsCFCUWalletAvailableOnLoad",IsCFCUWalletAvailable);
 	  				component.set("v.CFCUWalletStatusForDay", true);
@@ -413,7 +423,8 @@
 	  			 NegativeScoreObtained = parseInt(NegativeScoreObtained) + parseInt(ScoreModelNegativeScore);
 	  			 CurrentScore = parseInt(CurrentScore) -  parseInt(ScoreModelNegativeScore);
 				 TotalScoreRequiredToAchieveLevel = parseInt(TotalScoreRequiredToAchieveLevel) +  parseInt(NegativeScoreObtained);
-	  			 IsCFCUWalletAvailable = false;
+				 IsCFCUWalletAvailable = false;
+				 component.set("v.CurrentScore",CurrentScore);  
 	  			 component.set("v.IsCFCUWalletAvailableOnLoad",IsCFCUWalletAvailable);
 	  			 console.log('Line 412---MaximumPointsAvailable' + MaximumPointsAvailable);
 	  			 console.log('Line 413---NegativeScoreObtained' + NegativeScoreObtained);

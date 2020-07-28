@@ -802,7 +802,8 @@
 					        	if(AdditionalTokenOption2Match == undefined || AdditionalTokenOption2Match == ''){
 					        		AdditionalTokenOption2 ='';
 					        	}
-					        	 
+								var MemberNumber = (component.get("v.MemberNumberFromURL") != undefined && component.get("v.MemberNumberFromURL") != "" ) ? component.get("v.MemberNumberFromURL") : component.get("v.MemberNumberEntered");
+
 					            compEvent.setParams({"CFCUWalletScoreObtained" : ScoreObtained,"CFCUWalletFailedCount" : FailedCount, "ActionType": 'CFCU Wallet'});
 							    compEvent.fire();
 							    if(ScoreObtained >= 3 && FailedCount <= 1)
@@ -827,7 +828,9 @@
 						  						   "LoanAccount": LoanAccount,
 						  						   "Card": Card,
 						  						   "AdditionalTokenOption1": AdditionalTokenOption1,
-						  						   "AdditionalTokenOption2":AdditionalTokenOption2
+												   "AdditionalTokenOption2":AdditionalTokenOption2,
+												   "MemberNumber": MemberNumber
+													 
 						  						   
 						  						  });
 						  		action.setCallback(this, function (response) {	    
