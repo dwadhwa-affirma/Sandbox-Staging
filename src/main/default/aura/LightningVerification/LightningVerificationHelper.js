@@ -574,7 +574,6 @@
     	var MaximumPointsAvailable = component.get("v.MaximumPointsAvailable");
 		var IsKYMAvailable = component.get("v.IsKYMAvailableOnLoad");
 	    var IsOTPAvailable = component.get("v.IsOTPAvailableOnLoad");
-	    //var IsDebitPinAvailable = component.get("v.IsDebitPinAvailableOnLoad");
 	    var DebitCardStatus = component.get("v.DebitCardStatus");
 	    var IsOOWAvailable = component.get("v.OOWStatusForDay");
 	    var IsPublicWalletAvailable = component.get("v.IsPublicWalletAvailableOnLoad");
@@ -586,7 +585,7 @@
     	var CurrentAuthenticationLevel = component.get("v.CurrentAuthenticationLevel");
     	if(IVRGUIDFromUrl != undefined && IVRGUIDFromUrl !='')
     	{
-    		//helper.GetScoreDataForReload (component, event, helper,memberid,IVRGUIDFromUrl );
+    		
     		MaximumPointsAvailable = component.get("v.MaximumPointsAvailable");
     		PointsObtained = component.get("v.PointObtained");
     		CurrentAuthenticationLevel= component.get("v.CurrentAuthenticationLevel");
@@ -610,8 +609,7 @@
 	    	}
     	}
     	var ScoreModelNegativeScore = component.get("v.ScoreModelNegativeScore");
-    	var ScoreModelPositiveScore = component.get("v.ScoreModelPositiveScore");
-    	
+    	var ScoreModelPositiveScore = component.get("v.ScoreModelPositiveScore");    	
 		
     	if(activetabid == 'OOWTab'){
     		
@@ -635,13 +633,14 @@
 			               if(result.AccountNumber.length > 0)
 			               {
 		                       var MemberName = result.MemberName;
-		                       var AccountNumber = result.AccountNumber;
-		                       var Source = '';
+		                      // var AccountNumber = result.AccountNumber;
+							  var AccountNumber='';  
+							  var Source = '';
 		                       
 		                       if(IsMemberNumberValid == true){
                                    
 		                    	   AccountNumber = component.get("v.OOWMemberNumberEntered");
-                                   if(AccountNumber == undefined){
+                                   if(AccountNumber == ''){
                                        AccountNumber = component.get("v.MemberNumberFromURL");
                                    }
 		                    	   	Source = "&source=member";
@@ -651,7 +650,7 @@
                                    Source = "&source=member";
                                }
     		
-	                           component.set("v.AccountNumber",result.AccountNumber);
+	                           component.set("v.AccountNumber",AccountNumber);
 	                                                          
 	                           win = window.open(result.FlowURL+"&accountnumber=" + AccountNumber + "&firstname=allow" + MemberName + Source);
 		                       window.onmessage = function (e) {
@@ -676,14 +675,13 @@
                                
 		                        var action1 = component.get("c.SaveOOWLogData");
 		  		   					
-		   	      				 var membernumber = result.AccountNumber;
+		   	      				 var membernumber = AccountNumber;
 		                          action1.setParams({"status": status, "MemberNumber": membernumber,"MemberId":memberid, "reason":reason,"notes":notes, "GUID": GUID,"name": name,"Error":Error, "IVRGUIDFromUrl":IVRGUIDFromUrl});
 		          				 action1.setCallback(this, function (response) {
 			       	      		 var status1 = response.getState();            
 		                               if (component.isValid() && status1 === "SUCCESS") {
 		                            
-		                                   var result1 = response.getReturnValue();
-		                            
+		                                   var result1 = response.getReturnValue();	                            
 		                            
 		                                }
 		   	       				});	
@@ -752,26 +750,6 @@
 		  						}
 		  						
 								};  
-	                       
-	                        
-	                      /*  setTimeout(function () { 
-	                        			if(win.closed){
-	                        				//if(component.get("v.status") == 'passed' && component.get("v.status") != 'failed' && (component.get("v.status") == 'Cancelled' && Error !=null))
-	                        				if(component.get("v.status") == 'In Process')
-	                        				{
-	                        				
-		                        				component.set("v.Likedisable", false);
-		                        				component.set("v.status", 'Cancelled');
-		                        				component.set("v.reason", 'Time out');
-	                        				}
-	                        			}
-	                        			
-	                        	}, 
-	                        	
-	                        	45000
-	                        	
-	                        	);
-	                        */
 	                        
 			               }
 		               }
@@ -785,7 +763,7 @@
     		
     		
     	}
-    //	component.set("v.Likedisable",true);
+    
     	
     
     },
