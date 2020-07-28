@@ -179,12 +179,12 @@ trigger SolarLoanTrigger on Solar_Loans__c (after insert,before insert, after up
             
             //------------------------------- Adding ids if the Member Number field is not null----------------------------------//
             
-            if((trigger.old[i].Member_Number__c != trigger.new[i].Member_Number__c || trigger.new[i].Member_Number__c != null) && trigger.new[i].Member_Name__c == null){ 
+            if((trigger.old[i].Member_Number__c != trigger.new[i].Member_Number__c || trigger.new[i].Member_Number__c != null) && (trigger.new[i].Member_Name__c == null || trigger.old[i].Member_Number__c != trigger.new[i].Member_Number__c)){ 
             	SLForBranchIds.put(trigger.new[i].id, trigger.new[i]);
                 SLMemberNumberForName.add(trigger.new[i].Member_Number__c);
             }
             
-            if((trigger.old[i].Member_Number__c != trigger.new[i].Member_Number__c || trigger.new[i].Member_Number__c != null) && trigger.new[i].Account_Number__c == null){ 
+            if((trigger.old[i].Member_Number__c != trigger.new[i].Member_Number__c || trigger.new[i].Member_Number__c != null) && (trigger.new[i].Account_Number__c == null || trigger.old[i].Member_Number__c != trigger.new[i].Member_Number__c)){ 
             	SLForBranchIds.put(trigger.new[i].id, trigger.new[i]);
                 SLMemberNumber.add(trigger.new[i].Member_Number__c);
             }
