@@ -179,10 +179,14 @@ public class SolarLoanToCreateLoan {
                     DueDay1 = '15';
                 }
                 
-                if(sl.Additional_Amount__c != null)
-                    Payment = string.valueof(sl.Additional_Amount__c);
+                //-------------------------------------- Payment -----------------------------------//
+
+                if(sl.Loan_Pmt_Amount__c != null)
+                    Payment = string.valueof(sl.Loan_Pmt_Amount__c);
                 else
                     Payment = '0.00';
+
+                //-------------------------------------- Alternate Payment-----------------------------------//
 
                 if(sl.Additional_Amount__c != null){
 
@@ -194,9 +198,7 @@ public class SolarLoanToCreateLoan {
                 }   
                 
                 CouponCode = '1';
-                
                 PaymentMethod = '1';
-                
                 Description = 'SECURED SOLAR';
                 InterestRate = string.valueof(sl.Interest_Rate__c);
                 UserAmount1 = string.valueof(sl.Debt_Ratio__c);
