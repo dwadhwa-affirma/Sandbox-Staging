@@ -443,22 +443,40 @@
     },
     
     OpenInPersonSigning : function (component, event, helper) {
-        var pageReference = {
-            type: 'standard__component',
-            attributes: {
-                componentName: 'c__ACHSigningInPerson',
-                pageName: 'Test'
-            }
-        };
+        helper.SaveStageValuesSignInPeron(component, event, component.get("v.EFTRecord"), i, stages);             
+    },
 
-        const navService = component.find('navService');
-        
-        const handleUrl = (url) => {
-            window.open(url);
-        };
-        const handleError = (error) => {
-            console.log(error);
-        };
-        navService.generateUrl(pageReference).then(handleUrl, handleError);
+    backSigninPerson  : function (component, event, helper) {
+        var header = document.getElementsByClassName('slds-media_center cStageComponent');
+        var footer = document.getElementsByClassName('slds-modal__footer cStageComponent');
+        if(header != undefined){
+            header[0].style='';
+        }
+
+        if(footer != undefined){
+            footer[0].style='';
+        }
+        var modalbody = document.getElementsByClassName('modalbody cStageComponent');
+        if(modalbody != undefined){
+            modalbody[0].style='max-height:411px';
+        }
+        component.set("v.isSigninPersonClicked",false)
+        var stages = [];
+        stages = component.get("v.EFTStageDetails");
+        component.set("v.ActiveStepIndex",3);
+        component.set("v.ContinueButtonName", 'Send ACH Document');
+         $A.createComponent("c:"+stages[3].Stage_Component__c,{recordId: component.get("v.recordId"), EFTRecord: component.get("v.EFTRecord")},
+                                function(msgBox){                
+                                     if (component.isValid()) {
+                                        
+                                         var targetCmp = component.find('ModalDialogPlaceholder');
+                                        var body = targetCmp.get("v.body");
+                                        //body.push(msgBox);
+                                        body.splice(0, 1, msgBox);
+                                        targetCmp.set("v.body", body); 
+                   
+                                    }
+                                }
+                             );
     }
 })

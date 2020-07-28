@@ -5,6 +5,7 @@ public class SolarLoanToCreateLoan {
     public static String ErrorLoanLocator;
     public static String ErrorLoanNameLocator;
     public static String ErrorLoanTrackingLocator;
+    public static String loanAPI;
     
     //------------------------------------------------Solar Loan Parameters-----------------------------------------------------//
     public static String Type;
@@ -92,7 +93,10 @@ public class SolarLoanToCreateLoan {
     @future(callout=true)
     public static void createSolarLoans(Set<id> ids){
     
-    List<Episys_User__c> epu =  [select id,Alias__c,Episys_ID__c,Episys_Name__c from Episys_User__c where Episys_Name__c =: userinfo.getName()];
+    String userName = UserInfo.getUserName();
+    User activeUser = [Select Email,Alias From User where Username = : userName and Alias != null limit 1];
+
+    List<Episys_User__c> epu =  [select id,Alias__c,Episys_ID__c,Episys_Name__c from Episys_User__c where Alias__c =: activeUser.Alias];
     system.debug('Episys User' + epu);
     if(epu != null){
 		if(epu.size() > 1){
@@ -129,7 +133,15 @@ public class SolarLoanToCreateLoan {
             FROM Solar_Loans__c where id =: ids];
     
             for(Solar_Loans__c sl : solarloans){
+
+                //-----------Fetching API URL from custom setting to create Loan, LoanName, Loan Tracking and Fund record ---------------//
+
+                SolarLoan_To_Episys_API_Details__c api = SolarLoan_To_Episys_API_Details__c.getValues('ProductionURL');
                 
+                if(api.URL__c != null){
+                    loanAPI = api.URL__c;
+                }
+
                 Type = '75';
                 Branch = '96';
                 CreatedAtBranch = '96';
@@ -184,7 +196,7 @@ public class SolarLoanToCreateLoan {
                 ApplicationLoadedBy = operatorid;
                 
                 //req.setEndpoint('https://brscsymx.ctxcu.org/dev/EFT/CreateLoan');
-                req.setEndpoint('https://symxapi.chevronfcu.org/devclient/EFT/CreateLoan');
+                req.setEndpoint(loanAPI+'/EFT/CreateLoan');
                 req.setClientCertificateName('brscmcapi');
                 req.setMethod('POST');
                 req.setHeader('Content-Type', 'application/json');
@@ -242,7 +254,7 @@ public class SolarLoanToCreateLoan {
                     LoanId = result;
                     AccountNumber = sl.Account_Number__r.name;
                     
-                    req1.setEndpoint('https://symxapi.chevronfcu.org/devclient/EFT/CreateLoanName');
+                    req1.setEndpoint(loanAPI+'/EFT/CreateLoanName');
                     req1.setClientCertificateName('brscmcapi');
                     req1.setMethod('POST');
                     req1.setHeader('Content-Type', 'application/json');
@@ -350,7 +362,7 @@ public class SolarLoanToCreateLoan {
                 if(sl.ACH_Discount__c == true)  
                     UserDate11 = string.ValueOf(System.today());
                 else
-                    UserDate11 = ' ';
+                    UserDate11 = '';
                 
                 if(sl.Product_Loan_Type__c != null)  
                     UserChar6  = string.ValueOf(sl.Product_Loan_Type__c);
@@ -365,7 +377,7 @@ public class SolarLoanToCreateLoan {
                 LoanId = result; 
                 AccountNumber = sl.Account_Number__r.name;
                 
-                req2.setEndpoint('https://symxapi.chevronfcu.org/devclient/EFT/CreateLoanTracking');
+                req2.setEndpoint(loanAPI+'/EFT/CreateLoanTracking');
                 req2.setClientCertificateName('brscmcapi');
                 req2.setMethod('POST');
                 req2.setHeader('Content-Type', 'application/json');
@@ -412,7 +424,7 @@ public class SolarLoanToCreateLoan {
                     	
                     AccountNumber = sl.Account_Number__r.name;
                     
-                    req3.setEndpoint('https://symxapi.chevronfcu.org/devclient/Wires/FundLoan?accountNumber='+AccountNumber+'&loanId='+LoanId+'&amount='+Amount);
+                    req3.setEndpoint(loanAPI+'/Wires/FundLoan?accountNumber='+AccountNumber+'&loanId='+LoanId+'&amount='+Amount);
                     req3.setClientCertificateName('brscmcapi');
                     req3.setMethod('GET');
                     req3.setHeader('Content-Type', 'application/json');
@@ -448,7 +460,7 @@ public class SolarLoanToCreateLoan {
                                     
 //-------------------------------------------------Updating Solar Loan records -----------------------------------------//
                 
-                Solar_Loans__c s = new Solar_Loans__c();         
+                Solar_Loans__c s = new Solar_Loans__c();          
                 if(result != null && result != '')
                     s.Loan_Id__c = result;
                     
@@ -457,6 +469,11 @@ public class SolarLoanToCreateLoan {
                     
                 if(result2 != null && result2 != '')
                     s.Tracking_Record_33__c = 'Created';
+
+                if(s.Loan_Id__c != null || s.Loan_Name_Locator__c != null || s.Tracking_Record_33__c != null ){
+                    s.Status__c = 'Loan Funded';
+            	    s.Current_Solar_Loan_Stage__c = 'Stage 4';
+                }    
                       
                 if(ErrorLoanLocator != null && ErrorLoanLocator != '')
                     s.Error_Loan_Locator__c = ErrorLoanLocator;
@@ -476,7 +493,8 @@ public class SolarLoanToCreateLoan {
                              
                 s.id = sl.Id;       
                 s.Due_Date__c = System.Today() + 60;
-                
+                s.continue__c = false;
+
                 if(sl.Term_months__c != null){
                 	Month = Integer.Valueof(sl.Term_months__c) - 1;
                 	s.Maturity_Date__c = s.Due_Date__c.addMonths(Month);

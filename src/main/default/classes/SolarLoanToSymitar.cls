@@ -15,6 +15,7 @@ public class SolarLoanToSymitar {
     public static String MatchID3;
     public static String AccountNumber;
     public static String ErrorEFTLocator;
+    public static String loanAPI;
     
     
     public static String PaymentMethod;
@@ -48,6 +49,14 @@ public class SolarLoanToSymitar {
     
             for(Solar_Loans__c sl : solarloans){
                 
+                //--------------------------------Fetching API URL from custom setting to create EFT record--------------------------//
+
+                SolarLoan_To_Episys_API_Details__c api = SolarLoan_To_Episys_API_Details__c.getValues('ProductionURL');
+                
+                if(api.URL__c != null){
+                    loanAPI = api.URL__c;
+                }
+
                 EFTType = '3';
                 if(sl.Loan_Type__c == 'Savings Account')
                     AmountCode = '37' ;
@@ -100,7 +109,7 @@ public class SolarLoanToSymitar {
                 AccountNumber = sl.Account_Number__r.name;
                 
                 //req.setEndpoint('https://brscsymx.ctxcu.org/dev/EFT/CreateEft');
-                req.setEndpoint('https://symxapi.chevronfcu.org/devclient/EFT/CreateEft');
+                req.setEndpoint(loanAPI+'/EFT/CreateEft');
                 req.setClientCertificateName('brscmcapi');
                 req.setMethod('POST');
                 req.setHeader('Content-Type', 'application/json');

@@ -108,7 +108,60 @@
 		 
 		$A.enqueueAction(action);
         
-    }
+    },
+
+    SaveStageValuesSignInPeron: function(component, event, EFTRecord, i, stages){
+        var action = component.get("c.saveStageData");
+		
+       
+		var EFTRecord  = component.get("v.EFTRecord");	
+        if(EFTRecord.length == 1){
+            EFTRecord = EFTRecord.splice(0, 1);
+        }
+		
+		action.setParams({
+		"EFTRecord": EFTRecord
+		});			
+		action.setCallback(this, function(resp) {
+			var state=resp.getState();			
+			if(state === "SUCCESS"){
+				var result = resp.getReturnValue();   
+				component.set('v.EFTRecord', result);
+                
+                var header = document.getElementsByClassName('slds-media_center cStageComponent');
+        var footer = document.getElementsByClassName('slds-modal__footer cStageComponent');
+        if(header != undefined){
+            header[0].style='display:none';
+        }
+
+        if(footer != undefined){
+            footer[0].style='display:none';
+        }
+        var modalbody = document.getElementsByClassName('modalbody cStageComponent');
+        if(modalbody != undefined){
+            modalbody[0].style='max-height:590px';
+        }
+        component.set("v.isSigninPersonClicked",true)
+        $A.createComponent("c:ACHSigningInPerson",{recordId: component.get("v.recordId"), EFTRecord: component.get("v.EFTRecord")},
+                                function(msgBox){                
+                                     if (component.isValid()) {
+                                        
+                                         var targetCmp = component.find('ModalDialogPlaceholder');
+                                        var body = targetCmp.get("v.body");
+                                        //body.push(msgBox);
+                                        body.splice(0, 1, msgBox);
+                                        targetCmp.set("v.body", body); 
+                   
+                                    }
+                                }
+                             );  
+           }
+           
+		});
+		 
+		$A.enqueueAction(action);
+        
+    },
     
     
 })

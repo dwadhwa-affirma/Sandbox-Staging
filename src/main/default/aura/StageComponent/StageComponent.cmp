@@ -28,6 +28,7 @@
 <aura:attribute name="isDocusignEmailSelected" type="Boolean" default="false"/>
 <aura:attribute name="issubmitDisabled" type="Boolean" default="true"/>
 <aura:attribute name="isSigninPersonEnabled" type="Boolean" default="false"/>
+<aura:attribute name="isSigninPersonClicked" type="Boolean" default="false"/>
 <lightning:navigation aura:id="navService"/>
     
         <header class="slds-media_center slds-has-flexi-truncate slds-modal__header">
@@ -101,4 +102,11 @@
   </aura:if>
   </footer> 
 
+  <aura:if isTrue="{!v.isSigninPersonClicked}">
+    <footer class="slds-modal__footer slds-modal__footer_directional signinperson">
+        <lightning:button aura:id="Exit" label="Exit" title="Exit" onclick="{!c.cancelAction}"/>
+        <lightning:button variant="brand" label="Back" title="Back" onclick="{!c.backSigninPerson}"/> 
+    </footer>
+  </aura:if>
+  
 </aura:component>

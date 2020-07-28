@@ -154,6 +154,7 @@
             if(checkCurrentStage == 'Stage 7'){
                 component.set("v.ButtonLabelName", "Close Ticket");
                 component.set("v.StageName", "Stage 7: Close Ticket");
+                component.set("v.IsButtonDisabled", true);
             }
             if(checkCurrentStage == 'Stage 8'){
                 component.set("v.ButtonLabelName", "Close Ticket");

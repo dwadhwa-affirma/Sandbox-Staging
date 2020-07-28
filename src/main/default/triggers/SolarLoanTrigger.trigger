@@ -122,16 +122,7 @@ trigger SolarLoanTrigger on Solar_Loans__c (after insert,before insert, after up
     			trigger.new[i].Review_needed__c = true;
     		}
     		
-    		//------------------------------- Checking if the LoanId != null ---------------------------------------------------//
-            
-            if((trigger.old[i].Loan_Id__c != trigger.new[i].Loan_Id__c && trigger.new[i].Loan_Id__c != null) ||
-            	(trigger.old[i].Loan_Name_Locator__c != trigger.new[i].Loan_Name_Locator__c && trigger.new[i].Loan_Name_Locator__c != null) ||
-            	(trigger.old[i].Loan_Tracking_Locator__c != trigger.new[i].Loan_Tracking_Locator__c && trigger.new[i].Loan_Tracking_Locator__c != null)){
-            	trigger.new[i].Status__c = 'Loan Funded';
-            	trigger.new[i].Current_Solar_Loan_Stage__c = 'Stage 4';
-            }
-            
-            if(trigger.old[i].EftLocator__c != trigger.new[i].EftLocator__c && trigger.new[i].EftLocator__c != null){
+    	    if(trigger.old[i].EftLocator__c != trigger.new[i].EftLocator__c && trigger.new[i].EftLocator__c != null){
             	trigger.new[i].Status__c = 'EFT Record Created';
                 trigger.new[i].Current_Solar_Loan_Stage__c = 'Stage 8';
             }
@@ -180,12 +171,6 @@ trigger SolarLoanTrigger on Solar_Loans__c (after insert,before insert, after up
                 SLIds.add(trigger.new[i].id);
             }
             
-            //------------------------------- Checking if the status is being changed and status = 'Approved'-----------------//
-            
-            if(trigger.new[i].Status__c == 'Approved'){
-                SLIdsToCreateLoan.add(trigger.new[i].id);
-            }
-            
             //------------------------------- Checking if the status is being changed and status = 'Completed'-----------------//
             
             if(trigger.old[i].Status__c != 'Completed' && trigger.new[i].Status__c == 'Completed'){
@@ -194,12 +179,12 @@ trigger SolarLoanTrigger on Solar_Loans__c (after insert,before insert, after up
             
             //------------------------------- Adding ids if the Member Number field is not null----------------------------------//
             
-            if((trigger.old[i].Member_Number__c != trigger.new[i].Member_Number__c || trigger.new[i].Member_Number__c != null) && trigger.new[i].Member_Name__c == null){ 
+            if((trigger.old[i].Member_Number__c != trigger.new[i].Member_Number__c || trigger.new[i].Member_Number__c != null) && (trigger.new[i].Member_Name__c == null || trigger.old[i].Member_Number__c != trigger.new[i].Member_Number__c)){ 
             	SLForBranchIds.put(trigger.new[i].id, trigger.new[i]);
                 SLMemberNumberForName.add(trigger.new[i].Member_Number__c);
             }
             
-            if((trigger.old[i].Member_Number__c != trigger.new[i].Member_Number__c || trigger.new[i].Member_Number__c != null) && trigger.new[i].Account_Number__c == null){ 
+            if((trigger.old[i].Member_Number__c != trigger.new[i].Member_Number__c || trigger.new[i].Member_Number__c != null) && (trigger.new[i].Account_Number__c == null || trigger.old[i].Member_Number__c != trigger.new[i].Member_Number__c)){ 
             	SLForBranchIds.put(trigger.new[i].id, trigger.new[i]);
                 SLMemberNumber.add(trigger.new[i].Member_Number__c);
             }
@@ -264,13 +249,6 @@ trigger SolarLoanTrigger on Solar_Loans__c (after insert,before insert, after up
         if(SLIds.size() > 0){
             
             SolarLoanToDocuSign.docusignAPIcall(SLIds);
-        }
-        
-        //------------------------------- Creating "Loan/LoanName/LoanTracking" if the status = "Approved"---------------------------//
-        
-        if(SLIdsToCreateLoan.size() > 0){
-           
-            SolarLoanToCreateLoan.createSolarLoans(SLIdsToCreateLoan);
         }
         
         //------------------------------- Creating "EFT" record if the status = "Completed"------------------------------------------//

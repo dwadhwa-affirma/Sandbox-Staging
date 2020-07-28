@@ -744,6 +744,18 @@ public class EFTController {
         }
         return options;
     }
+
+    @AuraEnabled
+    public static Id saveSignature(String signatureBody, string EFTId){
+          
+        Attachment a = new Attachment();
+        a.ParentId = EFTId; // record id of object.
+        a.Body = EncodingUtil.base64Decode(signatureBody);
+        a.ContentType = 'image/png';
+        a.Name = 'ESignature.png';
+        insert a;
+        return a.Id;
+    }
     
     public class ShareLoanWrapperObject
     {
