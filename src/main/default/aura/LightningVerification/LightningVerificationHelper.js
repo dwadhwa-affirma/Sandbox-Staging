@@ -702,7 +702,7 @@
 		  							IsOOWAvailable = false;
 		  							component.set("v.OOWStatusForDay", false);
 									component.set("v.MaximumPointsAvailable",MaximumPointsAvailable);
-		  							component.set("v.PointObtained", PointsObtained);
+									component.set("v.PointObtained", PointsObtained);									
 		  							console.log('Helper Line 695---PointsObtained' + PointsObtained);
 		  							console.log('Helper Line 696---MaximumPointsAvailable' + MaximumPointsAvailable);
 		  							helper.GetNextAuthenticationType(component, event, helper, memberid, MemberType, MaximumPointsAvailable, PointsObtained, IsKYMAvailable, IsOTPAvailable, DebitCardStatus, IsOOWAvailable, IsPublicWalletAvailable, IsCFCUWalletAvailable);
