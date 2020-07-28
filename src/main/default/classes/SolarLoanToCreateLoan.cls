@@ -37,6 +37,8 @@ public class SolarLoanToCreateLoan {
     public static String ApplicationFundedBy;
     public static String ApplicationLoadedBy;
     public static String operatorid;
+    public static Double Total;
+    public static String AlternatePayment;
     
   
     public static String jsonData;
@@ -177,7 +179,20 @@ public class SolarLoanToCreateLoan {
                     DueDay1 = '15';
                 }
                 
-                Payment = string.valueof(sl.Loan_Pmt_Amount__c);
+                if(sl.Additional_Amount__c != null)
+                    Payment = string.valueof(sl.Additional_Amount__c);
+                else
+                    Payment = '0.00';
+
+                if(sl.Additional_Amount__c != null){
+
+                    Total = (Double.valueof(sl.Loan_Pmt_Amount__c) + Double.valueof(sl.Additional_Amount__c));
+                    AlternatePayment = string.valueof(Total);
+                }else{
+
+                    AlternatePayment = string.valueof(sl.Loan_Pmt_Amount__c);
+                }   
+                
                 CouponCode = '1';
                 
                 PaymentMethod = '1';

@@ -92,10 +92,7 @@ public class SolarLoanToSymitar {
                     EffectiveDate = null;
                 }
                 
-                if(sl.Additional_Amount__c != null)
-                    PostAmount = String.ValueOf(sl.Additional_Amount__c);
-                else
-                    PostAmount = '0.00';
+                PostAmount = '0.00';
                 Payee = sl.Routing_Number__c;
                 Reference = sl.Bank_Account_Number__c ;
                 if(sl.ABA_Bank_Name__c != null){
