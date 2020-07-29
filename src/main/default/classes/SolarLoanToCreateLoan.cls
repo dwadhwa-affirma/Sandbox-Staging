@@ -37,10 +37,7 @@ public class SolarLoanToCreateLoan {
     public static String ApplicationFundedBy;
     public static String ApplicationLoadedBy;
     public static String operatorid;
-    public static Double Total;
-    public static String AlternatePayment;
     
-  
     public static String jsonData;
     public static HttpRequest req = new HttpRequest();
     public static String result;
@@ -183,20 +180,7 @@ public class SolarLoanToCreateLoan {
 
                 if(sl.Loan_Pmt_Amount__c != null)
                     Payment = string.valueof(sl.Loan_Pmt_Amount__c);
-                else
-                    Payment = '0.00';
-
-                //-------------------------------------- Alternate Payment-----------------------------------//
-
-                if(sl.Additional_Amount__c != null){
-
-                    Total = (Double.valueof(sl.Loan_Pmt_Amount__c) + Double.valueof(sl.Additional_Amount__c));
-                    AlternatePayment = string.valueof(Total);
-                }else{
-
-                    AlternatePayment = string.valueof(sl.Loan_Pmt_Amount__c);
-                }   
-                
+               
                 CouponCode = '1';
                 PaymentMethod = '1';
                 Description = 'SECURED SOLAR';

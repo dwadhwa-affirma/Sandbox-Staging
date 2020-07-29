@@ -16,6 +16,8 @@ public class SolarLoanToSymitar {
     public static String AccountNumber;
     public static String ErrorEFTLocator;
     public static String loanAPI;
+    public static String AlternatePayment;
+    public static Double Total;
     
     
     public static String PaymentMethod;
@@ -102,6 +104,14 @@ public class SolarLoanToSymitar {
                     }
                 }
                 
+                //-------------------------------------- Alternate Payment-----------------------------------//
+
+                if(sl.Additional_Amount__c != null){
+
+                    Total = (Double.valueof(sl.Loan_Pmt_Amount__c) + Double.valueof(sl.Additional_Amount__c));
+                    AlternatePayment = string.valueof(Total);
+                }
+
                 system.debug('MatchID3'+MatchID3);    
                 AccountNumber = sl.Account_Number__r.name;
                 
@@ -152,8 +162,14 @@ public class SolarLoanToSymitar {
 	                req1.setHeader('Content-Type', 'application/json');
 	                req1.setHeader('Accept', 'application/json');
 	                
-	                jsonData1 = '{"AccountNumber":'+'\"'+AccountNumber+'\","LoanId":' + '\"'+ ID +'\"'+',"PaymentMethod":'+'\"'+PaymentMethod+'\"}';
-	                req1.setBodyAsBlob(Blob.valueof(jsondata1)); 
+	                if(AlternatePayment != ''){
+	                	jsonData1 = '{"AccountNumber":'+'\"'+AccountNumber+'\","LoanId":' + '\"'+ ID +'\"'+',"PaymentMethod":'+'\"'+PaymentMethod+ '\"'+',"AlternatePayment":'+'\"'+AlternatePayment+'\"}';
+	                }
+	                else{
+	                	jsonData1 = '{"AccountNumber":'+'\"'+AccountNumber+'\","LoanId":' + '\"'+ ID +'\"'+',"PaymentMethod":'+'\"'+PaymentMethod+ '\"}';
+	                }
+                    
+                    req1.setBodyAsBlob(Blob.valueof(jsondata1)); 
 	                system.debug('test'+jsonData1);
 	                
 	                Http http1 = new Http();  
