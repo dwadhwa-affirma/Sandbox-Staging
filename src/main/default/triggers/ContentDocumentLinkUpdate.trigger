@@ -99,16 +99,12 @@ trigger ContentDocumentLinkUpdate on ContentDocumentLink (after update,after del
     
     // ----------------------------Start Counting number Attachments for Solar Loan record--------------------------------------//
     
-    for (Solar_Loans__c sl : [select Id, count__c ,(SELECT Id FROM ContentDocumentLinks)  from Solar_Loans__c where Id IN :parent])
+    for (Solar_Loans__c sl : [select Id, count__c ,(SELECT Id FROM SolarLoan_Documents__r)  from Solar_Loans__c where Id IN :parent])
     {
         Solar_Loans__c s = new Solar_Loans__c();
         s.id = sl.id;
-        if(sl.count__c == null)
-        	s.count__c = String.valueof(sl.ContentDocumentLinks.size());
-    	else 
-    		s.count__c = String.valueof(sl.ContentDocumentLinks.size() + 1);
-    		
-        slcountUpdate.add(s);
+        s.count__c = String.valueof(sl.SolarLoan_Documents__r.size());
+    	slcountUpdate.add(s);
        
     }    
      if(MemberlsttoUpdate.size() > 0)

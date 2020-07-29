@@ -3,6 +3,7 @@ trigger ContentDocumnetDelete on ContentDocument (before delete, before insert, 
 	List<Approve_Attachment__c> toupdateApproveAttachment  = new List<Approve_Attachment__c>();    
     Map<id,ContentDocumentLink> attachmentDetails = new Map<id,ContentDocumentLink >();
     set<Id> attachmentIdsForSolarLoan = new set<Id>();
+    set<Id> ContentDocId = new set<Id>();
     set<Id> ContentVersionIds = new set<ID>();
     Set<id> parent = new Set<id>();
     List<Solar_Loans__c> slcountUpdate = new List<Solar_Loans__c>();
@@ -12,7 +13,7 @@ trigger ContentDocumnetDelete on ContentDocument (before delete, before insert, 
         
         for(ContentDocument d : Trigger.old){
         	attachmentIdsForSolarLoan.add(d.id);
-        	
+        	ContentDocId.add(d.id);
         	
             system.debug('Document ID - ' + d.Id);
             system.debug('d - ' + d);
@@ -45,17 +46,16 @@ trigger ContentDocumnetDelete on ContentDocument (before delete, before insert, 
             }
                        
         }
-        
-        
+        //List<SolarLoan_Document__c> solardoc = [select id, Attachment_Id__c from SolarLoan_Document__c where Attachment_Id__c in:ContentDocId];
+        //if(solardoc.size()>0){
+        //    delete solardoc;
+        //}
       	// ----------------------------Decreasing count of attachments under "Solar Loans" record--------------------------------//
       	
-	    for (Solar_Loans__c sl : [select Id, count__c ,(SELECT Id FROM ContentDocumentLinks)  from Solar_Loans__c where Id IN :parent]){
+	    for (Solar_Loans__c sl : [select Id, count__c ,(SELECT Id FROM SolarLoan_Documents__r)  from Solar_Loans__c where Id IN :parent]){
 			Solar_Loans__c s = new Solar_Loans__c();
 	    	s.id = sl.id;
-	    	if(sl.count__c == null)
-	    		s.count__c = String.valueof(sl.ContentDocumentLinks.size());
-	    	else	
-	    		s.count__c = String.valueOf(Integer.valueOf(sl.count__c) - 1) ;
+	    	s.count__c = String.valueof(sl.SolarLoan_Documents__r.size());
 	    	slcountUpdate.add(s);
 	    	system.debug('ttt');
 	   	}
