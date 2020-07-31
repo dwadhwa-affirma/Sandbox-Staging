@@ -117,7 +117,7 @@ public class SolarLoanToSymitar {
                 
                 //req.setEndpoint('https://brscsymx.ctxcu.org/dev/EFT/CreateEft');
                 req.setEndpoint(loanAPI+'/EFT/CreateEft');
-                req.setClientCertificateName('brscmcapi');
+                //req.setClientCertificateName('brscmcapi');
                 req.setMethod('POST');
                 req.setHeader('Content-Type', 'application/json');
                 req.setHeader('Accept', 'application/json');

@@ -198,7 +198,7 @@ public class SolarLoanToCreateLoan {
                 
                 //req.setEndpoint('https://brscsymx.ctxcu.org/dev/EFT/CreateLoan');
                 req.setEndpoint(loanAPI+'/EFT/CreateLoan');
-                req.setClientCertificateName('brscmcapi');
+                //req.setClientCertificateName('brscmcapi');
                 req.setMethod('POST');
                 req.setHeader('Content-Type', 'application/json');
                 req.setHeader('Accept', 'application/json');
@@ -256,7 +256,7 @@ public class SolarLoanToCreateLoan {
                     AccountNumber = sl.Account_Number__r.name;
                     
                     req1.setEndpoint(loanAPI+'/EFT/CreateLoanName');
-                    req1.setClientCertificateName('brscmcapi');
+                    //req1.setClientCertificateName('brscmcapi');
                     req1.setMethod('POST');
                     req1.setHeader('Content-Type', 'application/json');
                     req1.setHeader('Accept', 'application/json');
@@ -379,7 +379,7 @@ public class SolarLoanToCreateLoan {
                 AccountNumber = sl.Account_Number__r.name;
                 
                 req2.setEndpoint(loanAPI+'/EFT/CreateLoanTracking');
-                req2.setClientCertificateName('brscmcapi');
+                //req2.setClientCertificateName('brscmcapi');
                 req2.setMethod('POST');
                 req2.setHeader('Content-Type', 'application/json');
                 req2.setHeader('Accept', 'application/json');
@@ -426,7 +426,7 @@ public class SolarLoanToCreateLoan {
                     AccountNumber = sl.Account_Number__r.name;
                     
                     req3.setEndpoint(loanAPI+'/Wires/FundLoan?accountNumber='+AccountNumber+'&loanId='+LoanId+'&amount='+Amount);
-                    req3.setClientCertificateName('brscmcapi');
+                    //req3.setClientCertificateName('brscmcapi');
                     req3.setMethod('GET');
                     req3.setHeader('Content-Type', 'application/json');
                     req3.setHeader('Accept', 'application/json');
