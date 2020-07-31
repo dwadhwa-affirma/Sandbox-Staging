@@ -79,7 +79,7 @@ public class SolarLoanToSymitar {
                 Frequency = '4';
                 
                 if(sl.Due_Date__c != null){
-                    Day1 = '0'; //String.valueof(sl.Due_Date__c.day());
+                    Day1 = String.valueof(sl.Due_Date__c.day());
                 }
                 else{
                     Day1 = '0';
