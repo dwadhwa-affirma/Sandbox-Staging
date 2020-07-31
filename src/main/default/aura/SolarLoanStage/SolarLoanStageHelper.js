@@ -74,30 +74,36 @@
             if(stage == 'Stage 3'){
                 component.set("v.ButtonLabelName", "Create Loan Records");
                 component.set("v.StageName", "Stage 3: Create Loan Records");
+                component.set("v.IsWaitingDisabled", true);
             }
             if(stage == 'Stage 4'){
             	component.set("v.ButtonLabelName", "Mark Stage 4 Complete");
                 component.set("v.StageName", "Stage 4: Review ACH Info");
+                component.set("v.IsWaitingDisabled", true);
             } 
             if(stage == 'Stage 5'){
                 if(Stage5ACHCheck == 'True'){
             		component.set("v.ButtonLabelName", "Send ACH Document");
             	}
                 component.set("v.StageName", "Stage 5: Send ACH Document");
+                component.set("v.IsWaitingDisabled", true);
             }
             if(stage == 'Stage 6'){
             	component.set("v.ButtonLabelName", "Create EFT Record");
                 component.set("v.StageName", "Stage 6: Create EFT Record");
+                component.set("v.IsWaitingDisabled", true);
             }
             if(stage == 'Stage 7'){
                 component.set("v.ButtonLabelName", "Close Ticket");
                 component.set("v.StageName", "Stage 7: Close Ticket");
                 component.set("v.IsButtonDisabled", true);
+                component.set("v.IsWaitingDisabled", true);
             }
             if(stage == 'Stage 8'){
                 component.set("v.ButtonLabelName", "Close Ticket");
                 component.set("v.StageName", "Stage 7: Closed");
                 component.set("v.IsButtonDisabled", true);
+                component.set("v.IsWaitingDisabled", true);
             }   
         	
             //------------------------------------------Validation message for Stage-4 -----------------------------//
