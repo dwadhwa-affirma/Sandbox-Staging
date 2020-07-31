@@ -86,8 +86,8 @@ public class SolarLoanToSymitar {
                 }   
                 if(sl.Due_Date__c != null){
                     
-                    NextDate = string.valueof(sl.Due_Date__c + 1);
-                    EffectiveDate = string.valueof(sl.Due_Date__c + 1);
+                    NextDate = string.valueof(sl.Due_Date__c);
+                    EffectiveDate = string.valueof(sl.Due_Date__c);
                 }
                 else{
                     NextDate = null;
