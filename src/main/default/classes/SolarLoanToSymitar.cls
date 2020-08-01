@@ -237,7 +237,6 @@ public class SolarLoanToSymitar {
                     loanAPI = api.URL__c;
                 }
 
-                EFTType = '3';
                 if(sl.Loan_Type__c == 'Savings Account')
                     AmountCode = '37' ;
                 else
@@ -285,29 +284,31 @@ public class SolarLoanToSymitar {
                     responseBody = '{"EFTType":"3","AmountCode":"27","GroupNumber":"1","IdType":"1","ID":"100","Frequency":"4","Day1":"1","NextDate":"01-01-2019","EffectiveDate":"01-01-2019","PostAmount":"100.00","Payee":"322271627","Reference":"42006986568","MatchId3":"BANK OF AMERICA","AccountNumber":"123"}';
                 }
                 
-                req1.setEndpoint('https://symxapi.chevronfcu.org/devclient/EFT/UpdateLoanById');
-                req1.setClientCertificateName('brscmcapi');
-                req1.setMethod('POST');
-                req1.setHeader('Content-Type', 'application/json');
-                req1.setHeader('Accept', 'application/json');
-                
-                jsonData1 = '{"AccountNumber":'+'\"'+AccountNumber+'\","LoanId":' + '\"'+ ID +'\"'+',"PaymentMethod":'+'\"'+PaymentMethod+ '\"'+',"AlternatePayment":'+'\"'+AlternatePayment+'\"}';
-                
-                req1.setBodyAsBlob(Blob.valueof(jsondata1)); 
-                system.debug('test'+jsonData1);
-                
-                Http http1 = new Http();  
-                req1.setTimeout(60000);
-                HttpResponse res1;
-                String responseBody1;
-                if(!Test.isRunningTest()){                       
-                    res1 = http1.send(req1);
-                    responseBody1 = res1.getBody();
-                    System.debug('Response Body Solar Loan::'+res1.getBody());    
-                }else{
-                    responseBody1 = '{"Type":"3","Branch":"27","CreatedAtBranch":"1","PurposeCode":"1","CollateralCode":"100","ApprovalCode":"4","OriginalBalance":"1","ApprovalDate":"01-01-2019","MaturityDate":"01-01-2019","DueDate":"01-01-2019","FirstPaymentDate":"01-01-2019","DueDay1":"1","Payment":"1234","CouponCode":"123", "PaymentMethod" : "PaymentMethod", "Description" : "Description", "InterestRate" : "2.00", "UserAmount1" : "200.00", "ECOACode" : "778", "CreditScore" : "15", "PaymentCount" : "12", "PaymentFrequency" : "67"}';
-                }
-                
+                if(AlternatePayment != null && AlternatePayment != ''){
+
+                    req1.setEndpoint('https://symxapi.chevronfcu.org/devclient/EFT/UpdateLoanById');
+                    req1.setClientCertificateName('brscmcapi');
+                    req1.setMethod('POST');
+                    req1.setHeader('Content-Type', 'application/json');
+                    req1.setHeader('Accept', 'application/json');
+                    
+                    jsonData1 = '{"AccountNumber":'+'\"'+AccountNumber+'\","LoanId":' + '\"'+ ID +'\"'+',"PaymentMethod":'+'\"'+PaymentMethod+ '\"'+',"AlternatePayment":'+'\"'+AlternatePayment+'\"}';
+                    
+                    req1.setBodyAsBlob(Blob.valueof(jsondata1)); 
+                    system.debug('test'+jsonData1);
+                    
+                    Http http1 = new Http();  
+                    req1.setTimeout(60000);
+                    HttpResponse res1;
+                    String responseBody1;
+                    if(!Test.isRunningTest()){                       
+                        res1 = http1.send(req1);
+                        responseBody1 = res1.getBody();
+                        System.debug('Response Body Solar Loan::'+res1.getBody());    
+                    }else{
+                        responseBody1 = '{"Type":"3","Branch":"27","CreatedAtBranch":"1","PurposeCode":"1","CollateralCode":"100","ApprovalCode":"4","OriginalBalance":"1","ApprovalDate":"01-01-2019","MaturityDate":"01-01-2019","DueDate":"01-01-2019","FirstPaymentDate":"01-01-2019","DueDay1":"1","Payment":"1234","CouponCode":"123", "PaymentMethod" : "PaymentMethod", "Description" : "Description", "InterestRate" : "2.00", "UserAmount1" : "200.00", "ECOACode" : "778", "CreditScore" : "15", "PaymentCount" : "12", "PaymentFrequency" : "67"}';
+                    }
+                }   
             }
         }
 }
