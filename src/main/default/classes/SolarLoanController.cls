@@ -104,6 +104,7 @@ public class SolarLoanController {
     
     system.debug('SolarLoanRecordId'+SolarLoanRecordId); 
     Set<Id> SLIdsToCreateLoan = new Set<Id>();
+    Set<Id> SLIdsToCreateEFT = new Set<Id>();
     
 
     system.debug('CurrentStage'+CurrentStage);
@@ -285,11 +286,9 @@ public class SolarLoanController {
         
         //------------------------------------Stage-7 Chaging status to "EFT Record Created"-------------------------//
         
-        if(CurrentStage == 'Stage 7'){
-            solarLoanList[0].Status__c = 'Completed';
-            SolarLoanList[0].continue__c = false;
-            update SolarLoanList;
-            
+        if(CurrentStage == 'Stage 7' && (SolarLoanList[0].EftLocator__c == null || SolarLoanList[0].EftLocator__c == '')){
+            SLIdsToCreateEFT.add(SolarLoanList[0].id);
+            SolarLoanToSymitar.insertSolarLoans(SLIdsToCreateEFT);
         }
         
         //------------------------------------Skipping stages upto "Stage 7" if ACH = False-------------------------//

@@ -4,6 +4,7 @@ trigger SolarLoanTrigger on Solar_Loans__c (after insert,before insert, after up
     Set<Id> SLIdsToCreateLoan = new Set<Id>();
     Set<Id> UpdateStatus = new Set<Id>();
     Set<Id> SLIdsForEFT = new Set<Id>();
+    Set<Id> SLIdsForEFTUpdate = new Set<Id>();
     
     Set<Id> SLIdsForRouting = new Set<Id>();
     Map<Id, Solar_Loans__c> SLForBranchIds = new Map<Id, Solar_Loans__c>();
@@ -173,8 +174,14 @@ trigger SolarLoanTrigger on Solar_Loans__c (after insert,before insert, after up
             
             //------------------------------- Checking if the status is being changed and status = 'Completed'-----------------//
             
-            if(trigger.old[i].Status__c != 'Completed' && trigger.new[i].Status__c == 'Completed'){
+            if(trigger.old[i].Status__c != 'Completed' && trigger.new[i].Status__c == 'Completed' && 
+                    (trigger.new[i].EftLocator__c == null || trigger.new[i].EftLocator__c == '')){
                 SLIdsForEFT.add(trigger.new[i].id);
+            }
+
+            if(trigger.old[i].Status__c != 'Completed' && trigger.new[i].Status__c == 'Completed' && 
+                    (trigger.new[i].EftLocator__c != null || trigger.new[i].EftLocator__c != '')){
+                SLIdsForEFTUpdate.add(trigger.new[i].id);
             }
             
             //------------------------------- Adding ids if the Member Number field is not null----------------------------------//
@@ -256,6 +263,13 @@ trigger SolarLoanTrigger on Solar_Loans__c (after insert,before insert, after up
             
              SolarLoanToSymitar.insertSolarLoans(SLIdsForEFT);
         }
+
+        //------------------------------- Updating "EFT" record if the status = "Completed"------------------------------------------//
+
+        if(SLIdsForEFTUpdate.size() > 0){
+            
+            //SolarLoanToSymitar.updateEFTrecord(SLIdsForEFT);
+       }
         
     }
         
