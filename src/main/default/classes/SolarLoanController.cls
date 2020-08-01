@@ -221,7 +221,7 @@ public class SolarLoanController {
         
         //------------------------------------Stage-4  Creating Loan Records -----------------------------------------//
         
-        if(CurrentStage == 'Stage 4'){
+        if(CurrentStage == 'Stage 4' && (SolarLoanList[0].Loan_Id__c == null || SolarLoanList[0].Loan_Id__c == '')){
             
             SLIdsToCreateLoan.add(SolarLoanList[0].id);
             SolarLoanToCreateLoan.createSolarLoans(SLIdsToCreateLoan);
