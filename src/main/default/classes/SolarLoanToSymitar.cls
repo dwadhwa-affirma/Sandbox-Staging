@@ -247,8 +247,8 @@ public class SolarLoanToSymitar {
                 
                 Payee = sl.Routing_Number__c;
                 Reference = sl.Bank_Account_Number__c ;
-                if(sl.ABA_Bank_Name__c != null){
-                    MatchID3 = sl.ABA_Bank_Name__c;
+                if(sl.Bank_Name__c != null){
+                    MatchID3 = sl.Bank_Name__c;
                     if(MatchID3.length() > 22){
                         MatchID3 = MatchID3.left(21);
                     }
