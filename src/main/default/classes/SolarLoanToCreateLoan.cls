@@ -53,7 +53,6 @@ public class SolarLoanToCreateLoan {
     public static String BirthDate;
     public static String SSN;
     public static String LoanId;
-     
     public static String jsonData1;
     public static HttpRequest req1 = new HttpRequest();
     public static String result1;
@@ -252,6 +251,14 @@ public class SolarLoanToCreateLoan {
                     }
                     
                     SSN = sl.Joint_SSN__c;
+                   
+                    if(sl.ECOA_Code__c != null){
+                        ECOACODE = sl.ECOA_Code__c;
+                    }
+                    else{
+                        ECOACODE = '0';
+                    }
+                   
                     LoanId = result;
                     AccountNumber = sl.Account_Number__r.name;
                     
