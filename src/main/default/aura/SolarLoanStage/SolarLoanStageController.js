@@ -175,15 +175,24 @@
 			 compEvent.fire();
 			 
 			 if(Stage5ErrorCheck != 'True' && Stage3ErrorCheck != 'True'){
-				 window.setTimeout(
-				    $A.getCallback(function() {
-				       helper.hideSpinner(component,helper)
-				    }), 5000
-				 );
+                 if(checkCurrentStage == 'Stage 3'){
+                     window.setTimeout(
+                        $A.getCallback(function() {
+                           helper.hideSpinner(component,helper)
+                        }), 8000
+                     );
+                 }
+                 if(checkCurrentStage != 'Stage 3'){
+                     window.setTimeout(
+                        $A.getCallback(function() {
+                           helper.hideSpinner(component,helper)
+                        }), 5000
+                     );
+                 }
 	             window.setTimeout(
 				    $A.getCallback(function() {
 				      helper.getSolarLoanData(component,helper)
-				    }), 4000
+				    }), 2000
 				 ); 
 	         }
 	         //------------------------------------------Validation message for Stage-2 -----------------------------//
