@@ -123,12 +123,7 @@ trigger SolarLoanTrigger on Solar_Loans__c (after insert,before insert, after up
     			trigger.new[i].Review_needed__c = true;
     		}
     		
-    	    if(trigger.old[i].EftLocator__c != trigger.new[i].EftLocator__c && trigger.new[i].EftLocator__c != null){
-            	trigger.new[i].Status__c = 'EFT Record Created';
-                trigger.new[i].Current_Solar_Loan_Stage__c = 'Stage 7';
-            }
-            
-            //----------------------------- Start - Updating DocuSign Document Status -----------------------------------//
+    	    //----------------------------- Start - Updating DocuSign Document Status -----------------------------------//
             
             if(trigger.old[i].Status__c != trigger.new[i].Status__c && trigger.new[i].Status__c ==  'ACH Pending'){
             	trigger.new[i].DocuSign_Document_Status__c = 'Sent';
@@ -163,7 +158,7 @@ trigger SolarLoanTrigger on Solar_Loans__c (after insert,before insert, after up
     }
     		
     if(Trigger.isAfter && Trigger.isUpdate){
-    	
+        
         for(Integer i=0; i<trigger.new.size(); i++){
         
             //------------------------------- Checking if the status is being changed and status = 'ACH Pending'-----------------//
@@ -180,7 +175,7 @@ trigger SolarLoanTrigger on Solar_Loans__c (after insert,before insert, after up
             }
 
             if(trigger.old[i].Status__c != 'Completed' && trigger.new[i].Status__c == 'Completed' && 
-                    (trigger.new[i].EftLocator__c != null || trigger.new[i].EftLocator__c != '')){
+                    (trigger.new[i].EftLocator__c != null && trigger.new[i].EftLocator__c != '')){
                 SLIdsForEFTUpdate.add(trigger.new[i].id);
             }
             
@@ -268,7 +263,7 @@ trigger SolarLoanTrigger on Solar_Loans__c (after insert,before insert, after up
 
         if(SLIdsForEFTUpdate.size() > 0){
             
-            //SolarLoanToSymitar.updateEFTrecord(SLIdsForEFT);
+            SolarLoanToSymitar.updateEFTrecord(SLIdsForEFT);
        }
         
     }

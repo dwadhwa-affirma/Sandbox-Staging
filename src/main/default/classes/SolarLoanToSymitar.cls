@@ -18,6 +18,7 @@ public class SolarLoanToSymitar {
     public static String loanAPI;
     public static String AlternatePayment;
     public static Double Total;
+    public static string EFTLocatorId;
     
     
     public static String PaymentMethod;
@@ -79,7 +80,7 @@ public class SolarLoanToSymitar {
                 Frequency = '4';
                 
                 if(sl.Due_Date__c != null){
-                    Day1 = '0'; //String.valueof(sl.Due_Date__c.day());
+                    Day1 = '0';//String.valueof(sl.Due_Date__c.day());
                 }
                 else{
                     Day1 = '0';
@@ -123,7 +124,7 @@ public class SolarLoanToSymitar {
                 req.setHeader('Accept', 'application/json');
                 
                 jsonData = '{"Day1":'+'\"'+Day1+'\"'+',"NextDate":'+'\"'+NextDate+'\"'+',"EffectiveDate":'+'\"'+EffectiveDate+'\"'+',"EFTType":' + '\"'+ EFTType +'\"'+',"AmountCode":' + '\"'+ AmountCode +'\"'+',"GroupNumber":'+'\"'+ GroupNumber +'\"'+',"IdType":'+'\"' + IDType + '\"'+',"ID":'+'\"'+ID+'\"'+',"Frequency":'+'\"'+Frequency+'\"'+',"PostAmount":'+'\"'+PostAmount+'\"'+',"Payee":'+'\"'+Payee+'\"'+',"Reference":'+'\"'+Reference+'\"'+',"MatchId3":'+'\"'+MatchID3+'\"'+',"AccountNumber":'+'\"'+AccountNumber+'\"}';
-                //jsonData = '{"EFTType": 3,"AmountCode": 27,"GroupNumber": "000001","IdType": 0, "ID": "0100", "Frequency": 4,"Day1": 0,"NextDate": "2019-01-08","EffectiveDate": "2019-01-09","PostAmount": "100.00", "Payee": "0322271627","Reference": "42006986568","MatchId3": "BANK OF AMERICA, N.A.","AccountNumber": "123"}';
+                
                 req.setBodyAsBlob(Blob.valueof(jsondata)); 
                 system.debug('test'+jsonData);
                 
@@ -252,7 +253,7 @@ public class SolarLoanToSymitar {
                         MatchID3 = MatchID3.left(21);
                     }
                 }
-                
+               
                 //-------------------------------------- Alternate Payment-----------------------------------//
 
                 if(sl.Additional_Amount__c != null){
@@ -260,15 +261,16 @@ public class SolarLoanToSymitar {
                     Total = (Double.valueof(sl.Loan_Pmt_Amount__c) + Double.valueof(sl.Additional_Amount__c));
                     AlternatePayment = string.valueof(Total);
                 }
-                
+
+                EFTLocatorId = sl.EftLocator__c;
                 AccountNumber = sl.Account_Number__r.name;
-                //req.setEndpoint(loanAPI+'/EFT/CreateEft');
+                req.setEndpoint(loanAPI+'/EFT/UpdateEftById');
                 req.setMethod('POST');
                 req.setHeader('Content-Type', 'application/json');
                 req.setHeader('Accept', 'application/json');
                 
-                jsonData = '{"Day1":'+'\"'+Day1+'\"'+',"NextDate":'+'\"'+NextDate+'\"'+',"EffectiveDate":'+'\"'+EffectiveDate+'\"'+',"EFTType":' + '\"'+ EFTType +'\"'+',"AmountCode":' + '\"'+ AmountCode +'\"'+',"GroupNumber":'+'\"'+ GroupNumber +'\"'+',"IdType":'+'\"' + IDType + '\"'+',"ID":'+'\"'+ID+'\"'+',"Frequency":'+'\"'+Frequency+'\"'+',"PostAmount":'+'\"'+PostAmount+'\"'+',"Payee":'+'\"'+Payee+'\"'+',"Reference":'+'\"'+Reference+'\"'+',"MatchId3":'+'\"'+MatchID3+'\"'+',"AccountNumber":'+'\"'+AccountNumber+'\"}';
-                //jsonData = '{"EFTType": 3,"AmountCode": 27,"GroupNumber": "000001","IdType": 0, "ID": "0100", "Frequency": 4,"Day1": 0,"NextDate": "2019-01-08","EffectiveDate": "2019-01-09","PostAmount": "100.00", "Payee": "0322271627","Reference": "42006986568","MatchId3": "BANK OF AMERICA, N.A.","AccountNumber": "123"}';
+                jsonData = '{"AmountCode":'+'\"'+AmountCode+'\"'+',"Payee":'+'\"'+Payee+'\"'+',"Reference":'+'\"'+Reference+'\"'+',"MatchId3":'+'\"'+MatchID3+'\"'+',"EftLocatorId":'+'\"'+EFTLocatorId+'\"'+',"AccountNumber":'+'\"'+AccountNumber+'\"}';
+                
                 req.setBodyAsBlob(Blob.valueof(jsondata)); 
                 system.debug('test'+jsonData);
                 
