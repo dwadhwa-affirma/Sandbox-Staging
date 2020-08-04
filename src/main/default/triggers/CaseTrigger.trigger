@@ -573,60 +573,56 @@ System.Debug('Calling the CaseAssign method');
     
     public void updateErrorOnCaseClosing(List<Case> inCases){ 
         
-        Map<Id, Task> taskMap = new Map<Id, Task>();
-         
-        List<Task> tskList = [SELECT Id, WhatId FROM Task WHERE IsClosed=false AND WhatId IN :trigger.newMap.keySet()];
-         Map<Object, Object> caseAttachMap = new Map<Object, Object>();
-        System.debug('tskList is:::'+tskList);
-
-        if(tskList.size() > 0){ 
-             
-             for(Task t : tskList)
-             {
-                taskMap.put(t.WhatId, t);
-             }
-        }
-         System.debug('taskmap is::::'+taskMap);
-
         if(inCases.size() > 0){
-            for(Case c : inCases)
-            {
-                if(c.Status == 'Closed' && c.Future_Date__c > system.today()){
-                 
-                    c.addError('Case cannot be closed with a future date greater than today.');
-                }
-               
+            
+            for(Case c : inCases){
+            
                 if(c.Status == 'Closed'){
+                
+                    Map<Id, Task> taskMap = new Map<Id, Task>();
+                    Map<Object, Object> caseAttachMap = new Map<Object, Object>(); 
+                
+                    List<Task> tskList = [SELECT Id, WhatId FROM Task WHERE IsClosed=false AND WhatId IN :trigger.newMap.keySet()];
+                    System.debug('tskList is:::'+tskList);
+    
+                    if(tskList.size() > 0){ 
+                         
+                         for(Task t : tskList){
+                         
+                            taskMap.put(t.WhatId, t);
+                         }
+                    }
+                    System.debug('taskmap is::::'+taskMap);
+                    
                     if(taskMap.containsKey(c.Id)){
                         c.addError('All Tasks associated with a Case must be close/completed before the Case can be closed.');
                     }
-                }    
-             }
-        }
-         
-        AggregateResult[] pendingAttachCases = [select count(id) pendingDocCount, case__c from OnBase_Document__c where ((case__c IN:trigger.newMap.keySet() or Member_Comment__r.Case__C IN: trigger.newMap.keySet()) and document_type__c = '')  group by case__c];
-    
-    if(pendingAttachCases.size() > 0){
-        for(AggregateResult aggRes : pendingAttachCases){
-            System.debug('aggRes :: '+ aggRes);
-            caseAttachMap.put(aggRes.get('Case__c'),aggRes.get('pendingDocCount'));
-        }
-    }
-    
-    System.debug('caseAttachMap :: '+caseAttachMap);
-    
-     if(inCases.size() > 0){
-        for(Case c : inCases)
-        {
-            if(c.Status == 'Closed'){
-                if(caseAttachMap.containsKey(c.Id) && (Integer) caseAttachMap.get(c.Id)>0){
-                    c.addError('All attachments must be indexed before the case can be closed.');
+                    
+                    AggregateResult[] pendingAttachCases = [select count(id) pendingDocCount, case__c from OnBase_Document__c where ((case__c IN:trigger.newMap.keySet() or Member_Comment__r.Case__C IN: trigger.newMap.keySet()) and document_type__c = '')  group by case__c];
+                    
+                    if(pendingAttachCases.size() > 0){
+                        
+                        for(AggregateResult aggRes : pendingAttachCases){
+                            
+                            System.debug('aggRes :: '+ aggRes);
+                            caseAttachMap.put(aggRes.get('Case__c'),aggRes.get('pendingDocCount'));
+                        }
+                    }
+        
+                    System.debug('caseAttachMap :: '+caseAttachMap);
+                    
+                    if(caseAttachMap.containsKey(c.Id) && (Integer) caseAttachMap.get(c.Id)>0){
+                        c.addError('All attachments must be indexed before the case can be closed.');
+                    }
                 }
-            }    
-         }
-     }
-         
-}
+                if(c.Status == 'Closed' && c.Future_Date__c > system.today()){
+                             
+                    c.addError('Case cannot be closed with a future date greater than today.');
+                }
+    
+            }       
+        }                                    
+    }
     
     public void updateContactName(List<Case> ccList){
         
