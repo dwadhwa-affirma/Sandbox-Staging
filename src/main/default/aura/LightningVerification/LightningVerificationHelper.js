@@ -1022,7 +1022,8 @@
 	                                	   				}
 	                                	   	if(result.ScorePoints!= undefined){
 			                                	   component.set("v.MaximumPointsAvailable",result.ScorePoints[0].Maximum_Points_Available__c);
-			                                	   component.set("v.PointObtained",result.ScorePoints[0].Points_Obtained__c);
+												   component.set("v.PointObtained",result.ScorePoints[0].Points_Obtained__c);
+												   component.set("v.CurrentScore",result.ScorePoints[0].Points_Obtained__c);
 			                                	   component.set("v.CurrentAuthenticationLevel",result.ScorePoints[0].Current_Authentication_Level__c);
 			                                	   component.set("v.HighestAchievableLevel",result.ScorePoints[0].Highest_Achievable_Level__c);
 			                                	   component.set("v.ToGetHighestLevel",result.ScorePoints[0].Next_Level__c);
