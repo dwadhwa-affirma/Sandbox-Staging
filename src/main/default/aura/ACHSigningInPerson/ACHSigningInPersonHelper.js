@@ -157,24 +157,26 @@
                 $A.util.addClass(authwrapDiv,'showdiv');
                 
                 $A.get('e.force:refreshView').fire();
-                $A.get('e.force:closeQuickAction').fire();
+                //$A.get('e.force:closeQuickAction').fire();
                 
                $A.get('e.force:closeQuickAction').fire(); 
                 
-                var recordId = component.get("v.recordId");
+                var recordId = component.get("v.EFTRecord.Id");
                 if(recordId != undefined)
                {
-                var url = '/apex/eSignature?id=' + recordId;
-                var urlEvent = $A.get("e.force:navigateToURL");
-                urlEvent.setParams({
-                    "url": url
-                });
-                urlEvent.fire();
-                    }
+                    /*var url = '/apex/ACHSigningInPerson?id=' + recordId;
+                    var urlEvent = $A.get("e.force:navigateToURL");
+                    urlEvent.setParams({
+                        "url": url
+                    });
+                    urlEvent.fire();*/
+                    component.set('v.loading', false);
+                    window.open('/apex/ACHSigningInPerson?id=' + recordId,'_blank');
+                }
              }
-            component.set('v.loading', true);
+            component.set('v.loading', false);
         });       
-        //$A.enqueueAction(action);
+        $A.enqueueAction(action);
     },
      savePDF:function(component, event, helper){ 
         var recordId = component.get("v.recordId");

@@ -443,7 +443,10 @@
     },
     
     OpenInPersonSigning : function (component, event, helper) {
-        helper.SaveStageValuesSignInPeron(component, event, component.get("v.EFTRecord"), i, stages);             
+        var stages = [];
+        stages = component.get("v.EFTStageDetails");
+        component.set("v.ActiveStepIndex",5);       
+        helper.SaveStageValuesSignInPeron(component, event, component.get("v.EFTRecord"), 3, stages);             
     },
 
     backSigninPerson  : function (component, event, helper) {

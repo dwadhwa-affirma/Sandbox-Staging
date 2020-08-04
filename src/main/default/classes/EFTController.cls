@@ -1,4 +1,25 @@
-public class EFTController {   
+public class EFTController {  
+    
+    public EFT__c ACH;
+    public EFT__c ACHDetail{get; set;}
+    public id objParentId{get;set;}
+
+    public Id signAttachmentId{get {
+        List<Attachment> a = new List<Attachment>();
+        a = [SELECT Id FROM Attachment Where ParentId=:objParentId and Name='ESignature.png' Order by CreatedDate desc LIMIT 1]; 
+        if(a.size() > 0) {return a[0].Id;} 
+        return null;} set;}
+
+    public EFTController(ApexPages.StandardController stdController) {
+        this.ACH = (EFT__c)stdController.getRecord();
+        this.objParentId=this.ACH.Id;
+        system.debug(ApexPages.currentPage().getParameters().get('id'));
+        this.ACHDetail = [SELECT id, name, Member_Account__c, Stage__c, Action_Type__c, Share_Loan_Id__c, Type__c	,Share_Loan_Type__c, Share_Loan_Description__c,
+                            Routing_Number__c, Bank_Name__c, Account_Number__c, Alternate_Amount__c,Effective_Date__c,
+                            Frequency__c, Payment_Amount__c, Day_of_Month__c,Second_Day_of_Month__c, Member_Account__r.name, Case__c, Case__r.CaseNumber, Case__r.Status	, Expired__c, Member_Name__c
+                            from EFT__c  WHERE Id=:this.ACH.Id];
+    }
+
      //------------------------------- Getting Stage Details and Member Account Details-----------------------------------------------//
     @AuraEnabled
     public static map<string,object> getStageData(string recordId, string sObjectType){
@@ -755,6 +776,50 @@ public class EFTController {
         a.Name = 'ESignature.png';
         insert a;
         return a.Id;
+    }
+
+    @RemoteAction
+    public static Id saveSignature(String signatureBody, id parentId){
+            Attachment a = new Attachment();
+            a.ParentId = parentId; // record id of object.
+            a.Body = EncodingUtil.base64Decode(signatureBody);
+            a.ContentType = 'image/png';
+            a.Name = 'ESignature.png';
+            insert a;
+            return a.Id;
+      }
+    
+      public PageReference attach() {
+        Attachment myAttach = new Attachment();
+        myAttach.ParentId = ACH.Id;//Id of the object to which the page is attached
+        myAttach.name = 'ACH DIRECT PAYMENT AUTHORIZATION.pdf';
+        PageReference myPdf = ApexPages.currentPage();//myPdfPage is the name of your pdf page
+        myAttach.body = myPdf.getContentAsPdf();
+        insert myAttach;
+        
+        List<Attachment> signatures = new List<Attachment>();
+        	signatures = [SELECT Id FROM Attachment Where ParentId=:ACH.Id and Name='ESignature.png' Order by CreatedDate desc OFFSET 1]; 
+         	if(signatures.size()>0){
+             delete signatures;
+         	}
+         
+            List<Attachment> eSignPdfs = new List<Attachment>();
+        	eSignPdfs = [SELECT Id FROM Attachment Where ParentId=:ACH.Id and Name='ACH DIRECT PAYMENT AUTHORIZATION.pdf' Order by CreatedDate desc OFFSET 1]; 
+         	if(eSignPdfs.size()>0){
+             delete eSignPdfs;
+         	}
+        
+        ApexPages.addmessage(new ApexPages.message(ApexPages.severity.CONFIRM,'ACH Direct Payment Authorization pdf has been generated successfully.'));  
+        
+        PageReference pageRef = new PageReference('/' + objParentId);
+		pageRef.setRedirect(true);
+        return pageRef;
+    }
+    
+     public PageReference Cancel() {
+		PageReference pageRef = new PageReference('/' + objParentId);
+		pageRef.setRedirect(true);
+        return pageRef;
     }
     
     public class ShareLoanWrapperObject

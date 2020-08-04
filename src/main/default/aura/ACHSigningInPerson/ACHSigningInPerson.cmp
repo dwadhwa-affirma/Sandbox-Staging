@@ -1,4 +1,4 @@
-<aura:component controller="EFTController"  implements="force:appHostable,force:hasRecordId,force:lightningQuickAction,lightning:isUrlAddressable">
+<aura:component access="global" controller="EFTController" implements="force:appHostable,force:hasRecordId,force:lightningQuickAction,lightning:isUrlAddressable">
   <aura:attribute name="loading" type="Boolean" default="false" /> 
   <aura:attribute name="EFTRecord" type="EFT__c"/>  
   
