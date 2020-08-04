@@ -253,10 +253,10 @@ public class SolarLoanToCreateLoan {
                     SSN = sl.Joint_SSN__c;
                    
                     if(sl.ECOA_Code__c != null){
-                        ECOACODE = sl.ECOA_Code__c;
+                        ECOACode = sl.ECOA_Code__c;
                     }
                     else{
-                        ECOACODE = '0';
+                        ECOACode = '0';
                     }
                    
                     LoanId = result;
@@ -268,7 +268,7 @@ public class SolarLoanToCreateLoan {
                     req1.setHeader('Content-Type', 'application/json');
                     req1.setHeader('Accept', 'application/json');
                     
-                    jsonData1 = '{"Type":' + '\"'+ Type +'\"'+',"Last":' + '\"'+ Last +'\"'+',"First":'+'\"'+ First +'\"'+',"Street":'+'\"' + Street + '\"'+',"ExtraAddress":'+'\"'+ExtraAddress+'\"'+',"City":'+'\"'+City+'\"'+',"State":'+'\"'+State+'\"'+',"ZipCode":'+'\"'+ZipCode+'\"'+',"BirthDate":'+'\"'+BirthDate+'\"'+',"SSN":'+'\"'+SSN+'\"'+',"LoanId":'+'\"'+LoanId+'\"'+',"AccountNumber":'+'\"'+AccountNumber+'\"}';
+                    jsonData1 = '{"EcoaCode":'+'\"'+ECOACode+'\"'+',"Type":' + '\"'+ Type +'\"'+',"Last":' + '\"'+ Last +'\"'+',"First":'+'\"'+ First +'\"'+',"Street":'+'\"' + Street + '\"'+',"ExtraAddress":'+'\"'+ExtraAddress+'\"'+',"City":'+'\"'+City+'\"'+',"State":'+'\"'+State+'\"'+',"ZipCode":'+'\"'+ZipCode+'\"'+',"BirthDate":'+'\"'+BirthDate+'\"'+',"SSN":'+'\"'+SSN+'\"'+',"LoanId":'+'\"'+LoanId+'\"'+',"AccountNumber":'+'\"'+AccountNumber+'\"}';
                     req1.setBodyAsBlob(Blob.valueof(jsondata1)); 
                    //system.debug('test'+jsonData);
                     
