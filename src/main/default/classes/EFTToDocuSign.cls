@@ -106,8 +106,17 @@ public class EFTToDocuSign {
 				system.debug('EnvelopeId: '+EnvelopeId);
 				
 				EFT__c e = new EFT__c();
-            	e.id = eft.Id;
-            	e.DocuSignId__c = EnvelopeId;
+				e.id = eft.Id;
+                if(eft.Action_Type__c == 'Create'){
+                    system.debug('Create');
+                    e.DocuSignId__c = EnvelopeId;
+                }  
+				else if(eft.Action_Type__c == 'Update' && !eft.Expired__c){
+                    system.debug('Update');
+                    e.Update_DocuSignId__c = EnvelopeId;
+                }
+            		
+            	//e.DocuSignId__c = EnvelopeId;
             
             	EFTToUpdate.add(e);
 				
