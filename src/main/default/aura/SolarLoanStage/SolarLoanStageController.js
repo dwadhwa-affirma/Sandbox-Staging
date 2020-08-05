@@ -173,26 +173,26 @@
              					  "IsSubmitButtonDisabled" : buttonDisabled,
              					  "Stage5ACHCheck" : Stage5ACHCheck});
 			 compEvent.fire();
-			 
+			
 			 if(Stage5ErrorCheck != 'True' && Stage3ErrorCheck != 'True'){
-                 if(checkCurrentStage == 'Stage 3'){
+                 if(checkCurrentStage == 'Stage 3' || checkCurrentStage == 'Stage 6'){
                      window.setTimeout(
                         $A.getCallback(function() {
                            helper.hideSpinner(component,helper)
-                        }), 8000
+                        }), 10000
                      );
                  }
-                 if(checkCurrentStage != 'Stage 3'){
+                 if(checkCurrentStage != 'Stage 3' && checkCurrentStage != 'Stage 6'){
                      window.setTimeout(
                         $A.getCallback(function() {
                            helper.hideSpinner(component,helper)
-                        }), 5000
+                        }), 7000
                      );
                  }
 	             window.setTimeout(
 				    $A.getCallback(function() {
 				      helper.getSolarLoanData(component,helper)
-				    }), 2000
+				    }), 7000
 				 ); 
 	         }
 	         //------------------------------------------Validation message for Stage-2 -----------------------------//

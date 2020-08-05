@@ -263,7 +263,7 @@ trigger SolarLoanTrigger on Solar_Loans__c (after insert,before insert, after up
 
         if(SLIdsForEFTUpdate.size() > 0){
             
-            SolarLoanToSymitar.updateEFTrecord(SLIdsForEFT);
+            SolarLoanToSymitar.updateEFTrecord(SLIdsForEFTUpdate);
        }
         
     }

@@ -27,6 +27,8 @@ public class SolarLoanToSymitar {
     public static String jsonData1;  
     public static HttpRequest req = new HttpRequest();
     public static HttpRequest req1 = new HttpRequest();
+    public static HttpRequest req2 = new HttpRequest();
+
     public static String result;
     public static List<Solar_Loans__c> SolarLoanToUpdate = new List<Solar_Loans__c>();
     
@@ -80,7 +82,7 @@ public class SolarLoanToSymitar {
                 Frequency = '4';
                 
                 if(sl.Due_Date__c != null){
-                    Day1 = '0';//String.valueof(sl.Due_Date__c.day());
+                    Day1 = '0';
                 }
                 else{
                     Day1 = '0';
@@ -116,7 +118,6 @@ public class SolarLoanToSymitar {
                 system.debug('MatchID3'+MatchID3);    
                 AccountNumber = sl.Account_Number__r.name;
                 
-                //req.setEndpoint('https://brscsymx.ctxcu.org/dev/EFT/CreateEft');
                 req.setEndpoint(loanAPI+'/EFT/CreateEft');
                 //req.setClientCertificateName('brscmcapi');
                 req.setMethod('POST');
@@ -154,6 +155,44 @@ public class SolarLoanToSymitar {
                     ErrorEFTLocator = String.valueOf(ErrorEFTLocator).substringBefore('","ErrorDetails"');
                     system.debug('ErrorEFTLocator' + ErrorEFTLocator);
                 }
+
+                //---------------------------------Update Day1 after creation of EFT record--------------------------------//
+                
+                if(result != null && result != ''){
+            
+                    if(sl.Due_Date__c != null){
+                        Day1 = String.valueof(sl.Due_Date__c.day());
+                    }
+                    else{
+                        Day1 = '0';
+                    }
+
+                    req2.setEndpoint(loanAPI+'/EFT/UpdateEftById');
+                    req2.setMethod('POST');
+                    req2.setHeader('Content-Type', 'application/json');
+                    req2.setHeader('Accept', 'application/json');
+
+                    jsonData = '{"Day1":'+'\"'+Day1+'\"'+',"AmountCode":'+'\"'+AmountCode+'\"'+',"Payee":'+'\"'+Payee+'\"'+',"Reference":'+'\"'+Reference+'\"'+',"MatchId3":'+'\"'+MatchID3+'\"'+',"EftLocatorId":'+'\"'+result+'\"'+',"AccountNumber":'+'\"'+AccountNumber+'\"}';
+                
+                    req2.setBodyAsBlob(Blob.valueof(jsondata)); 
+                    system.debug('test'+jsonData);
+                    
+                    Http http2 = new Http();  
+                    req2.setTimeout(60000);
+                    HttpResponse res2;
+                    String responseBody2;
+                    if(!Test.isRunningTest()){                       
+                        res2 = http2.send(req2);
+                        responseBody2 = res2.getBody();
+                        System.debug('Response Body::'+res2.getBody());    
+                    }else{
+                        responseBody2 = '{"EFTType":"3","AmountCode":"27","GroupNumber":"1","IdType":"1","ID":"100","Frequency":"4","Day1":"1","NextDate":"01-01-2019","EffectiveDate":"01-01-2019","PostAmount":"100.00","Payee":"322271627","Reference":"42006986568","MatchId3":"BANK OF AMERICA","AccountNumber":"123"}';
+                    }
+
+                }    
+
+                //-------------------------------Update Loan record with PaymentMethod-------------------------------------//
+
                 if(result != null && result != '' && sl.ACH__c == 'True'){
                 	
                 	PaymentMethod = '5';
@@ -238,6 +277,13 @@ public class SolarLoanToSymitar {
                     loanAPI = api.URL__c;
                 }
 
+                if(sl.Due_Date__c != null){
+                    Day1 = String.valueof(sl.Due_Date__c.day());
+                }
+                else{
+                    Day1 = '0';
+                }
+
                 if(sl.Loan_Type__c == 'Savings Account')
                     AmountCode = '37' ;
                 else
@@ -249,8 +295,9 @@ public class SolarLoanToSymitar {
                 Reference = sl.Bank_Account_Number__c ;
                 if(sl.Bank_Name__c != null){
                     MatchID3 = sl.Bank_Name__c;
+                    MatchID3 = MatchID3.toUpperCase();
                     if(MatchID3.length() > 22){
-                        MatchID3 = MatchID3.left(21);
+                        MatchID3 = MatchID3.left(21); 
                     }
                 }
                
@@ -269,7 +316,7 @@ public class SolarLoanToSymitar {
                 req.setHeader('Content-Type', 'application/json');
                 req.setHeader('Accept', 'application/json');
                 
-                jsonData = '{"AmountCode":'+'\"'+AmountCode+'\"'+',"Payee":'+'\"'+Payee+'\"'+',"Reference":'+'\"'+Reference+'\"'+',"MatchId3":'+'\"'+MatchID3+'\"'+',"EftLocatorId":'+'\"'+EFTLocatorId+'\"'+',"AccountNumber":'+'\"'+AccountNumber+'\"}';
+                jsonData = '{"Day1":'+'\"'+Day1+'\"'+',"AmountCode":'+'\"'+AmountCode+'\"'+',"Payee":'+'\"'+Payee+'\"'+',"Reference":'+'\"'+Reference+'\"'+',"MatchId3":'+'\"'+MatchID3+'\"'+',"EftLocatorId":'+'\"'+EFTLocatorId+'\"'+',"AccountNumber":'+'\"'+AccountNumber+'\"}';
                 
                 req.setBodyAsBlob(Blob.valueof(jsondata)); 
                 system.debug('test'+jsonData);
@@ -287,6 +334,11 @@ public class SolarLoanToSymitar {
                 }
                 
                 if(AlternatePayment != null && AlternatePayment != ''){
+
+                    if(sl.ACH__c == 'True')
+                        PaymentMethod = '5';
+                    else
+                        PaymentMethod = '1';
 
                     req1.setEndpoint('https://symxapi.chevronfcu.org/devclient/EFT/UpdateLoanById');
                     req1.setClientCertificateName('brscmcapi');
