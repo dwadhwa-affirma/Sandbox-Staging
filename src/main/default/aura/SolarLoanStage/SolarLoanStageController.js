@@ -186,13 +186,13 @@
                      window.setTimeout(
                         $A.getCallback(function() {
                            helper.hideSpinner(component,helper)
-                        }), 5000
+                        }), 7000
                      );
                  }
 	             window.setTimeout(
 				    $A.getCallback(function() {
 				      helper.getSolarLoanData(component,helper)
-				    }), 4000
+				    }), 7000
 				 ); 
 	         }
 	         //------------------------------------------Validation message for Stage-2 -----------------------------//
