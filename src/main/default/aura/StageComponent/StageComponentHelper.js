@@ -125,8 +125,15 @@
 		action.setCallback(this, function(resp) {
 			var state=resp.getState();			
 			if(state === "SUCCESS"){
-				var result = resp.getReturnValue();   
-				component.set('v.EFTRecord', result);
+                var result = resp.getReturnValue();
+                
+                component.set('v.EFTRecord', result);
+                if(result.Alternate_Amount__c ==undefined){
+                    component.set('v.EFTRecord.isAlternateAmount__c', false);
+                }
+                else{
+                    component.set('v.EFTRecord.isAlternateAmount__c', true);
+                }
                 
                 var header = document.getElementsByClassName('slds-media_center cStageComponent');
         var footer = document.getElementsByClassName('slds-modal__footer cStageComponent');

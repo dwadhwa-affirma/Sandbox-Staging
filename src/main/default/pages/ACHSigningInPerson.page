@@ -162,7 +162,7 @@ function clearArea() {
 .authwrap .tblbor0 td{border:0 !important;}
 .authwrap .tblbor0 td.tblborright{border-right:1px solid #000 !important;}
 
-.authwrap .authtitle{margin:1rem;}
+.authwrap .authtitle{margin:1rem;margin-top: -0.5rem !important;}
 .authwrap .chkbx{border:1px solid #000; width:15px; height:15px; margin:0 1rem 0 1rem; display:inline-block; vertical-align:middle;
     line-height:15px; text-align:center;}
 
@@ -193,6 +193,14 @@ function clearArea() {
 
 .authwrap .signtbl div.dt {line-height:135px;}
 .authwrap .signtbl div.dt:before{line-height:normal;}
+
+.authwrap .txtACHReadOnly {
+    display: inline-block !important;
+    outline: 0;
+    border-width: 0 0 2px;
+}
+
+.authwrap .radioType table{width: 12%;}
 
 @media(max-width:767px){
 
@@ -323,53 +331,69 @@ function clearArea() {
             <h1 class="slds-text-heading--medium" style="font-family: Arial Unicode MS;font-size:18px;">CONSUMER AUTHORIZATION FOR DIRECT PAYMENT VIA ACH (ACH DEBITS)</h1>
         </div>
         <div id="eSignPdf" class="authwrap">    
-        <div class="authtitle">
-            <p style="font-family: Arial Unicode MS;font-size:15px;">The cutoff time for all wire transfer orders is <strong>11 a.m. PT</strong>. Orders received by this time will be processed the same  business day. Certain transactions that require further verification may not be processed until the next business day. </p>
-        </div>
-        
-        
+       
         
         <div class="authtitle">
-        	<br/>            
-            
+        	
             <p>Direct Payment via ACH is the transfer of funds from a consumer account for the purpose of making a payment.</p>
-            <br/>
+            
             <p>I (we) authorize CHEVRON FEDERAL CREDIT UNION to electronically debit my (our) account for the amount set forth in the loan note and/or monthly billing statement, (and, if necessary, electronically credit my (our) account to correct erroneous debits) as follows:</p>
-            <br/>
-            <p>Select One:</p>
-            <input type="radio" name="RadioBtn" value="{!ACHDetail.Type__c}"/>
+            
+            <label>Type:</label>
+            <span>{!ACHDetail.Type__c}</span>
+            <!--<apex:form>
+            <div class="radioType">
+            <apex:selectRadio value="{!ACHDetail.Type__c}" disabled="true">
+                    <apex:selectoptions value="{!Types}"></apex:selectoptions>
+            </apex:selectRadio>
+            </div>
+            </apex:form>-->     
             
             
-            <br/>
+           
             <p>at the depository financial institution named below. I (we) agree that ACH transactions I (we) authorize comply with all applicable law.</p>
+           
+            <label>Depository Name:</label>
+            <span>{!ACHDetail.Bank_Name__c}</span>            
             <br/>
-            Depository Name: {!ACHDetail.Bank_Name__c}
+        
+            <label>Routing/ABA Number: </label>
+            <span>{!ACHDetail.Routing_Number__c}</span>                      
             <br/>
-            Routing/ABA Number: {!ACHDetail.Routing_Number__c}
-            <br/>
-            Account Number: {!ACHDetail.Account_Number__c}
+            <label>Account Number:</label>
+            <span>{!ACHDetail.Account_Number__c}</span> 
+            
             <br/>
             <p>Please indicate account or loan where funds should be applied at CHEVRON FEDERAL CREDIT UNION:</p>
+            
+            <label>Member Name: </label>
+            <span>{!ACHDetail.Member_Name__c}</span> 
+            
             <br/>
-            Member Name: {!ACHDetail.Member_Name__c}
+            <label>Member Number: </label>
+            <span>{!ACHDetail.Member_Account__r.Name}</span> 
+           
             <br/>
-            Member Number: {!ACHDetail.Member_Account__r.Name}
-            <br/>
-            Four-Digit Share/Loan Type: {!ACHDetail.Share_Loan_Id__c}
+            <label>Four-Digit Share/Loan Type: </label>
+            <span>{!ACHDetail.Share_Loan_Id__c}</span> 
+            
             <br/>
             <p>
-                The amount set forth in the loan note and/or monthly billing statement will be debited on the due date set forth on each monthly billing statement. Note: Amount debited is subject to change based on loan terms.   
+                The amount set forth in the loan note and/or monthly billing statement will be debited on the due date set forth on each monthly billing statement. <strong> Note:</strong> Amount debited is subject to change based on loan terms.   
             </p>
-            <br/>
+           
             <apex:form>
-                <apex:inputCheckbox/>
+                <apex:inputCheckbox value="{!ACHDetail.isAlternateAmount__c}" disabled="true"/>            
+            <label>Indicate any additional amount to add to monthly payment:</label>
+            <span>{!ACHDetail.Alternate_Amount__c}</span> 
+           
             </apex:form>
-            Indicate any additional amount to add to monthly payment: {!ACHDetail.Alternate_Amount__c}
-            <br/>
+           
             <p>ACH origination will begin on the first payment, 10 days following receipt of this notice.</p>
-            <br/>
-            <p>I (we) understand that this authorization will remain in full force and effect until I (we) notify CHEVRON FEDERAL CREDIT UNION in writing by mail to P.O. Box 2069, Oakland, CA 94607-2069 that I (we) wish to revoke this authorization. I (we) understand that CHEVRON FEDERAL CREDIT UNION requires notice at least three (3) business days prior to the proposed effective date of the termination of authorization. Important Installment Loan Information: This authorization will be terminated and the debit entry will cease once the balance is paid in full.</p>
-        </div>
+            
+            <p>I (we) understand that this authorization will remain in full force and effect until I (we) notify CHEVRON FEDERAL CREDIT UNION in writing by mail to P.O. Box 2069, Oakland, CA 94607-2069 that I (we) wish to revoke this authorization. I (we) understand that CHEVRON FEDERAL CREDIT UNION requires notice at least three (3) business days prior to the proposed effective date of the termination of authorization.<strong> Important Installment Loan Information:</strong> This authorization will be terminated and the debit entry will cease once the balance is paid in full.</p>
+           
+            </div>
         
         <div class="signtbl">
             <table cellpadding="0" cellspacing="0">

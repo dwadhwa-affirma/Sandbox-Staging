@@ -16,8 +16,21 @@ public class EFTController {
         system.debug(ApexPages.currentPage().getParameters().get('id'));
         this.ACHDetail = [SELECT id, name, Member_Account__c, Stage__c, Action_Type__c, Share_Loan_Id__c, Type__c	,Share_Loan_Type__c, Share_Loan_Description__c,
                             Routing_Number__c, Bank_Name__c, Account_Number__c, Alternate_Amount__c,Effective_Date__c,
-                            Frequency__c, Payment_Amount__c, Day_of_Month__c,Second_Day_of_Month__c, Member_Account__r.name, Case__c, Case__r.CaseNumber, Case__r.Status	, Expired__c, Member_Name__c
+                            Frequency__c,isAlternateAmount__c, Payment_Amount__c, Day_of_Month__c,Second_Day_of_Month__c, Member_Account__r.name, Case__c, Case__r.CaseNumber, Case__r.Status	, Expired__c, Member_Name__c
                             from EFT__c  WHERE Id=:this.ACH.Id];
+    }
+
+    public List<SelectOption> getTypes(){
+        Schema.sObjectType sobject_type = EFT__c.getSObjectType();
+        Schema.DescribeSObjectResult sobject_describe = sobject_type.getDescribe();
+        Map<String, Schema.SObjectField> field_map = sobject_describe.fields.getMap();
+        System.debug('field_map=='+field_map);
+        List<Schema.PicklistEntry> pick_list_values = field_map.get('Type__c').getDescribe().getPickListValues();
+        List<selectOption> options = new List<selectOption>();
+        for (Schema.PicklistEntry a : pick_list_values) {
+                  options.add(new selectOption(a.getLabel(), a.getValue()));
+        }
+        return options;
     }
 
      //------------------------------- Getting Stage Details and Member Account Details-----------------------------------------------//
@@ -81,8 +94,8 @@ public class EFTController {
         system.debug('EFTRecord.Id=='+EFTRecord.Id);
     	if(EFTRecord.id != null){
         EFT__c ResultEFTRecord = [select id, name, Member_Account__c, Stage__c, Action_Type__c, Share_Loan_Id__c, Type__c	,Share_Loan_Type__c, Share_Loan_Description__c,
-                                      Routing_Number__c, Bank_Name__c, Account_Number__c, Alternate_Amount__c,Effective_Date__c,
-                                      Frequency__c, Payment_Amount__c, Day_of_Month__c,Second_Day_of_Month__c, Member_Account__r.name, Case__c, Case__r.CaseNumber, Case__r.Status	, Expired__c, Member_Name__c
+                                      Routing_Number__c, Bank_Name__c, Account_Number__c, Alternate_Amount__c,Effective_Date__c,EFT_ID_Type__c,
+                                      Frequency__c, Payment_Amount__c, Day_of_Month__c,Second_Day_of_Month__c, Member_Account__r.name, Case__c, Case__r.CaseNumber, Case__r.Status	, Expired__c, Member_Name__c,isAlternateAmount__c
                                       from EFT__c where id =: EFTRecord.id limit 1];
                                       return ResultEFTRecord;
     	}
@@ -104,7 +117,7 @@ public class EFTController {
         if(EFTRecord.Day_of_Month__c == '0'){
         	EFTRecord.Day_of_Month__c = (string)'0';
         }
-        List<EFT__c> EFTRecordList = [Select id, name, Member_Account__c, Stage__c, Action_Type__c from EFT__c where id =:EFTRecord.id limit 1];
+        List<EFT__c> EFTRecordList = [Select id, name, Member_Account__c, Stage__c, Action_Type__c, EftLocator__c from EFT__c where id =:EFTRecord.id limit 1];
         
         system.debug('EFTRecordList.size=='+EFTRecordList.size());
         system.debug('EFTRecordList.MemberAccount=='+EFTRecord.Member_Account__c);
@@ -295,7 +308,7 @@ public class EFTController {
         		
         		
         		EFT__c ResultEFTRecord = [select id, name, Member_Account__c, Stage__c, Action_Type__c, Share_Loan_Id__c, Type__c	,Share_Loan_Type__c, Share_Loan_Description__c,
-                                      Routing_Number__c, Bank_Name__c, Account_Number__c, Alternate_Amount__c,Effective_Date__c,
+                                      Routing_Number__c, Bank_Name__c, Account_Number__c, Alternate_Amount__c,Effective_Date__c,EFT_ID_Type__c,EftLocator__c,
                                       Frequency__c, Payment_Amount__c, Day_of_Month__c,Second_Day_of_Month__c, Member_Account__r.name, Case__c, Case__r.CaseNumber, Case__r.Status	, Expired__c, Member_Name__c, Docusign_Member_Email__c
                                       from EFT__c where id =: EFTRecord.id limit 1];
                                       
@@ -767,14 +780,23 @@ public class EFTController {
     }
 
     @AuraEnabled
-    public static Id saveSignature(String signatureBody, string EFTId){
-          
+    public static Id saveSignature(String signatureBody, string EFTId,EFT__c EFTRecord){
+        system.debug('EFTRecord.EftLocator__c=='+EFTRecord.EftLocator__c); 
         Attachment a = new Attachment();
         a.ParentId = EFTId; // record id of object.
         a.Body = EncodingUtil.base64Decode(signatureBody);
         a.ContentType = 'image/png';
         a.Name = 'ESignature.png';
         insert a;
+
+        
+        saveStageData(EFTRecord); 
+        Set<id> ids = new Set<id>();
+        ids.add(EFTId);
+        if(EFTRecord.EftLocator__c == null)
+            EFTToSyimtar.insertEFTs(ids);    
+        else
+            EFTToSyimtar.UpdateEFT(ids,false);
         return a.Id;
     }
 

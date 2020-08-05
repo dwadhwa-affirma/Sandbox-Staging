@@ -12,6 +12,12 @@
 			if(state === "SUCCESS"){				
 				var res = resp.getReturnValue();
                 component.set("v.EFTRecord",res);
+                if(res.Alternate_Amount__c == undefined || res.Alternate_Amount__c == '' || res.Alternate_Amount__c == null){
+                    component.set("v.EFTRecord.isAlternateAmount__c",false);
+                }
+                else{
+                    component.set("v.EFTRecord.isAlternateAmount__c",true);
+                }
                 				
 				}
 			});
@@ -31,7 +37,7 @@
         component.set('v.loading', true);
         component.set("v.saveDisabled",true);
         //event.target.set("v.disabled", true);
-        helper.saveHelper(component, event, helper);
+        helper.saveHelper(component, event, helper, component.get("v.EFTRecord"));
     },
     handleMemberSignatureClick:function(component, event, helper){
         var attachementId = component.get("v.attachmentId");
