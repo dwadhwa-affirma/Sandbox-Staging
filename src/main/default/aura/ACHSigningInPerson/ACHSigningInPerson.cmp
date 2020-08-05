@@ -1,6 +1,11 @@
 <aura:component access="global" controller="EFTController" implements="force:appHostable,force:hasRecordId,force:lightningQuickAction,lightning:isUrlAddressable">
   <aura:attribute name="loading" type="Boolean" default="false" /> 
-  <aura:attribute name="EFTRecord" type="EFT__c"/>  
+  <aura:attribute name="EFTRecord" type="EFT__c" default="{
+    'sobjectType': 'EFT__c',
+            'Stage__c': ''}"/>  
+  <aura:attribute name="RoutingBankName" type="string" />
+<aura:attribute name="RoutingNumber" type="string" />
+<aura:attribute name="AccountNumber" type="string" />
   
     <aura:html tag="style">
         .slds-modal__container{
@@ -79,29 +84,66 @@
             <br/>
             <p>at the depository financial institution named below. I (we) agree that ACH transactions I (we) authorize comply with all applicable law.</p>
             <br/>
-            Depository Name: {!v.EFTRecord.Bank_Name__c}
-            <br/>
-            Routing/ABA Number: {!v.EFTRecord.Routing_Number__c}
-            <br/>
-            Account Number: {!v.EFTRecord.Account_Number__c}
+            <div class="slds-form-element slds-form-element_horizontal">
+            <label class="slds-form-element__label">Depository Name:</label>
+            <!-- <input type="text" class="txtACH" value="{!v.EFTRecord.Bank_Name__c}" /> -->
+            <lightning:input class="txtACH" name="accountnumber" value="{!v.EFTRecord.Bank_Name__c}" />
+            </div>
+             
+            
+            <div class="slds-form-element slds-form-element_horizontal">
+            <label class="slds-form-element__label">Routing/ABA Number: </label>
+           <!-- <input type="text" class="txtACH" value="{!v.EFTRecord.Routing_Number__c}" /> -->
+            <lightning:input class="txtACH" name="accountnumber" value="{!v.EFTRecord.Routing_Number__c}" />
+        </div>
+            
+            <div class="slds-form-element slds-form-element_horizontal">
+            <label class="slds-form-element__label">Account Number:</label>
+            <!-- <input type="text" class="txtACH" value="{!v.EFTRecord.Account_Number__c}" /> -->
+            <lightning:input class="txtACH" name="accountnumber" value="{!v.EFTRecord.Account_Number__c}" />
+            </div>
             <br/>
             <p>Please indicate account or loan where funds should be applied at CHEVRON FEDERAL CREDIT UNION:</p>
             <br/>
-            Member Name: {!v.EFTRecord.Member_Name__c}
+            <label>Member Name: </label>
+            <input type="text" class="txtACHReadOnly" value="{!v.EFTRecord.Member_Name__c}" readonly="true" />            
             <br/>
-            Member Number: {!v.EFTRecord.Member_Account__r.Name}
+            <label>Member Number: </label>
+            <input type="text" class="txtACHReadOnly" value="{!v.EFTRecord.Member_Account__r.Name}" readonly="true"/>            
             <br/>
-            Four-Digit Share/Loan Type: {!v.EFTRecord.Share_Loan_Id__c}
+            <label>Four-Digit Share/Loan Type: </label>
+            <input type="text" class="txtACHReadOnly" value="{!v.EFTRecord.Share_Loan_Id__c}" readonly="true"/> 
+            
+            <br/>
             <br/>
             <p>
-                The amount set forth in the loan note and/or monthly billing statement will be debited on the due date set forth on each monthly billing statement. Note: Amount debited is subject to change based on loan terms.   
+                The amount set forth in the loan note and/or monthly billing statement will be debited on the due date set forth on each monthly billing statement. <strong>Note:</strong> Amount debited is subject to change based on loan terms.   
             </p>
             <br/>
-            <ui:inputCheckbox aura:id="checkbox" />Indicate any additional amount to add to monthly payment: {!v.EFTRecord.Alternate_Amount__c}
+            
+                
+                <table>
+                    <tr>
+                        <td style="width: 380px;">
+                            <ui:inputCheckbox aura:id="checkbox" class="chkAdditional" value="{!v.EFTRecord.isAlternateAmount__c}"/>
+                            <label class="">Indicate any additional amount to add to monthly payment:</label>
+                        </td>
+                        <td>
+                            <lightning:input class="txtACHAmount" name="alternateamount" value="{!v.EFTRecord.Alternate_Amount__c}" />
+                        </td>
+                    </tr>
+                </table>
+                
+                <!-- <input type="text" class="txtACH" value="{!v.EFTRecord.Alternate_Amount__c}" /> -->
+                
+          
+            
+            
+            <br/>
             <br/>
             <p>ACH origination will begin on the first payment, 10 days following receipt of this notice.</p>
             <br/>
-            <p>I (we) understand that this authorization will remain in full force and effect until I (we) notify CHEVRON FEDERAL CREDIT UNION in writing by mail to P.O. Box 2069, Oakland, CA 94607-2069 that I (we) wish to revoke this authorization. I (we) understand that CHEVRON FEDERAL CREDIT UNION requires notice at least three (3) business days prior to the proposed effective date of the termination of authorization. Important Installment Loan Information: This authorization will be terminated and the debit entry will cease once the balance is paid in full.</p>
+            <p>I (we) understand that this authorization will remain in full force and effect until I (we) notify CHEVRON FEDERAL CREDIT UNION in writing by mail to P.O. Box 2069, Oakland, CA 94607-2069 that I (we) wish to revoke this authorization. I (we) understand that CHEVRON FEDERAL CREDIT UNION requires notice at least three (3) business days prior to the proposed effective date of the termination of authorization. <strong>Important Installment Loan Information:</strong> This authorization will be terminated and the debit entry will cease once the balance is paid in full.</p>
         </div>
         
         <div class="signtbl">

@@ -131,8 +131,10 @@
         }); */      
        // $A.enqueueAction(action);
     },
-    saveHelper:function(component, event, helper){         
+    saveHelper:function(component, event, helper, EFTRecord){         
         var recordId = component.get("v.EFTRecord.Id");
+       // component.set('v.EFTRecord.Bank_Name__c',component.get("v.RoutingBankName"));
+       // var EFTRecord = component.get("v.EFTRecord");
         var pad=component.find('can').getElement();
         var dataUrl = pad.toDataURL();
         console.log('dataUrl:='+dataUrl);
@@ -140,7 +142,8 @@
         var action = component.get("c.saveSignature");
         action.setParams({
             signatureBody : strDataURI,
-            EFTId: recordId
+            EFTId: recordId,
+            EFTRecord: EFTRecord
         });
         action.setCallback(this,function(res){
             var state = res.getState();
@@ -164,14 +167,14 @@
                 var recordId = component.get("v.EFTRecord.Id");
                 if(recordId != undefined)
                {
-                    /*var url = '/apex/ACHSigningInPerson?id=' + recordId;
+                    var url = '/apex/ACHSigningInPerson?id=' + recordId;
                     var urlEvent = $A.get("e.force:navigateToURL");
                     urlEvent.setParams({
                         "url": url
                     });
-                    urlEvent.fire();*/
-                    component.set('v.loading', false);
-                    window.open('/apex/ACHSigningInPerson?id=' + recordId,'_blank');
+                    urlEvent.fire();
+                   // component.set('v.loading', false);
+                   // window.open('/apex/ACHSigningInPerson?id=' + recordId,'_blank');
                 }
              }
             component.set('v.loading', false);
