@@ -106,6 +106,8 @@ public class SolarLoanController {
     Set<Id> SLIdsToCreateLoan = new Set<Id>();
     Set<Id> SLIdsToCreateEFT = new Set<Id>();
     
+    Boolean PrimaryZipCode;
+    Boolean jointZipCode;
 
     system.debug('CurrentStage'+CurrentStage);
     Map<string,string> strMap = new  Map<string,string>();
@@ -185,16 +187,37 @@ public class SolarLoanController {
 
                 }
             }
-			
+            
+            //------------------------------------------------Primary and Joint SSN validation---------------------------------------//
+
 			if(SolarLoanList[0].Primary_SSN__c != null && SolarLoanList[0].Primary_SSN__c.length() != 9 && Stage3ErrorCheck != 'True'){
 								
-				Stage3MissingFields = 'The length of the member’s SSN is not correct';
+				Stage3MissingFields = 'The length of the member’s SSN is not correct.';
 				Stage3ErrorCheck = 'True';
 				
 			}
 			else if(SolarLoanList[0].ECOA_Code__c == '2' && SolarLoanList[0].Joint_SSN__c != null && SolarLoanList[0].Joint_SSN__c.length() != 9 && Stage3ErrorCheck != 'True'){
 				
-				Stage3MissingFields = 'The length of the member’s Joint SSN is not correct';
+				Stage3MissingFields = 'The length of the member’s Joint SSN is not correct.';
+				Stage3ErrorCheck = 'True';
+			}
+			else{
+	
+				Stage3MissingFields = 'The following fields are required:  '+ missingFields + '.';	
+            }
+            
+            //------------------------------------------------Primary and Joint PinCode validation---------------------------------------//
+            PrimaryZipCode = Pattern.matches('^[0-9]{5}(?:-[0-9]{4})?$',SolarLoanList[0].Primary_Zip_Code__c); 
+            jointZipCode =   Pattern.matches('^[0-9]{5}(?:-[0-9]{4})?$',SolarLoanList[0].Joint_Zip_Code__c); 
+            
+            if(PrimaryZipCode == false && Stage3ErrorCheck != 'True'){    
+                Stage3MissingFields = 'Primary Zip code is not in the correct format.';
+                Stage3ErrorCheck = 'True';
+         		
+			}
+			else if(SolarLoanList[0].ECOA_Code__c == '2' && jointZipCode == false && Stage3ErrorCheck != 'True'){
+				
+				Stage3MissingFields = 'Joint Zip code is not in the correct format.';
 				Stage3ErrorCheck = 'True';
 			}
 			else{
