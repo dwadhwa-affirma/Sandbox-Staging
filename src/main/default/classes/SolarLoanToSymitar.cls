@@ -196,7 +196,7 @@ public class SolarLoanToSymitar {
                 if(result != null && result != '' && sl.ACH__c == 'True'){
                 	
                 	PaymentMethod = '5';
-                	req1.setEndpoint('https://symxapi.chevronfcu.org/devclient/EFT/UpdateLoanById');
+                	req1.setEndpoint(loanAPI+'/EFT/UpdateLoanById');
 	                req1.setClientCertificateName('brscmcapi');
 	                req1.setMethod('POST');
 	                req1.setHeader('Content-Type', 'application/json');
@@ -340,7 +340,7 @@ public class SolarLoanToSymitar {
                     else
                         PaymentMethod = '1';
 
-                    req1.setEndpoint('https://symxapi.chevronfcu.org/devclient/EFT/UpdateLoanById');
+                    req1.setEndpoint(loanAPI+'/EFT/UpdateLoanById');
                     req1.setClientCertificateName('brscmcapi');
                     req1.setMethod('POST');
                     req1.setHeader('Content-Type', 'application/json');
