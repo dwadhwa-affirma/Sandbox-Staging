@@ -361,21 +361,7 @@ public class EFTToSyimtar {
 	        	}
 	        	
 	        	else if(result == 'OK'){
-	        		if(resultEFTLocator != '' && resultEFTLocator != null && EftLocator != resultEFTLocator){
-	        			e.expired__c = true;
-	        			e.Expiration_Date__c = Date.valueOf(resultExpDate);
-	        			//e.EftLocator__c = resultEFTLocator;
-	        			
-	        			//EFT__c newEFT = new EFT__c();
-	        			EFT__c newEFT = e.clone(false);
-	        			newEFT.expired__c = false;
-	        			newEFT.Expiration_Date__c = null;
-	        			newEFT.EftLocator__c = resultEFTLocator;
-	        			newEFT.Share_Loan_Description__c = e.Share_Loan_Description__c;
-	        			newEFT.Share_Loan_Type__c = e.Share_Loan_Type__c;
-	        			newEFT.Case__c = e.Case__c;
-						insert newEFT;
-	        		}
+	        		
 	        		
                 	req1.setEndpoint('https://symxapi.chevronfcu.org/devclient/EFT/UpdateLoanById');
 	                req1.setClientCertificateName('brscmcapi');
@@ -429,6 +415,21 @@ public class EFTToSyimtar {
 	                					+ '\n' + 'Additional Payment Amount: ' + e.Alternate_Amount__c;
 	                	CaseIdsToUpdate.put(e.Case__c, casedesc);
 	        		
+					}
+					if(resultEFTLocator != '' && resultEFTLocator != null && EftLocator != resultEFTLocator){
+	        			e.expired__c = true;
+	        			e.Expiration_Date__c = Date.valueOf(resultExpDate);
+	        			//e.EftLocator__c = resultEFTLocator;
+	        			
+	        			//EFT__c newEFT = new EFT__c();
+	        			EFT__c newEFT = e.clone(false);
+	        			newEFT.expired__c = false;
+	        			newEFT.Expiration_Date__c = null;
+	        			newEFT.EftLocator__c = resultEFTLocator;
+	        			newEFT.Share_Loan_Description__c = e.Share_Loan_Description__c;
+	        			newEFT.Share_Loan_Type__c = e.Share_Loan_Type__c;
+	        			newEFT.Case__c = e.Case__c;
+						insert newEFT;
 	        		}
 	        	}     
 	        	
