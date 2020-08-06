@@ -1,18 +1,21 @@
 trigger ContentDocumentLinkUpdate on ContentDocumentLink (after update,after delete,after insert) {
 	
-     Map<id,ContentDocumentLink> ContentDocumentLinkDetails = new Map<id,ContentDocumentLink >();
+    Map<id,ContentDocumentLink> ContentDocumentLinkDetails = new Map<id,ContentDocumentLink >();
      
-     List<Member_Comment__c> MemberlsttoUpdate = new List<Member_Comment__c>();
-     List<SolarLoan_Document__c> solarLoanAttachmentsList  = new List<SolarLoan_Document__c>();
-     set<ID> listCD  = new set<ID>();
-     Map<Id, ContentDocument> cs = new Map<Id, ContentDocument>(); 
-     Map<id,Solar_Loans__c> sl = new Map<id,Solar_Loans__c >();
-     Map<ID,ID> cv = new Map<ID,ID>();
-     Map<Id,ContentVersion> cvNewFile = new Map<ID,ContentVersion>();
-     List<Solar_Loans__c> slcountUpdate = new List<Solar_Loans__c>();
+    List<Member_Comment__c> MemberlsttoUpdate = new List<Member_Comment__c>();
+    List<SolarLoan_Document__c> solarLoanAttachmentsList  = new List<SolarLoan_Document__c>();
+    set<ID> listCD  = new set<ID>();
+    Map<Id, ContentDocument> cs = new Map<Id, ContentDocument>(); 
+    Map<id,Solar_Loans__c> sl = new Map<id,Solar_Loans__c >();
+    Map<ID,ID> cv = new Map<ID,ID>();
+    Map<Id,ContentVersion> cvNewFile = new Map<ID,ContentVersion>();
+    List<Solar_Loans__c> slcountUpdate = new List<Solar_Loans__c>();
      
+    String FinalString;
+    String UUID;
+    String UpdateString;
      
-     Set<id> parent = new Set<id>();
+    Set<id> parent = new Set<id>();
     
         if(Trigger.isUpdate && Trigger.isAfter)
         {   
@@ -58,7 +61,15 @@ trigger ContentDocumentLinkUpdate on ContentDocumentLink (after update,after del
 		            SolarLoan_Document__c solarLoanObj = new SolarLoan_Document__c();
 		            solarLoanObj.Attachment_Id__c = cs.get(c.ContentDocumentId).id;
 		            if(Title.length() > 80){
-		            	solarLoanObj.Name = Title.substring(0,80);
+                     
+                        UUID = Title.right(21);
+                        UpdateString = Title.left(59);
+                        FinalString = UpdateString + UUID;
+                        solarLoanObj.Name = FinalString;
+                        system.debug('UUID '+UUID);
+                        system.debug('UpdateString '+UpdateString);
+                        system.debug('FinalString '+FinalString);
+
 		            }else{
 		            	solarLoanObj.Name = cs.get(c.ContentDocumentId).title;	
 		            }
