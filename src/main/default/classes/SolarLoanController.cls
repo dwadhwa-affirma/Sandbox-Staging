@@ -207,15 +207,19 @@ public class SolarLoanController {
             }
             
             //------------------------------------------------Primary and Joint PinCode validation---------------------------------------//
-            PrimaryZipCode = Pattern.matches('^[0-9]{5}(?:-[0-9]{4})?$',SolarLoanList[0].Primary_Zip_Code__c); 
-            jointZipCode =   Pattern.matches('^[0-9]{5}(?:-[0-9]{4})?$',SolarLoanList[0].Joint_Zip_Code__c); 
             
-            if(PrimaryZipCode == false && Stage3ErrorCheck != 'True'){    
+            if(SolarLoanList[0].Primary_Zip_Code__c != null)
+            	PrimaryZipCode = Pattern.matches('^[0-9]{5}(?:-[0-9]{4})?$',SolarLoanList[0].Primary_Zip_Code__c); 
+            
+            if(SolarLoanList[0].Joint_Zip_Code__c != null)
+            	jointZipCode =   Pattern.matches('^[0-9]{5}(?:-[0-9]{4})?$',SolarLoanList[0].Joint_Zip_Code__c); 
+            
+            if(SolarLoanList[0].Primary_Zip_Code__c != null && PrimaryZipCode == false && Stage3ErrorCheck != 'True'){    
                 Stage3MissingFields = 'Primary Zip code is not in the correct format.';
                 Stage3ErrorCheck = 'True';
          		
 			}
-			else if(SolarLoanList[0].ECOA_Code__c == '2' && jointZipCode == false && Stage3ErrorCheck != 'True'){
+			else if(SolarLoanList[0].Joint_Zip_Code__c != null && SolarLoanList[0].ECOA_Code__c == '2' && jointZipCode == false && Stage3ErrorCheck != 'True'){
 				
 				Stage3MissingFields = 'Joint Zip code is not in the correct format.';
 				Stage3ErrorCheck = 'True';
