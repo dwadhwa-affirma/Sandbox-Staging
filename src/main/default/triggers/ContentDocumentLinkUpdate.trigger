@@ -11,9 +11,10 @@ trigger ContentDocumentLinkUpdate on ContentDocumentLink (after update,after del
     Map<Id,ContentVersion> cvNewFile = new Map<ID,ContentVersion>();
     List<Solar_Loans__c> slcountUpdate = new List<Solar_Loans__c>();
      
+    String[] strArr;
+    String FirstPart;
+    String SecondPart;
     String FinalString;
-    String UUID;
-    String UpdateString;
      
     Set<id> parent = new Set<id>();
     
@@ -62,13 +63,14 @@ trigger ContentDocumentLinkUpdate on ContentDocumentLink (after update,after del
 		            solarLoanObj.Attachment_Id__c = cs.get(c.ContentDocumentId).id;
 		            if(Title.length() > 80){
                      
-                        UUID = Title.right(21);
-                        UpdateString = Title.left(59);
-                        FinalString = UpdateString + UUID;
+                        strArr = Title.split('-');
+                        FirstPart = strArr[0] + '-'+ strArr[1];
+                        SecondPart = ' -'+ strArr[2];
+                        FinalString = FirstPart.left(80 - SecondPart.length());
+                        FinalString = FinalString + SecondPart;
                         solarLoanObj.Name = FinalString;
-                        system.debug('UUID '+UUID);
-                        system.debug('UpdateString '+UpdateString);
                         system.debug('FinalString '+FinalString);
+                        system.debug('Length '+FinalString.length());
 
 		            }else{
 		            	solarLoanObj.Name = cs.get(c.ContentDocumentId).title;	
