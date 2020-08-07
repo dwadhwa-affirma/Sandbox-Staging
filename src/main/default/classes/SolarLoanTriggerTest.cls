@@ -113,6 +113,9 @@ public class SolarLoanTriggerTest {
             sl.FNI__c = '12';
             sl.Member_Number__c = '0000269355';
             sl.Status__c = 'New';
+            sl.Bank_Name__c = 'Test Bank';
+            sl.ABA_Bank_Name__c = 'Test Bank';
+            sl.Additional_Amount__c = 100.00;
             insert sl;
         	
             sl.Member_Number__c = '0000247286';
@@ -133,17 +136,7 @@ public class SolarLoanTriggerTest {
     static testMethod void testMethod1(){
      
         User u = [SELECT Id,Email FROM User WHERE Email ='drana@chevronfcu.org'];
-        
-        DocuSign_Templates__c ds = new DocuSign_Templates__c();
-        ds.Name = 'Chevron';
-        ds.TemplateId__c = 'ad01d585-ad0a-4e68-b537-7e75293f0ef8';
-        insert ds;
-        
-        DocuSign_Templates__c ds1 = new DocuSign_Templates__c();
-        ds1.Name = 'Spectrum';
-        ds1.TemplateId__c = 'dc16d8f8-571c-497e-bbf5-42d8b25d4ee1';
-        insert ds1;
-        
+                
         String userName = UserInfo.getUserName();
 		User activeUser = [Select Email From User where Username = : userName limit 1];
 		String userEmail = activeUser.Email;
@@ -167,7 +160,26 @@ public class SolarLoanTriggerTest {
             
             Solar_Loans__c s1 = [select id,Status__c,DocuSignId__c from Solar_Loans__c where Status__c = 'Approved'];
             s1.Status__c = 'Completed';
-            update s1; 
+            update s1;
+        }
+    }
+    
+    static testMethod void testMethod4(){
+     
+        User u = [SELECT Id,Email FROM User WHERE Email ='drana@chevronfcu.org'];
+        
+        System.runAs(u){
+            
+            Solar_Loans__c s = [select id,Status__c,EftLocator__c,DocuSignId__c from Solar_Loans__c where Status__c = 'New'];
+            s.Status__c = 'Approved';
+            s.EftLocator__c = '123';
+            s.Bank_Name__c = 'Test Bank';
+            s.Additional_Amount__c = 100.00;
+            update s;
+            
+            Solar_Loans__c s1 = [select id,Status__c,DocuSignId__c from Solar_Loans__c where Status__c = 'Approved'];
+            s1.Status__c = 'Completed';
+            update s1;
         }
     }
 }
