@@ -64,9 +64,8 @@ trigger ContentDocumentLinkUpdate on ContentDocumentLink (after update,after del
 		            if(Title.length() > 80){
                      
                         strArr = Title.split('-');
-                        FirstPart = strArr[0] + '-'+ strArr[1];
-                        SecondPart = ' -'+ strArr[2];
-                        FinalString = FirstPart.left(80 - SecondPart.length());
+                        SecondPart = ' -'+ strArr[strArr.size() - 1];
+                        FinalString = Title.left(80 - SecondPart.length());
                         FinalString = FinalString + SecondPart;
                         solarLoanObj.Name = FinalString;
                         system.debug('FinalString '+FinalString);
