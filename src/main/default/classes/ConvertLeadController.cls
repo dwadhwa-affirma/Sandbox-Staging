@@ -18,7 +18,7 @@ public with sharing class ConvertLeadController {
     	List<object> listObj = new List<object>(); 
         map<string,List<object>> resultList=new map<string,List<object>>();
     	Id LoggedinUser = UserInfo.getUserId();
-        if(leadObject.Current_Member__c.toLowercase() == 'true' || leadObject.Current_Member__c.toLowercase() == 'yes'){
+        if(leadObject.Current_Member__c != null && (leadObject.Current_Member__c.toLowercase() == 'true' || leadObject.Current_Member__c.toLowercase() == 'yes')){
             resultList.put('ExistingMember',listObj);
             return resultList;
         }
