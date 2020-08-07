@@ -118,6 +118,7 @@ public class SolarLoanToSymitar {
                 system.debug('MatchID3'+MatchID3);    
                 AccountNumber = sl.Account_Number__r.name;
                 
+                System.debug('CreateEft called');
                 req.setEndpoint(loanAPI+'/EFT/CreateEft');
                 //req.setClientCertificateName('brscmcapi');
                 req.setMethod('POST');
@@ -166,7 +167,8 @@ public class SolarLoanToSymitar {
                     else{
                         Day1 = '0';
                     }
-
+                    
+                    System.debug('UpdateEftById called for Day1');
                     req2.setEndpoint(loanAPI+'/EFT/UpdateEftById');
                     req2.setMethod('POST');
                     req2.setHeader('Content-Type', 'application/json');
@@ -195,7 +197,8 @@ public class SolarLoanToSymitar {
 
                 if(result != null && result != '' && sl.ACH__c == 'True'){
                 	
-                	PaymentMethod = '5';
+                    PaymentMethod = '5';
+                    System.debug('UpdateLoanById called for PaymentMethod');
                 	req1.setEndpoint(loanAPI+'/EFT/UpdateLoanById');
 	                req1.setClientCertificateName('brscmcapi');
 	                req1.setMethod('POST');
@@ -249,7 +252,8 @@ public class SolarLoanToSymitar {
     }
     @future(callout=true)
     public static void updateEFTrecord(Set<id> ids){
-        
+    
+    System.debug('updateEFTrecord function called');
     List<Solar_Loans__c> Solanloanlist = new List<Solar_Loans__c>();         
     List<Solar_Loans__c> solarloans = [SELECT id,ABA_Bank_Name__c,ACH__c,Additional_Amount__c,Application_Date__c,
             Bank_Account_Number__c,Bank_Name__c,Battery__c,Brand__c,Change_Order__c,CreatedById,CreatedDate,
@@ -311,6 +315,7 @@ public class SolarLoanToSymitar {
 
                 EFTLocatorId = sl.EftLocator__c;
                 AccountNumber = sl.Account_Number__r.name;
+                System.debug('UpdateEftById method called when docusign completed');
                 req.setEndpoint(loanAPI+'/EFT/UpdateEftById');
                 req.setMethod('POST');
                 req.setHeader('Content-Type', 'application/json');
@@ -339,7 +344,8 @@ public class SolarLoanToSymitar {
                         PaymentMethod = '5';
                     else
                         PaymentMethod = '1';
-
+                    
+                    System.debug('UpdateLoanById method called to update Alternate Payment');
                     req1.setEndpoint(loanAPI+'/EFT/UpdateLoanById');
                     req1.setClientCertificateName('brscmcapi');
                     req1.setMethod('POST');

@@ -195,7 +195,7 @@ public class SolarLoanToCreateLoan {
                 ApplicationFundedBy = operatorid;
                 ApplicationLoadedBy = operatorid;
                 
-                //req.setEndpoint('https://brscsymx.ctxcu.org/dev/EFT/CreateLoan');
+                System.debug('CreateLoan method called');
                 req.setEndpoint(loanAPI+'/EFT/CreateLoan');
                 //req.setClientCertificateName('brscmcapi');
                 req.setMethod('POST');
@@ -262,6 +262,7 @@ public class SolarLoanToCreateLoan {
                     LoanId = result;
                     AccountNumber = sl.Account_Number__r.name;
                     
+                    System.debug('CreateLoanName method called');
                     req1.setEndpoint(loanAPI+'/EFT/CreateLoanName');
                     //req1.setClientCertificateName('brscmcapi');
                     req1.setMethod('POST');
@@ -385,6 +386,7 @@ public class SolarLoanToCreateLoan {
                 LoanId = result; 
                 AccountNumber = sl.Account_Number__r.name;
                 
+                System.debug('CreateLoanTracking method called');
                 req2.setEndpoint(loanAPI+'/EFT/CreateLoanTracking');
                 //req2.setClientCertificateName('brscmcapi');
                 req2.setMethod('POST');
@@ -432,6 +434,7 @@ public class SolarLoanToCreateLoan {
                     	
                     AccountNumber = sl.Account_Number__r.name;
                     
+                    System.debug('Funding method called');
                     req3.setEndpoint(loanAPI+'/Wires/FundLoan?accountNumber='+AccountNumber+'&loanId='+LoanId+'&amount='+Amount);
                     //req3.setClientCertificateName('brscmcapi');
                     req3.setMethod('GET');
