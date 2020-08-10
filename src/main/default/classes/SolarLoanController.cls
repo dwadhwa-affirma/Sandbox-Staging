@@ -197,7 +197,14 @@ public class SolarLoanController {
                 
             //------------------------------------------------Primary and Joint SSN validation---------------------------------------//
 
-			if(SolarLoanList[0].Primary_SSN__c != null && SolarLoanList[0].Primary_SSN__c.length() != 9 && Stage3ErrorCheck != 'True'){
+            if((SolarLoanList[0].Bank_Account_Number__c != null && SolarLoanList[0].Bank_Account_Number__c == 'Review and verify' && Stage3ErrorCheck != 'True') ||
+                (SolarLoanList[0].FNI__c != null && SolarLoanList[0].FNI__c == 'Review and verify' && Stage3ErrorCheck != 'True')){
+								
+				Stage3MissingFields = 'Please review and enter valid input for Bank Account Number or FNI.';
+				Stage3ErrorCheck = 'True';
+				
+			}
+            else if(SolarLoanList[0].Primary_SSN__c != null && SolarLoanList[0].Primary_SSN__c.length() != 9 && Stage3ErrorCheck != 'True'){
 								
 				Stage3MissingFields = 'The length of the member’s SSN is not correct.';
 				Stage3ErrorCheck = 'True';
