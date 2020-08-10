@@ -347,7 +347,6 @@ public class SolarLoanToSymitar {
                     
                     System.debug('UpdateLoanById method called to update Alternate Payment');
                     req1.setEndpoint(loanAPI+'/EFT/UpdateLoanById');
-                    req1.setClientCertificateName('brscmcapi');
                     req1.setMethod('POST');
                     req1.setHeader('Content-Type', 'application/json');
                     req1.setHeader('Accept', 'application/json');
