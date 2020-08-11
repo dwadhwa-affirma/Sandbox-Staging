@@ -100,8 +100,9 @@ public class SolarLoanToSymitar {
                 PostAmount = '0.00';
                 Payee = sl.Routing_Number__c;
                 Reference = sl.Bank_Account_Number__c ;
-                if(sl.ABA_Bank_Name__c != null){
-                    MatchID3 = sl.ABA_Bank_Name__c;
+                if(sl.Bank_Name__c != null){
+                    MatchID3 = sl.Bank_Name__c;
+                    MatchID3 = MatchID3.toUpperCase();
                     if(MatchID3.length() > 22){
                         MatchID3 = MatchID3.left(21);
                     }
@@ -142,8 +143,7 @@ public class SolarLoanToSymitar {
                     responseBody = '{"EFTType":"3","AmountCode":"27","GroupNumber":"1","IdType":"1","ID":"100","Frequency":"4","Day1":"1","NextDate":"01-01-2019","EffectiveDate":"01-01-2019","PostAmount":"100.00","Payee":"322271627","Reference":"42006986568","MatchId3":"BANK OF AMERICA","AccountNumber":"123"}';
                 }
                 
-                String result;
-    
+              
                 // JSon parse for Id                            
                 JSONParser parser = JSON.createParser(responseBody);    
                 result = String.valueOf(responseBody).substringAfter('EftLocator":"');
