@@ -17,7 +17,7 @@ public class SolarLoanToSymitar {
     public static String ErrorEFTLocator;
     public static String loanAPI;
     public static String AlternatePayment;
-    public static Double Total;
+    public static String Total;
     public static string EFTLocatorId;
     
     
@@ -111,7 +111,7 @@ public class SolarLoanToSymitar {
 
                 if(sl.Additional_Amount__c != null){
 
-                    Total = (Double.valueof(sl.Loan_Pmt_Amount__c) + Double.valueof(sl.Additional_Amount__c));
+                    Total = String.valueOf(sl.Loan_Pmt_Amount__c + sl.Additional_Amount__c);
                     AlternatePayment = string.valueof(Total);
                 }
 
@@ -309,7 +309,9 @@ public class SolarLoanToSymitar {
 
                 if(sl.Additional_Amount__c != null){
 
-                    Total = (Double.valueof(sl.Loan_Pmt_Amount__c) + Double.valueof(sl.Additional_Amount__c));
+                    System.debug('sl.Loan_Pmt_Amount__c'+sl.Loan_Pmt_Amount__c);
+                    System.debug('sl.Additional_Amount__c'+sl.Additional_Amount__c);
+                    Total = String.valueOf(sl.Loan_Pmt_Amount__c + sl.Additional_Amount__c);
                     AlternatePayment = string.valueof(Total);
                 }
 
