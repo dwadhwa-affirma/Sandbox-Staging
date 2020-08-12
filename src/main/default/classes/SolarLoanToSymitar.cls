@@ -121,7 +121,6 @@ public class SolarLoanToSymitar {
                 
                 System.debug('CreateEft called');
                 req.setEndpoint(loanAPI+'/EFT/CreateEft');
-                //req.setClientCertificateName('brscmcapi');
                 req.setMethod('POST');
                 req.setHeader('Content-Type', 'application/json');
                 req.setHeader('Accept', 'application/json');
@@ -200,7 +199,6 @@ public class SolarLoanToSymitar {
                     PaymentMethod = '5';
                     System.debug('UpdateLoanById called for PaymentMethod');
                 	req1.setEndpoint(loanAPI+'/EFT/UpdateLoanById');
-	                req1.setClientCertificateName('brscmcapi');
 	                req1.setMethod('POST');
 	                req1.setHeader('Content-Type', 'application/json');
 	                req1.setHeader('Accept', 'application/json');
