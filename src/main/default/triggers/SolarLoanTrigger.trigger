@@ -174,8 +174,18 @@ trigger SolarLoanTrigger on Solar_Loans__c (after insert,before insert, after up
                 SLIdsForEFT.add(trigger.new[i].id);
             }
 
-            if(trigger.old[i].Status__c != 'Completed' && trigger.new[i].Status__c == 'Completed' && 
+            /*if(trigger.old[i].Status__c != 'Completed' && trigger.new[i].Status__c == 'Completed' && 
                     (trigger.new[i].EftLocator__c != null && trigger.new[i].EftLocator__c != '')){
+                SLIdsForEFTUpdate.add(trigger.new[i].id);
+            }*/
+            if((trigger.new[i].EftLocator__c != null && trigger.new[i].EftLocator__c != '') && (
+                            (trigger.old[i].Status__c != 'Completed' && trigger.new[i].Status__c == 'Completed') ||
+                            (trigger.old[i].Loan_Type__c != trigger.new[i].Loan_Type__c)                         ||
+                            (trigger.old[i].Additional_Amount__c != trigger.new[i].Additional_Amount__c)         ||
+                            (trigger.old[i].Bank_Account_Number__c != trigger.new[i].Bank_Account_Number__c)     ||
+                            (trigger.old[i].Bank_Name__c != trigger.new[i].Bank_Name__c)                         ||
+                            (trigger.old[i].Routing_Number__c != trigger.new[i].Routing_Number__c))){
+
                 SLIdsForEFTUpdate.add(trigger.new[i].id);
             }
             
