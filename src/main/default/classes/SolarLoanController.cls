@@ -228,15 +228,6 @@ public class SolarLoanController {
                 Stage3ErrorCheck = 'True';
                 
             }
-            else if(SolarLoanList[0].Routing_Number__c != null &&  Stage3ErrorCheck != 'True' && 
-                    (SolarLoanList[0].Routing_Number__c.length() != 9 || (SolarLoanList[0].Routing_Number__c.substring(0,1) != '0' && 
-                    SolarLoanList[0].Routing_Number__c.substring(0,1) != '1' && SolarLoanList[0].Routing_Number__c.substring(0,1) != '2' &&
-                    SolarLoanList[0].Routing_Number__c.substring(0,1) != '3'))){
-								
-				Stage3MissingFields = 'Plese enter valid ABA/Routing Number.';
-				Stage3ErrorCheck = 'True';
-				
-            }
            
 			else{
 	
@@ -272,15 +263,24 @@ public class SolarLoanController {
         
         if(CurrentStage == 'Stage 5'){
             
-                   if(SolarLoanList[0].ACH__c == 'True' && (SolarLoanList[0].Routing_Number__c != null && SolarLoanList[0].Routing_Number__c != '0')
+                if(SolarLoanList[0].ACH__c == 'True' && (SolarLoanList[0].Routing_Number__c != null && SolarLoanList[0].Routing_Number__c != '0')
                                                         && (SolarLoanList[0].Bank_Name__c != null && SolarLoanList[0].Bank_Name__c != '0')
                                                         && (SolarLoanList[0].Bank_Account_Number__c != null && SolarLoanList[0].Bank_Account_Number__c != '0')){    	
            
-                	Stage5ACHCheck = 'True';
-                    SolarLoanList[0].Current_Solar_Loan_Stage__c = CurrentStage;
-                    SolarLoanList[0].continue__c = false;
-                	update SolarLoanList;
-              
+                    if(SolarLoanList[0].Routing_Number__c != null && (SolarLoanList[0].Routing_Number__c.length() != 9 || (SolarLoanList[0].Routing_Number__c.substring(0,1) != '0' && 
+                        SolarLoanList[0].Routing_Number__c.substring(0,1) != '1' && SolarLoanList[0].Routing_Number__c.substring(0,1) != '2' &&
+                        SolarLoanList[0].Routing_Number__c.substring(0,1) != '3'))){
+                        
+                        Stage5MissingFields = 'Plese enter valid ABA/Routing Number.';
+				        Stage5ErrorCheck = 'True';
+                    }
+                    else{
+                     
+                        Stage5ACHCheck = 'True';
+                        SolarLoanList[0].Current_Solar_Loan_Stage__c = CurrentStage;
+                        SolarLoanList[0].continue__c = false;
+                        update SolarLoanList;
+                    }    
             	}
             
             	
@@ -292,14 +292,19 @@ public class SolarLoanController {
 	            		missingFields += fieldMap.get(fieldName).getDescribe().getLabel() + ', ';
 		            	Stage5ErrorCheck = 'True';
 	            	}
-	          	}
+                  }
+                
+                if(missingFields != '') {
+                    
+                    Stage5MissingFields = 'The following fields are required:  '+ missingFields + '.';        
+                }
             
 	            if(SolarLoanList[0].ACH__c == 'False'){    	
 	           
 	                Stage5ACHCheck = 'False';
 	            }
             
-            Stage5MissingFields = 'The following fields are required:  '+ missingFields + '.';
+            
         }
         
         //----------------------------------ACH = True/False OnLoan Check---------------------------------------------//
