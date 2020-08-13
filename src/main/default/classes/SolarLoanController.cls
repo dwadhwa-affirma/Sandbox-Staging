@@ -195,7 +195,7 @@ public class SolarLoanController {
             if(SolarLoanList[0].Joint_Zip_Code__c != null)
                 jointZipCode =   Pattern.matches('^[0-9]{5}(?:-[0-9]{4})?$',SolarLoanList[0].Joint_Zip_Code__c);
                 
-            //------------------------------------------------Primary and Joint SSN validation---------------------------------------//
+            //------------------------------------------------validation check ------------------------------------------------------//
 
             if((SolarLoanList[0].Bank_Account_Number__c != null && SolarLoanList[0].Bank_Account_Number__c == 'Review and verify' && Stage3ErrorCheck != 'True') ||
                 (SolarLoanList[0].FNI__c != null && SolarLoanList[0].FNI__c == 'Review and verify' && Stage3ErrorCheck != 'True')){
@@ -227,7 +227,17 @@ public class SolarLoanController {
 				Stage3MissingFields = 'Joint Zip code is not in the correct format.';
                 Stage3ErrorCheck = 'True';
                 
-			}
+            }
+            else if(SolarLoanList[0].Routing_Number__c != null &&  Stage3ErrorCheck != 'True' && 
+                    (SolarLoanList[0].Routing_Number__c.length() != 9 || (SolarLoanList[0].Routing_Number__c.substring(0,1) != '0' && 
+                    SolarLoanList[0].Routing_Number__c.substring(0,1) != '1' && SolarLoanList[0].Routing_Number__c.substring(0,1) != '2' &&
+                    SolarLoanList[0].Routing_Number__c.substring(0,1) != '3'))){
+								
+				Stage3MissingFields = 'Plese enter valid ABA/Routing Number.';
+				Stage3ErrorCheck = 'True';
+				
+            }
+           
 			else{
 	
 				Stage3MissingFields = 'The following fields are required:  '+ missingFields + '.';	
