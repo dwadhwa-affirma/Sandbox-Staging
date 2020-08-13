@@ -293,7 +293,7 @@ public class SolarLoanToSymitar {
                 
                 ID = sl.Loan_Id__C;
                 
-                Payee = sl.Routing_Number__c;
+                Payee = '0' + sl.Routing_Number__c;
                 Reference = sl.Bank_Account_Number__c ;
                 if(sl.Bank_Name__c != null){
                     MatchID3 = sl.Bank_Name__c;
