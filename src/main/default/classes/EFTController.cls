@@ -110,7 +110,7 @@ public class EFTController {
     //------------------------------- Saving EFT data to Salesforce-----------------------------------------------//
     @AuraEnabled
     public static EFT__c saveStageData(EFT__c EFTRecord){
-        system.debug('EFTRecord=='+EFTRecord.Id);
+        system.debug('EFTRecord=='+EFTRecord.LoanCode__c);
         if(EFTRecord.Second_Day_of_Month__c == '0'){
         	EFTRecord.Second_Day_of_Month__c = '';
         }
@@ -176,6 +176,7 @@ public class EFTController {
             EFTRecordList[0].Member_Name__c  =  EFTRecord.Member_Name__c;
             EFTRecordList[0].Docusign_Member_Email__c  =  EFTRecord.Docusign_Member_Email__c;
             EFTRecordList[0].EftLocator__c  =  EFTRecord.EftLocator__c;
+            EFTRecordList[0].LoanCode__c  =  EFTRecord.LoanCode__c;
             if(EFTRecord.Type__c == 'Checking'){
                EFTRecordList[0].Docusign_Checking_Type__c = true;
                EFTRecordList[0].Docusign_Savings_Type__c = false; 
@@ -250,6 +251,24 @@ public class EFTController {
         system.debug('Member_Account__c==='+EFTRecord.Member_Account__c);
         system.debug('Member_Account__r==='+EFTRecord.Member_Account__r.Id);
         system.debug('Member_Name__c==='+EFTRecord.Member_Name__c);
+        string AccountNumber;
+        if(EFTRecord.Member_Account__c != null){
+            AccountNumber = [Select id, name from account_details__c where id=: EFTRecord.Member_Account__c].Name;
+        }
+        else{
+            AccountNumber = AccountNumber = [Select id, name from account_details__c where id=: EFTRecord.Member_Account__r.Id].Name;
+        }
+        string firstname,lastname;
+        List<string> Names=EFTRecord.Member_Name__c.split(' ');
+        if(Names.size() == 2){
+            firstname = Names[0]+ '%';
+            lastname= '%'+Names[1] + '%';
+        }
+        else if(Names.size() >= 3){
+            firstname = Names[0]+ '%';
+            lastname= '%'+Names[Names.size()-1] +'%';
+        }
+       
         list<CaseRecordType__c> scList = [SELECT Id,
                                                  Primary_Category__c,
                                                  Secondary_Category__c,
@@ -259,7 +278,16 @@ public class EFTController {
                                                  RecordTypeId__c FROM CaseRecordType__c WHERE Primary_Category__c = 'Account Maintenance' AND Secondary_Category__c='Account Services' AND Teritiary_Category__c='ACH - Authorization for Debit' LIMIT 1];
        
     		Group gp = [select Id, Name from Group where  Type = 'Queue' AND NAME = 'Authentication Failed – Unusual Activity'];
-			case cs = new case();
+            
+            system.debug('firstname'+firstname);
+            system.debug('lastname'+lastname);
+            system.debug('AccountNumber=='+AccountNumber);
+            Person_Account__c pa =[SELECT id, name,PersonID__c,Account_Number__c,PersonID__r.name 
+                                    from Person_Account__c where PersonID__r.firstname like: firstname
+                                    AND PersonID__r.LASTNAME like: lastname
+                                    AND Account_Number__r.name =: AccountNumber limit 1];
+
+            case cs = new case();
 			 for(CaseRecordType__c crt : scList){
 		            cs.RecordTypeId = scList[0].RecordTypeId__c;
 		            cs.Primary_Category__c = scList[0].Primary_Category__c;
@@ -271,7 +299,10 @@ public class EFTController {
 				//cs.AccountId = EFTRecord.Member_Account__c;
 				cs.Status = 'Open';
 				cs.Subject = 'ACH Record';
-				cs.ownerid = '005j000000DCwXHAA1';
+                cs.ownerid = '005j000000DCwXHAA1';
+                if(pa != null){
+                    cs.AccountId = pa.PersonID__c;
+                }
 				//cs.CaseComments__c = casecomment;
 				string operation='';
 				if(EFTRecord.Action_Type__c == 'Create'){
@@ -475,6 +506,7 @@ public class EFTController {
     
     //-------------------------------Getting Loan Accounts from Episys----------------------------------------------//
     public static Map<string,List<ShareLoanWrapperObject>> getLoanAccounts(string AccountNumber){
+        	system.debug('AccountNumber=='+AccountNumber);
     		List<ShareLoanWrapperObject> resultList = new List<ShareLoanWrapperObject>();
     		Map<string,List<ShareLoanWrapperObject>> resultmap = new Map<string,List<ShareLoanWrapperObject>>();
     		
@@ -487,6 +519,7 @@ public class EFTController {
 	        ACH_Loan_Share_Type_Configuration__c cs = ACH_Loan_Share_Type_Configuration__c.getValues('Loan');   
 	       	string loanTypes= (string)cs.Type__c;		  
 			String[] arrLoanTypes = loanTypes.split(',');   
+            system.debug('arrLoanTypes=='+arrLoanTypes);
 	          
 	       
 	        http httpParam = new http();
@@ -520,9 +553,12 @@ public class EFTController {
 	                               temp.Type =  'Loan'; 
 	                               temp.Payment = (decimal)localAcc.get('Payment');
 	                               if((string)localAcc.get('DueDate') != '')
-	                               temp.EffectiveDate = Date.ValueOf((string)localAcc.get('DueDate'));
+	                                temp.EffectiveDate = Date.ValueOf((string)localAcc.get('DueDate'));
 	                               temp.Day1 = (integer)localAcc.get('DueDay1');
-	                               temp.Day2 = (integer)localAcc.get('DueDay2'); 
+                                   temp.Day2 = (integer)localAcc.get('DueDay2'); 
+                                   if((string)localAcc.get('LoanCode') != ''){
+                                    temp.LoanCode = (string)localAcc.get('LoanCode'); 
+                                   }
 	                               resultList.add(temp);  
 	                       }
        				}
@@ -610,10 +646,11 @@ public class EFTController {
                  for(Object t : results){
                      
                       map<string, object> localAcc = (map<string, object>)t;
-                      // System.debug('localAcc ....' + localAcc.get('Id'));
+                      System.debug('localAcc ....' + localAcc.get('Id'));
                        string lsId = '';
                        if(localAcc.get('Id') != null && localAcc.get('Id') != ''){
-                       		lsId = String.valueOf(localAcc.get('Id')).substring(0, 2);
+                               lsId = String.valueOf(localAcc.get('Id')).substring(0, 2);
+                               System.debug('lsId ....' + lsId);
                        }
                       if(arrShareTypes.contains(lsId) || arrLoanTypes.contains(lsId)){
                    			EFTWrapperObject temp = new EFTWrapperObject();                       		   
@@ -681,7 +718,7 @@ public class EFTController {
         	set<string> setEmailIds = new set<string>();
         	set<string> setEmailNames = new set<string>();
         	List<EpisysAccountDetailsWrapper> listAccounts = new List<EpisysAccountDetailsWrapper>();
-        	List<EpisysAccountDetailsWrapper> listResultAccounts = new List<EpisysAccountDetailsWrapper>();
+        	set<EpisysAccountDetailsWrapper> listResultAccounts = new set<EpisysAccountDetailsWrapper>();
         	
         	Person_Account__c paPrimary = [SELECT Id,PersonID__c,
                              Account_Number__c, Account_Number__r.RecType__c,TypeTranslate__c, Account_Number__r.Name, PersonID__r.Home_Phone__pc,PersonID__r.Residential_City__pc,PersonID__r.Residential_State__pc, PersonID__r.Residential_Street__pc, PersonID__r.Residential_Zipocde__pc, PersonID__r.Name, PersonID__r.Email_raw__c FROM Person_Account__c 
@@ -745,6 +782,8 @@ public class EFTController {
            }
          system.debug('setEmailNames==' + setEmailNames);  
          for(Integer i=0;i<listAccounts.size();i++){
+            system.debug('1==' + listAccounts[i].EmailId +',' +listAccounts[i].fullname);  
+            system.debug('2==' + listAccounts[i].AltEmailId +',' +listAccounts[i].fullname);  
            		if(setEmailNames.contains(listAccounts[i].EmailId +',' +listAccounts[i].fullname)){
            				  EpisysAccountDetailsWrapper tmp = new EpisysAccountDetailsWrapper();
 	                       tmp.EmailId=listAccounts[i].EmailId;
@@ -752,7 +791,7 @@ public class EFTController {
 	                       tmp.FullName=listAccounts[i].fullname;
 	                       listResultAccounts.add(tmp);
            		}
-           		if(setEmailNames.contains(listAccounts[i].AltEmailId +',' +listAccounts[i].fullname)){
+           		if(setEmailNames.contains(listAccounts[i].AltEmailId +',' +listAccounts[i].fullname) && listAccounts[i].AltEmailId != listAccounts[i].EmailId){
            				  EpisysAccountDetailsWrapper tmp1 = new EpisysAccountDetailsWrapper();
 	                       tmp1.EmailId=listAccounts[i].AltEmailId;
 	                       tmp1.AccountType=listAccounts[i].AccountType;
@@ -864,6 +903,8 @@ public class EFTController {
       public integer Day1 {get;set;}
        @AuraEnabled
       public integer Day2 {get;set;}
+      @AuraEnabled
+      public string LoanCode {get;set;}
     }
     
      public class EFTWrapperObject
