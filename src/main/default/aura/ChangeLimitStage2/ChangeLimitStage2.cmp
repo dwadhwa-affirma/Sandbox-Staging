@@ -1,0 +1,12 @@
+<aura:component controller="ChangeLimitController" implements="force:appHostable,force:lightningQuickActionWithoutHeader,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,force:hasSObjectName" access="global">
+
+<aura:registerEvent name="ChangeLimitEvent" type="c:ChangeLimitEvent"/>
+<aura:attribute name="CLRecord" type="Change_Limit__c"/> 
+<aura:handler name="init" action="{!c.doInit}" value="{!this}" access="global" />
+    
+	<div id = "stage3" class = "stage3">    
+    	
+        ChangeLimitStage2
+        
+    </div>    
+</aura:component>
