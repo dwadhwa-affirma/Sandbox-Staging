@@ -6,7 +6,8 @@ public class EFTToSyimtar {
     public static String IDType;
     public static String ID;
     public static String Frequency;
-    public static String Day1;
+	public static String Day1;
+	public static String UpdateDay1;
     public static String Day2;
     public static String NextDate;
     public static String EffectiveDate;
@@ -17,15 +18,18 @@ public class EFTToSyimtar {
     public static String AccountNumber;
     public static String ErrorEFTLocator;
     public static String PaymentMethod;
-    public static String AlternatePayment = '';
+	public static String AlternatePayment = '';
+	public static String LoanCode;
     
     public static String EftLocator;
    
     
     public static String jsonData;  
-    public static String jsonData1;
+	public static String jsonData1;
+	public static String UpdatejsonData;
     public static HttpRequest req = new HttpRequest();
-     public static HttpRequest req1 = new HttpRequest();
+	public static HttpRequest req1 = new HttpRequest();
+	public static HttpRequest Updatereq = new HttpRequest();
     public static String result;
     public static List<EFT__c> EFTRecordsToUpdate = new List<EFT__c>();
    
@@ -39,7 +43,7 @@ public class EFTToSyimtar {
                          Frequency__c,Id,Member_Account__c,Member_Account__r.Brand__c,Member_Account__r.Name,Case__c, Case__r.Description,
                          Member__c,Name,
                          OwnerId,Payment_Amount__c,Routing_Number__c,Share_Loan_Id__c,Stage__c,
-                         Status__c,Type__c, EFT_ID_Type__c FROM EFT__c where id =: ids];
+                         Status__c,Type__c, EFT_ID_Type__c,LoanCode__c FROM EFT__c where id =: ids];
      map<Id, String> CaseIdsToUpdate = new Map<Id, String>();
      
     		for(EFT__c e : EFTs){
@@ -117,7 +121,8 @@ public class EFTToSyimtar {
                 }
                 
                 Payee = e.Routing_Number__c.leftPad(10,'0');
-                Reference = e.Account_Number__c ;
+				Reference = e.Account_Number__c ;
+				LoanCode = e.LoanCode__c;
                 if(e.Bank_Name__c != null){
                         MatchID3 = e.Bank_Name__c;
                 	if(MatchID3.length() > 22){
@@ -163,23 +168,83 @@ public class EFTToSyimtar {
 	        		ErrorEFTLocator = String.valueOf(responseBody).substringAfter('[MessageId=TESTING] ');
 	        		ErrorEFTLocator = String.valueOf(ErrorEFTLocator).substringBefore('","ErrorDetails"');
 	        		system.debug('ErrorEFTLocator' + ErrorEFTLocator);
-	        	}
+				}
+
+				/*-----------------------SI11042-5: Update Day1 Field----------------------------------*/
+				String updateresult;
+                string updateresultEFTLocator;       		
+				
+				if(result != null && result != ''){
+
+					if(e.Day_of_Month__c != null){
+						UpdateDay1 = String.ValueOf(e.Day_of_Month__c);
+					}
+					else{
+						UpdateDay1 = '0';
+					}
+					boolean isExpired = false;
+					Updatereq.setEndpoint('https://symxapi.chevronfcu.org/devclient/EFT/UpdateEft');
+					//req.setClientCertificateName('brscmcapi');
+					Updatereq.setMethod('POST');
+					Updatereq.setHeader('Content-Type', 'application/json');
+					Updatereq.setHeader('Accept', 'application/json');
+					
+				   
+					UpdatejsonData = '{"EftLocator":' + '\"'+ result +'\"'+',"AmountCode":' + '\"'+ AmountCode +'\"' +',"Frequency":'+'\"'+Frequency+'\"'+',"Day1":'+'\"'+UpdateDay1+'\"'+',"Day2":'+'\"'+Day2+'\"'+',"EffectiveDate":'+'\"'+EffectiveDate+'\"'+',"PostAmount":'+'\"'+PostAmount+'\"'+',"Payee":'+'\"'+Payee+'\"'+',"Reference":'+'\"'+Reference+'\"'+',"MatchId3":'+'\"'+MatchID3+'\"'+',"IsUpdateExpirationDate":'+'\"'+isExpired+'\"' +',"AccountNumber":'+'\"'+AccountNumber+'\"}';
+					//jsonData = '{"EFTType": 3,"AmountCode": 27,"GroupNumber": "000001","IdType": 0, "ID": "0100", "Frequency": 4,"Day1": 0,"NextDate": "2019-01-08","EffectiveDate": "2019-01-09","PostAmount": "100.00", "Payee": "0322271627","Reference": "42006986568","MatchId3": "BANK OF AMERICA, N.A.","AccountNumber": "123"}';
+					Updatereq.setBodyAsBlob(Blob.valueof(UpdatejsonData)); 
+					system.debug('UpdatejsonData'+UpdatejsonData);
+					
+					Http updatehttp = new Http();  
+					Updatereq.setTimeout(60000);
+					HttpResponse Updateres;
+					String updateresponseBody;
+					if(!Test.isRunningTest()){                       
+						Updateres = updatehttp.send(Updatereq);
+						updateresponseBody = Updatereq.getBody();
+						System.debug('Response Body::'+Updateres.getBody());    
+					}else{
+						updateresponseBody = '{"EFTType":"3","AmountCode":"27","GroupNumber":"1","IdType":"1","ID":"100","Frequency":"4","Day1":"1","NextDate":"01-01-2019","EffectiveDate":"01-01-2019","PostAmount":"100.00","Payee":"322271627","Reference":"42006986568","MatchId3":"BANK OF AMERICA","AccountNumber":"123"}';
+					}
+
+					// JSon parse for Id                            
+					updateresult = String.valueOf(responseBody).substringAfter('Status":"');
+					updateresult = String.valueOf(result).substringBefore('",');
+					System.debug('Status' + updateresult);
+					
+					updateresultEFTLocator = String.valueOf(updateresponseBody).substringAfter('EftLoctorId":"');
+					updateresultEFTLocator = String.valueOf(updateresultEFTLocator).substringBefore('",');
+					System.debug('updateresultEFTLocator' + updateresultEFTLocator);
+				}
 	        	
 	        	if(result != null && result != ''){
                 	
-                	PaymentMethod = '5';
-                	req1.setEndpoint('https://symxapi.chevronfcu.org/devclient/EFT/UpdateLoanById');
+					PaymentMethod = '5';
+					if(LoanCode == '2'){
+						req1.setEndpoint('https://symxapi.chevronfcu.org/devclient/EFT/UpdateLOCLoanbyId');
+						if(AlternatePayment != ''){
+							jsonData1 = '{"AccountNumber":'+'\"'+AccountNumber+'\","LoanId":' + '\"'+ ID +'\"'+',"PaymentMethod":'+'\"'+PaymentMethod+ '\"' +',"Payment":'+'\"'+e.Payment_Amount__c+ '\"' +',"AlternatePayment":'+'\"'+AlternatePayment+'\"}';
+						}
+						else{
+							jsonData1 = '{"AccountNumber":'+'\"'+AccountNumber+'\","LoanId":' + '\"'+ ID +'\"'+',"PaymentMethod":'+'\"'+PaymentMethod +',"Payment":'+'\"'+e.Payment_Amount__c+ '\"' + '\"}';
+						}
+					}						
+					else{
+						req1.setEndpoint('https://symxapi.chevronfcu.org/devclient/EFT/UpdateLoanById');
+						if(AlternatePayment != ''){
+							jsonData1 = '{"AccountNumber":'+'\"'+AccountNumber+'\","LoanId":' + '\"'+ ID +'\"'+',"PaymentMethod":'+'\"'+PaymentMethod+ '\"'+',"AlternatePayment":'+'\"'+AlternatePayment+'\"}';
+						}
+						else{
+							jsonData1 = '{"AccountNumber":'+'\"'+AccountNumber+'\","LoanId":' + '\"'+ ID +'\"'+',"PaymentMethod":'+'\"'+PaymentMethod+ '\"}';
+						}
+					}						
+					
 	                req1.setClientCertificateName('brscmcapi');
 	                req1.setMethod('POST');
 	                req1.setHeader('Content-Type', 'application/json');
 	                req1.setHeader('Accept', 'application/json');
 	                
-	                if(AlternatePayment != ''){
-	                	jsonData1 = '{"AccountNumber":'+'\"'+AccountNumber+'\","LoanId":' + '\"'+ ID +'\"'+',"PaymentMethod":'+'\"'+PaymentMethod+ '\"'+',"AlternatePayment":'+'\"'+AlternatePayment+'\"}';
-	                }
-	                else{
-	                	jsonData1 = '{"AccountNumber":'+'\"'+AccountNumber+'\","LoanId":' + '\"'+ ID +'\"'+',"PaymentMethod":'+'\"'+PaymentMethod+ '\"}';
-	                }
+	                
 	                
 	                req1.setBodyAsBlob(Blob.valueof(jsondata1)); 
 	                system.debug('test'+jsonData1);
@@ -269,8 +334,8 @@ public class EFTToSyimtar {
             	}           	
             	//Frequency = '4';
                 
-                if(e.Effective_Date__c != null){
-               		Day1 = '0';//String.ValueOf(e.Day_of_Month__c);
+                if(e.Day_of_Month__c != null){
+               		Day1 = String.ValueOf(e.Day_of_Month__c);
                	}
             	else{
             		Day1 = '0';

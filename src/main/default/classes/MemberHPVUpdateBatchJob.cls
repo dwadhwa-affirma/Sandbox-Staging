@@ -1,3 +1,4 @@
+/*--------------------------Batch Class to Update Members' HP/HV Data---------------------------------------*/
 global class MemberHPVUpdateBatchJob implements Database.Batchable<SObject>{
 
     private Set<String> AccountIds;
@@ -8,6 +9,8 @@ global class MemberHPVUpdateBatchJob implements Database.Batchable<SObject>{
 
     global Iterable<SObject> start(Database.BatchableContext BC){
         String query = 'SELECT Id,Account_Number__c,Account_Number__r.RecType__c, Account_Number__r.Name, PersonID__c, Account_Number__r.High_Value_Flag__c, Account_Number__r.OPEN_DATE__c FROM Person_Account__c WHERE PersonID__c IN: AccountIds and TypeTranslate__c in (\'0001/Joint Member\',\'0000/Primary\')';
+        System.debug('query='+query);
+        System.debug('AccountIds='+AccountIds);
         return Database.getQueryLocator(query); 
 
     }
@@ -23,7 +26,15 @@ global class MemberHPVUpdateBatchJob implements Database.Batchable<SObject>{
         map<id, String> mapHPPeronAccountNo = new map<id, String>();
         map<id, String> mapHVPeronAccountNo = new map<id, String>();
         map<id, Date> mapOpenDate = new map<id, Date>();
-        
+        map<Id, Member_HP_HV__c> MapMemberIds = new map<Id, Member_HP_HV__c>();
+        map<Id,Integer> MemberIdstoUpdateHV = new map<Id,Integer>();
+        map<Id,Integer> MemberIdstoInsertHV = new map<Id,Integer>();
+        map<Id,Integer> MemberIdstoUpdateHP = new map<Id,Integer>();
+        map<Id,Integer> MemberIdstoInsertHP = new map<Id,Integer>();        
+        List<Member_HP_HV__c> updateHVList = new List<Member_HP_HV__c>();
+        List<Member_HP_HV__c> inserHVList = new List<Member_HP_HV__c>();
+        List<Member_HP_HV__c> updateHPList = new List<Member_HP_HV__c>();
+        List<Member_HP_HV__c> inserHPList = new List<Member_HP_HV__c>();
         
 		for(Person_Account__c var: listPersonAccount){           	
             if(var.Account_Number__r.High_Value_Flag__c == 1 && mapHVPeronAccountNo.get(var.PersonID__c) != var.Account_Number__r.Name){
@@ -66,11 +77,7 @@ global class MemberHPVUpdateBatchJob implements Database.Batchable<SObject>{
         }
         System.debug('mapAccountHPCount=='+mapAccountHPCount);
         System.debug('mapAccountHVCount=='+mapAccountHVCount);
-        map<Id, Member_HP_HV__c> MapMemberIds = new map<Id, Member_HP_HV__c>();
-        map<Id,Integer> MemberIdstoUpdateHV = new map<Id,Integer>();
-        map<Id,Integer> MemberIdstoInsertHV = new map<Id,Integer>();
-        map<Id,Integer> MemberIdstoUpdateHP = new map<Id,Integer>();
-        map<Id,Integer> MemberIdstoInsertHP = new map<Id,Integer>();
+       
         List<Member_HP_HV__c> HVPList = [SELECT id, Member__c, Total_HPV__c, Total_HV__c from Member_HP_HV__c WHERE Member__c in: accIdset];
         for(Member_HP_HV__c mhp: HVPList){
             MapMemberIds.put(mhp.Member__c,mhp);
@@ -85,8 +92,6 @@ global class MemberHPVUpdateBatchJob implements Database.Batchable<SObject>{
             }
         }
 
-        List<Member_HP_HV__c> updateHVList = new List<Member_HP_HV__c>();
-        List<Member_HP_HV__c> inserHVList = new List<Member_HP_HV__c>();
 
         System.debug('MemberIdstoUpdateHP=='+MemberIdstoUpdateHV);
         System.debug('MemberIdstoInsertHP=='+MemberIdstoInsertHV);
@@ -125,9 +130,7 @@ global class MemberHPVUpdateBatchJob implements Database.Batchable<SObject>{
             }
         }        
         System.debug('MemberIdstoUpdateHP=='+MemberIdstoUpdateHP);
-        System.debug('MemberIdstoInsertHP=='+MemberIdstoInsertHP);
-        List<Member_HP_HV__c> updateHPList = new List<Member_HP_HV__c>();
-        List<Member_HP_HV__c> inserHPList = new List<Member_HP_HV__c>();
+        System.debug('MemberIdstoInsertHP=='+MemberIdstoInsertHP);        
         
         updateHPList = [SELECT id,Member__c from Member_HP_HV__c where id in: MemberIdstoUpdateHP.keySet()];
         System.debug('updateHPList=='+updateHPList);

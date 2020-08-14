@@ -5,13 +5,13 @@ public class EFTToDocuSign {
 	public static Account Member;
 	public static String EmailBody = 'In order for the Credit Union to ensure your solar loan automatic payment setup is accurate, please review and sign the ACH form.' +'\n\n' +'If changes are needed or you would like to provide additional payments, please update the form and sign.' +'\n\n' + 'If you have any questions, please contact us at 800-782-8782 ext. 5200.';
 	public static String EmailSubject = 'ACH Debits';    
-	public static String accountID = '2e80db6b-16cf-4202-bf90-dfa029c5949f'; 
-	public static String userId = 'cc0ace2f-a6a7-44ae-852d-3c7432552ebb'; 
-	public static String passWord = 'Affirm@123' ;
-	public static String integratorKey = '12c7957a-484f-4fec-b6b3-461ec9b666aa' ; 
-	public static String replyTo = 'noreply@chevronfcu.org';
-	public static String templateID = '5658c430-8e5d-4f53-b910-4d9e939e52ee';
-	public static String endPoint = 'demo.docusign.net';
+	public static String accountID; 
+	public static String userId; 
+	public static String passWord;
+	public static String integratorKey; 
+	public static String replyTo;
+	public static String templateID;
+	public static String endPoint;
 	public static String authorizationHeader;      
 	public static String endPointURL;
 	public static HttpRequest req = new HttpRequest();    
@@ -19,7 +19,7 @@ public class EFTToDocuSign {
 	public static Http http = new Http();
 	public static HTTPResponse res;
 	public static String responseBody;
-    public static String action;
+	public static String action;
 	
 	public static String endPointURL1;
 	public static HttpRequest req1 = new HttpRequest();    
@@ -47,8 +47,8 @@ public class EFTToDocuSign {
     	system.debug('ids =='+ids);
         //----------------------------Start - DocuSign Templates from Custom setting---------------------------------//
         SolarLoan_Docusign_Emails__c sde = SolarLoan_Docusign_Emails__c.getValues('Email For Testing');
-        DocuSign_User_Details__c DTSpectrum = DocuSign_User_Details__c.getValues('Spectrum');
-        DocuSign_User_Details__c DTChevron = DocuSign_User_Details__c.getValues('Chevron');
+        ACH_DocuSign_API_User_Details__c DTSpectrum = ACH_DocuSign_API_User_Details__c.getValues('Spectrum');
+        ACH_DocuSign_API_User_Details__c DTChevron = ACH_DocuSign_API_User_Details__c.getValues('Chevron');
         List<EFT__C> EFTToUpdate = new List<EFT__c>();
         
         String userName = UserInfo.getUserName();
@@ -72,9 +72,34 @@ public class EFTToDocuSign {
                              isAlternateAmount__c,is_Checking_Account__c,Member_Account__c,Member_Name__c,Member__c,
                              Name,OwnerId,Payment_Amount__c,Routing_Number__c,Second_Day_of_Month__c,Type__c,
                              Share_Loan_Description__c,Share_Loan_Id__c,Share_Loan_Type__c,Stage__c,Status__c,
-                             Update_DocuSignId__c,Update_Docusign_Status__c FROM EFT__c where id =: ids];
+                             Update_DocuSignId__c,Update_Docusign_Status__c, Member_Account__r.Brand__c FROM EFT__c where id =: ids];
         
         	for(EFT__c eft : EFTs){
+				if(eft.Member_Account__r.Brand__c == 'Spectrum'){
+					templateID = DTSpectrum.TemplateId__c;
+            		replyTo = DTSpectrum.ReplyTo__c;
+            		accountID = DTSpectrum.AccountId__c;
+            		userId = DTSpectrum.Username__c;
+            		passWord = DTSpectrum.Password__c;
+            		integratorKey = DTSpectrum.IntegratorKey__c;
+            		endpoint = DTSpectrum.EndPoint__c;
+            		
+            		authorizationHeader = '<DocuSignCredentials><Username>'+userId+'</Username><Password>'+Password+'</Password><IntegratorKey>'+integratorKey+'</IntegratorKey></DocuSignCredentials>';
+            		json2='{"replyEmailAddressOverride":"'+replyTo+'",'+'"replyEmailNameOverride": "Spectrum Team",'+'"bccEmailAddresses": []'+'}';
+				}
+				else{
+					templateID = DTChevron.TemplateId__c;
+            		replyTo = DTChevron.ReplyTo__c;
+            		accountID = DTChevron.AccountId__c;
+            		userId = DTChevron.Username__c;
+            		passWord = DTChevron.Password__c;
+            		integratorKey = DTChevron.IntegratorKey__c;
+            		endpoint = DTChevron.EndPoint__c;
+            		
+            		authorizationHeader = '<DocuSignCredentials><Username>'+userId+'</Username><Password>'+Password+'</Password><IntegratorKey>'+integratorKey+'</IntegratorKey></DocuSignCredentials>';
+            		json2='{"replyEmailAddressOverride": "'+replyTo+'",'+'"replyEmailNameOverride": "Chevron Team",'+'"bccEmailAddresses": []'+'}';
+				}
+
         		
                 action = eft.Action_Type__c;
                
@@ -156,7 +181,7 @@ public class EFTToDocuSign {
 				req2.setHeader('Content-Length','162100'); 
 				req2.setHeader('Content-Type','application/json'); 
 				req2.setHeader('Content-Disposition','form-data');
-				json2='{"replyEmailAddressOverride": "'+replyTo+'",'+'"replyEmailNameOverride": "Chevron Team",'+'"bccEmailAddresses": []'+'}';
+				//json2='{"replyEmailAddressOverride": "'+replyTo+'",'+'"replyEmailNameOverride": "Chevron Team",'+'"bccEmailAddresses": []'+'}';
 				req2.setBody(json2); 
 				if(!Test.isRunningTest()){ 
 					res2 = http2.send(req2);

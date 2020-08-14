@@ -91,7 +91,7 @@
     onRadioChange : function(component, event, helper) {
     	var evt = $A.get("e.c:EFTEvent");
         var SelectedShareLoan = event.getSource().get('v.value');
-        var SelectedShareLoanID, SelectedShareLoanType , SelectedShareLoanDesc, SelectedEFTIDType, SelectedPayment, SelectedED, SelectedDay1, SelectedDay2;
+        var SelectedShareLoanID, SelectedShareLoanType , SelectedShareLoanDesc, SelectedEFTIDType, SelectedPayment, SelectedED, SelectedDay1, SelectedDay2, SelectedLoanCode;
       /*  if(SelectedShareLoan != null && SelectedShareLoan != undefined){
         	SelectedShareLoanID = SelectedShareLoan.split(',')[0];
             SelectedShareLoanType  = SelectedShareLoan.split(',')[2];
@@ -109,7 +109,8 @@
 	            SelectedPayment = map[i].Payment;
 	            SelectedED = map[i].EffectiveDate;
 	            SelectedDay1 = map[i].Day1.toString().trim();
-	            SelectedDay2 = map[i].Day2.toString().trim();	            
+	            SelectedDay2 = map[i].Day2.toString().trim();	
+                SelectedLoanCode = map[i].LoanCode;
 	            break;
         	}
         }
@@ -122,6 +123,7 @@
          component.set("v.EFTRecord.Effective_Date__c",SelectedED);
          component.set("v.EFTRecord.Day_of_Month__c",SelectedDay1);
          component.set("v.EFTRecord.Second_Day_of_Month__c",SelectedDay2);
+        component.set("v.EFTRecord.LoanCode__c",SelectedLoanCode);
          component.set("v.EFTRecord.Stage__c",'Share/Loan');
          if(SelectedDay2 != '0'){
 	           component.set("v.EFTRecord.Frequency__c",'Semi-Monthly'); 
@@ -159,6 +161,7 @@
                     component.set("v.EFTRecord.Day_of_Month__c",EFTList[i].Day_of_Month__c);
                     component.set("v.EFTRecord.Second_Day_of_Month__c",EFTList[i].Second_Day_of_Month__c);
                     component.set("v.EFTRecord.EftLocator__c",EFTList[i].EftLocator__c);
+                    component.set("v.EFTRecord.LoanCode__c",EFTList[i].LoanCode__c);
                      component.set("v.EFTRecord.Id",EFTList[i].Id);
                     
                     break;
