@@ -1,9 +1,38 @@
 <aura:component controller="ChangeLimitController" implements="force:appHostable,force:lightningQuickActionWithoutHeader,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,force:hasSObjectName" access="global">
+
 <aura:registerEvent name="ChangeLimitEvent" type="c:ChangeLimitEvent"/>
 <aura:attribute name="CLRecord" type="Change_Limit__c"/> 
-    <div id = "stage3">
-        
-    	ChangeLimitStage3
+<aura:handler name="init" action="{!c.doInit}" value="{!this}" access="global" />
+<aura:attribute name="caList" type="Account_Details__c[]" />  
 
-    </div>
+	<div id = "stage3">    
+        <div>
+        	<p class = "fontstyle">What would you like to do?</p>
+            <br/>
+            <table aria-multiselectable="true" class="slds-table slds-table_header-hidden slds-table_edit slds-tree slds-table_tree" role="treegrid">
+                <tbody>
+                	<tr aria-expanded="false" aria-level="1" aria-posinset="3" aria-selected="false" aria-setsize="4" class="slds-hint-parent">
+                        <td class="slds-text-align_right" role="gridcell" style="width:3.25rem">
+                            <span class="slds-radio">
+                                <lightning:input type="radio" name="select" value="1"/>
+                            </span>
+                        </td>
+                        <td data-label="Employees" role="gridcell">
+                            <div class="slds-truncate" title="Change Card Limits">Change Card Limits</div>
+                        </td>
+                    </tr>
+                    <tr aria-expanded="false" aria-level="1" aria-posinset="3" aria-selected="false" aria-setsize="4" class="slds-hint-parent">
+                        <td class="slds-text-align_right" role="gridcell" style="width:3.25rem">
+                            <span class="slds-radio">
+                                <lightning:input type="radio" name="select" value="2"/>
+                            </span>
+                        </td>
+                        <td data-label="Employees" role="gridcell">
+                            <div class="slds-truncate" title="Reset Card Limits">Reset Card Limits</div>
+                        </td>
+                    </tr>
+               </tbody>
+            </table>
+        </div>
+    </div>    
 </aura:component>

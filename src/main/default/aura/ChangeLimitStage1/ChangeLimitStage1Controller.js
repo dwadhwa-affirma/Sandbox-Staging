@@ -35,7 +35,7 @@
         if(CL != undefined){
             evt.setParams({ "CLRecord": CL, "isMemberSelected": isMemberSelected});
             evt.fire();
-        }
+    	}
     }
   
 })

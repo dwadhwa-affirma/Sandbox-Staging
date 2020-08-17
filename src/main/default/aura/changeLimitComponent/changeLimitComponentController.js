@@ -18,7 +18,7 @@
                 Stages=result.CLStages;
                 var CLRecord =[];
                 CLRecord = result.CLRecord;
-               
+                helper.showSpinner(component);
 				Stages.sort(helper.Sort);
 				component.set("v.ActiveStepIndex", (0));
                 component.set("v.ChangeLimitStageDetails", Stages);
@@ -34,15 +34,16 @@
                                     var body = targetCmp.get("v.body");
                                     body.push(msgBox);
                                     targetCmp.set("v.body", body); 
-               
+               							
                                 }
+                                helper.hideSpinner(component);
                             }
-		       			 );               
+		       			 ); 
+                
             }            
         	
-            
-        	
         });	
+       
        $A.enqueueAction(action);
 	},
     
@@ -73,26 +74,51 @@
                  var dynamicText;
                  
                  if(i==0){
-                 	dynamicText = component.get("v.CLRecord.Member_Name__c");     
-                 }    
+                    dynamicText = component.get("v.CLRecord.Member_Name__c");     
+                    stages2[i].Stage_Action__c = dynamicText;
+                 	component.set("v.ChangeLimitStageDetails", stages2);
                  
-                 stages2[i].Stage_Action__c = dynamicText;
-                 component.set("v.ChangeLimitStageDetails", stages2);
-                 
-                 $A.createComponent("c:"+stages[i+1].Stage_Component__c,{recordId: component.get("v.recordId"), CLRecord: component.get("v.CLRecord")},
-                  	function(msgBox){                
-                    	if (component.isValid()) {
-                        	var targetCmp = component.find('ModalDialogPlaceholder');
-                        	var body = targetCmp.get("v.body");
-                            //body.push(msgBox);
-                            body.splice(0, 1, msgBox);
-                            targetCmp.set("v.body", body); 
+                    $A.createComponent("c:"+stages[i+1].Stage_Component__c,{recordId: component.get("v.recordId"), CLRecord: component.get("v.CLRecord")},
+                        function(msgBox){           
+                            if (component.isValid()) {
+                                var targetCmp = component.find('ModalDialogPlaceholder');
+                                var body = targetCmp.get("v.body");
+                                //body.push(msgBox);
+                                body.splice(0, 1, msgBox);
+                                targetCmp.set("v.body", body); 
+                           }
+                           helper.hideSpinner(component);	
                         }
-                    }
-                  );
+                     );
+                     break;
+                 }
+                 if(i==1 && (component.get("v.CLRecord.Card_Number__c") == '' || component.get("v.CLRecord.Card_Number__c") == undefined)){
+            		alert('Please Select Card Number');	
+            		helper.hideSpinner(component,helper);
+            		return;            
+                  }
+                 else{
+                 	
+                    dynamicText = component.get("v.CLRecord.Card_Number__c");   
+                    stages2[0].Stage_Action__c = component.get("v.CLRecord.Member_Name__c");
+                    stages2[i].Stage_Action__c = dynamicText;
+                 	component.set("v.ChangeLimitStageDetails", stages2);
                  
-                  helper.hideSpinner(component);
-		          break;
+                    $A.createComponent("c:"+stages[i+1].Stage_Component__c,{recordId: component.get("v.recordId"), CLRecord: component.get("v.CLRecord")},
+                        function(msgBox){           
+                            if (component.isValid()) {
+                                var targetCmp = component.find('ModalDialogPlaceholder');
+                                var body = targetCmp.get("v.body");
+                                //body.push(msgBox);
+                                body.splice(0, 1, msgBox);
+                                targetCmp.set("v.body", body); 
+                           }
+                           helper.hideSpinner(component);	
+                        }
+                     );
+                 break;	     
+                 }
+                
              }
             
         }    

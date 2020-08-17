@@ -22,7 +22,7 @@
               <span class="slds-assistive-text" data-aura-rendered-by="10331:0">Close this window</span>
           </button>  
             <div class="c-container">
-                <lightning:layout horizontalAlign="spread">                                            
+                <lightning:layout horizontalAlign="spread"> 
                     <div class="step-container">
                         <ul class="progressbar">
                             <aura:iteration items="{!v.ChangeLimitStageDetails}" var="itemOption" indexVar="i">
@@ -44,14 +44,13 @@
         </header>
 	
     	<div class="modalbody slds-p-around_medium" id="modal-content-id-1">
-			<div aura:id="ModalDialogPlaceholder" />
+		    <div aura:id="ModalDialogPlaceholder" />
 		</div>    
     	
-    	<lightning:spinner aura:id="Spinner" alternativeText="Loading" size="medium" variant="brand" class="slds-hide spin"/>
-    	
+		<lightning:spinner aura:id="Spinner" alternativeText="Loading" size="medium" variant="brand" class="slds-hide"/>        
+    
     	<footer class="slds-modal__footer slds-modal__footer_directional">
- 			
-            <lightning:button aura:id="Exit" label="Exit" title="Exit" onclick="{!c.cancelAction}"/>
+ 		    <lightning:button aura:id="Exit" label="Exit" title="Exit" onclick="{!c.cancelAction}"/>
             <lightning:button variant="brand" label="Back" disabled="{!(and(v.ActiveStepIndex == (0),v.isMemberSelected == false) ? true : false)}" title="Back" onclick="{!c.back}"/> 
             <lightning:button variant="brand" label="{!v.ContinueButtonName}" title="Continue" onclick="{!c.Continue}"/>
             
