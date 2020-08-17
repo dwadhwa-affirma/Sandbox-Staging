@@ -1,10 +1,9 @@
 ({
 	doInit : function(component, event, helper) {
-	
-		var action = component.get("c.getMembers");
+	    
+        var action = component.get("c.getMembers");
 		var recordId = component.get("v.recordId");
-		
-		action.setParams({
+        action.setParams({
 			"recordId": recordId
 		});			
 		action.setCallback(this, function(resp) {

@@ -68,8 +68,18 @@
        		 var ProgressBarStepClass = document.getElementById('Step'+(i+1)).classList;
              if((ProgressBarStepClass[0] == undefined || ProgressBarStepClass[0] == 'half')){
              	 component.set("v.ActiveStepIndex", (i+1));
-            	
-                  $A.createComponent("c:"+stages[i+1].Stage_Component__c,{recordId: component.get("v.recordId"), EFTRecord: component.get("v.EFTRecord")},
+                 var stages2 = [];
+                 stages2 = component.get("v.ChangeLimitStageDetails");
+                 var dynamicText;
+                 
+                 if(i==0){
+                 	dynamicText = component.get("v.CLRecord.Member_Name__c");     
+                 }    
+                 
+                 stages2[i].Stage_Action__c = dynamicText;
+                 component.set("v.ChangeLimitStageDetails", stages2);
+                 
+                 $A.createComponent("c:"+stages[i+1].Stage_Component__c,{recordId: component.get("v.recordId"), CLRecord: component.get("v.CLRecord")},
                   	function(msgBox){                
                     	if (component.isValid()) {
                         	var targetCmp = component.find('ModalDialogPlaceholder');
@@ -91,6 +101,48 @@
     
     back: function (component, event, helper) {      
       
+       var stages = [];
+       stages = component.get("v.ChangeLimitStageDetails"); 
+       if(component.get("v.isMemberSelected") == true && component.get("v.ActiveStepIndex") == 0){
+    	   component.set("v.isMemberSelected", false);
+    	   
+    	   $A.createComponent("c:"+stages[0].Stage_Component__c,{recordId: component.get("v.recordId"), CLRecord: component.get("v.CLRecord"), isMemberSelected: component.get("v.isMemberSelected")},
+               function(msgBox){                
+                    if (component.isValid()) {
+                        var targetCmp = component.find('ModalDialogPlaceholder');
+                        var body = targetCmp.get("v.body");
+                        //body.push(msgBox);
+                        body.splice(0, 1, msgBox);
+                        targetCmp.set("v.body", body); 
+                                            
+                    }
+                }
+           ); 
+           //helper.hideSpinner(component);
+           return;          
+       }
+       
+		for(var i=0; i<stages.length;i++){
+            var ProgressBarStepClass = document.getElementById('Step'+(i+1)).classList;   
+            if(ProgressBarStepClass[0] == "half"){
+                component.set("v.ActiveStepIndex", (i-1)); 
+             	
+                $A.createComponent("c:"+stages[i-1].Stage_Component__c,{recordId: component.get("v.recordId"), CLRecord: component.get("v.CLRecord")},
+                	function(msgBox){                
+                    	if (component.isValid()) {
+                            var targetCmp = component.find('ModalDialogPlaceholder');
+                            var body = targetCmp.get("v.body");
+                            //body.push(msgBox);
+                            body.splice(0, 1, msgBox);
+                            targetCmp.set("v.body", body); 
+                   
+                        }
+                    }
+                );
+                return;
+                
+            }
+        }
               
     },
     
