@@ -4,12 +4,36 @@ public class ChangeLimitController {
     @AuraEnabled
     public static map<string,object> getStageData(string recordId, string sObjectType){
         map<string,object> resultMap = new map<string,object>();
-        
         List<ChangeLimit_Stages__c> CLStages = new List<ChangeLimit_Stages__c>();
-        CLStages = [SELECT id, name, isActive__c, Order__c, Stage_Action__c,Stage_Action_Placeholder__c, Stage_Component__c, Stage_Label__c, StepId__c from ChangeLimit_Stages__c where isActive__c = true]; //where isActive__c = true;      //EFT_Stages__c.getall().values();
-        resultMap.put('CLStages', CLStages);
-        system.debug('sObjectType=='+sObjectType);
+        Id uniqueId = recordId;
+        Schema.SObjectType objType = uniqueId.getsobjecttype();
        
+        if(objType == Account_Details__c.sObjectType){
+            
+            CLStages = [SELECT id, name, isActive__c, Order__c, Stage_Action__c,Stage_Action_Placeholder__c, Stage_Component__c, Stage_Label__c, StepId__c from ChangeLimit_Stages__c where isActive__c = true]; //where isActive__c = true;      //EFT_Stages__c.getall().values();
+            resultMap.put('CLStages', CLStages);
+
+            List<Change_Limit__c> CLRecord = [Select id, name, Member_Account__c, Member__c from Change_Limit__c where Member_Account__c =:recordId limit 1];
+            integer activeStageIndex = 0;
+            if(CLRecord.size() >0){               
+                for(ChangeLimit_Stages__c clstage:CLStages){ 
+                    if(CLRecord[0].Stage__c == clstage.Stage_Label__c){
+                    	activeStageIndex = (integer)clstage.Order__c;
+                	}
+                }
+                              
+                resultMap.put('CLRecord', CLRecord);
+                
+            }
+            Account_Details__c MemberAccount = [select id,name from Account_Details__c where id=:recordId limit 1];
+            resultMap.put('MemberAccount', MemberAccount);
+        }
+
+        if(objType == Account.sObjectType){
+            
+            CLStages = [SELECT id, name, isActive__c, Order__c, Stage_Action__c,Stage_Action_Placeholder__c, Stage_Component__c, Stage_Label__c, StepId__c from ChangeLimit_Stages__c where StepId__c != 'Step1' and isActive__c = true];
+            resultMap.put('CLStages', CLStages);
+
             List<Change_Limit__c> CLRecord = [Select id, name, Member_Account__c, Member__c from Change_Limit__c where Member_Account__c =:recordId limit 1];
             integer activeStageIndex = 0;
             if(CLRecord.size() >0){               
@@ -22,9 +46,9 @@ public class ChangeLimitController {
                 resultMap.put('CLRecord', CLRecord);
                 
             }
-            Account_Details__c MemberAccount = [select id,name from Account_Details__c where id=:recordId limit 1];
-            resultMap.put('MemberAccount', MemberAccount);
-       
+            Account Member = [select id,name from Account where id=:recordId limit 1];
+            resultMap.put('Member', Member);
+        }
         return resultMap;
     }
     

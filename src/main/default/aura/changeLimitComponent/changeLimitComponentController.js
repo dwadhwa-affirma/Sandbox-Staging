@@ -22,23 +22,29 @@
 				Stages.sort(helper.Sort);
 				component.set("v.ActiveStepIndex", (0));
                 component.set("v.ChangeLimitStageDetails", Stages);
-                component.set("v.MemberAccount", result.MemberAccount);
-                component.set("v.CLRecord.Member_Account__c", result.MemberAccount.Id);
                 var CLRecordStage  =  component.get("v.CLRecord[0].Stage__c");
                 var modalBody;
                 
-                $A.createComponent("c:"+Stages[0].Stage_Component__c,{recordId: component.get("v.recordId"),CLRecord: component.get("v.CLRecord")},
-                            function(msgBox){                
-                                 if (component.isValid()) {                                    
-                                     var targetCmp = component.find('ModalDialogPlaceholder');
-                                    var body = targetCmp.get("v.body");
-                                    body.push(msgBox);
-                                    targetCmp.set("v.body", body); 
-               							
-                                }
-                                helper.hideSpinner(component);
+                if(result.MemberAccount != undefined){
+                    
+                	component.set("v.MemberAccount", result.MemberAccount);
+                	component.set("v.CLRecord.Member_Account__c", result.MemberAccount.Id);
+                }    
+                if(result.Member != undefined){
+                    component.set("v.Member", result.Member);
+                	component.set("v.CLRecord.Member_Name__c", result.Member.Name);
+                }
+                	$A.createComponent("c:"+Stages[0].Stage_Component__c,{recordId: component.get("v.recordId"),CLRecord: component.get("v.CLRecord")},
+                    	function(msgBox){                
+                        	if (component.isValid()) {                                    
+                            	var targetCmp = component.find('ModalDialogPlaceholder');
+                                var body = targetCmp.get("v.body");
+                                body.push(msgBox);
+                                targetCmp.set("v.body", body); 
                             }
-		       			 ); 
+                         helper.hideSpinner(component);
+                        }
+                	);
                 
             }            
         	
@@ -56,72 +62,119 @@
   		debugger;
         helper.showSpinner(component);
         var stages = [];
+        var sobjecttype = component.get("v.sobjecttype");
         stages = component.get("v.ChangeLimitStageDetails"); 
-        if(component.get("v.isMemberSelected") == false && component.get("v.ActiveStepIndex") == 0){
-        	if(component.get("v.CLRecord.Member_Name__c") =="" || component.get("v.CLRecord.Member_Name__c") ==undefined){
-    		   alert('Please Select Member');	
-            		helper.hideSpinner(component,helper);
-            		return;   
-    	   }
-           component.set("v.isMemberSelected", true); 
-        }
-        for(var i=0; i<stages.length;i++){
-       		 var ProgressBarStepClass = document.getElementById('Step'+(i+1)).classList;
-             if((ProgressBarStepClass[0] == undefined || ProgressBarStepClass[0] == 'half')){
-             	 component.set("v.ActiveStepIndex", (i+1));
-                 var stages2 = [];
-                 stages2 = component.get("v.ChangeLimitStageDetails");
-                 var dynamicText;
-                 
-                 if(i==0){
-                    dynamicText = component.get("v.CLRecord.Member_Name__c");     
-                    stages2[i].Stage_Action__c = dynamicText;
-                 	component.set("v.ChangeLimitStageDetails", stages2);
-                 
-                    $A.createComponent("c:"+stages[i+1].Stage_Component__c,{recordId: component.get("v.recordId"), CLRecord: component.get("v.CLRecord")},
-                        function(msgBox){           
-                            if (component.isValid()) {
-                                var targetCmp = component.find('ModalDialogPlaceholder');
-                                var body = targetCmp.get("v.body");
-                                //body.push(msgBox);
-                                body.splice(0, 1, msgBox);
-                                targetCmp.set("v.body", body); 
-                           }
-                           helper.hideSpinner(component);	
-                        }
-                     );
-                     break;
-                 }
-                 if(i==1 && (component.get("v.CLRecord.Card_Number__c") == '' || component.get("v.CLRecord.Card_Number__c") == undefined)){
-            		alert('Please Select Card Number');	
-            		helper.hideSpinner(component,helper);
-            		return;            
-                  }
-                 else{
-                 	
-                    dynamicText = component.get("v.CLRecord.Card_Number__c");   
-                    stages2[0].Stage_Action__c = component.get("v.CLRecord.Member_Name__c");
-                    stages2[i].Stage_Action__c = dynamicText;
-                 	component.set("v.ChangeLimitStageDetails", stages2);
-                 
-                    $A.createComponent("c:"+stages[i+1].Stage_Component__c,{recordId: component.get("v.recordId"), CLRecord: component.get("v.CLRecord")},
-                        function(msgBox){           
-                            if (component.isValid()) {
-                                var targetCmp = component.find('ModalDialogPlaceholder');
-                                var body = targetCmp.get("v.body");
-                                //body.push(msgBox);
-                                body.splice(0, 1, msgBox);
-                                targetCmp.set("v.body", body); 
-                           }
-                           helper.hideSpinner(component);	
-                        }
-                     );
-                 break;	     
-                 }
-                
-             }
+        
+        if(sobjecttype != 'Account'){
             
-        }    
+            for(var i=0; i<stages.length;i++){
+                 
+                var ProgressBarStepClass = document.getElementById('Step'+(i+1)).classList;
+                 
+                 if((ProgressBarStepClass[0] == undefined || ProgressBarStepClass[0] == 'half')){
+                     component.set("v.ActiveStepIndex", (i+1));
+                     var stages2 = [];
+                     stages2 = component.get("v.ChangeLimitStageDetails");
+                     var dynamicText;
+                     
+                     if(i==0 && (component.get("v.CLRecord.Member_Name__c") == '' || component.get("v.CLRecord.Member_Name__c") == undefined)){
+                        alert('Please Select Member');	
+                        helper.hideSpinner(component,helper);
+                        return;            
+                     }
+                     else{
+                        
+                        dynamicText = component.get("v.CLRecord.Member_Name__c");     
+                        stages2[i].Stage_Action__c = dynamicText;
+                        component.set("v.ChangeLimitStageDetails", stages2);
+                        component.set("v.isMemberSelected", true);
+                         
+                        $A.createComponent("c:"+stages[i+1].Stage_Component__c,{recordId: component.get("v.recordId"), CLRecord: component.get("v.CLRecord")},
+                            function(msgBox){           
+                                if (component.isValid()) {
+                                    var targetCmp = component.find('ModalDialogPlaceholder');
+                                    var body = targetCmp.get("v.body");
+                                    //body.push(msgBox);
+                                    body.splice(0, 1, msgBox);
+                                    targetCmp.set("v.body", body); 
+                               }
+                               helper.hideSpinner(component);	
+                            }
+                         );
+                         break;
+                     }
+                     if(i==1 && (component.get("v.CLRecord.Card_Number__c") == '' || component.get("v.CLRecord.Card_Number__c") == undefined)){
+                        alert('Please Select Card Number');	
+                        helper.hideSpinner(component,helper);
+                        return;            
+                      }
+                     else{
+                        
+                        dynamicText = component.get("v.CLRecord.Card_Number__c");   
+                        stages2[0].Stage_Action__c = component.get("v.CLRecord.Member_Name__c");
+                        stages2[i].Stage_Action__c = dynamicText;
+                        component.set("v.ChangeLimitStageDetails", stages2);
+                     
+                        $A.createComponent("c:"+stages[i+1].Stage_Component__c,{recordId: component.get("v.recordId"), CLRecord: component.get("v.CLRecord")},
+                            function(msgBox){           
+                                if (component.isValid()) {
+                                    var targetCmp = component.find('ModalDialogPlaceholder');
+                                    var body = targetCmp.get("v.body");
+                                    //body.push(msgBox);
+                                    body.splice(0, 1, msgBox);
+                                    targetCmp.set("v.body", body); 
+                               }
+                               helper.hideSpinner(component);	
+                            }
+                         );
+                     break;	     
+                     }
+                    
+                 }
+            } 
+        }
+        
+        if(sobjecttype == 'Account'){
+            
+            for(var i=0; i<stages.length;i++){
+                
+                var ProgressBarStepClass = document.getElementById('Step'+(i+2)).classList;
+                 
+                 if((ProgressBarStepClass[0] == undefined || ProgressBarStepClass[0] == 'half')){
+                     component.set("v.ActiveStepIndex", (i+1));
+                     var stages2 = [];
+                     stages2 = component.get("v.ChangeLimitStageDetails");
+                     var dynamicText;
+                     
+                     if(i==0 && (component.get("v.CLRecord.Card_Number__c") == '' || component.get("v.CLRecord.Card_Number__c") == undefined)){
+                        alert('Please Select Card Number');	
+                        helper.hideSpinner(component,helper);
+                        return;            
+                      }
+                     else{
+                        
+                        dynamicText = component.get("v.CLRecord.Card_Number__c");   
+                        stages2[i].Stage_Action__c = dynamicText;
+                        component.set("v.ChangeLimitStageDetails", stages2);
+                     
+                        $A.createComponent("c:"+stages[i+1].Stage_Component__c,{recordId: component.get("v.recordId"), CLRecord: component.get("v.CLRecord")},
+                            function(msgBox){           
+                                if (component.isValid()) {
+                                    var targetCmp = component.find('ModalDialogPlaceholder');
+                                    var body = targetCmp.get("v.body");
+                                    //body.push(msgBox);
+                                    body.splice(0, 1, msgBox);
+                                    targetCmp.set("v.body", body); 
+                               }
+                               helper.hideSpinner(component);	
+                            }
+                         );
+                     break;	     
+                     }
+                 }
+            } 
+        }
+        
      },
     
     

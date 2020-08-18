@@ -2,12 +2,10 @@
 	doInit : function(component, event, helper) {
 	    
 		var action = component.get("c.getCard");
-	
 		var recordId = component.get("v.recordId");
 		var CLRecord = component.get("v.CLRecord");
         var memberName = CLRecord.Member_Name__c;
-        
-		action.setParams({
+        action.setParams({
 			"recordId": recordId,
             "sObjectType": memberName
 		});			
