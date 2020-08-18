@@ -14,7 +14,7 @@
                 	<tr aria-expanded="false" aria-level="1" aria-posinset="3" aria-selected="false" aria-setsize="4" class="slds-hint-parent">
                         <td class="slds-text-align_right" role="gridcell" style="width:3.25rem">
                             <span class="slds-radio">
-                                <lightning:input type="radio" name="select" value="1"/>
+                                <lightning:input type="radio" name="select" value="Change Card Limits" onchange="{!c.onTypeChange}"/>
                             </span>
                         </td>
                         <td data-label="Employees" role="gridcell">
@@ -24,7 +24,7 @@
                     <tr aria-expanded="false" aria-level="1" aria-posinset="3" aria-selected="false" aria-setsize="4" class="slds-hint-parent">
                         <td class="slds-text-align_right" role="gridcell" style="width:3.25rem">
                             <span class="slds-radio">
-                                <lightning:input type="radio" name="select" value="2"/>
+                                <lightning:input type="radio" name="select" value="Reset Card Limits" onchange="{!c.onTypeChange}"/>
                             </span>
                         </td>
                         <td data-label="Employees" role="gridcell">

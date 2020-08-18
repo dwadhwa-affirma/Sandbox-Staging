@@ -82,7 +82,7 @@
                         helper.hideSpinner(component,helper);
                         return;            
                      }
-                     else{
+                     else if(i==0 && (component.get("v.CLRecord.Member_Name__c") != '' && component.get("v.CLRecord.Member_Name__c") != undefined)){
                         
                         dynamicText = component.get("v.CLRecord.Member_Name__c");     
                         stages2[i].Stage_Action__c = dynamicText;
@@ -103,15 +103,44 @@
                          );
                          break;
                      }
+                     
                      if(i==1 && (component.get("v.CLRecord.Card_Number__c") == '' || component.get("v.CLRecord.Card_Number__c") == undefined)){
                         alert('Please Select Card Number');	
                         helper.hideSpinner(component,helper);
                         return;            
                       }
-                     else{
-                        
+                     else if(i==1 && (component.get("v.CLRecord.Card_Number__c") != '' && component.get("v.CLRecord.Card_Number__c") != undefined)){
+                       
                         dynamicText = component.get("v.CLRecord.Card_Number__c");   
                         stages2[0].Stage_Action__c = component.get("v.CLRecord.Member_Name__c");
+                        stages2[i].Stage_Action__c = dynamicText;
+                        component.set("v.ChangeLimitStageDetails", stages2);
+                     
+                        $A.createComponent("c:"+stages[i+1].Stage_Component__c,{recordId: component.get("v.recordId"), CLRecord: component.get("v.CLRecord")},
+                            function(msgBox){           
+                                if (component.isValid()) {
+                                    var targetCmp = component.find('ModalDialogPlaceholder');
+                                    var body = targetCmp.get("v.body");
+                                    //body.push(msgBox);
+                                    body.splice(0, 1, msgBox);
+                                    targetCmp.set("v.body", body); 
+                               }
+                               helper.hideSpinner(component);	
+                            }
+                         );
+                     break;	     
+                     }
+                     
+                     if(i==2 && (component.get("v.CLRecord.Type__c") == '' || component.get("v.CLRecord.Type__c") == undefined)){
+                        alert('Please Select Request Type');	
+                        helper.hideSpinner(component,helper);
+                        return;            
+                      }
+                     else if(i==2 && (component.get("v.CLRecord.Type__c") != '' && component.get("v.CLRecord.Type__c") != undefined)){
+                       
+                        dynamicText = component.get("v.CLRecord.Type__c");   
+                        stages2[0].Stage_Action__c = component.get("v.CLRecord.Member_Name__c");
+                        stages2[1].Stage_Action__c = component.get("v.CLRecord.Card_Number__c");
                         stages2[i].Stage_Action__c = dynamicText;
                         component.set("v.ChangeLimitStageDetails", stages2);
                      
@@ -151,7 +180,7 @@
                         helper.hideSpinner(component,helper);
                         return;            
                       }
-                     else{
+                     else if(i==0 && (component.get("v.CLRecord.Card_Number__c") != '' && component.get("v.CLRecord.Card_Number__c") != undefined)){
                         
                         dynamicText = component.get("v.CLRecord.Card_Number__c");   
                         stages2[i].Stage_Action__c = dynamicText;
