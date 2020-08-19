@@ -1,5 +1,14 @@
-.THIS .spin{
-    position: fixed;
-    bottom: 10%;
-    z-index: 10;
+.THIS#stage2{font-size:.8125rem; width:70%; margin:0 auto;}
+.THIS#stage2 .radioAlign {margin-bottom:2rem !important;}
+
+.THIS#stage2 .uiInput--select, 
+.THIS#stage2 .slds-input{min-height:unset; height:32px;}
+
+.THIS#stage2 label.slds-form-element__label.slds-no-flex{display:none; width:0;}
+
+@media (max-width:1250px){
+    .THIS#stage2 {width:90%;}
+}
+@media (max-width:600px){
+    .THIS#stage2 {width:100%;}
 }

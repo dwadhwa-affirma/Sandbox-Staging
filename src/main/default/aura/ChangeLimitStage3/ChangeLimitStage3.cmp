@@ -4,14 +4,35 @@
 <aura:attribute name="CLRecord" type="Change_Limit__c"/> 
 <aura:handler name="init" action="{!c.doInit}" value="{!this}" access="global" />
 <aura:attribute name="caList" type="Account_Details__c[]" />  
+<aura:attribute name="ChangeCardLimitIsEnabled" type="Boolean" default="false"/>
 
-	<div id = "stage3">    
-        <div>
-        	<p class = "fontstyle">What would you like to do?</p>
+<aura:if isTrue="{!(v.ChangeCardLimitIsEnabled == true)}"> 
+    <div id = "stage3" class = "align">
+        <p class = "fontstyle">Change Card Limits</p><br></br>
+        <div class="slds-form">
+            <div class="slds-form-element slds-form-element_horizontal">
+                <b><label class="slds-form-element__label" for="horizontal-input-id-02">ATM Usage Limit ($0.01 - $1,000.00)</label></b>
+                <div class="slds-form-element__control">
+                    <force:inputField class="ATMUsageLimit" value="{!v.CLRecord.ATM_Usage_Limit__c}" > </force:inputField>
+                </div>
+            </div>
+            <div class="slds-form-element slds-form-element_horizontal">
+                <b><label class="slds-form-element__label" for="horizontal-input-id-02">Auth/POS Limit ($0.01 - $10,000.00)</label></b>
+                <div class="slds-form-element__control">
+                    <force:inputField class="AuthPOSLimit" value="{!v.CLRecord.Auth_POS_Limit__c}" > </force:inputField>
+                </div>
+            </div>
+        </div>
+    </div>
+    </aura:if>
+    
+    <aura:if isTrue="{!(v.ChangeCardLimitIsEnabled == false)}"> 
+        <div id = "stage1" class = "align">    
+            <p class = "fontstyle">What would you like to do?</p>
             <br/>
             <table aria-multiselectable="true" class="slds-table slds-table_header-hidden slds-table_edit slds-tree slds-table_tree" role="treegrid">
                 <tbody>
-                	<tr aria-expanded="false" aria-level="1" aria-posinset="3" aria-selected="false" aria-setsize="4" class="slds-hint-parent">
+                    <tr aria-expanded="false" aria-level="1" aria-posinset="3" aria-selected="false" aria-setsize="4" class="slds-hint-parent">
                         <td class="slds-text-align_right" role="gridcell" style="width:3.25rem">
                             <span class="slds-radio">
                                 <lightning:input type="radio" name="select" value="Change Card Limits" onchange="{!c.onTypeChange}"/>
@@ -31,8 +52,10 @@
                             <div class="slds-truncate" title="Reset Card Limits">Reset Card Limits</div>
                         </td>
                     </tr>
-               </tbody>
+                </tbody>
             </table>
-        </div>
-    </div>    
+        </div> 
+    </aura:if>
+    
+     
 </aura:component>

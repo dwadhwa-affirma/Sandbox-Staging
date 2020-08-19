@@ -138,27 +138,40 @@
                       }
                      else if(i==2 && (component.get("v.CLRecord.Type__c") != '' && component.get("v.CLRecord.Type__c") != undefined)){
                        
-                        dynamicText = component.get("v.CLRecord.Type__c");   
-                        stages2[0].Stage_Action__c = component.get("v.CLRecord.Member_Name__c");
-                        stages2[1].Stage_Action__c = component.get("v.CLRecord.Card_Number__c");
-                        stages2[i].Stage_Action__c = dynamicText;
-                        component.set("v.ChangeLimitStageDetails", stages2);
-                     
-                        $A.createComponent("c:"+stages[i+1].Stage_Component__c,{recordId: component.get("v.recordId"), CLRecord: component.get("v.CLRecord")},
-                            function(msgBox){           
-                                if (component.isValid()) {
-                                    var targetCmp = component.find('ModalDialogPlaceholder');
-                                    var body = targetCmp.get("v.body");
-                                    //body.push(msgBox);
-                                    body.splice(0, 1, msgBox);
-                                    targetCmp.set("v.body", body); 
-                               }
-                               helper.hideSpinner(component);	
-                            }
-                         );
-                     break;	     
+                        if(component.get("v.CLRecord.Type__c") == 'Change Card Limits'){
+                             $A.createComponent("c:"+stages[2].Stage_Component__c,{recordId: component.get("v.recordId"), CLRecord: component.get("v.CLRecord")},
+                             	function(msgBox){           
+                                    if (component.isValid()) {
+                                    	var targetCmp = component.find('ModalDialogPlaceholder');
+                                        var body = targetCmp.get("v.body");
+                                        body.splice(0, 1, msgBox);
+                                        targetCmp.set("v.body", body); 
+                                    }
+                                    helper.hideSpinner(component);	
+                                }
+                             );
+                        	break;
+                        }
+                        else{
+                            dynamicText = component.get("v.CLRecord.Type__c");   
+                            stages2[0].Stage_Action__c = component.get("v.CLRecord.Card_Number__c");
+                            stages2[i].Stage_Action__c = dynamicText;
+                            component.set("v.ChangeLimitStageDetails", stages2);
+                            
+                            $A.createComponent("c:"+stages[i+1].Stage_Component__c,{recordId: component.get("v.recordId"), CLRecord: component.get("v.CLRecord")},
+                            	function(msgBox){           
+                                    if (component.isValid()) {
+                                        var targetCmp = component.find('ModalDialogPlaceholder');
+                                        var body = targetCmp.get("v.body");
+                                        body.splice(0, 1, msgBox);
+                                        targetCmp.set("v.body", body); 
+                                    }
+                                    helper.hideSpinner(component);	
+                                }
+                             );
+                           	break;
+                        }
                      }
-                    
                  }
             } 
         }
@@ -170,7 +183,7 @@
                 var ProgressBarStepClass = document.getElementById('Step'+(i+2)).classList;
                  
                  if((ProgressBarStepClass[0] == undefined || ProgressBarStepClass[0] == 'half')){
-                     component.set("v.ActiveStepIndex", (i+1));
+                     
                      var stages2 = [];
                      stages2 = component.get("v.ChangeLimitStageDetails");
                      var dynamicText;
@@ -182,6 +195,7 @@
                       }
                      else if(i==0 && (component.get("v.CLRecord.Card_Number__c") != '' && component.get("v.CLRecord.Card_Number__c") != undefined)){
                         
+                        component.set("v.ActiveStepIndex", (i+1)); 
                         dynamicText = component.get("v.CLRecord.Card_Number__c");   
                         stages2[i].Stage_Action__c = dynamicText;
                         component.set("v.ChangeLimitStageDetails", stages2);
@@ -207,24 +221,41 @@
                       }
                      else if(i==1 && (component.get("v.CLRecord.Type__c") != '' && component.get("v.CLRecord.Type__c") != undefined)){
                        
-                        dynamicText = component.get("v.CLRecord.Type__c");   
-                        stages2[0].Stage_Action__c = component.get("v.CLRecord.Card_Number__c");
-                        stages2[i].Stage_Action__c = dynamicText;
-                        component.set("v.ChangeLimitStageDetails", stages2);
-                     
-                        $A.createComponent("c:"+stages[i+1].Stage_Component__c,{recordId: component.get("v.recordId"), CLRecord: component.get("v.CLRecord")},
-                            function(msgBox){           
-                                if (component.isValid()) {
-                                    var targetCmp = component.find('ModalDialogPlaceholder');
-                                    var body = targetCmp.get("v.body");
-                                    //body.push(msgBox);
-                                    body.splice(0, 1, msgBox);
-                                    targetCmp.set("v.body", body); 
-                               }
-                               helper.hideSpinner(component);	
-                            }
-                         );
-                     break;	     
+                        if(component.get("v.CLRecord.Type__c") == 'Change Card Limits'){
+                             $A.createComponent("c:"+stages[1].Stage_Component__c,{recordId: component.get("v.recordId"), CLRecord: component.get("v.CLRecord")},
+                             	function(msgBox){           
+                                    if (component.isValid()) {
+                                    	var targetCmp = component.find('ModalDialogPlaceholder');
+                                        var body = targetCmp.get("v.body");
+                                        body.splice(0, 1, msgBox);
+                                        targetCmp.set("v.body", body); 
+                                    }
+                                    helper.hideSpinner(component);	
+                                }
+                             );
+                        	break;
+                        }
+                        else{
+                            
+                            component.set("v.ActiveStepIndex", (i+1));
+                            dynamicText = component.get("v.CLRecord.Type__c");   
+                            stages2[0].Stage_Action__c = component.get("v.CLRecord.Card_Number__c");
+                            stages2[i].Stage_Action__c = dynamicText;
+                            component.set("v.ChangeLimitStageDetails", stages2);
+                            
+                            $A.createComponent("c:"+stages[i+1].Stage_Component__c,{recordId: component.get("v.recordId"), CLRecord: component.get("v.CLRecord")},
+                            	function(msgBox){           
+                                    if (component.isValid()) {
+                                        var targetCmp = component.find('ModalDialogPlaceholder');
+                                        var body = targetCmp.get("v.body");
+                                        body.splice(0, 1, msgBox);
+                                        targetCmp.set("v.body", body); 
+                                    }
+                                    helper.hideSpinner(component);	
+                                }
+                             );
+                           	break;
+                        }
                      }
                  }
             } 

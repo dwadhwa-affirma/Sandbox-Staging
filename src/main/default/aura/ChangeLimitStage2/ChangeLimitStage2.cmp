@@ -5,9 +5,8 @@
 <aura:handler name="init" action="{!c.doInit}" value="{!this}" access="global" />
 <aura:attribute name="caList" type="Account_Details__c[]" />  
 
-	<div id = "stage2">    
-        <div>
-        	<p class = "fontstyle">Select Card</p>
+	<div id = "stage2" class = "align">    
+        <p class = "fontstyle">Select Card</p>
             <br/>
             <table aria-multiselectable="true" class="slds-table slds-table_header-hidden slds-table_edit slds-tree slds-table_tree" role="treegrid">
                 <tbody>
@@ -25,6 +24,5 @@
                      </aura:iteration>
                  </tbody>
             </table>
-        </div>
     </div>    
 </aura:component>
