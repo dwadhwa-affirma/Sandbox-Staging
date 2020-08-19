@@ -11,27 +11,26 @@
 <aura:handler name="init" action="{!c.doInit}" value="{!this}" access="global" />  
 <aura:attribute name="paList" type="Person_Account__c[]" />    
 	
-   	<div id="stage1">
-    	<div>
-        	<p class = "fontstyle">Which member is requesting change/reset card limits ?</p>
-            <br/>
-            <table aria-multiselectable="true" class="slds-table slds-table_header-hidden slds-table_edit slds-tree slds-table_tree" role="treegrid">
-                <tbody>
-                    <aura:iteration items="{!v.paList}" var="itemOption" indexVar="i">                  
-                        <tr aria-expanded="false" aria-level="1" aria-posinset="3" aria-selected="false" aria-setsize="4" class="slds-hint-parent">
-                            <td class="slds-text-align_right" role="gridcell" style="width:3.25rem">
-                                <span class="slds-radio">
-                                  <lightning:input type="radio" name="select" value="{!itemOption.PersonID__r.Name}" onchange="{!c.onMemberChange}"/>
-                                </span>
-                            </td>
-                            
-                            <td data-label="Employees" role="gridcell">
-                                <div class="slds-truncate" title="{!itemOption.PersonID__r.Name}">{!itemOption.PersonID__r.Name}({!itemOption.TypeTranslate__c})</div>
-                            </td>
-                         </tr>
-                     </aura:iteration>
-                 </tbody>
-            </table>
-        </div>
-    </div>    
+<div id = "stage1" class = "align">
+    <div>
+        <p class = "fontstyle">Which member is requesting change/reset card limits ?</p><br/>
+        <table aria-multiselectable="true" class="slds-table slds-table_header-hidden slds-table_edit slds-tree slds-table_tree" role="treegrid">
+            <tbody>
+                <aura:iteration items="{!v.paList}" var="itemOption" indexVar="i">                  
+                    <tr aria-expanded="false" aria-level="1" aria-posinset="3" aria-selected="false" aria-setsize="4" class="slds-hint-parent">
+                        <td class="slds-text-align_right" role="gridcell" style="width:3.25rem">
+                            <span class="slds-radio">
+                                <lightning:input type="radio" name="select" value="{!itemOption.PersonID__r.Name}" onchange="{!c.onMemberChange}"/>
+                            </span>
+                        </td>
+                        
+                        <td data-label="Employees" role="gridcell">
+                            <div class="slds-truncate" title="{!itemOption.PersonID__r.Name}">{!itemOption.PersonID__r.Name}({!itemOption.TypeTranslate__c})</div>
+                        </td>
+                        </tr>
+                    </aura:iteration>
+                </tbody>
+        </table>
+    </div>    	
+</div>    
 </aura:component>

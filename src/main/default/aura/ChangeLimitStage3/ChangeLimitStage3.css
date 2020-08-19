@@ -8,7 +8,7 @@
 .THIS#stage3 label.slds-form-element__label.slds-no-flex{display:none; width:0;}
 
 .THIS#stage3 .uiInput--select .select, 
-.THIS#stage3 .uiInput--input.input, .THIS#stage2 .uiInput--input .input,
+.THIS#stage3 .uiInput--input.input, .THIS#stage3.uiInput--input .input,
 .THIS#stage3 .slds-input{min-height:unset; height:32px;}
 
 .THIS#stage3 .uiPicklistLabel{display:none;height:0;}

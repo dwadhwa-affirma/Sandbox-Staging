@@ -131,47 +131,47 @@
                      break;	     
                      }
                      
-                     if(i==2 && (component.get("v.CLRecord.Type__c") == '' || component.get("v.CLRecord.Type__c") == undefined)){
+                    if(i==2 && (component.get("v.CLRecord.Type__c") == '' || component.get("v.CLRecord.Type__c") == undefined)){
                         alert('Please Select Request Type');	
                         helper.hideSpinner(component,helper);
                         return;            
-                      }
-                     else if(i==2 && (component.get("v.CLRecord.Type__c") != '' && component.get("v.CLRecord.Type__c") != undefined)){
+                    }
+                    else if(i==2 && (component.get("v.CLRecord.Type__c") == 'Change Card Limits')){
                        
-                        if(component.get("v.CLRecord.Type__c") == 'Change Card Limits'){
-                             $A.createComponent("c:"+stages[2].Stage_Component__c,{recordId: component.get("v.recordId"), CLRecord: component.get("v.CLRecord")},
-                             	function(msgBox){           
-                                    if (component.isValid()) {
-                                    	var targetCmp = component.find('ModalDialogPlaceholder');
-                                        var body = targetCmp.get("v.body");
-                                        body.splice(0, 1, msgBox);
-                                        targetCmp.set("v.body", body); 
-                                    }
-                                    helper.hideSpinner(component);	
+                        $A.createComponent("c:"+stages[2].Stage_Component__c,{recordId: component.get("v.recordId"), CLRecord: component.get("v.CLRecord")},
+                            function(msgBox){           
+                                if (component.isValid()) {
+                                    var targetCmp = component.find('ModalDialogPlaceholder');
+                                    var body = targetCmp.get("v.body");
+                                    body.splice(0, 1, msgBox);
+                                    targetCmp.set("v.body", body); 
                                 }
-                             );
-                        	break;
-                        }
-                        else{
-                            dynamicText = component.get("v.CLRecord.Type__c");   
-                            stages2[0].Stage_Action__c = component.get("v.CLRecord.Card_Number__c");
-                            stages2[i].Stage_Action__c = dynamicText;
-                            component.set("v.ChangeLimitStageDetails", stages2);
-                            
-                            $A.createComponent("c:"+stages[i+1].Stage_Component__c,{recordId: component.get("v.recordId"), CLRecord: component.get("v.CLRecord")},
-                            	function(msgBox){           
-                                    if (component.isValid()) {
-                                        var targetCmp = component.find('ModalDialogPlaceholder');
-                                        var body = targetCmp.get("v.body");
-                                        body.splice(0, 1, msgBox);
-                                        targetCmp.set("v.body", body); 
-                                    }
-                                    helper.hideSpinner(component);	
+                                helper.hideSpinner(component);	
+                            }
+                            );
+                        break;
+                    }
+                    else if(i==2 && (component.get("v.CLRecord.Type__c") != 'Change Card Limits')){
+                        
+                        component.set("v.ActiveStepIndex", (i+1));
+                        dynamicText = component.get("v.CLRecord.Type__c");   
+                        stages2[0].Stage_Action__c = component.get("v.CLRecord.Card_Number__c");
+                        stages2[i].Stage_Action__c = dynamicText;
+                        component.set("v.ChangeLimitStageDetails", stages2);
+                        
+                        $A.createComponent("c:"+stages[i+1].Stage_Component__c,{recordId: component.get("v.recordId"), CLRecord: component.get("v.CLRecord")},
+                            function(msgBox){           
+                                if (component.isValid()) {
+                                    var targetCmp = component.find('ModalDialogPlaceholder');
+                                    var body = targetCmp.get("v.body");
+                                    body.splice(0, 1, msgBox);
+                                    targetCmp.set("v.body", body); 
                                 }
-                             );
-                           	break;
-                        }
-                     }
+                                helper.hideSpinner(component);	
+                            }
+                            );
+                        break;
+                    }
                  }
             } 
         }
@@ -214,49 +214,48 @@
                          );
                      break;	     
                      }
-                     if(i==1 && (component.get("v.CLRecord.Type__c") == '' || component.get("v.CLRecord.Type__c") == undefined)){
+                    if(i==1 && (component.get("v.CLRecord.Type__c") == '' || component.get("v.CLRecord.Type__c") == undefined)){
                         alert('Please Select Request Type');	
                         helper.hideSpinner(component,helper);
                         return;            
-                      }
-                     else if(i==1 && (component.get("v.CLRecord.Type__c") != '' && component.get("v.CLRecord.Type__c") != undefined)){
+                    }
+                    else if(i==1 && (component.get("v.CLRecord.Type__c") == 'Change Card Limits')){
                        
-                        if(component.get("v.CLRecord.Type__c") == 'Change Card Limits'){
-                             $A.createComponent("c:"+stages[1].Stage_Component__c,{recordId: component.get("v.recordId"), CLRecord: component.get("v.CLRecord")},
-                             	function(msgBox){           
-                                    if (component.isValid()) {
-                                    	var targetCmp = component.find('ModalDialogPlaceholder');
-                                        var body = targetCmp.get("v.body");
-                                        body.splice(0, 1, msgBox);
-                                        targetCmp.set("v.body", body); 
-                                    }
-                                    helper.hideSpinner(component);	
+                        $A.createComponent("c:"+stages[1].Stage_Component__c,{recordId: component.get("v.recordId"), CLRecord: component.get("v.CLRecord")},
+                            function(msgBox){           
+                                if (component.isValid()) {
+                                    var targetCmp = component.find('ModalDialogPlaceholder');
+                                    var body = targetCmp.get("v.body");
+                                    body.splice(0, 1, msgBox);
+                                    targetCmp.set("v.body", body); 
                                 }
-                             );
-                        	break;
-                        }
-                        else{
-                            
-                            component.set("v.ActiveStepIndex", (i+1));
-                            dynamicText = component.get("v.CLRecord.Type__c");   
-                            stages2[0].Stage_Action__c = component.get("v.CLRecord.Card_Number__c");
-                            stages2[i].Stage_Action__c = dynamicText;
-                            component.set("v.ChangeLimitStageDetails", stages2);
-                            
-                            $A.createComponent("c:"+stages[i+1].Stage_Component__c,{recordId: component.get("v.recordId"), CLRecord: component.get("v.CLRecord")},
-                            	function(msgBox){           
-                                    if (component.isValid()) {
-                                        var targetCmp = component.find('ModalDialogPlaceholder');
-                                        var body = targetCmp.get("v.body");
-                                        body.splice(0, 1, msgBox);
-                                        targetCmp.set("v.body", body); 
-                                    }
-                                    helper.hideSpinner(component);	
+                                helper.hideSpinner(component);	
+                            }
+                            );
+                        break;
+                    }
+                    else if(i==1 && (component.get("v.CLRecord.Type__c") != 'Change Card Limits')){
+                        
+                        component.set("v.ActiveStepIndex", (i+1));
+                        dynamicText = component.get("v.CLRecord.Type__c");   
+                        stages2[0].Stage_Action__c = component.get("v.CLRecord.Card_Number__c");
+                        stages2[i].Stage_Action__c = dynamicText;
+                        component.set("v.ChangeLimitStageDetails", stages2);
+                        
+                        $A.createComponent("c:"+stages[i+1].Stage_Component__c,{recordId: component.get("v.recordId"), CLRecord: component.get("v.CLRecord")},
+                            function(msgBox){           
+                                if (component.isValid()) {
+                                    var targetCmp = component.find('ModalDialogPlaceholder');
+                                    var body = targetCmp.get("v.body");
+                                    body.splice(0, 1, msgBox);
+                                    targetCmp.set("v.body", body); 
                                 }
-                             );
-                           	break;
-                        }
-                     }
+                                helper.hideSpinner(component);	
+                            }
+                            );
+                        break;
+                    }
+                     
                  }
             } 
         }

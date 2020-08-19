@@ -11,15 +11,19 @@
         <p class = "fontstyle">Change Card Limits</p><br></br>
         <div class="slds-form">
             <div class="slds-form-element slds-form-element_horizontal">
-                <b><label class="slds-form-element__label" for="horizontal-input-id-02">ATM Usage Limit ($0.01 - $1,000.00)</label></b>
                 <div class="slds-form-element__control">
-                    <force:inputField class="ATMUsageLimit" value="{!v.CLRecord.ATM_Usage_Limit__c}" > </force:inputField>
+                    <b><label class="slds-form-element__label" for="horizontal-input-id-01">ATM Usage Limit ($0.01 - $1,000.00)</label></b>
+                    <lightning:recordEditForm aura:id="recordEditForm" objectApiName="Change_Limit__c">
+                        <lightning:inputField fieldName="ATM_Usage_Limit__c" />
+                    </lightning:recordEditForm>
                 </div>
             </div>
             <div class="slds-form-element slds-form-element_horizontal">
-                <b><label class="slds-form-element__label" for="horizontal-input-id-02">Auth/POS Limit ($0.01 - $10,000.00)</label></b>
                 <div class="slds-form-element__control">
-                    <force:inputField class="AuthPOSLimit" value="{!v.CLRecord.Auth_POS_Limit__c}" > </force:inputField>
+                    <b><label class="slds-form-element__label" for="horizontal-input-id-02">Auth/POS Limit ($0.01 - $10,000.00)</label></b>
+                    <lightning:recordEditForm aura:id="recordEditForm" objectApiName="Change_Limit__c">
+                        <lightning:inputField fieldName="Auth_POS_Limit__c" />
+                    </lightning:recordEditForm>
                 </div>
             </div>
         </div>
