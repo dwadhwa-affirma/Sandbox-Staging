@@ -46,11 +46,11 @@ trigger EFTTrigger on EFT__c (after insert, after update, before update) {
             
              //------------------------------- Checking if only payment information changed-----------------//
             else if((trigger.old[i].Update_Docusign_Status__c != 'Completed' && trigger.new[i].Update_Docusign_Status__c == 'Completed')
-              /* && (trigger.old[i].Routing_Number__c == trigger.new[i].Routing_Number__c
-              && trigger.old[i].Account_Number__c == trigger.new[i].Account_Number__c
-              && trigger.old[i].Bank_Name__c == trigger.new[i].Bank_Name__c
-              && trigger.old[i].Type__c == trigger.new[i].Type__c)
-              && (trigger.old[i].Payment_Amount__c != trigger.new[i].Payment_Amount__c
+              /* || (trigger.old[i].Routing_Number__c == trigger.new[i].Routing_Number__c
+              || trigger.old[i].Account_Number__c == trigger.new[i].Account_Number__c
+              || trigger.old[i].Bank_Name__c == trigger.new[i].Bank_Name__c
+              || trigger.old[i].Type__c == trigger.new[i].Type__c)
+              || (trigger.old[i].Payment_Amount__c != trigger.new[i].Payment_Amount__c
               || trigger.old[i].Alternate_Amount__c != trigger.new[i].Alternate_Amount__c
               || trigger.old[i].Day_of_Month__c != trigger.new[i].Day_of_Month__c
               || trigger.old[i].Frequency__c != trigger.new[i].Frequency__c

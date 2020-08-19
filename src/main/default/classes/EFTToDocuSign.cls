@@ -3,7 +3,7 @@ public class EFTToDocuSign {
 	public static String EnvelopeId;
 	public static String EmailToSend;
 	public static Account Member;
-	public static String EmailBody = 'In order for the Credit Union to ensure your solar loan automatic payment setup is accurate, please review and sign the ACH form.' +'\n\n' +'If changes are needed or you would like to provide additional payments, please update the form and sign.' +'\n\n' + 'If you have any questions, please contact us at 800-782-8782 ext. 5200.';
+	public static String EmailBody = 'In order for the Credit Union to ensure your automatic payment setup is accurate, please review and sign the ACH form.' +'\n\n' +'If changes are needed or you would like to provide additional payments, please update the form and sign.' +'\n\n' + 'If you have any questions, please contact us at 800-782-8782 ext. 5200.';
 	public static String EmailSubject = 'ACH Debits';    
 	public static String accountID; 
 	public static String userId; 
@@ -136,7 +136,7 @@ public class EFTToDocuSign {
                     system.debug('Create');
                     e.DocuSignId__c = EnvelopeId;
                 }  
-				else if(eft.Action_Type__c == 'Update' && !eft.Expired__c){
+				else if(eft.Action_Type__c == 'Update' && eft.Expiration_Date__c == null){
                     system.debug('Update');
                     e.Update_DocuSignId__c = EnvelopeId;
                 }

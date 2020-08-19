@@ -23,7 +23,7 @@
     			</div>
   				<div class="slds-form-element slds-form-element_horizontal">
     				<b><label class="slds-form-element__label" for="horizontal-input-id-02">Bank Name</label></b>
-    					<lightning:input name="bankname" value="{!v.EFTRecord.Bank_Name__c}" disabled="true"/>
+    					<lightning:input name="bankname" value="{!v.EFTRecord.Bank_Name__c}" disabled="true" />
     			</div>
   				<div class="slds-form-element slds-form-element_horizontal">
     				<b><label class="slds-form-element__label" for="horizontal-input-id-03">Account#:</label></b>

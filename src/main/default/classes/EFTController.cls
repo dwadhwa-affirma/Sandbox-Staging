@@ -157,9 +157,9 @@ public class EFTController {
         else{
         	EFTRecordList[0].Stage__c =  EFTRecord.Stage__c;
             EFTRecordList[0].Share_Loan_Id__c =  EFTRecord.Share_Loan_Id__c;
-            EFTRecordList[0].Share_Loan_Type__c =  EFTRecord.Share_Loan_Type__c;
-            EFTRecordList[0].Share_Loan_Description__c =  EFTRecord.Share_Loan_Description__c;
-            EFTRecordList[0].EFT_ID_Type__c =  EFTRecord.EFT_ID_Type__c;
+            //EFTRecordList[0].Share_Loan_Type__c =  EFTRecord.Share_Loan_Type__c;
+            //EFTRecordList[0].Share_Loan_Description__c =  EFTRecord.Share_Loan_Description__c;
+            //EFTRecordList[0].EFT_ID_Type__c =  EFTRecord.EFT_ID_Type__c;
             EFTRecordList[0].Routing_Number__c =  EFTRecord.Routing_Number__c;
             EFTRecordList[0].Bank_Name__c =  EFTRecord.Bank_Name__c;
             EFTRecordList[0].Account_Number__c =  EFTRecord.Account_Number__c;
@@ -176,7 +176,7 @@ public class EFTController {
             EFTRecordList[0].Member_Name__c  =  EFTRecord.Member_Name__c;
             EFTRecordList[0].Docusign_Member_Email__c  =  EFTRecord.Docusign_Member_Email__c;
             EFTRecordList[0].EftLocator__c  =  EFTRecord.EftLocator__c;
-            EFTRecordList[0].LoanCode__c  =  EFTRecord.LoanCode__c;
+            //EFTRecordList[0].LoanCode__c  =  EFTRecord.LoanCode__c;
             if(EFTRecord.Type__c == 'Checking'){
                EFTRecordList[0].Docusign_Checking_Type__c = true;
                EFTRecordList[0].Docusign_Savings_Type__c = false; 
@@ -340,7 +340,7 @@ public class EFTController {
         		
         		EFT__c ResultEFTRecord = [select id, name, Member_Account__c, Stage__c, Action_Type__c, Share_Loan_Id__c, Type__c	,Share_Loan_Type__c, Share_Loan_Description__c,
                                       Routing_Number__c, Bank_Name__c, Account_Number__c, Alternate_Amount__c,Effective_Date__c,EFT_ID_Type__c,EftLocator__c,
-                                      Frequency__c, Payment_Amount__c, Day_of_Month__c,Second_Day_of_Month__c, Member_Account__r.name, Case__c, Case__r.CaseNumber, Case__r.Status	, Expired__c, Member_Name__c, Docusign_Member_Email__c
+                                      Frequency__c, Payment_Amount__c, Day_of_Month__c,Second_Day_of_Month__c, Member_Account__r.name, Case__c, Case__r.CaseNumber, Case__r.Status	, Expired__c,Expiration_Date__c, Member_Name__c, Docusign_Member_Email__c
                                       from EFT__c where id =: EFTRecord.id limit 1];
                                       
                 List<EFT__c> EFTToSendACHDoc = new List<EFT__c>();
@@ -369,7 +369,8 @@ public class EFTController {
       	system.debug('RoutingNumber=='+RoutingNumber);
     	String jsonData;  
     	HttpRequest req = new HttpRequest();
-    	String BankName;
+        String BankName;
+        Integer Code; 
     	//String RoutingNum = '122105155';
     	
     	req.setEndpoint('https://www.routingnumbers.info/api/data.json?rn='+RoutingNumber);
@@ -399,14 +400,21 @@ public class EFTController {
                    for(String key : results.keySet()){                   			
                        	if(key == 'customer_name'){
                        		BankName = (string)results.get(key);
-                       	}
+                           }
+                           if(key == 'code'){
+                            Code = (Integer)results.get(key);
+                        }
        				}
                     
                 }
             }
+
         
-		System.debug('Bank Name:' + BankName);
-           	                
+        System.debug('Bank Name:' + BankName);
+        if(Code == 404 || Code == 400){
+            BankName = 'Bank name not found';   
+        }
+
         return BankName; 
     }
     
@@ -421,7 +429,7 @@ public class EFTController {
         	
         	httpRequest requestparam = new httpRequest(); 
         	//requestparam.setTimeout(10); 
-	        requestparam.setEndpoint('https://symxapi.chevronfcu.org/devclient/PsAuto/GetShares?AccountNumber=' + AccountNumber + '&userchar2=abc');
+	        requestparam.setEndpoint('https://symxapi.chevronfcu.org/devclient/PSAuto/GetSharesEFT?AccountNumber=' + AccountNumber + '&userchar2=abc');
 	        requestparam.setMethod('GET');   
 	        
 	        ACH_Loan_Share_Type_Configuration__c cs = ACH_Loan_Share_Type_Configuration__c.getValues('Share');   
@@ -456,7 +464,8 @@ public class EFTController {
 	                               temp.ShareLoanID = ShareId; 
 	                               temp.ShareLoanIDString = 'S' + ShareId;
 	                               temp.Description =   (string)localAcc.get('Description');  
-	                               temp.TypeTranslate =  (string)localAcc.get('Description'); 
+                                   temp.TypeTranslate =  (string)localAcc.get('Description'); 
+                                   temp.UserChar3 =  (string)localAcc.get('UserChar3'); 
 	                               temp.Type =  'Share'; 
 	                               resultList.add(temp);
 	                       }
@@ -654,7 +663,11 @@ public class EFTController {
                        }
                       if(arrShareTypes.contains(lsId) || arrLoanTypes.contains(lsId)){
                    			EFTWrapperObject temp = new EFTWrapperObject();                       		   
-                       		EFT__c objEFT = new EFT__c();
+                            EFT__c objEFT = new EFT__c();
+                            if(arrShareTypes.contains(lsId))
+                                objEFT.EFT_ID_Type__c = 'Share';
+                            else if(arrLoanTypes.contains(lsId))
+                                objEFT.EFT_ID_Type__c = 'Loan';
                        		objEFT.Routing_Number__c = String.valueOf(localAcc.get('Payee')); 
                        		objEFT.Account_Number__c = String.valueOf(localAcc.get('Reference'));
                        		//system.debug('Account_Number__c=='+objEFT.Account_Number__c);
@@ -905,6 +918,8 @@ public class EFTController {
       public integer Day2 {get;set;}
       @AuraEnabled
       public string LoanCode {get;set;}
+      @AuraEnabled
+      public string UserChar3 {get;set;}
     }
     
      public class EFTWrapperObject
