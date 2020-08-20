@@ -134,9 +134,9 @@ public class EFTToSyimtar {
 					LoanCode = getLoanCode(AccountNumber,ID);
 				}
                 if(e.Bank_Name__c != null){
-                        MatchID3 = e.Bank_Name__c;
+                        MatchID3 = e.Bank_Name__c.toUpperCase().replace('&', '&#38;');
                 	if(MatchID3.length() > 22){
-                		MatchID3 = MatchID3.left(21);
+                		MatchID3 = MatchID3.left(21).toUpperCase().replace('&', '&#38;');
                 	}
                 }
                 system.debug('MatchID3'+MatchID3);    
@@ -244,8 +244,9 @@ public class EFTToSyimtar {
 						System.debug('Sweep Account');
 						string uc3;
 						uc3 = getUserChar3(AccountNumber,ID);
+						System.debug('uc3=='+uc3);
 						req1.setEndpoint('https://symxapi.chevronfcu.org/devclient/PSAuto/UpdateTracking32Records');
-						jsonData1 = '{"AccountNumber":'+'\"'+AccountNumber+'\","ShareId":' + '\"'+ ID +'\"'+',"UserChar3":'+'\"'+uc3+ '\"' +',"TotalPaymentAmount":'+'\"'+e.Payment_Amount__c+ '\"' +',"AdditionalPaymentAmount":'+'\"'+e.Alternate_Amount__c+ ',"NextPaymentDueDate":' + '\"'+ EffectiveDate +'\"}';
+						jsonData1 = '{"AccountNumber":'+'\"'+AccountNumber+'\","ShareId":' + '\"'+ ID +'\"'+',"UserChar3":'+'\"'+uc3+ '\"' +',"TotalPaymentAmount":'+'\"'+e.Payment_Amount__c+ '\"' +',"AdditionalPaymentAmount":'+'\"'+e.Alternate_Amount__c+ '\"' +',"NextPaymentDueDate":' + '\"'+ EffectiveDate +'\"}';
 					}					
 					else{
 						System.debug('LoanCode not 2');
@@ -257,7 +258,7 @@ public class EFTToSyimtar {
 							jsonData1 = '{"AccountNumber":'+'\"'+AccountNumber+'\","LoanId":' + '\"'+ ID +'\"'+',"PaymentMethod":'+'\"'+PaymentMethod+ '\"}';
 						}
 					}						
-					
+					//system.System.debug(jsonData1);
 	                req1.setClientCertificateName('brscmcapi');
 	                req1.setMethod('POST');
 	                req1.setHeader('Content-Type', 'application/json');
@@ -370,7 +371,7 @@ public class EFTToSyimtar {
                 if(e.Effective_Date__c != null){
                 	
                     NextDate = string.valueof(e.Effective_Date__c + 1);
-                	EffectiveDate = string.valueof(e.Effective_Date__c + 1);
+                	EffectiveDate = string.valueof(e.Effective_Date__c);
                 }
             	else{
             		NextDate = null;
@@ -400,9 +401,9 @@ public class EFTToSyimtar {
 					LoanCode = getLoanCode(AccountNumber,ID);
 				}
                 if(e.Bank_Name__c != null){
-                	MatchID3 = e.Bank_Name__c;
+                	MatchID3 = e.Bank_Name__c.toUpperCase().replace('&', '&#38;');
                 	if(MatchID3.length() > 22){
-                		MatchID3 = MatchID3.left(21);
+                		MatchID3 = MatchID3.left(21).toUpperCase().replace('&', '&#38;');
                 	}
                 }
                 system.debug('Reference'+Reference);    
@@ -465,15 +466,17 @@ public class EFTToSyimtar {
 							jsonData1 = '{"AccountNumber":'+'\"'+AccountNumber+'\","LoanId":' + '\"'+ ID +'\"'+',"PaymentMethod":'+'\"'+PaymentMethod+ '\"' +',"Payment":'+'\"'+e.Payment_Amount__c+ '\"' +',"AlternatePayment":'+'\"'+e.Alternate_Amount__c+'\"}';
 						}
 						else{
-							jsonData1 = '{"AccountNumber":'+'\"'+AccountNumber+'\","LoanId":' + '\"'+ ID +'\"'+',"PaymentMethod":'+'\"'+PaymentMethod +',"Payment":'+'\"'+e.Payment_Amount__c+ '\"' + '\"}';
+							jsonData1 = '{"AccountNumber":'+'\"'+AccountNumber+'\","LoanId":' + '\"'+ ID +'\"'+',"PaymentMethod":'+'\"'+PaymentMethod+ '\"'  +',"Payment":'+'\"'+e.Payment_Amount__c+ '\"}';
 						}
 					}
 					else if(ID != null && ID.SubString(0,2) == '28'){
 						System.debug('Sweep Account');
 						string uc3;
 						uc3 = getUserChar3(AccountNumber,ID);
+						System.debug('uc3=='+uc3);
 						req1.setEndpoint('https://symxapi.chevronfcu.org/devclient/PSAuto/UpdateTracking32Records');
-						jsonData1 = '{"AccountNumber":'+'\"'+AccountNumber+'\","ShareId":' + '\"'+ ID +'\"'+',"UserChar3":'+'\"'+uc3+ '\"' +',"TotalPaymentAmount":'+'\"'+e.Payment_Amount__c+ '\"' +',"AdditionalPaymentAmount":'+'\"'+e.Alternate_Amount__c+ ',"NextPaymentDueDate":' + '\"'+ EffectiveDate +'\"}';
+						jsonData1 = '{"AccountNumber":'+'\"'+AccountNumber+'\","ShareId":' + '\"'+ ID +'\"'+',"UserChar3":'+'\"'+uc3+ '\"' +',"TotalPaymentAmount":'+'\"'+e.Payment_Amount__c+ '\"' +',"AdditionalPaymentAmount":'+'\"'+e.Alternate_Amount__c +'\"'+ ',"NextPaymentDueDate":' + '\"'+ EffectiveDate +'\"}';
+						//System.debug('jsonData1=='+jsonData1);
 					}					
 					else{
 						System.debug('LoanCode not 2');
@@ -529,7 +532,7 @@ public class EFTToSyimtar {
                                      + '\n' +'Effective Date:' + e.Effective_Date__c
                                      + '\n' +'Frequency:' + e.Frequency__c
 									 + '\n' +'Day of Month:' + e.Day_of_Month__c
-									 + '\n' +'\n' + 'EFT Locator: ' + e.EftLocator__c;
+									 + '\n' +'\n' + 'EFT Locator: ' + resultEFTLocator;
 	        			CaseIdsToUpdate.put(e.Case__c, operation);
 	        		}
 	        		else{
@@ -538,7 +541,7 @@ public class EFTToSyimtar {
 	                					+ '\n' + 'ABA/Routing#: ' + e.Routing_Number__c
 	                					+ '\n' + 'Account Number: '+ e.Account_Number__c
 										+ '\n' + 'Additional Payment Amount: ' + e.Alternate_Amount__c
-										+ '\n' +'\n' + 'EFT Locator: ' + e.EftLocator__c;
+										+ '\n' +'\n' + 'EFT Locator: ' + resultEFTLocator;
 	                	CaseIdsToUpdate.put(e.Case__c, casedesc);
 	        		
 					}
@@ -554,7 +557,9 @@ public class EFTToSyimtar {
 	        			newEFT.EftLocator__c = resultEFTLocator;
 	        			newEFT.Share_Loan_Description__c = e.Share_Loan_Description__c;
 	        			newEFT.Share_Loan_Type__c = e.Share_Loan_Type__c;
-	        			newEFT.Case__c = e.Case__c;
+						newEFT.Case__c = e.Case__c;
+						//newEFT.Update_Docusign_Status__c = e.Update_Docusign_Status__c;
+						//newEFT.Update_DocuSignId__c = e.Update_DocuSignId__c;
 						insert newEFT;
 	        		}
 	        	}     
@@ -631,7 +636,7 @@ public class EFTToSyimtar {
 						map<string, object> localAcc = (map<string, object>)t;                       		
 						string accouttype = (string)localAcc.get('AccountType');                       		
 						string ShareId1 =  accouttype.split(' ')[1].replace('#','');
-						System.debug('ShareId ....' + ShareId1);
+						
 						if(ShareId1 != '0' && ShareId1 == ShareID){//&& ShareId == 2800
 							userchar3 = (string)localAcc.get('UserChar3');
 						}

@@ -607,8 +607,15 @@ public class EFTController {
     public static List<EFT__c> getEFTRecordsEpisys(string recordId){
     		system.debug('recordId=='+recordId);
         	Account_Details__c MemberAccount = [select id,name from Account_Details__c where id=:recordId limit 1];
-        	String AccountNumber = MemberAccount.name;
-        	
+            String AccountNumber = MemberAccount.name;
+            
+            List<EFT__c> SFEFT = [Select id,EftLocator__c from EFT__c where Member_Account__r.Name =:  AccountNumber] ;
+            map<string,id> EFTLocatorsMap=new map<string,id>();
+            set<string> EFTLocatorsset=new set<string>();
+            for(EFT__c e: SFEFT){
+                EFTLocatorsMap.put(e.EftLocator__c,e.id);
+                EFTLocatorsset.add(e.EftLocator__c);
+            }
         	
         	httpRequest requestparam = new httpRequest(); 
 	        requestparam.setEndpoint('https://symxapi.chevronfcu.org/devclient/EFT/GetEftRecords?accountNumber=' + AccountNumber);
@@ -631,7 +638,7 @@ public class EFTController {
          	System.debug('strStatus ....' + strStatus);
         	System.debug('strBody ....' + strBody);
         
-        	set<string> EFTLocatorsSet = new set<string>();
+        	//set<string> EFTLocatorsSet = new set<string>();
         	set<string> MemberNumbers = new set<string>();
         	List<EFT__c> EFTList= new List<EFT__c>();
         	if(strBody!=''){        
@@ -694,16 +701,17 @@ public class EFTController {
                        			Date expDate = Date.valueOf(String.valueOf(localAcc.get('ExpirationDate')));
                        			//if(expDate <= Date.today())
                        				objEFT.expired__c = true;
-                       		}     
-                       		system.debug('EXPDATE=='+String.valueOf(localAcc.get('ExpirationDate'))) ;      		
+                               }     
+                            if(localAcc.get('Id') == '7501')
+                       		system.debug('Day1=='+String.valueOf(localAcc.get('Day1'))) ;      		
                        		//objEFT.EftLocator__c = String.valueOf(localAcc.get('EftLocator__c'));    
                        		objEFT.Member_Account__r = new account_details__c(id =mapAccountIdName.get(String.valueOf(localAcc.get('AccountNumber'))), Name = String.valueOf(localAcc.get('AccountNumber')));//mapAccountIdName.get(String.valueOf(localAcc.get('AccountNumber')));  
                        		//system.debug('Member_Account__r=='+objEFT.Member_Account__r.Name);
-                       		List<EFT__c> SFEFT = [Select id from EFT__c where Member_Account__r.Name =:  objEFT.Member_Account__r.Name 
-                       						and EftLocator__c =: String.valueOf(localAcc.get('EftLocator')) limit 1] ;
+                       		//List<EFT__c> SFEFT = [Select id from EFT__c where Member_Account__r.Name =:  objEFT.Member_Account__r.Name 
+                       					//	and EftLocator__c =: String.valueOf(localAcc.get('EftLocator')) limit 1] ;
                        		
-                       		if(SFEFT.size() > 0){
-                       			objEFT.id = SFEFT[0].id;
+                       		if(EFTLocatorsMap.get(String.valueOf(localAcc.get('EftLocator'))) != null){ //SFEFT.size() > 0                                 
+                                objEFT.id = EFTLocatorsMap.get(String.valueOf(localAcc.get('EftLocator')));
                        		}
                        		
                        		EFTList.add(objEFT);
