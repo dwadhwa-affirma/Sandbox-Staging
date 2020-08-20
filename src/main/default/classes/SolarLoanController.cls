@@ -66,7 +66,7 @@ public class SolarLoanController {
     stage3RequireFields.add('ECOA_Code__c');
     stage3RequireFields.add('Site_UUID__c');
     stage3RequireFields.add('FNI__c');
-    stage3RequireFields.add('Member_Number__c');
+    //stage3RequireFields.add('Member_Number__c');
 	
 	List<String> stage3ECOARequireFields = new List<String>();
 	stage3ECOARequireFields.add('Joint_First_Name__c');
@@ -86,6 +86,7 @@ public class SolarLoanController {
 
     String SolarCurrentStage;
     String SolarCurrentStatus;
+    String Stage2MemberCheck;
     String Stage3LoanCheck;
     String Stage5ACHCheck;
     String OnLoadCheck;
@@ -244,6 +245,14 @@ public class SolarLoanController {
         
         system.debug('Stage3MissingFields'+Stage3MissingFields);
         if(Stage3ErrorCheck == 'False'){
+
+            if(SolarLoanList[0].Member_Number__c == null || SolarLoanList[0].Member_Number__c == ''){
+             
+                SLIdsToCreateLoan.add(SolarLoanList[0].id);
+                SolarLoanToCreateLoan.getMemberNumber(SLIdsToCreateLoan);
+                Stage2MemberCheck = 'True';
+            }
+
             SolarLoanList[0].Current_Solar_Loan_Stage__c = CurrentStage;
             solarLoanList[0].Status__c = 'Approved'; 
             SolarLoanList[0].continue__c = false;
@@ -389,7 +398,7 @@ public class SolarLoanController {
     strMap.put('Stage5MissingFields',Stage5MissingFields);
     strMap.put('Stage4ErrorCheck',Stage4ErrorCheck);
     strMap.put('waitingCheck',waitingCheck);
-    
+    strMap.put('Stage2MemberCheck',Stage2MemberCheck);
     
      
     return strMap;  
