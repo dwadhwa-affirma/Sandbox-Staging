@@ -238,14 +238,21 @@ public class SolarLoanToCreateLoan {
                     Type = '1';
                     Last = sl.Joint_Last_Name__c;
                     First = sl.Joint_First_Name__c;
-                    Street = sl.Joint_Address_1__c;
-                    if(Street.contains('&') == true){
-                        Street = Street.replace('&', '&#38;');
+
+                    if(sl.Joint_Address_1__c != null){
+                        Street = sl.Joint_Address_1__c;
+                        if(Street.contains('&') == true){
+                            Street = Street.replace('&', '&#38;');
+                        }
                     }
-                    ExtraAddress = sl.Joint_Address_2__c;
-                    if(ExtraAddress.contains('&') == true){
-                        ExtraAddress = ExtraAddress.replace('&', '&#38;');
+                   
+                    if(sl.Joint_Address_2__c != null){
+                        ExtraAddress = sl.Joint_Address_2__c;
+                        if(ExtraAddress.contains('&') == true){
+                            ExtraAddress = ExtraAddress.replace('&', '&#38;');
+                        }
                     }
+
                     City = sl.Joint_City__c;
                     State = sl.Joint_State__c;
                     ZipCode = sl.Joint_Zip_Code__c;
@@ -308,16 +315,24 @@ public class SolarLoanToCreateLoan {
             
                 Type = '33';
                 UserChar11 = sl.FNI__c;
-                UserChar1 = sl.Installer__c;
-                if(UserChar1.contains('&') == true){
-                    UserChar1 = UserChar1.replace('&', '&#38;');
+                
+                if(sl.Installer__c != null){
+                    UserChar1 = sl.Installer__c;
+                    if(UserChar1.contains('&') == true){
+                        UserChar1 = UserChar1.replace('&', '&#38;');
+                    }
                 }
+
                 UserChar2 = sl.Installer_Number__c;
                 UserChar3 = sl.Product__c;
-                UserChar4 = sl.Module__c;
-                if(UserChar4.contains('&') == true){
-                    UserChar4 = UserChar4.replace('&', '&#38;');
+               
+                if(sl.Module__c != null){
+                    UserChar4 = sl.Module__c;
+                    if(UserChar4.contains('&') == true){
+                        UserChar4 = UserChar4.replace('&', '&#38;');
+                    }
                 }
+                
                 if(sl.Inverter__c != null){
                     UserChar5 = sl.Inverter__c;
                     if(UserChar5.contains('&') == true){
