@@ -239,7 +239,13 @@ public class SolarLoanToCreateLoan {
                     Last = sl.Joint_Last_Name__c;
                     First = sl.Joint_First_Name__c;
                     Street = sl.Joint_Address_1__c;
+                    if(Street.contains('&') == true){
+                        Street = Street.replace('&', '&#38;');
+                    }
                     ExtraAddress = sl.Joint_Address_2__c;
+                    if(ExtraAddress.contains('&') == true){
+                        ExtraAddress = ExtraAddress.replace('&', '&#38;');
+                    }
                     City = sl.Joint_City__c;
                     State = sl.Joint_State__c;
                     ZipCode = sl.Joint_Zip_Code__c;
@@ -264,7 +270,7 @@ public class SolarLoanToCreateLoan {
                     
                     System.debug('CreateLoanName method called');
                     req1.setEndpoint(loanAPI+'/EFT/CreateLoanName');
-                    //req1.setClientCertificateName('brscmcapi');
+                   
                     req1.setMethod('POST');
                     req1.setHeader('Content-Type', 'application/json');
                     req1.setHeader('Accept', 'application/json');
@@ -303,12 +309,20 @@ public class SolarLoanToCreateLoan {
                 Type = '33';
                 UserChar11 = sl.FNI__c;
                 UserChar1 = sl.Installer__c;
+                if(UserChar1.contains('&') == true){
+                    UserChar1 = UserChar1.replace('&', '&#38;');
+                }
                 UserChar2 = sl.Installer_Number__c;
                 UserChar3 = sl.Product__c;
                 UserChar4 = sl.Module__c;
-                
+                if(UserChar4.contains('&') == true){
+                    UserChar4 = UserChar4.replace('&', '&#38;');
+                }
                 if(sl.Inverter__c != null){
                     UserChar5 = sl.Inverter__c;
+                    if(UserChar5.contains('&') == true){
+                        UserChar5 = UserChar5.replace('&', '&#38;');
+                    }
                     if(UserChar5.length() > 40){
                         UserChar5 = UserChar5.left(39);
                     }
@@ -518,5 +532,5 @@ public class SolarLoanToCreateLoan {
         if(SolarLoanToUpdate.size() > 0){
             update SolarLoanToUpdate;
         }
-    }
+    } 
 }

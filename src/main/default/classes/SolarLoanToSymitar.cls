@@ -103,8 +103,12 @@ public class SolarLoanToSymitar {
                 if(sl.Bank_Name__c != null){
                     MatchID3 = sl.Bank_Name__c;
                     MatchID3 = MatchID3.toUpperCase();
+                    if(MatchID3.contains('&') == true){
+                        MatchID3 = MatchID3.replace('&', '&#38;');
+                    }
                     if(MatchID3.length() > 22){
                         MatchID3 = MatchID3.left(21);
+                        
                     }
                 }
                 
@@ -298,6 +302,9 @@ public class SolarLoanToSymitar {
                 if(sl.Bank_Name__c != null){
                     MatchID3 = sl.Bank_Name__c;
                     MatchID3 = MatchID3.toUpperCase();
+                    if(MatchID3.contains('&') == true){
+                        MatchID3 = MatchID3.replace('&', '&#38;');
+                    }
                     if(MatchID3.length() > 22){
                         MatchID3 = MatchID3.left(21); 
                     }
