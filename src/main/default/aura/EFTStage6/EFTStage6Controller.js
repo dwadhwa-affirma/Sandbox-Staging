@@ -18,7 +18,7 @@
 			if(state === "SUCCESS"){				
 				var res = resp.getReturnValue();
                 component.set("v.EFTRecord",res);
-                if(component.get("v.EFTRecord.Action_Type__c") == 'Create' || (component.get("v.EFTRecord.Action_Type__c") == 'Update' && !component.get("v.EFTRecord.Expired__c")))
+                if(component.get("v.EFTRecord.Action_Type__c") == 'Create' || (component.get("v.EFTRecord.Action_Type__c") == 'Update' && component.get("v.EFTRecord.Expiration_Date__c") == undefined))
 				{
                     helper.sendACHDocument(component, event, helper);
                 }

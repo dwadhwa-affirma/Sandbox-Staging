@@ -4,6 +4,13 @@
 	},
 	
 	LoadBankName : function(component, event, helper) {
+    var RoutingNumber = component.get("v.EFTRecord.Routing_Number__c");
+    if(RoutingNumber != null && (RoutingNumber.length != 9 || (RoutingNumber.substring(0,1) != '0' && 
+        RoutingNumber.substring(0,1) != '1' && RoutingNumber.substring(0,1) != '2' &&
+        RoutingNumber.substring(0,1) != '3'))){                        
+                        alert('Plese enter valid ABA/Routing Number.');
+                        return;
+                    }  
 	helper.showSpinner(component);
 	var action = component.get("c.routingInfo");
         action.setParams({
@@ -14,7 +21,9 @@
             if (component.isValid() && state === "SUCCESS") {
                 var result = response.getReturnValue();
 				if(result != undefined && result != '' && result != null)
-					component.set("v.EFTRecord.Bank_Name__c", result);
+                    component.set("v.EFTRecord.Bank_Name__c", result);
+                    var a = component.get('c.onTypeChange');
+                    $A.enqueueAction(a);
                 
             }
             helper.hideSpinner(component,helper);

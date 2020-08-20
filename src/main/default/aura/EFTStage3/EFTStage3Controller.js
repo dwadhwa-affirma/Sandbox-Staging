@@ -148,8 +148,8 @@
                     component.set("v.EFTRecord.Share_Loan_Id__c",EFTList[i].Share_Loan_Id__c);
                     component.set("v.EFTRecord.Member_Account__r",EFTList[i].Member_Account__r);
                     component.set("v.EFTRecord.EFT_ID_Type__c",EFTList[i].EFT_ID_Type__c);
-                    component.set("v.EFTRecord.Share_Loan_Description__c",EFTList[i].Share_Loan_Description__c);
-                    component.set("v.EFTRecord.Share_Loan_Type__c",EFTList[i].Share_Loan_Type__c);
+                    //component.set("v.EFTRecord.Share_Loan_Description__c",EFTList[i].Share_Loan_Description__c);
+                    //component.set("v.EFTRecord.Share_Loan_Type__c",EFTList[i].Share_Loan_Type__c);
                     component.set("v.EFTRecord.Account_Number__c",EFTList[i].Account_Number__c);
                     component.set("v.EFTRecord.Bank_Name__c",EFTList[i].Bank_Name__c);
                     component.set("v.EFTRecord.Routing_Number__c",EFTList[i].Routing_Number__c);
@@ -161,7 +161,7 @@
                     component.set("v.EFTRecord.Day_of_Month__c",EFTList[i].Day_of_Month__c);
                     component.set("v.EFTRecord.Second_Day_of_Month__c",EFTList[i].Second_Day_of_Month__c);
                     component.set("v.EFTRecord.EftLocator__c",EFTList[i].EftLocator__c);
-                    component.set("v.EFTRecord.LoanCode__c",EFTList[i].LoanCode__c);
+                    //component.set("v.EFTRecord.LoanCode__c",EFTList[i].LoanCode__c);
                      component.set("v.EFTRecord.Id",EFTList[i].Id);
                     
                     break;

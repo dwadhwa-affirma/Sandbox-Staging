@@ -99,7 +99,8 @@
 	            	 }
 				 }
 		         var footer = document.getElementsByClassName('modal-footer');
-		          if(footer != null){
+		          if(footer != null && footer != undefined){
+					if(footer[0] != undefined)
 					 footer[0].style="display:none"
 				 }
 				 $A.createComponent(
