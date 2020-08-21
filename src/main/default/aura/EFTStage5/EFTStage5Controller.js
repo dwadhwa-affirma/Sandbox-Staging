@@ -6,6 +6,7 @@
         if(type != 'Loan' && component.get("v.EFTRecord.Action_Type__c") == 'Create'){
             component.set('v.isLoan', false);
             component.set('v.EFTRecord.Frequency__c', 'Monthly');
+            //component.set('v.EFTRecord.Payment_Amount__c', 0);
         }
         //helper.getDaysPicklist(component, event);
         //component.find("Day_of_Month__c").set("v.value","");
@@ -26,7 +27,13 @@
             }
         }*/
         var evt = $A.get("e.c:EFTEvent");
+        if(event.getSource().get("v.class") == "paymentamount"){
+          // var PaymentAmt =new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(component.get("v.EFTRecord.Payment_Amount__c")); 
+             //component.set("v.EFTRecord.Payment_Amount__c",PaymentAmt);
+        }
+        
         var PaymentAmt = component.get("v.EFTRecord.Payment_Amount__c");
+       
         var AlternateAmt = component.get("v.EFTRecord.Alternate_Amount__c");
         var EffectiveDate = component.get("v.EFTRecord.Effective_Date__c");
         var Frequency = component.get('v.EFTRecord.Frequency__c');

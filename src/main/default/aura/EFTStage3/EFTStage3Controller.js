@@ -88,9 +88,10 @@
        
     },
     
-    onRadioChange : function(component, event, helper) {
+    onRadioChange : function(component, event, helper) {        
     	var evt = $A.get("e.c:EFTEvent");
         var SelectedShareLoan = event.getSource().get('v.value');
+        var SelectedUserChar3;
         var SelectedShareLoanID, SelectedShareLoanType , SelectedShareLoanDesc, SelectedEFTIDType, SelectedPayment, SelectedED, SelectedDay1, SelectedDay2, SelectedLoanCode;
       /*  if(SelectedShareLoan != null && SelectedShareLoan != undefined){
         	SelectedShareLoanID = SelectedShareLoan.split(',')[0];
@@ -105,12 +106,19 @@
         		SelectedShareLoanID = map[i].ShareLoanID;
 	            SelectedShareLoanType  = map[i].TypeTranslate;
 	       		SelectedShareLoanDesc  = map[i].Description;
-	            SelectedEFTIDType  = map[i].Type;
-	            SelectedPayment = map[i].Payment;
-	            SelectedED = map[i].EffectiveDate;
-	            SelectedDay1 = map[i].Day1.toString().trim();
-	            SelectedDay2 = map[i].Day2.toString().trim();	
-                SelectedLoanCode = map[i].LoanCode;
+                SelectedEFTIDType  = map[i].Type;
+                if(SelectedEFTIDType == 'Loan'){
+                    SelectedPayment = map[i].Payment;
+                    SelectedED = map[i].EffectiveDate;
+                    SelectedDay1 = map[i].Day1.toString().trim();
+                    SelectedDay2 = map[i].Day2.toString().trim();	
+                    SelectedLoanCode = map[i].LoanCode;
+                }
+                else if(SelectedEFTIDType == 'Share'){
+                    SelectedUserChar3 = map[i].UserChar3;
+                }
+                    
+                
 	            break;
         	}
         }

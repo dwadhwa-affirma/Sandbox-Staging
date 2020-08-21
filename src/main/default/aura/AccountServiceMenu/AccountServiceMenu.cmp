@@ -61,7 +61,7 @@
 	}
 
     @media screen and ( max-width: 991px ){
-        .slds-modal__container{max-width: unset !important; width:70% !important; margin:0 auto !important;}
+        .slds-modal__container{max-width: unset !important; width:75% !important; margin:0 auto !important;}
     }
     @media screen and ( max-width: 767px ){
         .slds-modal__container{max-width: unset !important; width:94% !important; margin:0 auto !important;}

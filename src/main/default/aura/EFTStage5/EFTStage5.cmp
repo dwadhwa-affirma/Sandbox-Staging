@@ -20,17 +20,24 @@
     				<b><label class="slds-form-element__label" for="horizontal-input-id-01">Payment Amt:</label></b>
     				<div class="slds-form-element__control">
       					<!-- <force:inputField value="{!v.EFTRecord.Payment_Amount__c}" change="{!c.onMonthChange}"> </force:inputField>-->
-    					<lightning:input value="{!'$' + v.EFTRecord.Payment_Amount__c}" disabled="true" />
+						  	<aura:if isTrue="{!v.isLoan == true}">
+							  <lightning:input value="{!'$' + v.EFTRecord.Payment_Amount__c}" disabled="true" />
+							</aura:if>
+							<aura:if isTrue="{!v.isLoan == false}"> 
+							<!--<force:inputField class="alternateamount" value="{!v.EFTRecord.Payment_Amount__c}" change="{!c.onMonthChange}"> </force:inputField>   -->                        
+							<lightning:input class="paymentamount" type="number" value="{!v.EFTRecord.Payment_Amount__c}" disabled="false" onblur="{!c.onMonthChange}" step="0.01" formatter="currency"/>
+							</aura:if>
+						 
     				</div>
   				</div>
-                <aura:if isTrue="{!v.isLoan}">
+                <!--<aura:if isTrue="{!v.isLoan}">-->
   				<div class="slds-form-element slds-form-element_horizontal">
     				<b><label class="slds-form-element__label" for="horizontal-input-id-02">Additional Amt:</label></b>
     				<div class="slds-form-element__control">
       					<force:inputField class="alternateamount" value="{!v.EFTRecord.Alternate_Amount__c}" change="{!c.onMonthChange}"> </force:inputField>
     				</div>
   				</div>
-                </aura:if>
+               <!-- </aura:if>-->
   				<div class="slds-form-element slds-form-element_horizontal">
     				<b><label class="slds-form-element__label" for="horizontal-input-id-03">Effective Date:</label></b>
                     <div class="slds-form-element__control">
