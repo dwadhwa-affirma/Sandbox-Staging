@@ -74,7 +74,6 @@
         var Stage3ErrorCheck;
         var Stage3MissingFields;
         var Stage5MissingFields
-        var Stage2MemberCheck;
         var SolarLoanRecordId = component.get("v.recordId");
        	
         var CurrentStage;
@@ -116,10 +115,6 @@
                 	Stage5ACHCheck = 'True';
                 }
                 //---------------------Validation for Stage-2 -------------------------------//
-
-                if(result.Stage2MemberCheck == 'True'){
-                	Stage2MemberCheck = 'True';
-                }
 
                 if(result.Stage3ErrorCheck == 'True'){
                 	Stage3ErrorCheck = 'True';
@@ -201,22 +196,7 @@
 				 ); 
              }
              
-            //------------------------------------------Validation message for Stage-2 Member Number Update-----------------------------//
-	         if(Stage2MemberCheck == 'True'){
-				
-				helper.hideSpinner(component,helper); 
-				var toastEvent = $A.get("e.force:showToast");
-		        toastEvent.setParams({
-		            title : 'Success',
-		            message: 'Member Number has been updated Successfully',
-		            duration:' 5000',
-		            key: 'info_alt',
-		            type: 'success',
-		            mode: 'pester'
-		        });
-		        toastEvent.fire();
-			 
-             }
+           
 
 	         //------------------------------------------Validation message for Stage-2 -----------------------------//
 	         if(Stage3ErrorCheck == 'True'){

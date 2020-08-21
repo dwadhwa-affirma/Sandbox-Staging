@@ -23,6 +23,7 @@
 		var Stage5ACHCheck;
         var Stage4ErrorCheck;
         var waitingCheck;
+        var Stage2MemberCheck;
 		var buttonClass = component.find('WaitingButton');
         
 		var action = component.get("c.getMemberData");
@@ -43,6 +44,17 @@
 		        if(result.Stage3LoanCheck != undefined && result.Stage3LoanCheck != null){
 		       	    buttonStatus = result.Stage3LoanCheck;
                 }
+
+                //-------------------------validation for Stage-2 ---------------------------//
+
+                if(result.Stage2MemberCheck == 'True'){
+                	Stage2MemberCheck = 'True';
+                }
+
+                if(result.Stage2MemberCheck == 'False'){
+                	Stage2MemberCheck = 'False';
+                }
+
                 //---------------------Validation for Stage-4 -------------------------------//
                 
                 if(result.Stage4ErrorCheck == 'True'){
@@ -105,7 +117,38 @@
                 component.set("v.IsButtonDisabled", true);
                 component.set("v.IsWaitingDisabled", true);
             }   
-        	
+            
+             //------------------------------------------Validation message for Stage-2 Member Number Update-----------------------------//
+	         if(Stage2MemberCheck == 'True'){
+				
+				var toastEvent = $A.get("e.force:showToast");
+		        toastEvent.setParams({
+		            title : 'Success',
+		            message: 'Member Number has been updated Successfully.',
+		            duration:' 1000',
+		            key: 'info_alt',
+		            type: 'success',
+		            mode: 'pester'
+		        });
+		        toastEvent.fire();
+			 
+             }
+
+             if(Stage2MemberCheck == 'False'){
+				
+				var toastEvent = $A.get("e.force:showToast");
+		        toastEvent.setParams({
+		            title : 'Warning',
+		            message: 'Member Number not found.',
+		            duration:' 1000',
+		            key: 'info_alt',
+		            type: 'warning',
+		            mode: 'pester'
+		        });
+		        toastEvent.fire();
+			 
+             }
+
             //------------------------------------------Validation message for Stage-4 -----------------------------//
 	         
 	         if(Stage4ErrorCheck == 'True'){

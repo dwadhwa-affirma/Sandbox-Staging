@@ -250,19 +250,37 @@ public class SolarLoanController {
              
                 SLIdsToCreateLoan.add(SolarLoanList[0].id);
                 SolarLoanToCreateLoan.getMemberNumber(SLIdsToCreateLoan);
-                Stage2MemberCheck = 'True';
+                
+                SolarLoanList[0].Current_Solar_Loan_Stage__c = CurrentStage;
+                solarLoanList[0].Status__c = 'Approved'; 
+                SolarLoanList[0].continue__c = false;
+                update SolarLoanList;
             }
+        }
 
-            SolarLoanList[0].Current_Solar_Loan_Stage__c = CurrentStage;
-            solarLoanList[0].Status__c = 'Approved'; 
-            SolarLoanList[0].continue__c = false;
-            update SolarLoanList;
+        if(CurrentStage == ' '  && SolarLoanList[0].Current_Solar_Loan_Stage__c == 'Stage 3' && 
+                                (SolarLoanList[0].Member_Number__c == '' || SolarLoanList[0].Member_Number__c == null)){
+            Stage2MemberCheck = 'False';
+        }
+
+        if(CurrentStage == ' '  && SolarLoanList[0].Current_Solar_Loan_Stage__c == 'Stage 3' && 
+                SolarLoanList[0].Member_Number__c != '' && SolarLoanList[0].Member_Number__c != null){
+        
+            stage2MemberCheck = 'True';
             
         }
         
         //------------------------------------Stage-4  Creating Loan Records -----------------------------------------//
         
-        if(CurrentStage == 'Stage 4' && (SolarLoanList[0].Loan_Id__c == null || SolarLoanList[0].Loan_Id__c == '')){
+        if((SolarLoanList[0].Member_Number__c == '' || SolarLoanList[0].Member_Number__c == null) && CurrentStage == 'Stage 4' && 
+                (SolarLoanList[0].Loan_Id__c == null || SolarLoanList[0].Loan_Id__c == '')){
+            
+            SLIdsToCreateLoan.add(SolarLoanList[0].id);
+            SolarLoanToCreateLoan.getMemberNumber(SLIdsToCreateLoan);
+        }
+
+        if((SolarLoanList[0].Member_Number__c != '' && SolarLoanList[0].Member_Number__c != null) && CurrentStage == 'Stage 4' && 
+                (SolarLoanList[0].Loan_Id__c == null || SolarLoanList[0].Loan_Id__c == '')){
             
             SLIdsToCreateLoan.add(SolarLoanList[0].id);
             SolarLoanToCreateLoan.createSolarLoans(SLIdsToCreateLoan);
@@ -371,7 +389,7 @@ public class SolarLoanController {
                
     }
 
-    if(CurrentStage == ' ' && SolarLoanList[0].Current_Solar_Loan_Stage__c == 'Stage 3' &&
+    if(CurrentStage == ' ' && SolarLoanList[0].Current_Solar_Loan_Stage__c == 'Stage 3' &&  Stage2MemberCheck != 'False' &&
             (SolarLoanList[0].Error_Loan_Locator__c != null || SolarLoanList[0].Error_Loan_Name_Locator__c != null || 
              SolarLoanList[0].Error_Loan_Tracking_Locator__c != null)){
             
@@ -383,9 +401,9 @@ public class SolarLoanController {
     }
 
     if(CurrentStage == ' ' && SolarLoanList[0].Status__c == 'Waiting for Response' ){
-            
         waitingCheck = 'True';
     }
+
     system.debug('SolarCurrentStage'+SolarCurrentStage);
     strMap.put('SolarCurrentStage',SolarCurrentStage);  
     strMap.put('Stage3LoanCheck',Stage3LoanCheck);
