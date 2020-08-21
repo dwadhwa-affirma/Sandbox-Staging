@@ -306,7 +306,7 @@ public class SolarLoanToCreateLoan {
                     
                     if(result1 == null || result1 == ''){
                         
-                        ErrorLoanNameLocator = String.valueOf(responseBody1).substringAfter('[MessageId=TESTING] ');
+                        ErrorLoanNameLocator = String.valueOf(responseBody1).substringAfter('Error",');
                         ErrorLoanNameLocator = String.valueOf(ErrorLoanNameLocator).substringBefore('","ErrorDetails"');
                         system.debug('ErrorLoanNameLocator' + ErrorLoanNameLocator);
                     }
@@ -445,7 +445,7 @@ public class SolarLoanToCreateLoan {
                 
                 if(result2 == null || result2 == ''){
                         
-                    ErrorLoanTrackingLocator = String.valueOf(responseBody2).substringAfter('[MessageId=TESTING] ');
+                    ErrorLoanTrackingLocator = String.valueOf(responseBody2).substringAfter('Error",');
                     ErrorLoanTrackingLocator = String.valueOf(ErrorLoanTrackingLocator).substringBefore('","ErrorDetails"');
                     system.debug('ErrorLoanTrackingLocator' + ErrorLoanTrackingLocator);
                 }
