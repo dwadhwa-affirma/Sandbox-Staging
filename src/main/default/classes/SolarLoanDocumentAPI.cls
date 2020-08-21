@@ -8,7 +8,9 @@ global with sharing class SolarLoanDocumentAPI {
       
       global static List<SolarLoanDocumentAPIResopnse> getSolarLoanDocuemnts() {
             List<SolarLoan_Document__c> SolarLoanDocumentList = new List<SolarLoan_Document__c>();
-            
+            Map<ID,ID> cv = new Map<ID,ID>();
+          	set<ID> listCD  = new set<ID>();
+          
             SolarLoanDocumentList = [select Id, Name,Document_Name__c,Member_Number__c, SolarLoan_Document__c.Solar_Loans__c,Solar_Loans__r.Status__c,Attachment_Id__c,ContentDocumentLinkId__c,Document_Type__c,Move_To_OnBase_Date__c 
                                     from SolarLoan_Document__c where IsMovedToOnBase__c = false and Solar_Loans__r.Status__c = 'Done'];
             
@@ -17,14 +19,19 @@ global with sharing class SolarLoanDocumentAPI {
             
           	for(SolarLoan_Document__c SolarLoanObj : SolarLoanDocumentList){
             	solarids.add(SolarLoanObj.Solar_Loans__c );
+                listCD.add(SolarLoanObj.Attachment_Id__c);
             }
+                
+            For(ContentVersion contentVersion : [select id,NewFile__c,ContentDocumentId from ContentVersion where ContentDocumentId in: listCD]){
+        		cv.put(contentVersion.ContentDocumentId,contentVersion.id);
+        	}
             
             for(SolarLoan_Document__c SolarLoanObj : SolarLoanDocumentList)
             {
                 SolarLoanDocumentAPIResopnse respObj = new SolarLoanDocumentAPIResopnse();
                 
                 respObj.Name = (SolarLoanObj.Document_Name__c!=null)?SolarLoanObj.Document_Name__c:SolarLoanObj.Name;
-                respObj.AttachmentID = SolarLoanObj.Attachment_Id__c;
+                respObj.AttachmentID = cv.get(SolarLoanObj.Attachment_Id__c);
                 respObj.DocumentType = SolarLoanObj.Document_Type__c;
                 respObj.MemberNumber = SolarLoanObj.Member_Number__c;
                 responseObjList.add(respObj);
@@ -42,12 +49,18 @@ global with sharing class SolarLoanDocumentAPI {
            
             String strAttachmentIds = RestContext.request.requestBody.toString();
             List<string> IdsList = strAttachmentIds.split(',');
+           	set<Id> CDList = new Set<Id>();
+          
             List<SolarLoan_Document__c> SolarLoanDocumentList = new List<SolarLoan_Document__c>();
             List<SolarLoan_Document__c> UpdateSolarLoanDocumentList = new List<SolarLoan_Document__c>();
+          	
+          	For(ContentVersion contentVersion : [select id,NewFile__c,ContentDocumentId from ContentVersion where id in: IdsList]){
+        		CDList.add(contentVersion.ContentDocumentId);
+        	}
           
-            system.debug('IdsList##'+ IdsList);
+            system.debug('CDList##'+ CDList);
             SolarLoanDocumentList = [select Id, Name,SolarLoan_Document__c.Solar_Loans__c,Document_Name__c, Attachment_Id__c, IsMovedToOnBase__c from SolarLoan_Document__c 
-                                    where Attachment_Id__c IN: IdsList or ContentDocumentLinkId__c IN: IdsList];
+                                    where Attachment_Id__c IN: CDList];
                                           
             for(SolarLoan_Document__c SLDoc : SolarLoanDocumentList){
                 SolarLoan_Document__c NewSLDoc = new SolarLoan_Document__c();
