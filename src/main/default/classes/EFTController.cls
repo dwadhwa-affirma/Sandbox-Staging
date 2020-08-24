@@ -298,8 +298,9 @@ public class EFTController {
              	}    
 				//cs.AccountId = EFTRecord.Member_Account__c;
 				cs.Status = 'Open';
-				cs.Subject = 'ACH Record';
-                cs.ownerid = '005j000000DCwXHAA1';
+                cs.Subject = 'ACH Record';
+                system.debug('createdby==='+EFTRecord.CreatedBy.Id);
+                cs.ownerid = UserInfo.getUserId();
                 if(pa != null){
                     cs.AccountId = pa.PersonID__c;
                 }
@@ -612,9 +613,18 @@ public class EFTController {
             List<EFT__c> SFEFT = [Select id,EftLocator__c from EFT__c where Member_Account__r.Name =:  AccountNumber] ;
             map<string,id> EFTLocatorsMap=new map<string,id>();
             set<string> EFTLocatorsset=new set<string>();
+            map<string,decimal> LoanIDPaymentMap=new map<string,decimal>();
             for(EFT__c e: SFEFT){
                 EFTLocatorsMap.put(e.EftLocator__c,e.id);
                 EFTLocatorsset.add(e.EftLocator__c);
+            }
+
+            Map<string,List<ShareLoanWrapperObject>> LoanMap = getLoanAccounts(AccountNumber);
+            List<EFTController.ShareLoanWrapperObject> LoanList = LoanMap.get('LoanList');
+            if(LoanList != null){
+                for(ShareLoanWrapperObject sl: LoanList){
+                    LoanIDPaymentMap.put(sl.ShareLoanID,sl.Payment);                   
+                }		
             }
         	
         	httpRequest requestparam = new httpRequest(); 
@@ -661,26 +671,41 @@ public class EFTController {
                 
                  for(Object t : results){
                      
-                      map<string, object> localAcc = (map<string, object>)t;
-                      System.debug('localAcc ....' + localAcc.get('Id'));
+                      map<string, object> localAcc = (map<string, object>)t;                      
                        string lsId = '';
                        if(localAcc.get('Id') != null && localAcc.get('Id') != ''){
                                lsId = String.valueOf(localAcc.get('Id')).substring(0, 2);
-                               System.debug('lsId ....' + lsId);
+                               //System.debug('lsId ....' + lsId);
                        }
                       if(arrShareTypes.contains(lsId) || arrLoanTypes.contains(lsId)){
                    			EFTWrapperObject temp = new EFTWrapperObject();                       		   
                             EFT__c objEFT = new EFT__c();
-                            if(arrShareTypes.contains(lsId))
+                            if(arrShareTypes.contains(lsId)){
+                                //System.debug('Share ....');
                                 objEFT.EFT_ID_Type__c = 'Share';
-                            else if(arrLoanTypes.contains(lsId))
+                                map<string,decimal> resultAmount  = getTrackingRecordforShare(AccountNumber,String.valueOf(localAcc.get('Id')));
+                                if(resultAmount != null){
+                                    objEFT.Payment_Amount__c = resultAmount.get('Payment');
+                                    objEFT.Alternate_Amount__c = resultAmount.get('AlternateAmount');
+                                }
+                                
+                            }                                
+                            else if(arrLoanTypes.contains(lsId)){
+                               // System.debug('Loan ....');
                                 objEFT.EFT_ID_Type__c = 'Loan';
-                       		objEFT.Routing_Number__c = String.valueOf(localAcc.get('Payee')); 
-                       		objEFT.Account_Number__c = String.valueOf(localAcc.get('Reference'));
-                       		//system.debug('Account_Number__c=='+objEFT.Account_Number__c);
-                       		objEFT.Payment_Amount__c = Decimal.valueOf(String.valueOf(localAcc.get('Amount')));
-                       		if(String.valueOf(localAcc.get('EffectiveDate')) != '' && String.valueOf(localAcc.get('EffectiveDate')) != null)
-                       		objEFT.Effective_Date__c = Date.valueOf(String.valueOf(localAcc.get('EffectiveDate')));
+                                objEFT.Payment_Amount__c = LoanIDPaymentMap.get(String.valueOf(localAcc.get('Id')));
+                                objEFT.Alternate_Amount__c = Decimal.valueOf(String.valueOf(localAcc.get('Amount')));
+                            }      
+                            string bankname = String.valueOf(localAcc.get('Payee'));
+                            System.debug('bankname=='+bankname);
+                            if(bankname.length() == 10 && bankname.startsWith('0'))
+                                bankname = bankname.removeStart('0');                 
+                       		objEFT.Routing_Number__c = bankname; 
+                            objEFT.Account_Number__c = String.valueOf(localAcc.get('Reference'));                                        		
+                            
+                            
+                            if(String.valueOf(localAcc.get('EffectiveDate')) != '' && String.valueOf(localAcc.get('EffectiveDate')) != null)
+                       		    objEFT.Effective_Date__c = Date.valueOf(String.valueOf(localAcc.get('EffectiveDate')));
                        		if(String.valueOf(localAcc.get('Frequency')) == '5')
                        			objEFT.Frequency__c = 'Semi-Monthly';
                        		else
@@ -692,7 +717,7 @@ public class EFTController {
                        		//system.debug('EftLocator__c=='+String.valueOf(localAcc.get('EftLocator')));
                        		
                        		objEFT.EftLocator__c = String.valueOf(localAcc.get('EftLocator'));
-                       		//objEFT.Member_Account__c = 'a0Of100000GF8xOEAT';
+                       		
                        		if(String.valueOf(localAcc.get('AmountCode')) == '37')                       		
                        			objEFT.Type__c = 'Savings'; 
                        		else
@@ -702,13 +727,11 @@ public class EFTController {
                        			//if(expDate <= Date.today())
                        				objEFT.expired__c = true;
                                }     
-                            if(localAcc.get('Id') == '7501')
-                       		system.debug('Day1=='+String.valueOf(localAcc.get('Day1'))) ;      		
+                            
+                       		//system.debug('Day1=='+String.valueOf(localAcc.get('Day1'))) ;      		
                        		//objEFT.EftLocator__c = String.valueOf(localAcc.get('EftLocator__c'));    
                        		objEFT.Member_Account__r = new account_details__c(id =mapAccountIdName.get(String.valueOf(localAcc.get('AccountNumber'))), Name = String.valueOf(localAcc.get('AccountNumber')));//mapAccountIdName.get(String.valueOf(localAcc.get('AccountNumber')));  
-                       		//system.debug('Member_Account__r=='+objEFT.Member_Account__r.Name);
-                       		//List<EFT__c> SFEFT = [Select id from EFT__c where Member_Account__r.Name =:  objEFT.Member_Account__r.Name 
-                       					//	and EftLocator__c =: String.valueOf(localAcc.get('EftLocator')) limit 1] ;
+                       		
                        		
                        		if(EFTLocatorsMap.get(String.valueOf(localAcc.get('EftLocator'))) != null){ //SFEFT.size() > 0                                 
                                 objEFT.id = EFTLocatorsMap.get(String.valueOf(localAcc.get('EftLocator')));
@@ -716,17 +739,11 @@ public class EFTController {
                        		
                        		EFTList.add(objEFT);
                  }
-       		}
-       				
-       				
-       			
-            }
+       		} 				
             
-            //System.debug('EFTLocatorsSet ....' + EFTLocatorsSet);
-           /* List<EFT__c> EFTList = [select id, name,EFT_ID_Type__c, Member_Account__c, Stage__c, Action_Type__c, Share_Loan_Id__c, Type__c	,Share_Loan_Type__c, 	
-                                    Share_Loan_Description__c, Routing_Number__c, Bank_Name__c, Account_Number__c, Alternate_Amount__c,Effective_Date__c,
-                                      Frequency__c, Payment_Amount__c, Day_of_Month__c, Member_Account__r.name, Case__c, Case__r.CaseNumber, expired__C
-                                      from EFT__c where Member_Account__c =: recordId and EftLocator__c in: EFTLocatorsSet];*/
+		
+       			
+            }            
             
             return EFTList;       
     }
@@ -903,6 +920,55 @@ public class EFTController {
 		pageRef.setRedirect(true);
         return pageRef;
     }
+
+    @AuraEnabled
+    public static map<string,decimal> getTrackingRecordforShare(string AccountNumber, string ShareID){	
+        system.debug('AccountNumber=='+AccountNumber);
+        system.debug('ShareID=='+ShareID);
+       
+        map<string,decimal> resultAmount = new map<string,decimal>();
+		httpRequest requestparam = new httpRequest(); 
+        //requestparam.setTimeout(10); 
+	    requestparam.setEndpoint('https://symxapi.chevronfcu.org/devclient/PSAuto/GetTrackingRecords?accountNumber=' + AccountNumber);
+		requestparam.setMethod('GET'); 
+		
+		try { 
+	        http httpParam = new http();
+	        httpResponse response = httpParam.send(requestparam);
+	        
+	        String strStatus = response.getStatus();
+	        String strBody = response.getBody();
+        	
+         	System.debug('strStatustracking ....' + strStatus);
+			System.debug('strBodytracking ....' + strBody);
+
+			if(strBody!=''){        
+			  List<Object> results = (List<Object>) JSON.deserializeUntyped(response.getBody());      
+			  System.debug('Service response is ....' + results);
+			 
+			if(results != null){ 
+			  for(Object t : results){							
+						map<string, object> localAcc = (map<string, object>)t;                       		
+						integer trackingtype = (integer)localAcc.get('Type');                       		
+						string userchar1 = (string)localAcc.get('UserChar1'); 
+                        string userchar3 = EFTToSyimtar.getUserChar3(AccountNumber,ShareID);
+                        if(trackingtype == 32 && userchar1 == userchar3){//&& ShareId == 2800                            
+                            decimal AlternateAmount,Payment;
+                            Payment = (decimal)localAcc.get('UserAmount2');  
+                            AlternateAmount =  (decimal)localAcc.get('UserAmount10');                         
+                            resultAmount.put('Payment',Payment);
+                            resultAmount.put('AlternateAmount',AlternateAmount);
+						}
+					}
+				}			
+			 }
+		}
+		catch(System.CalloutException e){
+			system.debug('Exception');
+			
+		}
+		return resultAmount;
+	}
     
     public class ShareLoanWrapperObject
     {
