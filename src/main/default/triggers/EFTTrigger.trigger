@@ -124,7 +124,7 @@ trigger EFTTrigger on EFT__c (after insert, after update, before update) {
     if(CaseIdsToUpdate.size() > 0){  
         List<Case> UpdateCasesList = [select id, status from case where id in: CaseIdsToUpdate];
         for(Case c: UpdateCasesList){
-            	c.OwnerId = '005j000000DCwXHAA1';
+            	//c.OwnerId = UserInfo.getUserId();//'005j000000DCwXHAA1';
                 c.status = 'Closed';
             }
             update UpdateCasesList;
