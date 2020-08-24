@@ -1,7 +1,26 @@
 <aura:component controller="ChangeLimitController" implements="force:appHostable,force:lightningQuickActionWithoutHeader,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,force:hasSObjectName" access="global">
+
 <aura:registerEvent name="ChangeLimitEvent" type="c:ChangeLimitEvent"/>
 <aura:attribute name="CLRecord" type="Change_Limit__c"/> 
-    <div id = "stage4">
-    	ChangeLimitStage4
+<aura:handler name="init" action="{!c.doInit}" value="{!this}" access="global" />
+<aura:attribute name="caList" type="Account_Details__c[]" />  
+<aura:attribute name="ChangeCardLimitIsEnabled" type="Boolean" default="false"/>
+    <div id = "stage4" class = "align">
+        <p class = "fontstyle">Confirmation</p><br></br>
+        <div class="slds-form">
+            <div class="slds-form-element slds-form-element_horizontal">
+                <div class="slds-form-element__control">
+                    <table class="bottomtbl">
+                    	<tr>
+                    		<td>Card: </td>
+                        	<td>{!v.CLRecord.ATM_Usage_Limit__c	}</td>
+                    	</tr>    
+                    </table>	    
+                </div>
+            </div>
+        </div>
     </div>
+   
+    
+     
 </aura:component>

@@ -14,7 +14,7 @@
                 <div class="slds-form-element__control">
                     <b><label class="slds-form-element__label" for="horizontal-input-id-01">ATM Usage Limit ($0.01 - $1,000.00)</label></b>
                     <lightning:recordEditForm aura:id="recordEditForm" objectApiName="Change_Limit__c">
-                        <lightning:inputField fieldName="ATM_Usage_Limit__c" />
+                        <lightning:inputField onchange="{!c.handleChange}" value="{!v.CLRecord.ATM_Usage_Limit__c}" fieldName="ATM_Usage_Limit__c" />
                     </lightning:recordEditForm>
                 </div>
             </div>
@@ -22,7 +22,7 @@
                 <div class="slds-form-element__control">
                     <b><label class="slds-form-element__label" for="horizontal-input-id-02">Auth/POS Limit ($0.01 - $10,000.00)</label></b>
                     <lightning:recordEditForm aura:id="recordEditForm" objectApiName="Change_Limit__c">
-                        <lightning:inputField fieldName="Auth_POS_Limit__c" />
+                        <lightning:inputField  onchange="{!c.handleChange}" value="{!v.CLRecord.Auth_POS_Limit__c}" fieldName="Auth_POS_Limit__c" />
                     </lightning:recordEditForm>
                 </div>
             </div>
