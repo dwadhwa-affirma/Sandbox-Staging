@@ -11,6 +11,7 @@
 <aura:attribute name="Stage5" type="String" default="Waiting on Stage 4"/>
 <aura:attribute name="Stage6" type="String" default="Waiting on Stage 5"/>
 <aura:attribute name="Stage7" type="String" default="Waiting on Stage 6"/>
+<aura:attribute name="ActiveStepIndex" type="String"/>
 
 <div class="demo-only slds-box rightBox" style="background: white;">
 			    	<header class="slds-media_center slds-has-flexi-truncate" style = "width: 102%;">
@@ -18,7 +19,7 @@
 			               			<lightning:layout horizontalAlign="spread">                                            
                                             <div class="step-container">
                                                 <ul class="progressbar">
-                                                    <li id="Step1" class="one">
+                                                    <li id="Step1" class="{!(v.ActiveStepIndex == 'Stage 1' ? 'halFactive' : 'active')}">
                                                     	<lightning:layoutItem>
 	                                                    	<div class="header-column">
 	                                                    		<p class="field-title show" id="Level1IndicatorLabel">Application</p>
@@ -28,7 +29,7 @@
 	                                                        </div>
                                                         </lightning:layoutItem>
                                                     </li>
-                                                    <li id="Step2" class="two">
+                                                    <li id="Step2" class="{!(v.ActiveStepIndex == 'Stage 2' ? 'halFactive' : (v.ActiveStepIndex == 'Stage 3' ? 'active' : (v.ActiveStepIndex == 'Stage 4' ? 'active' : (v.ActiveStepIndex == 'Stage 5' ? 'active' : (v.ActiveStepIndex == 'Stage 6' ? 'active' : (v.ActiveStepIndex == 'Stage 7' ? 'active' : ''))))))}">
                                                     	<lightning:layoutItem>
 	                                                    	<div class="header-column">
 	                                                    		<p class="field-title show" id="Level2IndicatorLabel">Documents</p>
@@ -38,7 +39,7 @@
 	                                                        </div>
                                                         </lightning:layoutItem>
                                                     </li>
-                                                    <li id="Step3" class="thre">
+                                                    <li id="Step3" class="{!(v.ActiveStepIndex == 'Stage 3' ? 'halFactive' : (v.ActiveStepIndex == 'Stage 4' ? 'active' : (v.ActiveStepIndex == 'Stage 5' ? 'active' : (v.ActiveStepIndex == 'Stage 6' ? 'active' : (v.ActiveStepIndex == 'Stage 7' ? 'active' : '')))))}">
                                                     	<lightning:layoutItem>
 	                                                    	<div class="header-column">
 	                                                    		<p class="field-title show" id="Level3IndicatorLabel">Loan Records</p>
@@ -48,7 +49,7 @@
 	                                                        </div>
                                                         </lightning:layoutItem>
                                                     </li>
-                                                    <li id="Step4" class="four">
+                                                    <li id="Step4" class="{!(v.ActiveStepIndex == 'Stage 4' ? 'halFactive' : (v.ActiveStepIndex == 'Stage 5' ? 'active' : (v.ActiveStepIndex == 'Stage 6' ? 'active' : (v.ActiveStepIndex == 'Stage 7' ? 'active' : ''))))}">
                                                     	<lightning:layoutItem>
 	                                                    	<div class="header-column">
 	                                                    		<p class="field-title show" id="Level4IndicatorLabel">ACH Info</p>
@@ -58,7 +59,7 @@
 	                                                        </div>
                                                         </lightning:layoutItem>
                                                     </li>
-                                                    <li id="Step5" class="five">
+                                                    <li id="Step5" class="{!(v.ActiveStepIndex == 'Stage 5' ? 'halFactive' : (v.ActiveStepIndex == 'Stage 6' ? 'half' : (v.ActiveStepIndex == 'Stage 7' ? 'active' : '')))}">
                                                     	<lightning:layoutItem>
 	                                                    	<div class="header-column">
 	                                                    		<p class="field-title show" id="Level5IndicatorLabel">ACH Document</p>
@@ -68,7 +69,7 @@
 	                                                        </div>
                                                         </lightning:layoutItem>
                                                     </li>
-                                                    <li id="Step6" class="six">
+                                                    <li id="Step6" class="{!(v.ActiveStepIndex == 'Stage 6' ? 'halFactive' : (v.ActiveStepIndex == 'Stage 7' ? 'active' : ''))}">
                                                     	<lightning:layoutItem>
 	                                                    	<div class="header-column">
 	                                                    		<p class="field-title show" id="Level6IndicatorLabel">EFT Record</p>
@@ -78,7 +79,7 @@
 	                                                        </div>
                                                         </lightning:layoutItem>
                                                     </li>
-                                                    <li id="Step7" class="seven">
+                                                    <li id="Step7" class="{!(v.ActiveStepIndex == 'Stage 7' ? 'active' : '')}">
                                                     	<lightning:layoutItem>
 	                                                    	<div class="header-column">
 	                                                    		<p class="field-title show" id="Level7IndicatorLabel">Ticket Status</p>
