@@ -134,8 +134,12 @@ public class ChangeLimitController {
         system.debug('sObjectType'+sObjectType); 
         system.debug('recordId'+recordId);
         
+        //Person_Account__c personaccount = [select id ,PersonId__c, PersonID__r.Name, TypeTranslate__c FROM Person_Account__c where]
+
+        Account_Details__c MemberAccount = [select id,name from Account_Details__c where id=:recordId limit 1];
+
         List<Account_Details__c> cardList = [select id, Name, RecType__c, Card_Number__c, TypeTranslate__c, Card_Name__c, Card_Number_Last_4_Digits__c
-                                           from Account_Details__c where RecType__c = 'CARD' and Card_Name__c =: sObjectType];
+                                           from Account_Details__c where RecType__c = 'CARD' and name =: MemberAccount.name ];
                                            
 
 		return cardList;
