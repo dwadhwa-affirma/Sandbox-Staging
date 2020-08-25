@@ -100,23 +100,71 @@ private class SolarLoanTest{
      sl.ECOA_Code__c = '2';
      sl.Site_UUID__c = '11';
      sl.FNI__c = '12';
-     //sl.Member_Number__c = '269355';
+     sl.Member_Number__c = '269355';
      sl.Status__c = 'New'; 
      insert sl;
      
      SolarLoan_Obj.add(sl);
       
      Solar_Loans__c sl1 = new Solar_Loans__c();
-     sl1.id =  SolarLoan_Obj[0].id;
-     sl1.Status__c = 'Done';  
-     update sl1; 
-     
+     sl1.Joint_First_Name__c ='Tom';
+     sl1.Joint_Last_Name__c = 'Jerry';
+     sl1.Joint_DOB__c = System.today();
+     sl1.Joint_SSN__c =  '123';
+     sl1.Joint_FICO_Score__c = 12.00;
+     sl1.Joint_City__c = 'city';
+     sl1.Joint_State__c = 'PA';
+     sl1.Joint_Zip_Code__c =  '12345';
+     sl1.Joint_Address_1__c = 'street';
+     sl1.Joint_Address_2__c = 'street2';
+      
+     sl1.Primary_First_Name__c ='Tom';
+     sl1.Primary_Last_Name__c = 'Jerry';
+     sl1.Primary_DOB__c = System.today();
+     sl1.Primary_SSN__c =  '123456789';
+     sl1.Primary_Address_1__c = 'Add';
+     sl1.Primary_FICO_Score__c = 12.00;
+     sl1.Primary_City__c = 'city';
+     sl1.Primary_State__c = 'PA';
+     sl1.Primary_Zip_Code__c =  '12345';
+     sl1.Legal_Description__c = 'test';
+     sl1.Product__c = 'product';
+     sl1.Module__c = 'module';
+     sl1.Installer_Number__c = '12';
+     sl1.Inverter__c = 'inverter';
+     sl1.System_Size_kW__c = 12.00;
+     sl1.Battery__c = 'barary';
+     sl1.Installer__c = 'intealer';
+     sl1.Application_Date__c = system.today();
+     sl1.Mortgage_Balance__c = 1299.00;
+     sl1.Final_Payment_Amount__c = 111.00;
+     sl1.Go_To_Payment__c = 1252.00;
+     sl1.Bank_Name__c = 'test & bank';
+     sl1.Membership_Fee__c = 126.00;
+     sl1.Net_Funding_Amount__c = 1213.00;
+     sl1.Loan_Amount__c = 1211.00;
+     sl1.Loan_Pmt_Amount__c = 1245.00;
+     sl1.Credit_Exception__c = 'cr';
+     sl1.ITC_Rate__c = 2.00;
+     sl1.ITC_Amount__c = 1245.88;
+     sl1.Term_months__c = 12;
+     sl1.OID_Fee__c = 11;
+     sl1.Approval_Date__c = system.today();
+     sl1.ECOA_Code__c = '2';
+     sl1.Site_UUID__c = '116';
+     sl1.FNI__c = '12';
+     sl1.Member_Number__c = '269355';
+     sl1.Status__c = 'New'; 
+     insert sl1; 
+      
+     SolarLoan_Obj.add(sl1); 
+      
      //---------------------------------------- Creating Solar Loan Document record-----------------------------------//
      
      List<SolarLoan_Document__c> SolarLoanDocList = new List<SolarLoan_Document__c>{
-         new SolarLoan_Document__c(Name = 'Test Document', Solar_Loans__c = SolarLoan_Obj[0].id)};      
+         new SolarLoan_Document__c(Solar_Loans__c = SolarLoan_Obj[0].id)};      
      insert SolarLoanDocList;
-           
+     
      test.startTest();
      
      //---------------------------------------- Creating Content Version Record for Attachment---------------------------------------------//
@@ -141,7 +189,7 @@ private class SolarLoanTest{
       SolarLoanController.getMemberData(listSolarLoan[0].id, 'Stage 1');
       SolarLoanController.saveRoutingInfo(listSolarLoan[0].id,'122105155','Test Bank Name');
       SolarLoanController.getMemberData(listSolarLoan[0].id, 'Stage 3');
-      SolarLoanController.getMemberData(listSolarLoan[0].id, 'Stage 4');
+      
       SolarLoanController.routingInfo('122105155');
       SolarLoanController.getMemberData(listSolarLoan[0].id, 'Stage 5');
       test.startTest();
@@ -150,12 +198,20 @@ private class SolarLoanTest{
       
       test.stopTest();
   }
+    
+  static testMethod void test_Solarloancontroller2(){
+      List<Solar_Loans__c> listSolarLoan  =  [SELECT Id from Solar_Loans__c limit 2];
+      
+      SolarLoanController.getMemberData(listSolarLoan[1].id, 'Stage 3');
+      SolarLoanController.getMemberData(listSolarLoan[1].id, 'Stage 4');
+      
+  }  
   static testMethod void test_GetCaseAttachments_UseCase1(){
     
     test.startTest();  
     
     // ---------------------------Fetching Solar Loan record from test set up data -----------------------------------//
-    List<Solar_Loans__c> listSolarLoan  =  [SELECT Id from Solar_Loans__c limit 1];
+    List<Solar_Loans__c> listSolarLoan  =  [SELECT Id,status__c from Solar_Loans__c limit 1];
     
     // ---------------------------Fetching Cotent Document record from test set up data ------------------------------//
     List<ContentDocument> cdList = [SELECT Id, Title, LatestPublishedVersionId FROM ContentDocument limit 1];
@@ -165,6 +221,12 @@ private class SolarLoanTest{
       
     // --------------------------------Calling non static method of SolarLoanAPI class------------------------------//  
     
+    Solar_Loans__c sl1 = new Solar_Loans__c();
+	sl1.id =  listSolarLoan[0].id;
+    sl1.Sunlight_Update__c = true;
+    sl1.Status__c = 'Done';  
+    update sl1;
+      
     List<SolarLoanDocumentAPI.SolarLoanDocumentAPIResopnse> listApiResponse = SolarLoanDocumentAPI.getSolarLoanDocuemnts();
     RestRequest req = new RestRequest();
     req.requestURI = '/services/apexrest/SolarLoanDocumentAPI';
