@@ -9,14 +9,23 @@
         <p class = "fontstyle">Confirmation</p><br></br>
         <div class="slds-form">
             <div class="slds-form-element slds-form-element_horizontal">
-                <div class="slds-form-element__control">
-                    <table class="bottomtbl">
-                    	<tr>
-                    		<td>Card: </td>
-                        	<td>{!v.CLRecord.ATM_Usage_Limit__c	}</td>
-                    	</tr>    
-                    </table>	    
-                </div>
+                <table class="bottomtbl">
+                    <tr>
+                        <td><b>Card: </b></td>
+                        <td>{!v.CLRecord.Card_Number__c	}</td>
+                    </tr>
+                    <tr>
+                        <td><b>New ATM Usage Limit: </b></td>
+                        <td>{!v.CLRecord.ATM_Usage_Limit__c	}</td>
+                    </tr>
+                    <tr>
+                        <td><b>New Auth/POS Limit: </b></td>
+                        <td>{!v.CLRecord.Auth_POS_Limit__c	}</td>
+                    </tr>
+                    <tr>
+                    	Card limits will reset tonight if the amount is over the daily default limit
+                    </tr>
+                </table>	    
             </div>
         </div>
     </div>

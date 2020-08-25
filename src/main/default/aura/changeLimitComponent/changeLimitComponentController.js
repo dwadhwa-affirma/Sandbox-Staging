@@ -181,17 +181,7 @@
                         break;
                     }
                     
-                    if(i==3 && component.get("v.CLRecord.Type__c") == 'Change Card Limits' && component.get("v.CLRecord.ATM_Usage_Limit__c") == undefined){
-                        alert('Please Enter ATM Usage Limit');	
-                        helper.hideSpinner(component,helper);
-                        return;            
-                    }
-                    else if(i==3 && component.get("v.CLRecord.Type__c") == 'Change Card Limits'&& component.get("v.CLRecord.Auth_POS_Limit__c") == undefined){
-                        alert('Please Enter Auth POS Limit');	
-                        helper.hideSpinner(component,helper);
-                        return;            
-                    } 
-                    else if(i==3 && component.get("v.CLRecord.Type__c") == 'Change Card Limits' && component.get("v.CLRecord.ATM_Usage_Limit__c") != undefined
+                    if(i==3 && component.get("v.CLRecord.Type__c") == 'Change Card Limits' && component.get("v.CLRecord.ATM_Usage_Limit__c") != undefined
                            				&& component.get("v.CLRecord.Auth_POS_Limit__c") != undefined){
                        
                         component.set("v.ActiveStepIndex", (i));
@@ -212,6 +202,7 @@
                                 helper.hideSpinner(component);	
                             }
                             );
+                        component.set("v.ContinueButtonName", 'Submit');
                         break;
                     }
                  }
