@@ -251,14 +251,9 @@ public class SolarLoanController {
                 SLIdsToCreateLoan.add(SolarLoanList[0].id);
                 SolarLoanToCreateLoan.getMemberNumber(SLIdsToCreateLoan);
             }    
-            SolarLoanList[0].Current_Solar_Loan_Stage__c = CurrentStage;
-            solarLoanList[0].Status__c = 'Approved'; 
-            SolarLoanList[0].continue__c = false;
-            update SolarLoanList;
-            
         }
 
-        if(CurrentStage == ' '  && SolarLoanList[0].Current_Solar_Loan_Stage__c == 'Stage 3' && 
+        if(CurrentStage == ' '  && SolarLoanList[0].Current_Solar_Loan_Stage__c == 'Stage 2' && 
                                 (SolarLoanList[0].Member_Number__c == '' || SolarLoanList[0].Member_Number__c == null)){
             Stage2MemberCheck = 'False';
         }

@@ -133,13 +133,13 @@
 		        toastEvent.fire();
 			 
              }
-
-             if(Stage2MemberCheck == 'False'){
+			
+			 if(Stage2MemberCheck == 'False'){
 				
 				var toastEvent = $A.get("e.force:showToast");
 		        toastEvent.setParams({
 		            title : 'Warning',
-		            message: 'Member Number not found.',
+		            message: 'The Membership Account doesnt exist yet in Episys.',
 		            duration:' 1000',
 		            key: 'info_alt',
 		            type: 'warning',

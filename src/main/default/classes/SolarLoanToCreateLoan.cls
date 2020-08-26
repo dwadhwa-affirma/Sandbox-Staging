@@ -605,11 +605,13 @@ public class SolarLoanToCreateLoan {
                 result = String.valueOf(result).substringBefore('",');
                 System.debug('Member Number' + result);
 
-                if(result != null){
+                if(result != null && result != ''){
                     Solar_Loans__c s = new Solar_Loans__c(); 
                     s.id = sl.Id;       
                     s.Member_Number__c = result;
                     s.continue__c = false;
+                    s.Status__c = 'Approved';
+                    s.Current_Solar_Loan_Stage__c = 'Stage 3';
                     
                     SolarLoanToUpdate.add(s); 
                 }

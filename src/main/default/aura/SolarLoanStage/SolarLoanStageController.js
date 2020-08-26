@@ -73,7 +73,8 @@
         var Stage5ErrorCheck;
         var Stage3ErrorCheck;
         var Stage3MissingFields;
-        var Stage5MissingFields
+        var Stage5MissingFields;
+        var checkstage;
         var SolarLoanRecordId = component.get("v.recordId");
        	
         var CurrentStage;
@@ -92,6 +93,7 @@
             if(component.get("v.ButtonLabelName") == 'Close Ticket')
                 CurrentStage = 'Stage 8';    
         
+        checkstage = CurrentStage;
         action.setParams({"SolarLoanRecordId": SolarLoanRecordId,
                           "CurrentStage": CurrentStage });
         action.setCallback(this, function (response) {
@@ -189,12 +191,15 @@
                         }), 7000
                      );
                  }
-	             window.setTimeout(
-				    $A.getCallback(function() {
-				      helper.getSolarLoanData(component,helper)
-				    }), 7000
-				 ); 
-             }
+                 
+                if(checkstage != 'Stage 2'){
+                    window.setTimeout(
+                        $A.getCallback(function() {
+                        helper.getSolarLoanData(component,helper)
+                        }), 7000
+                    );
+                }
+            }
              
            
 
