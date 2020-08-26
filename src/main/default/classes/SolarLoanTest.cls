@@ -162,7 +162,7 @@ private class SolarLoanTest{
      //---------------------------------------- Creating Solar Loan Document record-----------------------------------//
      
      List<SolarLoan_Document__c> SolarLoanDocList = new List<SolarLoan_Document__c>{
-         new SolarLoan_Document__c(Solar_Loans__c = SolarLoan_Obj[0].id)};      
+         new SolarLoan_Document__c(Member_Number__c = '0000214414',Solar_Loans__c = SolarLoan_Obj[0].id)};      
      insert SolarLoanDocList;
      
      test.startTest();
