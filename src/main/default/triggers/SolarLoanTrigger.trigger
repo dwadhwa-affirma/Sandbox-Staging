@@ -191,12 +191,12 @@ trigger SolarLoanTrigger on Solar_Loans__c (after insert,before insert, after up
             
             //------------------------------- Adding ids if the Member Number field is not null----------------------------------//
             
-            if((trigger.old[i].Member_Number__c != trigger.new[i].Member_Number__c && trigger.new[i].Member_Number__c != null) && (trigger.new[i].Member_Name__c == null || trigger.old[i].Member_Number__c != trigger.new[i].Member_Number__c)){ 
+            if(trigger.new[i].Member_Number__c != null && trigger.new[i].Member_Name__c == null){ 
             	SLForBranchIds.put(trigger.new[i].id, trigger.new[i]);
                 SLMemberNumberForName.add(trigger.new[i].Member_Number__c);
             }
             
-            if((trigger.old[i].Member_Number__c != trigger.new[i].Member_Number__c && trigger.new[i].Member_Number__c != null) && (trigger.new[i].Account_Number__c == null || trigger.old[i].Member_Number__c != trigger.new[i].Member_Number__c)){ 
+            if(trigger.new[i].Member_Number__c != null && trigger.new[i].Account_Number__c == null){ 
             	SLForBranchIds.put(trigger.new[i].id, trigger.new[i]);
                 SLMemberNumber.add(trigger.new[i].Member_Number__c);
             }
@@ -235,8 +235,7 @@ trigger SolarLoanTrigger on Solar_Loans__c (after insert,before insert, after up
 		    	
 	    //--------------------------Updating "Brand" and "Four Digit Share Loan Type" from "Account Details" record------------------//
 	    
-	    if(SLMemberNumber != null){
-
+	    
             //List<Account_Details__c> adList = [select id, Name, Brand__c, ID1__c, TypeTranslate__c,RecType__c from Account_Details__c where Name in:SLMemberNumber and Brand__c != null and RecType__c = 'LOAN' and TypeTranslate__c = '75-SECURED SOLAR'];
             List<Account_Details__c> adList = [select id, Name, Brand__c, ID1__c, TypeTranslate__c,RecType__c from Account_Details__c where Name in:SLMemberNumber and Brand__c != null];
             for(Solar_Loans__c sl : SLForBranchIds.values()){
@@ -258,8 +257,6 @@ trigger SolarLoanTrigger on Solar_Loans__c (after insert,before insert, after up
             
                 update SLToUpdates.values();	
             }
-
-        }
         //------------------------------- Calling Batch class with list of "Solar Loans" id to send a Docusign email-----------------//    
         if(SLIds.size() > 0){
             
