@@ -22,15 +22,18 @@ trigger SolarLoanDocTrigger on SolarLoan_Document__c (before insert, before upda
         }
    	}
    
-    for(Solar_Loans__c sl : [SELECT id,NewDoc__c ,(SELECT Id FROM SolarLoan_Documents__r) FROM Solar_Loans__c where id in:custord]){
-      Solar_Loans__c s = new Solar_Loans__c(Id=sl.id);
-      s.count__c = String.valueof(sl.SolarLoan_Documents__r.size());
-      slcountUpdate.add(s);
-    } 
+    if(Trigger.isDelete) {
+       
+      for(Solar_Loans__c sl : [SELECT id,NewDoc__c ,(SELECT Id FROM SolarLoan_Documents__r) FROM Solar_Loans__c where id in:custord]){
+        Solar_Loans__c s = new Solar_Loans__c(Id=sl.id);
+        s.count__c = String.valueof(sl.SolarLoan_Documents__r.size());
+        slcountUpdate.add(s);
+      } 
 
-    if(slcountUpdate.size() > 0)	
-      update slcountUpdate;
-
+      if(slcountUpdate.size() > 0)	
+        update slcountUpdate;
+    }  
+    
   	AggregateResult[] groupedResults = [SELECT COUNT(Id), Solar_Loans__c FROM SolarLoan_Document__c where NewFile__c = true and Solar_Loans__c IN :custord GROUP BY Solar_Loans__c ];
    
     if(groupedResults.size() == 0){
