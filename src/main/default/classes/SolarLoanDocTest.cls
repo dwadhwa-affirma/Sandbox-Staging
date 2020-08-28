@@ -58,8 +58,8 @@ private class SolarLoanDocTest{
     sd.NewFile__c = false;
      
     update sd;  
-   
-     test.startTest();
+	delete sd;   
+    test.startTest();
      
      //---------------------------------------- Creating Content Version Record for Attachment---------------------------------------------//
      
