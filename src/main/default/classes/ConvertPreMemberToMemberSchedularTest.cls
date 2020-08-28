@@ -81,11 +81,12 @@ private class ConvertPreMemberToMemberSchedularTest {
         opp.StageName = 'Closed Won';
         opp.CloseDate = system.today();
         opp.Is_Converted__c = true;
-        opp.Opportunity_Source__c = 'Word of mouth';
+        opp.DESCRIPTION = 'DESCRIPTION';
+        opp.Opportunity_Source__c = 'Campaign Outreach';
         
         insert opp;
         
-         Case cas = new Case();
+        Case cas = new Case();
         cas.Accountid = pact.id;
         cas.Brand__c ='Chevron';
         insert cas;
@@ -104,11 +105,13 @@ private class ConvertPreMemberToMemberSchedularTest {
         NA_Deposit__c dep = new NA_Deposit__c();
         dep.Needs_Assessment__c = na.id;
         insert dep;
-     
-         Account_Details__c account_details_Obj = new Account_Details__c(Onboarded__c = false, RecType__c = 'ACCT', TypeTranslate__c = '2-TRUST');
-    			Insert account_details_Obj;
-        Person_Account__c person_account_Obj = new Person_Account__c(Account_Number__c = account_details_Obj.id, PersonID__c = act.id, Relationship__c = null, TypeTranslate__c = '0000/Primary');
-    		Insert person_account_Obj;
+        
+        Test.startTest();
+        Account_Details__c account_details_Obj = new Account_Details__c(Open_Date__c = Date.newInstance(2020, 2, 2),Onboarded__c = false, RecType__c = 'ACCT', TypeTranslate__c = '2-TRUST');
+    	Insert account_details_Obj;
+        
+        Person_Account__c person_account_Obj = new Person_Account__c(Name_Type__c = 0,Account_Number__c = account_details_Obj.id, PersonID__c = act.id, Relationship__c = null, TypeTranslate__c = '0000/Primary');
+    	Insert person_account_Obj;
         
         Account act1 = new Account();
         act1.FirstName = 'Test1';
@@ -118,11 +121,13 @@ private class ConvertPreMemberToMemberSchedularTest {
         act1.Residential_Street__pc = '11';
         act1.BIRTH_DATE__pc = system.Today().addyears(20);
         insert act1;
-          Test.startTest();
-         Account_Details__c account_details_Obj1 = new Account_Details__c(Onboarded__c = false, RecType__c = 'ACCT', TypeTranslate__c = '2-TRUST');
-    			Insert account_details_Obj1;
-        Person_Account__c person_account_Obj1 = new Person_Account__c(Account_Number__c = account_details_Obj1.id, PersonID__c = act1.id, Relationship__c = null, TypeTranslate__c = '0000/Primary');
-    		Insert person_account_Obj1;
+         
+         
+        Account_Details__c account_details_Obj1 = new Account_Details__c(Open_Date__c = Date.newInstance(2020, 2, 2),Onboarded__c = false, RecType__c = 'ACCT', TypeTranslate__c = '2-TRUST');
+    	Insert account_details_Obj1;
+        
+        Person_Account__c person_account_Obj1 = new Person_Account__c(Name_Type__c = 0,Account_Number__c = account_details_Obj1.id, PersonID__c = act1.id, Relationship__c = null, TypeTranslate__c = '0000/Primary');
+    	Insert person_account_Obj1;
         
         Account act2 = new Account();
         act2.FirstName = 'Test2';
@@ -147,7 +152,7 @@ private class ConvertPreMemberToMemberSchedularTest {
         pact1.BIRTH_DATE__pc = system.Today().addyears(20);
         insert pact1;
         
-         Account act12 = new Account();
+        Account act12 = new Account();
         act12.FirstName = 'Test2';
         act12.LastName = 'Test2';
         act12.RecordtypeId = rec.Id;
@@ -203,7 +208,7 @@ private class ConvertPreMemberToMemberSchedularTest {
         insert pact5;
         
         
-         Account act6 = new Account();
+        Account act6 = new Account();
         act6.FirstName = 'Test6';
         act6.LastName = 'LTest6';
         act6.RecordtypeId = rec.Id;
@@ -231,7 +236,7 @@ private class ConvertPreMemberToMemberSchedularTest {
         insert pact7;
         
         
-          Account act8 = new Account();
+        Account act8 = new Account();
         act8.FirstName = 'Test8';
         act8.LastName = 'LTest8';
         act8.Residential_Street__pc = 's8';
@@ -244,9 +249,9 @@ private class ConvertPreMemberToMemberSchedularTest {
         pact8.LastName = 'LTest8';
         pact8.RecordtypeId = rec1.Id;
         pact8.Residential_Street__pc = 's8';
-        insert pact8;
+        insert pact8; 
         
-          Account act9 = new Account();
+        Account act9 = new Account();
         act9.FirstName = 'NonEle';
         act9.LastName = 'LNonEle';
         act9.Residential_Street__pc = 'NonEle';
@@ -265,7 +270,8 @@ private class ConvertPreMemberToMemberSchedularTest {
         pactid.add(pact5.id);
         pactid.add(pact6.id);
         pactid.add(pact7.id);
-         pactid.add(pact8.id);
+        pactid.add(pact8.id);
+        
          List<Account> PreMemberAccount = [SELECT Id, PersonEmail, Email_raw__c, Alt_Email_Raw__c, FirstName,MiddleName,LastName, Name, Salutation ,Suffix,
 						Phone_Check__c, Mobile_Phone__pc, Residential_Street__pc ,RecordType.Name,Residential_City__pc,Residential_State__pc, Residential_Zipocde__pc,Residential_Extra_Address__pc,createddate
     		 				 FROM Account where RecordType.Name = 'Pre Member' and IsConverted__c=false and id IN: pactid];
@@ -275,25 +281,27 @@ private class ConvertPreMemberToMemberSchedularTest {
          
        
        		
-       		Account_Details__c account_details_Obj9 = new Account_Details__c(Onboarded__c = false, RecType__c = 'ACCT', TypeTranslate__c = '2-TRUST');
-    			Insert account_details_Obj9;
-        Person_Account__c person_account_Obj9 = new Person_Account__c(Account_Number__c = account_details_Obj9.id, PersonID__c = act9.id, Relationship__c = null, TypeTranslate__c = '0000/Primary');
-    		Insert person_account_Obj9;
+        Account_Details__c account_details_Obj9 = new Account_Details__c(Open_Date__c = Date.newInstance(2020, 2, 2),Onboarded__c = false, RecType__c = 'ACCT', TypeTranslate__c = '2-TRUST');
+    	Insert account_details_Obj9;
+        //Person_Account__c person_account_Obj9 = new Person_Account__c(Name_Type__c = 0,Account_Number__c = account_details_Obj9.id, PersonID__c = act9.id, Relationship__c = null, TypeTranslate__c = '0000/Primary');
+    	//Insert person_account_Obj9;
+    	
+        Test.stopTest();	
+    	
+        Account_Details__c account_details_Obj12 = new Account_Details__c(Open_Date__c = Date.newInstance(2020, 2, 25),Onboarded__c = false, RecType__c = 'ACCT', TypeTranslate__c = '2-TRUST');
+    	Insert account_details_Obj12;
+        //Person_Account__c person_account_Obj12 = new Person_Account__c(Account_Number__c = account_details_Obj12.id, PersonID__c = act12.id, Relationship__c = null, TypeTranslate__c = '0000/Primary');
+    	//Insert person_account_Obj12;
     		
-    		Account_Details__c account_details_Obj12 = new Account_Details__c(Onboarded__c = false, RecType__c = 'ACCT', TypeTranslate__c = '2-TRUST');
-    			Insert account_details_Obj12;
-        Person_Account__c person_account_Obj12 = new Person_Account__c(Account_Number__c = account_details_Obj12.id, PersonID__c = act12.id, Relationship__c = null, TypeTranslate__c = '0000/Primary');
-    		Insert person_account_Obj12;
     		
-    		
-            String jobId = System.schedule('ScheduleApexClassTest',  CRON_EXP, new ConvertPreMemberToMemberSchedular());
-            CronTrigger ct = [SELECT Id, CronExpression, TimesTriggered, NextFireTime FROM CronTrigger WHERE id = :jobId];
-            System.assertEquals(CRON_EXP, ct.CronExpression);
-            System.assertEquals(0, ct.TimesTriggered);
+        String jobId = System.schedule('ScheduleApexClassTest',  CRON_EXP, new ConvertPreMemberToMemberSchedular());
+        CronTrigger ct = [SELECT Id, CronExpression, TimesTriggered, NextFireTime FROM CronTrigger WHERE id = :jobId];
+        System.assertEquals(CRON_EXP, ct.CronExpression);
+        System.assertEquals(0, ct.TimesTriggered);
        
-          //  ConvertPreMemberToMemberSchedular.clearPhoneNumber('011 7373737');           
-            // ConvertPreMemberToMemberSchedular.clearPhoneNumber(' ');
-           Test.stopTest();
+         ConvertPreMemberToMemberSchedular.clearPhoneNumber('011 7373737');           
+        // ConvertPreMemberToMemberSchedular.clearPhoneNumber(' ');
+           
         
     }
 }

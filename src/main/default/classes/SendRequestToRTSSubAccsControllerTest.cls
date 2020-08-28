@@ -51,7 +51,7 @@ public class SendRequestToRTSSubAccsControllerTest {
          
          Account_Details__c accDetail = new Account_Details__c();
              accDetail.RecordTypeId = recTpe.Id;
-             accDetail.Combined_Account_ID__c = '0000018249L0100P0100';
+             accDetail.Combined_Account_ID__c = '0000018249C9821P0061';
          insert accDetail;
            
        PageReference pageRef = Page.SendRequestToRTSSubAccs;
@@ -63,8 +63,8 @@ public class SendRequestToRTSSubAccsControllerTest {
          SendRequestToRTSSubAccsController controller = new SendRequestToRTSSubAccsController();  
        Test.stopTest();
         
-       controller.init();
+       controller.init(); 
         
-    }
+    } 
     
 }
