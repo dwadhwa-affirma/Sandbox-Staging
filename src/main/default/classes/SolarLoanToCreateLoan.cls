@@ -7,6 +7,14 @@ public class SolarLoanToCreateLoan {
     public static String ErrorLoanTrackingLocator;
     public static String loanAPI;
     
+    //------------------------------------------------Existing Solar Loan Parameters-----------------------------------------------------//
+
+    public static HttpRequest req0 = new HttpRequest();
+    public static HttpResponse res0;
+    public static Http http0 = new Http();
+    public static string responseBody0;
+    public static String ExistingLoanId;
+
     //------------------------------------------------Solar Loan Parameters-----------------------------------------------------//
     public static String Type;
     public static String Branch;
@@ -21,6 +29,7 @@ public class SolarLoanToCreateLoan {
     public static String FirstPaymentDate;
     public static String DueDay1;
     public static String Payment;
+    public static Boolean PaymentMatched;
     public static String CouponCode;
     public static String PaymentMethod;
     public static String Description;
@@ -140,97 +149,150 @@ public class SolarLoanToCreateLoan {
                     loanAPI = api.URL__c;
                 }
 
-                Type = '75';
-                Branch = '96';
-                CreatedAtBranch = '96';
-                PurposeCode = '16';
-                CollateralCode = '4';
-                ApprovalCode = '9002';
-                if(sl.Loan_Amount__c != null)
-                    OriginalBalance = string.valueOf(sl.Loan_Amount__c);
-                else
-                    OriginalBalance = '0.00';
-                if(sl.Approval_Date__c != null){
-                	ApprovalDate = string.valueof(sl.Approval_Date__c);
-                }
+                    
+                //--------------------------Checking if Loan record already exist for this member number ---------------------------------//
                 
-                //-------------------------------------- Maturity Date------------------------------------//
-                
-                sl.Due_Date__c = System.Today() + 60;
-                
-                if(sl.Term_months__c != null){
-                	Month = Integer.Valueof(sl.Term_months__c) - 1;
-                	sl.Maturity_Date__c = sl.Due_Date__c.addMonths(Month);
-                }
-                MaturityDate = string.valueOf(sl.Maturity_Date__c);
-                
-                
-                DueDate = string.valueOf(System.Today()+ 60);
-                FirstPaymentDate = string.valueOf(System.Today() + 60);
-                              
-                if(sl.Due_Date__c != null){
-                    DueDay1 = String.valueof(sl.Due_Date__c.day());
-                }
-                else{
-                    DueDay1 = '15';
-                }
-                
-                //-------------------------------------- Payment -----------------------------------//
+                AccountNumber = sl.Account_Number__r.name;
 
                 if(sl.Loan_Pmt_Amount__c != null)
                     Payment = string.valueof(sl.Loan_Pmt_Amount__c);
-               
-                CouponCode = '1';
-                PaymentMethod = '1';
-                Description = 'SECURED SOLAR';
-                InterestRate = string.valueof(sl.Interest_Rate__c);
-                UserAmount1 = string.valueof(sl.Debt_Ratio__c);
-                ECOACode = sl.ECOA_Code__c;
-                CreditScore = String.valueOf(sl.Primary_FICO_Score__c);
-                PaymentCount = String.valueOf(sl.Term_months__c);
-                PaymentFrequency = '04';
-                AccountNumber = sl.Account_Number__r.name;
-                OriginalDate = string.valueOf(System.Today());
-                
-                ApplicationFundedBy = operatorid;
-                ApplicationLoadedBy = operatorid;
-                
-                System.debug('CreateLoan method called');
-                req.setEndpoint(loanAPI+'/EFT/CreateLoan');
-                //req.setClientCertificateName('brscmcapi');
-                req.setMethod('POST');
-                req.setHeader('Content-Type', 'application/json');
-                req.setHeader('Accept', 'application/json');
-                
-                jsonData = '{"UserChar4":' + '\"'+ ApplicationLoadedBy +'\"'+',"UserChar3":' + '\"'+ ApplicationFundedBy +'\"'+',"OriginalDate":' + '\"'+ OriginalDate +'\"'+',"Type":' + '\"'+ Type +'\"'+',"Branch":' + '\"'+ Branch +'\"'+',"CreatedAtBranch":'+'\"'+ CreatedAtBranch +'\"'+',"PurposeCode":'+'\"' + PurposeCode + '\"'+',"CollateralCode":'+'\"'+CollateralCode+'\"'+',"ApprovalCode":'+'\"'+ApprovalCode+'\"'+',"OriginalBalance":'+'\"'+OriginalBalance+'\"'+',"ApprovalDate":'+'\"'+ApprovalDate+'\"'+',"MaturityDate":'+'\"'+MaturityDate+'\"'+',"DueDate":'+'\"'+DueDate+'\"'+',"FirstPaymentDate":'+'\"'+FirstPaymentDate+'\"'+',"DueDay1":'+'\"'+DueDay1+'\"'+',"Payment":'+'\"'+Payment+'\"'+',"CouponCode":'+'\"'+CouponCode+'\"'+',"PaymentMethod":'+'\"'+PaymentMethod+'\"'+',"Description":'+'\"'+Description+'\"'+',"InterestRate":'+'\"'+InterestRate+'\"'+',"UserAmount1":'+'\"'+UserAmount1+'\"'+',"ECOACode":'+'\"'+ECOACode+'\"'+',"CreditScore":'+'\"'+CreditScore+'\"'+',"PaymentCount":'+'\"'+PaymentCount+'\"'+',"PaymentFrequency":'+'\"'+PaymentFrequency+'\"'+',"AccountNumber":'+'\"'+AccountNumber+'\"}';
-                req.setBodyAsBlob(Blob.valueof(jsondata)); 
-                system.debug('test'+jsonData);
-                
-                Http http = new Http();  
-                req.setTimeout(60000);
-                HttpResponse res;
-                String responseBody;
-                if(!Test.isRunningTest()){                       
-                    res = http.send(req);
-                    responseBody = res.getBody();
-                    System.debug('Response Body Solar Loan::'+res.getBody());    
-                }else{
-                    responseBody = '{"Type":"3","Branch":"27","CreatedAtBranch":"1","PurposeCode":"1","CollateralCode":"100","ApprovalCode":"4","OriginalBalance":"1","ApprovalDate":"01-01-2019","MaturityDate":"01-01-2019","DueDate":"01-01-2019","FirstPaymentDate":"01-01-2019","DueDay1":"1","Payment":"1234","CouponCode":"123", "PaymentMethod" : "PaymentMethod", "Description" : "Description", "InterestRate" : "2.00", "UserAmount1" : "200.00", "ECOACode" : "778", "CreditScore" : "15", "PaymentCount" : "12", "PaymentFrequency" : "67"}';
-                }
-                
-                // JSon parse for Id                            
-                JSONParser parser = JSON.createParser(responseBody);
-                result = String.valueOf(responseBody).substringAfter('LoanId":"');
-                result = String.valueOf(result).substringBefore('",');
-                
-                System.debug('LoanId' + result);
-                if(result == null || result == ''){
                     
-                    ErrorLoanLocator = String.valueOf(responseBody).substringAfter('[MessageId=TESTING] ');
-                    ErrorLoanLocator = String.valueOf(ErrorLoanLocator).substringBefore('","ErrorDetails"');
-                    system.debug('ErrorLoanLocator' + ErrorLoanLocator);
-                }
+                req0.setEndpoint(loanAPI+'/PSAuto/GetLoansSelectFields?accountNumber='+AccountNumber);
+                req0.setMethod('GET');
+                req0.setHeader('Content-Type', 'application/json');
+                req0.setHeader('Accept', 'application/json');
+                req0.setTimeout(60000);                    
                 
+                if(!Test.isRunningTest()){                       
+                    res0 = http0.send(req0);
+                    responseBody0 = res0.getBody();
+                    System.debug('Existing solar loan::'+responseBody0);    
+                }else{
+                    responseBody0 = '{"Type":"3","Branch":"27","CreatedAtBranch":"1","PurposeCode":"1","CollateralCode":"100","ApprovalCode":"4","OriginalBalance":"1","ApprovalDate":"01-01-2019","MaturityDate":"01-01-2019","DueDate":"01-01-2019","FirstPaymentDate":"01-01-2019","DueDay1":"1","Payment":"1234","CouponCode":"123", "PaymentMethod" : "PaymentMethod", "Description" : "Description", "InterestRate" : "2.00", "UserAmount1" : "200.00", "ECOACode" : "778", "CreditScore" : "15", "PaymentCount" : "12", "PaymentFrequency" : "67"}';
+                }
+                    
+                if(responseBody0!=''){        
+                    List<object> results = (List<Object>) JSON.deserializeUntyped(responseBody0);      
+                    System.debug('Response is ....' + results);
+                    
+                    if(results.size() > 0){
+                        for(Object key : results){ 
+                            Map<String, Object> loanids = (Map<String, Object>)key;
+                             for(String l : loanids.keyset()) {
+                                 if(l == 'LoanId'){
+                                    ExistingLoanId = String.valueOf(loanids.get(l));
+                                 }
+                                 if(l == 'Payment'){
+                                    if(Payment == String.valueOf(loanids.get(l))) {
+                                        PaymentMatched = true;
+                                    }
+                                }  
+                             }    
+                        }
+                    }
+                }
+                System.debug('ExistingLoanId'+ExistingLoanId);
+                
+                if(ExistingLoanId == null && PaymentMatched != true){
+
+                    System.debug('Going to Create New Loan record');
+                
+                    Type = '75';
+                    Branch = '96';
+                    CreatedAtBranch = '96';
+                    PurposeCode = '16';
+                    CollateralCode = '4';
+                    ApprovalCode = '9002';
+                    if(sl.Loan_Amount__c != null)
+                        OriginalBalance = string.valueOf(sl.Loan_Amount__c);
+                    else
+                        OriginalBalance = '0.00';
+                    if(sl.Approval_Date__c != null){
+                        ApprovalDate = string.valueof(sl.Approval_Date__c);
+                    }
+                    
+                    //-------------------------------------- Maturity Date------------------------------------//
+                    
+                    sl.Due_Date__c = System.Today() + 60;
+                    
+                    if(sl.Term_months__c != null){
+                        Month = Integer.Valueof(sl.Term_months__c) - 1;
+                        sl.Maturity_Date__c = sl.Due_Date__c.addMonths(Month);
+                    }
+                    MaturityDate = string.valueOf(sl.Maturity_Date__c);
+                    
+                    
+                    DueDate = string.valueOf(System.Today()+ 60);
+                    FirstPaymentDate = string.valueOf(System.Today() + 60);
+                                
+                    if(sl.Due_Date__c != null){
+                        DueDay1 = String.valueof(sl.Due_Date__c.day());
+                    }
+                    else{
+                        DueDay1 = '15';
+                    }
+                    
+                    //-------------------------------------- Payment -----------------------------------//
+
+                    if(sl.Loan_Pmt_Amount__c != null)
+                        Payment = string.valueof(sl.Loan_Pmt_Amount__c);
+                
+                    CouponCode = '1';
+                    PaymentMethod = '1';
+                    Description = 'SECURED SOLAR';
+                    InterestRate = string.valueof(sl.Interest_Rate__c);
+                    UserAmount1 = string.valueof(sl.Debt_Ratio__c);
+                    ECOACode = sl.ECOA_Code__c;
+                    CreditScore = String.valueOf(sl.Primary_FICO_Score__c);
+                    PaymentCount = String.valueOf(sl.Term_months__c);
+                    PaymentFrequency = '04';
+                    AccountNumber = sl.Account_Number__r.name;
+                    OriginalDate = string.valueOf(System.Today());
+                    
+                    ApplicationFundedBy = operatorid;
+                    ApplicationLoadedBy = operatorid;
+                    
+                    System.debug('CreateLoan method called');
+                    req.setEndpoint(loanAPI+'/EFT/CreateLoan');
+                    //req.setClientCertificateName('brscmcapi');
+                    req.setMethod('POST');
+                    req.setHeader('Content-Type', 'application/json');
+                    req.setHeader('Accept', 'application/json');
+                    
+                    jsonData = '{"UserChar4":' + '\"'+ ApplicationLoadedBy +'\"'+',"UserChar3":' + '\"'+ ApplicationFundedBy +'\"'+',"OriginalDate":' + '\"'+ OriginalDate +'\"'+',"Type":' + '\"'+ Type +'\"'+',"Branch":' + '\"'+ Branch +'\"'+',"CreatedAtBranch":'+'\"'+ CreatedAtBranch +'\"'+',"PurposeCode":'+'\"' + PurposeCode + '\"'+',"CollateralCode":'+'\"'+CollateralCode+'\"'+',"ApprovalCode":'+'\"'+ApprovalCode+'\"'+',"OriginalBalance":'+'\"'+OriginalBalance+'\"'+',"ApprovalDate":'+'\"'+ApprovalDate+'\"'+',"MaturityDate":'+'\"'+MaturityDate+'\"'+',"DueDate":'+'\"'+DueDate+'\"'+',"FirstPaymentDate":'+'\"'+FirstPaymentDate+'\"'+',"DueDay1":'+'\"'+DueDay1+'\"'+',"Payment":'+'\"'+Payment+'\"'+',"CouponCode":'+'\"'+CouponCode+'\"'+',"PaymentMethod":'+'\"'+PaymentMethod+'\"'+',"Description":'+'\"'+Description+'\"'+',"InterestRate":'+'\"'+InterestRate+'\"'+',"UserAmount1":'+'\"'+UserAmount1+'\"'+',"ECOACode":'+'\"'+ECOACode+'\"'+',"CreditScore":'+'\"'+CreditScore+'\"'+',"PaymentCount":'+'\"'+PaymentCount+'\"'+',"PaymentFrequency":'+'\"'+PaymentFrequency+'\"'+',"AccountNumber":'+'\"'+AccountNumber+'\"}';
+                    req.setBodyAsBlob(Blob.valueof(jsondata)); 
+                    system.debug('test'+jsonData);
+                    
+                    Http http = new Http();  
+                    req.setTimeout(60000);
+                    HttpResponse res;
+                    String responseBody;
+                    if(!Test.isRunningTest()){                       
+                        res = http.send(req);
+                        responseBody = res.getBody();
+                        System.debug('Response Body Solar Loan::'+res.getBody());    
+                    }else{
+                        responseBody = '{"Type":"3","Branch":"27","CreatedAtBranch":"1","PurposeCode":"1","CollateralCode":"100","ApprovalCode":"4","OriginalBalance":"1","ApprovalDate":"01-01-2019","MaturityDate":"01-01-2019","DueDate":"01-01-2019","FirstPaymentDate":"01-01-2019","DueDay1":"1","Payment":"1234","CouponCode":"123", "PaymentMethod" : "PaymentMethod", "Description" : "Description", "InterestRate" : "2.00", "UserAmount1" : "200.00", "ECOACode" : "778", "CreditScore" : "15", "PaymentCount" : "12", "PaymentFrequency" : "67"}';
+                    }
+                    
+                    // JSon parse for Id                            
+                    JSONParser parser = JSON.createParser(responseBody);
+                    result = String.valueOf(responseBody).substringAfter('LoanId":"');
+                    result = String.valueOf(result).substringBefore('",');
+                    
+                    System.debug('LoanId' + result);
+                    if(result == null || result == ''){
+                        
+                        ErrorLoanLocator = String.valueOf(responseBody).substringAfter('[MessageId=TESTING] ');
+                        ErrorLoanLocator = String.valueOf(ErrorLoanLocator).substringBefore('","ErrorDetails"');
+                        system.debug('ErrorLoanLocator' + ErrorLoanLocator);
+                    }
+                }
+                else{
+                    
+                    System.debug('Picking existing Loan Record with LoanId '+ ExistingLoanId);    
+                    result = ExistingLoanId;
+                }
                 
 //----------------------------------------------------Create Loan Name--------------------------------------------------//                
                 if(sl.Joint_SSN__c != null){
@@ -605,13 +667,11 @@ public class SolarLoanToCreateLoan {
                 result = String.valueOf(result).substringBefore('",');
                 System.debug('Member Number' + result);
 
-                if(result != null && result != ''){
+                if(result != null){
                     Solar_Loans__c s = new Solar_Loans__c(); 
                     s.id = sl.Id;       
                     s.Member_Number__c = result;
                     s.continue__c = false;
-                    s.Status__c = 'Approved';
-                    s.Current_Solar_Loan_Stage__c = 'Stage 3';
                     
                     SolarLoanToUpdate.add(s); 
                 }
