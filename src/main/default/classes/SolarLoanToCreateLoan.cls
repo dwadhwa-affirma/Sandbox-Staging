@@ -167,11 +167,9 @@ public class SolarLoanToCreateLoan {
                     res0 = http0.send(req0);
                     responseBody0 = res0.getBody();
                     System.debug('Existing solar loan::'+responseBody0);    
-                }else{
-                    responseBody0 = '{"Type":"3","Branch":"27","CreatedAtBranch":"1","PurposeCode":"1","CollateralCode":"100","ApprovalCode":"4","OriginalBalance":"1","ApprovalDate":"01-01-2019","MaturityDate":"01-01-2019","DueDate":"01-01-2019","FirstPaymentDate":"01-01-2019","DueDay1":"1","Payment":"1234","CouponCode":"123", "PaymentMethod" : "PaymentMethod", "Description" : "Description", "InterestRate" : "2.00", "UserAmount1" : "200.00", "ECOACode" : "778", "CreditScore" : "15", "PaymentCount" : "12", "PaymentFrequency" : "67"}';
                 }
                     
-                if(responseBody0!=''){        
+                if(responseBody0 != '' && responseBody0 != null){        
                     List<object> results = (List<Object>) JSON.deserializeUntyped(responseBody0);      
                     System.debug('Response is ....' + results);
                     

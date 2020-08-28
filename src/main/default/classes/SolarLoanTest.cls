@@ -42,11 +42,11 @@ private class SolarLoanTest{
      //---------------------------------------- Creating Person Account records--------------------------------------//
      
      List<Person_Account__c> person_obj= new List<Person_Account__c>{
-                               new Person_Account__c(TypeTranslate__c='0000/Primary',Account_Number__c = account_details_Obj[0].id, PersonID__c = account_Obj.Id)};
+                               new Person_Account__c(Name_Type__c = 0,TypeTranslate__c='0000/Primary',Account_Number__c = account_details_Obj[0].id, PersonID__c = account_Obj.Id)};
      insert person_obj;
       
      List<Person_Account__c> person_obj1= new List<Person_Account__c>{
-                               new Person_Account__c(TypeTranslate__c='0000/Primary',Account_Number__c = account_details_Obj1[0].id, PersonID__c = account_Obj.Id)};
+                               new Person_Account__c(Name_Type__c = 0,TypeTranslate__c='0000/Primary',Account_Number__c = account_details_Obj1[0].id, PersonID__c = account_Obj.Id)};
      insert person_obj1;
     
      
@@ -100,7 +100,7 @@ private class SolarLoanTest{
      sl.ECOA_Code__c = '2';
      sl.Site_UUID__c = '11';
      sl.FNI__c = '12';
-     sl.Member_Number__c = '269355';
+     sl.Member_Number__c = '0000147163';
      sl.Status__c = 'New'; 
      insert sl;
      
@@ -153,11 +153,66 @@ private class SolarLoanTest{
      sl1.ECOA_Code__c = '2';
      sl1.Site_UUID__c = '116';
      sl1.FNI__c = '12';
-     sl1.Member_Number__c = '269355';
+     sl1.Member_Number__c = '0000147163';
      sl1.Status__c = 'New'; 
+     //sl1.Additional_Amount__c = 11.00; 
      insert sl1; 
       
      SolarLoan_Obj.add(sl1); 
+      
+     Solar_Loans__c sl2 = new Solar_Loans__c();
+     sl2.Joint_First_Name__c ='Tom';
+     sl2.Joint_Last_Name__c = 'Jerry';
+     sl2.Joint_DOB__c = System.today();
+     sl2.Joint_SSN__c =  '123';
+     sl2.Joint_FICO_Score__c = 12.00;
+     sl2.Joint_City__c = 'city';
+     sl2.Joint_State__c = 'PA';
+     sl2.Joint_Zip_Code__c =  '12345';
+     sl2.Joint_Address_1__c = 'street';
+     sl2.Joint_Address_2__c = 'street2';
+      
+     sl2.Primary_First_Name__c ='Tom';
+     sl2.Primary_Last_Name__c = 'Jerry';
+     sl2.Primary_DOB__c = System.today();
+     sl2.Primary_SSN__c =  '123456789';
+     sl2.Primary_Address_1__c = 'Add';
+     sl2.Primary_FICO_Score__c = 12.00;
+     sl2.Primary_City__c = 'city';
+     sl2.Primary_State__c = 'PA';
+     sl2.Primary_Zip_Code__c =  '12345';
+     sl2.Legal_Description__c = 'test';
+     sl2.Product__c = 'product';
+     sl2.Module__c = 'module';
+     sl2.Installer_Number__c = '12';
+     sl2.Inverter__c = 'inverter';
+     sl2.System_Size_kW__c = 12.00;
+     sl2.Battery__c = 'barary';
+     sl2.Installer__c = 'intealer';
+     sl2.Application_Date__c = system.today();
+     sl2.Mortgage_Balance__c = 1299.00;
+     sl2.Final_Payment_Amount__c = 111.00;
+     sl2.Go_To_Payment__c = 1252.00;
+     sl2.Bank_Name__c = 'test & bank';
+     sl2.Membership_Fee__c = 126.00;
+     sl2.Net_Funding_Amount__c = 1213.00;
+     sl2.Loan_Amount__c = 1211.00;
+     sl2.Loan_Pmt_Amount__c = 1245.00;
+     sl2.Credit_Exception__c = 'cr';
+     sl2.ITC_Rate__c = 2.00;
+     sl2.ITC_Amount__c = 1245.88;
+     sl2.Term_months__c = 12;
+     sl2.OID_Fee__c = 11;
+     sl2.Approval_Date__c = system.today();
+     sl2.ECOA_Code__c = '1';
+     sl2.Site_UUID__c = '1167';
+     sl2.FNI__c = '12';
+     //sl2.Member_Number__c = '';
+     sl2.Status__c = 'New'; 
+     sl2.Additional_Amount__c = 11.00; 
+     insert sl2; 
+      
+     SolarLoan_Obj.add(sl2);  
       
      //---------------------------------------- Creating Solar Loan Document record-----------------------------------//
      
@@ -201,11 +256,23 @@ private class SolarLoanTest{
     
   static testMethod void test_Solarloancontroller2(){
       List<Solar_Loans__c> listSolarLoan  =  [SELECT Id from Solar_Loans__c limit 2];
+     
+      SolarLoanController.getMemberData(listSolarLoan[1].id, 'Stage 4');     
+  }
+    
+  static testMethod void test_Solarloancontroller3(){
+      List<Solar_Loans__c> listSolarLoan  =  [SELECT Id from Solar_Loans__c limit 3];
       
-      SolarLoanController.getMemberData(listSolarLoan[1].id, 'Stage 3');
-      SolarLoanController.getMemberData(listSolarLoan[1].id, 'Stage 4');
-      
+      SolarLoanController.getMemberData(listSolarLoan[2].id, 'Stage 3');
+      Solar_Loans__c sl2 = new Solar_Loans__c();
+      sl2.id =  listSolarLoan[2].id;
+      sl2.Additional_Amount__c = 56.00;
+      sl2.EftLocator__c = '12';
+      sl2.Member_Number__c = '0000147163';
+      sl2.Status__c = 'Completed';  
+      update sl2;
   }  
+    
   static testMethod void test_GetCaseAttachments_UseCase1(){
     
     test.startTest();  
@@ -226,7 +293,7 @@ private class SolarLoanTest{
     sl1.Sunlight_Update__c = true;
     sl1.Status__c = 'Done';  
     update sl1;
-      
+    
     List<SolarLoanDocumentAPI.SolarLoanDocumentAPIResopnse> listApiResponse = SolarLoanDocumentAPI.getSolarLoanDocuemnts();
     RestRequest req = new RestRequest();
     req.requestURI = '/services/apexrest/SolarLoanDocumentAPI';
