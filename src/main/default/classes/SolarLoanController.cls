@@ -256,7 +256,7 @@ public class SolarLoanController {
                 SolarLoanList[0].Status__c = 'Approved';
                 SolarLoanList[0].Current_Solar_Loan_Stage__c = 'Stage 3';
                 update SolarLoanList;
-            }    
+            }     
         }
 
         if(CurrentStage == ' '  && SolarLoanList[0].Current_Solar_Loan_Stage__c == 'Stage 2' && 
