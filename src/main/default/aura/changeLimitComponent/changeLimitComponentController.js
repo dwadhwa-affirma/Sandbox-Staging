@@ -138,8 +138,9 @@
                         helper.hideSpinner(component,helper);
                         return;            
                     }
-                    else if(i==2 && (component.get("v.CLRecord.Type__c") == 'Change Card Limits')){
-                       
+                    if(i==2 && component.get("v.CLRecord.Type__c") == 'Change Card Limits' && component.get("v.CLRecord.ATM_Usage_Limit__c") == undefined
+                           				&& component.get("v.CLRecord.Auth_POS_Limit__c") == undefined){
+                        
                         dynamicText = component.get("v.CLRecord.Type__c");
                         stages2[1].Stage_Action__c = component.get("v.CLRecord.Card_Number__c");
                         stages2[0].Stage_Action__c = component.get("v.CLRecord.Member_Name__c");
@@ -156,6 +157,7 @@
                                 helper.hideSpinner(component);	
                             }
                             );
+                        	break;
                         
                     }
                     else if(i==2 && (component.get("v.CLRecord.Type__c") != 'Change Card Limits')){
@@ -180,8 +182,7 @@
                             );
                         break;
                     }
-                    
-                    if(i==3 && component.get("v.CLRecord.Type__c") == 'Change Card Limits' && component.get("v.CLRecord.ATM_Usage_Limit__c") != undefined
+				    if(i==3 && component.get("v.CLRecord.Type__c") == 'Change Card Limits' && component.get("v.CLRecord.ATM_Usage_Limit__c") != undefined
                            				&& component.get("v.CLRecord.Auth_POS_Limit__c") != undefined){
                        
                         component.set("v.ActiveStepIndex", (i));

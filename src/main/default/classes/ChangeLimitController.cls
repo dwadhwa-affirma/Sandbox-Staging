@@ -134,6 +134,11 @@ public class ChangeLimitController {
         system.debug('sObjectType'+sObjectType); 
         system.debug('recordId'+recordId);
         String Type;
+        //String SSN;
+        
+        //Account acc = [select id,name,SSN_TIN_Encrypted__pc from Account where id=:sObjectType limit 1];
+        //SSN = acc.SSN_TIN_Encrypted__pc;
+        
         List<Account_Details__c> cardList = new List<Account_Details__c>();
 
         Account_Details__c MemberAccount = [select id,name from Account_Details__c where id=:recordId limit 1];
