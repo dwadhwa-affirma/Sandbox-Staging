@@ -23,8 +23,10 @@
                         <td>{!v.CLRecord.Auth_POS_Limit__c	}</td>
                     </tr>
                     <tr>
-                    	<lightning:icon iconName="utility:warning" alternativeText="Warning!" size="x-small" variant="warning"/>
+                        <td colspan="2">
+                    		<lightning:icon iconName="utility:warning" alternativeText="Warning!" size="x-small" variant="warning"/>
                         Card limits will reset tonight if the amount is over the daily default limit
+                    	</td>
                     </tr>
                 </table>	    
             </div>

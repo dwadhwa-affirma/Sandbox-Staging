@@ -1,15 +1,14 @@
-.THIS#stage4{width:70%; font-size:.8125rem; margin:0 auto;}
+.THIS#stage4{width:85%; font-size:.8125rem; margin:0 auto;}
 .THIS#stage4 .toptbl {width:100%; margin-bottom:2rem;}
 .THIS#stage4 .toptbl td{word-break: break-word; vertical-align:top;}
 .THIS#stage4 .toptbl td svg{fill:#00ad53;}
 .THIS#stage4 .toptbl td:nth-child(1){width:40px;}
 
-.THIS#stage4 .bottomtbl{margin-left:40px;}
-.THIS#stage4 .bottomtbl td{vertical-align:top; padding:.2rem 0;}
+.THIS#stage4 .bottomtbl td{vertical-align:top; padding:.45rem 0;}
 .THIS#stage4 .bottomtbl td:nth-child(1){width:180px;}
 .THIS#stage4 .bottomtbl td:nth-child(2){font-weight:bold;}
 .THIS#stage4 .bottomtbl td.sloan span{display:block;}
-
+.THIS#stage4 .bottomtbl td svg.slds-icon-text-warning { fill: #ff0000;}
 
 .THIS#stage4 .uiInput--select, 
 .THIS#stage4 .slds-input{min-height:unset; height:32px;}
