@@ -31,5 +31,39 @@ private class ContentDocumentDeleteTest {
         
         list<ContentDocument> cd = [select Id from ContentDocument where Id =: lstContent[0].ContentDocumentId or Id=: lstContent[1].ContentDocumentId];
         delete cd;
+    	        
+    }
+    
+    
+    static testMethod void ContentDocumentDeleteTriggerTest2() {
+        
+        List<Solar_Loans__c> SolarLoan_Obj = new List<Solar_Loans__c>{
+        	new Solar_Loans__c(Member_Number__c = '0000265418', Site_UUID__c = '0064M00000XWR42QAH',Status__c = 'Completed', Brand__c = 'Spectrum', Primary_First_Name__c = 'Tania', Primary_Last_Name__c = 'Cabrera')};
+     	Insert SolarLoan_Obj;
+        
+     	List<SolarLoan_Document__c> SolarLoanDocList = new List<SolarLoan_Document__c>{
+        	 new SolarLoan_Document__c(Name = 'Test Document', NewFile__c = true,Solar_Loans__c = SolarLoan_Obj[0].id)};      
+        insert SolarLoanDocList;
+        
+        Blob beforeblob=Blob.valueOf('TWFuIGlzIGRpc3Rpg');
+
+        List<ContentVersion> cv = new List<ContentVersion>{new ContentVersion(Title = '1. Loan Agreement Package - Jinachandran Rajeshytre  Kochath Rajan456 - 0064M00000WBhfhQAD',PathOnClient ='Test.jpg',VersionData =beforeblob), new ContentVersion(Title = 'Test1',PathOnClient ='Test1.jpg',VersionData =beforeblob)};      
+        insert cv;
+        
+        List<ContentVersion> lstContent = [SELECT id, ContentDocumentId FROM ContentVersion where Id IN: cv];
+        List<ContentDocumentLink> lstContentDocumentLink = new List<ContentDocumentLink>();
+        for (ContentVersion testcontent : lstContent)
+		{
+        	ContentDocumentLink contentlink=new ContentDocumentLink();
+        	contentlink.LinkedEntityId=SolarLoan_Obj[0].Id;
+        	contentlink.ShareType= 'V';
+        	contentlink.ContentDocumentId=testcontent.ContentDocumentId;
+        	lstContentDocumentLink.add(contentlink);
+		}
+        insert lstContentDocumentLink;
+ 
+        list<ContentDocument> cd = [select Id from ContentDocument where Id =: lstContent[0].ContentDocumentId or Id=: lstContent[1].ContentDocumentId];
+        delete cd;
+    	        
     }
 }

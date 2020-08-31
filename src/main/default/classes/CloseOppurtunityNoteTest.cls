@@ -42,7 +42,9 @@ public class CloseOppurtunityNoteTest {
         catch(DMLException de){
           
         }
-        
+        op.StageName = 'New';
+        update op;
+        delete oNote;
 		test.StopTest();		
 	}		
 }
