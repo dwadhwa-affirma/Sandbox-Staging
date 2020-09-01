@@ -152,7 +152,7 @@ public class SolarLoanToCreateLoan {
                     
                 //--------------------------Checking if Loan record already exist for this member number ---------------------------------//
                 
-                AccountNumber = sl.Account_Number__r.name;
+                AccountNumber = sl.Member_Number__c;
 
                 if(sl.Loan_Pmt_Amount__c != null)
                     Payment = string.valueof(sl.Loan_Pmt_Amount__c);
@@ -244,7 +244,7 @@ public class SolarLoanToCreateLoan {
                     CreditScore = String.valueOf(sl.Primary_FICO_Score__c);
                     PaymentCount = String.valueOf(sl.Term_months__c);
                     PaymentFrequency = '04';
-                    AccountNumber = sl.Account_Number__r.name;
+                    AccountNumber = sl.Member_Number__c;
                     OriginalDate = string.valueOf(System.Today());
                     
                     ApplicationFundedBy = operatorid;
@@ -333,7 +333,7 @@ public class SolarLoanToCreateLoan {
                     }
                    
                     LoanId = result;
-                    AccountNumber = sl.Account_Number__r.name;
+                    AccountNumber = sl.Member_Number__c;
                     
                     System.debug('CreateLoanName method called');
                     req1.setEndpoint(loanAPI+'/EFT/CreateLoanName');
@@ -473,7 +473,7 @@ public class SolarLoanToCreateLoan {
                     UserChar7   = null;
 
                 LoanId = result; 
-                AccountNumber = sl.Account_Number__r.name;
+                AccountNumber = sl.Member_Number__c;
                 
                 System.debug('CreateLoanTracking method called');
                 req2.setEndpoint(loanAPI+'/EFT/CreateLoanTracking');
@@ -521,7 +521,7 @@ public class SolarLoanToCreateLoan {
             		else
                     	Amount = 0;
                     	
-                    AccountNumber = sl.Account_Number__r.name;
+                    AccountNumber = sl.Member_Number__c;
                     
                     System.debug('Funding method called');
                     req3.setEndpoint(loanAPI+'/Wires/FundLoan?accountNumber='+AccountNumber+'&loanId='+LoanId+'&amount='+Amount);
