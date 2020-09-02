@@ -161,7 +161,7 @@ public class SolarLoanToCreateLoan {
                 req0.setMethod('GET');
                 req0.setHeader('Content-Type', 'application/json');
                 req0.setHeader('Accept', 'application/json');
-                req0.setTimeout(60000);                    
+                req0.setTimeout(60000);                   
                 
                 if(!Test.isRunningTest()){                       
                     res0 = http0.send(req0);
@@ -189,9 +189,15 @@ public class SolarLoanToCreateLoan {
                         }
                     }
                 }
+                system.debug('PaymentMatched'+PaymentMatched);
                 System.debug('ExistingLoanId'+ExistingLoanId);
-                
-                if(ExistingLoanId == null && PaymentMatched != true){
+             
+                if(ExistingLoanId != '0' && PaymentMatched == true){
+                    
+                    System.debug('Picking existing Loan Record with LoanId '+ ExistingLoanId);    
+                    result = ExistingLoanId;
+                }
+                else{    
 
                     System.debug('Going to Create New Loan record');
                 
@@ -286,11 +292,7 @@ public class SolarLoanToCreateLoan {
                         system.debug('ErrorLoanLocator' + ErrorLoanLocator);
                     }
                 }
-                else{
-                    
-                    System.debug('Picking existing Loan Record with LoanId '+ ExistingLoanId);    
-                    result = ExistingLoanId;
-                }
+               
                 
 //----------------------------------------------------Create Loan Name--------------------------------------------------//                
                 if(sl.Joint_SSN__c != null){
