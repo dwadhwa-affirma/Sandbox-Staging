@@ -377,10 +377,12 @@ public class OpportunityTriggerHandler {
 	{
  		system.debug('----------------------------Limit'+Limits.getQueries());
 		string uid= UserInfo.getUserId();
-		    User usr = [Select id, name, alias from User where id=:uid];
+		    User usr = [Select id, name,Profile.Name, alias from User where id=:uid];
 		 /*   List<Episys_User__c> eusr = [SELECT id, alias__c, Assigned_Branch__c,Episys_ID__c, Branch_Name__c,Default__c from Episys_User__c 
 		                                    where alias__c=:usr.alias order by Default__c desc];*/ 
 		Id LoggedinUser = UserInfo.getUserId();
+		String profilename = usr.Profile.Name;
+		system.debug('profilename'+profilename);
 		Set<Decimal> Episys_User_ID = new Set<Decimal>(); 
 		Set<String> branchnameSet = new Set<String>(); 
 		Group OppQueue = new Group();   
@@ -463,7 +465,7 @@ public class OpportunityTriggerHandler {
                  	if(QueOppId.contains(opp.id) && (opp.StageName == 'Closed Won' || opp.StageName == 'Closed Lost')){
             	 		opp.Adderror('Queue owned opportunities cannot be closed.');
             	 	}
-                 	if((oldOpp.StageName == 'Closed Won' || oldOpp.StageName == 'Closed Lost') && opp.Allow_Error__c == false)
+                 	if((oldOpp.StageName == 'Closed Won' || oldOpp.StageName == 'Closed Lost') && opp.Allow_Error__c == false && profilename != 'CFCU Admin')
             	 	{
             	 		opp.Adderror('Opportunity fields are read only for Closed Opportunity.');
             	 		
