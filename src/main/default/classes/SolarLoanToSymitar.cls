@@ -28,6 +28,14 @@ public class SolarLoanToSymitar {
     public static HttpRequest req = new HttpRequest();
     public static HttpRequest req1 = new HttpRequest();
     public static HttpRequest req2 = new HttpRequest();
+    
+    //------------------------------------------------System is online/offline-----------------------------------------------------//
+
+    public static HttpRequest req10 = new HttpRequest();
+    public static HttpResponse res10;
+    public static Http http10 = new Http();
+    public static string responseBody10;
+    public static boolean mode;
 
     public static String result;
     public static List<Solar_Loans__c> SolarLoanToUpdate = new List<Solar_Loans__c>();
@@ -61,191 +69,236 @@ public class SolarLoanToSymitar {
                 if(api.URL__c != null){
                     loanAPI = api.URL__c;
                 }
+                
+                //-------------------------------------------Checking if the System is online---------------------------------------//
 
-                EFTType = '3';
-                if(sl.Loan_Type__c == 'Savings Account')
-                    AmountCode = '37' ;
-               //   else if(sl.Loan_Type__c == 'Checking Account')
-               //       AmountCode = '27';
-                else
-                    AmountCode = '27';
-                    
-                if(sl.Brand__c == 'Spectrum')
-                    GroupNumber = '000006' ;
-                else if(sl.Brand__c == 'Chevron')
-                    GroupNumber = '000001';
-                else
-                    GroupNumber = ' ';
-               
-                IDType = '1';
-                ID = sl.Loan_Id__C;
-                Frequency = '4';
-                
-                if(sl.Due_Date__c != null){
-                    Day1 = '0';
-                }
-                else{
-                    Day1 = '0';
-                }   
-                if(sl.Due_Date__c != null){
-                    
-                    NextDate = string.valueof(sl.Due_Date__c);
-                    EffectiveDate = string.valueof(sl.Due_Date__c);
-                }
-                else{
-                    NextDate = null;
-                    EffectiveDate = null;
-                }
-                
-                PostAmount = '0.00';
-                Payee = '0' + sl.Routing_Number__c;
-                Reference = sl.Bank_Account_Number__c ;
-                if(sl.Bank_Name__c != null){
-                    MatchID3 = sl.Bank_Name__c;
-                    MatchID3 = MatchID3.toUpperCase();
-                    if(MatchID3.contains('&') == true){
-                        MatchID3 = MatchID3.replace('&', '&#38;');
-                    }
-                    if(MatchID3.length() > 22){
-                        MatchID3 = MatchID3.left(21);
-                        
-                    }
-                }
-                
-                //-------------------------------------- Alternate Payment-----------------------------------//
+                System.debug('Chceking if the system is online!');
 
-                if(sl.Additional_Amount__c != null){
-
-                    Total = String.valueOf(sl.Loan_Pmt_Amount__c + sl.Additional_Amount__c);
-                    AlternatePayment = string.valueof(Total);
-                }
-
-                system.debug('MatchID3'+MatchID3);    
-                AccountNumber = sl.Account_Number__r.name;
+                req10.setEndpoint(loanAPI+'/EFT/GetGeneralEpisysInformation');
+                req10.setMethod('GET');
+                req10.setHeader('Content-Type', 'application/json');
+                req10.setHeader('Accept', 'application/json');
+                req10.setTimeout(60000);                   
                 
-                System.debug('CreateEft called');
-                req.setEndpoint(loanAPI+'/EFT/CreateEft');
-                req.setMethod('POST');
-                req.setHeader('Content-Type', 'application/json');
-                req.setHeader('Accept', 'application/json');
-                
-                jsonData = '{"Day1":'+'\"'+Day1+'\"'+',"NextDate":'+'\"'+NextDate+'\"'+',"EffectiveDate":'+'\"'+EffectiveDate+'\"'+',"EFTType":' + '\"'+ EFTType +'\"'+',"AmountCode":' + '\"'+ AmountCode +'\"'+',"GroupNumber":'+'\"'+ GroupNumber +'\"'+',"IdType":'+'\"' + IDType + '\"'+',"ID":'+'\"'+ID+'\"'+',"Frequency":'+'\"'+Frequency+'\"'+',"PostAmount":'+'\"'+PostAmount+'\"'+',"Payee":'+'\"'+Payee+'\"'+',"Reference":'+'\"'+Reference+'\"'+',"MatchId3":'+'\"'+MatchID3+'\"'+',"AccountNumber":'+'\"'+AccountNumber+'\"}';
-                
-                req.setBodyAsBlob(Blob.valueof(jsondata)); 
-                system.debug('test'+jsonData);
-                
-                Http http = new Http();  
-                req.setTimeout(60000);
-                HttpResponse res;
-                String responseBody;
                 if(!Test.isRunningTest()){                       
-                    res = http.send(req);
-                    responseBody = res.getBody();
-                    System.debug('Response Body::'+res.getBody());    
-                }else{
-                    responseBody = '{"EFTType":"3","AmountCode":"27","GroupNumber":"1","IdType":"1","ID":"100","Frequency":"4","Day1":"1","NextDate":"01-01-2019","EffectiveDate":"01-01-2019","PostAmount":"100.00","Payee":"322271627","Reference":"42006986568","MatchId3":"BANK OF AMERICA","AccountNumber":"123"}';
+                    res10 = http10.send(req10);
+                    responseBody10 = res10.getBody();
+                    System.debug('EpisysInformation::'+responseBody10);    
+                }
+                else{
+                    responseBody10 = '{"SymNumber": "415","InMemoMode": "false","Status": "null","Error": "null","ErrorDetails": "null"}';
                 }
                 
-              
-                // JSon parse for Id                            
-                JSONParser parser = JSON.createParser(responseBody);    
-                result = String.valueOf(responseBody).substringAfter('EftLocator":"');
-                result = String.valueOf(result).substringBefore('",');
-                System.debug('EFTLocator' + result);
-                
-                if(result == null || result == ''){
+                if(responseBody10!=''){        
+                    Map<String,Object> results = (Map<String,Object>) JSON.deserializeUntyped(responseBody10);      
+                    System.debug('Service response is ....' + results);
+                    
+                    
+                    if(results.size() > 0){
                         
-                    ErrorEFTLocator = String.valueOf(responseBody).substringAfter('[MessageId=TESTING] ');
-                    ErrorEFTLocator = String.valueOf(ErrorEFTLocator).substringBefore('","ErrorDetails"');
-                    system.debug('ErrorEFTLocator' + ErrorEFTLocator);
+                        for(String key : results.keySet()){                   			
+                            if(key == 'InMemoMode'){
+                                mode = boolean.valueOf(results.get(key));
+                            }
+                        }
+                    }
                 }
-
-                //---------------------------------Update Day1 after creation of EFT record--------------------------------//
                 
-                if(result != null && result != ''){
-            
+                system.debug('mode'+mode);
+
+                if(mode == false){
+
+                    System.debug('Yes! System is online!');
+
+                    EFTType = '3';
+                    if(sl.Loan_Type__c == 'Savings Account')
+                        AmountCode = '37' ;
+                    else
+                        AmountCode = '27';
+                        
+                    if(sl.Brand__c == 'Spectrum')
+                        GroupNumber = '000006' ;
+                    else if(sl.Brand__c == 'Chevron')
+                        GroupNumber = '000001';
+                    else
+                        GroupNumber = ' ';
+                
+                    IDType = '1';
+                    ID = sl.Loan_Id__C;
+                    Frequency = '4';
+                    
                     if(sl.Due_Date__c != null){
-                        Day1 = String.valueof(sl.Due_Date__c.day());
+                        Day1 = '0';
                     }
                     else{
                         Day1 = '0';
+                    }   
+                    if(sl.Due_Date__c != null){
+                        
+                        NextDate = string.valueof(sl.Due_Date__c);
+                        EffectiveDate = string.valueof(sl.Due_Date__c);
+                    }
+                    else{
+                        NextDate = null;
+                        EffectiveDate = null;
                     }
                     
-                    System.debug('UpdateEftById called for Day1');
-                    req2.setEndpoint(loanAPI+'/EFT/UpdateEftById');
-                    req2.setMethod('POST');
-                    req2.setHeader('Content-Type', 'application/json');
-                    req2.setHeader('Accept', 'application/json');
+                    PostAmount = '0.00';
+                    Payee = '0' + sl.Routing_Number__c;
+                    Reference = sl.Bank_Account_Number__c ;
+                    if(sl.Bank_Name__c != null){
+                        MatchID3 = sl.Bank_Name__c;
+                        MatchID3 = MatchID3.toUpperCase();
+                        if(MatchID3.contains('&') == true){
+                            MatchID3 = MatchID3.replace('&', '&#38;');
+                        }
+                        if(MatchID3.length() > 22){
+                            MatchID3 = MatchID3.left(21);
+                            
+                        }
+                    }
+                    
+                    //-------------------------------------- Alternate Payment-----------------------------------//
 
-                    jsonData = '{"Day1":'+'\"'+Day1+'\"'+',"AmountCode":'+'\"'+AmountCode+'\"'+',"Payee":'+'\"'+Payee+'\"'+',"Reference":'+'\"'+Reference+'\"'+',"MatchId3":'+'\"'+MatchID3+'\"'+',"EftLocatorId":'+'\"'+result+'\"'+',"AccountNumber":'+'\"'+AccountNumber+'\"}';
-                
-                    req2.setBodyAsBlob(Blob.valueof(jsondata)); 
+                    if(sl.Additional_Amount__c != null){
+
+                        Total = String.valueOf(sl.Loan_Pmt_Amount__c + sl.Additional_Amount__c);
+                        AlternatePayment = string.valueof(Total);
+                    }
+
+                    system.debug('MatchID3'+MatchID3);    
+                    AccountNumber = sl.Account_Number__r.name;
+                    
+                    System.debug('CreateEft called');
+                    req.setEndpoint(loanAPI+'/EFT/CreateEft');
+                    req.setMethod('POST');
+                    req.setHeader('Content-Type', 'application/json');
+                    req.setHeader('Accept', 'application/json');
+                    
+                    jsonData = '{"Day1":'+'\"'+Day1+'\"'+',"NextDate":'+'\"'+NextDate+'\"'+',"EffectiveDate":'+'\"'+EffectiveDate+'\"'+',"EFTType":' + '\"'+ EFTType +'\"'+',"AmountCode":' + '\"'+ AmountCode +'\"'+',"GroupNumber":'+'\"'+ GroupNumber +'\"'+',"IdType":'+'\"' + IDType + '\"'+',"ID":'+'\"'+ID+'\"'+',"Frequency":'+'\"'+Frequency+'\"'+',"PostAmount":'+'\"'+PostAmount+'\"'+',"Payee":'+'\"'+Payee+'\"'+',"Reference":'+'\"'+Reference+'\"'+',"MatchId3":'+'\"'+MatchID3+'\"'+',"AccountNumber":'+'\"'+AccountNumber+'\"}';
+                    
+                    req.setBodyAsBlob(Blob.valueof(jsondata)); 
                     system.debug('test'+jsonData);
                     
-                    Http http2 = new Http();  
-                    req2.setTimeout(60000);
-                    HttpResponse res2;
-                    String responseBody2;
+                    Http http = new Http();  
+                    req.setTimeout(60000);
+                    HttpResponse res;
+                    String responseBody;
                     if(!Test.isRunningTest()){                       
-                        res2 = http2.send(req2);
-                        responseBody2 = res2.getBody();
-                        System.debug('Response Body::'+res2.getBody());    
+                        res = http.send(req);
+                        responseBody = res.getBody();
+                        System.debug('Response Body::'+res.getBody());    
                     }else{
-                        responseBody2 = '{"EFTType":"3","AmountCode":"27","GroupNumber":"1","IdType":"1","ID":"100","Frequency":"4","Day1":"1","NextDate":"01-01-2019","EffectiveDate":"01-01-2019","PostAmount":"100.00","Payee":"322271627","Reference":"42006986568","MatchId3":"BANK OF AMERICA","AccountNumber":"123"}';
+                        responseBody = '{"EftLocator":"123","EFTType":"3","AmountCode":"27","GroupNumber":"1","IdType":"1","ID":"100","Frequency":"4","Day1":"1","NextDate":"01-01-2019","EffectiveDate":"01-01-2019","PostAmount":"100.00","Payee":"322271627","Reference":"42006986568","MatchId3":"BANK OF AMERICA","AccountNumber":"123"}';
+                    }
+                    
+                
+                    // JSon parse for Id                            
+                    JSONParser parser = JSON.createParser(responseBody);    
+                    result = String.valueOf(responseBody).substringAfter('EftLocator":"');
+                    result = String.valueOf(result).substringBefore('",');
+                    System.debug('EFTLocator' + result);
+                    
+                    if(result == null || result == ''){
+                            
+                        ErrorEFTLocator = String.valueOf(responseBody).substringAfter('[MessageId=TESTING] ');
+                        ErrorEFTLocator = String.valueOf(ErrorEFTLocator).substringBefore('","ErrorDetails"');
+                        system.debug('ErrorEFTLocator' + ErrorEFTLocator);
                     }
 
-                }    
-
-                //-------------------------------Update Loan record with PaymentMethod-------------------------------------//
-
-                if(result != null && result != '' && sl.ACH__c == 'True'){
-                	
-                    PaymentMethod = '5';
-                    System.debug('UpdateLoanById called for PaymentMethod');
-                	req1.setEndpoint(loanAPI+'/EFT/UpdateLoanById');
-	                req1.setMethod('POST');
-	                req1.setHeader('Content-Type', 'application/json');
-	                req1.setHeader('Accept', 'application/json');
-	                
-	                if(AlternatePayment != ''){
-	                	jsonData1 = '{"AccountNumber":'+'\"'+AccountNumber+'\","LoanId":' + '\"'+ ID +'\"'+',"PaymentMethod":'+'\"'+PaymentMethod+ '\"'+',"AlternatePayment":'+'\"'+AlternatePayment+'\"}';
-	                }
-	                else{
-	                	jsonData1 = '{"AccountNumber":'+'\"'+AccountNumber+'\","LoanId":' + '\"'+ ID +'\"'+',"PaymentMethod":'+'\"'+PaymentMethod+ '\"}';
-	                }
+                    //---------------------------------Update Day1 after creation of EFT record--------------------------------//
                     
-                    req1.setBodyAsBlob(Blob.valueof(jsondata1)); 
-	                system.debug('test'+jsonData1);
-	                
-	                Http http1 = new Http();  
-	                req1.setTimeout(60000);
-	                HttpResponse res1;
-	                String responseBody1;
-	                if(!Test.isRunningTest()){                       
-	                    res1 = http1.send(req1);
-	                    responseBody1 = res1.getBody();
-	                    System.debug('Response Body Solar Loan::'+res1.getBody());    
-	                }else{
-	                    responseBody1 = '{"Type":"3","Branch":"27","CreatedAtBranch":"1","PurposeCode":"1","CollateralCode":"100","ApprovalCode":"4","OriginalBalance":"1","ApprovalDate":"01-01-2019","MaturityDate":"01-01-2019","DueDate":"01-01-2019","FirstPaymentDate":"01-01-2019","DueDay1":"1","Payment":"1234","CouponCode":"123", "PaymentMethod" : "PaymentMethod", "Description" : "Description", "InterestRate" : "2.00", "UserAmount1" : "200.00", "ECOACode" : "778", "CreditScore" : "15", "PaymentCount" : "12", "PaymentFrequency" : "67"}';
-	                }
+                    if(result != null && result != ''){
+                
+                        if(sl.Due_Date__c != null){
+                            Day1 = String.valueof(sl.Due_Date__c.day());
+                        }
+                        else{
+                            Day1 = '0';
+                        }
+                        
+                        System.debug('UpdateEftById called for Day1');
+                        req2.setEndpoint(loanAPI+'/EFT/UpdateEftById');
+                        req2.setMethod('POST');
+                        req2.setHeader('Content-Type', 'application/json');
+                        req2.setHeader('Accept', 'application/json');
+
+                        jsonData = '{"Day1":'+'\"'+Day1+'\"'+',"AmountCode":'+'\"'+AmountCode+'\"'+',"Payee":'+'\"'+Payee+'\"'+',"Reference":'+'\"'+Reference+'\"'+',"MatchId3":'+'\"'+MatchID3+'\"'+',"EftLocatorId":'+'\"'+result+'\"'+',"AccountNumber":'+'\"'+AccountNumber+'\"}';
+                    
+                        req2.setBodyAsBlob(Blob.valueof(jsondata)); 
+                        system.debug('test'+jsonData);
+                        
+                        Http http2 = new Http();  
+                        req2.setTimeout(60000);
+                        HttpResponse res2;
+                        String responseBody2;
+                        if(!Test.isRunningTest()){                       
+                            res2 = http2.send(req2);
+                            responseBody2 = res2.getBody();
+                            System.debug('Response Body::'+res2.getBody());    
+                        }else{
+                            responseBody2 = '{"EFTType":"3","AmountCode":"27","GroupNumber":"1","IdType":"1","ID":"100","Frequency":"4","Day1":"1","NextDate":"01-01-2019","EffectiveDate":"01-01-2019","PostAmount":"100.00","Payee":"322271627","Reference":"42006986568","MatchId3":"BANK OF AMERICA","AccountNumber":"123"}';
+                        }
+
+                    }    
+
+                    //-------------------------------Update Loan record with PaymentMethod-------------------------------------//
+
+                    if(result != null && result != '' && sl.ACH__c == 'True'){
+                        
+                        PaymentMethod = '5';
+                        System.debug('UpdateLoanById called for PaymentMethod');
+                        req1.setEndpoint(loanAPI+'/EFT/UpdateLoanById');
+                        req1.setMethod('POST');
+                        req1.setHeader('Content-Type', 'application/json');
+                        req1.setHeader('Accept', 'application/json');
+                        
+                        if(AlternatePayment != ''){
+                            jsonData1 = '{"AccountNumber":'+'\"'+AccountNumber+'\","LoanId":' + '\"'+ ID +'\"'+',"PaymentMethod":'+'\"'+PaymentMethod+ '\"'+',"AlternatePayment":'+'\"'+AlternatePayment+'\"}';
+                        }
+                        else{
+                            jsonData1 = '{"AccountNumber":'+'\"'+AccountNumber+'\","LoanId":' + '\"'+ ID +'\"'+',"PaymentMethod":'+'\"'+PaymentMethod+ '\"}';
+                        }
+                        
+                        req1.setBodyAsBlob(Blob.valueof(jsondata1)); 
+                        system.debug('test'+jsonData1);
+                        
+                        Http http1 = new Http();  
+                        req1.setTimeout(60000);
+                        HttpResponse res1;
+                        String responseBody1;
+                        if(!Test.isRunningTest()){                       
+                            res1 = http1.send(req1);
+                            responseBody1 = res1.getBody();
+                            System.debug('Response Body Solar Loan::'+res1.getBody());    
+                        }else{
+                            responseBody1 = '{"Type":"3","Branch":"27","CreatedAtBranch":"1","PurposeCode":"1","CollateralCode":"100","ApprovalCode":"4","OriginalBalance":"1","ApprovalDate":"01-01-2019","MaturityDate":"01-01-2019","DueDate":"01-01-2019","FirstPaymentDate":"01-01-2019","DueDay1":"1","Payment":"1234","CouponCode":"123", "PaymentMethod" : "PaymentMethod", "Description" : "Description", "InterestRate" : "2.00", "UserAmount1" : "200.00", "ECOACode" : "778", "CreditScore" : "15", "PaymentCount" : "12", "PaymentFrequency" : "67"}';
+                        }
+                    }
+                    
+                    Solar_Loans__c s = new Solar_Loans__c();         
+                    
+                    if(result != null && result != ''){
+                        s.EftLocator__c = result;
+                        s.Status__c = 'EFT Record Created';
+                        s.Current_Solar_Loan_Stage__c = 'Stage 7';
+                    }
+                    
+                    if(ErrorEFTLocator != null && ErrorEFTLocator != '')
+                        s.Error_EftLocator__c = ErrorEFTLocator;
+                    else
+                        s.Error_EftLocator__c = ''; 
+                    s.id = sl.Id;         
+                    s.continue__c = false;             
+                    SolarLoanToUpdate.add(s);  
                 }
-                
-                Solar_Loans__c s = new Solar_Loans__c();         
-                
-                if(result != null && result != ''){
-                    s.EftLocator__c = result;
-                    s.Status__c = 'EFT Record Created';
-                    s.Current_Solar_Loan_Stage__c = 'Stage 7';
+                else{
+
+                    Solar_Loans__c s = new Solar_Loans__c();
+                    s.id = sl.Id; 
+                    s.Error_Loan_Locator__c = 'System is ofline';
+                    SolarLoanToUpdate.add(s);
                 }
-                
-                if(ErrorEFTLocator != null && ErrorEFTLocator != '')
-                    s.Error_EftLocator__c = ErrorEFTLocator;
-                else
-                    s.Error_EftLocator__c = ''; 
-                s.id = sl.Id;         
-                s.continue__c = false;             
-                SolarLoanToUpdate.add(s);  
-                
                 
             }
         if(SolarLoanToUpdate.size() > 0){

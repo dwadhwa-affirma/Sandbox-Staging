@@ -116,6 +116,7 @@ public class SolarLoanTriggerTest {
             sl.Bank_Name__c = 'Test Bank';
             sl.ABA_Bank_Name__c = 'Test Bank';
             sl.Additional_Amount__c = 100.00;
+            sl.ACH__c = 'True';
             insert sl;
         	
             sl.Member_Number__c = '0000247286';
