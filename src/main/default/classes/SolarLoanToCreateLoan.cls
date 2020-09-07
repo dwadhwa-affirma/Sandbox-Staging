@@ -690,41 +690,86 @@ public class SolarLoanToCreateLoan {
             }
     
             for(Solar_Loans__c sl : solarloans){
-
-                SSN = sl.Primary_SSN__c;
-
-                System.debug('GetMemberNumber method called');
-               
-                req1.setEndpoint(loanAPI+'/EFT/GetAccountBySSN?ssn='+SSN);
-                req1.setMethod('GET');
-                req1.setHeader('Content-Type', 'application/json');
-                req1.setHeader('Accept', 'application/json');
                 
-                Http http1 = new Http();  
-                req1.setTimeout(60000);
-                HttpResponse res1;
-                String responseBody1;
+                
+                System.debug('Chceking if the system is online!');
+                req10.setEndpoint(loanAPI+'/EFT/GetGeneralEpisysInformation');
+                req10.setMethod('GET');
+                req10.setHeader('Content-Type', 'application/json');
+                req10.setHeader('Accept', 'application/json');
+                req10.setTimeout(60000);                   
+                
                 if(!Test.isRunningTest()){                       
-                    res1 = http1.send(req1);
-                    responseBody1 = res1.getBody();
-                    System.debug('Response Body SolarLoan:'+res1.getBody());    
-                }else{
-                    responseBody1 = '{"Type":"3","Last":"27","First":"1","Street":"1","ExtraAddress":"100","City":"Chicago","State":"IL","ZipCode":"0012345,"BirthDate":"01-01-2019","SSN":"1345","LoanId":"322271627","AccountNumber":"00000123456"}';
-                    
+                    res10 = http10.send(req10);
+                    responseBody10 = res10.getBody();
+                    System.debug('EpisysInformation::'+responseBody10);    
+                }
+                else{
+                    responseBody10 = '{"SymNumber": "415","InMemoMode": "false","Status": "null","Error": "null","ErrorDetails": "null"}';
                 }
                 
-                JSONParser parser = JSON.createParser(responseBody1);
-                result = String.valueOf(responseBody1).substringAfter('AccountNumber":"');
-                result = String.valueOf(result).substringBefore('",');
-                System.debug('Member Number' + result);
-
-                if(result != null){
-                    Solar_Loans__c s = new Solar_Loans__c(); 
-                    s.id = sl.Id;       
-                    s.Member_Number__c = result;
-                    s.continue__c = false;
+                if(responseBody10!=''){        
+                    Map<String,Object> results = (Map<String,Object>) JSON.deserializeUntyped(responseBody10);      
+                    System.debug('Service response is ....' + results);
                     
-                    SolarLoanToUpdate.add(s); 
+                    
+                    if(results.size() > 0){
+                        
+                        for(String key : results.keySet()){                   			
+                            if(key == 'InMemoMode'){
+                                mode = boolean.valueOf(results.get(key));
+                            }
+                        }
+                    }
+                }
+                
+                system.debug('mode'+mode);
+                if(mode == false){
+
+                    SSN = sl.Primary_SSN__c;
+
+                    System.debug('GetMemberNumber method called');
+                
+                    req1.setEndpoint(loanAPI+'/EFT/GetAccountBySSN?ssn='+SSN);
+                    req1.setMethod('GET');
+                    req1.setHeader('Content-Type', 'application/json');
+                    req1.setHeader('Accept', 'application/json');
+                    
+                    Http http1 = new Http();  
+                    req1.setTimeout(60000);
+                    HttpResponse res1;
+                    String responseBody1;
+                    if(!Test.isRunningTest()){                       
+                        res1 = http1.send(req1);
+                        responseBody1 = res1.getBody();
+                        System.debug('Response Body SolarLoan:'+res1.getBody());    
+                    }else{
+                        responseBody1 = '{"Type":"3","Last":"27","First":"1","Street":"1","ExtraAddress":"100","City":"Chicago","State":"IL","ZipCode":"0012345,"BirthDate":"01-01-2019","SSN":"1345","LoanId":"322271627","AccountNumber":"00000123456"}';
+                        
+                    }
+                    
+                    JSONParser parser = JSON.createParser(responseBody1);
+                    result = String.valueOf(responseBody1).substringAfter('AccountNumber":"');
+                    result = String.valueOf(result).substringBefore('",');
+                    System.debug('Member Number' + result);
+
+                    if(result != null && result != ''){
+                        Solar_Loans__c s = new Solar_Loans__c(); 
+                        s.id = sl.Id;       
+                        s.Member_Number__c = result;
+                        s.Status__c = 'Approved';
+                        s.Current_Solar_Loan_Stage__c = 'Stage 3';
+                        s.continue__c = false;
+                        
+                        SolarLoanToUpdate.add(s); 
+                    }
+                }
+                else{
+                    
+                    Solar_Loans__c s = new Solar_Loans__c();
+                    s.id = sl.Id; 
+                    s.Error_Loan_Locator__c = 'System is ofline';
+                    SolarLoanToUpdate.add(s);
                 }
 
             }
