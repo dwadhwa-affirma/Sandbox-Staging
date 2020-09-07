@@ -167,7 +167,7 @@ public class SolarLoanToSymitar {
                     }
 
                     system.debug('MatchID3'+MatchID3);    
-                    AccountNumber = sl.Account_Number__r.name;
+                    AccountNumber = sl.Member_Number__c;
                     
                     System.debug('CreateEft called');
                     req.setEndpoint(loanAPI+'/EFT/CreateEft');
@@ -374,7 +374,7 @@ public class SolarLoanToSymitar {
                 }
 
                 EFTLocatorId = sl.EftLocator__c;
-                AccountNumber = sl.Account_Number__r.name;
+                AccountNumber = sl.Member_Number__c;
                 System.debug('UpdateEftById method called when docusign completed');
                 req.setEndpoint(loanAPI+'/EFT/UpdateEftById');
                 req.setMethod('POST');
