@@ -1,0 +1,36 @@
+<aura:component controller="CardLimitResetController" implements="force:appHostable,force:lightningQuickActionWithoutHeader,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,force:hasSObjectName" access="global">
+
+<aura:attribute name="ActionDisabled" type="Boolean" default="true"/> 
+<aura:attribute name="AddIconName" type="string" default="utility:add" description="To change icon on Tab"/>
+<aura:attribute name="Action" type="String"  />
+<aura:registerEvent name="ChangeLimitEvent" type="c:ChangeLimitEvent"/>
+<aura:attribute name="CLRecord" type="Change_Limit__c"/> 
+<aura:attribute name="selectedAction" type="String"/> 
+<aura:attribute name="selectedChildAction" type="String"/> 
+<aura:attribute name="isMemberSelected" type="Boolean" default="false"/> 
+<aura:handler name="init" action="{!c.doInit}" value="{!this}" access="global" />  
+<aura:attribute name="paList" type="Person_Account__c[]" />    
+	
+<div id = "stage1" class = "align">
+    <div>
+        <p class = "fontstyle">Which member is requesting change/reset card limits ?</p><br/>
+        <table aria-multiselectable="true" class="slds-table slds-table_header-hidden slds-table_edit slds-tree slds-table_tree" role="treegrid">
+            <tbody>
+                <aura:iteration items="{!v.paList}" var="itemOption" indexVar="i">                  
+                    <tr aria-expanded="false" aria-level="1" aria-posinset="3" aria-selected="false" aria-setsize="4" class="slds-hint-parent">
+                        <td class="slds-text-align_right" role="gridcell" style="width:3.25rem">
+                            <span class="slds-radio">
+                                <lightning:input type="radio" name="select" value="{!itemOption.PersonID__r.Name}" onchange="{!c.onMemberChange}"/>
+                            </span>
+                        </td>
+                        
+                        <td data-label="Employees" role="gridcell">
+                            <div class="slds-truncate" title="{!itemOption.PersonID__r.Name}">{!itemOption.PersonID__r.Name}({!itemOption.TypeTranslate__c})</div>
+                        </td>
+                        </tr>
+                    </aura:iteration>
+                </tbody>
+        </table>
+    </div>    	
+</div>    
+</aura:component>
