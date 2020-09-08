@@ -1,4 +1,0 @@
-<aura:event type="APPLICATION"> 
-    <aura:attribute name="CLRecord" type="Change_Limit__c"/>  
-    <aura:attribute name="isMemberSelected" type="Boolean" />
-</aura:event>
