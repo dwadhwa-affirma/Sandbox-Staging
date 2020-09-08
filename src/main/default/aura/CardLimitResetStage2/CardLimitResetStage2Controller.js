@@ -27,7 +27,7 @@
     	var cardNumber = event.getSource().get('v.value');    
     	component.set("v.CLRecord.Card_Number__c",cardNumber);
     	
-    	var evt = $A.get("e.c:ChangeLimitEvent");
+    	var evt = $A.get("e.c:CardLimitResetEvent");
         var CL = component.get("v.CLRecord");
         var isMemberSelected = component.get("v.isMemberSelected");
         

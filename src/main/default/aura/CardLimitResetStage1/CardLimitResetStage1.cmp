@@ -3,7 +3,7 @@
 <aura:attribute name="ActionDisabled" type="Boolean" default="true"/> 
 <aura:attribute name="AddIconName" type="string" default="utility:add" description="To change icon on Tab"/>
 <aura:attribute name="Action" type="String"  />
-<aura:registerEvent name="ChangeLimitEvent" type="c:ChangeLimitEvent"/>
+<aura:registerEvent name="CardLimitResetEvent" type="c:CardLimitResetEvent"/>
 <aura:attribute name="CLRecord" type="Change_Limit__c"/> 
 <aura:attribute name="selectedAction" type="String"/> 
 <aura:attribute name="selectedChildAction" type="String"/> 

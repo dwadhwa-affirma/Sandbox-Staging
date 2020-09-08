@@ -4,7 +4,7 @@
 		var recordId = component.get("v.recordId");
 		var CLRecord = component.get("v.CLRecord");
         var isMemberSelected = component.get("v.isMemberSelected");
-        var evt = $A.get("e.c:ChangeLimitEvent");
+        var evt = $A.get("e.c:CardLimitResetEvent");
         
         var type = CLRecord.Type__c;
         if(type == 'Change Card Limits'){
@@ -27,7 +27,7 @@
         var type = event.getSource().get('v.value');    
     	component.set("v.CLRecord.Type__c",type);
     	
-    	var evt = $A.get("e.c:ChangeLimitEvent");
+    	var evt = $A.get("e.c:CardLimitResetEvent");
         var CL = component.get("v.CLRecord");
         
         var isMemberSelected = component.get("v.isMemberSelected");
@@ -41,7 +41,7 @@
     
     handleChange: function (component, event, helper) {
         
-        var evt = $A.get("e.c:ChangeLimitEvent");
+        var evt = $A.get("e.c:CardLimitResetEvent");
         var CL = component.get("v.CLRecord");
         var isMemberSelected = component.get("v.isMemberSelected");
         var ATM = component.get("v.CLRecord.ATM_Usage_Limit__c");

@@ -11,7 +11,7 @@
 <aura:attribute name="isError" type="Boolean" default="true" />
 <aura:attribute name="isMemberSelected" type="Boolean" default="false"/> 
 <aura:attribute name="ContinueButtonName" type="string" default="Continue"/>
-<aura:handler event="c:ChangeLimitEvent" action="{!c.getActionValue}"/> 
+<aura:handler event="c:CardLimitResetEvent" action="{!c.getActionValue}"/> 
 <aura:attribute name="CLRecord" type="Change_Limit__c" default="{
 		'sobjectType': 'Change_Limit__c',
                 'Stage__c': ''}"/>      

@@ -1,6 +1,6 @@
 <aura:component controller="CardLimitResetController" implements="force:appHostable,force:lightningQuickActionWithoutHeader,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,force:hasSObjectName" access="global">
 
-<aura:registerEvent name="ChangeLimitEvent" type="c:ChangeLimitEvent"/>
+<aura:registerEvent name="CardLimitResetEvent" type="c:CardLimitResetEvent"/>
 <aura:attribute name="CLRecord" type="Change_Limit__c"/> 
 <aura:handler name="init" action="{!c.doInit}" value="{!this}" access="global" />
 <aura:attribute name="caList" type="Account_Details__c[]" />  
