@@ -90,7 +90,8 @@
            		debugger;
         		var status = response.getState();            
             		if (component.isValid() && status === "SUCCESS") {
-                    
+                    	component.set("v.isExit", true);
+    					$A.get("e.force:closeQuickAction").fire();
                     }
                 });	
        			$A.enqueueAction(action); 
@@ -413,27 +414,5 @@
     backView:function (component, event, helper) {  
     	
     
-    },
-    
-    
-    ExpireEFT: function (component, event, helper) { 
-     
-    
-    },
-    
-    backACH: function (component, event, helper) { 
-     
-    },
-    
-    submitACH: function (component, event, helper) { 
-          
-    },
-    
-    OpenInPersonSigning : function (component, event, helper) {
-             
-    },
-
-    backSigninPerson  : function (component, event, helper) {
-     
     }
 })
