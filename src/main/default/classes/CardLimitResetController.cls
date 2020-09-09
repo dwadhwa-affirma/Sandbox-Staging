@@ -163,4 +163,53 @@ public class CardLimitResetController {
 
 		return cardList;
     }
+    @AuraEnabled
+    public static Change_Limit__c createCase(string recordId,string sObjectType){
+
+        string firstname,lastname;
+        List<string> Names=sObjectType.split(' ');
+        if(Names.size() == 2){
+            firstname = Names[0]+ '%';
+            lastname= '%'+Names[1] + '%';
+        }
+        else if(Names.size() >= 3){
+            firstname = Names[0]+ '%';
+            lastname= '%'+Names[Names.size()-1] +'%';
+        }
+        
+        string AccountNumber;
+      
+        Person_Account__c pa =[SELECT id, name,PersonID__c,Account_Number__c,PersonID__r.name 
+                                    from Person_Account__c where PersonID__r.firstname like: firstname
+                                    AND PersonID__r.LASTNAME like: lastname
+                                    AND Account_Number__r.name =: AccountNumber limit 1];
+
+        list<CaseRecordType__c> scList = [SELECT Id,
+											 Primary_Category__c,
+											 Secondary_Category__c,
+											 Teritiary_Category__c,
+											 Record_Type_Name__c,
+											 SLA__c,
+                                             RecordTypeId__c FROM CaseRecordType__c WHERE Primary_Category__c = 'Card Services' AND Secondary_Category__c='ATM/DEBIT' AND Teritiary_Category__c='Limit Changes' LIMIT 1];
+        
+        Case cs = new case();
+        for(CaseRecordType__c crt : scList){
+            cs.RecordTypeId = scList[0].RecordTypeId__c;
+            cs.Primary_Category__c = scList[0].Primary_Category__c;
+            cs.Secondary_Category__c = scList[0].Secondary_Category__c;
+            cs.Tertiary_Category__c = scList[0].Teritiary_Category__c;
+            cs.Sla__c = scList[0].SLA__c;
+
+        }
+        cs.Status = 'Open';
+        cs.Subject = 'Limit Change';
+        cs.ownerid = UserInfo.getUserId();
+        if(pa != null){
+            cs.AccountId = pa.PersonID__c;
+        }
+
+        insert cs;
+
+        return null;
+    }     
 }
