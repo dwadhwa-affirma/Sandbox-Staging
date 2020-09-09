@@ -164,25 +164,7 @@ public class CardLimitResetController {
 		return cardList;
     }
     @AuraEnabled
-    public static Change_Limit__c createCase(string recordId,string sObjectType){
-
-        string firstname,lastname;
-        List<string> Names=sObjectType.split(' ');
-        if(Names.size() == 2){
-            firstname = Names[0]+ '%';
-            lastname= '%'+Names[1] + '%';
-        }
-        else if(Names.size() >= 3){
-            firstname = Names[0]+ '%';
-            lastname= '%'+Names[Names.size()-1] +'%';
-        }
-        
-        string AccountNumber;
-      
-        Person_Account__c pa =[SELECT id, name,PersonID__c,Account_Number__c,PersonID__r.name 
-                                    from Person_Account__c where PersonID__r.firstname like: firstname
-                                    AND PersonID__r.LASTNAME like: lastname
-                                    AND Account_Number__r.name =: AccountNumber limit 1];
+    public static Change_Limit__c createCase(Change_Limit__c CLRecord){
 
         list<CaseRecordType__c> scList = [SELECT Id,
 											 Primary_Category__c,
@@ -204,12 +186,63 @@ public class CardLimitResetController {
         cs.Status = 'Open';
         cs.Subject = 'Limit Change';
         cs.ownerid = UserInfo.getUserId();
-        if(pa != null){
-            cs.AccountId = pa.PersonID__c;
+        if(CLRecord.Member__c != null){
+            cs.AccountId = CLRecord.Member__c;
         }
 
         insert cs;
-
+        id caseId = cs.id;
+        
+        CLRecord.Case__c = caseId;
+        update CLRecord;
+        
         return null;
-    }     
+    }
+    @AuraEnabled
+    public static Change_Limit__c Submit(string recordId,string cardnumber,string membername,string type,string authlimit,string atmlimit){ 
+        
+        system.debug('membername'+membername); 
+        system.debug('cardnumber'+cardnumber);
+        system.debug('type'+type); 
+        system.debug('authlimit'+authlimit); 
+        system.debug('atmlimit'+atmlimit); 
+        system.debug('recordId'+recordId);
+        
+        string firstname,lastname;
+        List<string> Names=membername.split(' ');
+        if(Names.size() == 2){
+            firstname = Names[0]+ '%';
+            lastname= '%'+Names[1] + '%';
+        }
+        else if(Names.size() >= 3){
+            firstname = Names[0]+ '%';
+            lastname= '%'+Names[Names.size()-1] +'%';
+        }
+
+        string AccountNumber;
+        if(recordId != null){
+            AccountNumber = [Select id, name from account_details__c where id=: recordId].Name;
+        }
+        else{
+            AccountNumber = AccountNumber = [Select id, name from account_details__c where id=: recordId].Name;
+        }
+
+        Person_Account__c pa =[SELECT id, name,PersonID__c,Account_Number__c,PersonID__r.name 
+                                from Person_Account__c where PersonID__r.firstname like: firstname
+                                AND PersonID__r.LASTNAME like: lastname
+                                AND Account_Number__r.name =: AccountNumber limit 1];
+
+        Change_Limit__c cl = new Change_Limit__c();
+        cl.Auth_POS_Limit__c = Decimal.valueOf(authlimit);
+        cl.ATM_Usage_Limit__c = Decimal.valueOf(atmlimit);
+        cl.Card_Number__c = cardnumber;
+        cl.Type__c = type;
+        cl.Member_Name__c = membername;
+        cl.Member_Account__c = recordId;
+        cl.Member__c = pa.PersonID__c;
+        insert cl;
+
+        //createCase(cl);
+        return null;    
+    }    
 }
