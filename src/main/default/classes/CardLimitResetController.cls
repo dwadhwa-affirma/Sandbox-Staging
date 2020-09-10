@@ -13,7 +13,7 @@ public class CardLimitResetController {
             CLStages = [SELECT id, name, isActive__c, Order__c, Stage_Action__c,Stage_Action_Placeholder__c, Stage_Component__c, Stage_Label__c, StepId__c from ChangeLimit_Stages__c where isActive__c = true]; //where isActive__c = true;      //EFT_Stages__c.getall().values();
             resultMap.put('CLStages', CLStages);
 
-            List<Change_Limit__c> CLRecord = [Select id, name, Member_Account__c, Member__c from Change_Limit__c where Member_Account__c =:recordId limit 1];
+            List<Change_Limit__c> CLRecord = [Select id, name, Stage__c,Member_Account__c, Member__c from Change_Limit__c where Member_Account__c =:recordId limit 1];
             integer activeStageIndex = 0;
             if(CLRecord.size() >0){               
                 for(ChangeLimit_Stages__c clstage:CLStages){ 
@@ -133,12 +133,35 @@ public class CardLimitResetController {
     
         system.debug('sObjectType'+sObjectType); 
         system.debug('recordId'+recordId);
+        HttpRequest req = new HttpRequest();
+        HttpResponse res;
+        Http http = new Http();
+        string responseBody;
+        string loanAPI;
+        String jsonData;
         String Type;
-        //String SSN;
+        String SSN;
         
-        //Account acc = [select id,name,SSN_TIN_Encrypted__pc from Account where id=:sObjectType limit 1];
-        //SSN = acc.SSN_TIN_Encrypted__pc;
-        
+        /*Account acc = [select id,name,SSN_TIN_Encrypted__pc from Account where id=:sObjectType limit 1];
+        SSN = acc.SSN_TIN_Encrypted__pc;
+       
+        SolarLoan_To_Episys_API_Details__c api = SolarLoan_To_Episys_API_Details__c.getValues('ProductionURL');
+                        
+        if(api.URL__c != null){
+            loanAPI = api.URL__c;
+        }
+                        
+        req.setEndpoint(loanAPI+'/CardLimitReset/GetCards');
+        req.setMethod('POST');
+        req.setHeader('Content-Type', 'application/json');
+        req.setHeader('Accept', 'application/json');
+        jsonData = '{"SSN":' + '\"'+ SSN +'\"}';                 
+        req.setBodyAsBlob(Blob.valueof(jsonData2));
+        req.setTimeout(60000);                    
+        res = http.send(req);
+        responseBody = res.getBody();
+        system.debug('responseBody'+responseBody);*/
+
         List<Account_Details__c> cardList = new List<Account_Details__c>();
 
         Account_Details__c MemberAccount = [select id,name from Account_Details__c where id=:recordId limit 1];
