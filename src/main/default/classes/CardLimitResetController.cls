@@ -144,9 +144,38 @@ public class CardLimitResetController {
         List<String> CardNumber = new List<String>();
         List<String> CardLocator = new List<String>();
         
-        Account acc = [select id,name,SSN_TIN_Encrypted__pc from Account where id=:sObjectType limit 1];
+        string firstname,lastname;
+        List<string> Names = sObjectType.split(' ');
+        if(Names.size() == 2){
+            firstname = Names[0]+ '%';
+            lastname= '%'+Names[1] + '%';
+        }
+        else if(Names.size() >= 3){
+            firstname = Names[0]+ '%';
+            lastname= '%'+Names[Names.size()-1] +'%';
+        }
+
+        string AccountNumber;
+        if(recordId != null){
+            AccountNumber = [Select id, name from account_details__c where id=: recordId].Name;
+        }
+        else{
+            AccountNumber = AccountNumber = [Select id, name from account_details__c where id=: recordId].Name;
+        }
+
+        system.debug('AccountNumber'+AccountNumber);
+
+        Person_Account__c pa =[SELECT id, name,PersonID__c,Account_Number__c,PersonID__r.name 
+                                from Person_Account__c where PersonID__r.firstname like: firstname
+                                AND PersonID__r.LASTNAME like: lastname
+                                AND Account_Number__r.name =: AccountNumber limit 1];
+
+        
+        system.debug('Member - '+pa.PersonID__c);
+        Account acc = [select id,name,SSN_TIN_Encrypted__pc from Account where id =:pa.PersonID__c limit 1];
         SSN = acc.SSN_TIN_Encrypted__pc;
-       
+
+        system.debug('SSN'+SSN);
         SolarLoan_To_Episys_API_Details__c api = SolarLoan_To_Episys_API_Details__c.getValues('ProductionURL');
                         
         if(api.URL__c != null){
@@ -160,7 +189,6 @@ public class CardLimitResetController {
         jsonData = '{"SSN":' + '\"'+ SSN +'\"}';                 
         req.setBodyAsBlob(Blob.valueof(jsonData));
         req.setTimeout(60000);                    
-        
         
         system.debug('responseBody'+responseBody);
 
@@ -177,10 +205,10 @@ public class CardLimitResetController {
                 for(Object key : results){ 
                     Map<String, Object> carddetail = (Map<String, Object>)key;
                     for(String l : carddetail.keyset()) {
-                        if(l == 'LoanId'){
+                        if(l == 'CardNumber'){
                             CardNumber.add(String.valueOf(carddetail.get(l)));
                         }
-                        if(l == 'Payment'){
+                        if(l == 'Locator'){
                             CardLocator.add(String.valueOf(carddetail.get(l)));
                         }  
                     }    
@@ -188,28 +216,7 @@ public class CardLimitResetController {
             }
         }
         system.debug('CardNumber'+CardNumber);
-        System.debug('CardLocator'+CardLocator);
-        /*List<Account_Details__c> cardList = new List<Account_Details__c>();
-
-        Account_Details__c MemberAccount = [select id,name from Account_Details__c where id=:recordId limit 1];
-
-        List<Person_Account__c> paList = [select id ,PersonId__c,Name_Type__c , PersonID__r.Name, TypeTranslate__c FROM Person_Account__c where
-                                            Account_Number__r.name =: MemberAccount.name];
-        for(Person_Account__c pa : paList){
-            
-            if(pa.PersonID__r.Name == sObjectType){
-                Type = String.ValueOf(pa.Name_Type__c) ;
-            }
-        }                                    
-
-        if(Type == '0'){
-            cardList = [select id, Name, RecType__c, Card_Number__c, TypeTranslate__c, Card_Name__c, Card_Number_Last_4_Digits__c
-                                           from Account_Details__c where RecType__c = 'CARD' and name =: MemberAccount.name ];
-        }
-        if(Type == '1'){
-            cardList = [select id, Name, RecType__c, Card_Number__c, TypeTranslate__c, Card_Name__c, Card_Number_Last_4_Digits__c
-                                           from Account_Details__c where RecType__c = 'CARD' and Card_Name__c =: sObjectType];
-        }*/                                   
+        System.debug('CardLocator'+CardLocator);                     
 
 		return CardNumber;
     }
@@ -258,6 +265,19 @@ public class CardLimitResetController {
         system.debug('atmlimit'+atmlimit); 
         system.debug('recordId'+recordId);
         
+        /*HttpRequest req = new HttpRequest();
+        HttpResponse res;
+        Http http = new Http();
+        string responseBody;
+        string loanAPI;
+        String jsonData;
+
+        SolarLoan_To_Episys_API_Details__c api = SolarLoan_To_Episys_API_Details__c.getValues('ProductionURL');
+                        
+        if(api.URL__c != null){
+            loanAPI = api.URL__c;
+        }*/
+
         string firstname,lastname;
         List<string> Names=membername.split(' ');
         if(Names.size() == 2){
@@ -290,9 +310,29 @@ public class CardLimitResetController {
         cl.Member_Name__c = membername;
         cl.Member_Account__c = recordId;
         cl.Member__c = pa.PersonID__c;
-        insert cl;
+        //insert cl;
 
         //createCase(cl);
+
+        /*req.setEndpoint(loanAPI+'/CardLimitReset/UpdateCardLimits');
+        req.setMethod('POST');
+        req.setHeader('Content-Type', 'application/json');
+        req.setHeader('Accept', 'application/json');
+        jsonData = '{"Locator":' + '\"'+ Locator +'\","AccountNumber":' + '\"'+ AccountNumber +'\","PosLimit":' + '\"'+ atmlimit +'\","AuthLimit":' + '\"'+ authlimit +'\"}';                 
+        req.setBodyAsBlob(Blob.valueof(jsonData));
+        req.setTimeout(60000);                    
+        
+        system.debug('responseBody'+responseBody);
+
+        if(!Test.isRunningTest()){                       
+            res = http.send(req);
+            responseBody = res.getBody();
+            System.debug('ResponseBody ::'+responseBody);    
+        }
+        else{
+            responseBody = '{"Locator":"120","AccountNumber":"0000214414","atmlimit":"5000","AuthLimit":"2500"}';
+        }*/
+
         return null;    
     }    
 }

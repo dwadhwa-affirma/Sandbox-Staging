@@ -14,11 +14,11 @@
                         <tr aria-expanded="false" aria-level="1" aria-posinset="3" aria-selected="false" aria-setsize="4" class="slds-hint-parent">
                             <td class="slds-text-align_right" role="gridcell" style="width:3.25rem">
                                 <span class="slds-radio">
-                                  <lightning:input type="radio" name="select" value="{!itemOption.Card_Number__c}" onchange="{!c.onCardChange}"/>
+                                  <lightning:input type="radio" name="select" value="{!itemOption}" onchange="{!c.onCardChange}"/>
                                 </span>
                             </td>
                             <td data-label="Employees" role="gridcell">
-                                <div class="slds-truncate" title="{!itemOption.Card_Number__c}">{!itemOption.Card_Number__c}</div>
+                                <div class="slds-truncate" title="{!itemOption}">{!itemOption}</div>
                             </td>
                          </tr>
                      </aura:iteration>
