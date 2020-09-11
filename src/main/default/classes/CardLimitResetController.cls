@@ -129,7 +129,7 @@ public class CardLimitResetController {
     }
     
     @AuraEnabled
-    public static List<Account_Details__c> getCard(string recordId, string sObjectType){
+    public static List<String> getCard(string recordId, string sObjectType){
     
         system.debug('sObjectType'+sObjectType); 
         system.debug('recordId'+recordId);
@@ -141,8 +141,10 @@ public class CardLimitResetController {
         String jsonData;
         String Type;
         String SSN;
+        List<String> CardNumber = new List<String>();
+        List<String> CardLocator = new List<String>();
         
-        /*Account acc = [select id,name,SSN_TIN_Encrypted__pc from Account where id=:sObjectType limit 1];
+        Account acc = [select id,name,SSN_TIN_Encrypted__pc from Account where id=:sObjectType limit 1];
         SSN = acc.SSN_TIN_Encrypted__pc;
        
         SolarLoan_To_Episys_API_Details__c api = SolarLoan_To_Episys_API_Details__c.getValues('ProductionURL');
@@ -156,13 +158,38 @@ public class CardLimitResetController {
         req.setHeader('Content-Type', 'application/json');
         req.setHeader('Accept', 'application/json');
         jsonData = '{"SSN":' + '\"'+ SSN +'\"}';                 
-        req.setBodyAsBlob(Blob.valueof(jsonData2));
+        req.setBodyAsBlob(Blob.valueof(jsonData));
         req.setTimeout(60000);                    
-        res = http.send(req);
-        responseBody = res.getBody();
-        system.debug('responseBody'+responseBody);*/
+        
+        
+        system.debug('responseBody'+responseBody);
 
-        List<Account_Details__c> cardList = new List<Account_Details__c>();
+        if(!Test.isRunningTest()){                       
+            res = http.send(req);
+            responseBody = res.getBody();
+            System.debug('ResponseBody ::'+responseBody);    
+        }
+        if(responseBody != '' && responseBody != null){        
+            List<object> results = (List<Object>) JSON.deserializeUntyped(responseBody);      
+            System.debug('Response is ....' + results);
+            
+            if(results.size() > 0){
+                for(Object key : results){ 
+                    Map<String, Object> carddetail = (Map<String, Object>)key;
+                    for(String l : carddetail.keyset()) {
+                        if(l == 'LoanId'){
+                            CardNumber.add(String.valueOf(carddetail.get(l)));
+                        }
+                        if(l == 'Payment'){
+                            CardLocator.add(String.valueOf(carddetail.get(l)));
+                        }  
+                    }    
+                }
+            }
+        }
+        system.debug('CardNumber'+CardNumber);
+        System.debug('CardLocator'+CardLocator);
+        /*List<Account_Details__c> cardList = new List<Account_Details__c>();
 
         Account_Details__c MemberAccount = [select id,name from Account_Details__c where id=:recordId limit 1];
 
@@ -182,9 +209,9 @@ public class CardLimitResetController {
         if(Type == '1'){
             cardList = [select id, Name, RecType__c, Card_Number__c, TypeTranslate__c, Card_Name__c, Card_Number_Last_4_Digits__c
                                            from Account_Details__c where RecType__c = 'CARD' and Card_Name__c =: sObjectType];
-        }                                   
+        }*/                                   
 
-		return cardList;
+		return CardNumber;
     }
     @AuraEnabled
     public static Change_Limit__c createCase(Change_Limit__c CLRecord){
