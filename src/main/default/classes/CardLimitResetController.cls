@@ -199,6 +199,10 @@ public class CardLimitResetController {
             responseBody = res.getBody();
             System.debug('ResponseBody ::'+responseBody);    
         }
+        else{
+            responseBody = '[{"CardNumber":"5460277067636965","ExpirationDate":"2021-10-01","CloseDate":"","CardOwner":null,"Locator":"33","Status":null,"Error":null,"ErrorDetails":null}]';
+
+        }
         if(responseBody != '' && responseBody != null){        
             List<object> results = (List<Object>) JSON.deserializeUntyped(responseBody);      
             System.debug('Response is ....' + results);
@@ -246,6 +250,7 @@ public class CardLimitResetController {
         }
         cs.Status = 'Open';
         cs.Subject = 'Limit Change';
+        cs.Account_Number__c = CLRecord.Member_Account__c;
         cs.ownerid = UserInfo.getUserId();
         if(CLRecord.Member__c != null){
             cs.AccountId = CLRecord.Member__c;
@@ -338,7 +343,7 @@ public class CardLimitResetController {
         cl.Member_Account__c = recordId;
         cl.Member__c = pa.PersonID__c;
 
-        //insert cl;
+        insert cl;
         //createCase(cl);
         return null;    
     }
