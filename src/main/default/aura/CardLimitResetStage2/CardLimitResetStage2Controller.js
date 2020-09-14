@@ -14,7 +14,8 @@
 			if(state === "SUCCESS"){
 				var result =  resp.getReturnValue();
                 if(result != undefined){
-                	component.set("v.caList", result);    					
+                	//component.set("v.caList", result);
+                    component.set('v.CardListMap', result.CardList);
                 }
 			}
 		});
@@ -24,8 +25,18 @@
 	},
     
     onCardChange: function (component, event, helper) {
-    	var cardNumber = event.getSource().get('v.value');    
-    	component.set("v.CLRecord.Card_Number__c",cardNumber);
+    	var SelectedCardNumber = event.getSource().get('v.value');
+        var SelectedCardLocator;
+        
+        var map=component.get('v.CardListMap');
+        for(var i=0;i<map.length;i++){
+        	if(map[i].CardNumber == SelectedCardNumber){
+            	SelectedCardLocator = map[i].CardLocator;  
+                break;
+            }
+        }
+    	component.set("v.CLRecord.Card_Number__c",SelectedCardNumber);
+        component.set("v.CLRecord.Card_Locator__c",SelectedCardLocator);
     	
     	var evt = $A.get("e.c:CardLimitResetEvent");
         var CL = component.get("v.CLRecord");

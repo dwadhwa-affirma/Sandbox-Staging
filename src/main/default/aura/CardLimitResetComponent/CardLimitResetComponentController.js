@@ -71,6 +71,7 @@
                 
                 var recordId = component.get("v.recordId");
                 var cardnumber = component.get("v.CLRecord.Card_Number__c");
+                var cardlocator = component.get("v.CLRecord.Card_Locator__c");
                 var membername = component.get("v.CLRecord.Member_Name__c");
                 var authlimit = component.get("v.CLRecord.Auth_POS_Limit__c");
                 var atmlimit = component.get("v.CLRecord.ATM_Usage_Limit__c");
@@ -79,6 +80,7 @@
                 action.setParams({
                 	"recordId": recordId,
                     "cardnumber": cardnumber,
+                    "cardlocator": cardlocator,
                     "membername":membername,
                     "type": type,
                     "authlimit": authlimit,

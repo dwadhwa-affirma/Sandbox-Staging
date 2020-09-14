@@ -129,10 +129,12 @@ public class CardLimitResetController {
     }
     
     @AuraEnabled
-    public static List<String> getCard(string recordId, string sObjectType){
+    public static Map<string,List<CardDetailWrapperObject>> getCard(string recordId, string sObjectType){
     
         system.debug('sObjectType'+sObjectType); 
         system.debug('recordId'+recordId);
+        Map<string,List<CardDetailWrapperObject>> resultmap = new Map<string,List<CardDetailWrapperObject>>();
+        List<CardDetailWrapperObject> resultList = new List<CardDetailWrapperObject>();
         HttpRequest req = new HttpRequest();
         HttpResponse res;
         Http http = new Http();
@@ -202,23 +204,25 @@ public class CardLimitResetController {
             System.debug('Response is ....' + results);
             
             if(results.size() > 0){
+                
                 for(Object key : results){ 
+                    CardDetailWrapperObject temp = new CardDetailWrapperObject();
                     Map<String, Object> carddetail = (Map<String, Object>)key;
-                    for(String l : carddetail.keyset()) {
-                        if(l == 'CardNumber'){
-                            CardNumber.add(String.valueOf(carddetail.get(l)));
-                        }
-                        if(l == 'Locator'){
-                            CardLocator.add(String.valueOf(carddetail.get(l)));
-                        }  
-                    }    
+                    string Card = string.valueof(carddetail.get('CardNumber'));
+                    temp.CardNumber =  string.valueof(carddetail.get('CardNumber'));
+                    temp.CardLocator =   string.valueof(carddetail.get('Locator'));
+                    resultList.add(temp);  
+                    system.debug('temp.CardNumber'+temp.CardNumber);
+                    system.debug('temp.CardLocator'+temp.CardLocator);
+                    system.debug('resultList'+resultList);
                 }
             }
         }
-        system.debug('CardNumber'+CardNumber);
-        System.debug('CardLocator'+CardLocator);                     
-
-		return CardNumber;
+        //system.debug('resultList'+resultList);
+        //system.debug('CardNumber'+CardNumber);
+        //System.debug('CardLocator'+CardLocator);                     
+        resultmap.put('CardList',resultList);
+		return resultmap;
     }
     @AuraEnabled
     public static Change_Limit__c createCase(Change_Limit__c CLRecord){
@@ -256,16 +260,17 @@ public class CardLimitResetController {
         return null;
     }
     @AuraEnabled
-    public static Change_Limit__c Submit(string recordId,string cardnumber,string membername,string type,string authlimit,string atmlimit){ 
+    public static Change_Limit__c Submit(string recordId,string cardnumber,string cardlocator,string membername,string type,string authlimit,string atmlimit){ 
         
         system.debug('membername'+membername); 
         system.debug('cardnumber'+cardnumber);
+        system.debug('cardlocator'+cardlocator);
         system.debug('type'+type); 
         system.debug('authlimit'+authlimit); 
         system.debug('atmlimit'+atmlimit); 
         system.debug('recordId'+recordId);
         
-        /*HttpRequest req = new HttpRequest();
+        HttpRequest req = new HttpRequest();
         HttpResponse res;
         Http http = new Http();
         string responseBody;
@@ -276,7 +281,7 @@ public class CardLimitResetController {
                         
         if(api.URL__c != null){
             loanAPI = api.URL__c;
-        }*/
+        }
 
         string firstname,lastname;
         List<string> Names=membername.split(' ');
@@ -301,24 +306,14 @@ public class CardLimitResetController {
                                 from Person_Account__c where PersonID__r.firstname like: firstname
                                 AND PersonID__r.LASTNAME like: lastname
                                 AND Account_Number__r.name =: AccountNumber limit 1];
+        system.debug('AccountNumber'+AccountNumber);                        
 
-        Change_Limit__c cl = new Change_Limit__c();
-        cl.Auth_POS_Limit__c = Decimal.valueOf(authlimit);
-        cl.ATM_Usage_Limit__c = Decimal.valueOf(atmlimit);
-        cl.Card_Number__c = cardnumber;
-        cl.Type__c = type;
-        cl.Member_Name__c = membername;
-        cl.Member_Account__c = recordId;
-        cl.Member__c = pa.PersonID__c;
-        //insert cl;
-
-        //createCase(cl);
-
-        /*req.setEndpoint(loanAPI+'/CardLimitReset/UpdateCardLimits');
+        req.setEndpoint(loanAPI+'/CardLimitReset/UpdateCardLimits');
         req.setMethod('POST');
         req.setHeader('Content-Type', 'application/json');
         req.setHeader('Accept', 'application/json');
-        jsonData = '{"Locator":' + '\"'+ Locator +'\","AccountNumber":' + '\"'+ AccountNumber +'\","PosLimit":' + '\"'+ atmlimit +'\","AuthLimit":' + '\"'+ authlimit +'\"}';                 
+        jsonData = '{"Locator":' + '\"'+ cardlocator +'\","AccountNumber":' + '\"'+ AccountNumber +'\","PosLimit":' + '\"'+ atmlimit +'\","AuthLimit":' + '\"'+ authlimit +'\"}';                 
+        system.debug('test'+jsonData);
         req.setBodyAsBlob(Blob.valueof(jsonData));
         req.setTimeout(60000);                    
         
@@ -331,8 +326,28 @@ public class CardLimitResetController {
         }
         else{
             responseBody = '{"Locator":"120","AccountNumber":"0000214414","atmlimit":"5000","AuthLimit":"2500"}';
-        }*/
+        }
 
+        Change_Limit__c cl = new Change_Limit__c();
+        cl.Auth_POS_Limit__c = Decimal.valueOf(authlimit);
+        cl.ATM_Usage_Limit__c = Decimal.valueOf(atmlimit);
+        cl.Card_Number__c = cardnumber;
+        cl.Card_Locator__c = cardlocator;
+        cl.Type__c = type;
+        cl.Member_Name__c = membername;
+        cl.Member_Account__c = recordId;
+        cl.Member__c = pa.PersonID__c;
+
+        //insert cl;
+        //createCase(cl);
         return null;    
+    }
+    public class CardDetailWrapperObject{
+
+        @AuraEnabled
+        public String CardNumber {get;set;}
+        @AuraEnabled
+        public string CardLocator {get;set;}
+          
     }    
 }

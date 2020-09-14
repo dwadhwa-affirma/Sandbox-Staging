@@ -3,22 +3,22 @@
 <aura:registerEvent name="CardLimitResetEvent" type="c:CardLimitResetEvent"/>
 <aura:attribute name="CLRecord" type="Change_Limit__c"/> 
 <aura:handler name="init" action="{!c.doInit}" value="{!this}" access="global" />
-<aura:attribute name="caList" type="Account_Details__c[]" />  
+<aura:attribute name="CardListMap" type="List" />
 
 	<div id = "stage2" class = "align">    
         <p class = "fontstyle">Select Card</p>
             <br/>
             <table aria-multiselectable="true" class="slds-table slds-table_header-hidden slds-table_edit slds-tree slds-table_tree" role="treegrid">
                 <tbody>
-                    <aura:iteration items="{!v.caList}" var="itemOption" indexVar="i">                  
+                    <aura:iteration items="{!v.CardListMap}" var="itemOption" indexVar="i">                  
                         <tr aria-expanded="false" aria-level="1" aria-posinset="3" aria-selected="false" aria-setsize="4" class="slds-hint-parent">
                             <td class="slds-text-align_right" role="gridcell" style="width:3.25rem">
                                 <span class="slds-radio">
-                                  <lightning:input type="radio" name="select" value="{!itemOption}" onchange="{!c.onCardChange}"/>
+                                  <lightning:input type="radio" name="select" value="{!itemOption.CardNumber}" onchange="{!c.onCardChange}"/>
                                 </span>
                             </td>
                             <td data-label="Employees" role="gridcell">
-                                <div class="slds-truncate" title="{!itemOption}">{!itemOption}</div>
+                                <div class="slds-truncate" title="{!itemOption.CardNumber}">{!itemOption.CardNumber}</div>
                             </td>
                          </tr>
                      </aura:iteration>
