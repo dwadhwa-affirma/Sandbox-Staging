@@ -45,27 +45,29 @@ public class CardLimitResetControllerTest {
            
      //---------------------------------------- Creating Solar Loan record---------------------------------------------//
      
-     Test.startTest();
-     List<Change_Limit__c> ChangeLimit_Obj = new List<Change_Limit__c>();
-     Change_Limit__c cl = new Change_Limit__c();
+    Test.startTest();
+    List<Change_Limit__c> ChangeLimit_Obj = new List<Change_Limit__c>();
+    Change_Limit__c cl = new Change_Limit__c();
      
-     cl.Auth_POS_Limit__c = 1200.00;
-     cl.ATM_Usage_Limit__c = 1100.00;
-     cl.Card_Number__c = '5460277067636965';
-     cl.Card_Locator__c = '33';
-     cl.Type__c = 'Change Card Limits';
-     cl.Member_Name__c = 'JEFF PACHECO FRANKLIN';
-     cl.Member_Account__c = account_details_Obj[0].id;
-     cl.Member__c = person_obj[0].id;
+    cl.Auth_POS_Limit__c = 1200.00;
+    cl.ATM_Usage_Limit__c = 1100.00;
+    cl.Card_Number__c = '5460277067636965';
+    cl.Card_Locator__c = '33';
+    cl.Type__c = 'Change Card Limits';
+    cl.Member_Name__c = 'JEFF PACHECO FRANKLIN';
+    cl.Member_Account__c = account_details_Obj[0].id;
+    cl.Member__c = person_obj[0].id;
  
-     ChangeLimit_Obj.add(cl);
-        
+    ChangeLimit_Obj.add(cl);
+    
+    RecordType rList = [Select id  From RecordType  Where sObjectType = 'Case'and RecordType.Name = 'Card Services'];
 	CaseRecordType__c crt = new CaseRecordType__c();
     crt.Primary_Category__c = 'Card Services';
     crt.Secondary_Category__c = 'ATM/DEBIT';
     crt.Teritiary_Category__c = 'Limit Changes';
     crt.Name = 'AAA';
-    crt.SLA__c = 50;
+    crt.SLA__c = 1;
+    crt.RecordTypeId__c = rList.id;
     insert crt;    
       
     test.stopTest();

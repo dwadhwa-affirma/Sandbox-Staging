@@ -222,9 +222,7 @@ public class CardLimitResetController {
                 }
             }
         }
-        //system.debug('resultList'+resultList);
-        //system.debug('CardNumber'+CardNumber);
-        //System.debug('CardLocator'+CardLocator);                     
+                        
         resultmap.put('CardList',resultList);
 		return resultmap;
     }
@@ -241,7 +239,7 @@ public class CardLimitResetController {
         
         Case cs = new case();
         for(CaseRecordType__c crt : scList){
-            cs.RecordTypeId = scList[0].RecordTypeId__c;
+            cs.RecordTypeId = scList[0].RecordTypeId__c; 
             cs.Primary_Category__c = scList[0].Primary_Category__c;
             cs.Secondary_Category__c = scList[0].Secondary_Category__c;
             cs.Tertiary_Category__c = scList[0].Teritiary_Category__c;
@@ -344,7 +342,7 @@ public class CardLimitResetController {
         cl.Member__c = pa.PersonID__c;
 
         insert cl;
-        //createCase(cl);
+        createCase(cl);
         return null;    
     }
     public class CardDetailWrapperObject{
