@@ -163,7 +163,10 @@
                     component.set("v.EFTRecord.Routing_Number__c",EFTList[i].Routing_Number__c);
                     component.set("v.EFTRecord.Type__c",EFTList[i].Type__c);
                     component.set("v.EFTRecord.Payment_Amount__c",EFTList[i].Payment_Amount__c);
-                    component.set("v.EFTRecord.Alternate_Amount__c",EFTList[i].Alternate_Amount__c);
+                    if(EFTList[i].Share_Loan_Id__c.startsWith('28'))
+                        component.set("v.EFTRecord.Alternate_Amount__c",EFTList[i].Alternate_Amount__c);
+                    else
+                        component.set("v.EFTRecord.Alternate_Amount__c",0.00);
                     component.set("v.EFTRecord.Effective_Date__c",EFTList[i].Effective_Date__c);
                     component.set("v.EFTRecord.Frequency__c",EFTList[i].Frequency__c);
                     component.set("v.EFTRecord.Day_of_Month__c",EFTList[i].Day_of_Month__c);
