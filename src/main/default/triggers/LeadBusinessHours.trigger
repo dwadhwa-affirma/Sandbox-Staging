@@ -115,7 +115,7 @@ trigger LeadBusinessHours on Lead (after insert, before insert, before update, a
      		{
      			  
      				
-     				if(lead.Status == 'New' && (lead.LeadSource == 'Branch Walk in' || lead.LeadSource == 'Branch Call') )
+     				if(lead.Status == 'New' && lead.Product_Type__c != 'Mortgage' && (lead.LeadSource == 'Branch Walk in' || lead.LeadSource == 'Branch Call') )
 		      		{
 		      			if(episysUsers.size() > 0)
 		      			{
