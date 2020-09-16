@@ -67,7 +67,7 @@
         
         if(sobjecttype != 'Account'){
             
-            if(component.get("v.ContinueButtonName") == 'Submit'){
+            if(component.get("v.ContinueButtonName") == 'Submit' && component.get("v.CLRecord.Type__c") == 'Change Card Limits'){
                 
                 var recordId = component.get("v.recordId");
                 var cardnumber = component.get("v.CLRecord.Card_Number__c");
@@ -100,6 +100,40 @@
                 
                 helper.hideSpinner(component);
             }
+            else if(component.get("v.ContinueButtonName") == 'Submit' && component.get("v.CLRecord.Type__c") != 'Change Card Limits'){
+                
+                var recordId = component.get("v.recordId");
+                var cardnumber = component.get("v.CLRecord.Card_Number__c");
+                var cardlocator = component.get("v.CLRecord.Card_Locator__c");
+                var membername = component.get("v.CLRecord.Member_Name__c");
+                var authlimit = component.get("v.CLRecord.Auth_POS_Limit__c");
+                var atmlimit = component.get("v.CLRecord.ATM_Usage_Limit__c");
+                var type = component.get("v.CLRecord.Type__c");   
+				var action = component.get("c.Submit");
+                action.setParams({
+                	"recordId": recordId,
+                    "cardnumber": cardnumber,
+                    "cardlocator": cardlocator,
+                    "membername":membername,
+                    "type": type,
+                    "authlimit": authlimit,
+                    "atmlimit": atmlimit
+                    
+                    
+                });
+                action.setCallback(this, function (response) {
+           		debugger;
+        		var status = response.getState();            
+            		if (component.isValid() && status === "SUCCESS") {
+                    	component.set("v.isExit", true);
+    					$A.get("e.force:closeQuickAction").fire();
+                    }
+                });	
+       			$A.enqueueAction(action); 
+                
+                helper.hideSpinner(component);
+                
+            }                
             else{
                 
                 for(var i=0; i<stages.length;i++){
@@ -203,6 +237,8 @@
                             stages2[0].Stage_Action__c = component.get("v.CLRecord.Member_Name__c");
                             stages2[i].Stage_Action__c = dynamicText;
                             component.set("v.ChangeLimitStageDetails", stages2);
+                            component.set("v.CLRecord.ATM_Usage_Limit__c", '510.00');
+                            component.set("v.CLRecord.Auth_POS_Limit__c", '2500.00');
                             
                             $A.createComponent("c:"+stages[i+1].Stage_Component__c,{recordId: component.get("v.recordId"), CLRecord: component.get("v.CLRecord")},
                                 function(msgBox){           
@@ -215,6 +251,7 @@
                                     helper.hideSpinner(component);	
                                 }
                                 );
+                            component.set("v.ContinueButtonName", 'Submit');
                             break;
                         }
                         if(i==3 && component.get("v.CLRecord.Type__c") == 'Change Card Limits' && component.get("v.CLRecord.ATM_Usage_Limit__c") != undefined

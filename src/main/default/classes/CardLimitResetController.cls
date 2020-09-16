@@ -311,24 +311,34 @@ public class CardLimitResetController {
                                 AND Account_Number__r.name =: AccountNumber limit 1];
         system.debug('AccountNumber'+AccountNumber);                        
 
-        req.setEndpoint(loanAPI+'/CardLimitReset/UpdateCardLimits');
-        req.setMethod('POST');
-        req.setHeader('Content-Type', 'application/json');
-        req.setHeader('Accept', 'application/json');
-        jsonData = '{"Locator":' + '\"'+ cardlocator +'\","AccountNumber":' + '\"'+ AccountNumber +'\","PosLimit":' + '\"'+ atmlimit +'\","AuthLimit":' + '\"'+ authlimit +'\"}';                 
-        system.debug('test'+jsonData);
-        req.setBodyAsBlob(Blob.valueof(jsonData));
-        req.setTimeout(60000);                    
-        
-        system.debug('responseBody'+responseBody);
+        if(type == 'Change Card Limits'){
 
-        if(!Test.isRunningTest()){                       
-            res = http.send(req);
-            responseBody = res.getBody();
-            System.debug('ResponseBody ::'+responseBody);    
+            System.debug('Change Card Limits');
+
+            req.setEndpoint(loanAPI+'/CardLimitReset/UpdateCardLimits');
+            req.setMethod('POST');
+            req.setHeader('Content-Type', 'application/json');
+            req.setHeader('Accept', 'application/json');
+            jsonData = '{"Locator":' + '\"'+ cardlocator +'\","AccountNumber":' + '\"'+ AccountNumber +'\","PosLimit":' + '\"'+ atmlimit +'\","AuthLimit":' + '\"'+ authlimit +'\"}';                 
+            system.debug('test'+jsonData);
+            req.setBodyAsBlob(Blob.valueof(jsonData));
+            req.setTimeout(60000);                    
+            
+            system.debug('responseBody'+responseBody);
+
+            if(!Test.isRunningTest()){                       
+                res = http.send(req);
+                responseBody = res.getBody();
+                System.debug('ResponseBody ::'+responseBody);    
+            }
+            else{
+                responseBody = '{"Locator":"120","AccountNumber":"0000214414","atmlimit":"5000","AuthLimit":"2500"}';
+            }
+
         }
-        else{
-            responseBody = '{"Locator":"120","AccountNumber":"0000214414","atmlimit":"5000","AuthLimit":"2500"}';
+        if(type == 'Reset Card Limits'){
+
+            System.debug('Reset Card Limits');
         }
 
         Change_Limit__c cl = new Change_Limit__c();
