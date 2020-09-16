@@ -247,6 +247,8 @@ public class ConvertPreMemberToMemberBatchClassTest {
         Test.startTest();
         ConvertPreMemberToMemberBatchClass a = new ConvertPreMemberToMemberBatchClass();
         Database.executeBatch(a);
+        ConvertPreMemberToMemberWebservice.Convert();
+        ConvertPreMemberToMemberWebservice.CreateCaseForNonMatchedMember();
         Test.stopTest();
       
     }
