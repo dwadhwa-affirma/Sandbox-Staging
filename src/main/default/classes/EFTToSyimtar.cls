@@ -532,7 +532,7 @@ public class EFTToSyimtar {
                                      + '\n' +'Effective Date:' + e.Effective_Date__c
                                      + '\n' +'Frequency:' + e.Frequency__c
 									 + '\n' +'Day of Month:' + e.Day_of_Month__c
-									 + '\n' +'\n' + 'EFT Locator: ' + resultEFTLocator;
+									 + '\n' +'\n' + 'EFT Locator: ' + EftLocator;
 	        			CaseIdsToUpdate.put(e.Case__c, operation);
 	        		}
 	        		else{
@@ -541,7 +541,7 @@ public class EFTToSyimtar {
 	                					+ '\n' + 'ABA/Routing#: ' + e.Routing_Number__c
 	                					+ '\n' + 'Account Number: '+ e.Account_Number__c
 										+ '\n' + 'Additional Payment Amount: ' + e.Alternate_Amount__c
-										+ '\n' +'\n' + 'EFT Locator: ' + resultEFTLocator;
+										+ '\n' +'\n' + 'EFT Locator: ' + EftLocator;
 	                	CaseIdsToUpdate.put(e.Case__c, casedesc);
 	        		
 					}

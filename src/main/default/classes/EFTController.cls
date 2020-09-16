@@ -299,7 +299,7 @@ public class EFTController {
 				//cs.AccountId = EFTRecord.Member_Account__c;
 				cs.Status = 'Open';
                 cs.Subject = 'ACH Record';
-                system.debug('createdby==='+EFTRecord.CreatedBy.Id);
+                //system.debug('createdby==='+EFTRecord.CreatedBy.Id);
                 cs.ownerid = UserInfo.getUserId();
                 if(pa != null){
                     cs.AccountId = pa.PersonID__c;
