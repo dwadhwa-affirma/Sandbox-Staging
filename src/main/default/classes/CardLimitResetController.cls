@@ -220,7 +220,7 @@ public class CardLimitResetController {
                     system.debug('temp.CardLocator'+temp.CardLocator);
                     system.debug('resultList'+resultList);
                 }
-            }
+            } 
         }
                         
         resultmap.put('CardList',resultList);
