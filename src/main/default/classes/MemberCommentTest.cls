@@ -23,12 +23,20 @@
 public class MemberCommentTest {
 
     static testMethod void MemberCommentUnitTest() {
-       MemberComment mc = new MemberComment();
-       mc.CreatedById ='';
-       mc.CreatedDate= System.Today();
-       mc.ShortComment='rr';
-       mc.FullComment = 'rrrr0';
-      
+       
+       Case cs = new Case();
+       cs.Brand__c = 'Spectrum';
+       cs.Subject = 'This is a test Case to Upload Attachment.';
+       cs.status ='In Process';
+       insert cs;
+       
+       ContentVersion objAt = new ContentVersion(Title = 'Test Document',PathOnClient = 'TestDocument.pdf',VersionData = Blob.valueOf('Test Content'), IsMajorVersion = true);
+       Insert objAt; 
+        
+       Member_Comment__c mc = new Member_Comment__c();
+       mc.Member_Communication__c = '<img src="/version/download/'+objAt.id;
+       mc.Case__c = cs.id;
+       insert mc;     
         
     }
 }
