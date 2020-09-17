@@ -30,7 +30,6 @@
         var RecordId = component.get("v.recordId");
         helper.ApproveTransactions(component, event,helper,RecordId,"Approve",false);
     },
-    
     RejectTransaction: function(component, event, helper) {
         var RecordId = component.get("v.recordId");
         helper.ApproveTransactions(component, event,helper,RecordId,"Reject",false);
@@ -39,18 +38,19 @@
         component.find("overlayLib1").notifyClose();
     },
     NextTransactions:function(component, event, helper) {
-         var RecordId = component.get("v.recordId");
+        var RecordId = component.get("v.recordId");
         var wireAmount=component.get("v.WiresObject.WireAmount__c");
         var balanceStatusCode=component.get("v.BalanceStatusCode");
-        if(wireAmount>250000) {
-            component.set("v.isGoodFundCheck",true);
-            component.set("v.isNextVisible",false);
-        }else{
+        if(wireAmount>10000) {
             if(balanceStatusCode<=0){
                 helper.ApproveTransactions(component, event,helper,RecordId,"Good Funds Check Failed",true);
             }else{
-                helper.ApproveTransactions(component, event,helper,RecordId,"Approve",true);
-            }
+                if(wireAmount>250000){
+                      helper.ApproveTransactions(component, event,helper,RecordId,"Pending for Approval",true);
+                }else{
+                    helper.ApproveTransactions(component, event,helper,RecordId,"Approve",true);
+                }
+            }   
         }
     },
     FailRedFlagsCheck:function(component, event, helper) {

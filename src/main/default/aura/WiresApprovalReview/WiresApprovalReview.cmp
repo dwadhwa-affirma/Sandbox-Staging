@@ -20,7 +20,8 @@
             }
         </aura:html>   
         
-        <aura:if isTrue="{!(v.WiresObject.Approval_Status__c=='Good Funds Check Failed')}">
+        <aura:if isTrue="{!or(v.WiresObject.Approval_Status__c=='Good Funds Check Failed',
+                         and(v.WiresObject.Approval_Status__c=='Pending for Approval',greaterthan(v.WiresObject.TotalFromAccount__c,0)))}">
             <table>
                 <tr class="trReview">
                     <td><ui:inputCheckbox class="checkbox" value="{!v.WiresObject.Available_Balance_Review__c}" change="{!c.onCheck}"/></td>
@@ -123,7 +124,9 @@
     </div>
     <div style="margin-top: 10px;">
         
-        <aura:if isTrue="{!(v.WiresObject.Approval_Status__c=='Good Funds Check Failed')}">
+        <aura:if isTrue="{!or(v.WiresObject.Approval_Status__c=='Good Funds Check Failed',
+                         and(v.WiresObject.Approval_Status__c=='Pending for Approval',greaterthan(v.WiresObject.TotalFromAccount__c,0)))}">
+            
             <footer class="slds-modal__footer" id="WiresApprovalReviewPageFooter">
                 <lightning:button variant="brand" label="Approve" onclick="{!c.ApproveTransactions}"/>
                 <lightning:button variant="brand" label="Reject" onclick="{!c.RejectTransaction}" />    

@@ -29,7 +29,8 @@ public class WiresTransactionApprovalController {
             }
         }
         System.debug('Status'+WiresList.Approval_Status__c);
-        if(WiresList.Approval_Status__c=='Good Funds Check Failed'){
+        if(WiresList.Approval_Status__c=='Good Funds Check Failed' 
+           || (WiresList.Approval_Status__c=='Pending for Approval' && WiresList.TotalFromAccount__c>250000)){
             
             Group grpA = [SELECT DeveloperName,Email,Id,Name,RelatedId,Type 
                           FROM Group WHERE DeveloperName ='Branch_Group_A' Limit 1];
@@ -134,6 +135,21 @@ public class WiresTransactionApprovalController {
                                       from WIRES_Transaction__c where id=:WiresRecordId limit 1];
         if(Action == 'Reject'){
             Wires.Approval_Status__c = 'Rejected'; 
+        }
+        if(Action=='Pending for Approval'){
+            Wires.Approval_Status__c = 'Pending for Approval'; 
+        }
+        if(Action == 'Good Funds Check Failed'){
+            Wires.Approval_Status__c = 'Good Funds Check Failed';
+            Wires.AccountStableReview__c = WiresObject.AccountStableReview__c;
+            Wires.Available_Balance_Review__c = WiresObject.Available_Balance_Review__c;
+            Wires.Review_Reason__c = WiresObject.Review_Reason__c;
+            Wires.EmailStableReview__c = WiresObject.EmailStableReview__c;
+            Wires.Home_Phone_Stable_Review__c = WiresObject.Home_Phone_Stable_Review__c;
+            Wires.ID_Verification_Review__c = WiresObject.ID_Verification_Review__c;
+            Wires.Mobile_Phone_Stable_Review__c = WiresObject.Mobile_Phone_Stable_Review__c;
+            Wires.Previous_Wires_Review__c = WiresObject.Previous_Wires_Review__c;
+            Wires.Work_Phone_Stable_Review__c = WiresObject.Work_Phone_Stable_Review__c;
         }
         else if((Wires.Approval_Status__c == 'Pending for Approval'|| Wires.Approval_Status__c == 'Fraud Review'
                 || Wires.Approval_Status__c == 'Good Funds Check Failed')){
@@ -241,7 +257,11 @@ public class WiresTransactionApprovalController {
                    if(isGoodFundCheck==true && statusCode<=0){
                        wt.Approval_Status__c = 'Good Funds Check Failed';
                        wiresToUpdate.add(wt);
-                   }else{
+                   }else if(isGoodFundCheck==true && statusCode>0 && wt.TotalFromAccount__c>250000 ){
+                       wt.Approval_Status__c = 'Pending for Approval';
+                       wiresToUpdate.add(wt);
+                   }
+                   else{
                        wt.Approval_Status__c = 'Approved';
                        wt.Approved_by_1st_Approver__c = UserInfo.getUserId();
                        wiresToUpdate.add(wt);
