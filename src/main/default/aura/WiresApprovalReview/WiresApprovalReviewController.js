@@ -28,21 +28,29 @@
     },
     ApproveTransactions: function(component, event, helper) {
         var RecordId = component.get("v.recordId");
-        helper.ApproveTransactions(component, event,helper,RecordId,"Approve");
+        helper.ApproveTransactions(component, event,helper,RecordId,"Approve",false);
     },
     
     RejectTransaction: function(component, event, helper) {
         var RecordId = component.get("v.recordId");
-        helper.ApproveTransactions(component, event,helper,RecordId,"Reject");
+        helper.ApproveTransactions(component, event,helper,RecordId,"Reject",false);
     },
     CancelTransaction:function(component, event, helper) {
         component.find("overlayLib1").notifyClose();
     },
     NextTransactions:function(component, event, helper) {
+         var RecordId = component.get("v.recordId");
         var wireAmount=component.get("v.WiresObject.WireAmount__c");
-        if(wireAmount>10000) {
+        var balanceStatusCode=component.get("v.BalanceStatusCode");
+        if(wireAmount>250000) {
             component.set("v.isGoodFundCheck",true);
             component.set("v.isNextVisible",false);
+        }else{
+            if(balanceStatusCode<=0){
+                helper.ApproveTransactions(component, event,helper,RecordId,"Good Funds Check Failed",true);
+            }else{
+                helper.ApproveTransactions(component, event,helper,RecordId,"Approve",true);
+            }
         }
     },
     FailRedFlagsCheck:function(component, event, helper) {

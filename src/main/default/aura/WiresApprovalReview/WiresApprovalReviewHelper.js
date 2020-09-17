@@ -1,7 +1,7 @@
 ({
     
     
-    ApproveTransactions: function(component, event,helper, recordId, actionType) {
+    ApproveTransactions: function(component, event,helper, recordId, actionType,isFromGoodFundCheck) {
         var action = component.get("c.ApproveTransaction");
         var wires = JSON.stringify(component.get("v.WiresObject"))
         action.setParams({"WiresRecordId": recordId, "Action": actionType,
@@ -14,9 +14,18 @@
             if (component.isValid() && status === "SUCCESS") {
                 var result = response.getReturnValue();
                 if(actionType == 'Approve')
-                    alert('Transaction Approved Successfully');
-                else
-                    alert('Transaction Rejected Successfully');  
+                    if(isFromGoodFundCheck) {
+                   	 alert('Good Funds Deposit Found. Transaction has been Approved.');
+                    }else{
+                     alert('Transaction has been Approved.');   
+                    }
+                else{
+                    if(isFromGoodFundCheck) {
+                        alert('Good Funds Deposit Not Found. Transaction has been sent to Good Fund Review.');
+                    }else{
+                        alert('Transaction has been Rejected.');  
+                    }
+                }
                 $A.get('e.force:refreshView').fire();
                 location.reload();
             }            

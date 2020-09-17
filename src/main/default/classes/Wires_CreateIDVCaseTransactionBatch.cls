@@ -43,7 +43,7 @@ global class Wires_CreateIDVCaseTransactionBatch implements Database.Batchable<s
                 cs.Sla__c = scList[0].SLA__c;
                 
             }    
-            cs.Status = 'Open';
+            cs.Status = 'Closed';
             cs.Subject = 'IDV Incomplete – Cancelled';
             cs.ownerid = UserInfo.getUserId();
             if(accDetail != null){
