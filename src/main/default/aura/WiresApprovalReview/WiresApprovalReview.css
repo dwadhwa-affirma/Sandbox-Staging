@@ -3,6 +3,6 @@
 }
 
 .THIS .tblNumber{
-   text-align: right;
-   max-width: 0rem;
+   text-align: left;
+   max-width: 90px;
 }

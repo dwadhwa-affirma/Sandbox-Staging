@@ -1,127 +1,131 @@
 ({
-	doInit : function(component, event, helper) {
+    doInit : function(component, event, helper) {
         if(!component.get("v.WiresObject.FlagAccountOpenfor45Days__c") ||
-          !component.get("v.WiresObject.FlagEmailStablefor30Days__c") ||
-          !component.get("v.WiresObject.FlagHomePhoneStablefor30Days__c") ||
-          !component.get("v.WiresObject.FlagMobilePhoneStablefor30Days__c") ||
+           !component.get("v.WiresObject.FlagEmailStablefor30Days__c") ||
+           !component.get("v.WiresObject.FlagHomePhoneStablefor30Days__c") ||
+           !component.get("v.WiresObject.FlagMobilePhoneStablefor30Days__c") ||
            !component.get("v.WiresObject.FlagWorkPhoneStablefor30Days__c")){
-             component.set("v.isReasonRequired",true);
+            component.set("v.isReasonRequired",true);
         }
-	/*var accDays = component.get("v.WiresObject.AccountOpenfor45Days");
-		 if(accDays.indexOf("Wires_Green_Check") > -1){
-                    component.set("v.AccountOpenfor45Days","Green");
-             		
-                }
-                else{
-                   component.set("v.AccountOpenfor45Days","Red"); 
-                    component.set("v.isReasonRequired",true);
-                }
-       	var emailStable = component.get("v.EmailStable");
-		if(emailStable.indexOf("Wires_EmailGreen") > -1){
-                    component.set("v.EmailStable","Green");
-                }
-        else{
-                   component.set("v.EmailStable","Red");
-             	   component.set("v.isReasonRequired",true);
+        
+        var wireAmount=component.get("v.WiresObject.WireAmount__c");
+        var docusignStatus=component.get("v.WiresObject.Status__c");
+        var isIDVUsed=component.get("v.WiresObject.Identity_Verification_Used__c");
+        var RecordId = component.get("v.recordId");
+        
+        if(wireAmount>5000) {
+            component.set("v.isIDVAuthentication",true);
+            if(docusignStatus!='Completed'){
+                component.set("v.isIDVAuthDone",false);
+            }else{
+                component.set("v.isIDVAuthDone",true);
             }
-        var homephoneStable = component.get("v.HomePhoneStable");
-        if(homephoneStable.indexOf("Wires_HomePhoneGreen") > -1){
-                    component.set("v.HomePhoneStable","Green");
-                }
-                else{
-                   component.set("v.HomePhoneStable","Red"); 
-                     component.set("v.isReasonRequired",true);
-                }
-        var workphoneStable = component.get("v.WorkPhoneStable");
-        if(workphoneStable.indexOf("Wires_WorkPhoneGreen") > -1){
-                    component.set("v.WorkPhoneStable","Green");
-                }
-                else{
-                   component.set("v.WorkPhoneStable","Red"); 
-                     component.set("v.isReasonRequired",true);
-                }
-        var mobilephoneStable = component.get("v.MobilePhoneStable");
-        if(mobilephoneStable.indexOf("Wires_MobilePhoneGreen") > -1){
-           	component.set("v.MobilePhoneStable","Green");
         }
-        else{
-              component.set("v.MobilePhoneStable","Red"); 
-             component.set("v.isReasonRequired",true);
-        }*/
         
-        
-        
-       
-	
-	},
-    
-     
+        if(wireAmount>10000) {
+            component.set("v.isNextVisible",true);
+        }
+    },
     ApproveTransactions: function(component, event, helper) {
         var RecordId = component.get("v.recordId");
-		helper.ApproveTransactions(component, event,helper,RecordId,"Approve");
+        helper.ApproveTransactions(component, event,helper,RecordId,"Approve",false);
     },
-    
     RejectTransaction: function(component, event, helper) {
         var RecordId = component.get("v.recordId");
-		helper.ApproveTransactions(component, event,helper,RecordId,"Reject");
+        helper.ApproveTransactions(component, event,helper,RecordId,"Reject",false);
     },
-    
-     closeModal: function(component, event, helper) {
-	  $A.get('e.force:closeQuickAction').fire();
-   }, 
-    
+    CancelTransaction:function(component, event, helper) {
+        component.find("overlayLib1").notifyClose();
+    },
+    NextTransactions:function(component, event, helper) {
+        var RecordId = component.get("v.recordId");
+        var wireAmount=component.get("v.WiresObject.WireAmount__c");
+        var balanceStatusCode=component.get("v.BalanceStatusCode");
+        if(wireAmount>10000) {
+            if(balanceStatusCode<=0){
+                helper.ApproveTransactions(component, event,helper,RecordId,"Good Funds Check Failed",true);
+            }else{
+                if(wireAmount>250000){
+                      helper.ApproveTransactions(component, event,helper,RecordId,"Pending for Approval",true);
+                }else{
+                    helper.ApproveTransactions(component, event,helper,RecordId,"Approve",true);
+                }
+            }   
+        }
+    },
+    FailRedFlagsCheck:function(component, event, helper) {
+        var RecordId = component.get("v.recordId");
+        helper.SendToFraud(component, event, helper,RecordId);
+    },
+    FailGoodFundCheck:function(component, event, helper) {
+        var RecordId = component.get("v.recordId");
+        helper.SendToGoodFuncdCheckFailed(component, event, helper,RecordId);
+    },
+    closeModal: function(component, event, helper) {
+        $A.get('e.force:closeQuickAction').fire();
+    }, 
+    CloseDialog: function(component, event, helper) {
+        component.find("overlayLib1").notifyClose();
+    },
     onCheck: function(component, event, helper) {
-        if(component.get("v.WiresObject.Approval_Status__c") == 'Pending for Approval'){
-                 if(!component.get("v.isReasonRequired") && component.get("v.WiresObject.AccountStableReview__c") &&
-                  component.get("v.WiresObject.Available_Balance_Review__c") &&
-                  component.get("v.WiresObject.EmailStableReview__c") &&
-                  component.get("v.WiresObject.Home_Phone_Stable_Review__c") &&
-                  component.get("v.WiresObject.ID_Verification_Review__c") &&
-                   component.get("v.WiresObject.Mobile_Phone_Stable_Review__c") &&
-                   component.get("v.WiresObject.Previous_Wires_Review__c") &&
-                   component.get("v.WiresObject.Work_Phone_Stable_Review__c") ){
+        var isGoodFundCheck=component.get("v.isGoodFundCheck");
+        var isNextVisible=component.get("v.isNextVisible");
+        
+        if(component.get("v.WiresObject.Approval_Status__c") == 'Pending for Approval' || 
+           component.get("v.WiresObject.Approval_Status__c") == 'Fraud Review'){
+            if(!component.get("v.isReasonRequired") && 
+               component.get("v.WiresObject.AccountStableReview__c") &&
+               component.get("v.WiresObject.EmailStableReview__c") &&
+               component.get("v.WiresObject.Home_Phone_Stable_Review__c") &&
+               component.get("v.WiresObject.Mobile_Phone_Stable_Review__c") &&
+               component.get("v.WiresObject.Work_Phone_Stable_Review__c") ){
+                
+                if(isNextVisible){
+                    component.set("v.isNextDisabled", false);
+                }else{
                     component.set("v.isApproveDisabled", false);
                 }
-                else if(component.get("v.isReasonRequired") && component.get("v.WiresObject.AccountStableReview__c") &&
-                  component.get("v.WiresObject.Available_Balance_Review__c") &&
-                  component.get("v.WiresObject.EmailStableReview__c") &&
-                  component.get("v.WiresObject.Home_Phone_Stable_Review__c") &&
-                  component.get("v.WiresObject.ID_Verification_Review__c") &&
-                   component.get("v.WiresObject.Mobile_Phone_Stable_Review__c") &&
-                   component.get("v.WiresObject.Previous_Wires_Review__c") &&
-                   component.get("v.WiresObject.Work_Phone_Stable_Review__c") && (component.get("v.WiresObject.Review_Reason__c") != "" && component.get("v.WiresObject.Review_Reason__c") != undefined)){
+            }
+            else if(component.get("v.isReasonRequired") && 
+                    component.get("v.WiresObject.AccountStableReview__c") &&
+                    component.get("v.WiresObject.EmailStableReview__c") &&
+                    component.get("v.WiresObject.Home_Phone_Stable_Review__c") &&
+                    component.get("v.WiresObject.Mobile_Phone_Stable_Review__c") &&
+                    component.get("v.WiresObject.Work_Phone_Stable_Review__c") 
+                    && (component.get("v.WiresObject.Review_Reason__c") != "" && component.get("v.WiresObject.Review_Reason__c") != undefined)){
+                if(isNextVisible){
+                    component.set("v.isNextDisabled", false);
+                }else{
                     component.set("v.isApproveDisabled", false);
                 }
+            }
                 else{
-                    component.set("v.isApproveDisabled", true);
+                    if(isNextVisible){
+                        component.set("v.isNextDisabled", true);
+                    }else{
+                        component.set("v.isApproveDisabled", true);
+                    }
                 }
-     		}
-        if(component.get("v.WiresObject.Approval_Status__c") == 'Pending for Second Approval'){
-                 if(!component.get("v.isReasonRequired") && component.get("v.WiresObject.Account_Stable_2nd_Review__c") &&
-                  component.get("v.WiresObject.Available_Balance_2nd_Review__c") &&
-                  component.get("v.WiresObject.Email_Stable_2nd_Review__c") &&
-                  component.get("v.WiresObject.Home_Phone_Stable_2nd_Review__c") &&
-                  component.get("v.WiresObject.ID_Verification_2nd_Review__c") &&
-                   component.get("v.WiresObject.Mobile_Phone_Stable_2nd_Review__c") &&
-                   component.get("v.WiresObject.Previous_Wires_2nd_Review__c") &&
-                   component.get("v.WiresObject.Work_Phone_Stable_2nd_Review__c") ){
+        }
+        
+        if(isGoodFundCheck){
+            if(component.get("v.WiresObject.Approval_Status__c") == 'Pending for Approval'){
+                if(! component.get("v.WiresObject.Available_Balance_Review__c") &&
+                   component.get("v.WiresObject.Previous_Wires_Review__c")){
+                    component.set("v.isApproveDisabled", true);
+                }else{
                     component.set("v.isApproveDisabled", false);
                 }
-                else if(component.get("v.isReasonRequired") && component.get("v.WiresObject.Account_Stable_2nd_Review__c") &&
-                  component.get("v.WiresObject.Available_Balance_2nd_Review__c") &&
-                  component.get("v.WiresObject.Email_Stable_2nd_Review__c") &&
-                  component.get("v.WiresObject.Home_Phone_Stable_2nd_Review__c") &&
-                  component.get("v.WiresObject.ID_Verification_2nd_Review__c") &&
-                   component.get("v.WiresObject.Mobile_Phone_Stable_2nd_Review__c") &&
-                   component.get("v.WiresObject.Previous_Wires_2nd_Review__c") &&
-                   component.get("v.WiresObject.Work_Phone_Stable_2nd_Review__c") && (component.get("v.WiresObject.Second_Approval_Review_Reason__c") != "" && component.get("v.WiresObject.Second_Approval_Review_Reason__c") != undefined)){
+            }
+            
+            if(component.get("v.WiresObject.Approval_Status__c") == 'Pending for Second Approval'){
+                if(! component.get("v.WiresObject.Available_Balance_2nd_Review__c") &&
+                   component.get("v.WiresObject.Previous_Wires_2nd_Review__c")){
+                    component.set("v.isApproveDisabled", true);
+                }else{
                     component.set("v.isApproveDisabled", false);
                 }
-                else{
-                    component.set("v.isApproveDisabled", true);
-                }
-     		}
-	  
-   }, 
-   
+            }
+        }
+    }
 })

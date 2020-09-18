@@ -14,7 +14,7 @@
     <aura:attribute name= "MobilePhoneStable" type="string" />
     <aura:attribute name="WiresObject" type="WIRES_Transaction__c"/> 
     
-    <aura:if isTrue="{!(v.isApprovalVisible == 'true')}">  
+    <aura:if isTrue="{!and(v.isApprovalVisible == 'true')}">  
      <lightning:overlayLibrary aura:id="overlayLib"/>
     <div class="groupbtn-parent stagebar">		       
 		

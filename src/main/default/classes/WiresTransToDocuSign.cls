@@ -3,15 +3,15 @@ public class WiresTransToDocuSign {
 	public static String EnvelopeId;
 	public static String EmailToSend;
 	public static Account Member;
-	public static String EmailBody = 'My Message';
-	public static String EmailSubject = 'Wire Approval';    
-	public static String accountID = '2e80db6b-16cf-4202-bf90-dfa029c5949f'; 
-	public static String userId = 'cc0ace2f-a6a7-44ae-852d-3c7432552ebb';
-	public static String passWord = 'Affirm@123';
-	public static String integratorKey = '12c7957a-484f-4fec-b6b3-461ec9b666aa';
-	public static String replyTo = 'noreply@chevronfcu.org';
-	public static String templateID = '9f83c1b8-23e7-49bb-a05f-fc81b6d0475c';
-	public static String endPoint = 'demo.docusign.net';
+	public static String EmailBody = '';
+	public static String EmailSubject = 'Wire Transfer Request';    
+	public static String accountID; 
+	public static String userId;
+	public static String passWord;
+	public static String integratorKey;
+	public static String replyTo;
+	public static String templateID;
+	public static String endPoint;
 	public static String authorizationHeader;      
 	public static String endPointURL;
 	public static HttpRequest req = new HttpRequest();    
@@ -44,21 +44,25 @@ public class WiresTransToDocuSign {
     @future(callout=true)
     public static void docusignAPIcall(Set<ID> ids){   
     	
+        System.debug('Ids'+ids);
         //----------------------------Start - DocuSign Templates from Custom setting---------------------------------//
-        SolarLoan_Docusign_Emails__c sde = SolarLoan_Docusign_Emails__c.getValues('Email For Testing');
-        DocuSign_User_Details__c DTSpectrum = DocuSign_User_Details__c.getValues('Spectrum');
-        DocuSign_User_Details__c DTChevron = DocuSign_User_Details__c.getValues('Chevron');
+        Wires_Docusign_Emails__c wde = Wires_Docusign_Emails__c.getValues('Email For Testing');
+        Wires_DocuSign_User_Details__c DTSpectrum = Wires_DocuSign_User_Details__c.getValues('Spectrum');
+        Wires_DocuSign_User_Details__c DTChevron = Wires_DocuSign_User_Details__c.getValues('Chevron');
         List<WIRES_Transaction__c> WireTransToUpdate = new List<WIRES_Transaction__c>();
         
+ 		Wires_Progress_Email_Test__c testEmail=Wires_Progress_Email_Test__c.getValues('Test');
+        String userEmail = testEmail.Email__c;
+        
         String userName = UserInfo.getUserName();
-		User activeUser = [Select Email From User where Username = : userName limit 1];
-		String userEmail = activeUser.Email;
+		//User activeUser = [Select Email From User where Username = : userName limit 1];
+		//String userEmail = activeUser.Email;
 		
-        if(sde.Emails__c != null){
-            EmailToSend = sde.Emails__c;
+        if(wde.Emails__c != null){
+            EmailToSend = wde.Emails__c;
         }
         
-        
+        System.debug('EmailToSend'+EmailToSend);
         
         //----------------------------End - DocuSign Templates from Custom setting------------------------------------//
        
@@ -78,12 +82,37 @@ public class WiresTransToDocuSign {
                     Previous_Wires_2nd_Review__c,Previous_Wires_Review__c,RecurrenceDay__c,Recurrence_Pattern__c,
                     Review_Reason__c,Second_Approval_Review_Reason__c,SendOn__c,Share_ID__c,Transaction_Status__c,
                     Source__c,StartDate__c,Status__c,ToAccountName__c,TransferType__c,WireAmount__c,WireMoneyDeliveryByDate__c,
-                    WIRES_Wires_Transaction__c,Work_Phone_Stable_2nd_Review__c,Work_Phone_Stable_Review__c
+                    WIRES_Wires_Transaction__c,Work_Phone_Stable_2nd_Review__c,Work_Phone_Stable_Review__c,Brand__c
                     FROM WIRES_Transaction__c where id =: ids];
         
         	for(WIRES_Transaction__c wt : WiresTrans){
-        		
-                authorizationHeader = '<DocuSignCredentials><Username>'+userId+'</Username><Password>'+Password+'</Password><IntegratorKey>'+integratorKey+'</IntegratorKey></DocuSignCredentials>';
+                
+               if(wt.Brand__c == 'Spectrum'){
+            		templateID = DTSpectrum.TemplateId__c;
+            		replyTo = DTSpectrum.ReplyTo__c;
+            		accountID = DTSpectrum.AccountId__c;
+            		userId = DTSpectrum.Username__c;
+            		passWord = DTSpectrum.Password__c;
+            		integratorKey = DTSpectrum.IntegratorKey__c;
+            		endpoint = DTSpectrum.EndPoint__c;
+            		
+            		authorizationHeader = '<DocuSignCredentials><Username>'+userId+'</Username><Password>'+Password+'</Password><IntegratorKey>'+integratorKey+'</IntegratorKey></DocuSignCredentials>';
+            		json2='{"replyEmailAddressOverride":"'+replyTo+'",'+'"replyEmailNameOverride": "Spectrum Team",'+'"bccEmailAddresses": []'+'}';
+            	}
+            	else{
+            		templateID = DTChevron.TemplateId__c;
+            		replyTo = DTChevron.ReplyTo__c;
+            		accountID = DTChevron.AccountId__c;
+            		userId = DTChevron.Username__c;
+            		passWord = DTChevron.Password__c;
+            		integratorKey = DTChevron.IntegratorKey__c;
+            		endpoint = DTChevron.EndPoint__c;
+            		
+            		authorizationHeader = '<DocuSignCredentials><Username>'+userId+'</Username><Password>'+Password+'</Password><IntegratorKey>'+integratorKey+'</IntegratorKey></DocuSignCredentials>';
+            		json2='{"replyEmailAddressOverride": "'+replyTo+'",'+'"replyEmailNameOverride": "Chevron Team",'+'"bccEmailAddresses": []'+'}';
+            	}
+            	
+                //authorizationHeader = '<DocuSignCredentials><Username>'+userId+'</Username><Password>'+Password+'</Password><IntegratorKey>'+integratorKey+'</IntegratorKey></DocuSignCredentials>';
         		
         		endPointURL = 'https://'+endpoint+'/restapi/v2.1/accounts/'+accountID+'/envelopes'; 
                 req.setEndpoint(endPointURL); 
@@ -152,7 +181,7 @@ public class WiresTransToDocuSign {
 				req2.setHeader('Content-Length','162100'); 
 				req2.setHeader('Content-Type','application/json'); 
 				req2.setHeader('Content-Disposition','form-data');
-				json2='{"replyEmailAddressOverride": "'+replyTo+'",'+'"replyEmailNameOverride": "Chevron Team",'+'"bccEmailAddresses": []'+'}';
+				//json2='{"replyEmailAddressOverride": "'+replyTo+'",'+'"replyEmailNameOverride": "Chevron Team",'+'"bccEmailAddresses": []'+'}';
 				req2.setBody(json2); 
 				if(!Test.isRunningTest()){ 
 					res2 = http2.send(req2);
