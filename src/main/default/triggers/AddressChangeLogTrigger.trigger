@@ -34,7 +34,7 @@ trigger AddressChangeLogTrigger on AddressChangeLog__c(before insert ){
 			if (memberemail != null && (MyPattern.matcher(memberemail).matches()))
 				EmailList.add(memberemail);
 			if (SendEmail && EmailList.size() > 0){
-				SendEmailNotifications(EmailList, 'Address Change',objAddressChange.Member__c);
+				SendEmailNotifications(EmailList, 'Address Change', objAddressChange.Member__c);
 			}
 			if (SendSMS && phone != null){
 				system.debug('memberPhone==' + phone);
@@ -78,11 +78,37 @@ trigger AddressChangeLogTrigger on AddressChangeLog__c(before insert ){
 			IdentificationMethod = 'Identification Method:' + objAddressChange.Identification_Method__c + '\n';
 			String MemberName = objMap.get(objAddressChange.Member__c).Name;
 
+			if ((objAddressChange.Address_New__c == '' || objAddressChange.Address_New__c == null) && objAddressChange.Address2_New__c != '' && objAddressChange.Address2_New__c != null){
+				objAddressChange.Address_New__c = objAddressChange.Address2_New__c;
+				objAddressChange.Address2_New__c = '';
+			}
+			if (objAddressChange.Address2_New__c != null && objAddressChange.Address2_New__c != ''){
+				if (objAddressChange.Address_New__c.toUpperCase().Contains('STE') || objAddressChange.Address_New__c.toUpperCase().Contains('SUITE') || objAddressChange.Address_New__c.toUpperCase().Contains('RM') || objAddressChange.Address_New__c.toUpperCase().Contains('DEPT') || objAddressChange.Address_New__c.toUpperCase().Contains('APT') || objAddressChange.Address_New__c.toUpperCase().Contains('APARTMENT')){
+					string temp = objAddressChange.Address_New__c;
+					objAddressChange.Address_New__c = objAddressChange.Address2_New__c;
+					objAddressChange.Address2_New__c = temp;
+				}
+			}
+
+			if(objAddressChange.Zip_New__c != null && objAddressChange.Zip_New__c.Contains('-')){
+				List<string> ZipCodes = objAddressChange.Zip_New__c.split('-');
+				objAddressChange.Zip_New__c = ZipCodes[0];
+				if(ZipCodes.size() > 1)
+					objAddressChange.Zip4_New__c = ZipCodes[1];
+			}
+
+			if(objAddressChange.Zip_Old__c != null && objAddressChange.Zip_Old__c.Contains('-')){
+				List<string> ZipCodes1 = objAddressChange.Zip_Old__c.split('-');
+				objAddressChange.Zip_Old__c = ZipCodes1[0];
+				if(ZipCodes1.size() > 1)
+					objAddressChange.Zip4_Old__c = ZipCodes1[1];
+			}
+
 			if (objAddressChange.Update_Type__c == 'Residential Address'){
 				Description = intakemethod + IdentificationMethod + 'Update Type:' + objAddressChange.Update_Type__c + '\n' + 'Member Name:' + MemberName + '\n' + 'Old Address1:' + (objAddressChange.Address_Old__c == null ? '' : objAddressChange.Address_Old__c)+'\n' + 'New Address1:' + (objAddressChange.Address_New__c == null ? '' : objAddressChange.Address_New__c)+'\n' + 
 													'Old Address2:' + (objAddressChange.Address2_Old__c == null ? '' : objAddressChange.Address2_Old__c)+'\n' + 'New Address2:' + (objAddressChange.Address2_New__c == null ? '' : objAddressChange.Address2_New__c)+'\n' + 'Old City:' + (objAddressChange.City_Old__c == null ? '' : objAddressChange.City_Old__c)+'\n' + 'New City:' + (objAddressChange.City_New__c == null ? '' : objAddressChange.City_New__c)+'\n' + 'Old State:' + (objAddressChange.State_Old__c == null ? '' : objAddressChange.State_Old__c)+'\n' + 'New State:' + (objAddressChange.State_New__c == null ? '' : objAddressChange.State_New__c)+'\n' + 
-													'Old Zip5:' + (objAddressChange.Zip_Old__c == null ? '' : objAddressChange.Zip_Old__c)+'\n' + 'New Zip5:' + (objAddressChange.Zip_New__c == null ? '' : objAddressChange.Zip_New__c)+'\n' + 
-													'Old Zip4:' + (objAddressChange.Zip4_Old__c == null ? '' : objAddressChange.Zip4_Old__c)+'\n' + 'New Zip4:' + (objAddressChange.Zip4_New__c == null ? '' : objAddressChange.Zip4_New__c)+'\n' + 
+													'Old Zip:' + (objAddressChange.Zip_Old__c == null ? '' : objAddressChange.Zip_Old__c)+'\n' + 'New Zip:' + (objAddressChange.Zip_New__c == null ? '' : objAddressChange.Zip_New__c)+'\n' + 
+													'Old Zip +4:' + (objAddressChange.Zip4_Old__c == null ? '' : objAddressChange.Zip4_Old__c)+'\n' + 'New Zip +4:' + (objAddressChange.Zip4_New__c == null ? '' : objAddressChange.Zip4_New__c)+'\n' + 
 													'Record Type Updated:' + 'Name Records' + '\n' + 
 													'Names:' + objAddressChange.Names__c;
 				if (objAddressChange.Is_Temp_Mail_Expired__c){
@@ -215,10 +241,10 @@ trigger AddressChangeLogTrigger on AddressChangeLog__c(before insert ){
 
 			}
 
-			if (objAddressChange.Update_Type__c == 'Residential Address' && objAddressChange.EmailNotificationJSONString__c != null){
-                string decodedJson = objAddressChange.EmailNotificationJSONString__c.unescapeHtml4().unescapeHtml4();
-				EmailNotificationDetails(decodedJson);
-			}
+			/*if (objAddressChange.Update_Type__c == 'Residential Address' && objAddressChange.EmailNotificationJSONString__c != null){
+			 string decodedJson = objAddressChange.EmailNotificationJSONString__c.unescapeHtml4().unescapeHtml4();
+			 EmailNotificationDetails(decodedJson);
+			 }*/
 		}
 	}
 
@@ -249,24 +275,24 @@ trigger AddressChangeLogTrigger on AddressChangeLog__c(before insert ){
 		// LastOTPSent = System.Now();
 	}
 
-	private void EmailNotificationDetails(string JSONString){
-		List<EmailNotificationStatusList> ListEmailStatus = (List<EmailNotificationStatusList>)System.JSON.deserialize(JSONString, List<EmailNotificationStatusList>.class);
-		Address_Change_Email_Notifiations__c acen = Address_Change_Email_Notifiations__c.getValues('Primary');
-		string opEmailIds = acen.Operations_EmailIds__c;
-		string reEmailIds = acen.Real_Estate_EmailIds__c;
+	/*private void EmailNotificationDetails(string JSONString){
+	 List<EmailNotificationStatusList> ListEmailStatus = (List<EmailNotificationStatusList>)System.JSON.deserialize(JSONString, List<EmailNotificationStatusList>.class);
+	 Address_Change_Email_Notifiations__c acen = Address_Change_Email_Notifiations__c.getValues('Primary');
+	 string opEmailIds = acen.Operations_EmailIds__c;
+	 string reEmailIds = acen.Real_Estate_EmailIds__c;
 
-		List<string> opEmailIdsList = opEmailIds.split(',');
-		List<string> reEmailIdsList = reEmailIds.split(',');
+	 List<string> opEmailIdsList = opEmailIds.split(',');
+	 List<string> reEmailIdsList = reEmailIds.split(',');
 
-		for (EmailNotificationStatusList les : ListEmailStatus){
-			if (les.IRACheck == true){
-				SendEmailNotifications(opEmailIdsList, 'Address Change Email Notification for Operations', les.accountNumber);
-			}
-			if (les.RECheck == true){
-				SendEmailNotifications(reEmailIdsList, 'Address_Change_Email_Notification_for_Real_Estate', les.accountNumber);
-			}
-		}
-	}
+	 for (EmailNotificationStatusList les : ListEmailStatus){
+	 if (les.IRACheck == true){
+	//SendEmailNotifications(opEmailIdsList, 'Address Change Email Notification for Operations', les.accountNumber);
+	 }
+	 if (les.RECheck == true){
+	//SendEmailNotifications(reEmailIdsList, 'Address_Change_Email_Notification_for_Real_Estate', les.accountNumber);
+	 }
+	 }
+	 }*/
 
 	public void SendEmailNotifications(List<string> EmailIdsList, string templatenAME, string accountNumber){
 		List<Messaging.SingleEmailMessage> mails = new List<Messaging.SingleEmailMessage>();
@@ -294,11 +320,13 @@ trigger AddressChangeLogTrigger on AddressChangeLog__c(before insert ){
 	}
 
 	public class EmailNotificationStatusList{
-        @AuraEnabled
+		@AuraEnabled
 		public string accountNumber{ get; set; }
-        @AuraEnabled
+
+		@AuraEnabled
 		public boolean IRACheck{ get; set; }
-        @AuraEnabled
+
+		@AuraEnabled
 		public boolean RECheck{ get; set; }
 	}
 }
