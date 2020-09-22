@@ -8,19 +8,27 @@
     <aura:attribute name="loadchk2" type="Boolean" default="false" />
     <aura:attribute name="loadchk3" type="Boolean" default="false" />
      <aura:attribute name="loadchk5" type="Boolean" default="false" />
+    <aura:attribute name="loadchk6" type="Boolean" default="false" />
+    <aura:attribute name="loadchk7" type="Boolean" default="false" />
     <aura:attribute name="nochk1" type="Boolean" default="false" />
     <aura:attribute name="nochk2" type="Boolean" default="false" />
     <aura:attribute name="nochk3" type="Boolean" default="false" />
     <aura:attribute name="nochk5" type="Boolean" default="false" />
+    <aura:attribute name="nochk6" type="Boolean" default="false" />
+    <aura:attribute name="nochk7" type="Boolean" default="false" />
     <aura:attribute name="progchk1" type="Boolean" default="false" />
     <aura:attribute name="progchk2" type="Boolean" default="false" />
     <aura:attribute name="progchk3" type="Boolean" default="false" />
      <aura:attribute name="progchk5" type="Boolean" default="false" />
+    <aura:attribute name="progchk6" type="Boolean" default="false" />
+    <aura:attribute name="progchk7" type="Boolean" default="false" />
     <aura:attribute name="ischk1" type="Boolean" default="false" />
     <aura:attribute name="ischk2" type="Boolean" default="false" />
     <aura:attribute name="ischk3" type="Boolean" default="false" />
     <aura:attribute name="ischk4" type="Boolean" default="false" />
-     <aura:attribute name="ischk5" type="Boolean" default="false" />
+    <aura:attribute name="ischk5" type="Boolean" default="false" />
+    <aura:attribute name="ischk6" type="Boolean" default="false" />
+    <aura:attribute name="ischk7" type="Boolean" default="false" />
     <aura:attribute name="nodata" type="Boolean" default="false" />
     <aura:attribute name="isfromto" type="Boolean" default="false" />
     <aura:attribute name="dateinvalid" type="Boolean" default="false" />
@@ -162,7 +170,7 @@
                                     
                                   <!-- OOW  -->  
                                   
-                                      <aura:if isTrue="{!v.ischk5}">
+                                  <aura:if isTrue="{!v.ischk5}">
                                     <div class="slds-checkbox">
                                         <div class="slds-clearfix">
                                             <div class="slds-float_left">
@@ -181,11 +189,61 @@
                                                     <aura:if isTrue="{! v.nochk5  }"> <lightning:icon iconName="utility:close" size="xx-small" alternativeText="No Result" />
                                                 		No Result
                                                	    </aura:if>
-                                                </p>
+                                               	 </p>
+                                            	</div>
+                                        	</div>
+                                    	</div>
+                                    </aura:if>
+                                    <!-- MC PIN Change -->
+                                    <aura:if isTrue="{!v.ischk6}">
+                                    <div class="slds-checkbox">
+                                        <div class="slds-clearfix">
+                                            <div class="slds-float_left">
+                                                <p><lightning:input type="checkbox" label="MC PIN Change"   aura:id="chk6"  value="MC PIN Change" onchange="{!c.callCheckboxMethod}" /></p>
                                             </div>
-                                        </div>
-                                       
-                                    </div>
+                                            <div class="slds-float_right">
+                                                <p class="SearchText"><aura:if isTrue="{! v.loadchk6 }"> 
+                                                		<lightning:icon iconName="utility:check" size="xx-small" alternativeText="Approved" />
+                                                		Result Showing
+                                                    </aura:if>
+                                                     <aura:if isTrue="{! v.progchk6 }"> 
+                                                        <lightning:icon iconName="utility:loop" size="xx-small" alternativeText="Approved" />
+                                                        Searching...
+                                                        
+                                                    </aura:if>
+                                                    <aura:if isTrue="{! v.nochk6  }"> <lightning:icon iconName="utility:close" size="xx-small" alternativeText="No Result" />
+                                                		No Result
+                                               	    </aura:if>
+                                               	 </p>
+                                            	</div>
+                                        	</div>
+                                    	</div>
+                                    </aura:if>
+                                    
+                                    <!-- MC Limit Change -->
+                                    <aura:if isTrue="{!v.ischk7}">
+                                    <div class="slds-checkbox">
+                                        <div class="slds-clearfix">
+                                            <div class="slds-float_left">
+                                                <p><lightning:input type="checkbox" label="MC Limit Change"   aura:id="chk7"  value="MC Limit Change" onchange="{!c.callCheckboxMethod}" /></p>
+                                            </div>
+                                            <div class="slds-float_right">
+                                                <p class="SearchText"><aura:if isTrue="{! v.loadchk7 }"> 
+                                                		<lightning:icon iconName="utility:check" size="xx-small" alternativeText="Approved" />
+                                                		Result Showing
+                                                    </aura:if>
+                                                     <aura:if isTrue="{! v.progchk7 }"> 
+                                                        <lightning:icon iconName="utility:loop" size="xx-small" alternativeText="Approved" />
+                                                        Searching...
+                                                        
+                                                    </aura:if>
+                                                    <aura:if isTrue="{! v.nochk7  }"> <lightning:icon iconName="utility:close" size="xx-small" alternativeText="No Result" />
+                                                		No Result
+                                               	    </aura:if>
+                                               	 </p>
+                                            	</div>
+                                        	</div>
+                                    	</div>
                                     </aura:if>
                                     
                                     

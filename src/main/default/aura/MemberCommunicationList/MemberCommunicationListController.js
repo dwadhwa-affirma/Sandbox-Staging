@@ -31,7 +31,8 @@
                  if(objsetting[i].Name == 'OOW' && objsetting[i].Hidden__c == false){
                 	 component.set('v.ischk5',true);
                  }
-            	 
+            	 component.set('v.ischk6',true);
+                 component.set('v.ischk7',true);
             	
              }
             	

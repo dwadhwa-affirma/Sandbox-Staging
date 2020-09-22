@@ -96,10 +96,14 @@
             cmp.set('v.loadchk2', false);
             cmp.set('v.loadchk3', false);
             cmp.set('v.loadchk5', false);
-             cmp.set('v.nochk1', false);
+            cmp.set('v.loadchk6', false);
+            cmp.set('v.loadchk7', false);
+            cmp.set('v.nochk1', false);
             cmp.set('v.nochk2', false);
             cmp.set('v.nochk3', false);
             cmp.set('v.nochk5', false);
+            cmp.set('v.nochk6', false);
+            cmp.set('v.nochk7', false);
             var paramVal=cmp.get('v.selectedCheckBoxes');
             var todate=cmp.get('v.todate');
             var fromdate=cmp.get('v.fromdate');
@@ -236,6 +240,18 @@
 	                
 	            } 
              }
+			if(cmp.get('v.ischk6')){
+            	if(cmp.find('chk6').get("v.checked")){          
+                	cmp.set('v.progchk6', true );
+	                helper.fetchchk6(cmp, event, helper,paramVal,fromdate,todate,recid,keyword);    
+	            } 
+             }
+			if(cmp.get('v.ischk7')){
+            	if(cmp.find('chk7').get("v.checked")){          
+                	cmp.set('v.progchk7', true );
+	                helper.fetchchk7(cmp, event, helper,paramVal,fromdate,todate,recid,keyword);    
+	            } 
+             }	
             
 	} ,  
     MergeData: function ( cmp, event, helper){
@@ -416,5 +432,91 @@
 			$A.enqueueAction(action);
                
             
+	},
+    fetchchk6: function (cmp, event, helper,paramVal,fromdate,todate,recid,keyword) {
+		var action = cmp.get('c.GetMCPingChangeData'); 
+        action.setParams({
+            source : paramVal,
+            fromdate : fromdate,
+            todate : todate,
+            recid:recid,
+            keyword:keyword
+        });        
+      	action.setCallback(this, function(a){       
+       	var state = a.getState(); // get the response state          
+           	if(state == 'SUCCESS') {
+            
+                var obj = a.getReturnValue();
+                var alldata = cmp.get('v.Alldata');
+                var result = JSON.parse(JSON.stringify(obj));
+                    if(result != null && result != ''){
+	            		if(alldata != null){
+	                        var x = parseInt(alldata.length);
+	                        for(var a in result){
+	                            x += 1;
+	                            alldata.push(result[a]);
+	    					}
+	                        cmp.set('v.Alldata',alldata ); 
+						}
+						else {
+						
+						    cmp.set('v.Alldata',result );
+						}
+						cmp.set('v.loadchk6',true);
+					}
+					else{
+						cmp.set('v.nochk6', true); 
+					}
+					helper.getData(cmp, event, helper);
+					cmp.set('v.Approve', true);
+					cmp.set('v.progchk6', false );
+					
+				}
+                
+                }); 
+			$A.enqueueAction(action);      
+	},
+    fetchchk7: function (cmp, event, helper,paramVal,fromdate,todate,recid,keyword) {
+		var action = cmp.get('c.GetMCLimitChangeData'); 
+        action.setParams({
+            source : paramVal,
+            fromdate : fromdate,
+            todate : todate,
+            recid:recid,
+            keyword:keyword
+        });        
+      	action.setCallback(this, function(a){       
+       	var state = a.getState(); // get the response state          
+           	if(state == 'SUCCESS') {
+            
+                var obj = a.getReturnValue();
+                var alldata = cmp.get('v.Alldata');
+                var result = JSON.parse(JSON.stringify(obj));
+                    if(result != null && result != ''){
+	            		if(alldata != null){
+	                        var x = parseInt(alldata.length);
+	                        for(var a in result){
+	                            x += 1;
+	                            alldata.push(result[a]);
+	    					}
+	                        cmp.set('v.Alldata',alldata ); 
+						}
+						else {
+						
+						    cmp.set('v.Alldata',result );
+						}
+						cmp.set('v.loadchk7',true);
+					}
+					else{
+						cmp.set('v.nochk7', true); 
+					}
+					helper.getData(cmp, event, helper);
+					cmp.set('v.Approve', true);
+					cmp.set('v.progchk7', false );
+					
+				}
+                
+                }); 
+			$A.enqueueAction(action);      
 	}
 })
