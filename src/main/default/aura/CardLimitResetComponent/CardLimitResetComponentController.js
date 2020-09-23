@@ -478,6 +478,7 @@
        var stages = [];
        var sobjecttype = component.get("v.sobjecttype");
        stages = component.get("v.ChangeLimitStageDetails"); 
+       
        /*if(component.get("v.isMemberSelected") == true && component.get("v.ActiveStepIndex") == 0){
     	   component.set("v.isMemberSelected", false);
     	   
@@ -496,13 +497,25 @@
            //helper.hideSpinner(component);
            return;          
        }*/
-       
+	
+	if(sobjecttype != 'Account'){ 
+        
 		for(var i=0; i<stages.length;i++){
+          
             var ProgressBarStepClass = document.getElementById('Step'+(i+1)).classList;   
+            
+            if(component.get("v.ContinueButtonName") == 'Submit'){
+            	component.set("v.ContinueButtonName", 'Continue');
+            }
+            
             if(ProgressBarStepClass[0] == "half"){
                 var stages2 = [];
                 stages2 = component.get("v.ChangeLimitStageDetails");
-               
+                
+                if(component.get("v.ContinueButtonName") == 'Submit'){
+                    component.set("v.ContinueButtonName", 'Continue');
+                }
+                
                 if(i==2 && (component.get("v.CLRecord.Type__c") == 'Change Card Limits')){
                         component.set("v.CLRecord.Type__c",'');
                     
@@ -538,8 +551,64 @@
                 }
             }
         }
-              
-    },
+    }        
+    
+    if(sobjecttype == 'Account'){ 
+    	
+    	for(var i=0; i<stages.length;i++){
+            
+            var ProgressBarStepClass = document.getElementById('Step'+(i+2)).classList;   
+            
+            if(component.get("v.ContinueButtonName") == 'Submit'){
+            	component.set("v.ContinueButtonName", 'Continue');
+            }
+            
+            if(ProgressBarStepClass[0] == "half"){
+                var stages2 = [];
+                stages2 = component.get("v.ChangeLimitStageDetails");
+                
+                if(component.get("v.ContinueButtonName") == 'Submit'){
+                    component.set("v.ContinueButtonName", 'Continue');
+                }
+                
+                if(i==1 && (component.get("v.CLRecord.Type__c") == 'Change Card Limits')){
+                        component.set("v.CLRecord.Type__c",'');
+                    
+                    	$A.createComponent("c:"+stages[1].Stage_Component__c,{recordId: component.get("v.recordId"), CLRecord: component.get("v.CLRecord")},
+                        function(msgBox){                
+                            if (component.isValid()) {
+                                var targetCmp = component.find('ModalDialogPlaceholder');
+                                var body = targetCmp.get("v.body");
+                                //body.push(msgBox);
+                                body.splice(0, 1, msgBox);
+                                targetCmp.set("v.body", body); 
+                       
+                            }
+                        }
+                    );
+                    return;    
+                }
+                else{    
+                    component.set("v.ActiveStepIndex", (i-1)); 
+                    $A.createComponent("c:"+stages[i-1].Stage_Component__c,{recordId: component.get("v.recordId"), CLRecord: component.get("v.CLRecord")},
+                        function(msgBox){                
+                            if (component.isValid()) {
+                                var targetCmp = component.find('ModalDialogPlaceholder');
+                                var body = targetCmp.get("v.body");
+                                //body.push(msgBox);
+                                body.splice(0, 1, msgBox);
+                                targetCmp.set("v.body", body); 
+                       
+                            }
+                        }
+                    );
+                    return;
+                }
+            }
+        }
+    }
+        
+  },
     
     getActionValue : function(component, event) {
 	  
