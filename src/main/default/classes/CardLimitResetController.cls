@@ -133,6 +133,9 @@ public class CardLimitResetController {
     
         system.debug('sObjectType'+sObjectType); 
         system.debug('recordId'+recordId);
+        Id uniqueId = recordId;
+        Schema.SObjectType objType = uniqueId.getsobjecttype();
+       
         Map<string,List<CardDetailWrapperObject>> resultmap = new Map<string,List<CardDetailWrapperObject>>();
         List<CardDetailWrapperObject> resultList = new List<CardDetailWrapperObject>();
         HttpRequest req = new HttpRequest();
@@ -141,6 +144,7 @@ public class CardLimitResetController {
         string responseBody;
         string loanAPI;
         String jsonData;
+
         String Type;
         String SSN;
         List<String> CardNumber = new List<String>();
@@ -157,33 +161,54 @@ public class CardLimitResetController {
             lastname= '%'+Names[Names.size()-1] +'%';
         }
 
-        string AccountNumber;
-        if(recordId != null){
-            AccountNumber = [Select id, name from account_details__c where id=: recordId].Name;
-        }
-        else{
-            AccountNumber = AccountNumber = [Select id, name from account_details__c where id=: recordId].Name;
-        }
-
-        system.debug('AccountNumber'+AccountNumber);
-
-        Person_Account__c pa =[SELECT id, name,PersonID__c,Account_Number__c,PersonID__r.name 
-                                from Person_Account__c where PersonID__r.firstname like: firstname
-                                AND PersonID__r.LASTNAME like: lastname
-                                AND Account_Number__r.name =: AccountNumber limit 1];
-
-        
-        system.debug('Member - '+pa.PersonID__c);
-        Account acc = [select id,name,SSN_TIN_Encrypted__pc from Account where id =:pa.PersonID__c limit 1];
-        SSN = acc.SSN_TIN_Encrypted__pc;
-
-        system.debug('SSN'+SSN);
         SolarLoan_To_Episys_API_Details__c api = SolarLoan_To_Episys_API_Details__c.getValues('ProductionURL');
                         
         if(api.URL__c != null){
             loanAPI = api.URL__c;
         }
-                        
+
+        string AccountNumber;
+        Person_Account__c pa;
+
+        if(objType == Account_Details__c.sObjectType){
+
+            if(recordId != null){
+                AccountNumber = [Select id, name from account_details__c where id=: recordId].Name;
+            }
+            else{
+                AccountNumber = AccountNumber = [Select id, name from account_details__c where id=: recordId].Name;
+            }          
+            
+            system.debug('AccountNumber'+AccountNumber);
+
+            pa =[SELECT id, name,PersonID__c,Account_Number__c,PersonID__r.name 
+                    from Person_Account__c where PersonID__r.firstname like: firstname
+                    AND PersonID__r.LASTNAME like: lastname
+                    AND Account_Number__r.name =: AccountNumber limit 1];
+            
+            system.debug('Member - '+pa.PersonID__c);
+
+            Account acc = [select id,name,SSN_TIN_Encrypted__pc from Account where id =:pa.PersonID__c limit 1];
+            //SSN = acc.SSN_TIN_Encrypted__pc;  
+            SSN = '123456789';
+
+            system.debug('SSN'+SSN);      
+        }
+        if(objType == Account.sObjectType){
+            
+            pa =[SELECT id, name,PersonID__c,Account_Number__c,PersonID__r.name 
+                    from Person_Account__c where PersonID__r.firstname like: firstname
+                    AND PersonID__r.LASTNAME like: lastname limit 1];
+            
+            system.debug('Member - '+pa.PersonID__c);
+
+            Account acc = [select id,name,SSN_TIN_Encrypted__pc from Account where id =:pa.PersonID__c limit 1];
+            //SSN = acc.SSN_TIN_Encrypted__pc;
+            SSN = '123456789';
+            system.debug('SSN'+SSN);
+
+        }
+     
         req.setEndpoint(loanAPI+'/CardLimitReset/GetCards');
         req.setMethod('POST');
         req.setHeader('Content-Type', 'application/json');
@@ -192,7 +217,7 @@ public class CardLimitResetController {
         req.setBodyAsBlob(Blob.valueof(jsonData));
         req.setTimeout(60000);                    
         
-        system.debug('responseBody'+responseBody);
+        system.debug('Request: '+jsonData);
 
         if(!Test.isRunningTest()){                       
             res = http.send(req);
@@ -223,6 +248,7 @@ public class CardLimitResetController {
             } 
         }
                         
+        resultmap.put('CardList',resultList);
         resultmap.put('CardList',resultList);
 		return resultmap;
     }
@@ -273,6 +299,9 @@ public class CardLimitResetController {
         system.debug('atmlimit'+atmlimit); 
         system.debug('recordId'+recordId);
         
+        Id uniqueId = recordId;
+        Schema.SObjectType objType = uniqueId.getsobjecttype();
+
         HttpRequest req = new HttpRequest();
         HttpResponse res;
         Http http = new Http();
@@ -280,6 +309,12 @@ public class CardLimitResetController {
         string loanAPI;
         String jsonData;
 
+        HttpRequest req1 = new HttpRequest();
+        HttpResponse res1;
+        Http http1 = new Http();
+        string responseBody1;
+        String jsonData1;
+        String SSN;
         SolarLoan_To_Episys_API_Details__c api = SolarLoan_To_Episys_API_Details__c.getValues('ProductionURL');
                         
         if(api.URL__c != null){
@@ -296,20 +331,70 @@ public class CardLimitResetController {
             firstname = Names[0]+ '%';
             lastname= '%'+Names[Names.size()-1] +'%';
         }
-
+        
         string AccountNumber;
-        if(recordId != null){
-            AccountNumber = [Select id, name from account_details__c where id=: recordId].Name;
-        }
-        else{
-            AccountNumber = AccountNumber = [Select id, name from account_details__c where id=: recordId].Name;
+        Person_Account__c pa;
+
+        if(objType == Account_Details__c.sObjectType){
+
+            if(recordId != null){
+                AccountNumber = [Select id, name from account_details__c where id=: recordId].Name;
+            }
+            else{
+                AccountNumber = AccountNumber = [Select id, name from account_details__c where id=: recordId].Name;
+            }          
+            
+            system.debug('AccountNumber'+AccountNumber);
+
+            pa =[SELECT id, name,PersonID__c,Account_Number__c,PersonID__r.name 
+                    from Person_Account__c where PersonID__r.firstname like: firstname
+                    AND PersonID__r.LASTNAME like: lastname
+                    AND Account_Number__r.name =: AccountNumber limit 1];
+            
+            system.debug('Member - '+pa.PersonID__c);
+
         }
 
-        Person_Account__c pa =[SELECT id, name,PersonID__c,Account_Number__c,PersonID__r.name 
-                                from Person_Account__c where PersonID__r.firstname like: firstname
-                                AND PersonID__r.LASTNAME like: lastname
-                                AND Account_Number__r.name =: AccountNumber limit 1];
-        system.debug('AccountNumber'+AccountNumber);                        
+        
+        if(objType == Account.sObjectType){
+            
+            pa =[SELECT id, name,PersonID__c,Account_Number__c,PersonID__r.name 
+                    from Person_Account__c where PersonID__r.firstname like: firstname
+                    AND PersonID__r.LASTNAME like: lastname limit 1];
+            
+            system.debug('Member - '+pa.PersonID__c);
+
+            Account acc = [select id,name,SSN_TIN_Encrypted__pc from Account where id =:pa.PersonID__c limit 1];
+            //SSN = acc.SSN_TIN_Encrypted__pc;
+            SSN = '123456789';
+            system.debug('SSN'+SSN);
+
+            System.debug('GetMemberNumber method called');
+
+            req1.setEndpoint(loanAPI+'/EFT/GetAccountBySSN?ssn='+SSN);
+            req1.setMethod('GET');
+            req1.setHeader('Content-Type', 'application/json');
+            req1.setHeader('Accept', 'application/json');
+            req1.setTimeout(60000);
+
+            if(!Test.isRunningTest()){                       
+                res1 = http1.send(req1);
+                responseBody1 = res1.getBody();
+                System.debug('Response Body SolarLoan:'+res1.getBody());    
+            }else{
+                responseBody1 = '{"Type":"3","Last":"27","First":"1","Street":"1","ExtraAddress":"100","City":"Chicago","State":"IL","ZipCode":"0012345,"BirthDate":"01-01-2019","SSN":"1345","LoanId":"322271627","AccountNumber":"00000123456"}';
+                
+            }
+            
+            JSONParser parser = JSON.createParser(responseBody1);
+            AccountNumber = String.valueOf(responseBody1).substringAfter('AccountNumber":"');
+            AccountNumber = String.valueOf(AccountNumber).substringBefore('",');
+            System.debug('Member Number' + AccountNumber);
+            Account_Details__c ad = [select id, Name, Brand__c, ID1__c, TypeTranslate__c,RecType__c from Account_Details__c where Name =:AccountNumber Limit 1];
+            recordId = ad.id;
+        }
+
+        system.debug('recordId'+recordId);
 
         if(type == 'Change Card Limits'){
 
@@ -324,7 +409,7 @@ public class CardLimitResetController {
             req.setBodyAsBlob(Blob.valueof(jsonData));
             req.setTimeout(60000);                    
             
-            system.debug('responseBody'+responseBody);
+            system.debug('Request: '+jsonData);
 
             if(!Test.isRunningTest()){                       
                 res = http.send(req);
@@ -341,6 +426,8 @@ public class CardLimitResetController {
             System.debug('Reset Card Limits');
         }
 
+        system.debug('recordId'+recordId);
+
         Change_Limit__c cl = new Change_Limit__c();
         cl.Auth_POS_Limit__c = Decimal.valueOf(authlimit);
         cl.ATM_Usage_Limit__c = Decimal.valueOf(atmlimit);
@@ -351,8 +438,8 @@ public class CardLimitResetController {
         cl.Member_Account__c = recordId;
         cl.Member__c = pa.PersonID__c;
 
-        insert cl;
-        createCase(cl);
+        //insert cl;
+        //createCase(cl);
         return null;    
     }
     public class CardDetailWrapperObject{
