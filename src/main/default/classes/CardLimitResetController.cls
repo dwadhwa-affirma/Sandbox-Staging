@@ -189,8 +189,8 @@ public class CardLimitResetController {
             system.debug('Member - '+pa.PersonID__c);
 
             Account acc = [select id,name,SSN_TIN_Encrypted__pc from Account where id =:pa.PersonID__c limit 1];
-            //SSN = acc.SSN_TIN_Encrypted__pc;  
-            SSN = '123456789';
+            SSN = acc.SSN_TIN_Encrypted__pc;  
+            //SSN = '123456789';
 
             system.debug('SSN'+SSN);      
         }
@@ -203,8 +203,8 @@ public class CardLimitResetController {
             system.debug('Member - '+pa.PersonID__c);
 
             Account acc = [select id,name,SSN_TIN_Encrypted__pc from Account where id =:pa.PersonID__c limit 1];
-            //SSN = acc.SSN_TIN_Encrypted__pc;
-            SSN = '123456789';
+            SSN = acc.SSN_TIN_Encrypted__pc;
+            //SSN = '123456789';
             system.debug('SSN'+SSN);
 
         }
