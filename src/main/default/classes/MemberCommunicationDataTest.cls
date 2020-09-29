@@ -50,7 +50,7 @@ public with sharing class MemberCommunicationDataTest {
                                    Comment_Block_20__c='ABC'
                                   )};
                                       Insert account_details_Obj;
-        Account_Details__c obj = [select id from Account_Details__c where id =: account_details_Obj[0].id];
+        Account_Details__c obj = [select id,name from Account_Details__c where id =: account_details_Obj[0].id];
         List<Person_Account__c> person_obj= new List<Person_Account__c>{
             new Person_Account__c(TypeTranslate__c='0000/Primary',Account_Number__c = account_details_Obj[0].id, PersonID__c = account_Obj.Id), 
                 new Person_Account__c(TypeTranslate__c='0000/Primary',Account_Number__c = account_details_Obj[0].Id, PersonID__c = account_Obj.Id)}; 
@@ -69,13 +69,23 @@ public with sharing class MemberCommunicationDataTest {
         sr.Url__c='https://dev2ssl.businessdatainc.com';
         insert sr;
         
+        MC_PIN_Change__c mp = new MC_PIN_Change__c();
+        mp.Member_Number__c = obj.name;
+        insert mp;
+        
+        MC_Limit_Change__c ml = new MC_Limit_Change__c();
+        ml.Member_Number__c = obj.name;
+        insert ml;
+        
     }
     static testMethod void GetAllDataTest() {
         TEst.starttest();
         
-        
         List<Account> obj = [select id from Account limit 1];
-        List<Account_Details__c> objd = [select id from Account_Details__c limit 1];
+        List<Account_Details__c> objd = [select id,name from Account_Details__c limit 1];
+        List<MC_PIN_Change__c> objmp = [select id,Member_Number__c from MC_PIN_Change__c limit 1];
+        List<MC_Limit_Change__c> objml = [select id,Member_Number__c from MC_Limit_Change__c limit 1];
+        
         list<string> str = 	new list<string>();
         Test.setMock(HttpCalloutMock.class, new MockHttpResponseGenerator());
         date dt = date.newinstance(2000, 2, 17);
@@ -89,7 +99,8 @@ public with sharing class MemberCommunicationDataTest {
         MemberCommunicationData.GetSalesforceData(str,dt,null,obj[0].Id,'Date Range');
         MemberCommunicationData.GetOOWData(null,null,'30',obj[0].Id);
         MemberCommunicationData.GetOOWData(dt,null,'Date Range',obj[0].Id);
-        
+        MemberCommunicationData.GetMCPingChangeData(str,null,null,obj[0].Id,'30');
+        MemberCommunicationData.GetMCLimitChangeData(str,null,null,obj[0].Id,'30');
         ApexPages.currentPage().getParameters().put('aburl', 'test');
         
         MemberCommunicationData md = new MemberCommunicationData(); 

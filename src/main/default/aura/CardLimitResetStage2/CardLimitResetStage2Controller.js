@@ -13,9 +13,13 @@
 			var state=resp.getState();			
 			if(state === "SUCCESS"){
 				var result =  resp.getReturnValue();
+                
                 if(result != undefined){
                 	//component.set("v.caList", result);
                     component.set('v.CardListMap', result.CardList);
+                }
+                if(result.CardList == undefined || result.CardList == ''){
+                	component.set("v.Empty", true);
                 }
 			}
 		});

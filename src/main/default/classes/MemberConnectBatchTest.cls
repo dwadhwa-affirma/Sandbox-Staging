@@ -66,10 +66,13 @@ public class MemberConnectBatchTest {
         mc1.Days__c = 365;
         
         insert mc1;*/
+        MemberConnectscheduledBatchable m = new MemberConnectscheduledBatchable();
+        String sch = '0 0 23 * * ?'; 
+        system.schedule('Test', sch, m);
         
-        MemberConnectBatch b = new MemberConnectBatch ();
-        Id batchId = database.executebatch(b);
-        system.debug('----batch id--'+batchId);
+        //MemberConnectBatch b = new MemberConnectBatch ();
+        //Id batchId = database.executebatch(b);
+        //system.debug('----batch id--'+batchId);
         test.stopTest();
         
     }

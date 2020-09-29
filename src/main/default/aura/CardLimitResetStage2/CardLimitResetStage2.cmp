@@ -4,24 +4,38 @@
 <aura:attribute name="CLRecord" type="Change_Limit__c"/> 
 <aura:handler name="init" action="{!c.doInit}" value="{!this}" access="global" />
 <aura:attribute name="CardListMap" type="List" />
+<aura:attribute name="Empty" type="Boolean" />
 
 	<div id = "stage2" class = "align">    
         <p class = "fontstyle">Select Card</p>
             <br/>
-            <table aria-multiselectable="true" class="slds-table slds-table_header-hidden slds-table_edit slds-tree slds-table_tree" role="treegrid">
+            <table aria-multiselectable="true" class="slds-table slds-table_header-hidden slds-table_edit slds-tree slds-table_tree bottomtbl" role="treegrid">
                 <tbody>
-                    <aura:iteration items="{!v.CardListMap}" var="itemOption" indexVar="i">                  
-                        <tr aria-expanded="false" aria-level="1" aria-posinset="3" aria-selected="false" aria-setsize="4" class="slds-hint-parent">
-                            <td class="slds-text-align_right" role="gridcell" style="width:3.25rem">
-                                <span class="slds-radio">
-                                  <lightning:input type="radio" name="select" value="{!itemOption.CardNumber}" onchange="{!c.onCardChange}"/>
-                                </span>
-                            </td>
-                            <td data-label="Employees" role="gridcell">
-                                <div class="slds-truncate" title="{!itemOption.CardNumber}">{!itemOption.CardNumber}</div>
-                            </td>
-                         </tr>
-                     </aura:iteration>
+                	<aura:if isTrue="{!not(empty(v.CardListMap))}">        
+                    	<aura:iteration items="{!v.CardListMap}" var="itemOption" indexVar="i">                  
+                            <tr aria-expanded="false" aria-level="1" aria-posinset="3" aria-selected="false" aria-setsize="4" class="slds-hint-parent">
+                                <td class="slds-text-align_right" role="gridcell" style="width:3.25rem">
+                                    <span class="slds-radio">
+                                        <lightning:input type="radio" name="select" value="{!itemOption.CardNumber}" onchange="{!c.onCardChange}"/>
+                                    </span>
+                                </td>
+                                <td data-label="Employees" role="gridcell">
+                                    <div class="slds-truncate" title="{!itemOption.CardNumber}">{!itemOption.CardNumber}</div>
+                                </td>
+                            </tr>
+                        </aura:iteration>
+                    </aura:if>
+                    <aura:if  isTrue="{!and(empty(v.CardListMap),not(v.Empty))}" >
+                        Fetching Card Details . . . . . . .
+                    </aura:if>
+                    
+                    <aura:if isTrue="{!(v.Empty)}">  
+                        <td colspan="2">
+                            <lightning:icon iconName="utility:warning" alternativeText="Warning!" size="x-small" variant="warning"/>
+                              Cards not Found!
+                        </td>
+                    </aura:if>
+                    
                  </tbody>
             </table>
     </div>    

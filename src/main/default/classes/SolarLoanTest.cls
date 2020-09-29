@@ -14,7 +14,7 @@ private class SolarLoanTest{
      api.URL__c = 'https://symxapi.chevronfcu.org/devclient';
      api.Name = 'ProductionURL';
      insert api;  
-   
+   	     
      List<Account_Details__c> account_details_Obj = new List<Account_Details__c>{
                 new Account_Details__c(Name = '0000147163', Balance__c = 0.00, Combined_Account_ID__c = '0000147163S0100P0100', ID1__c = '0100', 
                 Onboarded__c = true, Reference__c = 'BC02',RecType__c = 'LOAN', TypeTranslate__c = '75-SECURED SOLAR')};
@@ -208,7 +208,7 @@ private class SolarLoanTest{
      sl2.Site_UUID__c = '1167';
      sl2.FNI__c = '12';
      //sl2.Member_Number__c = '';
-     sl2.Status__c = 'New'; 
+     sl2.Status__c = 'Declined'; 
      sl2.Additional_Amount__c = 11.00; 
      insert sl2; 
       
@@ -285,7 +285,7 @@ private class SolarLoanTest{
     
     // ---------------------------Fetching Solar Loan document record from test set up data -------------------------//
     List<SolarLoan_Document__c> SolarLoanDocList = [SELECT id from SolarLoan_Document__c limit 1];  
-      
+   
     // --------------------------------Calling non static method of SolarLoanAPI class------------------------------//  
     
     Solar_Loans__c sl1 = new Solar_Loans__c();
@@ -309,7 +309,7 @@ private class SolarLoanTest{
     //--------------------------------- Creating Custom setting data --------------------------------------------------//
     SolarLoan_Document_Settings__c docSetting1 = new SolarLoan_Document_Settings__c();
     docSetting1.Days__c = 120;
-    docSetting1.Name = 'Completed';
+    docSetting1.Name = 'Closed';
     insert docSetting1;
     
     SolarLoan_Document_Settings__c docSetting2 = new SolarLoan_Document_Settings__c();
@@ -330,5 +330,106 @@ private class SolarLoanTest{
     test.stopTest();
  
   }
+  static testMethod void test_GetCaseAttachments_UseCase2(){
+    
+    // ---------------------------Fetching Solar Loan record from test set up data -----------------------------------//
+    List<Solar_Loans__c> listSolarLoan  =  [SELECT Id,status__c from Solar_Loans__c limit 1];
+    
+    // ---------------------------Fetching Cotent Document record from test set up data ------------------------------//
+    List<ContentDocument> cdList = [SELECT Id, Title, LatestPublishedVersionId FROM ContentDocument limit 1];
+    
+    // ---------------------------Fetching Solar Loan document record from test set up data -------------------------//
+    List<SolarLoan_Document__c> SolarLoanDocList = [SELECT id from SolarLoan_Document__c limit 1];  
+      
+    // --------------------------------Calling non static method of SolarLoanAPI class------------------------------//  
+    
+    Datetime yesterday = Datetime.now().addDays(-121);
+    Solar_Loans__c sl1 = new Solar_Loans__c();
+	sl1.id =  listSolarLoan[0].id;
+    sl1.Sunlight_Update__c = true;
+    sl1.Status__c = 'Expired';  
+    update sl1;
+	
+	 
+    SolarLoanDocList[0].IsMovedToOnBase__c = true;
+    SolarLoanDocList[0].Solar_Loans__c = sl1.id;
+    update SolarLoanDocList[0];      
+      
+    Test.setCreatedDate(SolarLoanDocList[0].Id, yesterday);      
+    test.startTest();  
+    //--------------------------------- Creating Custom setting data --------------------------------------------------//
+    SolarLoan_Document_Settings__c docSetting1 = new SolarLoan_Document_Settings__c();
+    docSetting1.Days__c = 120;
+    docSetting1.Name = 'Closed';
+    insert docSetting1;
+    
+    SolarLoan_Document_Settings__c docSetting2 = new SolarLoan_Document_Settings__c();
+    docSetting2.Days__c = 120;
+    docSetting2.Name = 'Declined';
+    insert docSetting2;
+    
+    SolarLoan_Document_Settings__c docSetting3 = new SolarLoan_Document_Settings__c();
+    docSetting3.Days__c = 120;
+    docSetting3.Name = 'Expired';
+    insert docSetting3;
+    
+    //---------------------------------Calling SolarLoanDeleteAttachment class-------------------------------------//
+    
+    SolarLoanDocumentDeleteAttachments obj = new SolarLoanDocumentDeleteAttachments();
+    obj.execute(null);
   
+    test.stopTest();
+ 
+  }
+  static testMethod void test_GetCaseAttachments_UseCase3(){
+    
+    // ---------------------------Fetching Solar Loan record from test set up data -----------------------------------//
+    List<Solar_Loans__c> listSolarLoan  =  [SELECT Id,status__c from Solar_Loans__c limit 1];
+    
+    // ---------------------------Fetching Cotent Document record from test set up data ------------------------------//
+    List<ContentDocument> cdList = [SELECT Id, Title, LatestPublishedVersionId FROM ContentDocument limit 1];
+    
+    // ---------------------------Fetching Solar Loan document record from test set up data -------------------------//
+    List<SolarLoan_Document__c> SolarLoanDocList = [SELECT id from SolarLoan_Document__c limit 1];  
+      
+    // --------------------------------Calling non static method of SolarLoanAPI class------------------------------//  
+    
+    Datetime yesterday = Datetime.now().addDays(-121);
+    Solar_Loans__c sl1 = new Solar_Loans__c();
+	sl1.id =  listSolarLoan[0].id;
+    sl1.Sunlight_Update__c = true;
+    sl1.Status__c = 'Declined';  
+    update sl1;
+	
+	 
+    SolarLoanDocList[0].IsMovedToOnBase__c = true;
+    SolarLoanDocList[0].Solar_Loans__c = sl1.id;
+    update SolarLoanDocList[0];      
+      
+    Test.setCreatedDate(SolarLoanDocList[0].Id, yesterday);      
+    test.startTest();  
+    //--------------------------------- Creating Custom setting data --------------------------------------------------//
+    SolarLoan_Document_Settings__c docSetting1 = new SolarLoan_Document_Settings__c();
+    docSetting1.Days__c = 120;
+    docSetting1.Name = 'Closed';
+    insert docSetting1;
+    
+    SolarLoan_Document_Settings__c docSetting2 = new SolarLoan_Document_Settings__c();
+    docSetting2.Days__c = 120;
+    docSetting2.Name = 'Declined';
+    insert docSetting2;
+    
+    SolarLoan_Document_Settings__c docSetting3 = new SolarLoan_Document_Settings__c();
+    docSetting3.Days__c = 120;
+    docSetting3.Name = 'Expired';
+    insert docSetting3;
+    
+    //---------------------------------Calling SolarLoanDeleteAttachment class-------------------------------------//
+    
+    SolarLoanDocumentDeleteAttachments obj = new SolarLoanDocumentDeleteAttachments();
+    obj.execute(null);
+  
+    test.stopTest();
+ 
+  } 	  
 }

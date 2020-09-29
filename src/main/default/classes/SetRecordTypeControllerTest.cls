@@ -296,6 +296,8 @@ public class SetRecordTypeControllerTest {
        controller.accountName = acc.Id;
        controller.pcOptions();
        controller.nextPage();
+       controller.SearchTertiary();
+       controller.ChangeCategories();
        System.assertEquals(ApexPages.getMessages()[0].getSummary(), 'Please select Primary Category');      
     }
     
@@ -388,9 +390,9 @@ public class SetRecordTypeControllerTest {
            cRec.CaseComments__c = 'test comments';
         insert cRec;
         
-        CaseComment cc = new CaseComment();
+        /*CaseComment cc = new CaseComment();
            cc.ParentId = cRec.Id;
-        insert cc;
+        insert cc;*/
         
         PageReference pageRef = Page.SetRecordType;
         Test.setCurrentPage(pageRef);
@@ -409,6 +411,7 @@ public class SetRecordTypeControllerTest {
          test.startTest();
         controller.process1();
         test.stopTest();
+        controller.nextPage();
     }
     
     static testMethod void testMethod11(){

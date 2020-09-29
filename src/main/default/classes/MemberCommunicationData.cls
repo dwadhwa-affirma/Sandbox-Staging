@@ -478,7 +478,85 @@ return results;
         system.debug('--------'+results.size());
         return results;
     }
-    
+    @AuraEnabled
+    public static List<MemberCommunicationData.documents> GetMCPingChangeData(List<string> source,Date fromdate,Date todate,string recid,string keyword)
+    {   
+        
+        List<String> lstSource = source;//source.split(',');
+        String apiURL='';
+        
+        List<Account_Details__c> recordid = [select id,Name from Account_Details__c where id =: recid limit 1];
+        
+        system.debug('----------'+recordid);
+        List<MemberCommunicationData.documents> results=new List<MemberCommunicationData.documents>();
+        String str='%'+keyword+'%';
+        
+        List<MC_PIN_Change__c> mpc = new List<MC_PIN_Change__c>();
+        if( fromdate != null && todate == null && keyword == 'Date Range')
+            mpc = [select id,name,Member_Number__c,createdDate from MC_PIN_Change__c where   createdDate  >= :fromdate ];
+        else if(fromdate != null && todate != null  && fromdate < todate && keyword == 'Date Range')
+            mpc = [select id,name,Member_Number__c,createdDate from MC_PIN_Change__c where  createdDate  >= :fromdate and createdDate  <= :todate];
+        else if(fromdate == null && todate == null && keyword == null)
+            mpc = [select id,name,Member_Number__c,createdDate from MC_PIN_Change__c];
+        else if( keyword != 'Date Range'){
+            Date d = System.today() - Integer.ValueOf(keyword);
+            mpc = [select id,name,Member_Number__c,createdDate from MC_PIN_Change__c where createdDate >= :d];
+        }
+        for(MC_PIN_Change__c mp : mpc ){
+            MemberCommunicationData.documents doc = new MemberCommunicationData.documents();
+            doc.id= mp.id;               
+            doc.dateDesc= 'MC PIN Change - '+mp.name;
+            doc.documentDate=Date.valueOf(mp.createdDate);
+            //doc.documentDateText = doc.documentDate.format() + ' 00:00';
+            //doc.userID =ld.Brand__c;
+            doc.DataSource='Salesforce';
+            doc.Account= mp.Member_Number__c;
+            results.add(doc);
+        }
+        
+        system.debug('--------'+results.size());
+        return results;
+    }
+
+    @AuraEnabled
+    public static List<MemberCommunicationData.documents> GetMCLimitChangeData(List<string> source,Date fromdate,Date todate,string recid,string keyword)
+    {   
+        
+        List<String> lstSource = source;//source.split(',');
+        String apiURL='';
+        
+        List<Account_Details__c> recordid = [select id,Name from Account_Details__c where id =: recid limit 1];
+        
+        system.debug('----------'+recordid);
+        List<MemberCommunicationData.documents> results=new List<MemberCommunicationData.documents>();
+        String str='%'+keyword+'%';
+        
+        List<MC_Limit_Change__c> mlc = new List<MC_Limit_Change__c>();
+        if( fromdate != null && todate == null && keyword == 'Date Range')
+            mlc = [select id,name,Member_Number__c,createdDate from MC_Limit_Change__c where   createdDate  >= :fromdate ];
+        else if(fromdate != null && todate != null  && fromdate < todate && keyword == 'Date Range')
+            mlc = [select id,name,Member_Number__c,createdDate from MC_Limit_Change__c where  createdDate  >= :fromdate and createdDate  <= :todate];
+        else if(fromdate == null && todate == null && keyword == null)
+            mlc = [select id,name,Member_Number__c,createdDate from MC_Limit_Change__c];
+        else if( keyword != 'Date Range'){
+            Date d = System.today() - Integer.ValueOf(keyword);
+            mlc = [select id,name,Member_Number__c,createdDate from MC_Limit_Change__c where createdDate >= :d];
+        }
+        for(MC_Limit_Change__c ml : mlc ){
+            MemberCommunicationData.documents doc = new MemberCommunicationData.documents();
+            doc.id= ml.id;               
+            doc.dateDesc= 'MC Limit Change - '+ml.name;
+            doc.documentDate=Date.valueOf(ml.createdDate);
+            //doc.documentDateText = doc.documentDate.format() + ' 00:00';
+            //doc.userID =ld.Brand__c;
+            doc.DataSource='Salesforce';
+            doc.Account= ml.Member_Number__c;
+            results.add(doc);
+        }
+        
+        system.debug('--------'+results.size());
+        return results;
+    }
     
     
     public class CommentsEnt
