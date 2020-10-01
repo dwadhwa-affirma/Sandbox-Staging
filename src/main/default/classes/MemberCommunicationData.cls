@@ -484,23 +484,34 @@ return results;
         
         List<String> lstSource = source;//source.split(',');
         String apiURL='';
+        set<String> accList = new set<String>();
+        set<string> typeList = new set<string>();
+       
+        for(Member360_TypeTranslate__c t : Member360_TypeTranslate__c.getAll().values()){
+       		typeList.add(t.name);	
+        }
         
-        List<Account_Details__c> recordid = [select id,Name from Account_Details__c where id =: recid limit 1];
+        list<Person_Account__c> paList = [SELECT Id, Account_Number__c,  PersonID__c, Account_Number__r.RecType__c, TypeTranslate__c, Account_Number__r.Name
+                FROM Person_Account__c where PersonID__c =:recid and TypeTranslate__c IN:typeList and Account_Number__r.RecType__c IN('ACCT', 'SHAR') order by  Account_Number__r.RecType__c asc];
+       
+        for(Person_Account__c p : paList){
+       		accList.add(p.Account_Number__r.Name);	
+        }
         
-        system.debug('----------'+recordid);
+        system.debug('accList'+accList);
         List<MemberCommunicationData.documents> results=new List<MemberCommunicationData.documents>();
         String str='%'+keyword+'%';
         
         List<MC_PIN_Change__c> mpc = new List<MC_PIN_Change__c>();
         if( fromdate != null && todate == null && keyword == 'Date Range')
-            mpc = [select id,name,Member_Number__c,createdDate from MC_PIN_Change__c where   createdDate  >= :fromdate ];
+            mpc = [select id,name,Member_Number__c,createdDate from MC_PIN_Change__c where   createdDate  >= :fromdate and Member_Number__c IN:accList ];
         else if(fromdate != null && todate != null  && fromdate < todate && keyword == 'Date Range')
-            mpc = [select id,name,Member_Number__c,createdDate from MC_PIN_Change__c where  createdDate  >= :fromdate and createdDate  <= :todate];
+            mpc = [select id,name,Member_Number__c,createdDate from MC_PIN_Change__c where  createdDate  >= :fromdate and createdDate  <= :todate and Member_Number__c IN:accList];
         else if(fromdate == null && todate == null && keyword == null)
-            mpc = [select id,name,Member_Number__c,createdDate from MC_PIN_Change__c];
+            mpc = [select id,name,Member_Number__c,createdDate from MC_PIN_Change__c where Member_Number__c IN:accList];
         else if( keyword != 'Date Range'){
             Date d = System.today() - Integer.ValueOf(keyword);
-            mpc = [select id,name,Member_Number__c,createdDate from MC_PIN_Change__c where createdDate >= :d];
+            mpc = [select id,name,Member_Number__c,createdDate from MC_PIN_Change__c where createdDate >= :d and Member_Number__c IN:accList];
         }
         for(MC_PIN_Change__c mp : mpc ){
             MemberCommunicationData.documents doc = new MemberCommunicationData.documents();
@@ -524,23 +535,34 @@ return results;
         
         List<String> lstSource = source;//source.split(',');
         String apiURL='';
+        set<String> accList = new set<String>();
+        set<string> typeList = new set<string>();
+       
+        for(Member360_TypeTranslate__c t : Member360_TypeTranslate__c.getAll().values()){
+       		typeList.add(t.name);	
+        }
         
-        List<Account_Details__c> recordid = [select id,Name from Account_Details__c where id =: recid limit 1];
+        list<Person_Account__c> paList = [SELECT Id, Account_Number__c,  PersonID__c, Account_Number__r.RecType__c, TypeTranslate__c, Account_Number__r.Name
+                FROM Person_Account__c where PersonID__c =:recid and TypeTranslate__c IN:typeList and Account_Number__r.RecType__c IN('ACCT', 'SHAR') order by  Account_Number__r.RecType__c asc];
+       
+        for(Person_Account__c p : paList){
+       		accList.add(p.Account_Number__r.Name);	
+        }
         
-        system.debug('----------'+recordid);
+        system.debug('accList'+accList);
         List<MemberCommunicationData.documents> results=new List<MemberCommunicationData.documents>();
         String str='%'+keyword+'%';
         
         List<MC_Limit_Change__c> mlc = new List<MC_Limit_Change__c>();
         if( fromdate != null && todate == null && keyword == 'Date Range')
-            mlc = [select id,name,Member_Number__c,createdDate from MC_Limit_Change__c where   createdDate  >= :fromdate ];
+            mlc = [select id,name,Member_Number__c,createdDate from MC_Limit_Change__c where  createdDate >= :fromdate and Member_Number__c IN:accList ];
         else if(fromdate != null && todate != null  && fromdate < todate && keyword == 'Date Range')
-            mlc = [select id,name,Member_Number__c,createdDate from MC_Limit_Change__c where  createdDate  >= :fromdate and createdDate  <= :todate];
+            mlc = [select id,name,Member_Number__c,createdDate from MC_Limit_Change__c where  createdDate  >= :fromdate and createdDate  <= :todate and Member_Number__c IN:accList];
         else if(fromdate == null && todate == null && keyword == null)
-            mlc = [select id,name,Member_Number__c,createdDate from MC_Limit_Change__c];
+            mlc = [select id,name,Member_Number__c,createdDate from MC_Limit_Change__c where Member_Number__c IN:accList];
         else if( keyword != 'Date Range'){
             Date d = System.today() - Integer.ValueOf(keyword);
-            mlc = [select id,name,Member_Number__c,createdDate from MC_Limit_Change__c where createdDate >= :d];
+            mlc = [select id,name,Member_Number__c,createdDate from MC_Limit_Change__c where createdDate >= :d and Member_Number__c IN:accList];
         }
         for(MC_Limit_Change__c ml : mlc ){
             MemberCommunicationData.documents doc = new MemberCommunicationData.documents();
