@@ -1,0 +1,63 @@
+<apex:page standardController="Account" sidebar="false" showHeader="false" lightningStylesheets="true">
+     <apex:includeLightning />
+	 <style>
+
+        html, body {
+        margin: 0;
+        padding: 0;
+        }
+
+        #lightningComponent {width: 100%;}
+		}
+    </style>    
+    <div id="lightningComponent">
+  
+  </div>
+    
+    <script>
+          
+		
+		 $Lightning.use("c:MemberHpHvExpiringCDLightningApp", function() {
+            $Lightning.createComponent(
+                "c:Member_HP_HV_ExpiringCD",
+                {},
+                "lightningComponent",
+                function(cmp) {
+                    //console.log(“Component is created!”);
+                    console.log(cmp);
+                });
+
+
+        });
+
+  </script>
+    
+
+
+
+<!-- <apex:page controller="Member_HP_HV_ExpiringCD" id="thePage">
+  <style type="text/css">
+      
+</style>
+  <apex:pageBlock title="HP/HV members with expiring CD's">
+    <apex:pageblockTable value="{!accounts}" var="a">
+        <apex:column headerValue="Name"><apex:outputLink value="/!{a.Id}" target="_blank">{!a.Name}</apex:outputLink></apex:column>
+        <apex:column value="{!a.Member_Branch__c}"/> 
+        <apex:column value="{!a.Phone}"/> 
+        <apex:column value="{!a.High_Value_Flag__c}"/>            
+    </apex:pageblockTable>
+</apex:pageBlock> -->
+
+<!-- <apex:pageBlock title="Data Table">
+        <apex:dataTable value="{!accounts}" var="a" styleClass="outBorder" width="550px">
+            <apex:column styleClass="inBorder">
+                <apex:facet name="header">Name</apex:facet>
+                <apex:outputText >{!a.Name}</apex:outputText>
+            </apex:column>       
+            <apex:column styleClass="inBorder">
+                <apex:facet name="header">High Value Flag</apex:facet>
+                <apex:outputText >{!a.High_Value_Flag__c}</apex:outputText>
+            </apex:column>              
+        </apex:dataTable>
+    </apex:pageBlock>     -->
+</apex:page>

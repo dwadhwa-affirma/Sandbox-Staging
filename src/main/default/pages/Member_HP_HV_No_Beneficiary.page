@@ -1,0 +1,58 @@
+<!-- <apex:page controller="Member_HP_HV_No_Beneficiary">
+    <style type="text/css">
+    </style>
+    <apex:pageBlock title="HP/HV members with no beneficiary">
+        <apex:pageblockTable value="{!accounts}" var="a">
+            <apex:column value="{!a.Name}" />
+            <apex:column value="{!a.Member_Branch__c}" />
+            <apex:column value="{!a.Phone}" />
+            <apex:column value="{!a.High_Value_Flag__c}" />
+        </apex:pageblockTable>
+    </apex:pageBlock>
+
+</apex:page> -->
+
+<apex:page standardController="Account" sidebar="false" showHeader="false" lightningStylesheets="true">
+     <apex:includeLightning />
+	 <style>
+
+        html, body {
+        margin: 0;
+        padding: 0;
+        }
+
+        #lightningComponent {width: 100%;}
+		}
+    </style>    
+    <div id="lightningComponent">
+  
+  </div>
+    
+    <script>
+          
+		
+		 $Lightning.use("c:MemberHpHvNoBeneficiaryLightningApp", function() {
+            $Lightning.createComponent(
+                "c:MemberHpHvNoBeneficiary",
+                {},
+                "lightningComponent",
+                function(cmp) {
+                    //console.log(“Component is created!”);
+                    console.log(cmp);
+                });
+
+
+        });
+		
+		
+		
+		
+		
+		
+		
+		
+    
+
+  </script>
+    
+</apex:page>
