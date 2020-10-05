@@ -1,0 +1,14 @@
+<aura:component implements="flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:lightningQuickAction,force:appHostable" access="global" controller="Member_HP_HV_ExpiringCD" >
+	<aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
+    <aura:attribute name="listViewResult" type="Account"/>
+    <aura:attribute name="columns" type="List"/>
+   
+    
+    <div style="height: 300px">
+        <lightning:datatable
+                keyField="id"
+                data="{!v.listViewResult}"
+                columns="{!v.columns}"
+                hideCheckboxColumn="true"/>
+    </div>
+</aura:component>
