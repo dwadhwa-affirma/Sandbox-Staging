@@ -10,10 +10,18 @@
         #lightningComponent {width: 100%;}
 		}
     </style>    
+     <apex:outputPanel layout="none" rendered="{!$Profile.Name == 'CFCU Admin'}">
     <div id="lightningComponent">
   
   </div>
-    
+</apex:outputPanel>
+<apex:outputPanel layout="none" rendered="{!$Profile.Name != 'CFCU Admin'}">
+  <apex:pageMessage   severity="ERROR"
+  strength="3"
+  title="Unauthorized Access"
+  summary="You do not have permissions to access this page.">
+</apex:pageMessage>
+</apex:outputPanel>
     <script>
           
 		

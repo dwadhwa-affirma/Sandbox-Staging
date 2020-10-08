@@ -1,14 +1,138 @@
-<aura:component implements="flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:lightningQuickAction,force:appHostable" access="global" controller="Member_HP_HV_No_Beneficiary" >
+<aura:component implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes,force:lightningQuickAction" access="global" controller="Member_HP_HV_No_Beneficiary" >
 	<aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
     <aura:attribute name="listViewResult" type="Account"/>
     <aura:attribute name="columns" type="List"/>
-   
+    <aura:attribute name="MemberBranch" type="String" default=""/>
+    <aura:attribute name="HighValueFlag" type="String" />
+    <aura:attribute name="loading" type="Boolean" default="false" />
+    <aura:attribute name="PageNumber" type="integer" default="1"/>
+    <aura:attribute name="TotalPages" type="integer" default="0"/>
+    <aura:attribute name="TotalRecords" type="integer" default="0"/>
+    <aura:attribute name="RecordStart" type="integer" default="0"/>
+    <aura:attribute name="RecordEnd" type="integer" default="0"/>
     
-    <div style="height: 300px">
-        <lightning:datatable
-                keyField="id"
-                data="{!v.listViewResult}"
-                columns="{!v.columns}"
-                hideCheckboxColumn="true"/>
+    <lightning:card title="HP/HV Members with No Beneficiaries" class="homeHomeCard">    
+    <div class="slds-grid">
+       
+        <div class="slds-col slds-small-size--1-of-4 slds-medium-size--1-of-4">
+            <div class="slds-form--stacked slds-p-around--medium slds-m-bottom--x-small">
+                
+                <div class="slds-form-element">
+                    <label class="slds-form-element__label">Member Branch</label>
+                    <div class="slds-form-element__control">
+                        <ui:inputText value="{!v.MemberBranch}"> </ui:inputText>
+                    </div>
+                </div>
+
+                <!-- <lightning:select name="select1" onchange="{!c.onPicklistChange}" label=" " class="customCls">
+
+                    <option value="Member Branch">Member Branch</option>
+                    <option value="High Value/High Potential">High Value/High Potential</option>
+
+                </lightning:select> -->
+            </div>
+        </div>
+        <div class="slds-col slds-small-size--2-of-4 slds-medium-size--1-of-4">
+            <div class="slds-form--stacked slds-p-around--medium slds-m-bottom--x-small">
+                <div class="slds-form-element">
+                    <label class="slds-form-element__label">High Value/High Potential</label>
+                    <!-- <div class="slds-form-element__control"> -->
+                        <ui:inputSelect class="customCls" value="{!v.HighValueFlag}">
+                            <ui:inputSelectOption value="None" text="--None--" />
+                            <ui:inputSelectOption value="High Value" text="High Value"/>
+                            <ui:inputSelectOption value="High Potential" text="High Potential"/>
+                            <ui:inputSelectOption value="High Value and High Potential" text="High Value and High Potential"/>
+                    </ui:inputSelect>
+                    <!-- </div> -->
+                </div>
+
+            </div>
+        </div>
+        <div class="slds-col slds-small-size--3-of-4 slds-medium-size--1-of-4">
+            <div class="slds-form--stacked slds-p-around--medium slds-m-bottom--x-small">
+                <div class="slds-form-element">
+                    <label class="slds-form-element__label">Display Records Per Page:</label>
+
+                    <ui:inputSelect aura:id="pageSize" class="customCls">
+                        <ui:inputSelectOption text="10" label="10" />
+                        <ui:inputSelectOption text="15" label="15" value="true"/>
+                        <ui:inputSelectOption text="20" label="20"/>
+                    </ui:inputSelect>
+                </div>
+            </div>
+            </div>
+        <div class="slds-col slds-small-size--4-of-4 slds-medium-size--1-of-4">
+            <div class="slds-form--stacked slds-p-around--medium slds-m-bottom--x-small">
+                <div class="slds-form-element">
+                    <label class="slds-form-element__label"></label>
+
+                <ui:button buttonTitle="Search" class="button" label="Search" press="{!c.Searchaccounts}"/>
+                </div>
+            </div>
+            </div>
+        
     </div>
+
+    
+    <div>
+        <!-- <lightning:datatable keyField="id" data="{!v.listViewResult}" columns="{!v.columns}"
+            hideCheckboxColumn="true" /> -->
+            <table class="slds-table slds-table_bordered slds-table_cell-buffer">
+                <thead>
+                    <tr class="slds-text-title_caps">
+                        <th scope="col">
+                            <strong><div class="slds-truncate" title="Name">Name</div></strong>
+                        </th>
+                        <th scope="col">
+                            <strong><div class="slds-truncate" title="Phone">Member Branch</div></strong>
+                        </th>
+                        <th scope="col">
+                            <strong><div class="slds-truncate" title="Phone">Phone</div></strong>
+                        </th>
+                        <th scope="col">
+                            <strong><div class="slds-truncate" title="Email">High Value Flag</div></strong>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <aura:iteration items="{!v.listViewResult}" var="con"> 
+                        <tr>
+                            <th scope="row" data-label="Name">
+                                <div class="slds-truncate" title="{!con.Name}"><a href="{!con.URL}" target="_blank" style="cursor:pointer !important;">{!con.Name}</a></div>
+                            </th>
+                            <th scope="row" data-label="MemberBranch">
+                                <div class="slds-truncate" title="{!con.Member_Branch__c}">{!con.Member_Branch__c}</div>
+                            </th>
+                            <th scope="row" data-label="Phone">
+                                <div class="slds-truncate" title="{!con.Phone}">{!con.Phone}</div>
+                            </th>
+                            <th scope="row" data-label="HighValueFlag">
+                                <div class="slds-truncate" title="{!con.High_Value_Flag__c}">{!con.High_Value_Flag__c}</div>
+                            </th>
+                        </tr>
+                    </aura:iteration> 
+                </tbody>
+            </table>
+    </div>
+
+    <div class="slds-clearfix">
+        <div class="slds-page-header" role="banner">
+            <div class="slds-float_right">            
+                <lightning:button disabled="{!v.PageNumber == 1}" variant="brand" aura:id="prevPage" label="Prev" onclick="{!c.handlePrev}" />            
+                <lightning:button disabled="{!v.PageNumber == v.TotalPages}" aura:id="nextPage" variant="brand" label="Next" onclick="{!c.handleNext}"/>
+            </div>
+            <p class="slds-page-header__title">{!v.RecordStart}-{!v.RecordEnd} of {!v.TotalRecords} | Page {!v.PageNumber} of {!v.TotalPages}</p>
+        </div>
+    </div>
+    <aura:if isTrue="{!(v.loading == true)}">
+            <div class="loadingDiv cCreateLead">
+                <div class="demo-only" style='height: 6rem; '>
+                    <div role="status" class="slds-spinner slds-spinner_medium">
+                        <div class="slds-spinner__dot-a"></div>
+                        <div class="slds-spinner__dot-b"></div>
+                    </div>
+                </div>
+            </div>
+        </aura:if>
+   </lightning:card> 
 </aura:component>

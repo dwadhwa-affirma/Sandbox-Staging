@@ -1,2 +1,23 @@
-.THIS {
+.THIS .button{
+    margin-top: 6%;  
+}
+.THIS .loadingDiv {
+    position: absolute;
+    z-index: 100;
+    background: rgba(255, 255, 255, 0.8);
+    width: 100%;
+    height: 100%;
+    top: 0px;
+}
+
+.THIS .loadingDiv .demo-only {
+    z-index: 101;
+}
+
+.THIS .homeHomeCard .slds-card {
+    padding: 1rem;
+}
+
+.THIS .customCls{
+    height: 35px  !important;
 }
