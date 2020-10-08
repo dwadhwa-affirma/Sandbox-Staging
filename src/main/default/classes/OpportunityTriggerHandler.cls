@@ -12,6 +12,203 @@ public class OpportunityTriggerHandler {
 		BatchSize = size;
 	}
 	
+	//-----------------------------------------------------------CRM-1873-------------------------------------------------------------//
+	
+	public static HttpRequest req = new HttpRequest();
+	public static HttpResponse res;
+	public static Http http = new Http();
+	public static string responseBody;
+	public static string loanAPI;
+	public static String jsonData;
+
+	public static HttpRequest req1 = new HttpRequest();
+	public static HttpResponse res1;
+	public static Http http1 = new Http();
+	public static string responseBody1;
+	public static String jsonData1;
+	public static String AccountNumber;
+	public static String Comment;
+	public static String Score;
+	
+	
+	
+	public void OppToCheck(List<opportunity> Opps){
+		
+		Set<Id> OppList = new Set<Id>();
+		for(Opportunity o : Opps){
+			
+			if(o.Product_Type__c == 'Consumer Lending' && o.Product_Sub__c == 'Pre Select Auto' && o.member_account__c != null){
+			
+				OppList.add(o.id);
+			}
+		}
+
+		if(OppList.size() > 0){
+
+			OppPreSelectCheck(OppList);
+		}
+
+	}
+	
+	@future(callout=true)
+	public static void OppPreSelectCheck(Set<Id> oppIds){
+
+		SolarLoan_To_Episys_API_Details__c api = SolarLoan_To_Episys_API_Details__c.getValues('ProductionURL');
+					
+		if(api.URL__c != null){
+			loanAPI = api.URL__c;
+		}
+
+		List<opportunity> OppList = new List<opportunity>();
+		List<opportunity> Opps = [select id,member_account__r.Name,member_account__c,Product_Type__c,Product_Sub__c from Opportunity where id =:oppIds];
+
+		for(opportunity op : Opps){
+
+			AccountNumber = op.member_account__r.Name;
+
+			system.debug('Pre-select checking');
+			req.setEndpoint(loanAPI+'/Opportunity/GetComments?accountNumber='+AccountNumber);
+			req.setMethod('GET');
+			req.setHeader('Content-Type', 'application/json');
+			req.setHeader('Accept', 'application/json');
+			req.setTimeout(60000);
+
+			if(!Test.isRunningTest()){                       
+				res = http.send(req);
+				responseBody = res.getBody();
+				System.debug('Response Body :'+res.getBody());    
+			}else{
+				responseBody = '[{"EffectiveDate":"2017-05-18", "Error":"null", "ErrorDetails":"null", "Locator":"78", "RecordChangeDate":"2017-05-18", "Status":"null", "Text":"PRIMARY DL SCANNED 05/18/17", "Type":"1"}]';
+			}
+			if(responseBody != '' && responseBody != null){        
+				List<object> results = (List<Object>) JSON.deserializeUntyped(responseBody);      
+				System.debug('Response is ....' + results);
+				
+				if(results.size() > 0){
+					
+					for(Object key : results){ 
+						
+						Map<String, Object> testdetail = (Map<String, Object>)key;
+						string comment = string.valueof(testdetail.get('Text'));
+						
+						system.debug('comment'+comment);
+						if(comment.startsWith('TEST')){
+							
+							system.debug('Valid Comment'+comment);
+							req1.setEndpoint(loanAPI+'/Opportunity/ExpirePreSelectComment');
+							req1.setMethod('POST');
+							req1.setHeader('Content-Type', 'application/json');
+							req1.setHeader('Accept', 'application/json');
+							req1.setTimeout(60000);
+							
+							jsonData = '{"AccountNumber":' + '\"'+ AccountNumber +'\"'+',"Text":' + '\"'+ comment+'\"}';
+							req1.setBodyAsBlob(Blob.valueof(jsondata)); 
+							system.debug('test'+jsonData);
+							   
+							if(!Test.isRunningTest()){                       
+								res1 = http1.send(req1);
+								responseBody1 = res1.getBody();
+								System.debug('Response Body :'+res1.getBody());    
+							}else{
+								responseBody1 = '{"Type":"3","Last":"27","First":"1","Street":"1","ExtraAddress":"100","City":"Chicago","State":"IL","ZipCode":"0012345,"BirthDate":"01-01-2019","SSN":"1345","LoanId":"322271627","AccountNumber":"00000123456"}';
+								
+							}
+						}
+					}
+				} 
+			}
+		}
+
+	}
+
+	public void OnAfterinsert(List<Opportunity> opps){
+
+		List<Id> OppIds = new List<Id>();
+		Set<Id> OppToCheck = new Set<Id>();
+		List<Opportunity> OppList = new List<Opportunity>();
+
+		OppList = [select id, member_account__c, member_account__r.name,Product_Type__c,Product_Sub__c from Opportunity where id =:OppIds];
+
+		for(Opportunity opp : opps){
+		
+			if(opp.Product_Type__c == 'Consumer Lending' && opp.Product_Sub__c == 'Pre Select Auto' && opp.member_account__c != null){
+				
+				List<Opportunity> OppMemberList = [select id, member_account__c, member_account__r.name,Product_Type__c,Product_Sub__c 
+													from Opportunity where Product_Type__c = 'Consumer Lending' and  Product_Sub__c = 'Pre Select Auto'
+													and member_account__c =: opp.member_account__c];
+				
+				system.debug('OppMemberList'+OppMemberList.size());
+				
+				if(OppMemberList.size() > 0){
+					
+					opp.Adderror('Opportunity record for Consumer Lending (Pre Select Auto) already exist!');
+				}
+				
+			}
+		}		
+	}
+	
+	public void OnAfterUpdate(List<Opportunity> opps, Map<ID, Opportunity> OpportunityOldMap){
+
+		SolarLoan_To_Episys_API_Details__c api = SolarLoan_To_Episys_API_Details__c.getValues('ProductionURL');
+					
+		if(api.URL__c != null){
+			loanAPI = api.URL__c;
+		}
+
+		List<Id> OppIds = new List<Id>();
+		Set<Id> OppToCheck = new Set<Id>();
+		List<Opportunity> OppList = new List<Opportunity>();
+		
+		for(Opportunity op : opps){
+			
+			Opportunity oldOpp = OpportunityOldMap.get(op.Id);
+			
+			System.debug('New Opp'+ op.Product_Type__c);
+			System.debug('old Opp'+ oldOpp.Product_Type__c);
+
+			if((oldOpp.Product_Type__c != op.Product_Type__c || oldOpp.Product_Sub__c != op.Product_Sub__c)
+						&& op.Product_Type__c == 'Consumer Lending' && 	op.Product_Sub__c == 'Pre Select Auto' 
+						&& op.member_account__c != null)
+			{
+				OppIds.add(op.Id);
+			}
+		}
+		System.debug('CRM-1873-Opp'+OppIds);
+
+		if(OppIds.size() > 0){
+			
+			OppList = [select id, member_account__c, member_account__r.name,Product_Type__c,Product_Sub__c from Opportunity where id =:OppIds];
+
+			for(Opportunity opp : OppList){
+			
+				AccountNumber = opp.member_account__r.Name;
+
+				List<Opportunity> OppMemberList = [select id, member_account__c, member_account__r.name,Product_Type__c,Product_Sub__c 
+													from Opportunity where Product_Type__c = 'Consumer Lending' and  Product_Sub__c = 'Pre Select Auto'
+													and member_account__c =: opp.member_account__c];
+				
+				system.debug('OppMemberList'+OppMemberList.size());
+				
+				if(OppMemberList.size() > 1){
+					
+					opp.Adderror('Opportunity record for Consumer Lending (Pre Select Auto) already exist!');
+				}
+				else{
+					
+					OppToCheck.add(opp.id);
+				}
+					
+				
+			}
+			if(OppToCheck.size() > 0){
+				OppPreSelectCheck(OppToCheck);
+			}
+		}
+	}
+
+	//-----------------------------------------------------------CRM-1873-------------------------------------------------------------//
+	
 	public void OnBeforeInsert(Opportunity[] newOpportunities)
 	{
 			system.debug('Handler Called###');
@@ -153,9 +350,6 @@ public class OpportunityTriggerHandler {
 		                 	
 		                 	opp.Member_Branch__c = MemAccMap.get(opp.Member_Account__c);
 		                 }
-		                 
-		                 
-		                 
 		    
 		      }
 		      
@@ -279,8 +473,6 @@ public class OpportunityTriggerHandler {
 			      				 	
 		      			}
 		      			
-		      			
-		      			
 		      		}
                   else if(opp.Ownership__c == 'Auto Assign' && opp.Opportunity_Source__c == 'Event'){
                       		
@@ -362,16 +554,7 @@ public class OpportunityTriggerHandler {
 		      		
 		      }	
     		 
-    				    
-		    
-		        	
-		        	
-		        	
-		        	
-                        
-	}
-	
-	
+ 	}
 	
 	public void OnBeforeUpdate(Opportunity[] Opportunities, Map<ID, Opportunity> OpportunityNewMap, Map<ID, Opportunity> OpportunityOldMap)
 	{

@@ -1,98 +1,103 @@
 @isTest
 public  class OpportunityTriggerTest {
    
-   @testSetup
-   
-	static void SetUp(){
-		test.StartTest();
+    @testSetup
+  	static void SetUp(){
+		
+        test.StartTest();
 			
-			string uid= UserInfo.getUserId();
-		    User usr = [Select id, name, alias from User where id=:uid];
-		    List<Episys_User__c> eusr = [SELECT id, alias__c, Assigned_Branch__c,Episys_ID__c, Branch_Name__c,Default__c from Episys_User__c 
-		                                    where alias__c=:usr.alias order by Default__c desc];
+        SolarLoan_To_Episys_API_Details__c api = new SolarLoan_To_Episys_API_Details__c();
+     	api.URL__c = 'https://symxapi.chevronfcu.org/devclient';
+     	api.Name = 'ProductionURL';
+     	insert api;
+        
+        string uid= UserInfo.getUserId();
+        User usr = [Select id, name, alias from User where id=:uid];
+        List<Episys_User__c> eusr = [SELECT id, alias__c, Assigned_Branch__c,Episys_ID__c, Branch_Name__c,Default__c from Episys_User__c 
+                                     where alias__c=:usr.alias order by Default__c desc];
 		                                    
-		    Account_Details__c accDetails = new Account_Details__c();
-            accDetails.Name = 'test';
-            accDetails.SecureEmailAddress__c = 'sample@sample.com';
-            accDetails.Created_By_User__c = 1;
-       		insert accDetails;
-       		
-       		 Account_Details__c accDetail = new Account_Details__c();
-            accDetail.Name = 'Test';
-            accDetail.RecType__c = 'ACCT';
+        Account_Details__c accDetails = new Account_Details__c();
+        accDetails.Name = 'test';
+        accDetails.SecureEmailAddress__c = 'sample@sample.com';
+        accDetails.Created_By_User__c = 1;
+        insert accDetails;
+        
+        Account_Details__c accDetail = new Account_Details__c();
+        accDetail.Name = 'Test';
+        accDetail.RecType__c = 'ACCT';
         insert accDetail;
        		
-       	    String RecTypeId= [select Id from RecordType where (Name='Person Account') and (SobjectType='Account')].Id;
-       		
-       		Account acc = new Account(
-           RecordTypeID=RecTypeId,
-           FirstName='Test FName',
-           LastName='Test LName',
-           PersonMailingStreet='test@yahoo.com',
-           PersonMailingPostalCode='12345',
-           PersonMailingCity='SFO',
-           PersonEmail='test@yahoo.com',
-           PersonHomePhone='1234567',
-           PersonMobilePhone='12345678');
-         
+        String RecTypeId= [select Id from RecordType where (Name='Person Account') and (SobjectType='Account')].Id;
+        
+        Account acc = new Account(
+        RecordTypeID=RecTypeId,
+        FirstName='Test FName',
+        LastName='Test LName',
+        PersonMailingStreet='test@yahoo.com',
+        PersonMailingPostalCode='12345',
+        PersonMailingCity='SFO',
+        PersonEmail='test@yahoo.com',
+        PersonHomePhone='1234567',
+        PersonMobilePhone='12345678');
+        
         insert acc;
+        
        		
-       		
-       		Person_Account__c pa = new Person_Account__c();
-       		pa.PersonID__c = acc.Id;
-        	pa.Account_Number__c = accDetail.Id;
-       		insert pa;
-       		
-		    Episys_User__c eu = new Episys_User__c();
-            eu.Episys_ID__c = 1;
-            eu.Episys_Name__c = 'testname';
-            accDetails.SecureEmailAddress__c = 'sample@sample.com';
-            eu.alias__c = usr.alias;
-       		insert eu;
-		
-			Group	listQueue = [select id,Name,Email from Group where Type = 'Queue' and (Email like '%lead.com') limit 1];
-			
-			Account account_Obj = new Account(PersonHomePhone='', PersonHasOptedOutOfEmail = false, Name = 'MARIA BANDA');
-			insert account_Obj; 
-			
+        Person_Account__c pa = new Person_Account__c();
+        pa.PersonID__c = acc.Id;
+        pa.Account_Number__c = accDetail.Id;
+        insert pa;
+        
+        Episys_User__c eu = new Episys_User__c();
+        eu.Episys_ID__c = 1;
+        eu.Episys_Name__c = 'testname';
+        accDetails.SecureEmailAddress__c = 'sample@sample.com';
+        eu.alias__c = usr.alias;
+        insert eu;
+        
+        Group	listQueue = [select id,Name,Email from Group where Type = 'Queue' and (Email like '%lead.com') limit 1];
+        
+        Account account_Obj = new Account(PersonHomePhone='', PersonHasOptedOutOfEmail = false, Name = 'MARIA BANDA');
+        insert account_Obj; 
 			
 			
-	    	Lead ld = new Lead (LastName = 'Test',Product_Type__c = 'Card',Brand__c = 'CFCU',FirstName = 'test',MiddleName = 'New', Description = 'New',
-	    						Salutation = 'MR.',Suffix = 'MR',Status = 'New',Phone= '1234567890',Email='test@test.com',MobilePhone='1234567892',How_did_you_hear_about_us__c='Website',Event_Source__c='Event-Reston-Open House-04/20/18',
-	   							 LeadSource='BDO-Realtor Referral' , Ownership__c='Queue', OwnerId = listQueue.Id, Street_Address_1__c='Address 1',State__c= 'NY',Zip_Code__c= '12345',City__c='NYC',Country__c ='USA');
-	    	insert ld;
-	    	
-	    	Account account_Obj1 = new Account(PersonHomePhone='', PersonHasOptedOutOfEmail = false, Name = 'MARIA BANDA', Parent_Lead__c =ld.id);
-			insert account_Obj1;  	
+			
+        Lead ld = new Lead (LastName = 'Test',Product_Type__c = 'Card',Brand__c = 'CFCU',FirstName = 'test',MiddleName = 'New', Description = 'New',
+                            Salutation = 'MR.',Suffix = 'MR',Status = 'New',Phone= '1234567890',Email='test@test.com',MobilePhone='1234567892',How_did_you_hear_about_us__c='Website',Event_Source__c='Event-Reston-Open House-04/20/18',
+                            LeadSource='BDO-Realtor Referral' , Ownership__c='Queue', OwnerId = listQueue.Id, Street_Address_1__c='Address 1',State__c= 'NY',Zip_Code__c= '12345',City__c='NYC',Country__c ='USA');
+        insert ld;
+        
+        Account account_Obj1 = new Account(PersonHomePhone='', PersonHasOptedOutOfEmail = false, Name = 'MARIA BANDA', Parent_Lead__c =ld.id);
+        insert account_Obj1;  	
 	      
-	       Opportunity op = new Opportunity(Name = 'Name', StageName = 'Open',Product_Type__c = 'Misc', CloseDate = system.today(),  Is_Converted__c = true, Queue_Assigned_Id__c= listQueue.Id,  Opportunity_Source__c = 'Word of mouth', AccountId = account_Obj.id,  Ownership__c = 'Auto Assign', Episys_User_ID__c = 1);
-	      
-	      
-	       Opportunity op1 = new Opportunity(Name = 'Name', StageName = 'Open',Product_Type__c = 'Misc', CloseDate = system.today(),  Is_Converted__c = true, Queue_Assigned_Id__c= listQueue.Id,  Opportunity_Source__c = 'Word of mouth', AccountId = account_Obj.id,  Ownership__c = 'Auto Assign', Episys_User_ID__c = 1033);
-	       
-		
-		 Opportunity op2 = new Opportunity(Name = 'Name', StageName = 'Open',Product_Type__c = 'Misc', CloseDate = system.today(),  Is_Converted__c = false, Queue_Assigned_Id__c= listQueue.Id,  Opportunity_Source__c = 'Word of mouth', AccountId = account_Obj.id,  Ownership__c = 'Keep', Episys_User_ID__c = 1);
-	      
-	       
-	      Opportunity op3 = new Opportunity(Name = 'Name', StageName = 'Open', Product_Type__c = 'Misc',CloseDate = system.today(),  Is_Converted__c = false, Queue_Assigned_Id__c= listQueue.Id,  Opportunity_Source__c = 'Branch Call', AccountId = account_Obj1.id,  Ownership__c = 'Auto Assign', Episys_User_ID__c = 1);
-	       
-	      Opportunity op4 = new Opportunity(Name = 'Name', StageName = 'Open', Product_Type__c = 'Misc', CloseDate = system.today(),  Is_Converted__c = false, Queue_Assigned_Id__c= listQueue.Id,  Opportunity_Source__c = 'Word of mouth', AccountId = account_Obj.id,  Ownership__c = 'Auto Assign', Episys_User_ID__c = 1);
-	     // Opportunity op5 = new Opportunity(Name = 'Name', StageName = 'Open', Product_Type__c = 'Misc', CloseDate = system.today(),  Is_Converted__c = false, Queue_Assigned_Id__c= listQueue.Id,  Opportunity_Source__c = 'Word of mouth', AccountId = pa.id,  Ownership__c = 'Auto Assign');
-	      Opportunity op6 = new Opportunity(Name = 'Name', StageName = 'Open', Product_Type__c = 'Misc', CloseDate = system.today(),  Is_Converted__c = false, Queue_Assigned_Id__c= listQueue.Id,  Opportunity_Source__c = 'Branch Call', AccountId = account_Obj.id,  Ownership__c = 'Auto Assign');
-	      
-        Opportunity op7 = new Opportunity(Name = 'Name', StageName = 'Open', Product_Type__c = 'Misc', CloseDate = system.today(),  Is_Converted__c = false, Queue_Assigned_Id__c= listQueue.Id,  Opportunity_Source__c = 'Event', AccountId = account_Obj.id,  Ownership__c = 'Auto Assign');
-	      
-	      List<Opportunity> insertopp = new List<Opportunity>();
-	      insertopp.Add(op);
-	       insertopp.Add(op1);
-	        insertopp.Add(op2);
-	         insertopp.Add(op3);
-	         insertopp.Add(op4);
-	      //   insertopp.Add(op5);
-	         insertopp.Add(op6);
+        Opportunity op = new Opportunity(Name = 'Name', member_account__c = accDetail.id, StageName = 'Open',Product_Type__c = 'Misc', CloseDate = system.today(),  Is_Converted__c = true, Queue_Assigned_Id__c= listQueue.Id,  Opportunity_Source__c = 'Word of mouth', AccountId = account_Obj.id,  Ownership__c = 'Auto Assign', Episys_User_ID__c = 1);
+        
+        
+        Opportunity op1 = new Opportunity(Name = 'Name', member_account__c = accDetail.id, StageName = 'Open',Product_Type__c = 'Misc', CloseDate = system.today(),  Is_Converted__c = true, Queue_Assigned_Id__c= listQueue.Id,  Opportunity_Source__c = 'Word of mouth', AccountId = account_Obj.id,  Ownership__c = 'Auto Assign', Episys_User_ID__c = 1033);
+        
+        
+        Opportunity op2 = new Opportunity(Name = 'Name', member_account__c = accDetail.id, StageName = 'Open',Product_Type__c = 'Misc', CloseDate = system.today(),  Is_Converted__c = false, Queue_Assigned_Id__c= listQueue.Id,  Opportunity_Source__c = 'Word of mouth', AccountId = account_Obj.id,  Ownership__c = 'Keep', Episys_User_ID__c = 1);
+        
+        
+        Opportunity op3 = new Opportunity(Name = 'Name',member_account__c = accDetail.id,  StageName = 'Open', Product_Type__c = 'Misc',CloseDate = system.today(),  Is_Converted__c = false, Queue_Assigned_Id__c= listQueue.Id,  Opportunity_Source__c = 'Branch Call', AccountId = account_Obj1.id,  Ownership__c = 'Auto Assign', Episys_User_ID__c = 1);
+        
+        Opportunity op4 = new Opportunity(Name = 'Name', member_account__c = accDetail.id, StageName = 'Open', Product_Type__c = 'Misc', CloseDate = system.today(),  Is_Converted__c = false, Queue_Assigned_Id__c= listQueue.Id,  Opportunity_Source__c = 'Word of mouth', AccountId = account_Obj.id,  Ownership__c = 'Auto Assign', Episys_User_ID__c = 1);
+        // Opportunity op5 = new Opportunity(Name = 'Name', StageName = 'Open', Product_Type__c = 'Misc', CloseDate = system.today(),  Is_Converted__c = false, Queue_Assigned_Id__c= listQueue.Id,  Opportunity_Source__c = 'Word of mouth', AccountId = pa.id,  Ownership__c = 'Auto Assign');
+        Opportunity op6 = new Opportunity(Name = 'Name',member_account__c = accDetail.id,  StageName = 'Open', Product_Type__c = 'Misc', CloseDate = system.today(),  Is_Converted__c = false, Queue_Assigned_Id__c= listQueue.Id,  Opportunity_Source__c = 'Branch Call', AccountId = account_Obj.id,  Ownership__c = 'Auto Assign');
+        
+        Opportunity op7 = new Opportunity(Name = 'Name',member_account__c = accDetail.id, Product_Sub__c = 'Pre Select Auto',Product_Type__c = 'Consumer Lending', StageName = 'Open', CloseDate = system.today(),  Is_Converted__c = false, Queue_Assigned_Id__c= listQueue.Id,  Opportunity_Source__c = 'Event', AccountId = account_Obj.id,  Ownership__c = 'Auto Assign');
+        
+        List<Opportunity> insertopp = new List<Opportunity>();
+        insertopp.Add(op);
+        insertopp.Add(op1);
+        insertopp.Add(op2);
+        insertopp.Add(op3);
+        insertopp.Add(op4);
+        //   insertopp.Add(op5);
+        insertopp.Add(op6);
         insertopp.Add(op7);
 	      
-	      insert insertopp;
+        insert insertopp;
 		
 		test.stopTest();
 	}
@@ -101,6 +106,7 @@ public  class OpportunityTriggerTest {
        
         Test.startTest(); 
         	Account account_Obj = [Select Id from Account limit 1];
+            Account_Details__c ad = [select id from Account_Details__c where RecType__c = 'ACCT' limit 1];
 	        Lead l = [Select id, Status,Ownership__c, LeadSource,Product_Type__c,Episys_User_ID__c from Lead limit 1];
 	        Opportunity op = [Select id,  Ownership__c,Queue_Owner__c,User_Owner__c,Queue_Assigned_Id__c from Opportunity where Ownership__c = 'Auto Assign' limit 1 ];
 	        Opportunity op1 = [Select id,  Ownership__c,Queue_Owner__c,User_Owner__c,Queue_Assigned_Id__c from Opportunity where Ownership__c = 'Keep' limit 1];
@@ -145,7 +151,8 @@ public  class OpportunityTriggerTest {
 					    try
 					     {
 					         op1.Product_Sub__c ='Credit Cards' ;
-					          update op1;
+                             op1.member_account__c = null;
+					         update op1;
 					     }
 					     catch(Exception error)
 					     {
@@ -155,7 +162,7 @@ public  class OpportunityTriggerTest {
 					     try
 					     {
 					         op1.How_did_you_hear_about_us__c ='Employer' ;
-					          update op1;
+					         update op1;
 					     }
 					     catch(Exception error)
 					     {
@@ -164,18 +171,11 @@ public  class OpportunityTriggerTest {
 					      
 					     try
 					     {
-					         op1.Event_Source__c ='Event – San Francisco Plaza Event 03/05/18' ;
-					          update op1;
-					     }
-					     catch(Exception error)
-					     {
-					         System.assert(error.getMessage().contains('Event Source is read only for Opportunity converted from Lead.')); 
-					     }
-					     
-					     try
-					     {
 					         op1.closedate = system.today().adddays(1) ;
-					          update op1;
+                             op1.Product_Type__c = 'Consumer Lending';
+        				 	 op1.Product_Sub__c = 'Pre Select Auto';
+                             op1.member_account__c = ad.id;
+        				     update op1;
 					     }
 					     catch(Exception error)
 					     {
@@ -189,17 +189,8 @@ public  class OpportunityTriggerTest {
 					     catch(Exception error)
 					     {
 					         System.assert(error.getMessage().contains('Member name is read only')); 
-					     }  
-					     try
-					     {
-					         op1.Member_Branch__c = 'Outreach' ;
-					          update op1;
 					     }
-					     catch(Exception error)
-					     {
-					         System.assert(error.getMessage().contains('Member Branch is read only for Opportunity converted from Lead.')); 
-					     }    
-	      	 
+          	 
      	 Test.stopTest();
        
         
