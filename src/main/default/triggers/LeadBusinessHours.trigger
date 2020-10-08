@@ -113,92 +113,91 @@ trigger LeadBusinessHours on Lead (after insert, before insert, before update, a
     
      		for(Lead lead: Trigger.new)
      		{
-     			  
-     				
-     				if(lead.Status == 'New' && lead.Product_Type__c != 'Mortgage' && (lead.LeadSource == 'Branch Walk in' || lead.LeadSource == 'Branch Call') )
-		      		{
-		      			if(episysUsers.size() > 0)
-		      			{
-		      				for(Episys_User__c episysItem: episysUsers)
-			      			{
-			      				system.debug('episysItem.Episys_ID__c###' + episysItem.Episys_ID__c);
-			      				system.debug('---Lead------episysItem.Episys_ID__c###' + lead.Episys_User_ID__c);
-			      				if(lead.Episys_User_ID__c == episysItem.Episys_ID__c)
-			      				{
-				      					system.debug('Episys user matched###');
-				      					string BranchQueue = episysItem.Branch_Name__c.replace(' ', '_').replace('-','_').replace('/','_').toLowerCase();
-				      					system.debug('EBranchQueue###' + BranchQueue);
-				      					for(Group grp : listQueue)
-						      			{
-						      				
-						      				if(grp.Email.containsIgnoreCase(BranchQueue))
-						      				{
-						      					groupName = grp.Name;
-						      					groupnameid = grp.id;
-						      					break;
-						      				}
-						      				 system.debug('groupName###' + groupName);
-						      			}
-						      			if(groupName!=null && groupName!='')
-				      				 	{
-				      				 		
-				      				 		lead.OwnerId = groupnameid;	
-				      				 		
-				      				 	}
-				      				 	else
-				      				 	{
-				      				 		 system.debug('Condition Product Type###');
-					      				 	string ProductType = lead.Product_Type__c.replace(' ', '_').replace('-','_').replace('/','_').toLowerCase();
-					      				 	system.debug('ProductType###' + ProductType);
-											for(Group grp : listQueue)
-							      			{
-							      				
-							      				if(grp.Email.containsIgnoreCase(ProductType))
-							      				{
-							      					groupName = grp.Name;
-							      					groupnameid = grp.id;
-							      					break;
-							      				}
-							      				
-							      				
-							      			}
-							      			system.debug('groupName###' + groupName);
-					      				 	if(groupName!=null && groupName!='')
-					      				 	{
-					      				 		lead.OwnerId = groupnameid;	
-					      				 	}
-				      				 	}
-				      				 	
-			      				}
-			      			}
-		      			}
-		      			else
-		      			{
-		      								 system.debug('Condition Product Type###');
-					      				 	string ProductType = lead.Product_Type__c.replace(' ', '_').replace('-','_').replace('/','_').toLowerCase();
-					      				 	system.debug('ProductType###' + ProductType);
-											for(Group grp : listQueue)
-							      			{
-							      				
-							      				if(grp.Email.containsIgnoreCase(ProductType))
-							      				{
-							      					groupName = grp.Name;
-							      					groupnameid = grp.id;
-							      					break;
-							      				}
-							      				
-							      				
-							      			}
-							      			system.debug('groupName###' + groupName);
-					      				 	if(groupName!=null && groupName!='')
-					      				 	{
-					      				 		lead.OwnerId = groupnameid;	
-					      				 	}
-		      				
-		      			}
-		      			
-		      		}
-                else if(lead.Status == 'New' && lead.LeadSource == 'Event' )
+				system.debug('Episys_User_ID##'+ lead.Episys_User_ID__c); 
+				if(lead.Status == 'New' && lead.Episys_User_ID__c != 7002 && (lead.LeadSource == 'Branch Walk in' || lead.LeadSource == 'Branch Call') )
+				{
+					if(episysUsers.size() > 0)
+					{
+						for(Episys_User__c episysItem: episysUsers)
+						{
+							system.debug('episysItem.Episys_ID__c###' + episysItem.Episys_ID__c);
+							system.debug('---Lead------episysItem.Episys_ID__c###' + lead.Episys_User_ID__c);
+							if(lead.Episys_User_ID__c == episysItem.Episys_ID__c)
+							{
+									system.debug('Episys user matched###');
+									string BranchQueue = episysItem.Branch_Name__c.replace(' ', '_').replace('-','_').replace('/','_').toLowerCase();
+									system.debug('EBranchQueue###' + BranchQueue);
+									for(Group grp : listQueue)
+									{
+										
+										if(grp.Email.containsIgnoreCase(BranchQueue))
+										{
+											groupName = grp.Name;
+											groupnameid = grp.id;
+											break;
+										}
+											system.debug('groupName###' + groupName);
+									}
+									if(groupName!=null && groupName!='')
+									{
+										
+										lead.OwnerId = groupnameid;	
+										
+									}
+									else
+									{
+											system.debug('Condition Product Type###');
+										string ProductType = lead.Product_Type__c.replace(' ', '_').replace('-','_').replace('/','_').toLowerCase();
+										system.debug('ProductType###' + ProductType);
+										for(Group grp : listQueue)
+										{
+											
+											if(grp.Email.containsIgnoreCase(ProductType))
+											{
+												groupName = grp.Name;
+												groupnameid = grp.id;
+												break;
+											}
+											
+											
+										}
+										system.debug('groupName###' + groupName);
+										if(groupName!=null && groupName!='')
+										{
+											lead.OwnerId = groupnameid;	
+										}
+									}
+									
+							}
+						}
+					}
+					else
+					{
+											system.debug('Condition Product Type###');
+										string ProductType = lead.Product_Type__c.replace(' ', '_').replace('-','_').replace('/','_').toLowerCase();
+										system.debug('ProductType###' + ProductType);
+										for(Group grp : listQueue)
+										{
+											
+											if(grp.Email.containsIgnoreCase(ProductType))
+											{
+												groupName = grp.Name;
+												groupnameid = grp.id;
+												break;
+											}
+											
+											
+										}
+										system.debug('groupName###' + groupName);
+										if(groupName!=null && groupName!='')
+										{
+											lead.OwnerId = groupnameid;	
+										}
+						
+					}
+					
+				}
+                else if(lead.Status == 'New' && lead.Episys_User_ID__c != 7002 && lead.LeadSource == 'Event' )
                 {
                     string BranchQueue ='';
                     if(eusr.size() > 0 )
@@ -249,7 +248,7 @@ trigger LeadBusinessHours on Lead (after insert, before insert, before update, a
                         }
                     }
                 }
-		      		else if(lead.Status == 'New' && (lead.LeadSource != 'Branch Walk in' && lead.LeadSource != 'Branch Call') )
+		      		else if(lead.Status == 'New' && lead.Episys_User_ID__c != 7002 && (lead.LeadSource != 'Branch Walk in' && lead.LeadSource != 'Branch Call') )
 		      		{
 		      					system.debug('Condition Product Type###');
 		      				 	string ProductType = lead.Product_Type__c.replace(' ', '_').replace('-','_').replace('/','_').toLowerCase();
@@ -274,7 +273,7 @@ trigger LeadBusinessHours on Lead (after insert, before insert, before update, a
                         
 			      				 	
 		      		}
-		      		else if(lead.Status =='Outreach' || lead.Status == 'Analyzing Needs' || lead.Status == 'Prospect Considering')
+		      		else if(lead.Episys_User_ID__c != 7002 && (lead.Status =='Outreach' || lead.Status == 'Analyzing Needs' || lead.Status == 'Prospect Considering'))
     				{
     					lead.OwnerId = uid;
     				}
