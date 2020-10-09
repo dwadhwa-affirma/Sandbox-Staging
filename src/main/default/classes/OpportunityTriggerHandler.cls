@@ -54,12 +54,14 @@ public class OpportunityTriggerHandler {
 	public static void OppPreSelectCheck(Set<Id> oppIds){
 
 		SolarLoan_To_Episys_API_Details__c api = SolarLoan_To_Episys_API_Details__c.getValues('ProductionURL');
+		String FicoScore;
 					
 		if(api.URL__c != null){
 			loanAPI = api.URL__c;
 		}
 
 		List<opportunity> OppList = new List<opportunity>();
+		List<opportunity> OppWithScore = new List<opportunity>();
 		List<opportunity> Opps = [select id,member_account__r.Name,member_account__c,Product_Type__c,Product_Sub__c from Opportunity where id =:oppIds];
 
 		for(opportunity op : Opps){
@@ -78,7 +80,7 @@ public class OpportunityTriggerHandler {
 				responseBody = res.getBody();
 				System.debug('Response Body :'+res.getBody());    
 			}else{
-				responseBody = '[{"EffectiveDate":"2017-05-18", "Error":"null", "ErrorDetails":"null", "Locator":"78", "RecordChangeDate":"2017-05-18", "Status":"null", "Text":"PRIMARY DL SCANNED 05/18/17", "Type":"1"}]';
+				responseBody = '[{"EffectiveDate":"2017-05-18", "Error":"null", "ErrorDetails":"null", "Locator":"78", "RecordChangeDate":"2017-05-18", "Status":"null", "Text":"PREAPP AUTO UP TO $50K/TIER A+ (123)", "Type":"1"}]';
 			}
 			if(responseBody != '' && responseBody != null){        
 				List<object> results = (List<Object>) JSON.deserializeUntyped(responseBody);      
@@ -92,8 +94,22 @@ public class OpportunityTriggerHandler {
 						string comment = string.valueof(testdetail.get('Text'));
 						
 						system.debug('comment'+comment);
-						if(comment.startsWith('TEST')){
+						if(comment.startsWith('PREAPP AUTO UP TO $50K/TIER A+')){
 							
+							//-------------------------Parsing Fico Score--------------------------------//
+
+							FicoScore = String.valueOf(comment).substringAfter('(');
+							FicoScore = String.valueOf(FicoScore).substringBefore(')');
+							System.debug('FicoScore' + FicoScore);
+							
+							//------------------Updating Opportunity with Score--------------------------//
+
+							if(FicoScore != null){
+								opportunity o = new opportunity();
+								o.id = op.id;
+								o.Score__c = 1.0;
+								OppWithScore.add(o);
+							}
 							system.debug('Valid Comment'+comment);
 							req1.setEndpoint(loanAPI+'/Opportunity/ExpirePreSelectComment');
 							req1.setMethod('POST');
@@ -117,6 +133,9 @@ public class OpportunityTriggerHandler {
 					}
 				} 
 			}
+		}
+		if(OppWithScore.size()>0){
+			//update OppWithScore;
 		}
 
 	}
@@ -167,9 +186,7 @@ public class OpportunityTriggerHandler {
 			System.debug('New Opp'+ op.Product_Type__c);
 			System.debug('old Opp'+ oldOpp.Product_Type__c);
 
-			if((oldOpp.Product_Type__c != op.Product_Type__c || oldOpp.Product_Sub__c != op.Product_Sub__c)
-						&& op.Product_Type__c == 'Consumer Lending' && 	op.Product_Sub__c == 'Pre Select Auto' 
-						&& op.member_account__c != null)
+			if((oldOpp.Product_Type__c != op.Product_Type__c || oldOpp.Product_Sub__c != op.Product_Sub__c) && op.Product_Type__c == 'Consumer Lending' && 	op.Product_Sub__c == 'Pre Select Auto' && op.member_account__c != null)
 			{
 				OppIds.add(op.Id);
 			}

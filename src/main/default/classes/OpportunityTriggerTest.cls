@@ -86,7 +86,11 @@ public  class OpportunityTriggerTest {
         Opportunity op6 = new Opportunity(Name = 'Name',member_account__c = accDetail.id,  StageName = 'Open', Product_Type__c = 'Misc', CloseDate = system.today(),  Is_Converted__c = false, Queue_Assigned_Id__c= listQueue.Id,  Opportunity_Source__c = 'Branch Call', AccountId = account_Obj.id,  Ownership__c = 'Auto Assign');
         
         Opportunity op7 = new Opportunity(Name = 'Name',member_account__c = accDetail.id, Product_Sub__c = 'Pre Select Auto',Product_Type__c = 'Consumer Lending', StageName = 'Open', CloseDate = system.today(),  Is_Converted__c = false, Queue_Assigned_Id__c= listQueue.Id,  Opportunity_Source__c = 'Event', AccountId = account_Obj.id,  Ownership__c = 'Auto Assign');
-        
+        Opportunity op8 = new Opportunity(Name = 'Name',member_account__c = accDetail.id,  StageName = 'Open', Product_Type__c = 'Misc',CloseDate = system.today(),  Is_Converted__c = false, Queue_Assigned_Id__c= listQueue.Id,  Opportunity_Source__c = 'Campaign Outreach', DESCRIPTION = 'Relevant Member Number',AccountId = account_Obj1.id,  Ownership__c = 'Auto Assign', Episys_User_ID__c = 1);
+        Opportunity op9 = new Opportunity(Name = 'Name',member_account__c = accDetail.id,  StageName = 'Open', Product_Type__c = 'Misc',CloseDate = system.today(),  Is_Converted__c = false, Queue_Assigned_Id__c= listQueue.Id,  Opportunity_Source__c = 'Campaign Outreach', DESCRIPTION = 'Last Activity Date',AccountId = account_Obj1.id,  Ownership__c = 'Auto Assign', Episys_User_ID__c = 1);
+        Opportunity op10 = new Opportunity(Name = 'Name',member_account__c = accDetail.id,  StageName = 'Open', Product_Type__c = 'Misc',CloseDate = system.today(),  Is_Converted__c = false, Queue_Assigned_Id__c= listQueue.Id,  Opportunity_Source__c = 'Campaign Outreach', DESCRIPTION = 'Dormant Date',AccountId = account_Obj1.id,  Ownership__c = 'Auto Assign', Episys_User_ID__c = 1);
+        Opportunity op11 = new Opportunity(Name = 'Name',member_account__c = accDetail.id,  StageName = 'Open', Product_Type__c = 'Misc',CloseDate = system.today(),  Is_Converted__c = false, Queue_Assigned_Id__c= listQueue.Id,  Opportunity_Source__c = 'Campaign Outreach', DESCRIPTION = 'High Value/High Potential',AccountId = acc.id,  Ownership__c = 'Auto Assign', Episys_User_ID__c = 1);
+        Opportunity op12 = new Opportunity(Name = 'Name',member_account__c = accDetail.id,  StageName = 'Open', Product_Type__c = 'Misc',CloseDate = system.today(),  Is_Converted__c = false, Queue_Assigned_Id__c= listQueue.Id,  Opportunity_Source__c = 'Campaign Outreach', DESCRIPTION = 'Script Link',AccountId = acc.id,  Ownership__c = 'Auto Assign', Episys_User_ID__c = 1);
         List<Opportunity> insertopp = new List<Opportunity>();
         insertopp.Add(op);
         insertopp.Add(op1);
@@ -96,6 +100,11 @@ public  class OpportunityTriggerTest {
         //   insertopp.Add(op5);
         insertopp.Add(op6);
         insertopp.Add(op7);
+        insertopp.Add(op8);
+        insertopp.Add(op9);
+        insertopp.Add(op10);
+        insertopp.Add(op11);
+        insertopp.Add(op12);
 	      
         insert insertopp;
 		
@@ -115,89 +124,80 @@ public  class OpportunityTriggerTest {
 	      	
 	      	 update op;  
 	      	 update op1; 
-	      	  			try
-					      {
-					         op.Opportunity_Source__c = 'BDO-Realtor Referral'; 
-					         update op;
-					      }
-					      catch(Exception error)
-					         { 
-					         	System.debug('###' +	error.getMessage());
-								System.assert(error.getMessage().contains('Opportunity Source is read only for Opportunity converted from Lead.')); 
-					            
-					         }
-					             
-					     try
-					     {
-					         op1.Brand__C ='Spectrum' ;
-					          update op1;
-					     }
-					     catch(Exception error)
-					     {
-					         System.assert(error.getMessage().contains('Brand is read only for Opportunity converted from Lead.')); 
-					     }
-					    
-					         
-					    try
-					     {
-					         op1.Product_Type__c ='Cards' ;
-					          update op1;
-					     }
-					     catch(Exception error)
-					     {
-					         System.assert(error.getMessage().contains('Product Type is read only for Opportunity converted from Lead.')); 
-					     }
-					         
-					    try
-					     {
-					         op1.Product_Sub__c ='Credit Cards' ;
-                             op1.member_account__c = null;
-					         update op1;
-					     }
-					     catch(Exception error)
-					     {
-					         System.assert(error.getMessage().contains('Product Subtype is read only for Opportunity converted from Lead.')); 
-					     }
-					      
-					     try
-					     {
-					         op1.How_did_you_hear_about_us__c ='Employer' ;
-					         update op1;
-					     }
-					     catch(Exception error)
-					     {
-					         System.assert(error.getMessage().contains('How did you hear about us is read only for Opportunity converted from Lead.')); 
-					     }
-					      
-					     try
-					     {
-					         op1.closedate = system.today().adddays(1) ;
-                             op1.Product_Type__c = 'Consumer Lending';
-        				 	 op1.Product_Sub__c = 'Pre Select Auto';
-                             op1.member_account__c = ad.id;
-        				     update op1;
-					     }
-					     catch(Exception error)
-					     {
-					         System.assert(error.getMessage().contains('Close date is read only')); 
-					     }
-					     try
-					     {
-					         op1.AccountId = account_Obj.id ;
-					          update op1;
-					     }
-					     catch(Exception error)
-					     {
-					         System.assert(error.getMessage().contains('Member name is read only')); 
-					     }
-          	 
-     	 Test.stopTest();
-       
-        
+        try{
+        	op.Opportunity_Source__c = 'BDO-Realtor Referral'; 
+            update op;
+        }
+        catch(Exception error){
+        	System.debug('###' +	error.getMessage());
+            System.assert(error.getMessage().contains('Opportunity Source is read only for Opportunity converted from Lead.')); 
+        }
+        try{
+            op1.Is_Converted__c = true;
+        	op1.Brand__C ='Spectrum' ;
+            update op1;
+        }
+        catch(Exception error){
+           System.assert(error.getMessage().contains('Brand is read only for Opportunity converted from Lead.')); 
+        }
+        try{
+            op1.Product_Type__c ='Cards' ;
+            update op1;
+        }
+        catch(Exception error){
+            System.assert(error.getMessage().contains('Product Type is read only for Opportunity converted from Lead.')); 
+        }
+        try{
+            op1.Product_Sub__c ='Credit Cards' ;
+            op1.member_account__c = null;
+            update op1;
+        }
+        catch(Exception error){
+            System.assert(error.getMessage().contains('Product Subtype is read only for Opportunity converted from Lead.')); 
+        }
+        try{
+            op1.How_did_you_hear_about_us__c ='Employer' ;
+            update op1;
+        }
+        catch(Exception error){
+            System.assert(error.getMessage().contains('How did you hear about us is read only for Opportunity converted from Lead.')); 
+        }
+        try{
+            op1.closedate = system.today().adddays(1) ;
+            update op1;
+        }
+        catch(Exception error){
+            System.assert(error.getMessage().contains('Close date is read only')); 
+        }
+        try{
+            op1.AccountId = account_Obj.id ;
+            update op1;
+        }
+        catch(Exception error){
+            System.assert(error.getMessage().contains('Member name is read only')); 
+        }
+        Test.stopTest();  
     }
+
+	static testMethod void OpportunityTriggerHandlerTest1() {
+       
+        Test.startTest(); 
+        Account account_Obj = [Select Id from Account limit 1];
+        Account_Details__c ad = [select id from Account_Details__c where RecType__c = 'ACCT' limit 1];
+        Lead l = [Select id, Status,Ownership__c, LeadSource,Product_Type__c,Episys_User_ID__c from Lead limit 1];
+        Opportunity op = [Select id,  Ownership__c,Queue_Owner__c,User_Owner__c,Queue_Assigned_Id__c from Opportunity where Ownership__c = 'Auto Assign' limit 1 ];
+        Opportunity op1 = [Select id,  Ownership__c,Queue_Owner__c,User_Owner__c,Queue_Assigned_Id__c from Opportunity where Ownership__c = 'Keep' limit 1];
+        op.StageName = 'Closed Won';  
+        op1.StageName = 'Closed Won';
+        op1.Product_Type__c = 'Consumer Lending';
+        op1.Product_Sub__c = 'Pre Select Auto';
+        update op;  
+        update op1; 
+        
+        Test.stopTest();  
+    }    
 	
 }
-		
 		
      /*  string uid= UserInfo.getUserId();
 		    User usr = [Select id, name, alias from User where id=:uid];
