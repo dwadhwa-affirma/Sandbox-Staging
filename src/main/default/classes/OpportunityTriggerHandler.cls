@@ -107,7 +107,7 @@ public class OpportunityTriggerHandler {
 							if(FicoScore != null && FicoScore != ''){
 								opportunity o = new opportunity();
 								o.id = op.id;
-								o.Score__c = 1.0;
+								o.Score__c = Decimal.valueOf(FicoScore);
 								OppWithScore.add(o);
 							}
 							system.debug('Valid Comment'+comment);
@@ -134,8 +134,9 @@ public class OpportunityTriggerHandler {
 				} 
 			}
 		}
+		System.debug('OppWithScore'+OppWithScore);
 		if(OppWithScore.size()>0){
-			//update OppWithScore;
+			update OppWithScore;
 		}
 
 	}
