@@ -104,7 +104,7 @@ public class OpportunityTriggerHandler {
 							
 							//------------------Updating Opportunity with Score--------------------------//
 
-							if(FicoScore != null){
+							if(FicoScore != null && FicoScore != ''){
 								opportunity o = new opportunity();
 								o.id = op.id;
 								o.Score__c = 1.0;
