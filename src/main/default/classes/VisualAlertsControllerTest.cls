@@ -62,7 +62,8 @@ public class VisualAlertsControllerTest{
         
         PageReference pageRef = Page.VisualAlerts;
         Test.setCurrentPage(pageRef);
-
+		
+        Test.startTest();
      	pageRef.getParameters().put('Id', String.valueOf(cas.Id));
      	ApexPages.StandardController sc = new ApexPages.StandardController(cas);
      	VisualAlertsController vac = new VisualAlertsController(sc);
@@ -72,5 +73,9 @@ public class VisualAlertsControllerTest{
         vac.RemoveAttach();
         vac.getMemberComment();
         vac.removeMemberComment();
+        
+        UpdateCaseSLABatch c = new UpdateCaseSLABatch();
+        Database.executeBatch(c);
+        Test.stopTest();
     }
 }
