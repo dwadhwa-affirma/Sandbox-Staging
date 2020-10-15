@@ -66,6 +66,7 @@ public class SolarLoanController {
     stage3RequireFields.add('ECOA_Code__c');
     stage3RequireFields.add('Site_UUID__c');
     stage3RequireFields.add('FNI__c');
+    stage3RequireFields.add('County__c');
     //stage3RequireFields.add('Member_Number__c');
 	
 	List<String> stage3ECOARequireFields = new List<String>();
@@ -127,7 +128,7 @@ public class SolarLoanController {
             Routing_Number__c,Site_UUID__c,Status__c,Symitar_Called__c,SystemModstamp,System_Size_kW__c,Term_months__c,
             Valid_ABA__c, Loan_Id__c,Loan_Name_Locator__c,Loan_Tracking_Locator__c,EftLocator__c,ITC_Rate__c,ITC_Amount__c,
             Error_EftLocator__c,Error_Loan_Locator__c,Error_Loan_Name_Locator__c,Error_Loan_Tracking_Locator__c,Approval_Date__c,
-            Current_Solar_Loan_Stage__c FROM Solar_Loans__c where id =: SolarLoanRecordId limit 1];
+            Current_Solar_Loan_Stage__c,County__c FROM Solar_Loans__c where id =: SolarLoanRecordId limit 1];
             
     if(SolarLoanList.size() > 0){
         
