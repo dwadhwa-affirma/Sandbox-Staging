@@ -38,7 +38,22 @@ public class CaseTriggerTest {
         insert cs;
         
         cs.Brand__c = 'Spectrum';
-        update cs;   
+        update cs;
+        
+        Task t = new Task();
+        t.WhatId = cs.id;
+        t.OwnerId = UserInfo.getUserId();
+        t.Subject='Donni';
+        t.Status = 'Open';
+        insert t; 
+        
+        Event e = new Event();
+        e.WhatId = cs.id;
+        e.StartDateTime = system.today();
+        e.EndDateTime = system.today()+5;
+        insert e;
+   
+        delete e;
   
     }
     
@@ -522,5 +537,111 @@ public class CaseTriggerTest {
           cs.Origin = 'Email';
           cs.Subject = '1   ';          
         insert cs;       
+    }
+    
+    static testMethod void testMethod13(){
+        
+        String RecTypeId= [select Id from RecordType where (Name='Person Account') and (SobjectType='Account')].Id;
+        
+         Account acc = new Account(
+           RecordTypeID=RecTypeId,
+           FirstName='Test FName',
+           LastName='Test LName',
+           PersonMailingStreet='test@yahoo.com',
+           PersonMailingPostalCode='12345',
+           PersonMailingCity='SFO',
+           PersonEmail='test@yahoo.com',
+           PersonHomePhone='1234567',
+           PersonMobilePhone='12345678');
+         
+        insert acc;
+        
+        Account_Details__c accDetail = new Account_Details__c();
+        accDetail.Name = 'Test123';
+        accDetail.RecType__c = 'ACCT';
+        //accDetail.Brand__c = 'Spectrum';
+        insert accDetail;
+        
+        Person_Account__c pa = new Person_Account__c();
+        pa.PersonID__c = acc.Id;
+        pa.Account_Number__c = accDetail.Id; 
+        pa.Name_Type__c = 0;
+        insert pa;
+        
+        test.startTest();
+        Case cs = new Case();
+       //cs.Brand__c = 'Chevron';
+        cs.Subject = '1234 testing tet sdf asdfa';
+         cs.Primary_Category__c = 'Card Services';
+          cs.Secondary_Category__c = 'ATM-Debit';
+          cs.Tertiary_Category__c = 'Travel Notification';
+         // cs.Origin = 'BoomiBulk';
+        cs.Account_Number__c = accDetail.Id;
+        cs.Member_Number__c = 'Test123';
+        cs.AccountId = acc.Id;       
+        insert cs;
+        
+         Case cs1 = new Case();
+        cs1.Brand__c = 'Specturm';
+        cs1.Subject = '1234 testing tet sdf asdfa';
+         cs1.Primary_Category__c = 'Card Services';
+          cs1.Secondary_Category__c = 'ATM-Debit';
+          cs1.Tertiary_Category__c = 'Travel Notification';
+         // cs.Origin = 'BoomiBulk';
+        cs1.Account_Number__c = accDetail.Id;
+        cs1.Member_Number__c = 'Test123';
+        cs1.AccountId = acc.Id;       
+        insert cs1;
+        
+        Mastercard_Travel__c mcObj = new Mastercard_Travel__c();
+			  	mcobj.CardId__c = accDetail.id;
+			  	mcobj.Case__c= cs.Id;
+			  	mcobj.Country__c= 'India';
+			  	mcobj.Departure_Date__c= Date.newInstance(2018, 12, 01);
+			  	mcobj.Destination__c= 'International';
+			  	mcobj.Email__c='dbhavsar@affirma.com';
+			  	mcobj.IsEmailPreferred__c= true;
+			  	mcobj.IsPhonePreferred__c=false;
+			  	mcobj.Return_Date__c=Date.newInstance(2018, 12, 10);
+			  	mcobj.State__c='';
+			  	mcobj.Timezone__c='America/Los_Angeles';
+			  //	mcobj.US_Mobile_Number__c='123456789';         		
+        		mcobj.isPlacedFromBoomi__c= true;
+			  	insert mcObj;
+        
+                Mastercard_Travel__c mcObj1 = new Mastercard_Travel__c();
+			  	mcObj1.CardId__c = accDetail.id;
+			  	mcObj1.Case__c= cs1.Id;
+			  	mcObj1.Country__c= 'India';
+			  	mcObj1.Departure_Date__c= Date.newInstance(2018, 12, 01);
+			  	mcObj1.Destination__c= 'International';
+			  	//mcObj1.Email__c='dbhavsar@affirma.com';
+			  	mcObj1.IsEmailPreferred__c= false;
+			  	mcObj1.IsPhonePreferred__c=true;
+			  	mcObj1.Return_Date__c=Date.newInstance(2018, 12, 10);
+			  	mcObj1.State__c='';
+			  	mcObj1.Timezone__c='America/Los_Angeles';
+			  	mcObj1.US_Mobile_Number__c='123456789';         		
+        		mcobj1.isPlacedFromBoomi__c= true;
+			  	insert mcObj1;
+        
+       /* MasterCard_Travel_Confirmation__c mctc = new MasterCard_Travel_Confirmation__c();
+        mctc.Case__c = cs.id;
+         mctc.Message__c = 'Email';
+        insert mctc;
+        
+        MasterCard_Travel_Confirmation__c mctc1 = new MasterCard_Travel_Confirmation__c();
+        mctc1.Case__c = cs1.id;
+         mctc1.Message__c = 'SMS';
+        insert mctc1;*/
+        
+        
+        cs.Description = 'Travel Notificatoon Test';
+        update cs;
+        
+        cs1.Description = 'Travel Notificatoon Test';
+        update cs1;
+        
+        test.stopTest();
     }
 }
