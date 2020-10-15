@@ -3,6 +3,7 @@ public class MCLimitChangeTest {
 
 @testSetup
     static void setupTestData(){
+        
         test.startTest();
         Account account_Obj = new Account(Name = 'MARIA BANDA', PersonHasOptedOutOfEmail = false, NA_Eligibility__c = false, NA_LEAV_Complete__c = true, NA_LECF_Complete__c = true, NA_LECP_Complete__c = false, NA_LEEM_Complete__c = true, NA_LEHS_Complete__c = true, NA_LEMD_Complete__c = false, NA_LEMP_Complete__c = false, NA_LEMQ_Complete__c = true, NA_LEOL_Complete__c = true, NA_LEOM_Complete__c = true, NA_LEPT_Complete__c = true, NA_LESB_Complete__c = false, NA_LESF_Complete__c = true, NA_LEWS_Complete__c = true, NA_Opt_Out__c = false);
         Insert account_Obj; 
@@ -10,20 +11,31 @@ public class MCLimitChangeTest {
         Insert account_details_Obj; 
         Person_Account__c person_account_Obj = new Person_Account__c(PersonID__c= account_Obj.id,Account_Number__c = account_details_Obj.id);
         Insert person_account_Obj; 
-        
-        
-        
     }
-     static testMethod void test_getData_UseCase1(){
+    
+    static testMethod void test_getData_UseCase1(){
         MC_Limit_Change__c obj1 = new MC_Limit_Change__c();
         obj1.Card_Number__c = '4459';
-     
         obj1.Member_Number__c = '0260049344';
-     
+        obj1.OdsKey__c = '123456789';
+        insert obj1;  
+    }
+    
+	static testMethod void test_getData_UseCase2(){
+        MC_Limit_Change__c obj1 = new MC_Limit_Change__c();
+        obj1.Card_Number__c = '4459';
+        obj1.Member_Number__c = '0260049344';
+        obj1.Email__c = 'test@test.com';
         obj1.OdsKey__c = '123456789';
         insert obj1;
-        
-        
-     }
+    }
     
-}
+    static testMethod void test_getData_UseCase3(){
+        MC_Limit_Change__c obj1 = new MC_Limit_Change__c();
+        obj1.Card_Number__c = '4459';
+        obj1.Mobile_Phone__c = '1234567891';
+        obj1.Member_Number__c = '0260049344';
+        obj1.OdsKey__c = '123456789';
+        insert obj1;  
+    }
+ }
