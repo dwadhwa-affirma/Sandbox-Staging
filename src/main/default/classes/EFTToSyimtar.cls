@@ -43,7 +43,7 @@ public class EFTToSyimtar {
                          Frequency__c,Id,Member_Account__c,Member_Account__r.Brand__c,Member_Account__r.Name,Case__c, Case__r.Description,
                          Member__c,Name,
                          OwnerId,Payment_Amount__c,Routing_Number__c,Share_Loan_Id__c,Stage__c,
-                         Status__c,Type__c, EFT_ID_Type__c,LoanCode__c FROM EFT__c where id =: ids];
+                         Status__c,Type__c, EFT_ID_Type__c,LoanCode__c,EFT_Payment_Date__c FROM EFT__c where id =: ids];
      map<Id, String> CaseIdsToUpdate = new Map<Id, String>();
      
     		for(EFT__c e : EFTs){
@@ -94,35 +94,44 @@ public class EFTToSyimtar {
             		Day2 = '0';
             	}
                
-               	
-               /*	if(e.Effective_Date__c != null){
-               		Day1 = '0'; //String.valueof(sl.Due_Date__c.day());
-               	}
-            	else{
-            		Day1 = '0';
-            	}	*/
                 if(e.Effective_Date__c != null){
                 	
-                    NextDate = string.valueof(e.Effective_Date__c + 1);
+                    //NextDate = string.valueof(e.Effective_Date__c + 1);
                 	EffectiveDate = string.valueof(e.Effective_Date__c);
                 }
             	else{
-            		NextDate = null;
+            		//NextDate = null;
             		EffectiveDate = null;
-            	}
-            	
+				}
+				
+				if(e.EFT_Payment_Date__c != null){                	
+                    NextDate = string.valueof(e.EFT_Payment_Date__c);                	
+                }
+            	else{
+            		NextDate = null;            		
+				}
+				
+				
+				
+				system.debug('e.Alternate_Amount__c'+e.Alternate_Amount__c);   
                 if(e.Alternate_Amount__c != null)
                 	PostAmount = String.ValueOf(e.Alternate_Amount__c);
                 else
                 	PostAmount = '0.00';
-				
+				system.debug('PostAmount'+PostAmount);   
 				
                 if(e.Alternate_Amount__c != null && e.Alternate_Amount__c != 0.0){
                 	AlternatePayment = String.ValueOf(e.Alternate_Amount__c + e.Payment_Amount__c);
 				}
+				else{
+					AlternatePayment = String.ValueOf(e.Payment_Amount__c);
+				}
 				
 				if(ID != null && ID.SubString(0,2) == '28'){
-					PostAmount = AlternatePayment;
+					PostAmount = AlternatePayment;					
+				}
+				else{
+					PostAmount = '0.00';
 				}
                 
                 Payee = e.Routing_Number__c.leftPad(10,'0');
@@ -191,6 +200,10 @@ public class EFTToSyimtar {
 					}
 					else{
 						UpdateDay1 = '0';
+					}
+
+					if(ID != null && ID.SubString(0,2) == '28'){
+						UpdateDay1 = '1';						
 					}
 					boolean isExpired = false;
 					Updatereq.setEndpoint('https://symxapi.chevronfcu.org/devclient/EFT/UpdateEft');
@@ -326,7 +339,7 @@ public class EFTToSyimtar {
 							CreatedById,CreatedDate,Day_of_Month__c,Second_Day_of_Month__c,DocuSignId__c,Effective_Date__c,
 							Frequency__c,Id,Member_Account__c,Member_Account__r.Brand__c,Member_Account__r.Name, Member__c,Name,Case__c, Case__r.Description,
 							OwnerId,Payment_Amount__c,Routing_Number__c,Share_Loan_Id__c,Stage__c,EftLocator__c,Share_Loan_Description__c,Share_Loan_Type__c,Member_Name__c,
-							Status__c,Type__c, EFT_ID_Type__c,LoanCode__c FROM EFT__c where id =: ids];
+							Status__c,Type__c, EFT_ID_Type__c,LoanCode__c,EFT_Payment_Date__c FROM EFT__c where id =: ids];
         
         map<Id, String> CaseIdsToUpdate = new Map<Id, String>();
         //else{
@@ -370,13 +383,21 @@ public class EFTToSyimtar {
             	}	
                 if(e.Effective_Date__c != null){
                 	
-                    NextDate = string.valueof(e.Effective_Date__c + 1);
+                    //NextDate = string.valueof(e.Effective_Date__c + 1);
                 	EffectiveDate = string.valueof(e.Effective_Date__c);
                 }
             	else{
-            		NextDate = null;
+            		//NextDate = null;
             		EffectiveDate = null;
-            	}
+				}
+				
+				if(e.EFT_Payment_Date__c != null){                	
+                    NextDate = string.valueof(e.EFT_Payment_Date__c);                	
+                }
+            	else{
+            		NextDate = null;            		
+				}
+				
             	
                 if(e.Alternate_Amount__c != null)
                 	PostAmount = String.ValueOf(e.Alternate_Amount__c);
@@ -389,8 +410,13 @@ public class EFTToSyimtar {
 				
 				if(ID != null && ID.SubString(0,2) == '28'){
 					PostAmount = AlternatePayment;
+					Day1 = '1';
 				}
-                
+				
+				else{
+					PostAmount = '0.00';
+				}
+				
                 Payee = e.Routing_Number__c.leftPad(10,'0');
 				Reference = e.Account_Number__c ;
 				//LoanCode = e.LoanCode__c;

@@ -11,6 +11,7 @@
 		action.setCallback(this, function(resp) {
 			var state=resp.getState();			
 			if(state === "SUCCESS"){
+                debugger;
 				var result =  resp.getReturnValue();
 				result.PersonList.sort(helper.Sort);
 				for(var i=0;i<result.PersonList.length;i++){
@@ -28,7 +29,7 @@
                 else if(result.EFTList == undefined){
                     component.set('v.isEFTDisabled', true);	
                 }
-	        							
+                                
 			}
 		});
 		

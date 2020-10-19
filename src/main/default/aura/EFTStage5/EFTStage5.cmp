@@ -1,83 +1,113 @@
-<aura:component implements="force:appHostable,force:lightningQuickActionWithoutHeader,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,force:hasSObjectName" access="global" controller="EFTController">
-    <aura:attribute name="actions" type="List" default="[{'label': 'Create a new EFT record', 'value': '1'},
-                                                   {'label': 'Access/Update existing EFT records', 'value': '2'}]"/>                                         
-                                                   
-<aura:attribute name="childActions" type="List" default="[{'label': 'View EFT Details', 'value': '3'},
+<aura:component
+	implements="force:appHostable,force:lightningQuickActionWithoutHeader,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,force:hasSObjectName"
+	access="global" controller="EFTController">
+	<aura:attribute name="actions" type="List" default="[{'label': 'Create a new EFT record', 'value': '1'},
+                                                   {'label': 'Access/Update existing EFT records', 'value': '2'}]" />
+
+	<aura:attribute name="childActions" type="List" default="[{'label': 'View EFT Details', 'value': '3'},
                                                    		{'label': 'Update EFT Record', 'value': '4'},
-                                                        {'label': 'Cancel/Expire EFT Record', 'value': '5'}]"/>  
-<aura:attribute name="isLoan" type="Boolean" default="true"/>
- <aura:attribute name="daysMap" type="Map"/>
+                                                        {'label': 'Cancel/Expire EFT Record', 'value': '5'}]" />
+	<aura:attribute name="isLoan" type="Boolean" default="true" />
+	<aura:attribute name="daysMap" type="Map" />
+	<aura:attribute name="isDayOfMonthDisabled" type="Boolean" default="false" />
 
 
-<aura:handler name="init" action="{!c.doInit}" value="{!this}" access="global" />  
-  <aura:registerEvent name="EFTEvent" type="c:EFTEvent"/>
-    
-<aura:attribute name="EFTRecord" type="EFT__c" /> 
-   		 <div id = "stage5">
-        	<p class = "fontstyle">Provide the payment information</p><br></br>
-                <div class="slds-form">
-  				<div class="slds-form-element slds-form-element_horizontal">
-    				<b><label class="slds-form-element__label" for="horizontal-input-id-01">Payment Amt:</label></b>
-    				<div class="slds-form-element__control">
-      					<!-- <force:inputField value="{!v.EFTRecord.Payment_Amount__c}" change="{!c.onMonthChange}"> </force:inputField>-->
-						  	<aura:if isTrue="{!v.isLoan == true}">
-							  <lightning:input value="{!'$' + v.EFTRecord.Payment_Amount__c}" disabled="true" />
-							</aura:if>
-							<aura:if isTrue="{!v.isLoan == false}"> 
-							<!--<force:inputField class="alternateamount" value="{!v.EFTRecord.Payment_Amount__c}" change="{!c.onMonthChange}"> </force:inputField>   -->                        
-							<lightning:input class="paymentamount" type="number" value="{!v.EFTRecord.Payment_Amount__c}" disabled="false" onblur="{!c.onMonthChange}" step="0.01" formatter="currency"/>
-							</aura:if>
-						 
-    				</div>
-  				</div>
-                <!--<aura:if isTrue="{!v.isLoan}">-->
-  				<div class="slds-form-element slds-form-element_horizontal">
-    				<b><label class="slds-form-element__label" for="horizontal-input-id-02">Additional Amt:</label></b>
-    				<div class="slds-form-element__control">
-      					<force:inputField class="alternateamount" value="{!v.EFTRecord.Alternate_Amount__c}" change="{!c.onMonthChange}"> </force:inputField>
-    				</div>
-  				</div>
-               <!-- </aura:if>-->
-  				<div class="slds-form-element slds-form-element_horizontal">
-    				<b><label class="slds-form-element__label" for="horizontal-input-id-03">Effective Date:</label></b>
-                    <div class="slds-form-element__control">
-    					<force:inputField value="{!v.EFTRecord.Effective_Date__c}" change="{!c.onMonthChange}"> </force:inputField>
-                    </div>
-  				</div>
-  				<div class="slds-form-element slds-form-element_horizontal">
-    				<b><label class="slds-form-element__label">Frequency:</label></b>
-    				<div class="slds-form-element__control">
-                         <aura:if isTrue="{!v.isLoan}">
-                         	<lightning:input value="{!v.EFTRecord.Frequency__c}" disabled="true" />
-	    					<!--<force:inputField value="{!v.EFTRecord.Frequency__c}" change="{!c.onMonthChange}"> </force:inputField>-->
-                         <aura:set attribute="else">
-                         <lightning:input value="{!v.EFTRecord.Frequency__c}" disabled="true" />
-                        </aura:set>
-                        </aura:if>
-	    				 <ul class='has-error uiInputDefaultError uiInput uiInputSelect uiInput--default uiInput--select' id='FrequencyError' style='display:none;'>
-							<li class="form-element__help" data-aura-rendered-by="45:2084;a">Complete this field</li>
-						</ul>
-	                </div>
-  				</div>
-  				<div class="slds-form-element slds-form-element_horizontal">
-    				<b><label class="slds-form-element__label">Day of Month:</label></b>
-    				<div class="slds-form-element__control">
-    				 <force:inputField value="{!v.EFTRecord.Day_of_Month__c}" change="{!c.onMonthChange}" aura:id="Day_of_Month__c"> </force:inputField>
-    					
-    					 <ul class='has-error uiInputDefaultError uiInput uiInputSelect uiInput--default uiInput--select' id='DayOfMonthError' style='display:none;'>
-							<li class="form-element__help" data-aura-rendered-by="45:2084;a">Complete this field</li>
-						</ul>
-	                </div>
-  				</div>
-  				<aura:renderIf isTrue="{!v.EFTRecord.Frequency__c == 'Semi-Monthly'}">
-  				<div class="slds-form-element slds-form-element_horizontal">
-    				<b><label class="slds-form-element__label">2nd Day of Month:</label></b>
-    				<div class="slds-form-element__control">
-    					<force:inputField value="{!v.EFTRecord.Second_Day_of_Month__c}" change="{!c.onMonthChange}"> </force:inputField>    					 
-	                	
-	                </div>
-  				</div>
-  	 	</aura:renderIf> 
-       		</div>
-		 </div>
-		</aura:component>
+	<aura:handler name="init" action="{!c.doInit}" value="{!this}" access="global" />
+	<aura:registerEvent name="EFTEvent" type="c:EFTEvent" />
+
+	<aura:attribute name="EFTRecord" type="EFT__c" />
+	<div id="stage5">
+		<p class="fontstyle">Provide the payment information</p><br></br>
+		<div class="slds-form">
+			<div class="slds-form-element slds-form-element_horizontal">
+				<b><label class="slds-form-element__label" for="horizontal-input-id-01">Payment Amt:</label></b>
+				<div class="slds-form-element__control">
+					<!-- <force:inputField value="{!v.EFTRecord.Payment_Amount__c}" change="{!c.onMonthChange}"> </force:inputField>-->
+					<aura:if isTrue="{!v.isLoan == true}">
+						<lightning:input value="{!'$' + v.EFTRecord.Payment_Amount__c}" disabled="true" />
+					</aura:if>
+					<aura:if isTrue="{!v.isLoan == false}">
+						<!--<force:inputField class="alternateamount" value="{!v.EFTRecord.Payment_Amount__c}" change="{!c.onMonthChange}"> </force:inputField>   -->
+						<lightning:input class="paymentamount" type="number" value="{!v.EFTRecord.Payment_Amount__c}"
+							disabled="false" onblur="{!c.onMonthChange}" step="0.01" formatter="currency" />
+					</aura:if>
+
+				</div>
+			</div>
+			<div class="slds-form-element slds-form-element_horizontal">
+				<b><label class="slds-form-element__label" for="horizontal-input-id-03">Next Payment Due
+						Date:</label></b>
+				<div class="slds-form-element__control">
+					<ui:inputDate value="{!v.EFTRecord.Next_Payment_Due_Date__c}" format="MM/dd/yyyy" disabled="true" />
+
+				</div>
+			</div>
+			<!--<aura:if isTrue="{!v.isLoan}">-->
+			<div class="slds-form-element slds-form-element_horizontal">
+				<b><label class="slds-form-element__label" for="horizontal-input-id-02">Additional Amt:</label></b>
+				<div class="slds-form-element__control">
+					<force:inputField class="alternateamount" value="{!v.EFTRecord.Alternate_Amount__c}"
+						change="{!c.onMonthChange}"> </force:inputField>
+				</div>
+			</div>
+			<!-- </aura:if>-->
+			<div class="slds-form-element slds-form-element_horizontal">
+				<b><label class="slds-form-element__label" for="horizontal-input-id-03">Effective Date:</label></b>
+				<div class="slds-form-element__control">
+					<force:inputField value="{!v.EFTRecord.Effective_Date__c}" change="{!c.onMonthChange}" class="effectivedate">
+					</force:inputField>
+				</div>
+			</div>
+			<div class="slds-form-element slds-form-element_horizontal">
+				<b><label class="slds-form-element__label">Frequency:</label></b>
+				<div class="slds-form-element__control">
+					<aura:if isTrue="{!v.isLoan}">
+						<lightning:input value="{!v.EFTRecord.Frequency__c}" disabled="true" />
+						<!--<force:inputField value="{!v.EFTRecord.Frequency__c}" change="{!c.onMonthChange}"> </force:inputField>-->
+						<aura:set attribute="else">
+							<lightning:input value="{!v.EFTRecord.Frequency__c}" disabled="true" />
+						</aura:set>
+					</aura:if>
+					<ul class='has-error uiInputDefaultError uiInput uiInputSelect uiInput--default uiInput--select'
+						id='FrequencyError' style='display:none;'>
+						<li class="form-element__help" data-aura-rendered-by="45:2084;a">Complete this field</li>
+					</ul>
+				</div>
+			</div>
+			<div class="slds-form-element slds-form-element_horizontal">
+				<b><label class="slds-form-element__label">Day of Month:</label></b>
+				<div class="slds-form-element__control">
+					<aura:if isTrue="{!v.isDayOfMonthDisabled}">
+						<lightning:input value="{!v.EFTRecord.Day_of_Month__c}" disabled="true" />
+						<aura:set attribute="else">
+							<force:inputField value="{!v.EFTRecord.Day_of_Month__c}" change="{!c.onMonthChange}"
+								aura:id="Day_of_Month__c" class="dayofmonth"> </force:inputField>
+						</aura:set>
+					</aura:if>
+
+					<ul class='has-error uiInputDefaultError uiInput uiInputSelect uiInput--default uiInput--select'
+						id='DayOfMonthError' style='display:none;'>
+						<li class="form-element__help" data-aura-rendered-by="45:2084;a">Complete this field</li>
+					</ul>
+				</div>
+			</div>
+			<aura:renderIf isTrue="{!v.EFTRecord.Frequency__c == 'Semi-Monthly'}">
+				<div class="slds-form-element slds-form-element_horizontal">
+					<b><label class="slds-form-element__label">2nd Day of Month:</label></b>
+					<div class="slds-form-element__control">
+						<force:inputField value="{!v.EFTRecord.Second_Day_of_Month__c}" change="{!c.onMonthChange}">
+						</force:inputField>
+
+					</div>
+				</div>
+			</aura:renderIf>
+			<div class="slds-form-element slds-form-element_horizontal">
+				<b><label class="slds-form-element__label" for="horizontal-input-id-03">EFT Payment Date:</label></b>
+				<div class="slds-form-element__control">
+					<ui:inputDate value="{!v.EFTRecord.EFT_Payment_Date__c}" format="MM/dd/yyyy" disabled="true" />
+					
+				</div>
+			</div>
+		</div>
+	</div>
+</aura:component>

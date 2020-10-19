@@ -29,6 +29,15 @@
 <aura:attribute name="issubmitDisabled" type="Boolean" default="true"/>
 <aura:attribute name="isSigninPersonEnabled" type="Boolean" default="false"/>
 <aura:attribute name="isSigninPersonClicked" type="Boolean" default="false"/>
+<aura:attribute name="isExistingEFT" type="Boolean"/>
+<aura:attribute name="EFTCount" type="Integer" />
+<aura:attribute name="CurrentEFT" type="Integer" default="0"/>
+<aura:attribute name="EFTRecordsList" type="List" />
+<aura:attribute name="isExpireEFT" type="Boolean" default="false" />
+<aura:attribute name="CurrentEFTRecord" type="EFT__c" />
+<aura:attribute name="isErrorStage1" type="Boolean" default="false" />
+<aura:attribute name="ErrorMessage" type="String" />
+
 <lightning:navigation aura:id="navService"/>
     
         <header class="slds-media_center slds-has-flexi-truncate slds-modal__header">
@@ -68,7 +77,7 @@
  <aura:if isTrue="{!and(v.ActiveStepIndex != 4,v.ActiveStepIndex != 5)}">
             <lightning:button aura:id="Exit" label="Exit" title="Exit" onclick="{!c.cancelAction}"/>
             <lightning:button variant="brand" label="Back" disabled="{!(and(v.ActiveStepIndex == (0),v.isMemberSelected == false) ? true : false)}" title="Back" onclick="{!c.back}"/> 
-            <lightning:button variant="brand" label="{!v.ContinueButtonName}" title="Continue" onclick="{!c.Continue}"/>
+            <lightning:button variant="brand" label="{!v.ContinueButtonName}" title="Continue" onclick="{!c.Continue}" disabled="{!v.isErrorStage1}"/>
       	<!--	<aura:renderIf isTrue="{!v.isSigninPersonEnabled}">		
      			<lightning:button variant="brand" label="Sign In Person" title="Sign In Person" onclick="{!c.OpenInPersonSigning}" name='signinperson'/>
      </aura:renderIf>-->

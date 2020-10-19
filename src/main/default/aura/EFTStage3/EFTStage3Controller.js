@@ -92,7 +92,9 @@
     	var evt = $A.get("e.c:EFTEvent");
         var SelectedShareLoan = event.getSource().get('v.value');
         var SelectedUserChar3;
-        var SelectedShareLoanID, SelectedShareLoanType , SelectedShareLoanDesc, SelectedEFTIDType, SelectedPayment, SelectedED, SelectedDay1, SelectedDay2, SelectedLoanCode;
+        var SelectedShareLoanID, SelectedShareLoanType , 
+            SelectedShareLoanDesc, SelectedEFTIDType, SelectedPayment, SelectedEFTPaymentDate,
+             SelectedED, SelectedDay1, SelectedDay2, SelectedLoanCode,SelectedNextPaymentDueDate;
       /*  if(SelectedShareLoan != null && SelectedShareLoan != undefined){
         	SelectedShareLoanID = SelectedShareLoan.split(',')[0];
             SelectedShareLoanType  = SelectedShareLoan.split(',')[2];
@@ -113,9 +115,14 @@
                     SelectedDay1 = map[i].Day1.toString().trim();
                     SelectedDay2 = map[i].Day2.toString().trim();	
                     SelectedLoanCode = map[i].LoanCode;
+                    SelectedNextPaymentDueDate = map[i].NextPaymentDueDate;
+                    SelectedEFTPaymentDate= map[i].EFTPaymentDate;
                 }
                 else if(SelectedEFTIDType == 'Share'){
                     SelectedUserChar3 = map[i].UserChar3;
+                    SelectedED = map[i].EffectiveDate;
+                    SelectedNextPaymentDueDate = map[i].NextPaymentDueDate;
+                    SelectedEFTPaymentDate= map[i].EFTPaymentDate;
                 }
                     
                 
@@ -132,6 +139,8 @@
          component.set("v.EFTRecord.Day_of_Month__c",SelectedDay1);
          component.set("v.EFTRecord.Second_Day_of_Month__c",SelectedDay2);
         component.set("v.EFTRecord.LoanCode__c",SelectedLoanCode);
+        component.set("v.EFTRecord.Next_Payment_Due_Date__c",SelectedNextPaymentDueDate);
+        component.set("v.EFTRecord.EFT_Payment_Date__c",SelectedEFTPaymentDate);
          component.set("v.EFTRecord.Stage__c",'Share/Loan');
          if(SelectedDay2 != '0'){
 	           component.set("v.EFTRecord.Frequency__c",'Semi-Monthly'); 
@@ -174,6 +183,8 @@
                     component.set("v.EFTRecord.EftLocator__c",EFTList[i].EftLocator__c);
                     //component.set("v.EFTRecord.LoanCode__c",EFTList[i].LoanCode__c);
                      component.set("v.EFTRecord.Id",EFTList[i].Id);
+                     component.set("v.EFTRecord.Next_Payment_Due_Date__c",EFTList[i].Next_Payment_Due_Date__c);
+                     component.set("v.EFTRecord.EFT_Payment_Date__c",EFTList[i].EFT_Payment_Date__c);
                     
                     break;
                 }
