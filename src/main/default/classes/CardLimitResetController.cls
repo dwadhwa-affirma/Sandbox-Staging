@@ -438,8 +438,8 @@ public class CardLimitResetController {
         cl.Member_Account__c = recordId;
         cl.Member__c = pa.PersonID__c;
 
-        //insert cl;
-        //createCase(cl);
+        insert cl;
+        createCase(cl);
         return null;    
     }
     public class CardDetailWrapperObject{
