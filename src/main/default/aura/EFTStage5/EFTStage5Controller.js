@@ -8,6 +8,14 @@
             component.set('v.EFTRecord.Frequency__c', 'Monthly');
             //component.set('v.EFTRecord.Payment_Amount__c', 0);
         }
+        if(component.get("v.EFTRecord.Share_Loan_Id__c").substring(0,2) == "28")
+        {
+            component.find("Day_of_Month__c").set("v.value","1");
+            component.set("v.isDayOfMonthDisabled",true);            
+        }
+        else{
+            component.set("v.isDayOfMonthDisabled",false); 
+        }   
         //helper.getDaysPicklist(component, event);
         //component.find("Day_of_Month__c").set("v.value","");
          //component.find("Day_of_Month__c").set("v.value", component.get('v.EFTRecord.Day_of_Month__c'));
@@ -15,25 +23,18 @@
 	},
     
     onMonthChange : function(component, event, helper) {
-         debugger;
-        /*if(event.getSource().get("v.class") == "alternateamount"){
-            var PaymentAmount = component.get("v.EFTRecord.Payment_Amount__c");
-            var AlternateAmount= event.getSource().get("v.value");
-            if(AlternateAmount <= PaymentAmount && AlternateAmount != "" && AlternateAmount != null){
-                alert('Alternate Amount should be greater than Payment Amount');
-                event.stopPropagation();
-                component.set("v.EFTRecord.Alternate_Amount__c","");
-                return;
-            }
-        }*/
+         debugger;        
         var evt = $A.get("e.c:EFTEvent");
-        if(event.getSource().get("v.class") == "paymentamount"){
-          // var PaymentAmt =new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(component.get("v.EFTRecord.Payment_Amount__c")); 
-             //component.set("v.EFTRecord.Payment_Amount__c",PaymentAmt);
+       if(event.getSource().get("v.class") == "effectivedate"){
+            helper.CheckValidEffectiveDate(component, event,event.getSource().get("v.value"));            
         }
+
+        helper.getEFTPaymentDate(component, event);
+
+        
         
         var PaymentAmt = component.get("v.EFTRecord.Payment_Amount__c");
-       
+        var NextPaymentDueDate = component.get("v.EFTRecord.Next_Payment_Due_Date__c");
         var AlternateAmt = component.get("v.EFTRecord.Alternate_Amount__c");
         var EffectiveDate = component.get("v.EFTRecord.Effective_Date__c");
         var Frequency = component.get('v.EFTRecord.Frequency__c');

@@ -67,7 +67,7 @@
    margin-inline-end: auto;
    font-weight: bolder;
 }
-.THIS.modalbody{overflow-y:auto !important; max-height:411px;padding:1rem 2rem !important;height: 570px !important;}
+.THIS.modalbody{overflow-y:auto !important; max-height:425px;padding:1rem 2rem !important;height: 570px !important;}
 .THIS.slds-modal__footer{position:absolute; bottom:0;width:100%;}
 .THIS.slds-modal__footer .slds-button{text-transform:uppercase; letter-spacing:1px;}
 .THIS.slds-modal__footer .slds-button:nth-child(2){float:left;}

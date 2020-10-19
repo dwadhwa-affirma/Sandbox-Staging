@@ -1,4 +1,7 @@
 .THIS#stage4 {width:70%; font-size:.8125rem; margin:0 auto;}
+.THIS .divFI{display:none;}
+
+.THIS#stage4 .existingEFT{width:100% !important; font-size:.8125rem; margin:0 auto;}
 
 .THIS#stage4 .slds-form-element__label{width:120px;max-width:unset;}
 
@@ -13,6 +16,16 @@
 .THIS#stage4 .slds-input{min-height:unset; height:32px;}
 
 .THIS#stage4 label.slds-form-element__label.slds-no-flex{display:none; width:0;}
+
+.THIS#stage4 .proceedtbl .slds-form-element__control,
+.THIS#stage4 .fundingtbl .slds-form-element__control{padding-left:0;}
+.THIS#stage4 .fundingtbl td{padding-bottom:10px;}
+
+.THIS#stage4 .eft4tbl{height:392px;}
+.THIS#stage4 .firstcol{border-right: 1px solid #777; margin-right: 1rem; padding-top:6rem;}
+.THIS#stage4 .secondcol{padding-top:6rem;}
+
+
 
 @media (max-width:1250px){
     .THIS#stage4 {width:90%;}

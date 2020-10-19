@@ -1,78 +1,83 @@
-<aura:component implements="force:appHostable,force:lightningQuickActionWithoutHeader,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,force:hasSObjectName" access="global" controller="EFTController">
-<aura:attribute name="actions" type="List" default="[{'label': 'Create a new EFT record', 'value': '1'},
-                                                   {'label': 'Access/Update existing EFT records', 'value': '2'}]"/>                                         
-<aura:handler name="init" action="{!c.doInit}" value="{!this}" access="global" />                                                  
-<aura:attribute name="childActions" type="List" default="[{'label': 'View EFT Details', 'value': '3'},
+<aura:component
+  implements="force:appHostable,force:lightningQuickActionWithoutHeader,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,force:hasSObjectName"
+  access="global" controller="EFTController">
+  <aura:attribute name="actions" type="List" default="[{'label': 'Create a new EFT record', 'value': '1'},
+                                                   {'label': 'Access/Update existing EFT records', 'value': '2'}]" />
+  <aura:handler name="init" action="{!c.doInit}" value="{!this}" access="global" />
+  <aura:attribute name="childActions" type="List" default="[{'label': 'View EFT Details', 'value': '3'},
                                                    		{'label': 'Update EFT Record', 'value': '4'},
-                                                        {'label': 'Cancel/Expire EFT Record', 'value': '5'}]"/>
-                                                         
-<aura:attribute name="AddIconName" type="string" default="utility:add" description="To change icon on Tab"/>
-                                                          
-<aura:attribute name="ActionDisabled" type="Boolean" default="true"/> 
+                                                        {'label': 'Cancel/Expire EFT Record', 'value': '5'}]" />
 
-<aura:attribute name="ShareLoanMap" type="List" />
-<aura:attribute name="SelectedShareLoan" type="String" />
-<aura:registerEvent name="EFTEvent" type="c:EFTEvent"/>
-<aura:attribute name="EFTRecord" type="EFT__c" /> 
-<aura:attribute name="EFTRecordsList" type="List" />   
+  <aura:attribute name="AddIconName" type="string" default="utility:add" description="To change icon on Tab" />
+
+  <aura:attribute name="ActionDisabled" type="Boolean" default="true" />
+
+  <aura:attribute name="ShareLoanMap" type="List" />
+  <aura:attribute name="SelectedShareLoan" type="String" />
+  <aura:registerEvent name="EFTEvent" type="c:EFTEvent" />
+  <aura:attribute name="EFTRecord" type="EFT__c" />
+  <aura:attribute name="EFTRecordsList" type="List" />
 
 
- <div id = "stage3" class = "stage3">
+  <div id="stage3" class="stage3">
 
- <aura:if isTrue="{!(v.EFTRecord.Action_Type__c == 'Create')}">
-            <div>
-                <p class = "fontstyle">Select a share or loan for this ACH record</p><br />
-                    <table aria-multiselectable="true" class="slds-table slds-table_header-hidden slds-table_edit slds-tree slds-table_tree" role="treegrid">
-                          <thead>
-                              <tr class="slds-line-height_reset">
-                                  <th class="slds-text-align_right" scope="col" style="width:3.25rem">
-                                      <span id="column-group-header" class="slds-assistive-text">Choose a row</span>
-                                      <div class="slds-th__action slds-th__action_form">
-                                          
-                                      </div>
-                                  </th>
-                                  <th aria-label="Share/Loan" class="loanth">
-                                      <a class="slds-th__action slds-text-link_reset" tabindex="-1">
-                                          <span class="slds-assistive-text">Sort by: </span>
-                                          <div class="slds-grid slds-grid_vertical-align-center slds-has-flexi-truncate">
-                                              <span class="slds-truncate" title="Share/Loan">ID</span>
-                                          </div>
-                                      </a>
-                                  </th>
-                                  <th aria-label="Description " aria-sort="none" class="slds-has-button-menu" scope="col">
-                                      <a class="slds-th__action slds-text-link_reset" href="javascript:void(0);" role="button" tabindex="-1">
-                                          <span class="slds-assistive-text">Sort by: </span>
-                                          <div class="slds-grid slds-grid_vertical-align-center slds-has-flexi-truncate">
-                                              <span class="slds-truncate" title="Description ">Description</span>
-                                              <span class="slds-icon_container slds-icon-utility-arrowdown">
-                                                  
-                                              </span>
-                                          </div>
-                                      </a>
-                                  </th>
-                              </tr>
-                           </thead>
-                      <tbody>
-                       <aura:iteration items="{!v.ShareLoanMap}" var="itemOption" indexVar="i">
-                       
-                       <tr aria-expanded="false" aria-level="1" aria-posinset="3" aria-selected="false" aria-setsize="4" class="slds-hint-parent">
-                          <td class="slds-text-align_right" role="gridcell" style="width:3.25rem">
-                            <div class="slds-radio">
-                              <span class="slds-radio">
-	                          <lightning:input type="radio" name="select" value="{!itemOption.ShareLoanID}" onchange="{!c.onRadioChange}"/>
-	                        </span>
-                            </div>
-                          </td>
-                          <td class="slds-text" role="gridcell" style="width:3.25rem">
-                           <div class="slds-truncate" title="{!itemOption.LoanId}">
-                              <a href="javascript:void(0);" tabindex="-1">{!itemOption.ShareLoanIDString}</a>
-                            </div>	                        
-                          </td>
-                           <td role="gridcell">
-                                <div class="slds-truncate" title="{!itemOption.Description}">{!itemOption.TypeTranslate}</div>
-                            </td>
-                          </tr>
-                          <!-- <th class="slds-tree__item" style = "padding-left: 0.5rem;" data-label="Account Name" scope="row">
+    <aura:if isTrue="{!(v.EFTRecord.Action_Type__c == 'Create')}">
+      <div>
+        <p class="fontstyle">Select a share or loan for this ACH record</p><br />
+        <table aria-multiselectable="true"
+          class="slds-table slds-table_header-hidden slds-table_edit slds-tree slds-table_tree" role="treegrid">
+          <thead>
+            <tr class="slds-line-height_reset">
+              <th class="slds-text-align_right" scope="col" style="width:3.25rem">
+                <span id="column-group-header" class="slds-assistive-text">Choose a row</span>
+                <div class="slds-th__action slds-th__action_form">
+
+                </div>
+              </th>
+              <th aria-label="Share/Loan" class="loanth">
+                <a class="slds-th__action slds-text-link_reset" tabindex="-1">
+                  <span class="slds-assistive-text">Sort by: </span>
+                  <div class="slds-grid slds-grid_vertical-align-center slds-has-flexi-truncate">
+                    <span class="slds-truncate" title="Share/Loan">ID</span>
+                  </div>
+                </a>
+              </th>
+              <th aria-label="Description " aria-sort="none" class="slds-has-button-menu" scope="col">
+                <a class="slds-th__action slds-text-link_reset" href="javascript:void(0);" role="button" tabindex="-1">
+                  <span class="slds-assistive-text">Sort by: </span>
+                  <div class="slds-grid slds-grid_vertical-align-center slds-has-flexi-truncate">
+                    <span class="slds-truncate" title="Description ">Description</span>
+                    <span class="slds-icon_container slds-icon-utility-arrowdown">
+
+                    </span>
+                  </div>
+                </a>
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            <aura:iteration items="{!v.ShareLoanMap}" var="itemOption" indexVar="i">
+
+              <tr aria-expanded="false" aria-level="1" aria-posinset="3" aria-selected="false" aria-setsize="4"
+                class="slds-hint-parent">
+                <td class="slds-text-align_right" role="gridcell" style="width:3.25rem">
+                  <div class="slds-radio">
+                    <span class="slds-radio">
+                      <lightning:input type="radio" name="select" value="{!itemOption.ShareLoanID}"
+                        onchange="{!c.onRadioChange}" />
+                    </span>
+                  </div>
+                </td>
+                <td class="slds-text" role="gridcell" style="width:3.25rem">
+                  <div class="slds-truncate" title="{!itemOption.LoanId}">
+                    <a href="javascript:void(0);" tabindex="-1">{!itemOption.ShareLoanIDString}</a>
+                  </div>
+                </td>
+                <td role="gridcell">
+                  <div class="slds-truncate" title="{!itemOption.Description}">{!itemOption.TypeTranslate}</div>
+                </td>
+              </tr>
+              <!-- <th class="slds-tree__item" style = "padding-left: 0.5rem;" data-label="Account Name" scope="row">
                             <button class="slds-button slds-button_icon slds-button_icon slds-button_icon-x-small slds-m-right_x-small add" aria-hidden="true" tabindex="-1" title="Expand" id="{!'btn' +i}" data-row-index="{!i}">
                               <lightning:buttonIcon iconName="{!itemOption.UtilityIcon}" size="x-small"  onclick="{!c.expand}" iconClass="{!'icon' +i}" name="{!'icon' +i}"/>
                               <span class="slds-assistive-text">Collapse</span>
@@ -85,100 +90,109 @@
                                 <div class="slds-truncate" title="{!itemOption.Description}">{!itemOption.TypeTranslate}</div>
                             </td>
                         </tr>-->
-                          <tr aria-level="2" aria-posinset="1" aria-selected="false" aria-setsize="1" class="container slds-hint-parent" id="{!'trDesc' +i}" data-row-index="{!i}">
-                              <td class="slds-text-align_right" role="gridcell" style="width:3.25rem">
-                              </td>
-                              <th class="slds-tree__item" data-label="Account Name" scope="row">
-                                
-                              </th>
-                              <td role="gridcell">
-                                <div class="slds-truncate" title="{!itemOption.Description}">{!itemOption.Description}</div>
-                              </td>
-                          </tr>
-                       
-                       </aura:iteration>
-                          
-                      </tbody>
-                </table>
-            </div>
- <aura:set attribute="else">
-    <div class="eftrecord">
-                <p class = "fontstyle">Select an ACH record</p><br />
-        <table aria-multiselectable="true" class="slds-table slds-table_header-hidden slds-table_edit slds-tree slds-table_tree" role="treegrid">
-                          <thead>
-                              <tr class="slds-line-height_reset">
-                                  <th class="slds-text-align_right" scope="col" style="width:3.25rem">
-                                      <span id="column-group-header" class="slds-assistive-text">Choose a row</span>
-                                      <div class="slds-th__action slds-th__action_form">
-                                          
-                                      </div>
-                                  </th>
-                                  <th aria-label="MemberNumber" class="loanth">
-                                      <a class="slds-th__action slds-text-link_reset" tabindex="-1">
-                                          <span class="slds-assistive-text">Sort by: </span>
-                                          <div class="slds-grid slds-grid_vertical-align-center slds-has-flexi-truncate">
-                                              <span class="slds-truncate" title="Member Number">Member Number</span>
-                                          </div>
-                                      </a>
-                                  </th>
-                                  <th aria-label="Share/Loan" class="loanth">
-                                      <a class="slds-th__action slds-text-link_reset" tabindex="-1">
-                                          <span class="slds-assistive-text">Sort by: </span>
-                                          <div class="slds-grid slds-grid_vertical-align-center slds-has-flexi-truncate">
-                                              <span class="slds-truncate" title="Share/Loan">Share/Loan</span>
-                                          </div>
-                                      </a>
-                                  </th>
-                                 <th aria-label="Amount" class="loanth">
-                                      <a class="slds-th__action slds-text-link_reset" tabindex="-1">
-                                          <span class="slds-assistive-text">Sort by: </span>
-                                          <div class="slds-grid slds-grid_vertical-align-center slds-has-flexi-truncate">
-                                              <span class="slds-truncate" title="Amount">Amount</span>
-                                          </div>
-                                      </a>
-                                  </th>
-                                  <th aria-label="Financial Institution" class="loanth">
-                                      <a class="slds-th__action slds-text-link_reset" tabindex="-1">
-                                          <span class="slds-assistive-text">Sort by: </span>
-                                          <div class="slds-grid slds-grid_vertical-align-center slds-has-flexi-truncate">
-                                              <span class="slds-truncate" title="Financial Institution">Financial Institution</span>
-                                          </div>
-                                      </a>
-                                  </th>    
-                              </tr>
-                           </thead>
-                      <tbody>
-                       <aura:iteration items="{!v.EFTRecordsList}" var="itemOption" indexVar="i">
-                       
-                       <tr aria-expanded="false" aria-level="1" aria-posinset="3" aria-selected="false" aria-setsize="4" class="{!itemOption.Expired__c ? 'slds-hint-parent expired': 'slds-hint-parent'}">
-                          <td class="slds-text-align_right" role="gridcell" style="width:3.25rem">
-                            <div class="slds-radio">
-                              <span class="slds-radio">
-	                          <lightning:input type="radio" name="select" value="{!itemOption.EftLocator__c}" onchange="{!c.onEFTSelect}"/>
-	                        </span>
-                            </div>
-                          </td>
-                          <td class="slds-text-align_right" role="gridcell" style="width:3.25rem">
-                            <div class="slds-truncate" title="{!itemOption.Member_Account__r.Name}">{!itemOption.Member_Account__r.Name}</div>
-                          </td>
-                          <td class="slds-text-align_right" role="gridcell" style="width:3.25rem">
-                            <div class="slds-truncate" title="{!itemOption.Share_Loan_Id__c}">{!itemOption.Share_Loan_Id__c}</div>
-                          </td>
-                         <td class="slds-text-align_right" role="gridcell" style="width:3.25rem">
-                            <div class="slds-truncate" title="{!itemOption.Payment_Amount__c}"><lightning:formattedNumber value="{!itemOption.Payment_Amount__c}" style="currency" currencyCode="USD"/></div>
-                          </td>
-                          <td class="slds-text-align_right" role="gridcell" style="width:3.25rem">
-                            <div class="slds-truncate" title="{!itemOption.Bank_Name__c}">{!itemOption.Bank_Name__c}</div>
-                          </td>
-                        </tr>
-                         
-                       
-                       </aura:iteration>
-                          
-                      </tbody>
-                </table>
-     </div> 
-</aura:set>
-</aura:if>
- </div>
+              <tr aria-level="2" aria-posinset="1" aria-selected="false" aria-setsize="1"
+                class="container slds-hint-parent" id="{!'trDesc' +i}" data-row-index="{!i}">
+                <td class="slds-text-align_right" role="gridcell" style="width:3.25rem">
+                </td>
+                <th class="slds-tree__item" data-label="Account Name" scope="row">
+
+                </th>
+                <td role="gridcell">
+                  <div class="slds-truncate" title="{!itemOption.Description}">{!itemOption.Description}</div>
+                </td>
+              </tr>
+
+            </aura:iteration>
+
+          </tbody>
+        </table>
+      </div>
+      <aura:set attribute="else">
+        <div class="eftrecord">
+          <p class="fontstyle">Select an ACH record</p><br />
+          <table aria-multiselectable="true"
+            class="slds-table slds-table_header-hidden slds-table_edit slds-tree slds-table_tree" role="treegrid">
+            <thead>
+              <tr class="slds-line-height_reset">
+                <th class="slds-text-align_right" scope="col" style="width:3.25rem">
+                  <span id="column-group-header" class="slds-assistive-text">Choose a row</span>
+                  <div class="slds-th__action slds-th__action_form">
+
+                  </div>
+                </th>
+                <th aria-label="MemberNumber" class="loanth">
+                  <a class="slds-th__action slds-text-link_reset" tabindex="-1">
+                    <span class="slds-assistive-text">Sort by: </span>
+                    <div class="slds-grid slds-grid_vertical-align-center slds-has-flexi-truncate">
+                      <span class="slds-truncate" title="Member Number">Member Number</span>
+                    </div>
+                  </a>
+                </th>
+                <th aria-label="Share/Loan" class="loanth">
+                  <a class="slds-th__action slds-text-link_reset" tabindex="-1">
+                    <span class="slds-assistive-text">Sort by: </span>
+                    <div class="slds-grid slds-grid_vertical-align-center slds-has-flexi-truncate">
+                      <span class="slds-truncate" title="Share/Loan">Share/Loan</span>
+                    </div>
+                  </a>
+                </th>
+                <th aria-label="Amount" class="loanth">
+                  <a class="slds-th__action slds-text-link_reset" tabindex="-1">
+                    <span class="slds-assistive-text">Sort by: </span>
+                    <div class="slds-grid slds-grid_vertical-align-center slds-has-flexi-truncate">
+                      <span class="slds-truncate" title="Amount">Amount</span>
+                    </div>
+                  </a>
+                </th>
+                <th aria-label="Financial Institution" class="loanth">
+                  <a class="slds-th__action slds-text-link_reset" tabindex="-1">
+                    <span class="slds-assistive-text">Sort by: </span>
+                    <div class="slds-grid slds-grid_vertical-align-center slds-has-flexi-truncate">
+                      <span class="slds-truncate" title="Financial Institution">Financial Institution</span>
+                    </div>
+                  </a>
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              <aura:iteration items="{!v.EFTRecordsList}" var="itemOption" indexVar="i">
+               
+                  <tr aria-expanded="false" aria-level="1" aria-posinset="3" aria-selected="false" aria-setsize="4"
+                    class="{!itemOption.Expired__c ? 'slds-hint-parent expired': 'slds-hint-parent'}">
+                    <td class="slds-text-align_right" role="gridcell" style="width:3.25rem">
+                      <div class="slds-radio">
+                        <span class="slds-radio">
+                          <lightning:input type="radio" name="select" value="{!itemOption.EftLocator__c}"
+                            onchange="{!c.onEFTSelect}" />
+                        </span>
+                      </div>
+                    </td>
+                    <td class="slds-text-align_right" role="gridcell" style="width:3.25rem">
+                      <div class="slds-truncate" title="{!itemOption.Member_Account__r.Name}">
+                        {!itemOption.Member_Account__r.Name}</div>
+                    </td>
+                    <td class="slds-text-align_right" role="gridcell" style="width:3.25rem">
+                      <div class="slds-truncate" title="{!itemOption.Share_Loan_Id__c}">{!itemOption.Share_Loan_Id__c}
+                      </div>
+                    </td>
+                    <td class="slds-text-align_right" role="gridcell" style="width:3.25rem">
+                      <div class="slds-truncate" title="{!itemOption.Payment_Amount__c}">
+                        <lightning:formattedNumber value="{!itemOption.Payment_Amount__c}" style="currency"
+                          currencyCode="USD" />
+                      </div>
+                    </td>
+                    <td class="slds-text-align_right" role="gridcell" style="width:3.25rem">
+                      <div class="slds-truncate" title="{!itemOption.Bank_Name__c}">{!itemOption.Bank_Name__c}</div>
+                    </td>
+                  </tr>
+
+                
+              </aura:iteration>
+
+            </tbody>
+          </table>
+        </div>
+      </aura:set>
+    </aura:if>
+  </div>
 </aura:component>

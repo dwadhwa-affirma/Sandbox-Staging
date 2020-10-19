@@ -12,19 +12,7 @@ trigger EFTTrigger on EFT__c (after insert, after update, before update) {
     Set<Id> EFTsForSavingsType = new Set<Id>();
     Set<Id> EFTsForNoAlternateAmount = new Set<Id>();
     Set<Id> EFTsForAlternateAmount = new Set<Id>();
-    
-  /*  if(Trigger.isInsert){
-        for(Integer i=0; i<trigger.new.size(); i++){
-        
-            //------------------------------- Checking if the status is being changed and status = 'Completed'-----------------------------------------------//
-                
-            if(trigger.new[i].Status__c == 'Completed'){
-                EFTdsForEFT.add(trigger.new[i].id);
-                CaseIdsToUpdate.add(trigger.new[i].Case__c); 
-            }   
-        }        
-    }*/
-    		
+  	
     if(Trigger.isAfter && Trigger.isUpdate){
         
         for(Integer i=0; i<trigger.new.size(); i++){
@@ -45,30 +33,11 @@ trigger EFTTrigger on EFT__c (after insert, after update, before update) {
             }
             
              //------------------------------- Checking if only payment information changed-----------------//
-            else if((trigger.old[i].Update_Docusign_Status__c != 'Completed' && trigger.new[i].Update_Docusign_Status__c == 'Completed')
-              /* || (trigger.old[i].Routing_Number__c == trigger.new[i].Routing_Number__c
-              || trigger.old[i].Account_Number__c == trigger.new[i].Account_Number__c
-              || trigger.old[i].Bank_Name__c == trigger.new[i].Bank_Name__c
-              || trigger.old[i].Type__c == trigger.new[i].Type__c)
-              || (trigger.old[i].Payment_Amount__c != trigger.new[i].Payment_Amount__c
-              || trigger.old[i].Alternate_Amount__c != trigger.new[i].Alternate_Amount__c
-              || trigger.old[i].Day_of_Month__c != trigger.new[i].Day_of_Month__c
-              || trigger.old[i].Frequency__c != trigger.new[i].Frequency__c
-              || trigger.old[i].Effective_Date__c != trigger.new[i].Effective_Date__c)*/
-              ){
+            else if((trigger.old[i].Update_Docusign_Status__c != 'Completed' && trigger.new[i].Update_Docusign_Status__c == 'Completed')){
                 EFTIdsForUpdate.add(trigger.new[i].id);
                 CaseIdsToUpdate.add(trigger.new[i].Case__c); 
-            }
+            }         
             
-            //------------------------------- Checking if financial institution data changed-----------------//
-           /*  else if((trigger.old[i].Update_Docusign_Status__c != 'Completed' && trigger.new[i].Update_Docusign_Status__c == 'Completed')
-                   && (trigger.old[i].Routing_Number__c != trigger.new[i].Routing_Number__c
-              || trigger.old[i].Account_Number__c != trigger.new[i].Account_Number__c
-              || trigger.old[i].Bank_Name__c != trigger.new[i].Bank_Name__c
-              || trigger.old[i].Type__c != trigger.new[i].Type__c)
-                   ){
-                EFTIdsForExpireCreate.add(trigger.new[i].id);
-            }*/
             
             //------------------------------- Checking if Only Expired-----------------//
             else if((trigger.old[i].Expired__c != trigger.new[i].Expired__c
@@ -101,24 +70,26 @@ trigger EFTTrigger on EFT__c (after insert, after update, before update) {
      
     //------------------------------- Creating "EFT" record if the status = "Completed"------------------------------------------//
     if(EFTdsForEFT.size() > 0){
-         EFTToSyimtar.insertEFTs(EFTdsForEFT);
+        if(!Test.isRunningTest()){
+             EFTToSyimtar.insertEFTs(EFTdsForEFT);
+        }
+        
     }
     
      //------------------------------- Update "EFT" record ------------------------------------------//
-    if(EFTIdsForUpdate.size() > 0){        
-         EFTToSyimtar.UpdateEFT(EFTIdsForUpdate, false);
-         system.debug('EFTIdsForUpdate=='+EFTIdsForUpdate);
+    if(EFTIdsForUpdate.size() > 0){      
+        if(!Test.isRunningTest()){
+         	EFTToSyimtar.UpdateEFT(EFTIdsForUpdate, false);
+            system.debug('EFTIdsForUpdate=='+EFTIdsForUpdate);
+        }
+         
     }
-    
-     //------------------------------- Expire and Create EFT Record------------------------------------------//
-    /*if(EFTIdsForExpireCreate.size() > 0){        
-         EFTToSyimtar.UpdateEFT(EFTIdsForExpireCreate, true);
-         EFTToSyimtar.insertEFTs(EFTIdsForExpireCreate);
-    }*/
-    
+   
     //------------------------------- Expire EFT Record------------------------------------------//
-    if(EFTIdsForExpire.size() > 0){        
-         EFTToSyimtar.UpdateEFT(EFTIdsForExpire, true);         
+    if(EFTIdsForExpire.size() > 0){   
+         if(!Test.isRunningTest()){
+         	EFTToSyimtar.UpdateEFT(EFTIdsForExpire, true);     
+         }
     }
     
     if(CaseIdsToUpdate.size() > 0){  

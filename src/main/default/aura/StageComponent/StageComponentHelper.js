@@ -170,5 +170,22 @@
         
     },
     
-    
+    ExpireExistingEFT: function(component, event, EFTRecord){
+        
+        var action = component.get("c.expireEFT");	
+       
+		action.setParams({
+		"EFTRecord": EFTRecord
+		});			
+		action.setCallback(this, function(resp) {
+			var state=resp.getState();			
+			if(state === "SUCCESS"){				
+               alert("EFT Record Expired Successfully.");
+            }
+           
+		});
+		 
+		$A.enqueueAction(action);
+        
+    },
 })
