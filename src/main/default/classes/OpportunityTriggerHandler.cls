@@ -654,9 +654,8 @@ public class OpportunityTriggerHandler {
 	                {
 	                     opp.Adderror('Member name is read only');
 	                }
-	              	system.debug('CloseDate'+oldOpp.CloseDate);
-                    
-                    if(oldOpp.Name != null && oldOpp.Name !='Name' && oldOpp.Name != opp.Name && oldOpp.CloseDate == Date.valueOf('2048-12-31'))
+	              	
+                    if(oldOpp.Name != null && oldOpp.Name !='Name' && oldOpp.Name != opp.Name )
 	                {
 	                     opp.Adderror('Opportunity Number is read-only');
 	                }
