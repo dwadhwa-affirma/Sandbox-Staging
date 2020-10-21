@@ -1,34 +1,27 @@
-trigger OpportunityTrigger on Opportunity (before insert, before update, after update, after insert) {
+trigger OpportunityTrigger on Opportunity (before insert, before update ) {
 
     // To prevent recursive re-entry
-    if(OpportunityTriggerHandler.hasExecuted){
-    
+	if(OpportunityTriggerHandler.hasExecuted)
+    {
          return;
     }
-   
-    //OpportunityTriggerHandler.hasExecuted = true;
+    
+    OpportunityTriggerHandler.hasExecuted = true;
     
     OpportunityTriggerHandler handler = new OpportunityTriggerHandler(Trigger.isExecuting, Trigger.size);
     
-    if(Trigger.isInsert && Trigger.isBefore){
-     
+    if(Trigger.isInsert && Trigger.isBefore)
+    { 
         system.debug('OnBefore Insert###');
         handler.OnBeforeInsert(Trigger.new);
-        handler.OnAfterinsert(Trigger.new);
     }
-    else if(Trigger.isUpdate && Trigger.isBefore){
-    
-        handler.OnBeforeUpdate(Trigger.new, Trigger.newMap, Trigger.oldMap);
-    }
-    
-    if(Trigger.isInsert && Trigger.isAfter){
+    else if(Trigger.isUpdate && Trigger.isBefore)
+    {
 
-        handler.OppToCheck(Trigger.new);
+        handler.OnBeforeUpdate(Trigger.new, Trigger.newMap, Trigger.oldMap);
+
     }
-    if(Trigger.isUpdate && Trigger.isAfter){ 
-        
-        handler.OnAfterUpdate(Trigger.new, Trigger.oldMap);    
-    }        
+    
 }
    /* string uid= UserInfo.getUserId();
     User usr = [Select id, name, alias from User where id=:uid];
