@@ -7,6 +7,8 @@ trigger AddressChangeLogTrigger on AddressChangeLog__c(before insert ){
 	string IdentificationMethod = '';
 	string Description = '';
 	string Subject = '';
+	Id caseid;
+	string IdentificationMethodInfo = '';
 
 
 	if (trigger.isbefore && trigger.isInsert){
@@ -75,7 +77,15 @@ trigger AddressChangeLogTrigger on AddressChangeLog__c(before insert ){
 				intakemethod = 'Intake Method:' + objAddressChange.Clean_Up_Intake_Method__c + '\n';
 			}
 
+			
 			IdentificationMethod = 'Identification Method:' + objAddressChange.Identification_Method__c + '\n';
+			if(objAddressChange.Identification_Method__c =='Company Badge' || objAddressChange.Identification_Method__c =='DL/ID/Other' || objAddressChange.Identification_Method__c =='Passport'){
+				IdentificationMethodInfo = objAddressChange.Identification_Method_Information__c;
+			}
+
+			if(IdentificationMethodInfo != '' && IdentificationMethodInfo != null){
+				IdentificationMethod = IdentificationMethod + 'Identification Method Information:' + IdentificationMethodInfo + '\n';
+			}
 			String MemberName = objMap.get(objAddressChange.Member__c).Name;
 
 			if ((objAddressChange.Address_New__c == '' || objAddressChange.Address_New__c == null) && objAddressChange.Address2_New__c != '' && objAddressChange.Address2_New__c != null){
@@ -181,13 +191,18 @@ trigger AddressChangeLogTrigger on AddressChangeLog__c(before insert ){
 				for (Case c : CaseList){
 					string tempdesc = c.Description;
 					if (tempdesc != null)
-						Description = tempdesc + '\n' + Description;
-					c.Status = 'Closed';
+						Description = tempdesc + '\n' + Description;					
 					c.OwnerId = objAddressChange.Updated_By__c;
+					//c.Status = 'Closed';
 					c.Description = Description;
 				}
 				update CaseList;
+				for (Case c : CaseList){					
+					c.Status = 'Closed';				
+				}
+				update CaseList;
 				objAddressChange.CaseId__c = CaseList[0].Id;
+				caseid = CaseList[0].Id;
 			}
 
 			//Create Case for AddressChange if Case does not exist//
@@ -233,32 +248,34 @@ trigger AddressChangeLogTrigger on AddressChangeLog__c(before insert ){
 					caseobj.Description = Description;
 				}
 
-				Id caseid;
+				
 				try{
 					insert caseobj;
 					caseid = caseobj.id;
 					objAddressChange.CaseId__c = caseid;
 					System.debug('Case created :' + caseobj.Id);
 
-					// --------------------- Attach multiple Accounts with case..................//
-					list<CaseAccountMemberDetail__c> listac = new List<CaseAccountMemberDetail__c>();
-
-					for (String s : setAccountNumbers){
-						CaseAccountMemberDetail__c obj = new CaseAccountMemberDetail__c();
-						obj.Account_Name__c = s;
-						obj.Case__c = caseid;
-						obj.MemberAccountid__c = mapAccountNumber.get(s);
-						listac.add(obj);
-
-					}
-
-					insert listac;
+					
 				} catch (exception e){
 					System.debug('An error occured while inserting case :' + e);
 				}
 
 
 			}
+
+			// --------------------- Attach multiple Accounts with case..................//
+			list<CaseAccountMemberDetail__c> listac = new List<CaseAccountMemberDetail__c>();
+
+			for (String s : setAccountNumbers){
+				CaseAccountMemberDetail__c obj = new CaseAccountMemberDetail__c();
+				obj.Account_Name__c = s;
+				obj.Case__c = caseid;
+				obj.MemberAccountid__c = mapAccountNumber.get(s);
+				listac.add(obj);
+
+			}
+
+			insert listac;
 
 			/*if (objAddressChange.Update_Type__c == 'Residential Address' && objAddressChange.EmailNotificationJSONString__c != null){
 			 string decodedJson = objAddressChange.EmailNotificationJSONString__c.unescapeHtml4().unescapeHtml4();
@@ -293,25 +310,6 @@ trigger AddressChangeLogTrigger on AddressChangeLog__c(before insert ){
 		Database.insert(smsObjectList, false);
 		// LastOTPSent = System.Now();
 	}
-
-	/*private void EmailNotificationDetails(string JSONString){
-	 List<EmailNotificationStatusList> ListEmailStatus = (List<EmailNotificationStatusList>)System.JSON.deserialize(JSONString, List<EmailNotificationStatusList>.class);
-	 Address_Change_Email_Notifiations__c acen = Address_Change_Email_Notifiations__c.getValues('Primary');
-	 string opEmailIds = acen.Operations_EmailIds__c;
-	 string reEmailIds = acen.Real_Estate_EmailIds__c;
-
-	 List<string> opEmailIdsList = opEmailIds.split(',');
-	 List<string> reEmailIdsList = reEmailIds.split(',');
-
-	 for (EmailNotificationStatusList les : ListEmailStatus){
-	 if (les.IRACheck == true){
-	//SendEmailNotifications(opEmailIdsList, 'Address Change Email Notification for Operations', les.accountNumber);
-	 }
-	 if (les.RECheck == true){
-	//SendEmailNotifications(reEmailIdsList, 'Address_Change_Email_Notification_for_Real_Estate', les.accountNumber);
-	 }
-	 }
-	 }*/
 
 	public void SendEmailNotifications(List<string> EmailIdsList, string templatenAME, string accountNumber){
 		List<Messaging.SingleEmailMessage> mails = new List<Messaging.SingleEmailMessage>();
