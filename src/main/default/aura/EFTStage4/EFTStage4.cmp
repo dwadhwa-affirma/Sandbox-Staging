@@ -117,7 +117,7 @@
 
 			<aura:set attribute="else">
 				<div id="stage4" class="divFI" aura:id="divFIData">
-				<p class="fontstyle">Provide the Funding FI information</p><br></br>
+				<p class="fontstyle">Provide Funding FI Information</p><br></br>
 				<div class="slds-form">
 					<div class="slds-form-element slds-form-element_horizontal">
 						<b><label class="slds-form-element__label"
@@ -133,9 +133,10 @@
 					</div>
 					<div class="slds-form-element slds-form-element_horizontal">
 						<b><label class="slds-form-element__label" for="horizontal-input-id-03">Account#:</label></b>
-						<div class="slds-form-element__control">
-							<force:inputField value="{!v.EFTRecord.Account_Number__c}" change="{!c.onTypeChange}">
-							</force:inputField>
+						<div class="slds-form-element__control accountnumber">
+							<lightning:input name="accountnumber" value="{!v.EFTRecord.Account_Number__c}" pattern="[0-9]*" messageWhenPatternMismatch="Invalid Account Number. Enter Numbers Only" onchange="{!c.onTypeChange}" aura:id="accountNumber"/>
+							<!-- <force:inputField value="{!v.EFTRecord.Account_Number__c}" change="{!c.onTypeChange}"> -->
+							<!-- </force:inputField> -->
 						</div>
 					</div>
 					<div class="slds-form-element slds-form-element_horizontal">

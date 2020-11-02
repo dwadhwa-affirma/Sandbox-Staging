@@ -143,11 +143,14 @@
             		}
             		if((component.get("v.EFTRecord.Type__c") == '' || component.get("v.EFTRecord.Type__c") == undefined)){
             			emptystring = emptystring + "Type";
-            		}
-            		if (!confirm('The following fields are blank, are you sure you wish to continue? \n' + emptystring)) {
-            				helper.hideSpinner(component,helper);
-            				return;            				
-            			}  
+                    }
+                    alert('The following fields are blank. Please complete all fields to continue: \n' +emptystring);
+                    helper.hideSpinner(component,helper);
+                    return;
+            		// if (!confirm('The following fields are blank, are you sure you wish to continue? \n' + emptystring)) {
+            		// 		helper.hideSpinner(component,helper);
+            		// 		return;            				
+            		// 	}  
                     }
                 }
 
@@ -292,7 +295,7 @@
                                         //body.push(msgBox);
                                         body.splice(0, 1, msgBox);
                                         targetCmp.set("v.body", body); 
-                                       // helper.hideSpinner(component);
+                                        helper.hideSpinner(component);
                                         
                                     }
                                 }

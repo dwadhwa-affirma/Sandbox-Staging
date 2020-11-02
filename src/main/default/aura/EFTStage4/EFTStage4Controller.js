@@ -1,7 +1,7 @@
 ({
   doInit: function (component, event, helper) {
     //helper.showSpinner(component);
-   
+    debugger;
     var recordId = component.get("v.recordId");
     var ShareLoanID = component.get("v.EFTRecord.Share_Loan_Id__c");
     var Operation = component.get("v.EFTRecord.Action_Type__c"); 
@@ -149,6 +149,15 @@
     var EFTCount = component.get("v.EFTCount");
 
     component.set("v.EFTRecord.Stage__c", "FI");
+
+    
+    var callingEle = event.getSource().get("v.name");
+    if(callingEle == "accountnumber"){
+      var validity = component.find("accountNumber").get("v.validity");
+      if(validity.valid == false){
+        component.set("v.EFTRecord.Account_Number__c","");
+      }
+    }
 
     if (Type != undefined) {
       evt.setParams({

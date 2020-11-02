@@ -17,7 +17,7 @@
 
 	<aura:attribute name="EFTRecord" type="EFT__c" />
 	<div id="stage5">
-		<p class="fontstyle">Provide the payment information</p><br></br>
+		<p class="fontstyle">Provide Payment Information</p><br></br>
 		<div class="slds-form">
 			<div class="slds-form-element slds-form-element_horizontal">
 				<b><label class="slds-form-element__label" for="horizontal-input-id-01">Payment Amt:</label></b>

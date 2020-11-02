@@ -23,7 +23,7 @@
 
     <aura:if isTrue="{!(v.EFTRecord.Action_Type__c == 'Create')}">
       <div>
-        <p class="fontstyle">Select a share or loan for this ACH record</p><br />
+        <p class="fontstyle">Select a Share or Loan for ACH record</p><br />
         <table aria-multiselectable="true"
           class="slds-table slds-table_header-hidden slds-table_edit slds-tree slds-table_tree" role="treegrid">
           <thead>

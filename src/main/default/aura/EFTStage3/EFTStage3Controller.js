@@ -112,8 +112,10 @@
                 if(SelectedEFTIDType == 'Loan'){
                     SelectedPayment = map[i].Payment;
                     SelectedED = map[i].EffectiveDate;
-                    SelectedDay1 = map[i].Day1.toString().trim();
-                    SelectedDay2 = map[i].Day2.toString().trim();	
+                    if(map[i].Day1 != null)
+                        SelectedDay1 = map[i].Day1.toString().trim();
+                    if(map[i].Day2 != null)
+                        SelectedDay2 = map[i].Day2.toString().trim();	
                     SelectedLoanCode = map[i].LoanCode;
                     SelectedNextPaymentDueDate = map[i].NextPaymentDueDate;
                     SelectedEFTPaymentDate= map[i].EFTPaymentDate;

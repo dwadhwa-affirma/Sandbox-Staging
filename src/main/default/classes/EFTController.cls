@@ -561,7 +561,7 @@ public class EFTController{
 			ACH_Loan_Share_Type_Configuration__c cs = ACH_Loan_Share_Type_Configuration__c.getValues('Loan');
 			string loanTypes = (string)cs.Type__c;
 			String[] arrLoanTypes = loanTypes.split(',');
-			//system.debug('arrLoanTypes==' + arrLoanTypes);
+			system.debug('arrLoanTypes==' + arrLoanTypes);
 
 
 			http httpParam = new http();
@@ -585,8 +585,8 @@ public class EFTController{
 						ShareLoanWrapperObject temp = new ShareLoanWrapperObject();
 						map<string, object> localAcc = (map<string, object>)t;
 						string LoanId = string.valueof(localAcc.get('LoanId'));
-						//System.debug('Service response is ....' + localAcc);
-						if (LoanId != '0' && arrLoanTypes.contains(string.valueof(LoanId).substring(0, 2))){
+						System.debug('Service response is ....' + LoanId);
+						if (LoanId != '0' && arrLoanTypes.contains(string.valueof(LoanId).leftPad(4, '0').substring(0, 2))){
 							temp.ShareLoanID = LoanId;
 							temp.ShareLoanIDString = 'L' + LoanId;
 							temp.Description = (string)localAcc.get('Description');
@@ -608,6 +608,7 @@ public class EFTController{
 								temp.EFTPaymentDate = getEFTPaymentDate(temp.EffectiveDate, temp.Day1);
 							//(integer)localAcc.get('DueDay1');
 							resultList.add(temp);
+							System.debug('temp ....' + temp);
 						}
 					}
 
@@ -670,8 +671,8 @@ public class EFTController{
 		List<EFTController.ShareLoanWrapperObject> LoanList = LoanMap.get('LoanList');
 		if (LoanList != null){
 			for (ShareLoanWrapperObject sl : LoanList){
-				LoanIDPaymentMap.put(sl.ShareLoanID, sl.Payment);
-				LoanIDNextPaymentDueDateMap.put(sl.ShareLoanID, sl.NextPaymentDueDate);
+				LoanIDPaymentMap.put(sl.ShareLoanID.leftPad(4, '0'), sl.Payment);
+				LoanIDNextPaymentDueDateMap.put(sl.ShareLoanID.leftPad(4, '0'), sl.NextPaymentDueDate);
 			}
 		}
 
