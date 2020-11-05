@@ -145,7 +145,7 @@ public class EFTToSyimtar {
                 if(e.Bank_Name__c != null){
                         MatchID3 = e.Bank_Name__c.toUpperCase().replace('&', '&#38;');
                 	if(MatchID3.length() > 22){
-                		MatchID3 = MatchID3.left(21).toUpperCase().replace('&', '&#38;');
+                		MatchID3 = MatchID3.left(22).toUpperCase().replace('&', '&#38;');
                 	}
                 }
                 system.debug('MatchID3'+MatchID3);    
@@ -429,7 +429,7 @@ public class EFTToSyimtar {
                 if(e.Bank_Name__c != null){
                 	MatchID3 = e.Bank_Name__c.toUpperCase().replace('&', '&#38;');
                 	if(MatchID3.length() > 22){
-                		MatchID3 = MatchID3.left(21).toUpperCase().replace('&', '&#38;');
+                		MatchID3 = MatchID3.left(22).toUpperCase().replace('&', '&#38;');
                 	}
                 }
                 system.debug('Reference'+Reference);    

@@ -479,18 +479,22 @@ public class EFTController{
 						string accouttype = (string)localAcc.get('AccountType');
 						string ShareId = accouttype.split(' ')[1].replace('#', '');
 						//System.debug('ShareId ....' + ShareId);
-						if (ShareId != '0' && arrShareTypes.contains(string.valueof(ShareId).substring(0, 2))){
+						if (ShareId != '0' && arrShareTypes.contains(string.valueof(ShareId).leftPad(4, '0').substring(0, 2))){
 							//&& ShareId == 2800
 							temp.ShareLoanID = ShareId;
 							temp.ShareLoanIDString = 'S' + ShareId;
 							temp.Description = (string)localAcc.get('Description');
 							temp.TypeTranslate = (string)localAcc.get('Description');
 							temp.UserChar3 = (string)localAcc.get('UserChar3');
+							
+							
 							temp.Type = 'Share';
 
 							map<string, string> resultDate = getTrackingRecordforShare(AccountNumber, ShareId);
 							if (resultDate != null){
 								temp.NextPaymentDueDate = date.valueOf(resultDate.get('UserDate1'));
+								System.debug('UserAmount2 ....' + decimal.valueOf(resultDate.get('Payment')));
+								temp.Payment = decimal.valueOf(resultDate.get('Payment'));
 							}
 
 							temp.EffectiveDate = date.newinstance(Next3BusinessDay.year(), Next3BusinessDay.month(), Next3BusinessDay.day());
@@ -615,7 +619,7 @@ public class EFTController{
 					set<string> LoanIds = new set<string>();
 					map<string, string> LoanIdTypeTranslateMap = new map<string, string>();
 					for (ShareLoanWrapperObject obj : resultList){
-						LoanIds.add(string.valueof(obj.ShareLoanID).substring(0, 2));
+						LoanIds.add(string.valueof(obj.ShareLoanID).leftPad(4, '0').substring(0, 2));
 						// system.debug('sdsf'==string.valueof(obj.ShareLoanID).substring(0, 2));
 					}
 					system.debug('LoanIds==' + LoanIds);
@@ -629,7 +633,7 @@ public class EFTController{
 					}
 
 					for (ShareLoanWrapperObject obj : resultList){
-						string typetrans = LoanIdTypeTranslateMap.get(string.valueof(obj.ShareLoanID).substring(0, 2));
+						string typetrans = LoanIdTypeTranslateMap.get(string.valueof(obj.ShareLoanID).leftPad(4, '0').substring(0, 2));
 						obj.TypeTranslate = typetrans;
 						//System.debug('typetrans ....' + typetrans);
 					}
@@ -723,16 +727,17 @@ public class EFTController{
 			for (Object t : results){
 
 				map<string, object> localAcc = (map<string, object>)t;
+				System.debug('localAcc' + localAcc.get('IdType'));
 				if (String.valueOf(localAcc.get('ExpirationDate')) == null || String.valueOf(localAcc.get('ExpirationDate')) == ''){
 					string lsId = '';
 					if (localAcc.get('Id') != null && localAcc.get('Id') != ''){
 						lsId = String.valueOf(localAcc.get('Id')).substring(0, 2);
 						//System.debug('lsId ....' + lsId);
 					}
-					if (arrShareTypes.contains(lsId) || arrLoanTypes.contains(lsId)){
+					if ((arrShareTypes.contains(lsId) && (string)localAcc.get('IdType') == '0')  || (arrLoanTypes.contains(lsId) && (string)localAcc.get('IdType') == '1')){
 						EFTWrapperObject temp = new EFTWrapperObject();
 						EFT__c objEFT = new EFT__c();
-						if (arrShareTypes.contains(lsId)){
+						if (arrShareTypes.contains(lsId) && (string)localAcc.get('IdType') == '0'){
 							//System.debug('Share ....');
 							objEFT.EFT_ID_Type__c = 'Share';
 							map<string, string> resultAmount = getTrackingRecordforShare(AccountNumber, String.valueOf(localAcc.get('Id')));
@@ -742,7 +747,7 @@ public class EFTController{
 								objEFT.Next_Payment_Due_Date__c = Date.valueOf(resultAmount.get('UserDate1'));
 							}
 
-						} else if (arrLoanTypes.contains(lsId)){
+						} else if (arrLoanTypes.contains(lsId) && (string)localAcc.get('IdType') == '1'){
 							// System.debug('Loan ....');
 							objEFT.EFT_ID_Type__c = 'Loan';
 							objEFT.Payment_Amount__c = LoanIDPaymentMap.get(String.valueOf(localAcc.get('Id')));

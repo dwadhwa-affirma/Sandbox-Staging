@@ -116,6 +116,9 @@
           RoutingNumber.substring(0, 1) != "3"))
     ) {
       alert("Plese enter valid ABA/Routing Number.");
+      component.set("v.EFTRecord.Bank_Name__c", '');
+      var a = component.get("c.onTypeChange");
+        $A.enqueueAction(a);
       return;
     }
     helper.showSpinner(component);
@@ -151,15 +154,18 @@
     component.set("v.EFTRecord.Stage__c", "FI");
 
     
-    var callingEle = event.getSource().get("v.name");
-    if(callingEle == "accountnumber"){
-      var validity = component.find("accountNumber").get("v.validity");
-      if(validity.valid == false){
-        component.set("v.EFTRecord.Account_Number__c","");
+    if(event != undefined){
+      var callingEle = event.getSource().get("v.name");
+      if(callingEle == "accountnumber"){
+        var validity = component.find("accountNumber").get("v.validity");
+        if(validity.valid == false){
+          component.set("v.EFTRecord.Account_Number__c","");
+        }
       }
     }
+   
 
-    if (Type != undefined) {
+   if (Type != undefined) {
       evt.setParams({
         EFTRecord: component.get("v.EFTRecord"),
         isExistingEFT: isExistingEFT,

@@ -21,7 +21,24 @@
             	else{
             		result.ShareLoanList.map((obj) => {   
 					obj.UtilityIcon = "utility:add";
-					})
+                    })
+                    
+                    for(var i=0;i<result.ShareLoanList.length;i++){
+                        if(result.ShareLoanList[i].Payment == undefined || result.ShareLoanList[i].Payment == null || result.ShareLoanList[i].Payment == 0){
+                            result.ShareLoanList[i].isDisabled = true;
+                        }
+                        else{
+                            result.ShareLoanList[i].isDisabled = false;
+                        }
+                    }
+                    // result.ShareLoanList.map((obj) => {  
+                    //     if(obj.Payment == undefined || obj.Payment == null || obj.Payment == 0){
+                    //         obj.isDisabled = true;
+                    //     } 
+                    //     else{
+                    //         obj.isDisabled = false; 
+                    //     }                                                                                             = "utility:add";
+                    // })
             	}
             	
             	component.set('v.ShareLoanMap', result.ShareLoanList);
@@ -125,6 +142,8 @@
                     SelectedED = map[i].EffectiveDate;
                     SelectedNextPaymentDueDate = map[i].NextPaymentDueDate;
                     SelectedEFTPaymentDate= map[i].EFTPaymentDate;
+                    if(map[i].Payment != null)
+                        SelectedPayment = map[i].Payment;
                 }
                     
                 

@@ -152,6 +152,12 @@
             		// 		return;            				
             		// 	}  
                     }
+
+                    else if(component.get("v.EFTRecord.Bank_Name__c") == "Bank name not found"){
+                        alert('Invalid Rounting #/Bank Name. Please Enter Valid Routing #.');
+                        helper.hideSpinner(component,helper);
+                        return;
+                    }
                 }
 
                 }
@@ -340,7 +346,7 @@
        stages = component.get("v.EFTStageDetails"); 
        if(component.get("v.isMemberSelected") == true && component.get("v.ActiveStepIndex") == 0){
     	   component.set("v.isMemberSelected", false);
-    	   //component.set("v.EFTRecord.Member_Name__c","");
+    	   component.set("v.EFTRecord.Member_Name__c","");
     	    $A.createComponent("c:"+stages[0].Stage_Component__c,{recordId: component.get("v.recordId"), EFTRecord: component.get("v.EFTRecord"), isMemberSelected: component.get("v.isMemberSelected")},
                                 function(msgBox){                
                                      if (component.isValid()) {
@@ -396,7 +402,9 @@
 			         component.set("v.EFTRecord.Payment_Amount__c","");
 			         component.set("v.EFTRecord.Effective_Date__c","");
 			         component.set("v.EFTRecord.Day_of_Month__c","");
-			         component.set("v.EFTRecord.Second_Day_of_Month__c","");
+                     component.set("v.EFTRecord.Second_Day_of_Month__c","");
+                     component.set("v.isExistingEFT", false);
+                     component.set("v.isExpireEFT", false);
 			        // component.set("v.EFTRecord.Stage__c",'Share/Loan');
 		         }
                     $A.createComponent("c:"+stages[i-1].Stage_Component__c,{recordId: component.get("v.recordId"), EFTRecord: component.get("v.EFTRecord")},
