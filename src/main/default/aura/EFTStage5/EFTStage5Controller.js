@@ -16,6 +16,13 @@
         else{
             component.set("v.isDayOfMonthDisabled",false); 
         }   
+
+        var evt = $A.get("e.c:EFTEvent");
+        var MonthDay = component.get("v.EFTRecord.Day_of_Month__c");
+        if (MonthDay != undefined) {
+            evt.setParams({ EFTRecord: component.get("v.EFTRecord") });
+            evt.fire();
+        }
         //helper.getDaysPicklist(component, event);
         //component.find("Day_of_Month__c").set("v.value","");
          //component.find("Day_of_Month__c").set("v.value", component.get('v.EFTRecord.Day_of_Month__c'));

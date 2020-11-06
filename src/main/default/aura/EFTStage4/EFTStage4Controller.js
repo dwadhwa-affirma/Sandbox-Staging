@@ -36,7 +36,7 @@
                   var evt = $A.get("e.c:EFTEvent");
                   var isExistingEFT = component.get("v.isExistingEFT");                    
                   var EFTCount = component.get("v.EFTCount");
-                 
+                  component.set("v.isExpireEFT", true);
                   evt.setParams({
                     EFTRecord: component.get("v.EFTRecord"),
                     isExistingEFT: isExistingEFT,
@@ -71,7 +71,7 @@
          var evt = $A.get("e.c:EFTEvent");
                 var isExistingEFT = component.get("v.isExistingEFT");                    
                 var EFTCount = component.get("v.EFTCount");
-               
+                component.set("v.isExpireEFT", true);
                 evt.setParams({
                   EFTRecord: component.get("v.EFTRecord"),
                   isExistingEFT: isExistingEFT,
@@ -87,7 +87,8 @@
 
     if(component.get("v.CurrentEFT") == component.get("v.EFTCount")){
         component.set("v.isExistingEFT", false); 
-        var div =component.find("divFIData");                
+        var div =component.find("divFIData");  
+        component.set("v.isExpireEFT", true);              
         $A.util.removeClass(div, 'divFI');
         var evt = $A.get("e.c:EFTEvent");          
                 evt.setParams({

@@ -118,11 +118,11 @@
                         component.set("v.CurrentEFT",CurrentEFT);
                     }
 
-                    if(isExistingEFT && component.get("v.isExpireEFT") == undefined){
-                        alert('Please Select one of the choices to either Proceed/Expire EFT Record.');	
-            		    helper.hideSpinner(component,helper);
-            		    return; 
-                    }
+                    // if(isExistingEFT && component.get("v.isExpireEFT") == undefined){
+                    //     alert('Please Select one of the choices to either Proceed/Expire EFT Record.');	
+            		//     helper.hideSpinner(component,helper);
+            		//     return; 
+                    // }
 
 
                     if(!isExistingEFT || EFTCount <= 0){

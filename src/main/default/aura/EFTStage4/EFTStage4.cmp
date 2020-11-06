@@ -30,12 +30,12 @@
             		<div class="slds-col firstcol">
 						<p class="fontstyle">Active ACH Records</p><br></br>
 
-						<p>The Selected {!v.EFTRecord.Share_Loan_Id__c}&nbsp;{!v.EFTRecord.EFT_ID_Type__c} record currebtly
+						<p>The Selected {!v.EFTRecord.Share_Loan_Id__c}&nbsp;{!v.EFTRecord.EFT_ID_Type__c} record currently
 							has an acive ACH record</p>
 						<br></br>
-						Indicate how you would like to proceed.
+						<p>Indicate how you would like to proceed. Selecting the CONTINUE button will expire the active ACH record.</p>
 
-						<table aria-multiselectable="true"
+						<!-- <table aria-multiselectable="true"
 							class="slds-table slds-table_header-hidden slds-table_edit slds-tree slds-table_tree proceedtbl"
 							role="treegrid">
 							<tbody>
@@ -63,7 +63,7 @@
 									</td>
 								</tr>
 							</tbody>
-						</table>
+						</table> -->
 					</div>
 					<div class="slds-col secondcol"> 
 						<table class="fundingtbl">
