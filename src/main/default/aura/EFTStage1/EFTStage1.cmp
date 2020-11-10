@@ -32,7 +32,7 @@
             <aura:if isTrue="{!(v.isMemberSelected == true)}">
                 <div id="stage1" class="align">
                     <div>
-                        <p class="fontstyle">Select an action</p>
+                        <p class="fontstyle">Select an Action</p>
                         <br />
                         <table aria-multiselectable="true"
                             class="slds-table slds-table_header-hidden slds-table_edit slds-tree slds-table_tree"
@@ -47,8 +47,8 @@
                                         </span>
                                     </td>
                                     <td data-label="Employees" role="gridcell">
-                                        <div class="slds-truncate" title="Create a new ACH record">Create a new ACH
-                                            record</div>
+                                        <div class="slds-truncate" title="Create a new ACH record">Create New ACH
+                                            Record</div>
                                     </td>
                                 </tr>
                                 <tr aria-expanded="false" aria-level="1" aria-posinset="3" aria-selected="false"
@@ -116,7 +116,7 @@
                 <aura:set attribute="else">
                     <div id="stage2" class="align">
                         <div>
-                            <p class="fontstyle">Which member is requesting the ACH Change?</p>
+                            <p class="fontstyle">Select Requester for the ACH Change</p>
                             <br />
                             <table aria-multiselectable="true"
                                 class="slds-table slds-table_header-hidden slds-table_edit slds-tree slds-table_tree"

@@ -1,7 +1,7 @@
 ({
   doInit: function (component, event, helper) {
     //helper.showSpinner(component);
-   
+    debugger;
     var recordId = component.get("v.recordId");
     var ShareLoanID = component.get("v.EFTRecord.Share_Loan_Id__c");
     var Operation = component.get("v.EFTRecord.Action_Type__c"); 
@@ -36,7 +36,7 @@
                   var evt = $A.get("e.c:EFTEvent");
                   var isExistingEFT = component.get("v.isExistingEFT");                    
                   var EFTCount = component.get("v.EFTCount");
-                 
+                  component.set("v.isExpireEFT", true);
                   evt.setParams({
                     EFTRecord: component.get("v.EFTRecord"),
                     isExistingEFT: isExistingEFT,
@@ -71,7 +71,7 @@
          var evt = $A.get("e.c:EFTEvent");
                 var isExistingEFT = component.get("v.isExistingEFT");                    
                 var EFTCount = component.get("v.EFTCount");
-               
+                component.set("v.isExpireEFT", true);
                 evt.setParams({
                   EFTRecord: component.get("v.EFTRecord"),
                   isExistingEFT: isExistingEFT,
@@ -87,7 +87,8 @@
 
     if(component.get("v.CurrentEFT") == component.get("v.EFTCount")){
         component.set("v.isExistingEFT", false); 
-        var div =component.find("divFIData");                
+        var div =component.find("divFIData");  
+        component.set("v.isExpireEFT", true);              
         $A.util.removeClass(div, 'divFI');
         var evt = $A.get("e.c:EFTEvent");          
                 evt.setParams({
@@ -116,6 +117,9 @@
           RoutingNumber.substring(0, 1) != "3"))
     ) {
       alert("Plese enter valid ABA/Routing Number.");
+      component.set("v.EFTRecord.Bank_Name__c", '');
+      var a = component.get("c.onTypeChange");
+        $A.enqueueAction(a);
       return;
     }
     helper.showSpinner(component);
@@ -150,7 +154,19 @@
 
     component.set("v.EFTRecord.Stage__c", "FI");
 
-    if (Type != undefined) {
+    
+    if(event != undefined){
+      var callingEle = event.getSource().get("v.name");
+      if(callingEle == "accountnumber"){
+        var validity = component.find("accountNumber").get("v.validity");
+        if(validity.valid == false){
+          component.set("v.EFTRecord.Account_Number__c","");
+        }
+      }
+    }
+   
+
+   if (Type != undefined) {
       evt.setParams({
         EFTRecord: component.get("v.EFTRecord"),
         isExistingEFT: isExistingEFT,

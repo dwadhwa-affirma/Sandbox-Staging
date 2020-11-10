@@ -54,7 +54,7 @@
                     <table class="toptbl">
                     	<tr>
                         	<td>
-                            	<lightning:icon class="icon_label1" iconName="utility:record" size="medium" alternativeText="Indicates approval"/>
+                            	<!-- <lightning:icon class="icon_label1" iconName="utility:record" size="medium" alternativeText="Indicates approval"/> -->
                             </td>
                             <td><p>Your ACH Create request has been successfully completed. The details of your request are in Mars case(<a href="{!('/one/one.app?#/sObject/'+ v.EFTRecord.Case__c + '/view')}" target="_blank">{!v.EFTRecord.Case__r.CaseNumber}</a>). When the member completes the DocuSign ACH verification form, the ACH record will be created in Episys.</p>                            	
                             </td>
@@ -211,7 +211,7 @@
                     <table class="toptbl">
                     	<tr>
                         	<td>
-                            	<lightning:icon class="icon_label1" iconName="utility:record" size="medium" alternativeText="Indicates approval"/>
+                            	<!-- <lightning:icon class="icon_label1" iconName="utility:record" size="medium" alternativeText="Indicates approval"/> -->
                             </td>
                             <td><p>Your ACH {!v.UpdateText} request has been successfully completed. The details of your request are in Mars case(<a href="{!('/one/one.app?#/sObject/'+ v.EFTRecord.Case__c + '/view')}" target="_blank">{!v.EFTRecord.Case__r.CaseNumber}</a>).</p>                            	
                             </td>

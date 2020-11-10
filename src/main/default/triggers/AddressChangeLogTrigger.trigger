@@ -164,13 +164,15 @@ trigger AddressChangeLogTrigger on AddressChangeLog__c(before insert ){
 												'Old Zip:' + (objAddressChange.Zip_Old__c == null ? '' : objAddressChange.Zip_Old__c)+'\n' + 'New Zip:' + (objAddressChange.Zip_New__c == null ? '' : objAddressChange.Zip_New__c)+'\n' + 
 												'Old Expiration Date:' + objAddressChange.ExpirationDate_Old__c + '\n' + 'New Expiration Date:' + objAddressChange.ExpirationDate_New__c + '\n' + 'Old Active Flag:' + objAddressChange.isActive_Old__c + '\n' + 'New Active Flag:' + objAddressChange.isActive_New__c + '\n' + 
 												'Record Type Updated:' + 'Mail only Records' + '\n' + 
-												'Names:' + objAddressChange.Names__c;
+												'Locator:' + objAddressChange.Temp_Mail_Locators__c + '\n' + 
+												'Names:' + objAddressChange.Temp_Mail_Account_Names__c;
 			} else if (objAddressChange.Update_Type__c == 'Temp Mailing Address - New'){
 				Description = intakemethod + IdentificationMethod + 'Update Type:' + 'Mailing Address - New' + '\n' + 'Member Name:' + MemberName + '\n' + 'New Address:' + (objAddressChange.Address_New__c == null ? '' : objAddressChange.Address_New__c)+'\n' + 
 												'New City:' + (objAddressChange.City_New__c == null ? '' : objAddressChange.City_New__c)+'\n' + 'New State:' + (objAddressChange.State_New__c == null ? '' : objAddressChange.State_New__c)+'\n' + 
 												'New Zip:' + (objAddressChange.Zip_New__c == null ? '' : objAddressChange.Zip_New__c)+'\n' + 'New Expiration Date:' + objAddressChange.ExpirationDate_New__c + '\n' + 'New Active Flag:' + objAddressChange.isActive_New__c + '\n' + 
 												'Record Type Updated:' + 'Mail only Records' + '\n' + 
-												'Names:' + objAddressChange.Names__c;
+												'Locator:' + objAddressChange.Temp_Mail_Locators__c + '\n' + 
+												'Names:' + objAddressChange.Temp_Mail_Account_Names__c;
 			}
 
 			// --------------------- Check if Case exists..................//

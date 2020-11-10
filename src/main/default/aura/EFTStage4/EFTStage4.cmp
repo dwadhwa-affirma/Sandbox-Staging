@@ -30,12 +30,12 @@
             		<div class="slds-col firstcol">
 						<p class="fontstyle">Active ACH Records</p><br></br>
 
-						<p>The Selected {!v.EFTRecord.Share_Loan_Id__c}&nbsp;{!v.EFTRecord.EFT_ID_Type__c} record currebtly
+						<p>The Selected {!v.EFTRecord.Share_Loan_Id__c}&nbsp;{!v.EFTRecord.EFT_ID_Type__c} record currently
 							has an acive ACH record</p>
 						<br></br>
-						Indicate how you would like to proceed.
+						<p>Indicate how you would like to proceed. Selecting the CONTINUE button will expire the active ACH record.</p>
 
-						<table aria-multiselectable="true"
+						<!-- <table aria-multiselectable="true"
 							class="slds-table slds-table_header-hidden slds-table_edit slds-tree slds-table_tree proceedtbl"
 							role="treegrid">
 							<tbody>
@@ -63,7 +63,7 @@
 									</td>
 								</tr>
 							</tbody>
-						</table>
+						</table> -->
 					</div>
 					<div class="slds-col secondcol"> 
 						<table class="fundingtbl">
@@ -117,13 +117,13 @@
 
 			<aura:set attribute="else">
 				<div id="stage4" class="divFI" aura:id="divFIData">
-				<p class="fontstyle">Provide the Funding FI information</p><br></br>
+				<p class="fontstyle">Provide Funding FI Information</p><br></br>
 				<div class="slds-form">
 					<div class="slds-form-element slds-form-element_horizontal">
 						<b><label class="slds-form-element__label"
 								for="horizontal-input-id-01">ABA/Routing#:</label></b>
-						<lightning:input name="accountnumber" value="{!v.EFTRecord.Routing_Number__c}"
-							onblur="{!c.LoadBankName}" onchange="{!c.onTypeChange}" />
+						<lightning:input name="routingnumber" value="{!v.EFTRecord.Routing_Number__c}"
+							onblur="{!c.LoadBankName}"  />
 						<lightning:spinner aura:id="Spinner" alternativeText="Loading" size="medium" variant="brand"
 							class="slds-hide spin" />
 					</div>
@@ -133,9 +133,10 @@
 					</div>
 					<div class="slds-form-element slds-form-element_horizontal">
 						<b><label class="slds-form-element__label" for="horizontal-input-id-03">Account#:</label></b>
-						<div class="slds-form-element__control">
-							<force:inputField value="{!v.EFTRecord.Account_Number__c}" change="{!c.onTypeChange}">
-							</force:inputField>
+						<div class="slds-form-element__control accountnumber">
+							<lightning:input name="accountnumber" value="{!v.EFTRecord.Account_Number__c}" pattern="[0-9]*" messageWhenPatternMismatch="Invalid Account Number. Enter Numbers Only" onchange="{!c.onTypeChange}" aura:id="accountNumber"/>
+							<!-- <force:inputField value="{!v.EFTRecord.Account_Number__c}" change="{!c.onTypeChange}"> -->
+							<!-- </force:inputField> -->
 						</div>
 					</div>
 					<div class="slds-form-element slds-form-element_horizontal">

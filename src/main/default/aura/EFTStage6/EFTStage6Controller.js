@@ -4,7 +4,9 @@
         helper.showSpinner(component);
         if(component.get("v.EFTRecord.Expired__c")){
             component.set("v.UpdateText","Expire");
-        }
+		}
+		
+		var initialAction =  component.get("v.EFTRecord.Action_Type__c");
         
         if(component.get("v.isDocusignEmailSelected") && component.get("v.EFTRecord.Action_Type__c") != 'Expire' && !component.get("v.EFTRecord.Expired__c")
            && component.get("v.EFTRecord.Action_Type__c") != 'View'){
@@ -62,9 +64,10 @@
 				var res = resp.getReturnValue();
                 
                 component.set("v.EFTRecord",res);
-                if(!component.get("v.EFTRecord.Expired__c")){
+                if(!component.get("v.EFTRecord.Expired__c") || initialAction == "View"){
                 
-                	component.set("v.EFTRecord.Action_Type__c", "View");
+					component.set("v.EFTRecord.Action_Type__c", "View");
+					component.set("v.EFTRecord.Expired__c", false);
                 	
                 }
                 helper.hideSpinner(component);

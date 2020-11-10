@@ -23,7 +23,7 @@
 
     <aura:if isTrue="{!(v.EFTRecord.Action_Type__c == 'Create')}">
       <div>
-        <p class="fontstyle">Select a share or loan for this ACH record</p><br />
+        <p class="fontstyle">Select Share or Loan for ACH Record</p><br />
         <table aria-multiselectable="true"
           class="slds-table slds-table_header-hidden slds-table_edit slds-tree slds-table_tree" role="treegrid">
           <thead>
@@ -64,7 +64,7 @@
                   <div class="slds-radio">
                     <span class="slds-radio">
                       <lightning:input type="radio" name="select" value="{!itemOption.ShareLoanID}"
-                        onchange="{!c.onRadioChange}" />
+                        onchange="{!c.onRadioChange}" disabled="{!itemOption.isDisabled}"/>
                     </span>
                   </div>
                 </td>
@@ -109,7 +109,7 @@
       </div>
       <aura:set attribute="else">
         <div class="eftrecord">
-          <p class="fontstyle">Select an ACH record</p><br />
+          <p class="fontstyle">Select an ACH Record</p><br />
           <table aria-multiselectable="true"
             class="slds-table slds-table_header-hidden slds-table_edit slds-tree slds-table_tree" role="treegrid">
             <thead>
