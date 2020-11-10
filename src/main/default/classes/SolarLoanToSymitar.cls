@@ -34,6 +34,7 @@ public class SolarLoanToSymitar {
     public static Http http0 = new Http();
     public static string responseBody0;
     public static String ExistingEFTID;
+    public static Boolean SolarEftFound;
 
     public static String result;
     public static List<Solar_Loans__c> SolarLoanToUpdate = new List<Solar_Loans__c>();
@@ -99,10 +100,17 @@ public class SolarLoanToSymitar {
                             System.debug('Record....' + key);
                             Map<String, Object> eftids = (Map<String, Object>)key;
                             for(String l : eftids.keyset()) {
+                                system.debug('Key: '+l);
+                                system.debug('Value: '+ String.valueOf(eftids.get(l)));
                                 if(l == 'EftLocator'){
                                     result = String.valueOf(eftids.get(l));
                                 }
-                            }    
+                                if(l == 'Id'){
+                                    if(String.valueOf(eftids.get(l)) == sl.Loan_Id__C){
+                                        SolarEftFound = true;
+                                    }
+                                }
+                            }
                         }
                     }
                 } 
@@ -171,7 +179,7 @@ public class SolarLoanToSymitar {
                     result = null;
                 }    
                     
-                if(result == null || result == ''){
+                if(SolarEftFound != true){
 
                     System.debug('CreateEft called');
 
