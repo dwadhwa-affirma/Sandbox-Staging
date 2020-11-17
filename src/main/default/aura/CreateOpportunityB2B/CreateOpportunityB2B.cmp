@@ -1,0 +1,159 @@
+<aura:component implements="flexipage:availableForAllPageTypes,force:appHostable,force:hasRecordId,force:lightningQuickActionWithoutHeader" controller="CreateOpportunityB2BController">
+  <aura:html tag="style">
+      .slds-modal__container{max-width: 65rem !important; width:65% !important;}
+      .slds-modal__content { padding: 0px;}
+      .cuf-content { padding: 0px !important;}
+      .remnove-label label {display:none;}
+      .select-queue select {width: 190px;}
+      .modal-maincontent{min-height: 375px;max-height: 375px;overflow-y: auto;}
+      .uiMenuList--default.uiMenuList{
+			max-width: 100% !important;
+			width: auto !important;
+		}
+  </aura:html>  
+      <aura:attribute name="isQuickAction" type="boolean" default="true" />
+   <aura:attribute name="loading" type="Boolean" default="false" />
+   <aura:handler value="{!this}" name="init" action="{!c.doInit}" />
+   <aura:attribute name="SelectedType" type="string" default="User" />
+   <aura:attribute name="simpleRecord" type="Opportunity" default="{'sobjectType':'Opportunity'}"/>
+   <aura:attribute name="recordError" type="String"/>
+   <aura:attribute name="record" type="Object" />
+   <aura:attribute name="leadCreators" type="object"  />
+   <aura:attribute name="objInfo" type="string" default="Opportunity" description="store object Info." />
+   <aura:attribute name="depnedentFieldMap" type="map" description="store controller(key)--> dependent(values) picklist value as a map." />
+   <aura:attribute name="isDependentDisable" type="boolean" default="true" description="use for, make disbale depandent field." />
+   <aura:attribute name="group" type="Group" default="{'sobjectType':'Group'}" description="To bind Queue List." />
+   <aura:attribute name="GroupNameSelected" type="String"  />
+   <aura:attribute name="EpisysUser" type="String"  />
+	
+	<aura:attribute name="accDetails" type="Account_Details__c[]"  />
+	<aura:attribute name="showDorpDown" type="boolean" default="false" />
+	<aura:attribute Name="selectedAcctNumber" type="object" access="public" description="This attribute can be used by parent component to read selected account number" />
+	<aura:attribute name="lookupIcon" type="String" access="public" default="standard:account" />
+	<aura:attribute name="RecordTypeName" type="String" access="public" />
+  
+    <lightning:overlayLibrary aura:id="overlayLib"/>
+    <aura:if isTrue="{!v.isQuickAction}">
+    <header class="slds-modal__header" id="CreateOpportunityHeader" >
+    	<button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse" title="Close" onclick="{!c.closePopup}">
+        	<span data-aura-rendered-by="47:1615;a" class="lightningPrimitiveIcon" data-aura-class="lightningPrimitiveIcon">
+            	<lightning:icon iconName="{#v.closeIcon}" size="small" variant="inverse" />
+         	</span>
+         <span class="slds-assistive-text">Close</span>
+      	</button>
+      <h2 id="modal-heading-01" class="slds-text-heading_medium slds-hyphenate">Create Opportunity</h2>
+   	</header>
+         </aura:if> 
+   <div class="modal-maincontent">
+      <h3 class="slds-section-title--divider">Opportunity Information</h3>
+      <div class="slds-grid">
+         <div class="slds-col slds-small-size--1-of-2 slds-medium-size--1-of-3">
+            <div class="slds-form--stacked slds-p-around--medium slds-m-bottom--x-small">
+               <div class="slds-form-element" >
+                   <div class="slds-form-element__control">
+                       <lightning:recordEditForm aura:id="recordEditForm" objectApiName="Opportunity">
+                           <lightning:inputField  value="{!v.simpleRecord.AccountId}" fieldName="AccountId" />
+                       </lightning:recordEditForm>
+                   </div>
+               </div>
+               <div class="slds-form-element" >
+                  <label class="slds-form-element__label" >Date Added</label>
+                  <div class="slds-form-element__control" id="DateAdded">
+                     <force:inputField value="{!v.simpleRecord.Date_Added__c}" aura:id="DateAdded"> </force:inputField>
+                  </div>
+               </div>
+               <div class="slds-form-element" >
+                   <label class="slds-form-element__label" >BDO</label>
+                   <div class="slds-form-element__control">
+                   		<force:inputField value="{!v.simpleRecord.BDO__c}"> </force:inputField>
+                   </div>
+               </div>
+               <div class="slds-form-element" >
+                   <label class="slds-form-element__label" >Branches Involved</label>
+                   <div class="slds-form-element__control">
+                   		<force:inputField value="{!v.simpleRecord.Branches_Involved__c}"> </force:inputField>
+                   </div>
+               </div>
+               <div class="slds-form-element" >
+                  <label class="slds-form-element__label" >Branch Contact</label>
+                  <div class="slds-form-element__control">
+                     <force:inputField value="{!v.simpleRecord.Branch_Contact__c}"> </force:inputField>
+                  </div>
+               </div>
+            </div>
+         </div>
+         <div class="slds-col slds-small-size--1-of-2 slds-medium-size--1-of-3">
+            <div class="slds-form--stacked slds-p-around--medium slds-m-bottom--x-small">
+               <div class="slds-form-element" >
+                  <label class="slds-form-element__label" >Opportunity Value</label>
+                  <div class="slds-form-element__control">
+                     <force:inputField value="{!v.simpleRecord.Opportunity_Value__c}"> </force:inputField>
+                  </div>
+               </div> 
+                <div class="slds-form-element" >
+                  <label class="slds-form-element__label" >Opportunity Value Reason</label>
+                  <div class="slds-form-element__control">
+                     <force:inputField value="{!v.simpleRecord.Opportunity_value_reason__c}"> </force:inputField>
+                  </div>
+               </div>
+               <div class="slds-form-element" >
+                  <label class="slds-form-element__label" >Estimated membership potential</label>
+                  <div class="slds-form-element__control">
+                     <force:inputField value="{!v.simpleRecord.Estimated_membership_potential__c}"> </force:inputField>
+                  </div>
+               </div>
+               <br/>
+               <div class="slds-form-element" >
+                  <label class="slds-form-element__label" >Opportunity for Value Added Services</label>
+                  <div class="slds-form-element__control">
+                     <force:inputField value="{!v.simpleRecord.Opportunity_for_Value_Added_Services__c}"> </force:inputField>
+                  </div>
+               </div>
+             </div>
+         </div>
+         <div class="slds-col slds-small-size--1-of-2 slds-medium-size--1-of-3">
+            <div class="slds-form--stacked slds-p-around--medium slds-m-bottom--x-small">
+               <div class="slds-form-element" >
+                  <label class="slds-form-element__label" >Time Frame</label>
+                  <div class="slds-form-element__control">
+                     <force:inputField value="{!v.simpleRecord.Time_FrameB2B__c}"> </force:inputField>
+                  </div>
+               </div>
+               <div class="slds-form-element" >
+                   <div class="slds-form-element__control">
+                       <lightning:input aura:id="closure" name="Closure" label="Closure/sale possibility (%)" type="number" min="0" max="100" formatter="percent-fixed" step="0.01"/>
+                   </div>
+               </div>
+               <div class="slds-form-element" >
+                  <label class="slds-form-element__label" ><span class="required " data-aura-rendered-by="2242:0">*</span>Status</label>
+                    <div class="slds-form-element__control" id="objOpportunityStagediv">
+                        <ui:inputSelect aura:id="objOpportunityStage" value="{!v.simpleRecord.StageName}" >
+                            <ui:inputSelectOption text="New"/>
+                            <ui:inputSelectOption text="Outreach"/>
+                            <ui:inputSelectOption text="Analyzing Needs"/>
+                            <ui:inputSelectOption text="Considering"/>
+                            <ui:inputSelectOption text="Fulfillment"/>
+                            <ui:inputSelectOption text="Closed Won"/>
+                            <ui:inputSelectOption text="Closed Lost"/>
+                        </ui:inputSelect>
+                    </div>
+               </div>
+            </div>
+         </div>
+      </div>
+      <aura:if isTrue="{!(v.loading == true)}">
+         <div class="loadingDiv cCreateLead">
+            <div class="demo-only" style='height:492px; '>
+               <div role="status" class="slds-spinner slds-spinner_medium">
+                  <div class="slds-spinner__dot-a"></div>
+                  <div class="slds-spinner__dot-b"></div>
+               </div>
+            </div>
+         </div>
+      </aura:if>
+   </div>
+   <footer class="slds-modal__footer" id="CreateLeadFooter">
+      <button class="slds-button slds-button--neutral uiButton forceActionButton" onclick="{!c.closePopup}">Cancel</button>
+      <button class="slds-button slds-button_brand" onclick="{!c.SaveOpportunity}">Save</button>
+   </footer>
+</aura:component>

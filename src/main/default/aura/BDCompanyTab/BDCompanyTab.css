@@ -1,0 +1,8 @@
+.THIS .customCls{
+    top:32px;
+    position:absolute;
+    left:937px;
+    right:0px;
+    width: 19%;
+    z-index:100 !important;
+}
