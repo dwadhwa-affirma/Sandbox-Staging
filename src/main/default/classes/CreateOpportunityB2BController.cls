@@ -18,9 +18,11 @@ public with sharing class CreateOpportunityB2BController {
     public static String OpportunityInsertUpdate(Opportunity opportunityObject){    
     	
         Id currentUserId = UserInfo.getUserId(); 
-    	
-    	opportunityObject.Name= 'Name';
+    	Id SEGRecordTypeId = Schema.SObjectType.Opportunity.getRecordTypeInfosByName().get('SEG').getRecordTypeId();
+
+     	opportunityObject.Name= 'Name';
  		opportunityObject.CloseDate = date.newInstance(2048,12,31);    	   
+        opportunityObject.RecordTypeId = SEGRecordTypeId;
         insert opportunityObject;                                 
         
         return opportunityObject.Id;         
