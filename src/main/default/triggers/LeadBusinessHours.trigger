@@ -130,7 +130,8 @@ trigger LeadBusinessHours on Lead (after insert,after update, before insert, bef
         
         List<Id> companyLeadIds = new List<Id>();
         List<Lead> companyLeads = new List<Lead>();
-        
+        BusinessHours stdBusinessHours = [select id from businesshours where isDefault = true];
+
         if(Trigger.isUpdate){
             
             for(Lead lead: Trigger.new){
@@ -155,8 +156,10 @@ trigger LeadBusinessHours on Lead (after insert,after update, before insert, bef
                 for(Lead lead: companyLeads){
                 
                     Task t = new Task(); 
-                    t.ActivityDate = Date.valueOf(system.now()) + 1;
-                    t.Activity_Date_Time__c = system.now() + 1;
+                    //t.ActivityDate = Date.valueOf(system.now()) + 1;
+                    t.ActivityDate = Date.valueOf(BusinessHours.addgmt(stdBusinessHours.id, system.now(),10* 60 * 60 * 1000L));
+                    //t.Activity_Date_Time__c = system.now() + 1;
+                    t.Activity_Date_Time__c = BusinessHours.addgmt(stdBusinessHours.id, system.now(),10* 60 * 60 * 1000L);
                     t.OwnerId = lead.OwnerId;
                     t.Priority = 'Normal';
                     t.RecordTypeId = taskRT;
@@ -166,8 +169,8 @@ trigger LeadBusinessHours on Lead (after insert,after update, before insert, bef
                     lTask.add(t);
                     
                     Task t1 = new Task(); 
-                    t1.ActivityDate = Date.valueOf(system.now()) + 7;
-                    t1.Activity_Date_Time__c = system.now() + 7;
+                    t1.Activity_Date_Time__c = BusinessHours.addgmt(stdBusinessHours.id, system.now(),70* 60 * 60 * 1000L);
+                    t1.ActivityDate = Date.valueOf(t1.Activity_Date_Time__c) - 1;
                     t1.OwnerId = lead.OwnerId;
                     t1.Priority = 'Normal';
                     t1.RecordTypeId = taskRT;
@@ -177,8 +180,8 @@ trigger LeadBusinessHours on Lead (after insert,after update, before insert, bef
                     lTask.add(t1);   
                     
                     Task t2 = new Task(); 
-                    t2.ActivityDate = Date.valueOf(system.now()) + 14;
-                    t2.Activity_Date_Time__c = system.now() + 14;
+                    t2.Activity_Date_Time__c = BusinessHours.addgmt(stdBusinessHours.id, system.now(),140* 60 * 60 * 1000L);
+                    t2.ActivityDate = Date.valueOf(t2.Activity_Date_Time__c) - 1;
                     t2.OwnerId = lead.OwnerId;
                     t2.Priority = 'Normal';
                     t2.RecordTypeId = taskRT;
@@ -188,8 +191,8 @@ trigger LeadBusinessHours on Lead (after insert,after update, before insert, bef
                     lTask.add(t2);
                     
                     Task t3 = new Task(); 
-                    t3.ActivityDate = Date.valueOf(system.now()) + 30;
-                    t3.Activity_Date_Time__c = system.now() + 30;
+                    t3.Activity_Date_Time__c = BusinessHours.addgmt(stdBusinessHours.id, system.now(),300* 60 * 60 * 1000L);
+                    t3.ActivityDate = Date.valueOf(t3.Activity_Date_Time__c) - 1;
                     t3.OwnerId = lead.OwnerId;
                     t3.Priority = 'Normal';
                     t3.RecordTypeId = taskRT;
@@ -199,8 +202,8 @@ trigger LeadBusinessHours on Lead (after insert,after update, before insert, bef
                     lTask.add(t3);
                     
                     Task t4 = new Task(); 
-                    t4.ActivityDate = Date.valueOf(system.now()) + 45;
-                    t4.Activity_Date_Time__c = system.now() + 45;
+                    t4.Activity_Date_Time__c = BusinessHours.addgmt(stdBusinessHours.id, system.now(),450* 60 * 60 * 1000L);
+                    t4.ActivityDate = Date.valueOf(t4.Activity_Date_Time__c) - 1;
                     t4.OwnerId = lead.OwnerId;
                     t4.Priority = 'Normal';
                     t4.RecordTypeId = taskRT;
@@ -210,8 +213,8 @@ trigger LeadBusinessHours on Lead (after insert,after update, before insert, bef
                     lTask.add(t4);
                     
                     Task t5 = new Task(); 
-                    t5.ActivityDate = Date.valueOf(system.now()) + 100;
-                    t5.Activity_Date_Time__c = system.now() + 100;
+                    t5.Activity_Date_Time__c = BusinessHours.addgmt(stdBusinessHours.id, system.now(),1000* 60 * 60 * 1000L);
+                    t5.ActivityDate = Date.valueOf(t5.Activity_Date_Time__c) - 1;
                     t5.OwnerId = lead.OwnerId;
                     t5.Priority = 'Normal';
                     t5.RecordTypeId = taskRT;
@@ -221,8 +224,8 @@ trigger LeadBusinessHours on Lead (after insert,after update, before insert, bef
                     lTask.add(t5);
                     
                     Task t6 = new Task(); 
-                    t6.ActivityDate = Date.valueOf(system.now()) + 120;
-                    t6.Activity_Date_Time__c = system.now() + 120;
+                    t6.Activity_Date_Time__c = BusinessHours.addgmt(stdBusinessHours.id, system.now(),1200* 60 * 60 * 1000L);
+                    t6.ActivityDate = Date.valueOf(t6.Activity_Date_Time__c) - 1;
                     t6.OwnerId = lead.OwnerId;
                     t6.Priority = 'Normal';
                     t6.RecordTypeId = taskRT;
@@ -232,8 +235,8 @@ trigger LeadBusinessHours on Lead (after insert,after update, before insert, bef
                     lTask.add(t6);
                     
                     Task t7 = new Task(); 
-                    t7.ActivityDate = Date.valueOf(system.now()) + 14;
-                    t7.Activity_Date_Time__c = system.now() + 14;
+                    t7.Activity_Date_Time__c = BusinessHours.addgmt(stdBusinessHours.id, system.now(),140* 60 * 60 * 1000L);
+                    t7.ActivityDate = Date.valueOf(t7.Activity_Date_Time__c) - 1;
                     t7.OwnerId = lead.OwnerId;
                     t7.Priority = 'Normal';
                     t7.RecordTypeId = taskRT;
