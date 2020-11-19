@@ -3,6 +3,13 @@ private class ConvertLeadControllerTest{
    
   static testmethod void setupTestData(){
       
+      SolarLoan_To_Episys_API_Details__c api = new SolarLoan_To_Episys_API_Details__c();
+      api.URL__c = 'https://symxapi.chevronfcu.org/devclient';
+      api.Name = 'ProductionURL';
+      insert api;
+      
+      Id LeadRT = Schema.SObjectType.Lead.getRecordTypeInfosByName().get('Company Lead').getRecordTypeId();
+      
       Amount_On_Lead_Opportunity__c mcs = new Amount_On_Lead_Opportunity__c();
       RecordType rec1 = [Select Name, Id From RecordType where sObjectType='Account' and isActive=true and Name='Pre Member'];      
       
@@ -11,14 +18,12 @@ private class ConvertLeadControllerTest{
       mcs.Product_Type__c = 'Mortgage';
       mcs.Name = 'Mortgage-Purchase';
       insert mcs;
-
-      
       
       Lead ld = new Lead ();
       ld.LastName = 'Test';
       ld.Email = 'test@gmail.com';
       ld.Product_Type__c = 'Misc';
-      ld.Brand__c = 'Chevron';
+      ld.Brand__c = 'CFCU';
       ld.FirstName = 'test';
       ld.LastName = 'New';    
       ld.MiddleName = 'New';
@@ -38,8 +43,16 @@ private class ConvertLeadControllerTest{
       ld.State__c= 'NY';
       ld.Zip_Code__c= '12345';
       ld.City__c='NYC';
-      ld.Country__c ='USA';    
+      ld.Country__c ='USA';
       insert ld;
+      
+      Lead ld1 = new Lead ();
+      ld1.LastName = 'Test';
+      ld1.Company = 'tttt';
+      ld1.Product_Type__c ='Mortgage';
+      ld1.Product_Subtype__c='Purchase';
+      ld1.RecordTypeId = LeadRT;
+      insert ld1;
  		
       Account pact = new Account();
       pact.FirstName = 'Test';
@@ -73,7 +86,6 @@ private class ConvertLeadControllerTest{
       contentlink.LinkedEntityId=ld.id;
       contentlink.contentdocumentid=[select contentdocumentid from contentversion where id =: content.id].contentdocumentid;
       contentlink.ShareType = 'V';
-      test.starttest();
       insert contentlink;
       
       Note testNote = new Note();
@@ -94,9 +106,39 @@ private class ConvertLeadControllerTest{
       insert t;
       
       //ConvertLeadController clc = new ConvertLeadController();
+      test.startTest();
       ConvertLeadController.ConvertLead(ld.id);
+      ConvertLeadControllerB2B.ConvertLead(ld1.id);
+      test.stopTest();
       ConvertLeadController.Baseurl();
-      ConvertLeadController.AttachActivity(opp, ld);  
+      ConvertLeadController.AttachActivity(opp, ld);
+      ConvertLeadControllerB2B.GetLeadInfo(ld1.id);
     
   }
+	static testmethod void testMethod1(){
+ 		
+        Id LeadRT = Schema.SObjectType.Lead.getRecordTypeInfosByName().get('Company Lead').getRecordTypeId();
+      
+		Lead ld1 = new Lead ();
+        ld1.LastName = 'Test1';
+        ld1.Company = 'tttt';
+        ld1.Status = 'New';
+        ld1.Product_Type__c ='Mortgage';
+        ld1.Product_Subtype__c='Purchase';
+        ld1.RecordTypeId = LeadRT;
+        insert ld1;
+        
+        Lead ld2 = new Lead ();
+        ld2.LastName = 'Test2';
+        ld2.Company = 'tttt';
+        ld2.Status = 'New';
+        ld2.Product_Type__c ='Mortgage';
+        ld2.Product_Subtype__c='Purchase';
+        ld2.RecordTypeId = LeadRT;
+        insert ld2;
+        
+        Test.startTest();
+        LeadWithCompanyController.fetchLeads(ld1.id);
+        Test.stopTest();
+  	}
 }
