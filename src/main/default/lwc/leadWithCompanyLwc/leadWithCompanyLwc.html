@@ -6,8 +6,12 @@
                     data={listAccsData}
                     columns={columns}
                     hide-checkbox-column="true"
+                    show-row-number-column="true"
                     onrowaction={navigateToRecordViewPage}>
             </lightning-datatable>
         </div>    
+        <div if:true={showLoadingSpinner}>
+            <lightning-spinner alternative-text="Loading" size="large"></lightning-spinner>
+        </div>
     </lightning-card>
 </template>
