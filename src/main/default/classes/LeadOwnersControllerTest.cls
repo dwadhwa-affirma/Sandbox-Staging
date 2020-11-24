@@ -5,8 +5,8 @@ private class LeadOwnersControllerTest{
     test.startTest();
     list<Lead> lstLead = new List<Lead>();
     
-    Lead l1 = new Lead(LastName = 'LastName268', Status = 'Open', HasOptedOutOfEmail = false,OwnerId = UserInfo.getUserId(), IsConverted = false, IsUnreadByOwner = false, Keep__c = false);
-     Lead l2 = new Lead(LastName = 'LastName2682', Status = 'Open', HasOptedOutOfEmail = false, IsConverted = false, IsUnreadByOwner = false, Keep__c = false,OwnerId = UserInfo.getUserId());
+    Lead l1 = new Lead(FirstName = 'FirstName270',LastName = 'LastName268', Brand__c = 'Chevron', Status = 'Open', HasOptedOutOfEmail = false,OwnerId = UserInfo.getUserId(), IsConverted = false, IsUnreadByOwner = false, Keep__c = false);
+     Lead l2 = new Lead(FirstName = 'FirstName270',LastName = 'LastName2682', Brand__c = 'Chevron', Status = 'Open', HasOptedOutOfEmail = false, IsConverted = false, IsUnreadByOwner = false, Keep__c = false,OwnerId = UserInfo.getUserId());
     
        
    

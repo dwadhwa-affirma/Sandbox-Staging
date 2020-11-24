@@ -30,20 +30,20 @@ public class LeadBusinessHoursTriggerTest {
         insert eu1;
             
             
-         Lead newlead = new Lead(Brand__c='CFCU', LastName = 'LastName268', Status = 'New', HasOptedOutOfEmail = false, IsConverted = false, IsUnreadByOwner = false, 
+         Lead newlead = new Lead(Brand__c='CFCU', FirstName = 'FirstName270',LastName = 'LastName268', Status = 'New', HasOptedOutOfEmail = false, IsConverted = false, IsUnreadByOwner = false, 
                        smagicinteract__SMSOptOut__c = false, Escalated__c = false, Membership_Required_old__c = false, Keep__c = false, et4ae5__HasOptedOutOfMobile__c = false, Episys_Flag__c = false,
                                 temp__c = false, Episys_User_ID__c= 1,LeadSource = 'Other', Product_Type__c ='Cards');
-         Lead newlead1 = new Lead(Brand__c='CFCU',LastName = 'LastName268', Status = 'New', HasOptedOutOfEmail = false, IsConverted = false, IsUnreadByOwner = false, 
+         Lead newlead1 = new Lead(Brand__c='CFCU',FirstName = 'FirstName270',LastName = 'LastName268', Status = 'New', HasOptedOutOfEmail = false, IsConverted = false, IsUnreadByOwner = false, 
                        smagicinteract__SMSOptOut__c = false, Escalated__c = false, Membership_Required_old__c = false, Keep__c = false, et4ae5__HasOptedOutOfMobile__c = false, Episys_Flag__c = false,
                                 temp__c = false, Episys_User_ID__c= 1,LeadSource = 'Branch Walk in', Product_Type__c ='Cards');
-        Lead newlead2 = new Lead(Brand__c='CFCU',LastName = 'LastName269', Status = 'Prospect Considering', HasOptedOutOfEmail = false, IsConverted = false, IsUnreadByOwner = false, 
+        Lead newlead2 = new Lead(Brand__c='CFCU',FirstName = 'FirstName270',LastName = 'LastName269', Status = 'Prospect Considering', HasOptedOutOfEmail = false, IsConverted = false, IsUnreadByOwner = false, 
                        smagicinteract__SMSOptOut__c = false, Escalated__c = false, Membership_Required_old__c = false, Keep__c = false, et4ae5__HasOptedOutOfMobile__c = false, Episys_Flag__c = false,
                                 temp__c = false, Episys_User_ID__c= 1,LeadSource = 'Branch Walk in', Product_Type__c ='Cards');
-         Lead newlead3 = new Lead(Brand__c='CFCU',LastName = 'LastName268', Status = 'Prospect Considering', HasOptedOutOfEmail = false, IsConverted = false, IsUnreadByOwner = false, 
+         Lead newlead3 = new Lead(Brand__c='CFCU',FirstName = 'FirstName270',LastName = 'LastName268', Status = 'Prospect Considering', HasOptedOutOfEmail = false, IsConverted = false, IsUnreadByOwner = false, 
                        smagicinteract__SMSOptOut__c = false, Escalated__c = false, Membership_Required_old__c = false, Keep__c = false, et4ae5__HasOptedOutOfMobile__c = false, Episys_Flag__c = false,
                                 temp__c = false, Episys_User_ID__c= 1033,LeadSource = 'Branch Walk in', Product_Type__c ='Cards');
         
-        Lead newlead5 = new Lead(Brand__c='CFCU',LastName = 'LastName270', Status = 'new', HasOptedOutOfEmail = false, IsConverted = false, IsUnreadByOwner = false, 
+        Lead newlead5 = new Lead(Brand__c='CFCU',FirstName = 'FirstName270',LastName = 'LastName270', Status = 'new', HasOptedOutOfEmail = false, IsConverted = false, IsUnreadByOwner = false, 
                        smagicinteract__SMSOptOut__c = false, Escalated__c = false, Membership_Required_old__c = false, Keep__c = false, et4ae5__HasOptedOutOfMobile__c = false, Episys_Flag__c = false,
                                 temp__c = false, LeadSource = 'Event', Product_Type__c ='Cards');
         test.StartTest();
@@ -73,7 +73,7 @@ public class LeadBusinessHoursTriggerTest {
         Group g2 = new Group(Name='Products & Services Referral Queue', type='Queue',Email ='accounts_shares@lead.com');
             insert g2;
         
-        Lead newlead5 = new Lead(Brand__c='CFCU',LastName = 'LastName270', Status = 'new', HasOptedOutOfEmail = false, IsConverted = false, IsUnreadByOwner = false, 
+        Lead newlead5 = new Lead(Brand__c='CFCU',FirstName = 'FirstName270',LastName = 'LastName270', Status = 'new', HasOptedOutOfEmail = false, IsConverted = false, IsUnreadByOwner = false, 
                        smagicinteract__SMSOptOut__c = false, Escalated__c = false, Membership_Required_old__c = false, Keep__c = false, et4ae5__HasOptedOutOfMobile__c = false, Episys_Flag__c = false,
                                 temp__c = false,  LeadSource = 'Event', Product_Type__c ='Accounts/Shares');
         Insert newlead5;
@@ -97,7 +97,7 @@ public class LeadBusinessHoursTriggerTest {
          
         Id LeadRT = Schema.SObjectType.Lead.getRecordTypeInfosByName().get('Company Lead').getRecordTypeId();
       
-        Lead newlead4 = new Lead(Brand__c='CFCU',LastName = 'LastName270', Status = 'New',company = 'c', RecordTypeId = LeadRT, HasOptedOutOfEmail = false, IsConverted = false, IsUnreadByOwner = false, 
+        Lead newlead4 = new Lead(Brand__c='CFCU',FirstName = 'FirstName270',LastName = 'LastName270', Status = 'New',company = 'c', RecordTypeId = LeadRT, HasOptedOutOfEmail = false, IsConverted = false, IsUnreadByOwner = false, 
                        smagicinteract__SMSOptOut__c = false, Escalated__c = false, Membership_Required_old__c = false, Keep__c = false, et4ae5__HasOptedOutOfMobile__c = false, Episys_Flag__c = false,
                        temp__c = false, Episys_User_ID__c= 1538, LeadSource = 'Branch Walk in', Product_Type__c ='Cards');
         system.runAs(ur) {
@@ -124,7 +124,7 @@ public class LeadBusinessHoursTriggerTest {
          
         Id LeadRT = Schema.SObjectType.Lead.getRecordTypeInfosByName().get('Non-Member Lead').getRecordTypeId();
       
-        Lead newlead4 = new Lead(Brand__c='CFCU',LastName = 'LastName270', Status = 'New',company = 'c', RecordTypeId = LeadRT, HasOptedOutOfEmail = false, IsConverted = false, IsUnreadByOwner = false, 
+        Lead newlead4 = new Lead(Brand__c='CFCU',FirstName = 'FirstName270',LastName = 'LastName270', Status = 'New',company = 'c', RecordTypeId = LeadRT, HasOptedOutOfEmail = false, IsConverted = false, IsUnreadByOwner = false, 
                        smagicinteract__SMSOptOut__c = false, Escalated__c = false, Membership_Required_old__c = false, Keep__c = false, et4ae5__HasOptedOutOfMobile__c = false, Episys_Flag__c = false,
                        temp__c = false, Episys_User_ID__c= 1538, LeadSource = 'Branch Walk in', Product_Type__c ='Cards');
         system.runAs(ur) {
@@ -139,7 +139,7 @@ public class LeadBusinessHoursTriggerTest {
          
         Id LeadRT = Schema.SObjectType.Lead.getRecordTypeInfosByName().get('Non-Member Lead').getRecordTypeId();
       
-        Lead newlead4 = new Lead(Brand__c='CFCU',LastName = 'LastName270', Status = 'New',company = 'c', RecordTypeId = LeadRT, HasOptedOutOfEmail = false, IsConverted = false, IsUnreadByOwner = false, 
+        Lead newlead4 = new Lead(Brand__c='CFCU',FirstName = 'FirstName270',LastName = 'LastName270', Status = 'New',company = 'c', RecordTypeId = LeadRT, HasOptedOutOfEmail = false, IsConverted = false, IsUnreadByOwner = false, 
                        smagicinteract__SMSOptOut__c = false, Escalated__c = false, Membership_Required_old__c = false, Keep__c = false, et4ae5__HasOptedOutOfMobile__c = false, Episys_Flag__c = false,
                        temp__c = false, Episys_User_ID__c= 1538, LeadSource = 'Branch Walk in', Product_Type__c ='Cards');
         system.runAs(ur) {
@@ -154,7 +154,7 @@ public class LeadBusinessHoursTriggerTest {
          
         Id LeadRT = Schema.SObjectType.Lead.getRecordTypeInfosByName().get('Non-Member Lead').getRecordTypeId();
       
-        Lead newlead4 = new Lead(Brand__c='CFCU',LastName = 'LastName270', Status = 'New',company = 'c', RecordTypeId = LeadRT, HasOptedOutOfEmail = false, IsConverted = false, IsUnreadByOwner = false, 
+        Lead newlead4 = new Lead(Brand__c='CFCU',FirstName = 'FirstName270',LastName = 'LastName270', Status = 'New',company = 'c', RecordTypeId = LeadRT, HasOptedOutOfEmail = false, IsConverted = false, IsUnreadByOwner = false, 
                        smagicinteract__SMSOptOut__c = false, Escalated__c = false, Membership_Required_old__c = false, Keep__c = false, et4ae5__HasOptedOutOfMobile__c = false, Episys_Flag__c = false,
                        temp__c = false, Episys_User_ID__c= 1538, LeadSource = 'Event', Product_Type__c ='Cards');
         system.runAs(ur) {
@@ -169,7 +169,7 @@ public class LeadBusinessHoursTriggerTest {
          
         Id LeadRT = Schema.SObjectType.Lead.getRecordTypeInfosByName().get('Non-Member Lead').getRecordTypeId();
       
-        Lead newlead4 = new Lead(Brand__c='CFCU',LastName = 'LastName270', Status = 'New',company = 'c', RecordTypeId = LeadRT, HasOptedOutOfEmail = false, IsConverted = false, IsUnreadByOwner = false, 
+        Lead newlead4 = new Lead(Brand__c='CFCU',FirstName = 'FirstName270',LastName = 'LastName270', Status = 'New',company = 'c', RecordTypeId = LeadRT, HasOptedOutOfEmail = false, IsConverted = false, IsUnreadByOwner = false, 
                        smagicinteract__SMSOptOut__c = false, Escalated__c = false, Membership_Required_old__c = false, Keep__c = false, et4ae5__HasOptedOutOfMobile__c = false, Episys_Flag__c = false,
                        temp__c = false, Episys_User_ID__c= 1538, LeadSource = 'Other', Product_Type__c ='Cards');
         system.runAs(ur) {
