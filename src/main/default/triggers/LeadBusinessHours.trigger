@@ -86,7 +86,7 @@ trigger LeadBusinessHours on Lead (after insert,after update, before insert, bef
                     t2.Priority = 'Normal';
                     t2.RecordTypeId = taskRT;
                     t2.Status = 'Open';
-                    t2.Subject = 'Email / Voice Message'  + ' ' + lead.FirstName + ' '  + lead.LastName;
+                    t2.Subject = 'Email / Call Voice Message'  + ' ' + lead.FirstName + ' '  + lead.LastName;
                     t2.WhoId = lead.id;
                     lTask.add(t2);
                     
