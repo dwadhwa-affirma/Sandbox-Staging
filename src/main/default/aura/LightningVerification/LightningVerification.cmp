@@ -98,6 +98,8 @@
 <aura:attribute name="IVRGUIDFromUrl" type="string"/>
 <aura:attribute name= "ReasonCodeFromURL" type="string" description="store from URL" />
 <aura:attribute name="HighFlagFromUrl" type="string" description="store from URL"/>
+<aura:attribute name="CardOwnerSSNFromURL" type="string" description="store from URL"/>
+
 
 <aura:attribute name="LastAchievable30day" type="string" description="" />
 <aura:attribute name="Supervisor" type="List" description="" />
@@ -131,6 +133,9 @@
 <aura:attribute name="OOWMemberNumberEntered" type="string" />
 <aura:attribute name="IsMemberManualSearched" type="boolean" default="false"/>
 <aura:attribute name="MultipleMemberNumberAlert" type="string" default=''/>
+<aura:attribute name="IsCardOwnerSSNMatch" type="boolean" default="false"/>
+<aura:attribute name="IsUnusualActivity" type="boolean" default="false"/>
+
 
     <article class="slds-card">
         <div class="slds-card__body slds-card__body_inner tblrow">
@@ -272,6 +277,13 @@
 		                							<aura:if isTrue="{!v.ShowFailedDesiredLevel == true}">
                           			  					<p style='color:red;'>{!v.ShowFailedDesiredLevelCount}</p> 
                          							</aura:if>
+		           							</div>
+										</lightning:layoutItem>
+										<lightning:layoutItem padding="around-small">
+		            						<div class="header-column">
+												<aura:if isTrue="{!v.IsUnusualActivity == true}">
+													<p class="field-title" style='color:red;' title="UnusualActivityWarning">Open Active Unusual Activity</p>	
+												</aura:if>	                							
 		           							</div>
 		        						</lightning:layoutItem>
 		   							

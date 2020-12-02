@@ -53,7 +53,8 @@ public class MemberAuthenticationController{
     public String SSNnumberMatch {get;set;}
     public String IVRSSNnumberMatch{get;set;}
     public boolean SSNnumberConfirm{get;set;}{SSNnumberConfirm = false;}
-    
+    public String CardOwnerSSN{get;set;}
+
     public string SSNnumberConfirmString{get;set;}{SSNnumberConfirmString = '';}
       
     public String SalesforceID{get;set;}
@@ -259,9 +260,10 @@ public class MemberAuthenticationController{
         Boolean IsUserSessionLoaded = true;
         Id MemberId;
         List<Authenticated_Log__c> AuthList = [Select id ,RecordType.Name , CallerPhoneNumber__c,EnteredMemberNumber__c,IVR_Card_Number__c,PhoneNumberMatch__c,IVR_Card_Match__c,IVR_SSN_Match__c,IVR_Member_Number_Match__c,
-        							EnteredSSN__c,IVR_SSN__c,SalesforceID__c, Current_User__c, PINMatch__c,HP_HV__c, IVR_Code__c, IVR_Sent_URL__c, IVR_GUID__c, Decision__c
+        							EnteredSSN__c,IVR_SSN__c,SalesforceID__c, Current_User__c, PINMatch__c,HP_HV__c, IVR_Code__c, IVR_Sent_URL__c, IVR_GUID__c, Decision__c,CardOwnerSSN__c
         							From Authenticated_Log__c where Current_User__c =:CurrentUser and IVR_GUID__c != null and  RecordType.Name !='Master Authentication Log' order by createddate desc Limit 1 ]; 
        system.debug('AuthList##' + AuthList);
+       system.debug('CardOwnerSSN1##' + AuthList[0].CardOwnerSSN__c);
        String IVRInteractionId;
         if(AuthList.size() > 0)
         {
@@ -271,11 +273,12 @@ public class MemberAuthenticationController{
         		
         		
         		AuthList = [Select id ,RecordType.Name , CallerPhoneNumber__c,EnteredMemberNumber__c,IVR_Card_Number__c,PhoneNumberMatch__c,IVR_Card_Match__c,IVR_SSN_Match__c,IVR_Member_Number_Match__c,
-        							EnteredSSN__c,IVR_SSN__c,SalesforceID__c, Current_User__c, PINMatch__c,HP_HV__c, IVR_Code__c, IVR_Sent_URL__c, IVR_GUID__c, Decision__c
+        							EnteredSSN__c,IVR_SSN__c,SalesforceID__c, Current_User__c, PINMatch__c,HP_HV__c, IVR_Code__c, IVR_Sent_URL__c, IVR_GUID__c, Decision__c,CardOwnerSSN__c
         							From Authenticated_Log__c where IVR_GUID__c =:IVRInteractionId  and RecordType.Name='IVR Authentication Log' order by createddate desc Limit 1 ]; 
         	}
         	 system.debug('AuthList2##' + AuthList);
             system.debug('IVRInteractionId##' + IVRInteractionId);
+            system.debug('CardOwnerSSN2##' + AuthList[0].CardOwnerSSN__c);
         	if(AuthList[0].IVR_SSN__c != null )
         	{
         		EnteredSSN = AuthList[0].IVR_SSN__c;
@@ -292,6 +295,7 @@ public class MemberAuthenticationController{
             IVRCardNumberMatch = AuthList[0].IVR_Card_Match__c;
             IVRSSNnumberMatch = AuthList[0].IVR_SSN_Match__c;
             IVRMemberNumberMatch = AuthList[0].IVR_Member_Number_Match__c;
+            CardOwnerSSN = AuthList[0].CardOwnerSSN__c;
         	if(AuthList[0].PINMatch__c == 'Fail')
         	{
         		PINMatch = 'false';
@@ -349,7 +353,7 @@ public class MemberAuthenticationController{
         
        	system.debug('IVREnteredCardNumber#' + IVREnteredCardNumber); 
         //pageCalulated = new PageReference('/lightning/cmp/c__LightningVerification?c__EnteredSSN='+ EnteredSSN+'&c__EnteredMemberNumber='+EnteredMemberNumber+'&c__CallersPhoneNumber='+PhoneNumber+'&c__PINMatch='+PINMatch+'&c__InteractionId='+IVRGUID+'&c__Reason=' + ReasonCode+ '&c__HighValueFlag=' + HighFlag + '&c__IsUserSessionLoaded=' + IsUserSessionLoaded +'&c__MemberId='+ MemberId);
-         RedirectToURL = '/lightning/cmp/c__LightningVerification?c__EnteredSSN='+ EnteredSSN+'&c__EnteredMemberNumber='+EnteredMemberNumber+'&c__CallersPhoneNumber='+PhoneNumber+'&c__PINMatch='+PINMatch+'&c__InteractionId='+IVRGUID+'&c__Reason=' + ReasonCode+ '&c__HighValueFlag=' + HighFlag + '&c__IsUserSessionLoaded=' + IsUserSessionLoaded +'&c__MemberId='+ MemberId +'&c__PhoneNumberMatch='+ PhoneNumberMatch +'&c__EnteredCardNumber='+ IVREnteredCardNumber + '&c__CardNumberMatch='+IVRCardNumberMatch + '&c__SSNnumberMatch='+IVRSSNnumberMatch +'&c__MemberNumberMatch='+ IVRMemberNumberMatch;
+         RedirectToURL = '/lightning/cmp/c__LightningVerification?c__EnteredSSN='+ EnteredSSN+'&c__EnteredMemberNumber='+EnteredMemberNumber+'&c__CallersPhoneNumber='+PhoneNumber+'&c__PINMatch='+PINMatch+'&c__InteractionId='+IVRGUID+'&c__Reason=' + ReasonCode+ '&c__HighValueFlag=' + HighFlag + '&c__IsUserSessionLoaded=' + IsUserSessionLoaded +'&c__MemberId='+ MemberId +'&c__PhoneNumberMatch='+ PhoneNumberMatch +'&c__EnteredCardNumber='+ IVREnteredCardNumber + '&c__CardNumberMatch='+IVRCardNumberMatch + '&c__SSNnumberMatch='+IVRSSNnumberMatch +'&c__MemberNumberMatch='+ IVRMemberNumberMatch +'&c__CardOwner='+CardOwnerSSN;
          system.debug('RedirectToURL#' + RedirectToURL); 
                 
         //pageCalulated.setRedirect(true);
@@ -403,7 +407,7 @@ public class MemberAuthenticationController{
         
        
         //pageCalulated = new PageReference('/lightning/cmp/c__LightningVerification?c__EnteredSSN='+ EnteredSSN + '&c__SSNnumberMatch='+SSNnumberMatch+ '&c__EnteredMemberNumber='+EnteredMemberNumber+ '&c__MemberNumberMatch='+MemberNumberMatch+ '&c__EnteredCardNumber='+EnteredCardNumber + '&c__CardNumberMatch='+CardNumberMatch+ '&c__CallersPhoneNumber='+PhoneNumber+ '&c__PhoneNumberMatch='+PhoneNumberMatch+ '&c__PINMatch='+PINMatch+'&c__InteractionId='+IVRGUID+'&c__Reason=' + ReasonCode+ '&c__HighValueFlag=' + HighFlag);
-        RedirectToURL = '/lightning/cmp/c__LightningVerification?c__EnteredSSN='+ EnteredSSN + '&c__SSNnumberMatch='+SSNnumberMatch+ '&c__EnteredMemberNumber='+EnteredMemberNumber+ '&c__MemberNumberMatch='+MemberNumberMatch+ '&c__EnteredCardNumber='+EnteredCardNumber + '&c__CardNumberMatch='+CardNumberMatch+ '&c__CallersPhoneNumber='+PhoneNumber+ '&c__PhoneNumberMatch='+PhoneNumberMatch+ '&c__PINMatch='+PINMatch+'&c__InteractionId='+IVRGUID+'&c__Reason=' + ReasonCode+ '&c__HighValueFlag=' + HighFlag;
+        RedirectToURL = '/lightning/cmp/c__LightningVerification?c__EnteredSSN='+ EnteredSSN + '&c__SSNnumberMatch='+SSNnumberMatch+ '&c__EnteredMemberNumber='+EnteredMemberNumber+ '&c__MemberNumberMatch='+MemberNumberMatch+ '&c__EnteredCardNumber='+EnteredCardNumber + '&c__CardNumberMatch='+CardNumberMatch+ '&c__CallersPhoneNumber='+PhoneNumber+ '&c__PhoneNumberMatch='+PhoneNumberMatch+ '&c__PINMatch='+PINMatch+'&c__InteractionId='+IVRGUID+'&c__Reason=' + ReasonCode+ '&c__HighValueFlag=' + HighFlag + '&c__CardOwner=' + CardOwnerSSN;
         system.debug('RedirectToURL##' + RedirectToURL);  
                 
         //pageCalulated.setRedirect(true);
@@ -2436,6 +2440,8 @@ public class MemberAuthenticationController{
         EnteredSSN = ApexPages.currentPage().getParameters().get('EnteredSSN');
         IVREnteredSSN = EnteredSSN;
         system.debug('EnteredSSN.length##' + EnteredSSN.length());
+        
+
         if (EnteredSSN == 'NULL' || (EnteredSSN.length() != 4 && EnteredSSN.length() != 9))
         {
             EnteredSSN = '';
@@ -2449,6 +2455,8 @@ public class MemberAuthenticationController{
             SSNnumberMatch = null;
         }
         
+        CardOwnerSSN = ApexPages.currentPage().getParameters().get('CardOwner');
+
         // Salesforce ID
         SalesforceID = ApexPages.currentPage().getParameters().get('SalesforceID');          
         

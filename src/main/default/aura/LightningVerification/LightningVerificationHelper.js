@@ -70,6 +70,12 @@
 		 if(SSNFromURL != undefined || MemberNumberFromURL != undefined || PhoneFromURL != undefined){
 			component.set("v.PageURL", url);
 		}
+		if(pageReference.state.c__CardOwner == 'null'){
+			component.set("v.CardOwnerSSNFromURL", '');
+		}
+		else{
+			component.set("v.CardOwnerSSNFromURL", pageReference.state.c__CardOwner);
+		}
 		/*if(SSNFromURL!= undefined && (SSNFromURL == "" || SSNFromURL == null || SSNFromURL == 'null'))
 		{
 			component.set("v.IsOOWTabVisible", false);
@@ -168,13 +174,14 @@
 		var DebitCardStatus = component.get("v.DebitCardStatus");
 		var MaximumPointsAvailable = component.get("v.MaximumPointsAvailable");
 		var PointsObtained = component.get("v.CurrentScore");
+		var CardOwnerSSNFromURL = component.get("v.CardOwnerSSNFromURL");
 		console.log('Helper Line 166---DebitCardStatus' + DebitCardStatus);
 		var action = component.get("c.SaveLastAchievableLevelLogs");
 		action.setParams({"MemberId": memberid, "GUID" : GUID, "LastLevel": LastLevel,"IVRGUIDFromUrl":IVRGUIDFromUrl, 
 						"PhoneFromURL": PhoneFromURL, "MemberNumberFromURL" : MemberNumberFromURL, "EnteredCardNumber": EnteredCardNumber,"CardNumberMatch":CardNumberMatch,
 						"PhoneNumberMatch": PhoneNumberMatch, "MemberNumberMatch" : MemberNumberMatch, "SSNnumberMatch": SSNnumberMatch,"HighFlagFromUrl":HighFlagFromUrl,
 						"ReasonCodeFromURL": ReasonCodeFromURL, "PINMatch" : PINMatch, "SSNFromURL": SSNFromURL,"DebitCardStatus":DebitCardStatus,
-						"MaximumPointsAvailable":MaximumPointsAvailable,"PointsObtained": PointsObtained});
+						"MaximumPointsAvailable":MaximumPointsAvailable,"PointsObtained": PointsObtained, "CardOwnerSSNFromURL": CardOwnerSSNFromURL});
 						
 		action.setCallback(this, function (response) {
   		 var status = response.getState();            
@@ -217,6 +224,8 @@
 		var SSNSearched = component.get("v.SSNEntered");
 		var PhoneSearched = component.get("v.PhoneNumberEntered");
 		var MemberSearched = component.get("v.MemberNumberEntered");
+		var CardOwnerSSNFromURL = component.get("v.CardOwnerSSNFromURL");
+
 		console.log('Helper Line 215---DebitCardStatus' + DebitCardStatus);
 		console.log('Helper Line 216---PointsObtained' + PointsObtained);
 		if(PageURL == undefined){
@@ -225,14 +234,14 @@
 								"ReLoadRequired": ReLoadRequired, "ReasonCodeFromURL": ReasonCodeFromURL,"HighFlagFromUrl":HighFlagFromUrl, "PointsObtained":PointsObtained, 
 								"IsOOWTabVisible": component.get("v.IsOOWTabVisible"), "IsUserSessionLoaded": component.get("v.IsUserSessionLoaded"),
 								"EnteredCardNumber": ' ', "CardNumberMatch": ' ',
-                              "PhoneNumberMatch": ' ', "MemberNumberMatch" : ' ', "SSNnumberMatch" : ' ', "PINMatch" : ' ' });
+                              "PhoneNumberMatch": ' ', "MemberNumberMatch" : ' ', "SSNnumberMatch" : ' ', "PINMatch" : ' ',  "CardOwnerSSNFromURL": ' ' });
 		}
 		else{
 			action.setParams({"MemberId": memberid,"GUID": GUID,"DebitCardStatus": DebitCardStatus,"SSNFromURL": SSNFromURL,"MemberNumberFromURL":MemberNumberFromURL,
 								"PhoneFromURL":PhoneFromURL,"PageURL":PageURL, "IVRGUIDFromUrl": IVRGUIDFromUrl,"ReLoadRequired":ReLoadRequired,"ReasonCodeFromURL": ReasonCodeFromURL,
 								"HighFlagFromUrl":HighFlagFromUrl, "PointsObtained":PointsObtained,  "IsOOWTabVisible": component.get("v.IsOOWTabVisible"), "IsUserSessionLoaded": component.get("v.IsUserSessionLoaded"),
 								"EnteredCardNumber": EnteredCardNumber, "CardNumberMatch":CardNumberMatch, "PhoneNumberMatch": PhoneNumberMatch, 
-                                "MemberNumberMatch" : MemberNumberMatch, "SSNnumberMatch" : SSNnumberMatch,"PINMatch":PINMatch
+                                "MemberNumberMatch" : MemberNumberMatch, "SSNnumberMatch" : SSNnumberMatch,"PINMatch":PINMatch , "CardOwnerSSNFromURL": CardOwnerSSNFromURL
 								 });
     	}
     	action.setCallback(this, function (response) {
@@ -281,6 +290,10 @@
 	                    component.set("v.MultipleMemberNumberAlert",result.MultipleMemberNumberAlert);
 						component.set("v.PointObtained", result.CurrentScore);   
 						component.set("v.CurrentScore", result.CurrentScore);
+						console.log('Helper Line 292---result.IsCardOwnerSSNMatch' + result.IsCardOwnerSSNMatch);
+						component.set("v.IsCardOwnerSSNMatch", result.IsCardOwnerSSNMatch);
+						component.set("v.IsUnusualActivity", result.UnusualActivity);
+
 					    if(result['OOWStatusForDay'] == false)
 					    {
 					    	component.set("v.Likedisable", true);
@@ -402,7 +415,18 @@
 								document.getElementById('frmMemberNumber').value = result['AccountNumber'];
 								component.set("v.OOWMemberNumberEntered",result['AccountNumber']);
 								component.set("v.MemberNumberEntered",result['AccountNumber']);
-						 } 
+						 }
+						 if(result.MemberHighFlagValue != undefined) {
+
+							if(result.MemberHighFlagValue == 1){
+
+								component.set("v.HighFlagFromUrl", 'HV');
+							}else if(result.MemberHighFlagValue == 2){
+								component.set("v.HighFlagFromUrl", 'HP');
+							}else{
+								component.set("v.HighFlagFromUrl", '');
+							}
+						 }
 						
 						component.set("v.isDoneRendering",true);
 	              	
@@ -649,7 +673,9 @@
                                if(component.get("v.OOWMemberNumberEntered")!= undefined && component.get("v.OOWMemberNumberEntered") !=''){
                                    Source = "&source=member";
                                }
-    		
+							   if(AccountNumber == ''){
+								AccountNumber = result.AccountNumber;
+							   }
 	                           component.set("v.AccountNumber",AccountNumber);
 	                                                          
 	                           win = window.open(result.FlowURL+"&accountnumber=" + AccountNumber + "&firstname=allow" + MemberName + Source);
@@ -700,7 +726,8 @@
 		  							IsOOWAvailable = false;
 		  							component.set("v.OOWStatusForDay", false);
 									component.set("v.MaximumPointsAvailable",MaximumPointsAvailable);
-									component.set("v.PointObtained", PointsObtained);									
+									component.set("v.PointObtained", PointsObtained);
+									component.set("v.CurrentScore",PointsObtained);																		
 		  							console.log('Helper Line 695---PointsObtained' + PointsObtained);
 		  							console.log('Helper Line 696---MaximumPointsAvailable' + MaximumPointsAvailable);
 		  							helper.GetNextAuthenticationType(component, event, helper, memberid, MemberType, MaximumPointsAvailable, PointsObtained, IsKYMAvailable, IsOTPAvailable, DebitCardStatus, IsOOWAvailable, IsPublicWalletAvailable, IsCFCUWalletAvailable);
@@ -721,7 +748,8 @@
 		  						}
 		  						
 		  						component.set("v.MaximumPointsAvailable",MaximumPointsAvailable );
-		  						component.set("v.PointsObtained",PointsObtained);
+								component.set("v.PointsObtained",PointsObtained);
+								component.set("v.CurrentScore",PointsObtained);	  
 		  						 console.log('Helper Line 716---PointsObtained' + PointsObtained);
 		  						 console.log('Helper Line 717---MaximumPointsAvailable' + MaximumPointsAvailable);
 		  						var element = document.getElementsByClassName('demo-only slds-box rightBox');
@@ -1076,7 +1104,18 @@
 						                        	$A.util.removeClass(ProgressBarStep3, 'three');
 						                        	$A.util.removeClass(ProgressBarStep3, 'active');
 						                        	$A.util.addClass(ProgressBarStep3, 'two');
-						                        }
+												}
+												if(result.MemberHighFlagValue != undefined) {
+
+                                                    if(result.MemberHighFlagValue == 1){
+                        
+                                                        component.set("v.HighFlagFromUrl", 'HV');
+                                                    }else if(result.MemberHighFlagValue == 2){
+                                                        component.set("v.HighFlagFromUrl", 'HP');
+                                                    }else{
+                                                        component.set("v.HighFlagFromUrl", '');
+                                                    }
+                                                 }
 	                                	   		
 	                             }
 	                                	   	
