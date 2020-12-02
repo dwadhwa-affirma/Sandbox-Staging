@@ -14,16 +14,22 @@ public class MCPINChangeTest {
 		
 		
 	}
-	 static testMethod void test_getData_UseCase1(){
+	static testMethod void test_getData_UseCase1(){
 	 	MC_PIN_Change__c obj1 = new MC_PIN_Change__c();
-	 	obj1.Card_Number__c = '4459';
-	 
+	 	obj1.Card_Number__c = '4459'; 
 	 	obj1.Member_Number__c = '0260049344';
-	 
+	 	obj1.Email__c = 'jrakesh@affirma.com';
+        obj1.Mobile_Phone__c = '456-346-3429';
 	 	obj1.OdsKey__c = '123456789';
 	 	insert obj1;
-	 	
-	 	
+	 }
+    static testMethod void test_getData_UseCase2(){
+	 	MC_PIN_Change__c obj1 = new MC_PIN_Change__c();
+	 	obj1.Card_Number__c = '4459'; 
+	 	obj1.Member_Number__c = '0260049344';
+	 	//obj1.Email__c = 'jrakesh@affirma.com';
+        obj1.OdsKey__c = '123456789';
+	 	insert obj1;
 	 }
 	
 }
