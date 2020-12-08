@@ -13,7 +13,7 @@ public class SolarLoanToCreateLoan {
     public static HttpResponse res10;
     public static Http http10 = new Http();
     public static string responseBody10;
-    public static boolean mode;
+    public static boolean mode = false;
    
     //------------------------------------------------Existing Solar Loan Parameters-----------------------------------------------------//
 
@@ -54,6 +54,7 @@ public class SolarLoanToCreateLoan {
     public static String ApplicationFundedBy;
     public static String ApplicationLoadedBy;
     public static String operatorid;
+    public static String ProductTypeDescription;
     
     public static String jsonData;
     public static HttpRequest req = new HttpRequest();
@@ -156,8 +157,15 @@ public class SolarLoanToCreateLoan {
                 if(api.URL__c != null){
                     loanAPI = api.URL__c;
                 }
-
-                System.debug('Chceking if the system is online!');
+                
+                List<Solar_Loan_Product_Types__c> PDList = Solar_Loan_Product_Types__c.getall().values();
+                for(Solar_Loan_Product_Types__c pd : PDList){ 
+                    if(sl.Product_Loan_Type__c == pd.Name){
+                            ProductTypeDescription = pd.Description__c;
+                    }
+                }
+    
+                /*System.debug('Chceking if the system is online!');
                 req10.setEndpoint(loanAPI+'/EFT/GetGeneralEpisysInformation');
                 req10.setMethod('GET');
                 req10.setHeader('Content-Type', 'application/json');
@@ -186,7 +194,7 @@ public class SolarLoanToCreateLoan {
                             }
                         }
                     }
-                }
+                }*/
                 
                 system.debug('mode'+mode);
                 if(mode == false){
@@ -286,7 +294,7 @@ public class SolarLoanToCreateLoan {
                     
                         CouponCode = '1';
                         PaymentMethod = '1';
-                        Description = 'SECURED SOLAR';
+                        Description = ProductTypeDescription;
                         InterestRate = string.valueof(sl.Interest_Rate__c);
                         UserAmount1 = string.valueof(sl.Debt_Ratio__c);
                         ECOACode = sl.ECOA_Code__c;
@@ -306,7 +314,7 @@ public class SolarLoanToCreateLoan {
                         req.setHeader('Content-Type', 'application/json');
                         req.setHeader('Accept', 'application/json');
                         
-                        jsonData = '{"UserChar4":' + '\"'+ ApplicationLoadedBy +'\"'+',"UserChar3":' + '\"'+ ApplicationFundedBy +'\"'+',"OriginalDate":' + '\"'+ OriginalDate +'\"'+',"Type":' + '\"'+ Type +'\"'+',"Branch":' + '\"'+ Branch +'\"'+',"CreatedAtBranch":'+'\"'+ CreatedAtBranch +'\"'+',"PurposeCode":'+'\"' + PurposeCode + '\"'+',"CollateralCode":'+'\"'+CollateralCode+'\"'+',"ApprovalCode":'+'\"'+ApprovalCode+'\"'+',"OriginalBalance":'+'\"'+OriginalBalance+'\"'+',"ApprovalDate":'+'\"'+ApprovalDate+'\"'+',"MaturityDate":'+'\"'+MaturityDate+'\"'+',"DueDate":'+'\"'+DueDate+'\"'+',"FirstPaymentDate":'+'\"'+FirstPaymentDate+'\"'+',"DueDay1":'+'\"'+DueDay1+'\"'+',"Payment":'+'\"'+Payment+'\"'+',"CouponCode":'+'\"'+CouponCode+'\"'+',"PaymentMethod":'+'\"'+PaymentMethod+'\"'+',"Description":'+'\"'+Description+'\"'+',"InterestRate":'+'\"'+InterestRate+'\"'+',"UserAmount1":'+'\"'+UserAmount1+'\"'+',"ECOACode":'+'\"'+ECOACode+'\"'+',"CreditScore":'+'\"'+CreditScore+'\"'+',"PaymentCount":'+'\"'+PaymentCount+'\"'+',"PaymentFrequency":'+'\"'+PaymentFrequency+'\"'+',"AccountNumber":'+'\"'+AccountNumber+'\"}';
+                        jsonData = '{"Description":'+'\"'+Description+'\"'+',"UserChar4":' + '\"'+ ApplicationLoadedBy +'\"'+',"UserChar3":' + '\"'+ ApplicationFundedBy +'\"'+',"OriginalDate":' + '\"'+ OriginalDate +'\"'+',"Type":' + '\"'+ Type +'\"'+',"Branch":' + '\"'+ Branch +'\"'+',"CreatedAtBranch":'+'\"'+ CreatedAtBranch +'\"'+',"PurposeCode":'+'\"' + PurposeCode + '\"'+',"CollateralCode":'+'\"'+CollateralCode+'\"'+',"ApprovalCode":'+'\"'+ApprovalCode+'\"'+',"OriginalBalance":'+'\"'+OriginalBalance+'\"'+',"ApprovalDate":'+'\"'+ApprovalDate+'\"'+',"MaturityDate":'+'\"'+MaturityDate+'\"'+',"DueDate":'+'\"'+DueDate+'\"'+',"FirstPaymentDate":'+'\"'+FirstPaymentDate+'\"'+',"DueDay1":'+'\"'+DueDay1+'\"'+',"Payment":'+'\"'+Payment+'\"'+',"CouponCode":'+'\"'+CouponCode+'\"'+',"PaymentMethod":'+'\"'+PaymentMethod+'\"'+',"InterestRate":'+'\"'+InterestRate+'\"'+',"UserAmount1":'+'\"'+UserAmount1+'\"'+',"ECOACode":'+'\"'+ECOACode+'\"'+',"CreditScore":'+'\"'+CreditScore+'\"'+',"PaymentCount":'+'\"'+PaymentCount+'\"'+',"PaymentFrequency":'+'\"'+PaymentFrequency+'\"'+',"AccountNumber":'+'\"'+AccountNumber+'\"}';
                         req.setBodyAsBlob(Blob.valueof(jsondata)); 
                         system.debug('test'+jsonData);
                         

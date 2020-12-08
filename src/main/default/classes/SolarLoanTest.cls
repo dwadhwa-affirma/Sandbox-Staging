@@ -13,7 +13,12 @@ private class SolarLoanTest{
      SolarLoan_To_Episys_API_Details__c api = new SolarLoan_To_Episys_API_Details__c();
      api.URL__c = 'https://symxapi.chevronfcu.org/devclient';
      api.Name = 'ProductionURL';
-     insert api;  
+     insert api;
+      
+     Solar_Loan_Product_Types__c slpt = new Solar_Loan_Product_Types__c();
+     slpt.Name = 'Solar';
+     slpt.Description__c = 'SECURED SOLAR';
+     insert slpt; 
    	     
      List<Account_Details__c> account_details_Obj = new List<Account_Details__c>{
                 new Account_Details__c(Name = '0000147163', Balance__c = 0.00, Combined_Account_ID__c = '0000147163S0100P0100', ID1__c = '0100', 
@@ -102,6 +107,7 @@ private class SolarLoanTest{
      sl.FNI__c = '12';
      sl.Member_Number__c = '0000147163';
      sl.Status__c = 'New'; 
+     sl.ACH__c = 'True';
      insert sl;
      
      SolarLoan_Obj.add(sl);
