@@ -28,4 +28,31 @@
 		var spinnerMain =  component.find("Spinner");
 		$A.util.addClass(spinnerMain, "slds-hide");
 	},
+
+	CheckValidEffectiveDate: function (component, event, EnteredEffectiveDate) {
+		var action = component.get("c.CheckValidEffectiveDate");
+		action.setParams({
+		  EnteredEffectiveDate: EnteredEffectiveDate,
+		});
+		action.setCallback(this, function (result) {
+		  var state = result.getState();
+		  if (component.isValid() && state === "SUCCESS") {
+			var resultData = result.getReturnValue();
+			if (resultData.isValid == "false") {
+			  component.set("v.EFTRecord.Effective_Date__c", "");
+			  alert(resultData.ErrorMessage.replace("Effective","Expire"));
+			}
+			else{
+				var evt = $A.get("e.c:EFTEvent");
+				var EFT = component.get("v.EFTRecord");
+				
+				if(EFT != undefined){
+					evt.setParams({ "EFTRecord": EFT});
+					evt.fire();
+				}
+			}
+		  }
+		});
+		$A.enqueueAction(action);
+	  }
 })

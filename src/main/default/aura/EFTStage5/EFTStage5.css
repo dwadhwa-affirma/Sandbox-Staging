@@ -13,6 +13,9 @@
 
 .THIS#stage5 .uiPicklistLabel{display:none;height:0;}
 
+.THIS#stage5 .halfDivLeft{float: left;width: 50%;}
+.THIS#stage5 .halfDivRight{float: right;width: 50%;}
+
 @media (max-width:1250px){
     .THIS#stage5 {width:90%;}
 }
@@ -27,3 +30,5 @@
     .THIS#stage5 .slds-form-element__label{clear:both;}
 	.THIS#stage5 .slds-form-element_horizontal .slds-form-element__control{clear:both; padding-left:0;}
 }
+
+.THIS#stage5 .slds-form-element{margin-bottom: 0.8% !important;}

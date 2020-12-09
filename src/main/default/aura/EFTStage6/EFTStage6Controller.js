@@ -89,7 +89,18 @@
             evt.setParams({ "EFTRecord": EFT, "isDocusignEmailSelected": isDocusignEmailSelected});
             evt.fire();
         }
-    }
+	},
+	
+	onExpirationDateChange : function(component, event, helper) {
+		debugger;        
+	   
+	  if(event.getSource().get("v.class") == "effectivedate"){
+		   helper.CheckValidEffectiveDate(component, event,event.getSource().get("v.value"));            
+	   }
+
+	      
+	   
+   }
 	
 	
 })

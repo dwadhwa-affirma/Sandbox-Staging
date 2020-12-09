@@ -78,11 +78,10 @@ public class EFTController{
 		resultMap.put('MemberAccount', MemberAccount);
 
 		Map<string, List<ShareLoanWrapperObject>> objShareLoan = getShareLoanAccounts(recordId);
-		system.debug('#####'+objShareLoan.get('ShareLoanList'));
-		if(objShareLoan.get('ShareLoanList').size() == 0){
+		system.debug('#####' + objShareLoan.get('ShareLoanList'));
+		if (objShareLoan.get('ShareLoanList').size() == 0){
 			resultmap.put('ErrorMessage', 'The membership account does not contain any share or loan types that can be managed with the ACH Automation workflow.');
-		}
-		else{
+		} else{
 			resultmap.put('ErrorMessage', '');
 		}
 
@@ -114,7 +113,7 @@ public class EFTController{
 			resultmap.put('EFTList', existingEFTs);
 		}
 
-		
+
 		return resultmap;
 	}
 
@@ -136,7 +135,7 @@ public class EFTController{
 	//------------------------------- Saving EFT data to Salesforce-----------------------------------------------//
 	@AuraEnabled
 	public static EFT__c saveStageData(EFT__c EFTRecord){
-		system.debug('EFTRecord==' + EFTRecord.LoanCode__c);
+		system.debug('Alternate_Amount__c==' + EFTRecord.Alternate_Amount__c);
 		if (EFTRecord.Second_Day_of_Month__c == '0'){
 			EFTRecord.Second_Day_of_Month__c = '';
 		}
@@ -196,7 +195,13 @@ public class EFTController{
 			EFTRecordList[0].Member_Name__c = EFTRecord.Member_Name__c;
 			EFTRecordList[0].Docusign_Member_Email__c = EFTRecord.Docusign_Member_Email__c;
 			EFTRecordList[0].EftLocator__c = EFTRecord.EftLocator__c;
-			//EFTRecordList[0].LoanCode__c  =  EFTRecord.LoanCode__c;
+			system.debug('Expired__c==' + EFTRecord.Expired__c);
+			system.debug('Expiration_Date__c==' + EFTRecord.Expiration_Date__c);
+			EFTRecordList[0].Expired__c = EFTRecord.Expired__c;
+			EFTRecordList[0].Expiration_Date__c = EFTRecord.Expiration_Date__c;
+			EFTRecordList[0].EFT_Payment_Date__c = EFTRecord.EFT_Payment_Date__c;
+			EFTRecordList[0].Next_Payment_Due_Date__c = EFTRecord.Next_Payment_Due_Date__c;
+			EFTRecordList[0].Locators_To_Expire__c = EFTRecord.Locators_To_Expire__c;
 			if (EFTRecord.Type__c == 'Checking'){
 				EFTRecordList[0].Docusign_Checking_Type__c = true;
 				EFTRecordList[0].Docusign_Savings_Type__c = false;
@@ -205,9 +210,9 @@ public class EFTController{
 				EFTRecordList[0].Docusign_Savings_Type__c = true;
 			}
 			if (EFTRecord.Alternate_Amount__c == null || EFTRecord.Alternate_Amount__c == 0){
-				EFTRecord.Docusign_is_Additional_Amount__c = false;
+				EFTRecordList[0].Docusign_is_Additional_Amount__c = false;
 			} else{
-				EFTRecord.Docusign_is_Additional_Amount__c = true;
+				EFTRecordList[0].Docusign_is_Additional_Amount__c = true;
 			}
 			update EFTRecordList;
 			return EFTRecordList[0];
@@ -220,7 +225,8 @@ public class EFTController{
 		// system.debug('EFTRecordString=='+EFTRecordString);
 		//EFT__c EFTRecord = (EFT__c) System.JSON.deserialize(EFTRecordString, EFT__c.Class);
 		system.debug('EFTRecordId==' + EFTRecord.Id);
-		system.debug('EFTRecordId==' + EFTRecord.EftLocator__c);
+		system.debug('Effective_Date__c==' + EFTRecord.Effective_Date__c);
+		system.debug('Expired__c==' + EFTRecord.Expired__c);
 		EFT__c EFTRecordList = new EFT__c();
 		if (EFTRecord.Id != null){
 			EFTRecordList = [Select Account_Number__c, Action_Type__c, Alternate_Amount__c, Bank_Name__c, CreatedById, CreatedDate, Day_of_Month__c, Second_Day_of_Month__c, DocuSignId__c, Effective_Date__c, Expiration_Date__c, Frequency__c, Id, Member_Account__c, Member_Account__r.Brand__c, Member_Account__r.Name, Member__c, Name, Case__c, OwnerId, Payment_Amount__c, Routing_Number__c, Share_Loan_Id__c, Stage__c, EftLocator__c, Share_Loan_Description__c, Share_Loan_Type__c, Member_Name__c, Status__c, Type__c, EFT_ID_Type__c, Expired__c
@@ -228,6 +234,9 @@ public class EFTController{
 			                 where id = :EFTRecord.Id
 			                 limit 1];
 			if (EFTRecordList != null){
+				EFTRecordList.Expired__c = false;
+				EFTRecordList.Effective_Date__c = EFTRecord.Effective_Date__c;
+				update EFTRecordList;
 				EFTRecordList.Expired__c = true;
 				EFTRecordList.Action_Type__c = 'Update';
 				EFT__c ResultEFTRecord = createCase(EFTRecordList);
@@ -287,19 +296,22 @@ public class EFTController{
 				lastname = '%' + Names[Names.size()-1]+'%';
 			}
 
+			system.debug('firstname' + firstname);
+			system.debug('lastname' + lastname);
+			system.debug('AccountNumber==' + AccountNumber);
+
 			pa = [SELECT id, name, PersonID__c, Account_Number__c, PersonID__r.name
-		                        from Person_Account__c
-		                        where PersonID__r.firstname like :firstname AND PersonID__r.LASTNAME like :lastname AND Account_Number__r.name = :AccountNumber
-		                        limit 1];
-		}
-		else{
+			      from Person_Account__c
+			      where ((PersonID__r.firstname like :firstname AND PersonID__r.LASTNAME like :lastname) OR (PersonID__r.name = :EFTRecord.Member_Name__c)) AND Account_Number__r.name = :AccountNumber
+			      limit 1];
+		} else{
 			system.debug('firstname' + firstname);
 			system.debug('lastname' + lastname);
 			system.debug('AccountNumber==' + AccountNumber);
 			pa = [SELECT id, name, PersonID__c, Account_Number__c, PersonID__r.name
-		                        from Person_Account__c
-		                        where Account_Number__r.name = :AccountNumber
-		                        limit 1];
+			      from Person_Account__c
+			      where Account_Number__r.name = :AccountNumber
+			      limit 1];
 
 		}
 
@@ -311,10 +323,8 @@ public class EFTController{
 
 		Group gp = [select Id, Name
 		            from Group
-		            where Type = 'Queue' AND NAME = 'Authentication Failed – Unusual Activity'];
+		            where Type = 'Queue' AND NAME = 'DocuSign Queue'];
 
-		
-		
 
 		case cs = new case();
 		for (CaseRecordType__c crt : scList){
@@ -326,28 +336,34 @@ public class EFTController{
 
 		}
 		//cs.AccountId = EFTRecord.Member_Account__c;
-		cs.Status = 'Open';
+		//cs.Status = 'Waiting for a member';
+		cs.Docusign_Envelope_Status__c = 'Sent';
 		cs.Subject = 'ACH Record';
 		//system.debug('createdby==='+EFTRecord.CreatedBy.Id);
-		cs.ownerid = UserInfo.getUserId();
+		//cs.ownerid = gp.Id;
 		if (pa != null){
 			cs.AccountId = pa.PersonID__c;
 		}
 		//cs.CaseComments__c = casecomment;
+		cs.Previous_Owner__c = UserInfo.getUserId();
 		string operation = '';
 		if (EFTRecord.Action_Type__c == 'Create'){
 			operation = 'ACH Record Created' + '\n';
+			cs.Subject = 'ACH Record Created';
+			cs.Description = operation + 'Member Name:' + EFTRecord.Member_Name__c + '\n' + 'Share/Loan:' + EFTRecord.Share_Loan_Id__c + '\n' + 'ABA/Routing#:' + EFTRecord.Routing_Number__c + '\n' + 'Funding FI:' + EFTRecord.Bank_Name__c + '\n' + 'Account Number:' + EFTRecord.Account_Number__c + '\n' + 'Type:' + EFTRecord.Type__c + '\n' + 'Payment Amount:' + EFTRecord.Payment_Amount__c + '\n' + 'Additional Payment Amount:' + (EFTRecord.Alternate_Amount__c == null ? 0 : EFTRecord.Alternate_Amount__c)+'\n' + 'Effective Date:' + EFTRecord.Effective_Date__c + '\n' + 'Frequency:' + EFTRecord.Frequency__c + '\n' + 'Day of Month:' + EFTRecord.Day_of_Month__c;
 		} else if (EFTRecord.Action_Type__c == 'Update' && !EFTRecord.Expired__c){
 			operation = 'ACH Record Updated' + '\n';
+			cs.Subject = 'ACH Record Updated';
+			cs.Description = operation + 'Member Name:' + EFTRecord.Member_Name__c + '\n' + 'Share/Loan:' + EFTRecord.Share_Loan_Id__c + '\n' + 'ABA/Routing#:' + EFTRecord.Routing_Number__c + '\n' + 'Funding FI:' + EFTRecord.Bank_Name__c + '\n' + 'Account Number:' + EFTRecord.Account_Number__c + '\n' + 'Type:' + EFTRecord.Type__c + '\n' + 'Payment Amount:' + EFTRecord.Payment_Amount__c + '\n' + 'Additional Payment Amount:' + (EFTRecord.Alternate_Amount__c == null ? 0 : EFTRecord.Alternate_Amount__c)+'\n' + 'Effective Date:' + EFTRecord.Effective_Date__c + '\n' + 'Frequency:' + EFTRecord.Frequency__c + '\n' + 'Day of Month:' + EFTRecord.Day_of_Month__c;
 		} else if (EFTRecord.Action_Type__c == 'Update' && EFTRecord.Expired__c){
-
 			operation = 'ACH Record Expired' + '\n' + 'Expiration Date:' + EFTRecord.Expiration_Date__c + '\n';
+			cs.Subject = 'ACH Record Cancelled/Expired';
+			cs.Description = operation + 'Member Name:' + EFTRecord.Member_Name__c + '\n' + 'Share/Loan:' + EFTRecord.Share_Loan_Id__c + '\n' + 'ABA/Routing#:' + EFTRecord.Routing_Number__c + '\n' + 'Funding FI:' + EFTRecord.Bank_Name__c + '\n' + 'Account Number:' + EFTRecord.Account_Number__c + '\n' + 'Type:' + EFTRecord.Type__c + '\n' + 'Payment Amount:' + EFTRecord.Payment_Amount__c + '\n' + 'Additional Payment Amount:' + (EFTRecord.Alternate_Amount__c == null ? 0 : EFTRecord.Alternate_Amount__c)+'\n' + 'Effective Date:' + EFTRecord.Effective_Date__c + '\n' + 'Frequency:' + EFTRecord.Frequency__c + '\n' + 'Day of Month:' + EFTRecord.Day_of_Month__c;
 		}
 		if (EFTRecord.Member_Account__c != null)
 			cs.Account_Number__c = EFTRecord.Member_Account__c;
 		else
 			cs.Account_Number__c = EFTRecord.Member_Account__r.Id;
-		cs.Description = operation + 'Member Name:' + EFTRecord.Member_Name__c + '\n' + 'Share/Loan:' + EFTRecord.Share_Loan_Id__c + '\n' + 'ABA/Routing#:' + EFTRecord.Routing_Number__c + '\n' + 'Funding FI:' + EFTRecord.Bank_Name__c + '\n' + 'Account Number:' + EFTRecord.Account_Number__c + '\n' + 'Type:' + EFTRecord.Type__c + '\n' + 'Payment Amount:' + EFTRecord.Payment_Amount__c + '\n' + 'Additional Payment Amount:' + (EFTRecord.Alternate_Amount__c == null ? 0 : EFTRecord.Alternate_Amount__c)+'\n' + 'Effective Date:' + EFTRecord.Effective_Date__c + '\n' + 'Frequency:' + EFTRecord.Frequency__c + '\n' + 'Day of Month:' + EFTRecord.Day_of_Month__c;
 		insert cs;
 		id caseId = cs.id;
 
@@ -486,8 +502,8 @@ public class EFTController{
 							temp.Description = (string)localAcc.get('Description');
 							temp.TypeTranslate = (string)localAcc.get('Description');
 							temp.UserChar3 = (string)localAcc.get('UserChar3');
-							
-							
+
+
 							temp.Type = 'Share';
 
 							map<string, string> resultDate = getTrackingRecordforShare(AccountNumber, ShareId);
@@ -611,6 +627,7 @@ public class EFTController{
 							if (temp.EffectiveDate != null && temp.Day1 != null)
 								temp.EFTPaymentDate = getEFTPaymentDate(temp.EffectiveDate, temp.Day1);
 							//(integer)localAcc.get('DueDay1');
+							temp.AlternatePayment = (decimal)localAcc.get('AlternatePayment');
 							resultList.add(temp);
 							System.debug('temp ....' + temp);
 						}
@@ -662,6 +679,7 @@ public class EFTController{
 		map<string, id> EFTLocatorsMap = new map<string, id>();
 		set<string> EFTLocatorsset = new set<string>();
 		map<string, decimal> LoanIDPaymentMap = new map<string, decimal>();
+		map<string, decimal> LoanIDAlternatePaymentMap = new map<string, decimal>();
 		map<string, Date> LoanIDNextPaymentDueDateMap = new map<string, Date>();
 		CalculateBusinessDays cbd = new CalculateBusinessDays();
 		Datetime Next3BusinessDay = cbd.AddDays(DateTime.newInstance(System.today(), Time.newInstance(0, 0, 0, 0)), 3);
@@ -677,6 +695,7 @@ public class EFTController{
 			for (ShareLoanWrapperObject sl : LoanList){
 				LoanIDPaymentMap.put(sl.ShareLoanID.leftPad(4, '0'), sl.Payment);
 				LoanIDNextPaymentDueDateMap.put(sl.ShareLoanID.leftPad(4, '0'), sl.NextPaymentDueDate);
+				LoanIDAlternatePaymentMap.put(sl.ShareLoanID.leftPad(4, '0'), sl.AlternatePayment);
 			}
 		}
 
@@ -734,7 +753,7 @@ public class EFTController{
 						lsId = String.valueOf(localAcc.get('Id')).substring(0, 2);
 						//System.debug('lsId ....' + lsId);
 					}
-					if ((arrShareTypes.contains(lsId) && (string)localAcc.get('IdType') == '0')  || (arrLoanTypes.contains(lsId) && (string)localAcc.get('IdType') == '1')){
+					if ((arrShareTypes.contains(lsId) && (string)localAcc.get('IdType') == '0') || (arrLoanTypes.contains(lsId) && (string)localAcc.get('IdType') == '1')){
 						EFTWrapperObject temp = new EFTWrapperObject();
 						EFT__c objEFT = new EFT__c();
 						if (arrShareTypes.contains(lsId) && (string)localAcc.get('IdType') == '0'){
@@ -742,9 +761,12 @@ public class EFTController{
 							objEFT.EFT_ID_Type__c = 'Share';
 							map<string, string> resultAmount = getTrackingRecordforShare(AccountNumber, String.valueOf(localAcc.get('Id')));
 							if (resultAmount != null){
-								objEFT.Payment_Amount__c = decimal.valueOf(resultAmount.get('Payment'));
+								if (String.valueOf(resultAmount.get('Payment')) != null)
+									objEFT.Payment_Amount__c = decimal.valueOf(resultAmount.get('Payment'));
 								objEFT.Alternate_Amount__c = decimal.valueOf(resultAmount.get('AlternateAmount'));
 								objEFT.Next_Payment_Due_Date__c = Date.valueOf(resultAmount.get('UserDate1'));
+								if (String.valueOf(localAcc.get('Amount')) != null)
+									objEFT.Existing_Alternate_Amount__c = Decimal.valueOf(String.valueOf(localAcc.get('Amount')));
 							}
 
 						} else if (arrLoanTypes.contains(lsId) && (string)localAcc.get('IdType') == '1'){
@@ -753,6 +775,7 @@ public class EFTController{
 							objEFT.Payment_Amount__c = LoanIDPaymentMap.get(String.valueOf(localAcc.get('Id')));
 							objEFT.Alternate_Amount__c = Decimal.valueOf(String.valueOf(localAcc.get('Amount')));
 							objEFT.Next_Payment_Due_Date__c = LoanIDNextPaymentDueDateMap.get(String.valueOf(localAcc.get('Id')));
+							objEFT.Existing_Alternate_Amount__c = LoanIDAlternatePaymentMap.get(String.valueOf(localAcc.get('Id')));
 						}
 						string bankname = String.valueOf(localAcc.get('Payee'));
 						System.debug('Payment_Amount__c==' + String.valueOf(localAcc.get('Payment')));
@@ -824,24 +847,50 @@ public class EFTController{
 		List<EpisysAccountDetailsWrapper> listAccounts = new List<EpisysAccountDetailsWrapper>();
 		set<EpisysAccountDetailsWrapper> listResultAccounts = new set<EpisysAccountDetailsWrapper>();
 
-		Person_Account__c paPrimary = [SELECT Id, PersonID__c, Account_Number__c, Account_Number__r.RecType__c, TypeTranslate__c, Account_Number__r.Name, PersonID__r.Home_Phone__pc, PersonID__r.Residential_City__pc, PersonID__r.Residential_State__pc, PersonID__r.Residential_Street__pc, PersonID__r.Residential_Zipocde__pc, PersonID__r.Name, PersonID__r.Email_raw__c
+		set<string> typeList = new set<string>();
+		for (Member360_TypeTranslate__c t : Member360_TypeTranslate__c.getAll().values()){
+			typeList.add(t.name.substring(0,4));
+		}	
+		
+		system.debug('typeList==' + typeList);
+
+		Person_Account__c paPrimary = [SELECT Id, PersonID__c, Account_Number__c, Account_Number__r.RecType__c, TypeTranslate__c, Account_Number__r.Name, PersonID__r.Home_Phone__pc, PersonID__r.Residential_City__pc, PersonID__r.Residential_State__pc, PersonID__r.Residential_Street__pc, PersonID__r.Residential_Zipocde__pc, PersonID__r.Name, PersonID__r.Email_raw__c, PersonID__r.PersonID__c
 		                               FROM Person_Account__c
-		                               WHERE Account_Number__c = :recordId and TypeTranslate__c like '%Primary%'
+		                               WHERE (Account_Number__r.Name = :recordId OR Account_Number__r.Name = :MemberAccount.Name) and TypeTranslate__c like '%Primary%'
 		                               limit 1];
 
-		string primaryName = '';
+		string primaryName = '', SSN;
 		if (paPrimary != null){
-			primaryName = paPrimary.PersonID__r.Name.replace(' ', '%20');
-		}
+
+			SSN = paPrimary.PersonID__r.PersonID__c.substring(1);
+			primaryName = paPrimary.PersonID__r.Name.replace(' ', '%20')+'|' + SSN;
+		}	
+
+
 		system.debug('primaryName==' + primaryName);
 		system.debug('AccountNumber==' + AccountNumber);
+		system.debug('SSN==' + SSN);
 		httpRequest requestparam = new httpRequest();
-		requestparam.setEndpoint('https://symxapi.chevronfcu.org/devclient/AddressChange/GetAddress?accountNumber=' + AccountNumber +'&FullNameStringList=' + primaryName +'&FullName=' + primaryName);
-		requestparam.setMethod('GET');
+		requestparam.setEndpoint('https://symxapi.chevronfcu.org/devclient/AddressChange/GetAddress');// + AccountNumber +'&FullNameStringList=' + primaryName +'&FullName=' + SSN);
+		requestparam.setMethod('POST');
+		requestparam.setHeader('Content-Type', 'application/json');
+		requestparam.setHeader('Accept', 'application/json');
+		requestparam.setHeader('Content-Length', '162100');
+		string jsonData = '{"accountNumber":' + '\"' + AccountNumber + '\","FullNameStringList":' + '\"' + primaryName + '\"' + ',"FullName":' + '\"' + SSN + '\"' + ',"IsIncludeMailAddresses":' + '\"' + 'true' + '\"}';
+		requestparam.setBody(jsonData);
+		system.debug('jsonData==' + jsonData);
+		Http httpParam = new Http();
 
-
-		http httpParam = new http();
-		httpResponse response = httpParam.send(requestparam);
+		//requestparam.setTimeout(60000);
+		HttpResponse response;
+		String responseBody1;
+		if (!Test.isRunningTest()){
+			response = httpParam.send(requestparam);
+			responseBody1 = response.getBody();
+			System.debug('Response Body ACH::' + response.getBody());
+		}
+		//http httpParam = new http();
+		//httpResponse response = httpParam.send(jsonData);
 
 		String strStatus = response.getStatus();
 		String strBody = response.getBody();
@@ -860,15 +909,19 @@ public class EFTController{
 			for (Object t : results){
 
 				map<string, object> localAcc = (map<string, object>)t;
+				string AccType= String.valueof((Integer)localAcc.get('type')).leftPad(4, '0');
+				//AccType= String.valueof(AccType).leftPad(4, '0');
+				System.debug('type ....' + AccType);
 				System.debug('localAcc ....' + localAcc.get('email'));
 				System.debug('altemail ....' + localAcc.get('altemail'));
 				string emailid = (string)localAcc.get('email');
-				if (true){
+				string altemail = (string)localAcc.get('altemail');
+				if (typeList.contains(AccType)){
 					//!setEmailIds.contains(emailid) && emailid!= ''
 					setEmailIds.add((string)localAcc.get('email'));
-					if (emailid != '')
+					if (emailid != '' && emailid.contains('@'))
 						setEmailNames.add(emailid + ',' + (string)localAcc.get('fullname'));
-					if ((string)localAcc.get('altemail') != '' && (string)localAcc.get('altemail') != null)
+					if ((string)localAcc.get('altemail') != '' && (string)localAcc.get('altemail') != null && altemail.contains('@'))
 						setEmailNames.add((string)localAcc.get('altemail')+',' + (string)localAcc.get('fullname'));
 					//     setEmailIds.add((string)localAcc.get('altemail'));
 					EpisysAccountDetailsWrapper tmp = new EpisysAccountDetailsWrapper();
@@ -1081,45 +1134,41 @@ public class EFTController{
 
 	// @AuraEnabled
 	// public static List<EFT__c> getEFTRecordsforShareLoan(string recordId, string ShareLoanID, string Operation, string EFTLocator){
-	// 	system.debug('Operation=='+Operation);
-	// 	system.debug('EFTLocator=='+EFTLocator);
-	// 	system.debug('ShareLoanID=='+ShareLoanID);
-	// 	system.debug('recordId=='+recordId);
-	// 	List<EFT__c> ListAllEFT = getEFTRecordsEpisys(recordId);
-	// 	List<EFT__c> resultEFT = new List<EFT__c>();		
-		
-	// 	if (ListAllEFT.size() > 0){
-	// 		for (EFT__C e : ListAllEFT){
-	// 			if (Operation == 'Create' && e.Share_Loan_Id__c == ShareLoanID){
-	// 				resultEFT.add(e);
-	// 			}
-
-	// 			else if(Operation == 'Update' && e.Share_Loan_Id__c == ShareLoanID && e.EftLocator__c != EFTLocator){
-	// 				resultEFT.add(e);
-	// 			}
-	// 		}
-	// 	}
-
-	// 	return resultEFT;
+	//     system.debug('Operation=='+Operation);
+	//     system.debug('EFTLocator=='+EFTLocator);
+	//     system.debug('ShareLoanID=='+ShareLoanID);
+	//     system.debug('recordId=='+recordId);
+	//     List<EFT__c> ListAllEFT = getEFTRecordsEpisys(recordId);
+	//     List<EFT__c> resultEFT = new List<EFT__c>();
+	//     if (ListAllEFT.size() > 0){
+	//         for (EFT__C e : ListAllEFT){
+	//             if (Operation == 'Create' && e.Share_Loan_Id__c == ShareLoanID){
+	//                 resultEFT.add(e);
+	//             }
+	//             else if(Operation == 'Update' && e.Share_Loan_Id__c == ShareLoanID && e.EftLocator__c != EFTLocator){
+	//                 resultEFT.add(e);
+	//             }
+	//         }
+	//     }
+	//     return resultEFT;
 	// }
-
 	@AuraEnabled
 	public static List<EFT__c> getEFTRecordsforShareLoan1(string re, string sh, string op, string ef){
-		system.debug('Operation=='+op);
-		system.debug('EFTLocator=='+ef);
-		system.debug('ShareLoanID=='+sh);
-		system.debug('recordId=='+re);
+		system.debug('Operation==' + op);
+		system.debug('EFTLocator==' + ef);
+		system.debug('ShareLoanID==' + sh);
+		system.debug('recordId==' + re);
+
+		sh = sh.leftPad(4, '0');
 
 		List<EFT__c> ListAllEFT = getEFTRecordsEpisys(re);
-		List<EFT__c> resultEFT = new List<EFT__c>();		
-		
+		List<EFT__c> resultEFT = new List<EFT__c>();
+
 		if (ListAllEFT.size() > 0){
 			for (EFT__C e : ListAllEFT){
 				if (op == 'Create' && e.Share_Loan_Id__c == sh){
 					resultEFT.add(e);
-				}
-
-				else if(op == 'Update' && e.Share_Loan_Id__c == sh && e.EftLocator__c != ef){
+				} else if (op == 'Update' && e.Share_Loan_Id__c == sh && e.EftLocator__c != ef){
 					resultEFT.add(e);
 				}
 			}
@@ -1167,6 +1216,9 @@ public class EFTController{
 
 		@AuraEnabled
 		public Date EFTPaymentDate{ get; set; }
+
+		@AuraEnabled
+		public decimal AlternatePayment{ get; set; }
 	}
 
 	public class EFTWrapperObject{
@@ -1184,6 +1236,12 @@ public class EFTController{
 
 		@AuraEnabled
 		public string FinancialInstitution{ get; set; }
+
+		@AuraEnabled
+		public string MatchID3{ get; set; }
+
+		@AuraEnabled
+		public string Locator{ get; set; }
 
 		@AuraEnabled
 		public string Payee{ get; set; }
@@ -1214,6 +1272,12 @@ public class EFTController{
 
 		@AuraEnabled
 		public string Id{ get; set; }
+
+		@AuraEnabled
+		public string IdType{ get; set; }
+
+		@AuraEnabled
+		public string PostAmount{ get; set; }
 	}
 
 	public class EpisysAccountDetailsWrapper{

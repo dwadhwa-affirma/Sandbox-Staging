@@ -201,11 +201,12 @@
 		        	   		if(component.get("v.EFTRecord.Alternate_Amount__c") == "" || component.get("v.EFTRecord.Alternate_Amount__c") == null || component.get("v.EFTRecord.Alternate_Amount__c") == undefined)
 		        	   			dynamicText = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(component.get("v.EFTRecord.Payment_Amount__c")); 
 		            		else
-		            			dynamicText = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(component.get("v.EFTRecord.Alternate_Amount__c"));
+		            			dynamicText = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(parseFloat(component.get("v.EFTRecord.Alternate_Amount__c")) + parseFloat(component.get("v.EFTRecord.Payment_Amount__c")));
 		            		stages2[i+1].Stage_Action__c = 'Pending Verification';               	
 		                }
 		             if(i !=2 && component.get("v.ContinueButtonName") == 'Send ACH Document'){
-		            	 component.set("v.ContinueButtonName", 'Continue');
+                         component.set("v.ContinueButtonName", 'Continue');
+                         
 		             }
 		             stages2[i].Stage_Action__c = dynamicText;
 		             component.set("v.EFTStageDetails", stages2);
@@ -290,7 +291,15 @@
                                 
                                 if(isExpireEFT){
                                     var CurrentEFTRecord = component.get("v.CurrentEFTRecord");
-                                    helper.ExpireExistingEFT(component, event, CurrentEFTRecord);
+                                    var LocatorsToExpire = component.get("v.EFTRecord.Locators_To_Expire__c");
+                                    if(LocatorsToExpire == '' || LocatorsToExpire == null || LocatorsToExpire == undefined){
+                                        LocatorsToExpire = component.get("v.CurrentEFTRecord.EftLocator__c");
+                                    }
+                                    else{
+                                        LocatorsToExpire = LocatorsToExpire + ',' + component.get("v.CurrentEFTRecord.EftLocator__c");
+                                    }
+                                    component.set("v.EFTRecord.Locators_To_Expire__c",LocatorsToExpire);
+                                    //helper.ExpireExistingEFT(component, event, CurrentEFTRecord);
                                 }                               
                                 $A.createComponent("c:"+stages[2].Stage_Component__c,{recordId: component.get("v.recordId"), EFTRecord: component.get("v.EFTRecord"), isExistingEFT : isExistingEFT, EFTCount:  EFTCount, CurrentEFT: CurrentEFT, EFTRecordsList: EFTRecordsList},
                                 function(msgBox){                
@@ -526,7 +535,8 @@
     submitACH: function (component, event, helper) { 
         var stages = [];
         stages = component.get("v.EFTStageDetails");
-        component.set("v.ActiveStepIndex",5);        
+        component.set("v.ActiveStepIndex",5);   
+        component.set("v.isBackButtonDisabled", true);     
         helper.SaveStageValues(component, event, component.get("v.EFTRecord"), 3, stages);
     
     },

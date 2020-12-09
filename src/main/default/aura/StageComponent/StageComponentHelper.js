@@ -20,6 +20,12 @@
 	},
     
     SaveStageValues: function(component, event, EFTRecord, i, stages){
+        // var LocatorsToExpire = component.get("v.LocatorsToExpire");
+        // if(LocatorsToExpire != null && LocatorsToExpire != undefined){
+        //     for(var j=0;j<LocatorsToExpire.length;j++){
+        //         this.ExpireExistingEFT(component, event,LocatorsToExpire[j]);
+        //     }
+        // }
         var action = component.get("c.saveStageData");
 		
        

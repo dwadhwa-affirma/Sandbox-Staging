@@ -37,6 +37,7 @@
 <aura:attribute name="CurrentEFTRecord" type="EFT__c" />
 <aura:attribute name="isErrorStage1" type="Boolean" default="false" />
 <aura:attribute name="ErrorMessage" type="String" />
+<aura:attribute name="isBackButtonDisabled" type="Boolean" default="false" />
 
 <lightning:navigation aura:id="navService"/>
     
@@ -84,7 +85,7 @@
   <aura:set attribute="else">
       <aura:if isTrue="{!(v.ActiveStepIndex == 5)}">
       	<lightning:button aura:id="Exit" label="Exit" title="Exit" onclick="{!c.cancelAction}"/>
-        <lightning:button variant="brand" label="Back" disabled="{!v.backButton}" title="Back" onclick="{!c.backView}"/> 
+        <lightning:button variant="brand" label="Back" disabled="{!v.isBackButtonDisabled}" title="Back" onclick="{!c.backView}"/> 
     <aura:set attribute="else">
         <aura:if isTrue="{!and(v.ActiveStepIndex == 4,v.EFTRecord.Action_Type__c == 'Expire' )}">
         <lightning:button aura:id="Exit" label="Exit" title="Exit" onclick="{!c.cancelAction}"/>

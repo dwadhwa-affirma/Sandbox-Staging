@@ -179,7 +179,7 @@
                 <p class = "fontstyle">ACH Record Details</p><br></br>
                	<table class="bottomtbl">
                     <tr>
-                    	<td colspan="2"><p>Select the “Expire” button to cancel/expire this ACH record</p></td>
+                    	<td colspan="2"><p>Select the “Expire” button to Cancel/Expire this ACH record</p></td>
                     </tr>
                 	<tr>
                     	<td>Share/Loan:</td>
@@ -199,6 +199,13 @@
                     </tr>
                     <tr>
                     	<td>Payment:</td><td><lightning:formattedNumber value="{!v.EFTRecord.Payment_Amount__c}" style="currency" currencyCode="USD"/></td> 
+                    </tr>
+                    <tr>
+                        <td style="vertical-align:middle;">Expire Date:</td>
+                        <td>
+                            <lightning:input variant="label-hidden" type="date" class="effectivedate" dateStyle="short" value="{!v.EFTRecord.Effective_Date__c}" onchange="{!c.onExpirationDateChange}" />
+                            <!-- <ui:inputDate value="{!v.EFTRecord.Effective_Date__c}" format="MM/dd/yyyy" dispxlayDatePicker="true"/>  -->
+                        </td>
                     </tr>
                 </table>
             </div>

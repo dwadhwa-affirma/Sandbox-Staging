@@ -15,8 +15,10 @@
         }
         else{
             component.set("v.isDayOfMonthDisabled",false); 
-        }   
-
+        }  
+        var total = parseFloat(component.get('v.EFTRecord.Payment_Amount__c') ) + parseFloat(component.get('v.EFTRecord.Alternate_Amount__c'));
+        component.set('v.NewTotalAmt', total ); 
+        
         var evt = $A.get("e.c:EFTEvent");
         var MonthDay = component.get("v.EFTRecord.Day_of_Month__c");
         if (MonthDay != undefined) {

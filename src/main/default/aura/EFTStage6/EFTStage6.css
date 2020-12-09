@@ -16,6 +16,7 @@
 
 .THIS#stage6 label.slds-form-element__label.slds-no-flex{display:none; width:0;}
 
+.THIS#stage6 .effectivedate{width: 140px;}
 @media (max-width:1250px){
     .THIS#stage6 {width:90%;}
 }

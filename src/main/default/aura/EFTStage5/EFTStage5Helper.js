@@ -63,7 +63,9 @@
       var MonthDay2 = component.get("v.EFTRecord.Second_Day_of_Month__c");
       component.set("v.EFTRecord.Stage__c", "Payment Monthly");
       var EFTPaymentDate = component.get("v.EFTRecord.EFT_Payment_Date__c");
-      
+      var total = parseFloat(AlternateAmt) + parseFloat(PaymentAmt);
+      component.set('v.NewTotalAmt', total); 
+
       var evt = $A.get("e.c:EFTEvent");
       if (MonthDay != undefined) {
         evt.setParams({ EFTRecord: component.get("v.EFTRecord") });
