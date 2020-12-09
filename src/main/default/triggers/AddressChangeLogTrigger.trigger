@@ -120,6 +120,7 @@ trigger AddressChangeLogTrigger on AddressChangeLog__c(before insert ){
 													'Old Zip:' + (objAddressChange.Zip_Old__c == null ? '' : objAddressChange.Zip_Old__c)+'\n' + 'New Zip:' + (objAddressChange.Zip_New__c == null ? '' : objAddressChange.Zip_New__c)+'\n' + 
 													'Old Zip +4:' + (objAddressChange.Zip4_Old__c == null ? '' : objAddressChange.Zip4_Old__c)+'\n' + 'New Zip +4:' + (objAddressChange.Zip4_New__c == null ? '' : objAddressChange.Zip4_New__c)+'\n' + 
 													'Old Country:' + (objAddressChange.Country_Old__c == null ? '' : objAddressChange.Country_Old__c)+'\n' + 'New Country:' + (objAddressChange.Country_New__c == null ? '' : objAddressChange.Country_New__c)+'\n' + 
+													'Old Country Code:' + (objAddressChange.CountryCode_Old__c == null ? '' : objAddressChange.CountryCode_Old__c)+'\n' + 'New Country Code:' + (objAddressChange.CountryCode_New__c == null ? '' : objAddressChange.CountryCode_New__c)+'\n' + 
 													'Record Type Updated:' + 'Name Records' + '\n' + 
 													'Names:' + objAddressChange.Names__c;
 				if (objAddressChange.Is_Temp_Mail_Expired__c && objAddressChange.Expired_Temp_Mail_Details__c != null){
@@ -173,9 +174,11 @@ trigger AddressChangeLogTrigger on AddressChangeLog__c(before insert ){
 				'Old City:' + (objAddressChange.City_Old__c == null ? '' : objAddressChange.City_Old__c)+'\n' + 'New City:' + (objAddressChange.City_New__c == null ? '' : objAddressChange.City_New__c)+'\n' + 'Old State:' + (objAddressChange.State_Old__c == null ? '' : objAddressChange.State_Old__c)+'\n' + 'New State:' + (objAddressChange.State_New__c == null ? '' : objAddressChange.State_New__c)+'\n' + 
 				'Old Zip:' + (objAddressChange.Zip_Old__c == null ? '' : objAddressChange.Zip_Old__c)+'\n' + 'New Zip:' + (objAddressChange.Zip_New__c == null ? '' : objAddressChange.Zip_New__c)+'\n' + 'New Expiration Date:' + objAddressChange.ExpirationDate_New__c + '\n' + 'New Active Flag:' + objAddressChange.isActive_New__c + '\n' + 
 												'Old Country:' + (objAddressChange.Country_Old__c == null ? '' : objAddressChange.Country_Old__c)+'\n' + 'New Country:' + (objAddressChange.Country_New__c == null ? '' : objAddressChange.Country_New__c)+'\n' + 
+												'Old Country Code:' + (objAddressChange.CountryCode_Old__c == null ? '' : objAddressChange.CountryCode_Old__c)+'\n' + 'New Country Code:' + (objAddressChange.CountryCode_New__c == null ? '' : objAddressChange.CountryCode_New__c)+'\n' +
 												'Record Type Updated:' + 'Mail only Records' + '\n' + 
 												'Locator:' + objAddressChange.Temp_Mail_Locators__c + '\n' + 
-												'Names:' + objAddressChange.Temp_Mail_Account_Names__c;
+												'Names:' + objAddressChange.Temp_Mail_Account_Names__c + '\n' + '\n' +
+												objAddressChange.Expired_Temp_Mail_Details__c;
 			}
 
 			// --------------------- Check if Case exists..................//
