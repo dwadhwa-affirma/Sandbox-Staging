@@ -240,7 +240,7 @@ public class EFTToDocuSign{
 				ContentVersion tempCV = mapContentVersion.get(tempContentDocId);
 				Attachment anAttachment = new Attachment();
 				anAttachment.Body = tempCV.VersionData;
-				anAttachment.ContentType = tempCV.FileType;
+				anAttachment.ContentType = 'application/pdf';
 				anAttachment.Name = tempCV.Title;
 				anAttachment.ParentId = obj.Case__c;
 				insert anAttachment;
