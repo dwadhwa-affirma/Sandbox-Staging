@@ -1,11 +1,12 @@
-trigger LeadBusinessHours on Lead (after insert, before insert, before update) {   
+trigger LeadBusinessHours on Lead (after insert,after update, before insert, before update) {   
     
     Id profileId=userinfo.getProfileId();
     String ProfileName=[Select Id,Name from Profile where Id=:profileId].Name;
     Map<ID,Schema.RecordTypeInfo> rt_Map = Lead.sObjectType.getDescribe().getRecordTypeInfosById();
     Id taskRT = Schema.SObjectType.Task.getRecordTypeInfosByName().get('SEG').getRecordTypeId();
     Id LeadRT = Schema.SObjectType.Lead.getRecordTypeInfosByName().get('Company Lead').getRecordTypeId();
-    Group BizDev = [Select Id,name from Group where Type = 'Queue' and Name = 'BIZ DEV' LIMIT 1];
+    Id LeadRT2 = Schema.SObjectType.Lead.getRecordTypeInfosByName().get('Non-Member Lead').getRecordTypeId();
+    //Group BizDev = [Select Id,name from Group where Type = 'Queue' and Name = 'BIZ DEV' LIMIT 1];
     system.debug('ProfileName'+ProfileName);
     List<Task> lTask = new List<Task>();
     List<Lead> leadList = new List<Lead>();
@@ -25,29 +26,52 @@ trigger LeadBusinessHours on Lead (after insert, before insert, before update) {
         
         insert openHours;
         
-        //------------------------------------------Task Creation on "Company Lead"--------------------------------//
+        //------------------------------------------Task Create on "Outreach"--------------------------------//
         
-        if(Trigger.isInsert){
+        List<Id> companyLeadIds = new List<Id>();
+        List<Lead> companyLeads = new List<Lead>();
+        BusinessHours stdBusinessHours = [select id from businesshours where isDefault = true];
+
+        if(Trigger.isUpdate){
             
             for(Lead lead: Trigger.new){
+                Lead oldLead = Trigger.oldMap.get(lead.Id);
+                if(rt_map.get(lead.recordTypeID).getName().containsIgnoreCase('Company Lead') && 
+                   	oldLead.Status != lead.Status && lead.Status == 'Outreach'){
+					companyLeadIds.add(lead.id);                        
+                    companyLeads.add(lead);
+                }
+            }
+            System.debug('companyLeadIds'+companyLeadIds);
+            System.debug('companyLeads'+companyLeads);
+           	
+            List<task> tasklist = [select whoId,status from task where ActivityDate != null and whoId in :companyLeadIds];
             
-                if(rt_map.get(lead.recordTypeID).getName().containsIgnoreCase('Company Lead')){
-                    
+            if(tasklist.size() > 0){
+                delete tasklist;
+            }
+            
+            if(companyLeads.size() > 0){
+            
+                for(Lead lead: companyLeads){
+                
                     Task t = new Task(); 
-                    t.ActivityDate = Date.valueOf(lead.CreatedDate) + 1;
-                    t.Activity_Date_Time__c = lead.CreatedDate + 1;
-                    t.OwnerId = BizDev.Id;
+                    //t.ActivityDate = Date.valueOf(system.now()) + 1;
+                    t.ActivityDate = Date.valueOf(BusinessHours.addgmt(stdBusinessHours.id, system.now(),10* 60 * 60 * 1000L));
+                    //t.Activity_Date_Time__c = system.now() + 1;
+                    t.Activity_Date_Time__c = BusinessHours.addgmt(stdBusinessHours.id, system.now(),10* 60 * 60 * 1000L);
+                    t.OwnerId = lead.OwnerId;
                     t.Priority = 'Normal';
                     t.RecordTypeId = taskRT;
                     t.Status = 'Open';
                     t.Subject = 'Email'  + ' ' + lead.FirstName + ' '  + lead.LastName;
                     t.WhoId = lead.id;
                     lTask.add(t);
-
+                    
                     Task t1 = new Task(); 
-                    t1.ActivityDate = Date.valueOf(lead.CreatedDate) + 7;
-                    t1.Activity_Date_Time__c = lead.CreatedDate + 7;
-                    t1.OwnerId = BizDev.Id;
+                    t1.Activity_Date_Time__c = BusinessHours.addgmt(stdBusinessHours.id, system.now(),70* 60 * 60 * 1000L);
+                    t1.ActivityDate = Date.valueOf(t1.Activity_Date_Time__c) - 1;
+                    t1.OwnerId = lead.OwnerId;
                     t1.Priority = 'Normal';
                     t1.RecordTypeId = taskRT;
                     t1.Status = 'Open';
@@ -56,20 +80,20 @@ trigger LeadBusinessHours on Lead (after insert, before insert, before update) {
                     lTask.add(t1);   
                     
                     Task t2 = new Task(); 
-                    t2.ActivityDate = Date.valueOf(lead.CreatedDate) + 14;
-                    t2.Activity_Date_Time__c = lead.CreatedDate + 14;
-                    t2.OwnerId = BizDev.Id;
+                    t2.Activity_Date_Time__c = BusinessHours.addgmt(stdBusinessHours.id, system.now(),140* 60 * 60 * 1000L);
+                    t2.ActivityDate = Date.valueOf(t2.Activity_Date_Time__c) - 1;
+                    t2.OwnerId = lead.OwnerId;
                     t2.Priority = 'Normal';
                     t2.RecordTypeId = taskRT;
                     t2.Status = 'Open';
-                    t2.Subject = 'Email'  + ' ' + lead.FirstName + ' '  + lead.LastName;
+                    t2.Subject = 'Email / Call Voice Message'  + ' ' + lead.FirstName + ' '  + lead.LastName;
                     t2.WhoId = lead.id;
                     lTask.add(t2);
                     
                     Task t3 = new Task(); 
-                    t3.ActivityDate = Date.valueOf(lead.CreatedDate) + 30;
-                    t3.Activity_Date_Time__c = lead.CreatedDate + 30;
-                    t3.OwnerId = BizDev.Id;
+                    t3.Activity_Date_Time__c = BusinessHours.addgmt(stdBusinessHours.id, system.now(),300* 60 * 60 * 1000L);
+                    t3.ActivityDate = Date.valueOf(t3.Activity_Date_Time__c) - 1;
+                    t3.OwnerId = lead.OwnerId;
                     t3.Priority = 'Normal';
                     t3.RecordTypeId = taskRT;
                     t3.Status = 'Open';
@@ -78,9 +102,9 @@ trigger LeadBusinessHours on Lead (after insert, before insert, before update) {
                     lTask.add(t3);
                     
                     Task t4 = new Task(); 
-                    t4.ActivityDate = Date.valueOf(lead.CreatedDate) + 45;
-                    t4.Activity_Date_Time__c = lead.CreatedDate + 45;
-                    t4.OwnerId = BizDev.Id;
+                    t4.Activity_Date_Time__c = BusinessHours.addgmt(stdBusinessHours.id, system.now(),1000* 60 * 60 * 1000L);
+                    t4.ActivityDate = Date.valueOf(t4.Activity_Date_Time__c) - 1;
+                    t4.OwnerId = lead.OwnerId;
                     t4.Priority = 'Normal';
                     t4.RecordTypeId = taskRT;
                     t4.Status = 'Open';
@@ -89,42 +113,22 @@ trigger LeadBusinessHours on Lead (after insert, before insert, before update) {
                     lTask.add(t4);
                     
                     Task t5 = new Task(); 
-                    t5.ActivityDate = Date.valueOf(lead.CreatedDate) + 100;
-                    t5.Activity_Date_Time__c = lead.CreatedDate + 100;
-                    t5.OwnerId = BizDev.Id;
+                    t5.Activity_Date_Time__c = BusinessHours.addgmt(stdBusinessHours.id, system.now(),1200* 60 * 60 * 1000L);
+                    t5.ActivityDate = Date.valueOf(t5.Activity_Date_Time__c) - 1;
+                    t5.OwnerId = lead.OwnerId;
                     t5.Priority = 'Normal';
                     t5.RecordTypeId = taskRT;
                     t5.Status = 'Open';
-                    t5.Subject = 'Call / Voice Message'  + ' ' + lead.FirstName + ' '  + lead.LastName;
+                    t5.Subject = 'Email'  + ' ' + lead.FirstName + ' '  + lead.LastName;
                     t5.WhoId = lead.id;
                     lTask.add(t5);
                     
-                    Task t6 = new Task(); 
-                    t6.ActivityDate = Date.valueOf(lead.CreatedDate) + 120;
-                    t6.Activity_Date_Time__c = lead.CreatedDate + 120;
-                    t6.OwnerId = BizDev.Id;
-                    t6.Priority = 'Normal';
-                    t6.RecordTypeId = taskRT;
-                    t6.Status = 'Open';
-                    t6.Subject = 'Call'  + ' ' + lead.FirstName + ' '  + lead.LastName;
-                    t6.WhoId = lead.id;
-                    lTask.add(t6);
-                    
-                    Task t7 = new Task(); 
-                    t7.ActivityDate = Date.valueOf(lead.CreatedDate) + 14;
-                    t7.Activity_Date_Time__c = lead.CreatedDate + 14;
-                    t7.OwnerId = BizDev.Id;
-                    t7.Priority = 'Normal';
-                    t7.RecordTypeId = taskRT;
-                    t7.Status = 'Open';
-                    t7.Subject = 'Call / Voice Message'  + ' ' + lead.FirstName + ' '  + lead.LastName;
-                    t7.WhoId = lead.id;
-                    lTask.add(t7);
-                }    
+                }
             }
             if(!lTask.IsEmpty())
                 insert lTask;
-        } 
+        }
+        
     }
     
     
@@ -393,8 +397,16 @@ trigger LeadBusinessHours on Lead (after insert, before insert, before update) {
             //--------------------------------Company Lead--------------------------------------------------//
             
             if(lead.Company != '' && lead.Company != null){
+                //string uid= UserInfo.getUserId();
+    			//User usr = [Select id, name, alias from User where id=:uid];
                 system.debug('Company Lead');
-                lead.RecordTypeId = LeadRT;
+                //if((lead.Company == 'Unbounce' || lead.company == 'unbounce') && usr.Alias == 'msyst'){
+                //    lead.RecordTypeId = LeadRT2;
+                //}
+                //else{
+                	lead.RecordTypeId = LeadRT;    
+                //}
+                
             }
         }
     }

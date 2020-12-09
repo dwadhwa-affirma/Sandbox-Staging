@@ -1,9 +1,10 @@
 @isTest
 private class cloneCaseControllerTest
 {
-			@testSetup
-		  static void setupTestData(){
-              String uid = UserInfo.getUserId();
+    @testSetup
+	static void setupTestData(){
+    
+        String uid = UserInfo.getUserId();
         RecordType recordtype =[SELECT Id,Name FROM RecordType WHERE Name='Person Account'];
         User currentUser = [SELECT LocaleSidKey, LanguageLocaleKey, TimeZoneSidKey, EmailEncodingKey FROM User WHERE Id=:uid];    
         
@@ -74,8 +75,7 @@ private class cloneCaseControllerTest
         } 
         insert AttachmentLst;
           
- Test.startTest();       
-        List<Member_Comment__c> memberComments = new List<Member_Comment__c>();
+ 	    List<Member_Comment__c> memberComments = new List<Member_Comment__c>();
        
         for(integer i=0 ; i <= 0 ; i++){
             Member_Comment__c mcom=new Member_Comment__c();    
@@ -95,7 +95,7 @@ private class cloneCaseControllerTest
         } 
         insert memberComments;
     
-          List<CaseComment> listCaseComments = new List<CaseComment>();
+        List<CaseComment> listCaseComments = new List<CaseComment>();
         
         for(integer i=0 ; i <= 0 ; i++){
             CaseComment caseComments=new CaseComment();    
@@ -104,7 +104,8 @@ private class cloneCaseControllerTest
             caseComments.CommentBody = 'ABC';
             listCaseComments.add(caseComments);
         }
-            insert listCaseComments;
+        Test.startTest();
+        insert listCaseComments;
        
         
         Blob beforeblob=Blob.valueOf('TWFuIGlzIGRpc3Rpg');
@@ -121,13 +122,15 @@ private class cloneCaseControllerTest
         	contentlink.ContentDocumentId=testcontent.ContentDocumentId;
         	lstContentDocumentLink.add(contentlink);
 		} 
-        insert lstContentDocumentLink;
-         Test.stopTest();  
+        
+        //insert lstContentDocumentLink;
+        Test.stopTest();  
         
           }
 	// Test Method: cloneCaseInsertUpdate
 	public static testmethod void Test_cloneCaseInsertUpdate(){
-         Test.startTest();
+        
+        Test.startTest();
 		List<Case> obj = [select id from Case limit 1];
         string recordid = obj[0].id;
 		boolean subject = true;
@@ -142,6 +145,30 @@ private class cloneCaseControllerTest
 		cloneCaseController.cloneCaseInsertUpdate(recordid, subject, description, device_type, status, cat, membercomment, casecomment, attachment);
  	 	Test.stopTest();
     }
-		 
-		//TearDown();
-	}
+	public static testmethod void Test_cloneCaseInsertUpdate1(){
+        
+		List<Case> obj = [select id from Case limit 1];
+        string recordid = obj[0].id;
+		boolean subject = true;
+		boolean description = true;
+		boolean device_type = true;
+		boolean status = true;
+		boolean cat = true;
+		boolean membercomment = true;
+		boolean casecomment = true;
+		boolean attachment = true;
+       
+        Attachment attach=new Attachment();    
+        attach.Name='Unit Test Attachment';
+        Blob bodyBlob=Blob.valueOf('Unit Test Attachment Body');
+        attach.body=bodyBlob;
+        attach.parentId=recordid;
+        //insert attach;
+        
+        Test.startTest();
+		cloneCaseController.cloneCaseInsertUpdate(recordid, subject, description, device_type, status, cat, membercomment, casecomment, attachment);
+ 	 	Test.stopTest();
+    }	 
+		
+		
+}

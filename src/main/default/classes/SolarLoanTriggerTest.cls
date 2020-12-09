@@ -4,12 +4,17 @@ public class SolarLoanTriggerTest {
     @TestSetup
     public static void setup() {
     	 
-        User u = [SELECT Id,Email,username FROM User WHERE Email ='drana@chevronfcu.org'];
+        User u = [SELECT Id,Email,username FROM User WHERE IsActive = true and Profile.Name = 'CFCU Admin' limit 1];
 		
         SolarLoan_To_Episys_API_Details__c api = new SolarLoan_To_Episys_API_Details__c();
         api.Name = 'ProductionURL';
         api.URL__c = 'https://symxapi.chevronfcu.org/devclient';
         insert api;
+        
+        Solar_Loan_Product_Types__c slpt = new Solar_Loan_Product_Types__c();
+        slpt.Name = 'Solar';
+        slpt.Description__c = 'SECURED SOLAR';
+        insert slpt;
         
         DocuSign_User_Details__c DTChevron = new DocuSign_User_Details__c();
         DTChevron.TemplateId__c = 'dc16d8f8-57ec-497e-bbf5-42d8b25d4ee1';
@@ -136,7 +141,7 @@ public class SolarLoanTriggerTest {
     }
     static testMethod void testMethod1(){
      
-        User u = [SELECT Id,Email FROM User WHERE Email ='drana@chevronfcu.org'];
+        User u = [SELECT Id,Email,username FROM User WHERE IsActive = true and Profile.Name = 'CFCU Admin' limit 1];
                 
         String userName = UserInfo.getUserName();
 		User activeUser = [Select Email From User where Username = : userName limit 1];
@@ -151,7 +156,7 @@ public class SolarLoanTriggerTest {
 	
     static testMethod void testMethod3(){
      
-        User u = [SELECT Id,Email FROM User WHERE Email ='drana@chevronfcu.org'];
+        User u = [SELECT Id,Email,username FROM User WHERE IsActive = true and Profile.Name = 'CFCU Admin' limit 1];
         
         System.runAs(u){
             
@@ -167,7 +172,7 @@ public class SolarLoanTriggerTest {
     
     static testMethod void testMethod4(){
      
-        User u = [SELECT Id,Email FROM User WHERE Email ='drana@chevronfcu.org'];
+        User u = [SELECT Id,Email,username FROM User WHERE IsActive = true and Profile.Name = 'CFCU Admin' limit 1];
         
         System.runAs(u){
             

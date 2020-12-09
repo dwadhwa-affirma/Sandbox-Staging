@@ -1,0 +1,51 @@
+.THIS.p-0 {
+    padding:15px 0px 0px 0px;
+}
+.THIS .table-responsive{
+    background: #f3f2f2;
+    padding: 5px 10px 10px 10px;
+    margin-bottom:4px;
+    border:1px solid #ddd;
+}
+.THIS .table-responsive:last-child{
+    margin-bottom:0px;
+    border-bottom:none;
+}
+.THIS .table-responsive h1{
+    font-size:16px;
+    margin-bottom:5px;
+}
+.THIS .table-responsive th,
+.THIS .table-responsive td{
+    line-height:24px
+}
+.THIS .table-responsive td span{
+    padding-right:5px;
+}
+.THIS .slds-table:not(.slds-no-row-hover) tbody tr:hover>td{
+    background-color:#fff;
+    box-shadow:none;
+}
+.THIS.inner-body{
+    background: #f3f2f2;
+    padding: 20px;
+    margin: 15px 0;
+}
+.THIS.title{
+    font-size: 28px;
+    text-align: center;
+    font-weight:300;
+}
+.THIS.subtitle{
+    text-align:center;
+    padding:20px 0;
+}
+.THIS.subtitle .subtitle-image {
+    height: 9rem;
+    max-width:100%;
+}
+.THIS.footers{
+    box-shadow:none;
+    border:none;
+    text-align:center;
+}

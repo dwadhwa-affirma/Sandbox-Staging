@@ -307,5 +307,14 @@ private class CreateCaseMemberPageControllerTest
 		System.Assert(CreateCaseMemberPageController.saveTheAttachment(parentid, filename, s, contenttype) != null);
 		
 	}
+    
+    public static testmethod void Testmethod1(){
+    	    
+        CreateCaseMemberPageController.selectCaseCategoriesforTopTenTypes('Loan Servicing', 'Consumer Loans');
+        CreateCaseMemberPageController.getDependentMap('Primary_Category__c', 'Secondary_Category__c');
+        CreateCaseMemberPageController.PicklistEntryWrapper  wrp = new CreateCaseMemberPageController.PicklistEntryWrapper();
+        CreateCaseMemberPageController.getTop10Cases();
+        CreateCaseMemberPageController.getPicklistValues('{"Needs_Assesment__c":["Do_you_Rent_or_Own__c","LEHS_Current_Lender__c","LEHS_Type_of_Mortgage__c","LEHS_Planning_to_Purchase__c","LEHS_Purchase_When__c","LEHS_Have_Realtor__c"]}');
+    }
 	
 }
