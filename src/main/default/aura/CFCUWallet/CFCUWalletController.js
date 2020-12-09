@@ -5,8 +5,12 @@
 		
 		component.find("AdditionalToken1").set("v.value", "Select");
 		component.find("AdditionalToken2").set("v.value","Select");
+        component.find("AdditionalToken3").set("v.value","Select");
+        component.find("AdditionalToken4").set("v.value","Select");
 		component.set("v.AdditionalTokenOption1Match",'');
 	    component.set("v.AdditionalTokenOption2Match",'');
+        component.set("v.AdditionalTokenOption3Match",'');
+        component.set("v.AdditionalTokenOption4Match",'');
 	    component.set("v.CardNumberMatch",'');
 	    component.set("v.BeneficiaryDetailMatch",'');
 	    component.set("v.JointOwnerDetailMatch",'');
@@ -30,12 +34,9 @@
 		}
 		
 	},
-	
 	ButtonClick : function(component, event, helper) {
         var ButtonId = event.getSource().getLocalId();
         var Button = event.getSource();
         helper.ButtonPassFailMethod(component, event, helper,ButtonId,Button);
-       
-       
     },
 })

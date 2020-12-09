@@ -1,5 +1,5 @@
 <aura:component implements="flexipage:availableForAllPageTypes,force:appHostable,force:hasRecordId" access="global" controller="MemberAuthenticationControllerLightning">
-	<aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
     <aura:attribute name="ScoreObtained" type="Integer" default="0"/>
     <aura:attribute name="FailedCount" type="Integer" default="0"/>
     <aura:attribute name="DLStateIdPassport" type="String"/>
@@ -14,110 +14,131 @@
     <aura:attribute name="IsSubmitClicked" type="boolean" default="false"/>
     <aura:attribute name="PublicWalletStatusForDay" type="boolean" default="true"/>
     <aura:attribute name="IsButtonDisabled" type="boolean" default="true"/>
-	<aura:attribute name="DOBMatch" type="String"/>
-	<aura:attribute name="IdNumberMatch" type="String"/>
-	<aura:attribute name="MMNMatch" type="String"/>
-	<aura:attribute name="EmailMatch" type="String"/>
-	<aura:attribute name="AdditionalTokenOption3Match" type="String"/>
-	<aura:attribute name="IsReLoadRequired" type="boolean" default="false"/>
-	<aura:attribute name="IsUserSessionLoaded" type="boolean" default="false"/>      
-	<aura:attribute name="EmailList" type="String[]" description="list of emails "/>
+    <aura:attribute name="DOBMatch" type="String"/>
+    <aura:attribute name="IdNumberMatch" type="String"/>
+    <aura:attribute name="MMNMatch" type="String"/>
+    <aura:attribute name="EmailMatch" type="String"/>
+    <aura:attribute name="AdditionalTokenOption3Match" type="String"/>
+    <aura:attribute name="IsReLoadRequired" type="boolean" default="false"/>
+    <aura:attribute name="IsUserSessionLoaded" type="boolean" default="false"/>      
+    <aura:attribute name="EmailList" type="String[]" description="list of emails "/>
     <aura:attribute name="DefaultEmailSelected" type="String" description="Default Email Selected in dropdown"/>
-	<aura:attribute name="MemberNumberFromURL" type="String" description="Member number received from IVR call"/>
-	<aura:attribute name="MemberNumberEntered" type="String" description="Member number Entered Manually"/>
+    <aura:attribute name="MemberNumberFromURL" type="String" description="Member number received from IVR call"/>
+    <aura:attribute name="MemberNumberEntered" type="String" description="Member number Entered Manually"/>
+    
+    <aura:attribute name="AdditionalTokenOption4" type="String"/>
+    <aura:attribute name="AdditionalTokenOption4Match" type="String"/>
+    
+    
     <aura:method name="PublicWalletMethod" action="{!c.doInit}" access="PUBLIC"> 
-   		 <aura:attribute name="param1" type="String"/>
-   		 <aura:attribute name="param2" type="boolean"/> 
-   		 <aura:attribute name="param3" type="boolean"/>
-	</aura:method>
-   
-	<aura:registerEvent name="statusEvent" type="c:MemberIdEvent" />
-	
-	 <article class="slds-card">
-       
-         <div class="MainDiv slds-scrollable_y MainField">
-       		
-       			<div class="InnerDiv">
-       				<div class="leftDiv">
-	       				<span class="labeltxt">Date of Birth: </span> 
-	       				<div>
-                            <ui:outputText aura:id="DobOutput" value="{!v.BirthDate}"/>
-       					</div>
-	       			</div>
-       				<div class="btnAlign">
-       				    <lightning:button variant="neutral" label="Passed" onclick="{! c.ButtonClick }" iconName="utility:check" aura:id="DobPassButton" class="BtnOne"/>
-       					<lightning:button variant="neutral" label="Failed" onclick="{! c.ButtonClick }" iconName="utility:close" aura:id="DobFailButton" class="BtnTwo"/>
-       				</div>
-       			</div> 
-       			<div class="InnerDiv">
-       				<div class="leftDiv">
-	       				<span class="labeltxt">DL/State ID/Passport:  </span>
-	       				<div>
-                            <ui:outputText aura:id="DLOutput" value="{!v.DLStateIdPassport}"/>
-       					</div>
-	       			</div>
-       				<div class="btnAlign">
-       					<lightning:button variant="neutral" label="Passed" onclick="{! c.ButtonClick }" iconName="utility:check" aura:id="DLPassButton" class="BtnOne"/>
-       					<lightning:button variant="neutral" label="Failed" onclick="{! c.ButtonClick }" iconName="utility:close" aura:id="DLFailButton" class="BtnTwo"/>
-       				</div>
-       				
-       			</div>	
-       			<div class="InnerDiv">
-       				<div class="leftDiv">
-	       				<span class="labeltxt">Password/Mother's Maiden Name: </span>
-	       				<div>
-                            <ui:outputText aura:id="MothersMaidenName" value="{!v.MothersMaidenName}"/>
-       					</div>
-	       			</div>
-       				<div class="btnAlign">
-       					
-       					<lightning:button variant="neutral" label="Passed" onclick="{! c.ButtonClick }" iconName="utility:check" aura:id="MothersMaidenNamePassButton" class="BtnOne"/>
-       					<lightning:button variant="neutral" label="Failed" onclick="{! c.ButtonClick }" iconName="utility:close" aura:id="MothersMaidenNameFailButton" class="BtnTwo"/>
-       				</div>
-       				
-       			</div>
-       			<div class="InnerDiv">
-       				<div class="leftDiv">
-	       				    
-	       				  <lightning:select name="Email"  aura:id="EmailId" value="{!v.DefaultEmailSelected}" class="select-auto-width" label="Email Address:">
-							        <aura:iteration items="{!v.EmailList}" var="Email">
-							            <option text="{!Email}" value="{!Email}" selected="{!Email.selected}"/>
-							        </aura:iteration>
-							  </lightning:select>		
-       					
-                          
-	       			</div>
-       				<div class="btnAlign">
-       					<lightning:button variant="neutral" label="Passed" onclick="{! c.ButtonClick }" iconName="utility:check" aura:id="EmailPassButton" class="BtnOne"/>
-       					<lightning:button variant="neutral" label="Failed" onclick="{! c.ButtonClick }" iconName="utility:close" aura:id="EmailFailButton" class="BtnTwo"/>
-   					</div>
-   					
-   					
-       			</div>	
-       			
-       			<div class="InnerDiv">
-       				<div class="leftDiv">
-	       				
-	       				<lightning:select name="AdditionalToken1" label="Additional Token"  aura:id="AdditionalToken1" class="select-auto-width">
-					        <option value="Select">---Select---</option>
-					        <option value="Red Herring">Red Herring</option>					        
-					    </lightning:select>
-       				</div>
-       				<div class="btnAlign">
-	       				<div style="margin-top:22px;">
-	       					<lightning:button variant="neutral" label="Passed" onclick="{! c.ButtonClick }" iconName="utility:check" aura:id="TokenPassButton1" class="BtnOne"/>
-	       					<lightning:button variant="neutral" label="Failed" onclick="{! c.ButtonClick }" iconName="utility:close" aura:id="TokenFailButton1" class="BtnTwo"/>
-	   					</div>
-       				</div>
-     			</div>
-     	
-       			
-       	</div>
+        <aura:attribute name="param1" type="String"/>
+        <aura:attribute name="param2" type="boolean"/> 
+        <aura:attribute name="param3" type="boolean"/>
+    </aura:method>
+    
+    <aura:registerEvent name="statusEvent" type="c:MemberIdEvent" />
+    
+    <article class="slds-card">
+        
+        <div class="MainDiv slds-scrollable_y MainField">
+            
+            <div class="InnerDiv">
+                <div class="leftDiv">
+                    <span class="labeltxt">Date of Birth: </span> 
+                    <div>
+                        <ui:outputText aura:id="DobOutput" value="{!v.BirthDate}"/>
+                    </div>
+                </div>
+                <div class="btnAlign">
+                    <lightning:button variant="neutral" label="Passed" onclick="{! c.ButtonClick }" iconName="utility:check" aura:id="DobPassButton" class="BtnOne"/>
+                    <lightning:button variant="neutral" label="Failed" onclick="{! c.ButtonClick }" iconName="utility:close" aura:id="DobFailButton" class="BtnTwo"/>
+                </div>
+            </div> 
+            <div class="InnerDiv">
+                <div class="leftDiv">
+                    <span class="labeltxt">DL/State ID/Passport:  </span>
+                    <div>
+                        <ui:outputText aura:id="DLOutput" value="{!v.DLStateIdPassport}"/>
+                    </div>
+                </div>
+                <div class="btnAlign">
+                    <lightning:button variant="neutral" label="Passed" onclick="{! c.ButtonClick }" iconName="utility:check" aura:id="DLPassButton" class="BtnOne"/>
+                    <lightning:button variant="neutral" label="Failed" onclick="{! c.ButtonClick }" iconName="utility:close" aura:id="DLFailButton" class="BtnTwo"/>
+                </div>
+                
+            </div>	
+            <div class="InnerDiv">
+                <div class="leftDiv">
+                    <span class="labeltxt">Password/Mother's Maiden Name: </span>
+                    <div>
+                        <ui:outputText aura:id="MothersMaidenName" value="{!v.MothersMaidenName}"/>
+                    </div>
+                </div>
+                <div class="btnAlign">
+                    
+                    <lightning:button variant="neutral" label="Passed" onclick="{! c.ButtonClick }" iconName="utility:check" aura:id="MothersMaidenNamePassButton" class="BtnOne"/>
+                    <lightning:button variant="neutral" label="Failed" onclick="{! c.ButtonClick }" iconName="utility:close" aura:id="MothersMaidenNameFailButton" class="BtnTwo"/>
+                </div>
+                
+            </div>
+            <div class="InnerDiv">
+                <div class="leftDiv">
+                    
+                    <lightning:select name="Email"  aura:id="EmailId" value="{!v.DefaultEmailSelected}" class="select-auto-width" label="Email Address:">
+                        <aura:iteration items="{!v.EmailList}" var="Email">
+                            <option text="{!Email}" value="{!Email}" selected="{!Email.selected}"/>
+                        </aura:iteration>
+                    </lightning:select>		
+                    
+                    
+                </div>
+                <div class="btnAlign">
+                    <lightning:button variant="neutral" label="Passed" onclick="{! c.ButtonClick }" iconName="utility:check" aura:id="EmailPassButton" class="BtnOne"/>
+                    <lightning:button variant="neutral" label="Failed" onclick="{! c.ButtonClick }" iconName="utility:close" aura:id="EmailFailButton" class="BtnTwo"/>
+                </div>
+                
+                
+            </div>	
+            
+            <div class="InnerDiv">
+                <div class="leftDiv">
+                    
+                    <lightning:select name="AdditionalToken1" label="Additional Token"  aura:id="AdditionalToken1" class="select-auto-width">
+                        <option value="Select">---Select---</option>
+                        <option value="Red Herring">Red Herring</option>	
+                        <option value="Birth Place">Birth Place</option>	
+                    </lightning:select>
+                </div>
+                <div class="btnAlign">
+                    <div style="margin-top:22px;">
+                        <lightning:button variant="neutral" label="Passed" onclick="{! c.ButtonClick }" iconName="utility:check" aura:id="TokenPassButton1" class="BtnOne"/>
+                        <lightning:button variant="neutral" label="Failed" onclick="{! c.ButtonClick }" iconName="utility:close" aura:id="TokenFailButton1" class="BtnTwo"/>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="InnerDiv">
+                <div class="leftDiv">
+                    <lightning:select name="AdditionalToken2" label="Additional Token"  aura:id="AdditionalToken2" class="select-auto-width">
+                        <option value="Select">---Select---</option>
+                        <option value="Red Herring">Red Herring</option>	
+                        <option value="Birth Place">Birth Place</option>	
+                    </lightning:select>
+                </div>
+                <div class="btnAlign">
+                    <div style="margin-top:22px;">
+                        <lightning:button variant="neutral" label="Passed" onclick="{! c.ButtonClick }" iconName="utility:check" aura:id="TokenPassButton2" class="BtnOne"/>
+                        <lightning:button variant="neutral" label="Failed" onclick="{! c.ButtonClick }" iconName="utility:close" aura:id="TokenFailButton2" class="BtnTwo"/>
+                    </div>
+                </div>
+            </div>
+            
+        </div>
         <div class="InnerDiv submitButton">
             <div class="CenterDiv">
                 <lightning:button variant="brand" label="Submit Answers" onclick="{! c.submit }" aura:id="SubmitButton" disabled = "{!v.IsButtonDisabled}" />
             </div> 	
-         </div>
-     </article>
-	
+        </div>
+    </article>
+    
 </aura:component>

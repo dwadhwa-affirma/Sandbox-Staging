@@ -10,6 +10,8 @@
 	<aura:attribute name="Card" type="object[]"/>
 	<aura:attribute name="AdditionalTokenOption1" type="String"/>
 	<aura:attribute name="AdditionalTokenOption2" type="String"/>
+    <aura:attribute name="AdditionalTokenOption3" type="String"/>
+    <aura:attribute name="AdditionalTokenOption4" type="String"/>
 	<aura:attribute name="IsLoanDataAvailable" type="Boolean" default="false"/>
 	<aura:attribute name="IsRelationshipDataAvailable" type="Boolean" default="false"/>
 	<aura:attribute name="IsCardDetailsAvailable" type="Boolean" default="false"/>
@@ -24,6 +26,8 @@
 	<aura:attribute name="CardNumberMatch" type="String"/>
 	<aura:attribute name="AdditionalTokenOption1Match" type="String"/>
 	<aura:attribute name="AdditionalTokenOption2Match" type="String"/>
+    <aura:attribute name="AdditionalTokenOption3Match" type="String"/>
+    <aura:attribute name="AdditionalTokenOption4Match" type="String"/>
 	<aura:attribute name="LoanDetailMatch" type="String"/>
 	<aura:attribute name="CFCULastSessionInfo" type="object[]"/>
 	<aura:attribute name="IsReLoadRequired" type="boolean" default="false"/> 
@@ -247,6 +251,8 @@
                               <option value="Transaction History">Transaction History</option>
                               <option value="Red Herring">Red Herring</option>
                               <option value="Online banking username">Online Banking Username</option>
+                              <option value="Membership Opening Date">Membership Opening Date</option>
+                             <option value="Eligibility for Member SEG">Eligibility for Member SEG</option>
                           </lightning:select>
                       </div>
                       <div class="RightDiv">
@@ -264,6 +270,8 @@
                               <option value="Transaction History">Transaction History</option>
                               <option value="Red Herring">Red Herring</option>
                               <option value="Online banking username">Online Banking Username</option>
+                              <option value="Membership Opening Date">Membership Opening Date</option>
+                              <option value="Eligibility for Member SEG">Eligibility for Member SEG</option>
                           </lightning:select>
                       </div>
                       <div class="RightDiv">
@@ -273,6 +281,45 @@
                           </div>
                       </div>
                   </div>
+                 
+                  <div class="InnerDiv">
+                      <div class="leftDiv">
+                          <lightning:select name="AdditionalToken3" label="Additional Token"  aura:id="AdditionalToken3" class="select-auto-width">
+                              <option value="Select">---Select---</option>
+                              <option value="Transaction History">Transaction History</option>
+                              <option value="Red Herring">Red Herring</option>
+                              <option value="Online banking username">Online Banking Username</option>
+                              <option value="Membership Opening Date">Membership Opening Date</option>
+                              <option value="Eligibility for Member SEG">Eligibility for Member SEG</option>
+                          </lightning:select>
+                      </div>
+                      <div class="RightDiv">
+                          <div style="margin-top:15px;">
+                              <lightning:button variant="neutral" label="Passed" onclick="{! c.ButtonClick }" iconName="utility:check" aura:id="TokenPassButton3" class="BtnOne"/>
+                              <lightning:button variant="neutral" label="Failed" onclick="{! c.ButtonClick }" iconName="utility:close" aura:id="TokenFailButton3" class="BtnTwo"/>
+                          </div>
+                      </div>
+                  </div>
+                 
+                 <div class="InnerDiv">
+                      <div class="leftDiv">
+                          <lightning:select name="AdditionalToken4" label="Additional Token"  aura:id="AdditionalToken4" class="select-auto-width">
+                              <option value="Select">---Select---</option>
+                              <option value="Transaction History">Transaction History</option>
+                              <option value="Red Herring">Red Herring</option>
+                              <option value="Online banking username">Online Banking Username</option>
+                              <option value="Membership Opening Date">Membership Opening Date</option>
+                              <option value="Eligibility for Member SEG">Eligibility for Member SEG</option>
+                          </lightning:select>
+                      </div>
+                      <div class="RightDiv">
+                          <div style="margin-top:15px;">
+                              <lightning:button variant="neutral" label="Passed" onclick="{! c.ButtonClick }" iconName="utility:check" aura:id="TokenPassButton4" class="BtnOne"/>
+                              <lightning:button variant="neutral" label="Failed" onclick="{! c.ButtonClick }" iconName="utility:close" aura:id="TokenFailButton4" class="BtnTwo"/>
+                          </div>
+                      </div>
+                  </div>
+                 
              </div>
      		 <div class="vl cfcuHeaderContainer">
                  <aura:if isTrue="{!v.IsCFCUSectionVisible}">
