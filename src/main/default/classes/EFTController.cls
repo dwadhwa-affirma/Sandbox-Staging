@@ -775,7 +775,7 @@ public class EFTController{
 							objEFT.Payment_Amount__c = LoanIDPaymentMap.get(String.valueOf(localAcc.get('Id')));
 							objEFT.Alternate_Amount__c = Decimal.valueOf(String.valueOf(localAcc.get('Amount')));
 							objEFT.Next_Payment_Due_Date__c = LoanIDNextPaymentDueDateMap.get(String.valueOf(localAcc.get('Id')));
-							objEFT.Existing_Alternate_Amount__c = LoanIDAlternatePaymentMap.get(String.valueOf(localAcc.get('Id')));
+							objEFT.Existing_Alternate_Amount__c = LoanIDAlternatePaymentMap.get(String.valueOf(localAcc.get('Id'))) - LoanIDPaymentMap.get(String.valueOf(localAcc.get('Id')));
 						}
 						string bankname = String.valueOf(localAcc.get('Payee'));
 						System.debug('Payment_Amount__c==' + String.valueOf(localAcc.get('Payment')));
