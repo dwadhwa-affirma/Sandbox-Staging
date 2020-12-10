@@ -33,6 +33,28 @@ private class MemberAuthenticationControlLightningTest {
         crt.SLA__c = 10;
         insert crt;
         
+        Member360_TypeTranslate__c t= new Member360_TypeTranslate__c();
+	 	t.name='0000/Primary';
+        insert t;
+        Member360_TypeTranslate__c t1= new Member360_TypeTranslate__c();
+        t1.name='001/Beneficiary';
+        insert t1;
+        Member360_TypeTranslate__c t2= new Member360_TypeTranslate__c();
+        t2.name='001/Joint Member';
+        insert t2;
+        Member360_TypeTranslate__c t3= new Member360_TypeTranslate__c();
+        t3.name='001/Trustee';
+        insert t3;
+        Member360_TypeTranslate__c t4= new Member360_TypeTranslate__c();
+        t4.name='001/Custodian';
+        insert t4;
+        Member360_TypeTranslate__c t5= new Member360_TypeTranslate__c();
+        t5.name='001/Primary';
+        insert t5;
+        Member360_TypeTranslate__c t6= new Member360_TypeTranslate__c();
+        t6.name='001/Representative Payee';
+	 	insert t6;
+        
     	ScoringModellist.add(sm1);
     	ScoringModellist.add(sm2);
         ScoringModellist.add(sm3);
@@ -54,8 +76,11 @@ private class MemberAuthenticationControlLightningTest {
      	List<Account_Details__c> Account_Details_List = new List<Account_Details__c>();
      	Account_Details__c ad = new Account_Details__c(Name = '00001',TypeTranslate__c = '1-PERSONAL',Balance__c = 5000,RecType__c = 'LOAN');
      	Account_Details__c ad1 = new Account_Details__c(Name = '00002',TypeTranslate__c = '1-PERSONAL',Balance__c = 5000,RecType__c = 'ACCT');
+        Account_Details__c ad2 = new Account_Details__c(Name = '0000084',TypeTranslate__c = '1-PERSONAL',Balance__c = 5000,RecType__c = 'ACCT');
+        
         Account_Details_List.add(ad);
         Account_Details_List.add(ad1);
+         Account_Details_List.add(ad2);
         insert Account_Details_List;
         
         List<Account> Account_Object_List = new List<Account>();
@@ -70,12 +95,14 @@ private class MemberAuthenticationControlLightningTest {
         Person_Account__c pc3 = new Person_Account__c(Account_Number__c = ad1.id,PersonID__c = acobj.id,RecType__c = 'ACCT',TypeTranslate__c = '001/Custodian');
         Person_Account__c pc4 = new Person_Account__c(Account_Number__c = ad.id,PersonID__c = acobj.id,RecType__c = 'LOAN',TypeTranslate__c = '001/Primary');
         Person_Account__c pc5 = new Person_Account__c(Account_Number__c = ad1.id,PersonID__c = acobj.id,RecType__c = 'ACCT',TypeTranslate__c = '001/Representative Payee');
+        Person_Account__c pc6 = new Person_Account__c(Account_Number__c = ad2.id,PersonID__c = acobj.id,RecType__c = 'ACCT',TypeTranslate__c = '001/Primary');
        	Person_Account_List.add(pc);
        	Person_Account_List.add(pc1);
         Person_Account_List.add(pc2);
        	Person_Account_List.add(pc3);
         Person_Account_List.add(pc4);
        	Person_Account_List.add(pc5);
+        Person_Account_List.add(pc6);
        	insert Person_Account_List;
         
         Account acc = [Select id from Account where FirstName='U' limit 1 ];
@@ -166,9 +193,9 @@ private class MemberAuthenticationControlLightningTest {
         Jointwrapper.ID = acc.id;
         
         Accountnumber = MemberAuthenticationControllerLightning.GetAccountNumber(acc.id);
-        MemberVerificationNumber = MemberAuthenticationControllerLightning.MemberVerificationAttemptsCheck(acc.id,'abc-123', 'Pass','1234','0000084','123-4567-765','www.googgle.com','abc-123',true,'aa','ss',3, true,false,'','','','','','');
-        MemberVerificationNumber = MemberAuthenticationControllerLightning.MemberVerificationAttemptsCheck(acc.id, 'abc-123', 'True','1234','0000084','123-4567-765','www.googgle.com','abc-123',true,'aa','ss',3, false, true, '','','','','','');
-        MemberVerificationNumber = MemberAuthenticationControllerLightning.MemberVerificationAttemptsCheck(acc.id, 'abc-123', 'True','1234','0000084','123-4567-765','www.googgle.com','abc-123',false,'aa','ss',3, false, false, '','','','','','');
+        MemberVerificationNumber = MemberAuthenticationControllerLightning.MemberVerificationAttemptsCheck(acc.id,'abc-123', 'Pass','1234','0000084','123-4567-765','www.googgle.com','abc-123',true,'aa','ss',3, true,false,'','','','','','','1234');
+        MemberVerificationNumber = MemberAuthenticationControllerLightning.MemberVerificationAttemptsCheck(acc.id, 'abc-123', 'True','1234','0000084','123-4567-765','www.googgle.com','abc-123',true,'aa','ss',3, false, true, '','','','','','','1234');
+        MemberVerificationNumber = MemberAuthenticationControllerLightning.MemberVerificationAttemptsCheck(acc.id, 'abc-123', 'True','1234','0000084','123-4567-765','www.googgle.com','abc-123',false,'aa','ss',3, false, false, '','','','','','','1234');        
         AuthwrapperList =  MemberAuthenticationControllerLightning.GetLogHistoryData(acc.id, 12, 'abc-123');
         getAuthLEvel = MemberAuthenticationControllerLightning.getLevel(acc.id); 
         Test.stopTest();
@@ -201,9 +228,11 @@ private class MemberAuthenticationControlLightningTest {
         Account_Details__c ad = [select id from Account_Details__c where name = '00001' limit 1];
         User u = [select id , name from user where Firstname = 'Deepika' limit 1]; 
         MemberAuthenticationControllerLightning.SaveOOWLogData('passed','00002',acc.id,'reason','Test1','abc-123', 'Test Test1','Error','abc-123');
+        MemberAuthenticationControllerLightning.SaveOOWLogData('failed','00002',acc.id,'reason','Test1','abc-123', 'Test Test1','Error','abc-123');
+        MemberAuthenticationControllerLightning.SaveOOWLogData('','00002',acc.id,'','Test1','abc-123', 'Test Test1','','abc-123');
         MemberAuthenticationControllerLightning.KYMSaveLogData(acc.id,'reason','Test1','abc-123');
-        MemberAuthenticationControllerLightning.PublicWalletSaveLogData(acc.id,'reason','abc-123','Pass','Pass','Pass','Pass','Pass','abc-123','test1','test2','test3', 'test4', 'test5','0000234534');
-        MemberAuthenticationControllerLightning.CFCUWalletSaveLogData(acc.id,'reason','abc-123','Pass','Pass','Pass','Pass','Pass','Pass','abc-123',obj, obj,obj,obj,'test1', 'test2','0000234534');
+        MemberAuthenticationControllerLightning.PublicWalletSaveLogData(acc.id,'reason','abc-123','Pass','Pass','Pass','Pass','Pass','abc-123','test1','test2','test3', 'test4', 'test5','0000234534','test6','Pass');
+        MemberAuthenticationControllerLightning.CFCUWalletSaveLogData(acc.id,'reason','abc-123','Pass','Pass','Pass','Pass','Pass','Pass','abc-123',obj, obj,obj,obj,'test1', 'test2','0000234534','test3', 'Pass','test4', 'Pass');
         MemberAuthenticationControllerLightning.GetFailedDesiredLevelLog(acc.id);
 	    MemberAuthenticationControllerLightning.SaveOTPCancelledAttempt(acc.id,'abc-123','abc-123');
          MemberAuthenticationControllerLightning.SaveOTPCancelledAttempt(acc.id,' ',' ');
@@ -228,11 +257,13 @@ private class MemberAuthenticationControlLightningTest {
         Account_Details__c ad = [select id from Account_Details__c where name = '00001' limit 1];
         User u = [select id , name from user where Firstname = 'Deepika' limit 1]; 
        
-        MemberAuthenticationControllerLightning.SaveOOWLogData('passed','00002',acc.id,'reason','Test1','abc-1234', 'Test Test1','Error','abc-1234'); 
-        MemberAuthenticationControllerLightning.PublicWalletSaveLogData(acc.id,'reason','abc-1234','Pass','Pass','Pass','Pass','Pass','abc-1234','test1','test2','test3', 'test4', 'test5','0000234534'); 
-        MemberAuthenticationControllerLightning.PublicWalletSaveLogData(acc.id,'reason','','Pass','Pass','Pass','Pass','Pass','','test1','test2','test3', 'test4', 'test5','0000234534');  
-        MemberAuthenticationControllerLightning.CFCUWalletSaveLogData(acc.id,'reason','','Pass','Pass','Pass','Pass','Pass','Pass','',obj, obj,obj,obj,'test1', 'test2','0000234534'); 
-        MemberAuthenticationControllerLightning.CFCUWalletSaveLogData(acc.id,'reason','abc-1234','Pass','Pass','Pass','Pass','Pass','Pass','abc-1234',obj, obj,obj,obj,'test1', 'test2','0000234534'); 
+        MemberAuthenticationControllerLightning.SaveOOWLogData('passed','00002',acc.id,'reason','Test1','abc-1234', 'Test Test1','Error','abc-1234');
+        MemberAuthenticationControllerLightning.SaveOOWLogData('failed','00002',acc.id,'reason','Test1','abc-1234', 'Test Test1','Error','abc-1234');
+        MemberAuthenticationControllerLightning.SaveOOWLogData('','00002',acc.id,'','Test1','abc-1234', 'Test Test1','','abc-1234');
+        MemberAuthenticationControllerLightning.PublicWalletSaveLogData(acc.id,'reason','abc-1234','Pass','Pass','Pass','Pass','Pass','abc-1234','test1','test2','test3', 'test4', 'test5','0000234534','test6','Pass'); 
+        MemberAuthenticationControllerLightning.PublicWalletSaveLogData(acc.id,'reason','','Pass','Pass','Pass','Pass','Pass','','test1','test2','test3', 'test4', 'test5','0000234534','test6','Pass');  
+        MemberAuthenticationControllerLightning.CFCUWalletSaveLogData(acc.id,'reason','','Pass','Pass','Pass','Pass','Pass','Pass','',obj, obj,obj,obj,'test1', 'test2','0000234534','test3', 'Pass','test4', 'Pass'); 
+        MemberAuthenticationControllerLightning.CFCUWalletSaveLogData(acc.id,'reason','abc-1234','Pass','Pass','Pass','Pass','Pass','Pass','abc-1234',obj, obj,obj,obj,'test1', 'test2','0000234534','test3', 'Pass','test4', 'Pass'); 
         MemberAuthenticationControllerLightning.SaveOTPCancelledAttempt(acc.id,'',''); 
         Test.stopTest();
     }
@@ -245,8 +276,8 @@ private class MemberAuthenticationControlLightningTest {
         Test.stopTest(); 
         MemberAuthenticationControllerLightning.getPublicWalletInfo(acc.id,'abc-123');
          MemberAuthenticationControllerLightning.getPublicWalletInfo(acc.id,'abc-1234'); 
-        MemberAuthenticationControllerLightning.SaveLastAchievableLevelLogs(acc.id,'abc-123','Level 1','abc-123','123-4567-765','0000084','123455','True','True','True','True','Test','1','True','1234','True', 5,18);
-       MemberAuthenticationControllerLightning.SaveLastAchievableLevelLogs(acc.id,' ','Level 1',' ','123-4567-765','0000084','123455','True','True','True','True','Test','1','True','1234','True',0,18);
+        MemberAuthenticationControllerLightning.SaveLastAchievableLevelLogs(acc.id,'abc-123','Level 1','abc-123','123-4567-765','0000084','123455','True','True','True','True','Test','1','True','1234','True', 5,18,'1234');
+       MemberAuthenticationControllerLightning.SaveLastAchievableLevelLogs(acc.id,' ','Level 1',' ','123-4567-765','0000084','123455','True','True','True','True','Test','1','True','1234','True',0,18,'1234');
         string str = MemberAuthenticationControllerLightning.substring('reason',2);
        
         

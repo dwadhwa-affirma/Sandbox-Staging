@@ -206,7 +206,7 @@
                      component.set("v.EFTRecord.Id",EFTList[i].Id);
                      component.set("v.EFTRecord.Next_Payment_Due_Date__c",EFTList[i].Next_Payment_Due_Date__c);
                      component.set("v.EFTRecord.EFT_Payment_Date__c",EFTList[i].EFT_Payment_Date__c);
-                    
+                     component.set("v.EFTRecord.Existing_Alternate_Amount__c",EFTList[i].Existing_Alternate_Amount__c);
                     break;
                 }
             }

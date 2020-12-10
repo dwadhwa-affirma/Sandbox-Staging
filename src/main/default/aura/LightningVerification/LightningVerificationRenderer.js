@@ -201,11 +201,26 @@ rerender : function(component, helper){
 						 }
 						 if(DebitCardStatus =='true' && aElement.id =='DebitCardTab__item'){
 							 console.log('Renderer 203---DebitCardTab__item' + DebitCardStatus);
-							  liElement[i].classList.add("green");
+							 //console.log('Renderer 204---DebitCardTab__item' + IsCardOwnerSSNMatch);
+							 if(component.get("v.IsCardOwnerSSNMatch")){
+								liElement[i].classList.add("green");
+								liElement[i].classList.remove("red");
+								liElement[i].classList.remove("grey");
+								component.set('v.DebitIconName','utility:check');
+								component.set("v.DebitCardMessage", 'Member has passed the debit card authentication' );
+							 }
+							 else{
+								liElement[i].classList.add("grey");
+								liElement[i].classList.remove("red");
+								liElement[i].classList.remove("green");
+								component.set('v.DebitIconName','utility:help');	
+								component.set("v.DebitCardMessage", '');							
+							 }
+							  
 							  liElement[i].firstChild.classList.remove("TabDisabled");
 				  			  liElement[i].classList.remove("slds-is-active");
-				  			  component.set("v.DebitCardMessage", 'Member has passed the debit card authentication' );
-				  			  component.set('v.DebitIconName','utility:check');
+				  			  
+				  			  
 				  			  helper.RedrawComponent(liElement[i]);
 				  			  
 						 }
@@ -214,7 +229,7 @@ rerender : function(component, helper){
 							  liElement[i].classList.add("grey");
 							  liElement[i].classList.add("TabDisabled");
 				  			  liElement[i].classList.remove("slds-is-active");
-				  			  component.set("v.DebitCardMessage", 'Member has passed the debit card authentication' );
+				  			  component.set("v.DebitCardMessage", '');
 				  			  component.set('v.DebitIconName','utility:ban');
 				  			  helper.RedrawComponent(liElement[i]);
 				  			 
