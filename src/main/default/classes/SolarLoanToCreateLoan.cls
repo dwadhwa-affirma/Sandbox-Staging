@@ -54,7 +54,7 @@ public class SolarLoanToCreateLoan {
     public static String ApplicationFundedBy;
     public static String ApplicationLoadedBy;
     public static String operatorid;
-    public static String ProductTypeDescription;
+    public static String ProductTypeDescription = 'SECURED SOLAR';
     
     public static String jsonData;
     public static HttpRequest req = new HttpRequest();
