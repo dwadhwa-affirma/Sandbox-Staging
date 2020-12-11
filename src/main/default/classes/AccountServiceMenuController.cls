@@ -15,14 +15,16 @@ public class AccountServiceMenuController {
     	result.put('SubMenu', mcList);
     	
     	
-    		Boolean IsUserInGroup,IsUserInEFTGroup ;
+    		Boolean IsUserInGroup,IsUserInEFTGroup, IsUserInAddressChangeGroup;
     		Group grp = [SELECT DeveloperName,Email,Id,Name,RelatedId,Type FROM Group where DeveloperName ='OOW_Execute' Limit 1];
-        	Group grpEFT = [SELECT DeveloperName,Email,Id,Name,RelatedId,Type FROM Group where DeveloperName ='EFT_Tool' Limit 1];
+			Group grpEFT = [SELECT DeveloperName,Email,Id,Name,RelatedId,Type FROM Group where DeveloperName ='EFT_Tool' Limit 1];
+			Group grpAddressChange = [SELECT DeveloperName,Email,Id,Name,RelatedId,Type FROM Group where DeveloperName ='Address_Change' Limit 1];
  	
  	
  		/*------------ EFT Tool Group --------------------*/
 		 	GroupMember[] gm  = [SELECT GroupId,Id,UserOrGroupId FROM GroupMember where GroupId =: grp.id and UserOrGroupId =: UserInfo.getUserId() ];
-        	GroupMember[] gmEFT  = [SELECT GroupId,Id,UserOrGroupId FROM GroupMember where GroupId =: grpEFT.id and UserOrGroupId =: UserInfo.getUserId() ];
+			GroupMember[] gmEFT  = [SELECT GroupId,Id,UserOrGroupId FROM GroupMember where GroupId =: grpEFT.id and UserOrGroupId =: UserInfo.getUserId() ];
+			GroupMember[] gmAddressChange  = [SELECT GroupId,Id,UserOrGroupId FROM GroupMember where GroupId =: grpAddressChange.id and UserOrGroupId =: UserInfo.getUserId() ];
 		 	
 		 	if(gm.size() > 0)
 		 	{
@@ -41,12 +43,24 @@ public class AccountServiceMenuController {
 		 	else 
 		 	{
 		 		IsUserInEFTGroup = false;
+			 }
+			 
+			 /*------------ Address Change Group --------------------*/
+			 if(gmAddressChange.size() > 0)
+		 	{
+				IsUserInAddressChangeGroup = true;
+		 	}
+		 	else 
+		 	{
+				IsUserInAddressChangeGroup = false;
 		 	}
         
-        	system.debug('IsUserInEFTGroup=='+IsUserInEFTGroup);
+			system.debug('IsUserInEFTGroup=='+IsUserInEFTGroup);
+			system.debug('IsUserInAddressChangeGroup=='+IsUserInAddressChangeGroup);
     	
  			result.put('UserStatus', IsUserInGroup);
-        	result.put('UserStatusEFT', IsUserInEFTGroup);
+			result.put('UserStatusEFT', IsUserInEFTGroup);
+			result.put('UserStatusAddressChange', IsUserInAddressChangeGroup);
     	
     	return result;
     }

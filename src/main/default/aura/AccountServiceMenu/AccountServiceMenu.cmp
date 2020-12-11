@@ -11,6 +11,7 @@
 <aura:attribute name="IsUserInGroup" type="Boolean"/>
 <aura:attribute name="OOWIndex" type="Integer"/>
 <aura:attribute name="IsUserInEFTGroup" type="Boolean"/>
+<aura:attribute name="IsUserInAddressChangeGroup" type="Boolean"/>
 
 <style>
     .slds-modal__content{overflow-y:hidden;}
@@ -100,10 +101,17 @@
                             	<li class="clsSubMenu"><a onclick="{!c.loadComponent}" id="{!('anchor' + (i+v.halfLength))}" style="pointer-events: none; cursor: default; text-decoration: none; color: grey;">{!sm.Function__c}</a></li>
                              </ul>
                                 
-                             <aura:set attribute="else">	
+                             <aura:set attribute="else">
+                                <aura:if isTrue="{!and(v.IsUserInAddressChangeGroup==false, sm.Function__c=='Address Change')}">
+                                    <ul style="list-style-type: disc;">	
+                                    <li class="clsSubMenu"><a onclick="{!c.loadComponent}" id="{!('anchor' + (i+v.halfLength))}" style="pointer-events: none; cursor: default; text-decoration: none; color: grey;">{!sm.Function__c}</a></li>
+                                 </ul>
+                                 <aura:set attribute="else">	
                              <ul style="list-style-type: disc;">					
                                 <li class="clsSubMenu"><a onclick="{!c.loadComponent}" id="{!('anchor' + (i+v.halfLength))}" style="">{!sm.Function__c}</a></li>
                                  </ul>
+                            </aura:set>
+                            </aura:if>
                             </aura:set>	
                             </aura:if> 
                             </aura:set>
