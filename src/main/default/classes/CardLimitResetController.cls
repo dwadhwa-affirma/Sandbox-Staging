@@ -272,7 +272,7 @@ public class CardLimitResetController {
             cs.Sla__c = scList[0].SLA__c;
 
         }
-        cs.Status = 'Open';
+        cs.Status = 'Closed';
         cs.Subject = 'Limit Change';
         cs.Account_Number__c = CLRecord.Member_Account__c;
         cs.ownerid = UserInfo.getUserId();
@@ -438,8 +438,8 @@ public class CardLimitResetController {
         cl.Member_Account__c = recordId;
         cl.Member__c = pa.PersonID__c;
 
-        insert cl;
-        createCase(cl);
+        //insert cl;
+        //createCase(cl);
         return null;    
     }
     public class CardDetailWrapperObject{

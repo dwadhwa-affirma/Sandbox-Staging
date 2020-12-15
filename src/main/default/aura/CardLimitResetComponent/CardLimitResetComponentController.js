@@ -69,6 +69,7 @@
             
             if(component.get("v.ContinueButtonName") == 'Submit'){
                 
+                helper.showSpinner(component);
                 var recordId = component.get("v.recordId");
                 var cardnumber = component.get("v.CLRecord.Card_Number__c");
                 var cardlocator = component.get("v.CLRecord.Card_Locator__c");
@@ -89,16 +90,18 @@
                     
                 });
                 action.setCallback(this, function (response) {
-           		debugger;
+           		//debugger;
+                
         		var status = response.getState();            
             		if (component.isValid() && status === "SUCCESS") {
-                    	component.set("v.isExit", true);
+                        component.set("v.isExit", true);
+                        helper.hideSpinner(component);
     					$A.get("e.force:closeQuickAction").fire();
                     }
                 });	
        			$A.enqueueAction(action); 
                 
-                helper.hideSpinner(component);
+                //helper.hideSpinner(component);
             }
             else{
                 
