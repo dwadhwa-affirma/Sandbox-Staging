@@ -253,7 +253,7 @@ public class CardLimitResetController {
 		return resultmap;
     }
     @AuraEnabled
-    public static Change_Limit__c createCase(Change_Limit__c CLRecord){
+    public static Change_Limit__c createCase(Change_Limit__c CLRecord, String cardnumber, String type, String authlimit, String atmlimit, String membername){
 
         list<CaseRecordType__c> scList = [SELECT Id,
 											 Primary_Category__c,
@@ -272,14 +272,15 @@ public class CardLimitResetController {
             cs.Sla__c = scList[0].SLA__c;
 
         }
-        cs.Status = 'Open';
+        cs.Status = 'Closed';
         cs.Subject = 'Limit Change';
+        cs.Description =  'Card Limit Change details: ' +'\n' + '\n' +'Member Name: '+ membername + '\n' + 'Card Number: '+ cardnumber + '\n' + 'Request Type: ' + type + '\n' + 'ATM Usage Limit: ' + atmlimit + '\n' + 'Auth/POS Limit: ' + authlimit + '\n' + 'Change Performed By: '+ UserInfo.getName();
         cs.Account_Number__c = CLRecord.Member_Account__c;
         cs.ownerid = UserInfo.getUserId();
         if(CLRecord.Member__c != null){
             cs.AccountId = CLRecord.Member__c;
         }
-
+        
         insert cs;
         id caseId = cs.id;
         
@@ -439,7 +440,8 @@ public class CardLimitResetController {
         cl.Member__c = pa.PersonID__c;
 
         insert cl;
-        createCase(cl);
+        createCase(cl,cardnumber,type,authlimit,atmlimit,membername);
+
         return null;    
     }
     public class CardDetailWrapperObject{

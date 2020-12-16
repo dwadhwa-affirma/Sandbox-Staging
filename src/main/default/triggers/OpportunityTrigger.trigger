@@ -1,7 +1,6 @@
 trigger OpportunityTrigger on Opportunity (before insert, before update ) {
 
-    // To prevent recursive re-entry
-	if(OpportunityTriggerHandler.hasExecuted)
+    if(OpportunityTriggerHandler.hasExecuted)// To prevent recursive re-entry
     {
          return;
     }

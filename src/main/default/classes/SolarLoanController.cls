@@ -117,7 +117,7 @@ public class SolarLoanController {
     List<Solar_Loans__c> SolarLoanList = [SELECT id,ABA_Bank_Name__c,ACH__c,Additional_Amount__c,Application_Date__c,
             Bank_Account_Number__c,Bank_Name__c,Battery__c,Brand__c,Change_Order__c,CreatedById,CreatedDate,
             Credit_Attributes__c,Credit_Exception__c,Debt_Ratio__c,DocuSignId__c,Due_Date__c,continue__c,
-            ECOA_Code__c,Final_Payment_Amount__c,FNI__c,Go_To_Payment__c,Initial_LT_Loan_Agreement__c,
+            ECOA_Code__c,Final_Payment_Amount__c,FNI__c,Go_To_Payment__c,Initial_LT_Loan_Agreement__c,Non_Solar_Amount__c,
             Installer_Number__c,Installer__c,Interest_Rate__c,Inverter__c,IsDeleted,Joint_Address_1__c,
             Joint_Address_2__c,Joint_City__c,Joint_DOB__c,Joint_FICO_Score__c,Joint_First_Name__c,Joint_Last_Name__c,
             Joint_SSN__c,Joint_State__c,Joint_Zip_Code__c,Latest_LT_Loan_Agreement__c,Legal_Description__c,Loan_Amount__c,Loan_Pmt_Amount__c,
@@ -199,7 +199,16 @@ public class SolarLoanController {
                 
             //------------------------------------------------validation check ------------------------------------------------------//
 
-            if((SolarLoanList[0].Bank_Account_Number__c != null && SolarLoanList[0].Bank_Account_Number__c == 'Review and verify' && Stage3ErrorCheck != 'True') ||
+            if(SolarLoanList[0].Non_Solar_Amount__c == null && (SolarLoanList[0].Product_Loan_Type__c == 'Integrated Solar Shingles' ||
+                                                                SolarLoanList[0].Product_Loan_Type__c == 'SolarPlus' ||
+                                                                SolarLoanList[0].Product_Loan_Type__c == 'SolarPlusITC')){
+								
+				Stage3MissingFields = 'Please enter Non Solar Amount.';
+				Stage3ErrorCheck = 'True';
+				
+            }
+            
+            else if((SolarLoanList[0].Bank_Account_Number__c != null && SolarLoanList[0].Bank_Account_Number__c == 'Review and verify' && Stage3ErrorCheck != 'True') ||
                 (SolarLoanList[0].FNI__c != null && SolarLoanList[0].FNI__c == 'Review and verify' && Stage3ErrorCheck != 'True')){
 								
 				Stage3MissingFields = 'Please review and enter valid input for Bank Account Number or FNI.';
