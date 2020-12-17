@@ -16,9 +16,11 @@
 				console.log(res);
                 var submenu = res['SubMenu'];
                 var userstatus = res['UserStatus'];
-                var userstatusEFT = res['UserStatusEFT'];
+				var userstatusEFT = res['UserStatusEFT'];
+				var userstatusaddresschange = res['UserStatusAddressChange'];
                 component.set("v.IsUserInGroup",userstatus);
-                component.set("v.IsUserInEFTGroup",userstatusEFT);
+				component.set("v.IsUserInEFTGroup",userstatusEFT);
+				component.set("v.IsUserInAddressChangeGroup",userstatusaddresschange);
                 var menu = res['Menu'];  
 				var LeftMenu = [];
 				var RightMenu= [];             
