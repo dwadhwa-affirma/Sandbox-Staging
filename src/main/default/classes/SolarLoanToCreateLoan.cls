@@ -7,6 +7,14 @@ public class SolarLoanToCreateLoan {
     public static String ErrorLoanTrackingLocator;
     public static String loanAPI;
     
+    //-----------------------------------------------------Brand--------------------------------------------------------------------//
+
+    public static HttpRequest req11 = new HttpRequest();
+    public static HttpResponse res11;
+    public static Http http11 = new Http();
+    public static string responseBody11;
+    public static string Brand;
+        
     //------------------------------------------------System is online/offline-----------------------------------------------------//
 
     public static HttpRequest req10 = new HttpRequest();
@@ -219,7 +227,11 @@ public class SolarLoanToCreateLoan {
                         responseBody0 = res0.getBody();
                         System.debug('Existing solar loan::'+responseBody0);    
                     }
-                        
+                    else{
+                        //responseBody11 = '{"LoanId" : "7500","Payment" : "4500.00"}';
+                        responseBody0 = '[{"LoanId":"7500","Payment":"4500.00","CloseDate":"","CardOwner":null,"Locator":"33","Status":null,"Error":null,"ErrorDetails":null}]';
+                    }
+
                     if(responseBody0 != '' && responseBody0 != null){        
                         List<object> results = (List<Object>) JSON.deserializeUntyped(responseBody0);      
                         System.debug('Response is ....' + results);
@@ -343,7 +355,41 @@ public class SolarLoanToCreateLoan {
                             system.debug('ErrorLoanLocator' + ErrorLoanLocator);
                         }
                     }
-                
+                    
+                    if(sl.Brand__c == null || sl.Brand__c == ''){
+
+                        req11.setEndpoint(loanAPI+'/PSAuto/GetAccountBrand?accountNumber='+AccountNumber);
+                        req11.setMethod('GET');
+                        req11.setHeader('Content-Type', 'application/json');
+                        req11.setHeader('Accept', 'application/json');
+                        req11.setTimeout(60000); 
+                            
+                        if(!Test.isRunningTest()){                       
+                            res11 = http11.send(req11);
+                            responseBody11 = res11.getBody();
+                            System.debug('Brand ::'+res11.getBody());    
+                        }else{
+                            responseBody11 = '{"Reference" : "BC01"}';
+                        }
+                        if(responseBody11 !=''){        
+                            Map<String,Object> results = (Map<String,Object>) JSON.deserializeUntyped(responseBody11);      
+                            System.debug('Brand response is....' + results);
+                            if(results.size() > 0){
+                                for(String key : results.keySet()){                   			
+                                    if(key == 'Reference'){
+                                        Brand = String.valueOf(results.get(key));
+                                    }
+                                }
+                            }
+                        }
+
+                        if(Brand == 'BC01')
+                            Brand = 'Chevron';
+
+                        else if(Brand == 'BC02')
+                            Brand = 'Spectrum';
+
+                    }
                     
     //----------------------------------------------------Create Loan Name--------------------------------------------------//                
                     if(sl.Joint_SSN__c != null){
@@ -647,6 +693,7 @@ public class SolarLoanToCreateLoan {
                     s.id = sl.Id;       
                     s.Due_Date__c = System.Today() + 60;
                     s.continue__c = false;
+                    s.Brand__c = Brand;
 
                     if(sl.Term_months__c != null){
                         Month = Integer.Valueof(sl.Term_months__c) - 1;
@@ -700,7 +747,7 @@ public class SolarLoanToCreateLoan {
             for(Solar_Loans__c sl : solarloans){
                 
                 
-                System.debug('Chceking if the system is online!');
+                /*System.debug('Chceking if the system is online!');
                 req10.setEndpoint(loanAPI+'/EFT/GetGeneralEpisysInformation');
                 req10.setMethod('GET');
                 req10.setHeader('Content-Type', 'application/json');
@@ -729,7 +776,7 @@ public class SolarLoanToCreateLoan {
                             }
                         }
                     }
-                }
+                }*/
                 
                 system.debug('mode'+mode);
                 if(mode == false){
