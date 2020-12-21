@@ -356,6 +356,8 @@ public class SolarLoanToCreateLoan {
                         }
                     }
                     
+    //----------------------------------------------Fetching Brand------------------------------------------------------//
+                    
                     if(sl.Brand__c == null || sl.Brand__c == ''){
 
                         req11.setEndpoint(loanAPI+'/PSAuto/GetAccountBrand?accountNumber='+AccountNumber);
