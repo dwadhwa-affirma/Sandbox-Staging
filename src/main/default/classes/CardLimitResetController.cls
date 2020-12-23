@@ -366,8 +366,8 @@ public class CardLimitResetController {
             system.debug('Member - '+pa.PersonID__c);
 
             Account acc = [select id,name,SSN_TIN_Encrypted__pc from Account where id =:pa.PersonID__c limit 1];
-            //SSN = acc.SSN_TIN_Encrypted__pc;
-            SSN = '123456789';
+            SSN = acc.SSN_TIN_Encrypted__pc;
+            //SSN = '123456789';
             system.debug('SSN'+SSN);
 
             System.debug('GetMemberNumber method called');
@@ -405,7 +405,7 @@ public class CardLimitResetController {
             req.setMethod('POST');
             req.setHeader('Content-Type', 'application/json');
             req.setHeader('Accept', 'application/json');
-            jsonData = '{"Locator":' + '\"'+ cardlocator +'\","AccountNumber":' + '\"'+ AccountNumber +'\","PosLimit":' + '\"'+ atmlimit +'\","AuthLimit":' + '\"'+ authlimit +'\"}';                 
+            jsonData = '{"Locator":' + '\"'+ cardlocator +'\","AccountNumber":' + '\"'+ AccountNumber +'\","PosLimit":' + '\"'+ authlimit +'\","AuthLimit":' + '\"'+ atmlimit +'\"}';                 
             system.debug('test'+jsonData);
             req.setBodyAsBlob(Blob.valueof(jsonData));
             req.setTimeout(60000);                    
@@ -425,6 +425,26 @@ public class CardLimitResetController {
         if(type == 'Reset Card Limits'){
 
             System.debug('Reset Card Limits');
+
+            req.setEndpoint(loanAPI+'/CardLimitReset/UpdateCardLimits');
+            req.setMethod('POST');
+            req.setHeader('Content-Type', 'application/json');
+            req.setHeader('Accept', 'application/json');
+            jsonData = '{"Locator":' + '\"'+ cardlocator +'\","AccountNumber":' + '\"'+ AccountNumber +'\","PosLimit":' + '\"'+ authlimit +'\","AuthLimit":' + '\"'+ atmlimit +'\"}';                 
+            system.debug('test'+jsonData);
+            req.setBodyAsBlob(Blob.valueof(jsonData));
+            req.setTimeout(60000);                    
+            
+            system.debug('Request: '+jsonData);
+
+            if(!Test.isRunningTest()){                       
+                res = http.send(req);
+                responseBody = res.getBody();
+                System.debug('ResponseBody ::'+responseBody);    
+            }
+            else{
+                responseBody = '{"Locator":"120","AccountNumber":"0000214414","atmlimit":"5000","AuthLimit":"2500"}';
+            }
         }
 
         system.debug('recordId'+recordId);
@@ -440,7 +460,7 @@ public class CardLimitResetController {
         cl.Member__c = pa.PersonID__c;
 
         insert cl;
-        createCase(cl,cardnumber,type,authlimit,atmlimit,membername);
+        //createCase(cl,cardnumber,type,authlimit,atmlimit,membername);
 
         return null;    
     }
