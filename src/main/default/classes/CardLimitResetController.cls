@@ -1,5 +1,10 @@
 public class CardLimitResetController {
 
+    //CardLimitReset/GetCards
+    //CardLimitReset/UpdateCardLimits
+    //EFT/GetAccountBySSN
+    //Account/IsDormantAccount
+
     //------------------------------- Getting Stage Details and Member Account Details-----------------------------------------------//
     @AuraEnabled
     public static map<string,object> getStageData(string recordId, string sObjectType){
@@ -67,11 +72,10 @@ public class CardLimitResetController {
         } 
         
         for(Person_Account__c var: paList){           			
-		         	if(typeList.contains(var.TypeTranslate__c)){
-        				result.add(var);
-        			}    
-        			
-            }
+            if(typeList.contains(var.TypeTranslate__c)){
+                result.add(var);
+            }       
+        }
         resultmap.put('PersonList', result);
       
     	return resultmap;
@@ -145,6 +149,12 @@ public class CardLimitResetController {
         string loanAPI;
         String jsonData;
 
+        HttpRequest req1 = new HttpRequest();
+        HttpResponse res1;
+        Http http1 = new Http();
+        string responseBody1;
+        string isDormant;
+
         String Type;
         String SSN;
         List<String> CardNumber = new List<String>();
@@ -192,7 +202,33 @@ public class CardLimitResetController {
             SSN = acc.SSN_TIN_Encrypted__pc;  
             //SSN = '123456789';
 
-            system.debug('SSN'+SSN);      
+            system.debug('SSN'+SSN);
+            
+            req1.setEndpoint(loanAPI+'/Account/IsDormantAccount?accountNumber='+accountNumber);
+            req1.setMethod('GET');
+            req1.setHeader('Content-Type', 'application/json');
+            req1.setHeader('Accept', 'application/json');
+            req1.setTimeout(60000); 
+
+            if(!Test.isRunningTest()){                       
+                res1 = http1.send(req1);
+                responseBody1 = res1.getBody();
+            }
+            else{
+                responseBody1 = '{"IsDormant":"false","Status":"OK","Error":"null","ErrorDetails":"null"}';   
+            }
+            if(responseBody1 !=''){        
+                Map<String,Object> results = (Map<String,Object>) JSON.deserializeUntyped(responseBody1);      
+                System.debug('Service response is ....' + results);
+                if(results.size() > 0){
+                    for(String key : results.keySet()){                   			
+                        if(key == 'IsDormant'){
+                            isDormant = string.valueOf(results.get(key));
+                        }
+                    }
+                }
+            }
+            system.debug('isDormant : ' + isDormant);
         }
         if(objType == Account.sObjectType){
             
@@ -209,47 +245,52 @@ public class CardLimitResetController {
 
         }
      
-        req.setEndpoint(loanAPI+'/CardLimitReset/GetCards');
-        req.setMethod('POST');
-        req.setHeader('Content-Type', 'application/json');
-        req.setHeader('Accept', 'application/json');
-        jsonData = '{"SSN":' + '\"'+ SSN +'\"}';                 
-        req.setBodyAsBlob(Blob.valueof(jsonData));
-        req.setTimeout(60000);                    
+        //----------------------------------------Checking if Membership is not dormant -----------------------------------------//
         
-        system.debug('Request: '+jsonData);
+        if(isDormant != 'true'){
 
-        if(!Test.isRunningTest()){                       
-            res = http.send(req);
-            responseBody = res.getBody();
-            System.debug('ResponseBody ::'+responseBody);    
-        }
-        else{
-            responseBody = '[{"CardNumber":"5460277067636965","ExpirationDate":"2021-10-01","CloseDate":"","CardOwner":null,"Locator":"33","Status":null,"Error":null,"ErrorDetails":null}]';
-
-        }
-        if(responseBody != '' && responseBody != null){        
-            List<object> results = (List<Object>) JSON.deserializeUntyped(responseBody);      
-            System.debug('Response is ....' + results);
+            req.setEndpoint(loanAPI+'/CardLimitReset/GetCards');
+            req.setMethod('POST');
+            req.setHeader('Content-Type', 'application/json');
+            req.setHeader('Accept', 'application/json');
+            jsonData = '{"SSN":' + '\"'+ SSN +'\"}';                 
+            req.setBodyAsBlob(Blob.valueof(jsonData));
+            req.setTimeout(60000);                    
             
-            if(results.size() > 0){
+            system.debug('Request: '+jsonData);
+
+            if(!Test.isRunningTest()){                       
+                res = http.send(req);
+                responseBody = res.getBody();
+                System.debug('ResponseBody ::'+responseBody);    
+            }
+            else{
+                responseBody = '[{"CardNumber":"5460277067636965","ExpirationDate":"2021-10-01","CloseDate":"","CardOwner":null,"Locator":"33","Status":null,"Error":null,"ErrorDetails":null}]';
+
+            }
+            if(responseBody != '' && responseBody != null){        
+                List<object> results = (List<Object>) JSON.deserializeUntyped(responseBody);      
+                System.debug('Response is ....' + results);
                 
-                for(Object key : results){ 
-                    CardDetailWrapperObject temp = new CardDetailWrapperObject();
-                    Map<String, Object> carddetail = (Map<String, Object>)key;
-                    string Card = string.valueof(carddetail.get('CardNumber'));
-                    temp.CardNumber =  string.valueof(carddetail.get('CardNumber'));
-                    temp.CardLocator =   string.valueof(carddetail.get('Locator'));
-                    resultList.add(temp);  
-                    system.debug('temp.CardNumber'+temp.CardNumber);
-                    system.debug('temp.CardLocator'+temp.CardLocator);
-                    system.debug('resultList'+resultList);
-                }
-            } 
+                if(results.size() > 0){
+                    
+                    for(Object key : results){ 
+                        CardDetailWrapperObject temp = new CardDetailWrapperObject();
+                        Map<String, Object> carddetail = (Map<String, Object>)key;
+                        string Card = string.valueof(carddetail.get('CardNumber'));
+                        temp.CardNumber =  string.valueof(carddetail.get('CardNumber'));
+                        temp.CardLocator =   string.valueof(carddetail.get('Locator'));
+                        resultList.add(temp);  
+                        system.debug('temp.CardNumber'+temp.CardNumber);
+                        system.debug('temp.CardLocator'+temp.CardLocator);
+                        system.debug('resultList'+resultList);
+                    }
+                } 
+            }
         }
-                        
+
         resultmap.put('CardList',resultList);
-        resultmap.put('CardList',resultList);
+        
 		return resultmap;
     }
     @AuraEnabled
