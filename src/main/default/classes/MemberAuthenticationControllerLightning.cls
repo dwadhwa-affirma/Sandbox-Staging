@@ -417,6 +417,9 @@ result.put('MultipleMemberNumberAlert', MultipleMemberNumberAlert); */
     {
         /*This method save Public Wallet log data in MAAP Log object*/
         system.debug('Email##' + Email );
+        
+        system.debug('Additional token 4 match' + AdditionalTokenOption4Match );
+        
         RecordType rec = GetRecordTypeData('Authenticated_Log__c', 'Public Wallet Log');         
         Authenticated_Log__c log = new Authenticated_Log__c();
         log.RecordTypeId= rec.id;
@@ -996,6 +999,10 @@ This query is working for Relaunch MAAP feature as well*/
                    Additional_Token_Option2_Match__c,
                    Additional_Token_Option5_Match__c,
                    Additional_Token_Option6_Match__c,
+                   Additional_Token_Option1__c,
+				   Additional_Token_Option2__c,
+				   Additional_Token_Option5__c,
+				   Additional_Token_Option6__c,
                    Loan_Detail_Match__c
                    From Authenticated_Log__c 
                    where createddate = Today and RecordTypeId= : rec.id and SalesforceID__c = : selectedID and IVR_GUID__c = :IVRGUIDFromUrl order by createddate desc Limit 1];					
@@ -1005,7 +1012,14 @@ This query is working for Relaunch MAAP feature as well*/
                        Member__c,Decision__c,CFCU_Wallet_Status__c,
                        Staff_Name__c,GUID__c,BeneficiaryDetailMatch__c,
                        Joint_OwnerDetailsMatch__c,CardNumberMatch__c,
-                       Additional_Token_Option1_Match__c,Additional_Token_Option2_Match__c,Additional_Token_Option5_Match__c,Additional_Token_Option6_Match__c,
+                       Additional_Token_Option1_Match__c,
+                       Additional_Token_Option2_Match__c,
+                       Additional_Token_Option5_Match__c,
+                       Additional_Token_Option6_Match__c,
+                       Additional_Token_Option1__c,
+				       Additional_Token_Option2__c,
+				       Additional_Token_Option5__c,
+				       Additional_Token_Option6__c,
                        Loan_Detail_Match__c
                        From Authenticated_Log__c 
                        where createddate = Today and RecordTypeId= : rec.id and SalesforceID__c = : selectedID and IVR_GUID__c != :IVRGUIDFromUrl  order by createddate desc Limit 1];
@@ -1042,8 +1056,14 @@ This query is working for Relaunch MAAP feature as well*/
         ReLoadAuthlog = [Select Id,SalesforceID__c,Member__c,
                          Decision__c,CFCU_Wallet_Status__c,Staff_Name__c,GUID__c,
                          BeneficiaryDetailMatch__c,Joint_OwnerDetailsMatch__c,
-                         CardNumberMatch__c,Additional_Token_Option1_Match__c,Additional_Token_Option2_Match__c,
-                         Additional_Token_Option5_Match__c,Additional_Token_Option6_Match__c,
+                         CardNumberMatch__c,Additional_Token_Option1_Match__c,
+                         Additional_Token_Option2_Match__c,
+                         Additional_Token_Option5_Match__c,
+                         Additional_Token_Option6_Match__c,
+                         Additional_Token_Option1__c,
+				   		 Additional_Token_Option2__c,
+				         Additional_Token_Option5__c,
+				         Additional_Token_Option6__c,
                          Loan_Detail_Match__c
                          From Authenticated_Log__c where createddate = Today and RecordTypeId= : rec.id and SalesforceID__c = : selectedID AND CreatedDate >=: Datetime.now().addMinutes(minutes) and IVR_GUID__c =:IVRGUIDFromUrl  order by createddate desc Limit 1];
         
@@ -1053,8 +1073,14 @@ This query is working for Relaunch MAAP feature as well*/
         }else{
             ReLoadAuthlog = [Select Id,SalesforceID__c,Member__c,Decision__c,
                              CFCU_Wallet_Status__c,Staff_Name__c,GUID__c,BeneficiaryDetailMatch__c,Joint_OwnerDetailsMatch__c,
-                             CardNumberMatch__c,Additional_Token_Option1_Match__c,Additional_Token_Option2_Match__c,
-                             Additional_Token_Option5_Match__c,Additional_Token_Option6_Match__c,
+                             CardNumberMatch__c,Additional_Token_Option1_Match__c,
+                             Additional_Token_Option2_Match__c,
+                             Additional_Token_Option5_Match__c,
+                             Additional_Token_Option6_Match__c,
+                             Additional_Token_Option1__c,
+				   			 Additional_Token_Option2__c,
+				   			 Additional_Token_Option5__c,
+				   			 Additional_Token_Option6__c,
                              Loan_Detail_Match__c
                              From Authenticated_Log__c where createddate = Today and RecordTypeId= : rec.id and SalesforceID__c = : selectedID AND CreatedDate >=: Datetime.now().addMinutes(minutes)   order by createddate desc Limit 1];
             if(ReLoadAuthlog.size() > 0)
@@ -1069,7 +1095,12 @@ within same day on tab switch as we don't need to maintain state of buttons when
 */
         ReLoadManualSession = [Select Id,SalesforceID__c,Member__c,Decision__c,CFCU_Wallet_Status__c,Staff_Name__c,GUID__c,BeneficiaryDetailMatch__c,Joint_OwnerDetailsMatch__c,
                                CardNumberMatch__c,Additional_Token_Option1_Match__c,Additional_Token_Option2_Match__c,
-                               Additional_Token_Option5_Match__c,Additional_Token_Option6_Match__c,
+                               Additional_Token_Option5_Match__c,
+                               Additional_Token_Option6_Match__c,
+                               Additional_Token_Option1__c,
+				   			   Additional_Token_Option2__c,
+				   			   Additional_Token_Option5__c,
+				   			   Additional_Token_Option6__c,
                                Loan_Detail_Match__c
                                From Authenticated_Log__c where createddate = Today and CFCU_Wallet_Status__c='Pass' and RecordTypeId= : rec.id and SalesforceID__c = : selectedID AND CreatedDate >=: Datetime.now().addMinutes(-2)  order by createddate desc Limit 1];
         /*
@@ -1079,7 +1110,11 @@ ReLoadManualSession list is to load data when user is doing manual search if the
         if(ReLoadManualSession.size() == 0)
         {
             ReLoadManualSession = [Select Id,SalesforceID__c,Member__c,Decision__c,CFCU_Wallet_Status__c,Staff_Name__c,GUID__c,BeneficiaryDetailMatch__c,Joint_OwnerDetailsMatch__c,
-                                   CardNumberMatch__c,Additional_Token_Option1_Match__c,Additional_Token_Option2_Match__c,Additional_Token_Option5_Match__c,Additional_Token_Option6_Match__c,
+                                   CardNumberMatch__c,Additional_Token_Option1_Match__c,
+                                   Additional_Token_Option2_Match__c,
+                                   Additional_Token_Option5_Match__c,Additional_Token_Option6_Match__c,
+                                   Additional_Token_Option1__c,Additional_Token_Option2__c,
+                                   Additional_Token_Option5__c,Additional_Token_Option6__c,
                                    Loan_Detail_Match__c
                                    From Authenticated_Log__c where createddate = Today and CFCU_Wallet_Status__c='Fail' and RecordTypeId= : rec.id and SalesforceID__c = : selectedID AND CreatedDate >=: Datetime.now().addMinutes(minutes) order by createddate desc Limit 1];
             
@@ -1358,7 +1393,9 @@ result.put('Emails',EmailList);*/
             RecordType rec = GetRecordTypeData('Authenticated_Log__c', 'Public Wallet Log');
             List<Authenticated_Log__c> authlog = new List<Authenticated_Log__c>();  
             authlog = [Select Id,SalesforceID__c,Current_User__c,Member__c,Public_Wallet_Status__c,DOBMatch__c,IdNumberMatch__c,MMNMatch__c,
-                       EmailMatch__c,Additional_Token_Option3_Match__c,Additional_Token_Option4_Match__c
+                       EmailMatch__c,Additional_Token_Option3_Match__c,Additional_Token_Option4_Match__c,
+                       Additional_Token_Option3__c,
+                       Additional_Token_Option4__c
                        From Authenticated_Log__c 
                        where createddate = Today and RecordTypeId= : rec.id and SalesforceID__c = : MemberId order by createddate desc Limit 1];          
             if(authlog.size() > 0)
@@ -1370,6 +1407,8 @@ result.put('Emails',EmailList);*/
                 result.put('EmailMatch',authlog[0].EmailMatch__c);
                 result.put('AdditionalTokenMatch',authlog[0].Additional_Token_Option3_Match__c);
                 result.put('AdditionalToken4Match',authlog[0].Additional_Token_Option4_Match__c);
+                result.put('Additional_Token_Option3__c',authlog[0].Additional_Token_Option3__c);
+                result.put('Additional_Token_Option4__c',authlog[0].Additional_Token_Option4__c);
             }
             //--------------------------Code to maintain state of Pass/ Fail Button within a day-----------------------------------
             
@@ -1905,6 +1944,7 @@ IsCFCUWalletAvailable = true;
             DebitPinStatus ='Fail';
         }
         system.debug('IsUserSessionLoaded##' + IsUserSessionLoaded);
+        system.debug('DebitPinStatus##' + DebitPinStatus);
         
         if(ReLoadRequired == true && IsUserSessionLoaded == false)
         {

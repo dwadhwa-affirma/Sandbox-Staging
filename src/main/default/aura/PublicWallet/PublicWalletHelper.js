@@ -62,6 +62,90 @@
                 
                 if(component.get("v.IsUserSessionLoaded") == true)
                 {
+                    debugger;
+                    if(result.DOBMatch == undefined){
+                        component.find('DobPassButton').set("v.variant", "neutral");
+                        component.find('DobFailButton').set("v.variant", "neutral");
+                    }	
+                    if(result.DOBMatch == 'Pass'){
+                        component.find('DobPassButton').set("v.variant", "success");
+                        component.find('DobFailButton').set("v.variant", "neutral");
+                    }
+                   if(result.DOBMatch == 'Fail'){
+                        component.find('DobFailButton').set("v.variant", "destructive");
+                        component.find('DobPassButton').set("v.variant", "neutral");
+                    }
+                    
+                    if(result.IdNumberMatch == undefined){
+                        component.find('DLPassButton').set("v.variant", "neutral");
+                        component.find('DLFailButton').set("v.variant", "neutral");
+                    }	
+                    if(result.IdNumberMatch == 'Pass'){
+                        component.find('DLPassButton').set("v.variant", "success");
+                        component.find('DLFailButton').set("v.variant", "neutral");
+                    }
+                    if(result.IdNumberMatch == 'Fail'){
+                        component.find('DLFailButton').set("v.variant", "destructive");
+                        component.find('DLPassButton').set("v.variant", "neutral");
+                    }
+                    
+                    if(result.MMNMatch ==undefined){
+                        component.find('MothersMaidenNamePassButton').set("v.variant", "neutral");
+                        component.find('MothersMaidenNameFailButton').set("v.variant", "neutral");
+                    }
+                    if(result.MMNMatch == 'Pass'){
+                        component.find('MothersMaidenNamePassButton').set("v.variant", "success");
+                        component.find('MothersMaidenNameFailButton').set("v.variant", "neutral");
+                    }
+                   if(result.MMNMatch == 'Fail'){
+                        component.find('MothersMaidenNameFailButton').set("v.variant", "destructive");
+                        component.find('MothersMaidenNamePassButton').set("v.variant", "neutral");
+                    }
+                    
+                    if(result.EmailMatch == undefined){
+                        component.find('EmailPassButton').set("v.variant", "neutral");
+                        component.find('EmailFailButton').set("v.variant", "neutral");
+                    }
+                    if(result.EmailMatch == 'Pass'){
+                        component.find('EmailPassButton').set("v.variant", "success");
+                        component.find('EmailFailButton').set("v.variant", "neutral");
+                    }
+                    if(result.EmailMatch == 'Fail'){
+                        component.find('EmailFailButton').set("v.variant", "destructive");
+                        component.find('EmailPassButton').set("v.variant", "neutral");
+                    }
+                    
+                    debugger;
+                    if(result.AdditionalTokenMatch == undefined){
+                        component.find('TokenPassButton1').set("v.variant", "neutral");
+                        component.find('TokenFailButton1').set("v.variant", "neutral");
+                    }
+                    if(result.AdditionalTokenMatch == 'Pass'){
+                        component.find('TokenPassButton1').set("v.variant", "success");
+                        component.find('TokenFailButton1').set("v.variant", "neutral");
+                        component.find("AdditionalToken1").set("v.value",result.Additional_Token_Option3__c);
+                    }
+                    if(result.AdditionalTokenMatch == 'Fail'){
+                        component.find('TokenFailButton1').set("v.variant", "destructive");
+                        component.find('TokenPassButton1').set("v.variant", "neutral");
+                        component.find("AdditionalToken1").set("v.value",result.Additional_Token_Option3__c);
+                    }
+                    
+                    if(result.AdditionalToken4Match == undefined){
+                        component.find('TokenPassButton2').set("v.variant", "neutral");
+                        component.find('TokenFailButton2').set("v.variant", "neutral");
+                    }
+                    if(result.AdditionalToken4Match == 'Pass'){
+                        component.find('TokenPassButton2').set("v.variant", "success");
+                        component.find('TokenFailButton2').set("v.variant", "neutral");
+                        component.find("AdditionalToken2").set("v.value",result.Additional_Token_Option4__c);
+                    }
+                    if(result.AdditionalToken4Match == 'Fail'){
+                        component.find('TokenFailButton2').set("v.variant", "destructive");
+                        component.find('TokenPassButton2').set("v.variant", "neutral");
+                        component.find("AdditionalToken2").set("v.value",result.Additional_Token_Option4__c);
+                    }
+                    
                     if(result.ReLaunchAuthPublicWalletStatus != undefined)
                     {
                         if(result.ReLaunchAuthDOBMatch != undefined)
@@ -381,6 +465,7 @@
         if(AdditionalTokenOption3Match == undefined){
             AdditionalTokenOption3Match ='';
         }
+        
         
         var AdditionalTokenOption4 = component.get("v.AdditionalTokenOption4");
         if(AdditionalTokenOption4Match == undefined){

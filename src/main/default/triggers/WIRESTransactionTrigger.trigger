@@ -82,6 +82,9 @@ trigger WIRESTransactionTrigger on WIRES_Transaction__c (before insert, after in
             if(objWIRESTransaction.Frequency__c == 'Recurring'){
                 objWIRESTransaction.SendOn__c = null;    	
             }
+
+            if(objWIRESTransaction.Source__c == 'Branch')
+                objWIRESTransaction.Status__c = 'N/A';
             
             List<Account_Details__c> listAccountDetails = [select id,Brand__c,ID1__c,OPEN_DATE__c from Account_Details__c where Name =: AccountNo 
                                                            and ID1__c =: objWIRESTransaction.Share_ID__c limit 1];

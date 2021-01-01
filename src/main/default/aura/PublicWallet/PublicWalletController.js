@@ -1,6 +1,7 @@
 ({
     doInit : function(component, event, helper) {
         
+        
         var memberId = component.get("v.recordId");
         //var PublicWalletStatusForDay = component.get("v.PublicWalletStatusForDay");
         var IVRGUIDFromUrl = component.get("v.IVRGUIDFromUrl");
@@ -11,6 +12,10 @@
         component.set("v.FailedCount",0 );
         component.set("v.IsSubmitClicked",false);
         component.set("v.IsButtonDisabled", true);
+        
+        component.find("AdditionalToken1").set("v.value","Select");
+        component.find("AdditionalToken2").set("v.value","Select");
+        
         helper.buttonOnLoad(component, event, helper);
         var params = event.getParam('arguments');
         if (params) {
@@ -381,8 +386,8 @@
                                                                 
                                                                 Button.set("v.variant", "destructive");
                                                                 findOtherButton.set("v.variant", "neutral");
-                                                                AdditionalTokenOption3Match = 'Fail';
-                                                                component.set("v.AdditionalTokenOption3Match",AdditionalTokenOption4Match);
+                                                                AdditionalTokenOption4Match = 'Fail';
+                                                                component.set("v.AdditionalTokenOption4Match",AdditionalTokenOption4Match);
                                                                 if(QuestionAttempt >=3){
                                                                     component.set("v.IsButtonDisabled",false);
                                                                 }

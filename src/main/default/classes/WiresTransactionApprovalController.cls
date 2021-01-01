@@ -11,8 +11,7 @@ public class WiresTransactionApprovalController {
                                           Home_Phone_Stable_Review__c,ID_Verification_Review__c, Mobile_Phone_Stable_Review__c, 
                                           Previous_Wires_Review__c, Work_Phone_Stable_Review__c, FlagAccountOpenfor45Days__c,
                                           FlagEmailStablefor30Days__c, FlagHomePhoneStablefor30Days__c, FlagMobilePhoneStablefor30Days__c, FlagWorkPhoneStablefor30Days__c,
-                                          Account_Stable_2nd_Review__c, Available_Balance_2nd_Review__c, Email_Stable_2nd_Review__c, Home_Phone_Stable_2nd_Review__c, ID_Verification_2nd_Review__c,
-                                          Mobile_Phone_Stable_2nd_Review__c, Previous_Wires_2nd_Review__c, Second_Approval_Review_Reason__c, Work_Phone_Stable_2nd_Review__c                                           
+                                          Second_Approval_Review_Reason__c                                           
                                           from WIRES_Transaction__c where id=:WiresRecordId limit 1];
         
         string isApprovalVisible;
@@ -30,7 +29,7 @@ public class WiresTransactionApprovalController {
         }
         System.debug('Status'+WiresList.Approval_Status__c);
         if(WiresList.Approval_Status__c=='Good Funds Check Failed' 
-           || (WiresList.Approval_Status__c=='Pending for Approval' && WiresList.TotalFromAccount__c>250000)){
+           || (WiresList.Approval_Status__c=='Pending for Approval')){
             
             Group grpA = [SELECT DeveloperName,Email,Id,Name,RelatedId,Type 
                           FROM Group WHERE DeveloperName ='Branch_Group_A' Limit 1];
@@ -52,6 +51,10 @@ public class WiresTransactionApprovalController {
                           FROM Group WHERE DeveloperName ='Branch_Group_E' Limit 1];
             GroupMember[] grpEmembers  = [SELECT GroupId,Id,UserOrGroupId FROM GroupMember where GroupId =: grpE.id and UserOrGroupId =: UserInfo.getUserId()];
             
+           	if(WiresList.TotalFromAccount__c>0 && WiresList.TotalFromAccount__c<=10000){
+                isApprovalVisible = 'true';
+            }
+               
             if(WiresList.TotalFromAccount__c>10000 && WiresList.TotalFromAccount__c<=50000){
                 if(grpAmembers.size()>0 || grpBmembers.size()>0 || grpCmembers.size()>0 || grpDmembers.size()>0){
                     isApprovalVisible = 'true';
@@ -335,15 +338,17 @@ public class WiresTransactionApprovalController {
             
             
             List<OrgWideEmailAddress> listAdd = [select Id,Address,DisplayName  from OrgWideEmailAddress where Address =: emailadd];
-            
-            string body = listEmailTemplate[0].Body;
-            body=body.replace('{BankName__c}', wt.ToAccoutId__r.BankName__c);
-            body=body.replace('{TotalFromAccount__c}',string.valueOf(wt.TotalFromAccount__c));
-            body=body.replace('{ToAccoutId__c}', wt.ToAccoutId__r.Recipient_AccountNumber__c);
-            body=body.replace('{FromAccount__c}', wt.FromAccount__c);
-            mail.setPlainTextBody(body);
-            mail.setOrgWideEmailAddressId(listAdd[0].Id);
-            mails.add(mail);
+			
+            if(!Test.isRunningTest()){            
+                string body = listEmailTemplate[0].Body;
+                body=body.replace('{BankName__c}', wt.ToAccoutId__r.BankName__c);
+                body=body.replace('{TotalFromAccount__c}',string.valueOf(wt.TotalFromAccount__c));
+                body=body.replace('{ToAccoutId__c}', wt.ToAccoutId__r.Recipient_AccountNumber__c);
+                body=body.replace('{FromAccount__c}', wt.FromAccount__c);
+                mail.setPlainTextBody(body);
+                mail.setOrgWideEmailAddressId(listAdd[0].Id);
+                mails.add(mail);
+            }
         }
         
         

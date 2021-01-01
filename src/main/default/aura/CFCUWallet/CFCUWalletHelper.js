@@ -135,10 +135,12 @@
                     if(result.CFCULastSessionInfo[0].Additional_Token_Option1_Match__c == 'Pass'){
                         component.find('TokenPassButton1').set("v.variant", "success");
                         component.find('TokenFailButton1').set("v.variant", "neutral");
+            		    component.find("AdditionalToken1").set("v.value",result.CFCULastSessionInfo[0].Additional_Token_Option1__c);
                     }
                     if(result.CFCULastSessionInfo[0].Additional_Token_Option1_Match__c == 'Fail'){
                         component.find('TokenFailButton1').set("v.variant", "destructive");
                         component.find('TokenPassButton1').set("v.variant", "neutral");
+                        component.find("AdditionalToken1").set("v.value",result.CFCULastSessionInfo[0].Additional_Token_Option1__c);
                     }
                     
                     if(result.CFCULastSessionInfo[0].Additional_Token_Option2_Match__c == undefined){
@@ -148,10 +150,12 @@
                     if(result.CFCULastSessionInfo[0].Additional_Token_Option2_Match__c == 'Pass'){
                         component.find('TokenPassButton2').set("v.variant", "success");
                         component.find('TokenFailButton2').set("v.variant", "neutral");
+                        component.find("AdditionalToken2").set("v.value",result.CFCULastSessionInfo[0].Additional_Token_Option2__c);
                     }
                     if(result.CFCULastSessionInfo[0].Additional_Token_Option2_Match__c == 'Fail'){
                         component.find('TokenFailButton2').set("v.variant", "destructive");
                         component.find('TokenPassButton2').set("v.variant", "neutral");
+                        component.find("AdditionalToken2").set("v.value",result.CFCULastSessionInfo[0].Additional_Token_Option2__c);
                     }
                     
                     
@@ -162,10 +166,12 @@
                     if(result.CFCULastSessionInfo[0].Additional_Token_Option5_Match__c == 'Pass'){
                         component.find('TokenPassButton3').set("v.variant", "success");
                         component.find('TokenFailButton3').set("v.variant", "neutral");
+                        component.find("AdditionalToken3").set("v.value",result.CFCULastSessionInfo[0].Additional_Token_Option5__c);	
                     }
                     if(result.CFCULastSessionInfo[0].Additional_Token_Option5_Match__c == 'Fail'){
                         component.find('TokenFailButton3').set("v.variant", "destructive");
                         component.find('TokenPassButton3').set("v.variant", "neutral");
+                        component.find("AdditionalToken3").set("v.value",result.CFCULastSessionInfo[0].Additional_Token_Option5__c);
                     }
                     
                     if(result.CFCULastSessionInfo[0].Additional_Token_Option6_Match__c == undefined){
@@ -175,13 +181,13 @@
                     if(result.CFCULastSessionInfo[0].Additional_Token_Option6_Match__c == 'Pass'){
                         component.find('TokenPassButton4').set("v.variant", "success");
                         component.find('TokenFailButton4').set("v.variant", "neutral");
+                        component.find("AdditionalToken4").set("v.value",result.CFCULastSessionInfo[0].Additional_Token_Option6__c);
                     }
                     if(result.CFCULastSessionInfo[0].Additional_Token_Option6_Match__c == 'Fail'){
                         component.find('TokenFailButton4').set("v.variant", "destructive");
                         component.find('TokenPassButton4').set("v.variant", "neutral");
+                        component.find("AdditionalToken4").set("v.value",result.CFCULastSessionInfo[0].Additional_Token_Option6__c);
                     }
-                    
-                    
                 }
                 else if(result.CFCULastSessionInfo !=undefined && result.CFCULastSessionInfo.length > 0 && result.CFCULastSessionInfo[0].CFCU_Wallet_Status__c != undefined  && component.get("v.IsUserSessionLoaded") == false  && component.get("v.IsReLoadRequired") == false){
                     
@@ -256,10 +262,12 @@
                         if(result.CFCULastSessionInfo[0].Additional_Token_Option1_Match__c == 'Pass'){
                             component.find('TokenPassButton1').set("v.variant", "success");
                             component.find('TokenFailButton1').set("v.variant", "neutral");
+                            component.find("AdditionalToken1").set("v.value",result.CFCULastSessionInfo[0].Additional_Token_Option1__c);
                         }
                         if(result.CFCULastSessionInfo[0].Additional_Token_Option1_Match__c == 'Fail'){
                             component.find('TokenFailButton1').set("v.variant", "destructive");
                             component.find('TokenPassButton1').set("v.variant", "neutral");
+                            component.find("AdditionalToken1").set("v.value",result.CFCULastSessionInfo[0].Additional_Token_Option1__c);
                         }
                         
                         if(result.CFCULastSessionInfo[0].Additional_Token_Option2_Match__c == undefined){
@@ -269,10 +277,12 @@
                         if(result.CFCULastSessionInfo[0].Additional_Token_Option2_Match__c == 'Pass'){
                             component.find('TokenPassButton2').set("v.variant", "success");
                             component.find('TokenFailButton2').set("v.variant", "neutral");
+                            component.find("AdditionalToken2").set("v.value",result.CFCULastSessionInfo[0].Additional_Token_Option2__c);
                         }
                         if(result.CFCULastSessionInfo[0].Additional_Token_Option2_Match__c == 'Fail'){
                             component.find('TokenFailButton2').set("v.variant", "destructive");
                             component.find('TokenPassButton2').set("v.variant", "neutral");
+                            component.find("AdditionalToken2").set("v.value",result.CFCULastSessionInfo[0].Additional_Token_Option2__c);
                         }
                         
                         if(result.CFCULastSessionInfo[0].Additional_Token_Option5_Match__c == undefined){
@@ -282,10 +292,12 @@
                         if(result.CFCULastSessionInfo[0].Additional_Token_Option5_Match__c == 'Pass'){
                             component.find('TokenPassButton3').set("v.variant", "success");
                             component.find('TokenFailButton3').set("v.variant", "neutral");
+                            component.find("AdditionalToken3").set("v.value",result.CFCULastSessionInfo[0].Additional_Token_Option5__c);
                         }
                         if(result.CFCULastSessionInfo[0].Additional_Token_Option5_Match__c == 'Fail'){
                             component.find('TokenFailButton3').set("v.variant", "destructive");
                             component.find('TokenPassButton3').set("v.variant", "neutral");
+                            component.find("AdditionalToken3").set("v.value",result.CFCULastSessionInfo[0].Additional_Token_Option5__c);
                         }
                         
                         if(result.CFCULastSessionInfo[0].Additional_Token_Option6_Match__c == undefined){
@@ -295,10 +307,12 @@
                         if(result.CFCULastSessionInfo[0].Additional_Token_Option6_Match__c == 'Pass'){
                             component.find('TokenPassButton4').set("v.variant", "success");
                             component.find('TokenFailButton4').set("v.variant", "neutral");
+                            component.find("AdditionalToken4").set("v.value",result.CFCULastSessionInfo[0].Additional_Token_Option6__c);
                         }
                         if(result.CFCULastSessionInfo[0].Additional_Token_Option6_Match__c == 'Fail'){
                             component.find('TokenFailButton4').set("v.variant", "destructive");
                             component.find('TokenPassButton4').set("v.variant", "neutral");
+                            component.find("AdditionalToken4").set("v.value",result.CFCULastSessionInfo[0].Additional_Token_Option6__c);
                         }
                         
                     }		    		
@@ -372,10 +386,12 @@
                             if(result.CFCUReloadInfo[0].Additional_Token_Option1_Match__c == 'Pass'){
                                 component.find('TokenPassButton1').set("v.variant", "success");
                                 component.find('TokenFailButton1').set("v.variant", "neutral");
+                                component.find("AdditionalToken1").set("v.value",result.CFCULastSessionInfo[0].Additional_Token_Option1__c);
                             }
                             if(result.CFCUReloadInfo[0].Additional_Token_Option1_Match__c == 'Fail'){
                                 component.find('TokenFailButton1').set("v.variant", "destructive");
                                 component.find('TokenPassButton1').set("v.variant", "neutral");
+                                component.find("AdditionalToken1").set("v.value",result.CFCULastSessionInfo[0].Additional_Token_Option1__c);
                             }
                             
                             if(result.CFCUReloadInfo[0].Additional_Token_Option2_Match__c == undefined){
@@ -385,10 +401,12 @@
                             if(result.CFCUReloadInfo[0].Additional_Token_Option2_Match__c == 'Pass'){
                                 component.find('TokenPassButton2').set("v.variant", "success");
                                 component.find('TokenFailButton2').set("v.variant", "neutral");
+                                component.find("AdditionalToken2").set("v.value",result.CFCULastSessionInfo[0].Additional_Token_Option2__c);
                             }
                             if(result.CFCUReloadInfo[0].Additional_Token_Option2_Match__c == 'Fail'){
                                 component.find('TokenFailButton2').set("v.variant", "destructive");
                                 component.find('TokenPassButton2').set("v.variant", "neutral");
+                                component.find("AdditionalToken2").set("v.value",result.CFCULastSessionInfo[0].Additional_Token_Option2__c);
                             }
                             
                             if(result.CFCUReloadInfo[0].Additional_Token_Option5_Match__c == undefined){
@@ -398,10 +416,12 @@
                             if(result.CFCUReloadInfo[0].Additional_Token_Option5_Match__c == 'Pass'){
                                 component.find('TokenPassButton3').set("v.variant", "success");
                                 component.find('TokenFailButton3').set("v.variant", "neutral");
+                                component.find("AdditionalToken3").set("v.value",result.CFCULastSessionInfo[0].Additional_Token_Option5__c);	
                             }
                             if(result.CFCUReloadInfo[0].Additional_Token_Option5_Match__c == 'Fail'){
                                 component.find('TokenFailButton3').set("v.variant", "destructive");
                                 component.find('TokenPassButton3').set("v.variant", "neutral");
+                                component.find("AdditionalToken3").set("v.value",result.CFCULastSessionInfo[0].Additional_Token_Option5__c);	
                             }
                             
                             if(result.CFCUReloadInfo[0].Additional_Token_Option6_Match__c == undefined){
@@ -411,10 +431,12 @@
                             if(result.CFCUReloadInfo[0].Additional_Token_Option6_Match__c == 'Pass'){
                                 component.find('TokenPassButton4').set("v.variant", "success");
                                 component.find('TokenFailButton4').set("v.variant", "neutral");
+                                component.find("AdditionalToken4").set("v.value",result.CFCULastSessionInfo[0].Additional_Token_Option6__c);	
                             }
                             if(result.CFCUReloadInfo[0].Additional_Token_Option6_Match__c == 'Fail'){
                                 component.find('TokenFailButton4').set("v.variant", "destructive");
                                 component.find('TokenPassButton4').set("v.variant", "neutral");
+                                component.find("AdditionalToken4").set("v.value",result.CFCULastSessionInfo[0].Additional_Token_Option6__c);	
                             }
                             
                         }else if(result.CFCUReloadManulSessionInfo != undefined && result.CFCUReloadManulSessionInfo.length > 0 && component.get("v.IsReLoadRequired") == undefined){
@@ -483,10 +505,12 @@
                             if(result.CFCUReloadManulSessionInfo[0].Additional_Token_Option1_Match__c == 'Pass'){
                                 component.find('TokenPassButton1').set("v.variant", "success");
                                 component.find('TokenFailButton1').set("v.variant", "neutral");
+                                component.find("AdditionalToken1").set("v.value",result.CFCULastSessionInfo[0].Additional_Token_Option1__c);
                             }
                             if(result.CFCUReloadManulSessionInfo[0].Additional_Token_Option1_Match__c == 'Fail'){
                                 component.find('TokenFailButton1').set("v.variant", "destructive");
                                 component.find('TokenPassButton1').set("v.variant", "neutral");
+                                component.find("AdditionalToken1").set("v.value",result.CFCULastSessionInfo[0].Additional_Token_Option1__c);
                             }
                             
                             if(result.CFCUReloadManulSessionInfo[0].Additional_Token_Option2_Match__c == undefined){
@@ -496,10 +520,12 @@
                             if(result.CFCUReloadManulSessionInfo[0].Additional_Token_Option2_Match__c == 'Pass'){
                                 component.find('TokenPassButton2').set("v.variant", "success");
                                 component.find('TokenFailButton2').set("v.variant", "neutral");
+                                component.find("AdditionalToken2").set("v.value",result.CFCULastSessionInfo[0].Additional_Token_Option2__c);
                             }
                             if(result.CFCUReloadManulSessionInfo[0].Additional_Token_Option2_Match__c == 'Fail'){
                                 component.find('TokenFailButton2').set("v.variant", "destructive");
                                 component.find('TokenPassButton2').set("v.variant", "neutral");
+                                component.find("AdditionalToken2").set("v.value",result.CFCULastSessionInfo[0].Additional_Token_Option2__c);
                             }
                             
                             if(result.CFCUReloadManulSessionInfo[0].Additional_Token_Option5_Match__c == undefined){
@@ -509,10 +535,12 @@
                             if(result.CFCUReloadManulSessionInfo[0].Additional_Token_Option5_Match__c == 'Pass'){
                                 component.find('TokenPassButton3').set("v.variant", "success");
                                 component.find('TokenFailButton3').set("v.variant", "neutral");
+                                component.find("AdditionalToken3").set("v.value",result.CFCULastSessionInfo[0].Additional_Token_Option5__c);	
                             }
                             if(result.CFCUReloadManulSessionInfo[0].Additional_Token_Option5_Match__c == 'Fail'){
                                 component.find('TokenFailButton3').set("v.variant", "destructive");
                                 component.find('TokenPassButton3').set("v.variant", "neutral");
+                                component.find("AdditionalToken3").set("v.value",result.CFCULastSessionInfo[0].Additional_Token_Option5__c);	
                             }
                             
                             if(result.CFCUReloadManulSessionInfo[0].Additional_Token_Option6_Match__c == undefined){
@@ -522,10 +550,12 @@
                             if(result.CFCUReloadManulSessionInfo[0].Additional_Token_Option6_Match__c == 'Pass'){
                                 component.find('TokenPassButton3').set("v.variant", "success");
                                 component.find('TokenFailButton3').set("v.variant", "neutral");
+                                component.find("AdditionalToken4").set("v.value",result.CFCULastSessionInfo[0].Additional_Token_Option6__c);
                             }
                             if(result.CFCUReloadManulSessionInfo[0].Additional_Token_Option6_Match__c == 'Fail'){
                                 component.find('TokenFailButton3').set("v.variant", "destructive");
                                 component.find('TokenPassButton3').set("v.variant", "neutral");
+                                component.find("AdditionalToken4").set("v.value",result.CFCULastSessionInfo[0].Additional_Token_Option6__c);
                             }
                             
                         }
@@ -549,7 +579,7 @@
             var findOtherButton;
             var ScoreObtained = component.get("v.ScoreObtained");
             var FailedCount = component.get("v.FailedCount");
-            debugger;
+            
             var token1 = component.find("AdditionalToken1").get("v.value");
             var token2 = component.find("AdditionalToken2").get("v.value");
             var token3 = component.find("AdditionalToken3").get("v.value");
@@ -964,7 +994,7 @@
                                                                 
                                                                 Button.set("v.variant", "destructive");
                                                                 findOtherButton.set("v.variant", "neutral");
-                                                                AdditionalTokenOption3Match = 'Fail';
+                                                                AdditionalTokenOption4Match = 'Fail';
                                                                 component.set("v.AdditionalTokenOption4Match",AdditionalTokenOption4Match);	
                                                                 if(QuestionAttempt >=3 && IsCFCUFailForTheDay != 'Fail' && IsCFCUFailOnReload != 'Fail'){
                                                                     component.set("v.IsButtonDisabled",false);

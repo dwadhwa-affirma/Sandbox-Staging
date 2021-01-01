@@ -10,24 +10,7 @@ trigger WiresBeneficiaryOTP on Wires_Beneficiary_OTP__c (before insert) {
       
       string accountNumber =  objWiresBeneficiaryotp.Member_Number__c;
       system.debug('accountNumber=='+ accountNumber);
-      Account_Details__c obj =  [select id,Brand__c from Account_Details__c where Name =: accountNumber limit 1];
-      
-    /*  list<Person_Account__c> paList = [SELECT Id,PersonID__c,
-                             Account_Number__c, Account_Number__r.RecType__c,TypeTranslate__c, Account_Number__r.Name FROM Person_Account__c 
-                             WHERE Account_Number__r.Name =: accountNumber and TypeTranslate__c like '%Primary%' limit 1];
-       Account acc = new Account();
-       List<Account> listAccount;  
-       if(paList.size() > 0){            
-          
-          listAccount = [select Id,FirstName,LastName,home_phone__pc,Mobile_Phone__pc,Work_Phone__pc,PersonEmail,Alternate_Email__pc, Email_raw__c 
-          				from Account where ID =:paList[0].PersonID__c ];
-                if(listAccount.size() > 0)
-                {
-                  acc = listAccount[0];
-                }    
-       		}   */
-			      // objWiresBeneficiaryotp.Email__c = acc.PersonEmail;
-			       //objWiresBeneficiaryotp.Mobile_Phone__c=acc.Mobile_Phone__pc;
+      Account_Details__c obj =  [select id,Brand__c from Account_Details__c where Name =: accountNumber limit 1];    
 			       
 			      string memberemail = objWiresBeneficiaryotp.Email__c;
 			      string phone = objWiresBeneficiaryotp.Mobile_Phone__c;
@@ -87,16 +70,21 @@ trigger WiresBeneficiaryOTP on Wires_Beneficiary_OTP__c (before insert) {
         
           
         mail.setToAddresses(sendTo);
-        string templatenAME = 'WIRES Beneficiary OTP';
+        string templatenAME;
+        string emailadd;
+        if(Brand == 'Spectrum'){
+          templatenAME = 'Spectrum WIRES Beneficiary OTP';
+          emailadd = 'noreply@spectrumcu.org';
+        }
+        else
+        {
+          templatenAME = 'Chevron WIRES Beneficiary OTP';
+          emailadd = 'noreply@chevronfcu.org';
+        }
+        //templatenAME = 'WIRES Beneficiary OTP';
         List<EmailTemplate> listEmailTemplate =  [select Id,Name,Body,Subject,HtmlValue from EmailTemplate where Name =: templatenAME];
         
-        mail.setSubject(listEmailTemplate[0].Subject);
-        
-        
-        string emailadd;
-        
-        emailadd = 'noreply@chevronfcu.org';
-        
+        mail.setSubject(listEmailTemplate[0].Subject);        
         
         List<OrgWideEmailAddress> listAdd = [select Id,Address,DisplayName  from OrgWideEmailAddress where Address =: emailadd];
         
@@ -119,8 +107,16 @@ trigger WiresBeneficiaryOTP on Wires_Beneficiary_OTP__c (before insert) {
         string emailadd;
        
        system.debug('UserInfo.getName()###' + UserInfo.getName());
+
+       if(Brand == 'Spectrum'){        
+        emailadd = 'Spectrum WIRES Transaction OTP';
+      }
+      else
+      {        
+        emailadd = 'Chevron WIRES Transaction OTP';
+      }
         
-        emailadd = 'WIRES Transaction OTP';
+        //emailadd = 'WIRES Transaction OTP';
         list<smagicinteract__SMS_Template__c> listTemplate =  [select Id, smagicinteract__Text__c from smagicinteract__SMS_Template__c where smagicinteract__Name__c =: emailadd];
 
         smsObject.smagicinteract__PhoneNumber__c = phone;
