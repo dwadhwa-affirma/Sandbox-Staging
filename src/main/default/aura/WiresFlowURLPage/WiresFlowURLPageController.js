@@ -16,7 +16,7 @@
                            
                            if(result.AccountNumber.length > 0)
                            {
-                               var win = window.open('https://flow.manywho.com/4aa12667-5b91-49e4-a628-d2a409a0d781/play/WiresPlayer/?flow-id=4e93a4fb-2034-42ec-94c0-b5a48a93d218&account='+ result.AccountNumber); 
+                               var win = window.open('https://flow.manywho.com/64d43304-8d36-4649-837a-ffa3530673b6/play/WiresPlayer?flow-id=4e93a4fb-2034-42ec-94c0-b5a48a93d218&account='+ result.AccountNumber); 
                            }
                     
                 }
