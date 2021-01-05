@@ -73,8 +73,11 @@
                     <a href="javascript:void(0);" tabindex="-1">{!itemOption.ShareLoanIDString}</a>
                   </div>
                 </td>
-                <td role="gridcell">
+                <td role="gridcell" style="width:30%;">
                   <div class="slds-truncate" title="{!itemOption.Description}">{!itemOption.TypeTranslate}</div>
+                </td>
+                <td role="gridcell" style="color:red;" rowspan="2">
+                  <div class="slds-truncate" title="{!itemOption.Warning}">{!itemOption.Warning}</div>
                 </td>
               </tr>
               <!-- <th class="slds-tree__item" style = "padding-left: 0.5rem;" data-label="Account Name" scope="row">
@@ -163,7 +166,7 @@
                       <div class="slds-radio">
                         <span class="slds-radio">
                           <lightning:input type="radio" name="select" value="{!itemOption.EftLocator__c}"
-                            onchange="{!c.onEFTSelect}" />
+                            onchange="{!c.onEFTSelect}" disabled="{!itemOption.isDisabled}"/>
                         </span>
                       </div>
                     </td>
@@ -185,6 +188,14 @@
                       <div class="slds-truncate" title="{!itemOption.Bank_Name__c}">{!itemOption.Bank_Name__c}</div>
                     </td>
                   </tr>
+                  <aura:if isTrue="{!(itemOption.isDisabled == true)}">
+                    <tr>
+                     <td></td> 
+                    <td colspan="4" style="color:red;">
+                      {!itemOption.Warning}
+                    </td>
+                  </tr> 
+                  </aura:if>
 
                 
               </aura:iteration>
