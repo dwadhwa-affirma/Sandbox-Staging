@@ -98,6 +98,7 @@ public class SolarLoanController {
     String Stage5MissingFields;
     String missingFields = '';
     String waitingCheck;
+    Boolean ProductTypeFound;
     
     String type='Solar_Loans__c';
     Map<String, Schema.SObjectType> schemaMap = Schema.getGlobalDescribe();
@@ -133,6 +134,13 @@ public class SolarLoanController {
     if(SolarLoanList.size() > 0){
         
         SolarCurrentStatus = SolarLoanList[0].Status__c;
+
+        List<Solar_Loan_Product_Types__c> PDList = Solar_Loan_Product_Types__c.getall().values();
+        for(Solar_Loan_Product_Types__c pd : PDList){ 
+            if(SolarLoanList[0].Product_Loan_Type__c == pd.Name){
+                    ProductTypeFound = true;
+            }
+        }
        
         if(CurrentStage != null && CurrentStage != ' '){
             
@@ -238,6 +246,11 @@ public class SolarLoanController {
 				Stage3MissingFields = 'Joint Zip code is not in the correct format.';
                 Stage3ErrorCheck = 'True';
                 
+            }
+            else if(ProductTypeFound != true){
+                
+                Stage3MissingFields = 'Please enter valid Product Loan Type';
+                Stage3ErrorCheck = 'True';
             }
            
 			else{

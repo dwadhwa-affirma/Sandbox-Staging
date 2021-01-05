@@ -98,7 +98,7 @@ trigger SolarLoanTrigger on Solar_Loans__c (after insert,before insert, after up
 		    		
 		    		Solar_Loans__c s = new Solar_Loans__c();
 		    		s.id = SLForBranchIds.get(sl.id).id;
-		    		s.Brand__c = a.Brand__c;
+		    		//s.Brand__c = a.Brand__c;
 		    		s.Account_Number__c = a.id;
 		    		system.debug('a.id'+a.id);
 		    		SLToUpdates.put(sl.id,s);
@@ -246,7 +246,7 @@ trigger SolarLoanTrigger on Solar_Loans__c (after insert,before insert, after up
                         
                         Solar_Loans__c s = new Solar_Loans__c();
                         s.id = SLForBranchIds.get(sl.id).id;
-                        s.Brand__c = a.Brand__c;
+                        //s.Brand__c = a.Brand__c;
                         s.Account_Number__c = a.id;
                         SLToUpdates.put(sl.id,s);
                     }

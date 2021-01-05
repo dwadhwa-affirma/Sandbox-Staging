@@ -21,14 +21,14 @@ private class SolarLoanTest{
      insert slpt; 
    	     
      List<Account_Details__c> account_details_Obj = new List<Account_Details__c>{
-                new Account_Details__c(Name = '0000147163', Balance__c = 0.00, Combined_Account_ID__c = '0000147163S0100P0100', ID1__c = '0100', 
-                Onboarded__c = true, Reference__c = 'BC02',RecType__c = 'LOAN', TypeTranslate__c = '75-SECURED SOLAR')};
+                new Account_Details__c(Name = '0000147163', Balance__c = 0.00, Combined_Account_ID__c = '0000147163S0100P0100', 
+                Onboarded__c = true,RecType__c = 'LOAN', TypeTranslate__c = '75-SECURED SOLAR')};
     
      insert account_details_Obj;
     
     
      List<Account_Details__c> account_details_Obj1 = new List<Account_Details__c>{
-                new Account_Details__c(Name = '0000123456', Balance__c = 0.00, Combined_Account_ID__c = '0000147163S0100P0100', ID1__c = '0100', 
+                new Account_Details__c(Name = '0000123456', Balance__c = 0.00, Combined_Account_ID__c = '0000147163S0100P0100', 
                 Onboarded__c = true, RecType__c = 'ACCT', TypeTranslate__c = '1-PRIMARY SHARE')};
     
      insert account_details_Obj1;
@@ -199,7 +199,7 @@ private class SolarLoanTest{
      sl2.Mortgage_Balance__c = 1299.00;
      sl2.Final_Payment_Amount__c = 111.00;
      sl2.Go_To_Payment__c = 1252.00;
-     sl2.Bank_Name__c = 'test & bank';
+     sl2.Bank_Name__c = 'test & bank2';
      sl2.Membership_Fee__c = 126.00;
      sl2.Net_Funding_Amount__c = 1213.00;
      sl2.Loan_Amount__c = 1211.00;
@@ -246,6 +246,10 @@ private class SolarLoanTest{
   }
   static testMethod void test_Solarloancontroller(){
       List<Solar_Loans__c> listSolarLoan  =  [SELECT Id from Solar_Loans__c limit 1];
+      List<Solar_Loans__c> listSolarLoan2  =  [SELECT Id,Bank_Name__c from Solar_Loans__c where Bank_Name__c = 'test & bank2' limit 1];
+      Set<ID> slids = new Set<ID>();
+      slids.add(listSolarLoan2[0].id);
+      
       SolarLoanController.waitingForResponse(listSolarLoan[0].id, 'New');
       SolarLoanController.getMemberData(listSolarLoan[0].id, 'Stage 1');
       SolarLoanController.saveRoutingInfo(listSolarLoan[0].id,'122105155','Test Bank Name');
@@ -256,6 +260,7 @@ private class SolarLoanTest{
       test.startTest();
       SolarLoanController.getMemberData(listSolarLoan[0].id, 'Stage 7');
       SolarLoanController.getMemberData(listSolarLoan[0].id, 'Stage 8');
+      SolarLoanToCreateLoan.getMemberNumber(slids);
       
       test.stopTest();
   }
