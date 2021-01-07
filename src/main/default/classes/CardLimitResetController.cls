@@ -204,6 +204,8 @@ public class CardLimitResetController {
 
             system.debug('SSN'+SSN);
             
+            //----------------------------------------Checking if Membership is not dormant -----------------------------------------//
+
             req1.setEndpoint(loanAPI+'/Account/IsDormantAccount?accountNumber='+accountNumber);
             req1.setMethod('GET');
             req1.setHeader('Content-Type', 'application/json');
@@ -244,52 +246,52 @@ public class CardLimitResetController {
             system.debug('SSN'+SSN);
 
         }
-     
-        //----------------------------------------Checking if Membership is not dormant -----------------------------------------//
+       
+        req.setEndpoint(loanAPI+'/CardLimitReset/GetCards');
+        req.setMethod('POST');
+        req.setHeader('Content-Type', 'application/json');
+        req.setHeader('Accept', 'application/json');
+        jsonData = '{"SSN":' + '\"'+ SSN +'\"}';                 
+        req.setBodyAsBlob(Blob.valueof(jsonData));
+        req.setTimeout(60000);                    
         
-        if(isDormant != 'true'){
+        system.debug('Request: '+jsonData);
 
-            req.setEndpoint(loanAPI+'/CardLimitReset/GetCards');
-            req.setMethod('POST');
-            req.setHeader('Content-Type', 'application/json');
-            req.setHeader('Accept', 'application/json');
-            jsonData = '{"SSN":' + '\"'+ SSN +'\"}';                 
-            req.setBodyAsBlob(Blob.valueof(jsonData));
-            req.setTimeout(60000);                    
-            
-            system.debug('Request: '+jsonData);
-
-            if(!Test.isRunningTest()){                       
-                res = http.send(req);
-                responseBody = res.getBody();
-                System.debug('ResponseBody ::'+responseBody);    
-            }
-            else{
-                responseBody = '[{"CardNumber":"5460277067636965","ExpirationDate":"2021-10-01","CloseDate":"","CardOwner":null,"Locator":"33","Status":null,"Error":null,"ErrorDetails":null}]';
-
-            }
-            if(responseBody != '' && responseBody != null){        
-                List<object> results = (List<Object>) JSON.deserializeUntyped(responseBody);      
-                System.debug('Response is ....' + results);
-                
-                if(results.size() > 0){
-                    
-                    for(Object key : results){ 
-                        CardDetailWrapperObject temp = new CardDetailWrapperObject();
-                        Map<String, Object> carddetail = (Map<String, Object>)key;
-                        string Card = string.valueof(carddetail.get('CardNumber'));
-                        temp.CardNumber =  string.valueof(carddetail.get('CardNumber'));
-                        temp.CardLocator =   string.valueof(carddetail.get('Locator'));
-                        resultList.add(temp);  
-                        system.debug('temp.CardNumber'+temp.CardNumber);
-                        system.debug('temp.CardLocator'+temp.CardLocator);
-                        system.debug('resultList'+resultList);
-                    }
-                } 
-            }
+        if(!Test.isRunningTest()){                       
+            res = http.send(req);
+            responseBody = res.getBody();
+            System.debug('ResponseBody ::'+responseBody);    
         }
+        else{
+            responseBody = '[{"CardNumber":"5460277067636965","ExpirationDate":"2021-10-01","CloseDate":"","CardOwner":null,"Locator":"33","Status":null,"Error":null,"ErrorDetails":null}]';
 
-        resultmap.put('CardList',resultList);
+        }
+        if(responseBody != '' && responseBody != null){        
+            List<object> results = (List<Object>) JSON.deserializeUntyped(responseBody);      
+            System.debug('Response is ....' + results);
+            
+            if(results.size() > 0){
+                
+                for(Object key : results){ 
+                    CardDetailWrapperObject temp = new CardDetailWrapperObject();
+                    Map<String, Object> carddetail = (Map<String, Object>)key;
+                    string Card = string.valueof(carddetail.get('CardNumber'));
+                    temp.CardNumber =  string.valueof(carddetail.get('CardNumber'));
+                    temp.CardLocator =   string.valueof(carddetail.get('Locator'));
+                    resultList.add(temp);  
+                    system.debug('temp.CardNumber'+temp.CardNumber);
+                    system.debug('temp.CardLocator'+temp.CardLocator);
+                    system.debug('resultList'+resultList);
+                }
+            } 
+        }
+        
+        if(isDormant == 'true'){
+            resultmap.put('DormantCardList',resultList);    
+        }
+        else{
+            resultmap.put('CardList',resultList);
+        }
         
 		return resultmap;
     }
