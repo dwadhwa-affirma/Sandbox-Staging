@@ -214,6 +214,7 @@ public class EFTController{
 			} else{
 				EFTRecordList[0].Docusign_is_Additional_Amount__c = true;
 			}
+			EFTRecordList[0].Existing_Alternate_Amount__c = EFTRecord.Existing_Alternate_Amount__c;
 			update EFTRecordList;
 			return EFTRecordList[0];
 		}
@@ -483,7 +484,7 @@ public class EFTController{
 			System.debug('strStatus ....' + strStatus);
 			System.debug('strBody ....' + strBody);
 
-
+			Set<string> uniqueShareLoanIdSet = new Set<string>();
 			if (strBody != ''){
 				List<Object> results = (List<Object>)JSON.deserializeUntyped(response.getBody());
 				System.debug('Service response is ....' + results);
@@ -502,7 +503,16 @@ public class EFTController{
 							temp.Description = (string)localAcc.get('Description');
 							temp.TypeTranslate = (string)localAcc.get('Description');
 							temp.UserChar3 = (string)localAcc.get('UserChar3');
-
+							if(uniqueShareLoanIdSet.contains(ShareId)){
+								temp.isDisabled = true;
+							}
+							else{
+								temp.isDisabled = false;
+								List<EFT__c> TotalEfts = getEFTRecordsforShareLoan1(recordId,ShareId,'Create','');
+								if(TotalEfts.size() > 0){
+									uniqueShareLoanIdSet.add(ShareId);
+								}								
+							}
 
 							temp.Type = 'Share';
 
@@ -545,9 +555,32 @@ public class EFTController{
 				}
 			}
 
-			Map<string, List<ShareLoanWrapperObject>> LoanList = getLoanAccounts(AccountNumber);
+			map<string,integer> ShareLoanIDEFTCountMap = new map<string,integer>();
+			if(!String.isBlank(recordId)){
+				List<EFT__c> ListAllEFT = getEFTRecordsEpisys(recordId);
+				if (ListAllEFT.size() > 0){
+					for (EFT__C e : ListAllEFT){
+						if(ShareLoanIDEFTCountMap.containsKey(e.Share_Loan_Id__c)){
+							ShareLoanIDEFTCountMap.put(e.Share_Loan_Id__c,ShareLoanIDEFTCountMap.get(e.Share_Loan_Id__c)+1);
+						}
+						else{
+							ShareLoanIDEFTCountMap.put(e.Share_Loan_Id__c,1);
+						}
+					}
+				}
+			}
+
+			Map<string, List<ShareLoanWrapperObject>> LoanList = getLoanAccounts(AccountNumber, recordId);
 			if (!LoanList.ContainsKey('Exception')){
 				resultList.addall(LoanList.get('LoanList'));
+				for(ShareLoanWrapperObject sl: resultList){
+					if(ShareLoanIDEFTCountMap.get(sl.ShareLoanID) > 1){
+						sl.isDisabled = true;
+					}
+					else{
+						sl.isDisabled = false;																
+					}
+				}
 				resultmap.put('ShareLoanList', resultList);
 				//system.debug('resultList==' + resultList);
 			} else{
@@ -562,7 +595,7 @@ public class EFTController{
 	}
 
 	//-------------------------------Getting Loan Accounts from Episys----------------------------------------------//
-	public static Map<string, List<ShareLoanWrapperObject>> getLoanAccounts(string AccountNumber){
+	public static Map<string, List<ShareLoanWrapperObject>> getLoanAccounts(string AccountNumber, string recordId){
 		//system.debug('AccountNumber==' + AccountNumber);
 		List<ShareLoanWrapperObject> resultList = new List<ShareLoanWrapperObject>();
 		Map<string, List<ShareLoanWrapperObject>> resultmap = new Map<string, List<ShareLoanWrapperObject>>();
@@ -593,6 +626,8 @@ public class EFTController{
 			//System.debug('strStatus1 ....' + strStatus);
 			//System.debug('strBody1 ....' + strBody);
 
+			map<string,integer> LoanIDEFTCountMap = new map<string,integer>();
+			
 
 			if (strBody != ''){
 				List<Object> results = (List<Object>)JSON.deserializeUntyped(response.getBody());
@@ -610,7 +645,8 @@ public class EFTController{
 							temp.ShareLoanID = LoanId;
 							temp.ShareLoanIDString = 'L' + LoanId;
 							temp.Description = (string)localAcc.get('Description');
-							//temp.TypeTranslate =  (string)localAcc.get('Description');
+							//temp.TypeTranslate =  (string)localAcc.get('Description');						
+							
 							temp.Type = 'Loan';
 							temp.Payment = (decimal)localAcc.get('Payment');
 							if ((string)localAcc.get('DueDate') != '')
@@ -689,7 +725,7 @@ public class EFTController{
 			EFTLocatorsset.add(e.EftLocator__c);
 		}
 
-		Map<string, List<ShareLoanWrapperObject>> LoanMap = getLoanAccounts(AccountNumber);
+		Map<string, List<ShareLoanWrapperObject>> LoanMap = getLoanAccounts(AccountNumber,'');
 		List<EFTController.ShareLoanWrapperObject> LoanList = LoanMap.get('LoanList');
 		if (LoanList != null){
 			for (ShareLoanWrapperObject sl : LoanList){
@@ -871,12 +907,12 @@ public class EFTController{
 		system.debug('AccountNumber==' + AccountNumber);
 		system.debug('SSN==' + SSN);
 		httpRequest requestparam = new httpRequest();
-		requestparam.setEndpoint('https://symxapi.chevronfcu.org/devclient/AddressChange/GetAddress');// + AccountNumber +'&FullNameStringList=' + primaryName +'&FullName=' + SSN);
+		requestparam.setEndpoint('https://symxapi.chevronfcu.org/devclient/EFT/GetAddress');// + AccountNumber +'&FullNameStringList=' + primaryName +'&FullName=' + SSN);
 		requestparam.setMethod('POST');
 		requestparam.setHeader('Content-Type', 'application/json');
 		requestparam.setHeader('Accept', 'application/json');
 		requestparam.setHeader('Content-Length', '162100');
-		string jsonData = '{"accountNumber":' + '\"' + AccountNumber + '\","FullNameStringList":' + '\"' + primaryName + '\"' + ',"FullName":' + '\"' + SSN + '\"' + ',"IsIncludeMailAddresses":' + '\"' + 'true' + '\"}';
+		string jsonData = '{"AccountNumber":' + '\"' + AccountNumber + '\","FullNameStringList":' + '\"' + primaryName + '\"' + ',"FullName":' + '\"' + SSN + '\"' + ',"IsIncludeMailAddresses":' + '\"' + 'true' + '\"}';
 		requestparam.setBody(jsonData);
 		system.debug('jsonData==' + jsonData);
 		Http httpParam = new Http();
@@ -1219,6 +1255,9 @@ public class EFTController{
 
 		@AuraEnabled
 		public decimal AlternatePayment{ get; set; }
+
+		@AuraEnabled
+		public boolean isDisabled{ get; set; }
 	}
 
 	public class EFTWrapperObject{

@@ -11,11 +11,15 @@
 	<aura:attribute name="daysMap" type="Map" />
 	<aura:attribute name="isDayOfMonthDisabled" type="Boolean" default="false" />
 	<aura:attribute name="NewTotalAmt" type="currency" default="0.00" />
-
+	<aura:attribute name="NewExistingTotalAmt" type="currency" default="0.00" />
+	
 	<aura:handler name="init" action="{!c.doInit}" value="{!this}" access="global" />
 	<aura:registerEvent name="EFTEvent" type="c:EFTEvent" />
 
 	<aura:attribute name="EFTRecord" type="EFT__c" />
+	<aura:attribute name="isAdditionalAmtDisabled" type="Boolean" default="true" />
+	<aura:attribute name="isNewAdditionalAmtDisabled" type="Boolean" default="false" />
+
 	<div id="stage5">
 		<p class="fontstyle">Provide Payment Information</p><br></br>
 		<div class="slds-form">
@@ -54,7 +58,7 @@
 
 								<lightning:input class="alternateamount" type="number"
 									value="{!v.EFTRecord.Existing_Alternate_Amount__c}" onchange="{!c.onMonthChange}"
-									step="0.01" formatter="currency" disabled="true" />
+									step="0.01" formatter="currency" disabled="{!v.isAdditionalAmtDisabled}" min="0" messageWhenRangeUnderflow="Amount should be greater than 0"/>
 							</div>
 						</div>
 						<div class="slds-col"><b><label class="slds-form-element__label" for="horizontal-input-id-02"
@@ -62,8 +66,8 @@
 							<div class="slds-form-element__control">
 
 								<lightning:input class="alternateamount" type="number"
-									value="{!add(v.EFTRecord.Existing_Alternate_Amount__c,v.EFTRecord.Payment_Amount__c)}"
-									step="0.01" formatter="currency" disabled="true" />
+								value="{!v.NewExistingTotalAmt}"
+									step="0.01" formatter="currency" disabled="true" onchange="{!c.onMonthChange}"/>
 							</div>
 						</div>
 					</div>					
@@ -77,7 +81,7 @@
 								
 								<lightning:input class="alternateamount" type="number"
 									value="{!v.EFTRecord.Alternate_Amount__c}" onchange="{!c.onMonthChange}" step="0.01"
-									formatter="currency" />
+									formatter="currency" min="0" messageWhenRangeUnderflow="Amount should be greater than 0" disabled="{!v.isNewAdditionalAmtDisabled}"/>
 							</div>
 						</div>
 						<div class="slds-col"><b><label class="slds-form-element__label" for="horizontal-input-id-02"

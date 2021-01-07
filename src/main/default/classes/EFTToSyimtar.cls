@@ -266,12 +266,12 @@ public class EFTToSyimtar{
 
 			if (result != null && result != ''){
 
-				PaymentMethod = '5';
+				PaymentMethod = '5';				
 				if (LoanCode == '2'){
 					System.debug('LoanCode');
 					req1.setEndpoint('https://symxapi.chevronfcu.org/devclient/EFT/UpdateLOCLoanbyId');
 					if (AlternatePayment != ''){
-						jsonData1 = '{"AccountNumber":' + '\"' + AccountNumber + '\","LoanId":' + '\"' + ID + '\"' + ',"PaymentMethod":' + '\"' + PaymentMethod + '\"' + ',"Payment":' + '\"' + e.Payment_Amount__c + '\"' + ',"AlternatePayment":' + '\"' + e.Alternate_Amount__c + '\"}';
+						jsonData1 = '{"AccountNumber":' + '\"' + AccountNumber + '\","LoanId":' + '\"' + ID + '\"' + ',"PaymentMethod":' + '\"' + PaymentMethod + '\"' + ',"Payment":' + '\"' + e.Payment_Amount__c + '\"' + ',"AlternatePayment":' + '\"' + e.Alternate_Amount__c  + '\"}';
 					} else{
 						jsonData1 = '{"AccountNumber":' + '\"' + AccountNumber + '\","LoanId":' + '\"' + ID + '\"' + ',"PaymentMethod":' + '\"' + PaymentMethod + ',"Payment":' + '\"' + e.Payment_Amount__c + '\"' + '\"}';
 					}
@@ -281,7 +281,7 @@ public class EFTToSyimtar{
 					uc3 = getUserChar3(AccountNumber, ID);
 					System.debug('uc3==' + uc3);
 					req1.setEndpoint('https://symxapi.chevronfcu.org/devclient/PSAuto/UpdateTracking32Records');
-					jsonData1 = '{"AccountNumber":' + '\"' + AccountNumber + '\","ShareId":' + '\"' + ID + '\"' + ',"UserChar3":' + '\"' + uc3 + '\"' + ',"TotalPaymentAmount":' + '\"' + e.Payment_Amount__c + '\"' + ',"AdditionalPaymentAmount":' + '\"' + e.Alternate_Amount__c + '\"' + ',"NextPaymentDueDate":' + '\"' + EffectiveDate + '\"}';
+					jsonData1 = '{"AccountNumber":' + '\"' + AccountNumber + '\","ShareId":' + '\"' + ID + '\"' + ',"UserChar3":' + '\"' + uc3 + '\"' + ',"TotalPaymentAmount":' + '\"' + e.Payment_Amount__c + '\"' + ',"AdditionalPaymentAmount":' + '\"' + e.Alternate_Amount__c  + '\"' + ',"NextPaymentDueDate":' + '\"' + EffectiveDate + '\"}';
 				} else{
 					System.debug('LoanCode not 2');
 					req1.setEndpoint('https://symxapi.chevronfcu.org/devclient/EFT/UpdateLoanById');
@@ -361,7 +361,7 @@ public class EFTToSyimtar{
 		system.debug('ids' + ids);
 		system.debug('isExpired' + isExpired);
 		List<EFT__c> EFTlist = new List<EFT__c>();
-		List<EFT__c> EFTs = [SELECT Account_Number__c, Action_Type__c, Alternate_Amount__c, Bank_Name__c, CreatedById, CreatedDate, Day_of_Month__c, Second_Day_of_Month__c, DocuSignId__c, Effective_Date__c, Frequency__c, Id, Member_Account__c, Member_Account__r.Brand__c, Member_Account__r.Name, Member__c, Name, Case__c, Case__r.Description, OwnerId, Payment_Amount__c, Routing_Number__c, Share_Loan_Id__c, Stage__c, EftLocator__c, Share_Loan_Description__c, Share_Loan_Type__c, Member_Name__c, Status__c, Type__c, EFT_ID_Type__c, LoanCode__c, EFT_Payment_Date__c, Locators_To_Expire__c
+		List<EFT__c> EFTs = [SELECT Account_Number__c, Action_Type__c, Alternate_Amount__c, Bank_Name__c, CreatedById, CreatedDate, Day_of_Month__c, Second_Day_of_Month__c, DocuSignId__c, Effective_Date__c, Frequency__c, Id, Member_Account__c, Member_Account__r.Brand__c, Member_Account__r.Name, Member__c, Name, Case__c, Case__r.Description, OwnerId, Payment_Amount__c, Routing_Number__c, Share_Loan_Id__c, Stage__c, EftLocator__c, Share_Loan_Description__c, Share_Loan_Type__c, Member_Name__c, Status__c, Type__c, EFT_ID_Type__c, LoanCode__c, EFT_Payment_Date__c, Locators_To_Expire__c, Existing_Alternate_Amount__c
 		                     FROM EFT__c
 		                     where id = :ids];
 
@@ -421,7 +421,11 @@ public class EFTToSyimtar{
 				PostAmount = '0.00';
 			if (e.Alternate_Amount__c != null && e.Alternate_Amount__c != 0.0){
 				AlternatePayment = String.ValueOf(e.Alternate_Amount__c + e.Payment_Amount__c);
-			} else{
+			} 
+			else if(e.Existing_Alternate_Amount__c != null && e.Existing_Alternate_Amount__c != 0.0){
+				AlternatePayment = String.ValueOf(e.Existing_Alternate_Amount__c + e.Payment_Amount__c);
+			}
+			else{
 				AlternatePayment = String.ValueOf(e.Payment_Amount__c);
 			}
 
@@ -648,7 +652,7 @@ public class EFTToSyimtar{
 
 				// }
 				OldAlternatePayment = OldPostAmount;
-				Map<string, List<EFTController.ShareLoanWrapperObject>> LoanMap = EFTController.getLoanAccounts(AccountNumber);
+				Map<string, List<EFTController.ShareLoanWrapperObject>> LoanMap = EFTController.getLoanAccounts(AccountNumber,'');
 				List<EFTController.ShareLoanWrapperObject> LoanList = LoanMap.get('LoanList');
 				if (LoanList != null){
 					for (EFTController.ShareLoanWrapperObject sl : LoanList){
@@ -699,11 +703,21 @@ public class EFTToSyimtar{
 				system.debug('ErrorEFTLocator' + ErrorEFTLocator);
 			} else if (result == 'OK'){
 				PaymentMethod = '5';
+				String TempAlternatePayment = '';
+				if(e.Alternate_Amount__c != null && e.Alternate_Amount__c != 0.0){
+					TempAlternatePayment = String.ValueOf(e.Alternate_Amount__c);
+				}
+				else if(e.Existing_Alternate_Amount__c != null && e.Existing_Alternate_Amount__c != 0.0){
+					TempAlternatePayment = String.ValueOf(e.Existing_Alternate_Amount__c);
+				}
+				else{
+					TempAlternatePayment = '0.0';
+				}
 				if (LoanCode == '2'){
 					System.debug('LoanCode');
 					req1.setEndpoint('https://symxapi.chevronfcu.org/devclient/EFT/UpdateLOCLoanbyId');
 					if (AlternatePayment != ''){
-						jsonData1 = '{"AccountNumber":' + '\"' + AccountNumber + '\","LoanId":' + '\"' + ID + '\"' + ',"PaymentMethod":' + '\"' + PaymentMethod + '\"' + ',"Payment":' + '\"' + e.Payment_Amount__c + '\"' + ',"AlternatePayment":' + '\"' + e.Alternate_Amount__c + '\"}';
+						jsonData1 = '{"AccountNumber":' + '\"' + AccountNumber + '\","LoanId":' + '\"' + ID + '\"' + ',"PaymentMethod":' + '\"' + PaymentMethod + '\"' + ',"Payment":' + '\"' + e.Payment_Amount__c + '\"' + ',"AlternatePayment":' + '\"' + TempAlternatePayment + '\"}';
 					} else{
 						jsonData1 = '{"AccountNumber":' + '\"' + AccountNumber + '\","LoanId":' + '\"' + ID + '\"' + ',"PaymentMethod":' + '\"' + PaymentMethod + '\"' + ',"Payment":' + '\"' + e.Payment_Amount__c + '\"}';
 					}
@@ -713,7 +727,7 @@ public class EFTToSyimtar{
 					uc3 = getUserChar3(AccountNumber, ID);
 					System.debug('uc3==' + uc3);
 					req1.setEndpoint('https://symxapi.chevronfcu.org/devclient/PSAuto/UpdateTracking32Records');
-					jsonData1 = '{"AccountNumber":' + '\"' + AccountNumber + '\","ShareId":' + '\"' + ID + '\"' + ',"UserChar3":' + '\"' + uc3 + '\"' + ',"TotalPaymentAmount":' + '\"' + e.Payment_Amount__c + '\"' + ',"AdditionalPaymentAmount":' + '\"' + e.Alternate_Amount__c + '\"' + ',"NextPaymentDueDate":' + '\"' + NextDate + '\"}';
+					jsonData1 = '{"AccountNumber":' + '\"' + AccountNumber + '\","ShareId":' + '\"' + ID + '\"' + ',"UserChar3":' + '\"' + uc3 + '\"' + ',"TotalPaymentAmount":' + '\"' + e.Payment_Amount__c + '\"' + ',"AdditionalPaymentAmount":' + '\"' + TempAlternatePayment + '\"' + ',"NextPaymentDueDate":' + '\"' + NextDate + '\"}';
 					//System.debug('jsonData1=='+jsonData1);
 				} else{
 					System.debug('LoanCode not 2');
@@ -841,7 +855,7 @@ public class EFTToSyimtar{
 
 	public static string getLoanCode(string AccountNumber, string LoanID){
 		string LoanCode;
-		Map<string, List<EFTController.ShareLoanWrapperObject>> LoanMap = EFTController.getLoanAccounts(AccountNumber);
+		Map<string, List<EFTController.ShareLoanWrapperObject>> LoanMap = EFTController.getLoanAccounts(AccountNumber,'');
 		List<EFTController.ShareLoanWrapperObject> LoanList = LoanMap.get('LoanList');
 		if (LoanList != null){
 			for (EFTController.ShareLoanWrapperObject sl : LoanList){

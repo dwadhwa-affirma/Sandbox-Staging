@@ -57,6 +57,7 @@
         "v.EFTRecord.Next_Payment_Due_Date__c"
       );
       var AlternateAmt = component.get("v.EFTRecord.Alternate_Amount__c");
+      var ExistingAlternateAmt = component.get("v.EFTRecord.Existing_Alternate_Amount__c");
       var EffectiveDate = component.get("v.EFTRecord.Effective_Date__c");
       var Frequency = component.get("v.EFTRecord.Frequency__c");
       var MonthDay = component.get("v.EFTRecord.Day_of_Month__c");
@@ -64,7 +65,10 @@
       component.set("v.EFTRecord.Stage__c", "Payment Monthly");
       var EFTPaymentDate = component.get("v.EFTRecord.EFT_Payment_Date__c");
       var total = parseFloat(AlternateAmt) + parseFloat(PaymentAmt);
+      var totalexisting = parseFloat(ExistingAlternateAmt) + parseFloat(PaymentAmt);
       component.set('v.NewTotalAmt', total); 
+      component.set('v.NewExistingTotalAmt', totalexisting); 
+      
 
       var evt = $A.get("e.c:EFTEvent");
       if (MonthDay != undefined) {
