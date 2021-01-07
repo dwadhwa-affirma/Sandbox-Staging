@@ -16,10 +16,9 @@
                     <aura:if isTrue="{!(v.IsDormant)}">  
                         <tr class="warningrow">
                             <td>
-                                <lightning:icon iconName="utility:warning" alternativeText="Warning!" size="x-small" variant="warning"/>
+                                <span class="noteTitle" style="font-weight: bold;">Note: </span>
                             </td>
                             <td class="notewrappertd">
-                                <span class="noteTitle">Note: </span>
                                 <ul class="noteContent">
                                     <li>Dormant cards/accounts are in red.</li>
                                     <li>You will need to reactivate the account before the change/reset limits can be changed.</li>
