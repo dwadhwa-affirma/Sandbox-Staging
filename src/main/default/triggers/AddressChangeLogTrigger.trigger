@@ -140,7 +140,7 @@ trigger AddressChangeLogTrigger on AddressChangeLog__c(before insert ){
                                 index=index+1;
                             }
                             if(isNewName==true){
-                            names+=accPipeName+',';
+                                names+=accPipeName+',';
                             }
                         }else{
                             for(String item : arryNameItem) {  
@@ -255,7 +255,7 @@ trigger AddressChangeLogTrigger on AddressChangeLog__c(before insert ){
             } else if (objAddressChange.Update_Type__c == 'Temp Mailing Address - New'){
                 Description = '\n'+intakemethod 
                     + IdentificationMethod +'\n'
-                    + 'Update Type:' + 'Mailing Address - New' + '\n\n' 
+                    + 'Update Type:' + 'Mailing Address' + '\n\n' 
                     + 'Member Name:' + MemberName + '\n' 
                     + 'Old Address1:' + (objAddressChange.Address_Old__c == null ? '' : objAddressChange.Address_Old__c)+'\n' 
                     + 'Old Address2:' + (objAddressChange.Address2_Old__c == null ? '' : objAddressChange.Address2_Old__c)+'\n'
@@ -270,10 +270,21 @@ trigger AddressChangeLogTrigger on AddressChangeLog__c(before insert ){
                     + 'New State:' + (objAddressChange.State_New__c == null ? '' : objAddressChange.State_New__c)+'\n' 
                     + 'New Zip:' + (objAddressChange.Zip_New__c == null ? '' : objAddressChange.Zip_New__c)+'\n' 
                     + 'New Country:' + (objAddressChange.Country_New__c == null ? '' : objAddressChange.Country_New__c)+'\n' 
-                    + 'New Country Code:' + (objAddressChange.CountryCode_New__c == null ? '' : objAddressChange.CountryCode_New__c)+'\n' 
-                    + 'New Expiration Date:' + objAddressChange.ExpirationDate_New__c + '\n' 
-                    + 'New Active Flag:' + objAddressChange.isActive_New__c + '\n' 
-                    + 'Record Type Updated:' + 'Mail only Records' + '\n' 
+                    + 'New Country Code:' + (objAddressChange.CountryCode_New__c == null ? '' : objAddressChange.CountryCode_New__c)+'\n\n'; 
+                  
+                if(objAddressChange.ExpirationDate_New__c!=objAddressChange.ExpirationDate_Old__c){ 
+                    
+                      string oldValue=objAddressChange.ExpirationDate_Old__c!=null ? objAddressChange.ExpirationDate_Old__c.format('yyyy-MM-dd'):'';
+                      string newValue=objAddressChange.ExpirationDate_New__c!=null ? objAddressChange.ExpirationDate_New__c.format('yyyy-MM-dd'):'';
+                    
+                       Description = Description + 'Expiration Date:\n'
+                           + 'Old:'+oldValue+'\n'
+                           + 'New:'+newValue;
+                   }else{
+                       Description =  Description+ 'Expiration Date:'+(objAddressChange.ExpirationDate_New__c!=null ? objAddressChange.ExpirationDate_New__c.format('yyyy-MM-dd'):'');
+                   }
+                
+                Description =Description+'\n\n'+ 'Record Type Updated:' + 'Mail only Records' + '\n' 
                     + 'Locator:' + objAddressChange.Temp_Mail_Locators__c + '\n' 
                     + 'Names:' + names;
             }
