@@ -5,23 +5,51 @@
 <aura:handler name="init" action="{!c.doInit}" value="{!this}" access="global" />
 <aura:attribute name="CardListMap" type="List" />
 <aura:attribute name="Empty" type="Boolean" />
+<aura:attribute name="IsDormant" type="Boolean" />
 
 	<div id = "stage2" class = "align">    
         <p class = "fontstyle">Select Card</p>
             <br/>
             <table aria-multiselectable="true" class="slds-table slds-table_header-hidden slds-table_edit slds-tree slds-table_tree bottomtbl" role="treegrid">
                 <tbody>
+                    
+                    <aura:if isTrue="{!(v.IsDormant)}">  
+                        <tr class="warningrow">
+                            <td>
+                                <span class="noteTitle" style="font-weight: bold;">Note: </span>
+                            </td>
+                            <td class="notewrappertd">
+                                <ul class="noteContent">
+                                    <li>Dormant cards/accounts are in red.</li>
+                                    <li>You will need to reactivate the account before the change/reset limits can be changed.</li>
+                                </ul> 
+                            </td>
+                        </tr>
+                    </aura:if>
+                    <br/>
                 	<aura:if isTrue="{!not(empty(v.CardListMap))}">        
                     	<aura:iteration items="{!v.CardListMap}" var="itemOption" indexVar="i">                  
                             <tr aria-expanded="false" aria-level="1" aria-posinset="3" aria-selected="false" aria-setsize="4" class="slds-hint-parent">
-                                <td class="slds-text-align_right" role="gridcell" style="width:3.25rem">
-                                    <span class="slds-radio">
-                                        <lightning:input type="radio" name="select" value="{!itemOption.CardNumber}" onchange="{!c.onCardChange}"/>
-                                    </span>
-                                </td>
-                                <td data-label="Employees" role="gridcell">
-                                    <div class="slds-truncate" title="{!itemOption.CardNumber}">{!itemOption.CardNumber}</div>
-                                </td>
+                                <aura:if isTrue="{!(v.IsDormant)}">
+                                    <td class="slds-text-align_right" role="gridcell" style="width:3.25rem">
+                                        <span class="slds-radio">
+                                            <lightning:input type="radio" disabled = "true" name="select" value="{!itemOption.CardNumber}" onchange="{!c.onCardChange}"/>
+                                        </span>
+                                    </td>
+                                    <td data-label="Employees" role="gridcell">
+                                        <div class="slds-text-color_error" title="{!itemOption.CardNumber}">{!itemOption.CardNumber}</div>
+                                    </td>
+                                        <aura:set attribute="else">
+                                            <td class="slds-text-align_right" role="gridcell" style="width:3.25rem">
+                                                <span class="slds-radio">
+                                                    <lightning:input type="radio" name="select" value="{!itemOption.CardNumber}" onchange="{!c.onCardChange}"/>
+                                                </span>
+                                            </td>
+                                            <td data-label="Employees" role="gridcell">
+                                                <div class="slds-truncate" title="{!itemOption.CardNumber}">{!itemOption.CardNumber}</div>
+                                            </td>
+                                        </aura:set>
+								</aura:if>
                             </tr>
                         </aura:iteration>
                     </aura:if>
@@ -35,6 +63,8 @@
                               Cards not Found!
                         </td>
                     </aura:if>
+                    
+                    
                     
                  </tbody>
             </table>

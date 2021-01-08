@@ -15,11 +15,21 @@
 				var result =  resp.getReturnValue();
                 
                 if(result != undefined){
-                	//component.set("v.caList", result);
-                    component.set('v.CardListMap', result.CardList);
-                }
-                if(result.CardList == undefined || result.CardList == ''){
-                	component.set("v.Empty", true);
+                    
+                    if(result.CardList != undefined && result.CardList != ''){
+                    	component.set('v.CardListMap', result.CardList);
+                    }
+                    
+                    if(result.DormantCardList != undefined && result.DormantCardList != ''){
+                    	component.set('v.CardListMap', result.DormantCardList);
+                        component.set("v.IsDormant", true);
+                    }
+                    
+                	if((result.DormantCardList == undefined || result.DormantCardList == '') &&
+                       (result.CardList == undefined || result.CardList == '')){
+                		component.set("v.Empty", true);
+                	}
+                    
                 }
 			}
 		});
