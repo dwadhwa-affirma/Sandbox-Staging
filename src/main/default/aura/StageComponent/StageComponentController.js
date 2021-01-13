@@ -125,7 +125,7 @@
                     // }
 
 
-                    if(!isExistingEFT || EFTCount <= 0){
+                    if((!isExistingEFT || EFTCount <= 0) && !component.get("v.isDisabledforDocusign")){
                         if(((component.get("v.EFTRecord.Routing_Number__c") == '' || component.get("v.EFTRecord.Routing_Number__c") == undefined)
             			|| (component.get("v.EFTRecord.Bank_Name__c") == '' || component.get("v.EFTRecord.Bank_Name__c") == undefined)
             			|| (component.get("v.EFTRecord.Account_Number__c") == '' || component.get("v.EFTRecord.Account_Number__c") == undefined)
@@ -177,7 +177,7 @@
 		           var dynamicText;
 		           if(i==0){
                         if(component.get("v.EFTRecord.Action_Type__c") == "Expire"){
-                        dynamicText = "Update";
+                        dynamicText = "Cancel/Expire";
                     	}
                        else{
                            dynamicText = component.get("v.EFTRecord.Action_Type__c");
@@ -467,7 +467,10 @@
 
        var CurrentEFTRecord = event.getParam("CurrentEFTRecord");
        if(CurrentEFTRecord != undefined)
-       component.set("v.CurrentEFTRecord", CurrentEFTRecord);      
+       component.set("v.CurrentEFTRecord", CurrentEFTRecord);  
+       
+       var isDisabledforDocusign = event.getParam("isDisabledforDocusign");
+       component.set("v.isDisabledforDocusign", isDisabledforDocusign);  
         
     },
     

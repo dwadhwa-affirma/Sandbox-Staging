@@ -171,6 +171,7 @@
         EFTRecord: component.get("v.EFTRecord"),
         isExistingEFT: isExistingEFT,
         EFTCount: EFTCount,
+        isDisabledforDocusign: component.get("v.isDisabled")
       });
       evt.fire();
     }
@@ -196,5 +197,30 @@
                   CurrentEFTRecord: component.get("v.CurrentEFTRecord")
                 });
                 evt.fire();
+  },
+
+  handleChange: function (component, event, helper){
+    var changeValue = event.getParam("value");
+    var isExistingEFT = component.get("v.isExistingEFT");
+    var EFTCount = component.get("v.EFTCount");
+    if(changeValue == "Yes"){
+        component.set("v.isDisabled",true);
+        component.set("v.EFTRecord.Routing_Number__c","");
+      component.set("v.EFTRecord.Bank_Name__c","");
+      component.set("v.EFTRecord.Account_Number__c","");
+      component.set("v.EFTRecord.Type__c","");
+        
+    }
+    else if(changeValue == "No"){
+      component.set("v.isDisabled",false);      
+    }
+    var evt = $A.get("e.c:EFTEvent");
+    evt.setParams({
+      EFTRecord: component.get("v.EFTRecord"),
+      isExistingEFT: isExistingEFT,
+      EFTCount: EFTCount,
+      isDisabledforDocusign: component.get("v.isDisabled")
+    });
+    evt.fire();
   }
 });

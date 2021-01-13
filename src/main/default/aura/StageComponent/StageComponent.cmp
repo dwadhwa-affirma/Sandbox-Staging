@@ -38,6 +38,7 @@
 <aura:attribute name="isErrorStage1" type="Boolean" default="false" />
 <aura:attribute name="ErrorMessage" type="String" />
 <aura:attribute name="isBackButtonDisabled" type="Boolean" default="false" />
+<aura:attribute name="isDisabledforDocusign" type="Boolean" default="false"/> 
 
 <lightning:navigation aura:id="navService"/>
     

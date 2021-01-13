@@ -20,7 +20,7 @@ trigger EFTTrigger on EFT__c(after insert, after update, before update ){
 
 		for (Integer i = 0; i < trigger.new.size(); i++){
 
-			//------------------------------- Checking if the status is being changed and status = 'Completed'-----------------//
+			//------------------------------- Checking if the status is being changed and status = 'Completed' on case of Create-----------------//
 			system.debug('trigger.new[i].Status__c==' + trigger.new[i].Status__c);
 			if (trigger.old[i].Status__c != 'Completed' && trigger.new[i].Status__c == 'Completed'){
 				if (!trigger.new[i].Docusign_is_Additional_Amount__c){
@@ -34,7 +34,7 @@ trigger EFTTrigger on EFT__c(after insert, after update, before update ){
 				CaseIdsToUpdate.add(trigger.new[i].Case__c);
 			}
 
-			//------------------------------- Checking if only payment information changed-----------------//
+			//------------------------------- Checking if the status is being changed and status = 'Completed' in case of Update-----------------//
 			else if ((trigger.old[i].Update_Docusign_Status__c != 'Completed' && trigger.new[i].Update_Docusign_Status__c == 'Completed')){
 				if (!trigger.new[i].Docusign_is_Additional_Amount__c){
 					EFTsForNoAlternateAmount.add(trigger.new[i].id);

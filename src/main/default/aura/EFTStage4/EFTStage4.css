@@ -27,7 +27,12 @@
 .THIS#stage4 .firstcol{border-right: 1px solid #777; margin-right: 1rem; padding-top:6rem;}
 .THIS#stage4 .secondcol{padding-top:6rem;}
 .THIS#stage4 .centerPara{text-align: center;font-size: 1rem;}
-
+.THIS#stage4 .customRadioCls .slds-form-element__control .slds-radio{
+    display : inline-block !important;
+}
+.THIS#stage4 .typedisabled .slds-grow{
+    padding-left: 0px !important; 
+}
 
 @media (max-width:1250px){
     .THIS#stage4 {width:90%;}

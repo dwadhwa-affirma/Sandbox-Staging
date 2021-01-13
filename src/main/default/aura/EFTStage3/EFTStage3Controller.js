@@ -33,7 +33,7 @@
               ) {
                 if (result.ShareLoanList[i].isDisabled == true) {
                   result.ShareLoanList[i].Warning =
-                    "Use of ACH servicing is not allowed for this loan/share as it currently has multiple EFT records.";
+                    "Use of ACH servicing is not allowed for this loan/share as it currently has multiple EFT records. To service this loan/share record, EFT changes needs to be made in Episys.";
                 } else {
                   result.ShareLoanList[i].isDisabled = true;
                   result.ShareLoanList[i].Warning = "";
@@ -41,20 +41,17 @@
               } else {
                 result.ShareLoanList[i].isDisabled = false;
                 result.ShareLoanList[i].Warning = "";
-              }
+              }              
             }
-            // result.ShareLoanList.map((obj) => {
-            //     if(obj.Payment == undefined || obj.Payment == null || obj.Payment == 0){
-            //         obj.isDisabled = true;
-            //     }
-            //     else{
-            //         obj.isDisabled = false;
-            //     }                                                                                             = "utility:add";
-            // })
+            
           }
-
-          component.set("v.ShareLoanMap", result.ShareLoanList);
-
+          if(result.ShareLoanList.length == 1){
+            component.set('v.isSingleShareLoan',true);
+            var action = component.get('c.onRadioChange');
+            $A.enqueueAction(action);
+          }
+          
+          component.set("v.ShareLoanMap", result.ShareLoanList);          
           //alert('d');
         }
       });
@@ -69,26 +66,8 @@
           var result = [];
           result = resp.getReturnValue();
           if (selectedaction != "View") {
-            var keyvaluemap = new Map();
-            for (var i = 0; i < result.length; i++) {
-              keyvaluemap.set(result[i].Share_Loan_Id__c, 0);
-            }
-            for (var i = 0; i < result.length; i++) {
-              keyvaluemap.set(
-                result[i].Share_Loan_Id__c,
-                keyvaluemap.get(result[i].Share_Loan_Id__c) + 1
-              );
-            }
-            for (var i = 0; i < result.length; i++) {
-              if (keyvaluemap.get(result[i].Share_Loan_Id__c) > 1) {
-                result[i].isDisabled = true;
-                result[i].Warning =
-                  "Use of ACH servicing is not allowed for this loan/share as it currently has multiple EFT records.";
-              } else {
-                result[i].isDisabled = false;
-                result[i].Warning = "";
-              }
-            }
+            helper.getMultipleEFTShareLoanList(result[0].Member_Account__r.Name, component, event);
+           
           }
 
           component.set("v.EFTRecordsList", result);
@@ -132,7 +111,8 @@
 
   onRadioChange: function (component, event, helper) {
     var evt = $A.get("e.c:EFTEvent");
-    var SelectedShareLoan = event.getSource().get("v.value");
+    var SelectedShareLoan='';
+      
     var SelectedUserChar3;
     var SelectedShareLoanID,
       SelectedShareLoanType,
@@ -153,6 +133,12 @@
             SelectedPayment = SelectedShareLoan.split(',')[4];
         }*/
     var map = component.get("v.ShareLoanMap");
+    if(event != undefined){
+      SelectedShareLoan = event.getSource().get("v.value");
+    } 
+    else{
+      SelectedShareLoan = map[0].ShareLoanID;
+    }
     for (var i = 0; i < map.length; i++) {
       if (map[i].ShareLoanID == SelectedShareLoan) {
         SelectedShareLoanID = map[i].ShareLoanID;

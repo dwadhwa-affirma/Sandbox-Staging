@@ -40,7 +40,9 @@ public class EFTToSyimtar{
 	public static String OldEffectiveDate;
 	public static String OldFrequency;
 	public static String OldDay1;
-	public static List<EFTController.EFTWrapperObject> EFTExpiredList;
+	public static List<EFTController.EFTWrapperObject> EFTExpiredList = new List<EFTController.EFTWrapperObject>();
+	
+	//-----------------Creating EFT in Episys-----------//
 	@future(callout = true)
 	public static void insertEFTs(Set<id> ids){
 
@@ -78,7 +80,7 @@ public class EFTToSyimtar{
 			} else{
 				Frequency = '0';
 			}
-			//Frequency = '4';
+			
 
 			if (e.Effective_Date__c != null){
 				Day1 = '0';//String.ValueOf(e.Day_of_Month__c);
@@ -147,10 +149,11 @@ public class EFTToSyimtar{
 				LocatorsToExpire = e.Locators_To_Expire__c.split(',');
 			}
 
+			/*-----------In Case of Multiple EFTs, First Expire All EFTS----------------*/
 			if (LocatorsToExpire != null){
 				for (string l : LocatorsToExpire){
 					ExpireReq.setEndpoint('https://symxapi.chevronfcu.org/devclient/EFT/UpdateEft');
-					//req.setClientCertificateName('brscmcapi');
+					
 					ExpireReq.setMethod('POST');
 					ExpireReq.setHeader('Content-Type', 'application/json');
 					ExpireReq.setHeader('Accept', 'application/json');
@@ -176,6 +179,7 @@ public class EFTToSyimtar{
 
 			}
 
+		   /*-----------Web serice call to Create EFT---------------*/
 			//req.setEndpoint('https://brscsymx.ctxcu.org/dev/EFT/CreateEft');
 			req.setEndpoint('https://symxapi.chevronfcu.org/devclient/EFT/CreateEft');
 			req.setClientCertificateName('brscmcapi');
@@ -197,7 +201,7 @@ public class EFTToSyimtar{
 				responseBody = res.getBody();
 				System.debug('Response Body::' + res.getBody());
 			} else{
-				responseBody = '{"EFTType":"3","AmountCode":"27","GroupNumber":"1","IdType":"1","ID":"100","Frequency":"4","Day1":"1","NextDate":"01-01-2019","EffectiveDate":"01-01-2019","PostAmount":"100.00","Payee":"322271627","Reference":"42006986568","MatchId3":"BANK OF AMERICA","AccountNumber":"123"}';
+				responseBody = '{"EFTType":"3","AmountCode":"27","GroupNumber":"1","IdType":"1","ID":"100","Frequency":"4","Day1":"1","NextDate":"01-01-2019","EffectiveDate":"01-01-2019","PostAmount":"100.00","Payee":"322271627","Reference":"42006986568","MatchId3":"BANK OF AMERICA","AccountNumber":"123","EftLocator":"345"}';
 			}
 
 			String result;
@@ -214,7 +218,7 @@ public class EFTToSyimtar{
 				system.debug('ErrorEFTLocator' + ErrorEFTLocator);
 			}
 
-			/*-----------------------SI11042-5: Update Day1 Field----------------------------------*/
+			/*-----------------------SI11042-5: Update Day1 Field------------------------*/
 			String updateresult;
 			string updateresultEFTLocator;
 
@@ -264,9 +268,11 @@ public class EFTToSyimtar{
 				System.debug('updateresultEFTLocator' + updateresultEFTLocator);
 			}
 
+			/*-----------Update Loan/Tracking record based on Loan/Share Code---------------*/
 			if (result != null && result != ''){
 
-				PaymentMethod = '5';				
+				PaymentMethod = '5';
+				/*-----------Update LOC Loan---------------*/				
 				if (LoanCode == '2'){
 					System.debug('LoanCode');
 					req1.setEndpoint('https://symxapi.chevronfcu.org/devclient/EFT/UpdateLOCLoanbyId');
@@ -275,14 +281,18 @@ public class EFTToSyimtar{
 					} else{
 						jsonData1 = '{"AccountNumber":' + '\"' + AccountNumber + '\","LoanId":' + '\"' + ID + '\"' + ',"PaymentMethod":' + '\"' + PaymentMethod + ',"Payment":' + '\"' + e.Payment_Amount__c + '\"' + '\"}';
 					}
-				} else if (ID != null && ID.SubString(0, 2) == '28'){
+				} 
+				/*-----------Update Tracking Records for Share---------------*/
+				else if (ID != null && ID.SubString(0, 2) == '28'){
 					System.debug('Sweep Account');
 					string uc3;
 					uc3 = getUserChar3(AccountNumber, ID);
 					System.debug('uc3==' + uc3);
 					req1.setEndpoint('https://symxapi.chevronfcu.org/devclient/PSAuto/UpdateTracking32Records');
 					jsonData1 = '{"AccountNumber":' + '\"' + AccountNumber + '\","ShareId":' + '\"' + ID + '\"' + ',"UserChar3":' + '\"' + uc3 + '\"' + ',"TotalPaymentAmount":' + '\"' + e.Payment_Amount__c + '\"' + ',"AdditionalPaymentAmount":' + '\"' + e.Alternate_Amount__c  + '\"' + ',"NextPaymentDueDate":' + '\"' + EffectiveDate + '\"}';
-				} else{
+				} 
+				/*-----------Update Non-LOC Loan---------------*/
+				else{
 					System.debug('LoanCode not 2');
 					req1.setEndpoint('https://symxapi.chevronfcu.org/devclient/EFT/UpdateLoanById');
 					if (AlternatePayment != ''){
@@ -329,21 +339,23 @@ public class EFTToSyimtar{
 			// s.id = sl.Id;
 			EFTRecordsToUpdate.add(e);
 
+			/*-----------Create EFT Note---------------*/
 			CreateEFTFormNote(AccountNumber, IDType.leftPad(2, '0'), ID, string.valueof(e.Alternate_Amount__c+e.Payment_Amount__c), 'N');
 
 		}
 		update EFTRecordsToUpdate;
 
-
+		/*-----------Attach Docusign to Case---------------*/
 		EFTToDocuSign.docusignAttachtoCase(ids);
 
 
+		/*-----------Update Case Status and Description--------------*/
 		if (CaseIdsToUpdate.size() > 0){
 			List<Case> UpdateCasesList = [select id, status
 			                              from case
 			                              where id in :CaseIdsToUpdate.keySet() and Status<>'Closed'];
 
-			system.debug('UpdateCasesList==' + UpdateCasesList);
+			system.debug('UpdateCasesList==' + UpdateCasesList);			
 			if (UpdateCasesList.size() > 0){
 				for (Case cs : UpdateCasesList){
 					cs.Description = CaseIdsToUpdate.get(cs.id);
@@ -356,6 +368,7 @@ public class EFTToSyimtar{
 		}
 	}
 
+	//-----------------Updating EFT in Episys-----------//
 	@future(callout = true)
 	public static void UpdateEFT(Set<id> ids, boolean isExpired){
 		system.debug('ids' + ids);
@@ -458,6 +471,7 @@ public class EFTToSyimtar{
 			AccountNumber = e.Member_Account__r.Name;
 
 			if (!isExpired){
+				/*-----------In Case of Multiple EFTs, First Expire All EFTS----------------*/
 				if (e.Locators_To_Expire__c != null && e.Locators_To_Expire__c != ''){
 					LocatorsToExpire = e.Locators_To_Expire__c.split(',');
 				}
@@ -491,6 +505,7 @@ public class EFTToSyimtar{
 				}
 			}
 
+			 /*-----------Web serice call to Update EFT---------------*/
 			//req.setEndpoint('https://brscsymx.ctxcu.org/dev/EFT/CreateEft');
 			req.setEndpoint('https://symxapi.chevronfcu.org/devclient/EFT/UpdateEft');
 			//req.setClientCertificateName('brscmcapi');
@@ -513,7 +528,7 @@ public class EFTToSyimtar{
 				responseBody = res.getBody();
 				System.debug('Response Body::' + res.getBody());
 			} else{
-				responseBody = '{"EFTType":"3","AmountCode":"27","GroupNumber":"1","IdType":"1","ID":"100","Frequency":"4","Day1":"1","NextDate":"01-01-2019","EffectiveDate":"01-01-2019","PostAmount":"100.00","Payee":"322271627","Reference":"42006986568","MatchId3":"BANK OF AMERICA","AccountNumber":"123"}';
+				responseBody = '{"EFTType":"3","AmountCode":"27","GroupNumber":"1","IdType":1,"ID":"100","Frequency":"4","Day1":"1","NextDate":"01-01-2019","EffectiveDate":"01-01-2019","PostAmount":"100.00","Payee":"322271627","Reference":"42006986568","MatchId3":"BANK OF AMERICA","AccountNumber":"123","Status":"OK"}';
 			}
 
 			String result;
@@ -521,6 +536,7 @@ public class EFTToSyimtar{
 
 			// Parse JSON response to get all the totalPrice field values.
 			JSONParser parser = JSON.createParser(responseBody);
+			 /*-----------Get Old Values to use in Case Description field---------------*/
 			while (parser.nextToken() != null){
 				//system.debug('parser.getCurrentToken()=' + parser.getCurrentToken());
 				//system.debug('JSONToken.FIELD_NAME=' + JSONToken.FIELD_NAME);
@@ -681,19 +697,12 @@ public class EFTToSyimtar{
 			System.debug('listObject' + listObject);
 			listObject = String.valueOf(listObject).substringBefore(',"Status"');
 			System.debug('listObject' + listObject);
-			EFTExpiredList = (List<EFTController.EFTWrapperObject>)JSON.deserialize(listObject, List<EFTController.EFTWrapperObject>.class);
-			System.debug('EFTExpiredList==' + EFTExpiredList);
-			// JSon parse for Id
-			//result = String.valueOf(responseBody).substringAfter('Status":"');
-			//result = String.valueOf(result).substringBefore('",');
+			if(listObject != null && listObject != '')
+				EFTExpiredList = (List<EFTController.EFTWrapperObject>)JSON.deserialize(listObject, List<EFTController.EFTWrapperObject>.class);
+			System.debug('EFTExpiredList==' + EFTExpiredList);			
 			System.debug('Status' + result);
-
-			//resultEFTLocator = String.valueOf(responseBody).substringAfter('EftLoctorId":"');
-			//resultEFTLocator = String.valueOf(resultEFTLocator).substringBefore('",');
-			System.debug('EFTLocator' + resultEFTLocator);
-
-			//resultExpDate = String.valueOf(responseBody).substringAfter('ExpirationDate":"');
-			//resultExpDate = String.valueOf(resultExpDate).substringBefore('",');
+			
+			System.debug('EFTLocator' + resultEFTLocator);			
 			System.debug('resultExpDate' + resultExpDate);
 
 			if (result != 'OK'){
@@ -713,6 +722,7 @@ public class EFTToSyimtar{
 				else{
 					TempAlternatePayment = '0.0';
 				}
+				/*-----------Update LOC Loan---------------*/			
 				if (LoanCode == '2'){
 					System.debug('LoanCode');
 					req1.setEndpoint('https://symxapi.chevronfcu.org/devclient/EFT/UpdateLOCLoanbyId');
@@ -721,7 +731,9 @@ public class EFTToSyimtar{
 					} else{
 						jsonData1 = '{"AccountNumber":' + '\"' + AccountNumber + '\","LoanId":' + '\"' + ID + '\"' + ',"PaymentMethod":' + '\"' + PaymentMethod + '\"' + ',"Payment":' + '\"' + e.Payment_Amount__c + '\"}';
 					}
-				} else if (ID != null && ID.SubString(0, 2) == '28'){
+				} 
+				/*-----------Update Tracking Records for Share---------------*/
+				else if (ID != null && ID.SubString(0, 2) == '28'){
 					System.debug('Sweep Account');
 					string uc3;
 					uc3 = getUserChar3(AccountNumber, ID);
@@ -729,7 +741,9 @@ public class EFTToSyimtar{
 					req1.setEndpoint('https://symxapi.chevronfcu.org/devclient/PSAuto/UpdateTracking32Records');
 					jsonData1 = '{"AccountNumber":' + '\"' + AccountNumber + '\","ShareId":' + '\"' + ID + '\"' + ',"UserChar3":' + '\"' + uc3 + '\"' + ',"TotalPaymentAmount":' + '\"' + e.Payment_Amount__c + '\"' + ',"AdditionalPaymentAmount":' + '\"' + TempAlternatePayment + '\"' + ',"NextPaymentDueDate":' + '\"' + NextDate + '\"}';
 					//System.debug('jsonData1=='+jsonData1);
-				} else{
+				} 
+				/*-----------Update Non-LOC Loan---------------*/
+				else{
 					System.debug('LoanCode not 2');
 					req1.setEndpoint('https://symxapi.chevronfcu.org/devclient/EFT/UpdateLoanById');
 					if (AlternatePayment != ''){
@@ -785,31 +799,23 @@ public class EFTToSyimtar{
 							freqExp = 'Semi-Monthly';
 						}
 						operation = operation + 'EFT Locator: ' + ef.Locator + '\n' + 'Expiration Date:' + dt.format('MM/dd/yyyy')+'\n' + 'ABA/Routing#:' + ef.Payee + '\n' + 'Funding FI:' + ef.MatchID3 + '\n' + 'Account Number:' + ef.Reference + '\n' + 'Type:' + typeexp + '\n' + 'Effective Date:' + dt.format('MM/dd/yyyy') + '\n' + 'Frequency:' + freqExp + '\n' + 'Day of Month:' + ef.Day1 + '\n' + '\n';//'Payment Amount:' + e.Payment_Amount__c + '\n' + 'Additional Payment Amount:' + (e.Alternate_Amount__c == null ? 0 : e.Alternate_Amount__c)
-					}
-					//e.Expiration_Date__c = Date.valueOf(resultExpDate);
-					//datetime dt = datetime.newInstance(Date.valueOf(resultExpDate).year(), Date.valueOf(resultExpDate).month(), Date.valueOf(resultExpDate).day());
-					//string operation = 'ACH Record Expired' + '\n' + 'Expiration Date:' + dt.format('MM/dd/yyyy')+'\n';
-					//operation = operation + 'Member Name:' + e.Member_Name__c + '\n' + 'Share/Loan:' + e.Share_Loan_Id__c + '\n' + 'ABA/Routing#:' + e.Routing_Number__c + '\n' + 'Funding FI:' + e.Bank_Name__c + '\n' + 'Account Number:' + e.Account_Number__c + '\n' + 'Type:' + e.Type__c + '\n' + 'Payment Amount:' + e.Payment_Amount__c + '\n' + 'Additional Payment Amount:' + (e.Alternate_Amount__c == null ? 0 : e.Alternate_Amount__c)+'\n' + 'Effective Date:' + e.Effective_Date__c + '\n' + 'Frequency:' + e.Frequency__c + '\n' + 'Day of Month:' + e.Day_of_Month__c + '\n' + '\n' + 'EFT Locator: ' + EftLocator;
+					}					
 					CaseIdsToUpdate.put(e.Case__c, operation);
 				} else{
 					string casedesc = e.Case__r.Description + '\n \n Old ACH Values \n ABA/Routing#: ' + OldPayee + '\n' + 'Funding FI: ' + OldMatchID3 + '\n' + 'Account Number: ' + OldReference + '\n' + 'Type: ' + OldAmountCode + '\n' + 'Payment Amount: ' + OldPostAmount + '\n' + 'Additional Payment Amount: ' + OldAlternatePayment + '\n' + 'Effective Date: ' + OldEffectiveDate + '\n' + 'Frequency: ' + OldFrequency + '\n' + 'Day of Month: ' + OldDay1 + '\n \n ACH DocuSign Values \n Type: ' + e.Type__c + '\n' + 'Funding FI: ' + e.Bank_Name__c + '\n' + 'ABA/Routing#: ' + e.Routing_Number__c + '\n' + 'Account Number: ' + e.Account_Number__c + '\n' + 'Additional Payment Amount: ' + e.Alternate_Amount__c + '\n' + '\n' + 'EFT Locator: ' + EftLocator;
 					CaseIdsToUpdate.put(e.Case__c, casedesc);
 				}
+				/*-----------Create EFT in SF if Expire and Create EFT---------------*/
 				if (resultEFTLocator != '' && resultEFTLocator != null && EftLocator != resultEFTLocator){
 					e.expired__c = true;
-					e.Expiration_Date__c = Date.valueOf(resultExpDate);
-					//e.EftLocator__c = resultEFTLocator;
-
-					//EFT__c newEFT = new EFT__c();
+					e.Expiration_Date__c = Date.valueOf(resultExpDate);					
 					EFT__c newEFT = e.clone(false);
 					newEFT.expired__c = false;
 					newEFT.Expiration_Date__c = null;
 					newEFT.EftLocator__c = resultEFTLocator;
 					newEFT.Share_Loan_Description__c = e.Share_Loan_Description__c;
 					newEFT.Share_Loan_Type__c = e.Share_Loan_Type__c;
-					newEFT.Case__c = e.Case__c;
-					//newEFT.Update_Docusign_Status__c = e.Update_Docusign_Status__c;
-					//newEFT.Update_DocuSignId__c = e.Update_DocuSignId__c;
+					newEFT.Case__c = e.Case__c;					
 					insert newEFT;
 				}
 			}
@@ -826,7 +832,7 @@ public class EFTToSyimtar{
 
 
 			EFTRecordsToUpdate.add(e);
-
+			/*-----------Create EFT Note---------------*/
 			if (!isExpired)
 				CreateEFTFormNote(AccountNumber, IDType.leftPad(2, '0'), ID, string.valueof(e.Alternate_Amount__c+e.Payment_Amount__c), 'N');
 			else{
@@ -836,10 +842,10 @@ public class EFTToSyimtar{
 		//}
 		update EFTRecordsToUpdate;
 
-
+		/*-----------Attach Docusign to Case---------------*/
 		EFTToDocuSign.docusignAttachtoCase(ids);
 
-
+		/*-----------Update Case Status and Description--------------*/
 		if (CaseIdsToUpdate.size() > 0){
 			List<Case> UpdateCasesList = [select id, status
 			                              from case
@@ -853,6 +859,7 @@ public class EFTToSyimtar{
 		}
 	}
 
+	//-----------------Getting Loan Code-----------//
 	public static string getLoanCode(string AccountNumber, string LoanID){
 		string LoanCode;
 		Map<string, List<EFTController.ShareLoanWrapperObject>> LoanMap = EFTController.getLoanAccounts(AccountNumber,'');
@@ -867,6 +874,7 @@ public class EFTToSyimtar{
 		return LoanCode;
 	}
 
+	//-----------------Getting UserChar3 value of Share Record-----------//
 	public static string getUserChar3(string AccountNumber, string ShareID){
 		string userchar3;
 		httpRequest requestparam = new httpRequest();
@@ -876,16 +884,24 @@ public class EFTToSyimtar{
 
 		try{
 			http httpParam = new http();
-			httpResponse response = httpParam.send(requestparam);
+			HttpResponse response;
+			String responseBody1;
+			String strStatus, strBody;
+			if (!Test.isRunningTest()){
+				response = httpParam.send(requestparam);
 
-			String strStatus = response.getStatus();
-			String strBody = response.getBody();
+				strStatus = response.getStatus();
+				strBody = response.getBody();
+			} 
+			else{
+				strBody = '[{"Order":100,"AvailableBalance":null,"Id":null,"Type":1,"AccountType":"SHARE #2800 - JOINT OWNER ","NameAndBalance":" Available Balance( $)","AccountNumber":"0000000123","Description":"PRIMARY SHARE","UserChar3":"","UserAmount2":0.00}]';
+			}
 
 			System.debug('strStatus ....' + strStatus);
 			System.debug('strBody ....' + strBody);
 
 			if (strBody != ''){
-				List<Object> results = (List<Object>)JSON.deserializeUntyped(response.getBody());
+				List<Object> results = (List<Object>)JSON.deserializeUntyped(strBody);
 				System.debug('Service response is ....' + results);
 
 				if (results != null){
@@ -908,6 +924,7 @@ public class EFTToSyimtar{
 		return userchar3;
 	}
 
+	//-----------------Creating EFT Form Note from Episys-----------//
 	public static void CreateEFTFormNote(string AccountNumber, string IDType, string ID, string Amount, string isExpired){
 		String dateFormatString = 'MM/dd/yy';
 		String dateFormatString1 = 'MMddyy';

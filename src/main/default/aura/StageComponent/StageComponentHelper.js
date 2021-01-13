@@ -90,7 +90,7 @@
                   //component.set("v.EFTRecord.Expiration_Date__c", result.Expiration_Date__c);
                  var stages2 = [];
 		       	stages2 = component.get("v.EFTStageDetails");
-                 stages2[4].Stage_Action__c = 'Pending Verification'; 
+                 stages2[4].Stage_Action__c = 'Complete'; 
                 component.set("v.EFTStageDetails", stages2);
                  var stages = [];
                 component.set("v.isDocusignEmailSelected", true);

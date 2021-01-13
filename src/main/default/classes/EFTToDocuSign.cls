@@ -34,11 +34,13 @@ public class EFTToDocuSign{
 	public static String json3;
 	public static Http http3 = new Http();
 	public static HTTPResponse res3;
+
+	//-----------------Sending Docusign-----------//
 	@future(callout = true)
 	public static void docusignAPIcall(Set<ID> ids){
 		system.debug('ids ==' + ids);
 		//----------------------------Start - DocuSign Templates from Custom setting---------------------------------//
-		SolarLoan_Docusign_Emails__c sde = SolarLoan_Docusign_Emails__c.getValues('Email For Testing');
+		ACH_Docusign_Emails__c sde = ACH_Docusign_Emails__c.getValues('Email For Testing');
 		ACH_DocuSign_API_User_Details__c DTSpectrum = ACH_DocuSign_API_User_Details__c.getValues('Spectrum');
 		ACH_DocuSign_API_User_Details__c DTChevron = ACH_DocuSign_API_User_Details__c.getValues('Chevron');
 		List<EFT__C> EFTToUpdate = new List<EFT__c>();
@@ -198,6 +200,7 @@ public class EFTToDocuSign{
 		}
 	}
 
+	//-----------------Attaching Docusign to Case-----------//
 	public static void docusignAttachtoCase(Set<ID> ids){
 
 		List<EFT__c> EFTs = [SELECT Account_Number__c, Action_Type__c, Alternate_Amount__c, Bank_Name__c, Case__c, CreatedById, CreatedDate, Day_of_Month__c, DocuSignId__c, Docusign_Checking_Type__c, Docusign_is_Additional_Amount__c, Docusign_Member_Email__c, Docusign_Savings_Type__c, Effective_Date__c, EftLocator__c, EFT_ID_Type__c, Error_EftLocator__c, Expiration_Date__c, Expired__c, Expire_DocuSignId__c, Expire_Docusign_Status__c, Frequency__c, Id, isAlternateAmount__c, is_Checking_Account__c, Member_Account__c, Member_Name__c, Member__c, Name, OwnerId, Payment_Amount__c, Routing_Number__c, Second_Day_of_Month__c, Type__c, Share_Loan_Description__c, Share_Loan_Id__c, Share_Loan_Type__c, Stage__c, Status__c, Update_DocuSignId__c, Update_Docusign_Status__c, Member_Account__r.Brand__c
@@ -233,7 +236,7 @@ public class EFTToDocuSign{
 		for (EFT__c obj : EFTs){
 			ContentDocumentLink att1 = mapEFTAttachment.get(obj.id);
 			system.debug('Case==' + obj.Case__c);
-			system.debug('att1==' + att1);
+			system.debug('att1==' + att1.ContentDocumentId);
 			if (att1 != null){
 				id tempContentDocId = att1.ContentDocumentId;
 
@@ -251,17 +254,19 @@ public class EFTToDocuSign{
 
 			List<OnBase_Document__c> documentList = [select Id, Name, Document_Name__c, Attachment_Id__c, Document_Type__c, IsMovedToOnBase__c, Attachment_Created_On__c, Member_Comment__r.CreatedBy.Profile.Name, Case__c
 			                                         FROM OnBase_Document__c
-			                                         where Case__c = :obj.Case__c and IsMovedToOnBase__c = :false
-			                                         limit 1];
+			                                         where Case__c = :obj.Case__c and IsMovedToOnBase__c = :false];
 
 			// OnBase_Document__c onbaseDocObj = new OnBase_Document__c();
 			// documentList[0].Id = documentList[0].id;
-			system.debug('documentList[0]==' + documentList[0].Attachment_Id__c);
+			system.debug('documentList==' + documentList);
 			system.debug('documentList[0].Case__c==' + documentList[0].Case__c);
 			if (documentList.size() > 0){
-				documentList[0].Document_Type__c = 'ACH Maintenance Forms';
-				documentList[0].Move_To_OnBase_Date__c = system.now();
-				documentList[0].Case__c = obj.Case__c;
+				for (OnBase_Document__c ob : documentList){
+					ob.Document_Type__c = 'ACH Maintenance Forms';
+					ob.Move_To_OnBase_Date__c = system.now();
+					ob.Case__c = obj.Case__c;
+				}
+
 				update documentList;
 			}
 			system.debug('documentList[0].Document_Type__c==' + documentList[0].Document_Type__c);
