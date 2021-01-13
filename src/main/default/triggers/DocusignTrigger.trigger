@@ -7,6 +7,7 @@ trigger DocusignTrigger on dsfs__DocuSign_Status__c(after insert, after update )
     Set<ID> DocusignIdList1 = new Set<Id>();
     Map<string, string> UpdateEFTCaseMap = new map<string, string>();
 
+	/*---------------------------------ACH Changes for assigning CaseId to Docusign Envelop Start Here----------------------------*/
 	if (Trigger.isAfter && Trigger.isInsert){
 		for (dsfs__DocuSign_Status__c d : Trigger.new){
 			DocusignEnvelopeIdList.add(d.dsfs__DocuSign_Envelope_ID__c);
@@ -56,6 +57,8 @@ trigger DocusignTrigger on dsfs__DocuSign_Status__c(after insert, after update )
 			update listDocusignStatusUpdate;
 		}
 	}
+
+	/*---------------------------------ACH Changes for assigning CaseId to Docusign Envelop End Here----------------------------*/
 
 	Map<Id, String> docMap = new Map<Id, String>();
 	for (dsfs__DocuSign_Status__c d : Trigger.new){
