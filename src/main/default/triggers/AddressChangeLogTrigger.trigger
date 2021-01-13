@@ -36,7 +36,7 @@ trigger AddressChangeLogTrigger on AddressChangeLog__c(before insert ){
             if (memberemail != null && (MyPattern.matcher(memberemail).matches()))
                 EmailList.add(memberemail);
             if (SendEmail && EmailList.size() > 0){
-                SendEmailNotifications(EmailList, 'Address Change', objAddressChange.Member__c);
+                //SendEmailNotifications(EmailList, 'Address Change', objAddressChange.Member__c);
             }
             if (SendSMS && phone != null){
                 system.debug('memberPhone==' + phone);
@@ -68,7 +68,7 @@ trigger AddressChangeLogTrigger on AddressChangeLog__c(before insert ){
                 mapAccountNumber.put(acc.name, acc.id);
             }
             
-            
+            /*----------------------------------Create and Format Case Description begins--------------------------------------------*/
             if (objAddressChange.Clean_Up_Intake_Method__c == 'Clean Up - Report Date'){
                 Datetime dt = datetime.newInstance(Date.valueOf(objAddressChange.Clean_Up_Report_Date__c).year(), Date.valueOf(objAddressChange.Clean_Up_Report_Date__c).month(), Date.valueOf(objAddressChange.Clean_Up_Report_Date__c).day());
                 intakemethod = 'Intake Method:' + objAddressChange.Clean_Up_Intake_Method__c + '\n' + 
@@ -114,6 +114,9 @@ trigger AddressChangeLogTrigger on AddressChangeLog__c(before insert ){
                     objAddressChange.Zip4_Old__c = ZipCodes1[1];
             }
             
+            //Construct Name field for case description
+            // It will contact all accnumber|accName separated by ','
+            // e.g. 0001234|Chevron Test123,0001234|Chevron Test456,000789|Chevron Test789
             string names='';
             if(objAddressChange.AccountNamePair__c!=null && !String.isEmpty(objAddressChange.AccountNamePair__c)){
                 String[] arrNames = objAddressChange.AccountNamePair__c.split(',');
@@ -167,6 +170,7 @@ trigger AddressChangeLogTrigger on AddressChangeLog__c(before insert ){
             }
             
             if (objAddressChange.Update_Type__c == 'Residential Address'){
+                // To create case description for residential address change
                 Description = '\n' + intakemethod 
                     + IdentificationMethod +'\n'
                     + 'Update Type:' + objAddressChange.Update_Type__c + '\n\n' 
@@ -190,6 +194,7 @@ trigger AddressChangeLogTrigger on AddressChangeLog__c(before insert ){
                     + 'Record Type Updated:' + 'Name Records' + '\n' 
                     + 'Names:' + names;
                 
+                //Log expired mailing address details to case description when comes from residential address change flow
                 if (objAddressChange.Is_Temp_Mail_Expired__c && objAddressChange.Expired_Temp_Mail_Details__c != null){
                     List<string> TempMailList = objAddressChange.Expired_Temp_Mail_Details__c.split(',');
                     Description = Description + '\n' + '\n' + 'Expired Active Mail Record Details:' ;
@@ -210,10 +215,11 @@ trigger AddressChangeLogTrigger on AddressChangeLog__c(before insert ){
                             Description = Description + '\n' +'Account Number:' + accno + '\n' + 'Address1:' + add1 + '\n' + 'Address2:' + add2 + '\n' + 'City:' + city + '\n' + 'State:' + state + '\n' + 'ZipCode:' + zip + '\n' + '\n';
                         }
                     }
-                    /*Description = Description + '\n' + '\n' + 'Expired Active Mail Record Details:' + 
-'\n' + 'Account Number:' + objAddressChange.Expire_Temp_Mail_Account_Number__c + '\n' + 'Address1:' + objAddressChange.Expire_Temp_Mail_Address1__c + '\n' + 'Address2:' + objAddressChange.Expire_Temp_Mail_Address2__c + '\n' + 'City:' + objAddressChange.Expire_Temp_Mail_City__c + '\n' + 'State:' + objAddressChange.Expire_Temp_Mail_State__c + '\n' + 'ZipCode:' + objAddressChange.Expire_Temp_Mail_Zip5__c;*/
                 }
             } else if (objAddressChange.Update_Type__c == 'Contact Info'){
+                
+                // To create case description for residential address change
+                
                 Description = '\n'+intakemethod 
                     + IdentificationMethod +'\n'
                     + 'Update Type:' + objAddressChange.Update_Type__c + '\n\n' 
@@ -233,6 +239,8 @@ trigger AddressChangeLogTrigger on AddressChangeLog__c(before insert ){
                     + 'Record Type Updated:' + 'Name Records' + '\n' + 
                     'Names:' + names;
             } else if (objAddressChange.Update_Type__c == 'Mailing Address'){
+                
+                // To create case description for mailing address change
                 Description = '\n'+ intakemethod 
                     + IdentificationMethod +'\n'
                     + 'Update Type:' + (objAddressChange.Update_Type__c + ' - Update')+ '\n\n'
@@ -253,6 +261,7 @@ trigger AddressChangeLogTrigger on AddressChangeLog__c(before insert ){
                     'Locator:' + objAddressChange.Temp_Mail_Locators__c + '\n' + 
                     'Names:' + names;
             } else if (objAddressChange.Update_Type__c == 'Temp Mailing Address - New'){
+                 // To create case description for mailing address change
                 Description = '\n'+intakemethod 
                     + IdentificationMethod +'\n'
                     + 'Update Type:' + 'Mailing Address' + '\n\n' 
@@ -272,6 +281,8 @@ trigger AddressChangeLogTrigger on AddressChangeLog__c(before insert ){
                     + 'New Country:' + (objAddressChange.Country_New__c == null ? '' : objAddressChange.Country_New__c)+'\n' 
                     + 'New Country Code:' + (objAddressChange.CountryCode_New__c == null ? '' : objAddressChange.CountryCode_New__c)+'\n\n'; 
                   
+                // Expiration date change then display old and new values 
+                // Expiration date did not change - display only new value 
                 if(objAddressChange.ExpirationDate_New__c!=objAddressChange.ExpirationDate_Old__c){ 
                     
                       string oldValue=objAddressChange.ExpirationDate_Old__c!=null ? objAddressChange.ExpirationDate_Old__c.format('yyyy-MM-dd'):'';
@@ -288,6 +299,8 @@ trigger AddressChangeLogTrigger on AddressChangeLog__c(before insert ){
                     + 'Locator:' + objAddressChange.Temp_Mail_Locators__c + '\n' 
                     + 'Names:' + names;
             }
+
+            /*----------------------------------Create and Format Case Description Ends--------------------------------------------*/
             
             // --------------------- Check if Case exists..................//
             
@@ -403,11 +416,6 @@ trigger AddressChangeLogTrigger on AddressChangeLog__c(before insert ){
             }
             
             insert listac;
-            
-            /*if (objAddressChange.Update_Type__c == 'Residential Address' && objAddressChange.EmailNotificationJSONString__c != null){
-string decodedJson = objAddressChange.EmailNotificationJSONString__c.unescapeHtml4().unescapeHtml4();
-EmailNotificationDetails(decodedJson);
-}*/
         }
     }
     
@@ -438,6 +446,7 @@ EmailNotificationDetails(decodedJson);
         // LastOTPSent = System.Now();
     }
     
+    // --------------------- Send Email Notification..................//
     public void SendEmailNotifications(List<string> EmailIdsList, string templatenAME, string accountNumber){
         List<Messaging.SingleEmailMessage> mails = new List<Messaging.SingleEmailMessage>();
         Messaging.SingleEmailMessage mail = new Messaging.SingleEmailMessage();
