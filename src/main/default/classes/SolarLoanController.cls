@@ -207,9 +207,7 @@ public class SolarLoanController {
                 
             //------------------------------------------------validation check ------------------------------------------------------//
 
-            if(SolarLoanList[0].Non_Solar_Amount__c == null && (SolarLoanList[0].Product_Loan_Type__c == 'Integrated Solar Shingles' ||
-                                                                SolarLoanList[0].Product_Loan_Type__c == 'SolarPlus' ||
-                                                                SolarLoanList[0].Product_Loan_Type__c == 'SolarPlusITC')){
+            if(SolarLoanList[0].Non_Solar_Amount__c == null && SolarLoanList[0].Product_Loan_Type__c != 'Solar'){
 								
 				Stage3MissingFields = 'Please enter Non Solar Amount.';
 				Stage3ErrorCheck = 'True';
