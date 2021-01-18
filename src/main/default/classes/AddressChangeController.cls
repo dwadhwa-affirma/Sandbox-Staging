@@ -1,7 +1,7 @@
 public class AddressChangeController {
 	
 	    
-   // ---------------------Updated by Dhwani Get Flow URL from Custom Settings..................//       	
+   // ---------------------Get data to pass in Address Change Flow..................//       	
 @AuraEnabled
     public static Map<string, string> GetAllData(string accid)
     {
@@ -10,7 +10,7 @@ public class AddressChangeController {
          string source;
          boolean SendEmail=false;
         
-         
+        // --------------------- Get Flow URL from Custom Settings..................//   
         AddressChangeConfigurations__c acc = AddressChangeConfigurations__c.getValues('Primary');
 		
 		if(acc.FlowURL__c != null){
@@ -35,7 +35,7 @@ public class AddressChangeController {
 
         return strMap; 
     }
-       // --------------------- Get Flow URL from Custom Settings..................//       	
+            	
    
     
 }

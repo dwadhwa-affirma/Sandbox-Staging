@@ -17,7 +17,8 @@
   <aura:registerEvent name="EFTEvent" type="c:EFTEvent" />
   <aura:attribute name="EFTRecord" type="EFT__c" />
   <aura:attribute name="EFTRecordsList" type="List" />
-
+  <aura:attribute name="MultipleEFTShareLoanId" type="List" />
+  <aura:attribute name="isSingleShareLoan" type="Boolean" default="false" />
 
   <div id="stage3" class="stage3">
 
@@ -61,12 +62,17 @@
               <tr aria-expanded="false" aria-level="1" aria-posinset="3" aria-selected="false" aria-setsize="4"
                 class="slds-hint-parent">
                 <td class="slds-text-align_right" role="gridcell" style="width:3.25rem">
-                  <div class="slds-radio">
-                    <span class="slds-radio">
-                      <lightning:input type="radio" name="select" value="{!itemOption.ShareLoanID}"
-                        onchange="{!c.onRadioChange}" disabled="{!itemOption.isDisabled}"/>
-                    </span>
-                  </div>
+                  <aura:if isTrue="{!v.isSingleShareLoan}">
+                     <ui:inputRadio name="select" change="{!c.onRadioChange}" value="true" text="{!itemOption.ShareLoanID}"/>
+                    <aura:set attribute="else">
+                      <div class="slds-radio">
+                        <span class="slds-radio">
+                          <lightning:input type="radio" name="select" value="{!itemOption.ShareLoanID}"
+                            onchange="{!c.onRadioChange}" disabled="{!itemOption.isDisabled}" class="clsRadio" />
+                        </span>
+                      </div>
+                    </aura:set>
+                  </aura:if>                  
                 </td>
                 <td class="slds-text" role="gridcell" style="width:3.25rem">
                   <div class="slds-truncate" title="{!itemOption.LoanId}">
@@ -180,18 +186,17 @@
                     </td>
                     <td class="slds-text-align_right" role="gridcell" style="width:3.25rem">
                       <div class="slds-truncate" title="{!itemOption.Payment_Amount__c}">
-                        <lightning:formattedNumber value="{!itemOption.Payment_Amount__c}" style="currency"
-                          currencyCode="USD" />
+                        <lightning:formattedNumber value="{!itemOption.Payment_Amount__c}" style="currency" currencyCode="USD" />
                       </div>
                     </td>
-                    <td class="slds-text-align_right" role="gridcell" style="width:3.25rem">
+                    <td class="slds-text-align_right" role="gridcell" style="width:3.25rem;">
                       <div class="slds-truncate" title="{!itemOption.Bank_Name__c}">{!itemOption.Bank_Name__c}</div>
                     </td>
                   </tr>
                   <aura:if isTrue="{!(itemOption.isDisabled == true)}">
                     <tr>
                      <td></td> 
-                    <td colspan="4" style="color:red;">
+                    <td colspan="4" style="color:red;white-space:normal !important;">
                       {!itemOption.Warning}
                     </td>
                   </tr> 

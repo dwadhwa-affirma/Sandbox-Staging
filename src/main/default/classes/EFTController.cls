@@ -22,6 +22,7 @@ public class EFTController{
 		set;
 	}
 
+	/*------------------------Standard Controller-------------------*/
 	public EFTController(ApexPages.StandardController stdController){
 		this.ACH = (EFT__c)stdController.getRecord();
 		this.objParentId = this.ACH.Id;
@@ -31,7 +32,8 @@ public class EFTController{
 		                  WHERE Id = :this.ACH.Id];
 	}
 
-	public List<SelectOption> getTypes(){
+	/*------------------------Getting Account Types picklist values-------------------*/
+	public static List<SelectOption> getTypes(){
 		Schema.sObjectType sobject_type = EFT__c.getSObjectType();
 		Schema.DescribeSObjectResult sobject_describe = sobject_type.getDescribe();
 		Map<String, Schema.SObjectField> field_map = sobject_describe.fields.getMap();
@@ -44,7 +46,7 @@ public class EFTController{
 		return options;
 	}
 
-	//------------------------------- Getting Stage Details and Member Account Details-----------------------------------------------//
+	//-----------------Getting Stage Details and Member Account Details-----------//
 	@AuraEnabled
 	public static map<string, object> getStageData(string recordId, string sObjectType){
 		map<string, object> resultMap = new map<string, object>();
@@ -88,6 +90,7 @@ public class EFTController{
 		return resultMap;
 	}
 
+	//-----------------------Getting Member Details-----------------------//
 	@AuraEnabled
 	public static map<string, object> getMembers(string recordId){
 		list<Person_Account__c> paList = PersonNameLightningController.getData(recordId);
@@ -117,6 +120,7 @@ public class EFTController{
 		return resultmap;
 	}
 
+	//---------------------------Getting EFT Record----------------------//
 	@AuraEnabled
 	public static EFT__c getEFT(EFT__c EFTRecord){
 		system.debug('EFTRecord.id==' + EFTRecord.id);
@@ -132,7 +136,7 @@ public class EFTController{
 		}
 	}
 
-	//------------------------------- Saving EFT data to Salesforce-----------------------------------------------//
+	//-----------------------Saving EFT data to Salesforce------------------//
 	@AuraEnabled
 	public static EFT__c saveStageData(EFT__c EFTRecord){
 		system.debug('Alternate_Amount__c==' + EFTRecord.Alternate_Amount__c);
@@ -152,6 +156,7 @@ public class EFTController{
 		system.debug('EFTRecordList.MemberAccount==' + EFTRecord.Member_Account__r);
 
 
+		/*-----------Create EFT in SF if Does not exist else Update----------------*/
 		if (EFTRecordList.size() == 0){
 			string MemberAccountID = EFTRecord.Member_Account__c == null ? EFTRecord.Member_Account__r.Id : EFTRecord.Member_Account__c;
 			Account_Details__c MemberAccount = [select id, name, Parent_Account__c
@@ -220,15 +225,15 @@ public class EFTController{
 		}
 	}
 
+	//--------------------------Expiring EFT Record---------------------------//
 	@AuraEnabled
-	public static EFT__c expireEFT(EFT__c EFTRecord){
-
-		// system.debug('EFTRecordString=='+EFTRecordString);
-		//EFT__c EFTRecord = (EFT__c) System.JSON.deserialize(EFTRecordString, EFT__c.Class);
+	public static EFT__c expireEFT(EFT__c EFTRecord){		
 		system.debug('EFTRecordId==' + EFTRecord.Id);
 		system.debug('Effective_Date__c==' + EFTRecord.Effective_Date__c);
 		system.debug('Expired__c==' + EFTRecord.Expired__c);
 		EFT__c EFTRecordList = new EFT__c();
+		
+		/*-----------Create EFT in SF if Does not exist before expiring----------------*/
 		if (EFTRecord.Id != null){
 			EFTRecordList = [Select Account_Number__c, Action_Type__c, Alternate_Amount__c, Bank_Name__c, CreatedById, CreatedDate, Day_of_Month__c, Second_Day_of_Month__c, DocuSignId__c, Effective_Date__c, Expiration_Date__c, Frequency__c, Id, Member_Account__c, Member_Account__r.Brand__c, Member_Account__r.Name, Member__c, Name, Case__c, OwnerId, Payment_Amount__c, Routing_Number__c, Share_Loan_Id__c, Stage__c, EftLocator__c, Share_Loan_Description__c, Share_Loan_Type__c, Member_Name__c, Status__c, Type__c, EFT_ID_Type__c, Expired__c
 			                 from EFT__c
@@ -268,7 +273,7 @@ public class EFTController{
 		return EFTRecordList;
 	}
 
-	//------------------------------- Createing Case-----------------------------------------------//
+	//-------------------------------Creating Case-------------------------//
 	@AuraEnabled
 	public static EFT__c createCase(EFT__c EFTRecord){
 		system.debug('EFTID===' + EFTRecord.id);
@@ -338,7 +343,7 @@ public class EFTController{
 		}
 		//cs.AccountId = EFTRecord.Member_Account__c;
 		//cs.Status = 'Waiting for a member';
-		cs.Docusign_Envelope_Status__c = 'Sent';
+		
 		cs.Subject = 'ACH Record';
 		//system.debug('createdby==='+EFTRecord.CreatedBy.Id);
 		//cs.ownerid = gp.Id;
@@ -351,14 +356,18 @@ public class EFTController{
 		if (EFTRecord.Action_Type__c == 'Create'){
 			operation = 'ACH Record Created' + '\n';
 			cs.Subject = 'ACH Record Created';
+			cs.Docusign_Envelope_Status__c = 'Sent';
 			cs.Description = operation + 'Member Name:' + EFTRecord.Member_Name__c + '\n' + 'Share/Loan:' + EFTRecord.Share_Loan_Id__c + '\n' + 'ABA/Routing#:' + EFTRecord.Routing_Number__c + '\n' + 'Funding FI:' + EFTRecord.Bank_Name__c + '\n' + 'Account Number:' + EFTRecord.Account_Number__c + '\n' + 'Type:' + EFTRecord.Type__c + '\n' + 'Payment Amount:' + EFTRecord.Payment_Amount__c + '\n' + 'Additional Payment Amount:' + (EFTRecord.Alternate_Amount__c == null ? 0 : EFTRecord.Alternate_Amount__c)+'\n' + 'Effective Date:' + EFTRecord.Effective_Date__c + '\n' + 'Frequency:' + EFTRecord.Frequency__c + '\n' + 'Day of Month:' + EFTRecord.Day_of_Month__c;
 		} else if (EFTRecord.Action_Type__c == 'Update' && !EFTRecord.Expired__c){
 			operation = 'ACH Record Updated' + '\n';
 			cs.Subject = 'ACH Record Updated';
+			cs.Docusign_Envelope_Status__c = 'Sent';
 			cs.Description = operation + 'Member Name:' + EFTRecord.Member_Name__c + '\n' + 'Share/Loan:' + EFTRecord.Share_Loan_Id__c + '\n' + 'ABA/Routing#:' + EFTRecord.Routing_Number__c + '\n' + 'Funding FI:' + EFTRecord.Bank_Name__c + '\n' + 'Account Number:' + EFTRecord.Account_Number__c + '\n' + 'Type:' + EFTRecord.Type__c + '\n' + 'Payment Amount:' + EFTRecord.Payment_Amount__c + '\n' + 'Additional Payment Amount:' + (EFTRecord.Alternate_Amount__c == null ? 0 : EFTRecord.Alternate_Amount__c)+'\n' + 'Effective Date:' + EFTRecord.Effective_Date__c + '\n' + 'Frequency:' + EFTRecord.Frequency__c + '\n' + 'Day of Month:' + EFTRecord.Day_of_Month__c;
 		} else if (EFTRecord.Action_Type__c == 'Update' && EFTRecord.Expired__c){
 			operation = 'ACH Record Expired' + '\n' + 'Expiration Date:' + EFTRecord.Expiration_Date__c + '\n';
 			cs.Subject = 'ACH Record Cancelled/Expired';
+			cs.ownerid = UserInfo.getUserId();
+			cs.Status='Closed';
 			cs.Description = operation + 'Member Name:' + EFTRecord.Member_Name__c + '\n' + 'Share/Loan:' + EFTRecord.Share_Loan_Id__c + '\n' + 'ABA/Routing#:' + EFTRecord.Routing_Number__c + '\n' + 'Funding FI:' + EFTRecord.Bank_Name__c + '\n' + 'Account Number:' + EFTRecord.Account_Number__c + '\n' + 'Type:' + EFTRecord.Type__c + '\n' + 'Payment Amount:' + EFTRecord.Payment_Amount__c + '\n' + 'Additional Payment Amount:' + (EFTRecord.Alternate_Amount__c == null ? 0 : EFTRecord.Alternate_Amount__c)+'\n' + 'Effective Date:' + EFTRecord.Effective_Date__c + '\n' + 'Frequency:' + EFTRecord.Frequency__c + '\n' + 'Day of Month:' + EFTRecord.Day_of_Month__c;
 		}
 		if (EFTRecord.Member_Account__c != null)
@@ -386,7 +395,7 @@ public class EFTController{
 		return ResultEFTRecord;
 	}
 
-	//-------------------------------Send ACH Document-----------------------------------------------//
+	//-------------------------------Sending ACH Document-----------------------//
 	@AuraEnabled
 	public static void sendACHDocument(EFT__c recordId){
 		set<Id> Ids = new Set<Id>();
@@ -394,7 +403,7 @@ public class EFTController{
 		EFTToDocuSign.docusignAPIcall(Ids);
 	}
 
-	//-------------------------------Getting BankName from Entered Routing No-----------------------------------------------//
+	//------------------Getting BankName from Entered Routing No--------------------//
 	@AuraEnabled
 	public static string routingInfo(String RoutingNumber){
 		system.debug('RoutingNumber==' + RoutingNumber);
@@ -449,7 +458,7 @@ public class EFTController{
 		return BankName;
 	}
 
-	//-------------------------------Getting Share Accounts from Episys----------------------------------------------//
+	//----------------Getting Share and Loan Accounts from Episys-----------------//
 	@AuraEnabled
 	public static Map<string, List<ShareLoanWrapperObject>> getShareLoanAccounts(string recordId){
 		system.debug('recordId==' + recordId);
@@ -476,17 +485,24 @@ public class EFTController{
 
 		try{
 			http httpParam = new http();
-			httpResponse response = httpParam.send(requestparam);
+			httpResponse response;
+			String strStatus, strBody;
+			if (!Test.isRunningTest()){
+				response = httpParam.send(requestparam);
 
-			String strStatus = response.getStatus();
-			String strBody = response.getBody();
+				strStatus = response.getStatus();
+				strBody = response.getBody();
+
+			} else{
+				strBody = '[{"Order":100,"AvailableBalance":null,"Id":null,"Type":1,"AccountType":"SHARE #2800 - JOINT OWNER ","NameAndBalance":" Available Balance( $)","AccountNumber":"0000000123","Description":"PRIMARY SHARE","UserChar3":"","UserAmount2":0.00}]';
+			}
 
 			System.debug('strStatus ....' + strStatus);
 			System.debug('strBody ....' + strBody);
 
 			Set<string> uniqueShareLoanIdSet = new Set<string>();
 			if (strBody != ''){
-				List<Object> results = (List<Object>)JSON.deserializeUntyped(response.getBody());
+				List<Object> results = (List<Object>)JSON.deserializeUntyped(strBody);
 				System.debug('Service response is ....' + results);
 
 				if (results != null){
@@ -502,17 +518,7 @@ public class EFTController{
 							temp.ShareLoanIDString = 'S' + ShareId;
 							temp.Description = (string)localAcc.get('Description');
 							temp.TypeTranslate = (string)localAcc.get('Description');
-							temp.UserChar3 = (string)localAcc.get('UserChar3');
-							if(uniqueShareLoanIdSet.contains(ShareId)){
-								temp.isDisabled = true;
-							}
-							else{
-								temp.isDisabled = false;
-								List<EFT__c> TotalEfts = getEFTRecordsforShareLoan1(recordId,ShareId,'Create','');
-								if(TotalEfts.size() > 0){
-									uniqueShareLoanIdSet.add(ShareId);
-								}								
-							}
+							temp.UserChar3 = (string)localAcc.get('UserChar3');							
 
 							temp.Type = 'Share';
 
@@ -554,31 +560,29 @@ public class EFTController{
 					//System.debug('typetrans ....' + typetrans);
 				}
 			}
-
-			map<string,integer> ShareLoanIDEFTCountMap = new map<string,integer>();
-			if(!String.isBlank(recordId)){
-				List<EFT__c> ListAllEFT = getEFTRecordsEpisys(recordId);
-				if (ListAllEFT.size() > 0){
-					for (EFT__C e : ListAllEFT){
-						if(ShareLoanIDEFTCountMap.containsKey(e.Share_Loan_Id__c)){
-							ShareLoanIDEFTCountMap.put(e.Share_Loan_Id__c,ShareLoanIDEFTCountMap.get(e.Share_Loan_Id__c)+1);
-						}
-						else{
-							ShareLoanIDEFTCountMap.put(e.Share_Loan_Id__c,1);
-						}
-					}
-				}
-			}
+			List<string> setLSIDMultipleEFT = GetMultipleEFTWarningRecords(AccountNumber);
+			map<string, integer> ShareLoanIDEFTCountMap = new map<string, integer>();
+			// if (!String.isBlank(recordId)){
+			// 	List<EFT__c> ListAllEFT = getEFTRecordsEpisys(recordId);
+			// 	if (ListAllEFT.size() > 0){
+			// 		for (EFT__C e : ListAllEFT){
+			// 			if (ShareLoanIDEFTCountMap.containsKey(e.Share_Loan_Id__c)){
+			// 				ShareLoanIDEFTCountMap.put(e.Share_Loan_Id__c, ShareLoanIDEFTCountMap.get(e.Share_Loan_Id__c)+1);
+			// 			} else{
+			// 				ShareLoanIDEFTCountMap.put(e.Share_Loan_Id__c, 1);
+			// 			}
+			// 		}
+			// 	}
+			// }
 
 			Map<string, List<ShareLoanWrapperObject>> LoanList = getLoanAccounts(AccountNumber, recordId);
 			if (!LoanList.ContainsKey('Exception')){
 				resultList.addall(LoanList.get('LoanList'));
-				for(ShareLoanWrapperObject sl: resultList){
-					if(ShareLoanIDEFTCountMap.get(sl.ShareLoanID) > 1){
+				for (ShareLoanWrapperObject sl : resultList){
+					if (setLSIDMultipleEFT.contains(sl.ShareLoanID)){
 						sl.isDisabled = true;
-					}
-					else{
-						sl.isDisabled = false;																
+					} else{
+						sl.isDisabled = false;
 					}
 				}
 				resultmap.put('ShareLoanList', resultList);
@@ -594,7 +598,7 @@ public class EFTController{
 		return resultmap;
 	}
 
-	//-------------------------------Getting Loan Accounts from Episys----------------------------------------------//
+	//--------------------Getting Loan Accounts from Episys-------------------//
 	public static Map<string, List<ShareLoanWrapperObject>> getLoanAccounts(string AccountNumber, string recordId){
 		//system.debug('AccountNumber==' + AccountNumber);
 		List<ShareLoanWrapperObject> resultList = new List<ShareLoanWrapperObject>();
@@ -618,19 +622,27 @@ public class EFTController{
 
 
 			http httpParam = new http();
-			httpResponse response = httpParam.send(requestparam);
+			HttpResponse response;
+			String responseBody1;
+			String strStatus, strBody;
+			if (!Test.isRunningTest()){
+				response = httpParam.send(requestparam);
 
-			String strStatus = response.getStatus();
-			String strBody = response.getBody();
+				strStatus = response.getStatus();
+				strBody = response.getBody();
+			} 
+			else{
+				strBody = '[{"LoanId":7501,"LoanType":0,"Description":"","Payment":0.0,"AlternatePayment":0.0,"PmtBucketAmount":0.0,"UserAmount2":0.0,"DueDate":"","DueDay1":0,"DueDay2":0,"LoanCode":""}]';
+			}
 
 			//System.debug('strStatus1 ....' + strStatus);
-			//System.debug('strBody1 ....' + strBody);
+			System.debug('strBody1 ....' + strBody);
 
-			map<string,integer> LoanIDEFTCountMap = new map<string,integer>();
-			
+			map<string, integer> LoanIDEFTCountMap = new map<string, integer>();
+
 
 			if (strBody != ''){
-				List<Object> results = (List<Object>)JSON.deserializeUntyped(response.getBody());
+				List<Object> results = (List<Object>)JSON.deserializeUntyped(strBody);
 				System.debug('Service response is1 ....' + results);
 
 
@@ -645,8 +657,8 @@ public class EFTController{
 							temp.ShareLoanID = LoanId;
 							temp.ShareLoanIDString = 'L' + LoanId;
 							temp.Description = (string)localAcc.get('Description');
-							//temp.TypeTranslate =  (string)localAcc.get('Description');						
-							
+							//temp.TypeTranslate =  (string)localAcc.get('Description');
+
 							temp.Type = 'Loan';
 							temp.Payment = (decimal)localAcc.get('Payment');
 							if ((string)localAcc.get('DueDate') != '')
@@ -700,6 +712,105 @@ public class EFTController{
 		return resultmap;
 	}
 
+	//--------------------Getting Share Accounts from Episys-------------------//
+	@AuraEnabled
+	public static Map<string, List<ShareLoanWrapperObject>> getShareAccounts(string AccountNumber){
+		system.debug('AccountNumber==' + AccountNumber);
+
+		List<ShareLoanWrapperObject> resultList = new List<ShareLoanWrapperObject>();
+		Map<string, List<ShareLoanWrapperObject>> resultmap = new Map<string, List<ShareLoanWrapperObject>>();
+
+		httpRequest requestparam = new httpRequest();
+		//requestparam.setTimeout(10);
+		requestparam.setEndpoint('https://symxapi.chevronfcu.org/devclient/PSAuto/GetSharesEFT?AccountNumber=' + AccountNumber + '&userchar2=abc');
+		requestparam.setMethod('GET');
+
+		ACH_Loan_Share_Type_Configuration__c cs = ACH_Loan_Share_Type_Configuration__c.getValues('Share');
+		string shareTypes = (string)cs.Type__c;
+		//system.debug('shareTypes==' + shareTypes);
+		String[] arrShareTypes = shareTypes.split(',');
+
+		CalculateBusinessDays cbd = new CalculateBusinessDays();
+		Datetime Next3BusinessDay = cbd.AddDays(DateTime.newInstance(System.today(), Time.newInstance(0, 0, 0, 0)), 3);
+
+		try{
+			http httpParam = new http();
+			httpResponse response;
+			String strStatus, strBody;
+			if (!Test.isRunningTest()){
+				response = httpParam.send(requestparam);
+
+				strStatus = response.getStatus();
+				strBody = response.getBody();
+			} else{
+				strBody = '[{"Order":100,"AvailableBalance":null,"Id":null,"Type":1,"AccountType":"SHARE #2800 - JOINT OWNER ","NameAndBalance":" Available Balance( $)","AccountNumber":"0000000123","Description":"PRIMARY SHARE","UserChar3":"123","UserAmount2":0.00}]';
+			}
+
+
+			System.debug('strStatus ....' + strStatus);
+			System.debug('strBody ....' + strBody);
+
+			Set<string> uniqueShareLoanIdSet = new Set<string>();
+			if (strBody != ''){
+				List<Object> results = (List<Object>)JSON.deserializeUntyped(strBody);
+				System.debug('Service response is ....' + results);
+
+				if (results != null){
+					for (Object t : results){
+						ShareLoanWrapperObject temp = new ShareLoanWrapperObject();
+						map<string, object> localAcc = (map<string, object>)t;
+						string accouttype = (string)localAcc.get('AccountType');
+						string ShareId = accouttype.split(' ')[1].replace('#', '');
+						//System.debug('ShareId ....' + ShareId);
+						if (ShareId != '0' && arrShareTypes.contains(string.valueof(ShareId).leftPad(4, '0').substring(0, 2))){
+							//&& ShareId == 2800
+							temp.ShareLoanID = ShareId;
+							temp.ShareLoanIDString = 'S' + ShareId;
+							temp.Description = (string)localAcc.get('Description');
+							temp.TypeTranslate = (string)localAcc.get('Description');
+							temp.UserChar3 = (string)localAcc.get('UserChar3');
+
+
+							temp.Type = 'Share';
+
+							resultList.add(temp);
+						}
+					}
+				}
+
+				set<string> ShareIds = new set<string>();
+				map<string, string> LoanIdTypeTranslateMap = new map<string, string>();
+				for (ShareLoanWrapperObject obj : resultList){
+					ShareIds.add(obj.ShareLoanID.substring(0, 2).replaceFirst('^0+', ''));
+					// system.debug('sdsf'==string.valueof(obj.ShareLoanID).substring(0, 2));
+				}
+				//system.debug('LoanIds==' + ShareIds);
+				List<EFT_ShareLoan_TypeTranslate__c> listTT = [select name, Code__c, RecType__c, TypeTranslate__c
+				                                               from EFT_ShareLoan_TypeTranslate__c
+				                                               where Code__c in :ShareIds and RecType__c = 'SHAR'];
+
+				system.debug('listTT==' + listTT);
+				for (EFT_ShareLoan_TypeTranslate__c t : listTT){
+					LoanIdTypeTranslateMap.put(t.Code__c, t.TypeTranslate__c);
+				}
+
+				for (ShareLoanWrapperObject obj : resultList){
+					string typetrans = LoanIdTypeTranslateMap.get(obj.ShareLoanID.substring(0, 2).replaceFirst('^0+', ''));
+					obj.TypeTranslate = typetrans;
+					//System.debug('typetrans ....' + typetrans);
+				}
+			}
+
+			resultmap.put('ShareLoanList', resultList);
+
+		} catch (System.CalloutException e){
+			system.debug('Exception');
+			resultmap.put('Exception', resultList);
+		}
+		return resultmap;
+	}
+
+	//--------------------Getting EFT records from Episys-------------------//
 	@AuraEnabled
 	public static List<EFT__c> getEFTRecordsEpisys(string recordId){
 		system.debug('recordId==' + recordId);
@@ -725,7 +836,7 @@ public class EFTController{
 			EFTLocatorsset.add(e.EftLocator__c);
 		}
 
-		Map<string, List<ShareLoanWrapperObject>> LoanMap = getLoanAccounts(AccountNumber,'');
+		Map<string, List<ShareLoanWrapperObject>> LoanMap = getLoanAccounts(AccountNumber, '');
 		List<EFTController.ShareLoanWrapperObject> LoanList = LoanMap.get('LoanList');
 		if (LoanList != null){
 			for (ShareLoanWrapperObject sl : LoanList){
@@ -748,10 +859,16 @@ public class EFTController{
 		String[] arrShareTypes = shareTypes.split(',');
 
 		http httpParam = new http();
-		httpResponse response = httpParam.send(requestparam);
+		httpResponse response;
+		String strStatus, strBody;
+		if (!Test.isRunningTest()){
+			response = httpParam.send(requestparam);
 
-		String strStatus = response.getStatus();
-		String strBody = response.getBody();
+			strStatus = response.getStatus();
+			strBody = response.getBody();
+		} else{
+			strBody = '[{"EftLocator":773,"AccountNumber":"0000000123","AmountCode":27,"Amount":0.01,"FinancialInstitution":"BANK OF AMERICA, N.A.","Payee":"0322271627","Reference":"42006986568","EffectiveDate":"2019-01-02","Day1":0,"Day2":0,"Frequency":4,"ExpirationDate":"","Id":"2800","IdType":"0","AlternateAmount":20.0}]';
+		}
 
 		System.debug('strStatus ....' + strStatus);
 		System.debug('strBody ....' + strBody);
@@ -760,7 +877,7 @@ public class EFTController{
 		set<string> MemberNumbers = new set<string>();
 		List<EFT__c> EFTList = new List<EFT__c>();
 		if (strBody != ''){
-			List<Object> results = (List<Object>)JSON.deserializeUntyped(response.getBody());
+			List<Object> results = (List<Object>)JSON.deserializeUntyped(strBody);
 			System.debug('Service response is ....' + results);
 
 			for (Object t : results){
@@ -811,7 +928,7 @@ public class EFTController{
 							objEFT.Payment_Amount__c = LoanIDPaymentMap.get(String.valueOf(localAcc.get('Id')));
 							objEFT.Alternate_Amount__c = Decimal.valueOf(String.valueOf(localAcc.get('Amount')));
 							objEFT.Next_Payment_Due_Date__c = LoanIDNextPaymentDueDateMap.get(String.valueOf(localAcc.get('Id')));
-							objEFT.Existing_Alternate_Amount__c = LoanIDAlternatePaymentMap.get(String.valueOf(localAcc.get('Id'))) - LoanIDPaymentMap.get(String.valueOf(localAcc.get('Id')));
+							objEFT.Existing_Alternate_Amount__c = LoanIDAlternatePaymentMap.get(String.valueOf(localAcc.get('Id')))-LoanIDPaymentMap.get(String.valueOf(localAcc.get('Id')));
 						}
 						string bankname = String.valueOf(localAcc.get('Payee'));
 						System.debug('Payment_Amount__c==' + String.valueOf(localAcc.get('Payment')));
@@ -870,6 +987,7 @@ public class EFTController{
 		return EFTList;
 	}
 
+	//-----------------Getting Email Addresses For docusign from Episys-----------//
 	@AuraEnabled
 	public static map<string, object> getEpisysEmailAddresses(string recordId){
 		system.debug('recordId==' + recordId);
@@ -885,9 +1003,9 @@ public class EFTController{
 
 		set<string> typeList = new set<string>();
 		for (Member360_TypeTranslate__c t : Member360_TypeTranslate__c.getAll().values()){
-			typeList.add(t.name.substring(0,4));
-		}	
-		
+			typeList.add(t.name.substring(0, 4));
+		}
+
 		system.debug('typeList==' + typeList);
 
 		Person_Account__c paPrimary = [SELECT Id, PersonID__c, Account_Number__c, Account_Number__r.RecType__c, TypeTranslate__c, Account_Number__r.Name, PersonID__r.Home_Phone__pc, PersonID__r.Residential_City__pc, PersonID__r.Residential_State__pc, PersonID__r.Residential_Street__pc, PersonID__r.Residential_Zipocde__pc, PersonID__r.Name, PersonID__r.Email_raw__c, PersonID__r.PersonID__c
@@ -900,7 +1018,7 @@ public class EFTController{
 
 			SSN = paPrimary.PersonID__r.PersonID__c.substring(1);
 			primaryName = paPrimary.PersonID__r.Name.replace(' ', '%20')+'|' + SSN;
-		}	
+		}
 
 
 		system.debug('primaryName==' + primaryName);
@@ -920,16 +1038,19 @@ public class EFTController{
 		//requestparam.setTimeout(60000);
 		HttpResponse response;
 		String responseBody1;
+		String strStatus, strBody;
 		if (!Test.isRunningTest()){
 			response = httpParam.send(requestparam);
 			responseBody1 = response.getBody();
 			System.debug('Response Body ACH::' + response.getBody());
+			strStatus = response.getStatus();
+			strBody = response.getBody();
+		} else{
+			strBody = '[{"AddressType":"","city":"","country":null,"locator":"794","cardlocator":null,"cardlast4":null,"extraaddress":"","state":"","street":"","userchar2":"","zipcode":"","name":"AXEL TAKACS","email":"dbhavsar@affirma.com","DisplayOnly":"0","type":0}]';
 		}
 		//http httpParam = new http();
 		//httpResponse response = httpParam.send(jsonData);
 
-		String strStatus = response.getStatus();
-		String strBody = response.getBody();
 
 		System.debug('strStatus ....' + strStatus);
 		System.debug('strBody ....' + strBody);
@@ -938,14 +1059,14 @@ public class EFTController{
 		set<string> MemberNumbers = new set<string>();
 		List<EFT__c> EFTList = new List<EFT__c>();
 		if (strBody != ''){
-			List<Object> results = (List<Object>)JSON.deserializeUntyped(response.getBody());
+			List<Object> results = (List<Object>)JSON.deserializeUntyped(strBody);
 			System.debug('Service response is ....' + results);
 
 
 			for (Object t : results){
 
 				map<string, object> localAcc = (map<string, object>)t;
-				string AccType= String.valueof((Integer)localAcc.get('type')).leftPad(4, '0');
+				string AccType = String.valueof((Integer)localAcc.get('type')).leftPad(4, '0');
 				//AccType= String.valueof(AccType).leftPad(4, '0');
 				System.debug('type ....' + AccType);
 				System.debug('localAcc ....' + localAcc.get('email'));
@@ -1001,7 +1122,7 @@ public class EFTController{
 	}
 
 	@AuraEnabled
-	//get Account Industry Picklist Values
+	//-----------------Getting Picklist Values for Days-----------//
 	public static Map<String, String> getDaysofMonth(){
 		Map<String, String> options = new Map<String, String>();
 
@@ -1013,6 +1134,7 @@ public class EFTController{
 		return options;
 	}
 
+	//-----------------Saving Signature-----------//
 	@AuraEnabled
 	public static Id saveSignature(String signatureBody, string EFTId, EFT__c EFTRecord){
 		system.debug('EFTRecord.EftLocator__c==' + EFTRecord.EftLocator__c);
@@ -1027,13 +1149,16 @@ public class EFTController{
 		saveStageData(EFTRecord);
 		Set<id> ids = new Set<id>();
 		ids.add(EFTId);
-		if (EFTRecord.EftLocator__c == null)
-			EFTToSyimtar.insertEFTs(ids);
-		else
-			EFTToSyimtar.UpdateEFT(ids, false);
+		if (!Test.isRunningTest()){
+			if (EFTRecord.EftLocator__c == null)
+				EFTToSyimtar.insertEFTs(ids);
+			else
+				EFTToSyimtar.UpdateEFT(ids, false);
+		}
 		return a.Id;
 	}
 
+	//-----------------Saving Signature on VF page-----------//
 	@RemoteAction
 	public static Id saveSignature(String signatureBody, id parentId){
 		Attachment a = new Attachment();
@@ -1045,12 +1170,17 @@ public class EFTController{
 		return a.Id;
 	}
 
+	//-----------------Attach Signature-----------//
 	public PageReference attach(){
 		Attachment myAttach = new Attachment();
 		myAttach.ParentId = ACH.Id;//Id of the object to which the page is attached
 		myAttach.name = 'ACH DIRECT PAYMENT AUTHORIZATION.pdf';
 		PageReference myPdf = ApexPages.currentPage();//myPdfPage is the name of your pdf page
-		myAttach.body = myPdf.getContentAsPdf();
+		if (!Test.isRunningTest()){
+			myAttach.body = myPdf.getContentAsPdf();
+		} else{
+			myAttach.body = blob.valueOf('Unit.Test');
+		}
 		insert myAttach;
 
 		List<Attachment> signatures = new List<Attachment>();
@@ -1086,6 +1216,7 @@ public class EFTController{
 		return pageRef;
 	}
 
+	//-----------------Getting Tracking Records from Episys-----------//
 	@AuraEnabled
 	public static map<string, string> getTrackingRecordforShare(string AccountNumber, string ShareID){
 		system.debug('AccountNumber==' + AccountNumber);
@@ -1099,24 +1230,38 @@ public class EFTController{
 
 		try{
 			http httpParam = new http();
-			httpResponse response = httpParam.send(requestparam);
+			HttpResponse response;
+			String responseBody1;
+			String strStatus, strBody;
+			if (!Test.isRunningTest()){
+				response = httpParam.send(requestparam);
 
-			String strStatus = response.getStatus();
-			String strBody = response.getBody();
+				strStatus = response.getStatus();
+				strBody = response.getBody();
+			} else{
+				strBody = '[{"Locator":"","Type":32,"UserChar1":"123","UserChar3":"","UserDate1":"2010-12-20","UserAmount1":10.0,"UserAmount10":0.0,"UserAmount2":20.0},{"Locator":"10","Type":40,"UserChar1":"Bill Payer","UserChar3":"","UserDate1":"2010-12-20","UserAmount1":0.00}]';
+			}
+
 
 			System.debug('strStatustracking ....' + strStatus);
 			System.debug('strBodytracking ....' + strBody);
 
 			if (strBody != ''){
-				List<Object> results = (List<Object>)JSON.deserializeUntyped(response.getBody());
+				List<Object> results = (List<Object>)JSON.deserializeUntyped(strBody);
 				System.debug('Service response is ....' + results);
 
 				if (results != null){
+					Map<string, List<ShareLoanWrapperObject>> mapforUserchar3 = getShareAccounts(AccountNumber);
+					List<ShareLoanWrapperObject> listShare = mapforUserchar3.get('ShareLoanList');
+					map<string, string> MapShareIdUserChar3 = new map<string, string>();
+					for (ShareLoanWrapperObject sw : listShare){
+						MapShareIdUserChar3.put(sw.ShareLoanID, sw.UserChar3);
+					}
 					for (Object t : results){
 						map<string, object> localAcc = (map<string, object>)t;
 						integer trackingtype = (integer)localAcc.get('Type');
 						string userchar1 = (string)localAcc.get('UserChar1');
-						string userchar3 = EFTToSyimtar.getUserChar3(AccountNumber, ShareID);
+						string userchar3 = MapShareIdUserChar3.get(ShareID);
 						if (trackingtype == 32 && userchar1 == userchar3){
 							//&& ShareId == 2800
 							string AlternateAmount, Payment;
@@ -1139,6 +1284,7 @@ public class EFTController{
 		return resultAmount;
 	}
 
+	//-----------------Calculate EFT Payment Date-----------//
 	@AuraEnabled
 	public static Date getEFTPaymentDate(Date EffectiveDate, Integer Day1){
 		integer EffectiveDateDay = EffectiveDate.day();
@@ -1151,6 +1297,7 @@ public class EFTController{
 		return EFTPaymentDate;
 	}
 
+	//-----------------Check Valid Effective Date-----------//
 	@AuraEnabled
 	public static map<string, string> CheckValidEffectiveDate(Date EnteredEffectiveDate){
 		CalculateBusinessDays cbd = new CalculateBusinessDays();
@@ -1167,27 +1314,8 @@ public class EFTController{
 		}
 		return resulMap;
 	}
-
-	// @AuraEnabled
-	// public static List<EFT__c> getEFTRecordsforShareLoan(string recordId, string ShareLoanID, string Operation, string EFTLocator){
-	//     system.debug('Operation=='+Operation);
-	//     system.debug('EFTLocator=='+EFTLocator);
-	//     system.debug('ShareLoanID=='+ShareLoanID);
-	//     system.debug('recordId=='+recordId);
-	//     List<EFT__c> ListAllEFT = getEFTRecordsEpisys(recordId);
-	//     List<EFT__c> resultEFT = new List<EFT__c>();
-	//     if (ListAllEFT.size() > 0){
-	//         for (EFT__C e : ListAllEFT){
-	//             if (Operation == 'Create' && e.Share_Loan_Id__c == ShareLoanID){
-	//                 resultEFT.add(e);
-	//             }
-	//             else if(Operation == 'Update' && e.Share_Loan_Id__c == ShareLoanID && e.EftLocator__c != EFTLocator){
-	//                 resultEFT.add(e);
-	//             }
-	//         }
-	//     }
-	//     return resultEFT;
-	// }
+	
+	//-----------------Getting EFT Record Count for Share/Loan-----------//
 	@AuraEnabled
 	public static List<EFT__c> getEFTRecordsforShareLoan1(string re, string sh, string op, string ef){
 		system.debug('Operation==' + op);
@@ -1211,6 +1339,57 @@ public class EFTController{
 		}
 
 		return resultEFT;
+	}
+
+	//-----------------Getting Warnings from Episys-----------//
+	@AuraEnabled
+	public static List<string> GetMultipleEFTWarningRecords(string AccountNumber){
+		system.debug('AccountNumber==' + AccountNumber);
+		List<string> setLSIDMultipleEFT = new List<string>();
+		map<string, string> resultAmount = new map<string, string>();
+		httpRequest requestparam = new httpRequest();
+		//requestparam.setTimeout(10);
+		requestparam.setEndpoint('https://symxapi.chevronfcu.org/devclient/EFT/Get117WarningCodeRecords?accountNumber=' + AccountNumber);
+		requestparam.setMethod('GET');
+
+		try{
+			http httpParam = new http();
+			HttpResponse response;
+			String responseBody1;
+			String strStatus, strBody;
+			if (!Test.isRunningTest()){
+				response = httpParam.send(requestparam);
+
+				strStatus = response.getStatus();
+				strBody = response.getBody();
+			} else{
+				strBody = '[{"Locator":"","Type":32,"UserChar1":"123","UserChar3":"","UserDate1":"2010-12-20","UserAmount1":10.0,"UserAmount10":0.0,"UserAmount2":20.0},{"Locator":"10","Type":40,"UserChar1":"Bill Payer","UserChar3":"","UserDate1":"2010-12-20","UserAmount1":0.00}]';
+			}
+
+
+			System.debug('strStatusWarning ....' + strStatus);
+			System.debug('strStatusWarning ....' + strBody);
+
+			if (strBody != ''){
+				List<Object> results = (List<Object>)JSON.deserializeUntyped(strBody);
+				System.debug('Service response is ....' + results);
+
+				if (results != null){					
+					for (Object t : results){
+						map<string, object> localAcc = (map<string, object>)t;
+						string LSId = (string)localAcc.get('Id');
+						if(LSId != null && LSId != '' && LSId != '0'){
+							setLSIDMultipleEFT.add(LSId);
+						}
+						
+					}
+				}
+			}
+		} catch (System.CalloutException e){
+			system.debug('Exception');
+
+		}
+		return setLSIDMultipleEFT;
 	}
 
 	public class ShareLoanWrapperObject{

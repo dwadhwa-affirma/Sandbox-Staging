@@ -9,121 +9,105 @@
                                                         {'label': 'Cancel/Expire EFT Record', 'value': '5'}]" />
 	<aura:attribute name="ActionDisabled" type="Boolean" default="true" />
 	<aura:attribute name="EFTRecord" type="EFT__c" />
-	<aura:attribute name="isExistingEFT" type="Boolean"/>
+	<aura:attribute name="isExistingEFT" type="Boolean" />
 	<aura:attribute name="EFTCount" type="Integer" />
 	<aura:attribute name="EFTRecordsList" type="List" />
-	<aura:handler name="init" action="{!c.doInit}" value="{!this}" access="global" />  
+	<aura:handler name="init" action="{!c.doInit}" value="{!this}" access="global" />
 	<aura:registerEvent name="EFTEvent" type="c:EFTEvent" />
-	<aura:attribute name="CurrentEFT" type="Integer" default="0"/>
+	<aura:attribute name="CurrentEFT" type="Integer" default="0" />
 	<aura:attribute name="CurrentEFTRecord" type="EFT__c" />
 	<aura:attribute name="isExpireEFT" type="Boolean" default="false" />
+	<aura:attribute name="options" type="List" default="[
+    {'label': 'Yes', 'value': 'Yes'},
+    {'label': 'No', 'value': 'No'}
+    ]" />
+	<aura:attribute name="value" type="String" default="No" />
+	<aura:attribute name="isDisabled" type="Boolean" default="false" />
+
 
 	<aura:html tag="style">
-    .divFI { 
+		.divFI {
 		display:none;
-	} 
+		}
 	</aura:html>
-	
-		<aura:if isTrue="{!and(v.isExistingEFT == true,lessthan(v.CurrentEFT,v.EFTCount))}">
-			<div id="stage4" class="existingEFT" style="width:100% !important;">
+
+	<aura:if isTrue="{!and(v.isExistingEFT == true,lessthan(v.CurrentEFT,v.EFTCount))}">
+		<div id="stage4" class="existingEFT" style="width:100% !important;">
 			<div class="slds-grid slds-gutters eft4tbl">
-            		<div class="slds-col firstcol">
-						<p class="fontstyle">Active ACH Records</p><br></br>
+				<div class="slds-col firstcol">
+					<p class="fontstyle">Active ACH Records</p><br></br>
 
-						<p class="">Selected {!v.EFTRecord.Share_Loan_Id__c}&nbsp;{!v.EFTRecord.EFT_ID_Type__c} record currently
-							has an active ACH record. Selecting the 'CONTINUE' button will expire the active ACH record.</p>
-						<br></br>
-						
+					<p class="">Selected {!v.EFTRecord.Share_Loan_Id__c}&nbsp;{!v.EFTRecord.EFT_ID_Type__c} record
+						currently
+						has an active ACH record. Selecting the 'CONTINUE' button will expire the active ACH record.</p>
+					<br></br>
 
-						<!-- <table aria-multiselectable="true"
-							class="slds-table slds-table_header-hidden slds-table_edit slds-tree slds-table_tree proceedtbl"
-							role="treegrid">
-							<tbody>
-								<tr aria-expanded="false" aria-level="1" aria-posinset="3" aria-selected="false"
-									aria-setsize="4" class="slds-hint-parent">
-									<td class="slds-text-align_right" role="gridcell">
-										<span class="slds-radio">
-											<lightning:input type="radio" name="select" value="1" onchange="{!c.onRadioChange}" />
-										</span>
-									</td>
-									<td data-label="Employees" role="gridcell">
-										<div class="slds-truncate" title="Proceed">Proceed, having multiple ACH records
-											is correct.</div>
-									</td>
-								</tr>
-								<tr aria-expanded="false" aria-level="1" aria-posinset="3" aria-selected="false"
-									aria-setsize="4" class="slds-hint-parent">
-									<td class="slds-text-align_right" role="gridcell">
-										<span class="slds-radio">
-											<lightning:input type="radio" name="select" value="2" onchange="{!c.onRadioChange}" />
-										</span>
-									</td>
-									<td data-label="Employees" role="gridcell">
-										<div class="slds-truncate" title="Expire">Expire the active ACH record</div>
-									</td>
-								</tr>
-							</tbody>
-						</table> -->
-					</div>
-					<div class="slds-col secondcol"> 
-						<table class="fundingtbl">
-							<tbody>
-								<tr>
-									<td>
-										<span>Funding FI:</span>
-									</td>
-									<td>
-										<lightning:input name="bankname" value="{!v.CurrentEFTRecord.Bank_Name__c}" disabled="true" />
-									</td>
-								</tr>
-								<tr>
-									<td>
-										<span>Account #:</span>
-									</td>
-									<td>
-										<lightning:input name="accountno" value="{!v.CurrentEFTRecord.Account_Number__c}" disabled="true" />
-									</td>
-								</tr>
-								<tr>
-									<td>
-										<span>Payment Amount:</span>
-									</td>
-									<td>
-										<lightning:input name="payment" value="{!v.CurrentEFTRecord.Payment_Amount__c}" disabled="true" />
-									</td>
-								</tr>
-								<tr>
-									<td>
-										<span>Additional Amount:</span>
-									</td>
-									<td>
-										<lightning:input name="additionalamount" value="{!v.CurrentEFTRecord.Alternate_Amount__c}" disabled="true" />
-									</td>
-								</tr>
-								<tr>
-									<td>
-										<span>Day of the Month:</span>
-									</td>
-									<td>
-										<lightning:input name="dayofthemonth" value="{!v.CurrentEFTRecord.Day_of_Month__c}" disabled="true" />
-									</td>
-								</tr>
-							</tbody>
-						</table>
-					</div>
+
+				</div>
+				<div class="slds-col secondcol">
+					<table class="fundingtbl">
+						<tbody>
+							<tr>
+								<td>
+									<span>Funding FI:</span>
+								</td>
+								<td>
+									<lightning:input name="bankname" value="{!v.CurrentEFTRecord.Bank_Name__c}"
+										disabled="true" />
+								</td>
+							</tr>
+							<tr>
+								<td>
+									<span>Account #:</span>
+								</td>
+								<td>
+									<lightning:input name="accountno" value="{!v.CurrentEFTRecord.Account_Number__c}"
+										disabled="true" />
+								</td>
+							</tr>
+							<tr>
+								<td>
+									<span>Payment Amount:</span>
+								</td>
+								<td>
+									<lightning:input name="payment" value="{!v.CurrentEFTRecord.Payment_Amount__c}"
+										disabled="true" />
+								</td>
+							</tr>
+							<tr>
+								<td>
+									<span>Additional Amount:</span>
+								</td>
+								<td>
+									<lightning:input name="additionalamount"
+										value="{!v.CurrentEFTRecord.Alternate_Amount__c}" disabled="true" />
+								</td>
+							</tr>
+							<tr>
+								<td>
+									<span>Day of the Month:</span>
+								</td>
+								<td>
+									<lightning:input name="dayofthemonth" value="{!v.CurrentEFTRecord.Day_of_Month__c}"
+										disabled="true" />
+								</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
 			</div>
-			</div>
+		</div>
 
 
-			<aura:set attribute="else">
-				<div id="stage4" class="divFI" aura:id="divFIData">
+		<aura:set attribute="else">
+			<div id="stage4" class="divFI" aura:id="divFIData">
 				<p class="fontstyle">Provide Funding FI Information</p><br></br>
 				<div class="slds-form">
 					<div class="slds-form-element slds-form-element_horizontal">
 						<b><label class="slds-form-element__label"
 								for="horizontal-input-id-01">ABA/Routing#:</label></b>
 						<lightning:input name="routingnumber" value="{!v.EFTRecord.Routing_Number__c}"
-							onblur="{!c.LoadBankName}"  />
+							onblur="{!c.LoadBankName}" disabled="{!v.isDisabled}" />
 						<lightning:spinner aura:id="Spinner" alternativeText="Loading" size="medium" variant="brand"
 							class="slds-hide spin" />
 					</div>
@@ -134,7 +118,9 @@
 					<div class="slds-form-element slds-form-element_horizontal">
 						<b><label class="slds-form-element__label" for="horizontal-input-id-03">Account#:</label></b>
 						<div class="slds-form-element__control accountnumber">
-							<lightning:input name="accountnumber" value="{!v.EFTRecord.Account_Number__c}" pattern="[0-9]*" messageWhenPatternMismatch="Invalid Account Number. Enter Numbers Only" onchange="{!c.onTypeChange}" aura:id="accountNumber"/>
+							<lightning:input name="accountnumber" value="{!v.EFTRecord.Account_Number__c}"
+								pattern="[0-9]*" messageWhenPatternMismatch="Invalid Account Number. Enter Numbers Only"
+								onchange="{!c.onTypeChange}" aura:id="accountNumber" disabled="{!v.isDisabled}" />
 							<!-- <force:inputField value="{!v.EFTRecord.Account_Number__c}" change="{!c.onTypeChange}"> -->
 							<!-- </force:inputField> -->
 						</div>
@@ -142,13 +128,31 @@
 					<div class="slds-form-element slds-form-element_horizontal">
 						<b><label class="slds-form-element__label">Type:</label></b>
 						<div class="slds-form-element__control">
-							<force:inputField value="{!v.EFTRecord.Type__c}" change="{!c.onTypeChange}">
-							</force:inputField>
+							<aura:if isTrue="{!v.isDisabled}">
+								<lightning:input value="{!v.EFTRecord.Type__c}" disabled="true" class="typedisabled"/>								
+							</aura:if>
+							<aura:renderIf isTrue="{!not(v.isDisabled)}">
+									<force:inputField value="{!v.EFTRecord.Type__c}" change="{!c.onTypeChange}"
+										aura:id="AccountType">
+									</force:inputField>
+								</aura:renderIf>
 						</div>
 					</div>
+					
+						<div class="slds-form-element slds-form-element_horizontal">
+							<div class="slds-form-element__control">
+								<b><label class="slds-form-element__label" style="width:auto;font-size: 0.9rem;">Do you want
+										to send a blank ACH form to the member?</label></b>
+							</div>
+							<div class="slds-form-element__control" style="padding-left: 15% !important;">
+								<lightning:radioGroup name="radioGroup" options="{!v.options }" value="{!v.value }"
+									type="radio" class="customRadioCls" onchange="{!c.handleChange}" />
+							</div>
+						</div>
+										
 				</div>
 			</div>
-			</aura:set>
-		</aura:if>
-	
+		</aura:set>
+	</aura:if>
+
 </aura:component>
