@@ -47,18 +47,28 @@ public class CardLimitResetControllerTest {
      
     Test.startTest();
     List<Change_Limit__c> ChangeLimit_Obj = new List<Change_Limit__c>();
-    Change_Limit__c cl = new Change_Limit__c();
-     
-    cl.Auth_POS_Limit__c = 1200.00;
-    cl.ATM_Usage_Limit__c = 1100.00;
-    cl.Card_Number__c = '5460277067636965';
-    cl.Card_Locator__c = '33';
-    cl.Type__c = 'Change Card Limits';
-    cl.Member_Name__c = 'JEFF PACHECO FRANKLIN';
-    cl.Member_Account__c = account_details_Obj[0].id;
-    cl.Member__c = person_obj[0].id;
+    Change_Limit__c cl1 = new Change_Limit__c();
+    cl1.Auth_POS_Limit__c = 1200.00;
+    cl1.ATM_Usage_Limit__c = 1100.00;
+    cl1.Card_Number__c = '5460277067636965';
+    cl1.Card_Locator__c = '33';
+    cl1.Type__c = 'Change Card Limits';
+    cl1.Member_Name__c = 'JEFF PACHECO FRANKLIN';
+    cl1.Member_Account__c = account_details_Obj[0].id;
+    cl1.Member__c = person_obj[0].id;
  
-    ChangeLimit_Obj.add(cl);
+    Change_Limit__c cl2 = new Change_Limit__c();
+    cl2.Auth_POS_Limit__c = 1200.00;
+    cl2.ATM_Usage_Limit__c = 1100.00;
+    cl2.Card_Number__c = '5460277067636965';
+    cl2.Card_Locator__c = '33';
+    cl2.Type__c = 'Reset Card Limits';
+    cl2.Member_Name__c = 'JEFF PACHECO FRANKLIN';
+    cl2.Member_Account__c = account_details_Obj[0].id;
+    cl2.Member__c = person_obj[0].id;    
+        
+    ChangeLimit_Obj.add(cl1);
+    ChangeLimit_Obj.add(cl2);
     
     RecordType rList = [Select id  From RecordType  Where sObjectType = 'Case'and RecordType.Name = 'Card Services'];
 	CaseRecordType__c crt = new CaseRecordType__c();
@@ -76,21 +86,38 @@ public class CardLimitResetControllerTest {
 	static testMethod void testmethod1(){
     	
         Account member  =  [SELECT Id,name from Account limit 1];
-               
         CardLimitResetController.getStageData(member.id,'test');
-        
     }
 
 	static testMethod void testmethod2(){
     	
         Account_Details__c memberacc  =  [SELECT Id,name from Account_Details__c limit 1];
-        
         CardLimitResetController.getStageData(memberacc.id,'JEFF PACHECO FRANKLIN');
         CardLimitResetController.getMembers(memberacc.id);
         CardLimitResetController.getCard(memberacc.id,'JEFF PACHECO FRANKLIN');
-        CardLimitResetController.Submit(memberacc.id,'5460277067636965','123','JEFF PACHECO FRANKLIN','Card Change Limits','123.00','456.00');
-        
-        
+        CardLimitResetController.Submit(memberacc.id,'5460277067636965','123','JEFF PACHECO FRANKLIN','Change Card Limits','123.00','456.00');
+    }
+    
+    static testMethod void testmethod3(){
+    	
+        Account_Details__c memberacc  =  [SELECT Id,name from Account_Details__c limit 1];
+        CardLimitResetController.getStageData(memberacc.id,'JEFF PACHECO FRANKLIN');
+        CardLimitResetController.getMembers(memberacc.id);
+        CardLimitResetController.getCard(memberacc.id,'JEFF PACHECO FRANKLIN');
+    }
+
+	static testMethod void testmethod4(){
+    	
+        Account member  =  [SELECT Id,name from Account limit 1];
+        CardLimitResetController.getCard(member.id,'JEFF PACHECO FRANKLIN');
+        CardLimitResetController.Submit(member.id,'5460277067636965','123','JEFF PACHECO FRANKLIN','Change Card Limits','123.00','456.00');
+    }
+    
+	static testMethod void testmethod5(){
+    	
+        Account member  =  [SELECT Id,name from Account limit 1];
+        CardLimitResetController.getCard(member.id,'JEFF PACHECO FRANKLIN');        
+        CardLimitResetController.Submit(member.id,'5460277067636965','123','JEFF PACHECO FRANKLIN','Reset Card Limits','2500.00','510.00');
     }    
 
 }

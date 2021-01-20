@@ -1,10 +1,5 @@
 public class CardLimitResetController {
 
-    //CardLimitReset/GetCards
-    //CardLimitReset/UpdateCardLimits
-    //EFT/GetAccountBySSN
-    //Account/IsDormantAccount
-
     //------------------------------- Getting Stage Details and Member Account Details-----------------------------------------------//
     @AuraEnabled
     public static map<string,object> getStageData(string recordId, string sObjectType){
@@ -18,8 +13,9 @@ public class CardLimitResetController {
             CLStages = [SELECT id, name, isActive__c, Order__c, Stage_Action__c,Stage_Action_Placeholder__c, Stage_Component__c, Stage_Label__c, StepId__c from ChangeLimit_Stages__c where isActive__c = true]; //where isActive__c = true;      //EFT_Stages__c.getall().values();
             resultMap.put('CLStages', CLStages);
 
-            List<Change_Limit__c> CLRecord = [Select id, name, Stage__c,Member_Account__c, Member__c from Change_Limit__c where Member_Account__c =:recordId limit 1];
             integer activeStageIndex = 0;
+            
+            /*List<Change_Limit__c> CLRecord = [Select id, name, Stage__c,Member_Account__c, Member__c from Change_Limit__c where Member_Account__c =:recordId limit 1];
             if(CLRecord.size() >0){               
                 for(ChangeLimit_Stages__c clstage:CLStages){ 
                     if(CLRecord[0].Stage__c == clstage.Stage_Label__c){
@@ -28,8 +24,8 @@ public class CardLimitResetController {
                 }
                               
                 resultMap.put('CLRecord', CLRecord);
-                
-            }
+            }*/
+
             Account_Details__c MemberAccount = [select id,name from Account_Details__c where id=:recordId limit 1];
             resultMap.put('MemberAccount', MemberAccount);
         }
@@ -39,8 +35,9 @@ public class CardLimitResetController {
             CLStages = [SELECT id, name, isActive__c, Order__c, Stage_Action__c,Stage_Action_Placeholder__c, Stage_Component__c, Stage_Label__c, StepId__c from ChangeLimit_Stages__c where StepId__c != 'Step1' and isActive__c = true];
             resultMap.put('CLStages', CLStages);
 
-            List<Change_Limit__c> CLRecord = [Select id, name, Member_Account__c, Member__c from Change_Limit__c where Member_Account__c =:recordId limit 1];
             integer activeStageIndex = 0;
+
+            /*List<Change_Limit__c> CLRecord = [Select id, name, Member_Account__c, Member__c from Change_Limit__c where Member_Account__c =:recordId limit 1];
             if(CLRecord.size() >0){               
                 for(ChangeLimit_Stages__c clstage:CLStages){
                     if(CLRecord[0].Stage__c == clstage.Stage_Label__c){
@@ -49,8 +46,8 @@ public class CardLimitResetController {
                 }
                               
                 resultMap.put('CLRecord', CLRecord);
-                
-            }
+            }*/
+
             Account Member = [select id,name from Account where id=:recordId limit 1];
             resultMap.put('Member', Member);
         }
@@ -426,7 +423,7 @@ public class CardLimitResetController {
                 responseBody1 = res1.getBody();
                 System.debug('Response Body SolarLoan:'+res1.getBody());    
             }else{
-                responseBody1 = '{"Type":"3","Last":"27","First":"1","Street":"1","ExtraAddress":"100","City":"Chicago","State":"IL","ZipCode":"0012345,"BirthDate":"01-01-2019","SSN":"1345","LoanId":"322271627","AccountNumber":"00000123456"}';
+                responseBody1 = '{"Type":"3","Last":"27","First":"1","Street":"1","ExtraAddress":"100","City":"Chicago","State":"IL","ZipCode":"0012345,"AccountNumber":"0000214414","SSN":"1345","LoanId":"322271627"}';
                 
             }
             
@@ -503,7 +500,7 @@ public class CardLimitResetController {
         cl.Member__c = pa.PersonID__c;
 
         insert cl;
-        //createCase(cl,cardnumber,type,authlimit,atmlimit,membername);
+        createCase(cl,cardnumber,type,authlimit,atmlimit,membername);
 
         return null;    
     }
