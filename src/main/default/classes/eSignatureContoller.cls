@@ -1,7 +1,7 @@
 global class eSignatureContoller {
-     
-    public WIRES_Transaction__c wireTransaction;
-    public WIRES_Transaction__c wireTransactionDetail{get; set;}
+    
+    public InPersonSigning__c wireTransaction;
+    public InPersonSigning__c wireTransactionDetail{get; set;}
     public id objParentId{get;set;}
     
     global Id signAttachmentId{get {
@@ -11,22 +11,22 @@ global class eSignatureContoller {
         return null;} set;}
     
     public eSignatureContoller(ApexPages.StandardController stdController) {
-        this.wireTransaction = (WIRES_Transaction__c)stdController.getRecord();
+        this.wireTransaction = (InPersonSigning__c)stdController.getRecord();
         this.objParentId=this.wireTransaction.Id;
         system.debug(ApexPages.currentPage().getParameters().get('id'));
-        this.wireTransactionDetail = [SELECT Id,Name,WireAmount__c,Fees__c,FromAccount__c,TotalFromAccount__c,Share_ID__c,
-                                    Member_Name__c,Member_Email__c,Member_Address__c,
-                                    Member_City_State_Zip__c,Member_Home_Phone__c,
-                                    ToAccoutId__r.Id,ToAccoutId__r.Name,ToAccoutId__r.Recipient_AccountNumber__c,
-                                    ToAccoutId__r.BankName__c,ToAccoutId__r.RoutingNumber__c,
-                                    ToAccoutId__r.Address1__c,ToAccoutId__r.City__c,ToAccoutId__r.State__c,
-                                    ToAccoutId__r.Country__c,ToAccoutId__r.Zipcode__c 
-                                    From WIRES_Transaction__c WHERE Id=:this.wireTransaction.Id];
+        this.wireTransactionDetail = [SELECT Id,Name,SalesforceID__c,
+                                      Sender_AccountNumber__c,Sender_Address__c,
+                                      Sender_Name__c,Sender_Email__c,Sender_Home_Phone__c,
+                                      Sender_City_State_Zip__c,
+                                      Recipient_AccountNumber__c,Recipient_Address__c,
+                                      Recipient_City__c,	Recipient_State__c,	Recipient_Zipcode__c,
+                                      Recipient_Bank__c,RecepientName__c,
+                                      RoutingNumber__c,Share_ID__c,TotalAmount__c
+                                      From InPersonSigning__c WHERE Id=:this.wireTransaction.Id];
     }
     
-	@AuraEnabled
+    @AuraEnabled
     public static Id saveSignature(String signatureBody, string wiresId){
-          
         Attachment a = new Attachment();
         a.ParentId = wiresId; // record id of object.
         a.Body = EncodingUtil.base64Decode(signatureBody);
@@ -37,15 +37,15 @@ global class eSignatureContoller {
     }
     
     @RemoteAction
-     global static Id saveSignature(String signatureBody, id parentId){
-            Attachment a = new Attachment();
-            a.ParentId = parentId; // record id of object.
-            a.Body = EncodingUtil.base64Decode(signatureBody);
-            a.ContentType = 'image/png';
-            a.Name = 'ESignature.png';
-            insert a;
-            return a.Id;
-      }
+    global static Id saveSignature(String signatureBody, id parentId){
+        Attachment a = new Attachment();
+        a.ParentId = parentId; // record id of object.
+        a.Body = EncodingUtil.base64Decode(signatureBody);
+        a.ContentType = 'image/png';
+        a.Name = 'ESignature.png';
+        insert a;
+        return a.Id;
+    }
     
     
     
@@ -60,18 +60,19 @@ global class eSignatureContoller {
     }
     
     @AuraEnabled   
-    public static WIRES_Transaction__c getWireTransactionData(Id wiresId){
-        WIRES_Transaction__c data= [SELECT Id,Name,WireAmount__c,Fees__c,FromAccount__c,TotalFromAccount__c,Share_ID__c,
-                                    Member_Name__c,Member_Email__c,Member_Address__c,
-                                    Member_City_State_Zip__c,Member_Home_Phone__c,
-                                    ToAccoutId__r.Id,ToAccoutId__r.Name,ToAccoutId__r.Recipient_AccountNumber__c,
-                                    ToAccoutId__r.BankName__c,ToAccoutId__r.RoutingNumber__c,
-                                    ToAccoutId__r.Address1__c,ToAccoutId__r.City__c,ToAccoutId__r.State__c,
-                                    ToAccoutId__r.Country__c,ToAccoutId__r.Zipcode__c 
-                                    From WIRES_Transaction__c WHERE Id=:wiresId];
+    public static InPersonSigning__c getInPersonSigningData(Id recordId){
+        InPersonSigning__c data= [SELECT Id,Name,SalesforceID__c,IsLocked__c,
+                                  Sender_AccountNumber__c,Sender_Address__c,
+                                  Sender_Name__c,Sender_Email__c,Sender_Home_Phone__c,
+                                  Sender_City_State_Zip__c,
+                                  Recipient_AccountNumber__c,Recipient_Address__c,
+                                  Recipient_City__c,	Recipient_State__c,	Recipient_Zipcode__c,
+                                  Recipient_Bank__c,RecepientName__c,
+                                  RoutingNumber__c,Share_ID__c,TotalAmount__c 
+                                  FROM InPersonSigning__c WHERE Id=:recordId];        
         return data;
     }
-        
+    
     public PageReference attach() {
         Attachment myAttach = new Attachment();
         myAttach.ParentId = wireTransaction.Id;//Id of the object to which the page is attached
@@ -81,27 +82,39 @@ global class eSignatureContoller {
         insert myAttach;
         
         List<Attachment> signatures = new List<Attachment>();
-        	signatures = [SELECT Id FROM Attachment Where ParentId=:wireTransaction.Id and Name='ESignature.png' Order by CreatedDate desc OFFSET 1]; 
-         	if(signatures.size()>0){
-             delete signatures;
-         	}
-         
-            List<Attachment> eSignPdfs = new List<Attachment>();
-        	eSignPdfs = [SELECT Id FROM Attachment Where ParentId=:wireTransaction.Id and Name='WIRE TRANSFER AUTHORIZATION.pdf' Order by CreatedDate desc OFFSET 1]; 
-         	if(eSignPdfs.size()>0){
-             delete eSignPdfs;
-         	}
+        signatures = [SELECT Id FROM Attachment Where ParentId=:wireTransaction.Id and Name='ESignature.png' Order by CreatedDate desc OFFSET 1]; 
+        if(signatures.size()>0){
+            delete signatures;
+        }
+        
+        List<Attachment> eSignPdfs = new List<Attachment>();
+        eSignPdfs = [SELECT Id FROM Attachment Where ParentId=:wireTransaction.Id and Name='WIRE TRANSFER AUTHORIZATION.pdf' Order by CreatedDate desc OFFSET 1]; 
+        if(eSignPdfs.size()>0){
+            delete eSignPdfs;
+        }
+        
+        InPersonSigning__c inPersonSigning=[SELECT Id, Name,SalesforceID__c FROM InPersonSigning__c WHERE Id=:wireTransaction.Id LIMIT 1];
+        if(inPersonSigning!=null){
+            inPersonSigning.IsLocked__c=true;
+            update inPersonSigning;
+        }
+        
+        //Execute progress email notification and red check flow of WIRES
+        set<Id> ids=new set<Id>();
+        ids.add(inPersonSigning.SalesforceID__c);
+        WiresTransactionApprovalController.SendProgressNotification(ids);
+        WiresTransactionApprovalController.CheckRedFlgsAndUpdateStatus(ids);
         
         ApexPages.addmessage(new ApexPages.message(ApexPages.severity.CONFIRM,'Wire Transfer Authorization pdf has been generated successfully.'));  
         
         PageReference pageRef = new PageReference('/' + objParentId);
-		pageRef.setRedirect(true);
+        pageRef.setRedirect(true);
         return pageRef;
     }
     
-     public PageReference Cancel() {
-		PageReference pageRef = new PageReference('/' + objParentId);
-		pageRef.setRedirect(true);
+    public PageReference Cancel() {
+        PageReference pageRef = new PageReference('/' + objParentId);
+        pageRef.setRedirect(true);
         return pageRef;
     }
     
@@ -111,12 +124,12 @@ global class eSignatureContoller {
     }
     
     Integer count = 0;
-                        
+    
     public PageReference incrementCounter() {
-            count++;
-            return null;
+        count++;
+        return null;
     }
-                        
+    
     public Integer getCount() {
         return count;
     }

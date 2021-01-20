@@ -33,8 +33,11 @@ trigger WIRESTransactionTrigger on WIRES_Transaction__c (before insert, after in
             
             if(WTIds.size() > 0){
                 Set<Id> range1To5000 = new Set<Id>();
-                Set<Id> range5001To1000 = new Set<Id>();
+                Set<Id> range50001To10000 = new Set<Id>();
                 Set<Id> rangeGrtThen10000 = new Set<Id>();
+                
+                Set<Id> range50001To10000ForDocusign = new Set<Id>();
+                Set<Id> rangeGrtThen10000ForDocusign = new Set<Id>();
                 
                 for(Integer i=0; i<WTIds.size(); i++){ 
                     if(WTIds[i].TotalFromAccount__c<=5000){
@@ -42,21 +45,27 @@ trigger WIRESTransactionTrigger on WIRES_Transaction__c (before insert, after in
                     }
                     
                     if(WTIds[i].TotalFromAccount__c>5000 && WTIds[i].TotalFromAccount__c<=10000){
-                        range5001To1000.add(WTIds[i].Id);
+                        range50001To10000.add(WTIds[i].Id);
+                        if(WTIds[i].Source__c!='Branch'){
+                            range50001To10000ForDocusign.add(WTIds[i].Id);
+                        }
                     }
                     
                     if(WTIds[i].TotalFromAccount__c>10000){
                         rangeGrtThen10000.add(WTIds[i].Id);
+                        if(WTIds[i].Source__c!='Branch'){
+                            rangeGrtThen10000ForDocusign.add(WTIds[i].Id);
+                        }
                     }
                 }        
                 
                 //Database.executeBatch(new WiresTransToDocuSignBatch(WTIds),1);
-                if(range5001To1000.size()>0){
-                    WiresTransToDocuSign.docusignAPIcall(range5001To1000);
+                if(range50001To10000ForDocusign.size()>0){
+                    WiresTransToDocuSign.docusignAPIcall(range50001To10000ForDocusign);
                 }
                 
-                if(rangeGrtThen10000.size()>0){
-                    WiresTransToDocuSign.docusignAPIcall(rangeGrtThen10000);
+                if(rangeGrtThen10000ForDocusign.size()>0){
+                    WiresTransToDocuSign.docusignAPIcall(rangeGrtThen10000ForDocusign);
                 }
                 
                 if(range1To5000.size()>0){
