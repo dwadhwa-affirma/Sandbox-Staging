@@ -175,6 +175,9 @@ public class WiresTransactionApprovalController {
     }
     
     public static void SendProgressNotification(Set<Id> id){
+        
+        System.debug('In Progress Email Notification');
+        System.debug('Id:'+Id);
         String EmailToSend='';
         Wires_Progress_Email_Test__c testEmail=Wires_Progress_Email_Test__c.getValues('Test');
         
@@ -201,6 +204,8 @@ public class WiresTransactionApprovalController {
     
     @future(callout=true)
     public static void CheckRedFlgsAndUpdateStatus(Set<Id> id){
+        
+        System.debug('Id:'+Id);
         List<WIRES_Transaction__c> wireTransactions = [SELECT Id,Approval_Status__c,ToAccountName__c,ToAccoutId__c,
                                                        Status__c, FromAccount__c,TotalFromAccount__c,WireAmount__c,
                                                        ToAccoutId__r.Recipient_AccountNumber__c,
@@ -213,7 +218,26 @@ public class WiresTransactionApprovalController {
                                                        FROM WIRES_Transaction__c WHERE id=:id];
         
         List<WIRES_Transaction__c> wiresToUpdate=new List<WIRES_Transaction__c>();
+        
+        List<Case> fraudCases=new List<Case>();
         for(WIRES_Transaction__c wt:wireTransactions){
+            
+            if(wt.TotalFromAccount__c>250000){
+                  wt.Approval_Status__c='Fraud Review';
+                  wiresToUpdate.add(wt);
+                
+                List<Account_Details__c> listAccountDetails = [select id,Brand__c,ID1__c,OPEN_DATE__c from Account_Details__c where Name =: wt.FromAccount__c and RecType__c='ACCT' LIMIT 1];
+                Case case1 =new Case();
+                case1.Subject='WIRES Fraud Review';
+                case1.Primary_Category__c='Account Maintenance';
+                case1.Secondary_Category__c=' Special Situations';
+                case1.Tertiary_Category__c='Potential Fraud';
+                if(listAccountDetails.size()>0){
+                	case1.Account_Number__c=listAccountDetails[0].Id;
+                }
+                
+                fraudCases.add(case1);
+            }else{
             integer statusCode=0;
             boolean isGoodFundCheck=false;
             if(wt.TotalFromAccount__c>10000){
@@ -273,8 +297,12 @@ public class WiresTransactionApprovalController {
                    wt.Approval_Status__c='Fraud Review';
                    wiresToUpdate.add(wt);
                }
+            }
         }
         
+        if(fraudCases.size()>0){
+            insert fraudCases;
+        }
         if(wiresToUpdate.size()>0){
             update wiresToUpdate;
         }
