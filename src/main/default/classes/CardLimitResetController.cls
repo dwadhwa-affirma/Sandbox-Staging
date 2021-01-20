@@ -1,10 +1,5 @@
 public class CardLimitResetController {
 
-    //CardLimitReset/GetCards
-    //CardLimitReset/UpdateCardLimits
-    //EFT/GetAccountBySSN
-    //Account/IsDormantAccount
-
     //------------------------------- Getting Stage Details and Member Account Details-----------------------------------------------//
     @AuraEnabled
     public static map<string,object> getStageData(string recordId, string sObjectType){
@@ -426,7 +421,7 @@ public class CardLimitResetController {
                 responseBody1 = res1.getBody();
                 System.debug('Response Body SolarLoan:'+res1.getBody());    
             }else{
-                responseBody1 = '{"Type":"3","Last":"27","First":"1","Street":"1","ExtraAddress":"100","City":"Chicago","State":"IL","ZipCode":"0012345,"BirthDate":"01-01-2019","SSN":"1345","LoanId":"322271627","AccountNumber":"00000123456"}';
+                responseBody1 = '{"Type":"3","Last":"27","First":"1","Street":"1","ExtraAddress":"100","City":"Chicago","State":"IL","ZipCode":"0012345,"AccountNumber":"0000214414","SSN":"1345","LoanId":"322271627"}';
                 
             }
             
@@ -503,7 +498,7 @@ public class CardLimitResetController {
         cl.Member__c = pa.PersonID__c;
 
         insert cl;
-        //createCase(cl,cardnumber,type,authlimit,atmlimit,membername);
+        createCase(cl,cardnumber,type,authlimit,atmlimit,membername);
 
         return null;    
     }
