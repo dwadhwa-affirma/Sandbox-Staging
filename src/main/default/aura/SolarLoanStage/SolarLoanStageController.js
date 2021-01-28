@@ -27,7 +27,7 @@
             	status = 'New';
         	if(component.get("v.ButtonLabelName") == 'Mark Stage 2 Complete')
             	status = 'New';
-        	if(component.get("v.ButtonLabelName") == 'Create Loan Records')
+        	if(component.get("v.ButtonLabelName") == 'Create Account/Loan Records')
             	status = 'Approved'; 
             if(component.get("v.ButtonLabelName") == 'Mark Stage 4 Complete')
                 status = 'Loan Funded';
@@ -82,7 +82,7 @@
                 CurrentStage = 'Stage 2';
         	if(component.get("v.ButtonLabelName") == 'Mark Stage 2 Complete')
                 CurrentStage = 'Stage 3';
-        	if(component.get("v.ButtonLabelName") == 'Create Loan Records')
+        	if(component.get("v.ButtonLabelName") == 'Create Account/Loan Records')
                 CurrentStage = 'Stage 4'; 
             if(component.get("v.ButtonLabelName") == 'Mark Stage 4 Complete')
             	CurrentStage = 'Stage 5';
@@ -135,8 +135,8 @@
                 component.set("v.StageName", "Stage 2: Review Documents");
             }
             if(checkCurrentStage == 'Stage 3'){
-                component.set("v.ButtonLabelName", "Create Loan Records");
-                component.set("v.StageName", "Stage 3: Create Loan Records");
+                component.set("v.ButtonLabelName", "Create Account/Loan Records");
+                component.set("v.StageName", "Stage 3: Create Account/Loan Records");
                 component.set("v.IsWaitingDisabled", true);
             }
             if(checkCurrentStage == 'Stage 4'){

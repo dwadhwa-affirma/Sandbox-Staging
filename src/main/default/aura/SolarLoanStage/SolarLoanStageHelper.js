@@ -84,8 +84,8 @@
                 component.set("v.StageName", "Stage 2: Review Documents");
             }
             if(stage == 'Stage 3'){
-                component.set("v.ButtonLabelName", "Create Loan Records");
-                component.set("v.StageName", "Stage 3: Create Loan Records");
+                component.set("v.ButtonLabelName", "Create Account/Loan Records");
+                component.set("v.StageName", "Stage 3: Create Account/Loan Records");
                 component.set("v.IsWaitingDisabled", true);
             }
             if(stage == 'Stage 4'){
