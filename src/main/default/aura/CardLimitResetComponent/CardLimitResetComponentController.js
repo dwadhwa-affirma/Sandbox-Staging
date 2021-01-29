@@ -242,7 +242,7 @@
                             	return;
                             }
                             if(component.get("v.CLRecord.Auth_POS_Limit__c") == 0){
-                                alert('New Auth/POS Limit should not be zero.'+'\n'+'Please enter valid ATM limit.');	
+                                alert('New Auth/POS Limit should not be zero.'+'\n'+'Please enter valid Auth/POS limit.');	
                             	helper.hideSpinner(component,helper);
                             	return;
                             }
@@ -449,7 +449,7 @@
                             	return;
                             }                            
                             if(component.get("v.CLRecord.Auth_POS_Limit__c") == 0){
-                                alert('New Auth/POS Limit should not be zero.'+'\n'+'Please enter valid ATM limit.');	
+                                alert('New Auth/POS Limit should not be zero.'+'\n'+'Please enter valid Auth/POS limit.');	
                             	helper.hideSpinner(component,helper);
                             	return;
                             }
