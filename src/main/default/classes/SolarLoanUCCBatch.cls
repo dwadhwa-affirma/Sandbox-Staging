@@ -71,7 +71,7 @@ global class SolarLoanUCCBatch implements Database.Batchable<sObject>, Database.
             }
             System.debug('token is = ' + token);
             
-            req.setEndpoint(EndpointURL+'/OnlineServices/api/File/V1/Filing/'+sl.UCC_Id__c);
+            req.setEndpoint(EndpointURL+'/OnlineServices/api/File/V2/Filing/'+sl.UCC_Id__c);
             req.setMethod('GET');
             req.setHeader('Accept', 'application/json');
             req.setHeader('Authorization', 'Bearer ' + token);
