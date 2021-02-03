@@ -387,7 +387,7 @@
                         }
                         if(i==1 && component.get("v.CLRecord.Type__c") == 'Change Card Limits' && component.get("v.CLRecord.ATM_Usage_Limit__c") == undefined
                                             && component.get("v.CLRecord.Auth_POS_Limit__c") == undefined){
-                           
+                          
                             dynamicText = component.get("v.CLRecord.Type__c");
                             stages2[0].Stage_Action__c = component.get("v.CLRecord.Card_Number__c");
                             stages2[i].Stage_Action__c = dynamicText;
@@ -432,7 +432,7 @@
                         }
                         if(i==1 && component.get("v.CLRecord.Type__c") == 'Change Card Limits' && component.get("v.CLRecord.ATM_Usage_Limit__c") != undefined
                                             && component.get("v.CLRecord.Auth_POS_Limit__c") != undefined){
-							
+				            
                             if(component.get("v.CLRecord.ATM_Usage_Limit__c") > 1000){
                                 alert('New limit is over max ATM Usage Limit of '+'\n'+'$1000.00. Please enter valid ATM limit.');	
                             	helper.hideSpinner(component,helper);
@@ -528,6 +528,8 @@
                 
                 if(i==2 && (component.get("v.CLRecord.Type__c") == 'Change Card Limits')){
                         component.set("v.CLRecord.Type__c",'');
+                    	component.set("v.CLRecord.ATM_Usage_Limit__c",undefined);
+                        component.set("v.CLRecord.Auth_POS_Limit__c", undefined);
                     
                     	$A.createComponent("c:"+stages[2].Stage_Component__c,{recordId: component.get("v.recordId"), CLRecord: component.get("v.CLRecord")},
                         function(msgBox){                
@@ -544,6 +546,12 @@
                     return;    
                 }
                 else{    
+                    
+                    if(component.get("v.CLRecord.Type__c") == 'Reset Card Limits'){
+                    	component.set("v.CLRecord.ATM_Usage_Limit__c",undefined);
+                        component.set("v.CLRecord.Auth_POS_Limit__c", undefined);
+                    }
+                    
                     component.set("v.ActiveStepIndex", (i-1)); 
                     $A.createComponent("c:"+stages[i-1].Stage_Component__c,{recordId: component.get("v.recordId"), CLRecord: component.get("v.CLRecord")},
                         function(msgBox){                
@@ -582,7 +590,10 @@
                 }
                 
                 if(i==1 && (component.get("v.CLRecord.Type__c") == 'Change Card Limits')){
-                        component.set("v.CLRecord.Type__c",'');
+                        
+                    	component.set("v.CLRecord.Type__c",'');
+                    	component.set("v.CLRecord.ATM_Usage_Limit__c",undefined);
+                        component.set("v.CLRecord.Auth_POS_Limit__c", undefined);
                     
                     	$A.createComponent("c:"+stages[1].Stage_Component__c,{recordId: component.get("v.recordId"), CLRecord: component.get("v.CLRecord")},
                         function(msgBox){                
@@ -599,6 +610,12 @@
                     return;    
                 }
                 else{    
+                    
+                    if(component.get("v.CLRecord.Type__c") == 'Reset Card Limits'){
+                    	component.set("v.CLRecord.ATM_Usage_Limit__c",undefined);
+                        component.set("v.CLRecord.Auth_POS_Limit__c", undefined);
+                    }
+                    
                     component.set("v.ActiveStepIndex", (i-1)); 
                     $A.createComponent("c:"+stages[i-1].Stage_Component__c,{recordId: component.get("v.recordId"), CLRecord: component.get("v.CLRecord")},
                         function(msgBox){                
@@ -624,7 +641,9 @@
 	  
       var CL = event.getParam("CLRecord");
 	  component.set("v.CLRecord", CL);
-        
+      var isMemberSelected =  event.getParam("isMemberSelected");
+      component.set("v.isMemberSelected", isMemberSelected);
+    
     },
     
     backView:function (component, event, helper) {  

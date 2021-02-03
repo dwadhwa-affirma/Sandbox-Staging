@@ -5,6 +5,7 @@
 		var recordId = component.get("v.recordId");
 		var CLRecord = component.get("v.CLRecord");
         var memberName = CLRecord.Member_Name__c;
+        var evt = $A.get("e.c:CardLimitResetEvent");
         action.setParams({
 			"recordId": recordId,
             "sObjectType": memberName
@@ -17,7 +18,9 @@
                 if(result != undefined){
                     
                     if(result.CardList != undefined && result.CardList != ''){
-                    	component.set('v.CardListMap', result.CardList);
+                    	evt.setParams({ "CLRecord": CLRecord, "isMemberSelected": true});
+            			evt.fire();
+                        component.set('v.CardListMap', result.CardList);
                     }
                     
                     if(result.DormantCardList != undefined && result.DormantCardList != ''){
@@ -55,6 +58,7 @@
     	var evt = $A.get("e.c:CardLimitResetEvent");
         var CL = component.get("v.CLRecord");
         var isMemberSelected = component.get("v.isMemberSelected");
+        
         
         if(CL != undefined){
             evt.setParams({ "CLRecord": CL, "isMemberSelected": isMemberSelected});

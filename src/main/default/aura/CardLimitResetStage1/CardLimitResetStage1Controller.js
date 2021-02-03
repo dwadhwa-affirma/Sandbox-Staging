@@ -3,6 +3,7 @@
 	    
         var action = component.get("c.getMembers");
 		var recordId = component.get("v.recordId");
+        var evt = $A.get("e.c:CardLimitResetEvent");
         action.setParams({
 			"recordId": recordId
 		});			
@@ -15,7 +16,9 @@
 					var tt = result.PersonList[i].TypeTranslate__c.substring(5);
 					result.PersonList[i].TypeTranslate__c = tt;
 				}
-                
+                evt.setParams({ "CLRecord": '', "isMemberSelected": true});
+            	evt.fire();
+                component.set("v.isMemberSelected",true);
 	        	component.set('v.paList', result.PersonList);    					
 			}
 		});
