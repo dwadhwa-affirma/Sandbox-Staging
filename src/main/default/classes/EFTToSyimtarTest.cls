@@ -152,7 +152,12 @@ public class EFTToSyimtarTest {
         objOnbase.Case__c = case_Obj[0].id;
         objOnbase.IsMovedToOnBase__c = false;
         objOnbase.Attachment_Id__c = documents[0].Id;
-        insert objOnbase;
+		insert objOnbase;
+		
+		ACH_To_Episys_API_Details__c api = new ACH_To_Episys_API_Details__c();
+		api.URL__c = 'https://symxapi.chevronfcu.org/devclient';
+		api.Name = 'ProductionURL';
+		insert api;
 
 		test.stopTest();
     }

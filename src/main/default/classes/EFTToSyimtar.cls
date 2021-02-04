@@ -41,7 +41,8 @@ public class EFTToSyimtar{
 	public static String OldFrequency;
 	public static String OldDay1;
 	public static List<EFTController.EFTWrapperObject> EFTExpiredList = new List<EFTController.EFTWrapperObject>();
-	
+	public static String loanAPI;
+
 	//-----------------Creating EFT in Episys-----------//
 	@future(callout = true)
 	public static void insertEFTs(Set<id> ids){
@@ -51,6 +52,12 @@ public class EFTToSyimtar{
 		                     FROM EFT__c
 		                     where id = :ids];
 		map<Id, String> CaseIdsToUpdate = new Map<Id, String>();
+
+		ACH_To_Episys_API_Details__c api = ACH_To_Episys_API_Details__c.getValues('ProductionURL');
+                
+                if(api.URL__c != null){
+                    loanAPI = api.URL__c;
+                }
 
 		for (EFT__c e : EFTs){
 
@@ -152,7 +159,7 @@ public class EFTToSyimtar{
 			/*-----------In Case of Multiple EFTs, First Expire All EFTS----------------*/
 			if (LocatorsToExpire != null){
 				for (string l : LocatorsToExpire){
-					ExpireReq.setEndpoint('https://symxapi.chevronfcu.org/devclient/EFT/UpdateEft');
+					ExpireReq.setEndpoint(loanAPI+'/EFT/UpdateEft');
 					
 					ExpireReq.setMethod('POST');
 					ExpireReq.setHeader('Content-Type', 'application/json');
@@ -181,8 +188,8 @@ public class EFTToSyimtar{
 
 		   /*-----------Web serice call to Create EFT---------------*/
 			//req.setEndpoint('https://brscsymx.ctxcu.org/dev/EFT/CreateEft');
-			req.setEndpoint('https://symxapi.chevronfcu.org/devclient/EFT/CreateEft');
-			req.setClientCertificateName('brscmcapi');
+			req.setEndpoint(loanAPI + '/EFT/CreateEft');
+			//req.setClientCertificateName('brscmcapi');
 			req.setMethod('POST');
 			req.setHeader('Content-Type', 'application/json');
 			req.setHeader('Accept', 'application/json');
@@ -234,7 +241,7 @@ public class EFTToSyimtar{
 					UpdateDay1 = '1';
 				}
 				boolean isExpired = false;
-				Updatereq.setEndpoint('https://symxapi.chevronfcu.org/devclient/EFT/UpdateEft');
+				Updatereq.setEndpoint(loanAPI+'/EFT/UpdateEft');
 				//req.setClientCertificateName('brscmcapi');
 				Updatereq.setMethod('POST');
 				Updatereq.setHeader('Content-Type', 'application/json');
@@ -275,7 +282,7 @@ public class EFTToSyimtar{
 				/*-----------Update LOC Loan---------------*/				
 				if (LoanCode == '2'){
 					System.debug('LoanCode');
-					req1.setEndpoint('https://symxapi.chevronfcu.org/devclient/EFT/UpdateLOCLoanbyId');
+					req1.setEndpoint(loanAPI + '/EFT/UpdateLOCLoanbyId');
 					if (AlternatePayment != ''){
 						jsonData1 = '{"AccountNumber":' + '\"' + AccountNumber + '\","LoanId":' + '\"' + ID + '\"' + ',"PaymentMethod":' + '\"' + PaymentMethod + '\"' + ',"Payment":' + '\"' + e.Payment_Amount__c + '\"' + ',"AlternatePayment":' + '\"' + e.Alternate_Amount__c  + '\"}';
 					} else{
@@ -288,13 +295,13 @@ public class EFTToSyimtar{
 					string uc3;
 					uc3 = getUserChar3(AccountNumber, ID);
 					System.debug('uc3==' + uc3);
-					req1.setEndpoint('https://symxapi.chevronfcu.org/devclient/PSAuto/UpdateTracking32Records');
+					req1.setEndpoint(loanAPI + '/PSAuto/UpdateTracking32Records');
 					jsonData1 = '{"AccountNumber":' + '\"' + AccountNumber + '\","ShareId":' + '\"' + ID + '\"' + ',"UserChar3":' + '\"' + uc3 + '\"' + ',"TotalPaymentAmount":' + '\"' + e.Payment_Amount__c + '\"' + ',"AdditionalPaymentAmount":' + '\"' + e.Alternate_Amount__c  + '\"' + ',"NextPaymentDueDate":' + '\"' + EffectiveDate + '\"}';
 				} 
 				/*-----------Update Non-LOC Loan---------------*/
 				else{
 					System.debug('LoanCode not 2');
-					req1.setEndpoint('https://symxapi.chevronfcu.org/devclient/EFT/UpdateLoanById');
+					req1.setEndpoint(loanAPI+'/EFT/UpdateLoanById');
 					if (AlternatePayment != ''){
 						jsonData1 = '{"AccountNumber":' + '\"' + AccountNumber + '\","LoanId":' + '\"' + ID + '\"' + ',"PaymentMethod":' + '\"' + PaymentMethod + '\"' + ',"AlternatePayment":' + '\"' + AlternatePayment + '\"}';
 					} else{
@@ -302,7 +309,7 @@ public class EFTToSyimtar{
 					}
 				}
 				//system.System.debug(jsonData1);
-				req1.setClientCertificateName('brscmcapi');
+				//req1.setClientCertificateName('brscmcapi');
 				req1.setMethod('POST');
 				req1.setHeader('Content-Type', 'application/json');
 				req1.setHeader('Accept', 'application/json');
@@ -380,7 +387,12 @@ public class EFTToSyimtar{
 
 		map<Id, String> CaseIdsToUpdate = new Map<Id, String>();
 		//else{
-
+		
+			ACH_To_Episys_API_Details__c api = ACH_To_Episys_API_Details__c.getValues('ProductionURL');
+                
+                if(api.URL__c != null){
+                    loanAPI = api.URL__c;
+				}
 		for (EFT__c e : EFTs){
 
 			EftLocator = e.EftLocator__c;
@@ -477,7 +489,7 @@ public class EFTToSyimtar{
 				}
 				if (LocatorsToExpire != null){
 					for (string l : LocatorsToExpire){
-						ExpireReq.setEndpoint('https://symxapi.chevronfcu.org/devclient/EFT/UpdateEft');
+						ExpireReq.setEndpoint(loanAPI+'/EFT/UpdateEft');
 						//req.setClientCertificateName('brscmcapi');
 						ExpireReq.setMethod('POST');
 						ExpireReq.setHeader('Content-Type', 'application/json');
@@ -507,7 +519,7 @@ public class EFTToSyimtar{
 
 			 /*-----------Web serice call to Update EFT---------------*/
 			//req.setEndpoint('https://brscsymx.ctxcu.org/dev/EFT/CreateEft');
-			req.setEndpoint('https://symxapi.chevronfcu.org/devclient/EFT/UpdateEft');
+			req.setEndpoint(loanAPI+'/EFT/UpdateEft');
 			//req.setClientCertificateName('brscmcapi');
 			req.setMethod('POST');
 			req.setHeader('Content-Type', 'application/json');
@@ -725,7 +737,7 @@ public class EFTToSyimtar{
 				/*-----------Update LOC Loan---------------*/			
 				if (LoanCode == '2'){
 					System.debug('LoanCode');
-					req1.setEndpoint('https://symxapi.chevronfcu.org/devclient/EFT/UpdateLOCLoanbyId');
+					req1.setEndpoint(loanAPI+'/EFT/UpdateLOCLoanbyId');
 					if (AlternatePayment != ''){
 						jsonData1 = '{"AccountNumber":' + '\"' + AccountNumber + '\","LoanId":' + '\"' + ID + '\"' + ',"PaymentMethod":' + '\"' + PaymentMethod + '\"' + ',"Payment":' + '\"' + e.Payment_Amount__c + '\"' + ',"AlternatePayment":' + '\"' + TempAlternatePayment + '\"}';
 					} else{
@@ -738,14 +750,14 @@ public class EFTToSyimtar{
 					string uc3;
 					uc3 = getUserChar3(AccountNumber, ID);
 					System.debug('uc3==' + uc3);
-					req1.setEndpoint('https://symxapi.chevronfcu.org/devclient/PSAuto/UpdateTracking32Records');
+					req1.setEndpoint(loanAPI+'/PSAuto/UpdateTracking32Records');
 					jsonData1 = '{"AccountNumber":' + '\"' + AccountNumber + '\","ShareId":' + '\"' + ID + '\"' + ',"UserChar3":' + '\"' + uc3 + '\"' + ',"TotalPaymentAmount":' + '\"' + e.Payment_Amount__c + '\"' + ',"AdditionalPaymentAmount":' + '\"' + TempAlternatePayment + '\"' + ',"NextPaymentDueDate":' + '\"' + NextDate + '\"}';
 					//System.debug('jsonData1=='+jsonData1);
 				} 
 				/*-----------Update Non-LOC Loan---------------*/
 				else{
 					System.debug('LoanCode not 2');
-					req1.setEndpoint('https://symxapi.chevronfcu.org/devclient/EFT/UpdateLoanById');
+					req1.setEndpoint(loanAPI+'/EFT/UpdateLoanById');
 					if (AlternatePayment != ''){
 						jsonData1 = '{"AccountNumber":' + '\"' + AccountNumber + '\","LoanId":' + '\"' + ID + '\"' + ',"AlternatePayment":' + '\"' + AlternatePayment + '\"}';
 					} else{
@@ -755,7 +767,7 @@ public class EFTToSyimtar{
 
 				system.debug('jsonData1' + jsonData1);
 				//req1.setEndpoint('https://symxapi.chevronfcu.org/devclient/EFT/UpdateLoanById');
-				req1.setClientCertificateName('brscmcapi');
+				//req1.setClientCertificateName('brscmcapi');
 				req1.setMethod('POST');
 				req1.setHeader('Content-Type', 'application/json');
 				req1.setHeader('Accept', 'application/json');
@@ -879,7 +891,7 @@ public class EFTToSyimtar{
 		string userchar3;
 		httpRequest requestparam = new httpRequest();
 		//requestparam.setTimeout(10);
-		requestparam.setEndpoint('https://symxapi.chevronfcu.org/devclient/PSAuto/GetSharesEFT?AccountNumber=' + AccountNumber + '&userchar2=abc');
+		requestparam.setEndpoint(loanAPI+'/PSAuto/GetSharesEFT?AccountNumber=' + AccountNumber + '&userchar2=abc');
 		requestparam.setMethod('GET');
 
 		try{
@@ -936,7 +948,7 @@ public class EFTToSyimtar{
 		System.debug(dateString1);
 		httpRequest requestparam = new httpRequest();
 		//requestparam.setTimeout(10);
-		requestparam.setEndpoint('https://symxapi.chevronfcu.org/devclient/EFT/CreateEFTFormNote');
+		requestparam.setEndpoint(loanAPI+'/EFT/CreateEFTFormNote');
 		//?RGUserChr1=' + AccountNumber + '&RGUserChr2=' + dateString +  '&RGUserChr3=' + IDType + ID + '&RGUserChr4=' + Amount + '&RGUserChr5=' + dateString1 + '|' + isExpired);
 		requestparam.setMethod('POST');
 		requestparam.setHeader('Content-Type', 'application/json');
@@ -956,24 +968,6 @@ public class EFTToSyimtar{
 				System.debug('Response Body::' + res.getBody());
 			}
 
-
-			// if (strBody != ''){
-			//     List<Object> results = (List<Object>)JSON.deserializeUntyped(response.getBody());
-			//     System.debug('Service response is ....' + results);
-
-			//     if (results != null){
-			//         for (Object t : results){
-			//             map<string, object> localAcc = (map<string, object>)t;
-			//             string accouttype = (string)localAcc.get('AccountType');
-			//             string ShareId1 = accouttype.split(' ')[1].replace('#', '');
-
-			//             if (ShareId1 != '0' && ShareId1 == ShareID){
-			//                 //&& ShareId == 2800
-			//                 userchar3 = (string)localAcc.get('UserChar3');
-			//             }
-			//         }
-			//     }
-			// }
 		} catch (System.CalloutException e){
 			system.debug('Exception');
 
