@@ -27,7 +27,7 @@ global with sharing class OnBaseDocumentAPI {
         				case__r.Primary_Category__c, case__r.Tertiary_Category__c,case__r.Secondary_Category__c,
         				case__r.Account.Name,
         				Account_Name__c, 
-        				case__r.Subject, case__r.Origin,case__r.Parent.CaseNumber, case__r.ClosedDate
+        				case__r.Subject, case__r.Origin, case__r.ClosedDate
         				 from CaseAccountMemberDetail__c where Case__c IN: caseids];
                         
             List<OnBaseDocumentAPIResopnse> responseObjList = new List<OnBaseDocumentAPIResopnse>();
