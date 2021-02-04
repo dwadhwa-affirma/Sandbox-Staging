@@ -232,7 +232,7 @@
             "v.EFTRecord.Alternate_Amount__c",
             EFTList[i].Alternate_Amount__c
           );
-        else component.set("v.EFTRecord.Alternate_Amount__c", 0.0);
+        else component.set("v.EFTRecord.Alternate_Amount__c", EFTList[i].Existing_Alternate_Amount__c);
         component.set(
           "v.EFTRecord.Effective_Date__c",
           EFTList[i].Effective_Date__c
