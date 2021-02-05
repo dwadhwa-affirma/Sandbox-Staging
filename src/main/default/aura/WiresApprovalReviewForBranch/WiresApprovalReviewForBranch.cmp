@@ -1,0 +1,63 @@
+<aura:component implements="flexipage:availableForAllPageTypes,force:appHostable,force:hasRecordId,lightning:isUrlAddressable" access="global" controller="WiresTransactionApprovalController">
+    <aura:handler value="{!this}" name="init" action="{!c.doInit}"/>  
+    <aura:attribute name="WiresBalance" type="String"/> 
+    <aura:attribute name="WiresCount" type="String"/>
+    <aura:attribute name="isReasonRequired" type="boolean" default="false"/> 
+    <aura:attribute name="WiresObject" type="WIRES_Transaction__c"/> 
+    <aura:attribute name="isApproveDisabled" type="boolean" default="true"/>
+    <aura:attribute name="isNextDisabled" type="boolean" default="true"/>
+    <aura:attribute name="isGoodFundCheck" type="boolean" default="false"/> 
+    <aura:attribute name="isNextVisible" type="boolean" default="false"/> 
+    <aura:attribute name="isIDVAuthentication" type="boolean" default="false"/> 
+    <aura:attribute name="isIDVAuthDone" type="boolean" default="false"/> 
+    <aura:attribute name="BalanceStatusCode" type="integer"/> 
+    <aura:attribute name="BalanceRGLines" type="String"/>   
+    
+    
+    <lightning:overlayLibrary aura:id="overlayLib1"/>
+    
+    <div>
+        <aura:html tag="style">
+            .slds-modal__container {
+            width: 35%;
+            }
+        </aura:html>   
+        
+        <table>
+            
+            <aura:if isTrue="{!v.WiresObject.Approval_Status__c=='Pending for Second Approval'}">
+                <tr class="trReview">
+                    <td><ui:inputCheckbox class="checkbox" value="{!v.WiresObject.Available_Balance2_Review__c}" change="{!c.onCheck}"/></td>
+                    <td>Is Valid Amount?</td><td class="tblNumber" style="vertical-align: bottom;">{!v.BalanceStatusCode le 0 ? 'No' : 'Yes' }<br/> {!v.BalanceRGLines} </td>
+                </tr>    
+                <tr class="trReview">
+                    <td><ui:inputCheckbox class="checkbox" value="{!v.WiresObject.Previous_Wires2_Review__c}" change="{!c.onCheck}"/></td>
+                    <td>Number of Previous Wires</td><td class="tblNumber">{!v.WiresCount}</td>
+                </tr>    
+                
+                <aura:set attribute="else">
+                    <tr class="trReview">
+                        <td><ui:inputCheckbox class="checkbox" value="{!v.WiresObject.Available_Balance_Review__c}" change="{!c.onCheck}"/></td>
+                        <td>Is Valid Amount?</td><td class="tblNumber" style="vertical-align: bottom;">{!v.BalanceStatusCode le 0 ? 'No' : 'Yes' }<br/> {!v.BalanceRGLines} </td>
+                    </tr>    
+                    <tr class="trReview">
+                        <td><ui:inputCheckbox class="checkbox" value="{!v.WiresObject.Previous_Wires_Review__c}" change="{!c.onCheck}"/></td>
+                        <td>Number of Previous Wires</td><td class="tblNumber">{!v.WiresCount}</td>
+                    </tr>    
+                    
+                </aura:set>
+            </aura:if>
+        </table>
+    </div>
+    
+    <div style="margin-top: 10px;">
+        <footer class="slds-modal__footer" id="WiresApprovalReviewPageFooter">
+            
+            <lightning:button variant="brand" label="Approve" onclick="{!c.ApproveTransactions}" disabled="{!v.isApproveDisabled}"/>
+            <lightning:button variant="brand" label="Reject" onclick="{!c.RejectTransaction}" />
+            <lightning:button variant="brand" label="Cancel" onclick="{!c.CancelTransaction}" />
+            
+        </footer> 
+    </div>
+    
+</aura:component>
