@@ -3,7 +3,7 @@
         var action = component.get("c.ApproveTransaction");
         var wires = JSON.stringify(component.get("v.WiresObject"));
         var approvalStatus = component.get("v.WiresObject.Approval_Status__c");
-        var wireAmount=component.get("v.WiresObject.WireAmount__c");
+        var wireAmount=component.get("v.WiresObject.TotalFromAccount__c");
         action.setParams({"WiresRecordId": recordId, "Action": actionType,
                           "wiresdetails": wires
                          });

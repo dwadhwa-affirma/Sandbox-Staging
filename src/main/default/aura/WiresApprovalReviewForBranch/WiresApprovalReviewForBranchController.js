@@ -1,6 +1,6 @@
 ({
     doInit : function(component, event, helper) {
-        var wireAmount=component.get("v.WiresObject.WireAmount__c");
+        var wireAmount=component.get("v.WiresObject.TotalFromAccount__c");
         var docusignStatus=component.get("v.WiresObject.Status__c");
         var isIDVUsed=component.get("v.WiresObject.Identity_Verification_Used__c");
         var RecordId = component.get("v.recordId");

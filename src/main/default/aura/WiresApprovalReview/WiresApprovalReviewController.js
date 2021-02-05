@@ -8,7 +8,7 @@
             component.set("v.isReasonRequired",true);
         }
         
-        var wireAmount=component.get("v.WiresObject.WireAmount__c");
+        var wireAmount=component.get("v.WiresObject.TotalFromAccount__c");
         var docusignStatus=component.get("v.WiresObject.Status__c");
         var isIDVUsed=component.get("v.WiresObject.Identity_Verification_Used__c");
         var RecordId = component.get("v.recordId");
@@ -82,7 +82,7 @@
         
         debugger;
         var RecordId = component.get("v.recordId");
-        var wireAmount=component.get("v.WiresObject.WireAmount__c");
+        var wireAmount=component.get("v.WiresObject.TotalFromAccount__c");
         var balanceStatusCode=component.get("v.BalanceStatusCode");
         if(wireAmount>10000) {
             if(balanceStatusCode<=0){
@@ -111,8 +111,6 @@
         component.find("overlayLib1").notifyClose();
     },
     onCheck: function(component, event, helper) {
-        
-        debugger;
         
         var isGoodFundCheck=component.get("v.isGoodFundCheck");
         var isNextVisible=component.get("v.isNextVisible");
