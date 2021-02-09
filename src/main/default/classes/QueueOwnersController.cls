@@ -26,7 +26,7 @@ public class QueueOwnersController {
         memIdSet.add(currentUsersId);
         //System.debug('MemIdSet is:::'+memIdSet);    
 
-        List<GroupMember> queueMemList = [select GroupId from GroupMember where (Group.Type = 'Queue' AND  UserOrGroupId =:memIdSet) OR UserOrGroupId =:roleRelatedGroupIds];
+        List<GroupMember> queueMemList = [select GroupId from GroupMember where (Group.Type = 'Queue' AND  UserOrGroupId =:memIdSet  and  group.name != 'Call Center Solar Onboarding Queue') OR UserOrGroupId =:roleRelatedGroupIds];
         Set<Id> grpIdSet = new Set<Id>();
         for(GroupMember que : queueMemList){
             grpIdSet.add(que.GroupId);
