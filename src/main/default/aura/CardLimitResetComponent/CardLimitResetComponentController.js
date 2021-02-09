@@ -225,7 +225,28 @@
                         }
                         if(i==3 && component.get("v.CLRecord.Type__c") == 'Change Card Limits' && component.get("v.CLRecord.ATM_Usage_Limit__c") != undefined
                                             && component.get("v.CLRecord.Auth_POS_Limit__c") != undefined){
-                           
+                            
+                            if(component.get("v.CLRecord.ATM_Usage_Limit__c") > 1000){
+                                alert('New limit is over max ATM Usage Limit of '+'\n'+'$1000.00. Please enter valid ATM limit.');	
+                            	helper.hideSpinner(component,helper);
+                            	return;
+                            }
+                            if(component.get("v.CLRecord.ATM_Usage_Limit__c") == 0){
+                                alert('New ATM Usage Limit should not be zero.'+'\n'+'Please enter valid ATM limit.');	
+                            	helper.hideSpinner(component,helper);
+                            	return;
+                            }
+							if(component.get("v.CLRecord.Auth_POS_Limit__c") > 10000){
+                                alert('New limit is over max Auth/POS Limit of '+'\n'+'$10,000.00.Please enter valid Auth limit.');
+                            	helper.hideSpinner(component,helper);
+                            	return;
+                            }
+                            if(component.get("v.CLRecord.Auth_POS_Limit__c") == 0){
+                                alert('New Auth/POS Limit should not be zero.'+'\n'+'Please enter valid Auth/POS limit.');	
+                            	helper.hideSpinner(component,helper);
+                            	return;
+                            }
+                            
                             component.set("v.ActiveStepIndex", (i));
                             dynamicText = component.get("v.CLRecord.Type__c");
                             stages2[1].Stage_Action__c = component.get("v.CLRecord.Card_Number__c");
@@ -366,7 +387,7 @@
                         }
                         if(i==1 && component.get("v.CLRecord.Type__c") == 'Change Card Limits' && component.get("v.CLRecord.ATM_Usage_Limit__c") == undefined
                                             && component.get("v.CLRecord.Auth_POS_Limit__c") == undefined){
-                           
+                          
                             dynamicText = component.get("v.CLRecord.Type__c");
                             stages2[0].Stage_Action__c = component.get("v.CLRecord.Card_Number__c");
                             stages2[i].Stage_Action__c = dynamicText;
@@ -411,7 +432,27 @@
                         }
                         if(i==1 && component.get("v.CLRecord.Type__c") == 'Change Card Limits' && component.get("v.CLRecord.ATM_Usage_Limit__c") != undefined
                                             && component.get("v.CLRecord.Auth_POS_Limit__c") != undefined){
-                           
+				            
+                            if(component.get("v.CLRecord.ATM_Usage_Limit__c") > 1000){
+                                alert('New limit is over max ATM Usage Limit of '+'\n'+'$1000.00. Please enter valid ATM limit.');	
+                            	helper.hideSpinner(component,helper);
+                            	return;
+                            }
+                            if(component.get("v.CLRecord.ATM_Usage_Limit__c") == 0){
+                                alert('New ATM Usage Limit should not be zero.'+'\n'+'Please enter valid ATM limit.');	
+                            	helper.hideSpinner(component,helper);
+                            	return;
+                            }
+							if(component.get("v.CLRecord.Auth_POS_Limit__c") > 10000){
+                                alert('New limit is over max Auth/POS Limit of '+'\n'+'$10,000.00.Please enter valid Auth limit.');
+                            	helper.hideSpinner(component,helper);
+                            	return;
+                            }                            
+                            if(component.get("v.CLRecord.Auth_POS_Limit__c") == 0){
+                                alert('New Auth/POS Limit should not be zero.'+'\n'+'Please enter valid Auth/POS limit.');	
+                            	helper.hideSpinner(component,helper);
+                            	return;
+                            }
                             component.set("v.ActiveStepIndex", (i+1));
                             dynamicText = component.get("v.CLRecord.Type__c");
                             stages2[0].Stage_Action__c = component.get("v.CLRecord.Card_Number__c");
@@ -487,6 +528,8 @@
                 
                 if(i==2 && (component.get("v.CLRecord.Type__c") == 'Change Card Limits')){
                         component.set("v.CLRecord.Type__c",'');
+                    	component.set("v.CLRecord.ATM_Usage_Limit__c",undefined);
+                        component.set("v.CLRecord.Auth_POS_Limit__c", undefined);
                     
                     	$A.createComponent("c:"+stages[2].Stage_Component__c,{recordId: component.get("v.recordId"), CLRecord: component.get("v.CLRecord")},
                         function(msgBox){                
@@ -503,6 +546,12 @@
                     return;    
                 }
                 else{    
+                    
+                    if(component.get("v.CLRecord.Type__c") == 'Reset Card Limits'){
+                    	component.set("v.CLRecord.ATM_Usage_Limit__c",undefined);
+                        component.set("v.CLRecord.Auth_POS_Limit__c", undefined);
+                    }
+                    
                     component.set("v.ActiveStepIndex", (i-1)); 
                     $A.createComponent("c:"+stages[i-1].Stage_Component__c,{recordId: component.get("v.recordId"), CLRecord: component.get("v.CLRecord")},
                         function(msgBox){                
@@ -541,7 +590,10 @@
                 }
                 
                 if(i==1 && (component.get("v.CLRecord.Type__c") == 'Change Card Limits')){
-                        component.set("v.CLRecord.Type__c",'');
+                        
+                    	component.set("v.CLRecord.Type__c",'');
+                    	component.set("v.CLRecord.ATM_Usage_Limit__c",undefined);
+                        component.set("v.CLRecord.Auth_POS_Limit__c", undefined);
                     
                     	$A.createComponent("c:"+stages[1].Stage_Component__c,{recordId: component.get("v.recordId"), CLRecord: component.get("v.CLRecord")},
                         function(msgBox){                
@@ -558,6 +610,12 @@
                     return;    
                 }
                 else{    
+                    
+                    if(component.get("v.CLRecord.Type__c") == 'Reset Card Limits'){
+                    	component.set("v.CLRecord.ATM_Usage_Limit__c",undefined);
+                        component.set("v.CLRecord.Auth_POS_Limit__c", undefined);
+                    }
+                    
                     component.set("v.ActiveStepIndex", (i-1)); 
                     $A.createComponent("c:"+stages[i-1].Stage_Component__c,{recordId: component.get("v.recordId"), CLRecord: component.get("v.CLRecord")},
                         function(msgBox){                
@@ -583,7 +641,9 @@
 	  
       var CL = event.getParam("CLRecord");
 	  component.set("v.CLRecord", CL);
-        
+      var isMemberSelected =  event.getParam("isMemberSelected");
+      component.set("v.isMemberSelected", isMemberSelected);
+    
     },
     
     backView:function (component, event, helper) {  

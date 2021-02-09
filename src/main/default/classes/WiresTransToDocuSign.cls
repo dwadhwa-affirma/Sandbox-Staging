@@ -67,22 +67,22 @@ public class WiresTransToDocuSign {
         //----------------------------End - DocuSign Templates from Custom setting------------------------------------//
        
         List<WIRES_Transaction__c> WiresList = new List<WIRES_Transaction__c>();         
-   		List<WIRES_Transaction__c> WiresTrans = [SELECT AccountStableReview__c,Account_Stable_2nd_Review__c,
-                     Approval_Status__c,Approved_by_1st_Approver__c,Approved_by_2nd_approver__c,
-                    Available_Balance_2nd_Review__c,Available_Balance_Review__c,Description__c,EndDate__c,
+   		List<WIRES_Transaction__c> WiresTrans = [SELECT AccountStableReview__c,
+                     Approval_Status__c,Approved_by_1st_Approver__c,
+                    Available_Balance_Review__c,Description__c,EndDate__c,
                     Chevron_Account_Number__c,CreatedById,CreatedDate,FlagAccountOpenfor45Days__c,Fees__c,
-                    DocuSignId__c,DocuSign_Status1__c,EmailStableReview__c,Email_Stable_2nd_Review__c,FlagHomePhoneStablefor30Days__c,
+                    DocuSignId__c,DocuSign_Status1__c,EmailStableReview__c,FlagHomePhoneStablefor30Days__c,
                     FlagEmailStablefor30Days__c,FlagMobilePhoneStablefor30Days__c,FlagWorkPhoneStablefor30Days__c,
-                    Frequency__c,FromAccount__c,Home_Phone_Stable_2nd_Review__c,Home_Phone_Stable_Review__c,Id,Identity_Verification_Used__c,
-                    ID_Verification_2nd_Review__c,ID_Verification_Review__c,IsAccountOpenfor45Days__c,IsDeleted,IsEmailStable__c,TotalFromAccount__c,
+                    Frequency__c,FromAccount__c,Home_Phone_Stable_Review__c,Id,Identity_Verification_Used__c,
+                    ID_Verification_Review__c,IsAccountOpenfor45Days__c,IsDeleted,IsEmailStable__c,TotalFromAccount__c,
                     IsHomePhoneStable__c,IsMobilePhoneStable__c,IsWorkPhoneStable__c,Is_Recurrence_Day__c,Member_Address__c,Member_City_State_Zip__c,
                     Member_Email__c,Member_Home_Phone__c,Member_Name__c,TransactionStatus__c,
-                    Mobile_Phone_Stable_2nd_Review__c,Mobile_Phone_Stable_Review__c,RecurrenceEndDate__c,
+                    Mobile_Phone_Stable_Review__c,RecurrenceEndDate__c,
                     Name,Occurences__c,OwnerId,ParentTransaction__c,ToAccoutId__c,RecurrenceRange__c,
-                    Previous_Wires_2nd_Review__c,Previous_Wires_Review__c,RecurrenceDay__c,Recurrence_Pattern__c,
+                    Previous_Wires_Review__c,RecurrenceDay__c,Recurrence_Pattern__c,
                     Review_Reason__c,Second_Approval_Review_Reason__c,SendOn__c,Share_ID__c,Transaction_Status__c,
                     Source__c,StartDate__c,Status__c,ToAccountName__c,TransferType__c,WireAmount__c,WireMoneyDeliveryByDate__c,
-                    WIRES_Wires_Transaction__c,Work_Phone_Stable_2nd_Review__c,Work_Phone_Stable_Review__c,Brand__c
+                    WIRES_Wires_Transaction__c,Work_Phone_Stable_Review__c,Brand__c
                     FROM WIRES_Transaction__c where id =: ids];
         
         	for(WIRES_Transaction__c wt : WiresTrans){

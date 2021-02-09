@@ -9,7 +9,7 @@
 <aura:attribute name="Action" type="String"  />
 <aura:attribute name="isExit" type="Boolean"  />
 <aura:attribute name="isError" type="Boolean" default="true" />
-<aura:attribute name="isMemberSelected" type="Boolean" default="false"/> 
+<aura:attribute name="isMemberSelected" type="Boolean" default="false"/>
 <aura:attribute name="ContinueButtonName" type="string" default="Continue"/>
 <aura:handler event="c:CardLimitResetEvent" action="{!c.getActionValue}"/> 
 <aura:attribute name="CLRecord" type="Change_Limit__c" default="{
@@ -53,7 +53,7 @@
     	<footer class="slds-modal__footer slds-modal__footer_directional">
  		    <lightning:button aura:id="Exit" label="Exit" title="Exit" onclick="{!c.cancelAction}"/>
             <lightning:button variant="brand" label="Back" disabled="{!(and(v.ActiveStepIndex == (0),v.isMemberSelected == false) ? true : false)}" title="Back" onclick="{!c.back}"/> 
-            <lightning:button variant="brand" label="{!v.ContinueButtonName}" title="Continue" onclick="{!c.Continue}"/>
+            <lightning:button variant="brand" label="{!v.ContinueButtonName}" disabled="{!v.isMemberSelected == false}" title="Continue" onclick="{!c.Continue}"/>
             
   		</footer> 
     

@@ -42,7 +42,7 @@
                                                     <li id="Step3" class="{!(v.ActiveStepIndex == 'Stage 3' ? 'halFactive' : (v.ActiveStepIndex == 'Stage 4' ? 'active' : (v.ActiveStepIndex == 'Stage 5' ? 'active' : (v.ActiveStepIndex == 'Stage 6' ? 'active' : (v.ActiveStepIndex == 'Stage 7' ? 'active' : '')))))}">
                                                     	<lightning:layoutItem>
 	                                                    	<div class="header-column">
-	                                                    		<p class="field-title show" id="Level3IndicatorLabel">Loan Records</p>
+	                                                    		<p class="field-title show" id="Level3IndicatorLabel">Account/Loan Records</p>
 	                                                            <div class="step-indicator-content">
 	                                                            	<b><p>{!v.Stage3}</p></b>
 	                                                            </div>

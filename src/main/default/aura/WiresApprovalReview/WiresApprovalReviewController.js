@@ -8,7 +8,7 @@
             component.set("v.isReasonRequired",true);
         }
         
-        var wireAmount=component.get("v.WiresObject.WireAmount__c");
+        var wireAmount=component.get("v.WiresObject.TotalFromAccount__c");
         var docusignStatus=component.get("v.WiresObject.Status__c");
         var isIDVUsed=component.get("v.WiresObject.Identity_Verification_Used__c");
         var RecordId = component.get("v.recordId");
@@ -23,8 +23,49 @@
         }
         
         if(wireAmount>10000) {
-            component.set("v.isNextVisible",true);
+            component.set("v.isNextVisible",true); 
         }
+      
+        var isGoodFundCheck=component.get("v.isGoodFundCheck");
+        var isNextVisible=component.get("v.isNextVisible");
+        
+         if(component.get("v.WiresObject.Approval_Status__c") == 'Pending for Approval' || 
+           component.get("v.WiresObject.Approval_Status__c") == 'Fraud Review'){
+            if(!component.get("v.isReasonRequired") && 
+               component.get("v.WiresObject.AccountStableReview__c") &&
+               component.get("v.WiresObject.EmailStableReview__c") &&
+               component.get("v.WiresObject.Home_Phone_Stable_Review__c") &&
+               component.get("v.WiresObject.Mobile_Phone_Stable_Review__c") &&
+               component.get("v.WiresObject.Work_Phone_Stable_Review__c") ){
+                
+                if(isNextVisible){
+                    component.set("v.isNextDisabled", false);
+                }else{
+                    component.set("v.isApproveDisabled", false);
+                }
+            }
+            else if(component.get("v.isReasonRequired") && 
+                    component.get("v.WiresObject.AccountStableReview__c") &&
+                    component.get("v.WiresObject.EmailStableReview__c") &&
+                    component.get("v.WiresObject.Home_Phone_Stable_Review__c") &&
+                    component.get("v.WiresObject.Mobile_Phone_Stable_Review__c") &&
+                    component.get("v.WiresObject.Work_Phone_Stable_Review__c") 
+                    && (component.get("v.WiresObject.Review_Reason__c") != "" && component.get("v.WiresObject.Review_Reason__c") != undefined)){
+                if(isNextVisible){
+                    component.set("v.isNextDisabled", false);
+                }else{
+                    component.set("v.isApproveDisabled", false);
+                }
+            }
+                else{
+                    if(isNextVisible){
+                        component.set("v.isNextDisabled", true);
+                    }else{
+                        component.set("v.isApproveDisabled", true);
+                    }
+                }
+        }
+       
     },
     ApproveTransactions: function(component, event, helper) {
         var RecordId = component.get("v.recordId");
@@ -38,8 +79,10 @@
         component.find("overlayLib1").notifyClose();
     },
     NextTransactions:function(component, event, helper) {
+        
+        debugger;
         var RecordId = component.get("v.recordId");
-        var wireAmount=component.get("v.WiresObject.WireAmount__c");
+        var wireAmount=component.get("v.WiresObject.TotalFromAccount__c");
         var balanceStatusCode=component.get("v.BalanceStatusCode");
         if(wireAmount>10000) {
             if(balanceStatusCode<=0){
@@ -68,6 +111,7 @@
         component.find("overlayLib1").notifyClose();
     },
     onCheck: function(component, event, helper) {
+        
         var isGoodFundCheck=component.get("v.isGoodFundCheck");
         var isNextVisible=component.get("v.isNextVisible");
         
@@ -126,6 +170,16 @@
                     component.set("v.isApproveDisabled", false);
                 }
             }
+        }
+        
+        if(isNextVisible){
+            if((component.get("v.WiresObject.Available_Balance_Review__c") && component.get("v.WiresObject.Previous_Wires_Review__c"))==false){
+                
+                component.set("v.isApproveDisabled", true);
+                
+                }else{
+                	component.set("v.isApproveDisabled", false);    
+                }
         }
     }
 })

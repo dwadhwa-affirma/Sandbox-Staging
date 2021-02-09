@@ -1,2 +1,7 @@
-.THIS {
+.THIS .collapsible{
+       display:none;
+}
+
+.THIS .slds-icon_container, .THIS .slds-icon__container{
+    margin-right:20px;
 }

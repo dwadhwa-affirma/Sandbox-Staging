@@ -1,11 +1,11 @@
 <aura:component implements="flexipage:availableForAllPageTypes,force:appHostable,force:hasRecordId,lightning:isUrlAddressable" access="global" controller="WiresTransactionApprovalController">
     
     <aura:handler name="init" action="{!c.doInit}" value="{!this}" access="global" />
-	<aura:attribute name= "isApprovalVisible" type="string" />
+    <aura:attribute name= "isApprovalVisible" type="string" />
     <aura:attribute name= "ApprovalStatus" type="string" />
-	<aura:attribute name="BalanceStatusCode" type="integer"/> 
-	<aura:attribute name="BalanceRGLines" type="String"/>
-	<aura:attribute name="WiresCount" type="String"/> 
+    <aura:attribute name="BalanceStatusCode" type="integer"/> 
+    <aura:attribute name="BalanceRGLines" type="String"/>
+    <aura:attribute name="WiresCount" type="String"/> 
     <aura:attribute name= "AccountOpenfor45Days" type="string" />
     <aura:attribute name="IdentificationUsed" type="String"/>
     <aura:attribute name= "EmailStable" type="string" />
@@ -13,18 +13,24 @@
     <aura:attribute name= "WorkPhoneStable" type="string" />
     <aura:attribute name= "MobilePhoneStable" type="string" />
     <aura:attribute name="WiresObject" type="WIRES_Transaction__c"/> 
+    <aura:attribute name= "Source" type="string" />
     
     <aura:if isTrue="{!and(v.isApprovalVisible == 'true')}">  
-     <lightning:overlayLibrary aura:id="overlayLib"/>
-    <div class="groupbtn-parent stagebar">		       
-		
-        <div style="margin-left: auto;">
-        	<lightning:button variant="brand" label="Approve Transaction" onclick="{!c.ApproveTransaction}" />
-        	
-        	<lightning:spinner aura:id="Spinner" alternativeText="Loading" size="medium" variant="brand" class="slds-hide spin"/>
+        <lightning:overlayLibrary aura:id="overlayLib"/>
+        <div class="groupbtn-parent stagebar">		       
+            
+            <div style="margin-left: auto;">
+                <aura:if isTrue="{!v.ApprovalStatus=='Fraud Review'}">
+                    <lightning:button variant="brand" label="Fraud Review" onclick="{!c.ApproveTransaction}" />
+                    <aura:set attribute="else">
+                        <lightning:button variant="brand" label="Approve Transaction" onclick="{!c.ApproveTransaction}" />
+                    </aura:set>
+                </aura:if> 
+                
+                <lightning:spinner aura:id="Spinner" alternativeText="Loading" size="medium" variant="brand" class="slds-hide spin"/>
+            </div>
+            
         </div>
-        
-		</div>
-     </aura:if>    
-   
+    </aura:if>    
+    
 </aura:component>

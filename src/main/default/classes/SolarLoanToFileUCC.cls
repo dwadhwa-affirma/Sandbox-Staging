@@ -95,7 +95,7 @@ public class SolarLoanToFileUCC {
             
             //------------------------------------------------Filling UCC------------------------------------------//
             
-            req.setEndpoint(EndpointURL+'/OnlineServices/api/File/V1/Filing');
+            req.setEndpoint(EndpointURL+'/OnlineServices/api/File/V2/Filing');
             req.setMethod('POST');
             req.setHeader('Accept', 'application/json');
             req.setHeader('Authorization', 'Bearer ' + token);
@@ -129,7 +129,7 @@ public class SolarLoanToFileUCC {
             /*UCCId = '9ec739d4-67fe-443b-a06d-804679c9e184';
             System.debug('UCC ID is = ' + UCCId);
             
-            req1.setEndpoint(EndpointURL+'/OnlineServices/api/File/V1/Filing/'+UCCId);
+            req1.setEndpoint(EndpointURL+'/OnlineServices/api/File/V2/Filing/'+UCCId);
             req1.setMethod('GET');
             req1.setHeader('Accept', 'application/json');
             req1.setHeader('Authorization', 'Bearer ' + token);
