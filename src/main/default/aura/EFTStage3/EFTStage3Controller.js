@@ -45,7 +45,7 @@
             }
             
           }
-          if(result.ShareLoanList.length == 1){
+          if(result.ShareLoanList.length == 1 && result.ShareLoanList[0].isDisabled == false){
             component.set('v.isSingleShareLoan',true);
             var action = component.get('c.onRadioChange');
             $A.enqueueAction(action);
