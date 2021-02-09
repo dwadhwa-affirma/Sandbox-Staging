@@ -62,10 +62,18 @@
       var Frequency = component.get("v.EFTRecord.Frequency__c");
       var MonthDay = component.get("v.EFTRecord.Day_of_Month__c");
       var MonthDay2 = component.get("v.EFTRecord.Second_Day_of_Month__c");
+      var type = component.get('v.EFTRecord.EFT_ID_Type__c');
+      var totalexisting;
       component.set("v.EFTRecord.Stage__c", "Payment Monthly");
       var EFTPaymentDate = component.get("v.EFTRecord.EFT_Payment_Date__c");
       var total = parseFloat(AlternateAmt) + parseFloat(PaymentAmt);
-      var totalexisting = parseFloat(ExistingAlternateAmt) + parseFloat(PaymentAmt);
+      if(type == 'Loan'){
+          totalexisting = parseFloat(ExistingAlternateAmt) + parseFloat(PaymentAmt);
+      }
+      else{
+          totalexisting = parseFloat(ExistingAlternateAmt);
+      }
+      
       component.set('v.NewTotalAmt', total); 
       component.set('v.NewExistingTotalAmt', totalexisting); 
       
