@@ -11,7 +11,9 @@
     <aura:attribute name="isIDVAuthentication" type="boolean" default="false"/> 
     <aura:attribute name="isIDVAuthDone" type="boolean" default="false"/> 
     <aura:attribute name="BalanceStatusCode" type="integer"/> 
-    <aura:attribute name="BalanceRGLines" type="String"/>   
+    <aura:attribute name="BalanceRGLines" type="String"/>
+     
+    
     <lightning:overlayLibrary aura:id="overlayLib1"/>
     <div>
         <aura:html tag="style">
@@ -69,7 +71,7 @@
                                         <td>MobilePhone Stable</td><td><aura:unescapedHtml value="{!v.WiresObject.IsMobilePhoneStable__c}"/> </td>        
                                     </tr> 
                                     <tr class="trReview">
-                                        <td><ui:inputCheckbox class="checkbox"/></td>              
+                                        <td><!-- <ui:inputCheckbox class="checkbox"/> --> </td>              
                                         <td>DocuSign ID Check</td><td><aura:unescapedHtml value="{!v.WiresObject.DocuSign_Status1__c}"/> </td>        
                                     </tr> 
                                     <aura:if isTrue="{!(v.isReasonRequired)}">
@@ -128,7 +130,7 @@
                          and(v.WiresObject.Approval_Status__c=='Pending for Approval',greaterthan(v.WiresObject.TotalFromAccount__c,0)))}">
             
             <footer class="slds-modal__footer" id="WiresApprovalReviewPageFooter">
-                <lightning:button variant="brand" label="Approve" onclick="{!c.ApproveTransactions}"/>
+                <lightning:button variant="brand" label="Approve" onclick="{!c.ApproveTransactions}" disabled="{!v.isApproveDisabled}"/>
                 <lightning:button variant="brand" label="Reject" onclick="{!c.RejectTransaction}" />    
             </footer>
             

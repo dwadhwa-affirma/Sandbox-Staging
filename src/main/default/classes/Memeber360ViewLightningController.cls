@@ -1222,7 +1222,7 @@ public  class Memeber360ViewLightningController {
         List<CaseAccountMemberDetail__c> camd = new List<CaseAccountMemberDetail__c>();
 		List<CaseAccountMemberDetail__c> finalcamd = new List<CaseAccountMemberDetail__c>();
 		 map<id, case> casemap = new map<id, case>();
-		 
+		 set<id> caseIdsfromMultiple = new set<id>();	
 		 
         camd = [select id,Case__c, MemberAccountid__c,  case__r.CaseNumber,case__r.OwnerId,
         				case__r.Owner.Name , case__r.Status, case__r.Category__c,
@@ -1243,10 +1243,25 @@ public  class Memeber360ViewLightningController {
          for(sObject so:caseList){
          	caseAccountmap.put(so.id, (string)so.get('Account_Number__c'));
          	casemap.put(so.id, (case)so);  
-         	memberAccountIds.add((string)so.get('Account_Number__c'));   
+         	memberAccountIds.add((string)so.get('Account_Number__c')); 
          	
          }
-         
+
+         for(CaseAccountMemberDetail__c so:camd){         	
+            caseIdsfromMultiple.add(so.case__c);         	
+            
+        }
+        
+         List<case> caseMemberAccountList = [select id, casenumber, Account_Number__c,Category__c, Status , Subject, Account.Name,
+                                               ParentId, Origin, CreatedDate, Account_Number__r.Brand__c, Owner.Name, Parent.CaseNumber, AccountId, ClosedDate
+                                                  from case where Id in: caseIdsfromMultiple];	
+          
+          for(case so:caseMemberAccountList){         	
+                casemap.put(so.id, so);           	
+                caseAccountmap.put(so.id, so.Account_Number__c);
+        } 
+
+         system.debug('caseAccountmap==' + caseAccountmap);
          memberAccountList = [select id, name, Brand__c from account_details__c where id in: memberAccountIds];
          
          for(account_details__c i: memberAccountList){
@@ -1260,7 +1275,11 @@ public  class Memeber360ViewLightningController {
          		if(maid != a.MemberAccountid__c){
          			finalcamd.add(a);
          		}
-         	}
+             }
+             else{
+                finalcamd.add(a);
+                //system.debug('finalcamdelse===' +a.case__r.casenumber ); 
+            }
          		
          }
          

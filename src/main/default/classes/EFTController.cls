@@ -22,15 +22,7 @@ public class EFTController{
 		set;
 	}
 
-	/*------------------------Standard Controller-------------------*/
-	public EFTController(ApexPages.StandardController stdController){
-		this.ACH = (EFT__c)stdController.getRecord();
-		this.objParentId = this.ACH.Id;
-		system.debug(ApexPages.currentPage().getParameters().get('id'));
-		this.ACHDetail = [SELECT id, name, Member_Account__c, Stage__c, Action_Type__c, Share_Loan_Id__c, Type__c, Share_Loan_Type__c, Share_Loan_Description__c, Routing_Number__c, Bank_Name__c, Account_Number__c, Alternate_Amount__c, Effective_Date__c, Frequency__c, isAlternateAmount__c, Payment_Amount__c, Day_of_Month__c, Second_Day_of_Month__c, Member_Account__r.name, Case__c, Case__r.CaseNumber, Case__r.Status, Expired__c, Member_Name__c
-		                  from EFT__c
-		                  WHERE Id = :this.ACH.Id];
-	}
+	public static String loanAPI;
 
 	/*------------------------Getting Account Types picklist values-------------------*/
 	public static List<SelectOption> getTypes(){
@@ -470,9 +462,15 @@ public class EFTController{
 		List<ShareLoanWrapperObject> resultList = new List<ShareLoanWrapperObject>();
 		Map<string, List<ShareLoanWrapperObject>> resultmap = new Map<string, List<ShareLoanWrapperObject>>();
 
+		ACH_To_Episys_API_Details__c api = ACH_To_Episys_API_Details__c.getValues('ProductionURL');
+                
+                if(api.URL__c != null){
+                    loanAPI = api.URL__c;
+				}
+				
 		httpRequest requestparam = new httpRequest();
 		//requestparam.setTimeout(10);
-		requestparam.setEndpoint('https://symxapi.chevronfcu.org/devclient/PSAuto/GetSharesEFT?AccountNumber=' + AccountNumber + '&userchar2=abc');
+		requestparam.setEndpoint(loanAPI+'/PSAuto/GetSharesEFT?AccountNumber=' + AccountNumber + '&userchar2=abc');
 		requestparam.setMethod('GET');
 
 		ACH_Loan_Share_Type_Configuration__c cs = ACH_Loan_Share_Type_Configuration__c.getValues('Share');
@@ -610,9 +608,15 @@ public class EFTController{
 		System.debug('Next3BusinessDay.day() ....' + Next3BusinessDay.day());
 
 		try{
+			ACH_To_Episys_API_Details__c api = ACH_To_Episys_API_Details__c.getValues('ProductionURL');
+                
+                if(api.URL__c != null){
+                    loanAPI = api.URL__c;
+				}
+				
 			httpRequest requestparam = new httpRequest();
 			//requestparam.setTimeout(10);
-			requestparam.setEndpoint('https://symxapi.chevronfcu.org/devclient/PsAuto/GetLoansSelectFields?AccountNumber=' + AccountNumber);
+			requestparam.setEndpoint(loanAPI+'/PsAuto/GetLoansSelectFields?AccountNumber=' + AccountNumber);
 			requestparam.setMethod('GET');
 
 			ACH_Loan_Share_Type_Configuration__c cs = ACH_Loan_Share_Type_Configuration__c.getValues('Loan');
@@ -720,9 +724,15 @@ public class EFTController{
 		List<ShareLoanWrapperObject> resultList = new List<ShareLoanWrapperObject>();
 		Map<string, List<ShareLoanWrapperObject>> resultmap = new Map<string, List<ShareLoanWrapperObject>>();
 
+		ACH_To_Episys_API_Details__c api = ACH_To_Episys_API_Details__c.getValues('ProductionURL');
+                
+                if(api.URL__c != null){
+                    loanAPI = api.URL__c;
+				}
+
 		httpRequest requestparam = new httpRequest();
 		//requestparam.setTimeout(10);
-		requestparam.setEndpoint('https://symxapi.chevronfcu.org/devclient/PSAuto/GetSharesEFT?AccountNumber=' + AccountNumber + '&userchar2=abc');
+		requestparam.setEndpoint(loanAPI + '/PSAuto/GetSharesEFT?AccountNumber=' + AccountNumber + '&userchar2=abc');
 		requestparam.setMethod('GET');
 
 		ACH_Loan_Share_Type_Configuration__c cs = ACH_Loan_Share_Type_Configuration__c.getValues('Share');
@@ -846,8 +856,14 @@ public class EFTController{
 			}
 		}
 
+		ACH_To_Episys_API_Details__c api = ACH_To_Episys_API_Details__c.getValues('ProductionURL');
+                
+                if(api.URL__c != null){
+                    loanAPI = api.URL__c;
+				}
+
 		httpRequest requestparam = new httpRequest();
-		requestparam.setEndpoint('https://symxapi.chevronfcu.org/devclient/EFT/GetEftRecords?accountNumber=' + AccountNumber);
+		requestparam.setEndpoint(loanAPI + '/EFT/GetEftRecords?accountNumber=' + AccountNumber);
 		requestparam.setMethod('GET');
 
 		ACH_Loan_Share_Type_Configuration__c cs = ACH_Loan_Share_Type_Configuration__c.getValues('Loan');
@@ -938,9 +954,7 @@ public class EFTController{
 						objEFT.Account_Number__c = String.valueOf(localAcc.get('Reference'));
 
 
-						objEFT.Effective_Date__c = date.newinstance(Next3BusinessDay.year(), Next3BusinessDay.month(), Next3BusinessDay.day());
-						//if (String.valueOf(localAcc.get('EffectiveDate')) != '' && String.valueOf(localAcc.get('EffectiveDate')) != null)
-						//objEFT.Effective_Date__c = Date.valueOf(String.valueOf(localAcc.get('EffectiveDate')));
+						objEFT.Effective_Date__c = date.newinstance(Next3BusinessDay.year(), Next3BusinessDay.month(), Next3BusinessDay.day());						
 						if (String.valueOf(localAcc.get('Frequency')) == '5')
 							objEFT.Frequency__c = 'Semi-Monthly';
 						else
@@ -949,7 +963,7 @@ public class EFTController{
 						objEFT.Second_Day_of_Month__c = String.valueOf(localAcc.get('Day2'));
 						objEFT.Bank_Name__c = String.valueOf(localAcc.get('FinancialInstitution'));
 						objEFT.Share_Loan_Id__c = String.valueOf(localAcc.get('Id'));
-						//system.debug('EftLocator__c=='+String.valueOf(localAcc.get('EftLocator')));
+						
 
 						objEFT.EftLocator__c = String.valueOf(localAcc.get('EftLocator'));
 
@@ -964,9 +978,7 @@ public class EFTController{
 						}
 
 						if (objEFT.Effective_Date__c != null && objEFT.Day_of_Month__c != null)
-							objEFT.EFT_Payment_Date__c = getEFTPaymentDate(objEFT.Effective_Date__c, Integer.valueof(objEFT.Day_of_Month__c));
-						//system.debug('Day1=='+String.valueOf(localAcc.get('Day1'))) ;
-						//objEFT.EftLocator__c = String.valueOf(localAcc.get('EftLocator__c'));
+							objEFT.EFT_Payment_Date__c = getEFTPaymentDate(objEFT.Effective_Date__c, Integer.valueof(objEFT.Day_of_Month__c));						
 						objEFT.Member_Account__r = new account_details__c(id = mapAccountIdName.get(String.valueOf(localAcc.get('AccountNumber'))), Name = String.valueOf(localAcc.get('AccountNumber')));//mapAccountIdName.get(String.valueOf(localAcc.get('AccountNumber')));
 
 
@@ -1024,8 +1036,15 @@ public class EFTController{
 		system.debug('primaryName==' + primaryName);
 		system.debug('AccountNumber==' + AccountNumber);
 		system.debug('SSN==' + SSN);
+
+		ACH_To_Episys_API_Details__c api = ACH_To_Episys_API_Details__c.getValues('ProductionURL');
+                
+                if(api.URL__c != null){
+                    loanAPI = api.URL__c;
+				}
+				
 		httpRequest requestparam = new httpRequest();
-		requestparam.setEndpoint('https://symxapi.chevronfcu.org/devclient/EFT/GetAddress');// + AccountNumber +'&FullNameStringList=' + primaryName +'&FullName=' + SSN);
+		requestparam.setEndpoint(loanAPI + '/EFT/GetAddress');// + AccountNumber +'&FullNameStringList=' + primaryName +'&FullName=' + SSN);
 		requestparam.setMethod('POST');
 		requestparam.setHeader('Content-Type', 'application/json');
 		requestparam.setHeader('Accept', 'application/json');
@@ -1170,52 +1189,6 @@ public class EFTController{
 		return a.Id;
 	}
 
-	//-----------------Attach Signature-----------//
-	public PageReference attach(){
-		Attachment myAttach = new Attachment();
-		myAttach.ParentId = ACH.Id;//Id of the object to which the page is attached
-		myAttach.name = 'ACH DIRECT PAYMENT AUTHORIZATION.pdf';
-		PageReference myPdf = ApexPages.currentPage();//myPdfPage is the name of your pdf page
-		if (!Test.isRunningTest()){
-			myAttach.body = myPdf.getContentAsPdf();
-		} else{
-			myAttach.body = blob.valueOf('Unit.Test');
-		}
-		insert myAttach;
-
-		List<Attachment> signatures = new List<Attachment>();
-		signatures = [SELECT Id
-		              FROM Attachment
-		              Where ParentId = :ACH.Id and Name = 'ESignature.png'
-		              Order by CreatedDate desc
-		              OFFSET 1];
-		if (signatures.size() > 0){
-			delete signatures;
-		}
-
-		List<Attachment> eSignPdfs = new List<Attachment>();
-		eSignPdfs = [SELECT Id
-		             FROM Attachment
-		             Where ParentId = :ACH.Id and Name = 'ACH DIRECT PAYMENT AUTHORIZATION.pdf'
-		             Order by CreatedDate desc
-		             OFFSET 1];
-		if (eSignPdfs.size() > 0){
-			delete eSignPdfs;
-		}
-
-		ApexPages.addmessage(new ApexPages.message(ApexPages.severity.CONFIRM, 'ACH Direct Payment Authorization pdf has been generated successfully.'));
-
-		PageReference pageRef = new PageReference('/' + objParentId);
-		pageRef.setRedirect(true);
-		return pageRef;
-	}
-
-	public PageReference Cancel(){
-		PageReference pageRef = new PageReference('/' + objParentId);
-		pageRef.setRedirect(true);
-		return pageRef;
-	}
-
 	//-----------------Getting Tracking Records from Episys-----------//
 	@AuraEnabled
 	public static map<string, string> getTrackingRecordforShare(string AccountNumber, string ShareID){
@@ -1223,9 +1196,15 @@ public class EFTController{
 		system.debug('ShareID==' + ShareID);
 
 		map<string, string> resultAmount = new map<string, string>();
+
+		ACH_To_Episys_API_Details__c api = ACH_To_Episys_API_Details__c.getValues('ProductionURL');
+                
+                if(api.URL__c != null){
+                    loanAPI = api.URL__c;
+                }
 		httpRequest requestparam = new httpRequest();
 		//requestparam.setTimeout(10);
-		requestparam.setEndpoint('https://symxapi.chevronfcu.org/devclient/PSAuto/GetTrackingRecords?accountNumber=' + AccountNumber);
+		requestparam.setEndpoint(loanAPI + '/PSAuto/GetTrackingRecords?accountNumber=' + AccountNumber);
 		requestparam.setMethod('GET');
 
 		try{
@@ -1347,9 +1326,16 @@ public class EFTController{
 		system.debug('AccountNumber==' + AccountNumber);
 		List<string> setLSIDMultipleEFT = new List<string>();
 		map<string, string> resultAmount = new map<string, string>();
+
+		ACH_To_Episys_API_Details__c api = ACH_To_Episys_API_Details__c.getValues('ProductionURL');
+                
+                if(api.URL__c != null){
+                    loanAPI = api.URL__c;
+				}
+				
 		httpRequest requestparam = new httpRequest();
 		//requestparam.setTimeout(10);
-		requestparam.setEndpoint('https://symxapi.chevronfcu.org/devclient/EFT/Get117WarningCodeRecords?accountNumber=' + AccountNumber);
+		requestparam.setEndpoint(loanAPI + '/EFT/Get117WarningCodeRecords?accountNumber=' + AccountNumber);
 		requestparam.setMethod('GET');
 
 		try{

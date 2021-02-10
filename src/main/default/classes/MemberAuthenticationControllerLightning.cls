@@ -979,7 +979,7 @@ This function read data from MAAP log object and display accordingly  -----*/
         }
         
         resultmap.put('RelationshipData',JTwrapperLst);
-        cardDetails = vc.CardNumbersAuth(selectedID);
+        cardDetails = GetCardDetails(selectedID);//vc.CardNumbersAuth(selectedID);
         system.debug('cardDetails'+cardDetails);
         MemberNumberLoanDetail  = [Select Name, id,TypeTranslate__c,Balance__c,OPEN_DATE__c ,Close_Date__c,PAYMENT__c from  Account_Details__c
                                    where (RecType__c = 'LOAN' or RecType__c = 'MORT' or RecType__c = 'SHAR' or RecType__c = 'STDL') AND (Parent_Account__c in :relatedIds Or id in :relatedIds)];
@@ -4501,6 +4501,106 @@ AuthLogMap.put('PinChangedExecutionResult', PinChangedExecutionResult);*/
         
         return allRelatedAccounts;
         
+    }
+
+    public static list<Account_Details__c> GetCardDetails(string accId){
+        Integer PageNo = 1,  PageSize = 50;
+        list<Person_Account__c> paList = [SELECT Id,
+                             Account_Number__c, Account_Number__r.RecType__c,TypeTranslate__c, Account_Number__r.Name FROM Person_Account__c WHERE PersonID__c =:accId order by TypeTranslate__c desc];
+        
+        set<string> typeList = new set<string>();
+        for(Member360_TypeTranslate__c t : Member360_TypeTranslate__c.getAll().values()){
+        	typeList.add(t.name);	
+        } 
+        
+        List<string> accountNumberSet = new List<string>();
+        List<string> accIdset = new List<string>();
+        List<string> acctypeSet = new List<string>();
+        Map<string,string> listRelationships = new  Map<string,string>(); 
+        Map<string,string> listRelationshipsexcluded = new  Map<string,string>();
+        Map<string,string> listRelationshipsNameexcluded = new  Map<string,string>();  
+        Map<string,string> listRelationshipsName = new  Map<string,string>();
+        for(Person_Account__c var: paList){
+           			accountNumberSet.add(var.Account_Number__r.Name);
+	         		acctypeSet.add(var.Account_Number__r.RecType__c);
+           			accIdSet.add(var.Account_Number__c);
+		            listRelationships.put(var.Account_Number__c,var.TypeTranslate__c);
+		            listRelationshipsName.put(var.Account_Number__r.Name,var.TypeTranslate__c);
+		         	
+		         	if(typeList.contains(var.TypeTranslate__c)){
+        					
+        			}    
+        			else{
+           
+            				listRelationshipsexcluded.put(var.Account_Number__c,var.TypeTranslate__c);
+            				listRelationshipsNameexcluded.put(var.Account_Number__r.Name,var.TypeTranslate__c);
+        				}   
+		         
+	         	
+            } 
+       
+       
+       
+        Map<string, object> m = new Map<string, object>();
+        
+        system.debug('listRelationshipsexcluded++ GetAllData++' + listRelationshipsexcluded);
+        system.debug('listRelationshipsNameexcluded++ GetAllData++' + listRelationshipsNameexcluded);
+        system.debug('listRelationships++ GetAllData++' + listRelationships);
+        system.debug('listRelationshipsName++ GetAllData++' + listRelationshipsName);
+        system.debug('acctypeSet++ GetAllData++' + acctypeSet);
+        system.debug('accountNumberSet++ GetAllData++' + accountNumberSet);
+        system.debug('accIdset++ GetAllData++' + accIdset);
+        
+        List<Account_Details__c> listACCList = [SELECT Id, Name, RecType__c, TypeTranslate__c, ID1__c, Balance__c, Combined_Account_ID__c, 
+                              Brand__c, Loan_Number__c, Close_Date__c, Card_Number_Last_4_Digits__c, OPEN_DATE__c,
+                              Open_Date_PST__c, Expiration_Date__c, Issue_Date__c, Emp_Balance__c, Emp_Available_Balance__c,
+                              Available_Balance__c FROM Account_Details__c WHERE Name IN: accountNumberSet and RecType__c != 'CARD'];
+        
+        List<String> AccountListIdSet = new List<String>();
+        for(Account_Details__c ac:listACCList){
+            string relationshipname = listRelationshipsName.get(ac.Name);
+            if(relationshipname != null && !relationshipname.contains('Beneficiary')){
+                AccountListIdSet.Add(ac.Id);  
+            }
+        }
+
+        List<Account_Details__c> listACCListReturn = new List<Account_Details__c>();
+        if(AccountListIdSet.size() > 0)
+        { 
+            listACCListReturn =[SELECT Id, Name, RecType__c, TypeTranslate__c, ID1__c, Balance__c, Combined_Account_ID__c, 
+                              Brand__c, Loan_Number__c, Close_Date__c, Card_Number_Last_4_Digits__c, OPEN_DATE__c,
+                              Open_Date_PST__c, Expiration_Date__c, Issue_Date__c, Emp_Balance__c, Emp_Available_Balance__c,
+                              Available_Balance__c FROM Account_Details__c WHERE Id IN: AccountListIdSet];
+            
+                for(Account_Details__c acc:listACCListReturn){
+                                acc.Card_Name__c = listRelationshipsName.get(acc.Name);
+                            }
+                           
+        }
+        
+        
+        List<String> accountNumberSetWOBeneficiary = new List<String>();
+        List<String> accIdSetWOBeneficiary = new List<String>();        
+        
+        for(Account_Details__c item: listACCListReturn)
+        {
+           
+            accountNumberSetWOBeneficiary.add(item.Name);
+            accIdSetWOBeneficiary.add(item.id);
+        }
+		system.debug('listACCList++' + listACCList);
+		system.debug('accountNumberSetWOBeneficiary++' + accountNumberSetWOBeneficiary);
+        system.debug('accIdSetWOBeneficiary++' + accIdSetWOBeneficiary);
+
+        /*--------------------------------------Get Cards List--------------------------------*/
+        
+        List<Account_Details__c> listCardsList = New List<Account_Details__c>();
+        listCardsList =[SELECT Id, Name, RecType__c, TypeTranslate__c, ID1__c, Balance__c, Combined_Account_ID__c, 
+                              Brand__c, Loan_Number__c, Close_Date__c, Card_Number_Last_4_Digits__c, OPEN_DATE__c,
+                              Open_Date_PST__c, Expiration_Date__c, Issue_Date__c, Emp_Balance__c, Emp_Available_Balance__c,
+                              Available_Balance__c FROM Account_Details__c WHERE Name IN: accountNumberSetWOBeneficiary and RecType__c = 'CARD' and status1__c = '1 Issued'];
+        return listCardsList;
+
     }
     
     

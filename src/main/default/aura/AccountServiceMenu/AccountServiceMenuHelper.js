@@ -18,6 +18,10 @@
                 var userstatus = res['UserStatus'];
 				var userstatusEFT = res['UserStatusEFT'];
 				var userstatusaddresschange = res['UserStatusAddressChange'];
+                var menuIcons = res['MenuIcons'];
+                debugger;
+                component.set("v.MenuIcons",menuIcons);
+                console.log(menuIcons);
                 component.set("v.IsUserInGroup",userstatus);
 				component.set("v.IsUserInEFTGroup",userstatusEFT);
 				component.set("v.IsUserInAddressChangeGroup",userstatusaddresschange);
@@ -54,7 +58,7 @@
                 var object = component.get("v.sObjectName");
                  var finalSubMenu = [];
                 	for(var i=0;i<menu.length; i++){
-                        var clicked = menu[i];                        
+                        var clicked = menu[i].Name;                        
                      
                      
                     

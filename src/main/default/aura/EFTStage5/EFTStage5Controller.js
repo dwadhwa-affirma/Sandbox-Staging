@@ -18,7 +18,14 @@
         }  
         var total = parseFloat(component.get('v.EFTRecord.Payment_Amount__c') ) + parseFloat(component.get('v.EFTRecord.Alternate_Amount__c'));
         component.set('v.NewTotalAmt', total ); 
-        var totalexisting = parseFloat(component.get('v.EFTRecord.Payment_Amount__c') ) + parseFloat(component.get('v.EFTRecord.Existing_Alternate_Amount__c'));
+        var totalexisting;        
+        if(type == 'Loan'){
+            totalexisting = parseFloat(component.get('v.EFTRecord.Payment_Amount__c') ) + parseFloat(component.get('v.EFTRecord.Existing_Alternate_Amount__c'));
+        }
+        else{
+            totalexisting = parseFloat(component.get('v.EFTRecord.Existing_Alternate_Amount__c'));
+        }
+        //var totalexisting = parseFloat(component.get('v.EFTRecord.Payment_Amount__c') ) + parseFloat(component.get('v.EFTRecord.Existing_Alternate_Amount__c'));
         component.set('v.NewExistingTotalAmt', totalexisting ); 
         
         if(parseFloat(component.get('v.EFTRecord.Existing_Alternate_Amount__c')) <= 0){

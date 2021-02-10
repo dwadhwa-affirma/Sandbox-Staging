@@ -118,9 +118,9 @@
     },
     getRecordData:function(component, event, helper) {
         var recordId = component.get("v.recordId");
-        var action = component.get("c.getWireTransactionData");
+        var action = component.get("c.getInPersonSigningData");
         action.setParams({
-            wiresId: recordId
+            recordId: recordId
         });
         action.setCallback(this,function(res){
             var state = res.getState();

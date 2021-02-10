@@ -53,7 +53,7 @@
 					<div class="slds-grid">
 						<div class="slds-col" style="padding-right: 2%;">
 							<b><label class="slds-form-element__label" for="horizontal-input-id-02"
-									style="max-width: 50% !important;">Additional Amt:</label></b>
+									style="max-width: 50% !important;">First Additional Amt:</label></b>
 							<div class="slds-form-element__control">
 
 								<lightning:input class="alternateamount" type="number"

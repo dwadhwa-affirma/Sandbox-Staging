@@ -99,11 +99,11 @@ global class eSignatureContoller {
             update inPersonSigning;
         }
         
-        //Execute progress email notification and red check flow of WIRES
+        //Execute progress email notification and good fund check flow of WIRES
         set<Id> ids=new set<Id>();
         ids.add(inPersonSigning.SalesforceID__c);
-        WiresTransactionApprovalController.SendProgressNotification(ids);
-        WiresTransactionApprovalController.CheckRedFlgsAndUpdateStatus(ids);
+        
+        WiresTransactionApprovalController.CheckGoodFundAndUpdateStatus(ids);
         
         ApexPages.addmessage(new ApexPages.message(ApexPages.severity.CONFIRM,'Wire Transfer Authorization pdf has been generated successfully.'));  
         
