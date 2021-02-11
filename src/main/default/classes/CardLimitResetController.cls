@@ -183,7 +183,7 @@ public class CardLimitResetController {
         if(objType == Account.sObjectType){
             
             pa =[SELECT id, name,PersonID__c,Account_Number__c,PersonID__r.name,Account_Number__r.name
-                    from Person_Account__c where PersonID__r.firstname like: firstname
+                    from Person_Account__c where Account_Type__c = 'ACCT' and PersonID__r.firstname like: firstname
                     AND PersonID__r.LASTNAME like: lastname limit 1];
             
             AccountNumber = pa.Account_Number__r.name;
@@ -200,7 +200,7 @@ public class CardLimitResetController {
         req.setTimeout(60000);                    
         jsonData = '{"accountNumber":' + '\"'+ AccountNumber +'\","cardNumber":' + '\"'+ cardnumber +'\"}';                 
         req.setBodyAsBlob(Blob.valueof(jsonData));
-
+       
         if(!Test.isRunningTest()){                       
             res = http.send(req);
             responseBody = res.getBody();
