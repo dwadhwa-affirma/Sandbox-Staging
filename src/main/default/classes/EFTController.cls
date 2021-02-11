@@ -521,10 +521,12 @@ public class EFTController{
 							temp.Type = 'Share';
 
 							map<string, string> resultDate = getTrackingRecordforShare(AccountNumber, ShareId);
+							System.debug('resultDate ....' + resultDate);
 							if (resultDate != null){
-								temp.NextPaymentDueDate = date.valueOf(resultDate.get('UserDate1'));
-								System.debug('UserAmount2 ....' + decimal.valueOf(resultDate.get('Payment')));
-								temp.Payment = decimal.valueOf(resultDate.get('Payment'));
+								if(resultDate.get('UserDate1') != null)
+									temp.NextPaymentDueDate = date.valueOf(resultDate.get('UserDate1'));
+								if(resultDate.get('Payment') != null)
+									temp.Payment = decimal.valueOf(resultDate.get('Payment'));
 							}
 
 							temp.EffectiveDate = date.newinstance(Next3BusinessDay.year(), Next3BusinessDay.month(), Next3BusinessDay.day());
@@ -935,7 +937,7 @@ public class EFTController{
 								objEFT.Alternate_Amount__c = decimal.valueOf(resultAmount.get('AlternateAmount'));
 								objEFT.Next_Payment_Due_Date__c = Date.valueOf(resultAmount.get('UserDate1'));
 								if (String.valueOf(localAcc.get('Amount')) != null)
-									objEFT.Existing_Alternate_Amount__c = Decimal.valueOf(String.valueOf(localAcc.get('Amount')));
+									objEFT.Existing_Alternate_Amount__c = decimal.valueOf(resultAmount.get('AlternateAmount'));//Decimal.valueOf(String.valueOf(localAcc.get('Amount')));
 							}
 
 						} else if (arrLoanTypes.contains(lsId) && (string)localAcc.get('IdType') == '1'){

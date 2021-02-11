@@ -67,12 +67,8 @@
       component.set("v.EFTRecord.Stage__c", "Payment Monthly");
       var EFTPaymentDate = component.get("v.EFTRecord.EFT_Payment_Date__c");
       var total = parseFloat(AlternateAmt) + parseFloat(PaymentAmt);
-      if(type == 'Loan'){
-          totalexisting = parseFloat(ExistingAlternateAmt) + parseFloat(PaymentAmt);
-      }
-      else{
-          totalexisting = parseFloat(ExistingAlternateAmt);
-      }
+      totalexisting = parseFloat(ExistingAlternateAmt) + parseFloat(PaymentAmt);
+      
       
       component.set('v.NewTotalAmt', total); 
       component.set('v.NewExistingTotalAmt', totalexisting); 

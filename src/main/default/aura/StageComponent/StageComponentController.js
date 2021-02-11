@@ -88,7 +88,8 @@
             return;          
        }
       for(var i=0; i<stages.length;i++){
-            var ProgressBarStepClass = document.getElementById('Step'+(i+1)).classList;   
+            var ProgressBarStepClass = document.getElementById('Step'+(i+1)).classList;  
+            var LoanCode = component.get('v.EFTRecord.LoanCode__c');
             if((ProgressBarStepClass[0] == undefined || ProgressBarStepClass[0] == 'half')){
             	if(i==0 && (component.get("v.EFTRecord.Action_Type__c") == '' || component.get("v.EFTRecord.Action_Type__c") == undefined)){
             		alert('Please Select Action');	
@@ -162,7 +163,7 @@
 
                 }
             	
-            	if(i==3 && ((component.get("v.EFTRecord.Payment_Amount__c") == '' || component.get("v.EFTRecord.Payment_Amount__c") == undefined)
+            	if(i==3 && ((LoanCode != undefined && LoanCode !=2 && component.get("v.EFTRecord.Payment_Amount__c") == '' || component.get("v.EFTRecord.Payment_Amount__c") == undefined)
             			|| (component.get("v.EFTRecord.Day_of_Month__c") == '' || component.get("v.EFTRecord.Day_of_Month__c") == undefined)
             			|| (component.get("v.EFTRecord.Effective_Date__c") == '' || component.get("v.EFTRecord.Effective_Date__c") == undefined)
             			|| (component.get("v.EFTRecord.Frequency__c") == '' || component.get("v.EFTRecord.Frequency__c") == undefined)
