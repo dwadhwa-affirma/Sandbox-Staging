@@ -142,13 +142,8 @@ public class EFTToDocuSign{
 			req1.setHeader('Content-Type', 'application/json');
 			req1.setHeader('Content-Disposition', 'form-data');
 
-			if (EmailToSend == 'Production' || EmailToSend == 'production'){
-
-				Member = [select id, name, PersonEmail
-				          from account
-				          where id = :eft.Member_Name__c
-				          Limit 1];
-				json1 = '{"signers": [' + '{' + '"email": "' + Member.PersonEmail + '",' + '"recipientId" : "1",' + '"roleName": "client",' + '"name": "' + Member.Name + '",' + '"signingGroupId": "signers",' + '"routingOrder" : "null"' + '}' + ']' + '}';
+			if (EmailToSend == 'Production' || EmailToSend == 'production'){				
+				json1 = '{"signers": [' + '{' + '"email": "' + eft.Docusign_Member_Email__c + '",' + '"recipientId" : "1",' + '"roleName": "client",' + '"name": "' + eft.Member_Name__c + '",' + '"signingGroupId": "signers",' + '"routingOrder" : "null"' + '}' + ']' + '}';
 			}
 
 			if (EmailToSend != 'Production' || EmailToSend != 'production'){
