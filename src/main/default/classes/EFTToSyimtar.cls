@@ -42,24 +42,40 @@ public class EFTToSyimtar{
 	public static String OldDay1;
 	public static List<EFTController.EFTWrapperObject> EFTExpiredList = new List<EFTController.EFTWrapperObject>();
 	public static String loanAPI;
-
+	public static String EpisysId;
 	//-----------------Creating EFT in Episys-----------//
 	@future(callout = true)
 	public static void insertEFTs(Set<id> ids){
 
 		List<EFT__c> EFTlist = new List<EFT__c>();
-		List<EFT__c> EFTs = [SELECT Account_Number__c, Action_Type__c, Alternate_Amount__c, Bank_Name__c, CreatedById, CreatedDate, Day_of_Month__c, Second_Day_of_Month__c, DocuSignId__c, Effective_Date__c, Frequency__c, Id, Member_Account__c, Member_Account__r.Brand__c, Member_Account__r.Name, Case__c, Case__r.Description, Member__c, Name, OwnerId, Payment_Amount__c, Routing_Number__c, Share_Loan_Id__c, Stage__c, Status__c, Type__c, EFT_ID_Type__c, LoanCode__c, EFT_Payment_Date__c, Locators_To_Expire__c
+		List<EFT__c> EFTs = [SELECT Account_Number__c, Action_Type__c, Alternate_Amount__c, Bank_Name__c, CreatedById, CreatedDate, Day_of_Month__c, Second_Day_of_Month__c, DocuSignId__c, Effective_Date__c, Frequency__c, Id, Member_Account__c, Member_Account__r.Brand__c, Member_Account__r.Name, Case__c, Case__r.Description, Member__c, Name, OwnerId, Payment_Amount__c, Routing_Number__c, Share_Loan_Id__c, Stage__c, Status__c, Type__c, EFT_ID_Type__c, LoanCode__c, EFT_Payment_Date__c, Locators_To_Expire__c, case__r.Previous_Owner__c
 		                     FROM EFT__c
 		                     where id = :ids];
 		map<Id, String> CaseIdsToUpdate = new Map<Id, String>();
 
 		ACH_To_Episys_API_Details__c api = ACH_To_Episys_API_Details__c.getValues('ProductionURL');
-                
-                if(api.URL__c != null){
-                    loanAPI = api.URL__c;
-                }
+
+		if (api.URL__c != null){
+			loanAPI = api.URL__c;
+		}
+
 
 		for (EFT__c e : EFTs){
+
+			User currentUser = [SELECT id, alias
+			                    from user
+			                    where Id = :e.case__r.Previous_Owner__c];
+			List<Episys_User__c> EpisysUser = [SELECT id, Alias__c, Episys_ID__c
+			                                   from Episys_User__c
+			                                   where Alias__c = :currentUser.alias
+			                                   limit 1];
+
+
+			if (EpisysUser.size() > 0){
+				EpisysId = String.Valueof(EpisysUser[0].Episys_ID__c);
+			} else{
+				EpisysId = '';
+			}
 
 			EFTType = '3';
 			if (e.Type__c == 'Savings')
@@ -87,7 +103,7 @@ public class EFTToSyimtar{
 			} else{
 				Frequency = '0';
 			}
-			
+
 
 			if (e.Effective_Date__c != null){
 				Day1 = '0';//String.ValueOf(e.Day_of_Month__c);
@@ -159,14 +175,14 @@ public class EFTToSyimtar{
 			/*-----------In Case of Multiple EFTs, First Expire All EFTS----------------*/
 			if (LocatorsToExpire != null){
 				for (string l : LocatorsToExpire){
-					ExpireReq.setEndpoint(loanAPI+'/EFT/UpdateEft');
-					
+					ExpireReq.setEndpoint(loanAPI + '/EFT/UpdateEft');
+
 					ExpireReq.setMethod('POST');
 					ExpireReq.setHeader('Content-Type', 'application/json');
 					ExpireReq.setHeader('Accept', 'application/json');
 
 
-					ExpirejsonData = '{"EftLocator":' + '\"' + l + '\"' +  ',"EffectiveDate":' + '\"' + EffectiveDate + '\"' + ',"IsUpdateExpirationDate":' + '\"' + true + '\"' +  ',"isCalledFromUpdate":' + '\"' + true + '\"'  +',"AccountNumber":' + '\"' + AccountNumber + '\"}';
+					ExpirejsonData = '{"EftLocator":' + '\"' + l + '\"' + ',"EffectiveDate":' + '\"' + EffectiveDate + '\"' + ',"IsUpdateExpirationDate":' + '\"' + true + '\"' + ',"isCalledFromUpdate":' + '\"' + true + '\"' + ',"AccountNumber":' + '\"' + AccountNumber + '\"' + ',"EpisysId":' + '\"' + EpisysId + '\"}';
 					//jsonData = '{"EFTType": 3,"AmountCode": 27,"GroupNumber": "000001","IdType": 0, "ID": "0100", "Frequency": 4,"Day1": 0,"NextDate": "2019-01-08","EffectiveDate": "2019-01-09","PostAmount": "100.00", "Payee": "0322271627","Reference": "42006986568","MatchId3": "BANK OF AMERICA, N.A.","AccountNumber": "123"}';
 					ExpireReq.setBodyAsBlob(Blob.valueof(ExpirejsonData));
 					system.debug('ExpirejsonData' + ExpirejsonData);
@@ -186,7 +202,7 @@ public class EFTToSyimtar{
 
 			}
 
-		   /*-----------Web serice call to Create EFT---------------*/
+			/*-----------Web serice call to Create EFT---------------*/
 			//req.setEndpoint('https://brscsymx.ctxcu.org/dev/EFT/CreateEft');
 			req.setEndpoint(loanAPI + '/EFT/CreateEft');
 			//req.setClientCertificateName('brscmcapi');
@@ -194,7 +210,7 @@ public class EFTToSyimtar{
 			req.setHeader('Content-Type', 'application/json');
 			req.setHeader('Accept', 'application/json');
 
-			jsonData = '{"EFTType":' + '\"' + EFTType + '\"' + ',"AmountCode":' + '\"' + AmountCode + '\"' + ',"GroupNumber":' + '\"' + GroupNumber + '\"' + ',"IdType":' + '\"' + IDType + '\"' + ',"ID":' + '\"' + ID + '\"' + ',"Frequency":' + '\"' + Frequency + '\"' + ',"Day1":' + '\"' + Day1 + '\"' + ',"Day2":' + '\"' + Day2 + '\"' + ',"NextDate":' + '\"' + NextDate + '\"' + ',"EffectiveDate":' + '\"' + EffectiveDate + '\"' + ',"PostAmount":' + '\"' + PostAmount + '\"' + ',"Payee":' + '\"' + Payee + '\"' + ',"Reference":' + '\"' + Reference + '\"' + ',"MatchId3":' + '\"' + MatchID3 + '\"' + ',"AccountNumber":' + '\"' + AccountNumber + '\"}';
+			jsonData = '{"EFTType":' + '\"' + EFTType + '\"' + ',"AmountCode":' + '\"' + AmountCode + '\"' + ',"GroupNumber":' + '\"' + GroupNumber + '\"' + ',"IdType":' + '\"' + IDType + '\"' + ',"ID":' + '\"' + ID + '\"' + ',"Frequency":' + '\"' + Frequency + '\"' + ',"Day1":' + '\"' + Day1 + '\"' + ',"Day2":' + '\"' + Day2 + '\"' + ',"NextDate":' + '\"' + NextDate + '\"' + ',"EffectiveDate":' + '\"' + EffectiveDate + '\"' + ',"PostAmount":' + '\"' + PostAmount + '\"' + ',"Payee":' + '\"' + Payee + '\"' + ',"Reference":' + '\"' + Reference + '\"' + ',"MatchId3":' + '\"' + MatchID3 + '\"' + ',"AccountNumber":' + '\"' + AccountNumber + '\"' + ',"EpisysId":' + '\"' + EpisysId + '\"}';
 			//jsonData = '{"EFTType": 3,"AmountCode": 27,"GroupNumber": "000001","IdType": 0, "ID": "0100", "Frequency": 4,"Day1": 0,"NextDate": "2019-01-08","EffectiveDate": "2019-01-09","PostAmount": "100.00", "Payee": "0322271627","Reference": "42006986568","MatchId3": "BANK OF AMERICA, N.A.","AccountNumber": "123"}';
 			req.setBodyAsBlob(Blob.valueof(jsondata));
 			system.debug('test' + jsonData);
@@ -241,14 +257,14 @@ public class EFTToSyimtar{
 					UpdateDay1 = '1';
 				}
 				boolean isExpired = false;
-				Updatereq.setEndpoint(loanAPI+'/EFT/UpdateEft');
+				Updatereq.setEndpoint(loanAPI + '/EFT/UpdateEft');
 				//req.setClientCertificateName('brscmcapi');
 				Updatereq.setMethod('POST');
 				Updatereq.setHeader('Content-Type', 'application/json');
 				Updatereq.setHeader('Accept', 'application/json');
 
 
-				UpdatejsonData = '{"EftLocator":' + '\"' + result + '\"' + ',"AmountCode":' + '\"' + AmountCode + '\"' + ',"Frequency":' + '\"' + Frequency + '\"' + ',"Day1":' + '\"' + UpdateDay1 + '\"' + ',"Day2":' + '\"' + Day2 + '\"' + ',"NextDate":' + '\"' + NextDate + '\"' + ',"EffectiveDate":' + '\"' + EffectiveDate + '\"' + ',"PostAmount":' + '\"' + PostAmount + '\"' + ',"Payee":' + '\"' + Payee + '\"' + ',"Reference":' + '\"' + Reference + '\"' + ',"MatchId3":' + '\"' + MatchID3 + '\"' + ',"IsUpdateExpirationDate":' + '\"' + isExpired + '\"' + ',"AccountNumber":' + '\"' + AccountNumber + '\"}';
+				UpdatejsonData = '{"EftLocator":' + '\"' + result + '\"' + ',"AmountCode":' + '\"' + AmountCode + '\"' + ',"Frequency":' + '\"' + Frequency + '\"' + ',"Day1":' + '\"' + UpdateDay1 + '\"' + ',"Day2":' + '\"' + Day2 + '\"' + ',"NextDate":' + '\"' + NextDate + '\"' + ',"EffectiveDate":' + '\"' + EffectiveDate + '\"' + ',"PostAmount":' + '\"' + PostAmount + '\"' + ',"Payee":' + '\"' + Payee + '\"' + ',"Reference":' + '\"' + Reference + '\"' + ',"MatchId3":' + '\"' + MatchID3 + '\"' + ',"IsUpdateExpirationDate":' + '\"' + isExpired + '\"' + ',"AccountNumber":' + '\"' + AccountNumber + '\"' + ',"EpisysId":' + '\"' + EpisysId + '\"}';
 				//jsonData = '{"EFTType": 3,"AmountCode": 27,"GroupNumber": "000001","IdType": 0, "ID": "0100", "Frequency": 4,"Day1": 0,"NextDate": "2019-01-08","EffectiveDate": "2019-01-09","PostAmount": "100.00", "Payee": "0322271627","Reference": "42006986568","MatchId3": "BANK OF AMERICA, N.A.","AccountNumber": "123"}';
 				Updatereq.setBodyAsBlob(Blob.valueof(UpdatejsonData));
 				system.debug('UpdatejsonData' + UpdatejsonData);
@@ -279,16 +295,16 @@ public class EFTToSyimtar{
 			if (result != null && result != ''){
 
 				PaymentMethod = '5';
-				/*-----------Update LOC Loan---------------*/				
+				/*-----------Update LOC Loan---------------*/
 				if (LoanCode == '2'){
 					System.debug('LoanCode');
 					req1.setEndpoint(loanAPI + '/EFT/UpdateLOCLoanbyId');
 					if (AlternatePayment != ''){
-						jsonData1 = '{"AccountNumber":' + '\"' + AccountNumber + '\","LoanId":' + '\"' + ID + '\"' + ',"PaymentMethod":' + '\"' + PaymentMethod + '\"' + ',"Payment":' + '\"' + e.Payment_Amount__c + '\"' + ',"AlternatePayment":' + '\"' + e.Alternate_Amount__c  + '\"}';
+						jsonData1 = '{"AccountNumber":' + '\"' + AccountNumber + '\","LoanId":' + '\"' + ID + '\"' + ',"PaymentMethod":' + '\"' + PaymentMethod + '\"' + ',"Payment":' + '\"' + e.Payment_Amount__c + '\"' + ',"AlternatePayment":' + '\"' + e.Alternate_Amount__c + '\"' + ',"EpisysId":' + '\"' + EpisysId + '\"}';
 					} else{
-						jsonData1 = '{"AccountNumber":' + '\"' + AccountNumber + '\","LoanId":' + '\"' + ID + '\"' + ',"PaymentMethod":' + '\"' + PaymentMethod + ',"Payment":' + '\"' + e.Payment_Amount__c + '\"' + '\"}';
+						jsonData1 = '{"AccountNumber":' + '\"' + AccountNumber + '\","LoanId":' + '\"' + ID + '\"' + ',"PaymentMethod":' + '\"' + PaymentMethod + ',"Payment":' + '\"' + e.Payment_Amount__c + '\"' + ',"EpisysId":' + '\"' + EpisysId + '\"}';
 					}
-				} 
+				}
 				/*-----------Update Tracking Records for Share---------------*/
 				else if (ID != null && ID.SubString(0, 2) == '28'){
 					System.debug('Sweep Account');
@@ -296,16 +312,16 @@ public class EFTToSyimtar{
 					uc3 = getUserChar3(AccountNumber, ID);
 					System.debug('uc3==' + uc3);
 					req1.setEndpoint(loanAPI + '/PSAuto/UpdateTracking32Records');
-					jsonData1 = '{"AccountNumber":' + '\"' + AccountNumber + '\","ShareId":' + '\"' + ID + '\"' + ',"UserChar3":' + '\"' + uc3 + '\"' + ',"TotalPaymentAmount":' + '\"' + e.Payment_Amount__c + '\"' + ',"AdditionalPaymentAmount":' + '\"' + e.Alternate_Amount__c  + '\"' + ',"NextPaymentDueDate":' + '\"' + EffectiveDate + '\"}';
-				} 
+					jsonData1 = '{"AccountNumber":' + '\"' + AccountNumber + '\","ShareId":' + '\"' + ID + '\"' + ',"UserChar3":' + '\"' + uc3 + '\"' + ',"TotalPaymentAmount":' + '\"' + e.Payment_Amount__c + '\"' + ',"AdditionalPaymentAmount":' + '\"' + e.Alternate_Amount__c + '\"' + ',"NextPaymentDueDate":' + '\"' + EffectiveDate + '\"' + ',"EpisysId":' + '\"' + EpisysId + '\"}';
+				}
 				/*-----------Update Non-LOC Loan---------------*/
 				else{
 					System.debug('LoanCode not 2');
-					req1.setEndpoint(loanAPI+'/EFT/UpdateLoanById');
+					req1.setEndpoint(loanAPI + '/EFT/UpdateLoanById');
 					if (AlternatePayment != ''){
-						jsonData1 = '{"AccountNumber":' + '\"' + AccountNumber + '\","LoanId":' + '\"' + ID + '\"' + ',"PaymentMethod":' + '\"' + PaymentMethod + '\"' + ',"AlternatePayment":' + '\"' + AlternatePayment + '\"}';
+						jsonData1 = '{"AccountNumber":' + '\"' + AccountNumber + '\","LoanId":' + '\"' + ID + '\"' + ',"PaymentMethod":' + '\"' + PaymentMethod + '\"' + ',"AlternatePayment":' + '\"' + AlternatePayment + '\"' + ',"EpisysId":' + '\"' + EpisysId + '\"}';
 					} else{
-						jsonData1 = '{"AccountNumber":' + '\"' + AccountNumber + '\","LoanId":' + '\"' + ID + '\"' + ',"PaymentMethod":' + '\"' + PaymentMethod + '\"}';
+						jsonData1 = '{"AccountNumber":' + '\"' + AccountNumber + '\","LoanId":' + '\"' + ID + '\"' + ',"PaymentMethod":' + '\"' + PaymentMethod + '\"' + ',"EpisysId":' + '\"' + EpisysId + '\"}';
 					}
 				}
 				//system.System.debug(jsonData1);
@@ -347,7 +363,7 @@ public class EFTToSyimtar{
 			EFTRecordsToUpdate.add(e);
 
 			/*-----------Create EFT Note---------------*/
-			CreateEFTFormNote(AccountNumber, IDType.leftPad(2, '0'), ID, string.valueof(e.Alternate_Amount__c+e.Payment_Amount__c), 'N');
+			CreateEFTFormNote(AccountNumber, IDType.leftPad(2, '0'), ID, string.valueof(e.Alternate_Amount__c + e.Payment_Amount__c), 'N', EpisysId);
 
 		}
 		update EFTRecordsToUpdate;
@@ -362,7 +378,7 @@ public class EFTToSyimtar{
 			                              from case
 			                              where id in :CaseIdsToUpdate.keySet() and Status<>'Closed'];
 
-			system.debug('UpdateCasesList==' + UpdateCasesList);			
+			system.debug('UpdateCasesList==' + UpdateCasesList);
 			if (UpdateCasesList.size() > 0){
 				for (Case cs : UpdateCasesList){
 					cs.Description = CaseIdsToUpdate.get(cs.id);
@@ -381,19 +397,35 @@ public class EFTToSyimtar{
 		system.debug('ids' + ids);
 		system.debug('isExpired' + isExpired);
 		List<EFT__c> EFTlist = new List<EFT__c>();
-		List<EFT__c> EFTs = [SELECT Account_Number__c, Action_Type__c, Alternate_Amount__c, Bank_Name__c, CreatedById, CreatedDate, Day_of_Month__c, Second_Day_of_Month__c, DocuSignId__c, Effective_Date__c, Frequency__c, Id, Member_Account__c, Member_Account__r.Brand__c, Member_Account__r.Name, Member__c, Name, Case__c, Case__r.Description, OwnerId, Payment_Amount__c, Routing_Number__c, Share_Loan_Id__c, Stage__c, EftLocator__c, Share_Loan_Description__c, Share_Loan_Type__c, Member_Name__c, Status__c, Type__c, EFT_ID_Type__c, LoanCode__c, EFT_Payment_Date__c, Locators_To_Expire__c, Existing_Alternate_Amount__c
+		List<EFT__c> EFTs = [SELECT Account_Number__c, Action_Type__c, Alternate_Amount__c, Bank_Name__c, CreatedById, CreatedDate, Day_of_Month__c, Second_Day_of_Month__c, DocuSignId__c, Effective_Date__c, Frequency__c, Id, Member_Account__c, Member_Account__r.Brand__c, Member_Account__r.Name, Member__c, Name, Case__c, Case__r.Description, OwnerId, Payment_Amount__c, Routing_Number__c, Share_Loan_Id__c, Stage__c, EftLocator__c, Share_Loan_Description__c, Share_Loan_Type__c, Member_Name__c, Status__c, Type__c, EFT_ID_Type__c, LoanCode__c, EFT_Payment_Date__c, Locators_To_Expire__c, Existing_Alternate_Amount__c, case__r.Previous_Owner__c
 		                     FROM EFT__c
 		                     where id = :ids];
 
 		map<Id, String> CaseIdsToUpdate = new Map<Id, String>();
 		//else{
-		
-			ACH_To_Episys_API_Details__c api = ACH_To_Episys_API_Details__c.getValues('ProductionURL');
-                
-                if(api.URL__c != null){
-                    loanAPI = api.URL__c;
-				}
+
+		ACH_To_Episys_API_Details__c api = ACH_To_Episys_API_Details__c.getValues('ProductionURL');
+
+		if (api.URL__c != null){
+			loanAPI = api.URL__c;
+		}	
+
 		for (EFT__c e : EFTs){
+
+			User currentUser = [SELECT id, alias
+			                    from user
+			                    where Id = :e.case__r.Previous_Owner__c];
+			List<Episys_User__c> EpisysUser = [SELECT id, Alias__c, Episys_ID__c
+			                                   from Episys_User__c
+			                                   where Alias__c = :currentUser.alias
+			                                   limit 1];
+
+
+			if (EpisysUser.size() > 0){
+				EpisysId = String.Valueof(EpisysUser[0].Episys_ID__c);
+			} else{
+				EpisysId = '';
+			}
 
 			EftLocator = e.EftLocator__c;
 			EFTType = '3';
@@ -446,11 +478,9 @@ public class EFTToSyimtar{
 				PostAmount = '0.00';
 			if (e.Alternate_Amount__c != null && e.Alternate_Amount__c != 0.0){
 				AlternatePayment = String.ValueOf(e.Alternate_Amount__c + e.Payment_Amount__c);
-			} 
-			else if(e.Existing_Alternate_Amount__c != null && e.Existing_Alternate_Amount__c != 0.0){
+			} else if (e.Existing_Alternate_Amount__c != null && e.Existing_Alternate_Amount__c != 0.0){
 				AlternatePayment = String.ValueOf(e.Existing_Alternate_Amount__c + e.Payment_Amount__c);
-			}
-			else{
+			} else{
 				AlternatePayment = String.ValueOf(e.Payment_Amount__c);
 			}
 
@@ -489,14 +519,14 @@ public class EFTToSyimtar{
 				}
 				if (LocatorsToExpire != null){
 					for (string l : LocatorsToExpire){
-						ExpireReq.setEndpoint(loanAPI+'/EFT/UpdateEft');
+						ExpireReq.setEndpoint(loanAPI + '/EFT/UpdateEft');
 						//req.setClientCertificateName('brscmcapi');
 						ExpireReq.setMethod('POST');
 						ExpireReq.setHeader('Content-Type', 'application/json');
 						ExpireReq.setHeader('Accept', 'application/json');
 
 
-						ExpirejsonData = '{"EftLocator":' + '\"' + l + '\"' +  ',"EffectiveDate":' + '\"' + EffectiveDate + '\"' + ',"IsUpdateExpirationDate":' + '\"' + true + '\"' +  ',"isCalledFromUpdate":' + '\"' + true + '\"'  +',"AccountNumber":' + '\"' + AccountNumber + '\"}';
+						ExpirejsonData = '{"EftLocator":' + '\"' + l + '\"' + ',"EffectiveDate":' + '\"' + EffectiveDate + '\"' + ',"IsUpdateExpirationDate":' + '\"' + true + '\"' + ',"isCalledFromUpdate":' + '\"' + true + '\"' + ',"AccountNumber":' + '\"' + AccountNumber + '\"' + ',"EpisysId":' + '\"' + EpisysId + '\"}';
 						//jsonData = '{"EFTType": 3,"AmountCode": 27,"GroupNumber": "000001","IdType": 0, "ID": "0100", "Frequency": 4,"Day1": 0,"NextDate": "2019-01-08","EffectiveDate": "2019-01-09","PostAmount": "100.00", "Payee": "0322271627","Reference": "42006986568","MatchId3": "BANK OF AMERICA, N.A.","AccountNumber": "123"}';
 						ExpireReq.setBodyAsBlob(Blob.valueof(ExpirejsonData));
 						system.debug('ExpirejsonData' + ExpirejsonData);
@@ -517,16 +547,16 @@ public class EFTToSyimtar{
 				}
 			}
 
-			 /*-----------Web serice call to Update EFT---------------*/
+			/*-----------Web serice call to Update EFT---------------*/
 			//req.setEndpoint('https://brscsymx.ctxcu.org/dev/EFT/CreateEft');
-			req.setEndpoint(loanAPI+'/EFT/UpdateEft');
+			req.setEndpoint(loanAPI + '/EFT/UpdateEft');
 			//req.setClientCertificateName('brscmcapi');
 			req.setMethod('POST');
 			req.setHeader('Content-Type', 'application/json');
 			req.setHeader('Accept', 'application/json');
 
 
-			jsonData = '{"EftLocator":' + '\"' + EftLocator + '\"' + ',"AmountCode":' + '\"' + AmountCode + '\"' + ',"Frequency":' + '\"' + Frequency + '\"' + ',"Day1":' + '\"' + Day1 + '\"' + ',"Day2":' + '\"' + Day2 + '\"' + ',"NextDate":' + '\"' + NextDate + '\"' + ',"EffectiveDate":' + '\"' + EffectiveDate + '\"' + ',"PostAmount":' + '\"' + PostAmount + '\"' + ',"Payee":' + '\"' + Payee + '\"' + ',"Reference":' + '\"' + Reference + '\"' + ',"MatchId3":' + '\"' + MatchID3 + '\"' + ',"IsUpdateExpirationDate":' + '\"' + isExpired + '\"' + ',"AccountNumber":' + '\"' + AccountNumber + '\"}';
+			jsonData = '{"EftLocator":' + '\"' + EftLocator + '\"' + ',"AmountCode":' + '\"' + AmountCode + '\"' + ',"Frequency":' + '\"' + Frequency + '\"' + ',"Day1":' + '\"' + Day1 + '\"' + ',"Day2":' + '\"' + Day2 + '\"' + ',"NextDate":' + '\"' + NextDate + '\"' + ',"EffectiveDate":' + '\"' + EffectiveDate + '\"' + ',"PostAmount":' + '\"' + PostAmount + '\"' + ',"Payee":' + '\"' + Payee + '\"' + ',"Reference":' + '\"' + Reference + '\"' + ',"MatchId3":' + '\"' + MatchID3 + '\"' + ',"IsUpdateExpirationDate":' + '\"' + isExpired + '\"' + ',"AccountNumber":' + '\"' + AccountNumber + '\"' + ',"EpisysId":' + '\"' + EpisysId + '\"}';
 			//jsonData = '{"EFTType": 3,"AmountCode": 27,"GroupNumber": "000001","IdType": 0, "ID": "0100", "Frequency": 4,"Day1": 0,"NextDate": "2019-01-08","EffectiveDate": "2019-01-09","PostAmount": "100.00", "Payee": "0322271627","Reference": "42006986568","MatchId3": "BANK OF AMERICA, N.A.","AccountNumber": "123"}';
 			req.setBodyAsBlob(Blob.valueof(jsondata));
 			system.debug('test' + jsonData);
@@ -548,7 +578,7 @@ public class EFTToSyimtar{
 
 			// Parse JSON response to get all the totalPrice field values.
 			JSONParser parser = JSON.createParser(responseBody);
-			 /*-----------Get Old Values to use in Case Description field---------------*/
+			/*-----------Get Old Values to use in Case Description field---------------*/
 			while (parser.nextToken() != null){
 				//system.debug('parser.getCurrentToken()=' + parser.getCurrentToken());
 				//system.debug('JSONToken.FIELD_NAME=' + JSONToken.FIELD_NAME);
@@ -680,7 +710,7 @@ public class EFTToSyimtar{
 
 				// }
 				OldAlternatePayment = OldPostAmount;
-				Map<string, List<EFTController.ShareLoanWrapperObject>> LoanMap = EFTController.getLoanAccounts(AccountNumber,'');
+				Map<string, List<EFTController.ShareLoanWrapperObject>> LoanMap = EFTController.getLoanAccounts(AccountNumber, '');
 				List<EFTController.ShareLoanWrapperObject> LoanList = LoanMap.get('LoanList');
 				if (LoanList != null){
 					for (EFTController.ShareLoanWrapperObject sl : LoanList){
@@ -709,12 +739,12 @@ public class EFTToSyimtar{
 			System.debug('listObject' + listObject);
 			listObject = String.valueOf(listObject).substringBefore(',"Status"');
 			System.debug('listObject' + listObject);
-			if(listObject != null && listObject != '')
+			if (listObject != null && listObject != '')
 				EFTExpiredList = (List<EFTController.EFTWrapperObject>)JSON.deserialize(listObject, List<EFTController.EFTWrapperObject>.class);
-			System.debug('EFTExpiredList==' + EFTExpiredList);			
+			System.debug('EFTExpiredList==' + EFTExpiredList);
 			System.debug('Status' + result);
-			
-			System.debug('EFTLocator' + resultEFTLocator);			
+
+			System.debug('EFTLocator' + resultEFTLocator);
 			System.debug('resultExpDate' + resultExpDate);
 
 			if (result != 'OK'){
@@ -725,43 +755,41 @@ public class EFTToSyimtar{
 			} else if (result == 'OK'){
 				PaymentMethod = '5';
 				String TempAlternatePayment = '';
-				if(e.Alternate_Amount__c != null && e.Alternate_Amount__c != 0.0){
+				if (e.Alternate_Amount__c != null && e.Alternate_Amount__c != 0.0){
 					TempAlternatePayment = String.ValueOf(e.Alternate_Amount__c);
-				}
-				else if(e.Existing_Alternate_Amount__c != null && e.Existing_Alternate_Amount__c != 0.0){
+				} else if (e.Existing_Alternate_Amount__c != null && e.Existing_Alternate_Amount__c != 0.0){
 					TempAlternatePayment = String.ValueOf(e.Existing_Alternate_Amount__c);
-				}
-				else{
+				} else{
 					TempAlternatePayment = '0.0';
 				}
-				/*-----------Update LOC Loan---------------*/			
+				/*-----------Update LOC Loan---------------*/
 				if (LoanCode == '2'){
 					System.debug('LoanCode');
-					req1.setEndpoint(loanAPI+'/EFT/UpdateLOCLoanbyId');
+					req1.setEndpoint(loanAPI + '/EFT/UpdateLOCLoanbyId');
 					if (AlternatePayment != ''){
-						jsonData1 = '{"AccountNumber":' + '\"' + AccountNumber + '\","LoanId":' + '\"' + ID + '\"' + ',"PaymentMethod":' + '\"' + PaymentMethod + '\"' + ',"Payment":' + '\"' + e.Payment_Amount__c + '\"' + ',"AlternatePayment":' + '\"' + TempAlternatePayment + '\"}';
+						jsonData1 = '{"AccountNumber":' + '\"' + AccountNumber + '\","LoanId":' + '\"' + ID + '\"' + ',"PaymentMethod":' + '\"' + PaymentMethod + '\"' + ',"Payment":' + '\"' + e.Payment_Amount__c + '\"' + ',"AlternatePayment":' + '\"' + TempAlternatePayment + '\"' + ',"EpisysId":' + '\"' + EpisysId + '\"}';
 					} else{
-						jsonData1 = '{"AccountNumber":' + '\"' + AccountNumber + '\","LoanId":' + '\"' + ID + '\"' + ',"PaymentMethod":' + '\"' + PaymentMethod + '\"' + ',"Payment":' + '\"' + e.Payment_Amount__c + '\"}';
+						jsonData1 = '{"AccountNumber":' + '\"' + AccountNumber + '\","LoanId":' + '\"' + ID + '\"' + ',"PaymentMethod":' + '\"' + PaymentMethod + '\"' + ',"Payment":' + '\"' + e.Payment_Amount__c + '\"' + ',"EpisysId":' + '\"' + EpisysId + '\"}';
 					}
-				} 
+				}
 				/*-----------Update Tracking Records for Share---------------*/
 				else if (ID != null && ID.SubString(0, 2) == '28'){
 					System.debug('Sweep Account');
 					string uc3;
 					uc3 = getUserChar3(AccountNumber, ID);
 					System.debug('uc3==' + uc3);
-					req1.setEndpoint(loanAPI+'/PSAuto/UpdateTracking32Records');
-					jsonData1 = '{"AccountNumber":' + '\"' + AccountNumber + '\","ShareId":' + '\"' + ID + '\"' + ',"UserChar3":' + '\"' + uc3 + '\"' + ',"TotalPaymentAmount":' + '\"' + e.Payment_Amount__c + '\"' + ',"AdditionalPaymentAmount":' + '\"' + TempAlternatePayment + '\"' + ',"NextPaymentDueDate":' + '\"' + NextDate + '\"}';
+					req1.setEndpoint(loanAPI + '/PSAuto/UpdateTracking32Records');
+					jsonData1 = '{"AccountNumber":' + '\"' + AccountNumber + '\","ShareId":' + '\"' + ID + '\"' + ',"UserChar3":' + '\"' + uc3 + '\"' + ',"TotalPaymentAmount":' + '\"' + e.Payment_Amount__c + '\"' + ',"AdditionalPaymentAmount":' + '\"' + TempAlternatePayment + '\"' + ',"NextPaymentDueDate":' + '\"' + NextDate + '\"' + ',"EpisysId":' + '\"' + EpisysId + '\"}';
 					//System.debug('jsonData1=='+jsonData1);
-				} 
+				}
 				/*-----------Update Non-LOC Loan---------------*/
 				else{
 					System.debug('LoanCode not 2');
-					req1.setEndpoint(loanAPI+'/EFT/UpdateLoanById');
+					req1.setEndpoint(loanAPI + '/EFT/UpdateLoanById');
 					if (AlternatePayment != ''){
-						jsonData1 = '{"AccountNumber":' + '\"' + AccountNumber + '\","LoanId":' + '\"' + ID + '\"' + ',"AlternatePayment":' + '\"' + AlternatePayment + '\"}';
+						jsonData1 = '{"AccountNumber":' + '\"' + AccountNumber + '\","LoanId":' + '\"' + ID + '\"' + ',"AlternatePayment":' + '\"' + AlternatePayment + '\"' + ',"EpisysId":' + '\"' + EpisysId + '\"}';
 					} else{
-						jsonData1 = '{"AccountNumber":' + '\"' + AccountNumber + '\","LoanId":' + '\"' + ID + '\"' + ',"PaymentMethod":' + '\"' + PaymentMethod + '\"}';
+						jsonData1 = '{"AccountNumber":' + '\"' + AccountNumber + '\","LoanId":' + '\"' + ID + '\"' + ',"PaymentMethod":' + '\"' + PaymentMethod + '\"' + ',"EpisysId":' + '\"' + EpisysId + '\"}';
 					}
 				}
 
@@ -799,19 +827,18 @@ public class EFTToSyimtar{
 					for (EFTController.EFTWrapperObject ef : EFTExpiredList){
 						date expDate = Date.valueOf(ef.ExpirationDate);
 						Datetime dt = datetime.newInstance(Date.valueOf(expDate).year(), Date.valueOf(expDate).month(), Date.valueOf(expDate).day());
-						string typeexp,freqExp;
+						string typeexp, freqExp;
 						if (ef.AmountCode == '37')
 							typeexp = 'Savings';
 						else
 							typeexp = 'Checking';
-						if(ef.Frequency == '4'){
+						if (ef.Frequency == '4'){
 							freqExp = 'Monthly';
-						}
-						else if(ef.Frequency == '5'){
+						} else if (ef.Frequency == '5'){
 							freqExp = 'Semi-Monthly';
 						}
-						operation = operation + 'EFT Locator: ' + ef.Locator + '\n' + 'Expiration Date:' + dt.format('MM/dd/yyyy')+'\n' + 'ABA/Routing#:' + ef.Payee + '\n' + 'Funding FI:' + ef.MatchID3 + '\n' + 'Account Number:' + ef.Reference + '\n' + 'Type:' + typeexp + '\n' + 'Effective Date:' + dt.format('MM/dd/yyyy') + '\n' + 'Frequency:' + freqExp + '\n' + 'Day of Month:' + ef.Day1 + '\n' + '\n';//'Payment Amount:' + e.Payment_Amount__c + '\n' + 'Additional Payment Amount:' + (e.Alternate_Amount__c == null ? 0 : e.Alternate_Amount__c)
-					}					
+						operation = operation + 'EFT Locator: ' + ef.Locator + '\n' + 'Expiration Date:' + dt.format('MM/dd/yyyy')+'\n' + 'ABA/Routing#:' + ef.Payee + '\n' + 'Funding FI:' + ef.MatchID3 + '\n' + 'Account Number:' + ef.Reference + '\n' + 'Type:' + typeexp + '\n' + 'Effective Date:' + dt.format('MM/dd/yyyy')+'\n' + 'Frequency:' + freqExp + '\n' + 'Day of Month:' + ef.Day1 + '\n' + '\n';//'Payment Amount:' + e.Payment_Amount__c + '\n' + 'Additional Payment Amount:' + (e.Alternate_Amount__c == null ? 0 : e.Alternate_Amount__c)
+					}
 					CaseIdsToUpdate.put(e.Case__c, operation);
 				} else{
 					string casedesc = e.Case__r.Description + '\n \n Old ACH Values \n ABA/Routing#: ' + OldPayee + '\n' + 'Funding FI: ' + OldMatchID3 + '\n' + 'Account Number: ' + OldReference + '\n' + 'Type: ' + OldAmountCode + '\n' + 'Payment Amount: ' + OldPostAmount + '\n' + 'Additional Payment Amount: ' + OldAlternatePayment + '\n' + 'Effective Date: ' + OldEffectiveDate + '\n' + 'Frequency: ' + OldFrequency + '\n' + 'Day of Month: ' + OldDay1 + '\n \n ACH DocuSign Values \n Type: ' + e.Type__c + '\n' + 'Funding FI: ' + e.Bank_Name__c + '\n' + 'ABA/Routing#: ' + e.Routing_Number__c + '\n' + 'Account Number: ' + e.Account_Number__c + '\n' + 'Additional Payment Amount: ' + e.Alternate_Amount__c + '\n' + '\n' + 'EFT Locator: ' + EftLocator;
@@ -820,14 +847,14 @@ public class EFTToSyimtar{
 				/*-----------Create EFT in SF if Expire and Create EFT---------------*/
 				if (resultEFTLocator != '' && resultEFTLocator != null && EftLocator != resultEFTLocator){
 					e.expired__c = true;
-					e.Expiration_Date__c = Date.valueOf(resultExpDate);					
+					e.Expiration_Date__c = Date.valueOf(resultExpDate);
 					EFT__c newEFT = e.clone(false);
 					newEFT.expired__c = false;
 					newEFT.Expiration_Date__c = null;
 					newEFT.EftLocator__c = resultEFTLocator;
 					newEFT.Share_Loan_Description__c = e.Share_Loan_Description__c;
 					newEFT.Share_Loan_Type__c = e.Share_Loan_Type__c;
-					newEFT.Case__c = e.Case__c;					
+					newEFT.Case__c = e.Case__c;
 					insert newEFT;
 				}
 			}
@@ -846,9 +873,9 @@ public class EFTToSyimtar{
 			EFTRecordsToUpdate.add(e);
 			/*-----------Create EFT Note---------------*/
 			if (!isExpired)
-				CreateEFTFormNote(AccountNumber, IDType.leftPad(2, '0'), ID, string.valueof(e.Alternate_Amount__c+e.Payment_Amount__c), 'N');
+				CreateEFTFormNote(AccountNumber, IDType.leftPad(2, '0'), ID, string.valueof(e.Alternate_Amount__c + e.Payment_Amount__c), 'N', EpisysId);
 			else{
-				CreateEFTFormNote(AccountNumber, IDType.leftPad(2, '0'), ID, string.valueof(e.Alternate_Amount__c+e.Payment_Amount__c), 'Y');
+				CreateEFTFormNote(AccountNumber, IDType.leftPad(2, '0'), ID, string.valueof(e.Alternate_Amount__c + e.Payment_Amount__c), 'Y', EpisysId);
 			}
 		}
 		//}
@@ -874,7 +901,7 @@ public class EFTToSyimtar{
 	//-----------------Getting Loan Code-----------//
 	public static string getLoanCode(string AccountNumber, string LoanID){
 		string LoanCode;
-		Map<string, List<EFTController.ShareLoanWrapperObject>> LoanMap = EFTController.getLoanAccounts(AccountNumber,'');
+		Map<string, List<EFTController.ShareLoanWrapperObject>> LoanMap = EFTController.getLoanAccounts(AccountNumber, '');
 		List<EFTController.ShareLoanWrapperObject> LoanList = LoanMap.get('LoanList');
 		if (LoanList != null){
 			for (EFTController.ShareLoanWrapperObject sl : LoanList){
@@ -891,7 +918,7 @@ public class EFTToSyimtar{
 		string userchar3;
 		httpRequest requestparam = new httpRequest();
 		//requestparam.setTimeout(10);
-		requestparam.setEndpoint(loanAPI+'/PSAuto/GetSharesEFT?AccountNumber=' + AccountNumber + '&userchar2=abc');
+		requestparam.setEndpoint(loanAPI + '/PSAuto/GetSharesEFT?AccountNumber=' + AccountNumber + '&userchar2=abc');
 		requestparam.setMethod('GET');
 
 		try{
@@ -904,8 +931,7 @@ public class EFTToSyimtar{
 
 				strStatus = response.getStatus();
 				strBody = response.getBody();
-			} 
-			else{
+			} else{
 				strBody = '[{"Order":100,"AvailableBalance":null,"Id":null,"Type":1,"AccountType":"SHARE #2800 - JOINT OWNER ","NameAndBalance":" Available Balance( $)","AccountNumber":"0000000123","Description":"PRIMARY SHARE","UserChar3":"","UserAmount2":0.00}]';
 			}
 
@@ -937,7 +963,7 @@ public class EFTToSyimtar{
 	}
 
 	//-----------------Creating EFT Form Note from Episys-----------//
-	public static void CreateEFTFormNote(string AccountNumber, string IDType, string ID, string Amount, string isExpired){
+	public static void CreateEFTFormNote(string AccountNumber, string IDType, string ID, string Amount, string isExpired, string EpisysId){
 		String dateFormatString = 'MM/dd/yy';
 		String dateFormatString1 = 'MMddyy';
 		Date d = Date.today();
@@ -948,14 +974,15 @@ public class EFTToSyimtar{
 		System.debug(dateString1);
 		httpRequest requestparam = new httpRequest();
 		//requestparam.setTimeout(10);
-		requestparam.setEndpoint(loanAPI+'/EFT/CreateEFTFormNote');
+		requestparam.setEndpoint(loanAPI + '/EFT/CreateEFTFormNote');
 		//?RGUserChr1=' + AccountNumber + '&RGUserChr2=' + dateString +  '&RGUserChr3=' + IDType + ID + '&RGUserChr4=' + Amount + '&RGUserChr5=' + dateString1 + '|' + isExpired);
 		requestparam.setMethod('POST');
 		requestparam.setHeader('Content-Type', 'application/json');
 		requestparam.setHeader('Accept', 'application/json');
-		string EFTNotejsonData = '{"RGUserChr1":' + '\"' + AccountNumber + '\"' + ',"RGUserChr2":' + '\"' + dateString + '\"' + ',"RGUserChr3":' + '\"' + IDType + ID + '\"' + ',"RGUserChr4":' + '\"' + Amount + '\"' + ',"RGUserChr5":' + '\"' + dateString1 + '|' + isExpired + '\"}';
+		string EFTNotejsonData = '{"RGUserChr1":' + '\"' + AccountNumber + '\"' + ',"RGUserChr2":' + '\"' + dateString + '\"' + ',"RGUserChr3":' + '\"' + IDType + ID + '\"' + ',"RGUserChr4":' + '\"' + Amount + '\"' + ',"RGUserChr5":' + '\"' + dateString1 + '|' + isExpired + '\"' + ',"EpisysId":' + '\"' + EpisysId + '\"}';
 		system.debug('EFTNotejsonData' + EFTNotejsonData);
 		requestparam.setBody(EFTNotejsonData);
+
 
 		try{
 			Http http = new Http();
