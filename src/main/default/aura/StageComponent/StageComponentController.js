@@ -217,6 +217,11 @@
                         component.set("v.EFTRecord.Action_Type__c","Update")
                     }
                     if(component.get("v.EFTRecord.Action_Type__c") != "Expire" && component.get("v.isDocusignEmailSelected") == false){
+                        if(component.get('v.EFTRecord.Alternate_Amount__c') == 0 || component.get('v.EFTRecord.Alternate_Amount__c') == null || component.get('v.EFTRecord.Alternate_Amount__c') == undefined){
+                            var AlternateAmt = component.get('v.EFTRecord.Existing_Alternate_Amount__c');
+                            if(AlternateAmt != undefined && AlternateAmt != null)
+                            component.set('v.EFTRecord.Alternate_Amount__c', AlternateAmt); 
+                        }
                     		$A.createComponent("c:"+stages[4].Stage_Component__c,{recordId: component.get("v.recordId"), EFTRecord: component.get("v.EFTRecord"), isDocusignEmailSelected : false },
                                 function(msgBox){                
                                      if (component.isValid()) {
@@ -488,7 +493,8 @@
         		stages2[3].Stage_Action__c = 'Waiting';
         		stages2[2].Stage_Action__c = 'Waiting';
         		stages2[1].Stage_Action__c = 'Waiting';
-        		component.set("v.EFTStageDetails", stages2);
+                component.set("v.EFTStageDetails", stages2);
+                component.set("v.isDocusignEmailSelected", false);
         $A.createComponent("c:"+stages[0].Stage_Component__c,{recordId: component.get("v.recordId"), EFTRecord: component.get("v.EFTRecord"), isMemberSelected: true},
                                 function(msgBox){                
                                      if (component.isValid()) {
@@ -507,6 +513,7 @@
     
     
     ExpireEFT: function (component, event, helper) { 
+        helper.showSpinner(component);
          if(component.get("v.EFTRecord.Action_Type__c") == "Expire"){
                         component.set("v.EFTRecord.Action_Type__c","Update")
                     }

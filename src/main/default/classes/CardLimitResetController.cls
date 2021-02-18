@@ -128,6 +128,110 @@ public class CardLimitResetController {
         
     	return paList1;
     }
+
+    @AuraEnabled
+    public static Map<string,string> getLimits(string recordId, string cardnumber, string membername){
+
+        system.debug('cardnumber'+cardnumber); 
+        system.debug('recordId'+recordId);
+        system.debug('membername'+membername);
+        Id uniqueId = recordId;
+        Schema.SObjectType objType = uniqueId.getsobjecttype();
+
+        string AccountNumber;
+        Person_Account__c pa;
+
+        map<string,string> resultMap = new map<string,string>();
+        HttpRequest req = new HttpRequest();
+        HttpResponse res;
+        Http http = new Http();
+        string responseBody;
+        string loanAPI;
+        String jsonData;
+        String PosLimit;
+        String AuthLimit;
+
+        string firstname,lastname;
+        List<string> Names = membername.split(' ');
+        if(Names.size() == 2){
+            firstname = Names[0]+ '%';
+            lastname= '%'+Names[1] + '%';
+        }
+        else if(Names.size() >= 3){
+            firstname = Names[0]+ '%';
+            lastname= '%'+Names[Names.size()-1] +'%';
+        }
+
+        SolarLoan_To_Episys_API_Details__c api = SolarLoan_To_Episys_API_Details__c.getValues('ProductionURL');
+                        
+        if(api.URL__c != null){
+            loanAPI = api.URL__c;
+        }
+
+        if(objType == Account_Details__c.sObjectType){
+
+            if(recordId != null){
+                AccountNumber = [Select id, name from account_details__c where id=: recordId].Name;
+            }
+            else{
+                AccountNumber = AccountNumber = [Select id, name from account_details__c where id=: recordId].Name;
+            }
+
+            system.debug('AccountNumber'+AccountNumber);
+
+        }
+        if(objType == Account.sObjectType){
+            
+            pa =[SELECT id, name,PersonID__c,Account_Number__c,PersonID__r.name,Account_Number__r.name
+                    from Person_Account__c where Account_Type__c = 'ACCT' and PersonID__r.firstname like: firstname
+                    AND PersonID__r.LASTNAME like: lastname limit 1];
+            
+            AccountNumber = pa.Account_Number__r.name;
+            system.debug('AccountNumber - ' + AccountNumber);
+
+        }
+
+        //----------------------------------------Checking if they made Card reset request previously------------------------------------//
+        
+        req.setEndpoint(loanAPI+'/CardLimitReset/GetCardByCardNumber');
+        req.setMethod('POST');
+        req.setHeader('Content-Type', 'application/json');
+        req.setHeader('Accept', 'application/json');
+        req.setTimeout(60000);                    
+        jsonData = '{"accountNumber":' + '\"'+ AccountNumber +'\","cardNumber":' + '\"'+ cardnumber +'\"}';                 
+        req.setBodyAsBlob(Blob.valueof(jsonData));
+       
+        if(!Test.isRunningTest()){                       
+            res = http.send(req);
+            responseBody = res.getBody();
+            System.debug('ResponseBody ::'+responseBody);    
+        }
+        else{
+            responseBody = '{"PosLimit":"600.00","AuthLimit":"600.00"}';
+        }
+
+        if(responseBody != '' && responseBody != null){        
+            Map<String,Object> results = (Map<String,Object>)System.JSON.deserializeUntyped(responseBody);
+            if(results.size() > 0){                     
+                for(String key : results.keySet()){                   			
+                    if(key == 'PosLimit'){
+                        PosLimit = String.valueOf(results.get(key));
+                        resultmap.put('PosLimit',PosLimit); 
+                    }
+                    if(key == 'AuthLimit'){
+                        AuthLimit = String.valueOf(results.get(key));
+                        resultmap.put('AuthLimit',AuthLimit);
+                    }
+                }
+                system.debug('PosLimit: '+PosLimit);
+                system.debug('AuthLimit: '+AuthLimit);
+            }
+
+        }
+        system.debug('resultmap'+resultmap);
+		return resultmap;
+
+    }
     
     @AuraEnabled
     public static Map<string,List<CardDetailWrapperObject>> getCard(string recordId, string sObjectType){

@@ -2,7 +2,7 @@ global class SolarLoanUCCBatch implements Database.Batchable<sObject>, Database.
 
     global Database.QueryLocator start(Database.BatchableContext BC){
     	
-        String query = 'SELECT Id,Status__c,UCC_Id__c from Solar_loans__c where Status__c = \'UCC Pending\'';
+        String query = 'SELECT Id,Status__c,UCC_Id__c from Solar_loans__c where Status__c = \'UCC Pending\' OR Status__c = \'UCC Submitted\'';
         return Database.getQueryLocator(query);
     }
     
@@ -100,7 +100,18 @@ global class SolarLoanUCCBatch implements Database.Batchable<sObject>, Database.
         	
             Solar_Loans__c s = new Solar_Loans__c(); 
             s.id = sl.Id;
-            s.Status__c = UCCStatus;
+            if(UCCStatus == 'Pending')
+            	s.Status__c = 'UCC Pending';
+            
+            else if(UCCStatus == 'Reviewed')
+            	s.Status__c = 'UCC Submitted';
+            
+            else if(UCCStatus == 'Recorded'){
+            	s.Status__c = 'UCC Completed';
+                s.Current_Solar_Loan_Stage__c = 'Stage 8';
+            }
+            
+            
         	SolarLoanToUpdate.add(s);      
         }
         

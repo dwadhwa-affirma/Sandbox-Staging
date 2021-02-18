@@ -104,12 +104,14 @@ public class CardLimitResetControllerTest {
         CardLimitResetController.getStageData(memberacc.id,'JEFF PACHECO FRANKLIN');
         CardLimitResetController.getMembers(memberacc.id);
         CardLimitResetController.getCard(memberacc.id,'JEFF PACHECO FRANKLIN');
+        CardLimitResetController.getLimits(memberacc.id,'5460277067636965','JEFF PACHECO FRANKLIN');
     }
 
 	static testMethod void testmethod4(){
     	
         Account member  =  [SELECT Id,name from Account limit 1];
         CardLimitResetController.getCard(member.id,'JEFF PACHECO FRANKLIN');
+        CardLimitResetController.getLimits(member.id,'5460277067636965','JEFF PACHECO FRANKLIN');
         CardLimitResetController.Submit(member.id,'5460277067636965','123','JEFF PACHECO FRANKLIN','Change Card Limits','123.00','456.00');
     }
     
@@ -118,6 +120,6 @@ public class CardLimitResetControllerTest {
         Account member  =  [SELECT Id,name from Account limit 1];
         CardLimitResetController.getCard(member.id,'JEFF PACHECO FRANKLIN');        
         CardLimitResetController.Submit(member.id,'5460277067636965','123','JEFF PACHECO FRANKLIN','Reset Card Limits','2500.00','510.00');
-    }    
+    }   
 
 }
