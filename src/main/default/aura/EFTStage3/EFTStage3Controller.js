@@ -29,8 +29,14 @@
                 result.ShareLoanList[i].Warning =
                   "Use of ACH servicing is not allowed for this loan/share as it currently has multiple EFT records. To service this loan/share record, EFT changes needs to be made in Episys.";
               } else {
-                result.ShareLoanList[i].isDisabled = false;
-                result.ShareLoanList[i].Warning = "";
+                if(result.ShareLoanList[i].Balance == 0){
+                  result.ShareLoanList[i].isDisabled = true;
+                  result.ShareLoanList[i].Warning = "";
+                }
+                else{
+                  result.ShareLoanList[i].isDisabled = false;
+                  result.ShareLoanList[i].Warning = "";
+                }                
               }                         
             }
             

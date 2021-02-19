@@ -666,7 +666,9 @@ public class EFTController{
 							//temp.TypeTranslate =  (string)localAcc.get('Description');
 
 							temp.Type = 'Loan';
-							temp.Payment = (decimal)localAcc.get('Payment');
+							temp.Payment = (decimal)localAcc.get('Payment');							
+							temp.Balance = (decimal)localAcc.get('Balance');
+								
 							if ((string)localAcc.get('DueDate') != '')
 								temp.NextPaymentDueDate = Date.ValueOf((string)localAcc.get('DueDate'));
 							temp.Day2 = (integer)localAcc.get('DueDay2');
@@ -1056,7 +1058,7 @@ public class EFTController{
 		system.debug('jsonData==' + jsonData);
 		Http httpParam = new Http();
 
-		//requestparam.setTimeout(60000);
+		requestparam.setTimeout(60000);
 		HttpResponse response;
 		String responseBody1;
 		String strStatus, strBody;
@@ -1425,6 +1427,9 @@ public class EFTController{
 
 		@AuraEnabled
 		public boolean isDisabled{ get; set; }
+
+		@AuraEnabled
+		public decimal Balance{ get; set; }
 	}
 
 	public class EFTWrapperObject{
