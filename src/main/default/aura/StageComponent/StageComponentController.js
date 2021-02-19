@@ -1,6 +1,5 @@
 ({
-	doInit : function(component, event, helper) {
-	
+	doInit : function(component, event, helper) {          
         var recordId = component.get("v.recordId");	
 		var action = component.get("c.getStageData");	
         var sobjecttype = component.get("v.sobjecttype");
@@ -46,10 +45,7 @@
                                 }
                             }
 		       			 );               
-            }            
-        	
-            
-        	
+            }                   	
         });	
        $A.enqueueAction(action);
 	},
@@ -477,6 +473,10 @@
        
        var isDisabledforDocusign = event.getParam("isDisabledforDocusign");
        component.set("v.isDisabledforDocusign", isDisabledforDocusign);  
+
+       var isMemberRadioClicked = event.getParam("isMemberRadioClicked");
+       if(isMemberRadioClicked != undefined)
+       component.set("v.isMemberRadioClicked", isMemberRadioClicked); 
         
     },
     
@@ -513,8 +513,7 @@
     },
     
     
-    ExpireEFT: function (component, event, helper) { 
-        helper.showSpinner(component);
+    ExpireEFT: function (component, event, helper) {        
          if(component.get("v.EFTRecord.Action_Type__c") == "Expire"){
                         component.set("v.EFTRecord.Action_Type__c","Update")
                     }
