@@ -1,0 +1,41 @@
+.THIS#stage2 {width:70%; font-size:.8125rem; margin:0 auto;}
+
+.THIS#stage2 .stage2{width:100% !important; font-size:.8125rem; margin:0 auto;}
+
+.THIS#stage2 .slds-form-element__label{width:120px;max-width:unset;}
+
+.THIS#stage2 .fontstyle{word-break:break-word;}
+.THIS#stage2 .pfontstyle{word-break:break-word;font-size: 1.5rem !important;color: #0e70d6;
+    font-weight: bold;
+    margin-top: 2%;
+    text-align: left !important;}
+
+
+.THIS#stage2 .firstcol{border-right: 1px solid #777; margin-right: 1rem; padding-top:1rem;width: 60% !important;}
+.THIS#stage2 .secondcol{padding-top:1rem;}
+.THIS#stage2 .centerPara{text-align: center;font-size: 1rem;}
+.THIS#stage2 .customRadioCls .slds-form-element__control .slds-radio{
+    display : inline-block !important;
+}
+.THIS#stage2 .typedisabled .slds-grow{
+    padding-left: 0px !important; 
+}
+
+.THIS#stage2 .fundingtbl{
+    line-height: 5px !important;
+}
+
+@media (max-width:1250px){
+    .THIS#stage2 {width:90%;}
+}
+@media (max-width:600px){
+    .THIS#stage2 {width:100%;}
+}
+@media (max-width:767px){
+    .THIS#stage2 .slds-form-element__label{float:left;}
+	.THIS#stage2 .slds-form-element_horizontal .slds-form-element__control{clear:none;}
+}
+@media (max-width:480px){
+    .THIS#stage2 .slds-form-element__label{clear:both;}
+	.THIS#stage2 .slds-form-element_horizontal .slds-form-element__control{clear:both; padding-left:0;}
+}

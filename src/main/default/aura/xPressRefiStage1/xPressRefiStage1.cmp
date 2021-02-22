@@ -1,0 +1,80 @@
+<aura:component
+    implements="force:appHostable,force:lightningQuickActionWithoutHeader,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,force:hasSObjectName"
+    access="global" controller="xPressRefiController">
+
+
+    <div id="stage1" class="stage1" style="width:100% !important;">
+        <div class="slds-grid slds-gutters eft4tbl">
+            <div class="slds-col firstcol">
+                <p class="pfontstyle">Address Information</p><br></br>
+                <table class="fundingtbl">
+                    <tbody>
+                        <tr>
+                            <td>
+                                <span>Member Number</span>
+                            </td>
+                            <td>
+                                <lightning:input name="bankname" value="112233445"
+                                    disabled="true" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <span>Property Address:</span>
+                            </td>
+                            <td>
+                                <lightning:textarea name="propertyAddress" disabled="true" value="123 N. Main Street Oakland CA, 94567"/>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <span>Membership Address:</span>
+                            </td>
+                            <td>
+                                <lightning:textarea name="propertyAddress" disabled="true" value="123 North Main ST Oakland CA, 94567-1234"/>
+                            </td>
+                        </tr>                        
+                    </tbody>
+                </table>
+            </div>
+            <div class="slds-col secondcol">
+                <p class="pfontstyle">Primary Residence Verification</p><br></br>
+                <p class="">The Property and Membership addresses are not identical. Please perform a visual comparison to determine if they both describe the same address</p>
+                <br></br>
+                <br></br>
+                <p class="">Do the 2 displayed addresses describe the same location?</p>
+                <table aria-multiselectable="true"
+                            class="slds-table slds-table_header-hidden slds-table_edit slds-tree slds-table_tree"
+                            role="treegrid">
+                            <tbody>
+                                <tr aria-expanded="false" aria-level="1" aria-posinset="3" aria-selected="false"
+                                    aria-setsize="4" class="slds-hint-parent">
+                                    <td class="slds-text-align_right" role="gridcell" style="width:3.25rem">
+                                        <span class="slds-radio">
+                                            <lightning:input type="radio" name="select" value="1"
+                                                onchange="" />
+                                        </span>
+                                    </td>
+                                    <td data-label="Employees" role="gridcell">
+                                        <div class="slds-truncate" title="Yes">Yes, the addresses describe the same location.</div>
+                                    </td>
+                                </tr>
+                                <tr aria-expanded="false" aria-level="1" aria-posinset="3" aria-selected="false"
+                                    aria-setsize="4" class="slds-hint-parent">
+                                    <td class="slds-text-align_right" role="gridcell" style="width:3.25rem">
+                                        <span class="slds-radio">
+                                            <lightning:input type="radio" name="select" value="2"
+                                                onchange=""/>
+                                        </span>
+                                    </td>
+                                    <td data-label="Employees" role="gridcell">
+                                        <div class="slds-truncate" title="No">No, the addresses describe different locations.</div>
+                                    </td>
+                                </tr>                                
+                            </tbody>
+                        </table>
+            </div>
+        </div>
+    </div>
+
+</aura:component>	

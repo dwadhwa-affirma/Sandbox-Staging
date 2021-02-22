@@ -1,0 +1,38 @@
+.THIS .btncontinue{float:right !important;}
+.THIS .footer{
+    position: fixed;
+    bottom: 7% !important;
+    width: 92.3%;
+    height: 62px;
+    text-align: center;  
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+}
+.THIS.modalbody{overflow-y:auto !important; max-height:480px;padding:1rem 2rem !important;height: 570px !important;}
+.THIS.slds-modal__footer{position:absolute; bottom:0;width:100%;}
+.THIS.slds-modal__footer .slds-button{text-transform:uppercase; letter-spacing:1px;}
+.THIS.slds-modal__footer .slds-button:nth-child(2){float:left;}
+.THIS .fontstyle
+{
+	font-size: 2rem;
+    color: #0e70d6;
+    font-weight: bold;
+    margin-top: 2%;
+    text-align: left !important;
+}
+.THIS .divHeader{
+    text-align: left !important;
+    margin-left: 15px;
+}
+
+@media screen and (max-height: 634px ){
+    .THIS.modalbody{max-height:300px;}
+}
+@media screen and (max-height: 603px ){
+    .THIS.modalbody{max-height:263px;}
+}
+@media screen and (max-width: 350px ){
+    .THIS.modalbody{padding: 1rem 1.2rem!important;}
+}
