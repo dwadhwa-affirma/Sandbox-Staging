@@ -212,7 +212,7 @@ public class CardLimitResetController {
 
         if(responseBody != '' && responseBody != null){        
             Map<String,Object> results = (Map<String,Object>)System.JSON.deserializeUntyped(responseBody);
-            if(results.size() > 0){                     
+            if(results != null){                     
                 for(String key : results.keySet()){                   			
                     if(key == 'PosLimit'){
                         PosLimit = String.valueOf(results.get(key));
