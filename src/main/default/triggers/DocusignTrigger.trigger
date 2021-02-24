@@ -74,7 +74,7 @@ trigger DocusignTrigger on dsfs__DocuSign_Status__c(after insert, after update )
 
 	//------------------------Start - Calling a method to create Attachment under "Solar Loans" from Docusign envelopeId---------------//
 
-	if(DocusignIdList1.size() != null && Trigger.isUpdate){
+	if(DocusignIdList.size() != 0 && Trigger.isUpdate){
 		
 		SolarLoanToDocuSign.docusignAttachtoSolar(DocusignIdList,DocusignEnvelopeIdList);
 	}
