@@ -15,6 +15,7 @@ trigger DocusignTrigger on dsfs__DocuSign_Status__c(after insert, after update )
 		}
 		system.debug('DocusignIdList1==' + DocusignIdList1);
 		system.debug('DocusignEnvelopeIdList==' + DocusignEnvelopeIdList);
+
 		List<EFT__C> lisCreateEFT = [SELECT id, Case__c, DocuSignId__c
 		                             from EFT__c
 		                             where DocuSignId__c IN :DocusignEnvelopeIdList];
@@ -58,6 +59,7 @@ trigger DocusignTrigger on dsfs__DocuSign_Status__c(after insert, after update )
 		}
 	}
 
+	
 	/*---------------------------------ACH Changes for assigning CaseId to Docusign Envelop End Here----------------------------*/
 
 	Map<Id, String> docMap = new Map<Id, String>();
@@ -66,8 +68,18 @@ trigger DocusignTrigger on dsfs__DocuSign_Status__c(after insert, after update )
 		docMap.put(d.dsfs__Case__c, d.dsfs__Envelope_Status__c);
 		if (d.dsfs__Envelope_Status__c == 'Completed'){
 			DocusignIdList.add(String.ValueOf(d.Id));
+			DocusignEnvelopeIdList.add(d.dsfs__DocuSign_Envelope_ID__c);
 		}
 	}
+
+	//------------------------Start - Calling a method to create Attachment under "Solar Loans" from Docusign envelopeId---------------//
+
+	if(DocusignIdList1.size() != null && Trigger.isUpdate){
+		
+		SolarLoanToDocuSign.docusignAttachtoSolar(DocusignIdList,DocusignEnvelopeIdList);
+	}
+
+	//------------------------End - Calling a method to create Attachment under "Solar Loans" from Docusign envelopeId---------------//
 
 	List<Case> cs = [Select Id, Previous_Owner__c
 	                 from Case
