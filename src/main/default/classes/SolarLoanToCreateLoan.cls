@@ -29,7 +29,7 @@ public class SolarLoanToCreateLoan {
     public static HttpResponse res0;
     public static Http http0 = new Http();
     public static string responseBody0;
-    public static String ExistingLoanId;
+    public static Boolean ExistingLoanId = false;
     public static String TrackingRecord;
 
     //------------------------------------------------Solar Loan Parameters-----------------------------------------------------//
@@ -239,27 +239,24 @@ public class SolarLoanToCreateLoan {
                         
                         if(results.size() > 0){
                             for(Object key : results){ 
+                                System.debug('Loan Record ...' + key);
                                 Map<String, Object> loanids = (Map<String, Object>)key;
                                 for(String l : loanids.keyset()) {
                                     if(l == 'LoanId'){
-                                        ExistingLoanId = String.valueOf(loanids.get(l));
+                                        if(String.valueOf(loanids.get(l)) == '7500')
+                    	                    ExistingLoanId = true;	
                                     }
-                                    if(l == 'Payment'){
-                                        if(Payment == String.valueOf(loanids.get(l))) {
-                                            PaymentMatched = true;
-                                        }
-                                    }  
                                 }    
                             }
                         }
                     }
-                    system.debug('PaymentMatched'+PaymentMatched);
+                   
                     System.debug('ExistingLoanId'+ExistingLoanId);
                 
-                    if(ExistingLoanId != '0' && PaymentMatched == true){
+                    if(ExistingLoanId == true){
                         
-                        System.debug('Picking existing Loan Record with LoanId '+ ExistingLoanId);    
-                        result = ExistingLoanId;
+                        System.debug('Picking existing Loan Record with LoanId 7500');    
+                        result = '7500';
                         TrackingRecord = 'IsFound';
                     }
                     else{    
@@ -323,7 +320,6 @@ public class SolarLoanToCreateLoan {
                         
                         System.debug('CreateLoan method called');
                         req.setEndpoint(loanAPI+'/EFT/CreateLoan');
-                        //req.setClientCertificateName('brscmcapi');
                         req.setMethod('POST');
                         req.setHeader('Content-Type', 'application/json');
                         req.setHeader('Accept', 'application/json');
@@ -336,7 +332,7 @@ public class SolarLoanToCreateLoan {
                         req.setTimeout(60000);
                         HttpResponse res;
                         String responseBody;
-                        if(!Test.isRunningTest()){                       
+                        if(!Test.isRunningTest() && ExistingLoanId == false){                       
                             res = http.send(req);
                             responseBody = res.getBody();
                             System.debug('Response Body Solar Loan::'+res.getBody());    
