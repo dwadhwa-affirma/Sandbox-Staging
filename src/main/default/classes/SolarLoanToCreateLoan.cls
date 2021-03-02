@@ -2,6 +2,7 @@ public class SolarLoanToCreateLoan {
 
     
     public static List<Solar_Loans__c> SolarLoanToUpdate = new List<Solar_Loans__c>();  
+    public static MAP<Id,Solar_Loans__c> solarMap = new MAP<Id,Solar_Loans__c>();
     public static String ErrorLoanLocator;
     public static String ErrorLoanNameLocator;
     public static String ErrorLoanTrackingLocator;
@@ -230,7 +231,7 @@ public class SolarLoanToCreateLoan {
                     }
                     else{
                         //responseBody11 = '{"LoanId" : "7500","Payment" : "4500.00"}';
-                        responseBody0 = '[{"LoanId":"7500","Payment":"4500.00","CloseDate":"","CardOwner":null,"Locator":"33","Status":null,"Error":null,"ErrorDetails":null}]';
+                        responseBody0 = '[{"LoanId":"7501","Payment":"4500.00","CloseDate":"","CardOwner":null,"Locator":"33","Status":null,"Error":null,"ErrorDetails":null}]';
                     }
 
                     if(responseBody0 != '' && responseBody0 != null){        
@@ -671,18 +672,19 @@ public class SolarLoanToCreateLoan {
                     system.debug('s.Maturity_Date__c'+s.Maturity_Date__c);
                     SolarLoanToUpdate.add(s);  
                 }
-                else{
+                /*else{
                     
                     Solar_Loans__c s = new Solar_Loans__c();
                     s.id = sl.Id; 
                     s.Error_Loan_Locator__c = 'System is ofline';
                     SolarLoanToUpdate.add(s); 
 
-                }
+                }*/
             }
             
-        if(SolarLoanToUpdate.size() > 0){
-            update SolarLoanToUpdate;
+        solarMap.putall(SolarLoanToUpdate);
+        if(solarMap.size() > 0){
+            update solarMap.values();
         }
     }
 
@@ -788,13 +790,13 @@ public class SolarLoanToCreateLoan {
                         SolarLoanToUpdate.add(s); 
                     }
                 }
-                else{
+                /*else{
                     
                     Solar_Loans__c s = new Solar_Loans__c();
                     s.id = sl.Id; 
                     s.Error_Loan_Locator__c = 'System is ofline';
                     SolarLoanToUpdate.add(s);
-                }
+                }*/
 
             }
             if(SolarLoanToUpdate.size() > 0){
@@ -880,8 +882,9 @@ public class SolarLoanToCreateLoan {
             }
               
             
-            if(SolarLoanToUpdate.size() > 0){
-                update SolarLoanToUpdate;
+            solarMap.putall(SolarLoanToUpdate);
+            if(solarMap.size() > 0){
+                update solarMap.values();
             }
 
     }
