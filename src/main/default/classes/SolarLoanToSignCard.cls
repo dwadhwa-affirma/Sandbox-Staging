@@ -1,10 +1,10 @@
-public class SolarLoanToDocuSign {
+public class SolarLoanToSignCard {
 
 	public static String EnvelopeId;
 	public static String EmailToSend;
 	public static Account Member;
 	public static String EmailBody = 'In order for the Credit Union to ensure your solar loan automatic payment setup is accurate, please review and sign the ACH form.' +'\n\n' +'If changes are needed or you would like to provide additional payments, please update the form and sign.' +'\n\n' + 'If you have any questions, please contact us at 800-782-8782 ext. 5200.';
-	public static String EmailSubject = 'ACH Debits';    
+	public static String EmailSubject = 'Signature Card';    
 	public static String accountID; 
 	public static String userId; 
 	public static String passWord;
@@ -40,14 +40,13 @@ public class SolarLoanToDocuSign {
 	public static HTTPResponse res3;
 	
     
-    
     @future(callout=true)
-    public static void docusignAPIcall(Set<ID> ids){   
+    public static void SignCard(Set<ID> ids){   
     	
         //----------------------------Start - DocuSign Templates from Custom setting---------------------------------//
         SolarLoan_Docusign_Emails__c sde = SolarLoan_Docusign_Emails__c.getValues('Email For Testing');
         DocuSign_User_Details__c DTSpectrum = DocuSign_User_Details__c.getValues('Spectrum');
-        DocuSign_User_Details__c DTChevron = DocuSign_User_Details__c.getValues('Chevron');
+        
         List<Solar_Loans__c> SolarLoansToUpdate = new List<Solar_Loans__c>();
         
         String userName = UserInfo.getUserName();
@@ -76,34 +75,33 @@ public class SolarLoanToDocuSign {
             Valid_ABA__c,Loan_Id__c,Account_Number__r.name,Loan_Name_Locator__c,Loan_Tracking_Locator__c, 
             Error_EftLocator__c,Error_Loan_Locator__c,Error_Loan_Name_Locator__c,Error_Loan_Tracking_Locator__c,
             EftLocator__c FROM Solar_Loans__c where id =: ids];
+        	
+        	//---------------------------------------Fetching "Loan Agreement Doc"---------------------------------//
+        	
+        	SolarLoan_Document__c sd = [select id,Attachment_Id__c	,name,Solar_Loans__r.id,Solar_Loans__c from SolarLoan_Document__c where Solar_Loans__r.id in: ids and Document_Name__c LIKE '%Loan Agreement Package%'];
+        	system.debug('Solar Doc '+ sd.id);	
+        
+        	//--------------------------------------Converting Loan Agreement into base64-------------------------//
+        	
+        	ContentVersion cv =[select VersionData from ContentVersion where ContentDocumentId =: sd.Attachment_Id__c];
+			String base64 = EncodingUtil.base64Encode(cv.versionData);
+			System.debug(base64);  
+        
         
         	for(Solar_Loans__c sl : solarloans){
         		
-            	if(sl.Brand__c == 'Spectrum'){
-            		templateID = DTSpectrum.TemplateId__c;
-            		replyTo = DTSpectrum.ReplyTo__c;
-            		accountID = DTSpectrum.AccountId__c;
-            		userId = DTSpectrum.Username__c;
-            		passWord = DTSpectrum.Password__c;
-            		integratorKey = DTSpectrum.IntegratorKey__c;
-            		endpoint = DTSpectrum.EndPoint__c;
-            		
-            		authorizationHeader = '<DocuSignCredentials><Username>'+userId+'</Username><Password>'+Password+'</Password><IntegratorKey>'+integratorKey+'</IntegratorKey></DocuSignCredentials>';
-            		json2='{"replyEmailAddressOverride":"'+replyTo+'",'+'"replyEmailNameOverride": "Spectrum Team",'+'"bccEmailAddresses": []'+'}';
-            	}
-            	else{
-            		templateID = DTChevron.TemplateId__c;
-            		replyTo = DTChevron.ReplyTo__c;
-            		accountID = DTChevron.AccountId__c;
-            		userId = DTChevron.Username__c;
-            		passWord = DTChevron.Password__c;
-            		integratorKey = DTChevron.IntegratorKey__c;
-            		endpoint = DTChevron.EndPoint__c;
-            		
-            		authorizationHeader = '<DocuSignCredentials><Username>'+userId+'</Username><Password>'+Password+'</Password><IntegratorKey>'+integratorKey+'</IntegratorKey></DocuSignCredentials>';
-            		json2='{"replyEmailAddressOverride": "'+replyTo+'",'+'"replyEmailNameOverride": "Chevron Team",'+'"bccEmailAddresses": []'+'}';
-            	}
+                templateID = DTSpectrum.TemplateId__c;
+                replyTo = DTSpectrum.ReplyTo__c;
+                accountID = DTSpectrum.AccountId__c;
+                userId = DTSpectrum.Username__c;
+                passWord = DTSpectrum.Password__c;
+                integratorKey = DTSpectrum.IntegratorKey__c;
+                endpoint = DTSpectrum.EndPoint__c;
+                
+                authorizationHeader = '<DocuSignCredentials><Username>'+userId+'</Username><Password>'+Password+'</Password><IntegratorKey>'+integratorKey+'</IntegratorKey></DocuSignCredentials>';
+                json2='{"replyEmailAddressOverride":"'+replyTo+'",'+'"replyEmailNameOverride": "Spectrum Team",'+'"bccEmailAddresses": []'+'}';
             	
+            	            	
         		endPointURL = 'https://'+endpoint+'/restapi/v2.1/accounts/'+accountID+'/envelopes'; 
                 req.setEndpoint(endPointURL); 
 				req.setMethod('POST'); 
@@ -111,7 +109,9 @@ public class SolarLoanToDocuSign {
 				req.setHeader('Content-Length','162100'); 
 				req.setHeader('Content-Type','application/json'); 
 				req.setHeader('Content-Disposition','form-data'); 
-                json = '{"emailBlurb":"'+EmailBody+'",'+'"emailSubject": "'+EmailSubject+'",'+'"status": "created",'+'"compositeTemplates": ['+'{'+'"serverTemplates": ['+'{'+'"sequence": "1",'+'"templateId":"'+templateID+'"'+'}'+'],'+'"inlineTemplates": ['+'{'+'"sequence": "1",'+'"customFields": {'+'"textCustomFields": ['+'{'+'"configurationType": "salesforce",'+'"name":"Solar_Loans__c",'+'"required": "true","show": "true",'+'"value":"'+sl.Id+'"'+'}'+']'+'}'+'}'+']'+'}'+']'+'}';
+                //json = '{"emailBlurb":"'+EmailBody+'",'+'"emailSubject": "'+EmailSubject+'",'+'"status": "created",'+'"documents": ['+'{'+'"documentId": "2",'+'"name": "Additional Document 1.pdf",'+'"order": "2",'+'"documentBase64": "'+base64+'"'+'}'+'],'+' "recipients": '+'{"signers": ['+'{"email": "rakesh.joshi@alept.com",'+'"name": "Rakesh",'+'"recipientId": "1",'+'"routingOrder": "1",'+'"tabs": '+'{'+'"signHereTabs": ['+'{"anchorString": "Signature of Joint Owner",'+'"anchorUnits": "inches",'+' "anchorXOffset": "2",'+'"anchorYOffset": "0.2"'+'}'+'],'+'"textTabs": ['+'{'+'"anchorString":"Member #",'+'"anchorUnits": "inches",'+'"anchorXOffset": "1",'+'"anchorYOffset": "0",'+'"bold": "true",'+'"font": "helvetica",'+'"fontSize": "size11",'+'"locked": "true",'+'"tabId": "legal_name",'+'"tabLabel": "Legal name",'+'"value":  "'+sl.Member_Number__c+'"'+'},'+'{'+'"anchorString":"XA Application No.",'+'"anchorUnits": "inches",'+'"anchorXOffset": "1.10",'+'"anchorYOffset": "0.05",'+'"bold": "true",'+'"font": "helvetica",'+'"fontSize": "size11",'+'"locked": "true",'+'"tabId": "legal_name",'+'"tabLabel": "Legal name",'+'"value": "2166"'+'}'+']'+'}'+'}'+']'+'}'+'}';
+                json = '{"emailBlurb":"'+EmailBody+'",'+'"emailSubject": "'+EmailSubject+'",'+'"status": "created",'+'"documents": ['+'{'+'"documentId": "2",'+'"name": "Additional Document 1.pdf",'+'"order": "2",'+'"documentBase64": "'+base64+'"'+'}'+'],'+' "recipients": '+'{"signers": ['+'{"email": "rakesh.joshi@alept.com",'+'"name": "Rakesh",'+'"recipientId": "1",'+'"routingOrder": "1",'+'"tabs": '+'{'+'"signHereTabs": ['+'{"anchorString": "Signature of Joint Owner",'+'"anchorUnits": "inches",'+' "anchorXOffset": "2",'+'"anchorYOffset": "0.2"'+'}'+'],'+'"textTabs": ['+'{'+'"anchorString":"Member #",'+'"anchorUnits": "inches",'+'"anchorXOffset": "1",'+'"anchorYOffset": "0",'+'"bold": "true",'+'"font": "helvetica",'+'"fontSize": "size11",'+'"locked": "true",'+'"tabId": "legal_name",'+'"tabLabel": "Legal name",'+'"value":  "'+sl.Member_Number__c+'"'+'},'+'{'+'"anchorString":"XA Application No.",'+'"anchorUnits": "inches",'+'"anchorXOffset": "1.10",'+'"anchorYOffset": "0.05",'+'"bold": "true",'+'"font": "helvetica",'+'"fontSize": "size11",'+'"locked": "true",'+'"tabId": "legal_name",'+'"tabLabel": "Legal name",'+'"value": "2166"'+'},'+'{'+'"anchorString":"Member Number:",'+'"anchorUnits": "inches",'+'"anchorXOffset": "0.4",'+'"anchorYOffset": "0.12",'+'"bold": "true",'+'"font": "helvetica",'+'"fontSize": "size11",'+'"locked": "true",'+'"tabId": "legal_name",'+'"tabLabel": "Legal name",'+'"value": "'+sl.Member_Number__c+'"'+'}'+']'+'}'+'}'+']'+'}'+'}';
+                
 	            req.setBody(json); 
     			if(!Test.isRunningTest()){  
     				res = http.send(req);
@@ -148,7 +148,7 @@ public class SolarLoanToDocuSign {
                 if(EmailToSend == 'Production' || EmailToSend == 'production'){
             	
          			Member = [select id, name, PersonEmail from account where id =: sl.Member_Name__c Limit 1];
-         			json1 = '{"signers": ['+'{'+'"email": "'+Member.PersonEmail+'",'+'"recipientId" : "1",'+'"roleName": "client",'+'"name": "'+Member.Name+'",'+'"signingGroupId": "signers",'+'"routingOrder" : "null"'+'}'+']'+'}';
+         			json1 = '{"signers": ['+'{'+'"email": "'+Member.PersonEmail+'",'+'"recipientId" : "2",'+'"roleName": "client",'+'"name": "'+Member.Name+'",'+'"signingGroupId": "signers",'+'"routingOrder" : "null"'+'}'+']'+'}';
            		}
                 
                 if(EmailToSend != 'Production' || EmailToSend != 'production'){
@@ -196,7 +196,7 @@ public class SolarLoanToDocuSign {
             }
             
             if(SolarLoansToUpdate.size() > 0){
-        		update SolarLoansToUpdate;
+        		//update SolarLoansToUpdate;
         	}
-    }    
+    }	
 }

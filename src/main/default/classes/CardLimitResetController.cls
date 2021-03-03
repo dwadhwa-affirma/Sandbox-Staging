@@ -150,6 +150,7 @@ public class CardLimitResetController {
         String jsonData;
         String PosLimit;
         String AuthLimit;
+        String UsageLimit;
 
         string firstname,lastname;
         List<string> Names = membername.split(' ');
@@ -212,7 +213,7 @@ public class CardLimitResetController {
 
         if(responseBody != '' && responseBody != null){        
             Map<String,Object> results = (Map<String,Object>)System.JSON.deserializeUntyped(responseBody);
-            if(results.size() > 0){                     
+            if(results != null){                     
                 for(String key : results.keySet()){                   			
                     if(key == 'PosLimit'){
                         PosLimit = String.valueOf(results.get(key));
@@ -222,9 +223,14 @@ public class CardLimitResetController {
                         AuthLimit = String.valueOf(results.get(key));
                         resultmap.put('AuthLimit',AuthLimit);
                     }
+                    if(key == 'UsageLimit'){
+                        UsageLimit = String.valueOf(results.get(key));
+                        resultmap.put('UsageLimit',UsageLimit); 
+                    }
                 }
                 system.debug('PosLimit: '+PosLimit);
                 system.debug('AuthLimit: '+AuthLimit);
+                system.debug('UsageLimit: '+UsageLimit);
             }
 
         }
@@ -453,7 +459,7 @@ public class CardLimitResetController {
         string responseBody;
         string loanAPI;
         String jsonData;
-
+        string operatorid;
         HttpRequest req1 = new HttpRequest();
         HttpResponse res1;
         Http http1 = new Http();
@@ -464,6 +470,26 @@ public class CardLimitResetController {
                         
         if(api.URL__c != null){
             loanAPI = api.URL__c;
+        }
+        
+        String userName = UserInfo.getUserName();
+        User activeUser = [Select Email,Alias From User where Username = : userName and Alias != null limit 1];
+        List<Episys_User__c> epu =  [select id,Alias__c,Episys_ID__c,Episys_Name__c from Episys_User__c where Alias__c =: activeUser.Alias];
+        system.debug('Episys User' + epu);
+        if(epu != null){
+            if(epu.size() > 1){
+                for(Episys_User__c eu : epu){
+                    if(eu.Alias__c != null){
+                        operatorid = string.ValueOf(epu[0].Episys_ID__c);
+                        system.debug('operatorid'+operatorid);
+                    }
+                }
+            
+            }
+            if(epu.size() == 1){
+                operatorid = string.ValueOf(epu[0].Episys_ID__c);
+                system.debug('operatorid'+operatorid);
+            }
         }
 
         string firstname,lastname;
@@ -549,7 +575,7 @@ public class CardLimitResetController {
             req.setMethod('POST');
             req.setHeader('Content-Type', 'application/json');
             req.setHeader('Accept', 'application/json');
-            jsonData = '{"Locator":' + '\"'+ cardlocator +'\","AccountNumber":' + '\"'+ AccountNumber +'\","PosLimit":' + '\"'+ authlimit +'\","AuthLimit":' + '\"'+ atmlimit +'\"}';                 
+            jsonData = '{"EpisysId":'+'\"'+operatorid+'\"'+',"Locator":' + '\"'+ cardlocator +'\","AccountNumber":' + '\"'+ AccountNumber +'\","UsageLimit":' + '\"'+ atmlimit +'\","AuthLimit":' + '\"'+ authlimit +'\"}';                 
             system.debug('test'+jsonData);
             req.setBodyAsBlob(Blob.valueof(jsonData));
             req.setTimeout(60000);                    
@@ -574,7 +600,7 @@ public class CardLimitResetController {
             req.setMethod('POST');
             req.setHeader('Content-Type', 'application/json');
             req.setHeader('Accept', 'application/json');
-            jsonData = '{"Locator":' + '\"'+ cardlocator +'\","AccountNumber":' + '\"'+ AccountNumber +'\","PosLimit":' + '\"'+ authlimit +'\","AuthLimit":' + '\"'+ atmlimit +'\"}';                 
+            jsonData = '{"EpisysId":'+'\"'+operatorid+'\"'+',"Locator":' + '\"'+ cardlocator +'\","AccountNumber":' + '\"'+ AccountNumber +'\","UsageLimit":' + '\"'+ atmlimit +'\","AuthLimit":' + '\"'+ authlimit +'\"}';                 
             system.debug('test'+jsonData);
             req.setBodyAsBlob(Blob.valueof(jsonData));
             req.setTimeout(60000);                    

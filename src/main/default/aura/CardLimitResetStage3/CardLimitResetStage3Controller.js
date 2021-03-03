@@ -32,8 +32,8 @@
                         else{
                             component.set("v.CLRecord.Auth_POS_Limit__c",'2500.00');
                         }
-                        if(result.AuthLimit != undefined && result.AuthLimit != ''){
-                            component.set("v.CLRecord.ATM_Usage_Limit__c", result.AuthLimit);
+                        if(result.UsageLimit != undefined && result.UsageLimit != ''){
+                            component.set("v.CLRecord.ATM_Usage_Limit__c", result.UsageLimit);
                         }
                         else{
                         	component.set("v.CLRecord.ATM_Usage_Limit__c",'510.00');   
