@@ -5,7 +5,9 @@
         helper.getAccountServiceMenuData(component, event);
         
     },
-    
+    preventDefault : function(component, event, helper) {	
+        event.preventDefault();
+    },
     loadSubMenu : function(component, event, helper) {	
         
         var submenu = component.get("v.SubMenu");
@@ -166,21 +168,20 @@
         var submenu = component.get("v.SubMenu");
         var clicked = event.target.text;
         
-        var index =  event.target.parentElement.id;
-        
+        var index =  event.target.parentElement.id
         if(!index){
-           index =  event.target.parentElement.parentElement.id
-        }
+            index =  event.target.parentElement.parentElement.id
+         }
         //  event.target.classList.add("visited");
         // component.set("v.LoadSubMenu",finalSubMenu);
         var ele = document.getElementById('divAccountServiceSubMenu'+index);
         if(ele.style.display == ''){
             ele.style.display = 'none';
-            //event.target.parentElement.firstChild.innerHTML='&#9658;'
+            event.target.parentElement.firstChild.innerHTML='&#9658;'
         }
         else{
             ele.style.display = '';
-            //event.target.parentElement.firstChild.innerHTML='&#9660;'
+            event.target.parentElement.firstChild.innerHTML='&#9660;'
         }
         // ele.style = '';
         
