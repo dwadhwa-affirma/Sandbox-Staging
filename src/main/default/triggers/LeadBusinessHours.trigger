@@ -209,8 +209,8 @@ trigger LeadBusinessHours on Lead (after insert,after update, before insert, bef
         for(Lead lead: Trigger.new){
         
             system.debug('Episys_User_ID##'+ lead.Episys_User_ID__c); 
-            
-            if(lead.Status == 'New' && lead.Episys_User_ID__c != 7002 &&
+            System.debug('lead.recordTypeID'+lead.recordTypeID);
+            if(lead.Status == 'New' && lead.Episys_User_ID__c != 7002 && lead.recordTypeID != null &&
                !rt_map.get(lead.recordTypeID).getName().containsIgnoreCase('Company Lead') && 
                (lead.LeadSource == 'Branch Walk in' || lead.LeadSource == 'Branch Call')){
                 System.debug('1111');
@@ -281,7 +281,7 @@ trigger LeadBusinessHours on Lead (after insert,after update, before insert, bef
                     }
                 }
             }
-            else if(lead.Status == 'New' && lead.Episys_User_ID__c != 7002 &&
+            else if(lead.Status == 'New' && lead.Episys_User_ID__c != 7002 && lead.recordTypeID != null &&
                     !rt_map.get(lead.recordTypeID).getName().containsIgnoreCase('Company Lead') && 
                     lead.LeadSource == 'Event' ){
             		System.debug('2222');
@@ -329,7 +329,7 @@ trigger LeadBusinessHours on Lead (after insert,after update, before insert, bef
                         }
                     }
                 }
-                else if(lead.Status == 'New' && lead.Episys_User_ID__c != 7002 &&
+                else if(lead.Status == 'New' && lead.Episys_User_ID__c != 7002 && lead.recordTypeID != null &&
                          !rt_map.get(lead.recordTypeID).getName().containsIgnoreCase('Company Lead') && 
                         (lead.LeadSource != 'Branch Walk in' && lead.LeadSource != 'Branch Call')){
                		System.debug('3333');
@@ -351,12 +351,28 @@ trigger LeadBusinessHours on Lead (after insert,after update, before insert, bef
                     }       
                     
                 }
-                else if(!rt_map.get(lead.recordTypeID).getName().containsIgnoreCase('Company Lead') && 
+                else if(lead.recordTypeID != null && !rt_map.get(lead.recordTypeID).getName().containsIgnoreCase('Company Lead') && 
                          lead.Episys_User_ID__c != 7002 && 
                         (lead.Status =='Outreach' || lead.Status == 'Analyzing Needs' || lead.Status == 'Prospect Considering')){
                 	System.debug('4444');
                     lead.OwnerId = uid;
-                }        
+                }
+            	else if(lead.Episys_User_ID__c != 7002 && lead.LeadSource == 'Real Estate help desk' && 
+                         lead.I_m_interested_in__c == 'Home Loan Help Desk'){
+                             
+                	System.debug('5555');
+                    for(Group grp : listQueue){
+              	      if(grp.name.containsIgnoreCase('Real Estate')){
+                 	     groupName = grp.Name;
+                         groupnameid = grp.id;
+                         break;
+                      }
+                    }
+                    if(groupName!=null && groupName!=''){
+                   		system.debug('Queue Name: '+groupName); 
+                        lead.OwnerId = groupnameid;
+                    }
+                }
         }   
     }
         
