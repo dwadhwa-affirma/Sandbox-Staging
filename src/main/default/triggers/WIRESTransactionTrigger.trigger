@@ -1,5 +1,6 @@
 trigger WIRESTransactionTrigger on WIRES_Transaction__c (before insert, after insert,after update) {
     
+      System.debug('In the trigger');
     
     //------------------------------------------------------------------After Update  ------------------------------------------------------------------------------//
     
@@ -94,8 +95,10 @@ trigger WIRESTransactionTrigger on WIRES_Transaction__c (before insert, after in
     
     //------------------------------------------------------------------Before Insert  ------------------------------------------------------------------------------//
     if(Trigger.isInsert && Trigger.isBefore){ 
+                    System.debug('Came in Before Insert');
         for(WIRES_Transaction__c objWIRESTransaction: trigger.New)
         {
+            System.debug('Came in Before Insert');
             string AccountNo= objWIRESTransaction.FromAccount__c;    	
             
             Account_Details__c accDetail=[SELECT Id,Name, Brand__c FROM Account_Details__c WHERE Name=:AccountNo AND RecType__c = 'ACCT' LIMIT 1];
@@ -138,6 +141,10 @@ trigger WIRESTransactionTrigger on WIRES_Transaction__c (before insert, after in
             
             if(objWIRESTransaction.Source__c==WiresConstant.Source_Branch){
                 objWIRESTransaction.Approval_Status__c = WiresConstant.ApprovalStatus_PendingForMemberReview;
+                
+                System.debug('WiresConstant.Source_Branch: Set user id');
+                
+                objWIRESTransaction.CreatedById =objWIRESTransaction.LaunchByUserId__c;
             }
             
             list<Person_Account__c> paList = [SELECT Id,PersonID__c,

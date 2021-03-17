@@ -470,19 +470,24 @@ public class WiresTransactionApprovalController {
                 if(wt.FlagAccountOpenfor45Days__c && wt.FlagEmailStablefor30Days__c
                    && wt.FlagHomePhoneStablefor30Days__c && wt.FlagMobilePhoneStablefor30Days__c
                    && wt.FlagWorkPhoneStablefor30Days__c){
+                       System.debug('In condiiton');
                        if(isGoodFundCheck==true && statusCode<=0){
+                           System.debug('In condiiton1');
                            wt.Approval_Status__c = WiresConstant.ApprovalStatus_GoodFundsCheckFailed;
                            wiresToUpdate.add(wt);
                        }else if(isGoodFundCheck==true && statusCode>0 && wt.TotalFromAccount__c>250000 ){
+                           System.debug('In condiiton2');
                            wt.Approval_Status__c = WiresConstant.ApprovalStatus_PendingForApproval;
                            wiresToUpdate.add(wt);
                        }
                        else{
+                           System.debug('In condiiton3');
                            wt.Approval_Status__c = WiresConstant.ApprovalStatus_Approved;
                            wt.Approved_by_1st_Approver__c = UserInfo.getUserId();
                            wiresToUpdate.add(wt);
                        }
                    }else{
+                       System.debug('In condiiton4');
                        wt.Approval_Status__c=WiresConstant.ApprovalStatus_FraudReview;
                        wiresToUpdate.add(wt);
                    }
@@ -500,7 +505,7 @@ public class WiresTransactionApprovalController {
     @future(callout=true)
     public static void CheckGoodFundAndUpdateStatus(Set<Id> id){
         
-        System.debug('Id:'+Id);
+        System.debug('THIS Id:'+Id);
         
         integer statusCode=0;
         boolean isGoodFundCheck=false;
@@ -552,7 +557,8 @@ public class WiresTransactionApprovalController {
                 }
             }
             
-            if(isGoodFundCheck==true && statusCode<=0){
+            System.debug('statusCode:'+statusCode);
+            if(isGoodFundCheck==true && (statusCode<=0 || statusCode==null)){
                 wt.Approval_Status__c = WiresConstant.ApprovalStatus_GoodFundsCheckFailed;
                 wiresToUpdate.add(wt);
             }else if(isGoodFundCheck==true && statusCode>0){
