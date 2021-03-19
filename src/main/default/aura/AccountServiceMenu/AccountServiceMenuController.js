@@ -5,7 +5,9 @@
         helper.getAccountServiceMenuData(component, event);
         
     },
-    
+    preventDefault : function(component, event, helper) {	
+        event.preventDefault();
+    },
     loadSubMenu : function(component, event, helper) {	
         
         var submenu = component.get("v.SubMenu");
@@ -55,12 +57,12 @@
         var submenu = component.get("v.SubMenu");
         var clicked = event.target.text;
         
-        if(clicked=="XpressRefi"){
-            var recordId = component.get("v.recordId");
-            var x = screen.width/2 - 900/2;
-            var y = screen.height/2 - 600/2;
-            var url = '/apex/xpressRefi?MemberId=' + recordId;
-            window.open(url, '_blank', 'height=500,width=900,left='+x+',top='+y);
+        if(clicked=="XpressRefiOld"){
+            // var recordId = component.get("v.recordId");
+            // var x = screen.width/2 - 900/2;
+            // var y = screen.height/2 - 600/2;
+            // var url = '/apex/xpressRefi?MemberId=' + recordId;
+            // window.open(url, '_blank', 'height=500,width=900,left='+x+',top='+y);
         }else{
             event.target.classList.add("visited");
             event.target.parentElement.classList.add("visited");
@@ -167,6 +169,9 @@
         var clicked = event.target.text;
         
         var index =  event.target.parentElement.id
+        if(!index){
+            index =  event.target.parentElement.parentElement.id
+         }
         //  event.target.classList.add("visited");
         // component.set("v.LoadSubMenu",finalSubMenu);
         var ele = document.getElementById('divAccountServiceSubMenu'+index);

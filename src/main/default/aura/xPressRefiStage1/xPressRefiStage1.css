@@ -1,6 +1,6 @@
 .THIS#stage1 {width:70%; font-size:.8125rem; margin:0 auto;}
 
-.THIS#stage1 .stage1{width:100% !important; font-size:.8125rem; margin:0 auto;}
+.THIS#stage1 .stage1{width:100% !important; font-size:.8125rem; margin:0 auto;height: 600px !important;}
 
 .THIS#stage1 .slds-form-element__label{width:120px;max-width:unset;}
 
@@ -10,8 +10,8 @@
     margin-top: 2%;
     text-align: left !important;}
 
-.THIS#stage1 .firstcol{border-right: 1px solid #777; margin-right: 1rem; padding-top:1rem;width: 60% !important;}
-.THIS#stage1 .secondcol{padding-top:1rem;}
+.THIS#stage1 .firstcol{border-right: 1px solid #777; margin-right: 1rem; padding-top:5rem;width: 60% !important;height: 580px !important;}
+.THIS#stage1 .secondcol{padding-top:5rem;}
 .THIS#stage1 .centerPara{text-align: center;font-size: 1rem;}
 .THIS#stage1 .customRadioCls .slds-form-element__control .slds-radio{
     display : inline-block !important;

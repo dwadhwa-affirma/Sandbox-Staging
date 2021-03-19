@@ -1,1 +1,6 @@
-<aura:event type="APPLICATION" description="Event template"/>
+<aura:event type="APPLICATION"> 
+    <aura:attribute name="ActiveStepIndex" type="Integer"/>   
+    <aura:attribute name="isLoanPrimaryResidence" type="Boolean" />  
+    <aura:attribute name="xPressRefiRecord" type="xPressRefi__c"/> 
+    <aura:attribute name="MembershipAddressDetails" type="Map" default="{ MembershipAddress1: '', MembershipAddress2: '', MembershipCity : '', MembershipState : '', MembershipZip : '' }" /> 
+</aura:event>

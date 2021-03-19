@@ -3,9 +3,19 @@
     access="global" controller="xPressRefiController">
 
     <aura:handler name="init" action="{!c.doInit}" value="{!this}" access="global" />
+    <aura:handler event="c:xPressRefiEvent" action="{!c.getActionValue}" />
 
+    <aura:attribute name="ActiveStepIndex" type="Integer" />
     <aura:attribute name="ContinueButtonName" type="string" default="Continue" />
     <aura:attribute name="xPressRefiStageDetails" type="xPressRefi_Stages__c[]" />
+    <aura:attribute name="isError" type="Boolean" />
+    <aura:attribute name="errorMessage" type="string" />
+    <aura:attribute name="isLoanPrimaryResidence" type="Boolean" />
+    <aura:attribute name="isContinueDisabled" type="Boolean" default="true" />
+    <aura:attribute name="xPressRefiRecord" type="xPressRefi__c" default="{
+		'sobjectType': 'xPressRefi__c',
+                'Property__c': ''}" />
+    <aura:attribute name="MembershipAddressDetails" type="Map" default="{ MembershipAddress1: '', MembershipAddress2: '', MembershipCity : '', MembershipState : '', MembershipZip : '' }" />
 
     <header class="slds-media_center slds-has-flexi-truncate slds-modal__header">
         <button
@@ -20,12 +30,26 @@
     </header>
     <div class="modalbody slds-p-around_medium" id="modal-content-id-1">
         <div aura:id="ModalDialogPlaceholder" />
+        <aura:if isTrue="{!(v.isError == true)}">
+            <div id="stage" class="align">
+                <p class="errorfontstyle">{!v.errorMessage}</p>
+            </div>
+        </aura:if>
+        
     </div>
+   
     <lightning:spinner aura:id="Spinner" alternativeText="Loading" size="medium" variant="brand"
         class="slds-hide spin" />
     <footer class="slds-modal__footer slds-modal__footer_directional">
-        <lightning:button aura:id="Exit" label="Exit" title="Exit" onclick="{!c.cancelAction}" />
-        <lightning:button variant="brand" label="{!v.ContinueButtonName}" title="Continue" onclick="{!c.Continue}"
-            aura:id="btnContinue" class="btncontinue" />
+        <lightning:button aura:id="Exit" label="Exit" title="Exit" onclick="{!c.cancelAction}" class="btnClass"/>
+        <aura:if isTrue="{!v.ActiveStepIndex != 3}">
+            <lightning:button variant="brand" label="{!v.ContinueButtonName}" title="Continue" onclick="{!c.Continue}"
+            aura:id="btnContinue" class="btncontinue btnClass" disabled="{!v.isContinueDisabled}" />
+        <aura:set attribute="else">
+            <lightning:button variant="brand" label="Close" title="Close" onclick="{!c.cancelAction}"
+             class="btncontinue btnClass" />
+        </aura:set>
+        </aura:if>
+        
     </footer>
 </aura:component>

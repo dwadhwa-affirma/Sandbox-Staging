@@ -1,284 +1,282 @@
-<aura:component implements="force:appHostable,force:lightningQuickActionWithoutHeader,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,force:hasSObjectName"
-    access="global" controller="xPressRefiController">
+<aura:component
+  implements="force:appHostable,force:lightningQuickActionWithoutHeader,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,force:hasSObjectName"
+  access="global" controller="xPressRefiController">
 
 
-    <div id="stage2" class="stage2" style="width:100% !important;">
-        <div class="slds-grid slds-gutters eft4tbl">
-            <div class="slds-col firstcol">
-                <p class="pfontstyle">Current Mortgage Information</p><br></br>
-                <table class="fundingtbl">
-                    <tbody>
-                        <tr>
-                            <td>
-                                <span>Member Number</span>
-                            </td>
-                            <td>
-                                <lightning:input name="membernumber" value="112233445"
-                                    disabled="true" />
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <span>Property Address:</span>
-                            </td>
-                            <td>
-                                <lightning:textarea name="propertyAddress" disabled="true" value="123 N. Main Street Oakland CA, 94567"/>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <span>Mortgage Type:</span>
-                            </td>
-                            <td>
-                                <lightning:input name="mortgagetype" value="15 Year Fixed"
-                                    disabled="true" />
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <span>Principle Balance:</span>
-                            </td>
-                            <td>
-                                <lightning:input class="PrincipleBalance" type="number"
-								value="308875.50"
-									step="0.01" formatter="currency" disabled="true"/>
-                            </td>
-                        </tr> 
-                        <tr>
-                            <td>
-                                <span>Interest Rate:</span>
-                            </td>
-                            <td>
-                                <lightning:input class="InterestRate" type="number"
-								value="3.92" formatter="percent" step="0.01" disabled="true"/>
-                            </td>
-                        </tr> 
-                        <tr>
-                            <td>
-                                <span>P&amp;I Payment:</span>
-                            </td>
-                            <td>
-                                <lightning:input class="InterestRate" type="number"
-								value="2272.93" formatter="currency" step="0.01" disabled="true"/>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <span>Total Payment Amt:</span>
-                            </td>
-                            <td>
-                                <lightning:input class="InterestRate" type="number"
-								value="2713.56" formatter="currency" step="0.01" disabled="true"/>
-                            </td>
-                        </tr>  
-                        <tr>
-                            <td>
-                                <span>Maturity Date:</span>
-                            </td>
-                            <td>
-                                <ui:inputDate value="2035-01-01" format="MM/dd/yyyy" disabled="true" />
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <span>Loan ID:</span>
-                            </td>
-                            <td>
-                                <lightning:input name="LoanID" value="1234-345-567"
-                                    disabled="true" />
-                            </td>
-                        </tr>                         
-                    </tbody>
-                </table>
-            </div>
-            <div class="slds-col secondcol">
-                <p class="pfontstyle">Refi Choices</p><br></br>                
-                <br></br>
-                <br></br>
-                <div class="eftrecord">                   
-                    <table aria-multiselectable="true"
-                      class="slds-table slds-table_header-hidden slds-table_edit slds-tree slds-table_tree" role="treegrid">
-                      <thead>
-                        <tr class="slds-line-height_reset">
-                          <th class="slds-text-align_right" scope="col" style="width:3.25rem">
-                            <span id="column-group-header" class="slds-assistive-text">Choose a row</span>
-                            <div class="slds-th__action slds-th__action_form">
-          
-                            </div>
-                          </th>
-                          <th aria-label="MemberNumber" class="loanth">
-                            <a class="slds-th__action slds-text-link_reset" tabindex="-1">
-                              <span class="slds-assistive-text">Sort by: </span>
-                              <div class="slds-grid slds-grid_vertical-align-center slds-has-flexi-truncate">
-                                <span class="slds-truncate" title="Product">Product</span>
-                              </div>
-                            </a>
-                          </th>
-                          <th aria-label="Share/Loan" class="loanth">
-                            <a class="slds-th__action slds-text-link_reset" tabindex="-1">
-                              <span class="slds-assistive-text">Sort by: </span>
-                              <div class="slds-grid slds-grid_vertical-align-center slds-has-flexi-truncate">
-                                <span class="slds-truncate" title="Rate">Rate</span>
-                              </div>
-                            </a>
-                          </th>
-                          <th aria-label="Amount" class="loanth">
-                            <a class="slds-th__action slds-text-link_reset" tabindex="-1">
-                              <span class="slds-assistive-text">Sort by: </span>
-                              <div class="slds-grid slds-grid_vertical-align-center slds-has-flexi-truncate">
-                                <span class="slds-truncate" title="APR">APR</span>
-                              </div>
-                            </a>
-                          </th>
-                          <th aria-label="Financial Institution" class="loanth">
-                            <a class="slds-th__action slds-text-link_reset" tabindex="-1">
-                              <span class="slds-assistive-text">Sort by: </span>
-                              <div class="slds-grid slds-grid_vertical-align-center slds-has-flexi-truncate">
-                                <span class="slds-truncate" title="Total P&amp;I Payment">Total P&amp;I Payment</span>
-                              </div>
-                            </a>
-                          </th>
-                          <th aria-label="Financial Institution" class="loanth">
-                            <a class="slds-th__action slds-text-link_reset" tabindex="-1">
-                              <span class="slds-assistive-text">Sort by: </span>
-                              <div class="slds-grid slds-grid_vertical-align-center slds-has-flexi-truncate">
-                                <span class="slds-truncate" title="MonthlySavings">Monthly Savings</span>
-                              </div>
-                            </a>
-                          </th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                                                
-                            <tr aria-expanded="false" aria-level="1" aria-posinset="3" aria-selected="false" aria-setsize="4"
-                              class="slds-hint-parent">
-                              <td class="slds-text-align_right" role="gridcell" style="width:3.25rem">
-                                <div class="slds-radio">
-                                  <span class="slds-radio">
-                                    <lightning:input type="radio" name="select"/>
-                                  </span>
-                                </div>
-                              </td>
-                              <td class="slds-text-align_right" role="gridcell" style="width:3.25rem">
-                                <div class="slds-truncate">
-                                    30 Yr Fix</div>
-                              </td>
-                              <td class="slds-text-align_right" role="gridcell" style="width:3.25rem">
-                                <div class="slds-truncate">3.125%
-                                </div>
-                              </td>
-                              <td class="slds-text-align_right" role="gridcell" style="width:3.25rem">
-                                <div class="slds-truncate">3.180%
-                                </div>
-                              </td>
-                              <td class="slds-text-align_right" role="gridcell" style="width:3.25rem">
-                                <div class="slds-truncate">
-                                  <lightning:formattedNumber value="1332.00" style="currency" currencyCode="USD" />
-                                </div>
-                              </td>
-                              <td class="slds-text-align_right" role="gridcell" style="width:3.25rem;">
-                                <lightning:formattedNumber value="940.93" style="currency" currencyCode="USD" />
-                              </td>
-                            </tr>
-                            
-                            <tr aria-expanded="false" aria-level="1" aria-posinset="3" aria-selected="false" aria-setsize="4"
-                              class="slds-hint-parent">
-                              <td class="slds-text-align_right" role="gridcell" style="width:3.25rem">
-                                <div class="slds-radio">
-                                  <span class="slds-radio">
-                                    <lightning:input type="radio" name="select"/>
-                                  </span>
-                                </div>
-                              </td>
-                              <td class="slds-text-align_right" role="gridcell" style="width:3.25rem">
-                                <div class="slds-truncate">
-                                    15 Yr Fix</div>
-                              </td>
-                              <td class="slds-text-align_right" role="gridcell" style="width:3.25rem">
-                                <div class="slds-truncate">2.375%
-                                </div>
-                              </td>
-                              <td class="slds-text-align_right" role="gridcell" style="width:3.25rem">
-                                <div class="slds-truncate">2.473%
-                                </div>
-                              </td>
-                              <td class="slds-text-align_right" role="gridcell" style="width:3.25rem">
-                                <div class="slds-truncate">
-                                  <lightning:formattedNumber value="2041.00" style="currency" currencyCode="USD" />
-                                </div>
-                              </td>
-                              <td class="slds-text-align_right" role="gridcell" style="width:3.25rem;">
-                                <lightning:formattedNumber value="231.93" style="currency" currencyCode="USD" />
-                              </td>
-                            </tr>
+  <aura:handler name="init" action="{!c.doInit}" value="{!this}" access="global" />
+  <aura:registerEvent name="xPressRefiEvent" type="c:xPressRefiEvent" />
 
-                            <tr aria-expanded="false" aria-level="1" aria-posinset="3" aria-selected="false" aria-setsize="4"
-                              class="slds-hint-parent">
-                              <td class="slds-text-align_right" role="gridcell" style="width:3.25rem">
-                                <div class="slds-radio">
-                                  <span class="slds-radio">
-                                    <lightning:input type="radio" name="select"/>
-                                  </span>
-                                </div>
-                              </td>
-                              <td class="slds-text-align_right" role="gridcell" style="width:3.25rem">
-                                <div class="slds-truncate">
-                                    7/6 ARM</div>
-                              </td>
-                              <td class="slds-text-align_right" role="gridcell" style="width:3.25rem">
-                                <div class="slds-truncate">2.750%
-                                </div>
-                              </td>
-                              <td class="slds-text-align_right" role="gridcell" style="width:3.25rem">
-                                <div class="slds-truncate">2.94%
-                                </div>
-                              </td>
-                              <td class="slds-text-align_right" role="gridcell" style="width:3.25rem">
-                                <div class="slds-truncate">
-                                  <lightning:formattedNumber value="" style="currency" currencyCode="USD" />
-                                </div>
-                              </td>
-                              <td class="slds-text-align_right" role="gridcell" style="width:3.25rem;">
-                                <lightning:formattedNumber value="" style="currency" currencyCode="USD" />
-                              </td>
-                            </tr>
+  <aura:attribute name="ActiveStepIndex" type="Integer" />
+  <aura:attribute name="xPressRefiRecord" type="xPressRefi__c" />
+  <aura:attribute name="PropertyAddress" type="string" />
+  <aura:attribute name="MembershipAddressDetails" type="Map"
+    default="{ MembershipAddress1: '', MembershipAddress2: '', MembershipCity : '', MembershipState : '', MembershipZip : '' }" />
+  <aura:attribute name="ProductList" type="List" />
+  <aura:attribute name="options" type="List" default="[
+        {'label': 'Yes', 'value': 'true'},
+        {'label': 'No', 'value': 'false'}
+    ]" />
+   
+    <aura:attribute name="IsChevronRelocation" type="Boolean"  />  
+    <aura:attribute name="IsChevronEmployee" type="Boolean" />  
+    <aura:attribute name="IsPrimaryResidence" type="Boolean"  />  
+    <aura:attribute name="isLoanPrimaryResidence" type="Boolean" />
+    <aura:attribute name="RatesUpdatedDate" type="string" />
+    <aura:attribute name="Note" type="string" />
 
-                            <tr aria-expanded="false" aria-level="1" aria-posinset="3" aria-selected="false" aria-setsize="4"
-                              class="slds-hint-parent">
-                              <td class="slds-text-align_right" role="gridcell" style="width:3.25rem">
-                                <div class="slds-radio">
-                                  <span class="slds-radio">
-                                    <lightning:input type="radio" name="select"/>
-                                  </span>
-                                </div>
-                              </td>
-                              <td class="slds-text-align_right" role="gridcell" style="width:3.25rem">
-                                <div class="slds-truncate">
-                                    3/6 ARM</div>
-                              </td>
-                              <td class="slds-text-align_right" role="gridcell" style="width:3.25rem">
-                                <div class="slds-truncate">2.500%
-                                </div>
-                              </td>
-                              <td class="slds-text-align_right" role="gridcell" style="width:3.25rem">
-                                <div class="slds-truncate">2.946%
-                                </div>
-                              </td>
-                              <td class="slds-text-align_right" role="gridcell" style="width:3.25rem">
-                                <div class="slds-truncate">
-                                  <lightning:formattedNumber value="" style="currency" currencyCode="USD" />
-                                </div>
-                              </td>
-                              <td class="slds-text-align_right" role="gridcell" style="width:3.25rem;">
-                                <lightning:formattedNumber value="" style="currency" currencyCode="USD" />
-                              </td>
-                            </tr>
-          
-                      </tbody>
-                    </table>
+  <div id="stage2" class="stage2" style="width:100% !important;">
+    <div class="slds-grid slds-gutters eft4tbl">
+      <div class="slds-col firstcol">
+        <p class="pfontstyle">Current Mortgage Information</p>
+        <aura:if isTrue="{!v.xPressRefiRecord.Impermissible__c}" >
+          <span class="note">This mortgage is marked as Impermissible</span>
+        </aura:if>        
+        <table class="fundingtbl">
+          <tbody>
+            <tr>
+              <td>
+                <span>Member Number</span>
+              </td>
+              <td>
+                <lightning:input name="membernumber" value="{!v.xPressRefiRecord.Member_Number__c}" disabled="true" />
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <span>Property Address:</span>
+              </td>
+              <td>
+                <lightning:textarea name="propertyAddress" disabled="true" value="{!v.PropertyAddress}" rows="3"
+                  cols="50" class="textarea" />
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <span>Mortgage Type:</span>
+              </td>
+              <td>
+                <lightning:input name="mortgagetype" value="{!v.xPressRefiRecord.Product_Type__c}" disabled="true" />
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <span>Principal Balance:</span>
+              </td>
+              <td>
+                <lightning:input class="PrincipalBalance" type="number"
+                  value="{!v.xPressRefiRecord.Principal_Balance__c}" step="0.01" formatter="currency" disabled="true" />
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <span>Interest Rate:</span>
+              </td>
+              <td>
+                <lightning:input class="InterestRate" type="number"
+                  value="{!v.xPressRefiRecord.Current_Interest_Rate__c}" formatter="percent-fixed" step="0.01"
+                  disabled="true" />
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <span>P&amp;I Payment:</span>
+              </td>
+              <td>
+                <lightning:input class="InterestRate" type="number" value="{!v.xPressRefiRecord.P_I_Payment__c}"
+                  formatter="currency" step="0.01" disabled="true" />
+              </td>
+            </tr>
+            <!-- <tr>
+              <td>
+                <span>Total Payment Amt:</span>
+              </td>
+              <td>
+                <lightning:input class="InterestRate" type="number" value="2713.56" formatter="currency" step="0.01"
+                  disabled="true" />
+              </td>
+            </tr> -->
+            <tr>
+              <td>
+                <span>Maturity Date:</span>
+              </td>
+              <td>
+                <ui:inputDate value="{!v.xPressRefiRecord.Maturity_Date__c}" format="MM/dd/yyyy" disabled="true" class="inputnolabel"/>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <span>Loan ID:</span>
+              </td>
+              <td>
+                <lightning:input name="LoanID" value="{!v.xPressRefiRecord.LoanId__c}" disabled="true" />
+              </td>
+            </tr> 
+            <tr>
+              <td>
+                <span>Remaining Term:</span>
+              </td>
+              <td>
+                <lightning:input name="RemainingTerm" value="{!v.xPressRefiRecord.Remaining_Term__c}" disabled="true" />
+              </td>
+            </tr> 
+            <tr>              
+              <td>
+                <span>Income:</span>
+              </td>
+              <td>
+                <lightning:input name="Income" value="{!v.xPressRefiRecord.Income__c}" disabled="false" formatter="currency" step="0.01" type="number" required="true" variant="label-hidden" onchange="{!c.HandleIncomeChange}" class="inputnolabel"/>
+              </td>
+            </tr>            
+          </tbody>
+        </table>
+        <table>
+          <tr>
+            <td class="questionstd">
+              <lightning:radioGroup name="chevronRelocation" 
+                        label="Is this a Chevron Relocation loan?"
+                        options="{!v.options }"
+                        value="{!v.IsChevronRelocation}"
+                        type="radio"
+                        class="customRadioCls"
+                        onchange="{!c.HandlePrimaryResidenceChange}" 
+                        required="true"/>
+            </td>
+          </tr>
+          <aura:if isTrue="{!v.IsChevronRelocation == 'true'}" >
+            <tr>
+              <td class="questionstd">
+                <lightning:radioGroup name="chevronEmployee" 
+                          label="Are you currently still employed by Chevron?"
+                          options="{!v.options }"
+                          value="{!v.IsChevronEmployee}"
+                          type="radio"
+                          class="customRadioCls"
+                          onchange="{!c.HandlePrimaryResidenceChange}" 
+                          required="true"/>
+              </td>
+            </tr>
+          </aura:if>
+          <aura:if isTrue="{!and(v.IsChevronEmployee == 'true',v.IsChevronRelocation == 'true')}" >
+            <tr>
+              <td class="questionstd">
+                <lightning:radioGroup name="primaryresidence" 
+                          label="Do you still occupy this home as your primary residence?"
+                          options="{!v.options }"
+                          value="{!v.IsPrimaryResidence}"
+                          type="radio"
+                          class="customRadioCls"
+                          onchange="{!c.HandlePrimaryResidenceChange}"
+                          required="true"/>
+              </td>
+            </tr>
+          </aura:if>          
+        </table>
+      </div>
+      <div class="slds-col secondcol">
+        <p><span class="pfontstyle">Refi Choices</span><span class="spanstyle">Rates Updated: {!v.RatesUpdatedDate}</span></p>   
+        <br></br>
+
+        <div class="eftrecord">  
+               
+          <table aria-multiselectable="true"
+            class="slds-table slds-table_header-hidden slds-table_edit slds-tree slds-table_tree" role="treegrid">
+            <thead>
+              <tr class="slds-line-height_reset">
+                <th class="slds-text-align_right" scope="col" style="width:3.25rem">
+                  <span id="column-group-header" class="slds-assistive-text">Choose a row</span>
+                  <div class="slds-th__action slds-th__action_form">
+
                   </div>
-            </div>
-        </div>
-    </div>
+                </th>
+                <th aria-label="MemberNumber" class="loanth">
+                  <a class="slds-th__action slds-text-link_reset" tabindex="-1">
+                    <span class="slds-assistive-text">Sort by: </span>
+                    <div class="slds-grid slds-grid_vertical-align-center slds-has-flexi-truncate">
+                      <span class="slds-truncate" title="Product">Product</span>
+                    </div>
+                  </a>
+                </th>
+                <th aria-label="Share/Loan" class="loanth">
+                  <a class="slds-th__action slds-text-link_reset" tabindex="-1">
+                    <span class="slds-assistive-text">Sort by: </span>
+                    <div class="slds-grid slds-grid_vertical-align-center slds-has-flexi-truncate">
+                      <span class="slds-truncate" title="Rate">Rate</span>
+                    </div>
+                  </a>
+                </th>
+                <th aria-label="Financial Institution" class="loanth">
+                  <a class="slds-th__action slds-text-link_reset" tabindex="-1">
+                    <span class="slds-assistive-text">Sort by: </span>
+                    <div class="slds-grid slds-grid_vertical-align-center slds-has-flexi-truncate">
+                      <span class="slds-truncate" title="Total P&amp;I Payment">Total P&amp;I Payment</span>
+                    </div>
+                  </a>
+                </th>
+                <th aria-label="Financial Institution" class="loanth">
+                  <a class="slds-th__action slds-text-link_reset" tabindex="-1">
+                    <span class="slds-assistive-text">Sort by: </span>
+                    <div class="slds-grid slds-grid_vertical-align-center slds-has-flexi-truncate">
+                      <span class="slds-truncate" title="MonthlySavings">Monthly Savings</span>
+                    </div>
+                  </a>
+                </th>
+                <th class="slds-text-align_right" scope="col">
+                  <span id="column-group-header" class="slds-assistive-text"></span>
+                  <div class="slds-th__action slds-th__action_form">
 
-</aura:component>	
+                  </div>
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              <aura:iteration items="{!v.ProductList}" var="itemOption" indexVar="i">
+                <tr aria-expanded="false" aria-level="1" aria-posinset="3" aria-selected="false" aria-setsize="4"
+                  class="slds-hint-parent">
+                  <td class="slds-text-align_right" role="gridcell" style="width:3.25rem">
+                    <div class="slds-radio">
+                      <span class="slds-radio">
+                        <lightning:input type="radio" name="select" onchange="{!c.onProductSelect}"
+                          value="{!itemOption.Product}" />
+                      </span>
+                    </div>
+                  </td>
+                  <td class="slds-text-align_right" role="gridcell" style="width:3.25rem">                   
+                    <div class="slds-truncate">
+                      {!itemOption.Product}</div>
+                  </td>
+                  <td class="slds-text-align_right" role="gridcell" style="width:3.25rem">
+                    <div class="slds-truncate">
+                      <lightning:formattedNumber value="{!itemOption.Rate}" style="percent-fixed"
+                        maximumFractionDigits="3" />
+                    </div>
+                  </td>
+                  <td class="slds-text-align_right" role="gridcell" style="width:3.25rem">
+                    <div class="slds-truncate">
+                      <lightning:formattedNumber value="{!itemOption.TotalPIPayment}" style="currency"
+                        currencyCode="USD" />
+                    </div>
+                  </td>
+                  <td class="slds-text-align_right" role="gridcell" style="width:3.25rem;">
+                    <lightning:formattedNumber value="{!itemOption.MonthlySavings}" style="currency"
+                      currencyCode="USD" />
+                  </td>
+                  <td class="slds-text-align_right" role="gridcell">
+                    <span class="{!(itemOption.IsMortgageCadence == true ? 'dotYellow' : 'dotGreen')}"></span>
+                  </td>
+                </tr>
+              </aura:iteration>
+
+
+            </tbody>
+          </table>
+          <div class="notestyle">
+            <span>
+              {!v.Note}
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</aura:component>

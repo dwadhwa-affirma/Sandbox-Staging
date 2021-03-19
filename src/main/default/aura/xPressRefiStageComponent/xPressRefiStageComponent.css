@@ -10,7 +10,7 @@
     justify-content: center;
     font-size: 14px;
 }
-.THIS.modalbody{overflow-y:auto !important; max-height:480px;padding:1rem 2rem !important;height: 570px !important;}
+.THIS.modalbody{overflow-y:auto !important; max-height:640px;padding:0rem 2rem !important;height: 620px !important;}
 .THIS.slds-modal__footer{position:absolute; bottom:0;width:100%;}
 .THIS.slds-modal__footer .slds-button{text-transform:uppercase; letter-spacing:1px;}
 .THIS.slds-modal__footer .slds-button:nth-child(2){float:left;}
@@ -25,6 +25,18 @@
 .THIS .divHeader{
     text-align: left !important;
     margin-left: 15px;
+}
+
+.THIS .errorfontstyle{
+    font-size: 1.23rem;
+    color: #0e70d6;
+    font-weight: bold;
+    margin-top: 2%;
+    text-align: left !important;
+}
+
+.THIS .btnClass{
+    cursor: pointer;
 }
 
 @media screen and (max-height: 634px ){
