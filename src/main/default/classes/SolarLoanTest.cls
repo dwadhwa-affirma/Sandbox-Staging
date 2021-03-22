@@ -241,7 +241,10 @@ private class SolarLoanTest{
  
      sl1.mem_Mailing_Extra_Address__c = 'MailExtra';
      sl1.mem_Mailing_State__c = 'MailState';
-  
+     sl1.mem_Primary_Foreign_Gov_t_Position__c = 'No';
+     sl1.mem_Primary_A_F_Foreign_Gov_t_Position__c = 'No';
+     sl1.mem_Joint_Foreign_Gov_t_Position__c = 'No';
+     sl1.mem_Joint_A_F_Foreign_Gov_t_Position__c = 'No';
       
      insert sl1; 
       
@@ -348,7 +351,11 @@ private class SolarLoanTest{
      sl2.mem_Mailing_City__c = 'City';
      sl2.Mailing_Street__c = 'Street';
      sl2.Mailing_Zip__c = '12345';
-      
+     
+     sl2.mem_Primary_Foreign_Gov_t_Position__c = 'Yes';
+     sl2.mem_Primary_A_F_Foreign_Gov_t_Position__c = 'Yes';
+     sl2.mem_Joint_Foreign_Gov_t_Position__c = 'Yes';
+     sl2.mem_Joint_A_F_Foreign_Gov_t_Position__c = 'Yes'; 
      insert sl2; 
       
      SolarLoan_Obj.add(sl2);  
@@ -398,31 +405,19 @@ private class SolarLoanTest{
       SolarLoanController.getMemberData(listSolarLoan[0].id, 'Stage 3');
    }
     
-  static testMethod void test_Solarloancontroller3(){
-      List<Solar_Loans__c> listSolarLoan  =  [SELECT Id from Solar_Loans__c limit 3];
-      
-      SolarLoanController.getMemberData(listSolarLoan[2].id, 'Stage 3');
-      Solar_Loans__c sl2 = new Solar_Loans__c();
-      sl2.id =  listSolarLoan[2].id;
-      sl2.Additional_Amount__c = 56.00;
-      sl2.EftLocator__c = '12';
-      sl2.Member_Number__c = '0000147163';
-      sl2.Status__c = 'Completed';  
-      update sl2;
-  } 
-    
+    static testMethod void test_Solarloancontroller3(){
+      List<Solar_Loans__c> listSolarLoan  =  [SELECT Id,mem_Primary_Foreign_Gov_t_Position__c from Solar_Loans__c where mem_Primary_Foreign_Gov_t_Position__c = 'Yes' limit 1];
+      SolarLoanTocreateLoan.MembershipExist = 'false';
+      SolarLoanController.getMemberData(listSolarLoan[0].id, 'Stage 4');
+  	}
+        
   static testMethod void test_Solarloancontroller4(){
-      List<Solar_Loans__c> listSolarLoan  =  [SELECT Id from Solar_Loans__c limit 1];
-      
+      List<Solar_Loans__c> listSolarLoan  =  [SELECT Id from Solar_Loans__c where mem_Primary_Foreign_Gov_t_Position__c = 'No' limit 1];
+      SolarLoanTocreateLoan.MembershipExist = 'true';
       SolarLoanController.getMemberData(listSolarLoan[0].id, 'Stage 4');
   }
-  static testMethod void test_Solarloancontroller5(){
-      List<Solar_Loans__c> listSolarLoan  =  [SELECT Id from Solar_Loans__c limit 1];
-      
-      SolarLoanController.getMemberData(listSolarLoan[0].id, 'Stage 5');
-  }  
   
-   static testMethod void test_Solarloancontroller6(){
+  static testMethod void test_Solarloancontroller6(){
       List<Solar_Loans__c> listSolarLoan  =  [SELECT Id,mem_Joint_SSN__c from Solar_Loans__c where mem_Joint_SSN__c = '127081988'limit 1];
       
       SolarLoanController.getMemberData(listSolarLoan[0].id, 'Stage 4');
@@ -488,17 +483,12 @@ private class SolarLoanTest{
   }
   static testMethod void test_GetCaseAttachments_UseCase2(){
     
-    // ---------------------------Fetching Solar Loan record from test set up data -----------------------------------//
+    test.startTest();
+    
     List<Solar_Loans__c> listSolarLoan  =  [SELECT Id,status__c from Solar_Loans__c limit 1];
-    
-    // ---------------------------Fetching Cotent Document record from test set up data ------------------------------//
-    List<ContentDocument> cdList = [SELECT Id, Title, LatestPublishedVersionId FROM ContentDocument limit 1];
-    
-    // ---------------------------Fetching Solar Loan document record from test set up data -------------------------//
+    //List<ContentDocument> cdList = [SELECT Id, Title, LatestPublishedVersionId FROM ContentDocument limit 1];
     List<SolarLoan_Document__c> SolarLoanDocList = [SELECT id from SolarLoan_Document__c limit 1];  
       
-    // --------------------------------Calling non static method of SolarLoanAPI class------------------------------//  
-    
     Datetime yesterday = Datetime.now().addDays(-121);
     Solar_Loans__c sl1 = new Solar_Loans__c();
 	sl1.id =  listSolarLoan[0].id;
@@ -506,13 +496,14 @@ private class SolarLoanTest{
     sl1.Status__c = 'Expired';  
     update sl1;
 	
-	 
+	   
     SolarLoanDocList[0].IsMovedToOnBase__c = true;
     SolarLoanDocList[0].Solar_Loans__c = sl1.id;
     update SolarLoanDocList[0];      
-      
+    
+    test.stopTest();  
     Test.setCreatedDate(SolarLoanDocList[0].Id, yesterday);      
-    test.startTest();  
+   
     //--------------------------------- Creating Custom setting data --------------------------------------------------//
     SolarLoan_Document_Settings__c docSetting1 = new SolarLoan_Document_Settings__c();
     docSetting1.Days__c = 120;
@@ -533,23 +524,15 @@ private class SolarLoanTest{
     
     SolarLoanDocumentDeleteAttachments obj = new SolarLoanDocumentDeleteAttachments();
     obj.execute(null);
-  
-    test.stopTest();
  
   }
   static testMethod void test_GetCaseAttachments_UseCase3(){
     
-    // ---------------------------Fetching Solar Loan record from test set up data -----------------------------------//
+	test.startTest();    
     List<Solar_Loans__c> listSolarLoan  =  [SELECT Id,status__c from Solar_Loans__c limit 1];
-    
-    // ---------------------------Fetching Cotent Document record from test set up data ------------------------------//
-    List<ContentDocument> cdList = [SELECT Id, Title, LatestPublishedVersionId FROM ContentDocument limit 1];
-    
-    // ---------------------------Fetching Solar Loan document record from test set up data -------------------------//
+    //List<ContentDocument> cdList = [SELECT Id, Title, LatestPublishedVersionId FROM ContentDocument limit 1];
     List<SolarLoan_Document__c> SolarLoanDocList = [SELECT id from SolarLoan_Document__c limit 1];  
-      
-    // --------------------------------Calling non static method of SolarLoanAPI class------------------------------//  
-    
+
     Datetime yesterday = Datetime.now().addDays(-121);
     Solar_Loans__c sl1 = new Solar_Loans__c();
 	sl1.id =  listSolarLoan[0].id;
@@ -562,8 +545,9 @@ private class SolarLoanTest{
     SolarLoanDocList[0].Solar_Loans__c = sl1.id;
     update SolarLoanDocList[0];      
       
+    test.stopTest();
     Test.setCreatedDate(SolarLoanDocList[0].Id, yesterday);      
-    test.startTest();  
+      
     //--------------------------------- Creating Custom setting data --------------------------------------------------//
     SolarLoan_Document_Settings__c docSetting1 = new SolarLoan_Document_Settings__c();
     docSetting1.Days__c = 120;
@@ -584,8 +568,6 @@ private class SolarLoanTest{
     
     SolarLoanDocumentDeleteAttachments obj = new SolarLoanDocumentDeleteAttachments();
     obj.execute(null);
-  
-    test.stopTest();
  
   } 	  
 }
