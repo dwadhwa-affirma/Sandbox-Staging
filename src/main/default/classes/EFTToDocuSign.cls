@@ -34,7 +34,6 @@ public class EFTToDocuSign{
 	public static String json3;
 	public static Http http3 = new Http();
 	public static HTTPResponse res3;
-
 	//-----------------Sending Docusign-----------//
 	@future(callout = true)
 	public static void docusignAPIcall(Set<ID> ids){
@@ -142,7 +141,7 @@ public class EFTToDocuSign{
 			req1.setHeader('Content-Type', 'application/json');
 			req1.setHeader('Content-Disposition', 'form-data');
 
-			if (EmailToSend == 'Production' || EmailToSend == 'production'){				
+			if (EmailToSend == 'Production' || EmailToSend == 'production'){
 				json1 = '{"signers": [' + '{' + '"email": "' + eft.Docusign_Member_Email__c + '",' + '"recipientId" : "1",' + '"roleName": "client",' + '"name": "' + eft.Member_Name__c + '",' + '"signingGroupId": "signers",' + '"routingOrder" : "null"' + '}' + ']' + '}';
 			}
 
@@ -198,13 +197,22 @@ public class EFTToDocuSign{
 	//-----------------Attaching Docusign to Case-----------//
 	public static void docusignAttachtoCase(Set<ID> ids){
 
+		system.debug('ids==' + ids);
 		List<EFT__c> EFTs = [SELECT Account_Number__c, Action_Type__c, Alternate_Amount__c, Bank_Name__c, Case__c, CreatedById, CreatedDate, Day_of_Month__c, DocuSignId__c, Docusign_Checking_Type__c, Docusign_is_Additional_Amount__c, Docusign_Member_Email__c, Docusign_Savings_Type__c, Effective_Date__c, EftLocator__c, EFT_ID_Type__c, Error_EftLocator__c, Expiration_Date__c, Expired__c, Expire_DocuSignId__c, Expire_Docusign_Status__c, Frequency__c, Id, isAlternateAmount__c, is_Checking_Account__c, Member_Account__c, Member_Name__c, Member__c, Name, OwnerId, Payment_Amount__c, Routing_Number__c, Second_Day_of_Month__c, Type__c, Share_Loan_Description__c, Share_Loan_Id__c, Share_Loan_Type__c, Stage__c, Status__c, Update_DocuSignId__c, Update_Docusign_Status__c, Member_Account__r.Brand__c
 		                     FROM EFT__c
 		                     where id IN :ids];
+		system.debug('EFTs==' + EFTs);
 
-		list<ContentDocumentLink> cls = [select ContentDocumentId, ShareType, LinkedEntityId
-		                                 from ContentDocumentLink
-		                                 where LinkedEntityId IN :ids];
+		List<Id> idsList = new List<Id>(ids);
+		list<ContentDocumentLink> cls = new list<ContentDocumentLink>();
+
+		if (idsList.size() > 0){
+			cls = [select id, ContentDocumentId, ShareType, LinkedEntityId
+			       from ContentDocumentLink
+			       where LinkedEntityId IN :idsList];
+		}
+
+		system.debug('cls==' + cls);
 
 		set<id> setContentDocumentLink = new set<id>();
 		set<id> setCaseIds = new set<id>();
@@ -221,6 +229,7 @@ public class EFTToDocuSign{
 		List<ContentVersion> theFiles = [SELECT Title, FileType, VersionData, ContentDocumentId
 		                                 FROM ContentVersion
 		                                 WHERE ContentDocumentId IN :setContentDocumentLink];
+		system.debug('theFiles==' + theFiles);
 
 		for (ContentVersion cv : theFiles){
 			mapContentVersion.put(cv.ContentDocumentId, cv);
@@ -236,6 +245,7 @@ public class EFTToDocuSign{
 				id tempContentDocId = att1.ContentDocumentId;
 
 				ContentVersion tempCV = mapContentVersion.get(tempContentDocId);
+				system.debug('tempCV==' + tempCV);
 				Attachment anAttachment = new Attachment();
 				anAttachment.Body = tempCV.VersionData;
 				anAttachment.ContentType = 'application/pdf';
@@ -253,8 +263,7 @@ public class EFTToDocuSign{
 
 			// OnBase_Document__c onbaseDocObj = new OnBase_Document__c();
 			// documentList[0].Id = documentList[0].id;
-			system.debug('documentList==' + documentList);
-			system.debug('documentList[0].Case__c==' + documentList[0].Case__c);
+			system.debug('documentList==' + documentList);			
 			if (documentList.size() > 0){
 				for (OnBase_Document__c ob : documentList){
 					ob.Document_Type__c = 'ACH Maintenance Forms';
@@ -263,9 +272,21 @@ public class EFTToDocuSign{
 				}
 
 				update documentList;
-			}
-			system.debug('documentList[0].Document_Type__c==' + documentList[0].Document_Type__c);
+			}		
 
+		}
+
+		if (setCaseIds.size() > 0){
+			List<Case> UpdateCasesList = [select id, status, OwnerID
+			                              from case
+			                              where id in :setCaseIds and Status<>'Closed'];
+			for (Case cs : UpdateCasesList){
+				If (cs.OwnerID.getsobjecttype() == User.sobjecttype){
+					cs.status = 'Closed';
+				}
+
+			}
+			update UpdateCasesList;
 		}
 	}
 }
