@@ -20,6 +20,11 @@
       ", " +
       fullzip;
     component.set("v.PropertyAddress", PropertyAddress);
+    var IsPrimaryResidence = component.get("v.isLoanPrimaryResidence");
+    component.set(
+      "v.xPressRefiRecord.Is_Primary_Residence__c",
+      IsPrimaryResidence
+    );
     helper.getProductList(component, event);
     var evt = $A.get("e.c:xPressRefiEvent");
     evt.setParams({
@@ -68,12 +73,10 @@
 
   HandlePrimaryResidenceChange: function (component, event, helper) {
     var IsChevronEmployee = component.get("v.IsChevronEmployee");
-    var IsPrimaryResidence = component.get("v.IsPrimaryResidence");
-    var IsChevronRelocation = component.get("v.IsChevronRelocation");
+    var IsPrimaryResidence = component.get("v.isLoanPrimaryResidence");//component.get("v.IsPrimaryResidence");
+    //var IsChevronRelocation = component.get("v.IsChevronRelocation");
 
-    // var IsChevronEmployeeBoolean = IsChevronEmployee == "true" ? true : (IsChevronEmployee == "false" ? false : undefined);
-    // var IsPrimaryResidenceBoolean = IsPrimaryResidence == "true" ? true : (IsPrimaryResidence == "false" ? false : undefined);
-    // var IsChevronRelocationBoolean = IsChevronRelocation == "true" ? true : (IsChevronRelocation == "false" ? false : undefined);
+    
     component.set(
       "v.xPressRefiRecord.Is_Chevron_Employee__c",
       IsChevronEmployee
@@ -82,10 +85,10 @@
       "v.xPressRefiRecord.Is_Primary_Residence__c",
       IsPrimaryResidence
     );
-    component.set(
-      "v.xPressRefiRecord.Is_Relocation_Loan__c",
-      IsChevronRelocation
-    );
+    // component.set(
+    //   "v.xPressRefiRecord.Is_Relocation_Loan__c",
+    //   IsChevronRelocation
+    // );
 
     var evt = $A.get("e.c:xPressRefiEvent");
 
@@ -93,9 +96,9 @@
     evt.fire();
 
     if (
-      IsChevronRelocation == "true" &&
+      // IsChevronRelocation == "true" &&
       IsChevronEmployee == "true" &&
-      IsPrimaryResidence == "true"
+      IsPrimaryResidence == true
     ) {
       helper.adjustDiscountRates(component, event, true);
     } else {

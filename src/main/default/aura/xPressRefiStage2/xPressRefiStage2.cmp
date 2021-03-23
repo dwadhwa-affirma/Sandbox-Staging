@@ -130,7 +130,7 @@
           </tbody>
         </table>
         <table>
-          <tr>
+          <!-- <tr>
             <td class="questionstd">
               <lightning:radioGroup name="chevronRelocation" 
                         label="Is this a Chevron Relocation loan?"
@@ -141,8 +141,9 @@
                         onchange="{!c.HandlePrimaryResidenceChange}" 
                         required="true"/>
             </td>
-          </tr>
-          <aura:if isTrue="{!v.IsChevronRelocation == 'true'}" >
+          </tr> -->
+          <aura:if isTrue="{!v.xPressRefiRecord.Is_Relocation_Loan__c}" >
+            <tr colspan="2"><td class="questionstd">This is a Chevron Relocation loan</td></tr>
             <tr>
               <td class="questionstd">
                 <lightning:radioGroup name="chevronEmployee" 
@@ -156,7 +157,7 @@
               </td>
             </tr>
           </aura:if>
-          <aura:if isTrue="{!and(v.IsChevronEmployee == 'true',v.IsChevronRelocation == 'true')}" >
+          <!-- <aura:if isTrue="{!and(v.IsChevronEmployee == 'true',v.IsChevronRelocation == 'true')}" >
             <tr>
               <td class="questionstd">
                 <lightning:radioGroup name="primaryresidence" 
@@ -169,7 +170,7 @@
                           required="true"/>
               </td>
             </tr>
-          </aura:if>          
+          </aura:if>           -->
         </table>
       </div>
       <div class="slds-col secondcol">

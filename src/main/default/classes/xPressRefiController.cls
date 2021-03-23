@@ -146,7 +146,7 @@ public class xPressRefiController{
 			}
 		}
 		// Associated member accounts
-		acList = [SELECT Id, Name, RecType__c, Due_Date__c, County_Name__c, Home_Value__c, OPEN_DATE__c, Investor__c, TypeTranslate__c, Brand__c, Brand_Code__c, Loan_Number__c, Mortgage_Name_1__c, Mortgage_Name_2__c, Emp_Available_Balance__c, Available_Balance__c, PROPERTY_ADDRESS__c, Property_City__c, Property_State__c, Property_Zip__c, PRINCIPAL_BALANCE__c, Interest_Rate__c, Maturity_Date__c, Emp_Balance__c, PAYMENT__c, Loan_code__c, Loan_Program_Type__c, Xpress_Refi_Eligibility__c, Impermissible__c, Income__c, PMI_Flag__c, P_I_Payment__c, Remaining_Term__c
+		acList = [SELECT Id, Name, RecType__c, Due_Date__c, County_Name__c, Home_Value__c, OPEN_DATE__c, Investor__c, TypeTranslate__c, Brand__c, Brand_Code__c, Loan_Number__c, Mortgage_Name_1__c, Mortgage_Name_2__c, Emp_Available_Balance__c, Available_Balance__c, PROPERTY_ADDRESS__c, Property_City__c, Property_State__c, Property_Zip__c, PRINCIPAL_BALANCE__c, Interest_Rate__c, Maturity_Date__c, Emp_Balance__c, PAYMENT__c, Loan_code__c, Loan_Program_Type__c, Xpress_Refi_Eligibility__c, Impermissible__c, Income__c, PMI_Flag__c, P_I_Payment__c, Remaining_Term__c, Is_Relocation_Loan__c
 		          FROM Account_Details__c
 		          WHERE Name IN :NameSet and TypeTranslate__c = 'MORTGAGE' and Maturity_Date__c >= TODAY and Close_Date__c = null
 		          LIMIT 1];
@@ -194,6 +194,7 @@ public class xPressRefiController{
 			xpressrefiobj.PMI_Flag__c = a.PMI_Flag__c;
 			xpressrefiobj.Impermissible__c = a.Impermissible__c;
 			xpressrefiobj.Remaining_Term__c = a.Remaining_Term__c;
+			xpressrefiobj.Is_Relocation_Loan__c = a.Is_Relocation_Loan__c;
 			System.debug(xpressrefiobj.P_I_Payment__c);
 			xPressrecordList.add(xpressrefiobj);
 		}

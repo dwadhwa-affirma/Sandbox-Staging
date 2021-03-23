@@ -108,21 +108,11 @@
             helper.hideSpinner(component);
             return;
         }
-        else if(IsChevronRelocationBoolean == undefined ){
-            alert('Please answer Chevron Relocation question.');
+        else if(IsChevronRelocationBoolean == true && IsChevronEmployeeBoolean == undefined){
+          alert('Please answer Chevron Relocation question.');
             helper.hideSpinner(component);
             return;
-        }
-        else if(IsChevronRelocationBoolean == "true" && IsChevronEmployeeBoolean == undefined){
-            alert('Please answer all Relocation questions.');
-            helper.hideSpinner(component);
-            return;
-        }
-        else if(IsChevronRelocationBoolean == "true" && IsChevronEmployeeBoolean == "true" && IsPrimaryResidenceBoolean == undefined){
-          alert('Please answer all Relocation questions.');
-          helper.hideSpinner(component);
-          return;
-      }
+        }      
         else if(NewProductType == undefined || NewProductType == null){
           alert('Please Select Product.');
           helper.hideSpinner(component);
