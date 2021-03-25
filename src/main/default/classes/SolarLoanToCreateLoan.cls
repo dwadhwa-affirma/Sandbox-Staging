@@ -1271,13 +1271,13 @@ public class SolarLoanToCreateLoan {
                     System.debug('CreateLoanName method called');
                     req13.setEndpoint(loanAPI+'/EFT/CreateLoanName');
                 
-                    req1.setMethod('POST');
+                    req13.setMethod('POST');
                     req13.setHeader('Content-Type', 'application/json');
                     req13.setHeader('Accept', 'application/json');
                     
                     jsonData13 = '{"EcoaCode":'+'\"'+SLECOACode+'\"'+',"Type":' + '\"'+ SLType +'\"'+',"Last":' + '\"'+ SLLast +'\"'+',"First":'+'\"'+ SLFirst +'\"'+',"Street":'+'\"' + SLStreet + '\"'+',"ExtraAddress":'+'\"'+SLExtraAddress+'\"'+',"City":'+'\"'+SLCity+'\"'+',"State":'+'\"'+SLState+'\"'+',"ZipCode":'+'\"'+SLZipCode+'\"'+',"BirthDate":'+'\"'+SLBirthDate+'\"'+',"SSN":'+'\"'+SLSSN+'\"'+',"LoanId":'+'\"'+LoanId+'\"'+',"AccountNumber":'+'\"'+AccountNumber+'\"}';
-                    req13.setBodyAsBlob(Blob.valueof(jsondata1)); 
-                    //system.debug('test'+jsonData13);
+                    req13.setBodyAsBlob(Blob.valueof(jsondata13)); 
+                    system.debug('test'+jsonData13);
                     
                     Http http13 = new Http();  
                     req13.setTimeout(120000);
