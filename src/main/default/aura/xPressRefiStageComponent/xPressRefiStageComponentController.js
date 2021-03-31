@@ -108,7 +108,7 @@
             helper.hideSpinner(component);
             return;
         }
-        else if(IsChevronRelocationBoolean == true && IsChevronEmployeeBoolean == undefined){
+        else if(IsChevronRelocationBoolean == true && IsChevronEmployeeBoolean == undefined && IsPrimaryResidenceBoolean == true){
           alert('Please answer Chevron Relocation question.');
             helper.hideSpinner(component);
             return;
