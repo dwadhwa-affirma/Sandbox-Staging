@@ -551,7 +551,6 @@
                     	component.set("v.CLRecord.ATM_Usage_Limit__c",undefined);
                         component.set("v.CLRecord.Auth_POS_Limit__c", undefined);
                     }
-                    
                     component.set("v.ActiveStepIndex", (i-1)); 
                     $A.createComponent("c:"+stages[i-1].Stage_Component__c,{recordId: component.get("v.recordId"), CLRecord: component.get("v.CLRecord")},
                         function(msgBox){                
@@ -617,6 +616,7 @@
                     }
                     
                     component.set("v.ActiveStepIndex", (i-1)); 
+                    alert(component.get("v.ActiveStepIndex"));
                     $A.createComponent("c:"+stages[i-1].Stage_Component__c,{recordId: component.get("v.recordId"), CLRecord: component.get("v.CLRecord")},
                         function(msgBox){                
                             if (component.isValid()) {

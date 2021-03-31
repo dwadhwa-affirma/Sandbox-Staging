@@ -198,5 +198,5 @@ public class SolarLoanToDocuSign {
             if(SolarLoansToUpdate.size() > 0){
         		update SolarLoansToUpdate;
         	}
-    }	
+    }    
 }

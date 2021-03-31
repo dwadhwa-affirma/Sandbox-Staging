@@ -128,6 +128,116 @@ public class CardLimitResetController {
         
     	return paList1;
     }
+
+    @AuraEnabled
+    public static Map<string,string> getLimits(string recordId, string cardnumber, string membername){
+
+        system.debug('cardnumber'+cardnumber); 
+        system.debug('recordId'+recordId);
+        system.debug('membername'+membername);
+        Id uniqueId = recordId;
+        Schema.SObjectType objType = uniqueId.getsobjecttype();
+
+        string AccountNumber;
+        Person_Account__c pa;
+
+        map<string,string> resultMap = new map<string,string>();
+        HttpRequest req = new HttpRequest();
+        HttpResponse res;
+        Http http = new Http();
+        string responseBody;
+        string loanAPI;
+        String jsonData;
+        String PosLimit;
+        String AuthLimit;
+        String UsageLimit;
+
+        string firstname,lastname;
+        List<string> Names = membername.split(' ');
+        if(Names.size() == 2){
+            firstname = Names[0]+ '%';
+            lastname= '%'+Names[1] + '%';
+        }
+        else if(Names.size() >= 3){
+            firstname = Names[0]+ '%';
+            lastname= '%'+Names[Names.size()-1] +'%';
+        }
+
+        SolarLoan_To_Episys_API_Details__c api = SolarLoan_To_Episys_API_Details__c.getValues('ProductionURL');
+                        
+        if(api.URL__c != null){
+            loanAPI = api.URL__c;
+        }
+
+        if(objType == Account_Details__c.sObjectType){
+
+            if(recordId != null){
+                AccountNumber = [Select id, name from account_details__c where id=: recordId].Name;
+            }
+            else{
+                AccountNumber = AccountNumber = [Select id, name from account_details__c where id=: recordId].Name;
+            }
+
+            system.debug('AccountNumber'+AccountNumber);
+
+        }
+        if(objType == Account.sObjectType){
+            
+            pa =[SELECT id, name,PersonID__c,Account_Number__c,PersonID__r.name,Account_Number__r.name
+                    from Person_Account__c where Account_Type__c = 'ACCT' and PersonID__r.firstname like: firstname
+                    AND PersonID__r.LASTNAME like: lastname limit 1];
+            
+            AccountNumber = pa.Account_Number__r.name;
+            system.debug('AccountNumber - ' + AccountNumber);
+
+        }
+
+        //----------------------------------------Checking if they made Card reset request previously------------------------------------//
+        
+        req.setEndpoint(loanAPI+'/CardLimitReset/GetCardByCardNumber');
+        req.setMethod('POST');
+        req.setHeader('Content-Type', 'application/json');
+        req.setHeader('Accept', 'application/json');
+        req.setTimeout(60000);                    
+        jsonData = '{"accountNumber":' + '\"'+ AccountNumber +'\","cardNumber":' + '\"'+ cardnumber +'\"}';                 
+        req.setBodyAsBlob(Blob.valueof(jsonData));
+       
+        if(!Test.isRunningTest()){                       
+            res = http.send(req);
+            responseBody = res.getBody();
+            System.debug('ResponseBody ::'+responseBody);    
+        }
+        else{
+            responseBody = '{"PosLimit":"600.00","AuthLimit":"600.00"}';
+        }
+
+        if(responseBody != '' && responseBody != null){        
+            Map<String,Object> results = (Map<String,Object>)System.JSON.deserializeUntyped(responseBody);
+            if(results != null){                     
+                for(String key : results.keySet()){                   			
+                    if(key == 'PosLimit'){
+                        PosLimit = String.valueOf(results.get(key));
+                        resultmap.put('PosLimit',PosLimit); 
+                    }
+                    if(key == 'AuthLimit'){
+                        AuthLimit = String.valueOf(results.get(key));
+                        resultmap.put('AuthLimit',AuthLimit);
+                    }
+                    if(key == 'UsageLimit'){
+                        UsageLimit = String.valueOf(results.get(key));
+                        resultmap.put('UsageLimit',UsageLimit); 
+                    }
+                }
+                system.debug('PosLimit: '+PosLimit);
+                system.debug('AuthLimit: '+AuthLimit);
+                system.debug('UsageLimit: '+UsageLimit);
+            }
+
+        }
+        system.debug('resultmap'+resultmap);
+		return resultmap;
+
+    }
     
     @AuraEnabled
     public static Map<string,List<CardDetailWrapperObject>> getCard(string recordId, string sObjectType){
@@ -349,7 +459,7 @@ public class CardLimitResetController {
         string responseBody;
         string loanAPI;
         String jsonData;
-
+        string operatorid;
         HttpRequest req1 = new HttpRequest();
         HttpResponse res1;
         Http http1 = new Http();
@@ -360,6 +470,26 @@ public class CardLimitResetController {
                         
         if(api.URL__c != null){
             loanAPI = api.URL__c;
+        }
+        
+        String userName = UserInfo.getUserName();
+        User activeUser = [Select Email,Alias From User where Username = : userName and Alias != null limit 1];
+        List<Episys_User__c> epu =  [select id,Alias__c,Episys_ID__c,Episys_Name__c from Episys_User__c where Alias__c =: activeUser.Alias];
+        system.debug('Episys User' + epu);
+        if(epu != null){
+            if(epu.size() > 1){
+                for(Episys_User__c eu : epu){
+                    if(eu.Alias__c != null){
+                        operatorid = string.ValueOf(epu[0].Episys_ID__c);
+                        system.debug('operatorid'+operatorid);
+                    }
+                }
+            
+            }
+            if(epu.size() == 1){
+                operatorid = string.ValueOf(epu[0].Episys_ID__c);
+                system.debug('operatorid'+operatorid);
+            }
         }
 
         string firstname,lastname;
@@ -445,7 +575,7 @@ public class CardLimitResetController {
             req.setMethod('POST');
             req.setHeader('Content-Type', 'application/json');
             req.setHeader('Accept', 'application/json');
-            jsonData = '{"Locator":' + '\"'+ cardlocator +'\","AccountNumber":' + '\"'+ AccountNumber +'\","PosLimit":' + '\"'+ authlimit +'\","AuthLimit":' + '\"'+ atmlimit +'\"}';                 
+            jsonData = '{"EpisysId":'+'\"'+operatorid+'\"'+',"Locator":' + '\"'+ cardlocator +'\","AccountNumber":' + '\"'+ AccountNumber +'\","UsageLimit":' + '\"'+ atmlimit +'\","AuthLimit":' + '\"'+ authlimit +'\"}';                 
             system.debug('test'+jsonData);
             req.setBodyAsBlob(Blob.valueof(jsonData));
             req.setTimeout(60000);                    
@@ -470,7 +600,7 @@ public class CardLimitResetController {
             req.setMethod('POST');
             req.setHeader('Content-Type', 'application/json');
             req.setHeader('Accept', 'application/json');
-            jsonData = '{"Locator":' + '\"'+ cardlocator +'\","AccountNumber":' + '\"'+ AccountNumber +'\","PosLimit":' + '\"'+ authlimit +'\","AuthLimit":' + '\"'+ atmlimit +'\"}';                 
+            jsonData = '{"EpisysId":'+'\"'+operatorid+'\"'+',"Locator":' + '\"'+ cardlocator +'\","AccountNumber":' + '\"'+ AccountNumber +'\","UsageLimit":' + '\"'+ atmlimit +'\","AuthLimit":' + '\"'+ authlimit +'\"}';                 
             system.debug('test'+jsonData);
             req.setBodyAsBlob(Blob.valueof(jsonData));
             req.setTimeout(60000);                    
