@@ -29,7 +29,13 @@
       <div class="slds-col firstcol">
         <p class="pfontstyle">Current Mortgage Information</p>
         <aura:if isTrue="{!v.xPressRefiRecord.Impermissible__c}" >
-          <span class="note">This mortgage is marked as Impermissible</span>
+          <span class="note">This mortgage is marked as Impermissible.</span><br/>
+        </aura:if> 
+        <aura:if isTrue="{!or(v.xPressRefiRecord.Vesting__c == '', v.xPressRefiRecord.Vesting__c == undefined)}" >
+          <span class="note">This loan contains no Vesting information.</span><br/>
+        </aura:if>
+        <aura:if isTrue="{!v.xPressRefiRecord.Trust__c}" >
+          <span class="note">This mortgage is held in trust.</span>
         </aura:if>        
         <table class="fundingtbl">
           <tbody>

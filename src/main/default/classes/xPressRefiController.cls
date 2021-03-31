@@ -146,7 +146,7 @@ public class xPressRefiController{
 			}
 		}
 		// Associated member accounts
-		acList = [SELECT Id, Name, RecType__c, Due_Date__c, County_Name__c, Home_Value__c, OPEN_DATE__c, Investor__c, TypeTranslate__c, Brand__c, Brand_Code__c, Loan_Number__c, Mortgage_Name_1__c, Mortgage_Name_2__c, Emp_Available_Balance__c, Available_Balance__c, PROPERTY_ADDRESS__c, Property_City__c, Property_State__c, Property_Zip__c, PRINCIPAL_BALANCE__c, Interest_Rate__c, Maturity_Date__c, Emp_Balance__c, PAYMENT__c, Loan_code__c, Loan_Program_Type__c, Xpress_Refi_Eligibility__c, Impermissible__c, Income__c, PMI_Flag__c, P_I_Payment__c, Remaining_Term__c, Is_Relocation_Loan__c
+		acList = [SELECT Id, Name, RecType__c, Due_Date__c, County_Name__c, Home_Value__c, OPEN_DATE__c, Investor__c, TypeTranslate__c, Brand__c, Brand_Code__c, Loan_Number__c, Mortgage_Name_1__c, Mortgage_Name_2__c, Emp_Available_Balance__c, Available_Balance__c, PROPERTY_ADDRESS__c, Property_City__c, Property_State__c, Property_Zip__c, PRINCIPAL_BALANCE__c, Interest_Rate__c, Maturity_Date__c, Emp_Balance__c, PAYMENT__c, Loan_code__c, Loan_Program_Type__c, Xpress_Refi_Eligibility__c, Impermissible__c, Income__c, PMI_Flag__c, P_I_Payment__c, Remaining_Term__c, Is_Relocation_Loan__c, Vesting__c, Trust__c
 		          FROM Account_Details__c
 		          WHERE Name IN :NameSet and TypeTranslate__c = 'MORTGAGE' and Maturity_Date__c >= TODAY and Close_Date__c = null
 		          LIMIT 1];
@@ -195,7 +195,8 @@ public class xPressRefiController{
 			xpressrefiobj.Impermissible__c = a.Impermissible__c;
 			xpressrefiobj.Remaining_Term__c = a.Remaining_Term__c;
 			xpressrefiobj.Is_Relocation_Loan__c = a.Is_Relocation_Loan__c;
-			System.debug(xpressrefiobj.P_I_Payment__c);
+			xpressrefiobj.Vesting__c = a.Vesting__c;
+			xpressrefiobj.Trust__c = a.Trust__c;
 			xPressrecordList.add(xpressrefiobj);
 		}
 
@@ -672,7 +673,7 @@ public class xPressRefiController{
 			}
 			pwo.TotalPIPayment = PIPaymentCalculation(LoanTermYears, pwo.Rate, xpressrefiobj.Principal_Balance__c);
 			//    pwo.MonthlySavings = cu.Product__c;
-			if (xpressrefiobj.Product_Type__c == cu.Product__c && xpressrefiobj.Impermissible__c == false){
+			if (xpressrefiobj.Product_Type__c == cu.Product__c && xpressrefiobj.Impermissible__c == false && String.isNotBlank(xpressrefiobj.Vesting__c)){
 				pwo.IsMortgageCadence = false;
 			} else{
 				pwo.IsMortgageCadence = true;
@@ -722,7 +723,7 @@ public class xPressRefiController{
 			xId = XpressRefiRecord.id;
 
 
-			List<xPressRefi__c> XpressRefiRecordList = [SELECT Borrower_Birth_Date__c, Borrower_First_Name__c, Borrower_Last_Name__c, Brand_Code__c, Brand__c, Case__c, Case__r.CaseNumber, Current_Interest_Rate_Calc__c, Current_Interest_Rate__c, Debit_Share_Account__c, DocuSignId__c, Docusign_Status__c, Home_Value__c, Id, Interest_Rate__c, Investor__c, is_CSV_Generated__c, Is_Mortgage_Ware_File_Created__c, Is_Product_Change__c, LoanId__c, Mailing_Address_1__c, Mailing_Address_2__c, Mailing_Address_City__c, Mailing_Address_Zip__c, Mailing_State__c, Maturity_Date_Calc__c, Maturity_Date__c, Member_Number__c, Member__c, New_Interest_Rate_Calc__c, New_Payment_Amount_Calc__c, New_Product_Type__c, PMI_Amount__c, Principal_Balance__c, Product_Type__c, Property_Address_2__c, Property_Balance__c, Property_City__c, Property_County__c, Property_State__c, Property_Zip__c, Property__c, P_I_Payment__c, Rate_Expiration_Date__c, Share_Account__c, Start_Date_Calc__c, Member_Phone__c, Member_Email__c, Loan_Program_Type__c, Borrower_Name_1__c, Borrower_Name_2__c, Due_Date__c, PMI_Flag__c, Is_Chevron_Employee__c, Is_Primary_Residence__c, Is_Relocation_Loan__c, Impermissible__c, New_Product_Name__c, Remaining_Term__c
+			List<xPressRefi__c> XpressRefiRecordList = [SELECT Borrower_Birth_Date__c, Borrower_First_Name__c, Borrower_Last_Name__c, Brand_Code__c, Brand__c, Case__c, Case__r.CaseNumber, Current_Interest_Rate_Calc__c, Current_Interest_Rate__c, Debit_Share_Account__c, DocuSignId__c, Docusign_Status__c, Home_Value__c, Id, Interest_Rate__c, Investor__c, is_CSV_Generated__c, Is_Mortgage_Ware_File_Created__c, Is_Product_Change__c, LoanId__c, Mailing_Address_1__c, Mailing_Address_2__c, Mailing_Address_City__c, Mailing_Address_Zip__c, Mailing_State__c, Maturity_Date_Calc__c, Maturity_Date__c, Member_Number__c, Member__c, New_Interest_Rate_Calc__c, New_Payment_Amount_Calc__c, New_Product_Type__c, PMI_Amount__c, Principal_Balance__c, Product_Type__c, Property_Address_2__c, Property_Balance__c, Property_City__c, Property_County__c, Property_State__c, Property_Zip__c, Property__c, P_I_Payment__c, Rate_Expiration_Date__c, Share_Account__c, Start_Date_Calc__c, Member_Phone__c, Member_Email__c, Loan_Program_Type__c, Borrower_Name_1__c, Borrower_Name_2__c, Due_Date__c, PMI_Flag__c, Is_Chevron_Employee__c, Is_Primary_Residence__c, Is_Relocation_Loan__c, Impermissible__c, New_Product_Name__c, Remaining_Term__c, Vesting__c, Trust__c
 			                                            FROM xPressRefi__c
 			                                            where id = :xId];
 
