@@ -1,0 +1,76 @@
+<aura:component
+    implements="force:appHostable,force:lightningQuickActionWithoutHeader,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,force:hasSObjectName"
+    access="global" controller="xPressRefiController">
+
+    <aura:handler name="init" action="{!c.doInit}" value="{!this}" access="global" />
+    <aura:registerEvent name="xPressRefiEvent" type="c:xPressRefiEvent" />
+
+    <aura:attribute name="ActiveStepIndex" type="Integer" />
+    <aura:attribute name="xPressRefiRecord" type="xPressRefi__c"/>
+    <aura:attribute name="PropertyAddress" type="string" />
+
+    <div id="stage3" class="stage3" style="width:100% !important;">
+        <div class="slds-grid slds-gutters eft4tbl">
+            <div class="slds-col firstcol">
+                <p class="pfontstyle">Request Status</p><br></br>
+                <p class="">Your xPress Refi request has been successfully submitted. The details of your request are in
+                    Mars Case(<a href="{!('/one/one.app?#/sObject/'+ v.xPressRefiRecord.Case__c + '/view')}"
+                        target="_blank">{!v.xPressRefiRecord.Case__r.CaseNumber}</a>)</p>
+            </div>
+            <div class="slds-col secondcol">
+                <table class="bottomtbl">
+                    <tr>
+                        <td>Member Number:</td>
+                        <td>{!v.xPressRefiRecord.Member_Number__c}</td>
+                    </tr>
+                    <tr>
+                        <td>Property Address:</td>
+                        <td class="sloan">
+                            {!v.PropertyAddress}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Loan ID:</td>
+                        <td>{!v.xPressRefiRecord.LoanId__c}</td>
+                    </tr>
+                    <tr>
+                        <td>Principal Balance:</td>
+                        <td>
+                            <lightning:formattedNumber value="{!v.xPressRefiRecord.Principal_Balance__c}"
+                                style="currency" currencyCode="USD" />
+                        </td>
+                    </tr>
+
+                    <br />
+                    <br />
+                    <tr>
+                        <td>Previous Mortgage Type:</td>
+                        <td>{!v.xPressRefiRecord.Product_Type__c}</td>
+                    </tr>
+                    <tr>
+                        <td>New Mortgage Type:</td>
+                        <td>{!v.xPressRefiRecord.New_Product_Type__c}</td>
+                    </tr>
+
+                    <br />
+                    <br />
+                    <tr>
+                        <td>Previous Interest Rate:</td>
+                        <td>
+                            <lightning:formattedNumber value="{!v.xPressRefiRecord.Current_Interest_Rate__c}"
+                                style="percent-fixed" maximumFractionDigits="3"/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>New Interest Rate:</td>
+                        <td>
+                            <lightning:formattedNumber value="{!v.xPressRefiRecord.New_Interest_Rate_Calc__c}"
+                                style="percent-fixed" maximumFractionDigits="3" />
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+
+</aura:component>

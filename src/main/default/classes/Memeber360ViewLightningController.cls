@@ -499,13 +499,13 @@ public  class Memeber360ViewLightningController {
                 {
                      Account_Details__c acc1 = (Account_Details__c)acc;
                     
-                    if(true){
-                        acc1.Card_Name__c = listRelationshipsName.get(acc1.Name);           
+                    if(listRelationships.get(acc1.Id) != null){
+                        acc1.Card_Name__c = listRelationships.get(acc1.Id);           
                         
                     }
                     else
                     {
-                        acc1.Card_Name__c = listRelationships.get(acc1.Id);
+                        acc1.Card_Name__c = listRelationshipsName.get(acc1.Name);
                     }
                     
                 }
@@ -697,7 +697,7 @@ public  class Memeber360ViewLightningController {
             
         list<Account_Details__c> accList = new list<Account_Details__c>();
             
-            
+         system.debug('line no 700 ---accountNumberSetWOBeneficiary=='+accountNumberSetWOBeneficiary);   
         
         if(true){
             accList = [SELECT Id, Name,TypeTranslate__c FROM Account_Details__c WHERE Name IN:accountNumberSetWOBeneficiary and RecType__c != 'CARD'];
@@ -874,7 +874,7 @@ public  class Memeber360ViewLightningController {
         
         List<sObject> caseList = Database.query(SOQLQuery);
         
-      
+        
         
 
 		List<CaseAccountMemberDetail__c> camd = new List<CaseAccountMemberDetail__c>();

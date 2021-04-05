@@ -13,7 +13,9 @@
 <aura:attribute name="isDocusignEmailSelected" type="Boolean" default="false"/>
 <aura:attribute name="EmailIdsList" type="List" />    
 <aura:registerEvent name="EFTEvent" type="c:EFTEvent"/>    
-   
+<aura:attribute name="CountACHpaymentPost" type="Integer" /> 
+<aura:attribute name="IsCountACHpaymentPostVisible" type="Boolean" default="false" /> 
+
   		<div id = "stage6">
          <aura:if isTrue="{!v.isDocusignEmailSelected == false}">
  	 <div class="eftreqstatus">
@@ -177,7 +179,7 @@
           <aura:if isTrue="{!(v.EFTRecord.Action_Type__c == 'Expire')}"> 
             <div class="eftrecorddetail2">
                 <p class = "fontstyle">ACH Record Details</p><br></br>
-               	<table class="bottomtbl">
+               	<table class="bottomtbl tblexp">
                     <tr>
                     	<td colspan="2"><p>Select the “Expire” button to Cancel/Expire this ACH record</p></td>
                     </tr>
@@ -206,8 +208,13 @@
                             <lightning:input variant="label-hidden" type="date" class="effectivedate" dateStyle="short" value="{!v.EFTRecord.Effective_Date__c}" onchange="{!c.onExpirationDateChange}" />
                             <!-- <ui:inputDate value="{!v.EFTRecord.Effective_Date__c}" format="MM/dd/yyyy" dispxlayDatePicker="true"/>  -->
                         </td>
-                    </tr>
+                    </tr>                    
                 </table>
+                <aura:if isTrue="{!v.IsCountACHpaymentPostVisible}">
+                    <span class="spanPostcount">
+                        {!v.CountACHpaymentPost} more ACH Payment(s) will post on this loan/share before your chosen expiration date.
+                    </span>
+                </aura:if>                
             </div>
            </aura:if>
             

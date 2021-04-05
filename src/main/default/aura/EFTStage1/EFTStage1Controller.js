@@ -58,7 +58,7 @@
          var isMemberSelected = component.get("v.isMemberSelected");
         
 		if(EFT != undefined){
-            evt.setParams({ "EFTRecord": EFT , "isMemberSelected": isMemberSelected});
+            evt.setParams({ "EFTRecord": EFT , "isMemberSelected": isMemberSelected, "isMemberRadioClicked": true});
             evt.fire();
         }
         
@@ -88,7 +88,7 @@
         var isMemberSelected = component.get("v.isMemberSelected");
         
 		if(EFT != undefined){
-            evt.setParams({ "EFTRecord": EFT, "isMemberSelected": isMemberSelected});
+            evt.setParams({ "EFTRecord": EFT, "isMemberSelected": isMemberSelected, "isMemberRadioClicked": true});
             evt.fire();
         }
     
@@ -103,7 +103,7 @@
         var isMemberSelected = component.get("v.isMemberSelected");
         
 		if(EFT != undefined){
-            evt.setParams({ "EFTRecord": EFT, "isMemberSelected": isMemberSelected});
+            evt.setParams({ "EFTRecord": EFT, "isMemberSelected": isMemberSelected , "isMemberRadioClicked": true});
             evt.fire();
         }
     }
