@@ -73,6 +73,7 @@ trigger WIRESTransactionTrigger on WIRES_Transaction__c (before insert, after in
                         if(WTIds[i].TotalFromAccount__c>10000){
                             rangeGrtThen10000.add(WTIds[i].Id);
                         }
+
                     }
                     
                     if(WTIds[i].Source__c==WiresConstant.Source_Branch){
