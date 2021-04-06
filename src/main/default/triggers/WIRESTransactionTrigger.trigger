@@ -1,21 +1,38 @@
 trigger WIRESTransactionTrigger on WIRES_Transaction__c (before insert, after insert,after update) {
     
+      System.debug('In the trigger');
     
     //------------------------------------------------------------------After Update  ------------------------------------------------------------------------------//
     
     if(Trigger.isAfter && Trigger.isUpdate){
-        set<Id> docSignCompletedIds=new set<Id>();
+        set<Id> docSignCompletedAtOnlineIds=new set<Id>();
+        
+        set<Id> sentToWireXchangeIds=new set<Id>();
         for(Integer i=0; i<trigger.new.size(); i++){
             //------------------------------- Checking if the status is being changed and status = 'Completed'-----------------//
             if(trigger.old[i].Status__c != 'Completed' && trigger.new[i].Status__c == 'Completed'){  
-                docSignCompletedIds.add(trigger.new[i].id);
+                if(trigger.new[i].Source__c==WiresConstant.Source_OnlineBanking){
+                    docSignCompletedAtOnlineIds.add(trigger.new[i].id);
+                }
+            }
+            
+            //----------- Checking if the approval status is being changed and status = 'Released In WireXchange'--------------//
+            if(trigger.old[i].Approval_Status__c != 'Released In WireXchange' && trigger.new[i].Approval_Status__c == 'Released In WireXchange'){
+                  if(trigger.new[i].Source__c!=WiresConstant.Source_Branch){
+                		sentToWireXchangeIds.add(trigger.new[i].id);
+                  }
             }
         }
         
-        if(docSignCompletedIds.size()>0){
-            System.debug('Completed'+docSignCompletedIds);
-            WiresTransactionApprovalController.SendProgressNotification(docSignCompletedIds);
-            WiresTransactionApprovalController.CheckRedFlgsAndUpdateStatus(docSignCompletedIds);
+        if(docSignCompletedAtOnlineIds.size()>0){
+            WiresTransactionApprovalController.SendProgressNotification(docSignCompletedAtOnlineIds);
+            WiresSMSNotificationController.SendProgressSMSNotification(docSignCompletedAtOnlineIds);
+            WiresTransactionApprovalController.CheckRedFlgsAndUpdateStatus(docSignCompletedAtOnlineIds);
+        }
+        
+        if(sentToWireXchangeIds.size()>0){
+            WiresTransactionApprovalController.ReleasedToWireXchangeEmailNotification(sentToWireXchangeIds);
+            WiresSMSNotificationController.ReleasedToWireXchangeSMSNotification(sentToWireXchangeIds);
         }
     }
     //------------------------------------------------------------------After Insert  ------------------------------------------------------------------------------//
@@ -27,32 +44,45 @@ trigger WIRESTransactionTrigger on WIRES_Transaction__c (before insert, after in
         if(Trigger.isAfter){
             
             for(Integer i=0; i<trigger.new.size(); i++){        	
-                if(trigger.new[i].ParentTransaction__c == null && trigger.new[i].Source__c != 'Branch')	
+                if(trigger.new[i].ParentTransaction__c == null)	
                     WTIds.add(trigger.new[i]);
             } 
             
             if(WTIds.size() > 0){
                 Set<Id> range1To5000 = new Set<Id>();
-                Set<Id> range5001To1000 = new Set<Id>();
+                Set<Id> range50001To10000 = new Set<Id>();
                 Set<Id> rangeGrtThen10000 = new Set<Id>();
                 
+                Set<Id> range50001To10000ForDocusign = new Set<Id>();
+                Set<Id> rangeGrtThen10000ForDocusign = new Set<Id>();
+				
+				Set<Id> rangeForInPersonSigning = new Set<Id>();                
+                
                 for(Integer i=0; i<WTIds.size(); i++){ 
-                    if(WTIds[i].TotalFromAccount__c<=5000){
-                        range1To5000.add(WTIds[i].Id);
+                    
+                    if(WTIds[i].Source__c!=WiresConstant.Source_Branch){
+                        
+                        if(WTIds[i].TotalFromAccount__c<=5000){
+                            range1To5000.add(WTIds[i].Id);
+                        }
+                        
+                        if(WTIds[i].TotalFromAccount__c>5000 && WTIds[i].TotalFromAccount__c<=10000){
+                            range50001To10000.add(WTIds[i].Id);
+                        }
+                        
+                        if(WTIds[i].TotalFromAccount__c>10000){
+                            rangeGrtThen10000.add(WTIds[i].Id);
+                        }
                     }
                     
-                    if(WTIds[i].TotalFromAccount__c>5000 && WTIds[i].TotalFromAccount__c<=10000){
-                        range5001To1000.add(WTIds[i].Id);
-                    }
-                    
-                    if(WTIds[i].TotalFromAccount__c>10000){
-                        rangeGrtThen10000.add(WTIds[i].Id);
+                    if(WTIds[i].Source__c==WiresConstant.Source_Branch){
+                        rangeForInPersonSigning.add(WTIds[i].Id);
                     }
                 }        
                 
                 //Database.executeBatch(new WiresTransToDocuSignBatch(WTIds),1);
-                if(range5001To1000.size()>0){
-                    WiresTransToDocuSign.docusignAPIcall(range5001To1000);
+                if(range50001To10000.size()>0){
+                    WiresTransToDocuSign.docusignAPIcall(range50001To10000);
                 }
                 
                 if(rangeGrtThen10000.size()>0){
@@ -61,8 +91,17 @@ trigger WIRESTransactionTrigger on WIRES_Transaction__c (before insert, after in
                 
                 if(range1To5000.size()>0){
                     WiresTransactionApprovalController.SendProgressNotification(range1To5000);
+                    WiresSMSNotificationController.SendProgressSMSNotification(range1To5000);
                     WiresTransactionApprovalController.CheckRedFlgsAndUpdateStatus(range1To5000);
                 }
+                
+                if(rangeForInPersonSigning.size()>0){
+                    InPersonSigningContoller inPersonSigning=new InPersonSigningContoller();
+                    for(Id id:rangeForInPersonSigning){
+                    	inPersonSigning.AssignWiresToInPersonSigningHandler(id);
+                    }
+                }
+                
             }
         }
     }
@@ -70,11 +109,13 @@ trigger WIRESTransactionTrigger on WIRES_Transaction__c (before insert, after in
     
     //------------------------------------------------------------------Before Insert  ------------------------------------------------------------------------------//
     if(Trigger.isInsert && Trigger.isBefore){ 
+                    System.debug('Came in Before Insert');
         for(WIRES_Transaction__c objWIRESTransaction: trigger.New)
         {
+            System.debug('Came in Before Insert');
             string AccountNo= objWIRESTransaction.FromAccount__c;    	
             
-			Account_Details__c accDetail=[SELECT Id,Name, Brand__c FROM Account_Details__c WHERE Name=:AccountNo AND RecType__c = 'ACCT' LIMIT 1];
+            Account_Details__c accDetail=[SELECT Id,Name, Brand__c FROM Account_Details__c WHERE Name=:AccountNo AND RecType__c = 'ACCT' LIMIT 1];
             if(accDetail!=null){
                 objWIRESTransaction.Brand__c=accDetail.Brand__c;
             }
@@ -82,6 +123,9 @@ trigger WIRESTransactionTrigger on WIRES_Transaction__c (before insert, after in
             if(objWIRESTransaction.Frequency__c == 'Recurring'){
                 objWIRESTransaction.SendOn__c = null;    	
             }
+            
+            if(objWIRESTransaction.Source__c == WiresConstant.Source_Branch)
+                objWIRESTransaction.Status__c = 'N/A';
             
             List<Account_Details__c> listAccountDetails = [select id,Brand__c,ID1__c,OPEN_DATE__c from Account_Details__c where Name =: AccountNo 
                                                            and ID1__c =: objWIRESTransaction.Share_ID__c limit 1];
@@ -108,6 +152,14 @@ trigger WIRESTransactionTrigger on WIRES_Transaction__c (before insert, after in
             objWIRESTransaction.Member_Home_Phone__c =  paPrimary.PersonID__r.Home_Phone__pc;
             objWIRESTransaction.Member_Address__c = paPrimary.PersonID__r.Residential_Street__pc;
             objWIRESTransaction.Member_City_State_Zip__c = paPrimary.PersonID__r.Residential_City__pc + ' '+ paPrimary.PersonID__r.Residential_State__pc + ' '+ paPrimary.PersonID__r.Residential_Zipocde__pc ;
+            
+            if(objWIRESTransaction.Source__c==WiresConstant.Source_Branch){
+                objWIRESTransaction.Approval_Status__c = WiresConstant.ApprovalStatus_PendingForMemberReview;
+                
+                System.debug('WiresConstant.Source_Branch: Set user id');
+                
+                objWIRESTransaction.CreatedById =objWIRESTransaction.LaunchByUserId__c;
+            }
             
             list<Person_Account__c> paList = [SELECT Id,PersonID__c,
                                               Account_Number__c, Account_Number__r.RecType__c,TypeTranslate__c, Account_Number__r.Name FROM Person_Account__c 
