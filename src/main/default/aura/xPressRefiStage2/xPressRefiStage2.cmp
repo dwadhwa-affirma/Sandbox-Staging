@@ -34,9 +34,7 @@
         <aura:if isTrue="{!or(v.xPressRefiRecord.Vesting__c == '', v.xPressRefiRecord.Vesting__c == undefined)}" >
           <span class="note">This loan contains no Vesting information.</span><br/>
         </aura:if>
-        <aura:if isTrue="{!v.xPressRefiRecord.Trust__c}" >
-          <span class="note">This mortgage is held in trust.</span>
-        </aura:if>        
+               
         <table class="fundingtbl">
           <tbody>
             <tr>
@@ -135,19 +133,7 @@
             </tr>            
           </tbody>
         </table>
-        <table>
-          <!-- <tr>
-            <td class="questionstd">
-              <lightning:radioGroup name="chevronRelocation" 
-                        label="Is this a Chevron Relocation loan?"
-                        options="{!v.options }"
-                        value="{!v.IsChevronRelocation}"
-                        type="radio"
-                        class="customRadioCls"
-                        onchange="{!c.HandlePrimaryResidenceChange}" 
-                        required="true"/>
-            </td>
-          </tr> -->
+        <table>         
           <aura:if isTrue="{!v.xPressRefiRecord.Is_Relocation_Loan__c}" >
             <tr colspan="2"><td class="questionstd">This is a Chevron Relocation loan</td></tr>
             <aura:if isTrue="{!v.isLoanPrimaryResidence}" >
@@ -166,21 +152,14 @@
             </aura:if>
             
           </aura:if>
-          <!-- <aura:if isTrue="{!and(v.IsChevronEmployee == 'true',v.IsChevronRelocation == 'true')}" >
-            <tr>
-              <td class="questionstd">
-                <lightning:radioGroup name="primaryresidence" 
-                          label="Do you still occupy this home as your primary residence?"
-                          options="{!v.options }"
-                          value="{!v.IsPrimaryResidence}"
-                          type="radio"
-                          class="customRadioCls"
-                          onchange="{!c.HandlePrimaryResidenceChange}"
-                          required="true"/>
-              </td>
-            </tr>
-          </aura:if>           -->
+          
         </table>
+        <aura:if isTrue="{!v.xPressRefiRecord.Trust__c}" >
+          <span class="note">This mortgage is held in trust.</span><br/>
+        </aura:if> 
+        <aura:if isTrue="{!and(v.xPressRefiRecord.PMI_Company_Name__c != '', v.xPressRefiRecord.PMI_Company_Name__c != undefined)}" >
+          <span class="note">This loan contains PMI.</span><br/>
+        </aura:if>
       </div>
       <div class="slds-col secondcol">
         <p><span class="pfontstyle">Refi Choices</span><span class="spanstyle">Rates Updated: {!v.RatesUpdatedDate}</span></p>   

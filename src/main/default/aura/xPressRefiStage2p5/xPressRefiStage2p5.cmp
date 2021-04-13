@@ -1,0 +1,110 @@
+<aura:component
+  implements="force:appHostable,force:lightningQuickActionWithoutHeader,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,force:hasSObjectName"
+  access="global" controller="xPressRefiController">
+
+  <aura:handler name="init" action="{!c.doInit}" value="{!this}" access="global" />
+  <aura:registerEvent name="xPressRefiEvent" type="c:xPressRefiEvent" />
+
+
+  <aura:attribute name="xPressRefiRecord" type="xPressRefi__c" />
+  <aura:attribute name="options" type="List" default="[
+        {'label': 'Yes', 'value': 'true'},
+        {'label': 'No', 'value': 'false'}
+    ]" />
+    <aura:attribute name="ActiveStepIndex" type="Integer" />  
+    <aura:attribute name="isVestingDisabled" type="Boolean"  default="false"/>  
+    <aura:attribute name="Note" type="string" />
+
+  <div id="stage2p5" class="stage2p5" style="width:100% !important;">
+    <div class="slds-grid slds-gutters eft4tbl">
+      <div class="slds-col firstcol">
+        <p class="pfontstyle">Vesting Information</p>
+        <p>Our mortgage Vesting information indicates the following individual(s) on the loan.</p><br/>
+        <p>Please type the full name of all the following individuals in the provided fields to the right.</p>
+        <table class="fundingtbl">
+          <tbody>
+            <tr>
+              <td>
+                <lightning:textarea name="vesting" disabled="true" value="{!v.xPressRefiRecord.Vesting__c}" rows="3"
+                  cols="50" class="textarea" />
+              </td>              
+            </tr>
+            <tr>
+                <td class="questionstd">
+                  <lightning:radioGroup name="vestingInfoChanged" 
+                            label="Has the vesting information changed since the loan was originated?"
+                            options="{!v.options}"
+                            value="{!v.xPressRefiRecord.Is_Vesting_Info_Changed__c}"
+                            type="radio"
+                            class="customRadioCls"  
+                            onchange="{!c.HandleRadioChange}"                          
+                            required="true"/>
+                </td>
+              </tr> 
+              <tr>
+                <td class="questionstd">
+                  <lightning:radioGroup name="vestingInfoTrust" 
+                            label="Does the vesting information above suggest that the loan is held in trust?"
+                            options="{!v.options}"
+                            value="{!v.xPressRefiRecord.Is_Vesting_Info_Trust__c}"
+                            type="radio"
+                            class="customRadioCls"  
+                            onchange="{!c.HandleRadioChange}"                           
+                            required="true"/>
+                </td>
+              </tr>        
+          </tbody>
+        </table>        
+      </div>
+      <div class="slds-col secondcol">
+        <p class="pfontstyle">Vested Individuals</p>   
+       
+        <div class="eftrecord">  
+            <table class="">
+             <tbody>
+                 <tr>
+                    <td>
+                        <span>Vesting Person 1</span>
+                      </td>
+                      <td>
+                        <lightning:input name="vestingperson1" value="{!v.xPressRefiRecord.Vesting_Person_1__c}" disabled="{!v.isVestingDisabled}" onchange="{!c.HandlePersonChange}"/>
+                      </td>
+                 </tr>
+                 <tr>
+                    <td>
+                        <span>Vesting Person 2</span>
+                      </td>
+                      <td>
+                        <lightning:input name="vestingperson2" value="{!v.xPressRefiRecord.Vesting_Person_2__c}" disabled="{!v.isVestingDisabled}" onchange="{!c.HandlePersonChange}"/>
+                      </td>
+                 </tr>
+                 <tr>
+                    <td>
+                        <span>Vesting Person 3</span>
+                      </td>
+                      <td>
+                        <lightning:input name="vestingperson3" value="{!v.xPressRefiRecord.Vesting_Person_3__c}" disabled="{!v.isVestingDisabled}" onchange="{!c.HandlePersonChange}"/>
+                      </td>
+                 </tr>
+                 <tr>
+                    <td>
+                        <span>Vesting Person 4</span>
+                      </td>
+                      <td>
+                        <lightning:input name="vestingperson4" value="{!v.xPressRefiRecord.Vesting_Person_4__c}" disabled="{!v.isVestingDisabled}" onchange="{!c.HandlePersonChange}"/>
+                      </td>
+                 </tr>
+             </tbody>   
+            </table>      
+         
+          <div class="notestyle">
+            <span>
+                {!v.Note}
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</aura:component>	

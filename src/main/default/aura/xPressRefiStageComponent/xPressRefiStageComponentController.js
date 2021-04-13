@@ -96,7 +96,9 @@
        }     
     }
     else if(ActiveStepIndex == 2 && component.get("v.ContinueButtonName") == 'Submit'){
-        
+        if(component.get("v.xPressRefiRecord.Is_Mortgage_Cadence__c") == false){
+          ActiveStepIndex = 3;
+        }
         var NewProductType = component.get("v.xPressRefiRecord.New_Product_Type__c");
         var IsChevronEmployeeBoolean = component.get("v.xPressRefiRecord.Is_Chevron_Employee__c");
         var IsPrimaryResidenceBoolean = component.get("v.xPressRefiRecord.Is_Primary_Residence__c");
@@ -113,35 +115,53 @@
             helper.hideSpinner(component);
             return;
         }      
-        else if(NewProductType == undefined || NewProductType == null){
+        else if(NewProductType == undefined || NewProductType == null || NewProductType == ''){
           alert('Please Select Product.');
           helper.hideSpinner(component);
           return;
         }
-        else{
+        else if(component.get("v.xPressRefiRecord.Is_Mortgage_Cadence__c") == true || ActiveStepIndex == 4){
           helper.saveXpressRefiData(component, event);
           component.set("v.ContinueButtonName", "Continue");
           return;
         }        
     } 
+    else if(ActiveStepIndex == 4){
+        var isVestingChanged = component.get("v.xPressRefiRecord.Is_Vesting_Info_Changed__c");
+        var isVestingTrust = component.get("v.xPressRefiRecord.Is_Vesting_Info_Trust__c");
+
+        if(isVestingChanged == undefined || isVestingTrust == undefined){
+          alert('Please Answer All Questions.');
+          helper.hideSpinner(component);
+          return;
+        }
+    }
     else {
       component.set("v.ContinueButtonName", "Continue");
     }
 
     if(!isError){
+      if(ActiveStepIndex == 4){
+        helper.saveXpressRefiData(component, event);
+          component.set("v.ContinueButtonName", "Continue");
+          return;       
+      }
+      else{
         $A.createComponent(
-            "c:" + stages[ActiveStepIndex].Stage_Component__c,
-            { recordId: component.get("v.recordId") , xPressRefiRecord: component.get("v.xPressRefiRecord"), isLoanPrimaryResidence: component.get("v.isLoanPrimaryResidence") },
-            function (msgBox) {
-              if (component.isValid()) {
-                var targetCmp = component.find("ModalDialogPlaceholder");
-                var body = targetCmp.get("v.body");
-                body.splice(0, 1, msgBox);
-                targetCmp.set("v.body", body);
-                helper.hideSpinner(component);
-              }
+          "c:" + stages[ActiveStepIndex].Stage_Component__c,
+          { recordId: component.get("v.recordId") , xPressRefiRecord: component.get("v.xPressRefiRecord"), isLoanPrimaryResidence: component.get("v.isLoanPrimaryResidence") },
+          function (msgBox) {
+            if (component.isValid()) {
+              var targetCmp = component.find("ModalDialogPlaceholder");
+              var body = targetCmp.get("v.body");
+              body.splice(0, 1, msgBox);
+              targetCmp.set("v.body", body);
+              helper.hideSpinner(component);
             }
-          );
+          }
+        );
+      }
+        
     }
     else{       
         component.set("v.isContinueDisabled", true);

@@ -35,7 +35,7 @@
 
   onProductSelect: function (component, event, helper) {
     debugger;
-    var SelectedProduct, SelectedInterestRate, SelectedPIPayment, SelectedProductName;
+    var SelectedProduct, SelectedInterestRate, SelectedPIPayment, SelectedProductName, isMortgageCadence;
     if (event != undefined) {
       SelectedProduct = event.getSource().get("v.value");
     }
@@ -46,6 +46,7 @@
         SelectedInterestRate = map[i].Rate;
         SelectedPIPayment = map[i].TotalPIPayment;
         SelectedProductName = map[i].ProductName;
+        isMortgageCadence = map[i].IsMortgageCadence;
         break;
       }
     }
@@ -62,6 +63,10 @@
     component.set(
       "v.xPressRefiRecord.New_Product_Name__c",
       SelectedProductName
+    );
+    component.set(
+      "v.xPressRefiRecord.Is_Mortgage_Cadence__c",
+      isMortgageCadence
     );
 
     var evt = $A.get("e.c:xPressRefiEvent");
@@ -89,6 +94,10 @@
     //   "v.xPressRefiRecord.Is_Relocation_Loan__c",
     //   IsChevronRelocation
     // );
+    component.set(
+      "v.xPressRefiRecord.New_Product_Type__c",
+      ''
+    );
 
     var evt = $A.get("e.c:xPressRefiEvent");
 
