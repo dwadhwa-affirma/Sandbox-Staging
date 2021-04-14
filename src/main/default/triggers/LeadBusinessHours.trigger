@@ -21,6 +21,15 @@ trigger LeadBusinessHours on Lead (after insert,after update, before insert, bef
                 obj.LeadId__c = lead.Id;
                 obj.Open_Hours__c = 0;
                 openHours.add(obj);
+                
+                //-------------------------------CRM-1877--------------------------------------//
+                
+                if(lead.Episys_User_ID__c != 7002 && lead.LeadSource == 'Real Estate help desk' && 
+                         lead.I_m_interested_in__c == 'Home Loan Help Desk'){
+					                             
+                	System.debug('Calling Future class');    
+                    MarketingLeadCheck.LeadCheck(lead.id);
+                }
             }
         }
         
@@ -133,7 +142,7 @@ trigger LeadBusinessHours on Lead (after insert,after update, before insert, bef
     
     
     if(Trigger.isInsert && Trigger.isBefore){
-                    
+        
         string uid= UserInfo.getUserId();
         User usr = [Select id, name, alias from User where id=:uid];
         List<Episys_User__c> eusr =  new List<Episys_User__c>(); 
@@ -193,6 +202,7 @@ trigger LeadBusinessHours on Lead (after insert,after update, before insert, bef
                     }
                 }
             }
+            
         }
         
         List<Episys_User__c> episysUsers = [SELECT id, alias__c, Assigned_Branch__c,Episys_ID__c, Branch_Name__c,Default__c from Episys_User__c 
@@ -357,25 +367,11 @@ trigger LeadBusinessHours on Lead (after insert,after update, before insert, bef
                 	System.debug('4444');
                     lead.OwnerId = uid;
                 }
-            	else if(lead.Episys_User_ID__c != 7002 && lead.LeadSource == 'Real Estate help desk' && 
-                         lead.I_m_interested_in__c == 'Home Loan Help Desk'){
-                             
-                	System.debug('5555');
-                    for(Group grp : listQueue){
-              	      if(grp.name.containsIgnoreCase('Real Estate')){
-                 	     groupName = grp.Name;
-                         groupnameid = grp.id;
-                         break;
-                      }
-                    }
-                    if(groupName!=null && groupName!=''){
-                   		system.debug('Queue Name: '+groupName); 
-                        lead.OwnerId = groupnameid;
-                    }
-                }
-        }   
+        }
     }
-        
+    
+	
+    
     if(Trigger.isupdate && Trigger.isBefore){
         
         //Map<id,Lead> MapLead = new Map<id,Lead>([select id,Owner.Id,Owner.Type from Lead where Owner.Type = 'Queue' and id =: trigger.New.id]);

@@ -20,7 +20,7 @@ trigger ContentDocumentLinkUpdate on ContentDocumentLink (before insert,after up
     
     //----- Fire validation error to upload attachments when In person signing record has been locked -----//
     //---------------------------------------START---------------------------------------------------------//
-    /*if(Trigger.isInsert && Trigger.isBefore){
+    if(Trigger.isInsert && Trigger.isBefore){
         List<Id> inPersonSigningIds=new List<Id>();
         for(ContentDocumentLink cdl: Trigger.new){
             if(cdl.LinkedEntityId!=null){
@@ -39,7 +39,7 @@ trigger ContentDocumentLinkUpdate on ContentDocumentLink (before insert,after up
                 item.addError('In Person Signing record is locked. You can not upload attachments.');
             }
         }
-    }*/
+    }
     //----------------------------------------END---------------------------------------------------------//
    
     
