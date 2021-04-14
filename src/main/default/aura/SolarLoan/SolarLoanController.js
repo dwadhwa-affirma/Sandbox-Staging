@@ -18,6 +18,7 @@
 		var ProgressBarStep5 = document.getElementById('Step5');
 		var ProgressBarStep6 = document.getElementById('Step6');
 		var ProgressBarStep7 = document.getElementById('Step7');
+        var ProgressBarStep8 = document.getElementById('Step8');
 		
 		var stage = event.getParam("Stage");
 		
@@ -81,7 +82,39 @@
 			ProgressBarStep5.classList.add('half');
 			ProgressBarStep6.classList.add('halFactive');
 		}
-		if(stage == 'Stage 7' || stage == 'Stage 8'){
+		if(stage == 'Stage 7'){
+		
+			component.set("v.Stage1", "Review Completed");
+			component.set("v.Stage2", "Review Completed");
+			component.set("v.Stage3", "Records Created");
+	
+            if(Stage5ACHCheck == 'False'){
+			
+				component.set("v.Stage4", "ACH Not Used");
+				component.set("v.Stage5", "ACH Not Used");
+				component.set("v.Stage6", "ACH EFT Not Used");
+           }
+			if(Stage5ACHCheck == 'True'){
+				component.set("v.Stage4", "Review Completed");
+				component.set("v.Stage5", "Document Signed");
+				component.set("v.Stage6", "EFT Record Created");
+         	}
+            component.set("v.Stage7", "Submit UCC Lien Request");
+			ProgressBarStep1.classList.remove('halFactive');
+            ProgressBarStep1.classList.add('active');
+			ProgressBarStep2.classList.add('active');
+			ProgressBarStep3.classList.remove('halFactive');
+			ProgressBarStep3.classList.add('active');
+			ProgressBarStep4.classList.remove('halFactive');
+			ProgressBarStep4.classList.add('active');
+			ProgressBarStep5.classList.remove('half');
+			ProgressBarStep5.classList.add('active');
+			ProgressBarStep6.classList.remove('halFactive');
+			ProgressBarStep6.classList.add('active');
+			ProgressBarStep7.classList.add('halFactive');
+		}
+		
+        if(stage == 'Stage 8'){
 		
 			component.set("v.Stage1", "Review Completed");
 			component.set("v.Stage2", "Review Completed");
@@ -96,10 +129,11 @@
 			if(Stage5ACHCheck == 'True'){
 				component.set("v.Stage4", "Review Completed");
 				component.set("v.Stage5", "Document Signed");
-				component.set("v.Stage6", "EFT Record Created");
+				component.set("v.Stage6", "EFT Record Created");                
 			}
-		
-			component.set("v.Stage7", "Ticket Closed");
+            
+			component.set("v.Stage7", "UCC Lien Completed");
+			component.set("v.Stage8", "Ticket Closed");
 			ProgressBarStep1.classList.remove('halFactive');
             ProgressBarStep1.classList.add('active');
 			ProgressBarStep2.classList.add('active');
@@ -111,9 +145,11 @@
 			ProgressBarStep5.classList.add('active');
 			ProgressBarStep6.classList.remove('halFactive');
 			ProgressBarStep6.classList.add('active');
+            ProgressBarStep7.classList.remove('halFactive');
 			ProgressBarStep7.classList.add('active');
+            ProgressBarStep8.classList.add('active');
 		}
-		
+        
 		window.setTimeout(
 		    $A.getCallback(function() {
 		       helper.getSolarLoanData(component,helper)

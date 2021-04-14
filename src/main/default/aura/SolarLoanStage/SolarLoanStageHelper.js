@@ -20,10 +20,13 @@
 		var SolarLoanRecordId = component.get("v.recordId");
 		var buttonStatus;
 		var stage;
+        var checkCurrentStatus;
 		var Stage5ACHCheck;
         var Stage4ErrorCheck;
         var waitingCheck;
-        var Stage2MemberCheck;
+        var JurisdictionErrorCheck;
+        var MultipleMembershipCheck;
+        //var Stage2MemberCheck;
 		var buttonClass = component.find('WaitingButton');
         
 		var action = component.get("c.getMemberData");
@@ -38,6 +41,10 @@
                 if(result.SolarCurrentStage != undefined){
 		       	    stage = result.SolarCurrentStage;
 		        }
+                if(result.SolarCurrentStatus != undefined){
+		       	    checkCurrentStatus = result.SolarCurrentStatus;
+                }
+                
                 if(result.SolarCurrentStatus != 'Waiting for Response'){
 		        	component.set("v.IsWaitingDisabled", false);
 		        }
@@ -46,16 +53,24 @@
                 }
 
                 //-------------------------validation for Stage-2 ---------------------------//
-
-                if(result.Stage2MemberCheck == 'True'){
+				
+                if(result.JurisdictionErrorCheck == 'True'){
+                	JurisdictionErrorCheck = 'True';
+                }
+                
+                /*if(result.Stage2MemberCheck == 'True'){
                 	Stage2MemberCheck = 'True';
                 }
 
                 if(result.Stage2MemberCheck == 'False'){
                 	Stage2MemberCheck = 'False';
-                }
+                }*/
 
                 //---------------------Validation for Stage-4 -------------------------------//
+                
+                if(result.MultipleMembershipCheck == 'True'){
+                    MultipleMembershipCheck = 'True';
+                }
                 
                 if(result.Stage4ErrorCheck == 'True'){
                 	Stage4ErrorCheck = 'True';
@@ -86,7 +101,7 @@
             if(stage == 'Stage 3'){
                 component.set("v.ButtonLabelName", "Create Account/Loan Records");
                 component.set("v.StageName", "Stage 3: Create Account/Loan Records");
-                component.set("v.IsWaitingDisabled", true);
+                component.set("v.IsWaitingDisabled", true);                
             }
             if(stage == 'Stage 4'){
             	component.set("v.ButtonLabelName", "Mark Stage 4 Complete");
@@ -105,21 +120,66 @@
                 component.set("v.StageName", "Stage 6: Create EFT Record");
                 component.set("v.IsWaitingDisabled", true);
             }
-            if(stage == 'Stage 7'){
-                component.set("v.ButtonLabelName", "Close Ticket");
-                component.set("v.StageName", "Stage 7: Close Ticket");
+            
+            if(stage == 'Stage 7' && (checkCurrentStatus == 'EFT Record Created' || 
+                                      checkCurrentStatus == 'Loan Funded')){
+                component.set("v.ButtonLabelName", "Submit UCC Data");
+                component.set("v.StageName", "Stage 7: Submit UCC Data");
+                component.set("v.IsWaitingDisabled", true);
+            }
+            
+            if(stage == 'Stage 7' && checkCurrentStatus == 'UCC Pending'){
+                component.set("v.ButtonLabelName", "UCC Data Submitted");
+                component.set("v.StageName", "Stage 7: UCC Data Submitted");
                 component.set("v.IsButtonDisabled", true);
                 component.set("v.IsWaitingDisabled", true);
             }
-            if(stage == 'Stage 8'){
-                component.set("v.ButtonLabelName", "Close Ticket");
-                component.set("v.StageName", "Stage 7: Closed");
+            
+            if(stage == 'Stage 7' && checkCurrentStatus == 'UCC Submitted'){
+                component.set("v.ButtonLabelName", "UCC Data Submitted");
+                component.set("v.StageName", "Stage 7: UCC Data Submitted");
                 component.set("v.IsButtonDisabled", true);
                 component.set("v.IsWaitingDisabled", true);
-            }   
+            }
             
-             //------------------------------------------Validation message for Stage-2 Member Number Update-----------------------------//
-	         if(Stage2MemberCheck == 'True'){
+            if(stage == 'Stage 7' && checkCurrentStatus == 'UCC Rejected'){
+                component.set("v.ButtonLabelName", "Resubmit UCC Data");
+                component.set("v.StageName", "Stage 7: Resubmit UCC Data");
+                //component.set("v.IsButtonDisabled", true);
+                component.set("v.IsWaitingDisabled", true);
+            }
+            
+            if(stage == 'Stage 7' && checkCurrentStatus == 'Done'){
+                component.set("v.ButtonLabelName", "Close Ticket");
+                component.set("v.StageName", "Stage 8: Close Ticket");
+                component.set("v.IsButtonDisabled", true);
+                component.set("v.IsWaitingDisabled", true);
+            }
+            
+            if(stage == 'Stage 8'){
+                component.set("v.ButtonLabelName", "Close Ticket");
+                component.set("v.StageName", "Stage 8: Close Ticket");
+                component.set("v.IsButtonDisabled", true);
+                component.set("v.IsWaitingDisabled", true);
+            }
+            
+           	//------------------------------------------Validation message for Stage-2 Member Number Update-----------------------------//
+	        
+            if(JurisdictionErrorCheck == 'True'){
+				var toastEvent = $A.get("e.force:showToast");
+		        toastEvent.setParams({
+		            title : 'Warning',
+		            message: 'Jurisdiction Id not found for County.',
+		            duration:' 5000',
+		            key: 'info_alt',
+		            type: 'warning',
+		            mode: 'sticky'
+		        });
+		        toastEvent.fire();
+			 
+             }
+            
+            /*if(Stage2MemberCheck == 'True'){
 				
 				var toastEvent = $A.get("e.force:showToast");
 		        toastEvent.setParams({
@@ -147,15 +207,29 @@
 		        });
 		        toastEvent.fire();
 			 
-             }
+             }*/
 
             //------------------------------------------Validation message for Stage-4 -----------------------------//
 	         
-	         if(Stage4ErrorCheck == 'True'){
+	         if(Stage4ErrorCheck == 'True' && MultipleMembershipCheck != 'True'){
 				var toastEvent = $A.get("e.force:showToast");
 		        toastEvent.setParams({
 		            title : 'Warning',
 		            message: 'Loan and Tracking records are not created',
+		            duration:' 5000',
+		            key: 'info_alt',
+		            type: 'warning',
+		            mode: 'sticky'
+		        });
+		        toastEvent.fire();
+			 
+             }
+            
+            if(MultipleMembershipCheck == 'True'){
+				var toastEvent = $A.get("e.force:showToast");
+		        toastEvent.setParams({
+		            title : 'Warning',
+		            message: 'There are multiple membership accounts',
 		            duration:' 5000',
 		            key: 'info_alt',
 		            type: 'warning',

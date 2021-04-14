@@ -50,7 +50,7 @@ private class SolarLoanDocTest{
      //---------------------------------------- Creating Solar Loan Document record-----------------------------------//
      
      List<SolarLoan_Document__c> SolarLoanDocList = new List<SolarLoan_Document__c>{
-         new SolarLoan_Document__c(Name = 'Test Document', NewFile__c = true,Solar_Loans__c = SolarLoan_Obj[0].id)};      
+         new SolarLoan_Document__c(Name = 'Test Document', Document_Name__c = 'Member Application_Completed', NewFile__c = true,Solar_Loans__c = SolarLoan_Obj[0].id)};      
      insert SolarLoanDocList;
      
 	SolarLoan_Document__c sd = new SolarLoan_Document__c();

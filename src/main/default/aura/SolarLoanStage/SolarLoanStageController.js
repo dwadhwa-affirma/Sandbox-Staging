@@ -68,12 +68,15 @@
         helper.showSpinner(component);
         var action = component.get("c.getMemberData");
         var checkCurrentStage;
+        var checkCurrentStatus;
         var buttonStatus;
         var Stage5ACHCheck;
+        var Stage6ErrorCheck;
         var Stage5ErrorCheck;
         var Stage3ErrorCheck;
         var Stage3MissingFields;
         var Stage5MissingFields;
+        var Stage6MissingFields;
         var checkstage;
         var SolarLoanRecordId = component.get("v.recordId");
        	
@@ -90,8 +93,10 @@
                 CurrentStage = 'Stage 6';
         	if(component.get("v.ButtonLabelName") == 'Create EFT Record')
                 CurrentStage = 'Stage 7';
-            if(component.get("v.ButtonLabelName") == 'Close Ticket')
-                CurrentStage = 'Stage 8';    
+        	if(component.get("v.ButtonLabelName") == 'Submit UCC Data' || component.get("v.ButtonLabelName") == 'Resubmit UCC Data'){
+                CurrentStage = 'Stage 8';
+            	component.set("v.IsButtonDisabled", true);
+       		}   
         
         checkstage = CurrentStage;
         action.setParams({"SolarLoanRecordId": SolarLoanRecordId,
@@ -104,6 +109,10 @@
                 if(result.SolarCurrentStage != undefined){
 		       	    checkCurrentStage = result.SolarCurrentStage;
                     component.set("v.CurrentStage",result.SolarCurrentStage);
+                }
+                
+                if(result.SolarCurrentStatus != undefined){
+		       	    checkCurrentStatus = result.SolarCurrentStatus;
                 }
                 
                 if(result.Stage3LoanCheck != undefined && result.Stage3LoanCheck != null){
@@ -128,6 +137,13 @@
                 if(result.Stage5ErrorCheck == 'True'){
                 	Stage5ErrorCheck = 'True';
                 	Stage5MissingFields = result.Stage5MissingFields;
+                }
+                
+                 //---------------------Validation for Stage-6 -------------------------------//
+                	
+                if(result.Stage6ErrorCheck == 'True'){
+                	Stage6ErrorCheck = 'True';
+                	Stage6MissingFields = result.Stage6MissingFields;
                 }
             
             if(checkCurrentStage == 'Stage 2'){
@@ -156,18 +172,34 @@
                 component.set("v.StageName", "Stage 6: Create EFT Record");
                 component.set("v.IsWaitingDisabled", true);
             }
-            if(checkCurrentStage == 'Stage 7'){
-                component.set("v.ButtonLabelName", "Close Ticket");
-                component.set("v.StageName", "Stage 7: Close Ticket");
+            
+            if(checkCurrentStage == 'Stage 7' && checkCurrentStatus == 'EFT Record Created'){
+                component.set("v.ButtonLabelName", "Submit UCC Data");
+                component.set("v.StageName", "Stage 7: Submit UCC Data");
+                component.set("v.IsWaitingDisabled", true);
+            }
+            
+            if(checkCurrentStage == 'Stage 7' && checkCurrentStatus == 'UCC Pending'){
+                component.set("v.ButtonLabelName", "Submit UCC Data");
+                component.set("v.StageName", "Stage 7: Submit UCC Data");
                 component.set("v.IsButtonDisabled", true);
                 component.set("v.IsWaitingDisabled", true);
             }
+                
+            if(checkCurrentStage == 'Stage 7' && checkCurrentStatus == 'UCC Rejected'){
+                component.set("v.ButtonLabelName", "Resubmit UCC Data");
+                component.set("v.StageName", "Stage 7: Resubmit UCC Data");
+                //component.set("v.IsButtonDisabled", true);
+                component.set("v.IsWaitingDisabled", true);
+            }     
+                
             if(checkCurrentStage == 'Stage 8'){
                 component.set("v.ButtonLabelName", "Close Ticket");
-                component.set("v.StageName", "Stage 7: Closed");
+                component.set("v.StageName", "Stage 8: Close Ticket");
                 component.set("v.IsButtonDisabled", true);
                 component.set("v.IsWaitingDisabled", true);
-            } 
+            }
+             
              var buttonDisabled = component.get("v.IsButtonDisabled");
              
              var compEvent = $A.get("e.c:SolarLoanStatusEvent"); 
@@ -177,7 +209,7 @@
 			 compEvent.fire();
 			
 			 if(Stage5ErrorCheck != 'True' && Stage3ErrorCheck != 'True'){
-                 if(checkCurrentStage == 'Stage 3' || checkCurrentStage == 'Stage 6'){
+                 if(checkCurrentStage == 'Stage 2' || checkCurrentStage == 'Stage 3' || checkCurrentStage == 'Stage 6'){
                      window.setTimeout(
                         $A.getCallback(function() {
                            helper.hideSpinner(component,helper)
@@ -193,6 +225,13 @@
                  }
                  
                 if(checkstage != 'Stage 2'){
+                    window.setTimeout(
+                        $A.getCallback(function() {
+                        helper.getSolarLoanData(component,helper)
+                        }), 7000
+                    );
+                }
+                 if(checkstage != 'Stage 7'){
                     window.setTimeout(
                         $A.getCallback(function() {
                         helper.getSolarLoanData(component,helper)
@@ -229,6 +268,24 @@
 		        toastEvent.setParams({
 		            title : 'Warning',
 		            message: Stage5MissingFields,
+		            duration:' 5000',
+		            key: 'info_alt',
+		            type: 'warning',
+		            mode: 'sticky'
+		        });
+		        toastEvent.fire();
+			 
+			 } 
+             
+             //------------------------------------------Validation message for Stage-6(Brand)---------------------------//
+			 
+			 if(Stage6ErrorCheck == 'True'){
+				
+				helper.hideSpinner(component,helper); 
+				var toastEvent = $A.get("e.force:showToast");
+		        toastEvent.setParams({
+		            title : 'Warning',
+		            message: Stage6MissingFields,
 		            duration:' 5000',
 		            key: 'info_alt',
 		            type: 'warning',
