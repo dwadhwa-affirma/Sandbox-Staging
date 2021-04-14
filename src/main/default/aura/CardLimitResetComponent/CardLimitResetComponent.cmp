@@ -5,7 +5,8 @@
 <aura:attribute name="isSigninPersonClicked" type="Boolean" default="false"/>
 <aura:attribute name="MemberAccount" type="Account_Details__c"  />
 <aura:attribute name="Member" type="Account"  />
-<aura:attribute name="ActiveStepIndex" type="String"  />
+<aura:attribute name="ActiveStepIndex" type="String"/>
+<aura:attribute name="BackButtonDis" type="String"/>
 <aura:attribute name="Action" type="String"  />
 <aura:attribute name="isExit" type="Boolean"  />
 <aura:attribute name="isError" type="Boolean" default="true" />
@@ -52,7 +53,7 @@
     
     	<footer class="slds-modal__footer slds-modal__footer_directional">
  		    <lightning:button aura:id="Exit" label="Exit" title="Exit" onclick="{!c.cancelAction}"/>
-            <lightning:button variant="brand" label="Back" disabled="{!(v.ActiveStepIndex == (0) ? true : false)}" title="Back" onclick="{!c.back}"/> 
+            <lightning:button variant="brand" label="Back" disabled="{!(or(v.ActiveStepIndex == (0),v.BackButtonDis == 1) ? true : false)}" title="Back" onclick="{!c.back}"/> 
             <lightning:button variant="brand" label="{!v.ContinueButtonName}" disabled="{!v.isMemberSelected == false}" title="Continue" onclick="{!c.Continue}"/>
             
   		</footer> 

@@ -35,6 +35,8 @@ trigger SolarLoanDocTrigger on SolarLoan_Document__c (before insert, before upda
     }  
     
   	AggregateResult[] groupedResults = [SELECT COUNT(Id), Solar_Loans__c FROM SolarLoan_Document__c where NewFile__c = true and Solar_Loans__c IN :custord GROUP BY Solar_Loans__c ];
+    
+    AggregateResult[] groupedResults1 = [SELECT COUNT(Id), Solar_Loans__c FROM SolarLoan_Document__c where Document_Name__c LIKE '%Member Application_Completed%' and Solar_Loans__c IN :custord GROUP BY Solar_Loans__c ];
    
     if(groupedResults.size() == 0){
         
@@ -45,18 +47,18 @@ trigger SolarLoanDocTrigger on SolarLoan_Document__c (before insert, before upda
      		sllist.add(sl);
         }
     }
-   for(AggregateResult ar:groupedResults) {
+	for(AggregateResult ar:groupedResults) {
+    	Id custid = (ID)ar.get('Solar_Loans__c');
+     	Integer count = (INTEGER)ar.get('expr0');
+     	system.debug('ttt'+count);
      
-     Id custid = (ID)ar.get('Solar_Loans__c');
+     	Solar_Loans__c sl = new Solar_Loans__c(Id=custid);
+     	sl.NewDoc__c = true;
      
-     Integer count = (INTEGER)ar.get('expr0');
-     
-     Solar_Loans__c sl = new Solar_Loans__c(Id=custid);
-     
-     sl.NewDoc__c = true;
-     system.debug('ttt'+count);
-     sllist.add(sl);
-   }
+     	if(groupedResults1.size() > 0)
+     		sl.Signed__c = true;
+     	sllist.add(sl);
+   	}
    
 	if(sllist.size() > 0){
         update sllist;     

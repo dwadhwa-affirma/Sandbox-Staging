@@ -4,7 +4,9 @@
 <aura:attribute name="CLRecord" type="Change_Limit__c"/> 
 <aura:handler name="init" action="{!c.doInit}" value="{!this}" access="global" />
 <aura:attribute name="caList" type="Account_Details__c[]" />  
-<aura:attribute name="ChangeCardLimitIsEnabled" type="Boolean" default="false"/>
+<aura:attribute name="IsFinal" type="Boolean" default="false"/>
+  
+<aura:if isTrue="{!(v.IsFinal == false)}">
     <div id = "stage4" class = "align">
         <p class = "fontstyle">Confirmation</p><br></br>
         <div class="slds-form">
@@ -32,7 +34,6 @@
             </div>
         </div>
     </div>
-   
-    
-     
+</aura:if>
+  <lightning:spinner aura:id="Spinner" alternativeText="Loading" size="medium" variant="brand" class="slds-hide spin"/>
 </aura:component>

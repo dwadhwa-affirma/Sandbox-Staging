@@ -128,7 +128,7 @@ trigger AttachmentNameUpdate on Attachment (after update,after delete,after inse
                 solarLoanObj.Solar_Loans__c = a.ParentId;
                 solarLoanObj.Attachment_Owner__c = a.OwnerId;
                 solarLoanObj.Attachment_Created_On__c = a.CreatedDate;
-              
+               
             	solarLoanAttachmentsList.add(solarLoanObj);
     		}
     	}

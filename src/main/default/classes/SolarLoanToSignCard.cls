@@ -1,5 +1,13 @@
 public class SolarLoanToSignCard {
-
+	
+    public List<Solar_loans__c> solarloans{get;set;}
+    private ApexPages.StandardSetController standardController;
+    public boolean validation {get;set;}
+    public boolean morethanone {get;set;}
+    public boolean signed {get;set;}
+    public boolean notready {get;set;}
+    
+    public static string Rurl;
 	public static String EnvelopeId;
 	public static Account Member;
 	public static String EmailBody = 'In order for the Credit Union to ensure the solar loan details are accurate, please review and sign the Signature Card form.' +'\n\n' +'If changes are needed or you would like to provide additional payments, please update the form and sign.' +'\n\n' + 'If you have any questions, please contact us at 800-782-8782 ext. 5200.';
@@ -52,11 +60,85 @@ public class SolarLoanToSignCard {
 	public static HTTPResponse res5;
     public static String responseBody1;
 	
+    public SolarLoanToSignCard(ApexPages.StandardSetController standardController){
+        // Returns all selected records
+        solarloans = (List<Solar_Loans__c>)standardController.getSelected();
+        
+        If(solarloans.size() == 0){
+            validation = false;
+        }
+        else If(solarloans.size() > 1){
+            validation = true;
+            morethanone = false;
+        }
+        else if(solarloans.size() == 1){
+        	List<Solar_Loans__c> SolarLoanToProcess = [select id,name,Name__c,Member_number__c,Current_Solar_Loan_Stage__c,
+                                                       Count__c,Signed__c from Solar_loans__c where id in :solarloans];    
+		  List<SolarLoan_Document__c> sd = [select id,Attachment_Id__c	,name,Solar_Loans__r.id,Solar_Loans__c from SolarLoan_Document__c where Solar_Loans__r.id in: SolarLoanToProcess and Document_Name__c LIKE '%Membership Application%' order by createddate desc LIMIT 1];
+            
+            System.debug('SolarLoan Doc: '+sd.size());
+            system.debug(SolarLoanToProcess[0].Signed__c);
+            
+            system.debug('Number: '+SolarLoanToProcess[0].Member_number__c);
+            system.debug('Name: '+SolarLoanToProcess[0].Name__c);
+            system.debug('Docs: '+SolarLoanToProcess[0].Count__c);
+            system.debug('Stage: '+SolarLoanToProcess[0].Current_Solar_Loan_Stage__c);
+            
+            if(SolarLoanToProcess[0].Signed__c == true){
+                validation = true;
+                morethanone = true;
+                signed = false;    
+            }
+            else if(sd.size() == 0 || SolarLoanToProcess[0].Member_number__c == null || SolarLoanToProcess[0].Name__c == null || 
+                    SolarLoanToProcess[0].Count__c == '0' || 
+                    (SolarLoanToProcess[0].Current_Solar_Loan_Stage__c != 'Stage 7' && SolarLoanToProcess[0].Current_Solar_Loan_Stage__c != 'Stage 8')){
+
+                validation = true;
+                morethanone = true;
+                signed = true;
+                notready = false;       
+            }
+            else{
+                validation = true;
+				morethanone = true;
+            	signed = true;
+            	notready = true;
+            }            
+        }    
+        else{
+			validation = true;
+			morethanone = true;
+            signed = true;
+            notready = true;
+        }
+        
+        this.standardController = standardController;
+        system.debug('tttt'+solarloans);
+        system.debug('validation'+validation);
+        system.debug('morethanone'+morethanone);
+    }
     
-    @future(callout=true)
-    public static void SignCard(Set<ID> ids){   
+    
+    //public static void SignCard(Set<ID> ids){   
+    public PageReference ExecuteSignatureMethod(){
     	
         //----------------------------Start - DocuSign Templates from Custom setting---------------------------------//
+        
+        List<Solar_Loans__c> selectedsolar = (List<Solar_Loans__c>)standardController.getSelected();
+        
+        Set<Id> ids = new set<Id>();
+        For(Solar_Loans__c sl : selectedsolar){
+            ids.add(sl.id);
+        }
+        system.debug('ids: '+ids);
+		
+        /*If(ids.size() == 0){
+    	 	validation = false;
+	 		return null;
+	 	}
+        else{
+            validation = true;
+        }*/
         
         DocuSign_User_Details__c DTSpectrum = DocuSign_User_Details__c.getValues('Spectrum');
         
@@ -215,7 +297,7 @@ public class SolarLoanToSignCard {
 				req5.setHeader('Content-Type','application/json'); 
                 req5.setHeader('Accept','application/json'); 
 				req5.setHeader('Content-Disposition','form-data');
-             	json5 = '{"clientUserId":"120",'+'"authenticationMethod":"email",'+'"returnUrl":"https://www.chevronfcu.org",'+'"userName": "'+userFullName+'",'+'"email": "'+userEmail+'"'+'}';
+             	json5 = '{"clientUserId":"120",'+'"authenticationMethod":"email",'+'"returnUrl":"https://www.spectrumcu.org",'+'"userName": "'+userFullName+'",'+'"email": "'+userEmail+'"'+'}';
              	req5.setBody(json5); 
                 system.debug('Request : '+ json5);
              	if(!Test.isRunningTest()){  
@@ -223,7 +305,10 @@ public class SolarLoanToSignCard {
                     responseBody1 = res5.getBody();
 					system.debug('DocuSign Response'+ responseBody1);
              	}
-                string Rurl;
+                else{
+                    responseBody1 = '{"url":"www.google.com"}';
+                }
+                
                 
                 if(responseBody1 !=''){        
                 	Map<String,Object> results = (Map<String,Object>)System.JSON.deserializeUntyped(responseBody1);  
@@ -246,5 +331,10 @@ public class SolarLoanToSignCard {
             if(SolarLoansToUpdate.size() > 0){
         		update SolarLoansToUpdate;
         	}
+        
+        PageReference page = new PageReference(Rurl);
+        page.setRedirect(true);
+        return page;       
+        
     }	
 }
