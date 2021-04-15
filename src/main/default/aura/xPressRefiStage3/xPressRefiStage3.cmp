@@ -68,6 +68,38 @@
                                 style="percent-fixed" maximumFractionDigits="3" />
                         </td>
                     </tr>
+                    <br />
+                    <br />
+                    <aura:if isTrue="{!and(v.xPressRefiRecord.Vesting__c != '', v.xPressRefiRecord.Vesting__c != undefined)}">
+                        <tr>
+                            <td>Vesting</td>
+                            <td>{!v.xPressRefiRecord.Vesting__c}</td>
+                        </tr>
+                    </aura:if>
+                    <aura:if isTrue="{!and(v.xPressRefiRecord.Vesting_Person_1__c != '', v.xPressRefiRecord.Vesting_Person_1__c != undefined)}">
+                        <tr>
+                            <td>Vesting Person 1</td>
+                            <td>{!v.xPressRefiRecord.Vesting_Person_1__c}</td>
+                        </tr>
+                    </aura:if>                    
+                    <aura:if isTrue="{!and(v.xPressRefiRecord.Vesting_Person_2__c != '', v.xPressRefiRecord.Vesting_Person_2__c != undefined)}">
+                        <tr>
+                            <td>Vesting Person 2</td>
+                            <td>{!v.xPressRefiRecord.Vesting_Person_2__c}</td>
+                        </tr>
+                    </aura:if>
+                    <aura:if isTrue="{!and(v.xPressRefiRecord.Vesting_Person_3__c != '', v.xPressRefiRecord.Vesting_Person_3__c != undefined)}">
+                        <tr>
+                            <td>Vesting Person 3</td>
+                            <td>{!v.xPressRefiRecord.Vesting_Person_3__c}</td>
+                        </tr>
+                    </aura:if>
+                    <aura:if isTrue="{!and(v.xPressRefiRecord.Vesting_Person_4__c != '', v.xPressRefiRecord.Vesting_Person_4__c != undefined)}">
+                        <tr>
+                            <td>Vesting Person 4</td>
+                            <td>{!v.xPressRefiRecord.Vesting_Person_4__c}</td>
+                        </tr>
+                    </aura:if>                    
                 </table>
             </div>
         </div>
