@@ -639,7 +639,7 @@ public class SolarLoanToCreateLoan {
                     
                     //----------------------------------------------------Create Loan Name--------------------------------------------------//
 
-                    if(sl.Joint_SSN__c != null){
+                    if(sl.Joint_SSN__c != null && TrackingRecord != 'IsFound'){
                             
                         SLType = '1';
                         SLLast = sl.Joint_Last_Name__c;
@@ -904,7 +904,8 @@ public class SolarLoanToCreateLoan {
                     Solar_Loans__c s = new Solar_Loans__c();          
                     if(result != null && result != '')
                         s.Loan_Id__c = result;
-                        
+                       
+                    system.debug('result1: '+result1);    
                     if(result1 != null && result1 != '')    
                         s.Loan_Name_Locator__c = result1;
                         
