@@ -19,6 +19,7 @@
   <aura:attribute name="EFTRecordsList" type="List" />
   <aura:attribute name="MultipleEFTShareLoanId" type="List" />
   <aura:attribute name="isSingleShareLoan" type="Boolean" default="false" />
+  <aura:attribute name="IsFirstAdditionalNull" type="Boolean" default="false" />
 
   <div id="stage3" class="stage3">
 

@@ -239,10 +239,16 @@
           "v.EFTRecord.Existing_Alternate_Amount__c",
           EFTList[i].Existing_Alternate_Amount__c
         );
+        if(parseFloat(EFTList[i].Existing_Alternate_Amount__c) <= 0){
+          component.set('v.IsFirstAdditionalNull',true);
+        }
+        else{
+          component.set('v.IsFirstAdditionalNull',false);
+        }
         break;
       }
     }
-    evt.setParams({ EFTRecord: component.get("v.EFTRecord") });
+    evt.setParams({ EFTRecord: component.get("v.EFTRecord"), IsFirstAdditionalNull: component.get("v.IsFirstAdditionalNull") });
     evt.fire();
   },
 });

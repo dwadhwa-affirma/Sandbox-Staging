@@ -319,7 +319,7 @@
                                     );
                          }
                          else{
-                            $A.createComponent("c:"+stages[i+1].Stage_Component__c,{recordId: component.get("v.recordId"), EFTRecord: component.get("v.EFTRecord")},
+                            $A.createComponent("c:"+stages[i+1].Stage_Component__c,{recordId: component.get("v.recordId"), EFTRecord: component.get("v.EFTRecord"), IsFirstAdditionalNull: component.get("v.IsFirstAdditionalNull")},
                                 function(msgBox){                
                                      if (component.isValid()) {
                                         
@@ -477,6 +477,10 @@
        var isMemberRadioClicked = event.getParam("isMemberRadioClicked");
        if(isMemberRadioClicked != undefined)
        component.set("v.isMemberRadioClicked", isMemberRadioClicked); 
+
+       var IsFirstAdditionalNull = event.getParam("IsFirstAdditionalNull");
+       if(IsFirstAdditionalNull != undefined)
+       component.set("v.IsFirstAdditionalNull", IsFirstAdditionalNull);      
         
     },
     

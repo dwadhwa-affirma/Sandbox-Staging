@@ -40,6 +40,7 @@
 <aura:attribute name="isBackButtonDisabled" type="Boolean" default="false" />
 <aura:attribute name="isDisabledforDocusign" type="Boolean" default="false"/> 
 <aura:attribute name="isMemberRadioClicked" type="Boolean"  default="false"/>
+<aura:attribute name="IsFirstAdditionalNull" type="Boolean" default="false" />
 
 <lightning:navigation aura:id="navService"/>
     

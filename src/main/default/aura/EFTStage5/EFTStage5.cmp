@@ -19,6 +19,7 @@
 	<aura:attribute name="EFTRecord" type="EFT__c" />
 	<aura:attribute name="isAdditionalAmtDisabled" type="Boolean" default="true" />
 	<aura:attribute name="isNewAdditionalAmtDisabled" type="Boolean" default="false" />
+	<aura:attribute name="IsFirstAdditionalNull" type="Boolean" default="false" />
 
 	<div id="stage5">
 		<p class="fontstyle">Provide Payment Information</p><br></br>
