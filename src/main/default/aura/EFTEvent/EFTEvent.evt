@@ -10,4 +10,5 @@
     <aura:attribute name="CurrentEFTRecord" type="EFT__c" />  
     <aura:attribute name="isDisabledforDocusign" type="Boolean" default="false"/>
     <aura:attribute name="isMemberRadioClicked" type="Boolean" />
+    <aura:attribute name="IsFirstAdditionalNull" type="Boolean" default="false" />
 </aura:event>

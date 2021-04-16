@@ -26,7 +26,7 @@
 }
 
 .THIS#stage2p5 .slds-textarea{
-    height:50px !important;
+    /* height:50px !important; */
     line-height: 1.1rem;
     padding-top: 5px;
 }

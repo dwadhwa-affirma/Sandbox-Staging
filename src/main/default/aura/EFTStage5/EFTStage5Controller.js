@@ -2,6 +2,7 @@
 	doInit : function(component, event, helper) {
         debugger;       
 		var type = component.get('v.EFTRecord.EFT_ID_Type__c');//.split(',')[1];
+        var IsFirstAdditionalNull = component.get('v.IsFirstAdditionalNull');       
 		//component.set('v.isLoan', false);
         if(type != 'Loan' && component.get("v.EFTRecord.Action_Type__c") == 'Create'){
             component.set('v.isLoan', false);
@@ -23,7 +24,7 @@
         
         component.set('v.NewExistingTotalAmt', totalexisting ); 
         
-        if(parseFloat(component.get('v.EFTRecord.Existing_Alternate_Amount__c')) <= 0){
+        if(parseFloat(component.get('v.EFTRecord.Existing_Alternate_Amount__c')) <= 0 || IsFirstAdditionalNull){
             component.set('v.isAdditionalAmtDisabled', false); 
             component.set('v.isNewAdditionalAmtDisabled', true); 
         }
@@ -33,9 +34,7 @@
             evt.setParams({ EFTRecord: component.get("v.EFTRecord") });
             evt.fire();
         }
-        //helper.getDaysPicklist(component, event);
-        //component.find("Day_of_Month__c").set("v.value","");
-         //component.find("Day_of_Month__c").set("v.value", component.get('v.EFTRecord.Day_of_Month__c'));
+        //helper.getDaysPicklist(component, event);       
        
 	},
     
