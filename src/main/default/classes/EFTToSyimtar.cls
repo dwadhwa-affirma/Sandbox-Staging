@@ -840,7 +840,11 @@ public class EFTToSyimtar{
 			  operation = operation + 'EFT Locator: ' + ef.Locator + '\n' + 'Expiration Date:' + dt.format('MM/dd/yyyy')+'\n' + 'ABA/Routing#:' + ef.Payee + '\n' + 'Funding FI:' + ef.MatchID3 + '\n' + 'Account Number:' + ef.Reference + '\n' + 'Type:' + typeexp + '\n' + 'Effective Date:' + dt.format('MM/dd/yyyy')+'\n' + 'Frequency:' + freqExp + '\n' + 'Day of Month:' + ef.Day1 + '\n' + '\n';//'Payment Amount:' + e.Payment_Amount__c + '\n' + 'Additional Payment Amount:' + (e.Alternate_Amount__c == null ? 0 : e.Alternate_Amount__c)
 			}
 			CaseIdsToUpdate.put(e.Case__c, operation);
-		  } else{
+		  } else if(resultEFTLocator != '' && resultEFTLocator != null && EftLocator != resultEFTLocator){
+			string casedesc = e.Case__r.Description + '\n \n Old ACH Values \n ABA/Routing#: ' + OldPayee + '\n' + 'Funding FI: ' + OldMatchID3 + '\n' + 'Account Number: ' + OldReference + '\n' + 'Type: ' + OldAmountCode + '\n' + 'Payment Amount: ' + OldPostAmount + '\n' + 'Additional Payment Amount: ' + OldAlternatePayment + '\n' + 'Effective Date: ' + OldEffectiveDate + '\n' + 'Frequency: ' + OldFrequency + '\n' + 'Day of Month: ' + OldDay1 + '\n \n ACH DocuSign Values \n Type: ' + e.Type__c + '\n' + 'Funding FI: ' + e.Bank_Name__c + '\n' + 'ABA/Routing#: ' + e.Routing_Number__c + '\n' + 'Account Number: ' + e.Account_Number__c + '\n' + 'Additional Payment Amount: ' + e.Alternate_Amount__c + '\n' + '\n' + 'Expired EFT Locator: ' + EftLocator + '\n' + 'Expiration Date: ' + resultExpDate + '\n\n' + 'New EFT Locator: ' + resultEFTLocator ;
+			CaseIdsToUpdate.put(e.Case__c, casedesc);
+		  }
+		  else{
 			string casedesc = e.Case__r.Description + '\n \n Old ACH Values \n ABA/Routing#: ' + OldPayee + '\n' + 'Funding FI: ' + OldMatchID3 + '\n' + 'Account Number: ' + OldReference + '\n' + 'Type: ' + OldAmountCode + '\n' + 'Payment Amount: ' + OldPostAmount + '\n' + 'Additional Payment Amount: ' + OldAlternatePayment + '\n' + 'Effective Date: ' + OldEffectiveDate + '\n' + 'Frequency: ' + OldFrequency + '\n' + 'Day of Month: ' + OldDay1 + '\n \n ACH DocuSign Values \n Type: ' + e.Type__c + '\n' + 'Funding FI: ' + e.Bank_Name__c + '\n' + 'ABA/Routing#: ' + e.Routing_Number__c + '\n' + 'Account Number: ' + e.Account_Number__c + '\n' + 'Additional Payment Amount: ' + e.Alternate_Amount__c + '\n' + '\n' + 'EFT Locator: ' + EftLocator;
 			CaseIdsToUpdate.put(e.Case__c, casedesc);
 		  }
