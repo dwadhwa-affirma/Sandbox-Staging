@@ -70,6 +70,8 @@
         var checkCurrentStage;
         var checkCurrentStatus;
         var buttonStatus;
+        var Stage2MissingDocs;
+        var Stage2ErrorCheck;
         var Stage5ACHCheck;
         var Stage6ErrorCheck;
         var Stage5ErrorCheck;
@@ -125,7 +127,16 @@
                 else{
                 	Stage5ACHCheck = 'True';
                 }
+                
                 //---------------------Validation for Stage-2 -------------------------------//
+                
+                if(result.Stage2ErrorCheck == 'True'){
+                	Stage2ErrorCheck = 'True';
+                	Stage2MissingDocs = result.Stage2MissingDocs;
+                }
+                
+                
+                //---------------------Validation for Stage-3 -------------------------------//
 
                 if(result.Stage3ErrorCheck == 'True'){
                 	Stage3ErrorCheck = 'True';
@@ -239,11 +250,28 @@
                     );
                 }
             }
-             
-           
-
-	         //------------------------------------------Validation message for Stage-2 -----------------------------//
-	         if(Stage3ErrorCheck == 'True'){
+    	
+            //-------------------------------------------Validation message for Stage-2 -----------------------------//
+           	
+            if(Stage2ErrorCheck == 'True'){
+				
+				helper.hideSpinner(component,helper); 
+				var toastEvent = $A.get("e.force:showToast");
+		        toastEvent.setParams({
+		            title : 'Warning',
+		            message: Stage2MissingDocs,
+		            duration:' 5000',
+		            key: 'info_alt',
+		            type: 'warning',
+		            mode: 'sticky'
+		        });
+		        toastEvent.fire();
+			 
+             }
+	
+	        //------------------------------------------Validation message for Stage-3 -----------------------------//
+	         
+            if(Stage3ErrorCheck == 'True'){
 				
 				helper.hideSpinner(component,helper); 
 				var toastEvent = $A.get("e.force:showToast");
