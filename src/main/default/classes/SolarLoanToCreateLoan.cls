@@ -2033,7 +2033,7 @@ public class SolarLoanToCreateLoan {
                 //---------------------------------------------------Creating PowerOn Record--------------------------------------------------//
                 
                 RGSession = '1';
-                RGUserChr1 = sl.Member_Number__c;
+                RGUserChr1 = AccountNumber;
                 RGUserChr2 = 'SOLAR';
                 
                 System.debug('----------------------------Calling PowerOn record-----------------------------');
@@ -2069,7 +2069,7 @@ public class SolarLoanToCreateLoan {
                     if(results.size() > 0){
                         for(String key : results.keySet()){                   			
                             if(key == 'RGlines'){
-                                PreferenceLocator = String.valueOf(results.get(key));
+                                RGLines = String.valueOf(results.get(key));
                             }
                         }
                     }
