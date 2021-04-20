@@ -52,6 +52,8 @@ public class SolarLoanController {
     stage3RequireFieldsForMembership.add('mem_ID_Expiration_Date__c'); 
     stage3RequireFieldsForMembership.add('Employer__c');
     stage3RequireFieldsForMembership.add('Occupation__c');
+    stage3RequireFieldsForMembership.add('mem_Primary_A_F_Foreign_Gov_t_Position__c');
+    stage3RequireFieldsForMembership.add('mem_Primary_Foreign_Gov_t_Position__c');
     
     List<String> stage3RequireFieldsForJointMembership = new List<String>();
     stage3RequireFieldsForJointMembership.add('mem_Joint_First_Name__c');
@@ -75,7 +77,9 @@ public class SolarLoanController {
     stage3RequireFieldsForJointMembership.add('Joint_ID_Issue_Date__c');
     stage3RequireFieldsForJointMembership.add('Joint_ID_Expiration_Date__c');  
     stage3RequireFieldsForJointMembership.add('mem_Joint_Employer__c');
-    stage3RequireFieldsForJointMembership.add('Joint_Occupation__c'); 
+    stage3RequireFieldsForJointMembership.add('Joint_Occupation__c');
+    stage3RequireFieldsForJointMembership.add('mem_Joint_Foreign_Gov_t_Position__c');
+    stage3RequireFieldsForJointMembership.add('mem_Joint_A_F_Foreign_Gov_t_Position__c'); 
 
     List<String> stage3RequireFieldsForMailingAddress = new List<String>();
     //stage3RequireFieldsForMailingAddress.add('mem_Mailing_Extra_Address__c');
@@ -213,7 +217,8 @@ public class SolarLoanController {
             mem_Joint_First_Name__c,mem_Joint_Last_Name__c,Joint_Email__c,mem_Joint_DOB__c,mem_Joint_Street__c,mem_Joint_City__c,
             mem_Joint_State__c,mem_Joint_Zip_Code__c,Joint_ID_Type__c,Joint_ID_Number__c,Joint_ID_State__c,Joint_ID_Issue_Date__c,
             Joint_ID_Expiration_Date__c,mem_Joint_Employer__c,Joint_Occupation__c,Mailing_Street__c, mem_Mailing_City__c,mem_Mailing_State__c,
-            Mailing_Zip__c,Joint_Cell_Phone__c,Joint_Home_Phone__c,Joint_Work_Phone__c,
+            Mailing_Zip__c,Joint_Cell_Phone__c,Joint_Home_Phone__c,Joint_Work_Phone__c,mem_Primary_A_F_Foreign_Gov_t_Position__c,
+            mem_Primary_Foreign_Gov_t_Position__c,mem_Joint_A_F_Foreign_Gov_t_Position__c,mem_Joint_Foreign_Gov_t_Position__c,
             Current_Solar_Loan_Stage__c,County__c FROM Solar_Loans__c where id =: SolarLoanRecordId limit 1];
             
     if(SolarLoanList.size() > 0){
@@ -515,21 +520,21 @@ public class SolarLoanController {
                 Stage3MissingFields = 'Please enter valid Primary Email.';
                 Stage3ErrorCheck = 'True';
             }
-            else if(system.today() > SolarLoanList[0].mem_ID_Expiration_Date__c ){
+            /*else if(system.today() > SolarLoanList[0].mem_ID_Expiration_Date__c ){
 
                 Stage3MissingFields = 'Primary Expiration date must be future date.';
                 Stage3ErrorCheck = 'True';
-            }
+            }*/
             else if((system.today() - 30)< SolarLoanList[0].mem_ID_Issue_Date__c ){
 
                 Stage3MissingFields = 'Primary Issue date must be 30 days older.';
                 Stage3ErrorCheck = 'True';
             }
-            else if(SolarLoanList[0].Joint_ID_Expiration_Date__c != null && system.today() > SolarLoanList[0].Joint_ID_Expiration_Date__c ){
+            /*else if(SolarLoanList[0].Joint_ID_Expiration_Date__c != null && system.today() > SolarLoanList[0].Joint_ID_Expiration_Date__c ){
 
                 Stage3MissingFields = 'Joint Expiration date must be future date.';
                 Stage3ErrorCheck = 'True';
-            }
+            }*/
             else if(SolarLoanList[0].Joint_ID_Issue_Date__c != null && (system.today() - 30) < SolarLoanList[0].Joint_ID_Issue_Date__c ){
 
                 Stage3MissingFields = 'Joint Issue date must be 30 days older.';
