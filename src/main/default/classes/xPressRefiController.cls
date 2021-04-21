@@ -148,7 +148,7 @@ public class xPressRefiController{
 		// Associated member accounts
 		acList = [SELECT Id, Name, RecType__c, Due_Date__c, County_Name__c, Home_Value__c, OPEN_DATE__c, Investor__c, TypeTranslate__c, Brand__c, Brand_Code__c, Loan_Number__c, Mortgage_Name_1__c, Mortgage_Name_2__c, Emp_Available_Balance__c, Available_Balance__c, PROPERTY_ADDRESS__c, Property_City__c, Property_State__c, Property_Zip__c, PRINCIPAL_BALANCE__c, Interest_Rate__c, Maturity_Date__c, Emp_Balance__c, PAYMENT__c, Loan_code__c, Loan_Program_Type__c, Xpress_Refi_Eligibility__c, Impermissible__c, Income__c, PMI_Flag__c, P_I_Payment__c, Remaining_Term__c, Is_Relocation_Loan__c, Vesting__c, Trust__c, PMI_Company_Name__c
 		          FROM Account_Details__c
-		          WHERE Name IN :NameSet and TypeTranslate__c = 'MORTGAGE' and Maturity_Date__c >= TODAY and Close_Date__c = null
+		          WHERE Name IN :NameSet and TypeTranslate__c = 'MORTGAGE' and Close_Date__c = null
 		          LIMIT 1];
 
 		system.debug('acList' + acList);
@@ -165,7 +165,12 @@ public class xPressRefiController{
 			xPressRefi__c xpressrefiobj = new xPressRefi__c();
 			xpressrefiobj.Current_Interest_Rate__c = a.Interest_Rate__c;
 			xpressrefiobj.LoanId__c = a.Loan_Number__c;
-			xpressrefiobj.Maturity_Date__c = a.Maturity_Date__c;
+			if(a.Maturity_Date__c.year() <= 2000){
+				xpressrefiobj.Maturity_Date__c = a.Maturity_Date__c.addYears(100);
+			}
+			else{
+				xpressrefiobj.Maturity_Date__c = a.Maturity_Date__c;
+			}
 			xpressrefiobj.Member_Number__c = a.Name;
 			xpressrefiobj.Principal_Balance__c = a.PRINCIPAL_BALANCE__c;
 			xpressrefiobj.Property__c = a.PROPERTY_ADDRESS__c;
@@ -360,23 +365,23 @@ public class xPressRefiController{
 					  'Is Primary Residence?: ' + (XpressRefiRecord.Is_Primary_Residence__c == true ? 'Yes' : 'No')+'\n\n' + 
 					  'Income: ' + '$' + XpressRefiRecord.Income__c + '\n' + 
 					  'Impermissible: ' + (XpressRefiRecord.Impermissible__c == true ? 'Yes' : 'No');
-		if(XpressRefiRecord.Vesting__c != '' && XpressRefiRecord.Vesting__c != null){
+		if (XpressRefiRecord.Vesting__c != '' && XpressRefiRecord.Vesting__c != null){
 			Description = Description + '\n\n' + 'Vesting: ' + XpressRefiRecord.Vesting__c;
-		} 
-		if(XpressRefiRecord.Vesting_Person_1__c != '' && XpressRefiRecord.Vesting_Person_1__c != null){
+		}
+		if (XpressRefiRecord.Vesting_Person_1__c != '' && XpressRefiRecord.Vesting_Person_1__c != null){
 			Description = Description + '\n' + 'Vesting Person 1: ' + XpressRefiRecord.Vesting_Person_1__c;
 		}
-		if(XpressRefiRecord.Vesting_Person_2__c != '' && XpressRefiRecord.Vesting_Person_2__c != null){
+		if (XpressRefiRecord.Vesting_Person_2__c != '' && XpressRefiRecord.Vesting_Person_2__c != null){
 			Description = Description + '\n' + 'Vesting Person 2: ' + XpressRefiRecord.Vesting_Person_2__c;
 		}
-		if(XpressRefiRecord.Vesting_Person_3__c != '' && XpressRefiRecord.Vesting_Person_3__c != null){
+		if (XpressRefiRecord.Vesting_Person_3__c != '' && XpressRefiRecord.Vesting_Person_3__c != null){
 			Description = Description + '\n' + 'Vesting Person 3: ' + XpressRefiRecord.Vesting_Person_3__c;
 		}
-		if(XpressRefiRecord.Vesting_Person_4__c != '' && XpressRefiRecord.Vesting_Person_4__c != null){
+		if (XpressRefiRecord.Vesting_Person_4__c != '' && XpressRefiRecord.Vesting_Person_4__c != null){
 			Description = Description + '\n' + 'Vesting Person 4: ' + XpressRefiRecord.Vesting_Person_4__c;
 		}
-					
-			
+
+
 		cs.Description = Description;
 		insert cs;
 		id caseId = cs.id;
@@ -385,7 +390,7 @@ public class xPressRefiController{
 
 	//-----------------P&I Payment Calculation-----------//
 	@AuraEnabled
-	public static decimal PIPaymentCalculation(Integer LoanTermYears, Decimal InterestRate, Decimal PrincipalAmount){
+	public static decimal PIPaymentCalculation(Integer LoanTermYears, Decimal InterestRate, Decimal PrincipalAmount, Boolean isNewProduct, xPressRefi__c xpressrefiobj){
 		// Integer LoanTermYears;
 		// Decimal InterestRate;
 		// Decimal PrincipleAmount;
@@ -398,8 +403,16 @@ public class xPressRefiController{
 			RatePerMonth = (InterestRate / 12) / 100;
 		system.debug('RatePerMonth=' + RatePerMonth);
 		Integer NumberOfPayments;
-		if (LoanTermYears != null)
+		if (LoanTermYears != null && isNewProduct == false)
 			NumberOfPayments = LoanTermYears * 12;
+		else{
+			Integer monthDiff = xpressrefiobj.Due_Date__c.monthsBetween(xpressrefiobj.Maturity_Date__c);
+			if (xpressrefiobj.Maturity_Date__c.day() >= xpressrefiobj.Due_Date__c.day())
+				monthDiff++;
+			System.debug(monthDiff);
+			NumberOfPayments = monthDiff;
+		}
+
 		system.debug('NumberOfPayments=' + NumberOfPayments);
 		Decimal PIPayment;
 		Decimal rplus1n = (RatePerMonth + 1).pow(NumberOfPayments);
@@ -663,7 +676,7 @@ public class xPressRefiController{
 
 		XpressRefiProductsList = [SELECT id, name, Active__c, Product__c, Product_Code__c, Program__c, Rate__c, Type__c, Order__c, LastModifiedDate
 		                          from CU_Rates__c
-		                          where Active__c = true and Type__c LIKE :ProductType and Program__c ='xPress Refi'
+		                          where Active__c = true and Type__c LIKE :ProductType and Program__c = 'xPress Refi'
 		                          order by LastModifiedDate desc];
 
 		system.debug('isReloDiscountApplied::' + isReloDiscountApplied);
@@ -689,7 +702,7 @@ public class xPressRefiController{
 			} else{
 				LoanTermYears = Integer.valueof(cu.Product__c.substring(0, 2));
 			}
-			pwo.TotalPIPayment = PIPaymentCalculation(LoanTermYears, pwo.Rate, xpressrefiobj.Principal_Balance__c);
+			pwo.TotalPIPayment = PIPaymentCalculation(LoanTermYears, pwo.Rate, xpressrefiobj.Principal_Balance__c, true, xpressrefiobj);
 			//    pwo.MonthlySavings = cu.Product__c;
 			if (xpressrefiobj.Product_Type__c == cu.Product__c && xpressrefiobj.Impermissible__c == false && String.isNotBlank(xpressrefiobj.Vesting__c) && String.isBlank(xpressrefiobj.PMI_Company_Name__c) && xpressrefiobj.Trust__c == false){
 				pwo.IsMortgageCadence = false;
@@ -710,7 +723,7 @@ public class xPressRefiController{
 
 		xPressRefi_Note__c Comment = xPressRefi_Note__c.getValues('Stage2');
 		string Note;
-		if(Comment.Note__c != null){
+		if (Comment.Note__c != null){
 			Note = Comment.Note__c;
 		}
 
@@ -726,7 +739,7 @@ public class xPressRefiController{
 		map<string, object> resultMap = new map<string, object>();
 		xPressRefi_Note__c Comment = xPressRefi_Note__c.getValues('Stage2.5');
 		string Note;
-		if(Comment.Note__c != null){
+		if (Comment.Note__c != null){
 			Note = Comment.Note__c;
 		}
 		resultMap.put('Note', Note);
