@@ -1723,7 +1723,7 @@ public class SolarLoanToCreateLoan {
                     else
                         JOINTZIPCODE = '';
                     
-                    UserChar3 = string.valueOf(sl.mem_Primary_First_Name__c) +' '+string.valueOf(sl.mem_Primary_Last_Name__c);
+                    UserChar3 = string.valueOf(sl.mem_Primary_First_Name__c).toUpperCase() +' '+string.valueOf(sl.mem_Primary_Last_Name__c).toUpperCase();
                    
                     JOINTUSERCHAR1 = '0016-'+string.valueOf(sl.name).toUpperCase();
                     System.debug('JOINTUSERCHAR1: '+ JOINTUSERCHAR1);
