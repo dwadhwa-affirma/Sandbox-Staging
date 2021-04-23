@@ -9,6 +9,7 @@
     <aura:attribute name="ContinueButtonName" type="string" default="Continue" />
     <aura:attribute name="xPressRefiStageDetails" type="xPressRefi_Stages__c[]" />
     <aura:attribute name="isError" type="Boolean" />
+    <aura:attribute name="isMultipleMortgages" type="Boolean" />
     <aura:attribute name="errorMessage" type="string" />
     <aura:attribute name="isLoanPrimaryResidence" type="Boolean" />
     <aura:attribute name="isContinueDisabled" type="Boolean" default="true" />
@@ -16,6 +17,7 @@
 		'sobjectType': 'xPressRefi__c',
                 'Property__c': ''}" />
     <aura:attribute name="MembershipAddressDetails" type="Map" default="{ MembershipAddress1: '', MembershipAddress2: '', MembershipCity : '', MembershipState : '', MembershipZip : '' }" />
+    <aura:attribute name="PendingXpressRefiAccountId" type="set" />
 
     <header class="slds-media_center slds-has-flexi-truncate slds-modal__header">
         <button

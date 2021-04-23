@@ -23,6 +23,10 @@
     <aura:attribute name="isLoanPrimaryResidence" type="Boolean" />
     <aura:attribute name="RatesUpdatedDate" type="string" />
     <aura:attribute name="Note" type="string" />
+    <aura:attribute name="IsMaturityDateReset" type="Boolean" default="false" />  
+
+    <lightning:spinner aura:id="Spinner" alternativeText="Loading" size="medium" variant="brand"
+        class="slds-hide spin" />
 
   <div id="stage2" class="stage2" style="width:100% !important;">
     <div class="slds-grid slds-gutters eft4tbl">
@@ -133,7 +137,19 @@
             </tr>            
           </tbody>
         </table>
-        <table>         
+        <table>    
+          <tr>
+            <td class="questionstd">
+              <lightning:radioGroup name="maturitydatereset" 
+                        label="Do you want to keep the Remaining Term/Maturity Date?"
+                        options="{!v.options}"
+                        value="{!v.IsMaturityDateReset}"
+                        type="radio"
+                        class="customRadioCls"
+                        onchange="{!c.HandleMatrurityReset}" 
+                        required="true"/>
+            </td>
+          </tr>     
           <aura:if isTrue="{!v.xPressRefiRecord.Is_Relocation_Loan__c}" >
             <tr colspan="2"><td class="questionstd">This is a Chevron Relocation loan</td></tr>
             <aura:if isTrue="{!v.isLoanPrimaryResidence}" >

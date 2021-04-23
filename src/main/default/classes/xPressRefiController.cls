@@ -114,6 +114,28 @@ public class xPressRefiController{
 		set<string> AccountnoSSNType = new set<string>();
 		List<xPressRefi__c> xPressrecordList = new List<xPressRefi__c>();
 		Boolean isABTQualified;
+		set<string> PendingXpressRefiAccountId = new set<string>();
+
+		/*-----------------------------Check if Existing XpressRefi record less than 90 days-------------*/
+		xPressRefi_Active_Days_Configuration__c config = xPressRefi_Active_Days_Configuration__c.getvalues('Primary');
+		Integer NoOfDays = 0;
+		if (config != null){
+			NoOfDays = (Integer.valueof(config.NumberOfDays__c)) * (-1);
+		}
+		date LastNDays = system.today().addDays(NoOfDays);
+		system.debug('LastNDays##' + LastNDays);
+		List<xPressRefi__c> ExistingXpressRefiList = [Select Id, Name, CreatedDate, Member_Number__c
+		                                              from xPressRefi__c
+		                                              where Member__c = :recordId and createddate > :LastNDays];
+		if (ExistingXpressRefiList.size() > 0){
+			resultMap.put('IsXpressRefiPending', true);
+			for(xPressRefi__c xrefi: ExistingXpressRefiList){
+				PendingXpressRefiAccountId.add(xrefi.Member_Number__c);
+			}
+			resultMap.put('PendingXpressRefiAccountId', PendingXpressRefiAccountId);
+		} else{
+			resultMap.put('IsXpressRefiPending', false);
+		}
 
 
 		/*--------Get Authorized Membership----------*/
@@ -148,8 +170,7 @@ public class xPressRefiController{
 		// Associated member accounts
 		acList = [SELECT Id, Name, RecType__c, Due_Date__c, County_Name__c, Home_Value__c, OPEN_DATE__c, Investor__c, TypeTranslate__c, Brand__c, Brand_Code__c, Loan_Number__c, Mortgage_Name_1__c, Mortgage_Name_2__c, Emp_Available_Balance__c, Available_Balance__c, PROPERTY_ADDRESS__c, Property_City__c, Property_State__c, Property_Zip__c, PRINCIPAL_BALANCE__c, Interest_Rate__c, Maturity_Date__c, Emp_Balance__c, PAYMENT__c, Loan_code__c, Loan_Program_Type__c, Xpress_Refi_Eligibility__c, Impermissible__c, Income__c, PMI_Flag__c, P_I_Payment__c, Remaining_Term__c, Is_Relocation_Loan__c, Vesting__c, Trust__c, PMI_Company_Name__c
 		          FROM Account_Details__c
-		          WHERE Name IN :NameSet and TypeTranslate__c = 'MORTGAGE' and Close_Date__c = null
-		          LIMIT 1];
+		          WHERE Name IN :NameSet and TypeTranslate__c = 'MORTGAGE' and Close_Date__c = null];
 
 		system.debug('acList' + acList);
 
@@ -165,10 +186,9 @@ public class xPressRefiController{
 			xPressRefi__c xpressrefiobj = new xPressRefi__c();
 			xpressrefiobj.Current_Interest_Rate__c = a.Interest_Rate__c;
 			xpressrefiobj.LoanId__c = a.Loan_Number__c;
-			if(a.Maturity_Date__c.year() <= 2000){
+			if (a.Maturity_Date__c.year() <= 2000){
 				xpressrefiobj.Maturity_Date__c = a.Maturity_Date__c.addYears(100);
-			}
-			else{
+			} else{
 				xpressrefiobj.Maturity_Date__c = a.Maturity_Date__c;
 			}
 			xpressrefiobj.Member_Number__c = a.Name;
@@ -203,28 +223,58 @@ public class xPressRefiController{
 			xpressrefiobj.Vesting__c = a.Vesting__c;
 			xpressrefiobj.Trust__c = a.Trust__c;
 			xpressrefiobj.PMI_Company_Name__c = a.PMI_Company_Name__c;
+			xpressrefiobj.Is_Maturity_Date_Reset__c = false;
 			xPressrecordList.add(xpressrefiobj);
 		}
 
+		map<string, string> mapMembershipAddress1 = new map<string, string>();
+		map<string, string> mapMembershipAddress2 = new map<string, string>();
+		map<string, string> mapMembershipCity = new map<string, string>();
+		map<string, string> mapMembershipState = new map<string, string>();
+		map<string, string> mapMembershipZip = new map<string, string>();
+		map<string, string> mapMembershipEmail = new map<string, string>();
+		map<string, string> mapMembershipPhone = new map<string, string>();
 		for (MemberAuthrizationWrapperObject r : resultList){
-			if (xPressrecordList.size() > 0 && r.AccountNumber == xPressrecordList[0].Member_Number__c && r.Type == '0'){
-				MembershipAddress1 = r.MembershipAddress1;
-				MembershipAddress2 = r.MembershipAddress2;
-				MembershipCity = r.MembershipCity;
-				MembershipState = r.MembershipState;
-				MembershipZip = r.MembershipZip;
-				xPressrecordList[0].Mailing_Address_1__c = MembershipAddress1;
-				xPressrecordList[0].Mailing_Address_2__c = MembershipAddress2;
-				xPressrecordList[0].Mailing_Address_City__c = MembershipCity;
-				xPressrecordList[0].Mailing_Address_Zip__c = MembershipZip;
-				xPressrecordList[0].Mailing_State__c = MembershipState;
-				xPressrecordList[0].Member_Email__c = r.MembershipEmail;
-				xPressrecordList[0].Member_Phone__c = r.MembershipPhone;
-				system.debug('r.MembershipEmail==' + r.MembershipEmail);
-				system.debug('r.MembershipPhone==' + r.MembershipPhone);
-				break;
+			if (r.Type == '0'){
+				mapMembershipAddress1.put(r.AccountNumber, r.MembershipAddress1);
+				mapMembershipAddress2.put(r.AccountNumber, r.MembershipAddress2);
+				mapMembershipCity.put(r.AccountNumber, r.MembershipCity);
+				mapMembershipState.put(r.AccountNumber, r.MembershipState);
+				mapMembershipZip.put(r.AccountNumber, r.MembershipZip);
+				mapMembershipEmail.put(r.AccountNumber, r.MembershipEmail);
+				mapMembershipPhone.put(r.AccountNumber, r.MembershipPhone);
 			}
 		}
+		system.debug('mapMembershipAddress1=='+mapMembershipAddress1);
+		for (xPressRefi__c xr : xPressrecordList){
+			system.debug('mapMembershipAddress1=='+mapMembershipAddress1);
+			xr.Mailing_Address_1__c = mapMembershipAddress1.get(xr.Member_Number__c);
+			xr.Mailing_Address_2__c = mapMembershipAddress2.get(xr.Member_Number__c);
+			xr.Mailing_Address_City__c = mapMembershipCity.get(xr.Member_Number__c);
+			xr.Mailing_State__c = mapMembershipState.get(xr.Member_Number__c);
+			xr.Mailing_Address_Zip__c = mapMembershipZip.get(xr.Member_Number__c);
+			xr.Member_Email__c = mapMembershipEmail.get(xr.Member_Number__c);
+			xr.Member_Phone__c = mapMembershipPhone.get(xr.Member_Number__c);
+		}
+		// for (MemberAuthrizationWrapperObject r : resultList){
+		// 	if (xPressrecordList.size() > 0 && r.AccountNumber == xPressrecordList[0].Member_Number__c && r.Type == '0'){
+		// 		MembershipAddress1 = r.MembershipAddress1;
+		// 		MembershipAddress2 = r.MembershipAddress2;
+		// 		MembershipCity = r.MembershipCity;
+		// 		MembershipState = r.MembershipState;
+		// 		MembershipZip = r.MembershipZip;
+		// 		xPressrecordList[0].Mailing_Address_1__c = MembershipAddress1;
+		// 		xPressrecordList[0].Mailing_Address_2__c = MembershipAddress2;
+		// 		xPressrecordList[0].Mailing_Address_City__c = MembershipCity;
+		// 		xPressrecordList[0].Mailing_Address_Zip__c = MembershipZip;
+		// 		xPressrecordList[0].Mailing_State__c = MembershipState;
+		// 		xPressrecordList[0].Member_Email__c = r.MembershipEmail;
+		// 		xPressrecordList[0].Member_Phone__c = r.MembershipPhone;
+		// 		system.debug('r.MembershipEmail==' + r.MembershipEmail);
+		// 		system.debug('r.MembershipPhone==' + r.MembershipPhone);
+		// 		break;
+		// 	}
+		// }
 
 		XpressRefiWrapperObject xpressrefiobject = new XpressRefiWrapperObject();
 		xpressrefiobject.xPressRefiList = xPressrecordList;
@@ -259,6 +309,7 @@ public class xPressRefiController{
 			Boolean isFullAddressMatch = (Boolean)isAddressMatch(xpressrefiobject).get('isFullAddressMatch');
 			resultMap.put('isFullAddressMatch', isFullAddressMatch);
 		}
+
 
 		return resultMap;
 	}
@@ -403,7 +454,7 @@ public class xPressRefiController{
 			RatePerMonth = (InterestRate / 12) / 100;
 		system.debug('RatePerMonth=' + RatePerMonth);
 		Integer NumberOfPayments;
-		if (LoanTermYears != null && isNewProduct == false)
+		if (LoanTermYears != null && xpressrefiobj.Is_Maturity_Date_Reset__c)
 			NumberOfPayments = LoanTermYears * 12;
 		else{
 			Integer monthDiff = xpressrefiobj.Due_Date__c.monthsBetween(xpressrefiobj.Maturity_Date__c);
@@ -638,6 +689,8 @@ public class xPressRefiController{
 	@AuraEnabled
 	public static map<string, object> getAllProductDetails1(xPressRefi__c xpressrefiobj, Boolean isReloDiscountApplied, Boolean isLoanPrimaryResidence){
 		system.debug('isLoanPrimaryResidence==' + isLoanPrimaryResidence);
+		system.debug('Is_Maturity_Date_Reset__c==' + xpressrefiobj.Is_Maturity_Date_Reset__c);
+
 		List<CU_Rates__c> ProductsList = new List<CU_Rates__c>();
 		map<string, object> resultMap = new map<string, object>();
 		List<CU_Rates__c> XpressRefiProductsList = new List<CU_Rates__c>();
@@ -704,17 +757,35 @@ public class xPressRefiController{
 			}
 			pwo.TotalPIPayment = PIPaymentCalculation(LoanTermYears, pwo.Rate, xpressrefiobj.Principal_Balance__c, true, xpressrefiobj);
 			//    pwo.MonthlySavings = cu.Product__c;
-			if (xpressrefiobj.Product_Type__c == cu.Product__c && xpressrefiobj.Impermissible__c == false && String.isNotBlank(xpressrefiobj.Vesting__c) && String.isBlank(xpressrefiobj.PMI_Company_Name__c) && xpressrefiobj.Trust__c == false){
+			system.debug('Product_Type__c::' + xpressrefiobj.Product_Type__c);
+			system.debug('cu.Product__c::' + cu.Product__c);
+			if (!xpressrefiobj.Product_Type__c.contains('ARM') && xpressrefiobj.Product_Type__c == cu.Product__c && xpressrefiobj.Impermissible__c == false && String.isNotBlank(xpressrefiobj.Vesting__c) && String.isBlank(xpressrefiobj.PMI_Company_Name__c) && xpressrefiobj.Trust__c == false){
 				pwo.IsMortgageCadence = false;
 			} else{
 				pwo.IsMortgageCadence = true;
 			}
 			system.debug('pwo.IsMortgageCadence::' + pwo.IsMortgageCadence);
-			if (isLoanPrimaryResidence){
-				ProductWrapperList.add(pwo);
-			} else if (!isLoanPrimaryResidence && LoanTermYears <= 15){
-				ProductWrapperList.add(pwo);
+			if (!xpressrefiobj.Is_Maturity_Date_Reset__c && !pwo.IsMortgageCadence){
+				if (isLoanPrimaryResidence){
+					ProductWrapperList.add(pwo);
+				} else if (!isLoanPrimaryResidence && LoanTermYears <= 15){
+					ProductWrapperList.add(pwo);
+				}
+			} else if (xpressrefiobj.Is_Maturity_Date_Reset__c && pwo.IsMortgageCadence){
+				if (isLoanPrimaryResidence){
+					ProductWrapperList.add(pwo);
+				} else if (!isLoanPrimaryResidence && LoanTermYears <= 15){
+					ProductWrapperList.add(pwo);
+				}
+			} else if (xpressrefiobj.Is_Maturity_Date_Reset__c && !pwo.IsMortgageCadence){
+				pwo.IsMortgageCadence = true;
+				if (isLoanPrimaryResidence){
+					ProductWrapperList.add(pwo);
+				} else if (!isLoanPrimaryResidence && LoanTermYears <= 15){
+					ProductWrapperList.add(pwo);
+				}
 			}
+
 
 			system.debug('pwo::' + pwo);
 		}
@@ -761,6 +832,64 @@ public class xPressRefiController{
 			if (accDetail.size() > 0){
 				XpressRefiRecord.Brand__c = accDetail[0].Brand__c;
 				XpressRefiRecord.Brand_Code__c = accDetail[0].Brand_Code__c;
+			}
+
+
+			if (XpressRefiRecord.Is_Mortgage_Cadence__c){
+				string MortgageCadenceNote = '';
+				if (XpressRefiRecord.Impermissible__c){
+					MortgageCadenceNote = MortgageCadenceNote + 'Marked as Impermissible';
+				}
+				if (XpressRefiRecord.Trust__c || XpressRefiRecord.Is_Vesting_Info_Trust__c){
+					if (MortgageCadenceNote == '')
+						MortgageCadenceNote = MortgageCadenceNote + 'Held in Trust';
+					else
+						MortgageCadenceNote = MortgageCadenceNote + '\n' + 'Held in Trust';
+				}
+				if (String.isNotBlank(XpressRefiRecord.PMI_Company_Name__c)){
+					if (MortgageCadenceNote == '')
+						MortgageCadenceNote = MortgageCadenceNote + 'Contains PMI';
+					else
+						MortgageCadenceNote = MortgageCadenceNote + '\n' + 'Contains PMI';
+				}
+				if (String.isBlank(XpressRefiRecord.Vesting__c)){
+					if (MortgageCadenceNote == '')
+						MortgageCadenceNote = MortgageCadenceNote + 'No Vesting information available';
+					else
+						MortgageCadenceNote = MortgageCadenceNote + '\n' + 'No Vesting information available';
+				}
+				if (XpressRefiRecord.Is_Vesting_Info_Changed__c){
+					if (MortgageCadenceNote == '')
+						MortgageCadenceNote = MortgageCadenceNote + 'Vesting information changed';
+					else
+						MortgageCadenceNote = MortgageCadenceNote + '\n' + 'Vesting information changed';
+				}
+				if (XpressRefiRecord.Product_Type__c != XpressRefiRecord.New_Product_Type__c){
+					if (MortgageCadenceNote == '')
+						MortgageCadenceNote = MortgageCadenceNote + 'Loan product change';
+					else
+						MortgageCadenceNote = MortgageCadenceNote + '\n' + 'Loan product change';
+				}
+				if (XpressRefiRecord.Is_Primary_Residence__c == false){
+					if (MortgageCadenceNote == '')
+						MortgageCadenceNote = MortgageCadenceNote + 'Not primary residence';
+					else
+						MortgageCadenceNote = MortgageCadenceNote + '\n' + 'Not primary residence';
+				}
+				if (XpressRefiRecord.Product_Type__c.contains('ARM')){
+					if (MortgageCadenceNote == '')
+						MortgageCadenceNote = MortgageCadenceNote + 'Loan is an Adjustable Rate Mortgage (ARM)';
+					else
+						MortgageCadenceNote = MortgageCadenceNote + '\n' + 'Loan is an Adjustable Rate Mortgage (ARM)';
+				}
+				if (XpressRefiRecord.Is_Maturity_Date_Reset__c){
+					if (MortgageCadenceNote == '')
+						MortgageCadenceNote = MortgageCadenceNote + 'Maturity Date Reset';
+					else
+						MortgageCadenceNote = MortgageCadenceNote + '\n' + 'Maturity Date Reset';
+				}
+
+				XpressRefiRecord.Mortgage_Cadence_Note__c = MortgageCadenceNote;
 			}
 
 			insert XpressRefiRecord;

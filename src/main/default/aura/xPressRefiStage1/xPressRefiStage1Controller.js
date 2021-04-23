@@ -12,7 +12,7 @@
     //   zip = fullzip;
     // }
 
-    var fullzipMemberShip = component.get("v.MembershipAddressDetails.MembershipZip");
+    var fullzipMemberShip = component.get("v.xPressRefiRecord.Mailing_Address_Zip__c");
     var zip5m, zip4m, zipm;
     if(fullzipMemberShip != null && fullzipMemberShip != undefined && fullzipMemberShip.length > 5){
         zip4m = fullzipMemberShip.substring(5);
@@ -29,10 +29,10 @@
       component.get("v.xPressRefiRecord.Property_State__c") +
       ", " + fullzip;   
     var MembershipAddress =
-      component.get("v.MembershipAddressDetails.MembershipAddress1") + " " +
-      component.get("v.MembershipAddressDetails.MembershipAddress2") + " " +
-      component.get("v.MembershipAddressDetails.MembershipCity") + " " +
-      component.get("v.MembershipAddressDetails.MembershipState")  +
+      component.get("v.xPressRefiRecord.Mailing_Address_1__c") + " " +
+      component.get("v.xPressRefiRecord.Mailing_Address_2__c") + " " +
+      component.get("v.xPressRefiRecord.Mailing_Address_City__c") + " " +
+      component.get("v.xPressRefiRecord.Mailing_State__c")  +
       ", " + zipm;     
     component.set("v.PropertyAddress",PropertyAddress);
     component.set("v.MembershipAddress",MembershipAddress);
