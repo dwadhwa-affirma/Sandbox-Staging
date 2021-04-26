@@ -98,6 +98,7 @@
                 component.set("v.ButtonLabelName", "Mark Stage 2 Complete");
                 component.set("v.StageName", "Stage 2: Review Documents");
             }
+            
             if(stage == 'Stage 3'){
                 component.set("v.ButtonLabelName", "Create Account/Loan Records");
                 component.set("v.StageName", "Stage 3: Create Account/Loan Records");
@@ -236,7 +237,6 @@
 		            mode: 'sticky'
 		        });
 		        toastEvent.fire();
-			 
              }
         });	
        $A.enqueueAction(action);

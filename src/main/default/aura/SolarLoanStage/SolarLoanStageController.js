@@ -221,7 +221,7 @@
 			
 			 if(Stage5ErrorCheck != 'True' && Stage3ErrorCheck != 'True'){
                  if(checkCurrentStage == 'Stage 2' || checkCurrentStage == 'Stage 3' || checkCurrentStage == 'Stage 6'){
-                     window.setTimeout(
+                   window.setTimeout(
                         $A.getCallback(function() {
                            helper.hideSpinner(component,helper)
                         }), 10000
@@ -234,19 +234,19 @@
                         }), 7000
                      );
                  }
-                 
-                if(checkstage != 'Stage 2'){
+                
+                 if(checkstage != 'Stage 2'){
                     window.setTimeout(
                         $A.getCallback(function() {
                         helper.getSolarLoanData(component,helper)
-                        }), 7000
+                        }), 10000
                     );
-                }
+                 }
                  if(checkstage != 'Stage 7'){
                     window.setTimeout(
                         $A.getCallback(function() {
                         helper.getSolarLoanData(component,helper)
-                        }), 7000
+                        }), 8000
                     );
                 }
             }
