@@ -2,6 +2,9 @@ public class SolarLoanToCreateLoan {
 
     public static List<Solar_Loans__c> SolarLoanToUpdate = new List<Solar_Loans__c>();
     public static MAP<Id,Solar_Loans__c> solarMap = new MAP<Id,Solar_Loans__c>();
+    public static List<Attachment> CCCHSAttachment = new List<Attachment>();
+    public static List<SolarLoan_Document__c> SDList = new List<SolarLoan_Document__c>();
+    public static boolean SDListDelete;
 
     public static string operatorid;
     public static string loanAPI;
@@ -383,7 +386,11 @@ public class SolarLoanToCreateLoan {
                                         Review_needed__c,Routing_Number__c,Section__c,Site_UUID__c,Status__c,Subdivision__c,Sunlight_Update__c,
                                         Symitar_Called__c,SystemModstamp,System_Size_kW__c,Term_months__c,Tracking_Record_33__c,Tract__c,UCC_Extraction__c,
                                         UCC_Id__c,Valid_ABA__c FROM Solar_Loans__c where id =: ids];
-    
+        
+        
+        
+        SDList = [select id,Attachment_Id__c,name,Solar_Loans__r.id,Solar_Loans__c from SolarLoan_Document__c where Solar_Loans__r.id in: ids AND Document_Name__c LIKE 'CCCHS%' LIMIT 1];
+
         for(Solar_Loans__c sl : solarloans){
 
             //--------------------------Fetching API URL from custom setting to create --------------------------//
@@ -635,6 +642,24 @@ public class SolarLoanToCreateLoan {
                             ErrorLoanLocator = String.valueOf(ErrorLoanLocator).substringBefore('","ErrorDetails"');
                             system.debug('ErrorLoanLocator' + ErrorLoanLocator);
                         }
+                        else if(result == '7500'){
+
+                            PageReference PDf =  Page.CCCHS;
+                            PDf.getParameters().put('Id',sl.id);
+                            PDf.setRedirect(true);
+                            Attachment attach = new Attachment();
+                            Blob b ;
+                            b = PDf.getContentAsPDF();
+                            attach.Body = b;
+                            attach.Name = 'CCCHS Application.pdf';
+                            attach.IsPrivate = false;
+                            attach.ParentId = sl.id;
+                            CCCHSAttachment.add(attach);
+                        }
+                        else if(result != '7500'){
+                            SDListDelete = true;
+                        }
+                        
                     }
                     
                     //----------------------------------------------------Create Loan Name--------------------------------------------------//
@@ -1289,6 +1314,23 @@ public class SolarLoanToCreateLoan {
                     ErrorLoanLocator = String.valueOf(responseBody12).substringAfter('[MessageId=TESTING] ');
                     ErrorLoanLocator = String.valueOf(ErrorLoanLocator).substringBefore('","ErrorDetails"');
                     system.debug('ErrorLoanLocator' + ErrorLoanLocator);
+                }
+                else if(result == '7500'){
+
+                    PageReference PDf =  Page.CCCHS;
+                    PDf.getParameters().put('Id',sl.id);
+                    PDf.setRedirect(true);
+                    Attachment attach = new Attachment();
+                    Blob b ;
+                    b = PDf.getContentAsPDF();
+                    attach.Body = b;
+                    attach.Name = 'CCCHS Application.pdf';
+                    attach.IsPrivate = false;
+                    attach.ParentId = sl.id;
+                    CCCHSAttachment.add(attach);
+                }
+                else if(result != '7500'){
+                    SDListDelete = true;
                 }
 
                 //----------------------------------------------------Create Loan Name--------------------------------------------------//
@@ -2145,7 +2187,15 @@ public class SolarLoanToCreateLoan {
         if(solarMap.size() > 0){
             update solarMap.values();
         }
-        
+
+        if(CCCHSAttachment.size() > 0){
+            insert CCCHSAttachment;
+        }
+        if(SDListDelete == true){
+            if(SDList.size() > 0){
+                delete SDList;
+            }
+        }
     }
 
     @future(callout=true)
