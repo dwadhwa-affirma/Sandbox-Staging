@@ -81,7 +81,7 @@
               </td>
               <td>
                 <lightning:input class="InterestRate" type="number"
-                  value="{!v.xPressRefiRecord.Current_Interest_Rate__c}" formatter="percent-fixed" step="0.01"
+                  value="{!v.xPressRefiRecord.Current_Interest_Rate__c}" formatter="percent-fixed" step="0.001"
                   disabled="true" />
               </td>
             </tr>

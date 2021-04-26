@@ -213,7 +213,7 @@
     }
     if (ActiveStepIndex == 0) {
       var SelectedAccount = component.get(
-        "v.xPressRefiRecord.Member_Number__c"
+        "v.xPressRefiRecord.LoanId__c"
       );
       var pendingAccountIds = component.get("v.PendingXpressRefiAccountId");
       if (pendingAccountIds!= undefined && pendingAccountIds.indexOf(SelectedAccount) != -1) {

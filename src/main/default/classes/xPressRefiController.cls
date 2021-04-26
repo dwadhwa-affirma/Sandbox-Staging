@@ -124,13 +124,13 @@ public class xPressRefiController{
 		}
 		date LastNDays = system.today().addDays(NoOfDays);
 		system.debug('LastNDays##' + LastNDays);
-		List<xPressRefi__c> ExistingXpressRefiList = [Select Id, Name, CreatedDate, Member_Number__c
+		List<xPressRefi__c> ExistingXpressRefiList = [Select Id, Name, CreatedDate, Member_Number__c, LoanId__c
 		                                              from xPressRefi__c
 		                                              where Member__c = :recordId and createddate > :LastNDays];
 		if (ExistingXpressRefiList.size() > 0){
 			resultMap.put('IsXpressRefiPending', true);
 			for(xPressRefi__c xrefi: ExistingXpressRefiList){
-				PendingXpressRefiAccountId.add(xrefi.Member_Number__c);
+				PendingXpressRefiAccountId.add(xrefi.LoanId__c);
 			}
 			resultMap.put('PendingXpressRefiAccountId', PendingXpressRefiAccountId);
 		} else{
@@ -167,8 +167,9 @@ public class xPressRefiController{
 				}
 			}
 		}
+		system.debug('NameSet='+NameSet);
 		// Associated member accounts
-		acList = [SELECT Id, Name, RecType__c, Due_Date__c, County_Name__c, Home_Value__c, OPEN_DATE__c, Investor__c, TypeTranslate__c, Brand__c, Brand_Code__c, Loan_Number__c, Mortgage_Name_1__c, Mortgage_Name_2__c, Emp_Available_Balance__c, Available_Balance__c, PROPERTY_ADDRESS__c, Property_City__c, Property_State__c, Property_Zip__c, PRINCIPAL_BALANCE__c, Interest_Rate__c, Maturity_Date__c, Emp_Balance__c, PAYMENT__c, Loan_code__c, Loan_Program_Type__c, Xpress_Refi_Eligibility__c, Impermissible__c, Income__c, PMI_Flag__c, P_I_Payment__c, Remaining_Term__c, Is_Relocation_Loan__c, Vesting__c, Trust__c, PMI_Company_Name__c
+		acList = [SELECT Id, Name, RecType__c, Due_Date__c, County_Name__c, Home_Value__c, OPEN_DATE__c, Investor__c, TypeTranslate__c, Brand__c, Brand_Code__c, Loan_Number__c, Mortgage_Name_1__c, Mortgage_Name_2__c, Emp_Available_Balance__c, Available_Balance__c, PROPERTY_ADDRESS__c, Property_City__c, Property_State__c, Property_Zip__c, PRINCIPAL_BALANCE__c, Interest_Rate__c, Maturity_Date__c, Emp_Balance__c, PAYMENT__c, Loan_code__c, Loan_Program_Type__c, Xpress_Refi_Eligibility__c, Impermissible__c, Income__c, PMI_Flag__c, P_I_Payment__c, Remaining_Term__c, Is_Relocation_Loan__c, Vesting__c, Trust__c, PMI_Company_Name__c, Closing_Documents_Date__c
 		          FROM Account_Details__c
 		          WHERE Name IN :NameSet and TypeTranslate__c = 'MORTGAGE' and Close_Date__c = null];
 
@@ -224,6 +225,7 @@ public class xPressRefiController{
 			xpressrefiobj.Trust__c = a.Trust__c;
 			xpressrefiobj.PMI_Company_Name__c = a.PMI_Company_Name__c;
 			xpressrefiobj.Is_Maturity_Date_Reset__c = false;
+			xpressrefiobj.Closing_Documents_Date__c = a.Closing_Documents_Date__c;
 			xPressrecordList.add(xpressrefiobj);
 		}
 
@@ -255,26 +257,7 @@ public class xPressRefiController{
 			xr.Mailing_Address_Zip__c = mapMembershipZip.get(xr.Member_Number__c);
 			xr.Member_Email__c = mapMembershipEmail.get(xr.Member_Number__c);
 			xr.Member_Phone__c = mapMembershipPhone.get(xr.Member_Number__c);
-		}
-		// for (MemberAuthrizationWrapperObject r : resultList){
-		// 	if (xPressrecordList.size() > 0 && r.AccountNumber == xPressrecordList[0].Member_Number__c && r.Type == '0'){
-		// 		MembershipAddress1 = r.MembershipAddress1;
-		// 		MembershipAddress2 = r.MembershipAddress2;
-		// 		MembershipCity = r.MembershipCity;
-		// 		MembershipState = r.MembershipState;
-		// 		MembershipZip = r.MembershipZip;
-		// 		xPressrecordList[0].Mailing_Address_1__c = MembershipAddress1;
-		// 		xPressrecordList[0].Mailing_Address_2__c = MembershipAddress2;
-		// 		xPressrecordList[0].Mailing_Address_City__c = MembershipCity;
-		// 		xPressrecordList[0].Mailing_Address_Zip__c = MembershipZip;
-		// 		xPressrecordList[0].Mailing_State__c = MembershipState;
-		// 		xPressrecordList[0].Member_Email__c = r.MembershipEmail;
-		// 		xPressrecordList[0].Member_Phone__c = r.MembershipPhone;
-		// 		system.debug('r.MembershipEmail==' + r.MembershipEmail);
-		// 		system.debug('r.MembershipPhone==' + r.MembershipPhone);
-		// 		break;
-		// 	}
-		// }
+		}		
 
 		XpressRefiWrapperObject xpressrefiobject = new XpressRefiWrapperObject();
 		xpressrefiobject.xPressRefiList = xPressrecordList;
@@ -481,84 +464,7 @@ public class xPressRefiController{
 		List<xPressRefi__c> xPressrecordList = [SELECT Case__c, Case__r.Status, Maturity_Date_Calc__c, Investor__c, Borrower_First_Name__c, Today_s_Date__c, Borrower_Last_Name__c, Borrower_Birth_Date__c, Member_Number__c, LoanId__c, Property__c, Property_County__c, New_Product_Type__c, Brand_Code__c, Principal_Balance__c, Home_Value__c, Current_Interest_Rate__c, Debit_Share_Account__c, Mailing_Address_1__c, Mailing_Address_2__c, Mailing_Address_City__c, Mailing_Address_Zip__c, Mailing_State__c, Maturity_Date__c, Member_Email__c, Member_Phone__c, New_Interest_Rate_Calc__c, New_Payment_Amount_Calc__c, PMI_Amount__c, Product_Type__c, Property_Address_2__c, Property_Balance__c, Property_City__c, Property_Full_Address__c, Property_State__c, Property_Zip__c, P_I_Payment__c, Rate_Expiration_Date__c, Share_Account__c, Start_Date_Calc__c, is_CSV_Generated__c, Is_Mortgage_Ware__c
 		                                        FROM xPressRefi__c
 		                                        where id IN :xPressIds
-		                                        limit 1];
-
-		// // jsonData = JSON.serialize(xPressrecordList);
-		// // System.debug('JsonData-' + jsonData);
-		// String dateFormatString = 'MM-dd-yyyy';
-		// String dateString;
-
-		// xPressRefi_To_Episys_API_Details__c api = xPressRefi_To_Episys_API_Details__c.getValues('ProductionCSVURL');
-		// if (api.URL__c != null){
-		//     loanAPI = api.URL__c;
-		// }
-
-		// httpreq = new httpRequest();
-		// httpreq.setEndpoint(loanAPI + '/XPressRefi/CreateMortgageCadenceCSV');// + AccountNumber +'&FullNameStringList=' + primaryName +'&FullName=' + SSN);
-		// httpreq.setMethod('POST');
-		// httpreq.setHeader('Content-Type', 'application/json');
-		// httpreq.setHeader('Accept', 'application/json');
-		// httpreq.setHeader('Content-Length', '162100');
-
-		// JSONGenerator gen = JSON.createGenerator(true);
-		// gen.writeStartObject();
-		// gen.writeStringField('Borrower_First_Name', xPressrecordList[0].Borrower_First_Name__c == null ? '' : xPressrecordList[0].Borrower_First_Name__c);
-		// gen.writeStringField('Borrower_Last_Name', xPressrecordList[0].Borrower_Last_Name__c == null ? '' : xPressrecordList[0].Borrower_Last_Name__c);
-		// gen.writeStringField('Borrower_Birth_Date', xPressrecordList[0].Borrower_Birth_Date__c == null ? '' : FormatDate(dateFormatString, xPressrecordList[0].Borrower_Birth_Date__c));
-		// gen.writeStringField('Loan_ID', xPressrecordList[0].LoanId__c == null ? '' : xPressrecordList[0].LoanId__c);
-		// gen.writeStringField('Member_Number', xPressrecordList[0].Member_Number__c == null ? '' : xPressrecordList[0].Member_Number__c);
-		// gen.writeStringField('Property_Address', xPressrecordList[0].Property__c == null ? '' : xPressrecordList[0].Property__c);
-		// gen.writeStringField('Property_County', xPressrecordList[0].Property_County__c == null ? '' : xPressrecordList[0].Property_County__c);
-		// gen.writeStringField('New_Product_Type', xPressrecordList[0].New_Product_Type__c == null ? '' : xPressrecordList[0].New_Product_Type__c);
-		// gen.writeStringField('Property_Balance', xPressrecordList[0].Principal_Balance__c == null ? '' : string.valueof(xPressrecordList[0].Principal_Balance__c));
-		// gen.writeStringField('Home_Value', xPressrecordList[0].Home_Value__c == null ? '' : string.valueof(xPressrecordList[0].Home_Value__c));
-		// gen.writeStringField('Current_Interest_Rate', xPressrecordList[0].Current_Interest_Rate__c == null ? '' : string.valueof(xPressrecordList[0].Current_Interest_Rate__c));
-		// gen.writeStringField('Current_PandI', xPressrecordList[0].P_I_Payment__c == null ? '' : string.valueof(xPressrecordList[0].P_I_Payment__c));
-		// gen.writeStringField('New_Interest_Rate', xPressrecordList[0].New_Interest_Rate_Calc__c == null ? '' : string.valueof(xPressrecordList[0].New_Interest_Rate_Calc__c));
-		// gen.writeStringField('New_Payment_Amount_C', xPressrecordList[0].New_Payment_Amount_Calc__c == null ? '' : string.valueof(xPressrecordList[0].New_Payment_Amount_Calc__c));
-
-		// gen.writeStringField('Maturity_Date_C', xPressrecordList[0].Maturity_Date_Calc__c == null ? '' : FormatDate(dateFormatString, xPressrecordList[0].Maturity_Date_Calc__c));
-		// gen.writeStringField('Start_Date_C', xPressrecordList[0].Start_Date_Calc__c == null ? '' : FormatDate(dateFormatString, xPressrecordList[0].Start_Date_Calc__c));
-		// gen.writeStringField('Brand_Code', xPressrecordList[0].Brand_Code__c == null ? '' : xPressrecordList[0].Brand_Code__c);
-		// gen.writeStringField('Mailing_Address1', xPressrecordList[0].Mailing_Address_1__c == null ? '' : xPressrecordList[0].Mailing_Address_1__c);
-		// gen.writeStringField('Mailing_Address2', xPressrecordList[0].Mailing_Address_2__c == null ? '' : xPressrecordList[0].Mailing_Address_2__c);
-		// gen.writeStringField('Mailing_Address_City', xPressrecordList[0].Mailing_Address_City__c == null ? '' : xPressrecordList[0].Mailing_Address_City__c);
-		// gen.writeStringField('Mailing_Address_State', xPressrecordList[0].Mailing_State__c == null ? '' : xPressrecordList[0].Mailing_State__c);
-		// gen.writeStringField('Mailing_Address_Zip', xPressrecordList[0].Mailing_Address_Zip__c == null ? '' : xPressrecordList[0].Mailing_Address_Zip__c);
-		// gen.writeStringField('Member_Email_Address', xPressrecordList[0].Member_Email__c == null ? '' : xPressrecordList[0].Member_Email__c);
-		// gen.writeStringField('Member_Phone_Number', xPressrecordList[0].Member_Phone__c == null ? '' : xPressrecordList[0].Member_Phone__c);
-		// gen.writeStringField('Current_Product_Type', xPressrecordList[0].Product_Type__c == null ? '' : xPressrecordList[0].Product_Type__c);
-		// gen.writeStringField('PMI_Flag', xPressrecordList[0].PMI_Amount__c == null ? '' : string.valueof(xPressrecordList[0].PMI_Amount__c));
-		// gen.writeStringField('Investor', xPressrecordList[0].Investor__c == null ? '' : string.valueof(xPressrecordList[0].Investor__c));
-
-		// gen.writeStringField('Todays_Date', xPressrecordList[0].Today_s_Date__c == null ? '' : FormatDate(dateFormatString, xPressrecordList[0].Today_s_Date__c));
-		// gen.writeStringField('Rate_Expiration_Date', xPressrecordList[0].Rate_Expiration_Date__c == null ? '' : FormatDate(dateFormatString, xPressrecordList[0].Rate_Expiration_Date__c));
-		// gen.writeStringField('Debit_Share_Account', xPressrecordList[0].Debit_Share_Account__c == null ? '' : xPressrecordList[0].Debit_Share_Account__c);
-		// gen.writeStringField('Share_Account', xPressrecordList[0].Share_Account__c == null ? '' : xPressrecordList[0].Share_Account__c);
-		// gen.writeEndObject();
-
-		// // Get the JSON string.
-		// jsonData = gen.getAsString();
-		// //jsonData = '{"AccountNumber":' + '\"' + AccountNumber + '\","FullNameStringList":' + '\"' + primaryName + '\"' + ',"FullName":' + '\"' + SSN + '\"' + ',"IsIncludeMailAddresses":' + '\"' + 'true' + '\"}';
-		// httpreq.setBody(jsonData);
-		// system.debug('jsonData==' + jsonData);
-		// Http httpParam = new Http();
-
-		// httpreq.setTimeout(60000);
-
-		// if (!Test.isRunningTest()){
-		//     response = httpParam.send(httpreq);
-		//     responseBody = response.getBody();
-		//     System.debug('Response Body::' + response.getBody());
-		//     strStatus = response.getStatus();
-		//     strBody = response.getBody();
-		// } else{
-		//     strBody = '[{"Status":"OK","city":"","country":null,"locator":"794","cardlocator":null,"cardlast4":null,"extraaddress":"","state":"","street":"","userchar2":"","zipcode":"","name":"AXEL TAKACS","email":"dbhavsar@affirma.com","DisplayOnly":"0","type":0}]';
-		// }
-
-		// string result = strBody.substringAfter('Status":"');
-		// result = String.valueOf(result).substringBefore('",');
-		// System.debug('Status' + result);
+		                                        limit 1];		
 
 		if (xPressrecordList.size() > 0){
 			xPressrecordList[0].Is_Mortgage_Cadence__c = true;
@@ -582,86 +488,7 @@ public class xPressRefiController{
 		List<xPressRefi__c> xPressrecordList = [SELECT Maturity_Date_Calc__c, Case__c, Investor__c, Borrower_First_Name__c, Today_s_Date__c, Borrower_Last_Name__c, Borrower_Birth_Date__c, Member_Number__c, LoanId__c, Property__c, Property_County__c, New_Product_Type__c, Brand_Code__c, Principal_Balance__c, Home_Value__c, Current_Interest_Rate__c, Debit_Share_Account__c, Mailing_Address_1__c, Mailing_Address_2__c, Mailing_Address_City__c, Mailing_Address_Zip__c, Mailing_State__c, Maturity_Date__c, Member_Email__c, Member_Phone__c, New_Interest_Rate_Calc__c, New_Payment_Amount_Calc__c, PMI_Amount__c, Product_Type__c, Property_Address_2__c, Property_Balance__c, Property_City__c, Property_Full_Address__c, Property_State__c, Property_Zip__c, P_I_Payment__c, Rate_Expiration_Date__c, Share_Account__c, Start_Date_Calc__c
 		                                        FROM xPressRefi__c
 		                                        where id IN :xPressIds
-		                                        limit 1];
-
-
-		// String dateFormatString = 'MM-dd-yyyy';
-		// xPressRefi_To_Episys_API_Details__c api = xPressRefi_To_Episys_API_Details__c.getValues('ProductionCSVURL');
-		// if (api.URL__c != null){
-		//     loanAPI = api.URL__c;
-		// }
-
-		// httpreq = new httpRequest();
-		// httpreq.setEndpoint( loanAPI + '/XPressRefi/CreateMortageWareCSV');// + AccountNumber +'&FullNameStringList=' + primaryName +'&FullName=' + SSN);
-		// httpreq.setMethod('POST');
-		// httpreq.setHeader('Content-Type', 'application/json');
-		// httpreq.setHeader('Accept', 'application/json');
-		// httpreq.setHeader('Content-Length', '162100');
-
-		// JSONGenerator gen = JSON.createGenerator(true);
-		// gen.writeStartObject();
-		// gen.writeStringField('LoanID', xPressrecordList[0].LoanId__c == null ? '' : xPressrecordList[0].LoanId__c);
-		// gen.writeStringField('PIPmt', xPressrecordList[0].P_I_Payment__c == null ? '' : string.valueof(xPressrecordList[0].P_I_Payment__c));
-		// gen.writeStringField('InterestRate', xPressrecordList[0].Current_Interest_Rate__c == null ? '' : string.valueof(xPressrecordList[0].Current_Interest_Rate__c));
-		// gen.writeStringField('OriginalTerm', '');
-		// gen.writeStringField('AmortizedTerm', '');
-		// gen.writeStringField('ChangeNextPaymentTo1', '');
-		// gen.writeStringField('FirstDueDate', '');
-		// gen.writeStringField('MaturityDate', xPressrecordList[0].Maturity_Date__c == null ? '' : FormatDate(dateFormatString, xPressrecordList[0].Rate_Expiration_Date__c));
-		// gen.writeStringField('ModificationDate', '');
-		// gen.writeStringField('NonSaleable', '');
-		// gen.writeStringField('FNMASaleable', '');
-		// gen.writeStringField('ModType', '');
-		// gen.writeStringField('XpressRefiBal', xPressrecordList[0].Principal_Balance__c == null ? '' : string.valueof(xPressrecordList[0].Principal_Balance__c));
-		// gen.writeStringField('GLPlan', '');
-		// gen.writeStringField('LoanProfile', '');
-		// gen.writeStringField('ARMLoan', '');
-		// gen.writeStringField('ARMPendingAdj', '');
-		// gen.writeStringField('ARMNextRateChgDate', '');
-		// gen.writeStringField('ARMNextPIChgDate', '');
-		// gen.writeStringField('ARMTemplate', '');
-		// gen.writeStringField('ARMIndex', '');
-		// gen.writeStringField('ARMMargin', '');
-		// gen.writeStringField('ARMPeriodRateInc', '');
-		// gen.writeStringField('ARMPeriodRateDec', '');
-		// gen.writeStringField('ARMFrstChgPeriodInc', '');
-		// gen.writeStringField('ARMFrstChgPeriodDec', '');
-		// gen.writeStringField('ARMLifeRateIncrease', '');
-		// gen.writeStringField('ARMLifeRateDecrease', '');
-		// gen.writeStringField('ARMFloorRate', '');
-		// gen.writeStringField('ARMTeaserRate', '');
-		// gen.writeStringField('ARMOriginalIntRate', '');
-		// gen.writeStringField('ARMOriginalPIPmt', '');
-		// gen.writeStringField('ARMFrstRateChgDate', '');
-		// gen.writeStringField('ARMFrstPIChgDate', '');
-		// gen.writeStringField('ARMOriginalIndex', '');
-		// gen.writeStringField('ARMCurrentIndex', '');
-		// gen.writeStringField('ARMTotCarryOverPercent', '');
-		// gen.writeStringField('Comment', '');
-		// gen.writeEndObject();
-
-		// // Get the JSON string.
-		// jsonData = gen.getAsString();
-		// //jsonData = '{"AccountNumber":' + '\"' + AccountNumber + '\","FullNameStringList":' + '\"' + primaryName + '\"' + ',"FullName":' + '\"' + SSN + '\"' + ',"IsIncludeMailAddresses":' + '\"' + 'true' + '\"}';
-		// httpreq.setBody(jsonData);
-		// system.debug('jsonData==' + jsonData);
-		// Http httpParam = new Http();
-
-		// httpreq.setTimeout(60000);
-
-		// if (!Test.isRunningTest()){
-		//     response = httpParam.send(httpreq);
-		//     responseBody = response.getBody();
-		//     System.debug('Response Body ACH::' + response.getBody());
-		//     strStatus = response.getStatus();
-		//     strBody = response.getBody();
-		// } else{
-		//     strBody = '[{"Status":"OK","city":"","country":null,"locator":"794","cardlocator":null,"cardlast4":null,"extraaddress":"","state":"","street":"","userchar2":"","zipcode":"","name":"AXEL TAKACS","email":"dbhavsar@affirma.com","DisplayOnly":"0","type":0}]';
-		// }
-
-		// string result = strBody.substringAfter('Status":"');
-		// result = String.valueOf(result).substringBefore('",');
-		// System.debug('Status' + result);
+		                                        limit 1];		
 
 		if (xPressrecordList.size() > 0){
 			xPressrecordList[0].Is_Mortgage_Ware__c = true;
@@ -771,7 +598,15 @@ public class xPressRefiController{
 				} else if (!isLoanPrimaryResidence && LoanTermYears <= 15){
 					ProductWrapperList.add(pwo);
 				}
-			} else if (xpressrefiobj.Is_Maturity_Date_Reset__c && pwo.IsMortgageCadence){
+			}
+			else if (!xpressrefiobj.Is_Maturity_Date_Reset__c && pwo.IsMortgageCadence && xpressrefiobj.Product_Type__c == cu.Product__c){
+				if (isLoanPrimaryResidence){
+					ProductWrapperList.add(pwo);
+				} else if (!isLoanPrimaryResidence && LoanTermYears <= 15){
+					ProductWrapperList.add(pwo);
+				}
+			}
+			else if (xpressrefiobj.Is_Maturity_Date_Reset__c && pwo.IsMortgageCadence && xpressrefiobj.Product_Type__c != cu.Product__c){
 				if (isLoanPrimaryResidence){
 					ProductWrapperList.add(pwo);
 				} else if (!isLoanPrimaryResidence && LoanTermYears <= 15){
@@ -785,6 +620,7 @@ public class xPressRefiController{
 					ProductWrapperList.add(pwo);
 				}
 			}
+			
 
 
 			system.debug('pwo::' + pwo);
@@ -896,7 +732,7 @@ public class xPressRefiController{
 			xId = XpressRefiRecord.id;
 
 
-			List<xPressRefi__c> XpressRefiRecordList = [SELECT Borrower_Birth_Date__c, Borrower_First_Name__c, Borrower_Last_Name__c, Brand_Code__c, Brand__c, Case__c, Case__r.CaseNumber, Current_Interest_Rate_Calc__c, Current_Interest_Rate__c, Debit_Share_Account__c, DocuSignId__c, Docusign_Status__c, Home_Value__c, Id, Interest_Rate__c, Investor__c, is_CSV_Generated__c, Is_Mortgage_Ware_File_Created__c, Is_Product_Change__c, LoanId__c, Mailing_Address_1__c, Mailing_Address_2__c, Mailing_Address_City__c, Mailing_Address_Zip__c, Mailing_State__c, Maturity_Date_Calc__c, Maturity_Date__c, Member_Number__c, Member__c, New_Interest_Rate_Calc__c, New_Payment_Amount_Calc__c, New_Product_Type__c, PMI_Amount__c, Principal_Balance__c, Product_Type__c, Property_Address_2__c, Property_Balance__c, Property_City__c, Property_County__c, Property_State__c, Property_Zip__c, Property__c, P_I_Payment__c, Rate_Expiration_Date__c, Share_Account__c, Start_Date_Calc__c, Member_Phone__c, Member_Email__c, Loan_Program_Type__c, Borrower_Name_1__c, Borrower_Name_2__c, Due_Date__c, PMI_Flag__c, Is_Chevron_Employee__c, Is_Primary_Residence__c, Is_Relocation_Loan__c, Impermissible__c, New_Product_Name__c, Remaining_Term__c, Vesting__c, Trust__c, PMI_Company_Name__c, Vesting_Person_1__c, Vesting_Person_2__c, Vesting_Person_3__c, Vesting_Person_4__c
+			List<xPressRefi__c> XpressRefiRecordList = [SELECT Borrower_Birth_Date__c, Borrower_First_Name__c, Borrower_Last_Name__c, Brand_Code__c, Brand__c, Case__c, Case__r.CaseNumber, Current_Interest_Rate_Calc__c, Current_Interest_Rate__c, Debit_Share_Account__c, DocuSignId__c, Docusign_Status__c, Home_Value__c, Id, Interest_Rate__c, Investor__c, is_CSV_Generated__c, Is_Mortgage_Ware_File_Created__c, Is_Product_Change__c, LoanId__c, Mailing_Address_1__c, Mailing_Address_2__c, Mailing_Address_City__c, Mailing_Address_Zip__c, Mailing_State__c, Maturity_Date_Calc__c, Maturity_Date__c, Member_Number__c, Member__c, New_Interest_Rate_Calc__c, New_Payment_Amount_Calc__c, New_Product_Type__c, PMI_Amount__c, Principal_Balance__c, Product_Type__c, Property_Address_2__c, Property_Balance__c, Property_City__c, Property_County__c, Property_State__c, Property_Zip__c, Property__c, P_I_Payment__c, Rate_Expiration_Date__c, Share_Account__c, Start_Date_Calc__c, Member_Phone__c, Member_Email__c, Loan_Program_Type__c, Borrower_Name_1__c, Borrower_Name_2__c, Due_Date__c, PMI_Flag__c, Is_Chevron_Employee__c, Is_Primary_Residence__c, Is_Relocation_Loan__c, Impermissible__c, New_Product_Name__c, Remaining_Term__c, Vesting__c, Trust__c, PMI_Company_Name__c, Vesting_Person_1__c, Vesting_Person_2__c, Vesting_Person_3__c, Vesting_Person_4__c, Closing_Documents_Date__c
 			                                            FROM xPressRefi__c
 			                                            where id = :xId];
 
