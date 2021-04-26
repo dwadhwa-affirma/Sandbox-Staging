@@ -19,7 +19,7 @@
         component.set('v.xPressRefiRecord', XpressRefirecord);
         
         $A.createComponent(
-          "c:" + stages[2].Stage_Component__c,
+          "c:" + stages[3].Stage_Component__c,
           {
             recordId: component.get("v.recordId") , xPressRefiRecord: XpressRefirecord 
           },

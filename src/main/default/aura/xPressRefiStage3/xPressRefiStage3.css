@@ -1,4 +1,4 @@
-.THIS#stage3 .bottomtbl{margin-left:40px;}
+.THIS#stage3 .bottomtbl{margin-left:40px;width: 80% !important;}
 .THIS#stage3 .bottomtbl td{vertical-align:top; padding:.2rem 0;}
 .THIS#stage3 .bottomtbl td:nth-child(1){width:180px;}
 .THIS#stage3 .bottomtbl td:nth-child(2){font-weight:bold;}

@@ -35,7 +35,11 @@
 
   onProductSelect: function (component, event, helper) {
     debugger;
-    var SelectedProduct, SelectedInterestRate, SelectedPIPayment, SelectedProductName, isMortgageCadence;
+    var SelectedProduct,
+      SelectedInterestRate,
+      SelectedPIPayment,
+      SelectedProductName,
+      isMortgageCadence;
     if (event != undefined) {
       SelectedProduct = event.getSource().get("v.value");
     }
@@ -77,11 +81,15 @@
   },
 
   HandlePrimaryResidenceChange: function (component, event, helper) {
+    helper.showSpinner(component);
     var IsChevronEmployee = component.get("v.IsChevronEmployee");
-    var IsPrimaryResidence = component.get("v.isLoanPrimaryResidence");//component.get("v.IsPrimaryResidence");
+    var IsPrimaryResidence = component.get("v.isLoanPrimaryResidence"); 
+    var IsMaturityDateReset = component.get(
+      "v.IsMaturityDateReset"
+    );
+    //component.get("v.IsPrimaryResidence");
     //var IsChevronRelocation = component.get("v.IsChevronRelocation");
 
-    
     component.set(
       "v.xPressRefiRecord.Is_Chevron_Employee__c",
       IsChevronEmployee
@@ -90,14 +98,21 @@
       "v.xPressRefiRecord.Is_Primary_Residence__c",
       IsPrimaryResidence
     );
-    // component.set(
-    //   "v.xPressRefiRecord.Is_Relocation_Loan__c",
-    //   IsChevronRelocation
-    // );
-    component.set(
-      "v.xPressRefiRecord.New_Product_Type__c",
-      ''
-    );
+    if(IsMaturityDateReset == "false"){
+      component.set(
+        "v.xPressRefiRecord.Is_Maturity_Date_Reset__c",
+        true
+      );
+    }
+
+    else if(IsMaturityDateReset == "true"){
+      component.set(
+        "v.xPressRefiRecord.Is_Maturity_Date_Reset__c",
+        false
+      );
+    }
+    
+    component.set("v.xPressRefiRecord.New_Product_Type__c", "");
 
     var evt = $A.get("e.c:xPressRefiEvent");
 
@@ -109,9 +124,9 @@
       IsChevronEmployee == "true" &&
       IsPrimaryResidence == true
     ) {
-      helper.adjustDiscountRates(component, event, true);
+      helper.adjustDiscountRates(component, event, true, IsMaturityDateReset);
     } else {
-      helper.adjustDiscountRates(component, event, false);
+      helper.adjustDiscountRates(component, event, false, IsMaturityDateReset);
     }
   },
 
@@ -120,5 +135,46 @@
 
     evt.setParams({ xPressRefiRecord: component.get("v.xPressRefiRecord") });
     evt.fire();
+  },
+
+  HandleMatrurityReset: function (component, event, helper) {
+    helper.showSpinner(component);
+    var IsChevronEmployee = component.get("v.IsChevronEmployee");
+    var IsPrimaryResidence = component.get("v.isLoanPrimaryResidence"); 
+    var IsMaturityDateReset = component.get(
+      "v.IsMaturityDateReset"
+    );
+    
+    if(IsMaturityDateReset == "false"){
+      component.set(
+        "v.xPressRefiRecord.Is_Maturity_Date_Reset__c",
+        true
+      );
+    }
+
+    else if(IsMaturityDateReset == "true"){
+      component.set(
+        "v.xPressRefiRecord.Is_Maturity_Date_Reset__c",
+        false
+      );
+    }
+   
+
+    var evt = $A.get("e.c:xPressRefiEvent");
+
+    evt.setParams({ xPressRefiRecord: component.get("v.xPressRefiRecord") });
+    evt.fire();
+
+    if (
+      // IsChevronRelocation == "true" &&
+      IsChevronEmployee == "true" &&
+      IsPrimaryResidence == true
+    ) {
+      helper.adjustDiscountRates(component, event, true, IsMaturityDateReset);
+    } else {
+      helper.adjustDiscountRates(component, event, false, IsMaturityDateReset);
+    }
+    
+
   },
 });

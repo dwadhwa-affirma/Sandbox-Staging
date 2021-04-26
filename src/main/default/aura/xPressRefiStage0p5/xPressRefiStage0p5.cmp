@@ -1,0 +1,144 @@
+<aura:component
+    implements="force:appHostable,force:lightningQuickActionWithoutHeader,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,force:hasSObjectName"
+    access="global" controller="xPressRefiController">
+
+    <aura:attribute name="xPressRefiRecordList" type="List" />
+    <aura:attribute name="xPressRefiRecord" type="xPressRefi__c" />
+    <aura:registerEvent name="xPressRefiEvent" type="c:xPressRefiEvent" />
+
+    <div id="stage0" class="stage0">
+        <div>
+            <p class="pfontstyle">Select Mortgage Account</p><br />
+            <table aria-multiselectable="true"
+                class="slds-table slds-table_header-hidden slds-table_edit slds-tree slds-table_tree" role="treegrid">
+                <thead>
+                    <tr class="slds-line-height_reset">
+                        <th class="slds-text-align_right" scope="col" style="width:3.25rem">
+                            <span id="column-group-header" class="slds-assistive-text">Choose a row</span>
+                            <div class="slds-th__action slds-th__action_form">
+
+                            </div>
+                        </th>
+                        <th aria-label="MemberNumber" class="loanth">
+                            <a class="slds-th__action slds-text-link_reset" tabindex="-1">
+                                <span class="slds-assistive-text">Sort by: </span>
+                                <div class="slds-grid slds-grid_vertical-align-center slds-has-flexi-truncate">
+                                    <span class="slds-truncate" title="MemberNumber">Member Number</span>
+                                </div>
+                            </a>
+                        </th>
+                        <th aria-label="LoanID" class="loanth">
+                            <a class="slds-th__action slds-text-link_reset" href="javascript:void(0);" role="button"
+                                tabindex="-1">
+                                <span class="slds-assistive-text">Sort by: </span>
+                                <div class="slds-grid slds-grid_vertical-align-center slds-has-flexi-truncate">
+                                    <span class="slds-truncate" title="LoanID">Loan ID</span>
+                                    <span class="slds-icon_container slds-icon-utility-arrowdown">
+
+                                    </span>
+                                </div>
+                            </a>
+                        </th>
+                        <th aria-label="PrincipleBalance" class="loanth">
+                            <a class="slds-th__action slds-text-link_reset" href="javascript:void(0);" role="button"
+                                tabindex="-1">
+                                <span class="slds-assistive-text">Sort by: </span>
+                                <div class="slds-grid slds-grid_vertical-align-center slds-has-flexi-truncate">
+                                    <span class="slds-truncate" title="PrincipleBalance ">Principle Balance</span>
+                                    <span class="slds-icon_container slds-icon-utility-arrowdown">
+
+                                    </span>
+                                </div>
+                            </a>
+                        </th>
+                        <th aria-label="CurrentLoanProduct" class="loanth">
+                            <a class="slds-th__action slds-text-link_reset" href="javascript:void(0);" role="button"
+                                tabindex="-1">
+                                <span class="slds-assistive-text">Sort by: </span>
+                                <div class="slds-grid slds-grid_vertical-align-center slds-has-flexi-truncate">
+                                    <span class="slds-truncate" title="CurrentLoanProduct">Current Loan Product</span>
+                                    <span class="slds-icon_container slds-icon-utility-arrowdown">
+
+                                    </span>
+                                </div>
+                            </a>
+                        </th>
+                        <th aria-label="MaturityDate" class="loanth">
+                            <a class="slds-th__action slds-text-link_reset" href="javascript:void(0);" role="button"
+                                tabindex="-1">
+                                <span class="slds-assistive-text">Sort by: </span>
+                                <div class="slds-grid slds-grid_vertical-align-center slds-has-flexi-truncate">
+                                    <span class="slds-truncate" title="MaturityDate">Maturity Date</span>
+                                    <span class="slds-icon_container slds-icon-utility-arrowdown">
+
+                                    </span>
+                                </div>
+                            </a>
+                        </th>
+                        <th aria-label="PropertyAddress" class="loanth">
+                            <a class="slds-th__action slds-text-link_reset" href="javascript:void(0);" role="button"
+                                tabindex="-1">
+                                <span class="slds-assistive-text">Sort by: </span>
+                                <div class="slds-grid slds-grid_vertical-align-center slds-has-flexi-truncate">
+                                    <span class="slds-truncate" title="PropertyAddress">Property Address</span>
+                                    <span class="slds-icon_container slds-icon-utility-arrowdown">
+
+                                    </span>
+                                </div>
+                            </a>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <aura:iteration items="{!v.xPressRefiRecordList}" var="itemOption" indexVar="i">
+
+                        <tr aria-expanded="false" aria-level="1" aria-posinset="3" aria-selected="false"
+                            aria-setsize="4"
+                            class="slds-hint-parent">
+                            <td class="slds-text-align_left" role="gridcell" style="width:3.25rem">
+                                <div class="slds-radio">
+                                    <span class="slds-radio">
+                                        <lightning:input type="radio" name="select" value="{!itemOption.LoanId__c}"
+                                            onchange="{!c.onAccountSelect}" />
+                                    </span>
+                                </div>
+                            </td>
+                            <td class="slds-text-align_left" role="gridcell" style="width:3.25rem">
+                                <div class="slds-truncate" title="{!itemOption.Member_Number__c}">
+                                    {!itemOption.Member_Number__c}</div>
+                            </td>
+                            <td class="slds-text-align_left" role="gridcell" style="width:3.25rem">
+                                <div class="slds-truncate" title="{!itemOption.LoanId__c}">
+                                    {!itemOption.LoanId__c}</div>
+                            </td>
+                            <td class="slds-text-align_left" role="gridcell" style="width:3.25rem">
+                                <div class="slds-truncate" title="{!itemOption.Principal_Balance__c}">
+                                    <lightning:formattedNumber value="{!itemOption.Principal_Balance__c}" style="currency"
+                                        currencyCode="USD" />                                  
+                                </div>
+                            </td>
+                            <td class="slds-text-align_left" role="gridcell" style="width:3.25rem">
+                                <div class="slds-truncate" title="{!itemOption.Product_Type__c}">
+                                    {!itemOption.Product_Type__c}
+                                </div>
+                            </td>
+                            <td class="slds-text-align_left" role="gridcell" style="width:3.25rem;">
+                                <div class="slds-truncate" title="{!itemOption.Maturity_Date__c}">{!itemOption.Maturity_Date__c}
+                                </div>
+                            </td>
+                            <td class="slds-text-align_left" role="gridcell" style="width:3.25rem;">
+                                <div class="slds-truncate" >{!itemOption.Property__c} {!itemOption.Property_City__c} {!itemOption.Property_State__c}, {!itemOption.Property_Zip__c}
+                                </div>
+                            </td>
+                        </tr>                        
+                            
+
+                    </aura:iteration>
+
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+
+</aura:component>
