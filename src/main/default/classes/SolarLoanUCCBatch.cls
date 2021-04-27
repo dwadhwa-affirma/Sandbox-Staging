@@ -154,10 +154,9 @@ global class SolarLoanUCCBatch implements Database.Batchable<sObject>, Database.
                 responseBody = '{"Status" :"Recorded", "Error" : "Error","FileNumber" : "234214","DateCreated" : "2016-11-11","FileDate" :"34324","LapsedDate" :"2011-11-11","WorkOrderID" :"34324"}';
             }
             
-            if(UCClogs == null)
-                UCClogs = responseBody;
-            else
-                UCClogs = UCClogs +'\n'+ responseBody;
+            
+            
+            UCClogs = responseBody;
             
             if(responseBody!=''){ 
                 Map<String,Object> results = (Map<String,Object>)System.JSON.deserializeUntyped(responseBody);
