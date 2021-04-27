@@ -248,13 +248,14 @@ public class SolarLoanToFileUCC {
             if(sl.mem_Joint_First_Name__c != null)
                 JointFirstName = sl.mem_Joint_First_Name__c;
 
-            if(sl.mem_Joint_Extra_Address__c != null)    
+            if(sl.mem_Joint_Extra_Address__c != null){    
                 JointAddress = sl.mem_Joint_Extra_Address__c;
                 
                 if(JointAddress.length() > 45){
                     JointAddress = JointAddress.left(45);
                 }
-
+            }
+            
             if(sl.mem_Joint_City__c != null)
                 JointCity = sl.mem_Joint_City__c;
 
