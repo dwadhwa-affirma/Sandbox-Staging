@@ -71,7 +71,7 @@
         </div>    
         <div class="field dt">{!MONTH(TODAY())}/{!DAY(TODAY())}/{!YEAR(TODAY())}</div>
         <div class="field pn">
-            {!Solar_Loans__c.Primary_Name__c}
+            {!Solar_Loans__c.Name__c}
         </div>
         <div class="field a1">
             {!Solar_Loans__c.Primary_Address_1__c}
