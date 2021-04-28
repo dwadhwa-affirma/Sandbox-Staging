@@ -246,31 +246,7 @@ public class SolarLoanToSignCard {
             	s.id = sl.Id;
             	s.DocuSignId__c = EnvelopeId;
             
-            	//--------------------------------------------------------------Custom field-------------------------------------------------//
-
-                /*endPointURL4 = 'https://'+endpoint+'/restapi/v2.1/accounts/'+accountID+'/custom_fields/145104';
-                //endPointURL4 = 'https://'+endpoint+'/restapi/v2.1/accounts/'+accountID+'/envelopes/'+EnvelopeId+'/custom_fields';
-				req4.setEndpoint(endPointURL4); 
-				req4.setMethod('PUT'); 
-                req4.setTimeout(120000);
-    			req4.setHeader('X-DocuSign-Authentication', authorizationHeader); 
-				req4.setHeader('Accept','application/json'); 
-                req4.setHeader('Content-Type','application/json'); 
-                //req4.setHeader('Content-Disposition','form-data');
-				
-            
-                json4 = '{"name": "Member Number",'+'"required":"false",'+'"value":"000223344"'+'}';
-        		
-                //json4 = '{"customFields": {'+'"textCustomFields": ['+'{'+'"name" : "Member Number",'+'"required":"true",'+'"show":"true",'+'"value":"000223344"'+'}'+']'+'}'+'}';
-	            
-                req4.setBody(json4); 
-	            if(!Test.isRunningTest()){
-    				res4 = http4.send(req4);
-    				system.debug('DocuSign Response'+ res4.getBody());
-	            }*/
-
-				
-				//------------------------------------------------------------Saving EnvelopeId-------------------------------------------------//
+            	//------------------------------------------------------------Saving EnvelopeId-------------------------------------------------//
 				
 				endPointURL1 = 'https://'+endpoint+'/restapi/v2.1/accounts/'+accountID+'/envelopes/'+EnvelopeId+'/recipients';
 				req1.setEndpoint(endPointURL1); 
