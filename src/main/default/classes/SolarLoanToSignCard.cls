@@ -59,6 +59,12 @@ public class SolarLoanToSignCard {
 	public static Http http5 = new Http();
 	public static HTTPResponse res5;
     public static String responseBody1;
+
+    public static String endPointURL6;
+	public static HttpRequest req6 = new HttpRequest();    
+	public static String json6;
+	public static Http http6 = new Http();
+	public static HTTPResponse res6;
 	
     public SolarLoanToSignCard(ApexPages.StandardSetController standardController){
         // Returns all selected records
@@ -124,6 +130,8 @@ public class SolarLoanToSignCard {
     	
         //----------------------------Start - DocuSign Templates from Custom setting---------------------------------//
         
+        SetCustomFieldFalse();
+
         List<Solar_Loans__c> selectedsolar = (List<Solar_Loans__c>)standardController.getSelected();
         
         Set<Id> ids = new set<Id>();
@@ -200,6 +208,8 @@ public class SolarLoanToSignCard {
                 
                 DocumentName = sl.Name__c +' - '+sl.Member_Number__c + ' - Member Application.pdf';
                 
+                System.debug('Member Number: '+sl.Member_Number__c);
+                system.debug('DocumentName: '+DocumentName);
                 authorizationHeader = '<DocuSignCredentials><Username>'+userId+'</Username><Password>'+Password+'</Password><IntegratorKey>'+integratorKey+'</IntegratorKey></DocuSignCredentials>';
                 json2='{"replyEmailAddressOverride":"'+replyTo+'",'+'"replyEmailNameOverride": "Spectrum Team",'+'"bccEmailAddresses": []'+'}';
             	
@@ -236,9 +246,31 @@ public class SolarLoanToSignCard {
             	s.id = sl.Id;
             	s.DocuSignId__c = EnvelopeId;
             
-            	
+            	//--------------------------------------------------------------Custom field-------------------------------------------------//
+
+                /*endPointURL4 = 'https://'+endpoint+'/restapi/v2.1/accounts/'+accountID+'/custom_fields/145104';
+                //endPointURL4 = 'https://'+endpoint+'/restapi/v2.1/accounts/'+accountID+'/envelopes/'+EnvelopeId+'/custom_fields';
+				req4.setEndpoint(endPointURL4); 
+				req4.setMethod('PUT'); 
+                req4.setTimeout(120000);
+    			req4.setHeader('X-DocuSign-Authentication', authorizationHeader); 
+				req4.setHeader('Accept','application/json'); 
+                req4.setHeader('Content-Type','application/json'); 
+                //req4.setHeader('Content-Disposition','form-data');
 				
-				//--------------------------------Saving EnvelopeId-------------------------------------------------//
+            
+                json4 = '{"name": "Member Number",'+'"required":"false",'+'"value":"000223344"'+'}';
+        		
+                //json4 = '{"customFields": {'+'"textCustomFields": ['+'{'+'"name" : "Member Number",'+'"required":"true",'+'"show":"true",'+'"value":"000223344"'+'}'+']'+'}'+'}';
+	            
+                req4.setBody(json4); 
+	            if(!Test.isRunningTest()){
+    				res4 = http4.send(req4);
+    				system.debug('DocuSign Response'+ res4.getBody());
+	            }*/
+
+				
+				//------------------------------------------------------------Saving EnvelopeId-------------------------------------------------//
 				
 				endPointURL1 = 'https://'+endpoint+'/restapi/v2.1/accounts/'+accountID+'/envelopes/'+EnvelopeId+'/recipients';
 				req1.setEndpoint(endPointURL1); 
@@ -323,7 +355,7 @@ public class SolarLoanToSignCard {
                 }
 
                 System.debug('Rurl: '+ Rurl);
-               
+    
                 s.SignatureCardURL__c = Rurl;
                 SolarLoansToUpdate.add(s);
             }
@@ -336,5 +368,90 @@ public class SolarLoanToSignCard {
         page.setRedirect(true);
         return page;       
         
+    }
+
+    @future(callout=true)
+    public static void SetCustomFieldTrue(){
+
+        DocuSign_User_Details__c DTSpectrum = DocuSign_User_Details__c.getValues('Spectrum');
+        String FieldId;
+
+        templateID = DTSpectrum.TemplateId__c;
+        replyTo = DTSpectrum.ReplyTo__c;
+        accountID = DTSpectrum.AccountId__c;
+        userId = DTSpectrum.Username__c;
+        passWord = DTSpectrum.Password__c;
+        integratorKey = DTSpectrum.IntegratorKey__c;
+        endpoint = DTSpectrum.EndPoint__c;
+
+        if(endpoint == 'www.docusign.net'){
+            FieldId = '4845275';
+        }
+        else{
+            FieldId = '145104';
+        }
+
+        authorizationHeader = '<DocuSignCredentials><Username>'+userId+'</Username><Password>'+Password+'</Password><IntegratorKey>'+integratorKey+'</IntegratorKey></DocuSignCredentials>';
+
+        //--------------------------------------------------------------Custom field-------------------------------------------------//
+
+        endPointURL6 = 'https://'+endpoint+'/restapi/v2.1/accounts/'+accountID+'/custom_fields/'+FieldId;
+        req6.setEndpoint(endPointURL6); 
+        req6.setMethod('PUT'); 
+        req6.setTimeout(120000);
+        req6.setHeader('X-DocuSign-Authentication', authorizationHeader); 
+        req6.setHeader('Accept','application/json'); 
+        req6.setHeader('Content-Type','application/json'); 
+        
+        json6 = '{"name": "Member Number",'+'"required":"true",'+'"show":"true"'+'}';
+  
+        req6.setBody(json6); 
+        if(!Test.isRunningTest()){
+            res6 = http6.send(req6);
+            system.debug('DocuSign Response'+ res6.getBody());
+        }
+
+    }
+
+    public static void SetCustomFieldFalse(){
+
+        DocuSign_User_Details__c DTSpectrum = DocuSign_User_Details__c.getValues('Spectrum');
+        String FieldId;
+
+        templateID = DTSpectrum.TemplateId__c;
+        replyTo = DTSpectrum.ReplyTo__c;
+        accountID = DTSpectrum.AccountId__c;
+        userId = DTSpectrum.Username__c;
+        passWord = DTSpectrum.Password__c;
+        integratorKey = DTSpectrum.IntegratorKey__c;
+        endpoint = DTSpectrum.EndPoint__c;
+
+        if(endpoint == 'www.docusign.net'){
+            FieldId = '4845275';
+        }
+        else{
+            FieldId = '145104';
+        }
+
+        authorizationHeader = '<DocuSignCredentials><Username>'+userId+'</Username><Password>'+Password+'</Password><IntegratorKey>'+integratorKey+'</IntegratorKey></DocuSignCredentials>';
+
+        //--------------------------------------------------------------Update Custom field-------------------------------------------------//
+
+        endPointURL6 = 'https://'+endpoint+'/restapi/v2.1/accounts/'+accountID+'/custom_fields/'+FieldId;
+        req6.setEndpoint(endPointURL6); 
+        req6.setMethod('PUT'); 
+        req6.setTimeout(120000);
+        req6.setHeader('X-DocuSign-Authentication', authorizationHeader); 
+        req6.setHeader('Accept','application/json'); 
+        req6.setHeader('Content-Type','application/json'); 
+        
+        json6 = '{"name": "Member Number",'+'"required":"false",'+'"show":"false"'+'}';
+    
+        req6.setBody(json6); 
+        if(!Test.isRunningTest()){
+            res6 = http6.send(req6);
+            system.debug('DocuSign Response'+ res6.getBody());
+        }
+
     }	
 }

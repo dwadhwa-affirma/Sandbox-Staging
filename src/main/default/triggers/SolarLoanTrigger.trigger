@@ -173,6 +173,10 @@ trigger SolarLoanTrigger on Solar_Loans__c (after insert,before insert, after up
                 SLIds.add(trigger.new[i].id);
             }
             
+            if(trigger.old[i].SignatureCardURL__c == null && trigger.new[i].SignatureCardURL__c != null){
+                SolarLoanToSignCard.SetCustomFieldTrue();
+            }
+            
             //------------------------------- Checking if the status is being changed and status = 'Completed'-----------------//
             
             if(trigger.old[i].Status__c != 'Completed' && trigger.new[i].Status__c == 'Completed' && 
