@@ -580,6 +580,57 @@ return results;
         return results;
     }
     
+     @AuraEnabled
+    public static List<MemberCommunicationData.documents> GetWiresData(List<string> source,Date fromdate,Date todate,string recid,string keyword)
+    {   
+        
+        List<String> lstSource = source;//source.split(',');
+        String apiURL='';
+        set<String> accList = new set<String>();
+        set<string> typeList = new set<string>();
+       
+        for(Member360_TypeTranslate__c t : Member360_TypeTranslate__c.getAll().values()){
+       		typeList.add(t.name);	
+        }
+        
+        list<Person_Account__c> paList = [SELECT Id, Account_Number__c,  PersonID__c, Account_Number__r.RecType__c, TypeTranslate__c, Account_Number__r.Name
+                FROM Person_Account__c where PersonID__c =:recid and TypeTranslate__c IN:typeList and Account_Number__r.RecType__c IN('ACCT', 'SHAR') order by  Account_Number__r.RecType__c asc];
+       
+        for(Person_Account__c p : paList){
+       		accList.add(p.Account_Number__r.Name);	
+        }
+        
+        system.debug('accList'+accList);
+        List<MemberCommunicationData.documents> results=new List<MemberCommunicationData.documents>();
+        String str='%'+keyword+'%';
+        
+        List<WIRES_Transaction__c> wires = new List<WIRES_Transaction__c>();
+        if( fromdate != null && todate == null && keyword == 'Date Range')
+            wires = [select id,name,FromAccount__c,createdDate,Source__c,Member_Name__c from WIRES_Transaction__c where  createdDate >= :fromdate and FromAccount__c IN:accList ];
+        else if(fromdate != null && todate != null  && fromdate < todate && keyword == 'Date Range')
+            wires = [select id,name,FromAccount__c,createdDate,Source__c,Member_Name__c from WIRES_Transaction__c where  createdDate  >= :fromdate and createdDate  <= :todate and FromAccount__c IN:accList];
+        else if(fromdate == null && todate == null && keyword == null)
+            wires = [select id,name,FromAccount__c,createdDate,Source__c,Member_Name__c from WIRES_Transaction__c where FromAccount__c IN:accList];
+        else if( keyword != 'Date Range'){
+            Date d = System.today() - Integer.ValueOf(keyword);
+            wires = [select id,name,FromAccount__c,createdDate,Source__c,Member_Name__c from WIRES_Transaction__c where createdDate >= :d and FromAccount__c IN:accList];
+        }
+        for(WIRES_Transaction__c ml : wires ){
+            MemberCommunicationData.documents doc = new MemberCommunicationData.documents();
+            doc.id= ml.id;               
+            doc.dateDesc= ml.name;
+            doc.documentDate=Date.valueOf(ml.createdDate);
+            //doc.documentDateText = doc.documentDate.format() + ' 00:00';
+            //doc.userID =ld.Brand__c;
+            doc.DataSource=ml.Source__c;
+            doc.Account= ml.FromAccount__c;
+            doc.MemberName=ml.Member_Name__c;
+            results.add(doc);
+        }
+        
+        system.debug('--------'+results.size());
+        return results;
+    }
     
     public class CommentsEnt
     {

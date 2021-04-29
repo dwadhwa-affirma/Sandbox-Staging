@@ -10,6 +10,7 @@
      <aura:attribute name="loadchk5" type="Boolean" default="false" />
     <aura:attribute name="loadchk6" type="Boolean" default="false" />
     <aura:attribute name="loadchk7" type="Boolean" default="false" />
+    <aura:attribute name="loadchk8" type="Boolean" default="false" />
     <aura:attribute name="nochk1" type="Boolean" default="false" />
     <aura:attribute name="nochk2" type="Boolean" default="false" />
     <aura:attribute name="nochk3" type="Boolean" default="false" />
@@ -22,6 +23,7 @@
      <aura:attribute name="progchk5" type="Boolean" default="false" />
     <aura:attribute name="progchk6" type="Boolean" default="false" />
     <aura:attribute name="progchk7" type="Boolean" default="false" />
+    <aura:attribute name="progchk8" type="Boolean" default="false" />
     <aura:attribute name="ischk1" type="Boolean" default="false" />
     <aura:attribute name="ischk2" type="Boolean" default="false" />
     <aura:attribute name="ischk3" type="Boolean" default="false" />
@@ -29,6 +31,7 @@
     <aura:attribute name="ischk5" type="Boolean" default="false" />
     <aura:attribute name="ischk6" type="Boolean" default="false" />
     <aura:attribute name="ischk7" type="Boolean" default="false" />
+    <aura:attribute name="ischk8" type="Boolean" default="false" />
     <aura:attribute name="nodata" type="Boolean" default="false" />
     <aura:attribute name="isfromto" type="Boolean" default="false" />
     <aura:attribute name="dateinvalid" type="Boolean" default="false" />
@@ -246,12 +249,34 @@
                                     	</div>
                                     </aura:if>
                                     
-                                    
+                                     <!-- WIRES -->
+                                    <aura:if isTrue="{!v.ischk8}">
+                                    <div class="slds-checkbox">
+                                        <div class="slds-clearfix">
+                                            <div class="slds-float_left">
+                                                <p><lightning:input type="checkbox" label="Wires"  aura:id="chk8" value="Wires" onchange="{!c.callCheckboxMethod}" /></p>
+                                            </div>
+                                            <div class="slds-float_right">
+                                                <p class="SearchText">
+                                                    <aura:if isTrue="{!v.loadchk8}"> 
+                                                		<lightning:icon iconName="utility:check" size="xx-small" alternativeText="Approved" />
+                                                		Result Showing
+                                                    </aura:if>
+                                                     <aura:if isTrue="{!v.progchk8}"> 
+                                                        <lightning:icon iconName="utility:loop" size="xx-small" alternativeText="Approved" />
+                                                        Searching...
+                                                    </aura:if>
+                                                    <aura:if isTrue="{!v.nochk8}"> <lightning:icon iconName="utility:close" size="xx-small" alternativeText="No Result" />
+                                                		No Result
+                                               	    </aura:if>
+                                               	 </p>
+                                            	</div>
+                                        	</div>
+                                    	</div>
+                                    </aura:if>
                                 </div>
                             </div>
-							
                         </article>
-                        
                     </div>
                     <div class="slds-size_3-of-12 BorderRight" >
                         <article class="slds-card  slds-m-left_x-small">
