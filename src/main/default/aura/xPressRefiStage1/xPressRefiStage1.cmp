@@ -1,0 +1,88 @@
+<aura:component
+    implements="force:appHostable,force:lightningQuickActionWithoutHeader,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,force:hasSObjectName"
+    access="global" controller="xPressRefiController">
+
+    <aura:handler name="init" action="{!c.doInit}" value="{!this}" access="global" />
+    <aura:registerEvent name="xPressRefiEvent" type="c:xPressRefiEvent" />
+
+    <aura:attribute name="ActiveStepIndex" type="Integer"/>  
+    <aura:attribute name="xPressRefiRecord" type="xPressRefi__c"/>  
+    <aura:attribute name="PropertyAddress" type="string"/>
+    <aura:attribute name="MembershipAddress" type="string"/>
+    <aura:attribute name="MembershipAddressDetails" type="Map" default="{ MembershipAddress1: '', MembershipAddress2: '', MembershipCity : '', MembershipState : '', MembershipZip : '' }" />  
+
+    <div id="stage1" class="stage1" style="width:100% !important;">
+        <div class="slds-grid slds-gutters eft4tbl">
+            <div class="slds-col firstcol">
+                <p class="pfontstyle">Address Information</p><br></br>
+                <table class="fundingtbl">
+                    <tbody>
+                        <tr>
+                            <td>
+                                <span>Member Number</span>
+                            </td>
+                            <td>
+                                <lightning:input name="membernumber" value="{!v.xPressRefiRecord.Member_Number__c}"
+                                    disabled="true" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <span>Property Address:</span>
+                            </td>
+                            <td>
+                                <lightning:textarea name="propertyAddress" disabled="true" value="{!v.PropertyAddress}"/>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <span>Membership Address:</span>
+                            </td>
+                            <td>
+                                <lightning:textarea name="membershipAddress" disabled="true" value="{!v.MembershipAddress}"/>
+                            </td>
+                        </tr>                        
+                    </tbody>
+                </table>
+            </div>
+            <div class="slds-col secondcol">
+                <p class="pfontstyle">Primary Residence Verification</p><br></br>
+                <p class="">The Property and Membership addresses are not identical. Please perform a visual comparison to determine if they both describe the same address</p>
+                <br></br>
+                <br></br>
+                <p class="">Is this loan your primary residence?</p><!-- Do the 2 displayed addresses describe the same location -->
+                <table aria-multiselectable="true"
+                            class="slds-table slds-table_header-hidden slds-table_edit slds-tree slds-table_tree"
+                            role="treegrid">
+                            <tbody>
+                                <tr aria-expanded="false" aria-level="1" aria-posinset="3" aria-selected="false"
+                                    aria-setsize="4" class="slds-hint-parent">
+                                    <td class="slds-text-align_right" role="gridcell" style="width:3.25rem">
+                                        <span class="slds-radio">
+                                            <lightning:input type="radio" name="select" value="1"
+                                            onchange="{!c.onAddressMatchRadioSelect}" />
+                                        </span>
+                                    </td>
+                                    <td data-label="Employees" role="gridcell">
+                                        <div class="slds-truncate" title="Yes">Yes</div><!--, the addresses describe the same location.-->
+                                    </td>
+                                </tr>
+                                <tr aria-expanded="false" aria-level="1" aria-posinset="3" aria-selected="false"
+                                    aria-setsize="4" class="slds-hint-parent">
+                                    <td class="slds-text-align_right" role="gridcell" style="width:3.25rem">
+                                        <span class="slds-radio">
+                                            <lightning:input type="radio" name="select" value="2"
+                                            onchange="{!c.onAddressMatchRadioSelect}"/>
+                                        </span>
+                                    </td>
+                                    <td data-label="Employees" role="gridcell">
+                                        <div class="slds-truncate" title="No">No</div><!--, the addresses describe different locations.-->
+                                    </td>
+                                </tr>                                
+                            </tbody>
+                        </table>
+            </div>
+        </div>
+    </div>
+    <lightning:spinner aura:id="Spinner" alternativeText="Loading" size="medium" variant="brand" class="slds-hide spin"/>
+</aura:component>	

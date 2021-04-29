@@ -12,14 +12,21 @@ global with sharing class OnBaseDocumentAPI {
             //system.debug('onbaseDocuemntList :: ' + onbaseDocuemntList[0].case__r);
             //system.debug('Account_Number__r :: ' + onbaseDocuemntList[0].case__r.Account_Number__r.Name);
             set<string> caseids = new set<string>();
+            set<string> Attachmentids = new set<string>();
+            set<string> ActiveAttachmentids = new set<string>();
             map<string, OnBaseDocumentAPIResopnse> caseAccounts = new  map<string, OnBaseDocumentAPIResopnse>();
             set<string> accountsAdded = new set<string>();
            
             
              for(OnBase_Document__c OnBaseObj : onbaseDocuemntList){
-             	caseids.add(OnBaseObj.case__c);
+                 caseids.add(OnBaseObj.case__c);
+                 Attachmentids.add(OnBaseObj.Attachment_Id__c);
              }
-             
+
+            List<Attachment> AttachmentList = [Select id, name from Attachment where Id in: Attachmentids];
+            for(Attachment ac: AttachmentList){
+                ActiveAttachmentids.add(ac.id);
+            }
              
              List<CaseAccountMemberDetail__c> camd = new List<CaseAccountMemberDetail__c>();
         	camd = [select id,Case__c, MemberAccountid__c,  case__r.CaseNumber,case__r.OwnerId,
@@ -35,86 +42,91 @@ global with sharing class OnBaseDocumentAPI {
             
             for(OnBase_Document__c OnBaseObj : onbaseDocuemntList)
             {
-                OnBaseDocumentAPIResopnse respObj = new OnBaseDocumentAPIResopnse();
-                
-                respObj.Name = (OnBaseObj.Document_Name__c!=null)?OnBaseObj.Document_Name__c:OnBaseObj.Name;
-                respObj.AttachmentID = OnBaseObj.Attachment_Id__c;
-                if(OnBaseObj.case__c != null)
+                if(ActiveAttachmentids.contains(OnBaseObj.Attachment_Id__c))
                 {
-                    respObj.CaseNumber = String.valueOf(Integer.valueOf(OnBaseObj.case__r.CaseNumber));
-                    if(OnBaseObj.case__r.Account_Number__r!=null)
+                    OnBaseDocumentAPIResopnse respObj = new OnBaseDocumentAPIResopnse();
+                    
+                    respObj.Name = (OnBaseObj.Document_Name__c!=null)?OnBaseObj.Document_Name__c:OnBaseObj.Name;
+                    respObj.AttachmentID = OnBaseObj.Attachment_Id__c;
+                    if(OnBaseObj.case__c != null)
                     {
-                    respObj.AccountNumber = (OnBaseObj.case__r.Account_Number__r==null)?'N/A':String.valueOf(Integer.valueOf(OnBaseObj.case__r.Account_Number__r.Name));
-                     respObj.AccountNumber = respObj.AccountNumber.replaceFirst('^0+','');
-                     system.debug('AccountNumber##'+ respObj.AccountNumber);
-                                    responseObjList.add(respObj);
-                                    caseAccounts.put(OnBaseObj.Attachment_Id__c, respObj);
-                                    accountsAdded.add(respObj.AccountNumber);
+                        respObj.CaseNumber = String.valueOf(Integer.valueOf(OnBaseObj.case__r.CaseNumber));
+                        if(OnBaseObj.case__r.Account_Number__r!=null)
+                        {
+                        respObj.AccountNumber = (OnBaseObj.case__r.Account_Number__r==null)?'N/A':String.valueOf(Integer.valueOf(OnBaseObj.case__r.Account_Number__r.Name));
+                        respObj.AccountNumber = respObj.AccountNumber.replaceFirst('^0+','');
+                        system.debug('AccountNumber##'+ respObj.AccountNumber);
+                                        responseObjList.add(respObj);
+                                        caseAccounts.put(OnBaseObj.Attachment_Id__c, respObj);
+                                        accountsAdded.add(respObj.AccountNumber);
+                        }
                     }
-                }
-                else
-                {
-                    respObj.CaseNumber = String.valueOf(Integer.valueOf(OnBaseObj.Member_Comment__r.Case__r.CaseNumber)); 
-                    if(OnBaseObj.Member_Comment__r.case__r.Account_Number__r != null)
-                    {      
-                   		 respObj.AccountNumber = (OnBaseObj.Member_Comment__r.case__r.Account_Number__r== null)?'N/A':String.valueOf(Integer.valueOf(OnBaseObj.Member_Comment__r.case__r.Account_Number__r.Name));
-                   		 respObj.AccountNumber = respObj.AccountNumber.replaceFirst('^0+','');
-                   		 system.debug('AccountNumber##' + respObj.AccountNumber);  
-                                    responseObjList.add(respObj);   
-                                    caseAccounts.put(OnBaseObj.Attachment_Id__c, respObj);
-                                    accountsAdded.add(respObj.AccountNumber);              
-                    }
-                }
-                for (OnBase_Supported_Extensions__c item : mcs)
-                {
-                    if(OnBaseObj.Document_Name__c.toLowerCase().endsWith('.' + item.Name.toLowerCase()))
+                    else
                     {
-                        
-                        respObj.ExtensionNumber = item.Value__c.format();
+                        respObj.CaseNumber = String.valueOf(Integer.valueOf(OnBaseObj.Member_Comment__r.Case__r.CaseNumber)); 
+                        if(OnBaseObj.Member_Comment__r.case__r.Account_Number__r != null)
+                        {      
+                            respObj.AccountNumber = (OnBaseObj.Member_Comment__r.case__r.Account_Number__r== null)?'N/A':String.valueOf(Integer.valueOf(OnBaseObj.Member_Comment__r.case__r.Account_Number__r.Name));
+                            respObj.AccountNumber = respObj.AccountNumber.replaceFirst('^0+','');
+                            system.debug('AccountNumber##' + respObj.AccountNumber);  
+                                        responseObjList.add(respObj);   
+                                        caseAccounts.put(OnBaseObj.Attachment_Id__c, respObj);
+                                        accountsAdded.add(respObj.AccountNumber);              
+                        }
                     }
-                }
-                if(respObj.ExtensionNumber == null || respObj.ExtensionNumber == '')
-                {
-                    respObj.ExtensionNumber = 'Other';
-                }
-                //respObj.AccountNumber = String..valueOf(Integer.valueOf(OnBaseObj.case__r.Account_Number__r.Name));
-                respObj.DocumentType = OnBaseObj.Document_Type__c;
+                    for (OnBase_Supported_Extensions__c item : mcs)
+                    {
+                        if(OnBaseObj.Document_Name__c.toLowerCase().endsWith('.' + item.Name.toLowerCase()))
+                        {
+                            
+                            respObj.ExtensionNumber = item.Value__c.format();
+                        }
+                    }
+                    if(respObj.ExtensionNumber == null || respObj.ExtensionNumber == '')
+                    {
+                        respObj.ExtensionNumber = 'Other';
+                    }
+                    //respObj.AccountNumber = String..valueOf(Integer.valueOf(OnBaseObj.case__r.Account_Number__r.Name));
+                    respObj.DocumentType = OnBaseObj.Document_Type__c;
                 
-                
+                }
             }
             
             for(OnBase_Document__c OnBaseObj : onbaseDocuemntList)
             { 
-            	if(OnBaseObj.case__c != null && OnBaseObj.case__r.Account_Number__r!=null){
-		           for(CaseAccountMemberDetail__c c: camd){
-		           		OnBaseDocumentAPIResopnse res = caseAccounts.get(OnBaseObj.Attachment_Id__c);
-		           		 system.debug('c===' + c.Account_Name__c);
-		           		  system.debug('res.AccountNumber===' + res.AccountNumber);
-		           		   system.debug('OnBaseObj.case__c===' + OnBaseObj.case__c);
-		           		if(OnBaseObj.case__c == c.case__c && OnBaseObj.case__r.Account_Number__r.Name != c.Account_Name__c){
-		           			 OnBaseDocumentAPIResopnse respObj = new OnBaseDocumentAPIResopnse();
-		           			 respObj.Name = (OnBaseObj.Document_Name__c!=null)?OnBaseObj.Document_Name__c:OnBaseObj.Name;
-                			 respObj.AttachmentID = OnBaseObj.Attachment_Id__c;
-                			 respObj.CaseNumber = String.valueOf(Integer.valueOf(OnBaseObj.case__r.CaseNumber));
-                			 respObj.AccountNumber = c.Account_Name__c;
-                			 respObj.AccountNumber = respObj.AccountNumber.replaceFirst('^0+','');
-                			 for (OnBase_Supported_Extensions__c item : mcs)
-				                {
-				                    if(OnBaseObj.Document_Name__c.toLowerCase().endsWith('.' + item.Name.toLowerCase()))
-				                    {				                        
-				                        respObj.ExtensionNumber = item.Value__c.format();
-				                    }
-				                }
-				                if(respObj.ExtensionNumber == null || respObj.ExtensionNumber == '')
-				                {
-				                    respObj.ExtensionNumber = 'Other';
-				                }
-				               respObj.DocumentType = OnBaseObj.Document_Type__c;
-				               responseObjList.add(respObj);
-		           		}
-		           	
-		           }
-	           }
+                if(ActiveAttachmentids.contains(OnBaseObj.Attachment_Id__c))
+                {
+                    if(OnBaseObj.case__c != null && OnBaseObj.case__r.Account_Number__r!=null){
+                    for(CaseAccountMemberDetail__c c: camd){
+                            OnBaseDocumentAPIResopnse res = caseAccounts.get(OnBaseObj.Attachment_Id__c);
+                            system.debug('c===' + c.Account_Name__c);
+                            system.debug('res.AccountNumber===' + res.AccountNumber);
+                            system.debug('OnBaseObj.case__c===' + OnBaseObj.case__c);
+                            if(OnBaseObj.case__c == c.case__c && OnBaseObj.case__r.Account_Number__r.Name != c.Account_Name__c){
+                                OnBaseDocumentAPIResopnse respObj = new OnBaseDocumentAPIResopnse();
+                                respObj.Name = (OnBaseObj.Document_Name__c!=null)?OnBaseObj.Document_Name__c:OnBaseObj.Name;
+                                respObj.AttachmentID = OnBaseObj.Attachment_Id__c;
+                                respObj.CaseNumber = String.valueOf(Integer.valueOf(OnBaseObj.case__r.CaseNumber));
+                                respObj.AccountNumber = c.Account_Name__c;
+                                respObj.AccountNumber = respObj.AccountNumber.replaceFirst('^0+','');
+                                for (OnBase_Supported_Extensions__c item : mcs)
+                                    {
+                                        if(OnBaseObj.Document_Name__c.toLowerCase().endsWith('.' + item.Name.toLowerCase()))
+                                        {				                        
+                                            respObj.ExtensionNumber = item.Value__c.format();
+                                        }
+                                    }
+                                    if(respObj.ExtensionNumber == null || respObj.ExtensionNumber == '')
+                                    {
+                                        respObj.ExtensionNumber = 'Other';
+                                    }
+                                respObj.DocumentType = OnBaseObj.Document_Type__c;
+                                responseObjList.add(respObj);
+                            }
+                        
+                    }
+                }
+            }
             }
                      
             

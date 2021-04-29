@@ -1,6 +1,5 @@
 ({
-	doInit : function(component, event, helper) {
-	
+	doInit : function(component, event, helper) {          
         var recordId = component.get("v.recordId");	
 		var action = component.get("c.getStageData");	
         var sobjecttype = component.get("v.sobjecttype");
@@ -46,10 +45,7 @@
                                 }
                             }
 		       			 );               
-            }            
-        	
-            
-        	
+            }                   	
         });	
        $A.enqueueAction(action);
 	},
@@ -88,7 +84,8 @@
             return;          
        }
       for(var i=0; i<stages.length;i++){
-            var ProgressBarStepClass = document.getElementById('Step'+(i+1)).classList;   
+            var ProgressBarStepClass = document.getElementById('Step'+(i+1)).classList;  
+            var LoanCode = component.get('v.EFTRecord.LoanCode__c');
             if((ProgressBarStepClass[0] == undefined || ProgressBarStepClass[0] == 'half')){
             	if(i==0 && (component.get("v.EFTRecord.Action_Type__c") == '' || component.get("v.EFTRecord.Action_Type__c") == undefined)){
             		alert('Please Select Action');	
@@ -162,7 +159,7 @@
 
                 }
             	
-            	if(i==3 && ((component.get("v.EFTRecord.Payment_Amount__c") == '' || component.get("v.EFTRecord.Payment_Amount__c") == undefined)
+            	if(i==3 && ((LoanCode != undefined && LoanCode !=2 && component.get("v.EFTRecord.Payment_Amount__c") == '' || component.get("v.EFTRecord.Payment_Amount__c") == undefined)
             			|| (component.get("v.EFTRecord.Day_of_Month__c") == '' || component.get("v.EFTRecord.Day_of_Month__c") == undefined)
             			|| (component.get("v.EFTRecord.Effective_Date__c") == '' || component.get("v.EFTRecord.Effective_Date__c") == undefined)
             			|| (component.get("v.EFTRecord.Frequency__c") == '' || component.get("v.EFTRecord.Frequency__c") == undefined)
@@ -322,7 +319,7 @@
                                     );
                          }
                          else{
-                            $A.createComponent("c:"+stages[i+1].Stage_Component__c,{recordId: component.get("v.recordId"), EFTRecord: component.get("v.EFTRecord")},
+                            $A.createComponent("c:"+stages[i+1].Stage_Component__c,{recordId: component.get("v.recordId"), EFTRecord: component.get("v.EFTRecord"), IsFirstAdditionalNull: component.get("v.IsFirstAdditionalNull")},
                                 function(msgBox){                
                                      if (component.isValid()) {
                                         
@@ -476,6 +473,14 @@
        
        var isDisabledforDocusign = event.getParam("isDisabledforDocusign");
        component.set("v.isDisabledforDocusign", isDisabledforDocusign);  
+
+       var isMemberRadioClicked = event.getParam("isMemberRadioClicked");
+       if(isMemberRadioClicked != undefined)
+       component.set("v.isMemberRadioClicked", isMemberRadioClicked); 
+
+       var IsFirstAdditionalNull = event.getParam("IsFirstAdditionalNull");
+       if(IsFirstAdditionalNull != undefined)
+       component.set("v.IsFirstAdditionalNull", IsFirstAdditionalNull);      
         
     },
     
@@ -512,8 +517,7 @@
     },
     
     
-    ExpireEFT: function (component, event, helper) { 
-        helper.showSpinner(component);
+    ExpireEFT: function (component, event, helper) {        
          if(component.get("v.EFTRecord.Action_Type__c") == "Expire"){
                         component.set("v.EFTRecord.Action_Type__c","Update")
                     }

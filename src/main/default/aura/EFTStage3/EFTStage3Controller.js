@@ -25,23 +25,19 @@
             });
 
             for (var i = 0; i < result.ShareLoanList.length; i++) {
-              if (
-                result.ShareLoanList[i].Payment == undefined ||
-                result.ShareLoanList[i].Payment == null ||
-                result.ShareLoanList[i].Payment == 0 ||
-                result.ShareLoanList[i].isDisabled == true
-              ) {
-                if (result.ShareLoanList[i].isDisabled == true) {
-                  result.ShareLoanList[i].Warning =
-                    "Use of ACH servicing is not allowed for this loan/share as it currently has multiple EFT records. To service this loan/share record, EFT changes needs to be made in Episys.";
-                } else {
+              if (result.ShareLoanList[i].isDisabled == true) {
+                result.ShareLoanList[i].Warning =
+                  "Use of ACH servicing is not allowed for this loan/share as it currently has multiple EFT records. To service this loan/share record, EFT changes needs to be made in Episys.";
+              } else {
+                if(result.ShareLoanList[i].Balance == 0){
                   result.ShareLoanList[i].isDisabled = true;
                   result.ShareLoanList[i].Warning = "";
                 }
-              } else {
-                result.ShareLoanList[i].isDisabled = false;
-                result.ShareLoanList[i].Warning = "";
-              }              
+                else{
+                  result.ShareLoanList[i].isDisabled = false;
+                  result.ShareLoanList[i].Warning = "";
+                }                
+              }                         
             }
             
           }
@@ -95,18 +91,6 @@
       rowEle.classList.add("hide");
     }
     component.set("v.ShareLoanMap", map);
-
-    // var container = component.find("containerCollapsable") ;
-    /* if(icon == 'utility:add'){
-           // $A.util.toggleClass(container, 'hide');
-            rowEle.classList.remove('hide');
-            component.set('v.AddIconName','utility:dash');
-        }
-        else{
-            //$A.util.toggleClass(container, 'hide');
-            rowEle.classList.add('hide');
-            component.set('v.AddIconName','utility:add');
-        }*/
   },
 
   onRadioChange: function (component, event, helper) {
@@ -125,13 +109,7 @@
       SelectedDay2,
       SelectedLoanCode,
       SelectedNextPaymentDueDate;
-    /*  if(SelectedShareLoan != null && SelectedShareLoan != undefined){
-        	SelectedShareLoanID = SelectedShareLoan.split(',')[0];
-            SelectedShareLoanType  = SelectedShareLoan.split(',')[2];
-       		SelectedShareLoanDesc  = SelectedShareLoan.split(',')[3];
-            SelectedEFTIDType  = SelectedShareLoan.split(',')[1];
-            SelectedPayment = SelectedShareLoan.split(',')[4];
-        }*/
+    
     var map = component.get("v.ShareLoanMap");
     if(event != undefined){
       SelectedShareLoan = event.getSource().get("v.value");
@@ -261,10 +239,16 @@
           "v.EFTRecord.Existing_Alternate_Amount__c",
           EFTList[i].Existing_Alternate_Amount__c
         );
+        if(parseFloat(EFTList[i].Existing_Alternate_Amount__c) <= 0){
+          component.set('v.IsFirstAdditionalNull',true);
+        }
+        else{
+          component.set('v.IsFirstAdditionalNull',false);
+        }
         break;
       }
     }
-    evt.setParams({ EFTRecord: component.get("v.EFTRecord") });
+    evt.setParams({ EFTRecord: component.get("v.EFTRecord"), IsFirstAdditionalNull: component.get("v.IsFirstAdditionalNull") });
     evt.fire();
   },
 });

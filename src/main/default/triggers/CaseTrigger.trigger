@@ -428,7 +428,9 @@ System.Debug('Calling the CaseAssign method');
       //  List<CaseRecordType__c> crtList = [Select Primary_Category__c, Secondary_Category__c, Teritiary_Category__c, RecordTypeId__c from CaseRecordType__c where Name =:newListCrt];
             
         List<EmailtoCaseCode__c> crtList = [Select Primary_Category__c, Secondary_Category__c, Teritiary_Category__c, RecordTypeId__c from EmailtoCaseCode__c where Name =:newListCrt];    
-        List<User> PortalUser = [select id,FirstName,ContactId,LastName from user where FirstName =: pa[0].PersonId__r.FirstName and LastName =: pa[0].PersonId__r.LastName limit 1];
+         List<User> PortalUser = new List<User>();
+            if(pa.size() > 0)
+        PortalUser = [select id,FirstName,ContactId,LastName from user where FirstName =: pa[0].PersonId__r.FirstName and LastName =: pa[0].PersonId__r.LastName limit 1];
         
         system.debug('crtList'+crtList);
         if(WireXchange == true){

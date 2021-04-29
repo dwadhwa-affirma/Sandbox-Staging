@@ -64,10 +64,17 @@
         var stages = [];
         var sobjecttype = component.get("v.sobjecttype");
         stages = component.get("v.ChangeLimitStageDetails"); 
+        var dynamicText;
+        var stages2 = [];
+        stages2 = component.get("v.ChangeLimitStageDetails");
         
         if(sobjecttype != 'Account'){
             
-            if(component.get("v.ContinueButtonName") == 'Submit'){
+            if(component.get("v.ContinueButtonName") == 'Close'){
+                
+                $A.get("e.force:closeQuickAction").fire();
+            }
+            else if(component.get("v.ContinueButtonName") == 'Submit'){
                 
                 helper.showSpinner(component);
                 var recordId = component.get("v.recordId");
@@ -77,7 +84,8 @@
                 var authlimit = component.get("v.CLRecord.Auth_POS_Limit__c");
                 var atmlimit = component.get("v.CLRecord.ATM_Usage_Limit__c");
                 var type = component.get("v.CLRecord.Type__c");   
-				var action = component.get("c.Submit");
+                var accounNumber = component.get("v.CLRecord.Member_Number__c");
+                var action = component.get("c.limitSubmit");
                 action.setParams({
                 	"recordId": recordId,
                     "cardnumber": cardnumber,
@@ -85,23 +93,43 @@
                     "membername":membername,
                     "type": type,
                     "authlimit": authlimit,
-                    "atmlimit": atmlimit
-                    
+                    "atmlimit": atmlimit,
+                    "accounNumber":accounNumber
                     
                 });
-                action.setCallback(this, function (response) {
-           		//debugger;
                 
+                action.setCallback(this, function (response) {
+           		debugger;
         		var status = response.getState();            
             		if (component.isValid() && status === "SUCCESS") {
-                        component.set("v.isExit", true);
-                        helper.hideSpinner(component);
-    					$A.get("e.force:closeQuickAction").fire();
+                        var result = response.getReturnValue();
+                        component.set("v.CLRecord.Id",result.Id);
+                        component.set("v.CLRecord.Case__c",result.Case__c);
+                        component.set("v.CLRecord.Case__r.CaseNumber",result.Case__r.CaseNumber);
+                        component.set("v.ActiveStepIndex", (4));
+                        stages2[3].Stage_Action__c = 'Confirmed';
+                        component.set("v.ChangeLimitStageDetails", stages2);
+                        
+                        $A.createComponent("c:"+stages[4].Stage_Component__c,{recordId: component.get("v.recordId"), CLRecord: component.get("v.CLRecord")},
+                        	function(msgBox){           
+                            	if (component.isValid()) {
+                            		var targetCmp = component.find('ModalDialogPlaceholder');
+                                    var body = targetCmp.get("v.body");
+                                    //body.push(msgBox);
+                                    body.splice(0, 1, msgBox);
+                                    targetCmp.set("v.body", body); 
+                                }
+                                helper.hideSpinner(component);	
+                            }
+                      	);
+                        component.set("v.ActiveStepIndex", (5));
+                        component.set("v.BackButtonDis", 1);
+                        stages2[4].Stage_Action__c = 'Submitted';
+                        component.set("v.ContinueButtonName", 'Close');
                     }
                 });	
-       			$A.enqueueAction(action); 
-                
-                //helper.hideSpinner(component);
+       			$A.enqueueAction(action);
+                                
             }
             else{
                 
@@ -110,10 +138,6 @@
                     var ProgressBarStepClass = document.getElementById('Step'+(i+1)).classList;
                      
                      if((ProgressBarStepClass[0] == undefined || ProgressBarStepClass[0] == 'half')){
-                         
-                         var stages2 = [];
-                         stages2 = component.get("v.ChangeLimitStageDetails");
-                         var dynamicText;
                          
                          if(i==0 && (component.get("v.CLRecord.Member_Name__c") == '' || component.get("v.CLRecord.Member_Name__c") == undefined)){
                             alert('Please Select Member');	
@@ -274,8 +298,17 @@
     	}
         
         if(sobjecttype == 'Account'){
-           
-            if(component.get("v.ContinueButtonName") == 'Submit' && component.get("v.CLRecord.Type__c") == 'Change Card Limits'){
+			
+            var stages2 = [];
+            stages2 = component.get("v.ChangeLimitStageDetails");
+            
+            helper.showSpinner(component);
+            
+            if(component.get("v.ContinueButtonName") == 'Close'){
+                
+                $A.get("e.force:closeQuickAction").fire();
+            }
+            else if(component.get("v.ContinueButtonName") == 'Submit' && component.get("v.CLRecord.Type__c") == 'Change Card Limits'){
                 
                 var recordId = component.get("v.recordId");
                 var cardnumber = component.get("v.CLRecord.Card_Number__c");
@@ -283,8 +316,9 @@
                 var membername = component.get("v.CLRecord.Member_Name__c");
                 var authlimit = component.get("v.CLRecord.Auth_POS_Limit__c");
                 var atmlimit = component.get("v.CLRecord.ATM_Usage_Limit__c");
-                var type = component.get("v.CLRecord.Type__c");   
-				var action = component.get("c.Submit");
+                var type = component.get("v.CLRecord.Type__c"); 
+                var accounNumber = component.get("v.CLRecord.Member_Number__c");
+                var action = component.get("c.limitSubmit");
                 action.setParams({
                 	"recordId": recordId,
                     "cardnumber": cardnumber,
@@ -292,21 +326,42 @@
                     "membername":membername,
                     "type": type,
                     "authlimit": authlimit,
-                    "atmlimit": atmlimit
-                    
+                    "atmlimit": atmlimit,
+                    "accounNumber":accounNumber
                     
                 });
                 action.setCallback(this, function (response) {
            		debugger;
         		var status = response.getState();            
             		if (component.isValid() && status === "SUCCESS") {
-                    	component.set("v.isExit", true);
-    					$A.get("e.force:closeQuickAction").fire();
+                        var result = response.getReturnValue();
+                        component.set("v.CLRecord.Id",result.Id);
+                        component.set("v.CLRecord.Case__c",result.Case__c);
+                        component.set("v.CLRecord.Case__r.CaseNumber",result.Case__r.CaseNumber);
+                        component.set("v.ActiveStepIndex", (3));
+                        stages2[2].Stage_Action__c = 'Confirmed';
+                        component.set("v.ChangeLimitStageDetails", stages2);
+                        
+                        $A.createComponent("c:"+stages[3].Stage_Component__c,{recordId: component.get("v.recordId"), CLRecord: component.get("v.CLRecord")},
+                        	function(msgBox){           
+                            	if (component.isValid()) {
+                            		var targetCmp = component.find('ModalDialogPlaceholder');
+                                    var body = targetCmp.get("v.body");
+                                    //body.push(msgBox);
+                                    body.splice(0, 1, msgBox);
+                                    targetCmp.set("v.body", body); 
+                                }
+                                helper.hideSpinner(component);	
+                            }
+                      	);
+                        component.set("v.ActiveStepIndex", (4));
+                        component.set("v.BackButtonDis", 1);
+                        stages2[3].Stage_Action__c = 'Submitted';
+                        component.set("v.ContinueButtonName", 'Close');
                     }
                 });	
        			$A.enqueueAction(action); 
                 
-                helper.hideSpinner(component);
             }
             else if(component.get("v.ContinueButtonName") == 'Submit' && component.get("v.CLRecord.Type__c") != 'Change Card Limits'){
                 
@@ -326,20 +381,40 @@
                     "type": type,
                     "authlimit": authlimit,
                     "atmlimit": atmlimit
-                    
-                    
                 });
+				
                 action.setCallback(this, function (response) {
            		debugger;
         		var status = response.getState();            
             		if (component.isValid() && status === "SUCCESS") {
-                    	component.set("v.isExit", true);
-    					$A.get("e.force:closeQuickAction").fire();
+                        var result = response.getReturnValue();
+                        component.set("v.CLRecord.Id",result.Id);
+                        component.set("v.CLRecord.Case__c",result.Case__c);
+                        component.set("v.CLRecord.Case__r.CaseNumber",result.Case__r.CaseNumber);
+                        component.set("v.ActiveStepIndex", (3));
+                        stages2[2].Stage_Action__c = 'Confirmed';
+                        component.set("v.ChangeLimitStageDetails", stages2);
+                        
+                        $A.createComponent("c:"+stages[3].Stage_Component__c,{recordId: component.get("v.recordId"), CLRecord: component.get("v.CLRecord")},
+                        	function(msgBox){           
+                            	if (component.isValid()) {
+                            		var targetCmp = component.find('ModalDialogPlaceholder');
+                                    var body = targetCmp.get("v.body");
+                                    //body.push(msgBox);
+                                    body.splice(0, 1, msgBox);
+                                    targetCmp.set("v.body", body); 
+                                }
+                                helper.hideSpinner(component);	
+                            }
+                      	);
+                        component.set("v.ActiveStepIndex", (4));
+                        component.set("v.BackButtonDis", 1);
+                        stages2[3].Stage_Action__c = 'Submitted';
+                        component.set("v.ContinueButtonName", 'Close');
                     }
-                });	
-       			$A.enqueueAction(action); 
-                
-                helper.hideSpinner(component);
+                });
+       		    
+                $A.enqueueAction(action); 
                 
             }                
             else{
@@ -350,8 +425,6 @@
                      
                      if((ProgressBarStepClass[0] == undefined || ProgressBarStepClass[0] == 'half')){
                          
-                         var stages2 = [];
-                         stages2 = component.get("v.ChangeLimitStageDetails");
                          var dynamicText;
 
                          if(i==0 && (component.get("v.CLRecord.Card_Number__c") == '' || component.get("v.CLRecord.Card_Number__c") == undefined)){
@@ -458,7 +531,7 @@
                             stages2[0].Stage_Action__c = component.get("v.CLRecord.Card_Number__c");
                             //stages2[0].Stage_Action__c = component.get("v.CLRecord.Member_Name__c");
                             stages2[1].Stage_Action__c = dynamicText;
-                            stages2[i].Stage_Action__c = 'Confirmation';
+                            //stages2[i].Stage_Action__c = 'Confirmation';
                             component.set("v.ChangeLimitStageDetails", stages2);
                             $A.createComponent("c:"+stages[2].Stage_Component__c,{recordId: component.get("v.recordId"), CLRecord: component.get("v.CLRecord")},
                                 function(msgBox){           
@@ -616,7 +689,6 @@
                     }
                     
                     component.set("v.ActiveStepIndex", (i-1)); 
-                    alert(component.get("v.ActiveStepIndex"));
                     $A.createComponent("c:"+stages[i-1].Stage_Component__c,{recordId: component.get("v.recordId"), CLRecord: component.get("v.CLRecord")},
                         function(msgBox){                
                             if (component.isValid()) {

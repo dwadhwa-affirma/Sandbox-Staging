@@ -6,6 +6,9 @@
 		var CLRecord = component.get("v.CLRecord");
         var memberName = CLRecord.Member_Name__c;
         var evt = $A.get("e.c:CardLimitResetEvent");
+        evt.setParams({"isMemberSelected": false});
+        evt.fire();
+        var evt1 = $A.get("e.c:CardLimitResetEvent");
         action.setParams({
 			"recordId": recordId,
             "sObjectType": memberName
@@ -18,13 +21,15 @@
                 if(result != undefined){
                     
                     if(result.CardList != undefined && result.CardList != ''){
-                    	evt.setParams({ "CLRecord": CLRecord, "isMemberSelected": true});
-            			evt.fire();
+                    	evt1.setParams({"isMemberSelected": true});
+            			evt1.fire();
                         component.set('v.CardListMap', result.CardList);
                     }
                     
                     if(result.DormantCardList != undefined && result.DormantCardList != ''){
-                    	component.set('v.CardListMap', result.DormantCardList);
+                        evt1.setParams({"isMemberSelected": true});
+            			evt1.fire();
+                        component.set('v.CardListMap', result.DormantCardList);
                         component.set("v.IsDormant", true);
                     }
                     
@@ -44,16 +49,19 @@
     onCardChange: function (component, event, helper) {
     	var SelectedCardNumber = event.getSource().get('v.value');
         var SelectedCardLocator;
+        var SelectedAccountNumber;
         
         var map=component.get('v.CardListMap');
         for(var i=0;i<map.length;i++){
         	if(map[i].CardNumber == SelectedCardNumber){
-            	SelectedCardLocator = map[i].CardLocator;  
+            	SelectedCardLocator = map[i].CardLocator;
+                SelectedAccountNumber = map[i].AccountNumber;
                 break;
             }
         }
     	component.set("v.CLRecord.Card_Number__c",SelectedCardNumber);
         component.set("v.CLRecord.Card_Locator__c",SelectedCardLocator);
+        component.set("v.CLRecord.Member_Number__c",SelectedAccountNumber);
     	
     	var evt = $A.get("e.c:CardLimitResetEvent");
         var CL = component.get("v.CLRecord");

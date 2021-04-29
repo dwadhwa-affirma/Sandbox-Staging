@@ -118,12 +118,23 @@ trigger AttachmentNameUpdate on Attachment (after update,after delete,after inse
 	            solarLoanObj.Name = a.name;
 	            solarLoanObj.Member_Number__c = sl.get(a.ParentId).Member_Number__c;
 	            solarLoanObj.IsMovedToOnBase__c = false;
-	            solarLoanObj.Document_Type__c = 'Solar Loan';
+                
+                If(a.name.contains('Member Application') || a.name.contains('Membership Application'))
+                    solarLoanObj.Document_Type__c = 'Signature Cards';
+                else If(a.name.contains('Government ID'))
+                    solarLoanObj.Document_Type__c = 'Member Identification Documents';
+                else If(a.name.contains('CCHS Application'))
+                    solarLoanObj.Document_Type__c = 'Account Verification Documents';
+                else If(a.name.contains('ACHDirectPayment'))
+                    solarLoanObj.Document_Type__c = 'Solar Secured Loans';
+                else
+                    solarLoanObj.Document_Type__c = 'Solar Loan';
+
 	            solarLoanObj.Document_Name__c =a.name;
                 solarLoanObj.Solar_Loans__c = a.ParentId;
                 solarLoanObj.Attachment_Owner__c = a.OwnerId;
                 solarLoanObj.Attachment_Created_On__c = a.CreatedDate;
-              
+               
             	solarLoanAttachmentsList.add(solarLoanObj);
     		}
     	}

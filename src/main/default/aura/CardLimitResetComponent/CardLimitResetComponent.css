@@ -1,7 +1,7 @@
 .THIS .step-container {width: 100%; padding-top:1rem;}
 .THIS .progressbar {counter-reset:step; width: 100%; margin: auto;}
 .THIS .progressbar::after { display:table; clear:both; content:'';}
-.THIS .progressbar li {list-style-type: none; display:inline-block; width: 25%; position: relative; text-align: center;}
+.THIS .progressbar li {list-style-type: none; display:inline-block; width: 20%; position: relative; text-align: center;}
 .THIS .progressbar li:before {content: counter(step); counter-increment: step; width: 36px; height: 34px; line-height: 35px; border: none; display: block; text-align: center; margin: 0 auto 10px auto; border-radius: 50%; background-color: #a0a2a5; color: #fff; 
     font-size: 16px; font-family: open sans;position: relative;
     z-index: 10;}

@@ -1,0 +1,45 @@
+.THIS#stage3 .bottomtbl{margin-left:40px;width: 80% !important;}
+.THIS#stage3 .bottomtbl td{vertical-align:top; padding:.2rem 0;}
+.THIS#stage3 .bottomtbl td:nth-child(1){width:180px;}
+.THIS#stage3 .bottomtbl td:nth-child(2){font-weight:bold;}
+.THIS#stage3 .bottomtbl td.sloan span{display:block;}
+
+@media (max-width:600px){
+.THIS#stage3 .bottomtbl{margin-left:0;}
+}
+.THIS#stage3 {width:70%; font-size:.8125rem; margin:0 auto;}
+
+.THIS#stage3 .stage3{width:90% !important; font-size:.8125rem; margin:0 auto;height: 600px !important;}
+
+.THIS#stage3 .slds-form-element__label{width:120px;max-width:unset;}
+
+.THIS#stage3 .fontstyle{word-break:break-word;}
+.THIS#stage3 .pfontstyle{word-break:break-word;font-size: 1.5rem !important;color: #0e70d6;
+    font-weight: bold;
+    margin-top: 2%;
+    text-align: left !important;}
+
+.THIS#stage3 .firstcol{border-right: 1px solid #777; margin-right: 1rem; padding-top:5rem;width: 30% !important;height: 580px !important;}
+.THIS#stage3 .secondcol{padding-top:5rem;}
+.THIS#stage3 .centerPara{text-align: center;font-size: 1rem;}
+.THIS#stage3 .customRadioCls .slds-form-element__control .slds-radio{
+    display : inline-block !important;
+}
+.THIS#stage3 .typedisabled .slds-grow{
+    padding-left: 0px !important; 
+}
+
+@media (max-width:1250px){
+    .THIS#stage3 {width:90%;}
+}
+@media (max-width:600px){
+    .THIS#stage3 {width:100%;}
+}
+@media (max-width:767px){
+    .THIS#stage3 .slds-form-element__label{float:left;}
+	.THIS#stage3 .slds-form-element_horizontal .slds-form-element__control{clear:none;}
+}
+@media (max-width:480px){
+    .THIS#stage3 .slds-form-element__label{clear:both;}
+	.THIS#stage3 .slds-form-element_horizontal .slds-form-element__control{clear:both; padding-left:0;}
+}

@@ -1,0 +1,82 @@
+.THIS#stage0 {
+  width: 100%;
+  font-size: 0.8125rem;
+  margin: 0 auto;
+}
+
+.THIS#stage0 .stage0 {
+  width: 100% !important;
+  font-size: 0.8125rem;
+  margin: 0 auto;
+  height: 600px !important;
+}
+
+.THIS#stage0 .slds-form-element__label {
+  width: 120px;
+  max-width: unset;
+}
+
+.THIS#stage0 .fontstyle {
+  word-break: break-word;
+}
+.THIS#stage0 .pfontstyle {
+  word-break: break-word;
+  font-size: 1.5rem !important;
+  color: #0e70d6;
+  font-weight: bold;
+  margin-top: 2%;
+  text-align: left !important;
+}
+.THIS.stage0 {
+  overflow-x: auto;
+}
+.THIS.stage0 .slds-table .loanth {
+  width: 130px;
+}
+.THIS.stage0 .slds-table th.slds-tree__item {
+  display: table-cell;
+  vertical-align: top;
+}
+.THIS.stage0 .slds-table th.slds-tree__item .slds-truncate {
+  display: inline;
+}
+.THIS.stage0 .slds-table td .slds-truncate {
+  white-space: normal;
+  display: inline-block;
+}
+.THIS.stage0 .slds-table td {
+  vertical-align: top;
+}
+
+.THIS#stage0 .uiInput--select,
+.THIS#stage0 .slds-input {
+  min-height: unset;
+  height: 32px;
+}
+
+.THIS#stage0 label.slds-form-element__label.slds-no-flex {
+  display: none;
+  width: 0;
+}
+
+@media (max-width: 1250px) {
+  .THIS#stage0 {
+    width: 90%;
+  }
+ 
+}
+
+@media (max-width: 600px) {
+  .THIS#stage0 {
+    width: 100%;
+  }
+  
+}
+
+.THIS.stage0 .slds-table {
+  font-size: var(--lwc-fontSize3, 0.8125rem);
+  min-width: 400px;
+}
+.THIS .expired {
+  color: red;
+}

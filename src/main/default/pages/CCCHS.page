@@ -1,0 +1,114 @@
+<!--<apex:page standardcontroller="CCCHS__c" showHeader="false" showQuickActionVfHeader="false" applyHtmlTag="false"  extensions="ccchsController">-->
+<apex:page standardcontroller="Solar_Loans__c" showHeader="false" showQuickActionVfHeader="false" applyHtmlTag="false" renderAs="pdf">
+   
+    <head> 
+      <style>
+        @page{
+          size: ledger landscape;
+        }
+        .pdf-container {
+          
+        }
+        .hide {
+          display: none;
+        }
+        .field {
+          position: absolute;
+          font-size: 20px;
+          font-weight: bold;
+        }
+        .dt {
+          top: 160px;
+          left:690px;
+        }
+        .fn {
+          top: 222px;
+          left:690px;
+        }
+        .ln {
+          top: 267px;
+          left:690px;
+        }
+        .pn {
+          top: 196px;
+          left:647px;
+        }
+        .a1 {
+          top: 233px;
+          left:662px;
+        }
+        .a2 {
+          top: 268px;
+          left:704px;
+        }  
+        .ac {
+          top: 303px;
+          left:634px;
+        }
+        .as {
+          top: 303px;
+          left:902px;
+        }
+        .az {
+          top: 340px;
+          left:644px;
+        }
+        .em {
+          top: 374px;
+          left:646px;
+        }
+        .hp {
+          top: 341px;
+          left:843px;
+        }
+      </style>
+    </head>
+    
+    <body>    
+      <div class="pdf-container">    
+        <div class="logoimg">
+          <img src="{!$Resource.ccchs_form2}" alt="CCCHS" />
+        </div>    
+        <div class="field dt">{!MONTH(TODAY())}/{!DAY(TODAY())}/{!YEAR(TODAY())}</div>
+        <div class="field pn">
+            {!Solar_Loans__c.Name__c}
+        </div>
+        <div class="field a1">
+            {!Solar_Loans__c.Primary_Address_1__c}
+        </div>
+        <div class="field a2">
+            {!Solar_Loans__c.Primary_Address_2__c}
+        </div>
+        <div class="field ac">
+            {!Solar_Loans__c.Primary_City__c}
+        </div>
+        <div class="field as">  
+            {!Solar_Loans__c.Primary_State__c}
+        </div>
+        <div class="field az">  
+            {!Solar_Loans__c.Primary_Zip_Code__c}
+        </div>
+        <div class="field em">
+            {!Solar_Loans__c.Primary_Email__c}
+        </div>  
+        <div class="field hp">
+            {!Solar_Loans__c.Primary_Home_Phone__c}
+        </div>
+      </div>
+
+    <div class="modal-footer_ slds-modal__footer_">
+        <!--<apex:form >
+            <div id="footer">
+                <apex:commandButton value="Cancel" styleClass="slds-button slds-button_brand"  onclick="cancelPDF();"/>
+                <apex:outputPanel >
+                    <apex:commandButton value="Save PDF" styleClass="slds-button slds-button_brand" action="{!attach}"/>
+                </apex:outputPanel>
+                <apex:outputText rendered="{!showAlert}" id="alert">
+                
+                </apex:outputText>
+            </div>
+        </apex:form>-->
+    </div>
+
+  </body>
+</apex:page>

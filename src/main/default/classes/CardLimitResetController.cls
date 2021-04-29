@@ -57,23 +57,93 @@ public class CardLimitResetController {
     @AuraEnabled
     public static map<string,object> getMembers(string recordId){
     	
+        HttpRequest req = new HttpRequest();
+        HttpResponse res;
+        Http http = new Http();
+        string responseBody;
+        string loanAPI;
+        String jsonData;
+        String SSN;
+        String IsValid;
+        String AccountNumber;
+
         list<Person_Account__c> paList = getData(recordId);
     	system.debug('result=='+paList);
+        Map<Id,Person_Account__c> mapPA = new Map<Id,Person_Account__c>();
+
     	map<string,object> resultmap=new map<string,object>();
-    	
+    	List<Id> accIdList = new List<Id>();
     	list<Person_Account__c> result = new List<Person_Account__c>();
+
+        SolarLoan_To_Episys_API_Details__c api = SolarLoan_To_Episys_API_Details__c.getValues('ProductionURL');
+                        
+        if(api.URL__c != null){
+            loanAPI = api.URL__c;
+        }
+
+        for(Person_Account__c p : paList){
+            accIdList.add(p.PersonId__c); 
+        }
     	
-    	set<string> typeList = new set<string>();
+        Map<Id, Account> accListForSSN = new Map<ID, Account>([select id,name,SSN_TIN_Encrypted__pc from Account where id in :accIdList]);
+
+
+        set<string> typeList = new set<string>();
         for(Member360_TypeTranslate__c t : Member360_TypeTranslate__c.getAll().values()){
         	typeList.add(t.name);	
         } 
         
-        for(Person_Account__c var: paList){           			
+        /*for(Person_Account__c var: paList){           			
             if(typeList.contains(var.TypeTranslate__c)){
+                
                 result.add(var);
             }       
+        }*/
+        for(Person_Account__c var: paList){
+
+            AccountNumber = var.Account_Number__r.name;
+            System.debug('AccountNumber: '+AccountNumber);
+            
+            SSN = accListForSSN.get(var.PersonId__c).SSN_TIN_Encrypted__pc;
+            
+            System.debug('SSN: '+SSN);
+            
+            req.setEndpoint(loanAPI+'/MemberAuthorization/IsValidMemberRelationShip');
+            req.setMethod('POST');
+            req.setHeader('Content-Type', 'application/json');
+            req.setHeader('Accept', 'application/json');
+            req.setTimeout(120000);                    
+            jsonData = '{"MemberNumber":' + '\"'+ AccountNumber +'\","SSN":' + '\"'+ SSN +'\"}';                 
+            req.setBodyAsBlob(Blob.valueof(jsonData));
+        
+            if(!Test.isRunningTest()){                       
+                res = http.send(req);
+                responseBody = res.getBody();
+                System.debug('ResponseBody ::'+responseBody);    
+            }
+            else{
+                responseBody = '{"IsValid":"true"}';
+            }
+            if(responseBody != '' && responseBody != null){        
+                Map<String,Object> results = (Map<String,Object>)System.JSON.deserializeUntyped(responseBody);
+                if(results != null){                     
+                    for(String key : results.keySet()){                   			
+                        if(key == 'IsValid'){
+                            IsValid = String.valueOf(results.get(key));
+                            
+                        }
+                    }
+                    system.debug('IsValid: '+IsValid);           
+                }
+            }
+            if(IsValid == 'true'){
+                //result.add(var);
+                mapPA.put(var.PersonId__c,var);
+            }
         }
-        resultmap.put('PersonList', result);
+
+
+        resultmap.put('PersonList', mapPA.values());
       
     	return resultmap;
     }
@@ -115,27 +185,37 @@ public class CardLimitResetController {
 		  = [SELECT 
                           PersonId__c,
                           PersonID__r.Name acctName,
-                          TypeTranslate__c FROM Person_Account__c WHERE Account_Number__c in: listStringIds group by PersonId__c,PersonID__r.Name,TypeTranslate__c ];
+                          Account_Number__c,
+                          Account_Number__r.name accNum,
+                          TypeTranslate__c
+                          FROM Person_Account__c WHERE Account_Number__c in: listStringIds group by PersonId__c,PersonID__r.Name,Account_Number__c,Account_Number__r.name,TypeTranslate__c ];
+
     	list<Person_Account__c> paList1 = new list<Person_Account__c>();
     	for (AggregateResult ar : groupedResults)  {
     		Person_Account__c item = new Person_Account__c();
     		item.PersonId__c = (string)ar.get('PersonId__c');
     		item.PersonID__r = new Account();
     		item.PersonID__r.Name = (string)ar.get('acctName');
+          
+            item.Account_Number__c = (string)ar.get('Account_Number__c');
+            item.Account_Number__r = new Account_Details__c();
+            item.Account_Number__r.name = (string)ar.get('accNum');
     		item.TypeTranslate__c = (string)ar.get('TypeTranslate__c');
-    		paList1.add(item);
+            paList1.add(item);
         }
         
     	return paList1;
     }
 
     @AuraEnabled
-    public static Map<string,string> getLimits(string recordId, string cardnumber, string membername){
-
-        system.debug('cardnumber'+cardnumber); 
+    public static Map<string,string> getCardLimits(string recordId, string cardnumber, string membername, string memberNumber){
+        
         system.debug('recordId'+recordId);
+        system.debug('cardnumber'+cardnumber); 
         system.debug('membername'+membername);
-        Id uniqueId = recordId;
+        system.debug('memberNumber'+memberNumber);
+        
+       	Id uniqueId = recordId;
         Schema.SObjectType objType = uniqueId.getsobjecttype();
 
         string AccountNumber;
@@ -169,29 +249,6 @@ public class CardLimitResetController {
             loanAPI = api.URL__c;
         }
 
-        if(objType == Account_Details__c.sObjectType){
-
-            if(recordId != null){
-                AccountNumber = [Select id, name from account_details__c where id=: recordId].Name;
-            }
-            else{
-                AccountNumber = AccountNumber = [Select id, name from account_details__c where id=: recordId].Name;
-            }
-
-            system.debug('AccountNumber'+AccountNumber);
-
-        }
-        if(objType == Account.sObjectType){
-            
-            pa =[SELECT id, name,PersonID__c,Account_Number__c,PersonID__r.name,Account_Number__r.name
-                    from Person_Account__c where Account_Type__c = 'ACCT' and PersonID__r.firstname like: firstname
-                    AND PersonID__r.LASTNAME like: lastname limit 1];
-            
-            AccountNumber = pa.Account_Number__r.name;
-            system.debug('AccountNumber - ' + AccountNumber);
-
-        }
-
         //----------------------------------------Checking if they made Card reset request previously------------------------------------//
         
         req.setEndpoint(loanAPI+'/CardLimitReset/GetCardByCardNumber');
@@ -199,7 +256,7 @@ public class CardLimitResetController {
         req.setHeader('Content-Type', 'application/json');
         req.setHeader('Accept', 'application/json');
         req.setTimeout(60000);                    
-        jsonData = '{"accountNumber":' + '\"'+ AccountNumber +'\","cardNumber":' + '\"'+ cardnumber +'\"}';                 
+        jsonData = '{"accountNumber":' + '\"'+ memberNumber +'\","cardNumber":' + '\"'+ cardnumber +'\"}';                 
         req.setBodyAsBlob(Blob.valueof(jsonData));
        
         if(!Test.isRunningTest()){                       
@@ -236,7 +293,7 @@ public class CardLimitResetController {
         }
         system.debug('resultmap'+resultmap);
 		return resultmap;
-
+        
     }
     
     @AuraEnabled
@@ -341,13 +398,13 @@ public class CardLimitResetController {
         }
         if(objType == Account.sObjectType){
             
-            pa =[SELECT id, name,PersonID__c,Account_Number__c,PersonID__r.name 
+            /*pa =[SELECT id, name,PersonID__c,Account_Number__c,PersonID__r.name 
                     from Person_Account__c where PersonID__r.firstname like: firstname
                     AND PersonID__r.LASTNAME like: lastname limit 1];
             
-            system.debug('Member - '+pa.PersonID__c);
+            system.debug('Member - '+pa.PersonID__c);*/
 
-            Account acc = [select id,name,SSN_TIN_Encrypted__pc from Account where id =:pa.PersonID__c limit 1];
+            Account acc = [select id,name,SSN_TIN_Encrypted__pc from Account where id =:recordId limit 1];
             SSN = acc.SSN_TIN_Encrypted__pc;
             //SSN = '123456789';
             system.debug('SSN'+SSN);
@@ -385,9 +442,11 @@ public class CardLimitResetController {
                     string Card = string.valueof(carddetail.get('CardNumber'));
                     temp.CardNumber =  string.valueof(carddetail.get('CardNumber'));
                     temp.CardLocator =   string.valueof(carddetail.get('Locator'));
+                    temp.AccountNumber = string.valueof(carddetail.get('AccountNumber'));
                     resultList.add(temp);  
                     system.debug('temp.CardNumber'+temp.CardNumber);
                     system.debug('temp.CardLocator'+temp.CardLocator);
+                    system.debug('temp.AccountNumber'+temp.AccountNumber);
                     system.debug('resultList'+resultList);
                 }
             } 
@@ -439,8 +498,9 @@ public class CardLimitResetController {
         
         return null;
     }
+    
     @AuraEnabled
-    public static Change_Limit__c Submit(string recordId,string cardnumber,string cardlocator,string membername,string type,string authlimit,string atmlimit){ 
+    public static Change_Limit__c limitSubmit(string recordId,string cardnumber,string cardlocator,string membername,string type,string authlimit,string atmlimit,string accounNumber){ 
         
         system.debug('membername'+membername); 
         system.debug('cardnumber'+cardnumber);
@@ -449,7 +509,8 @@ public class CardLimitResetController {
         system.debug('authlimit'+authlimit); 
         system.debug('atmlimit'+atmlimit); 
         system.debug('recordId'+recordId);
-        
+        system.debug('accounNumber'+accounNumber);
+
         Id uniqueId = recordId;
         Schema.SObjectType objType = uniqueId.getsobjecttype();
 
@@ -628,18 +689,27 @@ public class CardLimitResetController {
         cl.Member_Name__c = membername;
         cl.Member_Account__c = recordId;
         cl.Member__c = pa.PersonID__c;
+        cl.Member_Number__c = accounNumber;
+        cl.case__c = '50019000007AUjyAAG';
 
         insert cl;
-        createCase(cl,cardnumber,type,authlimit,atmlimit,membername);
+        //createCase(cl,cardnumber,type,authlimit,atmlimit,membername);
 
-        return null;    
+        Change_Limit__c CLRecord = [Select id, Auth_POS_Limit__c,name,ATM_Usage_Limit__c, Member_Account__c, Member__c,Card_Number__c, 
+                                    Card_Locator__c,Type__c,Member_Name__c,case__c,Case__r.CaseNumber from 
+                                    Change_Limit__c where id =:cl.id limit 1];
+        
+        return CLRecord;    
     }
+
     public class CardDetailWrapperObject{
 
         @AuraEnabled
         public String CardNumber {get;set;}
         @AuraEnabled
         public string CardLocator {get;set;}
+        @AuraEnabled
+        public string AccountNumber {get;set;}
           
     }    
 }

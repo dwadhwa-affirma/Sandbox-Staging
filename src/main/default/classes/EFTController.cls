@@ -521,10 +521,12 @@ public class EFTController{
 							temp.Type = 'Share';
 
 							map<string, string> resultDate = getTrackingRecordforShare(AccountNumber, ShareId);
+							System.debug('resultDate ....' + resultDate);
 							if (resultDate != null){
-								temp.NextPaymentDueDate = date.valueOf(resultDate.get('UserDate1'));
-								System.debug('UserAmount2 ....' + decimal.valueOf(resultDate.get('Payment')));
-								temp.Payment = decimal.valueOf(resultDate.get('Payment'));
+								if(resultDate.get('UserDate1') != null)
+									temp.NextPaymentDueDate = date.valueOf(resultDate.get('UserDate1'));
+								if(resultDate.get('Payment') != null)
+									temp.Payment = decimal.valueOf(resultDate.get('Payment'));
 							}
 
 							temp.EffectiveDate = date.newinstance(Next3BusinessDay.year(), Next3BusinessDay.month(), Next3BusinessDay.day());
@@ -664,7 +666,9 @@ public class EFTController{
 							//temp.TypeTranslate =  (string)localAcc.get('Description');
 
 							temp.Type = 'Loan';
-							temp.Payment = (decimal)localAcc.get('Payment');
+							temp.Payment = (decimal)localAcc.get('Payment');							
+							temp.Balance = (decimal)localAcc.get('Balance');
+								
 							if ((string)localAcc.get('DueDate') != '')
 								temp.NextPaymentDueDate = Date.ValueOf((string)localAcc.get('DueDate'));
 							temp.Day2 = (integer)localAcc.get('DueDay2');
@@ -674,12 +678,14 @@ public class EFTController{
 							if ((string)localAcc.get('DueDate') != '' && (temp.LoanCode == '0' || temp.LoanCode == '1' || temp.LoanCode == '2'))
 								temp.Day1 = temp.NextPaymentDueDate.Day();
 							temp.EffectiveDate = date.newinstance(Next3BusinessDay.year(), Next3BusinessDay.month(), Next3BusinessDay.day());
-							System.debug('temp.EffectiveDate ....' + temp.EffectiveDate);
+							
 
 							if (temp.EffectiveDate != null && temp.Day1 != null)
 								temp.EFTPaymentDate = getEFTPaymentDate(temp.EffectiveDate, temp.Day1);
 							//(integer)localAcc.get('DueDay1');
 							temp.AlternatePayment = (decimal)localAcc.get('AlternatePayment');
+							temp.UserAmount2 = (decimal)localAcc.get('UserAmount2');
+							System.debug('temp.UserAmount2 ....' + temp.UserAmount2);
 							resultList.add(temp);
 							System.debug('temp ....' + temp);
 						}
@@ -836,8 +842,10 @@ public class EFTController{
 		map<string, id> EFTLocatorsMap = new map<string, id>();
 		set<string> EFTLocatorsset = new set<string>();
 		map<string, decimal> LoanIDPaymentMap = new map<string, decimal>();
-		map<string, decimal> LoanIDAlternatePaymentMap = new map<string, decimal>();
-		map<string, Date> LoanIDNextPaymentDueDateMap = new map<string, Date>();
+    	map<string, decimal> LoanIDAlternatePaymentMap = new map<string, decimal>();
+    	map<string, Date> LoanIDNextPaymentDueDateMap = new map<string, Date>();
+		map<string, decimal> LoanIDUserAmountMap = new map<string, decimal>();
+		map<string, string> LoanIDLoanCodeMap = new map<string, string>();
 		CalculateBusinessDays cbd = new CalculateBusinessDays();
 		Datetime Next3BusinessDay = cbd.AddDays(DateTime.newInstance(System.today(), Time.newInstance(0, 0, 0, 0)), 3);
 
@@ -853,6 +861,8 @@ public class EFTController{
 				LoanIDPaymentMap.put(sl.ShareLoanID.leftPad(4, '0'), sl.Payment);
 				LoanIDNextPaymentDueDateMap.put(sl.ShareLoanID.leftPad(4, '0'), sl.NextPaymentDueDate);
 				LoanIDAlternatePaymentMap.put(sl.ShareLoanID.leftPad(4, '0'), sl.AlternatePayment);
+				LoanIDUserAmountMap.put(sl.ShareLoanID.leftPad(4, '0'), sl.UserAmount2);
+				LoanIDLoanCodeMap.put(sl.ShareLoanID.leftPad(4, '0'), sl.LoanCode);
 			}
 		}
 
@@ -935,16 +945,29 @@ public class EFTController{
 								objEFT.Alternate_Amount__c = decimal.valueOf(resultAmount.get('AlternateAmount'));
 								objEFT.Next_Payment_Due_Date__c = Date.valueOf(resultAmount.get('UserDate1'));
 								if (String.valueOf(localAcc.get('Amount')) != null)
-									objEFT.Existing_Alternate_Amount__c = Decimal.valueOf(String.valueOf(localAcc.get('Amount')));
+									objEFT.Existing_Alternate_Amount__c = decimal.valueOf(resultAmount.get('AlternateAmount'));//Decimal.valueOf(String.valueOf(localAcc.get('Amount')));
 							}
 
 						} else if (arrLoanTypes.contains(lsId) && (string)localAcc.get('IdType') == '1'){
-							// System.debug('Loan ....');
+							string LoanCodetemp = LoanIDLoanCodeMap.get(String.valueOf(localAcc.get('Id')));
+							System.debug('LoanCodetemp ....'+LoanCodetemp);
 							objEFT.EFT_ID_Type__c = 'Loan';
 							objEFT.Payment_Amount__c = LoanIDPaymentMap.get(String.valueOf(localAcc.get('Id')));
 							objEFT.Alternate_Amount__c = Decimal.valueOf(String.valueOf(localAcc.get('Amount')));
 							objEFT.Next_Payment_Due_Date__c = LoanIDNextPaymentDueDateMap.get(String.valueOf(localAcc.get('Id')));
-							objEFT.Existing_Alternate_Amount__c = LoanIDAlternatePaymentMap.get(String.valueOf(localAcc.get('Id')))-LoanIDPaymentMap.get(String.valueOf(localAcc.get('Id')));
+							if(LoanCodetemp == '2'){
+								objEFT.Existing_Alternate_Amount__c = LoanIDUserAmountMap.get(String.valueOf(localAcc.get('Id')));
+							}
+							else{
+								decimal diff = LoanIDAlternatePaymentMap.get(String.valueOf(localAcc.get('Id')))-LoanIDPaymentMap.get(String.valueOf(localAcc.get('Id')));
+								if(diff>=0)
+									objEFT.Existing_Alternate_Amount__c = LoanIDAlternatePaymentMap.get(String.valueOf(localAcc.get('Id')))-LoanIDPaymentMap.get(String.valueOf(localAcc.get('Id')));
+								else {
+									objEFT.Existing_Alternate_Amount__c = LoanIDAlternatePaymentMap.get(String.valueOf(localAcc.get('Id')));
+								}
+							}
+							System.debug('objEFT.Existing_Alternate_Amount__c ....'+objEFT.Existing_Alternate_Amount__c);
+							//objEFT.Existing_Alternate_Amount__c = LoanIDAlternatePaymentMap.get(String.valueOf(localAcc.get('Id')))-LoanIDPaymentMap.get(String.valueOf(localAcc.get('Id')));
 						}
 						string bankname = String.valueOf(localAcc.get('Payee'));
 						System.debug('Payment_Amount__c==' + String.valueOf(localAcc.get('Payment')));
@@ -1054,7 +1077,7 @@ public class EFTController{
 		system.debug('jsonData==' + jsonData);
 		Http httpParam = new Http();
 
-		//requestparam.setTimeout(60000);
+		requestparam.setTimeout(60000);
 		HttpResponse response;
 		String responseBody1;
 		String strStatus, strBody;
@@ -1423,6 +1446,12 @@ public class EFTController{
 
 		@AuraEnabled
 		public boolean isDisabled{ get; set; }
+
+		@AuraEnabled
+		public decimal Balance{ get; set; }
+
+		@AuraEnabled
+		public decimal UserAmount2{ get; set; }
 	}
 
 	public class EFTWrapperObject{

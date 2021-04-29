@@ -848,19 +848,19 @@ public  class Memeber360ViewLightningController {
                            'CreatedDate,' +
                            'Origin,' +
                            'Parent.CaseNumber,' +
-                           'ClosedDate FROM case WHERE Account_Number__c IN (\'' + string.join(accIds,'\',\'') +  '\')  AND Status != \'Closed\' ' + searchquery + ' ' +  orderString;
+                           'ClosedDate FROM case WHERE Account_Number__c IN (\'' + string.join(accIds,'\',\'') +  '\')  AND Status NOT IN (\'Closed\', \'Closed - Privacy request completed\') ' + searchquery + ' ' +  orderString;
         
          
         if(searchquery.length() > 0 && accIds.size() > 0)
         {
             string temp = '%' + SearchText + '%';
-            ARs  = [SELECT Count(id) cnt FROM case Where Account_Number__c IN :accIds AND Status != 'Closed' and (CaseNumber LIKE :  temp or Account_Number__r.Name LIKE :  temp or Account.Name LIKE :  temp or Category__c LIKE :  temp or Subject LIKE :  temp or Origin LIKE :  temp or Account_Number__r.Brand__c LIKE :  temp or Status LIKE :  temp or Owner.Name LIKE :  temp)];
+            ARs  = [SELECT Count(id) cnt FROM case Where Account_Number__c IN :accIds AND Status NOT IN ('Closed', 'Closed - Privacy request completed') and (CaseNumber LIKE :  temp or Account_Number__r.Name LIKE :  temp or Account.Name LIKE :  temp or Category__c LIKE :  temp or Subject LIKE :  temp or Origin LIKE :  temp or Account_Number__r.Brand__c LIKE :  temp or Status LIKE :  temp or Owner.Name LIKE :  temp)];
             if(isDate)
-                ARs  = [SELECT Count(id) cnt FROM case Where Account_Number__c IN :accIds AND Status != 'Closed' and (CaseNumber LIKE :  temp or Account_Number__r.Name LIKE :  temp or Account.Name LIKE :  temp or Category__c LIKE :  temp or Subject LIKE :  temp or Origin LIKE :  temp or Account_Number__r.Brand__c LIKE :  temp or Status LIKE :  temp or Owner.Name LIKE :  temp or (CreatedDate >=: dtStartTime and CreatedDate <=: dtEndTime))];
+                ARs  = [SELECT Count(id) cnt FROM case Where Account_Number__c IN :accIds AND Status NOT IN ('Closed', 'Closed - Privacy request completed') and (CaseNumber LIKE :  temp or Account_Number__r.Name LIKE :  temp or Account.Name LIKE :  temp or Category__c LIKE :  temp or Subject LIKE :  temp or Origin LIKE :  temp or Account_Number__r.Brand__c LIKE :  temp or Status LIKE :  temp or Owner.Name LIKE :  temp or (CreatedDate >=: dtStartTime and CreatedDate <=: dtEndTime))];
         }
         else if(accIds.size() > 0)
         {
-            ARs  = [SELECT Count(id) cnt FROM case Where Account_Number__c IN :accIds AND Status != 'Closed'];
+            ARs  = [SELECT Count(id) cnt FROM case Where Account_Number__c IN :accIds AND Status NOT IN ('Closed', 'Closed - Privacy request completed')];
         }
         else
         {
@@ -888,7 +888,7 @@ public  class Memeber360ViewLightningController {
         				case__r.Account.Name,
         				Account_Name__c, 
         				case__r.Subject, case__r.Origin,case__r.Parent.CaseNumber, case__r.ClosedDate
-        				 from CaseAccountMemberDetail__c where MemberAccountid__c IN : accIds AND case__r.Status != 'Closed'];//and MemberAccountid__c not in: lMemberIds
+        				 from CaseAccountMemberDetail__c where MemberAccountid__c IN : accIds AND case__r.Status NOT IN ('Closed', 'Closed - Privacy request completed')];//and MemberAccountid__c not in: lMemberIds
           system.debug('camd=='+camd);	
           
        	 
@@ -1202,18 +1202,18 @@ public  class Memeber360ViewLightningController {
                            'CreatedDate,' +
                            'Origin,' +
                            'Parent.CaseNumber,' +
-                           'ClosedDate FROM case WHERE Account_Number__c IN (\'' + string.join(accIds,'\',\'') +  '\') AND Status = \'Closed\' ' + searchquery + ' ' +  orderString;
+                           'ClosedDate FROM case WHERE Account_Number__c IN (\'' + string.join(accIds,'\',\'') +  '\') AND Status IN (\'Closed\', \'Closed - Privacy request completed\') ' + searchquery + ' ' +  orderString;
         
         if(searchquery.length() > 0)
         {
             string temp = '%' + SearchText + '%';
-            ARs  = [SELECT Count(id) cnt FROM case Where Account_Number__c IN :accIds AND Status = 'Closed' and (CaseNumber LIKE :  temp or Account_Number__r.Name LIKE :  temp or Account.Name LIKE :  temp or Category__c LIKE :  temp or Subject LIKE :  temp or Origin LIKE :  temp or Account_Number__r.Brand__c LIKE :  temp or Status LIKE :  temp or Owner.Name LIKE :  temp)];
+            ARs  = [SELECT Count(id) cnt FROM case Where Account_Number__c IN :accIds AND Status IN ('Closed', 'Closed - Privacy request completed') and (CaseNumber LIKE :  temp or Account_Number__r.Name LIKE :  temp or Account.Name LIKE :  temp or Category__c LIKE :  temp or Subject LIKE :  temp or Origin LIKE :  temp or Account_Number__r.Brand__c LIKE :  temp or Status LIKE :  temp or Owner.Name LIKE :  temp)];
             if(isDate)
-                ARs  = [SELECT Count(id) cnt FROM case Where Account_Number__c IN :accIds AND Status = 'Closed' and (CaseNumber LIKE :  temp or Account_Number__r.Name LIKE :  temp or Account.Name LIKE :  temp or Category__c LIKE :  temp or Subject LIKE :  temp or Origin LIKE :  temp or Account_Number__r.Brand__c LIKE :  temp or Status LIKE :  temp or Owner.Name LIKE :  temp or (CreatedDate >=: dtStartTime and CreatedDate <=: dtEndTime) or (ClosedDate >=: dtStartTime and ClosedDate <=: dtEndTime))];
+                ARs  = [SELECT Count(id) cnt FROM case Where Account_Number__c IN :accIds AND Status IN ('Closed', 'Closed - Privacy request completed') and (CaseNumber LIKE :  temp or Account_Number__r.Name LIKE :  temp or Account.Name LIKE :  temp or Category__c LIKE :  temp or Subject LIKE :  temp or Origin LIKE :  temp or Account_Number__r.Brand__c LIKE :  temp or Status LIKE :  temp or Owner.Name LIKE :  temp or (CreatedDate >=: dtStartTime and CreatedDate <=: dtEndTime) or (ClosedDate >=: dtStartTime and ClosedDate <=: dtEndTime))];
         }
         else
         {
-            ARs  = [SELECT Count(id) cnt FROM case Where Account_Number__c IN :accIds AND Status = 'Closed'];
+            ARs  = [SELECT Count(id) cnt FROM case Where Account_Number__c IN :accIds AND Status IN ('Closed', 'Closed - Privacy request completed')];
         }
         
         
@@ -1230,7 +1230,7 @@ public  class Memeber360ViewLightningController {
         				case__r.Account.Name,
         				Account_Name__c, 
         				case__r.Subject, case__r.Origin,case__r.Parent.CaseNumber, case__r.ClosedDate
-        				 from CaseAccountMemberDetail__c where MemberAccountid__c IN : accIds AND case__r.Status = 'Closed'];//and MemberAccountid__c not in: lMemberIds
+        				 from CaseAccountMemberDetail__c where MemberAccountid__c IN : accIds AND case__r.Status IN ('Closed', 'Closed - Privacy request completed')];//and MemberAccountid__c not in: lMemberIds
           system.debug('camd=='+camd);				 
         
          map<id, string> caseAccountmap = new map<id, string>();
@@ -1500,15 +1500,15 @@ public  class Memeber360ViewLightningController {
         if(SearchText.length() > 0)
         {
             string temp = '%' + SearchText + '%';
-            lstAllCases = [Select ParentId from CaseComment where ParentId in (select Id from Case where Account_Number__c IN : accIds And Status != 'Closed' AND (CaseNumber LIKE : temp OR Account_Number__r.Name LIKE :temp OR Account.Name LIKE : temp or Category__c LIKE : temp OR Status LIKE : temp)) group by ParentId];
+            lstAllCases = [Select ParentId from CaseComment where ParentId in (select Id from Case where Account_Number__c IN : accIds And Status NOT IN ('Closed', 'Closed - Privacy request completed') AND (CaseNumber LIKE : temp OR Account_Number__r.Name LIKE :temp OR Account.Name LIKE : temp or Category__c LIKE : temp OR Status LIKE : temp)) group by ParentId];
             if(lstAllCases.size() == 0)
             {
-                lstAllCases = [Select ParentId from CaseComment where ParentId in (select Id from Case where Account_Number__c IN : accIds And Status != 'Closed') AND CommentBody LIKE:temp group by ParentId];
+                lstAllCases = [Select ParentId from CaseComment where ParentId in (select Id from Case where Account_Number__c IN : accIds And Status NOT IN ('Closed', 'Closed - Privacy request completed')) AND CommentBody LIKE:temp group by ParentId];
             }
         }
         else
         {
-            lstAllCases = [Select ParentId from CaseComment where ParentId in (select Id from Case where Account_Number__c IN : accIds And Status != 'Closed') group by ParentId];
+            lstAllCases = [Select ParentId from CaseComment where ParentId in (select Id from Case where Account_Number__c IN : accIds And Status NOT IN ('Closed', 'Closed - Privacy request completed')) group by ParentId];
         }
         
         Integer TotalRecords = lstAllCases.size();
@@ -1639,11 +1639,11 @@ public  class Memeber360ViewLightningController {
         if(SearchText.length() > 0)
         {
             string temp = '%' + SearchText + '%';
-            lstAllCases = [Select WhatId from Task where What.Type='Case' AND WhatId in (select Id from Case where Account_Number__c IN : accIds And Status != 'Closed' AND (CaseNumber LIKE : temp OR Account_Number__r.Name LIKE :temp OR Account.Name LIKE : temp or Category__c LIKE : temp OR Status LIKE : temp)) group by WhatId];
+            lstAllCases = [Select WhatId from Task where What.Type='Case' AND WhatId in (select Id from Case where Account_Number__c IN : accIds And Status NOT IN ('Closed', 'Closed - Privacy request completed') AND (CaseNumber LIKE : temp OR Account_Number__r.Name LIKE :temp OR Account.Name LIKE : temp or Category__c LIKE : temp OR Status LIKE : temp)) group by WhatId];
         }
         else
         {
-            lstAllCases = [Select WhatId from Task where What.Type='Case' AND WhatId in (select Id from Case where Account_Number__c IN : accIds And Status != 'Closed') group by WhatId];
+            lstAllCases = [Select WhatId from Task where What.Type='Case' AND WhatId in (select Id from Case where Account_Number__c IN : accIds And Status NOT IN ('Closed', 'Closed - Privacy request completed')) group by WhatId];
         }
         
         Integer TotalRecords = lstAllCases.size();

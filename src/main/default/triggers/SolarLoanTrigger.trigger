@@ -122,6 +122,12 @@ trigger SolarLoanTrigger on Solar_Loans__c (after insert,before insert, after up
 			if(trigger.new[i].Routing_Number__c != trigger.old[i].Routing_Number__c && trigger.new[i].Routing_Number__c != null && trigger.new[i].Status__c == 'Completed'){
     			trigger.new[i].Review_needed__c = true;
     		}
+
+            //------------------------------- Updating "SignatureCardURL to null if the Checkbox called "Signed" is false---------//
+            
+            if(trigger.old[i].Signed__c == true && trigger.new[i].Signed__c == false){
+                trigger.new[i].SignatureCardURL__c = '';
+            }
     		
     	    //----------------------------- Start - Updating DocuSign Document Status -----------------------------------//
             
@@ -165,6 +171,10 @@ trigger SolarLoanTrigger on Solar_Loans__c (after insert,before insert, after up
             
             if(trigger.old[i].Status__c != 'ACH Pending' && trigger.new[i].Status__c == 'ACH Pending'){
                 SLIds.add(trigger.new[i].id);
+            }
+            
+            if(trigger.old[i].SignatureCardURL__c == null && trigger.new[i].SignatureCardURL__c != null){
+                SolarLoanToSignCard.SetCustomFieldTrue();
             }
             
             //------------------------------- Checking if the status is being changed and status = 'Completed'-----------------//

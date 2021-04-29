@@ -1,0 +1,88 @@
+.THIS#stage2p5 {width:70%; font-size:.8125rem; margin:0 auto;height: 600px !important;}
+
+.THIS#stage2p5 .stage2p5{width:100% !important; font-size:.8125rem; margin:0 auto;height: 600px !important;}
+
+.THIS#stage2p5 .slds-form-element__label{width:120px;max-width:unset;}
+
+.THIS#stage2p5 .fontstyle{word-break:break-word;}
+.THIS#stage2p5 .pfontstyle{word-break:break-word;font-size: 1.5rem !important;color: #0e70d6;
+    font-weight: bold;
+    margin-top: 2%;
+    text-align: left !important;margin-bottom:30px;}
+
+
+.THIS#stage2p5 .firstcol{border-right: 1px solid #777; margin-right: 1rem; padding-top:1rem;width: 60% !important;height:600px !important;overflow-y: auto !important;}
+.THIS#stage2p5 .secondcol{padding-top:1rem;}
+.THIS#stage2p5 .centerPara{text-align: center;font-size: 1rem;}
+.THIS#stage2p5 .customRadioCls .slds-form-element__control .slds-radio{
+    display : inline-block !important;
+}
+.THIS#stage2p5 .typedisabled .slds-grow{
+    padding-left: 0px !important; 
+}
+
+.THIS#stage2p5 .fundingtbl{
+    line-height: 25px !important;
+}
+
+.THIS#stage2p5 .slds-textarea{
+    /* height:50px !important; */
+    line-height: 1.1rem;
+    padding-top: 5px;
+}
+
+.THIS#stage2p5 .customRadioCls .slds-form-element__control .slds-radio{
+    display : inline-block !important;
+    width: 70px !important;
+    text-align: right !important;
+    margin-top: 10px;
+}
+
+.THIS#stage2p5 .customRadioCls .slds-form-element__control{
+    clear : none !important;
+}
+
+.THIS#stage2p5 .customRadioCls .slds-form-element__label{
+    width: 60% !important;
+    font-size: .8125rem;
+    font-weight: normal;
+    color: black !important;
+}
+
+.THIS#stage2p5 .questionstd{
+    padding-top: 7px !important;
+}
+
+.THIS#stage2p5 .note{
+    color: red;
+}
+
+.THIS#stage2p5 .inputnolabel{
+    margin-top: 7px;
+}
+
+.THIS#stage2p5 .spanstyle{
+    float: right;
+    margin-top: 1%;
+}
+
+.THIS#stage2p5 .notestyle{
+    margin-top: 10%;
+    text-align: center;
+    display: block;
+    width: 520px;
+}
+@media (max-width:1250px){
+    .THIS#stage2p5 {width:90%;}
+}
+@media (max-width:600px){
+    .THIS#stage2p5 {width:100%;}
+}
+@media (max-width:767px){
+    .THIS#stage2p5 .slds-form-element__label{float:left;}
+	.THIS#stage2p5 .slds-form-element_horizontal .slds-form-element__control{clear:none;}
+}
+@media (max-width:480px){
+    .THIS#stage2p5 .slds-form-element__label{clear:both;}
+	.THIS#stage2p5 .slds-form-element_horizontal .slds-form-element__control{clear:both; padding-left:0;}
+}

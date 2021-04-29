@@ -39,6 +39,8 @@
 <aura:attribute name="ErrorMessage" type="String" />
 <aura:attribute name="isBackButtonDisabled" type="Boolean" default="false" />
 <aura:attribute name="isDisabledforDocusign" type="Boolean" default="false"/> 
+<aura:attribute name="isMemberRadioClicked" type="Boolean"  default="false"/>
+<aura:attribute name="IsFirstAdditionalNull" type="Boolean" default="false" />
 
 <lightning:navigation aura:id="navService"/>
     
@@ -79,7 +81,7 @@
  <aura:if isTrue="{!and(v.ActiveStepIndex != 4,v.ActiveStepIndex != 5)}">
             <lightning:button aura:id="Exit" label="Exit" title="Exit" onclick="{!c.cancelAction}"/>
             <lightning:button variant="brand" label="Back" disabled="{!(and(v.ActiveStepIndex == (0),v.isMemberSelected == false) ? true : false)}" title="Back" onclick="{!c.back}"/> 
-            <lightning:button variant="brand" label="{!v.ContinueButtonName}" title="Continue" onclick="{!c.Continue}" disabled="{!v.isErrorStage1}"/>
+            <lightning:button variant="brand" label="{!v.ContinueButtonName}" title="Continue" onclick="{!c.Continue}" disabled="{!(or(v.isErrorStage1, not(v.isMemberRadioClicked)))}" aura:id="btnContinue"/>
       	<!--	<aura:renderIf isTrue="{!v.isSigninPersonEnabled}">		
      			<lightning:button variant="brand" label="Sign In Person" title="Sign In Person" onclick="{!c.OpenInPersonSigning}" name='signinperson'/>
      </aura:renderIf>-->
