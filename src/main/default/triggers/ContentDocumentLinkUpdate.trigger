@@ -88,7 +88,18 @@ trigger ContentDocumentLinkUpdate on ContentDocumentLink(after update, after del
 				system.debug(solarLoanObj.Name);
 				solarLoanObj.Member_Number__c = sl.get(c.LinkedEntityId).Member_Number__c;
 				solarLoanObj.IsMovedToOnBase__c = false;
-				solarLoanObj.Document_Type__c = 'Solar Loan';
+				
+                If(Title.contains('Member Application') || Title.contains('Membership Application'))
+	            	solarLoanObj.Document_Type__c = 'Signature Cards';
+                else If(Title.contains('Government ID'))
+                    solarLoanObj.Document_Type__c = 'Member Identification Documents';
+				else If(Title.contains('CCHS Application'))
+					solarLoanObj.Document_Type__c = 'Account Verification Documents';
+				else If(Title.contains('ACHDirectPayment'))
+					solarLoanObj.Document_Type__c = 'Solar Secured Loans';
+				else
+					solarLoanObj.Document_Type__c = 'Solar Loan';
+				
 				solarLoanObj.Document_Name__c = cs.get(c.ContentDocumentId).title;
 				solarLoanObj.Solar_Loans__c = c.LinkedEntityId;
 				solarLoanObj.Attachment_Owner__c = cs.get(c.ContentDocumentId).OwnerId;
