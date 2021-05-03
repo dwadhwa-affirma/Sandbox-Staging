@@ -33,6 +33,7 @@
                  }
             	 component.set('v.ischk6',true);
                  component.set('v.ischk7',true);
+                 component.set('v.ischk8',true);
             	
              }
             	
