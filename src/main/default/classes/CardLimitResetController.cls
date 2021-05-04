@@ -567,19 +567,19 @@ public class CardLimitResetController {
             lastname= '%'+Names[Names.size()-1] +'%';
         }
         
-        string AccountNumber;
+        string AccountNumber = accounNumber;
         Person_Account__c pa;
 
         if(objType == Account_Details__c.sObjectType){
 
-            if(recordId != null){
+            /*if(recordId != null){
                 AccountNumber = [Select id, name from account_details__c where id=: recordId].Name;
             }
             else{
                 AccountNumber = AccountNumber = [Select id, name from account_details__c where id=: recordId].Name;
             }          
             
-            system.debug('AccountNumber'+AccountNumber);
+            system.debug('AccountNumber'+AccountNumber); */
 
             pa =[SELECT id, name,PersonID__c,Account_Number__c,PersonID__r.name 
                     from Person_Account__c where PersonID__r.firstname like: firstname
@@ -593,7 +593,7 @@ public class CardLimitResetController {
         
         if(objType == Account.sObjectType){
             
-            pa =[SELECT id, name,PersonID__c,Account_Number__c,PersonID__r.name 
+            /*pa =[SELECT id, name,PersonID__c,Account_Number__c,PersonID__r.name 
                     from Person_Account__c where PersonID__r.firstname like: firstname
                     AND PersonID__r.LASTNAME like: lastname limit 1];
             
@@ -626,7 +626,7 @@ public class CardLimitResetController {
             AccountNumber = String.valueOf(AccountNumber).substringBefore('",');
             System.debug('Member Number' + AccountNumber);
             Account_Details__c ad = [select id, Name, Brand__c, ID1__c, TypeTranslate__c,RecType__c from Account_Details__c where Name =:AccountNumber Limit 1];
-            recordId = ad.id;
+            recordId = ad.id;*/
         }
 
         system.debug('recordId'+recordId);
@@ -693,10 +693,10 @@ public class CardLimitResetController {
         cl.Member_Account__c = recordId;
         cl.Member__c = pa.PersonID__c;
         cl.Member_Number__c = accounNumber;
-        cl.case__c = '50019000007AUjyAAG';
+        //cl.case__c = '50019000007AUjyAAG';
 
         insert cl;
-        //createCase(cl,cardnumber,type,authlimit,atmlimit,membername);
+        createCase(cl,cardnumber,type,authlimit,atmlimit,membername);
 
         Change_Limit__c CLRecord = [Select id, Auth_POS_Limit__c,name,ATM_Usage_Limit__c, Member_Account__c, Member__c,Card_Number__c, 
                                     Card_Locator__c,Type__c,Member_Name__c,case__c,Case__r.CaseNumber from 
