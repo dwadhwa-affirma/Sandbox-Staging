@@ -125,10 +125,8 @@ trigger AttachmentNameUpdate on Attachment (after update,after delete,after inse
                     solarLoanObj.Document_Type__c = 'Member Identification Documents';
                 else If(a.name.contains('CCHS Application'))
                     solarLoanObj.Document_Type__c = 'Account Verification Documents';
-                else If(a.name.contains('ACHDirectPayment'))
-                    solarLoanObj.Document_Type__c = 'Solar Secured Loans';
                 else
-                    solarLoanObj.Document_Type__c = 'Solar Loan';
+                    solarLoanObj.Document_Type__c = 'Solar Secured Loans';
 
 	            solarLoanObj.Document_Name__c =a.name;
                 solarLoanObj.Solar_Loans__c = a.ParentId;
