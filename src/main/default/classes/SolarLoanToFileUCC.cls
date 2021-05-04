@@ -232,7 +232,7 @@ public class SolarLoanToFileUCC {
             if(sl.Primary_Middle_Initial__c != null)
                 DebtorMiddleName = sl.Primary_Middle_Initial__c;
             else 
-                DebtorMiddleName = ' ';
+                DebtorMiddleName = '';
 
             if(sl.mem_Primary_Street__c != null)
                 DebtorStreetAddress = sl.mem_Primary_Street__c;
@@ -266,7 +266,7 @@ public class SolarLoanToFileUCC {
             if(sl.Joint_Middle_Initial__c != null)
                 JointMiddleName = sl.Joint_Middle_Initial__c;
             else 
-                JointMiddleName = ' ';
+                JointMiddleName = '';
 
             if(sl.mem_Joint_City__c != null)
                 JointCity = sl.mem_Joint_City__c;
