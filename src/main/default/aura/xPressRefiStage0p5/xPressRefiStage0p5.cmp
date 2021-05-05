@@ -5,6 +5,8 @@
     <aura:attribute name="xPressRefiRecordList" type="List" />
     <aura:attribute name="xPressRefiRecord" type="xPressRefi__c" />
     <aura:registerEvent name="xPressRefiEvent" type="c:xPressRefiEvent" />
+    <aura:handler name="init" action="{!c.doInit}" value="{!this}" access="global" />
+    <aura:attribute name="xRefiEligibleLoanIds" type="set" />
 
     <div id="stage0" class="stage0">
         <div>
@@ -99,7 +101,7 @@
                                 <div class="slds-radio">
                                     <span class="slds-radio">
                                         <lightning:input type="radio" name="select" value="{!itemOption.LoanId__c}"
-                                            onchange="{!c.onAccountSelect}" />
+                                            onchange="{!c.onAccountSelect}" disabled="{!itemOption.disabled}"/>
                                     </span>
                                 </div>
                             </td>
@@ -130,6 +132,11 @@
                                 <div class="slds-truncate" >{!itemOption.Property__c} {!itemOption.Property_City__c} {!itemOption.Property_State__c}, {!itemOption.Property_Zip__c}
                                 </div>
                             </td>
+                            
+                                <td class="{!itemOption.disabled ? 'slds-text-align_left' : 'slds-text-align_left hidden'}" role="gridcell" style="color:red;">
+                                    <div class="slds-truncate" title="{!itemOption.Warning}">{!itemOption.warning}</div>
+                                  </td>
+                                                    
                         </tr>                        
                             
 

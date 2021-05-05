@@ -4,6 +4,10 @@
   margin: 0 auto;
 }
 
+.THIS#stage0 .hidden{
+    display:none;
+}
+
 .THIS#stage0 .stage0 {
   width: 100% !important;
   font-size: 0.8125rem;
