@@ -29,6 +29,7 @@
                   cols="50" class="textarea" />
               </td>              
             </tr>
+            <tr><td><p class=""><b>Question to ask the member:</b></p></td></tr>
             <tr>
                 <td class="questionstd">
                   <lightning:radioGroup name="vestingInfoChanged" 
@@ -41,6 +42,7 @@
                             required="true"/>
                 </td>
               </tr> 
+              <tr><td style="padding-top: 50px;"><p style="width: 95%;"><b>RM/LO validates vesting information above does not contain Trust lagguage. If so - select "Yes"</b></p></td></tr>
               <tr>
                 <td class="questionstd">
                   <lightning:radioGroup name="vestingInfoTrust" 

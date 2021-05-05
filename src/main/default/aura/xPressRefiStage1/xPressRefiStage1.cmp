@@ -47,9 +47,10 @@
             </div>
             <div class="slds-col secondcol">
                 <p class="pfontstyle">Primary Residence Verification</p><br></br>
-                <p class="">The Property and Membership addresses are not identical. Please perform a visual comparison to determine if they both describe the same address</p>
+                <p class="">If the Property and Membership addresses are not identical. Please perform a visual comparison to determine if they both describe the same address</p>
                 <br></br>
                 <br></br>
+                <p class=""><b>Question to ask the member:</b></p>
                 <p class="">Is this loan your primary residence?</p><!-- Do the 2 displayed addresses describe the same location -->
                 <table aria-multiselectable="true"
                             class="slds-table slds-table_header-hidden slds-table_edit slds-tree slds-table_tree"
@@ -80,9 +81,10 @@
                                     </td>
                                 </tr>                                
                             </tbody>
-                        </table>
+                </table>
+                <p style="margin-top:10%;"><sup>*</sup>If "no" and/or in the event the members property address do not match; the application regardless of product will be created and submitted in Mortgage Cadence for review.</p>
             </div>
         </div>
     </div>
     <lightning:spinner aura:id="Spinner" alternativeText="Loading" size="medium" variant="brand" class="slds-hide spin"/>
-</aura:component>	
+</aura:component>
