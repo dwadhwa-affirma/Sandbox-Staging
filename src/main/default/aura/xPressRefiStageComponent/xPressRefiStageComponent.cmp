@@ -18,7 +18,9 @@
                 'Property__c': ''}" />
     <aura:attribute name="MembershipAddressDetails" type="Map" default="{ MembershipAddress1: '', MembershipAddress2: '', MembershipCity : '', MembershipState : '', MembershipZip : '' }" />
     <aura:attribute name="PendingXpressRefiAccountId" type="set" />
-
+    <aura:attribute name="xRefiEligibleLoanIds" type="set" />
+    
+	<lightning:overlayLibrary aura:id="overlayLib"/>
     <header class="slds-media_center slds-has-flexi-truncate slds-modal__header">
         <button
             class="slds-button slds-button_icon slds-modal__close closeIcon slds-button_icon-bare slds-button_icon-inverse"

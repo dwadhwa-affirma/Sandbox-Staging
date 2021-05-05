@@ -1,3 +1,259 @@
-<aura:component >
-	
+<aura:component implements="flexipage:availableForAllPageTypes,force:appHostable,force:hasRecordId,force:hasSObjectName,force:lightningQuickActionWithoutHeader,lightning:actionOverride" controller="MemberInfoController">
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}"></aura:handler>
+    <aura:attribute name="Level" type="string" description="" />
+    <aura:attribute name="IsOppAvailable" type="Boolean"/>
+    <aura:attribute name="Promocode" type="String"/>
+    <aura:attribute name="SurveyScore" type="Object"/>
+    <aura:attribute name="FraudWarnings" type="Object"/>
+    <aura:attribute name="IsThereCases" type="boolean" description="Check if there is Case or not" />
+    <aura:attribute name="tabIndex" type="integer" description="Check if there is Case or not" /> 
+    <aura:attribute name="Reason" type="String"/>
+    
+    <aura:attribute name="ShowData" type="string" />
+    <aura:attribute name="Memberisunder18" type="string" />
+    <aura:attribute name="Memberisnotprimary" type="string" />
+    <aura:attribute name="Memberhaspartiallycompleted" type="string" />
+    <aura:attribute name="MemberAssessmentHasCompleted" type="string" />
+    
+    <aura:attribute name="AMemberAssessmentisdue" type="string" />
+    <aura:attribute name="MemberRefreshNeeded" type="string" />
+    <aura:attribute name="MemberOptOut" type="string" />
+    
+    <aura:attribute name="Opt_Out_Date" type="String" />
+    
+    <aura:attribute name="Highpotentialflag" type="string" />
+    <aura:attribute name="Highvalueflag" type="string" />
+    
+    <aura:attribute name="ShowOTPInvalidAttempt" type="string" />
+    <aura:attribute name="OTPNextAttemptValidAfterHours" type="string" />
+    <aura:attribute name="IsShowOTPButton" type="string" />
+    <aura:attribute name="RecordTypeName" type="string" />
+    
+    <aura:attribute name="EStatements" type="string" />
+    <aura:attribute name="DirectDeposit" type="string" />
+    
+    <aura:handler event="c:MemberInfoEvent" action="{!c.getValueFromApplicationEvent}"/>
+    
+    
+    <aura:registerEvent name="loadMyEvent" type="c:MemberSnapshotEvent"/>
+    <lightning:navigation aura:id="navigate" />
+    <lightning:overlayLibrary aura:id="overlayLib"/>
+    
+    <aura:html tag="style">
+        
+        <aura:if isTrue="{!v.IsOppAvailable}">
+            .memberwrap .slds-tabs_default__nav li[title="Opportunity"],
+            .memberwrap .slds-tabs--default__nav li[title="Opportunity"]{
+            background-color: #EDB547 !important;
+            color: #fff;
+            }
+        </aura:if> 
+        
+        <aura:if isTrue="{! (v.RecordTypeName != 'Pre Member')}">
+            
+            <aura:if isTrue="{!(v.ShowData == 'true')}">                                     
+                <aura:if isTrue="{!(and(v.Memberhaspartiallycompleted == 'true', v.MemberRefreshNeeded == 'false'))}">
+                    .memberwrap .slds-tabs_default__nav li[title="Member Connect"],
+                    .memberwrap .slds-tabs--default__nav li[title="Member Connect"]{
+                    background-color: #EDB547 !important;
+                    color: #fff;
+                    }
+                </aura:if>
+                <aura:if isTrue="{!(and(v.AMemberAssessmentisdue == 'true', v.MemberRefreshNeeded == 'false'))}">
+                    .memberwrap .slds-tabs_default__nav li[title="Member Connect"],
+                    .memberwrap .slds-tabs--default__nav li[title="Member Connect"]{
+                    background-color:  #ff6666 !important;
+                    color: #fff;
+                    }
+                </aura:if>
+                
+                 <aura:if isTrue="{!(and(v.MemberAssessmentHasCompleted == 'true', v.MemberRefreshNeeded == 'false'))}">
+                    .memberwrap .slds-tabs_default__nav li[title="Member Connect"],
+                    .memberwrap .slds-tabs--default__nav li[title="Member Connect"]{
+                    background-color:  #00ad53 !important;
+                    color: #fff;
+                    }
+                </aura:if>
+                
+                
+                
+            </aura:if> 
+        </aura:if>
+        
+    </aura:html>
+    
+    <div class="snapwrap">
+        <div class="slds-grid slds-gutters">
+            <div class="slds-col">
+                <h1 class="snaptitle">Member Snapshot</h1>
+            </div>
+            <div class="slds-col">
+                <div class="groupbtn-parent stagebar">		       
+                    <div style="margin-left: auto;">
+                        
+                        <lightning:button variant="brand" label="Create Case" onclick="{!c.handleCreateCase}" />
+                        <lightning:button variant="brand" label="Create Opportunity" onclick="{!c.handleCreateOpportunity}" />
+                        <lightning:button variant="brand" label="Account Services" onclick="{!c.handleAccountServices}"/>
+                        
+                        <lightning:spinner aura:id="Spinner" alternativeText="Loading" size="medium" variant="brand" class="slds-hide spin"/>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="slds-grid slds-gutters">
+            <div class="slds-col">
+                <table class="snaptbl">                    
+                    <!-- <tr>
+                        <td>Member Connect</td>
+                        <td>
+                            <aura:if isTrue="{! (v.RecordTypeName != 'Pre Member')}">
+                                <aura:if isTrue="{!(v.ShowData == 'true')}">                                     
+                                    <span>&nbsp;</span>
+                                    <aura:if isTrue="{!(v.MemberOptOut == 'true')}">
+                                        Opted Out&nbsp;&nbsp;<ui:outputDate value="{!v.Opt_Out_Date}"></ui:outputDate>
+                                    </aura:if>
+                                    <aura:if isTrue="{!(v.Memberisunder18 == 'true')}">
+                                        Not eligible         					
+                                    </aura:if>
+                                    <aura:if isTrue="{! (v.Memberisnotprimary == 'true')}">
+                                        Not eligible
+                                    </aura:if>
+                                    <aura:if isTrue="{!(and(v.Memberhaspartiallycompleted == 'true', v.MemberRefreshNeeded == 'false'))}">
+                                        Partial
+                                    </aura:if>
+                                    <aura:if isTrue="{!(and(v.AMemberAssessmentisdue == 'true', v.MemberRefreshNeeded == 'false'))}">
+                                        Due
+                                    </aura:if>
+                                    
+                                    
+                                    <aura:set attribute="else">
+                                        <span>&nbsp;</span>
+                                        Not eligible 
+                                    </aura:set>
+                                </aura:if> 
+                            </aura:if>
+                        </td>
+                    </tr> --> 
+                    <tr>
+                        <td>
+                            <aura:if isTrue="{!not(empty(v.FraudWarnings))}">
+                                <aura:set attribute="else">
+                                    Fraud Warning
+                                </aura:set>
+                                <a onclick="{!c.handleFraudWarningClick}">Fraud Warning</a>
+                            </aura:if>     
+                            
+                        </td>
+                        <td>
+                            <aura:if isTrue="{!not(empty(v.FraudWarnings))}">
+                                <aura:set attribute="else">
+                                    <span>&nbsp;</span>Unavailable
+                                </aura:set>
+                                <span>&nbsp;</span>
+                                <span class="yellow">
+                                    <lightning:icon iconName="utility:warning" alternativeText="Fraud Warnings" title="Fraud Warnings" />
+                                </span>
+                            </aura:if>                        
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <aura:if isTrue="{!v.IsThereCases}">
+                                <a onclick="{!c.handleActiveCasesClick}">Active Cases</a>
+                                <aura:set attribute="else">
+                                    Active Cases
+                                </aura:set>
+                            </aura:if>
+                        </td>
+                        <td><span>&nbsp;</span>
+                            <aura:if isTrue="{!v.IsThereCases}">
+                                Available
+                                <aura:set attribute="else">
+                                    Unavailable
+                                </aura:set>
+                            </aura:if>
+                        </td>
+                    </tr>                
+                    
+                    <tr>
+                        <td>
+                           EStatements 
+                        </td>
+                        <td><span>&nbsp;</span>
+                           {!v.EStatements}
+                        </td>
+                    </tr>                
+                    
+                     <tr>
+                        <td>
+                           Direct Deposit  
+                        </td>
+                        <td><span>&nbsp;</span>
+                             {!v.DirectDeposit}
+                        </td>
+                    </tr>      
+                    
+                </table>
+            </div>
+            
+            
+            <div class="slds-col">
+                <table class="snaptbl">
+                    <tr>
+                        <td>NPS / Survey Score</td>                  
+                        <td>
+                            <aura:if isTrue="{!not(empty(v.SurveyScore.MaritzCX__Key_Metric_1_Bar__c))}">
+                                <aura:set attribute="else">
+                                    <span>&nbsp;</span>Unavailable
+                                </aura:set>
+                                <span class="green"><lightning:icon iconName="utility:like" alternativeText="favorite" title="favorite" /></span><a onclick="{!c.handleSurveyScoreClick}">{!v.SurveyScore.MaritzCX__Key_Metric_1_Bar__c}</a>
+                            </aura:if>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Promo Codes</td>
+                        <td>
+                            <aura:if isTrue="{!not(empty(v.Promocode))}">
+                                <aura:set attribute="else">
+                                    <span>&nbsp;</span>Unavailable
+                                </aura:set>
+                                {!v.Promocode}
+                            </aura:if>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Segmentation</td>
+                        <td></td>
+                    </tr>
+                </table>
+            </div>
+            
+            <div class="slds-col">
+                <table class="snaptbl">
+                    <tr>
+                        <td>MAAP Level Achieved</td>
+                        <td><span>&nbsp;</span>{!v.Level}</td>
+                    </tr>
+                    
+                    <tr>
+                        <td>Reason</td>
+                        <td> 
+                            <span>&nbsp;</span>
+                            <aura:if isTrue="{!not(empty(v.Reason))}">
+                                {!v.Reason}
+                                <aura:set attribute="else">
+                                    Unknown
+                                </aura:set>
+                            </aura:if>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Last Activity</td>
+                        <td></td>
+                    </tr>
+                </table>
+            </div>
+            
+        </div>
+    </div>
 </aura:component>

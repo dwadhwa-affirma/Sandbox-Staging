@@ -3,6 +3,7 @@
     
     
     getAccountServiceMenuData : function(component) {
+        
         debugger;
         var action = component.get("c.getAccountServiceMenuData");
         var recordId = component.get("v.recordId");	
@@ -21,7 +22,7 @@
                 var userstatusxpressrefi = res['UserStatusXpressRefi'];
                 
                 var menuIcons = res['MenuIcons'];
-                debugger;
+              
                 component.set("v.MenuIcons",menuIcons);
                 console.log(menuIcons);
                 component.set("v.IsUserInGroup",userstatus);

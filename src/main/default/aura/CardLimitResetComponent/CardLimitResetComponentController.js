@@ -56,6 +56,7 @@
     cancelAction: function(component, event, helper) {
        	component.set("v.isExit", true);
     	$A.get("e.force:closeQuickAction").fire();
+        component.find("overlayLib").notifyClose();
 	},
     
     Continue: function (component, event, helper) {

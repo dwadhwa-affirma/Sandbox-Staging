@@ -20,6 +20,8 @@
         var stageComponenttoLoad, isError;
         var isMultipleMortgages;
         component.set("v.xPressRefiStageDetails", Stages);
+        component.set("v.xRefiEligibleLoanIds", result.xRefiEligibleLoanIds);
+        
 
         if (
           result.IsXpressRefiPending &&
@@ -40,16 +42,16 @@
           component.set("v.errorMessage", "No Active Mortgages Exist");
           component.set("v.isContinueDisabled", true);
           isError = true;
-        } else if (!isError && !isABTQualified) {
+        } else if (isABTQualified != undefined && !isError && !isABTQualified) {
           component.set("v.isError", true);
           var errormessage = result.NotABTQualifiedMessage;
           component.set("v.errorMessage", errormessage);
           component.set("v.isContinueDisabled", true);
           isError = true;
-        } else if (!isError && !isFullAddressMatch) {
+        } else if (isFullAddressMatch != undefined && !isError && !isFullAddressMatch) {
           stageComponenttoLoad = Stages[1].Stage_Component__c;
           isError = false;
-        } else if (!isError && isFullAddressMatch) {
+        } else if (isFullAddressMatch != undefined && !isError && isFullAddressMatch) {
           stageComponenttoLoad = Stages[2].Stage_Component__c;
           component.set("v.ContinueButtonName", "Submit");
           isError = false;
@@ -102,6 +104,7 @@
                 "v.MembershipAddressDetails"
               ),
               xPressRefiRecordList: ActiveMortgages.xPressRefiList,
+              xRefiEligibleLoanIds: component.get("v.xRefiEligibleLoanIds")
             },
             function (msgBox) {
               if (component.isValid()) {
@@ -120,6 +123,7 @@
 
   cancelAction: function (component, event, helper) {
     $A.get("e.force:closeQuickAction").fire();
+    component.find("overlayLib").notifyClose();
   },
 
   Continue: function (component, event, helper) {

@@ -248,6 +248,8 @@
 				  {
 					  component.set("v.verified", "Cancelled");
 					  $A.get('e.force:closeQuickAction').fire();
+                      component.find("overlayLib").notifyClose();
+                      
 					  if(currentstep != 1){
 					  location.reload();
 					  }	
@@ -264,6 +266,7 @@
 		 else
 		 {
 			 $A.get('e.force:closeQuickAction').fire();
+             component.find("overlayLib").notifyClose();
 			 if(currentstep != 1){
 			 location.reload();	
 			 }

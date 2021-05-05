@@ -13,7 +13,8 @@
 	<aura:attribute name="optionRequired" type="boolean" default="false" />
 	<aura:attribute name="InputRequired" type="boolean" default="false" />
 	
-<style>
+    <lightning:overlayLibrary aura:id="overlayLib"/>
+<aura:html tag="style">
         /* Loading Style*/
         
         .loadingDiv {
@@ -59,7 +60,7 @@
 .sw-theme-arrows > ul.step-anchor > li > a:after { border-bottom: 50px solid transparent; border-left: 27px solid rgb(236, 235, 234); border-top: 50px solid transparent; content: " "; display: block; height: 0; left: 100%; margin-top: -50px; position: absolute; top: 50%; width: 0; z-index: 2; }
 .sw-theme-arrows > ul.step-anchor > li > a:hover:after { border-left: 27px solid rgb(221, 219, 218); }
         
-    </style>
+       </aura:html>  
     
 
 
