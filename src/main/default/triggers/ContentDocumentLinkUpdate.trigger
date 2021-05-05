@@ -151,9 +151,40 @@ trigger ContentDocumentLinkUpdate on ContentDocumentLink (before insert,after up
                 
                 xPressRefiAttachmentsList.add(xrefiDocumentObj);  
             }  
+            //-------------------------Start - CRM-1929---------------------------------//
+
+            if(objType == dsfs__DocuSign_Status__c.sObjectType){
+
+                DocuSignMapIds.put(c.LinkedEntityId,c);
+            }   
+            
+
         }
 
+        system.debug('DocuSignMapIds: '+DocuSignMapIds);
+      
+        List<dsfs__DocuSign_Status__c> DocuSignListIds = [select id,dsfs__Case__c,dsfs__Subject__c from dsfs__DocuSign_Status__c where id in :DocuSignMapIds.keyset() and dsfs__Case__c != null and dsfs__Subject__c != 'ACH Debits'];
+
+        system.debug('DocuSignListIds: '+DocuSignListIds);
+
+        if(DocuSignListIds.size() > 0){
+            
+            for(dsfs__DocuSign_Status__c ds : DocuSignListIds){
+                
+                Attachment anAttachment = new Attachment();
+                anAttachment.Body = cvNewFile.get(DocuSignMapIds.get(ds.id).ContentDocumentId).VersionData;
+                anAttachment.ContentType = 'application/pdf';
+                anAttachment.Name = cvNewFile.get(DocuSignMapIds.get(ds.id).ContentDocumentId).Title;
+                anAttachment.ParentId = ds.dsfs__Case__c;
+                AddCaseAttachmentList.add(anAttachment);
+            }
+        }
+
+        //--------------------------End - CRM-1929---------------------------------//
     }
+
+    if(AddCaseAttachmentList.size()> 0)
+        insert AddCaseAttachmentList;
     
     insert (solarLoanAttachmentsList);
     insert (xPressRefiAttachmentsList);
