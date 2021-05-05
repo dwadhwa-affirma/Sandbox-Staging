@@ -3,7 +3,10 @@ public with sharing class PersonAccountTriggerHandler {
     public static void createCase(map<Id,Person_Account__c> newMap){
         list<Person_Account__c> paList = new list<Person_Account__c>();
         list<Person_Account__c> OnboardPAList = new list<Person_Account__c>();
-        set<Id> personIds = new set<Id>();
+		list<Person_Account__c> OnboardPAListLoan = new list<Person_Account__c>();
+
+        List<String> MemberNumberList = new List<String>();
+		set<Id> personIds = new set<Id>();
         set<Id> accDetailIds = new set<Id>();
         map<Id,Account> personMap = new map<Id,Account>();
         map<Id,Account_Details__c> accDetailMap = new map<Id,Account_Details__c>();
@@ -13,7 +16,7 @@ public with sharing class PersonAccountTriggerHandler {
       //  map<double,Id> userMap = new map<double,Id>();
         map<String,Id> userMap1 = new map<String,Id>();
         map<String,Id> userAliasMap = new map<String,Id>();
-         map<String,Id> eBranchUserAliasMap = new map<String,Id>();
+        map<String,Id> eBranchUserAliasMap = new map<String,Id>();
         map<String,Id> eBranchUserMap = new map<String,Id>();
         
         
@@ -50,23 +53,39 @@ public with sharing class PersonAccountTriggerHandler {
             perId.add(pl.Id);
         }
         
-        list<Account_Details__c> accDetailList = [SELECT Id, Open_Date__c, Created_By_User__c, OnBoarded__c, Created_By_User_Text__c, Created_By_User_Alias__c, RecType__c, TypeTranslate__c FROM Account_Details__c WHERE Id IN: accDetailIds];
+        list<Account_Details__c> accDetailList = [SELECT Id, name,Open_Date__c, Created_By_User__c, OnBoarded__c, Created_By_User_Text__c, Created_By_User_Alias__c, RecType__c, TypeTranslate__c FROM Account_Details__c WHERE Id IN: accDetailIds];
         for(Account_Details__c adl: accDetailList){
             accDetailMap.put(adl.Id, adl);
-            
-            
+			MemberNumberList.add(adl.name);
         }
+
+		system.debug('accDetailMap: '+accDetailMap);
+		system.debug('PersonAccountIdSet: '+PersonAccountIdSet);
+		system.debug('MemberNumberList: '+MemberNumberList);
         
-       OnboardPAList = [SELECT AccountID__c,Account_Number__c,Account_Type__c,Id,Name,PersonAccount__c,PersonID__c,Person_ID_Number__c,Relationship__c, Account_Number__r.OnBoarded__c, Account_Number__r.RecType__c
+       	OnboardPAList = [SELECT AccountID__c,Account_Number__c,Account_Type__c,Id,Name,PersonAccount__c,PersonID__c,Person_ID_Number__c,Relationship__c, Account_Number__r.OnBoarded__c, Account_Number__r.RecType__c
         					 FROM Person_Account__c where Account_Number__r.OnBoarded__c = true and Account_Number__r.RecType__c = 'ACCT' and Id IN : PersonAccountIdSet];
-        Set<Id> PeraccId = new Set<Id>();
-         Set<Id> PersonId = new Set<Id>();
+		
+		
+		//--------------------------------------------------Creating a List and Map for the member account with "Loan" ----------------//
+		
+		List<Account_Details__c> MemAccList = [SELECT Id,name,ID1__c ,Open_Date__c, Created_By_User__c, OnBoarded__c, Created_By_User_Text__c, Created_By_User_Alias__c, RecType__c, TypeTranslate__c FROM Account_Details__c WHERE name IN: MemberNumberList and ID1__c like '%75%'];
+		
+		Map<String,Account_Details__c> MemAccLoanList = new Map<String,Account_Details__c>();
+
+		for(Account_Details__c ac : MemAccList){
+			MemAccLoanList.put(ac.name,ac);
+		}
+		system.debug('MemAccLoanList: '+MemAccLoanList);
+
+		System.debug('MemAccList: '+MemAccList);
+
+		Set<Id> PersonId = new Set<Id>();
          
-       if(OnboardPAList.size() > 0)
-       {  
+		if(OnboardPAList.size() > 0)
+       	{  
 	        for(Person_Account__c pa : OnboardPAList)
 	        {
-	        	PeraccId.add(pa.Id);
 	        	PersonId.add(pa.PersonID__c);
 	        }
 	        
@@ -79,19 +98,19 @@ public with sharing class PersonAccountTriggerHandler {
 	        		PrimaryPAMap.put(pa.PersonID__c, pa);
 	        	}
 	        	
-	        }
-	        					
-	        
-	        
+			}
+	       
+		} 
         
-       } 
-        
-        
-        List<Contact> con = [Select Id, Name, AccountId from Contact where Contact.AccountId =:perId];
-        Map<Id,Id> conMap = new Map<Id,Id>();
-        for(Contact ct : con){
-            conMap.put(ct.AccountId, ct.Id);
-        }
+		system.debug('PrimaryPAMap: '+PrimaryPAMap);
+
+		List<Contact> con = [Select Id, Name, AccountId from Contact where Contact.AccountId =:perId];
+		Map<Id,Id> conMap = new Map<Id,Id>();
+		for(Contact ct : con){
+			conMap.put(ct.AccountId, ct.Id);
+		}
+
+		Id CallCenterSolarOnboardingQueueId = [SELECT Id FROM Group WHERE Type='Queue' AND DeveloperName= 'Call_Center_Solar_Onboarding_Queue'].Id;
  
        // Id queueGroupId = [SELECT Id FROM Group WHERE Type='Queue' AND Name= 'Operations-Memberships Queue'].Id;
         Id queueGroupId = [SELECT Id FROM Group WHERE Type='Queue' AND DeveloperName= 'eBranch_Queue'].Id;
@@ -165,19 +184,28 @@ public with sharing class PersonAccountTriggerHandler {
 		                             
 		                system.debug('accdetailmap ..' + accDetailMap);
 		                system.debug('var.accounnumber ' + var.Account_Number__c);
-		                system.debug('check for user..' + userAliasMap.get(accDetailMap.get(var.Account_Number__c).Created_By_User_Alias__c));
+		                //system.debug('check for user..' + userAliasMap.get(accDetailMap.get(var.Account_Number__c).Created_By_User_Alias__c));
 		                
                          /*---------------------- CRM-1687: eBranch Onboarding Queue ----------------------------------*/
-                         if(episysUserMap.get((accDetailMap.get(var.Account_Number__c).Created_By_User__c)).Alias__c != null
-                            && eBranchUserAliasMap.get(episysUserMap.get((accDetailMap.get(var.Account_Number__c).Created_By_User__c)).Alias__c.toupperCase()) != null){
-                             c.OwnerId = onboardingQueueGroupId;
-                         }                         
+                         
+						system.debug('CallCenterSolarOnboardingQueueId: '+CallCenterSolarOnboardingQueueId);
+						//system.debug('Account Number: '+MemAccLoanList.get(accDetailMap.get(var.Account_Number__c).name).name);
+						//system.debug('Account Rec Type: '+MemAccLoanList.get(accDetailMap.get(var.Account_Number__c).name).ID1__c);
+
+						if(MemAccLoanList.size() > 0 && (MemAccLoanList.get(accDetailMap.get(var.Account_Number__c).name).ID1__c).startsWith('75')){
+							c.OwnerId = CallCenterSolarOnboardingQueueId;
+						}
+						else if(episysUserMap.get((accDetailMap.get(var.Account_Number__c).Created_By_User__c)).Alias__c != null
+                           && eBranchUserAliasMap.get(episysUserMap.get((accDetailMap.get(var.Account_Number__c).Created_By_User__c)).Alias__c.toupperCase()) != null){
+                            c.OwnerId = onboardingQueueGroupId;
+                        }                         
 		                else if(userAliasMap.get(accDetailMap.get(var.Account_Number__c).Created_By_User_Alias__c)!= null){
 		                  system.debug('###Inside  assigning owner' + userAliasMap.get(accDetailMap.get(var.Account_Number__c).Created_By_User_Alias__c));
-		               // if(userMap1.get(accDetailMap.get(var.Account_Number__c).Created_By_User_Text__c) != null){
+		               		// if(userMap1.get(accDetailMap.get(var.Account_Number__c).Created_By_User_Text__c) != null){
 		                    c.OwnerId = userAliasMap.get((accDetailMap.get(var.Account_Number__c).Created_By_User_Alias__c).toupperCase());
-		                }else if(userAliasMap.get(accDetailMap.get(var.Account_Number__c).Created_By_User_Alias__c) == null || accDetailMap.get(var.Account_Number__c).Created_By_User__c == NULL 
-		                   || uList != NULL){
+		                }
+						else if(userAliasMap.get(accDetailMap.get(var.Account_Number__c).Created_By_User_Alias__c) == null ||
+									accDetailMap.get(var.Account_Number__c).Created_By_User__c == NULL || uList != NULL){
 		                    system.debug('Inside assigning eBranch queue');
 		                    c.OwnerId = queueGroupId;
 		                }
