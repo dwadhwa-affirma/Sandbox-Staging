@@ -129,7 +129,7 @@
             </tr> 
             <tr>              
               <td>
-                <span>Income:</span>
+                <span>Monthly Income:</span>
               </td>
               <td>
                 <lightning:input name="Income" value="{!v.xPressRefiRecord.Income__c}" disabled="false" formatter="currency" step="0.01" type="number" required="true" variant="label-hidden" onchange="{!c.HandleIncomeChange}" class="inputnolabel"/>
@@ -137,6 +137,7 @@
             </tr>            
           </tbody>
         </table>
+        <p class=""><b>Question to ask the member:</b></p>
         <table>    
           <tr>
             <td class="questionstd">
@@ -165,6 +166,7 @@
                             required="true"/>
                 </td>
               </tr>
+              <tr colspan="2"><td style="padding-top: 5px;">This question only apply for RELO loans. If 'Yes' rate would reflect RELO discount. If 'No' rate would be current days XR rate</td></tr>
             </aura:if>
             
           </aura:if>

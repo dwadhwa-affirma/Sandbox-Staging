@@ -181,18 +181,14 @@ public class xPressRefiToDocusign{
 				req1.setHeader('Content-Disposition', 'form-data');
 
 				if (EmailToSend == 'Production' || EmailToSend == 'production'){
-					json1 = '{"signers": [' + '{' + '"email": "' + xp.Vesting_Person_Email_1__c + '",' + '"recipientId" : "1",' + '"roleName": "signer 1",' + '"name": "' + xp.Member__r.Name + '",' + '"signingGroupId": "signers",' + '"routingOrder" : "null"' + '}' + ']' + '}';
+					json1 = '{"signers": [' + '{' + '"email": "' + xp.Vesting_Person_Email_1__c + '",' + '"recipientId" : "1",' + '"roleName": "signer 1",' + '"name": "' + xp.Vesting_Person_1__c + '",' + '"signingGroupId": "signers",' + '"routingOrder" : "null"' + '}' + ']' + '}';
 				}
-				//xp.Member__r.Email_raw__c
+				
 				if (EmailToSend != 'Production' || EmailToSend != 'production'){
 					EmailToSend = userEmail;
 					system.debug('xp.createdby.email==' + xp.createdby.email);
 					json1 = '{"signers": [' + '{' + '"email": "' + xp.Vesting_Person_Email_1__c + '",' + '"recipientId" : "1",' + '"roleName": "Signer 1",' + '"name": "' + xp.Vesting_Person_1__c + '",' + '"signingGroupId": "signers",' + '"routingOrder" : "1"' + '}' + ']' + '}';
-					// if(xp.Vesting_Person_Email_2__c != null)
-					// 	json1 = '{"signers": [' + '{' + '"email": "' + xp.Vesting_Person_Email_1__c + '",' + '"recipientId" : "1",' + '"roleName": "Signer 1",' + '"name": "' + xp.Vesting_Person_1__c + '",' + '"signingGroupId": "signers",' + '"routingOrder" : "1"' + '},' + '{' + '"email": "' + xp.Vesting_Person_Email_2__c + '",' + '"recipientId" : "2",' + '"roleName": "Signer 2",' + '"name": "' + xp.Vesting_Person_2__c + '",' + '"signingGroupId": "signers",' + '"routingOrder" : "1", "recipientType" : "signer", "tabs" : { "signHereTabs": [ { "anchorString": "JONATHAN HERNANDEZ", "anchorUnits" : "inches", "anchorXOffset": "1", "anchorYOffset": "0.2" } ] } ' + '}' + ']' + '}';
-					// else {
-					// 	json1 = '{"signers": [' + '{' + '"email": "' + xp.Vesting_Person_Email_1__c + '",' + '"recipientId" : "1",' + '"roleName": "Signer 1",' + '"name": "' + xp.Vesting_Person_1__c + '",' + '"signingGroupId": "signers",' + '"routingOrder" : "null"' + '}' + ']' + '}';
-					// }
+					
 				}
 				system.debug('json1==' + json1);
 				req1.setBody(json1);
@@ -283,7 +279,7 @@ public class xPressRefiToDocusign{
 
 		//----------------------------End - DocuSign Templates from Custom setting------------------------------------//
 
-		List<xPressRefi__c> xPressRefiList = [SELECT Borrowers_Names__c, Case__c,Member_Email__c, Current_Interest_Rate_Calc__c, Current_Interest_Rate__c, Id, Interest_Rate__c, is_CSV_Generated__c, Is_Product_Change__c, LoanId__c, Maturity_Date_Calc__c, Maturity_Date__c, Member_Number__c, New_Interest_Rate_Calc__c, New_Payment_Amount_Calc__c, New_Product_Type__c, Principal_Balance__c, Product_Type__c, Property_Address_2__c, Property_Balance__c, Property_City__c, Property_County__c, Property_State__c, Property_Zip__c, Property__c, P_I_Payment__c, Start_Date_Calc__c, Member__c, Brand__c, Loan_Program_Type__c, Due_Date__c, Is_Mortgage_Ware__c, Is_Mortgage_Cadence__c
+		List<xPressRefi__c> xPressRefiList = [SELECT Borrowers_Names__c, Case__c,Member_Email__c, Current_Interest_Rate_Calc__c, Current_Interest_Rate__c, Id, Interest_Rate__c, is_CSV_Generated__c, Is_Product_Change__c, LoanId__c, Maturity_Date_Calc__c, Maturity_Date__c, Member_Number__c, New_Interest_Rate_Calc__c, New_Payment_Amount_Calc__c, New_Product_Type__c, Principal_Balance__c, Product_Type__c, Property_Address_2__c, Property_Balance__c, Property_City__c, Property_County__c, Property_State__c, Property_Zip__c, Property__c, P_I_Payment__c, Start_Date_Calc__c, Member__c,Member__r.Name, Brand__c, Loan_Program_Type__c, Due_Date__c, Is_Mortgage_Ware__c, Is_Mortgage_Cadence__c
 		                                      FROM xPressRefi__c
 		                                      where id = :ids];
 
