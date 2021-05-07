@@ -593,13 +593,13 @@ public class CardLimitResetController {
         
         if(objType == Account.sObjectType){
             
-            /*pa =[SELECT id, name,PersonID__c,Account_Number__c,PersonID__r.name 
+            pa =[SELECT id, name,PersonID__c,Account_Number__c,PersonID__r.name 
                     from Person_Account__c where PersonID__r.firstname like: firstname
                     AND PersonID__r.LASTNAME like: lastname limit 1];
             
             system.debug('Member - '+pa.PersonID__c);
 
-            Account acc = [select id,name,SSN_TIN_Encrypted__pc from Account where id =:pa.PersonID__c limit 1];
+            /*Account acc = [select id,name,SSN_TIN_Encrypted__pc from Account where id =:pa.PersonID__c limit 1];
             SSN = acc.SSN_TIN_Encrypted__pc;
             //SSN = '123456789';
             system.debug('SSN'+SSN);
@@ -624,9 +624,9 @@ public class CardLimitResetController {
             JSONParser parser = JSON.createParser(responseBody1);
             AccountNumber = String.valueOf(responseBody1).substringAfter('AccountNumber":"');
             AccountNumber = String.valueOf(AccountNumber).substringBefore('",');
-            System.debug('Member Number' + AccountNumber);
+            System.debug('Member Number' + AccountNumber);*/
             Account_Details__c ad = [select id, Name, Brand__c, ID1__c, TypeTranslate__c,RecType__c from Account_Details__c where Name =:AccountNumber Limit 1];
-            recordId = ad.id;*/
+            recordId = ad.id;
         }
 
         system.debug('recordId'+recordId);
