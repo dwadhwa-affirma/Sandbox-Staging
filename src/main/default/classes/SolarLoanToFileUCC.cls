@@ -16,6 +16,16 @@ public class SolarLoanToFileUCC {
     public static String UCCFile;
     public static string loanAPI;
     
+    public static string Mapp;
+    public static string Book;
+    public static string Page;
+    public static string APN;
+    public static string Lot;
+    public static string Block;
+    public static string Section;
+    public static string Tract;
+    public static string Subdivision;
+
     public static String box15;
     public static String box16;
     public static String ClientReference;  //not done 
@@ -191,32 +201,48 @@ public class SolarLoanToFileUCC {
             
             //------------------------------------------------Fetching Token------------------------------------//
             
-            if(sl.Map__c == null)
-                sl.Map__c = '';
-
-            if(sl.Book__c == null)
-                sl.Book__c = '';
-
-            if(sl.Page__c == null)
-                sl.Page__c = '';
-
-            if(sl.APN__c == null)
-                sl.APN__c = '';
-
-            if(sl.Lot__c == null)
-                sl.Lot__c = '';
-            
-            if(sl.Block__c == null)
-                sl.Block__c = '';    
-            
-            if(sl.Section__c == null)
-                sl.Section__c = '';
+            if(sl.Map__c != null)
+                Mapp = 'Map : '+sl.Map__c;
                 
-            if(sl.Tract__c == null)
-                sl.Tract__c = '';     
+            if(sl.Book__c != null && Mapp == null)
+                Book = 'Book : '+sl.Book__c;
+            else if(sl.Book__c != null && Mapp != null)
+                Book = ', Book : '+sl.Book__c;
+            
+            if(sl.Page__c != null && sl.Book__c == null && Mapp == null)
+                Page = 'Page : '+sl.Page__c;
+            else if(sl.Page__c != null && (sl.Book__c != null || Mapp != null))
+                Page = ', Page : '+sl.Page__c;
 
-            if(sl.Subdivision__c == null)
-                sl.Subdivision__c = '';     
+            if(sl.APN__c != null && sl.Page__c == null && sl.Book__c == null && Mapp == null)
+                APN = 'APN : '+sl.APN__c;
+            else if(sl.APN__c != null && (sl.Page__c != null || sl.Book__c != null || Mapp != null))
+                APN = ', APN : '+sl.APN__c;
+
+            if(sl.Lot__c != null && sl.APN__c == null && sl.Page__c == null && sl.Book__c == null && Mapp == null)
+                Lot = 'Lot : '+sl.Lot__c;
+            else if(sl.Lot__c != null && (sl.APN__c != null || sl.Page__c != null || sl.Book__c != null || Mapp != null))
+                Lot = ', Lot : '+sl.Lot__c;
+
+            if(sl.Block__c != null && sl.Lot__c == null && sl.APN__c == null && sl.Page__c == null && sl.Book__c == null && Mapp == null)
+                Block = 'Block : '+sl.Block__c;
+            else if(sl.Block__c != null && (sl.Lot__c != null || sl.APN__c != null || sl.Page__c != null || sl.Book__c != null || Mapp == null))
+                Block = ', Block : '+sl.Block__c;
+
+            if(sl.Section__c != null && sl.Block__c == null && sl.Lot__c == null && sl.APN__c == null && sl.Page__c == null && sl.Book__c == null && Mapp == null)
+                Section = 'Section : '+sl.Section__c;
+            else if(sl.Section__c != null && (sl.Block__c != null || sl.Lot__c == null || sl.APN__c != null || sl.Page__c != null || sl.Book__c != null || Mapp == null))
+                Section = ', Section : '+sl.Section__c;
+
+            if(sl.Tract__c != null && sl.Section__c == null && sl.Block__c == null && sl.Lot__c == null && sl.APN__c == null && sl.Page__c == null && sl.Book__c == null && Mapp == null)
+                Tract = 'Tract : '+sl.Tract__c;
+            else if(sl.Tract__c != null && (sl.Section__c != null || sl.Block__c != null || sl.Lot__c != null || sl.APN__c != null || sl.Page__c != null || sl.Book__c != null || Mapp != null))
+                Tract = ', Tract : '+sl.Tract__c;
+
+            if(sl.Subdivision__c != null && sl.Tract__c == null && sl.Section__c == null && sl.Block__c == null && sl.Lot__c == null && sl.APN__c == null && sl.Page__c == null && sl.Book__c == null && Mapp == null)
+                Subdivision = 'Subdivision : '+sl.Subdivision__c;     
+            else if(sl.Subdivision__c != null && (sl.Tract__c != null || sl.Section__c != null || sl.Block__c != null || sl.Lot__c != null || sl.APN__c != null || sl.Page__c != null || sl.Book__c != null || Mapp != null))
+                Subdivision = ', Subdivision : '+sl.Subdivision__c;
 
             if(sl.Legal_Description__c != null)
                 LegalDescription = sl.Legal_Description__c;
@@ -224,7 +250,37 @@ public class SolarLoanToFileUCC {
                 LegalDescription = '';
                     
             box15 = sl.mem_Primary_First_Name__c +' '+ sl.mem_Primary_Last_Name__c + '\n' + sl.mem_Primary_Street__c +', '+ '\n' + sl.mem_Primary_City__c + ', '+ '\n' + sl.mem_Primary_State__c + ' - ' +  sl.mem_Primary_Zip_Code__c;
-            box16 = 'LEGAL DESCRIPTION: '+ LegalDescription + '\n\n' + 'Map : '+sl.Map__c + ', Book : ' +sl.Book__c + ', Page : ' +sl.Page__c + ', APN : '+sl.APN__c + ', Lot : '+sl.Lot__c + ', Block : '+sl.Block__c + ', Section : '+ sl.Section__c + ', Tract : '+sl.Tract__c+ ', Subdivision: '+sl.Subdivision__c; 
+            
+            box16 = 'LEGAL DESCRIPTION: '+ LegalDescription + '\n\n';
+
+            if(sl.Map__c != null)
+                box16 = box16 + Mapp;
+                
+            if(sl.Book__c != null)
+                box16 = box16 + Book;
+                
+            if(sl.Page__c != null)
+                box16 = box16 + Page;
+
+            if(sl.APN__c != null)
+                box16 = box16 + APN;
+                
+            if(sl.Lot__c != null)
+                box16 = box16 + Lot;
+                
+            if(sl.Block__c != null)
+                box16 = box16 + Block;
+                
+            if(sl.Section__c != null)
+                box16 = box16 + Section;
+                
+            if(sl.Tract__c != null)
+                box16 = box16 + Tract;
+
+            if(sl.Subdivision__c != null)
+                box16 = box16 + Subdivision;
+
+            system.debug('Box16: '+box16);
             
             ClientReference = sl.Member_Number__c +' - 7500';
             
