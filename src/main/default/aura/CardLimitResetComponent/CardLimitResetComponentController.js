@@ -308,6 +308,7 @@
             if(component.get("v.ContinueButtonName") == 'Close'){
                 
                 $A.get("e.force:closeQuickAction").fire();
+                component.find("overlayLib").notifyClose();
             }
             else if(component.get("v.ContinueButtonName") == 'Submit' && component.get("v.CLRecord.Type__c") == 'Change Card Limits'){
                 
