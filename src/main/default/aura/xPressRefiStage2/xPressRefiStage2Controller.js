@@ -38,7 +38,7 @@
     var SelectedProduct,
       SelectedInterestRate,
       SelectedPIPayment,
-      SelectedProductName,
+      SelectedProductName, SelectedCostComponent, 
       isMortgageCadence;
     if (event != undefined) {
       SelectedProduct = event.getSource().get("v.value");
@@ -51,6 +51,7 @@
         SelectedPIPayment = map[i].TotalPIPayment;
         SelectedProductName = map[i].ProductName;
         isMortgageCadence = map[i].IsMortgageCadence;
+        SelectedCostComponent = map[i].CostComponent;
         break;
       }
     }
@@ -72,6 +73,13 @@
       "v.xPressRefiRecord.Is_Mortgage_Cadence__c",
       isMortgageCadence
     );
+
+    if(SelectedCostComponent > 0){
+      component.set("v.IsFeeCollectionVisible", true);
+    }
+    else{
+      component.set("v.IsFeeCollectionVisible", false);
+    }
 
     var evt = $A.get("e.c:xPressRefiEvent");
     if (SelectedProduct != undefined) {
@@ -177,4 +185,8 @@
     
 
   },
+
+  HandlePaymentCheck: function (component, event, helper) {
+    debugger;
+  }
 });

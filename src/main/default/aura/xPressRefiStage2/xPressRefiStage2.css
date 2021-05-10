@@ -86,6 +86,63 @@
     display: block;
     width: 520px;
 }
+
+.THIS div#cpcacd46e845 {
+	width: 200px;
+	background-color: #FF9900;
+	padding: 5px 0;
+}
+
+.THIS div#cpcacd46e845:hover {
+	cursor: pointer
+}
+
+.THIS div#cpcacd46e845 form {
+	margin: 0;
+	padding: 0;
+	text-align: center
+}
+
+.THIS div#cpcacd46e845 div.cpwrap {
+	width: 90%;
+	border: 0;
+	margin: 0 auto;
+	padding: 0px;
+	background-color: #FF9900
+}
+
+.THIS div#cpcacd46e845 button {
+	width: 95%;
+	border: 0;
+	margin: 0;
+	padding: 3px 0;
+	background-color: #FF9900;
+	text-align: center;
+	color: #FFFFFF;
+}
+
+.THIS div#cpcacd46e845:hover button {
+	text-decoration: underline
+}
+
+.THIS div#cpcacd46e845 button:focus,
+.THIS div#cpcacd46e845 button:visited,
+.THIS div#cpcacd46e845 button:active {
+	border: none;
+	outline: none
+}
+
+.THIS div#cpcacd46e845 button {
+	font-size: 16px
+}
+
+.THIS div#cpcacd46e845 {
+	background-color: #FFAA00;
+}
+
+.THIS div#cpcacd46e845 {
+	border-radius: 10px;
+}
 @media (max-width:1250px){
     .THIS#stage2 {width:90%;}
 }

@@ -560,12 +560,12 @@ public class xPressRefiController{
 			ProductType = 'Jumbo%';
 		}
 
-		ProductsList = [SELECT id, name, Active__c, Product__c, Product_Code__c, Program__c, Rate__c, Type__c, Order__c
+		ProductsList = [SELECT id, name, Active__c, Product__c, Product_Code__c, Program__c, Rate__c, Type__c, Order__c, Cost_Component__c
 		                from CU_Rates__c
 		                where Active__c = true and Type__c LIKE :ProductType
 		                order by Order__c];
 
-		XpressRefiProductsList = [SELECT id, name, Active__c, Product__c, Product_Code__c, Program__c, Rate__c, Type__c, Order__c, LastModifiedDate
+		XpressRefiProductsList = [SELECT id, name, Active__c, Product__c, Product_Code__c, Program__c, Rate__c, Type__c, Order__c, LastModifiedDate, Cost_Component__c
 		                          from CU_Rates__c
 		                          where Active__c = true and Type__c LIKE :ProductType and Program__c = 'xPress Refi'
 		                          order by LastModifiedDate desc];
@@ -580,6 +580,7 @@ public class xPressRefiController{
 			ProductsListWrapperObject pwo = new ProductsListWrapperObject();
 			pwo.Product = cu.Product__c;
 			pwo.ProductName = cu.name;
+			pwo.CostComponent = cu.Cost_Component__c;
 			if (isReloDiscountApplied && Discount != null){
 				pwo.Rate = cu.Rate__c - Discount;
 			} else{
@@ -858,5 +859,8 @@ public class xPressRefiController{
 
 		@AuraEnabled
 		public Boolean IsMortgageCadence{ get; set; }
+
+		@AuraEnabled
+		public decimal CostComponent{ get; set; }
 	}
 }

@@ -16,29 +16,31 @@
         {'label': 'Yes', 'value': 'true'},
         {'label': 'No', 'value': 'false'}
     ]" />
-   
-    <aura:attribute name="IsChevronRelocation" type="Boolean"  />  
-    <aura:attribute name="IsChevronEmployee" type="Boolean" />  
-    <aura:attribute name="IsPrimaryResidence" type="Boolean"  />  
-    <aura:attribute name="isLoanPrimaryResidence" type="Boolean" />
-    <aura:attribute name="RatesUpdatedDate" type="string" />
-    <aura:attribute name="Note" type="string" />
-    <aura:attribute name="IsMaturityDateReset" type="Boolean" default="false" />  
 
-    <lightning:spinner aura:id="Spinner" alternativeText="Loading" size="medium" variant="brand"
-        class="slds-hide spin" />
+  <aura:attribute name="IsChevronRelocation" type="Boolean" />
+  <aura:attribute name="IsChevronEmployee" type="Boolean" />
+  <aura:attribute name="IsPrimaryResidence" type="Boolean" />
+  <aura:attribute name="isLoanPrimaryResidence" type="Boolean" />
+  <aura:attribute name="RatesUpdatedDate" type="string" />
+  <aura:attribute name="Note" type="string" />
+  <aura:attribute name="IsMaturityDateReset" type="Boolean" default="false" />
+  <aura:attribute name="IsFeeCollectionVisible" type="Boolean" default="false" />
+  <aura:attribute name="isPaymentCheck" type="Boolean" default="false" />
+
+  
+  <lightning:spinner aura:id="Spinner" alternativeText="Loading" size="medium" variant="brand" class="slds-hide spin" />
 
   <div id="stage2" class="stage2" style="width:100% !important;">
     <div class="slds-grid slds-gutters eft4tbl">
       <div class="slds-col firstcol">
         <p class="pfontstyle">Current Mortgage Information</p>
-        <aura:if isTrue="{!v.xPressRefiRecord.Impermissible__c}" >
-          <span class="note">This mortgage is marked as Impermissible.</span><br/>
-        </aura:if> 
-        <aura:if isTrue="{!or(v.xPressRefiRecord.Vesting__c == '', v.xPressRefiRecord.Vesting__c == undefined)}" >
-          <span class="note">This loan contains no Vesting information.</span><br/>
+        <aura:if isTrue="{!v.xPressRefiRecord.Impermissible__c}">
+          <span class="note">This mortgage is marked as Impermissible.</span><br />
         </aura:if>
-               
+        <aura:if isTrue="{!or(v.xPressRefiRecord.Vesting__c == '', v.xPressRefiRecord.Vesting__c == undefined)}">
+          <span class="note">This loan contains no Vesting information.</span><br />
+        </aura:if>
+
         <table class="fundingtbl">
           <tbody>
             <tr>
@@ -108,7 +110,8 @@
                 <span>Maturity Date:</span>
               </td>
               <td>
-                <ui:inputDate value="{!v.xPressRefiRecord.Maturity_Date__c}" format="MM/dd/yyyy" disabled="true" class="inputnolabel"/>
+                <ui:inputDate value="{!v.xPressRefiRecord.Maturity_Date__c}" format="MM/dd/yyyy" disabled="true"
+                  class="inputnolabel" />
               </td>
             </tr>
             <tr>
@@ -118,7 +121,7 @@
               <td>
                 <lightning:input name="LoanID" value="{!v.xPressRefiRecord.LoanId__c}" disabled="true" />
               </td>
-            </tr> 
+            </tr>
             <tr>
               <td>
                 <span>Remaining Term:</span>
@@ -126,65 +129,65 @@
               <td>
                 <lightning:input name="RemainingTerm" value="{!v.xPressRefiRecord.Remaining_Term__c}" disabled="true" />
               </td>
-            </tr> 
-            <tr>              
+            </tr>
+            <tr>
               <td>
                 <span>Monthly Income:</span>
               </td>
               <td>
-                <lightning:input name="Income" value="{!v.xPressRefiRecord.Income__c}" disabled="false" formatter="currency" step="0.01" type="number" required="true" variant="label-hidden" onchange="{!c.HandleIncomeChange}" class="inputnolabel"/>
+                <lightning:input name="Income" value="{!v.xPressRefiRecord.Income__c}" disabled="false"
+                  formatter="currency" step="0.01" type="number" required="true" variant="label-hidden"
+                  onchange="{!c.HandleIncomeChange}" class="inputnolabel" />
               </td>
-            </tr>            
+            </tr>
           </tbody>
         </table>
         <p class=""><b>Question to ask the member:</b></p>
-        <table>    
+        <table>
           <tr>
             <td class="questionstd">
-              <lightning:radioGroup name="maturitydatereset" 
-                        label="Do you want to keep the Remaining Term/Maturity Date?"
-                        options="{!v.options}"
-                        value="{!v.IsMaturityDateReset}"
-                        type="radio"
-                        class="customRadioCls"
-                        onchange="{!c.HandleMatrurityReset}" 
-                        required="true"/>
+              <lightning:radioGroup name="maturitydatereset"
+                label="Do you want to keep the Remaining Term/Maturity Date?" options="{!v.options}"
+                value="{!v.IsMaturityDateReset}" type="radio" class="customRadioCls"
+                onchange="{!c.HandleMatrurityReset}" required="true" />
             </td>
-          </tr>     
-          <aura:if isTrue="{!v.xPressRefiRecord.Is_Relocation_Loan__c}" >
-            <tr colspan="2"><td class="questionstd">This is a Chevron Relocation loan</td></tr>
-            <aura:if isTrue="{!v.isLoanPrimaryResidence}" >
+          </tr>
+          <aura:if isTrue="{!v.xPressRefiRecord.Is_Relocation_Loan__c}">
+            <tr colspan="2">
+              <td class="questionstd">This is a Chevron Relocation loan</td>
+            </tr>
+            <aura:if isTrue="{!v.isLoanPrimaryResidence}">
               <tr>
                 <td class="questionstd">
-                  <lightning:radioGroup name="chevronEmployee" 
-                            label="Are you currently still employed by Chevron?"
-                            options="{!v.options }"
-                            value="{!v.IsChevronEmployee}"
-                            type="radio"
-                            class="customRadioCls"
-                            onchange="{!c.HandlePrimaryResidenceChange}" 
-                            required="true"/>
+                  <lightning:radioGroup name="chevronEmployee" label="Are you currently still employed by Chevron?"
+                    options="{!v.options }" value="{!v.IsChevronEmployee}" type="radio" class="customRadioCls"
+                    onchange="{!c.HandlePrimaryResidenceChange}" required="true" />
                 </td>
               </tr>
-              <tr colspan="2"><td style="padding-top: 5px;">This question only apply for RELO loans. If 'Yes' rate would reflect RELO discount. If 'No' rate would be current days XR rate</td></tr>
+              <tr colspan="2">
+                <td style="padding-top: 5px;">This question only apply for RELO loans. If 'Yes' rate would reflect RELO
+                  discount. If 'No' rate would be current days XR rate</td>
+              </tr>
             </aura:if>
-            
+
           </aura:if>
-          
+
         </table>
-        <aura:if isTrue="{!v.xPressRefiRecord.Trust__c}" >
-          <span class="note">This mortgage is held in trust.</span><br/>
-        </aura:if> 
-        <aura:if isTrue="{!and(v.xPressRefiRecord.PMI_Company_Name__c != '', v.xPressRefiRecord.PMI_Company_Name__c != undefined)}" >
-          <span class="note">This loan contains PMI.</span><br/>
+        <aura:if isTrue="{!v.xPressRefiRecord.Trust__c}">
+          <span class="note">This mortgage is held in trust.</span><br />
+        </aura:if>
+        <aura:if
+          isTrue="{!and(v.xPressRefiRecord.PMI_Company_Name__c != '', v.xPressRefiRecord.PMI_Company_Name__c != undefined)}">
+          <span class="note">This loan contains PMI.</span><br />
         </aura:if>
       </div>
       <div class="slds-col secondcol">
-        <p><span class="pfontstyle">Refi Choices</span><span class="spanstyle">Rates Updated: {!v.RatesUpdatedDate}</span></p>   
+        <p><span class="pfontstyle">Refi Choices</span><span class="spanstyle">Rates Updated:
+            {!v.RatesUpdatedDate}</span></p>
         <br></br>
 
-        <div class="eftrecord">  
-               
+        <div class="eftrecord">
+
           <table aria-multiselectable="true"
             class="slds-table slds-table_header-hidden slds-table_edit slds-tree slds-table_tree" role="treegrid">
             <thead>
@@ -247,7 +250,7 @@
                       </span>
                     </div>
                   </td>
-                  <td class="slds-text-align_right" role="gridcell" style="width:3.25rem">                   
+                  <td class="slds-text-align_right" role="gridcell" style="width:3.25rem">
                     <div class="slds-truncate">
                       {!itemOption.Product}</div>
                   </td>
@@ -281,6 +284,42 @@
               {!v.Note}
             </span>
           </div>
+          <aura:if isTrue="{!v.IsFeeCollectionVisible}">
+            <div id="cpcacd46e845" style="margin:10px 0" class="rounded-div"
+            onclick="document.getElementById('pay_now_form_18b5022503').submit()">
+            <form action="Payment - Error " id="pay_now_form_18b5022503" method="post">
+              <input type="hidden" name="x_login" value="WSP-CHEVR-7QwFAQB@7A" />
+              <input type="hidden" name="x_show_form" value="PAYMENT_FORM" />
+              <input type="hidden" name="x_fp_sequence" value="16203456683232910502" />
+              <input type="hidden" name="x_fp_hash" value="PNB-1.0-759d8a5d4b9d02ff3c649c6da2cb672db0780c6d" />
+              <input type="hidden" name="x_amount" value="750.00" />
+              <input type="hidden" name="x_currency_code" value="USD" />
+              <input type="hidden" name="x_test_request" value="TRUE" />
+              <input type="hidden" name="x_relay_response" value="" />
+              <input type="hidden" name="donation_prompt" value="" />
+              <input type="hidden" name="button_code" value="Pay Now Xpress Refi" />
+              <div class="cpwrap">
+                <button type="button">Charge Xpress Refi</button>
+              </div>
+            </form>
+          </div>
+          <table>
+            <tr>
+              <td>Please click here to confirm that payment has been completed</td>
+              <td><lightning:input type="checkbox" label="" name="input2" checked="{!v.isPaymentCheck}" onchange="{!c.HandlePaymentCheck}" ></lightning:input></td>
+            </tr>
+            <aura:if isTrue="{!v.isPaymentCheck}" >
+              <tr>
+                <td>
+                  Payment Reference #:
+                </td>
+                <td>
+                  <lightning:input name="input6" value="" maxlength="20" />
+                </td>
+              </tr>
+            </aura:if>
+          </table>
+          </aura:if>         
         </div>
       </div>
     </div>
