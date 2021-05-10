@@ -5,6 +5,7 @@
     <aura:attribute name= "notes" type="string" />
     <aura:attribute name="sobjecttype" type="String" default="{!v.sObjectName}"/>
     <aura:attribute name="AccountNumber" type="String" />
+    <lightning:overlayLibrary aura:id="overlayLib"/>
     
     <header class="slds-modal__header" id="oowServices" >
        

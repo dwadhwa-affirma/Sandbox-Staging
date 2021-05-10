@@ -54,6 +54,8 @@
     },
     
     loadComponent : function(component, event, helper) {		
+        
+        debugger;
         var submenu = component.get("v.SubMenu");
         var clicked = event.target.text;
         

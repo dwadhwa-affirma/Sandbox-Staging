@@ -734,7 +734,7 @@ NavigateToMember : function(component , event, helper){
     		 {
     			 var baseURL = urlString.substring(0, urlString.indexOf("/lightning"));
     		 }
-    		 baseURL = baseURL + '/lightning/r/Account/'+ memberid + '/view';
+    		 baseURL = baseURL + '/lightning/r/Account/'+ memberid + '/view?c__ivrguid='+IVRGUIDFromUrl;
     		 window.open(baseURL,"_self");  
     	}
     

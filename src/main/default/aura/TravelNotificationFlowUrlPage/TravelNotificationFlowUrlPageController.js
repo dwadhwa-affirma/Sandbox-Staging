@@ -14,6 +14,7 @@
 	
 	 closePopup: function(component, event, helper) {
 	  $A.get('e.force:closeQuickAction').fire();
+      component.find("overlayLib").notifyClose();
    }, 
 	
 })

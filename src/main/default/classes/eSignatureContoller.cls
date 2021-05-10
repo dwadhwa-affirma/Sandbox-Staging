@@ -3,6 +3,8 @@ global class eSignatureContoller {
     public InPersonSigning__c wireTransaction;
     public InPersonSigning__c wireTransactionDetail{get; set;}
     public id objParentId{get;set;}
+    public id toBeSIgnedListViewId{get;set;}
+    public boolean showAlert { get; set; }
     
     global Id signAttachmentId{get {
         List<Attachment> a = new List<Attachment>();
@@ -11,8 +13,15 @@ global class eSignatureContoller {
         return null;} set;}
     
     public eSignatureContoller(ApexPages.StandardController stdController) {
+        ListView lstView=[SELECT Id,Name from ListView Where Name='To Be Signed' LIMIT 1]; 
+        
+        if(lstView!=null){
+            toBeSIgnedListViewId= lstView.Id;
+        }
+        
         this.wireTransaction = (InPersonSigning__c)stdController.getRecord();
         this.objParentId=this.wireTransaction.Id;
+        
         system.debug(ApexPages.currentPage().getParameters().get('id'));
         this.wireTransactionDetail = [SELECT Id,Name,SalesforceID__c,
                                       Sender_AccountNumber__c,Sender_Address__c,
@@ -73,13 +82,27 @@ global class eSignatureContoller {
         return data;
     }
     
-    public PageReference attach() {
+    public void attach() {
+        
+        System.debug('came in attachment save method.');
         Attachment myAttach = new Attachment();
         myAttach.ParentId = wireTransaction.Id;//Id of the object to which the page is attached
         myAttach.name = 'WIRE TRANSFER AUTHORIZATION.pdf';
         PageReference myPdf = ApexPages.currentPage();//myPdfPage is the name of your pdf page
         myAttach.body = myPdf.getContentAsPdf();
         insert myAttach;
+        
+        
+        // Attach pdf to Wires transaction record
+        InPersonSigning__c inPersonSign=[Select SalesforceID__c FROM InPersonSigning__c Where Id=: wireTransaction.Id LIMIT 1];
+        if(inPersonSign!=null){
+            Attachment wireTransferPDF = new Attachment();
+            wireTransferPDF.ParentId = inPersonSign.SalesforceID__c;
+            wireTransferPDF.name = 'WIRE TRANSFER AUTHORIZATION.pdf';
+            PageReference wireTranferPdfContent = ApexPages.currentPage();
+            wireTransferPDF.body = wireTranferPdfContent.getContentAsPdf();
+            insert wireTransferPDF;
+        }
         
         List<Attachment> signatures = new List<Attachment>();
         signatures = [SELECT Id FROM Attachment Where ParentId=:wireTransaction.Id and Name='ESignature.png' Order by CreatedDate desc OFFSET 1]; 
@@ -107,16 +130,30 @@ global class eSignatureContoller {
         
         ApexPages.addmessage(new ApexPages.message(ApexPages.severity.CONFIRM,'Wire Transfer Authorization pdf has been generated successfully.'));  
         
-        PageReference pageRef = new PageReference('/' + objParentId);
-        pageRef.setRedirect(true);
-        return pageRef;
+        //ListView lstView=[SELECT Id,Name from ListView Where Name='To Be Signed' LIMIT 1];
+        //string baseUrl=URL.getSalesforceBaseUrl().toExternalForm()+ '/lightning/o/InPersonSigning__c/list?filterName='+lstView.Id; 
+        //system.debug('BaseURL:'+baseUrl);
+        //PageReference pageRef = new PageReference(baseUrl);
+        
+        //pageRef.setRedirect(true);
+        //return pageRef;
+        //
+        
+        //sforce.one.navigateToList('00B19000002CZbHEAW','To Be Signed','InPersonSigning__c');
+        
+        ListView lstView=[SELECT Id,Name from ListView Where Name='To Be Signed' LIMIT 1]; 
+        showAlert=true;
     }
     
-    public PageReference Cancel() {
-        PageReference pageRef = new PageReference('/' + objParentId);
-        pageRef.setRedirect(true);
-        return pageRef;
-    }
+    //public PageReference Cancel() {
+    //PageReference pageRef = new PageReference('/' + objParentId);
+    //ListView lstView=[SELECT Id,Name from ListView Where Name='To Be Signed' LIMIT 1];
+    //string baseUrl=URL.getSalesforceBaseUrl().toExternalForm()+ '/lightning/o/InPersonSigning__c/list?filterName='+lstView.Id; 
+    //system.debug('BaseURL:'+baseUrl);
+    //PageReference pageRef = new PageReference(baseUrl);
+    //pageRef.setRedirect(true);
+    //return pageRef;
+    //}
     
     public void spin() {
         long now = datetime.now().gettime();

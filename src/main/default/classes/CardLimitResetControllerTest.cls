@@ -95,7 +95,7 @@ public class CardLimitResetControllerTest {
         CardLimitResetController.getStageData(memberacc.id,'JEFF PACHECO FRANKLIN');
         CardLimitResetController.getMembers(memberacc.id);
         CardLimitResetController.getCard(memberacc.id,'JEFF PACHECO FRANKLIN');
-        CardLimitResetController.Submit(memberacc.id,'5460277067636965','123','JEFF PACHECO FRANKLIN','Change Card Limits','123.00','456.00');
+        CardLimitResetController.limitSubmit(memberacc.id,'5460277067636965','123','JEFF PACHECO FRANKLIN','Change Card Limits','123.00','456.00',memberacc.name);
     }
     
     static testMethod void testmethod3(){
@@ -104,22 +104,22 @@ public class CardLimitResetControllerTest {
         CardLimitResetController.getStageData(memberacc.id,'JEFF PACHECO FRANKLIN');
         CardLimitResetController.getMembers(memberacc.id);
         CardLimitResetController.getCard(memberacc.id,'JEFF PACHECO FRANKLIN');
-        CardLimitResetController.getLimits(memberacc.id,'5460277067636965','JEFF PACHECO FRANKLIN');
+        CardLimitResetController.getCardLimits(memberacc.id,'5460277067636965','JEFF PACHECO FRANKLIN',memberacc.name);
     }
 
 	static testMethod void testmethod4(){
     	
         Account member  =  [SELECT Id,name from Account limit 1];
         CardLimitResetController.getCard(member.id,'JEFF PACHECO FRANKLIN');
-        CardLimitResetController.getLimits(member.id,'5460277067636965','JEFF PACHECO FRANKLIN');
-        CardLimitResetController.Submit(member.id,'5460277067636965','123','JEFF PACHECO FRANKLIN','Change Card Limits','123.00','456.00');
+        CardLimitResetController.getCardLimits(member.id,'5460277067636965','JEFF PACHECO FRANKLIN','0000214414');
+        CardLimitResetController.limitSubmit(member.id,'5460277067636965','123','JEFF PACHECO FRANKLIN','Change Card Limits','123.00','456.00','0000214414');
     }
     
 	static testMethod void testmethod5(){
     	
         Account member  =  [SELECT Id,name from Account limit 1];
         CardLimitResetController.getCard(member.id,'JEFF PACHECO FRANKLIN');        
-        CardLimitResetController.Submit(member.id,'5460277067636965','123','JEFF PACHECO FRANKLIN','Reset Card Limits','2500.00','510.00');
+        CardLimitResetController.limitSubmit(member.id,'5460277067636965','123','JEFF PACHECO FRANKLIN','Reset Card Limits','2500.00','510.00','0000214414');
     }   
 
 }
