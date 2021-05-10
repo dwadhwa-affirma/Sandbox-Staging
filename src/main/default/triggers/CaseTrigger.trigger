@@ -336,61 +336,38 @@ System.Debug('Calling the CaseAssign method');
         if(cList[0].Origin == 'Email'){
         Set<String> str = new Set<String>();
         Set<Id> accDId = new Set<Id>();
-        String Code;
-        String MemberNumber;
-        Boolean WireXchange;
         Set<String> newListCrt = new Set<String>();
             
-        if(cList[0].Subject == null || cList[0].Subject == ''){
-            
-            cList[0].Member_Number__c = '';
-            cList[0].Code_Number__c = '';
-        }
-        else{          
-            
-            system.debug('cList###' + cList);
-            system.debug('WireXchange Automated Email '+ cList[0].Subject);
-
-            if(cList[0].Subject == '[EXTERNAL] WireXchange Automated Email'){
-                Code = String.valueOf(cList[0].Description).substringAfter('CODE: ');
-                Code = String.valueOf(Code).substringBefore('  ACCT');
-                System.debug('Code: '+ Code);
-                cList[0].Code_Number__c = Code;
-
-                MemberNumber = String.valueOf(cList[0].Description).substringAfter('ACCT: ');
-                MemberNumber = String.valueOf(MemberNumber).substringBefore('-');
-                System.debug('MemberNumber: '+ MemberNumber);
-                cList[0].Member_Number__c = MemberNumber;
-                WireXchange = true;
-            }
-            else{    
+            if(cList[0].Subject == null || cList[0].Subject == ''){
+             cList[0].Member_Number__c = '';
+                cList[0].Code_Number__c = '';
+            }else{          
+          system.debug('cList###' + cList);
+            List<String> splitted = cList[0].Subject.replace('[EXTERNAL] ','').split('\\s+');
+           
+          /*  if(splitted.size()>0 && splitted.size()<=1){
+            cList[0].Member_Number__c = splitted[0];
+               integer i;
+               integer membersize = cList[0].Member_Number__c.length();
+                 for(i=membersize; i<10;i++){
+                      cList[0].Member_Number__c = '0'+cList[0].Member_Number__c;
+                  } 
+            } */
                 
-                List<String> splitted = cList[0].Subject.replace('[EXTERNAL] ','').split('\\s+');
-            
-            /*  if(splitted.size()>0 && splitted.size()<=1){
-                cList[0].Member_Number__c = splitted[0];
-                integer i;
-                integer membersize = cList[0].Member_Number__c.length();
+             if(splitted.size()>0 && splitted.size()<=1){
+                  cList[0].Code_Number__c = splitted[0];
+             }
+        system.debug('splitted###' + splitted);
+        if(splitted.size()>=2){
+            cList[0].Code_Number__c = splitted[0];
+            cList[0].Member_Number__c = splitted[1];
+                 integer i;
+                 integer membersize = cList[0].Member_Number__c.length();
                     for(i=membersize; i<10;i++){
-                        cList[0].Member_Number__c = '0'+cList[0].Member_Number__c;
-                    } 
-                } */
-                    
-                if(splitted.size()>0 && splitted.size()<=1){
-                    cList[0].Code_Number__c = splitted[0];
+                       cList[0].Member_Number__c = '0'+cList[0].Member_Number__c;                          
+                   }                         
                 }
-                system.debug('splitted###' + splitted);
-                if(splitted.size()>=2){
-                    cList[0].Code_Number__c = splitted[0];
-                    cList[0].Member_Number__c = splitted[1];
-                    integer i;
-                    integer membersize = cList[0].Member_Number__c.length();
-                        for(i=membersize; i<10;i++){
-                        cList[0].Member_Number__c = '0'+cList[0].Member_Number__c;                          
-                    }                         
-                }
-            }
-        }          
+            }          
         
         for(Case c : Trigger.new){             
             if(c.Member_Number__c != null || c.Member_Number__c != '' || c.Code_Number__c != null || c.Code_Number__c != ''){
@@ -399,7 +376,7 @@ System.Debug('Calling the CaseAssign method');
                 
             }
         }     
-        system.debug('newListCrt'+newListCrt);
+        
         List<Account_Details__c> accDetails = [Select Id, Name from Account_Details__c where Name =:str AND RecType__c = 'ACCT'];
         
         System.debug('accDetails mylist is:::'+accDetails);
@@ -428,62 +405,32 @@ System.Debug('Calling the CaseAssign method');
       //  List<CaseRecordType__c> crtList = [Select Primary_Category__c, Secondary_Category__c, Teritiary_Category__c, RecordTypeId__c from CaseRecordType__c where Name =:newListCrt];
             
         List<EmailtoCaseCode__c> crtList = [Select Primary_Category__c, Secondary_Category__c, Teritiary_Category__c, RecordTypeId__c from EmailtoCaseCode__c where Name =:newListCrt];    
-         List<User> PortalUser = new List<User>();
-            if(pa.size() > 0)
-        PortalUser = [select id,FirstName,ContactId,LastName from user where FirstName =: pa[0].PersonId__r.FirstName and LastName =: pa[0].PersonId__r.LastName limit 1];
         
-        system.debug('crtList'+crtList);
-        if(WireXchange == true){
-            
-            for(Case c : Trigger.new){
-                if(accDetails.size()>0 || pa.size()>0 )
-                    c.Account_Number__c = accDetails[0].Id;
-                
-                system.debug('PersonId__r.FirstName'+pa[0].PersonId__r.FirstName);
-                System.debug('PersonId__r.LastName'+pa[0].PersonId__r.LastName);
-                System.debug('UserID '+ PortalUser[0].id);
-
+        for(Case c : Trigger.new){
+            if(accDetails.size()>0 || pa.size()>0 ){
+                c.Account_Number__c = accDetails[0].Id;
                 if(pa.size() > 0)
+                {
                     c.AccountId = pa[0].PersonId__c;
-                
+                    c.ContactId = conMap.get(pa[0].PersonId__c);
+                    c.First_Name__c = pa[0].PersonId__r.FirstName;
+                    c.Last_Name__c = pa[0].PersonId__r.LastName;
+                    c.Middle_Name__c = pa[0].PersonId__r.MiddleName;
+                    c.Street_Address_1__c = pa[0].PersonId__r.Residential_Street__pc;
+                    c.Street_Address_2__c = pa[0].PersonId__r.Residential_Extra_Address__pc;
+                    c.City__c = pa[0].PersonId__r.Residential_City__pc;
+                    c.State__c = pa[0].PersonId__r.Residential_State__pc;
+                    c.Country__c = pa[0].PersonId__r.Residential_Country__pc;
+                    c.Zip_Code__c = pa[0].PersonId__r.Residential_Zipocde__pc;
+                }
+                } 
                 if(crtList.size()>0 || !crtList.isEmpty()){
-                    c.Primary_Category__c = crtList[0].Primary_Category__c;
-                    c.Secondary_Category__c = crtList[0].Secondary_Category__c;
-                    c.Tertiary_Category__c = crtList[0].Teritiary_Category__c;
-                }
-                c.Origin = 'Portal';
-                c.Status ='Open';
-                if(PortalUser[0].id != null)
-                    c.createdById = PortalUser[0].id;
-            }
-        }    
-        else{
-            for(Case c : Trigger.new){
-                if(accDetails.size()>0 || pa.size()>0 ){
-                    c.Account_Number__c = accDetails[0].Id;
-                    if(pa.size() > 0)
-                    {
-                        c.AccountId = pa[0].PersonId__c;
-                        c.ContactId = conMap.get(pa[0].PersonId__c);
-                        c.First_Name__c = pa[0].PersonId__r.FirstName;
-                        c.Last_Name__c = pa[0].PersonId__r.LastName;
-                        c.Middle_Name__c = pa[0].PersonId__r.MiddleName;
-                        c.Street_Address_1__c = pa[0].PersonId__r.Residential_Street__pc;
-                        c.Street_Address_2__c = pa[0].PersonId__r.Residential_Extra_Address__pc;
-                        c.City__c = pa[0].PersonId__r.Residential_City__pc;
-                        c.State__c = pa[0].PersonId__r.Residential_State__pc;
-                        c.Country__c = pa[0].PersonId__r.Residential_Country__pc;
-                        c.Zip_Code__c = pa[0].PersonId__r.Residential_Zipocde__pc;
-                    }
-                    } 
-                    if(crtList.size()>0 || !crtList.isEmpty()){
-                    c.Primary_Category__c = crtList[0].Primary_Category__c;
-                    c.Secondary_Category__c = crtList[0].Secondary_Category__c;
-                    c.Tertiary_Category__c = crtList[0].Teritiary_Category__c;
-                    c.RecordTypeId = crtList[0].RecordTypeId__c;
-                    }           
-                }
-            }       
+                c.Primary_Category__c = crtList[0].Primary_Category__c;
+                c.Secondary_Category__c = crtList[0].Secondary_Category__c;
+                c.Tertiary_Category__c = crtList[0].Teritiary_Category__c;
+                c.RecordTypeId = crtList[0].RecordTypeId__c;
+                }           
+           }    
       } 
 }
 
@@ -651,7 +598,25 @@ System.Debug('Calling the CaseAssign method');
                         c.addError('All Tasks associated with a Case must be close/completed before the Case can be closed.');
                     }
                     
-                    AggregateResult[] pendingAttachCases = [select count(id) pendingDocCount, case__c from OnBase_Document__c where ((case__c IN:trigger.newMap.keySet() or Member_Comment__r.Case__C IN: trigger.newMap.keySet()) and document_type__c = '')  group by case__c];
+                    set<Id> AttachmentIdSet = new set<Id>();
+                    set<Id> OnbaseAttachmentIdSet = new set<Id>();
+                    AggregateResult[] pendingAttachCases = [select count(id) pendingDocCount, case__c from OnBase_Document__c where (case__c IN:trigger.newMap.keySet() and document_type__c = '')  group by case__c];
+                    //-----------CRM-1981---------------//
+                    List<OnBase_Document__c> pendingAttachMemberComments = [select Id, Name,Document_Name__c, Attachment_Id__c, IsMovedToOnBase__c, Case__c, Case__r.CaseNumber 
+                                                                             from OnBase_Document__c where Member_Comment__r.Case__C IN: trigger.newMap.keySet() and document_type__c = ''];
+
+
+                    for(OnBase_Document__c od:pendingAttachMemberComments){
+                        AttachmentIdSet.add(od.Attachment_Id__c);
+                    }                     
+                    
+                    List<Attachment> attachments = [SELECT BodyLength,Description,Id,LastModifiedDate ,Name,OwnerId,ParentId, Owner.Name, CreatedBy.Profile.Name, Parent.Type FROM Attachment where Id IN: AttachmentIdSet and CreatedBy.Profile.Name = 'Messaging center Customers'];
+                    for(Attachment a:attachments){
+                        OnbaseAttachmentIdSet.add(a.id);
+                    }
+
+                    System.debug('OnbaseAttachmentIdSet :: '+ OnbaseAttachmentIdSet);
+                    AggregateResult[] pendingAttachMemberCommentsAG = [select count(id) pendingDocCount, Member_Comment__r.Case__C from OnBase_Document__c where Attachment_Id__c IN: OnbaseAttachmentIdSet and document_type__c = '' group by Member_Comment__r.Case__C];
                     
                     if(pendingAttachCases.size() > 0){
                         
@@ -661,7 +626,16 @@ System.Debug('Calling the CaseAssign method');
                             caseAttachMap.put(aggRes.get('Case__c'),aggRes.get('pendingDocCount'));
                         }
                     }
-        
+
+                    if(pendingAttachMemberCommentsAG.size() > 0){
+                        
+                        for(AggregateResult aggRes : pendingAttachMemberCommentsAG){
+                            
+                            System.debug('aggRes1 :: '+ aggRes);
+                            caseAttachMap.put(aggRes.get('Case__c'),aggRes.get('pendingDocCount'));
+                        }
+                    }
+                     //-----------CRM-1981---------------//
                     System.debug('caseAttachMap :: '+caseAttachMap);
                     
                     if(caseAttachMap.containsKey(c.Id) && (Integer) caseAttachMap.get(c.Id)>0){
