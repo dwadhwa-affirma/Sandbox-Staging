@@ -639,7 +639,8 @@ public class CardLimitResetController {
             req.setMethod('POST');
             req.setHeader('Content-Type', 'application/json');
             req.setHeader('Accept', 'application/json');
-            jsonData = '{"EpisysId":'+'\"'+operatorid+'\"'+',"Locator":' + '\"'+ cardlocator +'\","AccountNumber":' + '\"'+ AccountNumber +'\","UsageLimit":' + '\"'+ atmlimit +'\","AuthLimit":' + '\"'+ authlimit +'\"}';                 
+            //jsonData = '{"EpisysId":'+'\"'+operatorid+'\"'+',"Locator":' + '\"'+ cardlocator +'\","AccountNumber":' + '\"'+ AccountNumber +'\","UsageLimit":' + '\"'+ atmlimit +'\","AuthLimit":' + '\"'+ authlimit +'\"}';                 
+            jsonData = '{"EpisysId":'+'\"'+operatorid+'\"'+',"Locator":' + '\"'+ cardlocator +'\","AccountNumber":' + '\"'+ AccountNumber +'\","UsageLimit":' + '\"'+ atmlimit +'\","AuthLimit":' + '\"'+ authlimit +'\","PosLimit":' + '\"'+ authlimit +'\"}'; 
             system.debug('test'+jsonData);
             req.setBodyAsBlob(Blob.valueof(jsonData));
             req.setTimeout(60000);                    
@@ -664,7 +665,7 @@ public class CardLimitResetController {
             req.setMethod('POST');
             req.setHeader('Content-Type', 'application/json');
             req.setHeader('Accept', 'application/json');
-            jsonData = '{"EpisysId":'+'\"'+operatorid+'\"'+',"Locator":' + '\"'+ cardlocator +'\","AccountNumber":' + '\"'+ AccountNumber +'\","UsageLimit":' + '\"'+ atmlimit +'\","AuthLimit":' + '\"'+ authlimit +'\"}';                 
+            jsonData = '{"EpisysId":'+'\"'+operatorid+'\"'+',"Locator":' + '\"'+ cardlocator +'\","AccountNumber":' + '\"'+ AccountNumber +'\","UsageLimit":' + '\"'+ atmlimit +'\","AuthLimit":' + '\"'+ authlimit +'\","PosLimit":' + '\"'+ authlimit +'\"}';                 
             system.debug('test'+jsonData);
             req.setBodyAsBlob(Blob.valueof(jsonData));
             req.setTimeout(60000);                    
