@@ -443,7 +443,7 @@ public class SolarLoanToFileUCC {
             if(StateMatched != true && CountyMatched != true )
                 FJId = null;
               
-            if(FJId != null){
+            if(FJId != null && sl.Jurisdiction__c != 'Not Found'){
 
                 //------------------------------------------------Filling UCC------------------------------------------//
                 
@@ -646,6 +646,7 @@ public class SolarLoanToFileUCC {
                 Solar_Loans__c s = new Solar_Loans__c(); 
                 s.id = sl.Id;
                 s.Jurisdiction__c = 'Not Found';
+                s.Status__c = 'EFT Record Created';
                 SolarLoanToUpdate.add(s);
 
             }
@@ -833,8 +834,8 @@ public class SolarLoanToFileUCC {
                 s.id = sl.Id;
                 s.Jurisdiction__c = string.valueOf(FJId);
                 s.continue__c = false;
-                s.Status__c = 'Approved';
-                s.Current_Solar_Loan_Stage__c = 'Stage 3';
+                //s.Status__c = 'Approved';
+                s.Current_Solar_Loan_Stage__c = 'Stage 2';
                 SolarLoanToUpdate.add(s); 
 
             }
