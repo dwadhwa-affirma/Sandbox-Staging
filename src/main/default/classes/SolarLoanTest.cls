@@ -236,7 +236,7 @@ private class SolarLoanTest{
      sl1.ECOA_Code__c = '2';
      sl1.Site_UUID__c = '116';
      sl1.FNI__c = '12';
-     sl1.Member_Number__c = '0000147163';
+     //sl1.Member_Number__c = '0000147163';
      sl1.Status__c = 'New'; 
      sl1.Primary_Cell_Phone__c = '567-678-7898';
      sl1.Primary_Home_Phone__c = '567-678-7898';
@@ -271,7 +271,9 @@ private class SolarLoanTest{
      sl1.mem_Primary_A_F_Foreign_Gov_t_Position__c = 'No';
      sl1.mem_Joint_Foreign_Gov_t_Position__c = 'No';
      sl1.mem_Joint_A_F_Foreign_Gov_t_Position__c = 'No';
-     
+     sl1.Membership_confirmation__c = true;
+    
+      
      sl1.Map__c = 'Map';
      sl1.Book__c = 'Book';
      sl1.Block__c = 'Block';
@@ -566,6 +568,7 @@ private class SolarLoanTest{
   static testMethod void test_Solarloancontroller4(){
       List<Solar_Loans__c> listSolarLoan  =  [SELECT Id from Solar_Loans__c where mem_Primary_Foreign_Gov_t_Position__c = 'No' limit 1];
       SolarLoanTocreateLoan.MembershipExist = 'true';
+      SolarLoanTocreateLoan.responseBody1 = '{"HasPrimaryAccount":"true","TotalPrimaryAccount" : "1"}';
       SolarLoanController.getMemberData(listSolarLoan[0].id, 'Stage 4');
   }
     
