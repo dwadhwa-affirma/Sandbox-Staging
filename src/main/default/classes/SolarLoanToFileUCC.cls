@@ -374,76 +374,82 @@ public class SolarLoanToFileUCC {
             }
             System.debug('token is = ' + token);
             
-            //------------------------------------------------Getting Jurisdiction------------------------------------------//
-
-            if(sl.county__c != null && sl.county__c !='')
-                FJcounty = sl.county__c;
+            if(sl.Jurisdiction__c == 'Not Found' || sl.Jurisdiction__c == null){
             
-            if(sl.mem_Primary_State__c  != null && sl.mem_Primary_State__c  !='')
-                FJstate = sl.mem_Primary_State__c;
+                //------------------------------------------------Getting Jurisdiction------------------------------------------//
 
-                req3.setEndpoint(EndpointURL+'/OnlineServices/api/V2/Jurisdiction');
-                req3.setMethod('GET');
-                req3.setHeader('Accept', 'application/json');
-                req3.setHeader('Authorization', 'Bearer ' + token);
-                req3.setHeader('Content-Type', 'application/json;charset=UTF-8'); 
+                if(sl.county__c != null && sl.county__c !='')
+                    FJcounty = sl.county__c;
                 
-                system.debug('test3'+req3);                     
-                
-                if(!Test.isRunningTest()){
-                    res3 = http3.send(req3);
-                    responseBody3 = res3.getBody();
-                    System.debug('Body: '+responseBody3);
-                }
-                else{
-                    responseBody3 = '[{"ID":"456","Name":"TM","State":"MJ"}]';
-                }
+                if(sl.mem_Primary_State__c  != null && sl.mem_Primary_State__c  !='')
+                    FJstate = sl.mem_Primary_State__c;
 
-                
-                /*if(UCClogs == null)
-                    UCClogs = responseBody3;
-                else
-                    UCClogs = UCClogs +'\n'+ responseBody3; */
+                    req3.setEndpoint(EndpointURL+'/OnlineServices/api/V2/Jurisdiction');
+                    req3.setMethod('GET');
+                    req3.setHeader('Accept', 'application/json');
+                    req3.setHeader('Authorization', 'Bearer ' + token);
+                    req3.setHeader('Content-Type', 'application/json;charset=UTF-8'); 
+                    
+                    system.debug('test3'+req3);                     
+                    
+                    if(!Test.isRunningTest()){
+                        res3 = http3.send(req3);
+                        responseBody3 = res3.getBody();
+                        System.debug('Body: '+responseBody3);
+                    }
+                    else{
+                        responseBody3 = '[{"ID":"456","Name":"TM","State":"MJ"}]';
+                    }
 
-                if(responseBody3 != ''){        
-                    List<Object> results = (List<Object>)System.JSON.deserializeUntyped(responseBody3);
-                    if(results.size() > 0){
-                        for(Object key : results){ 
-                            //System.debug('key: '+key);   
-                            Map<String, Object> Fdata = (Map<String, Object>)key;
-                            for(string o: Fdata.keyset()){
-                                if(StateMatched == false){
-                                    if(o == 'ID'){
-                                        FJId = Integer.valueOf(Fdata.get(o));
-                                    }
-                                    if(o == 'Name' && string.valueOf(Fdata.get(o)).equalsIgnoreCase(FJcounty)){
-                                        system.debug('FJ: '+ string.valueOf(Fdata.get(o)));
-                                        CountyMatched = true;
-                                    }
-                                   
-                                    if(CountyMatched == true && o == 'State' && StateMatched == false){
-                                        system.debug('State: '+ string.valueOf(Fdata.get(o)));
-                                        system.debug('-------'+Fdata);
-                                        FJstateDummy = string.valueOf(Fdata.get(o)).substringAfter('{Code=');
-                                        FJstateDummy = String.valueOf(FJstateDummy).substringBefore(', Country=');
-                                        if(FJstateDummy == FJstate){
-                                            StateMatched = true;
+                    
+                    /*if(UCClogs == null)
+                        UCClogs = responseBody3;
+                    else
+                        UCClogs = UCClogs +'\n'+ responseBody3; */
+
+                    if(responseBody3 != ''){        
+                        List<Object> results = (List<Object>)System.JSON.deserializeUntyped(responseBody3);
+                        if(results.size() > 0){
+                            for(Object key : results){ 
+                                //System.debug('key: '+key);   
+                                Map<String, Object> Fdata = (Map<String, Object>)key;
+                                for(string o: Fdata.keyset()){
+                                    if(StateMatched == false){
+                                        if(o == 'ID'){
+                                            FJId = Integer.valueOf(Fdata.get(o));
+                                        }
+                                        if(o == 'Name' && string.valueOf(Fdata.get(o)).equalsIgnoreCase(FJcounty)){
+                                            system.debug('FJ: '+ string.valueOf(Fdata.get(o)));
+                                            CountyMatched = true;
+                                        }
+                                    
+                                        if(CountyMatched == true && o == 'State' && StateMatched == false){
+                                            system.debug('State: '+ string.valueOf(Fdata.get(o)));
+                                            system.debug('-------'+Fdata);
+                                            FJstateDummy = string.valueOf(Fdata.get(o)).substringAfter('{Code=');
+                                            FJstateDummy = String.valueOf(FJstateDummy).substringBefore(', Country=');
+                                            if(FJstateDummy == FJstate){
+                                                StateMatched = true;
+                                            }
                                         }
                                     }
                                 }
                             }
                         }
                     }
-                }
-                
-            System.debug('CountyMatched: '+CountyMatched);
-            System.debug('StateMatched: '+StateMatched);    
-            System.debug('FJId: '+FJId);
+                    
+                System.debug('CountyMatched: '+CountyMatched);
+                System.debug('StateMatched: '+StateMatched);    
+                System.debug('FJId: '+FJId);
 
-            if(StateMatched != true && CountyMatched != true )
-                FJId = null;
-              
-            if(FJId != null && sl.Jurisdiction__c != 'Not Found'){
+                if(StateMatched != true && CountyMatched != true )
+                    FJId = null;
+            } 
+            else{
+                FJId = Integer.valueOf(sl.Jurisdiction__c);
+            }
+             
+            if(FJId != null){
 
                 //------------------------------------------------Filling UCC------------------------------------------//
                 
@@ -646,6 +652,8 @@ public class SolarLoanToFileUCC {
                 Solar_Loans__c s = new Solar_Loans__c(); 
                 s.id = sl.Id;
                 //s.Jurisdiction__c = 'Not Found';
+                if(UCClogs != null)
+                    s.UCC_logs__c = UCClogs;
                 s.Status__c = 'EFT Record Created';
                 SolarLoanToUpdate.add(s);
 
