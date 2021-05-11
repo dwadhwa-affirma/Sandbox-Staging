@@ -645,7 +645,7 @@ public class SolarLoanToFileUCC {
 
                 Solar_Loans__c s = new Solar_Loans__c(); 
                 s.id = sl.Id;
-                s.Jurisdiction__c = 'Not Found';
+                //s.Jurisdiction__c = 'Not Found';
                 s.Status__c = 'EFT Record Created';
                 SolarLoanToUpdate.add(s);
 

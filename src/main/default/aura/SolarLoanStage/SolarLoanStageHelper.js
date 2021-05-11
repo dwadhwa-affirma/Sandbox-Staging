@@ -123,7 +123,8 @@
             }
             
             if(stage == 'Stage 7' && (checkCurrentStatus == 'EFT Record Created' || 
-                                      checkCurrentStatus == 'Loan Funded')){
+                                      checkCurrentStatus == 'Loan Funded' ||
+                                      checkCurrentStatus == 'Completed')){
                 component.set("v.ButtonLabelName", "Submit UCC Data");
                 component.set("v.StageName", "Stage 7: Submit UCC Data");
                 component.set("v.IsWaitingDisabled", true);

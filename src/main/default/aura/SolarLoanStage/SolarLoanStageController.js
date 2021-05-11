@@ -235,13 +235,13 @@
                      );
                  }
                 
-                 if(checkstage != 'Stage 2'){
+                 /*if(checkstage != 'Stage 2'){
                     window.setTimeout(
                         $A.getCallback(function() {
                         helper.getSolarLoanData(component,helper)
                         }), 10000
                     );
-                 }
+                 }*/
                  if(checkstage != 'Stage 7'){
                     window.setTimeout(
                         $A.getCallback(function() {

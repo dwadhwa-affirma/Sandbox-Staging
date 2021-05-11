@@ -251,18 +251,41 @@ public class SolarLoanController {
         SolarCurrentStage = SolarLoanList[0].Current_Solar_Loan_Stage__c;
             
         
-        //------------------------------------------------Stage-2 Documents Check------------------------------------------------//
+        //------------------------------------------------Stage-2 Validation Check------------------------------------------------//
 
         if(CurrentStage == 'Stage 2'){
 
-            SLIdsToFileUCC.add(SolarLoanList[0].id);
-            SolarLoanToFileUCC.getJurisdiction(SLIdsToFileUCC);
-            
             if(SolarDocMemb.size() == 0){
 								
 				Stage2MissingDocs = 'Membership Application Document is not avaialble.';
 				Stage2ErrorCheck = 'True';
             }
+            else if(SolarLoanList[0].mem_ID_Issue_Date__c == null || SolarLoanList[0].mem_ID_Expiration_Date__c == null){
+								
+				Stage2MissingDocs = 'Please enter Primary ID Issue/Expiration Date.';
+				Stage2ErrorCheck = 'True';
+            }
+            else if(SolarLoanList[0].mem_ID_Issue_Date__c < SolarLoanList[0].mem_ID_Expiration_Date__c){
+								
+				Stage2MissingDocs = 'Primary ID Expiration Date is greater than ID Issue Date.';
+				Stage2ErrorCheck = 'True';
+            }
+            else if(SolarLoanList[0].mem_Joint_SSN__c != null && (SolarLoanList[0].mem_ID_Issue_Date__c == null || SolarLoanList[0].mem_ID_Expiration_Date__c == null)){
+								
+				Stage2MissingDocs = 'Please enter Joint ID Issue/Expiration Date.';
+				Stage2ErrorCheck = 'True';
+            }
+            else if(SolarLoanList[0].mem_Joint_SSN__c != null && SolarLoanList[0].Joint_ID_Issue_Date__c < SolarLoanList[0].Joint_ID_Expiration_Date__c){
+
+                Stage2MissingDocs = 'Joint ID Expiration Date is greater than ID Issue Date.';
+				Stage2ErrorCheck = 'True';
+            }
+            else{
+                
+                SLIdsToFileUCC.add(SolarLoanList[0].id);
+                SolarLoanToFileUCC.getJurisdiction(SLIdsToFileUCC);
+            }
+            
         }    
 
         //------------------------------------Stage-3 Member and Membership Info validation-----------------------------------------//
@@ -799,7 +822,7 @@ public class SolarLoanController {
         JurisdictionErrorCheck = 'True';
         update SolarLoanList;
     }
-    
+  
     if(CurrentStage == ' ' && SolarLoanList[0].Current_Solar_Loan_Stage__c == 'Stage 3' && 
                                 SolarLoanList[0].Error_Loan_Locator__c == 'There are multiple membership accounts'){
             
