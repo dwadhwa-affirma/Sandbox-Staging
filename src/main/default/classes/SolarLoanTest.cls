@@ -49,16 +49,6 @@ private class SolarLoanTest{
      Insert account_Obj; 
     
      
-     //---------------------------------------- Creating Person Account records--------------------------------------//
-     
-     /*List<Person_Account__c> person_obj= new List<Person_Account__c>{
-                               new Person_Account__c(Name_Type__c = 0,TypeTranslate__c='0000/Primary',Account_Number__c = account_details_Obj[0].id, PersonID__c = account_Obj.Id)};
-     insert person_obj;
-      
-     List<Person_Account__c> person_obj1= new List<Person_Account__c>{
-                               new Person_Account__c(Name_Type__c = 0,TypeTranslate__c='0000/Primary',Account_Number__c = account_details_Obj1[0].id, PersonID__c = account_Obj.Id)};
-     insert person_obj1;*/
-    
      
      //---------------------------------------- Creating Solar Loan record---------------------------------------------//
      
@@ -74,7 +64,7 @@ private class SolarLoanTest{
      sl.Joint_Zip_Code__c =  '12345';
      sl.Joint_Address_1__c = 'street';
      sl.Joint_Address_2__c = 'street2';
-      
+     sl.Product_Loan_Type__c = 'Solar'; 
      sl.Primary_First_Name__c ='Tom';
      sl.Primary_Last_Name__c = 'Jerry';
      sl.Primary_DOB__c = System.today();
@@ -185,8 +175,6 @@ private class SolarLoanTest{
      sl.mem_Joint_Zip_Code__c = '55555';
      sl.mem_Joint_Employer__c = 'rrr';
       
-     insert sl;
-     
      SolarLoan_Obj.add(sl);
       
      Solar_Loans__c sl1 = new Solar_Loans__c();
@@ -200,6 +188,7 @@ private class SolarLoanTest{
      sl1.Joint_Zip_Code__c =  '12345';
      sl1.Joint_Address_1__c = 'street';
      sl1.Joint_Address_2__c = 'street2';
+     sl1.Product_Loan_Type__c = 'Solar';
       
      sl1.Primary_First_Name__c ='Tom';
      sl1.Primary_Last_Name__c = 'Jerry';
@@ -264,6 +253,8 @@ private class SolarLoanTest{
      sl1.ACH__c = 'False';
      sl1.mem_Joint_SSN__c = '127081988';
      sl1.County__c = 'TM';
+     sl1.Joint_ID_Expiration_Date__c = system.today() - 100;
+     sl1.Joint_ID_Issue_Date__c = system.today() - 10;
  
      sl1.mem_Mailing_Extra_Address__c = 'MailExtra';
      sl1.mem_Mailing_State__c = 'MailState';
@@ -291,7 +282,6 @@ private class SolarLoanTest{
      sl1.mem_Joint_State__c = 'state'; 
      sl1.mem_Joint_Zip_Code__c = '55555';
      sl1.mem_Joint_Employer__c = 'rrr'; 
-     insert sl1; 
       
      SolarLoan_Obj.add(sl1); 
       
@@ -306,7 +296,7 @@ private class SolarLoanTest{
      sl2.Joint_Zip_Code__c =  '12345';
      sl2.Joint_Address_1__c = 'street';
      sl2.Joint_Address_2__c = 'street2';
-      
+     sl2.Product_Loan_Type__c = 'Solar'; 
      sl2.Primary_First_Name__c ='Tom';
      sl2.Primary_Last_Name__c = 'Jerry';
      sl2.Primary_DOB__c = System.today();
@@ -420,9 +410,7 @@ private class SolarLoanTest{
      sl2.mem_Joint_State__c = 'state'; 
      sl2.mem_Joint_Zip_Code__c = '55555';
      sl2.mem_Joint_Employer__c = 'rrr';
-      
-     insert sl2; 
-      
+   
      SolarLoan_Obj.add(sl2);   
       
      Solar_Loans__c sl3 = new Solar_Loans__c();
@@ -470,7 +458,8 @@ private class SolarLoanTest{
      sl3.Primary_Email__c = 'test1@test.com';
      sl3.mem_ID_Expiration_Date__c = system.today() + 100;
      sl3.mem_Primary_SSN__c = '123488789';
-    
+     sl3.Product_Loan_Type__c = 'Solar';
+      
      sl3.mem_Primary_DOB__c = system.today() - 50000;
      sl3.mem_Primary_City__c = 'City';
      sl3.Employer__c = 'T&T';
@@ -509,19 +498,20 @@ private class SolarLoanTest{
      sl3.mem_Joint_Zip_Code__c = '12345'; 
      sl3.UCC_Id__c = '3245-3422-25sr-24w2';
      
-     insert sl3;  
+     SolarLoan_Obj.add(sl3);
+     insert SolarLoan_Obj;
       
      //---------------------------------------- Creating Solar Loan Document record-----------------------------------//
      
      List<SolarLoan_Document__c> SolarLoanDocList = new List<SolarLoan_Document__c>{
-         new SolarLoan_Document__c(Member_Number__c = '0000214414',Solar_Loans__c = SolarLoan_Obj[0].id)};      
+         new SolarLoan_Document__c(Name = 'Membership Application', Member_Number__c = '0000214414',Solar_Loans__c = SolarLoan_Obj[0].id)};      
      insert SolarLoanDocList;
      
      test.startTest();
      
      //---------------------------------------- Creating Content Version Record for Attachment---------------------------------------------//
      
-     ContentVersion objAt = new ContentVersion(Title = 'Test Document',PathOnClient = 'TestDocument.pdf',VersionData = Blob.valueOf('Test Content'), IsMajorVersion = true);
+     ContentVersion objAt = new ContentVersion(Title = 'Membership Application',PathOnClient = 'TestDocument.pdf',VersionData = Blob.valueOf('Test Content'), IsMajorVersion = true);
      Insert objAt;
       
      
@@ -543,6 +533,7 @@ private class SolarLoanTest{
       test.startTest();
       SolarLoanController.waitingForResponse(listSolarLoan[0].id, 'New');
       SolarLoanController.getMemberData(listSolarLoan[0].id, 'Stage 1');
+      SolarLoanController.getMemberData(listSolarLoan[0].id, 'Stage 2');
       SolarLoanController.saveRoutingInfo(listSolarLoan[0].id,'122105155','Test Bank Name');
       SolarLoanController.routingInfo('122105155');
       SolarLoanToCreateLoan.getMemberNumber(slids);
@@ -574,13 +565,13 @@ private class SolarLoanTest{
     
   static testMethod void test_Solarloancontroller5(){
       List<Solar_Loans__c> listSolarLoan  =  [SELECT Id,Bank_Name__c from Solar_Loans__c where Bank_Name__c = 'test & bank' limit 1];
-      
+      SolarLoanController.getMemberData(listSolarLoan[0].id, 'Stage 2');
       SolarLoanController.getMemberData(listSolarLoan[0].id, 'Stage 5');
   }  
   
   static testMethod void test_Solarloancontroller6(){
       List<Solar_Loans__c> listSolarLoan  =  [SELECT Id,mem_Joint_SSN__c from Solar_Loans__c where mem_Joint_SSN__c = '127081988'limit 1];
-      
+     
       Test.startTest();
       SolarLoanController.getMemberData(listSolarLoan[0].id, 'Stage 4');
       SolarLoanController.getMemberData(listSolarLoan[0].id, 'Stage 7');

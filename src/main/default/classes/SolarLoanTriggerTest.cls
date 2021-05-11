@@ -153,7 +153,71 @@ public class SolarLoanTriggerTest {
             update s; 
         }
     }
-	
+    
+    static testMethod void testMethod10(){
+        
+
+        	Solar_Loans__c s = [select id,Status__c,DocuSignId__c from Solar_Loans__c where Status__c = 'New' ];
+			s.Status__c = 'Declined';            
+            update s;
+       
+        
+    }
+    static testMethod void testMethod11(){
+    
+            Solar_Loans__c s = [select id,Status__c,DocuSignId__c from Solar_Loans__c where Status__c = 'New' ];
+			s.Status__c = 'Expired';            
+            update s; 
+    }
+    
+    static testMethod void testMethod12(){
+        Test.startTest();
+        List<Solar_Loans__c> MemberTest = new list<Solar_Loans__c>();
+        
+        Solar_Loans__c s = new Solar_Loans__c();
+        s.Member_Number__c = '123456';
+        s.Site_UUID__c = '344';
+        
+        
+        MemberTest.add(s);
+        
+        if(MemberTest.size()>0){
+            insert MemberTest;
+        }
+        
+        s.Member_Number__c = '123456';
+        update MemberTest;
+        Test.stopTest();
+    }
+    
+    static testMethod void testMethod13(){
+        	Solar_Loans__c s1 = [select id,Status__c,DocuSignId__c,EftLocator__c from Solar_Loans__c where Status__c = 'New' ];
+			s1.Status__c = 'Completed';
+        	s1.EftLocator__c = null;
+            update s1;
+    } 
+    static testMethod void testMethod14(){
+        
+        Solar_Loans__c s = [select Id,DocuSignId__c,Member_Number__c,Member_Name__c from Solar_Loans__c];
+        s.Member_Number__c = '123456';
+        s.Member_Name__c = null;
+        update s;
+      
+    } 
+    static testMethod void testMethod15(){
+        Solar_Loans__c s = [select Id,DocuSignId__c,Status__c,Routing_Number__c from Solar_Loans__c where Status__c = 'New' and Routing_Number__c = null ];
+        s.Status__c = 'Completed';
+        s.Routing_Number__c = '1234566';
+        update s;
+
+    }
+    /* static testMethod void testMethod16(){
+        Solar_Loans__c s = [select Id,DocuSignId__c,SignatureCardURL__c from Solar_Loans__c where SignatureCardURL__c = null ];
+        s.SignatureCardURL__c = 'hkdsfsdfjsdhfkjsd';
+        update s;
+
+    } */
+    
     static testMethod void testMethod3(){
      
         User u = [SELECT Id,Email,username FROM User WHERE IsActive = true and Profile.Name = 'CFCU Admin' limit 1];
