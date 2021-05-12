@@ -265,9 +265,9 @@ public class SolarLoanController {
 				Stage2MissingDocs = 'Please enter Primary ID Issue/Expiration Date.';
 				Stage2ErrorCheck = 'True';
             }
-            else if(SolarLoanList[0].mem_ID_Issue_Date__c < SolarLoanList[0].mem_ID_Expiration_Date__c){
+            else if(SolarLoanList[0].mem_ID_Issue_Date__c > SolarLoanList[0].mem_ID_Expiration_Date__c){
 								
-				Stage2MissingDocs = 'Primary ID Expiration Date is greater than ID Issue Date.';
+				Stage2MissingDocs = 'Primary ID Expiration Date should be greater than ID Issue Date.';
 				Stage2ErrorCheck = 'True';
             }
             else if(SolarLoanList[0].mem_Joint_SSN__c != null && (SolarLoanList[0].Joint_ID_Issue_Date__c == null || SolarLoanList[0].Joint_ID_Expiration_Date__c == null)){
@@ -275,9 +275,9 @@ public class SolarLoanController {
 				Stage2MissingDocs = 'Please enter Joint ID Issue/Expiration Date.';
 				Stage2ErrorCheck = 'True';
             }
-            else if(SolarLoanList[0].mem_Joint_SSN__c != null && SolarLoanList[0].Joint_ID_Issue_Date__c < SolarLoanList[0].Joint_ID_Expiration_Date__c){
+            else if(SolarLoanList[0].mem_Joint_SSN__c != null && SolarLoanList[0].Joint_ID_Issue_Date__c > SolarLoanList[0].Joint_ID_Expiration_Date__c){
 
-                Stage2MissingDocs = 'Joint ID Expiration Date is greater than ID Issue Date.';
+                Stage2MissingDocs = 'Joint ID Expiration Date should be greater than ID Issue Date.';
 				Stage2ErrorCheck = 'True';
             }
             else{
