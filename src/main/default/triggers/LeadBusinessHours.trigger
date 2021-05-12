@@ -24,12 +24,12 @@ trigger LeadBusinessHours on Lead (after insert,after update, before insert, bef
                 
                 //-------------------------------CRM-1877--------------------------------------//
                 
-                if(lead.Episys_User_ID__c != 7002 && lead.LeadSource == 'Real Estate help desk' && 
+                /*if(lead.Episys_User_ID__c != 7002 && lead.LeadSource == 'Real Estate help desk' && 
                          lead.I_m_interested_in__c == 'Home Loan Help Desk'){
                                                  
                     System.debug('Calling Future class');    
                     MarketingLeadCheck.LeadCheck(lead.id);
-                }
+                }*/
             }
         }
         
@@ -367,7 +367,24 @@ trigger LeadBusinessHours on Lead (after insert,after update, before insert, bef
                          && lead.LeadSource != 'Refer a Member - Branch' && lead.LeadSource != 'Refer a Member - Web'){
                     System.debug('4444');
                     lead.OwnerId = uid;
-                } else {
+                } 
+            	else if(lead.Episys_User_ID__c != 7002 && lead.LeadSource == 'Real Estate help desk' && 
+                         lead.I_m_interested_in__c == 'Home Loan Help Desk'){
+                             
+                	System.debug('5555');
+                    for(Group grp : listQueue){
+              	      if(grp.name.containsIgnoreCase('Real Estate')){
+                 	     groupName = grp.Name;
+                         groupnameid = grp.id;
+                         break;
+                      }
+                    }
+                    if(groupName!=null && groupName!=''){
+                   		system.debug('Queue Name: '+groupName); 
+                        lead.OwnerId = groupnameid;
+                    }
+                }
+            	else{
                   //------------------------------- from Graham Smith 5/6/21 start --------------------------------------//
                   // Looks for a match on referring first name, referring last name and referring email.
                   // Only want to do this if single insert.
