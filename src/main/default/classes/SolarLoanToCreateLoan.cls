@@ -2,7 +2,7 @@ public class SolarLoanToCreateLoan {
 
     public static List<Solar_Loans__c> SolarLoanToUpdate = new List<Solar_Loans__c>();
     public static MAP<Id,Solar_Loans__c> solarMap = new MAP<Id,Solar_Loans__c>();
-    public static List<Attachment> CCCHSAttachment = new List<Attachment>();
+    public static List<ContentDocumentLink> CCCHSAttachment = new List<ContentDocumentLink>();
     public static List<SolarLoan_Document__c> SDList = new List<SolarLoan_Document__c>();
     public static boolean SDListDelete;
 
@@ -642,23 +642,9 @@ public class SolarLoanToCreateLoan {
                             ErrorLoanLocator = String.valueOf(ErrorLoanLocator).substringBefore('","ErrorDetails"');
                             system.debug('ErrorLoanLocator' + ErrorLoanLocator);
                         }
-                        else if(result == '7500'){
-
-                            PageReference PDf =  Page.CCCHS;
-                            PDf.getParameters().put('Id',sl.id);
-                            PDf.setRedirect(true);
-                            Attachment attach = new Attachment();
-                            Blob b ;
-                            b = PDf.getContentAsPDF();
-                            attach.Body = b;
-                            attach.Name = 'CCCHS Application.pdf';
-                            attach.IsPrivate = false;
-                            attach.ParentId = sl.id;
-                            CCCHSAttachment.add(attach);
-                        }
-                        else if(result != '7500'){
+                        /*else if(result != '7500'){
                             SDListDelete = true;
-                        }
+                        }*/
                         
                     }
                     
@@ -923,6 +909,29 @@ public class SolarLoanToCreateLoan {
                             
                         }
                     } 
+
+                    if(result == '7500' && TrackingRecord != 'IsFound'){
+
+                        PageReference PDf =  Page.CCCHS;
+                        PDf.getParameters().put('Id',sl.id);
+                        PDf.setRedirect(true);
+                        Blob b ;
+                        b = PDf.getContentAsPDF();
+                       
+                        ContentVersion cv = new ContentVersion();
+                        cv.Title = 'CCCHS Application.pdf';
+                        cv.PathOnClient = 'CCCHS Application.pdf';
+                        cv.VersionData = b;
+                        cv.IsMajorVersion = true;
+                        Insert cv;
+
+                        Id conDoc = [SELECT ContentDocumentId FROM ContentVersion WHERE Id =:cv.Id].ContentDocumentId;
+
+                        ContentDocumentLink cDe = new ContentDocumentLink();
+                        cDe.ContentDocumentId = conDoc;
+                        cDe.LinkedEntityId = sl.id;
+                        insert cDe;
+                    }
 
                     //-------------------------------------------------Updating Solar Loan records -----------------------------------------//
 
@@ -1315,23 +1324,9 @@ public class SolarLoanToCreateLoan {
                     ErrorLoanLocator = String.valueOf(ErrorLoanLocator).substringBefore('","ErrorDetails"');
                     system.debug('ErrorLoanLocator' + ErrorLoanLocator);
                 }
-                else if(result == '7500'){
-
-                    PageReference PDf =  Page.CCCHS;
-                    PDf.getParameters().put('Id',sl.id);
-                    PDf.setRedirect(true);
-                    Attachment attach = new Attachment();
-                    Blob b ;
-                    b = PDf.getContentAsPDF();
-                    attach.Body = b;
-                    attach.Name = 'CCCHS Application.pdf';
-                    attach.IsPrivate = false;
-                    attach.ParentId = sl.id;
-                    CCCHSAttachment.add(attach);
-                }
-                else if(result != '7500'){
+                /*else if(result != '7500'){
                     SDListDelete = true;
-                }
+                }*/
 
                 //----------------------------------------------------Create Loan Name--------------------------------------------------//
 
@@ -2119,7 +2114,30 @@ public class SolarLoanToCreateLoan {
 
                 System.debug('RGLines: '+ RGLines);
                 System.debug('logs: '+ logs);
-           
+                
+                system.debug('Result: '+result);
+                if(result == '7500'){
+
+                    PageReference PDf =  Page.CCCHS;
+                    PDf.getParameters().put('Id',sl.id);
+                    PDf.setRedirect(true);
+                    Blob b ;
+                    b = PDf.getContentAsPDF();
+                   
+                    ContentVersion cv = new ContentVersion();
+                    cv.Title = 'CCCHS Application.pdf';
+                    cv.PathOnClient = 'CCCHS Application.pdf';
+                    cv.VersionData = b;
+                    cv.IsMajorVersion = true;
+                    Insert cv;
+
+                    Id conDoc = [SELECT ContentDocumentId FROM ContentVersion WHERE Id =:cv.Id].ContentDocumentId;
+
+                    ContentDocumentLink cDe = new ContentDocumentLink();
+                    cDe.ContentDocumentId = conDoc;
+                    cDe.LinkedEntityId = sl.id;
+                    insert cDe;
+                }
                 //---------------------------------------------------Updating Solar Loan records -------------------------------------------//
             
                 Solar_Loans__c s = new Solar_Loans__c();  
@@ -2188,14 +2206,14 @@ public class SolarLoanToCreateLoan {
             update solarMap.values();
         }
 
-        if(CCCHSAttachment.size() > 0){
+        /*if(CCCHSAttachment.size() > 0){
             insert CCCHSAttachment;
         }
         if(SDListDelete == true){
             if(SDList.size() > 0){
                 delete SDList;
             }
-        }
+        }*/
     }
 
     @future(callout=true)

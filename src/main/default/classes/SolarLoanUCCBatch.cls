@@ -9,7 +9,7 @@ global class SolarLoanUCCBatch implements Database.Batchable<sObject>, Database.
     global void execute(Database.BatchableContext BC, List<Solar_loans__c> scope){
         
         List<Solar_Loans__c> SolarLoanToUpdate = new List<Solar_Loans__c>();
-        List<Attachment> SolarLoanUCCAttachment = new List<Attachment>();
+        List<ContentDocumentLink> SolarLoanUCCAttachment = new List<ContentDocumentLink>();
 
         HttpRequest req0 = new HttpRequest();
         HttpResponse res0;
@@ -244,13 +244,6 @@ global class SolarLoanUCCBatch implements Database.Batchable<sObject>, Database.
                 }
                 System.debug('UCC File is = ' + UCCFile);
                 
-                Attachment attach = new Attachment();
-                attach.contentType = 'application/pdf';
-                attach.name = 'UCC Filing document - Recorded';
-                attach.parentId = sl.id;
-                attach.body = EncodingUtil.base64Decode(UCCFile);
-                SolarLoanUCCAttachment.add(attach);
-
                 //------------------------------------Updating Existing Tracking 34----------------------------//
                 
                 Type = '34';
@@ -295,6 +288,21 @@ global class SolarLoanUCCBatch implements Database.Batchable<sObject>, Database.
                 }else{
                     responseBody1 = '{"Type":"34","UserChar1":"Submitted","TrackingLocator":"1","UserChar2":"1","UserChar3":"100","UserChar4":"4","UserChar5":"1","UserChar10":"01-01-2019","UserChar20":"01-01-2019","UserAmount1":"100.00","UserAmount2":"322271627","UserAmount3":"42006986568","UserAmount11":"BANK OF AMERICA","UserAmount12":"123","UserAmount13" : "UserAmount13","UserCode1" : "UserCode1", "LoanId" : "LoanId", "AccountNumber" : "AccountNumber"}';
                 }
+
+                ContentVersion cv = new ContentVersion();
+                cv.Title = 'UCC Filing document - Recorded.pdf';
+                cv.PathOnClient = 'UCC Filing document - Recorded.pdf';
+                cv.VersionData = EncodingUtil.base64Decode(UCCFile);
+                cv.IsMajorVersion = true;
+                Insert cv;
+
+                Id conDoc = [SELECT ContentDocumentId FROM ContentVersion WHERE Id =:cv.Id].ContentDocumentId;
+
+                ContentDocumentLink cDe = new ContentDocumentLink();
+                cDe.ContentDocumentId = conDoc;
+                cDe.LinkedEntityId = sl.id;
+                SolarLoanUCCAttachment.add(cDe);
+                
                 
                 if(UCClogs == null)
                 	UCClogs = responseBody1;

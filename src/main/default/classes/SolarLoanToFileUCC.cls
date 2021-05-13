@@ -1,7 +1,7 @@
 public class SolarLoanToFileUCC {
     
     public static List<Solar_Loans__c> SolarLoanToUpdate = new List<Solar_Loans__c>(); 
-    public static List<Attachment> SolarLoanUCCAttachment = new List<Attachment>();
+    public static List<ContentDocumentLink> SolarLoanUCCAttachment = new List<ContentDocumentLink>();
 
     public static String token;
     public static String UCCId;
@@ -628,12 +628,26 @@ public class SolarLoanToFileUCC {
                     UCClogs = UCClogs +'\n'+ responseBody2;
             
 
-                Attachment attach = new Attachment();
+                /*Attachment attach = new Attachment();
                 attach.contentType = 'application/pdf';
                 attach.name = 'UCC Filing document';
                 attach.parentId = sl.id;
                 attach.body = EncodingUtil.base64Decode(UCCFile);
-                SolarLoanUCCAttachment.add(attach);
+                SolarLoanUCCAttachment.add(attach);*/
+
+                ContentVersion cv = new ContentVersion();
+                cv.Title = 'UCC Filing document.pdf';
+                cv.PathOnClient = 'UCC Filing document.pdf';
+                cv.VersionData = EncodingUtil.base64Decode(UCCFile);
+                cv.IsMajorVersion = true;
+                Insert cv;
+
+                Id conDoc = [SELECT ContentDocumentId FROM ContentVersion WHERE Id =:cv.Id].ContentDocumentId;
+
+                ContentDocumentLink cDe = new ContentDocumentLink();
+                cDe.ContentDocumentId = conDoc;
+                cDe.LinkedEntityId = sl.id;
+                SolarLoanUCCAttachment.add(cDe);
 
                 
                 Solar_Loans__c s = new Solar_Loans__c(); 
