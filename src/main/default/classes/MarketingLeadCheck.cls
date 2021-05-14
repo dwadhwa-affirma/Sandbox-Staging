@@ -82,6 +82,20 @@ public class MarketingLeadCheck {
                 opp.StageName ='New';
                 opp.Opportunity_Source__c ='Real Estate Help desk';
                 
+                for(Group grp : listQueue){
+                    if(grp.name.containsIgnoreCase('Real Estate')){
+                        groupName = grp.Name;
+                        groupnameid = grp.id;
+                        break;
+                    }
+                }
+                
+                if(groupName!=null && groupName!=''){
+                    system.debug('Queue Name: '+groupName); 
+                    opp.Queue_Owner__c = groupName;
+                    opp.User_Owner__c = null;
+                }
+                
                 Lead l = new Lead();
                 l.id = lead.id;
                 leadToDelete.add(l);
@@ -103,6 +117,7 @@ public class MarketingLeadCheck {
                     system.debug('Queue Name: '+groupName); 
                     Lead l = new Lead();
                     l.id = lead.id;
+                    l.Product_Subtype__c = 'Xpress Refi';
                     l.OwnerId = groupnameid;
                     leadToUpdate.add(l);
                 }
