@@ -246,7 +246,7 @@ global class SolarLoanUCCBatch implements Database.Batchable<sObject>, Database.
                 
                 Attachment attach = new Attachment();
                 attach.contentType = 'application/pdf';
-                attach.name = 'UCC Filing document - Recorded';
+                attach.name = 'UCC Filing document - Recorded.pdf';
                 attach.parentId = sl.id;
                 attach.body = EncodingUtil.base64Decode(UCCFile);
                 SolarLoanUCCAttachment.add(attach);

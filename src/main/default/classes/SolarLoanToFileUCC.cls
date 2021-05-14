@@ -630,7 +630,7 @@ public class SolarLoanToFileUCC {
 
                 Attachment attach = new Attachment();
                 attach.contentType = 'application/pdf';
-                attach.name = 'UCC Filing document';
+                attach.name = 'UCC Filing document.pdf';
                 attach.parentId = sl.id;
                 attach.body = EncodingUtil.base64Decode(UCCFile);
                 SolarLoanUCCAttachment.add(attach);
