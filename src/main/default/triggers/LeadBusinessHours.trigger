@@ -22,11 +22,11 @@ trigger LeadBusinessHours on Lead (after insert,after update, before insert, bef
                 obj.Open_Hours__c = 0;
                 openHours.add(obj);
                 
-                //-------------------------------CRM-1877--------------------------------------//
+                //-------------------------------Xpress Refi Form--------------------------------------//
                 
                 /*if(lead.Episys_User_ID__c != 7002 && lead.LeadSource == 'Real Estate help desk' && 
-                         lead.I_m_interested_in__c == 'Home Loan Help Desk'){
-                                                 
+                         lead.I_m_interested_in__c == 'Xpress Refi Form'){
+					                             
                     System.debug('Calling Future class');    
                     MarketingLeadCheck.LeadCheck(lead.id);
                 }*/
@@ -370,7 +370,13 @@ trigger LeadBusinessHours on Lead (after insert,after update, before insert, bef
                 } 
             	else if(lead.Episys_User_ID__c != 7002 && lead.LeadSource == 'Real Estate help desk' && 
                          lead.I_m_interested_in__c == 'Home Loan Help Desk'){
-                             
+                    
+                	if(lead.Are_you_a_current_member__c == 'No'){
+                    	lead.Current_Member__c = 'No';
+                    }
+                    if(lead.Are_you_a_current_member__c == 'Yes'){
+                    	lead.Current_Member__c = 'Yes';
+                    }
                 	System.debug('5555');
                     for(Group grp : listQueue){
               	      if(grp.name.containsIgnoreCase('Real Estate')){
