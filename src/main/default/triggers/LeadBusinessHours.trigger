@@ -24,12 +24,12 @@ trigger LeadBusinessHours on Lead (after insert,after update, before insert, bef
                 
                 //-------------------------------Xpress Refi Form--------------------------------------//
                 
-                /*if(lead.Episys_User_ID__c != 7002 && lead.LeadSource == 'Real Estate help desk' && 
+                if(lead.Episys_User_ID__c != 7002 && lead.LeadSource == 'Xpress Form - Web' && 
                          lead.I_m_interested_in__c == 'Xpress Form - Web'){
 					                             
                     System.debug('Calling Future class');    
                     MarketingLeadCheck.LeadCheck(lead.id);
-                }*/
+                }
             }
         }
         
