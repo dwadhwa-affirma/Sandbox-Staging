@@ -79,8 +79,10 @@ public class MarketingLeadCheck {
                 
                 opp.CloseDate = Date.today();
                 opp.Product_Type__c ='Mortgage';
+                opp.Product_Sub__c = 'Xpress Refi';
                 opp.StageName ='New';
-                opp.Opportunity_Source__c ='Real Estate Help desk';
+                opp.Opportunity_Source__c ='Xpress Form - Web';
+                opp.I_m_interested_in__c = 'Xpress Form - Web';
                 
                 for(Group grp : listQueue){
                     if(grp.name.containsIgnoreCase('Real Estate')){
