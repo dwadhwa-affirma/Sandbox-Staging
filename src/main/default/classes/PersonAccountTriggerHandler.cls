@@ -193,12 +193,17 @@ public with sharing class PersonAccountTriggerHandler {
 						//system.debug('Account Rec Type: '+MemAccLoanList.get(accDetailMap.get(var.Account_Number__c).name).ID1__c);
 
 						if(MemAccLoanList.size() > 0 && (MemAccLoanList.get(accDetailMap.get(var.Account_Number__c).name).ID1__c).startsWith('75')){
+							system.debug('Inside assigning Call Center Solar Onboarding Queue');
 							c.OwnerId = CallCenterSolarOnboardingQueueId;
 						}
 						else if(episysUserMap.get((accDetailMap.get(var.Account_Number__c).Created_By_User__c)).Alias__c != null
                            && eBranchUserAliasMap.get(episysUserMap.get((accDetailMap.get(var.Account_Number__c).Created_By_User__c)).Alias__c.toupperCase()) != null){
                             c.OwnerId = onboardingQueueGroupId;
-                        }                         
+                        }
+						else if(episysUserMap.get(accDetailMap.get(var.Account_Number__c).Created_By_User__c).Episys_ID__c == 807){
+							system.debug('Inside assigning eBranch - Membership onboarding queue for 807');
+							c.OwnerId = onboardingQueueGroupId;
+						}                         
 		                else if(userAliasMap.get(accDetailMap.get(var.Account_Number__c).Created_By_User_Alias__c)!= null){
 		                  system.debug('###Inside  assigning owner' + userAliasMap.get(accDetailMap.get(var.Account_Number__c).Created_By_User_Alias__c));
 		               		// if(userMap1.get(accDetailMap.get(var.Account_Number__c).Created_By_User_Text__c) != null){

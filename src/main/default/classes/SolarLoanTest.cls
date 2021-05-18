@@ -523,6 +523,13 @@ private class SolarLoanTest{
         new ContentDocumentLink (ContentDocumentId = cdList[0].id, LinkedEntityId = SolarLoan_Obj[0].Id)};
      insert ListCDL;
       
+     Attachment attach=new Attachment();   	
+     attach.Name='Unit Test Attachment';
+     Blob bodyBlob=Blob.valueOf('Unit Test Attachment Body');
+     attach.body=bodyBlob;
+     attach.parentId=SolarLoan_Obj[0].Id;
+     insert attach;
+      
      test.stopTest();
   }
   static testMethod void test_Solarloancontroller(){
@@ -606,14 +613,17 @@ private class SolarLoanTest{
     List<ContentDocument> cdList = [SELECT Id, Title, LatestPublishedVersionId FROM ContentDocument limit 1];
     
     // ---------------------------Fetching Solar Loan document record from test set up data -------------------------//
-    List<SolarLoan_Document__c> SolarLoanDocList = [SELECT id from SolarLoan_Document__c limit 1];  
+    List<SolarLoan_Document__c> SolarLoanDocList = [SELECT id from SolarLoan_Document__c limit 1];
+      
+    List<Attachment> alist = [select id from Attachment Limit 1];  
    
     // --------------------------------Calling non static method of SolarLoanAPI class------------------------------//  
     
     Solar_Loans__c sl1 = new Solar_Loans__c();
 	sl1.id =  listSolarLoan[0].id;
     sl1.Sunlight_Update__c = true;
-    sl1.Status__c = 'Done';  
+    //sl1.Status__c = 'Done';  
+    sl1.Current_Solar_Loan_Stage__c = 'Stage 8';  
     update sl1;
     
     List<SolarLoanDocumentAPI.SolarLoanDocumentAPIResopnse> listApiResponse = SolarLoanDocumentAPI.getSolarLoanDocuemnts();

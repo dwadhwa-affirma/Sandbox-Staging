@@ -630,7 +630,7 @@ public class SolarLoanToFileUCC {
 
                 Attachment attach = new Attachment();
                 attach.contentType = 'application/pdf';
-                attach.name = 'UCC Filing document';
+                attach.name = 'UCC Filing document.pdf';
                 attach.parentId = sl.id;
                 attach.body = EncodingUtil.base64Decode(UCCFile);
                 SolarLoanUCCAttachment.add(attach);
@@ -651,7 +651,7 @@ public class SolarLoanToFileUCC {
 
                 Solar_Loans__c s = new Solar_Loans__c(); 
                 s.id = sl.Id;
-                //s.Jurisdiction__c = 'Not Found';
+                s.Jurisdiction__c = 'Not Found';
                 if(UCClogs != null)
                     s.UCC_logs__c = UCClogs;
                 s.Status__c = 'EFT Record Created';
