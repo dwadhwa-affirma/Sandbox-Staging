@@ -1126,8 +1126,12 @@ public class SolarLoanToCreateLoan {
                     MOTHERSMAIDENNAME = MOTHERSMAIDENNAME.substring(0,20);
                 }    
 
-                if(sl.Occupation__c != null)
+                if(sl.Occupation__c != null){
                     OCCUPATION = string.valueOf(sl.Occupation__c).toUpperCase();
+                    if(OCCUPATION.contains('&') == true){
+                        OCCUPATION = OCCUPATION.replace('&', '&#38;');
+                    }
+                }
                 else
                     OCCUPATION = '';
 
@@ -1734,8 +1738,12 @@ public class SolarLoanToCreateLoan {
                         JOINTMOTHERSMAIDENNAME = JOINTMOTHERSMAIDENNAME.substring(0,20);
                     }
 
-                    if(sl.Joint_Occupation__c != null)
+                    if(sl.Joint_Occupation__c != null){
                         JOINTOCCUPATION = string.valueOf(sl.Joint_Occupation__c).toUpperCase();
+                        if(JOINTOCCUPATION.contains('&') == true){
+                            JOINTOCCUPATION = JOINTOCCUPATION.replace('&', '&#38;');
+                        }
+                    }
                     else
                         JOINTOCCUPATION = '';                      
 
