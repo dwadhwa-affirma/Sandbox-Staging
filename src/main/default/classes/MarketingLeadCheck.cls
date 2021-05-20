@@ -103,7 +103,7 @@ public class MarketingLeadCheck {
                 l.id = lead.id;
                 leadToDelete.add(l);
                 
-                opp.I_m_interested_in__c = lead.Description;
+                opp.Description = lead.Description;
                 oppToCreate.add(opp);
                 System.debug('oppToCreate'+oppToCreate);
             }
