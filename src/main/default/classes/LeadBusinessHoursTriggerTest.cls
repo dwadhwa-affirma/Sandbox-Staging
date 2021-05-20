@@ -197,13 +197,13 @@ public class LeadBusinessHoursTriggerTest {
         PersonMobilePhone='12345678');         
         insert acc;
         
-        Lead newlead1 = new Lead(Brand__c='CFCU',I_m_interested_in__c = 'Home Loan Help Desk',FirstName = 'FirstName270',LastName = 'LastName270', Status = 'New',company = 'c', RecordTypeId = LeadRT, HasOptedOutOfEmail = false, IsConverted = false, IsUnreadByOwner = false, 
-                       Home_Phone__c = '555-555-5555',email = 'test@yahoo.com',smagicinteract__SMSOptOut__c = false, Escalated__c = false, Membership_Required_old__c = false, Keep__c = false, et4ae5__HasOptedOutOfMobile__c = false, Episys_Flag__c = false,
-                       temp__c = false, Episys_User_ID__c= 1538, LeadSource = 'Real Estate help desk', Product_Type__c ='Cards');
+        Lead newlead1 = new Lead(Are_you_a_current_member__c = 'No', Brand__c='CFCU',I_m_interested_in__c = 'Xpress Form - Web',FirstName = 'FirstName270',LastName = 'LastName270', Status = 'New',company = 'c', RecordTypeId = LeadRT, HasOptedOutOfEmail = false, IsConverted = false, IsUnreadByOwner = false, 
+                       Home_Phone__c = '555-555-5555',email = 'test1@yahoo.com',smagicinteract__SMSOptOut__c = false, Escalated__c = false, Membership_Required_old__c = false, Keep__c = false, et4ae5__HasOptedOutOfMobile__c = false, Episys_Flag__c = false,
+                       temp__c = false, Episys_User_ID__c= 1538, LeadSource = 'Xpress Form - Web', Product_Type__c ='Mortgage');
         
-        Lead newlead2 = new Lead(Brand__c='CFCU',I_m_interested_in__c = 'Home Loan Help Desk',FirstName = 'FirstName270',LastName = 'LastName270', Status = 'New',company = 'c', RecordTypeId = LeadRT, HasOptedOutOfEmail = false, IsConverted = false, IsUnreadByOwner = false, 
-                       Home_Phone__c = '556-555-5555',email = 'test1@yahoo.com',smagicinteract__SMSOptOut__c = false, Escalated__c = false, Membership_Required_old__c = false, Keep__c = false, et4ae5__HasOptedOutOfMobile__c = false, Episys_Flag__c = false,
-                       temp__c = false, Episys_User_ID__c= 1538, LeadSource = 'Real Estate help desk', Product_Type__c ='Cards');
+        Lead newlead2 = new Lead(Brand__c='CFCU',I_m_interested_in__c = 'Xpress Form - Web',FirstName = 'FirstName270',LastName = 'LastName270', Status = 'New',company = 'c', RecordTypeId = LeadRT, HasOptedOutOfEmail = false, IsConverted = false, IsUnreadByOwner = false, 
+                       Home_Phone__c = '556-555-5555',email = 'test@yahoo.com',smagicinteract__SMSOptOut__c = false, Escalated__c = false, Membership_Required_old__c = false, Keep__c = false, et4ae5__HasOptedOutOfMobile__c = false, Episys_Flag__c = false,
+                       temp__c = false, Episys_User_ID__c= 1538, LeadSource = 'Xpress Form - Web', Product_Type__c ='Mortgage');
         
         leadList.add(newlead1);
         leadList.add(newlead2);
