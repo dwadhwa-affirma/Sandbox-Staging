@@ -179,12 +179,14 @@ public class LeadBusinessHoursTriggerTest {
 		test.StopTest();		
 	}
     static testMethod void LeadBusinessHoursTriggerTest7(){
-		test.StartTest();
+		
         User ur = [select id,name,alias from user where alias='JFRA'];
         List<Lead> leadList = new List<Lead>();
         String RecTypeId= [select Id from RecordType where (Name='Person Account') and (SobjectType='Account')].Id; 
         Id LeadRT = Schema.SObjectType.Lead.getRecordTypeInfosByName().get('Non-Member Lead').getRecordTypeId();
-      	
+      	List<Person_Account__c> palist = new List<Person_Account__c>();
+        List<Account_Details__c> acclist = new List<Account_Details__c>();
+        
         Account acc = new Account(
         RecordTypeID=RecTypeId,
         FirstName='Test FName',
@@ -196,17 +198,56 @@ public class LeadBusinessHoursTriggerTest {
         PersonHomePhone='1234567',
         PersonMobilePhone='12345678');         
         insert acc;
+		
+        test.StartTest();
+        
+		Account_Details__c accDetails = new Account_Details__c();
+           accDetails.Name = 'test';
+           accDetails.RESTRICTED_ACCESS__c = 1;
+           accDetails.RecType__c = 'ACCT';
+           accDetails.Reference__c  = 'BC02';
+        
+        
+        Account_Details__c accDetails2 = new Account_Details__c();
+           accDetails2.Name = 'test2';
+           accDetails2.RESTRICTED_ACCESS__c = 1;
+           accDetails2.RecType__c = 'ACCT';
+           accDetails2.Reference__c  = 'BC01';
+        
+        acclist.add(accDetails);
+        acclist.add(accDetails2);
+        insert acclist;
+        
+        Person_Account__c pa = new Person_Account__c();
+           pa.PersonID__c = acc.Id;
+           pa.Account_Number__c = accDetails.Id;
+           pa.Name_Type__c = 0;
+        
+        
+        Person_Account__c pa2 = new Person_Account__c();
+           pa2.PersonID__c = acc.Id;
+           pa2.Account_Number__c = accDetails2.Id;
+           pa2.Name_Type__c = 0;
+        
+        palist.add(pa);
+        palist.add(pa2);
+        insert palist;
         
         Lead newlead1 = new Lead(Are_you_a_current_member__c = 'No', Brand__c='CFCU',I_m_interested_in__c = 'Xpress Form - Web',FirstName = 'FirstName270',LastName = 'LastName270', Status = 'New',company = 'c', RecordTypeId = LeadRT, HasOptedOutOfEmail = false, IsConverted = false, IsUnreadByOwner = false, 
                        Home_Phone__c = '555-555-5555',email = 'test1@yahoo.com',smagicinteract__SMSOptOut__c = false, Escalated__c = false, Membership_Required_old__c = false, Keep__c = false, et4ae5__HasOptedOutOfMobile__c = false, Episys_Flag__c = false,
                        temp__c = false, Episys_User_ID__c= 1538, LeadSource = 'Xpress Form - Web', Product_Type__c ='Mortgage');
         
-        Lead newlead2 = new Lead(Brand__c='CFCU',I_m_interested_in__c = 'Xpress Form - Web',FirstName = 'FirstName270',LastName = 'LastName270', Status = 'New',company = 'c', RecordTypeId = LeadRT, HasOptedOutOfEmail = false, IsConverted = false, IsUnreadByOwner = false, 
+        Lead newlead2 = new Lead(Brand__c='Spectrum',I_m_interested_in__c = 'Xpress Form - Web',FirstName = 'FirstName270',LastName = 'LastName270', Status = 'New',company = 'c', RecordTypeId = LeadRT, HasOptedOutOfEmail = false, IsConverted = false, IsUnreadByOwner = false, 
+                       Home_Phone__c = '556-555-5555',email = 'test@yahoo.com',smagicinteract__SMSOptOut__c = false, Escalated__c = false, Membership_Required_old__c = false, Keep__c = false, et4ae5__HasOptedOutOfMobile__c = false, Episys_Flag__c = false,
+                       temp__c = false, Episys_User_ID__c= 1538, LeadSource = 'Xpress Form - Web', Product_Type__c ='Mortgage');
+        
+        Lead newlead3 = new Lead(Brand__c='CFCU',I_m_interested_in__c = 'Xpress Form - Web',FirstName = 'FirstName270',LastName = 'LastName270', Status = 'New',company = 'c', RecordTypeId = LeadRT, HasOptedOutOfEmail = false, IsConverted = false, IsUnreadByOwner = false, 
                        Home_Phone__c = '556-555-5555',email = 'test@yahoo.com',smagicinteract__SMSOptOut__c = false, Escalated__c = false, Membership_Required_old__c = false, Keep__c = false, et4ae5__HasOptedOutOfMobile__c = false, Episys_Flag__c = false,
                        temp__c = false, Episys_User_ID__c= 1538, LeadSource = 'Xpress Form - Web', Product_Type__c ='Mortgage');
         
         leadList.add(newlead1);
         leadList.add(newlead2);
+        leadList.add(newlead3);
         
         system.runAs(ur) {
         	Insert leadList;
