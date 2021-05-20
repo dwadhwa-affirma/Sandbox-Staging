@@ -78,6 +78,11 @@ public class MarketingLeadCheck {
                 /*if(lstacc_phone.size() > 0)
                 	opp.AccountId = lstacc_phone[0].id;*/
                 
+                if(lead.Brand__c == 'Spectrum')
+                    opp.Brand__c = 'Spectrum';
+                else if(lead.Brand__c == 'CFCU')
+                    opp.Brand__c = 'Chevron';
+
                 opp.CloseDate = Date.today();
                 opp.Product_Type__c ='Mortgage';
                 opp.Product_Sub__c = 'Xpress Refi';
