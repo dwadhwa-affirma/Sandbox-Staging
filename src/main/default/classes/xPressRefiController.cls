@@ -165,8 +165,9 @@ public class xPressRefiController{
 				string SSN = p.PersonID__r.PersonID__c.substring(1);
 				string TempAccountnoSSNType = p.Account_Number__r.Name + ' ' + SSN + ' ' + p.typetranslate__c.substring(0, 4);
 				system.debug('TempAccountnoSSNType' + TempAccountnoSSNType);
-				if (AccountnoSSNType.contains(TempAccountnoSSNType)){//Accountno.contains(p.Account_Number__r.Name)
-					
+				if (AccountnoSSNType.contains(TempAccountnoSSNType)){
+					//Accountno.contains(p.Account_Number__r.Name)
+
 					NameSet.add(p.Account_Number__r.Name);
 				}
 			}
@@ -552,6 +553,7 @@ public class xPressRefiController{
 		}
 
 		string ProductType;
+		boolean IsJumboProduct;
 		if (xpressrefiobj != null && xpressrefiobj.Principal_Balance__c <= FinalRateLimit){
 			isConforming = true;
 			ProductType = 'Conforming%';
@@ -560,12 +562,20 @@ public class xPressRefiController{
 			ProductType = 'Jumbo%';
 		}
 
-		ProductsList = [SELECT id, name, Active__c, Product__c, Product_Code__c, Program__c, Rate__c, Type__c, Order__c, Cost_Component__c
+		if (xpressrefiobj.Product_Type__c.contains('Jumbo')){
+			IsJumboProduct = true;
+		} else{
+			IsJumboProduct = false;
+		}
+
+		system.debug('IsJumboProduct==' + IsJumboProduct);
+
+		ProductsList = [SELECT id, name, Active__c, Product__c, Product_Code__c, Program__c, Rate__c, Type__c, Order__c, Cost_Component__c, Conforming_Product__c
 		                from CU_Rates__c
 		                where Active__c = true and Type__c LIKE :ProductType
 		                order by Order__c];
 
-		XpressRefiProductsList = [SELECT id, name, Active__c, Product__c, Product_Code__c, Program__c, Rate__c, Type__c, Order__c, LastModifiedDate, Cost_Component__c
+		XpressRefiProductsList = [SELECT id, name, Active__c, Product__c, Product_Code__c, Program__c, Rate__c, Type__c, Order__c, LastModifiedDate, Cost_Component__c, Conforming_Product__c
 		                          from CU_Rates__c
 		                          where Active__c = true and Type__c LIKE :ProductType and Program__c = 'xPress Refi'
 		                          order by LastModifiedDate desc];
@@ -575,9 +585,26 @@ public class xPressRefiController{
 			Discount = getReloDiscountRates();
 		}
 
+		string Product;
+		if (IsJumboProduct && isConforming){
+			List<CU_Rates__c> ConfirmingProductsList = [SELECT id, name, Active__c, Product__c, Product_Code__c, Program__c, Rate__c, Type__c, Order__c, Cost_Component__c, Conforming_Product__c
+			                                            from CU_Rates__c
+			                                            where Active__c = true and Product__c = :xpressrefiobj.Product_Type__c
+			                                            order by Order__c
+			                                            limit 1];
+			system.debug('ConfirmingProductsList==' + ConfirmingProductsList);
+			if (ConfirmingProductsList.size() > 0){
+				Product = ConfirmingProductsList[0].Conforming_Product__c;
+			}
+		} else{
+			Product = xpressrefiobj.Product_Type__c;
+		}
+		system.debug('Product==' + Product);
+
 		List<ProductsListWrapperObject> ProductWrapperList = new List<ProductsListWrapperObject>();
 		for (CU_Rates__c cu : ProductsList){
 			ProductsListWrapperObject pwo = new ProductsListWrapperObject();
+
 			pwo.Product = cu.Product__c;
 			pwo.ProductName = cu.name;
 			pwo.CostComponent = cu.Cost_Component__c;
@@ -598,7 +625,7 @@ public class xPressRefiController{
 			//    pwo.MonthlySavings = cu.Product__c;
 			system.debug('Product_Type__c::' + xpressrefiobj.Product_Type__c);
 			system.debug('cu.Product__c::' + cu.Product__c);
-			if (!xpressrefiobj.Product_Type__c.contains('ARM') && xpressrefiobj.Product_Type__c == cu.Product__c && xpressrefiobj.Impermissible__c == false && String.isNotBlank(xpressrefiobj.Vesting__c) && String.isBlank(xpressrefiobj.PMI_Company_Name__c) && xpressrefiobj.Trust__c == false){
+			if (!xpressrefiobj.Product_Type__c.contains('ARM') && Product == cu.Product__c && xpressrefiobj.Impermissible__c == false && String.isNotBlank(xpressrefiobj.Vesting__c) && String.isBlank(xpressrefiobj.PMI_Company_Name__c) && xpressrefiobj.Trust__c == false){
 				pwo.IsMortgageCadence = false;
 			} else{
 				pwo.IsMortgageCadence = true;
@@ -610,19 +637,19 @@ public class xPressRefiController{
 				} else if (!isLoanPrimaryResidence && LoanTermYears <= 15){
 					ProductWrapperList.add(pwo);
 				}
-			} else if (!xpressrefiobj.Is_Maturity_Date_Reset__c && pwo.IsMortgageCadence && xpressrefiobj.Product_Type__c == cu.Product__c){
+			} else if (!xpressrefiobj.Is_Maturity_Date_Reset__c && pwo.IsMortgageCadence && Product == cu.Product__c){
 				if (isLoanPrimaryResidence){
 					ProductWrapperList.add(pwo);
 				} else if (!isLoanPrimaryResidence && LoanTermYears <= 15){
 					ProductWrapperList.add(pwo);
 				}
-			} else if (xpressrefiobj.Is_Maturity_Date_Reset__c && pwo.IsMortgageCadence && xpressrefiobj.Product_Type__c != cu.Product__c){
+			} else if (xpressrefiobj.Is_Maturity_Date_Reset__c && pwo.IsMortgageCadence && Product != cu.Product__c){
 				if (isLoanPrimaryResidence){
 					ProductWrapperList.add(pwo);
 				} else if (!isLoanPrimaryResidence && LoanTermYears <= 15){
 					ProductWrapperList.add(pwo);
 				}
-			} else if (xpressrefiobj.Is_Maturity_Date_Reset__c && pwo.IsMortgageCadence && xpressrefiobj.Product_Type__c == cu.Product__c){
+			} else if (xpressrefiobj.Is_Maturity_Date_Reset__c && pwo.IsMortgageCadence && Product == cu.Product__c){
 				if (isLoanPrimaryResidence){
 					ProductWrapperList.add(pwo);
 				} else if (!isLoanPrimaryResidence && LoanTermYears <= 15){
@@ -652,6 +679,9 @@ public class xPressRefiController{
 		resultMap.put('ProductWrapperList', ProductWrapperList);
 		resultMap.put('Note', Note);
 		resultMap.put('RatesUpdatedDate', FormatDate('MM/dd/yyyy', RatesUpdatedDate));
+
+		xRefi_Payeezy_Configurations__c PayeezyConfig = xRefi_Payeezy_Configurations__c.getValues('Primary');
+		resultMap.put('PayeezyConfig', PayeezyConfig);
 		return resultMap;
 	}
 

@@ -21,7 +21,6 @@
         var isMultipleMortgages;
         component.set("v.xPressRefiStageDetails", Stages);
         component.set("v.xRefiEligibleLoanIds", result.xRefiEligibleLoanIds);
-        
 
         if (
           result.IsXpressRefiPending &&
@@ -48,10 +47,18 @@
           component.set("v.errorMessage", errormessage);
           component.set("v.isContinueDisabled", true);
           isError = true;
-        } else if (isFullAddressMatch != undefined && !isError && !isFullAddressMatch) {
+        } else if (
+          isFullAddressMatch != undefined &&
+          !isError &&
+          !isFullAddressMatch
+        ) {
           stageComponenttoLoad = Stages[1].Stage_Component__c;
           isError = false;
-        } else if (isFullAddressMatch != undefined && !isError && isFullAddressMatch) {
+        } else if (
+          isFullAddressMatch != undefined &&
+          !isError &&
+          isFullAddressMatch
+        ) {
           stageComponenttoLoad = Stages[2].Stage_Component__c;
           component.set("v.ContinueButtonName", "Submit");
           isError = false;
@@ -104,7 +111,7 @@
                 "v.MembershipAddressDetails"
               ),
               xPressRefiRecordList: ActiveMortgages.xPressRefiList,
-              xRefiEligibleLoanIds: component.get("v.xRefiEligibleLoanIds")
+              xRefiEligibleLoanIds: component.get("v.xRefiEligibleLoanIds"),
             },
             function (msgBox) {
               if (component.isValid()) {
@@ -216,11 +223,12 @@
       component.set("v.ContinueButtonName", "Continue");
     }
     if (ActiveStepIndex == 0) {
-      var SelectedAccount = component.get(
-        "v.xPressRefiRecord.LoanId__c"
-      );
+      var SelectedAccount = component.get("v.xPressRefiRecord.LoanId__c");
       var pendingAccountIds = component.get("v.PendingXpressRefiAccountId");
-      if (pendingAccountIds!= undefined && pendingAccountIds.indexOf(SelectedAccount) != -1) {
+      if (
+        pendingAccountIds != undefined &&
+        pendingAccountIds.indexOf(SelectedAccount) != -1
+      ) {
         $A.createComponent(
           "c:" + stages[0].Stage_Component__c,
           {
@@ -306,5 +314,35 @@
     var xPressRefiRecord = event.getParam("xPressRefiRecord");
     if (xPressRefiRecord != undefined)
       component.set("v.xPressRefiRecord", xPressRefiRecord);
+
+    var IsFeeCollectionVisible = event.getParam("IsFeeCollectionVisible");
+    if (IsFeeCollectionVisible != undefined) {
+      component.set("v.IsFeeCollectionVisible", IsFeeCollectionVisible);
+    }
+    
+    var IsFeePaymentCompleted = component.get(
+      "v.xPressRefiRecord.Is_Fee_Payment_Completed__c"
+    );
+    var PaymentReferenceNumber = component.get(
+      "v.xPressRefiRecord.Payment_Reference_Number__c"
+    );
+    
+    if(IsFeeCollectionVisible && (IsFeePaymentCompleted == undefined || PaymentReferenceNumber == undefined)){
+      component.set("v.isContinueDisabled", true);
+    }
+    else if (
+      IsFeeCollectionVisible &&
+      (!IsFeePaymentCompleted || PaymentReferenceNumber == "")
+    ) {
+      component.set("v.isContinueDisabled", true);
+    } else if (
+      IsFeeCollectionVisible &&
+      (IsFeePaymentCompleted || PaymentReferenceNumber != "")
+    ) {
+      component.set("v.isContinueDisabled", false);
+    }
+    else if(!IsFeeCollectionVisible){
+      component.set("v.isContinueDisabled", false);
+    }
   },
 });

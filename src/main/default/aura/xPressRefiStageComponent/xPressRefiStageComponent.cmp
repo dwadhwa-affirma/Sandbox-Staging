@@ -19,6 +19,7 @@
     <aura:attribute name="MembershipAddressDetails" type="Map" default="{ MembershipAddress1: '', MembershipAddress2: '', MembershipCity : '', MembershipState : '', MembershipZip : '' }" />
     <aura:attribute name="PendingXpressRefiAccountId" type="set" />
     <aura:attribute name="xRefiEligibleLoanIds" type="set" />
+    <aura:attribute name="IsFeeCollectionVisible" type="Boolean" default="false" />
     
 	<lightning:overlayLibrary aura:id="overlayLib"/>
     <header class="slds-media_center slds-has-flexi-truncate slds-modal__header">
