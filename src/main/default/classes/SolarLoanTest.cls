@@ -124,7 +124,7 @@ private class SolarLoanTest{
      sl.mem_Primary_Last_Name__c = 'LAst';
      sl.Primary_Middle_Initial__c = 'M';
      sl.mem_Maiden_Name__c = 'M';
-     sl.Occupation__c = 'Occ';
+     sl.Occupation__c = 'Occ&';
      sl.mem_Primary_State__c = 'State';
      sl.mem_Primary_Zip_Code__c = '12356';
      sl.Primary_Work_Phone__c = '123-121-1212';
@@ -145,7 +145,7 @@ private class SolarLoanTest{
      sl.Joint_Middle_Initial__c = 'M';
      sl.Joint_Cell_Phone__c = '123-456-7653';
      sl.Joint_Maiden_Name__c = 'maiden';
-     sl.Joint_Occupation__c = 'Service';
+     sl.Joint_Occupation__c = 'Service&';
      sl.mem_Joint_State__c = 'CA';
      sl.mem_Joint_Street__c = 'Street';
      sl.Joint_Work_Phone__c = '123-445-4432';
@@ -246,7 +246,7 @@ private class SolarLoanTest{
      sl1.mem_Primary_Last_Name__c = 'LAst';
      sl1.Primary_Middle_Initial__c = 'M';
      sl1.mem_Maiden_Name__c = 'M';
-     sl1.Occupation__c = 'Occ';
+     sl1.Occupation__c = 'Occ&';
      sl1.mem_Primary_State__c = 'State';
      sl1.mem_Primary_Zip_Code__c = '12356';
      sl1.Primary_Work_Phone__c = '123-121-1212';
@@ -353,7 +353,7 @@ private class SolarLoanTest{
      sl2.mem_Primary_Last_Name__c = 'LAst';
      sl2.Primary_Middle_Initial__c = 'M';
      sl2.mem_Maiden_Name__c = 'M';
-     sl2.Occupation__c = 'Occ';
+     sl2.Occupation__c = 'Occ&';
      sl2.mem_Primary_State__c = 'State';
      sl2.mem_Primary_Zip_Code__c = '12356';
      sl2.Primary_Work_Phone__c = '123-121-1212';
@@ -374,7 +374,7 @@ private class SolarLoanTest{
      sl2.Joint_Middle_Initial__c = 'M';
      sl2.Joint_Cell_Phone__c = '123-456-7653';
      sl2.Joint_Maiden_Name__c = 'maiden';
-     sl2.Joint_Occupation__c = 'Service';
+     sl2.Joint_Occupation__c = 'Service&';
      sl2.mem_Joint_State__c = 'CA';
      sl2.mem_Joint_Street__c = 'Street';
      sl2.Joint_Work_Phone__c = '123-445-4432';
@@ -471,7 +471,7 @@ private class SolarLoanTest{
      sl3.mem_Primary_Last_Name__c = 'LAst';
      sl3.Primary_Middle_Initial__c = 'M';
      sl3.mem_Maiden_Name__c = 'M';
-     sl3.Occupation__c = 'Occ';
+     sl3.Occupation__c = 'Occ&';
      sl3.mem_Primary_State__c = 'State';
      sl3.mem_Primary_Zip_Code__c = '12356';
      sl3.Primary_Work_Phone__c = '123-121-1212';
@@ -491,7 +491,7 @@ private class SolarLoanTest{
      sl3.Joint_Middle_Initial__c = 'M';
      sl3.Joint_Cell_Phone__c = '123-456-7653';
      sl3.Joint_Maiden_Name__c = 'maiden';
-     sl3.Joint_Occupation__c = 'Service';
+     sl3.Joint_Occupation__c = 'Service&';
      sl3.mem_Joint_State__c = 'CA';
      sl3.mem_Joint_Street__c = 'Street';
      sl3.Joint_Work_Phone__c = '123-445-4432';
@@ -504,14 +504,14 @@ private class SolarLoanTest{
      //---------------------------------------- Creating Solar Loan Document record-----------------------------------//
      
      List<SolarLoan_Document__c> SolarLoanDocList = new List<SolarLoan_Document__c>{
-         new SolarLoan_Document__c(Name = 'Membership Application', Member_Number__c = '0000214414',Solar_Loans__c = SolarLoan_Obj[0].id)};      
+         new SolarLoan_Document__c(Name = 'Member Application_Completed', Member_Number__c = '0000214414',Solar_Loans__c = SolarLoan_Obj[0].id)};      
      insert SolarLoanDocList;
      
      test.startTest();
      
      //---------------------------------------- Creating Content Version Record for Attachment---------------------------------------------//
      
-     ContentVersion objAt = new ContentVersion(Title = 'Membership Application',PathOnClient = 'TestDocument.pdf',VersionData = Blob.valueOf('Test Content'), IsMajorVersion = true);
+     ContentVersion objAt = new ContentVersion(Title = 'Member Application_Completed',PathOnClient = 'TestDocument.pdf',VersionData = Blob.valueOf('Test Content'), IsMajorVersion = true);
      Insert objAt;
       
      
