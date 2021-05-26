@@ -76,19 +76,27 @@ public class MarketingLeadCheck {
             //system.debug('lstacc_phone'+lstacc_phone);
 
             if(lstacc_email.size() > 0){
-
+	
                 MemberName = lstacc_email[0].name;
-
-                List<string> Names = MemberName.split(' ');
-                if(Names.size() == 2){
-                    firstname = Names[0]+ '%';
-                    lastname= '%'+Names[1] + '%';
+                for(Account a : lstacc_email){
+                    
+                    List<string> Names = a.name.split(' ');
+                    if(Names.size() == 2){
+                        firstname = Names[0]+ '%';
+                        lastname= '%'+Names[1] + '%';
+                    }
+                    else if(Names.size() >= 3){
+                        firstname = Names[0]+ '%';
+                        lastname= '%'+Names[Names.size()-1] +'%';
+                    }
+                    if(firstname == lead.FirstName && lastname == lead.LastName){
+                        break;
+                    }
                 }
-                else if(Names.size() >= 3){
-                    firstname = Names[0]+ '%';
-                    lastname= '%'+Names[Names.size()-1] +'%';
-                }
-
+                
+                system.debug('firstname: '+firstname);
+                system.debug('lastname: '+lastname);
+                
                 if(lead.Brand__c == 'Spectrum'){
                 
                     pa = [SELECT id, name,PersonID__c,Account_Number__c,Account_Number__r.name,PersonID__r.name,Account_Number__r.RecType__c,
@@ -120,7 +128,7 @@ public class MarketingLeadCheck {
                 	opp.AccountId = lstacc_phone[0].id;*/
 
                 if(lstacc_email.size() > 0)
-                	opp.AccountId = lstacc_email[0].id;
+                	opp.AccountId = pa[0].PersonID__c;
                 if(ad.size() > 0)
                     opp.Member_Account__c = ad[0].id;    
                 
