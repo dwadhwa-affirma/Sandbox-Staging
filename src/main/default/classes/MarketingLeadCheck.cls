@@ -143,6 +143,8 @@ public class MarketingLeadCheck {
                 opp.StageName ='New';
                 opp.Opportunity_Source__c ='Xpress Form - Web';
                 opp.I_m_interested_in__c = 'Xpress Form - Web';
+                opp.Email__c = lead.Email;
+                opp.Home_Phone__c = lead.Home_Phone__c;
                 
                 for(Group grp : listQueue){
                     if(grp.name.containsIgnoreCase('Real Estate')){
