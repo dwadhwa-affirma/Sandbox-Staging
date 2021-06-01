@@ -498,12 +498,12 @@
 						}
 						
 						if(result.Profile.Name =='Branch'){
-							component.set("v.IsKYMTabVisible", false);
+							component.set("v.IsKYMTabVisible", true);
 							//component.set("v.IsKYMTabVisible", true); this change is done for AUT-292
 						}
 						else{
 							
-							component.set("v.IsKYMTabVisible", false);
+							component.set("v.IsKYMTabVisible", true);
 						}
 						
 						   var IsMatchingMemberFound; 

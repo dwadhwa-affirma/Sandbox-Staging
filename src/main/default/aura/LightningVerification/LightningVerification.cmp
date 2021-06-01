@@ -370,7 +370,7 @@
 								<lightning:tabset>
 					    		   	<aura:if isTrue ="{!v.IsKYMTabVisible}">
 										<lightning:tab label="KYM" id="KYMTab" onactive="{! c.handleActive }" iconName="{!v.KYMIconName}">
-											<c:KYMAuthentication recordId="{!v.SelectedmemberId}" GUID="{!v.GUID}"/>
+											<c:KYMAuthentication recordId="{!v.SelectedmemberId}" GUID="{!v.GUID}" IVRGUIDFromUrl="{!v.IVRGUIDFromUrl}"/>
 										</lightning:tab>
 								    </aura:if>
 											         

@@ -3,7 +3,7 @@
     <aura:registerEvent name="statusEvent" type="c:MemberIdEvent" />
     <aura:attribute name="selectedKYMvalue" type="string" default="Select"/>
     <aura:attribute name="GUID" type="string"/>
-    
+    <aura:attribute name="IVRGUIDFromUrl" type="string" />
     
     <aura:attribute name="IsSubmitClicked" type="boolean" default="false"/>
    <div >
@@ -13,13 +13,15 @@
                             <option value="I know this Member by Sight">I know this Member by Sight</option>
                             <option value="Drivers license/passport/state-issued ID">Drivers license/passport/state-issued ID</option>
                             <option value="Work badge">Work badge</option>
-                            <option value="Recognized by Voice">Recognized by Voice</option>                            
+                            <option value="Recognized by Voice">Recognized by Voice</option>  
+                            <option value="Secure Email">Secure Email</option>                          
                             <option value="Other">Other</option>
                 </lightning:select>
                 <span  id ="errorSpan" class="error hidden">Please select value from dropdown </span>
                 <lightning:input aura:id= "Otherreason" name="Otherreason" label="Other Reason" class="hidden MarginTop" maxlength="40" messageWhenTooLong="Your entry must be at max 40 characters." />
-            	<span  id ="errorSpaninput" class="error hidden">Please enter other reason </span>
-            
+            	<lightning:input aura:id= "SecureEmailCase" name="SecureEmailCase" label="Case Number" class="hidden MarginTop" pattern="[0-9]{8}" messageWhenPatternMismatch="Please Enter Valid Case Number"/>
+                <span  id ="errorSpaninput" class="error hidden">Please enter other reason </span>
+                <span  id ="errorSecureEmailSpaninput" class="error hidden">Please enter Case Number </span>
                     <button class="slds-button slds-button_neutral MarginTop" onclick="{!c.saveKYMLog}">Save</button> 
            </div>
    </div>

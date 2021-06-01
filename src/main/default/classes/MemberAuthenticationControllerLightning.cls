@@ -364,7 +364,7 @@ result.put('MultipleMemberNumberAlert', MultipleMemberNumberAlert); */
     
     @AuraEnabled
     
-    public static void KYMSaveLogData(string MemberId, string reason, string otherReason, string GUID)/*This is to save OOW log*/
+    public static void KYMSaveLogData(string MemberId, string reason, string otherReason, string GUID, string SecureEmailCase, string IVRGUIDFromUrl)/*This is to save OOW log*/
     {
         /*This method save KYM log data in MAAP Log object*/
         RecordType rec = GetRecordTypeData('Authenticated_Log__c', 'KYM Log'); 
@@ -383,6 +383,7 @@ result.put('MultipleMemberNumberAlert', MultipleMemberNumberAlert); */
         log.KYM_Reason__c = reason;
         log.KYM_Member_Number__c = AccountNumber;
         log.KYM_Other_Reason__c = otherReason;
+        log.KYM_Secure_Email_Case_Number__c = SecureEmailCase;
         log.SalesforceID__c = MemberId;
         log.Member__c = MemberId;
         log.Staff_Name__c = UserInfo.getName();
@@ -394,6 +395,47 @@ result.put('MultipleMemberNumberAlert', MultipleMemberNumberAlert); */
         insert log;
         
         system.debug('log##'+ log);
+
+        RecordType rec1 = GetRecordTypeData('Authenticated_Log__c', 'Master Authentication Log');
+        List<Authenticated_Log__c> MasterAuthenticationLog = GetDataForMasterAuthenticationLog(IVRGUIDFromUrl, rec1.id);
+        system.debug('MasterAuthenticationLog##'+ MasterAuthenticationLog);
+        if(MasterAuthenticationLog.size() == 0)
+        {
+            Authenticated_Log__c log2 = new Authenticated_Log__c();
+            log2.RecordTypeId= rec1.id;
+            log2.KYM_Reason__c = reason;
+            log2.KYM_Member_Number__c = AccountNumber;
+            log2.KYM_Other_Reason__c = otherReason;
+            log2.KYM_Secure_Email_Case_Number__c = SecureEmailCase;
+            log2.SalesforceID__c = MemberId;
+            log2.Member__c = MemberId;
+            log2.Staff_Name__c = UserInfo.getName();
+            log2.Current_User__c = Userinfo.getuserid();
+            log2.Member_Number__c = AccountNumber;
+            log2.Member__c = MemberId;
+            log2.GUID__c = GUID;
+            log2.Decision__c = reason;
+            log2.IVR_GUID__c = IVRGUIDFromUrl;         
+            
+            insert log2;
+        }
+        else{       
+            MasterAuthenticationLog[0].RecordTypeId= rec1.id;
+            MasterAuthenticationLog[0].KYM_Reason__c = reason;
+            MasterAuthenticationLog[0].KYM_Member_Number__c = AccountNumber;
+            MasterAuthenticationLog[0].KYM_Other_Reason__c = otherReason;
+            MasterAuthenticationLog[0].KYM_Secure_Email_Case_Number__c = SecureEmailCase;
+            MasterAuthenticationLog[0].SalesforceID__c = MemberId;
+            MasterAuthenticationLog[0].Member__c = MemberId;
+            MasterAuthenticationLog[0].Staff_Name__c = UserInfo.getName();
+            MasterAuthenticationLog[0].Current_User__c = Userinfo.getuserid();
+            MasterAuthenticationLog[0].Member_Number__c = AccountNumber;
+            MasterAuthenticationLog[0].Member__c = MemberId;
+            MasterAuthenticationLog[0].GUID__c = GUID;
+            MasterAuthenticationLog[0].Decision__c = reason;
+            MasterAuthenticationLog[0].IVR_GUID__c = IVRGUIDFromUrl;       
+            update MasterAuthenticationLog[0];
+        }
         
     }
     
