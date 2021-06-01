@@ -11,8 +11,14 @@ public class MarketingLeadCheck {
         
         List<Account> lstacc_email = new List<Account>();
         List<Account> lstacc_phone = new List<Account>();
+        List<Person_Account__c> pa = new List<Person_Account__c>();
+        List<Account_Details__c> ad = new List<Account_Details__c>();
         String groupName ;  
         Id groupnameid;
+        String MemberName;
+        String firstname;
+        String lastname;
+
         List<Group> listQueue = [select id,Name,Email from Group where Type = 'Queue' and (Email like '%lead.com' or Email like '%opportunity.com')];
         
 		List<Lead> LeadList = new List<Lead>();
@@ -60,7 +66,7 @@ public class MarketingLeadCheck {
                 system.debug('email'+lead.Email);
                 
                 if(lead.Email != null){
-                   lstacc_email = [Select id from Account where Alt_Email_Raw__c =:leademail OR Email_raw__c =: leademail OR Alternate_Email__pc =:leademail];
+                   lstacc_email = [Select id,name from Account where Alt_Email_Raw__c =:leademail OR Email_raw__c =: leademail OR Alternate_Email__pc =:leademail];
             	}
             	/*if(leadphone != null){
                 	lstacc_phone = [Select id from Account where (Phone =:leadphone OR Mobile_Phone__pc =:leadphone OR Home_Phone__pc =:leadphone) and recordtype.name = 'Person Account'];
@@ -68,22 +74,77 @@ public class MarketingLeadCheck {
             }
             system.debug('lstacc_email'+lstacc_email);
             //system.debug('lstacc_phone'+lstacc_phone);
-            
+
             if(lstacc_email.size() > 0){
+	
+                MemberName = lstacc_email[0].name;
+                for(Account a : lstacc_email){
+                    
+                    List<string> Names = a.name.split(' ');
+                    if(Names.size() == 2){
+                        firstname = Names[0]+ '%';
+                        lastname= '%'+Names[1] + '%';
+                    }
+                    else if(Names.size() >= 3){
+                        firstname = Names[0]+ '%';
+                        lastname= '%'+Names[Names.size()-1] +'%';
+                    }
+                    if(firstname == lead.FirstName && lastname == lead.LastName){
+                        break;
+                    }
+                }
+                
+                system.debug('firstname: '+firstname);
+                system.debug('lastname: '+lastname);
+                
+                if(lead.Brand__c == 'Spectrum'){
+                
+                    pa = [SELECT id, name,PersonID__c,Account_Number__c,Account_Number__r.name,PersonID__r.name,Account_Number__r.RecType__c,
+                                        Account_Number__r.Brand__c,Account_Number__r.createddate from Person_Account__c where 
+                                        PersonID__r.firstname like: firstname AND PersonID__r.LASTNAME like: lastname 
+                                        AND Account_Number__r.Brand__c = 'Spectrum' order by 
+                                        Account_Number__r.createddate desc LIMIT 1];
+               
+                    ad = [SELECT id, name,RecType__c,Brand__c,createddate from Account_Details__c where name =:pa[0].Account_Number__r.name AND RecType__c = 'ACCT' LIMIT 1];
+                                        
+                                        
+                }
+                else if(lead.Brand__c == 'CFCU'){
+
+                    pa = [SELECT id, name,PersonID__c,Account_Number__c,Account_Number__r.name,PersonID__r.name,Account_Number__r.RecType__c,
+                                        Account_Number__r.Brand__c,Account_Number__r.createddate from Person_Account__c where 
+                                        PersonID__r.firstname like: firstname AND PersonID__r.LASTNAME like: lastname
+                                        AND Account_Number__r.Brand__c = 'Chevron' order by 
+                                        Account_Number__r.createddate desc LIMIT 1];
+                    
+                    ad = [SELECT id, name,RecType__c,Brand__c,createddate from Account_Details__c where name =: pa[0].Account_Number__r.name AND RecType__c = 'ACCT' LIMIT 1];
+                }
+
+                system.debug('Person Account: '+pa);
                 Opportunity opp = new Opportunity();
                 opp.Name = 'test';
                 
-                if(lstacc_email.size() > 0)
-                	opp.AccountId = lstacc_email[0].id;
                 /*if(lstacc_phone.size() > 0)
                 	opp.AccountId = lstacc_phone[0].id;*/
+
+                if(lstacc_email.size() > 0)
+                	opp.AccountId = pa[0].PersonID__c;
+                if(ad.size() > 0)
+                    opp.Member_Account__c = ad[0].id;    
                 
+                if(lead.Brand__c == 'Spectrum')
+                    opp.Brand__c = 'Spectrum';
+                else if(lead.Brand__c == 'CFCU')
+                    opp.Brand__c = 'Chevron';
+
                 opp.CloseDate = Date.today();
                 opp.Product_Type__c ='Mortgage';
                 opp.Product_Sub__c = 'Xpress Refi';
                 opp.StageName ='New';
                 opp.Opportunity_Source__c ='Xpress Form - Web';
                 opp.I_m_interested_in__c = 'Xpress Form - Web';
+                opp.Email__c = lead.Email;
+                opp.Home_Phone__c = lead.Home_Phone__c;
                 
                 for(Group grp : listQueue){
                     if(grp.name.containsIgnoreCase('Real Estate')){
@@ -103,7 +164,7 @@ public class MarketingLeadCheck {
                 l.id = lead.id;
                 leadToDelete.add(l);
                 
-                opp.I_m_interested_in__c = lead.Description;
+                opp.Description = lead.Description;
                 oppToCreate.add(opp);
                 System.debug('oppToCreate'+oppToCreate);
             }

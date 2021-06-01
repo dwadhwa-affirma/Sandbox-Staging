@@ -1029,8 +1029,13 @@ public class SolarLoanToCreateLoan {
                     EMPLOYERNAME = '';
 
                     
-                if(sl.mem_Primary_Extra_Address__c != null)
+                if(sl.mem_Primary_Extra_Address__c != null){
                     EXTRAADDRESS = string.valueOf(sl.mem_Primary_Extra_Address__c).toUpperCase(); 
+
+                    if(EXTRAADDRESS.length() > 40){
+                        EXTRAADDRESS = EXTRAADDRESS.left(39);
+                    }
+                }
                 else
                     EXTRAADDRESS = '';
 
@@ -1126,8 +1131,12 @@ public class SolarLoanToCreateLoan {
                     MOTHERSMAIDENNAME = MOTHERSMAIDENNAME.substring(0,20);
                 }    
 
-                if(sl.Occupation__c != null)
+                if(sl.Occupation__c != null){
                     OCCUPATION = string.valueOf(sl.Occupation__c).toUpperCase();
+                    if(OCCUPATION.contains('&') == true){
+                        OCCUPATION = OCCUPATION.replace('&', '&#38;');
+                    }
+                }
                 else
                     OCCUPATION = '';
 
@@ -1635,8 +1644,13 @@ public class SolarLoanToCreateLoan {
                     else
                         JOINTEMPLOYERNAME = '';
 
-                    if(sl.mem_Joint_Extra_Address__c != null)
+                    if(sl.mem_Joint_Extra_Address__c != null){
                         JOINTEXTRAADDRESS = string.valueOf(sl.mem_Joint_Extra_Address__c).toUpperCase();
+                        
+                        if(JOINTEXTRAADDRESS.length() > 40){
+                            JOINTEXTRAADDRESS = JOINTEXTRAADDRESS.left(39);
+                        }
+                    }
                     else
                         JOINTEXTRAADDRESS = '';
 
@@ -1734,8 +1748,12 @@ public class SolarLoanToCreateLoan {
                         JOINTMOTHERSMAIDENNAME = JOINTMOTHERSMAIDENNAME.substring(0,20);
                     }
 
-                    if(sl.Joint_Occupation__c != null)
+                    if(sl.Joint_Occupation__c != null){
                         JOINTOCCUPATION = string.valueOf(sl.Joint_Occupation__c).toUpperCase();
+                        if(JOINTOCCUPATION.contains('&') == true){
+                            JOINTOCCUPATION = JOINTOCCUPATION.replace('&', '&#38;');
+                        }
+                    }
                     else
                         JOINTOCCUPATION = '';                      
 

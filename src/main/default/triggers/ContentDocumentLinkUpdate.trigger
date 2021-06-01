@@ -11,6 +11,7 @@ trigger ContentDocumentLinkUpdate on ContentDocumentLink (before insert,after up
     Map<ID,ID> cv = new Map<ID,ID>();
     Map<Id,ContentVersion> cvNewFile = new Map<ID,ContentVersion>();
     List<Solar_Loans__c> slcountUpdate = new List<Solar_Loans__c>();
+    List<Solar_Loans__c> slSignCardUpdate = new List<Solar_Loans__c>();
     List<xPressRefi_Document__c> xPressRefiAttachmentsList  = new List<xPressRefi_Document__c>();
     
     String[] strArr;
@@ -22,7 +23,7 @@ trigger ContentDocumentLinkUpdate on ContentDocumentLink (before insert,after up
     
     //----- Fire validation error to upload attachments when In person signing record has been locked -----//
     //---------------------------------------START---------------------------------------------------------//
-    if(Trigger.isInsert && Trigger.isBefore){
+    /*if(Trigger.isInsert && Trigger.isBefore){
         List<Id> inPersonSigningIds=new List<Id>();
         for(ContentDocumentLink cdl: Trigger.new){
             if(cdl.LinkedEntityId!=null){
@@ -41,7 +42,7 @@ trigger ContentDocumentLinkUpdate on ContentDocumentLink (before insert,after up
                 item.addError('In Person Signing record is locked. You can not upload attachments.');
             }
         }
-    }
+    }*/
     //----------------------------------------END---------------------------------------------------------//
    
     
@@ -112,6 +113,13 @@ trigger ContentDocumentLinkUpdate on ContentDocumentLink (before insert,after up
                 system.debug(solarLoanObj.Name);
                 solarLoanObj.Member_Number__c = sl.get(c.LinkedEntityId).Member_Number__c;
                 solarLoanObj.IsMovedToOnBase__c = false;
+                
+                if(Title.contains('Member Application_Completed')){
+                    Solar_Loans__c sl = new Solar_Loans__c();
+                    sl.id = c.LinkedEntityId;
+                    sl.Signed__c = true;
+                    slSignCardUpdate.add(sl);
+                }
                 
                 If(Title.contains('Member Application') || Title.contains('Membership Application'))
 	            	solarLoanObj.Document_Type__c = 'Signature Cards';
@@ -221,4 +229,6 @@ trigger ContentDocumentLinkUpdate on ContentDocumentLink (before insert,after up
         update MemberlsttoUpdate;
     if(slcountUpdate.size() > 0)	
         update slcountUpdate;
+    if(slSignCardUpdate.size()>0)
+        update slSignCardUpdate;
 }
