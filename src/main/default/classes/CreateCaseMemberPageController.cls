@@ -450,10 +450,12 @@ public class CreateCaseMemberPageController {
             cs.State__c = accObject.Residential_State__pc;
             cs.Country__c = accObject.Residential_Country__pc;
             cs.Zip_Code__c = accObject.Residential_Zipocde__pc;
-        system.debug('caseObject.Status=='+caseObject.Status);
-            if(caseObject.Status != '---None---'){
-                
+            if(caseObject.Status != '---None---'){                
                 cs.Status = caseObject.Status;
+                system.debug('Line no 454----'+caseObject.Sub_Status__c);
+                if(caseObject.Status == 'Closed - Privacy request completed'){
+                    cs.Sub_Status__c = caseObject.Sub_Status__c;
+                }
             }
             else{
                 cs.Status = '';
@@ -474,7 +476,6 @@ public class CreateCaseMemberPageController {
             cs.Future_Date__c = caseObject.Future_Date__c;  
             cs.Follow_up_Text__c = caseObject.Follow_up_Text__c; 
        try{ 
-             system.debug('cs.Status=='+cs.Status);
            insert cs;
            if(Test.isRunningTest()){
                Integer x=1/0;}            
@@ -529,7 +530,7 @@ public class CreateCaseMemberPageController {
                 insert CaseAccountMemberDetailList;
             }
             
-            
+            MaapCaseAddLog(accObject.Id,cs.Id);
             return mapresult;       
     }
     
@@ -621,8 +622,17 @@ public class CreateCaseMemberPageController {
         Case cs = new case();            
             cs.setOptions(dmlOpts);
             for(CaseRecordType__c crt : scList){
-                
+                if(scList[0].Primary_Category__c == 'Privacy'){
+                    List<recordtype> RTypes= [select id, name from recordtype where Name = 'Privacy Non Member' limit 1];
+                    system.debug('RTypes=='+RTypes[0].id);
+                    if(RTypes.size() > 0)
+                    	cs.RecordTypeId = RTypes[0].id;
+                    else
+                        cs.RecordTypeId = scList[0].RecordTypeId__c;
+                }
+                else{
                     cs.RecordTypeId = scList[0].RecordTypeId__c;
+                }                    
                     cs.Primary_Category__c = scList[0].Primary_Category__c;
                     cs.Secondary_Category__c = scList[0].Secondary_Category__c;
                     cs.Tertiary_Category__c = scList[0].Teritiary_Category__c;
@@ -682,6 +692,10 @@ public class CreateCaseMemberPageController {
             if(caseObject.Status != '---None---'){
                 
                 cs.Status = caseObject.Status;
+                system.debug('Line no 686----'+caseObject.Sub_Status__c);
+                if(caseObject.Status == 'Closed - Privacy request completed'){
+                    cs.Sub_Status__c = caseObject.Sub_Status__c;
+                }
             }
             else{
                 cs.Status = '';
@@ -880,9 +894,12 @@ public class CreateCaseMemberPageController {
             cs.Account_Number__c = memObject.Id;
             cs.Brand__c = 'CFCU';
             cs.AccountId = selectedMemberNumber.PersonID__c;
-            if(caseObject.Status != '---None---'){
-                
+            if(caseObject.Status != '---None---'){                
                 cs.Status = caseObject.Status;
+                system.debug('Line no 890----'+caseObject.Sub_Status__c);
+                if(caseObject.Status == 'Closed - Privacy request completed'){
+                    cs.Sub_Status__c = caseObject.Sub_Status__c;
+                }
             }
             else{
                 cs.Status = '';
@@ -941,7 +958,7 @@ public class CreateCaseMemberPageController {
             mapresult.put('CaseNumber', string.valueOf(caseFinal.CaseNumber));
            
           
-            
+            MaapCaseAddLog(selectedMemberNumber.PersonID__c,cs.Id);
             return mapresult;       
     }
     
@@ -1041,6 +1058,28 @@ public class CreateCaseMemberPageController {
             JSON.deserialize(JSON.serialize(PLEs), List<PicklistEntryWrapper>.class);
     }
     
+    @AuraEnabled
+    public static void MaapCaseAddLog(string RecordId, string CaseId)
+    {
+        Datetime dt  = System.now();
+        DateTime earlier = dt.addMinutes(-5);
+        List<Authenticated_Log__c> MaapLogsList = [SELECT Id, Member__c,MAAP_Case_Number_s__c, CreatedDate from Authenticated_Log__c where CreatedDate >=: earlier and Member__c =: RecordId and RecordType.Name = 'Master Authentication Log'];
+        system.debug('MaapLogsList.Size()=='+MaapLogsList.Size());
+        if(MaapLogsList.size() > 0){
+            string CaseNumber = [Select CaseNumber from Case where Id=: CaseId].CaseNumber;
+            String ExistingCaseNumber = MaapLogsList[0].MAAP_Case_Number_s__c;
+            string CaseURL = '<a href="' + URL.getSalesforceBaseUrl().toExternalForm() + '\\' + CaseId + '">' +  CaseNumber + '</a>';
+            if(String.IsNotBlank(ExistingCaseNumber)){
+                MaapLogsList[0].MAAP_Case_Number_s__c = ExistingCaseNumber + ', ' + CaseURL;
+            }
+            else{
+                MaapLogsList[0].MAAP_Case_Number_s__c = CaseURL;
+            }
+            update MaapLogsList[0];
+            system.debug('CaseURL=='+CaseURL);
+            system.debug('MaapLogsList[0].MAAP_Case_Number_s__c=='+MaapLogsList[0].MAAP_Case_Number_s__c);
+        }
+    }
     public class PicklistEntryWrapper{
         public String active {get;set;}
         public String defaultValue {get;set;}
