@@ -443,8 +443,9 @@ public class CardLimitResetController {
                     temp.CardNumber =  string.valueof(carddetail.get('CardNumber'));
                     temp.CardLocator =   string.valueof(carddetail.get('Locator'));
                     temp.AccountNumber = string.valueof(carddetail.get('AccountNumber'));
+                    String CardStatus = string.valueof(carddetail.get('CardStatus'));
                     
-                    if(temp.AccountNumber != null && temp.CardLocator != null && temp.CardNumber != null){
+                    if(temp.AccountNumber != null && temp.CardLocator != null && temp.CardNumber != null && CardStatus != '2'){
                         resultList.add(temp);
                     }
                     system.debug('temp.CardNumber'+temp.CardNumber);
