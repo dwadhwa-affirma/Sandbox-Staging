@@ -1029,13 +1029,8 @@ public class SolarLoanToCreateLoan {
                     EMPLOYERNAME = '';
 
                     
-                if(sl.mem_Primary_Extra_Address__c != null){
+                if(sl.mem_Primary_Extra_Address__c != null)
                     EXTRAADDRESS = string.valueOf(sl.mem_Primary_Extra_Address__c).toUpperCase(); 
-
-                    if(EXTRAADDRESS.length() > 40){
-                        EXTRAADDRESS = EXTRAADDRESS.left(39);
-                    }
-                }
                 else
                     EXTRAADDRESS = '';
 
@@ -1644,13 +1639,8 @@ public class SolarLoanToCreateLoan {
                     else
                         JOINTEMPLOYERNAME = '';
 
-                    if(sl.mem_Joint_Extra_Address__c != null){
+                    if(sl.mem_Joint_Extra_Address__c != null)
                         JOINTEXTRAADDRESS = string.valueOf(sl.mem_Joint_Extra_Address__c).toUpperCase();
-                        
-                        if(JOINTEXTRAADDRESS.length() > 40){
-                            JOINTEXTRAADDRESS = JOINTEXTRAADDRESS.left(39);
-                        }
-                    }
                     else
                         JOINTEXTRAADDRESS = '';
 
