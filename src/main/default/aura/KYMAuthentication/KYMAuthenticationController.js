@@ -9,10 +9,19 @@
         var element;
         var errorElement = document.getElementById('errorSpan');
         element = component.find("Otherreason");
+		var elementSecureEmail = component.find("SecureEmailCase");
         if(selectedPicklistValue == 'Other'){       
         	
         	$A.util.addClass(element, 'show');
         	$A.util.removeClass(element, 'hidden');
+        	errorElement.classList.remove('show');
+			errorElement.classList.add('hidden');
+        	
+        }
+		else if(selectedPicklistValue == 'Secure Email'){       
+        	
+        	$A.util.addClass(elementSecureEmail, 'show');
+        	$A.util.removeClass(elementSecureEmail, 'hidden');
         	errorElement.classList.remove('show');
 			errorElement.classList.add('hidden');
         	
@@ -29,6 +38,8 @@
         
         	$A.util.removeClass(element, 'show');
         	$A.util.addClass(element, 'hidden');
+			$A.util.removeClass(elementSecureEmail, 'show');
+        	$A.util.addClass(elementSecureEmail, 'hidden');
         	errorElement.classList.remove('show');
 			errorElement.classList.add('hidden');
         }
@@ -40,6 +51,7 @@
 	  	var reason =  component.get("v.selectedKYMvalue");
 	  	var element = document.getElementById('errorSpan');
 	  	var InputElement='';
+		var SecureEmailInputElement='';
 	  	if(reason == 'Select'){
 	  		
 	  		
@@ -60,13 +72,30 @@
 	  			{
 	  				errorSpaninput.classList.remove('show');
 				    errorSpaninput.classList.add('hidden');
-				    helper.saveMethod(component, event, reason, element, InputElement);
+				    helper.saveMethod(component, event, reason, element, InputElement, SecureEmailInputElement);
 	  			}
 	  			
 	  		
 	  	}
+		  else if(reason == 'Secure Email'){
+			SecureEmailInputElement = component.find("SecureEmailCase").get("v.value");	  		
+		   var errorSpaninput = document.getElementById('errorSecureEmailSpaninput');
+			   if(SecureEmailInputElement == ''){
+				   
+				   errorSpaninput.classList.add('show');
+				 errorSpaninput.classList.remove('hidden');
+			   }
+			   else
+			   {
+				   errorSpaninput.classList.remove('show');
+				 errorSpaninput.classList.add('hidden');
+				 helper.saveMethod(component, event, reason, element, InputElement, SecureEmailInputElement);
+			   }
+			   
+		   
+	   }
 	  	else{
-	  			helper.saveMethod(component, event, reason, element, InputElement);
+	  			helper.saveMethod(component, event, reason, element, InputElement, SecureEmailInputElement);
 	  				
 			   	}
     },
