@@ -220,7 +220,7 @@ public class SolarLoanController {
             Joint_ID_Expiration_Date__c,mem_Joint_Employer__c,Joint_Occupation__c,Mailing_Street__c, mem_Mailing_City__c,mem_Mailing_State__c,
             Mailing_Zip__c,Joint_Cell_Phone__c,Joint_Home_Phone__c,Joint_Work_Phone__c,mem_Primary_A_F_Foreign_Gov_t_Position__c,
             mem_Primary_Foreign_Gov_t_Position__c,mem_Joint_A_F_Foreign_Gov_t_Position__c,mem_Joint_Foreign_Gov_t_Position__c,
-            mem_Joint_Extra_Address__c,
+            mem_Joint_Extra_Address__c,mem_Primary_Extra_Address__c,mem_Mailing_Extra_Address__c,
             Current_Solar_Loan_Stage__c,County__c FROM Solar_Loans__c where id =: SolarLoanRecordId limit 1];
             
     if(SolarLoanList.size() > 0){
@@ -633,10 +633,20 @@ public class SolarLoanController {
                 
                 Stage3MissingFields = 'Joint DOB must be 18 or over.';
                 Stage3ErrorCheck = 'True';
-            }  
+            }
             else if(SolarLoanList[0].mem_Joint_Extra_Address__c != null && SolarLoanList[0].mem_Joint_Extra_Address__c.length() > 40){
 
                 Stage3MissingFields = 'Joint ExtraAdress contains more than 40 characters.';
+                Stage3ErrorCheck = 'True';
+            }  
+            else if(SolarLoanList[0].mem_Primary_Extra_Address__c != null && SolarLoanList[0].mem_Primary_Extra_Address__c.length() > 40){
+
+                Stage3MissingFields = 'Primary ExtraAdress contains more than 40 characters.';
+                Stage3ErrorCheck = 'True';
+            }
+            else if(SolarLoanList[0].mem_Mailing_Extra_Address__c != null && SolarLoanList[0].mem_Mailing_Extra_Address__c.length() > 40){
+
+                Stage3MissingFields = 'Mailing ExtraAdress contains more than 40 characters.';
                 Stage3ErrorCheck = 'True';
             }
             else{
