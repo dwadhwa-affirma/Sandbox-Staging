@@ -251,8 +251,8 @@
                         if(i==3 && component.get("v.CLRecord.Type__c") == 'Change Card Limits' && component.get("v.CLRecord.ATM_Usage_Limit__c") != undefined
                                             && component.get("v.CLRecord.Auth_POS_Limit__c") != undefined){
                             
-                            if(component.get("v.CLRecord.ATM_Usage_Limit__c") > 1000){
-                                alert('New limit is over max ATM Usage Limit of '+'\n'+'$1000.00. Please enter valid ATM limit.');	
+                            if(component.get("v.CLRecord.ATM_Usage_Limit__c") > 1010){
+                                alert('New limit is over max ATM Usage Limit of '+'\n'+'$1010.00. Please enter valid ATM limit.');	
                             	helper.hideSpinner(component,helper);
                             	return;
                             }
@@ -508,8 +508,8 @@
                         if(i==1 && component.get("v.CLRecord.Type__c") == 'Change Card Limits' && component.get("v.CLRecord.ATM_Usage_Limit__c") != undefined
                                             && component.get("v.CLRecord.Auth_POS_Limit__c") != undefined){
 				            
-                            if(component.get("v.CLRecord.ATM_Usage_Limit__c") > 1000){
-                                alert('New limit is over max ATM Usage Limit of '+'\n'+'$1000.00. Please enter valid ATM limit.');	
+                            if(component.get("v.CLRecord.ATM_Usage_Limit__c") > 1010){
+                                alert('New limit is over max ATM Usage Limit of '+'\n'+'$1010.00. Please enter valid ATM limit.');	
                             	helper.hideSpinner(component,helper);
                             	return;
                             }

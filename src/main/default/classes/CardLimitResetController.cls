@@ -297,15 +297,17 @@ public class CardLimitResetController {
     }
     
     @AuraEnabled
-    public static Map<string,List<CardDetailWrapperObject>> getCard(string recordId, string sObjectType){
+    public static Map<string,Map<string,List<CardDetailWrapperObject>>> getCard(string recordId, string sObjectType){
     
         system.debug('sObjectType'+sObjectType); 
         system.debug('recordId'+recordId);
         Id uniqueId = recordId;
         Schema.SObjectType objType = uniqueId.getsobjecttype();
        
-        Map<string,List<CardDetailWrapperObject>> resultmap = new Map<string,List<CardDetailWrapperObject>>();
+        Map<string,Map<String,List<CardDetailWrapperObject>>> resultmap = new Map<string,Map<String,List<CardDetailWrapperObject>>>();
+        Map<String, List<CardDetailWrapperObject>> resultinnerMap = new Map<String, List<CardDetailWrapperObject>>();
         List<CardDetailWrapperObject> resultList = new List<CardDetailWrapperObject>();
+
         HttpRequest req = new HttpRequest();
         HttpResponse res;
         Http http = new Http();
@@ -446,21 +448,38 @@ public class CardLimitResetController {
                     String CardStatus = string.valueof(carddetail.get('CardStatus'));
                     
                     if(temp.AccountNumber != null && temp.CardLocator != null && temp.CardNumber != null && CardStatus != '2'){
-                        resultList.add(temp);
+                        if(objType == Account_Details__c.sObjectType && temp.AccountNumber == AccountNumber){
+                            resultList.add(temp);
+                        }
+                        if(objType == Account.sObjectType){
+                            resultList.add(temp);
+                        }
                     }
                     system.debug('temp.CardNumber'+temp.CardNumber);
                     system.debug('temp.CardLocator'+temp.CardLocator);
                     system.debug('temp.AccountNumber'+temp.AccountNumber);
                     system.debug('resultList'+resultList);
+                 
                 }
             } 
         }
+
+        for (CardDetailWrapperObject c : resultList) {  
+            if (resultinnerMap.containsKey(c.AccountNumber)) {
+                resultinnerMap.get(c.AccountNumber).add(c);
+            }
+            else {
+                resultinnerMap.put(c.AccountNumber, new List<CardDetailWrapperObject>{c});
+            }
+        }
+
+        system.debug('resultinnerMap: '+resultinnerMap);
         
         if(isDormant == 'true'){
-            resultmap.put('DormantCardList',resultList);    
+            resultmap.put('DormantCardList',resultinnerMap);    
         }
         else{
-            resultmap.put('CardList',resultList);
+            resultmap.put('CardList',resultinnerMap);
         }
         
 		return resultmap;

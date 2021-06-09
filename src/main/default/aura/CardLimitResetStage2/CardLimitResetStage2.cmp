@@ -6,10 +6,12 @@
 <aura:attribute name="CardListMap" type="List" />
 <aura:attribute name="Empty" type="Boolean" />
 <aura:attribute name="IsDormant" type="Boolean" />
-
+<aura:attribute name="mapValues" type="object" /> 
+<aura:attribute name="objectname" type="String"/>
+    
 	<div id = "stage2" class = "align">    
         <p class = "fontstyle">Select Card</p>
-            <br/>
+            
             <table aria-multiselectable="true" class="slds-table slds-table_header-hidden slds-table_edit slds-tree slds-table_tree bottomtbl" role="treegrid">
                 <tbody>
                     
@@ -27,33 +29,83 @@
                         </tr>
                     </aura:if>
                     <br/>
-                	<aura:if isTrue="{!not(empty(v.CardListMap))}">        
-                    	<aura:iteration items="{!v.CardListMap}" var="itemOption" indexVar="i">                  
+                	<aura:if isTrue="{!and(not(empty(v.mapValues)), v.objectname == 'Account')}"> 
+                        <tr aria-expanded="false" aria-level="1" aria-posinset="3" aria-selected="false" aria-setsize="4" class="slds-hint-parent">
                             <tr aria-expanded="false" aria-level="1" aria-posinset="3" aria-selected="false" aria-setsize="4" class="slds-hint-parent">
-                                <aura:if isTrue="{!(v.IsDormant)}">
-                                    <td class="slds-text-align_right" role="gridcell" style="width:3.25rem">
-                                        <span class="slds-radio">
-                                            <lightning:input type="radio" disabled = "true" name="select" value="{!itemOption.CardNumber}" onchange="{!c.onCardChange}"/>
-                                        </span>
-                                    </td>
-                                    <td data-label="Employees" role="gridcell">
-                                        <div class="slds-text-color_error" title="{!itemOption.CardNumber}">{!itemOption.CardNumber}</div>
-                                    </td>
-                                        <aura:set attribute="else">
+                                <td class="slds-text-align_right" role="gridcell" style="width:3.25rem"/>
+                                <td data-label="Employees" role="gridcell" class="grid-column">Card Number</td>
+                                <td data-label="Employees" role="gridcell" class="grid-column">Name</td>
+                            </tr>
+                        </tr>    
+                    	<aura:iteration items="{!v.mapValues}" var="itemOption" indexVar="key">                  
+                            <tr aria-expanded="false" aria-level="1" aria-posinset="3" aria-selected="false" aria-setsize="4" class="slds-hint-parent">
+                            
+                                <div style="background-color:rgb(173, 172, 172);color:white" class="slds-truncate account-title">Account Number: {!itemOption.key}</div>
+                           		
+                                <aura:iteration items="{!itemOption.value}" var="mapValue">
+                                    <tr aria-expanded="false" aria-level="1" aria-posinset="3" aria-selected="false" aria-setsize="4" class="slds-hint-parent">
+                                        <aura:if isTrue="{!(v.IsDormant)}">	
                                             <td class="slds-text-align_right" role="gridcell" style="width:3.25rem">
                                                 <span class="slds-radio">
-                                                    <lightning:input type="radio" name="select" value="{!itemOption.CardNumber}" onchange="{!c.onCardChange}"/>
+                                                    <lightning:input type="radio" disabled = "true" name="select" value="{!mapValue.CardNumber}" onchange="{!c.onCardChange}"/>
                                                 </span>
                                             </td>
                                             <td data-label="Employees" role="gridcell">
-                                                <div class="slds-truncate" title="{!itemOption.CardNumber}">{!itemOption.CardNumber}</div>
+                                                <div class="slds-text-color_error" title="{!mapValue.CardNumber}">{!mapValue.CardNumber}</div>
                                             </td>
-                                        </aura:set>
-								</aura:if>
+                                            <aura:set attribute="else">
+                                                <td class="slds-text-align_right" role="gridcell" style="width:3.25rem">
+                                                    <span class="slds-radio">
+                                                        <lightning:input type="radio" name="select" value="{!mapValue.CardNumber}" onchange="{!c.onCardChange}"/>
+                                                    </span>
+                                                </td>
+                                                <td data-label="Employees" role="gridcell" class="grid-column">
+                                                    <div class="slds-truncate" title="{!mapValue.CardNumber}">{!mapValue.CardNumber}</div>
+                                                </td>
+                                                
+                                                <td data-label="Employees" role="gridcell" class="grid-column">
+                                                    <div class="slds-truncate" title="{!mapValue.CardLocator}">{!mapValue.CardLocator}</div>
+                                                </td>
+                                            </aura:set>
+                                        </aura:if>
+                                    </tr>    
+                                </aura:iteration>
                             </tr>
                         </aura:iteration>
                     </aura:if>
-                    <aura:if  isTrue="{!and(empty(v.CardListMap),not(v.Empty))}" >
+                    
+                    <aura:if isTrue="{!and(not(empty(v.mapValues)), v.objectname != 'Account')}"> 
+                        <aura:iteration items="{!v.mapValues}" var="itemOption" indexVar="key">                  
+                            <tr aria-expanded="false" aria-level="1" aria-posinset="3" aria-selected="false" aria-setsize="4" class="slds-hint-parent">
+                           	    <aura:iteration items="{!itemOption.value}" var="mapValue">
+                                    <tr aria-expanded="false" aria-level="1" aria-posinset="3" aria-selected="false" aria-setsize="4" class="slds-hint-parent">
+                                        <aura:if isTrue="{!(v.IsDormant)}">	
+                                            <td class="slds-text-align_right" role="gridcell" style="width:3.25rem">
+                                                <span class="slds-radio">
+                                                    <lightning:input type="radio" disabled = "true" name="select" value="{!mapValue.CardNumber}" onchange="{!c.onCardChange}"/>
+                                                </span>
+                                            </td>
+                                            <td data-label="Employees" role="gridcell">
+                                                <div class="slds-text-color_error" title="{!mapValue.CardNumber}">{!mapValue.CardNumber}</div>
+                                            </td>
+                                            <aura:set attribute="else">
+                                                <td class="slds-text-align_right" role="gridcell" style="width:3.25rem">
+                                                    <span class="slds-radio">
+                                                        <lightning:input type="radio" name="select" value="{!mapValue.CardNumber}" onchange="{!c.onCardChange}"/>
+                                                    </span>
+                                                </td>
+                                                <td data-label="Employees" role="gridcell">
+                                                    <div class="slds-truncate" title="{!mapValue.CardNumber}">{!mapValue.CardNumber}</div>
+                                                </td>
+                                            </aura:set>
+                                        </aura:if>
+                                    </tr>    
+                                </aura:iteration>
+                            </tr>
+                        </aura:iteration>
+                    </aura:if>    
+                    
+                    <aura:if  isTrue="{!and(empty(v.mapValues),not(v.Empty))}" >
                         Fetching Card Details . . . . . . .
                     </aura:if>
                     
