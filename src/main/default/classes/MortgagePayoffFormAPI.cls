@@ -31,7 +31,7 @@ global with sharing class MortgagePayoffFormAPI{
 		CreateCaseRequest requestJson = (CreateCaseRequest)System.JSON.deserialize(requestBody,CreateCaseRequest.class);  
 		
         
-		string PropertyZip, LoanNo, PayoffRequestReason, PayoffRequestReasonOther, RequestorInfo, RequestorCompany, RequestorName, RequestorPhoneNo, MethodofDelivery, PayoffRequestReasonRefinancing, PayoffRequestReasonRefinancingFavorableRate, PayoffRequestReasonRefinancingChangeinProduct, PayoffRequestReasonSaleOfProperty ;
+		string PropertyZip, LoanNo, PayoffRequestReason, PayoffRequestReasonOther, RequestorInfo, RequestorCompany, RequestorName, RequestorPhoneNo, MethodofDelivery, PayoffRequestReasonRefinancing, PayoffRequestReasonRefinancingFavorableRate, PayoffRequestReasonRefinancingChangeinProduct, PayoffRequestReasonSaleOfProperty, LenderName, PayoffEmail, PayoffFax;
 		boolean AuthorizedTitleCompany;
 		Date PayoffGoodToDate;
 		Id groupnameid;
@@ -47,6 +47,9 @@ global with sharing class MortgagePayoffFormAPI{
 		RequestorPhoneNo = string.valueof(requestJson.RequestorPhoneNo);
 		AuthorizedTitleCompany = requestJson.AuthorizedTitleCompany;
 		MethodofDelivery = string.valueof(requestJson.MethodofDelivery);	
+		LenderName = string.valueof(requestJson.LenderName);
+		PayoffFax = string.valueof(requestJson.PayoffFax);
+		PayoffEmail = string.valueof(requestJson.PayoffEmail);
 		
 		PayoffRequestReasonRefinancing = string.valueof(requestJson.PayoffRequestReasonRefinancing);
 		PayoffRequestReasonRefinancingFavorableRate = string.valueof(requestJson.PayoffRequestReasonRefinancingFavorableRate);
@@ -108,7 +111,9 @@ global with sharing class MortgagePayoffFormAPI{
 			caseobj.MPO_Refinancing_Favorable_Rate__c = PayoffRequestReasonRefinancingFavorableRate;
 			caseobj.MPO_Refinancing_Change_in_Product__c = PayoffRequestReasonRefinancingChangeinProduct;
 			caseobj.MPO_Request_Reason_Sale_Of_Property__c = PayoffRequestReasonSaleOfProperty;
-
+			caseobj.MPO_Lender_Name__c = LenderName;
+			caseobj.MPO_Email__c = PayoffEmail;
+			caseobj.MPO_Fax__c = PayoffFax;
 			insert caseObj;
 			return caseObj.Id;
 		} else{
@@ -147,5 +152,11 @@ global with sharing class MortgagePayoffFormAPI{
         global string PayoffRequestReasonRefinancingChangeinProduct;
 		@AuraEnabled
         global string PayoffRequestReasonSaleOfProperty;
+		@AuraEnabled
+        global string LenderName;
+		@AuraEnabled
+        global string PayoffEmail;
+		@AuraEnabled
+        global string PayoffFax;
 	}
 }
