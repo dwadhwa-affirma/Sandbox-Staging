@@ -105,9 +105,10 @@ public class MarketingLeadCheck {
                                         AND Account_Number__r.Brand__c = 'Spectrum' order by 
                                         Account_Number__r.createddate desc LIMIT 1];
                
-                    ad = [SELECT id, name,RecType__c,Brand__c,createddate from Account_Details__c where name =:pa[0].Account_Number__r.name AND RecType__c = 'ACCT' LIMIT 1];
-                                        
-                                        
+                    if(pa.size() > 0){
+                    	ad = [SELECT id, name,RecType__c,Brand__c,createddate from Account_Details__c where name =:pa[0].Account_Number__r.name AND RecType__c = 'ACCT' LIMIT 1];
+                    }
+                    
                 }
                 else if(lead.Brand__c == 'CFCU'){
 
@@ -117,56 +118,85 @@ public class MarketingLeadCheck {
                                         AND Account_Number__r.Brand__c = 'Chevron' order by 
                                         Account_Number__r.createddate desc LIMIT 1];
                     
-                    ad = [SELECT id, name,RecType__c,Brand__c,createddate from Account_Details__c where name =: pa[0].Account_Number__r.name AND RecType__c = 'ACCT' LIMIT 1];
-                }
-
-                system.debug('Person Account: '+pa);
-                Opportunity opp = new Opportunity();
-                opp.Name = 'test';
-                
-                /*if(lstacc_phone.size() > 0)
-                	opp.AccountId = lstacc_phone[0].id;*/
-
-                if(lstacc_email.size() > 0)
-                	opp.AccountId = pa[0].PersonID__c;
-                if(ad.size() > 0)
-                    opp.Member_Account__c = ad[0].id;    
-                
-                if(lead.Brand__c == 'Spectrum')
-                    opp.Brand__c = 'Spectrum';
-                else if(lead.Brand__c == 'CFCU')
-                    opp.Brand__c = 'Chevron';
-
-                opp.CloseDate = Date.today();
-                opp.Product_Type__c ='Mortgage';
-                opp.Product_Sub__c = 'Xpress Refi';
-                opp.StageName ='New';
-                opp.Opportunity_Source__c ='Xpress Form - Web';
-                opp.I_m_interested_in__c = 'Xpress Form - Web';
-                opp.Email__c = lead.Email;
-                opp.Home_Phone__c = lead.Home_Phone__c;
-                
-                for(Group grp : listQueue){
-                    if(grp.name.containsIgnoreCase('Real Estate')){
-                        groupName = grp.Name;
-                        groupnameid = grp.id;
-                        break;
+                    if(pa.size() > 0){
+                    	ad = [SELECT id, name,RecType__c,Brand__c,createddate from Account_Details__c where name =: pa[0].Account_Number__r.name AND RecType__c = 'ACCT' LIMIT 1];
                     }
                 }
-                
-                if(groupName!=null && groupName!=''){
-                    system.debug('Queue Name: '+groupName); 
-                    opp.Queue_Owner__c = groupName;
-                    opp.User_Owner__c = null;
+                if(pa.size()>0){
+                    
+                    system.debug('Person Account: '+pa);
+                    Opportunity opp = new Opportunity();
+                    opp.Name = 'test';
+                    
+                    /*if(lstacc_phone.size() > 0)
+                        opp.AccountId = lstacc_phone[0].id;*/
+    
+                    if(lstacc_email.size() > 0)
+                        opp.AccountId = pa[0].PersonID__c;
+                    if(ad.size() > 0)
+                        opp.Member_Account__c = ad[0].id;    
+                    
+                    if(lead.Brand__c == 'Spectrum')
+                        opp.Brand__c = 'Spectrum';
+                    else if(lead.Brand__c == 'CFCU')
+                        opp.Brand__c = 'Chevron';
+    
+                    opp.CloseDate = Date.today();
+                    opp.Product_Type__c ='Mortgage';
+                    opp.Product_Sub__c = 'Xpress Refi';
+                    opp.StageName ='New';
+                    opp.Opportunity_Source__c ='Xpress Form - Web';
+                    opp.I_m_interested_in__c = 'Xpress Form - Web';
+                    opp.Email__c = lead.Email;
+                    opp.Home_Phone__c = lead.Home_Phone__c;
+                    
+                    for(Group grp : listQueue){
+                        if(grp.name.containsIgnoreCase('Real Estate')){
+                            groupName = grp.Name;
+                            groupnameid = grp.id;
+                            break;
+                        }
+                    }
+                    
+                    if(groupName!=null && groupName!=''){
+                        system.debug('Queue Name: '+groupName); 
+                        opp.Queue_Owner__c = groupName;
+                        opp.User_Owner__c = null;
+                    }
+                    
+                    Lead l = new Lead();
+                    l.id = lead.id;
+                    leadToDelete.add(l);
+                    
+                    opp.Description = lead.Description;
+                    oppToCreate.add(opp);
+                    System.debug('oppToCreate'+oppToCreate);
+            	}
+                else{
+                    
+                    for(Group grp : listQueue){
+                        if(grp.name.containsIgnoreCase('Real Estate')){
+                            groupName = grp.Name;
+                            groupnameid = grp.id;
+                            break;
+                        }
+                    }
+                    if(groupName!=null && groupName!=''){
+                        system.debug('Queue Name: '+groupName); 
+                        Lead l = new Lead();
+                        l.id = lead.id;
+                        l.Product_Subtype__c = 'Xpress Refi';
+                        l.OwnerId = groupnameid;
+                        if(lead.Are_you_a_current_member__c == 'No'){
+                            l.Current_Member__c = 'No';
+                        }
+                        if(lead.Are_you_a_current_member__c == 'Yes'){
+                            l.Current_Member__c = 'Yes';
+                        }
+                        
+                        leadToUpdate.add(l);
+                    }
                 }
-                
-                Lead l = new Lead();
-                l.id = lead.id;
-                leadToDelete.add(l);
-                
-                opp.Description = lead.Description;
-                oppToCreate.add(opp);
-                System.debug('oppToCreate'+oppToCreate);
             }
             else{
                 
