@@ -20,8 +20,12 @@
                 <span  id ="errorSpan" class="error hidden">Please select value from dropdown </span>
                 <lightning:input aura:id= "Otherreason" name="Otherreason" label="Other Reason" class="hidden MarginTop" maxlength="40" messageWhenTooLong="Your entry must be at max 40 characters." />
             	<lightning:input aura:id= "SecureEmailCase" name="SecureEmailCase" label="Case Number" class="hidden MarginTop" pattern="[0-9]{8}" messageWhenPatternMismatch="Please Enter Valid Case Number"/>
+                <lightning:input aura:id= "DriverLicenseNo" name="DriverLicenseNo" label="Driver License Number" class="hidden MarginTop" />
+                <lightning:input aura:id= "WorkBadgeNo" name="WorkBadgeNo" label="Work Badge Number" class="hidden MarginTop" />
                 <span  id ="errorSpaninput" class="error hidden">Please enter other reason </span>
                 <span  id ="errorSecureEmailSpaninput" class="error hidden">Please enter Case Number </span>
+                <span  id ="errorDriverLicenseNoinput" class="error hidden">Please enter Driver License Number</span>
+                <span  id ="errorWorkBadgeNoinput" class="error hidden">Please enter Work Badge Number </span>
                     <button class="slds-button slds-button_neutral MarginTop" onclick="{!c.saveKYMLog}">Save</button> 
            </div>
    </div>

@@ -3,7 +3,7 @@
 		
 	},
 	
-	saveMethod : function(component, event, reason, element, InputElement, SecureEmailInputElement) {
+	saveMethod : function(component, event, reason, element, InputElement, SecureEmailInputElement, DriverLicenseInputElement, WorkBadgeInputElement) {
 		
 					if(component.get("v.IsSubmitClicked") == false)
 					{
@@ -14,7 +14,7 @@
 						    var IVRGUIDFromUrl = component.get("v.IVRGUIDFromUrl");
 						    var memberId = component.get("v.recordId");
 					        var compEvent;
-						    action.setParams({"MemberId": memberId,"reason":reason,"otherReason":InputElement,"GUID":GUID, "SecureEmailCase": SecureEmailInputElement, "IVRGUIDFromUrl": IVRGUIDFromUrl });
+						    action.setParams({"MemberId": memberId,"reason":reason,"otherReason":InputElement,"GUID":GUID, "SecureEmailCase": SecureEmailInputElement, "IVRGUIDFromUrl": IVRGUIDFromUrl , "DriverLicenseNo" : DriverLicenseInputElement, "WorkBadgeNo" : WorkBadgeInputElement });
 						    action.setCallback(this, function (response) {
 							var status = response.getState();            
 						    if (component.isValid() && status === "SUCCESS") {
