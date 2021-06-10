@@ -4,11 +4,11 @@ public class xPressRefiToDocusign{
 	public static Account Member;
 	public static String EmailBody = 'Congratulations!  Your Xpress Refinance has been approved.  Thank you very much for your patience.' + '\n\n' + 'Please carefully review the Loan Modification Agreement and ensure all signers have signed.  Please be informed if you have an Escrow Account, that is not included in your payment amount on the Loan Modification Agreement.' + '\n\n' + 'Once your documents have been signed by all parties, and received, your file will be assigned to a Closer.  If you have an ACH - Automatic Transfer set up through the Credit Union, you will receive a separate email from the Closer, so we can get that updated.' + '\n\n' + 'Please be sure to complete these documents within 5 business days of receiving the DocuSign email.  If for any reason you will not be able to meet that deadline, please contact us as soon as possible providing the reason for the delay.' + '\n\n' + 'The Xpress Refinance fee in the amount of ${Fees}, will be debited from the account indicated on the initial Request for Modification.  Please make sure funds are available in the designated account prior to completing the DocuSign.  If you are paying the Xpress Refinance fee by check, please let me know and I will provide a Overnight FedEx label for you to send this in to our Oakland Office.' + '\n\n' + 'Please let me know if you have any questions or concerns.';
 	public static String EmailSubject = 'Xpress Refinance Transaction';
-    public static String EmailContact1 = 'In order for the Credit Union to ensure the Modification Agreement routes to appropriate signatories; please review and provide accurate email information for each signer, which may include yourself.';
-    public static String EmailContact2 = 'Once provided, the Modification Agreement will be sent via DocuSign to all signatories in chronological order. This contact information request is a critical step in your modification process which allows us to accurately route the Modification Agreement via email.';
-    public static String EmailContact3 = 'Please review the contact information is accurate prior to completing and submitting this form. If you have any questions or concerns; please feel free to reach our Mortgage Help Desk at 888-334-5120.';
+	public static String EmailContact1 = 'In order for the Credit Union to ensure the Modification Agreement routes to appropriate signatories; please review and provide accurate email information for each signer, which may include yourself.';
+	public static String EmailContact2 = 'Once provided, the Modification Agreement will be sent via DocuSign to all signatories in chronological order. This contact information request is a critical step in your modification process which allows us to accurately route the Modification Agreement via email.';
+	public static String EmailContact3 = 'Please review the contact information is accurate prior to completing and submitting this form. If you have any questions or concerns; please feel free to reach our Mortgage Help Desk at 888-334-5120.';
 	public static String EmailBodyContact = EmailContact1 + '\n\n' + EmailContact2 + '\n\n' + EmailContact3;
-    //public static String EmailBodyContact1 = 'In order for the Credit Union to ensure your automatic payment setup is accurate, please review and sign the Contact form. ' + '\n\n' + 'If changes are needed or you would like to provide additional payments, please update the form and sign.' + '\n\n' + 'If you have any questions, please contact us at 800-782-8782 ext. 5200.';
+	//public static String EmailBodyContact1 = 'In order for the Credit Union to ensure your automatic payment setup is accurate, please review and sign the Contact form. ' + '\n\n' + 'If changes are needed or you would like to provide additional payments, please update the form and sign.' + '\n\n' + 'If you have any questions, please contact us at 800-782-8782 ext. 5200.';
 	public static String EmailSubjectContact = 'Xpress Refinance Contact Information';
 	public static String accountID;
 	public static String userId;
@@ -42,6 +42,70 @@ public class xPressRefiToDocusign{
 	public static HTTPResponse res3;
 	public static String Brand;
 	public static String TemplateName;
+
+	public List<xPressRefi__c> xPressRefis{ get; set; }
+
+	private ApexPages.StandardSetController standardController;
+
+	public boolean validation{ get; set; }
+
+	public boolean validrecords{ get; set; }
+
+	public boolean contactdocusigncompleted{ get; set; }
+
+	public xPressRefiToDocusign(ApexPages.StandardSetController standardController){
+		xPressRefis = (List<xPressRefi__c>)standardController.getSelected();
+
+		if (xPressRefis.size() == 0){
+			validation = false;
+		} else if (xPressRefis.size() >= 1){
+			List<xPressRefi__c> XpressRefisToProcess = [SELECT Borrowers_Names__c, Member_Email__c, Case__c, Current_Interest_Rate_Calc__c, Current_Interest_Rate__c, Id, Interest_Rate__c, is_CSV_Generated__c, Is_Product_Change__c, LoanId__c, Maturity_Date_Calc__c, Maturity_Date__c, Member_Number__c, New_Interest_Rate_Calc__c, New_Payment_Amount_Calc__c, New_Product_Type__c, Principal_Balance__c, Product_Type__c, Property_Address_2__c, Property_Balance__c, Property_City__c, Property_County__c, Property_State__c, Property_Zip__c, Property__c, P_I_Payment__c, Start_Date_Calc__c, Member__c, Brand__c, Loan_Program_Type__c, Due_Date__c, Is_Mortgage_Ware__c, Is_Mortgage_Cadence__c, CreatedById, CreatedBy.email, Vesting_Person_1__c, Vesting_Person_2__c, Vesting_Person_3__c, Vesting_Person_4__c, Vesting_Person_Email_1__c, Vesting_Person_Email_2__c, Vesting_Person_Email_3__c, Vesting_Person_Email_4__c
+			                                            FROM xPressRefi__c
+			                                            where id in :xPressRefis and Docusign_Status__c != 'Completed' and DocuSignId__c != '' and Is_Mortgage_Cadence__c = false];
+
+			List<xPressRefi__c> XpressRefisContactPending = [SELECT Borrowers_Names__c, Member_Email__c, Case__c, Current_Interest_Rate_Calc__c, Current_Interest_Rate__c, Id, Interest_Rate__c, is_CSV_Generated__c, Is_Product_Change__c, LoanId__c, Maturity_Date_Calc__c, Maturity_Date__c, Member_Number__c, New_Interest_Rate_Calc__c, New_Payment_Amount_Calc__c, New_Product_Type__c, Principal_Balance__c, Product_Type__c, Property_Address_2__c, Property_Balance__c, Property_City__c, Property_County__c, Property_State__c, Property_Zip__c, Property__c, P_I_Payment__c, Start_Date_Calc__c, Member__c, Brand__c, Loan_Program_Type__c, Due_Date__c, Is_Mortgage_Ware__c, Is_Mortgage_Cadence__c, CreatedById, CreatedBy.email, Vesting_Person_1__c, Vesting_Person_2__c, Vesting_Person_3__c, Vesting_Person_4__c, Vesting_Person_Email_1__c, Vesting_Person_Email_2__c, Vesting_Person_Email_3__c, Vesting_Person_Email_4__c
+			                                            FROM xPressRefi__c
+			                                            where id in :xPressRefis and Contact_DocuSign_Status__c != 'Completed' and Is_Mortgage_Cadence__c = false];
+			if (XpressRefisToProcess.size() == 0){
+				validation = true;
+				validrecords = false;
+				contactdocusigncompleted = true;
+			} 
+			else if(XpressRefisContactPending.size() > 0){
+				validation = true;
+				validrecords = true;
+				contactdocusigncompleted = false;
+			}
+			else{
+				validation = true;
+				validrecords = true;
+				contactdocusigncompleted = true;
+			}
+
+		}
+
+		this.standardController = standardController;
+		system.debug('xPressRefis' + xPressRefis);
+		system.debug('validation' + validation);
+		system.debug('validrecords' + validrecords);
+	}
+
+	public void ResendDocusignMenthod(){
+
+		List<xPressRefi__c> selectedxpressrefis = (List<xPressRefi__c>)standardController.getSelected();
+
+		Set<Id> ids = new set<Id>();
+		For (xPressRefi__c sl : selectedxpressrefis){
+			ids.add(sl.id);
+		}
+		system.debug('ids: ' + ids);
+		docusignAPIcall(ids);
+
+		// PageReference page = new PageReference();
+		// page.setRedirect(true);
+		// return page;
+	}
+
 	//-----------------Sending Docusign-----------//
 	@future(callout = true)
 	public static void docusignAPIcall(Set<ID> ids){
@@ -82,12 +146,13 @@ public class xPressRefiToDocusign{
 
 		//----------------------------End - DocuSign Templates from Custom setting------------------------------------//
 
-		List<xPressRefi__c> xPressRefiList = [SELECT Borrowers_Names__c,Member_Email__c, Case__c, Current_Interest_Rate_Calc__c, Current_Interest_Rate__c, Id, Interest_Rate__c, is_CSV_Generated__c, Is_Product_Change__c, LoanId__c, Maturity_Date_Calc__c, Maturity_Date__c, Member_Number__c, New_Interest_Rate_Calc__c, New_Payment_Amount_Calc__c, New_Product_Type__c, Principal_Balance__c, Product_Type__c, Property_Address_2__c, Property_Balance__c, Property_City__c, Property_County__c, Property_State__c, Property_Zip__c, Property__c, P_I_Payment__c, Start_Date_Calc__c, Member__c, Brand__c, Loan_Program_Type__c, Due_Date__c, Is_Mortgage_Ware__c, Is_Mortgage_Cadence__c, CreatedById, CreatedBy.email, Vesting_Person_1__c, Vesting_Person_2__c, Vesting_Person_3__c, Vesting_Person_4__c, Vesting_Person_Email_1__c, Vesting_Person_Email_2__c, Vesting_Person_Email_3__c, Vesting_Person_Email_4__c
+		List<xPressRefi__c> xPressRefiList = [SELECT Borrowers_Names__c, Member_Email__c, Case__c, Current_Interest_Rate_Calc__c, Current_Interest_Rate__c, Id, Interest_Rate__c, is_CSV_Generated__c, Is_Product_Change__c, LoanId__c, Maturity_Date_Calc__c, Maturity_Date__c, Member_Number__c, New_Interest_Rate_Calc__c, New_Payment_Amount_Calc__c, New_Product_Type__c, Principal_Balance__c, Product_Type__c, Property_Address_2__c, Property_Balance__c, Property_City__c, Property_County__c, Property_State__c, Property_Zip__c, Property__c, P_I_Payment__c, Start_Date_Calc__c, Member__c, Brand__c, Loan_Program_Type__c, Due_Date__c, Is_Mortgage_Ware__c, Is_Mortgage_Cadence__c, CreatedById, CreatedBy.email, Vesting_Person_1__c, Vesting_Person_2__c, Vesting_Person_3__c, Vesting_Person_4__c, Vesting_Person_Email_1__c, Vesting_Person_Email_2__c, Vesting_Person_Email_3__c, Vesting_Person_Email_4__c
 		                                      FROM xPressRefi__c
 		                                      where id = :ids];
-		Map<string,decimal> ProductCostMap = new Map<string,decimal>();
-		List<CU_Rates__c> ProductList = [Select Id,Product__c, Cost_Component__c from CU_Rates__c];
-		for(CU_Rates__c pl: ProductList){
+		Map<string, decimal> ProductCostMap = new Map<string, decimal>();
+		List<CU_Rates__c> ProductList = [Select Id, Product__c, Cost_Component__c
+		                                 from CU_Rates__c];
+		for (CU_Rates__c pl : ProductList){
 			ProductCostMap.put(pl.Product__c, pl.Cost_Component__c);
 		}
 
@@ -131,22 +196,19 @@ public class xPressRefiToDocusign{
 				req.setHeader('Content-Type', 'application/json');
 				req.setHeader('Content-Disposition', 'form-data');
 				system.debug('XpressRefi Id ==' + xp.Id);
-				if(xp.Vesting_Person_Email_2__c != null && xp.Vesting_Person_Email_3__c == null && xp.Vesting_Person_Email_4__c == null){
+				if (xp.Vesting_Person_Email_2__c != null && xp.Vesting_Person_Email_3__c == null && xp.Vesting_Person_Email_4__c == null){
 					//json = '{"emailBlurb":"' + EmailBody.replace('{BorrowerNames}', xp.Borrowers_Names__c)+'",' + '"emailSubject": "' + EmailSubject + '",' + '"status": "created",' + '"compositeTemplates": [' + '{' + '"serverTemplates": [' + '{' + '"sequence": "1",' + '"templateId":"' + templateID + '"' + '}' + '],' + '"inlineTemplates": [' + '{' + '"recipients": { "signers": [ { "email": " ' + xp.Vesting_Person_Email_2__c + '", "name": "' + xp.Vesting_Person_2__c +'", "recipientId": "2", "roleName": "Signer 2", "routingOrder": "1", "tabs": {"signHereTabs": [{"anchorString": "JONATHAN HERNANDEZ","anchorUnits": "inches", "anchorXOffset": "4.93","anchorYOffset": "0.8"}] } } ] },' + '"sequence": "2",' + '"customFields": {' + '"textCustomFields": [' + '{' + '"configurationType": "salesforce",' + '"name":"xPressRefi__c",' + '"required": "true","show": "true",' + '"value":"' + xp.Id + '"' + '}' + ']' + '}' + '}' + ']' + '}' + ']' + '}';
-					json = '{"emailBlurb":"' + EmailBody.replace('{Fees}', string.valueof(fees))+'",' + '"emailSubject": "' + EmailSubject + '",' + '"status": "created",' + '"compositeTemplates": [' + '{' + '"serverTemplates": [' + '{' + '"sequence": "1",' + '"templateId":"' + templateID + '"' + '}' + '],' + '"inlineTemplates": [' + '{' + '"recipients": { "signers": [ { "email": " ' + xp.Vesting_Person_Email_2__c + '", "name": "' + xp.Vesting_Person_2__c +'", "recipientId": "2", "roleName": "Signer 2", "routingOrder": "2", "tabs": {"signHereTabs": [{"anchorString": "JONATHAN HERNANDEZ","anchorUnits": "inches", "anchorXOffset": "4.93","anchorYOffset": "0.8"}] } } ] },' + '"sequence": "2",' + '"customFields": {' + '"textCustomFields": [' + '{' + '"configurationType": "salesforce",' + '"name":"xPressRefi__c",' + '"required": "true","show": "true",' + '"value":"' + xp.Id + '"' + '},' + '{' + '"configurationType": "salesforce",' + '"name":"Xrefi Principal Balance",' + '"required": "true","show": "true",' + '"value":"' + xp.Principal_Balance__c + '"' + '}' + ']' + '}' + '}' + ']' + '}' + ']' + '}';
+					json = '{"emailBlurb":"' + EmailBody.replace('{Fees}', string.valueof(fees))+'",' + '"emailSubject": "' + EmailSubject + '",' + '"status": "created",' + '"compositeTemplates": [' + '{' + '"serverTemplates": [' + '{' + '"sequence": "1",' + '"templateId":"' + templateID + '"' + '}' + '],' + '"inlineTemplates": [' + '{' + '"recipients": { "signers": [ { "email": " ' + xp.Vesting_Person_Email_2__c + '", "name": "' + xp.Vesting_Person_2__c + '", "recipientId": "2", "roleName": "Signer 2", "routingOrder": "2", "tabs": {"signHereTabs": [{"anchorString": "JONATHAN HERNANDEZ","anchorUnits": "inches", "anchorXOffset": "4.93","anchorYOffset": "0.8"}] } } ] },' + '"sequence": "2",' + '"customFields": {' + '"textCustomFields": [' + '{' + '"configurationType": "salesforce",' + '"name":"xPressRefi__c",' + '"required": "true","show": "true",' + '"value":"' + xp.Id + '"' + '},' + '{' + '"configurationType": "salesforce",' + '"name":"Xrefi Principal Balance",' + '"required": "true","show": "true",' + '"value":"' + xp.Principal_Balance__c + '"' + '}' + ']' + '}' + '}' + ']' + '}' + ']' + '}';
 					//json = '{"emailBlurb":"' + EmailBody.replace('{BorrowerNames}', xp.Borrowers_Names__c)+'",' + '"emailSubject": "' + EmailSubject + '",' + '"status": "created",' + '"compositeTemplates": [' + '{' + '"serverTemplates": [' + '{' + '"sequence": "1",' + '"templateId":"' + templateID + '"' + '}' + '],' + '"inlineTemplates": [' + '{' + '"recipients": { "signers": [ { "email": " ' + xp.Vesting_Person_Email_2__c + '", "name": "' + xp.Vesting_Person_2__c +'", "recipientId": "2", "roleName": "Signer 2", "routingOrder": "1", "tabs": {"signHereTabs": [{"anchorString": "JONATHAN HERNANDEZ","anchorUnits": "inches", "anchorXOffset": "4.93","anchorYOffset": "0.8"}] } } ] },' + '"sequence": "2",' + '"customFields": {' + '"textCustomFields": [' + '{' + '"configurationType": "salesforce",' + '"name":"xPressRefi__c",' + '"required": "true","show": "true",' + '"value":"' + xp.Id + '"' + '},' + '{' + '"configurationType": "salesforce",' + '"name":"Xrefi Principal Balance",' + '"required": "true","show": "true",' + '"value":"' + xp.Principal_Balance__c + '"' + '}' + ']' + '}' + '}' + ']' + '}' + '],' + '"customFields": {' + '"textCustomFields": [' + '{' + '"configurationType": "salesforce",' + '"name":"Xrefi Principal Balance",' + '"required": "true","show": "true",' + '"value":"' + xp.Principal_Balance__c + '"' + '}' + ']' + '}' + '}';
-				}	
-				else if(xp.Vesting_Person_Email_2__c != null && xp.Vesting_Person_Email_3__c != null && xp.Vesting_Person_Email_4__c == null){
-					json = '{"emailBlurb":"' + EmailBody.replace('{Fees}', string.valueof(fees))+'",' + '"emailSubject": "' + EmailSubject + '",' + '"status": "created",' + '"compositeTemplates": [' + '{' + '"serverTemplates": [' + '{' + '"sequence": "1",' + '"templateId":"' + templateID + '"' + '}' + '],' + '"inlineTemplates": [' + '{' + '"recipients": { "signers": [ { "email": " ' + xp.Vesting_Person_Email_2__c + '", "name": "' + xp.Vesting_Person_2__c +'", "recipientId": "2", "roleName": "Signer 2", "routingOrder": "2", "tabs": {"signHereTabs": [{"anchorString": "JONATHAN HERNANDEZ","anchorUnits": "inches", "anchorXOffset": "4.93","anchorYOffset": "0.8"}] } }, { "email": " ' + xp.Vesting_Person_Email_3__c + '", "name": "' + xp.Vesting_Person_3__c +'", "recipientId": "3", "roleName": "Signer 3", "routingOrder": "2", "tabs": {"signHereTabs": [{"anchorString": "JONATHAN HERNANDEZ","anchorUnits": "inches", "anchorXOffset": "4.93","anchorYOffset": "1.8"}] } } ] },' + '"sequence": "1",' + '"customFields": {' + '"textCustomFields": [' + '{' + '"configurationType": "salesforce",' + '"name":"xPressRefi__c",' + '"required": "true","show": "true",' + '"value":"' + xp.Id + '"' + '}' + ']' + '}' + '}' + ']' + '}' + ']' + '}';
+				} else if (xp.Vesting_Person_Email_2__c != null && xp.Vesting_Person_Email_3__c != null && xp.Vesting_Person_Email_4__c == null){
+					json = '{"emailBlurb":"' + EmailBody.replace('{Fees}', string.valueof(fees))+'",' + '"emailSubject": "' + EmailSubject + '",' + '"status": "created",' + '"compositeTemplates": [' + '{' + '"serverTemplates": [' + '{' + '"sequence": "1",' + '"templateId":"' + templateID + '"' + '}' + '],' + '"inlineTemplates": [' + '{' + '"recipients": { "signers": [ { "email": " ' + xp.Vesting_Person_Email_2__c + '", "name": "' + xp.Vesting_Person_2__c + '", "recipientId": "2", "roleName": "Signer 2", "routingOrder": "2", "tabs": {"signHereTabs": [{"anchorString": "JONATHAN HERNANDEZ","anchorUnits": "inches", "anchorXOffset": "4.93","anchorYOffset": "0.8"}] } }, { "email": " ' + xp.Vesting_Person_Email_3__c + '", "name": "' + xp.Vesting_Person_3__c + '", "recipientId": "3", "roleName": "Signer 3", "routingOrder": "2", "tabs": {"signHereTabs": [{"anchorString": "JONATHAN HERNANDEZ","anchorUnits": "inches", "anchorXOffset": "4.93","anchorYOffset": "1.8"}] } } ] },' + '"sequence": "1",' + '"customFields": {' + '"textCustomFields": [' + '{' + '"configurationType": "salesforce",' + '"name":"xPressRefi__c",' + '"required": "true","show": "true",' + '"value":"' + xp.Id + '"' + '}' + ']' + '}' + '}' + ']' + '}' + ']' + '}';
 					system.debug('JSON' + json);
-				}
-				else if(xp.Vesting_Person_Email_2__c != null && xp.Vesting_Person_Email_3__c != null && xp.Vesting_Person_Email_4__c != null){
-					json = '{"emailBlurb":"' + EmailBody.replace('{Fees}', string.valueof(fees))+'",' + '"emailSubject": "' + EmailSubject + '",' + '"status": "created",' + '"compositeTemplates": [' + '{' + '"serverTemplates": [' + '{' + '"sequence": "1",' + '"templateId":"' + templateID + '"' + '}' + '],' + '"inlineTemplates": [' + '{' + '"recipients": { "signers": [ { "email": " ' + xp.Vesting_Person_Email_2__c + '", "name": "' + xp.Vesting_Person_2__c +'", "recipientId": "2", "roleName": "Signer 2", "routingOrder": "2", "tabs": {"signHereTabs": [{"anchorString": "JONATHAN HERNANDEZ","anchorUnits": "inches", "anchorXOffset": "4.93","anchorYOffset": "0.8"}] } }, { "email": " ' + xp.Vesting_Person_Email_3__c + '", "name": "' + xp.Vesting_Person_3__c +'", "recipientId": "3", "roleName": "Signer 3", "routingOrder": "2", "tabs": {"signHereTabs": [{"anchorString": "JONATHAN HERNANDEZ","anchorUnits": "inches", "anchorXOffset": "4.93","anchorYOffset": "1.8"}] } }, { "email": " ' + xp.Vesting_Person_Email_4__c + '", "name": "' + xp.Vesting_Person_4__c +'", "recipientId": "4", "roleName": "Signer 4", "routingOrder": "2", "tabs": {"signHereTabs": [{"anchorString": "JONATHAN HERNANDEZ","anchorUnits": "inches", "anchorXOffset": "4.93","anchorYOffset": "2.8"}] } } ] },' + '"sequence": "1",' + '"customFields": {' + '"textCustomFields": [' + '{' + '"configurationType": "salesforce",' + '"name":"xPressRefi__c",' + '"required": "true","show": "true",' + '"value":"' + xp.Id + '"' + '}' + ']' + '}' + '}' + ']' + '}' + ']' + '}';
-				}
-				else{
+				} else if (xp.Vesting_Person_Email_2__c != null && xp.Vesting_Person_Email_3__c != null && xp.Vesting_Person_Email_4__c != null){
+					json = '{"emailBlurb":"' + EmailBody.replace('{Fees}', string.valueof(fees))+'",' + '"emailSubject": "' + EmailSubject + '",' + '"status": "created",' + '"compositeTemplates": [' + '{' + '"serverTemplates": [' + '{' + '"sequence": "1",' + '"templateId":"' + templateID + '"' + '}' + '],' + '"inlineTemplates": [' + '{' + '"recipients": { "signers": [ { "email": " ' + xp.Vesting_Person_Email_2__c + '", "name": "' + xp.Vesting_Person_2__c + '", "recipientId": "2", "roleName": "Signer 2", "routingOrder": "2", "tabs": {"signHereTabs": [{"anchorString": "JONATHAN HERNANDEZ","anchorUnits": "inches", "anchorXOffset": "4.93","anchorYOffset": "0.8"}] } }, { "email": " ' + xp.Vesting_Person_Email_3__c + '", "name": "' + xp.Vesting_Person_3__c + '", "recipientId": "3", "roleName": "Signer 3", "routingOrder": "2", "tabs": {"signHereTabs": [{"anchorString": "JONATHAN HERNANDEZ","anchorUnits": "inches", "anchorXOffset": "4.93","anchorYOffset": "1.8"}] } }, { "email": " ' + xp.Vesting_Person_Email_4__c + '", "name": "' + xp.Vesting_Person_4__c + '", "recipientId": "4", "roleName": "Signer 4", "routingOrder": "2", "tabs": {"signHereTabs": [{"anchorString": "JONATHAN HERNANDEZ","anchorUnits": "inches", "anchorXOffset": "4.93","anchorYOffset": "2.8"}] } } ] },' + '"sequence": "1",' + '"customFields": {' + '"textCustomFields": [' + '{' + '"configurationType": "salesforce",' + '"name":"xPressRefi__c",' + '"required": "true","show": "true",' + '"value":"' + xp.Id + '"' + '}' + ']' + '}' + '}' + ']' + '}' + ']' + '}';
+				} else{
 					json = '{"emailBlurb":"' + EmailBody.replace('{Fees}', string.valueof(fees))+'",' + '"emailSubject": "' + EmailSubject + '",' + '"status": "created",' + '"compositeTemplates": [' + '{' + '"serverTemplates": [' + '{' + '"sequence": "1",' + '"templateId":"' + templateID + '"' + '}' + '],' + '"inlineTemplates": [' + '{' + '"sequence": "1",' + '"customFields": {' + '"textCustomFields": [' + '{' + '"configurationType": "salesforce",' + '"name":"xPressRefi__c",' + '"required": "true","show": "true",' + '"value":"' + xp.Id + '"' + '}' + ']' + '}' + '}' + ']' + '}' + ']' + '}';
 				}
-				
+
 				//json = '{"emailBlurb":"'+EmailBody.replace('{BorrowerNames}', xp.Borrowers_Names__c)+'",'+'"emailSubject": "'+EmailSubject+'",'+'"status": "created",'+ '"compositeTemplates": [' + '{' + '"serverTemplates": [' + '{' + '"sequence": "1",' + '"templateId":"' + templateID + '"' + '}' + '],' + '"inlineTemplates": [' + '{' + '"sequence": "1",' + '"customFields": {' + '"textCustomFields": [' + '{' + '"configurationType": "salesforce",' + '"name":"xPressRefi__c",' + '"required": "true","show": "true",' + '"value":"' + xp.Id + '"' + '}' + ']' + '}' + '}' + ']' + '}' + '],' + ' "recipients": '+'{"signers": ['+'{"email": "'+xp.Vesting_Person_Email_1__c+'",'+'"name":  "'+xp.Vesting_Person_1__c+'",'+'"clientUserId" : "120",'+'"recipientId": "1",'+'"routingOrder": "1",'+'"tabs": '+'{'+'"signHereTabs": ['+'{"anchorString": "JONATHAN HERNANDEZ",'+'"anchorUnits": "inches",'+' "anchorXOffset": "1",'+'"anchorYOffset": "0.2"'+'}'+']'+'}'+'}'+']'+'}'+'}';
 				//system.debug('json==' + json);
 				req.setBody(json);
@@ -183,12 +245,12 @@ public class xPressRefiToDocusign{
 				if (EmailToSend == 'Production' || EmailToSend == 'production'){
 					json1 = '{"signers": [' + '{' + '"email": "' + xp.Vesting_Person_Email_1__c + '",' + '"recipientId" : "1",' + '"roleName": "signer 1",' + '"name": "' + xp.Vesting_Person_1__c + '",' + '"signingGroupId": "signers",' + '"routingOrder" : "null"' + '}' + ']' + '}';
 				}
-				
+
 				if (EmailToSend != 'Production' || EmailToSend != 'production'){
 					EmailToSend = userEmail;
 					system.debug('xp.createdby.email==' + xp.createdby.email);
 					json1 = '{"signers": [' + '{' + '"email": "' + xp.Vesting_Person_Email_1__c + '",' + '"recipientId" : "1",' + '"roleName": "Signer 1",' + '"name": "' + xp.Vesting_Person_1__c + '",' + '"signingGroupId": "signers",' + '"routingOrder" : "1"' + '}' + ']' + '}';
-					
+
 				}
 				system.debug('json1==' + json1);
 				req1.setBody(json1);
@@ -279,7 +341,7 @@ public class xPressRefiToDocusign{
 
 		//----------------------------End - DocuSign Templates from Custom setting------------------------------------//
 
-		List<xPressRefi__c> xPressRefiList = [SELECT Borrowers_Names__c, Case__c,Member_Email__c, Current_Interest_Rate_Calc__c, Current_Interest_Rate__c, Id, Interest_Rate__c, is_CSV_Generated__c, Is_Product_Change__c, LoanId__c, Maturity_Date_Calc__c, Maturity_Date__c, Member_Number__c, New_Interest_Rate_Calc__c, New_Payment_Amount_Calc__c, New_Product_Type__c, Principal_Balance__c, Product_Type__c, Property_Address_2__c, Property_Balance__c, Property_City__c, Property_County__c, Property_State__c, Property_Zip__c, Property__c, P_I_Payment__c, Start_Date_Calc__c, Member__c,Member__r.Name, Brand__c, Loan_Program_Type__c, Due_Date__c, Is_Mortgage_Ware__c, Is_Mortgage_Cadence__c
+		List<xPressRefi__c> xPressRefiList = [SELECT Borrowers_Names__c, Case__c, Member_Email__c, Current_Interest_Rate_Calc__c, Current_Interest_Rate__c, Id, Interest_Rate__c, is_CSV_Generated__c, Is_Product_Change__c, LoanId__c, Maturity_Date_Calc__c, Maturity_Date__c, Member_Number__c, New_Interest_Rate_Calc__c, New_Payment_Amount_Calc__c, New_Product_Type__c, Principal_Balance__c, Product_Type__c, Property_Address_2__c, Property_Balance__c, Property_City__c, Property_County__c, Property_State__c, Property_Zip__c, Property__c, P_I_Payment__c, Start_Date_Calc__c, Member__c, Member__r.Name, Brand__c, Loan_Program_Type__c, Due_Date__c, Is_Mortgage_Ware__c, Is_Mortgage_Cadence__c
 		                                      FROM xPressRefi__c
 		                                      where id = :ids];
 
