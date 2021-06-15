@@ -436,7 +436,7 @@ public class SolarLoanController {
                 jointZipCode =  Pattern.matches('^[0-9]{5}(?:-[0-9]{4})?$',SolarLoanList[0].Joint_Zip_Code__c);
 
             if(SolarLoanList[0].Primary_Email__c != null)   
-                PrimaryEmail = Pattern.matches('[a-zA-Z0-9._-]+@[a-zA-Z]+.[a-zA-Z]{2,4}[.]{0,1}[a-zA-Z]{0,2}',SolarLoanList[0].Primary_Email__c);
+                PrimaryEmail = Pattern.matches('^[a-zA-Z0-9._|\\\\%#~`=?&/$^*!}{+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,4}$',SolarLoanList[0].Primary_Email__c);
 
             String emailRegex = '([a-zA-Z0-9_\\-\\.]+)@((\\[a-z]{1,3}\\.[a-z]{1,3}\\.[a-z]{1,3}\\.)|(([a-zA-Z0-9\\-]+\\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})';    
             

@@ -89,7 +89,9 @@ public class MarketingLeadCheck {
                         firstname = Names[0]+ '%';
                         lastname= '%'+Names[Names.size()-1] +'%';
                     }
-                    if(firstname == lead.FirstName && lastname == lead.LastName){
+                    system.debug('firstname:'+firstname);
+                    system.debug('lastname:'+lastname);
+                    if(firstname.ContainsIgnoreCase(lead.FirstName) && lastname.ContainsIgnoreCase(lead.LastName)){
                         break;
                     }
                 }
