@@ -364,7 +364,7 @@ result.put('MultipleMemberNumberAlert', MultipleMemberNumberAlert); */
     
     @AuraEnabled
     
-    public static void KYMSaveLogData(string MemberId, string reason, string otherReason, string GUID, string SecureEmailCase, string IVRGUIDFromUrl)/*This is to save OOW log*/
+    public static void KYMSaveLogData(string MemberId, string reason, string otherReason, string GUID, string SecureEmailCase, string IVRGUIDFromUrl, string DriverLicenseNo, string WorkBadgeNo)/*This is to save OOW log*/
     {
         /*This method save KYM log data in MAAP Log object*/
         RecordType rec = GetRecordTypeData('Authenticated_Log__c', 'KYM Log'); 
@@ -384,6 +384,8 @@ result.put('MultipleMemberNumberAlert', MultipleMemberNumberAlert); */
         log.KYM_Member_Number__c = AccountNumber;
         log.KYM_Other_Reason__c = otherReason;
         log.KYM_Secure_Email_Case_Number__c = SecureEmailCase;
+        log.KYM_Driver_License_Number__c = DriverLicenseNo;
+        log.KYM_Work_Badge_Number__c = WorkBadgeNo;
         log.SalesforceID__c = MemberId;
         log.Member__c = MemberId;
         log.Staff_Name__c = UserInfo.getName();
@@ -407,6 +409,8 @@ result.put('MultipleMemberNumberAlert', MultipleMemberNumberAlert); */
             log2.KYM_Member_Number__c = AccountNumber;
             log2.KYM_Other_Reason__c = otherReason;
             log2.KYM_Secure_Email_Case_Number__c = SecureEmailCase;
+            log2.KYM_Driver_License_Number__c = DriverLicenseNo;
+            log2.KYM_Work_Badge_Number__c = WorkBadgeNo;
             log2.SalesforceID__c = MemberId;
             log2.Member__c = MemberId;
             log2.Staff_Name__c = UserInfo.getName();
@@ -425,6 +429,8 @@ result.put('MultipleMemberNumberAlert', MultipleMemberNumberAlert); */
             MasterAuthenticationLog[0].KYM_Member_Number__c = AccountNumber;
             MasterAuthenticationLog[0].KYM_Other_Reason__c = otherReason;
             MasterAuthenticationLog[0].KYM_Secure_Email_Case_Number__c = SecureEmailCase;
+            MasterAuthenticationLog[0].KYM_Driver_License_Number__c = DriverLicenseNo;
+            MasterAuthenticationLog[0].KYM_Work_Badge_Number__c = WorkBadgeNo;
             MasterAuthenticationLog[0].SalesforceID__c = MemberId;
             MasterAuthenticationLog[0].Member__c = MemberId;
             MasterAuthenticationLog[0].Staff_Name__c = UserInfo.getName();
