@@ -22,10 +22,19 @@
                 ResendDocusignMenthod();
             }
         }
-        function hide() {
-            document.getElementById('spin').style.display = "none";
-            alert('Request Processed Successfully.');
-            window.history.back();
+        function hide(isSuccess) {
+            debugger;
+            //var isSuccess = '{!isSuccess}';
+            if (isSuccess) {
+                document.getElementById('spin').style.display = "none";
+                alert('Request Processed Successfully.');
+                window.history.back();
+            }
+            else{
+                document.getElementById('spin').style.display = "none";
+                alert('Error Sending Docusign.');
+                window.history.back();
+            }   
         }
     </script>
 
@@ -39,7 +48,7 @@
                 </div>
             </div>
         </apex:pageblock>
-        <apex:actionFunction action="{!ResendDocusignMenthod}" name="ResendDocusignMenthod" oncomplete="hide();" rerender="theForm">
+        <apex:actionFunction action="{!ResendDocusignMenthod}" name="ResendDocusignMenthod" oncomplete="hide({!isSuccess});" rerender="theForm">
         </apex:actionFunction>
 
     </apex:form>
