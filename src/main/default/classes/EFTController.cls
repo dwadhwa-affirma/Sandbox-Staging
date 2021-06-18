@@ -941,7 +941,7 @@ public class EFTController{
 							//System.debug('Share ....');
 							objEFT.EFT_ID_Type__c = 'Share';
 							map<string, string> resultAmount = getTrackingRecordforShare(AccountNumber, String.valueOf(localAcc.get('Id')));
-							if (resultAmount != null){
+							if (resultAmount != null && resultAmount.size() > 0){
 								if (String.valueOf(resultAmount.get('Payment')) != null)
 									objEFT.Payment_Amount__c = decimal.valueOf(resultAmount.get('Payment'));
 								objEFT.Alternate_Amount__c = decimal.valueOf(resultAmount.get('AlternateAmount'));

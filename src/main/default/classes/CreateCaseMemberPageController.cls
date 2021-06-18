@@ -1062,8 +1062,8 @@ public class CreateCaseMemberPageController {
     public static void MaapCaseAddLog(string RecordId, string CaseId)
     {
         Datetime dt  = System.now();
-        DateTime earlier = dt.addMinutes(-5);
-        List<Authenticated_Log__c> MaapLogsList = [SELECT Id, Member__c,MAAP_Case_Number_s__c, CreatedDate from Authenticated_Log__c where CreatedDate >=: earlier and Member__c =: RecordId and RecordType.Name = 'Master Authentication Log'];
+        DateTime earlier = dt.addMinutes(-20);
+        List<Authenticated_Log__c> MaapLogsList = [SELECT Id, Member__c,MAAP_Case_Number_s__c, CreatedDate from Authenticated_Log__c where LastModifiedDate >=: earlier and Member__c =: RecordId and RecordType.Name = 'Master Authentication Log' order by LastModifiedDate desc limit 1];
         system.debug('MaapLogsList.Size()=='+MaapLogsList.Size());
         if(MaapLogsList.size() > 0){
             string CaseNumber = [Select CaseNumber from Case where Id=: CaseId].CaseNumber;

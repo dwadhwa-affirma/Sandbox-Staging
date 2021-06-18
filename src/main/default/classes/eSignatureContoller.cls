@@ -83,25 +83,36 @@ global class eSignatureContoller {
     }
     
     public void attach() {
+         
+        // Attach pdf to Wires transaction record
+        InPersonSigning__c inPersonSign=[Select SalesforceID__c FROM InPersonSigning__c Where Id=: wireTransaction.Id LIMIT 1];
+        WIRES_Transaction__c wire=[Select FromAccount__c,Name FROM WIRES_Transaction__c Where Id=: inPersonSign.SalesforceID__c LIMIT 1];
         
-        System.debug('came in attachment save method.');
         Attachment myAttach = new Attachment();
         myAttach.ParentId = wireTransaction.Id;//Id of the object to which the page is attached
-        myAttach.name = 'WIRE TRANSFER AUTHORIZATION.pdf';
+        myAttach.name = 'WIRETRANSFERAUTHORIZATION_'+wire.Name+'.pdf';
         PageReference myPdf = ApexPages.currentPage();//myPdfPage is the name of your pdf page
         myAttach.body = myPdf.getContentAsPdf();
         insert myAttach;
         
-        
-        // Attach pdf to Wires transaction record
-        InPersonSigning__c inPersonSign=[Select SalesforceID__c FROM InPersonSigning__c Where Id=: wireTransaction.Id LIMIT 1];
         if(inPersonSign!=null){
             Attachment wireTransferPDF = new Attachment();
             wireTransferPDF.ParentId = inPersonSign.SalesforceID__c;
-            wireTransferPDF.name = 'WIRE TRANSFER AUTHORIZATION.pdf';
+            wireTransferPDF.name = 'WIRETRANSFERAUTHORIZATION_'+wire.Name+'.pdf';
             PageReference wireTranferPdfContent = ApexPages.currentPage();
             wireTransferPDF.body = wireTranferPdfContent.getContentAsPdf();
             insert wireTransferPDF;
+            
+            Wires_Document__c wireDoc=new Wires_Document__c();
+            wireDoc.Attachment_Id__c =wireTransferPDF.Id;
+            wireDoc.Member_Number__c = wire.FromAccount__c;
+            wireDoc.IsMovedToOnBase__c = false;
+            wireDoc.Document_Type__c = 'Wire Transfers';
+            wireDoc.Document_Name__c = 'WIRETRANSFERAUTHORIZATION_'+wire.Name+'.pdf';
+            wireDoc.Wires__c = inPersonSign.SalesforceID__c;
+            wireDoc.Attachment_Created_On__c = DateTime.now();
+            
+            insert wireDoc;
         }
         
         List<Attachment> signatures = new List<Attachment>();
@@ -119,6 +130,7 @@ global class eSignatureContoller {
         InPersonSigning__c inPersonSigning=[SELECT Id, Name,SalesforceID__c FROM InPersonSigning__c WHERE Id=:wireTransaction.Id LIMIT 1];
         if(inPersonSigning!=null){
             inPersonSigning.IsLocked__c=true;
+            inPersonSigning.Wires_Transaction__c=inPersonSign.SalesforceID__c;
             update inPersonSigning;
         }
         
