@@ -534,41 +534,44 @@ public class SolarLoanToFileUCC {
                 }
                 
                 System.debug('UCC ID is = ' + UCCId);
-                
-                
-                req1.setEndpoint(EndpointURL+'/OnlineServices/api/File/V2/Filing/'+UCCId+'/GenerateImage');
-                req1.setMethod('GET');
-                req1.setHeader('Accept', 'application/json');
-                req1.setHeader('Authorization', 'Bearer ' + token);
-                req1.setHeader('Content-Type', 'application/json;charset=UTF-8');
-
-                system.debug('test1'+req1);                     
-                
-                if(!Test.isRunningTest()){
-                    res1 = http1.send(req1);
-                    responseBody1 = res1.getBody();
-                    System.debug('Body: '+responseBody1);
+                if(UCCId == null){
+                    UCCId = responseBody;
                 }
                 else{
-                    responseBody1 = '{"FileBase64String" : "SSetewtewewtegsgw"}';
-                }
-                
-                if(UCClogs == null)
-                    UCClogs = responseBody1;
-                else
-                    UCClogs = UCClogs +'\n'+ responseBody1;
+                    req1.setEndpoint(EndpointURL+'/OnlineServices/api/File/V2/Filing/'+UCCId+'/GenerateImage');
+                    req1.setMethod('GET');
+                    req1.setHeader('Accept', 'application/json');
+                    req1.setHeader('Authorization', 'Bearer ' + token);
+                    req1.setHeader('Content-Type', 'application/json;charset=UTF-8');
 
-                if(responseBody1!=''){ 
-                    Map<String,Object> results = (Map<String,Object>)System.JSON.deserializeUntyped(responseBody1);
-                    if(results.size() > 0){                     
-                        for(String key : results.keySet()){                   			
-                            if(key == 'FileBase64String'){
-                                UCCFile = String.valueOf(results.get(key));
+                    system.debug('test1'+req1);                     
+                    
+                    if(!Test.isRunningTest()){
+                        res1 = http1.send(req1);
+                        responseBody1 = res1.getBody();
+                        System.debug('Body: '+responseBody1);
+                    }
+                    else{
+                        responseBody1 = '{"FileBase64String" : "SSetewtewewtegsgw"}';
+                    }
+                    
+                    if(UCClogs == null)
+                        UCClogs = responseBody1;
+                    else
+                        UCClogs = UCClogs +'\n'+ responseBody1;
+
+                    if(responseBody1!=''){ 
+                        Map<String,Object> results = (Map<String,Object>)System.JSON.deserializeUntyped(responseBody1);
+                        if(results.size() > 0){                     
+                            for(String key : results.keySet()){                   			
+                                if(key == 'FileBase64String'){
+                                    UCCFile = String.valueOf(results.get(key));
+                                }
                             }
                         }
                     }
+                    System.debug('UCC File is = ' + UCCFile);
                 }
-                System.debug('UCC File is = ' + UCCFile);
 
                 //------------------------------------------------Creating Tracking 34 ------------------------------------------//
                 
@@ -619,6 +622,9 @@ public class SolarLoanToFileUCC {
                     }
                 }
                 system.debug('TrackingLocator '+TrackingLocator);
+                if(TrackingLocator == null){
+                    TrackingLocator = responseBody2;
+                }
                 
                 //-------------------------------------------------------------------------------------------------------------------------//
 
