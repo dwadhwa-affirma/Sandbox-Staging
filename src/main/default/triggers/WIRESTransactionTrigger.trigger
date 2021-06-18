@@ -1,6 +1,18 @@
-trigger WIRESTransactionTrigger on WIRES_Transaction__c (before insert, after insert,after update) {
+trigger WIRESTransactionTrigger on WIRES_Transaction__c (before insert,before update, after insert,after update) {
     
       System.debug('In the trigger');
+    
+    //------------------------------------------------------------------Before Update  ------------------------------------------------------------------------------//
+    
+    if(Trigger.isBefore && Trigger.isUpdate){
+        for(Integer i=0; i<trigger.new.size(); i++){
+            if((trigger.old[i].Current_Reviewer__c != trigger.new[i].Current_Reviewer__c) || 
+               (trigger.old[i].Current_Second_Reviewer__c != trigger.new[i].Current_Second_Reviewer__c)
+              ){  
+                trigger.new[i].Current_Reviewer_Modified_Date__c=DateTime.now();
+            }
+        }
+    }
     
     //------------------------------------------------------------------After Update  ------------------------------------------------------------------------------//
     
@@ -8,6 +20,8 @@ trigger WIRESTransactionTrigger on WIRES_Transaction__c (before insert, after in
         set<Id> docSignCompletedAtOnlineIds=new set<Id>();
         
         set<Id> sentToWireXchangeIds=new set<Id>();
+        set<Id> rejectedWiresIds=new set<Id>();
+        
         for(Integer i=0; i<trigger.new.size(); i++){
             //------------------------------- Checking if the status is being changed and status = 'Completed'-----------------//
             if(trigger.old[i].Status__c != 'Completed' && trigger.new[i].Status__c == 'Completed'){  
@@ -22,6 +36,14 @@ trigger WIRESTransactionTrigger on WIRES_Transaction__c (before insert, after in
                 		sentToWireXchangeIds.add(trigger.new[i].id);
                   }
             }
+            
+            //----------- Checking if the approval status is being changed and status = 'Rejected'--------------//
+            if(trigger.old[i].Approval_Status__c != 'Rejected' && trigger.new[i].Approval_Status__c == 'Rejected'){
+                  if(trigger.new[i].Source__c==WiresConstant.Source_Branch){
+                		rejectedWiresIds.add(trigger.new[i].id);
+                  }
+            }
+            
         }
         
         if(docSignCompletedAtOnlineIds.size()>0){
@@ -33,6 +55,10 @@ trigger WIRESTransactionTrigger on WIRES_Transaction__c (before insert, after in
         if(sentToWireXchangeIds.size()>0){
             WiresTransactionApprovalController.ReleasedToWireXchangeEmailNotification(sentToWireXchangeIds);
             WiresSMSNotificationController.ReleasedToWireXchangeSMSNotification(sentToWireXchangeIds);
+        }
+        
+        if(rejectedWiresIds.size()>0){
+            WiresTransactionApprovalController.SendBranchWireRejecteEmailNotification(rejectedWiresIds);
         }
     }
     //------------------------------------------------------------------After Insert  ------------------------------------------------------------------------------//
@@ -55,6 +81,8 @@ trigger WIRESTransactionTrigger on WIRES_Transaction__c (before insert, after in
                 
                 Set<Id> range50001To10000ForDocusign = new Set<Id>();
                 Set<Id> rangeGrtThen10000ForDocusign = new Set<Id>();
+				
+				Set<Id> rangeForInPersonSigning = new Set<Id>();                
                 
                 for(Integer i=0; i<WTIds.size(); i++){ 
                     
@@ -72,6 +100,10 @@ trigger WIRESTransactionTrigger on WIRES_Transaction__c (before insert, after in
                             rangeGrtThen10000.add(WTIds[i].Id);
                         }
                     }
+                    
+                    if(WTIds[i].Source__c==WiresConstant.Source_Branch){
+                        rangeForInPersonSigning.add(WTIds[i].Id);
+                    }
                 }        
                 
                 //Database.executeBatch(new WiresTransToDocuSignBatch(WTIds),1);
@@ -88,6 +120,14 @@ trigger WIRESTransactionTrigger on WIRES_Transaction__c (before insert, after in
                     WiresSMSNotificationController.SendProgressSMSNotification(range1To5000);
                     WiresTransactionApprovalController.CheckRedFlgsAndUpdateStatus(range1To5000);
                 }
+                
+                if(rangeForInPersonSigning.size()>0){
+                    InPersonSigningContoller inPersonSigning=new InPersonSigningContoller();
+                    for(Id id:rangeForInPersonSigning){
+                    	inPersonSigning.AssignWiresToInPersonSigningHandler(id);
+                    }
+                }
+                
             }
         }
     }
@@ -116,12 +156,15 @@ trigger WIRESTransactionTrigger on WIRES_Transaction__c (before insert, after in
             List<Account_Details__c> listAccountDetails = [select id,Brand__c,ID1__c,OPEN_DATE__c from Account_Details__c where Name =: AccountNo 
                                                            and ID1__c =: objWIRESTransaction.Share_ID__c limit 1];
             system.debug('listAccountDetails'+listAccountDetails);
-            Integer numberofDays = listAccountDetails[0].OPEN_DATE__c.daysBetween(Date.today());
+            
+            Integer numberofDays =0;
+            if(listAccountDetails.size()>0){
+             	numberofDays = listAccountDetails[0].OPEN_DATE__c.daysBetween(Date.today());
+            }
+            
             if(numberofDays >=45){
                 objWIRESTransaction.FlagAccountOpenfor45Days__c = true;
             }
-            
-            
             
             set<string> typeList = new set<string>();
             
@@ -129,15 +172,28 @@ trigger WIRESTransactionTrigger on WIRES_Transaction__c (before insert, after in
                 typeList.add(t.name);	
             }
             
-            Person_Account__c paPrimary = [SELECT Id,PersonID__c,
+            Person_Account__c paPrimary;
+            
+            if(objWIRESTransaction.Source__c=='Online Banking'){
+             paPrimary = [SELECT Id,PersonID__c,
                                            Account_Number__c, Account_Number__r.RecType__c,TypeTranslate__c, Account_Number__r.Name, PersonID__r.Home_Phone__pc,PersonID__r.Residential_City__pc,PersonID__r.Residential_State__pc, PersonID__r.Residential_Street__pc, PersonID__r.Residential_Zipocde__pc, PersonID__r.Name, PersonID__r.Email_raw__c FROM Person_Account__c 
                                            WHERE Account_Number__r.Name =: AccountNo and TypeTranslate__c  like '%Primary%' limit 1];
+            }else{
+                
+                string likeClause = '%' + String.escapeSingleQuotes( objWIRESTransaction.Member_SSN__c.trim());
+                paPrimary = [SELECT Id,PersonID__c,
+                                           Account_Number__c, Account_Number__r.RecType__c,TypeTranslate__c, Account_Number__r.Name, PersonID__r.Home_Phone__pc,PersonID__r.Residential_City__pc,PersonID__r.Residential_State__pc, PersonID__r.Residential_Street__pc, PersonID__r.Residential_Zipocde__pc, PersonID__r.Name, PersonID__r.Email_raw__c FROM Person_Account__c 
+                                           WHERE PersonID__r.PersonID__c like :likeClause limit 1];
+                
+                
+            }
             
+            objWIRESTransaction.Member__c = paPrimary.PersonID__c;
             objWIRESTransaction.Member_Name__c = paPrimary.PersonID__r.Name;
             objWIRESTransaction.Member_Email__c = paPrimary.PersonID__r.Email_raw__c;
             objWIRESTransaction.Member_Home_Phone__c =  paPrimary.PersonID__r.Home_Phone__pc;
             objWIRESTransaction.Member_Address__c = paPrimary.PersonID__r.Residential_Street__pc;
-            objWIRESTransaction.Member_City_State_Zip__c = paPrimary.PersonID__r.Residential_City__pc + ' '+ paPrimary.PersonID__r.Residential_State__pc + ' '+ paPrimary.PersonID__r.Residential_Zipocde__pc ;
+            objWIRESTransaction.Member_City_State_Zip__c = paPrimary.PersonID__r.Residential_City__pc + ', '+ paPrimary.PersonID__r.Residential_State__pc + ' '+ paPrimary.PersonID__r.Residential_Zipocde__pc ;
             
             if(objWIRESTransaction.Source__c==WiresConstant.Source_Branch){
                 objWIRESTransaction.Approval_Status__c = WiresConstant.ApprovalStatus_PendingForMemberReview;
