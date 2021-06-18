@@ -2,11 +2,59 @@
                 controller="MemberInfoController">
 	<aura:handler name="init" value="{!this}" action="{!c.doInit}"></aura:handler>
     <aura:attribute name="warnings" type="List"/>
+    <div class="slds-grid slds-gutters slds-wrap warningwrap">
+    	<div class="slds-col">
+        	<h1 class="warningtitle">Warnings <span class="red"><lightning:icon iconName="utility:warning" alternativeText="favorite" title="favorite" /></span></h1>
+            <table class="warningtbl">
+                    
+                    <aura:if isTrue="{!not(empty(v.warnings))}">
+                        <aura:iteration items="{!v.warnings}" var="itemOption" indexVar="i">
+                           <tr>
+                                <td>{!itemOption.Code}</td>
+                                <td>{!itemOption.Description}</td>
+                            </tr> 
+                        </aura:iteration>
+                        
+                        <aura:set attribute="else">
+                             <tr>
+                                <td colspan="2">No records found.</td>
+                            </tr>
+                        </aura:set>
+                    </aura:if>
+                    <!--<tr>
+                            <td>056</td>
+                            <td>Courtesy Pay Decision Required</td>
+                        </tr>
+                        <tr>
+                            <td>036</td>
+                            <td>Card Limit Increase Blocked Institution</td>
+                        </tr>
+                        <tr>
+                            <td>097</td>
+                            <td>Restricted Shared Branch Access</td>
+                        </tr>
+                        <tr>
+                            <td>394</td>
+                            <td>Lectus vel dapibus</td>
+                        </tr>
+                        <tr>
+                            <td>640</td>
+                            <td>Viverra massa</td>
+                        </tr>-->
+                    </table>
+        </div>
+        <div class="slds-col">
+            
+            <c:MemberInfoComments recordId="{!v.recordId}"/>
+                    	
+        </div>
+    </div>
     
-    WARNINGS <br/>
-     <aura:iteration items="{!v.warnings}" var="item">
+    
+
+    <!-- <aura:iteration items="{!v.warnings}" var="item">
          {!item.Code} and {!item.Description} <br/>
-    </aura:iteration>
+    </aura:iteration>-->
    
     
 </aura:component>
