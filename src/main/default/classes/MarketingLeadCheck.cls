@@ -66,9 +66,10 @@ public class MarketingLeadCheck {
                 system.debug('email'+lead.Email);
                 
                 if(lead.Email != null){
-                   lstacc_email = [Select id,name from Account where Alt_Email_Raw__c =:leademail OR Email_raw__c =: leademail OR Alternate_Email__pc =:leademail];
+					lstacc_email = [Select id,name from Account where Email_raw__c =: leademail];                   
             	}
             	/*if(leadphone != null){
+            	    lstacc_email = [Select id,name from Account where Alt_Email_Raw__c =:leademail OR Email_raw__c =: leademail OR Alternate_Email__pc =:leademail];
                 	lstacc_phone = [Select id from Account where (Phone =:leadphone OR Mobile_Phone__pc =:leadphone OR Home_Phone__pc =:leadphone) and recordtype.name = 'Person Account'];
             	}*/
             }
@@ -143,7 +144,7 @@ public class MarketingLeadCheck {
                     else if(lead.Brand__c == 'CFCU')
                         opp.Brand__c = 'Chevron';
     
-                    opp.CloseDate = Date.today();
+                    opp.CloseDate = Date.today()+7;
                     opp.Product_Type__c ='Mortgage';
                     opp.Product_Sub__c = 'Xpress Refi';
                     opp.StageName ='New';
@@ -188,6 +189,7 @@ public class MarketingLeadCheck {
                         Lead l = new Lead();
                         l.id = lead.id;
                         l.Product_Subtype__c = 'Xpress Refi';
+                        l.Lead_Type__c = 'Individual';
                         l.OwnerId = groupnameid;
                         if(lead.Are_you_a_current_member__c == 'No'){
                             l.Current_Member__c = 'No';
@@ -214,6 +216,7 @@ public class MarketingLeadCheck {
                     Lead l = new Lead();
                     l.id = lead.id;
                     l.Product_Subtype__c = 'Xpress Refi';
+                    l.Lead_Type__c = 'Individual';
                     l.OwnerId = groupnameid;
                     if(lead.Are_you_a_current_member__c == 'No'){
                     	l.Current_Member__c = 'No';
