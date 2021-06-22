@@ -282,6 +282,8 @@ public class SolarLoanToFileUCC {
 
             system.debug('Box16: '+box16);
             
+            box16 = box16.replace('"','');
+
             ClientReference = sl.Member_Number__c +' - 7500';
             
             if(sl.mem_Primary_First_Name__c != null)
