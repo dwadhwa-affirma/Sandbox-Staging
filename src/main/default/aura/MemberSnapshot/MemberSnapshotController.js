@@ -35,13 +35,14 @@
     },
     handleFraudWarningClick:function(component, event, helper) {
         var fraudWarnings=component.get("v.FraudWarnings");
-        if(fraudWarnings){  
+        if(fraudWarnings.length == 1){  
             var navService = component.find("navigate");    
             var pageReference = {
-                type: 'standard__objectPage',
+                type: 'standard__recordPage',
                 attributes: {
+                    recordId:fraudWarnings[0].Id,
                     objectApiName: 'Case',
-                    actionName: 'list'
+                    actionName: 'view'
                 },
                 state: {
                     filterName: "Authentication_Failed_Unusual_Activity_Case"
@@ -50,7 +51,14 @@
             
             navService.navigate(pageReference);   
         }
+        else{
+            var evt = $A.get("e.c:MemberSnapshotEvent");   
+        evt.fire(); 
+        }
     },
+        
+    
+    
     handleSurveyScoreClick:function(component, event, helper) {
         var sureveyScore=component.get("v.SurveyScore");
         if(sureveyScore) {

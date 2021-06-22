@@ -1,0 +1,7 @@
+.THIS.warningwrap .warningtitle{font-size:.825rem; text-transform:uppercase; letter-spacing:1px;margin-bottom:.5rem; width:100%; }
+.THIS.warningwrap .warningtitle span{vertical-align: bottom; display: inline-block; margin-left:.3rem;}
+.THIS.warningwrap .warningtitle span svg{width:1.1rem; height:1.1rem;}
+.THIS.warningwrap .warningtitle span.red svg{fill:#c23934;}
+.THIS.warningwrap .warningtbl{font-size:.875rem}
+.THIS.warningwrap .warningtbl td{border:2px solid #54698d; padding:.5rem .8rem;}
+.THIS.warningwrap .warningtbl td:nth-child(1){width:70px;}

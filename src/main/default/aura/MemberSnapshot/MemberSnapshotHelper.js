@@ -84,7 +84,7 @@
           if(component.isValid() && status === "SUCCESS")
           {
                 var result =  response.getReturnValue();
-              	if(result != null){
+              	if(result.length != null){
                     component.set("v.FraudWarnings",result);
                 }
           }
