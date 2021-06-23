@@ -64,7 +64,7 @@
                                                 </td>
                                                 
                                                 <td data-label="Employees" role="gridcell" class="grid-column">
-                                                    <div class="slds-truncate" title="{!mapValue.CardLocator}">{!mapValue.CardLocator}</div>
+                                                    <div class="slds-truncate" title="{!mapValue.LongName}">{!mapValue.LongName}</div>
                                                 </td>
                                             </aura:set>
                                         </aura:if>
