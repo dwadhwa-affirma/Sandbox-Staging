@@ -608,7 +608,7 @@ public class SolarLoanToFileUCC {
                     responseBody2 = res2.getBody();
                     System.debug('Response Body Tracking 34::'+res2.getBody());    
                 }else{
-                    responseBody2 = '{"Type":"34","UserChar1":"Submitted","TrackingLocator":"1","UserChar2":"1","UserChar3":"100","UserChar4":"4","UserChar5":"1","UserChar10":"01-01-2019","UserChar20":"01-01-2019","UserAmount1":"100.00","UserAmount2":"322271627","UserAmount3":"42006986568","UserAmount11":"BANK OF AMERICA","UserAmount12":"123","UserAmount13" : "UserAmount13","UserCode1" : "UserCode1", "LoanId" : "LoanId", "AccountNumber" : "AccountNumber"}';
+                    responseBody2 = '{"Type":"34","UserChar1":"Submitted","LoanTrackingLocator":"1","UserChar2":"1","UserChar3":"100","UserChar4":"4","UserChar5":"1","UserChar10":"01-01-2019","UserChar20":"01-01-2019","UserAmount1":"100.00","UserAmount2":"322271627","UserAmount3":"42006986568","UserAmount11":"BANK OF AMERICA","UserAmount12":"123","UserAmount13" : "UserAmount13","UserCode1" : "UserCode1", "LoanId" : "LoanId", "AccountNumber" : "AccountNumber"}';
                 } 
                 
                 if(responseBody2 != '' && responseBody2 != null){        
