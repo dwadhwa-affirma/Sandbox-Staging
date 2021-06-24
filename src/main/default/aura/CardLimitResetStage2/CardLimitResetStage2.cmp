@@ -29,7 +29,7 @@
                         </tr>
                     </aura:if>
                     <br/>
-                	<aura:if isTrue="{!and(not(empty(v.mapValues)), v.objectname == 'Account')}"> 
+                	<aura:if isTrue="{!not(empty(v.mapValues))}"> 
                         <tr aria-expanded="false" aria-level="1" aria-posinset="3" aria-selected="false" aria-setsize="4" class="slds-hint-parent">
                             <tr aria-expanded="false" aria-level="1" aria-posinset="3" aria-selected="false" aria-setsize="4" class="slds-hint-parent">
                                 <td class="slds-text-align_right" role="gridcell" style="width:3.25rem"/>
@@ -74,7 +74,7 @@
                         </aura:iteration>
                     </aura:if>
                     
-                    <aura:if isTrue="{!and(not(empty(v.mapValues)), v.objectname != 'Account')}"> 
+                    <!--<aura:if isTrue="{!and(not(empty(v.mapValues)), v.objectname != 'Account')}"> 
                         <aura:iteration items="{!v.mapValues}" var="itemOption" indexVar="key">                  
                             <tr aria-expanded="false" aria-level="1" aria-posinset="3" aria-selected="false" aria-setsize="4" class="slds-hint-parent">
                            	    <aura:iteration items="{!itemOption.value}" var="mapValue">
@@ -103,7 +103,7 @@
                                 </aura:iteration>
                             </tr>
                         </aura:iteration>
-                    </aura:if>    
+                    </aura:if>-->    
                     
                     <aura:if  isTrue="{!and(empty(v.mapValues),not(v.Empty))}" >
                         Fetching Card Details . . . . . . .
