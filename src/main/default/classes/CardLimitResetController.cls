@@ -429,7 +429,7 @@ public class CardLimitResetController {
             System.debug('ResponseBody ::'+responseBody);    
         }
         else{
-            responseBody = '[{"CardNumber":"5460277067636965","ExpirationDate":"2021-10-01","CloseDate":"","CardOwner":null,"Locator":"33","Status":null,"Error":null,"ErrorDetails":null}]';
+            responseBody = '[{"AccountNumber":"0000241444","CardNumber":"5460277067636965","CardLocator":"23","CardStatus":"1","CardOwner":null,"Locator":"33"}]';
 
         }
         if(responseBody != '' && responseBody != null){        
