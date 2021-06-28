@@ -66,7 +66,7 @@ public class MarketingLeadCheck {
                 system.debug('email'+lead.Email);
                 
                 if(lead.Email != null){
-					lstacc_email = [Select id,name from Account where Email_raw__c =: leademail];                   
+					lstacc_email = [Select id,name,Email_raw__c from Account where Email_raw__c =: leademail];                   
             	}
             	/*if(leadphone != null){
             	    lstacc_email = [Select id,name from Account where Alt_Email_Raw__c =:leademail OR Email_raw__c =: leademail OR Alternate_Email__pc =:leademail];
@@ -88,7 +88,7 @@ public class MarketingLeadCheck {
                     }
                     else if(Names.size() >= 3){
                         firstname = Names[0]+ '%';
-                        lastname= '%'+Names[Names.size()-1] +'%';
+                        lastname= '%'+Names[Names.size()-2] +'%';
                     }
                     system.debug('firstname:'+firstname);
                     system.debug('lastname:'+lastname);
@@ -104,7 +104,7 @@ public class MarketingLeadCheck {
                 
                     pa = [SELECT id, name,PersonID__c,Account_Number__c,Account_Number__r.name,PersonID__r.name,Account_Number__r.RecType__c,
                                         Account_Number__r.Brand__c,Account_Number__r.createddate from Person_Account__c where 
-                                        PersonID__r.firstname like: firstname AND PersonID__r.LASTNAME like: lastname 
+                                        PersonID__r.firstname like: firstname AND PersonID__r.Email_raw__c =: lstacc_email[0].Email_raw__c
                                         AND Account_Number__r.Brand__c = 'Spectrum' order by 
                                         Account_Number__r.createddate desc LIMIT 1];
                
@@ -115,9 +115,9 @@ public class MarketingLeadCheck {
                 }
                 else if(lead.Brand__c == 'CFCU'){
 
-                    pa = [SELECT id, name,PersonID__c,Account_Number__c,Account_Number__r.name,PersonID__r.name,Account_Number__r.RecType__c,
+                    pa = [SELECT id, name,PersonID__c,Account_Number__c,PersonID__r.Email_raw__c,Account_Number__r.name,PersonID__r.name,Account_Number__r.RecType__c,
                                         Account_Number__r.Brand__c,Account_Number__r.createddate from Person_Account__c where 
-                                        PersonID__r.firstname like: firstname AND PersonID__r.LASTNAME like: lastname
+                                        PersonID__r.firstname like: firstname AND PersonID__r.Email_raw__c =: lstacc_email[0].Email_raw__c 
                                         AND Account_Number__r.Brand__c = 'Chevron' order by 
                                         Account_Number__r.createddate desc LIMIT 1];
                     
