@@ -12,6 +12,16 @@ global class eSignatureContoller {
         if(a.size() > 0) {return a[0].Id;} 
         return null;} set;}
     
+    global string signImageUrl{
+        get{
+            string url=URL.getSalesforceBaseUrl().toExternalForm() +'/servlet/servlet.FileDownload?file='+signAttachmentId+'&oid='+UserInfo.getOrganizationId();
+            url=url.replace('visual', 'content');
+            System.debug('Url:'+url);
+            return url;
+        }
+    }
+    
+    
     public eSignatureContoller(ApexPages.StandardController stdController) {
         ListView lstView=[SELECT Id,Name from ListView Where Name='To Be Signed' LIMIT 1]; 
         
@@ -26,13 +36,23 @@ global class eSignatureContoller {
         this.wireTransactionDetail = [SELECT Id,Name,SalesforceID__c,
                                       Sender_AccountNumber__c,Sender_Address__c,
                                       Sender_Name__c,Sender_Email__c,Sender_Home_Phone__c,
-                                      Sender_City_State_Zip__c,
+                                      Sender_City_State_Zip__c,Description__c,
                                       Recipient_AccountNumber__c,Recipient_Address__c,
                                       Recipient_City__c,	Recipient_State__c,	Recipient_Zipcode__c,
                                       Recipient_Bank__c,RecepientName__c,
-                                      RoutingNumber__c,Share_ID__c,TotalAmount__c
+                                      RoutingNumber__c,Share_ID__c,TotalAmount__c,WireAmount__c,Fees__c,Brand__c
                                       From InPersonSigning__c WHERE Id=:this.wireTransaction.Id];
+        
+        decimal amount=this.wireTransactionDetail.WireAmount__c;
+        string amountInWord = ConvertCurrencyToWordsEN.english_number((long)amount)+' Dollars';
+        string centInWord=ConvertCurrencyToWordsEN.cent_in_word(amount);
+        if(centInWord!=''){
+            amountInWord=amountInWord+' AND '+centInWord+' '+'Cents';
+        }
+        
+        this.wireTransactionDetail.Wire_Amount_In_Word__c = amountInWord;
     }
+    
     
     @AuraEnabled
     public static Id saveSignature(String signatureBody, string wiresId){
@@ -73,12 +93,20 @@ global class eSignatureContoller {
         InPersonSigning__c data= [SELECT Id,Name,SalesforceID__c,IsLocked__c,
                                   Sender_AccountNumber__c,Sender_Address__c,
                                   Sender_Name__c,Sender_Email__c,Sender_Home_Phone__c,
-                                  Sender_City_State_Zip__c,
+                                  Sender_City_State_Zip__c,Description__c,
                                   Recipient_AccountNumber__c,Recipient_Address__c,
                                   Recipient_City__c,	Recipient_State__c,	Recipient_Zipcode__c,
                                   Recipient_Bank__c,RecepientName__c,
-                                  RoutingNumber__c,Share_ID__c,TotalAmount__c 
-                                  FROM InPersonSigning__c WHERE Id=:recordId];        
+                                  RoutingNumber__c,Share_ID__c,TotalAmount__c,Fees__c,WireAmount__c,Brand__c
+                                  FROM InPersonSigning__c WHERE Id=:recordId];    
+        
+        decimal amount=data.WireAmount__c;
+        string amountInWord = ConvertCurrencyToWordsEN.english_number((long)amount)+' Dollars';
+        string centInWord=ConvertCurrencyToWordsEN.cent_in_word(amount);
+        if(centInWord!=''){
+            amountInWord=amountInWord+' AND '+centInWord+' '+'Cents';
+        }
+        data.Wire_Amount_In_Word__c= amountInWord;
         return data;
     }
     
