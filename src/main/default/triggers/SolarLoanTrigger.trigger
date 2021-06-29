@@ -179,7 +179,7 @@ trigger SolarLoanTrigger on Solar_Loans__c (after insert,before insert, after up
             
             //------------------------------- Checking if the status is being changed and status = 'Completed'-----------------//
             
-            if(trigger.old[i].Status__c != 'Completed' && trigger.new[i].Status__c == 'Completed' && 
+            if(trigger.old[i].Status__c != 'Completed' && trigger.new[i].Status__c == 'Completed' && trigger.new[i].ACH__c == 'True' &&
                     (trigger.new[i].EftLocator__c == null || trigger.new[i].EftLocator__c == '')){
                 SLIdsForEFT.add(trigger.new[i].id);
             }
@@ -188,7 +188,7 @@ trigger SolarLoanTrigger on Solar_Loans__c (after insert,before insert, after up
                     (trigger.new[i].EftLocator__c != null && trigger.new[i].EftLocator__c != '')){
                 SLIdsForEFTUpdate.add(trigger.new[i].id);
             }*/
-            if((trigger.new[i].EftLocator__c != null && trigger.new[i].EftLocator__c != '') && (
+            if((trigger.new[i].EftLocator__c != null && trigger.new[i].EftLocator__c != '' && trigger.new[i].ACH__c == 'True') && (
                             (trigger.old[i].Status__c != 'Completed' && trigger.new[i].Status__c == 'Completed') ||
                             (trigger.old[i].Loan_Type__c != trigger.new[i].Loan_Type__c)                         ||
                             (trigger.old[i].Additional_Amount__c != trigger.new[i].Additional_Amount__c)         ||
@@ -198,6 +198,14 @@ trigger SolarLoanTrigger on Solar_Loans__c (after insert,before insert, after up
 
                 SLIdsForEFTUpdate.add(trigger.new[i].id);
             }
+            if(trigger.old[i].Status__c != 'Completed' && trigger.new[i].Status__c == 'Completed' && 
+                trigger.new[i].UCC_Id__c != null && trigger.new[i].Current_Solar_Loan_Stage__c == 'Stage 7'){
+
+                    Solar_Loans__c sl = new Solar_Loans__c();
+                    sl.id = trigger.new[i].id;
+                    sl.Status__c = 'UCC Pending';
+                    SLToUpdates.put(sl.id,sl);
+            }   
             
             //------------------------------- Adding ids if the Member Number field is not null----------------------------------//
             
@@ -263,10 +271,10 @@ trigger SolarLoanTrigger on Solar_Loans__c (after insert,before insert, after up
                 }
             }
              
-            if(SLToUpdates.size() > 0){
-            
-                update SLToUpdates.values();	
-            }
+        if(SLToUpdates.size() > 0){
+        
+            update SLToUpdates.values();	
+        }
         //------------------------------- Calling Batch class with list of "Solar Loans" id to send a Docusign email-----------------//    
         if(SLIds.size() > 0){
             
@@ -284,8 +292,8 @@ trigger SolarLoanTrigger on Solar_Loans__c (after insert,before insert, after up
         if(SLIdsForEFTUpdate.size() > 0){
             
             SolarLoanToSymitar.updateEFTrecord(SLIdsForEFTUpdate);
-       }
-        
+        }
+
     }
         
 }

@@ -8,12 +8,15 @@ public class MemberInfoController {
                        FROM Account WHERE 
                        Id=:accountId];
         
-        // Integer joiningDaysDiff = date.newinstance(acc.CreatedDate.year(), acc.CreatedDate.month(), acc.CreatedDate.day()).daysBetween(Date.today());
-        Integer joiningDaysDiff1 = date.newinstance(acc.CreatedDate.year(), acc.CreatedDate.month(), acc.CreatedDate.day()).monthsBetween(Date.today());
-        integer joiningDaysDiff=joiningDaysDiff1/12;
-        if(joiningDaysDiff1>12)
+        Integer joiningDaysDiff = date.newinstance(acc.CreatedDate.year(), acc.CreatedDate.month(), acc.CreatedDate.day()).daysBetween(Date.today());
+        Integer joiningDaysDiff2 = date.newinstance(acc.CreatedDate.year(), acc.CreatedDate.month(), acc.CreatedDate.day()).monthsBetween(Date.today());
+        integer joiningDaysDiff1=joiningDaysDiff2/12;
+        if(joiningDaysDiff<=365)
         {
             system.debug('joiningDaysDiff'+joiningDaysDiff);
+        }
+        else if(joiningDaysDiff>365){
+            system.debug('joiningDaysDiff'+joiningDaysDiff1);
         }
         Integer daysDiffBetwBirthAndToday=0;
         Integer daysDiffBetwThisYearBirthAndBirthDate=0;
@@ -31,6 +34,8 @@ public class MemberInfoController {
         accViewModel.MobilePhone = acc.Mobile_Phone__pc;
         accViewModel.MemberType = acc.MemberType__c;
         accViewModel.JoiningDaysDiff = joiningDaysDiff;
+                accViewModel.JoiningDaysDiff1 = joiningDaysDiff1;
+
         accViewModel.BirthDaysDiff = birthDaysDiff;   
         
         return accViewModel;
@@ -304,6 +309,7 @@ public class MemberInfoController {
         @AuraEnabled public string MobilePhone;
         @AuraEnabled public string MemberType;
         @AuraEnabled public Integer JoiningDaysDiff;
+@AuraEnabled public Integer JoiningDaysDiff1;
         @AuraEnabled public Integer BirthDaysDiff;
     }
     

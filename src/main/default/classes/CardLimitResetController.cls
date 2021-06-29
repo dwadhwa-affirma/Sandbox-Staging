@@ -429,7 +429,7 @@ public class CardLimitResetController {
             System.debug('ResponseBody ::'+responseBody);    
         }
         else{
-            responseBody = '[{"CardNumber":"5460277067636965","ExpirationDate":"2021-10-01","CloseDate":"","CardOwner":null,"Locator":"33","Status":null,"Error":null,"ErrorDetails":null}]';
+            responseBody = '[{"AccountNumber":"0000241444","CardNumber":"5460277067636965","CardLocator":"23","CardStatus":"1","CardOwner":null,"Locator":"33"}]';
 
         }
         if(responseBody != '' && responseBody != null){        
@@ -445,6 +445,7 @@ public class CardLimitResetController {
                     temp.CardNumber =  string.valueof(carddetail.get('CardNumber'));
                     temp.CardLocator =   string.valueof(carddetail.get('Locator'));
                     temp.AccountNumber = string.valueof(carddetail.get('AccountNumber'));
+                    temp.LongName = string.valueof(carddetail.get('LongName'));
                     String CardStatus = string.valueof(carddetail.get('CardStatus'));
                     
                     if(temp.AccountNumber != null && temp.CardLocator != null && temp.CardNumber != null && CardStatus != '2'){
@@ -458,6 +459,7 @@ public class CardLimitResetController {
                     system.debug('temp.CardNumber'+temp.CardNumber);
                     system.debug('temp.CardLocator'+temp.CardLocator);
                     system.debug('temp.AccountNumber'+temp.AccountNumber);
+                    system.debug('temp.LongName'+temp.LongName);
                     system.debug('resultList'+resultList);
                  
                 }
@@ -734,6 +736,8 @@ public class CardLimitResetController {
         public string CardLocator {get;set;}
         @AuraEnabled
         public string AccountNumber {get;set;}
+        @AuraEnabled
+        public string LongName {get;set;}
           
     }    
 }

@@ -282,6 +282,8 @@ public class SolarLoanToFileUCC {
 
             system.debug('Box16: '+box16);
             
+            box16 = box16.replace('"','');
+
             ClientReference = sl.Member_Number__c +' - 7500';
             
             if(sl.mem_Primary_First_Name__c != null)
@@ -534,41 +536,44 @@ public class SolarLoanToFileUCC {
                 }
                 
                 System.debug('UCC ID is = ' + UCCId);
-                
-                
-                req1.setEndpoint(EndpointURL+'/OnlineServices/api/File/V2/Filing/'+UCCId+'/GenerateImage');
-                req1.setMethod('GET');
-                req1.setHeader('Accept', 'application/json');
-                req1.setHeader('Authorization', 'Bearer ' + token);
-                req1.setHeader('Content-Type', 'application/json;charset=UTF-8');
-
-                system.debug('test1'+req1);                     
-                
-                if(!Test.isRunningTest()){
-                    res1 = http1.send(req1);
-                    responseBody1 = res1.getBody();
-                    System.debug('Body: '+responseBody1);
+                if(UCCId == null){
+                    UCCId = responseBody;
                 }
                 else{
-                    responseBody1 = '{"FileBase64String" : "SSetewtewewtegsgw"}';
-                }
-                
-                if(UCClogs == null)
-                    UCClogs = responseBody1;
-                else
-                    UCClogs = UCClogs +'\n'+ responseBody1;
+                    req1.setEndpoint(EndpointURL+'/OnlineServices/api/File/V2/Filing/'+UCCId+'/GenerateImage');
+                    req1.setMethod('GET');
+                    req1.setHeader('Accept', 'application/json');
+                    req1.setHeader('Authorization', 'Bearer ' + token);
+                    req1.setHeader('Content-Type', 'application/json;charset=UTF-8');
 
-                if(responseBody1!=''){ 
-                    Map<String,Object> results = (Map<String,Object>)System.JSON.deserializeUntyped(responseBody1);
-                    if(results.size() > 0){                     
-                        for(String key : results.keySet()){                   			
-                            if(key == 'FileBase64String'){
-                                UCCFile = String.valueOf(results.get(key));
+                    system.debug('test1'+req1);                     
+                    
+                    if(!Test.isRunningTest()){
+                        res1 = http1.send(req1);
+                        responseBody1 = res1.getBody();
+                        System.debug('Body: '+responseBody1);
+                    }
+                    else{
+                        responseBody1 = '{"FileBase64String" : "SSetewtewewtegsgw"}';
+                    }
+                    
+                    if(UCClogs == null)
+                        UCClogs = responseBody1;
+                    else
+                        UCClogs = UCClogs +'\n'+ responseBody1;
+
+                    if(responseBody1!=''){ 
+                        Map<String,Object> results = (Map<String,Object>)System.JSON.deserializeUntyped(responseBody1);
+                        if(results.size() > 0){                     
+                            for(String key : results.keySet()){                   			
+                                if(key == 'FileBase64String'){
+                                    UCCFile = String.valueOf(results.get(key));
+                                }
                             }
                         }
                     }
+                    System.debug('UCC File is = ' + UCCFile);
                 }
-                System.debug('UCC File is = ' + UCCFile);
 
                 //------------------------------------------------Creating Tracking 34 ------------------------------------------//
                 
@@ -603,7 +608,7 @@ public class SolarLoanToFileUCC {
                     responseBody2 = res2.getBody();
                     System.debug('Response Body Tracking 34::'+res2.getBody());    
                 }else{
-                    responseBody2 = '{"Type":"34","UserChar1":"Submitted","TrackingLocator":"1","UserChar2":"1","UserChar3":"100","UserChar4":"4","UserChar5":"1","UserChar10":"01-01-2019","UserChar20":"01-01-2019","UserAmount1":"100.00","UserAmount2":"322271627","UserAmount3":"42006986568","UserAmount11":"BANK OF AMERICA","UserAmount12":"123","UserAmount13" : "UserAmount13","UserCode1" : "UserCode1", "LoanId" : "LoanId", "AccountNumber" : "AccountNumber"}';
+                    responseBody2 = '{"Type":"34","UserChar1":"Submitted","LoanTrackingLocator":"1","UserChar2":"1","UserChar3":"100","UserChar4":"4","UserChar5":"1","UserChar10":"01-01-2019","UserChar20":"01-01-2019","UserAmount1":"100.00","UserAmount2":"322271627","UserAmount3":"42006986568","UserAmount11":"BANK OF AMERICA","UserAmount12":"123","UserAmount13" : "UserAmount13","UserCode1" : "UserCode1", "LoanId" : "LoanId", "AccountNumber" : "AccountNumber"}';
                 } 
                 
                 if(responseBody2 != '' && responseBody2 != null){        
@@ -619,6 +624,9 @@ public class SolarLoanToFileUCC {
                     }
                 }
                 system.debug('TrackingLocator '+TrackingLocator);
+                if(TrackingLocator == null){
+                    TrackingLocator = responseBody2;
+                }
                 
                 //-------------------------------------------------------------------------------------------------------------------------//
 
