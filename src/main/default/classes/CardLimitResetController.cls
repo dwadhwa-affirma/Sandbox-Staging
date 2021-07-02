@@ -201,7 +201,10 @@ public class CardLimitResetController {
             item.Account_Number__r = new Account_Details__c();
             item.Account_Number__r.name = (string)ar.get('accNum');
     		item.TypeTranslate__c = (string)ar.get('TypeTranslate__c');
-            paList1.add(item);
+            system.debug(item.TypeTranslate__c);
+            if(item.TypeTranslate__c != '0004/Beneficiary'){
+                paList1.add(item);
+            }
         }
         
     	return paList1;
@@ -480,7 +483,7 @@ public class CardLimitResetController {
         if(isDormant == 'true'){
             resultmap.put('DormantCardList',resultinnerMap);    
         }
-        else{
+        else if(isDormant != 'true' && resultinnerMap.size() > 0){
             resultmap.put('CardList',resultinnerMap);
         }
         
