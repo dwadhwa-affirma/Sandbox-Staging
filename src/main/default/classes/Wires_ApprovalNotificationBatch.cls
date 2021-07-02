@@ -14,7 +14,7 @@ global class Wires_ApprovalNotificationBatch implements Database.Batchable<sObje
                                          AND Frequency__c = 'One - Time'
                                          AND (Approval_Status__c=:WiresConstant.ApprovalStatus_PendingForApproval 
                                               OR Approval_Status__c=:WiresConstant.ApprovalStatus_PendingForSecondApproval
-                                              OR Approval_Status__c=:WiresConstant.ApprovalStatus_GoodFundsReview) ]);    
+                                              OR Approval_Status__c=:WiresConstant.ApprovalStatus_GoodFundsReview)]);    
     }
     
     global void execute(Database.BatchableContext BC,List<WIRES_Transaction__c> scopeWTIDs){
@@ -80,12 +80,9 @@ global class Wires_ApprovalNotificationBatch implements Database.Batchable<sObje
             groupEUsers.add(member.UserOrGroupId);
         }
         
-        System.debug('Time start:'+DateTime.now());
         Map<Id,User> userMap = new Map<Id,User>([SELECT Id,ManagerId,Email FROM User Where IsActive=true and Profile.Name!='Messaging center Customers']);
-        System.debug('Time end:'+DateTime.now());
         
         Map<Id,User> usersWithManagerMap=new Map<Id,User>([SELECT Id,ManagerId,Email FROM User Where IsActive=true and ManagerId!=null and Profile.Name!='Messaging center Customers']);        
-        System.debug('userManagerMap size'+usersWithManagerMap.size());
         
         set<Id> wiresId=new set<Id>();
         for(WIRES_Transaction__c wtc: scopeWTIDs){
@@ -128,15 +125,17 @@ global class Wires_ApprovalNotificationBatch implements Database.Batchable<sObje
                     //Where Field='Current_Reviewer__c' and ParentId=:wtc.Id];
                 }
                 
+                System.debug('history:'+history);
                 set<string> currentReviewerIds=new set<string>();
                 for(WIRES_Transaction__history wth:history){
                     if(wth.OldValue!=null){
                         currentReviewerIds.add(wth.OldValue.toString());
                     }
-                    currentReviewerIds.add(wth.NewValue.toString());
+                    
+                    if(wth.NewValue!=null){
+                    	currentReviewerIds.add(wth.NewValue.toString());
+                    }
                 }
-                
-                System.debug('currentReviewerIds:'+currentReviewerIds);
                 
                 Long dt1Long = DateTime.now().getTime();
                 Long dt2Long = wtc.Current_Reviewer_Modified_Date__c.getTime();
@@ -147,31 +146,31 @@ global class Wires_ApprovalNotificationBatch implements Database.Batchable<sObje
                 System.debug('LapsedMinutes:'+lapsedMinutes);
                 
                 //if(lapsedMinutes>timeLimit.Time_In_Minutes__c){
-                System.debug('Lapse time condition match');
-                
-                User manager;
-                
-                if(wtc.Approval_Status__c==WiresConstant.ApprovalStatus_PendingForSecondApproval){
-                    if(wtc.Current_Second_Reviewer__c==null){
-                        manager=userMap.get(wtc.First_Reviewer__c);
-                        //manager = [SELECT Id, Name, ManagerId FROM User WHERE Id =: wtc.First_Reviewer__c LIMIT 1];
+                    System.debug('Lapse time condition match');
+                    
+                    User manager;
+                    
+                    if(wtc.Approval_Status__c==WiresConstant.ApprovalStatus_PendingForSecondApproval){
+                        if(wtc.Current_Second_Reviewer__c==null){
+                            manager=userMap.get(wtc.First_Reviewer__c);
+                            //manager = [SELECT Id, Name, ManagerId FROM User WHERE Id =: wtc.First_Reviewer__c LIMIT 1];
+                        }else{
+                            manager=userMap.get(wtc.Current_Second_Reviewer__c);
+                            //manager = [SELECT Id, Name, ManagerId FROM User WHERE Id =: wtc.Current_Second_Reviewer__c LIMIT 1];
+                        }
                     }else{
-                        manager=userMap.get(wtc.Current_Second_Reviewer__c);
-                        //manager = [SELECT Id, Name, ManagerId FROM User WHERE Id =: wtc.Current_Second_Reviewer__c LIMIT 1];
+                        if(wtc.Current_Reviewer__c==null){
+                            manager=userMap.get(wtc.First_Reviewer__c);
+                            //manager = [SELECT Id, Name, ManagerId FROM User WHERE Id =: wtc.First_Reviewer__c LIMIT 1];
+                        }else{
+                            manager=userMap.get(wtc.Current_Reviewer__c);
+                            //manager = [SELECT Id, Name, ManagerId FROM User WHERE Id =: wtc.Current_Reviewer__c LIMIT 1];
+                        }
                     }
-                }else{
-                    if(wtc.Current_Reviewer__c==null){
-                        manager=userMap.get(wtc.First_Reviewer__c);
-                        //manager = [SELECT Id, Name, ManagerId FROM User WHERE Id =: wtc.First_Reviewer__c LIMIT 1];
-                    }else{
-                        manager=userMap.get(wtc.Current_Reviewer__c);
-                        //manager = [SELECT Id, Name, ManagerId FROM User WHERE Id =: wtc.Current_Reviewer__c LIMIT 1];
+                    
+                    if(manager!=null && manager.ManagerId!=null){
+                        TraverseApprovalNotificationTree(manager.ManagerId,wtc,userMap,usersWithManagerMap,currentReviewerIds,groupAUsers,groupBUsers,groupCUsers,groupDUsers,groupEUsers);
                     }
-                }
-                
-                if(manager!=null && manager.ManagerId!=null){
-                    TraverseApprovalNotificationTree(manager.ManagerId,wtc,userMap,usersWithManagerMap,currentReviewerIds,groupAUsers,groupBUsers,groupCUsers,groupDUsers,groupEUsers);
-                }
                 //}
                 
             }catch(Exception ex){ 
@@ -194,7 +193,7 @@ global class Wires_ApprovalNotificationBatch implements Database.Batchable<sObje
                                                              
                                                              boolean isReviewerChange=false;
                                                              
-                                                             System.debug('managerId:'+managerId);
+                                                             
                                                              List<User> siblings = new List<User>(); //[SELECT Id, Name, ManagerId,Email FROM User WHERE ManagerId =: managerId and ManagerId!=null];
                                                              for(User user:  usersWithManagerMap.values()){
                                                                  if(user.ManagerId!=null && user.ManagerId==managerId){
@@ -221,11 +220,6 @@ global class Wires_ApprovalNotificationBatch implements Database.Batchable<sObje
                                                                  }
                                                              }
                                                              
-                                                             System.debug('siblingsInWiresGrp:'+siblingsInWiresGrp);
-                                                             System.debug('currentReviewerIds:'+currentReviewerIds);
-                                                             System.debug(' wtc.Id:'+ wtc.Id);
-                                                             System.debug(' wtc.First_Reviewer__c:'+ wtc.First_Reviewer__c);
-                                                             
                                                              boolean isAnySiblingWasAssignedForReview = false;
                                                              for(User user: siblingsInWiresGrp){
                                                                  if(currentReviewerIds.contains(user.Id) || wtc.First_Reviewer__c==user.Id){   
@@ -237,16 +231,12 @@ global class Wires_ApprovalNotificationBatch implements Database.Batchable<sObje
                                                                  }
                                                              }
                                                              
-                                                             System.debug('isAnySiblingWasAssignedForReview:'+isAnySiblingWasAssignedForReview);
-                                                             
                                                              if(isAnySiblingWasAssignedForReview==false){     
                                                                  string currentReviewerId= getCurrentReviewer(wtc);
                                                                  for(User user: siblingsInWiresGrp){
                                                                      
                                                                      boolean shouldReviewerChange= wtc.Approval_Status__c==WiresConstant.ApprovalStatus_PendingForSecondApproval ? currentReviewerId!=user.Id && user.Id!=wtc.First_Reviewer__c && user.Id!=wtc.Approved_by_1st_Approver__c : currentReviewerId!=user.Id && user.Id!=wtc.First_Reviewer__c;
                                                                      if(shouldReviewerChange==true){
-                                                                         System.debug('In sibling set as reviewer statement');
-                                                                         System.debug('Reviewer Id:'+user.Id);
                                                                          
                                                                          if(wtc.Approval_Status__c==WiresConstant.ApprovalStatus_PendingForSecondApproval){
                                                                              wtc.Current_Second_Reviewer__c=user.Id;
@@ -259,8 +249,6 @@ global class Wires_ApprovalNotificationBatch implements Database.Batchable<sObje
                                                                      }
                                                                  }
                                                              }
-                                                             
-                                                             System.debug('isReviewerChange before managerloop:'+isReviewerChange);
                                                              
                                                              if(isReviewerChange==true){
                                                                  // call function to send an email to all siblings which are in wires group
@@ -276,11 +264,10 @@ global class Wires_ApprovalNotificationBatch implements Database.Batchable<sObje
                                                                      isManagerInTheWireApprovalGroup=IsUserInTheFirstWireApprovalGroup(managerId,wtc.TotalFromAccount__c,groupAUsers,groupBUsers,groupCUsers,groupDUsers,groupEUsers);
                                                                  }
                                                                  
-                                                                 System.debug('isManagerInTheWireApprovalGroup:'+isManagerInTheWireApprovalGroup);
+                                                                 
                                                                  if(isManagerInTheWireApprovalGroup==true){
                                                                      boolean shouldReviewerChange= wtc.Approval_Status__c==WiresConstant.ApprovalStatus_PendingForSecondApproval ? !currentReviewerIds.contains(managerId) && managerId!=wtc.Approved_by_1st_Approver__c :!currentReviewerIds.contains(managerId);
                                                                      if(shouldReviewerChange==true){
-                                                                         System.debug('In manager set as reviewer statement');
                                                                          
                                                                          if(wtc.Approval_Status__c==WiresConstant.ApprovalStatus_PendingForSecondApproval){
                                                                              wtc.Current_Second_Reviewer__c=managerId;
@@ -328,9 +315,7 @@ global class Wires_ApprovalNotificationBatch implements Database.Batchable<sObje
                                                              set<Id> groupAUsers,set<Id> groupBUsers,set<Id> groupCUsers,
                                                              set<Id> groupDUsers,set<Id> groupEUsers){
                                                                  
-                                                                 
                                                                  boolean isFound=false;  
-                                                                 
                                                                  
                                                                  if(wireTotalAmount>0 && wireTotalAmount<=25000){
                                                                      if(groupAUsers.contains(userId) || groupBUsers.contains(userId) 
@@ -366,7 +351,6 @@ global class Wires_ApprovalNotificationBatch implements Database.Batchable<sObje
     private static boolean IsUserInTheSecondWireApprovalGroup(Id userId,decimal wireTotalAmount, 
                                                               set<Id> groupAUsers,set<Id> groupBUsers,set<Id> groupCUsers,
                                                               set<Id> groupDUsers,set<Id> groupEUsers){
-                                                                  
                                                                   
                                                                   boolean isFound=false;  
                                                                   

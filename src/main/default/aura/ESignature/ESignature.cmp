@@ -6,6 +6,18 @@
         width:70% !important; }
         .modal-body{padding:1rem;}
         
+        .amtColTitle{
+        width:600px;
+        }
+        
+        .amtCol{
+        width:600px;
+        }
+        
+        .no-bg{
+        background-color:white !important;
+        }
+        
         @media (max-width:992px){
         .slds-modal__container{max-width: unset !important;width:90% !important;}
         }
@@ -19,11 +31,27 @@
         .cESignature.authwrap .titletbl .tblbor0 td.tblborright + td.tblborright{border-bottom:0 !important;}
         .authwrap .titletbl td{display:table-cell !important;}
         .authwrap .chkbx{margin:0 !important;}
+        
+        .amtColTitle{
+        width:280px;
+        }
+        
+        .amtCol{
+        width:280px;
+        }
+        
         }
         @media (max-width:580px){
         .slds-modal__container{max-width: unset !important;width:85% !important;}
         .authwrap td span{display:block;}
         
+        .amtColTitle{
+        width:280px;
+        }
+        
+        .amtCol{
+        width:277px;
+        }
         }
         
         
@@ -48,7 +76,16 @@
             
             <div class="logohead">
                 <div class="logoimg">
-                    <img src="{!$Resource.ChevronLogo}" alt="Chevron" />
+                    
+                    <aura:if isTrue="{!v.wireDetail.Brand__c=='Chevron'}">
+                        <img src="{!$Resource.ChevronLogo}" alt="Chevron" />
+                    </aura:if>
+                    
+                    <aura:if isTrue="{!v.wireDetail.Brand__c=='Spectrum'}">
+                        <img src="{!$Resource.Logo_SpectrumCU}" alt="Spectrum" />
+                    </aura:if>
+                    
+                    
                 </div>
                 <h1 class="slds-text-heading--medium">WIRE TRANSFER AUTHORIZATION FORM – DOMESTIC</h1>
             </div>
@@ -128,18 +165,34 @@
                             <table class="tblbor0">
                                 <tr>
                                     <td class="num tblborright">2</td>
-                                    <td>
+                                    <td >
                                         <h3>AMOUNT OF YOUR WIRE </h3>
+                                    </td>
+                                    <td class="tblborright">&nbsp;</td>
+                                    <td class="amtColTitle">
+                                        <h3>WIRE FEE</h3>
                                     </td>
                                 </tr>
                             </table>
                         </td>
                     </tr>
                     <tr>
-                        <td>Amount USD <span>${!v.wireDetail.TotalAmount__c}</span></td>
+                        <td class="titletbl p0">
+                            <table class="tblbor0">
+                                <tr>
+                                    <td class="no-bg">
+                                        Amount USD <span><lightning:formattedNumber value="{!v.wireDetail.WireAmount__c}" style="currency" currencyCode="USD"/></span>
+                                    </td>
+                                    <td class="tblborright no-bg">&nbsp;</td>
+                                    <td  class="amtCol no-bg">
+                                        <lightning:formattedNumber value="{!v.wireDetail.Fees__c}" style="currency" currencyCode="USD"/>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
                     </tr>
                     <tr>
-                        <td><strong><small>Please write out the dollar amount in words</small></strong></td>
+                        <td><span>{!v.wireDetail.Wire_Amount_In_Word__c}</span></td>
                     </tr>
                     <tr>
                         <td class="titletbl p0">
@@ -159,7 +212,6 @@
                             <table class="tblbor0">
                                 <tr>
                                     <td class="tblborright">Recipient Name <span>{!v.wireDetail.RecepientName__c}</span></td>
-                                    <td class="tblborright">Recipient Phone <span> </span></td>
                                 </tr>
                             </table>
                         </td>
@@ -173,9 +225,6 @@
                         <td>Name of Financial Institution <span>{!v.wireDetail.Recipient_Bank__c}</span></td>
                     </tr>
                     <tr>
-                        <td>Address of Financial Institution(optional) <span> </span></td>
-                    </tr>
-                    <tr>
                         <td class="p0">
                             <table class="tblbor0">
                                 <tr>
@@ -186,7 +235,7 @@
                         </td>
                     </tr>
                     <tr>
-                        <td>Special Instructions <span> </span></td>
+                        <td>Special Instructions <span>{!v.wireDetail.Description__c} </span></td>
                     </tr>
                     <tr>
                         <td class="titletbl p0">
@@ -228,22 +277,59 @@
                 <p class="slds-text-align_center"><strong>IMPORTANT: Read carefully before agreeing to this Authorization.</strong></p>
                 <br/>
                 <p><strong>General Wire Information</strong></p>
-                <p>You authorize Chevron Federal Credit Union (CFCU) to wire transfer funds as instructed in your payment order. Our charges for the funds transfer are disclosed in our fee schedule. Other banks involved in the funds transfer may impose additional charges. We may fail to act or delay in acting on a payment order without any liability because of legal constraint, your negligence, interruption of communication facilities, equipment failure, war, emergency conditions, or other circumstances beyond our control. We may also fail to send or delay in sending a payment order, without any liability, if sending the order would violate any guideline, rule or regulation of any government authority. We are not liable for consequential, special, or exemplary damages or losses of any kind.</p>
+                <p>You authorize
+                    
+                    <aura:if isTrue="{!v.wireDetail.Brand__c=='Chevron'}">
+                        Chevron Federal Credit Union (CFCU)
+                        <aura:set attribute="else">
+                            Chevron Federal Credit Union dba Spectrum Credit Union (Spectrum) 
+                        </aura:set>
+                    </aura:if>
+                    to wire transfer funds as instructed in your payment order. Our charges for the funds transfer are disclosed in our fee schedule. Other banks involved in the funds transfer may impose additional charges. We may fail to act or delay in acting on a payment order without any liability because of legal constraint, your negligence, interruption of communication facilities, equipment failure, war, emergency conditions, or other circumstances beyond our control. We may also fail to send or delay in sending a payment order, without any liability, if sending the order would violate any guideline, rule or regulation of any government authority. We are not liable for consequential, special, or exemplary damages or losses of any kind.</p>
                 <p>Funds may be transferred Monday through Friday, except on holidays.</p>
                 <p>You must accurately identify beneficiaries of the payment order. If you give us the name and account number of a beneficiary, we and other financial institutions may process the payment order based on the account number alone, even though the number may identify a person other than the beneficiary named. If you give us the name and identifying number of a financial institution, we and other financial institutions may process the payment order based on the financial institutions identifying number alone, even though the number may identify a financial institution other than the financial institution named. In these cases, you are still obliged to pay us the amount of the payment order. Incorrect or incomplete wire transfer forms may delay the processing of your wire transfer request.</p>
-                <p>Recurring wire transfers are processed according to the schedule that you provide to CFCU (e.g. weekly, every two weeks, monthly, etc.). Transfers scheduled to occur on a non-business day will be processed on the next business day. All recurring wire transfer orders remain in effect until revoked by you in writing or via secure email/PC Access. Changes to existing recurring wire transfer orders require a new Authorization Form.</p>
+                <p>Recurring wire transfers are processed according to the schedule that you provide to  <aura:if isTrue="{!v.wireDetail.Brand__c=='Chevron'}">
+                    CFCU
+                    <aura:set attribute="else">
+                        Spectrum
+                    </aura:set>
+                    </aura:if>  (e.g. weekly, every two weeks, monthly, etc.). Transfers scheduled to occur on a non-business day will be processed on the next business day. All recurring wire transfer orders remain in effect until revoked by you in writing or via secure email/PC Access. Changes to existing recurring wire transfer orders require a new Authorization Form.</p>
                 <br/>
                 <p><strong>Domestic Wire Transfers</strong></p>
                 <p>If we receive wire transfer orders after the applicable cutoff time, we may treat the payment order as if we received it on our next business day.</p>
                 <p>If you ask us to cancel or amend the wire transfer, we may make a reasonable effort to act on your request. But, we are not liable to you if for any reason this payment order is not amended or canceled. You agree to reimburse us for any costs, losses, or damages that we incur in connection with your request to amend or cancel the payment order. If we try to cancel this funds transfer, we do not have to refund your money until we determine that the beneficiary has not received the money and the money is returned to us. If we return your money, the refund may not be equal to the amount of the original payment order. For example, the amounts may be different because of a charge other financial institutions may impose to return the funds transfer.</p>
-                <p>Fedwire is the funds transfer system of the U.S. Federal Reserve Banks. We or other financial institutions involved may use Fedwire to make the funds transfer. If any part of the funds transfer is carried by Fedwire, your rights and obligations regarding the funds transfer are governed by Regulation J of the U.S. Federal Reserve Board. When a payment order is issued by a member, the security procedure involves use of identification methods that may involve photo identification, signature identification of original signature and/or call back procedure by CFCU. </p>
-                <p>You authorize CFCU to debit your account to pay for this funds transfer. We notify you about the funds transfer by listing it on your account statement. You must send us written notice, including a statement of relevant facts, within 14 calendar days after you receive the first account statement on which any unauthorized or erroneous debit to your account, or any other discrepancy between your records and ours appear. If you fail to notify us within this 14-day period, we are not liable or obligated to compensate you, for any loss of interest or interest equivalent because of unauthorized or erroneous debit. Notifications may be sent via mail to P.O. Box 2069, Oakland, CA 94607-2069, or via Secure Email through PC Access Online Banking. </p>
+                <p>Fedwire is the funds transfer system of the U.S. Federal Reserve Banks. We or other financial institutions involved may use Fedwire to make the funds transfer. If any part of the funds transfer is carried by Fedwire, your rights and obligations regarding the funds transfer are governed by Regulation J of the U.S. Federal Reserve Board. When a payment order is issued by a member, the security procedure involves use of identification methods that may involve photo identification, signature identification of original signature and/or call back procedure by <aura:if isTrue="{!v.Brand__c=='Chevron'}">
+                    CFCU
+                    <aura:set attribute="else">
+                        Spectrum
+                    </aura:set>
+                    </aura:if>. </p>
+                <p>You authorize <aura:if isTrue="{!v.wireDetail.Brand__c=='Chevron'}">
+                    CFCU
+                    <aura:set attribute="else">
+                        Spectrum
+                    </aura:set>
+                    </aura:if> to debit your account to pay for this funds transfer. We notify you about the funds transfer by listing it on your account statement. You must send us written notice, including a statement of relevant facts, within 14 calendar days after you receive the first account statement on which any unauthorized or erroneous debit to your account, or any other discrepancy between your records and ours appear. If you fail to notify us within this 14-day period, we are not liable or obligated to compensate you, for any loss of interest or interest equivalent because of unauthorized or erroneous debit. Notifications may be sent via mail to P.O. Box 2069, Oakland, CA 94607-2069, or via Secure Email through PC Access Online Banking. </p>
                 <br/>
                 <p><strong>International Wire Transfers</strong></p>
-                <p>If you initiate a funds transfer expressed in U.S. dollars for transfer to a foreign country, CFCU will convert the amount to be transferred to the currency of the beneficiary bank's country at CFCU's rate of exchange to U.S. dollars. If you initiate a funds transfer expressed in foreign currency, CFCU will convert the amount to be transferred from U.S. dollars to the currency of a designated foreign government or intergovernmental organization ("Foreign Currency") at CFCU's rate of exchange in effect at the time CFCU executes the wire transfer. The funds transfer will be done through our correspondent bank. </p>
-                <p>You can cancel for a full refund within 30 minutes of payment. After that the order will be final except that CFCU may at your request, make an effort to effect such stop payment or recall. In such case, CFCU will incur no liability for its failure or inability to do so and you will be responsible for any associated costs/fees, including but not limited to any loss due to the current currency exchange rates. </p>
-                <p>If the transfer is returned for any reason, you agree to accept the refund in U.S. dollars in the amount of the foreign money credit, based on CFCU's rate of exchange on the date of refund, less any charges and expenses incurred by us. </p>
-                <p>You have a right to dispute errors in your transaction. If you think there is an error, contact us within 180 days at 510-627-5000 or  800-232-8101 or via Secure Email through PC Access Online Banking. You can also contact us for a written explanation of your rights. </p>
+                
+                <aura:if isTrue="{!v.wireDetail.Brand__c=='Chevron'}">
+                    <p>If you initiate a funds transfer expressed in U.S. dollars for transfer to a foreign country, CFCU will convert the amount to be transferred to the currency of the beneficiary bank's country at CFCU's rate of exchange to U.S. dollars. If you initiate a funds transfer expressed in foreign currency, CFCU will convert the amount to be transferred from U.S. dollars to the currency of a designated foreign government or intergovernmental organization ("Foreign Currency") at CFCU's rate of exchange in effect at the time CFCU executes the wire transfer. The funds transfer will be done through our correspondent bank. </p>
+                    <p>You can cancel for a full refund within 30 minutes of payment. After that the order will be final except that CFCU may at your request, make an effort to effect such stop payment or recall. In such case, CFCU will incur no liability for its failure or inability to do so and you will be responsible for any associated costs/fees, including but not limited to any loss due to the current currency exchange rates. </p>
+                    <p>If the transfer is returned for any reason, you agree to accept the refund in U.S. dollars in the amount of the foreign money credit, based on CFCU's rate of exchange on the date of refund, less any charges and expenses incurred by us. </p>
+                    <p>You have a right to dispute errors in your transaction. If you think there is an error, contact us within 180 days at 510-627-5000 or  800-232-8101 or via Secure Email through PC Access Online Banking. You can also contact us for a written explanation of your rights. </p>
+                    <aura:set attribute="else">
+                        <p>If you initiate a funds transfer expressed in U.S. dollars for transfer to a foreign country, Spectrum will convert the amount to be transferred to the currency of the beneficiary bank's country at Spectrum’s rate of exchange to U.S. dollars. If you initiate a funds transfer expressed in foreign currency, Spectrum will convert the amount to be transferred from U.S. dollars to the currency of a designated foreign government or intergovernmental organization ("Foreign Currency") at Spectrum’s rate of exchange in effect at the time Spectrum executes the wire transfer. The funds transfer will be done through our correspondent bank.</p>
+                        <p>You can cancel for a full refund within 30 minutes of payment. After that the order will be final except that Spectrum may at your request, make an effort to effect such stop payment or recall. In such case, Spectrum will incur no liability for its failure or inability to do so and you will be responsible for any associated costs/fees, including but not limited to any loss due to the current currency exchange rates.</p>
+                        <p>If the transfer is returned for any reason, you agree to accept the refund in U.S. dollars in the amount of the foreign money credit, based on Spectrum’s rate of exchange on the date of refund, less any charges and expenses incurred by us.</p>
+                        <p>You have a right to dispute errors in your transaction. If you think there is an error, contact us within 180 days at 510-251-6000 or 
+                            800-782-8782 or via Secure Email through PC Access Online Banking. You can also contact us for a written explanation of your rights.
+                        </p>
+                    </aura:set>
+                </aura:if>
+                
+                
+                
             </div>
             
             <div class="signtbl">
@@ -255,7 +341,7 @@
                                     <img aura:id="signImg" src="{!'/servlet/servlet.FileDownload?file='+v.attachmentId}"/>
                                 </aura:if> 
                             </div>
-                            <p><strong>Member Signature</strong>
+                            <p class="red"><strong>Member Signature</strong>
                             </p>
                         </td>
                         <td>
@@ -265,15 +351,10 @@
                     </tr>
                 </table>
             </div>
-            
-            
-            
-            
         </div>
-        
     </div>
     
-    <div id="eSignDiv" aura:id="eSignDiv">
+    <div class="eSignDiv" id="eSignDiv" aura:id="eSignDiv">
         <div style="text-align: center;">
             <canvas aura:id="can" style="border:2px solid #ddd;background: transparent;"></canvas>
         </div>
@@ -282,6 +363,5 @@
             <button class="slds-button slds-button_brand" id="btnSave" disabled="{!v.saveDisabled}" onclick="{!c.save}">Save</button>
         </div>
     </div>
-    
     
 </aura:component>

@@ -4,7 +4,7 @@
     font-weight: 500; margin-top:.5rem;
     letter-spacing: 1px;}
 
-.THIS.authwrap{font-size:.8125rem;}
+.THIS.authwrap{font-size:.8125rem;background-color:#ffffff;padding:13px;}
 .THIS.authwrap .p0{padding:0 !important;}
 .THIS.authwrap .tblbor0 td{border:0 !important;}
 .THIS.authwrap .tblbor0 td.tblborright{border-right:1px solid #000 !important;}
@@ -55,4 +55,15 @@
 .THIS.authwrap .spin{
     top: 10% !important;
     bottom: 7% !important;
+}
+
+.THIS.eSignDiv {
+    background-color:#ffffff;
+    padding-top:50px;
+    height:100%;
+    padding-bottom:100px;
+}
+
+.THIS.eSignDiv .red {
+    color: red;
 }
