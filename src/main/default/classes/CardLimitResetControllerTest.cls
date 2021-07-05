@@ -95,6 +95,7 @@ public class CardLimitResetControllerTest {
         CardLimitResetController.getStageData(memberacc.id,'JEFF PACHECO FRANKLIN');
         CardLimitResetController.getMembers(memberacc.id);
         CardLimitResetController.getCard(memberacc.id,'JEFF PACHECO FRANKLIN');
+        CardLimitResetController.getCardDetails(memberacc.id,'JEFF PACHECO FRANKLIN','5460277067636965');
         CardLimitResetController.limitSubmit(memberacc.id,'5460277067636965','123','JEFF PACHECO FRANKLIN','Change Card Limits','123.00','456.00',memberacc.name);
     }
     

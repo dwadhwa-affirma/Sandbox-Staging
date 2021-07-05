@@ -110,10 +110,8 @@
                     </aura:if>
                     
                     <aura:if isTrue="{!(v.Empty)}">  
-                        <td colspan="2">
-                            <lightning:icon iconName="utility:warning" alternativeText="Warning!" size="x-small" variant="warning"/>
-                              Cards not Found!
-                        </td>
+                        <lightning:icon iconName="utility:warning" alternativeText="Warning!" size="x-small" variant="warning"/>
+                        Cards not Found!
                     </aura:if>
                     
                  </tbody>

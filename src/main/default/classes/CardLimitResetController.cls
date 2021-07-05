@@ -489,6 +489,179 @@ public class CardLimitResetController {
         
 		return resultmap;
     }
+
+    @AuraEnabled
+    public static Map<string,List<CardDetailWrapperObject>> getCardDetails(string recordId, string sObjectType, string SelectedCardNumber){
+    
+        system.debug('sObjectType'+sObjectType); 
+        system.debug('recordId'+recordId);
+        system.debug('SelectedCardNumber'+SelectedCardNumber);
+        Id uniqueId = recordId;
+        Schema.SObjectType objType = uniqueId.getsobjecttype();
+       
+        Map<String, List<CardDetailWrapperObject>> resultinnerMap = new Map<String, List<CardDetailWrapperObject>>();
+        List<CardDetailWrapperObject> resultList = new List<CardDetailWrapperObject>();
+
+        HttpRequest req = new HttpRequest();
+        HttpResponse res;
+        Http http = new Http();
+        string responseBody;
+        string loanAPI;
+        String jsonData;
+
+        HttpRequest req1 = new HttpRequest();
+        HttpResponse res1;
+        Http http1 = new Http();
+        string responseBody1;
+        string isDormant;
+
+        String Type;
+        String SSN;
+        List<String> CardNumber = new List<String>();
+        List<String> CardLocator = new List<String>();
+        
+        string firstname,lastname;
+        List<string> Names = sObjectType.split(' ');
+        if(Names.size() == 2){
+            firstname = Names[0]+ '%';
+            lastname= '%'+Names[1] + '%';
+        }
+        else if(Names.size() >= 3){
+            firstname = Names[0]+ '%';
+            lastname= '%'+Names[Names.size()-1] +'%';
+        }
+
+        SolarLoan_To_Episys_API_Details__c api = SolarLoan_To_Episys_API_Details__c.getValues('ProductionURL');
+                        
+        if(api.URL__c != null){
+            loanAPI = api.URL__c;
+        }
+
+        string AccountNumber;
+        Person_Account__c pa;
+
+        if(objType == Account_Details__c.sObjectType){
+
+            if(recordId != null){
+                AccountNumber = [Select id, name from account_details__c where id=: recordId].Name;
+            }
+            else{
+                AccountNumber = AccountNumber = [Select id, name from account_details__c where id=: recordId].Name;
+            }          
+            
+            system.debug('AccountNumber'+AccountNumber);
+
+            pa =[SELECT id, name,PersonID__c,Account_Number__c,PersonID__r.name 
+                    from Person_Account__c where PersonID__r.firstname like: firstname
+                    AND PersonID__r.LASTNAME like: lastname
+                    AND Account_Number__r.name =: AccountNumber limit 1];
+            
+            system.debug('Member - '+pa.PersonID__c);
+
+            Account acc = [select id,name,SSN_TIN_Encrypted__pc from Account where id =:pa.PersonID__c limit 1];
+            SSN = acc.SSN_TIN_Encrypted__pc;  
+            //SSN = '123456789';
+
+            system.debug('SSN'+SSN);
+            
+            //----------------------------------------Checking if Membership is not dormant -----------------------------------------//
+
+            req1.setEndpoint(loanAPI+'/Account/IsDormantAccount?accountNumber='+accountNumber);
+            req1.setMethod('GET');
+            req1.setHeader('Content-Type', 'application/json');
+            req1.setHeader('Accept', 'application/json');
+            req1.setTimeout(60000); 
+
+            if(!Test.isRunningTest()){                       
+                res1 = http1.send(req1);
+                responseBody1 = res1.getBody();
+            }
+            else{
+                responseBody1 = '{"IsDormant":"false","Status":"OK","Error":"null","ErrorDetails":"null"}';   
+            }
+            if(responseBody1 !=''){        
+                Map<String,Object> results = (Map<String,Object>) JSON.deserializeUntyped(responseBody1);      
+                System.debug('Service response is ....' + results);
+                if(results.size() > 0){
+                    for(String key : results.keySet()){                   			
+                        if(key == 'IsDormant'){
+                            isDormant = string.valueOf(results.get(key));
+                        }
+                    }
+                }
+            }
+            system.debug('isDormant : ' + isDormant);
+        }
+        if(objType == Account.sObjectType){
+            
+            /*pa =[SELECT id, name,PersonID__c,Account_Number__c,PersonID__r.name 
+                    from Person_Account__c where PersonID__r.firstname like: firstname
+                    AND PersonID__r.LASTNAME like: lastname limit 1];
+            
+            system.debug('Member - '+pa.PersonID__c);*/
+
+            Account acc = [select id,name,SSN_TIN_Encrypted__pc from Account where id =:recordId limit 1];
+            SSN = acc.SSN_TIN_Encrypted__pc;
+            //SSN = '123456789';
+            system.debug('SSN'+SSN);
+
+        }
+       
+        req.setEndpoint(loanAPI+'/CardLimitReset/GetCards');
+        req.setMethod('POST');
+        req.setHeader('Content-Type', 'application/json');
+        req.setHeader('Accept', 'application/json');
+        jsonData = '{"SSN":' + '\"'+ SSN +'\"}';                 
+        req.setBodyAsBlob(Blob.valueof(jsonData));
+        req.setTimeout(60000);                    
+        
+        system.debug('Request: '+jsonData);
+
+        if(!Test.isRunningTest()){                       
+            res = http.send(req);
+            responseBody = res.getBody();
+            System.debug('ResponseBody ::'+responseBody);    
+        }
+        else{
+            responseBody = '[{"AccountNumber":"0000241444","CardNumber":"5460277067636965","CardLocator":"23","CardStatus":"1","CardOwner":null,"Locator":"33"}]';
+
+        }
+        if(responseBody != '' && responseBody != null){        
+            List<object> results = (List<Object>) JSON.deserializeUntyped(responseBody);      
+            System.debug('Response is ....' + results);
+            
+            if(results.size() > 0){
+                
+                for(Object key : results){ 
+                    CardDetailWrapperObject temp = new CardDetailWrapperObject();
+                    Map<String, Object> carddetail = (Map<String, Object>)key;
+                    string Card = string.valueof(carddetail.get('CardNumber'));
+                    temp.CardNumber =  string.valueof(carddetail.get('CardNumber'));
+                    temp.CardLocator =   string.valueof(carddetail.get('Locator'));
+                    temp.AccountNumber = string.valueof(carddetail.get('AccountNumber'));
+                    temp.LongName = string.valueof(carddetail.get('LongName'));
+                    String CardStatus = string.valueof(carddetail.get('CardStatus'));
+                    
+                    if(temp.AccountNumber != null && temp.CardLocator != null && temp.CardNumber != null && CardStatus != '2'){
+                        if(temp.CardNumber == SelectedCardNumber){
+                            resultList.add(temp);
+                        }
+                    }
+                    system.debug('temp.CardNumber'+temp.CardNumber);
+                    system.debug('temp.CardLocator'+temp.CardLocator);
+                    system.debug('temp.AccountNumber'+temp.AccountNumber);
+                    system.debug('temp.LongName'+temp.LongName);
+                    system.debug('resultList'+resultList);
+                 
+                }
+            } 
+        }
+
+        resultinnerMap.put('CardList',resultList);
+
+		return resultinnerMap;
+    }
+
     @AuraEnabled
     public static Change_Limit__c createCase(Change_Limit__c CLRecord, String cardnumber, String type, String authlimit, String atmlimit, String membername){
 
