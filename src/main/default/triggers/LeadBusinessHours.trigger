@@ -390,6 +390,41 @@ trigger LeadBusinessHours on Lead (after insert,after update, before insert, bef
                         lead.OwnerId = groupnameid;
                     }
                 }
+            	else if(lead.Status == 'New' && lead.Episys_User_ID__c != 7002 && 
+                    lead.LeadSource == 'SEG Contact Form' ){
+                    System.debug('9999');                   
+                   
+                        for(Group grp : listQueue){                        
+                            if(grp.name.containsIgnoreCase('Business Development Queue')){                            
+                                groupName = grp.Name;
+                                groupnameid = grp.id;
+                                break;
+                            }
+                            system.debug('groupName###' + groupName);
+                        }                    
+                
+                    if(groupnameid != null){
+                        lead.OwnerId = groupnameid;
+                    }
+                    
+                }
+                else if(lead.Status == 'New' && lead.Episys_User_ID__c != 7002 && 
+                    lead.LeadSource == 'Expat Services Form' ){
+                    System.debug('8888');                   
+                   
+                        for(Group grp : listQueue){                        
+                            if(grp.name.containsIgnoreCase('Ex-Patriates')){                            
+                                groupName = grp.Name;
+                                groupnameid = grp.id;
+                                break;
+                            }
+                            system.debug('groupName###' + groupName);
+                        }                    
+                
+                    if(groupnameid != null){
+                        lead.OwnerId = groupnameid;
+                    }                    
+                }
             	else{
                   //------------------------------- from Graham Smith 5/6/21 start --------------------------------------//
                   // Looks for a match on referring first name, referring last name and referring email.
