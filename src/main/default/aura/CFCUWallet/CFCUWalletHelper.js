@@ -592,21 +592,29 @@
             
             if(ButtonId =='BeneficiaryPassButton'){
                 
-                if(Button.get("v.variant") ==  "neutral"  && findOtherButton.get("v.variant" ) == "neutral"){
+                if(Button.get("v.variant") ==  "success"){
+                     QuestionAttempt = parseInt(QuestionAttempt) - 1;
+                    Button.set("v.variant", "neutral");
+                    ScoreObtained = parseInt(ScoreObtained) - 1;
+                    BeneficiaryDetailMatch = '';
+                }
+                else if(Button.get("v.variant") ==  "neutral"  && findOtherButton.get("v.variant" ) == "neutral"){
                     QuestionAttempt = parseInt(QuestionAttempt) + 1;
+                    Button.set("v.variant", "success");
+                    ScoreObtained = parseInt(ScoreObtained) + 1;
+                    BeneficiaryDetailMatch = 'Pass';
                 }
                 else
                 {
                     FailedCount = parseInt(FailedCount) - 1;
                     component.set("v.FailedCount",FailedCount);
+                    Button.set("v.variant", "success");
+                    ScoreObtained = parseInt(ScoreObtained) + 1;
+                    BeneficiaryDetailMatch = 'Pass';
                 }
                 component.set("v.QuestionAttempt",QuestionAttempt );
-                
-                Button.set("v.variant", "success");
-                ScoreObtained = parseInt(ScoreObtained) + 1;
-                component.set("v.ScoreObtained",ScoreObtained);
-                findOtherButton.set("v.variant", "neutral");
-                BeneficiaryDetailMatch = 'Pass';
+				component.set("v.ScoreObtained",ScoreObtained);
+                findOtherButton.set("v.variant", "neutral");                
                 component.set("v.BeneficiaryDetailMatch",BeneficiaryDetailMatch);
                 if(QuestionAttempt >=3 && IsCFCUFailForTheDay != 'Fail' && IsCFCUFailOnReload != 'Fail'){
                     component.set("v.IsButtonDisabled",false);
@@ -614,23 +622,31 @@
             }
             else if(ButtonId =='BeneficiaryFailButton'){        
                 
-                findOtherButton = component.find('BeneficiaryPassButton')
-                if(Button.get("v.variant") ==  "neutral"  && findOtherButton.get("v.variant" ) == "neutral"){
+                findOtherButton = component.find('BeneficiaryPassButton');
+                if(Button.get("v.variant") ==  "destructive"){
+                    FailedCount = parseInt(FailedCount) - 1;
+                    Button.set("v.variant", "neutral");
+                    BeneficiaryDetailMatch = '';
+                    QuestionAttempt = parseInt(QuestionAttempt) - 1;
+                }
+                else if(Button.get("v.variant") ==  "neutral"  && findOtherButton.get("v.variant" ) == "neutral"){
                     QuestionAttempt = parseInt(QuestionAttempt) + 1;
+                    FailedCount = parseInt(FailedCount) + 1;
+                    Button.set("v.variant", "destructive");
+                    BeneficiaryDetailMatch = 'Fail';
                 }
                 else
                 {
                     ScoreObtained = parseInt(ScoreObtained) - 1;
                     component.set("v.ScoreObtained",ScoreObtained);
-                    
+                    FailedCount = parseInt(FailedCount) + 1;
+                    Button.set("v.variant", "destructive");
+                    BeneficiaryDetailMatch = 'Fail';                    
                 }
-                FailedCount = parseInt(FailedCount) + 1;
-                component.set("v.FailedCount",FailedCount);
                 
-                Button.set("v.variant", "destructive");
-                component.set("v.QuestionAttempt",QuestionAttempt );
-                findOtherButton.set("v.variant", "neutral");
-                BeneficiaryDetailMatch = 'Fail';
+                component.set("v.FailedCount",FailedCount);   
+				component.set("v.QuestionAttempt",QuestionAttempt );
+                findOtherButton.set("v.variant", "neutral");                
                 component.set("v.BeneficiaryDetailMatch",BeneficiaryDetailMatch);
                 if(QuestionAttempt >=3 && IsCFCUFailForTheDay != 'Fail' && IsCFCUFailOnReload != 'Fail'){
                     component.set("v.IsButtonDisabled",false);
@@ -640,41 +656,58 @@
                 {
                     
                     findOtherButton = component.find('JointFailButton');
-                    if(Button.get("v.variant") ==  "neutral"  && findOtherButton.get("v.variant" ) == "neutral"){
+                    if(Button.get("v.variant") ==  "success"){
+                        Button.set("v.variant", "neutral");
+                        QuestionAttempt = parseInt(QuestionAttempt) - 1;
+                        ScoreObtained = parseInt(ScoreObtained) - 1;
+                        JointOwnerDetailMatch = '';
+                    }
+                    else if(Button.get("v.variant") ==  "neutral"  && findOtherButton.get("v.variant" ) == "neutral"){
                         QuestionAttempt = parseInt(QuestionAttempt) + 1;
+                        Button.set("v.variant", "success");
+                        ScoreObtained = parseInt(ScoreObtained) + 1;
+                        JointOwnerDetailMatch = 'Pass';
                     }
                     else
                     {
                         FailedCount = parseInt(FailedCount) - 1;
                         component.set("v.FailedCount",FailedCount);
+                        Button.set("v.variant", "success");
+                        ScoreObtained = parseInt(ScoreObtained) + 1;
+                        JointOwnerDetailMatch = 'Pass';
                     }
-                    component.set("v.QuestionAttempt",QuestionAttempt );
-                    
-                    Button.set("v.variant", "success");
-                    ScoreObtained = parseInt(ScoreObtained) + 1;
+                    component.set("v.QuestionAttempt",QuestionAttempt ); 					
                     component.set("v.ScoreObtained",ScoreObtained);
-                    findOtherButton.set("v.variant", "neutral");
-                    JointOwnerDetailMatch = 'Pass';
+                    findOtherButton.set("v.variant", "neutral");                    
                     component.set("v.JointOwnerDetailMatch",JointOwnerDetailMatch);
                     if(QuestionAttempt >=3 && IsCFCUFailForTheDay != 'Fail' && IsCFCUFailOnReload != 'Fail'){
                         component.set("v.IsButtonDisabled",false);
                     }
                 }
-                    else if(ButtonId =='JointFailButton'){   
-                        FailedCount = parseInt(FailedCount) + 1;
-                        component.set("v.FailedCount",FailedCount);
+                    else if(ButtonId =='JointFailButton'){                       
                         findOtherButton = component.find('JointPassButton')
-                        if(Button.get("v.variant") ==  "neutral"  && findOtherButton.get("v.variant" ) == "neutral"){
+                        if(Button.get("v.variant") ==  "destructive"){
+                            FailedCount = parseInt(FailedCount) - 1;
+                            QuestionAttempt = parseInt(QuestionAttempt) - 1;
+                            Button.set("v.variant", "neutral");
+                            JointOwnerDetailMatch = '';
+                        }
+                        else if(Button.get("v.variant") ==  "neutral"  && findOtherButton.get("v.variant" ) == "neutral"){
                             QuestionAttempt = parseInt(QuestionAttempt) + 1;
+                            FailedCount = parseInt(FailedCount) + 1;
+                            Button.set("v.variant", "destructive");
+                            JointOwnerDetailMatch = 'Fail';
                         }
                         else{
                             ScoreObtained = parseInt(ScoreObtained) - 1;
-                            component.set("v.ScoreObtained",ScoreObtained);        		
-                        }
-                        component.set("v.QuestionAttempt",QuestionAttempt );
-                        Button.set("v.variant", "destructive");
-                        findOtherButton.set("v.variant", "neutral");
-                        JointOwnerDetailMatch = 'Fail';
+                            component.set("v.ScoreObtained",ScoreObtained); 
+                            FailedCount = parseInt(FailedCount) + 1;
+                            Button.set("v.variant", "destructive");
+                            JointOwnerDetailMatch = 'Fail';
+                        }                        
+                        component.set("v.FailedCount",FailedCount);
+                        component.set("v.QuestionAttempt",QuestionAttempt );                        
+                        findOtherButton.set("v.variant", "neutral");                       
                         component.set("v.JointOwnerDetailMatch",JointOwnerDetailMatch);
                         if(QuestionAttempt >=3 && IsCFCUFailForTheDay != 'Fail' && IsCFCUFailOnReload != 'Fail'){
                             component.set("v.IsButtonDisabled",false);
@@ -683,41 +716,57 @@
                         else if(ButtonId =='LoanPassButton')
                         {
                             findOtherButton = component.find('LoanFailButton');
-                            if(Button.get("v.variant") ==  "neutral"  && findOtherButton.get("v.variant" ) == "neutral"){
+                            if(Button.get("v.variant") ==  "success"){
+                                QuestionAttempt = parseInt(QuestionAttempt) - 1;
+                                Button.set("v.variant", "neutral");
+                                ScoreObtained = parseInt(ScoreObtained) - 1;
+                                LoanDetailMatch = '';
+                            }
+                            else if(Button.get("v.variant") ==  "neutral"  && findOtherButton.get("v.variant" ) == "neutral"){
                                 QuestionAttempt = parseInt(QuestionAttempt) + 1;
+                                Button.set("v.variant", "success");
+                                ScoreObtained = parseInt(ScoreObtained) + 1;
+                                LoanDetailMatch = 'Pass';
                             }
                             else{
                                 FailedCount = parseInt(FailedCount) - 1;
                                 component.set("v.FailedCount",FailedCount);
+                                Button.set("v.variant", "success");
+                                ScoreObtained = parseInt(ScoreObtained) + 1;
+                                LoanDetailMatch = 'Pass';
                             }
-                            component.set("v.QuestionAttempt",QuestionAttempt );
-                            Button.set("v.variant", "success");
-                            ScoreObtained = parseInt(ScoreObtained) + 1;
-                            component.set("v.ScoreObtained",ScoreObtained);
-                            findOtherButton.set("v.variant", "neutral");
-                            LoanDetailMatch = 'Pass';
+                            component.set("v.QuestionAttempt",QuestionAttempt );           
+							component.set("v.ScoreObtained",ScoreObtained);
+                            findOtherButton.set("v.variant", "neutral");                            
                             component.set("v.LoanDetailMatch",LoanDetailMatch);
                             if(QuestionAttempt >=3 && IsCFCUFailForTheDay != 'Fail' && IsCFCUFailOnReload != 'Fail'){
                                 component.set("v.IsButtonDisabled",false);
                             }
                         }
-                            else if(ButtonId =='LoanFailButton'){        
-                                
-                                FailedCount = parseInt(FailedCount) + 1;
-                                component.set("v.FailedCount",FailedCount);
+                            else if(ButtonId =='LoanFailButton'){                       
                                 findOtherButton = component.find('LoanPassButton');
-                                if(Button.get("v.variant") ==  "neutral"  && findOtherButton.get("v.variant" ) == "neutral"){
+                                if(Button.get("v.variant") ==  "destructive"){
+                                    QuestionAttempt = parseInt(QuestionAttempt) - 1;
+                                    FailedCount = parseInt(FailedCount) - 1;
+                                    Button.set("v.variant", "neutral");
+                                    LoanDetailMatch = '';
+                                }
+                                else if(Button.get("v.variant") ==  "neutral"  && findOtherButton.get("v.variant" ) == "neutral"){
                                     QuestionAttempt = parseInt(QuestionAttempt) + 1;
+                                    FailedCount = parseInt(FailedCount) + 1;
+                                    Button.set("v.variant", "destructive");
+                                    LoanDetailMatch = 'Fail';
                                 }
                                 else{
                                     ScoreObtained = parseInt(ScoreObtained) - 1;
                                     component.set("v.ScoreObtained",ScoreObtained);
-                                    
+                                    FailedCount = parseInt(FailedCount) + 1;
+                                    Button.set("v.variant", "destructive");
+                                    LoanDetailMatch = 'Fail';
                                 }
                                 component.set("v.QuestionAttempt",QuestionAttempt );
-                                Button.set("v.variant", "destructive");
-                                findOtherButton.set("v.variant", "neutral");
-                                LoanDetailMatch = 'Fail';
+								component.set("v.FailedCount",FailedCount);                                
+                                findOtherButton.set("v.variant", "neutral");                                
                                 component.set("v.LoanDetailMatch",LoanDetailMatch);
                                 if(QuestionAttempt >=3 && IsCFCUFailForTheDay != 'Fail' && IsCFCUFailOnReload != 'Fail'){
                                     component.set("v.IsButtonDisabled",false);
@@ -727,42 +776,58 @@
                                 else if(ButtonId =='CardPassButton')
                                 {
                                     findOtherButton = component.find('CardFailButton');
-                                    if(Button.get("v.variant") ==  "neutral"  && findOtherButton.get("v.variant" ) == "neutral"){
+                                    if(Button.get("v.variant") ==  "success"){
+                                        QuestionAttempt = parseInt(QuestionAttempt) - 1;
+                                        Button.set("v.variant", "neutral");
+                                        ScoreObtained = parseInt(ScoreObtained) - 1;
+                                        CardNumberMatch = '';
+                                    }
+                                    else if(Button.get("v.variant") ==  "neutral"  && findOtherButton.get("v.variant" ) == "neutral"){
                                         QuestionAttempt = parseInt(QuestionAttempt) + 1;
+                                        Button.set("v.variant", "success");
+                                        ScoreObtained = parseInt(ScoreObtained) + 1;
+                                        CardNumberMatch = 'Pass';
                                     }
                                     else{
                                         FailedCount = parseInt(FailedCount) - 1;
                                         component.set("v.FailedCount",FailedCount);
+                                        Button.set("v.variant", "success");
+                                        ScoreObtained = parseInt(ScoreObtained) + 1;
+                                        CardNumberMatch = 'Pass';
                                     }
-                                    component.set("v.QuestionAttempt",QuestionAttempt );
-                                    Button.set("v.variant", "success");
-                                    ScoreObtained = parseInt(ScoreObtained) + 1;
-                                    component.set("v.ScoreObtained",ScoreObtained);
-                                    findOtherButton.set("v.variant", "neutral");
-                                    CardNumberMatch = 'Pass';
+                                    component.set("v.QuestionAttempt",QuestionAttempt );                  
+									component.set("v.ScoreObtained",ScoreObtained);
+                                    findOtherButton.set("v.variant", "neutral");                                    
                                     component.set("v.CardNumberMatch",CardNumberMatch);
                                     if(QuestionAttempt >=3 && IsCFCUFailForTheDay != 'Fail' && IsCFCUFailOnReload != 'Fail'){
                                         component.set("v.IsButtonDisabled",false);
                                     }
                                 }
                                     else if(ButtonId =='CardFailButton'){        
-                                        
-                                        FailedCount = parseInt(FailedCount) + 1;
-                                        component.set("v.FailedCount",FailedCount);
-                                        findOtherButton = component.find('CardPassButton');
-                                        if(Button.get("v.variant") ==  "neutral"  && findOtherButton.get("v.variant" ) == "neutral"){
+										findOtherButton = component.find('CardPassButton');
+                                        if(Button.get("v.variant") ==  "destructive"){
+                                            QuestionAttempt = parseInt(QuestionAttempt) - 1;
+                                            Button.set("v.variant", "neutral");
+                                            FailedCount = parseInt(FailedCount) - 1;
+                                            CardNumberMatch = '';
+                                        }
+                                        else if(Button.get("v.variant") ==  "neutral"  && findOtherButton.get("v.variant" ) == "neutral"){
                                             QuestionAttempt = parseInt(QuestionAttempt) + 1;
+                                            Button.set("v.variant", "destructive");
+                                            FailedCount = parseInt(FailedCount) + 1;
+                                            CardNumberMatch = 'Fail';
                                         }
                                         else
                                         {
                                             ScoreObtained = parseInt(ScoreObtained) - 1;
                                             component.set("v.ScoreObtained",ScoreObtained);
-                                            
+                                            Button.set("v.variant", "destructive"); 
+                                            FailedCount = parseInt(FailedCount) + 1;
+                                            CardNumberMatch = 'Fail';
                                         }
-                                        component.set("v.QuestionAttempt",QuestionAttempt );
-                                        Button.set("v.variant", "destructive");
-                                        findOtherButton.set("v.variant", "neutral");
-                                        CardNumberMatch = 'Fail';
+                                        component.set("v.QuestionAttempt",QuestionAttempt );                                        
+                                        findOtherButton.set("v.variant", "neutral");                                        
+                                        component.set("v.FailedCount",FailedCount);                                        
                                         component.set("v.CardNumberMatch",CardNumberMatch);
                                         if(QuestionAttempt >=3 && IsCFCUFailForTheDay != 'Fail' && IsCFCUFailOnReload != 'Fail'){
                                             component.set("v.IsButtonDisabled",false);
@@ -776,21 +841,33 @@
                                                 alert('Please select Additional Token');
                                             }        	
                                             else{
-                                                component.set("v.AdditionalTokenOption1",token1);	
+                                                
                                                 findOtherButton = component.find('TokenFailButton1');
-                                                if(Button.get("v.variant") ==  "neutral"  && findOtherButton.get("v.variant" ) == "neutral"){
+                                                if(Button.get("v.variant") ==  "success"){
+                                                    QuestionAttempt = parseInt(QuestionAttempt) - 1;
+                                                    component.set("v.AdditionalTokenOption1",'');
+                                                    Button.set("v.variant", "neutral");
+                                                    ScoreObtained = parseInt(ScoreObtained) - 1;
+                                                    AdditionalTokenOption1Match = '';
+                                                }
+                                                else if(Button.get("v.variant") ==  "neutral"  && findOtherButton.get("v.variant" ) == "neutral"){
                                                     QuestionAttempt = parseInt(QuestionAttempt) + 1;
+                                                    component.set("v.AdditionalTokenOption1",token1);
+                                                    Button.set("v.variant", "success");
+                                                    ScoreObtained = parseInt(ScoreObtained) + 1;
+                                                    AdditionalTokenOption1Match = 'Pass';
                                                 }
                                                 else{
                                                     FailedCount = parseInt(FailedCount) - 1;
                                                     component.set("v.FailedCount",FailedCount);
+                                                    component.set("v.AdditionalTokenOption1",token1);
+                                                    Button.set("v.variant", "success");
+                                                    ScoreObtained = parseInt(ScoreObtained) + 1;
+                                                    AdditionalTokenOption1Match = 'Pass';
                                                 }
-                                                component.set("v.QuestionAttempt",QuestionAttempt );	        	
-                                                Button.set("v.variant", "success");
-                                                ScoreObtained = parseInt(ScoreObtained) + 1;
-                                                component.set("v.ScoreObtained",ScoreObtained);
-                                                findOtherButton.set("v.variant", "neutral");
-                                                AdditionalTokenOption1Match = 'Pass';
+                                                component.set("v.QuestionAttempt",QuestionAttempt );                                                	
+												component.set("v.ScoreObtained",ScoreObtained);
+                                                findOtherButton.set("v.variant", "neutral");                                                
                                                 component.set("v.AdditionalTokenOption1Match",AdditionalTokenOption1Match);	
                                                 if(QuestionAttempt >=3 && IsCFCUFailForTheDay != 'Fail' && IsCFCUFailOnReload != 'Fail'){
                                                     component.set("v.IsButtonDisabled",false);
@@ -803,22 +880,35 @@
                                                     alert('Please select Additional Token');
                                                 }        	
                                                 else{
-                                                    component.set("v.AdditionalTokenOption1",token1);	
-                                                    FailedCount = parseInt(FailedCount) + 1;
-                                                    component.set("v.FailedCount",FailedCount);
+                                                    
                                                     findOtherButton = component.find('TokenPassButton1');
-                                                    if(Button.get("v.variant") ==  "neutral"  && findOtherButton.get("v.variant" ) == "neutral"){
+                                                    if(Button.get("v.variant") ==  "destructive"){
+                                                        QuestionAttempt = parseInt(QuestionAttempt) - 1;
+                                                        component.set("v.AdditionalTokenOption1",'');	
+                                                    	FailedCount = parseInt(FailedCount) - 1;
+                                                        Button.set("v.variant", "neutral");
+                                                        AdditionalTokenOption1Match = '';
+                                                    }
+                                                    else if(Button.get("v.variant") ==  "neutral"  && findOtherButton.get("v.variant" ) == "neutral"){
                                                         QuestionAttempt = parseInt(QuestionAttempt) + 1;
+                                                        component.set("v.AdditionalTokenOption1",token1);	
+                                                    	FailedCount = parseInt(FailedCount) + 1;
+                                                        Button.set("v.variant", "destructive");
+                                                        AdditionalTokenOption1Match = 'Fail';
                                                     }
                                                     
                                                     else{
                                                         ScoreObtained = parseInt(ScoreObtained) - 1;
-                                                        component.set("v.ScoreObtained",ScoreObtained);        		
+                                                        component.set("v.ScoreObtained",ScoreObtained);  
+                                                        component.set("v.AdditionalTokenOption1",token1);	
+                                                    	FailedCount = parseInt(FailedCount) + 1;
+                                                        Button.set("v.variant", "destructive");
+                                                        AdditionalTokenOption1Match = 'Fail';
                                                     }
-                                                    component.set("v.QuestionAttempt",QuestionAttempt );
-                                                    Button.set("v.variant", "destructive");
-                                                    findOtherButton.set("v.variant", "neutral");
-                                                    AdditionalTokenOption1Match = 'Fail';
+                                                    
+                                                    component.set("v.FailedCount",FailedCount);
+                                                    component.set("v.QuestionAttempt",QuestionAttempt );                                                    
+                                                    findOtherButton.set("v.variant", "neutral");                                                    
                                                     component.set("v.AdditionalTokenOption1Match",AdditionalTokenOption1Match);
                                                     if(QuestionAttempt >=3 && IsCFCUFailForTheDay != 'Fail' && IsCFCUFailOnReload != 'Fail'){
                                                         component.set("v.IsButtonDisabled",false);
@@ -834,21 +924,33 @@
                                                     }
                                                     
                                                     else{
-                                                        component.set("v.AdditionalTokenOption2",token2);	
+                                                        	
                                                         findOtherButton = component.find('TokenFailButton2');
-                                                        if(Button.get("v.variant") ==  "neutral"  && findOtherButton.get("v.variant" ) == "neutral"){
+                                                        if(Button.get("v.variant") ==  "success"){
+                                                            QuestionAttempt = parseInt(QuestionAttempt) - 1;
+                                                             component.set("v.AdditionalTokenOption2",'');
+                                                            Button.set("v.variant", "neutral");
+                                                            ScoreObtained = parseInt(ScoreObtained) - 1;
+                                                            AdditionalTokenOption2Match = '';
+                                                        }
+                                                        else if(Button.get("v.variant") ==  "neutral"  && findOtherButton.get("v.variant" ) == "neutral"){
                                                             QuestionAttempt = parseInt(QuestionAttempt) + 1;
+                                                             component.set("v.AdditionalTokenOption2",token2);
+                                                            Button.set("v.variant", "success");
+                                                            ScoreObtained = parseInt(ScoreObtained) + 1;
+                                                            AdditionalTokenOption2Match = 'Pass';
                                                         }
                                                         else{
                                                             FailedCount = parseInt(FailedCount) - 1;
+                                                             component.set("v.AdditionalTokenOption2",token2);
                                                             component.set("v.FailedCount",FailedCount);
-                                                        }
-                                                        component.set("v.QuestionAttempt",QuestionAttempt );	        	
-                                                        Button.set("v.variant", "success");
-                                                        ScoreObtained = parseInt(ScoreObtained) + 1;
-                                                        component.set("v.ScoreObtained",ScoreObtained);
-                                                        findOtherButton.set("v.variant", "neutral");
-                                                        AdditionalTokenOption2Match = 'Pass';
+                                                            Button.set("v.variant", "success");
+                                                            ScoreObtained = parseInt(ScoreObtained) + 1;
+                                                            AdditionalTokenOption2Match = 'Pass';
+                                                        }                                                       
+                                                        component.set("v.QuestionAttempt",QuestionAttempt );      	
+                                  						component.set("v.ScoreObtained",ScoreObtained);
+                                                        findOtherButton.set("v.variant", "neutral");                                                        
                                                         component.set("v.AdditionalTokenOption2Match",AdditionalTokenOption2Match);	
                                                         if(QuestionAttempt >=3 && IsCFCUFailForTheDay != 'Fail' && IsCFCUFailOnReload != 'Fail'){
                                                             component.set("v.IsButtonDisabled",false);
@@ -861,23 +963,33 @@
                                                             alert('Please select Additional Token');
                                                         }
                                                         
-                                                        else{
-                                                            component.set("v.AdditionalTokenOption2",token2);	
-                                                            FailedCount = parseInt(FailedCount) + 1;
-                                                            component.set("v.FailedCount",FailedCount);
+                                                        else{                                                           
                                                             findOtherButton = component.find('TokenPassButton2');
-                                                            if(Button.get("v.variant") ==  "neutral"  && findOtherButton.get("v.variant" ) == "neutral"){
+                                                            if(Button.get("v.variant") ==  "destructive"){
+                                                                QuestionAttempt = parseInt(QuestionAttempt) - 1;
+                                                                component.set("v.AdditionalTokenOption2",'');
+                                                                FailedCount = parseInt(FailedCount) - 1;
+                                                                Button.set("v.variant", "neutral");
+                                                                AdditionalTokenOption2Match = '';
+                                                            }
+                                                            else if(Button.get("v.variant") ==  "neutral"  && findOtherButton.get("v.variant" ) == "neutral"){
                                                                 QuestionAttempt = parseInt(QuestionAttempt) + 1;
+                                                                component.set("v.AdditionalTokenOption2",token2);
+                                                                FailedCount = parseInt(FailedCount) + 1;
+                                                                Button.set("v.variant", "destructive");
+                                                                AdditionalTokenOption2Match = 'Fail';
                                                             }
                                                             else{
                                                                 ScoreObtained = parseInt(ScoreObtained) - 1;
-                                                                component.set("v.ScoreObtained",ScoreObtained);        		
+                                                                component.set("v.ScoreObtained",ScoreObtained); 
+                                                                component.set("v.AdditionalTokenOption2",token2);
+                                                                FailedCount = parseInt(FailedCount) + 1;
+                                                                Button.set("v.variant", "destructive");
+                                                                AdditionalTokenOption2Match = 'Fail';
                                                             }
-                                                            component.set("v.QuestionAttempt",QuestionAttempt );
-                                                            
-                                                            Button.set("v.variant", "destructive");
-                                                            findOtherButton.set("v.variant", "neutral");
-                                                            AdditionalTokenOption2Match = 'Fail';
+                                                            component.set("v.QuestionAttempt",QuestionAttempt );                                                    	
+															component.set("v.FailedCount",FailedCount);                                                            
+                                                            findOtherButton.set("v.variant", "neutral");                                                            
                                                             component.set("v.AdditionalTokenOption2Match",AdditionalTokenOption2Match);	
                                                             if(QuestionAttempt >=3 && IsCFCUFailForTheDay != 'Fail' && IsCFCUFailOnReload != 'Fail'){
                                                                 component.set("v.IsButtonDisabled",false);
@@ -891,22 +1003,34 @@
                                                         }
                                                         
                                                         else{
-                                                            debugger;
-                                                            component.set("v.AdditionalTokenOption3",token3);	
-                                                            findOtherButton = component.find('TokenFailButton3');
-                                                            if(Button.get("v.variant") ==  "neutral"  && findOtherButton.get("v.variant" ) == "neutral"){
+                                                            debugger; 
+                                                            if(Button.get("v.variant") ==  "success"){
+                                                                QuestionAttempt = parseInt(QuestionAttempt) - 1;
+                                                                component.set("v.AdditionalTokenOption3",'');
+                                                                Button.set("v.variant", "neutral");
+                                                            	ScoreObtained = parseInt(ScoreObtained) - 1;
+                                                                AdditionalTokenOption3Match = '';
+                                                            }
+                                                            else if(Button.get("v.variant") ==  "neutral"  && findOtherButton.get("v.variant" ) == "neutral"){
                                                                 QuestionAttempt = parseInt(QuestionAttempt) + 1;
+                                                                component.set("v.AdditionalTokenOption3",token3);
+                                                                Button.set("v.variant", "success");
+                                                            	ScoreObtained = parseInt(ScoreObtained) + 1;
+                                                                AdditionalTokenOption3Match = 'Pass';
                                                             }
                                                             else{
                                                                 FailedCount = parseInt(FailedCount) - 1;
                                                                 component.set("v.FailedCount",FailedCount);
+                                                                component.set("v.AdditionalTokenOption3",token3);
+                                                                 Button.set("v.variant", "success");
+                                                            	ScoreObtained = parseInt(ScoreObtained) + 1;
+                                                                AdditionalTokenOption3Match = 'Pass';
                                                             }
-                                                            component.set("v.QuestionAttempt",QuestionAttempt );	        	
-                                                            Button.set("v.variant", "success");
-                                                            ScoreObtained = parseInt(ScoreObtained) + 1;
+                                                            	
+                                                            findOtherButton = component.find('TokenFailButton3');
+                                                            component.set("v.QuestionAttempt",QuestionAttempt );                                                           
                                                             component.set("v.ScoreObtained",ScoreObtained);
-                                                            findOtherButton.set("v.variant", "neutral");
-                                                            AdditionalTokenOption3Match = 'Pass';
+                                                            findOtherButton.set("v.variant", "neutral");                                                            
                                                             component.set("v.AdditionalTokenOption3Match",AdditionalTokenOption3Match);	
                                                             if(QuestionAttempt >=3 && IsCFCUFailForTheDay != 'Fail' && IsCFCUFailOnReload != 'Fail'){
                                                                 component.set("v.IsButtonDisabled",false);
@@ -920,22 +1044,33 @@
                                                             }
                                                             
                                                             else{
-                                                                component.set("v.AdditionalTokenOption3",token3);	
-                                                                FailedCount = parseInt(FailedCount) + 1;
-                                                                component.set("v.FailedCount",FailedCount);
+                                                                
                                                                 findOtherButton = component.find('TokenPassButton3');
-                                                                if(Button.get("v.variant") ==  "neutral"  && findOtherButton.get("v.variant" ) == "neutral"){
+                                                                if(Button.get("v.variant") ==  "destructive"){
+                                                                    QuestionAttempt = parseInt(QuestionAttempt) - 1;
+                                                                    component.set("v.AdditionalTokenOption3",'');	
+                                                                    FailedCount = parseInt(FailedCount) - 1;
+                                                                    Button.set("v.variant", "neutral");
+                                                                    AdditionalTokenOption3Match = '';
+                                                                }
+                                                                else if(Button.get("v.variant") ==  "neutral"  && findOtherButton.get("v.variant" ) == "neutral"){
                                                                     QuestionAttempt = parseInt(QuestionAttempt) + 1;
+                                                                    component.set("v.AdditionalTokenOption3",token3);	
+                                                                    FailedCount = parseInt(FailedCount) + 1;   
+                                                                    Button.set("v.variant", "destructive");
+                                                                    AdditionalTokenOption3Match = 'Fail';
                                                                 }
                                                                 else{
                                                                     ScoreObtained = parseInt(ScoreObtained) - 1;
-                                                                    component.set("v.ScoreObtained",ScoreObtained);        		
+                                                                    component.set("v.ScoreObtained",ScoreObtained); 
+                                                                    component.set("v.AdditionalTokenOption3",token3);	
+                                                                    FailedCount = parseInt(FailedCount) + 1;   
+                                                                    Button.set("v.variant", "destructive");
+                                                                    AdditionalTokenOption3Match = 'Fail';
                                                                 }
                                                                 component.set("v.QuestionAttempt",QuestionAttempt );
-                                                                
-                                                                Button.set("v.variant", "destructive");
-                                                                findOtherButton.set("v.variant", "neutral");
-                                                                AdditionalTokenOption3Match = 'Fail';
+                                                                component.set("v.FailedCount",FailedCount);                                                                
+                                                                findOtherButton.set("v.variant", "neutral");                                                                
                                                                 component.set("v.AdditionalTokenOption3Match",AdditionalTokenOption3Match);	
                                                                 if(QuestionAttempt >=3 && IsCFCUFailForTheDay != 'Fail' && IsCFCUFailOnReload != 'Fail'){
                                                                     component.set("v.IsButtonDisabled",false);
@@ -951,21 +1086,34 @@
                                                         }
                                                         
                                                         else{
-                                                            component.set("v.AdditionalTokenOption4",token4);	
+                                                            	
                                                             findOtherButton = component.find('TokenFailButton4');
-                                                            if(Button.get("v.variant") ==  "neutral"  && findOtherButton.get("v.variant" ) == "neutral"){
+                                                            if(Button.get("v.variant") ==  "success"){
+                                                                component.set("v.AdditionalTokenOption4",'');
+                                                                QuestionAttempt = parseInt(QuestionAttempt) - 1;
+                                                                Button.set("v.variant", "neutral");
+                                                            	ScoreObtained = parseInt(ScoreObtained) - 1;
+                                                                AdditionalTokenOption4Match = '';
+                                                            }
+                                                            else if(Button.get("v.variant") ==  "neutral"  && findOtherButton.get("v.variant" ) == "neutral"){
                                                                 QuestionAttempt = parseInt(QuestionAttempt) + 1;
+                                                                component.set("v.AdditionalTokenOption4",token4);
+                                                                Button.set("v.variant", "success");
+                                                           		ScoreObtained = parseInt(ScoreObtained) + 1;
+                                                                AdditionalTokenOption4Match = 'Pass';
                                                             }
                                                             else{
                                                                 FailedCount = parseInt(FailedCount) - 1;
                                                                 component.set("v.FailedCount",FailedCount);
+                                                                component.set("v.AdditionalTokenOption4",token4);
+                                                                Button.set("v.variant", "success");
+                                                            	ScoreObtained = parseInt(ScoreObtained) + 1;
+                                                                AdditionalTokenOption4Match = 'Pass';
                                                             }
-                                                            component.set("v.QuestionAttempt",QuestionAttempt );	        	
-                                                            Button.set("v.variant", "success");
-                                                            ScoreObtained = parseInt(ScoreObtained) + 1;
+                                                            component.set("v.QuestionAttempt",QuestionAttempt );                                                           
                                                             component.set("v.ScoreObtained",ScoreObtained);
                                                             findOtherButton.set("v.variant", "neutral");
-                                                            AdditionalTokenOption4Match = 'Pass';
+                                                            
                                                             component.set("v.AdditionalTokenOption4Match",AdditionalTokenOption4Match);	
                                                             if(QuestionAttempt >=3 && IsCFCUFailForTheDay != 'Fail' && IsCFCUFailOnReload != 'Fail'){
                                                                 component.set("v.IsButtonDisabled",false);
@@ -976,25 +1124,35 @@
                                                         else if(ButtonId =='TokenFailButton4'){
                                                             if(token4 == 'Select'){
                                                                 alert('Please select Additional Token');
-                                                            }
-                                                            
-                                                            else{
-                                                                component.set("v.AdditionalTokenOption4",token4);	
-                                                                FailedCount = parseInt(FailedCount) + 1;
-                                                                component.set("v.FailedCount",FailedCount);
+                                                            }                                                            
+                                                            else{                                                          
+                                                                
                                                                 findOtherButton = component.find('TokenPassButton4');
-                                                                if(Button.get("v.variant") ==  "neutral"  && findOtherButton.get("v.variant" ) == "neutral"){
+                                                                if(Button.get("v.variant") ==  "destructive"){
+                                                                    component.set("v.AdditionalTokenOption4",'');	
+                                                                	FailedCount = parseInt(FailedCount) - 1;
+                                                                    Button.set("v.variant", "neutral");
+                                                                    AdditionalTokenOption4Match = '';
+                                                                }
+                                                                else if(Button.get("v.variant") ==  "neutral"  && findOtherButton.get("v.variant" ) == "neutral"){
                                                                     QuestionAttempt = parseInt(QuestionAttempt) + 1;
+                                                                    component.set("v.AdditionalTokenOption4",token4);	
+                                                                	FailedCount = parseInt(FailedCount) + 1;
+                                                                    Button.set("v.variant", "destructive");
+                                                                    AdditionalTokenOption4Match = 'Fail';
                                                                 }
                                                                 else{
                                                                     ScoreObtained = parseInt(ScoreObtained) - 1;
-                                                                    component.set("v.ScoreObtained",ScoreObtained);        		
+                                                                    component.set("v.ScoreObtained",ScoreObtained); 
+                                                                    component.set("v.AdditionalTokenOption4",token4);	
+                                                                	FailedCount = parseInt(FailedCount) + 1;
+                                                                    Button.set("v.variant", "destructive");
+                                                                    AdditionalTokenOption4Match = 'Fail';
                                                                 }
                                                                 component.set("v.QuestionAttempt",QuestionAttempt );
+                                                                component.set("v.FailedCount",FailedCount);
                                                                 
-                                                                Button.set("v.variant", "destructive");
-                                                                findOtherButton.set("v.variant", "neutral");
-                                                                AdditionalTokenOption4Match = 'Fail';
+                                                                findOtherButton.set("v.variant", "neutral");                                                                
                                                                 component.set("v.AdditionalTokenOption4Match",AdditionalTokenOption4Match);	
                                                                 if(QuestionAttempt >=3 && IsCFCUFailForTheDay != 'Fail' && IsCFCUFailOnReload != 'Fail'){
                                                                     component.set("v.IsButtonDisabled",false);
@@ -1004,7 +1162,7 @@
             
                                                             else if(ButtonId == 'SubmitButton')
                                                             {
-                                                                
+                                                                debugger;
                                                                 if(component.get("v.QuestionAttempt") <=2){
                                                                     alert('Please select at least 3 questions before clicking submit.');		        		
                                                                 }
