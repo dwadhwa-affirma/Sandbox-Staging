@@ -1,66 +1,66 @@
 trigger WiresBeneficiaryOTP on Wires_Beneficiary_OTP__c (before insert) {
-     
+    
     list<string> listString = new list<string>();     
     List<Wires_Beneficiary_OTP__c> objUpdateOTP = new List<Wires_Beneficiary_OTP__c>();
     
     
     for(Wires_Beneficiary_OTP__c objWiresBeneficiaryotp: trigger.New)
     {
-      
-      
-      string accountNumber =  objWiresBeneficiaryotp.Member_Number__c;
-      system.debug('accountNumber=='+ accountNumber);
-      Account_Details__c obj =  [select id,Brand__c from Account_Details__c where Name =: accountNumber limit 1];    
-			       
-			      string memberemail = objWiresBeneficiaryotp.Email__c;
-			      string phone = objWiresBeneficiaryotp.Mobile_Phone__c;
-			      String emailRegex = '([a-zA-Z0-9_\\-\\.]+)@((\\[a-z]{1,3}\\.[a-z]{1,3}\\.[a-z]{1,3}\\.)|(([a-zA-Z0-9\\-]+\\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})';
-			      Pattern MyPattern = Pattern.compile(emailRegex); 
-			          
-			      
-			      string RandomNumber;
-			      RandomNumber =String.valueOf(Math.random());
-			      RandomNumber= RandomNumber.substring(2,8);
-			      objWiresBeneficiaryotp.OTP__c = RandomNumber;
-			      
-			      
-			      if(obj != null)
-			      {
-			        
-			        
-			        if (memberemail == null || !MyPattern.matcher(memberemail).matches()) {
-			       
-			        }
-			        else
-			        {
-			          system.debug('memberemail=='+memberemail);
-			          SendOTPEmail(memberemail, obj.Brand__c, RandomNumber);
-			          //objUpdateOTP.add(objWiresBeneficiaryotp);
-			          
-			        }
-			        
-			        if(phone != null)
-			        {
-			            SendSMS(phone, obj.Brand__c, RandomNumber);
-			          	//objUpdateOTP.add(objWiresBeneficiaryotp);
-			        }
-			        else
-			        {
-			         
-			        }
         
-          
-
-      }
+        
+        string accountNumber =  objWiresBeneficiaryotp.Member_Number__c;
+        system.debug('accountNumber=='+ accountNumber);
+        Account_Details__c obj =  [select id,Brand__c from Account_Details__c where Name =: accountNumber limit 1];    
+        
+        string memberemail = objWiresBeneficiaryotp.Email__c;
+        string phone = objWiresBeneficiaryotp.Mobile_Phone__c;
+        String emailRegex = '([a-zA-Z0-9_\\-\\.]+)@((\\[a-z]{1,3}\\.[a-z]{1,3}\\.[a-z]{1,3}\\.)|(([a-zA-Z0-9\\-]+\\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})';
+        Pattern MyPattern = Pattern.compile(emailRegex); 
+        
+        
+        string RandomNumber;
+        RandomNumber =String.valueOf(Math.random());
+        RandomNumber= RandomNumber.substring(2,8);
+        objWiresBeneficiaryotp.OTP__c = RandomNumber;
+        
+        
+        if(obj != null)
+        {
+            
+            
+            if (memberemail == null || !MyPattern.matcher(memberemail).matches()) {
+                
+            }
+            else
+            {
+                system.debug('memberemail=='+memberemail);
+                SendOTPEmail(memberemail, obj.Brand__c, RandomNumber);
+                //objUpdateOTP.add(objWiresBeneficiaryotp);
+                
+            }
+            
+            if(phone != null)
+            {
+                SendSMS(phone, obj.Brand__c, RandomNumber);
+                //objUpdateOTP.add(objWiresBeneficiaryotp);
+            }
+            else
+            {
+                
+            }
+            
+            
+            
+        }
     }
     
-  //  update objUpdateOTP;
- 
-
+    //  update objUpdateOTP;
     
     
     
-   
+    
+    
+    
     private void SendOTPEmail(string ToEmail, string Brand, string otp)
     {
         List<Messaging.SingleEmailMessage> mails = new List<Messaging.SingleEmailMessage>();
@@ -68,27 +68,34 @@ trigger WiresBeneficiaryOTP on Wires_Beneficiary_OTP__c (before insert) {
         List<String> sendTo = new List<String>();
         sendTo.add(ToEmail);
         
-          
+        
         mail.setToAddresses(sendTo);
         string templatenAME;
         string emailadd;
         if(Brand == 'Spectrum'){
-          templatenAME = 'Spectrum WIRES Beneficiary OTP';
-          emailadd = 'noreply@spectrumcu.org';
+            templatenAME = 'Spectrum WIRES Beneficiary OTP';
+            emailadd = 'noreply@spectrumcu.org';
         }
-        else
+        else 
         {
-          templatenAME = 'Chevron WIRES Beneficiary OTP';
-          emailadd = 'noreply@chevronfcu.org';
+            templatenAME = 'Chevron WIRES Beneficiary OTP';
+            emailadd = 'noreply@chevronfcu.org';
         }
+        
         //templatenAME = 'WIRES Beneficiary OTP';
         List<EmailTemplate> listEmailTemplate =  [select Id,Name,Body,Subject,HtmlValue from EmailTemplate where Name =: templatenAME];
         
+        if(listEmailTemplate.size()>0){
         mail.setSubject(listEmailTemplate[0].Subject);        
+        }else{
+            mail.setSubject('Test');        
+        }
         
         List<OrgWideEmailAddress> listAdd = [select Id,Address,DisplayName  from OrgWideEmailAddress where Address =: emailadd];
-        
-        string body = listEmailTemplate[0].Body.replace('{WIRESOTP}', otp);
+        string body='';
+        if(listEmailTemplate.size()>0){
+        	body = listEmailTemplate[0].Body.replace('{WIRESOTP}', otp);
+        }
         mail.setPlainTextBody(body);
         mail.setOrgWideEmailAddressId(listAdd[0].Id);
         mails.add(mail);
@@ -96,7 +103,7 @@ trigger WiresBeneficiaryOTP on Wires_Beneficiary_OTP__c (before insert) {
         Messaging.sendEmail(mails);
         
     }
-   
+    
     
     private void SendSMS(string phone, string Brand, string otp)
     {
@@ -105,20 +112,20 @@ trigger WiresBeneficiaryOTP on Wires_Beneficiary_OTP__c (before insert) {
         smagicinteract__smsMagic__c smsObject = new smagicinteract__smsMagic__c();
         smsObject.smagicinteract__SenderId__c = 'CreditUnion';
         string emailadd;
-       
-       system.debug('UserInfo.getName()###' + UserInfo.getName());
-
-       if(Brand == 'Spectrum'){        
-        emailadd = 'Spectrum WIRES Transaction OTP';
-      }
-      else
-      {        
-        emailadd = 'Chevron WIRES Transaction OTP';
-      }
+        
+        system.debug('UserInfo.getName()###' + UserInfo.getName());
+        
+        if(Brand == 'Spectrum'){        
+            emailadd = 'Spectrum WIRES Transaction OTP';
+        }
+        else
+        {        
+            emailadd = 'Chevron WIRES Transaction OTP';
+        }
         
         //emailadd = 'WIRES Transaction OTP';
         list<smagicinteract__SMS_Template__c> listTemplate =  [select Id, smagicinteract__Text__c from smagicinteract__SMS_Template__c where smagicinteract__Name__c =: emailadd];
-
+        
         smsObject.smagicinteract__PhoneNumber__c = phone;
         smsObject.smagicinteract__Name__c = 'SMS - User'; // records name
         smsObject.smagicinteract__ObjectType__c = 'Contact'; // record type
@@ -130,8 +137,8 @@ trigger WiresBeneficiaryOTP on Wires_Beneficiary_OTP__c (before insert) {
         }
         smsObjectList.add(smsObject);
         Database.insert(smsObjectList, false);
-       // LastOTPSent = System.Now();
-}
-
-
+        // LastOTPSent = System.Now();
+    }
+    
+    
 }

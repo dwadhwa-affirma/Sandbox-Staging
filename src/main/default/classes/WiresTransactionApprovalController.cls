@@ -157,8 +157,8 @@ public class WiresTransactionApprovalController {
                           }
                    }
                    
-                   //For wires that are greater than $25,000, the person/user that submitted the wire should not be able to approve the same wire even if they are in the approval group
-                   if(WiresList.TotalFromAccount__c>25000 && WiresList.CreatedById==UserInfo.getUserId()){
+                   //The person/user that submitted the wire should not be able to approve the same wire even if user/person is in the approval group
+                   if(WiresList.CreatedById==UserInfo.getUserId()){
                        
                        System.debug('In if statement');
                        isApprovalVisible='false';
@@ -233,12 +233,14 @@ public class WiresTransactionApprovalController {
         Object statusMsg=checkWiresFundsResult.get('StatusMessage');
         
         
-        if(Integer.valueOf(statusCode)<=0){
-            WiresList.Good_Funds_Check__c='FAIL---'+statusMsg.toString();
-            update WiresList;
-        }else{
-            WiresList.Good_Funds_Check__c='PASS---'+statusMsg.toString();
-            update WiresList;
+        if(WiresList.Approval_Status__c!=WiresConstant.ApprovalStatus_PendingForMemberReview){
+            if(Integer.valueOf(statusCode)<=0){
+                WiresList.Good_Funds_Check__c='FAIL---'+statusMsg.toString();
+                update WiresList;
+            }else{
+                WiresList.Good_Funds_Check__c='PASS---'+statusMsg.toString();
+                update WiresList;
+            }
         }
         
         System.debug('checkWiresFundsResult:'+checkWiresFundsResult);
@@ -277,6 +279,10 @@ public class WiresTransactionApprovalController {
         Wires.Cancelled_On__c=DateTime.now();
         
         update Wires;
+        
+        set<id> wiresId=new Set<id>();
+        wiresId.add(Wires.Id);
+        WiresEmailController.SendBranchWireCancelledOrRejectEmailNotification(wiresId,true);
     }
     
     @AuraEnabled
@@ -296,6 +302,7 @@ public class WiresTransactionApprovalController {
             Wires.Approval_Status__c = WiresConstant.ApprovalStatus_Rejected; 
             Wires.Rejected_By__c=UserInfo.getUserId();
             Wires.Rejected_On__c=DateTime.now();
+            Wires.First_Approval_Comment__c=WiresObject.First_Approval_Comment__c;
         }
         
         if(Action == 'Good Funds Review'){
@@ -413,33 +420,7 @@ public class WiresTransactionApprovalController {
         SendEmail(id,EmailToSend);
     }
     
-    public static void SendBranchWireRejecteEmailNotification(Set<Id> id){
-        
-        System.debug('In Progress Email Notification');
-        System.debug('Id:'+Id);
-        String EmailToSend='';
-        
-        Wires_Progress_Email_Test__c testEmail=Wires_Progress_Email_Test__c.getValues('Test');
-        String userEmail = testEmail.Email__c;
-        
-        Wires_Docusign_Emails__c wde = Wires_Docusign_Emails__c.getValues('Email For Testing');
-        if(wde.Emails__c != null){
-            EmailToSend = wde.Emails__c;
-        }
-        
-        List<WIRES_Transaction__c> WiresTrans = [SELECT Id,Member_Email__c,CreatedBy.Email
-                                                 FROM WIRES_Transaction__c WHERE id =: id LIMIT 1];
-        
-        if(EmailToSend == 'Production' || EmailToSend == 'production'){
-            EmailToSend = WiresTrans[0].CreatedBy.Email;     
-        }
-        
-        if(EmailToSend != 'Production' || EmailToSend != 'production'){
-            EmailToSend = userEmail;
-        }
-        
-        SendBranchWireRejectedEmail(id,EmailToSend);
-    }
+    
     
     public static void ReleasedToWireXchangeEmailNotification(Set<Id> id){
         
@@ -604,7 +585,7 @@ public class WiresTransactionApprovalController {
                                                        Mobile_Phone_Stable_Review__c,Work_Phone_Stable_Review__c,
                                                        FlagAccountOpenfor45Days__c,FlagEmailStablefor30Days__c,
                                                        FlagHomePhoneStablefor30Days__c,FlagMobilePhoneStablefor30Days__c,
-                                                       FlagWorkPhoneStablefor30Days__c,Share_ID__c,Source__c
+                                                       FlagWorkPhoneStablefor30Days__c,Share_ID__c,Source__c,Has_Additional_Documents__c
                                                        FROM WIRES_Transaction__c WHERE id=:id];
         
         List<WIRES_Transaction__c> wiresToUpdate=new List<WIRES_Transaction__c>();
@@ -655,7 +636,7 @@ public class WiresTransactionApprovalController {
                 if(users.size()>0){
                     emails.add(users[0].Email);
                 }
-                WiresEmailController.SendApprovalNotification(wt.Id,emails,wt.Name,wt.TotalFromAccount__c,wt.Source__c);
+                WiresEmailController.SendApprovalNotification(wt.Id,emails,wt.Name,wt.TotalFromAccount__c,wt.Source__c,wt.Has_Additional_Documents__c);
             }else if(isGoodFundCheck==true && statusCode>0){
                 wt.Approval_Status__c = WiresConstant.ApprovalStatus_PendingForApproval;
                 wt.Current_Reviewer_Modified_Date__c=DateTime.now();
@@ -666,7 +647,7 @@ public class WiresTransactionApprovalController {
                 if(users.size()>0){
                     emails.add(users[0].Email);
                 }
-                WiresEmailController.SendApprovalNotification(wt.Id,emails,wt.Name,wt.TotalFromAccount__c,wt.Source__c);
+                WiresEmailController.SendApprovalNotification(wt.Id,emails,wt.Name,wt.TotalFromAccount__c,wt.Source__c,wt.Has_Additional_Documents__c);
             }
             
         }
@@ -778,82 +759,6 @@ public class WiresTransactionApprovalController {
     }
     
     // --------------------- Send Email Notification..................//  
-    
-    // --------------------- Send Branch Wire Rejected Email..................//   
-    
-    private static void SendBranchWireRejectedEmail(Set<Id> id,string ToEmail)
-    {
-        List<WIRES_Transaction__c> wireTransactions = [SELECT id,Approval_Status__c,ToAccountName__c,ToAccoutId__c,
-                                                       Status__c, FromAccount__c,TotalFromAccount__c,WireAmount__c,
-                                                       ToAccoutId__r.Recipient_AccountNumber__c,
-                                                       ToAccoutId__r.BankName__c,Member_Name__c
-                                                       from WIRES_Transaction__c where id=:id];
-        
-        List<Messaging.SingleEmailMessage> mails = new List<Messaging.SingleEmailMessage>();
-        
-        for(WIRES_Transaction__c wt:wireTransactions){
-            
-            Person_Account__c paPrimary = [SELECT Id,PersonID__c,
-                                           Account_Number__c, Account_Number__r.RecType__c,
-                                           TypeTranslate__c, Account_Number__r.Name, 
-                                           PersonID__r.Home_Phone__pc,
-                                           PersonID__r.Mobile_Phone__pc,
-                                           PersonID__r.Residential_City__pc,
-                                           PersonID__r.Residential_State__pc, 
-                                           PersonID__r.Residential_Street__pc, 
-                                           PersonID__r.Residential_Zipocde__pc, 
-                                           PersonID__r.Name, 
-                                           PersonID__r.Email_raw__c 
-                                           FROM Person_Account__c 
-                                           WHERE Account_Number__r.Name =: wt.FromAccount__c 
-                                           and TypeTranslate__c  like '%Primary%' limit 1];
-            
-            Account_Details__c accDetail=[SELECT Id,Name, Brand__c FROM Account_Details__c 
-                                          WHERE Name=:wt.FromAccount__c  AND RecType__c = 'ACCT' LIMIT 1];
-            
-            Messaging.SingleEmailMessage mail = new Messaging.SingleEmailMessage();
-            List<String> sendTo = new List<String>();
-            sendTo.add(ToEmail);
-            
-            mail.setToAddresses(sendTo);
-            string templatenAME;
-            
-            if(accDetail.Brand__c=='Spectrum'){
-                templatenAME='Wires Rejected Email Spctrum';
-            }
-            if(accDetail.Brand__c=='Chevron'){
-                templatenAME='Wires Rejected Email Chevron';
-            }
-            
-            List<EmailTemplate> listEmailTemplate =  [select Id,Name,Body,Subject,HtmlValue from EmailTemplate where Name =: templatenAME];
-            mail.setSubject(listEmailTemplate[0].Subject);
-            
-            
-            string emailadd;
-            
-            emailadd = 'noreply@chevronfcu.org';
-            
-            
-            List<OrgWideEmailAddress> listAdd = [select Id,Address,DisplayName  from OrgWideEmailAddress where Address =: emailadd];
-            
-            if(!Test.isRunningTest()){            
-                string body = listEmailTemplate[0].HtmlValue;
-                body=body.replace('{Name}', wt.Member_Name__c);
-                body=body.replace('{BankName__c}', wt.ToAccoutId__r.BankName__c);
-                body=body.replace('{TotalFromAccount__c}',string.valueOf(wt.TotalFromAccount__c));
-                
-                mail.setHtmlBody(body);
-                mail.setOrgWideEmailAddressId(listAdd[0].Id);
-                mails.add(mail);
-            }
-        }
-        
-        
-        Messaging.sendEmail(mails);
-        
-    }
-    
-    // --------------------- Send Branch Wire Rejected Email ..................//  
     
     
     // --------------------- Send Released to WireXchange Email Notification..................//   

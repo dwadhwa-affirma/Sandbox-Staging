@@ -5,8 +5,18 @@ public class WIRESTransactionTriggerTest {
 	 	Member360_TypeTranslate__c t= new Member360_TypeTranslate__c();
 	 	t.name='0000/Primary';
 	 	insert t;
-	 	
-	 	Account_Details__c accDetail = new Account_Details__c();
+         
+        Wires_Progress_Email_Test__c wpt = new Wires_Progress_Email_Test__c();
+        wpt.Name = 'Test';
+        wpt.Email__c = 'test@test.com';
+        insert wpt;
+         
+        Wires_Docusign_Emails__c wde = new Wires_Docusign_Emails__c();
+        wde.Name = 'Email For Testing';
+        wde.Emails__c = 'Testing';
+        insert wde;
+         
+     	Account_Details__c accDetail = new Account_Details__c();
 		accDetail.Name = '0000000123';
 		accDetail.RecType__c = 'ACCT';
 		accDetail.TypeTranslate__c = '1-PERSONAL';

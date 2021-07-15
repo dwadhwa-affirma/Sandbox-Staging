@@ -15,32 +15,36 @@ trigger WiresRecipientTrigger on WIRES_Recipient__c (after insert) {
         for (WIRES_Recipient__c c : wiresToUpdate) {	
             c.ExternalID__c = c.Id;
             
-            Person_Account__c paPrimary = [SELECT Id,PersonID__c,
-                                           Account_Number__c, Account_Number__r.RecType__c,
-                                           TypeTranslate__c, Account_Number__r.Name, 
-                                           PersonID__r.Home_Phone__pc,
-                                           PersonID__r.Mobile_Phone__pc,
-                                           PersonID__r.Residential_City__pc,
-                                           PersonID__r.Residential_State__pc, 
-                                           PersonID__r.Residential_Street__pc, 
-                                           PersonID__r.Residential_Zipocde__pc, 
-                                           PersonID__r.Name, 
-                                           PersonID__r.Email_raw__c 
-                                           FROM Person_Account__c 
-                                           WHERE Account_Number__r.Name =: c.Chevron_AccountNumber__c 
-                                           and TypeTranslate__c  like '%Primary%' limit 1];
+            List<Person_Account__c> paPrimary = [SELECT Id,PersonID__c,
+                                                 Account_Number__c, Account_Number__r.RecType__c,
+                                                 TypeTranslate__c, Account_Number__r.Name, 
+                                                 PersonID__r.Home_Phone__pc,
+                                                 PersonID__r.Mobile_Phone__pc,
+                                                 PersonID__r.Residential_City__pc,
+                                                 PersonID__r.Residential_State__pc, 
+                                                 PersonID__r.Residential_Street__pc, 
+                                                 PersonID__r.Residential_Zipocde__pc, 
+                                                 PersonID__r.Name, 
+                                                 PersonID__r.Email_raw__c 
+                                                 FROM Person_Account__c 
+                                                 WHERE Account_Number__r.Name =: c.Chevron_AccountNumber__c 
+                                                 and TypeTranslate__c  like '%Primary%' limit 1];
             
-            Account_Details__c accDetail=[SELECT Id,Name, Brand__c FROM Account_Details__c 
+            List<Account_Details__c> accDetail=[SELECT Id,Name, Brand__c FROM Account_Details__c 
                                           WHERE Name=:c.Chevron_AccountNumber__c  AND RecType__c = 'ACCT' LIMIT 1];
             
             EmailSMSNotification emailSMSNotification=new EmailSMSNotification();
             emailSMSNotification.accountNumber=c.Chevron_AccountNumber__c;
-            emailSMSNotification.email=paPrimary.PersonID__r.Email_raw__c;
-            emailSMSNotification.name=paPrimary.PersonID__r.Name;
-            emailSMSNotification.accountNumber=paPrimary.PersonID__r.Name;
-            emailSMSNotification.brand=accDetail.Brand__c;
-            emailSMSNotification.phone=paPrimary.PersonID__r.Mobile_Phone__pc;
+            if(paPrimary.size()>0){
+                emailSMSNotification.email=paPrimary[0].PersonID__r.Email_raw__c;
+                emailSMSNotification.name=paPrimary[0].PersonID__r.Name;
+                emailSMSNotification.accountNumber=paPrimary[0].PersonID__r.Name;
+                emailSMSNotification.phone=paPrimary[0].PersonID__r.Mobile_Phone__pc;
+            }
             
+            if(accDetail.size()>0){
+            	emailSMSNotification.brand=accDetail[0].Brand__c;
+            }
             EmailIdsList.add(emailSMSNotification);
         }
     }
@@ -52,16 +56,16 @@ trigger WiresRecipientTrigger on WIRES_Recipient__c (after insert) {
     if(EmailIdsList.size()>0){
         for (EmailSMSNotification emailSMSNotification : EmailIdsList) {
             if(emailSMSNotification.brand=='Spectrum'){
-                SendEmailNotifications(emailSMSNotification.email,emailSMSNotification.name,'Wires Address Book Update Spectrum');
+                //SendEmailNotifications(emailSMSNotification.email,emailSMSNotification.name,'Wires Address Book Update Spectrum');
                 if(!String.isBlank(emailSMSNotification.phone)){
-                    WiresSMSNotificationController.SendSMS(emailSMSNotification.phone,'Wires Address Book Update Spectrum');
+                    //WiresSMSNotificationController.SendSMS(emailSMSNotification.phone,'Wires Address Book Update Spectrum');
                 }
             }
             
             if(emailSMSNotification.brand=='Chevron'){
-                SendEmailNotifications(emailSMSNotification.email,emailSMSNotification.name,'Wires Address Book Update Chevron');
+                //SendEmailNotifications(emailSMSNotification.email,emailSMSNotification.name,'Wires Address Book Update Chevron');
                 if(!String.isBlank(emailSMSNotification.phone)){
-                    WiresSMSNotificationController.SendSMS(emailSMSNotification.phone,'Wires Address Book Update Chevron');
+                    //WiresSMSNotificationController.SendSMS(emailSMSNotification.phone,'Wires Address Book Update Chevron');
                 }
             }
         }

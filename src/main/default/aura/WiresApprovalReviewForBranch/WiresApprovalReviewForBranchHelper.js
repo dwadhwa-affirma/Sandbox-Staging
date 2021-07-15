@@ -14,7 +14,7 @@
                 var result = response.getReturnValue();
                 if(actionType == 'Approve')
                 {
-                    if(wireAmount > 100000 && (approvalStatus=='Pending for Approval' || approvalStatus=='Good Funds Check Failed')){
+                    if(wireAmount > 100000 && (approvalStatus=='Pending for Approval' || approvalStatus=='Good Funds Review')){
                         alert('Transaction has been sent for second approval.');   
                     }else{
                         alert('Transaction has been Approved.');   

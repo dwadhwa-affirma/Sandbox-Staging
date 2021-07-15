@@ -35,7 +35,7 @@ public class WiresSMSNotificationController {
         smsObject.smagicinteract__PhoneNumber__c = phone;
         smsObject.smagicinteract__Name__c = 'SMS - User'; // records name
         //   smsObject.smagicinteract__ObjectType__c = 'Contact'; // record type
-        smsObject.smagicinteract__disableSMSOnTrigger__c = 1; // this field either be 0 or 1, if you specify the value as 1 then sms will not get send but entry of sms will get create under SMS History object
+        smsObject.smagicinteract__disableSMSOnTrigger__c = 0; // this field either be 0 or 1, if you specify the value as 1 then sms will not get send but entry of sms will get create under SMS History object
         smsObject.smagicinteract__external_field__c = smagicinteract.ApexAPI.generateUniqueKey();
         
         smsObjectList.add(smsObject);

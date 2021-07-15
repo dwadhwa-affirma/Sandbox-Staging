@@ -29,8 +29,15 @@
         helper.ApproveTransactions(component, event,helper,RecordId,"Approve");
     },
     RejectTransaction: function(component, event, helper) {
+        var firstComment = JSON.stringify(component.get("v.WiresObject.First_Approval_Comment__c"));
+        var secondComment = JSON.stringify(component.get("v.WiresObject.Second_Approval_Comment__c"));
+        
+        if(!firstComment && !secondComment){
+            alert('Please provide comment for rejecting the transaction in comment box.')
+        }else{
         var RecordId = component.get("v.recordId");
         helper.ApproveTransactions(component, event,helper,RecordId,"Reject");
+        }
     },
     CancelTransaction:function(component, event, helper) {
         component.find("overlayLib1").notifyClose();
