@@ -62,7 +62,6 @@
                 
                 if(component.get("v.IsUserSessionLoaded") == true)
                 {
-                    debugger;
                     if(result.DOBMatch == undefined){
                         component.find('DobPassButton').set("v.variant", "neutral");
                         component.find('DobFailButton').set("v.variant", "neutral");
@@ -71,7 +70,7 @@
                         component.find('DobPassButton').set("v.variant", "success");
                         component.find('DobFailButton').set("v.variant", "neutral");
                     }
-                   if(result.DOBMatch == 'Fail'){
+                    if(result.DOBMatch == 'Fail'){
                         component.find('DobFailButton').set("v.variant", "destructive");
                         component.find('DobPassButton').set("v.variant", "neutral");
                     }
@@ -115,7 +114,6 @@
                         component.find('EmailPassButton').set("v.variant", "neutral");
                     }
                     
-                    debugger;
                     if(result.AdditionalTokenMatch == undefined){
                         component.find('TokenPassButton1').set("v.variant", "neutral");
                         component.find('TokenFailButton1').set("v.variant", "neutral");
@@ -148,6 +146,7 @@
                     
                     if(result.ReLaunchAuthPublicWalletStatus != undefined)
                     {
+                        
                         if(result.ReLaunchAuthDOBMatch != undefined)
                         {
                             if(result.ReLaunchAuthDOBMatch.length > 0){
@@ -162,6 +161,7 @@
                             }
                             
                         }
+                        
                         if(result.ReLaunchAuthIdNumberMatch != undefined)
                         {	
                             if(result.ReLaunchAuthIdNumberMatch.length > 0){
@@ -328,6 +328,7 @@
                         helper.buttonOnLoad(component, event, helper);
                     }
                 }
+                
                 if(result.RePublicWalletStatus != undefined && component.get("v.IsReLoadRequired") == true)
                 {
                     if(result.ReDOBMatch != undefined)
@@ -416,11 +417,7 @@
                     }
                     //component.set("v.PublicWalletStatusForDay",false);
                 }
-                
-                
-                
             }
-            
         });	
         
         $A.enqueueAction(action); 
@@ -466,7 +463,6 @@
             AdditionalTokenOption3Match ='';
         }
         
-        
         var AdditionalTokenOption4 = component.get("v.AdditionalTokenOption4");
         if(AdditionalTokenOption4Match == undefined){
             AdditionalTokenOption4Match ='';
@@ -487,8 +483,7 @@
         
         action.setParams({"MemberId": memberId, "Status": status, "GUID" : GUID, "DOBMatch" : DOBMatch, "IdNumberMatch" : IdNumberMatch, "MMNMatch" : MMNMatch, "EmailMatch" : EmailMatch, 
                           "AdditionalTokenOption3Match" : AdditionalTokenOption3Match, "IVRGUIDFromUrl" : IVRGUIDFromUrl,
-                          "DOB": DOB,"IdNumber": IdNumber, "MMN": MMN,"Email": Email,"AdditionalTokenOption3": 
-                          AdditionalTokenOption3,"MemberNumber": MemberNumber,
+                          "DOB": DOB,"IdNumber": IdNumber, "MMN": MMN,"Email": Email,"AdditionalTokenOption3": AdditionalTokenOption3,"MemberNumber": MemberNumber,
                           "AdditionalTokenOption4":AdditionalTokenOption4,
                           "AdditionalTokenOption4Match" : AdditionalTokenOption4Match});
         action.setCallback(this, function (response) {

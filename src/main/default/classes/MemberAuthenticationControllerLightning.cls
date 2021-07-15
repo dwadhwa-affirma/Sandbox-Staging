@@ -446,10 +446,12 @@ result.put('MultipleMemberNumberAlert', MultipleMemberNumberAlert); */
     }
     
     @AuraEnabled
-    public static void PublicWalletSaveLogData(string MemberId, string Status, string GUID, string DOBMatch, string IdNumberMatch, String MMNMatch, string EmailMatch, string AdditionalTokenOption3Match, string IVRGUIDFromUrl, string DOB,string IdNumber,string MMN, string Email, string AdditionalTokenOption3, string MemberNumber)
+    public static void PublicWalletSaveLogData(string MemberId, string Status, string GUID, string DOBMatch, string IdNumberMatch, String MMNMatch, string EmailMatch, string AdditionalTokenOption3Match, string IVRGUIDFromUrl, string DOB,string IdNumber,string MMN, string Email, string AdditionalTokenOption3, string MemberNumber, string AdditionalTokenOption4, string AdditionalTokenOption4Match)
     {
         /*This method save Public Wallet log data in MAAP Log object*/
         system.debug('Email##' + Email );
+        system.debug('AdditionalTokenOption4##' + AdditionalTokenOption4 );
+        system.debug('AdditionalTokenOption4Match##' + AdditionalTokenOption4Match );
         RecordType rec = GetRecordTypeData('Authenticated_Log__c', 'Public Wallet Log');         
         Authenticated_Log__c log = new Authenticated_Log__c();
         log.RecordTypeId= rec.id;
@@ -471,8 +473,11 @@ result.put('MultipleMemberNumberAlert', MultipleMemberNumberAlert); */
         log.ICardNumber__c = IdNumber;
         log.MMN__c = MMN;
         log.PW_Email__c = Email;
-        log.Additional_Token_Option3__c = AdditionalTokenOption3;        
-      
+        log.Additional_Token_Option3__c = AdditionalTokenOption3;   
+        
+        log.Additional_Token_Option4_Match__c = AdditionalTokenOption4Match;
+        log.Additional_Token_Option4__c = AdditionalTokenOption4;
+
         insert log;
         /* The below code is to create or update Master log data*/
         RecordType rec1 = GetRecordTypeData('Authenticated_Log__c', 'Master Authentication Log');
@@ -501,7 +506,10 @@ result.put('MultipleMemberNumberAlert', MultipleMemberNumberAlert); */
             log2.MMN__c = MMN;
             log2.PW_Email__c = Email;
             log2.Additional_Token_Option3__c = AdditionalTokenOption3;
-                      
+
+            log2.Additional_Token_Option4_Match__c = AdditionalTokenOption4Match;
+            log2.Additional_Token_Option4__c = AdditionalTokenOption4;
+                                  
             insert log2;  
         }
         else{
@@ -525,6 +533,9 @@ result.put('MultipleMemberNumberAlert', MultipleMemberNumberAlert); */
             MasterAuthenticationLog[0].PW_Email__c = Email;
             MasterAuthenticationLog[0].Additional_Token_Option3__c = AdditionalTokenOption3;
             
+            MasterAuthenticationLog[0].Additional_Token_Option4_Match__c = AdditionalTokenOption4Match;
+            MasterAuthenticationLog[0].Additional_Token_Option4__c = AdditionalTokenOption4;
+
             update MasterAuthenticationLog[0];  
         }
         
@@ -532,7 +543,7 @@ result.put('MultipleMemberNumberAlert', MultipleMemberNumberAlert); */
     
     @AuraEnabled
     public static void CFCUWalletSaveLogData(string MemberId, string Status, string GUID, string BeneficiaryDetailMatch, string JointOwnerDetailMatch, string CardNumberMatch, string AdditionalTokenOption1Match,
-    string AdditionalTokenOption2Match, string LoanDetailMatch, string IVRGUIDFromUrl, List<object> BeneficiaryAccount, List<object> JointAccount, List<object> LoanAccount,  List<object> Card, string AdditionalTokenOption1, string AdditionalTokenOption2, string MemberNumber)
+    string AdditionalTokenOption2Match, string LoanDetailMatch, string IVRGUIDFromUrl, List<object> BeneficiaryAccount, List<object> JointAccount, List<object> LoanAccount,  List<object> Card, string AdditionalTokenOption1, string AdditionalTokenOption2, string MemberNumber, string AdditionalTokenOption3, string AdditionalTokenOption3Match, string AdditionalTokenOption4, string AdditionalTokenOption4Match)
     {
         /*This method save CFCU Wallet log data in MAAP Log object*/
         string BA = '';
@@ -557,6 +568,9 @@ result.put('MultipleMemberNumberAlert', MultipleMemberNumberAlert); */
         log.CardNumberMatch__c = CardNumberMatch;
         log.Additional_Token_Option1_Match__c = AdditionalTokenOption1Match;
         log.Additional_Token_Option2_Match__c = AdditionalTokenOption2Match;
+
+        log.Additional_Token_Option5_Match__c = AdditionalTokenOption3Match;
+        log.Additional_Token_Option6_Match__c = AdditionalTokenOption4Match;
                
         log.Loan_Detail_Match__c = LoanDetailMatch;
         if(BeneficiaryAccount.size() > 0){
@@ -592,6 +606,9 @@ result.put('MultipleMemberNumberAlert', MultipleMemberNumberAlert); */
         }
         log.Additional_Token_Option1__c = AdditionalTokenOption1;
         log.Additional_Token_Option2__c = AdditionalTokenOption2;
+
+        log.Additional_Token_Option5__c = AdditionalTokenOption3;
+        log.Additional_Token_Option6__c = AdditionalTokenOption4;
        
         insert log;
         
@@ -617,6 +634,9 @@ result.put('MultipleMemberNumberAlert', MultipleMemberNumberAlert); */
             log2.CardNumberMatch__c = CardNumberMatch;
             log2.Additional_Token_Option1_Match__c = AdditionalTokenOption1Match;
             log2.Additional_Token_Option2_Match__c = AdditionalTokenOption2Match;
+
+            log2.Additional_Token_Option5_Match__c = AdditionalTokenOption3Match;
+            log2.Additional_Token_Option6_Match__c = AdditionalTokenOption4Match;
             
             log2.Loan_Detail_Match__c = LoanDetailMatch;
             if(BeneficiaryAccount.size() > 0){
@@ -651,6 +671,9 @@ result.put('MultipleMemberNumberAlert', MultipleMemberNumberAlert); */
             }
             log2.Additional_Token_Option1__c = AdditionalTokenOption1;
             log2.Additional_Token_Option2__c = AdditionalTokenOption2;
+
+            log2.Additional_Token_Option5__c = AdditionalTokenOption3;
+            log2.Additional_Token_Option6__c = AdditionalTokenOption4;
            
             insert log2;
         }
@@ -673,6 +696,8 @@ result.put('MultipleMemberNumberAlert', MultipleMemberNumberAlert); */
              MasterAuthenticationLog[0].Additional_Token_Option1_Match__c = AdditionalTokenOption1Match;
              MasterAuthenticationLog[0].Additional_Token_Option2_Match__c = AdditionalTokenOption2Match;
              
+             MasterAuthenticationLog[0].Additional_Token_Option5_Match__c = AdditionalTokenOption3Match;
+             MasterAuthenticationLog[0].Additional_Token_Option6_Match__c = AdditionalTokenOption4Match;
                         
              MasterAuthenticationLog[0].Loan_Detail_Match__c = LoanDetailMatch;
              if(BeneficiaryAccount.size() > 0){
@@ -709,6 +734,8 @@ result.put('MultipleMemberNumberAlert', MultipleMemberNumberAlert); */
              MasterAuthenticationLog[0].Additional_Token_Option1__c = AdditionalTokenOption1;
              MasterAuthenticationLog[0].Additional_Token_Option2__c = AdditionalTokenOption2;            
              
+             MasterAuthenticationLog[0].Additional_Token_Option5__c = AdditionalTokenOption3;
+             MasterAuthenticationLog[0].Additional_Token_Option6__c = AdditionalTokenOption4;
              
              update MasterAuthenticationLog[0];
              
@@ -989,12 +1016,12 @@ This query is working for Relaunch MAAP feature as well*/
         RecordType rec = GetRecordTypeData('Authenticated_Log__c', 'CFCU Wallet Log');
         List<Authenticated_Log__c> authlog = new List<Authenticated_Log__c>();  
         authlog = [Select Id,SalesforceID__c,Current_User__c,Member__c,Decision__c,CFCU_Wallet_Status__c,Staff_Name__c,GUID__c,BeneficiaryDetailMatch__c,Joint_OwnerDetailsMatch__c,
-        CardNumberMatch__c,Additional_Token_Option1_Match__c,Additional_Token_Option2_Match__c,Loan_Detail_Match__c
+        CardNumberMatch__c,Additional_Token_Option1_Match__c,Additional_Token_Option2_Match__c,Additional_Token_Option5_Match__c, Additional_Token_Option6_Match__c,Loan_Detail_Match__c, Additional_Token_Option1__c,Additional_Token_Option2__c,Additional_Token_Option5__c,Additional_Token_Option6__c
         From Authenticated_Log__c where createddate = Today and RecordTypeId= : rec.id and SalesforceID__c = : selectedID and IVR_GUID__c = :IVRGUIDFromUrl order by createddate desc Limit 1];          
         system.debug('authlog##' + authlog);
         if(authlog.size() == 0){
             authlog = [Select Id,SalesforceID__c,Current_User__c,Member__c,Decision__c,CFCU_Wallet_Status__c,Staff_Name__c,GUID__c,BeneficiaryDetailMatch__c,Joint_OwnerDetailsMatch__c,
-            CardNumberMatch__c,Additional_Token_Option1_Match__c,Additional_Token_Option2_Match__c,Loan_Detail_Match__c
+            CardNumberMatch__c,Additional_Token_Option1_Match__c,Additional_Token_Option2_Match__c,Additional_Token_Option5_Match__c, Additional_Token_Option6_Match__c,Loan_Detail_Match__c, Additional_Token_Option1__c,Additional_Token_Option2__c,Additional_Token_Option5__c,Additional_Token_Option6__c
             From Authenticated_Log__c where createddate = Today and RecordTypeId= : rec.id and SalesforceID__c = : selectedID and IVR_GUID__c != :IVRGUIDFromUrl  order by createddate desc Limit 1];
             if(authlog.size() > 0){
                 
@@ -1027,7 +1054,7 @@ This query is working for Relaunch MAAP feature as well*/
         /*ReLoadAuthlog List is for reload functinality (or call transfer functionality) when we need to maintain the state of buttons as per the minutes mention in our custom setting.*/
         
         ReLoadAuthlog = [Select Id,SalesforceID__c,Member__c,Decision__c,CFCU_Wallet_Status__c,Staff_Name__c,GUID__c,BeneficiaryDetailMatch__c,Joint_OwnerDetailsMatch__c,
-        CardNumberMatch__c,Additional_Token_Option1_Match__c,Additional_Token_Option2_Match__c,Loan_Detail_Match__c
+        CardNumberMatch__c,Additional_Token_Option1_Match__c,Additional_Token_Option2_Match__c,Additional_Token_Option5_Match__c, Additional_Token_Option6_Match__c,Loan_Detail_Match__c, Additional_Token_Option1__c,Additional_Token_Option2__c,Additional_Token_Option5__c,Additional_Token_Option6__c
           From Authenticated_Log__c where createddate = Today and RecordTypeId= : rec.id and SalesforceID__c = : selectedID AND CreatedDate >=: Datetime.now().addMinutes(minutes) and IVR_GUID__c =:IVRGUIDFromUrl  order by createddate desc Limit 1];
         
         if(ReLoadAuthlog.size() > 0)
@@ -1035,7 +1062,7 @@ This query is working for Relaunch MAAP feature as well*/
             resultmap.put('CFCUReloadInfo',ReLoadAuthlog);
         }else{
             ReLoadAuthlog = [Select Id,SalesforceID__c,Member__c,Decision__c,CFCU_Wallet_Status__c,Staff_Name__c,GUID__c,BeneficiaryDetailMatch__c,Joint_OwnerDetailsMatch__c,
-            CardNumberMatch__c,Additional_Token_Option1_Match__c,Additional_Token_Option2_Match__c,Loan_Detail_Match__c
+            CardNumberMatch__c,Additional_Token_Option1_Match__c,Additional_Token_Option2_Match__c,Additional_Token_Option5_Match__c, Additional_Token_Option6_Match__c,Loan_Detail_Match__c, Additional_Token_Option1__c,Additional_Token_Option2__c,Additional_Token_Option5__c,Additional_Token_Option6__c
               From Authenticated_Log__c where createddate = Today and RecordTypeId= : rec.id and SalesforceID__c = : selectedID AND CreatedDate >=: Datetime.now().addMinutes(minutes)   order by createddate desc Limit 1];
             if(ReLoadAuthlog.size() > 0)
             {
@@ -1334,7 +1361,7 @@ result.put('Emails',EmailList);*/
             //--------------------------Code to maintain state of Pass/ Fail Button within a day------------------------------------
             RecordType rec = GetRecordTypeData('Authenticated_Log__c', 'Public Wallet Log');
             List<Authenticated_Log__c> authlog = new List<Authenticated_Log__c>();  
-            authlog = [Select Id,SalesforceID__c,Current_User__c,Member__c,Public_Wallet_Status__c,DOBMatch__c,IdNumberMatch__c,MMNMatch__c,EmailMatch__c,Additional_Token_Option3_Match__c
+            authlog = [Select Id,SalesforceID__c,Current_User__c,Member__c,Public_Wallet_Status__c,DOBMatch__c,IdNumberMatch__c,MMNMatch__c,EmailMatch__c,Additional_Token_Option3_Match__c, Additional_Token_Option3__c, Additional_Token_Option4__c,Additional_Token_Option4_Match__c
             From Authenticated_Log__c where createddate = Today and RecordTypeId= : rec.id and SalesforceID__c = : MemberId order by createddate desc Limit 1];          
             if(authlog.size() > 0)
             {
@@ -1343,7 +1370,10 @@ result.put('Emails',EmailList);*/
                 result.put('IdNumberMatch',authlog[0].IdNumberMatch__c);
                 result.put('MMNMatch',authlog[0].MMNMatch__c);
                 result.put('EmailMatch',authlog[0].EmailMatch__c);
-                result.put('AdditionalTokenMatch',authlog[0].Additional_Token_Option3_Match__c);               
+                result.put('AdditionalTokenMatch',authlog[0].Additional_Token_Option3_Match__c);
+                result.put('Additional_Token_Option3__c',authlog[0].Additional_Token_Option3__c);
+                result.put('AdditionalToken4Match',authlog[0].Additional_Token_Option4_Match__c);
+                result.put('Additional_Token_Option4__c',authlog[0].Additional_Token_Option4__c);                
             }
             //--------------------------Code to maintain state of Pass/ Fail Button within a day-----------------------------------
             

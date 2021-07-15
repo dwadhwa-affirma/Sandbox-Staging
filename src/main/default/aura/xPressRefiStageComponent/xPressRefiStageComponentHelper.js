@@ -15,6 +15,12 @@
       var state = resp.getState();
       if (state === "SUCCESS") {
         var result = resp.getReturnValue(); 
+        if(result["Error"] != undefined){
+           alert(result["Error"]);
+           component.set('v.isContinueDisabled',true);
+           this.hideSpinner(component);
+           return;
+        }
         var XpressRefirecord = result.xPressRefiRecord; 
         component.set('v.xPressRefiRecord', XpressRefirecord);
         
@@ -33,6 +39,12 @@
           }
           
         );
+      }
+      else{
+          alert('There was an error while processing your request. Please Contact Admin.');
+           component.set('v.isContinueDisabled',true);
+           this.hideSpinner(component);
+           return;
       }
       this.hideSpinner(component);
     });
