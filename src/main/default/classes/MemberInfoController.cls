@@ -3,20 +3,40 @@ public class MemberInfoController {
     @AuraEnabled
     public static AccountViewModel GetMemberInfomation(Id accountId){
         System.debug('accountId:'+accountId);
-        Account acc = [SELECT Id,Name,BIRTH_DATE__pc,Email_raw__c, 
+        Account acc = [SELECT Id,Employee_Restricted_Access__c,Name,BIRTH_DATE__pc,Email_raw__c, 
                        Mobile_Phone__pc,MemberType__c,CreatedDate
                        FROM Account WHERE 
                        Id=:accountId];
         
-        Integer joiningDaysDiff = date.newinstance(acc.CreatedDate.year(), acc.CreatedDate.month(), acc.CreatedDate.day()).daysBetween(Date.today());
-        Integer joiningDaysDiff2 = date.newinstance(acc.CreatedDate.year(), acc.CreatedDate.month(), acc.CreatedDate.day()).monthsBetween(Date.today());
-        integer joiningDaysDiff1=joiningDaysDiff2/12;
-        if(joiningDaysDiff<=365)
-        {
-            system.debug('joiningDaysDiff'+joiningDaysDiff);
+        List<Person_Account__c> personAccounts=new List<Person_Account__c>();
+        personAccounts= [SELECT Id,PersonID__c,Account_Number__c,TypeTranslate__c,
+                         Account_Number__r.OPEN_DATE__c,Account_Number__r.Open_Date_PST__c,
+                         Account_Number__r.RecType__c
+                         FROM Person_Account__c 
+                         WHERE PersonID__c=: accountId and Account_Number__r.RecType__c='ACCT' and TypeTranslate__c!='0004/Beneficiary'
+                         Order By Account_Number__r.OPEN_DATE__c
+                         Limit 1];
+        
+        DateTime openDate;
+        if(personAccounts.size()>0){
+            openDate=personAccounts[0].Account_Number__r.Open_Date_PST__c;
         }
-        else if(joiningDaysDiff>365){
-            system.debug('joiningDaysDiff'+joiningDaysDiff1);
+        
+        Integer joiningDaysDiff =0;
+        Integer joiningDaysDiff2 =0;
+        Integer joiningDaysDiff1 =0;
+        
+        if(openDate!=null){
+            joiningDaysDiff = date.newinstance(openDate.year(), openDate.month(), openDate.day()).daysBetween(Date.today());
+            joiningDaysDiff2 = date.newinstance(openDate.year(), openDate.month(), openDate.day()).monthsBetween(Date.today());
+            joiningDaysDiff1=joiningDaysDiff2/12;
+            if(joiningDaysDiff<=365)
+            {
+                system.debug('joiningDaysDiff'+joiningDaysDiff);
+            }
+            else if(joiningDaysDiff>365){
+                system.debug('joiningDaysDiff'+joiningDaysDiff1);
+            }
         }
         Integer daysDiffBetwBirthAndToday=0;
         Integer daysDiffBetwThisYearBirthAndBirthDate=0;
@@ -34,9 +54,9 @@ public class MemberInfoController {
         accViewModel.MobilePhone = acc.Mobile_Phone__pc;
         accViewModel.MemberType = acc.MemberType__c;
         accViewModel.JoiningDaysDiff = joiningDaysDiff;
-                accViewModel.JoiningDaysDiff1 = joiningDaysDiff1;
-
-        accViewModel.BirthDaysDiff = birthDaysDiff;   
+        accViewModel.JoiningDaysDiff1 = joiningDaysDiff1;
+        accViewModel.EmployeeRestrictedAccess=acc.Employee_Restricted_Access__c;
+        accViewModel.BirthDaysDiff = birthDaysDiff;  
         
         return accViewModel;
     }
@@ -44,31 +64,53 @@ public class MemberInfoController {
     @AuraEnabled
     public static List<Opportunity> GetAvailableOpportunity(Id accountId){
         List<Opportunity> oppList=new List<Opportunity>();
-        oppList=[SELECT Id,Name FROM Opportunity WHERE AccountId=:accountId ORDER BY CreatedDate DESC];        
+        oppList=[SELECT Id,Name FROM Opportunity WHERE AccountId=:accountId 
+                 and (StageName='New' or StageName='Outreach' or StageName='Analyzing Needs' or StageName='Considering' or StageName='Fulfillment')
+                 ORDER BY CreatedDate DESC];        
         return oppList;
     }
     
     @AuraEnabled
     public static String GetPromocode(Id accountId){
+        
+        System.debug('In Promocode ');
         String promoCodes='';
         List<Person_Account__c> personAccounts=new List<Person_Account__c>();
-        personAccounts= [SELECT Id,PersonID__c,Account_Number__c 
-                         FROM Person_Account__c 
-                         WHERE PersonID__c=: accountId
-                         AND TypeTranslate__c  Like '%Primary%' Limit 1];
-        for (Person_Account__c pa : personAccounts) {
-            Account_Details__c accDetail=[SELECT Id,Name,PROMO_REPORT_CODE__c 
-                                          FROM Account_Details__c 
-                                          WHERE Id=:pa.Account_Number__c];
-            
-            if(accDetail!=null && accDetail.PROMO_REPORT_CODE__c!=null) {
-                promoCodes+=accDetail.PROMO_REPORT_CODE__c+',';
-            }
+        
+        
+        personAccounts=[SELECT Id,PersonID__c,Account_Number__c,Account_Number__r.Name,Account_Number__r.PROMO_REPORT_CODE__c 
+                        FROM Person_Account__c WHERE PersonID__c=:accountId];
+        
+        set<string> accountNumbers=new set<string>();
+        for(Person_Account__c pc : personAccounts){
+            accountNumbers.add(pc.Account_Number__r.Name);
         }
         
-        if(!String.isBlank(promoCodes)){ promoCodes = promoCodes.removeEnd(',');}
+        List<Account_Details__c> accountDetails=[SELECT Id,Name,PROMO_REPORT_CODE__c 
+                                                 FROM Account_Details__c WHERE PROMO_REPORT_CODE__c<>null 
+                                                 AND Name IN: accountNumbers];
         
-        return promoCodes;    
+        System.debug('accountDetails:'+accountDetails);
+        
+        if(accountDetails.size()==1){
+            promoCodes = accountDetails[0].PROMO_REPORT_CODE__c;
+        }
+        else if(accountDetails.size() > 1){
+            personAccounts= [SELECT Id,PersonID__c,Account_Number__c,Account_Number__r.PROMO_REPORT_CODE__c
+                             FROM Person_Account__c WHERE Account_Number__r.Name IN : accountNumbers and
+                             Account_Number__r.PROMO_REPORT_CODE__c <> null AND TypeTranslate__c  Like '%Primary%' Limit 1];
+            
+            System.debug('personAccounts:'+personAccounts);
+            if(personAccounts.size() > 0){
+                promoCodes = personAccounts[0].Account_Number__r.PROMO_REPORT_CODE__c;
+            }else{
+                promoCodes = accountDetails[0].PROMO_REPORT_CODE__c;
+            }
+            
+        }
+        
+        return promoCodes;   
+        
     }
     
     @AuraEnabled
@@ -309,8 +351,9 @@ public class MemberInfoController {
         @AuraEnabled public string MobilePhone;
         @AuraEnabled public string MemberType;
         @AuraEnabled public Integer JoiningDaysDiff;
-@AuraEnabled public Integer JoiningDaysDiff1;
+        @AuraEnabled public Integer JoiningDaysDiff1;
         @AuraEnabled public Integer BirthDaysDiff;
+        @AuraEnabled public decimal EmployeeRestrictedAccess;
     }
     
     public class WarningsViewModel {
