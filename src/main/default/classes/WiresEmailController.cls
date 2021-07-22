@@ -205,6 +205,9 @@ public  class WiresEmailController {
             sendTo.add(ToEmail);
             
             mail.setToAddresses(sendTo);
+            
+            System.debug('Send To:'+sendTo);
+            
             string templatenAME;
             
             if(isCancelled==true){

@@ -453,6 +453,13 @@ public class WiresTransactionApprovalController {
     
     @future(callout=true)
     public static void CheckRedFlgsAndUpdateStatus(Set<Id> id){
+        string apiURL='';
+        SolarLoan_To_Episys_API_Details__c api = SolarLoan_To_Episys_API_Details__c.getValues('ProductionURL');
+        
+        if(api.URL__c != null){
+            apiURL = api.URL__c;
+        }
+        
         List<WIRES_Transaction__c> wireTransactions = [SELECT Id,Approval_Status__c,ToAccountName__c,ToAccoutId__c,
                                                        Status__c, FromAccount__c,TotalFromAccount__c,WireAmount__c,
                                                        ToAccoutId__r.Recipient_AccountNumber__c,
@@ -501,7 +508,7 @@ public class WiresTransactionApprovalController {
                     
                     httpRequest requestparam = new httpRequest(); 
                     system.debug('amount=='+amount);
-                    requestparam.setEndpoint('https://symxapi.chevronfcu.org/devclient/Wires/WiresFundsCheck?amount=' + amount +'&accountNumber=' + AccountNumber + '&shareId=' + ShareID);
+                    requestparam.setEndpoint(apiURL+'/Wires/WiresFundsCheck?amount=' + amount +'&accountNumber=' + AccountNumber + '&shareId=' + ShareID);
                     requestparam.setMethod('GET');      
                     
                     
@@ -571,8 +578,14 @@ public class WiresTransactionApprovalController {
     
     @future(callout=true)
     public static void CheckGoodFundAndUpdateStatus(Set<Id> id){
-        
         System.debug('THIS Id:'+Id);
+        
+        string apiURL='';
+        SolarLoan_To_Episys_API_Details__c api = SolarLoan_To_Episys_API_Details__c.getValues('ProductionURL');
+        
+        if(api.URL__c != null){
+            apiURL = api.URL__c;
+        }
         
         integer statusCode=0;
         boolean isGoodFundCheck=false;
@@ -599,7 +612,7 @@ public class WiresTransactionApprovalController {
             Map<String,Object> results = new Map<String,Object>();
             httpRequest requestparam = new httpRequest(); 
             system.debug('amount=='+amount);
-            requestparam.setEndpoint('https://symxapi.chevronfcu.org/devclient/Wires/WiresFundsCheck?amount=' + amount +'&accountNumber=' + AccountNumber + '&shareId=' + ShareID);
+            requestparam.setEndpoint(apiURL+'/Wires/WiresFundsCheck?amount=' + amount +'&accountNumber=' + AccountNumber + '&shareId=' + ShareID);
             requestparam.setMethod('GET');      
             
             http httpParam = new http();
@@ -872,10 +885,17 @@ public class WiresTransactionApprovalController {
     // --------------------- Send SMS Notification..................//   
     
     private static Map<String,Object> checkWiresFunds(string AccountNumber, string ShareID, decimal amount){
+        string apiURL='';
+        SolarLoan_To_Episys_API_Details__c api = SolarLoan_To_Episys_API_Details__c.getValues('ProductionURL');
+        
+        if(api.URL__c != null){
+            apiURL = api.URL__c;
+        }
+        
         Map<String,Object> results = new Map<String,Object>();
         httpRequest requestparam = new httpRequest(); 
         system.debug('amount=='+amount);
-        requestparam.setEndpoint('https://symxapi.chevronfcu.org/devclient/Wires/WiresFundsCheck?amount=' + amount +'&accountNumber=' + AccountNumber + '&shareId=' + ShareID);
+        requestparam.setEndpoint(apiURL+'/Wires/WiresFundsCheck?amount=' + amount +'&accountNumber=' + AccountNumber + '&shareId=' + ShareID);
         requestparam.setMethod('GET');      
         
         

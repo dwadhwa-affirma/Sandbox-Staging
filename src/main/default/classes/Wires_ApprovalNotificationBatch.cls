@@ -144,9 +144,9 @@ global class Wires_ApprovalNotificationBatch implements Database.Batchable<sObje
                 Long seconds = milliseconds / 1000;
                 Long lapsedMinutes = seconds / 60;
                 
-                System.debug('LapsedMinutes:'+lapsedMinutes);
+                System.debug('Wires:'+wtc.Name+'----LapsedMinutes:'+lapsedMinutes);
                 
-                if(lapsedMinutes>timeLimit.Time_In_Minutes__c){
+                if(lapsedMinutes>=timeLimit.Time_In_Minutes__c){
                     System.debug('Lapse time condition match');
                     
                     User manager;
