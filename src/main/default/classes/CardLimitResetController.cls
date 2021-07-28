@@ -446,6 +446,7 @@ public class CardLimitResetController {
                     Map<String, Object> carddetail = (Map<String, Object>)key;
                     string Card = string.valueof(carddetail.get('CardNumber'));
                     temp.CardNumber =  string.valueof(carddetail.get('CardNumber'));
+                    temp.EncryptCardNumber = '**********'+string.valueof(carddetail.get('CardNumber')).substring(10, 16);
                     temp.CardLocator =   string.valueof(carddetail.get('Locator'));
                     temp.AccountNumber = string.valueof(carddetail.get('AccountNumber'));
                     temp.LongName = string.valueof(carddetail.get('LongName'));
@@ -461,6 +462,7 @@ public class CardLimitResetController {
                     }
                     system.debug('temp.CardNumber'+temp.CardNumber);
                     system.debug('temp.CardLocator'+temp.CardLocator);
+                    system.debug('temp.EncryptCardNumber'+temp.EncryptCardNumber);
                     system.debug('temp.AccountNumber'+temp.AccountNumber);
                     system.debug('temp.LongName'+temp.LongName);
                     system.debug('resultList'+resultList);
@@ -637,6 +639,7 @@ public class CardLimitResetController {
                     Map<String, Object> carddetail = (Map<String, Object>)key;
                     string Card = string.valueof(carddetail.get('CardNumber'));
                     temp.CardNumber =  string.valueof(carddetail.get('CardNumber'));
+                    temp.EncryptCardNumber = '**********'+string.valueof(carddetail.get('CardNumber')).substring(10, 16);
                     temp.CardLocator =   string.valueof(carddetail.get('Locator'));
                     temp.AccountNumber = string.valueof(carddetail.get('AccountNumber'));
                     temp.LongName = string.valueof(carddetail.get('LongName'));
@@ -648,6 +651,7 @@ public class CardLimitResetController {
                         }
                     }
                     system.debug('temp.CardNumber'+temp.CardNumber);
+                    system.debug('temp.EncryptCardNumber'+temp.EncryptCardNumber);
                     system.debug('temp.CardLocator'+temp.CardLocator);
                     system.debug('temp.AccountNumber'+temp.AccountNumber);
                     system.debug('temp.LongName'+temp.LongName);
@@ -684,6 +688,9 @@ public class CardLimitResetController {
         }
         cs.Status = 'Closed';
         cs.Subject = 'Limit Change';
+        if(cardnumber != null){
+            cardnumber = '**********'+string.valueof(cardnumber).substring(10, 16);
+        }
         cs.Description =  'Card Limit Change details: ' +'\n' + '\n' +'Member Name: '+ membername + '\n' + 'Card Number: '+ cardnumber + '\n' + 'Request Type: ' + type + '\n' + 'ATM Usage Limit: ' + atmlimit + '\n' + 'Auth/POS Limit: ' + authlimit + '\n' + 'Change Performed By: '+ UserInfo.getName();
         cs.Account_Number__c = CLRecord.Member_Account__c;
         cs.ownerid = UserInfo.getUserId();
@@ -914,6 +921,8 @@ public class CardLimitResetController {
         public string AccountNumber {get;set;}
         @AuraEnabled
         public string LongName {get;set;}
+        @AuraEnabled
+        public String EncryptCardNumber {get;set;}
           
     }    
 }

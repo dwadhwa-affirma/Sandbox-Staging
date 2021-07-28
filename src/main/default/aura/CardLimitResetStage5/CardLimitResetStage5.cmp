@@ -1,0 +1,25 @@
+<aura:component controller="CardLimitResetController" implements="force:appHostable,force:lightningQuickActionWithoutHeader,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,force:hasSObjectName" access="global">
+
+<aura:registerEvent name="CardLimitResetEvent" type="c:CardLimitResetEvent"/>
+<aura:attribute name="CLRecord" type="Change_Limit__c"/> 
+<aura:handler name="init" action="{!c.doInit}" value="{!this}" access="global" />
+<aura:attribute name="caList" type="Account_Details__c[]" />  
+<aura:attribute name="IsFinal" type="Boolean" default="false"/>
+    
+    <div id = "stage5" class = "align">
+        <p class = "fontstyle">Request Submitted</p><br></br>
+        <div class="slds-form">
+            <div class="slds-form-element slds-form-element_horizontal">
+                <table class="bottomtbl">
+                    <tr>
+                        <td><b>Your change/reset card limits request has been successfully submitted. </b></td>
+                    </tr>
+                    <tr>
+                        <td>The details of your request are in MARS case <b>(<a href="{!('/one/one.app?#/sObject/'+ v.CLRecord.Case__c + '/view')}" target="_blank">{!v.CLRecord.Case__r.CaseNumber}</a>)</b>.</td>
+                    </tr>
+                </table>	    
+            </div>
+        </div>
+    </div>
+    <lightning:spinner aura:id="Spinner" alternativeText="Loading" size="medium" variant="brand" class="slds-hide spin"/>
+</aura:component>

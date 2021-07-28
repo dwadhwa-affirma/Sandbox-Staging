@@ -64,6 +64,8 @@
 	},
     
     onCardChange: function (component, event, helper) {
+        
+        helper.showSpinner(component);
     	var SelectedCardNumber = event.getSource().get('v.value');
         var SelectedCardLocator;
         var SelectedAccountNumber;
@@ -86,7 +88,6 @@
 			var state=resp.getState();			
 			if(state === "SUCCESS"){
 				var result =  resp.getReturnValue();
-                
                 if(result != undefined){
                     if(result.CardList != undefined && result.CardList != ''){
                    		component.set('v.CardListMap', result.CardList);
@@ -108,7 +109,7 @@
                         evt.setParams({ "CLRecord": CL, "isMemberSelected": isMemberSelected});
                         evt.fire();
                     }
-                    
+                    helper.hideSpinner(component);
                     
                 }
 			}

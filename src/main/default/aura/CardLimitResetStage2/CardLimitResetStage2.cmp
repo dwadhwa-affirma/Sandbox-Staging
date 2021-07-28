@@ -51,7 +51,7 @@
                                                 </span>
                                             </td>
                                             <td data-label="Employees" role="gridcell">
-                                                <div class="slds-text-color_error" title="{!mapValue.CardNumber}">{!mapValue.CardNumber}</div>
+                                                <div class="slds-text-color_error" title="{!mapValue.EncryptCardNumber}">{!mapValue.EncryptCardNumber}</div>
                                             </td>
                                             <aura:set attribute="else">
                                                 <td class="slds-text-align_right" role="gridcell" style="width:3.25rem">
@@ -60,7 +60,7 @@
                                                     </span>
                                                 </td>
                                                 <td data-label="Employees" role="gridcell" class="grid-column">
-                                                    <div class="slds-truncate" title="{!mapValue.CardNumber}">{!mapValue.CardNumber}</div>
+                                                    <div class="slds-truncate" title="{!mapValue.EncryptCardNumber}">{!mapValue.EncryptCardNumber}</div>
                                                 </td>
                                                 
                                                 <td data-label="Employees" role="gridcell" class="grid-column">
@@ -116,5 +116,6 @@
                     
                  </tbody>
             </table>
+        <lightning:spinner aura:id="Spinner" alternativeText="Loading" size="medium" variant="brand" class="slds-hide"/>        
     </div>    
 </aura:component>
