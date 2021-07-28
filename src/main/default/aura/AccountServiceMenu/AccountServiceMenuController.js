@@ -111,14 +111,17 @@
                     }
                 }
                 var footer = document.getElementsByClassName('modal-footer');
+            
                 if(footer.length == 0){
                     footer = document.getElementsByClassName('slds-modal__footer');
                 }
                 
                 if(footer != null && footer != undefined){
                     if(footer[0] != undefined)
-                        footer[0].style="display:none"
-                        }
+                        footer[0].style="display:none";
+                    if(footer[1] != undefined)
+                        footer[1].style="display:none";    
+                }
                 $A.createComponent(
                     component.get("v.componentToOpen"),
                     {
