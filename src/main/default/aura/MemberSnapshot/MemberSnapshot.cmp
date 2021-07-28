@@ -67,7 +67,7 @@
                     }
                 </aura:if>
                 
-                 <aura:if isTrue="{!(and(v.MemberAssessmentHasCompleted == 'true', v.MemberRefreshNeeded == 'false'))}">
+                <aura:if isTrue="{!(and(v.MemberAssessmentHasCompleted == 'true', v.MemberRefreshNeeded == 'false'))}">
                     .memberwrap .slds-tabs_default__nav li[title="Member Connect"],
                     .memberwrap .slds-tabs--default__nav li[title="Member Connect"]{
                     background-color:  #00ad53 !important;
@@ -93,6 +93,7 @@
                         
                         <lightning:button variant="brand" label="Create Case" onclick="{!c.handleCreateCase}" />
                         <lightning:button variant="brand" label="Create Opportunity" onclick="{!c.handleCreateOpportunity}" />
+                        <lightning:button variant="brand" label="Create Opportunity!$" onclick="{!c.handleCreateOpportunity2}" />
                         <lightning:button variant="brand" label="Account Services" onclick="{!c.handleAccountServices}"/>
                         
                         <lightning:spinner aura:id="Spinner" alternativeText="Loading" size="medium" variant="brand" class="slds-hide spin"/>
@@ -165,11 +166,11 @@
                                 </aura:set>
                             </aura:if>
                         </td>
-                        <td><span>&nbsp;</span>
+                        <td>
                             <aura:if isTrue="{!v.IsThereCases}">
-                                Available
+                                <span>&nbsp;</span>Available
                                 <aura:set attribute="else">
-                                    None
+                                <span>&nbsp;</span>None
                                 </aura:set>
                             </aura:if>
                         </td>
@@ -177,19 +178,19 @@
                     
                     <tr>
                         <td>
-                           eStatements 
+                            eStatements 
                         </td>
                         <td><span>&nbsp;</span>
-                           {!v.EStatements}
+                            {!v.EStatements}
                         </td>
                     </tr>                
                     
-                     <tr>
+                    <tr>
                         <td>
-                           Direct Deposit  
+                            Direct Deposit  
                         </td>
                         <td><span>&nbsp;</span>
-                             {!v.DirectDeposit}
+                            {!v.DirectDeposit}
                         </td>
                     </tr>      
                     
@@ -201,15 +202,15 @@
                 <table class="snaptbl">
                     <tr>
                         <td>
-                         <aura:if isTrue="{!not(empty(v.SurveyScore.MaritzCX__Key_Metric_1_Bar__c))}">
+                            <aura:if isTrue="{!not(empty(v.SurveyScore.MaritzCX__Key_Metric_1_Bar__c))}">
                                 <aura:set attribute="else">
                                     NPS/Survey Score
                                 </aura:set>   
-                            
-                            
-                            
-                            <a onclick="{!c.handleSurveyScoreClick}">NPS/Survey Score</a>
-                        </aura:if>
+                                
+                                
+                                
+                                <a onclick="{!c.handleSurveyScoreClick}">NPS/Survey Score</a>
+                            </aura:if>
                         </td>
                         <td>
                             <aura:if isTrue="{!not(empty(v.SurveyScore.MaritzCX__Key_Metric_1_Bar__c))}">
@@ -217,8 +218,8 @@
                                     <span>&nbsp;</span>None
                                 </aura:set>
                                 <!-- <span class="green"><lightning:icon iconName="utility:like" alternativeText="favorite" title="favorite" /></span><a onclick="{!c.handleSurveyScoreClick}">{!v.SurveyScore.MaritzCX__Key_Metric_1_Bar__c}</a>-->
-                        <span class="green"><lightning:icon iconName="utility:like" alternativeText="favorite" title="favorite" /></span>{!v.SurveyScore.MaritzCX__Key_Metric_1_Bar__c}
-
+                                <span class="green"><lightning:icon iconName="utility:like" alternativeText="favorite" title="favorite" /></span>{!v.SurveyScore.MaritzCX__Key_Metric_1_Bar__c}
+                                
                             </aura:if>
                         </td>
                     </tr>
@@ -229,7 +230,7 @@
                                 <aura:set attribute="else">
                                     <span>&nbsp;</span>None
                                 </aura:set>
-                                {!v.Promocode}
+                                <span>&nbsp;</span>{!v.Promocode}
                             </aura:if>
                         </td>
                     </tr>
@@ -250,16 +251,15 @@
                     <tr>
                         <td>Reason</td>
                         <td> 
-                            <span>&nbsp;</span>
                             <aura:if isTrue="{!not(empty(v.Reason))}">
-                                {!v.Reason}
+                                <span>&nbsp;</span>{!v.Reason}
                                 <aura:set attribute="else">
-                                    Unknown
+                                 <span>&nbsp;</span>Unknown
                                 </aura:set>
                             </aura:if>
                         </td>
                     </tr>
-                   <!-- <tr>
+                    <!-- <tr>
                         <td>Last Activity</td>
                         <td></td>
                     </tr> -->

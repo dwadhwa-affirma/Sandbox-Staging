@@ -21,6 +21,14 @@
             .slds-modal__container {
             width: 35%;
             }
+            
+            
+            @media screen and (max-width: 767px) {
+            .slds-modal__container {
+            width:90% !important;
+            }
+            
+            }
         </aura:html>   
         
         <table>
@@ -33,7 +41,14 @@
                 <tr class="trReview">
                     <td><ui:inputCheckbox class="checkbox" value="{!v.WiresObject.Previous_Wires2_Review__c}" change="{!c.onCheck}"/></td>
                     <td>Number of Previous Wires</td><td class="tblNumber">{!v.WiresCount}</td>
-                </tr>    
+                </tr>  
+                
+                <tr class="trReview">
+                    <td colspan="3">
+                        <lightning:textarea maxlength="255" name="comment" placeholder="Comment..." value="{!v.WiresObject.Second_Approval_Comment__c}"/>
+                    </td>
+                </tr>
+                
                 
                 <aura:set attribute="else">
                     <tr class="trReview">
@@ -45,6 +60,12 @@
                         <td>Number of Previous Wires</td><td class="tblNumber">{!v.WiresCount}</td>
                     </tr>    
                     
+                    <tr class="trReview">
+                        <td colspan="3">
+                            <lightning:textarea maxlength="255" name="comment" placeholder="Comment..." value="{!v.WiresObject.First_Approval_Comment__c}"/>
+                        </td>
+                    </tr>
+                    
                 </aura:set>
             </aura:if>
         </table>
@@ -55,7 +76,7 @@
             
             <lightning:button variant="brand" label="Approve" onclick="{!c.ApproveTransactions}" disabled="{!v.isApproveDisabled}"/>
             <lightning:button variant="brand" label="Reject" onclick="{!c.RejectTransaction}" />
-            <lightning:button variant="brand" label="Cancel" onclick="{!c.CancelTransaction}" />
+            <lightning:button variant="brand" label="Close" onclick="{!c.CancelTransaction}" />
             
         </footer> 
     </div>

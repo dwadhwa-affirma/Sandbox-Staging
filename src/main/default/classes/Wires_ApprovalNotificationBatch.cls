@@ -8,7 +8,8 @@ global class Wires_ApprovalNotificationBatch implements Database.Batchable<sObje
                                          Current_Second_Reviewer__c,
                                          Current_Reviewer_Modified_Date__c,
                                          Approval_Status__c,
-                                         Approved_by_1st_Approver__c,Source__c
+                                         Approved_by_1st_Approver__c,Source__c,
+                                         Has_Additional_Documents__c
                                          FROM WIRES_Transaction__c 
                                          WHERE Source__c =: WiresConstant.Source_Branch
                                          AND Frequency__c = 'One - Time'
@@ -143,9 +144,9 @@ global class Wires_ApprovalNotificationBatch implements Database.Batchable<sObje
                 Long seconds = milliseconds / 1000;
                 Long lapsedMinutes = seconds / 60;
                 
-                System.debug('LapsedMinutes:'+lapsedMinutes);
+                System.debug('Wires:'+wtc.Name+'----LapsedMinutes:'+lapsedMinutes);
                 
-                //if(lapsedMinutes>timeLimit.Time_In_Minutes__c){
+                if(lapsedMinutes>=timeLimit.Time_In_Minutes__c){
                     System.debug('Lapse time condition match');
                     
                     User manager;
@@ -171,7 +172,7 @@ global class Wires_ApprovalNotificationBatch implements Database.Batchable<sObje
                     if(manager!=null && manager.ManagerId!=null){
                         TraverseApprovalNotificationTree(manager.ManagerId,wtc,userMap,usersWithManagerMap,currentReviewerIds,groupAUsers,groupBUsers,groupCUsers,groupDUsers,groupEUsers);
                     }
-                //}
+                }
                 
             }catch(Exception ex){ 
                 System.debug('Exception:'+ex);
@@ -252,7 +253,7 @@ global class Wires_ApprovalNotificationBatch implements Database.Batchable<sObje
                                                              
                                                              if(isReviewerChange==true){
                                                                  // call function to send an email to all siblings which are in wires group
-                                                                 WiresEmailController.SendApprovalNotification(wtc.Id,emails,wtc.Name,wtc.TotalFromAccount__c,wtc.Source__c);
+                                                                 WiresEmailController.SendApprovalNotification(wtc.Id,emails,wtc.Name,wtc.TotalFromAccount__c,wtc.Source__c,wtc.Has_Additional_Documents__c);
                                                                  return;
                                                              }
                                                              
@@ -281,7 +282,7 @@ global class Wires_ApprovalNotificationBatch implements Database.Batchable<sObje
                                                                          User managerUser=userMap.get(managerId);
                                                                          List<string> managerEmails=new List<string>();
                                                                          managerEmails.add(managerUser.Email);
-                                                                         WiresEmailController.SendApprovalNotification(wtc.Id,managerEmails,wtc.Name,wtc.TotalFromAccount__c,wtc.Source__c);
+                                                                         WiresEmailController.SendApprovalNotification(wtc.Id,managerEmails,wtc.Name,wtc.TotalFromAccount__c,wtc.Source__c,wtc.Has_Additional_Documents__c);
                                                                          return;
                                                                      }
                                                                  }

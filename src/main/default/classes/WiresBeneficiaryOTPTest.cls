@@ -13,6 +13,7 @@ public class WiresBeneficiaryOTPTest {
 	 	objWC.Member_Number__c = accDetail.Name;
 	 	objWC.OTP__c ='12345';
 	 	objWC.Mobile_Phone__c = '1234567890';
+        
 	 	
 	 	insert objWC;
      }

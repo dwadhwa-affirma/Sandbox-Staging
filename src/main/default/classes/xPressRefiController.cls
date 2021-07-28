@@ -128,7 +128,8 @@ public class xPressRefiController{
 		system.debug('LastNDays##' + LastNDays);
 		List<xPressRefi__c> ExistingXpressRefiList = [Select Id, Name, CreatedDate, Member_Number__c, LoanId__c
 		                                              from xPressRefi__c
-		                                              where Member__c = :recordId and createddate > :LastNDays];
+		                                              where Member__c = :recordId and createddate > :LastNDays and is_CSV_Generated__c = true];
+		system.debug('ExistingXpressRefiList##' + ExistingXpressRefiList);
 		if (ExistingXpressRefiList.size() > 0){
 			resultMap.put('IsXpressRefiPending', true);
 			for (xPressRefi__c xrefi : ExistingXpressRefiList){
@@ -377,7 +378,7 @@ public class xPressRefiController{
 		Person_Account__c pa = new Person_Account__c();
 		pa = [SELECT id, name, PersonID__c, Account_Number__c, PersonID__r.name, Account_Number__r.Name
 		      from Person_Account__c
-		      where PersonID__c = :recordId AND typetranslate__c like '%Primary%'
+		      where PersonID__c = :recordId AND Account_Number__r.Name =: XpressRefiRecord.Member_Number__c		  //typetranslate__c like '%Primary%'
 		      limit 1];
 
 		case cs = new case();
@@ -392,10 +393,8 @@ public class xPressRefiController{
 		if (pa != null)
 			cs.Account_Number__c = pa.Account_Number__c;
 		cs.Subject = 'xPress Refi';
-		cs.ownerid = UserInfo.getUserId();
-		if (pa != null){
-			cs.AccountId = pa.PersonID__c;
-		}
+		cs.ownerid = UserInfo.getUserId();		
+		cs.AccountId = recordId;		
 		cs.Previous_Owner__c = UserInfo.getUserId();
 		string Description = '';
 		Description = 'Member Account: ' + XpressRefiRecord.Member_Number__c + '\n' + 
@@ -704,84 +703,96 @@ public class xPressRefiController{
 		Id xId, caseId;
 		map<string, object> resultMap = new map<string, object>();
 		if (XpressRefiRecord != null){
-			caseId = createCase(recordId, XpressRefiRecord);
-			XpressRefiRecord.Case__c = caseId;
-			List<Account_Details__c> accDetail = [SELECT Id, Name, Brand__c, Brand_Code__c
-			                                      FROM Account_Details__c
-			                                      WHERE Name = :XpressRefiRecord.Member_Number__c AND RecType__c = 'ACCT'
-			                                      LIMIT 1];
-			if (accDetail.size() > 0){
-				XpressRefiRecord.Brand__c = accDetail[0].Brand__c;
-				XpressRefiRecord.Brand_Code__c = accDetail[0].Brand_Code__c;
+			try{
+				caseId = createCase(recordId, XpressRefiRecord);
+			} catch (exception ex){
+				resultMap.put('Error', 'There was an error while creating a Case. Please contact admin.');
+				return resultmap;
+			}
+			try{
+				XpressRefiRecord.Case__c = caseId;
+				List<Account_Details__c> accDetail = [SELECT Id, Name, Brand__c, Brand_Code__c
+				                                      FROM Account_Details__c
+				                                      WHERE Name = :XpressRefiRecord.Member_Number__c AND RecType__c = 'ACCT'
+				                                      LIMIT 1];
+				if (accDetail.size() > 0){
+					XpressRefiRecord.Brand__c = accDetail[0].Brand__c;
+					XpressRefiRecord.Brand_Code__c = accDetail[0].Brand_Code__c;
+				}
+
+
+				if (XpressRefiRecord.Is_Mortgage_Cadence__c){
+					string MortgageCadenceNote = '';
+					if (XpressRefiRecord.Impermissible__c){
+						MortgageCadenceNote = MortgageCadenceNote + 'Marked as Impermissible';
+					}
+					if (XpressRefiRecord.Trust__c || XpressRefiRecord.Is_Vesting_Info_Trust__c){
+						if (MortgageCadenceNote == '')
+							MortgageCadenceNote = MortgageCadenceNote + 'Held in Trust';
+						else
+							MortgageCadenceNote = MortgageCadenceNote + '\n' + 'Held in Trust';
+					}
+					if (String.isNotBlank(XpressRefiRecord.PMI_Company_Name__c)){
+						if (MortgageCadenceNote == '')
+							MortgageCadenceNote = MortgageCadenceNote + 'Contains PMI';
+						else
+							MortgageCadenceNote = MortgageCadenceNote + '\n' + 'Contains PMI';
+					}
+					if (String.isBlank(XpressRefiRecord.Vesting__c)){
+						if (MortgageCadenceNote == '')
+							MortgageCadenceNote = MortgageCadenceNote + 'No Vesting information available';
+						else
+							MortgageCadenceNote = MortgageCadenceNote + '\n' + 'No Vesting information available';
+					}
+					if (XpressRefiRecord.Is_Vesting_Info_Changed__c){
+						if (MortgageCadenceNote == '')
+							MortgageCadenceNote = MortgageCadenceNote + 'Vesting information changed';
+						else
+							MortgageCadenceNote = MortgageCadenceNote + '\n' + 'Vesting information changed';
+					}
+					if (XpressRefiRecord.Product_Type__c != XpressRefiRecord.New_Product_Type__c){
+						if (MortgageCadenceNote == '')
+							MortgageCadenceNote = MortgageCadenceNote + 'Loan product change';
+						else
+							MortgageCadenceNote = MortgageCadenceNote + '\n' + 'Loan product change';
+					}
+					if (XpressRefiRecord.Is_Primary_Residence__c == false){
+						if (MortgageCadenceNote == '')
+							MortgageCadenceNote = MortgageCadenceNote + 'Not primary residence';
+						else
+							MortgageCadenceNote = MortgageCadenceNote + '\n' + 'Not primary residence';
+					}
+					if (XpressRefiRecord.Product_Type__c.contains('ARM')){
+						if (MortgageCadenceNote == '')
+							MortgageCadenceNote = MortgageCadenceNote + 'Loan is an Adjustable Rate Mortgage (ARM)';
+						else
+							MortgageCadenceNote = MortgageCadenceNote + '\n' + 'Loan is an Adjustable Rate Mortgage (ARM)';
+					}
+					if (XpressRefiRecord.Is_Maturity_Date_Reset__c){
+						if (MortgageCadenceNote == '')
+							MortgageCadenceNote = MortgageCadenceNote + 'Maturity Date Reset';
+						else
+							MortgageCadenceNote = MortgageCadenceNote + '\n' + 'Maturity Date Reset';
+					}
+
+					XpressRefiRecord.Mortgage_Cadence_Note__c = MortgageCadenceNote;
+				}
+
+				insert XpressRefiRecord;
+				xId = XpressRefiRecord.id;
+
+
+				List<xPressRefi__c> XpressRefiRecordList = [SELECT Borrower_Birth_Date__c, Borrower_First_Name__c, Borrower_Last_Name__c, Brand_Code__c, Brand__c, Case__c, Case__r.CaseNumber, Current_Interest_Rate_Calc__c, Current_Interest_Rate__c, Debit_Share_Account__c, DocuSignId__c, Docusign_Status__c, Home_Value__c, Id, Interest_Rate__c, Investor__c, is_CSV_Generated__c, Is_Mortgage_Ware_File_Created__c, Is_Product_Change__c, LoanId__c, Mailing_Address_1__c, Mailing_Address_2__c, Mailing_Address_City__c, Mailing_Address_Zip__c, Mailing_State__c, Maturity_Date_Calc__c, Maturity_Date__c, Member_Number__c, Member__c, New_Interest_Rate_Calc__c, New_Payment_Amount_Calc__c, New_Product_Type__c, PMI_Amount__c, Principal_Balance__c, Product_Type__c, Property_Address_2__c, Property_Balance__c, Property_City__c, Property_County__c, Property_State__c, Property_Zip__c, Property__c, P_I_Payment__c, Rate_Expiration_Date__c, Share_Account__c, Start_Date_Calc__c, Member_Phone__c, Member_Email__c, Loan_Program_Type__c, Borrower_Name_1__c, Borrower_Name_2__c, Due_Date__c, PMI_Flag__c, Is_Chevron_Employee__c, Is_Primary_Residence__c, Is_Relocation_Loan__c, Impermissible__c, New_Product_Name__c, Remaining_Term__c, Vesting__c, Trust__c, PMI_Company_Name__c, Vesting_Person_1__c, Vesting_Person_2__c, Vesting_Person_3__c, Vesting_Person_4__c, Closing_Documents_Date__c
+				                                            FROM xPressRefi__c
+				                                            where id = :xId];
+
+				resultMap.put('xPressRefiRecord', XpressRefiRecordList[0]);
+			}
+			catch(exception e){
+				resultMap.put('Error', 'There was an error while creating xPressRefi Record. Please contact admin.');
+				return resultMap;
 			}
 
-
-			if (XpressRefiRecord.Is_Mortgage_Cadence__c){
-				string MortgageCadenceNote = '';
-				if (XpressRefiRecord.Impermissible__c){
-					MortgageCadenceNote = MortgageCadenceNote + 'Marked as Impermissible';
-				}
-				if (XpressRefiRecord.Trust__c || XpressRefiRecord.Is_Vesting_Info_Trust__c){
-					if (MortgageCadenceNote == '')
-						MortgageCadenceNote = MortgageCadenceNote + 'Held in Trust';
-					else
-						MortgageCadenceNote = MortgageCadenceNote + '\n' + 'Held in Trust';
-				}
-				if (String.isNotBlank(XpressRefiRecord.PMI_Company_Name__c)){
-					if (MortgageCadenceNote == '')
-						MortgageCadenceNote = MortgageCadenceNote + 'Contains PMI';
-					else
-						MortgageCadenceNote = MortgageCadenceNote + '\n' + 'Contains PMI';
-				}
-				if (String.isBlank(XpressRefiRecord.Vesting__c)){
-					if (MortgageCadenceNote == '')
-						MortgageCadenceNote = MortgageCadenceNote + 'No Vesting information available';
-					else
-						MortgageCadenceNote = MortgageCadenceNote + '\n' + 'No Vesting information available';
-				}
-				if (XpressRefiRecord.Is_Vesting_Info_Changed__c){
-					if (MortgageCadenceNote == '')
-						MortgageCadenceNote = MortgageCadenceNote + 'Vesting information changed';
-					else
-						MortgageCadenceNote = MortgageCadenceNote + '\n' + 'Vesting information changed';
-				}
-				if (XpressRefiRecord.Product_Type__c != XpressRefiRecord.New_Product_Type__c){
-					if (MortgageCadenceNote == '')
-						MortgageCadenceNote = MortgageCadenceNote + 'Loan product change';
-					else
-						MortgageCadenceNote = MortgageCadenceNote + '\n' + 'Loan product change';
-				}
-				if (XpressRefiRecord.Is_Primary_Residence__c == false){
-					if (MortgageCadenceNote == '')
-						MortgageCadenceNote = MortgageCadenceNote + 'Not primary residence';
-					else
-						MortgageCadenceNote = MortgageCadenceNote + '\n' + 'Not primary residence';
-				}
-				if (XpressRefiRecord.Product_Type__c.contains('ARM')){
-					if (MortgageCadenceNote == '')
-						MortgageCadenceNote = MortgageCadenceNote + 'Loan is an Adjustable Rate Mortgage (ARM)';
-					else
-						MortgageCadenceNote = MortgageCadenceNote + '\n' + 'Loan is an Adjustable Rate Mortgage (ARM)';
-				}
-				if (XpressRefiRecord.Is_Maturity_Date_Reset__c){
-					if (MortgageCadenceNote == '')
-						MortgageCadenceNote = MortgageCadenceNote + 'Maturity Date Reset';
-					else
-						MortgageCadenceNote = MortgageCadenceNote + '\n' + 'Maturity Date Reset';
-				}
-
-				XpressRefiRecord.Mortgage_Cadence_Note__c = MortgageCadenceNote;
-			}
-
-			insert XpressRefiRecord;
-			xId = XpressRefiRecord.id;
-
-
-			List<xPressRefi__c> XpressRefiRecordList = [SELECT Borrower_Birth_Date__c, Borrower_First_Name__c, Borrower_Last_Name__c, Brand_Code__c, Brand__c, Case__c, Case__r.CaseNumber, Current_Interest_Rate_Calc__c, Current_Interest_Rate__c, Debit_Share_Account__c, DocuSignId__c, Docusign_Status__c, Home_Value__c, Id, Interest_Rate__c, Investor__c, is_CSV_Generated__c, Is_Mortgage_Ware_File_Created__c, Is_Product_Change__c, LoanId__c, Mailing_Address_1__c, Mailing_Address_2__c, Mailing_Address_City__c, Mailing_Address_Zip__c, Mailing_State__c, Maturity_Date_Calc__c, Maturity_Date__c, Member_Number__c, Member__c, New_Interest_Rate_Calc__c, New_Payment_Amount_Calc__c, New_Product_Type__c, PMI_Amount__c, Principal_Balance__c, Product_Type__c, Property_Address_2__c, Property_Balance__c, Property_City__c, Property_County__c, Property_State__c, Property_Zip__c, Property__c, P_I_Payment__c, Rate_Expiration_Date__c, Share_Account__c, Start_Date_Calc__c, Member_Phone__c, Member_Email__c, Loan_Program_Type__c, Borrower_Name_1__c, Borrower_Name_2__c, Due_Date__c, PMI_Flag__c, Is_Chevron_Employee__c, Is_Primary_Residence__c, Is_Relocation_Loan__c, Impermissible__c, New_Product_Name__c, Remaining_Term__c, Vesting__c, Trust__c, PMI_Company_Name__c, Vesting_Person_1__c, Vesting_Person_2__c, Vesting_Person_3__c, Vesting_Person_4__c, Closing_Documents_Date__c
-			                                            FROM xPressRefi__c
-			                                            where id = :xId];
-
-			resultMap.put('xPressRefiRecord', XpressRefiRecordList[0]);
 		}
 
 

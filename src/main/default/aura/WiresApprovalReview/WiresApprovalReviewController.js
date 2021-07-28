@@ -72,21 +72,29 @@
         helper.ApproveTransactions(component, event,helper,RecordId,"Approve",false);
     },
     RejectTransaction: function(component, event, helper) {
+        
+        var firstComment = JSON.stringify(component.get("v.WiresObject.First_Approval_Comment__c"));
+        var secondComment = JSON.stringify(component.get("v.WiresObject.Second_Approval_Comment__c"));
+        
+        if(!firstComment && !secondComment){
+            alert('Please provide comment for rejecting the transaction in comment box.')
+        }else{
+        
         var RecordId = component.get("v.recordId");
         helper.ApproveTransactions(component, event,helper,RecordId,"Reject",false);
+        }
     },
     CancelTransaction:function(component, event, helper) {
         component.find("overlayLib1").notifyClose();
     },
     NextTransactions:function(component, event, helper) {
         
-        debugger;
         var RecordId = component.get("v.recordId");
         var wireAmount=component.get("v.WiresObject.TotalFromAccount__c");
         var balanceStatusCode=component.get("v.BalanceStatusCode");
         if(wireAmount>10000) {
             if(balanceStatusCode<=0){
-                helper.ApproveTransactions(component, event,helper,RecordId,"Good Funds Check Failed",true);
+                helper.ApproveTransactions(component, event,helper,RecordId,"Good Funds Review",true);
             }else{
                 if(wireAmount>250000){
                       helper.ApproveTransactions(component, event,helper,RecordId,"Pending for Approval",true);
@@ -136,7 +144,8 @@
                     component.get("v.WiresObject.Home_Phone_Stable_Review__c") &&
                     component.get("v.WiresObject.Mobile_Phone_Stable_Review__c") &&
                     component.get("v.WiresObject.Work_Phone_Stable_Review__c") 
-                    && (component.get("v.WiresObject.Review_Reason__c") != "" && component.get("v.WiresObject.Review_Reason__c") != undefined)){
+                    && (component.get("v.WiresObject.Review_Reason__c") != "" 
+                        && component.get("v.WiresObject.Review_Reason__c") != undefined)){
                 if(isNextVisible){
                     component.set("v.isNextDisabled", false);
                 }else{
@@ -173,7 +182,8 @@
         }
         
         if(isNextVisible){
-            if((component.get("v.WiresObject.Available_Balance_Review__c") && component.get("v.WiresObject.Previous_Wires_Review__c"))==false){
+            if((component.get("v.WiresObject.Available_Balance_Review__c") 
+                && component.get("v.WiresObject.Previous_Wires_Review__c"))==false){
                 
                 component.set("v.isApproveDisabled", true);
                 

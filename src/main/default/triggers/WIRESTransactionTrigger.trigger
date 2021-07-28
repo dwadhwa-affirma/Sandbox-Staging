@@ -6,11 +6,27 @@ trigger WIRESTransactionTrigger on WIRES_Transaction__c (before insert,before up
     
     if(Trigger.isBefore && Trigger.isUpdate){
         for(Integer i=0; i<trigger.new.size(); i++){
+            
             if((trigger.old[i].Current_Reviewer__c != trigger.new[i].Current_Reviewer__c) || 
                (trigger.old[i].Current_Second_Reviewer__c != trigger.new[i].Current_Second_Reviewer__c)
               ){  
                 trigger.new[i].Current_Reviewer_Modified_Date__c=DateTime.now();
             }
+            
+           if(trigger.old[i].Has_Additional_Documents__c==false && trigger.new[i].Has_Additional_Documents__c== true) {
+                List<string> emails=new List<string>();
+                 System.debug('In update flag trigger');
+                set<Id> userIds=new set<Id>();
+                userIds.add(trigger.new[i].Current_Reviewer__c);
+                userIds.add(trigger.new[i].First_Reviewer__c);
+                
+                List<User> users =[Select Id,Email From User Where Id=:userIds];
+                for(User u: users){
+                    emails.add(u.Email);
+                }
+                WiresEmailController.SendAdditionalDocumentsNotification(trigger.new[i].Id,emails,trigger.new[i].Name,trigger.new[i].TotalFromAccount__c,trigger.new[i].Source__c);
+            }
+            
         }
     }
     
@@ -58,7 +74,7 @@ trigger WIRESTransactionTrigger on WIRES_Transaction__c (before insert,before up
         }
         
         if(rejectedWiresIds.size()>0){
-            WiresTransactionApprovalController.SendBranchWireRejecteEmailNotification(rejectedWiresIds);
+            WiresEmailController.SendBranchWireCancelledOrRejectEmailNotification(rejectedWiresIds,false);
         }
     }
     //------------------------------------------------------------------After Insert  ------------------------------------------------------------------------------//

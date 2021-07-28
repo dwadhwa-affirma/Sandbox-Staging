@@ -20,6 +20,7 @@
                 var userstatusEFT = res['UserStatusEFT'];
                 var userstatusaddresschange = res['UserStatusAddressChange'];
                 var userstatusxpressrefi = res['UserStatusXpressRefi'];
+                var userStatusWires = res['UserStatusWires'];
                 
                 var menuIcons = res['MenuIcons'];
               
@@ -29,6 +30,8 @@
                 component.set("v.IsUserInEFTGroup",userstatusEFT);
                 component.set("v.IsUserInAddressChangeGroup",userstatusaddresschange);
                 component.set("v.IsUserInXpressRefiGroup",userstatusxpressrefi);
+                component.set("v.IsUserInWiresGroup",userStatusWires);
+                
                 var menu = res['Menu'];  
                 var LeftMenu = [];
                 var RightMenu= [];             

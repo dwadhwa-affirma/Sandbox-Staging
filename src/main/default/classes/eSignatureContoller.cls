@@ -38,7 +38,7 @@ global class eSignatureContoller {
                                       Sender_Name__c,Sender_Email__c,Sender_Home_Phone__c,
                                       Sender_City_State_Zip__c,Description__c,
                                       Recipient_AccountNumber__c,Recipient_Address__c,
-                                      Recipient_City__c,	Recipient_State__c,	Recipient_Zipcode__c,
+                                      Recipient_City__c,Recipient_State__c,	Recipient_Zipcode__c,
                                       Recipient_Bank__c,RecepientName__c,
                                       RoutingNumber__c,Share_ID__c,TotalAmount__c,WireAmount__c,Fees__c,Brand__c
                                       From InPersonSigning__c WHERE Id=:this.wireTransaction.Id];

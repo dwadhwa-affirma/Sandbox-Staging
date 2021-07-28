@@ -50,12 +50,14 @@ global class Wires_CreateIDVCaseTransactionBatch implements Database.Batchable<s
                 cs.Account_Number__c = accDetail.Id;
             }
             cases.add(cs);
+            insert cs;
+            wtc.Case__c=cs.Id;
         }
         
         update onetimeWireObjs;
-        if(cases.size()>0){
-            insert cases;
-        }
+        //if(cases.size()>0){
+            //insert cases;
+        //}
     }
     
     global void finish(Database.BatchableContext BC){

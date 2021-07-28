@@ -14,23 +14,69 @@
     <aura:attribute name= "MobilePhoneStable" type="string" />
     <aura:attribute name="WiresObject" type="WIRES_Transaction__c"/> 
     <aura:attribute name= "Source" type="string" />
+    <aura:attribute name= "Reason" type="string" />
+    <aura:attribute name="showConfirmDialog" type="boolean" default="false"/>
     
-    <aura:if isTrue="{!and(v.isApprovalVisible == 'true')}">  
-        <lightning:overlayLibrary aura:id="overlayLib"/>
-        <div class="groupbtn-parent stagebar">		       
+    <lightning:overlayLibrary aura:id="overlayLib"/> 
+    
+    <div class="slds-m-around_xx-large"> 
+        <aura:if isTrue="{!v.showConfirmDialog}">
+            <!--Modal Box Start-->
+            <div role="dialog" class="slds-modal slds-fade-in-open ">
+                <div class="slds-modal__container">
+                    <!--Modal Box Header Start-->
+                    <header class="slds-modal__header">
+                        <h1 class="slds-text-heading--small"><center><b>Are you sure you want to cancel this transaction ?</b></center></h1>
+                    </header>
+                    <!--Modal Box Header End-->
+                     
+                    <!--Modal Box Content Start-->
+                    <div class="slds-modal__content slds-p-around--medium">
+                        <lightning:textarea name="comment" placeholder="Reason..." value="{!v.Reason}"
+                                            onchange="{!c.commentKeyUp}"/>
+                    </div>
+                    <!--Modal Box Content End-->
+                     
+                    <!--Modal Box Button Start-->
+                    <footer class="slds-modal__footer">
+                        <lightning:button name='No' label='No' onclick='{!c.handleConfirmDialogNo}'/>
+                        <lightning:button variant="brand" name='Yes' aura:id="btnYes"
+                                          label='Yes' onclick='{!c.handleConfirmDialogYes}'/>
+                    </footer>
+                    <!--Modal Box Button End-->
+                </div>
+            </div>
+            <div class="slds-backdrop slds-backdrop--open"></div>            
+        </aura:if>
+    </div>
+    
+    <aura:if isTrue="{!or(v.ApprovalStatus!= 'Cancelled', v.isApprovalVisible == 'true')}">  
+    <div class="groupbtn-parent stagebar">		       
+        
+        <div style="margin-left: auto;">
+            <aura:if isTrue="{!and(v.ApprovalStatus!= 'Cancelled',v.ApprovalStatus!= 'Released In WireXchange')}">  
+                 <aura:if isTrue="{!and(v.ApprovalStatus!='Rejected')}">  
+            		<lightning:button variant="destructive" 
+                                      label="Cancel Transaction" 
+                                      onclick="{!c.handleConfirmDialog}"/>
+                </aura:if>
+            </aura:if>
             
-            <div style="margin-left: auto;">
+            <aura:if isTrue="{!and(v.isApprovalVisible == 'true')}">  
+                
                 <aura:if isTrue="{!v.ApprovalStatus=='Fraud Review'}">
                     <lightning:button variant="brand" label="Fraud Review" onclick="{!c.ApproveTransaction}" />
                     <aura:set attribute="else">
-                        <lightning:button variant="brand" label="Approve Transaction" onclick="{!c.ApproveTransaction}" />
+                        <aura:if isTrue="{!or(v.ApprovalStatus!= 'Pending for Approval',v.ApprovalStatus!= 'Pending for Second Approval')}">
+                        	<lightning:button variant="brand" label="Review Transaction" onclick="{!c.ApproveTransaction}" />
+                        </aura:if>
                     </aura:set>
                 </aura:if> 
                 
                 <lightning:spinner aura:id="Spinner" alternativeText="Loading" size="medium" variant="brand" class="slds-hide spin"/>
-            </div>
-            
+            </aura:if>    
         </div>
-    </aura:if>    
+    </div>
+    </aura:if>
     
 </aura:component>
