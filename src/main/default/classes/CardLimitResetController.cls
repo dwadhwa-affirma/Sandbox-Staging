@@ -691,6 +691,7 @@ public class CardLimitResetController {
         if(cardnumber != null){
             cardnumber = '**********'+string.valueof(cardnumber).substring(10, 16);
         }
+        cs.Future_Date__c = Date.today()-1;
         cs.Description =  'Card Limit Change details: ' +'\n' + '\n' +'Member Name: '+ membername + '\n' + 'Card Number: '+ cardnumber + '\n' + 'Request Type: ' + type + '\n' + 'ATM Usage Limit: ' + atmlimit + '\n' + 'Auth/POS Limit: ' + authlimit + '\n' + 'Change Performed By: '+ UserInfo.getName();
         cs.Account_Number__c = CLRecord.Member_Account__c;
         cs.ownerid = UserInfo.getUserId();
