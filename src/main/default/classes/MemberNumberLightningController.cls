@@ -24,7 +24,7 @@ public class MemberNumberLightningController{
                 for(i=membersize; i<10;i++){
                 searchText = '0'+searchText;
               }
-                whereQuery = ' (Account_Number__r.Name LIKE \''+searchText+'\' OR Account_Number__r.Parent_Account__r.Name LIKE \''+searchText+'\') AND Split_Type_Translate__c IN(\'Primary\',\'Joint Member\',\'Joint Owner\',\'Power of Attorney\',\'Trustee\',\'Authorized Signer\',\'Representative Payee\',\'Custodian\',\'Responsible Individual\',\'Loan Co-Maker\') ORDER BY Name_Type__c ASC NULLS LAST ' ;
+                whereQuery = ' (Account_Number__r.Name LIKE \''+searchText+'\' OR Account_Number__r.Parent_Account__r.Name LIKE \''+searchText+'\') AND Split_Type_Translate__c IN(\'Primary\',\'Joint Member\',\'Joint Owner\',\'Power of Attorney\',\'Trustee\',\'Authorized Signer\',\'Representative Payee\',\'Custodian\',\'Responsible Individual\',\'Co-Signer\',\'Loan Co-Applicant\',\'Loan Co-Maker\') ORDER BY Name_Type__c ASC NULLS LAST ' ;
             }
         }
         
