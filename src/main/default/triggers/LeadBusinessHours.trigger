@@ -410,18 +410,18 @@ trigger LeadBusinessHours on Lead (after insert,after update, before insert, bef
                 }
                 else if(lead.Status == 'New' && lead.Episys_User_ID__c != 7002 && 
                     lead.LeadSource == 'Expat Services Form' ){
-                    System.debug('8888');                   
+                    System.debug('8888');                 
                    
-                        for(Group grp : listQueue){                        
-                            if(grp.name.containsIgnoreCase('Ex-Patriates')){                            
+                        for(Group grp : listQueue){                                              
+                            if(grp.name.containsIgnoreCase('Ex-Patriates')){                                                            
                                 groupName = grp.Name;
                                 groupnameid = grp.id;
                                 break;
                             }
                             system.debug('groupName###' + groupName);
-                        }                    
-                
-                    if(groupnameid != null){
+                        }  
+                        
+                    if(groupnameid != null){                       
                         lead.OwnerId = groupnameid;
                     }                    
                 }
@@ -461,7 +461,7 @@ trigger LeadBusinessHours on Lead (after insert,after update, before insert, bef
             if(SetLead.contains(ld.id) && ld.Status == 'Closed - Not Converted'){
                 ld.Adderror('Queue owned leads cannot be closed.');
             }
-            if(oldlead.Status == 'Closed - Converted' || (oldlead.Status == 'Closed - Not Converted' && ld.Status == 'Closed - Not Converted'))
+            if((oldlead.Status == 'Closed - Converted' || (oldlead.Status == 'Closed - Not Converted' && ld.Status == 'Closed - Not Converted')) && Profilename != 'CFCU Admin')
             {
                 
                 ld.Adderror('Lead fields are read only for Closed Leads.');
