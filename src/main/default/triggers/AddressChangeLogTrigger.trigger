@@ -325,8 +325,9 @@ trigger AddressChangeLogTrigger on AddressChangeLog__c(before insert ){
                 for (Case c : CaseList){
                     string tempdesc = c.Description;
                     if (tempdesc != null)
-                        Description = tempdesc + '\n' + Description;          
-                    c.OwnerId = objAddressChange.Updated_By__c;
+                        Description = tempdesc + '\n' + Description; 
+                    if (objAddressChange.Updated_By__c != null && !String.isEmpty(objAddressChange.Updated_By__c))        
+                        c.OwnerId = objAddressChange.Updated_By__c;
                     //c.Status = 'Closed';
                     c.Description = Description;
                 }
@@ -361,15 +362,18 @@ trigger AddressChangeLogTrigger on AddressChangeLog__c(before insert ){
                 }
                 else{
                     caseobj.Status = 'Closed';
-                }        
-                caseobj.AccountId = objAddressChange.Member__c;
+                }     
+                if (objAddressChange.Member__c != null && !String.isEmpty(objAddressChange.Member__c))      
+                    caseobj.AccountId = objAddressChange.Member__c;
                 caseobj.RecordTypeId = scList[0].RecordTypeId__c;
                 caseobj.Primary_Category__c = scList[0].Primary_Category__c;
                 caseobj.Secondary_Category__c = scList[0].Secondary_Category__c;
                 caseobj.Tertiary_Category__c = scList[0].Teritiary_Category__c;
-                system.debug('user++++' + objAddressChange.Updated_By__c);
-                caseobj.CreatedById = objAddressChange.Updated_By__c;
-                caseobj.OwnerId = objAddressChange.Updated_By__c;
+                if (objAddressChange.Updated_By__c != null && !String.isEmpty(objAddressChange.Updated_By__c)){
+                    caseobj.CreatedById = objAddressChange.Updated_By__c;
+                    caseobj.OwnerId = objAddressChange.Updated_By__c;
+                }  
+                
                 
                 if (!String.IsBlank(objAddressChange.Address2_New__c) && String.IsBlank(objAddressChange.Address_New__c)){
                     objAddressChange.Address_New__c = objAddressChange.Address2_New__c;
