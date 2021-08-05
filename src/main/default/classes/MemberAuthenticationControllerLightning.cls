@@ -1594,7 +1594,7 @@ result.put('Emails',EmailList);*/
 
          /*CRM-1742: Unusual Activity Warning*/
 
-	  List<Case> CaseListUnusualActivity= [Select id from Case where Category__c = 'Account Maintenance / Special Situations / Unusual Activity' and AccountId =: MemberId and status != 'Closed'];
+	  List<Case> CaseListUnusualActivity= [Select id from Case where Category__c = 'Account Maintenance / Special Situations / Unusual Activity' and AccountId =: MemberId and status != 'Closed' and createddate = Last_N_Days:90];
 	  if(CaseListUnusualActivity.size() > 0)
 	  {
 		result.put('UnusualActivity',true);
@@ -3862,7 +3862,7 @@ system.debug('CurrentScorePost2##' + CurrentScore);
             result.put('Level',LastLog[0].Last_Achievable_Level__c);
         }
         
-        List<Case> CaseListUnusualActivity= [Select id from Case where Category__c = 'Account Maintenance / Special Situations / Unusual Activity' and AccountId =: accoutid and status != 'Closed'];
+        List<Case> CaseListUnusualActivity= [Select id from Case where Category__c = 'Account Maintenance / Special Situations / Unusual Activity' and AccountId =: accoutid and status != 'Closed' and createddate = Last_N_Days:90];
         if(CaseListUnusualActivity.size() > 0)
         {
           result.put('IsUnusualActivity',true);
