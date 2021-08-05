@@ -1591,6 +1591,17 @@ result.put('Emails',EmailList);*/
             
             
         }
+
+         /*CRM-1742: Unusual Activity Warning*/
+
+	  List<Case> CaseListUnusualActivity= [Select id from Case where Category__c = 'Account Maintenance / Special Situations / Unusual Activity' and AccountId =: MemberId and status != 'Closed' and createddate = Last_N_Days:90];
+	  if(CaseListUnusualActivity.size() > 0)
+	  {
+		result.put('UnusualActivity',true);
+	  }
+	  else{
+		result.put('UnusualActivity',false);
+	  }
         
         
         /*  List<Member_Verification_Attempt__c> mt = [Select id,Member_Name__c, Member_Salesforce_Id__c, Number_of_Attempts__c from Member_Verification_Attempt__c where Member_Salesforce_Id__c =:MemberId and Authentication_Type__c != 'OTP' and CreatedDate = Today limit 1];
@@ -3505,7 +3516,9 @@ system.debug('CurrentScorePost2##' + CurrentScore);
                                           SLA__c,
                                           RecordTypeId__c FROM CaseRecordType__c WHERE Primary_Category__c = 'Account Maintenance' AND Secondary_Category__c='Special Situations' AND Teritiary_Category__c='Unusual Activity' LIMIT 1];
         
-        Group gp = [select Id, Name from Group where  Type = 'Queue' AND NAME = 'Authentication Failed – Unusual Activity'];
+        //Group gp = [select Id, Name from Group where  Type = 'Queue' AND NAME = 'Authentication Failed – Unusual Activity'];
+        Group gp = [select Id, Name from Group where  Type = 'Queue' AND NAME = 'Fraud Analyst Queue'];
+
         case cs = new case();
         for(CaseRecordType__c crt : scList){
             cs.RecordTypeId = scList[0].RecordTypeId__c;
@@ -3517,7 +3530,7 @@ system.debug('CurrentScorePost2##' + CurrentScore);
         }    
         cs.AccountId = MemberId;
         cs.Status = 'Open';
-        cs.Subject = 'Unusual Activity';
+        cs.Subject = 'Authentication Failed – Unusual Activity';
         cs.ownerid = gp.id;
         cs.CaseComments__c = casecomment;
         cs.Account_Number__c = AccountId;
@@ -3849,6 +3862,14 @@ system.debug('CurrentScorePost2##' + CurrentScore);
             result.put('Level',LastLog[0].Last_Achievable_Level__c);
         }
         
+        List<Case> CaseListUnusualActivity= [Select id from Case where Category__c = 'Account Maintenance / Special Situations / Unusual Activity' and AccountId =: accoutid and status != 'Closed' and createddate = Last_N_Days:90];
+        if(CaseListUnusualActivity.size() > 0)
+        {
+          result.put('IsUnusualActivity',true);
+        }
+        else{
+          result.put('IsUnusualActivity',false);
+        } 
         
         return result;
     }

@@ -292,7 +292,8 @@
 						component.set("v.CurrentScore", result.CurrentScore);
 						console.log('Helper Line 292---result.IsCardOwnerSSNMatch' + result.IsCardOwnerSSNMatch);
 						component.set("v.IsCardOwnerSSNMatch", result.IsCardOwnerSSNMatch);						
-
+						component.set("v.IsUnusualActivity", result.UnusualActivity);
+						
 					    if(result['OOWStatusForDay'] == false)
 					    {
 					    	component.set("v.Likedisable", true);
