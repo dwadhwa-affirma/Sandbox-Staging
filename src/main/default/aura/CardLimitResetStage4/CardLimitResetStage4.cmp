@@ -5,6 +5,7 @@
 <aura:handler name="init" action="{!c.doInit}" value="{!this}" access="global" />
 <aura:attribute name="caList" type="Account_Details__c[]" />  
 <aura:attribute name="IsFinal" type="Boolean" default="false"/>
+<aura:attribute name="EncryptCard" type="String"/>    
   
 <aura:if isTrue="{!(v.IsFinal == false)}">
     <div id = "stage4" class = "align">
@@ -14,7 +15,7 @@
                 <table class="bottomtbl">
                     <tr>
                         <td><b>Card: </b></td>
-                        <td>{!v.CLRecord.Card_Number__c	}</td>
+                        <td>{!v.EncryptCard}</td>
                     </tr>
                     <tr>
                         <td><b>New ATM Usage Limit: </b></td>

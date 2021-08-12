@@ -898,7 +898,8 @@ clearAll : function(component, event){
    component.set("v.PINMatch",'');
    component.set("v.IsMemberManualSearched",false);
    component.set("v.MultipleMemberNumberAlert",'');
-   component.set("v.OOWMemberNumberEntered",'');	   
+   component.set("v.OOWMemberNumberEntered",'');
+   component.set("v.IsUnusualActivity",false);	   
    
    window.location.href = '/lightning/cmp/c__LightningVerification';
    
