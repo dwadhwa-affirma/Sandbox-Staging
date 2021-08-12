@@ -463,6 +463,8 @@ public class WiresTransactionApprovalController {
     
     @future(callout=true)
     public static void CheckRedFlgsAndUpdateStatus(Set<Id> id){
+        
+        System.debug('In CheckRedFlgsAndUpdateStatus');
         string apiURL='';
         SolarLoan_To_Episys_API_Details__c api = SolarLoan_To_Episys_API_Details__c.getValues('ProductionURL');
         
@@ -470,11 +472,12 @@ public class WiresTransactionApprovalController {
             apiURL = api.URL__c;
         }
         
-        List<WIRES_Transaction__c> wireTransactions = [SELECT Id,Approval_Status__c,ToAccountName__c,ToAccoutId__c,
+        List<WIRES_Transaction__c> wireTransactions = [SELECT Id,Name,Approval_Status__c,ToAccountName__c,ToAccoutId__c,
                                                        Status__c, FromAccount__c,TotalFromAccount__c,WireAmount__c,
-                                                       ToAccoutId__r.Recipient_AccountNumber__c,
-                                                       ToAccoutId__r.BankName__c,AccountStableReview__c,
-                                                       EmailStableReview__c,Home_Phone_Stable_Review__c,
+                                                       ToAccoutId__r.Recipient_AccountNumber__c,SendOn__c,Source__c,
+                                                       ToAccoutId__r.BankName__c,ToAccoutId__r.RoutingNumber__c,
+                                                       AccountStableReview__c,EmailStableReview__c,Member_Name__c,
+                                                       Identity_Verification_Used__c,Home_Phone_Stable_Review__c,
                                                        Mobile_Phone_Stable_Review__c,Work_Phone_Stable_Review__c,
                                                        FlagAccountOpenfor45Days__c,FlagEmailStablefor30Days__c,
                                                        FlagHomePhoneStablefor30Days__c,FlagMobilePhoneStablefor30Days__c,
@@ -487,24 +490,36 @@ public class WiresTransactionApprovalController {
         for(WIRES_Transaction__c wt:wireTransactions){
             
             if(wt.TotalFromAccount__c>250000){
+                
+                System.debug('In Greater than 25k');
                 wt.Approval_Status__c=WiresConstant.ApprovalStatus_FraudReview;
+                
+                List<Account_Details__c> listAccountDetails = [select id,Brand__c,ID1__c,OPEN_DATE__c from Account_Details__c where Name =: wt.FromAccount__c and RecType__c='ACCT' LIMIT 1];
+                Case case1 =new Case();
+                case1.Subject='WIRES Fraud Review';
+                case1.Primary_Category__c='Account Maintenance';
+                case1.Secondary_Category__c='Special Situations';
+                case1.Tertiary_Category__c='Potential Fraud';
+                case1.Description= 'Wire Name: '+wt.Name+'\n'
+                    +'Wire Amount: '+wt.WireAmount__c+'\n'
+                    +'Send On date: '+String.valueof(wt.SendOn__c).removeEnd(' 00:00:00')+'\n'
+                    +'Source: '+wt.Source__c+'\n'
+                    +'Recipient Bank Name: '+wt.ToAccoutId__r.BankName__c+'\n'
+                    +'Recipient Bank ABA Number: '+wt.ToAccoutId__r.RoutingNumber__c+'\n'
+                    +'ID Verification Used: '+wt.Identity_Verification_Used__c+'\n'
+                    +'Approval Status: '+wt.Approval_Status__c+'\n'
+                    +'Member Name: '+wt.Member_Name__c;
+                
+                    if(listAccountDetails.size()>0){
+                        case1.Account_Number__c=listAccountDetails[0].Id;
+                    }
+                insert case1;
+                System.debug('Case1 Id:'+case1.Id);
+                wt.Case__c=case1.Id;
+                
                 wiresToUpdate.add(wt);
-                
-                //List<Account_Details__c> listAccountDetails = [select id,Brand__c,ID1__c,OPEN_DATE__c from Account_Details__c where Name =: wt.FromAccount__c and RecType__c='ACCT' LIMIT 1];
-                //Case case1 =new Case();
-                //case1.Subject='WIRES Fraud Review';
-                //case1.Primary_Category__c='Account Maintenance';
-                //case1.Secondary_Category__c=' Special Situations';
-                //case1.Tertiary_Category__c='Potential Fraud';
-                //if(listAccountDetails.size()>0){
-                //case1.Account_Number__c=listAccountDetails[0].Id;
-                //}
-                
-                //insert case1;
-                //System.debug('Case1 Id:'+case1.Id);
-                //wt.Case__c=case1.Id;
-                //fraudCases.add(case1);
             }else{
+                System.debug('In less than 25k');
                 integer statusCode=0;
                 Object statusMsg='';
                 boolean isGoodFundCheck=false;
@@ -552,10 +567,6 @@ public class WiresTransactionApprovalController {
                    }
             }
         }
-        
-        //if(fraudCases.size()>0){
-        //insert fraudCases;
-        //}
         
         if(wiresToUpdate.size()>0){
             update wiresToUpdate;
