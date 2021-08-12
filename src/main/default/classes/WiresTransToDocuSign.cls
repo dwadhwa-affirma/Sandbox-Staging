@@ -147,6 +147,7 @@ public class WiresTransToDocuSign {
 				WIRES_Transaction__c w = new WIRES_Transaction__c();
             	w.id = wt.Id;
             	w.DocuSignId__c = EnvelopeId;
+                w.Approval_Status__c = WiresConstant.ApprovalStatus_PendingForMemberReview;
             
             	WireTransToUpdate.add(w);
 				
