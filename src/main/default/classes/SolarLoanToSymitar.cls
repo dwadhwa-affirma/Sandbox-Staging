@@ -161,7 +161,7 @@ public class SolarLoanToSymitar {
                     }
                     if(MatchID3.length() > 22){
                         MatchID3 = MatchID3.left(21);
-                        if(MatchID3.contains('&') == true && MatchID3.indexOf('&') > 17){
+                        if(MatchID3.contains('&') == true && MatchID3.indexOf('&') > 16){
                             MatchID3 = MatchID3.left(17);        
                         }            
                     }
