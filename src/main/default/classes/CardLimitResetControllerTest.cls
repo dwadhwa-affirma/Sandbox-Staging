@@ -5,11 +5,6 @@ public class CardLimitResetControllerTest {
 	static void setupTestData(){
    
      //---------------------------------------- Creating Account Details record-----------------------------------//
-     
-     SolarLoan_Document_Settings__c sds = new SolarLoan_Document_Settings__c();
-     sds.Days__c = 10;
-     sds.Name = 'Done';
-     insert sds; 
       
      SolarLoan_To_Episys_API_Details__c api = new SolarLoan_To_Episys_API_Details__c();
      api.URL__c = 'https://symxapi.chevronfcu.org/devclient';
