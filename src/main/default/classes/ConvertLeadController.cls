@@ -73,8 +73,8 @@ public with sharing class ConvertLeadController {
         opp.Timeframe__c                 = leadObject.Timeframe__c;
         opp.Estimate_Value__c            = leadObject.Estimate_Value__c;
         opp.Loan_Amount__c               = leadObject.Loan_Amount__c;
-        opp.Additional_Sub_Status__c     = leadObject.Additional_Sub_Status__c;
-        opp.Product_Amount__c            = leadObject.Product_Amount__c;
+        opp.Additional_Sub_Status__c     = leadObject.Additional_Sub_Status__c; // GS added
+        opp.Product_Amount__c            = leadObject.Product_Amount__c;        // GS added
         opp.Property_City__c             = leadObject.Property_City__c;
         opp.Property_Zip__c              = leadObject.Property_Zip__c;
         opp.Property_Address__c          = leadObject.Property_Address__c;
