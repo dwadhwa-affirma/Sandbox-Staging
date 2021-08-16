@@ -45,7 +45,8 @@ global class eSignatureContoller {
         
         decimal amount=this.wireTransactionDetail.WireAmount__c;
         string amountInWord = ConvertCurrencyToWordsEN.english_number((long)amount)+' Dollars';
-        string centInWord=ConvertCurrencyToWordsEN.cent_in_word(amount);
+        System.debug('Amount:'+amount);
+        string centInWord=ConvertCurrencyToWordsEN.cent_in_word((decimal)amount);
         if(centInWord!=''){
             amountInWord=amountInWord+' AND '+centInWord+' '+'Cents';
         }
@@ -102,7 +103,9 @@ global class eSignatureContoller {
         
         decimal amount=data.WireAmount__c;
         string amountInWord = ConvertCurrencyToWordsEN.english_number((long)amount)+' Dollars';
-        string centInWord=ConvertCurrencyToWordsEN.cent_in_word(amount);
+        
+        System.debug('Amount:'+amount);
+        string centInWord=ConvertCurrencyToWordsEN.cent_in_word((decimal)amount);
         if(centInWord!=''){
             amountInWord=amountInWord+' AND '+centInWord+' '+'Cents';
         }
@@ -157,8 +160,9 @@ global class eSignatureContoller {
         
         InPersonSigning__c inPersonSigning=[SELECT Id, Name,SalesforceID__c FROM InPersonSigning__c WHERE Id=:wireTransaction.Id LIMIT 1];
         if(inPersonSigning!=null){
-            inPersonSigning.IsLocked__c=true;
             inPersonSigning.Wires_Transaction__c=inPersonSign.SalesforceID__c;
+            //update lock status
+            inPersonSigning.IsLocked__c=true;
             update inPersonSigning;
         }
         

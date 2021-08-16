@@ -84,6 +84,14 @@ public with sharing class ConvertCurrencyToWordsEN {
             	return cent =to_19[integer.valueOf(strNum.substring(0,1))];         
             }
             
+            if(num<20 && strNum.length()==2){
+                return cent =to_19[integer.valueOf(strNum.substring(0,2))];     
+            }
+            
+            if(strNum.length()==2 && strNum.substring(1,2)=='0'){
+                return cent=zero_to_tens[integer.valueOf(strNum.substring(0,1))];        
+            }
+            
             if(strNum.length()==2){
                 return cent=zero_to_tens[integer.valueOf(strNum.substring(0,1))] +' '+ to_19[integer.valueOf(strNum.substring(1,2))];        
             }
