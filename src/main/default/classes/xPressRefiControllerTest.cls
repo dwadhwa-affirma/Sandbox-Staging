@@ -38,6 +38,7 @@ public class xPressRefiControllerTest {
         accDetail.Vesting__c = 'Test';
         accDetail.Trust__c = false;
         accDetail.PMI_Company_Name__c = '';
+        accDetail.Xpress_Refi_Eligibility__c = true;
 		insert accDetail;
 
 		List<Person_Account__c> person_obj = new List<Person_Account__c>{new Person_Account__c(TypeTranslate__c = '0000/Primary', Account_Number__c = accDetail.id, PersonID__c = acc.Id)};
@@ -60,6 +61,11 @@ public class xPressRefiControllerTest {
         xrelo.Name='Primary';
         xrelo.Discount__c =0.375;
         insert xrelo;
+
+        xPressRefi_Docusign_Emails__c ac = new xPressRefi_Docusign_Emails__c();
+		ac.Name = 'Email For Testing';
+		ac.Emails__c = 'Testing';
+		insert ac;
         
         xPressRefi_Case_Categories__c casecat = new xPressRefi_Case_Categories__c();
         casecat.Name='Categories';
@@ -146,6 +152,50 @@ public class xPressRefiControllerTest {
 
 
 		insert uu;
+
+        xPressRefi_Docusign_API_User_Details__c adAPIChevron = new xPressRefi_Docusign_API_User_Details__c();
+		adAPIChevron.Name = 'Chevron XR FIXED';
+		adAPIChevron.AccountId__c = 'Test';
+		adAPIChevron.EndPoint__c = 'Test';
+		adAPIChevron.IntegratorKey__c = 'Test';
+		adAPIChevron.Password__c = 'Test';
+		adAPIChevron.ReplyTo__c = 'Test';
+		adAPIChevron.TemplateId__c = 'Test';
+		adAPIChevron.Username__c = 'Test';
+		insert adAPIChevron;
+
+		xPressRefi_Docusign_API_User_Details__c adAPISpectrum = new xPressRefi_Docusign_API_User_Details__c();
+		adAPISpectrum.Name = 'Spectrum';
+		adAPISpectrum.AccountId__c = 'Test';
+		adAPISpectrum.EndPoint__c = 'Test';
+		adAPISpectrum.IntegratorKey__c = 'Test';
+		adAPISpectrum.Password__c = 'Test';
+		adAPISpectrum.ReplyTo__c = 'Test';
+		adAPISpectrum.TemplateId__c = 'Test';
+		adAPISpectrum.Username__c = 'Test';
+		insert adAPISpectrum;
+        
+        xPressRefi_Docusign_API_User_Details__c ContactSpectrum = new xPressRefi_Docusign_API_User_Details__c();
+		ContactSpectrum.Name = 'Spectrum Contact Info';
+		ContactSpectrum.AccountId__c = 'Test';
+		ContactSpectrum.EndPoint__c = 'Test';
+		ContactSpectrum.IntegratorKey__c = 'Test';
+		ContactSpectrum.Password__c = 'Test';
+		ContactSpectrum.ReplyTo__c = 'Test';
+		ContactSpectrum.TemplateId__c = 'Test';
+		ContactSpectrum.Username__c = 'Test';
+		insert ContactSpectrum;
+        
+        xPressRefi_Docusign_API_User_Details__c ContactCFCU = new xPressRefi_Docusign_API_User_Details__c();
+		ContactCFCU.Name = 'Chevron Contact Info';
+		ContactCFCU.AccountId__c = 'Test';
+		ContactCFCU.EndPoint__c = 'Test';
+		ContactCFCU.IntegratorKey__c = 'Test';
+		ContactCFCU.Password__c = 'Test';
+		ContactCFCU.ReplyTo__c = 'Test';
+		ContactCFCU.TemplateId__c = 'Test';
+		ContactCFCU.Username__c = 'Test';
+		insert ContactCFCU;
         
         test.stopTest();
 
@@ -183,7 +233,7 @@ public class xPressRefiControllerTest {
         Account objAccount = [select id, Name
 		                                        from Account
 		                                        limit 1];
-        List<xPressRefi__c> objXpressRefi = [SELECT Borrower_Birth_Date__c,Income__c, Borrower_First_Name__c, Borrower_Last_Name__c, Brand_Code__c, Brand__c, Case__c, Case__r.CaseNumber, Current_Interest_Rate_Calc__c, Current_Interest_Rate__c, Debit_Share_Account__c, DocuSignId__c, Docusign_Status__c, Home_Value__c, Id, Interest_Rate__c, Investor__c, is_CSV_Generated__c, Is_Mortgage_Ware_File_Created__c, Is_Product_Change__c, LoanId__c, Mailing_Address_1__c, Mailing_Address_2__c, Mailing_Address_City__c, Mailing_Address_Zip__c, Mailing_State__c, Maturity_Date_Calc__c, Maturity_Date__c, Member_Number__c, Member__c, New_Interest_Rate_Calc__c, New_Payment_Amount_Calc__c, New_Product_Type__c, PMI_Amount__c, Principal_Balance__c, Product_Type__c, Property_Address_2__c, Property_Balance__c, Property_City__c, Property_County__c, Property_State__c, Property_Zip__c, Property__c, P_I_Payment__c, Rate_Expiration_Date__c, Share_Account__c, Start_Date_Calc__c, Member_Phone__c, Member_Email__c, Loan_Program_Type__c, Borrower_Name_1__c, Borrower_Name_2__c, Due_Date__c, PMI_Flag__c, Is_Chevron_Employee__c, Is_Primary_Residence__c, Is_Relocation_Loan__c, Impermissible__c, New_Product_Name__c, Remaining_Term__c, Vesting__c, Trust__c, PMI_Company_Name__c
+        List<xPressRefi__c> objXpressRefi = [SELECT Borrower_Birth_Date__c,Income__c, Borrower_First_Name__c, Borrower_Last_Name__c, Brand_Code__c, Brand__c, Case__c, Case__r.CaseNumber, Current_Interest_Rate_Calc__c, Current_Interest_Rate__c, Debit_Share_Account__c, DocuSignId__c, Docusign_Status__c, Home_Value__c, Id, Interest_Rate__c, Investor__c, is_CSV_Generated__c, Is_Mortgage_Ware_File_Created__c, Is_Product_Change__c, LoanId__c, Mailing_Address_1__c, Mailing_Address_2__c, Mailing_Address_City__c, Mailing_Address_Zip__c, Mailing_State__c, Maturity_Date_Calc__c, Maturity_Date__c, Member_Number__c, Member__c, New_Interest_Rate_Calc__c, New_Payment_Amount_Calc__c, New_Product_Type__c, PMI_Amount__c, Principal_Balance__c, Product_Type__c, Property_Address_2__c, Property_Balance__c, Property_City__c, Property_County__c, Property_State__c, Property_Zip__c, Property__c, P_I_Payment__c, Rate_Expiration_Date__c, Share_Account__c, Start_Date_Calc__c, Member_Phone__c, Member_Email__c, Loan_Program_Type__c, Borrower_Name_1__c, Borrower_Name_2__c, Due_Date__c, PMI_Flag__c, Is_Chevron_Employee__c, Is_Primary_Residence__c, Is_Relocation_Loan__c, Impermissible__c, New_Product_Name__c, Remaining_Term__c, Vesting__c, Trust__c, PMI_Company_Name__c,Vesting_Person_1__c,Vesting_Person_2__c,Vesting_Person_3__c,Vesting_Person_4__c 
 			                                            FROM xPressRefi__c
 		                                        limit 1];
         xPressRefiController.createCase(objAccount.id, objXpressRefi[0]);
@@ -220,7 +270,7 @@ public class xPressRefiControllerTest {
     
     static testMethod void getAllProductDetails1(){		
         Test.startTest();
-        List<xPressRefi__c> objXpressRefi = [SELECT Borrower_Birth_Date__c, Borrower_First_Name__c, Borrower_Last_Name__c, Brand_Code__c, Brand__c, Case__c, Case__r.CaseNumber, Current_Interest_Rate_Calc__c, Current_Interest_Rate__c, Debit_Share_Account__c, DocuSignId__c, Docusign_Status__c, Home_Value__c, Id, Interest_Rate__c, Investor__c, is_CSV_Generated__c, Is_Mortgage_Ware_File_Created__c, Is_Product_Change__c, LoanId__c, Mailing_Address_1__c, Mailing_Address_2__c, Mailing_Address_City__c, Mailing_Address_Zip__c, Mailing_State__c, Maturity_Date_Calc__c, Maturity_Date__c, Member_Number__c, Member__c, New_Interest_Rate_Calc__c, New_Payment_Amount_Calc__c, New_Product_Type__c, PMI_Amount__c, Principal_Balance__c, Product_Type__c, Property_Address_2__c, Property_Balance__c, Property_City__c, Property_County__c, Property_State__c, Property_Zip__c, Property__c, P_I_Payment__c, Rate_Expiration_Date__c, Share_Account__c, Start_Date_Calc__c, Member_Phone__c, Member_Email__c, Loan_Program_Type__c, Borrower_Name_1__c, Borrower_Name_2__c, Due_Date__c, PMI_Flag__c, Is_Chevron_Employee__c, Is_Primary_Residence__c, Is_Relocation_Loan__c, Impermissible__c, New_Product_Name__c, Remaining_Term__c, Vesting__c, Trust__c, PMI_Company_Name__c
+        List<xPressRefi__c> objXpressRefi = [SELECT Borrower_Birth_Date__c,Is_Maturity_Date_Reset__c, Borrower_First_Name__c, Borrower_Last_Name__c, Brand_Code__c, Brand__c, Case__c, Case__r.CaseNumber, Current_Interest_Rate_Calc__c, Current_Interest_Rate__c, Debit_Share_Account__c, DocuSignId__c, Docusign_Status__c, Home_Value__c, Id, Interest_Rate__c, Investor__c, is_CSV_Generated__c, Is_Mortgage_Ware_File_Created__c, Is_Product_Change__c, LoanId__c, Mailing_Address_1__c, Mailing_Address_2__c, Mailing_Address_City__c, Mailing_Address_Zip__c, Mailing_State__c, Maturity_Date_Calc__c, Maturity_Date__c, Member_Number__c, Member__c, New_Interest_Rate_Calc__c, New_Payment_Amount_Calc__c, New_Product_Type__c, PMI_Amount__c, Principal_Balance__c, Product_Type__c, Property_Address_2__c, Property_Balance__c, Property_City__c, Property_County__c, Property_State__c, Property_Zip__c, Property__c, P_I_Payment__c, Rate_Expiration_Date__c, Share_Account__c, Start_Date_Calc__c, Member_Phone__c, Member_Email__c, Loan_Program_Type__c, Borrower_Name_1__c, Borrower_Name_2__c, Due_Date__c, PMI_Flag__c, Is_Chevron_Employee__c, Is_Primary_Residence__c, Is_Relocation_Loan__c, Impermissible__c, New_Product_Name__c, Remaining_Term__c, Vesting__c, Trust__c, PMI_Company_Name__c
 			                                            FROM xPressRefi__c
 		                                        limit 1];
         set<id> ids=new set<id>();

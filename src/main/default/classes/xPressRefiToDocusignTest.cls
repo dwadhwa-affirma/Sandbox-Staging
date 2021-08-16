@@ -94,6 +94,7 @@ public class xPressRefiToDocusignTest {
         objXpressRefi.Borrower_Name_2__c = accDetail.Mortgage_Name_2__c;
         objXpressRefi.Income__c = accDetail.Income__c;
         objXpressRefi.Due_Date__c = accDetail.Due_Date__c;
+        objXpressRefi.New_Product_Type__c = '30 Year Fixed';
 		insert objXpressRefi;
         
         Profile pf = [Select Id

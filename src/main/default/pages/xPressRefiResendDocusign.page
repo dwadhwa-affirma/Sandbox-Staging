@@ -1,0 +1,55 @@
+<apex:page standardController="xPressRefi__c" recordSetVar="xpressrefis" extensions="xPressRefiToDocusign" lightningStylesheets="true">
+    <apex:slds />
+    <script type="text/javascript"> 
+        window.onload = function () {
+            var validation = '{!validation}';
+            var validrecords = '{!validrecords}'
+            var contactdocusigncompleted = '{!contactdocusigncompleted}'
+            if (validation == 'false') {
+                alert('Please select at least one Xpress Refi record to resend Docusign!');
+                window.history.back();
+            }
+            else if (validrecords == 'false') {
+                alert('Please select valid Xpress Refi records');
+                window.history.back();
+            }
+            else if (contactdocusigncompleted == 'false') {
+                alert('Contact Docusign is pending. Please complete.');
+                window.history.back();
+            }
+            else {
+                document.getElementById('spin').style.display = "block";
+                ResendDocusignMenthod();
+            }
+        }
+        function hide(isSuccess) {
+            debugger;
+            //var isSuccess = '{!isSuccess}';
+            if (isSuccess) {
+                document.getElementById('spin').style.display = "none";
+                alert('Request Processed Successfully.');
+                window.history.back();
+            }
+            else{
+                document.getElementById('spin').style.display = "none";
+                alert('Error Sending Docusign.');
+                window.history.back();
+            }   
+        }
+    </script>
+
+    <apex:form id="theForm">
+
+        <apex:pageblock>
+            <div class="slds-spinner_container" style="position: fixed;" id="spin">
+                <div role="status" class="slds-spinner slds-spinner--large slds-spinner--brand">
+                    <div class="slds-spinner__dot-a"></div>
+                    <div class="slds-spinner__dot-b"></div>
+                </div>
+            </div>
+        </apex:pageblock>
+        <apex:actionFunction action="{!ResendDocusignMenthod}" name="ResendDocusignMenthod" oncomplete="hide({!isSuccess});" rerender="theForm">
+        </apex:actionFunction>
+
+    </apex:form>
+</apex:page>

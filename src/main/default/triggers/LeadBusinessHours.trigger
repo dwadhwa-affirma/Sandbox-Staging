@@ -22,12 +22,12 @@ trigger LeadBusinessHours on Lead (after insert,after update, before insert, bef
                 obj.Open_Hours__c = 0;
                 openHours.add(obj);
                 
-                //-------------------------------CRM-1877--------------------------------------//
+                //-------------------------------Xpress Refi Form--------------------------------------//
                 
-                if(lead.Episys_User_ID__c != 7002 && lead.LeadSource == 'Real Estate help desk' && 
-                         lead.I_m_interested_in__c == 'Home Loan Help Desk'){
+                if(lead.Episys_User_ID__c != 7002 && lead.LeadSource == 'Xpress Form - Web' && 
+                         lead.I_m_interested_in__c == 'Xpress Form - Web'){
 					                             
-                	System.debug('Calling Future class');    
+                    System.debug('Calling Future class');    
                     MarketingLeadCheck.LeadCheck(lead.id);
                 }
             }
@@ -46,14 +46,14 @@ trigger LeadBusinessHours on Lead (after insert,after update, before insert, bef
             for(Lead lead: Trigger.new){
                 Lead oldLead = Trigger.oldMap.get(lead.Id);
                 if(rt_map.get(lead.recordTypeID).getName().containsIgnoreCase('Company Lead') && 
-                   	oldLead.Status != lead.Status && lead.Status == 'Outreach'){
-					companyLeadIds.add(lead.id);                        
+                    oldLead.Status != lead.Status && lead.Status == 'Outreach'){
+                    companyLeadIds.add(lead.id);                        
                     companyLeads.add(lead);
                 }
             }
             System.debug('companyLeadIds'+companyLeadIds);
             System.debug('companyLeads'+companyLeads);
-           	
+            
             List<task> tasklist = [select whoId,status from task where ActivityDate != null and whoId in :companyLeadIds];
             
             if(tasklist.size() > 0){
@@ -294,7 +294,7 @@ trigger LeadBusinessHours on Lead (after insert,after update, before insert, bef
             else if(lead.Status == 'New' && lead.Episys_User_ID__c != 7002 && lead.recordTypeID != null &&
                     !rt_map.get(lead.recordTypeID).getName().containsIgnoreCase('Company Lead') && 
                     lead.LeadSource == 'Event' ){
-            		System.debug('2222');
+                    System.debug('2222');
                     string BranchQueue ='';
                     if(eusr.size() > 0 ){
                         BranchQueue = eusr[0].Branch_Name__c.replace(' ', '_').replace('-','_').replace('/','_').toLowerCase();
@@ -341,8 +341,8 @@ trigger LeadBusinessHours on Lead (after insert,after update, before insert, bef
                 }
                 else if(lead.Status == 'New' && lead.Episys_User_ID__c != 7002 && lead.recordTypeID != null &&
                          !rt_map.get(lead.recordTypeID).getName().containsIgnoreCase('Company Lead') && 
-                        (lead.LeadSource != 'Branch Walk in' && lead.LeadSource != 'Branch Call')){
-               		System.debug('3333');
+                        (lead.LeadSource != 'Branch Walk in' && lead.LeadSource != 'Branch Call' && lead.LeadSource != 'Refer a Member - Branch' && lead.LeadSource != 'Refer a Member - Web')){
+                    System.debug('3333');
                     system.debug('Condition Product Type###');
                     string ProductType = lead.Product_Type__c.replace(' ', '_').replace('-','_').replace('/','_').toLowerCase();
                     system.debug('ProductType###' + ProductType);
@@ -363,14 +363,89 @@ trigger LeadBusinessHours on Lead (after insert,after update, before insert, bef
                 }
                 else if(lead.recordTypeID != null && !rt_map.get(lead.recordTypeID).getName().containsIgnoreCase('Company Lead') && 
                          lead.Episys_User_ID__c != 7002 && 
-                        (lead.Status =='Outreach' || lead.Status == 'Analyzing Needs' || lead.Status == 'Prospect Considering')){
-                	System.debug('4444');
+                        (lead.Status =='Outreach' || lead.Status == 'Analyzing Needs' || lead.Status == 'Prospect Considering') 
+                         && lead.LeadSource != 'Refer a Member - Branch' && lead.LeadSource != 'Refer a Member - Web'){
+                    System.debug('4444');
                     lead.OwnerId = uid;
+                } 
+            	else if(lead.Episys_User_ID__c != 7002 && lead.LeadSource == 'Real Estate help desk' && 
+                         lead.I_m_interested_in__c == 'Home Loan Help Desk'){
+                    
+                	if(lead.Are_you_a_current_member__c == 'No'){
+                    	lead.Current_Member__c = 'No';
+                    }
+                    if(lead.Are_you_a_current_member__c == 'Yes'){
+                    	lead.Current_Member__c = 'Yes';
+                    }
+                	System.debug('5555');
+                    for(Group grp : listQueue){
+              	      if(grp.name.containsIgnoreCase('Real Estate')){
+                 	     groupName = grp.Name;
+                         groupnameid = grp.id;
+                         break;
+                      }
+                    }
+                    if(groupName!=null && groupName!=''){
+                   		system.debug('Queue Name: '+groupName); 
+                        lead.OwnerId = groupnameid;
+                    }
+                }
+            	else if(lead.Status == 'New' && lead.Episys_User_ID__c != 7002 && 
+                    lead.LeadSource == 'SEG Contact Form' ){
+                    System.debug('9999');                   
+                   
+                        for(Group grp : listQueue){                        
+                            if(grp.name.containsIgnoreCase('Business Development Queue')){                            
+                                groupName = grp.Name;
+                                groupnameid = grp.id;
+                                break;
+                            }
+                            system.debug('groupName###' + groupName);
+                        }                    
+                
+                    if(groupnameid != null){
+                        lead.OwnerId = groupnameid;
+                    }
+                    
+                }
+                else if(lead.Status == 'New' && lead.Episys_User_ID__c != 7002 && 
+                    lead.LeadSource == 'Expat Services Form' ){
+                    System.debug('8888');                 
+                   
+                        for(Group grp : listQueue){                                              
+                            if(grp.name.containsIgnoreCase('Ex-Patriates')){                                                            
+                                groupName = grp.Name;
+                                groupnameid = grp.id;
+                                break;
+                            }
+                            system.debug('groupName###' + groupName);
+                        }  
+                        
+                    if(groupnameid != null){                       
+                        lead.OwnerId = groupnameid;
+                    }                    
+                }
+            	else{
+                  //------------------------------- from Graham Smith 5/6/21 start --------------------------------------//
+                  // Looks for a match on referring first name, referring last name and referring email.
+                  // Only want to do this if single insert.
+                  if(Trigger.new.size() == 1) {
+                    if( (lead.LeadSource == 'Refer a Member - Branch' && lead.Person__c == null) || lead.LeadSource == 'Refer a Member - Web') {
+                      if(lead.Referring_Member_Email__c != null) {
+                        String testEmail = lead.Referring_Member_Email__c;
+                        String testFN    = lead.Referring_Member_FirstName__c;
+                        String testLN    = lead.Referring_Member_LastName__c;
+                        List<Account> matchingAccounts = [SELECT Id,FirstName,LastName,PersonEmail FROM Account WHERE FirstName = :testFN AND LastName = :testLN AND PersonEmail = :testEmail LIMIT 1];
+                        if(matchingAccounts.size() > 0) {
+                          lead.Person__c = matchingAccounts[0].Id;
+                        }
+                      }
+                    }
+                  }
+                  //------------------------------- from Graham Smith 5/6/21 end --------------------------------------//
                 }
         }
     }
-    
-	
     
     if(Trigger.isupdate && Trigger.isBefore){
         
@@ -386,7 +461,7 @@ trigger LeadBusinessHours on Lead (after insert,after update, before insert, bef
             if(SetLead.contains(ld.id) && ld.Status == 'Closed - Not Converted'){
                 ld.Adderror('Queue owned leads cannot be closed.');
             }
-            if(oldlead.Status == 'Closed - Converted' || (oldlead.Status == 'Closed - Not Converted' && ld.Status == 'Closed - Not Converted'))
+            if((oldlead.Status == 'Closed - Converted' || (oldlead.Status == 'Closed - Not Converted' && ld.Status == 'Closed - Not Converted')) && Profilename != 'CFCU Admin')
             {
                 
                 ld.Adderror('Lead fields are read only for Closed Leads.');
@@ -410,13 +485,13 @@ trigger LeadBusinessHours on Lead (after insert,after update, before insert, bef
             
             if(lead.Company != '' && lead.Company != null){
                 //string uid= UserInfo.getUserId();
-    			//User usr = [Select id, name, alias from User where id=:uid];
+                //User usr = [Select id, name, alias from User where id=:uid];
                 system.debug('Company Lead');
                 //if((lead.Company == 'Unbounce' || lead.company == 'unbounce') && usr.Alias == 'msyst'){
                 //    lead.RecordTypeId = LeadRT2;
                 //}
                 //else{
-                	lead.RecordTypeId = LeadRT;    
+                    lead.RecordTypeId = LeadRT;    
                 //}
                 
             }

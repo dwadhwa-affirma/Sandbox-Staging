@@ -13,7 +13,7 @@
         var evt = $A.get("e.c:CardLimitResetEvent");
         var ATM = component.get("v.CLRecord.ATM_Usage_Limit__c");
         var AUTH = component.get("v.CLRecord.Auth_POS_Limit__c");
-      
+       
         if(type == 'Change Card Limits'){
             
             component.set("v.ChangeCardLimitIsEnabled",true);
@@ -29,14 +29,20 @@
                 if(state === "SUCCESS"){
                     var result =  resp.getReturnValue();
                     if(result != undefined){
-                        if(result.AuthLimit != undefined && result.AuthLimit != ''){
+                        if(result.AuthLimit != undefined && result.AuthLimit != '' && AUTH == undefined){
                             component.set("v.CLRecord.Auth_POS_Limit__c", result.AuthLimit);
+                        }
+                        else if(AUTH != undefined){
+                            component.set("v.CLRecord.Auth_POS_Limit__c",AUTH);
                         }
                         else{
                             component.set("v.CLRecord.Auth_POS_Limit__c",'2500.00');
                         }
-                        if(result.UsageLimit != undefined && result.UsageLimit != ''){
+                        if(result.UsageLimit != undefined && result.UsageLimit != '' && ATM == undefined){
                             component.set("v.CLRecord.ATM_Usage_Limit__c", result.UsageLimit);
+                        }
+                        else if(ATM != undefined){
+                        	component.set("v.CLRecord.ATM_Usage_Limit__c",ATM);   
                         }
                         else{
                         	component.set("v.CLRecord.ATM_Usage_Limit__c",'510.00');   

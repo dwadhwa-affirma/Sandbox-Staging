@@ -16,6 +16,16 @@ public class SolarLoanToFileUCC {
     public static String UCCFile;
     public static string loanAPI;
     
+    public static string Mapp;
+    public static string Book;
+    public static string Page;
+    public static string APN;
+    public static string Lot;
+    public static string Block;
+    public static string Section;
+    public static string Tract;
+    public static string Subdivision;
+
     public static String box15;
     public static String box16;
     public static String ClientReference;  //not done 
@@ -191,32 +201,48 @@ public class SolarLoanToFileUCC {
             
             //------------------------------------------------Fetching Token------------------------------------//
             
-            if(sl.Map__c == null)
-                sl.Map__c = '';
-
-            if(sl.Book__c == null)
-                sl.Book__c = '';
-
-            if(sl.Page__c == null)
-                sl.Page__c = '';
-
-            if(sl.APN__c == null)
-                sl.APN__c = '';
-
-            if(sl.Lot__c == null)
-                sl.Lot__c = '';
-            
-            if(sl.Block__c == null)
-                sl.Block__c = '';    
-            
-            if(sl.Section__c == null)
-                sl.Section__c = '';
+            if(sl.Map__c != null)
+                Mapp = 'Map : '+sl.Map__c;
                 
-            if(sl.Tract__c == null)
-                sl.Tract__c = '';     
+            if(sl.Book__c != null && Mapp == null)
+                Book = 'Book : '+sl.Book__c;
+            else if(sl.Book__c != null && Mapp != null)
+                Book = ', Book : '+sl.Book__c;
+            
+            if(sl.Page__c != null && sl.Book__c == null && Mapp == null)
+                Page = 'Page : '+sl.Page__c;
+            else if(sl.Page__c != null && (sl.Book__c != null || Mapp != null))
+                Page = ', Page : '+sl.Page__c;
 
-            if(sl.Subdivision__c == null)
-                sl.Subdivision__c = '';     
+            if(sl.APN__c != null && sl.Page__c == null && sl.Book__c == null && Mapp == null)
+                APN = 'APN : '+sl.APN__c;
+            else if(sl.APN__c != null && (sl.Page__c != null || sl.Book__c != null || Mapp != null))
+                APN = ', APN : '+sl.APN__c;
+
+            if(sl.Lot__c != null && sl.APN__c == null && sl.Page__c == null && sl.Book__c == null && Mapp == null)
+                Lot = 'Lot : '+sl.Lot__c;
+            else if(sl.Lot__c != null && (sl.APN__c != null || sl.Page__c != null || sl.Book__c != null || Mapp != null))
+                Lot = ', Lot : '+sl.Lot__c;
+
+            if(sl.Block__c != null && sl.Lot__c == null && sl.APN__c == null && sl.Page__c == null && sl.Book__c == null && Mapp == null)
+                Block = 'Block : '+sl.Block__c;
+            else if(sl.Block__c != null && (sl.Lot__c != null || sl.APN__c != null || sl.Page__c != null || sl.Book__c != null || Mapp == null))
+                Block = ', Block : '+sl.Block__c;
+
+            if(sl.Section__c != null && sl.Block__c == null && sl.Lot__c == null && sl.APN__c == null && sl.Page__c == null && sl.Book__c == null && Mapp == null)
+                Section = 'Section : '+sl.Section__c;
+            else if(sl.Section__c != null && (sl.Block__c != null || sl.Lot__c == null || sl.APN__c != null || sl.Page__c != null || sl.Book__c != null || Mapp == null))
+                Section = ', Section : '+sl.Section__c;
+
+            if(sl.Tract__c != null && sl.Section__c == null && sl.Block__c == null && sl.Lot__c == null && sl.APN__c == null && sl.Page__c == null && sl.Book__c == null && Mapp == null)
+                Tract = 'Tract : '+sl.Tract__c;
+            else if(sl.Tract__c != null && (sl.Section__c != null || sl.Block__c != null || sl.Lot__c != null || sl.APN__c != null || sl.Page__c != null || sl.Book__c != null || Mapp != null))
+                Tract = ', Tract : '+sl.Tract__c;
+
+            if(sl.Subdivision__c != null && sl.Tract__c == null && sl.Section__c == null && sl.Block__c == null && sl.Lot__c == null && sl.APN__c == null && sl.Page__c == null && sl.Book__c == null && Mapp == null)
+                Subdivision = 'Subdivision : '+sl.Subdivision__c;     
+            else if(sl.Subdivision__c != null && (sl.Tract__c != null || sl.Section__c != null || sl.Block__c != null || sl.Lot__c != null || sl.APN__c != null || sl.Page__c != null || sl.Book__c != null || Mapp != null))
+                Subdivision = ', Subdivision : '+sl.Subdivision__c;
 
             if(sl.Legal_Description__c != null)
                 LegalDescription = sl.Legal_Description__c;
@@ -224,8 +250,40 @@ public class SolarLoanToFileUCC {
                 LegalDescription = '';
                     
             box15 = sl.mem_Primary_First_Name__c +' '+ sl.mem_Primary_Last_Name__c + '\n' + sl.mem_Primary_Street__c +', '+ '\n' + sl.mem_Primary_City__c + ', '+ '\n' + sl.mem_Primary_State__c + ' - ' +  sl.mem_Primary_Zip_Code__c;
-            box16 = 'LEGAL DESCRIPTION: '+ LegalDescription + '\n\n' + 'Map : '+sl.Map__c + ', Book : ' +sl.Book__c + ', Page : ' +sl.Page__c + ', APN : '+sl.APN__c + ', Lot : '+sl.Lot__c + ', Block : '+sl.Block__c + ', Section : '+ sl.Section__c + ', Tract : '+sl.Tract__c+ ', Subdivision: '+sl.Subdivision__c; 
             
+            box16 = 'LEGAL DESCRIPTION: '+ LegalDescription + '\n\n';
+
+            if(sl.Map__c != null)
+                box16 = box16 + Mapp;
+                
+            if(sl.Book__c != null)
+                box16 = box16 + Book;
+                
+            if(sl.Page__c != null)
+                box16 = box16 + Page;
+
+            if(sl.APN__c != null)
+                box16 = box16 + APN;
+                
+            if(sl.Lot__c != null)
+                box16 = box16 + Lot;
+                
+            if(sl.Block__c != null)
+                box16 = box16 + Block;
+                
+            if(sl.Section__c != null)
+                box16 = box16 + Section;
+                
+            if(sl.Tract__c != null)
+                box16 = box16 + Tract;
+
+            if(sl.Subdivision__c != null)
+                box16 = box16 + Subdivision;
+
+            system.debug('Box16: '+box16);
+            
+            box16 = box16.replace('"','');
+
             ClientReference = sl.Member_Number__c +' - 7500';
             
             if(sl.mem_Primary_First_Name__c != null)
@@ -318,75 +376,81 @@ public class SolarLoanToFileUCC {
             }
             System.debug('token is = ' + token);
             
-            //------------------------------------------------Getting Jurisdiction------------------------------------------//
-
-            if(sl.county__c != null && sl.county__c !='')
-                FJcounty = sl.county__c;
+            if(sl.Jurisdiction__c == 'Not Found' || sl.Jurisdiction__c == null){
             
-            if(sl.mem_Primary_State__c  != null && sl.mem_Primary_State__c  !='')
-                FJstate = sl.mem_Primary_State__c;
+                //------------------------------------------------Getting Jurisdiction------------------------------------------//
 
-                req3.setEndpoint(EndpointURL+'/OnlineServices/api/V2/Jurisdiction');
-                req3.setMethod('GET');
-                req3.setHeader('Accept', 'application/json');
-                req3.setHeader('Authorization', 'Bearer ' + token);
-                req3.setHeader('Content-Type', 'application/json;charset=UTF-8'); 
+                if(sl.county__c != null && sl.county__c !='')
+                    FJcounty = sl.county__c;
                 
-                system.debug('test3'+req3);                     
-                
-                if(!Test.isRunningTest()){
-                    res3 = http3.send(req3);
-                    responseBody3 = res3.getBody();
-                    System.debug('Body: '+responseBody3);
-                }
-                else{
-                    responseBody3 = '[{"ID":"456","Name":"TM","State":"MJ"}]';
-                }
+                if(sl.mem_Primary_State__c  != null && sl.mem_Primary_State__c  !='')
+                    FJstate = sl.mem_Primary_State__c;
 
-                
-                /*if(UCClogs == null)
-                    UCClogs = responseBody3;
-                else
-                    UCClogs = UCClogs +'\n'+ responseBody3; */
+                    req3.setEndpoint(EndpointURL+'/OnlineServices/api/V2/Jurisdiction');
+                    req3.setMethod('GET');
+                    req3.setHeader('Accept', 'application/json');
+                    req3.setHeader('Authorization', 'Bearer ' + token);
+                    req3.setHeader('Content-Type', 'application/json;charset=UTF-8'); 
+                    
+                    system.debug('test3'+req3);                     
+                    
+                    if(!Test.isRunningTest()){
+                        res3 = http3.send(req3);
+                        responseBody3 = res3.getBody();
+                        System.debug('Body: '+responseBody3);
+                    }
+                    else{
+                        responseBody3 = '[{"ID":"456","Name":"TM","State":"MJ"}]';
+                    }
 
-                if(responseBody3 != ''){        
-                    List<Object> results = (List<Object>)System.JSON.deserializeUntyped(responseBody3);
-                    if(results.size() > 0){
-                        for(Object key : results){ 
-                            //System.debug('key: '+key);   
-                            Map<String, Object> Fdata = (Map<String, Object>)key;
-                            for(string o: Fdata.keyset()){
-                                if(StateMatched == false){
-                                    if(o == 'ID'){
-                                        FJId = Integer.valueOf(Fdata.get(o));
-                                    }
-                                    if(o == 'Name' && string.valueOf(Fdata.get(o)).equalsIgnoreCase(FJcounty)){
-                                        system.debug('FJ: '+ string.valueOf(Fdata.get(o)));
-                                        CountyMatched = true;
-                                    }
-                                   
-                                    if(CountyMatched == true && o == 'State' && StateMatched == false){
-                                        system.debug('State: '+ string.valueOf(Fdata.get(o)));
-                                        system.debug('-------'+Fdata);
-                                        FJstateDummy = string.valueOf(Fdata.get(o)).substringAfter('{Code=');
-                                        FJstateDummy = String.valueOf(FJstateDummy).substringBefore(', Country=');
-                                        if(FJstateDummy == FJstate){
-                                            StateMatched = true;
+                    
+                    /*if(UCClogs == null)
+                        UCClogs = responseBody3;
+                    else
+                        UCClogs = UCClogs +'\n'+ responseBody3; */
+
+                    if(responseBody3 != ''){        
+                        List<Object> results = (List<Object>)System.JSON.deserializeUntyped(responseBody3);
+                        if(results.size() > 0){
+                            for(Object key : results){ 
+                                //System.debug('key: '+key);   
+                                Map<String, Object> Fdata = (Map<String, Object>)key;
+                                for(string o: Fdata.keyset()){
+                                    if(StateMatched == false){
+                                        if(o == 'ID'){
+                                            FJId = Integer.valueOf(Fdata.get(o));
+                                        }
+                                        if(o == 'Name' && string.valueOf(Fdata.get(o)).equalsIgnoreCase(FJcounty)){
+                                            system.debug('FJ: '+ string.valueOf(Fdata.get(o)));
+                                            CountyMatched = true;
+                                        }
+                                    
+                                        if(CountyMatched == true && o == 'State' && StateMatched == false){
+                                            system.debug('State: '+ string.valueOf(Fdata.get(o)));
+                                            system.debug('-------'+Fdata);
+                                            FJstateDummy = string.valueOf(Fdata.get(o)).substringAfter('{Code=');
+                                            FJstateDummy = String.valueOf(FJstateDummy).substringBefore(', Country=');
+                                            if(FJstateDummy == FJstate){
+                                                StateMatched = true;
+                                            }
                                         }
                                     }
                                 }
                             }
                         }
                     }
-                }
-                
-            System.debug('CountyMatched: '+CountyMatched);
-            System.debug('StateMatched: '+StateMatched);    
-            System.debug('FJId: '+FJId);
+                    
+                System.debug('CountyMatched: '+CountyMatched);
+                System.debug('StateMatched: '+StateMatched);    
+                System.debug('FJId: '+FJId);
 
-            if(StateMatched != true && CountyMatched != true )
-                FJId = null;
-              
+                if(StateMatched != true && CountyMatched != true )
+                    FJId = null;
+            } 
+            else{
+                FJId = Integer.valueOf(sl.Jurisdiction__c);
+            }
+             
             if(FJId != null){
 
                 //------------------------------------------------Filling UCC------------------------------------------//
@@ -472,41 +536,44 @@ public class SolarLoanToFileUCC {
                 }
                 
                 System.debug('UCC ID is = ' + UCCId);
-                
-                
-                req1.setEndpoint(EndpointURL+'/OnlineServices/api/File/V2/Filing/'+UCCId+'/GenerateImage');
-                req1.setMethod('GET');
-                req1.setHeader('Accept', 'application/json');
-                req1.setHeader('Authorization', 'Bearer ' + token);
-                req1.setHeader('Content-Type', 'application/json;charset=UTF-8');
-
-                system.debug('test1'+req1);                     
-                
-                if(!Test.isRunningTest()){
-                    res1 = http1.send(req1);
-                    responseBody1 = res1.getBody();
-                    System.debug('Body: '+responseBody1);
+                if(UCCId == null){
+                    UCCId = responseBody;
                 }
                 else{
-                    responseBody1 = '{"FileBase64String" : "SSetewtewewtegsgw"}';
-                }
-                
-                if(UCClogs == null)
-                    UCClogs = responseBody1;
-                else
-                    UCClogs = UCClogs +'\n'+ responseBody1;
+                    req1.setEndpoint(EndpointURL+'/OnlineServices/api/File/V2/Filing/'+UCCId+'/GenerateImage');
+                    req1.setMethod('GET');
+                    req1.setHeader('Accept', 'application/json');
+                    req1.setHeader('Authorization', 'Bearer ' + token);
+                    req1.setHeader('Content-Type', 'application/json;charset=UTF-8');
 
-                if(responseBody1!=''){ 
-                    Map<String,Object> results = (Map<String,Object>)System.JSON.deserializeUntyped(responseBody1);
-                    if(results.size() > 0){                     
-                        for(String key : results.keySet()){                   			
-                            if(key == 'FileBase64String'){
-                                UCCFile = String.valueOf(results.get(key));
+                    system.debug('test1'+req1);                     
+                    
+                    if(!Test.isRunningTest()){
+                        res1 = http1.send(req1);
+                        responseBody1 = res1.getBody();
+                        System.debug('Body: '+responseBody1);
+                    }
+                    else{
+                        responseBody1 = '{"FileBase64String" : "SSetewtewewtegsgw"}';
+                    }
+                    
+                    if(UCClogs == null)
+                        UCClogs = responseBody1;
+                    else
+                        UCClogs = UCClogs +'\n'+ responseBody1;
+
+                    if(responseBody1!=''){ 
+                        Map<String,Object> results = (Map<String,Object>)System.JSON.deserializeUntyped(responseBody1);
+                        if(results.size() > 0){                     
+                            for(String key : results.keySet()){                   			
+                                if(key == 'FileBase64String'){
+                                    UCCFile = String.valueOf(results.get(key));
+                                }
                             }
                         }
                     }
+                    System.debug('UCC File is = ' + UCCFile);
                 }
-                System.debug('UCC File is = ' + UCCFile);
 
                 //------------------------------------------------Creating Tracking 34 ------------------------------------------//
                 
@@ -541,7 +608,7 @@ public class SolarLoanToFileUCC {
                     responseBody2 = res2.getBody();
                     System.debug('Response Body Tracking 34::'+res2.getBody());    
                 }else{
-                    responseBody2 = '{"Type":"34","UserChar1":"Submitted","TrackingLocator":"1","UserChar2":"1","UserChar3":"100","UserChar4":"4","UserChar5":"1","UserChar10":"01-01-2019","UserChar20":"01-01-2019","UserAmount1":"100.00","UserAmount2":"322271627","UserAmount3":"42006986568","UserAmount11":"BANK OF AMERICA","UserAmount12":"123","UserAmount13" : "UserAmount13","UserCode1" : "UserCode1", "LoanId" : "LoanId", "AccountNumber" : "AccountNumber"}';
+                    responseBody2 = '{"Type":"34","UserChar1":"Submitted","LoanTrackingLocator":"1","UserChar2":"1","UserChar3":"100","UserChar4":"4","UserChar5":"1","UserChar10":"01-01-2019","UserChar20":"01-01-2019","UserAmount1":"100.00","UserAmount2":"322271627","UserAmount3":"42006986568","UserAmount11":"BANK OF AMERICA","UserAmount12":"123","UserAmount13" : "UserAmount13","UserCode1" : "UserCode1", "LoanId" : "LoanId", "AccountNumber" : "AccountNumber"}';
                 } 
                 
                 if(responseBody2 != '' && responseBody2 != null){        
@@ -557,6 +624,9 @@ public class SolarLoanToFileUCC {
                     }
                 }
                 system.debug('TrackingLocator '+TrackingLocator);
+                if(TrackingLocator == null){
+                    TrackingLocator = responseBody2;
+                }
                 
                 //-------------------------------------------------------------------------------------------------------------------------//
 
@@ -568,7 +638,7 @@ public class SolarLoanToFileUCC {
 
                 Attachment attach = new Attachment();
                 attach.contentType = 'application/pdf';
-                attach.name = 'UCC Filing document';
+                attach.name = 'UCC Filing document.pdf';
                 attach.parentId = sl.id;
                 attach.body = EncodingUtil.base64Decode(UCCFile);
                 SolarLoanUCCAttachment.add(attach);
@@ -590,6 +660,9 @@ public class SolarLoanToFileUCC {
                 Solar_Loans__c s = new Solar_Loans__c(); 
                 s.id = sl.Id;
                 s.Jurisdiction__c = 'Not Found';
+                if(UCClogs != null)
+                    s.UCC_logs__c = UCClogs;
+                s.Status__c = 'EFT Record Created';
                 SolarLoanToUpdate.add(s);
 
             }
@@ -777,8 +850,8 @@ public class SolarLoanToFileUCC {
                 s.id = sl.Id;
                 s.Jurisdiction__c = string.valueOf(FJId);
                 s.continue__c = false;
-                s.Status__c = 'Approved';
-                s.Current_Solar_Loan_Stage__c = 'Stage 3';
+                //s.Status__c = 'Approved';
+                s.Current_Solar_Loan_Stage__c = 'Stage 2';
                 SolarLoanToUpdate.add(s); 
 
             }

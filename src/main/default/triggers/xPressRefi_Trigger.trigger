@@ -15,7 +15,7 @@ trigger xPressRefi_Trigger on xPressRefi__c(after insert, after update ){
 			if(trigger.new[i].Is_Mortgage_Cadence__c == true && trigger.new[i].is_CSV_Generated__c == false){
 				xPressRefiIdsforMortgageCadenceCSV.add(trigger.new[i].Id);
 			}
-			else if (trigger.new[i].Is_Product_Change__c == false && trigger.new[i].Is_Mortgage_Cadence__c == false){
+			else if (trigger.new[i].is_CSV_Generated__c == false && trigger.new[i].Is_Mortgage_Cadence__c == false){
 				xPressRefiIdsforContactDocusign.add(trigger.new[i].Id);
 			} 
 			// else if (trigger.new[i].Is_Product_Change__c == true && trigger.new[i].is_CSV_Generated__c == false){

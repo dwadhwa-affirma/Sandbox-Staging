@@ -1,56 +1,154 @@
 <aura:component implements="flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,lightning:isUrlAddressable"
                 controller="MemberInfoController">
-	
-    <aura:handler name="init" value="{!this}" action="{!c.doInit}"></aura:handler>
-    <aura:attribute name="account" type="Object"/>
-    <div class="leftNavigationCmp">
-    	
-            
-            <h1 class="slds-text-heading_medium margin-btm-24">Member Information</h1>
-        	
-        	<div class="margin-btm-24">
-                <p class="slds-text-heading_medium">Name - {!v.account.Name}</p>
-            	<p class="slds-text-heading_small">Mobile Phone - {!v.account.MobilePhone}</p>
-        	</div>
-        
-        	<div class="margin-btm-24 memberTypeSection">
-                <div class="leftIconSection">
-                	<span class="slds-text-heading_small slds-icon_small"><lightning:icon iconName="action:user" class="slds-icon_container slds-icon-action-user" alternativeText="user" title="user" /></span>
-                </div>
-                <div class="contentSection">
-                    <p class="slds-text-heading_small">Member Type:- {!v.account.MemberType}</p>
-                  	<p class="slds-text-heading_medium">New Member  14 days</p>
-                	<div class="favIcon"><span class="slds-text-heading_small slds-icon_small"><lightning:icon iconName="utility:favorite" class="slds-icon_container slds-icon-action-check" alternativeText="favorite" title="favorite" /></span></div>
-                </div>
-                  
-                <aura:if isTrue="{!and(greaterthan(v.account.JoiningDaysDiff,0) ,lessthan(v.account.JoiningDaysDiff,14))}">
-                	Display star icon  after Member type 
-                    <lightning:icon iconName="utility:favorite" class="slds-icon_container slds-icon-action-check" alternativeText="favorite" title="favorite" />
-               	</aura:if>
-        	</div>
-        	
-        
-            Name:- {!v.account.Name}
-            Mobile Phone:- {!v.account.MobilePhone}
-            BirthDate:- {!v.account.BirthDate}
-            Emai:- {!v.account.Email}
-            Member Type:- {!v.account.MemberType}
-            <br/>
-            Joining Days:- {!v.account.JoiningDaysDiff}
-            <br/>
-            BirthDays:- {!v.account.BirthDaysDiff}
-            
-           <aura:if isTrue="{!and(greaterthan(v.account.JoiningDaysDiff,0) ,lessthan(v.account.JoiningDaysDiff,14))}">
-            Display star icon  after Member type  
-           </aura:if> 
-            
-           <aura:if isTrue="{!and(greaterthan(v.account.BirthDaysDiff,0) ,lessthan(v.account.BirthDaysDiff,14))}">
-            Display notification icon after Birth date   
-           </aura:if> 
-            
-            Member Connect Conversation : Partial
-  
-    </div>
     
+    
+    <aura:attribute name="account" type="Object"/>
+    <aura:attribute name="ShowData" type="string" />
+    <aura:attribute name="Memberisunder18" type="string" />
+    <aura:attribute name="Memberisnotprimary" type="string" />
+    <aura:attribute name="Memberhaspartiallycompleted" type="string" />
+    <aura:attribute name="AMemberAssessmentisdue" type="string" />
+    <aura:attribute name="MemberRefreshNeeded" type="string" />
+    <aura:attribute name="MemberOptOut" type="string" />
+    
+    <aura:attribute name="Opt_Out_Date" type="String" />
+    
+    <aura:attribute name="Highpotentialflag" type="string" />
+    <aura:attribute name="Highvalueflag" type="string" />
+    
+    <aura:attribute name="ShowOTPInvalidAttempt" type="string" />
+    <aura:attribute name="OTPNextAttemptValidAfterHours" type="string" />
+    <aura:attribute name="IsShowOTPButton" type="string" />
+    <aura:attribute name="RecordTypeName" type="string" />
+    
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}"></aura:handler>
+    
+    <div class="leftNavigationCmp">
+        
+        
+        <h1 class="slds-text-heading_large">Member Information</h1>
+        
+        <div class="lefttitle">
+            <p class="slds-text-heading_medium slds-truncate">{!v.account.Name}</p>
+            <!--<p class="slds-text-heading_small slds-truncate">{!v.account.MobilePhone}</p>-->       
+        </div>
+        
+        <div class="membertyperow">
+            <div class="lefticon">
+                <lightning:icon iconName="utility:user" alternativeText="user" title="user" />
+            </div>
+            <!--<aura:if isTrue="{!or(lessthanorequal(v.account.JoiningDaysDiff,365))}">
+
+                <div class="middlecontent">
+                    <p class="slds-text-heading_small slds-truncate">Member Type</p>
+                   <p class="slds-text-heading_medium slds-truncate">{!v.account.MemberType}&nbsp;for&nbsp;{!v.account.JoiningDaysDiff} Days</p>
+                </div>
+                </aura:if>
+                <aura:if isTrue="{greaterthan(v.account.JoiningDaysDiff,365)}">
+
+                <div class="middlecontent">
+                    <p class="slds-text-heading_small slds-truncate">Member Type</p>
+                   <p class="slds-text-heading_medium slds-truncate">{!v.account.MemberType}&nbsp;for&nbsp;{!v.account.JoiningDaysDiff1} Years</p>
+                </div>
+                </aura:if>-->
+            <aura:if isTrue="{!and(greaterthan(v.account.JoiningDaysDiff,0) ,lessthan(v.account.JoiningDaysDiff,31))}">
+                <div class="righticon"> 
+                    <lightning:icon iconName="utility:favorite" class="slds-icon_container slds-icon-action-check" alternativeText="Recent Member" title="Recent Member" />
+                </div>
+            </aura:if>
+            
+            <aura:if isTrue="{!or(lessthan(v.account.JoiningDaysDiff,365),equals(v.account.JoiningDaysDiff,365))}">
+                
+                <div class="middlecontent">
+                    <p class="slds-text-heading_small slds-truncate">Member Type</p>
+                    <p class="slds-text-heading_medium slds-truncate">{!v.account.MemberType}&nbsp;for&nbsp;{!v.account.JoiningDaysDiff} Days</p>
+                </div>
+            </aura:if>
+            <aura:if isTrue="{!(greaterthan(v.account.JoiningDaysDiff,365))}">
+                
+                <div class="middlecontent">
+                    <p class="slds-text-heading_small slds-truncate">Member Type</p>
+                    <p class="slds-text-heading_medium slds-truncate">{!v.account.MemberType}&nbsp;for&nbsp;{!v.account.JoiningDaysDiff1} Years</p>
+                </div>
+            </aura:if>
+            
+        </div>
+        
+        <aura:if isTrue="{!or(v.Highpotentialflag == 'true',v.Highvalueflag == 'true')}">
+            <div class="membertyperow">
+                <div class="lefticon">	
+                    <lightning:icon iconName="utility:high_velocity_sales" alternativeText="High Value/Potenital" title="High Value/Potenital" />
+                    
+                </div>
+                
+                <div class="middlecontent">
+                    <p class="slds-text-heading_small slds-truncate">High Value/Potential</p>
+                    <p class="slds-text-heading_medium slds-truncate"> 
+                        <aura:if isTrue="{! (v.RecordTypeName != 'Pre Member')}">
+                            <aura:if isTrue="{!(v.Highpotentialflag == 'true')}">High Potential</aura:if>
+                            <aura:if isTrue="{!(v.Highvalueflag == 'true')}">High Value</aura:if>
+                        </aura:if> 
+                    </p>
+                </div>
+                
+                <div class="righticon"> 
+                </div>
+            </div>
+        </aura:if>
+        <div class="membertyperow">
+            <div class="lefticon">
+                <lightning:icon iconName="utility:call" alternativeText="Phone Number" title="Phone Number" />
+            </div>
+            <div class="middlecontent">
+                <p class="slds-text-heading_small">Phone Number</p>
+                <p class="slds-text-heading_medium slds-truncate">{!v.account.MobilePhone}</p>
+            </div>
+            <div>     
+            </div>
+        </div>
+        
+        <div class="membertyperow">
+            <div class="lefticon">
+                <lightning:icon iconName="utility:email" alternativeText="Email" title="Email" />
+            </div>
+            <div class="middlecontent">
+                <p class="slds-text-heading_small">Email</p>
+                <p class="slds-text-heading_medium slds-truncate" title="{!v.account.Email}">{!v.account.Email}</p>
+            </div>
+            <div> 
+            </div>
+        </div>
+        
+        
+        <aura:if isTrue="{!empty(v.account.EmployeeRestrictedAccess)}">
+            <div class="membertyperow">
+                
+                
+                <div class="lefticon">
+                    <lightning:icon iconName="utility:event" alternativeText="Date Of Birth" title="Date Of Birth" />
+                </div>
+                
+                <div class="middlecontent">
+                    <p class="slds-text-heading_small">DOB</p>
+                    <p class="slds-text-heading_medium slds-truncate">
+                        <lightning:formattedDateTime value="{!v.account.BirthDate}" year="numeric" month="numeric" day="numeric"></lightning:formattedDateTime></p>
+                </div>
+                
+                <aura:if isTrue="{!and(greaterthan(v.account.BirthDaysDiff,0) ,lessthan(v.account.BirthDaysDiff,14))}">
+                    <div class="righticon"> 
+                        <lightning:icon iconName="utility:notification" class="slds-icon_container slds-icon-action-check" alternativeText="Birthday close" title="Birthday close" /> 
+                    </div>
+                </aura:if> 
+                
+                <aura:if isTrue="{!and(greaterthan(v.account.BirthDaysDiff,-14) ,lessthan(v.account.BirthDaysDiff,0))}">
+                    <div class="righticon"> 
+                        <lightning:icon iconName="utility:notification" class="slds-icon_container slds-icon-action-check" alternativeText="Birthday close" title="Birthday close" /> 
+                    </div>
+                </aura:if> 
+                
+            </div>   
+        </aura:if>
+        
+    </div>
     
 </aura:component>

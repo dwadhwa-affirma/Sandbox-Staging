@@ -12,8 +12,10 @@
         var state = response.getState();
         var response = response.getReturnValue();
         if (state == "SUCCESS") {	
-            console.log(response);
-            component.set("v.warnings",response);
+            let jsonObject = response.map(JSON.stringify); 
+            let uniqueSet = new Set(jsonObject); 
+            let uniqueArray = Array.from(uniqueSet).map(JSON.parse); 
+            component.set("v.warnings",uniqueArray);
         }else{
             console.log('Error occured while getting the account data.');
         }

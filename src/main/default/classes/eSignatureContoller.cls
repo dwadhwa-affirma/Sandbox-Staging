@@ -12,6 +12,16 @@ global class eSignatureContoller {
         if(a.size() > 0) {return a[0].Id;} 
         return null;} set;}
     
+    global string signImageUrl{
+        get{
+            string url=URL.getSalesforceBaseUrl().toExternalForm() +'/servlet/servlet.FileDownload?file='+signAttachmentId+'&oid='+UserInfo.getOrganizationId();
+            url=url.replace('visual', 'content');
+            System.debug('Url:'+url);
+            return url;
+        }
+    }
+    
+    
     public eSignatureContoller(ApexPages.StandardController stdController) {
         ListView lstView=[SELECT Id,Name from ListView Where Name='To Be Signed' LIMIT 1]; 
         
@@ -26,13 +36,24 @@ global class eSignatureContoller {
         this.wireTransactionDetail = [SELECT Id,Name,SalesforceID__c,
                                       Sender_AccountNumber__c,Sender_Address__c,
                                       Sender_Name__c,Sender_Email__c,Sender_Home_Phone__c,
-                                      Sender_City_State_Zip__c,
+                                      Sender_City_State_Zip__c,Description__c,
                                       Recipient_AccountNumber__c,Recipient_Address__c,
-                                      Recipient_City__c,	Recipient_State__c,	Recipient_Zipcode__c,
+                                      Recipient_City__c,Recipient_State__c,	Recipient_Zipcode__c,
                                       Recipient_Bank__c,RecepientName__c,
-                                      RoutingNumber__c,Share_ID__c,TotalAmount__c
+                                      RoutingNumber__c,Share_ID__c,TotalAmount__c,WireAmount__c,Fees__c,Brand__c
                                       From InPersonSigning__c WHERE Id=:this.wireTransaction.Id];
+        
+        decimal amount=this.wireTransactionDetail.WireAmount__c;
+        string amountInWord = ConvertCurrencyToWordsEN.english_number((long)amount)+' Dollars';
+        System.debug('Amount:'+amount);
+        string centInWord=ConvertCurrencyToWordsEN.cent_in_word((decimal)amount);
+        if(centInWord!=''){
+            amountInWord=amountInWord+' AND '+centInWord+' '+'Cents';
+        }
+        
+        this.wireTransactionDetail.Wire_Amount_In_Word__c = amountInWord;
     }
+    
     
     @AuraEnabled
     public static Id saveSignature(String signatureBody, string wiresId){
@@ -73,35 +94,56 @@ global class eSignatureContoller {
         InPersonSigning__c data= [SELECT Id,Name,SalesforceID__c,IsLocked__c,
                                   Sender_AccountNumber__c,Sender_Address__c,
                                   Sender_Name__c,Sender_Email__c,Sender_Home_Phone__c,
-                                  Sender_City_State_Zip__c,
+                                  Sender_City_State_Zip__c,Description__c,
                                   Recipient_AccountNumber__c,Recipient_Address__c,
                                   Recipient_City__c,	Recipient_State__c,	Recipient_Zipcode__c,
                                   Recipient_Bank__c,RecepientName__c,
-                                  RoutingNumber__c,Share_ID__c,TotalAmount__c 
-                                  FROM InPersonSigning__c WHERE Id=:recordId];        
+                                  RoutingNumber__c,Share_ID__c,TotalAmount__c,Fees__c,WireAmount__c,Brand__c
+                                  FROM InPersonSigning__c WHERE Id=:recordId];    
+        
+        decimal amount=data.WireAmount__c;
+        string amountInWord = ConvertCurrencyToWordsEN.english_number((long)amount)+' Dollars';
+        
+        System.debug('Amount:'+amount);
+        string centInWord=ConvertCurrencyToWordsEN.cent_in_word((decimal)amount);
+        if(centInWord!=''){
+            amountInWord=amountInWord+' AND '+centInWord+' '+'Cents';
+        }
+        data.Wire_Amount_In_Word__c= amountInWord;
         return data;
     }
     
     public void attach() {
+         
+        // Attach pdf to Wires transaction record
+        InPersonSigning__c inPersonSign=[Select SalesforceID__c FROM InPersonSigning__c Where Id=: wireTransaction.Id LIMIT 1];
+        WIRES_Transaction__c wire=[Select FromAccount__c,Name FROM WIRES_Transaction__c Where Id=: inPersonSign.SalesforceID__c LIMIT 1];
         
-        System.debug('came in attachment save method.');
         Attachment myAttach = new Attachment();
         myAttach.ParentId = wireTransaction.Id;//Id of the object to which the page is attached
-        myAttach.name = 'WIRE TRANSFER AUTHORIZATION.pdf';
+        myAttach.name = 'WIRETRANSFERAUTHORIZATION_'+wire.Name+'.pdf';
         PageReference myPdf = ApexPages.currentPage();//myPdfPage is the name of your pdf page
         myAttach.body = myPdf.getContentAsPdf();
         insert myAttach;
         
-        
-        // Attach pdf to Wires transaction record
-        InPersonSigning__c inPersonSign=[Select SalesforceID__c FROM InPersonSigning__c Where Id=: wireTransaction.Id LIMIT 1];
         if(inPersonSign!=null){
             Attachment wireTransferPDF = new Attachment();
             wireTransferPDF.ParentId = inPersonSign.SalesforceID__c;
-            wireTransferPDF.name = 'WIRE TRANSFER AUTHORIZATION.pdf';
+            wireTransferPDF.name = 'WIRETRANSFERAUTHORIZATION_'+wire.Name+'.pdf';
             PageReference wireTranferPdfContent = ApexPages.currentPage();
             wireTransferPDF.body = wireTranferPdfContent.getContentAsPdf();
             insert wireTransferPDF;
+            
+            Wires_Document__c wireDoc=new Wires_Document__c();
+            wireDoc.Attachment_Id__c =wireTransferPDF.Id;
+            wireDoc.Member_Number__c = wire.FromAccount__c;
+            wireDoc.IsMovedToOnBase__c = false;
+            wireDoc.Document_Type__c = 'Wire Transfers';
+            wireDoc.Document_Name__c = 'WIRETRANSFERAUTHORIZATION_'+wire.Name+'.pdf';
+            wireDoc.Wires__c = inPersonSign.SalesforceID__c;
+            wireDoc.Attachment_Created_On__c = DateTime.now();
+            
+            insert wireDoc;
         }
         
         List<Attachment> signatures = new List<Attachment>();
@@ -118,6 +160,8 @@ global class eSignatureContoller {
         
         InPersonSigning__c inPersonSigning=[SELECT Id, Name,SalesforceID__c FROM InPersonSigning__c WHERE Id=:wireTransaction.Id LIMIT 1];
         if(inPersonSigning!=null){
+            inPersonSigning.Wires_Transaction__c=inPersonSign.SalesforceID__c;
+            //update lock status
             inPersonSigning.IsLocked__c=true;
             update inPersonSigning;
         }

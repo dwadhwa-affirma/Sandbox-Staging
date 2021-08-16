@@ -134,8 +134,8 @@
 <aura:attribute name="IsMemberManualSearched" type="boolean" default="false"/>
 <aura:attribute name="MultipleMemberNumberAlert" type="string" default=''/>
 <aura:attribute name="IsCardOwnerSSNMatch" type="boolean" default="false"/>
+<aura:attribute name="WarningCodes" type="string[]" description=""/>
 <aura:attribute name="IsUnusualActivity" type="boolean" default="false"/>
-
 
     <article class="slds-card">
         <div class="slds-card__body slds-card__body_inner tblrow">
@@ -278,20 +278,36 @@
                           			  					<p style='color:red;'>{!v.ShowFailedDesiredLevelCount}</p> 
                          							</aura:if>
 		           							</div>
-										</lightning:layoutItem>
-										<lightning:layoutItem padding="around-small">
-		            						<div class="header-column">
-												<aura:if isTrue="{!v.IsUnusualActivity == true}">
-													<p class="field-title" style='color:red;' title="UnusualActivityWarning">Open Active Unusual Activity</p>	
-												</aura:if>	                							
-		           							</div>
-		        						</lightning:layoutItem>
-		   							
+										</lightning:layoutItem>								
+										<!-- <lightning:layoutItem padding="around-small">
+	  		            						<div class="header-column">
+	  												<aura:if isTrue="{!v.IsUnusualActivity == true}">
+	  													<p class="field-title" style='color:red;' title="UnusualActivityWarning">Open Active Unusual Activity</p>	
+	  												</aura:if>	                							
+	  		           							</div>
+	  		        						</lightning:layoutItem> -->
 		   							
 		   							</lightning:layout>
 		   							
 		   							
 								</div>
+								<!--Warning Code starts here-->
+								<div>
+									<lightning:layoutItem>
+										<div style="padding-left: 10px;">
+											<lightning:icon iconName="utility:warning" alternativeText="Warning!" size="x-small" variant="warning"/>
+										</div>										
+		            						<div class="header-column" style="border-left: 1px solid #a09f9f;padding: 20px 5px 8px 10px;margin-top: -15px;color: brown">
+												<aura:if isTrue="{!v.IsUnusualActivity == true}">
+													<p class="field-title" style='color:red;' title="UnusualActivityWarning">Active Unusual Activity</p>	
+												</aura:if>												
+												<aura:iteration items="{!v.WarningCodes}" var="item">
+													{!item} <br/>
+												</aura:iteration>													                							
+		           							</div>
+		        						</lightning:layoutItem>
+								</div>
+								<!--Warning Code ends here-->
 		    				</header>
 		    			</div>
 		    			<div class="demo-only slds-box rightBox">
@@ -364,7 +380,7 @@
 								<lightning:tabset>
 					    		   	<aura:if isTrue ="{!v.IsKYMTabVisible}">
 										<lightning:tab label="KYM" id="KYMTab" onactive="{! c.handleActive }" iconName="{!v.KYMIconName}">
-											<c:KYMAuthentication recordId="{!v.SelectedmemberId}" GUID="{!v.GUID}"/>
+											<c:KYMAuthentication recordId="{!v.SelectedmemberId}" GUID="{!v.GUID}" IVRGUIDFromUrl="{!v.IVRGUIDFromUrl}"/>
 										</lightning:tab>
 								    </aura:if>
 											         

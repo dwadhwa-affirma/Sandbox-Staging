@@ -3,17 +3,17 @@
 private class MemberAuthenticationControlLightningTest {
 
     @testSetup static void setup() {
-    	
+      
        
-    	List<Member_Authentication_Scoring_Model__c> ScoringModellist = new List<Member_Authentication_Scoring_Model__c>();
-    	
+      List<Member_Authentication_Scoring_Model__c> ScoringModellist = new List<Member_Authentication_Scoring_Model__c>();
+      
         RecordType rec = [select Id,Name,SobjectType from RecordType where SobjectType='Case' Limit 1];
         
-    	Member_Authentication_Scoring_Model__c sm1 = new Member_Authentication_Scoring_Model__c(Name='1',Authentication_Type__c='OTP',Foreign_Domestic_Flag__c='DOMESTIC',IsDomestic__c=true,IsForeign__c=false,IsPass__c=false,Negative_Point_Value__c=5,Positive_Point_Value__c=8);
-    	Member_Authentication_Scoring_Model__c sm2 = new Member_Authentication_Scoring_Model__c(Name='2',Authentication_Type__c='OOW',Foreign_Domestic_Flag__c='DOMESTIC',IsDomestic__c=true,IsForeign__c=false,IsPass__c=false,Negative_Point_Value__c=3,Positive_Point_Value__c=3);
-    	Member_Authentication_Scoring_Model__c sm3 = new Member_Authentication_Scoring_Model__c(Name='3',Authentication_Type__c='PIN Change',Foreign_Domestic_Flag__c='NA',IsDomestic__c=true,IsForeign__c=false,IsPass__c=false,Negative_Point_Value__c=3,Positive_Point_Value__c=0);
+      Member_Authentication_Scoring_Model__c sm1 = new Member_Authentication_Scoring_Model__c(Name='1',Authentication_Type__c='OTP',Foreign_Domestic_Flag__c='DOMESTIC',IsDomestic__c=true,IsForeign__c=false,IsPass__c=false,Negative_Point_Value__c=5,Positive_Point_Value__c=8);
+      Member_Authentication_Scoring_Model__c sm2 = new Member_Authentication_Scoring_Model__c(Name='2',Authentication_Type__c='OOW',Foreign_Domestic_Flag__c='DOMESTIC',IsDomestic__c=true,IsForeign__c=false,IsPass__c=false,Negative_Point_Value__c=3,Positive_Point_Value__c=3);
+      Member_Authentication_Scoring_Model__c sm3 = new Member_Authentication_Scoring_Model__c(Name='3',Authentication_Type__c='PIN Change',Foreign_Domestic_Flag__c='NA',IsDomestic__c=true,IsForeign__c=false,IsPass__c=false,Negative_Point_Value__c=3,Positive_Point_Value__c=0);
         Member_Authentication_Scoring_Model__c sm4 = new Member_Authentication_Scoring_Model__c(Name='4',Authentication_Type__c='PIN Change',Foreign_Domestic_Flag__c='NA',IsDomestic__c=false,IsForeign__c=true,IsPass__c=false,Negative_Point_Value__c=3,Positive_Point_Value__c=0);
-    	Member_Authentication_Scoring_Model__c sm5 = new Member_Authentication_Scoring_Model__c(Name='5',Authentication_Type__c='CFCU Wallet',Foreign_Domestic_Flag__c='DOMESTIC',IsDomestic__c=true,IsForeign__c=false,IsPass__c=false,Negative_Point_Value__c=3,Positive_Point_Value__c=4);
+      Member_Authentication_Scoring_Model__c sm5 = new Member_Authentication_Scoring_Model__c(Name='5',Authentication_Type__c='CFCU Wallet',Foreign_Domestic_Flag__c='DOMESTIC',IsDomestic__c=true,IsForeign__c=false,IsPass__c=false,Negative_Point_Value__c=3,Positive_Point_Value__c=4);
         Member_Authentication_Scoring_Model__c sm6 = new Member_Authentication_Scoring_Model__c(Name='6',Authentication_Type__c='Public Wallet',Foreign_Domestic_Flag__c='DOMESTIC',IsDomestic__c=true,IsForeign__c=false,IsPass__c=false,Negative_Point_Value__c=2,Positive_Point_Value__c=3);
         Member_Authentication_Scoring_Model__c sm7 = new Member_Authentication_Scoring_Model__c(Name='7',Authentication_Type__c='Public Wallet',Foreign_Domestic_Flag__c='Foreign',IsDomestic__c=false,IsForeign__c=true,IsPass__c=false,Negative_Point_Value__c=2,Positive_Point_Value__c=4);
         Member_Authentication_Scoring_Model__c sm8 = new Member_Authentication_Scoring_Model__c(Name='8',Authentication_Type__c='Debit Pin',Foreign_Domestic_Flag__c='Foreign',IsDomestic__c=false,IsForeign__c=true,IsPass__c=false,Negative_Point_Value__c=1,Positive_Point_Value__c=8);
@@ -32,9 +32,9 @@ private class MemberAuthenticationControlLightningTest {
         crt.RecordTypeId__c = rec.id;
         crt.SLA__c = 10;
         insert crt;
-        
+
         Member360_TypeTranslate__c t= new Member360_TypeTranslate__c();
-	 	t.name='0000/Primary';
+     t.name='0000/Primary';
         insert t;
         Member360_TypeTranslate__c t1= new Member360_TypeTranslate__c();
         t1.name='001/Beneficiary';
@@ -53,10 +53,10 @@ private class MemberAuthenticationControlLightningTest {
         insert t5;
         Member360_TypeTranslate__c t6= new Member360_TypeTranslate__c();
         t6.name='001/Representative Payee';
-	 	insert t6;
+     insert t6;
         
-    	ScoringModellist.add(sm1);
-    	ScoringModellist.add(sm2);
+      ScoringModellist.add(sm1);
+      ScoringModellist.add(sm2);
         ScoringModellist.add(sm3);
         ScoringModellist.add(sm4);
         ScoringModellist.add(sm5);
@@ -64,19 +64,20 @@ private class MemberAuthenticationControlLightningTest {
         ScoringModellist.add(sm7);
         ScoringModellist.add(sm8);
         ScoringModellist.add(sm9);
-     	insert ScoringModellist;
-     	  List<Member_Authentication_Level_Model__c> LevelModel = new List<Member_Authentication_Level_Model__c>();
-       	 Member_Authentication_Level_Model__c l1 = new Member_Authentication_Level_Model__c(Name='1',Tiers__c= 'Level 1', Range_Start__c=0,Range_End__c=5);
+       insert ScoringModellist;
+         List<Member_Authentication_Level_Model__c> LevelModel = new List<Member_Authentication_Level_Model__c>();
+          Member_Authentication_Level_Model__c l1 = new Member_Authentication_Level_Model__c(Name='1',Tiers__c= 'Level 1', Range_Start__c=0,Range_End__c=5);
          Member_Authentication_Level_Model__c l2 = new Member_Authentication_Level_Model__c(Name='2',Tiers__c= 'Level 2', Range_Start__c=6,Range_End__c=8);
          Member_Authentication_Level_Model__c l3 = new Member_Authentication_Level_Model__c(Name='3',Tiers__c= 'Level 3', Range_Start__c=9);
         LevelModel.add(l1);
         LevelModel.add(l2);
         LevelModel.add(l3);
-        insert LevelModel;
-     	List<Account_Details__c> Account_Details_List = new List<Account_Details__c>();
-     	Account_Details__c ad = new Account_Details__c(Name = '00001',TypeTranslate__c = '1-PERSONAL',Balance__c = 5000,RecType__c = 'LOAN');
-     	Account_Details__c ad1 = new Account_Details__c(Name = '00002',TypeTranslate__c = '1-PERSONAL',Balance__c = 5000,RecType__c = 'ACCT');
-        Account_Details__c ad2 = new Account_Details__c(Name = '0000084',TypeTranslate__c = '1-PERSONAL',Balance__c = 5000,RecType__c = 'ACCT');
+        insert LevelModel;        
+        
+       List<Account_Details__c> Account_Details_List = new List<Account_Details__c>();
+       Account_Details__c ad = new Account_Details__c(Name = '00001',TypeTranslate__c = '1-PERSONAL',Balance__c = 5000,RecType__c = 'LOAN');
+       Account_Details__c ad1 = new Account_Details__c(Name = '00002',TypeTranslate__c = '1-PERSONAL',Balance__c = 5000,RecType__c = 'ACCT');
+        Account_Details__c ad2 = new Account_Details__c(Name = '0000084',TypeTranslate__c = '1-PERSONAL',Balance__c = 5000,RecType__c = 'ACCT',High_Value_Flag__c=1);
         
         Account_Details_List.add(ad);
         Account_Details_List.add(ad1);
@@ -95,20 +96,20 @@ private class MemberAuthenticationControlLightningTest {
         Person_Account__c pc3 = new Person_Account__c(Account_Number__c = ad1.id,PersonID__c = acobj.id,RecType__c = 'ACCT',TypeTranslate__c = '001/Custodian');
         Person_Account__c pc4 = new Person_Account__c(Account_Number__c = ad.id,PersonID__c = acobj.id,RecType__c = 'LOAN',TypeTranslate__c = '001/Primary');
         Person_Account__c pc5 = new Person_Account__c(Account_Number__c = ad1.id,PersonID__c = acobj.id,RecType__c = 'ACCT',TypeTranslate__c = '001/Representative Payee');
-        Person_Account__c pc6 = new Person_Account__c(Account_Number__c = ad2.id,PersonID__c = acobj.id,RecType__c = 'ACCT',TypeTranslate__c = '001/Primary');
-       	Person_Account_List.add(pc);
-       	Person_Account_List.add(pc1);
+        Person_Account__c pc6 = new Person_Account__c(Account_Number__c = ad2.id,PersonID__c = acobj.id,RecType__c = 'ACCT',TypeTranslate__c = '0000/Primary');
+         Person_Account_List.add(pc);
+         Person_Account_List.add(pc1);
         Person_Account_List.add(pc2);
-       	Person_Account_List.add(pc3);
+         Person_Account_List.add(pc3);
         Person_Account_List.add(pc4);
-       	Person_Account_List.add(pc5);
+         Person_Account_List.add(pc5);
         Person_Account_List.add(pc6);
-       	insert Person_Account_List;
+         insert Person_Account_List;
         
         Account acc = [Select id from Account where FirstName='U' limit 1 ];
         
         List<Authenticated_Log__c> loglist = new List<Authenticated_Log__c>();
-       	Authenticated_Log__c log1 = new Authenticated_Log__c(GUID__c = 'abc-123', SalesforceID__c = acc.id, IVR_Sent_URL__c = 'www', CallerPhoneNumber__c = '123-2323-232', EnteredMemberNumber__c = '00000084',EnteredSSN__c = '1715');
+         Authenticated_Log__c log1 = new Authenticated_Log__c(GUID__c = 'abc-123', SalesforceID__c = acc.id, IVR_Sent_URL__c = 'www', CallerPhoneNumber__c = '123-2323-232', EnteredMemberNumber__c = '00000084',EnteredSSN__c = '1715');
         Authenticated_Log__c log2 = new Authenticated_Log__c(GUID__c = 'abc-123', SalesforceID__c = acc.id, IVR_Sent_URL__c = 'www1', CallerPhoneNumber__c = '123-2323-231', EnteredMemberNumber__c = '00000081',EnteredSSN__c = '1714');
         loglist.add(log1);
         loglist.add(log2);    
@@ -130,7 +131,7 @@ private class MemberAuthenticationControlLightningTest {
         
         insert uu;
          
-		
+    
          Account obj_Account = [select Id from Account limit 1];
         string accid = obj_Account.Id;
        RecordType OTPRec = [select Id,Name,SobjectType from RecordType where Name ='OTP Authentication Log' and SobjectType='Authenticated_Log__c' limit 1];
@@ -220,21 +221,20 @@ private class MemberAuthenticationControlLightningTest {
     }
      static testMethod void LogDataFunctionsTest3() {
         Test.startTest();
-      	  RecordType rec1 = [Select id, Name, sobjecttype from RecordType where Name='Master Authentication Log'];
+          RecordType rec1 = [Select id, Name, sobjecttype from RecordType where Name='Master Authentication Log'];
           List<Authenticated_Log__c> MasterAuthenticationLog = MemberAuthenticationControllerLightning.GetDataForMasterAuthenticationLog('abc-123', rec1.id);
          list<object> obj = new List<object>();
-     	
+       
         Account acc = [Select id from Account where FirstName='U' limit 1 ];
         Account_Details__c ad = [select id from Account_Details__c where name = '00001' limit 1];
         User u = [select id , name from user where Firstname = 'Deepika' limit 1]; 
         MemberAuthenticationControllerLightning.SaveOOWLogData('passed','00002',acc.id,'reason','Test1','abc-123', 'Test Test1','Error','abc-123');
-        MemberAuthenticationControllerLightning.SaveOOWLogData('failed','00002',acc.id,'reason','Test1','abc-123', 'Test Test1','Error','abc-123');
-        MemberAuthenticationControllerLightning.SaveOOWLogData('','00002',acc.id,'','Test1','abc-123', 'Test Test1','','abc-123');
+        
         MemberAuthenticationControllerLightning.KYMSaveLogData(acc.id,'reason','Test1','abc-123');
-        MemberAuthenticationControllerLightning.PublicWalletSaveLogData(acc.id,'reason','abc-123','Pass','Pass','Pass','Pass','Pass','abc-123','test1','test2','test3', 'test4', 'test5','0000234534','test6','Pass');
-        MemberAuthenticationControllerLightning.CFCUWalletSaveLogData(acc.id,'reason','abc-123','Pass','Pass','Pass','Pass','Pass','Pass','abc-123',obj, obj,obj,obj,'test1', 'test2','0000234534','test3', 'Pass','test4', 'Pass');
+        MemberAuthenticationControllerLightning.PublicWalletSaveLogData(acc.id,'reason','abc-123','Pass','Pass','Pass','Pass','Pass','abc-123','test1','test2','test3', 'test4', 'test5','0000234534');
+        MemberAuthenticationControllerLightning.CFCUWalletSaveLogData(acc.id,'reason','abc-123','Pass','Pass','Pass','Pass','Pass','Pass','abc-123',obj, obj,obj,obj,'test1', 'test2','0000234534');
         MemberAuthenticationControllerLightning.GetFailedDesiredLevelLog(acc.id);
-	    MemberAuthenticationControllerLightning.SaveOTPCancelledAttempt(acc.id,'abc-123','abc-123');
+      MemberAuthenticationControllerLightning.SaveOTPCancelledAttempt(acc.id,'abc-123','abc-123');
          MemberAuthenticationControllerLightning.SaveOTPCancelledAttempt(acc.id,' ',' ');
       
         Test.stopTest();
@@ -251,28 +251,27 @@ private class MemberAuthenticationControlLightningTest {
          
          List<Authenticated_Log__c> MasterAuthenticationLog = MemberAuthenticationControllerLightning.GetDataForMasterAuthenticationLog('abc-1234', rec1.id);
          list<object> obj = new List<object>();
-     	
+       
         Account acc = [Select id from Account where FirstName='U' limit 1 ];
         List<Authenticated_Log__c> logdata = MemberAuthenticationControllerLightning.GetMAAPLogData(acc.id);
         Account_Details__c ad = [select id from Account_Details__c where name = '00001' limit 1];
         User u = [select id , name from user where Firstname = 'Deepika' limit 1]; 
        
         MemberAuthenticationControllerLightning.SaveOOWLogData('passed','00002',acc.id,'reason','Test1','abc-1234', 'Test Test1','Error','abc-1234');
-        MemberAuthenticationControllerLightning.SaveOOWLogData('failed','00002',acc.id,'reason','Test1','abc-1234', 'Test Test1','Error','abc-1234');
-        MemberAuthenticationControllerLightning.SaveOOWLogData('','00002',acc.id,'','Test1','abc-1234', 'Test Test1','','abc-1234');
-        MemberAuthenticationControllerLightning.PublicWalletSaveLogData(acc.id,'reason','abc-1234','Pass','Pass','Pass','Pass','Pass','abc-1234','test1','test2','test3', 'test4', 'test5','0000234534','test6','Pass'); 
-        MemberAuthenticationControllerLightning.PublicWalletSaveLogData(acc.id,'reason','','Pass','Pass','Pass','Pass','Pass','','test1','test2','test3', 'test4', 'test5','0000234534','test6','Pass');  
-        MemberAuthenticationControllerLightning.CFCUWalletSaveLogData(acc.id,'reason','','Pass','Pass','Pass','Pass','Pass','Pass','',obj, obj,obj,obj,'test1', 'test2','0000234534','test3', 'Pass','test4', 'Pass'); 
-        MemberAuthenticationControllerLightning.CFCUWalletSaveLogData(acc.id,'reason','abc-1234','Pass','Pass','Pass','Pass','Pass','Pass','abc-1234',obj, obj,obj,obj,'test1', 'test2','0000234534','test3', 'Pass','test4', 'Pass'); 
+       
+        MemberAuthenticationControllerLightning.PublicWalletSaveLogData(acc.id,'reason','abc-1234','Pass','Pass','Pass','Pass','Pass','abc-1234','test1','test2','test3', 'test4', 'test5','0000234534'); 
+        MemberAuthenticationControllerLightning.PublicWalletSaveLogData(acc.id,'reason','','Pass','Pass','Pass','Pass','Pass','','test1','test2','test3', 'test4', 'test5','0000234534');  
+        MemberAuthenticationControllerLightning.CFCUWalletSaveLogData(acc.id,'reason','','Pass','Pass','Pass','Pass','Pass','Pass','',obj, obj,obj,obj,'test1', 'test2','0000234534'); 
+        MemberAuthenticationControllerLightning.CFCUWalletSaveLogData(acc.id,'reason','abc-1234','Pass','Pass','Pass','Pass','Pass','Pass','abc-1234',obj, obj,obj,obj,'test1', 'test2','0000234534'); 
         MemberAuthenticationControllerLightning.SaveOTPCancelledAttempt(acc.id,'',''); 
         Test.stopTest();
     }
      static testMethod void LogDataFunctionsTest() {
-     	
+       
           Account acc = [Select id from Account where FirstName='U' limit 1 ];
           Account_Details__c ad = [select id from Account_Details__c where name = '00001' limit 1];
          Test.startTest();
-        	MemberAuthenticationControllerLightning.SaveCaseWithLogData(acc.id,'00002','casecomment',ad.id,'abc-123','abc-123');
+          MemberAuthenticationControllerLightning.SaveCaseWithLogData(acc.id,'00002','casecomment',ad.id,'abc-123','abc-123');
         Test.stopTest(); 
         MemberAuthenticationControllerLightning.getPublicWalletInfo(acc.id,'abc-123');
          MemberAuthenticationControllerLightning.getPublicWalletInfo(acc.id,'abc-1234'); 
@@ -294,11 +293,11 @@ private class MemberAuthenticationControlLightningTest {
          Test.stopTest(); 
     }
    static testMethod void getMemberSearchDataTest(){
-   	
-   		Map<string,object> objmap = new Map<string,object>();
-   		objmap = MemberAuthenticationControllerLightning.getMemberSearchData('9169954478', '00002', '1715', '04-04-1963', true,'true');
-   		objmap = MemberAuthenticationControllerLightning.getMemberSearchData('9169954478', '00002', '1715', '04-04-1963', true,'false');
-   	
+     
+       Map<string,object> objmap = new Map<string,object>();
+       objmap = MemberAuthenticationControllerLightning.getMemberSearchData('9169954478', '00002', '1715', '04-04-1963', true,'true');
+       objmap = MemberAuthenticationControllerLightning.getMemberSearchData('9169954478', '00002', '1715', '04-04-1963', true,'false');
+     
    }
     
     static testMethod void SaveFailedDesiredLevelLog(){

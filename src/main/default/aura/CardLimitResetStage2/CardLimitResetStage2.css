@@ -11,6 +11,8 @@
 .THIS .notewrappertd{padding-top:20px;}
 .THIS .noteTitle {display:inline-block; margin-right:10px; vertical-align: top;}
 .THIS .noteContent {display:inline-block;}
+.THIS .account-title {padding:6px 58px; font-size:14px;}
+.THIS .grid-column {min-width:300px; text-transform:uppercase; font-size:13px; padding:6px;}
 
 @media (max-width:1250px){
     .THIS#stage2 {width:90%;}

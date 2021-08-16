@@ -291,9 +291,9 @@
 						component.set("v.PointObtained", result.CurrentScore);   
 						component.set("v.CurrentScore", result.CurrentScore);
 						console.log('Helper Line 292---result.IsCardOwnerSSNMatch' + result.IsCardOwnerSSNMatch);
-						component.set("v.IsCardOwnerSSNMatch", result.IsCardOwnerSSNMatch);
+						component.set("v.IsCardOwnerSSNMatch", result.IsCardOwnerSSNMatch);						
 						component.set("v.IsUnusualActivity", result.UnusualActivity);
-
+						
 					    if(result['OOWStatusForDay'] == false)
 					    {
 					    	component.set("v.Likedisable", true);
@@ -427,6 +427,10 @@
 								component.set("v.HighFlagFromUrl", '');
 							}
 						 }
+
+						 if(result.WarningCodes != undefined){
+							component.set("v.WarningCodes",result.WarningCodes);
+						}
 						
 						component.set("v.isDoneRendering",true);
 	              	
@@ -495,12 +499,12 @@
 						}
 						
 						if(result.Profile.Name =='Branch'){
-							component.set("v.IsKYMTabVisible", false);
+							component.set("v.IsKYMTabVisible", true);
 							//component.set("v.IsKYMTabVisible", true); this change is done for AUT-292
 						}
 						else{
 							
-							component.set("v.IsKYMTabVisible", false);
+							component.set("v.IsKYMTabVisible", true);
 						}
 						
 						   var IsMatchingMemberFound; 
@@ -533,7 +537,8 @@
 						}
 						if(result.ReLoadRequired == false && component.get("v.IsUserSessionLoaded")== true){
 							component.set("v.ReMemberId",result.AuthLog[0].SalesforceID__c);
-						}
+						}					
+						
 						
 						
 		    	}            	
@@ -672,10 +677,7 @@
 		                       }
                                if(component.get("v.OOWMemberNumberEntered")!= undefined && component.get("v.OOWMemberNumberEntered") !=''){
                                    Source = "&source=member";
-                               }
-							   if(AccountNumber == ''){
-								AccountNumber = result.AccountNumber;
-							   }
+                               }							   
 	                           component.set("v.AccountNumber",AccountNumber);
 	                                                          
 	                           win = window.open(result.FlowURL+"&accountnumber=" + AccountNumber + "&firstname=allow" + MemberName + Source);

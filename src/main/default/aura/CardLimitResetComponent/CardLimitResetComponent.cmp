@@ -54,7 +54,7 @@
     <footer class="slds-modal__footer slds-modal__footer_directional">
         <lightning:button aura:id="Exit" label="Exit" title="Exit" onclick="{!c.cancelAction}"/>
         <lightning:button variant="brand" label="Back" disabled="{!(or(v.ActiveStepIndex == (0),v.BackButtonDis == 1) ? true : false)}" title="Back" onclick="{!c.back}"/> 
-        <lightning:button variant="brand" label="{!v.ContinueButtonName}" disabled="{!v.isMemberSelected == false}" title="Continue" onclick="{!c.Continue}"/>
+        <lightning:button variant="brand" label="{!v.ContinueButtonName}" disabled="{!v.isMemberSelected == false}" title="{!v.ContinueButtonName}" onclick="{!c.Continue}"/>
         
     </footer> 
     

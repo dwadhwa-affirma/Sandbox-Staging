@@ -19,7 +19,12 @@ public class WiresTransToDocuSign {
 	public static Http http = new Http();
 	public static HTTPResponse res;
 	public static String responseBody;
-	
+	public static String returnUrl='https://www.google.com/';
+	public static String authenticationMethod='email';
+	public static String email='dbhavsar@affirma.com';	
+	public static String clientUserId;
+
+
 	public static String endPointURL1;
 	public static HttpRequest req1 = new HttpRequest();    
 	public static String json1;
@@ -79,8 +84,8 @@ public class WiresTransToDocuSign {
                     Member_Email__c,Member_Home_Phone__c,Member_Name__c,TransactionStatus__c,
                     Mobile_Phone_Stable_Review__c,RecurrenceEndDate__c,
                     Name,Occurences__c,OwnerId,ParentTransaction__c,ToAccoutId__c,RecurrenceRange__c,
-                    Previous_Wires_Review__c,RecurrenceDay__c,Recurrence_Pattern__c,
-                    Review_Reason__c,Second_Approval_Review_Reason__c,SendOn__c,Share_ID__c,Transaction_Status__c,
+                    Previous_Wires_Review__c,RecurrenceDay__c,Recurrence_Pattern__c,Review_Reason__c,
+                    Second_Approval_Review_Reason__c,SendOn__c,Share_ID__c,Transaction_Status__c,
                     Source__c,StartDate__c,Status__c,ToAccountName__c,TransferType__c,WireAmount__c,WireMoneyDeliveryByDate__c,
                     WIRES_Wires_Transaction__c,Work_Phone_Stable_Review__c,Brand__c
                     FROM WIRES_Transaction__c where id =: ids];
@@ -121,7 +126,7 @@ public class WiresTransToDocuSign {
 				req.setHeader('Content-Length','162100'); 
 				req.setHeader('Content-Type','application/json'); 
 				req.setHeader('Content-Disposition','form-data'); 
-                json = '{"emailBlurb":"'+EmailBody+'",'+'"emailSubject": "'+EmailSubject+'",'+'"status": "created",'+'"compositeTemplates": ['+'{'+'"serverTemplates": ['+'{'+'"sequence": "1",'+'"templateId":"'+templateID+'"'+'}'+'],'+'"inlineTemplates": ['+'{'+'"sequence": "1",'+'"customFields": {'+'"textCustomFields": ['+'{'+'"configurationType": "salesforce",'+'"name":"WIRES_Transaction__c",'+'"required": "true","show": "true",'+'"value":"'+wt.Id+'"'+'}'+']'+'}'+'}'+']'+'}'+']'+'}';
+                json = '{"emailBlurb":"'+EmailBody+'",'+'"emailSubject": "'+EmailSubject+'",'+'"status": "created",'+'"compositeTemplates": ['+'{'+'"serverTemplates": ['+'{'+'"sequence": "1",'+'"templateId":"'+templateID+'"'+'}'+'],'+'"inlineTemplates": ['+'{'+'"sequence": "1", "signers" : [{  "clientUserId": "1000" }],'+'"customFields": {'+'"textCustomFields": ['+'{'+'"configurationType": "salesforce",'+'"name":"WIRES_Transaction__c",'+'"required": "true","show": "true",'+'"value":"'+wt.Id+'"'+'}'+']'+'}'+'}'+']'+'}'+']'+'}';
 	            req.setBody(json); 
     			if(!Test.isRunningTest()){  
     				res = http.send(req);
@@ -142,6 +147,7 @@ public class WiresTransToDocuSign {
 				WIRES_Transaction__c w = new WIRES_Transaction__c();
             	w.id = wt.Id;
             	w.DocuSignId__c = EnvelopeId;
+                w.Approval_Status__c = WiresConstant.ApprovalStatus_PendingForMemberReview;
             
             	WireTransToUpdate.add(w);
 				
@@ -163,7 +169,7 @@ public class WiresTransToDocuSign {
                 
                 if(EmailToSend != 'Production' || EmailToSend != 'production'){
         			EmailToSend = userEmail;
-        			json1 = '{"signers": ['+'{'+'"email": "'+EmailToSend+'",'+'"recipientId" : "1",'+'"roleName": "client",'+'"name": "'+userName+'",'+'"signingGroupId": "signers",'+'"routingOrder" : "null"'+'}'+']'+'}';
+        			json1 = '{"signers": ['+'{'+'"email": "'+EmailToSend+'",'+'"recipientId" : "1",'+'"roleName": "Signer 1",'+'"name": "'+userName+'",'+'"signingGroupId": "signers",'+'"routingOrder" : "null"'+'}'+']'+'}';
         		}
                 
 	            req1.setBody(json1); 
@@ -208,5 +214,116 @@ public class WiresTransToDocuSign {
             if(WireTransToUpdate.size() > 0){
         		update WireTransToUpdate;
         	}
-    }	
+	}
+	
+	@future(callout=true)
+	public static void createRecipientViewdocusignAPIcall(Set<ID> ids, string envId){   
+    	
+        System.debug('Ids'+ids);
+        //----------------------------Start - DocuSign Templates from Custom setting---------------------------------//
+        Wires_Docusign_Emails__c wde = Wires_Docusign_Emails__c.getValues('Email For Testing');
+        Wires_DocuSign_User_Details__c DTSpectrum = Wires_DocuSign_User_Details__c.getValues('Spectrum');
+        Wires_DocuSign_User_Details__c DTChevron = Wires_DocuSign_User_Details__c.getValues('Chevron');
+        List<WIRES_Transaction__c> WireTransToUpdate = new List<WIRES_Transaction__c>();
+        
+ 		Wires_Progress_Email_Test__c testEmail=Wires_Progress_Email_Test__c.getValues('Test');
+        String userEmail = testEmail.Email__c;
+        
+        String userName = UserInfo.getUserName();
+		//User activeUser = [Select Email From User where Username = : userName limit 1];
+		//String userEmail = activeUser.Email;
+		
+        if(wde.Emails__c != null){
+            EmailToSend = wde.Emails__c;
+        }
+        
+        System.debug('EmailToSend'+EmailToSend);
+        
+        //----------------------------End - DocuSign Templates from Custom setting------------------------------------//
+       
+        List<WIRES_Transaction__c> WiresList = new List<WIRES_Transaction__c>();         
+   		List<WIRES_Transaction__c> WiresTrans = [SELECT AccountStableReview__c,
+                     Approval_Status__c,Approved_by_1st_Approver__c,
+                    Available_Balance_Review__c,Description__c,EndDate__c,
+                    Chevron_Account_Number__c,CreatedById,CreatedDate,FlagAccountOpenfor45Days__c,Fees__c,
+                    DocuSignId__c,DocuSign_Status1__c,EmailStableReview__c,FlagHomePhoneStablefor30Days__c,
+                    FlagEmailStablefor30Days__c,FlagMobilePhoneStablefor30Days__c,FlagWorkPhoneStablefor30Days__c,
+                    Frequency__c,FromAccount__c,Home_Phone_Stable_Review__c,Id,Identity_Verification_Used__c,
+                    ID_Verification_Review__c,IsAccountOpenfor45Days__c,IsDeleted,IsEmailStable__c,TotalFromAccount__c,
+                    IsHomePhoneStable__c,IsMobilePhoneStable__c,IsWorkPhoneStable__c,Is_Recurrence_Day__c,Member_Address__c,Member_City_State_Zip__c,
+                    Member_Email__c,Member_Home_Phone__c,Member_Name__c,TransactionStatus__c,
+                    Mobile_Phone_Stable_Review__c,RecurrenceEndDate__c,
+                    Name,Occurences__c,OwnerId,ParentTransaction__c,ToAccoutId__c,RecurrenceRange__c,
+                    Previous_Wires_Review__c,RecurrenceDay__c,Recurrence_Pattern__c,
+                    Second_Approval_Review_Reason__c,SendOn__c,Share_ID__c,Transaction_Status__c,Review_Reason__c,
+                    Source__c,StartDate__c,Status__c,ToAccountName__c,TransferType__c,WireAmount__c,WireMoneyDeliveryByDate__c,
+                    WIRES_Wires_Transaction__c,Work_Phone_Stable_Review__c,Brand__c
+                    FROM WIRES_Transaction__c where id =: ids];
+        
+            List<WIRES_Transaction__c> wiresToUpdate=new List<WIRES_Transaction__c> ();
+        	for(WIRES_Transaction__c wt : WiresTrans){
+                
+               if(wt.Brand__c == 'Spectrum'){
+            		templateID = DTSpectrum.TemplateId__c;
+            		replyTo = DTSpectrum.ReplyTo__c;
+            		accountID = DTSpectrum.AccountId__c;
+            		userId = DTSpectrum.Username__c;
+            		passWord = DTSpectrum.Password__c;
+            		integratorKey = DTSpectrum.IntegratorKey__c;
+            		endpoint = DTSpectrum.EndPoint__c;
+            		
+            		authorizationHeader = '<DocuSignCredentials><Username>'+userId+'</Username><Password>'+Password+'</Password><IntegratorKey>'+integratorKey+'</IntegratorKey></DocuSignCredentials>';
+            		
+            	}
+            	else{
+            		templateID = DTChevron.TemplateId__c;
+            		replyTo = DTChevron.ReplyTo__c;
+            		accountID = DTChevron.AccountId__c;
+            		userId = DTChevron.Username__c;
+            		passWord = DTChevron.Password__c;
+            		integratorKey = DTChevron.IntegratorKey__c;
+            		endpoint = DTChevron.EndPoint__c;
+            		
+            		authorizationHeader = '<DocuSignCredentials><Username>'+userId+'</Username><Password>'+Password+'</Password><IntegratorKey>'+integratorKey+'</IntegratorKey></DocuSignCredentials>';
+            		
+            	}
+            	
+                //authorizationHeader = '<DocuSignCredentials><Username>'+userId+'</Username><Password>'+Password+'</Password><IntegratorKey>'+integratorKey+'</IntegratorKey></DocuSignCredentials>';
+        		
+				endPointURL = 'https://'+endpoint+'/restapi/v2.1/accounts/'+accountID+'/envelopes/'+ envId + '/views/recipient'; 
+				system.debug('endPointURL'+ endPointURL);
+                req.setEndpoint(endPointURL); 
+				req.setMethod('POST'); 
+    			req.setHeader('X-DocuSign-Authentication', authorizationHeader); 
+				req.setHeader('Content-Length','162100'); 
+				req.setHeader('Content-Type','application/json'); 
+				req.setHeader('Content-Disposition','form-data'); 
+                json = '{"returnUrl":"'+returnUrl+'",'+'"authenticationMethod": "'+authenticationMethod + '",' + '"email": "' + userEmail + '",' + '"userName": "' + userName + '"}';
+				system.debug('json'+ json);
+				req.setBody(json);				
+    			if(!Test.isRunningTest()){  
+    				res = http.send(req);
+    				responseBody = res.getBody();
+    				system.debug('DocuSign Response'+ res.getBody()); 
+                    
+                    //RecipientView view=JSON.deserialize(res.getBody(),RecipientView);
+                    wt.DocuSignURL__c= res.getBody();
+                    wiresToUpdate.add(wt);
+    			}
+    			else{
+					responseBody = '{"url": "sample string 1"}'; 
+					system.debug('responseBody'+ responseBody);    				
+    			}               
+				  
+            }
+        
+            if(wiresToUpdate.size()>0){
+                update wiresToUpdate;
+            }
+    }
+     
+    public class RecipientView
+    {
+        @AuraEnabled public string url{get;set;}    
+    }
 }

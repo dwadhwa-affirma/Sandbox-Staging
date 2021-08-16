@@ -143,7 +143,12 @@ public class ConvertPreMemberToMemberBatchClassTest {
       
     }
     static testmethod void testmethod3() {
-	
+		
+        SolarLoan_To_Episys_API_Details__c api = new SolarLoan_To_Episys_API_Details__c();
+     	api.URL__c = 'https://symxapi.chevronfcu.org/devclient';
+     	api.Name = 'ProductionURL';
+     	insert api;
+        
         RecordType objRecordType = [SELECT Id,Name FROM RecordType WHERE Name='MemberShip'];
         RecordType objRecordType1 = [SELECT Id,Name FROM RecordType WHERE Name='Person Account'];
         RecordType rec1 = [Select Name, Id From RecordType where sObjectType='Account' and isActive=true and Name='Pre Member'];
@@ -239,10 +244,10 @@ public class ConvertPreMemberToMemberBatchClassTest {
         Opportunity op = new Opportunity(Name = 'Name', StageName = 'Open',Product_Type__c = 'Misc', CloseDate = system.today(),  Is_Converted__c = true, Opportunity_Source__c = 'Word of mouth', AccountId = pact.id,  Ownership__c = 'Auto Assign', Episys_User_ID__c = 1);
         insert op;
         
-        Case cs = new Case();
+        /*Case cs = new Case();
         cs.AccountId = pact.Id;
         cs.Brand__c = 'Spectrum';
-        insert cs;
+        insert cs;*/
         
         Test.startTest();
         ConvertPreMemberToMemberBatchClass a = new ConvertPreMemberToMemberBatchClass();

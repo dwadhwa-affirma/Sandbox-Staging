@@ -182,7 +182,8 @@ public class SolarLoanController {
     Set<Id> SLIdsToCreateLoan = new Set<Id>();
     Set<Id> SLIdsToCreateEFT = new Set<Id>();
     Set<Id> SLIdsToFileUCC = new Set<Id>();
-    
+    List<SolarLoan_Document__c> SolarDocMemb = new List<SolarLoan_Document__c>();
+
     Boolean PrimaryZipCode;
     Boolean jointZipCode;
     Boolean PrimaryCellPhone;
@@ -219,11 +220,12 @@ public class SolarLoanController {
             Joint_ID_Expiration_Date__c,mem_Joint_Employer__c,Joint_Occupation__c,Mailing_Street__c, mem_Mailing_City__c,mem_Mailing_State__c,
             Mailing_Zip__c,Joint_Cell_Phone__c,Joint_Home_Phone__c,Joint_Work_Phone__c,mem_Primary_A_F_Foreign_Gov_t_Position__c,
             mem_Primary_Foreign_Gov_t_Position__c,mem_Joint_A_F_Foreign_Gov_t_Position__c,mem_Joint_Foreign_Gov_t_Position__c,
+            mem_Joint_Extra_Address__c,mem_Primary_Extra_Address__c,mem_Mailing_Extra_Address__c,
             Current_Solar_Loan_Stage__c,County__c FROM Solar_Loans__c where id =: SolarLoanRecordId limit 1];
             
     if(SolarLoanList.size() > 0){
 
-        List<SolarLoan_Document__c> SolarDocMemb = [select id,Attachment_Id__c,name,Solar_Loans__r.id,Solar_Loans__c from SolarLoan_Document__c
+        SolarDocMemb = [select id,Attachment_Id__c,name,Solar_Loans__r.id,Solar_Loans__c from SolarLoan_Document__c
                                          where Solar_Loans__r.id in: SolarLoanList and Document_Name__c LIKE '%Membership Application%' order by createddate desc LIMIT 1];
 
         /*List<SolarLoan_Document__c> SolarDocGov = [select id,Attachment_Id__c,name,Solar_Loans__r.id,Solar_Loans__c from SolarLoan_Document__c
@@ -250,8 +252,7 @@ public class SolarLoanController {
         SolarCurrentStage = SolarLoanList[0].Current_Solar_Loan_Stage__c;
             
         
-
-        //------------------------------------------------Stage-2 Documents Check------------------------------------------------//
+        //------------------------------------------------Stage-2 Validation Check------------------------------------------------//
 
         if(CurrentStage == 'Stage 2'){
 
@@ -259,13 +260,38 @@ public class SolarLoanController {
 								
 				Stage2MissingDocs = 'Membership Application Document is not avaialble.';
 				Stage2ErrorCheck = 'True';
-			}
-            else{
-                SolarLoanList[0].Current_Solar_Loan_Stage__c = CurrentStage; 
-                SolarLoanList[0].continue__c = false;
-                update SolarLoanList;
             }
+            else if(SolarLoanList[0].mem_ID_Issue_Date__c == null || SolarLoanList[0].mem_ID_Expiration_Date__c == null){
+								
+				Stage2MissingDocs = 'Please enter Primary ID Issue/Expiration Date.';
+				Stage2ErrorCheck = 'True';
+            }
+            else if(SolarLoanList[0].mem_ID_Issue_Date__c > SolarLoanList[0].mem_ID_Expiration_Date__c){
+								
+				Stage2MissingDocs = 'Primary ID Expiration Date should be greater than ID Issue Date.';
+				Stage2ErrorCheck = 'True';
+            }
+            else if(SolarLoanList[0].mem_Joint_SSN__c != null && (SolarLoanList[0].Joint_ID_Issue_Date__c == null || SolarLoanList[0].Joint_ID_Expiration_Date__c == null)){
+								
+				Stage2MissingDocs = 'Please enter Joint ID Issue/Expiration Date.';
+				Stage2ErrorCheck = 'True';
+            }
+            else if(SolarLoanList[0].mem_Joint_SSN__c != null && SolarLoanList[0].Joint_ID_Issue_Date__c > SolarLoanList[0].Joint_ID_Expiration_Date__c){
 
+                Stage2MissingDocs = 'Joint ID Expiration Date should be greater than ID Issue Date.';
+				Stage2ErrorCheck = 'True';
+            }
+            else if(SolarLoanList[0].mem_Primary_State__c == null || SolarLoanList[0].county__c == null){
+								
+				Stage2MissingDocs = 'Please enter County/State details.';
+				Stage2ErrorCheck = 'True';
+            }
+            else{
+                
+                SLIdsToFileUCC.add(SolarLoanList[0].id);
+                SolarLoanToFileUCC.getJurisdiction(SLIdsToFileUCC);
+            }
+            
         }    
 
         //------------------------------------Stage-3 Member and Membership Info validation-----------------------------------------//
@@ -410,7 +436,7 @@ public class SolarLoanController {
                 jointZipCode =  Pattern.matches('^[0-9]{5}(?:-[0-9]{4})?$',SolarLoanList[0].Joint_Zip_Code__c);
 
             if(SolarLoanList[0].Primary_Email__c != null)   
-                PrimaryEmail = Pattern.matches('[a-zA-Z0-9._-]+@[a-zA-Z]+.[a-zA-Z]{2,4}[.]{0,1}[a-zA-Z]{0,2}',SolarLoanList[0].Primary_Email__c);
+                PrimaryEmail = Pattern.matches('^(?=.{1,64}@)[A-Za-z0-9_-]+(\\.[A-Za-z0-9_-]+)*@[^-][A-Za-z0-9-]+(\\.[A-Za-z0-9-]+)*(\\.[A-Za-z]{2,})$',SolarLoanList[0].Primary_Email__c);
 
             String emailRegex = '([a-zA-Z0-9_\\-\\.]+)@((\\[a-z]{1,3}\\.[a-z]{1,3}\\.[a-z]{1,3}\\.)|(([a-zA-Z0-9\\-]+\\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})';    
             
@@ -607,10 +633,23 @@ public class SolarLoanController {
                 
                 Stage3MissingFields = 'Joint DOB must be 18 or over.';
                 Stage3ErrorCheck = 'True';
+            }
+            else if(SolarLoanList[0].mem_Joint_Extra_Address__c != null && SolarLoanList[0].mem_Joint_Extra_Address__c.length() > 40){
 
+                Stage3MissingFields = 'Joint ExtraAdress contains more than 40 characters.';
+                Stage3ErrorCheck = 'True';
             }  
-              
-         	else{
+            else if(SolarLoanList[0].mem_Primary_Extra_Address__c != null && SolarLoanList[0].mem_Primary_Extra_Address__c.length() > 40){
+
+                Stage3MissingFields = 'Primary ExtraAdress contains more than 40 characters.';
+                Stage3ErrorCheck = 'True';
+            }
+            else if(SolarLoanList[0].mem_Mailing_Extra_Address__c != null && SolarLoanList[0].mem_Mailing_Extra_Address__c.length() > 40){
+
+                Stage3MissingFields = 'Mailing ExtraAdress contains more than 40 characters.';
+                Stage3ErrorCheck = 'True';
+            }
+            else{
 	
 				Stage3MissingFields = 'The following fields are required:  '+ missingFields + '.';	
 			}
@@ -622,19 +661,16 @@ public class SolarLoanController {
         }
         
         system.debug('Stage3MissingFields'+Stage3MissingFields);
-        if(Stage3ErrorCheck == 'False' && SolarLoanList[0].County__c != null){
 
-            //SolarLoanList[0].continue__c = false;
-            //SolarLoanList[0].Status__c = 'Approved';
-            //SolarLoanList[0].Current_Solar_Loan_Stage__c = 'Stage 3';
-            //update SolarLoanList;
+        if(Stage3ErrorCheck == 'False'){
 
-            SLIdsToFileUCC.add(SolarLoanList[0].id);
-            SolarLoanToFileUCC.getJurisdiction(SLIdsToFileUCC);     
-           
+            SolarLoanList[0].continue__c = false;
+            SolarLoanList[0].Status__c = 'Approved';
+            SolarLoanList[0].Current_Solar_Loan_Stage__c = 'Stage 3';
+            update SolarLoanList;
+                 
         }
-
-      
+        
         //------------------------------------Stage-4 Creating Loan Records -----------------------------------------//
         
         
@@ -800,12 +836,13 @@ public class SolarLoanController {
                
     }
 
-    if(CurrentStage == ' ' && SolarLoanList[0].Current_Solar_Loan_Stage__c == 'Stage 2' && SolarLoanList[0].Jurisdiction__c == 'Not Found'){
+    if(CurrentStage == ' ' && (SolarLoanList[0].Current_Solar_Loan_Stage__c == 'Stage 1' || SolarLoanList[0].Current_Solar_Loan_Stage__c == 'Stage 7')
+                             && SolarLoanList[0].Jurisdiction__c == 'Not Found'){
             
         JurisdictionErrorCheck = 'True';
         update SolarLoanList;
     }
-
+  
     if(CurrentStage == ' ' && SolarLoanList[0].Current_Solar_Loan_Stage__c == 'Stage 3' && 
                                 SolarLoanList[0].Error_Loan_Locator__c == 'There are multiple membership accounts'){
             

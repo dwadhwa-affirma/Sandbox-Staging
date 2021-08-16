@@ -1126,8 +1126,12 @@ public class SolarLoanToCreateLoan {
                     MOTHERSMAIDENNAME = MOTHERSMAIDENNAME.substring(0,20);
                 }    
 
-                if(sl.Occupation__c != null)
+                if(sl.Occupation__c != null){
                     OCCUPATION = string.valueOf(sl.Occupation__c).toUpperCase();
+                    if(OCCUPATION.contains('&') == true){
+                        OCCUPATION = OCCUPATION.replace('&', '&#38;');
+                    }
+                }
                 else
                     OCCUPATION = '';
 
@@ -1734,8 +1738,12 @@ public class SolarLoanToCreateLoan {
                         JOINTMOTHERSMAIDENNAME = JOINTMOTHERSMAIDENNAME.substring(0,20);
                     }
 
-                    if(sl.Joint_Occupation__c != null)
+                    if(sl.Joint_Occupation__c != null){
                         JOINTOCCUPATION = string.valueOf(sl.Joint_Occupation__c).toUpperCase();
+                        if(JOINTOCCUPATION.contains('&') == true){
+                            JOINTOCCUPATION = JOINTOCCUPATION.replace('&', '&#38;');
+                        }
+                    }
                     else
                         JOINTOCCUPATION = '';                      
 
@@ -2123,7 +2131,8 @@ public class SolarLoanToCreateLoan {
                 //---------------------------------------------------Updating Solar Loan records -------------------------------------------//
             
                 Solar_Loans__c s = new Solar_Loans__c();  
-        
+                
+                s.id = sl.Id;
                 if(result != null && result != '')
                     s.Loan_Id__c = result;
                     
@@ -2153,8 +2162,7 @@ public class SolarLoanToCreateLoan {
                 else
                     s.Error_Loan_Tracking_Locator__c = '';
 
-                            
-                s.id = sl.Id;       
+                      
                 s.Due_Date__c = System.Today() + 60;
                 s.continue__c = false;
                 s.Brand__c = 'Spectrum'; 
@@ -2163,11 +2171,17 @@ public class SolarLoanToCreateLoan {
                     SLMonth = Integer.Valueof(sl.Term_months__c) - 1;
                     s.Maturity_Date__c = s.Due_Date__c.addMonths(SLMonth);
                 }
-                s.Episys_Membership__c = 'Membership already exists, new membership not created';
+                
                 system.debug('s.Maturity_Date__c'+s.Maturity_Date__c);
 
-                if(MembershipccountStatus == 'OK')
+                system.debug('MembershipccountStatus: '+MembershipccountStatus);
+                if(MembershipccountStatus == 'OK'){
                     s.Episys_Membership__c = 'Created';
+                }
+
+                if(MembershipccountStatus == 'Error'){
+                    s.Episys_Membership__c = 'Membership could not create. Kindly review the Membership logs.';
+                }
                     
                 if(AccountNumber != null || AccountNumber != '')
                     s.Member_Number__c = AccountNumber;
@@ -2182,9 +2196,11 @@ public class SolarLoanToCreateLoan {
             }        
         
         }
+        system.debug('SolarLoanToUpdate: '+SolarLoanToUpdate);
         
         solarMap.putall(SolarLoanToUpdate);
         if(solarMap.size() > 0){
+            system.debug('solarMap.values(): '+solarMap.values());
             update solarMap.values();
         }
 

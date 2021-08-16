@@ -16,10 +16,12 @@
                 var result = response.getReturnValue();
                 
                 component.set("v.isApprovalVisible",result.isApprovalVisible);
+                
+                console.log("Approval Status:"+result.ApprovalStatus);
                 component.set("v.ApprovalStatus",result.ApprovalStatus);
                 // component.set("v.AccountOpenfor45Days",result.AccountOpenfor45Days);
                 component.set("v.BalanceStatusCode",result.WiresBalance.StatusCode);
-                component.set("v.BalanceRGLines",result.WiresBalance.StatusMessage.trim());
+                component.set("v.BalanceRGLines",result.WiresBalance.StatusMessage?result.WiresBalance.StatusMessage.trim():result.WiresBalance.StatusMessage);
                 component.set("v.WiresCount",result.WiresCount); 
                 //  component.set("v.IdentificationUsed",result.IdentificationUsed); 
                 //  component.set("v.EmailStable",result.EmailStable); 
@@ -71,7 +73,19 @@
                                }                               
                            });
         
-        
-        
+    },
+    CancelTransaction: function(component, event,helper, recordId,reason) {
+        var action = component.get("c.CancelTransaction");
+        action.setParams({"WiresRecordId": recordId, "Reason": reason});
+        action.setCallback(this, function (response) {
+            var status = response.getState();            
+            if (status === "SUCCESS") {
+                var result = response.getReturnValue();
+                alert('Transaction has been cancelled.');
+                $A.get('e.force:refreshView').fire();
+                location.reload();
+            }            
+        });	
+        $A.enqueueAction(action);   
     }
 })

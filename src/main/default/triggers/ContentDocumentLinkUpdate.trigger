@@ -11,6 +11,7 @@ trigger ContentDocumentLinkUpdate on ContentDocumentLink (before insert,after up
     Map<ID,ID> cv = new Map<ID,ID>();
     Map<Id,ContentVersion> cvNewFile = new Map<ID,ContentVersion>();
     List<Solar_Loans__c> slcountUpdate = new List<Solar_Loans__c>();
+    List<Solar_Loans__c> slSignCardUpdate = new List<Solar_Loans__c>();
     List<xPressRefi_Document__c> xPressRefiAttachmentsList  = new List<xPressRefi_Document__c>();
     
     String[] strArr;
@@ -22,7 +23,7 @@ trigger ContentDocumentLinkUpdate on ContentDocumentLink (before insert,after up
     
     //----- Fire validation error to upload attachments when In person signing record has been locked -----//
     //---------------------------------------START---------------------------------------------------------//
-    if(Trigger.isInsert && Trigger.isBefore){
+    /*if(Trigger.isInsert && Trigger.isBefore){
         List<Id> inPersonSigningIds=new List<Id>();
         for(ContentDocumentLink cdl: Trigger.new){
             if(cdl.LinkedEntityId!=null){
@@ -41,7 +42,7 @@ trigger ContentDocumentLinkUpdate on ContentDocumentLink (before insert,after up
                 item.addError('In Person Signing record is locked. You can not upload attachments.');
             }
         }
-    }
+    }*/
     //----------------------------------------END---------------------------------------------------------//
    
     
@@ -83,6 +84,7 @@ trigger ContentDocumentLinkUpdate on ContentDocumentLink (before insert,after up
 
     if(Trigger.isInsert && Trigger.isAfter)
     {
+        List<WIRES_Transaction__c> wiresToUpdate=new List<WIRES_Transaction__c>();
         for(ContentDocumentLink c : Trigger.New){
             Schema.SObjectType objType = c.LinkedEntityId.getsobjecttype();
             system.debug('objType'+objType);
@@ -112,6 +114,13 @@ trigger ContentDocumentLinkUpdate on ContentDocumentLink (before insert,after up
                 system.debug(solarLoanObj.Name);
                 solarLoanObj.Member_Number__c = sl.get(c.LinkedEntityId).Member_Number__c;
                 solarLoanObj.IsMovedToOnBase__c = false;
+                
+                if(Title.contains('Member Application_Completed')){
+                    Solar_Loans__c sl = new Solar_Loans__c();
+                    sl.id = c.LinkedEntityId;
+                    sl.Signed__c = true;
+                    slSignCardUpdate.add(sl);
+                }
                 
                 If(Title.contains('Member Application') || Title.contains('Membership Application'))
 	            	solarLoanObj.Document_Type__c = 'Signature Cards';
@@ -158,6 +167,26 @@ trigger ContentDocumentLinkUpdate on ContentDocumentLink (before insert,after up
                 DocuSignMapIds.put(c.LinkedEntityId,c);
             }   
             
+            //-------------------------------Set Has Additional Document true when Wire Transaction has attached additional documents--------------------//
+            
+            if(objType == WIRES_Transaction__c.sObjectType){
+                
+                List<WIRES_Transaction__c> wires= [SELECT Id,Name,Approval_Status__c,Source__c,Has_Additional_Documents__c 
+                                                  FROM WIRES_Transaction__c Where Id=:c.LinkedEntityId LIMIT 1];
+                 if(wires.size()>0){
+                    if((wires[0].Approval_Status__c==WiresConstant.ApprovalStatus_PendingForApproval || 
+                       wires[0].Approval_Status__c==WiresConstant.ApprovalStatus_PendingForSecondApproval) &&
+                       wires[0].Source__c=='Branch'
+                      ){   
+                          string authPDFName='WIRETRANSFERAUTHORIZATION_'+wires[0].Name;
+                          if(cs.get(c.ContentDocumentId).title!=authPDFName){
+                              wires[0].Has_Additional_Documents__c=true;
+                              wiresToUpdate.add(wires[0]);
+                          }
+                       }
+                }
+                
+            }
 
         }
 
@@ -179,8 +208,14 @@ trigger ContentDocumentLinkUpdate on ContentDocumentLink (before insert,after up
                 AddCaseAttachmentList.add(anAttachment);
             }
         }
-
+		 
         //--------------------------End - CRM-1929---------------------------------//
+        
+        
+        if(wiresToUpdate.size()>0){
+            update wiresToUpdate;
+        }
+        
     }
 
     if(AddCaseAttachmentList.size()> 0)
@@ -221,4 +256,6 @@ trigger ContentDocumentLinkUpdate on ContentDocumentLink (before insert,after up
         update MemberlsttoUpdate;
     if(slcountUpdate.size() > 0)	
         update slcountUpdate;
+    if(slSignCardUpdate.size()>0)
+        update slSignCardUpdate;
 }

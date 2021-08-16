@@ -12,7 +12,8 @@
     <aura:attribute name="OOWIndex" type="Integer"/>
     <aura:attribute name="IsUserInEFTGroup" type="Boolean"/>
     <aura:attribute name="IsUserInAddressChangeGroup" type="Boolean"/>
-    <aura:attribute name="IsUserInXpressRefiGroup" type="Boolean"/>    
+    <aura:attribute name="IsUserInXpressRefiGroup" type="Boolean"/>  
+    <aura:attribute name="IsUserInWiresGroup" type="Boolean"/>  
     <aura:attribute name="MenuIcons" type="Object[]"/>
     
     <aura:attribute name="sObjectName" type="string" />
@@ -114,7 +115,6 @@
                                                                 </a>
                                                             </li>
                                                         </ul>
-                                                        
                                                         <aura:set attribute="else">
                                                             <aura:if isTrue="{!and(v.IsUserInAddressChangeGroup==false, sm.Function__c=='Address Change')}">
                                                                 <ul style="list-style-type: disc;">	
@@ -128,32 +128,46 @@
                                                                     </li>
                                                                 </ul>
                                                                 <aura:set attribute="else">	
-                                                                    <ul style="list-style-type: disc;">					
-                                                                        <li class="clsSubMenu">
-                                                                            
-                                                                            
-                                                                            <aura:if isTrue="{!and(sm.isDisable==true)}">
-                                                                                
+                                                                    <aura:if isTrue="{!and(v.IsUserInWiresGroup==false, sm.Function__c=='Wires')}">
+                                                                        <ul style="list-style-type: disc;">	
+                                                                            <li class="clsSubMenu">
                                                                                 <a onclick="{!c.preventDefault}" 
+                                                                                   title="User is not in the Wires group"
                                                                                    id="{!('anchor' + (i+v.halfLength))}" 
-                                                                                   title="{!sm.toolTip}"
-                                                                                   style="cursor: default; text-decoration: none; color: grey;">{!sm.Function__c}
-                                                                                </a> 
-                                                                                
-                                                                                
-                                                                                <aura:set attribute="else">
-                                                                                    <a onclick="{!c.loadComponent}" 
-                                                                                       id="{!('anchor' + (i+v.halfLength))}" 
-                                                                                       style="">{!sm.Function__c}
-                                                                                    </a> 
+                                                                                   style="cursor: default; text-decoration: none; color: grey;">
+                                                                                    {!sm.Function__c}
+                                                                                </a>
+                                                                            </li>
+                                                                        </ul>
+                                                                        <aura:set attribute="else">	
+                                                                            <ul style="list-style-type: disc;">					
+                                                                                <li class="clsSubMenu">
                                                                                     
-                                                                                </aura:set>
-                                                                                
-                                                                            </aura:if> 
-                                                                            
-                                                                            
-                                                                        </li>
-                                                                    </ul>
+                                                                                    
+                                                                                    <aura:if isTrue="{!and(sm.isDisable==true)}">
+                                                                                        
+                                                                                        <a onclick="{!c.preventDefault}" 
+                                                                                           id="{!('anchor' + (i+v.halfLength))}" 
+                                                                                           title="{!sm.toolTip}"
+                                                                                           style="cursor: default; text-decoration: none; color: grey;">{!sm.Function__c}
+                                                                                        </a> 
+                                                                                        
+                                                                                        
+                                                                                        <aura:set attribute="else">
+                                                                                            <a onclick="{!c.loadComponent}" 
+                                                                                               id="{!('anchor' + (i+v.halfLength))}" 
+                                                                                               style="">{!sm.Function__c}
+                                                                                            </a> 
+                                                                                            
+                                                                                        </aura:set>
+                                                                                        
+                                                                                    </aura:if> 
+                                                                                    
+                                                                                    
+                                                                                </li>
+                                                                            </ul>
+                                                                        </aura:set>
+                                                                    </aura:if>
                                                                 </aura:set>
                                                             </aura:if>
                                                         </aura:set>	

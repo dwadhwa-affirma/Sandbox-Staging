@@ -1,4 +1,7 @@
 global with sharing class MemberCommunicationData {
+    
+    public static String notesAPI;
+    
     public string BlobText {
         get {
             string tempurl= ApexPages.currentPage().getParameters().get('aburl');
@@ -24,34 +27,34 @@ global with sharing class MemberCommunicationData {
         }
     }
     
-  /*  @AuraEnabled
-    public static List<SNAIL_Setting__c> SNAILSetting() {
-        return [select Name,Hidden__c from SNAIL_Setting__c order by Order__c];
-    }*/
+    /*  @AuraEnabled
+public static List<SNAIL_Setting__c> SNAILSetting() {
+return [select Name,Hidden__c from SNAIL_Setting__c order by Order__c];
+}*/
     
-     @AuraEnabled
-   	 public static Map<string, object> SNAILSetting() {
-   	 	
-   	 	Map<string, object> result = new Map<string, object>();
-   	 	List<SNAIL_Setting__c> settinglist = [select Name,Hidden__c from SNAIL_Setting__c order by Order__c];
-   	 	result.put('SnailSetting', settinglist);
-   	 	Boolean IsUserInGroup;
-    		Group grp = [SELECT DeveloperName,Email,Id,Name,RelatedId,Type FROM Group where DeveloperName ='OOW_Query' Limit 1];
- 	
-		 	GroupMember[] gm  = [SELECT GroupId,Id,UserOrGroupId FROM GroupMember where GroupId =: grp.id and UserOrGroupId =: UserInfo.getUserId() ];
-		 	
-		 	if(gm.size() > 0)
-		 	{
-		 		IsUserInGroup = true;
-		 	}
-		 	else 
-		 	{
-		 		IsUserInGroup = false;
-		 	}
-    	
- 			result.put('UserStatus', IsUserInGroup);
-   	 	
-   	 	
+    @AuraEnabled
+    public static Map<string, object> SNAILSetting() {
+        
+        Map<string, object> result = new Map<string, object>();
+        List<SNAIL_Setting__c> settinglist = [select Name,Hidden__c from SNAIL_Setting__c order by Order__c];
+        result.put('SnailSetting', settinglist);
+        Boolean IsUserInGroup;
+        Group grp = [SELECT DeveloperName,Email,Id,Name,RelatedId,Type FROM Group where DeveloperName ='OOW_Query' Limit 1];
+        
+        GroupMember[] gm  = [SELECT GroupId,Id,UserOrGroupId FROM GroupMember where GroupId =: grp.id and UserOrGroupId =: UserInfo.getUserId() ];
+        
+        if(gm.size() > 0)
+        {
+            IsUserInGroup = true;
+        }
+        else 
+        {
+            IsUserInGroup = false;
+        }
+        
+        result.put('UserStatus', IsUserInGroup);
+        
+        
         return result;
     }
     
@@ -394,55 +397,55 @@ return results;
     @AuraEnabled
     public static List<MemberCommunicationData.documents> GetOOWData(Date fromdate,Date todate,string keyword, string recid)
     {
-    	system.debug('recid###'+ recid);   
+        system.debug('recid###'+ recid);   
         system.debug('fromdate##' + fromdate);
         system.debug('todate##' + todate);
-     //  string strfromdate =  string.valueof(fromdate).replace(' ','T') +  '.000+0000';
-     //  string strtodate = string.valueof(todate).replace(' ','T') +  '.000+0000';
-    //    system.debug('fromdate##' + strfromdate);
-     //   system.debug('todate##' + strtodate);
+        //  string strfromdate =  string.valueof(fromdate).replace(' ','T') +  '.000+0000';
+        //  string strtodate = string.valueof(todate).replace(' ','T') +  '.000+0000';
+        //    system.debug('fromdate##' + strfromdate);
+        //   system.debug('todate##' + strtodate);
         
-       RecordType rec = [select Id,Name,SobjectType from RecordType where Name ='OOW Execution Log' and SobjectType='Authenticated_Log__c'];
-       Id CurrentUserId = UserInfo.getUserId();
-      
-       //--------------------------------------------------------------------------------------------------------//
-       set<String> accList = new set<String>();
-       set<string> typeList = new set<string>();
-       
-       for(Member360_TypeTranslate__c t : Member360_TypeTranslate__c.getAll().values()){
-       		typeList.add(t.name);	
-       }
-       
-       list<Person_Account__c> paList = [SELECT Id, Account_Number__c,  PersonID__c, Account_Number__r.RecType__c, TypeTranslate__c, Account_Number__r.Name
-                FROM Person_Account__c where PersonID__c =:recid and TypeTranslate__c IN:typeList and Account_Number__r.RecType__c IN('ACCT', 'SHAR') order by  Account_Number__r.RecType__c asc];
-       
-       for(Person_Account__c p : paList){
-       		accList.add(p.Account_Number__r.Name);	
-       }
-       
-       //--------------------------------------------------------------------------------------------------------//
-       
-       /*Person_Account__c p = [SELECT Id, Account_Number__c,  PersonID__c, Account_Number__r.RecType__c, TypeTranslate__c, Account_Number__r.Name
-                FROM Person_Account__c where PersonID__c =:recid and Account_Number__r.RecType__c IN('ACCT', 'SHAR') order by  Account_Number__r.RecType__c asc  limit 1];
-       string AccountNumber = p.Account_Number__r.Name; */
-       
+        RecordType rec = [select Id,Name,SobjectType from RecordType where Name ='OOW Execution Log' and SobjectType='Authenticated_Log__c'];
+        Id CurrentUserId = UserInfo.getUserId();
+        
+        //--------------------------------------------------------------------------------------------------------//
+        set<String> accList = new set<String>();
+        set<string> typeList = new set<string>();
+        
+        for(Member360_TypeTranslate__c t : Member360_TypeTranslate__c.getAll().values()){
+            typeList.add(t.name);	
+        }
+        
+        list<Person_Account__c> paList = [SELECT Id, Account_Number__c,  PersonID__c, Account_Number__r.RecType__c, TypeTranslate__c, Account_Number__r.Name
+                                          FROM Person_Account__c where PersonID__c =:recid and TypeTranslate__c IN:typeList and Account_Number__r.RecType__c IN('ACCT', 'SHAR') order by  Account_Number__r.RecType__c asc];
+        
+        for(Person_Account__c p : paList){
+            accList.add(p.Account_Number__r.Name);	
+        }
+        
+        //--------------------------------------------------------------------------------------------------------//
+        
+        /*Person_Account__c p = [SELECT Id, Account_Number__c,  PersonID__c, Account_Number__r.RecType__c, TypeTranslate__c, Account_Number__r.Name
+FROM Person_Account__c where PersonID__c =:recid and Account_Number__r.RecType__c IN('ACCT', 'SHAR') order by  Account_Number__r.RecType__c asc  limit 1];
+string AccountNumber = p.Account_Number__r.Name; */
+        
         List<MemberCommunicationData.documents> results=new List<MemberCommunicationData.documents>();
         String str='%'+keyword+'%';
         
         List<Authenticated_Log__c> al = new List<Authenticated_Log__c>();
         if( fromdate != null && todate == null && keyword == 'Date Range')
             al = [select id,name,Member_Name__c , RecordTypeId, CreatedById,CreatedDate,Created_Date_PST__c,OOW_Member_Number__c,OOW_Notes__c,OOW_Reason__c,OOW_Status__c from Authenticated_Log__c
-            		 where   createdDate  >= :fromdate and RecordTypeId = :rec.Id and OOW_Member_Number__c IN:accList order by CreatedDate desc ];
+                  where   createdDate  >= :fromdate and RecordTypeId = :rec.Id and OOW_Member_Number__c IN:accList order by CreatedDate desc ];
         else if(fromdate != null && todate != null  && fromdate < todate && keyword == 'Date Range')
             al = [select id,name, Member_Name__c , RecordTypeId, CreatedById,CreatedDate,Created_Date_PST__c,OOW_Member_Number__c,OOW_Notes__c,OOW_Reason__c,OOW_Status__c from Authenticated_Log__c
-            		 where  ( createdDate  >= :fromdate and createdDate  <= :todate) and  RecordTypeId = :rec.Id and OOW_Member_Number__c IN:accList order by CreatedDate desc ];
+                  where  ( createdDate  >= :fromdate and createdDate  <= :todate) and  RecordTypeId = :rec.Id and OOW_Member_Number__c IN:accList order by CreatedDate desc ];
         else if(fromdate == null && todate == null && keyword == null)
             al = [select id,name, Member_Name__c , RecordTypeId, CreatedById,CreatedDate,Created_Date_PST__c,OOW_Member_Number__c,OOW_Notes__c,OOW_Reason__c,OOW_Status__c from Authenticated_Log__c
-            		 where RecordTypeId = :rec.Id and OOW_Member_Number__c IN:accList order by CreatedDate desc	];
+                  where RecordTypeId = :rec.Id and OOW_Member_Number__c IN:accList order by CreatedDate desc	];
         else if( keyword != 'Date Range'){
             Date d = System.today() - Integer.ValueOf(keyword);
             al = [select id,name, Member_Name__c , RecordTypeId, CreatedById,CreatedDate,Created_Date_PST__c,OOW_Member_Number__c,OOW_Notes__c,OOW_Reason__c,OOW_Status__c from Authenticated_Log__c
-            	  where createdDate >= :d and RecordTypeId = :rec.Id and OOW_Member_Number__c IN:accList order by CreatedDate desc] ;
+                  where createdDate >= :d and RecordTypeId = :rec.Id and OOW_Member_Number__c IN:accList order by CreatedDate desc] ;
         }
         string baseUrl;
         String prefix = URL.getSalesforceBaseURL().toExternalForm().replace('https://', '').split('\\.')[0];
@@ -458,7 +461,7 @@ return results;
             else notes ='';
             if(ld.OOW_Reason__c !=null)
             {
-            doc.dateDesc=ld.OOW_Reason__c + '/' + '('+ ld.OOW_Status__c.capitalize()+ ')' + ' /' + notes ;
+                doc.dateDesc=ld.OOW_Reason__c + '/' + '('+ ld.OOW_Status__c.capitalize()+ ')' + ' /' + notes ;
             }
             else
             {
@@ -471,7 +474,7 @@ return results;
             doc.DataSource='OOW';
             doc.hyperlinkPDF = baseUrl + '/lightning/r/Authenticated_Log__c/'  + ld.id + '/view';
             doc.MemberName = ld.Member_Name__c;
-                //https://chevronfcu--staging2.lightning.force.com/lightning/r/Authenticated_Log__c/a0S3F000001IfdGUAS/view
+            //https://chevronfcu--staging2.lightning.force.com/lightning/r/Authenticated_Log__c/a0S3F000001IfdGUAS/view
             results.add(doc);
         }
         
@@ -486,16 +489,16 @@ return results;
         String apiURL='';
         set<String> accList = new set<String>();
         set<string> typeList = new set<string>();
-       
+        
         for(Member360_TypeTranslate__c t : Member360_TypeTranslate__c.getAll().values()){
-       		typeList.add(t.name);	
+            typeList.add(t.name);	
         }
         
         list<Person_Account__c> paList = [SELECT Id, Account_Number__c,  PersonID__c, Account_Number__r.RecType__c, TypeTranslate__c, Account_Number__r.Name
-                FROM Person_Account__c where PersonID__c =:recid and TypeTranslate__c IN:typeList and Account_Number__r.RecType__c IN('ACCT', 'SHAR') order by  Account_Number__r.RecType__c asc];
-       
+                                          FROM Person_Account__c where PersonID__c =:recid and TypeTranslate__c IN:typeList and Account_Number__r.RecType__c IN('ACCT', 'SHAR') order by  Account_Number__r.RecType__c asc];
+        
         for(Person_Account__c p : paList){
-       		accList.add(p.Account_Number__r.Name);	
+            accList.add(p.Account_Number__r.Name);	
         }
         
         system.debug('accList'+accList);
@@ -528,7 +531,7 @@ return results;
         system.debug('--------'+results.size());
         return results;
     }
-
+    
     @AuraEnabled
     public static List<MemberCommunicationData.documents> GetMCLimitChangeData(List<string> source,Date fromdate,Date todate,string recid,string keyword)
     {   
@@ -537,16 +540,16 @@ return results;
         String apiURL='';
         set<String> accList = new set<String>();
         set<string> typeList = new set<string>();
-       
+        
         for(Member360_TypeTranslate__c t : Member360_TypeTranslate__c.getAll().values()){
-       		typeList.add(t.name);	
+            typeList.add(t.name);	
         }
         
         list<Person_Account__c> paList = [SELECT Id, Account_Number__c,  PersonID__c, Account_Number__r.RecType__c, TypeTranslate__c, Account_Number__r.Name
-                FROM Person_Account__c where PersonID__c =:recid and TypeTranslate__c IN:typeList and Account_Number__r.RecType__c IN('ACCT', 'SHAR') order by  Account_Number__r.RecType__c asc];
-       
+                                          FROM Person_Account__c where PersonID__c =:recid and TypeTranslate__c IN:typeList and Account_Number__r.RecType__c IN('ACCT', 'SHAR') order by  Account_Number__r.RecType__c asc];
+        
         for(Person_Account__c p : paList){
-       		accList.add(p.Account_Number__r.Name);	
+            accList.add(p.Account_Number__r.Name);	
         }
         
         system.debug('accList'+accList);
@@ -580,7 +583,7 @@ return results;
         return results;
     }
     
-     @AuraEnabled
+    @AuraEnabled
     public static List<MemberCommunicationData.documents> GetWiresData(List<string> source,Date fromdate,Date todate,string recid,string keyword)
     {   
         
@@ -588,16 +591,16 @@ return results;
         String apiURL='';
         set<String> accList = new set<String>();
         set<string> typeList = new set<string>();
-       
+        
         for(Member360_TypeTranslate__c t : Member360_TypeTranslate__c.getAll().values()){
-       		typeList.add(t.name);	
+            typeList.add(t.name);	
         }
         
         list<Person_Account__c> paList = [SELECT Id, Account_Number__c,  PersonID__c, Account_Number__r.RecType__c, TypeTranslate__c, Account_Number__r.Name
-                FROM Person_Account__c where PersonID__c =:recid and TypeTranslate__c IN:typeList and Account_Number__r.RecType__c IN('ACCT', 'SHAR') order by  Account_Number__r.RecType__c asc];
-       
+                                          FROM Person_Account__c where PersonID__c =:recid and TypeTranslate__c IN:typeList and Account_Number__r.RecType__c IN('ACCT', 'SHAR') order by  Account_Number__r.RecType__c asc];
+        
         for(Person_Account__c p : paList){
-       		accList.add(p.Account_Number__r.Name);	
+            accList.add(p.Account_Number__r.Name);	
         }
         
         system.debug('accList'+accList);
@@ -606,14 +609,14 @@ return results;
         
         List<WIRES_Transaction__c> wires = new List<WIRES_Transaction__c>();
         if( fromdate != null && todate == null && keyword == 'Date Range')
-            wires = [select id,name,FromAccount__c,createdDate,Source__c,Member_Name__c from WIRES_Transaction__c where  createdDate >= :fromdate and FromAccount__c IN:accList ];
+            wires = [select id,name,FromAccount__c,createdDate,Source__c,Member_Name__c,Case__c from WIRES_Transaction__c where  createdDate >= :fromdate and FromAccount__c IN:accList ];
         else if(fromdate != null && todate != null  && fromdate < todate && keyword == 'Date Range')
-            wires = [select id,name,FromAccount__c,createdDate,Source__c,Member_Name__c from WIRES_Transaction__c where  createdDate  >= :fromdate and createdDate  <= :todate and FromAccount__c IN:accList];
+            wires = [select id,name,FromAccount__c,createdDate,Source__c,Member_Name__c,Case__c from WIRES_Transaction__c where  createdDate  >= :fromdate and createdDate  <= :todate and FromAccount__c IN:accList];
         else if(fromdate == null && todate == null && keyword == null)
-            wires = [select id,name,FromAccount__c,createdDate,Source__c,Member_Name__c from WIRES_Transaction__c where FromAccount__c IN:accList];
+            wires = [select id,name,FromAccount__c,createdDate,Source__c,Member_Name__c,Case__c from WIRES_Transaction__c where FromAccount__c IN:accList];
         else if( keyword != 'Date Range'){
             Date d = System.today() - Integer.ValueOf(keyword);
-            wires = [select id,name,FromAccount__c,createdDate,Source__c,Member_Name__c from WIRES_Transaction__c where createdDate >= :d and FromAccount__c IN:accList];
+            wires = [select id,name,FromAccount__c,createdDate,Source__c,Member_Name__c,Case__c from WIRES_Transaction__c where createdDate >= :d and FromAccount__c IN:accList];
         }
         for(WIRES_Transaction__c ml : wires ){
             MemberCommunicationData.documents doc = new MemberCommunicationData.documents();
@@ -625,8 +628,111 @@ return results;
             doc.DataSource=ml.Source__c;
             doc.Account= ml.FromAccount__c;
             doc.MemberName=ml.Member_Name__c;
+            doc.hyperlinkPDF=URL.getSalesforceBaseUrl().toExternalForm()+ '/lightning/r/WIRES_Transaction__c/'+ml.id+'/view';
+            if(ml.Case__c!=null){
+                doc.caseLinkLabel='Case';
+                doc.caseLink=URL.getSalesforceBaseUrl().toExternalForm()+ '/lightning/r/Case/'+ml.Case__c+'/view';
+            }
             results.add(doc);
         }
+        
+        system.debug('--------'+results.size());
+        return results;
+    }
+    
+    @AuraEnabled
+    public static List<MemberCommunicationData.documents> GetNotesData(List<string> source,Date fromdate,Date todate,string recid,string keyword)
+    {   
+        
+        List<String> lstSource = source;//source.split(',');
+        String apiURL='';
+        set<String> accList = new set<String>();
+        set<string> typeList = new set<string>();
+        List<Object> lstNotes=new List<Object>();
+        
+        for(Member360_TypeTranslate__c t : Member360_TypeTranslate__c.getAll().values()){
+            typeList.add(t.name);	
+        }
+        
+        Person_Account__c paPrimary = [SELECT Id, Account_Number__c,  PersonID__c, Account_Number__r.RecType__c, TypeTranslate__c, 
+                                       Account_Number__r.Name,PersonID__r.PersonID__c,PersonID__r.Name
+                                       FROM Person_Account__c 
+                                       where PersonID__c =:recid and TypeTranslate__c like '%Primary%' 
+                                       order by  Account_Number__r.RecType__c asc LIMIT 1];
+        
+        string SSN;
+        if (paPrimary != null){
+            SSN = paPrimary.PersonID__r.PersonID__c.substring(1);
+            System.debug('SSN:'+SSN);
+        }
+        
+        MARS_To_Episys_API_Details__c api = MARS_To_Episys_API_Details__c.getValues('ProductionURL');
+        if(api.URL__c != null){
+            notesAPI = api.URL__c;
+            System.debug('notesAPI:'+notesAPI);
+        }
+        
+        httpRequest requestparam = new httpRequest();
+        requestparam.setEndpoint(notesAPI + '/MARS/GetNotes?ssn=' + SSN);
+        requestparam.setMethod('GET');
+        
+        try{
+            http httpParam = new http();
+            HttpResponse response;
+            String responseBody1;
+            String strStatus, strBody;
+            if (!Test.isRunningTest()){
+                response = httpParam.send(requestparam);
+                strStatus = response.getStatus();
+                strBody = response.getBody();
+            } else{
+                strBody = '[{"Code":"0","EnterDate":"2010-12-20","ExpirationDate":"","Id":"","IdType":"3","Locator":"136","RecordChangeDate":"2010-12-20","Text":"Card Limit Increase Unblocked","AccountNumber":"0000000123","EntryId":1}]';
+            }
+            
+            System.debug('strStatustracking ....' + strStatus);
+            System.debug('strBodytracking ....' + strBody);
+            
+            if (strBody != ''){
+                lstNotes = (List<Object>)JSON.deserializeUntyped(strBody);
+                
+                
+                System.debug('Service response is ....' + lstNotes);
+            }
+        }catch (System.CalloutException e){
+            system.debug('Exception');
+        }
+        
+        List<MemberCommunicationData.documents> results=new List<MemberCommunicationData.documents>();
+        List<object> notes = new List<object>();
+        
+        for(Object note : lstNotes ){
+            map<string, object> localNote = (map<string, object>)note;
+            MemberCommunicationData.documents doc = new MemberCommunicationData.documents();
+            doc.Id= (string)localNote.get('id');               
+            doc.dateDesc= (string)localNote.get('Text');
+            doc.documentDate=localNote.get('EnterDate')!=null ? date.valueOf(localNote.get('EnterDate').toString()): null;
+            doc.DataSource='Symitar';
+            doc.Account= (string)localNote.get('AccountNumber');
+            doc.MemberName=paPrimary.PersonID__r.Name;
+            
+            boolean isFound=false;
+            if( fromdate != null && todate == null && keyword == 'Date Range')
+                isFound=doc.documentDate>= fromdate;
+            else if(fromdate != null && todate != null  && fromdate < todate && keyword == 'Date Range')
+                isFound=doc.documentDate>= fromdate && doc.documentDate<=todate;
+            else if(fromdate == null && todate == null && keyword == null)
+                isFound=true;
+            else if( keyword != 'Date Range'){
+                Date d = System.today() - Integer.ValueOf(keyword);
+                isFound=doc.documentDate >= d ;
+                
+            }
+            
+            if(isFound==true){
+            	results.add(doc);
+            }
+        }
+        
         
         system.debug('--------'+results.size());
         return results;
@@ -696,6 +802,10 @@ return results;
         public string Account{get;set;}
         @AuraEnabled
         public string MemberName{get;set;}
+        @AuraEnabled
+        public string caseLink{get;set;}
+        @AuraEnabled
+        public string caseLinkLabel{get;set;}
         
     }
     

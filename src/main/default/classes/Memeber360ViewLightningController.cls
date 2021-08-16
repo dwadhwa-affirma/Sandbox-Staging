@@ -1,4 +1,4 @@
-public  class Memeber360ViewLightningController {
+public class Memeber360ViewLightningController {
     public class AccountList360
     {
         public string Id {get;set;}
@@ -30,7 +30,7 @@ public  class Memeber360ViewLightningController {
     {
         Integer PageNo = 1,  PageSize = 10;
         list<Person_Account__c> paList = [SELECT Id,
-                             Account_Number__c, Account_Number__r.RecType__c,TypeTranslate__c, Account_Number__r.Name FROM Person_Account__c WHERE PersonID__c =:accId order by TypeTranslate__c desc];
+                             Account_Number__c,PersonId__r.SSN_TIN_Encrypted__pc, Account_Number__r.RecType__c,TypeTranslate__c, Account_Number__r.Name FROM Person_Account__c WHERE PersonID__c =:accId order by TypeTranslate__c desc];
         
         set<string> typeList = new set<string>();
         for(Member360_TypeTranslate__c t : Member360_TypeTranslate__c.getAll().values()){
@@ -44,32 +44,26 @@ public  class Memeber360ViewLightningController {
         Map<string,string> listRelationshipsexcluded = new  Map<string,string>();
         Map<string,string> listRelationshipsNameexcluded = new  Map<string,string>();  
         Map<string,string> listRelationshipsName = new  Map<string,string>();
-        for(Person_Account__c var: paList){
-           			accountNumberSet.add(var.Account_Number__r.Name);
-	         		acctypeSet.add(var.Account_Number__r.RecType__c);
-           			accIdSet.add(var.Account_Number__c);
-		            listRelationships.put(var.Account_Number__c,var.TypeTranslate__c);
-		            listRelationshipsName.put(var.Account_Number__r.Name,var.TypeTranslate__c);
-		         	
-		         	if(typeList.contains(var.TypeTranslate__c)){
-        					
-        			}    
-        			else{
-           
-            				listRelationshipsexcluded.put(var.Account_Number__c,var.TypeTranslate__c);
-            				listRelationshipsNameexcluded.put(var.Account_Number__r.Name,var.TypeTranslate__c);
-        				}   
-		         
-	         	
-            }
+        String isValid;
         
-       
-       
-        	  
-       
-       
-       
-       
+        for(Person_Account__c var: paList){
+            accountNumberSet.add(var.Account_Number__r.Name);
+            acctypeSet.add(var.Account_Number__r.RecType__c);
+            accIdSet.add(var.Account_Number__c);
+            listRelationships.put(var.Account_Number__c,var.TypeTranslate__c);
+            listRelationshipsName.put(var.Account_Number__r.Name,var.TypeTranslate__c);
+            
+            isValid = isValidRelationship(var.Account_Number__r.Name,var.PersonId__r.SSN_TIN_Encrypted__pc);
+            system.debug('1------------'+isValid);    
+            
+            //if(typeList.contains(var.TypeTranslate__c)){}                
+            if(isValid == 'true'){}
+            else{
+                listRelationshipsexcluded.put(var.Account_Number__c,var.TypeTranslate__c);
+                listRelationshipsNameexcluded.put(var.Account_Number__r.Name,var.TypeTranslate__c);
+            }   
+        }
+     
         Map<string, object> m = new Map<string, object>();
         
         system.debug('listRelationshipsexcluded++ GetAllData++' + listRelationshipsexcluded);
@@ -82,29 +76,25 @@ public  class Memeber360ViewLightningController {
         
         Object accList =  GetAccList(listRelationships,listRelationshipsName,acctypeSet, accountNumberSet, accIdset, 1, 1000, '', '', '');
         
-        Member360View localAcc =    (Member360View)accList;
+        Member360View localAcc =  (Member360View)accList;
         List<Account_Details__c> listACCList = (List<Account_Details__c>)localAcc.accList;
         List<String> accountNumberSetWOBeneficiary = new List<String>();
         List<String> accIdSetWOBeneficiary = new List<String>();
-         List<String> accountNumberSetWOBeneficiaryContact = new List<String>();
+        List<String> accountNumberSetWOBeneficiaryContact = new List<String>();
         List<String> accIdSetWOBeneficiaryContact = new List<String>();
         
-        for(Account_Details__c item: listACCList)
-        {
-           
+        for(Account_Details__c item: listACCList){
+       		
             accountNumberSetWOBeneficiary.add(item.Name);
             accIdSetWOBeneficiary.add(item.id);
-            if(!listRelationshipsexcluded.containsKey(item.id))
-            {
-            	 accIdSetWOBeneficiaryContact.add(item.id);
+            if(!listRelationshipsexcluded.containsKey(item.id)){
+            	 
+                accIdSetWOBeneficiaryContact.add(item.id);
             }
-            if(!listRelationshipsNameexcluded.containsKey(item.Name))
-            {
-            	 accountNumberSetWOBeneficiaryContact.add(item.Name);
+            if(!listRelationshipsNameexcluded.containsKey(item.Name)){
+           		
+                accountNumberSetWOBeneficiaryContact.add(item.Name);
             }
-            
-           
-            
         }
 		system.debug('listACCList++' + listACCList);
 		system.debug('accountNumberSetWOBeneficiary++' + accountNumberSetWOBeneficiary);
@@ -118,7 +108,7 @@ public  class Memeber360ViewLightningController {
 
         Object contactlist = GetContactDetails(accountNumberSetWOBeneficiaryContact,accIdSetWOBeneficiaryContact,accid,acctypeSet,accountNumberSet,accIdset,PageNo,PageSize, '', '', '');
         m.put('contactList', contactlist);
- 		 system.debug('contactList##' + contactlist);
+ 		system.debug('contactList##' + contactlist);
  		// system.debug('contactList##' + contactlist.get(acclist[0]));
  		 
  		 
@@ -145,10 +135,11 @@ public  class Memeber360ViewLightningController {
     public static Map<string, object> GetPagingData(string accid,Integer PageNo, Integer PageSize, String SectionName, string SortBy, string SortDir,string SearchText)
     {
         Map<string, object> m = new Map<string, object>();
+        String isValid;
         list<Person_Account__c> paList = [SELECT Id,
-                             Account_Number__c, Account_Number__r.RecType__c, Account_Number__r.Name, TypeTranslate__c FROM Person_Account__c WHERE PersonID__c =:accId];
+                             Account_Number__c,PersonId__r.SSN_TIN_Encrypted__pc, Account_Number__r.RecType__c, Account_Number__r.Name, TypeTranslate__c FROM Person_Account__c WHERE PersonID__c =:accId];
         
-         set<string> typeList = new set<string>();
+        set<string> typeList = new set<string>();
         for(Member360_TypeTranslate__c t : Member360_TypeTranslate__c.getAll().values()){
         	typeList.add(t.name);	
         } 
@@ -156,24 +147,27 @@ public  class Memeber360ViewLightningController {
         List<string> accountNumberSet = new List<string>();
         List<string> accIdset = new List<string>();
         List<string> acctypeSet = new List<string>();
-         Map<string,string> listRelationships = new  Map<string,string>(); 
+        Map<string,string> listRelationships = new  Map<string,string>(); 
         Map<string,string> listRelationshipsName = new  Map<string,string>();
-         Map<string,string> listRelationshipsexcluded = new  Map<string,string>();
+        Map<string,string> listRelationshipsexcluded = new  Map<string,string>();
         Map<string,string> listRelationshipsNameexcluded = new  Map<string,string>();  
         for(Person_Account__c var: paList){
             accountNumberSet.add(var.Account_Number__r.Name);
             acctypeSet.add(var.Account_Number__r.RecType__c);
             accIdSet.add(var.Account_Number__c);
-             listRelationships.put(var.Account_Number__c,var.TypeTranslate__c);
+            listRelationships.put(var.Account_Number__c,var.TypeTranslate__c);
             listRelationshipsName.put(var.Account_Number__r.Name,var.TypeTranslate__c);
-            if(typeList.contains(var.TypeTranslate__c)){
-        					
-        			}    
-        			else{
-           
-            				listRelationshipsexcluded.put(var.Account_Number__c,var.TypeTranslate__c);
-            				listRelationshipsNameexcluded.put(var.Account_Number__r.Name,var.TypeTranslate__c);
-        				}  
+            
+            //if(typeList.contains(var.TypeTranslate__c)){}        					
+            
+            isValid = isValidRelationship(var.Account_Number__r.Name,var.PersonId__r.SSN_TIN_Encrypted__pc);
+            system.debug('1------------'+isValid);    
+			
+            if(isValid == 'true'){}
+            else{
+                listRelationshipsexcluded.put(var.Account_Number__c,var.TypeTranslate__c);
+                listRelationshipsNameexcluded.put(var.Account_Number__r.Name,var.TypeTranslate__c);
+            }  
         }
         
         Object accList =  GetAccList(listRelationships,listRelationshipsName,acctypeSet, accountNumberSet, accIdset, 1, 1500, '', '','');
@@ -183,6 +177,7 @@ public  class Memeber360ViewLightningController {
         system.debug('acctypeSet++ GetPagingData++' + acctypeSet);
         system.debug('accountNumberSet++ GetPagingData++' + accountNumberSet);
         system.debug('accIdset++ GetPagingData++' + accIdset);
+        
         Member360View localAcc = (Member360View)accList;
         List<Account_Details__c> listACCList = (List<Account_Details__c>)localAcc.accList;
         List<String> accountNumberSetWOBeneficiary = new List<String>();
@@ -190,71 +185,55 @@ public  class Memeber360ViewLightningController {
         List<String> accountNumberSetWOBeneficiaryContact = new List<String>();
         List<String> accIdSetWOBeneficiaryContact = new List<String>();
         
-        for(Account_Details__c item: listACCList)
-        {
+        for(Account_Details__c item: listACCList){
            
             accountNumberSetWOBeneficiary.add(item.Name);
             accIdSetWOBeneficiary.add(item.id);
-            if(!listRelationshipsexcluded.containsKey(item.id))
-            {
-            	 accIdSetWOBeneficiaryContact.add(item.id);
-            }
-            if(!listRelationshipsNameexcluded.containsKey(item.Name))
-            {
-            	 accountNumberSetWOBeneficiaryContact.add(item.Name);
-            }
+            if(!listRelationshipsexcluded.containsKey(item.id)){
             
-           
+            	accIdSetWOBeneficiaryContact.add(item.id);
+            }
+            if(!listRelationshipsNameexcluded.containsKey(item.Name)){
             
+            	accountNumberSetWOBeneficiaryContact.add(item.Name);
+            }
         }
-       /* for(Account_Details__c item: listACCList)
-        {
-            accountNumberSetWOBeneficiary.add(item.Name);
-            accIdSetWOBeneficiary.add(item.id);
-            
-        }*/
-        
-        if(SectionName == 'accList')
-        {
+       
+        if(SectionName == 'accList'){
             Object accList1 =  GetAccList(listRelationships,listRelationshipsName,acctypeSet, accountNumberSet, accIdset, PageNo, PageSize, SortBy, SortDir,SearchText);
             m.put('accList', accList1);       
         }
         
-        
-        
-        if(SectionName == 'cardList')
-        {
-            
+        if(SectionName == 'cardList'){
             Object cardList = GetCardList(accountNumberSetWOBeneficiary,accIdSetWOBeneficiary,acctypeSet,accountNumberSet,accIdset,PageNo,PageSize, SortBy,  SortDir,SearchText);
             m.put('accList', cardList);
         }
-        if(SectionName == 'related persons')
-        {
+        
+        if(SectionName == 'related persons'){
             Object contactlist = GetContactDetails(accountNumberSetWOBeneficiaryContact,accIdSetWOBeneficiaryContact,accid,acctypeSet,accountNumberSet,accIdset,PageNo,PageSize, SortBy,  SortDir,SearchText);
             m.put('accList', contactlist);
         }
-        if(SectionName == 'active cases')
-        {
+        
+        if(SectionName == 'active cases'){
             Object activecaselist = GetActiveCaseDetails(accountNumberSetWOBeneficiary,accIdSetWOBeneficiary,acctypeSet,accountNumberSet,accIdset,PageNo,PageSize,SortBy,SortDir,SearchText);
             m.put('accList', activecaselist);
-        }       
-         if(SectionName == 'close cases')
-        {
+        }
+        
+        if(SectionName == 'close cases'){
             Object closecaselist = GetCloseCaseDetails(accountNumberSetWOBeneficiary,accIdSetWOBeneficiary,acctypeSet,accountNumberSet,accIdset,PageNo,PageSize,SortBy,SortDir,SearchText);
             m.put('accList', closecaselist);
         }
-        if(SectionName == 'Case Comments')
-        {
+        
+        if(SectionName == 'Case Comments'){
             Object casecomments = GetCaseComments(accountNumberSetWOBeneficiary,accIdSetWOBeneficiary,acctypeSet,accountNumberSet,accIdset,PageNo,PageSize,SortBy,SortDir,SearchText);
             m.put('accList', casecomments);
         }
-        if(SectionName == 'Active Tasks')
-        {
+        if(SectionName == 'Active Tasks'){
             Object taskList = GetActiveTasksDetails(accountNumberSetWOBeneficiary,accIdSetWOBeneficiary,acctypeSet,accountNumberSet,accIdset,PageNo,PageSize,SortBy,SortDir,SearchText);
             m.put('accList', taskList);
-        }           
-        if(SectionName == 'Warning/Comments')
-        {
+        }     
+        
+        if(SectionName == 'Warning/Comments'){
             Object warningList = GetWarningCodeDetails(accountNumberSetWOBeneficiary,accIdSetWOBeneficiary,acctypeSet,accountNumberSet,accIdset,PageNo,PageSize,SortBy,SortDir,SearchText);
             m.put('accList', warningList);
         }
@@ -266,23 +245,22 @@ public  class Memeber360ViewLightningController {
     private static object GetAccList(Map<string,string> listRelationships,Map<string,string> listRelationshipsName,   List<string> acctypeSet, List<string> accountNumberSet, 
             List<string> accIdset,Integer PageNo, Integer PageSize, string SortBy, string SortDir,string SearchText)
     {
-         Integer PageSize_Local = Integer.Valueof( PageSize);
+        Integer PageSize_Local = Integer.Valueof( PageSize);
         Integer PageNo_Local = Integer.Valueof( PageNo);
         string orderString = '';
-        if(SortBy != '' && SortDir != '')
-        {
+        if(SortBy != '' && SortDir != ''){
             orderString = ' Order by ' + SortBy + ' ' + SortDir;    
-            
-        }        
+        }
+        
         string offset = string.valueof( ((PageNo_Local - 1 ) * PageSize_Local));
-            AggregateResult[] ARs;
+        AggregateResult[] ARs;
         list<Account_Details__c>  accList = new list<Account_Details__c>();
         string SOQLQuery = '';
         string searchquery = '';
         boolean isDate = false;
         Date dtSearchText;
-        if(SearchText != '')
-        {
+        if(SearchText != ''){
+        
             try{
                 dtSearchText = Date.Parse(SearchText);
                 string month = string.valueOf(dtSearchText.month());
@@ -411,11 +389,8 @@ public  class Memeber360ViewLightningController {
             }
             
         }
-        
-        
-        
-        List<sObject> sobjList = Database.query(SOQLQuery);
-        
+   
+        List<sObject> sobjList = Database.query(SOQLQuery);    
         List<AccountList360> listAccountList360 = new List<AccountList360>();
         List<String> AccountListIdSet = new List<String>();
         
@@ -445,34 +420,32 @@ public  class Memeber360ViewLightningController {
             obj.Emp_Balance = acc.Emp_Balance__c;
             obj.Emp_Available_Balance = acc.Emp_Available_Balance__c;
             obj.Available_Balance = acc.Available_Balance__c;
+            
             if(true){
-                
-               	 obj.Relationship = listRelationshipsName.get(obj.Name);         
-                 
+                if(listRelationships.keyset().contains(obj.id)){
+                	obj.Relationship = listRelationships.get(obj.Id);    
+                }
+                else{
+                	obj.Relationship = listRelationshipsName.get(obj.Name);    
+                }
             }
-            else
-            {
+            else{
                 obj.Relationship = listRelationships.get(obj.Id);
-                
             }
             
-            
-            if(obj.Relationship != null && !obj.Relationship.contains('Beneficiary'))
-            {
+            if(obj.Relationship != null && !obj.Relationship.contains('Beneficiary')){
                
                 listAccountList360.add(obj);
                 AccountListIdSet.Add(obj.Id);   
                 accList.add(acc);
-                
             }    
-        
         }
         
       
-      if(AccountListIdSet.size() > 0)
-      {  
-      			system.debug('AccountListIdSet##' + AccountListIdSet);
-                SOQLQuery = ' SELECT Id, ' +
+		if(AccountListIdSet.size() > 0){
+       
+            system.debug('AccountListIdSet##' + AccountListIdSet);
+            SOQLQuery = ' SELECT Id, ' +
                               ' Name, ' +
                               '  RecType__c, ' +
                               ' TypeTranslate__c, ' +
@@ -492,47 +465,39 @@ public  class Memeber360ViewLightningController {
                               ' Emp_Balance__c, ' +
                               ' Emp_Available_Balance__c, ' +
                               ' Available_Balance__c FROM Account_Details__c Where Id IN (\'' + string.join(AccountListIdSet,'\',\'') +  '\') ' +  orderString + ' LIMIT  ' + string.valueOf( PageSize_Local) + ' OFFSET ' +  offset;
-                     system.debug('SOQLQuery5##' + SOQLQuery);            
-              sobjList = Database.query(SOQLQuery);
+              
+            system.debug('SOQLQuery5##' + SOQLQuery);            
+            sobjList = Database.query(SOQLQuery);
                
-                for(sObject acc : sobjList)
-                {
-                     Account_Details__c acc1 = (Account_Details__c)acc;
-                    
-                    if(true){
-                        acc1.Card_Name__c = listRelationshipsName.get(acc1.Name);           
-                        
+            for(sObject acc : sobjList){
+                Account_Details__c acc1 = (Account_Details__c)acc;
+                if(true){
+                    if(listRelationships.keyset().contains(acc1.id)){
+                        acc1.Card_Name__c = listRelationships.get(acc1.Id);    
                     }
-                    else
-                    {
-                        acc1.Card_Name__c = listRelationships.get(acc1.Id);
+                    else{
+                        acc1.Card_Name__c = listRelationshipsName.get(acc1.Name);    
                     }
-                    
                 }
+                else{
+                    acc1.Card_Name__c = listRelationships.get(acc1.Id);
+                }
+            }
                 
-                Member360View test = new Member360View();
-                test.accList = sobjList;
-                test.totalrecords = AccountListIdSet.size();
+            Member360View test = new Member360View();
+            test.accList = sobjList;
+            test.totalrecords = AccountListIdSet.size();
                 
-          return test;
-     
+            return test;
       } 
-      else
-      {
-         Member360View test = new Member360View();
-            test.accList = new List<Account_Details__c>();
-            
-            
-                test.totalrecords = 0;
+      else{
+          Member360View test = new Member360View();
+          test.accList = new List<Account_Details__c>();
+          test.totalrecords = 0;
           		
-                return test;
-        
+          return test;
       }
-        
-        
-       
-    
-    }
+	}
 
     
     private static boolean checkValueExistsInList(List<string> listValues, string value)
@@ -979,27 +944,29 @@ public  class Memeber360ViewLightningController {
          }
          
           
-         for(CaseAccountMemberDetail__c so:finalcamd){
-         	case c = new case();
+        for(CaseAccountMemberDetail__c so:finalcamd){
+        	
+            case c = new case();
         	c = casemap.get(so.case__c);
          	CaseModel Tempcase = new CaseModel();
-         	Tempcase.Id = c.id;
-         	Tempcase.CaseNumber = c.CaseNumber;
-         	Tempcase.Category = c.Category__c;
-         	Tempcase.Status = c.Status;
-         	Tempcase.AccountNumber = so.MemberAccountid__c;
-         	Tempcase.AccountName = so.Account_Name__c;
-         	Tempcase.Subject = c.Subject;
-         	Tempcase.MemberName = c.Account.Name;
-         	Tempcase.ParentId =  c.ParentId;
-         	Tempcase.Origin = c.Origin;
-         	Tempcase.CreatedDate = c.CreatedDate;
-         	Tempcase.Brand = c.Account_Number__r.Brand__c;
-         	Tempcase.OwnerName = c.Owner.Name;
-            Tempcase.ParentCaseNumber = c.Parent.CaseNumber;
-            Tempcase.AccountId = c.AccountId;
-         	finalCaseList.add(Tempcase);
-         		
+            if(c != null){
+                Tempcase.Id = c.id;
+                Tempcase.CaseNumber = c.CaseNumber;
+                Tempcase.Category = c.Category__c;
+                Tempcase.Status = c.Status;
+                Tempcase.AccountNumber = so.MemberAccountid__c;
+                Tempcase.AccountName = so.Account_Name__c;
+                Tempcase.Subject = c.Subject;
+                Tempcase.MemberName = c.Account.Name;
+                Tempcase.ParentId =  c.ParentId;
+                Tempcase.Origin = c.Origin;
+                Tempcase.CreatedDate = c.CreatedDate;
+                Tempcase.Brand = c.Account_Number__r.Brand__c;
+                Tempcase.OwnerName = c.Owner.Name;
+                Tempcase.ParentCaseNumber = c.Parent.CaseNumber;
+                Tempcase.AccountId = c.AccountId;
+                finalCaseList.add(Tempcase);
+            }	
          }
         system.debug('finalCaseList=='+finalCaseList) ;
         
@@ -2088,6 +2055,57 @@ public  class Memeber360ViewLightningController {
         
         return lstCardAlerts;
     }
+    
+    @AuraEnabled
+	public static String isValidRelationship(string MemberNumber, string SSN){
+		
+        String IsValid;
+        ACH_To_Episys_API_Details__c api = ACH_To_Episys_API_Details__c.getValues('ProductionURL');
+        String loanAPI;
+        
+		if (api.URL__c != null){
+			loanAPI = api.URL__c;
+		}
+
+		httpRequest requestparam = new httpRequest();
+		requestparam.setEndpoint(loanAPI +'/MemberAuthorization/IsValidMemberRelationShip');// + AccountNumber +'&FullNameStringList=' + primaryName +'&FullName=' + SSN);
+		requestparam.setMethod('POST');
+		requestparam.setHeader('Content-Type', 'application/json');
+		requestparam.setHeader('Accept', 'application/json');
+		requestparam.setHeader('Content-Length', '162100');
+		string jsonData = '{"MemberNumber":' + '\"' + MemberNumber + '\","SSN":' + '\"' + SSN + '\"}';
+		requestparam.setBody(jsonData);
+		system.debug('jsonData==' + jsonData);
+		Http httpParam = new Http();
+
+		requestparam.setTimeout(60000);
+		HttpResponse response;
+		String responseBody1;
+		String strStatus, strBody;
+		if (!Test.isRunningTest()){
+			response = httpParam.send(requestparam);
+			responseBody1 = response.getBody();
+			System.debug('Response Body::' + response.getBody());
+			strStatus = response.getStatus();
+			strBody = response.getBody();
+		} else{
+			strBody = '';
+		}
+        if(responseBody1 != '' && responseBody1 != null){        
+            Map<String,Object> results = (Map<String,Object>)System.JSON.deserializeUntyped(responseBody1);
+            if(results != null){                     
+                for(String key : results.keySet()){                   			
+                    if(key == 'IsValid'){
+                        IsValid = String.valueOf(results.get(key));
+                        
+                    }
+                }
+                system.debug('IsValid: '+IsValid);           
+            }
+        }
+        
+        return IsValid;
+	}
     
     public class Member360View
     {

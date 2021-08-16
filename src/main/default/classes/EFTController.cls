@@ -227,7 +227,7 @@ public class EFTController{
 		
 		/*-----------Create EFT in SF if Does not exist before expiring----------------*/
 		if (EFTRecord.Id != null){
-			EFTRecordList = [Select Account_Number__c, Action_Type__c, Alternate_Amount__c, Bank_Name__c, CreatedById, CreatedDate, Day_of_Month__c, Second_Day_of_Month__c, DocuSignId__c, Effective_Date__c, Expiration_Date__c, Frequency__c, Id, Member_Account__c, Member_Account__r.Brand__c, Member_Account__r.Name, Member__c, Name, Case__c, OwnerId, Payment_Amount__c, Routing_Number__c, Share_Loan_Id__c, Stage__c, EftLocator__c, Share_Loan_Description__c, Share_Loan_Type__c, Member_Name__c, Status__c, Type__c, EFT_ID_Type__c, Expired__c
+			EFTRecordList = [Select Account_Number__c, Action_Type__c, Alternate_Amount__c, Bank_Name__c, CreatedById, CreatedDate, Day_of_Month__c, Second_Day_of_Month__c, DocuSignId__c, Effective_Date__c, Expiration_Date__c, Frequency__c, Id, Member_Account__c, Member_Account__r.Brand__c, Member_Account__r.Name, Member__c, Name, Case__c, OwnerId, Payment_Amount__c, Routing_Number__c, Share_Loan_Id__c, Stage__c, EftLocator__c, Share_Loan_Description__c, Share_Loan_Type__c, Member_Name__c, Status__c, Type__c, EFT_ID_Type__c, Expired__c, Next_Payment_Due_Date__c
 			                 from EFT__c
 			                 where id = :EFTRecord.Id
 			                 limit 1];
@@ -345,22 +345,24 @@ public class EFTController{
 		//cs.CaseComments__c = casecomment;
 		cs.Previous_Owner__c = UserInfo.getUserId();
 		string operation = '';
+		Datetime dt = (datetime)EFTRecord.Next_Payment_Due_Date__c;
+		system.debug('dt=='+dt);
 		if (EFTRecord.Action_Type__c == 'Create'){
 			operation = 'ACH Record Created' + '\n';
 			cs.Subject = 'ACH Record Created';
 			cs.Docusign_Envelope_Status__c = 'Sent';
-			cs.Description = operation + 'Member Name:' + EFTRecord.Member_Name__c + '\n' + 'Share/Loan:' + EFTRecord.Share_Loan_Id__c + '\n' + 'ABA/Routing#:' + EFTRecord.Routing_Number__c + '\n' + 'Funding FI:' + EFTRecord.Bank_Name__c + '\n' + 'Account Number:' + EFTRecord.Account_Number__c + '\n' + 'Type:' + EFTRecord.Type__c + '\n' + 'Payment Amount:' + EFTRecord.Payment_Amount__c + '\n' + 'Additional Payment Amount:' + (EFTRecord.Alternate_Amount__c == null ? 0 : EFTRecord.Alternate_Amount__c)+'\n' + 'Effective Date:' + EFTRecord.Effective_Date__c + '\n' + 'Frequency:' + EFTRecord.Frequency__c + '\n' + 'Day of Month:' + EFTRecord.Day_of_Month__c;
+			cs.Description = operation + 'Member Name:' + EFTRecord.Member_Name__c + '\n' + 'Share/Loan:' + EFTRecord.Share_Loan_Id__c + '\n' + 'ABA/Routing#:' + EFTRecord.Routing_Number__c + '\n' + 'Funding FI:' + EFTRecord.Bank_Name__c + '\n' + 'Account Number:' + EFTRecord.Account_Number__c + '\n' + 'Type:' + EFTRecord.Type__c + '\n' + 'Payment Amount:' + EFTRecord.Payment_Amount__c + '\n' + 'Additional Payment Amount:' + (EFTRecord.Alternate_Amount__c == null ? 0 : EFTRecord.Alternate_Amount__c)+'\n' + 'Effective Date:' + EFTRecord.Effective_Date__c + '\n' + 'Frequency:' + EFTRecord.Frequency__c + '\n' + 'Day of Month:' + EFTRecord.Day_of_Month__c+ '\n' + 'Next Payment Due Date: ' + (dt == null ? '' : dt.formatGMT('yyyy-MM-dd'));
 		} else if (EFTRecord.Action_Type__c == 'Update' && !EFTRecord.Expired__c){
 			operation = 'ACH Record Updated' + '\n';
 			cs.Subject = 'ACH Record Updated';
 			cs.Docusign_Envelope_Status__c = 'Sent';
-			cs.Description = operation + 'Member Name:' + EFTRecord.Member_Name__c + '\n' + 'Share/Loan:' + EFTRecord.Share_Loan_Id__c + '\n' + 'ABA/Routing#:' + EFTRecord.Routing_Number__c + '\n' + 'Funding FI:' + EFTRecord.Bank_Name__c + '\n' + 'Account Number:' + EFTRecord.Account_Number__c + '\n' + 'Type:' + EFTRecord.Type__c + '\n' + 'Payment Amount:' + EFTRecord.Payment_Amount__c + '\n' + 'Additional Payment Amount:' + (EFTRecord.Alternate_Amount__c == null ? 0 : EFTRecord.Alternate_Amount__c)+'\n' + 'Effective Date:' + EFTRecord.Effective_Date__c + '\n' + 'Frequency:' + EFTRecord.Frequency__c + '\n' + 'Day of Month:' + EFTRecord.Day_of_Month__c;
+			cs.Description = operation + 'Member Name:' + EFTRecord.Member_Name__c + '\n' + 'Share/Loan:' + EFTRecord.Share_Loan_Id__c + '\n' + 'ABA/Routing#:' + EFTRecord.Routing_Number__c + '\n' + 'Funding FI:' + EFTRecord.Bank_Name__c + '\n' + 'Account Number:' + EFTRecord.Account_Number__c + '\n' + 'Type:' + EFTRecord.Type__c + '\n' + 'Payment Amount:' + EFTRecord.Payment_Amount__c + '\n' + 'Additional Payment Amount:' + (EFTRecord.Alternate_Amount__c == null ? 0 : EFTRecord.Alternate_Amount__c)+'\n' + 'Effective Date:' + EFTRecord.Effective_Date__c + '\n' + 'Frequency:' + EFTRecord.Frequency__c + '\n' + 'Day of Month:' + EFTRecord.Day_of_Month__c+ '\n' + 'Next Payment Due Date: ' + (dt == null ? '' : dt.formatGMT('yyyy-MM-dd'));
 		} else if (EFTRecord.Action_Type__c == 'Update' && EFTRecord.Expired__c){
 			operation = 'ACH Record Expired' + '\n' + 'Expiration Date:' + EFTRecord.Expiration_Date__c + '\n';
 			cs.Subject = 'ACH Record Cancelled/Expired';
 			cs.ownerid = UserInfo.getUserId();
 			cs.Status='Closed';
-			cs.Description = operation + 'Member Name:' + EFTRecord.Member_Name__c + '\n' + 'Share/Loan:' + EFTRecord.Share_Loan_Id__c + '\n' + 'ABA/Routing#:' + EFTRecord.Routing_Number__c + '\n' + 'Funding FI:' + EFTRecord.Bank_Name__c + '\n' + 'Account Number:' + EFTRecord.Account_Number__c + '\n' + 'Type:' + EFTRecord.Type__c + '\n' + 'Payment Amount:' + EFTRecord.Payment_Amount__c + '\n' + 'Additional Payment Amount:' + (EFTRecord.Alternate_Amount__c == null ? 0 : EFTRecord.Alternate_Amount__c)+'\n' + 'Effective Date:' + EFTRecord.Effective_Date__c + '\n' + 'Frequency:' + EFTRecord.Frequency__c + '\n' + 'Day of Month:' + EFTRecord.Day_of_Month__c;
+			cs.Description = operation + 'Member Name:' + EFTRecord.Member_Name__c + '\n' + 'Share/Loan:' + EFTRecord.Share_Loan_Id__c + '\n' + 'ABA/Routing#:' + EFTRecord.Routing_Number__c + '\n' + 'Funding FI:' + EFTRecord.Bank_Name__c + '\n' + 'Account Number:' + EFTRecord.Account_Number__c + '\n' + 'Type:' + EFTRecord.Type__c + '\n' + 'Payment Amount:' + EFTRecord.Payment_Amount__c + '\n' + 'Additional Payment Amount:' + (EFTRecord.Alternate_Amount__c == null ? 0 : EFTRecord.Alternate_Amount__c)+'\n' + 'Effective Date:' + EFTRecord.Effective_Date__c + '\n' + 'Frequency:' + EFTRecord.Frequency__c + '\n' + 'Day of Month:' + EFTRecord.Day_of_Month__c + '\n' + 'Next Payment Due Date: ' + (dt == null ? '' : dt.formatGMT('yyyy-MM-dd'));
 		}
 		if (EFTRecord.Member_Account__c != null)
 			cs.Account_Number__c = EFTRecord.Member_Account__c;
@@ -939,7 +941,7 @@ public class EFTController{
 							//System.debug('Share ....');
 							objEFT.EFT_ID_Type__c = 'Share';
 							map<string, string> resultAmount = getTrackingRecordforShare(AccountNumber, String.valueOf(localAcc.get('Id')));
-							if (resultAmount != null){
+							if (resultAmount != null && resultAmount.size() > 0){
 								if (String.valueOf(resultAmount.get('Payment')) != null)
 									objEFT.Payment_Amount__c = decimal.valueOf(resultAmount.get('Payment'));
 								objEFT.Alternate_Amount__c = decimal.valueOf(resultAmount.get('AlternateAmount'));

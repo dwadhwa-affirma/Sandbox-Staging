@@ -2,13 +2,15 @@ public class WiresConstant {
     
     //-------------------------------- Approval Status-------------------------------------------//
     
-	 public static final string ApprovalStatus_GoodFundsCheckFailed='Good Funds Check Failed';
+	 
+     public static final string ApprovalStatus_GoodFundsReview='Good Funds Review';
      public static final string ApprovalStatus_PendingForApproval='Pending for Approval';
      public static final string ApprovalStatus_PendingForSecondApproval='Pending for Second Approval';
      public static final string ApprovalStatus_FraudReview='Fraud Review';
      public static final string ApprovalStatus_Approved='Approved';
      public static final string ApprovalStatus_Rejected='Rejected';
      public static final string ApprovalStatus_PendingForMemberReview='Pending for Member Review';
+    public static final string ApprovalStatus_Cancelled='Cancelled';
     
     
     //--------------------------------Wire Transaction Source---------------------------------------------//

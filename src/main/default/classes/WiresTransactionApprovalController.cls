@@ -7,12 +7,14 @@ public class WiresTransactionApprovalController {
                                           Status__c, FromAccount__c,Share_ID__c,Source__c,TotalFromAccount__c,
                                           WireAmount__c, Description__c, IsAccountOpenfor45Days__c, Member_Name__c, 
                                           Identity_Verification_Used__c, IsEmailStable__c, IsHomePhoneStable__c, IsMobilePhoneStable__c, IsWorkPhoneStable__c,                                          
-                                          AccountStableReview__c,Review_Reason__c,Available_Balance_Review__c, EmailStableReview__c,
+                                          AccountStableReview__c,Available_Balance_Review__c, EmailStableReview__c,
                                           Home_Phone_Stable_Review__c,ID_Verification_Review__c, Mobile_Phone_Stable_Review__c, 
                                           Previous_Wires_Review__c, Work_Phone_Stable_Review__c, FlagAccountOpenfor45Days__c,
                                           FlagEmailStablefor30Days__c, FlagHomePhoneStablefor30Days__c, FlagMobilePhoneStablefor30Days__c, FlagWorkPhoneStablefor30Days__c,
-                                          Second_Approval_Review_Reason__c,Available_Balance2_Review__c,
-                                          Previous_Wires2_Review__c,Approved_by_1st_Approver__c
+                                          Review_Reason__c,Second_Approval_Review_Reason__c,Available_Balance2_Review__c,
+                                          Previous_Wires2_Review__c,Approved_by_1st_Approver__c,CreatedById,
+                                          Good_Funds_Check__c,BalanceRGLines__c,BalanceStatusCode__c,
+                                          First_Approval_Comment__c,Second_Approval_Comment__c
                                           from WIRES_Transaction__c where id=:WiresRecordId limit 1];
         
         string isApprovalVisible;
@@ -29,7 +31,7 @@ public class WiresTransactionApprovalController {
             }
         }
         System.debug('Status'+WiresList.Approval_Status__c);
-        if(WiresList.Approval_Status__c==WiresConstant.ApprovalStatus_GoodFundsCheckFailed 
+        if(WiresList.Approval_Status__c==WiresConstant.ApprovalStatus_GoodFundsReview 
            || (WiresList.Approval_Status__c==WiresConstant.ApprovalStatus_PendingForApproval)
            || (WiresList.Approval_Status__c==WiresConstant.ApprovalStatus_PendingForSecondApproval)){
                
@@ -85,7 +87,6 @@ public class WiresTransactionApprovalController {
                        }   
                    }
                    
-                   
                    if(WiresList.TotalFromAccount__c>25000 && WiresList.TotalFromAccount__c<=100000){
                        
                        if(grpBmembers.size()>0 || grpCmembers.size()>0 || grpDmembers.size()>0 || grpEmembers.size()>0){
@@ -110,7 +111,6 @@ public class WiresTransactionApprovalController {
                            }   
                        }
                    }
-                   
                    
                    if(WiresList.TotalFromAccount__c>250000 && WiresList.TotalFromAccount__c<=1000000){
                        if(WiresList.Approval_Status__c==WiresConstant.ApprovalStatus_PendingForSecondApproval){
@@ -155,8 +155,13 @@ public class WiresTransactionApprovalController {
                        System.debug('UserInfo.getUserId(): '+UserInfo.getUserId());
                        if(WiresList.Approval_Status__c==WiresConstant.ApprovalStatus_PendingForSecondApproval 
                           && WiresList.Approved_by_1st_Approver__c== UserInfo.getUserId()){
-                           isApprovalVisible = 'false';
-                       }
+                              isApprovalVisible = 'false';
+                          }
+                   }
+                   
+                   //The person/user that submitted the wire should not be able to approve the same wire even if user/person is in the approval group
+                   if(WiresList.CreatedById==UserInfo.getUserId()){
+                       isApprovalVisible='false';
                    }
                    
                }else{
@@ -215,12 +220,45 @@ public class WiresTransactionApprovalController {
                }
            }
         
-		strMap.put('Source',WiresList.Source__c);               
+        strMap.put('Source',WiresList.Source__c); 
+        
         strMap.put('isApprovalVisible',isApprovalVisible);   
         strMap.put('ApprovalStatus',WiresList.Approval_Status__c); 
         strMap.put('WiresList',WiresList);  
         strMap.put('WiresBalance','TBD');
-        strMap.put('WiresBalance',checkWiresFunds(WiresList.FromAccount__c, WiresList.Share_ID__c,WiresList.TotalFromAccount__c));
+        
+        string goodFundStatus= WiresList.Good_Funds_Check__c!=null ? WiresList.Good_Funds_Check__c.Split('\\---')[0]:'';
+        
+        System.debug('Status of goodfund:'+goodFundStatus);
+        if((WiresList.Approval_Status__c==WiresConstant.ApprovalStatus_PendingForApproval 
+            || WiresList.Approval_Status__c==WiresConstant.ApprovalStatus_PendingForSecondApproval
+            || WiresList.Approval_Status__c==WiresConstant.ApprovalStatus_GoodFundsReview) 
+           && (goodFundStatus=='' || goodFundStatus!='PASS')) {    
+               
+               Map<String,Object> checkWiresFundsResult=checkWiresFunds(WiresList.FromAccount__c, WiresList.Share_ID__c,WiresList.TotalFromAccount__c);
+               
+               Object statusCode=checkWiresFundsResult.get('StatusCode');
+               Object statusMsg=checkWiresFundsResult.get('StatusMessage');
+               
+               if(WiresList.Approval_Status__c!=WiresConstant.ApprovalStatus_PendingForMemberReview){
+                   if(Integer.valueOf(statusCode)<=0){
+                       WiresList.Good_Funds_Check__c='FAIL---'+statusMsg.toString();
+                   }else{
+                       WiresList.Good_Funds_Check__c='PASS---'+statusMsg.toString();
+                   }
+                   
+                   WiresList.BalanceRGLines__c=statusMsg.toString();
+                   WiresList.BalanceStatusCode__c=statusCode.toString();
+                   
+                   update WiresList;
+               }
+               
+               strMap.put('BalanceRGLines',statusMsg);
+               strMap.put('BalanceStatusCode',statusCode);
+           }else{
+               strMap.put('BalanceRGLines',WiresList.BalanceRGLines__c);
+               strMap.put('BalanceStatusCode',WiresList.BalanceStatusCode__c);
+           }
         
         List<WIRES_Transaction__c> Wires = [SELECT id,Approval_Status__c, FromAccount__c,Share_ID__c,
                                             WireAmount__c, Description__c, IsAccountOpenfor45Days__c, Member_Name__c 
@@ -234,23 +272,51 @@ public class WiresTransactionApprovalController {
     }
     
     @AuraEnabled
+    public static void CancelTransaction(string WiresRecordId, string Reason){
+        
+        WIRES_Transaction__c Wires = [SELECT id,Approval_Status__c, FromAccount__c,Share_ID__c,Source__c,TotalFromAccount__c,
+                                      WireAmount__c, Description__c, IsAccountOpenfor45Days__c, Member_Name__c, 
+                                      Identity_Verification_Used__c, IsEmailStable__c, IsHomePhoneStable__c, IsMobilePhoneStable__c, IsWorkPhoneStable__c,                                          
+                                      AccountStableReview__c,Available_Balance_Review__c, EmailStableReview__c,Review_Reason__c,
+                                      Home_Phone_Stable_Review__c,ID_Verification_Review__c, Mobile_Phone_Stable_Review__c, 
+                                      Previous_Wires_Review__c, Work_Phone_Stable_Review__c, FlagAccountOpenfor45Days__c,
+                                      FlagEmailStablefor30Days__c, FlagHomePhoneStablefor30Days__c, FlagMobilePhoneStablefor30Days__c, FlagWorkPhoneStablefor30Days__c 
+                                      from WIRES_Transaction__c where id=:WiresRecordId limit 1];
+        
+        Wires.Approval_Status__c = WiresConstant.ApprovalStatus_Cancelled;
+        Wires.Cancel_Reason__c = Reason;
+        Wires.Cancelled_By__c=UserInfo.getUserId();
+        Wires.Cancelled_On__c=DateTime.now();
+        
+        update Wires;
+        
+        set<id> wiresId=new Set<id>();
+        wiresId.add(Wires.Id);
+        WiresEmailController.SendBranchWireCancelledOrRejectEmailNotification(wiresId,true);
+    }
+    
+    @AuraEnabled
     public static void ApproveTransaction(string WiresRecordId, string Action, string wiresdetails){
         WIRES_Transaction__c WiresObject = (WIRES_Transaction__c)JSON.deserialize(wiresdetails, WIRES_Transaction__c.class);
         
         WIRES_Transaction__c Wires = [SELECT id,Approval_Status__c, FromAccount__c,Share_ID__c,Source__c,TotalFromAccount__c,
                                       WireAmount__c, Description__c, IsAccountOpenfor45Days__c, Member_Name__c, 
                                       Identity_Verification_Used__c, IsEmailStable__c, IsHomePhoneStable__c, IsMobilePhoneStable__c, IsWorkPhoneStable__c,                                          
-                                      AccountStableReview__c,Review_Reason__c,Available_Balance_Review__c, EmailStableReview__c,
+                                      AccountStableReview__c,Available_Balance_Review__c, EmailStableReview__c,Review_Reason__c,
                                       Home_Phone_Stable_Review__c,ID_Verification_Review__c, Mobile_Phone_Stable_Review__c, 
                                       Previous_Wires_Review__c, Work_Phone_Stable_Review__c, FlagAccountOpenfor45Days__c,
-                                      FlagEmailStablefor30Days__c, FlagHomePhoneStablefor30Days__c, FlagMobilePhoneStablefor30Days__c, FlagWorkPhoneStablefor30Days__c 
+                                      FlagEmailStablefor30Days__c, FlagHomePhoneStablefor30Days__c, FlagMobilePhoneStablefor30Days__c, FlagWorkPhoneStablefor30Days__c ,
+                                      First_Approval_Comment__c,Second_Approval_Comment__c
                                       from WIRES_Transaction__c where id=:WiresRecordId limit 1];
         if(Action == 'Reject'){
             Wires.Approval_Status__c = WiresConstant.ApprovalStatus_Rejected; 
+            Wires.Rejected_By__c=UserInfo.getUserId();
+            Wires.Rejected_On__c=DateTime.now();
+            Wires.First_Approval_Comment__c=WiresObject.First_Approval_Comment__c;
         }
         
-        if(Action == 'Good Funds Check Failed'){
-            Wires.Approval_Status__c = WiresConstant.ApprovalStatus_GoodFundsCheckFailed;
+        if(Action == 'Good Funds Review'){
+            Wires.Approval_Status__c = WiresConstant.ApprovalStatus_GoodFundsReview;
             Wires.AccountStableReview__c = WiresObject.AccountStableReview__c;
             Wires.Available_Balance_Review__c = WiresObject.Available_Balance_Review__c;
             Wires.Review_Reason__c = WiresObject.Review_Reason__c;
@@ -264,9 +330,8 @@ public class WiresTransactionApprovalController {
         else if((Wires.Approval_Status__c == WiresConstant.ApprovalStatus_PendingForApproval 
                  || Wires.Approval_Status__c == WiresConstant.ApprovalStatus_PendingForSecondApproval
                  || Wires.Approval_Status__c == WiresConstant.ApprovalStatus_FraudReview
-                 || Wires.Approval_Status__c == WiresConstant.ApprovalStatus_GoodFundsCheckFailed)){
+                 || Wires.Approval_Status__c == WiresConstant.ApprovalStatus_GoodFundsReview)){
                      
-                     System.debug('In nranch source');
                      if(Wires.Source__c==WiresConstant.Source_Branch){
                          
                          if(Wires.TotalFromAccount__c>100000 
@@ -287,15 +352,15 @@ public class WiresTransactionApprovalController {
                              System.debug('In else');
                              System.debug('Wires.Approval_Status__c:'+Wires.Approval_Status__c);
                              if(Wires.TotalFromAccount__c>100000 
-                            	&& Wires.Approval_Status__c == WiresConstant.ApprovalStatus_PendingForSecondApproval){
+                                && Wires.Approval_Status__c == WiresConstant.ApprovalStatus_PendingForSecondApproval){
                                     
-                                     System.debug('In second arrpoval');
-                             	Wires.Approved_by_2nd_Approver__c = UserInfo.getUserId();
-                             }else{
-                                 
-                                 System.debug('In fisrt approval');
-                                 Wires.Approved_by_1st_Approver__c = UserInfo.getUserId();
-                             }
+                                    System.debug('In second arrpoval');
+                                    Wires.Approved_by_2nd_Approver__c = UserInfo.getUserId();
+                                }else{
+                                    
+                                    System.debug('In fisrt approval');
+                                    Wires.Approved_by_1st_Approver__c = UserInfo.getUserId();
+                                }
                              
                              Wires.Approval_Status__c = WiresConstant.ApprovalStatus_Approved;
                          }
@@ -303,7 +368,7 @@ public class WiresTransactionApprovalController {
                          Wires.Approval_Status__c = WiresConstant.ApprovalStatus_Approved;  
                          wires.ApprovedDate__c=System.now();
                          Wires.Available_Balance_Review__c = WiresObject.Available_Balance_Review__c;
-                     	 Wires.Previous_Wires_Review__c = WiresObject.Previous_Wires_Review__c;
+                         Wires.Previous_Wires_Review__c = WiresObject.Previous_Wires_Review__c;
                          wires.Approved_by_1st_Approver__c = UserInfo.getUserId();
                      }
                      
@@ -330,6 +395,9 @@ public class WiresTransactionApprovalController {
             Wires.Previous_Wires_Review__c = WiresObject.Previous_Wires_Review__c;
             Wires.Work_Phone_Stable_Review__c = WiresObject.Work_Phone_Stable_Review__c;
         }
+        
+        Wires.Second_Approval_Comment__c = WiresObject.Second_Approval_Comment__c;
+        Wires.First_Approval_Comment__c = WiresObject.First_Approval_Comment__c;
         
         update Wires;
     }
@@ -361,6 +429,8 @@ public class WiresTransactionApprovalController {
         
         SendEmail(id,EmailToSend);
     }
+    
+    
     
     public static void ReleasedToWireXchangeEmailNotification(Set<Id> id){
         
@@ -394,12 +464,20 @@ public class WiresTransactionApprovalController {
     @future(callout=true)
     public static void CheckRedFlgsAndUpdateStatus(Set<Id> id){
         
-        System.debug('Id:'+Id);
-        List<WIRES_Transaction__c> wireTransactions = [SELECT Id,Approval_Status__c,ToAccountName__c,ToAccoutId__c,
+        System.debug('In CheckRedFlgsAndUpdateStatus');
+        string apiURL='';
+        SolarLoan_To_Episys_API_Details__c api = SolarLoan_To_Episys_API_Details__c.getValues('ProductionURL');
+        
+        if(api.URL__c != null){
+            apiURL = api.URL__c;
+        }
+        
+        List<WIRES_Transaction__c> wireTransactions = [SELECT Id,Name,Approval_Status__c,ToAccountName__c,ToAccoutId__c,
                                                        Status__c, FromAccount__c,TotalFromAccount__c,WireAmount__c,
-                                                       ToAccoutId__r.Recipient_AccountNumber__c,
-                                                       ToAccoutId__r.BankName__c,AccountStableReview__c,
-                                                       EmailStableReview__c,Home_Phone_Stable_Review__c,
+                                                       ToAccoutId__r.Recipient_AccountNumber__c,SendOn__c,Source__c,
+                                                       ToAccoutId__r.BankName__c,ToAccoutId__r.RoutingNumber__c,
+                                                       AccountStableReview__c,EmailStableReview__c,Member_Name__c,
+                                                       Identity_Verification_Used__c,Home_Phone_Stable_Review__c,
                                                        Mobile_Phone_Stable_Review__c,Work_Phone_Stable_Review__c,
                                                        FlagAccountOpenfor45Days__c,FlagEmailStablefor30Days__c,
                                                        FlagHomePhoneStablefor30Days__c,FlagMobilePhoneStablefor30Days__c,
@@ -412,91 +490,84 @@ public class WiresTransactionApprovalController {
         for(WIRES_Transaction__c wt:wireTransactions){
             
             if(wt.TotalFromAccount__c>250000){
+                
+                System.debug('In Greater than 25k');
                 wt.Approval_Status__c=WiresConstant.ApprovalStatus_FraudReview;
-                wiresToUpdate.add(wt);
                 
                 List<Account_Details__c> listAccountDetails = [select id,Brand__c,ID1__c,OPEN_DATE__c from Account_Details__c where Name =: wt.FromAccount__c and RecType__c='ACCT' LIMIT 1];
                 Case case1 =new Case();
                 case1.Subject='WIRES Fraud Review';
                 case1.Primary_Category__c='Account Maintenance';
-                case1.Secondary_Category__c=' Special Situations';
+                case1.Secondary_Category__c='Special Situations';
                 case1.Tertiary_Category__c='Potential Fraud';
-                if(listAccountDetails.size()>0){
-                    case1.Account_Number__c=listAccountDetails[0].Id;
-                }
+                case1.Description= 'Wire Name: '+wt.Name+'\n'
+                    +'Wire Amount: '+wt.WireAmount__c+'\n'
+                    +'Send On date: '+String.valueof(wt.SendOn__c).removeEnd(' 00:00:00')+'\n'
+                    +'Source: '+wt.Source__c+'\n'
+                    +'Recipient Bank Name: '+wt.ToAccoutId__r.BankName__c+'\n'
+                    +'Recipient Bank ABA Number: '+wt.ToAccoutId__r.RoutingNumber__c+'\n'
+                    +'ID Verification Used: '+wt.Identity_Verification_Used__c+'\n'
+                    +'Approval Status: '+wt.Approval_Status__c+'\n'
+                    +'Member Name: '+wt.Member_Name__c;
                 
-                fraudCases.add(case1);
-            }else{
-                integer statusCode=0;
-                boolean isGoodFundCheck=false;
-                if(wt.TotalFromAccount__c>10000){
-                    //Map<string,object> results = checkWiresFunds(wt.FromAccount__c, wt.Share_ID__c,wt.TotalFromAccount__c);
-                    
-                    decimal amount=wt.TotalFromAccount__c;
-                    String AccountNumber=wt.FromAccount__c;
-                    String ShareID=wt.Share_ID__c;
-                    
-                    Map<String,Object> results = new Map<String,Object>();
-                    httpRequest requestparam = new httpRequest(); 
-                    system.debug('amount=='+amount);
-                    requestparam.setEndpoint('https://symxapi.chevronfcu.org/devclient/Wires/WiresFundsCheck?amount=' + amount +'&accountNumber=' + AccountNumber + '&shareId=' + ShareID);
-                    requestparam.setMethod('GET');      
-                    
-                    
-                    http httpParam = new http();
-                    httpResponse response = httpParam.send(requestparam);
-                    
-                    String strStatus = response.getStatus();
-                    String strBody = response.getBody();
-                    
-                    System.debug('Service response is ....' + strStatus);
-                    System.debug('Service response is ....' + strBody);
-                    
-                    if(strBody!=''){        
-                        results = (Map<String,Object>) JSON.deserializeUntyped(response.getBody());      
-                        System.debug('Service response is ....' + results);              
+                    if(listAccountDetails.size()>0){
+                        case1.Account_Number__c=listAccountDetails[0].Id;
                     }
-                    
-                    if(results.size() > 0){
-                        for(String key : results.keySet()){                             
-                            if(key == 'StatusCode'){
-                                statusCode = integer.valueOf(results.get(key));
-                                isGoodFundCheck=true;
-                            }
-                        }
+                insert case1;
+                System.debug('Case1 Id:'+case1.Id);
+                wt.Case__c=case1.Id;
+                
+                wiresToUpdate.add(wt);
+            }else{
+                System.debug('In less than 25k');
+                integer statusCode=0;
+                Object statusMsg='';
+                boolean isGoodFundCheck=false;
+                Map<String,Object> results = new Map<String,Object>();
+                if(wt.TotalFromAccount__c>10000){
+                    Map<String,Object> checkWiresFundsResult=checkWiresFunds(wt.FromAccount__c, wt.Share_ID__c,wt.TotalFromAccount__c);
+                    if(checkWiresFundsResult.size() > 0){
+                        isGoodFundCheck=true;
+                        
+                        Object statusMsg1=checkWiresFundsResult.get('StatusMessage');
+                        statusCode = integer.valueOf(checkWiresFundsResult.get('StatusCode'));
+                        
+                        if(statusCode<=0){
+                            wt.Good_Funds_Check__c='FAIL---'+statusMsg1.toString();
+                        }else{
+                            wt.Good_Funds_Check__c='PASS---'+statusMsg1.toString();
+                        }    
+                        
+                        wt.BalanceStatusCode__c=String.valueOf(statusCode);
+                        wt.BalanceRGLines__c=String.valueOf(statusMsg1);
                     }
                 }
                 
                 if(wt.FlagAccountOpenfor45Days__c && wt.FlagEmailStablefor30Days__c
                    && wt.FlagHomePhoneStablefor30Days__c && wt.FlagMobilePhoneStablefor30Days__c
                    && wt.FlagWorkPhoneStablefor30Days__c){
-                       System.debug('In condiiton');
+                       
                        if(isGoodFundCheck==true && statusCode<=0){
-                           System.debug('In condiiton1');
-                           wt.Approval_Status__c = WiresConstant.ApprovalStatus_GoodFundsCheckFailed;
+                           wt.Approval_Status__c = WiresConstant.ApprovalStatus_GoodFundsReview;
+                           wt.Good_Funds_Check__c='FAIL---'+statusMsg.toString();
                            wiresToUpdate.add(wt);
                        }else if(isGoodFundCheck==true && statusCode>0 && wt.TotalFromAccount__c>250000 ){
-                           System.debug('In condiiton2');
                            wt.Approval_Status__c = WiresConstant.ApprovalStatus_PendingForApproval;
+                           wt.Good_Funds_Check__c='PASS---'+statusMsg.toString();
                            wiresToUpdate.add(wt);
                        }
                        else{
-                           System.debug('In condiiton3');
                            wt.Approval_Status__c = WiresConstant.ApprovalStatus_Approved;
                            wt.Approved_by_1st_Approver__c = UserInfo.getUserId();
                            wiresToUpdate.add(wt);
                        }
                    }else{
-                       System.debug('In condiiton4');
                        wt.Approval_Status__c=WiresConstant.ApprovalStatus_FraudReview;
                        wiresToUpdate.add(wt);
                    }
             }
         }
         
-        if(fraudCases.size()>0){
-            insert fraudCases;
-        }
         if(wiresToUpdate.size()>0){
             update wiresToUpdate;
         }
@@ -504,13 +575,14 @@ public class WiresTransactionApprovalController {
     
     @future(callout=true)
     public static void CheckGoodFundAndUpdateStatus(Set<Id> id){
-        
         System.debug('THIS Id:'+Id);
         
         integer statusCode=0;
+        string statusMessage='';
+        
         boolean isGoodFundCheck=false;
         
-        List<WIRES_Transaction__c> wireTransactions = [SELECT Id,Approval_Status__c,ToAccountName__c,ToAccoutId__c,
+        List<WIRES_Transaction__c> wireTransactions = [SELECT Id,Approval_Status__c,ToAccountName__c,ToAccoutId__c,First_Reviewer__c,Name,
                                                        Status__c, FromAccount__c,TotalFromAccount__c,WireAmount__c,
                                                        ToAccoutId__r.Recipient_AccountNumber__c,
                                                        ToAccoutId__r.BankName__c,AccountStableReview__c,
@@ -518,52 +590,53 @@ public class WiresTransactionApprovalController {
                                                        Mobile_Phone_Stable_Review__c,Work_Phone_Stable_Review__c,
                                                        FlagAccountOpenfor45Days__c,FlagEmailStablefor30Days__c,
                                                        FlagHomePhoneStablefor30Days__c,FlagMobilePhoneStablefor30Days__c,
-                                                       FlagWorkPhoneStablefor30Days__c,Share_ID__c
+                                                       FlagWorkPhoneStablefor30Days__c,Share_ID__c,Source__c,Has_Additional_Documents__c
                                                        FROM WIRES_Transaction__c WHERE id=:id];
+        
         List<WIRES_Transaction__c> wiresToUpdate=new List<WIRES_Transaction__c>();
         
         for(WIRES_Transaction__c wt:wireTransactions){
-            
-            decimal amount=wt.TotalFromAccount__c;
-            String AccountNumber=wt.FromAccount__c;
-            String ShareID=wt.Share_ID__c;
-            
-            Map<String,Object> results = new Map<String,Object>();
-            httpRequest requestparam = new httpRequest(); 
-            system.debug('amount=='+amount);
-            requestparam.setEndpoint('https://symxapi.chevronfcu.org/devclient/Wires/WiresFundsCheck?amount=' + amount +'&accountNumber=' + AccountNumber + '&shareId=' + ShareID);
-            requestparam.setMethod('GET');      
-            
-            http httpParam = new http();
-            httpResponse response = httpParam.send(requestparam);
-            
-            String strStatus = response.getStatus();
-            String strBody = response.getBody();
-            
-            System.debug('Service response is ....' + strStatus);
-            System.debug('Service response is ....' + strBody);
-            
-            if(strBody!=''){        
-                results = (Map<String,Object>) JSON.deserializeUntyped(response.getBody());      
-                System.debug('Service response is ....' + results);              
+            Map<String,Object> checkWiresFundsResult=checkWiresFunds(wt.FromAccount__c, wt.Share_ID__c,wt.TotalFromAccount__c);
+            if(checkWiresFundsResult.size() > 0){
+                isGoodFundCheck=true;
+                
+                Object statusMsg=checkWiresFundsResult.get('StatusMessage');
+                statusCode = integer.valueOf(checkWiresFundsResult.get('StatusCode'));
+                
+                if(statusCode<=0){
+                    wt.Good_Funds_Check__c='FAIL---'+statusMsg.toString();
+                }else{
+                    wt.Good_Funds_Check__c='PASS---'+statusMsg.toString();
+                }    
+                
+                wt.BalanceStatusCode__c=String.valueOf(statusCode);
+                wt.BalanceRGLines__c=String.valueOf(statusMsg);
             }
             
-            if(results.size() > 0){
-                for(String key : results.keySet()){                             
-                    if(key == 'StatusCode'){
-                        statusCode = integer.valueOf(results.get(key));
-                        isGoodFundCheck=true;
-                    }
-                }
-            }
-            
-            System.debug('statusCode:'+statusCode);
             if(isGoodFundCheck==true && (statusCode<=0 || statusCode==null)){
-                wt.Approval_Status__c = WiresConstant.ApprovalStatus_GoodFundsCheckFailed;
+                wt.Approval_Status__c = WiresConstant.ApprovalStatus_GoodFundsReview;
+                wt.Current_Reviewer_Modified_Date__c=DateTime.now();
+                wt.Current_Reviewer__c=wt.First_Reviewer__c;
                 wiresToUpdate.add(wt);
+                
+                List<User> users=[Select Id,Name,Email From User Where Id=:wt.First_Reviewer__c];
+                List<string> emails=new List<string>();
+                if(users.size()>0){
+                    emails.add(users[0].Email);
+                }
+                WiresEmailController.SendApprovalNotification(wt.Id,emails,wt.Name,wt.TotalFromAccount__c,wt.Source__c,wt.Has_Additional_Documents__c);
             }else if(isGoodFundCheck==true && statusCode>0){
                 wt.Approval_Status__c = WiresConstant.ApprovalStatus_PendingForApproval;
+                wt.Current_Reviewer_Modified_Date__c=DateTime.now();
+                wt.Current_Reviewer__c=wt.First_Reviewer__c;
                 wiresToUpdate.add(wt);
+                
+                List<User> users=[Select Id,Name,Email From User Where Id=:wt.First_Reviewer__c];
+                List<string> emails=new List<string>();
+                if(users.size()>0){
+                    emails.add(users[0].Email);
+                }
+                WiresEmailController.SendApprovalNotification(wt.Id,emails,wt.Name,wt.TotalFromAccount__c,wt.Source__c,wt.Has_Additional_Documents__c);
             }
             
         }
@@ -585,7 +658,7 @@ public class WiresTransactionApprovalController {
     public static void SendToGoodFundCheckFailed(Id id){
         WIRES_Transaction__c wireTransaction = [SELECT id,Approval_Status__c                                
                                                 FROM WIRES_Transaction__c WHERE id=:id limit 1];
-        wireTransaction.Approval_Status__c=WiresConstant.ApprovalStatus_GoodFundsCheckFailed;
+        wireTransaction.Approval_Status__c=WiresConstant.ApprovalStatus_GoodFundsReview;
         update wireTransaction;
     }
     
@@ -676,6 +749,7 @@ public class WiresTransactionApprovalController {
     
     // --------------------- Send Email Notification..................//  
     
+    
     // --------------------- Send Released to WireXchange Email Notification..................//   
     private static void SendReleasedToWireXchangeEmail(Set<Id> id,string ToEmail)
     {
@@ -756,6 +830,8 @@ public class WiresTransactionApprovalController {
     
     // --------------------- Send Released to WireXchange Email Notification..................//   
     
+    
+    
     // --------------------- Send SMS Notification..................//   
     
     private static void SendSMS(string phone)
@@ -785,10 +861,17 @@ public class WiresTransactionApprovalController {
     // --------------------- Send SMS Notification..................//   
     
     private static Map<String,Object> checkWiresFunds(string AccountNumber, string ShareID, decimal amount){
+        string apiURL='';
+        SolarLoan_To_Episys_API_Details__c api = SolarLoan_To_Episys_API_Details__c.getValues('ProductionURL');
+        
+        if(api.URL__c != null){
+            apiURL = api.URL__c;
+        }
+        
         Map<String,Object> results = new Map<String,Object>();
         httpRequest requestparam = new httpRequest(); 
         system.debug('amount=='+amount);
-        requestparam.setEndpoint('https://symxapi.chevronfcu.org/devclient/Wires/WiresFundsCheck?amount=' + amount +'&accountNumber=' + AccountNumber + '&shareId=' + ShareID);
+        requestparam.setEndpoint(apiURL+'/Wires/WiresFundsCheck?amount=' + amount +'&accountNumber=' + AccountNumber + '&shareId=' + ShareID);
         requestparam.setMethod('GET');      
         
         
