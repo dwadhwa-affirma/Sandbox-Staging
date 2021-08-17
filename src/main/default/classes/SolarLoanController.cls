@@ -30,6 +30,9 @@ public class SolarLoanController {
     @AuraEnabled
     public static  Map<string,string> getMemberData(string SolarLoanRecordId, String CurrentStage){
     
+    Date FutureDate = date.newInstance(2078, 12, 31);
+    Date PastDate = date.newInstance(1900, 01, 01);
+
     List<String> stage3RequireFieldsForMembership = new List<String>();
     stage3RequireFieldsForMembership.add('mem_Primary_First_Name__c');
     //stage3RequireFieldsForMembership.add('Primary_Middle_Initial__c');
@@ -250,7 +253,7 @@ public class SolarLoanController {
             }           
         }
         SolarCurrentStage = SolarLoanList[0].Current_Solar_Loan_Stage__c;
-            
+        
         
         //------------------------------------------------Stage-2 Validation Check------------------------------------------------//
 
@@ -261,24 +264,28 @@ public class SolarLoanController {
 				Stage2MissingDocs = 'Membership Application Document is not avaialble.';
 				Stage2ErrorCheck = 'True';
             }
-            else if(SolarLoanList[0].mem_ID_Issue_Date__c == null || SolarLoanList[0].mem_ID_Expiration_Date__c == null){
+            else if(SolarLoanList[0].mem_ID_Issue_Date__c == null || SolarLoanList[0].mem_ID_Issue_Date__c < PastDate || SolarLoanList[0].mem_ID_Issue_Date__c > FutureDate            
+                    || SolarLoanList[0].mem_ID_Expiration_Date__c == null || SolarLoanList[0].mem_ID_Expiration_Date__c < PastDate || SolarLoanList[0].mem_ID_Expiration_Date__c > FutureDate){
 								
-				Stage2MissingDocs = 'Please enter Primary ID Issue/Expiration Date.';
+				Stage2MissingDocs = 'Primary ID Issue/Expiration Date must between 1/1/1900 - 12/31/2078.';
 				Stage2ErrorCheck = 'True';
             }
             else if(SolarLoanList[0].mem_ID_Issue_Date__c > SolarLoanList[0].mem_ID_Expiration_Date__c){
 								
-				Stage2MissingDocs = 'Primary ID Expiration Date should be greater than ID Issue Date.';
+				Stage2MissingDocs = 'Primary ID Expiration Date must be greater than ID Issue Date.';
 				Stage2ErrorCheck = 'True';
             }
-            else if(SolarLoanList[0].mem_Joint_SSN__c != null && (SolarLoanList[0].Joint_ID_Issue_Date__c == null || SolarLoanList[0].Joint_ID_Expiration_Date__c == null)){
+            
+            else if(SolarLoanList[0].mem_Joint_SSN__c != null && (SolarLoanList[0].Joint_ID_Issue_Date__c == null || SolarLoanList[0].Joint_ID_Expiration_Date__c == null ||
+                SolarLoanList[0].Joint_ID_Issue_Date__c < PastDate || SolarLoanList[0].Joint_ID_Issue_Date__c > FutureDate || SolarLoanList[0].Joint_ID_Expiration_Date__c < PastDate ||
+                SolarLoanList[0].Joint_ID_Expiration_Date__c > FutureDate)){
 								
-				Stage2MissingDocs = 'Please enter Joint ID Issue/Expiration Date.';
+				Stage2MissingDocs = 'Joint ID Issue/Expiration Date must between 1/1/1900 - 12/31/2078.';
 				Stage2ErrorCheck = 'True';
             }
-            else if(SolarLoanList[0].mem_Joint_SSN__c != null && SolarLoanList[0].Joint_ID_Issue_Date__c > SolarLoanList[0].Joint_ID_Expiration_Date__c){
+            else if(SolarLoanList[0].mem_Joint_SSN__c != null && (SolarLoanList[0].Joint_ID_Issue_Date__c > SolarLoanList[0].Joint_ID_Expiration_Date__c)){                    
 
-                Stage2MissingDocs = 'Joint ID Expiration Date should be greater than ID Issue Date.';
+                Stage2MissingDocs = 'Joint ID Expiration Date must be greater than ID Issue Date.';
 				Stage2ErrorCheck = 'True';
             }
             else if(SolarLoanList[0].mem_Primary_State__c == null || SolarLoanList[0].county__c == null){
@@ -300,7 +307,8 @@ public class SolarLoanController {
         
         if(CurrentStage == 'Stage 3'){
             
-        	//----------------------------Primary details check--------------------------------------//
+        	
+            //----------------------------Primary details check--------------------------------------//
 
             for(String fieldName : stage3RequireFieldsForMembership){
         		
@@ -546,26 +554,26 @@ public class SolarLoanController {
                 Stage3MissingFields = 'Please enter valid Primary Email.';
                 Stage3ErrorCheck = 'True';
             }
-            /*else if(system.today() > SolarLoanList[0].mem_ID_Expiration_Date__c ){
+            /*else if(system.today() > SolarLoanList[0].mem_ID_Expiration_Date__c || FutureDate < SolarLoanList[0].mem_ID_Expiration_Date__c){
 
-                Stage3MissingFields = 'Primary Expiration date must be future date.';
+                Stage3MissingFields = 'Primary Expiration date must be valid future date.';
                 Stage3ErrorCheck = 'True';
             }*/
-            else if((system.today() - 30)< SolarLoanList[0].mem_ID_Issue_Date__c ){
+            /*else if(PastDate > SolarLoanList[0].mem_ID_Issue_Date__c ){
 
-                Stage3MissingFields = 'Primary Issue date must be 30 days older.';
-                Stage3ErrorCheck = 'True';
-            }
-            /*else if(SolarLoanList[0].Joint_ID_Expiration_Date__c != null && system.today() > SolarLoanList[0].Joint_ID_Expiration_Date__c ){
-
-                Stage3MissingFields = 'Joint Expiration date must be future date.';
+                Stage3MissingFields = 'Primary Issue date must be valid past date.';
                 Stage3ErrorCheck = 'True';
             }*/
-            else if(SolarLoanList[0].Joint_ID_Issue_Date__c != null && (system.today() - 30) < SolarLoanList[0].Joint_ID_Issue_Date__c ){
+            /*else if(SolarLoanList[0].Joint_ID_Expiration_Date__c != null && (system.today() > SolarLoanList[0].Joint_ID_Expiration_Date__c || FutureDate < SolarLoanList[0].Joint_ID_Expiration_Date__c)){
+
+                Stage3MissingFields = 'Joint Expiration date must be valid future date.';
+                Stage3ErrorCheck = 'True';
+            }*/
+            /*else if(SolarLoanList[0].Joint_ID_Issue_Date__c != null && (system.today() - 30) < SolarLoanList[0].Joint_ID_Issue_Date__c ){
 
                 Stage3MissingFields = 'Joint Issue date must be 30 days older.';
                 Stage3ErrorCheck = 'True';
-            }
+            }*/
             else if(SolarLoanList[0].mem_Primary_SSN__c != null && SolarLoanList[0].mem_Primary_SSN__c.length() != 9){
 								
 				Stage3MissingFields = 'The length of the member’s SSN is not correct.';
@@ -647,6 +655,16 @@ public class SolarLoanController {
             else if(SolarLoanList[0].mem_Mailing_Extra_Address__c != null && SolarLoanList[0].mem_Mailing_Extra_Address__c.length() > 40){
 
                 Stage3MissingFields = 'Mailing ExtraAdress contains more than 40 characters.';
+                Stage3ErrorCheck = 'True';
+            }
+            else if(SolarLoanList[0].Application_Date__c != null && (SolarLoanList[0].Application_Date__c < PastDate || SolarLoanList[0].Application_Date__c > FutureDate)){
+ 
+                Stage3MissingFields = 'Application Date must be between 1/1/1900 - 12/31/2078.';
+                Stage3ErrorCheck = 'True';
+            }
+            else if(SolarLoanList[0].Approval_Date__c < PastDate || SolarLoanList[0].Approval_Date__c > FutureDate){
+ 
+                Stage3MissingFields = 'Approval Date must be between 1/1/1900 - 12/31/2078.';
                 Stage3ErrorCheck = 'True';
             }
             else{

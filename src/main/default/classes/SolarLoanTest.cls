@@ -20,6 +20,25 @@ private class SolarLoanTest{
       
       insert suud;
       
+      SolarLoan_Docusign_Emails__c suud1 = new SolarLoan_Docusign_Emails__c();
+      suud1.Name = 'Email For Testing';
+      
+      insert suud1;
+      
+      DocuSign_User_Details__c dt1 = new DocuSign_User_Details__c();
+      
+      dt1.TemplateId__c = 'ad01d585-ad0a-4e68-b537-7e75293f0ef8';
+      dt1.Name = 'Chevron';      
+      
+      insert dt1;
+      
+      DocuSign_User_Details__c dt2 = new DocuSign_User_Details__c();
+      
+      dt2.TemplateId__c = 'dc16d8f8-571c-497e-bbf5-42d8b25d4ee1';
+      dt2.Name = 'Spectrum';
+      
+      insert dt2; 
+      
      Solar_Loan_Product_Types__c slpt = new Solar_Loan_Product_Types__c();
      slpt.Name = 'Solar';
      slpt.Description__c = 'SECURED SOLAR';
@@ -499,15 +518,132 @@ private class SolarLoanTest{
      sl3.UCC_Id__c = '3245-3422-25sr-24w2';
      
      SolarLoan_Obj.add(sl3);
+      
+     Solar_Loans__c sl4 = new Solar_Loans__c();
+     sl4.Primary_First_Name__c ='Tomzdgh';
+     sl4.Primary_Last_Name__c = 'Jersffgry';
+     sl4.Primary_DOB__c = System.today();
+     sl4.Primary_SSN__c =  '123456789';
+     sl4.Primary_Address_1__c = 'P.O. Box';
+     sl4.Primary_FICO_Score__c = 12.00;
+     sl4.Primary_City__c = 'city';
+     sl4.Primary_State__c = 'PA';
+     sl4.Primary_Zip_Code__c =  '12345';
+     sl4.Legal_Description__c = 'test';
+     sl4.Product__c = 'product';
+     sl4.Module__c = 'module';
+     sl4.Installer_Number__c = '12';
+     sl4.Inverter__c = 'inverter';
+     sl4.System_Size_kW__c = 12.00;
+     sl4.Battery__c = 'barary';
+     sl4.Installer__c = 'intealer';
+     sl4.Application_Date__c = system.today();
+     sl4.Mortgage_Balance__c = 1299.00;
+     sl4.Final_Payment_Amount__c = 111.00;
+     sl4.Go_To_Payment__c = 1252.00;
+     sl4.Bank_Name__c = 'test bank10';
+     sl4.Routing_Number__c = '122456788';
+     sl4.Bank_Account_Number__c = '121314234'; 
+     sl4.Membership_Fee__c = 126.00;
+     sl4.Net_Funding_Amount__c = 1213.00;
+     sl4.Loan_Amount__c = 1211.00;
+     sl4.Loan_Pmt_Amount__c = 1245.00;
+     sl4.Credit_Exception__c = 'cr';
+     sl4.ITC_Rate__c = 2.00;
+     sl4.ITC_Amount__c = 1245.88;
+     sl4.Term_months__c = 12;
+     sl4.OID_Fee__c = 11;
+     sl4.Approval_Date__c = system.today();
+     sl4.ECOA_Code__c = '1';
+     sl4.Site_UUID__c = 'abcd';
+     sl4.FNI__c = '12';
+     sl4.Member_Number__c = '0000452235';
+     sl4.Status__c = 'UCC Pending'; 
+     sl4.ACH__c = 'True'; 
+     sl4.Additional_Amount__c = 11.00; 
+     sl4.Primary_Cell_Phone__c = '567-678-8898';
+     sl4.Primary_Home_Phone__c = '567-678-4898';
+     sl4.Primary_Work_Phone__c = '567-678-3898';
+     sl4.Primary_Email__c = 'test1@test.com';
+     sl4.mem_ID_Expiration_Date__c = system.today() + 100;
+     sl4.mem_Primary_SSN__c = '123488789';
+     sl4.Product_Loan_Type__c = 'Solar';
+      
+     sl4.mem_Primary_DOB__c = system.today() ;
+     sl4.Joint_DOB__c = System.today(); 
+     sl4.mem_Primary_City__c = 'City';
+     sl4.mem_Primary_Street__c = 'P.O. Box'; 
+     sl4.Employer__c = 'T&T';
+     sl4.mem_Primary_Extra_Address__c = 'Extra';
+     sl4.mem_Primary_First_Name__c = 'First';
+     sl4.mem_ID_Issue_Date__c = system.today() - 500;
+     sl4.mem_ID_Number__c = 'RRR1';
+     sl4.mem_ID_Type__c = 'Passport'; 
+     sl4.mem_Primary_Last_Name__c = 'LAst';
+     sl4.Primary_Middle_Initial__c = 'M';
+     sl4.mem_Maiden_Name__c = 'M';
+     sl4.Occupation__c = 'Occ&';
+     sl4.mem_Primary_State__c = 'State';
+     sl4.mem_Primary_Zip_Code__c = '12356';
+     sl4.Primary_Work_Phone__c = '123-121-1212';
+     
+     sl4.mem_Joint_SSN__c = '573636331';
+     sl4.mem_Joint_DOB__c = system.today() ;
+     sl4.mem_Joint_City__c = 'City';
+     sl4.mem_Joint_Employer__c = 'A & B';
+     sl4.mem_Joint_Extra_Address__c = 'Extra';
+     sl4.mem_Joint_First_Name__c = 'JointFirst';
+     sl4.Joint_Home_Phone__c = '123-345-6787';
+     sl4.Joint_ID_Expiration_Date__c = system.today() + 1000;
+     sl4.Joint_ID_Issue_Date__c = system.today() - 1000;
+     sl4.Joint_ID_Number__c = '.';
+     sl4.Joint_ID_Type__c = 'Pasport';
+     sl4.mem_Joint_Last_Name__c = 'JointLasts';
+     sl4.Joint_Middle_Initial__c = 'M';
+     sl4.Joint_Cell_Phone__c = '123-456-7654';
+     sl4.Joint_Maiden_Name__c = 'maiden';
+     sl4.Joint_Occupation__c = 'Service&';
+     sl4.mem_Joint_State__c = 'CA';
+     sl4.mem_Joint_Street__c = 'Street';
+     sl4.Joint_Work_Phone__c = '123-445-4432';
+     sl4.mem_Joint_Zip_Code__c = '12345'; 
+     sl4.UCC_Id__c = '3245-3422-25sr-24w2';
+     sl4.Brand__c = '';
+    
+     SolarLoan_Obj.add(sl4);
+      
+      Solar_Loans__c sl5 = new Solar_Loans__c();
+      sl5.ACH__c = 'False';
+      sl5.Site_UUID__c = 'b';
+      sl5.Status__c = 'New';
+      sl5.Continue__c = false;
+      sl5.Loan_Id__c = '';
+      sl5.Error_Loan_Locator__c = 'abcd';
+      sl5.mem_Joint_SSN__c ='573636332';
+      sl5.Primary_Address_1__c = 'P.O. Box';
+      sl5.Primary_Cell_Phone__c = null;
+      sl5.Primary_Home_Phone__c = null;
+      sl5.Primary_Work_Phone__c = null;
+      sl5.Joint_DOB__c = system.today();
+      sl5.mem_Joint_DOB__c = system.today();
+      
+
+      
+      SolarLoan_Obj.add(sl5);
+  
+       
+      
+      
      insert SolarLoan_Obj;
       
      //---------------------------------------- Creating Solar Loan Document record-----------------------------------//
      
      List<SolarLoan_Document__c> SolarLoanDocList = new List<SolarLoan_Document__c>{
-         new SolarLoan_Document__c(Name = 'Member Application_Completed', Member_Number__c = '0000214414',Solar_Loans__c = SolarLoan_Obj[0].id)};      
+         new SolarLoan_Document__c(Name = 'Member Application_Completed', Member_Number__c = '0000214414',Solar_Loans__c = SolarLoan_Obj[0].id),
+         new SolarLoan_Document__c(Document_Name__c ='Membership Application', Name = 'Membership Application', Member_Number__c = '0000147163',Solar_Loans__c = SolarLoan_Obj[0].id)};      
      insert SolarLoanDocList;
-     
-     test.startTest();
+   
+      test.startTest();
      
      //---------------------------------------- Creating Content Version Record for Attachment---------------------------------------------//
      
@@ -601,7 +737,25 @@ private class SolarLoanTest{
        SolarLoanUCCBatch b = new SolarLoanUCCBatch();
 	   Database.executeBatch(b);
    }  
-     
+    
+    static testMethod void test_Solarloancontroller9(){
+      List<Solar_Loans__c> listSolarLoan  =  [SELECT Id,mem_Joint_SSN__c,ACH__c from Solar_Loans__c where mem_Joint_SSN__c = '127081988'limit 1];
+      
+      SolarLoanController.getMemberData(listSolarLoan[0].id, 'Stage 6');    } 
+    
+   static testMethod void test_Solarloancontroller10(){
+      List<Solar_Loans__c> listSolarLoan  =  [SELECT Id,mem_Joint_SSN__c from Solar_Loans__c where mem_Joint_SSN__c = '573636331'limit 1];
+      
+      SolarLoanController.getMemberData(listSolarLoan[0].id, 'Stage 7');
+      SolarLoanController.getMemberData(listSolarLoan[0].id, 'Stage 3');} 
+    
+    static testMethod void test_Solarloancontroller11(){
+    
+      List<Solar_Loans__c> listSolarLoan  =  [SELECT Id,mem_Joint_SSN__c from Solar_Loans__c where mem_Joint_SSN__c = '573636332'limit 1];
+      
+      SolarLoanController.getMemberData(listSolarLoan[0].id, 'Stage 3');
+    }  
+
   static testMethod void test_GetCaseAttachments_UseCase1(){
     
     test.startTest();  
@@ -630,7 +784,7 @@ private class SolarLoanTest{
     RestRequest req = new RestRequest();
     req.requestURI = '/services/apexrest/SolarLoanDocumentAPI';
       
-    req.requestBody = blob.valueof(listApiResponse[1].AttachmentID /*+ ',' + listApiResponse[1].AttachmentID*/);
+    req.requestBody = blob.valueof(listApiResponse[2].AttachmentID /*+ ',' + listApiResponse[1].AttachmentID*/);
     req.httpMethod = 'post';
     RestContext.request = req;
     
