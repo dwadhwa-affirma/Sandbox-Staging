@@ -696,12 +696,14 @@ private class SolarLoanTest{
     static testMethod void test_Solarloancontroller3(){
       List<Solar_Loans__c> listSolarLoan  =  [SELECT Id,mem_Primary_Foreign_Gov_t_Position__c from Solar_Loans__c where mem_Primary_Foreign_Gov_t_Position__c = 'Yes' limit 1];
       SolarLoanTocreateLoan.MembershipExist = 'false';
+      SolarLoanTocreateLoan.HasMembershipStatus  = 'OK';
       SolarLoanController.getMemberData(listSolarLoan[0].id, 'Stage 4');
   	}
         
   static testMethod void test_Solarloancontroller4(){
       List<Solar_Loans__c> listSolarLoan  =  [SELECT Id from Solar_Loans__c where mem_Primary_Foreign_Gov_t_Position__c = 'No' limit 1];
       SolarLoanTocreateLoan.MembershipExist = 'true';
+      SolarLoanTocreateLoan.HasMembershipStatus  = 'OK';
       SolarLoanTocreateLoan.responseBody1 = '{"HasPrimaryAccount":"true","TotalPrimaryAccount" : "1"}';
       SolarLoanController.getMemberData(listSolarLoan[0].id, 'Stage 4');
   }
