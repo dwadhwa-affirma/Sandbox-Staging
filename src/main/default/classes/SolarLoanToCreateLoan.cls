@@ -38,6 +38,7 @@ public class SolarLoanToCreateLoan {
     public static string MembershipExist;
     public static string jsonData1;
     public static Integer TotalPrimaryAccount;
+    public static string HasMembershipStatus;
     
     //-----------------------------------------------------Membership Create------------------------------------------//
 
@@ -367,7 +368,7 @@ public class SolarLoanToCreateLoan {
                                         Joint_Email__c,Joint_FICO_Score__c,Joint_First_Name__c,Joint_Home_Phone__c,Joint_ID_Expiration_Date__c,
                                         Joint_ID_Issue_Date__c,Joint_ID_Number__c,Joint_ID_State__c,Joint_ID_Type__c,Joint_Last_Name__c,
                                         Joint_Maiden_Name__c,Joint_Middle_Initial__c,Joint_Occupation__c,Joint_SSN__c,Joint_State__c,Joint_Work_Phone__c,
-                                        Joint_Zip_Code__c,Latest_LT_Loan_Agreement__c,
+                                        Joint_Zip_Code__c,Latest_LT_Loan_Agreement__c,Membership_Logs__c,
                                         Legal_Description__c,Load_Count__c,Load_Date__c,Loan_Amount__c,Loan_Id__c,Loan_Name_Locator__c,Loan_Pmt_Amount__c,
                                         Loan_Tracking_Locator__c,Loan_Type__c,Lot__c,Mailing_Street__c,Mailing_Zip__c,Map__c,Maturity_Date__c,
                                         Membership_Fee__c,Member_Name__c,Member_Number__c,mem_ID_Number__c,mem_ID_Expiration_Date__c,mem_ID_Issue_Date__c,
@@ -395,6 +396,17 @@ public class SolarLoanToCreateLoan {
 
             //--------------------------Fetching API URL from custom setting to create --------------------------//
             
+            system.debug('logs: '+logs);
+
+            logs = sl.Membership_Logs__c;
+
+            if(logs != null && logs.contains(']')){
+                logs = logs.replace(']','');
+            }
+            if(logs != null && logs.contains('[')){
+                logs = logs.replace('[','');
+            }
+
             SolarLoan_To_Episys_API_Details__c api = SolarLoan_To_Episys_API_Details__c.getValues('ProductionURL');
             
             if(api.URL__c != null){
@@ -444,19 +456,23 @@ public class SolarLoanToCreateLoan {
                         }
                         if(key == 'TotalPrimaryAccount'){
                             TotalPrimaryAccount = Integer.valueOf(results.get(key));
+                        }
+                        if(key == 'Status'){
+                            HasMembershipStatus = string.valueOf(results.get(key));
                         }    
                     }
                 }
             }
             if(logs == null)
-                logs = responseBody1;
+                logs = '[' + responseBody1 + ',';
             else
-                logs = logs +'\n'+ responseBody1;
+                logs = '[' + logs +'\n'+ ',' + responseBody1 + ',';
 
             system.debug('MembershipExist: '+MembershipExist);
             system.debug('TotalPrimaryAccount: '+TotalPrimaryAccount);
+            system.debug('HasMembershipStatus: '+HasMembershipStatus);
           
-            if(MembershipExist == 'true'){
+            if(MembershipExist == 'true' && HasMembershipStatus == 'OK'){  
                 
                 System.debug('Membership is already exist:: '+ MembershipExist);   
 
@@ -484,6 +500,11 @@ public class SolarLoanToCreateLoan {
                     AccountNumber = String.valueOf(responseBody16).substringAfter('AccountNumber":"');
                     AccountNumber = String.valueOf(AccountNumber).substringBefore('",');
                     System.debug('Member Number' + AccountNumber);
+
+                    if(logs == null)
+                        logs = responseBody16;
+                    else
+                        logs = logs +'\n'+ responseBody16 + ',';
 
                 }
                 
@@ -540,6 +561,16 @@ public class SolarLoanToCreateLoan {
                             }
                         }
                     }
+
+                    if(responseBody0 != null && responseBody0.contains('[')){
+                        responseBody0 = responseBody0.replace('[','');
+                    }
+                    
+                    if(responseBody0 != null && responseBody0.contains(']')){
+                        responseBody0 = responseBody0.replace(']','');
+                    }
+
+                    logs = logs +'\n'+ responseBody0;
 
                     System.debug('ApprovalDate'+ApprovalDate);
                     //System.debug('PaymentMatched'+SLPaymentMatched);
@@ -635,6 +666,11 @@ public class SolarLoanToCreateLoan {
                         result = String.valueOf(responseBody12).substringAfter('LoanId":"');
                         result = String.valueOf(result).substringBefore('",');
                         
+                        if(logs == null)
+                            logs = responseBody12;
+                        else
+                            logs = ',' + logs +'\n'+ responseBody12 + ',';
+
                         System.debug('LoanId' + result);
                         if(result == null || result == ''){
                             
@@ -741,6 +777,11 @@ public class SolarLoanToCreateLoan {
                             ErrorLoanNameLocator = String.valueOf(ErrorLoanNameLocator).substringBefore('","ErrorDetails"');
                             system.debug('ErrorLoanNameLocator' + ErrorLoanNameLocator);
                         }
+
+                        if(logs == null)
+                            logs = responseBody13;
+                        else
+                            logs = logs +'\n'+ responseBody13 + ',';
                     }
 
                     //-----------------------------------------------Create Loan Tracking---------------------------------------------------//        
@@ -882,6 +923,12 @@ public class SolarLoanToCreateLoan {
                             ErrorLoanTrackingLocator = String.valueOf(ErrorLoanTrackingLocator).substringBefore('","ErrorDetails"');
                             system.debug('ErrorLoanTrackingLocator' + ErrorLoanTrackingLocator);
                         }
+
+                        if(logs == null)
+                            logs = responseBody14;
+                        else
+                            logs = logs +'\n'+ responseBody14 + ',';
+
                     }
                     else{
                         System.debug('No need to create New Tracking Record');
@@ -922,6 +969,11 @@ public class SolarLoanToCreateLoan {
                             responseBody15 = '{"Type":"3","Last":"27","First":"1","Street":"1","ExtraAddress":"100","City":"Chicago","State":"IL","ZipCode":"0012345,"BirthDate":"01-01-2019","SSN":"1345","LoanId":"322271627","AccountNumber":"00000123456"}';
                             
                         }
+                        if(logs == null)
+                            logs = responseBody15;
+                        else
+                            logs = logs +'\n'+ responseBody15;
+
                     } 
 
                     //-------------------------------------------------Updating Solar Loan records -----------------------------------------//
@@ -970,6 +1022,8 @@ public class SolarLoanToCreateLoan {
                     if(s.Member_Number__c == null)
                         s.Member_Number__c = AccountNumber;
 
+                    s.Membership_Logs__c = logs+']';
+                   
                     s.Episys_Membership__c = 'Membership already exists, new membership not created';
                     system.debug('s.Maturity_Date__c'+s.Maturity_Date__c);
                     SolarLoanToUpdate.add(s);
@@ -985,7 +1039,7 @@ public class SolarLoanToCreateLoan {
                 }
                 
             }
-            else{    
+            if(MembershipExist == 'false' && HasMembershipStatus == 'OK'){    
                 
                 System.debug('Creating New Membership Account');
                 
@@ -1201,7 +1255,7 @@ public class SolarLoanToCreateLoan {
                 if(logs == null)
                     logs = responseBody2;
                 else
-                    logs = logs +'\n'+ responseBody2;
+                    logs = logs +'\n'+ responseBody2 + ',';
                 
                     if(responseBody2 != '' && responseBody2 != null){        
                     Map<String,Object> results = (Map<String,Object>) JSON.deserializeUntyped(responseBody2);
@@ -1306,7 +1360,7 @@ public class SolarLoanToCreateLoan {
                 if(logs == null)
                     logs = responseBody12;
                 else
-                    logs = logs +'\n'+ responseBody12;
+                    logs = logs +'\n'+ responseBody12 + ',';
 
                 JSONParser parser = JSON.createParser(responseBody12);
                 result = String.valueOf(responseBody12).substringAfter('LoanId":"');
@@ -1413,7 +1467,7 @@ public class SolarLoanToCreateLoan {
                     if(logs == null)
                         logs = responseBody13;
                     else
-                        logs = logs +'\n'+ responseBody13;
+                        logs = logs +'\n'+ responseBody13 + ',';
 
                     if(result1 == null || result1 == ''){
                         
@@ -1553,7 +1607,7 @@ public class SolarLoanToCreateLoan {
                 if(logs == null)
                     logs = responseBody14;
                 else
-                    logs = logs +'\n'+ responseBody14;
+                    logs = logs +'\n'+ responseBody14 + ',';
 
                 JSONParser parser2 = JSON.createParser(responseBody14);
                 result2 = String.valueOf(responseBody14).substringAfter('LoanTrackingLocator":"');
@@ -1606,7 +1660,7 @@ public class SolarLoanToCreateLoan {
                     if(logs == null)
                     logs = responseBody15;
                 else
-                    logs = logs +'\n'+ responseBody15;
+                    logs = logs +'\n'+ responseBody15 + ',';
                 }
 
                 //------------------------------------------------Creating Joint Name Record--------------------------------------------//
@@ -1806,7 +1860,7 @@ public class SolarLoanToCreateLoan {
                 if(logs == null)
                     logs = responseBody4;
                 else
-                    logs = logs +'\n'+ responseBody4;
+                    logs = logs +'\n'+ responseBody4 + ',';
                 //------------------------------------------------------Creating Mail Record--------------------------------------------//
 
                 if(sl.Mailing_Street__c != null && sl.mem_Mailing_State__c != null){
@@ -1883,7 +1937,8 @@ public class SolarLoanToCreateLoan {
                 if(logs == null)
                     logs = responseBody5;
                 else
-                    logs = logs +'\n'+ responseBody5;
+                    logs = logs +'\n'+ responseBody5 + ',';
+
                 //------------------------------------------------Creating Comment Record--------------------------------------------//
 
                 COMMENT = 'SPECTRUM CREDIT UNION';
@@ -1914,7 +1969,7 @@ public class SolarLoanToCreateLoan {
                 if(logs == null)
                     logs = res6.getBody();
                 else
-                    logs = logs +'\n'+ responseBody6;
+                    logs = logs +'\n'+ responseBody6 + ',';
 
                 //------------------------------------------------Creating Tracking 35 Record--------------------------------------------//
 
@@ -1945,7 +2000,7 @@ public class SolarLoanToCreateLoan {
                 if(logs == null)
                     logs = res7.getBody();
                 else
-                    logs = logs +'\n'+ responseBody7;
+                    logs = logs +'\n'+ responseBody7 + ',';
                 
                 if(responseBody7 != '' && responseBody7 != null){        
                     Map<String,Object> results = (Map<String,Object>) JSON.deserializeUntyped(responseBody7);
@@ -1986,7 +2041,7 @@ public class SolarLoanToCreateLoan {
                 if(logs == null)
                     logs = responseBody10;
                 else
-                    logs = logs +'\n'+ responseBody10;
+                    logs = logs +'\n'+ responseBody10 + ',';
 
                 PreferenceLocator = String.valueOf(responseBody10).substringAfter('"Locator":["');
                 PreferenceLocator = String.valueOf(PreferenceLocator).substringBefore('"],"Status"');
@@ -2037,7 +2092,7 @@ public class SolarLoanToCreateLoan {
                 if(logs == null)
                     logs = responseBody8;
                 else
-                    logs = logs +'\n'+ responseBody8;
+                    logs = logs +'\n'+ responseBody8 + ',';
 
                 //---------------------------------------------------Creating Share Record--------------------------------------------------//
 
@@ -2078,7 +2133,7 @@ public class SolarLoanToCreateLoan {
                 if(logs == null)
                     logs = responseBody9;
                 else
-                    logs = logs +'\n'+ jsonData9 + '\n' + responseBody9;
+                    logs = logs +'\n'+ responseBody9 + ',';
 
                 //---------------------------------------------------Creating PowerOn Record--------------------------------------------------//
                 
@@ -2189,8 +2244,7 @@ public class SolarLoanToCreateLoan {
                 if(TrackingLocator != null)
                     s.Tracking_Record_35__c = 'Created';
                     
-                if(logs != null)
-                    s.Membership_Logs__c = logs;
+                s.Membership_Logs__c = logs + ']';
                     
                 SolarLoanToUpdate.add(s);
             }        
