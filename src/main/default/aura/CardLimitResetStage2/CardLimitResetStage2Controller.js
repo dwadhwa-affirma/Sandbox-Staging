@@ -1,10 +1,12 @@
 ({
 	doInit : function(component, event, helper) {
 	    
-		var action = component.get("c.getCard");
+		var action = component.get("c.getCards");
         var recordId = component.get("v.recordId");
 		var CLRecord = component.get("v.CLRecord");
         var memberName = CLRecord.Member_Name__c;
+        var memberId = CLRecord.Member__c;
+       
         var evt = $A.get("e.c:CardLimitResetEvent");
         evt.setParams({"isMemberSelected": false});
         evt.fire();
@@ -14,7 +16,8 @@
         }
         action.setParams({
 			"recordId": recordId,
-            "sObjectType": memberName
+            "sObjectType": memberName,
+            "memId" : memberId
 		});			
 		action.setCallback(this, function(resp) {
 			var state=resp.getState();			
@@ -65,8 +68,9 @@
     
     onCardChange: function (component, event, helper) {
         
-        helper.showSpinner(component);
-    	var SelectedCardNumber = event.getSource().get('v.value');
+        var SelectedCardNumber = event.getSource().get('v.value');
+        var clist = component.get("v.CardList");
+       
         var SelectedCardLocator;
         var SelectedAccountNumber;
         var CL = component.get("v.CLRecord");
@@ -76,46 +80,62 @@
         var action = component.get("c.getCardDetails");
         var recordId = component.get("v.recordId");
 		var CLRecord = component.get("v.CLRecord");
+        
         var memberName = CLRecord.Member_Name__c;
         
-        action.setParams({
-			"recordId": recordId,
-            "sObjectType": memberName,
-            "SelectedCardNumber":SelectedCardNumber
-		});
-        
-        action.setCallback(this, function(resp) {
-			var state=resp.getState();			
-			if(state === "SUCCESS"){
-				var result =  resp.getReturnValue();
-                if(result != undefined){
-                    if(result.CardList != undefined && result.CardList != ''){
-                   		component.set('v.CardListMap', result.CardList);
-                    }
-               	    var map=component.get('v.CardListMap');
-                
-                    for(var i=0;i<map.length;i++){
-                        if(map[i].CardNumber == SelectedCardNumber){
-                            SelectedCardLocator = map[i].CardLocator;
-                            SelectedAccountNumber = map[i].AccountNumber;
-                            break;
-                        }
-                    }
-                    component.set("v.CLRecord.Card_Number__c",SelectedCardNumber);
-                    component.set("v.CLRecord.Card_Locator__c",SelectedCardLocator);
-                    component.set("v.CLRecord.Member_Number__c",SelectedAccountNumber);
-                    
-                    if(SelectedAccountNumber != undefined){
-                        evt.setParams({ "CLRecord": CL, "isMemberSelected": isMemberSelected});
-                        evt.fire();
-                    }
-                    helper.hideSpinner(component);
-                    
+        /*if(event.getSource().get('v.checked') == false && clist.length != 0){
+            for(var i=0;i<clist.length;i++){
+                if(clist[i].Card_Number__c == SelectedCardNumber){
+                    clist.splice(i,1);
                 }
-			}
-		});
-        
-        $A.enqueueAction(action);
+            }                      
+        }*/
+	    
+        if(event.getSource().get('v.checked') != false){
+            helper.showSpinner(component);
+            action.setParams({
+                "recordId": recordId,
+                "sObjectType": memberName,
+                "SelectedCardNumber":SelectedCardNumber
+            });
+            
+            action.setCallback(this, function(resp) {
+                var state=resp.getState();			
+                if(state === "SUCCESS"){
+                    var result =  resp.getReturnValue();
+                    if(result != undefined){
+                        if(result.CardList != undefined && result.CardList != ''){
+                            component.set('v.CardListMap', result.CardList);
+                        }
+                        var map=component.get('v.CardListMap');
+                    
+                        for(var i=0;i<map.length;i++){
+                            if(map[i].CardNumber == SelectedCardNumber){
+                                SelectedCardLocator = map[i].CardLocator;
+                                SelectedAccountNumber = map[i].AccountNumber;
+                                break;
+                            }
+                        }
+                        component.set("v.CLRecord.Card_Number__c",SelectedCardNumber);
+                        component.set("v.CLRecord.Card_Locator__c",SelectedCardLocator);
+                        component.set("v.CLRecord.Member_Number__c",SelectedAccountNumber);
+                        //var acc = {Card_Number__c: SelectedCardNumber, Card_Locator__c: SelectedCardLocator, Member_Number__c: SelectedAccountNumber};
+                        //clist.push(acc);
+                        //component.set("v.CardList", clist);
+                       
+                        if(SelectedAccountNumber != undefined){
+                            //evt.setParams({ "CLRecord": CLRecord, "isMemberSelected": isMemberSelected, "CLRecord2": component.get("v.CardList")});
+                            evt.setParams({ "CLRecord": CLRecord, "isMemberSelected": isMemberSelected});
+                            evt.fire();
+                        }
+                        helper.hideSpinner(component);
+                        
+                    }
+                }
+            });
+            
+            $A.enqueueAction(action);
+        }   
        
     }
   
