@@ -91,8 +91,13 @@ public class xPressRefiController{
 					temp.MembershipState = MembershipState;
 					temp.MembershipZip = MembershipZip;
 					temp.MembershipEmail = (string)localAcc.get('email');
-					temp.MembershipPhone = (string)localAcc.get('homephone');
+					string Homephone =  (string)localAcc.get('homephone');
+					string Mobilephone =  (string)localAcc.get('mobilephone');
+					string Workphone =  (string)localAcc.get('workphone');	
+					System.debug('HomePhone' +  Homephone + ', Mobilephone: ' + Mobilephone + ',Workphone: ' + Workphone + ' Email:' + (string)localAcc.get('email'));					
+					temp.MembershipPhone = String.isBlank(Homephone) ? (String.isBlank(Mobilephone) ? Workphone : Mobilephone) : Homephone;
 					System.debug('temp ....' + temp);
+					System.debug('temp.MembershipPhone ....' +  temp.MembershipPhone);					
 					resultList.add(temp);
 				}
 			}

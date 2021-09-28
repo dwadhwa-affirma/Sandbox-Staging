@@ -9,13 +9,13 @@
 .THIS .progressbar li:first-child:after {content: none;}    
 .THIS .progressbar li.three:before {background-color: #c23934;}                                                                                                                             
 .THIS .progressbar li.active {color: #16325c;}
-.THIS .progressbar li.active:before,.THIS .progressbar li.active.three:before {background-color: #00ad53;} 
-.THIS .progressbar li.active + li:after {background-color: #00ad53;}  
+.THIS .progressbar li.active:before,.THIS .progressbar li.active.three:before {background-color: #18b2ab;} 
+.THIS .progressbar li.active + li:after {background-color: #18b2ab;}  
 .THIS .progressbar li .step-indicator-content {width: 100%; margin: 0 auto; text-align:center;}                  
 .THIS .progressbar li.halFactive:before,.THIS .progressbar li.active.three:before {background-color: #16325c;}
 .THIS .progressbar li.halFactive + li:after {background-color: #a8b7c7;}
-.THIS .progressbar li.half:before,.THIS .progressbar li.active.three:before {background-color: #0070bf;}
-.THIS .progressbar li.half + li:after {background-color: #0070bf;}
+.THIS .progressbar li.half:before,.THIS .progressbar li.active.three:before {background-color: #18b2ab;}
+.THIS .progressbar li.half + li:after {background-color: #18b2ab;}
 .THIS .demo-only {background: white !important;}
 .THIS .region-main {width: 40% !important;}
 .THIS .btnClose{float:right !important;}
@@ -28,6 +28,7 @@
 .THIS .show
 {
 	display:block;
+    color: #18b2ab;
 }
 .THIS .disable
 {
@@ -47,7 +48,7 @@
 .THIS .fontstyle
 {
 	font-size: large;
-    color: #0e70d6;
+    color: black;
     font-weight: bold;
     margin-top: 2%;
 }

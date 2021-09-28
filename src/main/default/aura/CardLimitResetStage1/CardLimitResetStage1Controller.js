@@ -28,9 +28,16 @@
 	},   
      
     onMemberChange: function (component, event, helper) {
-    	var MemberName = event.getSource().get('v.value');    
-    	component.set("v.CLRecord.Member_Name__c",MemberName);
-    	
+    	var MemberId = event.getSource().get('v.value');    
+        var MemberName;
+      	component.set("v.CLRecord.Member__c",MemberId);
+        var plist=component.get('v.paList');
+        for(var i=0;i<plist.length;i++){
+        	if(plist[i].PersonID__c == MemberId){
+           		MemberName = plist[i].PersonID__r.Name;
+            }            
+        }
+        component.set("v.CLRecord.Member_Name__c",MemberName);
     	var evt = $A.get("e.c:CardLimitResetEvent");
         var CL = component.get("v.CLRecord");
         var isMemberSelected = component.get("v.isMemberSelected");

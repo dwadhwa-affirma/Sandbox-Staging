@@ -142,7 +142,7 @@ public class CardLimitResetController {
             }
         }
 
-
+        system.debug('Members: '+ mapPA.values());
         resultmap.put('PersonList', mapPA.values());
       
     	return resultmap;
@@ -300,10 +300,12 @@ public class CardLimitResetController {
     }
     
     @AuraEnabled
-    public static Map<string,Map<string,List<CardDetailWrapperObject>>> getCard(string recordId, string sObjectType){
+    public static Map<string,Map<string,List<CardDetailWrapperObject>>> getCards(string recordId, string sObjectType, string memId){
     
         system.debug('sObjectType'+sObjectType); 
         system.debug('recordId'+recordId);
+        system.debug('memberId: '+memId);
+
         Id uniqueId = recordId;
         Schema.SObjectType objType = uniqueId.getsobjecttype();
        
@@ -351,7 +353,7 @@ public class CardLimitResetController {
 
         if(objType == Account_Details__c.sObjectType){
 
-            if(recordId != null){
+            /*if(recordId != null){
                 AccountNumber = [Select id, name from account_details__c where id=: recordId].Name;
             }
             else{
@@ -365,10 +367,18 @@ public class CardLimitResetController {
                     AND PersonID__r.LASTNAME like: lastname
                     AND Account_Number__r.name =: AccountNumber limit 1];
             
-            system.debug('Member - '+pa.PersonID__c);
+            system.debug('Member - '+pa.PersonID__c);*/
 
-            Account acc = [select id,name,SSN_TIN_Encrypted__pc from Account where id =:pa.PersonID__c limit 1];
-            SSN = acc.SSN_TIN_Encrypted__pc;  
+            Account acc = [select id,name,SSN_TIN_Encrypted__pc,PersonID__c from Account where id =:memId limit 1];
+            
+            if(acc.PersonID__c != null){
+                if(acc.PersonID__c.startsWith('V')){
+                    SSN = acc.SSN_TIN_Encrypted__pc;
+                }
+                else{
+                    SSN = acc.PersonID__c.substring(1);
+                }  
+            }
             //SSN = '123456789';
 
             system.debug('SSN'+SSN);
@@ -409,8 +419,17 @@ public class CardLimitResetController {
             
             system.debug('Member - '+pa.PersonID__c);*/
 
-            Account acc = [select id,name,SSN_TIN_Encrypted__pc from Account where id =:recordId limit 1];
-            SSN = acc.SSN_TIN_Encrypted__pc;
+            Account acc = [select id,name,SSN_TIN_Encrypted__pc,PersonID__c from Account where id =:recordId limit 1];
+            
+            if(acc.PersonID__c != null){
+                if(acc.PersonID__c.startsWith('V')){
+                    SSN = acc.SSN_TIN_Encrypted__pc;
+                }
+                else{
+                    SSN = acc.PersonID__c.substring(1);
+                }
+            }
+            
             //SSN = '123456789';
             system.debug('SSN'+SSN);
 
@@ -560,8 +579,15 @@ public class CardLimitResetController {
             
             system.debug('Member - '+pa.PersonID__c);
 
-            Account acc = [select id,name,SSN_TIN_Encrypted__pc from Account where id =:pa.PersonID__c limit 1];
-            SSN = acc.SSN_TIN_Encrypted__pc;  
+            Account acc = [select id,name,SSN_TIN_Encrypted__pc,PersonID__c from Account where id =:pa.PersonID__c limit 1];
+            if(acc.PersonID__c != null){
+                if(acc.PersonID__c.startsWith('V')){
+                    SSN = acc.SSN_TIN_Encrypted__pc;
+                }
+                else{
+                    SSN = acc.PersonID__c.substring(1);
+                }
+            }  
             //SSN = '123456789';
 
             system.debug('SSN'+SSN);
@@ -602,8 +628,15 @@ public class CardLimitResetController {
             
             system.debug('Member - '+pa.PersonID__c);*/
 
-            Account acc = [select id,name,SSN_TIN_Encrypted__pc from Account where id =:recordId limit 1];
-            SSN = acc.SSN_TIN_Encrypted__pc;
+            Account acc = [select id,name,SSN_TIN_Encrypted__pc,PersonID__c from Account where id =:recordId limit 1];
+            if(acc.PersonID__c != null){
+                if(acc.PersonID__c.startsWith('V')){
+                    SSN = acc.SSN_TIN_Encrypted__pc;
+                }
+                else{
+                    SSN = acc.PersonID__c.substring(1);
+                }
+            }
             //SSN = '123456789';
             system.debug('SSN'+SSN);
 

@@ -5,11 +5,6 @@ public class CardLimitResetControllerTest {
 	static void setupTestData(){
    
      //---------------------------------------- Creating Account Details record-----------------------------------//
-     
-     SolarLoan_Document_Settings__c sds = new SolarLoan_Document_Settings__c();
-     sds.Days__c = 10;
-     sds.Name = 'Done';
-     insert sds; 
       
      SolarLoan_To_Episys_API_Details__c api = new SolarLoan_To_Episys_API_Details__c();
      api.URL__c = 'https://symxapi.chevronfcu.org/devclient';
@@ -92,9 +87,10 @@ public class CardLimitResetControllerTest {
 	static testMethod void testmethod2(){
     	
         Account_Details__c memberacc  =  [SELECT Id,name from Account_Details__c limit 1];
+        Account member  =  [SELECT Id,name from Account limit 1];
         CardLimitResetController.getStageData(memberacc.id,'JEFF PACHECO FRANKLIN');
         CardLimitResetController.getMembers(memberacc.id);
-        CardLimitResetController.getCard(memberacc.id,'JEFF PACHECO FRANKLIN');
+        CardLimitResetController.getCards(memberacc.id,'JEFF PACHECO FRANKLIN',member.id);
         CardLimitResetController.getCardDetails(memberacc.id,'JEFF PACHECO FRANKLIN','5460277067636965');
         CardLimitResetController.limitSubmit(memberacc.id,'5460277067636965','123','JEFF PACHECO FRANKLIN','Change Card Limits','123.00','456.00',memberacc.name);
     }
@@ -102,16 +98,17 @@ public class CardLimitResetControllerTest {
     static testMethod void testmethod3(){
     	
         Account_Details__c memberacc  =  [SELECT Id,name from Account_Details__c limit 1];
+        Account member  =  [SELECT Id,name from Account limit 1];
         CardLimitResetController.getStageData(memberacc.id,'JEFF PACHECO FRANKLIN');
         CardLimitResetController.getMembers(memberacc.id);
-        CardLimitResetController.getCard(memberacc.id,'JEFF PACHECO FRANKLIN');
+        CardLimitResetController.getCards(memberacc.id,'JEFF PACHECO FRANKLIN',member.id);
         CardLimitResetController.getCardLimits(memberacc.id,'5460277067636965','JEFF PACHECO FRANKLIN',memberacc.name);
     }
 
 	static testMethod void testmethod4(){
     	
         Account member  =  [SELECT Id,name from Account limit 1];
-        CardLimitResetController.getCard(member.id,'JEFF PACHECO FRANKLIN');
+        CardLimitResetController.getCards(member.id,'JEFF PACHECO FRANKLIN',member.id);
         CardLimitResetController.getCardLimits(member.id,'5460277067636965','JEFF PACHECO FRANKLIN','0000214414');
         CardLimitResetController.limitSubmit(member.id,'5460277067636965','123','JEFF PACHECO FRANKLIN','Change Card Limits','123.00','456.00','0000214414');
     }
@@ -119,7 +116,7 @@ public class CardLimitResetControllerTest {
 	static testMethod void testmethod5(){
     	
         Account member  =  [SELECT Id,name from Account limit 1];
-        CardLimitResetController.getCard(member.id,'JEFF PACHECO FRANKLIN');        
+        CardLimitResetController.getCards(member.id,'JEFF PACHECO FRANKLIN',member.id);        
         CardLimitResetController.limitSubmit(member.id,'5460277067636965','123','JEFF PACHECO FRANKLIN','Reset Card Limits','2500.00','510.00','0000214414');
     }   
 

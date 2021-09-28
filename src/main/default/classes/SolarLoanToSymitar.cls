@@ -161,7 +161,9 @@ public class SolarLoanToSymitar {
                     }
                     if(MatchID3.length() > 22){
                         MatchID3 = MatchID3.left(21);
-                        
+                        if(MatchID3.contains('&') == true && MatchID3.indexOf('&') > 16){
+                            MatchID3 = MatchID3.left(17);        
+                        }            
                     }
                 }
                 
@@ -190,7 +192,7 @@ public class SolarLoanToSymitar {
                     req.setHeader('Content-Type', 'application/json');
                     req.setHeader('Accept', 'application/json');
                     
-                    jsonData = '{"Day1":'+'\"'+Day1+'\"'+',"NextDate":'+'\"'+NextDate+'\"'+',"EffectiveDate":'+'\"'+EffectiveDate+'\"'+',"EFTType":' + '\"'+ EFTType +'\"'+',"AmountCode":' + '\"'+ AmountCode +'\"'+',"GroupNumber":'+'\"'+ GroupNumber +'\"'+',"IdType":'+'\"' + IDType + '\"'+',"ID":'+'\"'+ID+'\"'+',"Frequency":'+'\"'+Frequency+'\"'+',"PostAmount":'+'\"'+PostAmount+'\"'+',"Payee":'+'\"'+Payee+'\"'+',"Reference":'+'\"'+Reference+'\"'+',"MatchId3":'+'\"'+MatchID3+'\"'+',"AccountNumber":'+'\"'+AccountNumber+'\"}';
+                    jsonData = '{"MatchId3":'+'\"'+MatchID3+'\"'+',"Day1":'+'\"'+Day1+'\"'+',"NextDate":'+'\"'+NextDate+'\"'+',"EffectiveDate":'+'\"'+EffectiveDate+'\"'+',"EFTType":' + '\"'+ EFTType +'\"'+',"AmountCode":' + '\"'+ AmountCode +'\"'+',"GroupNumber":'+'\"'+ GroupNumber +'\"'+',"IdType":'+'\"' + IDType + '\"'+',"ID":'+'\"'+ID+'\"'+',"Frequency":'+'\"'+Frequency+'\"'+',"PostAmount":'+'\"'+PostAmount+'\"'+',"Payee":'+'\"'+Payee+'\"'+',"Reference":'+'\"'+Reference+'\"'+',"AccountNumber":'+'\"'+AccountNumber+'\"}';
                     
                     req.setBodyAsBlob(Blob.valueof(jsondata)); 
                     system.debug('Request: '+jsonData);

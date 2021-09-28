@@ -220,7 +220,7 @@
 			 compEvent.fire();
 			
 			 if(Stage5ErrorCheck != 'True' && Stage3ErrorCheck != 'True'){
-                 if(checkCurrentStage == 'Stage 2' || checkCurrentStage == 'Stage 3' || checkCurrentStage == 'Stage 6'){
+                 if(checkCurrentStage == 'Stage 2' || checkCurrentStage == 'Stage 6'){
                    window.setTimeout(
                         $A.getCallback(function() {
                            helper.hideSpinner(component,helper)
@@ -242,6 +242,10 @@
                         }), 10000
                     );
                  }*/
+                 if(checkCurrentStage == 'Stage 3'){
+                     window.location.reload();
+                 }
+                 
                  if(checkstage != 'Stage 7'){
                     window.setTimeout(
                         $A.getCallback(function() {

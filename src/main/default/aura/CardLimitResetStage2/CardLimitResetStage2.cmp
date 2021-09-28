@@ -4,6 +4,7 @@
 <aura:attribute name="CLRecord" type="Change_Limit__c"/> 
 <aura:handler name="init" action="{!c.doInit}" value="{!this}" access="global" />
 <aura:attribute name="CardListMap" type="List" />
+<aura:attribute name="CardList" type="Change_Limit__c[]" />
 <aura:attribute name="Empty" type="Boolean" />
 <aura:attribute name="IsDormant" type="Boolean" />
 <aura:attribute name="mapValues" type="object" /> 
