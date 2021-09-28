@@ -13,16 +13,18 @@
         var isIDVUsed=component.get("v.WiresObject.Identity_Verification_Used__c");
         var RecordId = component.get("v.recordId");
         
-        if(wireAmount>5000) {
+        // Now onwards Docusign is required for all online wires of any amount
+        //if(wireAmount>5000) {
             component.set("v.isIDVAuthentication",true);
             if(docusignStatus!='Completed'){
                 component.set("v.isIDVAuthDone",false);
             }else{
                 component.set("v.isIDVAuthDone",true);
             }
-        }
+        //}
         
-        if(wireAmount>10000) {
+        var minGoodFundAmountCheck=component.get('v.MinGoodFundAmountCheck');
+        if(wireAmount>minGoodFundAmountCheck) {
             component.set("v.isNextVisible",true); 
         }
       
@@ -88,11 +90,11 @@
         component.find("overlayLib1").notifyClose();
     },
     NextTransactions:function(component, event, helper) {
-        
         var RecordId = component.get("v.recordId");
         var wireAmount=component.get("v.WiresObject.TotalFromAccount__c");
         var balanceStatusCode=component.get("v.BalanceStatusCode");
-        if(wireAmount>10000) {
+        var minGoodFundAmountCheck=component.get('v.MinGoodFundAmountCheck');
+        if(wireAmount>minGoodFundAmountCheck) {
             if(balanceStatusCode<=0){
                 helper.ApproveTransactions(component, event,helper,RecordId,"Good Funds Review",true);
             }else{
@@ -120,6 +122,7 @@
     },
     onCheck: function(component, event, helper) {
         
+        debugger;
         var isGoodFundCheck=component.get("v.isGoodFundCheck");
         var isNextVisible=component.get("v.isNextVisible");
         

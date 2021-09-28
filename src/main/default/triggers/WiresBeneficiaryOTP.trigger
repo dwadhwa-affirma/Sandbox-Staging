@@ -21,7 +21,7 @@ trigger WiresBeneficiaryOTP on Wires_Beneficiary_OTP__c (before insert) {
         string RandomNumber;
         RandomNumber =String.valueOf(Math.random());
         RandomNumber= RandomNumber.substring(2,8);
-        objWiresBeneficiaryotp.OTP__c = RandomNumber;
+        objWiresBeneficiaryotp.OTP1__c = RandomNumber;
         
         
         if(obj != null)

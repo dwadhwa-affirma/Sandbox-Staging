@@ -4,6 +4,7 @@ global class Wires_ApprovalNotificationBatch implements Database.Batchable<sObje
         return DataBase.getQueryLocator([SELECT Id,Name,FromAccount__c,
                                          First_Reviewer__c,
                                          TotalFromAccount__c,
+                                         WireAmount__c,
                                          Current_Reviewer__c,
                                          Current_Second_Reviewer__c,
                                          Current_Reviewer_Modified_Date__c,
@@ -207,9 +208,9 @@ global class Wires_ApprovalNotificationBatch implements Database.Batchable<sObje
                                                              for(User user: siblings){
                                                                  boolean isSiblingInTheWireApprovalGroup=false;
                                                                  if(wtc.Approval_Status__c==WiresConstant.ApprovalStatus_PendingForSecondApproval) {
-                                                                     isSiblingInTheWireApprovalGroup = IsUserInTheSecondWireApprovalGroup(user.Id,wtc.TotalFromAccount__c,groupAUsers,groupBUsers,groupCUsers,groupDUsers,groupEUsers);
+                                                                     isSiblingInTheWireApprovalGroup = IsUserInTheSecondWireApprovalGroup(user.Id,wtc.WireAmount__c,groupAUsers,groupBUsers,groupCUsers,groupDUsers,groupEUsers);
                                                                  }else{
-                                                                     isSiblingInTheWireApprovalGroup = IsUserInTheFirstWireApprovalGroup(user.Id,wtc.TotalFromAccount__c,groupAUsers,groupBUsers,groupCUsers,groupDUsers,groupEUsers);
+                                                                     isSiblingInTheWireApprovalGroup = IsUserInTheFirstWireApprovalGroup(user.Id,wtc.WireAmount__c,groupAUsers,groupBUsers,groupCUsers,groupDUsers,groupEUsers);
                                                                  }
                                                                  
                                                                  if(isSiblingInTheWireApprovalGroup==true){ 
@@ -253,16 +254,16 @@ global class Wires_ApprovalNotificationBatch implements Database.Batchable<sObje
                                                              
                                                              if(isReviewerChange==true){
                                                                  // call function to send an email to all siblings which are in wires group
-                                                                 WiresEmailController.SendApprovalNotification(wtc.Id,emails,wtc.Name,wtc.TotalFromAccount__c,wtc.Source__c,wtc.Has_Additional_Documents__c);
+                                                                 WiresEmailController.SendApprovalNotification(wtc.Id,emails,wtc.Name,wtc.WireAmount__c,wtc.Source__c,wtc.Has_Additional_Documents__c);
                                                                  return;
                                                              }
                                                              
                                                              if(isReviewerChange==false){
                                                                  boolean isManagerInTheWireApprovalGroup=false;
                                                                  if(wtc.Approval_Status__c==WiresConstant.ApprovalStatus_PendingForSecondApproval) {
-                                                                     isManagerInTheWireApprovalGroup=IsUserInTheSecondWireApprovalGroup(managerId,wtc.TotalFromAccount__c,groupAUsers,groupBUsers,groupCUsers,groupDUsers,groupEUsers);
+                                                                     isManagerInTheWireApprovalGroup=IsUserInTheSecondWireApprovalGroup(managerId,wtc.WireAmount__c,groupAUsers,groupBUsers,groupCUsers,groupDUsers,groupEUsers);
                                                                  }else{
-                                                                     isManagerInTheWireApprovalGroup=IsUserInTheFirstWireApprovalGroup(managerId,wtc.TotalFromAccount__c,groupAUsers,groupBUsers,groupCUsers,groupDUsers,groupEUsers);
+                                                                     isManagerInTheWireApprovalGroup=IsUserInTheFirstWireApprovalGroup(managerId,wtc.WireAmount__c,groupAUsers,groupBUsers,groupCUsers,groupDUsers,groupEUsers);
                                                                  }
                                                                  
                                                                  
@@ -282,7 +283,7 @@ global class Wires_ApprovalNotificationBatch implements Database.Batchable<sObje
                                                                          User managerUser=userMap.get(managerId);
                                                                          List<string> managerEmails=new List<string>();
                                                                          managerEmails.add(managerUser.Email);
-                                                                         WiresEmailController.SendApprovalNotification(wtc.Id,managerEmails,wtc.Name,wtc.TotalFromAccount__c,wtc.Source__c,wtc.Has_Additional_Documents__c);
+                                                                         WiresEmailController.SendApprovalNotification(wtc.Id,managerEmails,wtc.Name,wtc.WireAmount__c,wtc.Source__c,wtc.Has_Additional_Documents__c);
                                                                          return;
                                                                      }
                                                                  }

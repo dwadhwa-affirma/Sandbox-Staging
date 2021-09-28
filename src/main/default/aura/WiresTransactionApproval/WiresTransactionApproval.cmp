@@ -16,6 +16,7 @@
     <aura:attribute name= "Source" type="string" />
     <aura:attribute name= "Reason" type="string" />
     <aura:attribute name="showConfirmDialog" type="boolean" default="false"/>
+    <aura:attribute name= "MinGoodFundAmountCheck" type="decimal" />
     
     <lightning:overlayLibrary aura:id="overlayLib"/> 
     
@@ -55,7 +56,7 @@
         
         <div style="margin-left: auto;">
             <aura:if isTrue="{!and(v.ApprovalStatus!= 'Cancelled',v.ApprovalStatus!= 'Released In WireXchange')}">  
-                 <aura:if isTrue="{!and(v.ApprovalStatus!='Rejected')}">  
+                 <aura:if isTrue="{!and(v.ApprovalStatus!='Rejected',v.ApprovalStatus!= 'DS Expired',v.ApprovalStatus!= 'DS Declined')}">  
             		<lightning:button variant="destructive" 
                                       label="Cancel Transaction" 
                                       onclick="{!c.handleConfirmDialog}"/>
