@@ -47,8 +47,15 @@ trigger WIRESTransactionTrigger on WIRES_Transaction__c (before insert,before up
                 }
             }
             
-            //------------------------------- Checking if the status is being changed and status = 'Voided'-----------------//
+            //------------------------------- Checking if the status is being changed and status = 'Declined'-----------------//
             if(trigger.old[i].Status__c != 'Declined' && trigger.new[i].Status__c == 'Declined'){  
+                if(trigger.new[i].Source__c==WiresConstant.Source_OnlineBanking){
+                    docSignDeclinedAtOnlineIds.add(trigger.new[i].id);
+                }
+            }
+            
+            //------------------------------- Checking if the status is being changed and status = 'Voided'-----------------//
+            if(trigger.old[i].Status__c != 'Voided' && trigger.new[i].Status__c == 'Voided'){  
                 if(trigger.new[i].Source__c==WiresConstant.Source_OnlineBanking){
                     docSignDeclinedAtOnlineIds.add(trigger.new[i].id);
                 }
