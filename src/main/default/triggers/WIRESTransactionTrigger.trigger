@@ -269,6 +269,8 @@ trigger WIRESTransactionTrigger on WIRES_Transaction__c (before insert,before up
                     objWIRESTransaction.Approval_Status__c = WiresConstant.ApprovalStatus_Recurring;
                 }else if(objWIRESTransaction.ParentTransaction__c==null){
                 	objWIRESTransaction.Approval_Status__c = WiresConstant.ApprovalStatus_PendingForMemberReview;
+                }else{
+                    objWIRESTransaction.Approval_Status__c = WiresConstant.ApprovalStatus_PendingForApproval;
                 }
                 
                 objWIRESTransaction.CreatedById =objWIRESTransaction.LaunchByUserId__c;
