@@ -19,8 +19,12 @@
         var isFullAddressMatch = result.isFullAddressMatch;
         var stageComponenttoLoad, isError;
         var isMultipleMortgages;
+        var EmailIds = result.EmailIds;
+        var isMultipleEmailIds = result.isMultipleEmailIds;
         component.set("v.xPressRefiStageDetails", Stages);
         component.set("v.xRefiEligibleLoanIds", result.xRefiEligibleLoanIds);
+        component.set("v.isMultipleEmailIds", isMultipleEmailIds);
+        component.set("v.EmailIds",EmailIds);
 
         if (
           result.IsXpressRefiPending &&
@@ -47,7 +51,15 @@
           component.set("v.errorMessage", errormessage);
           component.set("v.isContinueDisabled", true);
           isError = true;
-        } else if (
+        } 
+        else if (EmailIds.length == 0) {
+          component.set("v.isError", true);
+          var errormessage = "The selected member does not have an email address for the membership account in Episys.";
+          component.set("v.errorMessage", errormessage);
+          component.set("v.isContinueDisabled", true);
+          isError = true;
+        }
+        else if (
           isFullAddressMatch != undefined &&
           !isError &&
           !isFullAddressMatch
@@ -112,6 +124,8 @@
               ),
               xPressRefiRecordList: ActiveMortgages.xPressRefiList,
               xRefiEligibleLoanIds: component.get("v.xRefiEligibleLoanIds"),
+              isMultipleEmailIds: component.get("v.isMultipleEmailIds"),
+              EmailIds: component.get("v.EmailIds"),
             },
             function (msgBox) {
               if (component.isValid()) {
@@ -235,6 +249,8 @@
             recordId: component.get("v.recordId"),
             xPressRefiRecord: component.get("v.xPressRefiRecord"),
             isLoanPrimaryResidence: component.get("v.isLoanPrimaryResidence"),
+            isMultipleEmailIds: component.get("v.isMultipleEmailIds"),
+            EmailIds: component.get("v.EmailIds"),
           },
           function (msgBox) {
             if (component.isValid()) {
@@ -269,6 +285,8 @@
             recordId: component.get("v.recordId"),
             xPressRefiRecord: component.get("v.xPressRefiRecord"),
             isLoanPrimaryResidence: component.get("v.isLoanPrimaryResidence"),
+            isMultipleEmailIds: component.get("v.isMultipleEmailIds"),
+            EmailIds: component.get("v.EmailIds"),
           },
           function (msgBox) {
             if (component.isValid()) {
@@ -301,6 +319,9 @@
 
   getActionValue: function (component, event) {
     var ActiveStepIndex = event.getParam("ActiveStepIndex");
+    var MultipleemailIds = component.get("v.isMultipleEmailIds");
+    var Member_Email__c;
+    
     if (ActiveStepIndex != undefined) {
       component.set("v.ActiveStepIndex", ActiveStepIndex);
       component.set("v.isContinueDisabled", false);
@@ -312,9 +333,11 @@
     }
 
     var xPressRefiRecord = event.getParam("xPressRefiRecord");
-    if (xPressRefiRecord != undefined)
+    if (xPressRefiRecord != undefined){
       component.set("v.xPressRefiRecord", xPressRefiRecord);
-
+      Member_Email__c = component.get("v.xPressRefiRecord.Member_Email__c");
+    }
+      
     var IsFeeCollectionVisible = event.getParam("IsFeeCollectionVisible");
     if (IsFeeCollectionVisible != undefined) {
       component.set("v.IsFeeCollectionVisible", IsFeeCollectionVisible);
@@ -331,17 +354,17 @@
       component.set("v.isContinueDisabled", true);
     }
     else if (
-      IsFeeCollectionVisible &&
-      (!IsFeePaymentCompleted || PaymentReferenceNumber == "")
+      IsFeeCollectionVisible && Member_Email__c == undefined &&
+      (!IsFeePaymentCompleted || (PaymentReferenceNumber == "" || PaymentReferenceNumber == undefined))
     ) {
       component.set("v.isContinueDisabled", true);
     } else if (
-      IsFeeCollectionVisible &&
-      (IsFeePaymentCompleted || PaymentReferenceNumber != "")
+      IsFeeCollectionVisible && Member_Email__c != undefined &&
+      (IsFeePaymentCompleted || (PaymentReferenceNumber != "" && PaymentReferenceNumber != undefined))
     ) {
       component.set("v.isContinueDisabled", false);
     }
-    else if(!IsFeeCollectionVisible){
+    else if(!IsFeeCollectionVisible && Member_Email__c != undefined){
       component.set("v.isContinueDisabled", false);
     }
   },

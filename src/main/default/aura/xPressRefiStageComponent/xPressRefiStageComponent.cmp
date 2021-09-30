@@ -20,6 +20,8 @@
     <aura:attribute name="PendingXpressRefiAccountId" type="set" />
     <aura:attribute name="xRefiEligibleLoanIds" type="set" />
     <aura:attribute name="IsFeeCollectionVisible" type="Boolean" default="false" />
+    <aura:attribute name="isMultipleEmailIds" type="Boolean" default="false" />
+    <aura:attribute name="EmailIds" type="List" />
     
 	<lightning:overlayLibrary aura:id="overlayLib"/>
     <header class="slds-media_center slds-has-flexi-truncate slds-modal__header">

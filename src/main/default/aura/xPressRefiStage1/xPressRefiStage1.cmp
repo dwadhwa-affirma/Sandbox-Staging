@@ -10,7 +10,7 @@
     <aura:attribute name="PropertyAddress" type="string"/>
     <aura:attribute name="MembershipAddress" type="string"/>
     <aura:attribute name="MembershipAddressDetails" type="Map" default="{ MembershipAddress1: '', MembershipAddress2: '', MembershipCity : '', MembershipState : '', MembershipZip : '' }" />  
-
+    <aura:attribute name="isMultipleEmailIds" type="Boolean" default="false" />
     <div id="stage1" class="stage1" style="width:100% !important;">
         <div class="slds-grid slds-gutters eft4tbl">
             <div class="slds-col firstcol">

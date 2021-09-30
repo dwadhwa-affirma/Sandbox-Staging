@@ -41,6 +41,8 @@
       SelectedProductName,
       SelectedCostComponent,
       isMortgageCadence;
+    var isMultipleEmailIds = component.get("v.isMultipleEmailIds");
+    var currentrecordEmailID = component.get("v.xPressRefiRecord.Member_Email__c");
     if (event != undefined) {
       SelectedProduct = event.getSource().get("v.value");
     }
@@ -79,6 +81,13 @@
       component.set("v.IsFeeCollectionVisible", true);
     } else {
       component.set("v.IsFeeCollectionVisible", false);
+    }
+
+    if(!isMortgageCadence && isMultipleEmailIds && (currentrecordEmailID == "" || currentrecordEmailID == null || currentrecordEmailID == undefined)){
+        component.set("v.isEmailSelectionVisible", true);
+    }
+    else{
+      component.set("v.isEmailSelectionVisible", false);
     }
 
     var evt = $A.get("e.c:xPressRefiEvent");
@@ -182,7 +191,7 @@
 
     evt.setParams({
       xPressRefiRecord: component.get("v.xPressRefiRecord"),
-      IsFeeCollectionVisible: component.get("v.IsFeeCollectionVisible"),
+      IsFeeCollectionVisible: component.get("v.IsFeeCollectionVisible"),      
     });
     evt.fire();
   },
@@ -215,4 +224,22 @@
       param
     );
   },
+
+  onEmailSelect: function (component, event, helper) {
+    if (event != undefined) {
+      var SelectedEmailId = event.getSource().get("v.value");
+      if(SelectedEmailId != ""){
+        var evt = $A.get("e.c:xPressRefiEvent");
+        component.set(
+          "v.xPressRefiRecord.Member_Email__c",
+          SelectedEmailId);  
+          
+          evt.setParams({
+            xPressRefiRecord: component.get("v.xPressRefiRecord"),
+            IsFeeCollectionVisible: component.get("v.IsFeeCollectionVisible"),
+          });
+          evt.fire();
+      }
+    }
+  }
 });
