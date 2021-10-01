@@ -1,6 +1,6 @@
-global class Wires_ProcessRecurrenceTransactionBatch implements Database.Batchable<sObject>{    
+global class Wires_ProcessRecurrenceTransactionBatch implements Database.Batchable<sObject>,Database.Stateful,Database.AllowsCallouts{    
     
-    
+    global Set<Id> wiresId = new Set<Id>();
     global Database.QueryLocator start(Database.BatchableContext BC){
         
         Integer daysInMonth=Date.daysInMonth(Date.today().year(),Date.today().month());
@@ -16,6 +16,7 @@ global class Wires_ProcessRecurrenceTransactionBatch implements Database.Batchab
                                              RecurrenceEndDate__c
                                              FROM WIRES_Transaction__c 
                                              WHERE Frequency__c =: WiresConstant.Reccuring
+                                             AND Source__c=:WiresConstant.Source_OnlineBanking
                                              AND TransactionStatus__c = 'Pending' 
                                              AND IsActive__c=true
                                              AND RecurrenceEndDate__c >=: Date.today()
@@ -62,8 +63,6 @@ global class Wires_ProcessRecurrenceTransactionBatch implements Database.Batchab
             objWTC.Description__c=wtc.Description__c;
             objWTC.Source__c=wtc.Source__c;
             objWTC.First_Reviewer__c=wtc.First_Reviewer__c;
-            
-            objWTC.Approval_Status__c = WiresConstant.ApprovalStatus_PendingForApproval;
                         
             DateTime d = DateTime.newInstance(System.today(), Time.newInstance(0, 0, 0, 0));
             if(cbd.isWorkingDay(d)==false){
@@ -76,9 +75,15 @@ global class Wires_ProcessRecurrenceTransactionBatch implements Database.Batchab
             }
         }
         insert onetimeWireObjs;
+        
+        for(WIRES_Transaction__c w:onetimeWireObjs){
+        	wiresId.add(w.Id);
+        }
     }
     
     global void finish(Database.BatchableContext BC){
-        
+        if(wiresId.size()>0){
+             WiresTransToDocuSign.docusignAPIcallWithoutFuture(wiresId);
+        }
     }
 }
