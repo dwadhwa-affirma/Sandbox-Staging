@@ -27,7 +27,7 @@ public class CardLimitResetControllerTest {
     
      Account account_Obj = new Account(LastName = 'FRANKLIN', FirstName = 'JEFF', Type = 'null', PersonHasOptedOutOfEmail = false, 
               NA_Eligibility__c = false, NA_LEAV_Complete__c = true, NA_LECF_Complete__c = true, NA_LECP_Complete__c = true, NA_LEEM_Complete__c = true, NA_LEHS_Complete__c = true, 
-              SSN_TIN_Encrypted__pc = '565138120', NA_LEMP_Complete__c = false, NA_LEMQ_Complete__c = true, NA_LEOL_Complete__c = true, NA_LEOM_Complete__c = true, NA_LEPT_Complete__c = true, 
+              SSN_TIN_Encrypted__pc = '565138120', PersonID__c = 'V565138120',NA_LEMP_Complete__c = false, NA_LEMQ_Complete__c = true, NA_LEOL_Complete__c = true, NA_LEOM_Complete__c = true, NA_LEPT_Complete__c = true, 
               NA_LESB_Complete__c = false, NA_LESF_Complete__c = true, NA_LEWS_Complete__c = true, NA_Opt_Out__c = false);
      Insert account_Obj; 
     
@@ -102,6 +102,7 @@ public class CardLimitResetControllerTest {
         CardLimitResetController.getStageData(memberacc.id,'JEFF PACHECO FRANKLIN');
         CardLimitResetController.getMembers(memberacc.id);
         CardLimitResetController.getCards(memberacc.id,'JEFF PACHECO FRANKLIN',member.id);
+        CardLimitResetController.getCardDetails(member.id,'JEFF PACHECO FRANKLIN','5460277067636965');
         CardLimitResetController.getCardLimits(memberacc.id,'5460277067636965','JEFF PACHECO FRANKLIN',memberacc.name);
     }
 
