@@ -10,7 +10,11 @@ public class WiresConstant {
      public static final string ApprovalStatus_Approved='Approved';
      public static final string ApprovalStatus_Rejected='Rejected';
      public static final string ApprovalStatus_PendingForMemberReview='Pending for Member Review';
-    public static final string ApprovalStatus_Cancelled='Cancelled';
+     public static final string ApprovalStatus_Cancelled='Cancelled';
+     public static final string ApprovalStatus_FraudRejected='Fraud Rejected';
+     public static final string ApprovalStatus_Recurring='Recurring';
+     public static final string ApprovalStatus_DSExpired='DS Expired';
+     public static final string ApprovalStatus_DSDeclined='DS Declined';
     
     
     //--------------------------------Wire Transaction Source---------------------------------------------//
@@ -32,4 +36,8 @@ public class WiresConstant {
     public static final string Online_Group_D='WIRES_Online_Group_D';
     public static final string Online_Group_E='WIRES_Online_Group_E';
     
+    //--------------------------------Wires Frequency---------------------------------------------//
+    
+    public static final string OneTime='One - Time';
+    public static final string Reccuring='Recurring';
 }

@@ -241,7 +241,7 @@ public  class WiresEmailController {
                 string body = listEmailTemplate[0].HtmlValue;
                 body=body.replace('{Name}', wt.Member_Name__c);
                 body=body.replace('{BankName__c}', wt.ToAccoutId__r.BankName__c);
-                body=body.replace('{TotalFromAccount__c}',string.valueOf(wt.TotalFromAccount__c));
+                body=body.replace('{TotalFromAccount__c}',string.valueOf(wt.WireAmount__c));
                 if(isCancelled==true){
                     body=body.replace('{Reason}',wt.Cancel_Reason__c);
                 }else{

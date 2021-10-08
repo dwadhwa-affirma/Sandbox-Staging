@@ -11,10 +11,9 @@ public class WiresBeneficiaryOTPTest {
 	 	objWC.Email__c='test@test.com';
 	 	objWC.Entered_OTP__c = '12345';
 	 	objWC.Member_Number__c = accDetail.Name;
-	 	objWC.OTP__c ='12345';
+	 	objWC.OTP1__c ='12345';
 	 	objWC.Mobile_Phone__c = '1234567890';
         
-	 	
 	 	insert objWC;
      }
 }

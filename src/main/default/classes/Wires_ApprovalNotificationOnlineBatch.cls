@@ -1,4 +1,4 @@
-global class Wires_ApprovalNotificationBatch implements Database.Batchable<sObject> {
+global class Wires_ApprovalNotificationOnlineBatch implements Database.Batchable<sObject> {
     
     global Database.QueryLocator start(Database.BatchableContext BC){    
         return DataBase.getQueryLocator([SELECT Id,Name,FromAccount__c,
@@ -12,7 +12,7 @@ global class Wires_ApprovalNotificationBatch implements Database.Batchable<sObje
                                          Approved_by_1st_Approver__c,Source__c,
                                          Has_Additional_Documents__c
                                          FROM WIRES_Transaction__c 
-                                         WHERE Source__c =: WiresConstant.Source_Branch
+                                         WHERE Source__c =: WiresConstant.Source_OnlineBanking
                                          AND Frequency__c =: WiresConstant.OneTime
                                          AND (Approval_Status__c=:WiresConstant.ApprovalStatus_PendingForApproval 
                                               OR Approval_Status__c=:WiresConstant.ApprovalStatus_PendingForSecondApproval
@@ -20,13 +20,12 @@ global class Wires_ApprovalNotificationBatch implements Database.Batchable<sObje
     }
     
     global void execute(Database.BatchableContext BC,List<WIRES_Transaction__c> scopeWTIDs){
-        Wires_Approval_Notification_Time_Limit__c timeLimit=Wires_Approval_Notification_Time_Limit__c.getValues('Branch');
-        WiresApprovalEscalation__c branchWiresEscalation=WiresApprovalEscalation__c.getValues('Branch');
+        Wires_Approval_Notification_Time_Limit__c timeLimit=Wires_Approval_Notification_Time_Limit__c.getValues('Online');
+        WiresApprovalEscalation__c onlineWiresEscalation=WiresApprovalEscalation__c.getValues('Online');
         
         System.debug('Time limit configuration:'+timeLimit.Time_In_Minutes__c);
         
-        if(branchWiresEscalation!=null && branchWiresEscalation.Escalation__c==true) {
-            
+        if(onlineWiresEscalation!=null && onlineWiresEscalation.Escalation__c==true) {
             string grpAName='';
             string grpBName='';
             string grpCName='';

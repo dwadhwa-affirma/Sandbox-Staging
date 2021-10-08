@@ -2,6 +2,14 @@ public class WiresTransactionApprovalController {
     
     @AuraEnabled
     public static  Map<string,object> getWiresData(string WiresRecordId){
+        
+        decimal minGoodFundAmountCheck=0;        
+        Wires_Good_Fund_Limit__c goodFundLimit = Wires_Good_Fund_Limit__c.getValues('Min');
+        
+        if(goodFundLimit.Amount__c!=null){
+            minGoodFundAmountCheck=goodFundLimit.Amount__c;
+        }
+        
         Map<string,object> strMap = new  Map<string,object>();
         WIRES_Transaction__c WiresList = [SELECT id,Approval_Status__c,DocuSign_Status1__c,
                                           Status__c, FromAccount__c,Share_ID__c,Source__c,TotalFromAccount__c,
@@ -15,9 +23,9 @@ public class WiresTransactionApprovalController {
                                           Previous_Wires2_Review__c,Approved_by_1st_Approver__c,CreatedById,
                                           Good_Funds_Check__c,BalanceRGLines__c,BalanceStatusCode__c,
                                           First_Approval_Comment__c,Second_Approval_Comment__c
-                                          from WIRES_Transaction__c where id=:WiresRecordId limit 1];
+                                          FROM WIRES_Transaction__c WHERE Id=:WiresRecordId limit 1];
         
-        string isApprovalVisible;
+        string isApprovalVisible='false';
         
         if(WiresList.Approval_Status__c==WiresConstant.ApprovalStatus_FraudReview){
             Group grp = [SELECT DeveloperName,Email,Id,Name,RelatedId,Type 
@@ -78,7 +86,7 @@ public class WiresTransactionApprovalController {
                
                if(WiresList.Source__c==WiresConstant.Source_Branch){
                    
-                   if(WiresList.TotalFromAccount__c>0 && WiresList.TotalFromAccount__c<=25000){
+                   if(WiresList.WireAmount__c>0 && WiresList.WireAmount__c<=25000){
                        
                        if(grpAmembers.size()>0 || grpBmembers.size()>0 || grpCmembers.size()>0 || grpDmembers.size()>0 || grpEmembers.size()>0){
                            isApprovalVisible = 'true';
@@ -87,7 +95,7 @@ public class WiresTransactionApprovalController {
                        }   
                    }
                    
-                   if(WiresList.TotalFromAccount__c>25000 && WiresList.TotalFromAccount__c<=100000){
+                   if(WiresList.WireAmount__c>25000 && WiresList.WireAmount__c<=100000){
                        
                        if(grpBmembers.size()>0 || grpCmembers.size()>0 || grpDmembers.size()>0 || grpEmembers.size()>0){
                            isApprovalVisible = 'true';
@@ -96,7 +104,7 @@ public class WiresTransactionApprovalController {
                        }   
                    }
                    
-                   if(WiresList.TotalFromAccount__c>100000 && WiresList.TotalFromAccount__c<=250000){
+                   if(WiresList.WireAmount__c>100000 && WiresList.WireAmount__c<=250000){
                        if(WiresList.Approval_Status__c==WiresConstant.ApprovalStatus_PendingForSecondApproval){
                            if(grpCmembers.size()>0 || grpDmembers.size()>0 || grpEmembers.size()>0){
                                isApprovalVisible = 'true';
@@ -112,7 +120,7 @@ public class WiresTransactionApprovalController {
                        }
                    }
                    
-                   if(WiresList.TotalFromAccount__c>250000 && WiresList.TotalFromAccount__c<=1000000){
+                   if(WiresList.WireAmount__c>250000 && WiresList.WireAmount__c<=1000000){
                        if(WiresList.Approval_Status__c==WiresConstant.ApprovalStatus_PendingForSecondApproval){
                            
                            if(grpDmembers.size()>0 || grpEmembers.size()>0){
@@ -130,7 +138,7 @@ public class WiresTransactionApprovalController {
                        }
                    }
                    
-                   if(WiresList.TotalFromAccount__c>1000000){
+                   if(WiresList.WireAmount__c>1000000){
                        
                        if(WiresList.Approval_Status__c==WiresConstant.ApprovalStatus_PendingForSecondApproval){
                            if(grpEmembers.size()>0){
@@ -166,19 +174,20 @@ public class WiresTransactionApprovalController {
                    
                }else{
                    
-                   if(WiresList.TotalFromAccount__c>0 && WiresList.TotalFromAccount__c<=10000){
+                   if(WiresList.WireAmount__c>0 && WiresList.WireAmount__c<=10000){
                        isApprovalVisible = 'true';
                    }
                    
-                   if(WiresList.TotalFromAccount__c>10000 && WiresList.TotalFromAccount__c<=50000){
-                       if(grpAmembers.size()>0 || grpBmembers.size()>0 || grpCmembers.size()>0 || grpDmembers.size()>0){
-                           isApprovalVisible = 'true';
-                       }else{
-                           isApprovalVisible = 'false';
-                       }
+                   if(WiresList.WireAmount__c>10000 && WiresList.WireAmount__c<=50000){
+                       if(grpAmembers.size()>0 || grpBmembers.size()>0 || grpCmembers.size()>0 
+                          || grpDmembers.size()>0){
+                              isApprovalVisible = 'true';
+                          }else{
+                              isApprovalVisible = 'false';
+                          }
                    }
                    
-                   if(WiresList.TotalFromAccount__c>50000 && WiresList.TotalFromAccount__c<=100000){
+                   if(WiresList.WireAmount__c>50000 && WiresList.WireAmount__c<=100000){
                        if(grpBmembers.size()>0 || grpCmembers.size()>0 || grpDmembers.size()>0){
                            isApprovalVisible = 'true';
                        }else{
@@ -186,7 +195,7 @@ public class WiresTransactionApprovalController {
                        }
                    }
                    
-                   if(WiresList.TotalFromAccount__c>100000 && WiresList.TotalFromAccount__c<=250000){
+                   if(WiresList.WireAmount__c>100000 && WiresList.WireAmount__c<=250000){
                        if(grpCmembers.size()>0 || grpDmembers.size()>0 || grpEmembers.size()>0){
                            isApprovalVisible = 'true';
                        }else{
@@ -194,7 +203,7 @@ public class WiresTransactionApprovalController {
                        }
                    }
                    
-                   if(WiresList.TotalFromAccount__c>250000 && WiresList.TotalFromAccount__c<=500000){
+                   if(WiresList.WireAmount__c>250000 && WiresList.WireAmount__c<=500000){
                        if(grpCmembers.size()>0 || grpDmembers.size()>0 || grpEmembers.size()>0){
                            isApprovalVisible = 'true';
                        }else{
@@ -202,7 +211,7 @@ public class WiresTransactionApprovalController {
                        }
                    }
                    
-                   if(WiresList.TotalFromAccount__c>500000 && WiresList.TotalFromAccount__c<=1500000){
+                   if(WiresList.WireAmount__c>500000 && WiresList.WireAmount__c<=1500000){
                        if(grpDmembers.size()>0 || grpEmembers.size()>0){
                            isApprovalVisible = 'true';
                        }else{
@@ -210,7 +219,7 @@ public class WiresTransactionApprovalController {
                        }
                    }
                    
-                   if(WiresList.TotalFromAccount__c>1500000){
+                   if(WiresList.WireAmount__c>1500000){
                        if(grpEmembers.size()>0){
                            isApprovalVisible = 'true';
                        }else{
@@ -226,6 +235,9 @@ public class WiresTransactionApprovalController {
         strMap.put('ApprovalStatus',WiresList.Approval_Status__c); 
         strMap.put('WiresList',WiresList);  
         strMap.put('WiresBalance','TBD');
+        strMap.put('MinGoodFundAmountCheck',minGoodFundAmountCheck);
+        
+        
         
         string goodFundStatus= WiresList.Good_Funds_Check__c!=null ? WiresList.Good_Funds_Check__c.Split('\\---')[0]:'';
         
@@ -235,7 +247,7 @@ public class WiresTransactionApprovalController {
             || WiresList.Approval_Status__c==WiresConstant.ApprovalStatus_GoodFundsReview) 
            && (goodFundStatus=='' || goodFundStatus!='PASS')) {    
                
-               Map<String,Object> checkWiresFundsResult=checkWiresFunds(WiresList.FromAccount__c, WiresList.Share_ID__c,WiresList.TotalFromAccount__c);
+               Map<String,Object> checkWiresFundsResult=checkWiresFunds(WiresList.FromAccount__c, WiresList.Share_ID__c,WiresList.WireAmount__c);
                
                Object statusCode=checkWiresFundsResult.get('StatusCode');
                Object statusMsg=checkWiresFundsResult.get('StatusMessage');
@@ -272,6 +284,19 @@ public class WiresTransactionApprovalController {
     }
     
     @AuraEnabled
+    public static void ChangeOwner(string wiresId){
+        WIRES_Transaction__c Wires = [SELECT id,Approval_Status__c, FromAccount__c,
+                                      Share_ID__c,Source__c,TotalFromAccount__c,
+                                      WireAmount__c, Description__c, 
+                                      IsAccountOpenfor45Days__c, Member_Name__c,OwnerId
+                                      From WIRES_Transaction__c where Id=:wiresId 
+                                      Limit 1];
+        
+        Wires.OwnerId = UserInfo.getUserId();
+        update Wires;
+    }
+    
+    @AuraEnabled
     public static void CancelTransaction(string WiresRecordId, string Reason){
         
         WIRES_Transaction__c Wires = [SELECT id,Approval_Status__c, FromAccount__c,Share_ID__c,Source__c,TotalFromAccount__c,
@@ -297,6 +322,8 @@ public class WiresTransactionApprovalController {
     
     @AuraEnabled
     public static void ApproveTransaction(string WiresRecordId, string Action, string wiresdetails){
+        
+        System.debug('Call function ApproveTransaction');
         WIRES_Transaction__c WiresObject = (WIRES_Transaction__c)JSON.deserialize(wiresdetails, WIRES_Transaction__c.class);
         
         WIRES_Transaction__c Wires = [SELECT id,Approval_Status__c, FromAccount__c,Share_ID__c,Source__c,TotalFromAccount__c,
@@ -308,6 +335,7 @@ public class WiresTransactionApprovalController {
                                       FlagEmailStablefor30Days__c, FlagHomePhoneStablefor30Days__c, FlagMobilePhoneStablefor30Days__c, FlagWorkPhoneStablefor30Days__c ,
                                       First_Approval_Comment__c,Second_Approval_Comment__c
                                       from WIRES_Transaction__c where id=:WiresRecordId limit 1];
+        
         if(Action == 'Reject'){
             Wires.Approval_Status__c = WiresConstant.ApprovalStatus_Rejected; 
             Wires.Rejected_By__c=UserInfo.getUserId();
@@ -316,7 +344,7 @@ public class WiresTransactionApprovalController {
         }
         
         if(Action == 'Good Funds Review'){
-            Wires.Approval_Status__c = WiresConstant.ApprovalStatus_GoodFundsReview;
+            Wires.Approval_Status__c = WiresConstant.ApprovalStatus_PendingForApproval;
             Wires.AccountStableReview__c = WiresObject.AccountStableReview__c;
             Wires.Available_Balance_Review__c = WiresObject.Available_Balance_Review__c;
             Wires.Review_Reason__c = WiresObject.Review_Reason__c;
@@ -326,6 +354,10 @@ public class WiresTransactionApprovalController {
             Wires.Mobile_Phone_Stable_Review__c = WiresObject.Mobile_Phone_Stable_Review__c;
             Wires.Previous_Wires_Review__c = WiresObject.Previous_Wires_Review__c;
             Wires.Work_Phone_Stable_Review__c = WiresObject.Work_Phone_Stable_Review__c;
+            
+            if(WiresObject.Approval_Status__c == WiresConstant.ApprovalStatus_FraudReview){
+            	Wires.Fraud_Approver__c = UserInfo.getUserId();
+            }
         }
         else if((Wires.Approval_Status__c == WiresConstant.ApprovalStatus_PendingForApproval 
                  || Wires.Approval_Status__c == WiresConstant.ApprovalStatus_PendingForSecondApproval
@@ -334,10 +366,14 @@ public class WiresTransactionApprovalController {
                      
                      if(Wires.Source__c==WiresConstant.Source_Branch){
                          
-                         if(Wires.TotalFromAccount__c>100000 
+                         if(Wires.WireAmount__c>100000 
                             && Wires.Approval_Status__c != WiresConstant.ApprovalStatus_PendingForSecondApproval){
                                 
                                 Wires.Approval_Status__c = WiresConstant.ApprovalStatus_PendingForSecondApproval;
+                                
+                                if(WiresObject.Approval_Status__c == WiresConstant.ApprovalStatus_FraudReview){
+                                    Wires.Fraud_Approver__c = UserInfo.getUserId();
+                                }
                                 
                                 Wires.Approved_by_1st_Approver__c = UserInfo.getUserId();
                                 Wires.Available_Balance_Review__c = WiresObject.Available_Balance_Review__c;
@@ -349,16 +385,15 @@ public class WiresTransactionApprovalController {
                              Wires.Previous_Wires2_Review__c = WiresObject.Previous_Wires_Review__c;
                              Wires.ApprovedDate__c=System.now();
                              
-                             System.debug('In else');
-                             System.debug('Wires.Approval_Status__c:'+Wires.Approval_Status__c);
-                             if(Wires.TotalFromAccount__c>100000 
+                             if(Wires.WireAmount__c>100000 
                                 && Wires.Approval_Status__c == WiresConstant.ApprovalStatus_PendingForSecondApproval){
-                                    
-                                    System.debug('In second arrpoval');
                                     Wires.Approved_by_2nd_Approver__c = UserInfo.getUserId();
                                 }else{
+                                   
+                                    if(WiresObject.Approval_Status__c == WiresConstant.ApprovalStatus_FraudReview){
+                                        Wires.Fraud_Approver__c = UserInfo.getUserId();
+                                    }
                                     
-                                    System.debug('In fisrt approval');
                                     Wires.Approved_by_1st_Approver__c = UserInfo.getUserId();
                                 }
                              
@@ -369,9 +404,13 @@ public class WiresTransactionApprovalController {
                          wires.ApprovedDate__c=System.now();
                          Wires.Available_Balance_Review__c = WiresObject.Available_Balance_Review__c;
                          Wires.Previous_Wires_Review__c = WiresObject.Previous_Wires_Review__c;
+                         
+                         if(WiresObject.Approval_Status__c == WiresConstant.ApprovalStatus_FraudReview){
+                             Wires.Fraud_Approver__c = UserInfo.getUserId();
+                         }
+                         
                          wires.Approved_by_1st_Approver__c = UserInfo.getUserId();
                      }
-                     
                      
                      Wires.AccountStableReview__c = WiresObject.AccountStableReview__c;
                      Wires.Review_Reason__c = WiresObject.Review_Reason__c;
@@ -461,8 +500,63 @@ public class WiresTransactionApprovalController {
     }
     
     
+    public static void SetIdentityVerificationUsed(Set<Id> id){
+        List<WIRES_Transaction__c> wireTransactions = [SELECT Id,Name,Approval_Status__c,ToAccountName__c,ToAccoutId__c,
+                                                       Status__c, FromAccount__c,TotalFromAccount__c,WireAmount__c,
+                                                       ToAccoutId__r.Recipient_AccountNumber__c,SendOn__c,Source__c,
+                                                       ToAccoutId__r.BankName__c,ToAccoutId__r.RoutingNumber__c,
+                                                       AccountStableReview__c,EmailStableReview__c,Member_Name__c,
+                                                       Identity_Verification_Used__c,Home_Phone_Stable_Review__c,
+                                                       Mobile_Phone_Stable_Review__c,Work_Phone_Stable_Review__c,
+                                                       FlagAccountOpenfor45Days__c,FlagEmailStablefor30Days__c,
+                                                       FlagHomePhoneStablefor30Days__c,FlagMobilePhoneStablefor30Days__c,
+                                                       FlagWorkPhoneStablefor30Days__c,Share_ID__c
+                                                       FROM WIRES_Transaction__c WHERE id=:id];
+        
+        List<WIRES_Transaction__c> wiresToUpdate=new List<WIRES_Transaction__c>();
+        
+        for(WIRES_Transaction__c wt:wireTransactions){  
+            if(wt.WireAmount__c>50000){
+                wt.Identity_Verification_Used__c='Docusign ID Verification';
+                wiresToUpdate.add(wt);
+            }
+        }
+        
+        update wiresToUpdate;
+    }
+    
+    public static void SetWiresStatusToDSDeclined(Set<Id> id){
+        List<WIRES_Transaction__c> wireTransactions = [SELECT Id,Name,Approval_Status__c,ToAccountName__c,ToAccoutId__c,
+                                                       Status__c, FromAccount__c,TotalFromAccount__c,WireAmount__c,
+                                                       ToAccoutId__r.Recipient_AccountNumber__c,SendOn__c,Source__c,
+                                                       ToAccoutId__r.BankName__c,ToAccoutId__r.RoutingNumber__c,
+                                                       AccountStableReview__c,EmailStableReview__c,Member_Name__c,
+                                                       Identity_Verification_Used__c,Home_Phone_Stable_Review__c,
+                                                       Mobile_Phone_Stable_Review__c,Work_Phone_Stable_Review__c,
+                                                       FlagAccountOpenfor45Days__c,FlagEmailStablefor30Days__c,
+                                                       FlagHomePhoneStablefor30Days__c,FlagMobilePhoneStablefor30Days__c,
+                                                       FlagWorkPhoneStablefor30Days__c,Share_ID__c
+                                                       FROM WIRES_Transaction__c WHERE id=:id];
+        
+        List<WIRES_Transaction__c> wiresToUpdate=new List<WIRES_Transaction__c>();
+        
+        for(WIRES_Transaction__c wt:wireTransactions){  
+                wt.Approval_Status__c=WiresConstant.ApprovalStatus_DSDeclined;
+                wiresToUpdate.add(wt);
+        }
+        
+        update wiresToUpdate;
+    }
+    
     @future(callout=true)
     public static void CheckRedFlgsAndUpdateStatus(Set<Id> id){
+
+		decimal minGoodFundAmountCheck=0;        
+        Wires_Good_Fund_Limit__c goodFundLimit = Wires_Good_Fund_Limit__c.getValues('Min');
+        
+        if(goodFundLimit.Amount__c!=null){
+            minGoodFundAmountCheck=goodFundLimit.Amount__c;
+        }
         
         System.debug('In CheckRedFlgsAndUpdateStatus');
         string apiURL='';
@@ -471,6 +565,7 @@ public class WiresTransactionApprovalController {
         if(api.URL__c != null){
             apiURL = api.URL__c;
         }
+        
         
         List<WIRES_Transaction__c> wireTransactions = [SELECT Id,Name,Approval_Status__c,ToAccountName__c,ToAccoutId__c,
                                                        Status__c, FromAccount__c,TotalFromAccount__c,WireAmount__c,
@@ -489,7 +584,7 @@ public class WiresTransactionApprovalController {
         List<Case> fraudCases=new List<Case>();
         for(WIRES_Transaction__c wt:wireTransactions){
             
-            if(wt.TotalFromAccount__c>250000){
+            if(wt.WireAmount__c>250000){
                 
                 System.debug('In Greater than 25k');
                 wt.Approval_Status__c=WiresConstant.ApprovalStatus_FraudReview;
@@ -502,7 +597,7 @@ public class WiresTransactionApprovalController {
                 case1.Tertiary_Category__c='Potential Fraud';
                 case1.Description= 'Wire Name: '+wt.Name+'\n'
                     +'Wire Amount: '+wt.WireAmount__c+'\n'
-                    +'Send On date: '+String.valueof(wt.SendOn__c).removeEnd(' 00:00:00')+'\n'
+                    +'Send On Date: '+String.valueof(wt.SendOn__c).removeEnd(' 00:00:00')+'\n'
                     +'Source: '+wt.Source__c+'\n'
                     +'Recipient Bank Name: '+wt.ToAccoutId__r.BankName__c+'\n'
                     +'Recipient Bank ABA Number: '+wt.ToAccoutId__r.RoutingNumber__c+'\n'
@@ -510,12 +605,11 @@ public class WiresTransactionApprovalController {
                     +'Approval Status: '+wt.Approval_Status__c+'\n'
                     +'Member Name: '+wt.Member_Name__c;
                 
-                    if(listAccountDetails.size()>0){
-                        case1.Account_Number__c=listAccountDetails[0].Id;
-                    }
-                insert case1;
-                System.debug('Case1 Id:'+case1.Id);
-                wt.Case__c=case1.Id;
+                if(listAccountDetails.size()>0){
+                    case1.Account_Number__c=listAccountDetails[0].Id;
+                }
+                //insert case1;
+                //wt.Case__c=case1.Id;
                 
                 wiresToUpdate.add(wt);
             }else{
@@ -524,8 +618,8 @@ public class WiresTransactionApprovalController {
                 Object statusMsg='';
                 boolean isGoodFundCheck=false;
                 Map<String,Object> results = new Map<String,Object>();
-                if(wt.TotalFromAccount__c>10000){
-                    Map<String,Object> checkWiresFundsResult=checkWiresFunds(wt.FromAccount__c, wt.Share_ID__c,wt.TotalFromAccount__c);
+                if(wt.WireAmount__c>minGoodFundAmountCheck){
+                    Map<String,Object> checkWiresFundsResult=checkWiresFunds(wt.FromAccount__c, wt.Share_ID__c,wt.WireAmount__c);
                     if(checkWiresFundsResult.size() > 0){
                         isGoodFundCheck=true;
                         
@@ -548,10 +642,10 @@ public class WiresTransactionApprovalController {
                    && wt.FlagWorkPhoneStablefor30Days__c){
                        
                        if(isGoodFundCheck==true && statusCode<=0){
-                           wt.Approval_Status__c = WiresConstant.ApprovalStatus_GoodFundsReview;
+                           wt.Approval_Status__c = WiresConstant.ApprovalStatus_PendingForApproval;
                            wt.Good_Funds_Check__c='FAIL---'+statusMsg.toString();
                            wiresToUpdate.add(wt);
-                       }else if(isGoodFundCheck==true && statusCode>0 && wt.TotalFromAccount__c>250000 ){
+                       }else if(isGoodFundCheck==true && statusCode>0 && wt.WireAmount__c>250000 ){
                            wt.Approval_Status__c = WiresConstant.ApprovalStatus_PendingForApproval;
                            wt.Good_Funds_Check__c='PASS---'+statusMsg.toString();
                            wiresToUpdate.add(wt);
@@ -596,7 +690,7 @@ public class WiresTransactionApprovalController {
         List<WIRES_Transaction__c> wiresToUpdate=new List<WIRES_Transaction__c>();
         
         for(WIRES_Transaction__c wt:wireTransactions){
-            Map<String,Object> checkWiresFundsResult=checkWiresFunds(wt.FromAccount__c, wt.Share_ID__c,wt.TotalFromAccount__c);
+            Map<String,Object> checkWiresFundsResult=checkWiresFunds(wt.FromAccount__c, wt.Share_ID__c,wt.WireAmount__c);
             if(checkWiresFundsResult.size() > 0){
                 isGoodFundCheck=true;
                 
@@ -614,7 +708,7 @@ public class WiresTransactionApprovalController {
             }
             
             if(isGoodFundCheck==true && (statusCode<=0 || statusCode==null)){
-                wt.Approval_Status__c = WiresConstant.ApprovalStatus_GoodFundsReview;
+                wt.Approval_Status__c = WiresConstant.ApprovalStatus_PendingForApproval;
                 wt.Current_Reviewer_Modified_Date__c=DateTime.now();
                 wt.Current_Reviewer__c=wt.First_Reviewer__c;
                 wiresToUpdate.add(wt);
@@ -624,7 +718,7 @@ public class WiresTransactionApprovalController {
                 if(users.size()>0){
                     emails.add(users[0].Email);
                 }
-                WiresEmailController.SendApprovalNotification(wt.Id,emails,wt.Name,wt.TotalFromAccount__c,wt.Source__c,wt.Has_Additional_Documents__c);
+                WiresEmailController.SendApprovalNotification(wt.Id,emails,wt.Name,wt.WireAmount__c,wt.Source__c,wt.Has_Additional_Documents__c);
             }else if(isGoodFundCheck==true && statusCode>0){
                 wt.Approval_Status__c = WiresConstant.ApprovalStatus_PendingForApproval;
                 wt.Current_Reviewer_Modified_Date__c=DateTime.now();
@@ -636,7 +730,7 @@ public class WiresTransactionApprovalController {
                 if(users.size()>0){
                     emails.add(users[0].Email);
                 }
-                WiresEmailController.SendApprovalNotification(wt.Id,emails,wt.Name,wt.TotalFromAccount__c,wt.Source__c,wt.Has_Additional_Documents__c);
+                WiresEmailController.SendApprovalNotification(wt.Id,emails,wt.Name,wt.WireAmount__c,wt.Source__c,wt.Has_Additional_Documents__c);
             }
             
         }
@@ -650,7 +744,8 @@ public class WiresTransactionApprovalController {
     public static void SendToFraud(Id id){
         WIRES_Transaction__c wireTransaction = [SELECT id,Approval_Status__c                                
                                                 FROM WIRES_Transaction__c WHERE id=:id limit 1];
-        wireTransaction.Approval_Status__c=WiresConstant.ApprovalStatus_FraudReview;
+        
+        wireTransaction.Approval_Status__c=WiresConstant.ApprovalStatus_FraudRejected;
         update wireTransaction;
     }
     
@@ -658,7 +753,7 @@ public class WiresTransactionApprovalController {
     public static void SendToGoodFundCheckFailed(Id id){
         WIRES_Transaction__c wireTransaction = [SELECT id,Approval_Status__c                                
                                                 FROM WIRES_Transaction__c WHERE id=:id limit 1];
-        wireTransaction.Approval_Status__c=WiresConstant.ApprovalStatus_GoodFundsReview;
+        wireTransaction.Approval_Status__c=WiresConstant.ApprovalStatus_PendingForApproval;
         update wireTransaction;
     }
     
@@ -680,12 +775,26 @@ public class WiresTransactionApprovalController {
         List<WIRES_Transaction__c> wireTransactions = [SELECT id,Approval_Status__c,ToAccountName__c,ToAccoutId__c,
                                                        Status__c, FromAccount__c,TotalFromAccount__c,WireAmount__c,
                                                        ToAccoutId__r.Recipient_AccountNumber__c,
-                                                       ToAccoutId__r.BankName__c
+                                                       ToAccoutId__r.BankName__c,Source__c
                                                        from WIRES_Transaction__c where id=:id];
         
         List<Messaging.SingleEmailMessage> mails = new List<Messaging.SingleEmailMessage>();
         
         for(WIRES_Transaction__c wt:wireTransactions){
+            
+            Wires_Progress_Email_Test__c testEmail=Wires_Progress_Email_Test__c.getValues('Test');
+            String userEmail = testEmail.Email__c;
+            
+            WiresCutoffTimings__c wiresCutoffTimings;
+            if(wt.Source__c==WiresConstant.Source_Branch)
+            	wiresCutoffTimings=WiresCutoffTimings__c.getValues('Branch');
+            else
+            	wiresCutoffTimings=WiresCutoffTimings__c.getValues('Online');
+            
+            string cutoffTime='';
+            if(wiresCutoffTimings!=null){
+            	cutoffTime=getCutoffTimeIn12HourAMPMFormat(string.valueOf(wiresCutoffTimings.CutoffTime__c));
+            }
             
             Person_Account__c paPrimary = [SELECT Id,PersonID__c,
                                            Account_Number__c, Account_Number__r.RecType__c,
@@ -734,7 +843,8 @@ public class WiresTransactionApprovalController {
                 string body = listEmailTemplate[0].HtmlValue;
                 body=body.replace('{Name}', paPrimary.PersonID__r.Name);
                 body=body.replace('{BankName__c}', wt.ToAccoutId__r.BankName__c);
-                body=body.replace('{TotalFromAccount__c}',string.valueOf(wt.TotalFromAccount__c));
+                body=body.replace('{TotalFromAccount__c}',string.valueOf(wt.WireAmount__c));
+                body=body.replace('{cutofftime}',cutoffTime);
                 
                 mail.setHtmlBody(body);
                 mail.setOrgWideEmailAddressId(listAdd[0].Id);
@@ -815,7 +925,7 @@ public class WiresTransactionApprovalController {
                 string body = listEmailTemplate[0].HtmlValue;
                 body=body.replace('{Name}', paPrimary.PersonID__r.Name);
                 body=body.replace('{BankName__c}', wt.ToAccoutId__r.BankName__c);
-                body=body.replace('{TotalFromAccount__c}',string.valueOf(wt.TotalFromAccount__c));
+                body=body.replace('{TotalFromAccount__c}',string.valueOf(wt.WireAmount__c));
                 
                 mail.setHtmlBody(body);
                 mail.setOrgWideEmailAddressId(listAdd[0].Id);
@@ -890,4 +1000,24 @@ public class WiresTransactionApprovalController {
         }
         return results;
     }
+    
+    private static string getCutoffTimeIn12HourAMPMFormat(string cutofftime) {
+    	    cutofftime=cutofftime.replace('.',':');
+        	List<String> cutoffTimesList =cutofftime.split(':');
+        	List<String> result=new List<string>();
+        	if (cutoffTimesList.size() > 1) { // If time format correct
+    				string param0 =string.valueOf(math.mod(integer.valueOf(cutoffTimesList[0]),12)); // Adjust hours
+					result.add(param0);
+                	string param1=':';
+                	result.add(param1);
+                    string param2=cutoffTimesList[1];
+                	result.add(param2);
+                	string param3=integer.valueOf(cutoffTimesList[0]) < 12 ? ' AM' : ' PM'; // Set AM/PM
+                	result.add(param3);
+  			}
+
+			cutofftime= String.join(result,'');
+        	return cutofftime;
+    }
+    
 }

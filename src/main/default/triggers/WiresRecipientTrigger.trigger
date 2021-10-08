@@ -13,7 +13,7 @@ trigger WiresRecipientTrigger on WIRES_Recipient__c (after insert) {
     List<WIRES_Recipient__c> wiresToUpdate = [select id,Chevron_AccountNumber__c from WIRES_Recipient__c where id IN: Ids];
     if(wiresToUpdate.size() > 0){
         for (WIRES_Recipient__c c : wiresToUpdate) {	
-            c.ExternalID__c = c.Id;
+            //c.ExternalID__c = c.Id;
             
             List<Person_Account__c> paPrimary = [SELECT Id,PersonID__c,
                                                  Account_Number__c, Account_Number__r.RecType__c,

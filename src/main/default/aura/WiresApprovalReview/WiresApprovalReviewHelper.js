@@ -1,6 +1,8 @@
 ({
     
     ApproveTransactions: function(component, event,helper, recordId, actionType,isFromGoodFundCheck) {
+        
+        debugger;
         var action = component.get("c.ApproveTransaction");
         var wires = JSON.stringify(component.get("v.WiresObject"))
         action.setParams({"WiresRecordId": recordId, "Action": actionType,
@@ -43,7 +45,7 @@
         action.setCallback(this, function (response) {
             var status = response.getState();            
             if (component.isValid() && status === "SUCCESS") {
-                alert('Transaction has been sent to fraud review.');
+                alert('Transaction has been Fraud Rejected.');
                 location.reload();
             }            
         });	
