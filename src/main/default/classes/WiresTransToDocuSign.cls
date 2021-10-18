@@ -608,7 +608,7 @@ public class WiresTransToDocuSign{
 
 			//------------------------------------------Sending Envelope -----------------------------------------//
             string EnvelopeId = wt.DocuSignId__c;
-			endPointURL3 = 'https://'+endpoint+'/restapi/v2.1/accounts/'+accountID+'/envelopes/'+EnvelopeId + '?resend_envelope=true' ;//+ '/recipients';
+			endPointURL3 = 'https://'+endpoint+'/restapi/v2.1/accounts/' + accountID + '/envelopes/' + EnvelopeId + '/recipients?resend_envelope=true';//'https://'+endpoint+'/restapi/v2.1/accounts/'+accountID + '/identity_verification';//'https://'+endpoint+'/restapi/v2.1/accounts/'+accountID+'/envelopes/'+EnvelopeId + '?resend_envelope=true' ;//+ '/recipients';
 			req3.setEndpoint(endPointURL3);
 			req3.setMethod('PUT');
 			req3.setHeader('X-DocuSign-Authentication', authorizationHeader);
@@ -617,21 +617,21 @@ public class WiresTransToDocuSign{
 			req3.setHeader('Content-Disposition', 'form-data');
 			req3.setTimeout(10000);
 			json3 = '{"status":"sent"' + '}';
-			req3.setBody(json3);
+			//req3.setBody(json3);
 			if (!Test.isRunningTest()){
 				res3 = http2.send(req3);
 				system.debug('DocuSign Response' + res3.getBody());
 			}
 
 			if(wt.Docusign_IDV_Failure__c){
-			    wt.Docusign_Re_sent__c = true;
+			   // wt.Docusign_Re_sent__c = true;
 			}
-            WireTransToUpdate.add(wt);
+            //WireTransToUpdate.add(wt);
 		}
 
 
 		if(WireTransToUpdate.size() > 0){
-		    update WireTransToUpdate;
+		    //update WireTransToUpdate;
 		}
 	}
 

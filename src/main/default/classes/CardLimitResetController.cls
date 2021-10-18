@@ -353,7 +353,7 @@ public class CardLimitResetController {
 
         if(objType == Account_Details__c.sObjectType){
 
-            /*if(recordId != null){
+            if(recordId != null){
                 AccountNumber = [Select id, name from account_details__c where id=: recordId].Name;
             }
             else{
@@ -362,7 +362,7 @@ public class CardLimitResetController {
             
             system.debug('AccountNumber'+AccountNumber);
 
-            pa =[SELECT id, name,PersonID__c,Account_Number__c,PersonID__r.name 
+            /*pa =[SELECT id, name,PersonID__c,Account_Number__c,PersonID__r.name 
                     from Person_Account__c where PersonID__r.firstname like: firstname
                     AND PersonID__r.LASTNAME like: lastname
                     AND Account_Number__r.name =: AccountNumber limit 1];
