@@ -3944,6 +3944,7 @@ If 'IsUserSessionLoaded' parameter value is true its brings the data based on th
         system.debug('getDataForReload  called-------##' );
         system.debug('IsUserSessionLoaded##' + IsUserSessionLoaded);
         system.debug('memberid##' + memberid);
+         system.debug('AccountNumberInput##' + AccountNumberInput);
         String CurrentUser = UserInfo.getUserId();
         integer OTPAvailable = 0;
         integer PublicWalletAvailable = 0;
@@ -3989,12 +3990,12 @@ If 'IsUserSessionLoaded' parameter value is true its brings the data based on th
         system.debug('MemberType##'+ MemberType);
         ScoringModel = GetScoringModelData(MemberType);
         system.debug('ScoringModel##'+ ScoringModel);
-       
-            Account_Details__c acc_Detail = [SELECT Id,Name,RecType__c,High_Value_Flag__c  FROM Account_Details__c WHERE Name =:AccountNumberInput AND RecType__c= 'ACCT']; 
-       
-                MemberHighFlagValue = acc_Detail.High_Value_Flag__c.intValue();
-       
-        AuthLogMap.put('MemberHighFlagValue',MemberHighFlagValue);  
+        if(String.isNotBlank(AccountNumberInput)){
+            Account_Details__c acc_Detail = [SELECT Id,Name,RecType__c,High_Value_Flag__c  FROM Account_Details__c WHERE Name =:AccountNumberInput AND RecType__c= 'ACCT'];       
+            MemberHighFlagValue = acc_Detail.High_Value_Flag__c.intValue();       
+        	AuthLogMap.put('MemberHighFlagValue',MemberHighFlagValue); 
+        }
+             
         
         RecordType OOWRec = GetRecordTypeData('Authenticated_Log__c', 'OOW Execution Log');  
         if(IsUserSessionLoaded == true){
