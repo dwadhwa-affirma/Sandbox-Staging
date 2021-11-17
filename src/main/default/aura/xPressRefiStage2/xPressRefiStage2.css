@@ -143,6 +143,11 @@
 .THIS div#cpcacd46e845 {
 	border-radius: 10px;
 }
+
+.THIS .clsEmail{    
+    margin-bottom: 5%;
+    width: 25%;
+}
 @media (max-width:1250px){
     .THIS#stage2 {width:90%;}
 }

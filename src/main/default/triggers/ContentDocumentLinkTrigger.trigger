@@ -37,40 +37,9 @@ trigger ContentDocumentLinkTrigger on ContentDocumentLink(before insert, after i
 			if (objType == EFT__c.sObjectType){
 				parent.add(d.LinkedEntityId);
 				CDLIds.add(d.id);
-			} 
-			// else if (objType == dsfs__DocuSign_Status__c.sObjectType){
-			// 	parentDocusignStatus.add(d.LinkedEntityId);
-			// 	CDLIds.add(d.id);
-			// 	system.debug('parentDocusignStatus - ' + parentDocusignStatus);	
-			// 	system.debug('CDLIds - ' + CDLIds);				
-			// }
+			}		
+        }
 
-		}
-
-		// if (parentDocusignStatus.size() > 0){
-		// 	List<dsfs__DocuSign_Status__c> listDocusignStatus = [select id, dsfs__Case__c, dsfs__DocuSign_Envelope_ID__c
-		// 	                                                     from dsfs__DocuSign_Status__c
-		// 	                                                     where id in :parentDocusignStatus];
-		// 	system.debug('listDocusignStatus - ' + listDocusignStatus);
-		// 	for (dsfs__DocuSign_Status__c ds : listDocusignStatus){
-		// 		parentDocusignEnvelope.add(ds.dsfs__DocuSign_Envelope_ID__c);
-		// 	}
-		// 	system.debug('parentDocusignEnvelope - ' + parentDocusignEnvelope);
-		// 	if (parentDocusignEnvelope.size() > 0){
-		// 		List<EFT__C> listUpdateEFT = [SELECT id, Case__c, Update_DocuSignId__c
-		// 		                              from EFT__c
-		// 		                              where Update_DocuSignId__c IN :parentDocusignEnvelope];
-		// 		system.debug('listUpdateEFT - ' + listUpdateEFT);
-		// 		if (listUpdateEFT.size() > 0){
-		// 			for (EFT__c e : listUpdateEFT){
-		// 				parent.add(e.Id);
-						
-		// 			}
-		// 		}
-		// 	}
-
-
-		// }
 		system.debug('parent - ' + parent);
 		if (parent.size() > 0){
 			EFTToDocuSign.docusignAttachtoCase(parent);

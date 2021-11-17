@@ -146,6 +146,7 @@ public class EFTToSyimtar{
 
 			Payee = e.Routing_Number__c.leftPad(10, '0');
 			Reference = e.Account_Number__c;
+			AccountNumber = e.Member_Account__r.Name;
 			if (e.LoanCode__c != null){
 				LoanCode = e.LoanCode__c;
 			} else{
@@ -158,7 +159,7 @@ public class EFTToSyimtar{
 				}
 			}
 			system.debug('MatchID3' + MatchID3);
-			AccountNumber = e.Member_Account__r.Name;
+			
 
 
 			if (e.Locators_To_Expire__c != null && e.Locators_To_Expire__c != ''){
@@ -475,6 +476,7 @@ public class EFTToSyimtar{
 			Payee = e.Routing_Number__c.leftPad(10, '0');
 			Reference = e.Account_Number__c;
 			//LoanCode = e.LoanCode__c;
+			AccountNumber = e.Member_Account__r.Name;
 			if (e.LoanCode__c != null){
 				LoanCode = e.LoanCode__c;
 			} else{
@@ -487,7 +489,7 @@ public class EFTToSyimtar{
 				}
 			}
 			system.debug('Reference' + Reference);
-			AccountNumber = e.Member_Account__r.Name;
+			
 
 			if (!isExpired){
 				/*-----------In Case of Multiple EFTs, First Expire All EFTS----------------*/
@@ -824,6 +826,14 @@ public class EFTToSyimtar{
 					string casedesc = e.Case__r.Description + '\n \n Old ACH Values \n ABA/Routing#: ' + OldPayee + '\n' + 'Funding FI: ' + OldMatchID3 + '\n' + 'Account Number: ' + OldReference + '\n' + 'Type: ' + OldAmountCode + '\n' + 'Payment Amount: ' + OldPostAmount + '\n' + 'Additional Payment Amount: ' + OldAlternatePayment + '\n' + 'Effective Date: ' + OldEffectiveDate + '\n' + 'Frequency: ' + OldFrequency + '\n' + 'Day of Month: ' + OldDay1 + '\n \n ACH DocuSign Values \n Type: ' + e.Type__c + '\n' + 'Funding FI: ' + e.Bank_Name__c + '\n' + 'ABA/Routing#: ' + e.Routing_Number__c + '\n' + 'Account Number: ' + e.Account_Number__c + '\n' + 'Additional Payment Amount: ' + e.Alternate_Amount__c + '\n' + '\n' + 'EFT Locator: ' + EftLocator;
 					CaseIdsToUpdate.put(e.Case__c, casedesc);
 				}
+
+				/*-----------Create EFT Note---------------*/
+				if (!isExpired)
+					CreateEFTFormNote(AccountNumber, IDType.leftPad(2, '0'), ID, string.valueof(e.Alternate_Amount__c + e.Payment_Amount__c), 'N');
+				else{
+					CreateEFTFormNote(AccountNumber, IDType.leftPad(2, '0'), ID, string.valueof(e.Alternate_Amount__c + e.Payment_Amount__c), 'Y');
+				}
+				
 				/*-----------Create EFT in SF if Expire and Create EFT---------------*/
 				if (resultEFTLocator != '' && resultEFTLocator != null && EftLocator != resultEFTLocator){
 					e.expired__c = true;
@@ -851,12 +861,7 @@ public class EFTToSyimtar{
 
 
 			EFTRecordsToUpdate.add(e);
-			/*-----------Create EFT Note---------------*/
-			if (!isExpired)
-				CreateEFTFormNote(AccountNumber, IDType.leftPad(2, '0'), ID, string.valueof(e.Alternate_Amount__c + e.Payment_Amount__c), 'N');
-			else{
-				CreateEFTFormNote(AccountNumber, IDType.leftPad(2, '0'), ID, string.valueof(e.Alternate_Amount__c + e.Payment_Amount__c), 'Y');
-			}
+			
 		}
 		//}
 		update EFTRecordsToUpdate;

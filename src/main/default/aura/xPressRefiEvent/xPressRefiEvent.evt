@@ -3,5 +3,6 @@
     <aura:attribute name="isLoanPrimaryResidence" type="Boolean" />  
     <aura:attribute name="xPressRefiRecord" type="xPressRefi__c"/> 
     <aura:attribute name="IsFeeCollectionVisible" type="Boolean" default="false" />
+    <aura:attribute name="isMultipleEmailIds" type="Boolean" default="false" />
     <aura:attribute name="MembershipAddressDetails" type="Map" default="{ MembershipAddress1: '', MembershipAddress2: '', MembershipCity : '', MembershipState : '', MembershipZip : '' }" /> 
 </aura:event>

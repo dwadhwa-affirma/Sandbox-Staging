@@ -8,11 +8,13 @@ trigger ContentDocumentLinkUpdate on ContentDocumentLink (before insert,after up
     Map<Id, ContentDocument> cs = new Map<Id, ContentDocument>(); 
     Map<id,Solar_Loans__c> sl = new Map<id,Solar_Loans__c >();
     Map<id,xPressRefi__c> xl = new Map<id,xPressRefi__c >();
+    Map<id,WIRES_Transaction__c> wl = new Map<id,WIRES_Transaction__c >();
     Map<ID,ID> cv = new Map<ID,ID>();
     Map<Id,ContentVersion> cvNewFile = new Map<ID,ContentVersion>();
     List<Solar_Loans__c> slcountUpdate = new List<Solar_Loans__c>();
     List<Solar_Loans__c> slSignCardUpdate = new List<Solar_Loans__c>();
     List<xPressRefi_Document__c> xPressRefiAttachmentsList  = new List<xPressRefi_Document__c>();
+    List<Wires_Document__c> wiresAttachmentsList  = new List<Wires_Document__c>();
     
     String[] strArr;
     String FirstPart;
@@ -71,6 +73,10 @@ trigger ContentDocumentLinkUpdate on ContentDocumentLink (before insert,after up
 
     For(xPressRefi__c xrefi : [select id, Member_Number__c from xPressRefi__c where id in: parent]){
         xl.put(xrefi.id, xrefi);
+    }
+
+    For(WIRES_Transaction__c wt : [select id, FromAccount__c from WIRES_Transaction__c where id in: parent]){
+        wl.put(wt.id, wt);
     }
     
     For(ContentVersion contentVersion : [select id,Title,NewFile__c,VersionData,ContentDocumentId from ContentVersion where ContentDocumentId in: listCD]){
@@ -160,6 +166,27 @@ trigger ContentDocumentLinkUpdate on ContentDocumentLink (before insert,after up
                 
                 xPressRefiAttachmentsList.add(xrefiDocumentObj);  
             }  
+            //-------------------------Start - STRY0011703: Online Domestic Wires | Docusign wire transfer form---------------------------------//
+            if(objType == WIRES_Transaction__c.sObjectType){
+                String Title;
+                Title = cs.get(c.ContentDocumentId).title;
+                Wires_Document__c wiresDocumentObj = new Wires_Document__c();
+                wiresDocumentObj.Attachment_Id__c = cs.get(c.ContentDocumentId).id;
+                
+                //system.debug(wiresDocumentObj.Name);
+                wiresDocumentObj.Member_Number__c = wl.get(c.LinkedEntityId).FromAccount__c;
+                wiresDocumentObj.IsMovedToOnBase__c = false;
+                
+                
+                wiresDocumentObj.Document_Type__c = 'Wire Transfers';
+                wiresDocumentObj.Document_Name__c = cs.get(c.ContentDocumentId).title;
+                wiresDocumentObj.Wires__c = c.LinkedEntityId;
+                //wiresDocumentObj.Attachment_Owner__c = cs.get(c.ContentDocumentId).OwnerId;
+                wiresDocumentObj.Attachment_Created_On__c = cs.get(c.ContentDocumentId).CreatedDate;
+                //wiresDocumentObj.NewFile__c = cvNewFile.get(c.ContentDocumentId).NewFile__c;
+                
+                wiresAttachmentsList.add(wiresDocumentObj);  
+            }  
             //-------------------------Start - CRM-1929---------------------------------//
 
             if(objType == dsfs__DocuSign_Status__c.sObjectType){
@@ -223,6 +250,7 @@ trigger ContentDocumentLinkUpdate on ContentDocumentLink (before insert,after up
     
     insert (solarLoanAttachmentsList);
     insert (xPressRefiAttachmentsList);
+    insert (wiresAttachmentsList);
     
     // ----------------------------End Adding an Attachment detail in "Solar Loan Document" object--------------------------------------------------//
     

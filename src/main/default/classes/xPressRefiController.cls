@@ -96,7 +96,7 @@ public class xPressRefiController{
 					string Workphone =  (string)localAcc.get('workphone');	
 					System.debug('HomePhone' +  Homephone + ', Mobilephone: ' + Mobilephone + ',Workphone: ' + Workphone + ' Email:' + (string)localAcc.get('email'));					
 					temp.MembershipPhone = String.isBlank(Homephone) ? (String.isBlank(Mobilephone) ? Workphone : Mobilephone) : Homephone;
-					System.debug('temp ....' + temp);
+					System.debug('temp.MemberName ....' + temp.MemberName);
 					System.debug('temp.MembershipPhone ....' +  temp.MembershipPhone);					
 					resultList.add(temp);
 				}
@@ -243,6 +243,8 @@ public class xPressRefiController{
 			}
 		}
 
+		set<string> EmailIds = new set<string>();
+
 		resultMap.put('xRefiEligibleLoanIds', xRefiEligibleLoanIds);
 
 		map<string, string> mapMembershipAddress1 = new map<string, string>();
@@ -252,6 +254,7 @@ public class xPressRefiController{
 		map<string, string> mapMembershipZip = new map<string, string>();
 		map<string, string> mapMembershipEmail = new map<string, string>();
 		map<string, string> mapMembershipPhone = new map<string, string>();
+
 		for (MemberAuthrizationWrapperObject r : resultList){
 			//if (r.Type == '0'){
 			mapMembershipAddress1.put(r.AccountNumber, r.MembershipAddress1);
@@ -259,11 +262,15 @@ public class xPressRefiController{
 			mapMembershipCity.put(r.AccountNumber, r.MembershipCity);
 			mapMembershipState.put(r.AccountNumber, r.MembershipState);
 			mapMembershipZip.put(r.AccountNumber, r.MembershipZip);
-			mapMembershipEmail.put(r.AccountNumber, r.MembershipEmail);
+			if(String.isNotBlank(r.MembershipEmail)){
+				mapMembershipEmail.put(r.AccountNumber, r.MembershipEmail);
+				EmailIds.add(r.MembershipEmail);
+			}				
 			mapMembershipPhone.put(r.AccountNumber, r.MembershipPhone);
 			//}
 		}
-		system.debug('mapMembershipAddress1==' + mapMembershipAddress1);
+
+		system.debug('mapMembershipEmail==' + mapMembershipEmail);
 		for (xPressRefi__c xr : xPressrecordList){
 			system.debug('mapMembershipAddress1==' + mapMembershipAddress1);
 			xr.Mailing_Address_1__c = mapMembershipAddress1.get(xr.Member_Number__c);
@@ -271,9 +278,20 @@ public class xPressRefiController{
 			xr.Mailing_Address_City__c = mapMembershipCity.get(xr.Member_Number__c);
 			xr.Mailing_State__c = mapMembershipState.get(xr.Member_Number__c);
 			xr.Mailing_Address_Zip__c = mapMembershipZip.get(xr.Member_Number__c);
-			xr.Member_Email__c = mapMembershipEmail.get(xr.Member_Number__c);
+			if(String.isNotBlank(mapMembershipEmail.get(xr.Member_Number__c)) != null)			
+				xr.Member_Email__c = mapMembershipEmail.get(xr.Member_Number__c);
+			if(EmailIds.size() == 1)
+				xr.Member_Email__c =new List<String>(EmailIds).get(0);
 			xr.Member_Phone__c = mapMembershipPhone.get(xr.Member_Number__c);
 		}
+
+		resultMap.put('EmailIds', EmailIds);
+		if(EmailIds.size() > 1)
+			resultMap.put('isMultipleEmailIds', true);
+		else
+			resultMap.put('isMultipleEmailIds', false);
+		
+		
 
 		XpressRefiWrapperObject xpressrefiobject = new XpressRefiWrapperObject();
 		xpressrefiobject.xPressRefiList = xPressrecordList;

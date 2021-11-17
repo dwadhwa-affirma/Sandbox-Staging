@@ -2,31 +2,44 @@ trigger WIRESTransactionTrigger on WIRES_Transaction__c (before insert,before up
     
     System.debug('In the trigger');
     
+    
     //------------------------------------------------------------------Before Update  ------------------------------------------------------------------------------//
     
     if(Trigger.isBefore && Trigger.isUpdate){
         for(Integer i=0; i<trigger.new.size(); i++){
-            
-            if((trigger.old[i].Current_Reviewer__c != trigger.new[i].Current_Reviewer__c) || 
-               (trigger.old[i].Current_Second_Reviewer__c != trigger.new[i].Current_Second_Reviewer__c)
-              ){  
-                  trigger.new[i].Current_Reviewer_Modified_Date__c=DateTime.now();
-              }
-            
-            if(trigger.old[i].Has_Additional_Documents__c==false && trigger.new[i].Has_Additional_Documents__c== true) {
-                List<string> emails=new List<string>();
-                System.debug('In update flag trigger');
-                set<Id> userIds=new set<Id>();
-                userIds.add(trigger.new[i].Current_Reviewer__c);
-                userIds.add(trigger.new[i].First_Reviewer__c);
+            if(!trigger.new[i].Historical_Import__c) { 
+                if((trigger.old[i].Current_Reviewer__c != trigger.new[i].Current_Reviewer__c) || 
+                   (trigger.old[i].Current_Second_Reviewer__c != trigger.new[i].Current_Second_Reviewer__c)
+                  ){  
+                      trigger.new[i].Current_Reviewer_Modified_Date__c=DateTime.now();
+                  }
                 
-                List<User> users =[Select Id,Email From User Where Id=:userIds];
-                for(User u: users){
-                    emails.add(u.Email);
+                if((trigger.old[i].First_Reviewer__c != trigger.new[i].First_Reviewer__c) && 
+                    trigger.new[i].Source__c == WiresConstant.Source_OnlineBanking && trigger.old[i].Current_Reviewer__c != trigger.old[i].First_Reviewer__c){
+                        trigger.new[i].addError('First Reviewer can not be updated');
+                    }
+                else if((trigger.old[i].First_Reviewer__c != trigger.new[i].First_Reviewer__c) && 
+                   trigger.new[i].Source__c == WiresConstant.Source_OnlineBanking 
+                  ){  
+                      trigger.new[i].Current_Reviewer_Modified_Date__c=DateTime.now();
+                      trigger.new[i].Current_Reviewer__c=trigger.new[i].First_Reviewer__c;
+                  }
+                
+                
+                if(trigger.old[i].Has_Additional_Documents__c==false && trigger.new[i].Has_Additional_Documents__c== true) {
+                    List<string> emails=new List<string>();
+                    System.debug('In update flag trigger');
+                    set<Id> userIds=new set<Id>();
+                    userIds.add(trigger.new[i].Current_Reviewer__c);
+                    userIds.add(trigger.new[i].First_Reviewer__c);
+                    
+                    List<User> users =[Select Id,Email From User Where Id=:userIds];
+                    for(User u: users){
+                        emails.add(u.Email);
+                    }
+                    WiresEmailController.SendAdditionalDocumentsNotification(trigger.new[i].Id,emails,trigger.new[i].Name,trigger.new[i].TotalFromAccount__c,trigger.new[i].Source__c);
                 }
-                WiresEmailController.SendAdditionalDocumentsNotification(trigger.new[i].Id,emails,trigger.new[i].Name,trigger.new[i].TotalFromAccount__c,trigger.new[i].Source__c);
-            }
-            
+        	} 
         }
     }
     
@@ -35,46 +48,51 @@ trigger WIRESTransactionTrigger on WIRES_Transaction__c (before insert,before up
     if(Trigger.isAfter && Trigger.isUpdate){
         set<Id> docSignCompletedAtOnlineIds=new set<Id>();
         set<Id> docSignDeclinedAtOnlineIds=new set<Id>();
+        set<Id> docSignVoidedAtOnlineIds=new set<Id>();
         
         set<Id> sentToWireXchangeIds=new set<Id>();
         set<Id> rejectedWiresIds=new set<Id>();
         
         for(Integer i=0; i<trigger.new.size(); i++){
-            //------------------------------- Checking if the status is being changed and status = 'Completed'-----------------//
-            if(trigger.old[i].Status__c != 'Completed' && trigger.new[i].Status__c == 'Completed'){  
-                if(trigger.new[i].Source__c==WiresConstant.Source_OnlineBanking){
-                    docSignCompletedAtOnlineIds.add(trigger.new[i].id);
-                }
-            }
-            
-            //------------------------------- Checking if the status is being changed and status = 'Declined'-----------------//
-            if(trigger.old[i].Status__c != 'Declined' && trigger.new[i].Status__c == 'Declined'){  
-                if(trigger.new[i].Source__c==WiresConstant.Source_OnlineBanking){
-                    docSignDeclinedAtOnlineIds.add(trigger.new[i].id);
-                }
-            }
-            
-            //------------------------------- Checking if the status is being changed and status = 'Voided'-----------------//
-            if(trigger.old[i].Status__c != 'Voided' && trigger.new[i].Status__c == 'Voided'){  
-                if(trigger.new[i].Source__c==WiresConstant.Source_OnlineBanking){
-                    docSignDeclinedAtOnlineIds.add(trigger.new[i].id);
-                }
-            }
-            
-            //----------- Checking if the approval status is being changed and status = 'Released In WireXchange'--------------//
-            if(trigger.old[i].Approval_Status__c != 'Released In WireXchange' && trigger.new[i].Approval_Status__c == 'Released In WireXchange'){
-                if(trigger.new[i].Source__c!=WiresConstant.Source_Branch){
-                    sentToWireXchangeIds.add(trigger.new[i].id);
-                }
-            }
-            
-            //----------- Checking if the approval status is being changed and status = 'Rejected'--------------//
-            if(trigger.old[i].Approval_Status__c != 'Rejected' && trigger.new[i].Approval_Status__c == 'Rejected'){
-                if(trigger.new[i].Source__c==WiresConstant.Source_Branch){
-                    rejectedWiresIds.add(trigger.new[i].id);
-                }
-            }
-            
+             if(!trigger.new[i].Historical_Import__c) {
+                    //------------------------------- Checking if the status is being changed and status = 'Completed'-----------------//
+                    if(trigger.old[i].Status__c != 'Completed' && trigger.new[i].Status__c == 'Completed'){  
+                        if(trigger.new[i].Source__c==WiresConstant.Source_OnlineBanking){
+                          System.debug('After Update: Adding ' + trigger.new[i].id + ' to docSignCompletedAtOnlineIds');
+                          docSignCompletedAtOnlineIds.add(trigger.new[i].id);
+                        }
+                    }
+                    
+                    //------------------------------- Checking if the status is being changed and status = 'Declined'-----------------//
+                    if(trigger.old[i].Status__c != 'Declined' && trigger.new[i].Status__c == 'Declined'){  
+                        if(trigger.new[i].Source__c==WiresConstant.Source_OnlineBanking){
+                            docSignDeclinedAtOnlineIds.add(trigger.new[i].id);
+                        }
+                    }
+                    
+                    //------------------------------- Checking if the status is being changed and status = 'Voided'-----------------//
+                    if(trigger.old[i].Status__c != 'Voided' && trigger.new[i].Status__c == 'Voided'){  
+                        if(trigger.new[i].Source__c==WiresConstant.Source_OnlineBanking){
+                            //docSignDeclinedAtOnlineIds.add(trigger.new[i].id);
+                            docSignVoidedAtOnlineIds.add(trigger.new[i].id);
+                        }
+                    }
+                    
+                    //----------- Checking if the approval status is being changed and status = 'Released In WireXchange'--------------//
+                    if(trigger.old[i].Approval_Status__c != 'Released In WireXchange' && trigger.new[i].Approval_Status__c == 'Released In WireXchange'){
+                        if(trigger.new[i].Source__c!=WiresConstant.Source_Branch){
+                          System.debug('After Update: Adding ' + trigger.new[i].id + ' to sentToWireXchangeIds');
+                          sentToWireXchangeIds.add(trigger.new[i].id);
+                        }
+                    }
+                    
+                    //----------- Checking if the approval status is being changed and status = 'Rejected'--------------//
+                    if(trigger.old[i].Approval_Status__c != 'Rejected' && trigger.new[i].Approval_Status__c == 'Rejected'){
+                        if(trigger.new[i].Source__c==WiresConstant.Source_Branch){
+                            rejectedWiresIds.add(trigger.new[i].id);
+                        }
+                    }          
+             }
         }
         
         if(docSignCompletedAtOnlineIds.size()>0){
@@ -88,6 +106,9 @@ trigger WIRESTransactionTrigger on WIRES_Transaction__c (before insert,before up
             WiresTransactionApprovalController.SetWiresStatusToDSDeclined(docSignDeclinedAtOnlineIds);
         }
         
+        if(docSignVoidedAtOnlineIds.size() > 0){
+            WiresTransactionApprovalController.SetWiresStatusToDSExpired(docSignVoidedAtOnlineIds);
+        }
         
         if(sentToWireXchangeIds.size()>0){
             WiresTransactionApprovalController.ReleasedToWireXchangeEmailNotification(sentToWireXchangeIds);
@@ -106,9 +127,12 @@ trigger WIRESTransactionTrigger on WIRES_Transaction__c (before insert,before up
         
         if(Trigger.isAfter){
             
-            for(Integer i=0; i<trigger.new.size(); i++){        	
-                if(trigger.new[i].ParentTransaction__c == null)	
-                    WTIds.add(trigger.new[i]);
+            for(Integer i=0; i<trigger.new.size(); i++){
+                if(!trigger.new[i].Historical_Import__c) {
+                    system.debug('RecordType After Insert'+trigger.new[i].RecordType.Name);
+                    if(trigger.new[i].ParentTransaction__c == null)	
+                        WTIds.add(trigger.new[i]);
+                }                
             } 
             
             if(WTIds.size() > 0){
@@ -151,15 +175,18 @@ trigger WIRESTransactionTrigger on WIRES_Transaction__c (before insert,before up
                 // we also need docuSign for wires amount less than 5k
                 // STRY0011574: Online - DocuSign should be sent to customer for all online wires.
                 if(range1To5000.size()>0){
-                    WiresTransToDocuSign.docusignAPIcall(range1To5000);
+                  System.debug('After Insert: WiresTransToDocuSign low range');
+                  WiresTransToDocuSign.docusignAPIcall(range1To5000);
                 }
                 
                 if(range50001To10000.size()>0){
-                    WiresTransToDocuSign.docusignAPIcall(range50001To10000);
+                  System.debug('After Insert: WiresTransToDocuSign mid range');
+                  WiresTransToDocuSign.docusignAPIcall(range50001To10000);
                 }
                 
                 if(rangeGrtThen10000.size()>0){
-                    WiresTransToDocuSign.docusignAPIcall(rangeGrtThen10000);
+                  System.debug('After Insert: WiresTransToDocuSign high range');
+                  WiresTransToDocuSign.docusignAPIcall(rangeGrtThen10000);
                 }
                 
                 if(range1To5000.size()>0){
@@ -184,12 +211,12 @@ trigger WIRESTransactionTrigger on WIRES_Transaction__c (before insert,before up
     if(Trigger.isInsert && Trigger.isBefore){ 
         for(WIRES_Transaction__c objWIRESTransaction: trigger.New)
         {
-            
+           if(!objWIRESTransaction.Historical_Import__c){  
             string AccountNo= objWIRESTransaction.FromAccount__c;    	
-            
-            Account_Details__c accDetail=[SELECT Id,Name, Brand__c FROM Account_Details__c WHERE Name=:AccountNo AND RecType__c = 'ACCT' LIMIT 1];
-            if(accDetail!=null){
-                objWIRESTransaction.Brand__c=accDetail.Brand__c;
+             system.debug('RecordType Before Insert'+objWIRESTransaction.RecordType.Name);
+            List<Account_Details__c> accDetail=[SELECT Id,Name, Brand__c FROM Account_Details__c WHERE Name=:AccountNo AND RecType__c = 'ACCT' LIMIT 1];
+            if(accDetail.size() > 0){
+                objWIRESTransaction.Brand__c=accDetail[0].Brand__c;
             }
             
             if(objWIRESTransaction.Frequency__c == 'Recurring'){
@@ -263,11 +290,28 @@ trigger WIRESTransactionTrigger on WIRES_Transaction__c (before insert,before up
             }
             objWIRESTransaction.Wire_Amount_In_Word__c= amountInWord;
             
+            
+            if(objWIRESTransaction.Source__c==WiresConstant.Source_Branch && objWIRESTransaction.Frequency__c==WiresConstant.OneTime){
+                objWIRESTransaction.RecordTypeId = [SELECT Id, name FROM RecordType where name =: WiresConstant.Branch_Domestic_1_Time].Id;
+            }
+            
+            else if(objWIRESTransaction.Source__c==WiresConstant.Source_Branch && objWIRESTransaction.Frequency__c==WiresConstant.Reccuring){
+                objWIRESTransaction.RecordTypeId = [SELECT Id, name FROM RecordType where name =: WiresConstant.Branch_Domestic_Recurring].Id;
+            }
+            
+            else if(objWIRESTransaction.Source__c==WiresConstant.Source_OnlineBanking && objWIRESTransaction.Frequency__c==WiresConstant.OneTime){
+                objWIRESTransaction.RecordTypeId = [SELECT Id, name FROM RecordType where name =: WiresConstant.Online_Domestic_1_Time].Id;
+            }
+            
+            else if(objWIRESTransaction.Source__c==WiresConstant.Source_OnlineBanking && objWIRESTransaction.Frequency__c==WiresConstant.Reccuring){
+                objWIRESTransaction.RecordTypeId = [SELECT Id, name FROM RecordType where name =: WiresConstant.Online_Domestic_Recurring].Id;
+            }
+            
             if(objWIRESTransaction.Source__c==WiresConstant.Source_Branch){
                 
                 if(objWIRESTransaction.Frequency__c==WiresConstant.Reccuring){
                     objWIRESTransaction.Approval_Status__c = WiresConstant.ApprovalStatus_Recurring;
-                }else if(objWIRESTransaction.ParentTransaction__c==null){
+                }else if(objWIRESTransaction.ParentTransaction__c==null){                    
                 	objWIRESTransaction.Approval_Status__c = WiresConstant.ApprovalStatus_PendingForMemberReview;
                 }else{
                     objWIRESTransaction.Approval_Status__c = WiresConstant.ApprovalStatus_PendingForApproval;
@@ -549,7 +593,7 @@ trigger WIRESTransactionTrigger on WIRES_Transaction__c (before insert,before up
             }
             
             
-            
+           }
         }     
     }    
     

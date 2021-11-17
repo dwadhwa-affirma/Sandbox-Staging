@@ -13,6 +13,8 @@
     default="{ MembershipAddress1: '', MembershipAddress2: '', MembershipCity : '', MembershipState : '', MembershipZip : '' }" />
   <aura:attribute name="ProductList" type="List" />
   <aura:attribute name="PayeezyConfig" type="Object" />
+  <aura:attribute name="isMultipleEmailIds" type="Boolean" default="false" />
+  <aura:attribute name="isEmailSelectionVisible" type="Boolean" default="false" />
   
   <aura:attribute name="options" type="List" default="[
         {'label': 'Yes', 'value': 'true'},
@@ -28,7 +30,7 @@
   <aura:attribute name="IsMaturityDateReset" type="Boolean" default="false" />
   <aura:attribute name="IsFeeCollectionVisible" type="Boolean" default="false" />
   <aura:attribute name="isPaymentCheck" type="Boolean" default="false" />
-
+  <aura:attribute name="EmailIds" type="List" />   
 
   <lightning:spinner aura:id="Spinner" alternativeText="Loading" size="medium" variant="brand" class="slds-hide spin" />
 
@@ -286,6 +288,32 @@
               {!v.Note}
             </span>
           </div>
+          <aura:if isTrue="{!v.isEmailSelectionVisible}">
+              <div style="margin-top: 5%;">
+                 <p><b>Please Select EmailId</b></p>
+                  <table class="clsEmail">
+                    <tbody>                      
+                      <aura:iteration items="{!v.EmailIds}" var="itemOption" indexVar="i">
+                        <tr aria-expanded="false" aria-level="1" aria-posinset="3" aria-selected="false" aria-setsize="4"
+                          class="slds-hint-parent">
+                          <td class="" role="gridcell">
+                            <div class="slds-radio">
+                              <span class="slds-radio">
+                                <lightning:input type="radio" name="select" 
+                                  value="{!itemOption}" onchange="{!c.onEmailSelect}"/>
+                              </span>
+                            </div>
+                          </td>
+                          <td class="" role="gridcell">
+                            <div class="slds-truncate">
+                              {!itemOption}</div>
+                          </td>
+                          </tr>
+                          </aura:iteration>
+                    </tbody>
+                  </table>
+              </div>
+          </aura:if>
           <aura:if isTrue="{!v.IsFeeCollectionVisible}">
 
             <div id="{!v.PayeezyConfig.DivId__c}" style="margin: 10px 0" class="rounded-div" onclick="{!c.onChangeXpressRefiClick}">
@@ -300,10 +328,12 @@
                 <input type="hidden" name="x_test_request" value="{!v.PayeezyConfig.x_test_request__c}" />
                 <input type="hidden" name="x_relay_response" value="" />
                 <input type="hidden" name="donation_prompt" value="" />             
-                <input type="hidden" name="x_po_num" value="{!v.xPressRefiRecord.LoanId__c}" />
+          <!--  <input type="hidden" name="x_po_num" value="{!v.xPressRefiRecord.LoanId__c}" />   -->
+                <input type="hidden" name="x_po_num" value="{!v.xPressRefiRecord.Member_Number__c + '-' + v.xPressRefiRecord.LoanId__c}" />    
                 <input type="hidden" name="button_code" value="{!v.PayeezyConfig.button_code__c}" />
-                <input type="hidden" name="x_invoice_num" value="{!v.xPressRefiRecord.Member_Number__c}" />                
-                <div class="cpwrap">
+       <!--     <input type="hidden" name="x_invoice_num" value="{!v.xPressRefiRecord.Member_Number__c}" />             -->   
+            	<input type="hidden" name="x_invoice_num" value="{!'xpressrefi-' + v.xPressRefiRecord.Member_Number__c}" />
+                  <div class="cpwrap">
                   <button type="button">Charge Xpress Refi</button>
                 </div>
               </form>
