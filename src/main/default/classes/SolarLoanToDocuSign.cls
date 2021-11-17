@@ -74,7 +74,7 @@ public class SolarLoanToDocuSign {
             Primary_SSN__c,Primary_State__c,Primary_Zip_Code__c,Product_Loan_Type__c,Product__c,Record_ID__c,
             Routing_Number__c,Site_UUID__c,Status__c,Symitar_Called__c,SystemModstamp,System_Size_kW__c,Term_months__c,
             Valid_ABA__c,Loan_Id__c,Account_Number__r.name,Loan_Name_Locator__c,Loan_Tracking_Locator__c, 
-            Error_EftLocator__c,Error_Loan_Locator__c,Error_Loan_Name_Locator__c,Error_Loan_Tracking_Locator__c,
+            Error_EftLocator__c,Error_Loan_Locator__c,Error_Loan_Name_Locator__c,Error_Loan_Tracking_Locator__c,Primary_Email__c,
             EftLocator__c FROM Solar_Loans__c where id =: ids];
         
         	for(Solar_Loans__c sl : solarloans){
@@ -147,8 +147,8 @@ public class SolarLoanToDocuSign {
                 
                 if(EmailToSend == 'Production' || EmailToSend == 'production'){
             	
-         			Member = [select id, name, PersonEmail from account where id =: sl.Member_Name__c Limit 1];
-         			json1 = '{"signers": ['+'{'+'"email": "'+Member.PersonEmail+'",'+'"recipientId" : "1",'+'"roleName": "client",'+'"name": "'+Member.Name+'",'+'"signingGroupId": "signers",'+'"routingOrder" : "null"'+'}'+']'+'}';
+         			//Member = [select id, name, PersonEmail from account where id =: sl.Member_Name__c Limit 1];
+         			json1 = '{"signers": ['+'{'+'"email": "'+sl.Primary_Email__c+'",'+'"recipientId" : "1",'+'"roleName": "client",'+'"name": "'+Member.Name+'",'+'"signingGroupId": "signers",'+'"routingOrder" : "null"'+'}'+']'+'}';
            		}
                 
                 if(EmailToSend != 'Production' || EmailToSend != 'production'){
