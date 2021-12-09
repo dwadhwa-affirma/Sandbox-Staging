@@ -344,7 +344,7 @@
                                     </aura:if> -->
                                     <div class="BorderLeft"></div>
                                     <!-- eStatements (BDI) -->
-                                    <aura:if isTrue="{!v.ischk11}">
+                                    <aura:if isTrue="{!and(v.ischk11,v.EmpRescrictedAccess)}">
                                     <div class="slds-checkbox">
                                         <div class="slds-clearfix">
                                             <div class="slds-float_left">
@@ -461,7 +461,7 @@
                             <aura:if isTrue="{! v.isSalesforce }">
                                 <button class="slds-button slds-button_neutral" onclick="{!c.BtnMergeData}">Update Table</button>
                             </aura:if>
-                            <aura:if isTrue="{!and(v.loadchk11,v.EmpRescrictedAccess)}">
+                            <aura:if isTrue="{! v.loadchk11 }">
                                 <button class="slds-button slds-button_brand"  disabled="{!v.NotEstatements}" onclick="{!c.handleSelectedRecords}">Download</button>
                             </aura:if>                            
                         </span>
