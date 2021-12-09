@@ -18,6 +18,7 @@
                  if(objsetting[i].Name == 'BDI' && objsetting[i].Hidden__c == false){
                      
                 	 component.set('v.ischk1',true);
+                    
                  }
             	 if(objsetting[i].Name == 'Salesforce' && objsetting[i].Hidden__c == false){
                 	 component.set('v.ischk2',true);

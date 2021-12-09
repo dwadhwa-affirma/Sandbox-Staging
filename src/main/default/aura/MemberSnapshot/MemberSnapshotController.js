@@ -104,6 +104,23 @@
                                    })
                                }
                            });
+    },    
+    handleCreateOpportunity2: function(component, event, helper) {
+        var recordId = component.get("v.recordId");
+        var modalBody;
+        $A.createComponent("c:OppQuickAction", {recordId:recordId,isQuickAction: false},
+                           function(content, status) {
+                               if (status === "SUCCESS") {
+                                   modalBody = content;
+                                   component.find('overlayLib').showCustomModal({
+                                       header: "Create Opportunity",
+                                       body: modalBody,
+                                       showCloseButton: false,
+                                       closeCallback: function() {
+                                       }
+                                   })
+                               }
+                           });
     },
     handleAddressChange: function(component, event, helper) {
         var recordId = component.get("v.recordId");

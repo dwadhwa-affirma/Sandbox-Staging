@@ -111,6 +111,7 @@ return [select Name,Hidden__c from SNAIL_Setting__c order by Order__c];
                             documents doc = (documents)parser.readValueAs(documents.class);
                             
                             if(doc != null){
+                                doc.EmployeeRestrictedAccess=Employee_Restricted_Access__c !=null ? false:true;
                                 doc.DataSource='BDI';
                                 doc.Account=doc.Userid.leftPad(10,'0');
                                 //doc.hyperlinkPDF='/apex/MemberCommunicationPDF?url='+doc.hyperlinkPDF;
@@ -308,7 +309,7 @@ return results;
         String apiURL='';        
         List<MemberCommunicationData.documents> results=new List<MemberCommunicationData.documents>();
         list<string> lstrecid = new list<string>();
-        for(Person_Account__c pa :[SELECT Id,Account_Number__c,Account_Number__r.Name,Account_Number__r.Brand__c FROM Person_Account__c where PersonID__c =: recid and Account_Number__r.Employee_Restricted_Access__c=null]){
+        for(Person_Account__c pa :[SELECT Id,Account_Number__c,Account_Number__r.Name,Account_Number__r.Brand__c ,  Account_Number__r.Employee_Restricted_Access__c FROM Person_Account__c where PersonID__c =: recid ]){
             system.debug('------paccount------------'+PA);
             if(pa.Account_Number__r.Brand__c == 'Spectrum'){
                 apiURL = 'https://dev2ssl.businessdatainc.com/Spectrum/rest/documents/'+pa.Account_Number__r.Name+'?admin=0';
@@ -343,6 +344,7 @@ return results;
                             documents doc = (documents)parser.readValueAs(documents.class);
                             
                             if(doc != null){
+                                doc.EmployeeRestrictedAccess=Employee_Restricted_Access__c !=null ? false:true;
                                 doc.DataSource='BDI';
                                 doc.Account=doc.Userid.leftPad(10,'0');
                                 //doc.dateDesc=temp;
@@ -379,7 +381,7 @@ return results;
         
         List<String> lstSource = source;//source.split(',');
         String apiURL='';        
-        List<Account_Details__c> recordid = [select id,Name,Brand__c from Account_Details__c where id =: recid  and Account_Number__r.Employee_Restricted_Access__c=null limit 1]; 
+        List<Account_Details__c> recordid = [select id,Name,Brand__c,Account_Number__r.Employee_Restricted_Access__c from Account_Details__c where id =: recid  limit 1]; 
         List<MemberCommunicationData.documents> results=new List<MemberCommunicationData.documents>();
         Boolean isDup;
         list<string> lstrecid = new list<string>();
@@ -448,6 +450,7 @@ return results;
                             documents doc = (documents)parser.readValueAs(documents.class);
                             
                             if(doc != null){
+                                doc.EmployeeRestrictedAccess=Employee_Restricted_Access__c !=null ? false:true;
                                 doc.DataSource='BDI';
                                 doc.Account=doc.Userid.leftPad(10,'0');
                                 //doc.hyperlinkPDF='/apex/MemberCommunicationPDF?url='+doc.hyperlinkPDF;
@@ -1371,6 +1374,8 @@ string AccountNumber = p.Account_Number__r.Name; */
         public string caseLink{get;set;}
         @AuraEnabled
         public string caseLinkLabel{get;set;}
+        @AuraEnabled
+        public boolean EmployeeRestrictedAccess{get;set;}
         
     }
     

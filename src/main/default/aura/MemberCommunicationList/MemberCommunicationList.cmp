@@ -67,6 +67,8 @@
      <aura:attribute name="sortedDirection" type="String"/>
     <aura:attribute name="SNAILsetting" type="List"/>
     <aura:attribute name="IsUserInGroup" type="Boolean"/>
+    <aura:attribute name="EmpRescrictedAccess" type="Boolean" default="false" />
+    
     <!-- handlers-->
     <aura:handler name="init" value="{! this }" action="{! c.doInit }"/>
     <div >
@@ -112,7 +114,7 @@
                                             </div>
                                             <div class="slds-float_right">
                                                 <p class="SearchText">
-                                                <aura:if isTrue="{! v.loadchk1 }"> <lightning:icon iconName="utility:check" size="xx-small" alternativeText="Result" />
+                                                <aura:if isTrue="{!v.loadchk1}"> <lightning:icon iconName="utility:check" size="xx-small" alternativeText="Result" />
                                                 	Result Showing
                                                	</aura:if>
                                                	 <aura:if isTrue="{! v.progchk1 }"> 
@@ -459,7 +461,7 @@
                             <aura:if isTrue="{! v.isSalesforce }">
                                 <button class="slds-button slds-button_neutral" onclick="{!c.BtnMergeData}">Update Table</button>
                             </aura:if>
-                            <aura:if isTrue="{! v.loadchk11 }">
+                            <aura:if isTrue="{!and(v.loadchk11,v.EmpRescrictedAccess)}">
                                 <button class="slds-button slds-button_brand"  disabled="{!v.NotEstatements}" onclick="{!c.handleSelectedRecords}">Download</button>
                             </aura:if>                            
                         </span>
