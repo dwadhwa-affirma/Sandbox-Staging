@@ -379,7 +379,7 @@ return results;
         
         List<String> lstSource = source;//source.split(',');
         String apiURL='';        
-        List<Account_Details__c> recordid = [select id,Name,Brand__c from Account_Details__c where id =: recid limit 1]; 
+        List<Account_Details__c> recordid = [select id,Name,Brand__c from Account_Details__c where id =: recid  and Account_Number__r.Employee_Restricted_Access__c=null limit 1]; 
         List<MemberCommunicationData.documents> results=new List<MemberCommunicationData.documents>();
         Boolean isDup;
         list<string> lstrecid = new list<string>();
