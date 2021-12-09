@@ -308,7 +308,7 @@ return results;
         String apiURL='';        
         List<MemberCommunicationData.documents> results=new List<MemberCommunicationData.documents>();
         list<string> lstrecid = new list<string>();
-        for(Person_Account__c pa :[SELECT Id,Account_Number__c,Account_Number__r.Name,Account_Number__r.Brand__c FROM Person_Account__c where PersonID__c =: recid]){
+        for(Person_Account__c pa :[SELECT Id,Account_Number__c,Account_Number__r.Name,Account_Number__r.Brand__c FROM Person_Account__c where PersonID__c =: recid and Account_Number__r.Employee_Restricted_Access__c=null]){
             system.debug('------paccount------------'+PA);
             if(pa.Account_Number__r.Brand__c == 'Spectrum'){
                 apiURL = 'https://dev2ssl.businessdatainc.com/Spectrum/rest/documents/'+pa.Account_Number__r.Name+'?admin=0';
