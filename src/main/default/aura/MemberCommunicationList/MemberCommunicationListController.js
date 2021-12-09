@@ -34,6 +34,9 @@
             	 component.set('v.ischk6',true);
                  component.set('v.ischk7',true);
                  component.set('v.ischk8',true);
+                 component.set('v.ischk9',true);
+                 component.set('v.ischk10',true);
+                 component.set('v.ischk11',true);
             	
              }
             	
@@ -65,13 +68,33 @@
     callCheckboxMethod : function(component, event, helper) {      
         var capturedCheckboxName = event.getSource().get("v.value");
         var selectedCheckBoxes =  component.get("v.selectedCheckBoxes");
+        
         if(selectedCheckBoxes.indexOf(capturedCheckboxName) > -1){            
             selectedCheckBoxes.splice(selectedCheckBoxes.indexOf(capturedCheckboxName), 1);           
         }
         else{
             selectedCheckBoxes.push(capturedCheckboxName);
         }
+        
+        if(capturedCheckboxName == 'eStatements' && component.find("chk11").get("v.checked") == true){
+            component.set("v.NotEstatements", false);
+            for(var i = 0 ; i < selectedCheckBoxes.length;i++){
+            	component.find("chk1").set("v.checked", false);
+                component.find("chk5").set("v.checked", false);
+                component.find("chk6").set("v.checked", false);
+                component.find("chk7").set("v.checked", false);
+                component.find("chk8").set("v.checked", false);
+                component.find("chk9").set("v.checked", false);
+                //component.find("chk10").set("v.checked", false);                
+            }   
+        }
+        else{            
+            component.find("chk11").set("v.checked", false);
+            component.set("v.NotEstatements", true);
+        }
+        
         component.set("v.selectedCheckBoxes", selectedCheckBoxes);
+        component.set("v.NotEstatements", true);
         //alert('Selected--'+selectedCheckBoxes);
     },
     
@@ -80,6 +103,26 @@
         var fromdate=component.get('v.fromdate');
         var keyword =component.get('v.keyword');
         var today = $A.localizationService.formatDate(new Date(), "YYYY-MM-DD");
+        /*var recid = component.get('v.recordId');
+        if(component.get('v.selectedCheckBoxes') == ''){
+            
+            var action = component.get('c.getListSSN'); 
+            action.setParams({
+                recid:recid,
+            });
+            action.setCallback(this, function(a){       
+            var state = a.getState(); // get the response state          
+                if(state == 'SUCCESS') {
+                    var result = a.getReturnValue();
+                    if(result != null && result != ''){
+                        for(var i = 0; i < result.length; i++){
+                            window.open("https://brsconbaseweb1.ctxcu.org/AppNet/docpop/docpop.aspx?KT101_0_0_0="+result[i]+"&clienttype=activex&doctypeid=129", '_blank');
+                        }
+                    }    
+                }            
+        	}); 
+        	$A.enqueueAction(action); 
+        }*/
         
         component.set('v.dateinvalid',false);
         if(keyword == 'Date Range' && (fromdate == "" || fromdate == null) && (todate == "" || todate == null)){
@@ -92,7 +135,7 @@
         else{
         	 helper.fetchAllData(component,event,helper);
         }
-       
+        component.set("v.NotEstatements", true);
        
     },
     BtnMergeData :function(component, event, helper) {
@@ -138,7 +181,81 @@
         // };
         
         
-    }
-    
+    },
+    getSelected: function(component, event, helper) {
+    	
+        var selectedRows = event.getParam('selectedRows'); 
+        
+        if(selectedRows.length == 0){
+            component.set("v.NotEstatements", true);
+        }
+        else{
+            component.set("v.NotEstatements", false);
+        }
+        
+        var setRows = [];
+        for ( var i = 0; i < selectedRows.length; i++ ) {
+            
+            setRows.push(selectedRows[i]);
+
+        }
+        component.set("v.selectedRecords", setRows);
+      
+    },
+    handleSelectedRecords: function(component, event, helper) {
+    	
+        var url = window.location.href;
+        var records = component.get("v.selectedRecords");
+        var recordId = component.get("v.recordId");
+        var selectedEstatements = [];
+        
+        for(var i = 0; i < records.length; i++ ){
+            selectedEstatements[i] = records[i];
+        }
+        helper.showSpinner(component);
+        if(selectedEstatements == ''){
+            var toastEvent = $A.get("e.force:showToast");
+            toastEvent.setParams({
+                title : 'Warning',
+                message: 'Please Select at least one eStatement!',
+                duration:' 1000',
+                key: 'info_alt',
+                type: 'Warning',
+                mode: 'pester'
+            });
+            toastEvent.fire();
+        }
+        else if(selectedEstatements.length > 0){
+            
+            var action = component.get("c.processSelectedEstatements");
+            action.setParams({
+                "doclist" : selectedEstatements,
+                "recordId" : recordId
+            });
+            action.setCallback(this, function(result){
+                var state = result.getState();
+                var obj = result.getReturnValue();
+                if (component.isValid() && state === "SUCCESS"){
+                    //window.close();                                        
+                    for(var i=0;i<obj.length;i++){
+                         window.open(obj[i]);
+                    }                    
+                    //window.open(url);                    
+                    /*var toastEvent = $A.get("e.force:showToast");
+                    toastEvent.setParams({
+                        title : 'Success',
+                        message: 'eStatements have been set Successfully',
+                        duration:' 1000',
+                        key: 'info_alt',
+                        type: 'success',
+                        mode: 'pester'
+                    });
+                    toastEvent.fire();*/
+                }
+                helper.hideSpinner(component);
+            });
+            $A.enqueueAction(action);            
+        }	
+    }   
     
 })

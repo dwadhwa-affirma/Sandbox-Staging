@@ -2,39 +2,37 @@
 public with sharing class MemberCommunicationDataTest {
     @testSetup
     static void setupTestData(){
+        Account account_Obj = new Account(LastName = 'BANDATest', FirstName = 'MARIATest', Type = 'null', PersonHasOptedOutOfEmail = false, NA_Eligibility__c = false, NA_LEAV_Complete__c = true, NA_LECF_Complete__c = true, NA_LECP_Complete__c = true, NA_LEEM_Complete__c = true, NA_LEHS_Complete__c = true, NA_LEMD_Complete__c = false, NA_LEMP_Complete__c = false, NA_LEMQ_Complete__c = true, NA_LEOL_Complete__c = true, NA_LEOM_Complete__c = true, NA_LEPT_Complete__c = true, NA_LESB_Complete__c = false, NA_LESF_Complete__c = true, NA_LEWS_Complete__c = true, NA_Opt_Out__c = false, smagicinteract__SMSOptOut__pc = false, et4ae5__HasOptedOutOfMobile__pc = false, PersonID__c= 'V565138120');
+        Insert account_Obj;
+        Account account_Obj1 = new Account(LastName = 'BANDATest1', FirstName = 'MARIATest1', Type = 'null', PersonHasOptedOutOfEmail = false, NA_Eligibility__c = false, NA_LEAV_Complete__c = true, NA_LECF_Complete__c = true, NA_LECP_Complete__c = true, NA_LEEM_Complete__c = true, NA_LEHS_Complete__c = true, NA_LEMD_Complete__c = false, NA_LEMP_Complete__c = false, NA_LEMQ_Complete__c = true, NA_LEOL_Complete__c = true, NA_LEOM_Complete__c = true, NA_LEPT_Complete__c = true, NA_LESB_Complete__c = false, NA_LESF_Complete__c = true, NA_LEWS_Complete__c = true, NA_Opt_Out__c = false, smagicinteract__SMSOptOut__pc = false, et4ae5__HasOptedOutOfMobile__pc = false, PersonID__c= 'V565138121');
+        Insert account_Obj1; 
         
         MARS_To_Episys_API_Details__c api = new MARS_To_Episys_API_Details__c();
         api.URL__c = 'https://symxapi.chevronfcu.org/devclient';
         api.Name = 'ProductionURL';
         insert api;
         
-        RecordType recordtype =[SELECT Id,Name FROM RecordType WHERE Name='Person Account'];
-        
         Member360_TypeTranslate__c t = new Member360_TypeTranslate__c();
-		t.name = '0000/Primary';
-		insert t;
-		Member360_TypeTranslate__c t1 = new Member360_TypeTranslate__c();
-		t1.name = '001/Beneficiary';
-		insert t1;
-		Member360_TypeTranslate__c t2 = new Member360_TypeTranslate__c();
-		t2.name = '001/Joint Member';
-		insert t2;
-		Member360_TypeTranslate__c t3 = new Member360_TypeTranslate__c();
-		t3.name = '001/Trustee';
-		insert t3;
-		Member360_TypeTranslate__c t4 = new Member360_TypeTranslate__c();
-		t4.name = '001/Custodian';
-		insert t4;
-		Member360_TypeTranslate__c t5 = new Member360_TypeTranslate__c();
-		t5.name = '001/Primary';
-		insert t5;
-		Member360_TypeTranslate__c t6 = new Member360_TypeTranslate__c();
-		t6.name = '001/Representative Payee';
-		insert t6;
-        
-        
-        Account account_Obj = new Account(recordtypeid = recordtype.Id,LastName = 'BANDATest',PersonId__c = '566336329', FirstName = 'MARIATest', Type = 'null', PersonHasOptedOutOfEmail = false, NA_Eligibility__c = false, NA_LEAV_Complete__c = true, NA_LECF_Complete__c = true, NA_LECP_Complete__c = true, NA_LEEM_Complete__c = true, NA_LEHS_Complete__c = true, NA_LEMD_Complete__c = false, NA_LEMP_Complete__c = false, NA_LEMQ_Complete__c = true, NA_LEOL_Complete__c = true, NA_LEOM_Complete__c = true, NA_LEPT_Complete__c = true, NA_LESB_Complete__c = false, NA_LESF_Complete__c = true, NA_LEWS_Complete__c = true, NA_Opt_Out__c = false, smagicinteract__SMSOptOut__pc = false, et4ae5__HasOptedOutOfMobile__pc = false);
-        Insert account_Obj;
+    t.name = '0000/Primary';
+    insert t;
+    Member360_TypeTranslate__c t1 = new Member360_TypeTranslate__c();
+    t1.name = '001/Beneficiary';
+    insert t1;
+    Member360_TypeTranslate__c t2 = new Member360_TypeTranslate__c();
+    t2.name = '001/Joint Member';
+    insert t2;
+    Member360_TypeTranslate__c t3 = new Member360_TypeTranslate__c();
+    t3.name = '001/Trustee';
+    insert t3;
+    Member360_TypeTranslate__c t4 = new Member360_TypeTranslate__c();
+    t4.name = '001/Custodian';
+    insert t4;
+    Member360_TypeTranslate__c t5 = new Member360_TypeTranslate__c();
+    t5.name = '001/Primary';
+    insert t5;
+    Member360_TypeTranslate__c t6 = new Member360_TypeTranslate__c();
+    t6.name = '001/Representative Payee';
+    insert t6;
         
         List<Account_Details__c> account_details_Obj = new List<Account_Details__c>{
             new Account_Details__c(Name = '0000147163', Balance__c = 0.00, Combined_Account_ID__c = '0000147163S0100P0100', ID1__c = '0100', Onboarded__c = true, RecType__c = 'ACCT', TypeTranslate__c = '1-PRIMARY SHARE',WARNING_01_CODE__c='ABC',
@@ -81,8 +79,8 @@ public with sharing class MemberCommunicationDataTest {
                                       Insert account_details_Obj;
         Account_Details__c obj = [select id,name from Account_Details__c where id =: account_details_Obj[0].id];
         List<Person_Account__c> person_obj= new List<Person_Account__c>{
-            new Person_Account__c(TypeTranslate__c='0000/Primary',Account_Number__c = account_details_Obj[0].id, PersonID__c = account_Obj.Id), 
-                new Person_Account__c(TypeTranslate__c='0000/Primary',Account_Number__c = account_details_Obj[0].Id, PersonID__c = account_Obj.Id)}; 
+            new Person_Account__c(TypeTranslate__c='0000/Primary',Account_Number__c = account_details_Obj[0].id, PersonID__c = account_Obj.Id, RecType__c = 'ACCT'), 
+                new Person_Account__c(TypeTranslate__c='0000/Primary',Account_Number__c = account_details_Obj[0].Id, PersonID__c = account_Obj.Id, RecType__c = 'ACCT')}; 
                     Insert person_obj;
         
         String RecTypeId= [select Id from RecordType where (Name='IVR Authentication Log') and (SobjectType='Authenticated_Log__c')].Id;
@@ -106,36 +104,57 @@ public with sharing class MemberCommunicationDataTest {
         ml.Member_Number__c = obj.name;
         insert ml;
         
-        EDS_Member_Alerts__c obj1 = new EDS_Member_Alerts__c();
-        obj1.Account_Number__c = '0000147163';
-        obj1.OdsKey__c = '123456789';
-        insert obj1; 
+       /*  Account_Details__c accDetail = new Account_Details__c();
+        accDetail.Name = '0000000123';
+        accDetail.RecType__c = 'ACCT';
+        accDetail.TypeTranslate__c = '1-PERSONAL';
+        accDetail.ID1__c = '001';
+        accDetail.OPEN_DATE__c = Date.newInstance(2018, 12, 10);
+        insert accDetail;
         
-        /*WIRES_Transaction__c objWC = new WIRES_Transaction__c();
-	 	objWC.Description__c='test';
-	 	objWC.Fees__c = 30.0;
-	 	objWC.Chevron_Account_Number__c = '0000147163';
-	 	objWC.Share_ID__c ='001';
-        objWC.FromAccount__c = '0000147163';
-        objWC.ParentTransaction__c = 'a2X19000000jcf0EAA';
-        objWC.Member_SSN__c = '566336329';
-        objWC.WireAmount__c = 12345.12;
-	 	//objWC.Mobile_Phone__c = '1234567890'; 
-	 	
-	 	insert objWC;  */
+        Account acc = new Account();
+        //acc.RecordTypeID=rtId;
+        acc.FirstName='Test FName';
+        acc.LastName='Test LName';    
+        acc.Mobile_Phone__pc='555-469-3885'; 
+        acc.Home_Phone__pc='555-469-3886';
+        acc.Work_Phone__pc='555-469-3887';
+        acc.Email_raw__c='test@test.com'; 	
+        acc.PersonEmail='test1@test.com'; 
+        acc.PersonID__c='V565138120';
+        insert acc;
+        
+        List<Person_Account__c> person_obj1= new List<Person_Account__c>{
+            new Person_Account__c(TypeTranslate__c='0000/Primary',Account_Number__c = accDetail.Id, PersonID__c = acc.Id) 
+                };
+          Insert person_obj1;*/
+        
+        WIRES_Transaction__c objWC = new WIRES_Transaction__c();
+        objWC.Description__c='test';
+        objWC.Fees__c = 30.0;
+        objWC.Chevron_Account_Number__c = account_details_Obj[0].Name;
+        objWC.Share_ID__c ='001';
+        objWC.FromAccount__c = account_details_Obj[0].Name;
+        objWC.Member_SSN__c='565138120';
+        objWC.WireAmount__c=500;
+        objWC.Approval_Status__c ='Good Funds Review';
+        objWC.FlagAccountOpenfor45Days__c=true;
+        objWC.FlagEmailStablefor30Days__c=true;
+        objWC.FlagHomePhoneStablefor30Days__c=true;
+        objWC.FlagMobilePhoneStablefor30Days__c=true;
+        objWC.FlagWorkPhoneStablefor30Days__c=false;
+        insert objWC;
         
     }
     static testMethod void GetAllDataTest() {
-        
         TEst.starttest();
         
         List<Account> obj = [select id from Account limit 1];
-        List<EDS_Member_Alerts__c> eds = [select id from EDS_Member_Alerts__c limit 1];
         List<Account_Details__c> objd = [select id,name from Account_Details__c limit 1];
         List<MC_PIN_Change__c> objmp = [select id,Member_Number__c from MC_PIN_Change__c limit 1];
         List<MC_Limit_Change__c> objml = [select id,Member_Number__c from MC_Limit_Change__c limit 1];
         
-        list<string> str = 	new list<string>();
+        list<string> str =   new list<string>();
         Test.setMock(HttpCalloutMock.class, new MockHttpResponseGenerator());
         date dt = date.newinstance(2000, 2, 17);
         MemberCommunicationData.GetMemberCommData(str,null,null,obj[0].Id,'30');
@@ -150,17 +169,13 @@ public with sharing class MemberCommunicationDataTest {
         MemberCommunicationData.GetOOWData(dt,null,'Date Range',obj[0].Id);
         MemberCommunicationData.GetMCPingChangeData(str,null,null,obj[0].Id,'30');
         MemberCommunicationData.GetMCLimitChangeData(str,null,null,obj[0].Id,'30');
-        MemberCommunicationData.GetWiresData(str,null,null,obj[0].Id,'30');
-        MemberCommunicationData.GetWiresEDSData(str,null,null,obj[0].Id,'30');
-        MemberCommunicationData.GetNotesData(str,null,null,obj[0].Id,'30');
-       
-        
         ApexPages.currentPage().getParameters().put('aburl', 'test');
         
         MemberCommunicationData md = new MemberCommunicationData(); 
         string strblob = md.BlobText;
         TEst.stoptest();
     } 
+
     static testMethod void GetAllDataTest2() {
         
         SNAIL_Setting__c ss = new SNAIL_Setting__c();
@@ -179,13 +194,16 @@ public with sharing class MemberCommunicationDataTest {
         date dt = date.newinstance(2000, 2, 17);
         
         Profile profile = [SELECT Id,Name FROM Profile where Name ='Messaging center Customers' ];
-        
+        str.add('Wires');
+        str.add('Notes');
         MemberCommunicationData.SNAILSetting();
         MemberCommunicationData.GetBDIestatements(str,null,null,obj[0].Id,'30');
         MemberCommunicationData.GetBDIestatements(str,null,null,objd[0].Id,'30');
         MemberCommunicationData.GetBDIestatements(str,dt,null,obj[0].Id,'Date Range');
         MemberCommunicationData.GetBDIestatements(str,dt,null,objd[0].Id,'Date Range');
         MemberCommunicationData.isValidRelationship(objd[0].name, '123456789');
+        MemberCommunicationData.GetWiresData(str, null,null,obj[0].Id,'30');
+        MemberCommunicationData.GetNotesData(str, null,null,obj[0].Id,'30');
         
         MemberCommunicationData.CommentsEnt mc = new MemberCommunicationData.CommentsEnt();
         mc.id = 123;

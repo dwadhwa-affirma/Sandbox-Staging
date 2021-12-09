@@ -36,6 +36,12 @@ width: 80% !important;
 	
 	border-right: 1px solid rgb(221, 219, 218);
 }
+.THIS .BorderLeft{
+	
+	border: 1px solid rgb(221, 219, 218);
+    margin-top: 4px;
+    margin-bottom: 1px;
+}
 .THIS .SearchText{
 	
 	font-style: italic;
