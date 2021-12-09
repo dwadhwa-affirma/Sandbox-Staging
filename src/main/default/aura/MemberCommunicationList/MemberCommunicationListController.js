@@ -18,7 +18,6 @@
                  if(objsetting[i].Name == 'BDI' && objsetting[i].Hidden__c == false){
                      
                 	 component.set('v.ischk1',true);
-                    
                  }
             	 if(objsetting[i].Name == 'Salesforce' && objsetting[i].Hidden__c == false){
                 	 component.set('v.ischk2',true);
@@ -100,6 +99,7 @@
     },
     
     BtnFetchData:function(component, event, helper) {
+        debugger;
         var todate=component.get('v.todate');
         var fromdate=component.get('v.fromdate');
         var keyword =component.get('v.keyword');

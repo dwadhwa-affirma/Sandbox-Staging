@@ -67,8 +67,6 @@
      <aura:attribute name="sortedDirection" type="String"/>
     <aura:attribute name="SNAILsetting" type="List"/>
     <aura:attribute name="IsUserInGroup" type="Boolean"/>
-    <aura:attribute name="EmpRescrictedAccess" type="Boolean" default="false" />
-    
     <!-- handlers-->
     <aura:handler name="init" value="{! this }" action="{! c.doInit }"/>
     <div >
@@ -114,7 +112,7 @@
                                             </div>
                                             <div class="slds-float_right">
                                                 <p class="SearchText">
-                                                <aura:if isTrue="{!v.loadchk1}"> <lightning:icon iconName="utility:check" size="xx-small" alternativeText="Result" />
+                                                <aura:if isTrue="{! v.loadchk1 }"> <lightning:icon iconName="utility:check" size="xx-small" alternativeText="Result" />
                                                 	Result Showing
                                                	</aura:if>
                                                	 <aura:if isTrue="{! v.progchk1 }"> 
@@ -344,7 +342,7 @@
                                     </aura:if> -->
                                     <div class="BorderLeft"></div>
                                     <!-- eStatements (BDI) -->
-                                    <aura:if isTrue="{!and(v.ischk11,v.EmpRescrictedAccess)}">
+                                    <aura:if isTrue="{!v.ischk11}">
                                     <div class="slds-checkbox">
                                         <div class="slds-clearfix">
                                             <div class="slds-float_left">

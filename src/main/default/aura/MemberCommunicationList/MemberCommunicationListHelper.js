@@ -61,6 +61,7 @@
     },
     fetchAllData: function (cmp, event, helper) {
         
+        debugger;
         cmp.set("v.pageNumber", 1);
         cmp.set('v.Alldata', null );
         var linklabel ;
@@ -86,10 +87,10 @@
             {label: 'Account # ',fieldName: 'Account',type:'text',sortable : true,initialWidth: 110},
             
             {label: 'Case #' ,fieldName: 'caseLink',type:'url',initialWidth: 130,typeAttributes: { label:{fieldName:'caseLinkLabel'}, target:'_blank'}},
-            {label: 'Link', fieldName: 'hyperlinkPDF',type: 'url', typeAttributes: { label: linklabel, target:'_blank'}},
+            {label: 'Link',fieldName:'hyperlinkPDF',type: 'url', typeAttributes: { label: linklabel, target:'_blank'}},
             
         ]);
-            debugger;
+           
             cmp.set('v.loadchk1', false);
             cmp.set('v.loadchk2', false);
             cmp.set('v.loadchk3', false);
@@ -161,6 +162,8 @@
                                 else{
                                     cmp.set('v.Alldata',result );
                                 }
+                                
+                                debugger;
                                 cmp.set('v.loadchk1',true);
                             }
                             else{
