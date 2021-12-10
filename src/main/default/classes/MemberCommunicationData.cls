@@ -112,7 +112,7 @@ return [select Name,Hidden__c from SNAIL_Setting__c order by Order__c];
                             
                             if(doc != null){
                                 doc.DataSource='BDI';
-                                doc.EmployeeRestictedAccess=true;// replace this by query result
+                               // doc.EmployeeRestictedAccess=pa.PersonID__r.Employee_Restricted_Access__c!=null ? true:false;                                
                                 doc.Account=doc.Userid.leftPad(10,'0');
                                 //doc.hyperlinkPDF='/apex/MemberCommunicationPDF?url='+doc.hyperlinkPDF;
                                 //doc.dateDesc=temp;
@@ -196,7 +196,13 @@ return [select Name,Hidden__c from SNAIL_Setting__c order by Order__c];
                                     doc.Account=doc.Userid.leftPad(10,'0');
                                     //doc.documentDateText = doc.documentDate.format() + ' 00:00';
                                     string templink = doc.hyperlinkPDF;
-                                    doc.hyperlinkPDF='/apex/MemberCommunicationPDF?aburl='+ EncodingUtil.urlEncode(templink, 'UTF-8');
+                                    if(doc.EmployeeRestictedAccess){
+                                        doc.hyperlinkPDF = 'Restricted';
+                                    }
+                                    else{
+                                        doc.hyperlinkPDF='/apex/MemberCommunicationPDF?aburl='+ EncodingUtil.urlEncode(templink, 'UTF-8');
+                                    }
+                                    
                                     
                                     if(keyword == 'Date Range'){
                                         if( fromdate != null && todate == null && fromdate <= doc.documentDate  )
@@ -313,7 +319,7 @@ return results;
         List<MemberCommunicationData.documents> results=new List<MemberCommunicationData.documents>();
         list<string> lstrecid = new list<string>();
         for(Person_Account__c pa :[SELECT Id,Account_Number__c,Account_Number__r.Name,
-                                   Account_Number__r.Brand__c
+                                   Account_Number__r.Brand__c,PersonID__r.Employee_Restricted_Access__c 
                                    FROM Person_Account__c where PersonID__c =: recid]){
             system.debug('------paccount------------'+PA);
             if(pa.Account_Number__r.Brand__c == 'Spectrum'){
@@ -350,6 +356,7 @@ return results;
                             
                             if(doc != null){
                                 doc.DataSource='BDI';
+                                doc.EmployeeRestictedAccess=pa.PersonID__r.Employee_Restricted_Access__c!=null ? true:false;
                                 doc.Account=doc.Userid.leftPad(10,'0');
                                 //doc.dateDesc=temp;
                                 if(keyword == 'Date Range'){
@@ -455,6 +462,7 @@ return results;
                             
                             if(doc != null){
                                 doc.DataSource='BDI';
+                                //doc.EmployeeRestictedAccess=pa.PersonID__r.Employee_Restricted_Access__c!=null ? true:false;
                                 doc.Account=doc.Userid.leftPad(10,'0');
                                 //doc.hyperlinkPDF='/apex/MemberCommunicationPDF?url='+doc.hyperlinkPDF;
                                 //doc.dateDesc=temp;
@@ -485,7 +493,8 @@ return results;
         }
         else{
             
-            for(Person_Account__c pa :[SELECT Id,Account_Number__c,Account_Number__r.Name,Account_Number__r.Brand__c FROM Person_Account__c where PersonID__c =: recid]){
+            for(Person_Account__c pa :[SELECT Id,Account_Number__c,Account_Number__r.Name,
+            Account_Number__r.Brand__c,PersonID__r.Employee_Restricted_Access__c  FROM Person_Account__c where PersonID__c =: recid]){
                 system.debug('------paccount------------'+PA);
                 string strurl =SNAIL_Remote_Setting__c.getValues('BDIWebService').url__c;
                // string strurl = SNAIL_Remote_Setting__c.getValues('BDIProductionWebService').url__c;
@@ -542,12 +551,16 @@ return results;
                                 documents doc = (documents)parser.readValueAs(documents.class);
                                 if(doc != null){
                                     doc.DataSource= temp;
+                                    doc.EmployeeRestictedAccess=pa.PersonID__r.Employee_Restricted_Access__c!=null ? true:false;
                                     doc.Account=doc.Userid.leftPad(10,'0');
                                     //doc.documentDateText = doc.documentDate.format() + ' 00:00';
                                     string templink = doc.hyperlinkPDF;
-                                    
-                                    doc.hyperlinkPDF='/apex/MemberCommunicationPDF?aburl='+ EncodingUtil.urlEncode(templink, 'UTF-8');
-                                    
+                                    if(doc.EmployeeRestictedAccess){
+                                        doc.hyperlinkPDF = 'Restricted';
+                                    }
+                                    else{
+                                    	doc.hyperlinkPDF='/apex/MemberCommunicationPDF?aburl='+ EncodingUtil.urlEncode(templink, 'UTF-8');
+                                    }
                                     if(keyword == 'Date Range'){
                                         if( fromdate != null && todate == null && fromdate <= doc.documentDate  )
                                             
@@ -665,7 +678,7 @@ return results;
         }
         System.debug('memberNumberList: '+memberNumberList);
 
-        For(Person_Account__c p1 : [select id,account_number__c,PersonID__c,PersonID__r.firstname,
+        For(Person_Account__c p1 : [select id,account_number__c,PersonID__c,PersonID__r.firstname,PersonID__r.Employee_Restricted_Access__c,
                                     PersonID__r.LastName, Account_number__r.name from Person_Account__c
                                     where account_number__r.name In :memberNumberList and TypeTranslate__c='0000/Primary']){
             pmap.put(p1.Account_number__r.name, p1);

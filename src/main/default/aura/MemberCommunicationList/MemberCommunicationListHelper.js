@@ -66,15 +66,19 @@
         cmp.set('v.Alldata', null );
         var linklabel ;
         
+        debugger;
+
         if(cmp.get('v.selectedCheckBoxes')== 'OOW'){
             linklabel = 'Log';
         }
         else if(cmp.get('v.selectedCheckBoxes')== 'Wires' || cmp.get('v.selectedCheckBoxes')== 'Wires Transactions'){
             linklabel = 'View';
         }
-        else{
+        else {
+            
             linklabel= 'Download';
         }
+       
         
         cmp.set('v.columns', [
             {label: 'Source',fieldName: 'DataSource',type:'text', initialWidth: 130},
@@ -90,6 +94,9 @@
             {label: 'Link',fieldName:'hyperlinkPDF',type: 'url', typeAttributes: { label: linklabel, target:'_blank'}},
             
         ]);
+
+
+       
            
             cmp.set('v.loadchk1', false);
             cmp.set('v.loadchk2', false);
@@ -149,7 +156,15 @@
                         if(state == 'SUCCESS') {
                             var obj = a.getReturnValue();
                             var alldata = cmp.get('v.Alldata');
-                            var result = JSON.parse(JSON.stringify(obj));
+            				var isRestricteAccess = false;                            
+                                        var result = JSON.parse(JSON.stringify(obj));
+            				if(alldata != null && alldata.length > 0){
+                            	isRestricteAccess = alldata[0].EmployeeRestictedAccess;
+                            }
+                            else{
+                				if(result.length > 0)
+                            		isRestricteAccess = result[0].EmployeeRestictedAccess;
+                            }
                             if(result != null && result != ''){
                                 if(alldata != null){
                                     var x = parseInt(alldata.length);
@@ -165,6 +180,22 @@
                                 
                                 debugger;
                                 cmp.set('v.loadchk1',true);
+                                if(isRestricteAccess){
+                                    cmp.set('v.columns', [
+                                        {label: 'Source',fieldName: 'DataSource',type:'text', initialWidth: 130},
+                                        {label: 'Description', fieldName: 'dateDesc',type:'text',sortable : true,initialWidth: 300, wrapText:true},
+                                        {label: 'Date', fieldName: 'documentDate',type:'date-local',sortable : true,initialWidth: 110,typeAttributes: {day: '2-digit',
+                                                                                                                                                 month: '2-digit',
+                                                                                                                                                 year: 'numeric',
+                                                                                                                                                }},
+                                        {label: 'Member', fieldName: 'MemberName',type:'text',sortable : true,initialWidth: 200},
+                                        {label: 'Account # ',fieldName: 'Account',type:'text',sortable : true,initialWidth: 110},
+                                        
+                                        {label: 'Case #' ,fieldName: 'caseLink',type:'url',initialWidth: 130,typeAttributes: { label:{fieldName:'caseLinkLabel'}, target:'_blank'}},
+                                        {label: 'Link',fieldName:'hyperlinkPDF',type: 'text'},
+                                        
+                                    ]);
+                                }
                             }
                             else{
                                 cmp.set('v.nochk1', true); 
@@ -263,13 +294,82 @@
                 //     helper.fetchchk10(cmp, event, helper,paramVal,fromdate,todate,recid,keyword);    
                 // } 
             }
-			if(cmp.get('v.ischk11')){
+			/*if(cmp.get('v.ischk11')){
                 if(cmp.find('chk11').get("v.checked")){          
                     cmp.set('v.progchk11', true );
                     helper.fetchchk11(cmp, event, helper,paramVal,fromdate,todate,recid,keyword);    
                 } 
-            }
+            }*/
+            if(cmp.get('v.ischk11')){
+            	if(cmp.find('chk11').get("v.checked")){ 
+                    cmp.set('v.progchk11', true );
+                    var action = cmp.get('c.GetBDIestatements'); 
+                    action.setParams({
+                        source : paramVal,
+                        fromdate : fromdate,
+                        todate : todate,
+                        recid:recid,
+                        keyword:keyword
+                    });     
+            		action.setCallback(this, function(a){
+                        var state = a.getState(); // get the response state
+                
+                        if(state == 'SUCCESS') {
+                            var obj = a.getReturnValue();
+                            var alldata = cmp.get('v.Alldata');
+            				var isRestricteAccess = false;                            
+                                        var result = JSON.parse(JSON.stringify(obj));
+            				if(alldata != null && alldata.length > 0){
+                            	isRestricteAccess = alldata[0].EmployeeRestictedAccess;
+                            }
+                            else{
+                				if(result.length > 0)
+                            		isRestricteAccess = result[0].EmployeeRestictedAccess;
+                            }
+                            if(result != null && result != ''){
+                                if(alldata != null){
+                                    var x = parseInt(alldata.length);
+                                    for(var a in result){
+                                        x += 1;
+                                        alldata.push(result[a]);
+                                    }
+                                    cmp.set('v.Alldata',alldata ); 
+                                }
+                                else{
+                                    cmp.set('v.Alldata',result );
+                                }
+                                
+                                debugger;
+                                cmp.set('v.loadchk11',true);
+                                if(isRestricteAccess){
+                                    cmp.set('v.columns', [
+                                        {label: 'Source',fieldName: 'DataSource',type:'text', initialWidth: 130},
+                                        {label: 'Description', fieldName: 'dateDesc',type:'text',sortable : true,initialWidth: 300, wrapText:true},
+                                        {label: 'Date', fieldName: 'documentDate',type:'date-local',sortable : true,initialWidth: 110,typeAttributes: {day: '2-digit',
+                                                                                                                                                 month: '2-digit',
+                                                                                                                                                 year: 'numeric',
+                                                                                                                                                }},
+                                        {label: 'Member', fieldName: 'MemberName',type:'text',sortable : true,initialWidth: 200},
+                                        {label: 'Account # ',fieldName: 'Account',type:'text',sortable : true,initialWidth: 110},
+                                        
+                                        {label: 'Case #' ,fieldName: 'caseLink',type:'url',initialWidth: 130,typeAttributes: { label:{fieldName:'caseLinkLabel'}, target:'_blank'}},
+                                        {label: 'Link',fieldName:'hyperlinkPDF',type: 'text'},
+                                        
+                                    ]);
+                                }
+                            }
+                            else{
+                                cmp.set('v.nochk1', true); 
+                            }
+                            helper.getData(cmp, event, helper);
+                            cmp.set('v.Approve', true);
+                            cmp.set('v.progchk11', false );
+                        }
+					});
 
+					$A.enqueueAction(action);                
+				}	
+			}
 	},  
     MergeData: function ( cmp, event, helper){
         

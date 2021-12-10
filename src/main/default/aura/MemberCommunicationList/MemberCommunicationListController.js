@@ -2,7 +2,7 @@
     myAction : function(component, event, helper) {
         
     },
-    doInit : function(component, event, helper) {        
+    doInit : function(component, event, helper) {      
     	 var action = component.get('c.SNAILSetting'); 
     	
     	 action.setCallback(this, function(a){
