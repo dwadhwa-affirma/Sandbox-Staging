@@ -92,7 +92,7 @@
             
             {label: 'Case #' ,fieldName: 'caseLink',type:'url',initialWidth: 130,typeAttributes: { label:{fieldName:'caseLinkLabel'}, target:'_blank'}},
             {label: 'Link',fieldName:'hyperlinkPDF',type: 'url', typeAttributes: { label: linklabel, target:'_blank'}},
-            
+            //{label: 'Wire Status',fieldName: 'wirestatus',type:'text', initialWidth: 200},
         ]);
 
 
@@ -193,7 +193,8 @@
                                         
                                         {label: 'Case #' ,fieldName: 'caseLink',type:'url',initialWidth: 130,typeAttributes: { label:{fieldName:'caseLinkLabel'}, target:'_blank'}},
                                         {label: 'Link',fieldName:'hyperlinkPDF',type: 'text'},
-                                        
+                                        //{label: 'Wire Status', fieldName: 'wirestatus',type:'text',initialWidth: 200},
+
                                     ]);
                                 }
                             }
@@ -276,12 +277,84 @@
             		helper.fetchchk7(cmp, event, helper,paramVal,fromdate,todate,recid,keyword);    
         		} 
     		}	
-        	if(cmp.get('v.ischk8')){
+        	/*if(cmp.get('v.ischk8')){
             	if(cmp.find('chk8').get("v.checked")){          
                 	cmp.set('v.progchk8', true );
                 	helper.fetchchk8(cmp, event, helper,paramVal,fromdate,todate,recid,keyword);    
             	} 
-        	}	
+        	}*/
+            if(cmp.get('v.ischk8')){
+            	if(cmp.find('chk8').get("v.checked")){ 
+                    cmp.set('v.progchk8', true );
+                    var action = cmp.get('c.GetWiresData'); 
+                    action.setParams({
+                        source : paramVal,
+                        fromdate : fromdate,
+                        todate : todate,
+                        recid:recid,
+                        keyword:keyword
+                    });     
+            		action.setCallback(this, function(a){
+                        var state = a.getState(); // get the response state
+                
+                        if(state == 'SUCCESS') {
+                            var obj = a.getReturnValue();
+                            var alldata = cmp.get('v.Alldata');
+            				var isRestricteAccess = false;                            
+                                        var result = JSON.parse(JSON.stringify(obj));
+            				if(alldata != null && alldata.length > 0){
+                            	isRestricteAccess = alldata[0].EmployeeRestictedAccess;
+                            }
+                            else{
+                				if(result.length > 0)
+                            		isRestricteAccess = result[0].EmployeeRestictedAccess;
+                            }
+                            if(result != null && result != ''){
+                                if(alldata != null){
+                                    var x = parseInt(alldata.length);
+                                    for(var a in result){
+                                        x += 1;
+                                        alldata.push(result[a]);
+                                    }
+                                    cmp.set('v.Alldata',alldata ); 
+                                }
+                                else{
+                                    cmp.set('v.Alldata',result );
+                                }
+                                
+                                debugger;
+                                cmp.set('v.loadchk8',true);
+                                if(isRestricteAccess){
+                                    cmp.set('v.columns', [
+                                        {label: 'Source',fieldName: 'DataSource',type:'text', initialWidth: 130},
+                                        {label: 'Description', fieldName: 'dateDesc',type:'text',sortable : true,initialWidth: 300, wrapText:true},
+                                        {label: 'Date', fieldName: 'documentDate',type:'date-local',sortable : true,initialWidth: 110,typeAttributes: {day: '2-digit',
+                                                                                                                                                 month: '2-digit',
+                                                                                                                                                 year: 'numeric',
+                                                                                                                                                }},
+                                        {label: 'Member', fieldName: 'MemberName',type:'text',sortable : true,initialWidth: 200},
+                                        {label: 'Account # ',fieldName: 'Account',type:'text',sortable : true,initialWidth: 110},
+                                        
+                                        {label: 'Case #' ,fieldName: 'caseLink',type:'url',initialWidth: 130,typeAttributes: { label:{fieldName:'caseLinkLabel'}, target:'_blank'}},
+                                        {label: 'Link',fieldName:'hyperlinkPDF',type: 'text'},
+                                        {label: 'Wire Status', fieldName: 'wirestatus',type:'text',initialWidth: 200},
+ 
+                                    ]);
+                                }
+                            }
+                            else{
+                                cmp.set('v.nochk1', true); 
+                            }
+                            helper.getData(cmp, event, helper);
+                            cmp.set('v.Approve', true);
+                            cmp.set('v.progchk8', false );
+                        }
+					});
+
+					$A.enqueueAction(action);                
+				}	
+			}
+            
         	if(cmp.get('v.ischk9')){
             	if(cmp.find('chk9').get("v.checked")){          
                 	cmp.set('v.progchk9', true );
@@ -354,7 +427,8 @@
                                         
                                         {label: 'Case #' ,fieldName: 'caseLink',type:'url',initialWidth: 130,typeAttributes: { label:{fieldName:'caseLinkLabel'}, target:'_blank'}},
                                         {label: 'Link',fieldName:'hyperlinkPDF',type: 'text'},
-                                        
+                                       // {label: 'Wire Status', fieldName: 'wirestatus',type:'text',initialWidth: 200},
+ 
                                     ]);
                                 }
                             }

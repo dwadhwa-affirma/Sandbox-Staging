@@ -1079,14 +1079,14 @@ string AccountNumber = p.Account_Number__r.Name; */
         
         List<WIRES_Transaction__c> wires = new List<WIRES_Transaction__c>();
         if( fromdate != null && todate == null && keyword == 'Date Range')
-            wires = [select id,name,FromAccount__c,createdDate,Source__c,Member_Name__c,Case__c from WIRES_Transaction__c where  createdDate >= :fromdate and FromAccount__c IN:accList ];
+            wires = [select id,name,FromAccount__c,createdDate,Source__c,Member_Name__c,Case__c,Approval_Status__c from WIRES_Transaction__c where  createdDate >= :fromdate and FromAccount__c IN:accList ];
         else if(fromdate != null && todate != null  && fromdate < todate && keyword == 'Date Range')
-            wires = [select id,name,FromAccount__c,createdDate,Source__c,Member_Name__c,Case__c from WIRES_Transaction__c where  createdDate  >= :fromdate and createdDate  <= :todate and FromAccount__c IN:accList];
+            wires = [select id,name,FromAccount__c,createdDate,Source__c,Member_Name__c,Case__c,Approval_Status__c from WIRES_Transaction__c where  createdDate  >= :fromdate and createdDate  <= :todate and FromAccount__c IN:accList];
         else if(fromdate == null && todate == null && keyword == null)
-            wires = [select id,name,FromAccount__c,createdDate,Source__c,Member_Name__c,Case__c from WIRES_Transaction__c where FromAccount__c IN:accList];
+            wires = [select id,name,FromAccount__c,createdDate,Source__c,Member_Name__c,Case__c,Approval_Status__c from WIRES_Transaction__c where FromAccount__c IN:accList];
         else if( keyword != 'Date Range'){
             Date d = System.today() - Integer.ValueOf(keyword);
-            wires = [select id,name,FromAccount__c,createdDate,Source__c,Member_Name__c,Case__c from WIRES_Transaction__c where createdDate >= :d and FromAccount__c IN:accList];
+            wires = [select id,name,FromAccount__c,createdDate,Source__c,Member_Name__c,Case__c,Approval_Status__c from WIRES_Transaction__c where createdDate >= :d and FromAccount__c IN:accList];
         }
         for(WIRES_Transaction__c ml : wires ){
             MemberCommunicationData.documents doc = new MemberCommunicationData.documents();
@@ -1098,6 +1098,7 @@ string AccountNumber = p.Account_Number__r.Name; */
             doc.DataSource=ml.Source__c;
             doc.Account= ml.FromAccount__c;
             doc.MemberName=ml.Member_Name__c;
+            doc.wirestatus=ml.Approval_Status__c;
             doc.hyperlinkPDF=URL.getSalesforceBaseUrl().toExternalForm()+ '/lightning/r/WIRES_Transaction__c/'+ml.id+'/view';
             if(ml.Case__c!=null){
                 doc.caseLinkLabel='Case';
@@ -1393,6 +1394,8 @@ string AccountNumber = p.Account_Number__r.Name; */
         
         @AuraEnabled
         public boolean EmployeeRestictedAccess{get;set;}
+        @AuraEnabled
+        public string wirestatus{get;set;}
     }
     
     
