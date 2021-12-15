@@ -92,7 +92,7 @@
             
             {label: 'Case #' ,fieldName: 'caseLink',type:'url',initialWidth: 130,typeAttributes: { label:{fieldName:'caseLinkLabel'}, target:'_blank'}},
             {label: 'Link',fieldName:'hyperlinkPDF',type: 'url', typeAttributes: { label: linklabel, target:'_blank'}},
-            //{label: 'Wire Status',fieldName: 'wirestatus',type:'text', initialWidth: 200},
+          // {label: 'Wire Status',fieldName: 'wirestatus',type:'text', initialWidth: 200},
         ]);
 
 
@@ -302,13 +302,13 @@
                             var alldata = cmp.get('v.Alldata');
             				var isRestricteAccess = false;                            
                                         var result = JSON.parse(JSON.stringify(obj));
-            				if(alldata != null && alldata.length > 0){
+            				/*if(alldata != null && alldata.length > 0){
                             	isRestricteAccess = alldata[0].EmployeeRestictedAccess;
                             }
                             else{
                 				if(result.length > 0)
                             		isRestricteAccess = result[0].EmployeeRestictedAccess;
-                            }
+                            }*/
                             if(result != null && result != ''){
                                 if(alldata != null){
                                     var x = parseInt(alldata.length);
@@ -324,7 +324,7 @@
                                 
                                 debugger;
                                 cmp.set('v.loadchk8',true);
-                                if(isRestricteAccess){
+                               // if(isRestricteAccess){
                                     cmp.set('v.columns', [
                                         {label: 'Source',fieldName: 'DataSource',type:'text', initialWidth: 130},
                                         {label: 'Description', fieldName: 'dateDesc',type:'text',sortable : true,initialWidth: 300, wrapText:true},
@@ -340,7 +340,7 @@
                                         {label: 'Wire Status', fieldName: 'wirestatus',type:'text',initialWidth: 200},
  
                                     ]);
-                                }
+                                //}
                             }
                             else{
                                 cmp.set('v.nochk1', true); 
@@ -427,7 +427,7 @@
                                         
                                         {label: 'Case #' ,fieldName: 'caseLink',type:'url',initialWidth: 130,typeAttributes: { label:{fieldName:'caseLinkLabel'}, target:'_blank'}},
                                         {label: 'Link',fieldName:'hyperlinkPDF',type: 'text'},
-                                       // {label: 'Wire Status', fieldName: 'wirestatus',type:'text',initialWidth: 200},
+                                        //{label: 'Wire Status', fieldName: 'wirestatus',type:'text',initialWidth: 200},
  
                                     ]);
                                 }
