@@ -347,7 +347,7 @@
                                     <div class="slds-checkbox">
                                         <div class="slds-clearfix">
                                             <div class="slds-float_left">
-                                                <p><lightning:input type="checkbox" label="eStatements"  aura:id="chk11" value="eStatements" onchange="{!c.callCheckboxMethod}" /></p>
+                                                <p><lightning:input type="checkbox" label="Statements"  aura:id="chk11" value="eStatements" onchange="{!c.callCheckboxMethod}" /></p>
                                             </div>
                                             <div class="slds-float_right">
                                                 <p class="SearchText">
