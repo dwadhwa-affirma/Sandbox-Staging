@@ -75,7 +75,7 @@ return [select Name,Hidden__c from SNAIL_Setting__c order by Order__c];
             //https://sf.businessdatainc.com
             if(recordid[0].Brand__c == 'Spectrum'){
                 //apiURL = strurl+'/Spectrum/rest/documents/'+recordid[0].name+'?admin=0';
-                apiURL =  strurl + '/Spectrum/rest/documents/'+recordid[0].name+'?admin=0&typeID=acctID';
+                apiURL =  strurl + '/SpectrumCU/rest/documents/'+recordid[0].name+'?admin=0&typeID=acctID';
             }else{
                 //apiURL = strurl+'/ChevronFCU/rest/documents/'+recordid[0].name+'?admin=0';
                 if(strurl.contains('dev')){
@@ -152,7 +152,7 @@ return [select Name,Hidden__c from SNAIL_Setting__c order by Order__c];
                 //string strProdurl = SNAIL_Remote_Setting__c.getValues('BDIProductionWebService').url__c;
                 if(pa.Account_Number__r.Brand__c == 'Spectrum'){
                     //apiURL = strurl+'/Spectrum/rest/documents/'+pa.Account_Number__r.Name+'?admin=0';
-                    apiURL =  strurl + '/Spectrum/rest/documents/'+pa.Account_Number__r.Name+'?admin=0&typeID=acctID';
+                    apiURL =  strurl + '/SpectrumCU/rest/documents/'+pa.Account_Number__r.Name+'?admin=0&typeID=acctID';
                 }else{
                     //apiURL = strurl+'/ChevronFCU/rest/documents/'+pa.Account_Number__r.Name+'?admin=0';
                     if(strurl.contains('dev')){
@@ -323,7 +323,7 @@ return results;
                                    FROM Person_Account__c where PersonID__c =: recid]){
             system.debug('------paccount------------'+PA);
             if(pa.Account_Number__r.Brand__c == 'Spectrum'){
-                apiURL = 'https://dev2ssl.businessdatainc.com/Spectrum/rest/documents/'+pa.Account_Number__r.Name+'?admin=0';
+                apiURL = 'https://dev2ssl.businessdatainc.com/SpectrumCU/rest/documents/'+pa.Account_Number__r.Name+'?admin=0';
             }else{
                 apiURL = 'https://dev2ssl.businessdatainc.com/ChevronFCU/rest/documents/'+pa.Account_Number__r.Name+'?admin=0';
             }
@@ -402,7 +402,7 @@ return results;
             string strurl = SNAIL_Remote_Setting__c.getValues('BDIWebService').url__c;
            // string strurl = SNAIL_Remote_Setting__c.getValues('BDIProductionWebService').url__c;
             if(recordid[0].Brand__c == 'Spectrum'){
-                apiURL = strurl+'/Spectrum/rest/documents/'+recordid[0].name+'?admin=0';
+                apiURL = strurl+'/SpectrumCU/rest/documents/'+recordid[0].name+'?admin=0';
             }else{
                 if(strurl.contains('dev')){
                     apiURL = strurl+'/ChevronFCU/rest/documents/'+recordid[0].name+'?admin=0';
@@ -414,7 +414,7 @@ return results;
 
             if(recordid[0].Brand__c == 'Spectrum'){
                 //apiURL = 'https://sf.businessdatainc.com/Spectrum/rest/documents/'+recordid[0].name+'?admin=0&typeID=acctID';
-                apiURL =  strurl + '/Spectrum/rest/documents/'+recordid[0].name+'?admin=0&typeID=acctID';
+                apiURL =  strurl + '/SpectrumCU/rest/documents/'+recordid[0].name+'?admin=0&typeID=acctID';
             }
             else{
                 //apiURL = 'https://sf.businessdatainc.com/ChevronFCU/rest/documents/'+recordid[0].name+'?admin=0&typeID=acctID';
@@ -500,7 +500,7 @@ return results;
                // string strurl = SNAIL_Remote_Setting__c.getValues('BDIProductionWebService').url__c;
                 if(pa.Account_Number__r.Brand__c == 'Spectrum'){
                     //apiURL = 'https://sf.businessdatainc.com/Spectrum/rest/documents/'+pa.Account_Number__r.Name+'?admin=0&typeID=acctID';
-                    apiURL =  strurl + '/Spectrum/rest/documents/'+pa.Account_Number__r.Name+'?admin=0&typeID=acctID';
+                    apiURL =  strurl + '/SpectrumCU/rest/documents/'+pa.Account_Number__r.Name+'?admin=0&typeID=acctID';
                 }
                 else{
                     //apiURL = 'https://sf.businessdatainc.com/ChevronFCU/rest/documents/'+pa.Account_Number__r.Name+'?admin=0&typeID=acctID';

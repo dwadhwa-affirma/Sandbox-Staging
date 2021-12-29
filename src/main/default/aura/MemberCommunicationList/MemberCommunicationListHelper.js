@@ -192,7 +192,7 @@
                                         {label: 'Account # ',fieldName: 'Account',type:'text',sortable : true,initialWidth: 110},
                                         
                                         {label: 'Case #' ,fieldName: 'caseLink',type:'url',initialWidth: 130,typeAttributes: { label:{fieldName:'caseLinkLabel'}, target:'_blank'}},
-                                        {label: 'Link',fieldName:'hyperlinkPDF',type: 'url', typeAttributes: { label: linklabel, target:'_blank'}},
+                                        {label: 'Link',fieldName:'hyperlinkPDF',type: 'text'},
                                         //{label: 'Wire Status', fieldName: 'wirestatus',type:'text',initialWidth: 200},
 
                                     ]);
@@ -426,7 +426,7 @@
                                         {label: 'Account # ',fieldName: 'Account',type:'text',sortable : true,initialWidth: 110},
                                         
                                         {label: 'Case #' ,fieldName: 'caseLink',type:'url',initialWidth: 130,typeAttributes: { label:{fieldName:'caseLinkLabel'}, target:'_blank'}},
-                                        {label: 'Link',fieldName:'hyperlinkPDF',type: 'url', typeAttributes: { label: linklabel, target:'_blank'}},
+                                        {label: 'Link',fieldName:'hyperlinkPDF',type: 'text'},
                                         //{label: 'Wire Status', fieldName: 'wirestatus',type:'text',initialWidth: 200},
  
                                     ]);
