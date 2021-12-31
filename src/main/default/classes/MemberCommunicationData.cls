@@ -323,9 +323,9 @@ return results;
                                    FROM Person_Account__c where PersonID__c =: recid]){
             system.debug('------paccount------------'+PA);
             if(pa.Account_Number__r.Brand__c == 'Spectrum'){
-                apiURL = 'https://dev2ssl.businessdatainc.com/SpectrumCU/rest/documents/'+pa.Account_Number__r.Name+'?admin=0';
+                apiURL = 'https://sf.businessdatainc.com/SpectrumCU/rest/documents/'+pa.Account_Number__r.Name+'?admin=0';
             }else{
-                apiURL = 'https://dev2ssl.businessdatainc.com/ChevronFCU/rest/documents/'+pa.Account_Number__r.Name+'?admin=0';
+                apiURL = 'https://sf.businessdatainc.com/ChevronFCU/rest/documents/'+pa.Account_Number__r.Name+'?admin=0';
             }
             system.debug('----------apiurl--------'+apiURL);
             Http http = new Http(); 
