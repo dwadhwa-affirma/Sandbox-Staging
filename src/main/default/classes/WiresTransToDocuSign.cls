@@ -67,7 +67,7 @@ public class WiresTransToDocuSign{
 		//----------------------------End - DocuSign Templates from Custom setting------------------------------------//
 
 		List<WIRES_Transaction__c> WiresList = new List<WIRES_Transaction__c>();
-		List<WIRES_Transaction__c> WiresTrans = [SELECT AccountStableReview__c, Member__c, Approval_Status__c, Approved_by_1st_Approver__c, Available_Balance_Review__c, Description__c, EndDate__c, Chevron_Account_Number__c, CreatedById, CreatedDate, FlagAccountOpenfor45Days__c, Fees__c, DocuSignId__c, DocuSign_Status1__c, EmailStableReview__c, FlagHomePhoneStablefor30Days__c, FlagEmailStablefor30Days__c, FlagMobilePhoneStablefor30Days__c, FlagWorkPhoneStablefor30Days__c, Frequency__c, FromAccount__c, Home_Phone_Stable_Review__c, Id, Identity_Verification_Used__c, ID_Verification_Review__c, IsAccountOpenfor45Days__c, IsDeleted, IsEmailStable__c, TotalFromAccount__c, IsHomePhoneStable__c, IsMobilePhoneStable__c, IsWorkPhoneStable__c, Is_Recurrence_Day__c, Member_Address__c, Member_City_State_Zip__c, Member_Email__c, Member_Home_Phone__c, Member_Name__c, TransactionStatus__c, Mobile_Phone_Stable_Review__c, RecurrenceEndDate__c, Name, Occurences__c, OwnerId, ParentTransaction__c, ToAccoutId__c, RecurrenceRange__c, Previous_Wires_Review__c, RecurrenceDay__c, Recurrence_Pattern__c, Review_Reason__c, Second_Approval_Review_Reason__c, SendOn__c, Share_ID__c, Transaction_Status__c, Source__c, StartDate__c, Status__c, ToAccountName__c, TransferType__c, WireAmount__c, WireMoneyDeliveryByDate__c, WIRES_Wires_Transaction__c, Work_Phone_Stable_Review__c, Brand__c, Docusign_IDV_Failure__c
+		List<WIRES_Transaction__c> WiresTrans = [SELECT AccountStableReview__c, Member__c, Approval_Status__c, Approved_by_1st_Approver__c, Available_Balance_Review__c, Description__c, EndDate__c, Chevron_Account_Number__c, CreatedById, CreatedDate, FlagAccountOpenfor45Days__c, Fees__c, DocuSignId__c, DocuSign_Status1__c, EmailStableReview__c, FlagHomePhoneStablefor30Days__c, FlagEmailStablefor30Days__c, FlagMobilePhoneStablefor30Days__c, FlagWorkPhoneStablefor30Days__c, Frequency__c, FromAccount__c, Home_Phone_Stable_Review__c, Id, Identity_Verification_Used__c, ID_Verification_Review__c, IsAccountOpenfor45Days__c, IsDeleted, IsEmailStable__c, TotalFromAccount__c, IsHomePhoneStable__c, IsMobilePhoneStable__c, IsWorkPhoneStable__c, Is_Recurrence_Day__c, Member_Address__c, Member_City_State_Zip__c, Member_Email__c, Member_Home_Phone__c, Member_Name__c, TransactionStatus__c, Mobile_Phone_Stable_Review__c, RecurrenceEndDate__c, Name, Occurences__c, OwnerId, ParentTransaction__c, ToAccoutId__c, RecurrenceRange__c, Previous_Wires_Review__c, RecurrenceDay__c, Recurrence_Pattern__c, Review_Reason__c, Second_Approval_Review_Reason__c, SendOn__c, Share_ID__c, Transaction_Status__c, Source__c, StartDate__c, Status__c, ToAccountName__c, TransferType__c, WireAmount__c, WireMoneyDeliveryByDate__c, WIRES_Wires_Transaction__c, Work_Phone_Stable_Review__c, Brand__c, Docusign_IDV_Failure__c, IDV_Failed_Docusign_ID__c
 		                                         FROM WIRES_Transaction__c
 		                                         where id = :ids];
 
@@ -146,14 +146,17 @@ public class WiresTransToDocuSign{
 			EnvelopeId = String.valueOf(responseBody).substringAfter('"envelopeId":"');
 			EnvelopeId = String.valueOf(EnvelopeId).substringBefore('"');
 			system.debug('EnvelopeId: ' + EnvelopeId);
+            system.debug('wt.Docusign_IDV_Failure__c: ' + wt.Docusign_IDV_Failure__c);
 
-			WIRES_Transaction__c w = new WIRES_Transaction__c();
-			w.id = wt.Id;
-			w.DocuSignId__c = EnvelopeId;
+			WIRES_Transaction__c w = new WIRES_Transaction__c();	
+            if(wt.Docusign_IDV_Failure__c && string.isBlank(wt.IDV_Failed_Docusign_ID__c)){                
+                w.IDV_Failed_Docusign_ID__c = wt.DocuSignId__c;
+            }
+			w.id = wt.Id;			
+			w.DocuSignId__c = EnvelopeId;						
 			w.Approval_Status__c = WiresConstant.ApprovalStatus_PendingForMemberReview;
 
-			WireTransToUpdate.add(w);
-
+			
 			//--------------------------------Saving EnvelopeId-------------------------------------------------//
 
 			endPointURL1 = 'https://'+endpoint+'/restapi/v2.1/accounts/'+accountID+'/envelopes/'+EnvelopeId+'/recipients';
@@ -216,8 +219,11 @@ public class WiresTransToDocuSign{
 			}
 
 			if (wt.Docusign_IDV_Failure__c){
-				wt.Docusign_Re_sent__c = true;
+				w.Docusign_Re_sent__c = true;
 			}
+
+			WireTransToUpdate.add(w);
+
 		}
 
 
@@ -446,7 +452,7 @@ public class WiresTransToDocuSign{
 		//----------------------------End - DocuSign Templates from Custom setting------------------------------------//
 
 		List<WIRES_Transaction__c> WiresList = new List<WIRES_Transaction__c>();
-		List<WIRES_Transaction__c> WiresTrans = [SELECT AccountStableReview__c, Approval_Status__c, Approved_by_1st_Approver__c, Available_Balance_Review__c, Description__c, EndDate__c, Chevron_Account_Number__c, CreatedById, CreatedDate, FlagAccountOpenfor45Days__c, Fees__c, DocuSignId__c, DocuSign_Status1__c, EmailStableReview__c, FlagHomePhoneStablefor30Days__c, FlagEmailStablefor30Days__c, FlagMobilePhoneStablefor30Days__c, FlagWorkPhoneStablefor30Days__c, Frequency__c, FromAccount__c, Home_Phone_Stable_Review__c, Id, Identity_Verification_Used__c, ID_Verification_Review__c, IsAccountOpenfor45Days__c, IsDeleted, IsEmailStable__c, TotalFromAccount__c, IsHomePhoneStable__c, IsMobilePhoneStable__c, IsWorkPhoneStable__c, Is_Recurrence_Day__c, Member_Address__c, Member_City_State_Zip__c, Member_Email__c, Member_Home_Phone__c, Member_Name__c, TransactionStatus__c, Mobile_Phone_Stable_Review__c, RecurrenceEndDate__c, Name, Occurences__c, OwnerId, ParentTransaction__c, ToAccoutId__c, RecurrenceRange__c, Previous_Wires_Review__c, RecurrenceDay__c, Recurrence_Pattern__c, Second_Approval_Review_Reason__c, SendOn__c, Share_ID__c, Transaction_Status__c, Review_Reason__c, Source__c, StartDate__c, Status__c, ToAccountName__c, TransferType__c, WireAmount__c, WireMoneyDeliveryByDate__c, WIRES_Wires_Transaction__c, Work_Phone_Stable_Review__c, Brand__c
+		List<WIRES_Transaction__c> WiresTrans = [SELECT AccountStableReview__c, Approval_Status__c, Approved_by_1st_Approver__c, Available_Balance_Review__c, Description__c, EndDate__c, Chevron_Account_Number__c, CreatedById, CreatedDate, FlagAccountOpenfor45Days__c, Fees__c, DocuSignId__c, DocuSign_Status1__c, EmailStableReview__c, FlagHomePhoneStablefor30Days__c, FlagEmailStablefor30Days__c, FlagMobilePhoneStablefor30Days__c, FlagWorkPhoneStablefor30Days__c, Frequency__c, FromAccount__c, Home_Phone_Stable_Review__c, Id, Identity_Verification_Used__c, ID_Verification_Review__c, IsAccountOpenfor45Days__c, IsDeleted, IsEmailStable__c, TotalFromAccount__c, IsHomePhoneStable__c, IsMobilePhoneStable__c, IsWorkPhoneStable__c, Is_Recurrence_Day__c, Member_Address__c, Member_City_State_Zip__c, Member_Email__c, Member_Home_Phone__c, Member_Name__c, TransactionStatus__c, Mobile_Phone_Stable_Review__c, RecurrenceEndDate__c, Name, Occurences__c, OwnerId, ParentTransaction__c, ToAccoutId__c, RecurrenceRange__c, Previous_Wires_Review__c, RecurrenceDay__c, Recurrence_Pattern__c, Second_Approval_Review_Reason__c, SendOn__c, Share_ID__c, Transaction_Status__c, Review_Reason__c, Source__c, StartDate__c, Status__c, ToAccountName__c, TransferType__c, WireAmount__c, WireMoneyDeliveryByDate__c, WIRES_Wires_Transaction__c, Work_Phone_Stable_Review__c, Brand__c, Docusign_IDV_Failure__c
 		                                         FROM WIRES_Transaction__c
 		                                         where id = :ids];
 
@@ -604,11 +610,30 @@ public class WiresTransToDocuSign{
 				EmailToSend = userEmail;
 				json1 = '{"signers": [' + '{' + '"email": "' + EmailToSend + '",' + '"recipientId" : "1",' + '"roleName": "Signer 1",' + '"name": "' + Member.Name + '",' + '"signingGroupId": "signers",' + '"routingOrder" : "null"' + '}' + ']' + '}';
 			}
-
-
+			
+            
+           /* string endPointURL4 = 'https://'+endpoint+'/restapi/v2.1/accounts/' + accountID + '/templates/7e9a5e78-b8dd-4bde-888c-269864785110';
+			req3.setEndpoint(endPointURL4);
+			req3.setMethod('PUT');
+			req3.setHeader('X-DocuSign-Authentication', authorizationHeader);
+			req3.setHeader('Content-Length', '162100');
+			req3.setHeader('Content-Type', 'application/json');
+			req3.setHeader('Content-Disposition', 'form-data');
+			req3.setTimeout(10000);
+			//json3 = '{"status":"sent"' + '}';
+            json3 = '{"signers": [  {  "identityVerification": {"workflowId": null,"steps": null }, "recipientId" : "1" }  ]  }';
+            system.debug(json3);
+			req3.setBody(json3);
+            
+             
+			if (!Test.isRunningTest()){
+				res3 = http2.send(req3);
+				system.debug('DocuSign Response' + res3.getBody());
+			}*/
+            
 			//------------------------------------------Sending Envelope -----------------------------------------//
             string EnvelopeId = wt.DocuSignId__c;
-			endPointURL3 = 'https://'+endpoint+'/restapi/v2.1/accounts/' + accountID + '/envelopes/' + EnvelopeId + '/recipients?resend_envelope=true';//'https://'+endpoint+'/restapi/v2.1/accounts/'+accountID + '/identity_verification';//'https://'+endpoint+'/restapi/v2.1/accounts/'+accountID+'/envelopes/'+EnvelopeId + '?resend_envelope=true' ;//+ '/recipients';
+			endPointURL3 = 'https://'+endpoint+'/restapi/v2.1/accounts/'+accountID+'/envelopes/'+EnvelopeId + '?resend_envelope=true' ;//+ '/recipients';
 			req3.setEndpoint(endPointURL3);
 			req3.setMethod('PUT');
 			req3.setHeader('X-DocuSign-Authentication', authorizationHeader);
@@ -616,22 +641,25 @@ public class WiresTransToDocuSign{
 			req3.setHeader('Content-Type', 'application/json');
 			req3.setHeader('Content-Disposition', 'form-data');
 			req3.setTimeout(10000);
-			json3 = '{"status":"sent"' + '}';
-			//req3.setBody(json3);
+			//json3 = '{"status":"sent"' + '}';
+            json3 = '{"signers": [  {  "identityVerification": "",  "recipientId" : "1" }  ]  }';
+            system.debug(json3);
+			req3.setBody(json3);
+            
 			if (!Test.isRunningTest()){
 				res3 = http2.send(req3);
 				system.debug('DocuSign Response' + res3.getBody());
 			}
 
 			if(wt.Docusign_IDV_Failure__c){
-			   // wt.Docusign_Re_sent__c = true;
+			   wt.Docusign_Re_sent__c = true;
 			}
-            //WireTransToUpdate.add(wt);
+            WireTransToUpdate.add(wt);
 		}
 
 
 		if(WireTransToUpdate.size() > 0){
-		    //update WireTransToUpdate;
+		    update WireTransToUpdate;
 		}
 	}
 

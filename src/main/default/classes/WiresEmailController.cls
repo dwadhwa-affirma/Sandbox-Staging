@@ -19,7 +19,7 @@ public  class WiresEmailController {
                                                         emailIds=emails;
                                                     }
                                                     
-                                                    if(EmailToSend != 'Production' || EmailToSend != 'production'){
+                                                    else if(EmailToSend != 'Production'){
                                                         emailIds.add(userEmail);
                                                     }
                                                     
@@ -94,7 +94,7 @@ public  class WiresEmailController {
             emailIds=emails;
         }
         
-        if(EmailToSend != 'Production' || EmailToSend != 'production'){
+        else if(EmailToSend != 'Production'){
             emailIds.add(userEmail);
         }
         
@@ -152,14 +152,19 @@ public  class WiresEmailController {
             EmailToSend = wde.Emails__c;
         }
         
-        List<WIRES_Transaction__c> WiresTrans = [SELECT Id,Member_Email__c,CreatedBy.Email, LaunchByUserId__r.Email
+        List<WIRES_Transaction__c> WiresTrans = [SELECT Id,Member_Email__c,CreatedBy.Email, LaunchByUserId__r.Email, FormattedTotalAmount__c, source__c, member__c, member__r.personemail
                                                  FROM WIRES_Transaction__c WHERE id =: id LIMIT 1];
         
         if(EmailToSend == 'Production' || EmailToSend == 'production'){
-            EmailToSend = WiresTrans[0].LaunchByUserId__r.Email;     
+            if(WiresTrans[0].source__c == WiresConstant.Source_Branch){
+                EmailToSend = WiresTrans[0].LaunchByUserId__r.Email;
+            }
+            else{
+                EmailToSend = WiresTrans[0].member__r.personemail;
+            }     
         }
         
-        if(EmailToSend != 'Production' || EmailToSend != 'production'){
+        else if(EmailToSend != 'Production'){
             EmailToSend = userEmail;
         }
         
@@ -172,10 +177,10 @@ public  class WiresEmailController {
     {
         List<WIRES_Transaction__c> wireTransactions = [SELECT id,Approval_Status__c,ToAccountName__c,ToAccoutId__c,
                                                        Status__c, FromAccount__c,TotalFromAccount__c,WireAmount__c,
-                                                       ToAccoutId__r.Recipient_AccountNumber__c,
+                                                       ToAccoutId__r.Recipient_AccountNumber__c,ToAccoutId__r.RoutingNumber__c,
                                                        ToAccoutId__r.BankName__c,Member_Name__c,
                                                        Cancel_Reason__c,First_Approval_Comment__c,
-                                                       LaunchByUserId__r.Email
+                                                       LaunchByUserId__r.Email, Review_Reason__c, FormattedTotalAmount__c, FormattedWireAmount__c
                                                        from WIRES_Transaction__c where id=:id];
         
         List<Messaging.SingleEmailMessage> mails = new List<Messaging.SingleEmailMessage>();
@@ -239,13 +244,42 @@ public  class WiresEmailController {
             
             if(!Test.isRunningTest()){            
                 string body = listEmailTemplate[0].HtmlValue;
-                body=body.replace('{Name}', wt.Member_Name__c);
-                body=body.replace('{BankName__c}', wt.ToAccoutId__r.BankName__c);
-                body=body.replace('{TotalFromAccount__c}',string.valueOf(wt.WireAmount__c));
+                if(wt.Member_Name__c == null){
+                    body=body.replace('{Name}', 'Member');
+                }
+                else{
+                    body=body.replace('{Name}', wt.Member_Name__c);
+                }     
+                if(wt.ToAccoutId__r.BankName__c != null){
+                    body=body.replace('{BankName__c}', wt.ToAccoutId__r.BankName__c);
+                }
+                else{
+                    /*String RoutingNumber = wt.ToAccoutId__r.RoutingNumber__c;
+                    string BankName = '';
+                    if(String.isNotBlank(RoutingNumber)){
+                       	BankName = GetABADetailsWebService.GetBankName(RoutingNumber); 
+                        if(BankName == 'FAIL'){
+                            BankName = '';
+                        }
+                    }*/
+                    body=body.replace('to {BankName__c}', '');
+                }
+                //body=body.replace('{BankName__c}', wt.ToAccoutId__r.BankName__c);
+                body=body.replace('{TotalFromAccount__c}',wt.FormattedWireAmount__c);
                 if(isCancelled==true){
                     body=body.replace('{Reason}',wt.Cancel_Reason__c);
                 }else{
-                    body=body.replace('{Reason}',wt.First_Approval_Comment__c);
+                    string reason = '';                    
+                    if(String.isNotBlank(wt.First_Approval_Comment__c)){
+                        reason = wt.First_Approval_Comment__c;
+                    }
+                    else if(String.isNotBlank(wt.Review_Reason__c)){
+                        reason = wt.Review_Reason__c;
+                    }
+                    else{
+                        reason = '';
+                    }
+                    body=body.replace('{Reason}',reason);
                 }
                 mail.setHtmlBody(body);
                 mail.setOrgWideEmailAddressId(listAdd[0].Id);

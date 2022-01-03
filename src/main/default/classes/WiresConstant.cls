@@ -40,4 +40,11 @@ public class WiresConstant {
     
     public static final string OneTime='One - Time';
     public static final string Reccuring='Recurring';
+    
+    //--------------------------------Wires RecordTypes---------------------------------------------//
+    
+    public static final string Branch_Domestic_1_Time='Branch Domestic 1 Time';
+    public static final string Branch_Domestic_Recurring='Branch Domestic Recurring';
+    public static final string Online_Domestic_1_Time= 'Online Domestic 1 Time';
+    public static final string Online_Domestic_Recurring='Online Domestic Recurring';
 }

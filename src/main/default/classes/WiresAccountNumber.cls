@@ -12,9 +12,9 @@ public class WiresAccountNumber {
         strMap.put('FlowURL',FlowURL);
         
         
-        WiresBranchFlowURL__c wofu = WiresBranchFlowURL__c.getValues('WiresOnlineFlowURL');
+        /*WiresBranchFlowURL__c wofu = WiresBranchFlowURL__c.getValues('WiresOnlineFlowURL');
         string onlineFlowURL=wofu.URL__c;
-        strMap.put('OnlineFlowURL',onlineFlowURL);
+        strMap.put('OnlineFlowURL',onlineFlowURL);*/
         
         return strMap;
     }

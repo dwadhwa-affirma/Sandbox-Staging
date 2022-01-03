@@ -12,11 +12,13 @@ global class Wires_ApprovalNotificationOnlineBatch implements Database.Batchable
                                          Approved_by_1st_Approver__c,Source__c,
                                          Has_Additional_Documents__c
                                          FROM WIRES_Transaction__c 
-                                         WHERE Source__c =: WiresConstant.Source_OnlineBanking
+                                         WHERE Source__c =: WiresConstant.Source_OnlineBanking                                        
                                          AND Frequency__c =: WiresConstant.OneTime
                                          AND (Approval_Status__c=:WiresConstant.ApprovalStatus_PendingForApproval 
                                               OR Approval_Status__c=:WiresConstant.ApprovalStatus_PendingForSecondApproval
-                                              OR Approval_Status__c=:WiresConstant.ApprovalStatus_GoodFundsReview)]);    
+                                             OR Approval_Status__c=:WiresConstant.ApprovalStatus_GoodFundsReview) 
+                                         AND Current_Reviewer_Modified_Date__c <> null
+                                        ]);    
     }
     
     global void execute(Database.BatchableContext BC,List<WIRES_Transaction__c> scopeWTIDs){
@@ -32,11 +34,11 @@ global class Wires_ApprovalNotificationOnlineBatch implements Database.Batchable
             string grpDName='';
             string grpEName='';
             
-            grpAName=WiresConstant.Branch_Group_A;
-            grpBName=WiresConstant.Branch_Group_B;
-            grpCName=WiresConstant.Branch_Group_C;
-            grpDName=WiresConstant.Branch_Group_D;
-            grpEName=WiresConstant.Branch_Group_E;
+            grpAName=WiresConstant.Online_Group_A;
+            grpBName=WiresConstant.Online_Group_B;
+            grpCName=WiresConstant.Online_Group_C;
+            grpDName=WiresConstant.Online_Group_D;
+            grpEName=WiresConstant.Online_Group_E;
             
             Group grpA = [SELECT DeveloperName,Email,Id,Name,RelatedId,Type 
                           FROM Group WHERE DeveloperName =:grpAName Limit 1];
@@ -86,7 +88,7 @@ global class Wires_ApprovalNotificationOnlineBatch implements Database.Batchable
             
             Map<Id,User> userMap = new Map<Id,User>([SELECT Id,ManagerId,Email FROM User Where IsActive=true and Profile.Name!='Messaging center Customers']);
             
-            Map<Id,User> usersWithManagerMap=new Map<Id,User>([SELECT Id,ManagerId,Email FROM User Where IsActive=true and ManagerId!=null and Profile.Name!='Messaging center Customers']);        
+            Map<Id,User> usersWithManagerMap=new Map<Id,User>([SELECT Id,ManagerId,Email, IsActive FROM User Where IsActive=true and ManagerId!=null and Profile.Name!='Messaging center Customers']);        
             
             set<Id> wiresId=new set<Id>();
             for(WIRES_Transaction__c wtc: scopeWTIDs){
@@ -172,7 +174,10 @@ global class Wires_ApprovalNotificationOnlineBatch implements Database.Batchable
                             }
                         }
                         
-                        if(manager!=null && manager.ManagerId!=null){
+                        User managerUser=usersWithManagerMap.get(manager.ManagerId);
+                    
+                    System.debug('managerUser:'+managerUser);
+                        if(manager!=null && manager.ManagerId!=null && managerUser.IsActive==true){
                             TraverseApprovalNotificationTree(manager.ManagerId,wtc,userMap,usersWithManagerMap,currentReviewerIds,groupAUsers,groupBUsers,groupCUsers,groupDUsers,groupEUsers);
                         }
                     }
@@ -267,6 +272,7 @@ global class Wires_ApprovalNotificationOnlineBatch implements Database.Batchable
                                                                      isManagerInTheWireApprovalGroup=IsUserInTheSecondWireApprovalGroup(managerId,wtc.WireAmount__c,groupAUsers,groupBUsers,groupCUsers,groupDUsers,groupEUsers);
                                                                  }else{
                                                                      isManagerInTheWireApprovalGroup=IsUserInTheFirstWireApprovalGroup(managerId,wtc.WireAmount__c,groupAUsers,groupBUsers,groupCUsers,groupDUsers,groupEUsers);
+                                                                 	 system.debug('isManagerInTheWireApprovalGroup='+isManagerInTheWireApprovalGroup);
                                                                  }
                                                                  
                                                                  
@@ -322,27 +328,51 @@ global class Wires_ApprovalNotificationOnlineBatch implements Database.Batchable
                                                                  
                                                                  boolean isFound=false;  
                                                                  
-                                                                 if(wireTotalAmount>0 && wireTotalAmount<=25000){
+                                                                 if(wireTotalAmount>0 && wireTotalAmount<=5000){
                                                                      if(groupAUsers.contains(userId) || groupBUsers.contains(userId) 
-                                                                        || groupCUsers.contains(userId) || groupDUsers.contains(userId) || groupEUsers.contains(userId)){
+                                                                        || groupCUsers.contains(userId)){
                                                                             isFound = true;
                                                                         }else{
                                                                             isFound = false;
                                                                         }   
                                                                  }
-                                                                 if(wireTotalAmount>25000 && wireTotalAmount<=100000){
+                                                                 
+                                                                 if(wireTotalAmount>5000 && wireTotalAmount<=50000){
+                                                                     if(groupAUsers.contains(userId) || groupBUsers.contains(userId) 
+                                                                        || groupCUsers.contains(userId) || groupDUsers.contains(userId)){
+                                                                            isFound = true;
+                                                                        }else{
+                                                                            isFound = false;
+                                                                        }   
+                                                                 }
+                                                                 if(wireTotalAmount>50000 && wireTotalAmount<=100000){
                                                                      if(groupBUsers.contains(userId) 
                                                                         || groupCUsers.contains(userId) 
-                                                                        || groupDUsers.contains(userId) 
-                                                                        || groupEUsers.contains(userId)){
+                                                                        || groupDUsers.contains(userId)){
                                                                             isFound = true;
                                                                         }else{
                                                                             isFound = false;
                                                                         }   
                                                                  }
-                                                                 if(wireTotalAmount>100000){   
+                                                                 if(wireTotalAmount>100000 && wireTotalAmount<=500000){
                                                                      if(groupCUsers.contains(userId) 
-                                                                        || groupDUsers.contains(userId)){
+                                                                        || groupDUsers.contains(userId)
+                                                                       	|| groupEUsers.contains(userId)){
+                                                                            isFound = true;
+                                                                        }else{
+                                                                            isFound = false;
+                                                                        }   
+                                                                 }
+                                                                 if(wireTotalAmount>500000 && wireTotalAmount<=1500000){
+                                                                     if(groupDUsers.contains(userId)
+                                                                       	|| groupEUsers.contains(userId)){
+                                                                            isFound = true;
+                                                                        }else{
+                                                                            isFound = false;
+                                                                        }   
+                                                                 }
+                                                                 if(wireTotalAmount>1500000){   
+                                                                     if(groupEUsers.contains(userId)){
                                                                             isFound = true;
                                                                         }else{
                                                                             isFound = false;

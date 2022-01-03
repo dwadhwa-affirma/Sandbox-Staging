@@ -85,9 +85,9 @@ global class Wires_ApprovalNotificationBatch implements Database.Batchable<sObje
                 groupEUsers.add(member.UserOrGroupId);
             }
             
-            Map<Id,User> userMap = new Map<Id,User>([SELECT Id,ManagerId,Email FROM User Where IsActive=true and Profile.Name!='Messaging center Customers']);
+            Map<Id,User> userMap = new Map<Id,User>([SELECT Id,ManagerId,Email,IsActive FROM User Where IsActive=true and Profile.Name!='Messaging center Customers']);
             
-            Map<Id,User> usersWithManagerMap=new Map<Id,User>([SELECT Id,ManagerId,Email FROM User Where IsActive=true and ManagerId!=null and Profile.Name!='Messaging center Customers']);        
+            Map<Id,User> usersWithManagerMap=new Map<Id,User>([SELECT Id,ManagerId,Email,IsActive FROM User Where IsActive=true and ManagerId!=null and Profile.Name!='Messaging center Customers']);        
             
             set<Id> wiresId=new set<Id>();
             for(WIRES_Transaction__c wtc: scopeWTIDs){
@@ -166,14 +166,21 @@ global class Wires_ApprovalNotificationBatch implements Database.Batchable<sObje
                         }else{
                             if(wtc.Current_Reviewer__c==null){
                                 manager=userMap.get(wtc.First_Reviewer__c);
+                                
+                                
                                 //manager = [SELECT Id, Name, ManagerId FROM User WHERE Id =: wtc.First_Reviewer__c LIMIT 1];
                             }else{
                                 manager=userMap.get(wtc.Current_Reviewer__c);
+                                
+                                System.debug('Manager userMap.get:'+manager);
                                 //manager = [SELECT Id, Name, ManagerId FROM User WHERE Id =: wtc.Current_Reviewer__c LIMIT 1];
                             }
-                        }
+                       }
                         
-                        if(manager!=null && manager.ManagerId!=null){
+                    	User managerUser=usersWithManagerMap.get(manager.ManagerId);
+                    
+                    System.debug('managerUser:'+managerUser);
+                        if(manager!=null && manager.ManagerId!=null && managerUser.IsActive==true){
                             TraverseApprovalNotificationTree(manager.ManagerId,wtc,userMap,usersWithManagerMap,currentReviewerIds,groupAUsers,groupBUsers,groupCUsers,groupDUsers,groupEUsers);
                         }
                     }

@@ -12,8 +12,7 @@ global class Wires_ProcessRecurrenceTransactionBatch implements Database.Batchab
                                              Description__c,Chevron_Account_Number__c,
                                              SendOn__c,ToAccountName__c, 
                                              ToAccoutId__c, Share_ID__c,Frequency__c,
-                                             Source__c,First_Reviewer__c,
-                                             RecurrenceEndDate__c
+                                             Source__c,First_Reviewer__c,RecurrenceEndDate__c, Recurrence_Bypass__c, Number_of_One_Time_Wires_Sent__c                                             
                                              FROM WIRES_Transaction__c 
                                              WHERE Frequency__c =: WiresConstant.Reccuring
                                              AND Source__c=:WiresConstant.Source_OnlineBanking
@@ -22,17 +21,19 @@ global class Wires_ProcessRecurrenceTransactionBatch implements Database.Batchab
                                              AND RecurrenceEndDate__c >=: Date.today()
                                              AND (RecurrenceDay__c = : Date.today().day() OR (RecurrenceDay__c>:daysInMonth))]);    
         }else{
+            
             return DataBase.getQueryLocator([SELECT Id, FromAccount__c, WireAmount__c,Member_SSN__c,
                                              Fees__c,Description__c,Chevron_Account_Number__c,SendOn__c,
                                              ToAccountName__c, ToAccoutId__c, 
                                              Share_ID__c,Frequency__c,
-                                             Source__c,First_Reviewer__c,RecurrenceEndDate__c
+                                             Source__c,First_Reviewer__c,RecurrenceEndDate__c, Recurrence_Bypass__c, Number_of_One_Time_Wires_Sent__c
                                              FROM WIRES_Transaction__c 
-                                             WHERE Frequency__c =: WiresConstant.Reccuring
+                                             WHERE Frequency__c =: WiresConstant.Reccuring   
+                                             AND Source__c=:WiresConstant.Source_OnlineBanking
                                              AND IsActive__c=true
                                              AND TransactionStatus__c = 'Pending' 
                                              AND RecurrenceEndDate__c >=: Date.today()
-                                             AND RecurrenceDay__c = : Date.today().day()]);    
+                                             AND RecurrenceDay__c = : Date.today().day()]); 
         }
     }
     
@@ -41,6 +42,10 @@ global class Wires_ProcessRecurrenceTransactionBatch implements Database.Batchab
         
         List<WIRES_Transaction__c> onetimeWireObjs = new List<WIRES_Transaction__c>();
         Integer daysInMonth=Date.daysInMonth(Date.today().year(),Date.today().month());
+        List<WIRES_Transaction__c> RecurrenceBypassWirestoUpdate = new List<WIRES_Transaction__c>();
+        
+        Wires_Recurrence_Bypass__c RecurrenceBypass=Wires_Recurrence_Bypass__c.getValues('Online');
+        Decimal RecurrenceBypassNumber = RecurrenceBypass.RecurrenceBypassNumber__c;
         
         for(WIRES_Transaction__c wtc: scopeWTIDs){
             
@@ -63,27 +68,46 @@ global class Wires_ProcessRecurrenceTransactionBatch implements Database.Batchab
             objWTC.Description__c=wtc.Description__c;
             objWTC.Source__c=wtc.Source__c;
             objWTC.First_Reviewer__c=wtc.First_Reviewer__c;
-                        
+            
             DateTime d = DateTime.newInstance(System.today(), Time.newInstance(0, 0, 0, 0));
             if(cbd.isWorkingDay(d)==false){
-            	d=cbd.getNextWorkingDay(d);
+                d=cbd.getNextWorkingDay(d);
             }
             
             if(wtc.RecurrenceEndDate__c >= d) {	
                 objWTC.SendOn__c=d.Date();
-                onetimeWireObjs.add(objWTC);	
+                if(wtc.Recurrence_Bypass__c){                    
+                    objWTC.Approval_Status__c=WiresConstant.ApprovalStatus_Approved;
+                }
+                onetimeWireObjs.add(objWTC);     	
             }
+            system.debug('wtc.Number_of_One_Time_Wires_Sent__c #84'+wtc.Number_of_One_Time_Wires_Sent__c);
+            Integer CurrentNumber = wtc.Number_of_One_Time_Wires_Sent__c == null ? 0 : (Integer)wtc.Number_of_One_Time_Wires_Sent__c;
+            
+            wtc.Number_of_One_Time_Wires_Sent__c = CurrentNumber +1;
+            system.debug('wtc.Number_of_One_Time_Wires_Sent__c #89'+wtc.Number_of_One_Time_Wires_Sent__c);
+            if(wtc.Number_of_One_Time_Wires_Sent__c == RecurrenceBypassNumber){
+                wtc.Recurrence_Bypass__c = true;                
+            }
+            RecurrenceBypassWirestoUpdate.add(wtc);
         }
         insert onetimeWireObjs;
         
         for(WIRES_Transaction__c w:onetimeWireObjs){
-        	wiresId.add(w.Id);
+            if(w.Approval_Status__c != WiresConstant.ApprovalStatus_Approved){
+                system.debug('Approval Status #87'+w.Approval_Status__c);
+              	wiresId.add(w.Id);  
+            }            
+        }
+        
+        if(RecurrenceBypassWirestoUpdate.size() > 0){
+            update RecurrenceBypassWirestoUpdate;
         }
     }
     
     global void finish(Database.BatchableContext BC){
         if(wiresId.size()>0){
-             WiresTransToDocuSign.docusignAPIcallWithoutFuture(wiresId);
+            WiresTransToDocuSign.docusignAPIcallWithoutFuture(wiresId);
         }
     }
 }
