@@ -7,7 +7,11 @@ global with sharing  class ShowCasesController {
      public static integer mini = 0;
      public string CopyRights {get;set;}
      public string Brand_Help {get;set;}
-      public string Responsivecss {get;set;}
+     public string Responsivecss {get;set;}
+     public static Boolean isTyfone;
+    
+    public static String tyfoneSSN;
+	 
    //  public string redirecturl {get;set;}
   //   public string path {get;set;}
   //   public string currenturl {get;set;}
@@ -40,14 +44,15 @@ global with sharing  class ShowCasesController {
         List<User> u = [SELECT Name, ContactId, FederationIdentifier from User Where ID=:LoggedinUser];
         userAccount.CurrentUser = u[0];
         userAccount.fedid = u[0].FederationIdentifier;
-        List<contact> c = [SELECT AccountId, FirstName, MiddleName, LastName FROM Contact WHERE Id =:u[0].ContactId];
-        	 
+        List<contact> c = [SELECT AccountId, FirstName, MiddleName, LastName FROM Contact WHERE Id =:u[0].ContactId];        
+            
         if (c.size()>0)
          {
          	userAccount.userBusinessContact = c[0];
          }
             
 	    userAccount.fedid =  userAccount.Get10DigitFid(userAccount.fedid);
+        system.debug('ttt'+userAccount.fedid);    
 	    List<Person_Account__c> personaccounts =  [SELECT Account_Number__c,Id,Name, PersonID__c FROM Person_Account__c Where Name_Type__c = 0 and Account_Number__r.Name =:userAccount.fedid];
             
             
@@ -57,7 +62,7 @@ global with sharing  class ShowCasesController {
              userAccount.AccountId = userAccount.personaccount.PersonID__c;
              userAccount.AccountNumber = userAccount.personaccount.Account_Number__c;
          }
-            
+        
         List <Account_Details__c> ad = [Select Brand__c FROM Account_Details__c Where ID = :userAccount.AccountNumber];
         if(ad.size()>0)
         {
@@ -123,15 +128,24 @@ global with sharing  class ShowCasesController {
 		CFCUAccount userAccount = new CFCUAccount();
 		userAccount.personAccount = new Person_Account__c();
     	string LoggedinUser = UserInfo.getUserId();
+        List<String> UserList = new List<String>();
+        List<Integer> mnlist = new List<Integer>();
+        List<String> mnSList = new List<String>();
+        Boolean isTyfone = false;
+     	String tyfoneSSN;
+        
+        system.debug('LoggedinUser: '+LoggedinUser);
         List<User> u = [SELECT Name, ContactId, FederationIdentifier from User Where ID=:LoggedinUser];
+        system.debug('Loggedin UserName: '+u[0].Name);
+        system.debug('Loggedin user FID: '+u[0].FederationIdentifier);
+        
         userAccount.CurrentUser = u[0];
         userAccount.fedid = u[0].FederationIdentifier;
         List<contact> c = [SELECT AccountId, FirstName, MiddleName, LastName FROM Contact WHERE Id =:u[0].ContactId];
-        	 
-        if (c.size()>0)
-         {
-         	userAccount.userBusinessContact = c[0];
-         }
+        
+        if(c.size()>0){
+        	userAccount.userBusinessContact = c[0];
+        }
             
 	    userAccount.fedid =  userAccount.Get10DigitFid(userAccount.fedid);
 	    List<Person_Account__c> personaccounts =  [SELECT Account_Number__c,Id,Name, PersonID__c FROM Person_Account__c Where Name_Type__c = 0 and Account_Number__r.Name =:userAccount.fedid];
@@ -144,14 +158,177 @@ global with sharing  class ShowCasesController {
              userAccount.AccountNumber = userAccount.personaccount.Account_Number__c;
              System.Debug('userAccount.AccountNumber-' + userAccount.AccountNumber);
          }
-            
+        
         List <Account_Details__c> ad = [Select Brand__c FROM Account_Details__c Where ID = :userAccount.AccountNumber];
         if(ad.size()>0)
         {
         	userAccount.Brand = ad[0].Brand__c;
         }
-        	
+
+        string acName  = userAccount.fedid + '-' + userAccount.Brand;
+        string acName2  = u[0].FederationIdentifier + '-' + userAccount.Brand;
+        
+        system.debug('acName: '+ acName);
+        system.debug('acName2: '+ acName2);
+        
+        List<String> Accounts = new List<String>();
+        List<String> eligibleAccounts = new List<String>();
+        List<String> lstAccounts = new List<String>();
+        List<String> finalAccounts = new List<String>();
+        
+        String AccString;
+        List<String> AccList = new List<String>();
+        List<Account> aList = [SELECT Id,Name,Description FROM Account WHERE Name=:acName OR Name =:acName2 order by lastmodifieddate desc Limit 1];
+        
+        if(aList.size()>0){
+            
+            if(aList[0].Description != null){
+                
+                AccString = aList[0].Description.replaceAll('[()]', '');
+            	system.debug('AccString: '+AccString);
+                
+                if(AccString != null){
+                    AccList = AccString.split(',');
+                }
+                system.debug('AccList: '+AccList);
+                
+                if(AccList.size() != 1 && AccList.size() != 0){
+                	
+                    if(AccList.contains(userAccount.fedid) == false){
+                        Accounts.add(userAccount.fedid);
+                    }
+                    
+                    tyfoneSSN =(AccList[AccList.size()-1]).right(9);
+                    
+                    AccList.remove(AccList.size()-1);
+                    system.debug('AccList: '+AccList);
+                    
+                    for(String s : AccList){
+                        Accounts.add(s.trim());
+                        isTyfone = true;
+                    }
+					system.debug('tyfoneSSN: '+tyfoneSSN);
+                    system.debug('isTyfone: '+isTyfone);                    
+                }
+                if(AccList.size() == 1){
+                    
+                    tyfoneSSN =(AccList[AccList.size()-1]).right(9);
+                    isTyfone = true;
+                    system.debug('tyfoneSSN: '+tyfoneSSN);
+                    system.debug('isTyfone: '+isTyfone);
+                    
+                    Accounts.add(userAccount.fedid);
+                }                
+            }
+			else{
+                Accounts.add(userAccount.fedid);
+            }            
+        }
+        
     	System.Debug('UserAccount:-' + userAccount);
+        System.Debug('Accounts:-' + Accounts);
+        
+        if(Accounts.size()>0){
+        	eligibleAccounts.addAll(Accounts);    
+        }
+        
+        //------------------------------------------Member Authorization Matrix-----------------------------//
+        
+        string strNumber, strSSN;
+        strNumber = userAccount.fedid;
+        strNumber = '%' + strNumber;
+        string loanAPI;
+        
+        ACH_To_Episys_API_Details__c api = ACH_To_Episys_API_Details__c.getValues('ProductionURL');
+                
+        if(api.URL__c != null){
+            loanAPI = api.URL__c;
+        }
+        
+        system.debug('strNumber: '+strNumber);
+        
+        List<Person_Account__c> paPrimary = [SELECT Id, Account_Number__c,  PersonID__c, Account_Number__r.RecType__c, TypeTranslate__c, 
+									Account_Number__r.Name,PersonID__r.PersonID__c,PersonID__r.Name
+									FROM Person_Account__c 
+									where Account_Number__r.Name like :strNumber and TypeTranslate__c like '%Primary%' LIMIT 1];
+
+        if(paPrimary.size() > 0){
+            strSSN = paPrimary[0].PersonID__r.PersonID__c.substring(1);
+        }
+        
+        system.Debug('strSSN: '+strSSN);
+        system.debug('isTyfone: '+isTyfone);
+        
+        if(strSSN.length() == 9 && isTyfone == true){
+        	
+            system.debug('-------------------Webservice for Member Authorization---------------');
+            
+            HttpRequest req1 = new HttpRequest();
+            HttpResponse res1;
+            Http http1 = new Http();
+            string responseBody1;
+            string AuthrorizedAccountString = '';
+        
+            req1.setEndpoint(loanAPI + '/MemberAuthorization/GetAuthorizedAccounts?ssn=' + strSSN);
+            req1.setMethod('GET');
+            //req1.setTimeout(1200000);
+            
+            if(!Test.isRunningTest()){                       
+                res1 = http1.send(req1);
+                responseBody1 = res1.getBody();                
+            }
+            else{
+                responseBody1 = '{"Accounts":"0000000123,0000000256"}';
+            }
+        
+            system.debug('responseBody1: '+responseBody1);
+        
+            if(responseBody1 != ''){
+                map<string, object> jsonParsed = (map<string, object>)JSON.deserializeUntyped(responseBody1);
+                system.debug('jsonParsed=='+jsonParsed);
+                AuthrorizedAccountString = (string)jsonParsed.get('Accounts');
+            }
+                
+            lstAccounts = AuthrorizedAccountString.split(',');
+            Set<String> setAccounts = new Set<String>(lstAccounts);
+        
+            system.debug('lstAccounts: '+lstAccounts);
+            
+        }
+        
+        system.debug('eligibleAccounts: '+eligibleAccounts);
+        
+        for(string s: eligibleAccounts){
+            system.debug('s: '+s.length());
+        }
+        for(string s1: lstAccounts){
+            system.debug('s1: '+s1.length());
+        }
+        
+        for(String a : eligibleAccounts){
+            if(lstAccounts.contains(a.trim())){
+            	finalAccounts.add(a);                
+            }    
+        }
+        system.debug('finalAccounts: '+finalAccounts);
+        
+        system.debug('Accounts: '+Accounts);
+        
+        For(String mnumbers : Accounts){
+            mnlist.add(integer.valueOf(mnumbers.trim()));
+        }
+        System.debug('mnlist: '+mnlist);
+        
+        For(Integer i : mnlist){
+            mnSList.add(string.valueOf(i));
+        }
+        System.debug('mnSList: '+mnSList);
+        
+       	For(user uaccount : [select id,FederationIdentifier from user where FederationIdentifier in :Accounts OR FederationIdentifier in :mnSList]){
+        	UserList.add(uaccount.id);
+        }
+        System.debug('UserList: '+UserList);
+        
 		/* common code ends */
 		DateTime date18months = DateTime.now().addMonths(-18);
 		DateTime date5Years = DateTime.now().AddMonths(-60);
@@ -181,10 +358,11 @@ global with sharing  class ShowCasesController {
 	       		//cases =[SELECT Id, CaseNumber,Primary_Category__c,Description,Priority,Status,Subject,CreatedDate,IsMarkRead__c,contactid,
 	       		//		createdbyId from Case where AccountId =:contactid and createdbyId !=:LoggedinUserID
 	       		//		and IsMarkDeleted__c = false and IsMarkSaved__c = false and CreatedDate >= LAST_N_MONTHS:18]; 
-	       		casesCreatedBySupport =[SELECT Id, CaseNumber,Primary_Category__c,Description,Priority,Status,Subject,CreatedDate,IsMarkRead__c,contactid,
-	       				createdbyId,MemberCommentCount__c from Case where Account_Number__r.Name= :userAccount.fedid and 
-	       				((createdbyId !=: LoggedinUser and MemberCommentCount__c > 0) or (createdbyId =: LoggedInUser))
-	       				and IsMarkDeleted__c = false and IsMarkSaved__c = false and CreatedDate >= :date18months order by CreatedDate desc  ];
+	       		casesCreatedBySupport =[SELECT Id, CaseNumber,Account_Number__r.Name,Primary_Category__c,Description,Priority,Status,Subject,CreatedDate,IsMarkRead__c,contactid,
+	       				createdbyId,MemberCommentCount__c from Case where /*Account_Number__r.Name= :userAccount.fedid and*/
+                                        Account_Number__r.Name in:finalAccounts and
+	       				((createdbyId !=: LoggedinUser and MemberCommentCount__c > 0) or (createdbyId in :UserList)) and                                        
+                        IsMarkDeleted__c = false and IsMarkSaved__c = false and CreatedDate >= :date18months order by CreatedDate desc  ];
 	     
 		  	for( i =0 ; i < casesCreatedBySupport.size(); i ++)
 			{
@@ -201,7 +379,7 @@ global with sharing  class ShowCasesController {
 					parentcaseId.Add(CommentsbySupport[i].Case__r.Id);
 				}
 			}
-			cases = [SELECT Id, CaseNumber,Primary_Category__c,Description,Priority,Status,Subject,CreatedDate,IsMarkRead__c,contactid,
+			cases = [SELECT Id, CaseNumber,Account_Number__r.Name,Primary_Category__c,Description,Priority,Status,Subject,CreatedDate,IsMarkRead__c,contactid,
 	       				createdbyId,MemberCommentCount__c from Case where Id IN:parentcaseId and IsMarkDeleted__c = false
 	       				 and IsMarkSaved__c = false and CreatedDate >= :date18months  order by CreatedDate desc];
 	       				 
@@ -212,10 +390,12 @@ global with sharing  class ShowCasesController {
        	
        	if(TypeOfView == 'DeletedMessages')
        	{
-       		cases =[SELECT Id, CaseNumber,Primary_Category__c,Description,Priority,Status,Subject,CreatedDate,IsMarkRead__c,MemberCommentCount__c from Case 
-							where IsMarkDeleted__c = true and IsMarkSaved__c = false and Account_Number__r.Name= : userAccount.fedid  and CreatedDate > :date18months
-							and ((MemberCommentCount__c > 0 and createdbyId !=: LoggedinUser) or ( createdbyId =: LoggedinUser))
-							 order by CreatedDate desc];
+       		cases =[SELECT Id, CaseNumber,Account_Number__r.Name,Primary_Category__c,Description,Priority,Status,Subject,CreatedDate,IsMarkRead__c,MemberCommentCount__c from Case 
+							where IsMarkDeleted__c = true and IsMarkSaved__c = false and /*Account_Number__r.Name= : userAccount.fedid*/
+                    		Account_Number__r.Name in:finalAccounts and CreatedDate > :date18months
+							and ((MemberCommentCount__c > 0 and createdbyId !=: LoggedinUser) or 
+                            (createdbyId in :UserList)) order by CreatedDate desc];
+            
 			if(cases.size() >0)
 			{
 				for( i =0 ; i <cases.size(); i ++)
@@ -231,10 +411,11 @@ global with sharing  class ShowCasesController {
        	
        if(TypeOfView == 'SavedMessages')
        	{
-       		cases =[SELECT Id, CaseNumber,Primary_Category__c,Description,Priority,Status,Subject,CreatedDate,IsMarkRead__c,MemberCommentCount__c from Case
-       					 where IsMarkSaved__c = true and Account_Number__r.Name= : userAccount.fedid and  IsMarkDeleted__c= false  and CreatedDate > :date5Years 
-       					 and ((MemberCommentCount__c > 0 and createdbyId !=: LoggedinUser) or ( createdbyId =: LoggedinUser))
-       					 order by CreatedDate desc];
+       		cases =[SELECT Id, CaseNumber,Account_Number__r.Name,Primary_Category__c,Description,Priority,Status,Subject,CreatedDate,IsMarkRead__c,MemberCommentCount__c from Case
+                    	where IsMarkSaved__c = true and /*Account_Number__r.Name= : userAccount.fedid*/
+                    	Account_Number__r.Name in:finalAccounts and  IsMarkDeleted__c= false  and CreatedDate > :date5Years 
+       					and ((MemberCommentCount__c > 0 and createdbyId !=: LoggedinUser) or ( createdbyId in :UserList))
+       					order by CreatedDate desc];
 			if(cases.size() >0)
 			{
 				for( i =0 ; i < cases.size(); i ++)
@@ -247,8 +428,10 @@ global with sharing  class ShowCasesController {
        	}
        	if(TypeOfView == 'SentMessages')
        	{
-       		cases =[SELECT Id, CaseNumber,Primary_Category__c,Description,Priority,Status,Subject,CreatedDate,IsMarkRead__c,MemberCommentCount__c from Case 
-							where Account_Number__r.Name= : userAccount.fedid  and IsMarkSaved__c = false and IsMarkDeleted__c= false  and createdbyId =:LoggedinUser order by CreatedDate desc];
+       		cases =[SELECT Id, CaseNumber,Account_Number__r.Name,Primary_Category__c,Description,Priority,Status,Subject,CreatedDate,IsMarkRead__c,MemberCommentCount__c from Case 
+							where /*Account_Number__r.Name= : userAccount.fedid*/
+                    		Account_Number__r.Name in:finalAccounts and IsMarkSaved__c = false and IsMarkDeleted__c= false  
+                    		and createdbyId =:UserList order by CreatedDate desc];
 			if(cases.size() >0)
 			{				
 				for(i =0 ; i < cases.size(); i ++)
@@ -271,8 +454,15 @@ global with sharing  class ShowCasesController {
 			for( i =0 ; i < cases.size(); i++ )
 			{
 				Message message = new Message();
-				message.casenumber = cases[i].CaseNumber; 
-			
+                message.casenumber = cases[i].CaseNumber; 
+				message.accountNumber = cases[i].Account_Number__r.Name; 
+                
+                String valueToMask = cases[i].Account_Number__r.Name.substring(0, 8);
+                String mask = '*'.repeat(valueToMask.length());
+                String masked = cases[i].Account_Number__r.Name.replaceFirst(valueToMask, mask);
+                system.debug('Masked:'+masked);
+                
+				message.MaskedaccountNumber = masked;
 				message.PrimaryCategory = cases[i].Primary_Category__c;
 			
 				message.Description = cases[i].Description;
@@ -511,8 +701,9 @@ global with sharing  class ShowCasesController {
 	/* method supports mark as read action*/
 	@RemoteAction
 	global static void UpdateIsMarkRead(string id)
-	{
-		/*List<Case> cdata =[SELECT ID, IsMarkRead__c from case where Id =: id];
+	{	
+		System.debug('-------------In--------------');
+        /*List<Case> cdata =[SELECT ID, IsMarkRead__c from case where Id =: id];
 			for(Case cas:cdata)
 			{
 				cas.IsMarkRead__c = true;
@@ -533,6 +724,8 @@ global with sharing  class ShowCasesController {
     global static Integer GetMessageCount()
     {
     		/* common code starts */
+        List<String> ListAllMemberShips = new List<String>();
+        ListAllMemberShips = getMembership();
 		CFCUAccount userAccount = new CFCUAccount();
 		userAccount.personAccount = new Person_Account__c();
     	string LoggedinUser = UserInfo.getUserId();
@@ -579,7 +772,7 @@ global with sharing  class ShowCasesController {
 	  //  caseIds = [SELECT Id from Case where AccountId= :contact.AccountId and CreatedDate > LAST_N_MONTHS:18];
 	 	
 	    casesCreatedBySupport =[SELECT Id, CaseNumber,Primary_Category__c,Description,Priority,Status,Subject,CreatedDate,IsMarkRead__c,contactid,
-	       				createdbyId from Case where Account_Number__r.Name= : userAccount.fedid and createdbyId !=:LoggedinUserID
+	       				createdbyId from Case where Account_Number__r.Name IN: ListAllMemberShips and createdbyId !=:LoggedinUserID
 	       				and IsMarkDeleted__c = false and IsMarkSaved__c = false and MemberCommentCount__c > 0 and CreatedDate >= LAST_N_MONTHS:18];
 	       				
 	     	for( i =0 ; i < casesCreatedBySupport.size(); i ++)
@@ -588,7 +781,7 @@ global with sharing  class ShowCasesController {
 				//string caseidstr = '\'' + cases[i].Id + '\'';
 				parentcaseId.Add(casesCreatedBySupport[i].Id);
 			}
-			CommentsbySupport = [SELECT Case__r.Id, CreatedDate,Id,Member_Comment__c,Name, IsRead__c FROM Member_Comment__c Where CreatedById !=: LoggedinUserID and draft__c != true and case__r.Account_Number__r.Name= : userAccount.fedid];
+			CommentsbySupport = [SELECT Case__r.Id, CreatedDate,Id,Member_Comment__c,Name, IsRead__c FROM Member_Comment__c Where CreatedById !=: LoggedinUserID and draft__c != true and case__r.Account_Number__r.Name IN: ListAllMemberShips];
 			if(CommentsbySupport.size()>0)
 			{
 				for(i=0; i < CommentsbySupport.size(); i ++)
@@ -607,5 +800,95 @@ global with sharing  class ShowCasesController {
     		return messagecount;
     		
     }
+    
+    public static List<String> getMembership(){
+		
+        List<String> options = new List<String>();     
+        
+        CFCUAccount userAccount = new CFCUAccount();
+        userAccount.personAccount = new Person_Account__c();
+        string LoggedinUser = UserInfo.getUserId();
+        List<User> u = [SELECT Name, ContactId, FederationIdentifier from User Where ID = :LoggedinUser];
+        system.debug('Loggedin Id: '+u[0].Id);
+        system.debug('Loggedin UserName: '+u[0].Name);
+        system.debug('Loggedin user FID: '+u[0].FederationIdentifier);
+        
+        userAccount.CurrentUser = u[0];
+        userAccount.fedid = u[0].FederationIdentifier;
+        userAccount.fedid = userAccount.Get10DigitFid(userAccount.fedid);
+        
+        List<Person_Account__c> personaccounts = [SELECT Account_Number__c, Id, Name, PersonID__c,Account_Number__r.name
+                                                  FROM Person_Account__c
+                                                  Where Name_Type__c = 0 and Account_Number__r.Name = :userAccount.fedid];        
+        
+        System.debug(personaccounts[0].Account_Number__r.name);
+        system.debug(userAccount.fedid);
+        system.debug(u[0].name);
+        
+        List<Account_Details__c> ad = [Select name,Brand__c FROM Account_Details__c Where name = :userAccount.fedid LIMIT 1];
+        if (ad.size() > 0){
+            userAccount.Brand = ad[0].Brand__c;
+        }
+        
+        string acName  = userAccount.fedid + '-' + userAccount.Brand;
+        string acName2 = u[0].FederationIdentifier + '-' + userAccount.Brand;
+            
+        String AccString;
+        List<String> AccList = new List<String>();
+        List<String> AccDisList = new List<String>();
+        
+        system.debug(acName);
+        system.debug(acName2);
+        List<Account> aList = [SELECT Id,Name,Description FROM Account WHERE Name=:acName OR Name =:acName2 order by lastmodifieddate desc Limit 1];
+        //system.debug('aList: '+aList[0].id);
+        
+        if(aList.size()>0){
+            if(aList[0].Description != null){
+                
+                AccString = aList[0].Description.replaceAll('[()]', '');
+            	system.debug('AccString: '+AccString);
+                AccDisList.add(userAccount.fedid);
+               
+                if(AccString != null){
+                    AccList = AccString.split(',');
+                }
+                system.debug('AccList: '+AccList);
+                
+                if(AccList.size() != 1){
+                	
+                    options.add(userAccount.fedid);                                          
+                    tyfoneSSN =(AccList[AccList.size()-1]).right(9);
+                    
+                    AccList.remove(AccList.size()-1);     
+                    system.debug('AccList: '+AccList);
+                	
+                    for(String s : AccList){
+                        options.add(s.trim());
+                        AccDisList.add(s.trim()); 
+                        isTyfone = true;
+                    }
+                    
+                    system.debug('tyfoneSSN: '+tyfoneSSN);
+                    system.debug('isTyfone: '+isTyfone);
+                    system.debug('AccDisList'+AccDisList);                  
+                        
+                                  
+                }
+                if(AccList.size() == 1){
+                    
+                    tyfoneSSN =(AccList[AccList.size()-1]).right(9);
+                    isTyfone = true;
+                    system.debug('tyfoneSSN: '+tyfoneSSN);
+                    system.debug('isTyfone: '+isTyfone);                    
+                    options.add(userAccount.fedid);                    
+                }
+            }
+            else{
+                options.add(userAccount.fedid);                
+            }            
+        }
+        
+		return options;
+	}
 
 }
