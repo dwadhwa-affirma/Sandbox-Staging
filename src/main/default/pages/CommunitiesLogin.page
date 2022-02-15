@@ -91,11 +91,11 @@ else
 					<br />
 					<div class="col-xs-12 col-md-12 col-lg-12">
 						<h4>Your Secure Email session has timed out. Please return to
-							Secure Email in Mobile Banking or PC Access to continue.</h4>
+							Secure Email in Mobile Banking or Digital Banking to continue.</h4>
 						<br />
 						<p class='hideMobile'>
-							You will be redirected to <a href='' class="pcaccess">PC
-								Access</a> in 5 seconds.
+							You will be redirected to <a href='' class="pcaccess">Digital 
+								Banking</a> in 5 seconds.
 						</p>
 					</div>
 				</div>
