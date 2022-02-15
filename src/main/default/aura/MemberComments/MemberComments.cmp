@@ -31,7 +31,7 @@
     
     <aura:attribute name="record" type="Case"/>  
 <aura:attribute name="simpleRecord" type="Case"/>
-    
+<aura:attribute name="isTyfoneEmailEmpty" access="global" Type="boolean" />   
     
     <style>
     	
@@ -302,8 +302,8 @@
      <aura:if isTrue="{!v.isObjectAccess}"> 
      <footer class="slds-modal__footer" id="MemberCommentFooter">
       
-        <aura:if isTrue="{!v.Secure_Email_Address_Empty}">
-    				<b style="color:red">Please add Email address to member Account in order to create a member message. &nbsp;</b>
+        <aura:if isTrue="{!v.isTyfoneEmailEmpty}">
+    				<b style="color:red">Please add Email address to Tyfone Email Address in order to create a member message. &nbsp;</b>
     				<button class="slds-button slds-button--neutral uiButton forceActionButton" onclick="{!c.closePopup}">Cancel</button>        
     				<aura:set attribute="else">
     						<button class="slds-button slds-button--neutral uiButton forceActionButton" onclick="{!c.closePopup}">Cancel</button> 

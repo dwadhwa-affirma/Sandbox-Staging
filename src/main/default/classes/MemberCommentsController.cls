@@ -6,7 +6,7 @@ public without sharing class MemberCommentsController {
 	 	  List<Case> tempCase = new List<Case>();        
 		  List<Account_Details__c> objAccount = new List<Account_Details__c>();
 		  List<Member_Comment__c> objMemberComment = new List<Member_Comment__c>();
-		  tempCase = [select id,Account_Number__c, AccountId, CreatedBy.Email,Secure_Email__c from case where id =:caseId];
+		  tempCase = [select id,Account_Number__c, AccountId, CreatedBy.Email,Secure_Email__c, Tyfone_Member_Email__c from case where id =:caseId];
 		  
 		  wrapperObject wrapperobj = new wrapperObject();		  
 		  
@@ -54,11 +54,20 @@ public without sharing class MemberCommentsController {
 		  	  
 		  }		 
 		  wrapperobj.Secure_Email = tempCase[0].Secure_Email__c == null? '' : tempCase[0].Secure_Email__c;
+		  string tyfoneEmail = tempCase[0].Tyfone_Member_Email__c == null? '' : tempCase[0].Tyfone_Member_Email__c; 
+
 		  if(objAccount.size() > 0){
 		   wrapperobj.AccObj = objAccount[0];
 		  }
 		  else{		  	
 		  		  	wrapperobj.Secure_Email  = '';
+		  }
+
+		  if(string.isNotBlank(tyfoneEmail)){
+			wrapperobj.isTyfoneEmailEmpty = false;
+		  }
+		  else{
+			wrapperobj.isTyfoneEmailEmpty = true;
 		  }
 		  
 			return wrapperobj ;
@@ -317,7 +326,7 @@ public without sharing class MemberCommentsController {
         	
         	List<case> tempCase = new List<case>();        	
 
-			tempCase = [select id,Account_Number__c, AccountId, CreatedBy.Email from case where id =:caseId];
+			tempCase = [select id,Account_Number__c, AccountId, CreatedBy.Email, Tyfone_Member_Email__c from case where id =:caseId];
 			system.debug('tempCase===' + tempCase);
 						
 			if(tempCase == null || tempCase.Size() == 0)
@@ -325,11 +334,15 @@ public without sharing class MemberCommentsController {
 				// if member comment is in edit mode, caseid is membercommentId
 				Member_Comment__c memberComment = [select id, case__c, Draft__c from Member_Comment__c where id =:caseId];
 				editMemberCommentId=memberComment.id;
-				tempCase = [select id,Account_Number__c, AccountId, CreatedBy.Email,Secure_Email__c from case where id =:memberComment.case__c];
+				tempCase = [select id,Account_Number__c, AccountId, CreatedBy.Email,Secure_Email__c, Tyfone_Member_Email__c from case where id =:memberComment.case__c];
 				CaseId = memberComment.case__c;
 				isEdit= true;
 			}				
 			string Email = tempCase[0].CreatedBy.Email;
+			string TyfoneEmail = '';
+			if(tempCase.size() > 0){
+				TyfoneEmail = tempCase[0].Tyfone_Member_Email__c;
+			}
 			          
             system.debug('Azhar MemberDescription----'+MemberDescription);
             if(!isEdit){
@@ -342,6 +355,10 @@ public without sharing class MemberCommentsController {
                 if (secureEmailAddress != null && secureEmailAddress != '')
                 {
                     mbobj.Member_Email__c = secureEmailAddress;
+                }
+				if (TyfoneEmail != null && TyfoneEmail != '')
+                {
+                    mbobj.Tyfone_Member_Email__c = TyfoneEmail;
                 }
                 mbobj.Case_Creator_Email__c = Email;
                 mbobj.Canned_Response__c = selectedCannedResponse;
@@ -507,6 +524,10 @@ public without sharing class MemberCommentsController {
                 if (secureEmailAddress != null && secureEmailAddress != '')
                 {
                     mbobj.Member_Email__c = secureEmailAddress;
+                }
+				if (TyfoneEmail != null && TyfoneEmail != '')
+                {
+                    mbobj.Tyfone_Member_Email__c = TyfoneEmail;
                 }
                 mbobj.Case_Creator_Email__c = Email;
                 if(selectedCannedResponse != null)
@@ -756,7 +777,8 @@ public without sharing class MemberCommentsController {
 		public boolean isObjectAccess {get; set;}
 		@AuraEnabled
 		public boolean isCUReadEditable {get;set;}		
-        
+        @AuraEnabled
+		public boolean isTyfoneEmailEmpty {get;set;}
     } 
     
     public class AttachmentWrapper

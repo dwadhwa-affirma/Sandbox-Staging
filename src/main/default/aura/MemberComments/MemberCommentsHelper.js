@@ -36,7 +36,8 @@
 				{
 				component.set("v.isObjectAccess", true);
 				component.set("v.Model", res.AccObj);
-				component.set("v.Secure_Email_Address", res.Secure_Email);				
+				component.set("v.Secure_Email_Address", res.Secure_Email);	
+				component.set("v.isTyfoneEmailEmpty", res.isTyfoneEmailEmpty);			
 				if(res.Secure_Email == null || res.Secure_Email == '')
 				{
 					//res.Secure_Email_Address_Empty = true;
