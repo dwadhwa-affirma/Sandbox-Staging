@@ -2096,8 +2096,11 @@ public class SolarLoanToCreateLoan {
 
                 //---------------------------------------------------Creating Share Record--------------------------------------------------//
 
-                SHAREBRANCH = '299';
-                SHARECREATEDATBRANCH = '299';
+                //SHAREBRANCH = '299';
+                //SHARECREATEDATBRANCH = '299';
+                
+                SHAREBRANCH = '253';
+				SHARECREATEDATBRANCH = '253';
                 SHARECREATEDBYUSER = operatorid;
 
                 if(hasJoint == true)
