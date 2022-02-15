@@ -39,7 +39,11 @@ trigger WIRESTransactionTrigger on WIRES_Transaction__c (before insert,before up
                     }
                     WiresEmailController.SendAdditionalDocumentsNotification(trigger.new[i].Id,emails,trigger.new[i].Name,trigger.new[i].TotalFromAccount__c,trigger.new[i].Source__c);
                 }
-        	} 
+            	
+                if(trigger.old[i].Approval_Status__c == 'Cancelled' && trigger.new[i].Approval_Status__c != 'Cancelled'){
+                     trigger.new[i].addError('Cancelled transactions can not be updated');
+                }
+            } 
         }
     }
     
@@ -56,7 +60,7 @@ trigger WIRESTransactionTrigger on WIRES_Transaction__c (before insert,before up
         for(Integer i=0; i<trigger.new.size(); i++){
              if(!trigger.new[i].Historical_Import__c) {
                     //------------------------------- Checking if the status is being changed and status = 'Completed'-----------------//
-                    if(trigger.old[i].Status__c != 'Completed' && trigger.new[i].Status__c == 'Completed'){  
+                    if(trigger.old[i].Status__c != 'Completed' && trigger.new[i].Status__c == 'Completed' && trigger.old[i].Approval_Status__c != 'Cancelled'){  
                         if(trigger.new[i].Source__c==WiresConstant.Source_OnlineBanking){
                           System.debug('After Update: Adding ' + trigger.new[i].id + ' to docSignCompletedAtOnlineIds');
                           docSignCompletedAtOnlineIds.add(trigger.new[i].id);
@@ -64,14 +68,14 @@ trigger WIRESTransactionTrigger on WIRES_Transaction__c (before insert,before up
                     }
                     
                     //------------------------------- Checking if the status is being changed and status = 'Declined'-----------------//
-                    if(trigger.old[i].Status__c != 'Declined' && trigger.new[i].Status__c == 'Declined'){  
+                    if(trigger.old[i].Status__c != 'Declined' && trigger.new[i].Status__c == 'Declined' && trigger.old[i].Approval_Status__c != 'Cancelled'){  
                         if(trigger.new[i].Source__c==WiresConstant.Source_OnlineBanking){
                             docSignDeclinedAtOnlineIds.add(trigger.new[i].id);
                         }
                     }
                     
                     //------------------------------- Checking if the status is being changed and status = 'Voided'-----------------//
-                    if(trigger.old[i].Status__c != 'Voided' && trigger.new[i].Status__c == 'Voided'){  
+                    if(trigger.old[i].Status__c != 'Voided' && trigger.new[i].Status__c == 'Voided' && trigger.old[i].Approval_Status__c != 'Cancelled'){  
                         if(trigger.new[i].Source__c==WiresConstant.Source_OnlineBanking){
                             //docSignDeclinedAtOnlineIds.add(trigger.new[i].id);
                             docSignVoidedAtOnlineIds.add(trigger.new[i].id);
@@ -130,7 +134,7 @@ trigger WIRESTransactionTrigger on WIRES_Transaction__c (before insert,before up
             for(Integer i=0; i<trigger.new.size(); i++){
                 if(!trigger.new[i].Historical_Import__c) {
                     system.debug('RecordType After Insert'+trigger.new[i].RecordType.Name);
-                    if(trigger.new[i].ParentTransaction__c == null)	
+                    if(trigger.new[i].ParentTransaction__c == null) 
                         WTIds.add(trigger.new[i]);
                 }                
             } 
@@ -148,26 +152,26 @@ trigger WIRESTransactionTrigger on WIRES_Transaction__c (before insert,before up
                         
                         if(WTIds[i].WireAmount__c<=5000){
                             if(WTIds[i].Frequency__c==WiresConstant.OneTime){
-                            	range1To5000.add(WTIds[i].Id);
+                                range1To5000.add(WTIds[i].Id);
                             }
                         }
                         
                         if(WTIds[i].WireAmount__c>5000 && WTIds[i].WireAmount__c<=10000){
                             if(WTIds[i].Frequency__c==WiresConstant.OneTime){
-                            	range50001To10000.add(WTIds[i].Id);
+                                range50001To10000.add(WTIds[i].Id);
                             }
                         }
                         
                         if(WTIds[i].WireAmount__c>10000){
                             if(WTIds[i].Frequency__c==WiresConstant.OneTime){
-                            	rangeGrtThen10000.add(WTIds[i].Id);
+                                rangeGrtThen10000.add(WTIds[i].Id);
                             }
                         }
                     }
                     
                     if(WTIds[i].Source__c==WiresConstant.Source_Branch){
                         if(WTIds[i].Frequency__c==WiresConstant.OneTime){
-                        	rangeForInPersonSigning.add(WTIds[i].Id);
+                            rangeForInPersonSigning.add(WTIds[i].Id);
                         }
                     }
                 }        
@@ -211,8 +215,8 @@ trigger WIRESTransactionTrigger on WIRES_Transaction__c (before insert,before up
     if(Trigger.isInsert && Trigger.isBefore){ 
         for(WIRES_Transaction__c objWIRESTransaction: trigger.New)
         {
-           if(!objWIRESTransaction.Historical_Import__c){  
-            string AccountNo= objWIRESTransaction.FromAccount__c;    	
+           string AccountNo= objWIRESTransaction.FromAccount__c; 
+           if(!objWIRESTransaction.Historical_Import__c && AccountNo != null){                  
              system.debug('RecordType Before Insert'+objWIRESTransaction.RecordType.Name);
             List<Account_Details__c> accDetail=[SELECT Id,Name, Brand__c FROM Account_Details__c WHERE Name=:AccountNo AND RecType__c = 'ACCT' LIMIT 1];
             if(accDetail.size() > 0){
@@ -220,7 +224,7 @@ trigger WIRESTransactionTrigger on WIRES_Transaction__c (before insert,before up
             }
             
             if(objWIRESTransaction.Frequency__c == 'Recurring'){
-                objWIRESTransaction.SendOn__c = null;    	
+                objWIRESTransaction.SendOn__c = null;       
             }
             
             if(objWIRESTransaction.Source__c == WiresConstant.Source_Branch)
@@ -242,14 +246,32 @@ trigger WIRESTransactionTrigger on WIRES_Transaction__c (before insert,before up
             set<string> typeList = new set<string>();
             
             for(Member360_TypeTranslate__c t : Member360_TypeTranslate__c.getAll().values()){
-                typeList.add(t.name);	
+                typeList.add(t.name);   
             }
             
-            Person_Account__c paPrimary;
-            
-            if(objWIRESTransaction.Source__c=='Online Banking'){
-                string likeClause = '%' + String.escapeSingleQuotes( objWIRESTransaction.Member_SSN__c.trim());
-                paPrimary = [SELECT Id,PersonID__c,
+            List<Person_Account__c> paPrimary = new List<Person_Account__c>();
+           if(objWIRESTransaction.ParentTransaction__c == null){
+            if(objWIRESTransaction.Source__c=='Online Banking' && AccountNo != null){
+               
+                List<String> validRelations = new List<String>();
+                if(objWIRESTransaction.Authorized_Types__c != null)
+                	validRelations = objWIRESTransaction.Authorized_Types__c.split(',');
+                List<String> substrings = new List<String>();
+                    
+                for(String wa: validRelations){
+                    if(String.isNotBlank(wa)){
+                        substrings.add(wa.trim().leftPad(4, '0')+'%');
+                    }
+                }
+                
+                //system.debug('objWIRESTransactionId=='+objWIRESTransaction.Id);
+                system.debug('objWIRESTransactionMember_SSN__c=='+objWIRESTransaction.Member_SSN__c);
+                string likeClause='';
+                if(objWIRESTransaction.Member_SSN__c != null){
+                    //set<string> AuthorizedAccounts = WiresTransactionApprovalController.GetAuthorizedAccounts(objWIRESTransaction.Member_SSN__c);
+                    likeClause = '%' + String.escapeSingleQuotes( objWIRESTransaction.Member_SSN__c.trim());
+                    if(substrings.size() > 0){
+                        paPrimary = [SELECT Id,PersonID__c,
                              Account_Number__c, Account_Number__r.RecType__c,TypeTranslate__c, 
                              Account_Number__r.Name, PersonID__r.Home_Phone__pc,
                              PersonID__r.Residential_City__pc,PersonID__r.Residential_State__pc, 
@@ -257,12 +279,55 @@ trigger WIRESTransactionTrigger on WIRES_Transaction__c (before insert,before up
                              PersonID__r.Name, PersonID__r.Email_raw__c 
                              FROM Person_Account__c 
                              WHERE PersonID__r.PersonID__c like :likeClause AND
-                             Account_Number__r.Name =: AccountNo 
+                             Account_Number__r.Name =: AccountNo and TypeTranslate__c like : substrings
+                            // and Account_Number__r.Name in: AuthorizedAccounts
                              Limit 1];
-            }else{
+                    }
+                    else{
+                        paPrimary = [SELECT Id,PersonID__c,
+                             Account_Number__c, Account_Number__r.RecType__c,TypeTranslate__c, 
+                             Account_Number__r.Name, PersonID__r.Home_Phone__pc,
+                             PersonID__r.Residential_City__pc,PersonID__r.Residential_State__pc, 
+                             PersonID__r.Residential_Street__pc, PersonID__r.Residential_Zipocde__pc, 
+                             PersonID__r.Name, PersonID__r.Email_raw__c 
+                             FROM Person_Account__c 
+                             WHERE PersonID__r.PersonID__c like :likeClause AND
+                             Account_Number__r.Name =: AccountNo //and TypeTranslate__c like : substrings
+                            // and Account_Number__r.Name in: AuthorizedAccounts
+                             Limit 1];
+                    }
+                     system.debug('paPrimary1'+paPrimary);
+                }
+                else{
+                    if(substrings.size() > 0){
+                        paPrimary = [SELECT Id,PersonID__c,
+                             Account_Number__c, Account_Number__r.RecType__c,TypeTranslate__c, 
+                             Account_Number__r.Name, PersonID__r.Home_Phone__pc,
+                             PersonID__r.Residential_City__pc,PersonID__r.Residential_State__pc, 
+                             PersonID__r.Residential_Street__pc, PersonID__r.Residential_Zipocde__pc, 
+                             PersonID__r.Name, PersonID__r.Email_raw__c 
+                             FROM Person_Account__c 
+                             WHERE Account_Number__r.Name =: AccountNo and TypeTranslate__c like : substrings
+                             Limit 1];
+                    }
+                    else{
+                        paPrimary = [SELECT Id,PersonID__c,
+                             Account_Number__c, Account_Number__r.RecType__c,TypeTranslate__c, 
+                             Account_Number__r.Name, PersonID__r.Home_Phone__pc,
+                             PersonID__r.Residential_City__pc,PersonID__r.Residential_State__pc, 
+                             PersonID__r.Residential_Street__pc, PersonID__r.Residential_Zipocde__pc, 
+                             PersonID__r.Name, PersonID__r.Email_raw__c 
+                             FROM Person_Account__c 
+                             WHERE Account_Number__r.Name =: AccountNo //and TypeTranslate__c like : substrings
+                             Limit 1];
+                    }
+                    system.debug('paPrimary2'+paPrimary);
+                }
                 
-                string likeClause = '%' + String.escapeSingleQuotes( objWIRESTransaction.Member_SSN__c.trim());
-                paPrimary = [SELECT Id,PersonID__c,
+            }else{
+                if(AccountNo != null){
+                    string likeClause = '%' + String.escapeSingleQuotes( objWIRESTransaction.Member_SSN__c.trim());
+                    paPrimary = [SELECT Id,PersonID__c,
                              Account_Number__c, Account_Number__r.RecType__c,TypeTranslate__c,
                              Account_Number__r.Name, PersonID__r.Home_Phone__pc,
                              PersonID__r.Residential_City__pc,PersonID__r.Residential_State__pc, 
@@ -272,15 +337,21 @@ trigger WIRESTransactionTrigger on WIRES_Transaction__c (before insert,before up
                              WHERE PersonID__r.PersonID__c like :likeClause 
                              AND Account_Number__r.Name =: AccountNo 
                              Limit 1];
+                    system.debug('paPrimary3'+paPrimary);
+                }
+                
             }
+               //system.debug('paPrimary Size'+paPrimary.size());
+               if(paPrimary.size() > 0){
+                    objWIRESTransaction.Member__c = paPrimary[0].PersonID__c;
+                    objWIRESTransaction.Member_Name__c = paPrimary[0].PersonID__r.Name;
+                    objWIRESTransaction.Member_Email__c = paPrimary[0].PersonID__r.Email_raw__c;
+                    objWIRESTransaction.Member_Home_Phone__c =  paPrimary[0].PersonID__r.Home_Phone__pc;
+                    objWIRESTransaction.Member_Address__c = paPrimary[0].PersonID__r.Residential_Street__pc;
+                    objWIRESTransaction.Member_City_State_Zip__c = paPrimary[0].PersonID__r.Residential_City__pc + ', '+ paPrimary[0].PersonID__r.Residential_State__pc + ' '+ paPrimary[0].PersonID__r.Residential_Zipocde__pc ;
+               }
             
-            objWIRESTransaction.Member__c = paPrimary.PersonID__c;
-            objWIRESTransaction.Member_Name__c = paPrimary.PersonID__r.Name;
-            objWIRESTransaction.Member_Email__c = paPrimary.PersonID__r.Email_raw__c;
-            objWIRESTransaction.Member_Home_Phone__c =  paPrimary.PersonID__r.Home_Phone__pc;
-            objWIRESTransaction.Member_Address__c = paPrimary.PersonID__r.Residential_Street__pc;
-            objWIRESTransaction.Member_City_State_Zip__c = paPrimary.PersonID__r.Residential_City__pc + ', '+ paPrimary.PersonID__r.Residential_State__pc + ' '+ paPrimary.PersonID__r.Residential_Zipocde__pc ;
-            
+           }
             decimal amount=objWIRESTransaction.WireAmount__c;
             
             string amountInWord = ConvertCurrencyToWordsEN.english_number((long)amount)+' Dollars';
@@ -312,7 +383,7 @@ trigger WIRESTransactionTrigger on WIRES_Transaction__c (before insert,before up
                 if(objWIRESTransaction.Frequency__c==WiresConstant.Reccuring){
                     objWIRESTransaction.Approval_Status__c = WiresConstant.ApprovalStatus_Recurring;
                 }else if(objWIRESTransaction.ParentTransaction__c==null){                    
-                	objWIRESTransaction.Approval_Status__c = WiresConstant.ApprovalStatus_PendingForMemberReview;
+                    objWIRESTransaction.Approval_Status__c = WiresConstant.ApprovalStatus_PendingForMemberReview;
                 }else{
                     objWIRESTransaction.Approval_Status__c = WiresConstant.ApprovalStatus_PendingForApproval;
                 }
@@ -662,7 +733,7 @@ trigger WIRESTransactionTrigger on WIRES_Transaction__c (before insert,before up
                             oldestAccountHistory = accHistory;
                         }
                     }
-                }	
+                }   
             }
             if(OldestValue == FieldValue)
             {
