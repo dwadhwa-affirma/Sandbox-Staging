@@ -93,7 +93,8 @@ public class xPressRefiController{
 					temp.MembershipEmail = (string)localAcc.get('email');
 					string Homephone =  (string)localAcc.get('homephone');
 					string Mobilephone =  (string)localAcc.get('mobilephone');
-					string Workphone =  (string)localAcc.get('workphone');	
+					string Workphone =  (string)localAcc.get('workphone');
+					system.debug('AccountNumber:'+AccountNumber);	
 					System.debug('HomePhone' +  Homephone + ', Mobilephone: ' + Mobilephone + ',Workphone: ' + Workphone + ' Email:' + (string)localAcc.get('email'));					
 					temp.MembershipPhone = String.isBlank(Homephone) ? (String.isBlank(Mobilephone) ? Workphone : Mobilephone) : Homephone;
 					System.debug('temp.MemberName ....' + temp.MemberName);
@@ -285,6 +286,7 @@ public class xPressRefiController{
 			xr.Member_Phone__c = mapMembershipPhone.get(xr.Member_Number__c);
 		}
 
+		system.debug('EmailIds==' + EmailIds);
 		resultMap.put('EmailIds', EmailIds);
 		if(EmailIds.size() > 1)
 			resultMap.put('isMultipleEmailIds', true);

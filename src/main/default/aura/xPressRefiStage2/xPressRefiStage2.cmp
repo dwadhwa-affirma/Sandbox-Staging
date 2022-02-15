@@ -290,7 +290,7 @@
           </div>
           <aura:if isTrue="{!v.isEmailSelectionVisible}">
               <div style="margin-top: 5%;">
-                 <p><b>Please Select EmailId</b></p>
+                 <p><b>Please Select Email</b></p><br/>
                   <table class="clsEmail">
                     <tbody>                      
                       <aura:iteration items="{!v.EmailIds}" var="itemOption" indexVar="i">

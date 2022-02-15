@@ -83,7 +83,7 @@
       component.set("v.IsFeeCollectionVisible", false);
     }
 
-    if(!isMortgageCadence && isMultipleEmailIds && (currentrecordEmailID == "" || currentrecordEmailID == null || currentrecordEmailID == undefined)){
+    if(!isMortgageCadence && isMultipleEmailIds ){ //&& (currentrecordEmailID == "" || currentrecordEmailID == null || currentrecordEmailID == undefined)
         component.set("v.isEmailSelectionVisible", true);
     }
     else{
