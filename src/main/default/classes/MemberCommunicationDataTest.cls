@@ -11,6 +11,11 @@ public with sharing class MemberCommunicationDataTest {
         api.URL__c = 'https://symxapi.chevronfcu.org/devclient';
         api.Name = 'ProductionURL';
         insert api;
+
+        ACH_To_Episys_API_Details__c api1 = new ACH_To_Episys_API_Details__c();
+		api1.URL__c = 'https://symxapi.chevronfcu.org/devclient';
+		api1.Name = 'ProductionURL';
+		insert api1;
         
         Member360_TypeTranslate__c t = new Member360_TypeTranslate__c();
     t.name = '0000/Primary';
