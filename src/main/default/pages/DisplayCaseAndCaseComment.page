@@ -89,13 +89,9 @@
         </style>
                 </head>
                 <body class="MailDisplayPg">
-                
-                
-                
-                
-                  <apex:form id="DisplayCaseandCasecommentForm" forceSSL="true">
+                 <apex:form id="DisplayCaseandCasecommentForm" forceSSL="true">
                     <div class="container" id="container">
-                        <div class="row">
+                        <!--<div class="row">
                             <div class="header">
                                 <div class="col-xs-12 col-sm-7">
                                     <div class="chevron_logo">
@@ -114,16 +110,23 @@
                                 </div>
                                 <div class="clearfix"></div>
                             </div>
+                        </div>-->
+                        <br/> 
+                        <div class="col-xs-12 col-sm-12 text-right">
+                            <ul class="topaction_btn_list">
+                                <a href="#" class="btn btn-primary action_close"
+                                   id="btnClose" onclick="window.close();">Close</a>
+                            </ul>
                         </div>
                         <div class="row">
                             <div class="content_area clearfix">
                                 <div class="col-xs-12 col-md-12 MDParea">
                                     <div class="message_content">
-                                        <div class="row nameContainer">
+                                       <!-- <div class="row nameContainer">
                                             <div id="UserName">
                                                         <b>Welcome {!UserName}</b>
                                                     </div>
-                                        </div>  
+                                        </div>  -->
                                         <div id="messageBindDiv">
                                             <div class="top_nav clearfix">
                                                 <div class="row ">
@@ -300,7 +303,7 @@
                                                         <apex:outputText value="<" escape="false" />!-- ko if: CreatedById() == '{!$User.Id}'  --<apex:outputText value=">" escape="false" />
                                                         <li>
                                                         <div class="unamedate">
-                                                              <strong>{!UserName}</strong>
+                                                            <strong data-bind="html:TyfoneMemberName"></strong><!--{!UserName}-->
                                                               <span data-bind="html: moment(CreatedDate()).format('MMM Do') + ' ' + moment(CreatedDate()).format('h:mm a') + ' (' + moment(CreatedDate()).fromNow() + ')'" ></span>
                                                         </div>
                                                         <div class="collapsedata">
@@ -378,7 +381,7 @@
                                                         <apex:outputText value="<" escape="false" />!-- ko if: model.CreatedById() == '{!$User.Id}'  --<apex:outputText value=">" escape="false" />
                                                         <li id="custsupp2">
                                                         <div class="unamedate">
-                                                          <strong>{!UserName}</strong>
+                                                          <strong data-bind="html:TyfoneMemberName"></strong><!--{!UserName}-->
                                                           <span data-bind="html: moment(CaseCreatedDate()).format('MMM Do') + ' ' + moment(CaseCreatedDate()).format('h:mm a') + ' (' + moment(CaseCreatedDate()).fromNow() + ')'"></span>
                                                         </div>
                                                         <div class="collapsedata">
@@ -540,7 +543,7 @@
                         <div class="row">
                             <div class="footer_area">
                                 <div class="col-xs-12">
-                                    <span>&copy;2017&nbsp;{!CopyRights}</span>
+                                    <span style="color: #23527c;">&copy;2021&nbsp;{!CopyRights}</span>
                                 </div>
                             </div>
                         </div>
