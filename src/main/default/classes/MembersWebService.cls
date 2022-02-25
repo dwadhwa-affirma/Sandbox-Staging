@@ -4,13 +4,13 @@ global class MembersWebService{
     webservice static Boolean checkMemberDetails(String accountNumber, String appId){
         //RestRequest request = RestContext.request;
         // grab the accountId from the end of the URL        
-        if(!Test.isRunningTest()){
-           // accountNumber = request.params.get('AccountNumber');//request.requestURI.substring(request.requestURI.lastIndexOf('/')+1);
-           // appId = request.params.get('AppId');            
-        }else{
-            accountNumber = '0090067880';
-            appId = '1234';
-        }
+        // if(!Test.isRunningTest()){
+        //    // accountNumber = request.params.get('AccountNumber');//request.requestURI.substring(request.requestURI.lastIndexOf('/')+1);
+        //    // appId = request.params.get('AppId');            
+        // }else{
+        //     accountNumber = '0090067880';
+        //     appId = '1234';
+        // }
         system.debug('###' + accountNumber);
         List<Account_Details__c> lstAccountDetails = new List<Account_Details__c>();
         lstAccountDetails = [SELECT Id, Name
@@ -42,11 +42,11 @@ global class MembersWebService{
         system.debug('###shares==' + shares);
         
         Map<string, Object> lstAccts = (Map<string, Object>)JSON.deserializeUntyped(accts);
-        if(Test.isRunningTest()){
-            cards = '{"AccountNumber":"0000000123", "Description":"CHEVRON DEBIT EMV CARD", "IssueDate": "2019-10-31T07:00:00Z" , "DepLimit":"500.00" , "LimitAmount":"0", "PosLimit":"2500.00", "AuthLimit":"2500.00", "ExpirationDate" : "2022-01-11T07:00:00Z", "StatusReason" : "0","ActivityDate":"2021-07-29T07:00:00Z","CorrespondDate":"2022-02-18T08:00:00Z","CreatedAtBranch":"0","CreatedByUser":"9999","InvalidAttemptCount":0,"InvalidAttemptDate":"2021-12-30T08:00:00Z","MemberGroup":1185,"OpenDate":"2006-07-17T07:00:00Z","Reference":"BC01","Restrict":0,"StatementMailCode":20,"Type":1,"NameObjects":[{"AddressType":"0","city":"VALLEJO","country":"","locator":"1","cardlocator":null,"cardlast4":null,"extraaddress":"","state":"CA","street":"146 FLYING DUTCHMAN CT","userchar2":"V666147265","zipcode":"94591","name":"CHEVRONQA TEST123","email":"DBHAVSAR@AFFIRMA.COM","DisplayOnly":"0","middlename":null,"mailoverride":"No","LastAddressChangeDate":"2021-11-25T08:00:00Z","Status":"Inactive","homephone":"888-888-8888","workphone":"777-777-7777","workphoneextension":"66","expirationdate":"1900-01-01T08:00:00Z","expirationstring":"01/01/1900 12:00:00 AM","mobilephone":"999-999-9999","firstname":"CHEVRONQA","lastname":"TEST123","ssn":null,"ssnnumber":"666147265","Order":100,"AvailableBalance":null,"fullname":"CHEVRONQA TEST123","type":0,"accounttype":"PRIMARY","accountTypeName":"PRIMARY","altemail":null,"accountnumber":"0000000123","Description":null,"BirthDate":"01-01-1970","Last4Ssn":"7265","IsDormantAccount":false, "DepLimit":5, "LimitAmount":500, "PosLimit":5, "AuthLimit":5}]}';
-            loans = '[]';
-            shares = '[]';
-        }
+        // if(Test.isRunningTest()){
+        //     cards = '{"AccountNumber":"0000000123", "Description":"CHEVRON DEBIT EMV CARD", "IssueDate": "2019-10-31T07:00:00Z" , "DepLimit":"500.00" , "LimitAmount":"0", "PosLimit":"2500.00", "AuthLimit":"2500.00", "ExpirationDate" : "2022-01-11T07:00:00Z", "StatusReason" : "0","ActivityDate":"2021-07-29T07:00:00Z","CorrespondDate":"2022-02-18T08:00:00Z","CreatedAtBranch":"0","CreatedByUser":"9999","InvalidAttemptCount":0,"InvalidAttemptDate":"2021-12-30T08:00:00Z","MemberGroup":1185,"OpenDate":"2006-07-17T07:00:00Z","Reference":"BC01","Restrict":0,"StatementMailCode":20,"Type":1,"NameObjects":[{"AddressType":"0","city":"VALLEJO","country":"","locator":"1","cardlocator":null,"cardlast4":null,"extraaddress":"","state":"CA","street":"146 FLYING DUTCHMAN CT","userchar2":"V666147265","zipcode":"94591","name":"CHEVRONQA TEST123","email":"DBHAVSAR@AFFIRMA.COM","DisplayOnly":"0","middlename":null,"mailoverride":"No","LastAddressChangeDate":"2021-11-25T08:00:00Z","Status":"Inactive","homephone":"888-888-8888","workphone":"777-777-7777","workphoneextension":"66","expirationdate":"1900-01-01T08:00:00Z","expirationstring":"01/01/1900 12:00:00 AM","mobilephone":"999-999-9999","firstname":"CHEVRONQA","lastname":"TEST123","ssn":null,"ssnnumber":"666147265","Order":100,"AvailableBalance":null,"fullname":"CHEVRONQA TEST123","type":0,"accounttype":"PRIMARY","accountTypeName":"PRIMARY","altemail":null,"accountnumber":"0000000123","Description":null,"BirthDate":"01-01-1970","Last4Ssn":"7265","IsDormantAccount":false, "DepLimit":5, "LimitAmount":500, "PosLimit":5, "AuthLimit":5}]}';
+        //     loans = '[]';
+        //     shares = '[]';
+        // }
         List<Object> lstCards = (List<Object>)JSON.deserializeUntyped(cards);
         List<Object> lstLoans = (List<Object>)JSON.deserializeUntyped(loans);
         List<Object> lstShares = (List<Object>)JSON.deserializeUntyped(shares);
@@ -59,7 +59,7 @@ global class MembersWebService{
         string ACCTId = '';
         string MemberId;
         
-        if (lstAccountDetails.size() == 0 || Test.isRunningTest()){            
+        if (lstAccountDetails.size() == 0){            
             if (lstAccts.size() > 0){
                 //Accounts to be inserted for ACCT Record Type
                 Account_Details__c objAccount = new Account_Details__c();
@@ -1523,12 +1523,16 @@ global class MembersWebService{
             Map<String, Object> objItem = (Map<String, Object>)obj;
             string type = String.valueof(objItem.get('type'));
             SSNNumber = String.valueof(objItem.get('ssnnumber'));
+            system.debug('type=='+type);
+            system.debug('SSNNumber=='+SSNNumber);
             if (string.isNotBlank(SSNNumber) && type == '0'){
                 string ssnString = '%' + SSNNumber;
                 lstAccount = [SELECT Id, PersonID__c, Residential_City__pc, Residential_Country__pc, Residential_Extra_Address__pc, Residential_State__pc, Residential_Street__pc, PersonID__pc, Residential_Zipocde__pc, Email_raw__c, MiddleName, Home_Phone__pc, Work_Phone__pc, Work_Phone_Extension__pc, Mobile_Phone__pc, FirstName, LastName, Alt_Email_Raw__c, Description, BIRTH_DATE__pc
                               FROM Account
                               WHERE PersonID__c like:ssnString
                               limit 1];
+
+                system.debug('lstAccount=='+lstAccount);
                 
                 for (Account a : lstAccount){                   
                     mapSSNAccount.put(a.PersonID__c.substring(1), a);
