@@ -48,7 +48,7 @@ global class eSignatureContoller {
         System.debug('Amount:'+amount);
         string centInWord=ConvertCurrencyToWordsEN.cent_in_word((decimal)amount);
         if(centInWord!=''){
-            amountInWord=amountInWord+' AND '+centInWord+' '+'Cents';
+            amountInWord=amountInWord+' and '+centInWord;
         }
         
         this.wireTransactionDetail.Wire_Amount_In_Word__c = amountInWord;
@@ -107,7 +107,7 @@ global class eSignatureContoller {
         System.debug('Amount:'+amount);
         string centInWord=ConvertCurrencyToWordsEN.cent_in_word((decimal)amount);
         if(centInWord!=''){
-            amountInWord=amountInWord+' AND '+centInWord+' '+'Cents';
+            amountInWord=amountInWord+' and '+centInWord;
         }
         data.Wire_Amount_In_Word__c= amountInWord;
         return data;

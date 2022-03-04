@@ -1,6 +1,6 @@
 public with sharing class ConvertCurrencyToWordsEN { 
     
-    static String[] to_19 = new string[]{ 'Zero', 'One',  'Two', 'Three', 'Four',  'Five',  'Six', 'Seven','Eight', 'Nine', 'Ten',  'Eleven', 'Twelve', 'Thirteen',  'Forteen', 'Fifteen', 'Sixteen', 'Seventeen', 'Eighteen', 'Nighteen' }; 
+    static String[] to_19 = new string[]{ 'Zero', 'One',  'Two', 'Three', 'Four',  'Five',  'Six', 'Seven','Eight', 'Nine', 'Ten',  'Eleven', 'Twelve', 'Thirteen',  'Fourteen', 'Fifteen', 'Sixteen', 'Seventeen', 'Eighteen', 'Nighteen' }; 
         static String[] tens = new string[]{ 'Twenty', 'Thirty', 'Fourty','Fifty', 'Sixty', 'Seventy', 'Eighty', 'Ninety'}; 
             
             static String[] zero_to_tens = new string[]{'Zero','Ten','Twenty', 'Thirty', 'Fourty','Fifty', 'Sixty', 'Seventy', 'Eighty', 'Ninety'}; 
@@ -79,21 +79,23 @@ public with sharing class ConvertCurrencyToWordsEN {
                 return cent='Ten';
             }
             
+            
+            string suffix=(num > 1? ' Cents':' Cent');     
             string strNum=arrayDecimal[1];
             if(strNum.length()==1){
-            	return cent =to_19[integer.valueOf(strNum.substring(0,1))];         
+            	return cent =to_19[integer.valueOf(strNum.substring(0,1))]+suffix;         
             }
             
             if(num<20 && strNum.length()==2){
-                return cent =to_19[integer.valueOf(strNum.substring(0,2))];     
+                return cent =to_19[integer.valueOf(strNum.substring(0,2))]+ suffix;     
             }
             
             if(strNum.length()==2 && strNum.substring(1,2)=='0'){
-                return cent=zero_to_tens[integer.valueOf(strNum.substring(0,1))];        
+                return cent=zero_to_tens[integer.valueOf(strNum.substring(0,1))]+suffix;           
             }
             
             if(strNum.length()==2){
-                return cent=zero_to_tens[integer.valueOf(strNum.substring(0,1))] +' '+ to_19[integer.valueOf(strNum.substring(1,2))];        
+                return cent=zero_to_tens[integer.valueOf(strNum.substring(0,1))] +' '+ to_19[integer.valueOf(strNum.substring(1,2))] + suffix;        
             }
         	
         }
