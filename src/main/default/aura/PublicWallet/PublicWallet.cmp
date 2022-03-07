@@ -118,23 +118,23 @@
                 </div>
             </div>
             
-            <!--<div class="InnerDiv">
-                <div class="leftDiv">
+           <div class="InnerDiv">
+                <!-- <div class="leftDiv">
                     <lightning:select name="AdditionalToken2" label="Additional Token"  aura:id="AdditionalToken2" class="select-auto-width">
-                        <option value="Select">---Select---</option>
-                        <option value="Red Herring">Red Herring</option>
+                        <option value="Select">Select</option>
+                      <option value="Red Herring">Red Herring</option>
                         <option value="Birth Place">Birth Place</option>	
                     </lightning:select>
-                </div>
-                <div class="btnAlign">
+                </div>-->
+                 <div class="btnAlign">
                     <div style="margin-top:22px;">
-                        <lightning:button variant="neutral" label="Passed" onclick="{! c.ButtonClick }" iconName="utility:check" aura:id="TokenPassButton2" class="BtnOne"/>
-                        <lightning:button variant="neutral" label="Failed" onclick="{! c.ButtonClick }" iconName="utility:close" aura:id="TokenFailButton2" class="BtnTwo"/>
+                        <lightning:button variant="neutral" label="Passed" onclick="{! c.ButtonClick }" iconName="utility:check" aura:id="TokenPassButton2" class="slds-hidden"/>
+                        <lightning:button variant="neutral" label="Failed" onclick="{! c.ButtonClick }" iconName="utility:close" aura:id="TokenFailButton2" class="slds-hidden"/>
                     </div>
                 </div>
             </div>
             
-        </div>-->
+        </div>
         <div class="InnerDiv submitButton">
             <div class="CenterDiv">
                 <lightning:button variant="brand" label="Submit Answers" onclick="{! c.submit }" aura:id="SubmitButton" disabled = "{!v.IsButtonDisabled}" />
