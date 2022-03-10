@@ -13,7 +13,7 @@
         component.set("v.IsButtonDisabled", true);
         
         component.find("AdditionalToken1").set("v.value","Select");
-        component.find("AdditionalToken2").set("v.value","Select");
+       // component.find("AdditionalToken2").set("v.value","Select");
         
         helper.buttonOnLoad(component, event, helper);
         var params = event.getParam('arguments');
@@ -67,14 +67,14 @@
             var MMNMatch;
             var EmailMatch;
             var AdditionalTokenOption3Match;
-            var AdditionalTokenOption4Match;
+           var AdditionalTokenOption4Match;
             var ButtonId = event.getSource().getLocalId();
             var Button = event.getSource();
             var findOtherButton;
             findOtherButton = component.find('DobFailButton');
             var QuestionAttempt = component.get("v.QuestionAttempt");
             var token1 = component.find("AdditionalToken1").get("v.value");
-            var token2 = component.find("AdditionalToken2").get("v.value");
+           // var token2 = component.find("AdditionalToken2").get("v.value");
             var ScoreObtained = component.get("v.ScoreObtained");
             var FailedCount = component.get("v.FailedCount");
             if(ButtonId =='DobPassButton'){
@@ -351,10 +351,10 @@
                                             else if(ButtonId =='TokenPassButton1')
                                             {
                                                 
-                                                if(token1 == 'Select'){
-                                                    alert('Please select Additional Token');
-                                                }
-                                                else{                                                   
+                                               // if(token1 == 'Select'){
+                                                //    alert('Please select Additional Token');
+                                               // }
+                                                {                                                   
                                                     
                                                     findOtherButton = component.find('TokenFailButton1');
                                                     if(Button.get("v.variant") ==  "success"){
@@ -393,10 +393,10 @@
                                                 
                                             }
                                                 else if(ButtonId =='TokenFailButton1'){ 
-                                                    if(token1 == 'Select'){
-                                                        alert('Please select Additional Token');
-                                                    }
-                                                    else{                                                        
+                                                    //if(token1 == 'Select'){
+                                                        //alert('Please select Additional Token');
+                                                    //}
+                                                    {                                                        
                                                         findOtherButton = component.find('TokenPassButton1');
                                                         if(Button.get("v.variant") ==  "destructive"){	
                                                            FailedCount = parseInt(FailedCount) - 1; 
@@ -434,7 +434,7 @@
                                                     }
                                                     
                                                 }
-                                                    else if(ButtonId =='TokenPassButton2')
+                                                 else if(ButtonId =='TokenPassButton2')
                                                     {
                                                         
                                                         if(token2 == 'Select'){
@@ -477,7 +477,7 @@
                                                         }
                                                         
                                                     }
-                                                        else if(ButtonId =='TokenFailButton2'){ 
+                                                       else if(ButtonId =='TokenFailButton2'){ 
                                                             if(token2 == 'Select'){
                                                                 alert('Please select Additional Token');
                                                             }
@@ -521,6 +521,7 @@
                                                             }
                                                             
                                                         }
+            
         }   
         
     },
