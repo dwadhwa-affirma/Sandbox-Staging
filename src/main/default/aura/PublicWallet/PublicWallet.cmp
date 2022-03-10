@@ -106,7 +106,7 @@
                     <lightning:select name="AdditionalToken1" label="Additional Token"  aura:id="AdditionalToken1" class="select-auto-width">
                         <!--<option value="Select">Select</option>-->
                           <option value="Birth Place">Birth Place</option>
-                        <option value="Red Herring">Red Herring</option>	
+                        <!--<option value="Red Herring">Red Herring</option>-->	
                       	
                     </lightning:select>
                 </div>
@@ -128,8 +128,8 @@
                 </div>-->
                  <div class="btnAlign">
                     <div style="margin-top:22px;">
-                        <lightning:button variant="neutral" label="Passed" onclick="{! c.ButtonClick }" iconName="utility:check" aura:id="TokenPassButton2" class="slds-hidden"/>
-                        <lightning:button variant="neutral" label="Failed" onclick="{! c.ButtonClick }" iconName="utility:close" aura:id="TokenFailButton2" class="slds-hidden"/>
+                        <lightning:button variant="neutral" label="Passed" onclick="{! c.ButtonClick }" iconName="utility:check" aura:id="TokenPassButton2" disabled="true" class="slds-hidden"/>
+                        <lightning:button variant="neutral" label="Failed" onclick="{! c.ButtonClick }" iconName="utility:close" aura:id="TokenFailButton2" disabled="true" class="slds-hidden"/>
                     </div>
                 </div>
             </div>
