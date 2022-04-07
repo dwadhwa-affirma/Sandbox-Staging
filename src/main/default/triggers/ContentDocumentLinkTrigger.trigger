@@ -44,6 +44,24 @@ trigger ContentDocumentLinkTrigger on ContentDocumentLink(before insert, after i
 		if (parent.size() > 0){
 			EFTToDocuSign.docusignAttachtoCase(parent);
 		}
+        
+        
+        Map<id, case> e2 = new Map<id, case>();
+		for (ContentDocumentLink d : Trigger.New){
+			system.debug('d1 ' + d);
+			system.debug('LinkedEntityId1 - ' + d.LinkedEntityId);
+			Schema.SObjectType objType = d.LinkedEntityId.getsobjecttype();
+			system.debug('objType - ' + objType);
+			if (objType == case.sObjectType){
+				parent.add(d.LinkedEntityId);
+				CDLIds.add(d.id);
+			}		
+        }
+
+        
+        if (parent.size() > 0){
+			CaseToSignCard.docusignAttachtoCase(parent);
+		}
 
 	}
 }
