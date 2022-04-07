@@ -11,6 +11,8 @@ global class MembersWebService{
         //     accountNumber = '0090067880';
         //     appId = '1234';
         // }
+        
+        AccountNumber = AccountNumber.leftPad(10, '0');
         system.debug('###' + accountNumber);
         List<Account_Details__c> lstAccountDetails = new List<Account_Details__c>();
         lstAccountDetails = [SELECT Id, Name
@@ -129,19 +131,22 @@ global class MembersWebService{
                 ACCTId = objAccount.Id;
                 List<Object> NameObject = (List<Object>)objItem.get('NameObjects');
                 system.debug('###' + NameObject);
-                map<string, object> resultMemberMap = CreateUpdateMemberRecord(NameObject);
-                List<Account> PAToInsert = (List<Account>)resultMemberMap.get('Insert');
-                system.debug('PAToInsert###' + PAToInsert);
-                if(PAToInsert == null){
-                    PAToInsert = (List<Account>)resultMemberMap.get('Update');
+                if(NameObject != null){
+                    map<string, object> resultMemberMap = CreateUpdateMemberRecord(NameObject);
+                    List<Account> PAToInsert = (List<Account>)resultMemberMap.get('Insert');
+                    system.debug('PAToInsert###' + PAToInsert);
+                    if(PAToInsert == null){
+                        PAToInsert = (List<Account>)resultMemberMap.get('Update');
+                    }
+                    system.debug('PAToInsert###' + PAToInsert);
+                    if(PAToInsert != null && PAToInsert.size() > 0){
+                        MemberId = PAToInsert[0].Id;
+                    }
+                    for (Account a : PAToInsert){                   
+                        CreateUpdatePersonRecord('ACCT', ACCTId, a.Id, a.PersonId__c, '	0000/Primary', accountNumber);
+                    }
                 }
-                system.debug('PAToInsert###' + PAToInsert);
-                if(PAToInsert != null && PAToInsert.size() > 0){
-                    MemberId = PAToInsert[0].Id;
-                }
-                for (Account a : PAToInsert){                   
-                    CreateUpdatePersonRecord('ACCT', ACCTId, a.Id, a.PersonId__c, '	0000/Primary', accountNumber);
-                }
+                
             }
             
             if (lstCards.size() > 0){
