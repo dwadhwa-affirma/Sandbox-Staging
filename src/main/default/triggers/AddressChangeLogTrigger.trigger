@@ -1,7 +1,7 @@
 /* ---------------------This trigger will be executed before insert of address change log.
 It creates a case with addresschange details in description field.
 It also sends Email and SMS notifications.................*/
-trigger AddressChangeLogTrigger on AddressChangeLog__c(before insert ){
+trigger AddressChangeLogTrigger on AddressChangeLog__c(before insert, after insert){
     
     string intakemethod = '';
     string IdentificationMethod = '';
@@ -13,12 +13,15 @@ trigger AddressChangeLogTrigger on AddressChangeLog__c(before insert ){
     
     if (trigger.isbefore && trigger.isInsert){
         set<string> setMemberId = new set<string>();
+        
         for (AddressChangeLog__c objAddressChange : trigger.New){
             setMemberId.add(objAddressChange.Member__c);
         }
+        
         Map<Id, Account> objMap = new Map<Id, Account>([SELECT Id, Name
                                                         FROM Account
                                                         WHERE Id IN :setMemberId]);
+        
         for (AddressChangeLog__c objAddressChange : trigger.New){
             string memberemail = objAddressChange.Email__c;
             string phone = objAddressChange.MobilePhone__c;
@@ -35,13 +38,13 @@ trigger AddressChangeLogTrigger on AddressChangeLog__c(before insert ){
             List<string> EmailList = new List<String>();
             if (memberemail != null && (MyPattern.matcher(memberemail).matches()))
                 EmailList.add(memberemail);
-            if (SendEmail && EmailList.size() > 0){
+            /*if (SendEmail && EmailList.size() > 0){
                 //SendEmailNotifications(EmailList, 'Address Change', objAddressChange.Member__c);
             }
             if (SendSMS && phone != null){
                 system.debug('memberPhone==' + phone);
                 //SendSMS(phone);
-            }
+            }*/
             
             String accountstring =objAddressChange.AccountNumbersString__c;
             List<String> listAccountNumber = new List<String>();
@@ -220,7 +223,8 @@ trigger AddressChangeLogTrigger on AddressChangeLog__c(before insert ){
                         }
                     }
                 }
-            } else if (objAddressChange.Update_Type__c == 'Contact Info'){
+            } 
+            else if (objAddressChange.Update_Type__c == 'Contact Info'){
                 
                 // To create case description for residential address change
                 
@@ -243,7 +247,8 @@ trigger AddressChangeLogTrigger on AddressChangeLog__c(before insert ){
                     + 'New AlternateEmail:' + (objAddressChange.AlternateEmail_New__c == null ? '' : objAddressChange.AlternateEmail_New__c)+'\n' 
                     + 'Record Type Updated:' + 'Name Records' + '\n' + 
                     'Names:' + names;
-            } else if (objAddressChange.Update_Type__c == 'Mailing Address'){
+            } 
+            else if (objAddressChange.Update_Type__c == 'Mailing Address'){
                 
                 // To create case description for mailing address change
                 Description = '\n'+ intakemethod 
@@ -265,7 +270,8 @@ trigger AddressChangeLogTrigger on AddressChangeLog__c(before insert ){
                     + 'Record Type Updated:' + 'Mail only Records' + '\n' + 
                     'Locator:' + objAddressChange.Temp_Mail_Locators__c + '\n' + 
                     'Names:' + names;
-            } else if (objAddressChange.Update_Type__c == 'Temp Mailing Address - New'){
+            } 
+            else if (objAddressChange.Update_Type__c == 'Temp Mailing Address - New'){
                  // To create case description for mailing address change
                 Description = '\n'+intakemethod 
                     + IdentificationMethod +'\n'
@@ -330,6 +336,9 @@ trigger AddressChangeLogTrigger on AddressChangeLog__c(before insert ){
                         c.OwnerId = objAddressChange.Updated_By__c;
                     //c.Status = 'Closed';
                     c.Description = Description;
+                    if(c.AccountId == null && objAddressChange.Member__c != null){
+                        c.AccountId = objAddressChange.Member__c;
+                    }
                 }
                 update CaseList;
                 for (Case c : CaseList){  
@@ -395,9 +404,11 @@ trigger AddressChangeLogTrigger on AddressChangeLog__c(before insert ){
                 } else if (objAddressChange.Update_Type__c == 'Temp Mailing Address - New'){
                     caseobj.Subject = 'Mailing Address Update';
                     caseobj.Description = Description;
-                }
+                }  
                 
-                
+                if(!String.IsBlank(objAddressChange.Case_Origin__c))  {
+                    caseobj.Origin = objAddressChange.Case_Origin__c;
+                }              
                 try{
                     insert caseobj;
                     caseid = caseobj.id;
@@ -425,6 +436,43 @@ trigger AddressChangeLogTrigger on AddressChangeLog__c(before insert ){
             }
             
             insert listac;
+            
+            if (objAddressChange.Update_Type__c == 'Contact Info'){//&& objAddressChange.Case_Origin__c == 'Digital Banking'
+                SendEmailUpdateNotification(objAddressChange.AccountNameOldEmail__c,objAddressChange.Email_New__c, SendEmail);
+            }
+        }
+    }
+    
+    if(trigger.isAfter && trigger.isInsert){
+        for (AddressChangeLog__c objAddressChange : trigger.New){
+            if (objAddressChange.Update_Type__c == 'Residential Address'){
+                //Update Residential Address Details in Salesforce
+                 string[] allNamePairRecords = objAddressChange.AccountNamePair__c.split(',');
+                    set<string> setSSNs = new set<string>();
+                    for(String nameItem : allNamePairRecords) {
+                        List<String> arryNameItem=nameItem.trim().split('\\|');
+                        if(arryNameItem.size() >= 3){
+                            if(string.isNotBlank(arryNameItem[2])){
+                                setSSNs.add(arryNameItem[2]);
+                            }
+                        }
+                    }            
+                	UpdateResidentialAddress(objAddressChange, setSSNs);
+            }
+            else if(objAddressChange.Update_Type__c == 'Contact Info'){
+                //Update Contact Details in Salesforce
+                string[] allNamePairRecords = objAddressChange.AccountNamePair__c.split(',');
+                    set<string> setSSNs = new set<string>();
+                    for(String nameItem : allNamePairRecords) {
+                        List<String> arryNameItem=nameItem.trim().split('\\|');
+                        if(arryNameItem.size() >= 3){
+                            if(string.isNotBlank(arryNameItem[2])){
+                                setSSNs.add(arryNameItem[2]);
+                            }
+                        }
+                    }            
+                	UpdateContactDetails(objAddressChange, setSSNs);
+            }
         }
     }
     
@@ -456,15 +504,35 @@ trigger AddressChangeLogTrigger on AddressChangeLog__c(before insert ){
     }
     
     // --------------------- Send Email Notification..................//
-    public void SendEmailNotifications(List<string> EmailIdsList, string templatenAME, string accountNumber){
+    public void SendEmailNotifications(Set<string> EmailIdsSet, string html, string templateName, string FirstName, string LastName){
+        system.debug('In SendEmailNotifications');
         List<Messaging.SingleEmailMessage> mails = new List<Messaging.SingleEmailMessage>();
         Messaging.SingleEmailMessage mail = new Messaging.SingleEmailMessage();
+             
+        String Environment='';
         
+        List<String> EmailIdsList = new List<String>();
+        String userEmail;
+        
+        Address_Change_Email_Notifiations__c ade = Address_Change_Email_Notifiations__c.getValues('Primary');
+        if(ade.Environment__c != null){
+            Environment = ade.Environment__c;
+            userEmail = ade.TestEmailId__c;
+        }
+        
+        if(Environment == 'Production' || Environment == 'production'){
+            EmailIdsList.addAll(EmailIdsSet);
+        }        
+        else if(Environment != 'Production'){
+            EmailIdsList.add(userEmail);
+        }   
+        
+        system.debug('EmailIdsList=='+EmailIdsList);
         
         mail.setToAddresses(EmailIdsList);
         List<EmailTemplate> listEmailTemplate = [select Id, Name, Body, Subject, HtmlValue
                                                  from EmailTemplate
-                                                 where Name = :templatenAME];
+                                                 where Name = :templateName];
         
         mail.setSubject(listEmailTemplate[0].Subject);
         string emailadd;
@@ -473,12 +541,226 @@ trigger AddressChangeLogTrigger on AddressChangeLog__c(before insert ){
                                              from OrgWideEmailAddress
                                              where Address = :emailadd];
         
-        string body = listEmailTemplate[0].Body.replace('{AccountNumber}', accountNumber);
-        mail.setPlainTextBody(body);
+        string body = listEmailTemplate[0].HtmlValue.replace('{EmailUpdateDetails}', html);
+        if(String.isNotBlank(FirstName)){
+            body = body.replace('{FirstName}', FirstName);
+        }
+        else{
+            body = body.replace('{FirstName}', '');
+        }
+        if(String.isNotBlank(LastName)){
+             body = body.replace('{LastName}', LastName);
+        }
+        else{
+            body = body.replace('{LastName}', '');
+        }
+        mail.setHtmlBody(body);
         mail.setOrgWideEmailAddressId(listAdd[0].Id);
         mails.add(mail);
         
-        Messaging.sendEmail(mails);
+        Messaging.SendEmailResult[] results = Messaging.sendEmail(mails);
+        if (results[0].success) 
+        {
+            System.debug('The update email was sent successfully.');
+        } else {
+            System.debug('The update email failed to send:' +  results[0].errors[0].message);
+        }
+    }
+    
+    
+    public void SendEmailUpdateNotification(string AccountNameOldEmail, string NewEmailId, boolean SendEmail){
+        set<string> OldEmailIds = new set<string>();
+        set<string> SSNSet = new set<string>();
+        set<string> AccountNamesWithUpdatedEmail = new set<string>();        
+        map<string,string> SSNEmailIdsMap = new map<string,string>();
+        set<string> AccountNumbersforBrand = new set<string>();
+        map<string,string> AccountNoBrandMap = new map<string,string>();
+        map<string,string> SSNFirstNameMap = new map<string,string>();
+        map<string,string> SSNLastNameMap = new map<string,string>();
+        
+        List<string> AccountNameEmailList  = new List<string>();
+        AccountNameEmailList = AccountNameOldEmail.split(',');
+        
+       // string htmlTable = '<table><thead><th><td>Account Number</td></th><th><td>Name</td></th><th><td>Old Email</td></th><th><td>New Email</td></th></thead><tbody>';
+       
+        for(string se: AccountNameEmailList){
+            if(!String.IsBlank(se)){
+                List<string> tempList = se.split('\\|');
+                if(tempList.size() >= 3){
+                    string OldEmailId = tempList[2];
+                    if(!OldEmailId.equalsIgnoreCase(NewEmailId)){
+                        AccountNamesWithUpdatedEmail.add(se); 
+                        if(tempList.size() >= 4)
+                        	SSNSet.add(tempList[3]);
+                        AccountNumbersforBrand.add(tempList[0]);
+                    }                    
+                }
+            }  
+		 }
+        
+        List<Person_Account__c> listMemberAccounts = [SELECT id, Account_number__r.Brand__c,TypeTranslate__c, Account_number__r.name, personid__r.personid__c, personid__r.LastName, personid__r.FirstName from Person_Account__c where Account_number__r.Name in: AccountNumbersforBrand order by Account_number__r.Name, TypeTranslate__c];
+        if(listMemberAccounts.size() > 0){
+            for(Person_Account__c lma: listMemberAccounts){
+                if(!AccountNoBrandMap.containsKey(lma.Account_number__r.name)){
+                	AccountNoBrandMap.put(lma.Account_number__r.name, lma.Account_number__r.Brand__c);
+            	}
+                if(!SSNFirstNameMap.containsKey(lma.personid__r.personid__c)){
+                    SSNFirstNameMap.put(lma.personid__r.personid__c.substring(1), lma.personid__r.FirstName);
+                }
+                 if(!SSNLastNameMap.containsKey(lma.personid__r.personid__c)){
+                    SSNLastNameMap.put(lma.personid__r.personid__c.substring(1), lma.personid__r.LastName);
+                }
+            }                        	
+        }
+        
+        system.debug('AccountNoBrandMap=='+AccountNoBrandMap);
+        system.debug('SSNFirstNameMap=='+SSNFirstNameMap);
+        system.debug('SSNLastNameMap=='+SSNLastNameMap);
+        
+        set<string> AllEmailsIds = new set<string>();
+        for(string ssn: SSNSet){
+            set<string> EmailsIds = new set<string>(); 
+            string Brand = '';
+            string FirstName = SSNFirstNameMap.get(ssn);
+            string LastName = SSNLastNameMap.get(ssn);
+            EmailsIds.add(NewEmailId);
+            string htmlTable = '<table style="border: 1px solid black;border-collapse: collapse;width: 80%;text-align: center;"><thead style="border: 1px solid black;border-collapse: collapse;"><th style="border: 1px solid black;border-collapse: collapse;">Account Number</th><th style="border: 1px solid black;border-collapse: collapse;">Name</th><th style="border: 1px solid black;border-collapse: collapse;">Old Email</th><th style="border: 1px solid black;border-collapse: collapse;">New Email</th></thead><tbody>';
+            for(string se: AccountNamesWithUpdatedEmail){
+                if(!String.IsBlank(se)){
+                    List<string> tempList = se.split('\\|');
+                    if(tempList.size() >= 4){
+                        string tssn = tempList[3];
+                        string toldemail = tempList[2];
+                        string taccountno = tempList[0]; 
+                        //if(String.isBlank(Brand)){
+                            //Brand = AccountNoBrandMap.get(taccountno);
+                        //}
+                        string tname= tempList[1];
+                        if(ssn == tssn){
+                            Brand = AccountNoBrandMap.get(taccountno);
+                            EmailsIds.add(toldemail);                            
+                            htmlTable += '<tr><td style="border: 1px solid black;border-collapse: collapse;">'+ maskAccountNumber(taccountno) +'</td><td style="border: 1px solid black;border-collapse: collapse;">'+ tname +'</td><td style="border: 1px solid black;border-collapse: collapse;">'+ toldemail +'</td><td style="border: 1px solid black;border-collapse: collapse;">'+ NewEmailId +'</td></tr>';
+                           // AllEmailsIds.add(toldemail);
+                        }
+                    }
+                }
+            }
+            
+            htmlTable += '</tbody></table>';
+            system.debug('EmailsIds=='+EmailsIds);
+            system.debug('htmlTable=='+htmlTable);
+            string TemplateName = '';
+            if(Brand == 'Spectrum'){
+                TemplateName  = 'Address Change Email Update Notification - Spectrum';
+            }
+            else{
+                TemplateName  = 'Address Change Email Update Notification - Chevron';
+            }
+            if(SendEmail){
+                SendEmailNotifications(EmailsIds,htmlTable, TemplateName, FirstName, LastName);
+            }
+            
+        }   
+   
+    }
+    
+    public string maskAccountNumber(string AccountNumber){
+        		String valueToMask = AccountNumber.substring(0, 8);
+                String mask = '*'.repeat(valueToMask.length());
+                String masked = AccountNumber.replaceFirst(valueToMask, mask);
+                system.debug('Masked:'+masked);
+        		return masked;
+    }
+    
+    public void UpdateResidentialAddress(AddressChangeLog__c AddressChangeRecord, set<string> SSNList){
+       List<String> substrings = new List<String>();
+       for(String wa: SSNList){
+             if(String.isNotBlank(wa)){
+                    substrings.add('%' + wa.trim());
+                }       
+        }
+       List<Account> AccountstoUpdate= [Select Residential_Street__pc, Residential_Extra_Address__pc,Residential_City__pc, Residential_State__pc, Residential_Country__pc,Residential_Zipocde__pc, Residential_Country_Code__pc  from Account where PersonId__C Like: substrings];
+        for(Account acc: AccountstoUpdate){
+            if(acc.Residential_Street__pc != AddressChangeRecord.Address_New__c){
+                acc.Residential_Street__pc = AddressChangeRecord.Address_New__c;
+            }
+            if(acc.Residential_Extra_Address__pc != AddressChangeRecord.Address2_New__c){
+                acc.Residential_Extra_Address__pc = AddressChangeRecord.Address2_New__c;
+            }
+            if(acc.Residential_City__pc != AddressChangeRecord.City_New__c){
+                acc.Residential_City__pc = AddressChangeRecord.City_New__c;
+            }
+            if(acc.Residential_State__pc != AddressChangeRecord.State_New__c){
+                acc.Residential_State__pc = AddressChangeRecord.State_New__c;
+            }
+            if(acc.Residential_Country__pc != AddressChangeRecord.Country_New__c){
+                acc.Residential_Country__pc = AddressChangeRecord.Country_New__c;
+            }
+            
+            if(acc.Residential_Zipocde__pc != AddressChangeRecord.Zip_New__c){
+                system.debug('1----');
+                 if(AddressChangeRecord.Zip_New__c != null && AddressChangeRecord.Zip_New__c.Contains('-')){
+                    List<string> ZipCodes = AddressChangeRecord.Zip_New__c.split('-');                     
+                    acc.Residential_Zipocde__pc = ZipCodes[0];                      
+                    if(ZipCodes.size() >= 1)
+                        acc.Residential_Zipocde__pc += '-' + ZipCodes[1];                     
+                }
+                else if(AddressChangeRecord.Zip_New__c != null){
+                    acc.Residential_Zipocde__pc = AddressChangeRecord.Zip_New__c;
+                }
+            }     
+            
+			if(acc.Residential_Country_Code__pc != AddressChangeRecord.CountryCode_New__c){
+                acc.Residential_Country_Code__pc = AddressChangeRecord.CountryCode_New__c;
+            }            
+        }
+        
+       update AccountstoUpdate;
+    }
+    
+    public void UpdateContactDetails(AddressChangeLog__c AddressChangeRecord, set<string> SSNList){
+        List<String> substrings = new List<String>();
+       for(String wa: SSNList){
+             if(String.isNotBlank(wa)){
+                    substrings.add('%' + wa.trim());
+                }       
+        }
+       List<Account> AccountstoUpdate= [Select Home_Phone__pc, Mobile_Phone__pc,Work_Phone__pc, Work_Phone_Extension__pc, PersonEmail,Alt_Email_Raw__c	  from Account where PersonId__C Like: substrings];
+        for(Account acc: AccountstoUpdate){
+            if(acc.Home_Phone__pc != AddressChangeRecord.HomePhone_New__c && AddressChangeRecord.HomePhone_New__c != 'Not available'){
+                acc.Home_Phone__pc = AddressChangeRecord.HomePhone_New__c;
+            }
+            
+            if(acc.Mobile_Phone__pc != AddressChangeRecord.MobilePhone_New__c && AddressChangeRecord.MobilePhone_New__c != 'Not available'){
+                acc.Mobile_Phone__pc = AddressChangeRecord.MobilePhone_New__c;
+            }
+            
+            if(acc.Work_Phone__pc != AddressChangeRecord.WorkPhone_New__c && AddressChangeRecord.WorkPhone_New__c != 'Not available'){
+                acc.Work_Phone__pc = AddressChangeRecord.WorkPhone_New__c;
+            }
+            
+            if(acc.Work_Phone_Extension__pc != AddressChangeRecord.WorkExtension_New__c && AddressChangeRecord.WorkExtension_New__c != 'Not available'){
+                acc.Work_Phone_Extension__pc = AddressChangeRecord.WorkExtension_New__c;
+            }
+            
+            if(acc.PersonEmail != AddressChangeRecord.Email_New__c && AddressChangeRecord.Email_New__c != 'Not available'){
+                acc.PersonEmail = AddressChangeRecord.Email_New__c;
+            }
+
+            if(acc.Email_raw__c != AddressChangeRecord.Email_New__c && AddressChangeRecord.Email_New__c != 'Not available'){
+                acc.Email_raw__c = AddressChangeRecord.Email_New__c;
+            }
+            
+            if(acc.Alt_Email_Raw__c != AddressChangeRecord.AlternateEmail_New__c && AddressChangeRecord.AlternateEmail_New__c != 'Not available'){
+                acc.Alt_Email_Raw__c = AddressChangeRecord.AlternateEmail_New__c;
+            }
+
+            if(acc.Alternate_Email__pc != AddressChangeRecord.AlternateEmail_New__c && AddressChangeRecord.AlternateEmail_New__c != 'Not available'){
+                acc.Alternate_Email__pc = AddressChangeRecord.AlternateEmail_New__c;
+            }
+        }
+        
+        update AccountstoUpdate;
     }
     
     public class EmailNotificationStatusList{
