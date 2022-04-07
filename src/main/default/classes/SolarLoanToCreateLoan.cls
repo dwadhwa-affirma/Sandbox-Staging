@@ -39,6 +39,10 @@ public class SolarLoanToCreateLoan {
     public static string jsonData1;
     public static Integer TotalPrimaryAccount;
     public static string HasMembershipStatus;
+
+    public static Integer TotalPrimaryAccountReCheck;
+    public static string HasMembershipStatusReCheck;
+    public static string MembershipExistReCheck;
     
     //-----------------------------------------------------Membership Create------------------------------------------//
 
@@ -192,6 +196,7 @@ public class SolarLoanToCreateLoan {
     public static string SLUserCode11;
     public static string SLUserDate11;
     public static String SLUserChar7;
+    public static String SLUserChar8;
     public static string SLUserChar6;
 
     public static HttpRequest req14 = new HttpRequest();
@@ -309,6 +314,8 @@ public class SolarLoanToCreateLoan {
     public static string responseBody9;
     public static string jsonData9;
     public static string RGlines;
+    public static String result3;
+    public static string ErrorShareLocator;
 
     public static string SHAREBRANCH;
     public static string SHARECREATEDATBRANCH;
@@ -316,6 +323,7 @@ public class SolarLoanToCreateLoan {
     public static string SHAREMINIMUMBALANCE;
     public static string SHARETYPE;
     public static string SHAREID;
+    
 
     //-------------------------------------------------------------- PowerOn Record--------------------------------------------------//
 
@@ -470,8 +478,8 @@ public class SolarLoanToCreateLoan {
 
             system.debug('MembershipExist: '+MembershipExist);
             system.debug('TotalPrimaryAccount: '+TotalPrimaryAccount);
-            system.debug('HasMembershipStatus: '+HasMembershipStatus);
-          
+            system.debug('HasMembershipStatus: '+HasMembershipStatus);            
+            
             if(MembershipExist == 'true' && HasMembershipStatus == 'OK'){  
                 
                 System.debug('Membership is already exist:: '+ MembershipExist);   
@@ -888,6 +896,11 @@ public class SolarLoanToCreateLoan {
                         else
                             SLUserChar7   = null;
 
+                        if(sl.Name != null)  
+                            SLUserChar8   = String.ValueOf(sl.Name);
+                        else
+                            SLUserChar8   = null;   
+
                         LoanId = result; 
                         //AccountNumber = sl.Member_Number__c;
                         
@@ -898,7 +911,7 @@ public class SolarLoanToCreateLoan {
                         req14.setHeader('Content-Type', 'application/json');
                         req14.setHeader('Accept', 'application/json');
                         
-                        jsonData14 = '{"EpisysId":'+'\"'+operatorid+'\"'+',"UserChar6":' + '\"'+ SLUserChar6 +'\"'+',"UserChar7":' + '\"'+ SLUserChar7 +'\"'+',"UserCode11":' + '\"'+ SLUserCode11 +'\"'+',"UserDate11":' + '\"'+ SLUserDate11 +'\"'+',"Type":' + '\"'+ SLType +'\"'+',"UserChar11":' + '\"'+ SLUserChar11 +'\"'+',"UserChar1":'+'\"'+ SLUserChar1 +'\"'+',"UserChar2":'+'\"' + SLUserChar2 + '\"'+',"UserChar3":'+'\"'+SLUserChar3+'\"'+',"UserChar4":'+'\"'+SLUserChar4+'\"'+',"UserChar5":'+'\"'+SLUserChar5+'\"'+',"UserAmount14":'+'\"'+SLUserAmount14+'\"'+',"UserRate1":'+'\"'+SLUserRate1+'\"'+',"UserChar10":'+'\"'+SLUserChar10+'\"'+',"UserChar20":'+'\"'+SLUserChar20+'\"'+',"UserAmount1":'+'\"'+SLUserAmount1+'\"'+',"UserAmount2":'+'\"'+SLUserAmount2+'\"'+',"UserAmount3":'+'\"'+SLUserAmount3+'\"'+',"UserAmount11":'+'\"'+SLUserAmount11+'\"'+',"UserAmount12":'+'\"'+SLUserAmount12+'\"'+',"UserAmount13":'+'\"'+SLUserAmount13+'\"'+',"UserCode1":'+'\"'+SLUserCode1+'\"'+',"UserRate1":'+'\"'+SLUserRate1+'\"'+',"LoanId":'+'\"'+LoanId+'\"'+',"AccountNumber":'+'\"'+AccountNumber+'\"}';
+                        jsonData14 = '{"EpisysId":'+'\"'+operatorid+'\"'+',"UserChar6":' + '\"'+ SLUserChar6 +'\"'+',"UserChar7":' + '\"'+ SLUserChar7 +'\"'+',"UserCode11":' + '\"'+ SLUserCode11 +'\"'+',"UserDate11":' + '\"'+ SLUserDate11 +'\"'+',"Type":' + '\"'+ SLType +'\"'+',"UserChar11":' + '\"'+ SLUserChar11 +'\"'+',"UserChar1":'+'\"'+ SLUserChar1 +'\"'+',"UserChar2":'+'\"' + SLUserChar2 + '\"'+',"UserChar3":'+'\"'+SLUserChar3+'\"'+',"UserChar4":'+'\"'+SLUserChar4+'\"'+',"UserChar5":'+'\"'+SLUserChar5+'\"'+',"UserAmount14":'+'\"'+SLUserAmount14+'\"'+',"UserRate1":'+'\"'+SLUserRate1+'\"'+',"UserChar10":'+'\"'+SLUserChar10+'\"'+',"UserChar20":'+'\"'+SLUserChar20+'\"'+',"UserAmount1":'+'\"'+SLUserAmount1+'\"'+',"UserAmount2":'+'\"'+SLUserAmount2+'\"'+',"UserAmount3":'+'\"'+SLUserAmount3+'\"'+',"UserAmount11":'+'\"'+SLUserAmount11+'\"'+',"UserAmount12":'+'\"'+SLUserAmount12+'\"'+',"UserAmount13":'+'\"'+SLUserAmount13+'\"'+',"UserCode1":'+'\"'+SLUserCode1+'\"'+',"UserRate1":'+'\"'+SLUserRate1+'\"'+',"LoanId":'+'\"'+LoanId+'\"'+',"AccountNumber":'+'\"'+AccountNumber +'\"'+',"UserChar8":'+'\"'+SLUserChar8 +'\"}';
                         req14.setBodyAsBlob(Blob.valueof(jsondata14)); 
                         system.debug('test'+jsonData14);
                         
@@ -939,6 +952,8 @@ public class SolarLoanToCreateLoan {
                     system.debug('result2: '+result2);
                     system.debug('result: '+result);
 
+
+
                     if(result2 != null && result != null){
                             
                         LoanId = result;
@@ -976,6 +991,76 @@ public class SolarLoanToCreateLoan {
 
                     } 
 
+                    //--------------------------Checking if Share 100 record already exist for this member number ---------------------------------//
+                    boolean isShareExist=false;
+                    String shares = GetSymxapiRecByAccountNumber.GetSharesEFT(AccountNumber);
+                    List<Object> lstShares = (List<Object>)JSON.deserializeUntyped(shares);
+                    system.debug('lstShares###' + lstShares);
+                    if (lstShares.size() > 0){
+                        for (Object obj : lstShares){
+                            Map<String, Object> objItem = (Map<String, Object>)obj;
+                            string ShareId = String.valueof(objItem.get('Id'));
+                            if(ShareId == '0100'){
+                                isShareExist = true;
+                                break;
+                            }
+                        }
+                    }
+
+                    //---------------------------------------------------Creating Share Record--------------------------------------------------//
+                    if(isShareExist == false){
+                        SHAREBRANCH = '253';
+                        SHARECREATEDATBRANCH = '253';
+                        SHARECREATEDBYUSER = operatorid;
+        
+                        if(hasJoint == true)
+                            SHAREMINIMUMBALANCE = '50.00';
+                        else
+                            SHAREMINIMUMBALANCE = '25.00';
+        
+                        SHARETYPE = '1';
+                        SHAREID = '0100';
+                       
+                        System.debug('----------------------------Calling Share record-----------------------------');
+                        System.debug('Creating Share Record');
+                        req9.setEndpoint(loanAPI+'/SolarLoan/CreateShare');
+                        req9.setMethod('POST');
+                        req9.setHeader('Content-Type', 'application/json');
+                        req9.setHeader('Accept', 'application/json');
+                        
+                        jsonData9 = '{"MinimumBalance":' + '\"'+ SHAREMINIMUMBALANCE +'\"'+',"EpisysId":'+'\"'+operatorid+'\"'+',"AccountNumber":'+'\"'+AccountNumber+'\"'+',"Branch":' + '\"'+ SHAREBRANCH +'\"'+',"CreatedAtBranch":' + '\"'+ SHARECREATEDATBRANCH +'\"'+',"CreatedByUser":' + '\"'+ SHARECREATEDBYUSER +'\"'+',"Type":' + '\"'+ SHARETYPE +'\"'+',"Id":' + '\"'+ SHAREID +'\"}';
+                        req9.setBodyAsBlob(Blob.valueof(jsondata9)); 
+                        system.debug('test'+jsonData9);
+                        
+                        Http http9 = new Http();  
+                        req9.setTimeout(120000);
+                        
+                        if(!Test.isRunningTest()){                       
+                            res9 = http9.send(req9);
+                            responseBody9 = res9.getBody();
+                            System.debug('Create Share record Response::'+res9.getBody());    
+                        }else{
+                            responseBody9 = '{"Type":"3","PaymentFrequency" : "67"}';
+                        } 
+        
+                        JSONParser parser3 = JSON.createParser(responseBody9);
+                        result3 = String.valueOf(responseBody9).substringAfter('ShareId":"');
+                        result3 = String.valueOf(result3).substringBefore('",');
+                        System.debug('Share Id' + result3);
+        
+                        if(logs == null)
+                            logs = responseBody9;
+                        else
+                            logs = logs +'\n'+ responseBody9 + ',';
+        
+                        if(result3 == null || result3 == ''){
+                                
+                            ErrorShareLocator = String.valueOf(responseBody9).substringAfter('Error",');
+                            ErrorShareLocator = String.valueOf(ErrorShareLocator).substringBefore('","ErrorDetails"');
+                            system.debug('ErrorShareLocator' + ErrorShareLocator);
+                        }
+                    }
+
                     //-------------------------------------------------Updating Solar Loan records -----------------------------------------//
 
                     Solar_Loans__c s = new Solar_Loans__c();          
@@ -1009,7 +1094,14 @@ public class SolarLoanToCreateLoan {
                     else
                         s.Error_Loan_Tracking_Locator__c = '';
                     
-                                
+                    if(result3 != null && result3 != '')    
+                        s.Share_Id__c = result3;
+    
+                    if(ErrorShareLocator != null && ErrorShareLocator != '')
+                        s.Error_Share_Locator__c = ErrorShareLocator;
+                    else
+                        s.Error_Share_Locator__c = '';   
+
                     s.id = sl.Id;       
                     s.Due_Date__c = System.Today() + 60;
                     s.continue__c = false;
@@ -1275,6 +1367,85 @@ public class SolarLoanToCreateLoan {
 
                 System.debug('MembershipccountStatus: '+MembershipccountStatus);
                 System.debug('AccountNumber: '+AccountNumber);
+
+                //Check if the Account was created but Account NUmber was not returned
+
+                if(responseBody2 == '' && (AccountNumber == null || AccountNumber == '')){
+                    string AccountNumbers='';
+                    if(!Test.isRunningTest()){                       
+                        res1 = http1.send(req1);
+                        responseBody1 = res1.getBody();
+                        System.debug('Membership Exists???::'+responseBody1);    
+                    }
+                    
+                    if(responseBody1 != '' && responseBody1 != null){        
+                        Map<string,object> results = (Map<String,Object>) JSON.deserializeUntyped(responseBody1);      
+                        System.debug('Response is ....' + results);
+                        
+                        if(results.size() > 0){
+                            for(string key : results.keyset()){ 
+                                if(key == 'HasPrimaryAccount'){
+                                    MembershipExistReCheck = String.valueOf(results.get(key));
+                                }
+                                if(key == 'TotalPrimaryAccount'){
+                                    TotalPrimaryAccountReCheck = Integer.valueOf(results.get(key));
+                                }
+                                if(key == 'Status'){
+                                    HasMembershipStatusReCheck = string.valueOf(results.get(key));
+                                } 
+                                if(key == 'AccountNumbers'){
+                                    AccountNumbers = string.valueOf(results.get(key));
+                                }    
+                            }
+                        }
+                    }
+                    
+                    if(logs == null)
+                        logs = '[' + responseBody1 + ',';
+                    else
+                        logs = '[' + logs +'\n'+ ',' + responseBody1 + ',';
+
+                    system.debug('MembershipExist: '+MembershipExistReCheck);
+                    system.debug('TotalPrimaryAccount: '+TotalPrimaryAccountReCheck);
+                    system.debug('HasMembershipStatus: '+HasMembershipStatusReCheck); 
+                    system.debug('AccountNumbers.length(): '+AccountNumbers.length());    
+                    
+
+                    System.debug('----------------------------Gettimg Member number-----------------------------');
+
+                    req16.setEndpoint(loanAPI+'/EFT/GetAccountBySSN?ssn='+SSN);
+                    req16.setMethod('GET');
+                    req16.setHeader('Content-Type', 'application/json');
+                    req16.setHeader('Accept', 'application/json');
+                    
+                    req16.setTimeout(120000);
+                    
+                    if(!Test.isRunningTest()){                       
+                        res16 = http16.send(req16);
+                        responseBody16 = res16.getBody();
+                        System.debug('Response Body SolarLoan:'+res16.getBody());    
+                    }else{
+                        responseBody16 = '{"Type":"3","Last":"27","First":"1","Street":"1","ExtraAddress":"100","City":"Chicago","State":"IL","ZipCode":"0012345,"BirthDate":"01-01-2019","SSN":"1345","LoanId":"322271627","AccountNumber":"00000123456"}';
+                        
+                    }
+
+                    if(TotalPrimaryAccountReCheck == 1){
+                        JSONParser parser = JSON.createParser(responseBody16);
+                        AccountNumber = String.valueOf(responseBody16).substringAfter('AccountNumber":"');
+                        AccountNumber = String.valueOf(AccountNumber).substringBefore('",');
+                        System.debug('Member Number' + AccountNumber);
+                    }                   
+                    
+
+                    if(logs == null)
+                        logs = responseBody16;
+                    else
+                        logs = logs +'\n'+ responseBody16 + ',';                    
+                    
+                }
+    
+
+                
                
                 //---------------------------------------------------Creating Solar Loan------------------------------------------------//
 
@@ -1579,6 +1750,11 @@ public class SolarLoanToCreateLoan {
                 else
                     SLUserChar7   = null;
 
+                if(sl.Name != null)  
+                    SLUserChar8   = String.ValueOf(sl.Name);
+                else
+                    SLUserChar8   = null;    
+
                 LoanId = result; 
                 //AccountNumber = sl.Member_Number__c;
                 
@@ -1589,7 +1765,7 @@ public class SolarLoanToCreateLoan {
                 req14.setHeader('Content-Type', 'application/json');
                 req14.setHeader('Accept', 'application/json');
                 
-                jsonData14 = '{"EpisysId":'+'\"'+operatorid+'\"'+',"UserChar6":' + '\"'+ SLUserChar6 +'\"'+',"UserChar7":' + '\"'+ SLUserChar7 +'\"'+',"UserCode11":' + '\"'+ SLUserCode11 +'\"'+',"UserDate11":' + '\"'+ SLUserDate11 +'\"'+',"Type":' + '\"'+ SLType +'\"'+',"UserChar11":' + '\"'+ SLUserChar11 +'\"'+',"UserChar1":'+'\"'+ SLUserChar1 +'\"'+',"UserChar2":'+'\"' + SLUserChar2 + '\"'+',"UserChar3":'+'\"'+SLUserChar3+'\"'+',"UserChar4":'+'\"'+SLUserChar4+'\"'+',"UserChar5":'+'\"'+SLUserChar5+'\"'+',"UserAmount14":'+'\"'+SLUserAmount14+'\"'+',"UserRate1":'+'\"'+SLUserRate1+'\"'+',"UserChar10":'+'\"'+SLUserChar10+'\"'+',"UserChar20":'+'\"'+SLUserChar20+'\"'+',"UserAmount1":'+'\"'+SLUserAmount1+'\"'+',"UserAmount2":'+'\"'+SLUserAmount2+'\"'+',"UserAmount3":'+'\"'+SLUserAmount3+'\"'+',"UserAmount11":'+'\"'+SLUserAmount11+'\"'+',"UserAmount12":'+'\"'+SLUserAmount12+'\"'+',"UserAmount13":'+'\"'+SLUserAmount13+'\"'+',"UserCode1":'+'\"'+SLUserCode1+'\"'+',"UserRate1":'+'\"'+SLUserRate1+'\"'+',"LoanId":'+'\"'+LoanId+'\"'+',"AccountNumber":'+'\"'+AccountNumber+'\"}';
+                jsonData14 = '{"EpisysId":'+'\"'+operatorid+'\"'+',"UserChar6":' + '\"'+ SLUserChar6 +'\"'+',"UserChar7":' + '\"'+ SLUserChar7 +'\"'+',"UserCode11":' + '\"'+ SLUserCode11 +'\"'+',"UserDate11":' + '\"'+ SLUserDate11 +'\"'+',"Type":' + '\"'+ SLType +'\"'+',"UserChar11":' + '\"'+ SLUserChar11 +'\"'+',"UserChar1":'+'\"'+ SLUserChar1 +'\"'+',"UserChar2":'+'\"' + SLUserChar2 + '\"'+',"UserChar3":'+'\"'+SLUserChar3+'\"'+',"UserChar4":'+'\"'+SLUserChar4+'\"'+',"UserChar5":'+'\"'+SLUserChar5+'\"'+',"UserAmount14":'+'\"'+SLUserAmount14+'\"'+',"UserRate1":'+'\"'+SLUserRate1+'\"'+',"UserChar10":'+'\"'+SLUserChar10+'\"'+',"UserChar20":'+'\"'+SLUserChar20+'\"'+',"UserAmount1":'+'\"'+SLUserAmount1+'\"'+',"UserAmount2":'+'\"'+SLUserAmount2+'\"'+',"UserAmount3":'+'\"'+SLUserAmount3+'\"'+',"UserAmount11":'+'\"'+SLUserAmount11+'\"'+',"UserAmount12":'+'\"'+SLUserAmount12+'\"'+',"UserAmount13":'+'\"'+SLUserAmount13+'\"'+',"UserCode1":'+'\"'+SLUserCode1+'\"'+',"UserRate1":'+'\"'+SLUserRate1+'\"'+',"LoanId":'+'\"'+LoanId+'\"'+',"AccountNumber":'+'\"'+AccountNumber+'\"'+',"UserChar8":'+'\"'+SLUserChar8 +'\"}';
                 req14.setBodyAsBlob(Blob.valueof(jsondata14)); 
                 system.debug('test'+jsonData14);
                 
@@ -2133,10 +2309,22 @@ public class SolarLoanToCreateLoan {
                     responseBody9 = '{"Type":"3","PaymentFrequency" : "67"}';
                 } 
 
+                JSONParser parser3 = JSON.createParser(responseBody9);
+                result3 = String.valueOf(responseBody9).substringAfter('ShareId":"');
+                result3 = String.valueOf(result3).substringBefore('",');
+                System.debug('Share Id' + result3);
+
                 if(logs == null)
                     logs = responseBody9;
                 else
                     logs = logs +'\n'+ responseBody9 + ',';
+
+                if(result3 == null || result3 == ''){
+                        
+                    ErrorShareLocator = String.valueOf(responseBody9).substringAfter('Error",');
+                    ErrorShareLocator = String.valueOf(ErrorShareLocator).substringBefore('","ErrorDetails"');
+                    system.debug('ErrorShareLocator' + ErrorShareLocator);
+                }
 
                 //---------------------------------------------------Creating PowerOn Record--------------------------------------------------//
                 
@@ -2246,6 +2434,14 @@ public class SolarLoanToCreateLoan {
 
                 if(TrackingLocator != null)
                     s.Tracking_Record_35__c = 'Created';
+
+                if(result3 != null && result3 != '')    
+                    s.Share_Id__c = result3;
+                
+                if(ErrorShareLocator != null && ErrorShareLocator != '')
+                    s.Error_Share_Locator__c = ErrorShareLocator;
+                else
+                    s.Error_Share_Locator__c = '';
                     
                 s.Membership_Logs__c = logs + ']';
                     

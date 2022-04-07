@@ -26,6 +26,7 @@
         var waitingCheck;
         var JurisdictionErrorCheck;
         var MultipleMembershipCheck;
+        var Stage4ShareErrorCheck;
         //var Stage2MemberCheck;
 		var buttonClass = component.find('WaitingButton');
         
@@ -37,7 +38,8 @@
         	var status = response.getState();            
             if (component.isValid() && status === "SUCCESS") {
                 var result = response.getReturnValue();
-                
+                console.log('!result!');
+                console.log(result);
                 if(result.SolarCurrentStage != undefined){
 		       	    stage = result.SolarCurrentStage;
 		        }
@@ -74,6 +76,10 @@
                 
                 if(result.Stage4ErrorCheck == 'True'){
                 	Stage4ErrorCheck = 'True';
+                }
+
+                if(result.Stage4ShareErrorCheck == 'True'){
+                	Stage4ShareErrorCheck = 'True';
                 }
                 
                 //---------------------Validation for Stage-5 -------------------------------//
@@ -218,6 +224,20 @@
 		        toastEvent.setParams({
 		            title : 'Warning',
 		            message: 'Loan and Tracking records are not created',
+		            duration:' 5000',
+		            key: 'info_alt',
+		            type: 'warning',
+		            mode: 'sticky'
+		        });
+		        toastEvent.fire();
+			 
+             }
+
+            else if(Stage4ShareErrorCheck == 'True' && MultipleMembershipCheck != 'True'){
+				var toastEvent = $A.get("e.force:showToast");
+		        toastEvent.setParams({
+		            title : 'Warning',
+		            message: 'Share records are not created',
 		            duration:' 5000',
 		            key: 'info_alt',
 		            type: 'warning',
