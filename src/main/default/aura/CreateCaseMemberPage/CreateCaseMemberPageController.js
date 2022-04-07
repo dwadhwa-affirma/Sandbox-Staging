@@ -52,7 +52,8 @@
 	        		}
 	        		component.set('v.loading',false);	
 					     		
-	        	}            	
+	        	}
+				  	
 	       });
 		   $A.enqueueAction(action);
        }
@@ -228,7 +229,8 @@
         		caseObject.Tertiary_Category__c = selectedTextArray[2];
         		component.set('v.caseObject', caseObject);
         		component.set('v.loading',false);
-        	}            	
+        	} 
+           
 	   	});
         $A.enqueueAction(action);
    },   

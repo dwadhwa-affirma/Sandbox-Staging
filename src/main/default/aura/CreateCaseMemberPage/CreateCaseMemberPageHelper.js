@@ -307,6 +307,27 @@
         		component.set('v.loading',false);
         		
         	}
+           else{
+               var errors = response.getError();
+                if (errors) {
+                    if (errors[0] && errors[0].message) {
+                        console.log("Error message: " + 
+                                 errors[0].message)
+                       // alert(errors[0].message);
+                    }
+                }
+                let showToast = $A.get( "e.force:showToast" );
+                showToast.setParams({
+                    title : 'Error!!!',
+                    type : 'error',
+                    mode : 'sticky',
+                    message : errors[0].message
+             });
+              component.set('v.loading',false);
+                component.set('v.IsSaveandNewPressed', false);
+                component.set('v.isSavePressed', false);
+                showToast.fire();
+           }
         });
          $A.enqueueAction(action);		
 	},
