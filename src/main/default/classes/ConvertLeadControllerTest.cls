@@ -35,7 +35,7 @@ private class ConvertLeadControllerTest{
       ld.Email='test@test.com';
       ld.MobilePhone='1234567892';
       ld.How_did_you_hear_about_us__c='Website';
-      ld.Event_Source__c='Event-Reston-Open House-04/20/18';
+      //ld.Event_Source__c='Event-Reston-Open House-04/20/18';
       ld.LeadSource='BDO-Realtor Referral';
       ld.Product_Type__c ='Mortgage';
       ld.Product_Subtype__c='Purchase';
@@ -49,11 +49,12 @@ private class ConvertLeadControllerTest{
       Lead ld1 = new Lead ();
       ld1.LastName = 'Test';
       ld1.Company = 'tttt';
+      ld1.FirstName = 'Test';
       ld1.Product_Type__c ='Mortgage';
       ld1.Product_Subtype__c='Purchase';
       ld1.RecordTypeId = LeadRT;
       insert ld1;
- 		
+        
       Account pact = new Account();
       pact.FirstName = 'Test';
       pact.LastName = 'Test1';
@@ -70,6 +71,7 @@ private class ConvertLeadControllerTest{
       opp.Is_Converted__c = true;
       opp.DESCRIPTION = 'DESCRIPTION';
       opp.Opportunity_Source__c = 'Campaign Outreach';
+      opp.Product_Type__c = 'Mortgage';
       
       insert opp;
       
@@ -94,7 +96,7 @@ private class ConvertLeadControllerTest{
       testNote.ParentId = ld.Id;
       
       insert testNote;
- 	
+    
       Event e = new Event();
       e.WhoId = ld.id;
       e.StartDateTime = system.today();
@@ -115,12 +117,13 @@ private class ConvertLeadControllerTest{
       ConvertLeadControllerB2B.GetLeadInfo(ld1.id);
     
   }
-	static testmethod void testMethod1(){
- 		
+    static testmethod void testMethod1(){
+        
         Id LeadRT = Schema.SObjectType.Lead.getRecordTypeInfosByName().get('Company Lead').getRecordTypeId();
-      
-		Lead ld1 = new Lead ();
+        List<Id> lds = new List<ID>();
+        Lead ld1 = new Lead ();
         ld1.LastName = 'Test1';
+        ld1.FirstName = 'Test';
         ld1.Company = 'tttt';
         ld1.Status = 'New';
         ld1.Product_Type__c ='Mortgage';
@@ -131,14 +134,19 @@ private class ConvertLeadControllerTest{
         Lead ld2 = new Lead ();
         ld2.LastName = 'Test2';
         ld2.Company = 'tttt';
+        ld2.FirstName = 'Test';
         ld2.Status = 'New';
         ld2.Product_Type__c ='Mortgage';
         ld2.Product_Subtype__c='Purchase';
         ld2.RecordTypeId = LeadRT;
         insert ld2;
         
+        lds.add(ld1.id);
+        lds.add(ld2.id);
+        
         Test.startTest();
         LeadWithCompanyController.fetchLeads(ld1.id);
+        LeadWithCompanyController.deleteLeads(lds);
         Test.stopTest();
-  	}
+    }
 }

@@ -51,20 +51,18 @@ public class CreateOpportunityControllerTest {
         accDetails.SecureEmailAddress__c = 'sample@sample.com';
         insert eu;
         
-        Group	listQueue = [select id,Name,Email from Group where Type = 'Queue' and (Email like '%lead.com') limit 1];
+        Group   listQueue = [select id,Name,Email from Group where Type = 'Queue' and (Email like '%lead.com') limit 1];
         
         Account account_Obj = new Account(PersonHomePhone='', PersonHasOptedOutOfEmail = false, Name = 'MARIA BANDA');
         insert account_Obj; 
         
-        
-        
         Lead ld = new Lead (LastName = 'Test',Product_Type__c = 'Card',Brand__c = 'CFCU',FirstName = 'test',MiddleName = 'New', Description = 'New',
-                            Salutation = 'MR.',Suffix = 'MR',Status = 'New',Phone= '1234567890',Email='test@test.com',MobilePhone='1234567892',How_did_you_hear_about_us__c='Website',Event_Source__c='Event-Reston-Open House-04/20/18',
-                            LeadSource='BDO-Realtor Referral' , Ownership__c='Queue', OwnerId = listQueue.Id, Street_Address_1__c='Address 1',State__c= 'NY',Zip_Code__c= '12345',City__c='NYC',Country__c ='USA');
+        Salutation = 'MR.',Suffix = 'MR',Status = 'New',Phone= '1234567890',Email='test@test.com',MobilePhone='1234567892',How_did_you_hear_about_us__c='Website',
+        LeadSource='BDO-Realtor Referral' , Ownership__c='Queue', OwnerId = listQueue.Id, Street_Address_1__c='Address 1',State__c= 'NY',Zip_Code__c= '12345',City__c='NYC',Country__c ='USA');
         insert ld;
         
         Account account_Obj1 = new Account(PersonHomePhone='', PersonHasOptedOutOfEmail = false, Name = 'MARIA BANDA', Parent_Lead__c =ld.id);
-        insert account_Obj1;  	
+        insert account_Obj1;    
         
         Opportunity op = new Opportunity(Name = 'Name', StageName = 'Open',Product_Type__c = 'Misc', CloseDate = system.today(),  Is_Converted__c = true, Queue_Assigned_Id__c= listQueue.Id,  Opportunity_Source__c = 'Word of mouth', AccountId = account_Obj.id,  Ownership__c = 'Auto Assign', Episys_User_ID__c = 1);
         
@@ -100,11 +98,6 @@ public class CreateOpportunityControllerTest {
         CreateOpportunityController.OpportunityInsertUpdate(op6);
         CreateOpportunityController.OpportunityInsertUpdate(op7);
         test.stopTest();
-        //CreateOpportunityController.OpportunityInsertUpdate(op8);
-        CreateOpportunityB2BController.FetchLeadData(acc.id);
-        CreateOpportunityB2BController.OpportunityInsertUpdate(op9);
-        BDCompanyTabController.listValues('Account');
-
     }
     
     static testMethod void CreateOpportunityControllerTest1(){
@@ -157,20 +150,19 @@ public class CreateOpportunityControllerTest {
         accDetails.SecureEmailAddress__c = 'sample@sample.com';
         insert eu;
         
-        Group	listQueue = [select id,Name,Email from Group where Type = 'Queue' and (Email like '%lead.com') limit 1];
+        Group   listQueue = [select id,Name,Email from Group where Type = 'Queue' and (Email like '%lead.com') limit 1];
         
         Account account_Obj = new Account(PersonHomePhone='', PersonHasOptedOutOfEmail = false, Name = 'MARIA BANDA');
         insert account_Obj; 
-        
-        
-        
-        Lead ld = new Lead (LastName = 'Test',Product_Type__c = 'Card',Brand__c = 'CFCU',FirstName = 'test',MiddleName = 'New', Description = 'New',
-                            Salutation = 'MR.',Suffix = 'MR',Status = 'New',Phone= '1234567890',Email='test@test.com',MobilePhone='1234567892',How_did_you_hear_about_us__c='Website',Event_Source__c='Event-Reston-Open House-04/20/18',
-                            LeadSource='BDO-Realtor Referral' , Ownership__c='Queue', OwnerId = listQueue.Id, Street_Address_1__c='Address 1',State__c= 'NY',Zip_Code__c= '12345',City__c='NYC',Country__c ='USA');
+                
+        Lead ld = new Lead (LastName = 'Test',Product_Type__c = 'Card',Brand__c = 'CFCU',FirstName = 'test',MiddleName = 'New', Description = 'New',Event_Source__c='Event-Reston-Open House-04/20/18',
+        Salutation = 'MR.',Suffix = 'MR',Status = 'New',Phone= '1234567890',Email='test@test.com',MobilePhone='1234567892',How_did_you_hear_about_us__c='Website',
+        LeadSource='BDO-Realtor Referral' , Ownership__c='Queue', OwnerId = listQueue.Id, Street_Address_1__c='Address 1',State__c= 'NY',Zip_Code__c= '12345',City__c='NYC',Country__c ='USA');
+
         insert ld;
         
         Account account_Obj1 = new Account(PersonHomePhone='', PersonHasOptedOutOfEmail = false, Name = 'MARIA BANDA', Parent_Lead__c =ld.id);
-        insert account_Obj1;  	
+        insert account_Obj1;    
         
         Opportunity op = new Opportunity(Name = 'Name', StageName = 'Open',Product_Type__c = 'Misc', CloseDate = system.today(),  Is_Converted__c = true, Queue_Assigned_Id__c= listQueue.Id,  Opportunity_Source__c = 'Word of mouth', AccountId = account_Obj.id,  Ownership__c = 'Auto Assign', Episys_User_ID__c = 1);
         
