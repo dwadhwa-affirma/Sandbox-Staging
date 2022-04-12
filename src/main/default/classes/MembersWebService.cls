@@ -126,6 +126,10 @@ global class MembersWebService{
                 if (membershipRecordType.size() > 0){
                     objAccount.RecordTypeId = membershipRecordType[0].Id;
                 }
+                objAccount.AccountID__c = AccountNumber + 'A9999P9999';
+                objAccount.Combined_Account_ID__c = AccountNumber + 'A9999P9999';
+                objAccount.TypeTranslate__c = '1-PERSONAL';
+                objAccount.Unique_Account_Number__c= AccountNumber + 'A9999P9999';
                 system.debug('objAccount==' + objAccount);
                 insert objAccount;
                 ACCTId = objAccount.Id;
@@ -359,6 +363,11 @@ global class MembersWebService{
                     if (loanRecordType.size() > 0){
                         tempLoanObj.RecordTypeId = loanRecordType[0].Id;
                     }
+
+                    tempLoanObj.AccountID__c = AccountNumber + 'L5600P5600';
+                    tempLoanObj.Combined_Account_ID__c = AccountNumber + 'L5600P5600';
+                    tempLoanObj.TypeTranslate__c = '56-INDIRECT LENDING NEW RV';
+                    tempLoanObj.Unique_Account_Number__c= AccountNumber + 'L5600P5600';
                     
                     system.debug('tempLoanObj==' + tempLoanObj);
                     if (tempLoanObj.Close_Date__c == null && String.isNotBlank(tempLoanObj.ID1__c) && tempLoanObj.ID1__c != '0'){
@@ -497,7 +506,10 @@ global class MembersWebService{
                     if (shareRecordType.size() > 0){
                         tempShareObj.RecordTypeId = shareRecordType[0].Id;
                     }
-                    
+                    tempShareObj.AccountID__c = AccountNumber + 'S0100P0100';
+                    tempShareObj.Combined_Account_ID__c = AccountNumber + 'S0100P0100';
+                    tempShareObj.TypeTranslate__c = '1-PRIMARY SHARE';
+                    tempShareObj.Unique_Account_Number__c= AccountNumber + 'S0100P0100';
                     
                     system.debug('tempShareObj==' + tempShareObj);
                     if (tempShareObj.Close_Date__c == null){
