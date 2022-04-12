@@ -600,7 +600,7 @@ global with sharing class MemberCommunicationData{
                                                         }
                                                         if (md.Account == doc.Account && md.documentDate == doc.documentDate){
                                                             isDup = true;
-                                                            break;
+                                                            //break;
                                                         }
                                                     }
                                                     system.debug('isDup: ' + isDup);
@@ -626,7 +626,9 @@ global with sharing class MemberCommunicationData{
                 }
             }
         }
+        system.debug('results' +results);
         return results;
+       
     }
 
     @AuraEnabled
@@ -1286,7 +1288,7 @@ global with sharing class MemberCommunicationData{
                return setAccounts;
 }
 
-    /*@AuraEnabled
+    @AuraEnabled
      public static List<MemberCommunicationData.documents> GetWiresEDSData(List<string> source,Date fromdate,Date todate,string recid,string keyword)
      {
 
@@ -1347,7 +1349,7 @@ global with sharing class MemberCommunicationData{
 
      system.debug('--------'+results.size());
      return results;
-     }*/
+     }
     @AuraEnabled
     public static String isValidRelationship(string MemberNumber, string SSN){
 
