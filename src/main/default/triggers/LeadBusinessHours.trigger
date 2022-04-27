@@ -511,8 +511,7 @@ trigger LeadBusinessHours on Lead(after insert, after update, before insert, bef
 
             if ((oldlead.Status == 'Closed - Converted' || (oldlead.Status == 'Closed - Not Converted' && ld.Status == 'Closed - Not Converted')) 
             && ld.Product_Type__c == 'Mortgage' && (userRole == 'Mortgage Sales Manager 5' || userRole == 'Mortgage Sales Manager 7') 
-            && updatedFields.size() == 1 && updatedFields.contains('leadsource'))
-            {
+            && updatedFields.size() == 1 && updatedFields.contains('leadsource')){
                 // Allow Mortgage Sales Manager to update the Lead Source
             } 
             else if( (oldlead.Status == 'Closed - Converted' || oldlead.Status == 'Closed - Not Converted') && 
