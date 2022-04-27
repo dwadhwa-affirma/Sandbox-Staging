@@ -2,7 +2,7 @@
  * @description       : 
  * @author            : ChangeMeIn@UserSettingsUnder.SFDoc
  * @group             : 
- * @last modified on  : 03-31-2022
+ * @last modified on  : 04-25-2022
  * @last modified by  : ChangeMeIn@UserSettingsUnder.SFDoc
 **/
 public class CreateCaseMemberPageController {
@@ -550,17 +550,32 @@ public class CreateCaseMemberPageController {
     }
     
     @AuraEnabled
-    public static Map<string,string> saveData2(String primaryCat, String secondaryCat, String teritaryCat, String subject, String followuptext,String comments, Date followupdate,String status, String brand, String subStatus, String reportNumber, String Ltk, String description, String accId, Id selectedAcctNumberId)
+    public static Map<string,string> saveData2(String primaryCat, String secondaryCat, String teritaryCat, String subject, String followuptext,String comments, Date followupdate,String status, String brand, String subStatus, String reportNumber, String Ltk, String description, String accId, List<Id> selectedAcctNumberId, String queueValue , String caseownership)
     {
         system.debug('followupdate'+followupdate);
         system.debug('followuptext'+followuptext);
+        System.debug('selectedAcctNumberId...' + selectedAcctNumberId);
+        System.debug('queueValue...'+queueValue);
+        System.debug('ownership...'+caseownership);
 
+        
+        List<Id> selectedAcctNumber = new List<Id>();
+        for(Id selId : selectedAcctNumberId){
+            if(selId != null){
+                selectedAcctNumber.add(selId);
+            }
+        }
+        
+
+        System.debug('selectedAcctNumberIds...' + selectedAcctNumber);
 
         string returnvalue = '';
         Map<string, string> mapresult = new Map<string,string>();
-        Account_Details__c selectedAcctNumber = [select id, Name from Account_Details__c WHERE Id =: selectedAcctNumberId];
-        List<Account_Details__c> AccountObjectlist = new List<Account_Details__c>(); 
-        AccountObjectlist.add(selectedAcctNumber);
+        List<Account_Details__c> AccountObjectlist = [select id, Name from Account_Details__c WHERE Id IN : selectedAcctNumberId];
+
+        // List<Account_Details__c> selectedAcctNumber = [select id, Name from Account_Details__c WHERE Id IN : selectedAcctNumberId];
+        //List<Account_Details__c> AccountObjectlist = new List<Account_Details__c>(); 
+        //AccountObjectlist.add(selectedAcctNumber);
 
         Account accObject = [select id, PersonEmail, Email_raw__c, PersonHomePhone, FirstName, LastName, Residential_Street__pc,
                             Residential_Extra_Address__pc, Residential_City__pc, Residential_State__pc, 
@@ -710,6 +725,8 @@ public class CreateCaseMemberPageController {
             cs.State__c = accObject.Residential_State__pc;
             cs.Country__c = accObject.Residential_Country__pc;
             cs.Zip_Code__c = accObject.Residential_Zipocde__pc;
+            cs.Ownership__c = caseownership;
+            
             if(Status != '---None---'){                
                 cs.Status = Status;
                 system.debug('Line no 454----'+subStatus);
@@ -722,7 +739,7 @@ public class CreateCaseMemberPageController {
             }
              
             if(selectedAcctNumber != null)
-                cs.Account_Number__c = selectedAcctNumber.Id;
+                cs.Account_Number__c = selectedAcctNumber[0];
           
             cs.Special_Reporting_Number__c = reportNumber;
             cs.LTK__c = Ltk;
@@ -731,6 +748,14 @@ public class CreateCaseMemberPageController {
             cs.Subject = Subject;
             cs.Follow_up_Text__c = followuptext;
             cs.Follow_up_Date__c = followupdate;
+            //cs.Ownership__c = caseObject.Ownership__c;
+            if(queueValue != null && queueValue !=''){
+                system.debug('ownerid'+queueValue);
+                cs.OwnerId = queueValue;
+                
+            }
+
+
        try{ 
            insert cs;
            System.debug(cs);
@@ -758,11 +783,11 @@ public class CreateCaseMemberPageController {
             System.debug('AccountObjectlist##' + AccountObjectlist);
             List<CaseAccountMemberDetail__c> CaseAccountMemberDetailList = new List<CaseAccountMemberDetail__c>();
             
-            CaseAccountMemberDetail__c camd1 = new CaseAccountMemberDetail__c();
+           /* CaseAccountMemberDetail__c camd1 = new CaseAccountMemberDetail__c();
             camd1.Case__c = cs.Id;
-            camd1.MemberAccountid__c = selectedAcctNumber.Id ;
+            camd1.MemberAccountid__c = selectedAcctNumber[0].Id ;
             camd1.Account_Name__c = selectedAcctNumber.Name;
-            CaseAccountMemberDetailList.add(camd1); 
+            CaseAccountMemberDetailList.add(camd1); */
                                 
             System.debug('AccountObjectlistarray##' + AccountObjectlist);
             if(mSize > 0 )
@@ -789,6 +814,13 @@ public class CreateCaseMemberPageController {
             
             MaapCaseAddLog(accObject.Id,cs.Id);
             return mapresult;       
+    }
+
+    @AuraEnabled
+    public static List<group> getQueueData(){
+        List<group> queuelist = [select Id, Name from group where type = 'Queue'];
+        return queuelist;
+
     }
     
     @AuraEnabled
