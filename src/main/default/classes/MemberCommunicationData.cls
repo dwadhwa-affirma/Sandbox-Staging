@@ -546,6 +546,7 @@ global with sharing class MemberCommunicationData{
                                 while (parser.nextToken() != null && parser.getText() != 'exigent'){
 
                                     documents doc = (documents)parser.readValueAs(documents.class);
+                                    system.debug('doc'+doc);
                                     if (doc != null){
                                         doc.DataSource = temp;
                                         doc.EmployeeRestictedAccess = pa.PersonID__r.Employee_Restricted_Access__c != null ? true : false;
@@ -558,8 +559,30 @@ global with sharing class MemberCommunicationData{
                                             doc.hyperlinkPDF = '/apex/MemberCommunicationPDF?aburl=' + EncodingUtil.urlEncode(templink, 'UTF-8');
                                         }
                                         if (keyword == 'Date Range'){
-                                            if (fromdate != null && todate == null && fromdate <= doc.documentDate)
-                                                results.add(doc);
+                                            if (fromdate != null && todate == null && fromdate <= doc.documentDate){
+                                                //results.add(doc);
+                                                system.debug('todate -null: ' );
+                                                if (results.size() > 0){
+                                                    for (MemberCommunicationData.documents md : results){
+
+                                                        if (md.Account != doc.Account || md.documentDate != doc.documentDate){
+                                                            isDup = false;
+                                                        }
+                                                        if (md.Account == doc.Account && md.documentDate == doc.documentDate && md.DataSource == doc.DataSource){
+                                                            isDup = true;
+                                                            break;
+                                                        }
+
+                                                    }
+                                                    if (isDup == false){
+                                                        results.add(doc);
+                                                       
+                                                    }
+                                                } else{
+                                                    results.add(doc);
+                                                }
+                                                system.debug('isDup-if: ' + isDup);
+                                            }
                                             else if (fromdate != null && todate != null && fromdate <= doc.documentDate && todate >= doc.documentDate && fromdate < todate){
                                                 if (results.size() > 0){
                                                     for (MemberCommunicationData.documents md : results){
@@ -567,17 +590,20 @@ global with sharing class MemberCommunicationData{
                                                         if (md.Account != doc.Account || md.documentDate != doc.documentDate){
                                                             isDup = false;
                                                         }
-                                                        if (md.Account == doc.Account && md.documentDate == doc.documentDate){
+                                                        if (md.Account == doc.Account && md.documentDate == doc.documentDate && md.DataSource == doc.DataSource){
                                                             isDup = true;
+                                                            break;
                                                         }
 
                                                     }
                                                     if (isDup == false){
                                                         results.add(doc);
+                                                       
                                                     }
                                                 } else{
                                                     results.add(doc);
                                                 }
+                                                system.debug('isDup-else if: ' + isDup);
 
 
                                             }
@@ -597,15 +623,17 @@ global with sharing class MemberCommunicationData{
 
                                                         if (md.Account != doc.Account || md.documentDate != doc.documentDate){
                                                             isDup = false;
+                                                           
                                                         }
-                                                        if (md.Account == doc.Account && md.documentDate == doc.documentDate){
+                                                        if (md.Account == doc.Account && md.documentDate == doc.documentDate && md.DataSource == doc.DataSource){
                                                             isDup = true;
-                                                            //break;
+                                                           break;
                                                         }
                                                     }
-                                                    system.debug('isDup: ' + isDup);
+                                                    system.debug('isDup-else: ' + isDup);
                                                     if (isDup == false){
                                                         results.add(doc);
+                                                       
                                                     }
                                                 } else{
                                                     results.add(doc);
