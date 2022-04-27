@@ -1,13 +1,13 @@
 trigger OpportunityTrigger on Opportunity (before insert, before update ) {
 
     if(OpportunityTriggerHandler.hasExecuted)// To prevent recursive re-entry
-    {
+   {
          return;
     }
     
-    OpportunityTriggerHandler.hasExecuted = true;
+   OpportunityTriggerHandler.hasExecuted = true;
     
-    OpportunityTriggerHandler handler = new OpportunityTriggerHandler(Trigger.isExecuting, Trigger.size);
+   OpportunityTriggerHandler handler = new OpportunityTriggerHandler(Trigger.isExecuting, Trigger.size);
     
     if(Trigger.isInsert && Trigger.isBefore)
     { 
@@ -18,7 +18,6 @@ trigger OpportunityTrigger on Opportunity (before insert, before update ) {
     {
 
         handler.OnBeforeUpdate(Trigger.new, Trigger.newMap, Trigger.oldMap);
-
     }
     
 }
