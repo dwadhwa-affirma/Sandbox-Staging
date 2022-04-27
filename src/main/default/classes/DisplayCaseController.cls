@@ -323,10 +323,12 @@ global  class DisplayCaseController {
                 for (Object obj : jsonParsed){
                         Map<String, Object> objItem = (Map<String, Object>)obj;
                         system.debug(String.valueof(objItem.get('ssnnumber')));
-                    	setAuthorizedSSNList.add('%' + String.valueof(objItem.get('ssnnumber')));                    	
+                        if(string.isNotBlank(String.valueof(objItem.get('ssnnumber'))))
+                    	    setAuthorizedSSNList.add('%' + String.valueof(objItem.get('ssnnumber')));                    	
                 }               
             }
-           
+            system.debug('setAuthorizedSSNList=='+setAuthorizedSSNList);
+
             List<Person_Account__c> AuthorizedPA = [select Id, Account_Number__c,  PersonID__c, Account_Number__r.RecType__c, TypeTranslate__c, 
 									Account_Number__r.Name,PersonID__r.PersonID__c,PersonID__r.Name from person_account__c where PersonID__r.PersonID__c like: setAuthorizedSSNList and TypeTranslate__c like '%Primary%'];
             Set<string> AuthorzedfedIds = new Set<string>();
