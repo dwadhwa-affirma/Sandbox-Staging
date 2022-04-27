@@ -104,9 +104,9 @@
                 <div class="leftDiv">
                     
                     <lightning:select name="AdditionalToken1" label="Additional Token"  aura:id="AdditionalToken1" class="select-auto-width">
-                        <!--<option value="Select">Select</option>-->
+                       <!-- <option value="Select">Select</option>-->
                           <option value="Birth Place">Birth Place</option>
-                        <!--<option value="Red Herring">Red Herring</option>-->	
+                      <!-- <option value="Red Herring">Red Herring</option>	-->
                       	
                     </lightning:select>
                 </div>

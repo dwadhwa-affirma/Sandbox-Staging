@@ -317,11 +317,11 @@
                                     </aura:if>
                                     
                                     <!-- WIRES Transactions (EDS) -->
-                                    <!-- <aura:if isTrue="{!v.ischk10}">
+                                     <aura:if isTrue="{!v.ischk10}">
                                     <div class="slds-checkbox">
                                         <div class="slds-clearfix">
                                             <div class="slds-float_left">
-                                                <p><lightning:input type="checkbox" label="Wires Transactions"  aura:id="chk10" value="Wires Transactions" onchange="{!c.callCheckboxMethod}" /></p>
+                                                <p><lightning:input type="checkbox" label="Wires Notifications"  aura:id="chk10" value="Wires Transactions" onchange="{!c.callCheckboxMethod}" /></p>
                                             </div>
                                             <div class="slds-float_right">
                                                 <p class="SearchText">
@@ -340,7 +340,7 @@
                                             	</div>
                                         	</div>
                                     	</div>
-                                    </aura:if> -->
+                                    </aura:if> 
                                     <div class="BorderLeft"></div>
                                     <!-- eStatements (BDI) -->
                                     <aura:if isTrue="{!v.ischk11}">

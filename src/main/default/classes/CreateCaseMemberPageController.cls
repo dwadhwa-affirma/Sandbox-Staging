@@ -1,3 +1,10 @@
+/**
+ * @description       : 
+ * @author            : ChangeMeIn@UserSettingsUnder.SFDoc
+ * @group             : 
+ * @last modified on  : 04-25-2022
+ * @last modified by  : ChangeMeIn@UserSettingsUnder.SFDoc
+**/
 public class CreateCaseMemberPageController {
     @auraenabled
     public static  Map<string,object> getData(string accoutid)
@@ -299,7 +306,6 @@ public class CreateCaseMemberPageController {
         }
         return op;
     }
-    
     @AuraEnabled
     public static Map<string,string> saveData(Case caseObject, Account accObject, Account_Details__c selectedAcctNumber,  List<Account_Details__c> AccountObjectlist)
     {
@@ -469,20 +475,29 @@ public class CreateCaseMemberPageController {
             cs.Description = caseObject.Description;
             cs.CaseComments__c = caseObject.CaseComments__c;            
             cs.Subject = caseObject.Subject;
+            cs.Follow_up_Text__c = caseObject.Follow_up_Text__c;
+            cs.Follow_up_Date__c = caseObject.Follow_up_Date__c;
             cs.Ownership__c = caseObject.Ownership__c;
             if(cs.Ownership__c == 'Assign'){
                 cs.OwnerId = caseObject.OwnerId;
             }
             cs.Future_Date__c = caseObject.Future_Date__c;  
             cs.Follow_up_Text__c = caseObject.Follow_up_Text__c; 
+            cs.Follow_up_Date__c = caseObject.Follow_up_Date__c;
+            cs.LTK__c = caseObject.LTK__c;
        try{ 
            insert cs;
            if(Test.isRunningTest()){
                Integer x=1/0;}            
-           }catch (exception e)  {           
-           System.debug('An error occured while inserting case :' + e);                   
+           }catch (DMLException  e)  { 
+                String message = e.getDmlMessage(0);
+            throw new AuraHandledException(message); 
+          // System.debug('An error occured while inserting case :' + e);                   
           
           }
+        catch (Exception e) {
+             throw new AuraHandledException(e.getMessage()); 
+        }
             if(cs.CaseComments__c != null){
             CaseComment cc = new CaseComment();
               cc.ParentId = cs.Id;
@@ -532,6 +547,280 @@ public class CreateCaseMemberPageController {
             
             MaapCaseAddLog(accObject.Id,cs.Id);
             return mapresult;       
+    }
+    
+    @AuraEnabled
+    public static Map<string,string> saveData2(String primaryCat, String secondaryCat, String teritaryCat, String subject, String followuptext,String comments, Date followupdate,String status, String brand, String subStatus, String reportNumber, String Ltk, String description, String accId, List<Id> selectedAcctNumberId, String queueValue , String caseownership)
+    {
+        system.debug('followupdate'+followupdate);
+        system.debug('followuptext'+followuptext);
+        System.debug('selectedAcctNumberId...' + selectedAcctNumberId);
+        System.debug('queueValue...'+queueValue);
+        System.debug('ownership...'+caseownership);
+
+        
+        List<Id> selectedAcctNumber = new List<Id>();
+        for(Id selId : selectedAcctNumberId){
+            if(selId != null){
+                selectedAcctNumber.add(selId);
+            }
+        }
+        
+
+        System.debug('selectedAcctNumberIds...' + selectedAcctNumber);
+
+        string returnvalue = '';
+        Map<string, string> mapresult = new Map<string,string>();
+        List<Account_Details__c> AccountObjectlist = [select id, Name from Account_Details__c WHERE Id IN : selectedAcctNumberId];
+
+        // List<Account_Details__c> selectedAcctNumber = [select id, Name from Account_Details__c WHERE Id IN : selectedAcctNumberId];
+        //List<Account_Details__c> AccountObjectlist = new List<Account_Details__c>(); 
+        //AccountObjectlist.add(selectedAcctNumber);
+
+        Account accObject = [select id, PersonEmail, Email_raw__c, PersonHomePhone, FirstName, LastName, Residential_Street__pc,
+                            Residential_Extra_Address__pc, Residential_City__pc, Residential_State__pc, 
+                            Residential_Country__pc, Residential_Zipocde__pc from Account WHERE Id =: accId];
+
+        integer commentLimit = 4000;
+        if(selectedAcctNumber == null){
+            
+            returnvalue= 'Please select Account Number';
+            mapresult.put('IsSaved', 'false');
+            mapresult.put('Message', returnvalue);
+            return mapresult;
+           }
+          else if(primaryCat == NULL || primaryCat == '-None-'){
+            
+            returnvalue = 'Please select Primary Category';
+            mapresult.put('IsSaved', 'false');
+            mapresult.put('Message', returnvalue);
+            return mapresult;
+        } else if(secondaryCat == NULL || secondaryCat == '-None-'){
+           
+            returnvalue = 'Please select Secondary Category';
+            mapresult.put('IsSaved', 'false');
+            mapresult.put('Message', returnvalue);
+            return mapresult;
+        } 
+         else if(teritaryCat == NULL || teritaryCat == '-None-' && secondaryCat != 'Transfers Between Sub-Accounts' && secondaryCat != 'Transfers Between Memberships'
+                 && secondaryCat != 'Check By Phone' && secondaryCat != 'Loan Payment' && secondaryCat != 'Check Withdrawal to Self'
+                 && secondaryCat != 'Credit Card Payment' && secondaryCat != 'Check Withdrawal to Third Party' && secondaryCat != 'Other') 
+         /* else if(tcValue == NULL || tcValue == '-None-' && scValue != 'Death Claims' && scValue != 'EPS Research' && scValue != 'OnBoarding')*/
+           {
+            
+            returnvalue = 'Please select Tertiary Category';
+            mapresult.put('IsSaved', 'false');
+            mapresult.put('Message', returnvalue);
+            return mapresult;
+           } 
+         else if(comments != NULL && comments.length() > commentLimit ) {
+                
+                returnvalue = 'Case Comments must be less than ' + commentLimit + ' characters. [' + comments.length() + ']';
+                mapresult.put('IsSaved', 'false');
+                mapresult.put('Message', returnvalue);
+                return mapresult;
+            }           
+     
+        else{
+           if(teritaryCat == '-None-'){
+                teritaryCat = 'None';
+            } 
+        }     
+        list<CaseRecordType__c> scList = [SELECT Id,
+                                                 Primary_Category__c,
+                                                 Secondary_Category__c,
+                                                 Teritiary_Category__c,
+                                                 Record_Type_Name__c,
+                                                 RecordTypeId__c FROM CaseRecordType__c WHERE Primary_Category__c =:primaryCat AND Secondary_Category__c=:secondaryCat AND Teritiary_Category__c=:teritaryCat LIMIT 1];
+       List<Contact> clist = [SELECT Id, Name FROM Contact WHERE Contact.AccountId =:accObject.Id];
+        AssignmentRule AR = new AssignmentRule(); 
+        AR = [SELECT Id FROM AssignmentRule WHERE SobjectType = 'Case' AND Active = True LIMIT 1];
+        /*List<Group> gp = [select Id, Name from Group where Type = 'Queue' and Name = 'Complaint Management Queue' Limit 1];
+        List<Group> ARQ = [select Id, Name from Group where Type = 'Queue' and Name = 'Asset Recovery Complaints Queue' Limit 1];
+        List<Group> SQ = [select Id, Name from Group where Type = 'Queue' and Name = 'Servicing Complaints Queue' Limit 1];
+        List<Group> PQ = [select Id, Name from Group where Type = 'Queue' and Name = 'Product Complaints Queue' Limit 1];
+        List<Group> ALQ = [select Id, Name from Group where Type = 'Queue' and Name = 'Auto Loans Complaints Queue' Limit 1];
+        List<Group> SLQ = [select Id, Name from Group where Type = 'Queue' and Name = 'Solar Loans Complaints Queue' Limit 1];
+        List<Group> FQ = [select Id, Name from Group where Type = 'Queue' and Name = 'Fraud Complaints Queue' Limit 1];
+        List<Group> DBQ = [select Id, Name from Group where Type = 'Queue' and Name = 'Digital Banking Complaints Queue' Limit 1];
+        List<Group> MQ = [select Id, Name from Group where Type = 'Queue' and Name = 'Marketing Complaints Queue' Limit 1];
+        List<Group> MLQ = [select Id, Name from Group where Type = 'Queue' and Name = 'Mortgage Lending Complaints Queue' Limit 1];
+        List<Group> PSQ = [select Id, Name from Group where Type = 'Queue' and Name = 'Payment Services Complaints Queue' Limit 1]; */
+            
+        Database.DMLOptions dmlOpts = new Database.DMLOptions(); 
+        dmlOpts.assignmentRuleHeader.assignmentRuleId= AR.id;   
+       
+        Case cs = new case();            
+            cs.setOptions(dmlOpts);
+            for(CaseRecordType__c crt : scList){
+                cs.RecordTypeId = scList[0].RecordTypeId__c;
+                cs.Primary_Category__c = scList[0].Primary_Category__c;
+                cs.Secondary_Category__c = scList[0].Secondary_Category__c;
+                cs.Tertiary_Category__c = scList[0].Teritiary_Category__c;
+                
+                //----------------------------------------KX11043-26 and KX11043-27---------------------------------------------//
+                
+                /* if(scList[0].Primary_Category__c =='Complaint' && scList[0].Teritiary_Category__c == 'Asset Recovery'){
+                    
+                     cs.OwnerId = ARQ[0].id;
+                }
+                if(scList[0].Primary_Category__c =='Complaint' && scList[0].Teritiary_Category__c == 'Servicing'){
+                    
+                     cs.OwnerId = SQ[0].id;
+                }
+                if(scList[0].Primary_Category__c =='Complaint' && scList[0].Teritiary_Category__c == 'Product'){
+                    
+                     cs.OwnerId = PQ[0].id;
+                 }
+                if(scList[0].Primary_Category__c =='Complaint' && scList[0].Teritiary_Category__c == 'Auto Loans'){
+                    
+                     cs.OwnerId = ALQ[0].id;
+                }
+                if(scList[0].Primary_Category__c =='Complaint' && scList[0].Teritiary_Category__c == 'Solar Loan'){
+                    
+                     cs.OwnerId = SLQ[0].id;
+                }
+                if(scList[0].Primary_Category__c =='Complaint' && scList[0].Teritiary_Category__c == 'Others'){
+                    
+                     cs.OwnerId = gp[0].id;
+                } 
+                if(scList[0].Primary_Category__c =='Complaint' && scList[0].Teritiary_Category__c == 'Fraud'){
+                    
+                     cs.OwnerId = FQ[0].id;
+                }
+                if(scList[0].Primary_Category__c =='Complaint' && scList[0].Teritiary_Category__c == 'Digital Banking'){
+                    
+                     cs.OwnerId = DBQ[0].id;
+                }
+                if(scList[0].Primary_Category__c =='Complaint' && scList[0].Teritiary_Category__c == 'Marketing'){
+                    
+                     cs.OwnerId = MQ[0].id;
+    			}
+                if(scList[0].Primary_Category__c =='Complaint' && scList[0].Teritiary_Category__c == 'Mortgage Lending'){
+                    
+                     cs.OwnerId = MLQ[0].id;
+                }
+                if(scList[0].Primary_Category__c =='Complaint' && scList[0].Teritiary_Category__c == 'Payment Services'){
+                    
+                     cs.OwnerId = PSQ[0].id;
+        		} */
+                
+               //----------------------------------------KX11043-26 and KX11043-27------------------------------------------------------//   
+            }
+            cs.Brand__c = brand;
+            cs.Brand__c = 'CFCU';
+            cs.AccountId = accObject.Id;
+            cs.ContactId = cList[0].Id;
+              if(accObject.PersonEmail != null){
+                  cs.Email_Address__c = accObject.PersonEmail;
+              }else{
+                  cs.Email_Address__c = accObject.Email_raw__c;
+             }
+            cs.Phone_Number__c = accObject.PersonHomePhone;
+            cs.First_Name__c = accObject.FirstName;
+            cs.Last_Name__c = accObject.LastName;
+            cs.Street_Address_1__c = accObject.Residential_Street__pc;
+            cs.Street_Address_2__c = accObject.Residential_Extra_Address__pc;
+            cs.City__c = accObject.Residential_City__pc;
+            cs.State__c = accObject.Residential_State__pc;
+            cs.Country__c = accObject.Residential_Country__pc;
+            cs.Zip_Code__c = accObject.Residential_Zipocde__pc;
+            cs.Ownership__c = caseownership;
+            
+            if(Status != '---None---'){                
+                cs.Status = Status;
+                system.debug('Line no 454----'+subStatus);
+                if(Status == 'Closed - Privacy request completed'){
+                    cs.Sub_Status__c = subStatus;
+                }
+            }
+            else{
+                cs.Status = '';
+            }
+             
+            if(selectedAcctNumber != null)
+                cs.Account_Number__c = selectedAcctNumber[0];
+          
+            cs.Special_Reporting_Number__c = reportNumber;
+            cs.LTK__c = Ltk;
+            cs.Description = description;
+            cs.CaseComments__c = comments;            
+            cs.Subject = Subject;
+            cs.Follow_up_Text__c = followuptext;
+            cs.Follow_up_Date__c = followupdate;
+            //cs.Ownership__c = caseObject.Ownership__c;
+            if(queueValue != null && queueValue !=''){
+                system.debug('ownerid'+queueValue);
+                cs.OwnerId = queueValue;
+                
+            }
+
+
+       try{ 
+           insert cs;
+           System.debug(cs);
+           if(Test.isRunningTest()){
+               Integer x=1/0;}            
+           }catch (exception e)  {           
+           System.debug('An error occured while inserting case :' + e);                   
+          
+          }
+            if(cs.CaseComments__c != null){
+            CaseComment cc = new CaseComment();
+              cc.ParentId = cs.Id;
+              cc.CommentBody = cs.CaseComments__c;
+             
+            insert cc; 
+            }
+            returnvalue = 'Case saved successfully.';
+            mapresult.put('IsSaved', 'true');
+            mapresult.put('Message', returnvalue);
+            mapresult.put('CaseId', string.valueOf(cs.Id));
+            Case caseFinal = [select CaseNumber from Case where Id =: cs.Id];
+            mapresult.put('CaseNumber', string.valueOf(caseFinal.CaseNumber));
+             
+            Integer mSize = AccountObjectlist.size();
+            System.debug('AccountObjectlist##' + AccountObjectlist);
+            List<CaseAccountMemberDetail__c> CaseAccountMemberDetailList = new List<CaseAccountMemberDetail__c>();
+            
+           /* CaseAccountMemberDetail__c camd1 = new CaseAccountMemberDetail__c();
+            camd1.Case__c = cs.Id;
+            camd1.MemberAccountid__c = selectedAcctNumber[0].Id ;
+            camd1.Account_Name__c = selectedAcctNumber.Name;
+            CaseAccountMemberDetailList.add(camd1); */
+                                
+            System.debug('AccountObjectlistarray##' + AccountObjectlist);
+            if(mSize > 0 )
+            {
+                for(Account_Details__c accd : AccountObjectlist )
+                {
+                    system.debug('accd##'+ accd);
+                    if(accd.Id != null)
+                    {
+                        CaseAccountMemberDetail__c camd = new CaseAccountMemberDetail__c();
+                        camd.Case__c = cs.Id;
+                        camd.MemberAccountid__c = accd.Id ;
+                        camd.Account_Name__c = accd.Name;
+                        CaseAccountMemberDetailList.add(camd);
+                    }
+                    
+                }
+            }
+            System.debug('CaseAccountMemberDetailList##' + CaseAccountMemberDetailList);
+            If(!CaseAccountMemberDetailList.IsEmpty())
+            {
+                insert CaseAccountMemberDetailList;
+            }
+            
+            MaapCaseAddLog(accObject.Id,cs.Id);
+            return mapresult;       
+    }
+
+    @AuraEnabled
+    public static List<group> getQueueData(){
+        List<group> queuelist = [select Id, Name from group where type = 'Queue'];
+        return queuelist;
+
     }
     
     @AuraEnabled
@@ -712,6 +1001,7 @@ public class CreateCaseMemberPageController {
             }
             cs.Future_Date__c = caseObject.Future_Date__c;
             cs.Follow_up_Text__c = caseObject.Follow_up_Text__c;  
+            cs.Follow_up_Date__c = caseObject.Follow_up_Date__c;
        try{ 
            insert cs;
            if(Test.isRunningTest()){
@@ -934,6 +1224,7 @@ public class CreateCaseMemberPageController {
             }
             cs.Future_Date__c = caseObject.Future_Date__c;  
             cs.Follow_up_Text__c = caseObject.Follow_up_Text__c; 
+            cs.Follow_up_Date__c = caseObject.Follow_up_Date__c;
        try{ 
            insert cs;
            if(Test.isRunningTest()){

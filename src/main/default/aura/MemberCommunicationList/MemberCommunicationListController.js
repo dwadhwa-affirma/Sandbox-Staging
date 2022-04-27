@@ -85,7 +85,7 @@
                 component.find("chk7").set("v.checked", false);
                 component.find("chk8").set("v.checked", false);
                 component.find("chk9").set("v.checked", false);
-                //component.find("chk10").set("v.checked", false);                
+                component.find("chk10").set("v.checked", false);                
             }   
         }
         else{            
