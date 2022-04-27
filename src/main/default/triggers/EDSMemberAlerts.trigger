@@ -19,6 +19,8 @@ trigger EDSMemberAlerts on EDS_Member_Alerts__c (after insert) {
     Map<String,String> lnameFromEmail = new Map<String,String>();
     string Firstname, Lastname;
     string WXRefNumber;
+    Set<String> setTypeTranslate = new Set<String>();
+    Map<String,String> accountEmail = new Map<String,String>();
     
     for(EDS_Member_Alerts__c objEDS: trigger.New){
         
@@ -30,7 +32,50 @@ trigger EDSMemberAlerts on EDS_Member_Alerts__c (after insert) {
         
         System.debug('Set: '+accDetailName);
         accDetailMap = [select id,Brand__c, Name from Account_Details__c where Name In :accDetailName];
-                
+        
+        paList = [select id,TypeTranslate__c,Account_Number__r.name,PersonId__r.Firstname,PersonId__r.Lastname,PersonId__c,PersonId__r.Email_raw__c, PersonId__r.PersonEmail, Account_Number__r.TypeTranslate__c from Person_Account__c where Account_Number__r.name in: accDetailName and TypeTranslate__c IN ('0000/Primary','0006/Trustee') and Account_Number__r.TypeTranslate__c IN ('1-PERSONAL','2-TRUST','5-FOREIGN')];
+        
+		for(Person_Account__c p2: paList){            
+            setTypeTranslate.add(p2.Account_Number__r.TypeTranslate__c);
+        }        
+
+
+        //Get Trustees Email Addresses
+        if(setTypeTranslate.contains('2-TRUST')){
+            string Email =''; 
+            for(Person_Account__c p2: paList){ 
+                if(p2.TypeTranslate__c == '0006/Trustee'){
+                    if(accountEmail.containsKey(p2.Account_Number__r.name)){                    
+                        Email = accountEmail.get(p2.Account_Number__r.name) + ',' +  p2.PersonId__r.PersonEmail;                    
+                        accountEmail.put(p2.Account_Number__r.name, Email);
+                    }
+                    else{
+                        accountEmail.put(p2.Account_Number__r.name, p2.PersonId__r.PersonEmail);
+                    }
+                    fnameFromEmail.put(p2.PersonId__r.PersonEmail,p2.PersonId__r.Firstname);
+                    lnameFromEmail.put(p2.PersonId__r.PersonEmail,p2.PersonId__r.Lastname); 
+                }               
+            }
+        }
+
+        //Get Primary Email Addresses in case of Foreign and Non-trust accounts
+        else{
+            string Email =''; 
+            for(Person_Account__c p2: paList){ 
+                if(p2.TypeTranslate__c == '0000/Primary'){
+                    if(accountEmail.containsKey(p2.Account_Number__r.name)){                    
+                        Email = accountEmail.get(p2.Account_Number__r.name) + ',' +  p2.PersonId__r.PersonEmail;                    
+                        accountEmail.put(p2.Account_Number__r.name, Email);
+                    }
+                    else{
+                        accountEmail.put(p2.Account_Number__r.name, p2.PersonId__r.PersonEmail);
+                    }
+                    fnameFromEmail.put(p2.PersonId__r.PersonEmail,p2.PersonId__r.Firstname);
+                    lnameFromEmail.put(p2.PersonId__r.PersonEmail,p2.PersonId__r.Lastname); 
+                }               
+            }
+        }
+        
         /*palist = [select id,TypeTranslate__c,Account_Number__r.name,PersonId__r.Firstname,PersonId__r.Lastname,PersonId__c,PersonId__r.Email_raw__c from Person_Account__c where Account_Number__r.name in: accDetailName and TypeTranslate__c = '0000/Primary'];
 
 		for(Person_Account__c p2: [select id,Account_Number__r.name,Account_Number__c,PersonId__c,PersonId__r.Email_raw__c from Person_Account__c where PersonId__c in: AccList]){
@@ -40,13 +85,16 @@ trigger EDSMemberAlerts on EDS_Member_Alerts__c (after insert) {
         
         system.debug(AccNum);*/
         
-        for(Person_Account__c p3 : [select id,TypeTranslate__c,Account_Number__r.name,PersonId__r.Firstname,PersonId__r.Lastname,PersonId__c,PersonId__r.Email_raw__c from Person_Account__c where Account_Number__r.name in: accDetailName]){
-            
-            if(p3.PersonId__r.Email_raw__c != null){
-            	fnameFromEmail.put(p3.PersonId__r.Email_raw__c,p3.PersonId__r.Firstname);
-            	lnameFromEmail.put(p3.PersonId__r.Email_raw__c,p3.PersonId__r.Lastname);  
-            }
-        }
+        // for(Person_Account__c p3 : [select id,TypeTranslate__c,Account_Number__r.name,PersonId__r.Firstname,PersonId__r.Lastname,PersonId__c,PersonId__r.Email_raw__c from Person_Account__c where Account_Number__r.name in: accDetailName]){
+          
+        //   fnameFromEmail.put(p3.Account_Number__r.name,p3.PersonId__r.Firstname);
+        //   lnameFromEmail.put(p3.Account_Number__r.name,p3.PersonId__r.Lastname);
+
+        //     // if(p3.PersonId__r.Email_raw__c != null){
+        //     // 	fnameFromEmail.put(p3.PersonId__r.Email_raw__c,p3.PersonId__r.Firstname);
+        //     // 	lnameFromEmail.put(p3.PersonId__r.Email_raw__c,p3.PersonId__r.Lastname);  
+        //     // }
+        // }
         
         
         /*for(Person_Account__c p: palist){
@@ -67,46 +115,58 @@ trigger EDSMemberAlerts on EDS_Member_Alerts__c (after insert) {
             
             string brand = accountMemberBranch.get(EDS.Account_Number__c);
             
-            if(EDS.Email__c != null){
-                Firstname = fnameFromEmail.get(EDS.Email__c);
-                Lastname = lnameFromEmail.get(EDS.Email__c);
-            }
+            //if(EDS.Email__c != null){
+                // Firstname = fnameFromEmail.get(EDS.Email__c);
+                // Lastname = lnameFromEmail.get(EDS.Email__c);
+                // Firstname = fnameFromEmail.get(EDS.Account_Number__c);
+                // Lastname  = lnameFromEmail.get(EDS.Account_Number__c);
+            //}
             
             System.debug('Brand' + brand);
             System.debug('Firstname' + Firstname);
             System.debug('Lastname' + Lastname);
           	
-            if(Firstname == null || Lastname == null){            	
-                for(Person_Account__c p1: [select id,TypeTranslate__c,Account_Number__r.name,PersonId__r.Firstname,PersonId__r.Lastname,PersonId__c,PersonId__r.Email_raw__c from Person_Account__c where Account_Number__r.name in: accDetailName and TypeTranslate__c = '0000/Primary']){
-                    Firstname = p1.PersonID__r.Firstname;
-                    Lastname = p1.PersonID__r.Lastname;
-                }                
-            }
+            // if(Firstname == null || Lastname == null){            	
+            //     for(Person_Account__c p1: [select id,TypeTranslate__c,Account_Number__r.name,PersonId__r.Firstname,PersonId__r.Lastname,PersonId__c,PersonId__r.Email_raw__c from Person_Account__c where Account_Number__r.name in: accDetailName and TypeTranslate__c = '0000/Primary']){
+            //         Firstname = p1.PersonID__r.Firstname;
+            //         Lastname = p1.PersonID__r.Lastname;
+            //     }                
+            // }
             
-            System.debug('Firstname' + Firstname);
-            System.debug('Lastname' + Lastname);
+            // System.debug('Firstname' + Firstname);
+            // System.debug('Lastname' + Lastname);
             
-            if(EDS.Event_Id__c  != null){
+            if(EDS.Event_Id__c != null){
                 WXRefNumber = EDS.Event_Id__c;    
             }
-            
-            if (EDS.Email__c == null || !MyPattern.matcher(EDS.Email__c).matches()) {
+
+            string AllEmails = accountEmail.get(EDS.Account_Number__c);
+            List<String> lstEmails = AllEmails.split(',');
+            Set<String> sEmails = new Set<String>(lstEmails);
+            for(string e: sEmails){
+                if (e == null || !MyPattern.matcher(e).matches() || string.isBlank(e)) {
                 
-                EDS_Member_Alert_Log__c objLog =  new EDS_Member_Alert_Log__c();
-                objLog.ODS_Key__c = EDS.OdsKey__c;
-                objLog.Account_Number__c = EDS.Account_Number__c;
-                if(EDS.Email__c == null)
-                {
-                    objLog.Email_Message__c = 'NULL';
+                    EDS_Member_Alert_Log__c objLog =  new EDS_Member_Alert_Log__c();
+                    objLog.ODS_Key__c = EDS.OdsKey__c;
+                    objLog.Account_Number__c = EDS.Account_Number__c;
+                    if(EDS.Email__c == null)
+                    {
+                        objLog.Email_Message__c = 'NULL';
+                    }
+                    else{
+                        objLog.Email_Message__c = 'Invalid email ' + EDS.Email__c;
+                    }
+                    listToInsertLogs.add(objLog);
                 }
-                else{
-                    objLog.Email_Message__c = 'Invalid email ' + EDS.Email__c;
+                else{ 
+                    Firstname = fnameFromEmail.get(e);
+                    Lastname = lnameFromEmail.get(e);
+                    SendLimitChangeEmail(e, brand, Firstname, Lastname, WXRefNumber, EDS.Event_Action__c);
+                    //SendLimitChangeEmail(EDS.Email__c, brand, Firstname, Lastname, WXRefNumber, EDS.Event_Action__c);            
                 }
-                listToInsertLogs.add(objLog);
             }
-            else{
-                SendLimitChangeEmail(EDS.Email__c, brand, Firstname, Lastname, WXRefNumber, EDS.Event_Action__c);            
-            } 
+            
+             
                         
         }
         if(listToInsertLogs.size()>0){
@@ -116,7 +176,7 @@ trigger EDSMemberAlerts on EDS_Member_Alerts__c (after insert) {
     
     private void SendLimitChangeEmail(string ToEmail, string Brand,String Firstname,String Lastname, String WXRefNumber, String Action){
         
-        SolarLoan_Docusign_Emails__c sde = SolarLoan_Docusign_Emails__c.getValues('Email For Testing');
+        Wires_Notification_EmailTo__c sde = Wires_Notification_EmailTo__c.getValues('Email For Testing');
         List<Messaging.SingleEmailMessage> mails = new List<Messaging.SingleEmailMessage>();
         Messaging.SingleEmailMessage mail = new Messaging.SingleEmailMessage();
         List<String> sendTo = new List<String>();
