@@ -19,7 +19,12 @@
                 component.set("v.WiresCount",result.WiresCount); 
                 component.set("v.WiresObject",result.WiresList);
                 component.set("v.Source",result.Source);
+                component.set("v.Frequency",result.WiresList.Frequency__c);                
                 component.set("v.MinGoodFundAmountCheck",result.MinGoodFundAmountCheck);
+                /*if(result.WiresList.Frequency__c == "Recurring"){
+                    var togglebutton = component.find("cancelButton")
+                    $A.util.toggleClass(togglebutton, "toggle");
+                }*/
             }            
             
         });	

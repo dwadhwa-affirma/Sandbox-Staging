@@ -1,0 +1,38 @@
+.THIS {
+    /*position: absolute;
+    top: 8%;
+    right: 5%;
+    z-index: 100;
+    width: auto;
+    max-width: 25%; */
+    position: absolute;
+    top: 3.8rem;
+    right: -3rem;
+    z-index: 100;
+    width: auto;
+    max-width: 30rem;
+    font-size: 0.75rem;
+}
+
+
+.THIS td{
+    width: 30%;
+    text-align: center;
+}
+
+.THIS .forceHighlightsStencilDesktop .actionsContainer{padding-top:0;}
+    
+.THIS .linebreak{
+    width: 60%;    
+}
+
+.THIS .breached{
+    color: red;
+}
+.THIS .value{
+    font-size: 0.875rem !important;
+}
+
+@media(max-width:1080px){
+    .THIS table {right:auto; left:270px;}
+}

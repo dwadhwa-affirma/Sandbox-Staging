@@ -16,8 +16,8 @@
     <aura:attribute name= "Source" type="string" />
     <aura:attribute name= "Reason" type="string" />
     <aura:attribute name="showConfirmDialog" type="boolean" default="false"/>
-    <aura:attribute name= "MinGoodFundAmountCheck" type="decimal" />
-    
+    <aura:attribute name= "MinGoodFundAmountCheck" type="decimal" /> 
+    <aura:attribute name= "Frequency" type="string" /> 
     <lightning:overlayLibrary aura:id="overlayLib"/> 
     
     <div class="slds-m-around_xx-large"> 
@@ -55,11 +55,16 @@
     <div class="groupbtn-parent stagebar">		       
         
         <div style="margin-left: auto;">
-            <aura:if isTrue="{!and(v.ApprovalStatus!= 'Cancelled',v.ApprovalStatus!= 'Released In WireXchange')}">  
+            <aura:if isTrue="{!and(v.ApprovalStatus!= 'Cancelled',v.ApprovalStatus!= 'Released In WireXchange', v.ApprovalStatus!= 'Sent from WireXchange')}">  
                  <aura:if isTrue="{!and(v.ApprovalStatus!='Rejected',v.ApprovalStatus!= 'DS Expired',v.ApprovalStatus!= 'DS Declined')}">  
-            		<lightning:button variant="destructive" 
+                     <aura:if isTrue="{!v.Frequency!= 'Recurring'}"> 
+                         <aura:if isTrue="{!v.ApprovalStatus!= 'Sent from WireXchange'}"> 
+								<lightning:button variant="destructive" class="cancel"
                                       label="Cancel Transaction" 
-                                      onclick="{!c.handleConfirmDialog}"/>
+                                      onclick="{!c.handleConfirmDialog}"/>    
+                         </aura:if>
+                     </aura:if> 
+            		
                 </aura:if>
             </aura:if>
             

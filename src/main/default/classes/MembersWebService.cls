@@ -11,6 +11,8 @@ global class MembersWebService{
         //     accountNumber = '0090067880';
         //     appId = '1234';
         // }
+        
+        AccountNumber = AccountNumber.leftPad(10, '0');
         system.debug('###' + accountNumber);
         List<Account_Details__c> lstAccountDetails = new List<Account_Details__c>();
         lstAccountDetails = [SELECT Id, Name
@@ -124,24 +126,31 @@ global class MembersWebService{
                 if (membershipRecordType.size() > 0){
                     objAccount.RecordTypeId = membershipRecordType[0].Id;
                 }
+                objAccount.AccountID__c = AccountNumber + 'A9999P9999';
+                objAccount.Combined_Account_ID__c = AccountNumber + 'A9999P9999';
+                objAccount.TypeTranslate__c = '1-PERSONAL';
+                objAccount.Unique_Account_Number__c= AccountNumber + 'A9999P9999';
                 system.debug('objAccount==' + objAccount);
                 insert objAccount;
                 ACCTId = objAccount.Id;
                 List<Object> NameObject = (List<Object>)objItem.get('NameObjects');
                 system.debug('###' + NameObject);
-                map<string, object> resultMemberMap = CreateUpdateMemberRecord(NameObject);
-                List<Account> PAToInsert = (List<Account>)resultMemberMap.get('Insert');
-                system.debug('PAToInsert###' + PAToInsert);
-                if(PAToInsert == null){
-                    PAToInsert = (List<Account>)resultMemberMap.get('Update');
+                if(NameObject != null){
+                    map<string, object> resultMemberMap = CreateUpdateMemberRecord(NameObject);
+                    List<Account> PAToInsert = (List<Account>)resultMemberMap.get('Insert');
+                    system.debug('PAToInsert###' + PAToInsert);
+                    if(PAToInsert == null){
+                        PAToInsert = (List<Account>)resultMemberMap.get('Update');
+                    }
+                    system.debug('PAToInsert###' + PAToInsert);
+                    if(PAToInsert != null && PAToInsert.size() > 0){
+                        MemberId = PAToInsert[0].Id;
+                    }
+                    for (Account a : PAToInsert){                   
+                        CreateUpdatePersonRecord('ACCT', ACCTId, a.Id, a.PersonId__c, '	0000/Primary', accountNumber);
+                    }
                 }
-                system.debug('PAToInsert###' + PAToInsert);
-                if(PAToInsert != null && PAToInsert.size() > 0){
-                    MemberId = PAToInsert[0].Id;
-                }
-                for (Account a : PAToInsert){                   
-                    CreateUpdatePersonRecord('ACCT', ACCTId, a.Id, a.PersonId__c, '	0000/Primary', accountNumber);
-                }
+                
             }
             
             if (lstCards.size() > 0){
@@ -354,6 +363,11 @@ global class MembersWebService{
                     if (loanRecordType.size() > 0){
                         tempLoanObj.RecordTypeId = loanRecordType[0].Id;
                     }
+
+                    tempLoanObj.AccountID__c = AccountNumber + 'L5600P5600';
+                    tempLoanObj.Combined_Account_ID__c = AccountNumber + 'L5600P5600';
+                    tempLoanObj.TypeTranslate__c = '56-INDIRECT LENDING NEW RV';
+                    tempLoanObj.Unique_Account_Number__c= AccountNumber + 'L5600P5600';
                     
                     system.debug('tempLoanObj==' + tempLoanObj);
                     if (tempLoanObj.Close_Date__c == null && String.isNotBlank(tempLoanObj.ID1__c) && tempLoanObj.ID1__c != '0'){
@@ -492,7 +506,10 @@ global class MembersWebService{
                     if (shareRecordType.size() > 0){
                         tempShareObj.RecordTypeId = shareRecordType[0].Id;
                     }
-                    
+                    tempShareObj.AccountID__c = AccountNumber + 'S0100P0100';
+                    tempShareObj.Combined_Account_ID__c = AccountNumber + 'S0100P0100';
+                    tempShareObj.TypeTranslate__c = '1-PRIMARY SHARE';
+                    tempShareObj.Unique_Account_Number__c= AccountNumber + 'S0100P0100';
                     
                     system.debug('tempShareObj==' + tempShareObj);
                     if (tempShareObj.Close_Date__c == null){

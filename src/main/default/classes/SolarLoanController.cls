@@ -161,6 +161,7 @@ public class SolarLoanController {
     String Stage3MembershipCheck;
     String Stage3MissingFields;
     String Stage4ErrorCheck;
+    String Stage4ShareErrorCheck;
     String Stage5ErrorCheck;
     String Stage5MissingFields;
     String Stage6ErrorCheck;
@@ -197,6 +198,11 @@ public class SolarLoanController {
     Boolean JointWorkPhone;
     Boolean PrimaryEmail;
 
+    Boolean IsPrimaryIDIssueFutureDate =false;
+    Boolean IsJoinIDIssueFutureDate = false;
+    Boolean IsPrimaryIDExpirationPastDate = false;
+    Boolean IsJointIDExpirationPastDate = false;
+
     system.debug('CurrentStage'+CurrentStage);
     Map<string,string> strMap = new  Map<string,string>();
   
@@ -224,7 +230,7 @@ public class SolarLoanController {
             Mailing_Zip__c,Joint_Cell_Phone__c,Joint_Home_Phone__c,Joint_Work_Phone__c,mem_Primary_A_F_Foreign_Gov_t_Position__c,
             mem_Primary_Foreign_Gov_t_Position__c,mem_Joint_A_F_Foreign_Gov_t_Position__c,mem_Joint_Foreign_Gov_t_Position__c,
             mem_Joint_Extra_Address__c,mem_Primary_Extra_Address__c,mem_Mailing_Extra_Address__c,
-            Current_Solar_Loan_Stage__c,County__c FROM Solar_Loans__c where id =: SolarLoanRecordId limit 1];
+            Current_Solar_Loan_Stage__c,County__c, Share_Id__c, Error_Share_Locator__c FROM Solar_Loans__c where id =: SolarLoanRecordId limit 1];
             
     if(SolarLoanList.size() > 0){
 
@@ -243,8 +249,29 @@ public class SolarLoanController {
                     ProductTypeFound = true;    
             }
         }
-       
+        system.debug('SolarLoanList[0].Member_Number__c'+SolarLoanList[0].Member_Number__c);
         if(CurrentStage != null && CurrentStage != ' '){
+
+            if(SolarLoanList[0].mem_ID_Issue_Date__c != null && SolarLoanList[0].mem_ID_Issue_Date__c > Date.today()){
+                IsPrimaryIDIssueFutureDate = true;
+                strMap.put('IsPrimaryIDIssueFutureDate','True');               
+            }
+            if(SolarLoanList[0].Joint_ID_Issue_Date__c != null && SolarLoanList[0].Joint_ID_Issue_Date__c > Date.today()){
+                IsJoinIDIssueFutureDate = true;
+                strMap.put('IsJoinIDIssueFutureDate','True');               
+            }
+            if(SolarLoanList[0].mem_ID_Expiration_Date__c != null && SolarLoanList[0].mem_ID_Expiration_Date__c < Date.today()){
+                IsPrimaryIDExpirationPastDate = true;
+                strMap.put('IsPrimaryIDExpirationPastDate','True');               
+            }
+            if(SolarLoanList[0].Joint_ID_Expiration_Date__c != null && SolarLoanList[0].Joint_ID_Expiration_Date__c < Date.today()){
+                IsJointIDExpirationPastDate = true;
+                strMap.put('IsJointIDExpirationPastDate','True');               
+            }
+
+            if(IsPrimaryIDIssueFutureDate || IsJoinIDIssueFutureDate || IsPrimaryIDExpirationPastDate || IsJointIDExpirationPastDate){
+                return strMap;
+            }
             
             if(CurrentStage != 'Stage 2' && CurrentStage != 'Stage 4' && CurrentStage != 'Stage 3' && CurrentStage != 'Stage 5' && CurrentStage != 'Stage 7' && CurrentStage != 'Stage 8'){
                 SolarLoanList[0].Current_Solar_Loan_Stage__c = CurrentStage; 
@@ -294,7 +321,8 @@ public class SolarLoanController {
 				Stage2ErrorCheck = 'True';
             }
             else{
-                
+                system.debug('Stage2ErrorCheck'+Stage2ErrorCheck);
+                system.debug('Stage2MissingDocs'+Stage2MissingDocs);
                 SLIdsToFileUCC.add(SolarLoanList[0].id);
                 SolarLoanToFileUCC.getJurisdiction(SLIdsToFileUCC);
             }
@@ -876,6 +904,18 @@ public class SolarLoanController {
             Stage4ErrorCheck = 'True';
             update SolarLoanList;
         }
+        
+    }
+
+    if(CurrentStage == ' ' && SolarLoanList[0].Current_Solar_Loan_Stage__c == 'Stage 3' &&  Stage2MemberCheck != 'False' &&
+            (SolarLoanList[0].Error_Share_Locator__c != null )){            
+        
+        if(SolarLoanList[0].Share_Id__c == null || SolarLoanList[0].Share_Id__c == ''){
+
+            Stage4ShareErrorCheck = 'True';
+            update SolarLoanList;
+        }
+        
     }
 
     if(CurrentStage == ' ' && SolarLoanList[0].Status__c == 'Waiting for Response' ){
@@ -905,6 +945,7 @@ public class SolarLoanController {
     strMap.put('JurisdictionErrorCheck',JurisdictionErrorCheck);
     strMap.put('MultipleMembershipCheck',MultipleMembershipCheck);
     strMap.put('waitingCheck',waitingCheck);
+    strMap.put('Stage4ShareErrorCheck',Stage4ShareErrorCheck);
     //strMap.put('Stage2MemberCheck',Stage2MemberCheck);
     
      

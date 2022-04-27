@@ -896,6 +896,22 @@
             function submitform(addattachment)
             {
                 debugger;
+                try{                    
+                    sforce.connection.sessionId = '{!$Api.Session_ID}';                   
+                    var result = sforce.connection.query("Select Name, Id from User Limit 1");
+                    // if(result)
+                    //     return true;
+                    // else
+                    //     return false; 
+                }
+                catch(ex){
+                    if(ex.faultcode == 'sf:INVALID_SESSION_ID')
+                        alert('Your session has expired, data will not be saved.');
+                    else
+                    alert('Your session has expired, data will not be saved.');
+                    return false;
+                }
+                  
                             casecomment = getRTEValue();
                             //var casecommentcopy = casecomment;
                             var casecommenttext = getRTETextValue();

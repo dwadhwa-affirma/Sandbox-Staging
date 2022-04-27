@@ -1,0 +1,87 @@
+<aura:component controller="AddressChangeController" implements="flexipage:availableForAllPageTypes,force:appHostable,force:hasRecordId,force:lightningQuickActionWithoutHeader,lightning:actionOverride" access="global" >
+    <aura:attribute name="accList" type="Object[]" description="rows of table" />
+    <aura:attribute name="accListtotalrecords" type="integer" description="rows of table" />
+    <aura:attribute name="accListIsHidden" type="string" default="false" />
+    <aura:attribute name="loading" type="Boolean" default="false" />
+    <aura:attribute name="selectedAccount" type="string" />
+    <aura:attribute name="straccList" type="string" description="comma seprated list" />
+    <aura:attribute name="recordId"
+                    type="String"
+                    description="ID of the record."/>
+    
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}" />
+    <lightning:overlayLibrary aura:id="overlayLib"/>
+    <aura:html tag="style">
+        .loadingDiv {
+        position: absolute;
+        z-index: 200;
+        background: rgba(255, 255, 255, 0.8);
+        width: 100%;
+        height: 96%;
+        top:0px;
+        opacity: 2;
+        }
+        
+        .loadingDiv .demo-only {
+        z-index: 101;
+        }
+        
+        .forceChatterBasePublisher :not(.PHONE) .cuf-content{padding:0px !important;}
+        .slds-p-around_medium, .slds-p-around--medium{padding:0px !important;}
+        .cAddressChangeAllAccounts{padding:15px;background: white !important;}
+        
+        .slds-modal__container{max-width: 80rem !important; width:70% !important;height: 600px;}
+        .modal-maincontent{min-height: 379px;max-height: 379px;overflow-y: auto;}
+        
+    </aura:html>  
+    <aura:if isTrue="{!(v.loading == true)}">
+        <div class="loadingDiv">
+            <div class="demo-only" style='height: 6rem; '>
+                <div role="status" class="slds-spinner slds-spinner_medium">
+                    <span class="slds-assistive-text">Loading</span>
+                    <div class="slds-spinner__dot-a"></div>
+                    <div class="slds-spinner__dot-b"></div>
+                </div>
+            </div>
+        </div>
+    </aura:if>
+    <header class="slds-modal__header" id="CreateMemberCommentHeader" >
+        <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse" title="Close" onclick="{!c.closePopup}">
+            <span data-aura-rendered-by="47:1615;a" class="lightningPrimitiveIcon" data-aura-class="lightningPrimitiveIcon"><lightning:icon iconName="{#v.closeIcon}" size="small" variant="inverse" /></span>
+            <span class="slds-assistive-text">Close</span>
+        </button>
+        <h2 id="modal-heading-01" class="slds-text-heading_medium slds-hyphenate">Address Change</h2>
+    </header>
+    <div style="min-height:100px !important; max-height:200px !important;">
+        
+        <div style="margin-top: 35%;">
+            
+            <footer class="slds-modal__footer" id="OTPVerificationPageFooter">
+                <button class="slds-button slds-button_neutral" onclick="{!c.closePopup}">Close</button>       
+            </footer> 
+            
+        </div>
+    </div>
+    <!--  <div class="modal-maincontent">   
+<fieldset class="slds-form-element">
+  <legend class="slds-form-element__legend slds-form-element__label">Select Member Account</legend>
+  <div class="slds-form-element__control">
+   <aura:iteration items="{!v.accList}" var="itemOption">
+     <span class="slds-radio">
+       <input type="radio" id="{!itemOption}" name="options" value="{!itemOption}" onchange="{!c.handleRadioClick}"/>
+       <label class="slds-radio__label" for="{!itemOption}">
+         <span class="slds-radio_faux"></span>
+         <span class="slds-form-element__label">{!itemOption}</span>
+       </label>
+     </span>
+    </aura:iteration>
+  </div>
+</fieldset>
+</div>-->
+    
+    <!-- <footer class="slds-modal__footer" id="AddressChangeFooter">
+  <button class="slds-button slds-button-neutral uiButton forceActionButton" onclick="{!c.nextClick}">Next</button> 
+  
+  </footer>-->
+    
+</aura:component>

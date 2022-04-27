@@ -6,5 +6,5 @@ global class MemberComment {
     public boolean IsRead {get;set;}
         public string commentid {get;set;}
     public List<FileList> files {get;set;}
-   
+    public string TyfoneMemberName {get;set;}
 }

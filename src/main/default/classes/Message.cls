@@ -1,6 +1,8 @@
 global class Message {
    
 		public string casenumber {get; set;}
+    	public string accountNumber {get; set;}
+    	public string MaskedaccountNumber {get; set;}
 		public string PrimaryCategory {get;set;}
 		public string Description {get; set;} 
 		public string ShortDescription {get;set;}
@@ -29,7 +31,7 @@ global class Message {
     	public Boolean ShowCaseBelow {get;set;} 
     	public Integer Days_after_closed_date {get; set;}
     	public DateTime CaseCreatedDate {get;set;}
-    	
+    	public string TyfoneMemberName {get;set;}
     	
 		
 }

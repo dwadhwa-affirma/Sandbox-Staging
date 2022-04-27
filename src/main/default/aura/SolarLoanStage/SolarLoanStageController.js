@@ -107,6 +107,66 @@
         	var status = response.getState();            
             if (component.isValid() && status === "SUCCESS") {
                 var result = response.getReturnValue();
+
+                if(result.IsPrimaryIDIssueFutureDate  == 'True'){
+                    helper.hideSpinner(component,helper); 
+                    var toastEvent = $A.get("e.force:showToast");
+                    toastEvent.setParams({
+                        title : 'Warning',
+                        message: 'Primary ID Issue Date Must be in Past',
+                        duration:' 5000',
+                        key: 'info_alt',
+                        type: 'warning',
+                        mode: 'sticky'
+                    });
+                    toastEvent.fire();
+                    return;
+                }
+
+                if(result.IsJoinIDIssueFutureDate   == 'True'){
+                    helper.hideSpinner(component,helper); 
+                    var toastEvent = $A.get("e.force:showToast");
+                    toastEvent.setParams({
+                        title : 'Warning',
+                        message: 'Joint ID Issue Date Must be in Past',
+                        duration:' 5000',
+                        key: 'info_alt',
+                        type: 'warning',
+                        mode: 'sticky'
+                    });
+                    toastEvent.fire();
+                    return;
+                }
+
+                if(result.IsPrimaryIDExpirationPastDate == 'True'){
+                    helper.hideSpinner(component,helper); 
+                    var toastEvent = $A.get("e.force:showToast");
+                    toastEvent.setParams({
+                        title : 'Warning',
+                        message: 'Primary ID Expiration Date Must be in Future',
+                        duration:' 5000',
+                        key: 'info_alt',
+                        type: 'warning',
+                        mode: 'sticky'
+                    });
+                    toastEvent.fire();
+                    return;
+                }
+
+                if(result.IsJointIDExpirationPastDate == 'True'){
+                    helper.hideSpinner(component,helper); 
+                    var toastEvent = $A.get("e.force:showToast");
+                    toastEvent.setParams({
+                        title : 'Warning',
+                        message: 'Joint ID Expiration Date Must be in Future',
+                        duration:' 5000',
+                        key: 'info_alt',
+                        type: 'warning',
+                        mode: 'sticky'
+                    });
+                    toastEvent.fire();
+                    return;
+                }
                 
                 if(result.SolarCurrentStage != undefined){
 		       	    checkCurrentStage = result.SolarCurrentStage;

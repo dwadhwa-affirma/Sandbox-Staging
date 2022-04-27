@@ -162,3 +162,60 @@
     .THIS#stage2 .slds-form-element__label{clear:both;}
 	.THIS#stage2 .slds-form-element_horizontal .slds-form-element__control{clear:both; padding-left:0;}
 }
+
+.THIS div#cp87116aa311 {
+	width: 200px;
+	background-color: #FF9900;
+	padding: 5px 0;
+}
+
+.THIS div#cp87116aa311:hover {
+	cursor: pointer
+}
+
+.THIS div#cp87116aa311 form {
+	margin: 0;
+	padding: 0;
+	text-align: center
+}
+
+.THIS div#cp87116aa311 div.cpwrap {
+	width: 90%;
+	border: 0;
+	margin: 0 auto;
+	padding: 0px;
+	background-color: #FF9900
+}
+
+.THIS div#cp87116aa311 button {
+	width: 95%;
+	border: 0;
+	margin: 0;
+	padding: 3px 0;
+	background-color: #FF9900;
+	text-align: center;
+	color: #FFFFFF;
+}
+
+.THIS div#cp87116aa311:hover button {
+	text-decoration: underline
+}
+
+.THIS div#cp87116aa311 button:focus,
+.THIS div#cp87116aa311 button:visited,
+.THIS div#cp87116aa311 button:active {
+	border: none;
+	outline: none
+}
+
+.THIS div#cp87116aa311 button {
+	font-size: 16px
+}
+
+.THIS div#cp87116aa311 {
+	background-color: #FFAA00;
+}
+
+.THIS div#cp87116aa311 {
+	border-radius: 10px;
+}

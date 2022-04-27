@@ -3,7 +3,7 @@ public class MemberInfoController {
     @AuraEnabled
     public static AccountViewModel GetMemberInfomation(Id accountId){
         System.debug('accountId:'+accountId);
-        Account acc = [SELECT Id,Employee_Restricted_Access__c,Name,BIRTH_DATE__pc,Email_raw__c, 
+        Account acc = [SELECT Id,Employee_Restricted_Access__c,Name,BIRTH_DATE__pc,Email_raw__c, PersonEmail, 
                        Mobile_Phone__pc,MemberType__c,CreatedDate
                        FROM Account WHERE 
                        Id=:accountId];
@@ -50,7 +50,7 @@ public class MemberInfoController {
         AccountViewModel accViewModel = new AccountViewModel();
         accViewModel.Name = acc.Name;
         accViewModel.BirthDate = acc.BIRTH_DATE__pc;
-        accViewModel.Email = acc.Email_raw__c;
+        accViewModel.Email = acc.PersonEmail;
         accViewModel.MobilePhone = acc.Mobile_Phone__pc;
         accViewModel.MemberType = acc.MemberType__c;
         accViewModel.JoiningDaysDiff = joiningDaysDiff;
