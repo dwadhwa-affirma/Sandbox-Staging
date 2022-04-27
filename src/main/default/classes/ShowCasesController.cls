@@ -133,6 +133,7 @@ global with sharing  class ShowCasesController {
         List<String> mnSList = new List<String>();
         Boolean isTyfone = false;
      	String tyfoneSSN;
+        set<string> AuthorizedCreatedbyIds =  new set<string>();
         
         system.debug('LoggedinUser: '+LoggedinUser);
         List<User> u = [SELECT Name, ContactId, FederationIdentifier from User Where ID=:LoggedinUser];
@@ -210,7 +211,7 @@ global with sharing  class ShowCasesController {
 					system.debug('tyfoneSSN: '+tyfoneSSN);
                     system.debug('isTyfone: '+isTyfone);                    
                 }
-                if(AccList.size() == 1){
+                else if(AccList.size() == 1){
                     
                     tyfoneSSN =(AccList[AccList.size()-1]).right(9);
                     isTyfone = true;
@@ -252,7 +253,7 @@ global with sharing  class ShowCasesController {
 									FROM Person_Account__c 
 									where Account_Number__r.Name like :strNumber and TypeTranslate__c like '%Primary%' LIMIT 1];
 
-        if(paPrimary.size() > 0){
+        if(paPrimary.size() > 0){            
             strSSN = paPrimary[0].PersonID__r.PersonID__c.substring(1);
         }
         
@@ -260,7 +261,10 @@ global with sharing  class ShowCasesController {
         system.debug('isTyfone: '+isTyfone);
         
         if(strSSN.length() == 9 && isTyfone == true){
-        	
+            if(string.isNotBlank(tyfoneSSN)){
+                strSSN = tyfoneSSN;
+            }
+        	system.Debug('strSSN: '+strSSN);
             system.debug('-------------------Webservice for Member Authorization---------------');
             
             HttpRequest req1 = new HttpRequest();
@@ -294,7 +298,60 @@ global with sharing  class ShowCasesController {
         
             system.debug('lstAccounts: '+lstAccounts);
             
-        }
+            
+            system.debug('-------------------Webservice for Authorized Members---------------');
+            
+            HttpRequest req2 = new HttpRequest();
+            HttpResponse res2;
+            Http http2 = new Http();
+            string responseBody2;
+            Set<String> setAuthorizedSSNList = new Set<String>();
+        
+            req2.setEndpoint(loanAPI + '/MemberAuthorization/GetAuthorizedMemeber?accountNumber=' + userAccount.fedid);
+            req2.setMethod('GET');
+            //req1.setTimeout(1200000);
+            
+            if(!Test.isRunningTest()){                       
+                res2 = http2.send(req2);
+                responseBody2 = res2.getBody();                
+            }
+            else{
+                responseBody2 = '[{"AddressType":"0","type":0,"accounttype":null,"accountnumber":"0000000123"},{"AddressType":"0","type":1,"accounttype":null,"accountnumber":"0000000123"}]';
+            }
+        
+            system.debug('responseBody2: '+responseBody2);
+            
+            if(responseBody2 != ''){
+                List<Object> jsonParsed = (List<Object>)JSON.deserializeUntyped(responseBody2);
+                system.debug('jsonParsed=='+jsonParsed);
+                for (Object obj : jsonParsed){
+                        Map<String, Object> objItem = (Map<String, Object>)obj;
+                        system.debug(String.valueof(objItem.get('ssnnumber')));
+                        if(string.isNotBlank(String.valueof(objItem.get('ssnnumber')))){
+                            setAuthorizedSSNList.add('%' + String.valueof(objItem.get('ssnnumber')));  
+                        }
+                    	                  	
+                }               
+            }
+           
+            system.debug('setAuthorizedSSNList: '+setAuthorizedSSNList);
+            List<Person_Account__c> AuthorizedPA = new List<Person_Account__c>();
+            if(setAuthorizedSSNList != null &&  setAuthorizedSSNList.size() > 0){
+                AuthorizedPA = [select Id, Account_Number__c,  PersonID__c, Account_Number__r.RecType__c, TypeTranslate__c, 
+									Account_Number__r.Name,PersonID__r.PersonID__c,PersonID__r.Name from person_account__c where PersonID__r.PersonID__c like: setAuthorizedSSNList and TypeTranslate__c like '%Primary%'];
+            }
+            
+            Set<string> AuthorzedfedIds = new Set<string>();
+            for(Person_Account__c apa: AuthorizedPA){
+                string fedidwithoutzeros = apa.Account_Number__r.Name.replaceFirst('^0+', '');
+                AuthorzedfedIds.add(fedidwithoutzeros);
+            }
+            
+            List<User> AuthrorizedUsers = [Select id, name from user where FederationIdentifier in: AuthorzedfedIds];
+            for(User us: AuthrorizedUsers){
+                AuthorizedCreatedbyIds.add(us.id);
+            }
+ 		}
         
         system.debug('eligibleAccounts: '+eligibleAccounts);
         
@@ -353,16 +410,26 @@ global with sharing  class ShowCasesController {
     	commentdate =[Select CreatedDate from Member_Comment__c where  Case__c IN :caseIds and draft__c != true and draft__c != true order by CreatedDate limit 1 ];	
 	 	mv.UserName = userAccount.CurrentUser.Name;
 	 	System.Debug('user-' + userAccount.CurrentUser.Name);
+        System.Debug('UserList-' + UserList);
        	if (TypeOfView == 'Messages')
        	{
 	       		//cases =[SELECT Id, CaseNumber,Primary_Category__c,Description,Priority,Status,Subject,CreatedDate,IsMarkRead__c,contactid,
 	       		//		createdbyId from Case where AccountId =:contactid and createdbyId !=:LoggedinUserID
 	       		//		and IsMarkDeleted__c = false and IsMarkSaved__c = false and CreatedDate >= LAST_N_MONTHS:18]; 
-	       		casesCreatedBySupport =[SELECT Id, CaseNumber,Account_Number__r.Name,Primary_Category__c,Description,Priority,Status,Subject,CreatedDate,IsMarkRead__c,contactid,
+            if(AuthorizedCreatedbyIds.size() > 0){
+                casesCreatedBySupport =[SELECT Id, CaseNumber,Account_Number__r.Name,Primary_Category__c,Description,Priority,Status,Subject,CreatedDate,IsMarkRead__c,contactid,
+	       				createdbyId,MemberCommentCount__c from Case where /*Account_Number__r.Name= :userAccount.fedid and*/
+                                        Account_Number__r.Name in:finalAccounts and
+	       				((createdbyId !=: LoggedinUser and MemberCommentCount__c > 0) or (createdbyId in :UserList) or (createdbyId in :AuthorizedCreatedbyIds)) and                                        
+                        IsMarkDeleted__c = false and IsMarkSaved__c = false and CreatedDate >= :date18months order by CreatedDate desc  ];
+            }	
+            else{
+                casesCreatedBySupport =[SELECT Id, CaseNumber,Account_Number__r.Name,Primary_Category__c,Description,Priority,Status,Subject,CreatedDate,IsMarkRead__c,contactid,
 	       				createdbyId,MemberCommentCount__c from Case where /*Account_Number__r.Name= :userAccount.fedid and*/
                                         Account_Number__r.Name in:finalAccounts and
 	       				((createdbyId !=: LoggedinUser and MemberCommentCount__c > 0) or (createdbyId in :UserList)) and                                        
                         IsMarkDeleted__c = false and IsMarkSaved__c = false and CreatedDate >= :date18months order by CreatedDate desc  ];
+            }
 	     
 		  	for( i =0 ; i < casesCreatedBySupport.size(); i ++)
 			{
@@ -769,6 +836,7 @@ global with sharing  class ShowCasesController {
 	    string LoggedinUserID =	UserInfo.getUserId();
 	    
 	    final Integer messagecount;
+        Integer Casemessagecount;
 	  //  caseIds = [SELECT Id from Case where AccountId= :contact.AccountId and CreatedDate > LAST_N_MONTHS:18];
 	 	
 	    casesCreatedBySupport =[SELECT Id, CaseNumber,Primary_Category__c,Description,Priority,Status,Subject,CreatedDate,IsMarkRead__c,contactid,
@@ -793,9 +861,16 @@ global with sharing  class ShowCasesController {
 			cases = [SELECT Id, CaseNumber,Primary_Category__c,Description,Priority,Status,Subject,CreatedDate,IsMarkRead__c,contactid,
 	       				createdbyId from Case where Id IN:parentcaseId and IsMarkDeleted__c = false and IsMarkSaved__c = false and CreatedDate >= LAST_N_MONTHS:18];
 			comments =[SELECT Case__r.Id, CreatedDate,Id,Member_Comment__c,Name, IsRead__c FROM Member_Comment__c Where Case__r.Id IN : parentcaseId and draft__c != true order by CreatedDate desc];
+        
+        	List<Member_Comment__c> UnreadcommentsfromReadCases =[SELECT Case__r.Id, CreatedDate,Id,Member_Comment__c,Name, IsRead__c FROM Member_Comment__c Where Case__r.Id IN : parentcaseId and draft__c != true and Case__r.IsMarkRead__c = true and IsRead__c = false order by CreatedDate desc];
 				
 			messagecount = [Select count() from Case where Id IN:parentcaseId and IsMarkDeleted__c = false and IsMarkSaved__c = false and IsMarkRead__c = false and MemberCommentCount__c > 0 and CreatedDate >= LAST_N_MONTHS:18 ];
-			system.debug('parentcaseId' +  parentcaseId);
+			/*set<id> ReadCaseswithUnreadComments = new set<id>();
+            for(Member_Comment__c mc:UnreadcommentsfromReadCases){
+                ReadCaseswithUnreadComments.add(mc.Case__c);
+            }	
+        	messagecount = Casemessagecount + ReadCaseswithUnreadComments.size();*/
+        	system.debug('parentcaseId' +  parentcaseId);
 			system.debug('messagecount' +  messagecount);
     		return messagecount;
     		
@@ -874,7 +949,7 @@ global with sharing  class ShowCasesController {
                         
                                   
                 }
-                if(AccList.size() == 1){
+                else if(AccList.size() == 1){
                     
                     tyfoneSSN =(AccList[AccList.size()-1]).right(9);
                     isTyfone = true;
