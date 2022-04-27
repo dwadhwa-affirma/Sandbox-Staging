@@ -436,8 +436,17 @@ trigger AddressChangeLogTrigger on AddressChangeLog__c(before insert, after inse
             }
             
             insert listac;
+
+            List<Address_Change_Email_Configuration__mdt> EmailConfigMDT = [Select id, Label, Send_Email__c from Address_Change_Email_Configuration__mdt];
+            Map<string, boolean> mapConfigValue = new Map<string, boolean>();
+            for(Address_Change_Email_Configuration__mdt mdt: EmailConfigMDT){
+                mapConfigValue.put(mdt.Label,mdt.Send_Email__c);
+            }
             
-            if (objAddressChange.Update_Type__c == 'Contact Info'){//&& objAddressChange.Case_Origin__c == 'Digital Banking'
+            if (objAddressChange.Update_Type__c == 'Contact Info' && objAddressChange.Case_Origin__c == 'Digital Banking' && mapConfigValue.get('Tyfone') == true){//&& objAddressChange.Case_Origin__c == 'Digital Banking'
+                SendEmailUpdateNotification(objAddressChange.AccountNameOldEmail__c,objAddressChange.Email_New__c, SendEmail);
+            }
+            else if(objAddressChange.Update_Type__c == 'Contact Info' && objAddressChange.Case_Origin__c != 'Digital Banking' && mapConfigValue.get('Internal') == true){
                 SendEmailUpdateNotification(objAddressChange.AccountNameOldEmail__c,objAddressChange.Email_New__c, SendEmail);
             }
         }
@@ -725,7 +734,7 @@ trigger AddressChangeLogTrigger on AddressChangeLog__c(before insert, after inse
                     substrings.add('%' + wa.trim());
                 }       
         }
-       List<Account> AccountstoUpdate= [Select Home_Phone__pc, Mobile_Phone__pc,Work_Phone__pc, Work_Phone_Extension__pc, PersonEmail,Alt_Email_Raw__c	  from Account where PersonId__C Like: substrings];
+       List<Account> AccountstoUpdate= [Select Home_Phone__pc, Mobile_Phone__pc,Work_Phone__pc, Work_Phone_Extension__pc, PersonEmail,Alt_Email_Raw__c, Email_raw__c, Alternate_Email__pc from Account where PersonId__C Like: substrings];
         for(Account acc: AccountstoUpdate){
             if(acc.Home_Phone__pc != AddressChangeRecord.HomePhone_New__c && AddressChangeRecord.HomePhone_New__c != 'Not available'){
                 acc.Home_Phone__pc = AddressChangeRecord.HomePhone_New__c;
