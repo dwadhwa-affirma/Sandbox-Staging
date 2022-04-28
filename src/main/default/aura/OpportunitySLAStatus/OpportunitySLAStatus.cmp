@@ -24,7 +24,7 @@
               <p class="linebreak value">{!v.CurrentStageSLA}</p>
             </td>
             <td>
-                <p class="{!v.isBreached ? 'linebreak breached value' : 'linebreak value'}" style="width: auto;text-align: left;">{!v.CurrentStageBusinessHoursRemaining}</p>
+                <p class="{!v.isBreached ? 'linebreak breached value' : 'linebreak value'}" >{!v.CurrentStageBusinessHoursRemaining}</p>
             </td>
             <td>
                 <p class="linebreak value"><aura:unescapedHtml value="{!v.CurrentStageBreach}" /> </p>
