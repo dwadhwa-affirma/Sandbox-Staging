@@ -10,14 +10,12 @@
 <table align="right">
         <tr>
             <td>
-                <p class="linebreak">Current Stage SLA</p>
+                <p class="linebreak">SLA Business Hours</p>
             </td>
             <td>
-                <p class="linebreak">Current Stage Business Hours Remaining</p>
+                <p class="linebreak">Hours Remaining</p>
             </td>
-            <td>
-                <p class="linebreak">Current Stage Breach</p>
-            </td>
+            
         </tr>
         <tr>        	  
             <td>
@@ -26,9 +24,7 @@
             <td>
                 <p class="{!v.isBreached ? 'linebreak breached value' : 'linebreak value'}" >{!v.CurrentStageBusinessHoursRemaining}</p>
             </td>
-            <td>
-                <p class="linebreak value"><aura:unescapedHtml value="{!v.CurrentStageBreach}" /> </p>
-            </td>
+            
         </tr>
 </table>
 </aura:component>
