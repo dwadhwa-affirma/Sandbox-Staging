@@ -74,33 +74,8 @@ trigger EDSMemberAlerts on EDS_Member_Alerts__c (after insert) {
                     lnameFromEmail.put(p2.PersonId__r.PersonEmail,p2.PersonId__r.Lastname); 
                 }               
             }
-        }
+        }       
         
-        /*palist = [select id,TypeTranslate__c,Account_Number__r.name,PersonId__r.Firstname,PersonId__r.Lastname,PersonId__c,PersonId__r.Email_raw__c from Person_Account__c where Account_Number__r.name in: accDetailName and TypeTranslate__c = '0000/Primary'];
-
-		for(Person_Account__c p2: [select id,Account_Number__r.name,Account_Number__c,PersonId__c,PersonId__r.Email_raw__c from Person_Account__c where PersonId__c in: AccList]){
-            
-            AccNum.add(p2.Account_Number__r.name);
-        }
-        
-        system.debug(AccNum);*/
-        
-        // for(Person_Account__c p3 : [select id,TypeTranslate__c,Account_Number__r.name,PersonId__r.Firstname,PersonId__r.Lastname,PersonId__c,PersonId__r.Email_raw__c from Person_Account__c where Account_Number__r.name in: accDetailName]){
-          
-        //   fnameFromEmail.put(p3.Account_Number__r.name,p3.PersonId__r.Firstname);
-        //   lnameFromEmail.put(p3.Account_Number__r.name,p3.PersonId__r.Lastname);
-
-        //     // if(p3.PersonId__r.Email_raw__c != null){
-        //     // 	fnameFromEmail.put(p3.PersonId__r.Email_raw__c,p3.PersonId__r.Firstname);
-        //     // 	lnameFromEmail.put(p3.PersonId__r.Email_raw__c,p3.PersonId__r.Lastname);  
-        //     // }
-        // }
-        
-        
-        /*for(Person_Account__c p: palist){
-            fnameFromEmail.put(p.Account_Number__r.name,p.PersonId__r.Firstname);
-            lnameFromEmail.put(p.Account_Number__r.name,p.PersonId__r.Lastname);
-        }*/
 		
         system.debug('fnameFromEmail: '+fnameFromEmail);
         system.debug('lnameFromEmail: '+lnameFromEmail);
@@ -115,26 +90,10 @@ trigger EDSMemberAlerts on EDS_Member_Alerts__c (after insert) {
             
             string brand = accountMemberBranch.get(EDS.Account_Number__c);
             
-            //if(EDS.Email__c != null){
-                // Firstname = fnameFromEmail.get(EDS.Email__c);
-                // Lastname = lnameFromEmail.get(EDS.Email__c);
-                // Firstname = fnameFromEmail.get(EDS.Account_Number__c);
-                // Lastname  = lnameFromEmail.get(EDS.Account_Number__c);
-            //}
             
             System.debug('Brand' + brand);
             System.debug('Firstname' + Firstname);
-            System.debug('Lastname' + Lastname);
-          	
-            // if(Firstname == null || Lastname == null){            	
-            //     for(Person_Account__c p1: [select id,TypeTranslate__c,Account_Number__r.name,PersonId__r.Firstname,PersonId__r.Lastname,PersonId__c,PersonId__r.Email_raw__c from Person_Account__c where Account_Number__r.name in: accDetailName and TypeTranslate__c = '0000/Primary']){
-            //         Firstname = p1.PersonID__r.Firstname;
-            //         Lastname = p1.PersonID__r.Lastname;
-            //     }                
-            // }
-            
-            // System.debug('Firstname' + Firstname);
-            // System.debug('Lastname' + Lastname);
+            System.debug('Lastname' + Lastname);          	
             
             if(EDS.Event_Id__c != null){
                 WXRefNumber = EDS.Event_Id__c;    
