@@ -1,12 +1,10 @@
 <aura:component implements="flexipage:availableForAllPageTypes,force:hasRecordId" controller="OpportunitySLAStatusController" access="global">
-
 <aura:attribute name="CurrentStageSLA" type="string" default="" />
 <aura:attribute name="CurrentStageBusinessHoursRemaining" type="string" default="" />
 <aura:attribute name="CurrentStageBreach" type="string" default="" />
 <aura:attribute name="isBreached" type="boolean" default="false" />
-
+<aura:handler event="force:refreshView" action="{!c.isRefreshed}" />
 <aura:handler name="init" value="{!this}" action="{!c.doinit }" access="global"/> 
-
 <table align="right">
         <tr>
             <td>
