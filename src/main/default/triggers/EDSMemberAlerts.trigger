@@ -85,53 +85,9 @@ trigger EDSMemberAlerts on EDS_Member_Alerts__c (after insert) {
                 accountMemberBranch.put(acc.Name,acc.Brand__c);
             }   
         }
-       
-        for(EDS_Member_Alerts__c EDS: EDSRecords){
-            
-            string brand = accountMemberBranch.get(EDS.Account_Number__c);
-            
-            
-            System.debug('Brand' + brand);
-            System.debug('Firstname' + Firstname);
-            System.debug('Lastname' + Lastname);          	
-            
-            if(EDS.Event_Id__c != null){
-                WXRefNumber = EDS.Event_Id__c;    
-            }
-
-            string AllEmails = accountEmail.get(EDS.Account_Number__c);
-            List<String> lstEmails = AllEmails.split(',');
-            Set<String> sEmails = new Set<String>(lstEmails);
-            for(string e: sEmails){
-                if (e == null || !MyPattern.matcher(e).matches() || string.isBlank(e)) {
-                
-                    EDS_Member_Alert_Log__c objLog =  new EDS_Member_Alert_Log__c();
-                    objLog.ODS_Key__c = EDS.OdsKey__c;
-                    objLog.Account_Number__c = EDS.Account_Number__c;
-                    if(EDS.Email__c == null)
-                    {
-                        objLog.Email_Message__c = 'NULL';
-                    }
-                    else{
-                        objLog.Email_Message__c = 'Invalid email ' + EDS.Email__c;
-                    }
-                    listToInsertLogs.add(objLog);
-                }
-                else{ 
-                    Firstname = fnameFromEmail.get(e);
-                    Lastname = lnameFromEmail.get(e);
-
-                    //STRY0012093: Call to Queueable class To send Notification Emails 
-                    ID jobID = System.enqueueJob(new EDSAlertSendEmailQueueable(e, brand, Firstname, Lastname, WXRefNumber, EDS.Event_Action__c));                              
-                }
-            }
-            
-             
-                        
-        }
-        if(listToInsertLogs.size()>0){
-            insert listToInsertLogs;
-        }
+        
+        //STRY0012093: Call to Queueable class To send Notification Emails 
+        ID jobID = System.enqueueJob(new EDSAlertSendEmailQueueable(EDSRecords,accountEmail, accountMemberBranch,fnameFromEmail, lnameFromEmail));        
     }
     
     
