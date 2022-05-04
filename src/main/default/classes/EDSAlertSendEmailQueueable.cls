@@ -29,7 +29,7 @@ public class EDSAlertSendEmailQueueable implements Queueable, Database.AllowsCal
         List<String> sendTo = new List<String>();
         string emailadd;
         string EmailToSend;
-        string templatenAME;
+        string TemplateName;
         string body;
         String userName = UserInfo.getUserName();
         User activeUser = [Select Email From User where Username = : userName limit 1];
@@ -49,21 +49,23 @@ public class EDSAlertSendEmailQueueable implements Queueable, Database.AllowsCal
         System.debug('Action: '+Action);
         System.debug('Brand: '+Brand);
         
-        if(EmailToSend != 'Production' || EmailToSend != 'production'){
+        if(EmailToSend.ToLowerCase() != 'production'){
             ToEmail = userEmail;
         }
         
         system.debug('ToEmail: '+ToEmail);
         sendTo.add(ToEmail);
         mail.setToAddresses(sendTo);
+
+        //'W' indicates Withdrawal Event and 'D' indicates Deposit Event
         if(Action == 'W'){
-        	templatenAME = 'Wires Notification (W) ' + Brand;
+        	TemplateName = 'Wires Notification (W) ' + Brand;
         }
         else{
-            templatenAME = 'Wires Notification (D) ' + Brand;
+            TemplateName = 'Wires Notification (D) ' + Brand;
         }
                 
-        system.debug('templatenAME: '+templatenAME);
+        system.debug('TemplateName: '+TemplateName);
         List<EmailTemplate> listEmailTemplate =  [select Id,Name,Body,Subject,HtmlValue from EmailTemplate where Name =: templatenAME];
         mail.setSubject(listEmailTemplate[0].Subject);
         
