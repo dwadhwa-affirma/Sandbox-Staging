@@ -895,25 +895,19 @@
             var addattachmentglobal;;
             function submitform(addattachment)
             {
-                debugger;
+                /*STRY0012049: Chnages to detect invalid session Start*/
                 try{                    
                     sforce.connection.sessionId = '{!$Api.Session_ID}';                   
-                    var result = sforce.connection.query("Select Name, Id from User Limit 1");
-                    // if(result)
-                    //     return true;
-                    // else
-                    //     return false; 
+                    var result = sforce.connection.query("Select Name, Id from User Limit 1");                   
                 }
                 catch(ex){
-                    if(ex.faultcode == 'sf:INVALID_SESSION_ID')
-                        alert('Your session has expired, data will not be saved.');
-                    else
-                    alert('Your session has expired, data will not be saved.');
+                     alert('Your session has expired. To continue please login to send a secure email.');
                     return false;
                 }
+
+                /*STRY0012049: Chnages to detect invalid session End*/
                   
-                            casecomment = getRTEValue();
-                            //var casecommentcopy = casecomment;
+                            casecomment = getRTEValue();                           
                             var casecommenttext = getRTETextValue();
                             casecommenttext = casecommenttext.replace(/[\u200B-\u200D\uFEFF]/g, '');
                 
