@@ -66,7 +66,7 @@ public class EDSAlertSendEmailQueueable implements Queueable, Database.AllowsCal
         
         String emailRegex = '([a-zA-Z0-9_\\-\\.]+)@((\\[a-z]{1,3}\\.[a-z]{1,3}\\.[a-z]{1,3}\\.)|(([a-zA-Z0-9\\-]+\\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})';
         Pattern MyPattern = Pattern.compile(emailRegex);
-        
+
         //Prepare Email data
         for (EDS_Member_Alerts__c EDS : EDSRecords){
             system.debug('EDS.Account_Number__c: ' + EDS.Account_Number__c);
@@ -109,7 +109,7 @@ public class EDSAlertSendEmailQueueable implements Queueable, Database.AllowsCal
                     System.debug('Action: ' + Action);
                     System.debug('Brand: ' + Brand);
 
-                    if (EmailToSend.ToLowerCase() != 'production'){
+                    if (EmailToSend != null && EmailToSend.ToLowerCase() != 'production'){
                         ToEmail = userEmail;
                     }
 
