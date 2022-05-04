@@ -4,49 +4,84 @@ public class OpportunityTriggerHandler {
     
    private boolean m_isExecuting = false;
    private integer BatchSize = 0;
-   private Sla_Manager__mdt slaDef1;
-   private Sla_Manager__mdt slaDef2;
+   private Sla_Manager__mdt[] slaDefList;
+   private String NewOppSources;
         
    public OpportunityTriggerHandler(boolean isExecuting, integer size )
      {
-        m_isExecuting =  isExecuting;
-        BatchSize = size;
-        slaDef1 = Sla_Manager__mdt.getInstance('Opportunity_1');
-        slaDef2 = Sla_Manager__mdt.getInstance('Opportunity_2');
+    m_isExecuting =  isExecuting;
+    BatchSize = size;
+    slaDefList = [SELECT DeveloperName,Event_Source__c,Opportunity_Source__c,Product_Type__c,SLA__c,StageName__c FROM Sla_Manager__mdt WHERE Object_Name__c = 'Opportunity' ORDER BY DeveloperName ASC];
+    NewOppSources = slaDefList[0].Opportunity_Source__c; // First Definition is used for Opportunity Source Breaches
     }
     
-    decimal getSLA(Opportunity opp, String oldStage) {
-      // Could be changed to use loops if more SLAs of a similar type are needed in future.
-      Decimal sla;
-      String defSource1,defSource2,defSource3;
-      // Option 1
-      if(opp.StageName == slaDef1.StageName__c && opp.Product_Type__c == slaDef1.Product_Type__c) {
-        if(!String.isBlank(slaDef1.Opportunity_Source__c) && !String.isBlank(opp.Opportunity_Source__c)) {
-          defSource1 = slaDef1.Opportunity_Source__c;
-          if(defSource1.contains(opp.Opportunity_Source__c)) {
-            sla = slaDef1.Sla__c;
+    decimal getSLA(Opportunity opp) {
+        // Routine loops through all metadata for opportunities and if a match is found, returns the SLA based on Event_Source__c,Opportunity_Source__c,Product_Type__c & StageName__c combination.
+        // Definitions can include single values or lists for Event_Source__c & Opportunity_Source__c.
+        // Wildcard * in Event_Source__c or Opportunity_Source__c def means it only requires opp.[field] is populated.
+        Boolean opportunitySourceOK,productTypeOK,eventSourceOK,stageOK;
+        String defEventSource,defOppSource,defOppProductType,defStage;
+        Decimal sla;
+        opportunitySourceOK = false;
+        productTypeOK       = false;
+        eventSourceOK       = false;
+        stageOK             = false;
+        for(Sla_Manager__mdt slaDef : slaDefList) {
+          if(slaDef.Event_Source__c == '*') { // * = something has to have been chosen, but it doesn't matter what.
+            if(!String.isBlank(opp.Event_Source__c)) {
+              eventSourceOK = true;
+            }
+          } else {
+            if(String.isBlank(slaDef.Event_Source__c)) {
+              eventSourceOK = true;
+            } else  {
+              defEventSource = slaDef.Event_Source__c;
+              if(String.isNotBlank(opp.Event_Source__c) && defEventSource.contains(opp.Event_Source__c)) {
+                eventSourceOK = true;
+              }
+            }
+          }
+          if(slaDef.Opportunity_Source__c == '*') { // * = something has to have been chosen, but it doesn't matter what.
+            if(!String.isBlank(opp.Opportunity_Source__c)) {
+              opportunitySourceOK = true;
+            }
+          } else {
+            if(String.isBlank(slaDef.Opportunity_Source__c)) {
+              opportunitySourceOK = true;
+            } else  {
+              defOppSource = slaDef.Opportunity_Source__c;
+              if(String.isNotBlank(opp.Opportunity_Source__c) && defOppSource.contains(opp.Opportunity_Source__c)) {
+                opportunitySourceOK = true;
+              } 
+            }
+          }
+          if(String.isBlank(slaDef.Product_Type__c)) {
+            productTypeOK = true;
+          } else {
+            defOppProductType = slaDef.Product_Type__c;
+            // Maybe one day, list of product will be used.  Ready for that.
+            if(String.isNotBlank(opp.Product_Type__c) && defOppProductType.contains(opp.Product_Type__c)) {
+              productTypeOK = true;
+            }
+          }
+          if(String.isBlank(slaDef.StageName__c)) {
+            stageOK = true;
+          } else {
+            defStage = slaDef.StageName__c;
+            if(defStage == opp.StageName) {
+              stageOK = true;
+            }
+          }
+          if(eventSourceOK && opportunitySourceOK && productTypeOK && stageOK) {
+            sla = slaDef.Sla__c;
+            break;
+          }
+          else{
+            sla = null;  
           }
         }
+        return sla;
       }
-      // Option 2 - spec doesn't mention if this should only be when stage changes from new to outreach.  This may change.
-      if(slaDef2.Event_Source__c == '*') {
-        if(!String.isBlank(opp.Opportunity_Source__c)) {
-          defSource2 = slaDef2.Opportunity_Source__c;
-          if(!String.isBlank(opp.Event_Source__c) && defSource2.contains(opp.Opportunity_Source__c)) {
-            sla = slaDef2.Sla__c;
-          }
-        }
-      } else {
-        if(!String.isBlank(opp.Opportunity_Source__c) && !String.isBlank(opp.Event_Source__c)) {
-          defSource2 = slaDef2.Opportunity_Source__c;
-          defSource3 = slaDef2.Event_Source__c;
-          if(defSource2.contains(opp.Opportunity_Source__c) && defSource3.contains(opp.Event_Source__c)) {
-            sla = slaDef2.Sla__c;
-          }
-        }
-      }
-      return sla;
-    }
 
     public void OnBeforeInsert(Opportunity[] newOpportunities) {
         BusinessHours stdBusinessHours = [select id from businesshours where isDefault = true];
@@ -140,7 +175,6 @@ public class OpportunityTriggerHandler {
             system.debug('pa: '+pa.size());
             for(Person_Account__c item : pa) {
                 system.debug('PersonID__c##'+ item.PersonID__c);
-                //if(opp.accountid == item.PersonID__c)
                 if(opp.Member_Account__c == item.Account_Number__c) {   
                     system.debug('RecType__c##'+ item.Account_Number__r.RecType__c);
                     system.debug('Brand##'+ item.Account_Number__r.Brand__c);
@@ -151,19 +185,12 @@ public class OpportunityTriggerHandler {
                     }
                     else{
                         opp.Brand__c = item.Account_Number__r.Brand__c;
-                        /*if(opp.Brand__c == '')
-{
-opp.Brand__c = item.Account_Number__r.Brand__c;
-}*/
+                       
                     }
                 }
             }
             
-            /* if(brand != '')
-{
-opp.Brand__c = brand;
-
-}*/
+            
             /* logic to get branch detail from member account detail */
             if(opp.Member_Account__c != null && MemAccMap.containsKey(opp.Member_Account__c)){
                 opp.Member_Branch__c = MemAccMap.get(opp.Member_Account__c);
@@ -171,7 +198,6 @@ opp.Brand__c = brand;
         }
         
         for(Opportunity opp: newOpportunities) {
-            // if(opp.Mortgage_Loan_Officer__c == null && opp.Episys_User_ID__c != null)
             if(opp.Episys_User_ID__c != null) {
                 Episys_User_ID.Add(opp.Episys_User_ID__c);
             }
@@ -185,14 +211,7 @@ opp.Brand__c = brand;
         for(Opportunity opp: newOpportunities) {
             system.debug('Above Conditions###');
             system.debug('Ownership__c###' + opp.Ownership__c);
-            /*if(opp.Mortgage_Loan_Officer__c != null && opp.Is_Converted__c == false)
-{
-system.debug('Condition Mortgage Officer###');
-opp.Ownerid = opp.Mortgage_Loan_Officer__c;
-opp.User_Owner__c = opp.Mortgage_Loan_Officer__c;
-opp.Queue_Owner__c = null;
-}*/
-            //else if(opp.Ownership__c == 'Auto Assign' && opp.Mortgage_Loan_Officer__c == null && (opp.Opportunity_Source__c == 'Branch Walk in' || opp.Opportunity_Source__c == 'Branch Call')  && opp.Is_Converted__c == false)
+            
             if(opp.Ownership__c == 'Auto Assign' && (opp.Opportunity_Source__c == 'Branch Walk in' || opp.Opportunity_Source__c == 'Branch Call')  && opp.Is_Converted__c == false) {
                 system.debug('opp.Episys_User_ID__c###' + opp.Episys_User_ID__c);
                 system.debug('episysUsers###' + episysUsers);
@@ -273,7 +292,6 @@ opp.Queue_Owner__c = null;
                     }
                 }
                 if(groupname != null && groupname!=''){
-                    //opp.Opportunity_Owner__c = groupnameid;
                     opp.Queue_Owner__c = groupName;   
                     opp.User_Owner__c = null;
                     opp.Ownership__c ='Keep';
@@ -288,14 +306,12 @@ opp.Queue_Owner__c = null;
                     }
                     system.debug('groupName###' + groupname);
                     if(groupname!=null && groupname!='') {
-                        //Opp.Opportunity_Owner__c = groupnameid; 
                         opp.Queue_Owner__c = groupName;   
                         opp.User_Owner__c = null;
                         opp.Ownership__c ='Keep';
                     }
                 }
             } 
-            //  else if(opp.Ownership__c == 'Auto Assign' && opp.Mortgage_Loan_Officer__c == null && (opp.Opportunity_Source__c != 'Branch Walk in' && opp.Opportunity_Source__c != 'Branch Call')  && opp.Is_Converted__c == false)
             else if(opp.Ownership__c == 'Auto Assign' && (opp.Opportunity_Source__c != 'Branch Walk in' && opp.Opportunity_Source__c != 'Branch Call')  && opp.Is_Converted__c == false) {
                 system.debug('Condition Product Type###');
                 string ProductType = opp.Product_Type__c.replace(' ', '_').replace('-','_').replace('/','_').toLowerCase();
@@ -315,78 +331,6 @@ opp.Queue_Owner__c = null;
                 }
             }
         } 
-        
-        
-        /*for(Opportunity opp: newOpportunities){
-list<Sla_Manager__mdt> AssignSLA=[select label, Start_Value__c, SLA__c from Sla_Manager__mdt where Start_Value__c=:opp.StageName  AND  Object_Name__c='Opportunity']; 
-if(  (opp.Opportunity_Source__c == 'Branch Call' || opp.Opportunity_Source__c == 'Branch Walk in'|| opp.Opportunity_Source__c == 'Call Center'||
-opp.Opportunity_Source__c == 'Email'|| opp.Opportunity_Source__c == 'Employee Referral'|| opp.Opportunity_Source__c == 'Xpress Form - Web'||
-opp.Opportunity_Source__c == 'Partner'||opp.Opportunity_Source__c == 'General Mailbox' || opp.Opportunity_Source__c == 'PTM' || opp.Opportunity_Source__c =='Xpress Refi-Web'||
-opp.Opportunity_Source__c =='Xpress Refi' || opp.Opportunity_Source__c =='Existing Member' )
-&& opp.Product_Type__c == 'Mortgage') 
-{
-if(AssignSLA.size() > 0){
-opp.SLA_Business_Hours__c=AssignSLA[0].SLA__c;
-}
-else{
-opp.SLA_Business_Hours__c=null;
-}
-
-} 
-else        
-
-{
-opp.SLA_Business_Hours__c=null; 
-}
-}
-for(Opportunity opp: newOpportunities){
-
-if( opp.StageName=='New'){
-opp.TimeStamp_New_status__c=DateTime.now();
-} else  if(opp.StageName=='Outreach'){
-opp.TimeStamp_Outreach_status__c =DateTime.now();
-}
-
-
-}
-
-for(Opportunity opp: newOpportunities){
-//  datetime FD;      
-datetime NewTimestamp= opp.TimeStamp_New_status__c;
-if((opp.SLA_Business_Hours__c != NULL) && (stdBusinessHours != NULL)){
-if(opp.TimeStamp_New_status__c != null)
-// FD = datetime.newInstance(opp.TimeStamp_New_status__c.year(), opp.TimeStamp_New_status__c.month(),opp.TimeStamp_New_status__c.day());
-//else if(opp.createdDate != null)
-// FD = opp.createdDate; 
-//if(FD != null)               
-opp.SLA_Yellow_Start_Time__c = BusinessHours.addgmt(stdBusinessHours.id, NewTimestamp , (Long)(opp.SLA_Business_Hours__c-1) * 3600000);
-system.debug('SLA_Yellow_Start_Time__c'+opp.SLA_Yellow_Start_Time__c);
-}else{
-opp.SLA_Yellow_Start_Time__c=null; 
-}
-
-
-
-}
-for(Opportunity opp: newOpportunities){
-datetime FD;      
-datetime NewTimestamp= opp.TimeStamp_New_status__c;
-if((opp.SLA_Business_Hours__c != NULL) && (stdBusinessHours != NULL)){
-if(opp.TimeStamp_New_status__c != null)
-//  FD = datetime.newInstance(opp.TimeStamp_New_status__c.year(), opp.TimeStamp_New_status__c.month(),opp.TimeStamp_New_status__c.day());
-// else if(opp.createdDate != null)
-//   FD = opp.createdDate; 
-// if(FD != null)               
-opp.SLA_Breach_Time__c = BusinessHours.addgmt(stdBusinessHours.id, NewTimestamp , (Long)(opp.SLA_Business_Hours__c) * 3600000);
-system.debug('SLA_Breach_Time__c'+opp.SLA_Breach_Time__c);
-}
-else{
-opp.SLA_Breach_Time__c=null; 
-}
-
-
-
-}*/
 updateSLAFields(Trigger.new, null);
     }
     
@@ -399,9 +343,7 @@ updateSLAFields(Trigger.new, null);
         
         String userrolename = usr.UserRole.Name;
         system.debug('userrolename'+userrolename);
-        /*   List<Episys_User__c> eusr = [SELECT id, alias__c, Assigned_Branch__c,Episys_ID__c, Branch_Name__c,Default__c from Episys_User__c 
-
-where alias__c=:usr.alias order by Default__c desc];*/ 
+        
         Id LoggedinUser = UserInfo.getUserId();
         String profilename = usr.Profile.Name;
         system.debug('profilename'+profilename);
@@ -452,10 +394,7 @@ where alias__c=:usr.alias order by Default__c desc];*/
         List<Group> listQueue = [select id,Name,Email from Group where Type = 'Queue' and (Email like '%lead.com' or Email like '%opportunity.com')];
         List<Episys_User__c> episysUsers = [SELECT id, alias__c, Assigned_Branch__c,Episys_ID__c, Branch_Name__c,Default__c from Episys_User__c 
                                             where Episys_ID__c in: Episys_User_ID];
-        /* set<id> setOpp = new Set<id>();
-for(Opportunity Opp1 : [select id,Name from Opportunity where Owner.Type = 'Queue' and id IN :QueOppId]){
-SetOpp.add(Opp1.id);
-}*/
+        
         system.debug('----------------'+QueOppId) ;   
         String pid = UserInfo.getProfileId();
         /*
@@ -503,9 +442,9 @@ Change by Graham Smith to allow closed opps to be re-opened if user is in metada
             }
             
             
-            if( (oldOpp.StageName == 'Closed Won' || oldOpp.StageName == 'Closed Lost') && 
-               (userrolename == 'Mortgage Sales Manager 5'|| userrolename == 'Mortgage Sales Manager 7') &&
-               opp.Product_Type__c == 'Mortgage' && updatedFields.size() == 1 
+            if( (oldOpp.StageName == 'Closed Won' || (oldOpp.StageName == 'Closed Lost' && opp.StageName == 'Closed Lost') )&& 
+            opp.Product_Type__c == 'Mortgage' && (userrolename == 'Mortgage Sales Manager 5'|| userrolename == 'Mortgage Sales Manager 7') 
+                 && updatedFields.size() == 1 
                && updatedFields.contains('opportunity_source__c'))
                
                {
@@ -513,14 +452,14 @@ Change by Graham Smith to allow closed opps to be re-opened if user is in metada
                } 
                else if( (oldOpp.StageName == 'Closed Won' || oldOpp.StageName == 'Closed Lost') && 
                (userrolename == 'Mortgage Sales Manager 5'|| userrolename == 'Mortgage Sales Manager 7') &&
-               opp.Product_Type__c == 'Mortgage' && updatedFields.contains('opportunity_source__c') &&   updatedFields.contains('event_source__c') &&
+                opp.Product_Type__c == 'Mortgage' && updatedFields.contains('opportunity_source__c') &&   updatedFields.contains('event_source__c') &&
                ( opp.Opportunity_Source__c== 'Event' || opp.Opportunity_Source__c=='Member Intelligence') && updatedFields.size() == 2 )
                {
                    // Allow Mortgage Sales Manager to update the opportunity_source__c  when opportunity_source__c='event'
                }
             else{
                 
-                if( (oldOpp.StageName == 'Closed Won' || oldOpp.StageName == 'Closed Lost') && opp.Allow_Error__c == false) {
+                if( (oldOpp.StageName == 'Closed Won' || (oldOpp.StageName == 'Closed Lost'  && opp.StageName == 'Closed Lost'))&& opp.Allow_Error__c == false) {
                     if(!profilesThatCanReopenOpp.contains(pid)) {
                         opp.Adderror('Opportunity fields are read only for Closed Opportunity.');
                     }
@@ -562,10 +501,7 @@ Change by Graham Smith to allow closed opps to be re-opened if user is in metada
             if(opp.Product_Type__c == 'Mortgage' && (opp.StageName == 'Closed Won' || opp.StageName == 'Closed Lost') ) {
                 //opp.Adderror('Product Number is required when Product=Mortgage and Status=Closed Won');
             }
-            /* if(opp.Is_Converted__c && oldOpp.Member_Branch__c != opp.Member_Branch__c) {
-opp.Adderror('Member Branch is read only for Opportunity converted from Lead.');
-}
-*/      
+     
             
             if(oldOpp.Lead_Episys_User_ID__c != opp.Lead_Episys_User_ID__c) {
                 opp.Adderror('Lead Episys User Id is read only');
@@ -579,154 +515,11 @@ opp.Adderror('Member Branch is read only for Opportunity converted from Lead.');
                 opp.Allow_Error__c = false;
             }
             
-            /*  if(oldOpp.Mortgage_Loan_Officer__c != opp.Mortgage_Loan_Officer__c && opp.Mortgage_Loan_Officer__c!=null ) {
-opp.Ownerid = opp.Mortgage_Loan_Officer__c;
-opp.User_Owner__c = opp.Mortgage_Loan_Officer__c;
-opp.Queue_Owner__c = null;
-}*/                 
-            /*  else if(opp.Ownership__c == 'Auto Assign' && opp.Mortgage_Loan_Officer__c == null &&(opp.Opportunity_Source__c == 'Branch Walk in' || opp.Opportunity_Source__c == 'Branch Call')) {
-groupName = '';
-for(Episys_User__c episysItem: episysUsers) {
-if(opp.Episys_User_ID__c == episysItem.Episys_ID__c) {
-string BranchQueue = episysItem.Branch_Name__c.replace(' ', '_').replace('-','_').replace('/','_').toLowerCase();
-for(Group grp : listQueue) {
-if(grp.Email.containsIgnoreCase(BranchQueue)) {
-groupName = grp.Name;
-break;
-}
-}
-if(groupName!=null || groupName!='') {
-opp.Queue_Owner__c = groupName; 
-opp.User_Owner__c = null;
-}
-break;
-}
-}
-}
-else if(opp.Ownership__c == 'Auto Assign' && opp.Mortgage_Loan_Officer__c == null && (opp.Opportunity_Source__c != 'Branch Walk in' && opp.Opportunity_Source__c != 'Branch Call')) {
-groupName = '';
-string ProductType = opp.Product_Type__c.replace(' ', '_').replace('-','_').replace('/','_').toLowerCase();
-for(Group grp : listQueue) {
-if(grp.Email.containsIgnoreCase(ProductType)) {
-groupName = grp.Name;
-break;
-}
-}
-if(groupName!=null || groupName!='') {
-opp.Queue_Owner__c = groupName; 
-opp.User_Owner__c = null;
-}
-}*/
+
         }
         
         
-        /*   for(Opportunity opp: Opportunities){
-Opportunity oldOpp = OpportunityOldMap.get(opp.Id);   
-if(oldOpp.StageName=='New' && opp.StageName!='New'){
-DateTime  currentTime=Datetime.now();
-
-Long TimeDiff= BusinessHours.diff(stdBusinessHours.id, opp.TimeStamp_New_status__c, currentTime);
-system.debug('TimeDiff  '+TimeDiff);
-decimal hh=TimeDiff/3600000;
-system.debug('hh  '+hh);
-
-opp.Hour_Spent_New_Status__c=opp.Hour_Spent_New_Status__c!=null ? opp.Hour_Spent_New_Status__c+hh:hh;
-
-
-
-}
-
-if(oldOpp.StageName=='Outreach' && opp.StageName!='Outreach'){   
-DateTime  currentTimeOutreach=Datetime.now();
-
-Long TimeDiffOutreach= BusinessHours.diff(stdBusinessHours.id, opp.TimeStamp_Outreach_status__c, currentTimeOutreach);
-system.debug('TimeDiffOutreach  '+TimeDiffOutreach);
-decimal hhOutreach=TimeDiffOutreach/3600000;
-system.debug('hhOutreach  '+hhOutreach);
-
-opp.Hour_Spent_New_Status__c=opp.Hour_Spent_New_Status__c!=null ? opp.Hour_Spent_New_Status__c+hhOutreach:hhOutreach;
-
-
-} 
-}
-
-
-
-
-for(Opportunity opp: Opportunities){
-list<Sla_Manager__mdt> AssignSLA=[select label, Start_Value__c, SLA__c from Sla_Manager__mdt where Start_Value__c=:opp.StageName AND  Object_Name__c='Opportunity']; 
-if(  (opp.Opportunity_Source__c == 'Branch Call' || opp.Opportunity_Source__c == 'Branch Walk in'|| opp.Opportunity_Source__c == 'Call Center'||
-opp.Opportunity_Source__c == 'Email'|| opp.Opportunity_Source__c == 'Employee Referral'|| opp.Opportunity_Source__c == 'Xpress Form - Web'||
-opp.Opportunity_Source__c == 'Partner'||opp.Opportunity_Source__c == 'General Mailbox' || opp.Opportunity_Source__c == 'PTM' || opp.Opportunity_Source__c =='Xpress Refi-Web'||
-opp.Opportunity_Source__c =='Xpress Refi' || opp.Opportunity_Source__c =='Existing Member' )
-&& opp.Product_Type__c == 'Mortgage') 
-{
-if(AssignSLA.size() > 0){
-opp.SLA_Business_Hours__c=AssignSLA[0].SLA__c;
-}
-else{
-opp.SLA_Business_Hours__c=null;
-}
-}
-else {
-
-
-opp.SLA_Business_Hours__c = null;
-
-
-}
-system.debug('sla'+opp.SLA_Business_Hours__c);
-system.debug('Product_Type__c'+opp.Product_Type__c);
-}
-for(Opportunity opp: Opportunities){
-Opportunity oldOpp = OpportunityOldMap.get(opp.Id);
-if(oldOpp.StageName!='New' && opp.StageName=='New'){
-opp.TimeStamp_New_status__c=DateTime.now();
-}else  if(oldOpp.StageName!='Outreach' && opp.StageName=='Outreach'){
-opp.TimeStamp_Outreach_status__c =DateTime.now();
-}
-
-
-}
-
-for(Opportunity opp: Opportunities){
-Opportunity oldOpp = OpportunityOldMap.get(opp.Id);
-datetime oldTimestamp= oldOpp.TimeStamp_New_status__c;   
-datetime NewTimestamp= opp.TimeStamp_New_status__c;
-if((opp.SLA_Business_Hours__c != NULL) && (stdBusinessHours != NULL)){
-if(opp.TimeStamp_New_status__c != null)
-//  FD = datetime.newInstance(opp.TimeStamp_New_status__c.year(), opp.TimeStamp_New_status__c.month(),opp.TimeStamp_New_status__c.day());
-//else if(opp.createdDate != null)
-//  FD = opp.createdDate; 
-//if(FD != null)               
-opp.SLA_Yellow_Start_Time__c = BusinessHours.addgmt(stdBusinessHours.id, oldTimestamp , (Long)(opp.SLA_Business_Hours__c-1) * 3600000);
-system.debug('SLA_Yellow_Start_Time__c'+opp.SLA_Yellow_Start_Time__c);
-}  else{
-opp.SLA_Yellow_Start_Time__c=null;
-}
-
-
-
-}
-for(Opportunity opp: Opportunities){
-Opportunity oldOpp = OpportunityOldMap.get(opp.Id);
-datetime oldTimestamp= oldOpp.TimeStamp_New_status__c;   
-// datetime NewTimestamp= opp.TimeStamp_New_status__c;
-if((opp.SLA_Business_Hours__c != NULL) && (stdBusinessHours != NULL)){
-if(opp.TimeStamp_New_status__c != null)
-//   FD = datetime.newInstance(opp.TimeStamp_New_status__c.year(), opp.TimeStamp_New_status__c.month(),opp.TimeStamp_New_status__c.day());
-//  else if(opp.createdDate != null)
-// FD = opp.createdDate; 
-//if(FD != null)               
-opp.SLA_Breach_Time__c = BusinessHours.addgmt(stdBusinessHours.id, oldTimestamp , (Long)(opp.SLA_Business_Hours__c) * 3600000);
-system.debug('SLA_Breach_Time__c'+opp.SLA_Breach_Time__c);
-}
-else{
-opp.SLA_Breach_Time__c=null;
-}
-
-
-}*/
+ 
 updateSLAFields(Trigger.new, Trigger.old);    
     }
     /*----PRJ0011432-11432: MARS Functionality Review Changes start-----*/
@@ -736,50 +529,19 @@ updateSLAFields(Trigger.new, Trigger.old);
         BusinessHours stdBusinessHours = [select id
                                           from businesshours
                                           where isDefault = true];
-         List<Sla_Manager__mdt> AssignSLA = [select label,Start_Field__c, Start_Value__c, SLA__c
-                                             from Sla_Manager__mdt
-                                             where Object_Name__c = 'Opportunity'];
-         Map<string, decimal> mapStatusSLA  = new Map<string, decimal>();
+
         
         Map<string, Opportunity> mapOldOpportunity = new Map<string, Opportunity>();
-         for (Sla_Manager__mdt sm : AssignSLA) {
-           //(sm.Start_Field__c == 'Status') {
-             mapStatusSLA.put(sm.Start_Value__c, sm.SLA__c);
-           //}
-         }
-        
-         system.debug('mapStatusSLA'  + mapStatusSLA);
+         
         if (trigger.isBefore){
             if (trigger.isinsert){
                 if (newOppList.size() > 0){
                     for (Opportunity l : newOppList){
                         /*--------Update SLA Field------*/
                         string status = l.StageName;
-                         decimal SLA = mapStatusSLA.get(status);
-                        system.debug('status'+ status);
-                         system.debug('SLA'+ SLA);
-                        
-                       // l.SLA_Business_Hours__c = getSLA(l,'');
-
-                         if (status == 'New') {
-                             if ((l.Opportunity_Source__c == 'Branch Call' || l.Opportunity_Source__c == 'General Mailbox'|| l.Opportunity_Source__c == 'Branch Walk in' || l.Opportunity_Source__c == 'Call Center' || l.Opportunity_Source__c == 'Email' || l.Opportunity_Source__c == 'Employee Referral' || l.Opportunity_Source__c == 'Xpress Form - Web' || l.Opportunity_Source__c == 'Partner' || l.Opportunity_Source__c == 'PTM' || l.Opportunity_Source__c == 'Xpress Refi-Web' || l.Opportunity_Source__c == 'Xpress Refi' || l.Opportunity_Source__c == 'Existing Member') && l.Product_Type__c == 'Mortgage'){
-                                 if (AssignSLA.size() > 0 && SLA != null){
-                                     l.SLA_Business_Hours__c = SLA;
-                                 } else{
-                                     l.SLA_Business_Hours__c = null;
-                                 }
-                             } else{
-                                 l.SLA_Business_Hours__c = null;
-                             }
-                            
-                         } else {
-                             if (AssignSLA.size() > 0 && SLA != null){
-                                 l.SLA_Business_Hours__c = SLA;
-                             } else{
-                                 l.SLA_Business_Hours__c = null;
-                             }
-                         }
-                        
+                       
+                         l.SLA_Business_Hours__c = getSLA(l);
+                      
                         /*--------Update TimeStamp Fields------*/
                         if (status == 'New'){
                             l.TimeStamp_New_status__c = DateTime.now();
@@ -798,21 +560,15 @@ updateSLAFields(Trigger.new, Trigger.old);
                         
                         /*----------Update Yellow and Breach TimeStamp Fields--------*/
                         if (l.SLA_Business_Hours__c != NULL && stdBusinessHours != NULL && l.StageName == 'New' && l.TimeStamp_New_status__c != null){
-                            l.SLA_Yellow_Start_Time__c = BusinessHours.addgmt(stdBusinessHours.id, l.TimeStamp_New_status__c, (Long) (l.SLA_Business_Hours__c - 1) * 3600000);
-                            l.SLA_Breach_Time__c = BusinessHours.addgmt(stdBusinessHours.id, l.TimeStamp_New_status__c, (Long) (l.SLA_Business_Hours__c) * 3600000);
+                            l.SLA_Yellow_Start_Time__c = BusinessHours.addgmt(stdBusinessHours.id, l.TimeStamp_New_status__c, (Long) ((l.SLA_Business_Hours__c - 1) * 3600000));
+                            l.SLA_Breach_Time__c = BusinessHours.addgmt(stdBusinessHours.id, l.TimeStamp_New_status__c, (Long) ((l.SLA_Business_Hours__c) * 3600000));
                         }
-                        /*if(l.Hour_Spent_New_Status__c != 0){
-                            l.SLA_Yellow_Start_Time__c = BusinessHours.addgmt(stdBusinessHours.id, l.SLA_Yellow_Start_Time__c, -(Long)(l.Hour_Spent_New_Status__c*3600000));
-                            l.SLA_Breach_Time__c = BusinessHours.addgmt(stdBusinessHours.id, l.SLA_Breach_Time__c, -(Long)(l.Hour_Spent_New_Status__c*3600000));
-                        }*/
+                        
                         else if (l.SLA_Business_Hours__c != NULL && stdBusinessHours != NULL && l.StageName == 'Outreach' && l.TimeStamp_Outreach_status__c != null){
-                            l.SLA_Yellow_Start_Time__c = BusinessHours.addgmt(stdBusinessHours.id, l.TimeStamp_Outreach_status__c, (Long) (l.SLA_Business_Hours__c - 1) * 3600000);
-                            l.SLA_Breach_Time__c = BusinessHours.addgmt(stdBusinessHours.id, l.TimeStamp_Outreach_status__c, (Long) (l.SLA_Business_Hours__c) * 3600000);
+                            l.SLA_Yellow_Start_Time__c = BusinessHours.addgmt(stdBusinessHours.id, l.TimeStamp_Outreach_status__c, (Long) ((l.SLA_Business_Hours__c - 1) * 3600000));
+                            l.SLA_Breach_Time__c = BusinessHours.addgmt(stdBusinessHours.id, l.TimeStamp_Outreach_status__c, (Long) ((l.SLA_Business_Hours__c) * 3600000));
                         }
-                       /* if(l.Hour_Spent_Outreach_Status__c != 0){
-                            l.SLA_Yellow_Start_Time__c = BusinessHours.addgmt(stdBusinessHours.id, l.SLA_Yellow_Start_Time__c, -(Long)(l.Hour_Spent_Outreach_Status__c*3600000));
-                            l.SLA_Breach_Time__c = BusinessHours.addgmt(stdBusinessHours.id, l.SLA_Breach_Time__c, -(Long)(l.Hour_Spent_Outreach_Status__c*3600000));
-                        }*/
+                       
                         else{
                             l.SLA_Yellow_Start_Time__c = null;
                             l.SLA_Breach_Time__c = null;
@@ -828,61 +584,17 @@ updateSLAFields(Trigger.new, Trigger.old);
                     mapOldOpportunity.put(ol.Id, ol);
                 }
                 if (newOppList.size() > 0){
-                    //String NewOppSources = slaDef1.Opportunity_Source__c;
                     for (Opportunity l : newOppList){
                         /*--------Update SLA Field------*/
                         string status = l.StageName;
-                         decimal SLA = mapStatusSLA.get(status);
                         Opportunity oldOpportunity = mapOldOpportunity.get(l.Id);
                         string oldStatus = oldOpportunity.StageName;
                         string oldProductType = oldOpportunity.Product_Type__c;
                         string newProductType = l.Product_Type__c;
                         string oldoppSource = oldOpportunity.Opportunity_Source__c;
                         string newoppSource = l.Opportunity_Source__c;
-                         List<string> NewOppSources = new List<String>{'Branch Call', 'Branch Walk in', 'Call Center' , 'General Mailbox','Email', 'Employee Referral' , 'Xpress Form - Web', 'Partner', 'PTM', 'Xpress Refi-Web', 'Xpress Refi', 'Existing Member'};
     
-                       // l.SLA_Business_Hours__c = getSLA(l,oldStatus);
-
-                         if (status == 'New' && oldStatus != 'New'){
-                             if ((l.Opportunity_Source__c == 'Branch Call' || l.Opportunity_Source__c == 'Branch Walk in' || l.Opportunity_Source__c == 'General Mailbox'|| l.Opportunity_Source__c == 'Call Center' || l.Opportunity_Source__c == 'Email' || l.Opportunity_Source__c == 'Employee Referral' || l.Opportunity_Source__c == 'Xpress Form - Web' || l.Opportunity_Source__c == 'Partner' || l.Opportunity_Source__c == 'PTM' || l.Opportunity_Source__c == 'Xpress Refi-Web' || l.Opportunity_Source__c == 'Xpress Refi' || l.Opportunity_Source__c == 'Existing Member') && l.Product_Type__c == 'Mortgage'){
-                                 if (AssignSLA.size() > 0 && SLA != null){
-                                     l.SLA_Business_Hours__c = SLA;
-                                     system.debug('SLA -New '+l.SLA_Business_Hours__c);
-                                 } else{
-                                     l.SLA_Business_Hours__c = null;
-                                     system.debug('SLA -New-else '+l.SLA_Business_Hours__c);
-                                 }
-                             } else{
-                                 l.SLA_Business_Hours__c = null;
-                                 system.debug('SLA -New-else-else '+l.SLA_Business_Hours__c);
-                             }
-                         } 
-                         else if (status != oldStatus){
-                             if (AssignSLA.size() > 0 && SLA != null){
-                                 l.SLA_Business_Hours__c = SLA;
-                             } else{
-                                 l.SLA_Business_Hours__c = null;
-                             }
-                         }
-                         else if(newProductType == 'Mortgage' && oldProductType != 'Mortgage' && status == 'New'){
-                             if (l.Opportunity_Source__c == 'Branch Call' || l.Opportunity_Source__c == 'Branch Walk in' || l.Opportunity_Source__c == 'Call Center'|| l.Opportunity_Source__c == 'General Mailbox' || l.Opportunity_Source__c == 'Email' || l.Opportunity_Source__c == 'Employee Referral' || l.Opportunity_Source__c == 'Xpress Form - Web' || l.Opportunity_Source__c == 'Partner' || l.Opportunity_Source__c == 'PTM' || l.Opportunity_Source__c == 'Xpress Refi-Web' || l.Opportunity_Source__c == 'Xpress Refi' || l.Opportunity_Source__c == 'Existing Member'){
-                                 if (AssignSLA.size() > 0 && SLA != null){
-                                     l.SLA_Business_Hours__c = SLA;
-                                 } else{
-                                     l.SLA_Business_Hours__c = null;
-                                 }
-                             }
-                             else{
-                                 l.SLA_Business_Hours__c = null;
-                             }
-                         }
-                         else if(NewOppSources.contains(newoppSource) && !NewOppSources.contains(oldoppSource) && status == 'New' && newProductType == 'Mortgage'){
-                             if (AssignSLA.size() > 0 && SLA != null){
-                                 l.SLA_Business_Hours__c = SLA;
-                             } else{
-                                 l.SLA_Business_Hours__c = null;
-                            }
-                         }
+                         l.SLA_Business_Hours__c = getSLA(l);
                         /*--------Update TimeStamp Fields------*/
                         if (Status == 'New' && oldStatus != 'New'){
                             l.TimeStamp_New_status__c = DateTime.now();
@@ -901,8 +613,8 @@ updateSLAFields(Trigger.new, Trigger.old);
                         
                         /*----------Update Yellow and Breach TimeStamp Fields--------*/
                         if (l.SLA_Business_Hours__c != NULL && stdBusinessHours != NULL && l.StageName == 'New' && l.TimeStamp_New_status__c != null && oldStatus != 'New'){
-                            l.SLA_Yellow_Start_Time__c = BusinessHours.addgmt(stdBusinessHours.id, l.TimeStamp_New_status__c, (Long) (l.SLA_Business_Hours__c - 1) * 3600000);
-                            l.SLA_Breach_Time__c = BusinessHours.addgmt(stdBusinessHours.id, l.TimeStamp_New_status__c, (Long) (l.SLA_Business_Hours__c) * 3600000);
+                            l.SLA_Yellow_Start_Time__c = BusinessHours.addgmt(stdBusinessHours.id, l.TimeStamp_New_status__c, (Long) ((l.SLA_Business_Hours__c - 1) * 3600000));
+                            l.SLA_Breach_Time__c = BusinessHours.addgmt(stdBusinessHours.id, l.TimeStamp_New_status__c, (Long) ((l.SLA_Business_Hours__c) * 3600000));
                             if(l.Hour_Spent_New_Status__c != 0 && l.Hour_Spent_New_Status__c != null){
                                 l.SLA_Yellow_Start_Time__c = BusinessHours.addgmt(stdBusinessHours.id, l.SLA_Yellow_Start_Time__c, -(Long)(l.Hour_Spent_New_Status__c*3600000));
                                 l.SLA_Breach_Time__c = BusinessHours.addgmt(stdBusinessHours.id, l.SLA_Breach_Time__c, -(Long)(l.Hour_Spent_New_Status__c*3600000));
@@ -911,8 +623,8 @@ updateSLAFields(Trigger.new, Trigger.old);
                         
                         
                         else if (l.SLA_Business_Hours__c != NULL && stdBusinessHours != NULL && l.StageName == 'Outreach' && l.TimeStamp_Outreach_status__c != null && oldStatus != 'Outreach'){
-                            l.SLA_Yellow_Start_Time__c = BusinessHours.addgmt(stdBusinessHours.id, l.TimeStamp_Outreach_status__c, (Long) (l.SLA_Business_Hours__c - 1) * 3600000);
-                            l.SLA_Breach_Time__c = BusinessHours.addgmt(stdBusinessHours.id, l.TimeStamp_Outreach_status__c, (Long) (l.SLA_Business_Hours__c) * 3600000);
+                            l.SLA_Yellow_Start_Time__c = BusinessHours.addgmt(stdBusinessHours.id, l.TimeStamp_Outreach_status__c, (Long) ((l.SLA_Business_Hours__c - 1) * 3600000));
+                            l.SLA_Breach_Time__c = BusinessHours.addgmt(stdBusinessHours.id, l.TimeStamp_Outreach_status__c, (Long) ((l.SLA_Business_Hours__c) * 3600000));
                             
                              if(l.Hour_Spent_Outreach_Status__c != 0 && l.Hour_Spent_Outreach_Status__c != null){
                                 l.SLA_Yellow_Start_Time__c = BusinessHours.addgmt(stdBusinessHours.id, l.SLA_Yellow_Start_Time__c, -(Long)(l.Hour_Spent_Outreach_Status__c*3600000));
@@ -920,8 +632,8 @@ updateSLAFields(Trigger.new, Trigger.old);
                             }
                         }
                         else if(newProductType == 'Mortgage' && oldProductType != 'Mortgage' && l.SLA_Business_Hours__c != NULL && stdBusinessHours != NULL && l.StageName == 'New' && l.TimeStamp_New_status__c != null){
-                            l.SLA_Yellow_Start_Time__c = BusinessHours.addgmt(stdBusinessHours.id, l.TimeStamp_New_status__c, (Long) (l.SLA_Business_Hours__c - 1) * 3600000);                            
-                            l.SLA_Breach_Time__c = BusinessHours.addgmt(stdBusinessHours.id, l.TimeStamp_New_status__c, (Long) (l.SLA_Business_Hours__c) * 3600000);
+                            l.SLA_Yellow_Start_Time__c = BusinessHours.addgmt(stdBusinessHours.id, l.TimeStamp_New_status__c, (Long) ((l.SLA_Business_Hours__c - 1) * 3600000));                            
+                            l.SLA_Breach_Time__c = BusinessHours.addgmt(stdBusinessHours.id, l.TimeStamp_New_status__c, (Long) ((l.SLA_Business_Hours__c) * 3600000));
                             if(l.Hour_Spent_New_Status__c != 0 && l.Hour_Spent_New_Status__c != null){
                                 l.SLA_Yellow_Start_Time__c = BusinessHours.addgmt(stdBusinessHours.id, l.SLA_Yellow_Start_Time__c, -(Long)(l.Hour_Spent_New_Status__c*3600000));
                                 l.SLA_Breach_Time__c = BusinessHours.addgmt(stdBusinessHours.id, l.SLA_Breach_Time__c, -(Long)(l.Hour_Spent_New_Status__c*3600000));
@@ -929,8 +641,8 @@ updateSLAFields(Trigger.new, Trigger.old);
                         }
                         
                         else if(NewOppSources.contains(newoppSource) && !NewOppSources.contains(oldoppSource) && newProductType == 'Mortgage' && l.SLA_Business_Hours__c != NULL && stdBusinessHours != NULL && l.StageName == 'New' && l.TimeStamp_New_status__c != null){
-                            l.SLA_Yellow_Start_Time__c = BusinessHours.addgmt(stdBusinessHours.id, l.TimeStamp_New_status__c, (Long) (l.SLA_Business_Hours__c - 1) * 3600000);                            
-                            l.SLA_Breach_Time__c = BusinessHours.addgmt(stdBusinessHours.id, l.TimeStamp_New_status__c, (Long) (l.SLA_Business_Hours__c) * 3600000);
+                            l.SLA_Yellow_Start_Time__c = BusinessHours.addgmt(stdBusinessHours.id, l.TimeStamp_New_status__c, (Long) ((l.SLA_Business_Hours__c - 1) * 3600000));                            
+                            l.SLA_Breach_Time__c = BusinessHours.addgmt(stdBusinessHours.id, l.TimeStamp_New_status__c, (Long) ((l.SLA_Business_Hours__c) * 3600000));
                             if(l.Hour_Spent_New_Status__c != 0 && l.Hour_Spent_New_Status__c != null){
                                 l.SLA_Yellow_Start_Time__c = BusinessHours.addgmt(stdBusinessHours.id, l.SLA_Yellow_Start_Time__c, -(Long)(l.Hour_Spent_New_Status__c*3600000));
                                 l.SLA_Breach_Time__c = BusinessHours.addgmt(stdBusinessHours.id, l.SLA_Breach_Time__c, -(Long)(l.Hour_Spent_New_Status__c*3600000));
@@ -970,10 +682,7 @@ updateSLAFields(Trigger.new, Trigger.old);
                             decimal hh = (TimeDiff / 3600000).setScale(2);
                             l.Hour_Spent_Fulfilment_Status__c = l.Hour_Spent_Fulfilment_Status__c != null ? l.Hour_Spent_Fulfilment_Status__c + hh : hh;
                         }
-                         /*----------Update Breach Flag--------*/
-                       // if(l.isSLABreached__c == true && oldOpportunity.isSLABreached__c == false){
-                       //   l.SLABreached__c = true;
-                       // }
+                         
                         
                     }
                 }

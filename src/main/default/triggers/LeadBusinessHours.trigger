@@ -665,12 +665,14 @@ trigger LeadBusinessHours on Lead(after insert, after update, before insert, bef
                         
                         /*----------Update Yellow and Breach TimeStamp Fields--------*/
                         if (l.SLA__c != NULL && stdBusinessHours != NULL && l.Status == 'New' && l.TimeStamp_New_status__c != null){
-                            l.SLA_Yellow_Start_Time__c = BusinessHours.addgmt(stdBusinessHours.id, l.TimeStamp_New_status__c, (Long) (l.SLA__c - 1) * 3600000);
-                            l.SLA_Breach_Time__c = BusinessHours.addgmt(stdBusinessHours.id, l.TimeStamp_New_status__c, (Long) (l.SLA__c) * 3600000);
+                            l.SLA_Yellow_Start_Time__c = BusinessHours.addgmt(stdBusinessHours.id, l.TimeStamp_New_status__c, (Long) ((l.SLA__c - 1) * 3600000));
+                            l.SLA_Breach_Time__c = BusinessHours.addgmt(stdBusinessHours.id, l.TimeStamp_New_status__c, (Long) ((l.SLA__c) * 3600000));
+                            system.debug('SLA_Breach_Time__c New '+l.SLA_Breach_Time__c);
+
                         }
                         else if (l.SLA__c != NULL && stdBusinessHours != NULL && l.Status == 'Outreach' && l.TimeStamp_Outreach_status__c != null){
-                            l.SLA_Yellow_Start_Time__c = BusinessHours.addgmt(stdBusinessHours.id, l.TimeStamp_Outreach_status__c, (Long) (l.SLA__c - 1) * 3600000);
-                            l.SLA_Breach_Time__c = BusinessHours.addgmt(stdBusinessHours.id, l.TimeStamp_Outreach_status__c, (Long) (l.SLA__c) * 3600000);
+                            l.SLA_Yellow_Start_Time__c = BusinessHours.addgmt(stdBusinessHours.id, l.TimeStamp_Outreach_status__c, (Long)((l.SLA__c - 1) * 3600000));
+                            l.SLA_Breach_Time__c = BusinessHours.addgmt(stdBusinessHours.id, l.TimeStamp_Outreach_status__c, ((Long) (l.SLA__c) * 3600000));
                         }else{
                             l.SLA_Yellow_Start_Time__c = null;
                             l.SLA_Breach_Time__c = null;
@@ -713,16 +715,16 @@ trigger LeadBusinessHours on Lead(after insert, after update, before insert, bef
                         
                         /*----------Update Yellow and Breach TimeStamp Fields--------*/
                         if (l.SLA__c != NULL && stdBusinessHours != NULL && l.Status == 'New' && l.TimeStamp_New_status__c != null && oldStatus != 'New'){
-                            l.SLA_Yellow_Start_Time__c = BusinessHours.addgmt(stdBusinessHours.id, l.TimeStamp_New_status__c, (Long) (l.SLA__c - 1) * 3600000);                            
-                            l.SLA_Breach_Time__c = BusinessHours.addgmt(stdBusinessHours.id, l.TimeStamp_New_status__c, (Long) (l.SLA__c) * 3600000);
-                            
+                            l.SLA_Yellow_Start_Time__c = BusinessHours.addgmt(stdBusinessHours.id, l.TimeStamp_New_status__c, (Long) ((l.SLA__c - 1) * 3600000));                            
+                            l.SLA_Breach_Time__c = BusinessHours.addgmt(stdBusinessHours.id, l.TimeStamp_New_status__c, (Long) ((l.SLA__c) * 3600000));
+                            system.debug('SLA_Breach_Time__c New '+l.SLA_Breach_Time__c);
                             if(l.Hour_Spent_New_Status__c != 0 && l.Hour_Spent_New_Status__c != null){
                                 l.SLA_Yellow_Start_Time__c = BusinessHours.addgmt(stdBusinessHours.id, l.SLA_Yellow_Start_Time__c, -(Long)(l.Hour_Spent_New_Status__c*3600000));
                                 l.SLA_Breach_Time__c = BusinessHours.addgmt(stdBusinessHours.id, l.SLA_Breach_Time__c, -(Long)(l.Hour_Spent_New_Status__c*3600000));
                             }
                         } else if (l.SLA__c != NULL && stdBusinessHours != NULL && l.Status == 'Outreach' && l.TimeStamp_Outreach_status__c != null && oldStatus != 'Outreach'){
-                            l.SLA_Yellow_Start_Time__c = BusinessHours.addgmt(stdBusinessHours.id, l.TimeStamp_Outreach_status__c, (Long) (l.SLA__c - 1) * 3600000);
-                            l.SLA_Breach_Time__c = BusinessHours.addgmt(stdBusinessHours.id, l.TimeStamp_Outreach_status__c, (Long) (l.SLA__c) * 3600000); 
+                            l.SLA_Yellow_Start_Time__c = BusinessHours.addgmt(stdBusinessHours.id, l.TimeStamp_Outreach_status__c, (Long) ((l.SLA__c - 1) * 3600000));
+                            l.SLA_Breach_Time__c = BusinessHours.addgmt(stdBusinessHours.id, l.TimeStamp_Outreach_status__c, (Long) ((l.SLA__c) * 3600000)); 
                             
                             if(l.Hour_Spent_Outreach_Status__c != 0 && l.Hour_Spent_Outreach_Status__c != null){
                                 l.SLA_Yellow_Start_Time__c = BusinessHours.addgmt(stdBusinessHours.id, l.SLA_Yellow_Start_Time__c, -(Long)(l.Hour_Spent_Outreach_Status__c*3600000));
@@ -730,16 +732,16 @@ trigger LeadBusinessHours on Lead(after insert, after update, before insert, bef
                             }
                         } 
                         else if(newProductType == 'Mortgage' && oldProductType != 'Mortgage' && l.SLA__c != NULL && stdBusinessHours != NULL && l.Status == 'New' && l.TimeStamp_New_status__c != null){
-                            l.SLA_Yellow_Start_Time__c = BusinessHours.addgmt(stdBusinessHours.id, l.TimeStamp_New_status__c, (Long) (l.SLA__c - 1) * 3600000);                            
-                            l.SLA_Breach_Time__c = BusinessHours.addgmt(stdBusinessHours.id, l.TimeStamp_New_status__c, (Long) (l.SLA__c) * 3600000);
+                            l.SLA_Yellow_Start_Time__c = BusinessHours.addgmt(stdBusinessHours.id, l.TimeStamp_New_status__c, (Long) ((l.SLA__c - 1) * 3600000));                            
+                            l.SLA_Breach_Time__c = BusinessHours.addgmt(stdBusinessHours.id, l.TimeStamp_New_status__c, (Long) ((l.SLA__c) * 3600000));
                             if(l.Hour_Spent_New_Status__c != 0 && l.Hour_Spent_New_Status__c != null){
                                 l.SLA_Yellow_Start_Time__c = BusinessHours.addgmt(stdBusinessHours.id, l.SLA_Yellow_Start_Time__c, -(Long)(l.Hour_Spent_New_Status__c*3600000));
                                 l.SLA_Breach_Time__c = BusinessHours.addgmt(stdBusinessHours.id, l.SLA_Breach_Time__c, -(Long)(l.Hour_Spent_New_Status__c*3600000));
                             }
                         }
                         else if(NewLeadSources.contains(newLeadSource) && !NewLeadSources.contains(oldLeadSource) && newProductType == 'Mortgage' && l.SLA__c != NULL && stdBusinessHours != NULL && l.Status == 'New' && l.TimeStamp_New_status__c != null){
-                            l.SLA_Yellow_Start_Time__c = BusinessHours.addgmt(stdBusinessHours.id, l.TimeStamp_New_status__c, (Long) (l.SLA__c - 1) * 3600000);                            
-                            l.SLA_Breach_Time__c = BusinessHours.addgmt(stdBusinessHours.id, l.TimeStamp_New_status__c, (Long) (l.SLA__c) * 3600000);
+                            l.SLA_Yellow_Start_Time__c = BusinessHours.addgmt(stdBusinessHours.id, l.TimeStamp_New_status__c, (Long) ((l.SLA__c - 1) * 3600000));                            
+                            l.SLA_Breach_Time__c = BusinessHours.addgmt(stdBusinessHours.id, l.TimeStamp_New_status__c, (Long) ((l.SLA__c) * 3600000));
                             if(l.Hour_Spent_New_Status__c != 0 && l.Hour_Spent_New_Status__c != null){
                                 l.SLA_Yellow_Start_Time__c = BusinessHours.addgmt(stdBusinessHours.id, l.SLA_Yellow_Start_Time__c, -(Long)(l.Hour_Spent_New_Status__c*3600000));
                                 l.SLA_Breach_Time__c = BusinessHours.addgmt(stdBusinessHours.id, l.SLA_Breach_Time__c, -(Long)(l.Hour_Spent_New_Status__c*3600000));
