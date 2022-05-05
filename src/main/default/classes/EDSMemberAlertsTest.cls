@@ -6,6 +6,7 @@ public class EDSMemberAlertsTest {
         
         Wires_Notification_EmailTo__c suud1 = new Wires_Notification_EmailTo__c();
       	suud1.Name = 'Email For Testing';
+        suud1.Emails__c ='test@test.com';
       	insert suud1;
         
         test.startTest();
