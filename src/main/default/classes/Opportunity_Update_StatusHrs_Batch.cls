@@ -6,7 +6,7 @@ global class Opportunity_Update_StatusHrs_Batch implements Database.Batchable<sO
         string getOppStatus = (string) LeadStatus.get('Opportunity').Status__c;
         List<String> spltstatus = getOppStatus.split(',');
         system.debug('spltstatus  '+spltstatus);
-       query='SELECT id,Status,Hour_Spent_New_Status__c,Hour_Spent_Outreach_Status__c,TimeStamp_New_status__c,TimeStamp_Outreach_status__c FROM Opportunity WHERE StageName IN (\'' + string.join(spltstatus,'\',\'') +  '\') Order by CreatedDate DESC LIMIT 20';      
+       query='SELECT id,StageName,Hour_Spent_New_Status__c,Hour_Spent_Outreach_Status__c,TimeStamp_New_status__c,TimeStamp_Outreach_status__c FROM Opportunity WHERE StageName IN (\'' + string.join(spltstatus,'\',\'') +  '\') Order by CreatedDate DESC LIMIT 20';      
        return Database.getQueryLocator(query);
     }
     global void execute(Database.BatchableContext BC, List<Opportunity> OppList) {
