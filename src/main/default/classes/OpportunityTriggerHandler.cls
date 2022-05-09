@@ -552,7 +552,7 @@ updateSLAFields(Trigger.new, Trigger.old);
                             l.TimeStamp_Considering_status__c = DateTime.now();
                         } 
                         else if (status == 'Analyzing Needs'){
-                            l.TimeStamp_Analyzing_Need_status__c = DateTime.now();
+                           l.TimeStamp_Analyzing_Needs_status__c = DateTime.now();
                         }
                         else if (status == 'Fulfillment'){
                             l.TimeStamp_Fulfilment_status__c = DateTime.now();
@@ -605,7 +605,7 @@ updateSLAFields(Trigger.new, Trigger.old);
                             l.TimeStamp_Considering_status__c = DateTime.now();
                         } 
                         else if (Status == 'Analyzing Needs' && oldStatus != 'Analyzing Needs'){
-                            l.TimeStamp_Analyzing_Need_status__c = DateTime.now();
+                           l.TimeStamp_Analyzing_Needs_status__c = DateTime.now();
                         }
                         else if (Status == 'Fulfillment' && oldStatus != 'Fulfillment'){
                             l.TimeStamp_Fulfilment_status__c = DateTime.now();
@@ -672,17 +672,17 @@ updateSLAFields(Trigger.new, Trigger.old);
                             decimal hh = (TimeDiff / 3600000).setScale(2);
                             l.Hour_Spent_Considering_Status__c = l.Hour_Spent_Considering_Status__c != null ? l.Hour_Spent_Considering_Status__c + hh : hh;
                         } 
-                        else if (status != 'Analyzing Needs' && oldStatus == 'Analyzing Needs' && l.TimeStamp_Analyzing_Need_status__c != null){
-                            decimal TimeDiff = BusinessHours.diff(stdBusinessHours.id, l.TimeStamp_Analyzing_Need_status__c, currentTime);
+                        else if (status != 'Analyzing Needs' && oldStatus == 'Analyzing Needs' && l.TimeStamp_Analyzing_Needs_status__c != null){
+                            decimal TimeDiff = BusinessHours.diff(stdBusinessHours.id, l.TimeStamp_Analyzing_Needs_status__c, currentTime);
                             decimal hh = (TimeDiff / 3600000).setScale(2);
-                            l.Hour_Spent_Analyzing_Need_Status__c = l.Hour_Spent_Analyzing_Need_Status__c != null ? l.Hour_Spent_Analyzing_Need_Status__c + hh : hh;
+                            l.Hour_Spent_Analyzing_Needs_Status__c = l.Hour_Spent_Analyzing_Needs_Status__c != null ? l.Hour_Spent_Analyzing_Needs_Status__c + hh : hh;
                         } 
                         else if (status != 'Fulfillment' && oldStatus == 'Fulfillment' && l.TimeStamp_Fulfilment_status__c != null){
                             decimal TimeDiff = BusinessHours.diff(stdBusinessHours.id, l.TimeStamp_Fulfilment_status__c, currentTime);
                             decimal hh = (TimeDiff / 3600000).setScale(2);
                             l.Hour_Spent_Fulfilment_Status__c = l.Hour_Spent_Fulfilment_Status__c != null ? l.Hour_Spent_Fulfilment_Status__c + hh : hh;
                         }
-                         
+                        
                         
                     }
                 }

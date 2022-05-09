@@ -750,7 +750,7 @@ trigger LeadBusinessHours on Lead(after insert, after update, before insert, bef
                         
                         
                         /*----------Update Hours Spent Fields--------*/
-                        DateTime currentTime = Datetime.now();
+                       DateTime currentTime = Datetime.now();
                         if (status != 'New' && oldStatus == 'New' && l.TimeStamp_New_status__c != null){
                             decimal TimeDiff = BusinessHours.diff(stdBusinessHours.id, l.TimeStamp_New_status__c, currentTime);
                             decimal hh = (TimeDiff / 3600000).setScale(2);
@@ -776,7 +776,7 @@ trigger LeadBusinessHours on Lead(after insert, after update, before insert, bef
                         else if (status != 'Analyzing Needs' && oldStatus == 'Analyzing Needs' && l.TimeStamp_Analyzing_Needs_status__c != null){
                             decimal TimeDiff = BusinessHours.diff(stdBusinessHours.id, l.TimeStamp_Analyzing_Needs_status__c, currentTime);
                             decimal hh = (TimeDiff / 3600000).setScale(2);
-                            l.Hour_Spent_Analyzing_Need_Status__c = l.Hour_Spent_Analyzing_Need_Status__c != null ? l.Hour_Spent_Analyzing_Need_Status__c + hh : hh;
+                            l.Hour_Spent_Analyzing_Needs_Status__c = l.Hour_Spent_Analyzing_Needs_Status__c != null ? l.Hour_Spent_Analyzing_Needs_Status__c + hh : hh;
                             
                         }
                         
