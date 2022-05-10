@@ -2043,12 +2043,12 @@ public class SolarLoanToCreateLoan {
 
                     hasMail = true;
                     if(sl.mem_Primary_First_Name__c != null && sl.mem_Primary_First_Name__c != '')
-                        MAILFIRST = string.valueOf(sl.mem_Primary_First_Name__c);
+                        MAILFIRST = string.valueOf(sl.mem_Primary_First_Name__c).toUpperCase();
                     else
                         MAILFIRST = '';
 
                     if(sl.mem_Primary_Last_Name__c != null && sl.mem_Primary_Last_Name__c != '')
-                        MAILLAST = string.valueOf(sl.mem_Primary_Last_Name__c);
+                        MAILLAST = string.valueOf(sl.mem_Primary_Last_Name__c).toUpperCase();
                     else
                         MAILLAST = '';
 
@@ -2058,7 +2058,7 @@ public class SolarLoanToCreateLoan {
                         MAILEXTRAADDRESS = '';
                     
                     if(sl.Primary_Middle_Initial__c != null && sl.Primary_Middle_Initial__c != '')
-                        MAILMIDDLE = string.valueOf(sl.Primary_Middle_Initial__c);
+                        MAILMIDDLE = string.valueOf(sl.Primary_Middle_Initial__c).toUpperCase();
                     else
                         MAILMIDDLE = '';
                     
@@ -2494,39 +2494,7 @@ public class SolarLoanToCreateLoan {
                 loanAPI = api.URL__c;
             }
     
-            for(Solar_Loans__c sl : solarloans){
-                
-                
-                /*System.debug('Chceking if the system is online!');
-                req10.setEndpoint(loanAPI+'/EFT/GetGeneralEpisysInformation');
-                req10.setMethod('GET');
-                req10.setHeader('Content-Type', 'application/json');
-                req10.setHeader('Accept', 'application/json');
-                req10.setTimeout(120000);                   
-                
-                if(!Test.isRunningTest()){                       
-                    res10 = http10.send(req10);
-                    responseBody10 = res10.getBody();
-                    System.debug('EpisysInformation::'+responseBody10);    
-                }
-                else{
-                    responseBody10 = '{"SymNumber": "415","InMemoMode": "false","Status": "null","Error": "null","ErrorDetails": "null"}';
-                }
-                
-                if(responseBody10!=''){        
-                    Map<String,Object> results = (Map<String,Object>) JSON.deserializeUntyped(responseBody10);      
-                    System.debug('Service response is ....' + results);
-                    
-                    
-                    if(results.size() > 0){
-                        
-                        for(String key : results.keySet()){                   			
-                            if(key == 'InMemoMode'){
-                                mode = boolean.valueOf(results.get(key));
-                            }
-                        }
-                    }
-                }*/
+            for(Solar_Loans__c sl : solarloans){                
                 
                 system.debug('mode'+mode);
                 if(mode == false){
@@ -2566,14 +2534,7 @@ public class SolarLoanToCreateLoan {
                         
                         SolarLoanToUpdate.add(s); 
                     }
-                }
-                /*else{
-                    
-                    Solar_Loans__c s = new Solar_Loans__c();
-                    s.id = sl.Id; 
-                    s.Error_Loan_Locator__c = 'System is ofline';
-                    SolarLoanToUpdate.add(s);
-                }*/
+                }               
 
             }
             solarMap.putall(SolarLoanToUpdate);
