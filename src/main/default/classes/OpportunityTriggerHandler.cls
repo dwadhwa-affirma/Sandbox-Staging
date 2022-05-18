@@ -13,7 +13,8 @@ public class OpportunityTriggerHandler {
     BatchSize = size;
     slaDefList = [SELECT DeveloperName,Event_Source__c,Opportunity_Source__c,Product_Type__c,SLA__c,StageName__c FROM Sla_Manager__mdt WHERE Object_Name__c = 'Opportunity' ORDER BY DeveloperName ASC];
     NewOppSources = slaDefList[0].Opportunity_Source__c; // First Definition is used for Opportunity Source Breaches
-    }
+    system.debug('NewOppSources'+NewOppSources);
+}
     
     decimal getSLA(Opportunity opp) {
         // Routine loops through all metadata for opportunities and if a match is found, returns the SLA based on Event_Source__c,Opportunity_Source__c,Product_Type__c & StageName__c combination.
@@ -22,11 +23,11 @@ public class OpportunityTriggerHandler {
         Boolean opportunitySourceOK,productTypeOK,eventSourceOK,stageOK;
         String defEventSource,defOppSource,defOppProductType,defStage;
         Decimal sla;
-        opportunitySourceOK = false;
-        productTypeOK       = false;
-        eventSourceOK       = false;
-        stageOK             = false;
         for(Sla_Manager__mdt slaDef : slaDefList) {
+          opportunitySourceOK = false;
+          productTypeOK       = false;
+          eventSourceOK       = false;
+          stageOK             = false;
           if(slaDef.Event_Source__c == '*') { // * = something has to have been chosen, but it doesn't matter what.
             if(!String.isBlank(opp.Event_Source__c)) {
               eventSourceOK = true;
@@ -530,9 +531,13 @@ updateSLAFields(Trigger.new, Trigger.old);
                                           from businesshours
                                           where isDefault = true];
 
-        
+        system.debug('stdBusinessHours'+stdBusinessHours);
         Map<string, Opportunity> mapOldOpportunity = new Map<string, Opportunity>();
-         
+       
+
+        
+
+
         if (trigger.isBefore){
             if (trigger.isinsert){
                 if (newOppList.size() > 0){
@@ -555,7 +560,7 @@ updateSLAFields(Trigger.new, Trigger.old);
                            l.TimeStamp_Analyzing_Needs_status__c = DateTime.now();
                         }
                         else if (status == 'Fulfillment'){
-                            l.TimeStamp_Fulfilment_status__c = DateTime.now();
+                            l.TimeStamp_Fulfillment_status__c = DateTime.now();
                         }
                         
                         /*----------Update Yellow and Breach TimeStamp Fields--------*/
@@ -583,19 +588,46 @@ updateSLAFields(Trigger.new, Trigger.old);
                 for (Opportunity ol : oldOpportunityList){
                     mapOldOpportunity.put(ol.Id, ol);
                 }
+                set<id> ids=new set<id>();
+                for (Opportunity ol : newOppList){
+                    ids.add(ol.id);
+                }
+                List<OpportunityFieldHistory> HrsHistory=new list<OpportunityFieldHistory>();
+                HrsHistory=[Select Id,Opportunity.id, CreatedById, CreatedDate,Field, NewValue, OldValue from OpportunityFieldHistory where 
+                ( field = 'Hour_Spent_Outreach_Status__c' or field = 'Hour_Spent_New_Status__c' or field = 'Hour_Spent_Analyzing_Needs_Status__c' or field = 'Hour_Spent_Considering_Status__c' or field = 'Hour_Spent_Fulfillment_Status__c' ) 
+               and Opportunity.id IN: ids Order by CreatedDate DESC ];
+
+                map<string,OpportunityFieldHistory> dd=new map<string,OpportunityFieldHistory>();
+                for(OpportunityFieldHistory oo:HrsHistory)
+                {
+
+                 if( !dd.containsKey(oo.Field))
+                 dd.put(oo.Field,oo);
+
+                }
                 if (newOppList.size() > 0){
                     for (Opportunity l : newOppList){
                         /*--------Update SLA Field------*/
+                       
                         string status = l.StageName;
+                        id oppid=l.id;
+                        system.debug('l.id'+l.id);
                         Opportunity oldOpportunity = mapOldOpportunity.get(l.Id);
                         string oldStatus = oldOpportunity.StageName;
+                        decimal oldSLAhrs = oldOpportunity.SLA_Business_Hours__c;
                         string oldProductType = oldOpportunity.Product_Type__c;
                         string newProductType = l.Product_Type__c;
                         string oldoppSource = oldOpportunity.Opportunity_Source__c;
                         string newoppSource = l.Opportunity_Source__c;
-    
+                          system.debug('newoppSource'+newoppSource);
+                          system.debug('oldoppSource'+oldoppSource);
                          l.SLA_Business_Hours__c = getSLA(l);
-                        /*--------Update TimeStamp Fields------*/
+                         DateTime currentTime = Datetime.now();
+                         decimal TimeDiff;
+                         decimal hh;
+                        
+                         Datetime HrsHistoryT;
+                         /*--------Update TimeStamp Fields------*/
                         if (Status == 'New' && oldStatus != 'New'){
                             l.TimeStamp_New_status__c = DateTime.now();
                         } else if (Status == 'Outreach' && oldStatus != 'Outreach'){
@@ -608,7 +640,7 @@ updateSLAFields(Trigger.new, Trigger.old);
                            l.TimeStamp_Analyzing_Needs_status__c = DateTime.now();
                         }
                         else if (Status == 'Fulfillment' && oldStatus != 'Fulfillment'){
-                            l.TimeStamp_Fulfilment_status__c = DateTime.now();
+                            l.TimeStamp_Fulfillment_status__c = DateTime.now();
                         }
                         
                         /*----------Update Yellow and Breach TimeStamp Fields--------*/
@@ -640,7 +672,7 @@ updateSLAFields(Trigger.new, Trigger.old);
                             }
                         }
                         
-                        else if(NewOppSources.contains(newoppSource) && !NewOppSources.contains(oldoppSource) && newProductType == 'Mortgage' && l.SLA_Business_Hours__c != NULL && stdBusinessHours != NULL && l.StageName == 'New' && l.TimeStamp_New_status__c != null){
+                        else if(newoppSource!=null && oldoppSource!=null && NewOppSources.contains(newoppSource) && !NewOppSources.contains(oldoppSource) && newProductType == 'Mortgage' && l.SLA_Business_Hours__c != NULL  && stdBusinessHours != NULL  && l.StageName == 'New' && l.TimeStamp_New_status__c != null  ){
                             l.SLA_Yellow_Start_Time__c = BusinessHours.addgmt(stdBusinessHours.id, l.TimeStamp_New_status__c, (Long) ((l.SLA_Business_Hours__c - 1) * 3600000));                            
                             l.SLA_Breach_Time__c = BusinessHours.addgmt(stdBusinessHours.id, l.TimeStamp_New_status__c, (Long) ((l.SLA_Business_Hours__c) * 3600000));
                             if(l.Hour_Spent_New_Status__c != 0 && l.Hour_Spent_New_Status__c != null){
@@ -648,39 +680,224 @@ updateSLAFields(Trigger.new, Trigger.old);
                                 l.SLA_Breach_Time__c = BusinessHours.addgmt(stdBusinessHours.id, l.SLA_Breach_Time__c, -(Long)(l.Hour_Spent_New_Status__c*3600000));
                             }
                         }
+                        else if(l.SLA_Business_Hours__c!=null && oldSLAhrs!=null ){
+                        
+                        if(l.SLA_Business_Hours__c!=oldSLAhrs){
+
+                            l.SLA_Yellow_Start_Time__c = BusinessHours.addgmt(stdBusinessHours.id, currentTime, (Long) ((l.SLA_Business_Hours__c - 1) * 3600000));                            
+                            l.SLA_Breach_Time__c = BusinessHours.addgmt(stdBusinessHours.id, currentTime, (Long) ((l.SLA_Business_Hours__c) * 3600000));
+                            system.debug('SLA_Business_Hours__c!=oldSLAhrs');
+                        }
+                    }
                         
                         /*----------Update Hours Spent Fields--------*/
-                        DateTime currentTime = Datetime.now();
+
+                        system.debug('status'+status);
+
                         if (status != 'New' && oldStatus == 'New' && l.TimeStamp_New_status__c != null){
-                            decimal TimeDiff = BusinessHours.diff(stdBusinessHours.id, l.TimeStamp_New_status__c, currentTime);
-                            decimal hh = (TimeDiff / 3600000).setScale(2);
+                            OpportunityFieldHistory tempobj=dd.get('Hour_Spent_New_Status__c');
+                            DateTime ValueforDifference;
+                            if(tempobj != null){
+                                HrsHistoryT=tempobj.CreatedDate;
+                                if(HrsHistoryT > l.TimeStamp_New_status__c){
+                                    ValueforDifference = HrsHistoryT;
+                                }
+                                   else{
+                                       ValueforDifference = l.TimeStamp_New_status__c;
+                                   }
+                            }
+                            else{
+                                ValueforDifference = l.TimeStamp_New_status__c;
+                            }
+                                                        
+
+                            if( l.Hour_Spent_Outreach_Status__c == null && l.Hour_Spent_Considering_Status__c == null && l.Hour_Spent_Analyzing_Needs_Status__c == null && l.Hour_Spent_Fulfillment_Status__c == null)
+                            {
+                                TimeDiff = BusinessHours.diff(stdBusinessHours.id,l.TimeStamp_New_status__c, currentTime);
+                				hh = (TimeDiff / 3600000).setScale(2);
+                                l.Hour_Spent_New_Status__c = hh;
+                                system.debug('665 '+  l.Hour_Spent_New_Status__c);
+                            }
+                            else{
+                                TimeDiff = BusinessHours.diff(stdBusinessHours.id,ValueforDifference, currentTime);
+                				hh = (TimeDiff / 3600000).setScale(2);
                             l.Hour_Spent_New_Status__c = l.Hour_Spent_New_Status__c != null ? l.Hour_Spent_New_Status__c + hh : hh;
+                            system.debug('  669 '+  l.Hour_Spent_New_Status__c);
+                        }
+                            
                             if(oldOpportunity.isSLABreached__c == true){
                                 l.SLABreached__c = true;
                             }
                         } 
                         else if (Status != 'Outreach' && oldStatus == 'Outreach' && l.TimeStamp_Outreach_status__c != null){
-                            decimal TimeDiff = BusinessHours.diff(stdBusinessHours.id, l.TimeStamp_Outreach_status__c, currentTime);
-                            decimal hh = (TimeDiff / 3600000).setScale(2);
-                            l.Hour_Spent_Outreach_Status__c = l.Hour_Spent_Outreach_Status__c != null ? l.Hour_Spent_Outreach_Status__c + hh : hh;
+                            
+                            OpportunityFieldHistory tempobj=dd.get('Hour_Spent_Outreach_Status__c');
+                            if(tempobj != null){
+                            HrsHistoryT=tempobj.CreatedDate;
+                            
+                            if(HrsHistoryT > l.TimeStamp_Outreach_status__c){
+                                TimeDiff = BusinessHours.diff(stdBusinessHours.id, HrsHistoryT, currentTime);
+                                hh = (TimeDiff / 3600000).setScale(2);
+                               system.debug('HrsHistoryT ');
+                               system.debug('TimeDiff '+TimeDiff);
+                               system.debug('hh '+hh);
+                               }
+                               else{
+                                TimeDiff = BusinessHours.diff(stdBusinessHours.id, l.TimeStamp_Outreach_status__c, currentTime);
+                                hh = (TimeDiff / 3600000).setScale(2);
+                               system.debug('timestamp ');
+                               system.debug('TimeDiff '+TimeDiff);
+                               system.debug('hh '+hh);
+
+                               }
+                            }
+                               
+                               else{
+                                TimeDiff = BusinessHours.diff(stdBusinessHours.id, l.TimeStamp_Outreach_status__c, currentTime);
+                                hh = (TimeDiff / 3600000).setScale(2);
+                               system.debug('timestamp ');
+                               system.debug('TimeDiff '+TimeDiff);
+                               system.debug('hh '+hh);
+
+                               }
+
+                            if(  l.Hour_Spent_New_Status__c == null && l.Hour_Spent_Considering_Status__c == null && l.Hour_Spent_Analyzing_Needs_Status__c == null && l.Hour_Spent_Fulfillment_Status__c == null)
+                            {
+                                l.Hour_Spent_Outreach_Status__c = hh;
+                                system.debug(' l.Hour_Spent_Outreach_Status__c '+   l.Hour_Spent_Outreach_Status__c);
+                            }
+                            else{
+                                l.Hour_Spent_Outreach_Status__c = l.Hour_Spent_Outreach_Status__c != null ? l.Hour_Spent_Outreach_Status__c + hh : hh;
+                                system.debug('   l.Hour_Spent_Outreach_Status__c '+   l.Hour_Spent_Outreach_Status__c);
+                        }
+
                             if(oldOpportunity.isSLABreached__c == true){
                                 l.SLABreached__c = true;
                             }
                         } 
                         else if (status != 'Considering' && oldStatus == 'Considering' && l.TimeStamp_Considering_status__c != null){
-                            decimal TimeDiff = BusinessHours.diff(stdBusinessHours.id, l.TimeStamp_Considering_status__c, currentTime);
-                            decimal hh = (TimeDiff / 3600000).setScale(2);
-                            l.Hour_Spent_Considering_Status__c = l.Hour_Spent_Considering_Status__c != null ? l.Hour_Spent_Considering_Status__c + hh : hh;
+                            OpportunityFieldHistory tempobj=dd.get('Hour_Spent_Considering_Status__c');
+                            if(tempobj != null){
+                            HrsHistoryT=tempobj.CreatedDate;
+                            if(HrsHistoryT > l.TimeStamp_Considering_status__c){
+                                TimeDiff = BusinessHours.diff(stdBusinessHours.id, HrsHistoryT, currentTime);
+                                hh = (TimeDiff / 3600000).setScale(2);
+                               system.debug('HrsHistoryT ');
+                               system.debug('TimeDiff '+TimeDiff);
+                               system.debug('hh '+hh);
+                               }
+                               else{
+                                TimeDiff = BusinessHours.diff(stdBusinessHours.id, l.TimeStamp_Considering_status__c, currentTime);
+                                hh = (TimeDiff / 3600000).setScale(2);
+                               system.debug('timestamp ');
+                               system.debug('TimeDiff '+TimeDiff);
+                               system.debug('hh '+hh);
+
+                               }
+                            }
+                               else{
+                                TimeDiff = BusinessHours.diff(stdBusinessHours.id, l.TimeStamp_Considering_status__c, currentTime);
+                                hh = (TimeDiff / 3600000).setScale(2);
+                               system.debug('timestamp ');
+                               system.debug('TimeDiff '+TimeDiff);
+                               system.debug('hh '+hh);
+
+                               }
+                          
+                            if(  l.Hour_Spent_New_Status__c == null &&  l.Hour_Spent_Outreach_Status__c == null && l.Hour_Spent_Analyzing_Needs_Status__c == null && l.Hour_Spent_Fulfillment_Status__c == null)
+                            {
+                                l.Hour_Spent_Considering_Status__c = hh;
+                                system.debug('l.Hour_Spent_Considering_Status__c '+  l.Hour_Spent_Considering_Status__c);
+                            }
+                            else{
+                                l.Hour_Spent_Considering_Status__c = l.Hour_Spent_Considering_Status__c != null ? l.Hour_Spent_Considering_Status__c + hh : hh;
+                                system.debug('  l.Hour_Spent_Considering_Status__c '+  l.Hour_Spent_Considering_Status__c);
+                        }
+
+
+
                         } 
                         else if (status != 'Analyzing Needs' && oldStatus == 'Analyzing Needs' && l.TimeStamp_Analyzing_Needs_status__c != null){
-                            decimal TimeDiff = BusinessHours.diff(stdBusinessHours.id, l.TimeStamp_Analyzing_Needs_status__c, currentTime);
-                            decimal hh = (TimeDiff / 3600000).setScale(2);
-                            l.Hour_Spent_Analyzing_Needs_Status__c = l.Hour_Spent_Analyzing_Needs_Status__c != null ? l.Hour_Spent_Analyzing_Needs_Status__c + hh : hh;
+                            OpportunityFieldHistory tempobj=dd.get('Hour_Spent_Analyzing_Needs_Status__c');
+                            if(tempobj != null){
+                            HrsHistoryT=tempobj.CreatedDate;
+                            if(HrsHistoryT > l.TimeStamp_Analyzing_Needs_status__c){
+                                TimeDiff = BusinessHours.diff(stdBusinessHours.id, HrsHistoryT, currentTime);
+                                hh = (TimeDiff / 3600000).setScale(2);
+                               system.debug('HrsHistoryT ');
+                               system.debug('TimeDiff '+TimeDiff);
+                               system.debug('hh '+hh);
+                               }
+                               else{
+                                TimeDiff = BusinessHours.diff(stdBusinessHours.id, l.TimeStamp_Analyzing_Needs_status__c, currentTime);
+                                hh = (TimeDiff / 3600000).setScale(2);
+                               system.debug('timestamp ');
+                               system.debug('TimeDiff '+TimeDiff);
+                               system.debug('hh '+hh);
+
+                               }
+                            }
+                            else{
+                                TimeDiff = BusinessHours.diff(stdBusinessHours.id, l.TimeStamp_Analyzing_Needs_status__c, currentTime);
+                                hh = (TimeDiff / 3600000).setScale(2);
+                               system.debug('timestamp ');
+                               system.debug('TimeDiff '+TimeDiff);
+                               system.debug('hh '+hh);
+
+                               }
+                            if(  l.Hour_Spent_New_Status__c == null &&  l.Hour_Spent_Outreach_Status__c == null && l.Hour_Spent_Considering_Status__c == null && l.Hour_Spent_Fulfillment_Status__c == null)
+                            {
+                                l.Hour_Spent_Analyzing_Needs_Status__c = hh;
+                                system.debug('l.Hour_Spent_Analyzing_Needs_Status__c '+  l.Hour_Spent_Analyzing_Needs_Status__c);
+                            }
+                            else{
+                                l.Hour_Spent_Analyzing_Needs_Status__c = l.Hour_Spent_Analyzing_Needs_Status__c != null ? l.Hour_Spent_Analyzing_Needs_Status__c + hh : hh;
+                                system.debug('  l.Hour_Spent_Analyzing_Needs_Status__c '+  l.Hour_Spent_Analyzing_Needs_Status__c);
+                        }
+                        
+
                         } 
-                        else if (status != 'Fulfillment' && oldStatus == 'Fulfillment' && l.TimeStamp_Fulfilment_status__c != null){
-                            decimal TimeDiff = BusinessHours.diff(stdBusinessHours.id, l.TimeStamp_Fulfilment_status__c, currentTime);
-                            decimal hh = (TimeDiff / 3600000).setScale(2);
-                            l.Hour_Spent_Fulfilment_Status__c = l.Hour_Spent_Fulfilment_Status__c != null ? l.Hour_Spent_Fulfilment_Status__c + hh : hh;
+                        else if (status != 'Fulfillment' && oldStatus == 'Fulfillment' && l.TimeStamp_Fulfillment_status__c != null){
+                            OpportunityFieldHistory tempobj=dd.get('Hour_Spent_Fulfillment_Status__c');
+                            if(tempobj != null){
+                            HrsHistoryT=tempobj.CreatedDate;
+                            if(HrsHistoryT > l.TimeStamp_Fulfillment_status__c){
+                                TimeDiff = BusinessHours.diff(stdBusinessHours.id, HrsHistoryT, currentTime);
+                                hh = (TimeDiff / 3600000).setScale(2);
+                               system.debug('HrsHistoryT ');
+                               system.debug('TimeDiff '+TimeDiff);
+                               system.debug('hh '+hh);
+                               }
+                               else{
+                                TimeDiff = BusinessHours.diff(stdBusinessHours.id, l.TimeStamp_Fulfillment_status__c, currentTime);
+                                hh = (TimeDiff / 3600000).setScale(2);
+                               system.debug('timestamp ');
+                               system.debug('TimeDiff '+TimeDiff);
+                               system.debug('hh '+hh);
+
+                               }
+                            }
+                            else{
+                                TimeDiff = BusinessHours.diff(stdBusinessHours.id, l.TimeStamp_Fulfillment_status__c, currentTime);
+                                hh = (TimeDiff / 3600000).setScale(2);
+                               system.debug('timestamp ');
+                               system.debug('TimeDiff '+TimeDiff);
+                               system.debug('hh '+hh);
+
+                               }
+
+
+                            if(  l.Hour_Spent_New_Status__c == null &&  l.Hour_Spent_Outreach_Status__c == null && l.Hour_Spent_Considering_Status__c == null && l.Hour_Spent_Analyzing_Needs_Status__c == null)
+                            {
+                                l.Hour_Spent_Fulfillment_Status__c = hh;
+                                system.debug('l.Hour_Spent_Fulfillment_Status__c '+  l.Hour_Spent_Fulfillment_Status__c);
+                            }
+                            else{
+                                l.Hour_Spent_Fulfillment_Status__c = l.Hour_Spent_Fulfillment_Status__c != null ? l.Hour_Spent_Fulfillment_Status__c + hh : hh;
+                                system.debug('  l.Hour_Spent_Fulfillment_Status__c '+ l.Hour_Spent_Fulfillment_Status__c);
+                        }
+
+                        
                         }
                         
                         
@@ -690,8 +907,5 @@ updateSLAFields(Trigger.new, Trigger.old);
         }
         
     }
-    /*----PRJ0011432-11432: MARS Functionality Review Changes End-----*/
-    
-    
-    
 }
+    /*----PRJ0011432-11432: MARS Functionality Review Changes End-----*/
