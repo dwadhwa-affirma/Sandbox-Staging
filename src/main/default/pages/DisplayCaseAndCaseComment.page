@@ -247,9 +247,9 @@
                                                     </apex:panelGrid>
                                                 </div>
                                                 <a href="#" class="btn btn-primary action_submit"
-                                                    onClick="submitform(false);">Reply</a>
+                                                    onClick="checkEmail(false);">Reply</a>
                                                  <a href="#" class="btn btn-primary action_submit" id="btnReplyAdd"
-                                                    onClick="submitform(true);">Reply and Add File</a>
+                                                    onClick="checkEmail(true);">Reply and Add File</a>
                                                 <apex:commandButton id="cmdSave" value="Save"
                                                     reRender="PageVariables" status="actStatusId"
                                                     style="visibility: hidden;" />
@@ -868,9 +868,10 @@
                             var h = iframeDocument.getElementById('DisplayCaseandCasecomment:DisplayCaseandCasecommentForm:message_rta_body');
                             j$(h).html(html);
             }
-            var addattachmentglobal;;
-            function submitform(addattachment)
-            {
+            var addattachmentglobal;
+
+    /*STRY0012065  - Adding warning if member tries to create or reply to a secure email if they don't have an email address.*/
+            function checkEmail(addattachment){
                 /*STRY0012049: Chnages to detect invalid session Start*/
                 try{                    
                     sforce.connection.sessionId = '{!$Api.Session_ID}';                   
@@ -882,7 +883,36 @@
                 }
 
                 /*STRY0012049: Chnages to detect invalid session End*/
-                  
+
+                var isEmptyEmail = true;
+                DisplayCaseController.GetEmailAddress(function(result, event)
+                {
+                    j$.blockUI({ css: { 
+                        border: 'none', 
+                        padding: '15px', 
+                        backgroundColor: '#000', 
+                        '-webkit-border-radius': '10px', 
+                        '-moz-border-radius': '10px', 
+                        opacity: .5, 
+                        color: '#fff' 
+                    } }); 
+            
+                setTimeout(j$.unblockUI, 2000); 	
+                    var Email= result.Email;
+                    if(Email == undefined || Email == '' || Email == null){
+                        isEmptyEmail = true;
+                        alert(result.ErrorMessage);
+                        return false;
+                    }
+                    else{
+                        isEmptyEmail = false;
+                        submitform(addattachment);
+                    }
+                });
+            }
+
+            function submitform(addattachment)
+            {
                             casecomment = getRTEValue();                           
                             var casecommenttext = getRTETextValue();
                             casecommenttext = casecommenttext.replace(/[\u200B-\u200D\uFEFF]/g, '');
@@ -904,8 +934,7 @@
                             var dtype ;
                             if(isMobile.phone)
                                {
-                                 dtype = 'Mobile';
-                                 
+                                 dtype = 'Mobile';                            
                                     
                                   
                                }

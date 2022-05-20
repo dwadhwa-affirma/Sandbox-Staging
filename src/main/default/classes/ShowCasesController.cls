@@ -11,10 +11,7 @@ global with sharing  class ShowCasesController {
      public static Boolean isTyfone;
     
     public static String tyfoneSSN;
-	 
-   //  public string redirecturl {get;set;}
-  //   public string path {get;set;}
-  //   public string currenturl {get;set;}
+	
     // constructor
     	public ShowCasesController() 
     	{
@@ -51,7 +48,7 @@ global with sharing  class ShowCasesController {
          	userAccount.userBusinessContact = c[0];
          }
             
-	    userAccount.fedid =  userAccount.Get10DigitFid(userAccount.fedid);
+	    userAccount.fedid =  userAccount.fedid.leftPad(10,'0');
         system.debug('ttt'+userAccount.fedid);    
 	    List<Person_Account__c> personaccounts =  [SELECT Account_Number__c,Id,Name, PersonID__c FROM Person_Account__c Where Name_Type__c = 0 and Account_Number__r.Name =:userAccount.fedid];
             
@@ -148,7 +145,7 @@ global with sharing  class ShowCasesController {
         	userAccount.userBusinessContact = c[0];
         }
             
-	    userAccount.fedid =  userAccount.Get10DigitFid(userAccount.fedid);
+	    userAccount.fedid =  userAccount.fedid.leftPad(10,'0');
 	    List<Person_Account__c> personaccounts =  [SELECT Account_Number__c,Id,Name, PersonID__c FROM Person_Account__c Where Name_Type__c = 0 and Account_Number__r.Name =:userAccount.fedid];
             
             
@@ -513,7 +510,7 @@ global with sharing  class ShowCasesController {
 		
 		 				
        	}
-     	messagecount = GetMessageCount();
+     	messagecount = GetMessageCount();		
        	string shortdesc ='';
        	List<Message> messages = new List<Message>();
        	if(cases.size()>0)
@@ -769,22 +766,7 @@ global with sharing  class ShowCasesController {
 	@RemoteAction
 	global static void UpdateIsMarkRead(string id)
 	{	
-		System.debug('-------------In--------------');
-        /*List<Case> cdata =[SELECT ID, IsMarkRead__c from case where Id =: id];
-			for(Case cas:cdata)
-			{
-				cas.IsMarkRead__c = true;
-				update cas;
-			}
-		List<Member_Comment__c> membercomments =  [SELECT Case__r.Id,Member_Read_Date_Time__c, CreatedDate,Id,Member_Comment__c,Name, IsRead__c FROM Member_Comment__c Where case__r.Id =: id and draft__c != true and IsRead__c != true];
-		
-			for(Member_Comment__c mc:membercomments)
-			{
-				mc.IsRead__c = true;
-				mc.Member_Read_Date_Time__c = System.now();
-				
-			}
-			update membercomments;*/
+		System.debug('-------------In--------------');        
 	}
 	/* method supports get message count call*/
 	@RemoteAction
@@ -806,7 +788,7 @@ global with sharing  class ShowCasesController {
          	userAccount.userBusinessContact = c[0];
          }
             
-	    userAccount.fedid =  userAccount.Get10DigitFid(userAccount.fedid);
+	    userAccount.fedid =  userAccount.fedid.leftPad(10,'0');
 	    List<Person_Account__c> personaccounts =  [SELECT Account_Number__c,Id,Name, PersonID__c FROM Person_Account__c Where Name_Type__c = 0 and Account_Number__r.Name =:userAccount.fedid];
             
             
@@ -890,7 +872,7 @@ global with sharing  class ShowCasesController {
         
         userAccount.CurrentUser = u[0];
         userAccount.fedid = u[0].FederationIdentifier;
-        userAccount.fedid = userAccount.Get10DigitFid(userAccount.fedid);
+        userAccount.fedid = userAccount.fedid.leftPad(10,'0');
         
         List<Person_Account__c> personaccounts = [SELECT Account_Number__c, Id, Name, PersonID__c,Account_Number__r.name
                                                   FROM Person_Account__c
@@ -966,4 +948,87 @@ global with sharing  class ShowCasesController {
 		return options;
 	}
 
+	/*STRY0012065  - Getting Email Address and adding warning if member tries to create or reply to a secure email if they don't have an email address.*/
+	@RemoteAction
+    global static EmailWrapper GetEmailAddress()
+	{	
+		EmailWrapper EmailResult = new EmailWrapper();
+		CFCUAccount userAccount = new CFCUAccount();        
+        string LoggedinUser = UserInfo.getUserId();
+        List<User> u = [SELECT Name, ContactId, FederationIdentifier from User Where ID = :LoggedinUser];
+           
+        
+        userAccount.CurrentUser = u[0];
+        userAccount.fedid = u[0].FederationIdentifier;
+        userAccount.fedid = userAccount.fedid.leftPad(10,'0');
+        
+        List<Account_Details__c> ad = [Select name,Brand__c FROM Account_Details__c Where name = :userAccount.fedid LIMIT 1];
+        if (ad.size() > 0){
+            userAccount.Brand = ad[0].Brand__c;
+        }
+        
+        string acName  = userAccount.fedid + '-' + userAccount.Brand;
+        string acName2 = u[0].FederationIdentifier + '-' + userAccount.Brand;
+            
+        String AccString;
+        List<String> AccList = new List<String>();
+        List<String> AccDisList = new List<String>();
+       
+        List<Account> aList = [SELECT Id,Name,Description FROM Account WHERE Name=:acName OR Name =:acName2 order by lastmodifieddate desc Limit 1];
+        
+        
+        if(aList.size()>0){
+            if(aList[0].Description != null){
+                
+                AccString = aList[0].Description.replaceAll('[()]', '');            	
+                AccDisList.add(userAccount.fedid);
+               
+                if(AccString != null){
+                    AccList = AccString.split(',');
+                }                
+                
+                if(AccList.size() != 1){                	                                     
+                    tyfoneSSN =(AccList[AccList.size()-1]).right(9);                    
+                    AccList.remove(AccList.size()-1);               
+                }
+                else if(AccList.size() == 1){                    
+                    tyfoneSSN =(AccList[AccList.size()-1]).right(9);                                   
+                }
+            }                     
+        }
+		system.debug('tyfoneSSN=='+tyfoneSSN);
+		string TyfoneEmail = '';	
+		string strSSN = '%' + tyfoneSSN;	
+		system.debug('strSSN=='+strSSN);
+		List<Person_Account__c> paPrimary = [SELECT Id, Account_Number__c,  PersonID__c, Account_Number__r.RecType__c, TypeTranslate__c, 
+                                       Account_Number__r.Name,PersonID__r.PersonID__c,PersonID__r.Name, PersonID__r.PersonEmail	
+                                       FROM Person_Account__c 
+                                       where PersonID__r.PersonID__c like :strSSN                         			   
+                         			   order by CreatedDate LIMIT 1];
+		if(paPrimary.size() > 0){           
+            if(string.isNotBlank(paPrimary[0].PersonID__r.PersonEmail))
+				TyfoneEmail = paPrimary[0].PersonID__r.PersonEmail;
+			else {
+				TyfoneEmail = '';
+				List<Secure_Email_Messages__mdt> SEmdt = [SELECT id, Message__c, Label, Brand__c from Secure_Email_Messages__mdt where Brand__c =: userAccount.Brand and Label like 'Email_Not_Available%' limit 1];
+				if(SEmdt.size() > 0){
+					EmailResult.ErrorMessage = SEmdt[0].Message__c;
+				}
+				
+			}
+        }
+
+		
+		
+		system.debug('TyfoneEmail=='+TyfoneEmail);
+		EmailResult.Email = TyfoneEmail;
+		
+		return EmailResult;
+		
+	}
+
+	global class EmailWrapper{
+		public string Email {get; set;}
+		public string ErrorMessage {get; set;}
+	}
 }
