@@ -100,10 +100,8 @@
 				<div class="row">
 					<div class="content_area clearfix">
 						<div class="sidebar">
-							<div class="col-xs-12 col-md-4 col-lg-2">
-
-								<a href="{!$Site.Prefix}/CreateCase"
-									class="btn btn-primary action_submit inqbtn">Create New Inquiry</a>
+							<div class="col-xs-12 col-md-4 col-lg-2">									
+								<a href="#" class="btn btn-primary action_submit inqbtn" onclick="CreateInquiry();">Create New Inquiry</a>								
 								<div class="sidebar_nav_list">
 									<ul class="sb_navlist">
 										<li><a href="#" onclick="CallLoadCase()" id="messageNav"><span>Messages</span>
@@ -552,37 +550,13 @@ function CustomerPageModel(data, messageCount)
 	self.cases = ExtractModels(self, data, CustomerModel);
 		
 	self.MessageCount = messageCount;
-	var filters = [
-		/*{
-			Type: "text",
-			Name: "CaseNumber",
-			Value: ko.observable(""),
-			RecordValue: function(record) { return record.CaseNumber; }
-		},*/
+	var filters = [		
 		{
 			Type: "text",
 			Name: "Primary_Category__c",
 			Value: ko.observable(""),
 			RecordValue: function(record) { return record.Primary_Category__c; }
-		},
-		/*{
-			Type: "text",
-			Name: "Subject",
-			Value: ko.observable(""),
-			RecordValue: function(record) { return record.Subject; }
-		},
-		{
-			Type: "text",
-			Name: "Description",
-			Value: ko.observable(""),
-			RecordValue: function(record) { return decodeEntities(record.Description); }
-		},
-		{
-			Type: "text",
-			Name: "Priority",
-			Value: ko.observable(""),
-			RecordValue: function(record) { return record.Priority; }
-		},*/
+		},		
 		{
 			Type: "text",
 			Name: "CreatedDate",
@@ -705,19 +679,7 @@ function PagerModel(records)
 	        } }); 
 	 
 	       setTimeout(j$.unblockUI, 500); 
-		self.changePageIndex(0);
-		
-		/*if(self.recordCount() < (self.currentPageIndex() + 1 ) * pageSize)
-			{
-				j$('.endindex').text(self.recordCount());
-			}
-			else
-			{
-				j$('.endindex').text((self.currentPageIndex() + 1 ) * pageSize);
-			}
-			
-		j$('.pagenext').removeClass('disabled');
-		j$('.pageprev').addClass('disabled');*/
+		self.changePageIndex(0);		
 	};
 	self.movePrevious = function() {
 		
@@ -732,46 +694,7 @@ function PagerModel(records)
         } }); 
  
        setTimeout(j$.unblockUI, 500); 
-       self.changePageIndex(self.currentPageIndex() - 1);
-		/*if(self.currentPageIndex()== 0 && self.maxPageIndex() <1)
-		{
-			j$('.pagenext').addClass('disabled');
-			j$('.pageprev').addClass('disabled');
-		}
-		else if(self.currentPageIndex()== 0 && self.maxPageIndex() >= 1)
-		{
-			j$('.pagenext').removeClass('disabled');
-			j$('.pageprev').addClass('disabled');
-		}
-		else if(self.currentPageIndex() > 0  && self.maxPageIndex() >= 1)
-		{
-			
-			self.changePageIndex(self.currentPageIndex() - 1);
-			if(self.currentPageIndex()==0)
-			{
-				j$('.pagenext').removeClass('disabled');
-				j$('.pageprev').addClass('disabled');
-			}
-			else
-			{
-				j$('.pagenext').removeClass('disabled');
-				j$('.pageprev').removeClass('disabled');
-			}
-		}
-		
-		if(self.recordCount() < (self.currentPageIndex() + 1 ) * pageSize)
-		{
-				j$('.endindex').text(self.recordCount());
-		}
-		else
-		{
-			j$('.endindex').text((self.currentPageIndex() + 1 ) * pageSize);
-		}
-		*/
-		
-		
-	
-	 
+       self.changePageIndex(self.currentPageIndex() - 1);		
 	};
 	self.moveNext = function() {
 			
@@ -786,52 +709,7 @@ function PagerModel(records)
 	        } }); 
 	 
 	       setTimeout(j$.unblockUI, 500); 
-       		self.changePageIndex(self.currentPageIndex() + 1);
-			/*if(self.currentPageIndex()== 0 && self.maxPageIndex() <1)
-			{
-				j$('.pagenext').addClass('disabled');
-				j$('.pageprev').addClass('disabled');
-			}
-			else if(self.currentPageIndex() == self.maxPageIndex())
-			{
-				j$('.pagenext').addClass('disabled');
-			
-			}
-			else if(self.currentPageIndex()== 0 && self.maxPageIndex() >= 1)
-			{
-				//j$('.pagenext').removeClass('disabled');
-				//j$('.pageprev').removeClass('disabled');
-				self.changePageIndex(self.currentPageIndex() + 1);
-				if(self.currentPageIndex() == self.maxPageIndex())
-				{
-					j$('.pageprev').removeClass('disabled');
-					j$('.pagenext').addClass('disabled');
-				}
-				else
-				{
-					j$('.pagenext').removeClass('disabled');
-					j$('.pageprev').removeClass('disabled');
-				}
-				
-			}
-			else
-			{
-				j$('.pagenext').removeClass('disabled');
-				
-				self.changePageIndex(self.currentPageIndex() + 1);
-			
-			}
-			
-			if(self.recordCount() < (self.currentPageIndex() + 1 ) * pageSize)
-			{
-				j$('.endindex').text(self.recordCount());
-			}
-			else
-			{
-				j$('.endindex').text((self.currentPageIndex() + 1 ) * pageSize);
-			}
-			
-		*/
+       		self.changePageIndex(self.currentPageIndex() + 1);		
 		
 	};
 	self.moveLast = function() {
@@ -847,19 +725,7 @@ function PagerModel(records)
 		        } }); 
 		 
 		       setTimeout(j$.unblockUI, 500); 
-			self.changePageIndex(self.maxPageIndex());
-		
-		/*	if(self.recordCount() < (self.currentPageIndex() + 1 ) * pageSize)
-			{
-				j$('.endindex').text(self.recordCount());
-			}
-			else
-			{
-				j$('.endindex').text((self.currentPageIndex() + 1 ) * pageSize);
-			}
-			
-			j$('.pageprev').removeClass('disabled');
-			j$('.pagenext').addClass('disabled');*/
+			self.changePageIndex(self.maxPageIndex());		
 	};
 	self.changePageIndex = function(newIndex) {
 		if (newIndex < 0
@@ -1479,6 +1345,32 @@ function CallLoadCase()
  function CallbackUpdateRead(chk_id)
  { 	
  	
+ }
+
+ /*STRY0012065  - Adding warning if member tries to create or reply to a secure email if they don't have an email address.*/
+ function CreateInquiry(){
+	ShowCasesController.GetEmailAddress(function(result, event)
+	{
+		j$.blockUI({ css: { 
+            border: 'none', 
+            padding: '15px', 
+            backgroundColor: '#000', 
+            '-webkit-border-radius': '10px', 
+            '-moz-border-radius': '10px', 
+            opacity: .5, 
+            color: '#fff' 
+        } }); 
+ 
+       setTimeout(j$.unblockUI, 2000); 	
+		var Email= result.Email;
+	 	if(Email == undefined || Email == '' || Email == null){
+			alert(result.ErrorMessage);
+		}
+		else{
+			window.location.href='{!$Site.Prefix}/CreateCase';
+		}
+	});	
+	
  }
  
     </script>

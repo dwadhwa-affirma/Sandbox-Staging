@@ -90,27 +90,7 @@
                 </head>
                 <body class="MailDisplayPg">
                  <apex:form id="DisplayCaseandCasecommentForm" forceSSL="true">
-                    <div class="container" id="container">
-                        <!--<div class="row">
-                            <div class="header">
-                                <div class="col-xs-12 col-sm-7">
-                                    <div class="chevron_logo">
-                                        <a href="{!$Site.Prefix}/ShowCases?Type=Messages"><apex:image url="{!URLFOR($Resource.MessagingAssets,'MessagingAssets/img/' + imgName)}"
-                                            styleClass="img-responsive" alt="" /></a>
-                                    </div>
-                                </div>
-                                <div class="col-xs-12 col-sm-5 text-right" style="padding-right:10px">
-                                    <div class="top_action_btn">
-                                        <ul class="topaction_btn_list">
-                                            <li><a class="knowledgelink" target="_blank" href="{!Brand_Help}">Knowledge Base</a></li>
-                                            <li style="padding-right:0px;"><a href="#" class="btn btn-primary action_close"
-                                                onclick="window.close();">Close</a></li>
-                                        </ul>
-                                    </div>
-                                </div>
-                                <div class="clearfix"></div>
-                            </div>
-                        </div>-->
+                    <div class="container" id="container">                        
                         <br/> 
                         <div class="col-xs-12 col-sm-12 text-right">
                             <ul class="topaction_btn_list">
@@ -122,11 +102,7 @@
                             <div class="content_area clearfix">
                                 <div class="col-xs-12 col-md-12 MDParea">
                                     <div class="message_content">
-                                       <!-- <div class="row nameContainer">
-                                            <div id="UserName">
-                                                        <b>Welcome {!UserName}</b>
-                                                    </div>
-                                        </div>  -->
+                                      
                                         <div id="messageBindDiv">
                                             <div class="top_nav clearfix">
                                                 <div class="row ">
@@ -271,9 +247,9 @@
                                                     </apex:panelGrid>
                                                 </div>
                                                 <a href="#" class="btn btn-primary action_submit"
-                                                    onClick="submitform(false);">Reply</a>
+                                                    onClick="checkEmail(false);">Reply</a>
                                                  <a href="#" class="btn btn-primary action_submit" id="btnReplyAdd"
-                                                    onClick="submitform(true);">Reply and Add File</a>
+                                                    onClick="checkEmail(true);">Reply and Add File</a>
                                                 <apex:commandButton id="cmdSave" value="Save"
                                                     reRender="PageVariables" status="actStatusId"
                                                     style="visibility: hidden;" />
@@ -892,28 +868,52 @@
                             var h = iframeDocument.getElementById('DisplayCaseandCasecomment:DisplayCaseandCasecommentForm:message_rta_body');
                             j$(h).html(html);
             }
-            var addattachmentglobal;;
-            function submitform(addattachment)
-            {
-                debugger;
+            var addattachmentglobal;
+
+    /*STRY0012065  - Adding warning if member tries to create or reply to a secure email if they don't have an email address.*/
+            function checkEmail(addattachment){
+                /*STRY0012049: Chnages to detect invalid session Start*/
                 try{                    
                     sforce.connection.sessionId = '{!$Api.Session_ID}';                   
-                    var result = sforce.connection.query("Select Name, Id from User Limit 1");
-                    // if(result)
-                    //     return true;
-                    // else
-                    //     return false; 
+                    var result = sforce.connection.query("Select Name, Id from User Limit 1");                   
                 }
                 catch(ex){
-                    if(ex.faultcode == 'sf:INVALID_SESSION_ID')
-                        alert('Your session has expired, data will not be saved.');
-                    else
-                    alert('Your session has expired, data will not be saved.');
+                     alert('Your session has expired. To continue please login to send a secure email.');
                     return false;
                 }
-                  
-                            casecomment = getRTEValue();
-                            //var casecommentcopy = casecomment;
+
+                /*STRY0012049: Chnages to detect invalid session End*/
+
+                var isEmptyEmail = true;
+                DisplayCaseController.GetEmailAddress(function(result, event)
+                {
+                    j$.blockUI({ css: { 
+                        border: 'none', 
+                        padding: '15px', 
+                        backgroundColor: '#000', 
+                        '-webkit-border-radius': '10px', 
+                        '-moz-border-radius': '10px', 
+                        opacity: .5, 
+                        color: '#fff' 
+                    } }); 
+            
+                setTimeout(j$.unblockUI, 2000); 	
+                    var Email= result.Email;
+                    if(Email == undefined || Email == '' || Email == null){
+                        isEmptyEmail = true;
+                        alert(result.ErrorMessage);
+                        return false;
+                    }
+                    else{
+                        isEmptyEmail = false;
+                        submitform(addattachment);
+                    }
+                });
+            }
+
+            function submitform(addattachment)
+            {
+                            casecomment = getRTEValue();                           
                             var casecommenttext = getRTETextValue();
                             casecommenttext = casecommenttext.replace(/[\u200B-\u200D\uFEFF]/g, '');
                 
@@ -934,8 +934,7 @@
                             var dtype ;
                             if(isMobile.phone)
                                {
-                                 dtype = 'Mobile';
-                                 
+                                 dtype = 'Mobile';                            
                                     
                                   
                                }
@@ -1486,14 +1485,9 @@
                                         j$('#errorMessage'+ filesposition[i]).text('');
                                         j$('#erroricon'+ filesposition[i]).removeClass('glyphicon');
                                         j$('#erroricon'+ filesposition[i]).removeClass('glyphicon-exclamation-sign');
-                                        break;
-                                            
+                                        break;                                           
                                         
-                                /*      flagforupload[i]= false;
-                                        j$('#errorMessage'+ filesposition[i]).text('File type is not allowed.');
-                                        j$('#erroricon'+ filesposition[i]).addClass('glyphicon glyphicon-exclamation-sign');
-                                        j++;
-                                    */      
+                                    
                                     }
                                     
                                 
@@ -1533,11 +1527,10 @@
                         var displaySize = Math.floor(files[i].size/1024) + 'KB';
                     }else if(files[i].size > 10485760 ){
                         
-                        //alert('File size is greater than 2 MB');
+                        
                         j$(".uploadBox input").removeAttr("disabled");
                         j$(".uploadBox button").removeAttr("disabled").attr("class","btn");
-                        //j$('.UploadInputfiles').val('');
-                        //j$('#filesInput'+ i).val('');
+                        
                         j$('#errorMessage'+ filesposition[i]).text('File size is greater than 10 MB');
                         j$('#erroricon'+ filesposition[i]).addClass('glyphicon glyphicon-exclamation-sign');
                         files[i].size = 0;
@@ -1697,35 +1690,6 @@
                             
                         }
                         return false;
-/*
-                    
-                  
-                    
-                    if(fileName == 'png' || fileName == 'jpg' || fileName == 'jpeg' || fileName == 'bmp' || fileName == 'gif')
-                    {
-                        j$("#imgImageContent").attr('src', siteUrl + url);
-                        j$("#imgImageContentDiv").show();
-                        j$(".content_area").hide();
-                        j$("#imgImageContent").show();
-                        j$("#ifrmOtherContent").hide();
-                        
-                    }
-                    else
-                    {
-                    
-                    
-                        
-                        else
-                        {
-                            j$("#ifrmOtherContent").attr('src', siteUrl + url);
-                            j$("#imgImageContentDiv").show();
-                            j$("#imgImageContent").hide();
-                            j$("#ifrmOtherContent").show();
-                            j$(".content_area").hide();
-                        }
-                        
-                        
-                    }*/
                     
                     return true;
                 }
@@ -1738,20 +1702,7 @@
                     j$('html,body').animate({
                         scrollTop: 0
                     }, 700);
-                });
-                
-               // if(j$('.svdellinks #savelinkbottom').text == "" || j$('.svdellinks #deletelinkbottom').text == ""){
-               //   j$('.svdellinkpipe').hide();
-               //   j$('.svdellinks #savelinkbottom').css("paddingTop", "12px");
-               //   j$('.svdellinks #deletelinkbottom').css("paddingTop", "12px");
-               // }
-               // else if(j$('.svdellinks #savelinkbottom').text == "" && j$('.svdellinks #deletelinkbottom').text == ""){
-               //   j$('.svdellinkpipe').hide();
-                //  j$('.svdellinks #savelinkbottom').css("padding", 0);
-               //   j$('.svdellinks #deletelinkbottom').css("padding", 0);
-               // }
-               // else if(j$('.svdellinks #savelinkbottom').text == "" && j$('.svdellinks #deletelinkbottom').text == ""){
-               // }
+                });               
             });
                 
             </script>
@@ -1760,15 +1711,7 @@
             // File Attachment Design JQUERY Start
             j$(document).on('change', '.inputfiles .uploadfile', function(){
               var fileval = j$(this).val().split('\\').pop();
-                j$(this).siblings('span.spanfilename').html(fileval);
-             // if(j$(this).parent().hasClass('des4') && j$(fileval) != ""){
-             //   j$(this).siblings('span.spanfilename').show();
-             //   j$(this).siblings('label.lblfilename').hide();
-             // }
-             // else if(j$(this).parent().hasClass('des4')){
-             //   j$(this).siblings('span.spanfilename').hide();
-             //   j$(this).siblings('label.lblfilename').show();
-             // }
+                j$(this).siblings('span.spanfilename').html(fileval);             
               if(j$(window).width() < 1025){
                     j$('.des4').each(function() {
                         if(j$(this).children('.uploadfile').val() == ""){
