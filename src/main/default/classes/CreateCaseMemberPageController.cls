@@ -2,10 +2,17 @@
  * @description       : 
  * @author            : ChangeMeIn@UserSettingsUnder.SFDoc
  * @group             : 
- * @last modified on  : 04-25-2022
+ * @last modified on  : 05-18-2022
  * @last modified by  : ChangeMeIn@UserSettingsUnder.SFDoc
 **/
 public class CreateCaseMemberPageController {
+    public static list<SelectOption> pcOptionList;
+    public static string pcValue;
+    public static list<SelectOption> scOptionList;
+    public static string scValue ;
+    public static list<SelectOption> tcOptionList;
+    public static string tcValue ;
+    public static list<SelectOption> SearchResult;
     @auraenabled
     public static  Map<string,object> getData(string accoutid)
     {
@@ -258,7 +265,7 @@ public class CreateCaseMemberPageController {
             scSet.add(var.Secondary_Category__c);
         } 
         list<KeyValuePairModel> op = new list<KeyValuePairModel>();
-        op.add(new KeyValuePairModel('--- None ---',''));
+        //op.add(new KeyValuePairModel('--- None ---',''));
         for (String sc : scSet)
         {
             if(sc!='None'){
@@ -283,7 +290,7 @@ public class CreateCaseMemberPageController {
         }
      //   str.sort();
         list<KeyValuePairModel> op = new list<KeyValuePairModel>();
-        op.add(new KeyValuePairModel('--- None ---',''));
+        //op.add(new KeyValuePairModel('--- None ---',''));
         for (String tc : scSet){
             if(tc!='None'){
                 op.add(new KeyValuePairModel(tc,tc));
@@ -299,7 +306,7 @@ public class CreateCaseMemberPageController {
         Schema.DescribeFieldResult statusFieldDescription = Case.Primary_Category__c.getDescribe();
         System.debug('Getting description:::'+ statusFieldDescription);
         list<KeyValuePairModel> op = new list<KeyValuePairModel>();
-        op.add(new KeyValuePairModel('--- None ---',''));
+        //op.add(new KeyValuePairModel('--- None ---',''));
         for (Schema.Picklistentry picklistEntry : statusFieldDescription.getPicklistValues())
         {
             op.add(new KeyValuePairModel(pickListEntry.getValue(),pickListEntry.getLabel()));
@@ -1257,18 +1264,11 @@ public class CreateCaseMemberPageController {
     public static Map<string, object> selectCaseCategoriesforTopTenTypes(string PrimaryText, string SecondaryText)
     {
         Map<string,object> mapList = new Map<string,object>();
-        
-        
         //List<String> splits = selectedText.split(' / ');
-        
         List<KeyValuePairModel> scOptions =  getscOptions(PrimaryText);
-        List<KeyValuePairModel> tcOptions =  gettcOptions(SecondaryText);
-        
-        
-        
+        List<KeyValuePairModel> tcOptions =  gettcOptions(SecondaryText); 
         mapList.put('scOptions', scOptions);
-        mapList.put('tcOptions', tcOptions);
-        
+        mapList.put('tcOptions', tcOptions);   
         return mapList;
         
     }
@@ -1379,5 +1379,230 @@ public class CreateCaseMemberPageController {
         public String validFor {get;set;}
         public PicklistEntryWrapper(){            
         }
-}
+    }
+    @AuraEnabled(cacheable=true)
+	public static List<Account_Details__c> getMemberAccounts(String AccountId)
+	{
+		system.debug('----------------------test-'+AccountId);
+		list<Person_Account__c> paList = new list<Person_Account__c>();
+            paList = [SELECT Id,
+                             Account_Number__c, Account_Number__r.RecType__c, Account_Number__r.Name FROM Person_Account__c WHERE PersonID__c =: AccountId];
+        system.debug('----------------------test-'+paList);
+        return accountDetails(paList);
+	}
+    /*@AuraEnabled(cacheable=true)
+    public static List<String> SearchTertiary(String searchText){
+        List<String> lstOptions = new List<String>();
+
+        pcOptionList = new list<SelectOption>();
+        pcOptionList .add(new SelectOption('-None-','-None-'));
+         scOptionList = new list<SelectOption>();
+        scOptionList .add(new SelectOption('-None-','-None-'));
+                    String newSearchText = '%'+searchText+'%';
+        list<CaseRecordType__c> tcList = [SELECT Id,
+                                            Primary_Category__c,Secondary_Category__c, Teritiary_Category__c FROM CaseRecordType__c WHERE Teritiary_Category__c like :newSearchText or 
+                                            Primary_Category__c like :newSearchText or Secondary_Category__c like :newSearchText ];
+        List<String> str = new List<String>();
+
+        for(CaseRecordType__c tcr: tcList){
+            str.add(tcr.Primary_Category__c + ' / ' + tcr.Secondary_Category__c + ' / ' + tcr.Teritiary_Category__c);
+        }
+
+        SearchResult = new list<SelectOption>();
+
+        Map<String, String> mapOfOptions = new Map<String, String>();
+        for (String tc : str){
+            if(tc!='None'){
+                SearchResult.add(new SelectOption(tc,tc));
+                mapOfOptions.put(tc, tc);
+                lstOptions.add(tc);
+            }
+        }
+  
+    
+        scOptionList = new list<SelectOption>();
+        tcOptionList = new list<SelectOption>();
+        tcOptionList.add(new SelectOption('-None-','-None-'));
+        scOptionList.add(new SelectOption('-None-','-None-'));
+                pcOptionList = pcOptions();   
+        scValue = '-None-';
+        pcValue = '-None-';
+        tcValue = '-None-';
+
+        return lstOptions;
+    }
+    */
+     @AuraEnabled(cacheable=true)
+     public static Object getTop10CaseRecord(Id recId)
+      {
+          system.debug('recId...'+recId);
+         Top_10_Case_Types__c objCaseType = [select id, Case_Type__c, Internal_Comments__c, Primary_Category__c, Secondary_Category__c, Subject__c, Tertiary_Category__c  from Top_10_Case_Types__c WHERE Id =: recId LIMIT 1];
+         return objCaseType;
+      }
+      private static List<Account_Details__c> accountDetails(list<Person_Account__c> paList){
+        set<String> accountNumberSet = new set<String>();
+        set<Id> accIdset = new set<Id>();
+        set<String> acctypeSet = new set<String>();
+        for(Person_Account__c var: paList){
+            accountNumberSet.add(var.Account_Number__r.Name);
+            acctypeSet.add(var.Account_Number__r.RecType__c);
+            accIdSet.add(var.Account_Number__c);
+        }
+        system.debug('---------------accIdSet-------test-'+accountNumberSet);
+        list<Account_Details__c> accList = new list<Account_Details__c>();
+        if(acctypeSet.contains('ACCT')){
+            accList = [SELECT Id,
+                              Name,
+                              RecType__c,
+                              TypeTranslate__c,
+                              ID1__c,
+                              Balance__c,                              
+                              Combined_Account_ID__c,
+                              Reference__c,
+                              Brand__c FROM Account_Details__c Where Name IN:accountNumberSet and (RecType__c = 'ACCT' or (RecType__c = 'SHAR' and TypeTranslate__c ='1-PRIMARY SHARE')) ORDER BY Name asc, RecType__c asc];
+        }else{
+            accList = [SELECT Id,
+                              Name,
+                              RecType__c,
+                              TypeTranslate__c,
+                              ID1__c,
+                              Balance__c,
+                              
+                              Combined_Account_ID__c,
+                              Reference__c,
+                              Brand__c  FROM Account_Details__c Where Id IN:accIdSet  and (RecType__c = 'ACCT' or (RecType__c = 'SHAR' and TypeTranslate__c ='1-PRIMARY SHARE')) ORDER BY Name asc, RecType__c asc];
+        }
+        return accList;
+    }
+    
+      @AuraEnabled
+      public static String uploadFile(String base64, String filename, String recordId) {
+        Attachment  cv = createContentVersion(base64, filename);
+        ContentDocumentLink cdl = createContentLink(cv.Id, recordId);
+        cdl.LinkedEntityId = recordId;
+        if (cv == null || cdl == null) { return null; }
+        return cdl.Id;
+      }
+
+      
+      private static Attachment  createContentVersion(String base64, String filename) {
+        Attachment  cv = new Attachment ();
+       // cv.VersionData = EncodingUtil.base64Decode(base64);
+       // cv.Title = filename;
+       // cv.PathOnClient = filename;
+        try {
+          insert cv;
+          return cv;
+        } catch(DMLException e) {
+          System.debug(e);
+          return null;
+        }
+      }
+
+     
+     private static ContentDocumentLink createContentLink(String contentVersionId, String recordId) {
+            if (contentVersionId == null || recordId == null) { return null; }
+                ContentDocumentLink cdl = new ContentDocumentLink();
+                cdl.ContentDocumentId = [SELECT Id FROM ContentVersion WHERE Id =: contentVersionId].ContentDocumentId;
+                cdl.LinkedEntityId = recordId;
+                // ShareType is either 'V', 'C', or 'I'
+                // V = Viewer, C = Collaborator, I = Inferred
+                cdl.ShareType = 'V';
+                try {
+                insert cdl;
+                return cdl;
+                } catch(DMLException e) {
+                System.debug(e);
+                return null;
+            }
+        }
+
+        // test
+        @AuraEnabled
+    public static String uploadFiles2(String recordId, String filedata) {
+        try {
+            if(String.isNotBlank(FileData)) {
+                List<FileDataWP> files = (List<FileDataWP>) JSON.deserialize(filedata, List<FileDataWP>.class);
+                System.debug(files);
+ 
+                List<Attachment> attList = new List<Attachment>();
+                for(FileDataWP file : files) {
+                   Attachment oAttachment = new Attachment();
+                    oAttachment.parentId = recordId;
+             		if(file.fileContent != null)
+                    oAttachment.Body = EncodingUtil.base64Decode(file.fileContent);
+                    else
+                        oAttachment.Body = EncodingUtil.base64Decode('');
+                    oAttachment.Name = file.fileName;
+                    attList.add(oAttachment);
+                    //oAttachment.ContentType = contentType;
+                }
+                Insert attList;
+         
+            } else {
+                return 'record Id is Blank';
+            }
+            return 'success';
+        } catch (Exception ex) {
+            System.debug(ex.getMessage() + ' -> ' + ex.getStackTraceString());
+            throw new AuraHandledException(ex.getMessage());
+        }
+    }
+ 
+    public class FileDataWP {
+        public String fileName;
+        public String fileContent;
+    }
+
+    // test 2
+
+    @AuraEnabled
+    public static Id saveChunk(Id parentId, String fileName, String base64, String contentType, String fileId) {
+        // check if fileId id ''(Always blank in first chunk), then call the saveTheFile method,
+        //  which is save the check data and return the attachemnt Id after insert, 
+        //  next time (in else) we are call the appentTOFile() method
+        //   for update the attachment with reamins chunks   
+        if (fileId == '') {
+            fileId = saveTheFile(parentId, fileName, base64, contentType);
+        } else {
+            appendToFile(fileId, base64);
+        }
+ 
+        return Id.valueOf(fileId);
+    }
+ 
+    public static Id saveTheFile(Id parentId, String fileName, String base64, String contentType) {
+        base64 = EncodingUtil.urlDecode(base64, 'UTF-8');
+ 
+        Attachment oAttachment = new Attachment();
+        oAttachment.parentId = parentId;
+ 
+        oAttachment.Body = EncodingUtil.base64Decode(base64);
+        oAttachment.Name = fileName;
+        oAttachment.ContentType = contentType;
+ 
+ 
+ 			system.debug('parentId###' +  parentId);
+ 		
+ 	
+        insert oAttachment;
+ 
+        return oAttachment.Id;
+    }
+ 
+    private static void appendToFile(Id fileId, String base64) {
+        base64 = EncodingUtil.urlDecode(base64, 'UTF-8');
+ 
+        Attachment a = [
+            SELECT Id, Body
+            FROM Attachment
+            WHERE Id =: fileId
+        ];
+ 
+        String existingBody = EncodingUtil.base64Encode(a.Body);
+ 
+        a.Body = EncodingUtil.base64Decode(existingBody + base64);
+ 
+        update a;
+    }
 }

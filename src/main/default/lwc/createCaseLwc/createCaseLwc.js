@@ -12,6 +12,13 @@ import getData from "@salesforce/apex/CreateCaseMemberPageController.getData";
 import CASE_OBJECT from "@salesforce/schema/Case";
 import STANDARD_MC from "@salesforce/messageChannel/StandardMessageChannel__c";
 import { ShowToastEvent } from "lightning/platformShowToastEvent";
+import uploadFile from "@salesforce/apex/CreateCaseMemberPageController.uploadFile";
+import uploadFiles2 from "@salesforce/apex/CreateCaseMemberPageController.uploadFiles2";
+const MAX_FILE_SIZE = 24500;
+import GetCaseAttachments from "@salesforce/apex/GetCaseAttachments.GetCaseAttachments"
+
+import saveChunk from "@salesforce/apex/CreateCaseMemberPageController.saveChunk";
+
 
 import {
   publish,
@@ -25,16 +32,18 @@ import getscOptions from "@salesforce/apex/CreateCaseMemberPageController.getscO
 import gettcOptions from "@salesforce/apex/CreateCaseMemberPageController.gettcOptions";
 import getPicklistValues from "@salesforce/apex/CreateCaseMemberPageController.getPicklistValues";
 import selectCaseCategoriesforTopTenTypes from "@salesforce/apex/CreateCaseMemberPageController.selectCaseCategoriesforTopTenTypes";
-//import getDataValue from 'lightning/apex/CreateCaseMemberPageController.getDataValue';
 import saveData2 from "@salesforce/apex/CreateCaseMemberPageController.saveData2";
 
 export default class createCaseLwc extends NavigationMixin(LightningElement) {
   @api recordId;
   @api showDorpDown = false;
-  //@api isselectedAcctNumberEmpty = false;
   @wire(MessageContext)
-  //@wire(getDataValue, { caseid: '$recordId' })
   messageContext;
+  showSpinner = false;
+  @track filesData = [];
+ 
+
+  
 
   subscription = null;
   receivedMessage;
@@ -44,7 +53,6 @@ export default class createCaseLwc extends NavigationMixin(LightningElement) {
   userId = Id;
   showSpinner = false;
   showSaveEnabled = true;
-  //saveAndNewClick      = true;
   showStatusEnabled = false;
   showAssignDropdown = false;
   showQueueDropdown = false;
@@ -91,7 +99,7 @@ export default class createCaseLwc extends NavigationMixin(LightningElement) {
   subject = "";
   caseObject = CASE_OBJECT;
   followuptext = "";
-  status = "";
+  status = "Open";
   Ltk = "";
   reportNumber = "";
   email = "";
@@ -103,7 +111,15 @@ export default class createCaseLwc extends NavigationMixin(LightningElement) {
   isselectedAcctNumberEmpty = true;
   accountCount = 0;
   AccountObjectlist = [];
-  //showDorpDown = false;
+  isFileUpload = false;
+  isNext = false;
+  CaseNumber;
+  fileNames = [];
+  isNoFilesSelected = false;
+  fileData = [];
+  CaseId;
+  IsUploadandNewPressed = false;
+  
 
   @track caseObj = {};
 
@@ -238,6 +254,7 @@ export default class createCaseLwc extends NavigationMixin(LightningElement) {
         this.handleLoad();
       }
     }
+    console.log('pcvalue',this.primaryCat);
     this.connectedCallbackCnt++;
     this.loadQuickCases();
     console.log(
@@ -360,26 +377,43 @@ export default class createCaseLwc extends NavigationMixin(LightningElement) {
         .then((result) => {
           console.log('getAccData');
           console.log(result.accountDetails.PersonEmail);
+          
+          
+          this.selectedAcctNumber = this.memberAccountValue;
+
+          this.accList = this.memberAccountValue;
+        
           this.email = result.accountDetails.PersonEmail;
-          var aList = result.accList; 
+          
+          var aList = result.accList;
+          
           this.accObject = result.accountDetails;
           aList.map((obj) => {   
             obj.isShow = true;
-            }) 
+          }) 
+            
           this.accList = aList;
-          if(aList.length == 2 ){
+          console.log('aList.length...');
+          console.log(aList.length);
+          
+          if(this.accList.length == 2){
+            this.isselectedAcctNumberEmpty = false;
+          }
+
+          if(this.accList.length == 2){
             for(var i = 0; i < aList.length; i++){
               if(aList[i].RecType__c == 'ACCT'){
-                this.singleAccountDetail = true;                
-                        var serverResult = this.accList;
-                        var selItem = serverResult[0];
-                        console.log(selItem);
-                        if(selItem){
-                          this.selectedAcctNumber = selItem;
-                      }
+                var serverResult = this.accList;
+                var selItem = serverResult[0];
+                console.log(selItem);
+                if(selItem){
+                  this.selectedAcctNumber = selItem;
+                }
               }
             }
           }
+          
+         
         })
         .catch((error) => {
           console.log('getAccData');
@@ -402,18 +436,10 @@ export default class createCaseLwc extends NavigationMixin(LightningElement) {
             if (!this.memberAccountMap[key]) {
               this.memberAccountMap[key] = rec;
             }
-            /*          
-        Brand__c: "Chevron"
-        Combined_Account_ID__c: "0080264002A9999P9999"
-        Id: "a0OZ000000Ev2InMAJ"
-        Name: "0080264002"
-        RecType__c: "ACCT"
-        Reference__c: "BC01"
-        TypeTranslate__c: "1-PERSONAL"
-*/
+            
           }
           this.memberAccounts = [...memberAccountData];
-          if (this.memberAccounts.length > 0) {
+          if (this.memberAccounts.length == 1) {
             this.memberAccountValue = memberAccountData[0].value;
           }
           console.log("------------ memberAccountValue -------------------");
@@ -433,10 +459,9 @@ export default class createCaseLwc extends NavigationMixin(LightningElement) {
   async handleLoad() {
     console.log(`handleLoad recordId: ${this.recordId}`);
     let id = this.recordId;
-    //await this.getEpisysData();
     await this.getAccountData(id);
-    //await this.getLeadDetails(id);
     await this.fetchPicklistFields();
+    
   }
 
   loadQuickCases() {
@@ -458,7 +483,6 @@ export default class createCaseLwc extends NavigationMixin(LightningElement) {
           });
         });
 
-        // this.quickCases = [...caseList];
         this.secondaryVals = [...secondaryList];
       })
       .catch((error) => {
@@ -467,15 +491,6 @@ export default class createCaseLwc extends NavigationMixin(LightningElement) {
   }
 
   closeAction() {
-    /* var url = window.location.href;
-    window.open(url, '_self');
-    //window.history.back();
-    return false;*/
-    /*var url = window.location.href; 
-        var value = url.substr(0,url.lastIndexOf('/') + 1);
-        window.history.back();
-        return false;*/
-
     const payload = { origin: "CaseQuickAction", action: "Close" };
     publish(this.messageContext, STANDARD_MC, payload);
   }
@@ -499,7 +514,6 @@ export default class createCaseLwc extends NavigationMixin(LightningElement) {
       fields.Member_Account__c =
         this.memberAccountMap[this.memberAccountValue].Id;
     }
-    //fields.Member_Account__c         = this.memberAccountMap[this.memberAccountValue].Id;
     fields.AccountId = this.recordId;
     fields.StageName = this.statusValue;
     fields.Episys_User_ID__c = this.episysUserId;
@@ -540,35 +554,7 @@ export default class createCaseLwc extends NavigationMixin(LightningElement) {
         break;
     }
     debugger;
-    /*
-    @Ownership__c
-    @Queue_Owner__c
-    @Member_Account__c
-    @Queue_Assigned_Id__c
-    @User_Owner__c
-    @Episys_User_ID__c
-    @Branch_of_Lead_creator__c
-    
-
-    AccountId
-    Account_Number__c
-    Brand__c
-    CaseComments__c
-    Case_type__c
-    Category__c
-    Follow_up_Text__c
-    Future_Date__c
-    LTK__c
    
-    Primary_Category__c
-    Secondary_Category__c
-    Tertiary_Category__c 
-    Status
-    Subject
-    
-
-    */
-    //debugger;
     this.template.querySelector("lightning-record-edit-form").submit(fields);
   }
 
@@ -592,6 +578,10 @@ export default class createCaseLwc extends NavigationMixin(LightningElement) {
     console.log('##handle followuptext',event.detail.value);
     this.followuptext =  event.detail.value;
   }
+  handleOnchangeinternalcomment(event){
+    console.log('##handle followuptext',event.detail.value);
+    this.internalcmt =  event.detail.value;
+  }
   handleOnchangefollowupDate(event){
     console.log('##handle followupdate',event.detail.value);
     this.followupdate = event.detail.value;
@@ -609,38 +599,16 @@ export default class createCaseLwc extends NavigationMixin(LightningElement) {
   handleSuccess(event) {
     this.showSaveEnabled = false;
     this.showSpinner = false;
+    debugger;
     console.log(`Success - Case Id ${event.detail.id} created.`);
     this.showNotification(event.detail.id);
     this.caseRecordId = event.detail.id;
     this.navigateToCasePage();
-    //this.handleReset();
     
     this.closeAction();
     
   }
-  /*handleSuccess(event) {
-    const even = new ShowToastEvent({
-        title: 'Success!',
-        message: 'Record created!',
-        variant: 'success'
-    });
-    this.dispatchEvent(even);
-    if(this.redirect == true){
-        console.log('handleSuccess'+this.redirect);
-        this.caseRecordId = event.detail.id;
-        this[NavigationMixin.Navigate]({
-            type: 'standard__recordPage',
-            attributes: {
-                recordId:caseRecordId,
-                objectApiName:'Case',
-                actionName:'view'
-            }
-        })
-    }
-    if(this.resetpage== true){
-        this.handleReset();
-    }
-}*/
+ 
 
   navigateToCasePage() {
     this[NavigationMixin.Navigate]({
@@ -665,38 +633,12 @@ export default class createCaseLwc extends NavigationMixin(LightningElement) {
     event.preventDefault(); 
     this.fields = event.detail.fields;
   }
-
-  
-  
-
-  /*saveAndNewClick() {
-    console.log('in method');
-    alert('this method');
-   // this.saveAndNewClick = true;
-    this.showSaveEnabled = true;
-      //handleSuccess();
-      this.handleReset();
-  }*/
   
   print() {
-    //alert('###print');
     console.log("##in method");
     // alert('###this method');
     this.handleReset();
   }
-
-  /* handleReset() {
-    console.log('###handleReset');
-    // Might be possible to use this.fields instead of a selector
-    const inputFields = this.template.querySelectorAll(
-        'lightning-input-field'
-    );
-    if (inputFields) {
-        inputFields.forEach(field => {
-            field.reset();
-        });
-    }
-  }*/
  
 
   loadTopCase() {
@@ -713,9 +655,7 @@ export default class createCaseLwc extends NavigationMixin(LightningElement) {
           result.Secondary_Category__c;
         this.template.querySelector('[data-id="Tertiary_Category__c"]').value =
           result.Tertiary_Category__c;
-        // this.primaryCat = result.Primary_Category__c;
-        //this.secondaryCat = result.Secondary_Category__c;
-        //this.tertiaryCat = result.Tertiary_Category__c;
+        
         this.internalcmt = result.Internal_Comments__c;
         this.firstval = result[0].Secondary_Category__c;
         console.debug();
@@ -732,13 +672,7 @@ export default class createCaseLwc extends NavigationMixin(LightningElement) {
       .then((result) => {
         console.log(result);
         var selectedTextArray = this.selectedText.split(" / ");
-        /*  
-      var caseObject = this.CASE_OBJECT;
-        caseObject.Primary_Category__c = selectedTextArray[0];
-        caseObject.Secondary_Category__c = selectedTextArray[1];
-        caseObject.Tertiary_Category__c = selectedTextArray[2];
-        this.CASE_OBJECT = caseObject;
-        */
+       
         this.primaryCat = selectedTextArray[0];
         this.secondaryCat = selectedTextArray[1];
         this.tertiaryCat = selectedTextArray[2];
@@ -786,6 +720,173 @@ export default class createCaseLwc extends NavigationMixin(LightningElement) {
     var tcValue = event.target.value;
     this.tertiaryCat = tcValue;
   }
+  selectfileupload(event){    	
+    var ischecked = event.target.checked;
+    this.checked = ischecked;
+  }
+  handleChangecheckbox(event) {
+    this.isFileUpload = event.target.checked;
+    //this.NextClick();
+  }
+  handleisNext(event){    	
+    
+    this.saveClicked();
+    this.showNotification();
+  }
+  
+
+openfileUpload(event){
+  const files = event.target.files;
+  var fileNames = new Array();
+  
+  if (event.target.files.length > 0) {
+      for(var i = 0; i < event.target.files.length; i++)
+      {
+        
+        let file = event.target.files[i]; 
+        fileNames.push(file.name); 
+        let reader = new FileReader();
+                reader.onload = k => {
+                    var fileContents = reader.result.split(',')[1]
+                    this.filesData.push({'fileName':file.name, 'fileContent':fileContents});                    
+                };
+        reader.readAsDataURL(file); 
+                 
+      }
+      
+  }
+  if(files.length == 0){
+    this.isNoFilesSelected = true;
+  }
+  else{
+    this.isNoFilesSelected = false;
+  }
+  this.fileNames = [...fileNames];
+
+}
+
+handleclickattechment(event){
+  if(this.isNoFilesSelected == true){
+    alert('Please Select a Valid File');
+  }
+  else{
+
+  }
+
+
+}
+
+ 
+
+/*
+Test from line 885 to 942
+*/
+handleFileUploaded(event) {
+  if (event.target.files.length > 0) {
+      for(var i=0; i< event.target.files.length; i++){
+          if (event.target.files[i].size > MAX_FILE_SIZE) {
+              this.showToast('Error!', 'error', 'File size exceeded the upload size limit.');
+              return;
+          }
+          let file = event.target.files[i];
+          let reader = new FileReader();
+          reader.onload = e => {
+              var fileContents = reader.result.split(',')[1]
+              this.filesData.push({'fileName':file.name, 'fileContent':fileContents});
+          };
+          reader.readAsDataURL(file);
+      }
+  }
+}
+
+uploadFiles2(event) {
+  if(event.target.label == "Upload Attachment"){
+    this.IsUploadandNewPressed = false;
+  }
+  else{
+    this.IsUploadandNewPressed = true;
+  }
+  
+  if(this.filesData == [] || this.filesData.length == 0) {
+      this.showToast('Error', 'error', 'Please select files first'); return;
+  }
+  this.showSpinner = true;
+  uploadFiles2({
+      recordId : this.CaseId,
+      filedata : JSON.stringify(this.filesData)
+  })
+  .then(result => {
+      console.log(result);
+      if(result && result == 'success') {
+          this.filesData = [];
+          this.showToast('Success', 'success', 'Files Uploaded successfully.');
+          if(!this.IsUploadandNewPressed){
+            this[NavigationMixin.Navigate]({
+              type: 'standard__recordPage',
+              attributes: {
+                  recordId:this.CaseId,
+                  objectApiName:'Case',
+                  actionName:'view'
+              }
+            })
+          }
+          else{
+                  this.isNext = false;
+                  this.isFileUpload = false;
+                  this.handleReset();
+          }
+          
+      } else {
+          this.showToast('Error', 'error', result);
+      }
+  }).catch(error => {
+      if(error && error.body && error.body.message) {
+          this.showToast('Error', 'error', error.body.message);
+      }
+  }).finally(() => this.showSpinner = false );
+  
+}
+CaseAttachments(){
+  console.log("inside Case Attachment");
+  GetCaseAttachments({
+    CaseId : this.recordId,
+})
+.then(result => {
+    console.log(result);
+    if(result && result == 'success') {
+        this.filesData = [];
+        this.showToast('Success', 'success', 'Files Uploaded successfully.');
+    } else {
+        this.showToast('Error', 'error', result);
+    }
+}).catch(error => {
+    if(error && error.body && error.body.message) {
+        this.showToast('Error', 'error', error.body.message);
+    }
+}).finally(() => this.showSpinner = false );
+}
+
+removeReceiptImage(event) {
+  var index = event.currentTarget.dataset.id;
+  this.filesData.splice(index, 1);
+}
+
+showToast(title, variant, message) {
+  this.dispatchEvent(
+      new ShowToastEvent({
+          title: title,
+          variant: variant,
+          message: message,
+      })
+  );
+}
+toast(title){
+  const toastEvent = new ShowToastEvent({
+    title,
+    variant:"success"
+  })
+  this.dispatchEvent(toastEvent)
+}
   fetchPicklistFields() {
     var NAFields = ["Primary_Category__c"];
     this.picklistFields["Case"] = NAFields;
@@ -882,7 +983,6 @@ export default class createCaseLwc extends NavigationMixin(LightningElement) {
         }
         this.scOptions = [...secopts];
         this.tcOptions = [...teropts];
-        //this.primaryCat = pc;
 
         this.template.querySelector('[data-id="Primary_Category__c"]').value = pc;          
         this.template.querySelector('[data-id="Secondary_Category__c"]').value = sc;          
@@ -897,6 +997,8 @@ export default class createCaseLwc extends NavigationMixin(LightningElement) {
       });
       }
     }
+    console.log('pcvalue',this.primaryCat);
+
   }
   isInputValid() {
     let isValid = true;
@@ -916,11 +1018,8 @@ export default class createCaseLwc extends NavigationMixin(LightningElement) {
 saveClicked(){
   if(this.isInputValid()) {
     console.log('this.contact');
-
-//let inputFields = this.template.querySelectorAll('.slds-select');
-//console.log('testsldsselect',inputFields);
-  //this.isInputValid();
   console.log('saveClicked...');
+  console.log('pcvalue',this.primaryCat);
   console.log(this.primaryCat);
   console.log(this.secondaryCat);
   console.log(this.tertiaryCat); 
@@ -940,7 +1039,10 @@ saveClicked(){
 
   
   var a= this.accList;
+  console.log('accList...');
+  console.log(this.accList);
   var aList = [];
+  a[1].isShow = false;
   for(var i=0;i<a.length;i++){
     if(a[i].isShow==false){
       aList[i] = a[i].Id;
@@ -952,9 +1054,10 @@ saveClicked(){
       aListToPass[i] = aList[i];
     }
   }
+  console.log('##selectedAcctNumber',this.selectedAcctNumber);
   console.log(aListToPass);
-  console.log('##alist',aList);
-  if(aList.length == 0 ){
+  console.log('##alist',aList.length);
+  if(this.selectedAcctNumber == null || this.selectedAcctNumber == '' || this.selectedAcctNumber == undefined ){
     console.log('##123list',aList);
 
     const event = new ShowToastEvent({
@@ -964,13 +1067,17 @@ saveClicked(){
   
   });
   this.dispatchEvent(event);
+  return false;
   }
-  
-  saveData2({primaryCat: this.primaryCat, secondaryCat: this.secondaryCat, teritaryCat: this.tertiaryCat,followuptext: this.followuptext, followupdate: this.followupdate, comments: '', status: this.status, brand: '', subStatus: 'Day1 Started', reportNumber: this.reportNumber, Ltk: this.Ltk, description: '', subject: this.subject, accId: this.recordId, selectedAcctNumberId: aList, queueValue: this.queueValue ,caseownership: this.ownershipChangeValue })
+ 
+  saveData2({primaryCat: this.primaryCat, secondaryCat: this.secondaryCat, teritaryCat: this.tertiaryCat,followuptext: this.followuptext, followupdate: this.followupdate, comments: this.internalcmt, status: this.status, brand: '', subStatus: 'Day1 Started', reportNumber: this.reportNumber, Ltk: this.Ltk, description: '', subject: this.subject, accId: this.recordId, selectedAcctNumberId: aList, queueValue: this.queueValue ,caseownership: this.ownershipChangeValue })
   .then((result) => {
     console.log(result);
     console.log('###result');
     console.log(result.CaseId);
+    this.CaseNumber = result.CaseNumber;
+    this.CaseId = result.CaseId;
+      if(this.isFileUpload == false){
         this[NavigationMixin.Navigate]({
             type: 'standard__recordPage',
             attributes: {
@@ -979,6 +1086,13 @@ saveClicked(){
                 actionName:'view'
             }
         })
+      }
+      if(this.isFileUpload == true){
+        this.handleReset();
+        this.isNext = true;
+        this.isFileUpload = false;
+      }
+
   })
   .catch((error) => {
     console.log(error);
@@ -988,51 +1102,12 @@ saveClicked(){
 saveAndNewClick(){
   console.log("saveandnew");
   this.saveClick();
-  //this.redirect = false;
- // this.template.querySelector("lightning-record-edit-form").submit(this.fields);
-  //this.resetpage = true;
-  //this.handleReset();
+
   
 }
 handleReset() {
   console.log("reset");
-  const inputFields = this.template.querySelectorAll("lightning-input-field");
-  
-const selectFieldsPrimary = this.template.querySelector('[data-id="Primary_Category__c"]').value='';
-if (selectFieldsPrimary) {
-  selectFieldsPrimary.forEach((field) => {
-    field.reset();
 
-  });
-}
-const selectFieldsSecondary = this.template.querySelector('[data-id="Secondary_Category__c"]').value='';
-if (selectFieldsSecondary) {
-  selectFieldsSecondary.forEach((field) => {
-    field.reset();
-
-  });
-}
-const selectFieldsTertiary = this.template.querySelector('[data-id="Tertiary_Category__c"]').value='';
-if (selectFieldsTertiary) {
-  selectFieldsTertiary.forEach((field) => {
-    field.reset();
-
-  });
-}
-const selectFieldsQuickcase = this.template.querySelector('[data-id="Quick_case"]').value='';
-if (selectFieldsQuickcase) {
-  selectFieldsQuickcase.forEach((field) => {
-    field.reset();
-
-  });
-}
-const selectFieldsSearchResult = this.template.querySelector('[data-id="Search_Result"]').value='';
-if (selectFieldsSearchResult) {
-  selectFieldsSearchResult.forEach((field) => {
-    field.reset();
-
-  });
-}
 
 var a= this.accList;
 for(var i=0;i<a.length;i++){            	  
@@ -1040,9 +1115,9 @@ for(var i=0;i<a.length;i++){
 }               
 this.accList = [...a];   
 
- // this.template.querySelector('form').reset();
- //this.ownership =null;
+ 
 this.isselectedAcctNumberEmpty =true;
+
 var acc = this.AccountObjectlist;
 var length = this.accountCount;
 acc.splice(0,parseInt(length));
@@ -1058,17 +1133,76 @@ this.accountCount = 0;
  this.subject = "";
  this.status="";
   this.searchValue = "";
-  //this.quickCase ='';
-  //this.primaryCat ="";
-  //this.secondaryCat ="";
-  //this.tertiaryCat ="";
+  this.internalcmt = "";
+ 
   this.memberAccountValue ="";
   this.queueValue = "";
+  const inputFields = this.template.querySelectorAll("lightning-input-field");
+  console.log('##handelresetlast');
   if (inputFields) {
     inputFields.forEach((field) => {
       field.reset();
 
     });
+  }
+
+  if(this.template.querySelector('[data-id="Primary_Category__c"]') != null){
+    const selectFieldsPrimary = this.template.querySelector('[data-id="Primary_Category__c"]').value='';
+    if (selectFieldsPrimary) {
+      selectFieldsPrimary.forEach((field) => {
+        field.reset();
+    
+      });
+    }
+  }
+  
+  
+  if(this.template.querySelector('[data-id="Secondary_Category__c"]') != null){
+    const selectFieldsSecondary = this.template.querySelector('[data-id="Secondary_Category__c"]').value='';
+    var Seccoptions =  this.scOptions;
+    for(var i=0;i<Seccoptions.length;i++){
+      Seccoptions[i].isSelected = false;
+    }
+    if (selectFieldsSecondary) {
+      selectFieldsSecondary.forEach((field) => {
+        field.reset();
+    
+      });
+    }
+  }
+  
+  if(this.template.querySelector('[data-id="Tertiary_Category__c"]') != null){
+    const selectFieldsTertiary = this.template.querySelector('[data-id="Tertiary_Category__c"]').value='';
+    var Tercoptions =  this.tcOptions;
+    for(var i=0;i<Tercoptions.length;i++){
+      Tercoptions[i].isSelected = false;
+    }
+    if (selectFieldsTertiary) {
+      selectFieldsTertiary.forEach((field) => {
+        field.reset();
+    
+      });
+    }
+  }
+  
+  if(this.template.querySelector('[data-id="Quick_case"]') != null){
+    const selectFieldsQuickcase = this.template.querySelector('[data-id="Quick_case"]').value='';
+    if (selectFieldsQuickcase) {
+      selectFieldsQuickcase.forEach((field) => {
+        field.reset();
+    
+      });
+    }
+  }
+  
+  if(this.template.querySelector('[data-id="Search_Result"]') != null){
+    const selectFieldsSearchResult = this.template.querySelector('[data-id="Search_Result"]').value='';
+    if (selectFieldsSearchResult) {
+      selectFieldsSearchResult.forEach((field) => {
+        field.reset();
+    
+      });
+    }
   }
 }
 
@@ -1076,9 +1210,7 @@ saveClick() {
   if(this.isInputValid()) {
     console.log('this.contact');
 
-//let inputFields = this.template.querySelectorAll('.slds-select');
 //console.log('testsldsselect',inputFields);
-  //this.isInputValid();
   console.log('saveClicked...');
   console.log(this.primaryCat);
   console.log(this.secondaryCat);
@@ -1094,15 +1226,78 @@ saveClick() {
  // console.log(this.accList); 
  // console.log('queueValue...');
   console.log(this.queueValue);
+  
   console.log('##selectedAccountnumber',this.selectedAcctNumber);
   
   var a= this.accList;
   var aList = [];
+  a[1].isShow = false;
   for(var i=0;i<a.length;i++){
     if(a[i].isShow==false){
       aList[i] = a[i].Id;
     }
   }
+  
+  var aListToPass = [];
+  for(var i=0;i<aList.length;i++){
+    if(aList[i]){
+      aListToPass[i] = aList[i];
+    }
+  }
+  console.log(aListToPass);
+  console.log('##alist',aList);
+  if(this.selectedAcctNumber == null || this.selectedAcctNumber == '' || this.selectedAcctNumber == undefined ){
+    console.log('##123list',aList);
+
+    const event = new ShowToastEvent({
+      title: 'Error!',
+      message: 'Account Number is required',
+      variant: 'error'
+  
+  });
+  this.dispatchEvent(event);
+  return false;
+  }
+  
+  saveData2({primaryCat: this.primaryCat, secondaryCat: this.secondaryCat, teritaryCat: this.tertiaryCat,followuptext: this.followuptext, followupdate: this.followupdate, comments: this.internalcmt, status: this.status, brand: '', subStatus: 'Day1 Started', reportNumber: this.reportNumber, Ltk: this.Ltk, description: '', subject: this.subject, accId: this.recordId, selectedAcctNumberId: aList, queueValue: this.queueValue ,caseownership: this.ownershipChangeValue })
+  .then((result) => {
+    console.log(result);
+    console.log('###resultsavedata2');
+    console.log(result.CaseId);
+    this.handleReset();
+  })
+  .catch((error) => {
+    console.log(error);
+  });
+}
+}
+
+NextClick() {
+  if(this.isInputValid()) {
+    console.log('this.contact');
+  console.log('saveClicked...');
+  console.log(this.primaryCat);
+  console.log(this.secondaryCat);
+  console.log(this.tertiaryCat); 
+  console.log(this.subject);
+  console.log(this.followuptext);
+  console.log(this.status);
+  console.log(this.followupdate);
+  console.log(this.Ltk);
+  console.log(this.reportNumber);
+  console.log(this.queueValue);
+  
+  console.log('##selectedAccountnumber',this.selectedAcctNumber);
+  
+  var a= this.accList;
+  var aList = [];
+  a[1].isShow = false;
+  for(var i=0;i<a.length;i++){
+    if(a[i].isShow==false){
+      aList[i] = a[i].Id;
+    }
+  }
+  
   var aListToPass = [];
   for(var i=0;i<aList.length;i++){
     if(aList[i]){
@@ -1116,26 +1311,24 @@ saveClick() {
 
     const event = new ShowToastEvent({
       title: 'Error!',
-      message: 'Account Number is required',
+      message: 'Account Number is required.....',
       variant: 'error'
   
   });
   this.dispatchEvent(event);
   }
   
-  saveData2({primaryCat: this.primaryCat, secondaryCat: this.secondaryCat, teritaryCat: this.tertiaryCat,followuptext: this.followuptext, followupdate: this.followupdate, comments: '', status: this.status, brand: '', subStatus: 'Day1 Started', reportNumber: this.reportNumber, Ltk: this.Ltk, description: '', subject: this.subject, accId: this.recordId, selectedAcctNumberId: aList, queueValue: this.queueValue ,caseownership: this.ownershipChangeValue })
+  saveData2({primaryCat: this.primaryCat, secondaryCat: this.secondaryCat, teritaryCat: this.tertiaryCat,followuptext: this.followuptext, followupdate: this.followupdate, comments: this.internalcmt, status: this.status, brand: '', subStatus: 'Day1 Started', reportNumber: this.reportNumber, Ltk: this.Ltk, description: '', subject: this.subject, accId: this.recordId, selectedAcctNumberId: aList, queueValue: this.queueValue ,caseownership: this.ownershipChangeValue })
   .then((result) => {
     console.log(result);
     console.log('###resultsavedata2');
     console.log(result.CaseId);
-    this.handleReset();
   })
   .catch((error) => {
     console.log(error);
   });
 }
 }
-
   changeSelectedCategory(event){
 
     var selectedText = event.target.value;
@@ -1191,16 +1384,12 @@ saveClick() {
  }
 
   onBlurLookup(event){
-    //alert('a');
     this.showDorpDown = false;   
     
-    //this.tabClass = 'undefined lookup__menu uiAbstractList uiAutocompleteList uiInput uiAutocomplete uiInput--default uiInput--lookup class2'; 
   }
 
   onFocusLookup(event){
-    //alert('a');
     this.showDorpDown = true; 
-    //this.tabClass = 'undefined lookup__menu uiAbstractList uiAutocompleteList uiInput uiAutocomplete uiInput--default uiInput--lookup class1';   
   }
 
   clearSelection(){
@@ -1246,14 +1435,11 @@ saveClick() {
          console.log(this.accListId);
          this.isselectedAcctNumberEmpty = false;
          
-         //component.set("v.last_ServerResult",serverResult);
       } 
-     // component.set("v.accList",null); 
   } 
   }
 
     getIndexFrmParent(target,attributeToFind){
-      //User can click on any child element, so traverse till intended parent found
       var SelIndex = target.getAttribute(attributeToFind);
       while(!SelIndex){
           target = target.parentNode ;
@@ -1271,7 +1457,6 @@ saveClick() {
             this.AccountObjectlist = [...AccountObjectlist];
             count = count + 1;
             this.accountCount = count;
-            //this.isselectedAcctNumberEmpty = true;
       }
   }
   clearSelectionAdditional(event){
@@ -1352,7 +1537,6 @@ saveClick() {
         console.log(this.accList);
         }
      
-       // document.getElementById('MemberAccountPicker' + SelIndexid).style = '';  
     
   }
   }
