@@ -381,8 +381,11 @@ public class LeadBusinessHoursTriggerTest {
 		test.StopTest();		
 	}
     static testMethod void LeadBusinessHoursTriggerTest9(){
-      
+   
         test.StartTest();	
+         List<Sla_Manager__mdt> mdtList = new List<Sla_Manager__mdt>();
+        Sla_Manager__mdt slaDefList = new Sla_Manager__mdt( DeveloperName='Lead_1',Opportunity_Source__c='Branch Call',Product_Type__c='Mortgage',SLA__c=0.50,StageName__c ='New', Object_Name__c = 'Lead' );
+       mdtList.add(slaDefList);
         Group g1 = new Group(Name='Branch 14 - 1600 Smith Queue', type='Queue');
             insert g1;
         Group g2 = new Group(Name='Products & Services Referral Queue', type='Queue',Email ='cards_accounts_shares@opportunity.com');
@@ -407,7 +410,6 @@ public class LeadBusinessHoursTriggerTest {
         leadList.add(newlead0);
         Insert newlead0;
          
-        newlead0.Status='Considering';
       
         update newlead0;
        
@@ -416,7 +418,7 @@ public class LeadBusinessHoursTriggerTest {
                                 temp__c = false,  LeadSource = 'Branch Call', Product_Type__c ='Mortgage',Sub_Status__c='No Response',Product_Amount__c=28.00);
 	      leadList.add(newlead1);
         Insert newlead1;
-       newlead1.Status='New';
+     
       
       
         update newlead1;
@@ -425,17 +427,14 @@ public class LeadBusinessHoursTriggerTest {
                                 temp__c = false,  LeadSource = 'Branch Call', Product_Type__c ='Mortgage',Sub_Status__c='No Response',Product_Amount__c=28.00);
 	   leadList.add(newlead2);
         Insert newlead2;
-       newlead2.Status='Outreach';
-        newlead2.Sub_Status__c = '1st attempt';
-         newlead2.TimeStamp_Outreach_status__c = Datetime.now();
+      
 
         update newlead2;
         
         newlead2.Status='New';
-        newlead2.SLA__c = 10.0;
-        newlead2.Hour_Spent_New_Status__c=1.00;
+    
          update newlead2;
 
 		test.StopTest();		
-	}
+    }
 }

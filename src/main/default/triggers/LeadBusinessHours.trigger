@@ -790,13 +790,13 @@ trigger LeadBusinessHours on Lead(after insert, after update, before insert, bef
 
                             if( l.Hour_Spent_Outreach_Status__c == null && l.Hour_Spent_Considering_Status__c == null && l.Hour_Spent_Analyzing_Needs_Status__c == null )
                             {
-                                TimeDiff = BusinessHours.diff(stdBusinessHours.id,l.TimeStamp_New_status__c, currentTime);
-                				hh = (TimeDiff / 3600000).setScale(2);
+                              
+                				hh = getTimeDifference(l.TimeStamp_New_status__c);
                                 l.Hour_Spent_New_Status__c = hh;
                             }
                             else{
-                                TimeDiff = BusinessHours.diff(stdBusinessHours.id,ValueforDifference, currentTime);
-                				hh = (TimeDiff / 3600000).setScale(2);
+                              
+                				hh = getTimeDifference(ValueforDifference);
                             l.Hour_Spent_New_Status__c = l.Hour_Spent_New_Status__c != null ? l.Hour_Spent_New_Status__c + hh : hh;
                         }
                             
@@ -811,21 +811,20 @@ trigger LeadBusinessHours on Lead(after insert, after update, before insert, bef
                             HrsHistoryT=tempobj.CreatedDate;
                             
                             if(HrsHistoryT > l.TimeStamp_Outreach_status__c){
-                                TimeDiff = BusinessHours.diff(stdBusinessHours.id, HrsHistoryT, currentTime);
-                                hh = (TimeDiff / 3600000).setScale(2);
+                               
+                                hh =  getTimeDifference(HrsHistoryT);
                              
                                }
                                else{
-                                TimeDiff = BusinessHours.diff(stdBusinessHours.id, l.TimeStamp_Outreach_status__c, currentTime);
-                                hh = (TimeDiff / 3600000).setScale(2);
+                               
+                                hh =  getTimeDifference(l.TimeStamp_Outreach_status__c);
                               
 
                                }
                             }
                                
                                else{
-                                TimeDiff = BusinessHours.diff(stdBusinessHours.id, l.TimeStamp_Outreach_status__c, currentTime);
-                                hh = (TimeDiff / 3600000).setScale(2);
+                                  hh =  getTimeDifference(l.TimeStamp_Outreach_status__c);
                               
 
                                }
@@ -848,20 +847,18 @@ trigger LeadBusinessHours on Lead(after insert, after update, before insert, bef
                             if(tempobj != null){
                             HrsHistoryT=tempobj.CreatedDate;
                             if(HrsHistoryT > l.TimeStamp_Considering_status__c){
-                                TimeDiff = BusinessHours.diff(stdBusinessHours.id, HrsHistoryT, currentTime);
-                                hh = (TimeDiff / 3600000).setScale(2);
+                              
+                                 hh =  getTimeDifference(HrsHistoryT);
                               
                                }
                                else{
-                                TimeDiff = BusinessHours.diff(stdBusinessHours.id, l.TimeStamp_Considering_status__c, currentTime);
-                                hh = (TimeDiff / 3600000).setScale(2);
+                               
+                                hh =  getTimeDifference(l.TimeStamp_Considering_status__c);
 
                                }
                             }
                                else{
-                                TimeDiff = BusinessHours.diff(stdBusinessHours.id, l.TimeStamp_Considering_status__c, currentTime);
-                                hh = (TimeDiff / 3600000).setScale(2);
-
+                                hh =  getTimeDifference(l.TimeStamp_Considering_status__c);
                                }
                           
                             if(  l.Hour_Spent_New_Status__c == null &&  l.Hour_Spent_Outreach_Status__c == null && l.Hour_Spent_Analyzing_Needs_Status__c == null )
@@ -880,20 +877,18 @@ trigger LeadBusinessHours on Lead(after insert, after update, before insert, bef
                             if(tempobj != null){
                             HrsHistoryT=tempobj.CreatedDate;
                             if(HrsHistoryT > l.TimeStamp_Analyzing_Needs_status__c){
-                                TimeDiff = BusinessHours.diff(stdBusinessHours.id, HrsHistoryT, currentTime);
-                                hh = (TimeDiff / 3600000).setScale(2);
+                            
+                               hh =  getTimeDifference(HrsHistoryT);
                                
                                }
                                else{
-                                TimeDiff = BusinessHours.diff(stdBusinessHours.id, l.TimeStamp_Analyzing_Needs_status__c, currentTime);
-                                hh = (TimeDiff / 3600000).setScale(2);
+                             
+                                hh =  getTimeDifference(l.TimeStamp_Analyzing_Needs_status__c);
 
                                }
                             }
                             else{
-                                TimeDiff = BusinessHours.diff(stdBusinessHours.id, l.TimeStamp_Analyzing_Needs_status__c, currentTime);
-                                hh = (TimeDiff / 3600000).setScale(2);
-
+                                 hh =  getTimeDifference(l.TimeStamp_Analyzing_Needs_status__c);
                                }
                             if(  l.Hour_Spent_New_Status__c == null &&  l.Hour_Spent_Outreach_Status__c == null && l.Hour_Spent_Considering_Status__c == null )
                             {
@@ -911,5 +906,20 @@ trigger LeadBusinessHours on Lead(after insert, after update, before insert, bef
         
     }
     /*----PRJ0011432-11432: MARS Functionality Review Changes End-----*/
+    //function to get the Timedifference for Hour spent field//
+      private decimal getTimeDifference(datetime StartTime){
+        decimal hh;
+        decimal TimeDifference;
+        
+        BusinessHours stdBusinessHours = [select id
+                                            from businesshours
+                                            where isDefault = true];
+        DateTime currentTime = Datetime.now();
+        
+        TimeDifference = BusinessHours.diff(stdBusinessHours.id,StartTime, currentTime);
+        hh = (TimeDifference / 3600000).setScale(2);
+        
+        return hh;
+    }
     
 }
