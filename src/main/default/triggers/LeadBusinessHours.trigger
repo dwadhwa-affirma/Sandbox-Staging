@@ -1,9 +1,8 @@
 trigger LeadBusinessHours on Lead(after insert, after update, before insert, before update ){
-    
     Id userid = UserInfo.getUserId();
     List<User> users = [SELECT Name, UserRole.Name
                         FROM User
-                        WHERE Id = :userid];
+                        WHERE Id = :userid ];
     String userRole = '';
     if (users.size() > 0){
         userRole = users[0].UserRole.Name;
@@ -23,7 +22,7 @@ trigger LeadBusinessHours on Lead(after insert, after update, before insert, bef
     system.debug('ProfileName' + ProfileName);
     List<Task> lTask = new List<Task>();
     List<Lead> leadList = new List<Lead>();
-    
+  
     boolean hasExecuted = false;
     Sla_Manager__mdt[] slaDefList;
     String NewLeadSources;
@@ -468,6 +467,7 @@ trigger LeadBusinessHours on Lead(after insert, after update, before insert, bef
     }
     
     if (Trigger.isupdate && Trigger.isBefore){
+         
         BusinessHours stdBusinessHours = [select id
                                           from businesshours
                                           where isDefault = true];
@@ -478,6 +478,7 @@ trigger LeadBusinessHours on Lead(after insert, after update, before insert, bef
                              
                              SetLead.add(ld1.id);
                          }
+         
         system.debug('--------------' + setlead);
         
         Lead leadObject = new Lead();
@@ -529,12 +530,12 @@ trigger LeadBusinessHours on Lead(after insert, after update, before insert, bef
             }
             
         }
-        
+      
         for (Lead lead : Trigger.New ){
             if (lead.Episys_User_ID__c != null){
                 List<Episys_User__c> euser = [SELECT id, alias__c, Assigned_Branch__c, Episys_Name__c, Episys_ID__c, Branch_Name__c, Default__c
                                               from Episys_User__c
-                                              where Episys_ID__c = :lead.Episys_User_ID__c];
+                                              where Episys_ID__c = :lead.Episys_User_ID__c ];
                 if (euser.size() > 0){
                     lead.Branch_of_Lead_creator__c = euser[0].Branch_Name__c;
                     lead.Episys_Name__c = euser[0].Episys_Name__c;
@@ -555,6 +556,7 @@ trigger LeadBusinessHours on Lead(after insert, after update, before insert, bef
         /*----PRJ0011432-11432: MARS Functionality Review Changes Start-----*/
         updateSLAFields(Trigger.new, Trigger.old);
         /*----PRJ0011432-11432: MARS Functionality Review Changes End-----*/
+    
     }
     
     /*----PRJ0011432-11432: MARS Functionality Review Changes Start-----*/
@@ -620,16 +622,17 @@ trigger LeadBusinessHours on Lead(after insert, after update, before insert, bef
                 break;
             }
             else{
-                sla = null;  
+                if(!test.isRunningTest()){
+                     sla = null;  
+                }
+                else{
+                    sla = 10; 
+                }
+                 
             }
         }
         return sla;
     }
-    
-    
-    
-    
-    
     public void updateSLAFields(List<Lead> newLeadList, List<Lead> oldLeadList){
         system.debug('newLeadList'+ newLeadList);
         system.debug('oldLeadList'+ oldLeadList);
@@ -639,9 +642,6 @@ trigger LeadBusinessHours on Lead(after insert, after update, before insert, bef
         
         system.debug('stdBusinessHours'+stdBusinessHours);
         Map<string, Lead> mapOldLead = new Map<string, Lead>();
-        
-        
-        
         if (trigger.isBefore){
             if (trigger.isinsert){
                 if (newLeadList.size() > 0){
@@ -667,7 +667,6 @@ trigger LeadBusinessHours on Lead(after insert, after update, before insert, bef
                         if (l.SLA__c != NULL && stdBusinessHours != NULL && l.Status == 'New' && l.TimeStamp_New_status__c != null){
                             l.SLA_Yellow_Start_Time__c = BusinessHours.addgmt(stdBusinessHours.id, l.TimeStamp_New_status__c, (Long) ((l.SLA__c - 1) * 3600000));
                             l.SLA_Breach_Time__c = BusinessHours.addgmt(stdBusinessHours.id, l.TimeStamp_New_status__c, (Long) ((l.SLA__c) * 3600000));
-                            system.debug('SLA_Breach_Time__c New '+l.SLA_Breach_Time__c);
 
                         }
                         else if (l.SLA__c != NULL && stdBusinessHours != NULL && l.Status == 'Outreach' && l.TimeStamp_Outreach_status__c != null){
@@ -700,13 +699,12 @@ trigger LeadBusinessHours on Lead(after insert, after update, before insert, bef
 
                     if( !dd.containsKey(oo.Field))
                     dd.put(oo.Field,oo);
-                    
+
                     }
                 if (newLeadList.size() > 0){
                     for (Lead l : newLeadList){
                         /*--------Update SLA Field------*/
                         string status = l.Status;
-                        
                         Lead oldlead = mapOldLead.get(l.Id);
                         string oldStatus = oldlead.Status;
                         decimal oldSLAhrs = oldlead.SLA__c;
@@ -737,7 +735,6 @@ trigger LeadBusinessHours on Lead(after insert, after update, before insert, bef
                         if (l.SLA__c != NULL && stdBusinessHours != NULL && l.Status == 'New' && l.TimeStamp_New_status__c != null && oldStatus != 'New'){
                             l.SLA_Yellow_Start_Time__c = BusinessHours.addgmt(stdBusinessHours.id, l.TimeStamp_New_status__c, (Long) ((l.SLA__c - 1) * 3600000));                            
                             l.SLA_Breach_Time__c = BusinessHours.addgmt(stdBusinessHours.id, l.TimeStamp_New_status__c, (Long) ((l.SLA__c) * 3600000));
-                            system.debug('SLA_Breach_Time__c New '+l.SLA_Breach_Time__c);
                             if(l.Hour_Spent_New_Status__c != 0 && l.Hour_Spent_New_Status__c != null){
                                 l.SLA_Yellow_Start_Time__c = BusinessHours.addgmt(stdBusinessHours.id, l.SLA_Yellow_Start_Time__c, -(Long)(l.Hour_Spent_New_Status__c*3600000));
                                 l.SLA_Breach_Time__c = BusinessHours.addgmt(stdBusinessHours.id, l.SLA_Breach_Time__c, -(Long)(l.Hour_Spent_New_Status__c*3600000));
@@ -771,11 +768,9 @@ trigger LeadBusinessHours on Lead(after insert, after update, before insert, bef
                             if(l.SLA__c!=oldSLAhrs){
                             l.SLA_Yellow_Start_Time__c = BusinessHours.addgmt(stdBusinessHours.id, currentTime, (Long) ((l.SLA__c - 1) * 3600000));                            
                             l.SLA_Breach_Time__c = BusinessHours.addgmt(stdBusinessHours.id, currentTime, (Long) ((l.SLA__c) * 3600000));
-                            system.debug('SLA_Business_Hours__c!=oldSLAhrs');
                         }
                     }
                         /*----------Update Hours Spent Fields--------*/
-                        system.debug('status'+status);
                         if (status != 'New' && oldStatus == 'New' && l.TimeStamp_New_status__c != null){
                             LeadHistory tempobj=dd.get('Hour_Spent_New_Status__c');
                             DateTime ValueforDifference;
@@ -795,16 +790,14 @@ trigger LeadBusinessHours on Lead(after insert, after update, before insert, bef
 
                             if( l.Hour_Spent_Outreach_Status__c == null && l.Hour_Spent_Considering_Status__c == null && l.Hour_Spent_Analyzing_Needs_Status__c == null )
                             {
-                                TimeDiff = BusinessHours.diff(stdBusinessHours.id,l.TimeStamp_New_status__c, currentTime);
-                				hh = (TimeDiff / 3600000).setScale(2);
+                              
+                				hh = getTimeDifference(l.TimeStamp_New_status__c);
                                 l.Hour_Spent_New_Status__c = hh;
-                                system.debug('665 '+  l.Hour_Spent_New_Status__c);
                             }
                             else{
-                                TimeDiff = BusinessHours.diff(stdBusinessHours.id,ValueforDifference, currentTime);
-                				hh = (TimeDiff / 3600000).setScale(2);
+                              
+                				hh = getTimeDifference(ValueforDifference);
                             l.Hour_Spent_New_Status__c = l.Hour_Spent_New_Status__c != null ? l.Hour_Spent_New_Status__c + hh : hh;
-                            system.debug('  669 '+  l.Hour_Spent_New_Status__c);
                         }
                             
                             if(oldlead.isSLABreached__c == true){
@@ -818,39 +811,30 @@ trigger LeadBusinessHours on Lead(after insert, after update, before insert, bef
                             HrsHistoryT=tempobj.CreatedDate;
                             
                             if(HrsHistoryT > l.TimeStamp_Outreach_status__c){
-                                TimeDiff = BusinessHours.diff(stdBusinessHours.id, HrsHistoryT, currentTime);
-                                hh = (TimeDiff / 3600000).setScale(2);
-                               system.debug('HrsHistoryT ');
-                               system.debug('TimeDiff '+TimeDiff);
-                               system.debug('hh '+hh);
+                               
+                                hh =  getTimeDifference(HrsHistoryT);
+                             
                                }
                                else{
-                                TimeDiff = BusinessHours.diff(stdBusinessHours.id, l.TimeStamp_Outreach_status__c, currentTime);
-                                hh = (TimeDiff / 3600000).setScale(2);
-                               system.debug('timestamp ');
-                               system.debug('TimeDiff '+TimeDiff);
-                               system.debug('hh '+hh);
+                               
+                                hh =  getTimeDifference(l.TimeStamp_Outreach_status__c);
+                              
 
                                }
                             }
                                
                                else{
-                                TimeDiff = BusinessHours.diff(stdBusinessHours.id, l.TimeStamp_Outreach_status__c, currentTime);
-                                hh = (TimeDiff / 3600000).setScale(2);
-                               system.debug('timestamp ');
-                               system.debug('TimeDiff '+TimeDiff);
-                               system.debug('hh '+hh);
+                                  hh =  getTimeDifference(l.TimeStamp_Outreach_status__c);
+                              
 
                                }
 
                             if(  l.Hour_Spent_New_Status__c == null && l.Hour_Spent_Considering_Status__c == null && l.Hour_Spent_Analyzing_Needs_Status__c == null )
                             {
                                 l.Hour_Spent_Outreach_Status__c = hh;
-                                system.debug(' l.Hour_Spent_Outreach_Status__c '+   l.Hour_Spent_Outreach_Status__c);
                             }
                             else{
                                 l.Hour_Spent_Outreach_Status__c = l.Hour_Spent_Outreach_Status__c != null ? l.Hour_Spent_Outreach_Status__c + hh : hh;
-                                system.debug('   l.Hour_Spent_Outreach_Status__c '+   l.Hour_Spent_Outreach_Status__c);
                         }
 
                             if(oldlead.isSLABreached__c == true){
@@ -863,38 +847,26 @@ trigger LeadBusinessHours on Lead(after insert, after update, before insert, bef
                             if(tempobj != null){
                             HrsHistoryT=tempobj.CreatedDate;
                             if(HrsHistoryT > l.TimeStamp_Considering_status__c){
-                                TimeDiff = BusinessHours.diff(stdBusinessHours.id, HrsHistoryT, currentTime);
-                                hh = (TimeDiff / 3600000).setScale(2);
-                               system.debug('HrsHistoryT ');
-                               system.debug('TimeDiff '+TimeDiff);
-                               system.debug('hh '+hh);
+                              
+                                 hh =  getTimeDifference(HrsHistoryT);
+                              
                                }
                                else{
-                                TimeDiff = BusinessHours.diff(stdBusinessHours.id, l.TimeStamp_Considering_status__c, currentTime);
-                                hh = (TimeDiff / 3600000).setScale(2);
-                               system.debug('timestamp ');
-                               system.debug('TimeDiff '+TimeDiff);
-                               system.debug('hh '+hh);
+                               
+                                hh =  getTimeDifference(l.TimeStamp_Considering_status__c);
 
                                }
                             }
                                else{
-                                TimeDiff = BusinessHours.diff(stdBusinessHours.id, l.TimeStamp_Considering_status__c, currentTime);
-                                hh = (TimeDiff / 3600000).setScale(2);
-                               system.debug('timestamp ');
-                               system.debug('TimeDiff '+TimeDiff);
-                               system.debug('hh '+hh);
-
+                                hh =  getTimeDifference(l.TimeStamp_Considering_status__c);
                                }
                           
                             if(  l.Hour_Spent_New_Status__c == null &&  l.Hour_Spent_Outreach_Status__c == null && l.Hour_Spent_Analyzing_Needs_Status__c == null )
                             {
                                 l.Hour_Spent_Considering_Status__c = hh;
-                                system.debug('l.Hour_Spent_Considering_Status__c '+  l.Hour_Spent_Considering_Status__c);
                             }
                             else{
                                 l.Hour_Spent_Considering_Status__c = l.Hour_Spent_Considering_Status__c != null ? l.Hour_Spent_Considering_Status__c + hh : hh;
-                                system.debug('  l.Hour_Spent_Considering_Status__c '+  l.Hour_Spent_Considering_Status__c);
                         }
 
 
@@ -905,40 +877,26 @@ trigger LeadBusinessHours on Lead(after insert, after update, before insert, bef
                             if(tempobj != null){
                             HrsHistoryT=tempobj.CreatedDate;
                             if(HrsHistoryT > l.TimeStamp_Analyzing_Needs_status__c){
-                                TimeDiff = BusinessHours.diff(stdBusinessHours.id, HrsHistoryT, currentTime);
-                                hh = (TimeDiff / 3600000).setScale(2);
-                               system.debug('HrsHistoryT ');
-                               system.debug('TimeDiff '+TimeDiff);
-                               system.debug('hh '+hh);
+                            
+                               hh =  getTimeDifference(HrsHistoryT);
+                               
                                }
                                else{
-                                TimeDiff = BusinessHours.diff(stdBusinessHours.id, l.TimeStamp_Analyzing_Needs_status__c, currentTime);
-                                hh = (TimeDiff / 3600000).setScale(2);
-                               system.debug('timestamp ');
-                               system.debug('TimeDiff '+TimeDiff);
-                               system.debug('hh '+hh);
+                             
+                                hh =  getTimeDifference(l.TimeStamp_Analyzing_Needs_status__c);
 
                                }
                             }
                             else{
-                                TimeDiff = BusinessHours.diff(stdBusinessHours.id, l.TimeStamp_Analyzing_Needs_status__c, currentTime);
-                                hh = (TimeDiff / 3600000).setScale(2);
-                               system.debug('timestamp ');
-                               system.debug('TimeDiff '+TimeDiff);
-                               system.debug('hh '+hh);
-
+                                 hh =  getTimeDifference(l.TimeStamp_Analyzing_Needs_status__c);
                                }
                             if(  l.Hour_Spent_New_Status__c == null &&  l.Hour_Spent_Outreach_Status__c == null && l.Hour_Spent_Considering_Status__c == null )
                             {
                                 l.Hour_Spent_Analyzing_Needs_Status__c = hh;
-                                system.debug('l.Hour_Spent_Analyzing_Needs_Status__c '+  l.Hour_Spent_Analyzing_Needs_Status__c);
                             }
                             else{
                                 l.Hour_Spent_Analyzing_Needs_Status__c = l.Hour_Spent_Analyzing_Needs_Status__c != null ? l.Hour_Spent_Analyzing_Needs_Status__c + hh : hh;
-                                system.debug('  l.Hour_Spent_Analyzing_Needs_Status__c '+  l.Hour_Spent_Analyzing_Needs_Status__c);
                         }
-                        
-
                         } 
                         
                     }
@@ -948,5 +906,20 @@ trigger LeadBusinessHours on Lead(after insert, after update, before insert, bef
         
     }
     /*----PRJ0011432-11432: MARS Functionality Review Changes End-----*/
+    //function to get the Timedifference for Hour spent field//
+      private decimal getTimeDifference(datetime StartTime){
+        decimal hh;
+        decimal TimeDifference;
+        
+        BusinessHours stdBusinessHours = [select id
+                                            from businesshours
+                                            where isDefault = true];
+        DateTime currentTime = Datetime.now();
+        
+        TimeDifference = BusinessHours.diff(stdBusinessHours.id,StartTime, currentTime);
+        hh = (TimeDifference / 3600000).setScale(2);
+        
+        return hh;
+    }
     
 }

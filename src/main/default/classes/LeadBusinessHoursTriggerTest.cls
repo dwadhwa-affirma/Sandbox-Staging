@@ -7,11 +7,17 @@ public class LeadBusinessHoursTriggerTest {
             insert g1;
         Group g2 = new Group(Name='Products & Services Referral Queue', type='Queue',Email ='cards_accounts_shares@opportunity.com');
             insert g2;
+        
+         QueueSobject mappingObject = new QueueSobject(QueueId = g1.Id, SobjectType = 'Lead');
+        System.runAs(new User(Id = UserInfo.getUserId()))
+        {insert mappingObject;}
+        
+        
+         QueueSobject mappingObject1 = new QueueSobject(QueueId = g2.Id, SobjectType = 'Lead');
+        System.runAs(new User(Id = UserInfo.getUserId()))
+        {insert mappingObject1;}
       
-      /*  Lead_Queue__c lq = new Lead_Queue__c();
-        lq.Episys_User_Branch_Name__c = '14 1600 Smith';
-        lq.Lead_Queue_Name__c = 'Branch 14 - 1600 Smith Queue';
-        insert lq;*/
+     
        
          User ur = [select id,name,alias from user where id=:UserInfo.getUserID()];
          Episys_User__c eu = new Episys_User__c();
@@ -86,13 +92,25 @@ public class LeadBusinessHoursTriggerTest {
 	}
      static testMethod void LeadBusinessHoursTriggerTest2(){
 		test.StartTest();
-        User ur = [select id,name,alias from user where alias='JFRA'];
+         Profile testProfile = [SELECT Id 
+                           FROM profile
+                           WHERE Name = 'CFCU Admin' 
+                           LIMIT 1];
+         User testUser = new User(LastName = 'test user 1', 
+                             Username = 'testing.user.1@example.com', 
+                             Email = 'test.1@example.com', 
+                             Alias = 'testu1', 
+                             TimeZoneSidKey = 'GMT', 
+                             LocaleSidKey = 'en_GB', 
+                             EmailEncodingKey = 'ISO-8859-1', 
+                             ProfileId = testProfile.Id, 
+                             LanguageLocaleKey = 'en_US');
          
         Episys_User__c eu = new Episys_User__c();
              eu.Episys_ID__c = 1538;
              eu.Episys_Name__c = 'test';
              eu.Assigned_Branch__c =14;
-             eu.alias__c = ur.alias;
+             eu.alias__c = testUser.alias;
         insert eu; 
          
         Id LeadRT = Schema.SObjectType.Lead.getRecordTypeInfosByName().get('Company Lead').getRecordTypeId();
@@ -100,10 +118,10 @@ public class LeadBusinessHoursTriggerTest {
         Lead newlead4 = new Lead(Brand__c='CFCU',FirstName = 'FirstName270',LastName = 'LastName270', Status = 'New',company = 'c', RecordTypeId = LeadRT, HasOptedOutOfEmail = false, IsConverted = false, IsUnreadByOwner = false, 
                        smagicinteract__SMSOptOut__c = false, Escalated__c = false, Membership_Required_old__c = false, Keep__c = false, et4ae5__HasOptedOutOfMobile__c = false, Episys_Flag__c = false,
                        temp__c = false, Episys_User_ID__c= 1538, LeadSource = 'Branch Walk in', Product_Type__c ='Cards');
-        system.runAs(ur) {
+        system.runAs(testUser) {
         	Insert newlead4;
         }
-        system.runAs(ur) {
+        system.runAs(testUser) {
         	newlead4.Status = 'Outreach';
             newlead4.Sub_Status__c = '1st attempt';
             update newlead4;
@@ -113,13 +131,25 @@ public class LeadBusinessHoursTriggerTest {
 	}
 	static testMethod void LeadBusinessHoursTriggerTest3(){
 		test.StartTest();
-        User ur = [select id,name,alias from user where alias='JFRA'];
+         Profile testProfile = [SELECT Id 
+                           FROM profile
+                           WHERE Name = 'CFCU Admin' 
+                           LIMIT 1];
+         User testUser = new User(LastName = 'test user 1', 
+                             Username = 'testing.user.1@example.com', 
+                             Email = 'test.1@example.com', 
+                             Alias = 'testu1', 
+                             TimeZoneSidKey = 'GMT', 
+                             LocaleSidKey = 'en_GB', 
+                             EmailEncodingKey = 'ISO-8859-1', 
+                             ProfileId = testProfile.Id, 
+                             LanguageLocaleKey = 'en_US');
          
         Episys_User__c eu = new Episys_User__c();
              eu.Episys_ID__c = 1538;
              eu.Episys_Name__c = 'test';
              eu.Assigned_Branch__c =14;
-             eu.alias__c = ur.alias;
+             eu.alias__c = testUser.alias;
         insert eu; 
          
         Id LeadRT = Schema.SObjectType.Lead.getRecordTypeInfosByName().get('Non-Member Lead').getRecordTypeId();
@@ -127,7 +157,7 @@ public class LeadBusinessHoursTriggerTest {
         Lead newlead4 = new Lead(Brand__c='CFCU',FirstName = 'FirstName270',LastName = 'LastName270', Status = 'New',company = 'c', RecordTypeId = LeadRT, HasOptedOutOfEmail = false, IsConverted = false, IsUnreadByOwner = false, 
                        smagicinteract__SMSOptOut__c = false, Escalated__c = false, Membership_Required_old__c = false, Keep__c = false, et4ae5__HasOptedOutOfMobile__c = false, Episys_Flag__c = false,
                        temp__c = false, Episys_User_ID__c= 1538, LeadSource = 'Branch Walk in', Product_Type__c ='Cards');
-        system.runAs(ur) {
+        system.runAs(testUser) {
         	Insert newlead4;
         }
 		
@@ -135,14 +165,26 @@ public class LeadBusinessHoursTriggerTest {
 	}
 	static testMethod void LeadBusinessHoursTriggerTest4(){
 		test.StartTest();
-        User ur = [select id,name,alias from user where alias='JFRA'];
+        Profile testProfile = [SELECT Id 
+                           FROM profile
+                           WHERE Name = 'CFCU Admin' 
+                           LIMIT 1];
+         User testUser = new User(LastName = 'test user 1', 
+                             Username = 'testing.user.1@example.com', 
+                             Email = 'test.1@example.com', 
+                             Alias = 'testu1', 
+                             TimeZoneSidKey = 'GMT', 
+                             LocaleSidKey = 'en_GB', 
+                             EmailEncodingKey = 'ISO-8859-1', 
+                             ProfileId = testProfile.Id, 
+                             LanguageLocaleKey = 'en_US');
          
         Id LeadRT = Schema.SObjectType.Lead.getRecordTypeInfosByName().get('Non-Member Lead').getRecordTypeId();
       
         Lead newlead4 = new Lead(Brand__c='CFCU',FirstName = 'FirstName270',LastName = 'LastName270', Status = 'New',company = 'c', RecordTypeId = LeadRT, HasOptedOutOfEmail = false, IsConverted = false, IsUnreadByOwner = false, 
                        smagicinteract__SMSOptOut__c = false, Escalated__c = false, Membership_Required_old__c = false, Keep__c = false, et4ae5__HasOptedOutOfMobile__c = false, Episys_Flag__c = false,
                        temp__c = false, Episys_User_ID__c= 1538, LeadSource = 'Branch Walk in', Product_Type__c ='Cards');
-        system.runAs(ur) {
+        system.runAs(testUser) {
         	Insert newlead4;
         }
 		
@@ -150,14 +192,26 @@ public class LeadBusinessHoursTriggerTest {
 	}    
     static testMethod void LeadBusinessHoursTriggerTest5(){
 		test.StartTest();
-        User ur = [select id,name,alias from user where alias='JFRA'];
+          Profile testProfile = [SELECT Id 
+                           FROM profile
+                           WHERE Name = 'CFCU Admin' 
+                           LIMIT 1];
+         User testUser = new User(LastName = 'test user 1', 
+                             Username = 'testing.user.1@example.com', 
+                             Email = 'test.1@example.com', 
+                             Alias = 'testu1', 
+                             TimeZoneSidKey = 'GMT', 
+                             LocaleSidKey = 'en_GB', 
+                             EmailEncodingKey = 'ISO-8859-1', 
+                             ProfileId = testProfile.Id, 
+                             LanguageLocaleKey = 'en_US');
          
         Id LeadRT = Schema.SObjectType.Lead.getRecordTypeInfosByName().get('Non-Member Lead').getRecordTypeId();
       
         Lead newlead4 = new Lead(Brand__c='CFCU',FirstName = 'FirstName270',LastName = 'LastName270', Status = 'New',company = 'c', RecordTypeId = LeadRT, HasOptedOutOfEmail = false, IsConverted = false, IsUnreadByOwner = false, 
                        smagicinteract__SMSOptOut__c = false, Escalated__c = false, Membership_Required_old__c = false, Keep__c = false, et4ae5__HasOptedOutOfMobile__c = false, Episys_Flag__c = false,
                        temp__c = false, Episys_User_ID__c= 1538, LeadSource = 'Event', Product_Type__c ='Cards');
-        system.runAs(ur) {
+        system.runAs(testUser) {
         	Insert newlead4;
         }
 		
@@ -165,14 +219,26 @@ public class LeadBusinessHoursTriggerTest {
 	}
     static testMethod void LeadBusinessHoursTriggerTest6(){
 		test.StartTest();
-        User ur = [select id,name,alias from user where alias='JFRA'];
+        Profile testProfile = [SELECT Id 
+                           FROM profile
+                           WHERE Name = 'CFCU Admin' 
+                           LIMIT 1];
+         User testUser = new User(LastName = 'test user 1', 
+                             Username = 'testing.user.1@example.com', 
+                             Email = 'test.1@example.com', 
+                             Alias = 'testu1', 
+                             TimeZoneSidKey = 'GMT', 
+                             LocaleSidKey = 'en_GB', 
+                             EmailEncodingKey = 'ISO-8859-1', 
+                             ProfileId = testProfile.Id, 
+                             LanguageLocaleKey = 'en_US');
          
         Id LeadRT = Schema.SObjectType.Lead.getRecordTypeInfosByName().get('Non-Member Lead').getRecordTypeId();
       
         Lead newlead4 = new Lead(Brand__c='CFCU',FirstName = 'FirstName270',LastName = 'LastName270', Status = 'New',company = 'c', RecordTypeId = LeadRT, HasOptedOutOfEmail = false, IsConverted = false, IsUnreadByOwner = false, 
                        smagicinteract__SMSOptOut__c = false, Escalated__c = false, Membership_Required_old__c = false, Keep__c = false, et4ae5__HasOptedOutOfMobile__c = false, Episys_Flag__c = false,
                        temp__c = false, Episys_User_ID__c= 1538, LeadSource = 'Other', Product_Type__c ='Cards');
-        system.runAs(ur) {
+        system.runAs(testUser) {
         	Insert newlead4;
         }
 		
@@ -180,7 +246,20 @@ public class LeadBusinessHoursTriggerTest {
 	}
     static testMethod void LeadBusinessHoursTriggerTest7(){
 		
-        User ur = [select id,name,alias from user where alias='JFRA'];
+         Profile testProfile = [SELECT Id 
+                           FROM profile
+                           WHERE Name = 'CFCU Admin' 
+                           LIMIT 1];
+         User testUser = new User(LastName = 'test user 1', 
+                             Username = 'testing.user.1@example.com', 
+                             Email = 'test.1@example.com', 
+                             Alias = 'testu1', 
+                             TimeZoneSidKey = 'GMT', 
+                             LocaleSidKey = 'en_GB', 
+                             EmailEncodingKey = 'ISO-8859-1', 
+                             ProfileId = testProfile.Id, 
+                             LanguageLocaleKey = 'en_US');
+         
         List<Lead> leadList = new List<Lead>();
         String RecTypeId= [select Id from RecordType where (Name='Person Account') and (SobjectType='Account')].Id; 
         Id LeadRT = Schema.SObjectType.Lead.getRecordTypeInfosByName().get('Non-Member Lead').getRecordTypeId();
@@ -249,15 +328,28 @@ public class LeadBusinessHoursTriggerTest {
         leadList.add(newlead2);
         leadList.add(newlead3);
         
-        system.runAs(ur) {
+        system.runAs(testUser) {
         	Insert leadList;
         }
 		
 		test.StopTest();		
 	}
     static testMethod void LeadBusinessHoursTriggerTest8(){
-		
-        User ur = [select id,name,alias from user where alias='JFRA'];
+		 test.StartTest();
+        //User ur = [select id,name,alias from user where alias='JFRA'];
+          Profile testProfile = [SELECT Id 
+                           FROM profile
+                           WHERE Name = 'CFCU Admin' 
+                           LIMIT 1];
+         User testUser = new User(LastName = 'test user 1', 
+                             Username = 'testing.user.1@example.com', 
+                             Email = 'test.1@example.com', 
+                             Alias = 'testu1', 
+                             TimeZoneSidKey = 'GMT', 
+                             LocaleSidKey = 'en_GB', 
+                             EmailEncodingKey = 'ISO-8859-1', 
+                             ProfileId = testProfile.Id, 
+                             LanguageLocaleKey = 'en_US');
         List<Lead> leadList = new List<Lead>();
         String RecTypeId= [select Id from RecordType where (Name='Person Account') and (SobjectType='Account')].Id; 
         Id LeadRT = Schema.SObjectType.Lead.getRecordTypeInfosByName().get('Non-Member Lead').getRecordTypeId();
@@ -276,19 +368,73 @@ public class LeadBusinessHoursTriggerTest {
         PersonMobilePhone='12345678');         
         insert acc;
 		
-        test.StartTest();
-        
-		
         Lead newlead1 = new Lead(Are_you_a_current_member__c = 'No', Brand__c='Spectrum',I_m_interested_in__c = 'Xpress Form - Web',FirstName = 'FirstName270',LastName = 'LastName270', Status = 'New',company = 'c', RecordTypeId = LeadRT, HasOptedOutOfEmail = false, IsConverted = false, IsUnreadByOwner = false, 
                        Home_Phone__c = '555-555-5555',email = 'test@yahoo.com',smagicinteract__SMSOptOut__c = false, Escalated__c = false, Membership_Required_old__c = false, Keep__c = false, et4ae5__HasOptedOutOfMobile__c = false, Episys_Flag__c = false,
                        temp__c = false, Episys_User_ID__c= 1538, LeadSource = 'Xpress Form - Web', Product_Type__c ='Mortgage');
        
         leadList.add(newlead1);
       
-        system.runAs(ur) {
+        system.runAs(testUser) {
         	Insert leadList;
         }
 		
 		test.StopTest();		
 	}
+    static testMethod void LeadBusinessHoursTriggerTest9(){
+   
+        test.StartTest();	
+         List<Sla_Manager__mdt> mdtList = new List<Sla_Manager__mdt>();
+        Sla_Manager__mdt slaDefList = new Sla_Manager__mdt( DeveloperName='Lead_1',Opportunity_Source__c='Branch Call',Product_Type__c='Mortgage',SLA__c=0.50,StageName__c ='New', Object_Name__c = 'Lead' );
+       mdtList.add(slaDefList);
+        Group g1 = new Group(Name='Branch 14 - 1600 Smith Queue', type='Queue');
+            insert g1;
+        Group g2 = new Group(Name='Products & Services Referral Queue', type='Queue',Email ='cards_accounts_shares@opportunity.com');
+            insert g2;
+      
+          User ur = [select id,name,alias from user where id=:UserInfo.getUserID()];
+          Episys_User__c eu = new Episys_User__c();
+             eu.Episys_ID__c = 1;
+             eu.Episys_Name__c = 'test';
+             eu.Assigned_Branch__c =14;
+             eu.alias__c = ur.alias;
+        insert eu;
+        
+          List<Lead> leadList = new List<Lead>();
+     List<BusinessHours> bhs=[select id from BusinessHours where IsDefault=true];
+       System.assert(bhs.size()==1);      
+        
+     
+        Lead newlead0 = new Lead(Brand__c='CFCU',FirstName = 'FirstName270',LastName = 'LastName270', Status = 'New', HasOptedOutOfEmail = false, IsConverted = false, IsUnreadByOwner = false, 
+                       smagicinteract__SMSOptOut__c = false, Escalated__c = false, Membership_Required_old__c = false, Keep__c = false, et4ae5__HasOptedOutOfMobile__c = false, Episys_Flag__c = false,
+                                temp__c = false,  LeadSource = 'Branch Call', Product_Type__c ='Mortgage');
+        leadList.add(newlead0);
+        Insert newlead0;
+         
+      
+        update newlead0;
+       
+     Lead newlead1 = new Lead(Brand__c='CFCU',FirstName = 'FirstName270',LastName = 'LastName270', Status = 'Outreach', HasOptedOutOfEmail = false, IsConverted = false, IsUnreadByOwner = false, 
+                       smagicinteract__SMSOptOut__c = false, Escalated__c = false, Membership_Required_old__c = false, Keep__c = false, et4ae5__HasOptedOutOfMobile__c = false, Episys_Flag__c = false,
+                                temp__c = false,  LeadSource = 'Branch Call', Product_Type__c ='Mortgage',Sub_Status__c='No Response',Product_Amount__c=28.00);
+	      leadList.add(newlead1);
+        Insert newlead1;
+     
+      
+      
+        update newlead1;
+         Lead newlead2 = new Lead(Brand__c='CFCU',FirstName = 'FirstName270',LastName = 'LastName270', Status = 'Considering', HasOptedOutOfEmail = false, IsConverted = false, IsUnreadByOwner = false, 
+                       smagicinteract__SMSOptOut__c = false, Escalated__c = false, Membership_Required_old__c = false, Keep__c = false, et4ae5__HasOptedOutOfMobile__c = false, Episys_Flag__c = false,
+                                temp__c = false,  LeadSource = 'Branch Call', Product_Type__c ='Mortgage',Sub_Status__c='No Response',Product_Amount__c=28.00);
+	   leadList.add(newlead2);
+        Insert newlead2;
+      
+
+        update newlead2;
+        
+        newlead2.Status='New';
+    
+         update newlead2;
+
+		test.StopTest();		
+    }
 }
