@@ -1,3 +1,10 @@
+/**
+ * @description       : 
+ * @author            : ChangeMeIn@UserSettingsUnder.SFDoc
+ * @group             : 
+ * @last modified on  : 05-23-2022
+ * @last modified by  : ChangeMeIn@UserSettingsUnder.SFDoc
+**/
 public class xPressRefiController{
 	public static HttpRequest httpreq = new HttpRequest();
 	public static String jsonData;
@@ -387,7 +394,7 @@ public class xPressRefiController{
 
 	//-----------------Create Case-----------//
 	@AuraEnabled
-	public static string createCase(string recordId, xPressRefi__c XpressRefiRecord){
+	public static string createCase(string recordId, xPressRefi__c XpressRefiRecord,string MortgageCadenceNote){
 
 		xPressRefi_Case_Categories__c caseCategories = xPressRefi_Case_Categories__c.getValues('Categories');
 
@@ -450,7 +457,9 @@ public class xPressRefiController{
 		if (XpressRefiRecord.Vesting_Person_4__c != '' && XpressRefiRecord.Vesting_Person_4__c != null){
 			Description = Description + '\n' + 'Vesting Person 4: ' + XpressRefiRecord.Vesting_Person_4__c;
 		}
-
+		if(MortgageCadenceNote != '' && MortgageCadenceNote != null  ){
+			Description = Description + '\n' + 'Yellow Path Reason: ' + MortgageCadenceNote;
+		}
 
 		cs.Description = Description;
 		insert cs;
@@ -727,9 +736,65 @@ public class xPressRefiController{
 	public static map<string, object> saveXpressRefiData(xPressRefi__c XpressRefiRecord, string recordId){
 		Id xId, caseId;
 		map<string, object> resultMap = new map<string, object>();
+		string MortgageCadenceNote = '';
 		if (XpressRefiRecord != null){
+			if (XpressRefiRecord.Is_Mortgage_Cadence__c){
+			
+					if (XpressRefiRecord.Impermissible__c){
+						MortgageCadenceNote = MortgageCadenceNote + 'Marked as Impermissible.';
+					}
+					if (XpressRefiRecord.Trust__c || XpressRefiRecord.Is_Vesting_Info_Trust__c){
+						if (MortgageCadenceNote == '')
+							MortgageCadenceNote = MortgageCadenceNote + 'Held in Trust.';
+						else
+							MortgageCadenceNote = MortgageCadenceNote + '\n' + 'Held in Trust.';
+					}
+					if (String.isNotBlank(XpressRefiRecord.PMI_Company_Name__c)){
+						if (MortgageCadenceNote == '')
+							MortgageCadenceNote = MortgageCadenceNote + 'Contains PMI.';
+						else
+							MortgageCadenceNote = MortgageCadenceNote + '\n' + 'Contains PMI.';
+					}
+					if (String.isBlank(XpressRefiRecord.Vesting__c)){
+						if (MortgageCadenceNote == '')
+							MortgageCadenceNote = MortgageCadenceNote + 'No Vesting information available.';
+						else
+							MortgageCadenceNote = MortgageCadenceNote + '\n' + 'No Vesting information available.';
+					}
+					if (XpressRefiRecord.Is_Vesting_Info_Changed__c){
+						if (MortgageCadenceNote == '')
+							MortgageCadenceNote = MortgageCadenceNote + 'Vesting information changed.';
+						else
+							MortgageCadenceNote = MortgageCadenceNote + '\n' + 'Vesting information changed.';
+					}
+					if (XpressRefiRecord.Product_Type__c != XpressRefiRecord.New_Product_Type__c){
+						if (MortgageCadenceNote == '')
+							MortgageCadenceNote = MortgageCadenceNote + 'Loan product change.';
+						else
+							MortgageCadenceNote = MortgageCadenceNote + '\n' + 'Loan product change.';
+					}
+					if (XpressRefiRecord.Is_Primary_Residence__c == false){
+						if (MortgageCadenceNote == '')
+							MortgageCadenceNote = MortgageCadenceNote + 'Not primary residence.';
+						else
+							MortgageCadenceNote = MortgageCadenceNote + '\n' + 'Not primary residence.';
+					}
+					if (XpressRefiRecord.Product_Type__c.contains('ARM')){
+						if (MortgageCadenceNote == '')
+							MortgageCadenceNote = MortgageCadenceNote + 'Loan is an Adjustable Rate Mortgage (ARM).';
+						else
+							MortgageCadenceNote = MortgageCadenceNote + '\n' + 'Loan is an Adjustable Rate Mortgage (ARM).';
+					}
+					if (XpressRefiRecord.Is_Maturity_Date_Reset__c){
+						if (MortgageCadenceNote == '')
+							MortgageCadenceNote = MortgageCadenceNote + 'Maturity Date Reset.';
+						else
+							MortgageCadenceNote = MortgageCadenceNote + '\n' + 'Maturity Date Reset.';
+					}
+				}
 			try{
-				caseId = createCase(recordId, XpressRefiRecord);
+				caseId = createCase(recordId, XpressRefiRecord,MortgageCadenceNote);
+
 			} catch (exception ex){
 				resultMap.put('Error', 'There was an error while creating a Case. Please contact admin.');
 				return resultmap;
@@ -747,58 +812,7 @@ public class xPressRefiController{
 
 
 				if (XpressRefiRecord.Is_Mortgage_Cadence__c){
-					string MortgageCadenceNote = '';
-					if (XpressRefiRecord.Impermissible__c){
-						MortgageCadenceNote = MortgageCadenceNote + 'Marked as Impermissible';
-					}
-					if (XpressRefiRecord.Trust__c || XpressRefiRecord.Is_Vesting_Info_Trust__c){
-						if (MortgageCadenceNote == '')
-							MortgageCadenceNote = MortgageCadenceNote + 'Held in Trust';
-						else
-							MortgageCadenceNote = MortgageCadenceNote + '\n' + 'Held in Trust';
-					}
-					if (String.isNotBlank(XpressRefiRecord.PMI_Company_Name__c)){
-						if (MortgageCadenceNote == '')
-							MortgageCadenceNote = MortgageCadenceNote + 'Contains PMI';
-						else
-							MortgageCadenceNote = MortgageCadenceNote + '\n' + 'Contains PMI';
-					}
-					if (String.isBlank(XpressRefiRecord.Vesting__c)){
-						if (MortgageCadenceNote == '')
-							MortgageCadenceNote = MortgageCadenceNote + 'No Vesting information available';
-						else
-							MortgageCadenceNote = MortgageCadenceNote + '\n' + 'No Vesting information available';
-					}
-					if (XpressRefiRecord.Is_Vesting_Info_Changed__c){
-						if (MortgageCadenceNote == '')
-							MortgageCadenceNote = MortgageCadenceNote + 'Vesting information changed';
-						else
-							MortgageCadenceNote = MortgageCadenceNote + '\n' + 'Vesting information changed';
-					}
-					if (XpressRefiRecord.Product_Type__c != XpressRefiRecord.New_Product_Type__c){
-						if (MortgageCadenceNote == '')
-							MortgageCadenceNote = MortgageCadenceNote + 'Loan product change';
-						else
-							MortgageCadenceNote = MortgageCadenceNote + '\n' + 'Loan product change';
-					}
-					if (XpressRefiRecord.Is_Primary_Residence__c == false){
-						if (MortgageCadenceNote == '')
-							MortgageCadenceNote = MortgageCadenceNote + 'Not primary residence';
-						else
-							MortgageCadenceNote = MortgageCadenceNote + '\n' + 'Not primary residence';
-					}
-					if (XpressRefiRecord.Product_Type__c.contains('ARM')){
-						if (MortgageCadenceNote == '')
-							MortgageCadenceNote = MortgageCadenceNote + 'Loan is an Adjustable Rate Mortgage (ARM)';
-						else
-							MortgageCadenceNote = MortgageCadenceNote + '\n' + 'Loan is an Adjustable Rate Mortgage (ARM)';
-					}
-					if (XpressRefiRecord.Is_Maturity_Date_Reset__c){
-						if (MortgageCadenceNote == '')
-							MortgageCadenceNote = MortgageCadenceNote + 'Maturity Date Reset';
-						else
-							MortgageCadenceNote = MortgageCadenceNote + '\n' + 'Maturity Date Reset';
-					}
+					
 
 					XpressRefiRecord.Mortgage_Cadence_Note__c = MortgageCadenceNote;
 				}
