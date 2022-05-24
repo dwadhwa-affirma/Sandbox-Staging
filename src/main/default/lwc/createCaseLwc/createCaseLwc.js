@@ -13,7 +13,7 @@ import CASE_OBJECT from "@salesforce/schema/Case";
 import STANDARD_MC from "@salesforce/messageChannel/StandardMessageChannel__c";
 import { ShowToastEvent } from "lightning/platformShowToastEvent";
 import uploadFile from "@salesforce/apex/CreateCaseMemberPageController.uploadFile";
-import uploadFiles2 from "@salesforce/apex/CreateCaseMemberPageController.uploadFiles2";
+import uploadDocument from "@salesforce/apex/CreateCaseMemberPageController.uploadDocument";
 const MAX_FILE_SIZE = 24500;
 import GetCaseAttachments from "@salesforce/apex/GetCaseAttachments.GetCaseAttachments"
 
@@ -157,7 +157,6 @@ export default class createCaseLwc extends NavigationMixin(LightningElement) {
         this.showUserOwner = true;
         this.showAssignDropdown = true;
         this.showQueueDropdown = false;
-        //this.resetField("Sub_Status__c");
         break;
     }
   }
@@ -174,7 +173,6 @@ export default class createCaseLwc extends NavigationMixin(LightningElement) {
     console.log("handleAssignChange...");
     console.log(event.detail.value);
     this.caseTypeId = event.detail.value;
-    //this.loadTopCase();
   }
 
   handleEpisysUserIdChange(event) {
@@ -260,7 +258,6 @@ export default class createCaseLwc extends NavigationMixin(LightningElement) {
     console.log(
       `connectedCallback count : ${this.connectedCallbackCnt} - recordId: ${this.recordId}`
     );
-    // this.subscribeMC();
     this.getAccData(this.recordId);
   }
 
@@ -268,7 +265,6 @@ export default class createCaseLwc extends NavigationMixin(LightningElement) {
     // Note: If this component is NOT wrapped inside an Aura one, then recordId must be hidden in the DOM so that it is eventually hydrated by Salesforce and this gets called when that happens.
     this.renderedCallbackCnt++;
 
-    //console.log(`renderedCallback count : ${this.renderedCallbackCnt}`);
     if (this.recordId != undefined) {
       if (!this.loaded) {
         this.loaded = true;
@@ -296,7 +292,6 @@ export default class createCaseLwc extends NavigationMixin(LightningElement) {
     SearchTertiary({ searchText: searchText })
       .then((result) => {
         console.log("search options");
-        //console.log(JSON.stringify(result));
         this.searchOptions = result;
         console.log(JSON.stringify(this.searchOptions));
         let searchList = []; //[{value: '', label:'--- None ---'}];
@@ -468,9 +463,7 @@ export default class createCaseLwc extends NavigationMixin(LightningElement) {
     getTop10Cases()
       .then((result) => {
         console.log("search options");
-        //console.log(JSON.stringify(result));
         this.quickCases = result;
-        //console.log(JSON.stringify(this.quickCases));
         let caseList = [{ value: "", label: "--- None ---" }];
         let secondaryList = [{ value: "", label: "--- None ---" }];
 
@@ -496,7 +489,6 @@ export default class createCaseLwc extends NavigationMixin(LightningElement) {
   }
 
   handleSubmit(event) {
-    // Mimics CreateCaseController.CaseInsertUpdate behavior.
     event.preventDefault();
     this.showSpinner = true;
 
@@ -554,7 +546,7 @@ export default class createCaseLwc extends NavigationMixin(LightningElement) {
         break;
     }
     debugger;
-   
+
     this.template.querySelector("lightning-record-edit-form").submit(fields);
   }
 
@@ -603,8 +595,7 @@ export default class createCaseLwc extends NavigationMixin(LightningElement) {
     console.log(`Success - Case Id ${event.detail.id} created.`);
     this.showNotification(event.detail.id);
     this.caseRecordId = event.detail.id;
-    this.navigateToCasePage();
-    
+    this.navigateToCasePage();    
     this.closeAction();
     
   }
@@ -633,10 +624,9 @@ export default class createCaseLwc extends NavigationMixin(LightningElement) {
     event.preventDefault(); 
     this.fields = event.detail.fields;
   }
-  
+
   print() {
     console.log("##in method");
-    // alert('###this method');
     this.handleReset();
   }
  
@@ -655,7 +645,6 @@ export default class createCaseLwc extends NavigationMixin(LightningElement) {
           result.Secondary_Category__c;
         this.template.querySelector('[data-id="Tertiary_Category__c"]').value =
           result.Tertiary_Category__c;
-        
         this.internalcmt = result.Internal_Comments__c;
         this.firstval = result[0].Secondary_Category__c;
         console.debug();
@@ -672,7 +661,6 @@ export default class createCaseLwc extends NavigationMixin(LightningElement) {
       .then((result) => {
         console.log(result);
         var selectedTextArray = this.selectedText.split(" / ");
-       
         this.primaryCat = selectedTextArray[0];
         this.secondaryCat = selectedTextArray[1];
         this.tertiaryCat = selectedTextArray[2];
@@ -726,14 +714,12 @@ export default class createCaseLwc extends NavigationMixin(LightningElement) {
   }
   handleChangecheckbox(event) {
     this.isFileUpload = event.target.checked;
-    //this.NextClick();
   }
-  handleisNext(event){    	
-    
+  handleisNext(event){    	  
     this.saveClicked();
     this.showNotification();
   }
-  
+
 
 openfileUpload(event){
   const files = event.target.files;
@@ -762,7 +748,6 @@ openfileUpload(event){
     this.isNoFilesSelected = false;
   }
   this.fileNames = [...fileNames];
-
 }
 
 handleclickattechment(event){
@@ -773,14 +758,10 @@ handleclickattechment(event){
 
   }
 
-
 }
 
- 
 
-/*
-Test from line 885 to 942
-*/
+
 handleFileUploaded(event) {
   if (event.target.files.length > 0) {
       for(var i=0; i< event.target.files.length; i++){
@@ -799,7 +780,7 @@ handleFileUploaded(event) {
   }
 }
 
-uploadFiles2(event) {
+uploadDocument(event) {
   if(event.target.label == "Upload Attachment"){
     this.IsUploadandNewPressed = false;
   }
@@ -811,7 +792,7 @@ uploadFiles2(event) {
       this.showToast('Error', 'error', 'Please select files first'); return;
   }
   this.showSpinner = true;
-  uploadFiles2({
+  uploadDocument({
       recordId : this.CaseId,
       filedata : JSON.stringify(this.filesData)
   })
@@ -844,7 +825,7 @@ uploadFiles2(event) {
           this.showToast('Error', 'error', error.body.message);
       }
   }).finally(() => this.showSpinner = false );
-  
+
 }
 CaseAttachments(){
   console.log("inside Case Attachment");
@@ -1010,21 +991,18 @@ toast(title){
             inputField.reportValidity();
             isValid = false;
         }
-       // this.contact[inputField.name] = inputField.value;
     });
     return isValid;
   }
 
 saveClicked(){
   if(this.isInputValid()) {
-    console.log('this.contact');
+  console.log('this.contact');
   console.log('saveClicked...');
   console.log('pcvalue',this.primaryCat);
   console.log(this.primaryCat);
   console.log(this.secondaryCat);
   console.log(this.tertiaryCat); 
- // console.log(this.memberAccountMap[this.memberAccountValue].Id);
- // console.log(this.memberAccounts);
   console.log(this.subject);
   console.log(this.followuptext);
   console.log(this.status);
@@ -1032,8 +1010,6 @@ saveClicked(){
   console.log(this.Ltk);
   console.log(this.reportNumber);
   console.log(this.accList); 
- // console.log('queueValue...');
- // console.log(this.queueValue);
   console.log('##selectedAccountnumber',this.selectedAcctNumber);
   console.log(this.internalcmt);
 
@@ -1102,7 +1078,6 @@ saveClicked(){
 saveAndNewClick(){
   console.log("saveandnew");
   this.saveClick();
-
   
 }
 handleReset() {
@@ -1115,7 +1090,7 @@ for(var i=0;i<a.length;i++){
 }               
 this.accList = [...a];   
 
- 
+
 this.isselectedAcctNumberEmpty =true;
 
 var acc = this.AccountObjectlist;
@@ -1134,7 +1109,6 @@ this.accountCount = 0;
  this.status="";
   this.searchValue = "";
   this.internalcmt = "";
- 
   this.memberAccountValue ="";
   this.queueValue = "";
   const inputFields = this.template.querySelectorAll("lightning-input-field");
@@ -1209,22 +1183,16 @@ this.accountCount = 0;
 saveClick() {
   if(this.isInputValid()) {
     console.log('this.contact');
-
-//console.log('testsldsselect',inputFields);
   console.log('saveClicked...');
   console.log(this.primaryCat);
   console.log(this.secondaryCat);
   console.log(this.tertiaryCat); 
- // console.log(this.memberAccountMap[this.memberAccountValue].Id);
- // console.log(this.memberAccounts);
   console.log(this.subject);
   console.log(this.followuptext);
   console.log(this.status);
   console.log(this.followupdate);
   console.log(this.Ltk);
   console.log(this.reportNumber);
- // console.log(this.accList); 
- // console.log('queueValue...');
   console.log(this.queueValue);
   
   console.log('##selectedAccountnumber',this.selectedAcctNumber);
@@ -1385,7 +1353,6 @@ NextClick() {
 
   onBlurLookup(event){
     this.showDorpDown = false;   
-    
   }
 
   onFocusLookup(event){

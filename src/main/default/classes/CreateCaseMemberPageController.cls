@@ -2,7 +2,7 @@
  * @description       : 
  * @author            : ChangeMeIn@UserSettingsUnder.SFDoc
  * @group             : 
- * @last modified on  : 05-18-2022
+ * @last modified on  : 05-24-2022
  * @last modified by  : ChangeMeIn@UserSettingsUnder.SFDoc
 **/
 public class CreateCaseMemberPageController {
@@ -76,17 +76,11 @@ public class CreateCaseMemberPageController {
                               Balance__c,
                               Reference__c,
                               Brand__c  FROM Account_Details__c Where  Name IN:accountNumberSet and (RecType__c = 'SHAR' and TypeTranslate__c ='1-PRIMARY SHARE') ORDER BY Name asc, RecType__c asc];
-                             // Brand__c  FROM Account_Details__c Where /*Id IN:accIdSet*/ Name IN:accountNumberSet and (RecType__c = 'ACCT' or (RecType__c = 'SHAR' and TypeTranslate__c ='1-PRIMARY SHARE')) ORDER BY Name asc, RecType__c asc];
                               system.debug('AccoutDetailQuery2'+accList ); 
         }
         
         mapList.put('accList', accList);
         
-      /*  List<Top_10_Case_Types__c> ctList= new List<Top_10_Case_Types__c>();    
-        ctList = [select id, Case_Type__c, Internal_Comments__c, Primary_Category__c, Secondary_Category__c, Subject__c, Tertiary_Category__c  from Top_10_Case_Types__c order by Case_Type__c];
-        
-        
-        mapList.put('toptencategories', ctList);    */
        return mapList;
         
     }
@@ -196,11 +190,6 @@ public class CreateCaseMemberPageController {
         
         mapList.put('accList', paList);
        
-    /*    List<Top_10_Case_Types__c> ctList= new List<Top_10_Case_Types__c>();    
-        ctList = [select id, Case_Type__c, Internal_Comments__c, Primary_Category__c, Secondary_Category__c, Subject__c, Tertiary_Category__c  from Top_10_Case_Types__c order by Case_Type__c];
-        
-        
-        mapList.put('toptencategories', ctList); */
        
        return mapList;
         
@@ -288,9 +277,7 @@ public class CreateCaseMemberPageController {
         for(CaseRecordType__c tcr: tcList){
             scSet.add(tcr.Teritiary_Category__c);
         }
-     //   str.sort();
         list<KeyValuePairModel> op = new list<KeyValuePairModel>();
-        //op.add(new KeyValuePairModel('--- None ---',''));
         for (String tc : scSet){
             if(tc!='None'){
                 op.add(new KeyValuePairModel(tc,tc));
@@ -306,7 +293,6 @@ public class CreateCaseMemberPageController {
         Schema.DescribeFieldResult statusFieldDescription = Case.Primary_Category__c.getDescribe();
         System.debug('Getting description:::'+ statusFieldDescription);
         list<KeyValuePairModel> op = new list<KeyValuePairModel>();
-        //op.add(new KeyValuePairModel('--- None ---',''));
         for (Schema.Picklistentry picklistEntry : statusFieldDescription.getPicklistValues())
         {
             op.add(new KeyValuePairModel(pickListEntry.getValue(),pickListEntry.getLabel()));
@@ -343,7 +329,6 @@ public class CreateCaseMemberPageController {
          else if(caseObject.Tertiary_Category__c == NULL || caseObject.Tertiary_Category__c == '-None-' && caseObject.Secondary_Category__c != 'Transfers Between Sub-Accounts' && caseObject.Secondary_Category__c != 'Transfers Between Memberships'
                  && caseObject.Secondary_Category__c != 'Check By Phone' && caseObject.Secondary_Category__c != 'Loan Payment' && caseObject.Secondary_Category__c != 'Check Withdrawal to Self'
                  && caseObject.Secondary_Category__c != 'Credit Card Payment' && caseObject.Secondary_Category__c != 'Check Withdrawal to Third Party' && caseObject.Secondary_Category__c != 'Other') 
-         /* else if(tcValue == NULL || tcValue == '-None-' && scValue != 'Death Claims' && scValue != 'EPS Research' && scValue != 'OnBoarding')*/
            {
             
             returnvalue = 'Please select Tertiary Category';
@@ -373,17 +358,6 @@ public class CreateCaseMemberPageController {
        List<Contact> clist = [SELECT Id, Name FROM Contact WHERE Contact.AccountId =:accObject.Id];
         AssignmentRule AR = new AssignmentRule(); 
         AR = [SELECT Id FROM AssignmentRule WHERE SobjectType = 'Case' AND Active = True LIMIT 1];
-        /*List<Group> gp = [select Id, Name from Group where Type = 'Queue' and Name = 'Complaint Management Queue' Limit 1];
-        List<Group> ARQ = [select Id, Name from Group where Type = 'Queue' and Name = 'Asset Recovery Complaints Queue' Limit 1];
-        List<Group> SQ = [select Id, Name from Group where Type = 'Queue' and Name = 'Servicing Complaints Queue' Limit 1];
-        List<Group> PQ = [select Id, Name from Group where Type = 'Queue' and Name = 'Product Complaints Queue' Limit 1];
-        List<Group> ALQ = [select Id, Name from Group where Type = 'Queue' and Name = 'Auto Loans Complaints Queue' Limit 1];
-        List<Group> SLQ = [select Id, Name from Group where Type = 'Queue' and Name = 'Solar Loans Complaints Queue' Limit 1];
-        List<Group> FQ = [select Id, Name from Group where Type = 'Queue' and Name = 'Fraud Complaints Queue' Limit 1];
-        List<Group> DBQ = [select Id, Name from Group where Type = 'Queue' and Name = 'Digital Banking Complaints Queue' Limit 1];
-        List<Group> MQ = [select Id, Name from Group where Type = 'Queue' and Name = 'Marketing Complaints Queue' Limit 1];
-        List<Group> MLQ = [select Id, Name from Group where Type = 'Queue' and Name = 'Mortgage Lending Complaints Queue' Limit 1];
-        List<Group> PSQ = [select Id, Name from Group where Type = 'Queue' and Name = 'Payment Services Complaints Queue' Limit 1]; */
             
         Database.DMLOptions dmlOpts = new Database.DMLOptions(); 
         dmlOpts.assignmentRuleHeader.assignmentRuleId= AR.id;   
@@ -395,55 +369,7 @@ public class CreateCaseMemberPageController {
                 cs.Primary_Category__c = scList[0].Primary_Category__c;
                 cs.Secondary_Category__c = scList[0].Secondary_Category__c;
                 cs.Tertiary_Category__c = scList[0].Teritiary_Category__c;
-                
-                //----------------------------------------KX11043-26 and KX11043-27---------------------------------------------//
-                
-                /* if(scList[0].Primary_Category__c =='Complaint' && scList[0].Teritiary_Category__c == 'Asset Recovery'){
-                    
-                     cs.OwnerId = ARQ[0].id;
-                }
-                if(scList[0].Primary_Category__c =='Complaint' && scList[0].Teritiary_Category__c == 'Servicing'){
-                    
-                     cs.OwnerId = SQ[0].id;
-                }
-                if(scList[0].Primary_Category__c =='Complaint' && scList[0].Teritiary_Category__c == 'Product'){
-                    
-                     cs.OwnerId = PQ[0].id;
-                 }
-                if(scList[0].Primary_Category__c =='Complaint' && scList[0].Teritiary_Category__c == 'Auto Loans'){
-                    
-                     cs.OwnerId = ALQ[0].id;
-                }
-                if(scList[0].Primary_Category__c =='Complaint' && scList[0].Teritiary_Category__c == 'Solar Loan'){
-                    
-                     cs.OwnerId = SLQ[0].id;
-                }
-                if(scList[0].Primary_Category__c =='Complaint' && scList[0].Teritiary_Category__c == 'Others'){
-                    
-                     cs.OwnerId = gp[0].id;
-                } 
-                if(scList[0].Primary_Category__c =='Complaint' && scList[0].Teritiary_Category__c == 'Fraud'){
-                    
-                     cs.OwnerId = FQ[0].id;
-                }
-                if(scList[0].Primary_Category__c =='Complaint' && scList[0].Teritiary_Category__c == 'Digital Banking'){
-                    
-                     cs.OwnerId = DBQ[0].id;
-                }
-                if(scList[0].Primary_Category__c =='Complaint' && scList[0].Teritiary_Category__c == 'Marketing'){
-                    
-                     cs.OwnerId = MQ[0].id;
-    			}
-                if(scList[0].Primary_Category__c =='Complaint' && scList[0].Teritiary_Category__c == 'Mortgage Lending'){
-                    
-                     cs.OwnerId = MLQ[0].id;
-                }
-                if(scList[0].Primary_Category__c =='Complaint' && scList[0].Teritiary_Category__c == 'Payment Services'){
-                    
-                     cs.OwnerId = PSQ[0].id;
-        		} */
-                
-               //----------------------------------------KX11043-26 and KX11043-27------------------------------------------------------//   
+               
             }
             cs.Brand__c = caseObject.Brand__c;
             cs.Brand__c = 'CFCU';
@@ -499,7 +425,6 @@ public class CreateCaseMemberPageController {
            }catch (DMLException  e)  { 
                 String message = e.getDmlMessage(0);
             throw new AuraHandledException(message); 
-          // System.debug('An error occured while inserting case :' + e);                   
           
           }
         catch (Exception e) {
@@ -580,9 +505,6 @@ public class CreateCaseMemberPageController {
         Map<string, string> mapresult = new Map<string,string>();
         List<Account_Details__c> AccountObjectlist = [select id, Name from Account_Details__c WHERE Id IN : selectedAcctNumberId];
 
-        // List<Account_Details__c> selectedAcctNumber = [select id, Name from Account_Details__c WHERE Id IN : selectedAcctNumberId];
-        //List<Account_Details__c> AccountObjectlist = new List<Account_Details__c>(); 
-        //AccountObjectlist.add(selectedAcctNumber);
 
         Account accObject = [select id, PersonEmail, Email_raw__c, PersonHomePhone, FirstName, LastName, Residential_Street__pc,
                             Residential_Extra_Address__pc, Residential_City__pc, Residential_State__pc, 
@@ -612,7 +534,6 @@ public class CreateCaseMemberPageController {
          else if(teritaryCat == NULL || teritaryCat == '-None-' && secondaryCat != 'Transfers Between Sub-Accounts' && secondaryCat != 'Transfers Between Memberships'
                  && secondaryCat != 'Check By Phone' && secondaryCat != 'Loan Payment' && secondaryCat != 'Check Withdrawal to Self'
                  && secondaryCat != 'Credit Card Payment' && secondaryCat != 'Check Withdrawal to Third Party' && secondaryCat != 'Other') 
-         /* else if(tcValue == NULL || tcValue == '-None-' && scValue != 'Death Claims' && scValue != 'EPS Research' && scValue != 'OnBoarding')*/
            {
             
             returnvalue = 'Please select Tertiary Category';
@@ -642,17 +563,7 @@ public class CreateCaseMemberPageController {
        List<Contact> clist = [SELECT Id, Name FROM Contact WHERE Contact.AccountId =:accObject.Id];
         AssignmentRule AR = new AssignmentRule(); 
         AR = [SELECT Id FROM AssignmentRule WHERE SobjectType = 'Case' AND Active = True LIMIT 1];
-        /*List<Group> gp = [select Id, Name from Group where Type = 'Queue' and Name = 'Complaint Management Queue' Limit 1];
-        List<Group> ARQ = [select Id, Name from Group where Type = 'Queue' and Name = 'Asset Recovery Complaints Queue' Limit 1];
-        List<Group> SQ = [select Id, Name from Group where Type = 'Queue' and Name = 'Servicing Complaints Queue' Limit 1];
-        List<Group> PQ = [select Id, Name from Group where Type = 'Queue' and Name = 'Product Complaints Queue' Limit 1];
-        List<Group> ALQ = [select Id, Name from Group where Type = 'Queue' and Name = 'Auto Loans Complaints Queue' Limit 1];
-        List<Group> SLQ = [select Id, Name from Group where Type = 'Queue' and Name = 'Solar Loans Complaints Queue' Limit 1];
-        List<Group> FQ = [select Id, Name from Group where Type = 'Queue' and Name = 'Fraud Complaints Queue' Limit 1];
-        List<Group> DBQ = [select Id, Name from Group where Type = 'Queue' and Name = 'Digital Banking Complaints Queue' Limit 1];
-        List<Group> MQ = [select Id, Name from Group where Type = 'Queue' and Name = 'Marketing Complaints Queue' Limit 1];
-        List<Group> MLQ = [select Id, Name from Group where Type = 'Queue' and Name = 'Mortgage Lending Complaints Queue' Limit 1];
-        List<Group> PSQ = [select Id, Name from Group where Type = 'Queue' and Name = 'Payment Services Complaints Queue' Limit 1]; */
+       
             
         Database.DMLOptions dmlOpts = new Database.DMLOptions(); 
         dmlOpts.assignmentRuleHeader.assignmentRuleId= AR.id;   
@@ -665,54 +576,7 @@ public class CreateCaseMemberPageController {
                 cs.Secondary_Category__c = scList[0].Secondary_Category__c;
                 cs.Tertiary_Category__c = scList[0].Teritiary_Category__c;
                 
-                //----------------------------------------KX11043-26 and KX11043-27---------------------------------------------//
                 
-                /* if(scList[0].Primary_Category__c =='Complaint' && scList[0].Teritiary_Category__c == 'Asset Recovery'){
-                    
-                     cs.OwnerId = ARQ[0].id;
-                }
-                if(scList[0].Primary_Category__c =='Complaint' && scList[0].Teritiary_Category__c == 'Servicing'){
-                    
-                     cs.OwnerId = SQ[0].id;
-                }
-                if(scList[0].Primary_Category__c =='Complaint' && scList[0].Teritiary_Category__c == 'Product'){
-                    
-                     cs.OwnerId = PQ[0].id;
-                 }
-                if(scList[0].Primary_Category__c =='Complaint' && scList[0].Teritiary_Category__c == 'Auto Loans'){
-                    
-                     cs.OwnerId = ALQ[0].id;
-                }
-                if(scList[0].Primary_Category__c =='Complaint' && scList[0].Teritiary_Category__c == 'Solar Loan'){
-                    
-                     cs.OwnerId = SLQ[0].id;
-                }
-                if(scList[0].Primary_Category__c =='Complaint' && scList[0].Teritiary_Category__c == 'Others'){
-                    
-                     cs.OwnerId = gp[0].id;
-                } 
-                if(scList[0].Primary_Category__c =='Complaint' && scList[0].Teritiary_Category__c == 'Fraud'){
-                    
-                     cs.OwnerId = FQ[0].id;
-                }
-                if(scList[0].Primary_Category__c =='Complaint' && scList[0].Teritiary_Category__c == 'Digital Banking'){
-                    
-                     cs.OwnerId = DBQ[0].id;
-                }
-                if(scList[0].Primary_Category__c =='Complaint' && scList[0].Teritiary_Category__c == 'Marketing'){
-                    
-                     cs.OwnerId = MQ[0].id;
-    			}
-                if(scList[0].Primary_Category__c =='Complaint' && scList[0].Teritiary_Category__c == 'Mortgage Lending'){
-                    
-                     cs.OwnerId = MLQ[0].id;
-                }
-                if(scList[0].Primary_Category__c =='Complaint' && scList[0].Teritiary_Category__c == 'Payment Services'){
-                    
-                     cs.OwnerId = PSQ[0].id;
-        		} */
-                
-               //----------------------------------------KX11043-26 and KX11043-27------------------------------------------------------//   
             }
             cs.Brand__c = brand;
             cs.Brand__c = 'CFCU';
@@ -755,7 +619,6 @@ public class CreateCaseMemberPageController {
             cs.Subject = Subject;
             cs.Follow_up_Text__c = followuptext;
             cs.Follow_up_Date__c = followupdate;
-            //cs.Ownership__c = caseObject.Ownership__c;
             if(queueValue != null && queueValue !=''){
                 system.debug('ownerid'+queueValue);
                 cs.OwnerId = queueValue;
@@ -772,7 +635,7 @@ public class CreateCaseMemberPageController {
            System.debug('An error occured while inserting case :' + e);                   
           
           }
-            if(cs.CaseComments__c != null){
+            if(cs.CaseComments__c != null && cs.CaseComments__c != '' ){
             CaseComment cc = new CaseComment();
               cc.ParentId = cs.Id;
               cc.CommentBody = cs.CaseComments__c;
@@ -789,12 +652,6 @@ public class CreateCaseMemberPageController {
             Integer mSize = AccountObjectlist.size();
             System.debug('AccountObjectlist##' + AccountObjectlist);
             List<CaseAccountMemberDetail__c> CaseAccountMemberDetailList = new List<CaseAccountMemberDetail__c>();
-            
-           /* CaseAccountMemberDetail__c camd1 = new CaseAccountMemberDetail__c();
-            camd1.Case__c = cs.Id;
-            camd1.MemberAccountid__c = selectedAcctNumber[0].Id ;
-            camd1.Account_Name__c = selectedAcctNumber.Name;
-            CaseAccountMemberDetailList.add(camd1); */
                                 
             System.debug('AccountObjectlistarray##' + AccountObjectlist);
             if(mSize > 0 )
@@ -870,7 +727,6 @@ public class CreateCaseMemberPageController {
          else if(caseObject.Tertiary_Category__c == NULL || caseObject.Tertiary_Category__c == '-None-' && caseObject.Secondary_Category__c != 'Transfers Between Sub-Accounts' && caseObject.Secondary_Category__c != 'Transfers Between Memberships'
                  && caseObject.Secondary_Category__c != 'Check By Phone' && caseObject.Secondary_Category__c != 'Loan Payment' && caseObject.Secondary_Category__c != 'Check Withdrawal to Self'
                  && caseObject.Secondary_Category__c != 'Credit Card Payment' && caseObject.Secondary_Category__c != 'Check Withdrawal to Third Party' && caseObject.Secondary_Category__c != 'Other') 
-         /* else if(tcValue == NULL || tcValue == '-None-' && scValue != 'Death Claims' && scValue != 'EPS Research' && scValue != 'OnBoarding')*/
            {
             
             returnvalue = 'Please select Tertiary Category';
@@ -900,17 +756,7 @@ public class CreateCaseMemberPageController {
      
         AssignmentRule AR = new AssignmentRule(); 
         AR = [SELECT Id FROM AssignmentRule WHERE SobjectType = 'Case' AND Active = True LIMIT 1];
-        /*List<Group> gp = [select Id, Name from Group where Type = 'Queue' and Name = 'Complaint Management Queue' Limit 1];
-        List<Group> ARQ = [select Id, Name from Group where Type = 'Queue' and Name = 'Asset Recovery Complaints Queue' Limit 1];
-        List<Group> SQ = [select Id, Name from Group where Type = 'Queue' and Name = 'Servicing Complaints Queue' Limit 1];
-        List<Group> PQ = [select Id, Name from Group where Type = 'Queue' and Name = 'Product Complaints Queue' Limit 1];
-        List<Group> ALQ = [select Id, Name from Group where Type = 'Queue' and Name = 'Auto Loans Complaints Queue' Limit 1];
-        List<Group> SLQ = [select Id, Name from Group where Type = 'Queue' and Name = 'Solar Loans Complaints Queue' Limit 1];
-        List<Group> FQ = [select Id, Name from Group where Type = 'Queue' and Name = 'Fraud Complaints Queue' Limit 1];
-        List<Group> DBQ = [select Id, Name from Group where Type = 'Queue' and Name = 'Digital Banking Complaints Queue' Limit 1];
-        List<Group> MQ = [select Id, Name from Group where Type = 'Queue' and Name = 'Marketing Complaints Queue' Limit 1];
-        List<Group> MLQ = [select Id, Name from Group where Type = 'Queue' and Name = 'Mortgage Lending Complaints Queue' Limit 1];
-        List<Group> PSQ = [select Id, Name from Group where Type = 'Queue' and Name = 'Payment Services Complaints Queue' Limit 1];*/
+       
             
         Database.DMLOptions dmlOpts = new Database.DMLOptions(); 
         dmlOpts.assignmentRuleHeader.assignmentRuleId= AR.id;   
@@ -933,54 +779,7 @@ public class CreateCaseMemberPageController {
                     cs.Secondary_Category__c = scList[0].Secondary_Category__c;
                     cs.Tertiary_Category__c = scList[0].Teritiary_Category__c;
                     
-                    //----------------------------------------KX11043-26 and KX11043-27---------------------------------------------//
-                    
-                    /*if(scList[0].Primary_Category__c =='Complaint' && scList[0].Teritiary_Category__c == 'Asset Recovery'){
-                    
-                        cs.OwnerId = ARQ[0].id;
-					}
-                    if(scList[0].Primary_Category__c =='Complaint' && scList[0].Teritiary_Category__c == 'Servicing'){
-                        
-                         cs.OwnerId = SQ[0].id;
-                     }
-                    if(scList[0].Primary_Category__c =='Complaint' && scList[0].Teritiary_Category__c == 'Product'){
-                        
-                         cs.OwnerId = PQ[0].id;
-                    }
-                    if(scList[0].Primary_Category__c =='Complaint' && scList[0].Teritiary_Category__c == 'Auto Loans'){
-                        
-                         cs.OwnerId = ALQ[0].id;
-                    }
-                    if(scList[0].Primary_Category__c =='Complaint' && scList[0].Teritiary_Category__c == 'Solar Loan'){
-                        
-                         cs.OwnerId = SLQ[0].id;
-					}
-                    if(scList[0].Primary_Category__c =='Complaint' && scList[0].Teritiary_Category__c == 'Others'){
-                        
-                         cs.OwnerId = gp[0].id;
-                    } 
-                    if(scList[0].Primary_Category__c =='Complaint' && scList[0].Teritiary_Category__c == 'Fraud'){
-                        
-                         cs.OwnerId = FQ[0].id;
-     				}
-                    if(scList[0].Primary_Category__c =='Complaint' && scList[0].Teritiary_Category__c == 'Digital Banking'){
-                        
-                         cs.OwnerId = DBQ[0].id;
-                    }
-                    if(scList[0].Primary_Category__c =='Complaint' && scList[0].Teritiary_Category__c == 'Marketing'){
-                        
-                         cs.OwnerId = MQ[0].id;
-                    }
-                    if(scList[0].Primary_Category__c =='Complaint' && scList[0].Teritiary_Category__c == 'Mortgage Lending'){
-                        
-                         cs.OwnerId = MLQ[0].id;
-                    }
-                    if(scList[0].Primary_Category__c =='Complaint' && scList[0].Teritiary_Category__c == 'Payment Services'){
-                        
-                         cs.OwnerId = PSQ[0].id;
-                    } */
-                    
-                    //----------------------------------------KX11043-26 and KX11043-27---------------------------------------------//
+                   
             }
             cs.Brand__c = 'CFCU';                     
             
@@ -1015,8 +814,7 @@ public class CreateCaseMemberPageController {
                Integer x=1/0;}            
            }catch (exception e)  {           
            System.debug('An error occured while inserting case :' + e);                   
-           //ApexPages.Message msgs = new ApexPages.Message(ApexPages.Severity.ERROR, 'Please select appropriate values for all the fields.');
-           //ApexPages.addMessage(msgs); 
+          
           }
             if(cs.CaseComments__c != null){
             CaseComment cc = new CaseComment();
@@ -1065,7 +863,6 @@ public class CreateCaseMemberPageController {
          else if(caseObject.Tertiary_Category__c == NULL || caseObject.Tertiary_Category__c == '-None-' && caseObject.Secondary_Category__c != 'Transfers Between Sub-Accounts' && caseObject.Secondary_Category__c != 'Transfers Between Memberships'
                  && caseObject.Secondary_Category__c != 'Check By Phone' && caseObject.Secondary_Category__c != 'Loan Payment' && caseObject.Secondary_Category__c != 'Check Withdrawal to Self'
                  && caseObject.Secondary_Category__c != 'Credit Card Payment' && caseObject.Secondary_Category__c != 'Check Withdrawal to Third Party' && caseObject.Secondary_Category__c != 'Other') 
-         /* else if(tcValue == NULL || tcValue == '-None-' && scValue != 'Death Claims' && scValue != 'EPS Research' && scValue != 'OnBoarding')*/
            {
            
             returnvalue = 'Please select Tertiary Category';
@@ -1115,17 +912,7 @@ public class CreateCaseMemberPageController {
        List<Contact> clist = [SELECT Id, Name FROM Contact WHERE Contact.AccountId =:selectedMemberNumber.PersonID__c];
         AssignmentRule AR = new AssignmentRule(); 
         AR = [SELECT Id FROM AssignmentRule WHERE SobjectType = 'Case' AND Active = True LIMIT 1];
-        /*List<Group> gp = [select Id, Name from Group where Type = 'Queue' and Name = 'Complaint Management Queue' Limit 1];
-        List<Group> ARQ = [select Id, Name from Group where Type = 'Queue' and Name = 'Asset Recovery Complaints Queue' Limit 1];
-        List<Group> SQ = [select Id, Name from Group where Type = 'Queue' and Name = 'Servicing Complaints Queue' Limit 1];
-        List<Group> PQ = [select Id, Name from Group where Type = 'Queue' and Name = 'Product Complaints Queue' Limit 1];
-        List<Group> ALQ = [select Id, Name from Group where Type = 'Queue' and Name = 'Auto Loans Complaints Queue' Limit 1];
-        List<Group> SLQ = [select Id, Name from Group where Type = 'Queue' and Name = 'Solar Loans Complaints Queue' Limit 1];
-        List<Group> FQ = [select Id, Name from Group where Type = 'Queue' and Name = 'Fraud Complaints Queue' Limit 1];
-        List<Group> DBQ = [select Id, Name from Group where Type = 'Queue' and Name = 'Digital Banking Complaints Queue' Limit 1];
-        List<Group> MQ = [select Id, Name from Group where Type = 'Queue' and Name = 'Marketing Complaints Queue' Limit 1];
-        List<Group> MLQ = [select Id, Name from Group where Type = 'Queue' and Name = 'Mortgage Lending Complaints Queue' Limit 1];
-        List<Group> PSQ = [select Id, Name from Group where Type = 'Queue' and Name = 'Payment Services Complaints Queue' Limit 1];*/
+       
                
         Database.DMLOptions dmlOpts = new Database.DMLOptions(); 
         dmlOpts.assignmentRuleHeader.assignmentRuleId= AR.id;   
@@ -1139,54 +926,7 @@ public class CreateCaseMemberPageController {
                 cs.Secondary_Category__c = scList[0].Secondary_Category__c;
                 cs.Tertiary_Category__c = scList[0].Teritiary_Category__c; 
                 
-                //----------------------------------------KX11043-26 and KX11043-27---------------------------------------------//
-                
-                /*if(scList[0].Primary_Category__c =='Complaint' && scList[0].Teritiary_Category__c == 'Asset Recovery'){
-                    
-                     cs.OwnerId = ARQ[0].id;
-                }
-                if(scList[0].Primary_Category__c =='Complaint' && scList[0].Teritiary_Category__c == 'Servicing'){
-                    
-                     cs.OwnerId = SQ[0].id;
-                }
-                if(scList[0].Primary_Category__c =='Complaint' && scList[0].Teritiary_Category__c == 'Product'){
-                    
-                     cs.OwnerId = PQ[0].id;
-                }
-                if(scList[0].Primary_Category__c =='Complaint' && scList[0].Teritiary_Category__c == 'Auto Loans'){
-                    
-                     cs.OwnerId = ALQ[0].id;
-		        }
-                if(scList[0].Primary_Category__c =='Complaint' && scList[0].Teritiary_Category__c == 'Solar Loan'){
-                    
-                     cs.OwnerId = SLQ[0].id;
-                }
-                if(scList[0].Primary_Category__c =='Complaint' && scList[0].Teritiary_Category__c == 'Others'){
-                    
-                     cs.OwnerId = gp[0].id;
-                } 
-                if(scList[0].Primary_Category__c =='Complaint' && scList[0].Teritiary_Category__c == 'Fraud'){
-                    
-                     cs.OwnerId = FQ[0].id;
-                 }
-                if(scList[0].Primary_Category__c =='Complaint' && scList[0].Teritiary_Category__c == 'Digital Banking'){
-                    
-                     cs.OwnerId = DBQ[0].id;
-                }
-                if(scList[0].Primary_Category__c =='Complaint' && scList[0].Teritiary_Category__c == 'Marketing'){
-                    
-                     cs.OwnerId = MQ[0].id;
-                }
-                if(scList[0].Primary_Category__c =='Complaint' && scList[0].Teritiary_Category__c == 'Mortgage Lending'){
-                    
-                     cs.OwnerId = MLQ[0].id;
-                }
-                if(scList[0].Primary_Category__c =='Complaint' && scList[0].Teritiary_Category__c == 'Payment Services'){
-                    
-                     cs.OwnerId = PSQ[0].id;
-                } */
-                
-                //----------------------------------------KX11043-26 and KX11043-27---------------------------------------------//
+               
             }
             cs.Account_Number__c = memObject.Id;
             cs.Brand__c = 'CFCU';
@@ -1264,7 +1004,6 @@ public class CreateCaseMemberPageController {
     public static Map<string, object> selectCaseCategoriesforTopTenTypes(string PrimaryText, string SecondaryText)
     {
         Map<string,object> mapList = new Map<string,object>();
-        //List<String> splits = selectedText.split(' / ');
         List<KeyValuePairModel> scOptions =  getscOptions(PrimaryText);
         List<KeyValuePairModel> tcOptions =  gettcOptions(SecondaryText); 
         mapList.put('scOptions', scOptions);
@@ -1390,48 +1129,7 @@ public class CreateCaseMemberPageController {
         system.debug('----------------------test-'+paList);
         return accountDetails(paList);
 	}
-    /*@AuraEnabled(cacheable=true)
-    public static List<String> SearchTertiary(String searchText){
-        List<String> lstOptions = new List<String>();
-
-        pcOptionList = new list<SelectOption>();
-        pcOptionList .add(new SelectOption('-None-','-None-'));
-         scOptionList = new list<SelectOption>();
-        scOptionList .add(new SelectOption('-None-','-None-'));
-                    String newSearchText = '%'+searchText+'%';
-        list<CaseRecordType__c> tcList = [SELECT Id,
-                                            Primary_Category__c,Secondary_Category__c, Teritiary_Category__c FROM CaseRecordType__c WHERE Teritiary_Category__c like :newSearchText or 
-                                            Primary_Category__c like :newSearchText or Secondary_Category__c like :newSearchText ];
-        List<String> str = new List<String>();
-
-        for(CaseRecordType__c tcr: tcList){
-            str.add(tcr.Primary_Category__c + ' / ' + tcr.Secondary_Category__c + ' / ' + tcr.Teritiary_Category__c);
-        }
-
-        SearchResult = new list<SelectOption>();
-
-        Map<String, String> mapOfOptions = new Map<String, String>();
-        for (String tc : str){
-            if(tc!='None'){
-                SearchResult.add(new SelectOption(tc,tc));
-                mapOfOptions.put(tc, tc);
-                lstOptions.add(tc);
-            }
-        }
-  
     
-        scOptionList = new list<SelectOption>();
-        tcOptionList = new list<SelectOption>();
-        tcOptionList.add(new SelectOption('-None-','-None-'));
-        scOptionList.add(new SelectOption('-None-','-None-'));
-                pcOptionList = pcOptions();   
-        scValue = '-None-';
-        pcValue = '-None-';
-        tcValue = '-None-';
-
-        return lstOptions;
-    }
-    */
      @AuraEnabled(cacheable=true)
      public static Object getTop10CaseRecord(Id recId)
       {
@@ -1487,9 +1185,7 @@ public class CreateCaseMemberPageController {
       
       private static Attachment  createContentVersion(String base64, String filename) {
         Attachment  cv = new Attachment ();
-       // cv.VersionData = EncodingUtil.base64Decode(base64);
-       // cv.Title = filename;
-       // cv.PathOnClient = filename;
+       
         try {
           insert cv;
           return cv;
@@ -1505,8 +1201,7 @@ public class CreateCaseMemberPageController {
                 ContentDocumentLink cdl = new ContentDocumentLink();
                 cdl.ContentDocumentId = [SELECT Id FROM ContentVersion WHERE Id =: contentVersionId].ContentDocumentId;
                 cdl.LinkedEntityId = recordId;
-                // ShareType is either 'V', 'C', or 'I'
-                // V = Viewer, C = Collaborator, I = Inferred
+               
                 cdl.ShareType = 'V';
                 try {
                 insert cdl;
@@ -1517,9 +1212,8 @@ public class CreateCaseMemberPageController {
             }
         }
 
-        // test
         @AuraEnabled
-    public static String uploadFiles2(String recordId, String filedata) {
+    public static String uploadDocument(String recordId, String filedata) {
         try {
             if(String.isNotBlank(FileData)) {
                 List<FileDataWP> files = (List<FileDataWP>) JSON.deserialize(filedata, List<FileDataWP>.class);
@@ -1535,7 +1229,6 @@ public class CreateCaseMemberPageController {
                         oAttachment.Body = EncodingUtil.base64Decode('');
                     oAttachment.Name = file.fileName;
                     attList.add(oAttachment);
-                    //oAttachment.ContentType = contentType;
                 }
                 Insert attList;
          
