@@ -1,483 +1,369 @@
 <!--
-  @description       : 
-  @author            : ChangeMeIn@UserSettingsUnder.SFDoc
-  @group             : 
-  @last modified on  : 04-22-2022
-  @last modified by  : ChangeMeIn@UserSettingsUnder.SFDoc
--->
-<template>
-  <div>
-    <lightning-record-edit-form object-api-name={caseObject} onsuccess={handleSuccess}  onerror={handleError}>
-      <lightning-card>
-        <h2 slot="title" class="slds-align_absolute-center">
-          <lightning-icon icon-name="standard:case" size="medium"></lightning-icon>
-          &nbsp;&nbsp;&nbsp;Create Case
-        </h2>
+   @description       : 
+   @author            : ChangeMeIn@UserSettingsUnder.SFDoc
+   @group             : 
+   @last modified on  : 05-24-2022
+   @last modified by  : ChangeMeIn@UserSettingsUnder.SFDoc
+   -->
+   <template>
 
-        <div>
-          <h3 class="slds-section-title--divider">PLEASE SELECT APPROPRIATE CASE CATEGORIES</h3>
-        </div>
-        <div class="case-grid">
-          <div class="case-grid-col-1">
-            
-            <!-- <div class="case-item">
-            <lightning-input-field field-name='Subject' value={subject} onchange={handleSubjectChange}></lightning-input-field>
-          </div>-->
-          <div class="case-item">
-            <div class="slds-form-element">
-              <label class="slds-form-element__label">Member</label>
-              <div class="slds-form-element__control">
-                  {accObject.Name}                                    
-              </div>
-          </div>
-          </div>
-          
-            <div class="case-item">
-              <div class="slds-form-element">
-                <label class="slds-form-element__label"><span class="required ">*</span>Account Number</label>
-                <div class="divouter slds-form-element__control">
-                  <div class="slds-form-element__control">
-                    <div class="uiInput forceSearchInputLookupDesktop uiInput--default forceInputField" data-aura-class="uiInput forceSearchInputLookupDesktop uiInput--default forceInputField">
-                      <div class="contentWrapper slds-box--border" id="MemberPicker">
-                        <div class="inputWrapper" style="position: relative;">
-                          <span class="slds-icon_container slds-icon-utility-search inputLookupIcon slds-float--right slds-input-has-icon slds-p-top--xx-small slds-p-right--small">
-                            <span class="lightningPrimitiveIcon" data-aura-class="lightningPrimitiveIcon">
-                            </span>
-                            </span>
-                            <div class="autocompleteWrapper">
-                              <input if:true={isselectedAcctNumberEmpty} class="default input uiInput uiInputTextForAutocomplete uiInput--default uiInput--input uiInput uiAutocomplete uiInput--default uiInput--lookup" maxlength="500" role="combobox" id="22:1107;a" aria-expanded="true" aria-autocomplete="list" type="text"
-                                                                data-interactive-lib-uid="3" aria-required="true" spellcheck="false" onmouseenter={onFocusLookup} onmouseleave={onBlurLookup} placeholder="Search..." title="Search" />
-                              <span if:false={isselectedAcctNumberEmpty} class="slds-pill slds-pill_link fullWidth"> 
-                                <a class="slds-pill__action slds-p-left_x-small" title={selectedAcctNumber.Name}>
-                                     <lightning-icon icon-name="standard:account" size="x-small"></lightning-icon>
-                                       <span class="slds-pill__label slds-p-left_x-small">{selectedAcctNumber.Name}</span>
-                                 </a>
-                                 <lightning-button-icon icon-name="utility:close" alternative-text="Press delete or backspace to remove" title="Remove" onclick={clearSelection}></lightning-button-icon>
-                                 <!-- <button onclick={clearSelection} class="slds-button slds-button_icon slds-button_icon slds-pill__remove" title="Remove">
-                                   <lightning-icon icon-name="utility:close" size="small" alternative-text="Press delete or backspace to remove"></lightning-icon>
-                                     <span class="slds-assistive-text" >Remove</span>
-                                 </button> -->
-                              </span>
-                              <div class={tabClass} role="listbox" onmouseenter={onFocusLookup} onmouseleave={onBlurLookup}>
-                                <div class="listContent">
-                                  <ul class="lookup__list  visible" role="presentation">
-                                    <template for:each={accList} for:item="itemOption" for:index="i">
-                                      <li if:true={itemOption.isShow} key={itemOption.Name} class="lookup__item  default uiAutocompleteOption forceSearchInputLookupDesktopOption" role="presentation" data-aura-class="uiAutocompleteOption forceSearchInputLookupDesktopOption" data-interactive-uid="7" onclick={itemSelected} data-selectedindex={i}>
-                                        <span style="cursor: pointer;">
-                                          <div class="mruIcon slds-icon slds-icon--small slds-float--left slds-m-vertical--xx-small slds-m-left--xx-small slds-media__figure forceEntityIcon" style="background-color: #7f8de1" data-aura-class="forceEntityIcon">
-                                            <span class="uiImage" data-aura-class="uiImage">
-                                              <img src="https://chevronfcu--ltgdev.cs13.my.salesforce.com/img/icon/t4v35/standard/person_account_120.png" class="icon " alt="User" title="User" />
-                                            </span>
-                                          </div>
-                                          <div class="slds-m-left--smalllabels slds-truncate slds-media__body">
-                                            <div class="primaryLabel slds-truncate slds-lookup__result-text" title={itemOption.Name}>
-                                                {itemOption.Name}
-                                                <!--render facet: 55:3148;a-->
-                                            </div>
-                                            <div class="slds-lookup__result-meta secondaryLabel slds-truncate slds-text-body--small" title="" >
-                                                {itemOption.RecType__c} | {itemOption.TypeTranslate__c} | {itemOption.Brand__c}
-                                            </div>
-                                        </div>
-                                        </span>
-                                      </li>
-                                    </template>
-                                  </ul>
-                                </div>
-                              </div>
-                            </div>
-                        </div>
-                      </div>
-                    
-                    
-                    
-                    
-                    </div>
-                    <div style="width:0%;cursor: pointer; position:absolute;top:0;right:0" class="addMemberAccountcls">
-                      <span style="font-size: 30px;" onclick={addMemberAccount}>+</span>
-                  </div>
-                  </div>
-                  <h3 class="slds-section-title--divider">Add more accounts</h3>
-                  <template for:each={AccountObjectlist} for:item="item" for:index="indexNumber">
-                    <div key={item.Name} class="slds-form-element__control">
-                      <div class="slds-form-element__control">
-                        <div class="uiInput forceSearchInputLookupDesktop uiInput--default forceInputField" data-aura-class="uiInput forceSearchInputLookupDesktop uiInput--default forceInputField">
-                          <div class="contentWrapper slds-box--border" id={indexNumber}>
-                            <div class="inputWrapper" style="position: relative;">
-                              <span class="slds-icon_container slds-icon-utility-search inputLookupIcon slds-float--right slds-input-has-icon slds-p-top--xx-small slds-p-right--small">
-                                <span class="lightningPrimitiveIcon" data-aura-class="lightningPrimitiveIcon"></span>
-                              </span>
-                              <div if:true={item.isEmpty} class="entityMenu slds-align-middle slds-p-vertical--xx-small slds-p-left--xxx-small slds-float--left uiMenu" data-aura-class="uiMenu">
-                                <div class="uiPopupTrigger" data-aura-class="uiPopupTrigger" data-interactive-uid="11">
-                                    <div>
-                                        <div>
-                                            <a class="entityMenuTrigger slds-button slds-button--icon slds-shrink-none slds-m-vertical--xxx-small slds-m-left--xx-small " aria-disabled="false" aria-haspopup="true" tabindex="0" role="button" title="" href="javascript:void(0);">
-                                                <div class="entityIcon slds-icon slds-icon--small slds-float--left forceEntityIcon" style="background-color: #7f8de1" data-aura-class="forceEntityIcon">
-                                                    <span class="uiImage" data-aura-class="uiImage">
-                                                      <img src="https://chevronfcu--ltgdev.cs13.my.salesforce.com/img/icon/t4v35/standard/person_account_120.png" class="icon " alt="Users" title="Users" />
-                                                    </span>
-                                                </div>
-                                            </a>
-                                        </div>
-                                    </div>
-                                </div>
-
-                            </div>
-                            <div class="autocompleteWrapper">
-                              <input if:true={item.isEmpty} class="default input uiInput uiInputTextForAutocomplete uiInput--default uiInput--input uiInput uiAutocomplete uiInput--default uiInput--lookup" maxlength="500" role="combobox"  aria-expanded="true" aria-autocomplete="list" type="text" data-class={indexNumber} data-interactive-lib-uid="3" aria-required="true" spellcheck="false" onmouseenter={onFocusLookupAdditional} onmouseleave={onBlurLookupAdditional} placeholder="Search..." title="Search" />
-                              <span if:false={item.isEmpty} class="slds-pill slds-pill_link fullWidth" data-account={indexNumber}> 
-                                <a href="javascript:void(0);" class="slds-pill__action slds-p-left_x-small" title={selectedAcctNumber.Name}>
-                                  <lightning-icon icon-name="standard:account" size="x-small"></lightning-icon>
-                                  <span class="slds-pill__label slds-p-left_x-small" >{item.Name}</span>
-                                </a>
-                                <lightning-button-icon icon-name="utility:close" alternative-text="Press delete or backspace to remove" title="Remove" onclick={clearSelectionAdditional}></lightning-button-icon>
-                                <!-- <button onclick={clearSelectionAdditional} class="slds-button slds-button_icon slds-button_icon slds-pill__remove" title="Remove" id={indexNumber}>
-                                  <lightning-icon icon-name="utility:close" size="small" alternativetext="Press delete or backspace to remove"></lightning-icon>
-                                  <span class="slds-assistive-text" >Remove</span>
-                                </button> -->
-                                </span>
-                                <div class="undefined lookup__menu uiAbstractList uiAutocompleteList uiInput uiAutocomplete uiInput--default uiInput--lookup dropdownadditionaaccount" role="listbox"  data-class={indexNumber} data-divid={indexNumber} onmouseenter={onFocusLookupAdditional} onmouseleave={onBlurLookupAdditional} style="width: 100%; left: 1px;height:200px;overflow-y:auto;display:none;">
-                                  <div class="listContent">
-                                    <ul class="lookup__list  visible" role="presentation">
-                                      <template for:each={accList} for:item="itemOption" for:index="i">
-                                        <li if:true={itemOption.isShow} key={itemOption.Name} class="lookup__item  default uiAutocompleteOption forceSearchInputLookupDesktopOption" role="presentation" data-aura-class="uiAutocompleteOption forceSearchInputLookupDesktopOption" data-interactive-uid="7" onclick={itemSelectedAdditional} data-selectedindexid={i}>
-                                          <span style="cursor: pointer;">
-                                            <div class="mruIcon slds-icon slds-icon--small slds-float--left slds-m-vertical--xx-small slds-m-left--xx-small slds-media__figure forceEntityIcon" style="background-color: #7f8de1" data-aura-rendered-by="5:3148;a" data-aura-class="forceEntityIcon">
-                                              <span class="uiImage" data-aura-class="uiImage">
-                                                <img src="https://chevronfcu--ltgdev.cs13.my.salesforce.com/img/icon/t4v35/standard/person_account_120.png" class="icon " alt="User" title="User" />
-                                            </span>
-                                            </div>
-                                            <div class="slds-m-left--smalllabels slds-truncate slds-media__body">
-                                              <div class="primaryLabel slds-truncate slds-lookup__result-text" title={itemOption.Name}>
-                                                  {itemOption.Name}                                                 
-                                              </div>
-                                              <div class="slds-lookup__result-meta secondaryLabel slds-truncate slds-text-body--small" title="">
-                                                  {itemOption.RecType__c} | {itemOption.TypeTranslate__c} | {itemOption.Brand__c}
-                                              </div>                                             
-                                              
-                                          </div>
-                                          </span>
-                                        </li>
-                                      </template>
-                                    </ul>
-                                  </div>
-                                </div>
-                            </div>
-                            <div style="width:0%;float: right;margin-top: -9%;cursor: pointer;" class="removeMemberAccountcls">
-                              <span data-indexid={indexNumber} style="font-size: 40px;padding-left:3px;" onclick={removeMemberAccount}>-</span>
-                            </div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </template>
-                </div>
-              </div>
-              <!-- <template if:true={memberAccounts}>
-                <lightning-combobox name="Member Account" label="Member" placeholder="Member"
-                  value={memberAccountValue} onchange={handleMbrAcctChange} options={memberAccounts}>
-                </lightning-combobox>
-              </template>
-              <h3 class="slds-section-title--divider">Add More Accounts</h3> -->
-            </div>
-            
-
-            <div class="case-item">
-              <span onkeypress={handleEnter}>
-                <lightning-input type="text" label="Search Field" value={searchText} onkeypress={handleEnter}>
-                </lightning-input>
-              </span>
-            </div>
-
-            <div class="case-item">
-              <!--<lightning-combobox
-                    name="Search Options"
-                    label="Search Result"
-                    options={searchOptions}
-                    value={searchValue}
-                    onchange={handleSearchRecChange}>
-            </lightning-combobox>-->
-            <label class="slds-form-element__label">               
-              <span class="">Search Result</span>
-            </label>
-              <select multiple="multiple" onchange={changeSelectedCategory} value={searchValue} data-id="Search_Result" id="Search_Result"
-                class="input uiInput uiInputText uiInput--default uiInput--input">
-                <template for:each={searchOptions} for:item="mnData" for:index="index">
-                  <option value={mnData.value} key={mnData.value}>
-                    {mnData.value}
-                  </option>
-                </template>
-              </select>
-            </div>
-
-
-            <div class="case-item">
-              <!-- <lightning-combobox name="Quick Cases" label="Quick Cases" options={quickCases} value={quickCase}
-                onchange={changeTopTenCase} required=true> 
-              </lightning-combobox> -->
-              <label class="slds-form-element__label">               
-                <span class="">Quick Cases</span>
-              </label>
-              <div class="slds-form-element__control">
-                <div class="slds-select_container">
-                  <select  class="slds-select" onchange={changeTopTenCase}  data-id="Quick_case" id="Quick_case" value={quickCase}>   
-                    <option value="">--- None ----</option>                 
-                    <template for:each={quickCases} for:item="itemOption" for:index="index">
-                      <option value={itemOption.Case_Type__c} key={itemOption.Case_Type__c}>{itemOption.Case_Type__c}</option>
-                    </template>
-                  </select>
-                </div>
-              </div> 
-            </div>
-
-            <div class="slds-text-align_center">
-              <lightning-formatted-text value="--------- Or ---------"></lightning-formatted-text>
-            </div>
-            <div class="case-item">
-              <!-- <lightning-input-field field-name='Case.Primary_Category__c' value={primaryCat} onchange={changePrimaryCategory}></lightning-input-field> -->
-              <!-- <lightning-input field-name='Primary_Category__c' value={primaryCat} onchange={handleAssignChange} ></lightning-input> -->
-               <label class="slds-form-element__label">
-               <!-- <abbr title="required">*</abbr>-->
-               <span class="required">*</span> 
-               Primary Category
-              </label>
-              <div class="slds-form-element__control">
-                <div class="slds-select_container">
-                  
-                  <select  class="slds-select"  onchange={changePrimaryCategory}  data-id="Primary_Category__c" value={primaryCat} id="Primary_Category__c" required>                    
-                    <template for:each={pcOptions} for:item="itemOption" for:index="index"> 
-                      <option value={itemOption.Value} key={itemOption.Text}>{itemOption.Value}</option>
-                    </template>
-                  </select>
-                
-                </div>
-              </div> 
-            </div>
-            <div class="case-item">
-              <!-- <lightning-input field-name='Secondary_Category__c' value={secondaryCat} onchange={handleAssignChange} ></lightning-input> -->
-              <!--<lightning-combobox name="Type" label="Type" placeholder="Select Type" options={secondaryVals}
-             value={firstval}></lightning-combobox>-->
-              <label class="slds-form-element__label">
-                <!--<abbr title="required">*</abbr>-->
-                <span class="required ">*</span> 
-                Secondary Category
-                <!--<span class="">Secondary Category</span>-->
-              </label>
-              <div class="slds-form-element__control">
-                <div class="slds-select_container">
-                  <select class="slds-select" onchange={changeSecondaryCategory}  data-id='Secondary_Category__c' value={secondaryCat} required>
-                    <template for:each={scOptions} for:item="itemOption" for:index="index">
-                      <option value={itemOption.Value} key={itemOption.Text} selected={itemOption.isSelected}>{itemOption.Value}</option>
-                    </template>
-                  </select>
-                </div>
-              </div>
-            </div>
-            <div class="case-item">
-              <!-- <lightning-input field-name='Tertiary_Category__c' value={tertiaryCat} onchange={handleAssignChange} ></lightning-input> -->
-              <label class="slds-form-element__label">
-               <!-- <abbr title="required">*</abbr>-->
-                <span class="required ">*</span> 
-                Tertiary Category
-                <!--<span class="">Tertiary Category</span>-->
-              </label>
-              <div class="slds-form-element__control">
-                <div class="slds-select_container">
-                  <select class="slds-select"  onchange={changeTirtaryCategory} data-id='Tertiary_Category__c' value={tertiaryCat} required>
-                    <template for:each={tcOptions} for:item="itemOption" for:index="index">
-                      <option value={itemOption.Value} key={itemOption.Text} selected={itemOption.isSelected}>{itemOption.Value}</option>
-                    </template>
-                  </select>
-                </div>
-              </div>
-            </div>
-            <div class="case-item">
-              <lightning-input-field field-name='Comments' value={internalcmt}></lightning-input-field>
-            </div>
-
-
-
-            <!-- <div class="case-item">
-            <input field-name='Primary_Category__c' value={primaryCat} onchange={handleAssignChange} ></input>
-          </div>
-          
-          
-          <div class="case-item">
-            <input field-name='Secondary_Category__c' value={secondaryCat} ></input>
-            <lightning-combobox name="Type" label="Type" placeholder="Select Type" options={secondaryVals}
-             value={secondaryCat}></lightning-combobox>-->
-            <!-- </div>
-          <div class="case-item">
-            <input field-name='Tertiary_Category__c' value={tertiaryCat}  ></input>
-          </div>-->
-
-
-
-            <!-- <div class="case-item">
-            <template if:true={memberAccounts}> 
-              <lightning-combobox
-                name="Member Account"
-                label="Member Account"
-                placeholder="Member Account"
-                value={memberAccountValue}
-                onchange={handleMbrAcctChange}
-                options={memberAccounts}>
-              </lightning-combobox>
-            </template>
-          </div>-->
-
-            <!--<div class="case-item">
-            <template if:true={leadCreatorsMap}> 
-              <lightning-combobox
-                name="Episys User ID-Creator"
-                label="Episys User ID-Creator"
-                placeholder="-- None --"
-                value={episysUserId}
-                onchange={handleLeadCreatorsChange}
-                options={leadCreators}>
-              </lightning-combobox>
-            </template>
-          </div>
-          <div class="case-item">
-            <lightning-input-field field-name='Episys_User_ID__c' value={episysUserId} onchange={handleEpisysUserIdChange}></lightning-input-field> 
-          </div>-->
-         
-          </div>
-          <div class="case-grid-col-2">
-            <div class="case-item">
-              <lightning-input  field-name = 'PersonEmail' label="E-mail Address" value={email} disabled></lightning-input>
-              </div>
-            <div class="case-item">
-              <lightning-input-field field-name='Ownership__c' value={ownership} onchange={handleOwnershipChange}>
-              </lightning-input-field>
-              <div class="user-or-queue">
-                <div>
-                  <template if:true={showAssignDropdown}>
-                    <lightning-combobox name="Assign" label="Assign" options={assignOptions} value={assignValue}
-                      onchange={handleAssignChange}>
-                    </lightning-combobox>
-                  </template>
-                </div>
-                <div>
-                  <template if:true={showQueueDropdown}>
-                     
-                    <template if:true={queuesData}>
-                      <lightning-combobox name="Queues" label="Queues" value={queueValue} onchange={handleQueueChange}
-                        options={queuesData}>
-                      </lightning-combobox>
-                    </template>
-                    
-                  </template>
-                  <template if:true={showUserOwner}>
-                    <lightning-input-field field-name='User_Owner__c'></lightning-input-field>
-                  </template>
-                </div>
-              </div>
-            </div>
-            <div class="case-item">
+      <div>
+        <template if:false={isNext}>
+         <lightning-record-edit-form object-api-name={caseObject} onsuccess={handleSuccess}  onerror={handleError}>
+            <lightning-card>
+               <h2 slot="title" class="slds-align_absolute-center">
+                  <lightning-icon icon-name="standard:case" size="medium"></lightning-icon>
+                  &nbsp;&nbsp;&nbsp;Create Case
+               </h2>
+               <div>
+                  <h3 class="slds-section-title--divider">PLEASE SELECT APPROPRIATE CASE CATEGORIES</h3>
+               </div>
   
-              <lightning-input-field field-name='Status' value={status} onchange={handleOnchange}></lightning-input-field>
-            </div>
-            <div class="case-item">
-              <lightning-input label="Subject" type="text" value={subject} onchange={handleOnchangesubject}></lightning-input>
-            </div>
-           <!-- <div class="case-item">
-              <lightning-input-field field-name='Follow_up_Date__c' value={followupdate} onchange={handleOnchangefollowupDate}></lightning-input-field>
-            </div>-->
-            <div class="case-item">
-              <lightning-input label="Follow-up Date" type="date" value={followupdate} onchange={handleOnchangefollowupDate}></lightning-input>
-            </div>
-            
-            <div class="case-item">
-              <lightning-input label="Follow-up Text" type="text" value={followuptext} onchange={handleOnchangefollowuptext}></lightning-input>
-            </div>
-            <!--<div class="case-item">
-            <lightning-input-field field-name='Comments'></lightning-input-field>
-          </div>-->
-            <div class="case-item">
-              <lightning-input-field field-name='Special_Reporting_Number__c' value ={reportNumber} onchange={handleOnchangereportingnumber}></lightning-input-field>
-            </div>
-            <div class="case-item">
-              <lightning-input label='Ticket #' type="text" value={Ltk} onchange={handleOnchangeticket}></lightning-input>
-            </div>
+               <div class="case-grid">
+                  <div class="case-grid-col-1">
+                     <div class="case-item">
+                        <div class="slds-form-element">
+                           <label class="slds-form-element__label">Member</label>
+                           <div class="slds-form-element__control">
+                              {accObject.Name}                                    
+                           </div>
+                        </div>
+                     </div>
+                     <div class="case-item">
+                        <div class="slds-form-element">
+                           <label class="slds-form-element__label"><span class="required ">*</span>Account Number</label>
+                           <div class="divouter slds-form-element__control">
+                              <div class="slds-form-element__control">
+                                 <div class="uiInput forceSearchInputLookupDesktop uiInput--default forceInputField" data-aura-class="uiInput forceSearchInputLookupDesktop uiInput--default forceInputField">
+                                    <div class="contentWrapper slds-box--border" id="MemberPicker">
+                                       <div class="inputWrapper" style="position: relative;">
+                                          <span class="slds-icon_container slds-icon-utility-search inputLookupIcon slds-float--right slds-input-has-icon slds-p-top--xx-small slds-p-right--small">
+                                          <span class="lightningPrimitiveIcon" data-aura-class="lightningPrimitiveIcon">
+                                          </span>
+                                          </span>
+                                          <div class="autocompleteWrapper">
+                                             <input if:true={isselectedAcctNumberEmpty} class="default input uiInput uiInputTextForAutocomplete uiInput--default uiInput--input uiInput uiAutocomplete uiInput--default uiInput--lookup" maxlength="500" role="combobox" id="22:1107;a" aria-expanded="true" aria-autocomplete="list" type="text"
+                                                data-interactive-lib-uid="3" aria-required="true" spellcheck="false" onmouseenter={onFocusLookup} onmouseleave={onBlurLookup} placeholder="Search..." title="Search" />
+                                             <span if:false={isselectedAcctNumberEmpty} class="slds-pill slds-pill_link fullWidth">
+                                                <a class="slds-pill__action slds-p-left_x-small" title={selectedAcctNumber.Name}>
+                                                   <lightning-icon icon-name="standard:account" size="x-small"></lightning-icon>
+                                                   <span class="slds-pill__label slds-p-left_x-small">{selectedAcctNumber.Name}</span>
+                                                </a>
+                                                <lightning-button-icon icon-name="utility:close" alternative-text="Press delete or backspace to remove" title="Remove" onclick={clearSelection}></lightning-button-icon>
+                                             </span>
+                                             <div class={tabClass} role="listbox" onmouseenter={onFocusLookup} onmouseleave={onBlurLookup}>
+                                                <div class="listContent">
+                                                   <ul class="lookup__list  visible" role="presentation">
+                                                      <template for:each={accList} for:item="itemOption" for:index="i">
+                                                         <li if:true={itemOption.isShow} key={itemOption.Name} class="lookup__item  default uiAutocompleteOption forceSearchInputLookupDesktopOption" role="presentation" data-aura-class="uiAutocompleteOption forceSearchInputLookupDesktopOption" data-interactive-uid="7" onclick={itemSelected} data-selectedindex={i}>
+                                                            <span style="cursor: pointer;">
+                                                               <div class="mruIcon slds-icon slds-icon--small slds-float--left slds-m-vertical--xx-small slds-m-left--xx-small slds-media__figure forceEntityIcon" style="background-color: #7f8de1" data-aura-class="forceEntityIcon">
+                                                                  <span class="uiImage" data-aura-class="uiImage">
+                                                                  <img src="https://chevronfcu--ltgdev.cs13.my.salesforce.com/img/icon/t4v35/standard/person_account_120.png" class="icon " alt="User" title="User" />
+                                                                  </span>
+                                                               </div>
+                                                               <div class="slds-m-left--smalllabels slds-truncate slds-media__body">
+                                                                  <div class="primaryLabel slds-truncate slds-lookup__result-text" title={itemOption.Name}>
+                                                                     {itemOption.Name}
+                                                                  </div>
+                                                                  <div class="slds-lookup__result-meta secondaryLabel slds-truncate slds-text-body--small" title="" >
+                                                                     {itemOption.RecType__c} | {itemOption.TypeTranslate__c} | {itemOption.Brand__c}
+                                                                  </div>
+                                                               </div>
+                                                            </span>
+                                                         </li>
+                                                      </template>
+                                                   </ul>
+                                                </div>
+                                             </div>
+                                          </div>
+                                       </div>
+                                    </div>
+                                 </div>
+                                 <div style="width:0%;cursor: pointer; position:absolute;top:0;right:0" class="addMemberAccountcls">
+                                    <span style="font-size: 30px;" onclick={addMemberAccount}>+</span>
+                                 </div>
+                              </div>
+                              <h3 class="slds-section-title--divider">Add more accounts</h3>
+                              <template for:each={AccountObjectlist} for:item="item" for:index="indexNumber">
+                                 <div key={item.Name} class="slds-form-element__control">
+                                    <div class="slds-form-element__control">
+                                       <div class="uiInput forceSearchInputLookupDesktop uiInput--default forceInputField" data-aura-class="uiInput forceSearchInputLookupDesktop uiInput--default forceInputField">
+                                          <div class="contentWrapper slds-box--border" id={indexNumber}>
+                                             <div class="inputWrapper" style="position: relative;">
+                                                <span class="slds-icon_container slds-icon-utility-search inputLookupIcon slds-float--right slds-input-has-icon slds-p-top--xx-small slds-p-right--small">
+                                                <span class="lightningPrimitiveIcon" data-aura-class="lightningPrimitiveIcon"></span>
+                                                </span>
+                                                <div if:true={item.isEmpty} class="entityMenu slds-align-middle slds-p-vertical--xx-small slds-p-left--xxx-small slds-float--left uiMenu" data-aura-class="uiMenu">
+                                                   <div class="uiPopupTrigger" data-aura-class="uiPopupTrigger" data-interactive-uid="11">
+                                                      <div>
+                                                         <div>
+                                                            <a class="entityMenuTrigger slds-button slds-button--icon slds-shrink-none slds-m-vertical--xxx-small slds-m-left--xx-small " aria-disabled="false" aria-haspopup="true" tabindex="0" role="button" title="" href="javascript:void(0);">
+                                                               <div class="entityIcon slds-icon slds-icon--small slds-float--left forceEntityIcon" style="background-color: #7f8de1" data-aura-class="forceEntityIcon">
+                                                                  <span class="uiImage" data-aura-class="uiImage">
+                                                                  <img src="https://chevronfcu--ltgdev.cs13.my.salesforce.com/img/icon/t4v35/standard/person_account_120.png" class="icon " alt="Users" title="Users" />
+                                                                  </span>
+                                                               </div>
+                                                            </a>
+                                                         </div>
+                                                      </div>
+                                                   </div>
+                                                </div>
+                                                <div class="autocompleteWrapper">
+                                                   <input if:true={item.isEmpty} class="default input uiInput uiInputTextForAutocomplete uiInput--default uiInput--input uiInput uiAutocomplete uiInput--default uiInput--lookup" maxlength="500" role="combobox"  aria-expanded="true" aria-autocomplete="list" type="text" data-class={indexNumber} data-interactive-lib-uid="3" aria-required="true" spellcheck="false" onmouseenter={onFocusLookupAdditional} onmouseleave={onBlurLookupAdditional} placeholder="Search..." title="Search" />
+                                                   <span if:false={item.isEmpty} class="slds-pill slds-pill_link fullWidth" data-account={indexNumber}>
+                                                      <a href="javascript:void(0);" class="slds-pill__action slds-p-left_x-small" title={selectedAcctNumber.Name}>
+                                                         <lightning-icon icon-name="standard:account" size="x-small"></lightning-icon>
+                                                         <span class="slds-pill__label slds-p-left_x-small" >{item.Name}</span>
+                                                      </a>
+                                                      <lightning-button-icon icon-name="utility:close" alternative-text="Press delete or backspace to remove" title="Remove" onclick={clearSelectionAdditional}></lightning-button-icon>
+                                                   </span>
+                                                   <div class="undefined lookup__menu uiAbstractList uiAutocompleteList uiInput uiAutocomplete uiInput--default uiInput--lookup dropdownadditionaaccount" role="listbox"  data-class={indexNumber} data-divid={indexNumber} onmouseenter={onFocusLookupAdditional} onmouseleave={onBlurLookupAdditional} style="width: 100%; left: 1px;height:200px;overflow-y:auto;display:none;">
+                                                      <div class="listContent">
+                                                         <ul class="lookup__list  visible" role="presentation">
+                                                            <template for:each={accList} for:item="itemOption" for:index="i">
+                                                               <li if:true={itemOption.isShow} key={itemOption.Name} class="lookup__item  default uiAutocompleteOption forceSearchInputLookupDesktopOption" role="presentation" data-aura-class="uiAutocompleteOption forceSearchInputLookupDesktopOption" data-interactive-uid="7" onclick={itemSelectedAdditional} data-selectedindexid={i}>
+                                                                  <span style="cursor: pointer;">
+                                                                     <div class="mruIcon slds-icon slds-icon--small slds-float--left slds-m-vertical--xx-small slds-m-left--xx-small slds-media__figure forceEntityIcon" style="background-color: #7f8de1" data-aura-rendered-by="5:3148;a" data-aura-class="forceEntityIcon">
+                                                                        <span class="uiImage" data-aura-class="uiImage">
+                                                                        <img src="https://chevronfcu--ltgdev.cs13.my.salesforce.com/img/icon/t4v35/standard/person_account_120.png" class="icon " alt="User" title="User" />
+                                                                        </span>
+                                                                     </div>
+                                                                     <div class="slds-m-left--smalllabels slds-truncate slds-media__body">
+                                                                        <div class="primaryLabel slds-truncate slds-lookup__result-text" title={itemOption.Name}>
+                                                                           {itemOption.Name}                                                 
+                                                                        </div>
+                                                                        <div class="slds-lookup__result-meta secondaryLabel slds-truncate slds-text-body--small" title="">
+                                                                           {itemOption.RecType__c} | {itemOption.TypeTranslate__c} | {itemOption.Brand__c}
+                                                                        </div>
+                                                                     </div>
+                                                                  </span>
+                                                               </li>
+                                                            </template>
+                                                         </ul>
+                                                      </div>
+                                                   </div>
+                                                </div>
+                                                <div style="width:0%;float: right;margin-top: -9%;cursor: pointer;" class="removeMemberAccountcls">
+                                                   <span data-indexid={indexNumber} style="font-size: 40px;padding-left:3px;" onclick={removeMemberAccount}>-</span>
+                                                </div>
+                                             </div>
+                                          </div>
+                                       </div>
+                                    </div>
+                                 </div>
+                              </template>
+                           </div>
+                        </div>
+                     </div>
+                     <div class="case-item">
+                        <span onkeypress={handleEnter}>
+                           <lightning-input type="text" label="Search Field" value={searchText} onkeypress={handleEnter}>
+                           </lightning-input>
+                        </span>
+                     </div>
+                     <div class="case-item">
+                        <label class="slds-form-element__label">               
+                        <span class="">Search Result</span>
+                        </label>
+                        <select multiple="multiple" onchange={changeSelectedCategory} name="searchValue" data-id="Search_Result" id="Search_Result"
+                           class="input uiInput uiInputText uiInput--default uiInput--input">
+                           <template for:each={searchOptions} for:item="mnData" for:index="index">
+                              <option value={mnData.value} key={mnData.value}>
+                                 {mnData.value}
+                              </option>
+                           </template>
+                        </select>
+                     </div>
+                     <div class="case-item">
+                        <label class="slds-form-element__label">               
+                        <span class="">Quick Cases</span>
+                        </label>
+                        <div class="slds-form-element__control">
+                           <div class="slds-select_container">
+                              <select  class="slds-select" onchange={changeTopTenCase}  data-id="Quick_case" id="Quick_case" name="quickCase">
+                                 <option value="">--- None ----</option>
+                                 <template for:each={quickCases} for:item="itemOption" for:index="index">
+                                    <option value={itemOption.Case_Type__c} key={itemOption.Case_Type__c}>{itemOption.Case_Type__c}</option>
+                                 </template>
+                              </select>
+                           </div>
+                        </div>
+                     </div>
+                     <div class="slds-text-align_center">
+                        <lightning-formatted-text value="--------- Or ---------"></lightning-formatted-text>
+                     </div>
+                     <div class="case-item">
+                        <label class="slds-form-element__label">
+                           <span class="required">*</span> 
+                           Primary Category
+                        </label>
+                        <div class="slds-form-element__control">
+                           <div class="slds-select_container">
+                              <select  class="slds-select"  onchange={changePrimaryCategory}  data-id="Primary_Category__c" name="primaryCat" id="Primary_Category__c" required>
+                                 <option value="">--- None ----</option>
+                                 <template for:each={pcOptions} for:item="itemOption" >
+                                    <option value={itemOption.Value} key={itemOption.Text}>{itemOption.Value}</option>
+                                    
 
-          </div>
-          <!-- <div class = "case-grid-col-3">
-          <div class="case-item">
-            <lightning-input-field field-name='Product_Type__c'></lightning-input-field>
-          </div>
-          <div class="case-item">
-            <lightning-input-field field-name='Product_Sub__c'></lightning-input-field>
-          </div>
-          <div class="case-item">
-            <template if:true={showStatusEnabled}>
-              <lightning-input-field field-name='StageName' value={statusValue}></lightning-input-field>
+                                 </template>
+                              </select>
+                           </div>
+                        </div>
+                     </div>
+                     <div class="case-item">
+                        <label class="slds-form-element__label">
+                           <span class="required ">*</span> 
+                           Secondary Category
+                        </label>
+                        <div class="slds-form-element__control">
+                           <div class="slds-select_container">
+                              <select class="slds-select" onchange={changeSecondaryCategory}  data-id='Secondary_Category__c' id="Secondary_Category__c" name="secondaryCat" required>
+                                 <option value="">--- None ----</option>
+                                 <template for:each={scOptions} for:item="itemOption" for:index="index">
+                                    <option value={itemOption.Value} key={itemOption.Text} selected={itemOption.isSelected}>{itemOption.Value}</option>
+                                 </template>
+                              </select>
+                           </div>
+                        </div>
+                     </div>
+                     <div class="case-item">
+                        <label class="slds-form-element__label">
+                           <span class="required ">*</span> 
+                           Tertiary Category
+                        </label>
+                        <div class="slds-form-element__control">
+                           <div class="slds-select_container">
+                              <select class="slds-select"  onchange={changeTirtaryCategory} data-id='Tertiary_Category__c' name="tertiaryCat" required>
+                                 <option value="">--- None ----</option>
+                                 <template for:each={tcOptions} for:item="itemOption" for:index="index">
+                                    <option value={itemOption.Value} key={itemOption.Text} selected={itemOption.isSelected}>{itemOption.Value}</option>
+                                 </template>
+                              </select>
+                           </div>
+                        </div>
+                     </div>
+                     <div class="case-item">
+                        <lightning-input-field field-name='Comments' value={internalcmt} onchange={handleOnchangeinternalcomment}></lightning-input-field>
+                     </div>
+                  </div>
+                  <div class="case-grid-col-2">
+                     <div class="case-item">
+                        <lightning-input  field-name = 'PersonEmail' label="E-mail Address" value={email} disabled></lightning-input>
+                     </div>
+                     <div class="case-item">
+                        <lightning-input-field field-name='Ownership__c' value={ownership} onchange={handleOwnershipChange}>
+                        </lightning-input-field>
+                        <div class="user-or-queue">
+                           <div>
+                              <template if:true={showAssignDropdown}>
+                                 <lightning-combobox name="Assign" label="Assign" options={assignOptions} value={assignValue}
+                                    onchange={handleAssignChange}>
+                                 </lightning-combobox>
+                              </template>
+                           </div>
+                           <div>
+                              <template if:true={showQueueDropdown}>
+                                 <template if:true={queuesData}>
+                                    <lightning-combobox name="Queues" label="Queues" value={queueValue} onchange={handleQueueChange}
+                                       options={queuesData}>
+                                    </lightning-combobox>
+                                 </template>
+                              </template>
+                              <template if:true={showUserOwner}>
+                                 <lightning-input-field field-name='User_Owner__c'></lightning-input-field>
+                              </template>
+                           </div>
+                        </div>
+                     </div>
+                     <div class="case-item">
+                        <lightning-input-field field-name='Status' value={status} onchange={handleOnchange}></lightning-input-field>
+                     </div>
+                     <div class="case-item">
+                        <lightning-input label="Subject" type="text" value={subject} onchange={handleOnchangesubject}></lightning-input>
+                     </div>
+                     <div class="case-item">
+                        <lightning-input label="Follow-up Date" type="date" value={followupdate} onchange={handleOnchangefollowupDate}></lightning-input>
+                     </div>
+                     <div class="case-item">
+                        <lightning-input label="Follow-up Text" type="text" value={followuptext} onchange={handleOnchangefollowuptext}></lightning-input>
+                     </div>
+                     <div class="case-item">
+                        <lightning-input-field field-name='Special_Reporting_Number__c' value ={reportNumber} onchange={handleOnchangereportingnumber}></lightning-input-field>
+                     </div>
+                     <div class="case-item">
+                        <lightning-input label='Ticket #' type="text" value={Ltk} onchange={handleOnchangeticket}></lightning-input>
+                     </div>
+                     <div class="case-item">
+                     </div>
+                  </div>
+               </div>
+               
+               <lightning-input type="checkbox" label="Check the box to attach a document." onchange={handleChangecheckbox}></lightning-input>
+              </lightning-card>
+  
+              </lightning-record-edit-form>
             </template>
-            <template if:false={showStatusEnabled}>
-              <lightning-input-field field-name='StageName' value={statusValue} disabled='true'></lightning-input-field>
-            </template> 
-          </div>
-          
-          <div class="case-item">
-            <lightning-input-field field-name='Product_Sub_Status__c'></lightning-input-field>
-          </div>   
-          <div>
-            <lightning-input-field field-name='Opportunity_Source__c'></lightning-input-field>
-          </div>                          
-        </div>-->
-        </div>
-        <!-- <div style="
-        height: 50px;
-        scroll-behavior: auto;
-        height: 10em;
-        overflow: scroll;
-        width: 30em;
-      
-    ">
-          <table><template for:each={searchOptions} for:item="item">
-            <tr key={item.value}>
-                <td>{item.value}</td>
-            </tr>
-            
-        </template>
-      </table>
-        </div> -->
-        <div slot="footer">
-          <!--<lightning-button variant="neutral" label="Cancel" onclick={closeAction}></lightning-button>
-          &nbsp;&nbsp;&nbsp;
-          <template if:true={showSaveEnabled}>
-            <template if:true={showSpinner}>
-              <lightning-spinner alternative-text="Saving" size="medium"></lightning-spinner>
-            </template>
-            <lightning-button variant="brand"  type="submit"  label="Save"></lightning-button>
-          </template>
-          <template if:false={showSaveEnabled}>
-            <lightning-button variant="brand"  type="submit"  label="Save" disabled="true"></lightning-button>
-        </template>&nbsp;&nbsp;&nbsp;
-        <lightning-button type="submit" variant="brand" label="Save & New" onclick={print}>
-        </lightning-button>-->
-          <div class="slds-m-top_large slds-grid slds-grid_align-center slds-align–absolute-center">
-            <lightning-button variant="neutral" label="Cancel" onclick={closeAction}></lightning-button>
-            &nbsp;&nbsp;
-            <lightning-button variant="brand" label="Save" onclick={saveClicked}></lightning-button>
-            &nbsp;&nbsp;
-            <lightning-button  variant="brand" label="Save &amp; New" onclick={saveAndNewClick}></lightning-button>
-          </div>
-        </div>
-      </lightning-card>
-    </lightning-record-edit-form>
-  </div>
-  <template if:true={error}>
-    <div>
-      {error}
-    </div>
-  </template>
-
-  <!--
-    This is a hack! if component is not wrapped.  recordId has to be on the DOM for renderedCallback() to fire when it is eventually populated by Salesforce.
-    This is because recordId is not visible in connectedCallback().
-    <template if:true={recordId}>
-      <div class="recordId">{recordId}</div>
-    </template>
-  -->
-</template>
+               <template if:true={isNext}>
+                  <lightning-card >
+                     <div class="slds-m-around_medium">
+                        
+                        <div class="slds-box slds-p-top_small" style="background-color: white; position: relative;">
+                          <template if:true={showSpinner} >
+                              <lightning-spinner alternative-text="Loading" size="medium" class="spinnerClass"></lightning-spinner>
+                          </template>
+                          <div class="slds-text-heading_small">Please attach file for case ({CaseNumber})</div> <br/>
+                          <lightning-input type="file"
+                                           label="Upload Attachment"
+                                           onchange={openfileUpload}
+                                           multiple="true">
+                          </lightning-input>
+                              <template for:each={fileNames} for:item="item" for:index="index">
+                                <div key={item} class="slds-text-body_small slds-text-color_error">{item}</div>
+                                  
+                              </template>
+                              <template if:true={isNoFilesSelected}>
+                                <div class="slds-text-body_small slds-text-color_error">No file selected</div>
+                              </template>
+                          <br/>
+                          <lightning-button variant="brand" label="Upload Attachment" onclick={uploadDocument} class="slds-m-top_medium"> </lightning-button>
+                          &nbsp;&nbsp;
+                          <lightning-button variant="brand" label="Upload Attachment & Create New Case" title="submit" onclick={uploadDocument} class = "slds-m-left-x-small"></lightning-button>
+                          <div slot="footer" class="slds-m-top_large slds-grid slds-grid_align-Right slds-align–absolute-Right">
+                           <lightning-button variant="neutral" label="Cancel" onclick={closeAction}></lightning-button>
+                          </div>
+                      </div>
+                       
+                       
+                     </div>
+                  </lightning-card>
+                 
+               </template>
+               <div slot="footer">
+                  <template if:false={isFileUpload}>
+                    <template if:false={isNext}>
+                     <div class="slds-m-top_large slds-grid slds-grid_align-center slds-align–absolute-center">
+                        <lightning-button variant="neutral" label="Cancel" onclick={closeAction}></lightning-button>
+                        &nbsp;&nbsp;
+                        <lightning-button variant="brand" label="Save" onclick={saveClicked}></lightning-button>
+                        &nbsp;&nbsp;
+                        <lightning-button  variant="brand" label="Save &amp; New" onclick={saveAndNewClick}></lightning-button>
+                     </div>
+                    </template>
+                  </template>
+                  <template if:true={isFileUpload}>
+                     <div class="slds-m-top_large slds-grid slds-grid_align-center slds-align–absolute-center">
+                     <lightning-button variant="brand" label="Next" title="Next" onclick={handleisNext} class = "slds-m-left-x-small"></lightning-button>
+                     &nbsp;&nbsp;
+                     <lightning-button variant="neutral" label="Cancel" onclick={closeAction}></lightning-button>
+                  </div>
+                  </template>
+               </div>
+        
+      </div>
+      <template if:true={error}>
+         <div>
+            {error}
+         </div>
+      </template>
+   </template>

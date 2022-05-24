@@ -64,3 +64,11 @@
   overflow-y:auto;
   display:none;
 }
+.removeImage {
+  border-radius: 50%;
+  padding: 0px 4px;
+  margin: 8px 2px 8px 8px;
+  color: #fff;
+  background-color: #9f201b;
+  cursor: pointer;
+}
