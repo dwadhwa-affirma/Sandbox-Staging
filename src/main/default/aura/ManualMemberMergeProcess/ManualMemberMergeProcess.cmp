@@ -38,7 +38,7 @@
             float:left;
             width:16.66%;
             background:#ccc;
-            height:100%;
+            height:max-content;
             position: absolute;
             padding: 10px 15px;
             box-sizing:border-box;
@@ -90,9 +90,7 @@
 	         </span>
          </div>
             <h3 style="font-size: 19px;">
-           New Members <!-- <button class="slds-icon_container slds-button_icon-small slds-icon-action-info slds-icon_container__circle" onclick="{!c.display}">
-			    <lightning:icon iconName="utility:help" class="slds-button__icon" size="small" alternativeText="Move this item up" />
-			</button>--> 
+           New Members 
 			 <lightning:buttonIcon iconName="utility:help" size="x-small" class="slds-icon_container_circler slds-button_icon-brand" alternativeText="Help" onclick="{!c.display}"/></h3>  
            
             <ui:inputSelect  change="{!c.selectListType}" aura:id="MemberType" class="single"  >
@@ -137,7 +135,6 @@
 			            <aura:if isTrue="{!(v.PersonalShow == true)}">
                         <div class="test-id__section slds-section slds-is-open full forcePageBlockSection forcePageBlockSectionView">   
                             <div class="test-id__section-content slds-section__content section__content slds-p-top--none">
-                                <!-- <div class="slds-form"> -->
                                 <div class="slds-grid full forcePageBlockSectionRow">
                                     <div class="slds-has-flexi-truncate slds-p-horizontal_x-small full forcePageBlockItem forcePageBlockItemView">
                                         <div class="slds-form-element slds-m-bottom_xx-small slds-form-element_edit slds-grow slds-hint-parent override--slds-form-element">
@@ -258,25 +255,12 @@
                                         </div>
                                     </div>
                                 </div>
-                                <!-- </div> -->
                             </div>
                         </div>
                         </aura:if>
-                 <!--    <h3 class="slds-section__title  test-id__section-header-container">
-                            <button class="slds-button test-id__section-header-button slds-section__title-action" type="button" onclick="{!c.showHideAddress}"  aria-controls="589:382;a" aria-expanded="false">
-                                <aura:if isTrue="{!(v.AddressShow == false)}">
-                                <lightning:icon iconName="utility:chevronright" size="xx-small" />
-                                  </aura:if>
-                                 <aura:if isTrue="{!(v.AddressShow == true)}">
-                                <lightning:icon iconName="utility:chevrondown" size="xx-small" />
-                                  </aura:if>
-                                <span class="test-id__section-header-title slds-truncate" style="margin-left:10px;">Member Address Information</span>
-                            </button>
-                        </h3> -->    
                         <aura:if isTrue="{!(v.AddressShow == true)}">
                         <div class="test-id__section slds-section slds-is-open full forcePageBlockSection forcePageBlockSectionView">   
                             <div class="test-id__section-content slds-section__content section__content slds-p-top--none">
-                                <!-- <div class="slds-form"> -->
                                 <div class="slds-grid full forcePageBlockSectionRow">
                                     <div class="slds-has-flexi-truncate slds-p-horizontal_x-small full forcePageBlockItem forcePageBlockItemView">
                                         <div class="slds-form-element slds-m-bottom_xx-small slds-form-element_edit slds-grow slds-hint-parent override--slds-form-element">
@@ -397,7 +381,7 @@
                                         </div>
                                     </div>
                                 </div>
-                                <!-- </div> -->
+
                             </div>
                         </div>
                     </aura:if>
@@ -437,9 +421,7 @@
 	                                    <th class="slds-is-sortable slds-is-resizable slds-text-title_caps"  scope="col">
 	                                        <div class="slds-th__action"><span class="slds-truncate" title="EMAIL"><b>EMAIL</b></span></div>
 	                                    </th>
-	                                    <!-- <th class="slds-is-sortable slds-is-resizable slds-text-title_caps"  scope="col">
-	                                        <div class="slds-th__action"> <span class="slds-truncate" title="CREATED DATE"><b>CREATED DATE</b></span></div>
-	                                    </th> -->
+	                                  
 	                                    <th class="slds-is-sortable slds-is-resizable slds-text-title_caps"  scope="col">
 	                                        <div class="slds-th__action"><span class="slds-truncate" title="RESIDENTIAL STREET"><b>STREET</b></span></div>
 	                                    </th>
@@ -452,9 +434,7 @@
 	                                    <th class="slds-is-sortable slds-is-resizable slds-text-title_caps"  scope="col"  style="width: 8%;">
 	                                        <div class="slds-th__action"><span class="slds-truncate" title="RESIDENTIAL ZIPCODE"><b>ZIPCODE</b></span></div>
 	                                    </th>
-	                                    <!-- <th class="slds-is-sortable slds-is-resizable slds-text-title_caps"  scope="col">
-	                                        <div class="slds-th__action"><span class="slds-truncate" title="RESIDENTIAL EXTRA ADDRESS"><b>EXTRA ADDRESS</b></span></div>
-	                                    </th> -->
+	                                    
 	                                </tr>
 	                            </thead>
 	                            <tbody>
@@ -505,9 +485,7 @@
 	                                    <td>	                                        
 	                                        <c:ManualMermberMergeHighLightColumn valueToDisplay="{!item.Email_raw__c}"  valueToCompare="{!v.accountdetail.Email_raw__c}" />
 	                                    </td> 
-	                                    <!-- <td>
-	                                        <span class="slds-truncate truncate" title="{!item.CreatedDate}"><ui:outputDate format="MMMM dd, YYYY" value="{!item.CreatedDate}" /></span>
-	                                    </td> --> 
+	                                
 	                                    <td>
 	                                        <c:ManualMermberMergeHighLightColumn valueToDisplay="{!item.Residential_Street__pc}"  valueToCompare="{!v.accountdetail.Residential_Street__pc}" />
 	                                    </td> 
@@ -520,9 +498,7 @@
 	                                    <td>
 	                                        <c:ManualMermberMergeHighLightColumn valueToDisplay="{!item.Residential_Zipocde__pc}"  valueToCompare="{!v.accountdetail.Residential_Zipocde__pc}" />
 	                                    </td>
-	                                   <!--  <td>
-	                                        <span class="slds-truncate truncate" title="{!item.Residential_Extra_Address__pc}">{!item.Residential_Extra_Address__pc}</span>
-	                                    </td> -->                                   
+	                                                              
 	                                </tr>
 	                            </aura:iteration>
 	                            </tbody>
