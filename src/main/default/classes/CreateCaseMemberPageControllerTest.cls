@@ -18,6 +18,7 @@ private class CreateCaseMemberPageControllerTest
         cl.Name = 'Open';
         cl.hours__c = 8;
         insert cl;
+		
         
         Create_SLA__c cl1 = new Create_SLA__c();
         cl1.Status__c = 'In Process';

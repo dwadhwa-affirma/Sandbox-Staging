@@ -1216,6 +1216,7 @@ public class CreateCaseMemberPageController {
             accountNumberSet.add(var.Account_Number__r.Name);
             acctypeSet.add(var.Account_Number__r.RecType__c);
             accIdSet.add(var.Account_Number__c);
+            
         }
         system.debug('---------------accIdSet-------test-'+accountNumberSet);
         list<Account_Details__c> accList = new list<Account_Details__c>();
