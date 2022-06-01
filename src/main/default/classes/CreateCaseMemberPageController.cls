@@ -2,7 +2,7 @@
  * @description       : 
  * @author            : ChangeMeIn@UserSettingsUnder.SFDoc
  * @group             : 
- * @last modified on  : 05-26-2022
+ * @last modified on  : 06-01-2022
  * @last modified by  : ChangeMeIn@UserSettingsUnder.SFDoc
 **/
 public class CreateCaseMemberPageController {
@@ -1131,7 +1131,7 @@ public class CreateCaseMemberPageController {
 	}
 
     @AuraEnabled
-	public static List<Episys_User__c> getEpsysDetails()
+	public static List<Episys_User__c> getEpisysDetails()
 	{
 		string uid= UserInfo.getUserId();		
 		User usr = [Select id, name, alias from User where id=:uid];
@@ -1173,7 +1173,7 @@ public class CreateCaseMemberPageController {
         leadObject.City__c = acc.Residential_City__pc;
 		leadObject.Zip_Code__c = acc.Residential_Zipocde__pc;
 		
-		List<Episys_User__c> lstepisysUser = getEpsysDetails();
+		List<Episys_User__c> lstepisysUser = getEpisysDetails();
 		//BranchOption = eu.Branch_Name__c;
 		if(lstepisysUser.size() == 1)
 		{

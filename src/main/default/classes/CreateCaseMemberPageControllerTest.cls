@@ -1,3 +1,10 @@
+/**
+ * @description       : 
+ * @author            : ChangeMeIn@UserSettingsUnder.SFDoc
+ * @group             : 
+ * @last modified on  : 06-01-2022
+ * @last modified by  : ChangeMeIn@UserSettingsUnder.SFDoc
+**/
 @isTest
 private class CreateCaseMemberPageControllerTest
 {
@@ -48,8 +55,7 @@ private class CreateCaseMemberPageControllerTest
         
         test.StartTest();
         
-        //Account account_Obj = new Account(LastName = 'LastName540', FirstName = 'First297', CreatedDate = DateTime.now(), LastModifiedDate = DateTime.now(), PersonEmail = 'Email88@test.com', PersonHasOptedOutOfEmail = false, Email_raw__c = 'Email191', NA_Eligibility__c = false, NA_LEAV_Complete__c = false, NA_LECF_Complete__c = false, NA_LECP_Complete__c = false, NA_LEEM_Complete__c = false, NA_LEHS_Complete__c = false, NA_LEMD_Complete__c = false, NA_LEMP_Complete__c = false, NA_LEMQ_Complete__c = false, NA_LEOL_Complete__c = false, NA_LEOM_Complete__c = false, NA_LEPT_Complete__c = false, NA_LESB_Complete__c = false, NA_LESF_Complete__c = false, NA_LEWS_Complete__c = false, NA_Opt_Out__c = false, smagicinteract__SMSOptOut__pc = false, Alternate_Email__pc = 'Email153@test.com', Residential_City__pc = 'Resid358', Residential_Country_Code__pc = '12', Residential_Country__pc = '1', Residential_Extra_Address__pc = 'Resid386', Residential_State__pc = 'Resid481', Residential_Street__pc = 'Resid202', Residential_Zipocde__pc = 'Resid562');
-        //Insert account_Obj;
+        
         
         Account account_Obj = new Account(PersonHomePhone='', PersonHasOptedOutOfEmail = false, 
                                           NA_Eligibility__c = false, 
@@ -110,7 +116,7 @@ private class CreateCaseMemberPageControllerTest
         Account_Details__c account_Details_Obj = [select 
                                                   Id, Parent_Account__c,  Name, RecordTypeId ,CreatedDate, LastModifiedDate, Onboarded__c , RecType__c, Reference__c
                                                   from Account_Details__c order by CreatedDate desc limit 1];
-        // insert account_Details_Obj;
+        
         Account account_Obj = [select id, PersonEmail, Email_raw__c,PersonHomePhone, FirstName, LastName, Residential_Street__pc, Residential_Extra_Address__pc, Residential_City__pc,  Residential_State__pc, Residential_Country__pc, Residential_Zipocde__pc from Account limit 1];
         Case case_Obj = [select
                          Description, Ownership__c,OwnerId,Future_Date__c,Follow_up_Text__c ,Sub_Status__c,
@@ -133,7 +139,7 @@ private class CreateCaseMemberPageControllerTest
         Account_Details__c account_Details_Obj = [select 
                                                   Id, Parent_Account__c,  Name, RecordTypeId ,CreatedDate, LastModifiedDate, Onboarded__c , RecType__c, Reference__c
                                                   from Account_Details__c order by CreatedDate desc limit 1];
-        // insert account_Details_Obj;
+        
         Account account_Obj = [select id, PersonEmail, Email_raw__c,PersonHomePhone, FirstName, LastName, Residential_Street__pc, Residential_Extra_Address__pc, Residential_City__pc,  Residential_State__pc, Residential_Country__pc, Residential_Zipocde__pc from Account limit 1];
         Case case_Obj = [select
                          Description, Ownership__c,OwnerId,Future_Date__c,Follow_up_Text__c ,Sub_Status__c,
@@ -147,8 +153,7 @@ private class CreateCaseMemberPageControllerTest
         List<Account_Details__c> acclist = new List<Account_Details__c>();	
         
         // TODO : Change following Assert Statement
-        //System.Assert(CreateCaseMemberPageController.saveData2());	
-        //System.Assert(CreateCaseMemberPageController.saveData2(case_Obj, account_Obj, null, acclist) != null);
+        
         String primarycat = 'Account Maintenance';
         String secondaryCat = 'Account Maintenance';
         String teritaryCat = 'Account Balance';
@@ -168,7 +173,7 @@ private class CreateCaseMemberPageControllerTest
         String queueValue = '005190000039XfxAAE';
         String caseownership = 'Keep';
         
-        //case_Obj.Primary_Category__c = null;
+        
         System.Assert(CreateCaseMemberPageController.saveData2(primarycat,secondaryCat,teritaryCat,subject,followuptext,comments,followupdate,status,brand,subStatus,reportNumber,Ltk,description,accId,selectedAcctNumberId,queueValue,caseownership) != null);
         
     }
