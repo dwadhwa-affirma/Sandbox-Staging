@@ -1,8 +1,8 @@
 import { api, wire, track, LightningElement } from "lwc";
 import Id from "@salesforce/user/Id";
-import getMemberAccounts from "@salesforce/apex/CreateOpportunityController.getMemberAccounts";
-import getEpisysDetails from "@salesforce/apex/CreateOpportunityController.getEpsysDetails";
-import FetchLeadData from "@salesforce/apex/CreateOpportunityController.FetchLeadData";
+import getMemberAccounts from "@salesforce/apex/CreateCaseMemberPageController.getMemberAccounts";
+import getEpisysDetails from "@salesforce/apex/CreateCaseMemberPageController.getEpsysDetails";
+import FetchLeadData from "@salesforce/apex/CreateCaseMemberPageController.FetchLeadData";
 import SearchTertiary from "@salesforce/apex/CreateOpportunityController.SearchTertiary";
 import getTop10Cases from "@salesforce/apex/CreateOpportunityController.getTop10Cases";
 import getQueueData from "@salesforce/apex/CreateCaseMemberPageController.getQueueData";
@@ -12,7 +12,7 @@ import getData from "@salesforce/apex/CreateCaseMemberPageController.getData";
 import CASE_OBJECT from "@salesforce/schema/Case";
 import STANDARD_MC from "@salesforce/messageChannel/StandardMessageChannel__c";
 import { ShowToastEvent } from "lightning/platformShowToastEvent";
-import uploadFile from "@salesforce/apex/CreateCaseMemberPageController.uploadFile";
+//import uploadFile from "@salesforce/apex/CreateCaseMemberPageController.uploadFile";
 import uploadDocument from "@salesforce/apex/CreateCaseMemberPageController.uploadDocument";
 const MAX_FILE_SIZE = 24500;
 import GetCaseAttachments from "@salesforce/apex/GetCaseAttachments.GetCaseAttachments"
