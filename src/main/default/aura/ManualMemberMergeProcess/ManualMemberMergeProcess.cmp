@@ -42,6 +42,7 @@
             position: absolute;
             padding: 10px 15px;
             box-sizing:border-box;
+            padding-bottom: 44px;
         }
         .right-content{
             float:left;

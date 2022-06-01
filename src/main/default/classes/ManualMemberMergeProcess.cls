@@ -194,7 +194,6 @@ public without sharing class ManualMemberMergeProcess{
 		                    FROM Account
 		                    where RecordType.Name = 'Pre Member' and IsConverted__c = false
 		                    order by LastName];
-
 		List<Account> listEmailMatched = new List<Account>();
 		List<Account> listLastNameMatched = new List<Account>();
 		List<Account> listFirstNameMatched = new List<Account>();
@@ -298,9 +297,12 @@ public without sharing class ManualMemberMergeProcess{
 
 			if (!isadded){
 				listNotMatched.add(preMembers);
+
 			} else{
 				finalList.put(preMembers, counter);
+
 			}
+
 		}
 
 		AccountWrapper[] accountList = new AccountWrapper[0];
@@ -319,7 +321,6 @@ public without sharing class ManualMemberMergeProcess{
 		PreMemberAccountreturn = PreMemberAccount;
 		listObj.Add(FinalPreMemberAccountListToReturn);
 
-
 		return listObj;
 	}
 
@@ -328,11 +329,9 @@ public without sharing class ManualMemberMergeProcess{
 		Account ma = [SELECT Id, Pre_Member_Number__c, PersonEmail, FirstName, MiddleName, LastName, Salutation, Suffix, Phone_Check__c, Residential_Street__pc, RecordType.Name, Residential_Zipocde__pc, Alternate_Email__pc, Alt_Email_Raw__c, AnnualRevenue, Bad_Email__c, BillingCity, BillingCountry, BillingCountryCode, BillingGeocodeAccuracy, BillingLatitude, BillingLongitude, BillingPostalCode, BillingState, BillingStateCode, BillingStreet, BIRTH_DATE__pc, IsCustomerPortal, Death_Date__pc, Description, Email_raw__c, Employee_Restricted_Access__c, NumberOfEmployees, Employer_Occupation__pc, Extended_Name__pc, Fax, Home_Phone_Number__c, Home_Phone__pc, ID_1_Description__pc, ID_1_Expiration_Date__pc, ID_1_Issuance_Date__pc, ID_1_Number__pc, ID_1_Type__pc, ID_1_Type__c, ID_1_Verification_Date__pc, ID_2_Description__pc, ID_2_Expiration_Date__pc, ID_2_Issuance_Date__pc, ID_2_Number__pc, ID_2_Type__pc, ID_2_Verification_Date__pc, ID_3_Description__pc, ID_3_Expiration_Date__pc, ID_3_Issuance_Date__pc, ID_3_Number__pc, ID_3_Type__pc, ID_3_Verification_Date__pc, Industry, Initial_Record__pc, LastModifiedDate__pc, AccountNumber, Site, AccountSource, Member_Verification_OTP_Invalid_Attempt__c, et4ae5__Mobile_Country_Code__pc, et4ae5__HasOptedOutOfMobile__pc, Mobile_Phone__pc, Mothers_Maiden_Name__pc, Multi_Name__pc, MultiAddress__pc, MultiDOB__pc, MultiMMN__pc, MultiSSN__pc, NA_Eligibility__c, NA_LEHS_Complete__c, NA_LEHS_Update__c, NA_LEOM_Complete__c, NA_LEOM_Update__c, NA_Opt_Out__c, NA_Opt_Out_Date__c, NA_Opt_Out_Updated__c, NA_LEAV_Complete__c, NA_LECF_Complete__c, NA_LECP_Complete__c, NA_LEEM_Complete__c, NA_LEMD_Complete__c, NA_LEMP_Complete__c, NA_LEMQ_Complete__c, NA_LEOL_Complete__c, NA_LEPT_Complete__c, NA_LESB_Complete__c, NA_LESF_Complete__c, NA_LEWS_Complete__c, Name_Format__pc, Occupation__pc, Onbase_Drivers_License__c, Onbase_Signature_Card__c, Ownership, PersonID__pc, Phone, Phone_Type__pc, Rating, Residential_City__pc, Residential_Country__pc, Residential_Country_Code__pc, Residential_Extra_Address__pc, Residential_State__pc, Sex__pc, ShippingCity, ShippingCountry, ShippingCountryCode, ShippingGeocodeAccuracy, ShippingLatitude, ShippingLongitude, ShippingPostalCode, ShippingState, ShippingStateCode, ShippingStreet, Sic, SicDesc, smagicinteract__SMSOptOut__pc, SSN_Last_4__pc, SSN_TIN_Encrypted__pc, SSN_TIN_Type__pc, TickerSymbol, Type, Website, Work_Phone_Extension__pc, Work_Phone__pc
 		              FROM Account
 		              where RecordType.Name = 'Person Account' and Id = :mid];
-
 		Account pma = [SELECT Id, Pre_Member_Number__c, Name, PersonEmail, FirstName, MiddleName, LastName, Salutation, Suffix, Owner.Name, Parent_Lead__c, CreatedDate, Phone_Check__c, Residential_Street__pc, RecordType.Name, Residential_Zipocde__pc, Alternate_Email__pc, Alt_Email_Raw__c, AnnualRevenue, Bad_Email__c, BillingCity, BillingCountry, BillingCountryCode, BillingGeocodeAccuracy, BillingLatitude, BillingLongitude, BillingPostalCode, BillingState, BillingStateCode, BillingStreet, BIRTH_DATE__pc, IsCustomerPortal, Death_Date__pc, Description, Email_raw__c, Employee_Restricted_Access__c, NumberOfEmployees, Employer_Occupation__pc, Extended_Name__pc, Fax, Home_Phone_Number__c, Home_Phone__pc, ID_1_Description__pc, ID_1_Expiration_Date__pc, ID_1_Issuance_Date__pc, ID_1_Number__pc, ID_1_Type__pc, ID_1_Type__c, ID_1_Verification_Date__pc, ID_2_Description__pc, ID_2_Expiration_Date__pc, ID_2_Issuance_Date__pc, ID_2_Number__pc, ID_2_Type__pc, ID_2_Verification_Date__pc, ID_3_Description__pc, ID_3_Expiration_Date__pc, ID_3_Issuance_Date__pc, ID_3_Number__pc, ID_3_Type__pc, ID_3_Verification_Date__pc, Industry, Initial_Record__pc, LastModifiedDate__pc, AccountNumber, Site, AccountSource, Member_Verification_OTP_Invalid_Attempt__c, et4ae5__Mobile_Country_Code__pc, et4ae5__HasOptedOutOfMobile__pc, Mobile_Phone__pc, Mothers_Maiden_Name__pc, Multi_Name__pc, MultiAddress__pc, MultiDOB__pc, MultiMMN__pc, MultiSSN__pc, NA_Eligibility__c, NA_LEHS_Complete__c, NA_LEHS_Update__c, NA_LEOM_Complete__c, NA_LEOM_Update__c, NA_Opt_Out__c, NA_Opt_Out_Date__c, NA_Opt_Out_Updated__c, NA_LEAV_Complete__c, NA_LECF_Complete__c, NA_LECP_Complete__c, NA_LEEM_Complete__c, NA_LEMD_Complete__c, NA_LEMP_Complete__c, NA_LEMQ_Complete__c, NA_LEOL_Complete__c, NA_LEPT_Complete__c, NA_LESB_Complete__c, NA_LESF_Complete__c, NA_LEWS_Complete__c, Name_Format__pc, Occupation__pc, Onbase_Drivers_License__c, Onbase_Signature_Card__c, Ownership, PersonID__pc, Phone, Phone_Type__pc, Rating, Residential_City__pc, Residential_Country__pc, Residential_Country_Code__pc, Residential_Extra_Address__pc, Residential_State__pc, Sex__pc, ShippingCity, ShippingCountry, ShippingCountryCode, ShippingGeocodeAccuracy, ShippingLatitude, ShippingLongitude, ShippingPostalCode, ShippingState, ShippingStateCode, ShippingStreet, Employer_Name__pc, PersonMobilePhone, PersonOtherPhone, PersonLeadSource, Last_NA__c, Last_NA_LEHS__c, Converted_On__c, IsConverted__c, PersonDepartment, PersonLastCURequestDate, PersonLastCUUpdateDate, PersonAssistantName, PersonAssistantPhone, PersonBirthdate, PersonDoNotCall, PersonHasOptedOutOfEmail, PersonHasOptedOutOfFax, Sic, SicDesc, smagicinteract__SMSOptOut__pc, SSN_Last_4__pc, SSN_TIN_Encrypted__pc, SSN_TIN_Type__pc, TickerSymbol, Type, Website, Work_Phone_Extension__pc, Work_Phone__pc
 		               FROM Account
 		               where RecordType.Name = 'Pre Member' and IsConverted__c = false and Id = :pmid];
-
 		//Committing Code as we are deleting Premember record
 
 		ma.IsConverted__c = true;

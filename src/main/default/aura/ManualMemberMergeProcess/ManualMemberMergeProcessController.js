@@ -81,8 +81,8 @@
 				}
                 component.set("v.accountdetail", accountdetail);
                 component.set("v.PreMemberAccounts", PreMemberAccounts);
-	            	/*component.set("v.PreMemberAccounts", result[1]);
-                	component.set("v.NoPreMemberAccount", false);*/
+	            	component.set("v.PreMemberAccounts", result[1]);
+                	component.set("v.NoPreMemberAccount", false);
                 	component.set("v.loading", false);
                 	component.set("v.AddressShow", true);
                 	component.set("v.PersonalShow", true);
