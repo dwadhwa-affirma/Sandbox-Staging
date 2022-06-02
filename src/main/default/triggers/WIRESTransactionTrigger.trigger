@@ -104,6 +104,7 @@ trigger WIRESTransactionTrigger on WIRES_Transaction__c (before insert,before up
             WiresSMSNotificationController.SendProgressSMSNotification(docSignCompletedAtOnlineIds);
             WiresTransactionApprovalController.SetIdentityVerificationUsed(docSignCompletedAtOnlineIds);
             WiresTransactionApprovalController.CheckRedFlgsAndUpdateStatus(docSignCompletedAtOnlineIds);
+            WiresTransactionApprovalController.SetSLA(docSignCompletedAtOnlineIds);
         }
         
         if(docSignDeclinedAtOnlineIds.size()>0){

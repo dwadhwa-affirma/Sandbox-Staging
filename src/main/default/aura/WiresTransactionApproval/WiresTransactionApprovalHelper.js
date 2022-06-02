@@ -21,10 +21,24 @@
                 component.set("v.Source",result.Source);
                 component.set("v.Frequency",result.WiresList.Frequency__c);                
                 component.set("v.MinGoodFundAmountCheck",result.MinGoodFundAmountCheck);
-                /*if(result.WiresList.Frequency__c == "Recurring"){
-                    var togglebutton = component.find("cancelButton")
-                    $A.util.toggleClass(togglebutton, "toggle");
-                }*/
+                if(result.ApprovalStatus == 'Fraud Review' || result.ApprovalStatus == 'Pending for Approval' || result.ApprovalStatus == 'Pending for Second Approval'){
+                    component.set("v.isWaitingOnMemberVisible",true);
+                }
+                else{
+                    component.set("v.isWaitingOnMemberVisible",false);
+                }
+
+                var buttonClass = component.find('WaitingButton');
+                if(result.WaitingForMember == true){
+                    component.set("v.WaitingOnMemberLabel", "Continue");
+                    component.set("v.isWaitingOnMember", true);                    
+                    $A.util.addClass(buttonClass, 'yellow');                   
+                }
+                else{
+                    component.set("v.WaitingOnMemberLabel", "Waiting On Member");
+                    component.set("v.isWaitingOnMember", false);  
+                    $A.util.removeClass(buttonClass, 'yellow');                   
+                }                
             }            
             
         });	
@@ -74,5 +88,30 @@
             }            
         });	
         $A.enqueueAction(action);   
-    }
+    },
+
+    WaitingonMember: function(component, event, action, RecordId){
+        this.showSpinner(component);
+        var actionmethod = component.get("c.WaitingOnMember");
+        actionmethod.setParams({"WiresId": RecordId, "Action": action});
+        actionmethod.setCallback(this, function (response) {
+            var status = response.getState();            
+            if (status === "SUCCESS") {
+                var result = response.getReturnValue();                
+                $A.get('e.force:refreshView').fire();               
+            }  
+            this.hideSpinner(component);          
+        });	
+        $A.enqueueAction(actionmethod); 
+    },
+
+    showSpinner: function (component) {
+        var spinnerMain = component.find("Spinner");
+        $A.util.removeClass(spinnerMain, "slds-hide");
+      },
+    
+      hideSpinner: function (component) {
+        var spinnerMain = component.find("Spinner");
+        $A.util.addClass(spinnerMain, "slds-hide");
+      }
 })

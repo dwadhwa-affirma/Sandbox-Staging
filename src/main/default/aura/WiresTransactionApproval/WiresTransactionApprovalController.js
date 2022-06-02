@@ -37,5 +37,22 @@
         }else{
             yesButton.set("v.disabled",'disabled');
         }
+    },
+    handleWaitingonMember: function(component, event, helper) {
+        var buttonClass = component.find('WaitingButton');
+        var RecordId = component.get("v.recordId");
+		if(component.get("v.WaitingOnMemberLabel") == 'Waiting On Member'){
+            component.set("v.WaitingOnMemberLabel", "Continue");
+            component.set("v.isWaitingOnMember", true);   
+            $A.util.addClass(buttonClass, 'yellow');    
+            helper.WaitingonMember(component, event,'Waiting', RecordId);
+        }
+        else if(component.get("v.WaitingOnMemberLabel") == 'Continue'){
+            component.set("v.WaitingOnMemberLabel", "Waiting On Member");
+            component.set("v.isWaitingOnMember", false);   
+            $A.util.removeClass(buttonClass, 'yellow');
+            helper.WaitingonMember(component, event,'Continue', RecordId);
+        }
+        
     }
 })

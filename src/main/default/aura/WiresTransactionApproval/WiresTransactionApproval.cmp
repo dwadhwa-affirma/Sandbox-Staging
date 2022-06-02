@@ -18,7 +18,10 @@
     <aura:attribute name="showConfirmDialog" type="boolean" default="false"/>
     <aura:attribute name= "MinGoodFundAmountCheck" type="decimal" /> 
     <aura:attribute name= "Frequency" type="string" /> 
+    <aura:attribute name= "WaitingOnMemberLabel" type="string" default="Waiting On Member"/> 
     <lightning:overlayLibrary aura:id="overlayLib"/> 
+    <aura:attribute name="isWaitingOnMemberVisible" type="boolean" default="false"/>
+    <aura:attribute name="isWaitingOnMember" type="boolean" default="false"/>
     
     <div class="slds-m-around_xx-large"> 
         <aura:if isTrue="{!v.showConfirmDialog}">
@@ -62,27 +65,34 @@
 								<lightning:button variant="destructive" class="cancel"
                                       label="Cancel Transaction" 
                                       onclick="{!c.handleConfirmDialog}"/>    
-                         </aura:if>
+                                      <aura:if isTrue="{!v.isWaitingOnMemberVisible}">
+                                        <lightning:button variant="brand" label="{!v.WaitingOnMemberLabel}" onclick="{!c.handleWaitingonMember}" aura:id="WaitingButton" class="{!v.isWaitingOnMember ? 'yellow' : '' }"/>                                   
+                                    </aura:if>                                                                          
+                        </aura:if>
                      </aura:if> 
             		
                 </aura:if>
+                
             </aura:if>
             
-            <aura:if isTrue="{!and(v.isApprovalVisible == 'true')}">  
+            <aura:if isTrue="{!(v.isApprovalVisible == 'true')}">  
                 
                 <aura:if isTrue="{!v.ApprovalStatus=='Fraud Review'}">
                     <lightning:button variant="brand" label="Fraud Review" onclick="{!c.ApproveTransaction}" />
                     <aura:set attribute="else">
                         <aura:if isTrue="{!or(v.ApprovalStatus!= 'Pending for Approval',v.ApprovalStatus!= 'Pending for Second Approval')}">
                         	<lightning:button variant="brand" label="Review Transaction" onclick="{!c.ApproveTransaction}" />
-                        </aura:if>
+                        </aura:if>                                             
                     </aura:set>
-                </aura:if> 
-                
+                </aura:if>               
+               
                 <lightning:spinner aura:id="Spinner" alternativeText="Loading" size="medium" variant="brand" class="slds-hide spin"/>
-            </aura:if>    
+            </aura:if> 
+
+            
+           
         </div>
     </div>
     </aura:if>
-    
+
 </aura:component>
