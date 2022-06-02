@@ -22,7 +22,7 @@ public class WiresTransactionApprovalController {
                                           Review_Reason__c,Second_Approval_Review_Reason__c,Available_Balance2_Review__c,
                                           Previous_Wires2_Review__c,Approved_by_1st_Approver__c,CreatedById,
                                           Good_Funds_Check__c,BalanceRGLines__c,BalanceStatusCode__c,
-                                          First_Approval_Comment__c,Second_Approval_Comment__c, Docusign_Review__c, Docusign_IDV_Failure__c, Frequency__c
+                                          First_Approval_Comment__c,Second_Approval_Comment__c, Docusign_Review__c, Docusign_IDV_Failure__c, Frequency__c, Waiting_for_Member__c
                                           FROM WIRES_Transaction__c WHERE Id=:WiresRecordId limit 1];
         
         string isApprovalVisible='false';
@@ -253,7 +253,7 @@ public class WiresTransactionApprovalController {
                Object statusCode=checkWiresFundsResult.get('StatusCode');
                Object statusMsg=checkWiresFundsResult.get('StatusMessage');
                
-               if(WiresList.Approval_Status__c!=WiresConstant.ApprovalStatus_PendingForMemberReview){
+               if(WiresList.Approval_Status__c!=WiresConstant.ApprovalStatus_PendingForMemberReview && statusMsg != null){
                    if(Integer.valueOf(statusCode)<=0){
                        WiresList.Good_Funds_Check__c='FAIL---'+statusMsg.toString();
                    }else{
@@ -278,6 +278,13 @@ public class WiresTransactionApprovalController {
                                             from WIRES_Transaction__c where Member_Name__c=: WiresList.Member_Name__c and id !=: WiresList.id];
         
         strMap.put('WiresCount',String.valueOf(Wires.size()));
+
+        if(WiresList.Waiting_for_Member__c){
+            strMap.put('WaitingForMember',true);
+        }
+        else{
+            strMap.put('WaitingForMember',false);
+        }
         
         system.debug('WiresList.Identity_Verification_Used__c=='+WiresList.Identity_Verification_Used__c);
         return strMap;
@@ -984,15 +991,7 @@ public class WiresTransactionApprovalController {
                   }
                   body=body.replace('{BankName__c}', bankName);
                 }
-                else{
-                    /*String RoutingNumber = wt.ToAccoutId__r.RoutingNumber__c;
-                    string BankName = '';
-                    if(String.isNotBlank(RoutingNumber)){
-                       	BankName = GetABADetailsWebService.GetBankName(RoutingNumber); 
-                        if(BankName == 'FAIL'){
-                            BankName = '';
-                        }
-                    }*/
+                else{                  
                     body=body.replace('to {BankName__c}', '');
                 }
                 body=body.replace('{TotalFromAccount__c}',wt.FormattedWireAmount__c);//string.valueOf(wt.FormattedTotalAmount__c)
@@ -1006,12 +1005,8 @@ public class WiresTransactionApprovalController {
         
         Messaging.sendEmail(mails);
         
-    }
-    
-    // --------------------- Send Released to WireXchange Email Notification..................//   
-    
-    
-    
+    }   
+   
     // --------------------- Send SMS Notification..................//   
     
     public static void SendSMS(string phone)
@@ -1028,8 +1023,7 @@ public class WiresTransactionApprovalController {
         list<smagicinteract__SMS_Template__c> listTemplate =  [select Id, smagicinteract__Text__c from smagicinteract__SMS_Template__c where smagicinteract__Name__c =: emailadd];
         
         smsObject.smagicinteract__PhoneNumber__c = phone;
-        smsObject.smagicinteract__Name__c = 'SMS - User'; // records name
-        //   smsObject.smagicinteract__ObjectType__c = 'Contact'; // record type
+        smsObject.smagicinteract__Name__c = 'SMS - User'; // records name       
         smsObject.smagicinteract__disableSMSOnTrigger__c = 0; // this field either be 0 or 1, if you specify the value as 1 then sms will not get send but entry of sms will get create under SMS History object
         smsObject.smagicinteract__external_field__c = smagicinteract.ApexAPI.generateUniqueKey();
         
@@ -1299,73 +1293,157 @@ public class WiresTransactionApprovalController {
                                                        FlagAccountOpenfor45Days__c,FlagEmailStablefor30Days__c,
                                                        FlagHomePhoneStablefor30Days__c,FlagMobilePhoneStablefor30Days__c,Description__c, Frequency__C,
                                                        FlagWorkPhoneStablefor30Days__c,Share_ID__c, Member__c, FormattedWireAmount__c, Fees__c
-                                                       FROM WIRES_Transaction__c WHERE id=:id];       
+                                                       FROM WIRES_Transaction__c WHERE id=:id];  
         
-        
-       /* list<CaseRecordType__c> scList = [SELECT Id,
-                                          Primary_Category__c,
-                                          Secondary_Category__c,
-                                          Teritiary_Category__c,
-                                          Record_Type_Name__c,
-                                          SLA__c,
-                                          RecordTypeId__c 
-                                          FROM CaseRecordType__c 
-                                          WHERE Primary_Category__c = 'Account Maintenance'
-                                          AND Secondary_Category__c='Special Situations'
-                                          AND Teritiary_Category__c='Potential Fraud' 
-                                          LIMIT 1];*/
-        
+     
         List<WIRES_Transaction__c> onetimeWireObjs = new List<WIRES_Transaction__c>();
         List<Case> cases = new List<Case>();
         for(WIRES_Transaction__c wtc: wireTransactions){
             wtc.Approval_Status__c = WiresConstant.ApprovalStatus_DSExpired;
-            onetimeWireObjs.add(wtc);           
+            onetimeWireObjs.add(wtc);     
            
-           /* Account_Details__c accDetail=[SELECT Id,Name, Brand__c 
-                                          FROM Account_Details__c 
-                                          WHERE Name=:wtc.FromAccount__c 
-                                          AND RecType__c = 'ACCT' LIMIT 1];   
-            
-            case cs = new case();
-            for(CaseRecordType__c crt : scList){
-                cs.RecordTypeId = scList[0].RecordTypeId__c;
-                cs.Primary_Category__c = scList[0].Primary_Category__c;
-                cs.Secondary_Category__c = scList[0].Secondary_Category__c;
-                cs.Tertiary_Category__c = scList[0].Teritiary_Category__c;
-                cs.Sla__c = scList[0].SLA__c;
-            }    
-            cs.Status = 'Open';
-            cs.AccountId=wtc.Member__c;
-            cs.Subject = 'Wires DocuSign Expiration';
-            cs.ownerid = UserInfo.getUserId();
-            if(accDetail != null){
-                cs.Account_Number__c = accDetail.Id;
-            }
-            
-            Datetime dt = datetime.newInstance(Date.valueOf(wtc.SendOn__c).year(), Date.valueOf(wtc.SendOn__c).month(), Date.valueOf(wtc.SendOn__c).day());
-            string caseDesc=+'Wire Name: '+ wtc.Name +'\n'
-                                    +'Type of wire: '+ 'Domestic' +'\n'
-                                    +'Account#: '+ wtc.FromAccount__c +'\n'
-                                    +'Share ID: '+ wtc.Share_ID__c +'\n'
-                                    +'Amount of Wire: $'+ wtc.FormattedWireAmount__c +'\n'
-                                    +'Wire Fee: $'+ wtc.Fees__c +'\n'
-                                    +'Total Amount to be debited from account: $'+ wtc.FormattedTotalAmount__c +'\n'
-                                    +'Recipient Name: '+ wtc.ToAccountName__c +'\n'
-                                    +'Recipient Account Number: '+ wtc.ToAccoutId__c +'\n'
-                                    +'Financial Institution Name: '+ Wtc.ToAccoutId__r.BankName__c +'\n'
-                                    +'Special Instructions: '+ wtc.Description__c +'\n'
-                                    +'Frequency: '+ wtc.Frequency__c +'\n'
-                                    +'Send On: '+ dt.format('MM/dd/yyyy') +'\n';
-            
-            
-            cs.Description=caseDesc;
-            cases.add(cs);
-            insert cs;
-            wtc.Case__c=cs.Id;*/
         }
         
         update onetimeWireObjs;       
 
+    }
+    
+    public static map<string,object> GetAuthorizedMembers(string AccountNumber){
+        	string loanAPI;
+        	string AuthrorizedAccountString = '';
+        	map<string,object> MapAuthorizedMembers = new map<string,object>();
+             ACH_To_Episys_API_Details__c api = ACH_To_Episys_API_Details__c.getValues('ProductionURL');
+                
+                if(api.URL__c != null){
+                    loanAPI = api.URL__c;
+				}
+
+                httpRequest requestparam = new httpRequest();
+                requestparam.setEndpoint(loanAPI + '/MemberAuthorization/GetAuthorizedMemeber?accountNumber=' + AccountNumber);
+                requestparam.setMethod('GET');
+                
+                http httpParam = new http();
+                httpResponse response;
+                String strStatus, strBody;
+                if (!Test.isRunningTest()){
+                    response = httpParam.send(requestparam);        
+                    strStatus = response.getStatus();
+                    strBody = response.getBody();
+                    system.debug('strBody #1160=='+strBody);
+                } else{
+                	strBody = '{"Accounts":"abc","bcd"}';
+                }
+                
+        		List<object> jsonParsed = new List<object>();
+                if(strBody != ''){
+                    jsonParsed = (List<object>)JSON.deserializeUntyped(strBody);
+                    system.debug('jsonParsed=='+jsonParsed);    
+                    
+                }
+        		
+        		List<AuthorizedMember> ListResult = new List<AuthorizedMember>();
+                for (Object t : jsonParsed){
+                    map<string, object> localAcc = (map<string, object>)t;
+                    AuthorizedMember tempObj = new AuthorizedMember();
+                    string AccType = String.valueof((Integer)localAcc.get('type')).leftPad(4, '0');
+                    tempObj.AccountNo = (string)localAcc.get('accountnumber');
+                    tempObj.AcctType = AccType;
+                    tempObj.MemberName =(string)localAcc.get('fullname');
+                    tempObj.SSN =  (string)localAcc.get('ssnnumber');
+                    ListResult.add(tempObj);
+                }
+        
+        		MapAuthorizedMembers.put('ListAuthorizedMembers', ListResult);
+                system.debug('MapAuthorizedMembers=='+MapAuthorizedMembers);    
+				return MapAuthorizedMembers;
+    }
+    
+    /*-------------STRY0012069: Sets SLA for Wire Transactions when DocuSign is complete----------*/
+    public static void SetSLA(set<Id> WireTransactionIds){
+        List<WIRES_Transaction__c> WiresTrans = [SELECT Id,Member_Email__c, Member__c,Member__r.PersonEmail, SendOn__c, Status__c, SLA_Business_Hours__c
+                                                 FROM WIRES_Transaction__c WHERE id in: WireTransactionIds];
+        
+        Date TodayDate = Date.today();  
+        List<WIRES_Transaction__c> WiresToUpdate  = new List<WIRES_Transaction__c>();
+        for(WIRES_Transaction__c ws:WiresTrans){
+            decimal SLA;
+            if(ws.SendOn__c == TodayDate){
+                SLA = GetSLA(ws);
+                ws.SLA_Business_Hours__c = SLA;
+                if (ws.SLA_Business_Hours__c != NULL && ws.Status__c == 'Completed'){
+                    ws.SLA_Yellow_Start_Time__c =AddBusinessHours(Datetime.now(),(Long) ((ws.SLA_Business_Hours__c - 1) * 3600000));
+                    ws.SLA_Breach_Time__c = AddBusinessHours(Datetime.now(),(Long) ((ws.SLA_Business_Hours__c) * 3600000));
+                    ws.Docusign_Completed_DateTime__c = Datetime.Now();
+                }
+                WiresToUpdate.add(ws);
+            }
+        }
+        update WiresToUpdate;
+    }
+
+    /*-------------STRY0012069: Fucntion to get SLA from metadata----------*/
+    public static decimal GetSLA(WIRES_Transaction__c w) {
+        Decimal sla;
+        Sla_Manager__mdt[] slaDefList;
+        slaDefList = [SELECT DeveloperName,Event_Source__c,Opportunity_Source__c,Product_Type__c,SLA__c,StageName__c FROM Sla_Manager__mdt WHERE Object_Name__c = 'WIRES_Transaction__c' ORDER BY DeveloperName ASC limit 1];
+        if(slaDefList.size() > 0){
+            sla = slaDefList[0].Sla__c;
+        }     
+        return sla;   
+    }
+
+    /*-------------STRY0012069: Fucntion to set SLA fields when SLA is Paused/Restarted----------*/
+    @AuraEnabled
+    public static void WaitingOnMember(Id WiresId, string Action) {
+        List<WIRES_Transaction__c> wireTransactions = [SELECT Id,Approval_Status__c,Waiting_for_Member__c,Waiting_on_Members_Start_Time__c,  
+                                                        Waiting_on_Members_End_Time__c, SLA_Breach_Time__c, SLA_Yellow_Start_Time__c, SLA_Business_Hours__c, Docusign_Completed_DateTime__c, Total_Time_Spent_Waiting_for_Member__c
+                                                        FROM WIRES_Transaction__c WHERE id=:WiresId Limit 1];
+
+        if(wireTransactions.size() > 0){
+            if(Action == 'Waiting'){
+                wireTransactions[0].Waiting_for_Member__c = true;
+                wireTransactions[0].Waiting_on_Members_Start_Time__c = Datetime.now();
+                wireTransactions[0].SLA_Breach_Time__c = null;
+                wireTransactions[0].SLA_Yellow_Start_Time__c = null;
+            }
+            else if(Action == 'Continue'){
+                BusinessHours stdBusinessHours = [select id
+                                          from businesshours
+                                          where isDefault = true];
+
+                wireTransactions[0].Waiting_for_Member__c = false;
+                wireTransactions[0].Waiting_on_Members_End_Time__c = Datetime.now();
+                Datetime StartTime, EndTime;
+                StartTime = wireTransactions[0].Waiting_on_Members_Start_Time__c;
+                EndTime = wireTransactions[0].Waiting_on_Members_End_Time__c;
+
+                if(stdBusinessHours != NULL && StartTime != null && EndTime != null){
+                    Decimal TimeDiff = BusinessHours.diff(stdBusinessHours.id,StartTime, EndTime);
+                    Decimal Hours = (TimeDiff / 3600000).setScale(2);
+                    if(wireTransactions[0].Total_Time_Spent_Waiting_for_Member__c != null){
+                        wireTransactions[0].Total_Time_Spent_Waiting_for_Member__c = wireTransactions[0].Total_Time_Spent_Waiting_for_Member__c + Hours;
+                    }
+                    else{
+                        wireTransactions[0].Total_Time_Spent_Waiting_for_Member__c = Hours;
+                    }
+                    wireTransactions[0].SLA_Yellow_Start_Time__c = AddBusinessHours(wireTransactions[0].Docusign_Completed_DateTime__c,(Long) ((wireTransactions[0].SLA_Business_Hours__c + wireTransactions[0].Total_Time_Spent_Waiting_for_Member__c - 1) * 3600000));
+                    wireTransactions[0].SLA_Breach_Time__c = AddBusinessHours(wireTransactions[0].Docusign_Completed_DateTime__c,(Long) ((wireTransactions[0].SLA_Business_Hours__c + wireTransactions[0].Total_Time_Spent_Waiting_for_Member__c) * 3600000));
+                }               
+            }
+            update wireTransactions[0];
+        }
+    }
+
+    /*-------------STRY0012069: Fucntion to add Business Hours----------*/
+    public static DateTime AddBusinessHours(DateTime StartTime, Long intervalMilliseconds){
+        DateTime Result;
+        BusinessHours stdBusinessHours = [select id
+                                          from businesshours
+                                          where isDefault = true];
+
+        Result = BusinessHours.addgmt(stdBusinessHours.id, StartTime, intervalMilliseconds);
+
+        return Result;
     }
     
     public class FraudReviewMARSDetailsWrapperObject{
@@ -1423,6 +1501,16 @@ public class WiresTransactionApprovalController {
         @AuraEnabled
         public decimal Amount { get; set; }        
     }
-
-
+    
+    public class AuthorizedMember {
+        @AuraEnabled
+        public String AccountNo { get; set; }
+        @AuraEnabled
+        public String AcctType { get; set; }
+        @AuraEnabled
+        public String MemberName { get; set; }    
+        @AuraEnabled
+        public String SSN { get; set; }        
+    }
+    
 }
