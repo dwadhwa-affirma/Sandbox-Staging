@@ -2,7 +2,7 @@
  * @description       : 
  * @author            : ChangeMeIn@UserSettingsUnder.SFDoc
  * @group             : 
- * @last modified on  : 06-01-2022
+ * @last modified on  : 05-23-2022
  * @last modified by  : ChangeMeIn@UserSettingsUnder.SFDoc
 **/
 trigger LevyTrigger on Levy__c (before update, after update , after insert) {
@@ -27,7 +27,7 @@ trigger LevyTrigger on Levy__c (before update, after update , after insert) {
         Decimal sla;
         if(slaDefList.size()>0){
             sla = slaDefList[0].SLA__c;
-            updateSLAField(trigger.new,sla);
+            leviesController.updateSLAField(trigger.new,sla);
             
         }
         
@@ -35,45 +35,5 @@ trigger LevyTrigger on Levy__c (before update, after update , after insert) {
         
     }
     
-    public void  updateSLAField(List<Levy__c> newLevyList,decimal sla){
-        
-        BusinessHours stdBusinessHours = [select id from businesshours where isDefault = true];
-        if(trigger.isAfter){           
-            if(trigger.isinsert){
-                set<Id> LevyIds = new set<Id>();
-                if(newLevyList.size() > 0){
-                    for (Levy__c c : newLevyList) {
-                        if ((stdBusinessHours != NULL) ) {    
-                            LevyIds.add(c.id);
-                        }              
-
-                    }
-                }
-                List<Levy__c> levystoUpdate = [select id,CreatedDate,SLA__c  from Levy__c where id IN: LevyIds];
-                if(levystoUpdate.size() > 0){
-                    for (Levy__c c : levystoUpdate) { 
-								c.SLA__c = sla;            
-                        if ((c.SLA__c != NULL) && (stdBusinessHours != NULL) ) {
-                            datetime FD = c.CreatedDate;                    
-                            c.SLA_Yellow_Start_Time__c = BusinessHours.addgmt(stdBusinessHours.id, FD , (Long)(c.SLA__c-8) * 3600000);
-                            c.SLA_Breach_Time__c = BusinessHours.addgmt(stdBusinessHours.id, FD, (Long) ((c.SLA__c) * 3600000));
-                            
-                        }
-                        else{
-                            c.SLA_Yellow_Start_Time__c = null;
-                            c.SLA_Breach_Time__c = null;
-                        }
-                        
-                    }
-                    if(levystoUpdate.size() > 0){
-                        update levystoUpdate;
-                    }
-                }
-                
-                
-                
-            }
-            
-        }       
-    }    
+    
 }
