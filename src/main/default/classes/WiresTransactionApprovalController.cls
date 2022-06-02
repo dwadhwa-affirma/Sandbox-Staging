@@ -1381,7 +1381,7 @@ public class WiresTransactionApprovalController {
         update WiresToUpdate;
     }
 
-    /*-------------STRY0012069: Fucntion to get SLA from metadata----------*/
+    /*-------------STRY0012069: Function to get SLA from metadata----------*/
     public static decimal GetSLA(WIRES_Transaction__c w) {
         Decimal sla;
         Sla_Manager__mdt[] slaDefList;
@@ -1392,7 +1392,7 @@ public class WiresTransactionApprovalController {
         return sla;   
     }
 
-    /*-------------STRY0012069: Fucntion to set SLA fields when SLA is Paused/Restarted----------*/
+    /*-------------STRY0012069: Function to set SLA fields when SLA is Paused/Restarted----------*/
     @AuraEnabled
     public static void WaitingOnMember(Id WiresId, string Action) {
         List<WIRES_Transaction__c> wireTransactions = [SELECT Id,Approval_Status__c,Waiting_for_Member__c,Waiting_on_Members_Start_Time__c,  
@@ -1434,7 +1434,7 @@ public class WiresTransactionApprovalController {
         }
     }
 
-    /*-------------STRY0012069: Fucntion to add Business Hours----------*/
+    /*-------------STRY0012069: Function to add Business Hours----------*/
     public static DateTime AddBusinessHours(DateTime StartTime, Long intervalMilliseconds){
         DateTime Result;
         BusinessHours stdBusinessHours = [select id
