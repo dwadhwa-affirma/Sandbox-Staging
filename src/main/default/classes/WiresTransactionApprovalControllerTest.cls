@@ -4,7 +4,7 @@ public class WiresTransactionApprovalControllerTest{
     static void setup(){
 
         ACH_To_Episys_API_Details__c api1 = new ACH_To_Episys_API_Details__c();
-        api1.URL__c = 'https://symxapi.chevronfcu.org/devclient';
+        api1.URL__c = 'test';
         api1.Name = 'ProductionURL';
         insert api1;
 
@@ -85,7 +85,7 @@ public class WiresTransactionApprovalControllerTest{
 
 
         SolarLoan_To_Episys_API_Details__c api = new SolarLoan_To_Episys_API_Details__c();
-        api.URL__c = 'https://symxapi.chevronfcu.org/devclient';
+        api.URL__c = 'test';
         api.Name = 'ProductionURL';
         insert api;
 

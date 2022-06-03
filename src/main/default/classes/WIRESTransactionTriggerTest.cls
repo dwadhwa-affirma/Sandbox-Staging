@@ -2,9 +2,10 @@
 public class WIRESTransactionTriggerTest{
     static testMethod void test1(){
         SolarLoan_To_Episys_API_Details__c api = new SolarLoan_To_Episys_API_Details__c();
-        api.URL__c = 'https://symxapi.chevronfcu.org/devclient';
+        api.URL__c = 'test';
         api.Name = 'ProductionURL';
         insert api;
+
 
         Member360_TypeTranslate__c t = new Member360_TypeTranslate__c();
         t.name = '0000/Primary';
@@ -44,6 +45,7 @@ public class WIRESTransactionTriggerTest{
         acc.Mobile_Phone__pc = '555-479-3885';
         update acc;
 
+
         Account_Details__c accDetail = new Account_Details__c();
         accDetail.Name = '00000000123';
         accDetail.RecType__c = 'ACCT';
@@ -52,8 +54,10 @@ public class WIRESTransactionTriggerTest{
         accDetail.OPEN_DATE__c = Date.newInstance(2018, 12, 10);
         insert accDetail;
 
+
         List<Person_Account__c> person_obj = new List<Person_Account__c>{ new Person_Account__c(TypeTranslate__c = '0000/Primary', Account_Number__c = accDetail.Id, PersonID__c = acc.Id), new Person_Account__c(TypeTranslate__c = '0000/Primary', Account_Number__c = accDetail.Id, PersonID__c = acc.Id) };
         Insert person_obj;
+
 
         WIRES_Transaction__c objWC = new WIRES_Transaction__c();
         objWC.Description__c = 'test';
@@ -68,16 +72,19 @@ public class WIRESTransactionTriggerTest{
         objWC.Source__c = 'Branch';
         objWC.First_Reviewer__c = UserInfo.getUserId();
         objWC.Current_Reviewer__c = UserInfo.getUserId();
+
         insert objWC;
         objWC.Current_Reviewer_Modified_Date__c = DateTime.now();
         objWC.WireAmount__c = 400;
         objWC.Current_Reviewer__c = objWC.First_Reviewer__c;
+
         objWC.Frequency__c = 'One - Time';
         objWC.Approval_Status__c = 'Released In WireXchange';
         objWC.Status__c = 'voided';
         objWC.Source__c = 'Online Banking';
         objWC.Has_Additional_Documents__c = true;
         update objWC;
+
 
         WIRES_Transaction__c objWCc = new WIRES_Transaction__c();
         objWCc.Description__c = 'test';
@@ -91,10 +98,12 @@ public class WIRESTransactionTriggerTest{
         objWCc.Frequency__c = 'One - Time';
         objWCc.Source__c = 'Branch';
         objWCc.Current_Reviewer__c = UserInfo.getUserId();
+
         insert objWCc;
         objWCc.Current_Reviewer_Modified_Date__c = DateTime.now();
         objWCc.WireAmount__c = 400;
         objWCc.Current_Reviewer__c = objWC.First_Reviewer__c;
+
         objWCc.Frequency__c = 'One - Time';
         objWCc.Approval_Status__c = 'Rejected';
         objWCc.Status__c = 'Pending';
@@ -114,18 +123,22 @@ public class WIRESTransactionTriggerTest{
         objWCc1.Frequency__c = 'One - Time';
         objWCc1.Source__c = 'Branch';
         objWCc1.Current_Reviewer__c = UserInfo.getUserId();
+
         insert objWCc1;
+
         objWCc1.Approval_Status__c = 'Cancelled';
         objWCc1.Status__c = 'Pending';
         objWCc1.Source__c = 'Branch';
+
         update objWCc1;
     }
 
     static testMethod void test2(){
         SolarLoan_To_Episys_API_Details__c api = new SolarLoan_To_Episys_API_Details__c();
-        api.URL__c = 'https://symxapi.chevronfcu.org/devclient';
+        api.URL__c = 'test';
         api.Name = 'ProductionURL';
         insert api;
+
 
         Member360_TypeTranslate__c t = new Member360_TypeTranslate__c();
         t.name = '0000/Primary';
@@ -149,10 +162,13 @@ public class WIRESTransactionTriggerTest{
         wde.Emails__c = 'Testing';
         insert wde;
 
+
         Account acc = new Account();
         acc.FirstName = 'Test FName';
         acc.LastName = 'Test LName';
         acc.Mobile_Phone__pc = '555-469-3885';
+
+
         acc.Email_raw__c = 'test@test.com';
         acc.PersonEmail = 'test1@test.com';
         acc.PersonID__c = 'V565138120';
@@ -162,7 +178,9 @@ public class WIRESTransactionTriggerTest{
         acc.Mobile_Phone__pc = '555-479-3885';
         update acc;
 
+
         Account_Details__c accDetail = new Account_Details__c();
+
         accDetail.Name = '00000000123';
         accDetail.RecType__c = 'ACCT';
         accDetail.TypeTranslate__c = '1-PERSONAL';
@@ -170,8 +188,10 @@ public class WIRESTransactionTriggerTest{
         accDetail.OPEN_DATE__c = Date.newInstance(2018, 12, 10);
         insert accDetail;
 
+
         List<Person_Account__c> person_obj = new List<Person_Account__c>{ new Person_Account__c(TypeTranslate__c = '0000/Primary', Account_Number__c = accDetail.Id, PersonID__c = acc.Id), new Person_Account__c(TypeTranslate__c = '0000/Primary', Account_Number__c = accDetail.Id, PersonID__c = acc.Id) };
         Insert person_obj;
+
 
         WIRES_Transaction__c objWC = new WIRES_Transaction__c();
         objWC.Description__c = 'test';
@@ -186,6 +206,7 @@ public class WIRESTransactionTriggerTest{
         objWC.Approval_Status__c = 'Rejected';
         objWC.Source__c = 'Branch';
         objWC.Current_Reviewer_Modified_Date__c = datetime.now();
+
 
         insert objWC;
         objWC.Current_Second_Reviewer__c = UserInfo.getUserId();
@@ -203,7 +224,7 @@ public class WIRESTransactionTriggerTest{
     static testMethod void test3(){
 
         SolarLoan_To_Episys_API_Details__c api = new SolarLoan_To_Episys_API_Details__c();
-        api.URL__c = 'https://symxapi.chevronfcu.org/devclient';
+        api.URL__c = 'test';
         api.Name = 'ProductionURL';
         insert api;
 
@@ -230,6 +251,7 @@ public class WIRESTransactionTriggerTest{
         wde.Emails__c = 'Testing';
         insert wde;
 
+
         Account acc = new Account();
         acc.FirstName = 'Test FName';
         acc.LastName = 'Test LName';
@@ -245,6 +267,7 @@ public class WIRESTransactionTriggerTest{
         acc.Mobile_Phone__pc = '555-479-3885';
         update acc;
 
+
         Account_Details__c accDetail = new Account_Details__c();
         accDetail.Name = '00000000123';
         accDetail.RecType__c = 'ACCT';
@@ -253,8 +276,10 @@ public class WIRESTransactionTriggerTest{
         accDetail.OPEN_DATE__c = Date.newInstance(2018, 12, 10);
         insert accDetail;
 
+
         List<Person_Account__c> person_obj = new List<Person_Account__c>{ new Person_Account__c(TypeTranslate__c = '0000/Primary', Account_Number__c = accDetail.Id, PersonID__c = acc.Id), new Person_Account__c(TypeTranslate__c = '0000/Primary', Account_Number__c = accDetail.Id, PersonID__c = acc.Id) };
         Insert person_obj;
+
 
         WIRES_Transaction__c objWC = new WIRES_Transaction__c();
         objWC.Description__c = 'test';
@@ -268,6 +293,7 @@ public class WIRESTransactionTriggerTest{
         objWC.Current_Reviewer__c = UserInfo.getUserId();
 
         insert objWC;
+
 
         objWC.Current_Reviewer_Modified_Date__c = DateTime.now();
         objWC.WireAmount__c = 10001;
@@ -286,7 +312,7 @@ public class WIRESTransactionTriggerTest{
 
     static testMethod void test4(){
         SolarLoan_To_Episys_API_Details__c api = new SolarLoan_To_Episys_API_Details__c();
-        api.URL__c = 'https://symxapi.chevronfcu.org/devclient';
+        api.URL__c = 'test';
         api.Name = 'ProductionURL';
         insert api;
 
@@ -313,6 +339,7 @@ public class WIRESTransactionTriggerTest{
         wde.Emails__c = 'Testing';
         insert wde;
 
+
         Account acc = new Account();
         acc.FirstName = 'Test FName';
         acc.LastName = 'Test LName';
@@ -328,6 +355,7 @@ public class WIRESTransactionTriggerTest{
         acc.Mobile_Phone__pc = '555-479-3885';
         update acc;
 
+
         Account_Details__c accDetail = new Account_Details__c();
         accDetail.Name = '00000000123';
         accDetail.RecType__c = 'ACCT';
@@ -335,6 +363,7 @@ public class WIRESTransactionTriggerTest{
         accDetail.ID1__c = '001';
         accDetail.OPEN_DATE__c = Date.newInstance(2018, 12, 10);
         insert accDetail;
+
 
         List<Person_Account__c> person_obj = new List<Person_Account__c>{ new Person_Account__c(TypeTranslate__c = '0000/Primary', Account_Number__c = accDetail.Id, PersonID__c = acc.Id), new Person_Account__c(TypeTranslate__c = '0000/Primary', Account_Number__c = accDetail.Id, PersonID__c = acc.Id) };
         Insert person_obj;
@@ -348,6 +377,7 @@ public class WIRESTransactionTriggerTest{
         wdae.TemplateId__c = '0d330f9b-9fe1-4165-a6d5-bef671134243';
         wdae.Username__c = '9c9450c4-0f40-47f7-8ee8-8292ad64f81b';
         wdae.IDVEndPoint__c = 'proof-d.docusign.net';
+
         insert wdae;
 
         Wires_DocuSign_User_Details__c wdae1 = new Wires_DocuSign_User_Details__c();
@@ -361,6 +391,7 @@ public class WIRESTransactionTriggerTest{
         wdae1.IDVEndPoint__c = 'proof-d.docusign.net';
         wdae1.Password__c = '!DocApi999999';
         insert wdae1;
+
 
         WIRES_Transaction__c WTIds = new WIRES_Transaction__c();
         WTIds.Member__c = acc.id;
