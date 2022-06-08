@@ -487,7 +487,7 @@ global  class DisplayCaseController {
                 // 3/31 only show attachments added by member
                 if(Test.isRunningTest()){
                     attachments = [Select Id,Name,BodyLength, ParentId from Attachment Where ParentId in :parentcaseId];
-                    attachments1 = [select Id, ContentDocumentId,LinkedEntityId, ContentDocument.Title, ContentDocument.FileType from ContentDocumentLink where LinkedEntityId =:parentcaseId];
+                    attachments1 = [select Id, ContentDocumentId,LinkedEntityId, ContentDocument.Title, ContentDocument.FileType,ContentDocument.ContentSize from ContentDocumentLink where LinkedEntityId =:parentcaseId];
                 }
                 else{
                      attachments  = [Select Id,Name,BodyLength, ParentId from Attachment Where ParentId in :parentcaseId and  createdby.Profile.UserLicense.LicenseDefinitionKey !='SFDC'];
