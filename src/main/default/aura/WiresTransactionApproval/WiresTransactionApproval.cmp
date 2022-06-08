@@ -22,6 +22,8 @@
     <lightning:overlayLibrary aura:id="overlayLib"/> 
     <aura:attribute name="isWaitingOnMemberVisible" type="boolean" default="false"/>
     <aura:attribute name="isWaitingOnMember" type="boolean" default="false"/>
+    <aura:attribute name="SLABreached" type="boolean" default="false"/>
+    
     
     <div class="slds-m-around_xx-large"> 
         <aura:if isTrue="{!v.showConfirmDialog}">

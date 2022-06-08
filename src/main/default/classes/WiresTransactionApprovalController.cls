@@ -22,7 +22,7 @@ public class WiresTransactionApprovalController {
                                           Review_Reason__c,Second_Approval_Review_Reason__c,Available_Balance2_Review__c,
                                           Previous_Wires2_Review__c,Approved_by_1st_Approver__c,CreatedById,
                                           Good_Funds_Check__c,BalanceRGLines__c,BalanceStatusCode__c,
-                                          First_Approval_Comment__c,Second_Approval_Comment__c, Docusign_Review__c, Docusign_IDV_Failure__c, Frequency__c, Waiting_for_Member__c
+                                          First_Approval_Comment__c,Second_Approval_Comment__c, Docusign_Review__c, Docusign_IDV_Failure__c, Frequency__c, Waiting_for_Member__c, isSLABreached__c, SLA_Business_Hours__c
                                           FROM WIRES_Transaction__c WHERE Id=:WiresRecordId limit 1];
         
         string isApprovalVisible='false';
@@ -284,6 +284,13 @@ public class WiresTransactionApprovalController {
         }
         else{
             strMap.put('WaitingForMember',false);
+        }
+
+        if(WiresList.isSLABreached__c || WiresList.SLA_Business_Hours__c == null){
+            strMap.put('SLABreached',true);
+        }
+        else{
+            strMap.put('SLABreached',false);
         }
         
         system.debug('WiresList.Identity_Verification_Used__c=='+WiresList.Identity_Verification_Used__c);
@@ -1331,7 +1338,7 @@ public class WiresTransactionApprovalController {
                     strBody = response.getBody();
                     system.debug('strBody #1160=='+strBody);
                 } else{
-                	strBody = '{"Accounts":"abc","bcd"}';
+                	strBody = '[{"AddressType":"0","type":0,"accounttype":null,"accountnumber":"0000000123"},{"AddressType":"0","type":1,"accounttype":null,"accountnumber":"0000000123"}]';
                 }
                 
         		List<object> jsonParsed = new List<object>();

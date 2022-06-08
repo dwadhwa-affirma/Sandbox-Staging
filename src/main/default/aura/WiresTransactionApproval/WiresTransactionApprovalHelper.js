@@ -21,7 +21,15 @@
                 component.set("v.Source",result.Source);
                 component.set("v.Frequency",result.WiresList.Frequency__c);                
                 component.set("v.MinGoodFundAmountCheck",result.MinGoodFundAmountCheck);
-                if(result.ApprovalStatus == 'Fraud Review' || result.ApprovalStatus == 'Pending for Approval' || result.ApprovalStatus == 'Pending for Second Approval'){
+                
+                if(result.SLABreached == true){                    
+                    component.set("v.isWaitingOnMember", true);
+                }
+                else{
+                    component.set("v.isWaitingOnMember", false);                   
+                }    
+
+                if((result.ApprovalStatus == 'Fraud Review' || result.ApprovalStatus == 'Pending for Approval' || result.ApprovalStatus == 'Pending for Second Approval') && (result.SLABreached == false)){
                     component.set("v.isWaitingOnMemberVisible",true);
                 }
                 else{
@@ -38,7 +46,8 @@
                     component.set("v.WaitingOnMemberLabel", "Waiting On Member");
                     component.set("v.isWaitingOnMember", false);  
                     $A.util.removeClass(buttonClass, 'yellow');                   
-                }                
+                }  
+            
             }            
             
         });	
