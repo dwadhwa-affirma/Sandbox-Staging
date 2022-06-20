@@ -45,9 +45,13 @@ trigger EDSMemberAlerts on EDS_Member_Alerts__c (after insert) {
             string Email =''; 
             for(Person_Account__c p2: paList){ 
                 if(p2.TypeTranslate__c == '0006/Trustee'){
-                    if(accountEmail.containsKey(p2.Account_Number__r.name)){                    
-                        Email = accountEmail.get(p2.Account_Number__r.name) + ',' +  p2.PersonId__r.PersonEmail;                    
-                        accountEmail.put(p2.Account_Number__r.name, Email);
+                    if(accountEmail.containsKey(p2.Account_Number__r.name)){   
+                        string EmailString = accountEmail.get(p2.Account_Number__r.name);
+                        if(!EmailString.contains(p2.PersonId__r.PersonEmail)){
+                            Email = accountEmail.get(p2.Account_Number__r.name) + ',' +  p2.PersonId__r.PersonEmail;                    
+                            accountEmail.put(p2.Account_Number__r.name, Email);
+                        }           
+                        
                     }
                     else{
                         accountEmail.put(p2.Account_Number__r.name, p2.PersonId__r.PersonEmail);
@@ -63,9 +67,12 @@ trigger EDSMemberAlerts on EDS_Member_Alerts__c (after insert) {
             string Email =''; 
             for(Person_Account__c p2: paList){ 
                 if(p2.TypeTranslate__c == '0000/Primary'){
-                    if(accountEmail.containsKey(p2.Account_Number__r.name)){                    
-                        Email = accountEmail.get(p2.Account_Number__r.name) + ',' +  p2.PersonId__r.PersonEmail;                    
-                        accountEmail.put(p2.Account_Number__r.name, Email);
+                    if(accountEmail.containsKey(p2.Account_Number__r.name)){ 
+                        string EmailString = accountEmail.get(p2.Account_Number__r.name);
+                        if(!EmailString.contains(p2.PersonId__r.PersonEmail)){                   
+                            Email = accountEmail.get(p2.Account_Number__r.name) + ',' +  p2.PersonId__r.PersonEmail;                    
+                            accountEmail.put(p2.Account_Number__r.name, Email);
+                        }
                     }
                     else{
                         accountEmail.put(p2.Account_Number__r.name, p2.PersonId__r.PersonEmail);
