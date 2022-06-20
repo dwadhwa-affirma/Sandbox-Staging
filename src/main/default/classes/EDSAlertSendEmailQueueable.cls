@@ -19,7 +19,7 @@ public class EDSAlertSendEmailQueueable implements Queueable, Database.AllowsCal
         SendLimitChangeEmail(accountEmail, fnameFromEmail, lnameFromEmail, EDSRecords);
     }
 
-    private void SendLimitChangeEmail(Map<String, String> accountEmail, Map<String, String> fnameFromEmail, Map<String, String> lnameFromEmail, List<EDS_Member_Alerts__c> validEDS){
+    private void SendLimitChangeEmail(Map<String, String> accountEmail, Map<String, String> fnameFromEmail, Map<String, String> lnameFromEmail, List<EDS_Member_Alerts__c> EDSRecords){
         string ToEmail;
         string emailadd;
         string EmailToSend;
@@ -30,6 +30,7 @@ public class EDSAlertSendEmailQueueable implements Queueable, Database.AllowsCal
         List<EDS_Member_Alert_Log__c> listToInsertLogs = new List<EDS_Member_Alert_Log__c>();
         Map<String, EmailTemplate> EmailTemplateMap = new Map<String, EmailTemplate>();
         Map<String, OrgWideEmailAddress> OrgWideEmailMap = new Map<String, OrgWideEmailAddress>();
+        set<String> EDSIdstoUpdate = new set<String>();
 
         List<String> sendTo = new List<String>();
         String userName = UserInfo.getUserName();
@@ -150,12 +151,27 @@ public class EDSAlertSendEmailQueueable implements Queueable, Database.AllowsCal
                     mail.setHtmlBody(body);
                     mail.setOrgWideEmailAddressId(OrgWideEmailMap.get(emailadd).Id);
                     mails.add(mail);
+
+                    EDSIdstoUpdate.add(EDS.id);
                 }
             }
         }
 
         if (listToInsertLogs.size() > 0){
             insert listToInsertLogs;
+        }
+
+        //STRY0012157: Update Email Field
+        if (EDSIdstoUpdate.size() > 0){
+           List<EDS_Member_Alerts__c> EDSListUpdate = new List<EDS_Member_Alerts__c>();
+           EDSListUpdate = [SELECT Id, Account_Number__c, Email__c from EDS_Member_Alerts__c where Id in: EDSIdstoUpdate];          
+
+           for(EDS_Member_Alerts__c eds:EDSListUpdate){
+               string AccountNo = eds.Account_Number__c;
+               eds.Email__c = accountEmail.get(AccountNo);              
+           }
+
+           update EDSListUpdate;
         }
 
         //Send Email
