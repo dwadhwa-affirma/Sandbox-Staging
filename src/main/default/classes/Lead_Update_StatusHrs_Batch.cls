@@ -50,23 +50,23 @@ global class Lead_Update_StatusHrs_Batch implements Database.Batchable<sObject>{
             string hoursSpentFieldName = 'Hour_Spent_' + currentstatus.replace(' ', ('_')) + '_Status__c';
             string statusTimeStampFieldName = 'TimeStamp_' + currentstatus.replace(' ', ('_')) + '_status__c';
             decimal timeDiff;
-            decimal hh;
+            decimal timespent;
             decimal finalresult;
-            Integer i = 0;
+           
 
             List<String> listHoursSpentFieldNames = new List<String>();
             listHoursSpentFieldNames = ListAllHoursSpentFieldNames;
-
-            while (i < listHoursSpentFieldNames.size()){
+            Integer i = listHoursSpentFieldNames.size()-1;
+            while (i >= 0 ){
                 if (listHoursSpentFieldNames.get(i).contains(HoursSpentFieldName)){
                     listHoursSpentFieldNames.remove(i);
                 } else{
-                    i++;
+                    i--;
                 }
             }
 
             if ((l.get(statusTimeStampFieldName) != null)){
-                boolean isHoursFiledsNotNull = false;
+                boolean isHoursFieldsNotNull = false;
                 Datetime hrsHistoryT;
 
                 LeadHistory tempobj = findHistoryObject(l.id, hoursSpentFieldName, hrsHistory);
@@ -85,18 +85,18 @@ global class Lead_Update_StatusHrs_Batch implements Database.Batchable<sObject>{
 
                 for (string s : ListHoursSpentFieldNames){
                     if ((l.get(s) != null)){
-                        isHoursFiledsNotNull = true;
+                        isHoursFieldsNotNull = true;
                         break;
                     }
                 }
-                if (isHoursFiledsNotNull == false){
-                    hh = getTimeDifference((datetime) (l.get(statusTimeStampFieldName)));
-                    finalresult = hh;
+                if (isHoursFieldsNotNull == false){
+                    timespent = getTimeDifference((datetime) (l.get(statusTimeStampFieldName)));
+                    finalresult = timespent;
                     l.put(hoursSpentFieldName, finalresult);
 
                 } else{
-                    hh = getTimeDifference(ValueforDifference);
-                    finalresult = l.get(hoursSpentFieldName) != null ? (decimal) l.get(hoursSpentFieldName) + hh : hh;
+                    timespent = getTimeDifference(ValueforDifference);
+                    finalresult = l.get(hoursSpentFieldName) != null ? (decimal) l.get(hoursSpentFieldName) + timespent : timespent;
                     l.put(hoursSpentFieldName, finalresult);
 
                 }
@@ -115,7 +115,7 @@ global class Lead_Update_StatusHrs_Batch implements Database.Batchable<sObject>{
 
     //function to get the Timedifference for Hour spent field//
     private decimal getTimeDifference(datetime startTime){
-        decimal hh;
+        decimal timespent;
         decimal timeDifference;
 
         BusinessHours stdBusinessHours = [select id
@@ -124,20 +124,20 @@ global class Lead_Update_StatusHrs_Batch implements Database.Batchable<sObject>{
         DateTime currentTime = Datetime.now();
 
         timeDifference = BusinessHours.diff(stdBusinessHours.id, startTime, currentTime);
-        hh = (timeDifference / 3600000).setScale(2);
+        timespent = (timeDifference / 3600000).setScale(2);
 
-        return hh;
+        return timespent;
     }
 
     private LeadHistory findHistoryObject(id leadId, string fieldName, List<LeadHistory> hrsHistory){
-        LeadHistory ldh = new LeadHistory();
+        LeadHistory leadhistory = new LeadHistory();
         for (LeadHistory fldHistory : hrsHistory){
             if (fldHistory.LeadId == leadId && fldHistory.Field.toLowerCase() == fieldName.toLowerCase()){
-                ldh = fldHistory;
+                leadhistory = fldHistory;
                 break;
             }
         }
-        return ldh;
+        return leadhistory;
     }
 
 }

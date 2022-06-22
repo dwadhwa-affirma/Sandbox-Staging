@@ -48,14 +48,16 @@
             string hoursSpentFieldName = 'Hour_Spent_' + currentstatus.replace(' ', ('_')) + '_Status__c';
             string statusTimeStampFieldName = 'TimeStamp_' + currentstatus.replace(' ', ('_')) + '_status__c';
             decimal timeDiff;
-            decimal hh;
+            decimal timespent;
             decimal finalresult;
-            Integer i = 0;
-            while (i < ListAllHoursSpentFieldNames.size()){
-                if (ListAllHoursSpentFieldNames.get(i).contains(HoursSpentFieldName)){
-                    ListAllHoursSpentFieldNames.remove(i);
+            List<String> listHoursSpentFieldNames = new List<String>();
+            listHoursSpentFieldNames = ListAllHoursSpentFieldNames;
+            Integer i = listHoursSpentFieldNames.size()-1;
+            while (i >= 0 ){
+                if (listHoursSpentFieldNames.get(i).contains(HoursSpentFieldName)){
+                    listHoursSpentFieldNames.remove(i);
                 } else{
-                    i++;
+                    i--;
                 }
             }
             if ((OppL.get(statusTimeStampFieldName) != null)){
@@ -74,7 +76,7 @@
                     valueforDifference = (datetime) (OppL.get(statusTimeStampFieldName));
                 }
 
-                for (string s : ListAllHoursSpentFieldNames){
+                for (string s : ListHoursSpentFieldNames){
                     if ((OppL.get(s) != null)){
                         isHoursFieldsNotNull = true;
                         break;
@@ -82,13 +84,13 @@
                 }
 
                 if (isHoursFieldsNotNull == false){
-                    hh = getTimeDifference((datetime) (OppL.get(statusTimeStampFieldName)));
-                    finalresult = hh;
+                    timespent = getTimeDifference((datetime) (OppL.get(statusTimeStampFieldName)));
+                    finalresult = timespent;
                     OppL.put(HoursSpentFieldName, finalresult);
 
                 } else{
-                    hh = getTimeDifference(valueforDifference);
-                    finalresult = OppL.get(HoursSpentFieldName) != null ? (decimal) OppL.get(HoursSpentFieldName) + hh : hh;
+                    timespent = getTimeDifference(valueforDifference);
+                    finalresult = OppL.get(HoursSpentFieldName) != null ? (decimal) OppL.get(HoursSpentFieldName) + timespent : timespent;
                     OppL.put(HoursSpentFieldName, finalresult);
 
                 }
@@ -106,7 +108,7 @@
 
     //function to get the Timedifference for Hour spent field//
     private decimal getTimeDifference(datetime startTime){
-        decimal hh;
+        decimal timespent;
         decimal timeDifference;
 
         BusinessHours stdBusinessHours = [select id
@@ -115,20 +117,20 @@
         DateTime currentTime = Datetime.now();
 
         timeDifference = BusinessHours.diff(stdBusinessHours.id, startTime, currentTime);
-        hh = (timeDifference / 3600000).setScale(2);
+        timespent = (timeDifference / 3600000).setScale(2);
 
-        return hh;
+        return timespent;
     }
 
     private OpportunityFieldHistory findHistoryObject(id opportunityID, string fieldName, List<OpportunityFieldHistory> hrsHistory){
-        OpportunityFieldHistory ooph = new OpportunityFieldHistory();
+        OpportunityFieldHistory oophistory = new OpportunityFieldHistory();
         for (OpportunityFieldHistory fldHistory : hrsHistory){
 
             if (fldHistory.OpportunityID == opportunityID && fldHistory.Field.toLowerCase() == fieldName.toLowerCase()){
-                ooph = fldHistory;
+                oophistory = fldHistory;
                 break;
             }
         }
-        return ooph;
+        return oophistory;
     }
 }
