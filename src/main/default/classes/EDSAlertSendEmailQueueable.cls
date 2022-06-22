@@ -16,10 +16,10 @@ public class EDSAlertSendEmailQueueable implements Queueable, Database.AllowsCal
 
     public void execute(QueueableContext context){
         system.debug('accountEmail: ' + accountEmail);
-        SendLimitChangeEmail(accountEmail, fnameFromEmail, lnameFromEmail, eDSRecords);
+        sendLimitChangeEmail(accountEmail, fnameFromEmail, lnameFromEmail, eDSRecords);
     }
 
-    private void SendLimitChangeEmail(Map<String, String> accountEmail, Map<String, String> fnameFromEmail, Map<String, String> lnameFromEmail, List<EDS_Member_Alerts__c> eDSRecords){
+    private void sendLimitChangeEmail(Map<String, String> accountEmail, Map<String, String> fnameFromEmail, Map<String, String> lnameFromEmail, List<EDS_Member_Alerts__c> eDSRecords){
         string toEmail;
         string emailadd;
         string emailToSend;
