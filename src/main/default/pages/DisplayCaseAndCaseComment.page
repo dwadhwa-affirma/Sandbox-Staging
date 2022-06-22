@@ -1,3 +1,10 @@
+<!--
+  @description       : 
+  @author            : ChangeMeIn@UserSettingsUnder.SFDoc
+  @group             : 
+  @last modified on  : 06-22-2022
+  @last modified by  : ChangeMeIn@UserSettingsUnder.SFDoc
+-->
 <apex:page id="DisplayCaseandCasecomment" Controller="DisplayCaseController" showHeader="false" action="{!PageLoad}" applyHtmlTag="false" docType="html-5.0"
             standardStylesheets="false">
             
@@ -57,7 +64,7 @@
         
         <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
                 <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
-                <!--[if lt IE 9]>
+                 <!--[if lt IE 9]>
                     <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.2/html5shiv.min.js"></script>
                     <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
                 <![endif]-->
@@ -72,13 +79,7 @@
         <link rel="stylesheet" type="text/css" href="{!URLFOR($Resource.MessagingAssets,'MessagingAssets/css/simplebar.css')}"/>
              <link rel="stylesheet" type="text/css" href="{!URLFOR($Resource.MessagingAssets,'MessagingAssets/css/' + Responsivecss  )}"/> 
         
-        <!--   <c:CSS_Message1 /> -->
-          
-        <!--  <c:CSS_FileUploadcss />
-        <c:CSS_Message1 />
-        <c:CSS_simplebar />-->
-         <!--<c:CSS_Responsive_Chevron /> -->  
-        <!-- <c:CSS_Responsive_Spectrum /> -->
+        
         
         
         
@@ -88,6 +89,7 @@
         
         </style>
                 </head>
+                
                 <body class="MailDisplayPg">
                  <apex:form id="DisplayCaseandCasecommentForm" forceSSL="true">
                     <div class="container" id="container">                        
@@ -98,6 +100,62 @@
                                    id="btnClose" onclick="window.close();">Close</a>
                             </ul>
                         </div>
+                        <div id="counter">15:00
+                                    <script> 
+                            			debugger;
+                                        var startTime;
+                                        if (sessionStorage) {
+                                          // Ask other tabs for session storage
+                                          localStorage["getTmestamp"] = "get";
+                                        
+                                          window.addEventListener("storage", (event) => {
+                                            if (event.key == "getTmestamp") {
+                                              // Some tab asked for the sessionStorage -> send it
+                                              localStorage["timestamp"] = sessionStorage["timestamp"];
+                                              localStorage.removeItem("getTmestamp");
+                                            } else if (event.key == "timestamp" && !sessionStorage["timestamp"]) {
+                                              sessionStorage["timestamp"] = new Date(localStorage["timestamp"]);
+                                              localStorage.removeItem("timestamp");
+                                            }
+                                          });
+                                        } else {
+                                          console.warn("Browser doesn't support sessionStorage");
+                                        }
+                                        var interval = setInterval(() => {
+                                            
+                                          if (!startTime && sessionStorage && !sessionStorage["timestamp"]) {
+                                            sessionStorage["timestamp"] = new Date();
+                                          }
+                                          startTime = new Date(sessionStorage["timestamp"]);
+                                          var currentTime = new Date();
+                                          var timeElapsed = Math.ceil((currentTime - startTime) / 1000);
+                                          var remainingTime = 30 - timeElapsed;
+                                          if (remainingTime <= 0) {
+                                              var messagevalue='{!message}';
+                                            alert(messagevalue);
+                                              //alert("Session Timeout");
+                                            clearInterval(interval);
+                                            var anchors = document.getElementsByTagName("a");
+                                            for (var i = 0; i < anchors.length; i++) {
+                                                anchors[i].setAttribute('disabled', 'disabled');
+                                                anchors[i].style.opacity = '0.65';
+                                                anchors[i].style.cursor = 'default';
+                                                anchors[i].style.pointerEvents = 'none';
+                                                anchors[i].onclick = function() {return false;};
+                                            }                                            
+                                          }
+                            				var counter = document.getElementById("counter");
+                            				var current_minutes = parseInt(remainingTime/60);
+    										var current_seconds = remainingTime % 60;
+                                            counter.innerHTML = "Session Expires in " + current_minutes + ":" + (current_seconds < 10 ? "0" : "") + String(current_seconds);
+                                          console.log("Session Time in seconds:", timeElapsed);
+                                          console.log("Remaining Session Time in seconds:", remainingTime);
+                                        }, 500);
+                                            
+                                            
+                           
+                                                    </script>
+                                            </div>
                         <div class="row">
                             <div class="content_area clearfix">
                                 <div class="col-xs-12 col-md-12 MDParea">
@@ -109,7 +167,7 @@
                                                     
                                                     <div class="col-xs-6">
                                                         <a
-                                                            data-bind="text: BackToView,attr:{'href':'{!$Site.CurrentSiteUrl}ShowCases?Type=' + TypeofView }"
+                                                            data-bind="text: BackToView,attr:{'href':'{!$Site.CurrentSiteUrl}ShowCases?Type=' + TypeofView }" id = "back-to-inbox"
                                                             class="back_to_inbox"></a>
                                                     </div>
                                                     <div class="col-xs-6 text-right">
@@ -246,7 +304,7 @@
                                                         </div>
                                                     </apex:panelGrid>
                                                 </div>
-                                                <a href="#" class="btn btn-primary action_submit"
+                                                <a href="#" class="btn btn-primary action_submit" id="btnReplyAdd1"
                                                     onClick="checkEmail(false);">Reply</a>
                                                  <a href="#" class="btn btn-primary action_submit" id="btnReplyAdd"
                                                     onClick="checkEmail(true);">Reply and Add File</a>
@@ -425,12 +483,12 @@
                                                         <apex:outputText value="<" escape="false" />!-- /ko --<apex:outputText value=">" escape="false" />
                                                     </ul>
                                                 </div>
-                                    
+                                    			
                                 <!-- Inside this end -->        
                                             <div class="row DPfooterlinks">
                                                 
                                                 <div class="col-xs-6">
-                                                    <a class="back_to_inbox" data-bind="text: BackToView, attr:{'href':'{!$Site.CurrentSiteUrl}ShowCases?Type=' + TypeofView } "></a>
+                                                    <a class="back_to_inbox" id = "back-to-inbox1" data-bind="text: BackToView, attr:{'href':'{!$Site.CurrentSiteUrl}ShowCases?Type=' + TypeofView } "></a>
                                                 </div>
                                                 <div class="col-xs-6 text-right">
                                                     <div class="msg_action">
@@ -515,6 +573,7 @@
         
         
                             </apex:outputPanel>
+                           
                         </div>
                         <div class="row">
                             <div class="footer_area">
@@ -1008,8 +1067,7 @@
             
                 
                 pid = result;
-                //j$('[id$=cmdSave]').click();
-                //j$('[id$=message]').val('');
+               
                 setRTEValue('');
                 j$('#commenttext').val();
                 j$('#parentid').val(pid);
@@ -1281,7 +1339,7 @@
                 });
                 
                 j$('#expAll').click(function(){
-                    //$(this).text('Collapse All');
+                    
                     var $button = j$('.PMlist li .collapsedata');
                     $button.toggleClass('liExpanded');
                     
@@ -1313,8 +1371,7 @@
                     
                     ko.applyBindings(model, document.getElementById('messageBindDiv'));
                     ko.applyBindings(model, document.getElementById('bottomMessageBindDiv'));
-                    //ko.applyBindings(model, document.getElementById('bottomMessageBindDiv1'));
-                    //model.fileupload = new fileuploadmodel
+                   
                     if(model.Status() == 'Closed' && model.Days_after_closed_date() > allowedDaysAfterClose)
                     {
                         j$('#commentinputdiv').css('display', 'none'); 
@@ -1341,7 +1398,7 @@
                     commentmodel = ko.mapping.fromJS(result);
                     
                     ko.applyBindings(commentmodel,document.getElementById('CommentBindDiv'));
-                    //ko.applyBindings(commentmodel,document.getElementById('CommentBindDiv1'));
+                   
                     bindMessagetoggle();
                 });
                 
@@ -1420,7 +1477,6 @@
             function callFileUpload()
             {
                 prepareFileUploads();
-                //window.location.href='{!$Site.Prefix}/ShowCases?Type=Messages';
                     
             }
           var byteChunkArray; 
@@ -1511,7 +1567,6 @@
                     if(j$.inArray(false, flagforupload) !== -1)
                     {
                         
-                        //alert('You cannot upload file with extension:' + blockedExtension );
                         
                         j$(".uploadBox input").removeAttr("disabled");
                         j$(".uploadBox button").removeAttr("disabled").attr("class","btn");
@@ -1823,5 +1878,6 @@
             }
             
         </script>
+                
         </html>
         </apex:page>
