@@ -47,7 +47,7 @@ public class EDSAlertSendEmailQueueable implements Queueable, Database.AllowsCal
         }
 
         List<Messaging.SingleEmailMessage> mails = new List<Messaging.SingleEmailMessage>();
-        Messaging.SingleEmailMessage mail = new Messaging.SingleEmailMessage();
+        
 
         //To Get Email Template Details
         List<EmailTemplate> listEmailTemplate = [select Id, Name, Body, Subject, HtmlValue
@@ -96,6 +96,7 @@ public class EDSAlertSendEmailQueueable implements Queueable, Database.AllowsCal
                     }
                     listToInsertLogs.add(objLog);
                 } else{
+                    Messaging.SingleEmailMessage mail = new Messaging.SingleEmailMessage();
                     ToEmail = e;
                     Firstname = fnameFromEmail.get(e);
                     Lastname = lnameFromEmail.get(e);
