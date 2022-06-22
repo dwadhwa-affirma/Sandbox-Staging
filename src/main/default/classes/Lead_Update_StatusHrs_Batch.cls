@@ -1,0 +1,143 @@
+@SuppressWarnings('PMD.AvoidGlobalModifier')
+global class Lead_Update_StatusHrs_Batch implements Database.Batchable<sObject>{
+    public string query;
+    @TestVisible
+    global Database.QueryLocator start(Database.BatchableContext bc){
+        // collect the batches of records or objects to be passed to execute
+
+        Map<string, SLA_Status_Manager__c> leadstatus = SLA_Status_Manager__c.getAll();//get the custom setting value SLA_Status_Manager__c
+        string getleadstatus = (string) leadstatus.get('Lead').Status__c;
+        List<String> spltstatus = getleadstatus.split(',');
+
+        query = 'SELECT id,Status,SLA__c,Hour_Spent_New_Status__c,Hour_Spent_Outreach_Status__c,Hour_Spent_Considering_Status__c,Hour_Spent_Analyzing_Needs_Status__c,TimeStamp_New_status__c,TimeStamp_Outreach_status__c,TimeStamp_Considering_status__c,TimeStamp_Analyzing_Needs_status__c FROM Lead WHERE   Status IN (\'' + string.join(spltstatus, '\',\'') + '\') AND SLA__c!=null Order by CreatedDate DESC LIMIT 20';
+
+
+        return Database.getQueryLocator(query);
+    }
+
+    global void execute(Database.BatchableContext bc, List<Lead> leadList){
+        set<string> leadIds = new set<string>();
+        for (Lead o : leadList){
+            leadIds.add(o.Id);
+        }
+
+        String strObjectName = 'Lead';
+        String strPicklistField = 'Status';
+        List<String> listAllStatuses = new List<String>();
+        List<String> listAllHoursSpentFieldNames = new List<String>();
+        Map<String, String> mapPickListValues = new Map<String, String>();
+        Schema.SObjectType objSobjectType = Schema.getGlobalDescribe().get(strObjectName);//Returns a map of  Lead object Status field  values
+        Schema.DescribeSObjectResult objDescribeSobject = objSobjectType.getDescribe();
+        Map<String, Schema.SObjectField> mapFields = objDescribeSobject.fields.getMap();
+        List<Schema.PicklistEntry> lstPickListValues = mapFields.get(strPicklistField).getDescribe().getPickListValues();
+        for (Schema.PicklistEntry objPickList : lstPickListValues){
+            string val = objPickList.getValue();
+            if (!val.contains('Closed') && !val.contains('Client/SEG') && !val.contains('Prospecting')){
+                ListAllStatuses.add(val);
+                ListAllHoursSpentFieldNames.add('Hour_Spent_' + val.replace(' ', ('_')) + '_Status__c');
+            }
+        }
+        List<LeadHistory> hrsHistory = new list<LeadHistory>();
+        hrsHistory = [Select Id, LeadId, CreatedById, CreatedDate, Field, NewValue, OldValue
+                      from LeadHistory
+                      where (field = 'Hour_Spent_Outreach_Status__c' or field = 'Hour_Spent_New_Status__c' or field = 'Hour_Spent_Analyzing_Needs_Status__c' or field = 'Hour_Spent_Considering_Status__c') and LeadId IN:leadIds
+                      Order by CreatedDate DESC];
+
+        //For updating the Hour spent field dynamically //
+        for (lead l : LeadList){
+
+            string currentstatus = l.Status;
+            string hoursSpentFieldName = 'Hour_Spent_' + currentstatus.replace(' ', ('_')) + '_Status__c';
+            string statusTimeStampFieldName = 'TimeStamp_' + currentstatus.replace(' ', ('_')) + '_status__c';
+            decimal timeDiff;
+            decimal hh;
+            decimal finalresult;
+            Integer i = 0;
+
+            List<String> listHoursSpentFieldNames = new List<String>();
+            listHoursSpentFieldNames = ListAllHoursSpentFieldNames;
+
+            while (i < listHoursSpentFieldNames.size()){
+                if (listHoursSpentFieldNames.get(i).contains(HoursSpentFieldName)){
+                    listHoursSpentFieldNames.remove(i);
+                } else{
+                    i++;
+                }
+            }
+
+            if ((l.get(statusTimeStampFieldName) != null)){
+                boolean isHoursFiledsNotNull = false;
+                Datetime hrsHistoryT;
+
+                LeadHistory tempobj = findHistoryObject(l.id, hoursSpentFieldName, hrsHistory);
+                DateTime valueforDifference;
+                if (tempobj != null){
+                    hrsHistoryT = tempobj.CreatedDate;
+                    if (hrsHistoryT > (datetime) (l.get(statusTimeStampFieldName))){
+                        valueforDifference = hrsHistoryT;
+                    } else{
+                        valueforDifference = (datetime) (l.get(statusTimeStampFieldName));
+                    }
+                } else{
+                    valueforDifference = (datetime) (l.get(statusTimeStampFieldName));
+                }
+
+
+                for (string s : ListHoursSpentFieldNames){
+                    if ((l.get(s) != null)){
+                        isHoursFiledsNotNull = true;
+                        break;
+                    }
+                }
+                if (isHoursFiledsNotNull == false){
+                    hh = getTimeDifference((datetime) (l.get(statusTimeStampFieldName)));
+                    finalresult = hh;
+                    l.put(hoursSpentFieldName, finalresult);
+
+                } else{
+                    hh = getTimeDifference(ValueforDifference);
+                    finalresult = l.get(hoursSpentFieldName) != null ? (decimal) l.get(hoursSpentFieldName) + hh : hh;
+                    l.put(hoursSpentFieldName, finalresult);
+
+                }
+            }
+
+
+        }
+        update leadList;
+    }
+
+    global void finish(Database.BatchableContext bc){
+       
+        // execute any post-processing operations
+        system.debug('Finish');
+    }
+
+    //function to get the Timedifference for Hour spent field//
+    private decimal getTimeDifference(datetime startTime){
+        decimal hh;
+        decimal timeDifference;
+
+        BusinessHours stdBusinessHours = [select id
+                                          from businesshours
+                                          where isDefault = true];
+        DateTime currentTime = Datetime.now();
+
+        timeDifference = BusinessHours.diff(stdBusinessHours.id, startTime, currentTime);
+        hh = (timeDifference / 3600000).setScale(2);
+
+        return hh;
+    }
+
+    private LeadHistory findHistoryObject(id leadId, string fieldName, List<LeadHistory> hrsHistory){
+        LeadHistory ldh = new LeadHistory();
+        for (LeadHistory fldHistory : hrsHistory){
+            if (fldHistory.LeadId == leadId && fldHistory.Field.toLowerCase() == fieldName.toLowerCase()){
+                ldh = fldHistory;
+                break;
+            }
+        }
+        return ldh;
+    }
+
+}
