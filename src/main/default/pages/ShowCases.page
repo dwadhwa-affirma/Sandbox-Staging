@@ -2,12 +2,13 @@
   @description       : 
   @author            : ChangeMeIn@UserSettingsUnder.SFDoc
   @group             : 
-  @last modified on  : 06-21-2022
+  @last modified on  : 06-22-2022
   @last modified by  : ChangeMeIn@UserSettingsUnder.SFDoc
 -->
 <apex:page id="ShowCase" Controller="ShowCasesController"
 	showHeader="false" applyHtmlTag="false" docType="html-5.0"
 	standardStylesheets="false" action="{!PageLoad}">	
+	
     <html>
         <head>
             <meta http-equiv="X-UA-Compatible" content="IE=edge" />
