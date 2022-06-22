@@ -1,132 +1,136 @@
-global class Opportunity_Update_StatusHrs_Batch implements Database.Batchable<sObject>{
+@SuppressWarnings('PMD.AvoidGlobalModifier')global class Opportunity_Update_StatusHrs_Batch implements Database.Batchable<sObject>{
     public string query;
-    global Database.QueryLocator start(Database.BatchableContext BC) 
-    {
+    global Database.QueryLocator start(Database.BatchableContext bc){
         // collect the batches of records or objects to be passed to execute
-        Map<string, SLA_Status_Manager__c> LeadStatus = SLA_Status_Manager__c.getAll();
-        string getOppStatus = (string) LeadStatus.get('Opportunity').Status__c;
+        Map<string, SLA_Status_Manager__c> leadstatus = SLA_Status_Manager__c.getAll();//get the custom setting value SLA_Status_Manager__c
+        string getOppStatus = (string) leadstatus.get('Opportunity').Status__c;
         List<String> spltstatus = getOppStatus.split(',');
-       query='SELECT id,SLA_Business_Hours__c,StageName,Hour_Spent_New_Status__c,Hour_Spent_Outreach_Status__c,Hour_Spent_Considering_Status__c,Hour_Spent_Analyzing_Needs_Status__c,Hour_Spent_Fulfillment_Status__c,TimeStamp_New_status__c,TimeStamp_Outreach_status__c,TimeStamp_Considering_status__c,TimeStamp_Analyzing_Needs_status__c,TimeStamp_Fulfillment_status__c,Product_Type__c FROM Opportunity WHERE  StageName IN (\'' + string.join(spltstatus,'\',\'') +  '\') AND SLA_Business_Hours__c!=null Order by CreatedDate DESC LIMIT 20';      
-       return Database.getQueryLocator(query);
+        query = 'SELECT id,SLA_Business_Hours__c,StageName,Hour_Spent_New_Status__c,Hour_Spent_Outreach_Status__c,Hour_Spent_Considering_Status__c,Hour_Spent_Analyzing_Needs_Status__c,Hour_Spent_Fulfillment_Status__c,TimeStamp_New_status__c,TimeStamp_Outreach_status__c,TimeStamp_Considering_status__c,TimeStamp_Analyzing_Needs_status__c,TimeStamp_Fulfillment_status__c,Product_Type__c FROM Opportunity WHERE  StageName IN (\'' + string.join(spltstatus, '\',\'') + '\') AND SLA_Business_Hours__c!=null Order by CreatedDate DESC';
+        return Database.getQueryLocator(query);
     }
-    global void execute(Database.BatchableContext BC, List<Opportunity> OppList)
-    {
-       
-        set<string> OpportunityIds = new set<string>();
-        for(Opportunity o: OppList){
-            OpportunityIds.add(o.Id);
-        }        
-       
+
+    global void execute(Database.BatchableContext bc, List<Opportunity> oppList){
+
+        set<string> opportunityIds = new set<string>();
+        for (Opportunity o : oppList){
+            opportunityIds.add(o.Id);
+        }
+
         String strObjectName = 'Opportunity';
         String strPicklistField = 'StageName';
-        List<String> ListAllStatuses = new List<String>();
-        List<String> ListAllHoursSpentFieldNames = new List<String>();
+        List<String> listallstatuses = new List<String>();
+        List<String> listAllHoursSpentFieldNames = new List<String>();
         Map<String, String> mapPickListValues = new Map<String, String>();
-        Schema.SObjectType objSobjectType = Schema.getGlobalDescribe().get(strObjectName);
+        Schema.SObjectType objSobjectType = Schema.getGlobalDescribe().get(strObjectName);//Returns a map of  Opportunity object Stagename field  values
         Schema.DescribeSObjectResult objDescribeSobject = objSobjectType.getDescribe();
         Map<String, Schema.SObjectField> mapFields = objDescribeSobject.fields.getMap();
         List<Schema.PicklistEntry> lstPickListValues = mapFields.get(strPicklistField).getDescribe().getPickListValues();
-        
-        for (Schema.PicklistEntry objPickList : lstPickListValues) 
-            {
-            string val = objPickList.getValue();
-            if(!val.contains('Closed'))
-            {
-            ListAllStatuses.add(val);
-            ListAllHoursSpentFieldNames.add('Hour_Spent_'+val.replace(' ',('_'))+'_Status__c');
-            }
-            }
-         
-		
-        List<OpportunityFieldHistory> HrsHistory=new list<OpportunityFieldHistory>();
-                HrsHistory=[Select Id,Opportunity.id, CreatedById, CreatedDate,Field, NewValue, OldValue from OpportunityFieldHistory where 
-                ( field = 'Hour_Spent_Outreach_Status__c' or field = 'Hour_Spent_New_Status__c' or field = 'Hour_Spent_Analyzing_Needs_Status__c' or field = 'Hour_Spent_Considering_Status__c' or field = 'Hour_Spent_Fulfillment_Status__c' ) 
-               and Opportunity.id IN: OpportunityIds Order by CreatedDate DESC ];
-               map<string,OpportunityFieldHistory> dd=new map<string,OpportunityFieldHistory>();
-            for(OpportunityFieldHistory oo:HrsHistory){                
-                if( !dd.containsKey(oo.Field))
-                dd.put(oo.Field,oo);            
-            }
 
-        /*For updating the Hour spent field dynamically */
-        for(Opportunity OppL: OppList)
-        {  
-            id oppid=OppL.id;
-            string Currentstatus = OppL.StageName;
-            string HoursSpentFieldName = 'Hour_Spent_'+Currentstatus.replace(' ',('_'))+'_Status__c';
-            string statusTimeStampFieldName ='TimeStamp_'+Currentstatus.replace(' ',('_'))+'_status__c';
-            decimal TimeDiff;
-            decimal hh;
-            decimal Finalresult;
-            Integer i = 0;
-            while (i < ListAllHoursSpentFieldNames.size())
-            {
-            if(ListAllHoursSpentFieldNames.get(i).contains(HoursSpentFieldName)){
-            ListAllHoursSpentFieldNames.remove(i);
-            } else {
-            i++;
+        for (Schema.PicklistEntry objPickList : lstPickListValues){
+            string val = objPickList.getValue();
+            if (!val.contains('Closed')){
+                listallstatuses.add(val);
+                listAllHoursSpentFieldNames.add('Hour_Spent_' + val.replace(' ', ('_')) + '_Status__c');
             }
         }
-            if((OppL.get(statusTimeStampFieldName) != null)){
+
+        //get the hours spent field history//
+        List<OpportunityFieldHistory> hrsHistory = new list<OpportunityFieldHistory>();
+        hrsHistory = [Select Id, Opportunity.id, CreatedById, CreatedDate, Field, NewValue, OldValue
+                      from OpportunityFieldHistory
+                      where (field = 'Hour_Spent_Outreach_Status__c' or field = 'Hour_Spent_New_Status__c' or field = 'Hour_Spent_Analyzing_Needs_Status__c' or field = 'Hour_Spent_Considering_Status__c' or field = 'Hour_Spent_Fulfillment_Status__c') and Opportunity.id IN:OpportunityIds
+                      Order by CreatedDate DESC];
+       
+        //For updating the Hour spent field dynamically //
+        for (Opportunity oppL : oppList){
+            id oppid = oppL.id;
+            string currentstatus = oppL.StageName;
+            string hoursSpentFieldName = 'Hour_Spent_' + currentstatus.replace(' ', ('_')) + '_Status__c';
+            string statusTimeStampFieldName = 'TimeStamp_' + currentstatus.replace(' ', ('_')) + '_status__c';
+            decimal timeDiff;
+            decimal timespent;
+            decimal finalresult;
+            List<String> listHoursSpentFieldNames = new List<String>();
+            listHoursSpentFieldNames = ListAllHoursSpentFieldNames;
+            Integer i = listHoursSpentFieldNames.size()-1;
+            while (i >= 0 ){
+                if (listHoursSpentFieldNames.get(i).contains(HoursSpentFieldName)){
+                    listHoursSpentFieldNames.remove(i);
+                } else{
+                    i--;
+                }
+            }
+            if ((OppL.get(statusTimeStampFieldName) != null)){
                 boolean isHoursFieldsNotNull = false;
-                Datetime HrsHistoryT;
-                OpportunityFieldHistory tempobj=dd.get(HoursSpentFieldName);
-                DateTime ValueforDifference;
-                if(tempobj != null){
-                    HrsHistoryT=tempobj.CreatedDate;
-                    if(HrsHistoryT > (datetime)(OppL.get(statusTimeStampFieldName))){
-                        ValueforDifference = HrsHistoryT;
+                Datetime hrsHistoryT;
+                OpportunityFieldHistory tempobj = findHistoryObject(OppL.id,HoursSpentFieldName,hrsHistory);
+                DateTime valueforDifference;
+                if (tempobj != null){
+                    hrsHistoryT = tempobj.CreatedDate;
+                    if (hrsHistoryT > (datetime) (OppL.get(statusTimeStampFieldName))){
+                        valueforDifference = hrsHistoryT;
+                    } else{
+                        valueforDifference = (datetime) (OppL.get(statusTimeStampFieldName));
                     }
-                       else{
-                           ValueforDifference = (datetime)(OppL.get(statusTimeStampFieldName));
-                       }
-                }
-                else{
-                    ValueforDifference = (datetime)(OppL.get(statusTimeStampFieldName));
-                }
-  
-              for(string s: ListAllHoursSpentFieldNames){
-               if((OppL.get(s) != null)){
-                isHoursFieldsNotNull = true;
-                break;
-                }
-               }
-               
-                if(isHoursFieldsNotNull == false){
-                hh = getTimeDifference((datetime)(OppL.get(statusTimeStampFieldName)));
-                Finalresult = hh;
-                OppL.put(HoursSpentFieldName, Finalresult);
-                  
-                }
-                else{
-                hh = getTimeDifference(ValueforDifference);
-                Finalresult = OppL.get(HoursSpentFieldName) != null ? (decimal)OppL.get(HoursSpentFieldName) + hh : hh;
-                OppL.put(HoursSpentFieldName, Finalresult);
-               
+                } else{
+                    valueforDifference = (datetime) (OppL.get(statusTimeStampFieldName));
                 }
 
-       }
-           update OppList;
+                for (string s : ListHoursSpentFieldNames){
+                    if ((OppL.get(s) != null)){
+                        isHoursFieldsNotNull = true;
+                        break;
+                    }
+                }
+
+                if (isHoursFieldsNotNull == false){
+                    timespent = getTimeDifference((datetime) (OppL.get(statusTimeStampFieldName)));
+                    finalresult = timespent;
+                    OppL.put(HoursSpentFieldName, finalresult);
+
+                } else{
+                    timespent = getTimeDifference(valueforDifference);
+                    finalresult = OppL.get(HoursSpentFieldName) != null ? (decimal) OppL.get(HoursSpentFieldName) + timespent : timespent;
+                    OppL.put(HoursSpentFieldName, finalresult);
+
+                }
+
+            }
+
+        }
+        update oppList;
     }
-      
-}    
-    global void finish(Database.BatchableContext BC) 
-    {
-    	// execute any post-processing operations
-    }  
+
+    global void finish(Database.BatchableContext bc){
+        // execute any post-processing operations
+        system.debug('Finish');
+    }
+
     //function to get the Timedifference for Hour spent field//
-private decimal getTimeDifference(datetime StartTime){
-    decimal hh;
-    decimal TimeDifference;
-    
-    BusinessHours stdBusinessHours = [select id
-                                        from businesshours
-                                        where isDefault = true];
-    DateTime currentTime = Datetime.now();
-    
-    TimeDifference = BusinessHours.diff(stdBusinessHours.id,StartTime, currentTime);
-    hh = (TimeDifference / 3600000).setScale(2);
-    
-    return hh;
-}
+    private decimal getTimeDifference(datetime startTime){
+        decimal timespent;
+        decimal timeDifference;
+
+        BusinessHours stdBusinessHours = [select id
+                                          from businesshours
+                                          where isDefault = true];
+        DateTime currentTime = Datetime.now();
+
+        timeDifference = BusinessHours.diff(stdBusinessHours.id, startTime, currentTime);
+        timespent = (timeDifference / 3600000).setScale(2);
+
+        return timespent;
+    }
+
+    private OpportunityFieldHistory findHistoryObject(id opportunityID, string fieldName, List<OpportunityFieldHistory> hrsHistory){
+        OpportunityFieldHistory oophistory = new OpportunityFieldHistory();
+        for (OpportunityFieldHistory fldHistory : hrsHistory){
+
+            if (fldHistory.OpportunityID == opportunityID && fldHistory.Field.toLowerCase() == fieldName.toLowerCase()){
+                oophistory = fldHistory;
+                break;
+            }
+        }
+        return oophistory;
+    }
 }
