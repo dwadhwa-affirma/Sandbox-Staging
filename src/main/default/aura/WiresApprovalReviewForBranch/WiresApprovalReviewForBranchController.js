@@ -11,10 +11,12 @@
         if(approvalStatus=='Pending for Second Approval'){
             if((component.get("v.WiresObject.Available_Balance2_Review__c") 
                 && component.get("v.WiresObject.Previous_Wires2_Review__c"))==false){
-                component.set("v.isApproveDisabled", true);
+                component.set("v.isSecondApproveDisabled", true);
             }else{
-                component.set("v.isApproveDisabled", false);    
+                component.set("v.isSecondApproveDisabled", false);    
             }
+            component.set("v.isFirstApproveVisible", false);  
+            component.set("v.isSecondApproveVisible", true);   
         }else{
             if((component.get("v.WiresObject.Available_Balance_Review__c") 
                 && component.get("v.WiresObject.Previous_Wires_Review__c"))==false){
@@ -22,12 +24,22 @@
             }else{
                 component.set("v.isApproveDisabled", false);    
             }
+            component.set("v.isSecondApproveVisible", false); 
+            component.set("v.isFirstApproveVisible", true);  
         }
     },
+
+
     ApproveTransactions: function(component, event, helper) {
         var RecordId = component.get("v.recordId");
         helper.ApproveTransactions(component, event,helper,RecordId,"Approve");
     },
+
+    SecondApproveTransactions: function(component, event, helper) {
+        var RecordId = component.get("v.recordId");
+        helper.SecondApproveTransaction(component, event,helper,RecordId,"Approve");
+    },
+
     RejectTransaction: function(component, event, helper) {
         var firstComment = JSON.stringify(component.get("v.WiresObject.First_Approval_Comment__c"));
         var secondComment = JSON.stringify(component.get("v.WiresObject.Second_Approval_Comment__c"));
@@ -54,9 +66,9 @@
         if(approvalStatus=='Pending for Second Approval'){
             if((component.get("v.WiresObject.Available_Balance2_Review__c") 
                 && component.get("v.WiresObject.Previous_Wires2_Review__c"))==false){
-                component.set("v.isApproveDisabled", true);
+                component.set("v.isSecondApproveDisabled", true);
             }else{
-                component.set("v.isApproveDisabled", false);    
+                component.set("v.isSecondApproveDisabled", false);    
             }
         }else{
             if((component.get("v.WiresObject.Available_Balance_Review__c") 

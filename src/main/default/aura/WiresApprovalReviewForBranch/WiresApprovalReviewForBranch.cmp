@@ -5,6 +5,7 @@
     <aura:attribute name="isReasonRequired" type="boolean" default="false"/> 
     <aura:attribute name="WiresObject" type="WIRES_Transaction__c"/> 
     <aura:attribute name="isApproveDisabled" type="boolean" default="true"/>
+    <aura:attribute name="isSecondApproveDisabled" type="boolean" default="true"/>    
     <aura:attribute name="isNextDisabled" type="boolean" default="true"/>
     <aura:attribute name="isGoodFundCheck" type="boolean" default="false"/> 
     <aura:attribute name="isNextVisible" type="boolean" default="false"/> 
@@ -12,7 +13,8 @@
     <aura:attribute name="isIDVAuthDone" type="boolean" default="false"/> 
     <aura:attribute name="BalanceStatusCode" type="integer"/> 
     <aura:attribute name="BalanceRGLines" type="String"/>   
-    
+    <aura:attribute name="isFirstApproveVisible" type="boolean" default="false"/> 
+    <aura:attribute name="isSecondApproveVisible" type="boolean" default="false"/> 
     
     <lightning:overlayLibrary aura:id="overlayLib1"/>
     
@@ -74,7 +76,13 @@
     <div style="margin-top: 10px;">
         <footer class="slds-modal__footer" id="WiresApprovalReviewPageFooter">
             
-            <lightning:button variant="brand" label="Approve" onclick="{!c.ApproveTransactions}" disabled="{!v.isApproveDisabled}"/>
+            <aura:if isTrue="{!v.isFirstApproveVisible}" >
+                <lightning:button variant="brand" label="Approve" onclick="{!c.ApproveTransactions}" disabled="{!v.isApproveDisabled}"/>
+            </aura:if>
+            <aura:if isTrue="{!v.isSecondApproveVisible}" >
+                <lightning:button variant="brand" label="Approve" onclick="{!c.SecondApproveTransactions}" disabled="{!v.isSecondApproveDisabled}"/>
+            </aura:if>
+            
             <lightning:button variant="brand" label="Reject" onclick="{!c.RejectTransaction}" />
             <lightning:button variant="brand" label="Close" onclick="{!c.CancelTransaction}" />
             
