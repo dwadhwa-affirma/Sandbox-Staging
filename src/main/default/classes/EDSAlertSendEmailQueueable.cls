@@ -71,11 +71,14 @@ public class EDSAlertSendEmailQueueable implements Queueable, Database.AllowsCal
 
         //Prepare Email data
         for (EDS_Member_Alerts__c eds : eDSRecords){
-            system.debug('eds.Account_Number__c: ' + eds.Account_Number__c);
-            string allEmails = accountEmail.get(eds.Account_Number__c);
-            List<String> lstEmails = allEmails.split(',');
-            Set<String> sEmails = new Set<String>(lstEmails);
-
+            system.debug('eds.Account_Number__c: ' + eds.Account_Number__c);            
+            string allEmails = accountEmail.get(eds.Account_Number__c); 
+            List<String> lstEmails = new List<String>();
+            Set<String> sEmails = new Set<String>();
+            if(allEmails != null) {          
+                lstEmails = allEmails.split(',');
+                sEmails = new Set<String>(lstEmails);
+            }    
             string brand = accountMemberBranch.get(eds.Account_Number__c);
 
             if (eds.Event_Id__c != null){
@@ -102,8 +105,19 @@ public class EDSAlertSendEmailQueueable implements Queueable, Database.AllowsCal
                     firstname = fnameFromEmail.get(e);
                     lastname = lnameFromEmail.get(e);
 
-                    firstname = firstname.subString(0, 1).ToUpperCase() + firstname.subString(1).ToLowerCase();
-                    lastname = lastname.subString(0, 1).ToUpperCase() + lastname.subString(1).ToLowerCase();
+                    if(firstname != null){
+                        firstname = firstname.subString(0, 1).ToUpperCase() + firstname.subString(1).ToLowerCase();
+                    }
+                    else{
+                        firstname= '';
+                    }
+                    if(lastname != null){
+                        lastname = lastname.subString(0, 1).ToUpperCase() + lastname.subString(1).ToLowerCase();
+                    }
+                    else{
+                        lastname = '';
+                    }
+                    
 
                     system.debug('toEmail: ' + toEmail);
                     system.debug('FName: ' + firstname);
