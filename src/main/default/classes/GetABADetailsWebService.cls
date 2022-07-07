@@ -1,5 +1,5 @@
 global class GetABADetailsWebService {
-    webservice static string GetBankName(string RoutingNumber){
+    webservice static ABABankDetails GetBankName(string RoutingNumber){
         HttpRequest req1 = new HttpRequest();
         HttpRequest req2 = new HttpRequest();
         HttpRequest req3 = new HttpRequest();
@@ -15,15 +15,20 @@ global class GetABADetailsWebService {
         String token;
         String bankName;
         BankAbaDetails bankDetails;
+        BankAbaDetails bankDetails1;
         String freeToken, bankToken;
+        String freeToken1, bankToken1;
+        ABABankDetails ResultBankDetails = new ABABankDetails();
         
         RoutingNumber = RoutingNumber.leftPad(9, '0');
-        System.debug('RoutingNumber:'+RoutingNumber);
+//        System.debug('RoutingNumber:'+RoutingNumber);
         
         Map<string, BankAbaVerifyCredentials__mdt> BankABA = BankAbaVerifyCredentials__mdt.getAll();
         String Endpoint1 = (String) BankABA.get('Token').Endpoint__c;
         String Username = (String) BankABA.get('Token').UserName__c;
         String Password = (String) BankABA.get('Token').Password__c;
+        
+        Bank_Verify_Message__mdt ErrorMessage = [SELECT Message__c FROM Bank_Verify_Message__mdt WHERE DeveloperName = 'FedWireCorrection'];
         
         
         req1.setEndpoint(Endpoint1+'?username='+Username+'&password='+Password);
@@ -40,7 +45,7 @@ global class GetABADetailsWebService {
         JSONParser parser = JSON.createParser(responseBody1);
         token = String.valueOf(responseBody1).substringAfter('token":"');
         token = String.valueOf(token).substringBefore('",');
-        System.debug('Token: ' + token);
+//        System.debug('Token: ' + token);
         
         
          
@@ -55,40 +60,87 @@ global class GetABADetailsWebService {
         if(!Test.isRunningTest()){                       
             res2 = http2.send(req2);
             responseBody2 = res2.getBody();
-            System.debug('Response Body:'+res2.getBody());    
+            //System.debug('Response Body:'+res2.getBody());    
         }
         
        
                 
         if(responseBody2 != ''){        
             Map<String,Object> results = (Map<String,Object>)System.JSON.deserializeUntyped(responseBody2);
-            system.debug('results: '+results);
+//            system.debug('results: '+results);
             String Status = (String)results.get('status');
-            system.debug('Status: '+Status);
+           //system.debug('Status: '+Status);
             if(Status == 'PASS'){               
                 
                 Map<String,Object> bankResponseMap = (Map<String, Object>) JSON.deserializeUntyped(responseBody2);//(Map<String,Object>)results.get('headOfficeDetails');
-                system.debug('bankResponseMap: '+bankResponseMap);
+//                system.debug('bankResponseMap: '+bankResponseMap);
                 bankDetails = BankAbaVerifyExtractBankDetails.getDetails(bankResponseMap);
                 freeToken   = bankDetails.FreeToken; 
                 bankToken   = bankDetails.BankToken;
                 Map<String, Object> bankFedResponseMap = BankAbaVerifyGetBankData.getBankFedData(token, freeToken, bankToken, 'US');
-                bankDetails = BankAbaVerifyExtractBankDetails.getFedDetails(bankDetails,bankFedResponseMap);
+                bankDetails = BankAbaVerifyExtractBankDetails.getFedDetails(bankDetails,bankFedResponseMap);               
+                system.debug('bankDetails: '+bankDetails);
                 if(bankDetails.ClearingStatus  == 'PASS'    &&
-                  bankDetails.FedAchServiceId  == 'FEDACH'  && bankDetails.FedAchParticipantId.length()  > 0 &&
                   bankDetails.FedWireServiceId == 'FEDWIRE' && bankDetails.FedWireParticipantId.length() > 0 && 
                   bankDetails.FedWireParticipantType.startsWith('F')) {
-                  bankName  = bankDetails.BankName;                  
-                } else {
-                  bankName = 'FAIL';
+                  ResultBankDetails.BankName  = bankDetails.BankName;       
+                  ResultBankDetails.ErrorMessage = '';
+                  ResultBankDetails.CorrectedRoutingNumber = '';
+                } 
+                else {
+                    if(!bankDetails.FedWireParticipantType.startsWith('F') && bankDetails.fedWireAttributeType3 == 'Fedwire Corr' && String.isNotBlank(bankDetails.fedWireAttributeValue3)){
+                        Map<String, Object> bankResponseMap1 = BankAbaVerifyGetBankData.getBankData(token,'US',bankDetails.fedWireAttributeValue3);
+                        String status1  = (String) bankResponseMap1.get('status');
+                        String comment1 = (String) bankResponseMap1.get('comment');
+                        if(status1 == 'PASS') {
+                                bankDetails1 = BankAbaVerifyExtractBankDetails.getDetails(bankResponseMap1);
+                                freeToken1   = bankDetails1.FreeToken; 
+                                bankToken1   = bankDetails1.BankToken;
+                                Map<String, Object> bankFedResponseMap1 = BankAbaVerifyGetBankData.getBankFedData(token, freeToken1, bankToken1, 'US');
+                                bankDetails1 = BankAbaVerifyExtractBankDetails.getFedDetails(bankDetails1,bankFedResponseMap1);
+                                if(bankDetails1.ClearingStatus  == 'PASS'    &&                                
+                                  bankDetails1.FedWireServiceId == 'FEDWIRE' && bankDetails1.FedWireParticipantId.length() > 0 && 
+                                  bankDetails1.FedWireParticipantType.startsWith('F')) {
+                                  ResultBankDetails.BankName  = ''; 
+                                  ResultBankDetails.ErrorMessage  = ErrorMessage.Message__c; 
+                                  ResultBankDetails.CorrectedRoutingNumber = bankDetails.fedWireAttributeValue3;
+                                } 
+                            	else {
+                                  ResultBankDetails.BankName  = ''; 
+                                  ResultBankDetails.ErrorMessage  = '';    
+                                    ResultBankDetails.CorrectedRoutingNumber = bankDetails.fedWireAttributeValue3;
+                                }
+                    	}
+                    }
+                    else{                        
+                       ResultBankDetails.BankName  = 'FAIL';//bankDetails.BankName;
+                       ResultBankDetails.ErrorMessage  = ''; 
+                        ResultBankDetails.CorrectedRoutingNumber = '';
+                        
+                    }                  
                 }
                 //bankName = (String)results2.get('bankName');
                 //system.debug('Bank: '+bankName);
             }
             else{
-                bankName = 'FAIL';
+                ResultBankDetails.BankName  = 'FAIL'; 
+                ResultBankDetails.ErrorMessage  = ''; 
+                ResultBankDetails.CorrectedRoutingNumber = '';
             }            
         }
-        return bankName;
+        system.debug('ResultBankDetails: '+ResultBankDetails);
+        return ResultBankDetails;
     }
+        
+
+    global class ABABankDetails{
+         @auraenabled
+    	webservice String BankName { get; set; }
+        
+        @auraenabled
+    	webservice String ErrorMessage { get; set; }
+        
+        @auraenabled
+    	webservice String CorrectedRoutingNumber { get; set; }
+    }   
 }
