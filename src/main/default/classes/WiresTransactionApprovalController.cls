@@ -345,131 +345,198 @@ public class WiresTransactionApprovalController {
     }
     
     @AuraEnabled
-    public static void ApproveTransaction(string WiresRecordId, string Action, string wiresdetails){
-        
-        System.debug('Call function ApproveTransaction');
-        WIRES_Transaction__c WiresObject = (WIRES_Transaction__c)JSON.deserialize(wiresdetails, WIRES_Transaction__c.class);
-        
-        WIRES_Transaction__c Wires = [SELECT id,Approval_Status__c, FromAccount__c,Share_ID__c,Source__c,TotalFromAccount__c,
-                                      WireAmount__c, Description__c, IsAccountOpenfor45Days__c, Member_Name__c, 
-                                      Identity_Verification_Used__c, IsEmailStable__c, IsHomePhoneStable__c, IsMobilePhoneStable__c, IsWorkPhoneStable__c,                                          
-                                      AccountStableReview__c,Available_Balance_Review__c, EmailStableReview__c,Review_Reason__c,
-                                      Home_Phone_Stable_Review__c,ID_Verification_Review__c, Mobile_Phone_Stable_Review__c, 
-                                      Previous_Wires_Review__c, Work_Phone_Stable_Review__c, FlagAccountOpenfor45Days__c,
-                                      FlagEmailStablefor30Days__c, FlagHomePhoneStablefor30Days__c, FlagMobilePhoneStablefor30Days__c, FlagWorkPhoneStablefor30Days__c , Docusign_Review__c,
-                                      First_Approval_Comment__c,Second_Approval_Comment__c
-                                      from WIRES_Transaction__c where id=:WiresRecordId limit 1];
-        
-        if(Action == 'Reject'){
-            Wires.Approval_Status__c = WiresConstant.ApprovalStatus_Rejected; 
-            Wires.Rejected_By__c=UserInfo.getUserId();
-            Wires.Rejected_On__c=DateTime.now();
-            Wires.First_Approval_Comment__c=WiresObject.First_Approval_Comment__c;
-        }
-        
-        if(Action == 'Good Funds Review'){
-            Wires.Approval_Status__c = WiresConstant.ApprovalStatus_PendingForApproval;
-            Wires.AccountStableReview__c = WiresObject.AccountStableReview__c;
-            Wires.Available_Balance_Review__c = WiresObject.Available_Balance_Review__c;
-            Wires.Review_Reason__c = WiresObject.Review_Reason__c;
-            Wires.EmailStableReview__c = WiresObject.EmailStableReview__c;
-            Wires.Home_Phone_Stable_Review__c = WiresObject.Home_Phone_Stable_Review__c;
-            Wires.ID_Verification_Review__c = WiresObject.ID_Verification_Review__c;
-            Wires.Mobile_Phone_Stable_Review__c = WiresObject.Mobile_Phone_Stable_Review__c;
-            Wires.Previous_Wires_Review__c = WiresObject.Previous_Wires_Review__c;
-            Wires.Work_Phone_Stable_Review__c = WiresObject.Work_Phone_Stable_Review__c;
-            Wires.Docusign_Review__c = WiresObject.Docusign_Review__c;
-            
-            
-            if(WiresObject.Approval_Status__c == WiresConstant.ApprovalStatus_FraudReview){
-            	Wires.Fraud_Approver__c = UserInfo.getUserId();
-            }
-        }
-        else if((Wires.Approval_Status__c == WiresConstant.ApprovalStatus_PendingForApproval 
-                 || Wires.Approval_Status__c == WiresConstant.ApprovalStatus_PendingForSecondApproval
-                 || Wires.Approval_Status__c == WiresConstant.ApprovalStatus_FraudReview
-                 || Wires.Approval_Status__c == WiresConstant.ApprovalStatus_GoodFundsReview)){
-                     
-                     if(Wires.Source__c==WiresConstant.Source_Branch){
-                         
-                         if(Wires.WireAmount__c>100000 
-                            && Wires.Approval_Status__c != WiresConstant.ApprovalStatus_PendingForSecondApproval){
-                                
-                                Wires.Approval_Status__c = WiresConstant.ApprovalStatus_PendingForSecondApproval;
-                                
-                                if(WiresObject.Approval_Status__c == WiresConstant.ApprovalStatus_FraudReview){
-                                    Wires.Fraud_Approver__c = UserInfo.getUserId();
-                                }
-                                
-                                Wires.Approved_by_1st_Approver__c = UserInfo.getUserId();
-                                Wires.Available_Balance_Review__c = WiresObject.Available_Balance_Review__c;
-                                Wires.Previous_Wires_Review__c = WiresObject.Previous_Wires_Review__c;
-                            }
-                         else
-                         {
-                             Wires.Available_Balance2_Review__c = WiresObject.Available_Balance_Review__c;
-                             Wires.Previous_Wires2_Review__c = WiresObject.Previous_Wires_Review__c;
-                             Wires.ApprovedDate__c=System.now();
-                             
-                             if(Wires.WireAmount__c>100000 
-                                && Wires.Approval_Status__c == WiresConstant.ApprovalStatus_PendingForSecondApproval){
-                                    Wires.Approved_by_2nd_Approver__c = UserInfo.getUserId();
-                                }else{
-                                   
-                                    if(WiresObject.Approval_Status__c == WiresConstant.ApprovalStatus_FraudReview){
-                                        Wires.Fraud_Approver__c = UserInfo.getUserId();
-                                    }
-                                    
-                                    Wires.Approved_by_1st_Approver__c = UserInfo.getUserId();
-                                }
-                             
-                             Wires.Approval_Status__c = WiresConstant.ApprovalStatus_Approved;
-                         }
-                     }else{
-                         Wires.Approval_Status__c = WiresConstant.ApprovalStatus_Approved;                         
-                         Wires.Available_Balance_Review__c = WiresObject.Available_Balance_Review__c;
-                         Wires.Previous_Wires_Review__c = WiresObject.Previous_Wires_Review__c;
-                         
-                         if(WiresObject.Approval_Status__c == WiresConstant.ApprovalStatus_FraudReview){
-                             Wires.Fraud_Approver__c = UserInfo.getUserId();
-                         }
-                         else{
-                             wires.Approved_by_1st_Approver__c = UserInfo.getUserId();
-                             wires.ApprovedDate__c=System.now();
-                         }
-                         
-                     }
-                     
-                     Wires.AccountStableReview__c = WiresObject.AccountStableReview__c;
-                     Wires.Review_Reason__c = WiresObject.Review_Reason__c;
-                     Wires.EmailStableReview__c = WiresObject.EmailStableReview__c;
-                     Wires.Home_Phone_Stable_Review__c = WiresObject.Home_Phone_Stable_Review__c;
-                     Wires.ID_Verification_Review__c = WiresObject.ID_Verification_Review__c;
-                     Wires.Mobile_Phone_Stable_Review__c = WiresObject.Mobile_Phone_Stable_Review__c;
-                     Wires.Work_Phone_Stable_Review__c = WiresObject.Work_Phone_Stable_Review__c;
-                     Wires.Docusign_Review__c = WiresObject.Docusign_Review__c;
-                 }
-        
-        if(Action=='Pending for Approval'){
-            Wires.Approval_Status__c = WiresConstant.ApprovalStatus_PendingForApproval;
-            
-            Wires.AccountStableReview__c = WiresObject.AccountStableReview__c;
-            Wires.Available_Balance_Review__c = WiresObject.Available_Balance_Review__c;
-            Wires.Review_Reason__c = WiresObject.Review_Reason__c;
-            Wires.EmailStableReview__c = WiresObject.EmailStableReview__c;
-            Wires.Home_Phone_Stable_Review__c = WiresObject.Home_Phone_Stable_Review__c;
-            Wires.ID_Verification_Review__c = WiresObject.ID_Verification_Review__c;
-            Wires.Mobile_Phone_Stable_Review__c = WiresObject.Mobile_Phone_Stable_Review__c;
-            Wires.Previous_Wires_Review__c = WiresObject.Previous_Wires_Review__c;
-            Wires.Work_Phone_Stable_Review__c = WiresObject.Work_Phone_Stable_Review__c;
-            Wires.Docusign_Review__c = WiresObject.Docusign_Review__c;
-        }
-        
-        Wires.Second_Approval_Comment__c = WiresObject.Second_Approval_Comment__c;
+public static boolean ApproveTransaction(string WiresRecordId, string Action, string wiresdetails){
+
+    System.debug('Call function ApproveTransaction');
+    Boolean isAlreadyApproved = false;
+    
+    WIRES_Transaction__c WiresObject = (WIRES_Transaction__c)JSON.deserialize(wiresdetails, WIRES_Transaction__c.class);
+
+    WIRES_Transaction__c Wires = [SELECT id, Approval_Status__c, FromAccount__c, Share_ID__c, Source__c, TotalFromAccount__c, WireAmount__c, Description__c, IsAccountOpenfor45Days__c, Member_Name__c, Identity_Verification_Used__c, IsEmailStable__c, IsHomePhoneStable__c, IsMobilePhoneStable__c, IsWorkPhoneStable__c, AccountStableReview__c, Available_Balance_Review__c, EmailStableReview__c, Review_Reason__c, Home_Phone_Stable_Review__c, ID_Verification_Review__c, Mobile_Phone_Stable_Review__c, Previous_Wires_Review__c, Work_Phone_Stable_Review__c, FlagAccountOpenfor45Days__c, FlagEmailStablefor30Days__c, FlagHomePhoneStablefor30Days__c, FlagMobilePhoneStablefor30Days__c, FlagWorkPhoneStablefor30Days__c, Docusign_Review__c, First_Approval_Comment__c, Second_Approval_Comment__c, Approved_by_1st_Approver__c
+                                  from WIRES_Transaction__c
+                                  where id = :WiresRecordId
+                                  limit 1 FOR UPDATE];
+
+    if (Action == 'Reject'){
+        Wires.Approval_Status__c = WiresConstant.ApprovalStatus_Rejected;
+        Wires.Rejected_By__c = UserInfo.getUserId();
+        Wires.Rejected_On__c = DateTime.now();
         Wires.First_Approval_Comment__c = WiresObject.First_Approval_Comment__c;
-        
-        update Wires;
     }
+
+    if (Action == 'Good Funds Review'){
+        Wires.Approval_Status__c = WiresConstant.ApprovalStatus_PendingForApproval;
+        Wires.AccountStableReview__c = WiresObject.AccountStableReview__c;
+        Wires.Available_Balance_Review__c = WiresObject.Available_Balance_Review__c;
+        Wires.Review_Reason__c = WiresObject.Review_Reason__c;
+        Wires.EmailStableReview__c = WiresObject.EmailStableReview__c;
+        Wires.Home_Phone_Stable_Review__c = WiresObject.Home_Phone_Stable_Review__c;
+        Wires.ID_Verification_Review__c = WiresObject.ID_Verification_Review__c;
+        Wires.Mobile_Phone_Stable_Review__c = WiresObject.Mobile_Phone_Stable_Review__c;
+        Wires.Previous_Wires_Review__c = WiresObject.Previous_Wires_Review__c;
+        Wires.Work_Phone_Stable_Review__c = WiresObject.Work_Phone_Stable_Review__c;
+        Wires.Docusign_Review__c = WiresObject.Docusign_Review__c;
+
+
+        if (WiresObject.Approval_Status__c == WiresConstant.ApprovalStatus_FraudReview){
+            Wires.Fraud_Approver__c = UserInfo.getUserId();
+        }
+    } 
+    
+    else if ((Wires.Approval_Status__c == WiresConstant.ApprovalStatus_PendingForApproval || Wires.Approval_Status__c == WiresConstant.ApprovalStatus_PendingForSecondApproval || Wires.Approval_Status__c == WiresConstant.ApprovalStatus_FraudReview || Wires.Approval_Status__c == WiresConstant.ApprovalStatus_GoodFundsReview)){
+
+        if (Wires.Source__c == WiresConstant.Source_Branch){
+            system.debug('Wires.Approval_Status__c'+Wires.Approval_Status__c);
+            system.debug('Wires.Approved_by_1st_Approver__c'+Wires.Approved_by_1st_Approver__c);
+            if(Wires.Approval_Status__c == WiresConstant.ApprovalStatus_PendingForSecondApproval && Wires.Approved_by_1st_Approver__c != null){
+                
+                isAlreadyApproved = true;
+                return isAlreadyApproved;
+            }
+
+            if (Wires.WireAmount__c > 100000 && Wires.Approval_Status__c != WiresConstant.ApprovalStatus_PendingForSecondApproval){
+
+                Wires.Approval_Status__c = WiresConstant.ApprovalStatus_PendingForSecondApproval;
+
+                if (WiresObject.Approval_Status__c == WiresConstant.ApprovalStatus_FraudReview){
+                    Wires.Fraud_Approver__c = UserInfo.getUserId();
+                }
+
+                Wires.Approved_by_1st_Approver__c = UserInfo.getUserId();
+                Wires.Available_Balance_Review__c = WiresObject.Available_Balance_Review__c;
+                Wires.Previous_Wires_Review__c = WiresObject.Previous_Wires_Review__c;
+            } 
+            else{
+                Wires.Available_Balance2_Review__c = WiresObject.Available_Balance_Review__c;
+                Wires.Previous_Wires2_Review__c = WiresObject.Previous_Wires_Review__c;
+                Wires.ApprovedDate__c = System.now();
+
+                if (Wires.WireAmount__c > 100000 && Wires.Approval_Status__c == WiresConstant.ApprovalStatus_PendingForSecondApproval){
+                   // Wires.Approved_by_2nd_Approver__c = UserInfo.getUserId();
+                } 
+                else{
+
+                    if (WiresObject.Approval_Status__c == WiresConstant.ApprovalStatus_FraudReview){
+                        Wires.Fraud_Approver__c = UserInfo.getUserId();
+                    }
+
+                    Wires.Approved_by_1st_Approver__c = UserInfo.getUserId();
+                }
+
+                Wires.Approval_Status__c = WiresConstant.ApprovalStatus_Approved;
+            }
+        } else{
+            Wires.Approval_Status__c = WiresConstant.ApprovalStatus_Approved;
+            Wires.Available_Balance_Review__c = WiresObject.Available_Balance_Review__c;
+            Wires.Previous_Wires_Review__c = WiresObject.Previous_Wires_Review__c;
+
+            if (WiresObject.Approval_Status__c == WiresConstant.ApprovalStatus_FraudReview){
+                Wires.Fraud_Approver__c = UserInfo.getUserId();
+            } else{
+                wires.Approved_by_1st_Approver__c = UserInfo.getUserId();
+                wires.ApprovedDate__c = System.now();
+            }
+
+        }
+
+        Wires.AccountStableReview__c = WiresObject.AccountStableReview__c;
+        Wires.Review_Reason__c = WiresObject.Review_Reason__c;
+        Wires.EmailStableReview__c = WiresObject.EmailStableReview__c;
+        Wires.Home_Phone_Stable_Review__c = WiresObject.Home_Phone_Stable_Review__c;
+        Wires.ID_Verification_Review__c = WiresObject.ID_Verification_Review__c;
+        Wires.Mobile_Phone_Stable_Review__c = WiresObject.Mobile_Phone_Stable_Review__c;
+        Wires.Work_Phone_Stable_Review__c = WiresObject.Work_Phone_Stable_Review__c;
+        Wires.Docusign_Review__c = WiresObject.Docusign_Review__c;
+    }
+
+    if (Action == 'Pending for Approval'){
+        Wires.Approval_Status__c = WiresConstant.ApprovalStatus_PendingForApproval;
+
+        Wires.AccountStableReview__c = WiresObject.AccountStableReview__c;
+        Wires.Available_Balance_Review__c = WiresObject.Available_Balance_Review__c;
+        Wires.Review_Reason__c = WiresObject.Review_Reason__c;
+        Wires.EmailStableReview__c = WiresObject.EmailStableReview__c;
+        Wires.Home_Phone_Stable_Review__c = WiresObject.Home_Phone_Stable_Review__c;
+        Wires.ID_Verification_Review__c = WiresObject.ID_Verification_Review__c;
+        Wires.Mobile_Phone_Stable_Review__c = WiresObject.Mobile_Phone_Stable_Review__c;
+        Wires.Previous_Wires_Review__c = WiresObject.Previous_Wires_Review__c;
+        Wires.Work_Phone_Stable_Review__c = WiresObject.Work_Phone_Stable_Review__c;
+        Wires.Docusign_Review__c = WiresObject.Docusign_Review__c;
+    }
+
+    Wires.Second_Approval_Comment__c = WiresObject.Second_Approval_Comment__c;
+    Wires.First_Approval_Comment__c = WiresObject.First_Approval_Comment__c;
+
+    update Wires;
+
+    return isAlreadyApproved;
+}
+
+@AuraEnabled
+public static boolean ApproveTransactionSecondApproval(string WiresRecordId, string Action, string wiresdetails){
+
+    System.debug('Call function ApproveTransaction Second Approval');
+    Boolean isAlreadyApproved = false;
+    WIRES_Transaction__c WiresObject = (WIRES_Transaction__c)JSON.deserialize(wiresdetails, WIRES_Transaction__c.class);
+
+    WIRES_Transaction__c Wires = [SELECT id, Approval_Status__c, FromAccount__c, Share_ID__c, Source__c, TotalFromAccount__c, WireAmount__c, Description__c, IsAccountOpenfor45Days__c, Member_Name__c, Identity_Verification_Used__c, IsEmailStable__c, IsHomePhoneStable__c, IsMobilePhoneStable__c, IsWorkPhoneStable__c, AccountStableReview__c, Available_Balance_Review__c, EmailStableReview__c, Review_Reason__c, Home_Phone_Stable_Review__c, ID_Verification_Review__c, Mobile_Phone_Stable_Review__c, Previous_Wires_Review__c, Work_Phone_Stable_Review__c, FlagAccountOpenfor45Days__c, FlagEmailStablefor30Days__c, FlagHomePhoneStablefor30Days__c, FlagMobilePhoneStablefor30Days__c, FlagWorkPhoneStablefor30Days__c, Docusign_Review__c, First_Approval_Comment__c, Second_Approval_Comment__c, Approved_by_2nd_Approver__c
+                                  from WIRES_Transaction__c
+                                  where id = :WiresRecordId
+                                  limit 1 FOR UPDATE]; 
+
+        
+    if ((Wires.Approval_Status__c == WiresConstant.ApprovalStatus_PendingForSecondApproval)){
+
+        if (Wires.Source__c == WiresConstant.Source_Branch){
+
+            if(Wires.Approval_Status__c == WiresConstant.ApprovalStatus_Approved && Wires.Approved_by_2nd_Approver__c != null){
+                isAlreadyApproved = true;
+                return isAlreadyApproved;
+            }
+
+             
+            else{
+                Wires.Available_Balance2_Review__c = WiresObject.Available_Balance_Review__c;
+                Wires.Previous_Wires2_Review__c = WiresObject.Previous_Wires_Review__c;
+                Wires.ApprovedDate__c = System.now();
+
+                if (Wires.WireAmount__c > 100000 && Wires.Approval_Status__c == WiresConstant.ApprovalStatus_PendingForSecondApproval){
+                    Wires.Approved_by_2nd_Approver__c = UserInfo.getUserId();
+                }                 
+
+                Wires.Approval_Status__c = WiresConstant.ApprovalStatus_Approved;
+            }
+        } else{
+            Wires.Approval_Status__c = WiresConstant.ApprovalStatus_Approved;
+            Wires.Available_Balance_Review__c = WiresObject.Available_Balance_Review__c;
+            Wires.Previous_Wires_Review__c = WiresObject.Previous_Wires_Review__c;
+
+            if (WiresObject.Approval_Status__c == WiresConstant.ApprovalStatus_FraudReview){
+                Wires.Fraud_Approver__c = UserInfo.getUserId();
+            } else{
+                wires.Approved_by_1st_Approver__c = UserInfo.getUserId();
+                wires.ApprovedDate__c = System.now();
+            }
+
+        }
+
+        Wires.AccountStableReview__c = WiresObject.AccountStableReview__c;
+        Wires.Review_Reason__c = WiresObject.Review_Reason__c;
+        Wires.EmailStableReview__c = WiresObject.EmailStableReview__c;
+        Wires.Home_Phone_Stable_Review__c = WiresObject.Home_Phone_Stable_Review__c;
+        Wires.ID_Verification_Review__c = WiresObject.ID_Verification_Review__c;
+        Wires.Mobile_Phone_Stable_Review__c = WiresObject.Mobile_Phone_Stable_Review__c;
+        Wires.Work_Phone_Stable_Review__c = WiresObject.Work_Phone_Stable_Review__c;
+        Wires.Docusign_Review__c = WiresObject.Docusign_Review__c;
+    }
+    
+    Wires.Second_Approval_Comment__c = WiresObject.Second_Approval_Comment__c;
+    Wires.First_Approval_Comment__c = WiresObject.First_Approval_Comment__c;
+
+    update Wires;
+
+    return isAlreadyApproved;
+}
     
     public static void SendProgressNotification(Set<Id> id){
         
