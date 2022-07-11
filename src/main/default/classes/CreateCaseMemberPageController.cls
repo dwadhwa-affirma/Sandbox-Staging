@@ -1335,19 +1335,9 @@ public class CreateCaseMemberPageController {
  
         update a;
     }
-    @AuraEnabled(cacheable=true)
-	public static List<Episys_User__c> getEpsysDetails()
-	{
-		string uid= UserInfo.getUserId();		
-		User usr = [Select id, name, alias from User where id=:uid];
-		
-		List<Episys_User__c> eusr = [SELECT id,
-                      alias__c,
-                      Assigned_Branch__c,Episys_ID__c, Branch_Name__c,Default__c from Episys_User__c where alias__c=:usr.alias order by Default__c]; 
-                      
-        return eusr;
-	}
-    public static List<SelectOption> primcOptions() {
+    
+    
+    public static List<SelectOption> primeCategoryOptions() {
     
         Schema.DescribeFieldResult statusFieldDescription = Case.Primary_Category__c.getDescribe();
             System.debug('Getting description:::'+ statusFieldDescription);
@@ -1393,7 +1383,7 @@ public class CreateCaseMemberPageController {
         tcOptionList = new list<SelectOption>();
         tcOptionList.add(new SelectOption('-None-','-None-'));
         scOptionList.add(new SelectOption('-None-','-None-'));
-                pcOptionList = primcOptions();   
+                pcOptionList = primeCategoryOptions();   
         scValue = '-None-';
         pcValue = '-None-';
         tcValue = '-None-';
