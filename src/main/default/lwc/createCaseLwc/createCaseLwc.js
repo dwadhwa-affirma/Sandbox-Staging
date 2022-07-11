@@ -2,24 +2,18 @@ import { api, wire, track, LightningElement } from "lwc";
 import Id from "@salesforce/user/Id";
 import getMemberAccounts from "@salesforce/apex/CreateCaseMemberPageController.getMemberAccounts";
 import getEpisysDetails from "@salesforce/apex/CreateCaseMemberPageController.getEpsysDetails";
-import FetchLeadData from "@salesforce/apex/CreateCaseMemberPageController.FetchLeadData";
-import SearchTertiary from "@salesforce/apex/CreateOpportunityController.SearchTertiary";
-import getTop10Cases from "@salesforce/apex/CreateOpportunityController.getTop10Cases";
+import SearchTertiary from "@salesforce/apex/CreateCaseMemberPageController.SearchTertiary";
+import getTop10Cases from "@salesforce/apex/CreateCaseMemberPageController.getTop10Cases";
 import getQueueData from "@salesforce/apex/CreateCaseMemberPageController.getQueueData";
-import getTop10CaseRecord from "@salesforce/apex/CreateOpportunityController.getTop10CaseRecord";
+import getTop10CaseRecord from "@salesforce/apex/CreateCaseMemberPageController.getTop10CaseRecord";
 import selectCaseCategories from "@salesforce/apex/CreateCaseMemberPageController.selectCaseCategories";
 import getData from "@salesforce/apex/CreateCaseMemberPageController.getData";
 import CASE_OBJECT from "@salesforce/schema/Case";
 import STANDARD_MC from "@salesforce/messageChannel/StandardMessageChannel__c";
 import { ShowToastEvent } from "lightning/platformShowToastEvent";
-//import uploadFile from "@salesforce/apex/CreateCaseMemberPageController.uploadFile";
 import uploadDocument from "@salesforce/apex/CreateCaseMemberPageController.uploadDocument";
 const MAX_FILE_SIZE = 24500;
-import GetCaseAttachments from "@salesforce/apex/GetCaseAttachments.GetCaseAttachments"
-
-import saveChunk from "@salesforce/apex/CreateCaseMemberPageController.saveChunk";
-
-
+import getCaseAttachment from "@salesforce/apex/GetCaseAttachments.getCaseAttachment"
 import {
   publish,
   subscribe,
@@ -44,7 +38,7 @@ export default class createCaseLwc extends NavigationMixin(LightningElement) {
  
 
   
-
+  isLoading = false;
   subscription = null;
   receivedMessage;
   redirect = true;
@@ -100,7 +94,7 @@ export default class createCaseLwc extends NavigationMixin(LightningElement) {
   caseObject = CASE_OBJECT;
   followuptext = "";
   status = "Open";
-  Ltk = "";
+  ltk = "";
   reportNumber = "";
   email = "";
   accList = [];
@@ -119,6 +113,8 @@ export default class createCaseLwc extends NavigationMixin(LightningElement) {
   fileData = [];
   CaseId;
   IsUploadandNewPressed = false;
+  disabled = false;
+  saveandnewbreak = false;
   
 
   @track caseObj = {};
@@ -306,38 +302,7 @@ export default class createCaseLwc extends NavigationMixin(LightningElement) {
     console.log("search options###", this.searchOptions);
   }
 
-  getLeadDetails(id) {
-    return new Promise((resolve, reject) => {
-      FetchLeadData({ AccountID: id })
-        .then((result) => {
-          this.episysUserId = result[0].Episys_User_ID__c;
-          this.episysUser = result[0].Branch_of_Lead_creator__c;
-          let queueData = result[1];
-          let queueList = [{ value: "", label: "--- None ---" }];
-          queueData.forEach((rec) => {
-            queueList.push({ value: rec.Id, label: rec.Name });
-            if (!this.queueMap[rec.Id]) {
-              this.queueMap[rec.Id] = rec;
-            }
-          });
-          this.queues = [...queueList];
-          console.log("------ getLeadDetails ------");
-          console.log("this.episysUserId", this.episysUserId);
-          console.log("this.episysUser", this.episysUser);
-          console.log(result);
-          console.log("---------------------------");
-          console.log(queueList);
-          console.log("-------- queueList above -------------------");
-          console.log(this.queueMap);
-          console.log("-------- queueMap above -------------------");
-          resolve("Ok");
-        })
-        .catch((error) => {
-          console.log(error);
-          reject(error);
-        });
-    });
-  }
+  
 
   getEpisysData() {
     return new Promise((resolve, reject) => {
@@ -418,7 +383,7 @@ export default class createCaseLwc extends NavigationMixin(LightningElement) {
 
   getAccountData(id) {
     return new Promise((resolve, reject) => {
-      getMemberAccounts({ AccountId: id })
+      getMemberAccounts({ accountId: id })
         .then((result) => {
           console.log('getAccountData...');
           console.log(result);
@@ -571,7 +536,7 @@ export default class createCaseLwc extends NavigationMixin(LightningElement) {
     this.followuptext =  event.detail.value;
   }
   handleOnchangeinternalcomment(event){
-    console.log('##handle followuptext',event.detail.value);
+    console.log('##handle internalcmt',event.detail.value);
     this.internalcmt =  event.detail.value;
   }
   handleOnchangefollowupDate(event){
@@ -580,7 +545,7 @@ export default class createCaseLwc extends NavigationMixin(LightningElement) {
   }
   handleOnchangeticket(event){
     console.log('##handle ticket',event.detail.value);
-    this.Ltk = event.detail.value;
+    this.ltk = event.detail.value;
   }
   handleOnchangereportingnumber(event){
     console.log('##handle reporting number',event.detail.value);
@@ -717,7 +682,7 @@ export default class createCaseLwc extends NavigationMixin(LightningElement) {
   }
   handleisNext(event){    	  
     this.saveClicked();
-    this.showNotification();
+    //this.showNotification();
   }
 
 
@@ -814,6 +779,7 @@ uploadDocument(event) {
           else{
                   this.isNext = false;
                   this.isFileUpload = false;
+                 
                   this.handleReset();
           }
           
@@ -829,8 +795,8 @@ uploadDocument(event) {
 }
 CaseAttachments(){
   console.log("inside Case Attachment");
-  GetCaseAttachments({
-    CaseId : this.recordId,
+  getCaseAttachment({
+    caseId : this.recordId,
 })
 .then(result => {
     console.log(result);
@@ -941,7 +907,7 @@ toast(title){
         this.secondaryCat = sc;
         this.tertiaryCat = tc;
 
-      selectCaseCategoriesforTopTenTypes({ PrimaryText: pc , SecondaryText: sc })
+      selectCaseCategoriesforTopTenTypes({ primaryText: pc , secondaryText: sc })
       .then((result) => {
         console.log(result);        
         var secopts = result.scOptions;
@@ -1007,21 +973,23 @@ saveClicked(){
   console.log(this.followuptext);
   console.log(this.status);
   console.log(this.followupdate);
-  console.log(this.Ltk);
+  console.log(this.ltk);
   console.log(this.reportNumber);
   console.log(this.accList); 
   console.log('##selectedAccountnumber',this.selectedAcctNumber);
   console.log(this.internalcmt);
-
-  
+  this.disabled = true;
+  this.isLoading = true;
   var a= this.accList;
   console.log('accList...');
   console.log(this.accList);
   var aList = [];
   a[1].isShow = false;
   for(var i=0;i<a.length;i++){
-    if(a[i].isShow==false){
-      aList[i] = a[i].Id;
+    if(aList.length == 0){
+      if(a[i].isShow==false){
+        aList[i] = a[i].Id;
+      }
     }
   }
   var aListToPass = [];
@@ -1030,12 +998,11 @@ saveClicked(){
       aListToPass[i] = aList[i];
     }
   }
-  console.log('##selectedAcctNumber',this.selectedAcctNumber);
+  console.log('##selectedAcctNumberCount',this.selectedAcctNumber);
   console.log(aListToPass);
   console.log('##alist',aList.length);
   if(this.selectedAcctNumber == null || this.selectedAcctNumber == '' || this.selectedAcctNumber == undefined ){
     console.log('##123list',aList);
-
     const event = new ShowToastEvent({
       title: 'Error!',
       message: 'Account Number is required',
@@ -1045,14 +1012,39 @@ saveClicked(){
   this.dispatchEvent(event);
   return false;
   }
- 
-  saveData2({primaryCat: this.primaryCat, secondaryCat: this.secondaryCat, teritaryCat: this.tertiaryCat,followuptext: this.followuptext, followupdate: this.followupdate, comments: this.internalcmt, status: this.status, brand: '', subStatus: 'Day1 Started', reportNumber: this.reportNumber, Ltk: this.Ltk, description: '', subject: this.subject, accId: this.recordId, selectedAcctNumberId: aList, queueValue: this.queueValue ,caseownership: this.ownershipChangeValue })
+var today = new Date();
+var dd = String(today.getDate()).padStart(2, '0');
+var mm = String(today.getMonth() + 1).padStart(2, '0'); 
+var yyyy = today.getFullYear();
+
+today = yyyy + '-' + mm + '-' + dd;
+console.log('today date'+today);
+console.log('followupdate'+this.followupdate);
+  if(this.status=='Closed' && this.followupdate > today ){
+    console.log('followup');
+    this.disabled = false;
+    const event = new ShowToastEvent({
+      title: 'Error!',
+      message: 'We cannot save this record because the “Case Ownership Log Record” process failed. Give your Salesforce admin these details. This error occurred when the flow tried to update records: FIELD_CUSTOM_VALIDATION_EXCEPTION: Case cannot be closed with a future date greater than today.. You can look up ExceptionCode values in the SOAP API Developer Guide. Error ID: 1306633977-130899 (-307519248)k up ExceptionCode values in the SOAP API Developer Guide. Error ID: 1306633977-130899 (-307519248)',
+      variant: 'error'
+    
+  
+  });
+  this.dispatchEvent(event);
+  return false; 
+  
+  }
+  
+  saveData2({primaryCat: this.primaryCat, secondaryCat: this.secondaryCat, teritaryCat: this.tertiaryCat,followuptext: this.followuptext, followupdate: this.followupdate, comments: this.internalcmt, status: this.status, brand: '', subStatus: 'Day1 Started', reportNumber: this.reportNumber, ltk: this.ltk, description: '', subject: this.subject, accId: this.recordId, selectedAcctNumberId: aList, queueValue: this.queueValue ,caseownership: this.ownershipChangeValue })
   .then((result) => {
     console.log(result);
     console.log('###result');
     console.log(result.CaseId);
     this.CaseNumber = result.CaseNumber;
+    console.log(result.CaseNumber);
     this.CaseId = result.CaseId;
+   
+    this.showNotification();
       if(this.isFileUpload == false){
         this[NavigationMixin.Navigate]({
             type: 'standard__recordPage',
@@ -1077,12 +1069,15 @@ saveClicked(){
 }
 saveAndNewClick(){
   console.log("saveandnew");
+  
   this.saveClick();
+ 
+  this.disabled = false;
   
 }
 handleReset() {
   console.log("reset");
-
+  this.isLoading = false;
 
 var a= this.accList;
 for(var i=0;i<a.length;i++){            	  
@@ -1100,14 +1095,14 @@ this.AccountObjectlist = [...acc];
 this.accountCount = 0;
  this.selectedAcctNumber = {};
  this.searchText= null;
- this.searchValue = null;
  this.followuptext = "";
  this.followupdate = new Date();
- this.Ltk = "";
+ this.ltk = "";
  this.reportNumber="";
  this.subject = "";
  this.status="";
-  this.searchValue = "";
+  this.searchText = "";
+  this.searchOptions = [];
   this.internalcmt = "";
   this.memberAccountValue ="";
   this.queueValue = "";
@@ -1178,6 +1173,16 @@ this.accountCount = 0;
       });
     }
   }
+
+  if(this.template.querySelector('[data-id="searchText"]') != null){
+    const selectFieldsSearchResult = this.template.querySelector('[data-id="searchText"]').value='';
+    if (selectFieldsSearchResult) {
+      selectFieldsSearchResult.forEach((field) => {
+        field.reset();
+    
+      });
+    }
+  }
 }
 
 saveClick() {
@@ -1191,19 +1196,21 @@ saveClick() {
   console.log(this.followuptext);
   console.log(this.status);
   console.log(this.followupdate);
-  console.log(this.Ltk);
+  console.log(this.ltk);
   console.log(this.reportNumber);
   console.log(this.queueValue);
-  
+  this.isLoading = true;
   console.log('##selectedAccountnumber',this.selectedAcctNumber);
   
   var a= this.accList;
   var aList = [];
   a[1].isShow = false;
   for(var i=0;i<a.length;i++){
-    if(a[i].isShow==false){
-      aList[i] = a[i].Id;
-    }
+    if(aList.length == 0){
+      if(a[i].isShow==false){
+        aList[i] = a[i].Id;
+      }
+   }
   }
   
   var aListToPass = [];
@@ -1226,12 +1233,32 @@ saveClick() {
   this.dispatchEvent(event);
   return false;
   }
+var today = new Date();
+var dd = String(today.getDate()).padStart(2, '0');
+var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
+var yyyy = today.getFullYear();
+
+today = yyyy + '-' + mm + '-' + dd;
+  if(this.status=='Closed' && this.followupdate > today ){
+    console.log('followup');
+    this.isLoading = false;
+        const event = new ShowToastEvent({
+      title: 'Error!',
+      message: 'We cannot save this record because the “Case Ownership Log Record” process failed. Give your Salesforce admin these details. This error occurred when the flow tried to update records: FIELD_CUSTOM_VALIDATION_EXCEPTION: Case cannot be closed with a future date greater than today.. You can look up ExceptionCode values in the SOAP API Developer Guide. Error ID: 1306633977-130899 (-307519248)k up ExceptionCode values in the SOAP API Developer Guide. Error ID: 1306633977-130899 (-307519248)',
+      variant: 'error'
   
-  saveData2({primaryCat: this.primaryCat, secondaryCat: this.secondaryCat, teritaryCat: this.tertiaryCat,followuptext: this.followuptext, followupdate: this.followupdate, comments: this.internalcmt, status: this.status, brand: '', subStatus: 'Day1 Started', reportNumber: this.reportNumber, Ltk: this.Ltk, description: '', subject: this.subject, accId: this.recordId, selectedAcctNumberId: aList, queueValue: this.queueValue ,caseownership: this.ownershipChangeValue })
+  });
+  this.dispatchEvent(event);
+  return false; 
+  }
+ 
+  saveData2({primaryCat: this.primaryCat, secondaryCat: this.secondaryCat, teritaryCat: this.tertiaryCat,followuptext: this.followuptext, followupdate: this.followupdate, comments: this.internalcmt, status: this.status, brand: '', subStatus: 'Day1 Started', reportNumber: this.reportNumber, ltk: this.ltk, description: '', subject: this.subject, accId: this.recordId, selectedAcctNumberId: aList, queueValue: this.queueValue ,caseownership: this.ownershipChangeValue })
   .then((result) => {
     console.log(result);
     console.log('###resultsavedata2');
     console.log(result.CaseId);
+    
+    this.showNotification();
     this.handleReset();
   })
   .catch((error) => {
@@ -1251,7 +1278,7 @@ NextClick() {
   console.log(this.followuptext);
   console.log(this.status);
   console.log(this.followupdate);
-  console.log(this.Ltk);
+  console.log(this.ltk);
   console.log(this.reportNumber);
   console.log(this.queueValue);
   
@@ -1285,8 +1312,26 @@ NextClick() {
   });
   this.dispatchEvent(event);
   }
+  var today = new Date();
+  var dd = String(today.getDate()).padStart(2, '0');
+  var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
+  var yyyy = today.getFullYear();
+
+today = yyyy + '-' + mm + '-' + dd;
+  if(this.status=='Closed' && this.followupdate > today ){
+    console.log('followup');
+    this.saveandnewbreak = false;
+    this.isLoading = false;
+        const event = new ShowToastEvent({
+      title: 'Error!',
+      message: 'We cannot save this record because the “Case Ownership Log Record” process failed. Give your Salesforce admin these details. This error occurred when the flow tried to update records: FIELD_CUSTOM_VALIDATION_EXCEPTION: Case cannot be closed with a future date greater than today.. You can look up ExceptionCode values in the SOAP API Developer Guide. Error ID: 1306633977-130899 (-307519248)k up ExceptionCode values in the SOAP API Developer Guide. Error ID: 1306633977-130899 (-307519248)',
+      variant: 'error'
   
-  saveData2({primaryCat: this.primaryCat, secondaryCat: this.secondaryCat, teritaryCat: this.tertiaryCat,followuptext: this.followuptext, followupdate: this.followupdate, comments: this.internalcmt, status: this.status, brand: '', subStatus: 'Day1 Started', reportNumber: this.reportNumber, Ltk: this.Ltk, description: '', subject: this.subject, accId: this.recordId, selectedAcctNumberId: aList, queueValue: this.queueValue ,caseownership: this.ownershipChangeValue })
+  });
+  this.dispatchEvent(event);
+  return false; 
+  }
+  saveData2({primaryCat: this.primaryCat, secondaryCat: this.secondaryCat, teritaryCat: this.tertiaryCat,followuptext: this.followuptext, followupdate: this.followupdate, comments: this.internalcmt, status: this.status, brand: '', subStatus: 'Day1 Started', reportNumber: this.reportNumber, ltk: this.ltk, description: '', subject: this.subject, accId: this.recordId, selectedAcctNumberId: aList, queueValue: this.queueValue ,caseownership: this.ownershipChangeValue })
   .then((result) => {
     console.log(result);
     console.log('###resultsavedata2');
@@ -1440,6 +1485,7 @@ NextClick() {
             a[i].isShow=true;
           }
         }
+
         for (var len = 0; len < acc.length; len++) {         
           acc[len].isEmpty = true;        
        }
