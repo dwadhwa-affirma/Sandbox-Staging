@@ -2,7 +2,7 @@
  * @description       : 
  * @author            : ChangeMeIn@UserSettingsUnder.SFDoc
  * @group             : 
- * @last modified on  : 06-01-2022
+ * @last modified on  : 07-11-2022
  * @last modified by  : ChangeMeIn@UserSettingsUnder.SFDoc
 **/
 public class CreateCaseMemberPageController {
@@ -12,7 +12,7 @@ public class CreateCaseMemberPageController {
     public static string scValue ;
     public static list<SelectOption> tcOptionList;
     public static string tcValue ;
-    public static list<SelectOption> SearchResult;
+    public static list<SelectOption> searchResult;
     @auraenabled
     public static  Map<string,object> getData(string accoutid)
     {
@@ -85,18 +85,7 @@ public class CreateCaseMemberPageController {
         
     }
     
-     @auraenabled
-     
-     public static Map<string,object> getTop10Cases()
-     {
-         List<Top_10_Case_Types__c> ctList= new List<Top_10_Case_Types__c>();    
-        ctList = [select id, Case_Type__c, Internal_Comments__c, Primary_Category__c, Secondary_Category__c, Subject__c, Tertiary_Category__c  from Top_10_Case_Types__c order by Case_Type__c];
-        
-        Map<string,object> mapList = new Map<string,object>();
-        mapList.put('toptencategories', ctList);    
-       return mapList;
-     } 
-     
+   
     @auraenabled
     public static  Map<string,object> getAccountDetailsData(string accoutid)
     {
@@ -299,6 +288,17 @@ public class CreateCaseMemberPageController {
         }
         return op;
     }
+    @AuraEnabled(cacheable=true)
+    public static List<object> getTop10Cases()
+     {
+         List<Top_10_Case_Types__c> ctList= new List<Top_10_Case_Types__c>();    
+        ctList = [select id, Case_Type__c, Internal_Comments__c, Primary_Category__c, Secondary_Category__c, Subject__c, Tertiary_Category__c  from Top_10_Case_Types__c order by Case_Type__c];
+        
+        Map<string,object> mapList = new Map<string,object>();
+        mapList.put('toptencategories', ctList);    
+       return ctList;
+     }
+    
     @AuraEnabled
     public static Map<string,string> saveData(Case caseObject, Account accObject, Account_Details__c selectedAcctNumber,  List<Account_Details__c> AccountObjectlist)
     {
@@ -356,11 +356,11 @@ public class CreateCaseMemberPageController {
                                                  Record_Type_Name__c,
                                                  RecordTypeId__c FROM CaseRecordType__c WHERE Primary_Category__c =:caseObject.Primary_Category__c AND Secondary_Category__c=:caseObject.Secondary_Category__c AND Teritiary_Category__c=:caseObject.Tertiary_Category__c LIMIT 1];
        List<Contact> clist = [SELECT Id, Name FROM Contact WHERE Contact.AccountId =:accObject.Id];
-        AssignmentRule AR = new AssignmentRule(); 
-        AR = [SELECT Id FROM AssignmentRule WHERE SobjectType = 'Case' AND Active = True LIMIT 1];
+        AssignmentRule aR = new AssignmentRule(); 
+        aR = [SELECT Id FROM AssignmentRule WHERE SobjectType = 'Case' AND Active = True LIMIT 1];
             
         Database.DMLOptions dmlOpts = new Database.DMLOptions(); 
-        dmlOpts.assignmentRuleHeader.assignmentRuleId= AR.id;   
+        dmlOpts.assignmentRuleHeader.assignmentRuleId= aR.id;   
        
         Case cs = new case();            
             cs.setOptions(dmlOpts);
@@ -400,9 +400,9 @@ public class CreateCaseMemberPageController {
                 cs.Status = '';
             }
              
-            if(selectedAcctNumber != null)
+            if(selectedAcctNumber != null){
                 cs.Account_Number__c = selectedAcctNumber.Id;
-          
+            }
             cs.Special_Reporting_Number__c = caseObject.Special_Reporting_Number__c;
             cs.LTK__c = caseObject.LTK__c;
             cs.Description = caseObject.Description;
@@ -418,10 +418,12 @@ public class CreateCaseMemberPageController {
             cs.Follow_up_Text__c = caseObject.Follow_up_Text__c; 
             cs.Follow_up_Date__c = caseObject.Follow_up_Date__c;
             cs.LTK__c = caseObject.LTK__c;
+            
        try{ 
            insert cs;
            if(Test.isRunningTest()){
-               Integer x=1/0;}            
+               //Integer x=1/0;
+           }            
            }catch (DMLException  e)  { 
                 String message = e.getDmlMessage(0);
             throw new AuraHandledException(message); 
@@ -446,13 +448,13 @@ public class CreateCaseMemberPageController {
              
             Integer mSize = AccountObjectlist.size();
             System.debug('AccountObjectlist##' + AccountObjectlist);
-            List<CaseAccountMemberDetail__c> CaseAccountMemberDetailList = new List<CaseAccountMemberDetail__c>();
+            List<CaseAccountMemberDetail__c> caseAccountMemberDetailList = new List<CaseAccountMemberDetail__c>();
             
             CaseAccountMemberDetail__c camd1 = new CaseAccountMemberDetail__c();
             camd1.Case__c = cs.Id;
             camd1.MemberAccountid__c = selectedAcctNumber.Id ;
             camd1.Account_Name__c = selectedAcctNumber.Name;
-            CaseAccountMemberDetailList.add(camd1); 
+            caseAccountMemberDetailList.add(camd1); 
                                 
             System.debug('AccountObjectlistarray##' + AccountObjectlist);
             if(mSize > 0 )
@@ -466,23 +468,23 @@ public class CreateCaseMemberPageController {
                         camd.Case__c = cs.Id;
                         camd.MemberAccountid__c = accd.Id ;
                         camd.Account_Name__c = accd.Name;
-                        CaseAccountMemberDetailList.add(camd);
+                        caseAccountMemberDetailList.add(camd);
                     }
                     
                 }
             }
-            System.debug('CaseAccountMemberDetailList##' + CaseAccountMemberDetailList);
-            If(!CaseAccountMemberDetailList.IsEmpty())
+            System.debug('CaseAccountMemberDetailList##' + caseAccountMemberDetailList);
+            If(!caseAccountMemberDetailList.IsEmpty())
             {
-                insert CaseAccountMemberDetailList;
+                insert caseAccountMemberDetailList;
             }
             
-            MaapCaseAddLog(accObject.Id,cs.Id);
+            maapCaseAddLog(accObject.Id,cs.Id);
             return mapresult;       
     }
     
     @AuraEnabled
-    public static Map<string,string> saveData2(String primaryCat, String secondaryCat, String teritaryCat, String subject, String followuptext,String comments, Date followupdate,String status, String brand, String subStatus, String reportNumber, String Ltk, String description, String accId, List<Id> selectedAcctNumberId, String queueValue , String caseownership)
+    public static Map<string,string> saveData2(String primaryCat, String secondaryCat, String teritaryCat, String subject, String followuptext,String comments, Date followupdate,String status, String brand, String subStatus, String reportNumber, String ltk, String description, String accId, List<Id> selectedAcctNumberId, String queueValue , String caseownership)
     {
         system.debug('followupdate'+followupdate);
         system.debug('followuptext'+followuptext);
@@ -561,12 +563,12 @@ public class CreateCaseMemberPageController {
                                                  Record_Type_Name__c,
                                                  RecordTypeId__c FROM CaseRecordType__c WHERE Primary_Category__c =:primaryCat AND Secondary_Category__c=:secondaryCat AND Teritiary_Category__c=:teritaryCat LIMIT 1];
        List<Contact> clist = [SELECT Id, Name FROM Contact WHERE Contact.AccountId =:accObject.Id];
-        AssignmentRule AR = new AssignmentRule(); 
-        AR = [SELECT Id FROM AssignmentRule WHERE SobjectType = 'Case' AND Active = True LIMIT 1];
+        AssignmentRule aR = new AssignmentRule(); 
+        aR = [SELECT Id FROM AssignmentRule WHERE SobjectType = 'Case' AND Active = True LIMIT 1];
        
             
         Database.DMLOptions dmlOpts = new Database.DMLOptions(); 
-        dmlOpts.assignmentRuleHeader.assignmentRuleId= AR.id;   
+        dmlOpts.assignmentRuleHeader.assignmentRuleId= aR.id;   
        
         Case cs = new case();            
             cs.setOptions(dmlOpts);
@@ -609,9 +611,9 @@ public class CreateCaseMemberPageController {
                 cs.Status = '';
             }
              
-            if(selectedAcctNumber != null)
+            if(selectedAcctNumber != null){
                 cs.Account_Number__c = selectedAcctNumber[0];
-          
+            }
             cs.Special_Reporting_Number__c = reportNumber;
             cs.LTK__c = Ltk;
             cs.Description = description;
@@ -651,7 +653,7 @@ public class CreateCaseMemberPageController {
              
             Integer mSize = AccountObjectlist.size();
             System.debug('AccountObjectlist##' + AccountObjectlist);
-            List<CaseAccountMemberDetail__c> CaseAccountMemberDetailList = new List<CaseAccountMemberDetail__c>();
+            List<CaseAccountMemberDetail__c> caseAccountMemberDetailList = new List<CaseAccountMemberDetail__c>();
                                 
             System.debug('AccountObjectlistarray##' + AccountObjectlist);
             if(mSize > 0 )
@@ -665,18 +667,18 @@ public class CreateCaseMemberPageController {
                         camd.Case__c = cs.Id;
                         camd.MemberAccountid__c = accd.Id ;
                         camd.Account_Name__c = accd.Name;
-                        CaseAccountMemberDetailList.add(camd);
+                        caseAccountMemberDetailList.add(camd);
                     }
                     
                 }
             }
-            System.debug('CaseAccountMemberDetailList##' + CaseAccountMemberDetailList);
-            If(!CaseAccountMemberDetailList.IsEmpty())
+            System.debug('CaseAccountMemberDetailList##' + caseAccountMemberDetailList);
+            If(!caseAccountMemberDetailList.IsEmpty())
             {
-                insert CaseAccountMemberDetailList;
+                insert caseAccountMemberDetailList;
             }
             
-            MaapCaseAddLog(accObject.Id,cs.Id);
+            maapCaseAddLog(accObject.Id,cs.Id);
             return mapresult;       
     }
 
@@ -754,12 +756,12 @@ public class CreateCaseMemberPageController {
                                                  Record_Type_Name__c,
                                                  RecordTypeId__c FROM CaseRecordType__c WHERE Primary_Category__c =:caseObject.Primary_Category__c AND Secondary_Category__c=:caseObject.Secondary_Category__c AND Teritiary_Category__c=:caseObject.Tertiary_Category__c LIMIT 1];
      
-        AssignmentRule AR = new AssignmentRule(); 
-        AR = [SELECT Id FROM AssignmentRule WHERE SobjectType = 'Case' AND Active = True LIMIT 1];
+        AssignmentRule aR = new AssignmentRule(); 
+        aR = [SELECT Id FROM AssignmentRule WHERE SobjectType = 'Case' AND Active = True LIMIT 1];
        
             
         Database.DMLOptions dmlOpts = new Database.DMLOptions(); 
-        dmlOpts.assignmentRuleHeader.assignmentRuleId= AR.id;   
+        dmlOpts.assignmentRuleHeader.assignmentRuleId= aR.id;   
        
         Case cs = new case();            
             cs.setOptions(dmlOpts);
@@ -767,10 +769,10 @@ public class CreateCaseMemberPageController {
                 if(scList[0].Primary_Category__c == 'Privacy'){
                     List<recordtype> RTypes= [select id, name from recordtype where Name = 'Privacy Non Member' limit 1];
                     system.debug('RTypes=='+RTypes[0].id);
-                    if(RTypes.size() > 0)
+                    if(RTypes.size() > 0){
                     	cs.RecordTypeId = RTypes[0].id;
-                    else
-                        cs.RecordTypeId = scList[0].RecordTypeId__c;
+                     }else{
+                        cs.RecordTypeId = scList[0].RecordTypeId__c;}
                 }
                 else{
                     cs.RecordTypeId = scList[0].RecordTypeId__c;
@@ -910,12 +912,12 @@ public class CreateCaseMemberPageController {
                                            PersonId__r.Email_raw__c FROM Person_Account__c WHERE PersonId__c =:selectedMemberNumber.PersonID__c LIMIT 1];
                    
        List<Contact> clist = [SELECT Id, Name FROM Contact WHERE Contact.AccountId =:selectedMemberNumber.PersonID__c];
-        AssignmentRule AR = new AssignmentRule(); 
-        AR = [SELECT Id FROM AssignmentRule WHERE SobjectType = 'Case' AND Active = True LIMIT 1];
+        AssignmentRule aR = new AssignmentRule(); 
+        aR = [SELECT Id FROM AssignmentRule WHERE SobjectType = 'Case' AND Active = True LIMIT 1];
        
                
         Database.DMLOptions dmlOpts = new Database.DMLOptions(); 
-        dmlOpts.assignmentRuleHeader.assignmentRuleId= AR.id;   
+        dmlOpts.assignmentRuleHeader.assignmentRuleId= aR.id;   
        
             Case cs = new case();            
             cs.setOptions(dmlOpts);
@@ -942,8 +944,8 @@ public class CreateCaseMemberPageController {
                 cs.Status = '';
             }
              
-            if(cList.size() > 0)
-                cs.ContactId = cList[0].Id;
+            if(cList.size() > 0){
+                cs.ContactId = cList[0].Id;}
             if(pa.size()>0){
                 if(pa[0].PersonId__r.PersonEmail != null){
                    cs.Email_Address__c = pa[0].PersonId__r.PersonEmail;
@@ -996,12 +998,12 @@ public class CreateCaseMemberPageController {
             mapresult.put('CaseNumber', string.valueOf(caseFinal.CaseNumber));
            
           
-            MaapCaseAddLog(selectedMemberNumber.PersonID__c,cs.Id);
+            maapCaseAddLog(selectedMemberNumber.PersonID__c,cs.Id);
             return mapresult;       
     }
     
        @AuraEnabled
-    public static Map<string, object> selectCaseCategoriesforTopTenTypes(string PrimaryText, string SecondaryText)
+    public static Map<string, object> selectCaseCategoriesforTopTenTypes(string primaryText, string secondaryText)
     {
         Map<string,object> mapList = new Map<string,object>();
         List<KeyValuePairModel> scOptions =  getscOptions(PrimaryText);
@@ -1063,7 +1065,7 @@ public class CreateCaseMemberPageController {
     }
     
     public static String base64ToBits(String validFor) {
-        if (String.isEmpty(validFor)) return '';
+        if (String.isEmpty(validFor)) {return '';}
         
         String validForBits = '';
         
@@ -1083,31 +1085,31 @@ public class CreateCaseMemberPageController {
         '0123456789+/';
     
     
-    private static List<PicklistEntryWrapper> wrapPicklistEntries(List<Schema.PicklistEntry> PLEs) {
+    private static List<PicklistEntryWrapper> wrapPicklistEntries(List<Schema.PicklistEntry> pLEs) {
         return (List<PicklistEntryWrapper>)
             JSON.deserialize(JSON.serialize(PLEs), List<PicklistEntryWrapper>.class);
     }
     
     @AuraEnabled
-    public static void MaapCaseAddLog(string RecordId, string CaseId)
+    public static void maapCaseAddLog(string recordId, string caseId)
     {
         Datetime dt  = System.now();
         DateTime earlier = dt.addMinutes(-20);
-        List<Authenticated_Log__c> MaapLogsList = [SELECT Id, Member__c,MAAP_Case_Number_s__c, CreatedDate from Authenticated_Log__c where LastModifiedDate >=: earlier and Member__c =: RecordId and RecordType.Name = 'Master Authentication Log' order by LastModifiedDate desc limit 1];
-        system.debug('MaapLogsList.Size()=='+MaapLogsList.Size());
-        if(MaapLogsList.size() > 0){
+        List<Authenticated_Log__c> maapLogsList = [SELECT Id, Member__c,MAAP_Case_Number_s__c, CreatedDate from Authenticated_Log__c where LastModifiedDate >=: earlier and Member__c =: RecordId and RecordType.Name = 'Master Authentication Log' order by LastModifiedDate desc limit 1];
+        system.debug('maapLogsList.Size()=='+maapLogsList.Size());
+        if(maapLogsList.size() > 0){
             string CaseNumber = [Select CaseNumber from Case where Id=: CaseId].CaseNumber;
             String ExistingCaseNumber = MaapLogsList[0].MAAP_Case_Number_s__c;
             string CaseURL = '<a href="' + URL.getSalesforceBaseUrl().toExternalForm() + '\\' + CaseId + '">' +  CaseNumber + '</a>';
             if(String.IsNotBlank(ExistingCaseNumber)){
-                MaapLogsList[0].MAAP_Case_Number_s__c = ExistingCaseNumber + ', ' + CaseURL;
+                maapLogsList[0].MAAP_Case_Number_s__c = ExistingCaseNumber + ', ' + CaseURL;
             }
             else{
-                MaapLogsList[0].MAAP_Case_Number_s__c = CaseURL;
+                maapLogsList[0].MAAP_Case_Number_s__c = CaseURL;
             }
-            update MaapLogsList[0];
+            update maapLogsList[0];
             system.debug('CaseURL=='+CaseURL);
-            system.debug('MaapLogsList[0].MAAP_Case_Number_s__c=='+MaapLogsList[0].MAAP_Case_Number_s__c);
+            system.debug('maapLogsList[0].MAAP_Case_Number_s__c=='+maapLogsList[0].MAAP_Case_Number_s__c);
         }
     }
     public class PicklistEntryWrapper{
@@ -1116,16 +1118,17 @@ public class CreateCaseMemberPageController {
         public String label {get;set;}
         public String value {get;set;}
         public String validFor {get;set;}
-        public PicklistEntryWrapper(){            
+        public PicklistEntryWrapper(){
+            
         }
     }
     @AuraEnabled(cacheable=true)
-	public static List<Account_Details__c> getMemberAccounts(String AccountId)
+	public static List<Account_Details__c> getMemberAccounts(String accountId)
 	{
-		system.debug('----------------------test-'+AccountId);
+		system.debug('----------------------test-'+accountId);
 		list<Person_Account__c> paList = new list<Person_Account__c>();
             paList = [SELECT Id,
-                             Account_Number__c, Account_Number__r.RecType__c, Account_Number__r.Name FROM Person_Account__c WHERE PersonID__c =: AccountId];
+                             Account_Number__c, Account_Number__r.RecType__c, Account_Number__r.Name FROM Person_Account__c WHERE PersonID__c =: accountId];
         system.debug('----------------------test-'+paList);
         return accountDetails(paList);
 	}
@@ -1144,7 +1147,7 @@ public class CreateCaseMemberPageController {
 	}
 
     @AuraEnabled   
-    public static List<object> FetchLeadData(string AccountID)
+    public static List<object> FetchLeadData(string accountId)
     {
     	List<object> listObj = new List<object>(); 
     	List<Account> acclist = [Select Id,Name,Alternate_Email__pc,Owner.Name,Owner.ID,Suffix,FirstName,MiddleName,RecordType.Name,
@@ -1216,7 +1219,6 @@ public class CreateCaseMemberPageController {
             accountNumberSet.add(var.Account_Number__r.Name);
             acctypeSet.add(var.Account_Number__r.RecType__c);
             accIdSet.add(var.Account_Number__c);
-            
         }
         system.debug('---------------accIdSet-------test-'+accountNumberSet);
         list<Account_Details__c> accList = new list<Account_Details__c>();
@@ -1245,44 +1247,7 @@ public class CreateCaseMemberPageController {
         return accList;
     }
     
-      @AuraEnabled
-      public static String uploadFile(String base64, String filename, String recordId) {
-        Attachment  cv = createContentVersion(base64, filename);
-        ContentDocumentLink cdl = createContentLink(cv.Id, recordId);
-        cdl.LinkedEntityId = recordId;
-        if (cv == null || cdl == null) { return null; }
-        return cdl.Id;
-      }
-
       
-      private static Attachment  createContentVersion(String base64, String filename) {
-        Attachment  cv = new Attachment ();
-       
-        try {
-          insert cv;
-          return cv;
-        } catch(DMLException e) {
-          System.debug(e);
-          return null;
-        }
-      }
-
-     
-     private static ContentDocumentLink createContentLink(String contentVersionId, String recordId) {
-            if (contentVersionId == null || recordId == null) { return null; }
-                ContentDocumentLink cdl = new ContentDocumentLink();
-                cdl.ContentDocumentId = [SELECT Id FROM ContentVersion WHERE Id =: contentVersionId].ContentDocumentId;
-                cdl.LinkedEntityId = recordId;
-               
-                cdl.ShareType = 'V';
-                try {
-                insert cdl;
-                return cdl;
-                } catch(DMLException e) {
-                System.debug(e);
-                return null;
-            }
-        }
 
         @AuraEnabled
     public static String uploadDocument(String recordId, String filedata) {
@@ -1295,8 +1260,8 @@ public class CreateCaseMemberPageController {
                 for(FileDataWP file : files) {
                    Attachment oAttachment = new Attachment();
                     oAttachment.parentId = recordId;
-             		if(file.fileContent != null)
-                    oAttachment.Body = EncodingUtil.base64Decode(file.fileContent);
+             		if(file.fileContent != null){
+                    oAttachment.Body = EncodingUtil.base64Decode(file.fileContent);}
                     else
                         oAttachment.Body = EncodingUtil.base64Decode('');
                     oAttachment.Name = file.fileName;
@@ -1370,4 +1335,61 @@ public class CreateCaseMemberPageController {
  
         update a;
     }
+    
+    
+    public static List<SelectOption> primeCategoryOptions() {
+    
+        Schema.DescribeFieldResult statusFieldDescription = Case.Primary_Category__c.getDescribe();
+            System.debug('Getting description:::'+ statusFieldDescription);
+            list<SelectOption> op = new list<SelectOption>();
+            op.add(new SelectOption('-None-','-None-'));
+            for (Schema.Picklistentry picklistEntry : statusFieldDescription.getPicklistValues())
+            {
+                op.add(new SelectOption(pickListEntry.getValue(),pickListEntry.getLabel()));
+            }
+            return op;
+        }
+    @AuraEnabled(cacheable=true)
+    public static List<String> searchTertiary(String searchText){
+        List<String> lstOptions = new List<String>();
+
+        pcOptionList = new list<SelectOption>();
+        pcOptionList .add(new SelectOption('-None-','-None-'));
+         scOptionList = new list<SelectOption>();
+        scOptionList .add(new SelectOption('-None-','-None-'));
+                    String newSearchText = '%'+searchText+'%';
+        list<CaseRecordType__c> tcList = [SELECT Id,
+                                            Primary_Category__c,Secondary_Category__c, Teritiary_Category__c FROM CaseRecordType__c WHERE Teritiary_Category__c like :newSearchText or 
+                                            Primary_Category__c like :newSearchText or Secondary_Category__c like :newSearchText ];
+        List<String> str = new List<String>();
+
+        for(CaseRecordType__c tcr: tcList){
+            str.add(tcr.Primary_Category__c + ' / ' + tcr.Secondary_Category__c + ' / ' + tcr.Teritiary_Category__c);
+        }
+
+        searchResult = new list<SelectOption>();
+
+        Map<String, String> mapOfOptions = new Map<String, String>();
+        for (String tc : str){
+            if(tc!='None'){
+                searchResult.add(new SelectOption(tc,tc));
+                mapOfOptions.put(tc, tc);
+                lstOptions.add(tc);
+            }
+        }
+  
+    
+        scOptionList = new list<SelectOption>();
+        tcOptionList = new list<SelectOption>();
+        tcOptionList.add(new SelectOption('-None-','-None-'));
+        scOptionList.add(new SelectOption('-None-','-None-'));
+                pcOptionList = primeCategoryOptions();   
+        scValue = '-None-';
+        pcValue = '-None-';
+        tcValue = '-None-';
+
+        return lstOptions;
+    }
+    
+    
 }

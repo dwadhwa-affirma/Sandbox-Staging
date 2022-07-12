@@ -1,0 +1,9 @@
+<aura:component implements="flexipage:availableForRecordHome,force:hasRecordId,force:lightningQuickActionWithoutHeader" access="global" >
+    
+  <aura:html tag="style"> .slds-modal__container { min-width: 80vw; } </aura:html>
+    <lightning:overlayLibrary aura:id="overlayLib"/>	
+ 
+  <lightning:messageChannel type="StandardMessageChannel__c" aura:id="standardMessageChannel" onMessage="{!c.handleChanged}" scope="APPLICATION"/> 
+  <c:createCaseLwc recordId="{!v.recordId}"/> 
+  
+</aura:component>

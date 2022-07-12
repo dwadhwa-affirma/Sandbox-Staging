@@ -1,23 +1,33 @@
+/**
+ * @description       : 
+ * @author            : ChangeMeIn@UserSettingsUnder.SFDoc
+ * @group             : 
+ * @last modified on  : 07-11-2022
+ * @last modified by  : ChangeMeIn@UserSettingsUnder.SFDoc
+**/
 public class GetCaseAttachments {   
 
     @AuraEnabled 
-    public static object GetCaseAttachments(string CaseId)
+    public static object getCaseAttachment(string caseId)
     {
-                 system.debug('CaseId####DW' + CaseId);
+                 system.debug('CaseId####DW' + caseId);
                 List<string> parentId = new List<string>();
                 List<Attachment> attachments = new List<Attachment>();
                 List<ListAttachment> listAttachments  = new List<ListAttachment>();
                 List<string> parentIdmembercomment = new List<string>();
-                
-                Case caseDetail = [select status, Attachments_Are_Deleted__c, Account_Number__c from Case where Id =: CaseId];
-                //CaseId = System.currentPageReference().getParameters().get('id');
+                Case caseDetail;
+                if(caseId != null){
+                caseDetail = [select status, Attachments_Are_Deleted__c, Account_Number__c from Case where Id =: caseId];
                 system.debug('caseDetail.Account_Number__r :: '+caseDetail.Account_Number__c);
-                parentId.Add(CaseId);
+                }
                 
-                List<OnBase_Document__c> onbaseList = [Select Id,Name,Attachment_Id__c,IsMovedToOnBase__c,Document_Type__c,Attachment_Created_On__c,Attachment_Owner__r.Name from OnBase_Document__c where case__c =: CaseId  or Member_Comment__r.Case__C =: caseId];
-                //listAttachments = new List<ListAttachment>();
-                system.debug('caseDetail.Attachments_Are_Deleted__ :: '+caseDetail.Attachments_Are_Deleted__c);
-                //system.debug('onbaseList :: '+ onbaseList[0]);
+                parentId.Add(caseId);
+                
+                List<OnBase_Document__c> onbaseList = [Select Id,Name,Attachment_Id__c,IsMovedToOnBase__c,Document_Type__c,Attachment_Created_On__c,Attachment_Owner__r.Name from OnBase_Document__c where case__c =: caseId  or Member_Comment__r.Case__C =: caseId LIMIT 49999];
+               
+                  system.debug('onbaseList :: '+ onbaseList[0]);
+
+                if(caseDetail != null){
                 if(caseDetail.Attachments_Are_Deleted__c == true){
                 	system.debug('In If ');
                 	for(OnBase_Document__c onbaseObj : onbaseList){
@@ -35,7 +45,8 @@ public class GetCaseAttachments {
                         }
                         listAttachments.add(la);
                 	}
-                }else{
+                }
+                else{
                 	
                 
                 Map<Id,OnBase_Document__c> onbaseDocumentMap = new Map<Id,OnBase_Document__c>();
@@ -43,7 +54,7 @@ public class GetCaseAttachments {
                     onbaseDocumentMap.put(onbaseObj.Attachment_Id__c,onbaseObj);
                 }
                
-                List<Member_Comment__c> membercomment = [Select Id from Member_Comment__c where case__c =: CaseId];
+                List<Member_Comment__c> membercomment = [Select Id from Member_Comment__c where case__c =: caseId];
                 for(Member_Comment__c mc : membercomment)
                 {
                     parentIdmembercomment.Add(mc.Id);
@@ -52,10 +63,8 @@ public class GetCaseAttachments {
                  system.debug('ParentId####DW' + parentId);
                  system.debug('parentIdmembercomment####DW' + parentIdmembercomment);
                  attachments = [SELECT BodyLength,Description,Id,LastModifiedDate ,Name,OwnerId,ParentId, Owner.Name, CreatedBy.Profile.Name, Parent.Type FROM Attachment where ParentId IN: parentId];
-               //  List<ContentDocumentLink> ContentDocumentLst = [select Id, ContentDocumentId,LinkedEntityId, ContentDocument.Title, ContentDocument.FileType, ContentDocument.ContentSize, ContentDocument.OwnerId, ContentDocument.ContentModifiedDate, ContentDocument.CreatedBy.Name, ContentDocument.CreatedBy.Profile.Name from ContentDocumentLink where LinkedEntityId IN: parentIdmembercomment];
                   system.debug('attachments1####DW' + attachments);
                   
-                 //  system.debug('ContentDocumentLst####DW' + ContentDocumentLst);
                   
                   
                  for(Attachment att : attachments)
@@ -113,52 +122,20 @@ public class GetCaseAttachments {
                      }
                      system.debug('listAttachments==='+listAttachments);
                 }
+                }
     
-                     
-                 /*   for(ContentDocumentLink cd : ContentDocumentLst)
-                    {
-                        ListAttachment la = new ListAttachment();
-                        
-                       if(cd.ContentDocument.CreatedBy.Profile.Name == 'Messaging center Customers' )
-                        {
-                            la.FromMember = true;
-                        }
-                        else
-                        {
-                            la.FromMember = false;
-                        }
-                        
-                        if(cd.ContentDocument.ContentSize < 1000)
-                        {
-                            la.displaySize = cd.ContentDocument.ContentSize + ' Bytes';
-                                  
-                        }                               
-                        else if(cd.ContentDocument.ContentSize > 1000 && cd.ContentDocument.ContentSize < 1000000)
-                        {
-                              la.displaySize = Math.floor(cd.ContentDocument.ContentSize/1000) + ' KB';
-                        }
-                        else
-                        {
-                            la.displaySize  = Math.round((cd.ContentDocument.ContentSize / 1000000)*10)/10 + ' MB';
-                        }
-                        
-                        la.Name = cd.ContentDocument.Title;
-                        la.LastModifiedDate = cd.ContentDocument.ContentModifiedDate.format('MM/dd/yyyy HH:mm:ss');
-                        la.CreatedBy = cd.ContentDocument.CreatedBy.Name;
-                        la.downloadLink = '/sfc/servlet.shepherd/document/download/'+ string.valueOf(cd.ContentDocumentId);
-                        listAttachments.add(la);
-                     }*/
-                     
                      system.debug('listContentDocument==='+listAttachments);
                      
                      ListAttachmentWithCaseDetail response = new ListAttachmentWithCaseDetail();
                      response.attachmentList = listAttachments;
+                     if(caseDetail != null){
                      response.caseDetail = caseDetail;
+                     }
             return response;          
     }
     
     @AuraEnabled 
-    public static void DeleteAttachment(string attachmentId){
+    public static void deleteAttachment(string attachmentId){
         Attachment attachmentToDelete = new Attachment();
         attachmentToDelete = [SELECT BodyLength,Description,Id,LastModifiedDate ,Name,OwnerId,ParentId FROM Attachment where Id =: attachmentId];
         delete attachmentToDelete;
@@ -167,15 +144,15 @@ public class GetCaseAttachments {
   public class ListAttachment
   {
         @AuraEnabled
-        public  Boolean FromMember {get; set;} 
+        public  Boolean fromMember {get; set;} 
         @AuraEnabled  
         public  string  displaysize {get; set;} 
         @AuraEnabled
-        public string Name {get;set;}  
+        public string name {get;set;}  
         @AuraEnabled
-        public string CreatedBy {get;set;}
+        public string createdBy {get;set;}
         @AuraEnabled
-        public string LastModifiedDate {get;set;}
+        public string lastModifiedDate {get;set;}
         @AuraEnabled
         public string downloadLink {get;set;}
         @AuraEnabled
@@ -185,7 +162,7 @@ public class GetCaseAttachments {
         @AuraEnabled
         public boolean isMovedToOnBase = false;
         @AuraEnabled
-        public string DocumentType = '';
+        public string documentType = '';
   }
    public class ListAttachmentWithCaseDetail{
         @AuraEnabled
