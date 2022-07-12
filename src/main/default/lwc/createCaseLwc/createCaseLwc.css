@@ -1,45 +1,19 @@
 .recordId {
   color:white;
 }
-/*
-.modal-container {
-  width:100% !important;
-  max-width: 1055px !important
-}
 
-.slds-modal__container {
-  max-width: 85% !important; 
-  width:85% !important;
-}
-*/
 
 .case-grid {
   display:grid;
   grid-template-columns: 50% 50%;  
 }
-/*
-.opp-grid-col-1 {
-  background-color: #C0C6F0;
-}
 
-.opp-grid-col-2 {
-  background-color: #CAD1FC;
-}
-
-.opp-grid-col-3 {
-  background-color: #ABB1D6;
-}
-*/
 .case-item {
   margin:5px;
   padding:5px;
   min-height: 76px;
 }
-/*.case--result{
-  margin: 5px;
-  padding: 5px;
-  min-height: 76px;
-}*/
+
 
 .user-or-queue {
   display:grid;
