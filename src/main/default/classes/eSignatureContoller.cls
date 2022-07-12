@@ -174,34 +174,21 @@ global class eSignatureContoller {
         
         ApexPages.addmessage(new ApexPages.message(ApexPages.severity.CONFIRM,'Wire Transfer Authorization pdf has been generated successfully.'));  
         
-        //ListView lstView=[SELECT Id,Name from ListView Where Name='To Be Signed' LIMIT 1];
-        //string baseUrl=URL.getSalesforceBaseUrl().toExternalForm()+ '/lightning/o/InPersonSigning__c/list?filterName='+lstView.Id; 
-        //system.debug('BaseURL:'+baseUrl);
-        //PageReference pageRef = new PageReference(baseUrl);
         
-        //pageRef.setRedirect(true);
-        //return pageRef;
-        //
-        
-        //sforce.one.navigateToList('00B19000002CZbHEAW','To Be Signed','InPersonSigning__c');
         
         ListView lstView=[SELECT Id,Name from ListView Where Name='To Be Signed' LIMIT 1]; 
         showAlert=true;
+        // $Author: Affirma$ $US: STRY0012069 add SLA to wire_transactions__c$
+        //: The below method is called to setSLA when user is making wire transaction from the branch
+        // after In-Person_Signing of the document
+        WiresTransactionApprovalController.setSLA(ids);
     }
     
-    //public PageReference Cancel() {
-    //PageReference pageRef = new PageReference('/' + objParentId);
-    //ListView lstView=[SELECT Id,Name from ListView Where Name='To Be Signed' LIMIT 1];
-    //string baseUrl=URL.getSalesforceBaseUrl().toExternalForm()+ '/lightning/o/InPersonSigning__c/list?filterName='+lstView.Id; 
-    //system.debug('BaseURL:'+baseUrl);
-    //PageReference pageRef = new PageReference(baseUrl);
-    //pageRef.setRedirect(true);
-    //return pageRef;
-    //}
+    
     
     public void spin() {
         long now = datetime.now().gettime();
-        //while(datetime.now().gettime()-now<5000); // Busy loop for 5000 ms
+       
     }
     
     Integer count = 0;
