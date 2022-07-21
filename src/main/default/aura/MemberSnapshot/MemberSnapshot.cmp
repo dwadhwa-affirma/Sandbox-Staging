@@ -1,3 +1,10 @@
+<!--
+  @description       : 
+  @author            : ChangeMeIn@UserSettingsUnder.SFDoc
+  @group             : 
+  @last modified on  : 07-21-2022
+  @last modified by  : ChangeMeIn@UserSettingsUnder.SFDoc
+-->
 <aura:component implements="flexipage:availableForAllPageTypes,force:appHostable,force:hasRecordId,force:hasSObjectName,force:lightningQuickActionWithoutHeader,lightning:actionOverride" controller="MemberInfoController">
     <aura:handler name="init" value="{!this}" action="{!c.doInit}"></aura:handler>
     <aura:attribute name="Level" type="string" description="" />
@@ -104,37 +111,7 @@
         <div class="slds-grid slds-gutters">
             <div class="slds-col">
                 <table class="snaptbl">                    
-                    <!-- <tr>
-                        <td>Member Connect</td>
-                        <td>
-                            <aura:if isTrue="{! (v.RecordTypeName != 'Pre Member')}">
-                                <aura:if isTrue="{!(v.ShowData == 'true')}">                                     
-                                    <span>&nbsp;</span>
-                                    <aura:if isTrue="{!(v.MemberOptOut == 'true')}">
-                                        Opted Out&nbsp;&nbsp;<ui:outputDate value="{!v.Opt_Out_Date}"></ui:outputDate>
-                                    </aura:if>
-                                    <aura:if isTrue="{!(v.Memberisunder18 == 'true')}">
-                                        Not eligible         					
-                                    </aura:if>
-                                    <aura:if isTrue="{! (v.Memberisnotprimary == 'true')}">
-                                        Not eligible
-                                    </aura:if>
-                                    <aura:if isTrue="{!(and(v.Memberhaspartiallycompleted == 'true', v.MemberRefreshNeeded == 'false'))}">
-                                        Partial
-                                    </aura:if>
-                                    <aura:if isTrue="{!(and(v.AMemberAssessmentisdue == 'true', v.MemberRefreshNeeded == 'false'))}">
-                                        Due
-                                    </aura:if>
-                                    
-                                    
-                                    <aura:set attribute="else">
-                                        <span>&nbsp;</span>
-                                        Not eligible 
-                                    </aura:set>
-                                </aura:if> 
-                            </aura:if>
-                        </td>
-                    </tr> --> 
+                    
                     <tr>
                         <td>
                             <aura:if isTrue="{!not(empty(v.FraudWarnings))}">
@@ -217,7 +194,6 @@
                                 <aura:set attribute="else">
                                     <span>&nbsp;</span>None
                                 </aura:set>
-                                <!-- <span class="green"><lightning:icon iconName="utility:like" alternativeText="favorite" title="favorite" /></span><a onclick="{!c.handleSurveyScoreClick}">{!v.SurveyScore.MaritzCX__Key_Metric_1_Bar__c}</a>-->
                                 <span class="green"><lightning:icon iconName="utility:like" alternativeText="favorite" title="favorite" /></span>{!v.SurveyScore.MaritzCX__Key_Metric_1_Bar__c}
                                 
                             </aura:if>
@@ -234,10 +210,7 @@
                             </aura:if>
                         </td>
                     </tr>
-                    <!-- <tr>
-                        <td>Segmentation</td>
-                        <td></td>
-                    </tr>-->
+                    
                 </table>
             </div>
             
@@ -259,10 +232,7 @@
                             </aura:if>
                         </td>
                     </tr>
-                    <!-- <tr>
-                        <td>Last Activity</td>
-                        <td></td>
-                    </tr> -->
+                    
                 </table>
             </div>
             

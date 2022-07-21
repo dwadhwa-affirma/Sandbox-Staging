@@ -8,6 +8,7 @@
         helper.getReason(component, event, helper);
         helper.getMemberPageMessages(component, event, helper);
         
+        
         var returnValue =helper.getUrlParameter("c__ivrguid");
         if(returnValue){
             helper.getReason(component, event, helper,returnValue);
