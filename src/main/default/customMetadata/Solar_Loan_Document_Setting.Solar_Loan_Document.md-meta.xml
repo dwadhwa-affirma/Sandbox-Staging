@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomMetadata xmlns="http://soap.sforce.com/2006/04/metadata" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+    <label>Solar Loan Document</label>
+    <protected>false</protected>
+    <values>
+        <field>SolarLoanDocumentEndDate__c</field>
+        <value xsi:type="xsd:dateTime">2022-07-19T10:55:00.000Z</value>
+    </values>
+    <values>
+        <field>SolarLoanDocumentStartDate__c</field>
+        <value xsi:type="xsd:dateTime">2022-07-07T06:38:00.000Z</value>
+    </values>
+</CustomMetadata>

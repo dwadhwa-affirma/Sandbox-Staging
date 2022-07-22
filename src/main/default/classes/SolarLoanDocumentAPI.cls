@@ -10,9 +10,12 @@ global with sharing class SolarLoanDocumentAPI {
             List<SolarLoan_Document__c> SolarLoanDocumentList = new List<SolarLoan_Document__c>();
             Map<ID,ID> cv = new Map<ID,ID>();
           	set<ID> listCD  = new set<ID>();
-          
+            //Custom metadata created for US:STRY0012192 to define the start and end range for createddate to bring the documents.
+            Solar_Loan_Document_Setting__mdt solarLoanDocumentSetting = Solar_Loan_Document_Setting__mdt.getInstance('Solar_Loan_Document');
+            system.debug(solarLoanDocumentSetting);
+                     
             SolarLoanDocumentList = [select Id, Name,Document_Name__c,Member_Number__c, SolarLoan_Document__c.Solar_Loans__c,Solar_Loans__r.Status__c,Attachment_Id__c,ContentDocumentLinkId__c,Document_Type__c,Move_To_OnBase_Date__c,Solar_Loans__r.Current_Solar_Loan_Stage__c 
-                                    from SolarLoan_Document__c where IsMovedToOnBase__c = false and Member_Number__c !=null and (Solar_Loans__r.Current_Solar_Loan_Stage__c = 'Stage 7' OR Solar_Loans__r.Current_Solar_Loan_Stage__c = 'Stage 8')];
+                                    from SolarLoan_Document__c where IsMovedToOnBase__c = false and CreatedDate > : solarLoanDocumentSetting.SolarLoanDocumentStartDate__c and CreatedDate <=:solarLoanDocumentSetting.SolarLoanDocumentEndDate__c and Member_Number__c !=null and (Solar_Loans__r.Current_Solar_Loan_Stage__c = 'Stage 7' OR Solar_Loans__r.Current_Solar_Loan_Stage__c = 'Stage 8')];
             
             set<string> solarids = new set<string>();
             List<SolarLoanDocumentAPIResopnse> responseObjList = new List<SolarLoanDocumentAPIResopnse>();
@@ -32,7 +35,7 @@ global with sharing class SolarLoanDocumentAPI {
                 
                 respObj.Name = (SolarLoanObj.Document_Name__c!=null)?SolarLoanObj.Document_Name__c:SolarLoanObj.Name;
                 
-                if(SolarLoanObj.Attachment_Id__c.startsWith('00P')){
+                if(SolarLoanObj.Attachment_Id__c != null && SolarLoanObj.Attachment_Id__c.startsWith('00P')){
                 	respObj.AttachmentID = SolarLoanObj.Attachment_Id__c;    
                 }
                 else{
@@ -41,9 +44,10 @@ global with sharing class SolarLoanDocumentAPI {
                 
                 respObj.DocumentType = SolarLoanObj.Document_Type__c;
                 respObj.MemberNumber = SolarLoanObj.Member_Number__c;
-                responseObjList.add(respObj);
+                if(respObj.AttachmentID != null)
+                	responseObjList.add(respObj);
             }
-            
+            system.debug('response##' + responseObjList);
             return responseObjList;
       }
       
