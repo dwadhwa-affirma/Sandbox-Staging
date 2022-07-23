@@ -4,7 +4,7 @@ private class SolarLoanTest{
   static void setupTestData(){
    
      //---------------------------------------- Creating Account Details record-----------------------------------//
-          
+     Solar_Loan_Document_Setting__mdt solarLoanDocumentSetting = Solar_Loan_Document_Setting__mdt.getInstance('Solar_Loan_Document');    
      SolarLoan_To_Episys_API_Details__c api = new SolarLoan_To_Episys_API_Details__c();
      api.URL__c = 'https://symxapi.chevronfcu.org/devclient';
      api.Name = 'ProductionURL';
@@ -42,7 +42,8 @@ private class SolarLoanTest{
      Solar_Loan_Product_Types__c slpt = new Solar_Loan_Product_Types__c();
      slpt.Name = 'Solar';
      slpt.Description__c = 'SECURED SOLAR';
-     insert slpt; 
+     insert slpt;       
+     
    	     
      List<Account_Details__c> account_details_Obj = new List<Account_Details__c>{
                 new Account_Details__c(Name = '0000147163', Balance__c = 0.00, Combined_Account_ID__c = '0000147163S0100P0100', 
@@ -131,7 +132,7 @@ private class SolarLoanTest{
      sl.mem_ID_Expiration_Date__c = system.today() + 100;
      sl.mem_Primary_SSN__c = '123456789';
      sl.County__c = 'TM';
-     
+     sl.Current_Solar_Loan_Stage__c ='Stage 8';
      sl.mem_Primary_DOB__c = system.today() - 50000;
      sl.mem_Primary_City__c = 'City';
      sl.Employer__c = 'T&T';
@@ -636,38 +637,54 @@ private class SolarLoanTest{
       
      insert SolarLoan_Obj;
       
-     //---------------------------------------- Creating Solar Loan Document record-----------------------------------//
+       test.startTest();
      
-     List<SolarLoan_Document__c> SolarLoanDocList = new List<SolarLoan_Document__c>{
-         new SolarLoan_Document__c(Name = 'Member Application_Completed', Member_Number__c = '0000214414',Solar_Loans__c = SolarLoan_Obj[0].id),
-         new SolarLoan_Document__c(Document_Name__c ='Membership Application', Name = 'Membership Application', Member_Number__c = '0000147163',Solar_Loans__c = SolarLoan_Obj[0].id)};      
-     insert SolarLoanDocList;
-   
-      test.startTest();
+     //---------------------------------------- Creating Content Version Record for Attachment---------------------------------------------//  
+  
      
-     //---------------------------------------- Creating Content Version Record for Attachment---------------------------------------------//
-     
+    
      ContentVersion objAt = new ContentVersion(Title = 'Member Application_Completed',PathOnClient = 'TestDocument.pdf',VersionData = Blob.valueOf('Test Content'), IsMajorVersion = true);
      Insert objAt;
       
-     
-     List<ContentDocument> cdList = [SELECT Id, Title, LatestPublishedVersionId FROM ContentDocument];
+       List<ContentDocument> cdList = [SELECT Id, Title, LatestPublishedVersionId FROM ContentDocument];
+      
     
      //--------------------- Creating Content Document Link with Parent as "Solar Loan" record-----------------------//
      
-     List<ContentDocumentLink> ListCDL = new List<ContentDocumentLink>{
-        new ContentDocumentLink (ContentDocumentId = cdList[0].id, LinkedEntityId = SolarLoan_Obj[0].Id)};
-     insert ListCDL;
+      ContentVersion contentVersion_2 = [SELECT Id, Title, ContentDocumentId 
+                            FROM ContentVersion WHERE Id = :objAt.Id LIMIT 1];
       
-     Attachment attach=new Attachment();   	
+     List<ContentDocumentLink> ListCDL = new List<ContentDocumentLink>{
+        new ContentDocumentLink (ContentDocumentId = contentVersion_2.contentdocumentid, LinkedEntityId = SolarLoan_Obj[0].Id)};
+     insert ListCDL;     
+      
+      Attachment attach=new Attachment();   	
      attach.Name='Unit Test Attachment';
      Blob bodyBlob=Blob.valueOf('Unit Test Attachment Body');
      attach.body=bodyBlob;
      attach.parentId=SolarLoan_Obj[0].Id;
      insert attach;
       
+      Attachment attach1=new Attachment();   	
+     attach1.Name='Unit Test Attachment 1';
+     Blob bodyBlob1=Blob.valueOf('Unit Test Attachment Body 1');
+     attach1.body=bodyBlob1;
+     attach1.parentId=SolarLoan_Obj[0].Id;
+     insert attach1;
+     
      test.stopTest();
-  }
+      
+     //---------------------------------------- Creating Solar Loan Document record-----------------------------------//    
+      List<SolarLoan_Document__c> SolarLoanDocList = new List<SolarLoan_Document__c>{
+         new SolarLoan_Document__c(Name = 'Member Application_Completed', Member_Number__c = '0000214414',Solar_Loans__c = SolarLoan_Obj[0].id),
+         new SolarLoan_Document__c(Document_Name__c ='Membership Application', Name = 'Membership Application', Member_Number__c = '0000147163',Solar_Loans__c = SolarLoan_Obj[0].id),
+         new SolarLoan_Document__c(Document_Name__c ='Membership Application1', Name = 'Membership Application1',  Member_Number__c = '0000147163',Solar_Loans__c = SolarLoan_Obj[0].id, createddate = solarLoanDocumentSetting.SolarLoanDocumentEndDate__c  )    };      
+     insert SolarLoanDocList;
+   
+     
+  }   
+     
+   
   static testMethod void test_Solarloancontroller(){
       List<Solar_Loans__c> listSolarLoan  =  [SELECT Id from Solar_Loans__c limit 1];
       List<Solar_Loans__c> listSolarLoan2  =  [SELECT Id,Bank_Name__c from Solar_Loans__c where Bank_Name__c = 'test & bank2' limit 1];
@@ -769,7 +786,8 @@ private class SolarLoanTest{
     List<ContentDocument> cdList = [SELECT Id, Title, LatestPublishedVersionId FROM ContentDocument limit 1];
     
     // ---------------------------Fetching Solar Loan document record from test set up data -------------------------//
-    List<SolarLoan_Document__c> SolarLoanDocList = [SELECT id from SolarLoan_Document__c limit 1];
+    List<SolarLoan_Document__c> SolarLoanDocList = [SELECT id, Attachment_Id__c, Member_Number__c, createddate from SolarLoan_Document__c where name ='Membership Application1' limit 1];
+     
       
     List<Attachment> alist = [select id from Attachment Limit 1];  
    
@@ -785,8 +803,10 @@ private class SolarLoanTest{
     List<SolarLoanDocumentAPI.SolarLoanDocumentAPIResopnse> listApiResponse = SolarLoanDocumentAPI.getSolarLoanDocuemnts();
     RestRequest req = new RestRequest();
     req.requestURI = '/services/apexrest/SolarLoanDocumentAPI';
-      
-    req.requestBody = blob.valueof(listApiResponse[2].AttachmentID /*+ ',' + listApiResponse[1].AttachmentID*/);
+      /*if(listApiResponse.size() > 0)  {
+    		req.requestBody = blob.valueof(listApiResponse[0].AttachmentID );
+      }*/
+   req.requestBody = blob.valueof(alist[0].id) ;      
     req.httpMethod = 'post';
     RestContext.request = req;
     
