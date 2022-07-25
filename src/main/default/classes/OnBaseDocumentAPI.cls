@@ -4,11 +4,10 @@ global with sharing class OnBaseDocumentAPI {
       @HttpGET 
       global static List<OnBaseDocumentAPIResopnse> getOnBaseDocuments() {
             List<OnBase_Document__c> onbaseDocuemntList = new List<OnBase_Document__c>();
-          
-          DateTime dt = [select id, SelectDocumentDateTime__c from OnBase_Document_Settings__c].SelectDocumentDateTime__c;
-            system.debug('cut off date is : ' + dt);          
-           
-          List<String> docTypeList = new List<String>{'Account Verification Documents', 'ACH Maintenance Forms', 'ACH Origination Forms', 'ACH Stop Payments',
+            //New fields created in Custom setting for US:STRY0012192 to define the start and end range for createddate to bring the documents. 
+            Map<String , DateTime> onBaseDocumentDateRangeMap = OnBaseDocumentAPI.getOnBaseDocumentSetting();     
+            
+            List<String> docTypeList = new List<String>{'Account Verification Documents', 'ACH Maintenance Forms', 'ACH Origination Forms', 'ACH Stop Payments',
               'Change of Address', 'Collateralized Loans', 'Correspondence', 'CTR', 'Death Certificates', 'Death Claims', 'Debit Card Dispute Forms', 
               'Declaration of Loss', 'Deletion of Owner/Member', 'Dormant Accounts and Accounts Subject to Escheatment', 'Fiduciary Accounts',
                'Inactive / Dormant Accounts', 'IRA Documents', 'Levy or Subpeona', 'Lines of Credit', 'Medallion Guarantee Documents', 'Member Identification Documents', 
@@ -19,10 +18,11 @@ global with sharing class OnBaseDocumentAPI {
               onbaseDocuemntList = [select Id, Name,Document_Name__c, Attachment_Id__c,Case__c,Member_Comment__r.case__r.Account_Number__r.Name,
                                   Member_Comment__r.Case__r.CaseNumber,Case__r.CaseNumber,ContentDocumentLinkId__c,Document_Type__c,
                                   Move_To_OnBase_Date__c, Case__r.Account_Number__r.Name from OnBase_Document__c 
-                                    where IsMovedToOnBase__c = false and Document_Type__c in: docTypeList and CreatedDate >: dt and
+                                    where IsMovedToOnBase__c = false and Document_Type__c in: docTypeList and CreatedDate >: onBaseDocumentDateRangeMap.get('startDate') 
+                                    and CreatedDate <=: onBaseDocumentDateRangeMap.get('endDate') and
                                     (Case__c != null or (Member_Comment__c!=null and Member_Comment__r.CreatedBy.Profile.Name = 'Messaging center Customers'))];
             
-
+                                    system.debug('onbaseDocuemntList##'+ onbaseDocuemntList.size());
             set<string> caseids = new set<string>();
             set<string> attachmentids = new set<string>();
             set<string> activeAttachmentids = new set<string>();
@@ -41,7 +41,7 @@ global with sharing class OnBaseDocumentAPI {
             }
              
              List<CaseAccountMemberDetail__c> camd = new List<CaseAccountMemberDetail__c>();
-          camd = [select id,Case__c, MemberAccountid__c,  case__r.CaseNumber,case__r.OwnerId,
+                camd = [select id,Case__c, MemberAccountid__c,  case__r.CaseNumber,case__r.OwnerId,
                 case__r.Owner.Name , case__r.Status, case__r.Category__c,
                 case__r.Primary_Category__c, case__r.Tertiary_Category__c,case__r.Secondary_Category__c,
                 case__r.Account.Name,
@@ -141,11 +141,17 @@ global with sharing class OnBaseDocumentAPI {
             }
             }
                      
-            
+            system.debug('responseObjList'+ responseObjList);
             return responseObjList;
       }
-    
-     
+     //The below method getOnBaseDocumentSetting is wriiten to bring the data from custom setting for US:STRY0012192
+     public static Map<String , DateTime> getOnBaseDocumentSetting(){
+        Map<String , DateTime> onBaseDocumentDateRangeMap = new Map<String, DateTime>();
+        List<OnBase_Document_Settings__c> onBaseDocumentSettingList = [select id, OnBaseDocumentStartDateTime__c,OnBaseDocumentEndDateTime__c from OnBase_Document_Settings__c Limit 1];
+        onBaseDocumentDateRangeMap.put('startDate',onBaseDocumentSettingList[0].OnBaseDocumentStartDateTime__c);
+        onBaseDocumentDateRangeMap.put('endDate',onBaseDocumentSettingList[0].OnBaseDocumentEndDateTime__c);         
+        return  onBaseDocumentDateRangeMap;  
+     }
     
     
 
@@ -160,9 +166,8 @@ global with sharing class OnBaseDocumentAPI {
             List<OnBase_Document__c> memberCommentOnbaseDocuemntList = new List<OnBase_Document__c>();
             List<OnBase_Document__c> memberCommentOnbaseDocuemntListToUpdate = new List<OnBase_Document__c>();
             system.debug('idsList##'+ idsList);            
-          
-            DateTime dt = [select id, SelectDocumentDateTime__c from OnBase_Document_Settings__c].SelectDocumentDateTime__c;
-            system.debug('cut off date is : ' + dt);          
+            //New fields created in Custom setting for US:STRY0012192 to define the start and end range for createddate to bring the documents. 
+            Map<String , DateTime> onBaseDocumentDateRangeMap = OnBaseDocumentAPI.getOnBaseDocumentSetting();         
            
             List<String> docTypeList = new List<String>{'Account Verification Documents', 'ACH Maintenance Forms', 'ACH Origination Forms', 'ACH Stop Payments',
               'Change of Address', 'Collateralized Loans', 'Correspondence', 'CTR', 'Death Certificates', 'Death Claims', 'Debit Card Dispute Forms', 
@@ -177,8 +182,8 @@ global with sharing class OnBaseDocumentAPI {
                                     
             memberCommentOnbaseDocuemntList = [select Id, Name,Document_Name__c,Member_Comment__r.Case__c 
                                     from OnBase_Document__c 
-                                    where IsMovedToOnBase__c = false and Document_Type__c in: docTypeList and CreatedDate >: dt
-                                    and Member_Comment__c != null and Member_Comment__r.CreatedBy.Profile.Name != 'Messaging center Customers'];
+                                    where IsMovedToOnBase__c = false and Document_Type__c in: docTypeList and CreatedDate >: onBaseDocumentDateRangeMap.get('startDate') 
+                                    and CreatedDate <=: onBaseDocumentDateRangeMap.get('endDate') and Member_Comment__c != null and Member_Comment__r.CreatedBy.Profile.Name != 'Messaging center Customers'];
                                     
             for(OnBase_Document__c onbaseDoc : onbaseDocuemntList){
                 onbaseDoc.IsMovedToOnBase__c = true;
