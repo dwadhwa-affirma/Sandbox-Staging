@@ -1,0 +1,153 @@
+<template>
+    <lightning-card title="">
+      
+        <div class="authwrap" id="authwrap">
+            <div id="signaturePDF">   
+                <div class="logohead">
+                    <div class="logoimg">
+                     <template if:true={brandname}>
+                     
+                        <span style="display: inline-block; margin-right:10px;"><img src={spectrumlogo} alt="Spectrum" /> </span> 
+                        
+                    </template>
+                    <template if:false={brandname}>
+                      <img src={chevronlogo} alt="Chevron" />
+                       
+                      </template>
+                        
+                        
+                    </div>
+                    <h1 class="slds-text-heading--medium" style="text-align:center;font-weight: 600;margin-top: 22px;
+                    margin-bottom: 30px;">ADDRESS CHANGE AUTHORIZATION FORM </h1>
+                </div> 
+                
+                <lightning-record-view-form record-id={recordId} object-api-name="AddressChangeLog__c">
+
+                    <div class="slds-grid slds-wrap">
+                        <div class="slds-col slds-size_1-of-2">
+                            Member Name <lightning-output-field variant="label-hidden" field-name="Names__c" ></lightning-output-field>
+                            Email Address<lightning-output-field variant="label-hidden" field-name="Email__c" > </lightning-output-field>
+                        </div>
+                        <div class="slds-col slds-size_1-of-2">
+                            Account Number <lightning-output-field variant="label-hidden" field-name="AccountNumbersString__c" ></lightning-output-field>
+                             <!--Alternate Email Address <lightning-output-field variant="label-hidden" field-name="AlternateEmail_New__c" ></lightning-output-field>-->
+                        </div>
+                      
+                       
+                        <div class="slds-col slds-size_1-of-1">
+                            <p class="slds-align_absolute-left" style="font-weight: bold">Residential Address</p>
+                        </div>
+                        <div class="slds-col slds-size_1-of-1">
+                            Line 1 <lightning-output-field variant="label-hidden" field-name="Address_New__c" ></lightning-output-field>
+
+                    </div>
+                    <div class="slds-col slds-size_1-of-1">
+                        Line 2 <lightning-output-field variant="label-hidden" field-name="Address2_New__c" ></lightning-output-field>
+
+                        </div>
+                        <div class="slds-col slds-size_1-of-3">
+                            City <lightning-output-field variant="label-hidden" field-name="Address2_New__c" ></lightning-output-field>
+                            </div>
+                            <div class="slds-col slds-size_1-of-3">                            
+                                State <lightning-output-field variant="label-hidden" field-name="Address2_New__c" ></lightning-output-field>
+                            </div>
+                            <div class="slds-col slds-size_1-of-3">
+                            Zip <lightning-output-field variant="label-hidden" field-name="Address2_New__c" ></lightning-output-field>
+                        </div>
+                        <div class="slds-col slds-size_1-of-3">
+                            Address Type  <lightning-output-field variant="label-hidden" field-name="Address2_New__c" ></lightning-output-field>
+                            </div>
+                            <div class="slds-col slds-size_1-of-3">                            
+                                Country  <lightning-output-field variant="label-hidden" field-name="Address2_New__c" ></lightning-output-field>
+                            </div>
+                            <div class="slds-col slds-size_1-of-3">
+                                Country Code <lightning-output-field variant="label-hidden" field-name="Address2_New__c" ></lightning-output-field>
+                        </div>
+
+                        <div class="slds-col slds-size_1-of-1" style="font-weight: bold">
+                            Telephone Type  <lightning-output-field variant="label-hidden" field-name="Address2_New__c" ></lightning-output-field>
+                            </div>
+
+                            <div class="slds-col slds-size_1-of-3">
+                                Home Phone  <lightning-output-field variant="label-hidden" field-name="Address2_New__c" ></lightning-output-field>
+                                </div>
+                                <div class="slds-col slds-size_1-of-3">                            
+                                    Work Phone  <lightning-output-field variant="label-hidden" field-name="Address2_New__c" ></lightning-output-field>
+                                </div>
+                                <div class="slds-col slds-size_1-of-3">
+                                    Work Ext <lightning-output-field variant="label-hidden" field-name="Address2_New__c" ></lightning-output-field>
+                            </div>
+                            <div class="slds-col slds-size_1-of-2">
+                                Cell Phone  <lightning-output-field variant="label-hidden" field-name="Address2_New__c" ></lightning-output-field>
+                                </div>
+                                <!--<div class="slds-col slds-size_1-of-2">                            
+                                    Pager No.  <lightning-output-field variant="label-hidden" field-name="Address2_New__c" ></lightning-output-field>
+                                </div>-->
+                                <div class="slds-col slds-size_1-of-1">
+                                    <p class="slds-align_absolute-left" style="font-weight: bold">Account Mailing Address</p>
+                                    Expires on  <lightning-output-field variant="label-hidden" field-name="Address2_New__c" ></lightning-output-field>
+
+                                </div>
+                                <div class="slds-col slds-size_1-of-1">
+                                    Line 1 <lightning-output-field variant="label-hidden" field-name="Address_New__c" ></lightning-output-field>
+        
+                            </div>
+                            <div class="slds-col slds-size_1-of-1">
+                                Line 2 <lightning-output-field variant="label-hidden" field-name="Address2_New__c" ></lightning-output-field>
+        
+                                </div>
+                                <div class="slds-col slds-size_1-of-3">
+                                    City <lightning-output-field variant="label-hidden" field-name="Address2_New__c" ></lightning-output-field>
+                                    </div>
+                                    <div class="slds-col slds-size_1-of-3">                            
+                                        State <lightning-output-field variant="label-hidden" field-name="Address2_New__c" ></lightning-output-field>
+                                    </div>
+                                    <div class="slds-col slds-size_1-of-3">
+                                    Zip <lightning-output-field variant="label-hidden" field-name="Address2_New__c" ></lightning-output-field>
+                                </div>
+                                <div class="slds-col slds-size_1-of-3">
+                                    Address Type  <lightning-output-field variant="label-hidden" field-name="Address2_New__c" ></lightning-output-field>
+                                    </div>
+                                    <div class="slds-col slds-size_1-of-3">                            
+                                        Country  <lightning-output-field variant="label-hidden" field-name="Address2_New__c" ></lightning-output-field>
+                                    </div>
+                                    <div class="slds-col slds-size_1-of-3">
+                                        Country Code <lightning-output-field variant="label-hidden" field-name="Address2_New__c" ></lightning-output-field>
+                                </div>
+                                
+        
+                            
+                    </div>
+                </lightning-record-view-form>
+                <div class="signtbl">
+                
+                    <p onclick={addSignClass}>Member Signature</p>
+                    <template if:true={attachmentId}>
+                            
+                            
+                            <div class={eSignDiv} id="eSignDiv" >
+                                <div style="text-align: center;">
+                                    <canvas id="can" style="border:2px solid #ddd;background: transparent;"></canvas>
+                                </div>
+                            </div>
+                        
+                        </template>   
+                                <p><strong>Date</strong></p>
+                                <div class="dt">{date}</div>
+                                
+                           
+                </div>
+               
+                
+            
+                  <!--  <div style="text-align: center;margin: 7px;">
+                        <button class="slds-button slds-button_brand" onclick="{!c.erase}">Clear</button>
+                        <button class="slds-button slds-button_brand" id="btnSave" disabled="{!v.saveDisabled}" onclick="{!c.save}">Save</button>
+                    </div>-->
+               
+            </div>
+        </div>
+   
+     
+</lightning-card>
+</template>
