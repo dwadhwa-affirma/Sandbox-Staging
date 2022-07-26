@@ -22,6 +22,7 @@
 	  var recordid = component.get("v.recordId");
 	  var parameters = {"accountId": recordid };
 	  action.setParams(parameters);
+    
 	  action.setCallback(this, function(response){
 	  var status = response.getState();
           if(component.isValid() && status === "SUCCESS")

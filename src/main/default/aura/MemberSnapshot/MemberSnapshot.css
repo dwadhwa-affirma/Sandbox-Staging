@@ -19,6 +19,7 @@
 .THIS.snapwrap .snaptbl td:nth-child(1){background-color:#f7f9fb;}
 .THIS.snapwrap .stagebar{display:flex;margin-bottom:0.5rem;}
 
+
 @media (max-width:1024px){
     .THIS.snapwrap .slds-grid{display:block;}
     .THIS.snapwrap .snaptbl{margin-bottom:1rem;}

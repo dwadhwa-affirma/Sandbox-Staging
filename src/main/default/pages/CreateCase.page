@@ -1,3 +1,10 @@
+<!--
+  @description       : 
+  @author            : ChangeMeIn@UserSettingsUnder.SFDoc
+  @group             : 
+  @last modified on  : 07-26-2022
+  @last modified by  : ChangeMeIn@UserSettingsUnder.SFDoc
+-->
 <apex:page id="CreateCase" Controller="CreateCaseController" showHeader="false" standardStylesheets="false" action="{!PageLoad}" applyHtmlTag="false" docType="html-5.0"  >
 <html>
 <head>
@@ -52,28 +59,114 @@
 <link rel="stylesheet" type="text/css" href="{!URLFOR($Resource.MessagingAssets,'MessagingAssets/css/FileUploadCSS.css')}"/>
 <link rel="stylesheet" type="text/css" href="{!URLFOR($Resource.MessagingAssets,'MessagingAssets/css/' + Responsivecss  )}"/>
 <link rel="stylesheet" type="text/css" href="{!URLFOR($Resource.MessagingAssets,'MessagingAssets/css/' + sidebar  )}"/> 
-  <!-- <c:CSS_Responsive_Spectrum />   -->
  <apex:includeScript value="{!$Site.Prefix}/soap/ajax/36.0/connection.js" />
  
  
 </head>
 
-
-<body>
+ <body>
 <apex:form id="CreateCaseForm" forceSSL="true">
 	<div class="container">
 		<div class="row">
+            
 				<div class="header">
+                    <div class="col-xs-12 col-sm-7" id="counter">
+                                    <script> 
+                        				var counter = document.getElementById("counter");
+                                        var startTime;
+                                        if (sessionStorage) {
+                                          // Ask other tabs for session storage
+                                          localStorage["getTmestamp"] = "get";
+                                        
+                                          window.addEventListener("storage", (event) => {
+                                            if (event.key == "getTmestamp") {
+                                              // Some tab asked for the sessionStorage -> send it
+                                              localStorage["timestamp"] = sessionStorage["timestamp"];
+                                              localStorage.removeItem("getTmestamp");
+                                            } else if (event.key == "timestamp" && !sessionStorage["timestamp"]) {
+                                              sessionStorage["timestamp"] = new Date(localStorage["timestamp"]);
+                                              localStorage.removeItem("timestamp");
+                                            }
+                                          });
+                                        } else {
+                                          console.warn("Browser doesn't support sessionStorage");
+                                        }
+                                        var interval = setInterval(() => {
+                                            
+                                          if (!startTime && sessionStorage && !sessionStorage["timestamp"]) {
+                                            sessionStorage["timestamp"] = new Date();
+                                          }
+                                          startTime = new Date(sessionStorage["timestamp"]);
+                                          var currentTime = new Date();
+                                          var timeElapsed = Math.ceil((currentTime - startTime) / 1000);
+                                          var remainingTime = 900 - timeElapsed;
+                                          if (remainingTime <= 0) {
+                                              var counter2 = document.getElementById("counter");
+                                              counter2.innerHTML = "Session Expired ";
+                                             var messagevalue='{!message}';
+                                            alert(messagevalue); 
+                                              //alert("Session Timeout");
+                                            clearInterval(interval);
+                                            var anchors = document.getElementsByTagName("a");
+                                            for (var i = 0; i < anchors.length; i++) {
+                                                anchors[i].setAttribute('disabled', 'disabled');
+                                                anchors[i].style.opacity = '0.65';
+                                                anchors[i].style.cursor = 'default';
+                                                anchors[i].style.pointerEvents = 'none';
+                                                anchors[i].onclick = function() {return false;};
+                                            }
+                                              var childNodes = document.getElementById("FileUploadPanel").getElementsByTagName('*');
+                                                for (var node of childNodes) {
+                                                   node.disabled = true;
+                                                }
+                                              var childNodes = document.getElementById("NextPrev").getElementsByTagName('*');
+                                              for (var node of childNodes) {
+                                                  node.disabled = true;
+                                              }
+                                              var buttons = document.getElementsByTagName("button");
+                                            for (var i = 0; i < anchors.length; i++) {
+                                                buttons[i].setAttribute('disabled', 'disabled');
+                                                buttons[i].onclick = function() {return false;};
+                                            }
+                                            
+                                          }
+                            				    
+                        					var current_minutes = parseInt(remainingTime/60);
+    										var current_seconds = remainingTime % 60;
+                        					if(remainingTime < 2 ){
+                                            		counter.innerHTML = "Session Expired ";
+                                            }else{
+                                                    counter.innerHTML = "Session Expires in " + current_minutes + ":" + (current_seconds < 10 ? "0" : "") + String(current_seconds);
+
+                                            }
+                        					
+                                          console.log("Session Time in seconds:", timeElapsed);
+                                          console.log("Remaining Session Time in seconds:", remainingTime);
+                                        }, 500);
+                       
+                                    
+                                    </script>
+                                    </div>
+                    <div class="row">
+                        <p>
+                            
+                        </p>
+                    </div>
+                    <div class="row">
+                        <p>
+                            
+                        </p>
+                    </div>
+
 					<div class="col-xs-12 col-sm-7">
 						<div class="chevron_logo"><a href="{!$Site.Prefix}/ShowCases?Type=Messages"><apex:image url="{!URLFOR($Resource.MessagingAssets,'MessagingAssets/img/' + imgName)}" styleClass="img-responsive imageposition" alt=""/></a></div>
 					</div>
 					<div class="col-xs-12 col-sm-5 text-right">
 						<div class="top_action_btn">
 							<ul class="topaction_btn_list">
-								<li><a class="knowledgelink" target="_blank" href="{!Brand_Help}">Knowledge Base</a></li>
 								<li>
 								
-								<a href="#" class="btn btn-primary action_close" id="btnClose" onclick="window.close();" >Close</a></li>
+								<c href="#" class="btn btn-primary action_close" id="btnClose" onclick="window.close();" >Close</c></li>
 							</ul>
 						</div>
 					</div>
@@ -88,7 +181,6 @@
 						
 							<div class="sidebar">
 							
-								<!--  <a data-bind="attr:{'href':'{!$Site.CurrentSiteUrl}CreateCase'}" class="btn btn-primary action_submit inqbtn">Create New Inquiry</a>-->
 								<div class="sidebar_nav_list">
 									<ul class="sb_navlist">
 										<li><a href="{!$Site.Prefix}/ShowCases?Type=Messages">Messages</a></li>
@@ -142,7 +234,7 @@
                      				 <apex:inputTextarea cols="30" rows="10" style="width:0px;border:0px solid red;height:0px;" id="commenttext" value="{!cdescription}" required="true" />
 								</div>
 							</apex:outputPanel>
-							<div class="showDesktop">
+							<div class="showDesktop" id = "FileUploadPanel">
 							<label for="attachfile">*Each file not to exceed more than 10 MB. Files may take several minutes to upload/download depending on your Internet connection speed.</label>
 							<apex:panelGrid columns="2" style="width:100%; table-layout: fixed;" id="panelgrid" >
 										<div class="uploadBox">
@@ -198,12 +290,7 @@
   
   <input type="hidden"  class='addattachment' value="false" /> 
                   
-  <!-- <apex:outputPanel id="PageVariables" layout="block">
-  <input type="hidden" class="parentid" value="{!caseid}" />
-   <apex:actionFunction name="passStringToController" action="{!SaveCase}" rerender="PageVariables">
-   	<apex:param assignto="{!DeviceType}" name="DeviceType" value="{!}"></apex:param>
-   </apex:actionFunction>
-  </apex:outputPanel> -->
+  
 <div class="row">
 				<div class="footer_area">
 					<div class="col-xs-12" >
@@ -261,7 +348,6 @@
 
   </body>  
  
-<!--  <c:MultiAttachment objId="{!$CurrentPage.Parameters.id}"/>--> 
     
 <script type="text/javascript"> 
 j$ = jQuery.noConflict();
@@ -508,7 +594,6 @@ j$(document).ready(function()
     function Cancel()
     {
     	var txt;
-   		//var r = confirm("Are you sure you want to cancel this request?");
    		showCustomConfirm("Are you sure you want to cancel this request?");
     	
     	
@@ -535,7 +620,6 @@ j$(document).ready(function()
     	var i = 3; 
     		var self = this;
 		    self.FileUploadList = ko.observableArray([new fileupload(""),new fileupload(""),new fileupload("")]);
-		   /* j$('.uploadBox').addClass('hidden');*/
 		    self.remove = function () {
 		  
 		        self.FileUploadList.remove(this);
@@ -589,14 +673,7 @@ j$(document).ready(function()
     	
     }
     
-    /*function getRTEValue()
-    {
-    				var iframe = j$('#cke_1_contents iframe')[0];
-					var iframeDocument = iframe.contentDocument || iframe.contentWindow.document;
-					var h = iframeDocument.getElementById('CreateCase:CreateCaseForm:description_rta_body');
-					return j$(h).text();
-    }
-    */
+    
     function getRTEValue()
     {
         var iframe = j$('#cke_1_contents iframe')[0];
@@ -792,17 +869,13 @@ files = [];
 	   				j++;
 					
 				}
-	    		/*if(j > 0 )
-	    		{
-	    			files.length =0;
-	    		}*/
+	    		
 			}
 			
 			
 			if(j$.inArray(false, flagforupload) !== -1)
 			{
 				
-				//alert('You cannot upload file with extension:' + blockedExtension );
 				
 	    		j$(".uploadBox input").removeAttr("disabled");
 				j$(".uploadBox button").removeAttr("disabled").attr("class","btn");
@@ -822,19 +895,16 @@ files = [];
 						}
 						else if(files[i].size > 10485760)
 						{
-							//alert('File size is greater than 2 MB');
 							j$(".uploadBox input").removeAttr("disabled");
 							j$(".uploadBox button").removeAttr("disabled").attr("class","btn");
 							
-						//	j$(".selectpicker").removeAttr("disabled");
 				   			j$(".subjectinput").removeAttr("disabled");
 				     		j$(".descriptioninput").removeAttr("disabled");
 				     		 j$(".removebutton").removeAttr("disabled"); 
 				     		j$(".addfile").removeAttr("disabled");
 				     		 j$(".submitbutton").removeAttr("disabled"); 
 				     		 
-							//j$('.UploadInputfiles').val('');
-							//j$('#filesInput'+ i).val('');
+							
 							j$('#errorMessage'+ filesposition[i]).text('File size is greater than 10 MB');
 							j$('#erroricon'+ filesposition[i]).addClass('glyphicon glyphicon-exclamation-sign');
 							files[i].size = 0;
@@ -1034,7 +1104,6 @@ files = [];
 		}
 		
 		j$("#DialogText").html(msg);
-		//j$(".showDialog").click();
 		
 		j$('#myModal').modal({
 			backdrop:'static',
@@ -1051,7 +1120,6 @@ files = [];
 	function showCustomConfirm(msg) 
 	{
 		j$("#confirmText").html(msg);
-		//j$(".showConfirm").click();
 
 		j$('#confirm').modal({
 		      backdrop: 'static',
