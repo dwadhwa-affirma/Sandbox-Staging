@@ -8,16 +8,20 @@ global class CFCUSAMLHelper implements Auth.SamlJitHandler {
        	
         if(create) 
         {
-        	
+        	Boolean isSandbox = [SELECT Id, IsSandbox FROM Organization LIMIT 1].IsSandbox;
         	system.debug('------Start handleUser------');
-        	if (Brand == 'Chevron')
-        	{
+            if (Brand == 'Chevron'){
             	u.Username = federationIdentifier + '@mars.chevronfcu.org';
         	}
-        	else
-        	{
+            else{
         		u.Username = federationIdentifier + '@mars.spectrumcu.org';
         	}
+            
+            if(isSandbox == true){
+                u.Username = u.Username + 'staging';
+            }
+            system.debug('Username: '+ u.Username);
+            
             u.FederationIdentifier = federationIdentifier;
            	if(EmailAddress !='')
             {
@@ -96,8 +100,8 @@ global class CFCUSAMLHelper implements Auth.SamlJitHandler {
         		u.KEEP_ALIVE_URL__c = attributes.get('KEEP_ALIVE_URL');
             }
             
-        }
-           
+        }      
+        
     }
 
 	@TestVisible private Account handleAccount(string AccountName, string Brand,Boolean Create,string FederationId,List<String> federationIdentifierList)
@@ -111,7 +115,7 @@ global class CFCUSAMLHelper implements Auth.SamlJitHandler {
 			//a.Name = AccountName + ' - ' + Brand;
 			a.Name = federationId + '-' + Brand;
             if(federationIdentifierList.size()>0){
-                a.Description = string.valueOf(federationIdentifierList);
+                a.Description = string.join(federationIdentifierList, ',');
             }
             else{
                 a.Description ='';
@@ -132,7 +136,7 @@ global class CFCUSAMLHelper implements Auth.SamlJitHandler {
                 NewAcc.id = a.id;
                 system.debug('federationIdentifierList: '+federationIdentifierList);
                 if(federationIdentifierList.size()>0){
-                	NewAcc.Description = string.valueOf(federationIdentifierList);
+                	NewAcc.Description = string.join(federationIdentifierList, ',');
                 }
                 else{
                     NewAcc.Description = '';
@@ -148,7 +152,7 @@ global class CFCUSAMLHelper implements Auth.SamlJitHandler {
 				//a.Name = AccountName + ' - ' + Brand;
 				a1.Name = federationId + '-' + Brand;
                 if(federationIdentifierList.size()>0){
-                    a1.Description = string.valueOf(federationIdentifierList);
+                    a1.Description = string.join(federationIdentifierList, ',');
                 }
                 else{
                     a1.Description ='';
@@ -171,17 +175,7 @@ global class CFCUSAMLHelper implements Auth.SamlJitHandler {
 	        
 	        insert c;
 	        u.ContactId = c.Id;
-        }
-        /*else{
-            system.debug('else');
-            Contact pc = [SELECT Id, LastName, FirstName, Email FROM Contact WHERE AccountId=:account.Id];
-            system.debug('pc:'+pc);
-            system.debug('account:'+account);
-            system.debug('u.contact.Email:'+u.contact.Email);
-            if(u.contact.Email == null){                
-                u.Contact.Email = pc.Email;
-            }
-        }*/
+        }        
         
     }
 
@@ -237,7 +231,7 @@ global class CFCUSAMLHelper implements Auth.SamlJitHandler {
                     system.debug('S: '+s);
                     Integer sl = s.length();        
                     
-                    if (sl<10){
+                    if (sl<10 && sl!=0){
                         Integer  zerotoadd = 10-sl;
                         string prepend='';
                         for (Integer  i=0; i<zerotoadd; i++){
@@ -249,7 +243,7 @@ global class CFCUSAMLHelper implements Auth.SamlJitHandler {
                         }
                     }
                     else{
-                        if(federationIdentifierList.contains(s)== false && s != AccountName){
+                        if(federationIdentifierList.contains(s)== false && s != AccountName && sl!=0){
                         	federationIdentifierList.add(s);
                         }
                     }
@@ -262,7 +256,7 @@ global class CFCUSAMLHelper implements Auth.SamlJitHandler {
              
            	accountdetails = [SELECT AccountID__c,Id,Name,Parent_Account__c, Brand__c, SecureEmailAddress__c FROM Account_Details__c Where Name =:AccountName and Parent_Account__c = null];
             
-           	personaccount = [Select AccountID__c, Account_Number__c, Name_Type__c,  Id, PersonAccount__c, PersonID__c, Person_ID_Number__c FROM Person_Account__c Where Account_Number__c =: accountdetails.id and Name_Type__c = 0];
+           	personaccount = [Select AccountID__c, Account_Number__c, Name_Type__c,  Id, PersonAccount__c, PersonID__c, Person_ID_Number__c FROM Person_Account__c Where Account_Number__c =: accountdetails.id and Name_Type__c = 0 order by createddate asc limit 1];
             
           	userAccount = [Select Id, PersonID__C, Name,PersonEmail,FirstName, LastName from Account WHERE Id =: personaccount.PersonID__c];
           	
@@ -312,7 +306,8 @@ global class CFCUSAMLHelper implements Auth.SamlJitHandler {
         User u = [SELECT Id, FirstName, ContactId, Email, Contact.Email FROM User WHERE Id=:userId];
         system.debug('U===' + u);
         handleJit(false, u, samlSsoProviderId, communityId, portalId,federationIdentifier, attributes, assertion);
-        
+        system.debug('UpdatedU===' + u.Contact.Email);
+        system.debug('UpdatedU===' + u.Email);
         update u;
     }
    
