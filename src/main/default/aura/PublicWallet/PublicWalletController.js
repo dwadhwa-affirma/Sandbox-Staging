@@ -123,6 +123,7 @@
                     Button.set("v.variant", "destructive");
                     DOBMatch = 'Fail';
                     FailedCount = parseInt(FailedCount) + 1;
+                    ScoreObtained = parseInt(ScoreObtained) - 1;  
                 }
                 else
                 {
@@ -189,6 +190,7 @@
                             Button.set("v.variant", "destructive");
                             FailedCount = parseInt(FailedCount) + 1;
                             IdNumberMatch = 'Fail';
+                            ScoreObtained = parseInt(ScoreObtained) - 1;  
                         }
                         else
                         {
@@ -200,7 +202,7 @@
                         }
                         component.set("v.QuestionAttempt",QuestionAttempt );                        
                         component.set("v.FailedCount",FailedCount);
-                        
+                        component.set("v.ScoreObtained",ScoreObtained);
                         findOtherButton.set("v.variant", "neutral");                        
                         component.set("v.IdNumberMatch",IdNumberMatch);
                         if(QuestionAttempt >=3){
@@ -259,6 +261,7 @@
                                     Button.set("v.variant", "destructive");
                                      FailedCount = parseInt(FailedCount) + 1;
                                      MMNMatch = 'Fail';
+                                     ScoreObtained = parseInt(ScoreObtained) - 1;  
                                 }
                                 else
                                 {
@@ -271,7 +274,7 @@
                                 component.set("v.QuestionAttempt",QuestionAttempt );
                                 component.set("v.FailedCount",FailedCount);
                                 findOtherButton = component.find('MothersMaidenNamePassButton');
-                                
+                                component.set("v.ScoreObtained",ScoreObtained);
                                 findOtherButton.set("v.variant", "neutral");
                                
                                 component.set("v.MMNMatch",MMNMatch);
@@ -328,6 +331,7 @@
                                             FailedCount = parseInt(FailedCount) + 1;
                                             Button.set("v.variant", "destructive");
                                             EmailMatch = 'Fail';
+                                            ScoreObtained = parseInt(ScoreObtained) - 1;  
                                         }
                                         else
                                         {
@@ -341,7 +345,7 @@
                                         component.set("v.FailedCount",FailedCount);
                                         
                                         findOtherButton.set("v.variant", "neutral");
-                                        
+                                        component.set("v.ScoreObtained",ScoreObtained);
                                         component.set("v.EmailMatch",EmailMatch);
                                         if(QuestionAttempt >=3){
                                             component.set("v.IsButtonDisabled",false);
@@ -411,6 +415,7 @@
                                                             Button.set("v.variant", "destructive");
                                                              AdditionalTokenOption3Match = 'Fail';
                                                              component.set("v.AdditionalTokenOption3",token1); 
+                                                             ScoreObtained = parseInt(ScoreObtained) - 1;  
                                                         }
                                                         else
                                                         {
@@ -422,7 +427,7 @@
                                                              component.set("v.AdditionalTokenOption3",token1); 
                                                         }
                                                         component.set("v.QuestionAttempt",QuestionAttempt );
-                                                                                                              
+                                                        component.set("v.ScoreObtained",ScoreObtained);                                                     
                                                         component.set("v.FailedCount",FailedCount);                                                        
                                                         findOtherButton.set("v.variant", "neutral");
                                                        
@@ -497,6 +502,7 @@
                                                                     FailedCount = parseInt(FailedCount) + 1;
                                                                     Button.set("v.variant", "destructive");
                                                                      AdditionalTokenOption4Match = 'Fail';
+                                                                     ScoreObtained = parseInt(ScoreObtained) - 1;  
                                                                 }
                                                                 else
                                                                 {
@@ -510,7 +516,7 @@
                                                                 component.set("v.QuestionAttempt",QuestionAttempt );                                                             
                                                                 
                                                                 component.set("v.FailedCount",FailedCount);
-                                                                
+                                                                component.set("v.ScoreObtained",ScoreObtained);
                                                                 findOtherButton.set("v.variant", "neutral");
                                                                
                                                                 component.set("v.AdditionalTokenOption4Match",AdditionalTokenOption4Match);
