@@ -1,153 +1,247 @@
 <template>
     <lightning-card title="">
-      
+
         <div class="authwrap" id="authwrap">
-            <div id="signaturePDF">   
-                <div class="logohead">
-                    <div class="logoimg">
-                     <template if:true={brandname}>
-                     
-                        <span style="display: inline-block; margin-right:10px;"><img src={spectrumlogo} alt="Spectrum" /> </span> 
+            <div id="signaturePDF">
+                <template if:true={defaultloadpage}>
+                    <div class="logohead">
+                        <div class="logoimg">
+                            <template if:true={isLogoChevron}>
+                               
+                                <span style="display: inline-block; margin-right:10px;"><img src={brandName}
+                                        alt="Spectrum" /> </span>
+
+                            </template>
+                            <template if:false={isLogoChevron}>
+                               
+                                <img src={brandName} alt="Chevron"
+                                    style="width: 197px;height: 46px;display: inline-block;" />
+
+                            </template>
+
+
+                        </div>
+                        <h1 class="slds-text-heading--medium heading">ADDRESS CHANGE AUTHORIZATION </h1>
+                    </div>
+                    <lightning-record-view-form record-id={recordId} object-api-name="InPersonSigning__c">
+                    <div class="addrform">
+                        <table>                
+                            <tr>
+                                <td class="p0">
+                                    <table class="tblbor0">
+                                        <tr>
+                                            <td class="tblborright">Member Name <span><lightning-output-field  class="outputvalue" style=" text-decoration: underline" variant="label-hidden" field-name="AC_Member__c"></lightning-output-field></span></td>
+                                            <td>Account Number <span> <lightning-output-field  variant="label-hidden" name="Account Number"
+                                                field-name="AC_Member_Account__c" > </lightning-output-field> </span></td>                                
+                                        </tr>
+                                    </table>
+                                </td>
+                            </tr>
+                            <tr>
+                              <td class="titletbl"><strong>New Residential Address</strong></td>
+                            </tr>
+                            <tr>
+                                <td>
+                                  Line 1 <span>142 FLYING DUTCHMAN CT</span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Line 2 <span><lightning-output-field variant="label-hidden"  class="outputvalue" name="Line 2"
+                                    field-name="AC_Residential_Address_Line2__c"></lightning-output-field></span></td>
+                            </tr>
+                            <tr>
+                              <td class="p0">
+                                <table class="tblbor0">
+                                    <tr>
+                                      <td class="tblborright">City <span><lightning-output-field variant="label-hidden"  class="outputvalue" field-name="AC_Residential_City__c">
+                                    </lightning-output-field></span></td>
+                                      <td class="tblborright">State <span><lightning-output-field variant="label-hidden"  class="outputvalue" field-name="AC_Residential_State__c">
+                                    </lightning-output-field></span></td>
+                                      <td>Zip <span><lightning-output-field variant="label-hidden"  class="outputvalue" field-name="AC_Residential_Zip__c">
+                                    </lightning-output-field></span></td>
+                                    </tr>
+                                </table>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td class="p0">
+                                <table class="tblbor0">
+                                  <tr>
+                                    <td class="tblborright">Address Type <span><lightning-output-field variant="label-hidden" class="outputvalue"
+                                        field-name="AC_Address_Type__c"></lightning-output-field></span></td>
+                                    <td class="tblborright">Country <span><lightning-output-field variant="label-hidden"  class="outputvalue" field-name="AC_Residential_Country__c">
+                                    </lightning-output-field></span></td>
+                                    <td>Country Code <span><lightning-output-field variant="label-hidden"  class="outputvalue"
+                                        field-name="AC_Residential_Country_Code__c"></lightning-output-field></span></td>
+                                  </tr>
+                                </table>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td><strong>Telephone Type</strong> <span><span class="chkbx">X</span> Domestic</span> &nbsp; <span><span class="chkbx">X</span> Foreign </span></td>                  
+                            </tr>
+                            <tr>
+                              <td class="p0">
+                                <table class="tblbor0">
+                                    <tr>
+                                      <td class="tblborright">Home Phone <span><lightning-output-field variant="label-hidden"  class="outputvalue" field-name="AC_Home_Phone__c">
+                                    </lightning-output-field></span></td>
+                                      <td class="tblborright">Work Phone <span><lightning-output-field variant="label-hidden" field-name="AC_Work_Phone__c">
+                                    </lightning-output-field></span></td>
+                                      <td>Work Ext <span><lightning-output-field variant="label-hidden"  class="outputvalue" field-name="AC_Work_Extension__c">
+                                    </lightning-output-field></span></td>
+                                    </tr>
+                                </table>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td class="p0">
+                                <table class="tblbor0">
+                                    <tr>
+                                      <td class="tblborright">Cell Phone  <span><lightning-output-field variant="label-hidden"  class="outputvalue" field-name="AC_Mobile_Phone__c">
+                                    </lightning-output-field></span></td>
+                                      <!-- <td>Pager No. <span>{Value}</span></td>                           -->
+                                    </tr>
+                                </table>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td class="multicoltbl">
+                                <table class="tblbor0">
+                                  <tr>
+                                      <td class="tblborright"><strong>Account Mailing Address </strong></td>
+                                      <td>Expire On <span><lightning-output-field variant="label-hidden"  class="outputvalue" field-name="AC_Expires_On__c"
+                                        ></lightning-output-field></span></td>                                
+                                  </tr>
+                                </table>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                Line 1 <span><lightning-output-field variant="label-hidden" class="outputvalue" field-name="AC_Mailing_Address_Line1__c"
+                                    ></lightning-output-field></span>
+                              </td>
+                            </tr>
+                            <tr>
+                                <td>Line 2 <span><lightning-output-field variant="label-hidden" class="outputvalue" field-name="AC_Mailing_Address_Line2__c"
+                                    ></lightning-output-field></span></td>
+                            </tr>
+                            <tr>
+                              <td class="p0">
+                                <table class="tblbor0">
+                                    <tr>
+                                      <td class="tblborright">City <span><lightning-output-field variant="label-hidden" class="outputvalue" field-name="AC_Mailing_Address_City__c"
+                                        ></lightning-output-field></span></td>
+                                      <td class="tblborright">State <span><lightning-output-field variant="label-hidden" class="outputvalue" field-name="AC_Mailing_Address_State__c"
+                                        ></lightning-output-field></span></td>
+                                      <td>Zip <span><lightning-output-field variant="label-hidden" class="outputvalue" field-name="AC_Mailing_Address_Zip__c"
+                                        ></lightning-output-field></span></td>
+                                    </tr>
+                                </table>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td class="p0">
+                                <table class="tblbor0">
+                                  <tr>
+                                    <td class="tblborright">Address Type <span><lightning-output-field variant="label-hidden" class="outputvalue" field-name="AC_Mailing_Address_Type__c"
+                                        ></lightning-output-field></span></td>
+                                    <td class="tblborright">Country <span><lightning-output-field variant="label-hidden" class="outputvalue" field-name="AC_Mailing_Address_Country__c"
+                                        ></lightning-output-field></span></td>
+                                    <td>Country Code <span><lightning-output-field variant="label-hidden" class="outputvalue" field-name="AC_Mailing_Address_Country_Code__c"
+                                        ></lightning-output-field></span></td>
+                                  </tr>
+                                </table>
+                              </td>
+                            </tr>                  
+                            <tr>
+                                <td class="p0">
+                                    <table class="tblbor0">
+                                        <tr>
+                                            <td class="tblborright">Member Signature <span>{Value}</span></td>
+                                            <td>Date <span>{date}</span></td>
+                                        </tr>
+                                    </table>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><strong>Additional Names and Account Numbers Updated </strong> <span><lightning-output-field variant="label-hidden" class="outputvalue" field-name="AC_AccountNamePair__c"></lightning-output-field></span></td>
+                            </tr>                                
+                        </table>
+                        <br/>
+                        <div class="credit-use">For Credit Union Use Only</div>
+                        <table class="credittbl">
+                          <tr>
+                            <td class="p0">
+                              <table class="tblbor0">
+                                <tr>
+                                  <td><strong>Identification Method</strong></td>
+                                </tr>
+                                <tr>
+                                  <td><span class="chkbx">X</span> Known</td>
+                                </tr>
+                                <tr>
+                                  <td><span class="chkbx">X</span> Chevron Badge</td>
+                                </tr>
+                                <tr>
+                                  <td><span class="chkbx">X</span> Signature Card</td>
+                                </tr>
+                                <tr>
+                                  <td><span class="chkbx">X</span> DL/ID/Other #  {Value}</td>
+                                </tr>
+                                <tr>
+                                  <td><span class="chkbx">X</span> Passport #  {Value}</td>
+                                </tr>
+                                <tr>
+                                  <td><span class="chkbx">X</span> MAAP</td>
+                                </tr>
+                              </table>
+                            </td>
+                            <td class="p0">
+                              <table class="tblbor0">
+                                <tr>
+                                  <td><strong>Intake Method</strong></td>
+                                </tr>
+                                <tr>
+                                  <td><span class="chkbx">X</span> In Person Request </td>
+                                  <td><span class="chkbx">X</span> In Person Request via PTM</td>
+                                </tr>
+                                <tr>
+                                  <td><span class="chkbx">X</span> Telephone Request </td>                      
+                                </tr>
+                                <tr>
+                                  <td><span class="chkbx">X</span> Mail</td>
+                                  <td><span class="chkbx">X</span> DocuSign</td>
+                                </tr>
+                                <tr>
+                                  <td><span class="chkbx">X</span> Correction to Address Change/Signature Card</td>                      
+                                </tr>
+                                <tr>
+                                  <td>&nbsp;</td>                      
+                                </tr> 
+                                <tr>
+                                  <td>Operator ID {Value}</td>                      
+                                </tr>
+                                                 
+                              </table>
+                            </td>
+                          </tr>              
+                        </table>
                         
-                    </template>
-                    <template if:false={brandname}>
-                      <img src={chevronlogo} alt="Chevron" />
-                       
-                      </template>
-                        
+                        <div class="note"><strong>*The information contained in the Address Change Authorization supersedes current information on file.</strong></div>
                         
                     </div>
-                    <h1 class="slds-text-heading--medium" style="text-align:center;font-weight: 600;margin-top: 22px;
-                    margin-bottom: 30px;">ADDRESS CHANGE AUTHORIZATION FORM </h1>
-                </div> 
-                
-                <lightning-record-view-form record-id={recordId} object-api-name="AddressChangeLog__c">
+                    </lightning-record-view-form>
+                    
+                  
+                </template>
 
-                    <div class="slds-grid slds-wrap">
-                        <div class="slds-col slds-size_1-of-2">
-                            Member Name <lightning-output-field variant="label-hidden" field-name="Names__c" ></lightning-output-field>
-                            Email Address<lightning-output-field variant="label-hidden" field-name="Email__c" > </lightning-output-field>
-                        </div>
-                        <div class="slds-col slds-size_1-of-2">
-                            Account Number <lightning-output-field variant="label-hidden" field-name="AccountNumbersString__c" ></lightning-output-field>
-                             <!--Alternate Email Address <lightning-output-field variant="label-hidden" field-name="AlternateEmail_New__c" ></lightning-output-field>-->
-                        </div>
-                      
-                       
-                        <div class="slds-col slds-size_1-of-1">
-                            <p class="slds-align_absolute-left" style="font-weight: bold">Residential Address</p>
-                        </div>
-                        <div class="slds-col slds-size_1-of-1">
-                            Line 1 <lightning-output-field variant="label-hidden" field-name="Address_New__c" ></lightning-output-field>
 
-                    </div>
-                    <div class="slds-col slds-size_1-of-1">
-                        Line 2 <lightning-output-field variant="label-hidden" field-name="Address2_New__c" ></lightning-output-field>
 
-                        </div>
-                        <div class="slds-col slds-size_1-of-3">
-                            City <lightning-output-field variant="label-hidden" field-name="Address2_New__c" ></lightning-output-field>
-                            </div>
-                            <div class="slds-col slds-size_1-of-3">                            
-                                State <lightning-output-field variant="label-hidden" field-name="Address2_New__c" ></lightning-output-field>
-                            </div>
-                            <div class="slds-col slds-size_1-of-3">
-                            Zip <lightning-output-field variant="label-hidden" field-name="Address2_New__c" ></lightning-output-field>
-                        </div>
-                        <div class="slds-col slds-size_1-of-3">
-                            Address Type  <lightning-output-field variant="label-hidden" field-name="Address2_New__c" ></lightning-output-field>
-                            </div>
-                            <div class="slds-col slds-size_1-of-3">                            
-                                Country  <lightning-output-field variant="label-hidden" field-name="Address2_New__c" ></lightning-output-field>
-                            </div>
-                            <div class="slds-col slds-size_1-of-3">
-                                Country Code <lightning-output-field variant="label-hidden" field-name="Address2_New__c" ></lightning-output-field>
-                        </div>
 
-                        <div class="slds-col slds-size_1-of-1" style="font-weight: bold">
-                            Telephone Type  <lightning-output-field variant="label-hidden" field-name="Address2_New__c" ></lightning-output-field>
-                            </div>
-
-                            <div class="slds-col slds-size_1-of-3">
-                                Home Phone  <lightning-output-field variant="label-hidden" field-name="Address2_New__c" ></lightning-output-field>
-                                </div>
-                                <div class="slds-col slds-size_1-of-3">                            
-                                    Work Phone  <lightning-output-field variant="label-hidden" field-name="Address2_New__c" ></lightning-output-field>
-                                </div>
-                                <div class="slds-col slds-size_1-of-3">
-                                    Work Ext <lightning-output-field variant="label-hidden" field-name="Address2_New__c" ></lightning-output-field>
-                            </div>
-                            <div class="slds-col slds-size_1-of-2">
-                                Cell Phone  <lightning-output-field variant="label-hidden" field-name="Address2_New__c" ></lightning-output-field>
-                                </div>
-                                <!--<div class="slds-col slds-size_1-of-2">                            
-                                    Pager No.  <lightning-output-field variant="label-hidden" field-name="Address2_New__c" ></lightning-output-field>
-                                </div>-->
-                                <div class="slds-col slds-size_1-of-1">
-                                    <p class="slds-align_absolute-left" style="font-weight: bold">Account Mailing Address</p>
-                                    Expires on  <lightning-output-field variant="label-hidden" field-name="Address2_New__c" ></lightning-output-field>
-
-                                </div>
-                                <div class="slds-col slds-size_1-of-1">
-                                    Line 1 <lightning-output-field variant="label-hidden" field-name="Address_New__c" ></lightning-output-field>
-        
-                            </div>
-                            <div class="slds-col slds-size_1-of-1">
-                                Line 2 <lightning-output-field variant="label-hidden" field-name="Address2_New__c" ></lightning-output-field>
-        
-                                </div>
-                                <div class="slds-col slds-size_1-of-3">
-                                    City <lightning-output-field variant="label-hidden" field-name="Address2_New__c" ></lightning-output-field>
-                                    </div>
-                                    <div class="slds-col slds-size_1-of-3">                            
-                                        State <lightning-output-field variant="label-hidden" field-name="Address2_New__c" ></lightning-output-field>
-                                    </div>
-                                    <div class="slds-col slds-size_1-of-3">
-                                    Zip <lightning-output-field variant="label-hidden" field-name="Address2_New__c" ></lightning-output-field>
-                                </div>
-                                <div class="slds-col slds-size_1-of-3">
-                                    Address Type  <lightning-output-field variant="label-hidden" field-name="Address2_New__c" ></lightning-output-field>
-                                    </div>
-                                    <div class="slds-col slds-size_1-of-3">                            
-                                        Country  <lightning-output-field variant="label-hidden" field-name="Address2_New__c" ></lightning-output-field>
-                                    </div>
-                                    <div class="slds-col slds-size_1-of-3">
-                                        Country Code <lightning-output-field variant="label-hidden" field-name="Address2_New__c" ></lightning-output-field>
-                                </div>
-                                
-        
-                            
-                    </div>
-                </lightning-record-view-form>
-                <div class="signtbl">
-                
-                    <p onclick={addSignClass}>Member Signature</p>
-                    <template if:true={attachmentId}>
-                            
-                            
-                            <div class={eSignDiv} id="eSignDiv" >
-                                <div style="text-align: center;">
-                                    <canvas id="can" style="border:2px solid #ddd;background: transparent;"></canvas>
-                                </div>
-                            </div>
-                        
-                        </template>   
-                                <p><strong>Date</strong></p>
-                                <div class="dt">{date}</div>
-                                
-                           
-                </div>
-               
-                
-            
-                  <!--  <div style="text-align: center;margin: 7px;">
-                        <button class="slds-button slds-button_brand" onclick="{!c.erase}">Clear</button>
-                        <button class="slds-button slds-button_brand" id="btnSave" disabled="{!v.saveDisabled}" onclick="{!c.save}">Save</button>
-                    </div>-->
-               
             </div>
+         
+           
         </div>
-   
-     
-</lightning-card>
+    </lightning-card>
 </template>

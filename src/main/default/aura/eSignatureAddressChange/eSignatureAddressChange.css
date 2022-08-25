@@ -1,0 +1,23 @@
+.THIS.authwrap{font-size:.8125rem;background-color:#ffffff;padding:13px;}
+.THIS.hidediv {
+    display:none;
+}
+.THIS.showdiv {
+    display:block;
+}
+.THIS.eSignDiv {
+    background-color:#ffffff;
+    padding-top:50px;
+    height:100%;
+    padding-bottom:100px;
+}
+.THIS.tblId{
+    margin-top: -6rem;
+}
+.THIS.imgLogo{
+    height: 4rem !important;
+    margin-left: -87% !important;
+}
+.THIS.slds-text-heading--medium{
+
+}

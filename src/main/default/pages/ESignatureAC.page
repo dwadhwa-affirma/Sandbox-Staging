@@ -194,8 +194,8 @@
             </p>
             <p style='margin-top:0in;margin-right:0in;margin-bottom:0in;margin-left:0in;line-height:normal;'>
                 <span style='font-size:13px;font-family:"Arial",sans-serif;'>Member Name&nbsp;
-                    <span class="linespace" style="width:245px;">{!addressChangeObjectDetail.Sender_Name__c}</span> &nbsp; &nbsp;Account Number&nbsp;
-                    <span class="linespace" style="width:135px;">&nbsp;</span>&nbsp; &nbsp; &nbsp;&nbsp;</span>
+                    <span class="linespace" style="width:245px;">{!addressChangeObjectDetail.AC_Member__r.Name}</span> &nbsp; &nbsp;Account Number&nbsp;
+                    <span class="linespace" style="width:135px;">{!addressChangeObjectDetail.AC_Member_Account__r.Name}&nbsp;</span>&nbsp; &nbsp; &nbsp;&nbsp;</span>
             </p>
             <p style='margin-top:0in;margin-right:0in;margin-bottom:0in;margin-left:0in;line-height:normal;'>
                 <span style='font-size:13px;font-family:"Arial",sans-serif;'>&nbsp;</span>
@@ -248,9 +248,9 @@
             </p>
             <p style='margin-top:0in;margin-right:0in;margin-bottom:0in;margin-left:0in;line-height:normal;'>
                 <span style='font-size:13px;font-family:"Arial",sans-serif;'>Address Type&nbsp;
-                    <span class="linespace" style="width:150px;">{!addressChangeObjectDetail.AC_Residential_Country__c}&nbsp;</span> Country&nbsp;
-                    <span class="linespace" style="width:110px;">{!addressChangeObjectDetail.AC_Residential_Country_Code__c}&nbsp;</span> Country Code&nbsp;
-                    <span class="linespace" style="width:107px;">&nbsp;</span>
+                    <span class="linespace" style="width:150px;">{!addressChangeObjectDetail.AC_Address_Type__c}&nbsp;</span> Country&nbsp;
+                    <span class="linespace" style="width:110px;">{!addressChangeObjectDetail.AC_Residential_Country__c}&nbsp;</span> Country Code&nbsp;
+                    <span class="linespace" style="width:107px;">{!addressChangeObjectDetail.AC_Residential_Country_Code__c}&nbsp;</span>
                 </span>
             </p>
             <p style='margin-top:0in;margin-right:0in;margin-bottom:0in;margin-left:0in;line-height:normal;'>
@@ -263,9 +263,17 @@
                     <span style='font-size:13px;font-family:"Arial",sans-serif;'>Telephone Type:</span>
                 </strong>
                 <span style='font-size:13px;font-family:"Arial",sans-serif;'>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp;</span>
-                <span class="checkbox">x</span>
+                <span class="checkbox">
+                    <apex:outputPanel rendered="{!if(addressChangeObjectDetail.AC_Telephone_Type__c=='Domestic' , true ,false)}"> 
+                    x
+                    </apex:outputPanel>
+                </span>
                 <span style='font-size:13px;font-family:"Arial",sans-serif;'>&nbsp;Domestic&nbsp; &nbsp; &nbsp;</span>
-                <span class="checkbox">&nbsp;</span>
+                <span class="checkbox">
+                    <apex:outputPanel rendered="{!if(addressChangeObjectDetail.AC_Telephone_Type__c=='Foreign' , true ,false)}"> 
+                    x
+                    </apex:outputPanel>
+                   </span>
                 <span style='font-size:13px;font-family:"Arial",sans-serif;'>&nbsp;Foreign &nbsp; &nbsp; &nbsp;&nbsp;</span>
             </p>
             <p style='margin-top:0in;margin-right:0in;margin-bottom:0in;margin-left:0in;line-height:normal;'>
@@ -296,7 +304,7 @@
                     <span style='font-size:16px;font-family:"Arial",sans-serif;'>Account Mailing Address &nbsp;</span>
                 </strong>
                 <span style='font-size:13px;font-family:"Arial",sans-serif;'>Expire On&nbsp;
-                    <span class="linespace" style="width:100px;">&nbsp;</span>
+                    <span class="linespace" style="width:130px;">{!fmtDateExpiresOn}&nbsp;</span>
                 </span>
             </p>
             <p style='margin-top:0in;margin-right:0in;margin-bottom:0in;margin-left:0in;line-height:normal;'>
@@ -330,7 +338,7 @@
             </p>
             <p style='margin-top:0in;margin-right:0in;margin-bottom:0in;margin-left:0in;line-height:normal;'>
                 <span style='font-size:13px;font-family:"Arial",sans-serif;'>Address Type&nbsp;
-                    <span class="linespace" style="width:150px;">&nbsp;</span> Country&nbsp;
+                    <span class="linespace" style="width:150px;">{!addressChangeObjectDetail.AC_Mailing_Address_Type__c}&nbsp;</span> Country&nbsp;
                     <span class="linespace" style="width:110px;">{!addressChangeObjectDetail.AC_Mailing_Address_Country__c}&nbsp;</span> Country Code&nbsp;
                     <span class="linespace" style="width:107px;">{!addressChangeObjectDetail.AC_Mailing_Address_Country_Code__c}&nbsp;</span>
                 </span>
@@ -343,7 +351,12 @@
             </p>
             <p style='margin-top:0in;margin-right:0in;margin-bottom:0in;margin-left:0in;line-height:115%;'>
                 <span style='font-size:13px;line-height:115%;font-family:"Arial",sans-serif;'>Member Signature&nbsp;
-                    <span class="linespace" style="width:150px;">&nbsp;</span>&nbsp; &nbsp;Date&nbsp;
+                    <span class="linespace" style="width:150px;display:inline">
+                        <apex:outputPanel rendered="{!NOT(ISNULL(signAttachmentId))}">
+                            <img width="100" id="signImg" src="{!signImageUrl}"/>
+                                    </apex:outputPanel>
+                    </span>
+                    &nbsp; &nbsp;Date&nbsp;
                     <span class="linespace" style="width:150px;">{!fmtDate}&nbsp;</span>
                 </span>
             </p>
@@ -354,6 +367,7 @@
                 <strong>
                     <span style='font-size:13px;line-height:150%;font-family:"Arial",sans-serif;'>Additional Names and Account Numbers Updated:&nbsp;</span>
                 </strong>
+                <span class="linespace">{!addressChangeObjectDetail.AC_AccountNamePair__c}&nbsp;</span>
             </p>
             <p style='margin-top:0in;margin-right:0in;margin-bottom:0in;margin-left:0in;line-height:115%;'>
                 <strong>&nbsp;</strong>
@@ -387,7 +401,11 @@
                             <apex:repeat value="{!str_id}" var="a">
                                 <tr>
                                 <td>
-                                    <span class="checkbox"></span>&nbsp;&nbsp;
+                                    <span class="checkbox">
+                                        <apex:outputPanel rendered="{!if(addressChangeObjectDetail.Identification_Method__c==a , true ,false)}">
+                                        x
+                                        </apex:outputPanel>
+                                    </span>&nbsp;&nbsp;
                                     <span style='font-size:13px;line-height:150%;font-family:"Arial",sans-serif;'>{!a}</span>
                                 </td>
                             </tr>
@@ -408,7 +426,11 @@
                             <apex:repeat value="{!str_intake}" var="a">
                             <tr>
                                 <td>
-                                    <span class="checkbox">x&nbsp;</span>&nbsp;&nbsp;
+                                    <span class="checkbox">
+                                        <apex:outputPanel rendered="{!if(addressChangeObjectDetail.Clean_Up_Intake_Method__c==a , true ,false)}">
+                                        x
+                                        </apex:outputPanel>
+                                    </span>&nbsp;&nbsp;
                                     <span style='font-size:13px;line-height:150%;font-family:"Arial",sans-serif;'>{!a}</span>
                                 </td>
                             </tr>
@@ -428,16 +450,12 @@
 
     </body>
     <div style="text-align:center;" class="footer">
-        <apex:form>
+        <apex:form >
 
             <div id="footer">
 
                 <apex:commandButton value="Cancel" styleClass="slds-button slds-button_brand" onclick="cancelPDF();" />
-                <apex:commandButton value="Save PDF" onclick="this.onclick=function(){return false;}" styleClass="slds-button slds-button_brand"
-                    action="{!attach}" />
-                <!-- <apex:outputPanel rendered="{!NOT(ISNULL(signAttachmentId))}">
-                    <apex:commandButton value="Save PDF" onclick="this.onclick=function(){return false;}" styleClass="slds-button slds-button_brand" action="{!attach}"/>
-                </apex:outputPanel> -->
+                <apex:commandButton value="Save PDF" onclick="this.onclick=function(){return false;}" styleClass="slds-button slds-button_brand" action="{!attach}" />
                 <apex:outputText rendered="{!showAlert}" id="alert">
                     <script>
                         sforce.one.navigateToList(listViewId, 'To Be Signed', 'InPersonSigning__c');
