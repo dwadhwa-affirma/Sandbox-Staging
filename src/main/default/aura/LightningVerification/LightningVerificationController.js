@@ -20,7 +20,7 @@
 	},
 	*/
 	onRender : function (component, event, helper) {
-		 console.log('onRender called');
+		 console.log('onRender called');        
 		var memberid = component.get("v.ReMemberId");
 		var IVRGUIDFromUrl =  component.get("v.IVRGUIDFromUrl");
 		var GUID =  component.get("v.GUID");

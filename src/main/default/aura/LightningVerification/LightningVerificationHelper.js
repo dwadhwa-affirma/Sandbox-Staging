@@ -415,6 +415,9 @@
 								document.getElementById('frmMemberNumber').value = result['AccountNumber'];
 								component.set("v.OOWMemberNumberEntered",result['AccountNumber']);
 								component.set("v.MemberNumberEntered",result['AccountNumber']);
+								if((PhoneSearched !=undefined && PhoneSearched !='')) {
+									component.set("v.IsMemberNumberValid",true);
+								}								
 						 }
 						 if(result.MemberHighFlagValue != undefined) {
 
@@ -945,7 +948,7 @@
     },
 	
 	GetReloadData : function(component, event, helper,memberid,GUID,IVRGUIDFromUrl ){
-		console.log('GetReloadData called');
+		console.log('GetReloadData called');        
 		console.log('IsUserSessionLoaded' + component.get("v.IsUserSessionLoaded"));
        	var DebitCardStatus = component.get("v.DebitCardStatus");
 		var action = component.get("c.getDataForReload");
