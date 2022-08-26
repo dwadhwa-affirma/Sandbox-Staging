@@ -1,7 +1,8 @@
 import { api, wire, track, LightningElement } from "lwc";
 import Id from "@salesforce/user/Id";
 import getMemberAccounts from "@salesforce/apex/CreateCaseMemberPageController.getMemberAccounts";
-import getEpisysDetails from "@salesforce/apex/CreateCaseMemberPageController.getEpsysDetails";
+import getEpisysDetails from "@salesforce/apex/CreateCaseMemberPageController.getEpisysDetails";
+import FetchLeadData from "@salesforce/apex/CreateCaseMemberPageController.FetchLeadData";
 import SearchTertiary from "@salesforce/apex/CreateCaseMemberPageController.SearchTertiary";
 import getTop10Cases from "@salesforce/apex/CreateCaseMemberPageController.getTop10Cases";
 import getQueueData from "@salesforce/apex/CreateCaseMemberPageController.getQueueData";
@@ -11,9 +12,14 @@ import getData from "@salesforce/apex/CreateCaseMemberPageController.getData";
 import CASE_OBJECT from "@salesforce/schema/Case";
 import STANDARD_MC from "@salesforce/messageChannel/StandardMessageChannel__c";
 import { ShowToastEvent } from "lightning/platformShowToastEvent";
+//import uploadFile from "@salesforce/apex/CreateCaseMemberPageController.uploadFile";
 import uploadDocument from "@salesforce/apex/CreateCaseMemberPageController.uploadDocument";
 const MAX_FILE_SIZE = 24500;
-import getCaseAttachment from "@salesforce/apex/GetCaseAttachments.getCaseAttachment"
+import GetCaseAttachments from "@salesforce/apex/GetCaseAttachments.GetCaseAttachments"
+
+import saveChunk from "@salesforce/apex/CreateCaseMemberPageController.saveChunk";
+
+
 import {
   publish,
   subscribe,
@@ -89,12 +95,12 @@ export default class createCaseLwc extends NavigationMixin(LightningElement) {
   tcOptions = [];
   pcOptions = [];
   picklistFields = {};
-  followupdate = new Date();
+  followupdate ;
   subject = "";
   caseObject = CASE_OBJECT;
   followuptext = "";
   status = "Open";
-  ltk = "";
+  Ltk = "";
   reportNumber = "";
   email = "";
   accList = [];
@@ -107,6 +113,7 @@ export default class createCaseLwc extends NavigationMixin(LightningElement) {
   AccountObjectlist = [];
   isFileUpload = false;
   isNext = false;
+  //isSaveandNewClicked = false;
   CaseNumber;
   fileNames = [];
   isNoFilesSelected = false;
@@ -115,7 +122,16 @@ export default class createCaseLwc extends NavigationMixin(LightningElement) {
   IsUploadandNewPressed = false;
   disabled = false;
   saveandnewbreak = false;
-  
+  isStandalone = false;
+  /*disableButton() {
+    this.disabled = true;
+    console.log('inside disable');
+  }*/
+  /*get disableButton(){
+    console.log('inside disable');
+    return  !(this.disabled) ;
+
+}*/
 
   @track caseObj = {};
 
@@ -248,13 +264,19 @@ export default class createCaseLwc extends NavigationMixin(LightningElement) {
         this.handleLoad();
       }
     }
+    else{
+      this.isStandalone = true;
+    }
     console.log('pcvalue',this.primaryCat);
     this.connectedCallbackCnt++;
     this.loadQuickCases();
+    this.fetchPicklistFields();
     console.log(
       `connectedCallback count : ${this.connectedCallbackCnt} - recordId: ${this.recordId}`
     );
-    this.getAccData(this.recordId);
+    if(this.isStandalone == false){
+      this.getAccData(this.recordId);
+    }    
   }
 
   renderedCallback() {
@@ -302,7 +324,38 @@ export default class createCaseLwc extends NavigationMixin(LightningElement) {
     console.log("search options###", this.searchOptions);
   }
 
-  
+  getLeadDetails(id) {
+    return new Promise((resolve, reject) => {
+      FetchLeadData({ AccountID: id })
+        .then((result) => {
+          this.episysUserId = result[0].Episys_User_ID__c;
+          this.episysUser = result[0].Branch_of_Lead_creator__c;
+          let queueData = result[1];
+          let queueList = [{ value: "", label: "--- None ---" }];
+          queueData.forEach((rec) => {
+            queueList.push({ value: rec.Id, label: rec.Name });
+            if (!this.queueMap[rec.Id]) {
+              this.queueMap[rec.Id] = rec;
+            }
+          });
+          this.queues = [...queueList];
+          console.log("------ getLeadDetails ------");
+          console.log("this.episysUserId", this.episysUserId);
+          console.log("this.episysUser", this.episysUser);
+          console.log(result);
+          console.log("---------------------------");
+          console.log(queueList);
+          console.log("-------- queueList above -------------------");
+          console.log(this.queueMap);
+          console.log("-------- queueMap above -------------------");
+          resolve("Ok");
+        })
+        .catch((error) => {
+          console.log(error);
+          reject(error);
+        });
+    });
+  }
 
   getEpisysData() {
     return new Promise((resolve, reject) => {
@@ -383,7 +436,7 @@ export default class createCaseLwc extends NavigationMixin(LightningElement) {
 
   getAccountData(id) {
     return new Promise((resolve, reject) => {
-      getMemberAccounts({ accountId: id })
+      getMemberAccounts({ AccountId: id })
         .then((result) => {
           console.log('getAccountData...');
           console.log(result);
@@ -420,7 +473,7 @@ export default class createCaseLwc extends NavigationMixin(LightningElement) {
     console.log(`handleLoad recordId: ${this.recordId}`);
     let id = this.recordId;
     await this.getAccountData(id);
-    await this.fetchPicklistFields();
+    //await this.fetchPicklistFields();
     
   }
 
@@ -491,7 +544,7 @@ export default class createCaseLwc extends NavigationMixin(LightningElement) {
     );
     console.log("Future_Date__c:", fields.Future_Date__c);
     console.log("Follow_up_Text__c:",fields.Follow_up_Text__c);
-    console.log("Follow_up_Date__c:",fields.Follow_up_Date__c);
+    //console.log("Follow_up_Date__c:",fields.Follow_up_Date__c);
 
 
     switch (this.ownershipChangeValue) {
@@ -545,7 +598,7 @@ export default class createCaseLwc extends NavigationMixin(LightningElement) {
   }
   handleOnchangeticket(event){
     console.log('##handle ticket',event.detail.value);
-    this.ltk = event.detail.value;
+    this.Ltk = event.detail.value;
   }
   handleOnchangereportingnumber(event){
     console.log('##handle reporting number',event.detail.value);
@@ -793,10 +846,10 @@ uploadDocument(event) {
   }).finally(() => this.showSpinner = false );
 
 }
-CaseAttachments(){
+/*CaseAttachments(){
   console.log("inside Case Attachment");
-  getCaseAttachment({
-    caseId : this.recordId,
+  GetCaseAttachments({
+    CaseId : this.recordId,
 })
 .then(result => {
     console.log(result);
@@ -811,7 +864,7 @@ CaseAttachments(){
         this.showToast('Error', 'error', error.body.message);
     }
 }).finally(() => this.showSpinner = false );
-}
+}*/
 
 removeReceiptImage(event) {
   var index = event.currentTarget.dataset.id;
@@ -839,7 +892,7 @@ toast(title){
     this.picklistFields["Case"] = NAFields;
     this.getPicklistValues(this.picklistFields);
 
-    var scOptions = [{ Text: "--- None ---", Value: "" }];
+    var scOptions = [{ Text: "--- None ---", Value: "--- None ---" }];
     this.scOptions = scOptions;
     this.tcOptions = scOptions;
   }
@@ -869,11 +922,11 @@ toast(title){
   buildPicklist(elementId, optionValues) {
     var opts = [];
     if (optionValues != undefined && optionValues.length > 0) {
-      opts.push({
-        class: "optionClass",
-        Text: "--- None ---",
-        Value: "",
-      });
+      // opts.push({
+      //   class: "optionClass",
+      //   Text: "--- None ---",
+      //   Value: "",
+      // });
     }
 
     for (var i = 0; i < optionValues.length; i++) {
@@ -890,10 +943,21 @@ toast(title){
   changeTopTenCase(event) {
     var stc = event.target.value;
 
+    console.log("stc:" + stc);
+
+    if(stc == '' || stc == null){
+      console.log('check blank...');
+      this.template.querySelector('[data-id="Primary_Category__c"]').value = '--- None ----';          
+      this.template.querySelector('[data-id="Secondary_Category__c"]').value = '--- None ----';          
+      this.template.querySelector('[data-id="Tertiary_Category__c"]').value = '--- None ----';
+      this.internalcmt = '';
+    }
+
     var alltoptencategories = this.quickCases;
     console.log("alltoptencategories:" + alltoptencategories);
     for (var i = 0; i < alltoptencategories.length; i++) {
       if (alltoptencategories[i].Case_Type__c === stc) {
+        
         var pc = alltoptencategories[i].Primary_Category__c;
         var sc = alltoptencategories[i].Secondary_Category__c;
         var tc = alltoptencategories[i].Tertiary_Category__c;
@@ -907,7 +971,7 @@ toast(title){
         this.secondaryCat = sc;
         this.tertiaryCat = tc;
 
-      selectCaseCategoriesforTopTenTypes({ primaryText: pc , secondaryText: sc })
+      selectCaseCategoriesforTopTenTypes({ PrimaryText: pc , SecondaryText: sc })
       .then((result) => {
         console.log(result);        
         var secopts = result.scOptions;
@@ -931,9 +995,13 @@ toast(title){
         this.scOptions = [...secopts];
         this.tcOptions = [...teropts];
 
+        
+
         this.template.querySelector('[data-id="Primary_Category__c"]').value = pc;          
         this.template.querySelector('[data-id="Secondary_Category__c"]').value = sc;          
         this.template.querySelector('[data-id="Tertiary_Category__c"]').value = tc; 
+
+        
          
         this.internalcmt = internalcomment; 
             
@@ -944,6 +1012,7 @@ toast(title){
       });
       }
     }
+
     console.log('pcvalue',this.primaryCat);
 
   }
@@ -973,55 +1042,68 @@ saveClicked(){
   console.log(this.followuptext);
   console.log(this.status);
   console.log(this.followupdate);
-  console.log(this.ltk);
+  console.log(this.Ltk);
   console.log(this.reportNumber);
   console.log(this.accList); 
   console.log('##selectedAccountnumber',this.selectedAcctNumber);
   console.log(this.internalcmt);
-  this.disabled = true;
+  //console.log('insideevent',event.target.value);
   this.isLoading = true;
+  this.disabled = true;
   var a= this.accList;
   console.log('accList...');
   console.log(this.accList);
   var aList = [];
-  a[1].isShow = false;
-  for(var i=0;i<a.length;i++){
-    if(aList.length == 0){
-      if(a[i].isShow==false){
-        aList[i] = a[i].Id;
+  if(this.isStandalone == false){
+    a[1].isShow = false;
+    for(var i=0;i<a.length;i++){
+      if(aList.length == 0){
+        if(a[i].isShow==false){
+          aList[i] = a[i].Id;
+        }
       }
     }
-  }
-  var aListToPass = [];
-  for(var i=0;i<aList.length;i++){
-    if(aList[i]){
-      aListToPass[i] = aList[i];
+
+    var aListToPass = [];
+    for(var i=0;i<aList.length;i++){
+      if(aList[i]){
+        aListToPass[i] = aList[i];
+      }
     }
+    console.log('##selectedAcctNumberCount',this.selectedAcctNumber);
+    console.log(aListToPass);
+
+    console.log('##alist',aList.length);
+    if(this.selectedAcctNumber == null || this.selectedAcctNumber == '' || this.selectedAcctNumber == undefined ){
+      
+      this.isLoading = false;
+      console.log('##123list',aList);
+      //this.disabled = false;
+      const event = new ShowToastEvent({
+        title: 'Error!',
+        message: 'Account Number is required',
+        variant: 'error'
+    
+    });
+    this.dispatchEvent(event);
+    return false;
   }
-  console.log('##selectedAcctNumberCount',this.selectedAcctNumber);
-  console.log(aListToPass);
-  console.log('##alist',aList.length);
-  if(this.selectedAcctNumber == null || this.selectedAcctNumber == '' || this.selectedAcctNumber == undefined ){
-    console.log('##123list',aList);
-    const event = new ShowToastEvent({
-      title: 'Error!',
-      message: 'Account Number is required',
-      variant: 'error'
+ 
   
-  });
-  this.dispatchEvent(event);
-  return false;
+  
   }
 var today = new Date();
 var dd = String(today.getDate()).padStart(2, '0');
 var mm = String(today.getMonth() + 1).padStart(2, '0'); 
 var yyyy = today.getFullYear();
 
+//today = mm + '/' + dd + '/' + yyyy;
 today = yyyy + '-' + mm + '-' + dd;
 console.log('today date'+today);
 console.log('followupdate'+this.followupdate);
   if(this.status=='Closed' && this.followupdate > today ){
     console.log('followup');
+    this.isLoading = false;
     this.disabled = false;
     const event = new ShowToastEvent({
       title: 'Error!',
@@ -1035,7 +1117,8 @@ console.log('followupdate'+this.followupdate);
   
   }
   
-  saveData2({primaryCat: this.primaryCat, secondaryCat: this.secondaryCat, teritaryCat: this.tertiaryCat,followuptext: this.followuptext, followupdate: this.followupdate, comments: this.internalcmt, status: this.status, brand: '', subStatus: 'Day1 Started', reportNumber: this.reportNumber, ltk: this.ltk, description: '', subject: this.subject, accId: this.recordId, selectedAcctNumberId: aList, queueValue: this.queueValue ,caseownership: this.ownershipChangeValue })
+  //saveData2({primaryCat: this.primaryCat, secondaryCat: this.secondaryCat, teritaryCat: this.tertiaryCat,followuptext: this.followuptext, followupdate: this.followupdate, comments: this.internalcmt, status: this.status, brand: '', subStatus: 'Day1 Started', reportNumber: this.reportNumber, Ltk: this.Ltk, description: '', subject: this.subject, accId: this.recordId, selectedAcctNumberId: aList, queueValue: this.queueValue ,caseownership: this.ownershipChangeValue })
+  saveData2({primaryCat: this.primaryCat, secondaryCat: this.secondaryCat, teritaryCat: this.tertiaryCat,followuptext: this.followuptext, followupdate: this.followupdate, comments: this.internalcmt, status: this.status, brand: '', subStatus: 'Day1 Started', reportNumber: this.reportNumber, Ltk: this.Ltk, description: '', subject: this.subject, accId: this.recordId, selectedAcctNumberId: this.selectedAcctNumber.Id, queueValue: this.queueValue ,caseownership: this.ownershipChangeValue })
   .then((result) => {
     console.log(result);
     console.log('###result');
@@ -1043,7 +1126,10 @@ console.log('followupdate'+this.followupdate);
     this.CaseNumber = result.CaseNumber;
     console.log(result.CaseNumber);
     this.CaseId = result.CaseId;
-   
+   /* if(this.CaseId > 0){
+      console.log('insideCaseId');
+      this.disabled = false;
+    }*/
     this.showNotification();
       if(this.isFileUpload == false){
         this[NavigationMixin.Navigate]({
@@ -1060,6 +1146,9 @@ console.log('followupdate'+this.followupdate);
         this.isNext = true;
         this.isFileUpload = false;
       }
+      if(this.followupdate == ''|| this.followupdate == null){
+        console.log("blankfollowupdate");
+      }
 
   })
   .catch((error) => {
@@ -1069,14 +1158,17 @@ console.log('followupdate'+this.followupdate);
 }
 saveAndNewClick(){
   console.log("saveandnew");
-  
+  //this.saveandnewbreak = true;
+  //this.isLoading = true;
   this.saveClick();
- 
+  //this.saveandnewbreak = true;
+  //this.handleReset();
   this.disabled = false;
   
 }
 handleReset() {
   console.log("reset");
+  //this.saveandnewbreak = false;
   this.isLoading = false;
 
 var a= this.accList;
@@ -1095,12 +1187,14 @@ this.AccountObjectlist = [...acc];
 this.accountCount = 0;
  this.selectedAcctNumber = {};
  this.searchText= null;
+ //this.searchValue = null;
  this.followuptext = "";
  this.followupdate = new Date();
- this.ltk = "";
+ this.Ltk = "";
  this.reportNumber="";
  this.subject = "";
  this.status="";
+  //this.searchValue = "";
   this.searchText = "";
   this.searchOptions = [];
   this.internalcmt = "";
@@ -1196,11 +1290,14 @@ saveClick() {
   console.log(this.followuptext);
   console.log(this.status);
   console.log(this.followupdate);
-  console.log(this.ltk);
+  console.log(this.Ltk);
   console.log(this.reportNumber);
   console.log(this.queueValue);
+  //this.saveandnewbreak = false;
   this.isLoading = true;
+ // this.isSaveandNewClicked = true;
   console.log('##selectedAccountnumber',this.selectedAcctNumber);
+  //this.disabled = true;
   
   var a= this.accList;
   var aList = [];
@@ -1221,9 +1318,13 @@ saveClick() {
   }
   console.log(aListToPass);
   console.log('##alist',aList);
-  if(this.selectedAcctNumber == null || this.selectedAcctNumber == '' || this.selectedAcctNumber == undefined ){
-    console.log('##123list',aList);
+  console.log(this.selectedAcctNumber);
+  console.log(this.selectedAcctNumber.Id);
 
+  if(this.selectedAcctNumber == null || this.selectedAcctNumber == '' || this.selectedAcctNumber == undefined || this.selectedAcctNumber.Id == undefined){
+    console.log('##123list',aList);
+    
+    this.isLoading = false;
     const event = new ShowToastEvent({
       title: 'Error!',
       message: 'Account Number is required',
@@ -1241,6 +1342,7 @@ var yyyy = today.getFullYear();
 today = yyyy + '-' + mm + '-' + dd;
   if(this.status=='Closed' && this.followupdate > today ){
     console.log('followup');
+    //this.saveandnewbreak = false;
     this.isLoading = false;
         const event = new ShowToastEvent({
       title: 'Error!',
@@ -1252,17 +1354,19 @@ today = yyyy + '-' + mm + '-' + dd;
   return false; 
   }
  
-  saveData2({primaryCat: this.primaryCat, secondaryCat: this.secondaryCat, teritaryCat: this.tertiaryCat,followuptext: this.followuptext, followupdate: this.followupdate, comments: this.internalcmt, status: this.status, brand: '', subStatus: 'Day1 Started', reportNumber: this.reportNumber, ltk: this.ltk, description: '', subject: this.subject, accId: this.recordId, selectedAcctNumberId: aList, queueValue: this.queueValue ,caseownership: this.ownershipChangeValue })
+  saveData2({primaryCat: this.primaryCat, secondaryCat: this.secondaryCat, teritaryCat: this.tertiaryCat,followuptext: this.followuptext, followupdate: this.followupdate, comments: this.internalcmt, status: this.status, brand: '', subStatus: 'Day1 Started', reportNumber: this.reportNumber, Ltk: this.Ltk, description: '', subject: this.subject, accId: this.recordId, selectedAcctNumberId: this.selectedAcctNumber.Id, queueValue: this.queueValue ,caseownership: this.ownershipChangeValue })
   .then((result) => {
     console.log(result);
     console.log('###resultsavedata2');
     console.log(result.CaseId);
+    //this.saveandnewbreak = true;
     
     this.showNotification();
     this.handleReset();
   })
   .catch((error) => {
     console.log(error);
+    //this.saveandnewbreak = false;
   });
 }
 }
@@ -1278,10 +1382,10 @@ NextClick() {
   console.log(this.followuptext);
   console.log(this.status);
   console.log(this.followupdate);
-  console.log(this.ltk);
+  console.log(this.Ltk);
   console.log(this.reportNumber);
   console.log(this.queueValue);
-  
+  this.isLoading = true;
   console.log('##selectedAccountnumber',this.selectedAcctNumber);
   
   var a= this.accList;
@@ -1301,7 +1405,22 @@ NextClick() {
   }
   console.log(aListToPass);
   console.log('##alist',aList);
-  if(aList.length == 0 ){
+  if(this.selectedAcctNumber == null || this.selectedAcctNumber == '' || this.selectedAcctNumber == undefined ){
+    
+    this.isLoading = false;
+    console.log('##123list',aList);
+    //this.disabled = false;
+    const event = new ShowToastEvent({
+      title: 'Error!',
+      message: 'Account Number is required',
+      variant: 'error'
+  
+  });
+  this.dispatchEvent(event);
+  return false;
+  }
+
+  /*if(aList.length == 0 ){
     console.log('##123list',aList);
 
     const event = new ShowToastEvent({
@@ -1311,7 +1430,7 @@ NextClick() {
   
   });
   this.dispatchEvent(event);
-  }
+  }*/
   var today = new Date();
   var dd = String(today.getDate()).padStart(2, '0');
   var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
@@ -1331,7 +1450,7 @@ today = yyyy + '-' + mm + '-' + dd;
   this.dispatchEvent(event);
   return false; 
   }
-  saveData2({primaryCat: this.primaryCat, secondaryCat: this.secondaryCat, teritaryCat: this.tertiaryCat,followuptext: this.followuptext, followupdate: this.followupdate, comments: this.internalcmt, status: this.status, brand: '', subStatus: 'Day1 Started', reportNumber: this.reportNumber, ltk: this.ltk, description: '', subject: this.subject, accId: this.recordId, selectedAcctNumberId: aList, queueValue: this.queueValue ,caseownership: this.ownershipChangeValue })
+  saveData2({primaryCat: this.primaryCat, secondaryCat: this.secondaryCat, teritaryCat: this.tertiaryCat,followuptext: this.followuptext, followupdate: this.followupdate, comments: this.internalcmt, status: this.status, brand: '', subStatus: 'Day1 Started', reportNumber: this.reportNumber, Ltk: this.Ltk, description: '', subject: this.subject, accId: this.recordId, selectedAcctNumberId: this.selectedAcctNumber.Id, queueValue: this.queueValue ,caseownership: this.ownershipChangeValue })
   .then((result) => {
     console.log(result);
     console.log('###resultsavedata2');
@@ -1418,7 +1537,8 @@ today = yyyy + '-' + mm + '-' + dd;
   }
 
   itemSelected(event){
-    var target = event.target;   
+    var target = event.target;  
+    this.disabled = false; 
     console.log('in li...');
     console.log(JSON.stringify(event.target));
     console.log(JSON.stringify(event.target.parentElement.closest('li').dataset));
@@ -1485,7 +1605,6 @@ today = yyyy + '-' + mm + '-' + dd;
             a[i].isShow=true;
           }
         }
-
         for (var len = 0; len < acc.length; len++) {         
           acc[len].isEmpty = true;        
        }

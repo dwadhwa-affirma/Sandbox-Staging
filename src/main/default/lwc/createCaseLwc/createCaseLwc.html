@@ -2,7 +2,7 @@
    @description       : 
    @author            : ChangeMeIn@UserSettingsUnder.SFDoc
    @group             : 
-   @last modified on  : 07-11-2022
+   @last modified on  : 07-25-2022
    @last modified by  : ChangeMeIn@UserSettingsUnder.SFDoc
    -->
    <template>
@@ -20,9 +20,10 @@
                <div>
                   <h3 class="slds-section-title--divider">PLEASE SELECT APPROPRIATE CASE CATEGORIES</h3>
                </div>
-  
+
                <div class="case-grid">
                   <div class="case-grid-col-1">
+                     <template if:false={isStandalone}>
                      <div class="case-item">
                         <div class="slds-form-element">
                            <label class="slds-form-element__label">Member</label>
@@ -30,7 +31,7 @@
                               {accObject.Name}                                    
                            </div>
                         </div>
-                     </div>
+                     </div>                  
                      <div class="case-item">
                         <div class="slds-form-element">
                            <label class="slds-form-element__label"><span class="required ">*</span>Account Number</label>
@@ -158,6 +159,7 @@
                            </div>
                         </div>
                      </div>
+                  </template>
                      <div class="case-item">
                         <span onkeypress={handleEnter}>
                            <lightning-input type="text" label="Search Field" value={searchText} onkeypress={handleEnter} data-id="searchText">
@@ -203,7 +205,7 @@
                         <div class="slds-form-element__control">
                            <div class="slds-select_container">
                               <select  class="slds-select"  onchange={changePrimaryCategory}  data-id="Primary_Category__c" name="primaryCat" id="Primary_Category__c" required>
-                                 <option value="">--- None ----</option>
+                                 <option value="--- None ----">--- None ----</option>
                                  <template for:each={pcOptions} for:item="itemOption" >
                                     <option value={itemOption.Value} key={itemOption.Text}>{itemOption.Value}</option>
                                     
@@ -221,7 +223,7 @@
                         <div class="slds-form-element__control">
                            <div class="slds-select_container">
                               <select class="slds-select" onchange={changeSecondaryCategory}  data-id='Secondary_Category__c' id="Secondary_Category__c" name="secondaryCat" required>
-                                 <option value="">--- None ----</option>
+                                 <option value="--- None ----">--- None ----</option>
                                  <template for:each={scOptions} for:item="itemOption" for:index="index">
                                     <option value={itemOption.Value} key={itemOption.Text} selected={itemOption.isSelected}>{itemOption.Value}</option>
                                  </template>
@@ -237,7 +239,7 @@
                         <div class="slds-form-element__control">
                            <div class="slds-select_container">
                               <select class="slds-select"  onchange={changeTirtaryCategory} data-id='Tertiary_Category__c' name="tertiaryCat" required>
-                                 <option value="">--- None ----</option>
+                                 <option value="--- None ----">--- None ----</option>
                                  <template for:each={tcOptions} for:item="itemOption" for:index="index">
                                     <option value={itemOption.Value} key={itemOption.Text} selected={itemOption.isSelected}>{itemOption.Value}</option>
                                  </template>
@@ -250,9 +252,11 @@
                      </div>
                   </div>
                   <div class="case-grid-col-2">
+                     <template if:false={isStandalone}>
                      <div class="case-item">
                         <lightning-input  field-name = 'PersonEmail' label="E-mail Address" value={email} disabled></lightning-input>
                      </div>
+                  </template>
                      <div class="case-item">
                         <lightning-input-field field-name='Ownership__c' value={ownership} onchange={handleOwnershipChange}>
                         </lightning-input-field>
@@ -285,7 +289,7 @@
                         <lightning-input label="Subject" type="text" value={subject} onchange={handleOnchangesubject}></lightning-input>
                      </div>
                      <div class="case-item">
-                        <lightning-input label="Follow-up Date" type="date" value={followupdate} onchange={handleOnchangefollowupDate}></lightning-input>
+                        <lightning-input label="Follow-up Date"  type="date" value={followupdate} onchange={handleOnchangefollowupDate}></lightning-input>
                      </div>
                      <div class="case-item">
                         <lightning-input label="Follow-up Text" type="text" value={followuptext} onchange={handleOnchangefollowuptext}></lightning-input>

@@ -22,7 +22,6 @@
 	  var recordid = component.get("v.recordId");
 	  var parameters = {"accountId": recordid };
 	  action.setParams(parameters);
-    
 	  action.setCallback(this, function(response){
 	  var status = response.getState();
           if(component.isValid() && status === "SUCCESS")
@@ -69,6 +68,13 @@
                 var result =  response.getReturnValue();
               	if(result != null){
                     component.set("v.SurveyScore",result);
+                    let score=result.MaritzCX__Key_Metric_1_Bar__c;
+                    if(result.MaritzCX__Key_Metric_1_Bar__c){
+                        if(result.MaritzCX__Key_Metric_1_Bar__c.toString().toLowerCase().includes('out of range')){
+                           score= result.MaritzCX__Key_Metric_1_Bar__c.toLowerCase().replace('out of range','');
+                        }
+                    }
+                    component.set("v.SurveyScoreString",score);
                 }
           }
       });
