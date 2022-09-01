@@ -892,7 +892,7 @@ toast(title){
     this.picklistFields["Case"] = NAFields;
     this.getPicklistValues(this.picklistFields);
 
-    var scOptions = [{ Text: "--- None ---", Value: "--- None ---" }];
+    var scOptions = [{ Text: "--- None ---", Value: "" }];
     this.scOptions = scOptions;
     this.tcOptions = scOptions;
   }
@@ -922,11 +922,11 @@ toast(title){
   buildPicklist(elementId, optionValues) {
     var opts = [];
     if (optionValues != undefined && optionValues.length > 0) {
-      // opts.push({
-      //   class: "optionClass",
-      //   Text: "--- None ---",
-      //   Value: "",
-      // });
+      opts.push({
+        class: "optionClass",
+        Text: "--- None ---",
+        Value: "",
+      });
     }
 
     for (var i = 0; i < optionValues.length; i++) {
@@ -1298,42 +1298,43 @@ saveClick() {
  // this.isSaveandNewClicked = true;
   console.log('##selectedAccountnumber',this.selectedAcctNumber);
   //this.disabled = true;
-  
-  var a= this.accList;
-  var aList = [];
-  a[1].isShow = false;
-  for(var i=0;i<a.length;i++){
-    if(aList.length == 0){
-      if(a[i].isShow==false){
-        aList[i] = a[i].Id;
+  if(this.isStandalone == false){
+      var a= this.accList;
+      var aList = [];
+      a[1].isShow = false;
+      for(var i=0;i<a.length;i++){
+        if(aList.length == 0){
+          if(a[i].isShow==false){
+            aList[i] = a[i].Id;
+          }
       }
-   }
-  }
-  
-  var aListToPass = [];
-  for(var i=0;i<aList.length;i++){
-    if(aList[i]){
-      aListToPass[i] = aList[i];
-    }
-  }
-  console.log(aListToPass);
-  console.log('##alist',aList);
-  console.log(this.selectedAcctNumber);
-  console.log(this.selectedAcctNumber.Id);
+      }
+      
+      var aListToPass = [];
+      for(var i=0;i<aList.length;i++){
+        if(aList[i]){
+          aListToPass[i] = aList[i];
+        }
+      }
+      console.log(aListToPass);
+      console.log('##alist',aList);
+      console.log(this.selectedAcctNumber);
+      console.log(this.selectedAcctNumber.Id);
 
-  if(this.selectedAcctNumber == null || this.selectedAcctNumber == '' || this.selectedAcctNumber == undefined || this.selectedAcctNumber.Id == undefined){
-    console.log('##123list',aList);
-    
-    this.isLoading = false;
-    const event = new ShowToastEvent({
-      title: 'Error!',
-      message: 'Account Number is required',
-      variant: 'error'
-  
-  });
-  this.dispatchEvent(event);
-  return false;
-  }
+      if(this.selectedAcctNumber == null || this.selectedAcctNumber == '' || this.selectedAcctNumber == undefined || this.selectedAcctNumber.Id == undefined){
+        console.log('##123list',aList);
+        
+        this.isLoading = false;
+        const event = new ShowToastEvent({
+          title: 'Error!',
+          message: 'Account Number is required',
+          variant: 'error'
+      
+      });
+      this.dispatchEvent(event);
+      return false;
+      }
+}
 var today = new Date();
 var dd = String(today.getDate()).padStart(2, '0');
 var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!

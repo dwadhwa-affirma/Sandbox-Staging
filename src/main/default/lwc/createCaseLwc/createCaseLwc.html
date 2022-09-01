@@ -205,9 +205,9 @@
                         <div class="slds-form-element__control">
                            <div class="slds-select_container">
                               <select  class="slds-select"  onchange={changePrimaryCategory}  data-id="Primary_Category__c" name="primaryCat" id="Primary_Category__c" required>
-                                 <option value="--- None ----">--- None ----</option>
+                                 <!-- <option value="--- None ----">--- None ----</option> -->
                                  <template for:each={pcOptions} for:item="itemOption" >
-                                    <option value={itemOption.Value} key={itemOption.Text}>{itemOption.Value}</option>
+                                    <option value={itemOption.Value} key={itemOption.Text}>{itemOption.Text}</option>
                                     
 
                                  </template>
@@ -223,9 +223,9 @@
                         <div class="slds-form-element__control">
                            <div class="slds-select_container">
                               <select class="slds-select" onchange={changeSecondaryCategory}  data-id='Secondary_Category__c' id="Secondary_Category__c" name="secondaryCat" required>
-                                 <option value="--- None ----">--- None ----</option>
+                                 <!-- <option value="--- None ----">--- None ----</option> -->
                                  <template for:each={scOptions} for:item="itemOption" for:index="index">
-                                    <option value={itemOption.Value} key={itemOption.Text} selected={itemOption.isSelected}>{itemOption.Value}</option>
+                                    <option value={itemOption.Value} key={itemOption.Text} selected={itemOption.isSelected}>{itemOption.Text}</option>
                                  </template>
                               </select>
                            </div>
@@ -239,9 +239,9 @@
                         <div class="slds-form-element__control">
                            <div class="slds-select_container">
                               <select class="slds-select"  onchange={changeTirtaryCategory} data-id='Tertiary_Category__c' name="tertiaryCat" required>
-                                 <option value="--- None ----">--- None ----</option>
+                                 <!-- <option value="--- None ----">--- None ----</option> -->
                                  <template for:each={tcOptions} for:item="itemOption" for:index="index">
-                                    <option value={itemOption.Value} key={itemOption.Text} selected={itemOption.isSelected}>{itemOption.Value}</option>
+                                    <option value={itemOption.Value} key={itemOption.Text} selected={itemOption.isSelected}>{itemOption.Text}</option>
                                  </template>
                               </select>
                            </div>
