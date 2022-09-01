@@ -8,7 +8,6 @@
         helper.getReason(component, event, helper);
         helper.getMemberPageMessages(component, event, helper);
         
-        
         var returnValue =helper.getUrlParameter("c__ivrguid");
         if(returnValue){
             helper.getReason(component, event, helper,returnValue);
@@ -88,6 +87,23 @@
                                }
                            });
     },
+    handleCreateCase2: function(component, event, helper) {
+      var recordId = component.get("v.recordId");
+      var modalBody;
+      $A.createComponent("c:CaseQuickAction", {recordId:recordId,isQuickAction: false},
+                         function(content, status) {
+                             if (status === "SUCCESS") {
+                                 modalBody = content;
+                                 component.find('overlayLib').showCustomModal({
+                                     header: "Create Case",
+                                     body: modalBody,
+                                     showCloseButton: false,
+                                     closeCallback: function() {
+                                     }
+                                 })
+                             }
+                         });
+  },
     handleCreateOpportunity: function(component, event, helper) {
         var recordId = component.get("v.recordId");
         var modalBody;
