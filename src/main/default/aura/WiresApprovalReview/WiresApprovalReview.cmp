@@ -13,12 +13,19 @@
     <aura:attribute name="BalanceStatusCode" type="integer"/> 
     <aura:attribute name="BalanceRGLines" type="String"/>
     <aura:attribute name= "MinGoodFundAmountCheck" type="decimal" />
+    <aura:attribute name= "isIDVFailed" type="boolean" default="false" />
+    <aura:attribute name= "MARSDetails" type="map" />
+    <aura:attribute name= "DocusignIDVFailureDetails" type="map" />
+    <aura:attribute name= "isSpinnerVisible" type="boolean" default="true"/>
+	<aura:attribute name="IDFrontSideImage" type="String"/>
+    <aura:attribute name="IDBackSideImage" type="String"/>
     
     <lightning:overlayLibrary aura:id="overlayLib1"/>
     <div>
         <aura:html tag="style">
             .slds-modal__container {
-            width: 35%;
+            width: 750px;
+            height: 750px
             }
             
             @media screen and (max-width: 767px) {
@@ -27,11 +34,19 @@
             }
             
         </aura:html>   
-        
+        <aura:if isTrue="{!v.isSpinnerVisible}">
+                <lightning:spinner aura:id="Spinner" alternativeText="Loading" size="medium" variant="brand" class="slds-show spin" />
+        </aura:if>
         <aura:if isTrue="{!or(v.WiresObject.Approval_Status__c=='Good Funds Review',
                          and(v.WiresObject.Approval_Status__c=='Pending for Approval',greaterthan(v.WiresObject.TotalFromAccount__c,0)))}">
             <table>
-                <tr class="trReview">
+                <aura:if isTrue="{!lessthan(v.BalanceStatusCode,0)}">
+                	<tr class="trReview">
+                    <td><ui:inputCheckbox class="checkbox" value="{!v.WiresObject.Available_Balance_Review__c}" change="{!c.onCheck}"/></td>
+                    <td>Is Valid Amount?</td><td class="tblNumber" style="vertical-align: bottom;">{!v.BalanceStatusCode le 0 ? 'No' : 'Yes' }<br/> {!v.BalanceRGLines} </td>
+                </tr>
+                </aura:if>
+               <!-- <tr class="trReview">
                     <td><ui:inputCheckbox class="checkbox" value="{!v.WiresObject.Available_Balance_Review__c}" change="{!c.onCheck}"/></td>
                     <td>Is Valid Amount?</td><td class="tblNumber" style="vertical-align: bottom;">{!v.BalanceStatusCode le 0 ? 'No' : 'Yes' }<br/> {!v.BalanceRGLines} </td>
                 </tr>    
@@ -39,28 +54,34 @@
                     <td><ui:inputCheckbox class="checkbox" value="{!v.WiresObject.Previous_Wires_Review__c}" change="{!c.onCheck}"/></td>
                     <td>Number of Previous Wires</td>
                     <td class="tblNumber">{!v.WiresCount}</td>
-                </tr> 
+                </tr> -->
                 <tr class="trReview">
                     <td colspan="3">
-                        <lightning:textarea maxlength="255" name="comment" placeholder="Comment..." value="{!v.WiresObject.First_Approval_Comment__c}"/>
+                        <lightning:textarea maxlength="255" name="comment" placeholder="Comment..." value="{!v.WiresObject.First_Approval_Comment__c}" onchange="{!c.onCommentChange}"/>
                     </td>
                 </tr>
             </table>
             
-            <aura:set attribute="else">
+            <aura:set attribute="else">                
                 <table>
                     <aura:if isTrue="{!(v.isGoodFundCheck)}">
-                        <tr class="trReview">
+                        <aura:if isTrue="{!lessthan(v.BalanceStatusCode,0)}">
+                            <tr class="trReview">
+                            <td><ui:inputCheckbox class="checkbox" value="{!v.WiresObject.Available_Balance_Review__c}" change="{!c.onCheck}"/></td>
+                            <td>Is Valid Amount?</td><td class="tblNumber" style="vertical-align: bottom;">{!v.BalanceStatusCode le 0 ? 'No' : 'Yes' }<br/> {!v.BalanceRGLines} </td>
+                        </tr>
+                        </aura:if>
+                     <!--   <tr class="trReview">
                             <td><ui:inputCheckbox class="checkbox" value="{!v.WiresObject.Available_Balance_Review__c}" change="{!c.onCheck}"/></td>
                             <td>Is Valid Amount?</td><td class="tblNumber" style="vertical-align: bottom;">{!v.BalanceStatusCode le 0 ? 'No' : 'Yes' }<br/> {!v.BalanceRGLines} </td>
                         </tr>    
                         <tr class="trReview">
                             <td><ui:inputCheckbox class="checkbox" value="{!v.WiresObject.Previous_Wires_Review__c}" change="{!c.onCheck}"/></td>
                             <td>Number of Previous Wires</td><td class="tblNumber">{!v.WiresCount}</td>
-                        </tr>  
+                        </tr>  -->
                         <tr class="trReview">
                             <td colspan="3">
-                                <lightning:textarea maxlength="255" name="comment" placeholder="Comment..." value="{!v.WiresObject.First_Approval_Comment__c}"/>
+                                <lightning:textarea maxlength="255" name="comment" placeholder="Comment..." value="{!v.WiresObject.First_Approval_Comment__c}" onchange="{!c.onCommentChange}"/>
                             </td>
                         </tr>
                         <aura:set attribute="else">
@@ -88,7 +109,7 @@
                                         <td>MobilePhone Stable</td><td><aura:unescapedHtml value="{!v.WiresObject.IsMobilePhoneStable__c}"/> </td>        
                                     </tr> 
                                     <tr class="trReview">
-                                        <td><!-- <ui:inputCheckbox class="checkbox"/> --> </td>              
+                                        <td><ui:inputCheckbox class="checkbox" value="{!v.WiresObject.Docusign_Review__c}" change="{!c.onCheck}"/></td>              
                                         <td>DocuSign ID Check</td><td><aura:unescapedHtml value="{!v.WiresObject.DocuSign_Status1__c}"/> </td>        
                                     </tr> 
                                     <aura:if isTrue="{!(v.isReasonRequired)}">
@@ -97,8 +118,7 @@
                                             <td>Specify Reason if Red:</td>
                                             <td><lightning:textarea name="reason" placeholder="Reason..." value="{!v.WiresObject.Review_Reason__c}" onchange="{!c.onCheck}" /></td>
                                         </tr>
-                                    </aura:if> 
-                                    
+                                    </aura:if>                                                                    
                                     <aura:set attribute="else">
                                         Waiting for Docusign approval from member.
                                     </aura:set>
@@ -138,21 +158,74 @@
                         </aura:set>
                     </aura:if>
                 </table>
+                <aura:if isTrue="{!(v.isIDVFailed)}">
+                                        <div class="divIDVFailedDetails">
+                                        	<div class="divMarsDetails">
+                                                <table class="tblMarsdetails">
+                                                <thead>
+                                                    <th colspan="2">MARS Details</th>                                                
+                                                </thead> 
+                                                <tbody>
+                                                    <tr><td>ID Type</td><td>{!v.MARSDetails.TypeOfId}</td></tr>  
+                                                    <tr><td>ID Number</td><td>{!v.MARSDetails.IdNumber}</td></tr>
+                                                    <tr><td>ID Issuance Date</td><td><lightning:formattedDateTime value="{!v.MARSDetails.IssuanceDate}" year="numeric" month="numeric" day="numeric"/></td></tr>
+                                                    <tr><td>ID Expiration Date</td><td><lightning:formattedDateTime value="{!v.MARSDetails.ExpirationDate}" year="numeric" month="numeric" day="numeric"/></td></tr>
+                                                    <tr><td>Date of Birth</td><td><lightning:formattedDateTime value="{!v.MARSDetails.DateOfBirth}" year="numeric" month="numeric" day="numeric"/></td></tr>
+                                                    <tr><td>Residential Address</td><td>{!v.MARSDetails.ResidentialAddress}</td></tr>
+                                                    <tr><td>First Name</td><td>{!v.MARSDetails.FirstNames}</td></tr>
+                                                    <tr><td>Middle Name</td><td>{!v.MARSDetails.MiddleNames}</td></tr>
+                                                    <tr><td>Last Name</td><td>{!v.MARSDetails.LastNames}</td></tr>
+                                                </tbody>
+                                            </table>
+                                        </div>                                     
+                                    	<div class="divIDVDetails">
+                                            <table class="tblMarsdetails">
+                                                <thead>
+                                                    <th colspan="2">Docusign IDV Details</th>                                                
+                                                </thead> 
+                                                <tbody>
+                                                    <tr><td>ID Type</td><td>{!v.DocusignIDVFailureDetails.TypeOfId}</td></tr>  
+                                                    <tr><td>ID Number</td><td>{!v.DocusignIDVFailureDetails.IdNumber}</td></tr>
+                                                    <tr><td>ID Issuance Date</td><td>{!v.DocusignIDVFailureDetails.IssuanceDate}</td></tr>
+                                                    <tr><td>ID Expiration Date</td><td>{!v.DocusignIDVFailureDetails.ExpirationDate}</td></tr>                                       
+                                                    <tr><td>Date of Birth</td><td>{!v.DocusignIDVFailureDetails.DateOfBirth}</td></tr>
+                                                    <tr><td>Residential Address</td><td>{!v.DocusignIDVFailureDetails.ResidentialAddress}</td></tr>  
+                                                    <tr><td>First Name</td><td>{!v.DocusignIDVFailureDetails.FirstNames}</td></tr>
+                                                    <tr><td>Middle Name</td><td>{!v.DocusignIDVFailureDetails.MiddleNames}</td></tr>
+                                                    <tr><td>Last Name</td><td>{!v.DocusignIDVFailureDetails.LastNames}</td></tr>
+                                                    <tr><td>IDV Failure Reason</td><td>{!v.DocusignIDVFailureDetails.ErrorType}</td></tr>
+                                                </tbody>
+                                        	</table>
+                                           
+                                            
+                                            
+											                                            
+                                        </div>
+                                        </div>      
+                    					<!--<aura:if isTrue="{!not(empty(v.IDFrontSideImage))}">-->
+                    					 <div class="divIDVFailedDetails" style="margin-top: 465px;padding: 20px;">
+                                             <aura:if isTrue="{!not(empty(v.IDFrontSideImage))}">
+                                            	<div class=""><img src="{!v.IDFrontSideImage}" class="imgIDV"/></div>
+                                              </aura:if>
+                                                <!--<div class="divIDVDetails"><img src="{!v.IDBackSideImage}" class="imgIDV"/></div>-->
+                                            </div>
+                                       <!-- </aura:if> -->
+                                    </aura:if>    
             </aura:set>
         </aura:if>
     </div>
-    <div style="margin-top: 10px;">
+    <div>
         
         <aura:if isTrue="{!or(v.WiresObject.Approval_Status__c=='Good Funds Review',
                          and(v.WiresObject.Approval_Status__c=='Pending for Approval',greaterthan(v.WiresObject.TotalFromAccount__c,0)))}">
             
-            <footer class="slds-modal__footer" id="WiresApprovalReviewPageFooter">
+            <footer class="{!v.isIDVFailed? 'slds-modal__footer footeridvfailed': 'slds-modal__footer footernoidv'}" id="WiresApprovalReviewPageFooter">
                 <lightning:button variant="brand" label="Approve" onclick="{!c.ApproveTransactions}" disabled="{!v.isApproveDisabled}"/>
                 <lightning:button variant="brand" label="Reject" onclick="{!c.RejectTransaction}" />    
             </footer>
             
             <aura:set attribute="else">
-                <footer class="slds-modal__footer" id="WiresApprovalReviewPageFooter">
+                <footer class="{!v.isIDVFailed? 'slds-modal__footer footeridvfailed': 'slds-modal__footer footernoidv'}" id="WiresApprovalReviewPageFooter">
                     <aura:if isTrue="{!and(v.isIDVAuthentication)}">
                         <aura:if isTrue="{!and(v.isIDVAuthDone)}">
                             <aura:if isTrue="{!v.isNextVisible}"> 

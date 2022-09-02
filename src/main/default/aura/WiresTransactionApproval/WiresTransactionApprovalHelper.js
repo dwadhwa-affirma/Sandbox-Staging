@@ -12,6 +12,7 @@
             if (component.isValid() && status === "SUCCESS") {
                 var result = response.getReturnValue();
                 component.set("v.isApprovalVisible",result.isApprovalVisible);
+                component.set("v.isSecondApprovalVisible",result.isSecondApprovalVisible);
                 console.log("Approval Status:"+result.ApprovalStatus);
                 component.set("v.ApprovalStatus",result.ApprovalStatus);
                 component.set("v.BalanceStatusCode",result.BalanceStatusCode);

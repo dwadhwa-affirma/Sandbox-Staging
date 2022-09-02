@@ -12,9 +12,9 @@ global class Wires_ProcessRecurrenceTransactionBatch implements Database.Batchab
                                              Description__c,Chevron_Account_Number__c,
                                              SendOn__c,ToAccountName__c, 
                                              ToAccoutId__c, Share_ID__c,Frequency__c,
-                                             Source__c,First_Reviewer__c,RecurrenceEndDate__c, Recurrence_Bypass__c, Number_of_One_Time_Wires_Sent__c                                             
+                                             Source__c,First_Reviewer__c,RecurrenceEndDate__c, Recurrence_Bypass__c, Number_of_One_Time_Wires_Sent__c, Member__c, Member_Name__c, Member_Email__c, Member_Home_Phone__c, Member_Address__c, Member_City_State_Zip__c                                            
                                              FROM WIRES_Transaction__c 
-                                             WHERE Frequency__c =: WiresConstant.Reccuring
+                                             WHERE Frequency__c =: WiresConstant.Reccuring                                          
                                              AND Source__c=:WiresConstant.Source_OnlineBanking
                                              AND TransactionStatus__c = 'Pending' 
                                              AND IsActive__c=true
@@ -26,9 +26,9 @@ global class Wires_ProcessRecurrenceTransactionBatch implements Database.Batchab
                                              Fees__c,Description__c,Chevron_Account_Number__c,SendOn__c,
                                              ToAccountName__c, ToAccoutId__c, 
                                              Share_ID__c,Frequency__c,
-                                             Source__c,First_Reviewer__c,RecurrenceEndDate__c, Recurrence_Bypass__c, Number_of_One_Time_Wires_Sent__c
+                                             Source__c,First_Reviewer__c,RecurrenceEndDate__c, Recurrence_Bypass__c, Number_of_One_Time_Wires_Sent__c, Member__c, Member_Name__c, Member_Email__c, Member_Home_Phone__c, Member_Address__c, Member_City_State_Zip__c
                                              FROM WIRES_Transaction__c 
-                                             WHERE Frequency__c =: WiresConstant.Reccuring   
+                                             WHERE Frequency__c =: WiresConstant.Reccuring                                            
                                              AND Source__c=:WiresConstant.Source_OnlineBanking
                                              AND IsActive__c=true
                                              AND TransactionStatus__c = 'Pending' 
@@ -64,6 +64,13 @@ global class Wires_ProcessRecurrenceTransactionBatch implements Database.Batchab
             objWTC.Fees__c =wtc.Fees__c;
             
             objWTC.ParentTransaction__c = wtc.Id;
+            
+            objWTC.Member__c = wtc.Member__c;
+            objWTC.Member_Name__c = wtc.Member_Name__c;
+            objWTC.Member_Email__c = wtc.Member_Email__c;
+            objWTC.Member_Home_Phone__c =  wtc.Member_Home_Phone__c;
+            objWTC.Member_Address__c = wtc.Member_Address__c;
+            objWTC.Member_City_State_Zip__c =wtc.Member_City_State_Zip__c;
             
             objWTC.Description__c=wtc.Description__c;
             objWTC.Source__c=wtc.Source__c;

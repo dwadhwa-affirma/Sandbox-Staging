@@ -21,12 +21,7 @@
             $("#footer").addClass("showdiv");   
             canvas = document.getElementById('myCanvas');
             ctx = canvas.getContext("2d");
-            
-            
-            
-            
             canvas.addEventListener("mousedown", function (e) {
-                
                 mousePressed = true;
                 Draw(e.pageX - $(this).offset().left, e.pageY - $(this).offset().top, false);
             });
@@ -37,14 +32,11 @@
                     Draw(e.pageX - $(this).offset().left, e.pageY - $(this).offset().top, true);
                 }
             });
-            
-            
-            
+
             canvas.addEventListener("mouseup", function (e) {
                 mousePressed = false;
             });
-            
-            
+
             canvas.addEventListener("mouseleave", function (e) {
                 mousePressed = false;
             });
@@ -350,6 +342,7 @@
             .firsttbl{border:1px solid #000;}
             
             @media print{.modal-footer{display:none !important;}
+
         </style>
     </head>
     
@@ -769,7 +762,7 @@ Amount USD <span><apex:outputText value="{0, number, currency}">
     <div style="text-align:center;">
         <apex:form >
             
-            <div id="footer">
+            <div id="footer" style="display: flex;justify-content: center;column-gap: 15em;margin-bottom: 5em;">
                 
                 <apex:commandButton value="Cancel" styleClass="slds-button slds-button_brand"  onclick="cancelPDF();"/>
                 <apex:outputPanel rendered="{!NOT(ISNULL(signAttachmentId))}">

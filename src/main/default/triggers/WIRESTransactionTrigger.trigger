@@ -62,7 +62,6 @@ trigger WIRESTransactionTrigger on WIRES_Transaction__c (before insert,before up
                     //------------------------------- Checking if the status is being changed and status = 'Completed'-----------------//
                     if(trigger.old[i].Status__c != 'Completed' && trigger.new[i].Status__c == 'Completed' && trigger.old[i].Approval_Status__c != 'Cancelled'){  
                         if(trigger.new[i].Source__c==WiresConstant.Source_OnlineBanking){
-                          System.debug('After Update: Adding ' + trigger.new[i].id + ' to docSignCompletedAtOnlineIds');
                           docSignCompletedAtOnlineIds.add(trigger.new[i].id);
                         }
                     }
@@ -77,7 +76,6 @@ trigger WIRESTransactionTrigger on WIRES_Transaction__c (before insert,before up
                     //------------------------------- Checking if the status is being changed and status = 'Voided'-----------------//
                     if(trigger.old[i].Status__c != 'Voided' && trigger.new[i].Status__c == 'Voided' && trigger.old[i].Approval_Status__c != 'Cancelled'){  
                         if(trigger.new[i].Source__c==WiresConstant.Source_OnlineBanking){
-                            //docSignDeclinedAtOnlineIds.add(trigger.new[i].id);
                             docSignVoidedAtOnlineIds.add(trigger.new[i].id);
                         }
                     }
@@ -85,12 +83,12 @@ trigger WIRESTransactionTrigger on WIRES_Transaction__c (before insert,before up
                     //----------- Checking if the approval status is being changed and status = 'Released In WireXchange'--------------//
                     if(trigger.old[i].Approval_Status__c != 'Released In WireXchange' && trigger.new[i].Approval_Status__c == 'Released In WireXchange'){
                         if(trigger.new[i].Source__c!=WiresConstant.Source_Branch){
-                          System.debug('After Update: Adding ' + trigger.new[i].id + ' to sentToWireXchangeIds');
                           sentToWireXchangeIds.add(trigger.new[i].id);
                         }
                     }
                     
                     //----------- Checking if the approval status is being changed and status = 'Rejected'--------------//
+                 
                     if(trigger.old[i].Approval_Status__c != 'Rejected' && trigger.new[i].Approval_Status__c == 'Rejected'){
                         if(trigger.new[i].Source__c==WiresConstant.Source_Branch){
                             rejectedWiresIds.add(trigger.new[i].id);
@@ -213,6 +211,7 @@ trigger WIRESTransactionTrigger on WIRES_Transaction__c (before insert,before up
     
     
     //------------------------------------------------------------------Before Insert  ------------------------------------------------------------------------------//
+     
     if(Trigger.isInsert && Trigger.isBefore){ 
         for(WIRES_Transaction__c objWIRESTransaction: trigger.New)
         {
@@ -326,8 +325,10 @@ trigger WIRESTransactionTrigger on WIRES_Transaction__c (before insert,before up
                 }
                 
             }else{
+              
                 if(AccountNo != null){
                     string likeClause = '%' + String.escapeSingleQuotes( objWIRESTransaction.Member_SSN__c.trim());
+                    
                     paPrimary = [SELECT Id,PersonID__c,
                              Account_Number__c, Account_Number__r.RecType__c,TypeTranslate__c,
                              Account_Number__r.Name, PersonID__r.Home_Phone__pc,
@@ -421,9 +422,11 @@ trigger WIRESTransactionTrigger on WIRES_Transaction__c (before insert,before up
             }
             else
             {
+               
                 accList = [SELECT Id,
                            Name
                            FROM Account_Details__c Where Id IN: accIdSet and RecType__c != 'CARD'];
+                
             }
             system.debug('allRelatedAccounts 2---' + allRelatedAccounts);
             
@@ -454,13 +457,14 @@ trigger WIRESTransactionTrigger on WIRES_Transaction__c (before insert,before up
             List<Account> listAccount;
             List<accounthistory> listhistory;        
             List<wrapperAccount> listWrapperAccount = new List<wrapperAccount>();
-            
+            //if (!Test.isRunningTest()){
             if (allRelatedAccounts != null && allRelatedAccounts.size() > 0)
             {
                 
                 listAccount = [select Id, Member_Verification_OTP_Invalid_Attempt__c, Home_Phone__pc, FirstName, LastName, Mobile_Phone__pc, Work_Phone__pc, PersonEmail, Alternate_Email__pc from Account where ID in :allRelatedAccounts];
                 listhistory = [Select accountid,field,OldValue, NewValue, CreatedDate From accounthistory where accountid in :allRelatedAccounts and createddate >: (date.TODAY() - 30)];
-                List<accounthistory> listhistoryOlder = [Select accountid,field,OldValue, NewValue, CreatedDate From accounthistory where accountid in :allRelatedAccounts and createddate <=: (date.TODAY() - 30)];
+                List<accounthistory> listhistoryOlder = [Select accountid,field,OldValue, NewValue, CreatedDate From accounthistory where 
+                                                         accountid in :allRelatedAccounts and createddate <=: (date.TODAY() - 30) ];
                 
                 set<string> listContacts = new set<string>();
                 
@@ -539,10 +543,7 @@ trigger WIRESTransactionTrigger on WIRES_Transaction__c (before insert,before up
                         }
                     }
                 }
-                
-                
-                
-                
+        
                 for (Account accountLocal : listAccount)
                 {
                     if (accountLocal.Mobile_Phone__pc != null && accountLocal.Mobile_Phone__pc != '')
@@ -619,7 +620,7 @@ trigger WIRESTransactionTrigger on WIRES_Transaction__c (before insert,before up
                 }
                 
             }
-            
+           // }
             boolean isEmailStable=true, isHomePhoneStable=true, isMobilePhoneStable=true, isWorkPhoneStable=true;
             
             if (listWrapperAccount != null && listWrapperAccount.size() > 0)
@@ -668,9 +669,8 @@ trigger WIRESTransactionTrigger on WIRES_Transaction__c (before insert,before up
            }
         }     
     }    
-    
-    
-    
+   
+   
     public static boolean isContactEnabled(string FieldValue, string FieldName, string accountid,  List<accounthistory> listhistory, List<accounthistory> listhistoryOlder, boolean phone)
     {
         Set<String> contactFields = new Set<string>{ 'Mobile_Phone__pc','Home_Phone__pc','Work_Phone__pc'};
@@ -699,11 +699,8 @@ trigger WIRESTransactionTrigger on WIRES_Transaction__c (before insert,before up
         
         
         for(string field  : contactFields){
-            
-            
             string OldestValue = '';
             DateTime OldestTime;
-            
             
             accounthistory oldestAccountHistory = new accounthistory(); 
             system.debug('-------field###' + field);
@@ -743,7 +740,6 @@ trigger WIRESTransactionTrigger on WIRES_Transaction__c (before insert,before up
             
         }
         
-        
         boolean foundInOlderValue = false;
         for(accounthistory accounthistoryLocal : listhistoryOlder){
             string oldValue='',newValue='';
@@ -761,21 +757,17 @@ trigger WIRESTransactionTrigger on WIRES_Transaction__c (before insert,before up
                 return true;
             }
         }
-        
-        
-        
-        
+  
         return false;
         
-        
     } 
-    
+     
     public class wrapperAccount
     {
         public string fieldName { get; set; }
         public string fieldType { get; set; }
         public string value { get; set; }
-        public string encryptedvalue { get; set; }
+        //public string encryptedvalue { get; set; }
         public boolean isEnabled {get; set;}
     }
 }
