@@ -362,10 +362,10 @@
             	} 
         	}
             if(cmp.get('v.ischk10')){
-                // if(cmp.find('chk10').get("v.checked")){          
-                //     cmp.set('v.progchk10', true );
-                //     helper.fetchchk10(cmp, event, helper,paramVal,fromdate,todate,recid,keyword);    
-                // } 
+                if(cmp.find('chk10').get("v.checked")){          
+                    cmp.set('v.progchk10', true );
+                    helper.fetchchk10(cmp, event, helper,paramVal,fromdate,todate,recid,keyword);    
+                } 
             }
 			/*if(cmp.get('v.ischk11')){
                 if(cmp.find('chk11').get("v.checked")){          
