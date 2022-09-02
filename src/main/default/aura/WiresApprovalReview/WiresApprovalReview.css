@@ -6,3 +6,52 @@
    text-align: left;
    max-width: 90px;
 }
+
+.THIS table.tblMarsdetails{
+    border: 1px solid black;
+}
+
+.THIS table.tblMarsdetails tr{
+    border: 1px solid black;
+}
+
+.THIS table.tblMarsdetails tr td{
+    border: 1px solid black;
+}
+
+.THIS table.tblMarsdetails tr td:first-child{
+    font-weight:600;
+}
+
+.THIS table.tblMarsdetails th{
+    text-align: center;
+}
+
+.THIS .divMarsDetails{
+   width: 45%;
+   float:left;
+}
+
+.THIS .divIDVDetails{
+    width: 45%;
+    float: right;
+}
+
+.THIS .divIDVFailedDetails{
+    width: 580px !important;
+    margin-top: 20px;
+}
+
+.THIS .spin{
+    height: 90%;
+    top: 6%;
+}
+
+.THIS .slds-modal__footer .footernoidv{position:absolute; bottom:115px;width:100%;left:0px;text-align: right !important;}
+
+.THIS .slds-modal__footer .footeridvfailed{position:absolute; bottom:0px !important;width:100%;left:0px;text-align: right !important;}
+
+.THIS .imgIDV{
+    /*height: 300px !important;
+    width: 560px !important;*/
+}

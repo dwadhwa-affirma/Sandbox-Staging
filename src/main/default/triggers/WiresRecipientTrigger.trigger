@@ -12,9 +12,9 @@ trigger WiresRecipientTrigger on WIRES_Recipient__c (after insert) {
     }
     List<WIRES_Recipient__c> wiresToUpdate = [select id,Chevron_AccountNumber__c from WIRES_Recipient__c where id IN: Ids];
     if(wiresToUpdate.size() > 0){
-        for (WIRES_Recipient__c c : wiresToUpdate) {	
+        for (WIRES_Recipient__c c : wiresToUpdate) {    
             //c.ExternalID__c = c.Id;
-            
+                      
             List<Person_Account__c> paPrimary = [SELECT Id,PersonID__c,
                                                  Account_Number__c, Account_Number__r.RecType__c,
                                                  TypeTranslate__c, Account_Number__r.Name, 
@@ -30,6 +30,7 @@ trigger WiresRecipientTrigger on WIRES_Recipient__c (after insert) {
                                                  WHERE Account_Number__r.Name =: c.Chevron_AccountNumber__c 
                                                  and TypeTranslate__c  like '%Primary%' limit 1];
             
+            
             List<Account_Details__c> accDetail=[SELECT Id,Name, Brand__c FROM Account_Details__c 
                                           WHERE Name=:c.Chevron_AccountNumber__c  AND RecType__c = 'ACCT' LIMIT 1];
             
@@ -38,12 +39,12 @@ trigger WiresRecipientTrigger on WIRES_Recipient__c (after insert) {
             if(paPrimary.size()>0){
                 emailSMSNotification.email=paPrimary[0].PersonID__r.Email_raw__c;
                 emailSMSNotification.name=paPrimary[0].PersonID__r.Name;
-                emailSMSNotification.accountNumber=paPrimary[0].PersonID__r.Name;
+                emailSMSNotification.accountNumber=paPrimary[0].Account_Number__c;
                 emailSMSNotification.phone=paPrimary[0].PersonID__r.Mobile_Phone__pc;
             }
             
             if(accDetail.size()>0){
-            	emailSMSNotification.brand=accDetail[0].Brand__c;
+                emailSMSNotification.brand=accDetail[0].Brand__c;
             }
             EmailIdsList.add(emailSMSNotification);
         }
@@ -72,7 +73,7 @@ trigger WiresRecipientTrigger on WIRES_Recipient__c (after insert) {
     }
     
     // --------------------- Send Email Notification..................//
-    public void SendEmailNotifications(string email,string name, string templatenAME){
+    /*public void SendEmailNotifications(string email,string name, string templatenAME){
         List<Messaging.SingleEmailMessage> mails = new List<Messaging.SingleEmailMessage>();
         Messaging.SingleEmailMessage mail = new Messaging.SingleEmailMessage();
         
@@ -113,7 +114,7 @@ trigger WiresRecipientTrigger on WIRES_Recipient__c (after insert) {
         mails.add(mail);
         
         Messaging.sendEmail(mails);
-    }
+    }*/
     
     public class EmailSMSNotification{
         @AuraEnabled

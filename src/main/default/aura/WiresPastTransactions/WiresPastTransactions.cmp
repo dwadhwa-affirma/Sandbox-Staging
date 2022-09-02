@@ -1,0 +1,72 @@
+<aura:component implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId" controller="WiresTransactionApprovalController">
+<aura:handler name="init" value="{!this}" action="{!c.doInit}" />
+<aura:attribute name="allData" access="global" Type="List" />
+<aura:attribute name="tableData" type="List" />
+<aura:attribute name="columns" type="Object[]" />
+<aura:attribute name="pageSize" type="Integer" default="15" />
+<aura:attribute name="pageSizeOptions" type="Integer[]" default="10,15,20,25,50,100" />
+<aura:attribute name="currentPageNumber" type="Integer" default="1" />
+<aura:attribute name="totalPages" type="Integer" default="1" />
+<aura:attribute name="isLoading" type="Boolean" default="false" />
+<aura:attribute name="filteredData" type="List" />
+<aura:attribute name="sortedBy" type="String"/>
+<aura:attribute name="sortDirection" type="String" default="asc"/>    
+ 
+<aura:if isTrue="{! v.isLoading }">
+        <lightning:spinner alternativeText="Loading" />
+</aura:if>
+    
+<lightning:card>
+        <div class="slds-p-around_small slds-grid slds-grid_align-spread slds-grid_vertical-align-start">
+            <div>
+                <lightning:select
+                    label="Number of records on page:"
+                    value="{!v.pageSize }"
+                    onchange="{!c.onPageSizeChange }">
+                    <aura:iteration items="{! v.pageSizeOptions }" var="opt">
+                        <option text="{!opt }"></option>
+                    </aura:iteration>
+                </lightning:select>
+            </div>
+            <div>
+                <lightning:button
+                    label="First"
+                    iconName="utility:left"
+                    iconPosition="left"
+                    onclick="{!c.onFirst }"
+                    disabled="{!v.currentPageNumber == 1 }" />
+                <lightning:button
+                    label="Previous"
+                    iconName="utility:chevronleft"
+                    iconPosition="left"
+                    onclick="{! c.onPrev }"
+                    disabled="{! v.currentPageNumber == 1 }" />
+                <span class="slds-var-p-horizontal_x-small">
+                    Page {! (v.currentPageNumber) } of {! (v.totalPages) }
+                </span>
+                <span class="slds-var-p-horizontal_x-small">
+                    Number of records: {! (v.filteredData.length) }
+                </span>
+                <lightning:button
+                    label="Next"
+                    iconName="utility:chevronright"
+                    iconPosition="right"
+                    onclick="{!c.onNext }"
+                    disabled="{!v.currentPageNumber == v.totalPages }" />
+                <lightning:button
+                    label="Last"
+                    iconName="utility:right"
+                    iconPosition="right"
+                    onclick="{!c.onLast }"        
+                    disabled="{!v.currentPageNumber == v.totalPages }" />
+            </div>           
+        </div>
+        <lightning:datatable
+            aura:id="table"
+            columns="{!v.columns}"
+            data="{!v.tableData}"
+            hideCheckboxColumn="true"
+            keyField="WireNumber" 
+            />
+    </lightning:card>
+</aura:component>

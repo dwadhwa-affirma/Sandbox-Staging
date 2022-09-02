@@ -34,7 +34,7 @@ trigger WiresBeneficiaryOTP on Wires_Beneficiary_OTP__c (before insert) {
             else
             {
                 system.debug('memberemail=='+memberemail);
-                SendOTPEmail(memberemail, obj.Brand__c, RandomNumber);
+                SendOTPEmail(memberemail, obj.Brand__c, RandomNumber, accountNumber);
                 //objUpdateOTP.add(objWiresBeneficiaryotp);
                 
             }
@@ -61,7 +61,7 @@ trigger WiresBeneficiaryOTP on Wires_Beneficiary_OTP__c (before insert) {
     
     
     
-    private void SendOTPEmail(string ToEmail, string Brand, string otp)
+    private void SendOTPEmail(string ToEmail, string Brand, string otp, string accountNumber)
     {
         List<Messaging.SingleEmailMessage> mails = new List<Messaging.SingleEmailMessage>();
         Messaging.SingleEmailMessage mail = new Messaging.SingleEmailMessage();
@@ -73,12 +73,12 @@ trigger WiresBeneficiaryOTP on Wires_Beneficiary_OTP__c (before insert) {
         string templatenAME;
         string emailadd;
         if(Brand == 'Spectrum'){
-            templatenAME = 'Spectrum WIRES Beneficiary OTP';
+            templateNAME = 'Wires One Time Passcode Spectrum';//'Spectrum WIRES Beneficiary OTP';
             emailadd = 'noreply@spectrumcu.org';
         }
         else 
         {
-            templatenAME = 'Chevron WIRES Beneficiary OTP';
+            templatenAME = 'Wires One Time Passcode Chevron';//'Chevron WIRES Beneficiary OTP';
             emailadd = 'noreply@chevronfcu.org';
         }
         
@@ -93,10 +93,30 @@ trigger WiresBeneficiaryOTP on Wires_Beneficiary_OTP__c (before insert) {
         
         List<OrgWideEmailAddress> listAdd = [select Id,Address,DisplayName  from OrgWideEmailAddress where Address =: emailadd];
         string body='';
+        
+        List<Person_Account__c> paPrimary = [SELECT Id,PersonID__c,
+                                           Account_Number__c, Account_Number__r.RecType__c,
+                                           TypeTranslate__c, Account_Number__r.Name, 
+                                           PersonID__r.Home_Phone__pc,
+                                           PersonID__r.Mobile_Phone__pc,
+                                           PersonID__r.Residential_City__pc,
+                                           PersonID__r.Residential_State__pc, 
+                                           PersonID__r.Residential_Street__pc, 
+                                           PersonID__r.Residential_Zipocde__pc, 
+                                           PersonID__r.Name, 
+                                           PersonID__r.Email_raw__c 
+                                           FROM Person_Account__c 
+                                           WHERE Account_Number__r.Name =: accountNumber 
+                                           and TypeTranslate__c  like '%Primary%' limit 1];
+        
         if(listEmailTemplate.size()>0){
-        	body = listEmailTemplate[0].Body.replace('{WIRESOTP}', otp);
+        	body = listEmailTemplate[0].HtmlValue.replace('{WIRESOTP}', otp);
+            if(paPrimary.size() > 0)
+            	body = body.replace('{Name}', paPrimary[0].PersonID__r.Name);
+            else
+                body = body.replace('{Name}', 'Member');
         }
-        mail.setPlainTextBody(body);
+        mail.setHtmlBody(body);
         mail.setOrgWideEmailAddressId(listAdd[0].Id);
         mails.add(mail);
         

@@ -1,0 +1,23 @@
+<aura:component controller="WireTransactionOwnBy" implements="flexipage:availableForAllPageTypes,force:hasRecordId" access="global">
+	 <aura:handler name="init" value="{!this}" action="{!c.doInit}" />
+    <aura:attribute name="wireDetails" type="Object"  />
+    <aura:attribute name="OwnerTypeName" type="string" />
+   
+   
+  
+       
+       
+   <aura:if isTrue="{! (v.wireDetails.Owner.Type == 'User')}">
+       	<table align="right">
+        	<tr align="right">        	  
+	        	<td align="right">
+        <label class="naTextNorm">Current Owner : {!v.wireDetails.Owner.Name } </label>&nbsp;&nbsp;
+      
+                    </td>
+	        </tr>
+	</table>
+       </aura:if>
+          
+     
+   
+</aura:component>
