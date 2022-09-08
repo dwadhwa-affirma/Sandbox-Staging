@@ -439,6 +439,7 @@ global with sharing class MemberCommunicationData{
             if (!Test.isRunningTest()){
                 HttpResponse response = http.send(request);
                 responseBody = response.getBody();
+                system.debug('monthly --->>'+response.getBody());
             } else{
                 responseBody = '[{"Monthly Statement":{"desc":"Monthly Statement","documents":[{"Userid":"147163","MDUserID":"147163","acctID":"147163","dateDesc":"Aug 31, 2021","documentDate":"2021-08-31","exigent":false,"hyperlinkPDF":"www.google.com"}]}}]';
             }
@@ -1361,7 +1362,7 @@ global with sharing class MemberCommunicationData{
      for(EDS_Member_Alerts__c ml : eds ){
      MemberCommunicationData.documents doc = new MemberCommunicationData.documents();
      doc.id= ml.id;
-     doc.dateDesc= 'Wires Tranaction - ' + ml.Event_ID__c;
+     doc.dateDesc= 'Wires Transaction - ' + ml.Event_ID__c;
      doc.documentDate=Date.valueOf(ml.createdDate);
      //doc.documentDateText = doc.documentDate.format() + ' 00:00';
      //doc.userID =ld.Brand__c;
