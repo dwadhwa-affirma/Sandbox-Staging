@@ -8,7 +8,6 @@ public class MaritzCXSurveyResponseTriggerHandler {
         for(MaritzCX__Survey_Response__c surveyRes : newSurveyRes) {
             surveyRes.MaritzCX__ALG_Survey_Id__c=maritzResMdt.MaritzCX_ALG_Survey_Id__c;
             surveyRes.MaritzCX__Key_Metric_5__c=maritzResMdt.MaritzCX_Key_Metric_5__c;
-            surveyRes.MaritzCX__respondent_email__c ='V555628874';
         }
     }
     
