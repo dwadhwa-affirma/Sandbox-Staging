@@ -11,9 +11,8 @@ public class MaritzCXSurveyResponseTriggerHandler {
         }
     }
     
-    public void afterInsert(List<MaritzCX__Survey_Response__c> newSurveyRes){
-        
-        System.debug('afterInsert');
+    public void afterInsert(List<MaritzCX__Survey_Response__c> newSurveyRes){   
+     
         //-----STRY0012259 : Create Maritz Survey Response Case --//
         Set<String> personIds=new Set<String>();
         Set<String> accNums=new Set<String>();
@@ -35,8 +34,6 @@ public class MaritzCXSurveyResponseTriggerHandler {
         
         List<CaseRecordType__c> recTypeList =RecordTypeSelector.getCaseRecordTypeByPrimaryCat('Surveys');
         
-        System.debug('recTypeList:'+recTypeList);
-        
         Set<String> surveyCodeQueues = new Set<String>();
         Map<String,Survey_Case_Codes__c> surveyCodesMap = new Map<String,Survey_Case_Codes__c>();
         for(Survey_Case_Codes__c caseCode : getSurveyCaseCodes(surveyCaseCodes))
@@ -50,8 +47,6 @@ public class MaritzCXSurveyResponseTriggerHandler {
         {
             accDetailsMap.put(accDetail.Name,accDetail);
         }
-        
-        System.debug('accDetailsMap:'+accDetailsMap);
         
         Map<String,Person_Account__c> personAccByAccNumberMap= new Map<String,Person_Account__c>();
         Map<String,Person_Account__c> personAccByPersonIdMap= new Map<String,Person_Account__c>();
@@ -70,14 +65,10 @@ public class MaritzCXSurveyResponseTriggerHandler {
             }
         }
         
-        System.debug('conMap:'+conMap);
-        
         Map<String,Group> queueMap = new Map<String,Group>();
         for(Group g : [SELECT Id, Name FROM Group WHERE Name =:surveyCodeQueues]){
             queueMap.put(g.Name, g);
         }
-        
-        System.debug('queueMap:'+queueMap);
         
         Map<String,String> surveyResCaseMap=new Map<String,String>();
         for(MaritzCX__Survey_Response__c surveyRes : newSurveyRes) {
