@@ -16,7 +16,6 @@ public class MaritzCXSurveyResponseTriggerHandler {
     
     public void afterInsert(List<MaritzCX__Survey_Response__c> newSurveyRes){
         
-        System.debug('afterInsert');
         //-----STRY0012259 : Create Maritz Survey Response Case --//
         Set<String> personIds=new Set<String>();
         Set<String> accNums=new Set<String>();
@@ -38,8 +37,6 @@ public class MaritzCXSurveyResponseTriggerHandler {
         
         List<CaseRecordType__c> recTypeList =RecordTypeSelector.getCaseRecordTypeByPrimaryCat('Surveys');
         
-        System.debug('recTypeList:'+recTypeList);
-        
         Set<String> surveyCodeQueues = new Set<String>();
         Map<String,Survey_Case_Codes__c> surveyCodesMap = new Map<String,Survey_Case_Codes__c>();
         for(Survey_Case_Codes__c caseCode : getSurveyCaseCodes(surveyCaseCodes))
@@ -53,8 +50,6 @@ public class MaritzCXSurveyResponseTriggerHandler {
         {
             accDetailsMap.put(accDetail.Name,accDetail);
         }
-        
-        System.debug('accDetailsMap:'+accDetailsMap);
         
         Map<String,Person_Account__c> personAccByAccNumberMap= new Map<String,Person_Account__c>();
         Map<String,Person_Account__c> personAccByPersonIdMap= new Map<String,Person_Account__c>();
@@ -73,21 +68,15 @@ public class MaritzCXSurveyResponseTriggerHandler {
             }
         }
         
-        System.debug('conMap:'+conMap);
-        
         Map<String,Group> queueMap = new Map<String,Group>();
         for(Group g : [SELECT Id, Name FROM Group WHERE Name =:surveyCodeQueues]){
             queueMap.put(g.Name, g);
         }
         
-        System.debug('queueMap:'+queueMap);
-        
         Map<String,String> surveyResCaseMap=new Map<String,String>();
         for(MaritzCX__Survey_Response__c surveyRes : newSurveyRes) {
             Survey_Case_Codes__c surveyCode=surveyCodesMap.get(surveyRes.MaritzCX__Metric_2__c);
             if(surveyCode!=null) {
-                System.debug('surveyCode:'+surveyCode);
-                system.debug('case creation is started');
                 Case case1=new Case();
                 case1.Subject= surveyCode.Branch_Dept__c+' Alert'+' :'+surveyCode.Name+':'+surveyRes.MaritzCX__Metric_1__c;
                 case1.Origin='MaritzCX';
@@ -130,8 +119,6 @@ public class MaritzCXSurveyResponseTriggerHandler {
                 insert case1;
                 
                 surveyResCaseMap.put(surveyRes.Id,case1.Id);
-                
-              
             } 
             
             List<MaritzCX__Survey_Response__c> resToUpdate=new List<MaritzCX__Survey_Response__c>();
