@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomMetadata xmlns="http://soap.sforce.com/2006/04/metadata" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+    <label>MaritzCX Response</label>
+    <protected>false</protected>
+    <values>
+        <field>MaritzCX_ALG_Survey_Id__c</field>
+        <value xsi:type="xsd:double">111.0</value>
+    </values>
+    <values>
+        <field>MaritzCX_Key_Metric_5__c</field>
+        <value xsi:type="xsd:double">111.0</value>
+    </values>
+    <values>
+        <field>MaritzCX_Key_Metric_6__c</field>
+        <value xsi:type="xsd:double">112.0</value>
+    </values>
+    <values>
+        <field>MaritzCX_Key_Metric_7__c</field>
+        <value xsi:type="xsd:double">112.0</value>
+    </values>
+</CustomMetadata>

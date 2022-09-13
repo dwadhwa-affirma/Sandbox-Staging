@@ -8,11 +8,13 @@ public class MaritzCXSurveyResponseTriggerHandler {
         for(MaritzCX__Survey_Response__c surveyRes : newSurveyRes) {
             surveyRes.MaritzCX__ALG_Survey_Id__c=maritzResMdt.MaritzCX_ALG_Survey_Id__c;
             surveyRes.MaritzCX__Key_Metric_5__c=maritzResMdt.MaritzCX_Key_Metric_5__c;
+            surveyRes.MaritzCX__Key_Metric_6__c=maritzResMdt.MaritzCX_Key_Metric_6__c;
+            surveyRes.MaritzCX__Key_Metric_7__c=maritzResMdt.MaritzCX_Key_Metric_7__c;
         }
     }
     
-    public void afterInsert(List<MaritzCX__Survey_Response__c> newSurveyRes){   
-     
+    public void afterInsert(List<MaritzCX__Survey_Response__c> newSurveyRes){
+        
         //-----STRY0012259 : Create Maritz Survey Response Case --//
         Set<String> personIds=new Set<String>();
         Set<String> accNums=new Set<String>();
@@ -74,8 +76,6 @@ public class MaritzCXSurveyResponseTriggerHandler {
         for(MaritzCX__Survey_Response__c surveyRes : newSurveyRes) {
             Survey_Case_Codes__c surveyCode=surveyCodesMap.get(surveyRes.MaritzCX__Metric_2__c);
             if(surveyCode!=null) {
-                System.debug('surveyCode:'+surveyCode);
-                system.debug('case creation is started');
                 Case case1=new Case();
                 case1.Subject= surveyCode.Branch_Dept__c+' Alert'+' :'+surveyCode.Name+':'+surveyRes.MaritzCX__Metric_1__c;
                 case1.Origin='MaritzCX';
@@ -118,8 +118,6 @@ public class MaritzCXSurveyResponseTriggerHandler {
                 insert case1;
                 
                 surveyResCaseMap.put(surveyRes.Id,case1.Id);
-                
-              
             } 
             
             List<MaritzCX__Survey_Response__c> resToUpdate=new List<MaritzCX__Survey_Response__c>();
