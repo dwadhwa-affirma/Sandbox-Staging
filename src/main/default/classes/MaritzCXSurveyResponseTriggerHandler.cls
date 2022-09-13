@@ -10,7 +10,6 @@ public class MaritzCXSurveyResponseTriggerHandler {
             surveyRes.MaritzCX__Key_Metric_5__c=maritzResMdt.MaritzCX_Key_Metric_5__c;
             surveyRes.MaritzCX__Key_Metric_6__c=maritzResMdt.MaritzCX_Key_Metric_6__c;
             surveyRes.MaritzCX__Key_Metric_7__c=maritzResMdt.MaritzCX_Key_Metric_7__c;
-            //surveyRes.MaritzCX__respondent_email__c ='V555628874';
         }
     }
     
