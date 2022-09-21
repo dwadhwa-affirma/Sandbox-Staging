@@ -150,7 +150,7 @@
             .linespace {
                 border: 0;
                 border-bottom: 1px solid #000;
-                height: 15px;
+                height: auto;
                 display: inline-block;
             }
 

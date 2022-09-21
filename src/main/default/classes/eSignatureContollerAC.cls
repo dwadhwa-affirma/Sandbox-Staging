@@ -164,16 +164,15 @@ global class eSignatureContollerAC{
                 acDoc[0].Document_Type__c = 'Change of Address';
                 update acDoc[0];
              }
-            //  OnBase_Document__c acDoc=new OnBase_Document__c();
-            //  acDoc.Attachment_Id__c =addressChangePDF.Id;
-            //  //acDoc.Member_Number__c = wire.FromAccount__c;
-            //  acDoc.IsMovedToOnBase__c = false;
-            //  acDoc.Document_Type__c = 'Change of Address';
-            //  acDoc.Document_Name__c = 'AddressChange_'+inPersonSign.AC_Case__r.CaseNumber+'.pdf';
-            //  acDoc.Case__c = inPersonSign.AC_Case__c;
-            //  acDoc.Attachment_Created_On__c = DateTime.now();
 
-             //insert acDoc;
+             List<Case> caseList = [Select id, CaseNumber, Status from Case where Id =: inPersonSign.AC_Case__c limit 1];
+             if(caseList.size() > 0){
+                for(Case c: CaseList){
+                    c.Status = 'Closed';
+                }
+                update caseList[0];
+             }
+            
         }
 
         List<Attachment> signatures = new List<Attachment>();
@@ -213,30 +212,9 @@ global class eSignatureContollerAC{
 
         ApexPages.addmessage(new ApexPages.message(ApexPages.severity.CONFIRM, 'Wire Transfer Authorization pdf has been generated successfully.'));
 
-        //ListView lstView=[SELECT Id,Name from ListView Where Name='To Be Signed' LIMIT 1];
-        //string baseUrl=URL.getSalesforceBaseUrl().toExternalForm()+ '/lightning/o/InPersonSigning__c/list?filterName='+lstView.Id;
-        //system.debug('BaseURL:'+baseUrl);
-        //PageReference pageRef = new PageReference(baseUrl);
-
-        //pageRef.setRedirect(true);
-        //return pageRef;
-        //
-
-        //sforce.one.navigateToList('00B19000002CZbHEAW','To Be Signed','InPersonSigning__c');
-
-        //ListView lstView = [SELECT Id, Name from ListView Where Name = 'To Be Signed'LIMIT 1];
         showAlert = true;
     }
 
-    //public PageReference Cancel() {
-    //PageReference pageRef = new PageReference('/' + objParentId);
-    //ListView lstView=[SELECT Id,Name from ListView Where Name='To Be Signed' LIMIT 1];
-    //string baseUrl=URL.getSalesforceBaseUrl().toExternalForm()+ '/lightning/o/InPersonSigning__c/list?filterName='+lstView.Id;
-    //system.debug('BaseURL:'+baseUrl);
-    //PageReference pageRef = new PageReference(baseUrl);
-    //pageRef.setRedirect(true);
-    //return pageRef;
-    //}
     public void spin(){
         long now = datetime.now().gettime();
         //while(datetime.now().gettime()-now<5000); // Busy loop for 5000 ms
