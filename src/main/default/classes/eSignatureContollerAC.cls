@@ -146,7 +146,13 @@ global class eSignatureContollerAC{
         myAttach.ParentId = addressChangeObject.Id;//Id of the object to which the page is attached
         myAttach.name = 'AddressChange_' + inPersonSign.AC_Case__r.CaseNumber +'.pdf';
         PageReference myPdf = ApexPages.currentPage();//myPdfPage is the name of your pdf page
-        myAttach.body = myPdf.getContentAsPdf();
+        if(Test.isRunningTest()) { 
+            myAttach.body = blob.valueOf('Unit.Test');
+          } 
+        else {
+            myAttach.body = myPdf.getContentAsPdf();
+        }
+        
         insert myAttach;
         System.debug('Inserted...' + myAttach.id);
 
@@ -155,7 +161,13 @@ global class eSignatureContollerAC{
             addressChangePDF.ParentId = inPersonSign.AC_Case__c;
             addressChangePDF.name = 'AddressChange_'+inPersonSign.AC_Case__r.CaseNumber+'.pdf';
              PageReference addressChangePdfContent = ApexPages.currentPage();
-             addressChangePDF.body = addressChangePdfContent.getContentAsPdf();
+             if(Test.isRunningTest()) { 
+                addressChangePDF.body = blob.valueOf('Unit.Test');
+              } 
+            else {
+                addressChangePDF.body = addressChangePdfContent.getContentAsPdf();
+            }
+             
              insert addressChangePDF;
 
              List<OnBase_Document__c> acDoc = [SELECT id, Attachment_Id__c, case__r.casenumber, createddate, Document_Type__c, Document_Name__c from OnBase_Document__c where case__c =: inPersonSign.AC_Case__c order by CreatedDate desc limit 1];
