@@ -1,0 +1,65 @@
+.logohead{text-align:center;}
+.logohead h1{text-transform: uppercase;
+    font-size: 1rem;
+    font-weight: 500; margin-top:.5rem;
+    letter-spacing: 1px;}
+
+.THIS.authwrap{font-size:.8125rem;background-color:#ffffff;padding:13px;}
+.p0{padding:0 !important;}
+.tblbor0{
+    border-spacing: 0px;
+}
+.tblbor0 td{border:0 !important;}
+.tblbor0 td.tblborright{border-right:1px solid #000 !important;}
+
+.authtitle{margin:1rem;}
+.authtitle h2{text-transform:uppercase; font-size:1rem;font-size:.875rem; font-weight:700; letter-spacing:1px;}
+.chkbx{border:1px solid #000; width:15px; height:15px; margin:0 1rem 0 1rem; display:inline-block; vertical-align:middle;
+	line-height:15px; text-align:center;}
+
+.addrform table {width: 100%;}
+.addrform table td{border:1px solid #000;}
+.addrform td{padding:.5rem;}
+.addrform td.titletbl{background:#ccc;}
+
+td span{font-size:.875rem; text-transform:uppercase;}
+
+td.titletbl,td.multicoltbl{
+    background: #ccc;
+    text-transform: uppercase;
+}
+td.multicoltbl{
+    padding: 0px;
+}
+td.multicoltbl td{ 
+    text-transform: none;
+}
+.THIS.hidediv {
+    display:none;
+}
+.THIS.showdiv {
+    display:block;
+}
+.spin{
+    top: 10% !important;
+    bottom: 7% !important;
+}
+.credit-use{
+    font-weight: bold;
+    border-bottom: 2px solid #000;
+    text-align: center;
+    padding:13px;
+    margin: 3px 3px 10px 3px;
+}
+table.credittbl > tbody > tr > td{
+    width: 50%;
+}
+.note{
+    margin: 20px 0 50px 0;    
+}
+.outputvalue.slds-form-element__control{
+    display: inline-block !important; 
+}
+.slds-form-element__control {
+    display: inline-block !important; 
+ }

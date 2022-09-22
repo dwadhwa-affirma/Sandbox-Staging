@@ -1,0 +1,468 @@
+<apex:page standardcontroller="InPersonSigning__c" showHeader="false" showQuickActionVfHeader="false" applyHtmlTag="false"
+    extensions="eSignatureContollerAC">
+    <apex:stylesheet value="https://fonts.googleapis.com/css?family=Alef" />
+
+    <head>
+        <apex:includeScript value="{! $Resource.jsPDF + '/jquery-3.5.1.min.js' }" />
+        <script src="https://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.js"></script>
+        <script>var $ = jQuery.noConflict();</script>
+
+        <script> 
+
+            var mousePressed = false;
+            var lastX, lastY;
+            var canvas;
+            var ctx;
+            var canSave = false;
+            var parentId = '{!objParentId}';
+            var listViewId = '{!toBeSIgnedListViewId}';
+
+            $(document).ready(function () {
+                $("#eSignDiv").addClass("hidediv");
+                $("#footer").removeClass("hidediv");
+                $("#footer").addClass("showdiv");
+                canvas = document.getElementById('myCanvas');
+                ctx = canvas.getContext("2d");
+
+
+
+
+                canvas.addEventListener("mousedown", function (e) {
+
+                    mousePressed = true;
+                    Draw(e.pageX - $(this).offset().left, e.pageY - $(this).offset().top, false);
+                });
+
+                canvas.addEventListener("mousemove", function (e) {
+                    if (mousePressed) {
+                        var canSave = true;
+                        Draw(e.pageX - $(this).offset().left, e.pageY - $(this).offset().top, true);
+                    }
+                });
+
+
+
+                canvas.addEventListener("mouseup", function (e) {
+                    mousePressed = false;
+                });
+
+
+                canvas.addEventListener("mouseleave", function (e) {
+                    mousePressed = false;
+                });
+
+                canvas.addEventListener("touchstart", function (e) {
+                    mousePressed = true;
+                    Draw(e.pageX - $(this).offset().left, e.pageY - $(this).offset().top, false);
+                });
+                canvas.addEventListener("touchmove", function (e) {
+                    if (mousePressed) {
+                        var canSave = true;
+                        Draw(e.pageX - $(this).offset().left, e.pageY - $(this).offset().top, true);
+                    }
+                });
+                canvas.addEventListener("touchend", function (e) {
+                    mousePressed = false;
+                });
+            });
+
+            function Draw(x, y, isDown) {
+                if (isDown) {
+                    ctx.beginPath();
+                    ctx.strokeStyle = $('#selColor').val();
+                    ctx.lineWidth = $('#selWidth').val();
+                    ctx.lineJoin = "round";
+                    ctx.moveTo(lastX, lastY);
+                    ctx.lineTo(x, y);
+                    ctx.closePath();
+                    ctx.stroke();
+                }
+                lastX = x; lastY = y;
+            }
+
+            function clearArea() {
+                // Use the identity matrix while clearing the canvas
+                ctx.setTransform(1, 0, 0, 1, 0, 0);
+                ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+            }
+
+            function saveSignature() {
+                var strDataURI = canvas.toDataURL();
+                strDataURI = strDataURI.replace(/^data:image\/(png|jpg);base64,/, "");
+                eSignatureContoller.saveSignature(strDataURI, parentId, processResult);
+            }
+
+            function cancelPDF() {
+                sforce.one.navigateToList(listViewId, 'To Be Signed', 'InPersonSigning__c');
+            }
+
+            function showAlert() {
+                alert('OK');
+            }
+
+            function processResult(result) {
+                if (result) {
+                    $("#eSignDiv").removeClass('showdiv');
+                    $("#eSignDiv").addClass('hidediv');
+
+                    $("#eSignPdf").removeClass('hidediv');
+                    $("#eSignPdf").addClass('showdiv');
+
+                    $("#footer").removeClass("hidediv");
+                    $("#footer").addClass("showdiv");
+
+                    var src = '/servlet/servlet.FileDownload?file=' + eSignatureContoller.signAttachmentId;
+                    $("#signImg").removeAttr("src").attr("src", src);
+
+                    window.location.reload();
+                } else {
+                    alert('An error occurred while saving the signature. Please try again.');
+                }
+            }
+
+            function handleMemberSignatureClick() {
+                var attachementId = eSignatureContoller.signAttachmentId;
+                if (!attachementId) {
+                    $("#eSignDiv").removeClass('hidediv');
+                    $("#eSignDiv").addClass('showdiv');
+
+                    $("#eSignPdf").removeClass('showdiv');
+                    $("#eSignPdf").addClass('hidediv');
+
+                    $("#footer").removeClass("showdiv");
+                    $("#footer").addClass("hidediv");
+                }
+
+            }
+
+            function handleCancel() {
+                $("#eSignDiv").removeClass("showdiv");
+                $("#eSignDiv").addClass("hidediv");
+
+                $("#eSignPdf").removeClass('hidediv');
+                $("#eSignPdf").addClass('showdiv');
+
+                $("#footer").removeClass("hidediv");
+                $("#footer").addClass("showdiv");
+            }
+        </script>
+        <style>
+            .linespace {
+                border: 0;
+                border-bottom: 1px solid #000;
+                height: auto;
+                display: inline-block;
+            }
+
+            .checkbox {
+                width: 13px;
+                height: 13px;
+                border: 1px solid #000;
+                display: inline-block;
+                line-height: 12px;
+                text-align: center;
+                font-family: sans-serif;
+                font-size: 14px;
+                font-weight: bold;
+            }
+
+            @media print {
+                .footer {
+                    display: none !important;
+                }
+        </style>
+    </head>
+
+    <body>
+        <apex:pageMessages />
+        <div style="max-width: 650px; margin:0 auto 0">
+            <p style="margin-bottom:20px;">
+                <img src="{!$Resource.ChevronLogo}" alt="chevron logo image" />
+            </p>
+            <p style='margin-top:0in;margin-right:0in;margin-bottom:0in;margin-left:0in;line-height:normal;text-align:center;'>
+                <strong>
+                    <span style='font-size:21px;font-family:"Arial",sans-serif;'>Address Change Authorization</span>
+                </strong>
+            </p>
+            <p style='margin-top:0in;margin-right:0in;margin-bottom:0in;margin-left:0in;line-height:normal;'>
+                <strong>
+                    <span style='font-size:13px;font-family:"Arial",sans-serif;'>&nbsp;</span>
+                </strong>
+            </p>
+            <p style='margin-top:0in;margin-right:0in;margin-bottom:0in;margin-left:0in;line-height:normal;'>
+                <span style='font-size:13px;font-family:"Arial",sans-serif;'>&nbsp;</span>
+            </p>
+            <p style='margin-top:0in;margin-right:0in;margin-bottom:0in;margin-left:0in;line-height:normal;'>
+                <span style='font-size:13px;font-family:"Arial",sans-serif;'>Member Name&nbsp;
+                    <span class="linespace" style="width:245px;">{!addressChangeObjectDetail.AC_Member__r.Name}</span> &nbsp; &nbsp;Account Number&nbsp;
+                    <span class="linespace" style="width:135px;">{!addressChangeObjectDetail.AC_Member_Account__r.Name}&nbsp;</span>&nbsp; &nbsp; &nbsp;&nbsp;</span>
+            </p>
+            <p style='margin-top:0in;margin-right:0in;margin-bottom:0in;margin-left:0in;line-height:normal;'>
+                <span style='font-size:13px;font-family:"Arial",sans-serif;'>&nbsp;</span>
+            </p>
+            <p style='margin-top:0in;margin-right:0in;margin-bottom:0in;margin-left:0in;line-height:normal;'>
+                <span style='font-size:13px;font-family:"Arial",sans-serif;'>Email Address&nbsp;
+                    <span class="linespace" style="width:175px;">{!addressChangeObjectDetail.AC_Email__c}&nbsp;</span> 
+                </span>
+            </p>
+            <p style='margin-top:0in;margin-right:0in;margin-bottom:0in;margin-left:0in;line-height:normal;'>
+                <strong>
+                    <span style='font-size:16px;font-family:"Arial",sans-serif;'>&nbsp;</span>
+                </strong>
+            </p>
+            <p style='margin-top:0in;margin-right:0in;margin-bottom:0in;margin-left:0in;line-height:normal;'>
+                <strong>
+                    <span style='font-size:16px;font-family:"Arial",sans-serif;'>New Residential Address</span>
+                </strong>
+            </p>
+            <p style='margin-top:0in;margin-right:0in;margin-bottom:0in;margin-left:0in;line-height:normal;'>
+                <strong>
+                    <span style='font-size:13px;font-family:"Arial",sans-serif;'>&nbsp;</span>
+                </strong>
+            </p>
+            <p style='margin-top:0in;margin-right:0in;margin-bottom:0in;margin-left:0in;line-height:normal;'>
+                <span style='font-size:13px;font-family:"Arial",sans-serif;'>Line 1&nbsp;
+                    <span class="linespace" style="width:550px;">{!addressChangeObjectDetail.AC_Residential_Address_Line1__c}&nbsp;</span>
+                </span>
+            </p>
+            <p style='margin-top:0in;margin-right:0in;margin-bottom:0in;margin-left:0in;line-height:normal;'>
+                <span style='font-size:13px;font-family:"Arial",sans-serif;'>&nbsp;</span>
+            </p>
+            <p style='margin-top:0in;margin-right:0in;margin-bottom:0in;margin-left:0in;line-height:normal;'>
+                <span style='font-size:13px;font-family:"Arial",sans-serif;'>Line 2&nbsp;
+                    <span class="linespace" style="width:550px;">{!addressChangeObjectDetail.AC_Residential_Address_Line2__c}&nbsp;</span>
+                </span>
+            </p>
+            <p style='margin-top:0in;margin-right:0in;margin-bottom:0in;margin-left:0in;line-height:normal;'>
+                <span style='font-size:13px;font-family:"Arial",sans-serif;'>&nbsp;</span>
+            </p>
+            <p style='margin-top:0in;margin-right:0in;margin-bottom:0in;margin-left:0in;line-height:normal;'>
+                <span style='font-size:13px;font-family:"Arial",sans-serif;'>City&nbsp;
+                    <span class="linespace" style="width:170px;">{!addressChangeObjectDetail.AC_Residential_City__c}&nbsp;</span> State&nbsp;
+                    <span class="linespace" style="width:170px;">{!addressChangeObjectDetail.AC_Residential_State__c}&nbsp;</span> Zip&nbsp;
+                    <span class="linespace" style="width:160px;">{!addressChangeObjectDetail.AC_Residential_Zip__c}&nbsp;</span>
+                </span>
+            </p>
+            <p style='margin-top:0in;margin-right:0in;margin-bottom:0in;margin-left:0in;line-height:normal;'>
+                <span style='font-size:13px;font-family:"Arial",sans-serif;'>&nbsp;</span>
+            </p>
+            <p style='margin-top:0in;margin-right:0in;margin-bottom:0in;margin-left:0in;line-height:normal;'>
+                <span style='font-size:13px;font-family:"Arial",sans-serif;'>Address Type&nbsp;
+                    <span class="linespace" style="width:150px;">{!addressChangeObjectDetail.AC_Address_Type__c}&nbsp;</span> Country&nbsp;
+                    <span class="linespace" style="width:110px;">{!addressChangeObjectDetail.AC_Residential_Country__c}&nbsp;</span> Country Code&nbsp;
+                    <span class="linespace" style="width:107px;">{!addressChangeObjectDetail.AC_Residential_Country_Code__c}&nbsp;</span>
+                </span>
+            </p>
+            <p style='margin-top:0in;margin-right:0in;margin-bottom:0in;margin-left:0in;line-height:normal;'>
+                <strong>
+                    <span style='font-size:13px;font-family:"Arial",sans-serif;'>&nbsp;</span>
+                </strong>
+            </p>
+            <p style='margin-top:0in;margin-right:0in;margin-bottom:0in;margin-left:0in;line-height:normal;'>
+                <strong>
+                    <span style='font-size:13px;font-family:"Arial",sans-serif;'>Telephone Type:</span>
+                </strong>
+                <span style='font-size:13px;font-family:"Arial",sans-serif;'>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp;</span>
+                <span class="checkbox">
+                    <apex:outputPanel rendered="{!if(addressChangeObjectDetail.AC_Telephone_Type__c=='Domestic' , true ,false)}"> 
+                    x
+                    </apex:outputPanel>
+                </span>
+                <span style='font-size:13px;font-family:"Arial",sans-serif;'>&nbsp;Domestic&nbsp; &nbsp; &nbsp;</span>
+                <span class="checkbox">
+                    <apex:outputPanel rendered="{!if(addressChangeObjectDetail.AC_Telephone_Type__c=='Foreign' , true ,false)}"> 
+                    x
+                    </apex:outputPanel>
+                   </span>
+                <span style='font-size:13px;font-family:"Arial",sans-serif;'>&nbsp;Foreign &nbsp; &nbsp; &nbsp;&nbsp;</span>
+            </p>
+            <p style='margin-top:0in;margin-right:0in;margin-bottom:0in;margin-left:0in;line-height:normal;'>
+                <span style='font-size:13px;font-family:"Arial",sans-serif;'>&nbsp;</span>
+            </p>
+            <p style='margin-top:0in;margin-right:0in;margin-bottom:0in;margin-left:0in;line-height:normal;'>
+                <span style='font-size:13px;font-family:"Arial",sans-serif;'>Home Phone&nbsp;
+                    <span class="linespace" style="width:140px;">{!addressChangeObjectDetail.AC_Home_Phone__c}&nbsp;</span> Work Phone&nbsp;
+                    <span class="linespace" style="width:135px;">{!addressChangeObjectDetail.AC_Work_Phone__c}&nbsp;</span> Work Ext&nbsp;
+                    <span class="linespace" style="width:100px;">{!addressChangeObjectDetail.AC_Work_Extension__c}&nbsp;</span>
+                </span>
+            </p>
+            <p style='margin-top:0in;margin-right:0in;margin-bottom:0in;margin-left:0in;line-height:normal;'>
+                <span style='font-size:13px;font-family:"Arial",sans-serif;'>&nbsp;</span>
+            </p>
+            <p style='margin-top:0in;margin-right:0in;margin-bottom:0in;margin-left:0in;line-height:normal;'>
+                <span style='font-size:13px;font-family:"Arial",sans-serif;'>Cell Phone&nbsp;
+                    <span class="linespace" style="width:155px;">{!addressChangeObjectDetail.AC_Mobile_Phone__c}&nbsp;</span> &nbsp;
+                </span>
+            </p>
+            <p style='margin-top:0in;margin-right:0in;margin-bottom:0in;margin-left:0in;line-height:normal;'>
+                <strong>
+                    <span style='font-size:16px;font-family:"Arial",sans-serif;'>&nbsp;</span>
+                </strong>
+            </p>
+            <p style='margin-top:0in;margin-right:0in;margin-bottom:0in;margin-left:0in;line-height:normal;'>
+                <strong>
+                    <span style='font-size:16px;font-family:"Arial",sans-serif;'>Account Mailing Address &nbsp;</span>
+                </strong>
+                <span style='font-size:13px;font-family:"Arial",sans-serif;'>Expire On&nbsp;
+                    <span class="linespace" style="width:130px;">{!fmtDateExpiresOn}&nbsp;</span>
+                </span>
+            </p>
+            <p style='margin-top:0in;margin-right:0in;margin-bottom:0in;margin-left:0in;line-height:normal;'>
+                <span style='font-size:13px;font-family:"Arial",sans-serif;'>&nbsp;</span>
+            </p>
+            <p style='margin-top:0in;margin-right:0in;margin-bottom:0in;margin-left:0in;line-height:normal;'>
+                <span style='font-size:13px;font-family:"Arial",sans-serif;'>Line 1&nbsp;
+                    <span class="linespace" style="width:550px;">{!addressChangeObjectDetail.AC_Mailing_Address_Line1__c}&nbsp;</span>
+                </span>
+            </p>
+            <p style='margin-top:0in;margin-right:0in;margin-bottom:0in;margin-left:0in;line-height:normal;'>
+                <span style='font-size:13px;font-family:"Arial",sans-serif;'>&nbsp;</span>
+            </p>
+            <p style='margin-top:0in;margin-right:0in;margin-bottom:0in;margin-left:0in;line-height:normal;'>
+                <span style='font-size:13px;font-family:"Arial",sans-serif;'>Line 2&nbsp;
+                    <span class="linespace" style="width:550px;">{!addressChangeObjectDetail.AC_Mailing_Address_Line2__c}&nbsp;</span>
+                </span>
+            </p>
+            <p style='margin-top:0in;margin-right:0in;margin-bottom:0in;margin-left:0in;line-height:normal;'>
+                <span style='font-size:13px;font-family:"Arial",sans-serif;'>&nbsp;</span>
+            </p>
+            <p style='margin-top:0in;margin-right:0in;margin-bottom:0in;margin-left:0in;line-height:normal;'>
+                <span style='font-size:13px;font-family:"Arial",sans-serif;'>City&nbsp;
+                    <span class="linespace" style="width:170px;">{!addressChangeObjectDetail.AC_Mailing_Address_City__c	}&nbsp;</span> State&nbsp;
+                    <span class="linespace" style="width:170px;">{!addressChangeObjectDetail.AC_Mailing_Address_State__c}&nbsp;</span> Zip&nbsp;
+                    <span class="linespace" style="width:160px;">{!addressChangeObjectDetail.AC_Mailing_Address_Zip__c}&nbsp;</span>
+                </span>
+            </p>
+            <p style='margin-top:0in;margin-right:0in;margin-bottom:0in;margin-left:0in;line-height:normal;'>
+                <span style='font-size:13px;font-family:"Arial",sans-serif;'>&nbsp;</span>
+            </p>
+            <p style='margin-top:0in;margin-right:0in;margin-bottom:0in;margin-left:0in;line-height:normal;'>
+                <span style='font-size:13px;font-family:"Arial",sans-serif;'>Address Type&nbsp;
+                    <span class="linespace" style="width:150px;">{!addressChangeObjectDetail.AC_Mailing_Address_Type__c}&nbsp;</span> Country&nbsp;
+                    <span class="linespace" style="width:110px;">{!addressChangeObjectDetail.AC_Mailing_Address_Country__c}&nbsp;</span> Country Code&nbsp;
+                    <span class="linespace" style="width:107px;">{!addressChangeObjectDetail.AC_Mailing_Address_Country_Code__c}&nbsp;</span>
+                </span>
+            </p>
+            <p style='margin-top:0in;margin-right:0in;margin-bottom:0in;margin-left:0in;line-height:normal;'>
+                <span style='font-size:13px;font-family:"Arial",sans-serif;'>&nbsp;</span>
+            </p>
+            <p style='margin-top:0in;margin-right:0in;margin-bottom:0in;margin-left:0in;line-height:normal;'>
+                <span style='font-size:13px;font-family:"Arial",sans-serif;'>&nbsp;</span>
+            </p>
+            <p style='margin-top:0in;margin-right:0in;margin-bottom:0in;margin-left:0in;line-height:115%;'>
+                <span style='font-size:13px;line-height:115%;font-family:"Arial",sans-serif;'>Member Signature&nbsp;
+                    <span class="linespace" style="width:150px;display:inline">
+                        <apex:outputPanel rendered="{!NOT(ISNULL(signAttachmentId))}">
+                            <img width="100" id="signImg" src="{!signImageUrl}"/>
+                                    </apex:outputPanel>
+                    </span>
+                    &nbsp; &nbsp;Date&nbsp;
+                    <span class="linespace" style="width:150px;">{!fmtDate}&nbsp;</span>
+                </span>
+            </p>
+            <p style='margin-top:0in;margin-right:0in;margin-bottom:0in;margin-left:0in;line-height:115%;'>
+                <span style='font-size:13px;line-height:115%;font-family:"Arial",sans-serif;'>&nbsp;</span>
+            </p>
+            <p style='margin-top:0in;margin-right:0in;margin-bottom:0in;margin-left:0in;line-height:115%;'>
+                <strong>
+                    <span style='font-size:13px;line-height:150%;font-family:"Arial",sans-serif;'>Additional Names and Account Numbers Updated:&nbsp;</span>
+                </strong>
+                <span class="linespace">{!addressChangeObjectDetail.AC_AccountNamePair__c}&nbsp;</span>
+            </p>
+            <p style='margin-top:0in;margin-right:0in;margin-bottom:0in;margin-left:0in;line-height:115%;'>
+                <strong>&nbsp;</strong>
+            </p>
+            <p style='margin-top:0in;margin-right:0in;margin-bottom:0in;margin-left:0in;line-height:115%;'>
+                <strong>
+                    <span style='font-size:13px;line-height:115%;font-family:"Arial",sans-serif;'>&nbsp;</span>
+                </strong>
+            </p>
+            <div style='margin-top:0in;margin-right:0in;margin-bottom:10.0pt;margin-left:0in;line-height:115%;border:none;border-bottom:solid windowtext 1.0pt;padding:0in 0in 1.0pt 0in;'>
+                <p style='margin-top:0in;margin-right:0in;margin-bottom:0in;margin-left:0in;line-height:normal;border:none;padding:0in;'>
+                    <span style='font-size:13px;font-family:"Arial",sans-serif;'>&nbsp;</span>
+                </p>
+                <p style='margin-top:0in;margin-right:0in;margin-bottom:0in;margin-left:0in;line-height:normal;text-align:center;border:none;padding:0in;'>
+                    <strong>
+                        <span style='font-size:13px;font-family:"Arial",sans-serif;'>For Credit Union Use Only</span>
+                    </strong>
+                </p>
+            </div>
+            <table>
+                <tr>
+                    <td style="padding-right:20px;vertical-align:top;width:50%">
+                        <table>
+                            <tr>
+                                <td>
+                                    <span style='font-size:13px;line-height:150%;font-family:"Arial",sans-serif;'>
+                                        <strong>Identification Method: </strong>
+                                    </span>
+                                </td>
+                            </tr>
+                            <apex:repeat value="{!str_id}" var="a">
+                                <tr>
+                                <td>
+                                    <span class="checkbox">
+                                        <apex:outputPanel rendered="{!if(addressChangeObjectDetail.Identification_Method__c==a , true ,false)}">
+                                        x
+                                        </apex:outputPanel>
+                                    </span>&nbsp;&nbsp;
+                                    <span style='font-size:13px;line-height:150%;font-family:"Arial",sans-serif;'>{!a}</span>
+                                </td>
+                            </tr>
+
+                        </apex:repeat>
+                            
+                        </table>
+                    </td>
+                    <td style="vertical-align:top">
+                        <table>
+                            <tr>
+                                <td>
+                                    <span style='font-size:13px;line-height:150%;font-family:"Arial",sans-serif;'>
+                                        <strong>Intake Method: </strong>
+                                    </span>
+                                </td>
+                            </tr>
+                            <apex:repeat value="{!str_intake}" var="a">
+                            <tr>
+                                <td>
+                                    <span class="checkbox">
+                                        <apex:outputPanel rendered="{!if(addressChangeObjectDetail.Clean_Up_Intake_Method__c==a , true ,false)}">
+                                        x
+                                        </apex:outputPanel>
+                                    </span>&nbsp;&nbsp;
+                                    <span style='font-size:13px;line-height:150%;font-family:"Arial",sans-serif;'>{!a}</span>
+                                </td>
+                            </tr>
+                            </apex:repeat>
+                            
+                        </table>
+                    </td>
+                </tr>
+            </table>
+            <p style='margin-top:6.0pt;margin-right:0in;margin-bottom:0in;margin-left:0in;line-height:115%;'>
+                <strong>
+                    <span style='font-size:12px;line-height:115%;font-family:"Arial",sans-serif;'>*The information contained in the Address Change Authorization supersedes current information on file.&nbsp;</span>
+                </strong>
+            </p>
+        </div>
+
+
+    </body>
+    <div style="text-align:center;" class="footer">
+        <apex:form >
+
+            <div id="footer">
+
+                <apex:commandButton value="Cancel" styleClass="slds-button slds-button_brand" onclick="cancelPDF();" />
+                <apex:commandButton value="Save PDF" onclick="this.onclick=function(){return false;}" styleClass="slds-button slds-button_brand" action="{!attach}" />
+                <apex:outputText rendered="{!showAlert}" id="alert">
+                    <script>
+                        sforce.one.navigateToList(listViewId, 'To Be Signed', 'InPersonSigning__c');
+                    </script>
+                </apex:outputText>
+
+            </div>
+        </apex:form>
+    </div>
+</apex:page>

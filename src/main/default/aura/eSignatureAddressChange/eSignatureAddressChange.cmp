@@ -1,0 +1,363 @@
+<aura:component controller="AddressChangeLogController" implements="force:appHostable,force:hasRecordId,force:lightningQuickAction,flexipage:availableForAllPageTypes" access="global" >
+    <aura:html tag="style">
+		.logohead{text-align:center;}
+.logohead h1{text-transform: uppercase;
+    font-size: 1.5rem;
+    font-weight: 500; margin-top:.5rem;
+    letter-spacing: 1px;margin-bottom: 0.8rem;}
+
+
+.p0{padding:0 !important;}
+.tblbor0{
+    border-spacing: 0px;
+}
+.tblbor0 td{border:0 !important;}
+.tblbor0 td.tblborright{border-right:1px solid #000 !important;}
+
+.authtitle{margin:1rem;}
+.authtitle h2{text-transform:uppercase; font-size:1rem;font-size:.875rem; font-weight:700; letter-spacing:1px;}
+.chkbx{border:1px solid #000; width:15px; height:15px; margin:0 1rem 0 1rem; display:inline-block; vertical-align:middle;
+	line-height:15px; text-align:center;}
+
+.addrform table {width: 100%;}
+.addrform table td{border:1px solid #000;}
+.addrform td{padding:.5rem;}
+.addrform td.titletbl{background:#ccc;}
+
+td span{font-size:.875rem; text-transform:uppercase;}
+
+td.titletbl,td.multicoltbl{
+    background: #ccc;
+    text-transform: uppercase;
+}
+td.multicoltbl{
+    padding: 0px;
+}
+td.multicoltbl td{ 
+    text-transform: none;
+}
+.THIS.hidediv {
+    display:none;
+}
+
+.spin{
+    top: 10% !important;
+    bottom: 7% !important;
+}
+.credit-use{
+    font-weight: bold;
+    border-bottom: 2px solid #000;
+    text-align: center;
+    padding:13px;
+    margin: 3px 3px 10px 3px;
+}
+table.credittbl > tbody > tr > td{
+    width: 50%;
+}
+.note{
+    margin: 20px 0 50px 0;    
+}  
+.tblId{
+  margin-top: -6rem !important;
+}  
+.imgLogoSpec{
+  height: 4rem !important;
+  margin-left: -87% !important;
+}
+.imgLogoChev{
+  height: 2rem !important;
+  margin-left: -92% !important;
+}
+    </aura:html>
+    
+    <aura:attribute name="loading" type="Boolean" default="false" />
+    <ltng:require afterScriptsLoaded="{!c.Init}"/>
+    
+    <aura:attribute name="saveDisabled" type="Boolean" default="false" />
+    <aura:attribute name="ACLogDetails" type="InPersonSigning__c" />
+    <aura:attribute name="todayDate" type="String" />
+    <aura:attribute name="attachmentId" type="Id" />
+
+    <aura:attribute name="IdentificationMethodsList" type="List" />
+    <aura:attribute name="IntakeMethodsList" type="List" />
+
+    <div class="authwrap" aura:id="authwrap">
+        
+        
+    <div id="signaturePDF">    
+        
+        <div class="logohead">
+            <div class="logoimg">
+                
+                <aura:if isTrue="{!v.ACLogDetails.Brand__c=='Chevron'}">
+                    <img class="imgLogoChev" src="{!$Resource.ChevronLogo}" alt="Chevron" />
+                    <aura:set attribute="else">
+                      <img class="imgLogoSpec" src="{!$Resource.Logo_SpectrumCU}" alt="Spectrum" />
+                    </aura:set>
+                </aura:if>
+
+            </div>
+            <h1 class="slds-text-heading--medium"><b>Address Change Authorization</b></h1>
+        </div>
+        <div class="spinner">
+            <aura:if isTrue="{!v.loading}">            
+                <lightning:spinner alternativeText="Loading" size="medium" variant="brand" class="spin"/>            
+            </aura:if>
+        </div>
+                
+        <div class="addrform">
+            <table>                
+                <tr>
+                    <td class="p0">
+                        <table class="tblbor0">
+                            <tr>
+                                <td class="tblborright"><strong>Member Name </strong><span>{!v.ACLogDetails.AC_Member__r.Name}</span></td>
+                                <td><strong>Account Number </strong><span>{!v.ACLogDetails.AC_Member_Account__r.Name}</span></td>                                
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+                <tr>
+                  <td class="p0">
+                      <table class="tblbor0">
+                          <tr>
+                              <td class="tblborright"><strong>Email Address </strong><span>{!v.ACLogDetails.AC_Email__c}</span></td>
+                                                       
+                          </tr>
+                      </table>
+                  </td>
+              </tr>
+                <tr>
+                  <td class="titletbl"><strong>New Residential Address</strong></td>
+                </tr>
+                <tr>
+                    <td>
+                      <strong>Line 1 </strong><span>{!v.ACLogDetails.AC_Residential_Address_Line1__c}</span>
+                    </td>
+                </tr>
+                <tr>
+                    <td><strong>Line 2 </strong><span>{!v.ACLogDetails.AC_Residential_Address_Line2__c}</span></td>
+                </tr>
+                <tr>
+                  <td class="p0">
+                    <table class="tblbor0">
+                        <tr>
+                          <td class="tblborright"><strong>City </strong><span>{!v.ACLogDetails.AC_Residential_City__c}</span></td>
+                          <td class="tblborright"><strong>State </strong> <span>{!v.ACLogDetails.AC_Residential_State__c}</span></td>
+                          <td><strong>Zip </strong><span>{!v.ACLogDetails.AC_Residential_Zip__c}</span></td>
+                        </tr>
+                    </table>
+                  </td>
+                </tr>
+                <tr>
+                  <td class="p0">
+                    <table class="tblbor0">
+                      <tr>
+                        <td class="tblborright"><strong>Address Type </strong><span>{!v.ACLogDetails.AC_Address_Type__c}</span></td>
+                        <td class="tblborright"><strong>Country </strong> <span>{!v.ACLogDetails.AC_Residential_Country__c}</span></td>
+                        <td><strong>Country Code </strong> <span>{!v.ACLogDetails.AC_Residential_Country_Code__c}</span></td>
+                      </tr>
+                    </table>
+                  </td>
+                </tr>
+                <tr>
+                  <td><strong>Telephone Type</strong> 
+                  <aura:if isTrue="{!(v.ACLogDetails.AC_Telephone_Type__c == 'Domestic')}">
+                    <span><span class="chkbx">X</span> Domestic</span> &nbsp; 
+                    <span><span class="chkbx"></span> Foreign </span> 
+                    <aura:set attribute="else">
+                      <aura:if isTrue="{!(v.ACLogDetails.AC_Telephone_Type__c == 'Foreign')}">
+                        <span><span class="chkbx">X</span> Domestic</span> &nbsp; 
+                        <span><span class="chkbx"></span> Foreign </span> 
+                        <aura:set attribute="else">
+                          <span><span class="chkbx"></span> Domestic</span> &nbsp; 
+                          <span><span class="chkbx"></span> Foreign </span>
+                      </aura:set>
+                      </aura:if>
+                    </aura:set>
+                  </aura:if>
+                  
+                  
+                  
+                  </td>          
+               
+                </tr>
+                <tr>
+                  <td class="p0">
+                    <table class="tblbor0">
+                        <tr>
+                          <td class="tblborright"><strong>Home Phone </strong> <span>{!v.ACLogDetails.AC_Home_Phone__c}</span></td>
+                          <td class="tblborright"><strong>Work Phone </strong> <span>{!v.ACLogDetails.AC_Work_Phone__c}</span></td>
+                          <td><strong>Work Ext </strong><span>{!v.ACLogDetails.AC_Work_Extension__c}</span></td>
+                        </tr>
+                    </table>
+                  </td>
+                </tr>
+                <tr>
+                  <td class="p0">
+                    <table class="tblbor0">
+                        <tr>
+                          <td class="tblborright"><strong>Cell Phone </strong>  <span>{!v.ACLogDetails.AC_Mobile_Phone__c}</span></td>
+                          <!-- <td>Pager No. <span>{!v.ACLogDetails.AC_Member__c}</span></td>                           -->
+                        </tr>
+                    </table>
+                  </td>
+                </tr>
+                <tr>
+                  <td class="multicoltbl">
+                    <table class="tblbor0">
+                      <tr>
+                          <td class="tblborright"><strong>Account Mailing Address </strong></td>
+                          <td><strong>Expire On </strong> <span><lightning:formattedDateTime value="{!v.ACLogDetails.AC_Expires_On__c}" year="numeric" month="numeric" day="numeric" /></span></td>                                
+                      </tr>
+                    </table>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                  <strong>Line 1 </strong> <span>{!v.ACLogDetails.AC_Mailing_Address_Line1__c}</span>
+                  </td>
+                </tr>
+                <tr>
+                    <td><strong>Line 2 </strong> <span>{!v.ACLogDetails.AC_Mailing_Address_Line2__c}</span></td>
+                </tr>
+                <tr>
+                  <td class="p0">
+                    <table class="tblbor0">
+                        <tr>
+                          <td class="tblborright"><strong>City </strong> <span>{!v.ACLogDetails.AC_Mailing_Address_City__c}</span></td>
+                          <td class="tblborright"><strong>State </strong> <span>{!v.ACLogDetails.AC_Mailing_Address_State__c}</span></td>
+                          <td><strong>Zip </strong> <span>{!v.ACLogDetails.AC_Mailing_Address_Zip__c}</span></td>
+                        </tr>
+                    </table>
+                  </td>
+                </tr>
+                <tr>
+                  <td class="p0">
+                    <table class="tblbor0">
+                      <tr>
+                        <td class="tblborright"><strong>Address Type </strong> <span>{!v.ACLogDetails.AC_Mailing_Address_Type__c}</span></td>
+                        <td class="tblborright"><strong>Country </strong> <span>{!v.ACLogDetails.AC_Mailing_Address_Country__c}</span></td>
+                        <td><strong>Country Code </strong> <span>{!v.ACLogDetails.AC_Mailing_Address_Country_Code__c}</span></td>
+                      </tr>
+                    </table>
+                  </td>
+                </tr>                  
+                <tr>
+                    <td class="p0">
+                      <div class="signtbl">
+                        <table class="tblbor0">
+                            <tr>
+                                <td onclick="{!c.handleMemberSignatureClick}">                                    
+                                    <p class="red"><strong>Member Signature</strong>
+                                      <span onclick="{!c.handleMemberSignatureClick}"><div>
+                                        <aura:if isTrue="{!not(empty(v.attachmentId))}">
+                                            <img aura:id="signImg" src="{!'/servlet/servlet.FileDownload?file='+v.attachmentId}"/>
+                                        </aura:if> 
+                                    </div></span>
+                                    </p>
+                                </td>
+                                <td><strong>Date </strong> <span>{!v.todayDate}</span></td>
+                            </tr>
+                        </table>
+                    </div>
+                        <!-- <table class="tblbor0">
+                            <tr>
+                                <td class="tblborright">Member Signature <span></span></td>
+                                <td>Date <span>{!v.todayDate}</span></td>
+                            </tr>
+                        </table> -->
+                    </td>
+                </tr>
+                <tr>
+                    <td><strong>Additional Names and Account Numbers Updated </strong> <span>{!v.ACLogDetails.AC_AccountNamePair__c} </span></td>
+                </tr>                                
+            </table>
+            <br/>
+            <div class="credit-use">For Credit Union Use Only</div>
+            <table class="credittbl">
+              <tr>
+                <td class="p0">
+                  <table class="tblbor0 tblId">
+                    <tr>
+                      <td><strong>Identification Method</strong></td>
+                    </tr>
+                    
+                    <aura:iteration var="a" items="{!v.IdentificationMethodsList}" indexVar="indx">
+                      <tr>
+                        <td>
+                          <aura:if isTrue="{!(v.ACLogDetails.Identification_Method__c == a)}">
+                            <span class="chkbx">X</span>{!a}
+                            <!-- <lightning:input type="checkbox" label="{!a}" name="a" checked="true" disabled="true"/> -->
+                          <aura:set attribute="else">
+                            <span class="chkbx"></span>{!a}
+                            <!-- <lightning:input type="checkbox" label="{!a}" name="a" checked="false" disabled="true"/> -->
+                          </aura:set>
+                          </aura:if>                          
+                        </td>
+                      </tr>                      
+                    </aura:iteration>                   
+                  </table>
+                </td>
+                <td class="p0">
+                  <table class="tblbor0">
+                    <tr>
+                      <td><strong>Intake Method</strong></td>
+                    </tr>
+                    <aura:iteration var="a" items="{!v.IntakeMethodsList}" indexVar="indx">
+                      <tr>
+                        <td>
+                          <aura:if isTrue="{!(v.ACLogDetails.Clean_Up_Intake_Method__c == a)}">
+                            <span class="chkbx">X</span>{!a}
+                            <!-- <lightning:input type="checkbox" label="{!a}" name="a" checked="true" disabled="true"/> -->
+                          <aura:set attribute="else">
+                            <span class="chkbx"></span>{!a}
+                            <!-- <lightning:input type="checkbox" label="{!a}" name="a" checked="false" disabled="true"/> -->
+                          </aura:set>
+                          </aura:if>                          
+                        </td>
+                      </tr>                      
+                    </aura:iteration> 
+                    <!-- <tr>
+                      <td><span class="chkbx">X</span> In Person Request </td>
+                      <td><span class="chkbx">X</span> In Person Request via PTM</td>
+                    </tr>
+                    <tr>
+                      <td><span class="chkbx">X</span> Telephone Request </td>                      
+                    </tr>
+                    <tr>
+                      <td><span class="chkbx">X</span> Mail</td>
+                      <td><span class="chkbx">X</span> DocuSign</td>
+                    </tr>
+                    <tr>
+                      <td><span class="chkbx">X</span> Correction to Address Change/Signature Card</td>                      
+                    </tr> -->
+                    <tr>
+                      <td>&nbsp;</td>                      
+                    </tr> 
+                    <tr>
+                      <td style="padding-left: 1.5rem;"><strong>Operator ID </strong></td>                      
+                    </tr>
+                                     
+                  </table>
+                </td>
+              </tr>              
+            </table>
+            
+            <div class="note"><strong>*The information contained in the Address Change Authorization supersedes current information on file.</strong></div>
+            
+        </div>
+        
+    </div>
+</div>
+
+<div class="eSignDiv" id="eSignDiv" aura:id="eSignDiv">
+  <div style="text-align: center;">
+      <canvas aura:id="can" style="border:2px solid #ddd;background: transparent;"></canvas>
+  </div>
+  <div style="text-align: center;margin: 7px;">
+      <button class="slds-button slds-button_brand" onclick="{!c.erase}">Clear</button>
+      <button class="slds-button slds-button_brand" id="btnSave" disabled="{!v.saveDisabled}" onclick="{!c.save}">Save</button>
+  </div>
+</div>
+</aura:component>
