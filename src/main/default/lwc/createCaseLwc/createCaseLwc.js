@@ -14,6 +14,7 @@ import STANDARD_MC from "@salesforce/messageChannel/StandardMessageChannel__c";
 import { ShowToastEvent } from "lightning/platformShowToastEvent";
 //import uploadFile from "@salesforce/apex/CreateCaseMemberPageController.uploadFile";
 import uploadDocument from "@salesforce/apex/CreateCaseMemberPageController.uploadDocument";
+import PersonAccountIconURL from "@salesforce/resourceUrl/PersonAccountIcon"
 const MAX_FILE_SIZE = 24500;
 import GetCaseAttachments from "@salesforce/apex/GetCaseAttachments.GetCaseAttachments"
 
@@ -123,6 +124,8 @@ export default class createCaseLwc extends NavigationMixin(LightningElement) {
   disabled = false;
   saveandnewbreak = false;
   isStandalone = false;
+
+  PersonAccountIconPath = PersonAccountIconURL;
   /*disableButton() {
     this.disabled = true;
     console.log('inside disable');
@@ -297,7 +300,7 @@ export default class createCaseLwc extends NavigationMixin(LightningElement) {
     .then((result) => {
       console.log('getQueueDetails...');
       console.log(result);
-      for(var i=0; i<result.length; i++) {
+      for(let i=0; i<result.length; i++) {
         this.queuesData = [...this.queuesData ,{value: result[i].Id , label: result[i].Name}];
       }
     })
@@ -398,7 +401,7 @@ export default class createCaseLwc extends NavigationMixin(LightningElement) {
         
           this.email = result.accountDetails.PersonEmail;
           
-          var aList = result.accList;
+          let aList = result.accList;
           
           this.accObject = result.accountDetails;
           aList.map((obj) => {   
@@ -414,10 +417,10 @@ export default class createCaseLwc extends NavigationMixin(LightningElement) {
           }
 
           if(this.accList.length == 2){
-            for(var i = 0; i < aList.length; i++){
+            for(let i = 0; i < aList.length; i++){
               if(aList[i].RecType__c == 'ACCT'){
-                var serverResult = this.accList;
-                var selItem = serverResult[0];
+                let serverResult = this.accList;
+                let selItem = serverResult[0];
                 console.log(selItem);
                 if(selItem){
                   this.selectedAcctNumber = selItem;
@@ -678,7 +681,7 @@ export default class createCaseLwc extends NavigationMixin(LightningElement) {
     selectCaseCategories({ selectedText: this.selectedText })
       .then((result) => {
         console.log(result);
-        var selectedTextArray = this.selectedText.split(" / ");
+        let selectedTextArray = this.selectedText.split(" / ");
         this.primaryCat = selectedTextArray[0];
         this.secondaryCat = selectedTextArray[1];
         this.tertiaryCat = selectedTextArray[2];
@@ -689,7 +692,7 @@ export default class createCaseLwc extends NavigationMixin(LightningElement) {
   }
 
   changePrimaryCategory(event) {
-    var pcValue = event.target.value;
+    let pcValue = event.target.value;
     console.log(event.target.value);
     this.primaryCat = pcValue;
     getscOptions({ pcValue: pcValue })
@@ -699,7 +702,7 @@ export default class createCaseLwc extends NavigationMixin(LightningElement) {
         this.scOptions = result;
         this.Secondary_Category__c = null;
         this.Tertiary_Category__c = null;
-        var tcOptions = [{ Text: "--- None ---", Value: "" }];
+        let tcOptions = [{ Text: "--- None ---", Value: "" }];
 
         this.tcOptions = tcOptions;
       })
@@ -709,7 +712,7 @@ export default class createCaseLwc extends NavigationMixin(LightningElement) {
   }
 
   changeSecondaryCategory(event) {
-    var scValue = event.target.value;
+    let scValue = event.target.value;
     console.log(event.target.value);
     this.secondaryCat = scValue;
     gettcOptions({ scValue: scValue })
@@ -723,11 +726,11 @@ export default class createCaseLwc extends NavigationMixin(LightningElement) {
       });
   }
   changeTirtaryCategory(event){
-    var tcValue = event.target.value;
+    let tcValue = event.target.value;
     this.tertiaryCat = tcValue;
   }
   selectfileupload(event){    	
-    var ischecked = event.target.checked;
+    let ischecked = event.target.checked;
     this.checked = ischecked;
   }
   handleChangecheckbox(event) {
@@ -741,17 +744,17 @@ export default class createCaseLwc extends NavigationMixin(LightningElement) {
 
 openfileUpload(event){
   const files = event.target.files;
-  var fileNames = new Array();
+  let fileNames = new Array();
   
   if (event.target.files.length > 0) {
-      for(var i = 0; i < event.target.files.length; i++)
+      for(let i = 0; i < event.target.files.length; i++)
       {
         
         let file = event.target.files[i]; 
         fileNames.push(file.name); 
         let reader = new FileReader();
                 reader.onload = k => {
-                    var fileContents = reader.result.split(',')[1]
+                    let fileContents = reader.result.split(',')[1]
                     this.filesData.push({'fileName':file.name, 'fileContent':fileContents});                    
                 };
         reader.readAsDataURL(file); 
@@ -782,7 +785,7 @@ handleclickattechment(event){
 
 handleFileUploaded(event) {
   if (event.target.files.length > 0) {
-      for(var i=0; i< event.target.files.length; i++){
+      for(let i=0; i< event.target.files.length; i++){
           if (event.target.files[i].size > MAX_FILE_SIZE) {
               this.showToast('Error!', 'error', 'File size exceeded the upload size limit.');
               return;
@@ -790,7 +793,7 @@ handleFileUploaded(event) {
           let file = event.target.files[i];
           let reader = new FileReader();
           reader.onload = e => {
-              var fileContents = reader.result.split(',')[1]
+              let fileContents = reader.result.split(',')[1]
               this.filesData.push({'fileName':file.name, 'fileContent':fileContents});
           };
           reader.readAsDataURL(file);
@@ -867,7 +870,7 @@ uploadDocument(event) {
 }*/
 
 removeReceiptImage(event) {
-  var index = event.currentTarget.dataset.id;
+  let index = event.currentTarget.dataset.id;
   this.filesData.splice(index, 1);
 }
 
@@ -888,11 +891,11 @@ toast(title){
   this.dispatchEvent(toastEvent)
 }
   fetchPicklistFields() {
-    var NAFields = ["Primary_Category__c"];
+    let NAFields = ["Primary_Category__c"];
     this.picklistFields["Case"] = NAFields;
     this.getPicklistValues(this.picklistFields);
 
-    var scOptions = [{ Text: "--- None ---", Value: "" }];
+    let scOptions = [{ Text: "--- None ---", Value: "" }];
     this.scOptions = scOptions;
     this.tcOptions = scOptions;
   }
@@ -901,14 +904,14 @@ toast(title){
     getPicklistValues({ objpicklistFieldsMap: JSON.stringify(sobjFieldsmap) })
       .then((result) => {
         console.log(result);
-        var obj;
+        let obj;
         for (obj in result) {
-          var objName = result[obj];
+          let objName = result[obj];
           console.log("object name --> " + obj);
-          var field;
+          let field;
           for (field in objName) {
             console.log("fields --> " + field);
-            var optionValues = objName[field];
+            let optionValues = objName[field];
             console.log("options --> " + optionValues);
             this.buildPicklist(obj + "." + field, optionValues);
           }
@@ -920,7 +923,7 @@ toast(title){
   }
 
   buildPicklist(elementId, optionValues) {
-    var opts = [];
+    let opts = [];
     if (optionValues != undefined && optionValues.length > 0) {
       opts.push({
         class: "optionClass",
@@ -929,7 +932,7 @@ toast(title){
       });
     }
 
-    for (var i = 0; i < optionValues.length; i++) {
+    for (let i = 0; i < optionValues.length; i++) {
       opts.push({
         class: "optionClass",
         Value: optionValues[i],
@@ -941,7 +944,7 @@ toast(title){
   }
 
   changeTopTenCase(event) {
-    var stc = event.target.value;
+    let stc = event.target.value;
 
     console.log("stc:" + stc);
 
@@ -953,16 +956,16 @@ toast(title){
       this.internalcmt = '';
     }
 
-    var alltoptencategories = this.quickCases;
+    let alltoptencategories = this.quickCases;
     console.log("alltoptencategories:" + alltoptencategories);
-    for (var i = 0; i < alltoptencategories.length; i++) {
+    for (let i = 0; i < alltoptencategories.length; i++) {
       if (alltoptencategories[i].Case_Type__c === stc) {
         
-        var pc = alltoptencategories[i].Primary_Category__c;
-        var sc = alltoptencategories[i].Secondary_Category__c;
-        var tc = alltoptencategories[i].Tertiary_Category__c;
-        var subject = alltoptencategories[i].Subject__c;
-        var internalcomment = alltoptencategories[i].Internal_Comments__c;
+        let pc = alltoptencategories[i].Primary_Category__c;
+        let sc = alltoptencategories[i].Secondary_Category__c;
+        let tc = alltoptencategories[i].Tertiary_Category__c;
+        let subject = alltoptencategories[i].Subject__c;
+        let internalcomment = alltoptencategories[i].Internal_Comments__c;
         
         console.log(pc);
         console.log(sc);
@@ -974,8 +977,8 @@ toast(title){
       selectCaseCategoriesforTopTenTypes({ PrimaryText: pc , SecondaryText: sc })
       .then((result) => {
         console.log(result);        
-        var secopts = result.scOptions;
-        for(var j=0; j< secopts.length;j++){
+        let secopts = result.scOptions;
+        for(let j=0; j< secopts.length;j++){
           if(secopts[j].Value == sc){
             secopts[j].isSelected = true;
           }
@@ -983,8 +986,8 @@ toast(title){
             secopts[j].isSelected = false;
           }
         }
-        var teropts = result.tcOptions;
-        for(var k=0; k< teropts.length;k++){
+        let teropts = result.tcOptions;
+        for(let k=0; k< teropts.length;k++){
           if(teropts[k].Value == tc){
             teropts[k].isSelected = true;
           }
@@ -1050,13 +1053,13 @@ saveClicked(){
   //console.log('insideevent',event.target.value);
   this.isLoading = true;
   this.disabled = true;
-  var a= this.accList;
+  let a= this.accList;
   console.log('accList...');
   console.log(this.accList);
-  var aList = [];
+  let aList = [];
   if(this.isStandalone == false){
     a[1].isShow = false;
-    for(var i=0;i<a.length;i++){
+    for(let i=0;i<a.length;i++){
       if(aList.length == 0){
         if(a[i].isShow==false){
           aList[i] = a[i].Id;
@@ -1064,8 +1067,8 @@ saveClicked(){
       }
     }
 
-    var aListToPass = [];
-    for(var i=0;i<aList.length;i++){
+    let aListToPass = [];
+    for(let i=0;i<aList.length;i++){
       if(aList[i]){
         aListToPass[i] = aList[i];
       }
@@ -1092,10 +1095,10 @@ saveClicked(){
   
   
   }
-var today = new Date();
-var dd = String(today.getDate()).padStart(2, '0');
-var mm = String(today.getMonth() + 1).padStart(2, '0'); 
-var yyyy = today.getFullYear();
+  let today = new Date();
+  let dd = String(today.getDate()).padStart(2, '0');
+  let mm = String(today.getMonth() + 1).padStart(2, '0'); 
+  let yyyy = today.getFullYear();
 
 //today = mm + '/' + dd + '/' + yyyy;
 today = yyyy + '-' + mm + '-' + dd;
@@ -1171,8 +1174,8 @@ handleReset() {
   //this.saveandnewbreak = false;
   this.isLoading = false;
 
-var a= this.accList;
-for(var i=0;i<a.length;i++){            	  
+  let a= this.accList;
+for(let i=0;i<a.length;i++){            	  
   a[i].isShow=true;            	   
 }               
 this.accList = [...a];   
@@ -1180,8 +1183,8 @@ this.accList = [...a];
 
 this.isselectedAcctNumberEmpty =true;
 
-var acc = this.AccountObjectlist;
-var length = this.accountCount;
+let acc = this.AccountObjectlist;
+let length = this.accountCount;
 acc.splice(0,parseInt(length));
 this.AccountObjectlist = [...acc];
 this.accountCount = 0;
@@ -1222,8 +1225,8 @@ this.accountCount = 0;
   
   if(this.template.querySelector('[data-id="Secondary_Category__c"]') != null){
     const selectFieldsSecondary = this.template.querySelector('[data-id="Secondary_Category__c"]').value='';
-    var Seccoptions =  this.scOptions;
-    for(var i=0;i<Seccoptions.length;i++){
+    let Seccoptions =  this.scOptions;
+    for(let i=0;i<Seccoptions.length;i++){
       Seccoptions[i].isSelected = false;
     }
     if (selectFieldsSecondary) {
@@ -1236,8 +1239,8 @@ this.accountCount = 0;
   
   if(this.template.querySelector('[data-id="Tertiary_Category__c"]') != null){
     const selectFieldsTertiary = this.template.querySelector('[data-id="Tertiary_Category__c"]').value='';
-    var Tercoptions =  this.tcOptions;
-    for(var i=0;i<Tercoptions.length;i++){
+    let Tercoptions =  this.tcOptions;
+    for(let i=0;i<Tercoptions.length;i++){
       Tercoptions[i].isSelected = false;
     }
     if (selectFieldsTertiary) {
@@ -1299,10 +1302,10 @@ saveClick() {
   console.log('##selectedAccountnumber',this.selectedAcctNumber);
   //this.disabled = true;
   if(this.isStandalone == false){
-      var a= this.accList;
-      var aList = [];
+    let a= this.accList;
+    let aList = [];
       a[1].isShow = false;
-      for(var i=0;i<a.length;i++){
+      for(let i=0;i<a.length;i++){
         if(aList.length == 0){
           if(a[i].isShow==false){
             aList[i] = a[i].Id;
@@ -1310,8 +1313,8 @@ saveClick() {
       }
       }
       
-      var aListToPass = [];
-      for(var i=0;i<aList.length;i++){
+      let aListToPass = [];
+      for(let i=0;i<aList.length;i++){
         if(aList[i]){
           aListToPass[i] = aList[i];
         }
@@ -1335,10 +1338,10 @@ saveClick() {
       return false;
       }
 }
-var today = new Date();
-var dd = String(today.getDate()).padStart(2, '0');
-var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
-var yyyy = today.getFullYear();
+let today = new Date();
+let dd = String(today.getDate()).padStart(2, '0');
+let mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
+let yyyy = today.getFullYear();
 
 today = yyyy + '-' + mm + '-' + dd;
   if(this.status=='Closed' && this.followupdate > today ){
@@ -1389,17 +1392,17 @@ NextClick() {
   this.isLoading = true;
   console.log('##selectedAccountnumber',this.selectedAcctNumber);
   
-  var a= this.accList;
-  var aList = [];
+  let a= this.accList;
+  let aList = [];
   a[1].isShow = false;
-  for(var i=0;i<a.length;i++){
+  for(let i=0;i<a.length;i++){
     if(a[i].isShow==false){
       aList[i] = a[i].Id;
     }
   }
   
-  var aListToPass = [];
-  for(var i=0;i<aList.length;i++){
+  let aListToPass = [];
+  for(let i=0;i<aList.length;i++){
     if(aList[i]){
       aListToPass[i] = aList[i];
     }
@@ -1432,10 +1435,10 @@ NextClick() {
   });
   this.dispatchEvent(event);
   }*/
-  var today = new Date();
-  var dd = String(today.getDate()).padStart(2, '0');
-  var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
-  var yyyy = today.getFullYear();
+  let today = new Date();
+  let dd = String(today.getDate()).padStart(2, '0');
+  let mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
+  let yyyy = today.getFullYear();
 
 today = yyyy + '-' + mm + '-' + dd;
   if(this.status=='Closed' && this.followupdate > today ){
@@ -1464,13 +1467,13 @@ today = yyyy + '-' + mm + '-' + dd;
 }
   changeSelectedCategory(event){
 
-    var selectedText = event.target.value;
+    let selectedText = event.target.value;
     selectCaseCategories({ selectedText: selectedText })
     .then((result) => {
-      var secopts = result.scOptions;      
-      var selectedTextArray  = selectedText.split(' / ');
+      let secopts = result.scOptions;      
+      let selectedTextArray  = selectedText.split(' / ');
       
-      for(var j=0; j< secopts.length;j++){
+      for(let j=0; j< secopts.length;j++){
         if(secopts[j].Value == selectedTextArray[1]){
           secopts[j].isSelected = true;
         }
@@ -1478,8 +1481,8 @@ today = yyyy + '-' + mm + '-' + dd;
           secopts[j].isSelected = false;
         }
       }
-      var teropts = result.tcOptions;
-      for(var k=0; k< teropts.length;k++){
+      let teropts = result.tcOptions;
+      for(let k=0; k< teropts.length;k++){
         if(teropts[k].Value == selectedTextArray[2]){
           teropts[k].isSelected = true;
         }
@@ -1525,9 +1528,9 @@ today = yyyy + '-' + mm + '-' + dd;
   }
 
   clearSelection(){
-    var acc = this.selectedAcctNumber;
-    var a= this.accList;
-    for(var i=0;i<a.length;i++){
+    let acc = this.selectedAcctNumber;
+    let a= this.accList;
+    for(let i=0;i<a.length;i++){
       if(a[i].Id == acc.Id){
         a[i].isShow=true;
       }
@@ -1538,25 +1541,25 @@ today = yyyy + '-' + mm + '-' + dd;
   }
 
   itemSelected(event){
-    var target = event.target;  
+    let target = event.target;  
     this.disabled = false; 
     console.log('in li...');
     console.log(JSON.stringify(event.target));
     console.log(JSON.stringify(event.target.parentElement.closest('li').dataset));
     console.log(JSON.stringify(event.target.parentElement.closest('li').dataset.selectedindex));
 
-    var SelIndex = event.target.parentElement.closest('li').dataset.selectedindex;
+    let SelIndex = event.target.parentElement.closest('li').dataset.selectedindex;
     console.log(SelIndex);
     if(SelIndex){
       console.log('in if...');
       console.log(this.accList);
-      var serverResult = this.accList;
-      var selItem = serverResult[SelIndex];
+      let serverResult = this.accList;
+      let selItem = serverResult[SelIndex];
       if(selItem){
          this.selectedAcctNumber = selItem ;
          this.showDorpDown = false;
-         var a= this.accList;
-         for(var i=0;i<a.length;i++){
+         let a= this.accList;
+         for(let i=0;i<a.length;i++){
            
            if(a[i].Id == selItem.Id){
              a[i].isShow=false;
@@ -1573,7 +1576,7 @@ today = yyyy + '-' + mm + '-' + dd;
   }
 
     getIndexFrmParent(target,attributeToFind){
-      var SelIndex = target.getAttribute(attributeToFind);
+      let SelIndex = target.getAttribute(attributeToFind);
       while(!SelIndex){
           target = target.parentNode ;
           SelIndex = getIndexFrmParent(target,helper,attributeToFind);           
@@ -1582,10 +1585,10 @@ today = yyyy + '-' + mm + '-' + dd;
   }
 
   addMemberAccount(){
-    var count = this.accountCount;
+    let count = this.accountCount;
       if(count < 9)
       {
-            var AccountObjectlist =  this.AccountObjectlist;    	
+        let AccountObjectlist =  this.AccountObjectlist;    	
             AccountObjectlist.push({'Account_Details__c': '','Id':null, 'isEmpty': true});
             this.AccountObjectlist = [...AccountObjectlist];
             count = count + 1;
@@ -1593,20 +1596,20 @@ today = yyyy + '-' + mm + '-' + dd;
       }
   }
   clearSelectionAdditional(event){
-    var acc = this.AccountObjectlist;
-    var target = event.target; 
-    var SelIndex = event.target.parentElement.closest('span').dataset.account;
+    let acc = this.AccountObjectlist;
+    let target = event.target; 
+    let SelIndex = event.target.parentElement.closest('span').dataset.account;
     if(SelIndex){
-      var serverResult = this.accList;  
-      var selItem = acc[SelIndex];
+      let serverResult = this.accList;  
+      let selItem = acc[SelIndex];
         acc[SelIndex]= [{'Account_Details__c': '','Id':null, 'isEmpty': true}];
-        var a= this.accList;
-        for(var i=0;i<a.length;i++){
+        let a= this.accList;
+        for(let i=0;i<a.length;i++){
           if(a[i].Id == selItem.Id){
             a[i].isShow=true;
           }
         }
-        for (var len = 0; len < acc.length; len++) {         
+        for (let len = 0; len < acc.length; len++) {         
           acc[len].isEmpty = true;        
        }
         this.accList = [...a];
@@ -1615,8 +1618,8 @@ today = yyyy + '-' + mm + '-' + dd;
   }
 
   onFocusLookupAdditional(event){
-    var index = parseInt( event.target.getAttribute("data-class") );
-      var autodiv = event.target.nextElementSibling;
+    let index = parseInt( event.target.getAttribute("data-class") );
+    let autodiv = event.target.nextElementSibling;
       if(autodiv != undefined && autodiv != null){
         autodiv.style.display = '';
       }
@@ -1627,8 +1630,8 @@ today = yyyy + '-' + mm + '-' + dd;
   }
 
   onBlurLookupAdditional(event){
-    var index = parseInt( event.target.getAttribute("data-class") );
-    var autodiv = event.target.nextElementSibling;
+    let index = parseInt( event.target.getAttribute("data-class") );
+    let autodiv = event.target.nextElementSibling;
     if(autodiv != undefined && autodiv != null){
       autodiv.style.display = 'none';
     }
@@ -1639,16 +1642,16 @@ today = yyyy + '-' + mm + '-' + dd;
   }
 
   itemSelectedAdditional(event){
-    var target = event.target;
-    var SelIndexid = event.target.parentElement.closest('div .dropdownadditionaaccount').dataset.class;
-    var SelIndex = event.target.parentElement.closest('li').dataset.selectedindexid;
+    let target = event.target;
+    let SelIndexid = event.target.parentElement.closest('div .dropdownadditionaaccount').dataset.class;
+    let SelIndex = event.target.parentElement.closest('li').dataset.selectedindexid;
 
     if(SelIndex){
-      var serverResult = this.accList;
-      var selItem = serverResult[SelIndex];
-       var acc = this.AccountObjectlist;    
+      let serverResult = this.accList;
+      let selItem = serverResult[SelIndex];
+      let acc = this.AccountObjectlist;    
       if(selItem){
-          for (var len = 0; len < acc.length; len++) { 
+          for (let len = 0; len < acc.length; len++) { 
              if(acc[len].Id== null && len == SelIndexid )
              {
                acc[len] = selItem;
@@ -1659,8 +1662,8 @@ today = yyyy + '-' + mm + '-' + dd;
           }
          
          this.AccountObjectlist= [...acc];
-          var a= this.accList;
-         for(var i=0;i<a.length;i++){
+         let a= this.accList;
+         for(let i=0;i<a.length;i++){
            if(a[i].Id == selItem.Id){
              a[i].isShow=false;           
            }
@@ -1675,10 +1678,10 @@ today = yyyy + '-' + mm + '-' + dd;
   }
 
   removeMemberAccount(event){
-    var target = event.target.dataset.indexid;
-    var AccountObjectlist =  this.AccountObjectlist; 
-    var a= this.accList;
-    for(var i=0;i<a.length;i++){
+    let target = event.target.dataset.indexid;
+    let AccountObjectlist =  this.AccountObjectlist; 
+    let a= this.accList;
+    for(let i=0;i<a.length;i++){
       if(a[i].Id == AccountObjectlist[target].Id){
         a[i].isShow=true;
       }
@@ -1687,7 +1690,7 @@ today = yyyy + '-' + mm + '-' + dd;
     AccountObjectlist.splice(parseInt(target),1);
     
     this.AccountObjectlist = [...AccountObjectlist];
-    var count = this.accountCount;
+    let count = this.accountCount;
     count = count - 1;
     this.accountCount = count;
   }
