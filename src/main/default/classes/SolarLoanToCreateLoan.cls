@@ -451,7 +451,7 @@ public class SolarLoanToCreateLoan {
             
             //-------------------------------------Checking if the membership has been created already for this member ------------------//
             
-            AccountNumber = sl.Member_Number__c;
+            AccountNumber = sl.Member_Number__c.left(40);
             
             SSN = sl.mem_Primary_SSN__c;
             System.debug('----------------------------Checking existing membership-----------------------------');
@@ -733,14 +733,14 @@ SLPaymentMatched = true;
                         
                         SLType = '1';
                         SLLast = sl.Joint_Last_Name__c;
-                        SLFirst = sl.Joint_First_Name__c;
+                        SLFirst = sl.Joint_First_Name__c.left(40);
                         SLJOINTSUFFIX = ' ';
                         
                         SLJOINTUSERCHAR3 = string.valueOf(sl.mem_Primary_First_Name__c).toUpperCase() +' '+string.valueOf(sl.mem_Primary_Last_Name__c).toUpperCase();
 		 				SLJOINTUSERCHAR1 = '0016-'+string.valueOf(sl.name).toUpperCase();
                         
                         if(sl.Joint_Address_1__c != null){
-                            SLStreet = sl.Joint_Address_1__c;
+                            SLStreet = sl.Joint_Address_1__c.left(40);
                             if(SLStreet.contains('&') == true){
                                 SLStreet = SLStreet.replace('&', '&#38;');
                             }
@@ -794,7 +794,7 @@ SLPaymentMatched = true;
                         
 					if(sl.mem_Joint_Employer__c != null){
                         
-                        SLCurrentEmployer = string.valueOf(sl.mem_Joint_Employer__c).toUpperCase();    
+                        SLCurrentEmployer = string.valueOf(sl.mem_Joint_Employer__c).left(40).toUpperCase();
                         if(SLCurrentEmployer.contains('&') == true){
                             SLCurrentEmployer = SLCurrentEmployer.replace('&', '&#38;');
                         }
@@ -803,7 +803,7 @@ SLPaymentMatched = true;
                         SLCurrentEmployer = '';
 						
 					if(sl.Joint_Occupation__c != null){
-                        SLOccupation = string.valueOf(sl.Joint_Occupation__c).toUpperCase();
+                        SLOccupation = string.valueOf(sl.Joint_Occupation__c).left(40).toUpperCase();
                         if(SLOccupation.contains('&') == true){
                             SLOccupation = SLOccupation.replace('&', '&#38;');
                         }
@@ -815,7 +815,7 @@ SLPaymentMatched = true;
                         SLJOINTIDENTDOCFLAG3 = 0;
 	
 	 if(sl.Joint_Maiden_Name__c != null)
-                        SLJOINTMOTHERSMAIDENNAME = string.valueOf(sl.Joint_Maiden_Name__c).toUpperCase();
+                        SLJOINTMOTHERSMAIDENNAME = string.valueOf(sl.Joint_Maiden_Name__c).left(40).toUpperCase();
                     else
                         SLJOINTMOTHERSMAIDENNAME = '';
                     
@@ -823,7 +823,7 @@ SLPaymentMatched = true;
                         SLJOINTMOTHERSMAIDENNAME = SLJOINTMOTHERSMAIDENNAME.substring(0,20);
                     }
      if(sl.Joint_ID_State__c != null)
-                        SLJOINTIDENTIDDESCRIPTION = string.valueOf(sl.Joint_ID_State__c).toUpperCase();
+                        SLJOINTIDENTIDDESCRIPTION = string.valueOf(sl.Joint_ID_State__c).left(40).toUpperCase();
                     else
                         SLJOINTIDENTIDDESCRIPTION = '';
                         
@@ -864,7 +864,7 @@ SLPaymentMatched = true;
                         SLJOINTIDENTIDISSUEDATE = '';
                     
                     if(sl.Joint_ID_Number__c != null)
-                        SLJOINTIDENTIDNUMBER = string.valueOf(sl.Joint_ID_Number__c).toUpperCase();
+                        SLJOINTIDENTIDNUMBER = string.valueOf(sl.Joint_ID_Number__c).left(40).toUpperCase();
                     else
                         SLJOINTIDENTIDNUMBER = '';
                     
@@ -937,7 +937,7 @@ SLPaymentMatched = true;
                         SLUserChar11 = sl.FNI__c;
                         
                         if(sl.Installer__c != null){
-                            SLUserChar1 = sl.Installer__c;
+                            SLUserChar1 = (sl.Installer__c).left(40);
                             if(SLUserChar1.contains('&') == true){
                                 SLUserChar1 = SLUserChar1.replace('&', '&#38;');
                             }
@@ -947,14 +947,14 @@ SLPaymentMatched = true;
                         SLUserChar3 = sl.Product__c;
                         
                         if(sl.Module__c != null){
-                            SLUserChar4 = sl.Module__c;
+                            SLUserChar4 = sl.Module__c.left(40);
                             if(SLUserChar4.contains('&') == true){
                                 SLUserChar4 = SLUserChar4.replace('&', '&#38;');
                             }
                         }
                         
                         if(sl.Inverter__c != null){
-                            SLUserChar5 = sl.Inverter__c;
+                            SLUserChar5 = sl.Inverter__c.left(40);
                             if(SLUserChar5.contains('&') == true){
                                 SLUserChar5 = SLUserChar5.replace('&', '&#38;');
                             }
@@ -965,7 +965,7 @@ SLPaymentMatched = true;
                         system.debug('UserChar5'+SLUserChar5);
                         
                         SLUserChar10 = sl.Credit_Attributes__c;
-                        SLUserChar20 = sl.Site_UUID__c;
+                        SLUserChar20 = sl.Site_UUID__c.left(40);
                         if(sl.Loan_Amount__c != null)
                             SLUserAmount1 = String.ValueOf(sl.Loan_Amount__c);
                         else
@@ -1022,12 +1022,12 @@ SLPaymentMatched = true;
                             SLUserDate11 = '';
                         
                         if(sl.Product_Loan_Type__c != null)  
-                            SLUserChar6  = string.ValueOf(sl.Product_Loan_Type__c);
+                            SLUserChar6  = string.ValueOf(sl.Product_Loan_Type__c).left(40);
                         else
                             SLUserChar6  = ' ';    
                         
                         if(sl.Credit_Exception__c != null)  
-                            SLUserChar7   = String.ValueOf(sl.Credit_Exception__c);
+                            SLUserChar7   = String.ValueOf(sl.Credit_Exception__c).left(40);
                         else
                             SLUserChar7   = null;
                         
@@ -1300,7 +1300,7 @@ SLPaymentMatched = true;
                 
                 if(sl.Employer__c != null){
                     
-                    EMPLOYERNAME = string.valueOf(sl.Employer__c).toUpperCase();    
+                    EMPLOYERNAME = string.valueOf(sl.Employer__c).left(40).toUpperCase();    
                     if(EMPLOYERNAME.contains('&') == true){
                         EMPLOYERNAME = EMPLOYERNAME.replace('&', '&#38;');
                     }
@@ -1311,7 +1311,7 @@ SLPaymentMatched = true;
                 
                 
                 if(sl.mem_Primary_Extra_Address__c != null)
-                    EXTRAADDRESS = string.valueOf(sl.mem_Primary_Extra_Address__c).toUpperCase(); 
+                    EXTRAADDRESS = string.valueOf(sl.mem_Primary_Extra_Address__c).left(40).toUpperCase(); 
                 else
                     EXTRAADDRESS = '';
                 
@@ -1408,7 +1408,7 @@ SLPaymentMatched = true;
                 }    
                 
                 if(sl.Occupation__c != null){
-                    OCCUPATION = string.valueOf(sl.Occupation__c).toUpperCase();
+                    OCCUPATION = string.valueOf(sl.Occupation__c).left(40).toUpperCase();
                     if(OCCUPATION.contains('&') == true){
                         OCCUPATION = OCCUPATION.replace('&', '&#38;');
                     }
@@ -1425,7 +1425,7 @@ SLPaymentMatched = true;
                     STATE = '';
                 
                 if(sl.mem_Primary_Street__c	 != null)
-                    STREET = string.valueOf(sl.mem_Primary_Street__c).toUpperCase();    
+                    STREET = string.valueOf(sl.mem_Primary_Street__c).left(40).toUpperCase();    
                 else
                     STREET = '';
                 
@@ -1451,7 +1451,7 @@ SLPaymentMatched = true;
                 
                 PRIMARYUSERCHAR1 = '6161-'+string.valueOf(sl.name).toUpperCase();
                 System.debug('PRIMARYUSERCHAR1: '+ PRIMARYUSERCHAR1);
-                AccountNumber = sl.Member_Number__c;
+                AccountNumber = sl.Member_Number__c.left(40);
                 
                 if(AccountNumber == null || AccountNumber == '')
                     AccountNumber = '';
@@ -1703,7 +1703,7 @@ SLPaymentMatched = true;
                     
                     SLType = '1';
                     SLLast = sl.Joint_Last_Name__c;
-                    SLFirst = sl.Joint_First_Name__c;
+                    SLFirst = sl.Joint_First_Name__c.left(40);
                     
                     SLJOINTUSERCHAR3 = string.valueOf(sl.mem_Primary_First_Name__c).toUpperCase() +' '+string.valueOf(sl.mem_Primary_Last_Name__c).toUpperCase();
 		            SLJOINTUSERCHAR1 = '0016-'+string.valueOf(sl.name).toUpperCase();
@@ -1711,7 +1711,7 @@ SLPaymentMatched = true;
                     SLJOINTSUFFIX = ' ';
                     
                     if(sl.Joint_Address_1__c != null){
-                        SLStreet = sl.Joint_Address_1__c;
+                        SLStreet = sl.Joint_Address_1__c.left(40);
                         if(SLStreet.contains('&') == true){
                             SLStreet = SLStreet.replace('&', '&#38;');
                         }
@@ -1765,7 +1765,7 @@ SLPaymentMatched = true;
                     
                    if(sl.mem_Joint_Employer__c != null){
                         
-                        SLCurrentEmployer = string.valueOf(sl.mem_Joint_Employer__c).toUpperCase();    
+                        SLCurrentEmployer = string.valueOf(sl.mem_Joint_Employer__c).left(40).toUpperCase();    
                         if(SLCurrentEmployer.contains('&') == true){
                             SLCurrentEmployer = SLCurrentEmployer.replace('&', '&#38;');
                         }
@@ -1774,7 +1774,7 @@ SLPaymentMatched = true;
                         SLCurrentEmployer = '';
 						
 					if(sl.Joint_Occupation__c != null){
-                        SLOccupation = string.valueOf(sl.Joint_Occupation__c).toUpperCase();
+                        SLOccupation = string.valueOf(sl.Joint_Occupation__c).left(40).toUpperCase();
                         if(SLOccupation.contains('&') == true){
                             SLOccupation = SLOccupation.replace('&', '&#38;');
                         }
@@ -1786,7 +1786,7 @@ SLPaymentMatched = true;
                      SLJOINTIDENTDOCFLAG3 = 0;
 	
 	 if(sl.Joint_Maiden_Name__c != null)
-                        SLJOINTMOTHERSMAIDENNAME = string.valueOf(sl.Joint_Maiden_Name__c).toUpperCase();
+                        SLJOINTMOTHERSMAIDENNAME = string.valueOf(sl.Joint_Maiden_Name__c).left(40).toUpperCase();
                     else
                         SLJOINTMOTHERSMAIDENNAME = '';
                     
@@ -1794,7 +1794,7 @@ SLPaymentMatched = true;
                         SLJOINTMOTHERSMAIDENNAME = SLJOINTMOTHERSMAIDENNAME.substring(0,20);
                     }
      if(sl.Joint_ID_State__c != null)
-                        SLJOINTIDENTIDDESCRIPTION = string.valueOf(sl.Joint_ID_State__c).toUpperCase();
+                        SLJOINTIDENTIDDESCRIPTION = string.valueOf(sl.Joint_ID_State__c).left(40).toUpperCase();
                     else
                         SLJOINTIDENTIDDESCRIPTION = '';
                     
@@ -1835,7 +1835,7 @@ SLPaymentMatched = true;
                         SLJOINTIDENTIDISSUEDATE = '';
                     
                     if(sl.Joint_ID_Number__c != null)
-                        SLJOINTIDENTIDNUMBER = string.valueOf(sl.Joint_ID_Number__c).toUpperCase();
+                        SLJOINTIDENTIDNUMBER = string.valueOf(sl.Joint_ID_Number__c).left(40).toUpperCase();
                     else
                         SLJOINTIDENTIDNUMBER = '';
                     
@@ -1906,7 +1906,7 @@ SLPaymentMatched = true;
                 SLUserChar11 = sl.FNI__c;
                 
                 if(sl.Installer__c != null){
-                    SLUserChar1 = sl.Installer__c;
+                    SLUserChar1 = sl.Installer__c.left(40);
                     if(SLUserChar1.contains('&') == true){
                         SLUserChar1 = SLUserChar1.replace('&', '&#38;');
                     }
@@ -1916,14 +1916,14 @@ SLPaymentMatched = true;
                 SLUserChar3 = sl.Product__c;
                 
                 if(sl.Module__c != null){
-                    SLUserChar4 = sl.Module__c;
+                    SLUserChar4 = sl.Module__c.left(40);
                     if(SLUserChar4.contains('&') == true){
                         SLUserChar4 = SLUserChar4.replace('&', '&#38;');
                     }
                 }
                 
                 if(sl.Inverter__c != null){
-                    SLUserChar5 = sl.Inverter__c;
+                    SLUserChar5 = sl.Inverter__c.left(40);
                     if(SLUserChar5.contains('&') == true){
                         SLUserChar5 = SLUserChar5.replace('&', '&#38;');
                     }
@@ -1934,7 +1934,7 @@ SLPaymentMatched = true;
                 system.debug('UserChar5'+SLUserChar5);
                 
                 SLUserChar10 = sl.Credit_Attributes__c;
-                SLUserChar20 = sl.Site_UUID__c;
+                SLUserChar20 = sl.Site_UUID__c.left(40);
                 if(sl.Loan_Amount__c != null)
                     SLUserAmount1 = String.ValueOf(sl.Loan_Amount__c);
                 else
@@ -1991,12 +1991,12 @@ SLPaymentMatched = true;
                     SLUserDate11 = '';
                 
                 if(sl.Product_Loan_Type__c != null)  
-                    SLUserChar6  = string.ValueOf(sl.Product_Loan_Type__c);
+                    SLUserChar6  = string.ValueOf(sl.Product_Loan_Type__c).left(40);
                 else
                     SLUserChar6  = ' ';    
                 
                 if(sl.Credit_Exception__c != null)  
-                    SLUserChar7   = String.ValueOf(sl.Credit_Exception__c);
+                    SLUserChar7   = String.ValueOf(sl.Credit_Exception__c).left(40);
                 else
                     SLUserChar7   = null;
                 
@@ -2111,7 +2111,7 @@ SLPaymentMatched = true;
                     
                     if(sl.mem_Joint_Employer__c != null){
                         
-                        JOINTEMPLOYERNAME = string.valueOf(sl.mem_Joint_Employer__c).toUpperCase();    
+                        JOINTEMPLOYERNAME = string.valueOf(sl.mem_Joint_Employer__c).left(40).toUpperCase();    
                         if(JOINTEMPLOYERNAME.contains('&') == true){
                             JOINTEMPLOYERNAME = JOINTEMPLOYERNAME.replace('&', '&#38;');
                         }
@@ -2120,7 +2120,7 @@ SLPaymentMatched = true;
                         JOINTEMPLOYERNAME = '';
                     
                     if(sl.mem_Joint_Extra_Address__c != null)
-                        JOINTEXTRAADDRESS = string.valueOf(sl.mem_Joint_Extra_Address__c).toUpperCase();
+                        JOINTEXTRAADDRESS = string.valueOf(sl.mem_Joint_Extra_Address__c).left(40).toUpperCase();
                     else
                         JOINTEXTRAADDRESS = '';
                     
@@ -2138,7 +2138,7 @@ SLPaymentMatched = true;
                     JOINTIDENTDOCFLAG3 = 0;
                     
                     if(sl.Joint_ID_State__c != null)
-                        JOINTIDENTIDDESCRIPTION = string.valueOf(sl.Joint_ID_State__c).toUpperCase();
+                        JOINTIDENTIDDESCRIPTION = string.valueOf(sl.Joint_ID_State__c).left(40).toUpperCase();
                     else
                         JOINTIDENTIDDESCRIPTION = '';
                     
@@ -2181,7 +2181,7 @@ SLPaymentMatched = true;
                         JOINTIDENTIDISSUEDATE = '';
                     
                     if(sl.Joint_ID_Number__c != null)
-                        JOINTIDENTIDNUMBER = string.valueOf(sl.Joint_ID_Number__c).toUpperCase();
+                        JOINTIDENTIDNUMBER = string.valueOf(sl.Joint_ID_Number__c).left(40).toUpperCase();
                     else
                         JOINTIDENTIDNUMBER = '';
                     
@@ -2210,7 +2210,7 @@ SLPaymentMatched = true;
                         JOINTMOBILEPHONE = '';
                     
                     if(sl.Joint_Maiden_Name__c != null)
-                        JOINTMOTHERSMAIDENNAME = string.valueOf(sl.Joint_Maiden_Name__c).toUpperCase();
+                        JOINTMOTHERSMAIDENNAME = string.valueOf(sl.Joint_Maiden_Name__c).left(40).toUpperCase();
                     else
                         JOINTMOTHERSMAIDENNAME = '';
                     
@@ -2219,7 +2219,7 @@ SLPaymentMatched = true;
                     }
                     
                     if(sl.Joint_Occupation__c != null){
-                        JOINTOCCUPATION = string.valueOf(sl.Joint_Occupation__c).toUpperCase();
+                        JOINTOCCUPATION = string.valueOf(sl.Joint_Occupation__c).left(40).toUpperCase();
                         if(JOINTOCCUPATION.contains('&') == true){
                             JOINTOCCUPATION = JOINTOCCUPATION.replace('&', '&#38;');
                         }
@@ -2238,7 +2238,7 @@ SLPaymentMatched = true;
                         JOINTSTATE = '';
                     
                     if(sl.mem_Joint_Street__c != null)
-                        JOINTSTREET = string.valueOf(sl.mem_Joint_Street__c).toUpperCase();
+                        JOINTSTREET = string.valueOf(sl.mem_Joint_Street__c).left(40).toUpperCase();
                     else
                         JOINTSTREET = '';
                     JOINTSUFFIX = ' ';
@@ -2303,7 +2303,7 @@ SLPaymentMatched = true;
                         MAILLAST = '';
                     
                     if(sl.mem_Mailing_Extra_Address__c != null && sl.mem_Mailing_Extra_Address__c != '')
-                        MAILEXTRAADDRESS = string.valueOf(sl.mem_Mailing_Extra_Address__c).toUpperCase();
+                        MAILEXTRAADDRESS = string.valueOf(sl.mem_Mailing_Extra_Address__c).left(40).toUpperCase();
                     else
                         MAILEXTRAADDRESS = '';
                     
@@ -2320,12 +2320,12 @@ SLPaymentMatched = true;
                         MAILSTATE = '';
                     
                     if(sl.mem_Mailing_City__c != null && sl.mem_Mailing_City__c != '')
-                        MAILCITY = string.valueOf(sl.mem_Mailing_City__c).toUpperCase();
+                        MAILCITY = string.valueOf(sl.mem_Mailing_City__c).left(40).toUpperCase();
                     else
                         MAILCITY = '';
                     
                     if(sl.Mailing_Street__c	 != null && sl.Mailing_Street__c != '')
-                        MAILSTREET = string.valueOf(sl.Mailing_Street__c).toUpperCase();
+                        MAILSTREET = string.valueOf(sl.Mailing_Street__c).left(40).toUpperCase();
                     else
                         MAILSTREET = '';
                     
@@ -2824,7 +2824,7 @@ SLPaymentMatched = true;
         for(Solar_Loans__c sl : solarloans){
             
             System.debug('GetAccountBrand method called');
-            AccountNumber = sl.Member_Number__c;
+            AccountNumber = sl.Member_Number__c.left(40);
             req11.setEndpoint(loanAPI+'/PSAuto/GetAccountBrand?accountNumber='+AccountNumber);
             req11.setMethod('GET');
             req11.setHeader('Content-Type', 'application/json');
