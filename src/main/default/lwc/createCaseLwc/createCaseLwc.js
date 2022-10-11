@@ -505,7 +505,11 @@ export default class createCaseLwc extends NavigationMixin(LightningElement) {
   }
 
   closeAction() {
-    const payload = { origin: "CaseQuickAction", action: "Close" };
+    if(this.isStandalone) {
+      window.close();
+    }
+
+    const payload = { origin: "CaseQuickAction", action: "Close",isStandAlone: this.isStandalone};
     publish(this.messageContext, STANDARD_MC, payload);
   }
 
