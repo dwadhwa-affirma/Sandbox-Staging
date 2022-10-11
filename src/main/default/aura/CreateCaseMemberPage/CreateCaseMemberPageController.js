@@ -65,8 +65,9 @@
         	var status = response.getState();
         	if(component.isValid() && status === "SUCCESS")
 	        	{
+                        debugger;
 	        		var result =  response.getReturnValue(); 
-	        		component.set('v.TopTenCases', result.toptencategories);
+	        		component.set('v.TopTenCases', result);
 	        	}
         	
         });
