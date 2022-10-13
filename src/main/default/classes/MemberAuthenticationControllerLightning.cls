@@ -2183,7 +2183,7 @@ IsCFCUWalletAvailable = true;
                 
                 /* The below code is to create or update Master log data*/
                 RecordType rec2 = GetRecordTypeData('Authenticated_Log__c', 'Master Authentication Log');       
-                List<Authenticated_Log__c> MasterAuthenticationLog = GetDataForMasterAuthenticationLog(IVRGUIDFromUrl, rec1.id);
+                List<Authenticated_Log__c> MasterAuthenticationLog = GetDataForMasterAuthenticationLog(IVRGUIDFromUrl, rec2.id);
                 if(MasterAuthenticationLog.size() == 0)
                 {
                     
