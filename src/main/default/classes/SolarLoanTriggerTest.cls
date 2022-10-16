@@ -126,7 +126,149 @@ public class SolarLoanTriggerTest {
         	
             sl.Member_Number__c = '0000247286';
             update sl;
-            
+            try{
+               sl.Inverter__c = '0000247286 FIELD_CUSTOM_VALIDATION_EXCEPTION';
+               update sl; 
+            } catch(Exception error){
+                System.assert(error.getMessage().contains('FIELD_CUSTOM_VALIDATION_EXCEPTION'));  
+            }
+            try{
+               sl.Installer__c = '0000247286 FIELD_CUSTOM_VALIDATION_EXCEPTION';
+               update sl; 
+            } catch(Exception error){
+                System.assert(error.getMessage().contains('FIELD_CUSTOM_VALIDATION_EXCEPTION'));  
+            }
+            try{
+               sl.Credit_Exception__c = '0000247286 FIELD_CUSTOM_VALIDATION_EXCEPTION';
+               update sl; 
+            } catch(Exception error){
+                System.assert(error.getMessage().contains('FIELD_CUSTOM_VALIDATION_EXCEPTION'));  
+            }
+            try{
+               sl.mem_Joint_Extra_Address__c = '0000247286 FIELD_CUSTOM_VALIDATION_EXCEPTION';
+               update sl; 
+            } catch(Exception error){
+                System.assert(error.getMessage().contains('FIELD_CUSTOM_VALIDATION_EXCEPTION'));  
+            }
+            try{
+               sl.Joint_Address_1__c = '0000247286 FIELD_CUSTOM_VALIDATION_EXCEPTION';
+               update sl; 
+            } catch(Exception error){
+                System.assert(error.getMessage().contains('FIELD_CUSTOM_VALIDATION_EXCEPTION'));  
+            }
+            try{
+               sl.mem_Joint_Employer__c = '0000247286 FIELD_CUSTOM_VALIDATION_EXCEPTION';
+               update sl; 
+            } catch(Exception error){
+                System.assert(error.getMessage().contains('FIELD_CUSTOM_VALIDATION_EXCEPTION'));  
+            }
+            try{
+               sl.Joint_ID_State__c = '0000247286 FIELD_CUSTOM_VALIDATION_EXCEPTION';
+               update sl; 
+            } catch(Exception error){
+                System.assert(error.getMessage().contains('FIELD_CUSTOM_VALIDATION_EXCEPTION'));  
+            }
+            try{
+               sl.mem_Mailing_City__c = '0000247286 FIELD_CUSTOM_VALIDATION_EXCEPTION';
+               update sl; 
+            } catch(Exception error){
+                System.assert(error.getMessage().contains('FIELD_CUSTOM_VALIDATION_EXCEPTION'));  
+            }
+            try{
+               sl.Site_UUID__c = '0000247286 FIELD_CUSTOM_VALIDATION_EXCEPTION';
+               update sl; 
+            } catch(Exception error){
+                System.assert(error.getMessage().contains('FIELD_CUSTOM_VALIDATION_EXCEPTION'));  
+            }
+            try{
+               sl.Product_Loan_Type__c = '0000247286 FIELD_CUSTOM_VALIDATION_EXCEPTION';
+               update sl; 
+            } catch(Exception error){
+                System.assert(error.getMessage().contains('FIELD_CUSTOM_VALIDATION_EXCEPTION'));  
+            }
+            try{
+               sl.Member_Number__c = '0000247286 FIELD_CUSTOM_VALIDATION_EXCEPTION';
+               update sl; 
+            } catch(Exception error){
+                System.assert(error.getMessage().contains('FIELD_CUSTOM_VALIDATION_EXCEPTION'));  
+            }
+            try{
+               sl.Bank_Name__c = '0000247286 FIELD_CUSTOM_VALIDATION_EXCEPTION';
+               update sl; 
+            } catch(Exception error){
+                System.assert(error.getMessage().contains('FIELD_CUSTOM_VALIDATION_EXCEPTION'));  
+            }
+            try{
+               sl.Occupation__c = '0000247286 FIELD_CUSTOM_VALIDATION_EXCEPTION';
+               update sl; 
+            } catch(Exception error){
+                System.assert(error.getMessage().contains('FIELD_CUSTOM_VALIDATION_EXCEPTION'));  
+            }try{
+               sl.mem_Primary_Extra_Address__c = '0000247286 FIELD_CUSTOM_VALIDATION_EXCEPTION';
+               update sl; 
+            } catch(Exception error){
+                System.assert(error.getMessage().contains('FIELD_CUSTOM_VALIDATION_EXCEPTION'));  
+            }
+            try{
+               sl.mem_Mailing_City__c = '0000247286 FIELD_CUSTOM_VALIDATION_EXCEPTION';
+               update sl; 
+            } catch(Exception error){
+                System.assert(error.getMessage().contains('FIELD_CUSTOM_VALIDATION_EXCEPTION'));  
+            }
+            try{
+               sl.Module__c = '0000247286 FIELD_CUSTOM_VALIDATION_EXCEPTION';
+               update sl; 
+            } catch(Exception error){
+                System.assert(error.getMessage().contains('FIELD_CUSTOM_VALIDATION_EXCEPTION'));  
+            }
+			try{
+               sl.mem_Primary_Street__c = '0000247286 FIELD_CUSTOM_VALIDATION_EXCEPTION';
+               update sl; 
+            } catch(Exception error){
+                System.assert(error.getMessage().contains('FIELD_CUSTOM_VALIDATION_EXCEPTION'));  
+            }
+            try{
+               sl.Employer__c = '0000247286 FIELD_CUSTOM_VALIDATION_EXCEPTION';
+               update sl; 
+            } catch(Exception error){
+                System.assert(error.getMessage().contains('FIELD_CUSTOM_VALIDATION_EXCEPTION'));  
+            }
+            try{
+               sl.Mailing_Street__c = '0000247286 FIELD_CUSTOM_VALIDATION_EXCEPTION';
+               update sl; 
+            } catch(Exception error){
+                System.assert(error.getMessage().contains('FIELD_CUSTOM_VALIDATION_EXCEPTION'));  
+            }
+            try{
+               sl.mem_Joint_Street__c = '0000247286 FIELD_CUSTOM_VALIDATION_EXCEPTION';
+               update sl; 
+            } catch(Exception error){
+                System.assert(error.getMessage().contains('FIELD_CUSTOM_VALIDATION_EXCEPTION'));  
+            }
+            try{
+               sl.Joint_Occupation__c = '0000247286 FIELD_CUSTOM_VALIDATION_EXCEPTION';
+               update sl; 
+            } catch(Exception error){
+                System.assert(error.getMessage().contains('FIELD_CUSTOM_VALIDATION_EXCEPTION'));  
+            }
+            try{
+               sl.Joint_Maiden_Name__c = '0000247286 FIELD_CUSTOM_VALIDATION_EXCEPTION';
+               update sl; 
+            } catch(Exception error){
+                System.assert(error.getMessage().contains('FIELD_CUSTOM_VALIDATION_EXCEPTION'));  
+            }
+            try{
+               sl.Joint_ID_Number__c = '0000247286 FIELD_CUSTOM_VALIDATION_EXCEPTION';
+               update sl; 
+            } catch(Exception error){
+                System.assert(error.getMessage().contains('FIELD_CUSTOM_VALIDATION_EXCEPTION'));  
+            }
+			try{
+               sl.Joint_First_Name__c = '0000247286 FIELD_CUSTOM_VALIDATION_EXCEPTION';
+               update sl; 
+            } catch(Exception error){
+                System.assert(error.getMessage().contains('FIELD_CUSTOM_VALIDATION_EXCEPTION'));  
+            }
             System.debug('Current User: ' + UserInfo.getUserName());
 
             System.debug('ttt');
@@ -137,6 +279,345 @@ public class SolarLoanTriggerTest {
             a.LastName =   'Jerry';
             a.PersonEmail = 'jrakesh@affirma.com';
             insert a;
+            
+            try {
+                List<Solar_Loans__c> slInsertlist = new List<Solar_Loans__c>();
+                Solar_Loans__c sl2 = new Solar_Loans__c();
+                sl2.Joint_First_Name__c ='Tom Solar ';
+                sl2.Joint_Last_Name__c = 'Jerry Solar ';
+                sl2.Joint_DOB__c = System.today();
+                sl2.Joint_SSN__c =  '1715';
+                sl2.Joint_FICO_Score__c = 12.00;
+                sl2.Joint_City__c = 'city ';
+                sl2.Joint_State__c = 'PA ';
+                sl2.Joint_Zip_Code__c =  '12345';
+                sl2.Primary_First_Name__c ='Tom';
+                sl2.Primary_Last_Name__c = 'Jerry';
+                sl2.Primary_DOB__c = System.today();
+                sl2.Primary_SSN__c =  '1715';
+                sl2.Primary_Address_1__c = 'Add';
+                sl2.Primary_FICO_Score__c = 12.00;
+                sl2.Primary_City__c = 'city';
+                sl2.Primary_State__c = 'PA';
+                sl2.Primary_Zip_Code__c =  '12345';
+                sl2.Legal_Description__c = 'test';
+                sl2.Product__c = 'product';
+                sl2.Module__c = 'module';
+                sl2.Installer_Number__c = '12';
+                sl2.Inverter__c = 'inverter';
+                sl2.System_Size_kW__c = 12.00;
+                sl2.Battery__c = 'barary';
+                sl2.Installer__c = 'intealer';
+                sl2.Application_Date__c = system.today();
+                sl2.Mortgage_Balance__c = 1299.00;
+                sl2.Final_Payment_Amount__c = 111.00;
+                sl2.Go_To_Payment__c = 1252.00;
+                sl2.Membership_Fee__c = 126.00;
+                sl2.Net_Funding_Amount__c = 1213.00;
+                sl2.Loan_Amount__c = 1211.00;
+                sl2.Loan_Pmt_Amount__c = 1245.00;
+                sl2.Credit_Exception__c = 'crSolar Loan Non-Text Area fieldsSolar Loan Non-Text Area fields';
+                sl2.ITC_Rate__c = 2.00;
+                sl2.ITC_Amount__c = 1245.88;
+                sl2.Term_months__c = 12;
+                sl2.OID_Fee__c = 11;
+                sl2.Approval_Date__c = system.today();
+                sl2.ECOA_Code__c = '1';
+                sl2.Site_UUID__c = '11';
+                sl2.FNI__c = '12';
+                sl2.Member_Number__c = '0000269355';
+                sl2.Status__c = 'New';
+                sl2.Bank_Name__c = 'Test Bank';
+                sl2.ABA_Bank_Name__c = 'Test Bank';
+                sl2.Additional_Amount__c = 100.00;
+                sl2.ACH__c = 'True';
+                slInsertlist.add(sl2);
+                Solar_Loans__c sl3 = new Solar_Loans__c();
+                sl3.Site_UUID__c= 'cr';
+            	slInsertlist.add(sl3);
+                 insert slInsertlist;
+            }catch(Exception error){
+                System.assert(error.getMessage().contains('FIELD_CUSTOM_VALIDATION_EXCEPTION'));    
+            }
+            try{
+               Solar_Loans__c sl3 = new Solar_Loans__c();
+                sl3.Joint_First_Name__c ='Tom Solar ';
+                sl3.Joint_Last_Name__c = 'Jerry Solar ';
+                sl3.Joint_DOB__c = System.today();
+                sl3.Joint_SSN__c =  '1715';
+                sl3.Joint_FICO_Score__c = 12.00;
+                sl3.Joint_City__c = 'city ';
+                sl3.Joint_State__c = 'PA ';
+                sl3.Joint_Zip_Code__c =  '12345';
+                sl3.Primary_First_Name__c ='Tom';
+                sl3.Primary_Last_Name__c = 'Jerry';
+                sl3.Primary_DOB__c = System.today();
+                sl3.Primary_SSN__c =  '1715';
+                sl3.Primary_Address_1__c = 'Add';
+                sl3.Primary_FICO_Score__c = 12.00;
+                sl3.Primary_City__c = 'city';
+                sl3.Primary_State__c = 'PA';
+                sl3.Primary_Zip_Code__c =  '12345';
+                sl3.Legal_Description__c = 'test';
+                sl3.Product__c = 'product';
+                sl3.Module__c = 'module';
+                sl3.Installer_Number__c = '12';
+                sl3.Inverter__c = 'inverter Test Bank Test Bank Test Bank Test Bank Test Bank Test Bank Test Bank ';
+                sl3.System_Size_kW__c = 12.00;
+                sl3.Battery__c = 'barary';
+                sl3.Installer__c = 'intealer';
+                sl3.Application_Date__c = system.today();
+                sl3.Mortgage_Balance__c = 1299.00;
+                sl3.Final_Payment_Amount__c = 111.00;
+                sl3.Go_To_Payment__c = 1252.00;
+                sl3.Membership_Fee__c = 126.00;
+                sl3.Net_Funding_Amount__c = 1213.00;
+                sl3.Loan_Amount__c = 1211.00;
+                sl3.Loan_Pmt_Amount__c = 1245.00;
+                sl3.Credit_Exception__c = 'cr';
+                sl3.ITC_Rate__c = 2.00;
+                sl3.ITC_Amount__c = 1245.88;
+                sl3.Term_months__c = 12;
+                sl3.OID_Fee__c = 11;
+                sl3.Approval_Date__c = system.today();
+                sl3.ECOA_Code__c = '1';
+                sl3.Site_UUID__c = '11';
+                sl3.FNI__c = '12';
+                sl3.Member_Number__c = '0000269355';
+                sl3.Status__c = 'New';
+                sl3.Bank_Name__c = 'Test Bank';
+                sl3.ABA_Bank_Name__c = 'Test Bank';
+                sl3.Additional_Amount__c = 100.00;
+                sl3.ACH__c = 'True';
+                insert sl3;
+                
+            }catch(Exception error){
+                System.assert(error.getMessage().contains('FIELD_CUSTOM_VALIDATION_EXCEPTION'));  
+            }
+            try{
+                Solar_Loans__c sl4 = new Solar_Loans__c();
+                sl4.Joint_First_Name__c ='Tom Solar ';
+                sl4.Joint_Last_Name__c = 'Jerry Solar ';
+                sl4.Joint_DOB__c = System.today();
+                sl4.Joint_SSN__c =  '1715';
+                sl4.Joint_FICO_Score__c = 12.00;
+                sl4.Joint_City__c = 'city ';
+                sl4.Joint_State__c = 'PA ';
+                sl4.Joint_Zip_Code__c =  '12345';
+                sl4.Primary_First_Name__c ='Tom';
+                sl4.Primary_Last_Name__c = 'Jerry';
+                sl4.Primary_DOB__c = System.today();
+                sl4.Primary_SSN__c =  '1715';
+                sl4.Primary_Address_1__c = 'Add';
+                sl4.Primary_FICO_Score__c = 12.00;
+                sl4.Primary_City__c = 'city';
+                sl4.Primary_State__c = 'PA';
+                sl4.Primary_Zip_Code__c =  '12345';
+                sl4.Legal_Description__c = 'test';
+                sl4.Product__c = 'product';
+                sl4.Module__c = 'module';
+                sl4.Installer_Number__c = '12';
+                sl4.Inverter__c = 'inverter';
+                sl4.System_Size_kW__c = 12.00;
+                sl4.Battery__c = 'barary';
+                sl4.Installer__c = 'intealer';
+                sl4.Application_Date__c = system.today();
+                sl4.Mortgage_Balance__c = 1299.00;
+                sl4.Final_Payment_Amount__c = 111.00;
+                sl4.Go_To_Payment__c = 1252.00;
+                sl4.Membership_Fee__c = 126.00;
+                sl4.Net_Funding_Amount__c = 1213.00;
+                sl4.Loan_Amount__c = 1211.00;
+                sl4.Loan_Pmt_Amount__c = 1245.00;
+                sl4.Credit_Exception__c = 'cr';
+                sl4.ITC_Rate__c = 2.00;
+                sl4.ITC_Amount__c = 1245.88;
+                sl4.Term_months__c = 12;
+                sl4.OID_Fee__c = 11;
+                sl4.Approval_Date__c = system.today();
+                sl4.ECOA_Code__c = '1';
+                sl4.Site_UUID__c = '11';
+                sl4.FNI__c = '12';
+                sl4.Member_Number__c = '0000269355';
+                sl4.Status__c = 'New';
+                sl4.Bank_Name__c = 'Test Bank Test Bank Test Bank Test Bank Test Bank Test Bank Test Bank Test Bank ';
+                sl4.ABA_Bank_Name__c = 'Test Bank';
+                sl4.Additional_Amount__c = 100.00;
+                sl4.ACH__c = 'True';
+                insert sl4;
+                
+            }catch(Exception error){
+               
+               System.assert(error.getMessage().contains('FIELD_CUSTOM_VALIDATION_EXCEPTION'));    
+            }
+            try{
+               Solar_Loans__c sl5 = new Solar_Loans__c();
+                sl5.Joint_First_Name__c ='Tom Solar ';
+                sl5.Joint_Last_Name__c = 'Jerry Solar ';
+                sl5.Joint_DOB__c = System.today();
+                sl5.Joint_SSN__c =  '1715';
+                sl5.Joint_Address_1__c = 'qwertyuioplkjhgfdsazxcvbnmlkjhgfdsaqwerty';
+                sl5.Joint_FICO_Score__c = 12.00;
+                sl5.Joint_City__c = 'city ';
+                sl5.Joint_State__c = 'PA ';
+                sl5.Joint_Zip_Code__c =  '12345';
+                sl5.Primary_First_Name__c ='Tom';
+                sl5.Primary_Last_Name__c = 'Jerry';
+                sl5.Primary_DOB__c = System.today();
+                sl5.Primary_SSN__c =  '1715';
+                sl5.Primary_Address_1__c = 'Add';
+                sl5.Primary_FICO_Score__c = 12.00;
+                sl5.Primary_City__c = 'city';
+                sl5.Primary_State__c = 'PA';
+                sl5.Primary_Zip_Code__c =  '12345';
+                sl5.Legal_Description__c = 'test';
+                sl5.Product__c = 'product';
+                sl5.Module__c = 'module';
+                sl5.Installer_Number__c = '12';
+                sl5.Inverter__c = 'inverter';
+                sl5.System_Size_kW__c = 12.00;
+                sl5.Battery__c = 'barary';
+                sl5.Installer__c = '';
+                sl5.Application_Date__c = system.today();
+                sl5.Mortgage_Balance__c = 1299.00;
+                sl5.Final_Payment_Amount__c = 111.00;
+                sl5.Go_To_Payment__c = 1252.00;
+                sl5.Membership_Fee__c = 126.00;
+                sl5.Net_Funding_Amount__c = 1213.00;
+                sl5.Loan_Amount__c = 1211.00;
+                sl5.Loan_Pmt_Amount__c = 1245.00;
+                sl5.Credit_Exception__c = 'cr';
+                sl5.ITC_Rate__c = 2.00;
+                sl5.ITC_Amount__c = 1245.88;
+                sl5.Term_months__c = 12;
+                sl5.OID_Fee__c = 11;
+                sl5.Approval_Date__c = system.today();
+                sl5.ECOA_Code__c = '1';
+                sl5.Site_UUID__c = '11';
+                sl5.FNI__c = '12';
+                sl5.Member_Number__c = '0000269355';
+                sl5.Status__c = 'New';
+                sl5.Bank_Name__c = 'Test Bank';
+                sl5.ABA_Bank_Name__c = 'Test Bank';
+                sl5.Additional_Amount__c = 100.00;
+                sl5.ACH__c = 'True';
+                insert sl5;
+                
+            }catch(Exception error){
+                System.assert(error.getMessage().contains('FIELD_CUSTOM_VALIDATION_EXCEPTION'));  
+            }
+            try{
+               Solar_Loans__c sl6 = new Solar_Loans__c();
+                sl6.Joint_First_Name__c ='Tom Solar';                
+                sl6.Joint_Last_Name__c = 'Jerry Solar ';
+                sl6.mem_Joint_Employer__c = 'Tom Solar qwerty plkjhggfff jhdkjsh uytrew';
+                sl6.Joint_DOB__c = System.today();
+                sl6.Joint_SSN__c =  '1715';
+                sl6.Joint_FICO_Score__c = 12.00;
+                sl6.Joint_City__c = 'city ';
+                sl6.Joint_State__c = 'PA ';
+                sl6.Joint_Zip_Code__c =  '12345';
+                sl6.Primary_First_Name__c ='Tom';
+                sl6.Primary_Last_Name__c = 'Jerry';
+                sl6.Primary_DOB__c = System.today();
+                sl6.Primary_SSN__c =  '1715';
+                sl6.Primary_Address_1__c = 'Add';
+                sl6.Primary_FICO_Score__c = 12.00;
+                sl6.Primary_City__c = 'city';
+                sl6.Primary_State__c = 'PA';
+                sl6.Primary_Zip_Code__c =  '12345';
+                sl6.Legal_Description__c = 'test';
+                sl6.Product__c = 'product';
+                sl6.Module__c = 'module';
+                sl6.Installer_Number__c = '12';
+                sl6.Inverter__c = 'inverter';
+                sl6.System_Size_kW__c = 12.00;
+                sl6.Battery__c = 'barary';
+                sl6.Installer__c = 'intealer';
+                sl6.Application_Date__c = system.today();
+                sl6.Mortgage_Balance__c = 1299.00;
+                sl6.Final_Payment_Amount__c = 111.00;
+                sl6.Go_To_Payment__c = 1252.00;
+                sl6.Membership_Fee__c = 126.00;
+                sl6.Net_Funding_Amount__c = 1213.00;
+                sl6.Loan_Amount__c = 1211.00;
+                sl6.Loan_Pmt_Amount__c = 1245.00;
+                sl6.Credit_Exception__c = 'cr';
+                sl6.ITC_Rate__c = 2.00;
+                sl6.ITC_Amount__c = 1245.88;
+                sl6.Term_months__c = 12;
+                sl6.OID_Fee__c = 11;
+                sl6.Approval_Date__c = system.today();
+                sl6.ECOA_Code__c = '1';
+                sl6.Site_UUID__c = '11';
+                sl6.FNI__c = '12';
+                sl6.Member_Number__c = '0000269355';
+                sl6.Status__c = 'New';
+                sl6.Bank_Name__c = 'Test Bank';
+                sl6.ABA_Bank_Name__c = 'Test Bank';
+                sl6.Additional_Amount__c = 100.00;
+                sl6.ACH__c = 'True';
+                insert sl6;
+                
+            }catch(Exception error){
+                System.assert(error.getMessage().contains('FIELD_CUSTOM_VALIDATION_EXCEPTION'));  
+            }
+            try{
+               Solar_Loans__c sl7 = new Solar_Loans__c();
+                sl7.Joint_First_Name__c ='Tom Solar';
+                sl7.Joint_Last_Name__c = 'Jerry Solar ';
+				sl7.mem_Joint_Extra_Address__c ='Tom Solar qwerty plkjhggfff jhdkjshdkjshkjd shdkjahk';
+                sl7.Joint_DOB__c = System.today();
+                sl7.Joint_SSN__c =  '1715';
+                sl7.Joint_FICO_Score__c = 12.00;
+                sl7.Joint_City__c = 'city ';
+                sl7.Joint_State__c = 'PA ';
+                sl7.Joint_Zip_Code__c =  '12345';
+                sl7.Primary_First_Name__c ='Tom';
+                sl7.Primary_Last_Name__c = 'Jerry';
+                sl7.Primary_DOB__c = System.today();
+                sl7.Primary_SSN__c =  '1715';
+                sl7.Primary_Address_1__c = 'Add';
+                sl7.Primary_FICO_Score__c = 12.00;
+                sl7.Primary_City__c = 'city';
+                sl7.Primary_State__c = 'PA';
+                sl7.Primary_Zip_Code__c =  '12345';
+                sl7.Legal_Description__c = 'test';
+                sl7.Product__c = 'product';
+                sl7.Module__c = 'module';
+                sl7.Installer_Number__c = '12';
+                sl7.Inverter__c = 'inverter';
+                sl7.System_Size_kW__c = 12.00;
+                sl7.Battery__c = 'barary';
+                sl7.Installer__c = 'intealer';
+                sl7.Application_Date__c = system.today();
+                sl7.Mortgage_Balance__c = 1299.00;
+                sl7.Final_Payment_Amount__c = 111.00;
+                sl7.Go_To_Payment__c = 1252.00;
+                sl7.Membership_Fee__c = 126.00;
+                sl7.Net_Funding_Amount__c = 1213.00;
+                sl7.Loan_Amount__c = 1211.00;
+                sl7.Loan_Pmt_Amount__c = 1245.00;
+                sl7.Credit_Exception__c = 'cr';
+                sl7.ITC_Rate__c = 2.00;
+                sl7.ITC_Amount__c = 1245.88;
+                sl7.Term_months__c = 12;
+                sl7.OID_Fee__c = 11;
+                sl7.Approval_Date__c = system.today();
+                sl7.ECOA_Code__c = '1';
+                sl7.Site_UUID__c = '11';
+                sl7.FNI__c = '12';
+                sl7.Member_Number__c = '0000269355';
+                sl7.Status__c = 'New';
+                sl7.Bank_Name__c = 'Test Bank';
+                sl7.ABA_Bank_Name__c = 'Test Bank';
+                sl7.Additional_Amount__c = 100.00;
+                sl7.ACH__c = 'True';
+                insert sl7;
+                
+            }catch(Exception error){
+                System.assert(error.getMessage().contains('FIELD_CUSTOM_VALIDATION_EXCEPTION'));  
+            }
         }
     }
     static testMethod void testMethod1(){
