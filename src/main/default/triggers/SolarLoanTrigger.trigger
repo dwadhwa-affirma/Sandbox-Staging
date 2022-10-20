@@ -197,6 +197,7 @@ trigger SolarLoanTrigger on Solar_Loans__c (after insert,before insert, after up
         
     if(Trigger.isBefore && Trigger.isUpdate){
         
+        
         for(Integer i=0; i<trigger.new.size(); i++){
             // code change for US: STRY0012031 begin    
             if(trigger.new[i].Credit_Exception__c != trigger.old[i].Credit_Exception__c  && trigger.new[i].Credit_Exception__c !=null && trigger.new[i].Credit_Exception__c.length() >40 ){                        
