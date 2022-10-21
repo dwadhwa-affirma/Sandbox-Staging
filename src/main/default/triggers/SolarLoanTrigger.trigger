@@ -197,78 +197,79 @@ trigger SolarLoanTrigger on Solar_Loans__c (after insert,before insert, after up
         
     if(Trigger.isBefore && Trigger.isUpdate){
         
+        
         for(Integer i=0; i<trigger.new.size(); i++){
             // code change for US: STRY0012031 begin    
-            if(trigger.new[i].Credit_Exception__c != trigger.old[i].Credit_Exception__c  && trigger.new[i].Credit_Exception__c.length() >40 ){                        
+            if(trigger.new[i].Credit_Exception__c != trigger.old[i].Credit_Exception__c  && trigger.new[i].Credit_Exception__c !=null && trigger.new[i].Credit_Exception__c.length() >40 ){                        
                 Trigger.new[i].addError('Credit Exception can\'t be greater than 40 character');
             }
-			if(trigger.new[i].Installer__c != trigger.old[i].Installer__c  && trigger.new[i].Installer__c.length() >40 ){                        
+			if(trigger.new[i].Installer__c != trigger.old[i].Installer__c  && trigger.new[i].Installer__c !=null && trigger.new[i].Installer__c.length() >40 ){                        
                 Trigger.new[i].addError('Installer can\'t be greater than 40 character');
             }
-			if(trigger.new[i].Inverter__c != trigger.old[i].Inverter__c  && trigger.new[i].Inverter__c.length() >40 ){                        
+			if(trigger.new[i].Inverter__c != trigger.old[i].Inverter__c  && trigger.new[i].Inverter__c !=null && trigger.new[i].Inverter__c.length() >40 ){                        
                 Trigger.new[i].addError('Inverter can\'t be greater than 40 character');
             }
-			if(trigger.new[i].Joint_Address_1__c != trigger.old[i].Joint_Address_1__c  && trigger.new[i].Joint_Address_1__c.length() >40 ){                        
+			if(trigger.new[i].Joint_Address_1__c != trigger.old[i].Joint_Address_1__c  && trigger.new[i].Joint_Address_1__c !=null && trigger.new[i].Joint_Address_1__c.length() >40 ){                        
                 Trigger.new[i].addError('Joint Address 1 can\'t be greater than 40 character');
             }
-			if(trigger.new[i].Joint_First_Name__c != trigger.old[i].Joint_First_Name__c  && trigger.new[i].Joint_First_Name__c.length() >40 ){                        
+			if(trigger.new[i].Joint_First_Name__c != trigger.old[i].Joint_First_Name__c  && trigger.new[i].Joint_First_Name__c!=null && trigger.new[i].Joint_First_Name__c.length() >40 ){                        
                 Trigger.new[i].addError('Joint First Name can\'t be greater than 40 character');
             }
-			if(trigger.new[i].mem_Joint_Employer__c != trigger.old[i].mem_Joint_Employer__c  && trigger.new[i].mem_Joint_Employer__c.length() >40 ){                        
+			if(trigger.new[i].mem_Joint_Employer__c != trigger.old[i].mem_Joint_Employer__c  && trigger.new[i].mem_Joint_Employer__c !=null && trigger.new[i].mem_Joint_Employer__c.length() >40 ){                        
                 Trigger.new[i].addError('mem Joint Employer can\'t be greater than 40 character');
             }
-			if(trigger.new[i].mem_Joint_Extra_Address__c != trigger.old[i].mem_Joint_Extra_Address__c  && trigger.new[i].mem_Joint_Extra_Address__c.length() >40 ){                        
+			if(trigger.new[i].mem_Joint_Extra_Address__c != trigger.old[i].mem_Joint_Extra_Address__c  && trigger.new[i].mem_Joint_Extra_Address__c !=null && trigger.new[i].mem_Joint_Extra_Address__c.length() >40 ){                        
                 Trigger.new[i].addError('mem Joint Extra Address can\'t be greater than 40 character');
             }
-			if(trigger.new[i].Joint_ID_Number__c != trigger.old[i].Joint_ID_Number__c  && trigger.new[i].Joint_ID_Number__c.length() >40 ){                        
+			if(trigger.new[i].Joint_ID_Number__c != trigger.old[i].Joint_ID_Number__c  && trigger.new[i].Joint_ID_Number__c !=null && trigger.new[i].Joint_ID_Number__c.length() >40 ){                        
                 Trigger.new[i].addError('mem Joint ID Number can\'t be greater than 40 character');
             }
-			if(trigger.new[i].Joint_ID_State__c != trigger.old[i].Joint_ID_State__c  && trigger.new[i].Joint_ID_State__c.length() >40 ){                        
+			if(trigger.new[i].Joint_ID_State__c != trigger.old[i].Joint_ID_State__c  && trigger.new[i].Joint_ID_State__c !=null && trigger.new[i].Joint_ID_State__c.length() >40 ){                        
                 Trigger.new[i].addError('mem Joint ID State can\'t be greater than 40 character');
             }
-			if(trigger.new[i].Joint_Maiden_Name__c != trigger.old[i].Joint_Maiden_Name__c  && trigger.new[i].Joint_Maiden_Name__c.length() >40 ){                        
+			if(trigger.new[i].Joint_Maiden_Name__c != trigger.old[i].Joint_Maiden_Name__c  && trigger.new[i].Joint_Maiden_Name__c !=null && trigger.new[i].Joint_Maiden_Name__c.length() >40 ){                        
                 Trigger.new[i].addError('mem Joint Maiden Name can\'t be greater than 40 character');
             }
-			if(trigger.new[i].Joint_Occupation__c != trigger.old[i].Joint_Occupation__c  && trigger.new[i].Joint_Occupation__c.length() >40 ){                        
+			if(trigger.new[i].Joint_Occupation__c != trigger.old[i].Joint_Occupation__c  && trigger.new[i].Joint_Occupation__c != null && trigger.new[i].Joint_Occupation__c.length() >40 ){                        
                 Trigger.new[i].addError('mem Joint Occupation can\'t be greater than 40 character');
             }
-			if(trigger.new[i].mem_Joint_Street__c != trigger.old[i].mem_Joint_Street__c  && trigger.new[i].mem_Joint_Street__c.length() >40 ){                        
+			if(trigger.new[i].mem_Joint_Street__c != trigger.old[i].mem_Joint_Street__c  && trigger.new[i].mem_Joint_Street__c !=null && trigger.new[i].mem_Joint_Street__c.length() >40 ){                        
                 Trigger.new[i].addError('mem Joint Street can\'t be greater than 40 character');
             }
-			if(trigger.new[i].mem_Mailing_City__c != trigger.old[i].mem_Mailing_City__c  && trigger.new[i].mem_Mailing_City__c.length() >40 ){                        
+			if(trigger.new[i].mem_Mailing_City__c != trigger.old[i].mem_Mailing_City__c  && trigger.new[i].mem_Mailing_City__c !=null && trigger.new[i].mem_Mailing_City__c.length() >40 ){                        
                 Trigger.new[i].addError('mem Mailing City can\'t be greater than 40 character');
             }
-			if(trigger.new[i].mem_Mailing_Extra_Address__c != trigger.old[i].mem_Mailing_Extra_Address__c  && trigger.new[i].mem_Mailing_Extra_Address__c.length() >40 ){                        
+			if(trigger.new[i].mem_Mailing_Extra_Address__c != trigger.old[i].mem_Mailing_Extra_Address__c  && trigger.new[i].mem_Mailing_Extra_Address__c !=null && trigger.new[i].mem_Mailing_Extra_Address__c.length() >40 ){                        
                 Trigger.new[i].addError('mem Mailing Extra Address can\'t be greater than 40 character');
             }
-			if(trigger.new[i].Mailing_Street__c != trigger.old[i].Mailing_Street__c  && trigger.new[i].Mailing_Street__c.length() >40 ){                        
+			if(trigger.new[i].Mailing_Street__c != trigger.old[i].Mailing_Street__c  && trigger.new[i].Mailing_Street__c !=null && trigger.new[i].Mailing_Street__c.length() >40 ){                        
                 Trigger.new[i].addError('mem Mailing Street can\'t be greater than 40 character');
             }
-			if(trigger.new[i].Employer__c != trigger.old[i].Employer__c  && trigger.new[i].Employer__c.length() >40 ){                        
+			if(trigger.new[i].Employer__c != trigger.old[i].Employer__c  && trigger.new[i].Employer__c !=null && trigger.new[i].Employer__c.length() >40 ){                        
                 Trigger.new[i].addError('mem Primary Employer can\'t be greater than 40 character');
             }
-            if(trigger.new[i].mem_Primary_Extra_Address__c != trigger.old[i].mem_Primary_Extra_Address__c  && trigger.new[i].mem_Primary_Extra_Address__c.length() >40 ){                        
+            if(trigger.new[i].mem_Primary_Extra_Address__c != trigger.old[i].mem_Primary_Extra_Address__c  && trigger.new[i].mem_Primary_Extra_Address__c !=null && trigger.new[i].mem_Primary_Extra_Address__c.length() >40 ){                        
                 Trigger.new[i].addError('mem Primary Extra Address can\'t be greater than 40 character');
             }
-			if(trigger.new[i].Occupation__c != trigger.old[i].Occupation__c  && trigger.new[i].Occupation__c.length() >40 ){                        
+			if(trigger.new[i].Occupation__c != trigger.old[i].Occupation__c  && trigger.new[i].Occupation__c !=null && trigger.new[i].Occupation__c.length() >40 ){                        
                 Trigger.new[i].addError('mem Primary Occupation can\'t be greater than 40 character');
             }
-			if(trigger.new[i].mem_Primary_Street__c != trigger.old[i].mem_Primary_Street__c  && trigger.new[i].mem_Primary_Street__c.length() >40 ){                        
+			if(trigger.new[i].mem_Primary_Street__c != trigger.old[i].mem_Primary_Street__c  && trigger.new[i].mem_Primary_Street__c !=null && trigger.new[i].mem_Primary_Street__c.length() >40 ){                        
                 Trigger.new[i].addError('mem Primary Street can\'t be greater than 40 character');
             }
-			if(trigger.new[i].Bank_Name__c != trigger.old[i].Bank_Name__c  && trigger.new[i].Bank_Name__c.length() >40 ){                        
+			if(trigger.new[i].Bank_Name__c != trigger.old[i].Bank_Name__c  && trigger.new[i].Bank_Name__c != null && trigger.new[i].Bank_Name__c.length() >40 ){                        
                 Trigger.new[i].addError('Member Entered Bank Name can\'t be greater than 40 character');
             }
-			if(trigger.new[i].Member_Number__c != trigger.old[i].Member_Number__c  && trigger.new[i].Member_Number__c.length() >40 ){                        
+			if(trigger.new[i].Member_Number__c != trigger.old[i].Member_Number__c  && trigger.new[i].Member_Number__c != null && trigger.new[i].Member_Number__c.length() >40 ){                        
                 Trigger.new[i].addError('Member Number can\'t be greater than 40 character');
             }
-			if(trigger.new[i].Module__c != trigger.old[i].Module__c  && trigger.new[i].Module__c.length() >40 ){                        
+			if(trigger.new[i].Module__c != trigger.old[i].Module__c  && trigger.new[i].Module__c !=null && trigger.new[i].Module__c.length() >40 ){                        
                 Trigger.new[i].addError('Module can\'t be greater than 40 character');
             }
-			if(trigger.new[i].Product_Loan_Type__c != trigger.old[i].Product_Loan_Type__c  && trigger.new[i].Product_Loan_Type__c.length() >40 ){                        
+			if(trigger.new[i].Product_Loan_Type__c != trigger.old[i].Product_Loan_Type__c  && trigger.new[i].Product_Loan_Type__c !=null && trigger.new[i].Product_Loan_Type__c.length() >40 ){                        
                 Trigger.new[i].addError('Product Loan Type can\'t be greater than 40 character');
             }
-			if(trigger.new[i].Site_UUID__c != trigger.old[i].Site_UUID__c  && trigger.new[i].Site_UUID__c.length() >40 ){                        
+			if(trigger.new[i].Site_UUID__c != trigger.old[i].Site_UUID__c  && trigger.new[i].Site_UUID__c !=null && trigger.new[i].Site_UUID__c.length() >40 ){                        
                 Trigger.new[i].addError('Site UUID can\'t be greater than 40 character');
             }
             // code change for US: STRY0012031 end 
