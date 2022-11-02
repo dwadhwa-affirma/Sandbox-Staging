@@ -688,12 +688,14 @@ public class Memeber360ViewLightningController {
             searchquery += 'and (PersonID__r.Name LIKE \'%' + SearchText + '%\' or Account_Number__r.Name LIKE \'%' + SearchText + '%\' or TypeTranslate__c LIKE \'%' + SearchText + '%\' or Account_Number__r.Brand__c LIKE \'%' + SearchText + '%\' or Account_Number__r.TypeTranslate__c LIKE \'%' + SearchText + '%\' or Account_Type__c LIKE \'%' + SearchText + '%\')';
         }
        
-        SOQLQuery = 'Select Id,' +
+        if(accName.size() > 0){
+            SOQLQuery = 'Select Id,' +
                               'personId__c,' +
                               'Account_Number__c,' +
                               'TypeTranslate__c,' +
                               'Account_Type__c,' +
                               'Relationship__c,' +
+                			  'Inactive__c,'+
                               'PersonID__r.SSN_Last_4__pc,' +
                               'Open_Date__c,' +
                              // PersonID__r.BIRTH_DATE__pc,
@@ -702,7 +704,27 @@ public class Memeber360ViewLightningController {
                               'PersonID__r.FirstName,' +
                               'PersonID__r.LastName,' +
                               'PersonID__r.Name,' +
-                              'Account_Number__r.Brand__c From Person_Account__c WHERE  personId__c != \''  + accid +  '\' and Account_Number__r.Name IN (\'' + string.join(accName,'\',\'') +  '\') ' + searchquery + ' ' +  orderString +  '   LIMIT  ' + string.valueOf( PageSize_Local) + ' OFFSET ' +  offset ;        
+                              'Account_Number__r.Brand__c From Person_Account__c WHERE  personId__c != \''  + accid +  '\' and Account_Number__r.Name IN (\'' + string.join(accName,'\',\'') +  '\') ' + searchquery + ' ' +  orderString +  '   LIMIT  ' + string.valueOf( PageSize_Local) + ' OFFSET ' +  offset ;  
+        }
+        else{
+            SOQLQuery = 'Select Id,' +
+                              'personId__c,' +
+                              'Account_Number__c,' +
+                              'TypeTranslate__c,' +
+                              'Account_Type__c,' +
+                              'Relationship__c,' +
+                              'Inactive__c,'+
+                              'PersonID__r.SSN_Last_4__pc,' +
+                              'Open_Date__c,' +
+                             // PersonID__r.BIRTH_DATE__pc,
+                              'Account_Number__r.Name,' +
+                              'Account_Number__r.TypeTranslate__c,' +
+                              'PersonID__r.FirstName,' +
+                              'PersonID__r.LastName,' +
+                              'PersonID__r.Name,' +
+                              'Account_Number__r.Brand__c From Person_Account__c WHERE  personId__c != \''  + accid +  '\' ' + searchquery + ' ' +  orderString +  '   LIMIT  ' + string.valueOf( PageSize_Local) + ' OFFSET ' +  offset ;
+        }
+                
                 if(searchquery.length() > 0)
                 {
                     string temp = '%' + SearchText + '%';
@@ -721,6 +743,7 @@ public class Memeber360ViewLightningController {
        Member360View lstcontact = new Member360View();
         lstcontact.accList = ContactList;
         lstcontact.totalrecords = Integer.Valueof( ARs[0].get('cnt'));
+        
         return lstcontact;
     }
         
@@ -1151,6 +1174,7 @@ public class Memeber360ViewLightningController {
         }
       
         //Start: CRM-1400: Get Multiple Accounts added to case - DB
+
         SOQLQuery = 'Select Id,' +
                            'CaseNumber,' +
                            'OwnerId,' +
@@ -1184,8 +1208,10 @@ public class Memeber360ViewLightningController {
         }
         
         
-        
-        List<sObject> caseList = Database.query(SOQLQuery);
+        system.debug('SOQLQuery=='+SOQLQuery);
+        List<sObject> caseList = new List<sObject>();
+        if(accIds.size() > 0)
+         caseList = Database.query(SOQLQuery);
         List<CaseAccountMemberDetail__c> camd = new List<CaseAccountMemberDetail__c>();
 		List<CaseAccountMemberDetail__c> finalcamd = new List<CaseAccountMemberDetail__c>();
 		 map<id, case> casemap = new map<id, case>();
