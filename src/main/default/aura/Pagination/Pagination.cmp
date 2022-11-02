@@ -206,7 +206,7 @@
                         </aura:iteration>
                         <aura:set attribute="else">
                             <aura:iteration items="{!v.ListObject}" var="item">
-                                <tr style="{!('background-color:' + (((v.SectionName == 'Warning/Comments' &amp;&amp; item.CloseDate != null) || (v.SectionName == 'accList' &amp;&amp; item.Close_Date__c != null) || (v.SectionName == 'cardList' &amp;&amp; item.Close_Date__c != null)) ? '#cccccc' : ''))}">
+                                <tr style="{!('background-color:' + (((v.SectionName == 'Warning/Comments' &amp;&amp; item.CloseDate != null) || (v.SectionName == 'accList' &amp;&amp; item.Close_Date__c != null) || (v.SectionName == 'cardList' &amp;&amp; item.Close_Date__c != null) || (v.SectionName == 'related persons' &amp;&amp; item.Inactive__c == true)) ? '#cccccc' : ''))}">
                                 	<aura:if isTrue="{!(v.SectionName == 'Warning/Comments') || (v.SectionName == 'accList')}">
                                 		<aura:iteration items="{!v.HeaderColumnArray}" var="col" indexVar="number">
                                 				<aura:if isTrue="{!(col == 'WarningCode') }">
