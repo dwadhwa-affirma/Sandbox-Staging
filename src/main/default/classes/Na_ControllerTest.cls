@@ -2,7 +2,49 @@
 
 public class Na_ControllerTest
 {
-
+	@testsetup public static void setup(){
+        
+        Account acc = new Account();
+        acc.Name = 'Test account for Recommendation Controller';
+        Insert acc;
+        
+        Needs_Assesment__c na = new Needs_Assesment__c();
+        na.Member__c = acc.Id;
+        na.Rec_LEOM_Outcome_1__c= '';  
+        na.Rec_LEEM_Outcome_2__c ='';
+        na.REC_LEMD_Outcome_2__c ='';
+        na.REC_LEMD_Outcome_1__c ='';
+        na.Rec_LEEM_Outcome_1__c ='';
+        na.Rec_LEOM_Outcome_2__c ='';
+        na.Rec_LEOM_Outcome_3__c ='';
+        na.Rec_LEOM_Outcome_4__c ='';
+        na.Rec_LEOM_Outcome_5__c ='';
+        na.Rec_LEOM_Outcome_7__c ='';
+        na.Rec_LEOM_Outcome_6__c ='';
+        na.Rec_LEOL_Outcome_1__c ='';
+        na.Rec_LEOL_Outcome_2__c ='';
+        na.REC_LEAV_Outcome_1__c ='';
+        na.Rec_LEHS_1_Outcome__c ='';
+        na.Rec_LEHS_Outcome_2__c ='';
+        na.Rec_LECF_Outcome_1__c ='';
+        na.Rec_LECF_Outcome_2__c ='';
+        na.Rec_LECF_Outcome_3__c ='';
+        na.Rec_LECF_Outcome_4__c ='';
+        na.Rec_LECF_Outcome_4__c ='';
+        na.REC_LEMP_Outcome_1__c ='';
+        na.REC_LEMP_Outcome_2__c ='';
+        na.REC_LEMP_Outcome_3__c ='';
+        na.REC_LEMP_Outcome_4__c ='';
+        na.REC_LEMP_Outcome_5__c ='';
+        na.REC_LEMP_Outcome_6__c ='';
+        na.REC_LEMP_Outcome_7__c ='';
+        na.REC_LEMP_Outcome_8__c ='';
+        na.REC_LEMD_Outcome_3__c ='';
+        na.REC_LEMQ_Outcome_1__c ='';
+        na.REC_LEPT_Outcome_1__c ='';
+        insert na;
+        
+    }
     static testMethod void PrimaryTransition()
     {
         Test.StartTest();
@@ -845,6 +887,30 @@ public class Na_ControllerTest
        
         insert na;
         
+        Nasf.AccountC  = acc;
+        //Nasf.parentController = need;
+
+        Nasf.getnao();
+        Nasf.setnao(na);
+
+        //Nasf.SubmitOtherForm();
+        }catch(exception e){
+        	system.debug('error--'+e);
+        }
+        Test.StopTest();
+
+    }
+    static testMethod void RecomendationTest1()
+    {
+        Test.StartTest();
+        try{
+        
+        //initializeGracePeriod();
+        
+        RecomendationController  Nasf = new RecomendationController();
+        
+        Account acc = [Select id, Name from Account where Name = 'Test account for Recommendation Controller' ];
+        Needs_Assesment__c na = [Select id, Member__c , Rec_LEOM_Outcome_1__c, Rec_LEEM_Outcome_2__c from Needs_Assesment__c where Member__c=: acc.id];
         Nasf.AccountC  = acc;
         //Nasf.parentController = need;
 
