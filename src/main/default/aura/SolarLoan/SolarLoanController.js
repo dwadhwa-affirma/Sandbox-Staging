@@ -13,6 +13,7 @@
 		
         var ProgressBarStep1 = document.getElementById('Step1');
 		var ProgressBarStep2 = document.getElementById('Step2');
+        var ProgressBarStep2Pt5 = document.getElementById('Step2Pt5');
 		var ProgressBarStep3 = document.getElementById('Step3');
 		var ProgressBarStep4 = document.getElementById('Step4');
 		var ProgressBarStep5 = document.getElementById('Step5');
@@ -33,18 +34,31 @@
 			ProgressBarStep2.classList.add('halFactive');
 			
 		}
+        if(stage == 'Stage 2.5'){
+			component.set("v.Stage1", "Review Completed");
+			component.set("v.Stage2", "Review Completed");
+            component.set("v.Stage2Pt5", "Needs Review");
+			ProgressBarStep1.classList.add('active');
+			ProgressBarStep2.classList.remove('halFactive');
+            ProgressBarStep2.classList.add('active');
+			ProgressBarStep2Pt5.classList.add('halFactive');
+			
+		}
 		if(stage == 'Stage 3'){
 			component.set("v.Stage1", "Review Completed");
 			component.set("v.Stage2", "Review Completed");
+            component.set("v.Stage2Pt5", "Card Signed");
 			component.set("v.Stage3", "Create Records");
             ProgressBarStep1.classList.add('active');
-			ProgressBarStep2.classList.remove('halFactive');
 			ProgressBarStep2.classList.add('active');
+            ProgressBarStep2Pt5.classList.remove('halFactive');
+            ProgressBarStep2Pt5.classList.add('active');
 			ProgressBarStep3.classList.add('halFactive');
 		}
 		if(stage == 'Stage 4'){
 			component.set("v.Stage1", "Review Completed");
 			component.set("v.Stage2", "Review Completed");
+            component.set("v.Stage2Pt5", "Card Signed");
 			component.set("v.Stage3", "Records Created");
 			component.set("v.Stage4", "Needs Review");
          	ProgressBarStep1.classList.add('active');
@@ -56,6 +70,7 @@
 		if(stage == 'Stage 5'){
 			component.set("v.Stage1", "Review Completed");
 			component.set("v.Stage2", "Review Completed");
+            component.set("v.Stage2Pt5", "Card Signed");
 			component.set("v.Stage3", "Records Created");
 			component.set("v.Stage4", "Review Completed");
 			if(Stage5ACHCheck == 'True')
@@ -70,6 +85,7 @@
 		if(stage == 'Stage 6'){
 			component.set("v.Stage1", "Review Completed");
 			component.set("v.Stage2", "Review Completed");
+            component.set("v.Stage2Pt5", "Card Signed");
 			component.set("v.Stage3", "Records Created");
 			component.set("v.Stage4", "Review Completed");
 			component.set("v.Stage5", "Waiting for Member");
@@ -86,6 +102,7 @@
 		
 			component.set("v.Stage1", "Review Completed");
 			component.set("v.Stage2", "Review Completed");
+            component.set("v.Stage2Pt5", "Card Signed");
 			component.set("v.Stage3", "Records Created");
 	
             if(Stage5ACHCheck == 'False'){
@@ -118,6 +135,7 @@
 		
 			component.set("v.Stage1", "Review Completed");
 			component.set("v.Stage2", "Review Completed");
+            component.set("v.Stage2Pt5", "Card Signed");
 			component.set("v.Stage3", "Records Created");
 			
 			if(Stage5ACHCheck == 'False'){
