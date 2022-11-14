@@ -6,7 +6,8 @@
 <aura:attribute name="StagePassed" type="String"/>
 <aura:attribute name="Stage1" type="String" default="Needs Review"/>
 <aura:attribute name="Stage2" type="String" default="Waiting on Stage 1"/>
-<aura:attribute name="Stage3" type="String" default="Waiting on Stage 2"/>
+<aura:attribute name="Stage2Pt5" type="String" default="Waiting on Stage 2"/>
+<aura:attribute name="Stage3" type="String" default="Waiting on Stage 2.5"/>
 <aura:attribute name="Stage4" type="String" default="Waiting on Stage 3"/>
 <aura:attribute name="Stage5" type="String" default="Waiting on Stage 4"/>
 <aura:attribute name="Stage6" type="String" default="Waiting on Stage 5"/>
@@ -21,7 +22,8 @@
             <lightning:layout horizontalAlign="spread">                                            
                 <div class="step-container">
                     <ul class="progressbar">
-                        <li id="Step1" class="{!(v.ActiveStepIndex == 'Stage 1' ? 'halFactive' : 'active')}">
+                        <li id="Step1" value="1" class="{!(v.ActiveStepIndex == 'Stage 1' ? 'halFactive' : 'active')}">
+                            <span>1</span>
                             <lightning:layoutItem>
                                 <div class="header-column">
                                     <p class="field-title show" id="Level1IndicatorLabel">Application</p>
@@ -31,7 +33,8 @@
                                 </div>
                             </lightning:layoutItem>
                         </li>
-                        <li id="Step2" class="{!(v.ActiveStepIndex == 'Stage 2' ? 'halFactive' : (v.ActiveStepIndex == 'Stage 3' ? 'active' : (v.ActiveStepIndex == 'Stage 4' ? 'active' : (v.ActiveStepIndex == 'Stage 5' ? 'active' : (v.ActiveStepIndex == 'Stage 6' ? 'active' : (v.ActiveStepIndex == 'Stage 7' ? 'active' : (v.ActiveStepIndex == 'Stage 8' ? 'active' : '')))))))}">
+                        <li id="Step2" value="2" class="{!(v.ActiveStepIndex == 'Stage 2' ? 'halFactive' : (or(v.ActiveStepIndex == 'Stage 2.5',v.ActiveStepIndex == 'Stage 3') ? 'active' : (v.ActiveStepIndex == 'Stage 4' ? 'active' : (v.ActiveStepIndex == 'Stage 5' ? 'active' : (v.ActiveStepIndex == 'Stage 6' ? 'active' : (v.ActiveStepIndex == 'Stage 7' ? 'active' : (v.ActiveStepIndex == 'Stage 8' ? 'active' : '')))))))}">
+                           <span>2</span>
                             <lightning:layoutItem>
                                 <div class="header-column">
                                     <p class="field-title show" id="Level2IndicatorLabel">Documents</p>
@@ -41,7 +44,19 @@
                                 </div>
                             </lightning:layoutItem>
                         </li>
-                        <li id="Step3" class="{!(v.ActiveStepIndex == 'Stage 3' ? 'halFactive' : (v.ActiveStepIndex == 'Stage 4' ? 'active' : (v.ActiveStepIndex == 'Stage 5' ? 'active' : (v.ActiveStepIndex == 'Stage 6' ? 'active' : (v.ActiveStepIndex == 'Stage 7' ? 'active' : (v.ActiveStepIndex == 'Stage 8' ? 'active' : ''))))))}">
+                        <li id="Step2Pt5" value="2.5" class="{!(v.ActiveStepIndex == 'Stage 2.5' ? 'halFactive' : (v.ActiveStepIndex == 'Stage 3' ? 'active' : (v.ActiveStepIndex == 'Stage 4' ? 'active' : (v.ActiveStepIndex == 'Stage 5' ? 'active' : (v.ActiveStepIndex == 'Stage 6' ? 'active' : (v.ActiveStepIndex == 'Stage 7' ? 'active' : (v.ActiveStepIndex == 'Stage 8' ? 'active' : '')))))))}">
+                           <span class="twoPtFive">2.5</span>
+                            <lightning:layoutItem>
+                                <div class="header-column">
+                                    <p class="field-title show" id="Level2Pt5IndicatorLabel">Signature Card</p>
+                                    <div class="step-indicator-content">
+                                        <b><p>{!v.Stage2Pt5}</p></b>
+                                    </div>
+                                </div>
+                            </lightning:layoutItem>
+                        </li>
+                        <li id="Step3" value="3" class="{!(v.ActiveStepIndex == 'Stage 3' ? 'halFactive' : (v.ActiveStepIndex == 'Stage 4' ? 'active' : (v.ActiveStepIndex == 'Stage 5' ? 'active' : (v.ActiveStepIndex == 'Stage 6' ? 'active' : (v.ActiveStepIndex == 'Stage 7' ? 'active' : (v.ActiveStepIndex == 'Stage 8' ? 'active' : ''))))))}">
+                            <span>3</span>
                             <lightning:layoutItem>
                                 <div class="header-column">
                                     <p class="field-title show" id="Level3IndicatorLabel">Account/Loan Records</p>
@@ -51,7 +66,8 @@
                                 </div>
                             </lightning:layoutItem>
                         </li>
-                        <li id="Step4" class="{!(v.ActiveStepIndex == 'Stage 4' ? 'halFactive' : (v.ActiveStepIndex == 'Stage 5' ? 'active' : (v.ActiveStepIndex == 'Stage 6' ? 'active' : (v.ActiveStepIndex == 'Stage 7' ? 'active' : (v.ActiveStepIndex == 'Stage 8' ? 'active' : '')))))}">
+                        <li id="Step4" value="4" class="{!(v.ActiveStepIndex == 'Stage 4' ? 'halFactive' : (v.ActiveStepIndex == 'Stage 5' ? 'active' : (v.ActiveStepIndex == 'Stage 6' ? 'active' : (v.ActiveStepIndex == 'Stage 7' ? 'active' : (v.ActiveStepIndex == 'Stage 8' ? 'active' : '')))))}">
+                            <span>4</span>
                             <lightning:layoutItem>
                                 <div class="header-column">
                                     <p class="field-title show" id="Level4IndicatorLabel">ACH Info</p>
@@ -61,7 +77,8 @@
                                 </div>
                             </lightning:layoutItem>
                         </li>
-                        <li id="Step5" class="{!(v.ActiveStepIndex == 'Stage 5' ? 'halFactive' : (v.ActiveStepIndex == 'Stage 6' ? 'half' : (v.ActiveStepIndex == 'Stage 7' ? 'active' : (v.ActiveStepIndex == 'Stage 8' ? 'active' : ''))))}">
+                        <li id="Step5" value="5" class="{!(v.ActiveStepIndex == 'Stage 5' ? 'halFactive' : (v.ActiveStepIndex == 'Stage 6' ? 'half' : (v.ActiveStepIndex == 'Stage 7' ? 'active' : (v.ActiveStepIndex == 'Stage 8' ? 'active' : ''))))}">
+                            <span>5</span>
                             <lightning:layoutItem>
                                 <div class="header-column">
                                     <p class="field-title show" id="Level5IndicatorLabel">ACH Document</p>
@@ -71,7 +88,8 @@
                                 </div>
                             </lightning:layoutItem>
                         </li>
-                        <li id="Step6" class="{!(v.ActiveStepIndex == 'Stage 6' ? 'halFactive' : (v.ActiveStepIndex == 'Stage 7' ? 'active' : (v.ActiveStepIndex == 'Stage 8' ? 'active' : '')))}">
+                        <li id="Step6" value="6" class="{!(v.ActiveStepIndex == 'Stage 6' ? 'halFactive' : (v.ActiveStepIndex == 'Stage 7' ? 'active' : (v.ActiveStepIndex == 'Stage 8' ? 'active' : '')))}">
+                            <span>6</span>
                             <lightning:layoutItem>
                                 <div class="header-column">
                                     <p class="field-title show" id="Level6IndicatorLabel">EFT Record</p>
@@ -82,7 +100,8 @@
                             </lightning:layoutItem>
                         </li>
                         <!--<li id="Step7" class="{!(v.ActiveStepIndex == 'Stage 7' ? 'halFactive' : (v.CurrentStatus == 'UCC Pending' ? 'active' : ''))}">-->
-                        <li id="Step7" class="{!(v.ActiveStepIndex == 'Stage 8' ? 'active' : (v.CurrentStatus == 'UCC Pending' ? 'active' : (v.CurrentStatus == 'UCC Submitted' ? 'active' : (v.ActiveStepIndex == 'Stage 7' ? 'halFactive' : ''))))}">
+                        <li id="Step7" value="7" class="{!(v.ActiveStepIndex == 'Stage 8' ? 'active' : (v.CurrentStatus == 'UCC Pending' ? 'active' : (v.CurrentStatus == 'UCC Submitted' ? 'active' : (v.ActiveStepIndex == 'Stage 7' ? 'halFactive' : ''))))}">
+                            <span>7</span>
                             <lightning:layoutItem>
                                 <div class="header-column">
                                     <p class="field-title show" id="Level6IndicatorLabel">UCC Lien</p>
@@ -92,7 +111,8 @@
                                 </div>
                             </lightning:layoutItem>
                         </li>
-                        <li id="Step8" class="{!(v.ActiveStepIndex == 'Stage 8' ? 'active' : (v.CurrentStatus == 'UCC Pending' ? 'halFactive' : (v.CurrentStatus == 'UCC Submitted' ? 'halFactive' : '')))}">
+                        <li id="Step8" value="8" class="{!(v.ActiveStepIndex == 'Stage 8' ? 'active' : (v.CurrentStatus == 'UCC Pending' ? 'halFactive' : (v.CurrentStatus == 'UCC Submitted' ? 'halFactive' : '')))}">
+                            <span>8</span>
                             <lightning:layoutItem>
                                 <div class="header-column">
                                     <p class="field-title show" id="Level8IndicatorLabel">Ticket Status</p>

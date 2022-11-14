@@ -11,15 +11,17 @@
     <aura:attribute name="IsWaitingDisabled" type="boolean" default="false"/>
     
     <div class="groupbtn-parent solarloanstagebar">
-		       
-		<lightning:button class="slds-m-right_small" variant="brand" label="{!v.WaitingButton}" aura:id="WaitingButton" onclick="{!c.waiting}"  disabled = "{!v.IsWaitingDisabled}"/>
-		<b><p class="field-title show">{!v.StageName}</p></b>		
-        <div style="margin-left: auto;">
-        	<lightning:button variant="brand" label="{!v.ButtonLabelName}" aura:id="SubmitButton" onclick="{!c.submit }" disabled = "{!v.IsButtonDisabled}"/>
-        	<!-- <lightning:button variant="brand" label="{!v.ButtonLabelName}" aura:id="SubmitButton" disabled = "{!v.IsButtonDisabled}"/>-->
-        	<lightning:spinner aura:id="Spinner" alternativeText="Loading" size="medium" variant="brand" class="slds-hide spin"/>
-        </div>
         
-		</div>
-	
+        <lightning:button class="slds-m-right_small" variant="brand" label="{!v.WaitingButton}" aura:id="WaitingButton" onclick="{!c.waiting}"  disabled = "{!v.IsWaitingDisabled}"/>
+        <b><p class="field-title show">{!v.StageName}</p></b>	
+        
+        <aura:if isTrue="{!v.CurrentStage!='Stage 2.5'}">
+            <div style="margin-left: auto;">
+                <lightning:button variant="brand" label="{!v.ButtonLabelName}" aura:id="SubmitButton" onclick="{!c.submit }" disabled = "{!v.IsButtonDisabled}"/>
+                <!-- <lightning:button variant="brand" label="{!v.ButtonLabelName}" aura:id="SubmitButton" disabled = "{!v.IsButtonDisabled}"/>-->
+                <lightning:spinner aura:id="Spinner" alternativeText="Loading" size="medium" variant="brand" class="slds-hide spin"/>
+            </div>
+        </aura:if> 
+    </div>
+    
 </aura:component>

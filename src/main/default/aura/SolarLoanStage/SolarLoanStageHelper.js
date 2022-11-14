@@ -37,11 +37,14 @@
 		action.setCallback(this, function (response) {
         	var status = response.getState();            
             if (component.isValid() && status === "SUCCESS") {
+                
+                debugger;
                 var result = response.getReturnValue();
                 console.log('!result!');
                 console.log(result);
                 if(result.SolarCurrentStage != undefined){
 		       	    stage = result.SolarCurrentStage;
+                    component.set("v.CurrentStage",result.SolarCurrentStage);
 		        }
                 if(result.SolarCurrentStatus != undefined){
 		       	    checkCurrentStatus = result.SolarCurrentStatus;
@@ -103,6 +106,11 @@
         	if(stage == 'Stage 2'){
                 component.set("v.ButtonLabelName", "Mark Stage 2 Complete");
                 component.set("v.StageName", "Stage 2: Review Documents");
+            }
+            
+            if(stage == 'Stage 2.5'){
+                component.set("v.StageName", "Stage 2.5: Signature Card");
+                component.set("v.IsWaitingDisabled", true);
             }
             
             if(stage == 'Stage 3'){
