@@ -1,0 +1,30 @@
+<aura:component implements="flexipage:availableForRecordHome,force:hasRecordId" controller="SLAStatusController" access="global" >
+  <aura:attribute name="CurrentStageSLA" type="decimal" default="" />
+  <aura:attribute name="CurrentStageBusinessHoursRemaining" type="string" default="" />
+  <aura:attribute name="CurrentStageSLABreached" type="Boolean" default="" />
+  <aura:attribute name="IsBreached" type="Boolean" default="false" />
+  <aura:attribute name="IsSLAInGreen" type="Boolean" default="false" />
+  <aura:attribute name="IsSLAInRed" type="Boolean" default="false" />
+  <aura:attribute name="IsSLAInYellow" type="Boolean" default="false" />
+  <aura:handler event="force:refreshView" action="{!c.isRefreshed}" />
+  <aura:handler name="init" value="{!this}" action="{!c.doinit }" access="global"/> 
+    
+  <table align="right">
+    <tr>
+      <td><p>Stage SLA</p></td>
+      <td><p>Hours Remaining</p></td>
+      <td><p>Stage Breach</p></td>
+    </tr>
+    <tr>        	  
+      <td><p class="value">{!v.CurrentStageSLA}</p></td>
+      <td>
+        <p class="{!v.IsBreached ? 'breached value' : 'unbreached value'}" >{!v.CurrentStageBusinessHoursRemaining}</p>
+      </td>
+      <td>
+        <aura:if isTrue="{!v.IsSLAInGreen}"> <img height="20" width="20" src="{!$Resource.SLAGreen}"/></aura:if> 
+        <aura:if isTrue="{!v.IsSLAInRed}">   <img height="20" width="20" src="{!$Resource.SLARed}"/></aura:if>
+        <aura:if isTrue="{!v.IsSLAInYellow}"><img height="20" width="20" src="{!$Resource.SLAYellow}"/></aura:if>
+      </td>
+    </tr>
+  </table>
+</aura:component>

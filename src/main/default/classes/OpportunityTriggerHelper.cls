@@ -35,8 +35,8 @@ public void updateSLAFields(List<Opportunity> newOppList, List<Opportunity> oldO
             for (Opportunity opp : newOppList){
                 Opportunity oldOpportunity = mapOldOpportunity.get(opp.Id);
                 string oldStatus = oldOpportunity.StageName;
-                
-                opp.SLA_Business_Hours__c = getSLA(opp);
+                string newStatus = opp.Stagename;
+                opp.SLA_Business_Hours__c = getSLA(opp, newStatus);
 
                 set<ID> ids = getNewOppIds(newOppList);
                 
@@ -68,10 +68,11 @@ public void updateSLAFields(List<Opportunity> newOppList, List<Opportunity> oldO
 
     private List<OpportunityFieldHistory> getFieldHistory(List<OpportunityFieldHistory> hrsHoursHistory,set<id> ids)
     {
+        system.debug('ids##' + ids);
         hrsHoursHistory=[Select Id,Opportunity.id, CreatedById, CreatedDate,Field, NewValue, OldValue from OpportunityFieldHistory where 
                             ( field = 'Hour_Spent_Outreach_Status__c' or field = 'Hour_Spent_New_Status__c' or field = 'Hour_Spent_Analyzing_Needs_Status__c' 
                             or field = 'Hour_Spent_Considering_Status__c' or field = 'Hour_Spent_Fulfillment_Status__c')  
-                            and Opportunity.id IN: ids Order by CreatedDate DESC ];
+                            and Opportunity.id IN: ids Order by CreatedDate DESC];
         return hrsHoursHistory;
     }
     
@@ -120,7 +121,7 @@ public void updateSLAFields(List<Opportunity> newOppList, List<Opportunity> oldO
         }
         return null;
     }
-
+@testvisible
     private void updateTimeStampOnOpp(String status,Opportunity opp,decimal hoursSpent,boolean addPreviousValue)
     {
         switch on status
@@ -180,7 +181,7 @@ public void updateSLAFields(List<Opportunity> newOppList, List<Opportunity> oldO
             }
         }
     }
-
+@testvisible
     private boolean getOtherFieldsAreNull(string status, Opportunity opp)
     {   
         switch on status
@@ -209,7 +210,7 @@ public void updateSLAFields(List<Opportunity> newOppList, List<Opportunity> oldO
         return null;
 
     }
-
+@testvisible
     private DateTime getTimeStampFieldValue(String status,Opportunity opp)
     {
         switch on status
@@ -242,35 +243,102 @@ public void updateSLAFields(List<Opportunity> newOppList, List<Opportunity> oldO
     private void updateSLAFieldsForInsert(Opportunity opp,BusinessHours stdBusinessHours)
     {
         string status = opp.StageName;
-        opp.SLA_Business_Hours__c = getSLA(opp);
+        decimal sla = getSLA(opp, status);
+        opp.SLA_Business_Hours__c = sla;
         /*--------Update TimeStamp Fields------*/
         if (status == 'New'){
-            opp.TimeStamp_New_status__c = DateTime.now();
+            if(sla > 0){
+            	opp.TimeStamp_New_status__c = DateTime.now();
+            	opp.SLA_New__c = sla;
+            	opp.Hour_Spent_New_Status__c = 0;
+            }else{
+                opp.TimeStamp_New_status__c = null;
+            	opp.SLA_New__c = null;
+            	opp.Hour_Spent_New_Status__c = null;
+            }
         } else if (status == 'Outreach'){
-            opp.TimeStamp_Outreach_status__c = DateTime.now();
+            if(sla > 0){
+            	opp.TimeStamp_Outreach_status__c = DateTime.now();
+            	opp.SLA_Outreach__c = sla;
+            	opp.Hour_Spent_Outreach_Status__c = 0;
+            }else{
+                opp.TimeStamp_Outreach_status__c = null;
+            	opp.SLA_Outreach__c = null;
+            	opp.Hour_Spent_Outreach_Status__c = null;
+            }
         }
         else if (status == 'Considering'){
-            opp.TimeStamp_Considering_status__c = DateTime.now();
+            if(sla > 0){
+            	opp.TimeStamp_Considering_status__c = DateTime.now();
+            	opp.SLA_Considering__c = sla;
+            	opp.Hour_Spent_Considering_Status__c = 0;
+            }else{
+                opp.TimeStamp_Considering_status__c = null;
+            	opp.SLA_Considering__c = null;
+            	opp.Hour_Spent_Considering_Status__c = null;
+            }
         } 
         else if (status == 'Analyzing Needs'){
-            opp.TimeStamp_Analyzing_Needs_status__c = DateTime.now();
+            if(sla > 0){
+            	opp.TimeStamp_Analyzing_Needs_status__c = DateTime.now();
+            	opp.SLA_Analyzing_Needs__c = sla;
+            	opp.Hour_Spent_Analyzing_Needs_Status__c = 0;
+            }else{
+                opp.TimeStamp_Analyzing_Needs_status__c = null;
+            	opp.SLA_Analyzing_Needs__c = null;
+            	opp.Hour_Spent_Analyzing_Needs_Status__c = null;
+            }
         }
         else if (status == 'Fulfillment'){
-            opp.TimeStamp_Fulfillment_status__c = DateTime.now();
+            if(sla> 0){
+                opp.TimeStamp_Fulfillment_status__c = DateTime.now();
+            	opp.SLA_Fulfillment__c = sla;
+            	opp.Hour_Spent_Fulfillment_Status__c = 0;
+            }else{
+                opp.TimeStamp_Fulfillment_status__c = null;
+            	opp.SLA_Fulfillment__c = null;
+            	opp.Hour_Spent_Fulfillment_Status__c = null;
+            }
         }
         /*----------Update Yellow and Breach TimeStamp Fields--------*/
-        if (opp.SLA_Business_Hours__c != NULL && stdBusinessHours != NULL && opp.StageName == 'New' && opp.TimeStamp_New_status__c != null){
-            opp.SLA_Yellow_Start_Time__c = addBusinessHours(stdBusinessHours.id, opp.TimeStamp_New_status__c, (Long)(opp.SLA_Business_Hours__c -1) );
-            opp.SLA_Breach_Time__c = addBusinessHours(stdBusinessHours.id, opp.TimeStamp_New_status__c, (Long)opp.SLA_Business_Hours__c );
-        }
+        if (opp.SLA_Business_Hours__c != NULL && stdBusinessHours != NULL && status == 'New' && opp.TimeStamp_New_status__c != null){
 
-        else if (opp.SLA_Business_Hours__c != NULL && stdBusinessHours != NULL && opp.StageName == 'Outreach' && opp.TimeStamp_Outreach_status__c != null){
-            opp.SLA_Yellow_Start_Time__c = addBusinessHours(stdBusinessHours.id, opp.TimeStamp_Outreach_status__c, (Long)(opp.SLA_Business_Hours__c - 1) );
-            opp.SLA_Breach_Time__c = addBusinessHours(stdBusinessHours.id, opp.TimeStamp_Outreach_status__c, (Long)opp.SLA_Business_Hours__c );
+            opp.Yellow_Start_Time_New_Status__c = addBusinessHours(stdBusinessHours.id, opp.TimeStamp_New_status__c, (Long)(opp.SLA_Business_Hours__c -1) );            
+            opp.SLA_Start_Time_New_Status__c = addBusinessHours(stdBusinessHours.id, opp.TimeStamp_New_status__c, (Long)opp.SLA_Business_Hours__c );
+
+        }else if (opp.SLA_Business_Hours__c != NULL && stdBusinessHours != NULL && status == 'Outreach' && opp.TimeStamp_Outreach_status__c != null){
+
+            opp.Yellow_Start_Time_Outreach_Status__c = addBusinessHours(stdBusinessHours.id, opp.TimeStamp_Outreach_status__c, (Long)(opp.SLA_Business_Hours__c - 1) );           
+            opp.SLA_Start_Time_Outreach_Status__c = addBusinessHours(stdBusinessHours.id, opp.TimeStamp_Outreach_status__c, (Long)opp.SLA_Business_Hours__c );
+
+        }else if (opp.SLA_Business_Hours__c != NULL && stdBusinessHours != NULL && status == 'Considering' && opp.TimeStamp_Considering_status__c != null){
+
+            opp.Yellow_Start_Time_Considering_Status__c = addBusinessHours(stdBusinessHours.id, opp.TimeStamp_Considering_status__c, (Long)(opp.SLA_Business_Hours__c - 1) );           
+           opp.SLA_Start_Time_Considering_Status__c = addBusinessHours(stdBusinessHours.id, opp.TimeStamp_Considering_status__c, (Long)opp.SLA_Business_Hours__c );
+
+        } else if (opp.SLA_Business_Hours__c != NULL && stdBusinessHours != NULL && status == 'Analyzing Needs' && opp.TimeStamp_Analyzing_Needs_status__c != null){
+
+            opp.Yellow_Start_Time_Analyzing_Needs_Status__c = addBusinessHours(stdBusinessHours.id, opp.TimeStamp_Analyzing_Needs_status__c, (Long)(opp.SLA_Business_Hours__c - 1) );           
+            opp.SLA_Start_Time_Analyzing_Needs_Status__c = addBusinessHours(stdBusinessHours.id, opp.TimeStamp_Analyzing_Needs_status__c, (Long)opp.SLA_Business_Hours__c );
+
+        }else if (opp.SLA_Business_Hours__c != NULL && stdBusinessHours != NULL && status == 'Fulfillment' && opp.TimeStamp_Fulfillment_status__c != null){
+
+            opp.Yellow_Start_Time_Fulfillment_Status__c = addBusinessHours(stdBusinessHours.id, opp.TimeStamp_Fulfillment_status__c, (Long)(opp.SLA_Business_Hours__c - 1) );            
+            opp.SLA_Start_Time_Fulfillment_Status__c = addBusinessHours(stdBusinessHours.id, opp.TimeStamp_Fulfillment_status__c, (Long)opp.SLA_Business_Hours__c );
         }
         else{
-            opp.SLA_Yellow_Start_Time__c = null;
-            opp.SLA_Breach_Time__c = null;
+           
+            opp.Yellow_Start_Time_New_Status__c = null;
+            opp.Yellow_Start_Time_Outreach_Status__c = null;
+            opp.Yellow_Start_Time_Considering_Status__c = null;
+            opp.Yellow_Start_Time_Analyzing_Needs_Status__c = null;
+            opp.Yellow_Start_Time_Fulfillment_Status__c = null;
+            opp.SLA_Start_Time_New_Status__c = null;
+            opp.SLA_Start_Time_Outreach_Status__c = null;
+            opp.SLA_Start_Time_Considering_Status__c = null;
+            opp.SLA_Start_Time_Analyzing_Needs_Status__c = null;
+            opp.SLA_Start_Time_Fulfillment_Status__c = null;
+            
         }                        
     }
 
@@ -282,71 +350,78 @@ public void updateSLAFields(List<Opportunity> newOppList, List<Opportunity> oldO
         string oldProductType = oldOpportunity.Product_Type__c;
         string oldoppSource = oldOpportunity.Opportunity_Source__c;
         DateTime currentTime = DateTime.Now();
-
+        decimal sla = getSLA(opp, status);
+       
         if (opp.StageName == 'New' && oldStatus != 'New'){
             opp.TimeStamp_New_status__c = DateTime.now();
+            opp.SLA_New__c = sla;
         } else if (opp.StageName == 'Outreach' && oldStatus != 'Outreach'){
             opp.TimeStamp_Outreach_status__c = DateTime.now();
+            opp.SLA_Outreach__c = sla;
         }
         else if (opp.StageName == 'Considering' && oldStatus != 'Considering'){
             opp.TimeStamp_Considering_status__c = DateTime.now();
+            opp.SLA_Considering__c = sla;
         } 
         else if (opp.StageName == 'Analyzing Needs' && oldStatus != 'Analyzing Needs'){
            opp.TimeStamp_Analyzing_Needs_status__c = DateTime.now();
+           opp.SLA_Analyzing_Needs__c = sla;
         }
         else if (opp.StageName == 'Fulfillment' && oldStatus != 'Fulfillment'){
             opp.TimeStamp_Fulfillment_status__c = DateTime.now();
+            opp.SLA_Fulfillment__c = sla;
         }
         
         if (opp.SLA_Business_Hours__c != NULL && stdBusinessHours != NULL && opp.StageName == 'New' && opp.TimeStamp_New_status__c != null && oldStatus != 'New'){
             system.debug('in new');
-            opp.SLA_Yellow_Start_Time__c = addBusinessHours(stdBusinessHours.id,opp.TimeStamp_New_status__c,(Long)(opp.SLA_Business_Hours__c-1));
-            opp.SLA_Breach_Time__c = addBusinessHours(stdBusinessHours.id,opp.TimeStamp_New_status__c,(Long)opp.SLA_Business_Hours__c);
+            opp.Yellow_Start_Time_New_Status__c = addBusinessHours(stdBusinessHours.id,opp.TimeStamp_New_status__c,(Long)(opp.SLA_Business_Hours__c-1));
+            opp.SLA_Start_Time_New_Status__c = addBusinessHours(stdBusinessHours.id,opp.TimeStamp_New_status__c,(Long)opp.SLA_Business_Hours__c);
             //subtract hours already spent from the new SLA timings
-            if(opp.Hour_Spent_New_Status__c != null && opp.Hour_Spent_New_Status__c != 0){
-                opp.SLA_Yellow_Start_Time__c = addBusinessHours(stdBusinessHours.id,opp.SLA_Breach_Time__c,-(Long)(opp.Hour_Spent_New_Status__c));
-                opp.SLA_Breach_Time__c = addBusinessHours(stdBusinessHours.id,opp.SLA_Breach_Time__c,-(Long)opp.Hour_Spent_New_Status__c);
-            }
+           /* if(opp.Hour_Spent_New_Status__c != null && opp.Hour_Spent_New_Status__c != 0){
+                opp.Yellow_Start_Time_New_Status__c = addBusinessHours(stdBusinessHours.id,opp.SLA_Start_Time_New_Status__c,-(Long)(opp.Hour_Spent_New_Status__c));
+                opp.SLA_Start_Time_New_Status__c = addBusinessHours(stdBusinessHours.id,opp.SLA_Start_Time_New_Status__c,-(Long)opp.Hour_Spent_New_Status__c);
+            }*/
         }                      
         else if (opp.SLA_Business_Hours__c != NULL && stdBusinessHours != NULL && opp.StageName == 'Outreach' && opp.TimeStamp_Outreach_status__c != null && oldStatus != 'Outreach'){
-            system.debug('in out reach');
-            opp.SLA_Yellow_Start_Time__c = addBusinessHours(stdBusinessHours.id,opp.TimeStamp_Outreach_status__c,(Long)(opp.SLA_Business_Hours__c-1));
-            opp.SLA_Breach_Time__c = addBusinessHours(stdBusinessHours.id,opp.TimeStamp_Outreach_status__c,(Long)opp.SLA_Business_Hours__c);
+            system.debug('in outreach');
+            opp.Yellow_Start_Time_Outreach_Status__c = addBusinessHours(stdBusinessHours.id,opp.TimeStamp_Outreach_status__c,(Long)(opp.SLA_Business_Hours__c-1));
+            opp.SLA_Start_Time_Outreach_Status__c = addBusinessHours(stdBusinessHours.id,opp.TimeStamp_Outreach_status__c,(Long)opp.SLA_Business_Hours__c);
 
-            if(opp.Hour_Spent_Outreach_Status__c != null && opp.Hour_Spent_Outreach_Status__c != 0){
-                opp.SLA_Yellow_Start_Time__c = addBusinessHours(stdBusinessHours.id,opp.SLA_Yellow_Start_Time__c,-(Long)(opp.Hour_Spent_Outreach_Status__c));
-                opp.SLA_Breach_Time__c = addBusinessHours(stdBusinessHours.id,opp.SLA_Breach_Time__c,-(Long)opp.Hour_Spent_Outreach_Status__c);
-            }
-        }
-        else if(opp.Product_Type__c == 'Mortgage' && oldProductType != 'Mortgage' && opp.SLA_Business_Hours__c != NULL && stdBusinessHours != NULL && opp.StageName == 'New' && opp.TimeStamp_New_status__c != null){
-            system.debug('in mortgage');
-            opp.SLA_Yellow_Start_Time__c = addBusinessHours(stdBusinessHours.id,opp.TimeStamp_New_status__c,(Long)(opp.SLA_Business_Hours__c-1));
-            opp.SLA_Breach_Time__c = addBusinessHours(stdBusinessHours.id,opp.TimeStamp_New_status__c,(Long)opp.SLA_Business_Hours__c);
-            
-            if(opp.Hour_Spent_New_Status__c != null && opp.Hour_Spent_New_Status__c != 0){
-                opp.SLA_Yellow_Start_Time__c = addBusinessHours(stdBusinessHours.id,opp.SLA_Yellow_Start_Time__c,-(Long)(opp.Hour_Spent_New_Status__c ));
-                opp.SLA_Breach_Time__c = addBusinessHours(stdBusinessHours.id,opp.SLA_Breach_Time__c,-(Long)opp.Hour_Spent_New_Status__c);
-            }
-        }
-        else if(opp.Product_Type__c !=null && oldoppSource!=null && newOppSources.contains(opp.Opportunity_Source__c) && !newOppSources.contains(oldoppSource) && opp.Product_Type__c == 'Mortgage' 
-                        && opp.SLA_Business_Hours__c != NULL  && stdBusinessHours != NULL  && opp.StageName == 'New' && opp.TimeStamp_New_status__c != null  ){
-            system.debug('in opp sources');
-            opp.SLA_Yellow_Start_Time__c = addBusinessHours(stdBusinessHours.id,opp.TimeStamp_New_status__c,(Long)(opp.SLA_Business_Hours__c-1));
-            opp.SLA_Breach_Time__c = addBusinessHours(stdBusinessHours.id,opp.TimeStamp_New_status__c,(Long)opp.SLA_Business_Hours__c);
-            
-            if(opp.Hour_Spent_New_Status__c != null && opp.Hour_Spent_New_Status__c != 0){
-                opp.SLA_Yellow_Start_Time__c = addBusinessHours(stdBusinessHours.id,opp.SLA_Yellow_Start_Time__c,-(Long)(opp.Hour_Spent_New_Status__c));
-                opp.SLA_Breach_Time__c = addBusinessHours(stdBusinessHours.id,opp.SLA_Breach_Time__c,-(Long)opp.Hour_Spent_New_Status__c);
-            }
-        }
-        else if(opp.SLA_Business_Hours__c!=null && oldSLAHours!=null ){
-            system.debug('in business hours');
-            if(opp.SLA_Business_Hours__c!=oldSLAHours){
+           /* if(opp.Hour_Spent_Outreach_Status__c != null && opp.Hour_Spent_Outreach_Status__c != 0){
+                opp.Yellow_Start_Time_Outreach_Status__c = addBusinessHours(stdBusinessHours.id,opp.Yellow_Start_Time_Outreach_Status__c,-(Long)(opp.Hour_Spent_Outreach_Status__c));
+                opp.SLA_Start_Time_Outreach_Status__c = addBusinessHours(stdBusinessHours.id,opp.SLA_Start_Time_Outreach_Status__c,-(Long)opp.Hour_Spent_Outreach_Status__c);
+            }*/
+        }else if (opp.SLA_Business_Hours__c != NULL && stdBusinessHours != NULL && opp.StageName == 'Considering' && opp.TimeStamp_Considering_status__c != null && oldStatus != 'Considering'){
+            system.debug('in Considering');
+            opp.Yellow_Start_Time_Considering_Status__c = addBusinessHours(stdBusinessHours.id,opp.TimeStamp_Considering_status__c,(Long)(opp.SLA_Business_Hours__c-1));
+            opp.SLA_Start_Time_Considering_Status__c = addBusinessHours(stdBusinessHours.id,opp.TimeStamp_Considering_status__c,(Long)opp.SLA_Business_Hours__c);
 
-                opp.SLA_Yellow_Start_Time__c = addBusinessHours(stdBusinessHours.id,currentTime,(Long)(opp.SLA_Business_Hours__c - 1));                            
-                opp.SLA_Breach_Time__c = addBusinessHours(stdBusinessHours.id,currentTime,(Long)opp.SLA_Business_Hours__c);                            
-            }
-        }   
+           /* if(opp.Hour_Spent_Considering_Status__c != null && opp.Hour_Spent_Considering_Status__c != 0){
+                opp.Yellow_Start_Time_Considering_Status__c = addBusinessHours(stdBusinessHours.id,opp.Yellow_Start_Time_Considering_Status__c,-(Long)(opp.Hour_Spent_Considering_Status__c));
+                opp.SLA_Start_Time_Considering_Status__c = addBusinessHours(stdBusinessHours.id,opp.SLA_Start_Time_Considering_Status__c,-(Long)opp.Hour_Spent_Considering_Status__c);
+            }*/
+        }else if (opp.SLA_Business_Hours__c != NULL && stdBusinessHours != NULL && opp.StageName == 'Analyzing Needs' && opp.TimeStamp_Analyzing_Needs_status__c != null && oldStatus != 'Analyzing Needs'){
+            system.debug('in Analyzing Needs');
+            opp.Yellow_Start_Time_Analyzing_Needs_Status__c = addBusinessHours(stdBusinessHours.id,opp.TimeStamp_Analyzing_Needs_status__c,(Long)(opp.SLA_Business_Hours__c-1));
+            opp.SLA_Start_Time_Analyzing_Needs_Status__c = addBusinessHours(stdBusinessHours.id,opp.TimeStamp_Analyzing_Needs_status__c,(Long)opp.SLA_Business_Hours__c);
+
+            /*if(opp.Hour_Spent_Analyzing_Needs_Status__c != null && opp.Hour_Spent_Analyzing_Needs_Status__c != 0){
+                opp.Yellow_Start_Time_Analyzing_Needs_Status__c = addBusinessHours(stdBusinessHours.id,opp.Yellow_Start_Time_Analyzing_Needs_Status__c,-(Long)(opp.Hour_Spent_Analyzing_Needs_Status__c));
+                opp.SLA_Start_Time_Analyzing_Needs_Status__c = addBusinessHours(stdBusinessHours.id,opp.SLA_Start_Time_Analyzing_Needs_Status__c,-(Long)opp.Hour_Spent_Analyzing_Needs_Status__c);
+            }*/
+        }else if (opp.SLA_Business_Hours__c != NULL && stdBusinessHours != NULL && opp.StageName == 'Fulfillment' && opp.TimeStamp_Fulfillment_status__c != null && oldStatus != 'Fulfillment'){
+            system.debug('in Fulfillment');
+            opp.Yellow_Start_Time_Fulfillment_Status__c = addBusinessHours(stdBusinessHours.id,opp.TimeStamp_Fulfillment_status__c,(Long)(opp.SLA_Business_Hours__c-1));
+            opp.SLA_Start_Time_Fulfillment_Status__c = addBusinessHours(stdBusinessHours.id,opp.TimeStamp_Fulfillment_status__c,(Long)opp.SLA_Business_Hours__c);
+           
+
+           /* if(opp.Hour_Spent_Fulfillment_Status__c != null && opp.Hour_Spent_Fulfillment_Status__c != 0){
+                opp.Yellow_Start_Time_Fulfillment_Status__c = addBusinessHours(stdBusinessHours.id,opp.Yellow_Start_Time_Fulfillment_Status__c,-(Long)(opp.Hour_Spent_Fulfillment_Status__c));
+                opp.SLA_Start_Time_Fulfillment_Status__c = addBusinessHours(stdBusinessHours.id,opp.SLA_Start_Time_Fulfillment_Status__c,-(Long)opp.Hour_Spent_Fulfillment_Status__c);
+            }*/
+        }
+        
+        
 
 
     }
@@ -356,7 +431,7 @@ public void updateSLAFields(List<Opportunity> newOppList, List<Opportunity> oldO
         return BusinessHours.addgmt(standardBusinessHourId, startDate, (Long) ((interval) * 3600000));
     }
 
-    
+  @testvisible  
     private decimal getTimeDifference(datetime startTime)
     {
         decimal hh;
@@ -372,79 +447,42 @@ public void updateSLAFields(List<Opportunity> newOppList, List<Opportunity> oldO
 
         return hh;
     }
-
-    decimal getSLA(Opportunity opp) {
+    
+    decimal getSLA(Opportunity opp, string oppstatus) {
         // Routine loops through all metadata for opportunities and if a match is found, returns the SLA based on Event_Source__c,Opportunity_Source__c,Product_Type__c & StageName__c combination.
         // Definitions can include single values or lists for Event_Source__c & Opportunity_Source__c.
         // Wildcard * in Event_Source__c or Opportunity_Source__c def means it only requires opp.[field] is populated.
-        Boolean opportunitySourceOK;
-        Boolean productTypeOK;
-        Boolean eventSourceOK;
-        Boolean stageOK;
-        String defEventSource;
-        String defOppSource;
-        String defOppProductType;
-        String defStage;
-        Decimal sla;
-        for(Sla_Manager__mdt slaDef : slaDefList) {
-          opportunitySourceOK = false;
-          productTypeOK       = false;
-          eventSourceOK       = false;
-          stageOK             = false;
-          if(slaDef.Event_Source__c == '*') { // * = something has to have been chosen, but it doesn't matter what.
-            if(!String.isBlank(opp.Event_Source__c)) {
-              eventSourceOK = true;
-            }
-          } else {
-            if(String.isBlank(slaDef.Event_Source__c)) {
-              eventSourceOK = true;
-            } else  {
-              defEventSource = slaDef.Event_Source__c;
-              if(String.isNotBlank(opp.Event_Source__c) && defEventSource.contains(opp.Event_Source__c)) {
-                eventSourceOK = true;
-              }
-            }
-          }
-          if(slaDef.Opportunity_Source__c == '*') { // * = something has to have been chosen, but it doesn't matter what.
-            if(!String.isBlank(opp.Opportunity_Source__c)) {
-              opportunitySourceOK = true;
-            }
-          } else {
-            if(String.isBlank(slaDef.Opportunity_Source__c)) {
-              opportunitySourceOK = true;
-            } else  {
-              defOppSource = slaDef.Opportunity_Source__c;
-              if(String.isNotBlank(opp.Opportunity_Source__c) && defOppSource.contains(opp.Opportunity_Source__c)) {
-                opportunitySourceOK = true;
-              } 
-            }
-          }
-          if(String.isBlank(slaDef.Product_Type__c)) {
-            productTypeOK = true;
-          } else {
-            defOppProductType = slaDef.Product_Type__c;
-            // Maybe one day, list of product will be used.  Ready for that.
-            if(String.isNotBlank(opp.Product_Type__c) && defOppProductType.contains(opp.Product_Type__c)) {
-              productTypeOK = true;
-            }
-          }
-          if(String.isBlank(slaDef.StageName__c)) {
-            stageOK = true;
-          } else {
-            defStage = slaDef.StageName__c;
-            if(defStage == opp.StageName) {
-              stageOK = true;
-            }
-          }
-          if(eventSourceOK && opportunitySourceOK && productTypeOK && stageOK) {
-            sla = slaDef.Sla__c;
-            break;
-          }
-          else{
-            sla = null;  
-          }
-        }
-        return sla;
-      }
 
+        Map<String, Sla_Manager__mdt> slaManagerMap = Sla_Manager__mdt.getAll();
+        for(string key: slaManagerMap.keySet()){
+            String eventSource = opp.Event_Source__c;
+            String productType = opp.Product_Type__c;
+            String oppSource = opp.Opportunity_Source__c;
+            String status = oppstatus;
+
+            if(slaManagerMap.get(key).Object_Name__c == 'Opportunity' && slaManagerMap.get(key).Event_Source__c == '*'){
+                eventSource = '*';
+
+            }
+            if(slaManagerMap.get(key).Object_Name__c == 'Opportunity' && slaManagerMap.get(key).Product_Type__c == '*'){
+                productType = '*';
+                
+            }
+            if(slaManagerMap.get(key).Object_Name__c == 'Opportunity' && slaManagerMap.get(key).Opportunity_Source__c == '*'){
+                oppSource = '*';
+                
+            }
+            if(slaManagerMap.get(key).Object_Name__c == 'Opportunity' && slaManagerMap.get(key).StageName__c == '*'){
+                status = '*';
+                
+            }
+            if((eventSource != null && slaManagerMap.get(key).Event_Source__c == eventSource) && (productType != null && slaManagerMap.get(key).Product_Type__c == productType) && (oppSource != null && slaManagerMap.get(key).Opportunity_Source__c.contains(oppSource)) && slaManagerMap.get(key).StageName__c == status ){
+                return (decimal)slaManagerMap.get(key).SLA__c;
+            }
+
+
+        }
+        
+        return 0.0;
+      }
     }
