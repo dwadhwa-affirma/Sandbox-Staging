@@ -14,76 +14,8 @@ public class OpportunityTriggerHandler {
     slaDefList = [SELECT DeveloperName,Event_Source__c,Opportunity_Source__c,Product_Type__c,SLA__c,StageName__c FROM Sla_Manager__mdt WHERE Object_Name__c = 'Opportunity' ORDER BY DeveloperName ASC];
     NewOppSources = slaDefList[0].Opportunity_Source__c; // First Definition is used for Opportunity Source Breaches
     system.debug('NewOppSources'+NewOppSources);
-}
-    
-   /* decimal getSLA(Opportunity opp) {
-        // Routine loops through all metadata for opportunities and if a match is found, returns the SLA based on Event_Source__c,Opportunity_Source__c,Product_Type__c & StageName__c combination.
-        // Definitions can include single values or lists for Event_Source__c & Opportunity_Source__c.
-        // Wildcard * in Event_Source__c or Opportunity_Source__c def means it only requires opp.[field] is populated.
-        Boolean opportunitySourceOK,productTypeOK,eventSourceOK,stageOK;
-        String defEventSource,defOppSource,defOppProductType,defStage;
-        Decimal sla;
-        for(Sla_Manager__mdt slaDef : slaDefList) {
-          opportunitySourceOK = false;
-          productTypeOK       = false;
-          eventSourceOK       = false;
-          stageOK             = false;
-          if(slaDef.Event_Source__c == '*') { // * = something has to have been chosen, but it doesn't matter what.
-            if(!String.isBlank(opp.Event_Source__c)) {
-              eventSourceOK = true;
-            }
-          } else {
-            if(String.isBlank(slaDef.Event_Source__c)) {
-              eventSourceOK = true;
-            } else  {
-              defEventSource = slaDef.Event_Source__c;
-              if(String.isNotBlank(opp.Event_Source__c) && defEventSource.contains(opp.Event_Source__c)) {
-                eventSourceOK = true;
-              }
-            }
-          }
-          if(slaDef.Opportunity_Source__c == '*') { // * = something has to have been chosen, but it doesn't matter what.
-            if(!String.isBlank(opp.Opportunity_Source__c)) {
-              opportunitySourceOK = true;
-            }
-          } else {
-            if(String.isBlank(slaDef.Opportunity_Source__c)) {
-              opportunitySourceOK = true;
-            } else  {
-              defOppSource = slaDef.Opportunity_Source__c;
-              if(String.isNotBlank(opp.Opportunity_Source__c) && defOppSource.contains(opp.Opportunity_Source__c)) {
-                opportunitySourceOK = true;
-              } 
-            }
-          }
-          if(String.isBlank(slaDef.Product_Type__c)) {
-            productTypeOK = true;
-          } else {
-            defOppProductType = slaDef.Product_Type__c;
-            // Maybe one day, list of product will be used.  Ready for that.
-            if(String.isNotBlank(opp.Product_Type__c) && defOppProductType.contains(opp.Product_Type__c)) {
-              productTypeOK = true;
-            }
-          }
-          if(String.isBlank(slaDef.StageName__c)) {
-            stageOK = true;
-          } else {
-            defStage = slaDef.StageName__c;
-            if(defStage == opp.StageName) {
-              stageOK = true;
-            }
-          }
-          if(eventSourceOK && opportunitySourceOK && productTypeOK && stageOK) {
-            sla = slaDef.Sla__c;
-            break;
-          }
-          else{
-            sla = null;  
-          }
-        }
-        return sla;
-      }
-*/
+}    
+   
     public void OnBeforeInsert(Opportunity[] newOpportunities) {
         BusinessHours stdBusinessHours = [select id from businesshours where isDefault = true];
         
