@@ -11,7 +11,6 @@ public class SolarLoanTriggerTest {
         api.URL__c = 'https://symxapi.chevronfcu.org/devclient';
         insert api;
         
-        
         Solar_Loan_Product_Types__c slpt = new Solar_Loan_Product_Types__c();
         slpt.Name = 'Solar';
         slpt.Description__c = 'SECURED SOLAR';
