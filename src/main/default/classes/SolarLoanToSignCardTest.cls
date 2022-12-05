@@ -1,6 +1,23 @@
 @isTest
 public class SolarLoanToSignCardTest {
-
+	@testSetup
+    static void setup() {
+        DocuSign_User_Details__c DTSpectrum = new DocuSign_User_Details__c();
+        DTSpectrum.TemplateId__c = 'dc16d8f8-571c-497e-bbf5-42d8b25d4ee1';
+        DTSpectrum.ReplyTo__c = 'noreply@spectrum.org';
+        DTSpectrum.AccountId__c = '2e80db6b-16cf-4202-bf90-dfa029c5949f';
+        DTSpectrum.Username__c = '524ecc26-873e-4590-b094-a079ad9a65a2';
+        DTSpectrum.Password__c = '!DocusignApi';
+        DTSpectrum.IntegratorKey__c = 	'12c7957a-484f-4fec-b6b3-461ec9b666aa';
+        DTSpectrum.EndPoint__c = 'demo.docusign.net';
+        DTSpectrum.Name = 'Spectrum';
+        
+        insert DTSpectrum;
+    }
+    @istest
+    static void SetCustomFieldFalseTest(){
+        SolarLoanToSignCardHelper.SetCustomFieldFalse();
+    }
     static testMethod void SolarLoanDocTestData1(){
         
         Solar_Loans__c sl = new Solar_Loans__c();
@@ -192,17 +209,7 @@ public class SolarLoanToSignCardTest {
         api.URL__c = 'https://symxapi.chevronfcu.org/devclient';
         insert api;
        	
-       	DocuSign_User_Details__c DTSpectrum = new DocuSign_User_Details__c();
-        DTSpectrum.TemplateId__c = 'dc16d8f8-571c-497e-bbf5-42d8b25d4ee1';
-        DTSpectrum.ReplyTo__c = 'noreply@spectrum.org';
-        DTSpectrum.AccountId__c = '2e80db6b-16cf-4202-bf90-dfa029c5949f';
-        DTSpectrum.Username__c = '524ecc26-873e-4590-b094-a079ad9a65a2';
-        DTSpectrum.Password__c = '!DocusignApi';
-        DTSpectrum.IntegratorKey__c = 	'12c7957a-484f-4fec-b6b3-461ec9b666aa';
-        DTSpectrum.EndPoint__c = 'demo.docusign.net';
-        DTSpectrum.Name = 'Spectrum';
-        
-        insert DTSpectrum;
+       
         
         Test.startTest();
         Insert slList;
