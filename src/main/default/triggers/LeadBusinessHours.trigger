@@ -1,39 +1,48 @@
-trigger LeadBusinessHours on Lead(after insert, after update, before insert, before update ){
-    Id userid = UserInfo.getUserId();
-    List<User> users = [SELECT Name, UserRole.Name
-                        FROM User
-                        WHERE Id = :userid ];
-    String userRole = '';
-    if (users.size() > 0){
-        userRole = users[0].UserRole.Name;
+trigger LeadBusinessHours on Lead(after insert, after update, before insert, before update ) {
+
+    String userName = UserInfo.getName();
+    system.debug('++ ' + userName + ' ++');
+    String ProfileName,userRole = '';
+    Id profileId;
+    if(userName != 'Automated Process') {
+      Id userid = UserInfo.getUserId();
+      List<User> users = [SELECT Name, UserRole.Name
+                          FROM User
+                          WHERE Id = :userid ];
+     
+      if (users.size() > 0){
+          userRole = users[0].UserRole.Name;
+      }
+      system.debug('userRole:' + userRole);
+      
+      profileId = userinfo.getProfileId();
+      ProfileName = [Select Id, Name
+                            from Profile
+                            where Id = :profileId].Name;
+      system.debug('ProfileName' + ProfileName);                            
     }
-    
-    system.debug('userRole:' + userRole);
-    
-    Id profileId = userinfo.getProfileId();
-    String ProfileName = [Select Id, Name
-                          from Profile
-                          where Id = :profileId].Name;
     
     Map<ID, Schema.RecordTypeInfo> rt_Map = Lead.sObjectType.getDescribe().getRecordTypeInfosById();
     Id taskRT = Schema.SObjectType.Task.getRecordTypeInfosByName().get('SEG').getRecordTypeId();
     Id LeadRT = Schema.SObjectType.Lead.getRecordTypeInfosByName().get('Company Lead').getRecordTypeId();
     Id LeadRT2 = Schema.SObjectType.Lead.getRecordTypeInfosByName().get('Non-Member Lead').getRecordTypeId();
-    system.debug('ProfileName' + ProfileName);
+    
     List<Task> lTask = new List<Task>();
     List<Lead> leadList = new List<Lead>();
   
     boolean hasExecuted = false;
     Sla_Manager__mdt[] slaDefList;
     String NewLeadSources;
+    
     slaDefList = [SELECT DeveloperName,Event_Source__c,Opportunity_Source__c,Product_Type__c,SLA__c,StageName__c FROM Sla_Manager__mdt WHERE Object_Name__c = 'Lead' ORDER BY DeveloperName ASC];
     NewLeadSources = slaDefList[0].Opportunity_Source__c; // First Definition is used for Lead Source Breaches
     
-    if (Trigger.isAfter){
-        
+    if (Trigger.isAfter) {
+      if(userName == 'Automated Process') {
+        return;
+      }
         List<OpenHours__c> openHours = new List<OpenHours__c>();
         for (Lead lead : Trigger.new ){
-            
             if (Trigger.isInsert && Trigger.isAfter){
                 system.debug('31');
                 OpenHours__c obj = new OpenHours__c();
@@ -42,19 +51,15 @@ trigger LeadBusinessHours on Lead(after insert, after update, before insert, bef
                 openHours.add(obj);
                 
                 //-------------------------------Xpress Refi Form--------------------------------------//
-                
                 if (lead.Episys_User_ID__c != 7002 && lead.LeadSource == 'Xpress Form - Web' && lead.I_m_interested_in__c == 'Xpress Form - Web'){
-                    
                     System.debug('Calling Future class');
                     MarketingLeadCheck.LeadCheck(lead.id);
                 }
             }
         }
-        
         insert openHours;
         
         //------------------------------------------Task Create on "Outreach"--------------------------------//
-        
         List<Id> companyLeadIds = new List<Id>();
         List<Lead> companyLeads = new List<Lead>();
         BusinessHours stdBusinessHours = [select id
@@ -62,7 +67,6 @@ trigger LeadBusinessHours on Lead(after insert, after update, before insert, bef
                                           where isDefault = true];
         
         if (Trigger.isUpdate){
-            
             for (Lead lead : Trigger.new ){
                 Lead oldLead = Trigger.oldMap.get(lead.Id);
                 if (rt_map.get(lead.recordTypeID).getName().containsIgnoreCase('Company Lead') && oldLead.Status != lead.Status && lead.Status == 'Outreach'){
@@ -161,6 +165,9 @@ trigger LeadBusinessHours on Lead(after insert, after update, before insert, bef
     
     
     if (Trigger.isInsert && Trigger.isBefore){
+        if(userName == 'Automated Process') {
+          return;
+        }      
         BusinessHours stdBusinessHours = [select id
                                           from businesshours
                                           where isDefault = true];
@@ -462,7 +469,8 @@ trigger LeadBusinessHours on Lead(after insert, after update, before insert, bef
         }
         
         /*----PRJ0011432-11432: MARS Functionality Review Changes Start-----*/
-        updateSLAFields(Trigger.new, null);
+        LeadTriggerHelper helper = new LeadTriggerHelper();
+        helper.updateSLAFields(Trigger.new, null);
         /*----PRJ0011432-11432: MARS Functionality Review Changes End-----*/
     }
     
@@ -554,13 +562,14 @@ trigger LeadBusinessHours on Lead(after insert, after update, before insert, bef
         }
         
         /*----PRJ0011432-11432: MARS Functionality Review Changes Start-----*/
-        updateSLAFields(Trigger.new, Trigger.old);
+         LeadTriggerHelper helper = new LeadTriggerHelper();
+        helper.updateSLAFields(Trigger.new, Trigger.old);
         /*----PRJ0011432-11432: MARS Functionality Review Changes End-----*/
     
     }
     
     /*----PRJ0011432-11432: MARS Functionality Review Changes Start-----*/
-    decimal getSLA(Lead Ld) {
+   /* decimal getSLA(Lead Ld) {
         // Routine loops through all metadata for opportunities and if a match is found, returns the SLA based on Event_Source__c,Opportunity_Source__c,Product_Type__c & StageName__c combination.
         // Definitions can include single values or lists for Event_Source__c & Opportunity_Source__c.
         // Wildcard * in Event_Source__c or Opportunity_Source__c def means it only requires ld.[field] is populated.
@@ -632,8 +641,8 @@ trigger LeadBusinessHours on Lead(after insert, after update, before insert, bef
             }
         }
         return sla;
-    }
-    public void updateSLAFields(List<Lead> newLeadList, List<Lead> oldLeadList){
+    }*/
+   /* public void updateSLAFields(List<Lead> newLeadList, List<Lead> oldLeadList){
         system.debug('newLeadList'+ newLeadList);
         system.debug('oldLeadList'+ oldLeadList);
         BusinessHours stdBusinessHours = [select id
@@ -646,11 +655,11 @@ trigger LeadBusinessHours on Lead(after insert, after update, before insert, bef
             if (trigger.isinsert){
                 if (newLeadList.size() > 0){
                     for (Lead l : newLeadList){
-                        /*--------Update SLA Field------*/
+                       
                         string status = l.Status;
                         
                         l.SLA__c = getSLA(l);
-                        /*--------Update TimeStamp Fields------*/
+                       
                         if (status == 'New'){
                             l.TimeStamp_New_status__c = DateTime.now();
                         } else if (l.Status == 'Outreach'){
@@ -663,7 +672,7 @@ trigger LeadBusinessHours on Lead(after insert, after update, before insert, bef
                             l.TimeStamp_Analyzing_Needs_status__c = DateTime.now();
                         }
                         
-                        /*----------Update Yellow and Breach TimeStamp Fields--------*/
+                      
                         if (l.SLA__c != NULL && stdBusinessHours != NULL && l.Status == 'New' && l.TimeStamp_New_status__c != null){
                             l.SLA_Yellow_Start_Time__c = BusinessHours.addgmt(stdBusinessHours.id, l.TimeStamp_New_status__c, (Long) ((l.SLA__c - 1) * 3600000));
                             l.SLA_Breach_Time__c = BusinessHours.addgmt(stdBusinessHours.id, l.TimeStamp_New_status__c, (Long) ((l.SLA__c) * 3600000));
@@ -703,7 +712,7 @@ trigger LeadBusinessHours on Lead(after insert, after update, before insert, bef
                     }
                 if (newLeadList.size() > 0){
                     for (Lead l : newLeadList){
-                        /*--------Update SLA Field------*/
+                       
                         string status = l.Status;
                         Lead oldlead = mapOldLead.get(l.Id);
                         string oldStatus = oldlead.Status;
@@ -718,7 +727,7 @@ trigger LeadBusinessHours on Lead(after insert, after update, before insert, bef
                         decimal hh;
                         Datetime HrsHistoryT;
                         
-                        /*--------Update TimeStamp Fields------*/
+                       
                         if (status == 'New' && oldStatus != 'New'){
                             l.TimeStamp_New_status__c = DateTime.now();
                         } else if (status == 'Outreach' && oldStatus != 'Outreach'){
@@ -731,7 +740,7 @@ trigger LeadBusinessHours on Lead(after insert, after update, before insert, bef
                             l.TimeStamp_Analyzing_Needs_status__c = DateTime.now();
                         }
                         
-                        /*----------Update Yellow and Breach TimeStamp Fields--------*/
+                       
                         if (l.SLA__c != NULL && stdBusinessHours != NULL && l.Status == 'New' && l.TimeStamp_New_status__c != null && oldStatus != 'New'){
                             l.SLA_Yellow_Start_Time__c = BusinessHours.addgmt(stdBusinessHours.id, l.TimeStamp_New_status__c, (Long) ((l.SLA__c - 1) * 3600000));                            
                             l.SLA_Breach_Time__c = BusinessHours.addgmt(stdBusinessHours.id, l.TimeStamp_New_status__c, (Long) ((l.SLA__c) * 3600000));
@@ -756,7 +765,7 @@ trigger LeadBusinessHours on Lead(after insert, after update, before insert, bef
                                 l.SLA_Breach_Time__c = BusinessHours.addgmt(stdBusinessHours.id, l.SLA_Breach_Time__c, -(Long)(l.Hour_Spent_New_Status__c*3600000));
                             }
                         }
-                        else if(NewLeadSources.contains(newLeadSource) && !NewLeadSources.contains(oldLeadSource) && newProductType == 'Mortgage' && l.SLA__c != NULL && stdBusinessHours != NULL && l.Status == 'New' && l.TimeStamp_New_status__c != null){
+                        else if(NewLeadSources != null && NewLeadSources.contains(newLeadSource) && !NewLeadSources.contains(oldLeadSource)  && newProductType == 'Mortgage' && l.SLA__c != NULL && stdBusinessHours != NULL && l.Status == 'New' && l.TimeStamp_New_status__c != null){
                             l.SLA_Yellow_Start_Time__c = BusinessHours.addgmt(stdBusinessHours.id, l.TimeStamp_New_status__c, (Long) ((l.SLA__c - 1) * 3600000));                            
                             l.SLA_Breach_Time__c = BusinessHours.addgmt(stdBusinessHours.id, l.TimeStamp_New_status__c, (Long) ((l.SLA__c) * 3600000));
                             if(l.Hour_Spent_New_Status__c != 0 && l.Hour_Spent_New_Status__c != null){
@@ -770,7 +779,7 @@ trigger LeadBusinessHours on Lead(after insert, after update, before insert, bef
                             l.SLA_Breach_Time__c = BusinessHours.addgmt(stdBusinessHours.id, currentTime, (Long) ((l.SLA__c) * 3600000));
                         }
                     }
-                        /*----------Update Hours Spent Fields--------*/
+                       
                         if (status != 'New' && oldStatus == 'New' && l.TimeStamp_New_status__c != null){
                             LeadHistory tempobj=dd.get('Hour_Spent_New_Status__c');
                             DateTime ValueforDifference;
@@ -791,12 +800,12 @@ trigger LeadBusinessHours on Lead(after insert, after update, before insert, bef
                             if( l.Hour_Spent_Outreach_Status__c == null && l.Hour_Spent_Considering_Status__c == null && l.Hour_Spent_Analyzing_Needs_Status__c == null )
                             {
                               
-                				hh = getTimeDifference(l.TimeStamp_New_status__c);
+                                hh = getTimeDifference(l.TimeStamp_New_status__c);
                                 l.Hour_Spent_New_Status__c = hh;
                             }
                             else{
                               
-                				hh = getTimeDifference(ValueforDifference);
+                                hh = getTimeDifference(ValueforDifference);
                             l.Hour_Spent_New_Status__c = l.Hour_Spent_New_Status__c != null ? l.Hour_Spent_New_Status__c + hh : hh;
                         }
                             
@@ -905,7 +914,7 @@ trigger LeadBusinessHours on Lead(after insert, after update, before insert, bef
         }
         
     }
-    /*----PRJ0011432-11432: MARS Functionality Review Changes End-----*/
+   */
     //function to get the Timedifference for Hour spent field//
       private decimal getTimeDifference(datetime StartTime){
         decimal hh;

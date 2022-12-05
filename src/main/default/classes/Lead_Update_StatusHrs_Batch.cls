@@ -9,8 +9,8 @@ global class Lead_Update_StatusHrs_Batch implements Database.Batchable<sObject>{
         string getleadstatus = (string) leadstatus.get('Lead').Status__c;
         List<String> spltstatus = getleadstatus.split(',');
 
-        query = 'SELECT id,Status,SLA__c,Hour_Spent_New_Status__c,Hour_Spent_Outreach_Status__c,Hour_Spent_Considering_Status__c,Hour_Spent_Analyzing_Needs_Status__c,TimeStamp_New_status__c,TimeStamp_Outreach_status__c,TimeStamp_Considering_status__c,TimeStamp_Analyzing_Needs_status__c FROM Lead WHERE   Status IN (\'' + string.join(spltstatus, '\',\'') + '\') AND SLA__c!=null Order by CreatedDate DESC LIMIT 20';
-
+        query = 'SELECT id,Status,SLA__c,SLA_New__c,SLA_Outreach__c,SLA_Considering__c,SLA_Analyzing_Needs__c, SLA_Breached_New_Status__c, SLA_Breached_Outreach_Status__c, SLA_Breached_Considering_Status__c,SLA_Breached_Analyzing_Needs_Status__c, Hour_Spent_New_Status__c,Hour_Spent_Outreach_Status__c,Hour_Spent_Considering_Status__c,Hour_Spent_Analyzing_Needs_Status__c,TimeStamp_New_status__c,TimeStamp_Outreach_status__c,TimeStamp_Considering_status__c,TimeStamp_Analyzing_Needs_status__c FROM Lead WHERE  Status IN (\'' + string.join(spltstatus, '\',\'') + '\') AND SLA__c!=null Order by CreatedDate DESC LIMIT 20';
+		system.debug('query##'+ query); 
 
         return Database.getQueryLocator(query);
     }
@@ -20,7 +20,9 @@ global class Lead_Update_StatusHrs_Batch implements Database.Batchable<sObject>{
         for (Lead o : leadList){
             leadIds.add(o.Id);
         }
-
+        BusinessHours stdBusinessHours = [select id
+                                          from businesshours
+                                          where isDefault = true];
         String strObjectName = 'Lead';
         String strPicklistField = 'Status';
         List<String> listAllStatuses = new List<String>();
@@ -49,10 +51,12 @@ global class Lead_Update_StatusHrs_Batch implements Database.Batchable<sObject>{
             string currentstatus = l.Status;
             string hoursSpentFieldName = 'Hour_Spent_' + currentstatus.replace(' ', ('_')) + '_Status__c';
             string statusTimeStampFieldName = 'TimeStamp_' + currentstatus.replace(' ', ('_')) + '_status__c';
+            string slaBreachedFieldName = 'SLA_Breached_'  + currentstatus.replace(' ', ('_')) + '_Status__c';
+            String slaDurationFieldName = 'SLA_' + currentstatus.replace(' ', ('_')) + '__c';
             decimal timeDiff;
             decimal timespent;
             decimal finalresult;
-           
+            decimal slaDuration;
 
             List<String> listHoursSpentFieldNames = new List<String>();
             listHoursSpentFieldNames = ListAllHoursSpentFieldNames;
@@ -60,6 +64,7 @@ global class Lead_Update_StatusHrs_Batch implements Database.Batchable<sObject>{
             while (i >= 0 ){
                 if (listHoursSpentFieldNames.get(i).contains(HoursSpentFieldName)){
                     listHoursSpentFieldNames.remove(i);
+                    i--;
                 } else{
                     i--;
                 }
@@ -90,14 +95,43 @@ global class Lead_Update_StatusHrs_Batch implements Database.Batchable<sObject>{
                     }
                 }
                 if (isHoursFieldsNotNull == false){
-                    timespent = getTimeDifference((datetime) (l.get(statusTimeStampFieldName)));
+                    timespent = getTimeDifference((datetime) (l.get(statusTimeStampFieldName)), stdBusinessHours);
                     finalresult = timespent;
+                   
                     l.put(hoursSpentFieldName, finalresult);
+                    system.debug('slaDurationFieldName#' + slaDurationFieldName);
+                    system.debug('slaDuration#'+ l.get(slaDurationFieldName));
+                    system.debug('leadid##' + l.id); 
+                    if((l.get(slaDurationFieldName) != null)) {
+                        slaDuration = (decimal) l.get(slaDurationFieldName);
+                        if(finalresult > slaDuration){
+                            l.put(slaBreachedFieldName, true);
+                        }else{
+                            l.put(slaBreachedFieldName, false);
+                        }
+                        
+                    }
+
+                    
 
                 } else{
-                    timespent = getTimeDifference(ValueforDifference);
+                    system.debug('ValueforDifference##'+ ValueforDifference);
+                    timespent = getTimeDifference(ValueforDifference, stdBusinessHours);
                     finalresult = l.get(hoursSpentFieldName) != null ? (decimal) l.get(hoursSpentFieldName) + timespent : timespent;
+                    system.debug('finalresult'+ finalresult);
                     l.put(hoursSpentFieldName, finalresult);
+                    system.debug('slaDurationFieldName#' + slaDurationFieldName);
+                    system.debug('slaDuration#'+ l.get(slaDurationFieldName));    
+                    system.debug('leadid##' + l.id);
+                    if((l.get(slaDurationFieldName) != null)) {
+                        slaDuration = (decimal) l.get(slaDurationFieldName);
+                        if(finalresult > slaDuration){
+                            l.put(slaBreachedFieldName, true);
+                        }else{
+                            l.put(slaBreachedFieldName, false);
+                        }
+                        
+                    }
 
                 }
             }
@@ -114,13 +148,13 @@ global class Lead_Update_StatusHrs_Batch implements Database.Batchable<sObject>{
     }
 
     //function to get the Timedifference for Hour spent field//
-    private decimal getTimeDifference(datetime startTime){
+    private decimal getTimeDifference(datetime startTime, BusinessHours stdBusinessHours){
         decimal timespent;
         decimal timeDifference;
 
-        BusinessHours stdBusinessHours = [select id
+       /* BusinessHours stdBusinessHours = [select id
                                           from businesshours
-                                          where isDefault = true];
+                                          where isDefault = true];*/
         DateTime currentTime = Datetime.now();
 
         timeDifference = BusinessHours.diff(stdBusinessHours.id, startTime, currentTime);

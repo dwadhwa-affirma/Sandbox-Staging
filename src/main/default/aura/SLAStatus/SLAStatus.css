@@ -1,0 +1,35 @@
+.THIS {
+    position: absolute;
+    top: 4rem;
+    right: 0px;
+    z-index: 100;
+    width: 280px;
+    font-size: 12px;
+}
+
+.THIS td {
+    width: 33.33%;
+    text-align: center;
+    vertical-align: top;
+}
+
+
+.THIS .forceHighlightsStencilDesktop .actionsContainer{padding-top:0;}
+    
+.THIS .breached{
+    color: red;
+    font-weight: bold;
+}
+
+.THIS .unbreached {
+    color: green;
+    font-weight: bold;
+}
+
+.THIS .value{
+    font-size: 13px;
+}
+
+@media(max-width:1080px){
+    .THIS table {right:auto; left:270px;}
+}
