@@ -32,7 +32,7 @@ public class LeadTriggerHelper
 
                 //the history list to query later in the updatehoursSpent method
                 List<LeadHistory> hrsHoursHistory=new list<LeadHistory>();
-                hrsHoursHistory = getFieldHistory(hrsHoursHistory,ids);
+                //hrsHoursHistory = getFieldHistory(hrsHoursHistory,ids);
 
                 for (Lead lead : newleadList){
                     Lead oldlead = mapOldLead.get(lead.Id);
