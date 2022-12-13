@@ -45,10 +45,23 @@ public class LeadTriggerHelper
                     
                     //update hours spent for all statuses - the logic will update in only one instance below
                     //based on the current status of the leadortunity
-                    LeadTriggerService.updateHoursSpent('New', oldStatus, lead,hrsHoursHistory);
-                    LeadTriggerService.updateHoursSpent('Outreach', oldStatus, lead,hrsHoursHistory);
-                    LeadTriggerService.updateHoursSpent('Considering', oldStatus, lead,hrsHoursHistory);
-                    LeadTriggerService.updateHoursSpent('Analyzing Needs', oldStatus, lead,hrsHoursHistory);
+                    if (oldStatus == 'New')
+                    {
+                        LeadTriggerService.updateHoursSpent('New', oldStatus, lead,hrsHoursHistory);
+                    }
+                    if (oldStatus == 'Outreach')
+                    {
+                        LeadTriggerService.updateHoursSpent('Outreach', oldStatus, lead,hrsHoursHistory);
+                    }
+                    if (oldStatus == 'Considering')
+                    {
+                        LeadTriggerService.updateHoursSpent('Considering', oldStatus, lead,hrsHoursHistory);
+                    }
+                    if (oldStatus == 'Analyzing Needs')
+                    {
+                        LeadTriggerService.updateHoursSpent('Analyzing Needs', oldStatus, lead,hrsHoursHistory);
+                    }
+                    
                 }
             }
         }
