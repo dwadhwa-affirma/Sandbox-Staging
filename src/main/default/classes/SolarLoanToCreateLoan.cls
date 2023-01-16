@@ -417,8 +417,6 @@ public class SolarLoanToCreateLoan {
                                            Symitar_Called__c,SystemModstamp,System_Size_kW__c,Term_months__c,Tracking_Record_33__c,Tract__c,UCC_Extraction__c,
                                            UCC_Id__c,Valid_ABA__c FROM Solar_Loans__c where id =: ids];
         
-        
-        
         SDList = [select id,Attachment_Id__c,name,Solar_Loans__r.id,Solar_Loans__c from SolarLoan_Document__c where Solar_Loans__r.id in: ids AND Document_Name__c LIKE 'CCCHS%' LIMIT 1];
         
         for(Solar_Loans__c sl : solarloans){
@@ -469,10 +467,18 @@ public class SolarLoanToCreateLoan {
                 responseBody1 = res1.getBody();
                 System.debug('Membership Exists???::'+responseBody1);    
             }
-            //else{
-            
-            //responseBody1 = '{"HasPrimaryAccount":"false","TotalPrimaryAccount" : "1"}';
-            //}
+            else{
+                Integer randomNumber = Integer.valueof((Math.random() * 100));
+                Integer r;
+                r = System.Math.mod(randomNumber, 2);
+                if(r == 0)
+                {
+                	responseBody1 = '{"HasPrimaryAccount":"true","TotalPrimaryAccount" : "1","Status":"OK"}';
+                } else
+                {
+               		responseBody1 = '{"HasPrimaryAccount":"false","TotalPrimaryAccount" : "1","Status":"OK"}';
+                }
+           	}
             
             if(responseBody1 != '' && responseBody1 != null){        
                 Map<string,object> results = (Map<String,Object>) JSON.deserializeUntyped(responseBody1);      
@@ -606,7 +612,6 @@ SLPaymentMatched = true;
                     System.debug('ExistingLoanId'+ExistingLoanId);
                     
                     if(ExistingLoanId != '0' && ApprovalDate == true){
-                        
                         System.debug('Picking existing Loan Record with LoanId 7500');    
                         result = ExistingLoanId;
                         TrackingRecord = 'IsFound';

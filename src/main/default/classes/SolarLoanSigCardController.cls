@@ -43,9 +43,11 @@ public class SolarLoanSigCardController {
                 morethanone = true;
                 signed = false;    
             }
-            else if(sd.size() == 0 || SolarLoanToProcess[0].Member_number__c == null || SolarLoanToProcess[0].Name__c == null || 
-                    SolarLoanToProcess[0].Count__c == '0' || 
-                    (SolarLoanToProcess[0].Current_Solar_Loan_Stage__c != 'Stage 2.5')){  
+            else if(sd.size() == 0 || SolarLoanToProcess[0].Name__c == null ||   SolarLoanToProcess[0].Count__c == '0' 
+            // || (SolarLoanToProcess[0].Current_Solar_Loan_Stage__c != 'Stage 3.5')
+//            else if(sd.size() == 0 || SolarLoanToProcess[0].Member_number__c == null || SolarLoanToProcess[0].Name__c == null || 
+//                    SolarLoanToProcess[0].Count__c == '0' || 
+                    ){  
                         System.debug('In second else if');
                         validation = true;
                         morethanone = true;
