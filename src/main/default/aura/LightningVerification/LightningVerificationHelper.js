@@ -415,9 +415,6 @@
 								document.getElementById('frmMemberNumber').value = result['AccountNumber'];
 								component.set("v.OOWMemberNumberEntered",result['AccountNumber']);
 								component.set("v.MemberNumberEntered",result['AccountNumber']);
-								if((PhoneSearched !=undefined && PhoneSearched !='')) {
-									component.set("v.IsMemberNumberValid",true);
-								}								
 						 }
 						 if(result.MemberHighFlagValue != undefined) {
 
@@ -553,8 +550,8 @@
     },
 	
 	GetActiveTabId: function (component, event) {
-        var tab = event.getSource();
-        var tabid = tab.get('v.id');
+        let tab = event.getSource();
+        let tabid = event.getSource().get('v.id');		
         var memberid = component.get("v.SelectedmemberId");
         component.set("v.ActiveTabId", tabid);
         component.set("v.ActiveTab", tab);
@@ -563,6 +560,8 @@
         var IsUserSessionLoaded = component.get("v.IsUserSessionLoaded");
         var CFCUWalletComponent = component.find('CFCUWallet');
         var IsMemberManualSearched = component.get("v.IsMemberManualSearched");
+
+		
         /*if(ReLoadRequired == undefined){
 			ReLoadRequired = false;
 		}*/
@@ -614,6 +613,7 @@
     	var scoringModel = component.get("v.ScoringModel");
     	var LevelModel = component.get("v.LevelModel");
     	var PointsObtained = component.get("v.PointObtained");
+        var CurrentScore = component.get("v.CurrentScore");
     	var CurrentAuthenticationLevel = component.get("v.CurrentAuthenticationLevel");
     	if(IVRGUIDFromUrl != undefined && IVRGUIDFromUrl !='')
     	{
@@ -666,7 +666,7 @@
 			               {
 		                       var MemberName = result.MemberName;
 		                      // var AccountNumber = result.AccountNumber;
-							  var AccountNumber='';  
+							  var AccountNumber= ''; //result.AccountNumber;  
 							  var Source = '';
 		                       
 		                       if(IsMemberNumberValid == true){
@@ -677,11 +677,13 @@
                                    }
 		                    	   	Source = "&source=member";
                                    
-		                       }
+		                       }else{
+								AccountNumber = component.get("v.AccountNumber");
+							   }
                                if(component.get("v.OOWMemberNumberEntered")!= undefined && component.get("v.OOWMemberNumberEntered") !=''){
                                    Source = "&source=member";
                                }							   
-	                           component.set("v.AccountNumber",AccountNumber);
+	                           //component.set("v.AccountNumber",AccountNumber);
 	                                                          
 	                           win = window.open(result.FlowURL+"&accountnumber=" + AccountNumber + "&firstname=allow" + MemberName + Source);
 		                       window.onmessage = function (e) {
@@ -728,33 +730,36 @@
 		  							console.log('Helper Line 688---ScoreModelPositiveScore' + ScoreModelPositiveScore);
 		  							MaximumPointsAvailable = parseInt(MaximumPointsAvailable) - parseInt(ScoreModelPositiveScore);
 		  							PointsObtained = parseInt(PointsObtained) + parseInt(ScoreModelPositiveScore);
+                                    CurrentScore = parseInt(CurrentScore) +  parseInt(ScoreModelPositiveScore);
 		  							IsOOWAvailable = false;
 		  							component.set("v.OOWStatusForDay", false);
 									component.set("v.MaximumPointsAvailable",MaximumPointsAvailable);
 									component.set("v.PointObtained", PointsObtained);
-									component.set("v.CurrentScore",PointsObtained);																		
+									component.set("v.CurrentScore",CurrentScore);																		
 		  							console.log('Helper Line 695---PointsObtained' + PointsObtained);
 		  							console.log('Helper Line 696---MaximumPointsAvailable' + MaximumPointsAvailable);
-		  							helper.GetNextAuthenticationType(component, event, helper, memberid, MemberType, MaximumPointsAvailable, PointsObtained, IsKYMAvailable, IsOTPAvailable, DebitCardStatus, IsOOWAvailable, IsPublicWalletAvailable, IsCFCUWalletAvailable);
+		  							helper.GetNextAuthenticationType(component, event, helper, memberid, MemberType, MaximumPointsAvailable, CurrentScore, IsKYMAvailable, IsOTPAvailable, DebitCardStatus, IsOOWAvailable, IsPublicWalletAvailable, IsCFCUWalletAvailable);
 		  							component.set("v.Likedisable",true);
 		  							
 		  						}
 		  						else if(status == 'failed'){
 		  							console.log('Helper Line 703---ScoreModelNegativeScore' + ScoreModelNegativeScore);
 		  							MaximumPointsAvailable = parseInt(MaximumPointsAvailable) - parseInt(ScoreModelNegativeScore);
+                                    CurrentScore = parseInt(CurrentScore) -  parseInt(ScoreModelNegativeScore);
 		  							IsOOWAvailable = false;
 		  							component.set("v.OOWStatusForDay", false);
 									component.set("v.MaximumPointsAvailable",MaximumPointsAvailable);
 		  							component.set("v.PointObtained", PointsObtained);
 		  							console.log('Helper Line 708---PointsObtained' + PointsObtained);
 		  							console.log('Helper Line 709---MaximumPointsAvailable' + MaximumPointsAvailable);
-		  							helper.GetNextAuthenticationType(component, event, helper, memberid, MemberType, MaximumPointsAvailable, PointsObtained, IsKYMAvailable, IsOTPAvailable, DebitCardStatus, IsOOWAvailable, IsPublicWalletAvailable, IsCFCUWalletAvailable);
+                                    component.set("v.CurrentScore",CurrentScore);
+		  							helper.GetNextAuthenticationType(component, event, helper, memberid, MemberType, MaximumPointsAvailable, CurrentScore, IsKYMAvailable, IsOTPAvailable, DebitCardStatus, IsOOWAvailable, IsPublicWalletAvailable, IsCFCUWalletAvailable);
 		  							component.set("v.Likedisable",true);
 		  						}
 		  						
 		  						component.set("v.MaximumPointsAvailable",MaximumPointsAvailable );
 								component.set("v.PointsObtained",PointsObtained);
-								component.set("v.CurrentScore",PointsObtained);	  
+								component.set("v.CurrentScore",CurrentScore);	  
 		  						 console.log('Helper Line 716---PointsObtained' + PointsObtained);
 		  						 console.log('Helper Line 717---MaximumPointsAvailable' + MaximumPointsAvailable);
 		  						var element = document.getElementsByClassName('demo-only slds-box rightBox');
@@ -846,9 +851,9 @@
     		
     },
     
-    GetNextAuthenticationType: function(component, event, helper, MemberId, MemberType, MaximumPointsAvailable, PointsObtained , IsKYMAvailable, IsOTPAvailable, DebitCardStatus, IsOOWAvailable, IsPublicWalletAvailable, IsCFCUWalletAvailable){
+    GetNextAuthenticationType: function(component, event, helper, MemberId, MemberType, MaximumPointsAvailable, CurrentScore , IsKYMAvailable, IsOTPAvailable, DebitCardStatus, IsOOWAvailable, IsPublicWalletAvailable, IsCFCUWalletAvailable){
     	console.log('Helper Line 828---MaximumPointsAvailable' + MaximumPointsAvailable);
-    	console.log('Helper Line 829---PointsObtained' + PointsObtained);
+    	console.log('Helper Line 829---PointsObtained' + CurrentScore);
     	console.log('Helper Line 830---IsKYMAvailable' + IsKYMAvailable);
     	console.log('Helper Line 831---IsOTPAvailable' + IsOTPAvailable);
     	console.log('Helper Line 832---DebitCardStatus' + DebitCardStatus);
@@ -859,9 +864,11 @@
     	var IVRGUIDFromUrl = component.get("v.IVRGUIDFromUrl");
     	if(IVRGUIDFromUrl == undefined){IVRGUIDFromUrl = '';}
     	var action = component.get("c.GetNextAuthenticationType");
-    	action.setParams({"MemberId": MemberId,"MemberType":MemberType,"MaximumPointsAvailable":MaximumPointsAvailable,"PointsObtained": PointsObtained, "IsKYMAvailable": IsKYMAvailable, 
+    	action.setParams({"MemberId": MemberId,"MemberType":MemberType,"MaximumPointsAvailable":MaximumPointsAvailable,"PointsObtained": CurrentScore, "IsKYMAvailable": IsKYMAvailable, 
     						"IsOTPAvailable": IsOTPAvailable,"IsDebitPinAvailable":DebitCardStatus,"IsOOWAvailable":IsOOWAvailable,"IsPublicWalletAvailable": IsPublicWalletAvailable,
-                            "IsCFCUWalletAvailable": IsCFCUWalletAvailable,"IVRGUIDFromUrl":IVRGUIDFromUrl,"AccountNumberInput":component.get("v.MemberNumberEntered")
+                            "IsCFCUWalletAvailable": IsCFCUWalletAvailable,"IVRGUIDFromUrl":IVRGUIDFromUrl,
+							"AccountNumberInput":component.get("v.MemberNumberEntered"), "currentScore" : component.get("v.CurrentScore")
+							
                         });
     	 action.setCallback(this, function (response) {
 		       	      		 var status = response.getState();            
@@ -869,7 +876,7 @@
 	                            
 	                                   var result = response.getReturnValue();
 	                                   console.log('Helper Line 846---result' + JSON.stringify(result));
-	                                   if(PointsObtained < result.ScoreRequired){
+	                                   if(CurrentScore < result.ScoreRequired){
 	                                	   component.set("v.ToGetHighestLevel",result.NextLevel);
 	                                   }else{
 	                                	   component.set("v.ToGetHighestLevel",'Level Achieved');
@@ -925,6 +932,7 @@
 				                        	$A.util.removeClass(ProgressBarStep3, 'active');
 				                        	$A.util.addClass(ProgressBarStep3, 'two');
 				                        }
+										
 	                                   
 	                                   
 	                                }
@@ -948,7 +956,8 @@
     },
 	
 	GetReloadData : function(component, event, helper,memberid,GUID,IVRGUIDFromUrl ){
-		console.log('GetReloadData called');        
+		console.log('GetReloadData called');
+        debugger;
 		console.log('IsUserSessionLoaded' + component.get("v.IsUserSessionLoaded"));
        	var DebitCardStatus = component.get("v.DebitCardStatus");
 		var action = component.get("c.getDataForReload");

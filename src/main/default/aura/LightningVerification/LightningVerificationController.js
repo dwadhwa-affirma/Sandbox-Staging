@@ -20,14 +20,19 @@
 	},
 	*/
 	onRender : function (component, event, helper) {
-		 console.log('onRender called');        
+		 console.log('onRender called');
+        debugger;
 		var memberid = component.get("v.ReMemberId");
 		var IVRGUIDFromUrl =  component.get("v.IVRGUIDFromUrl");
 		var GUID =  component.get("v.GUID");
 		var attribute1 = memberid;
 		var ReLoadRequired = component.get("v.ReLoadRequired");
-		var PointsObtained = component.get("v.PointObtained");
+		//var PointsObtained = component.get("v.PointObtained");
+		var PointsObtained = component.get("v.CurrentScore");
 		var IsUserSessionLoaded = component.get("v.IsUserSessionLoaded");
+
+    console.log(`PointObtained: ${PointsObtained}`);
+
 		if(ReLoadRequired != undefined && (memberid != undefined && memberid != '') && component.get("v.IsReLoaded") ==false && IVRGUIDFromUrl != ''){
 		
 			var element = document.getElementById(memberid);
@@ -86,7 +91,7 @@
 	var PointsObtained = component.get("v.PointObtained");
 	var IsKYMAvailable = component.get("v.IsKYMAvailableOnLoad");
 	var IsOTPAvailable = component.get("v.IsOTPAvailableOnLoad");
-	//var IsDebitPinAvailable = component.get("v.IsDebitPinAvailableOnLoad");
+	
 	var IsOOWAvailable;
 	if(component.get("v.IsOOWTabVisible") == true)
 	{
@@ -96,7 +101,7 @@
 	{
 		IsOOWAvailable = false;
 	}
-  //  var IsOOWAvailable = component.get("v.IsOOWAvailableOnLoad"); 
+ 
 	var IsPublicWalletAvailable = component.get("v.IsPublicWalletAvailableOnLoad");
 	var IsCFCUWalletAvailable =   component.get("v.IsCFCUWalletAvailableOnLoad");
 	var memberid = component.get("v.SelectedmemberId");
@@ -125,13 +130,6 @@
 	var TotalScoreRequiredToAchieveLevel = component.get("v.TotalScoreRequiredToAchieveLevel");
 	var CurrentScore = component.get("v.CurrentScore");
 	var IsAllEmailandPhoneExhausted = event.getParam("IsAllEmailandPhoneExhausted");
-	/*var IsDebitPinAvailable;
-	if(DebitCardStatus =='true')
-	{	IsDebitPinAvailable = true;
-	}else if(DebitCardStatus =='false')
-	{
-		IsDebitPinAvailable = false;
-	}*/
 	
 	
 	component.set("v.isFailedDesiredLevelModelOpen",FDLShowPopup);
@@ -205,33 +203,11 @@
 	 {
 		MaximumPointsAvailable = parseInt(MaximumPointsAvailable) - parseInt(FDLogPreviousDayNegativePoint);	
 		component.set("v.isFDLogCalculated",true);
+		component.set("v.MaximumPointsAvailable", MaximumPointsAvailable);
 	 }
-	/*if(isPinChangeCalculated == false && isPINChange == true )
-	 {
-		
-		MaximumPointsAvailable = parseInt(MaximumPointsAvailable) - parseInt(PINChangeNegativePoint);
-		component.set("v.isPinChangeCalculated",true);
-	 }
-			*/
-	//---------------------------For checking MC Pin Change and Failed desired level score -----------//
+
 	
 	
-	/*if(isDebitPinCalculated == false && DebitCardStatus == 'true' )
-	 {
-			 PointsObtained = parseInt(PointsObtained) + parseInt(DebitPinPositivePoint);
-			  component.set("v.PointObtained",PointsObtained );
-			  CurrentScore = parseInt(CurrentScore) +  parseInt(DebitPinPositivePoint);
-			  MaximumPointsAvailable = parseInt(MaximumPointsAvailable) + parseInt(DebitPinPositivePoint);
-			 component.set("v.isDebitPinCalculated",true);
-	 }
-	if(isDebitPinCalculated == false && DebitCardStatus == 'false' )
-	 {
-			 MaximumPointsAvailable = parseInt(MaximumPointsAvailable) - parseInt(DebitPinNegativePoint);
-			 component.set("v.isDebitPinCalculated",true);
-			 NegativeScoreObtained = parseInt(NegativeScoreObtained) + parseInt(DebitPinNegativePoint);
-			 CurrentScore = parseInt(CurrentScore) -  parseInt(DebitPinNegativePoint);
-			 TotalScoreRequiredToAchieveLevel = parseInt(TotalScoreRequiredToAchieveLevel) +  parseInt(NegativeScoreObtained);
-	 }*/
 	for(var i=0 ; i < liElement.length; i++)
 	{
 		 aElement = liElement[i].firstElementChild;
@@ -278,6 +254,7 @@
 			liElement[i].classList.add("red");
 			  component.set('v.OTPIconName','utility:close');	  			
 			  MaximumPointsAvailable = parseInt(MaximumPointsAvailable) - parseInt(ScoreModelNegativeScore);
+			  component.set("v.MaximumPointsAvailable",MaximumPointsAvailable);
 			  NegativeScoreObtained = parseInt(NegativeScoreObtained) + parseInt(ScoreModelNegativeScore);
 			  CurrentScore = parseInt(CurrentScore) -  parseInt(ScoreModelNegativeScore);
 			TotalScoreRequiredToAchieveLevel = parseInt(TotalScoreRequiredToAchieveLevel) +  parseInt(NegativeScoreObtained);
@@ -295,6 +272,7 @@
 			liElement[i].classList.add("red");
 			  component.set('v.OTPIconName','utility:close');
 			  MaximumPointsAvailable = parseInt(MaximumPointsAvailable) - parseInt(ScoreModelNegativeScore);
+			  component.set("v.MaximumPointsAvailable",MaximumPointsAvailable);
 			  NegativeScoreObtained = parseInt(NegativeScoreObtained) + parseInt(ScoreModelNegativeScore);
 			CurrentScore = parseInt(CurrentScore) -  parseInt(ScoreModelNegativeScore);
 			component.set("v.CurrentScore",CurrentScore);  
@@ -312,6 +290,7 @@
 			liElement[i].classList.add("red");
 			  component.set('v.OTPIconName','utility:close');	  			
 			  MaximumPointsAvailable = parseInt(MaximumPointsAvailable) - parseInt(ScoreModelNegativeScore);
+			  component.set("v.MaximumPointsAvailable",MaximumPointsAvailable);
 			  NegativeScoreObtained = parseInt(NegativeScoreObtained) + parseInt(ScoreModelNegativeScore);
 			  CurrentScore = parseInt(CurrentScore) -  parseInt(ScoreModelNegativeScore);
 			TotalScoreRequiredToAchieveLevel = parseInt(TotalScoreRequiredToAchieveLevel) +  parseInt(NegativeScoreObtained);
@@ -345,6 +324,7 @@
 			 liElement[i].classList.add("red");
 			   component.set('v.KYMIconName','utility:close');
 			   MaximumPointsAvailable = parseInt(MaximumPointsAvailable) - parseInt(ScoreModelNegativeScore);
+			   component.set("v.MaximumPointsAvailable",MaximumPointsAvailable);
 			   NegativeScoreObtained = parseInt(NegativeScoreObtained) + parseInt(ScoreModelNegativeScore);
 			 CurrentScore = parseInt(CurrentScore) -  parseInt(ScoreModelNegativeScore);
 			 component.set("v.CurrentScore",CurrentScore);  
@@ -382,6 +362,7 @@
 			 liElement[i].classList.remove("green");
 			   component.set('v.PWIconName','utility:close');
 			   MaximumPointsAvailable = parseInt(MaximumPointsAvailable) - parseInt(ScoreModelNegativeScore);
+			   component.set("v.MaximumPointsAvailable",MaximumPointsAvailable);
 			   NegativeScoreObtained = parseInt(NegativeScoreObtained) + parseInt(ScoreModelNegativeScore);
 			   CurrentScore = parseInt(CurrentScore) -  parseInt(ScoreModelNegativeScore);
 			 TotalScoreRequiredToAchieveLevel = parseInt(TotalScoreRequiredToAchieveLevel) +  parseInt(NegativeScoreObtained);
@@ -403,8 +384,8 @@
 				  component.set('v.CFCUIconName','utility:check');
 				  PointsObtained = parseInt(PointsObtained) + parseInt(ScoreModelPositiveScore);
 				  CurrentScore = parseInt(CurrentScore) +  parseInt(ScoreModelPositiveScore);
-				component.set("v.PointObtained",PointsObtained);
-				component.set("v.CurrentScore",CurrentScore);  
+				 component.set("v.PointObtained",PointsObtained);
+				 component.set("v.CurrentScore",CurrentScore);  
 				  IsCFCUWalletAvailable = false;
 				  component.set("v.IsCFCUWalletAvailableOnLoad",IsCFCUWalletAvailable);
 				  component.set("v.CFCUWalletStatusForDay", true);
@@ -420,11 +401,12 @@
 			 liElement[i].classList.remove("green");
 			   component.set('v.CFCUIconName','utility:close');
 			   MaximumPointsAvailable = parseInt(MaximumPointsAvailable) - parseInt(ScoreModelNegativeScore);
+			   component.set("v.MaximumPointsAvailable",MaximumPointsAvailable);
 			   NegativeScoreObtained = parseInt(NegativeScoreObtained) + parseInt(ScoreModelNegativeScore);
 			   CurrentScore = parseInt(CurrentScore) -  parseInt(ScoreModelNegativeScore);
-			 TotalScoreRequiredToAchieveLevel = parseInt(TotalScoreRequiredToAchieveLevel) +  parseInt(NegativeScoreObtained);
-			 IsCFCUWalletAvailable = false;
-			 component.set("v.CurrentScore",CurrentScore);  
+				TotalScoreRequiredToAchieveLevel = parseInt(TotalScoreRequiredToAchieveLevel) +  parseInt(NegativeScoreObtained);
+				IsCFCUWalletAvailable = false;
+				component.set("v.CurrentScore",CurrentScore);  
 			   component.set("v.IsCFCUWalletAvailableOnLoad",IsCFCUWalletAvailable);
 			   console.log('Line 412---MaximumPointsAvailable' + MaximumPointsAvailable);
 			   console.log('Line 413---NegativeScoreObtained' + NegativeScoreObtained);
@@ -439,6 +421,11 @@
 		 component.set("v.MaximumPointsAvailable", MaximumPointsAvailable);
 		
 	}
+  console.log(`CurrentScore: ${CurrentScore}`);
+  console.log(`PointObtained: ${PointsObtained}`);
+
+  //console.log(`CurrentScore: ${CurrentScore} PointObtained: ${PointsObtained}`);
+
 	if(FDLEventParam !=undefined)
 	{
 			 helper.SaveFailedDesiredLevel(component, event, helper, memberid, FDLEventParam,GUID,IVRGUIDFromUrl);
@@ -525,7 +512,8 @@ handleRadioClick : function(component, event, helper){
 	var membername = event.getSource().get('v.label');
 	var MemberType = component.get("v.Membertype");
 	var ReLoadRequired = component.get("v.ReLoadRequired");
-	var PointsObtained = component.get("v.PointObtained");
+	//var PointsObtained = component.get("v.PointObtained");
+	var PointsObtained = component.get("v.CurrentScore");
 	component.set("v.SelectedmemberId",memberid );
 	component.set("v.SelectedmemberName",membername );
 	var DebitCardStatus = component.get("v.DebitCardStatus");

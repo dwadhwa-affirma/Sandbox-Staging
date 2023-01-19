@@ -1,634 +1,689 @@
-<aura:component implements="flexipage:availableForAllPageTypes,force:appHostable,force:hasRecordId,lightning:isUrlAddressable" access="global" controller="MemberAuthenticationControllerLightning" >
+<aura:component
+  implements="flexipage:availableForAllPageTypes,force:appHostable,force:hasRecordId,lightning:isUrlAddressable"
+  access="global" controller="MemberAuthenticationControllerLightning">
 
-<aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
-<aura:handler name="render" value="{!this}" action="{!c.onRender}"/> 
-<aura:handler name="statusEvent" event="c:MemberIdEvent" action="{!c.MemberCompEvent}"/>
-<!-- <aura:handler event="aura:locationChange" action="{!c.LocationUpdate}"/> -->
-<aura:attribute name="CurrentUrl" type="string" description="to store current url"/>
-<aura:attribute name="PhoneNumberEntered" type="string" description="to search from Phone Number "/>
-<aura:attribute name="MemberNumberEntered" type="string" description="to search from Member Number " default=""/>
-<aura:attribute name="SSNEntered" type="string" description="to search from SSN "/>
-<aura:attribute name="DOBEntered" type="string" description="to search from DOB "/>
-<aura:attribute name="IsMatchingMemberFound" type="boolean" default="false" />
-<aura:attribute name="IsMemberNumberValid" type="boolean" default="false" description="to show message on Member Number"/>
-<aura:attribute name="IsDOBValid" type="boolean" default="false" description="to show message on DOB Enter"/>
-<aura:attribute name="accounts" type="Account[]" description="list of members "/>
-<aura:attribute name="ActiveTabId" type="string" description="store Active tab id"/>
-<aura:attribute name="ActiveTab" type="string" description="store Active tab "/>
-<aura:attribute name="SelectedmemberId" type="string" description="store Selected Member id"/>
-<aura:attribute name="AccountNumber" type="String" />
+  <aura:handler name="init" value="{!this}" action="{!c.doInit}" />
+  <aura:handler name="render" value="{!this}" action="{!c.onRender}" />
+  <aura:handler name="statusEvent" event="c:MemberIdEvent" action="{!c.MemberCompEvent}" />
+  <!-- <aura:handler event="aura:locationChange" action="{!c.LocationUpdate}"/> -->
+  <aura:attribute name="CurrentUrl" type="string" description="to store current url" />
+  <aura:attribute name="PhoneNumberEntered" type="string" description="to search from Phone Number " />
+  <aura:attribute name="MemberNumberEntered" type="string" description="to search from Member Number " default="" />
+  <aura:attribute name="SSNEntered" type="string" description="to search from SSN " />
+  <aura:attribute name="DOBEntered" type="string" description="to search from DOB " />
+  <aura:attribute name="IsMatchingMemberFound" type="boolean" default="false" />
+  <aura:attribute name="IsMemberNumberValid" type="boolean" default="false"
+    description="to show message on Member Number" />
+  <aura:attribute name="IsDOBValid" type="boolean" default="false" description="to show message on DOB Enter" />
+  <aura:attribute name="accounts" type="Account[]" description="list of members " />
+  <aura:attribute name="ActiveTabId" type="string" description="store Active tab id" />
+  <aura:attribute name="ActiveTab" type="string" description="store Active tab " />
+  <aura:attribute name="SelectedmemberId" type="string" description="store Selected Member id" />
+  <aura:attribute name="AccountNumber" type="String" />
 
-<aura:attribute name="IsRightDivVisible" type="boolean" default="false" description="to make right div visible on radio button selected"/>
-<aura:attribute name="Likedisable" type="Boolean" default="false" />
-<aura:attribute name="IsAuth" type="string" description="" default="true"/>
-<aura:attribute name= "status" type="string" default="In Process" description="oowStatus"/>
-<aura:attribute name= "reason" type="string" description="oowsReason" />
-<aura:attribute name= "notes" type="string" description="oowNotes" />
-<aura:attribute name= "Membertype" type="string" description="Foreign or Domestic Flag" />
+  <aura:attribute name="IsRightDivVisible" type="boolean" default="false"
+    description="to make right div visible on radio button selected" />
+  <aura:attribute name="Likedisable" type="Boolean" default="false" />
+  <aura:attribute name="IsAuth" type="string" description="" default="true" />
+  <aura:attribute name="status" type="string" default="In Process" description="oowStatus" />
+  <aura:attribute name="reason" type="string" description="oowsReason" />
+  <aura:attribute name="notes" type="string" description="oowNotes" />
+  <aura:attribute name="Membertype" type="string" description="Foreign or Domestic Flag" />
 
-<aura:attribute name="IsLevel1Achieved" type="Boolean" default="false" />
-<aura:attribute name="IsLevel2Achieved" type="Boolean" default="false" />
-<aura:attribute name="IsLevel3Achieved" type="Boolean" default="false" />
+  <aura:attribute name="IsLevel1Achieved" type="Boolean" default="false" />
+  <aura:attribute name="IsLevel2Achieved" type="Boolean" default="false" />
+  <aura:attribute name="IsLevel3Achieved" type="Boolean" default="false" />
 
-<aura:attribute name="OTPValidStatus" type="string" default="" />
-<aura:attribute name="AuthenticationDecision" type="string"/>
-<aura:attribute name="IsKYMTabVisible" type="Boolean" default="false" />
-<aura:attribute name="IsOOWTabVisible" type="Boolean" default="true" />
-<aura:attribute name="IsDebitTabVisible" type="Boolean" default="true" />
-<aura:attribute name="DebitCardMessage" type="string"/>
-<aura:attribute name="DebitCardStatus" type="string"/>
-<aura:attribute name="Visible" type="Boolean" default="true" />
-<aura:attribute name="Attempts" type="integer" default=" " />
-<aura:attribute name="CFCUWalletStatusForDay" type="Boolean" default="true"/>
-<aura:attribute name="PublicWalletStatusForDay" type="Boolean" default="true"/>
-<aura:attribute name="OOWStatusForDay" type="Boolean" default="true"/>
-<aura:attribute name="OTPStatusForDay" type="Boolean" default="true"/>
-<aura:attribute name="OTPCancellAttept" type="Integer" default="0"/>
-<aura:attribute name="OTPMessage" type="string" default=""/>
-<aura:attribute name="MemberIdFromHomePage" type="string" description="store Member id from Home page search"/>
-<aura:attribute name="IspageOpenFromHomePage" type="boolean" default="false" description="if page open from Home page search"/>
-<aura:attribute name="AccountNumberFromHomePage" type="string" default="false" description="store Account Number from Home page search"/>
-<aura:attribute name="ShowFailedDesiredLevel" type="boolean" default="false" description="Failed Desired Level within 7 days"/>
-<aura:attribute name="KYMIconName" type="string" default="utility:help" description="To change icon on Tab"/>
-<aura:attribute name="PWIconName" type="string" default="utility:help" description="To change icon on Tab"/>
-<aura:attribute name="OOWIconName" type="string" default="utility:help" description="To change icon on Tab"/>
-<aura:attribute name="OTPIconName" type="string" default="utility:help" description="To change icon on Tab"/>
-<aura:attribute name="DebitIconName" type="string" default="utility:ban" description="To change icon on Tab"/>
-<aura:attribute name="CFCUIconName" type="string" default="utility:help" description="To change icon on Tab"/>
-<aura:attribute name="isOpen" type="boolean" default="false"/>
-<aura:attribute name="options" type="List" default="[{'label': 'Verbal', 'value': 'Verbal'},{'label': 'Transferred', 'value': 'Transferred'},{'label': 'Manager Callback', 'value': 'ManagerCallback'}]"/>
-<aura:attribute name="overrideType" type="String"/>
-<aura:attribute name="stages" type="String[]" default="Verbal,Transferred,Manager Callback"/>
-<aura:attribute name="isCaseModelOpen" type="boolean" default="false"/>
-<aura:attribute name="SelectedmemberName" type="string" />
-<aura:attribute name="AccountId" type="string" />
-<aura:attribute name="isViewHistoryModelOpen" type="boolean" default="false"/>
+  <aura:attribute name="OTPValidStatus" type="string" default="" />
+  <aura:attribute name="AuthenticationDecision" type="string" />
+  <aura:attribute name="IsKYMTabVisible" type="Boolean" default="false" />
+  <aura:attribute name="IsOOWTabVisible" type="Boolean" default="true" />
+  <aura:attribute name="IsDebitTabVisible" type="Boolean" default="true" />
+  <aura:attribute name="DebitCardMessage" type="string" />
+  <aura:attribute name="DebitCardStatus" type="string" />
+  <aura:attribute name="Visible" type="Boolean" default="true" />
+  <aura:attribute name="Attempts" type="integer" default=" " />
+  <aura:attribute name="CFCUWalletStatusForDay" type="Boolean" default="true" />
+  <aura:attribute name="PublicWalletStatusForDay" type="Boolean" default="true" />
+  <aura:attribute name="OOWStatusForDay" type="Boolean" default="true" />
+  <aura:attribute name="OTPStatusForDay" type="Boolean" default="true" />
+  <aura:attribute name="OTPCancellAttept" type="Integer" default="0" />
+  <aura:attribute name="OTPMessage" type="string" default="" />
+  <aura:attribute name="MemberIdFromHomePage" type="string" description="store Member id from Home page search" />
+  <aura:attribute name="IspageOpenFromHomePage" type="boolean" default="false"
+    description="if page open from Home page search" />
+  <aura:attribute name="AccountNumberFromHomePage" type="string" default="false"
+    description="store Account Number from Home page search" />
+  <aura:attribute name="ShowFailedDesiredLevel" type="boolean" default="false"
+    description="Failed Desired Level within 7 days" />
+  <aura:attribute name="KYMIconName" type="string" default="utility:help" description="To change icon on Tab" />
+  <aura:attribute name="PWIconName" type="string" default="utility:help" description="To change icon on Tab" />
+  <aura:attribute name="OOWIconName" type="string" default="utility:help" description="To change icon on Tab" />
+  <aura:attribute name="OTPIconName" type="string" default="utility:help" description="To change icon on Tab" />
+  <aura:attribute name="DebitIconName" type="string" default="utility:ban" description="To change icon on Tab" />
+  <aura:attribute name="CFCUIconName" type="string" default="utility:help" description="To change icon on Tab" />
+  <aura:attribute name="isOpen" type="boolean" default="false" />
+  <aura:attribute name="options" type="List"
+    default="[{'label': 'Verbal', 'value': 'Verbal'},{'label': 'Transferred', 'value': 'Transferred'},{'label': 'Manager Callback', 'value': 'ManagerCallback'}]" />
+  <aura:attribute name="overrideType" type="String" />
+  <aura:attribute name="stages" type="String[]" default="Verbal,Transferred,Manager Callback" />
+  <aura:attribute name="isCaseModelOpen" type="boolean" default="false" />
+  <aura:attribute name="SelectedmemberName" type="string" />
+  <aura:attribute name="AccountId" type="string" />
+  <aura:attribute name="isViewHistoryModelOpen" type="boolean" default="false" />
 
-<aura:attribute name="MaximumScore" type="integer" default="" />
-<aura:attribute name="NegativeScoreObtained" type="integer" default="0" />
-<aura:attribute name="PositiveScoreObtained" type="integer" default="0" />
-<aura:attribute name="CurrentAuthenticationLevel" type="string" default="Level 1"/>
-<aura:attribute name= "LevelModel" type="object[]" description="Custom setting data" />
-<aura:attribute name= "HighestAchievableLevel" type="string" description="" />
-<aura:attribute name= "ToGetHighestLevel" type="string" description="" />
-<aura:attribute name="RangeStart" type="Integer" default="0"/>
-<aura:attribute name="RangeEnd" type="Integer" default="0"/>
-<aura:attribute name= "ScoringModel" type="object[]" description="Custom setting data" />
-<aura:attribute name="ScoreModelNegativeScore" type="integer" default="0" />
-<aura:attribute name="ScoreModelPositiveScore" type="integer" default="0" />
-<aura:attribute name="MaximumPointsAvailable" type="Integer" default="0"/>
-<aura:attribute name="PointObtained" type="Integer" default="0"/>
-<aura:attribute name="TotalScoreRequiredToAchieveLevel" type="Integer" default="0"/>
-<aura:attribute name="CurrentScore" type="Integer" default="0"/>
-<aura:attribute name="NextTabLevel2" type="string[]" description=""/>
-<aura:attribute name="NextTabLevel3" type="string[]" description=""/>
-<aura:attribute name="IsKYMAvailableOnLoad" type="boolean" default="false"/>
-<aura:attribute name="IsOTPAvailableOnLoad" type="boolean" default="false"/>
-<aura:attribute name="IsDebitPinAvailableOnLoad" type="boolean" default="false"/>
-<aura:attribute name="IsOOWAvailableOnLoad" type="boolean" default="true"/>
-<aura:attribute name="IsPublicWalletAvailableOnLoad" type="boolean" default="false"/>
-<aura:attribute name="IsCFCUWalletAvailableOnLoad" type="boolean" default="false"/>
-<aura:attribute name="IsCFCUSectionVisible" type="boolean" default="true"/>
+  <aura:attribute name="MaximumScore" type="integer" default="" />
+  <aura:attribute name="NegativeScoreObtained" type="integer" default="0" />
+  <aura:attribute name="PositiveScoreObtained" type="integer" default="0" />
+  <aura:attribute name="CurrentAuthenticationLevel" type="string" default="Level 1" />
+  <aura:attribute name="LevelModel" type="object[]" description="Custom setting data" />
+  <aura:attribute name="HighestAchievableLevel" type="string" description="" />
+  <aura:attribute name="ToGetHighestLevel" type="string" description="" />
+  <aura:attribute name="RangeStart" type="Integer" default="0" />
+  <aura:attribute name="RangeEnd" type="Integer" default="0" />
+  <aura:attribute name="ScoringModel" type="object[]" description="Custom setting data" />
+  <aura:attribute name="ScoreModelNegativeScore" type="integer" default="0" />
+  <aura:attribute name="ScoreModelPositiveScore" type="integer" default="0" />
+  <aura:attribute name="MaximumPointsAvailable" type="Integer" default="0" />
+  <aura:attribute name="PointObtained" type="Integer" default="0" />
+  <aura:attribute name="TotalScoreRequiredToAchieveLevel" type="Integer" default="0" />
+  <aura:attribute name="CurrentScore" type="Integer" default="0" />
+  <aura:attribute name="NextTabLevel2" type="string[]" description="" />
+  <aura:attribute name="NextTabLevel3" type="string[]" description="" />
+  <aura:attribute name="IsKYMAvailableOnLoad" type="boolean" default="false" />
+  <aura:attribute name="IsOTPAvailableOnLoad" type="boolean" default="false" />
+  <aura:attribute name="IsDebitPinAvailableOnLoad" type="boolean" default="false" />
+  <aura:attribute name="IsOOWAvailableOnLoad" type="boolean" default="true" />
+  <aura:attribute name="IsPublicWalletAvailableOnLoad" type="boolean" default="false" />
+  <aura:attribute name="IsCFCUWalletAvailableOnLoad" type="boolean" default="false" />
+  <aura:attribute name="IsCFCUSectionVisible" type="boolean" default="true" />
 
-<aura:attribute name= "GUID" type="string" description="" />
-<aura:attribute name="PageURL" type="string" description="URL"/>
-<aura:attribute name="SSNFromURL" type="string" description="store SSN from URL"/>
-<aura:attribute name="MemberNumberFromURL" type="string" description="store Member Number from URL"/>
-<aura:attribute name="PhoneFromURL" type="string" description="store Phone Number from URL"/>
-<aura:attribute name="IVRGUIDFromUrl" type="string"/>
-<aura:attribute name= "ReasonCodeFromURL" type="string" description="store from URL" />
-<aura:attribute name="HighFlagFromUrl" type="string" description="store from URL"/>
-<aura:attribute name="CardOwnerSSNFromURL" type="string" description="store from URL"/>
+  <aura:attribute name="GUID" type="string" description="" />
+  <aura:attribute name="PageURL" type="string" description="URL" />
+  <aura:attribute name="SSNFromURL" type="string" description="store SSN from URL" />
+  <aura:attribute name="MemberNumberFromURL" type="string" description="store Member Number from URL" />
+  <aura:attribute name="PhoneFromURL" type="string" description="store Phone Number from URL" />
+  <aura:attribute name="IVRGUIDFromUrl" type="string" />
+  <aura:attribute name="ReasonCodeFromURL" type="string" description="store from URL" />
+  <aura:attribute name="HighFlagFromUrl" type="string" description="store from URL" />
+  <aura:attribute name="CardOwnerSSNFromURL" type="string" description="store from URL" />
 
 
-<aura:attribute name="LastAchievable30day" type="string" description="" />
-<aura:attribute name="Supervisor" type="List" description="" />
-<aura:attribute name="isViewDescriptionModelOpen" type="boolean" default="false"/>
-<aura:attribute name="ShowFailedDesiredLevelCount" type="integer" default="0" description="Failed Desired Level within 7 days count"/>
-<aura:attribute name="CurrentLevelRangeStart" type="Integer" default="0"/>
-<aura:attribute name="CurrentLevelRangeEnd" type="Integer" default="0"/>
-<aura:attribute name="isDoneRendering" type="Boolean" default="false"/>
-<aura:attribute name="isDebitPinCalculated" type="Boolean" default="false"/>
-<aura:attribute name="isPinChangeCalculated" type="Boolean" default="false"/>
-<aura:attribute name="isFDLogCalculated" type="Boolean" default="false"/>
-<aura:attribute name="isPINChange" type="Boolean" default="false"/>
-<aura:attribute name="isFDLogPreviousDay" type="Boolean" default="false"/>
-<aura:attribute name="PublicWalletColor" type="string" />
-<aura:attribute name="CFCUWalletColor" type="string" />
-<aura:attribute name="OOWColor" type="string" />
-<aura:attribute name="OTPColor" type="string" />
-<aura:attribute name="ReLoadRequired" type="boolean" default="false" />
-<aura:attribute name="ReMemberId" type="string" />
-<aura:attribute name="IsReLoaded" type="boolean" default="false" />
-<aura:attribute name="isFailedDesiredLevelModelOpen" type="boolean" default="false"/>
-<aura:attribute name="ManagerCallbackComments" type="string" />
-<aura:attribute name="IsGetReloadDataCalled" type="boolean" default="false"/>
-<aura:attribute name="IsUserSessionLoaded" type="boolean" default="false"/>
-<aura:attribute name="EnteredCardNumber" type="string" />
-<aura:attribute name="CardNumberMatch" type="string" />
-<aura:attribute name="MemberNumberMatch" type="string" />
-<aura:attribute name="PhoneNumberMatch" type="string" />
-<aura:attribute name="SSNnumberMatch" type="string" />
-<aura:attribute name="PINMatch" type="string" />
-<aura:attribute name="OOWMemberNumberEntered" type="string" />
-<aura:attribute name="IsMemberManualSearched" type="boolean" default="false"/>
-<aura:attribute name="MultipleMemberNumberAlert" type="string" default=''/>
-<aura:attribute name="IsCardOwnerSSNMatch" type="boolean" default="false"/>
-<aura:attribute name="WarningCodes" type="string[]" description=""/>
-<aura:attribute name="IsUnusualActivity" type="boolean" default="false"/>
+  <aura:attribute name="LastAchievable30day" type="string" description="" />
+  <aura:attribute name="Supervisor" type="List" description="" />
+  <aura:attribute name="isViewDescriptionModelOpen" type="boolean" default="false" />
+  <aura:attribute name="ShowFailedDesiredLevelCount" type="integer" default="0"
+    description="Failed Desired Level within 7 days count" />
+  <aura:attribute name="CurrentLevelRangeStart" type="Integer" default="0" />
+  <aura:attribute name="CurrentLevelRangeEnd" type="Integer" default="0" />
+  <aura:attribute name="isDoneRendering" type="Boolean" default="false" />
+  <aura:attribute name="isDebitPinCalculated" type="Boolean" default="false" />
+  <aura:attribute name="isPinChangeCalculated" type="Boolean" default="false" />
+  <aura:attribute name="isFDLogCalculated" type="Boolean" default="false" />
+  <aura:attribute name="isPINChange" type="Boolean" default="false" />
+  <aura:attribute name="isFDLogPreviousDay" type="Boolean" default="false" />
+  <aura:attribute name="PublicWalletColor" type="string" />
+  <aura:attribute name="CFCUWalletColor" type="string" />
+  <aura:attribute name="OOWColor" type="string" />
+  <aura:attribute name="OTPColor" type="string" />
+  <aura:attribute name="ReLoadRequired" type="boolean" default="false" />
+  <aura:attribute name="ReMemberId" type="string" />
+  <aura:attribute name="IsReLoaded" type="boolean" default="false" />
+  <aura:attribute name="isFailedDesiredLevelModelOpen" type="boolean" default="false" />
+  <aura:attribute name="ManagerCallbackComments" type="string" />
+  <aura:attribute name="IsGetReloadDataCalled" type="boolean" default="false" />
+  <aura:attribute name="IsUserSessionLoaded" type="boolean" default="false" />
+  <aura:attribute name="EnteredCardNumber" type="string" />
+  <aura:attribute name="CardNumberMatch" type="string" />
+  <aura:attribute name="MemberNumberMatch" type="string" />
+  <aura:attribute name="PhoneNumberMatch" type="string" />
+  <aura:attribute name="SSNnumberMatch" type="string" />
+  <aura:attribute name="PINMatch" type="string" />
+  <aura:attribute name="OOWMemberNumberEntered" type="string" />
+  <aura:attribute name="IsMemberManualSearched" type="boolean" default="false" />
+  <aura:attribute name="MultipleMemberNumberAlert" type="string" default='' />
+  <aura:attribute name="IsCardOwnerSSNMatch" type="boolean" default="false" />
+  <aura:attribute name="WarningCodes" type="string[]" description="" />
+  <aura:attribute name="IsUnusualActivity" type="boolean" default="false" />
 
-    <article class="slds-card">
-        <div class="slds-card__body slds-card__body_inner tblrow">
-            <div class="demo-only slds-box leftBox">
-                <nav class="slds-nav-vertical" aria-label="Sub page">
-                    <div class="slds-nav-vertical__section">
-                        <div class="slds-form-element__label caller-info-title">Caller Information</div>
-                        <ul aria-describedby="entity-header">
-                            <li class="MarginTop10px">
-                                
-                                <div class="slds-form-element">
-                                    <div class="slds-form-element__icon">
-                                        <button class="slds-button slds-button_icon">
-                                            <lightning:icon iconName="utility:call" alternativeText="Connected" size="xx-small" />
-                                            <span class="slds-assistive-text">Help</span>
-                                        </button>
-                                    </div>
-                                    <label class="slds-form-element__label" for="form-element-01">Phone Number</label>
-                                    
-                                    <div class="slds-form-element__control">
-                                        <input type="text" id="frmPhoneNumber" placeholder="###-###-####" class="slds-input" onkeyup="{!c.searchMember}" disabled="{!v.ReLoadRequired}"/>
-                                        <p id="PhoneNumberMessage"><span></span></p>
-                                    </div>
-                                </div>
-                                
-                            </li>
-                            <li class="MarginTop10px">
-                                <div class="slds-form-element">
-                                    <div class="slds-form-element__icon">
-                                        <button class="slds-button slds-button_icon">
-                                            <lightning:icon iconName="utility:user" alternativeText="Connected" size="xx-small" />
-                                            <span class="slds-assistive-text">Help</span>
-                                        </button>
-                                    </div>
-                                    <label class="slds-form-element__label" for="form-element-01">Member Number</label>
-                                    <div class="slds-form-element__control">
-                                        <input type="text" id="frmMemberNumber"  placeholder="Number" class="slds-input" onkeyup="{!c.searchMember}" disabled="{!v.ReLoadRequired}"/>
-                                    </div>
-                                    <div class="" id="MemberNoDiv">
-                                    	
-                                            <aura:if isTrue="{!v.IsMemberNumberValid}">
-											     <div>
-											      <lightning:icon iconName="action:approval" alternativeText="Approved" size="xx-small"/>
-											      <span class ="confirm"> Valid </span>											    
-											     </div>
-											     <div>
-											     	  <span>{!v.MultipleMemberNumberAlert} </span>
-											     </div>
-											    <aura:set attribute="else">
-											    <div class="MemberNo hidden">
-											     <lightning:icon iconName="utility:error" alternativeText="Error!" variant="error" size="xx-small"/>
-											     <span class="error"> &nbsp; &nbsp; No Member Found</span>
-											    </div>
-											    </aura:set>
-											  </aura:if> 
-											  
-                                    </div>
-                                    
-                                </div>
-                            </li>
-                            <li class="MarginTop10px">
-                                <div class="slds-form-element">
-                                    <div class="slds-form-element__icon">
-                                        <button class="slds-button slds-button_icon">
-                                            <lightning:icon iconName="utility:identity" alternativeText="Connected" size="xx-small" />
-                                            <span class="slds-assistive-text">Help</span>
-                                        </button>
-                                    </div>
-                                    <label class="slds-form-element__label" for="form-element-01">SSN</label>
-                                    <div class="slds-form-element__control">
-                                        <input type="text" id="frmSSN" placeholder="####" class="slds-input" onkeyup="{!c.searchMember}" disabled="{!v.ReLoadRequired}" />
-                                    </div>
-                                </div>
-                            </li>
-                            <li class="MarginTop10px">
-                                <fieldset class="slds-form-element">
-                                    <legend class="slds-form-element__legend slds-form-element__label">Which member is calling?</legend>
-                                    <div class="slds-form-element__control">
-                                        <aura:iteration items="{!v.accounts}" var="a" indexVar="index">
-		                                  
-		                                   <lightning:input id="{!a.Id}" name="radioButtonGroup" label="{!a.Name}" value="{!a.Id}" type="radio" disabled="{!v.ReLoadRequired}" onchange="{!c.handleRadioClick}"  />
-            						    </aura:iteration>         
-		                                      
-                                    </div>
-                                </fieldset>
-                            </li>
-                             
-                        </ul>
+  <article class="slds-card">
+    <p>{!v.PointObtained}</p>
+    <div class="slds-card__body slds-card__body_inner tblrow">
+      <div class="demo-only slds-box leftBox">
+        <nav class="slds-nav-vertical" aria-label="Sub page">
+          <div class="slds-nav-vertical__section">
+            <div class="slds-form-element__label caller-info-title">Caller Information</div>
+            <ul aria-describedby="entity-header">
+              <li class="MarginTop10px">
+
+                <div class="slds-form-element">
+                  <div class="slds-form-element__icon">
+                    <button class="slds-button slds-button_icon">
+                      <lightning:icon iconName="utility:call" alternativeText="Connected" size="xx-small" />
+                      <span class="slds-assistive-text">Help</span>
+                    </button>
+                  </div>
+                  <label class="slds-form-element__label" for="form-element-01">Phone Number</label>
+
+                  <div class="slds-form-element__control">
+                    <input type="text" id="frmPhoneNumber" placeholder="###-###-####" class="slds-input"
+                      onkeyup="{!c.searchMember}" disabled="{!v.ReLoadRequired}" />
+                    <p id="PhoneNumberMessage"><span></span></p>
+                  </div>
+                </div>
+
+              </li>
+              <li class="MarginTop10px">
+                <div class="slds-form-element">
+                  <div class="slds-form-element__icon">
+                    <button class="slds-button slds-button_icon">
+                      <lightning:icon iconName="utility:user" alternativeText="Connected" size="xx-small" />
+                      <span class="slds-assistive-text">Help</span>
+                    </button>
+                  </div>
+                  <label class="slds-form-element__label" for="form-element-01">Member Number</label>
+                  <div class="slds-form-element__control">
+                    <input type="text" id="frmMemberNumber" placeholder="Number" class="slds-input"
+                      onkeyup="{!c.searchMember}" disabled="{!v.ReLoadRequired}" />
+                  </div>
+                  <div class="" id="MemberNoDiv">
+
+                    <aura:if isTrue="{!v.IsMemberNumberValid}">
+                      <div>
+                        <lightning:icon iconName="action:approval" alternativeText="Approved" size="xx-small" />
+                        <span class="confirm"> Valid </span>
+                      </div>
+                      <div>
+                        <span>{!v.MultipleMemberNumberAlert} </span>
+                      </div>
+                      <aura:set attribute="else">
+                        <div class="MemberNo hidden">
+                          <lightning:icon iconName="utility:error" alternativeText="Error!" variant="error"
+                            size="xx-small" />
+                          <span class="error"> &nbsp; &nbsp; No Member Found</span>
+                        </div>
+                      </aura:set>
+                    </aura:if>
+
+                  </div>
+
+                </div>
+              </li>
+              <li class="MarginTop10px">
+                <div class="slds-form-element">
+                  <div class="slds-form-element__icon">
+                    <button class="slds-button slds-button_icon">
+                      <lightning:icon iconName="utility:identity" alternativeText="Connected" size="xx-small" />
+                      <span class="slds-assistive-text">Help</span>
+                    </button>
+                  </div>
+                  <label class="slds-form-element__label" for="form-element-01">SSN</label>
+                  <div class="slds-form-element__control">
+                    <input type="text" id="frmSSN" placeholder="####" class="slds-input" onkeyup="{!c.searchMember}"
+                      disabled="{!v.ReLoadRequired}" />
+                  </div>
+                </div>
+              </li>
+              <li class="MarginTop10px">
+                <fieldset class="slds-form-element">
+                  <legend class="slds-form-element__legend slds-form-element__label">Which member is calling?</legend>
+                  <div class="slds-form-element__control">
+                    <aura:iteration items="{!v.accounts}" var="a" indexVar="index">
+
+                      <lightning:input id="{!a.Id}" name="radioButtonGroup" label="{!a.Name}" value="{!a.Id}"
+                        type="radio" disabled="{!v.ReLoadRequired}" onchange="{!c.handleRadioClick}" />
+                    </aura:iteration>
+
+                  </div>
+                </fieldset>
+              </li>
+
+            </ul>
+          </div>
+
+        </nav>
+      </div>
+
+
+      <div>
+        <aura:if isTrue="{!v.IsRightDivVisible}">
+          <div class="demo-only slds-box rightBox">
+            <lightning:layoutItem padding="around-small">
+              <div class="header-column">
+                <div class="field-title field-reason" title="Reason">
+                  <aura:if isTrue="{!not(empty(v.HighFlagFromUrl))}">
+                    <div class="field-reason-section">
+                      <span>{!v.HighFlagFromUrl}</span>
                     </div>
-                    
-                </nav>
-            </div>
-            
-                  
-			<div >	
-				<aura:if isTrue ="{!v.IsRightDivVisible}">
-		            	<div class="demo-only slds-box rightBox">
-                            <lightning:layoutItem padding="around-small">
-		            						<div class="header-column">
-                                        		<div class="field-title field-reason"  title="Reason">
-                                        			<aura:if isTrue="{!not(empty(v.HighFlagFromUrl))}">
-                                        				<div class="field-reason-section">
-                                        				<span>{!v.HighFlagFromUrl}</span>
-                                       					</div>
-                                       				</aura:if> 
-                                       				<div class="field-reason-section">
-                                       				Reason:<span>{!v.ReasonCodeFromURL}</span>
-                                       				</div>
-                                      			</div>
-		                					</div>
-		        						</lightning:layoutItem>
-		     				<header class="slds-media slds-media_center slds-has-flexi-truncate">
-		         				
-                                <div class="c-container">
-		        					<lightning:layout horizontalAlign="spread" >
-										<lightning:layoutItem padding="around-small" class="warning-container">			
-											<p class="field-header"  title="WARNINGS">WARNINGS 
-		               				 			<lightning:icon iconName="utility:warning" alternativeText="Warning!" size="x-small" variant="warning"/>
-		               				 		</p>
-                                        </lightning:layoutItem>
-		    								<lightning:layoutItem padding="around-small">
-		        								<div class="header-column">
-		                							<p class="field-title" style='color:red;' title="NumberOfCallsToday"># Of Calls Same Member/KYM Today </p>
-		                							<aura:if isTrue="{!v.Attempts ge 1}">
-		                           			 			<p style='color:red;'>{!v.Attempts}</p>
-		                         					</aura:if>
-		            							</div>
-		        							</lightning:layoutItem>
-		        							
-		        						<lightning:layoutItem padding="around-small">
-		            						<div class="header-column">
-		                						<p class="field-title" style='color:red;' title="LastAchievable30days">Last Achieved Level Within 30 Days</p>
-		                						<p style='color:red;'>{!v.LastAchievable30day}</p>
-		            						</div>
-		        						</lightning:layoutItem>
-		        						<lightning:layoutItem padding="around-small">
-		            						<div class="header-column">
-		                						<p class="field-title" style='color:red;' title="LevelWarning">Failed Desired Level Within 7 Days</p>
-		                							<aura:if isTrue="{!v.ShowFailedDesiredLevel == true}">
-                          			  					<p style='color:red;'>{!v.ShowFailedDesiredLevelCount}</p> 
-                         							</aura:if>
-		           							</div>
-										</lightning:layoutItem>								
-										<!-- <lightning:layoutItem padding="around-small">
+                  </aura:if>
+                  <div class="field-reason-section">
+                    Reason:<span>{!v.ReasonCodeFromURL}</span>
+                  </div>
+                </div>
+              </div>
+            </lightning:layoutItem>
+            <header class="slds-media slds-media_center slds-has-flexi-truncate">
+
+              <div class="c-container">
+                <lightning:layout horizontalAlign="spread">
+                  <lightning:layoutItem padding="around-small" class="warning-container">
+                    <p class="field-header" title="WARNINGS">WARNINGS
+                      <lightning:icon iconName="utility:warning" alternativeText="Warning!" size="x-small"
+                        variant="warning" />
+                    </p>
+                  </lightning:layoutItem>
+                  <lightning:layoutItem padding="around-small">
+                    <div class="header-column">
+                      <p class="field-title" style='color:red;' title="NumberOfCallsToday"># Of Calls Same Member/KYM
+                        Today </p>
+                      <aura:if isTrue="{!v.Attempts ge 1}">
+                        <p style='color:red;'>{!v.Attempts}</p>
+                      </aura:if>
+                    </div>
+                  </lightning:layoutItem>
+
+                  <lightning:layoutItem padding="around-small">
+                    <div class="header-column">
+                      <p class="field-title" style='color:red;' title="LastAchievable30days">Last Achieved Level Within
+                        30 Days</p>
+                      <p style='color:red;'>{!v.LastAchievable30day}</p>
+                    </div>
+                  </lightning:layoutItem>
+                  <lightning:layoutItem padding="around-small">
+                    <div class="header-column">
+                      <p class="field-title" style='color:red;' title="LevelWarning">Failed Desired Level Within 7 Days
+                      </p>
+                      <aura:if isTrue="{!v.ShowFailedDesiredLevel == true}">
+                        <p style='color:red;'>{!v.ShowFailedDesiredLevelCount}</p>
+                      </aura:if>
+                    </div>
+                  </lightning:layoutItem>
+                  <!-- <lightning:layoutItem padding="around-small">
 	  		            						<div class="header-column">
 	  												<aura:if isTrue="{!v.IsUnusualActivity == true}">
 	  													<p class="field-title" style='color:red;' title="UnusualActivityWarning">Open Active Unusual Activity</p>	
 	  												</aura:if>	                							
 	  		           							</div>
 	  		        						</lightning:layoutItem> -->
-		   							
-		   							</lightning:layout>
-		   							
-		   							
-								</div>
-								<!--Warning Code starts here-->
-								<div>
-									<lightning:layoutItem>
-										<div style="padding-left: 10px;">
-											<lightning:icon iconName="utility:warning" alternativeText="Warning!" size="x-small" variant="warning"/>
-										</div>										
-		            						<div class="header-column" style="border-left: 1px solid #a09f9f;padding: 20px 5px 8px 10px;margin-top: -15px;color: brown">
-												<aura:if isTrue="{!v.IsUnusualActivity == true}">
-													<p class="field-title" style='color:red;' title="UnusualActivityWarning">Active Unusual Activity</p>	
-												</aura:if>												
-												<aura:iteration items="{!v.WarningCodes}" var="item">
-													{!item} <br/>
-												</aura:iteration>													                							
-		           							</div>
-		        						</lightning:layoutItem>
-								</div>
-								<!--Warning Code ends here-->
-		    				</header>
-		    			</div>
-		    			<div class="demo-only slds-box rightBox">
-			    			<header class="slds-media slds-media_center slds-has-flexi-truncate">
-			         			<div class="c-container maap-questions">
-			               			<lightning:layout horizontalAlign="spread">
-                                            <lightning:layoutItem padding="around-small">
-                                            	<p class="field-header" title="AUTHINFO">MAAP LEVELS
-                                            		<lightning:buttonIcon iconName="utility:info" variant="bare" onclick="{! c.OpenDescription }" alternativeText="info" />
-                                            	</p>
-                                            </lightning:layoutItem>
-                                            <div class="step-container">
-                                                <ul class="progressbar">
-                                                    <li class="active" >
-                                                    	<lightning:layoutItem>
-	                                                    	<div class="header-column step-indicator-content">
-	                                                    		<p class="field-title show">Level 1</p>
-	                                                            <div>
-	                                                            	<p>Level Reached</p>
-	                                                            </div>
-	                                                        </div>
-                                                        </lightning:layoutItem>
-                                                    </li>
-                                                    <li aura:id="step2" class="two">
-                                                    	<lightning:layoutItem>
-                                                            <div class="header-column step-indicator-content">
-                                                                <p class="field-title show" title="HighAchievableLevel" aura:id="Level2IndicatorLabel">To Get to Level 2 </p>
-                                                                <aura:if isTrue="{!or(v.CurrentAuthenticationLevel == 'Level 2',v.CurrentAuthenticationLevel == 'Level 3')}">
-                                                                	<p class="field-title show" title="Level2ReachedLabel" id="Level2ReachedLabel">Level 2 </p>
-                                                                </aura:if>
-                                                                 <div>
-                                                                     <aura:iteration items="{!v.NextTabLevel2}" var="l2" indexVar="index">
-                                                                        <p>{!l2}</p>
-                                                                    </aura:iteration>
-                                                                 </div>
-                                                            </div>
-                                                        </lightning:layoutItem>
-                                                    </li>
-                                                    <li aura:id="step3" class="two">
-                                                    	<lightning:layoutItem>
-                                                            <div class="header-column step-indicator-content">
-                                                                <p class="field-title show" title="LastAchievable30days" aura:id="Level3IndicatorLabel">To Get to Level 3</p>
-                                                                <aura:if isTrue="{!v.CurrentAuthenticationLevel == 'Level 3'}">
-                                                                	<p class="field-title show" title="Level3ReachedLabel" id="Level3ReachedLabel">Level 3 </p>
-                                                                </aura:if>
-                                                                
-                                                                <div>
-                                                                	<aura:iteration items="{!v.NextTabLevel3}" var="l3" indexVar="index">
-                                                                        <p>{!l3}</p>
-                                                                 	</aura:iteration>
-                                                                </div> 
-                                                            </div>
-                                                        </lightning:layoutItem>
-                                                    </li>
-                                                </ul>
-                                            </div>
-			    					</lightning:layout>
-								</div>
-			    			</header>
-						</div>	
-		            	
-			    	  <div class="demo-only slds-box rightBox authQuestions">				    	
-                           <header class="slds-media slds-media_center slds-has-flexi-truncate">
-							<div class="c-container">	
-                                <lightning:layout horizontalAlign="spread">
-                                            <lightning:layoutItem padding="around-small">
-												<p class="field-header authQuestion" title="AuthQuestions">MAAP QUESTIONS</p>
-											</lightning:layoutItem>
-                                   										
-								<lightning:tabset>
-					    		   	<aura:if isTrue ="{!v.IsKYMTabVisible}">
-										<lightning:tab label="KYM" id="KYMTab" onactive="{! c.handleActive }" iconName="{!v.KYMIconName}">
-											<c:KYMAuthentication recordId="{!v.SelectedmemberId}" GUID="{!v.GUID}" IVRGUIDFromUrl="{!v.IVRGUIDFromUrl}"/>
-										</lightning:tab>
-								    </aura:if>
-											         
-								        <lightning:tab label="Public Wallet" id="PublicWalletTab" onactive="{! c.handleActive }" iconName="{!v.PWIconName}" >
-											
-												
-												<div class=" " id="cmpPublicWallet">
-									  				<c:PublicWallet recordId="{!v.SelectedmemberId}" aura:id="PublicWallet" GUID="{!v.GUID}" PublicWalletStatusForDay ="{!v.PublicWalletStatusForDay}" IVRGUIDFromUrl="{!v.IVRGUIDFromUrl}" MemberNumberFromURL = "{!v.MemberNumberFromURL}" MemberNumberEntered ="{!v.MemberNumberEntered}"  />
-												</div>
-											
-										</lightning:tab>
-															        	
-										<lightning:tab label="CFCU Wallet" id="CFCUWalletTab" onactive="{! c.handleActive }" iconName="{!v.CFCUIconName}" >
-				         					<c:CFCUWallet recordId="{!v.SelectedmemberId}" aura:id="CFCUWallet" GUID="{!v.GUID}" IsCFCUSectionVisible="{!v.IsCFCUSectionVisible}" CFCUWalletStatusForDay ="{!v.CFCUWalletStatusForDay}" IVRGUIDFromUrl="{!v.IVRGUIDFromUrl}" MemberNumberFromURL = "{!v.MemberNumberFromURL}" MemberNumberEntered ="{!v.MemberNumberEntered}" />
-							        	</lightning:tab>
-							        							        	
-							          	<aura:if isTrue="{!v.IsOOWTabVisible}">
-								          	<aura:if isTrue="{!v.IsOOWAvailableOnLoad}">
-									        	<lightning:tab label="OOW" id="OOWTab" onactive="{! c.handleActive }" iconName="{!v.OOWIconName}" >
-												
-													<div>
-												 		<lightning:button aura:id="OOWsession" variant="brand" label="Start OOW Session" title="Start OOW Session" onclick="{! c.OpenOOWComponent }" disabled="{!v.Likedisable}" />
-														<!--  <button aura:id="OOWsession" disabled="{!v.Likedisable}" class="slds-button slds-button_brand OOWsession" onclick="{! c.OpenOOWComponent}">Start OOW Session</button>-->
-													</div>
-												  	<div class="hidden" id="oowComponentdiv">
-												  		<c:OOWFlowExecution recordId="{!v.SelectedmemberId}" status="{!v.status}" reason="{!v.reason}" notes="{!v.notes}" />
-												 	</div>
-												
-										   	 </lightning:tab>
-										  	</aura:if>
-										</aura:if>						       
-							        <lightning:tab label="OTP" id="OTPTab" onactive="{!c.handleActive }" iconName="{!v.OTPIconName}">
-						            	<div class=" " id="cmpOTPVerification">
-											
-												<c:OTPAuthentication aura:id="OTPAuthentication" recordId="{!v.SelectedmemberId}" IsCallingfromAuth="{!v.IsAuth}" GUID="{!v.GUID}" OTPStatusForDay="{!v.OTPStatusForDay}" IVRGUIDFromUrl="{!v.IVRGUIDFromUrl}" MemberNumberFromURL = "{!v.MemberNumberFromURL}" MemberNumberEntered ="{!v.MemberNumberEntered}" />
-				                        	
-											
-											
-										</div>
-							        </lightning:tab>
-							        <aura:if isTrue ="{!v.IsDebitTabVisible}">
-								       	<lightning:tab label="Debit Card/PIN" id="DebitCardTab" onactive="{! c.handleActive }" iconName="{!v.DebitIconName}" class="TabDisabled">
-								        	{!v.DebitCardMessage}
-								        </lightning:tab>
-						    		</aura:if>
-						    </lightning:tabset>
-                                </lightning:layout>
-                               </div>
-                          </header>
-					     </div>
-			</aura:if> 
-        </div>
-	</div> 
-		<div class="groupbtn-parent">
-		       
-			<lightning:button aura:id="ViewHistory" variant="Neutral" label="View History" title="View History" onclick="{!c.openViewHistoryModel}"/>
-			<lightning:button variant="Neutral" label="Clear All" title="Clear All" onclick="{! c.clearAll }"/>
-			<lightning:button variant="brand" label="Convert to Lead" title="Convert to Lead" onclick="{!c.ConvertToLead}" />
-			<lightning:button aura:id="CreateCase" variant="brand" label="Unusual Activity Create Case" title="Unusual Activity Create Case" onclick="{! c.openCaseModel }"/>
-			<lightning:button aura:id="FailedDesiredLevel" variant="brand" label="Failed Desired Level" title="Failed Desired Level" onclick="{! c.openFailedDesiredLevelModel }"/>
-			<lightning:button aura:id="OverrideRequested" variant="brand" label="Override Requested" title="Override Requested" onclick="{! c.openModel}"/>
-			<lightning:button variant="brand" label="Save &amp; Go to Member Page" title="Save &amp; Go to Member Page" onclick="{!c.NavigateToMember}"/>
-		</div>
-		
-		 <div class="slds-m-around_xx-large">
-            <aura:if isTrue="{!v.isOpen}">
-	            
-	            <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true" aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open">
-	                <div class="slds-modal__container">
-	                    
-	                    <header class="slds-modal__header">
-	                        <lightning:buttonIcon iconName="utility:close"
-	                                              onclick="{! c.closeModel }"
-	                                              alternativeText="close"
-	                                              variant="bare-inverse"
-	                                              class="slds-modal__close"/>
-	                        <h2 id="modal-heading-01" class="slds-text-heading_medium slds-hyphenate">Override Requested</h2>
-	                    </header>
-	                    <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-1">
-	                        <p>
-	                        	
-	                        	<p><b>Override Request Type</b></p>
-	                        	
-							    <aura:iteration items="{!v.stages}" var="stage">
-							   		 <lightning:input aura:id= "requestType" name="radioGroup" label="{!stage}" value="{!stage}" type="radio"  onchange="{!c.onChange}"/>
-							    </aura:iteration> 
-							    <lightning:input aura:id= "ManagerComments" name="ManagerComments" label="Comments" class="hidden MarginTop" maxlength="300" messageWhenTooLong="Your entry must be at max 40 characters." />
-								<span  id ="errorSpaninputOne" class="error hidden">Please enter valid comments</span>                        
-							    
-							    <span  id ="errorSpaninput" class="error hidden">Please Select An Override Request Type </span>                       
-	                            <lightning:select aura:id= "Supervisor" class="hidden" name="Supervisor"  label="Override Request Supervisor" required="true" onchange="{!c.onChangeSupervior}" >
-	                            	<option value="Select">Select</option>
-                                    <aura:iteration items="{!v.Supervisor}" var="item">
-                   							 <option text="{!item.Name}" value="{!item.Name}"/>
-                					</aura:iteration>
-                                    
-                                </lightning:select>
-                                <span  id ="errorSpan" class="error hidden">Please Select a Supervisor </span>
-	                        </p>
-	                    </div>
-	                    <footer class="slds-modal__footer">
-	                        <lightning:button variant="neutral" label="Cancel" title="Cancel" onclick="{!c.closeModel }"/>
-	                        <lightning:button aura:id="OverrideRequested" variant="brand"  label="Save and Close" title="Save and Close" onclick="{!c.AuthenticatedLog}"/>
-                            
-	                    </footer>
-	                </div>
-	            </section>
-	            <div class="slds-backdrop slds-backdrop_open"></div>
-	        </aura:if>
-	        </div>
-	        <div class="slds-m-around_xx-large">
-            <aura:if isTrue="{!v.isCaseModelOpen}">
-	            
-	            <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true" aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open">
-	                <div class="slds-modal__container">
-	                    
-	                    <header class="slds-modal__header">
-	                        <lightning:buttonIcon iconName="utility:close"
-	                                              onclick="{! c.closeCaseModel }"
-	                                              alternativeText="close"
-	                                              variant="bare-inverse"
-	                                              class="slds-modal__close"/>
-	                        <h2 id="modal-heading-01" class="slds-text-heading_large slds-hyphenate">Create Case</h2>
-	                    </header>
-	                    <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-1">
-	                        <div class="slds-form-element">
-                                <label class="slds-form-element__label LabelSize">Member Name</label>
-                                <div class="slds-form-element__control">
-                                        {!v.SelectedmemberName}                             
-                                </div>
+
+                </lightning:layout>
+
+
+              </div>
+              <!--Warning Code starts here-->
+              <div>
+                <lightning:layoutItem>
+                  <div style="padding-left: 10px;">
+                    <lightning:icon iconName="utility:warning" alternativeText="Warning!" size="x-small"
+                      variant="warning" />
+                  </div>
+                  <div class="header-column"
+                    style="border-left: 1px solid #a09f9f;padding: 20px 5px 8px 10px;margin-top: -15px;color: brown">
+                    <aura:if isTrue="{!v.IsUnusualActivity == true}">
+                      <p class="field-title" style='color:red;' title="UnusualActivityWarning">Active Unusual Activity
+                      </p>
+                    </aura:if>
+                    <aura:iteration items="{!v.WarningCodes}" var="item">
+                      {!item} <br />
+                    </aura:iteration>
+                  </div>
+                </lightning:layoutItem>
+              </div>
+              <!--Warning Code ends here-->
+            </header>
+          </div>
+          <div class="demo-only slds-box rightBox">
+            <header class="slds-media slds-media_center slds-has-flexi-truncate">
+              <div class="c-container maap-questions">
+                <lightning:layout horizontalAlign="spread">
+                  <lightning:layoutItem padding="around-small">
+                   <!-- <p>Current Score (temp) {!v.PointObtained}</p>-->
+                      <p>Current Score (temp) {!v.CurrentScore}</p>
+                    <p class="field-header" title="AUTHINFO">MAAP LEVELS
+                      <lightning:buttonIcon iconName="utility:info" variant="bare" onclick="{! c.OpenDescription }"
+                        alternativeText="info" />
+                    </p>
+                  </lightning:layoutItem>
+                  <div class="step-container">
+                    <ul class="progressbar">
+                      <li class="active">
+                        <lightning:layoutItem>
+                          <div class="header-column step-indicator-content">
+                            <p class="field-title show">Level 1</p>
+                            <div>
+                              <p>Level Reached</p>
                             </div>
-                            <div class="slds-form-element">
-                                <label class="slds-form-element__label LabelSize">Member Number</label>
-                                <div class="slds-form-element__control">
-                                        {!v.AccountNumber}                             
-                                </div>
+                          </div>
+                        </lightning:layoutItem>
+                      </li>
+                      <li aura:id="step2" class="two">
+                        <lightning:layoutItem>
+                          <div class="header-column step-indicator-content">
+                            <p class="field-title show" title="HighAchievableLevel" aura:id="Level2IndicatorLabel">To
+                              Get to Level 2 </p>
+                            <aura:if
+                              isTrue="{!or(v.CurrentAuthenticationLevel == 'Level 2',v.CurrentAuthenticationLevel == 'Level 3')}">
+                              <p class="field-title show" title="Level2ReachedLabel" id="Level2ReachedLabel">Level 2
+                              </p>
+                            </aura:if>
+                            <div>
+                              <aura:iteration items="{!v.NextTabLevel2}" var="l2" indexVar="index">
+                                <p>{!l2}</p>
+                              </aura:iteration>
                             </div>
-                            <div class="slds-form-element">
-                                <label class="slds-form-element__label LabelSize">Case Comment</label>
-                                <div class="slds-form-element__control">
-                                        <lightning:textarea aura:id="CaseComment" name="CaseComment" value="" placeholder="type here..." label="" maxlength="30000" />                         
-                                </div>
+                          </div>
+                        </lightning:layoutItem>
+                      </li>
+                      <li aura:id="step3" class="two">
+                        <lightning:layoutItem>
+                          <div class="header-column step-indicator-content">
+                            <p class="field-title show" title="LastAchievable30days" aura:id="Level3IndicatorLabel">To
+                              Get to Level 3</p>
+                            <aura:if isTrue="{!v.CurrentAuthenticationLevel == 'Level 3'}">
+                              <p class="field-title show" title="Level3ReachedLabel" id="Level3ReachedLabel">Level 3
+                              </p>
+                            </aura:if>
+
+                            <div>
+                              <aura:iteration items="{!v.NextTabLevel3}" var="l3" indexVar="index">
+                                <p>{!l3}</p>
+                              </aura:iteration>
                             </div>
-	                   
-	                    
+                          </div>
+                        </lightning:layoutItem>
+                      </li>
+                    </ul>
+                  </div>
+                </lightning:layout>
+              </div>
+            </header>
+          </div>
+
+          <div class="demo-only slds-box rightBox authQuestions">
+            <header class="slds-media slds-media_center slds-has-flexi-truncate">
+              <div class="c-container">
+                <lightning:layout horizontalAlign="spread">
+                  <lightning:layoutItem padding="around-small">
+                    <p class="field-header authQuestion" title="AuthQuestions">MAAP QUESTIONS</p>
+                  </lightning:layoutItem>
+                  
+                  <lightning:tabset>
+                    <aura:if isTrue="{!v.IsKYMTabVisible}">
+                      <lightning:tab label="KYM" aura:id="KYMTab"  id="KYMTab" onactive="{! c.handleActive }" iconName="{!v.KYMIconName}">
+                        <c:KYMAuthentication recordId="{!v.SelectedmemberId}" GUID="{!v.GUID}"
+                          IVRGUIDFromUrl="{!v.IVRGUIDFromUrl}" />
+                      </lightning:tab>
+                    </aura:if>
+
+                    <lightning:tab label="Public Wallet" aura:id="PublicWalletTab"  id="PublicWalletTab" onactive="{! c.handleActive }"
+                                          iconName="{!v.PWIconName}" >
+                     <!--<p>Current Score (temp) {!v.PointObtained}</p>-->
+
+                      <div  id="cmpPublicWallet" class="cmpPublicWallet">
+                        <c:PublicWallet recordId="{!v.SelectedmemberId}" aura:id="PublicWallet" GUID="{!v.GUID}"
+                          PublicWalletStatusForDay="{!v.PublicWalletStatusForDay}" IVRGUIDFromUrl="{!v.IVRGUIDFromUrl}"
+                          MemberNumberFromURL="{!v.MemberNumberFromURL}"
+                          MemberNumberEntered="{!v.MemberNumberEntered}" />
+                      </div>
+
+                    </lightning:tab>
+
+                    <lightning:tab label="CFCU Wallet" aura:id="CFCUWalletTab" id="CFCUWalletTab" onactive="{! c.handleActive }"
+                      iconName="{!v.CFCUIconName}">
+                      <c:CFCUWallet recordId="{!v.SelectedmemberId}" aura:id="CFCUWallet" GUID="{!v.GUID}"
+                        IsCFCUSectionVisible="{!v.IsCFCUSectionVisible}"
+                        CFCUWalletStatusForDay="{!v.CFCUWalletStatusForDay}" IVRGUIDFromUrl="{!v.IVRGUIDFromUrl}"
+                        MemberNumberFromURL="{!v.MemberNumberFromURL}" MemberNumberEntered="{!v.MemberNumberEntered}" />
+                    </lightning:tab>
+
+                    <aura:if isTrue="{!v.IsOOWTabVisible}">
+                      <aura:if isTrue="{!v.IsOOWAvailableOnLoad}">
+                        <lightning:tab label="OOW" aura:id="OOWTab"  id="OOWTab" onactive="{! c.handleActive }"
+                          iconName="{!v.OOWIconName}">
+
+                          <div>
+                            <lightning:button aura:id="OOWsession" variant="brand" label="Start OOW Session"
+                              title="Start OOW Session" onclick="{! c.OpenOOWComponent }" disabled="{!v.Likedisable}" />
+                            <!--  <button aura:id="OOWsession" disabled="{!v.Likedisable}" class="slds-button slds-button_brand OOWsession" onclick="{! c.OpenOOWComponent}">Start OOW Session</button>-->
+                          </div>
+                          <div class="hidden" id="oowComponentdiv">
+                            <c:OOWFlowExecution recordId="{!v.SelectedmemberId}" status="{!v.status}"
+                              reason="{!v.reason}" notes="{!v.notes}" />
+                          </div>
+
+                        </lightning:tab>
+                      </aura:if>
+                    </aura:if>
+                    <lightning:tab label="OTP" aura:id="OTPTab" id="OTPTab" onactive="{!c.handleActive }" iconName="{!v.OTPIconName}">
+                      <div class=" " id="cmpOTPVerification">
+
+                        <c:OTPAuthentication aura:id="OTPAuthentication" recordId="{!v.SelectedmemberId}"
+                          IsCallingfromAuth="{!v.IsAuth}" GUID="{!v.GUID}" OTPStatusForDay="{!v.OTPStatusForDay}"
+                          IVRGUIDFromUrl="{!v.IVRGUIDFromUrl}" MemberNumberFromURL="{!v.MemberNumberFromURL}"
+                          MemberNumberEntered="{!v.MemberNumberEntered}" />
+
+
+
+                      </div>
+                    </lightning:tab>
+                    <aura:if isTrue="{!v.IsDebitTabVisible}">
+                      <lightning:tab label="Debit Card/PIN" id="DebitCardTab" onactive="{! c.handleActive }"
+                        iconName="{!v.DebitIconName}" class="TabDisabled">
+                        {!v.DebitCardMessage}
+                      </lightning:tab>
+                    </aura:if>
+                  </lightning:tabset>
+                </lightning:layout>
+              </div>
+            </header>
+          </div>
+        </aura:if>
+      </div>
+    </div>
+    <div class="groupbtn-parent">
+
+      <lightning:button aura:id="ViewHistory" variant="Neutral" label="View History" title="View History"
+        onclick="{!c.openViewHistoryModel}" />
+      <lightning:button variant="Neutral" label="Clear All" title="Clear All" onclick="{! c.clearAll }" />
+      <lightning:button variant="brand" label="Convert to Lead" title="Convert to Lead" onclick="{!c.ConvertToLead}" />
+      <lightning:button aura:id="CreateCase" variant="brand" label="Unusual Activity Create Case"
+        title="Unusual Activity Create Case" onclick="{! c.openCaseModel }" />
+      <lightning:button aura:id="FailedDesiredLevel" variant="brand" label="Failed Desired Level"
+        title="Failed Desired Level" onclick="{! c.openFailedDesiredLevelModel }" />
+      <lightning:button aura:id="OverrideRequested" variant="brand" label="Override Requested"
+        title="Override Requested" onclick="{! c.openModel}" />
+      <lightning:button variant="brand" label="Save &amp; Go to Member Page" title="Save &amp; Go to Member Page"
+        onclick="{!c.NavigateToMember}" />
+    </div>
+
+    <div class="slds-m-around_xx-large">
+      <aura:if isTrue="{!v.isOpen}">
+
+        <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true"
+          aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open">
+          <div class="slds-modal__container">
+
+            <header class="slds-modal__header">
+              <lightning:buttonIcon iconName="utility:close" onclick="{! c.closeModel }" alternativeText="close"
+                variant="bare-inverse" class="slds-modal__close" />
+              <h2 id="modal-heading-01" class="slds-text-heading_medium slds-hyphenate">Override Requested</h2>
+            </header>
+            <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-1">
+              <p>
+
+              <p><b>Override Request Type</b></p>
+
+              <aura:iteration items="{!v.stages}" var="stage">
+                <lightning:input aura:id="requestType" name="radioGroup" label="{!stage}" value="{!stage}" type="radio"
+                  onchange="{!c.onChange}" />
+              </aura:iteration>
+              <lightning:input aura:id="ManagerComments" name="ManagerComments" label="Comments"
+                class="hidden MarginTop" maxlength="300"
+                messageWhenTooLong="Your entry must be at max 40 characters." />
+              <span id="errorSpaninputOne" class="error hidden">Please enter valid comments</span>
+
+              <span id="errorSpaninput" class="error hidden">Please Select An Override Request Type </span>
+              <lightning:select aura:id="Supervisor" class="hidden" name="Supervisor"
+                label="Override Request Supervisor" required="true" onchange="{!c.onChangeSupervior}">
+                <option value="Select">Select</option>
+                <aura:iteration items="{!v.Supervisor}" var="item">
+                  <option text="{!item.Name}" value="{!item.Name}" />
+                </aura:iteration>
+
+              </lightning:select>
+              <span id="errorSpan" class="error hidden">Please Select a Supervisor </span>
+              </p>
+            </div>
+            <footer class="slds-modal__footer">
+              <lightning:button variant="neutral" label="Cancel" title="Cancel" onclick="{!c.closeModel }" />
+              <lightning:button aura:id="OverrideRequested" variant="brand" label="Save and Close"
+                title="Save and Close" onclick="{!c.AuthenticatedLog}" />
+
+            </footer>
+          </div>
+        </section>
+        <div class="slds-backdrop slds-backdrop_open"></div>
+      </aura:if>
+    </div>
+    <div class="slds-m-around_xx-large">
+      <aura:if isTrue="{!v.isCaseModelOpen}">
+
+        <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true"
+          aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open">
+          <div class="slds-modal__container">
+
+            <header class="slds-modal__header">
+              <lightning:buttonIcon iconName="utility:close" onclick="{! c.closeCaseModel }" alternativeText="close"
+                variant="bare-inverse" class="slds-modal__close" />
+              <h2 id="modal-heading-01" class="slds-text-heading_large slds-hyphenate">Create Case</h2>
+            </header>
+            <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-1">
+              <div class="slds-form-element">
+                <label class="slds-form-element__label LabelSize">Member Name</label>
+                <div class="slds-form-element__control">
+                  {!v.SelectedmemberName}
                 </div>
-	                    <footer class="slds-modal__footer">
-	                        <lightning:button variant="neutral" label="Cancel" title="Cancel" onclick="{!c.closeCaseModel }"/>
-	                        <lightning:button aura:id="CreateCaseModel" variant="brand"  label="Save and Close" title="Save and Close" onclick="{!c.CreateCase}"/>
-                            
-	                    </footer>
-	                </div>
-	               
-	            </section>
-	            <div class="slds-backdrop slds-backdrop_open"></div>
-	        </aura:if>
-   		 </div>
-         
-         <div class="slds-m-around_xx-large">
-            <aura:if isTrue="{!v.isViewHistoryModelOpen}">
-	            
-	            <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true" aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open">
-	                <div class="slds-modal__container" id="viewhistoryDiv">
-	                    
-	                    <header class="slds-modal__header">
-	                        <lightning:buttonIcon iconName="utility:close"
-	                                              onclick="{! c.closeViewHistoryModel }"
-	                                              alternativeText="close"
-	                                              variant="bare-inverse"
-	                                              class="slds-modal__close"/>
-	                        <h2 id="modal-heading-01" class="slds-text-heading_medium slds-hyphenate">MAAP History</h2>
-	                    </header>
-	                    <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-1">
-	                        
-	                        	<div> <c:ViewAuthenticationLogHistory  recordId="{!v.SelectedmemberId}" GUID="{!v.GUID}" /> </div>
-	                   
-	                    
-               			</div>
-	                    <footer class="slds-modal__footer">
-	                        <lightning:button variant="neutral" label="Cancel" title="Cancel" onclick="{!c.closeViewHistoryModel }"/>
-	                                                    
-	                    </footer>
-	                </div>
-	               
-	            </section>
-	            <div class="slds-backdrop slds-backdrop_open"></div>
-	        </aura:if>
-   		 </div>   
-         
-         <div class="slds-m-around_xx-large">
-            <aura:if isTrue="{!v.isFailedDesiredLevelModelOpen}">
-	            
-	            <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true" aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open">
-	                <div class="slds-modal__container" id="viewFDLDiv">
-	                    
-	                    <header class="slds-modal__header">
-	                        <lightning:buttonIcon iconName="utility:close"
-	                                              onclick="{! c.closeFailedDesiredLevelModel }"
-	                                              alternativeText="close"
-	                                              variant="bare-inverse"
-	                                              class="slds-modal__close"/>
-	                        <h2 id="modal-heading-01" class="slds-text-heading_medium slds-hyphenate">Desired Level</h2>
-	                    </header>
-	                    <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-1">
-	                        
-	                        	<div> <c:FailedDesiredLevel  recordId="{!v.SelectedmemberId}" GUID="{!v.GUID}" aura:id ="FailedDesiredLevel" /> </div>
-	                   			
-	                    
-               			</div>
-	                   
-	                </div>
-	               
-	            </section>
-	            <div class="slds-backdrop slds-backdrop_open"></div>
-	        </aura:if>
-   		 </div>
-         
-         <div class="slds-m-around_xx-large">
-            <aura:if isTrue="{!v.isViewDescriptionModelOpen}">
-	            
-	            <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true" aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open">
-	                <div class="slds-modal__container" id="viewDescriptionDiv">
-	                    
-	                    <header class="slds-modal__header">
-	                        <lightning:buttonIcon iconName="utility:close"
-	                                              onclick="{! c.closeViewDedcriptionModel }"
-	                                              alternativeText="close"
-	                                              variant="bare-inverse"
-	                                              class="slds-modal__close"/>
-	                       
-	                    </header>
-	                    <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-1">
-	                        
-	                        	<div> <c:Description /> </div>
-	                   
-	                    
-               			</div>
-	                    <footer class="slds-modal__footer">
-	                        <lightning:button variant="neutral" label="Cancel" title="Cancel" onclick="{!c.closeViewDedcriptionModel }"/>
-	                       	                             
-	                    </footer>
-	                </div>
-	               
-	            </section>
-	            <div class="slds-backdrop slds-backdrop_open"></div>
-	        </aura:if>
-   		 </div>    
-            		 
-    </article> 
-    
+              </div>
+              <div class="slds-form-element">
+                <label class="slds-form-element__label LabelSize">Member Number</label>
+                <div class="slds-form-element__control">
+                  {!v.AccountNumber}
+                </div>
+              </div>
+              <div class="slds-form-element">
+                <label class="slds-form-element__label LabelSize">Case Comment</label>
+                <div class="slds-form-element__control">
+                  <lightning:textarea aura:id="CaseComment" name="CaseComment" value="" placeholder="type here..."
+                    label="" maxlength="30000" />
+                </div>
+              </div>
+
+
+            </div>
+            <footer class="slds-modal__footer">
+              <lightning:button variant="neutral" label="Cancel" title="Cancel" onclick="{!c.closeCaseModel }" />
+              <lightning:button aura:id="CreateCaseModel" variant="brand" label="Save and Close" title="Save and Close"
+                onclick="{!c.CreateCase}" />
+
+            </footer>
+          </div>
+
+        </section>
+        <div class="slds-backdrop slds-backdrop_open"></div>
+      </aura:if>
+    </div>
+
+    <div class="slds-m-around_xx-large">
+      <aura:if isTrue="{!v.isViewHistoryModelOpen}">
+
+        <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true"
+          aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open">
+          <div class="slds-modal__container" id="viewhistoryDiv">
+
+            <header class="slds-modal__header">
+              <lightning:buttonIcon iconName="utility:close" onclick="{! c.closeViewHistoryModel }"
+                alternativeText="close" variant="bare-inverse" class="slds-modal__close" />
+              <h2 id="modal-heading-01" class="slds-text-heading_medium slds-hyphenate">MAAP History</h2>
+            </header>
+            <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-1">
+
+              <div>
+                <c:ViewAuthenticationLogHistory recordId="{!v.SelectedmemberId}" GUID="{!v.GUID}" />
+              </div>
+
+
+            </div>
+            <footer class="slds-modal__footer">
+              <lightning:button variant="neutral" label="Cancel" title="Cancel" onclick="{!c.closeViewHistoryModel }" />
+
+            </footer>
+          </div>
+
+        </section>
+        <div class="slds-backdrop slds-backdrop_open"></div>
+      </aura:if>
+    </div>
+
+    <div class="slds-m-around_xx-large">
+      <aura:if isTrue="{!v.isFailedDesiredLevelModelOpen}">
+
+        <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true"
+          aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open">
+          <div class="slds-modal__container" id="viewFDLDiv">
+
+            <header class="slds-modal__header">
+              <lightning:buttonIcon iconName="utility:close" onclick="{! c.closeFailedDesiredLevelModel }"
+                alternativeText="close" variant="bare-inverse" class="slds-modal__close" />
+              <h2 id="modal-heading-01" class="slds-text-heading_medium slds-hyphenate">Desired Level</h2>
+            </header>
+            <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-1">
+
+              <div>
+                <c:FailedDesiredLevel recordId="{!v.SelectedmemberId}" GUID="{!v.GUID}" aura:id="FailedDesiredLevel" />
+              </div>
+
+
+            </div>
+
+          </div>
+
+        </section>
+        <div class="slds-backdrop slds-backdrop_open"></div>
+      </aura:if>
+    </div>
+
+    <div class="slds-m-around_xx-large">
+      <aura:if isTrue="{!v.isViewDescriptionModelOpen}">
+
+        <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true"
+          aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open">
+          <div class="slds-modal__container" id="viewDescriptionDiv">
+
+            <header class="slds-modal__header">
+              <lightning:buttonIcon iconName="utility:close" onclick="{! c.closeViewDedcriptionModel }"
+                alternativeText="close" variant="bare-inverse" class="slds-modal__close" />
+
+            </header>
+            <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-1">
+
+              <div>
+                <c:Description />
+              </div>
+
+
+            </div>
+            <footer class="slds-modal__footer">
+              <lightning:button variant="neutral" label="Cancel" title="Cancel"
+                onclick="{!c.closeViewDedcriptionModel }" />
+
+            </footer>
+          </div>
+
+        </section>
+        <div class="slds-backdrop slds-backdrop_open"></div>
+      </aura:if>
+    </div>
+
+  </article>
+
 </aura:component>
