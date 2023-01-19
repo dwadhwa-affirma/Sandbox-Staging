@@ -591,4 +591,12 @@ border: 0px;
     min-width: 20rem;
 }
 
+.THIS .tab-active {
+    --sds-c-tabs-scoped-color-text-active: yellow !important;
+}
+
+.THIS slds-tabs--default__nav li.slds-active{
+    background: yellow;
+}
+
 }
