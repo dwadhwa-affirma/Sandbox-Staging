@@ -31,8 +31,6 @@ public class LeadTriggerHelper
                 set<ID> ids = getNewleadIds(newLeadList);
 
                 //the history list to query later in the updatehoursSpent method
-                List<LeadHistory> hrsHoursHistory=new list<LeadHistory>();
-                //hrsHoursHistory = getFieldHistory(hrsHoursHistory,ids);
 
                 for (Lead lead : newleadList){
                     Lead oldlead = mapOldLead.get(lead.Id);
@@ -47,19 +45,19 @@ public class LeadTriggerHelper
                     //based on the current status of the leadortunity
                     if (oldStatus == 'New')
                     {
-                        LeadTriggerService.updateHoursSpent('New', oldStatus, lead,hrsHoursHistory);
+                        LeadTriggerService.updateHoursSpent('New', oldStatus, lead);
                     }
                     if (oldStatus == 'Outreach')
                     {
-                        LeadTriggerService.updateHoursSpent('Outreach', oldStatus, lead,hrsHoursHistory);
+                        LeadTriggerService.updateHoursSpent('Outreach', oldStatus, lead);
                     }
                     if (oldStatus == 'Considering')
                     {
-                        LeadTriggerService.updateHoursSpent('Considering', oldStatus, lead,hrsHoursHistory);
+                        LeadTriggerService.updateHoursSpent('Considering', oldStatus, lead);
                     }
                     if (oldStatus == 'Analyzing Needs')
                     {
-                        LeadTriggerService.updateHoursSpent('Analyzing Needs', oldStatus, lead,hrsHoursHistory);
+                        LeadTriggerService.updateHoursSpent('Analyzing Needs', oldStatus, lead);
                     }
                     
                 }
@@ -72,15 +70,7 @@ public class LeadTriggerHelper
                 mapOldLead.put(ol.Id, ol);
             }
             return mapOldLead;
-        }
-
-        private List<LeadHistory> getFieldHistory(List<LeadHistory> hrsHoursHistory,set<id> ids)
-        {
-            hrsHoursHistory=[Select Id,LeadId, CreatedById, CreatedDate,Field, NewValue, OldValue from LeadHistory  where 
-                    ( field = 'Hour_Spent_Outreach_Status__c' or field = 'Hour_Spent_New_Status__c' or field = 'Hour_Spent_Analyzing_Needs_Status__c' or field = 'Hour_Spent_Considering_Status__c'  ) 
-                    and LeadId IN: ids Order by CreatedDate DESC ];
-            return hrsHoursHistory;
-        }
+        }        
 
         private set<id> getNewLeadIds(List<Lead> newleadList)
         {
@@ -91,11 +81,4 @@ public class LeadTriggerHelper
             return ids;
         }
 
-        
-
-        
-    
-
-    
-    
 }
