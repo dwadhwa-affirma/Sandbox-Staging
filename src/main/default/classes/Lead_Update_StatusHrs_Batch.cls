@@ -10,7 +10,7 @@ global class Lead_Update_StatusHrs_Batch implements Database.Batchable<sObject>{
         List<String> spltstatus = getleadstatus.split(',');
 
         //query = 'SELECT id,Event_Source__c,Product_Type__c,LeadSource,Status,SLA__c,SLA_New__c,SLA_Outreach__c,SLA_Considering__c,SLA_Analyzing_Needs__c, SLA_Breached_New_Status__c, SLA_Breached_Outreach_Status__c, SLA_Breached_Considering_Status__c,SLA_Breached_Analyzing_Needs_Status__c, Hour_Spent_New_Status__c,Hour_Spent_Outreach_Status__c,Hour_Spent_Considering_Status__c,Hour_Spent_Analyzing_Needs_Status__c,TimeStamp_New_status__c,TimeStamp_Outreach_status__c,TimeStamp_Considering_status__c,TimeStamp_Analyzing_Needs_status__c,Total_Lead_Business_Hours__c FROM Lead WHERE CreatedDate=LAST_N_DAYS:15 AND Status IN (\'' + string.join(spltstatus, '\',\'') + '\') AND SLA__c!=null AND SLA__c > 0 Order by CreatedDate DESC';
-        query = 'SELECT id,Last_TimeStamp_Updated__c,Event_Source__c,Product_Type__c,LeadSource,Status,SLA__c,SLA_New__c,SLA_Outreach__c,SLA_Considering__c,SLA_Analyzing_Needs__c, SLA_Breached_New_Status__c, SLA_Breached_Outreach_Status__c, SLA_Breached_Considering_Status__c,SLA_Breached_Analyzing_Needs_Status__c, Hour_Spent_New_Status__c,Hour_Spent_Outreach_Status__c,Hour_Spent_Considering_Status__c,Hour_Spent_Analyzing_Needs_Status__c,TimeStamp_New_status__c,TimeStamp_Outreach_status__c,TimeStamp_Considering_status__c,TimeStamp_Analyzing_Needs_status__c,Total_Lead_Business_Hours__c FROM Lead WHERE CreatedDate=LAST_N_DAYS:5 AND SLA__c!=null  Order by CreatedDate DESC';
+        query = 'SELECT id,Last_TimeStamp_Updated__c,Event_Source__c,Product_Type__c,LeadSource,Status,SLA__c,SLA_New__c,SLA_Outreach__c,SLA_Considering__c,SLA_Analyzing_Needs__c, SLA_Breached_New_Status__c, SLA_Breached_Outreach_Status__c, SLA_Breached_Considering_Status__c,SLA_Breached_Analyzing_Needs_Status__c, Hour_Spent_New_Status__c,Hour_Spent_Outreach_Status__c,Hour_Spent_Considering_Status__c,Hour_Spent_Analyzing_Needs_Status__c,TimeStamp_New_status__c,TimeStamp_Outreach_status__c,TimeStamp_Considering_status__c,TimeStamp_Analyzing_Needs_status__c,Total_Lead_Business_Hours__c FROM Lead WHERE Last_TimeStamp_Updated__c=LAST_N_DAYS:10 AND SLA__c!=null AND Status IN (\'' + string.join(spltstatus, '\',\'') + '\') Order by CreatedDate DESC';
 		
         system.debug('query##'+ query); 
 
@@ -41,12 +41,6 @@ global class Lead_Update_StatusHrs_Batch implements Database.Batchable<sObject>{
                 ListAllHoursSpentFieldNames.add('Hour_Spent_' + val.replace(' ', ('_')) + '_Status__c');
             }
         }
-        List<LeadHistory> hrsHistory = new list<LeadHistory>();
-        /*hrsHistory = [Select Id, LeadId, CreatedById, CreatedDate, Field, NewValue, OldValue
-                      from LeadHistory
-                      where (field = 'Hour_Spent_Outreach_Status__c' or field = 'Hour_Spent_New_Status__c' or field = 'Hour_Spent_Analyzing_Needs_Status__c' or field = 'Hour_Spent_Considering_Status__c') and LeadId IN:leadIds
-                      Order by CreatedDate DESC];*/
-        
         List<lead> lstLeadToUpdate=new List<lead>();
         //For updating the Hour spent field dynamically //
         for (lead l : LeadList){
@@ -64,33 +58,15 @@ global class Lead_Update_StatusHrs_Batch implements Database.Batchable<sObject>{
             List<String> listHoursSpentFieldNames = new List<String>();
             listHoursSpentFieldNames = ListAllHoursSpentFieldNames;
             Integer i = listHoursSpentFieldNames.size()-1;
-            /*while (i >= 0 ){
-                if (listHoursSpentFieldNames.get(i).contains(HoursSpentFieldName)){
-                    listHoursSpentFieldNames.remove(i);
-                    i--;
-                } else{
-                    i--;
-                }
-            }*/
 
             DateTime timeStampFieldValue = l.Last_TimeStamp_Updated__c;
             if ((timeStampFieldValue != null)){
                 boolean isHoursFieldsNotNull = false;
-                Datetime hrsHistoryT;
-
-                LeadHistory tempobj = null;//findHistoryObject(l.id, hoursSpentFieldName, hrsHistory);
                 DateTime valueforDifference;
-                if (tempobj != null){
-                    hrsHistoryT = tempobj.CreatedDate;
-                    if (hrsHistoryT > (datetime) (l.get(statusTimeStampFieldName))){
-                        valueforDifference = hrsHistoryT;
-                    } else{
-                        valueforDifference = timeStampFieldValue;
-                    }
-                } else{
-                    valueforDifference = timeStampFieldValue;   
-                }
-
+                
+                //read from Last timestamp Updated field instead of history object
+                valueforDifference = timeStampFieldValue;   
+                
                 for (string s : ListHoursSpentFieldNames){
                     if ((l.get(s) != null)){
                         isHoursFieldsNotNull = true;
@@ -98,55 +74,43 @@ global class Lead_Update_StatusHrs_Batch implements Database.Batchable<sObject>{
                     }
                 }
 
-                SLA_Update_Hours_Setting__mdt slaUpdateHrsSetting = SLA_Update_Hours_Setting__mdt.getInstance('MaxHoursToUpdate');
-
                 if (isHoursFieldsNotNull == false){
                     timespent = getTimeDifference(timeStampFieldValue, stdBusinessHours);
                     finalresult = timespent;
-                    if(l.Total_Lead_Business_Hours__c <= slaUpdateHrsSetting.Max_Hours_to_Update__c) {
-
-                        l.put(hoursSpentFieldName, finalresult);
-                        l.put('Last_TimeStamp_Updated__c',DateTime.now());
-                        system.debug('slaDurationFieldName#' + slaDurationFieldName);
-                        system.debug('slaDuration#'+ l.get(slaDurationFieldName));
-                        system.debug('leadid##' + l.id); 
-                        if((l.get(slaDurationFieldName) != null)) {
-                            slaDuration = (decimal) l.get(slaDurationFieldName);
-                            if(sladuration > 0 && (finalresult > slaDuration)){
-                                l.put(slaBreachedFieldName, true);
-                            }else{
-                                l.put(slaBreachedFieldName, false);
-                            }
+                    
+                    l.put(hoursSpentFieldName, finalresult);
+                    l.put('Last_TimeStamp_Updated__c',DateTime.now());
+                    if((l.get(slaDurationFieldName) != null)) {
+                        slaDuration = (decimal) l.get(slaDurationFieldName);
+                        if(sladuration > 0 && (finalresult > slaDuration)){
+                            l.put(slaBreachedFieldName, true);
+                        }else{
+                            l.put(slaBreachedFieldName, false);
                         }
+                    }
 
-                        lstLeadToUpdate.add(l);
-                    } 
+                    lstLeadToUpdate.add(l);
+                     
 
                 } else{
                     system.debug('ValueforDifference##'+ ValueforDifference);
                     timespent = getTimeDifference(ValueforDifference, stdBusinessHours);
                     finalresult = l.get(hoursSpentFieldName) != null ? (decimal) l.get(hoursSpentFieldName) + timespent : timespent;
 
-                    if(l.Total_Lead_Business_Hours__c <= slaUpdateHrsSetting.Max_Hours_to_Update__c) {
-
-                        system.debug('finalresult'+ finalresult);
-                        l.put(hoursSpentFieldName, finalresult);
-                        l.put('Last_TimeStamp_Updated__c',DateTime.now());
-                        system.debug('slaDurationFieldName#' + slaDurationFieldName);
-                        system.debug('slaDuration#'+ l.get(slaDurationFieldName));    
-                        system.debug('leadid##' + l.id);
-                        if((l.get(slaDurationFieldName) != null)) {
-                            slaDuration = (decimal) l.get(slaDurationFieldName);
-                            if(slaDuration > 0 && (finalresult > slaDuration)){
-                                l.put(slaBreachedFieldName, true);
-                            }else{
-                                l.put(slaBreachedFieldName, false);
-                            }
-                            
+                    system.debug('finalresult'+ finalresult);
+                    l.put(hoursSpentFieldName, finalresult);
+                    l.put('Last_TimeStamp_Updated__c',DateTime.now());
+                    if((l.get(slaDurationFieldName) != null)) {
+                        slaDuration = (decimal) l.get(slaDurationFieldName);
+                        if(slaDuration > 0 && (finalresult > slaDuration)){
+                            l.put(slaBreachedFieldName, true);
+                        }else{
+                            l.put(slaBreachedFieldName, false);
                         }
-
-                        lstLeadToUpdate.add(l);
+                        
                     }
+
+                    lstLeadToUpdate.add(l);
                 }
             }
         }
@@ -172,16 +136,4 @@ global class Lead_Update_StatusHrs_Batch implements Database.Batchable<sObject>{
 
         return timespent;
     }
-
-    private LeadHistory findHistoryObject(id leadId, string fieldName, List<LeadHistory> hrsHistory){
-        LeadHistory leadhistory = new LeadHistory();
-        for (LeadHistory fldHistory : hrsHistory){
-            if (fldHistory.LeadId == leadId && fldHistory.Field.toLowerCase() == fieldName.toLowerCase()){
-                leadhistory = fldHistory;
-                break;
-            }
-        }
-        return leadhistory;
-    }
-
 }

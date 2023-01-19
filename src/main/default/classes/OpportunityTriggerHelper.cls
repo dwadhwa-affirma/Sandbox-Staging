@@ -41,40 +41,28 @@ public void updateSLAFields(List<Opportunity> newOppList, List<Opportunity> oldO
 
                 set<ID> ids = getNewOppIds(newOppList);
                 
-                //the history list to query later in the updatehoursSpent method
-                List<OpportunityFieldHistory> hrsHoursHistory = new list<OpportunityFieldHistory>();
-                //hrsHoursHistory = getFieldHistory(hrsHoursHistory,ids);
-
                 updateSLAFieldsForUpdate(opp, oldOpportunity, stdBusinessHours);
                 
-                /*decimal oldSLA = getSLA(opp,oldStatus);
-                boolean updateHours = false;
-                if (oldSLA != null && oldSLA > 0)
-                {
-                    updateHours = true;
-                }*/
                 //update hours spent for all statuses - the logic will update in only one instance below
                 //based on the current status of the opportunity
-                if (oldStatus == 'New')
-                {
-                    updateHoursSpent('New', oldStatus, opp,hrsHoursHistory);
-                }
-                if (oldStatus == 'Outreach')
-                {
-                    updateHoursSpent('Outreach', oldStatus, opp,hrsHoursHistory);
-                }
-                if (oldStatus == 'Considering')
-                {
-                    updateHoursSpent('Considering', oldStatus, opp,hrsHoursHistory);
-                }
-                if (oldStatus == 'Analyzing Needs')
-                {
-                    updateHoursSpent('Analyzing Needs', oldStatus, opp,hrsHoursHistory);
-                }
-                if (oldStatus == 'Fulfilment')
-                {
-                    updateHoursSpent('Fulfilment', oldStatus, opp,hrsHoursHistory);
-                }
+                // If null, this record does not need time fields updated.
+                if(opp.Last_TimeStamp_Updated__c != null) {
+                  if (oldStatus == 'New') {
+                    updateHoursSpent('New', oldStatus, opp);
+                  }
+                  if (oldStatus == 'Outreach') {
+                    updateHoursSpent('Outreach', oldStatus, opp);
+                  }
+                  if (oldStatus == 'Considering') {
+                    updateHoursSpent('Considering', oldStatus, opp);
+                  }
+                  if (oldStatus == 'Analyzing Needs') {
+                    updateHoursSpent('Analyzing Needs', oldStatus, opp);
+                  }
+                  if (oldStatus == 'Fulfillment') {
+                    updateHoursSpent('Fulfillment', oldStatus, opp);
+                  }
+              }
             }
         }
     }
@@ -88,37 +76,17 @@ public void updateSLAFields(List<Opportunity> newOppList, List<Opportunity> oldO
         return ids;
     }
 
-    private List<OpportunityFieldHistory> getFieldHistory(List<OpportunityFieldHistory> hrsHoursHistory,set<id> ids)
-    {
-        system.debug('ids##' + ids);
-        hrsHoursHistory=[Select Id,Opportunity.id, CreatedById, CreatedDate,Field, NewValue, OldValue from OpportunityFieldHistory where 
-                            ( field = 'Hour_Spent_Outreach_Status__c' or field = 'Hour_Spent_New_Status__c' or field = 'Hour_Spent_Analyzing_Needs_Status__c' 
-                            or field = 'Hour_Spent_Considering_Status__c' or field = 'Hour_Spent_Fulfillment_Status__c')  
-                            and Opportunity.id IN: ids Order by CreatedDate DESC];
-        return hrsHoursHistory;
-    }
-    
-    private void updateHoursSpent(String status,string oldStatus, Opportunity opp,List<OpportunityFieldHistory> hrsHistory)
+    private void updateHoursSpent(String status,string oldStatus, Opportunity opp)
     {
         decimal hoursSpent;
-        
+       
         if (opp.StageName != status && oldStatus == status && getTimeStampFieldValue(status,opp) != null){
-            OpportunityFieldHistory oppFldHistoryobj=null; //findHistoryObject(opp.id,'Hour_Spent_' + status.replace(' ','_') +'_Status__c',HrsHistory);
+            
             DateTime valueforDifference;
+            //get last timestamp from last_timestamp_updated__c instead of the history object
             DateTime timeStampFieldValue = opp.Last_TimeStamp_Updated__c;  //getTimeStampFieldValue(status,opp);
             
-            if(oppFldHistoryobj != null){
-                DateTime historyTimeStamp=oppFldHistoryobj.CreatedDate;
-                if(historyTimeStamp > timeStampFieldValue){
-                    valueforDifference = historyTimeStamp;
-                }
-                else{
-                    valueforDifference = timeStampFieldValue;
-                }
-            }
-            else{
-                valueforDifference = timeStampFieldValue;
-            }
+            valueforDifference = timeStampFieldValue;
 
             if(getOtherFieldsAreNull(status,opp) )
             {
@@ -131,18 +99,7 @@ public void updateSLAFields(List<Opportunity> newOppList, List<Opportunity> oldO
             }
         }
     }
-
-    private OpportunityFieldHistory findHistoryObject(id opportunityID,string fieldName,List<OpportunityFieldHistory> hrsHistory)
-    {
-        for(OpportunityFieldHistory fldHistory: hrsHistory)
-        {
-            if (fldHistory.OpportunityID == opportunityID && fldHistory.Field.toLowerCase() == fieldName.toLowerCase() )
-            {
-                return fldHistory;
-            }
-        }
-        return null;
-    }
+    
 @testvisible
     private void updateTimeStampOnOpp(String status,Opportunity opp,decimal hoursSpent,boolean addPreviousValue)
     {
@@ -194,7 +151,7 @@ public void updateSLAFields(List<Opportunity> newOppList, List<Opportunity> oldO
                 }
                 opp.Last_TimeStamp_Updated__c = DateTime.now();
             }
-            when 'Fulfilment'
+            when 'Fulfillment'
             {
                 if (addPreviousValue)
                 {
@@ -229,7 +186,7 @@ public void updateSLAFields(List<Opportunity> newOppList, List<Opportunity> oldO
             {
                 return opp.Hour_Spent_New_Status__c == null && opp.Hour_Spent_Considering_Status__c == null && opp.Hour_Spent_Outreach_Status__c == null && opp.Hour_Spent_Fulfillment_Status__c == null; 
             }
-            when 'Fulfilment'
+            when 'Fulfillment'
             {
                 return opp.Hour_Spent_New_Status__c == null && opp.Hour_Spent_Considering_Status__c == null && opp.Hour_Spent_Outreach_Status__c == null && opp.Hour_Spent_Analyzing_Needs_Status__c == null; 
             }
@@ -258,7 +215,7 @@ public void updateSLAFields(List<Opportunity> newOppList, List<Opportunity> oldO
             {
                 return opp.TimeStamp_Analyzing_Needs_status__c;
             }
-            when 'Fulfilment'
+            when 'Fulfillment'
             {
                 return opp.TimeStamp_Fulfillment_status__c;    
             }
@@ -458,17 +415,9 @@ public void updateSLAFields(List<Opportunity> newOppList, List<Opportunity> oldO
                 opp.Yellow_Start_Time_Fulfillment_Status__c = addBusinessHours(stdBusinessHours.id,opp.TimeStamp_Fulfillment_status__c,(decimal)(opp.SLA_Business_Hours__c-1));
                 opp.SLA_Start_Time_Fulfillment_Status__c = addBusinessHours(stdBusinessHours.id,opp.TimeStamp_Fulfillment_status__c,(decimal)opp.SLA_Business_Hours__c);
         } 
-
-           /* if(opp.Hour_Spent_Fulfillment_Status__c != null && opp.Hour_Spent_Fulfillment_Status__c != 0){
-                opp.Yellow_Start_Time_Fulfillment_Status__c = addBusinessHours(stdBusinessHours.id,opp.Yellow_Start_Time_Fulfillment_Status__c,-(Long)(opp.Hour_Spent_Fulfillment_Status__c));
-                opp.SLA_Start_Time_Fulfillment_Status__c = addBusinessHours(stdBusinessHours.id,opp.SLA_Start_Time_Fulfillment_Status__c,-(Long)opp.Hour_Spent_Fulfillment_Status__c);
-            }*/
-        }
-        
-        
-
-
+      
     }
+}
 
     private datetime addBusinessHours(ID standardBusinessHourId,Datetime startDate,decimal interval)
     {

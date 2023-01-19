@@ -38,9 +38,9 @@ trigger LeadBusinessHours on Lead(after insert, after update, before insert, bef
     NewLeadSources = slaDefList[0].Opportunity_Source__c; // First Definition is used for Lead Source Breaches
     
     if (Trigger.isAfter) {
-      if(userName == 'Automated Process') {
-        return;
-      }
+      // if(userName == 'Automated Process') {
+      //   return;
+      // }
         List<OpenHours__c> openHours = new List<OpenHours__c>();
         for (Lead lead : Trigger.new ){
             if (Trigger.isInsert && Trigger.isAfter){

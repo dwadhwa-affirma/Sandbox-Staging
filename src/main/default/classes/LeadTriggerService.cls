@@ -7,9 +7,8 @@ public class LeadTriggerService {
             String productType = objLead.Product_Type__c;
             String leadSource = objLead.LeadSource;
             String status = leadStatus;
-            system.debug('Label##' + key);
+            
             if(slaManagerMap.get(key).Object_Name__c == 'Lead' && slaManagerMap.get(key).Event_Source__c == '*'){
-                system.debug('inside....');
                 eventSource = '*';
 
             }
@@ -25,11 +24,14 @@ public class LeadTriggerService {
                 status = '*';
                 
             }
-            system.debug('eventsource#' + eventsource);
-            if( (eventsource != null && slaManagerMap.get(key).Event_Source__c != null && slaManagerMap.get(key).Event_Source__c.toLowerCase().contains(eventSource.toLowerCase())) && slaManagerMap.get(key).Product_Type__c == productType && (leadSource !=null && slaManagerMap.get(key).Opportunity_Source__c.toLowerCase().contains(leadSource.toLowerCase()) ) && slaManagerMap.get(key).StageName__c == status ){
-                return (decimal)slaManagerMap.get(key).SLA__c;
+            
+            if (slaManagerMap.get(key).Object_Name__c == 'Lead')
+            {
+                if( (eventsource != null && slaManagerMap.get(key).Event_Source__c != null && slaManagerMap.get(key).Event_Source__c.toLowerCase().contains(eventSource.toLowerCase())) && slaManagerMap.get(key).Product_Type__c == productType && (leadSource !=null && slaManagerMap.get(key).Opportunity_Source__c.toLowerCase().contains(leadSource.toLowerCase()) ) && slaManagerMap.get(key).StageName__c == status ){
+                    return (decimal)slaManagerMap.get(key).SLA__c;
+                }
             }
-            system.debug('end key#');
+            
         }
         
         return 0.0;
@@ -50,27 +52,15 @@ public class LeadTriggerService {
 
         return hh;
     }
-    public static void updateHoursSpent(String status,string oldStatus, Lead lead,List<LeadHistory> hrsHistory)
+    public static void updateHoursSpent(String status,string oldStatus, Lead lead)
     {
         decimal hoursSpent;
         
         if (lead.status != status && oldStatus == status && lead.Last_TimeStamp_Updated__c != null){
-            LeadHistory leadFldHistoryobj= null;   //LeadTriggerService.findHistoryObject(lead.id,'Hour_Spent_' + status.replace(' ','_') +'_Status__c',HrsHistory);
             Datetime valueforDifference;
             DateTime timeStampFieldValue = lead.Last_TimeStamp_Updated__c;//LeadTriggerService.getTimeStampFieldValue(status,lead);
-            if(leadFldHistoryobj != null){
-                DateTime historyTimeStamp=leadFldHistoryobj.CreatedDate;
-                
-                if(historyTimeStamp > timeStampFieldValue){
-                    ValueforDifference = historyTimeStamp;
-                }
-                else{
-                    ValueforDifference = timeStampFieldValue;
-                }
-            }
-            else{
-                ValueforDifference = timeStampFieldValue;
-            }
+            
+            ValueforDifference = timeStampFieldValue;
 
             if(LeadTriggerService.getOtherFieldsAreNull(status,lead) )
             {
@@ -186,6 +176,7 @@ public class LeadTriggerService {
             string oldProductType = oldlead.Product_Type__c;
             string oldleadSource = oldlead.LeadSource;
             decimal sla = getSLA(lead, lead.Status);
+            
 
             if (lead.Status == 'New' && oldStatus != 'New'){
                 lead.TimeStamp_New_status__c = DateTime.now();
@@ -244,13 +235,6 @@ public class LeadTriggerService {
                     }
                 }
             }
-            /*else if(lead.SLA__c!=null && oldSLAhours!=null ){
-                if(lead.SLA__c!=oldSLAhours){
-                lead.SLA_Yellow_Start_Time__c = LeadTriggerService.addBusinessHours(stdBusinessHours.id, currentTime, (Long) lead.SLA__c - 1);                            
-                lead.SLA_Breach_Time__c = LeadTriggerService.addBusinessHours(stdBusinessHours.id, currentTime, (Long) lead.SLA__c - 1);
-                }  
-
-            }*/
     }
 
     public static DateTime getTimeStampFieldValue(String status,Lead lead){
@@ -288,17 +272,7 @@ public class LeadTriggerService {
         {
             return BusinessHours.addgmt(standardBusinessHourId, startDate, -(Long) ((interval) * 3600000));
         }
-        public static LeadHistory findHistoryObject(id leadID,string fieldName,List<LeadHistory> hrsHistory)
-        {
-            for(LeadHistory fldHistory: hrsHistory)
-            {
-                if (fldHistory.LeadID == leadID && fldHistory.Field.toLowerCase() == fieldName.toLowerCase() )
-                {
-                    return fldHistory;
-                }
-            }
-            return null;
-        }
+        
         public static boolean getOtherFieldsAreNull(string status, Lead lead)
         {   
             switch on status
@@ -378,5 +352,4 @@ public class LeadTriggerService {
                 }           
             }
         }
-
 }
