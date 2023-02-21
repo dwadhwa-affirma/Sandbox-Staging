@@ -4,6 +4,7 @@
         var action = component.get("c.getPublicWalletInfo");
         action.setParams({"MemberId": memberId,"IVRGUIDFromUrl":IVRGUIDFromUrl});
         action.setCallback(this, function (response) {
+            
             var status = response.getState();            
             if (component.isValid() && status === "SUCCESS") {
                 var result = response.getReturnValue();
@@ -59,7 +60,7 @@
                     component.set("v.DefaultEmailSelected", result.DefaultEmailInList);
                 }
                 
-                
+                debugger;
                 if(component.get("v.IsUserSessionLoaded") == true)
                 {
                     if(result.DOBMatch == undefined){
@@ -236,7 +237,10 @@
                         
                     }
                     
-                    if(result.PublicWalletStatus =='Fail' && component.get("v.IsUserSessionLoaded") == false)
+                   
+                }
+                
+                 if(result.PublicWalletStatus =='Fail' && component.get("v.IsUserSessionLoaded") == false)
                     {
                         if(result.DOBMatch != undefined)
                         {
@@ -327,7 +331,6 @@
                     {
                         helper.buttonOnLoad(component, event, helper);
                     }
-                }
                 
                 if(result.RePublicWalletStatus != undefined && component.get("v.IsReLoadRequired") == true)
                 {

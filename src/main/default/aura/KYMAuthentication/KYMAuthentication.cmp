@@ -4,8 +4,14 @@
     <aura:attribute name="selectedKYMvalue" type="string" default="Select"/>
     <aura:attribute name="GUID" type="string"/>
     <aura:attribute name="IVRGUIDFromUrl" type="string" />
-    
+    <aura:attribute name="IsReLoadRequired" type="boolean" default="false"/>
+    <aura:attribute name="IsUserSessionLoaded" type="boolean" default="false"/>  
     <aura:attribute name="IsSubmitClicked" type="boolean" default="false"/>
+    <aura:method name="KYMMethod" action="{!c.doInit}" access="PUBLIC"> 
+        <aura:attribute name="param1" type="String"/>
+        <aura:attribute name="param2" type="boolean"/> 
+        <aura:attribute name="param3" type="boolean"/>
+    </aura:method>
    <div >
       	 <div class="divwidth">
                 <lightning:select name="distance" aura:id="statusPicklist" label="How do you know this member?" onchange="{!c.onChange}"  value="{!v.selectedKYMvalue}">

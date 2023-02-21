@@ -16,6 +16,7 @@
        // component.find("AdditionalToken2").set("v.value","Select");
         
         helper.buttonOnLoad(component, event, helper);
+        debugger;
         var params = event.getParam('arguments');
         if (params) {
             var IsReLoadRequired =  params.param2;
@@ -71,13 +72,14 @@
             var ButtonId = event.getSource().getLocalId();
             var Button = event.getSource();
             var findOtherButton;
-            findOtherButton = component.find('DobFailButton');
+            
             var QuestionAttempt = component.get("v.QuestionAttempt");
             var token1 = component.find("AdditionalToken1").get("v.value");
            // var token2 = component.find("AdditionalToken2").get("v.value");
             var ScoreObtained = component.get("v.ScoreObtained");
             var FailedCount = component.get("v.FailedCount");
             if(ButtonId =='DobPassButton'){
+                findOtherButton = component.find('DobFailButton');
                 if(Button.get("v.variant") ==  "success"){
                     Button.set("v.variant", "neutral");
                     QuestionAttempt = parseInt(QuestionAttempt) - 1;
@@ -120,6 +122,12 @@
                 }
                 else if(Button.get("v.variant") ==  "neutral" && findOtherButton.get("v.variant" ) == "neutral"){
                     QuestionAttempt = parseInt(QuestionAttempt) + 1;
+                    Button.set("v.variant", "destructive");
+                    DOBMatch = 'Fail';
+                    FailedCount = parseInt(FailedCount) + 1;
+                    //ScoreObtained = parseInt(ScoreObtained) - 1;  
+                }
+                else if(Button.get("v.variant") ==  "neutral" && findOtherButton.get("v.variant" ) == "success"){                    
                     Button.set("v.variant", "destructive");
                     DOBMatch = 'Fail';
                     FailedCount = parseInt(FailedCount) + 1;
@@ -190,6 +198,12 @@
                             Button.set("v.variant", "destructive");
                             FailedCount = parseInt(FailedCount) + 1;
                             IdNumberMatch = 'Fail';
+                            //ScoreObtained = parseInt(ScoreObtained) - 1;  
+                        }
+                        else if(Button.get("v.variant") ==  "neutral" && findOtherButton.get("v.variant" ) == "success"){                    
+                            Button.set("v.variant", "destructive");
+                            IdNumberMatch = 'Fail';
+                            FailedCount = parseInt(FailedCount) + 1;
                             ScoreObtained = parseInt(ScoreObtained) - 1;  
                         }
                         else
@@ -248,7 +262,7 @@
                             else if(ButtonId =='MothersMaidenNameFailButton'){        
                                 
                                
-                                
+                                findOtherButton = component.find('MothersMaidenNamePassButton')
                                 if(Button.get("v.variant") ==  "destructive"){
                                     Button.set("v.variant", "neutral");
                                      QuestionAttempt = parseInt(QuestionAttempt) - 1;
@@ -261,7 +275,13 @@
                                     Button.set("v.variant", "destructive");
                                      FailedCount = parseInt(FailedCount) + 1;
                                      MMNMatch = 'Fail';
-                                     ScoreObtained = parseInt(ScoreObtained) - 1;  
+                                     //ScoreObtained = parseInt(ScoreObtained) - 1;  
+                                }
+                                else if(Button.get("v.variant") ==  "neutral" && findOtherButton.get("v.variant" ) == "success"){                    
+                                    Button.set("v.variant", "destructive");
+                                    MMNMatch = 'Fail';
+                                    FailedCount = parseInt(FailedCount) + 1;
+                                    ScoreObtained = parseInt(ScoreObtained) - 1;  
                                 }
                                 else
                                 {
@@ -331,6 +351,12 @@
                                             FailedCount = parseInt(FailedCount) + 1;
                                             Button.set("v.variant", "destructive");
                                             EmailMatch = 'Fail';
+                                            //ScoreObtained = parseInt(ScoreObtained) - 1;  
+                                        }
+                                        else if(Button.get("v.variant") ==  "neutral" && findOtherButton.get("v.variant" ) == "success"){                    
+                                            Button.set("v.variant", "destructive");
+                                            EmailMatch = 'Fail';
+                                            FailedCount = parseInt(FailedCount) + 1;
                                             ScoreObtained = parseInt(ScoreObtained) - 1;  
                                         }
                                         else
@@ -415,7 +441,13 @@
                                                             Button.set("v.variant", "destructive");
                                                              AdditionalTokenOption3Match = 'Fail';
                                                              component.set("v.AdditionalTokenOption3",token1); 
-                                                             ScoreObtained = parseInt(ScoreObtained) - 1;  
+                                                             //ScoreObtained = parseInt(ScoreObtained) - 1;  
+                                                        }
+                                                        else if(Button.get("v.variant") ==  "neutral" && findOtherButton.get("v.variant" ) == "success"){                    
+                                                            Button.set("v.variant", "destructive");
+                                                            AdditionalTokenOption3Match = 'Fail';
+                                                            FailedCount = parseInt(FailedCount) + 1;
+                                                            ScoreObtained = parseInt(ScoreObtained) - 1;  
                                                         }
                                                         else
                                                         {
@@ -502,7 +534,13 @@
                                                                     FailedCount = parseInt(FailedCount) + 1;
                                                                     Button.set("v.variant", "destructive");
                                                                      AdditionalTokenOption4Match = 'Fail';
-                                                                     ScoreObtained = parseInt(ScoreObtained) - 1;  
+                                                                     //ScoreObtained = parseInt(ScoreObtained) - 1;  
+                                                                }
+                                                                else if(Button.get("v.variant") ==  "neutral" && findOtherButton.get("v.variant" ) == "success"){                    
+                                                                    Button.set("v.variant", "destructive");
+                                                                    AdditionalTokenOption4Match = 'Fail';
+                                                                    FailedCount = parseInt(FailedCount) + 1;
+                                                                    ScoreObtained = parseInt(ScoreObtained) - 1;  
                                                                 }
                                                                 else
                                                                 {

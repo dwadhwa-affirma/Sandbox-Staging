@@ -34,4 +34,33 @@
 						   	component.set("v.IsSubmitClicked",true);
 					   	}
 	},
+	getDataOnLoad: function (component, event, helper, memberId, IVRGUIDFromUrl){
+		var action = component.get("c.getKYMInfo");
+		action.setParams({"MemberId": memberId,"IVRGUIDFromUrl":IVRGUIDFromUrl});
+		action.setCallback(this, function (response) {
+			var status = response.getState();
+			if (component.isValid() && status === "SUCCESS") {
+                var result = response.getReturnValue();
+				if(result.KYM_Reason__c != undefined && result.KYM_Reason__c =='Secure Email' ){
+					component.set("v.selectedKYMvalue", 'Secure Email');
+					
+				}else{
+					component.set("v.selectedKYMvalue", ' ');
+				}
+				if(result.KYM_Secure_Email_Case_Number__c != undefined && result.KYM_Secure_Email_Case_Number__c != '' ){
+					component.find("SecureEmailCase").set("v.value",result.KYM_Secure_Email_Case_Number__c);				
+					$A.util.addClass(component.find("SecureEmailCase"), "show");
+				}
+				else{
+					component.find("SecureEmailCase").set("v.value",'');
+				}
+
+				
+			}
+		
+		});	
+        
+        $A.enqueueAction(action); 
+
+	},
 })
