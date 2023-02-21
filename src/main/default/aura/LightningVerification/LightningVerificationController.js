@@ -64,6 +64,11 @@
 		}
 		if(IsUserSessionLoaded == true && (memberid != undefined && memberid != ''))
 		{
+			var KYMComponent = component.find('KYMComponent');
+			if(KYMComponent != undefined){
+				KYMComponent.KYMMethod(attribute1,ReLoadRequired, IsUserSessionLoaded);
+			}
+		
 			var PublicWalletComponent = component.find('PublicWallet');
 			if(PublicWalletComponent!=undefined)PublicWalletComponent.PublicWalletMethod(attribute1,ReLoadRequired,IsUserSessionLoaded);
 				
@@ -306,7 +311,7 @@
 			  
 		}
 		if(KYMeventParam == "SUCCESS" && aElement.id =='KYMTab__item'){
-		 
+			component.set("v.KYMColor",'Green');
 			liElement[i].classList.add("green");
 			  component.set('v.KYMIconName','utility:check');
 			  PointsObtained = parseInt(PointsObtained) + parseInt(ScoreModelPositiveScore);
@@ -321,6 +326,7 @@
 		 
 		 if(KYMeventParam == "FAIL" && aElement.id =='KYMTab__item')
 		 {
+			component.set("v.KYMColor",'Red');
 			 liElement[i].classList.add("red");
 			   component.set('v.KYMIconName','utility:close');
 			   MaximumPointsAvailable = parseInt(MaximumPointsAvailable) - parseInt(ScoreModelNegativeScore);
@@ -518,6 +524,8 @@ handleRadioClick : function(component, event, helper){
 	component.set("v.SelectedmemberName",membername );
 	var DebitCardStatus = component.get("v.DebitCardStatus");
 	var attribute1 = component.get('v.SelectedmemberId');
+	var KYMComponent = component.find('KYMComponent');
+	
 	var PublicWalletComponent = component.find('PublicWallet');
 	var IsUserSessionLoaded = component.get("v.IsUserSessionLoaded");
 	/*if(ReLoadRequired == undefined){
@@ -525,6 +533,10 @@ handleRadioClick : function(component, event, helper){
 	}*/
 	console.log('Line 520---PointsObtained' + PointsObtained);
 	console.log('Line 521---DebitCardStatus' + DebitCardStatus);
+	if(KYMComponent != undefined){
+		KYMComponent.KYMMethod(attribute1,ReLoadRequired, IsUserSessionLoaded);
+	}
+
 	if(PublicWalletComponent!=undefined){
 		PublicWalletComponent.PublicWalletMethod(attribute1,ReLoadRequired, IsUserSessionLoaded);
 	}
@@ -860,6 +872,7 @@ clearAll : function(component, event){
    component.set("v.isPINChange",false);
    component.set("v.isFDLogPreviousDay",false);
    component.set("v.PublicWalletColor",'');
+   component.set("v.KYMColor",'');
    component.set("v.CFCUWalletColor",'');
    component.set("v.OOWColor",'');
    component.set("v.OTPColor",'');

@@ -1,5 +1,32 @@
 ({
-  doInit: function (component, event, helper) {},
+  doInit: function (component, event, helper) {
+    var memberId = component.get("v.recordId");
+        //var PublicWalletStatusForDay = component.get("v.PublicWalletStatusForDay");
+        var IVRGUIDFromUrl = component.get("v.IVRGUIDFromUrl");
+       
+
+    component.set("v.IsSubmitClicked",false);
+    component.set("v.selectedKYMvalue", 'Select');
+    $A.util.addClass(elementSecureEmail, "hidden");
+    var elementSecureEmail = component.find("SecureEmailCase").set("v.value",'');
+   
+    $A.util.addClass(elementSecureEmail, "hidden");
+    var IsReLoadRequired;
+    var IsUserSessionLoaded;
+    var params = event.getParam('arguments');
+        if (params) {
+             IsReLoadRequired =  params.param2;
+             IsUserSessionLoaded = params.param3;
+            component.set("v.IsReLoadRequired", IsReLoadRequired);
+            component.set("v.IsUserSessionLoaded", IsUserSessionLoaded);
+        }
+
+       if(IsUserSessionLoaded){
+
+        helper.getDataOnLoad(component, event, helper, memberId, IVRGUIDFromUrl);
+       } 
+
+  },
 
   onChange: function (component, event, helper) {
     var selectedPicklistValue = component.get("v.selectedKYMvalue");
@@ -97,8 +124,8 @@
     if (reason == "Select") {
       element.classList.add("show");
       element.classList.remove("hidden");
-      errorSpaninput.classList.add("hidden");
-      errorSpaninput.classList.remove("show");
+      errorOtherSpaninput.classList.add("hidden");
+      errorOtherSpaninput.classList.remove("show");
       errorSecureEmailSpaninput.classList.add("hidden");
       errorSecureEmailSpaninput.classList.remove("show");
       errorDriverLicenseNoinput.classList.add("hidden");

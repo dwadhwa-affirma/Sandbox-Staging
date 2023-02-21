@@ -2,7 +2,7 @@
 public class MemberAuthenticationControllerTest {
     
     static testMethod void MemberAuthenticationTest1() {
-        
+          Test.startTest();
         MemberAuthenticationController ma = new MemberAuthenticationController();
         ma.selectedID='';
         boolean showErrorMsgLoanData2 =ma.showErrorMsgLoanData;
@@ -40,7 +40,7 @@ public class MemberAuthenticationControllerTest {
         ma.homePage();
         ma.NewLeadPage();
         ma.DetailsPage();
-        
+          Test.stopTest();
     }
     
     static testMethod void MemberAuthenticationTest2() {
@@ -102,7 +102,7 @@ public class MemberAuthenticationControllerTest {
         
         //ApexPages.currentPage().getParameters().put('selectedID',accounts[0].id);
         
-        
+          Test.startTest();
         MemberAuthenticationController ma = new MemberAuthenticationController();
         ma.CheckIfMemberValidated();
         //ma.selectedID='123456789123456789';
@@ -136,10 +136,11 @@ verificationObject.Pin = 'test1234';   */
         //ma.DetailsPage();
         //verifyCaller vc = new verifyCaller();
         //vc.getAccountByName(accounts[0].id);
+         Test.stopTest();
     }
     
     static testMethod void MemberAuthenticationTest3() {
-        
+          Test.startTest();
         MemberAuthenticationController ma = new MemberAuthenticationController();
         
         ma.PhoneNumberMatch  = 'true';
@@ -152,10 +153,10 @@ verificationObject.Pin = 'test1234';   */
         ma.EnteredSSN = '123456';
         ma.VerifyCallerDetails();
         ma.NoIVRInformation();
-        
+          Test.stopTest();
     }
     static testMethod void MemberAuthenticationTest4() {
-        
+       
         MemberAuthenticationController ma = new MemberAuthenticationController();
         
         ma.PhoneNumberMatch  = 'true';
@@ -169,7 +170,7 @@ verificationObject.Pin = 'test1234';   */
         ma.VerifyCallerDetails();
         //ma.verifySelectedCallerDetails();
         //ma.NoIVRInformation();
-        
+         
     }
     static testMethod void MemberAuthenticationTest5() {
         String SalesforceID;
@@ -494,7 +495,7 @@ verificationObject.Pin = 'test1234';   */
         ApexPages.currentPage().getParameters().put('SSNnumberMatch','true');
         ApexPages.currentPage().getParameters().put('CardNumberMatch','null');
         
-        //Test.startTest();
+        Test.startTest();
         ma.EnteredMemberNumber = ac.Name;
         system.debug('--ma.EnteredMemberNumber--'+ma.EnteredMemberNumber);
         ma.PhoneNumberMatch  = 'true';
@@ -537,7 +538,7 @@ verificationObject.Pin = 'test1234';   */
         ma.clearFields();
         //ma.DetailsPage();
         
-        //Test.StopTest();
+        Test.StopTest();
     }
     
     static testMethod void MemberAuthenticationTest7() {
@@ -606,7 +607,7 @@ verificationObject.Pin = 'test1234';   */
         ApexPages.currentPage().getParameters().put('SSNnumberMatch','true');
         ApexPages.currentPage().getParameters().put('CardNumberMatch','null');
         
-        //Test.startTest();
+        Test.startTest();
         ma.EnteredMemberNumber = ac.Name;
         system.debug('--ma.EnteredMemberNumber--'+ma.EnteredMemberNumber);
         ma.PhoneNumberMatch  = 'true';
@@ -616,7 +617,7 @@ verificationObject.Pin = 'test1234';   */
         ma.selectedID = acobj.id;
         
         ma.DOB= '1963-04-04';
-        //ma.selectedID = accounts[0].id;
+      //  ma.selectedID = accounts[0].id;
         ma.NameList = new  list<Account>();
         ma.NameList.add(acobj);
         
@@ -641,6 +642,6 @@ verificationObject.Pin = 'test1234';   */
         ma.homePage();
         //ma.DetailsPage();
         
-        //Test.StopTest();
+        Test.StopTest();
     }
 }
