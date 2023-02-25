@@ -296,7 +296,7 @@
 		console.log('Helper Line 216---PointsObtained' + PointsObtained);
 		if(PageURL == undefined){
 			component.set("v.IsDebitTabVisible", false);
-			action.setParams({"MemberId": memberid,"GUID": GUID,"DebitCardStatus": DebitCardStatus,"SSNFromURL": SSNSearched,"MemberNumberFromURL": MemberSearched,"PhoneFromURL": PhoneSearched, "PageURL" : ' ', "IVRGUIDFromUrl": IVRGUIDFromUrl,
+			action.setParams({"MemberId": memberid,"GUID": GUID,"DebitCardStatus": DebitCardStatus,"SSNFromURL": SSNSearched,"MemberNumberFromURL": MemberSearched,"PhoneFromURL": PhoneSearched, "PageURL" : '', "IVRGUIDFromUrl": IVRGUIDFromUrl,
 								"ReLoadRequired": ReLoadRequired, "ReasonCodeFromURL": ReasonCodeFromURL,"HighFlagFromUrl":HighFlagFromUrl, "PointsObtained":PointsObtained, 
 								"IsOOWTabVisible": component.get("v.IsOOWTabVisible"), "IsUserSessionLoaded": component.get("v.IsUserSessionLoaded"),
 								"EnteredCardNumber": ' ', "CardNumberMatch": ' ',
@@ -358,6 +358,7 @@
 	                    component.set("v.MultipleMemberNumberAlert",result.MultipleMemberNumberAlert);
 						component.set("v.PointObtained", result.CurrentScore);   
 						component.set("v.CurrentScore", result.CurrentScore);
+						component.set("v.DebitPinStatus", result.DebitPinStatus);
 						console.log('Helper Line 292---result.IsCardOwnerSSNMatch' + result.IsCardOwnerSSNMatch);
 						component.set("v.IsCardOwnerSSNMatch", result.IsCardOwnerSSNMatch);						
 						component.set("v.IsUnusualActivity", result.UnusualActivity);

@@ -7,12 +7,14 @@
 	<aura:attribute name="JointAccountOnly" type="object[]"/>
 	<aura:attribute name="BeneficiaryAccountOnly" type="object[]"/>
 	<aura:attribute name="LoanAccount" type="object[]"/>
+    <aura:attribute name="OnlineUserName" type="string"/>
 	<aura:attribute name="Card" type="object[]"/>
 	<aura:attribute name="AdditionalTokenOption1" type="String"/>
 	<aura:attribute name="AdditionalTokenOption2" type="String"/>
     <aura:attribute name="AdditionalTokenOption3" type="String"/>
     <aura:attribute name="AdditionalTokenOption4" type="String"/>
 	<aura:attribute name="IsLoanDataAvailable" type="Boolean" default="false"/>
+    <aura:attribute name="IsOnlineUserNameAvailable" type="Boolean" default="false"/>
 	<aura:attribute name="IsRelationshipDataAvailable" type="Boolean" default="false"/>
 	<aura:attribute name="IsCardDetailsAvailable" type="Boolean" default="false"/>
 	<aura:attribute name="GUID" type="string"/>
@@ -29,6 +31,7 @@
     <aura:attribute name="AdditionalTokenOption3Match" type="String"/>
     <aura:attribute name="AdditionalTokenOption4Match" type="String"/>
 	<aura:attribute name="LoanDetailMatch" type="String"/>
+    <aura:attribute name="OnlineUserNameMatch" type="String"/>
 	<aura:attribute name="CFCULastSessionInfo" type="object[]"/>
 	<aura:attribute name="IsReLoadRequired" type="boolean" default="false"/> 
 	<aura:attribute name="IsButtonDisabled" type="boolean" default="true"/>
@@ -141,8 +144,8 @@
                          <lightning:button variant="neutral" label="Failed" onclick="{! c.ButtonClick }" iconName="utility:close" aura:id="LoanFailButton" class="BtnTwo"/>
                      </div>
                   </div>
-            </div>
-            <div class="vl cfcuHeaderContainer">
+                </div>
+                <div class="vl cfcuHeaderContainer">
                 <div class="mr-left10">
                     <p class="field-header" title="RP">Share/Loan Types on Membership</p> 		
                     <aura:if isTrue="{!v.IsLoanDataAvailable}">
@@ -230,6 +233,48 @@
                 </div>
 		 	 </div>
          </div>
+         <div class="MainDiv slds-scrollable_y clearfix MainField">
+            <div class="InnerDivContainer">
+                <div class="InnerDiv">
+                    <div class="leftDiv">
+                        <span>Online User Name</span>
+                    </div>
+                    <div class="RightDiv">
+                                 
+                        <lightning:button variant="neutral" label="Passed" onclick="{! c.ButtonClick }" iconName="utility:check" aura:id="onlineUserNamePassButton" class="BtnOne"/>
+                        <lightning:button variant="neutral" label="Failed" onclick="{! c.ButtonClick }" iconName="utility:close" aura:id="onlineUserNameFailButton" class="BtnTwo"/>
+                    </div>
+                </div>
+            </div>
+            <div class="vl cfcuHeaderContainer">
+                <div class="mr-left10">
+                    <p class="field-header" title="Online User Name">User Name</p> 		
+                    <aura:if isTrue="{!v.IsOnlineUserNameAvailable}">
+                        <div>
+                            <div class="slds-media slds-media_center slds-has-flexi-truncate">
+                                <div class="c-container">
+                                        <div>
+                                            <h3>{!v.OnlineUserName}</h3>
+                                        </div>
+                                </div>
+                            </div>
+                        </div>	
+                        <aura:set attribute="else">
+                            <div >
+                                <div class="slds-media slds-media_center slds-has-flexi-truncate">
+                                    <div class="c-container">
+                                        <div>
+                                            <h3>Data not available</h3>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                        </aura:set>
+                    </aura:if>
+                </div>
+            </div>
+        </div> 
          <div class="MainDiv slds-scrollable_y clearfix MainField CardDetails">
        		 <div class="InnerDivContainer">
                   <aura:if isTrue="{!v.IsCFCUSectionVisible}">
@@ -249,8 +294,7 @@
                           <lightning:select name="AdditionalToken1" label="Additional Token"  aura:id="AdditionalToken1" class="select-auto-width">
                               <option value="Select">---Select---</option>
                               <option value="Transaction History">Transaction History</option>
-                              <option value="Red Herring">Red Herring</option>
-                              <option value="Online banking username">Online Banking Username</option>
+                              <option value="Red Herring">Red Herring</option>                             
                               <option value="Membership Opening Date">Membership Opening Date</option>
                              <option value="Eligibility for Member SEG">Eligibility for Member SEG</option>
                           </lightning:select>
@@ -268,8 +312,7 @@
                           <lightning:select name="AdditionalToken2" label="Additional Token"  aura:id="AdditionalToken2" class="select-auto-width">
                               <option value="Select">---Select---</option>
                               <option value="Transaction History">Transaction History</option>
-                              <option value="Red Herring">Red Herring</option>
-                              <option value="Online banking username">Online Banking Username</option>
+                              <option value="Red Herring">Red Herring</option>                             
                               <option value="Membership Opening Date">Membership Opening Date</option>
                               <option value="Eligibility for Member SEG">Eligibility for Member SEG</option>
                           </lightning:select>
@@ -287,8 +330,7 @@
                           <lightning:select name="AdditionalToken3" label="Additional Token"  aura:id="AdditionalToken3" class="select-auto-width">
                               <option value="Select">---Select---</option>
                               <option value="Transaction History">Transaction History</option>
-                              <option value="Red Herring">Red Herring</option>
-                              <option value="Online banking username">Online Banking Username</option>
+                              <option value="Red Herring">Red Herring</option>                             
                               <option value="Membership Opening Date">Membership Opening Date</option>
                               <option value="Eligibility for Member SEG">Eligibility for Member SEG</option>
                           </lightning:select>
@@ -306,8 +348,7 @@
                           <lightning:select name="AdditionalToken4" label="Additional Token"  aura:id="AdditionalToken4" class="select-auto-width">
                               <option value="Select">---Select---</option>
                               <option value="Transaction History">Transaction History</option>
-                              <option value="Red Herring">Red Herring</option>
-                              <option value="Online banking username">Online Banking Username</option>
+                              <option value="Red Herring">Red Herring</option>                             
                               <option value="Membership Opening Date">Membership Opening Date</option>
                               <option value="Eligibility for Member SEG">Eligibility for Member SEG</option>
                           </lightning:select>

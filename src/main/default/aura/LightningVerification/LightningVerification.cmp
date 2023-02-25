@@ -41,6 +41,7 @@
   <aura:attribute name="IsDebitTabVisible" type="Boolean" default="true" />
   <aura:attribute name="DebitCardMessage" type="string" />
   <aura:attribute name="DebitCardStatus" type="string" />
+  <aura:attribute name="DebitPinStatus" type="string" />
   <aura:attribute name="Visible" type="Boolean" default="true" />
   <aura:attribute name="Attempts" type="integer" default=" " />
   <aura:attribute name="CFCUWalletStatusForDay" type="Boolean" default="true" />
