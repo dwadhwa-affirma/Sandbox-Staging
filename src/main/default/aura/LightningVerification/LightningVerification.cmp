@@ -41,10 +41,12 @@
   <aura:attribute name="IsDebitTabVisible" type="Boolean" default="true" />
   <aura:attribute name="DebitCardMessage" type="string" />
   <aura:attribute name="DebitCardStatus" type="string" />
+  <aura:attribute name="DebitPinStatus" type="string" />
   <aura:attribute name="Visible" type="Boolean" default="true" />
   <aura:attribute name="Attempts" type="integer" default=" " />
   <aura:attribute name="CFCUWalletStatusForDay" type="Boolean" default="true" />
   <aura:attribute name="PublicWalletStatusForDay" type="Boolean" default="true" />
+  <aura:attribute name="KYMStatusForDay" type="Boolean" default="true" />
   <aura:attribute name="OOWStatusForDay" type="Boolean" default="true" />
   <aura:attribute name="OTPStatusForDay" type="Boolean" default="true" />
   <aura:attribute name="OTPCancellAttept" type="Integer" default="0" />
@@ -126,6 +128,7 @@
   <aura:attribute name="CFCUWalletColor" type="string" />
   <aura:attribute name="OOWColor" type="string" />
   <aura:attribute name="OTPColor" type="string" />
+  <aura:attribute name="KYMColor" type="string" />
   <aura:attribute name="ReLoadRequired" type="boolean" default="false" />
   <aura:attribute name="ReMemberId" type="string" />
   <aura:attribute name="IsReLoaded" type="boolean" default="false" />
@@ -411,7 +414,7 @@
                     <aura:if isTrue="{!v.IsKYMTabVisible}">
                       <lightning:tab label="KYM" aura:id="KYMTab"  id="KYMTab" onactive="{! c.handleActive }" iconName="{!v.KYMIconName}">
                         <c:KYMAuthentication recordId="{!v.SelectedmemberId}" GUID="{!v.GUID}"
-                          IVRGUIDFromUrl="{!v.IVRGUIDFromUrl}" />
+                          IVRGUIDFromUrl="{!v.IVRGUIDFromUrl}" aura:id="KYMComponent"/>
                       </lightning:tab>
                     </aura:if>
 

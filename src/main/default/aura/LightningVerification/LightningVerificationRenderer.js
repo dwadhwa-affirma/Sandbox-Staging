@@ -33,6 +33,7 @@ rerender : function(component, helper){
 	    	var IsVisible =  component.get("v.Visible");
 	    	var CFCUWalletStatusForDay = component.get("v.CFCUWalletStatusForDay");
 	    	var PublicWalletStatusForDay = component.get("v.PublicWalletStatusForDay");
+			var KYMStatusForDay = component.get("v.KYMStatusForDay");
 	    	var OTPStatusForDay = component.get("v.IsOTPAvailableOnLoad");
 	    	var OOWStatusForDay = component.get("v.OOWStatusForDay");
 		    var element = document.getElementsByClassName('demo-only slds-box rightBox');
@@ -51,7 +52,30 @@ rerender : function(component, helper){
 				for(var i=0 ; i < liElement.length; i++)
 				{
 					aElement = liElement[i].firstElementChild;
-					
+					//----------------------------------KYM wallet -----------------------------------//
+					console.log('Renderer 55---KYMTab__item' + component.get("v.KYMColor"));
+					if(aElement.id =='KYMTab__item' && KYMStatusForDay==false && component.get("v.KYMColor") == 'Grey'){
+						console.log('Renderer 57---KYMTab__item' + KYMStatusForDay);
+						liElement[i].classList.add("grey");
+						liElement[i].classList.remove("green");
+			  			component.set('v.KYMIconName','utility:close');
+			  			helper.RedrawComponent(liElement[i]);
+					}
+					if(aElement.id =='KYMTab__item' && KYMStatusForDay==true && component.get("v.KYMColor") == 'Green' ){
+						console.log('Renderer 64---PublicWalletTab__item' + KYMStatusForDay);
+						liElement[i].classList.remove("grey");
+						liElement[i].classList.add("green");
+						component.set('v.KYMIconName','utility:check');
+						helper.RedrawComponent(liElement[i]);
+					}
+					if(aElement.id =='KYMTab__item' && KYMStatusForDay==true && component.get("v.KYMColor") == 'Grey'){
+						console.log('Renderer 71---PublicWalletTab__item' + KYMStatusForDay);
+						liElement[i].classList.remove("red");
+						liElement[i].classList.remove("green");	
+						liElement[i].classList.add("grey");				
+			  			component.set('v.KYMIconName','utility:help');
+			  			helper.RedrawComponent(liElement[i]);
+					}
 					
 					//----------------------------------Public wallet -----------------------------------//
 					console.log('Renderer 55---PublicWalletTab__item' + component.get("v.PublicWalletColor"));

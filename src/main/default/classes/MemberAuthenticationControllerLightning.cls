@@ -336,8 +336,10 @@ public class MemberAuthenticationControllerLightning{
         log.Current_User__c = Userinfo.getuserid();
         log.Member_Number__c = AccountNumber;
         log.Member__c = MemberId;
-        log.GUID__c = GUID;
+        log.GUID__c = GUID;      
+        log.IVR_GUID__c = IVRGUIDFromUrl;
         log.Decision__c = reason;
+        
         insert log;
         
         system.debug('log##'+ log);
@@ -362,6 +364,7 @@ public class MemberAuthenticationControllerLightning{
             log2.Member_Number__c = AccountNumber;
             log2.Member__c = MemberId;
             log2.GUID__c = GUID;
+            log2.IVR_GUID__c = IVRGUIDFromUrl;
             log2.Decision__c = reason;
             log2.IVR_GUID__c = IVRGUIDFromUrl;         
             
@@ -489,9 +492,12 @@ public class MemberAuthenticationControllerLightning{
     
     @AuraEnabled
     public static void CFCUWalletSaveLogData(string MemberId, string Status, string GUID, string BeneficiaryDetailMatch, string JointOwnerDetailMatch, string CardNumberMatch, string AdditionalTokenOption1Match,
-    string AdditionalTokenOption2Match, string LoanDetailMatch, string IVRGUIDFromUrl, List<object> BeneficiaryAccount, List<object> JointAccount, List<object> LoanAccount,  List<object> Card, string AdditionalTokenOption1, string AdditionalTokenOption2, string MemberNumber, string AdditionalTokenOption3, string AdditionalTokenOption3Match, string AdditionalTokenOption4, string AdditionalTokenOption4Match)
+    string AdditionalTokenOption2Match, string LoanDetailMatch, string IVRGUIDFromUrl, List<object> BeneficiaryAccount, List<object> JointAccount, List<object> LoanAccount,  List<object> Card, 
+    string AdditionalTokenOption1, string AdditionalTokenOption2, string MemberNumber, string AdditionalTokenOption3, string AdditionalTokenOption3Match,
+    string AdditionalTokenOption4, string AdditionalTokenOption4Match, string onlineUserNameMatch, string onlineUserName)
     {
         /*This method save CFCU Wallet log data in MAAP Log object*/
+        system.debug('onlineUserNameMatch##' + onlineUserNameMatch);
         string BA = '';
         string JA = '';
         string LA = '';
@@ -519,6 +525,8 @@ public class MemberAuthenticationControllerLightning{
         log.Additional_Token_Option6_Match__c = AdditionalTokenOption4Match;
                
         log.Loan_Detail_Match__c = LoanDetailMatch;
+        log.Online_User_Name_Match__c = onlineUserNameMatch;
+        log.Online_User_Name__c = onlineUserName;
         if(BeneficiaryAccount.size() > 0){
             for(object obj :BeneficiaryAccount)
             {
@@ -585,6 +593,8 @@ public class MemberAuthenticationControllerLightning{
             log2.Additional_Token_Option6_Match__c = AdditionalTokenOption4Match;
             
             log2.Loan_Detail_Match__c = LoanDetailMatch;
+            log2.Online_User_Name_Match__c = onlineUserNameMatch;
+            log2.Online_User_Name__c = onlineUserName;
             if(BeneficiaryAccount.size() > 0){
                 for(object obj :BeneficiaryAccount)
                 {
@@ -646,6 +656,8 @@ public class MemberAuthenticationControllerLightning{
              MasterAuthenticationLog[0].Additional_Token_Option6_Match__c = AdditionalTokenOption4Match;
                         
              MasterAuthenticationLog[0].Loan_Detail_Match__c = LoanDetailMatch;
+             MasterAuthenticationLog[0].Online_User_Name_Match__c = onlineUserNameMatch;
+             MasterAuthenticationLog[0].Online_User_Name__c = onlineUserName;
              if(BeneficiaryAccount.size() > 0){
                  for(object obj :BeneficiaryAccount)
                  {
@@ -857,8 +869,16 @@ This function read data from MAAP log object and display accordingly  -----*/
         List<JointMemberRelationshipWrapper> JTwrapperLst = new List<JointMemberRelationshipWrapper>();
         List<Account_Details__c> MemberAccountDetail = new List<Account_Details__c>();
         List<Person_Account__c> RelatedPerson = new List<Person_Account__c>();
+        //ENHC0012917 Begin
+        List<Account> onlineUserName = new List<Account>();
+        onlineUserName = [select id, Digital_Banking_Username_Chevron__c from Account where id=: selectedID];
+        if(onlineUserName.size() > 0){
+            resultmap.put('onlineUserName',onlineUserName);
+        }
+
+        // ENHC0012917 Ends
         // do not query for beneficiary as we don't want information to be displayed for selected user who is a beneficiary.
-        RelatedPerson = [select Account_Number__c from Person_Account__c where TypeTranslate__C != '0004/Beneficiary' and PersonID__c =:selectedID];
+        RelatedPerson = [select Account_Number__c, personid__r.Digital_Banking_Username_Chevron__c from Person_Account__c where TypeTranslate__C != '0004/Beneficiary' and PersonID__c =:selectedID];
         List<id> relatedIds = new List<Id>();
         for(Person_Account__c p : relatedPerson ){
             relatedIds.add(p.Account_Number__c);
@@ -962,12 +982,14 @@ This query is working for Relaunch MAAP feature as well*/
         RecordType rec = GetRecordTypeData('Authenticated_Log__c', 'CFCU Wallet Log');
         List<Authenticated_Log__c> authlog = new List<Authenticated_Log__c>();  
         authlog = [Select Id,SalesforceID__c,Current_User__c,Member__c,Decision__c,CFCU_Wallet_Status__c,Staff_Name__c,GUID__c,BeneficiaryDetailMatch__c,Joint_OwnerDetailsMatch__c,
-        CardNumberMatch__c,Additional_Token_Option1_Match__c,Additional_Token_Option2_Match__c,Additional_Token_Option5_Match__c, Additional_Token_Option6_Match__c,Loan_Detail_Match__c, Additional_Token_Option1__c,Additional_Token_Option2__c,Additional_Token_Option5__c,Additional_Token_Option6__c
+        CardNumberMatch__c,Additional_Token_Option1_Match__c,Additional_Token_Option2_Match__c,Additional_Token_Option5_Match__c, Additional_Token_Option6_Match__c,Loan_Detail_Match__c,
+         Additional_Token_Option1__c,Additional_Token_Option2__c,Additional_Token_Option5__c,Additional_Token_Option6__c,Online_User_Name__c,Online_User_Name_Match__c
         From Authenticated_Log__c where createddate = Today and RecordTypeId= : rec.id and SalesforceID__c = : selectedID and IVR_GUID__c = :IVRGUIDFromUrl order by createddate desc Limit 1];          
         system.debug('authlog##' + authlog);
         if(authlog.size() == 0){
             authlog = [Select Id,SalesforceID__c,Current_User__c,Member__c,Decision__c,CFCU_Wallet_Status__c,Staff_Name__c,GUID__c,BeneficiaryDetailMatch__c,Joint_OwnerDetailsMatch__c,
-            CardNumberMatch__c,Additional_Token_Option1_Match__c,Additional_Token_Option2_Match__c,Additional_Token_Option5_Match__c, Additional_Token_Option6_Match__c,Loan_Detail_Match__c, Additional_Token_Option1__c,Additional_Token_Option2__c,Additional_Token_Option5__c,Additional_Token_Option6__c
+            CardNumberMatch__c,Additional_Token_Option1_Match__c,Additional_Token_Option2_Match__c,Additional_Token_Option5_Match__c, Additional_Token_Option6_Match__c,Loan_Detail_Match__c, 
+            Additional_Token_Option1__c,Additional_Token_Option2__c,Additional_Token_Option5__c,Additional_Token_Option6__c, Online_User_Name__c,Online_User_Name_Match__c
             From Authenticated_Log__c where createddate = Today and RecordTypeId= : rec.id and SalesforceID__c = : selectedID and IVR_GUID__c != :IVRGUIDFromUrl  order by createddate desc Limit 1];
             if(authlog.size() > 0){
                 
@@ -1048,6 +1070,21 @@ ReLoadManualSession list is to load data when user is doing manual search if the
         system.debug('resultmap##' + resultmap);
         return resultmap;
         
+    }
+    @AuraEnabled        
+    public static Authenticated_Log__c getKYMInfo(String MemberId, string IVRGUIDFromUrl )
+    {
+        system.debug('MemberId##' + MemberId );
+        system.debug('IVRGUIDFromUrl##' + IVRGUIDFromUrl );
+
+        RecordType rec = GetRecordTypeData('Authenticated_Log__c', 'KYM Log');
+        system.debug('recid##' + rec.id );
+        Authenticated_Log__c authlog = new Authenticated_Log__c();  
+        authlog = [Select Id,SalesforceID__c,Current_User__c,Member__c,  KYM_Reason__c,
+                     KYM_Secure_Email_Case_Number__c     From Authenticated_Log__c 
+                     where createddate = Today and RecordTypeId= : rec.id and SalesforceID__c = : MemberId order by createddate desc Limit 1];          
+        return authlog;
+
     }
     
     @AuraEnabled        
@@ -1370,10 +1407,12 @@ This function read data from MAAP log object and display accordingly  -----*/
         Boolean OTP = true;
         Boolean PublicWallet = true;
         Boolean CFCUWallet = true;
+        Boolean KYM = true;
         string PWColor ='Grey' ;
         string CWColor ='Grey' ;
         string OOWColor ='Grey';
         string OTPColor ='Grey';
+        string KYMColor ='Grey';
         Map<string,object> result = new  Map<string,object>();
         Boolean FailedDesiredLevelCount;
         List<MC_PIN_Change__c> PC = new List<MC_PIN_Change__c>();
@@ -1381,7 +1420,7 @@ This function read data from MAAP log object and display accordingly  -----*/
         boolean IsPinChanged;
         string  AccountNumber;
         Integer MemberHighFlagValue =0 ;
-        Boolean IsCardOwnerSSNMatch=true;
+        Boolean IsCardOwnerSSNMatch=false;
         
         set<string> typeList = new set<string>();
         for(Member360_TypeTranslate__c t : Member360_TypeTranslate__c.getAll().values()){
@@ -1529,6 +1568,7 @@ This function read data from MAAP log object and display accordingly  -----*/
         String OOWStatus;
         string PWStatus;
         string CFCUStatus;
+        string KYMStatus;
         if(IsUserSessionLoaded == true)
         {  
            
@@ -1688,9 +1728,48 @@ This function read data from MAAP log object and display accordingly  -----*/
             }
         }
         
-        
+        //--------------------------------------------- Identify KYM Wallet Tab color ----------------------------------------------------------------//
+        if(IsUserSessionLoaded == true)
+        {
+          
+            for(Authenticated_Log__c KYMlog : [select id,createddate ,GUID__c, Decision__c, RecordType.name from Authenticated_Log__c where createddate = Today and SalesforceID__c =:MemberId and RecordType.name = 'KYM Log' order by RecordType.name, createddate desc limit 1]){
+                KYMStatus = KYMlog.Decision__c;
+            }
+            if(KYMStatus != 'Secure Email'){
+                KYM = false;
+                KYMColor ='Grey';
+            }
+            if(KYMStatus == 'Secure Email'){
+                for(Authenticated_Log__c KYMPasslog : [select id,createddate ,GUID__c, Decision__c,Member__c, RecordType.name from Authenticated_Log__c where createddate = Today and SalesforceID__c =:MemberId and RecordType.name = 'KYM Log' and IVR_GUID__c = : IVRGUIDFromUrl order by RecordType.name, createddate desc limit 1]){
+                    if(KYMPasslog.Decision__c == 'Secure Email')
+                    {
+                        KYMColor ='Green';
+                    }
+                }
+            }
+        }else{
+            
+            for(Authenticated_Log__c KYMlog : [select id,createddate ,GUID__c, Decision__c,Member__c, RecordType.name from Authenticated_Log__c where createddate = Today and SalesforceID__c =:MemberId and RecordType.name = 'KYM Log'  order by RecordType.name, createddate desc limit 1]){
+                if(KYMlog.Decision__c != 'Secure Email'){
+                    KYM = false;
+                }
+                if(KYMlog.Decision__c == 'Secure Email'){
+                    KYMColor ='Grey';
+                    KYMStatus = 'Pass';
+                }
+            }
+        }
+
+
+
+
+
+
+
+
         system.debug('CWColor##'+ CWColor);
         result.put('CWColor', CWColor);
+        result.put('KYMColor', KYMColor);
           
         system.debug('ttt'+visible)  ;
         result.put('Visible',visible); 
@@ -1698,6 +1777,7 @@ This function read data from MAAP log object and display accordingly  -----*/
         result.put('OOWStatusForDay',OOW);
         result.put('OTPStatusForDay',OTP);
         result.put('PublicWalletStatusForDay',PublicWallet) ;
+        result.put('KYMStatusForDay',KYM) ;
         result.put('CFCUWalletStatusForDay',CFCUWallet);
         result.put('AccountNumber',AccountNumber);
         result.put('IsCardOwnerSSNMatch',IsCardOwnerSSNMatch);
@@ -1748,7 +1828,7 @@ This function read data from MAAP log object and display accordingly  -----*/
         //  check based on Debit card 
         
         Boolean IsDebitPinAvailable = false;
-        if(DebitCardStatus == 'true'){
+        if(DebitCardStatus == 'Pass'){
             IsDebitPinAvailable = true;
         }else{
             IsDebitPinAvailable = false;
@@ -1774,11 +1854,11 @@ This function read data from MAAP log object and display accordingly  -----*/
             IsOOWAvailable = true;
             system.debug('test1');
         }
-        string DebitPinStatus='';
-        if(DebitCardStatus =='true' && IsCardOwnerSSNMatch == true){
+        string DebitPinStatus='Fail';
+        if(DebitCardStatus =='Pass' && IsCardOwnerSSNMatch == true){
             DebitPinStatus ='Pass';
         }
-        else if(DebitCardStatus =='false' && IsCardOwnerSSNMatch == false){
+        else if(DebitCardStatus =='Fail' && IsCardOwnerSSNMatch == false){
             DebitPinStatus ='Fail';
         }
         system.debug('IsUserSessionLoaded##' + IsUserSessionLoaded);
@@ -1855,11 +1935,11 @@ This function read data from MAAP log object and display accordingly  -----*/
         
         system.debug('KYM' + IsKYMAvailable);
         system.debug('TotalScore KYM' + TotalScore);
-        if(OTP == true)
+        if(OTP == true && OTPColor == 'Green')
         {
             for(Member_Authentication_Scoring_Model__c sm: ScoringModel)
             {
-                if(sm.Authentication_Type__c == 'OTP')
+                if(sm.Authentication_Type__c == 'OTP' )
                 {
                     TotalScore = TotalScore + sm.Positive_Point_Value__c;
                     scoremap.put(sm.Authentication_Type__c,sm.Positive_Point_Value__c.intValue());
@@ -1874,7 +1954,7 @@ This function read data from MAAP log object and display accordingly  -----*/
         system.debug('OTP' + IsOTPAvailable);
         system.debug('TotalScore OTP' + TotalScore);
         double DebitPinScore =0;
-        if(DebitCardStatus == 'true'){
+        if(DebitCardStatus == 'Pass'){
             for(Member_Authentication_Scoring_Model__c sm: ScoringModel)
             {
                 if(sm.Authentication_Type__c == 'Debit Pin')
@@ -1900,10 +1980,10 @@ This function read data from MAAP log object and display accordingly  -----*/
             IsOOWAvailable = true;
         }
         
-        if(OOW == true){
+        if(OOW == true  && OOWColor == 'Green'){
             for(Member_Authentication_Scoring_Model__c sm: ScoringModel)
             {
-                if(sm.Authentication_Type__c == 'OOW')
+                if(sm.Authentication_Type__c == 'OOW' )
                 {
                     TotalScore = TotalScore + sm.Positive_Point_Value__c;
                     scoremap.put(sm.Authentication_Type__c,sm.Positive_Point_Value__c.intValue());
@@ -1919,10 +1999,10 @@ This function read data from MAAP log object and display accordingly  -----*/
         system.debug('OOW' + IsOOWAvailable);
         system.debug('TotalScore OOW' + TotalScore);
         
-        if(PublicWallet == true){
+        if(PublicWallet == true  && PWColor == 'Green'){
             for(Member_Authentication_Scoring_Model__c sm: ScoringModel)
             {
-                if(sm.Authentication_Type__c == 'Public Wallet')
+                if(sm.Authentication_Type__c == 'Public Wallet' )
                 {
                     TotalScore = TotalScore + sm.Positive_Point_Value__c;
                     scoremap.put(sm.Authentication_Type__c,sm.Positive_Point_Value__c.intValue());
@@ -1939,7 +2019,7 @@ This function read data from MAAP log object and display accordingly  -----*/
         system.debug('TotalScore Public' + TotalScore);
         
         
-        if(CFCUWallet == true){
+        if(CFCUWallet == true  && CWColor == 'Green'){
             for(Member_Authentication_Scoring_Model__c sm: ScoringModel)
             {
                 if(sm.Authentication_Type__c == 'CFCU Wallet')
@@ -2008,12 +2088,7 @@ This function read data from MAAP log object and display accordingly  -----*/
                 log.IVR_Member_Number_Match__c = MemberNumberMatch;
                 log.IVR_SSN_Match__c = SSNnumberMatch;
                 log.IVR_Card_Match__c = CardNumberMatch;
-                
-                if(DebitCardStatus == 'true')
-                    log.IVR_Pin_Match__c = 'Pass';
-                if(DebitCardStatus == 'false')
-                    log.IVR_Pin_Match__c = 'Fail';
-                
+                log.IVR_Pin_Match__c = DebitCardStatus;                
                 log.Staff_Name__c = UserInfo.getName();
                 log.Current_User__c = Userinfo.getuserid();
                 log.Member_Number__c = AccountNumber;
@@ -2033,16 +2108,9 @@ This function read data from MAAP log object and display accordingly  -----*/
                 RecordType rec1 = GetRecordTypeData('Authenticated_Log__c', 'Debit PIN Log');
                 Authenticated_Log__c log1 = new Authenticated_Log__c();
                 log1.IVR_Sent_URL__c = PageURL;
-                if(DebitCardStatus == 'true'){
-                    log1.IVR_Pin_Match__c = 'Pass';
-                    log1.PINMatch__c = 'Pass';
-                    log1.Decision__c = 'Pass';
-                }
-                if(DebitCardStatus == 'false'){
-                    log1.IVR_Pin_Match__c = 'Fail';
-                    log1.PINMatch__c = 'Fail';
-                    log1.Decision__c = 'Fail';
-                }
+                log1.IVR_Pin_Match__c = DebitCardStatus;
+                log1.PINMatch__c = DebitCardStatus;
+                log1.Decision__c = DebitCardStatus;                
                 log1.GUID__c = GUID;
                 log1.Staff_Name__c = UserInfo.getName();
                 log1.Member_Number__c = AccountNumber;
@@ -2085,12 +2153,7 @@ This function read data from MAAP log object and display accordingly  -----*/
                     log2.IVR_Member_Number_Match__c = MemberNumberMatch;
                     log2.IVR_SSN_Match__c = SSNnumberMatch;
                     log2.IVR_Card_Match__c = CardNumberMatch;
-                    
-                    if(DebitCardStatus == 'true')
-                        log.IVR_Pin_Match__c = 'Pass';
-                    if(DebitCardStatus == 'false')
-                        log.IVR_Pin_Match__c = 'Fail';
-                    
+                    log.IVR_Pin_Match__c = DebitCardStatus;
                     log2.Staff_Name__c = UserInfo.getName();
                     log2.Current_User__c = Userinfo.getuserid();
                     log2.Member_Number__c = AccountNumber;
@@ -2102,16 +2165,9 @@ This function read data from MAAP log object and display accordingly  -----*/
                     log2.Member__c = MemberId;
                     log2.HP_HV__c = HighFlagFromUrl;
                     log2.IVR_Code__c = ReasonCodeFromURL;
-                    if(DebitCardStatus == 'true'){
-                        log2.IVR_Pin_Match__c = 'Pass';
-                        log2.PINMatch__c = 'Pass';
-                        log2.Decision__c = 'Pass';
-                    }
-                    if(DebitCardStatus == 'false'){
-                        log2.IVR_Pin_Match__c = 'Fail';
-                        log2.PINMatch__c = 'Fail';
-                        log2.Decision__c = 'Fail';
-                    }
+                    log2.IVR_Pin_Match__c = DebitCardStatus;
+                    log2.PINMatch__c = DebitCardStatus;
+                    log2.Decision__c = DebitCardStatus;                   
                     log2.RecordtypeId = rec2.Id; 
                     log2.CardOwnerSSN__c = CardOwnerSSNFromURL;
                     insert log2;
@@ -2143,12 +2199,7 @@ This function read data from MAAP log object and display accordingly  -----*/
                     MasterAuthenticationLog[0].IVR_Member_Number_Match__c = MemberNumberMatch;
                     MasterAuthenticationLog[0].IVR_SSN_Match__c = SSNnumberMatch;
                     MasterAuthenticationLog[0].IVR_Card_Match__c = CardNumberMatch;
-                    
-                    if(DebitCardStatus == 'true')
-                        MasterAuthenticationLog[0].IVR_Pin_Match__c = 'Pass';
-                    if(DebitCardStatus == 'false')
-                        MasterAuthenticationLog[0].IVR_Pin_Match__c = 'Fail';
-                    
+                    MasterAuthenticationLog[0].IVR_Pin_Match__c = DebitCardStatus;
                     MasterAuthenticationLog[0].Staff_Name__c = UserInfo.getName();
                     MasterAuthenticationLog[0].Current_User__c = Userinfo.getuserid();
                     MasterAuthenticationLog[0].Member_Number__c = AccountNumber;
@@ -2160,16 +2211,10 @@ This function read data from MAAP log object and display accordingly  -----*/
                     MasterAuthenticationLog[0].Member__c = MemberId;
                     MasterAuthenticationLog[0].HP_HV__c = HighFlagFromUrl;
                     MasterAuthenticationLog[0].IVR_Code__c = ReasonCodeFromURL;
-                    if(DebitCardStatus == 'true'){
-                        MasterAuthenticationLog[0].IVR_Pin_Match__c = 'Pass';
-                        MasterAuthenticationLog[0].PINMatch__c = 'Pass';
-                        MasterAuthenticationLog[0].Decision__c = 'Pass';
-                    }
-                    if(DebitCardStatus == 'false'){
-                        MasterAuthenticationLog[0].IVR_Pin_Match__c = 'Fail';
-                        MasterAuthenticationLog[0].PINMatch__c = 'Fail';
-                        MasterAuthenticationLog[0].Decision__c = 'Fail';
-                    }
+                    MasterAuthenticationLog[0].IVR_Pin_Match__c = DebitCardStatus;
+                    MasterAuthenticationLog[0].PINMatch__c = DebitCardStatus;
+                    MasterAuthenticationLog[0].Decision__c = DebitCardStatus;
+                    
                     MasterAuthenticationLog[0].RecordtypeId = rec2.Id; 
                     MasterAuthenticationLog[0].CardOwnerSSN__c = CardOwnerSSNFromURL;
                     update MasterAuthenticationLog[0];
@@ -2281,10 +2326,10 @@ This function read data from MAAP log object and display accordingly  -----*/
                 
                 
             }
-            if(DebitPinStatus == 'Fail' || DebitPinStatus =='false'){
+            if(PageURL != '' && (DebitPinStatus == 'Fail' || DebitPinStatus =='false')){
                 CurrentScore = CurrentScore - DebitPinNegativeScore.intValue();
             }
-            else if(DebitPinStatus == 'Pass' || DebitPinStatus =='true')
+            else if(PageURL != '' && (DebitPinStatus == 'Pass' || DebitPinStatus =='true'))
             {
                 CurrentScore = CurrentScore + DebitPinPositiveScore.intValue();
             }
@@ -2453,7 +2498,7 @@ This function read data from MAAP log object and display accordingly  -----*/
         result.put('MaximumPointsAvailable',TotalScore);
         result.put('LevelModel', LevelModel);
         result.put('ScoringModel', ScoringModel);
-
+        result.put('DebitPinStatus', DebitPinStatus);
         
         result.put('WarningCodes',rwcwList);
         system.debug('result##' + result);
@@ -2516,31 +2561,7 @@ This function read data from MAAP log object and display accordingly  -----*/
             
         }
         
-        /*system.debug('DebitPinStatus##'+ DebitPinStatus);  
-system.debug('CurrentScorePre##'+ CurrentScore);
-system.debug('DebitPinNegativeScore##'+ DebitPinNegativeScore);
-if(DebitPinStatus == 'Fail' || DebitPinStatus =='false'){
-CurrentScore = CurrentScore - DebitPinNegativeScore.intValue();
-}
-else if(DebitPinStatus == 'Pass' || DebitPinStatus =='true')
-{
-CurrentScore = CurrentScore + DebitPinPositiveScore.intValue();
-}
-system.debug('CurrentScorePost1##' + CurrentScore);
-system.debug('IsPinChanged##' + IsPinChanged);
-if(IsPinChanged == true ){
-CurrentScore = CurrentScore - PINChangeNegativeScore.intValue();
-
-}
-else if(IsPinChanged == false ){
-
-CurrentScore = CurrentScore + PINChangePositiveScore.intValue();
-}
-system.debug('CurrentScorePost2##' + CurrentScore);
-*/
-        // reading the data from custom setting and assining points value into variables Ends-----------------
-        
-        // reading the data from custom setting for level and assining start range value of levels into variables begins-----------------
+       
         for(Member_Authentication_Level_Model__c lm :LevelModel )
         {
             
@@ -2906,12 +2927,12 @@ system.debug('CurrentScorePost2##' + CurrentScore);
     }
     
     @AuraEnabled
-    public static Map<string,object> GetNextAuthenticationType(string MemberId, string MemberType, Integer MaximumPointsAvailable,Integer PointsObtained, boolean IsKYMAvailable, boolean IsOTPAvailable, string IsDebitPinAvailable, boolean IsOOWAvailable, boolean IsPublicWalletAvailable, boolean IsCFCUWalletAvailable, string IVRGUIDFromUrl, string AccountNumberInput, integer currentScore)
+    public static Map<string,object> GetNextAuthenticationType(string MemberId, string MemberType, Integer MaximumPointsAvailable,Integer PointsObtained, boolean IsKYMAvailable, boolean IsOTPAvailable, string DebitCardStatus, boolean IsOOWAvailable, boolean IsPublicWalletAvailable, boolean IsCFCUWalletAvailable, string IVRGUIDFromUrl, string AccountNumberInput, integer currentScore)
     {
         
         //---------------------------------Aut-190 implementation starts here------------------------------------------------------------------------
         System.debug('GetNextAuthenticationType method called-------------------');
-        system.debug('GetNextAuthenticationType param received' + 'PointsObtained##'+ PointsObtained + 'MemberType#' + MemberType + 'MaximumPointsAvailable#' + MaximumPointsAvailable + 'IsOTPAvailable#' + IsOTPAvailable + 'IsKYMAvailable#' + IsKYMAvailable + 'IsDebitPinAvailable#' + IsDebitPinAvailable + 'IsOOWAvailable#' + IsOOWAvailable + 'IsPublicWalletAvailable#' + IsPublicWalletAvailable + 'IsCFCUWalletAvailable#' + IsCFCUWalletAvailable + 'AccountNumberInput#' + AccountNumberInput + 'currentScore##' + currentScore );
+        system.debug('GetNextAuthenticationType param received' + 'PointsObtained##'+ PointsObtained + 'MemberType#' + MemberType + 'MaximumPointsAvailable#' + MaximumPointsAvailable + 'IsOTPAvailable#' + IsOTPAvailable + 'IsKYMAvailable#' + IsKYMAvailable + 'DebitCardStatus#' + DebitCardStatus + 'IsOOWAvailable#' + IsOOWAvailable + 'IsPublicWalletAvailable#' + IsPublicWalletAvailable + 'IsCFCUWalletAvailable#' + IsCFCUWalletAvailable + 'AccountNumberInput#' + AccountNumberInput + 'currentScore##' + currentScore );
         if(PointsObtained == null){
             PointsObtained = 0;
             
@@ -2960,16 +2981,12 @@ system.debug('CurrentScorePost2##' + CurrentScore);
         integer CFCUWalletAvailable = 0;
         integer OOWAvailable = 0;
         //Integer CurrentScore = 0;
-        string DebitCardStatus = '';
+       
         if(IsOTPAvailable == true){OTPAvailable=1;}
         if(IsPublicWalletAvailable == true){PublicWalletAvailable=1;}
         if(IsCFCUWalletAvailable == true){CFCUWalletAvailable=1;}
         if(IsOOWAvailable == true){OOWAvailable=1;}
-        if(IsDebitPinAvailable == 'true' ){
-            DebitCardStatus = 'Pass';
-        }else if(IsDebitPinAvailable == 'false'){
-            DebitCardStatus = 'Fail';
-        }
+        
         
         system.debug('PointsObtained1##'+ PointsObtained);
         system.debug('OOWAvailable##'+ OOWAvailable);
@@ -2992,10 +3009,10 @@ system.debug('CurrentScorePost2##' + CurrentScore);
             }
             
         }
-        if(DebitCardStatus == 'Fail' || DebitCardStatus =='false'){
+        if(DebitCardStatus == 'Fail' ){
             CurrentScore = CurrentScore - DebitPinNegativeScore.intValue();
         }
-        else if(DebitCardStatus == 'Pass' || DebitCardStatus =='true')
+        else if(DebitCardStatus == 'Pass')
         {
             CurrentScore = CurrentScore + DebitPinPositiveScore.intValue();
         }
@@ -3272,13 +3289,7 @@ system.debug('CurrentScorePost2##' + CurrentScore);
         log.IVR_Member_Number_Match__c = MemberNumberMatch;
         log.IVR_SSN_Match__c = SSNnumberMatch;
         log.IVR_Card_Match__c = CardNumberMatch;
-        
-        
-        if(DebitCardStatus == 'true')
-            log.IVR_Pin_Match__c = 'Pass';
-        if(DebitCardStatus == 'false')
-            log.IVR_Pin_Match__c = 'Fail'; 
-        
+        log.IVR_Pin_Match__c = DebitCardStatus;
         log.RecordTypeId= rec.id;
         log.SalesforceID__c = MemberId;
         log.Last_Achievable_Level__c = LastLevel;
@@ -3326,13 +3337,7 @@ system.debug('CurrentScorePost2##' + CurrentScore);
             log2.IVR_Member_Number_Match__c = MemberNumberMatch;
             log2.IVR_SSN_Match__c = SSNnumberMatch;
             log2.IVR_Card_Match__c = CardNumberMatch;
-            
-            
-            if(DebitCardStatus == 'true')
-                log2.IVR_Pin_Match__c = 'Pass';
-            if(DebitCardStatus == 'false')
-                log2.IVR_Pin_Match__c = 'Fail'; 
-            
+            log2.IVR_Pin_Match__c = DebitCardStatus;
             log2.RecordTypeId= rec1.id;
             log2.SalesforceID__c = MemberId;
             log2.Last_Achievable_Level__c = LastLevel;
@@ -3375,13 +3380,7 @@ system.debug('CurrentScorePost2##' + CurrentScore);
             MasterAuthenticationLog[0].IVR_Member_Number_Match__c = MemberNumberMatch;
             MasterAuthenticationLog[0].IVR_SSN_Match__c = SSNnumberMatch;
             MasterAuthenticationLog[0].IVR_Card_Match__c = CardNumberMatch;
-            
-            
-            if(DebitCardStatus == 'true')
-                MasterAuthenticationLog[0].IVR_Pin_Match__c = 'Pass';
-            if(DebitCardStatus == 'false')
-                MasterAuthenticationLog[0].IVR_Pin_Match__c = 'Fail'; 
-            
+            MasterAuthenticationLog[0].IVR_Pin_Match__c = DebitCardStatus;
             MasterAuthenticationLog[0].SalesforceID__c = MemberId;
             MasterAuthenticationLog[0].Last_Achievable_Level__c = LastLevel;
             MasterAuthenticationLog[0].Member__c = MemberId;

@@ -25,11 +25,14 @@
 		}else{
 			component.set("v.PhoneFromURL", pageReference.state.c__CallersPhoneNumber);
 		}
-		if(pageReference.state.c__PINMatch != undefined && pageReference.state.c__PINMatch.toLowerCase() == 'null'){
+		/*if(pageReference.state.c__PINMatch != undefined && pageReference.state.c__PINMatch.toLowerCase() == 'null'){
 			component.set("v.DebitCardStatus", '');
 		}else if(pageReference.state.c__PINMatch != undefined ){		
 			component.set("v.DebitCardStatus", pageReference.state.c__PINMatch.toLowerCase());
-		}
+		}*/
+
+		
+
 		if(pageReference.state.c__InteractionId == 'null' || pageReference.state.c__InteractionId == undefined){
 		
 			component.set("v.IVRGUIDFromUrl", '');
@@ -76,16 +79,7 @@
 		else{
 			component.set("v.CardOwnerSSNFromURL", pageReference.state.c__CardOwner);
 		}
-		/*if(SSNFromURL!= undefined && (SSNFromURL == "" || SSNFromURL == null || SSNFromURL == 'null'))
-		{
-			component.set("v.IsOOWTabVisible", false);
-			component.set("v.IsOOWAvailableOnLoad", false);
-		}
-		else
-		{
-			component.set("v.IsOOWTabVisible", true);
-		}
-		*/
+		
 		if(PINMatchFromURL!= undefined &&(PINMatchFromURL == "" || PINMatchFromURL == null || PINMatchFromURL == 'null' ))
 		{
 			component.set("v.IsDebitTabVisible", false);
@@ -107,11 +101,83 @@
 		}
 		console.log('Isusersessionloaded'+ component.get("v.IsUserSessionLoaded"));
 	    component.set("v.EnteredCardNumber", pageReference.state.c__EnteredCardNumber);
-	    component.set("v.CardNumberMatch", pageReference.state.c__CardNumberMatch);
-		component.set("v.PhoneNumberMatch", pageReference.state.c__PhoneNumberMatch);
-		component.set("v.MemberNumberMatch", pageReference.state.c__MemberNumberMatch);       
-		component.set("v.SSNnumberMatch", pageReference.state.c__SSNnumberMatch); 
-		component.set("v.PINMatch", pageReference.state.c__PINMatch);   
+	    
+		if(pageReference.state.c__MemberNumberMatch != undefined && (pageReference.state.c__MemberNumberMatch == null || pageReference.state.c__MemberNumberMatch.toLowerCase() == 'null') )
+		{
+			component.set("v.MemberNumberMatch",'null' );
+		}else if(pageReference.state.c__MemberNumberMatch != undefined && pageReference.state.c__MemberNumberMatch == ''){
+			component.set("v.MemberNumberMatch",'' );
+		}else if(pageReference.state.c__MemberNumberMatch != undefined && pageReference.state.c__MemberNumberMatch.toLowerCase() == 'true'){
+			component.set("v.MemberNumberMatch",'Pass' );			
+	   }else if(pageReference.state.c__MemberNumberMatch != undefined && pageReference.state.c__MemberNumberMatch.toLowerCase() == 'false'){
+			component.set("v.MemberNumberMatch",'Fail' );			
+	   }else if(pageReference.state.c__MemberNumberMatch === undefined){
+			component.set("v.MemberNumberMatch",'' );			
+	   }
+
+		if(pageReference.state.c__SSNnumberMatch != undefined && (pageReference.state.c__SSNnumberMatch == null || pageReference.state.c__SSNnumberMatch.toLowerCase() == 'null') )
+		{
+			component.set("v.SSNnumberMatch",'null' );
+		}else if(pageReference.state.c__SSNnumberMatch != undefined && pageReference.state.c__SSNnumberMatch == ''){
+ 			component.set("v.SSNnumberMatch",'' );
+		}else if(pageReference.state.c__SSNnumberMatch != undefined && pageReference.state.c__SSNnumberMatch.toLowerCase() == 'true'){
+			component.set("v.SSNnumberMatch",'Pass' );			
+	   }else if(pageReference.state.c__SSNnumberMatch != undefined && pageReference.state.c__SSNnumberMatch.toLowerCase() == 'false'){
+			component.set("v.SSNnumberMatch",'Fail' );			
+	   }else if(pageReference.state.c__SSNnumberMatch === undefined){
+			component.set("v.SSNnumberMatch",'' );			
+	   }
+
+		if(pageReference.state.c__PINMatch != undefined && (pageReference.state.c__PINMatch == null || pageReference.state.c__PINMatch.toLowerCase() == 'null') )
+		{
+			component.set("v.PINMatch",'null' );
+			component.set("v.DebitCardStatus", '');
+		}else if(pageReference.state.c__PINMatch != undefined && pageReference.state.c__PINMatch == ''){
+			component.set("v.PINMatch",'' );
+			component.set("v.DebitCardStatus", '');
+		}
+		else if(pageReference.state.c__PINMatch != undefined && pageReference.state.c__PINMatch.toLowerCase() == 'true'){
+
+			 component.set("v.PINMatch",'Pass' );
+			 component.set("v.DebitCardStatus", 'Pass');
+		}else if(pageReference.state.c__PINMatch != undefined && pageReference.state.c__PINMatch.toLowerCase() == 'false'){
+
+			component.set("v.PINMatch",'Fail' );
+			component.set("v.DebitCardStatus", 'Fail');
+	   }else if(pageReference.state.c__PINMatch === undefined){
+			component.set("v.PINMatch",'' );
+			component.set("v.DebitCardStatus", '');
+	   }
+
+		if(pageReference.state.c__CardNumberMatch != undefined && (pageReference.state.c__CardNumberMatch == null || pageReference.state.c__CardNumberMatch.toLowerCase() == 'null') )
+		{
+			component.set("v.CardNumberMatch",'null' );
+		}else if(pageReference.state.c__CardNumberMatch != undefined && pageReference.state.c__CardNumberMatch == ''){
+			component.set("v.CardNumberMatch",'' );
+		}else if(pageReference.state.c__CardNumberMatch != undefined && pageReference.state.c__CardNumberMatch.toLowerCase() == 'true'){
+			component.set("v.CardNumberMatch",'Pass' );			
+	   }else if(pageReference.state.c__CardNumberMatch != undefined && pageReference.state.c__CardNumberMatch.toLowerCase() == 'false'){
+			component.set("v.CardNumberMatch",'Fail' );			
+	   }else if(pageReference.state.c__CardNumberMatch === undefined){
+			component.set("v.CardNumberMatch",'' );			
+	   }
+
+		if(pageReference.state.c__PhoneNumberMatch != undefined && (pageReference.state.c__PhoneNumberMatch == null || pageReference.state.c__PhoneNumberMatch.toLowerCase() == 'null') )
+		{
+			component.set("v.PhoneNumberMatch",'null' );
+		}else if(pageReference.state.c__PhoneNumberMatch != undefined && pageReference.state.c__PhoneNumberMatch == ''){
+			component.set("v.PhoneNumberMatch",'' );
+		}else if(pageReference.state.c__PhoneNumberMatch != undefined && pageReference.state.c__PhoneNumberMatch.toLowerCase() == 'true'){
+			component.set("v.PhoneNumberMatch",'Pass' );			
+	   }else if(pageReference.state.c__PhoneNumberMatch != undefined && pageReference.state.c__PhoneNumberMatch.toLowerCase() == 'false'){
+			component.set("v.PhoneNumberMatch",'Fail' );			
+	   }else if(pageReference.state.c__PhoneNumberMatch === undefined){
+			component.set("v.PhoneNumberMatch",'' );			
+	   }
+
+		
+		
+		 
 		 
 		// URL Encoding........................................................................................
 		
@@ -142,7 +208,7 @@
 		
 		    var DebitCardStatus = component.get("v.DebitCardStatus");
 		
-			if(DebitCardStatus == 'true' || DebitCardStatus == 'false'){
+			if(DebitCardStatus == 'Pass' || DebitCardStatus == 'Fail'){
 				component.set("v.IsCFCUSectionVisible",false);
 				
 			}
@@ -230,7 +296,7 @@
 		console.log('Helper Line 216---PointsObtained' + PointsObtained);
 		if(PageURL == undefined){
 			component.set("v.IsDebitTabVisible", false);
-			action.setParams({"MemberId": memberid,"GUID": GUID,"DebitCardStatus": DebitCardStatus,"SSNFromURL": SSNSearched,"MemberNumberFromURL": MemberSearched,"PhoneFromURL": PhoneSearched, "PageURL" : ' ', "IVRGUIDFromUrl": IVRGUIDFromUrl,
+			action.setParams({"MemberId": memberid,"GUID": GUID,"DebitCardStatus": DebitCardStatus,"SSNFromURL": SSNSearched,"MemberNumberFromURL": MemberSearched,"PhoneFromURL": PhoneSearched, "PageURL" : '', "IVRGUIDFromUrl": IVRGUIDFromUrl,
 								"ReLoadRequired": ReLoadRequired, "ReasonCodeFromURL": ReasonCodeFromURL,"HighFlagFromUrl":HighFlagFromUrl, "PointsObtained":PointsObtained, 
 								"IsOOWTabVisible": component.get("v.IsOOWTabVisible"), "IsUserSessionLoaded": component.get("v.IsUserSessionLoaded"),
 								"EnteredCardNumber": ' ', "CardNumberMatch": ' ',
@@ -254,6 +320,7 @@
                     	component.set("v.Attempts", result['Attempts']);
                     	component.set("v.CFCUWalletStatusForDay",result['CFCUWalletStatusForDay']);
                     	component.set("v.PublicWalletStatusForDay",result['PublicWalletStatusForDay']);
+						component.set("v.KYMStatusForDay",result['KYMStatusForDay']);
                     	component.set("v.OTPStatusForDay",result.IsOTPAvailable);
                     	component.set("v.OOWStatusForDay",result['OOWStatusForDay']);
                     	component.set("v.ShowFailedDesiredLevel",true);
@@ -281,6 +348,7 @@
 					    component.set("v.CFCUWalletColor", result.CWColor);
 					    component.set("v.OOWColor", result.OOWColor);
 					    component.set("v.OTPColor", result.OTPColor);
+						component.set("v.KYMColor", result.KYMColor);
 					    //component.set("v.CurrentAuthenticationLevel", result.LastAchievableLevel);
 					    component.set("v.NextTabLevel2", result.NextTabLevel2);
 					    component.set("v.NextTabLevel3", result.NextTabLevel3);
@@ -290,6 +358,7 @@
 	                    component.set("v.MultipleMemberNumberAlert",result.MultipleMemberNumberAlert);
 						component.set("v.PointObtained", result.CurrentScore);   
 						component.set("v.CurrentScore", result.CurrentScore);
+						component.set("v.DebitPinStatus", result.DebitPinStatus);
 						console.log('Helper Line 292---result.IsCardOwnerSSNMatch' + result.IsCardOwnerSSNMatch);
 						component.set("v.IsCardOwnerSSNMatch", result.IsCardOwnerSSNMatch);						
 						component.set("v.IsUnusualActivity", result.UnusualActivity);
@@ -865,7 +934,7 @@
     	if(IVRGUIDFromUrl == undefined){IVRGUIDFromUrl = '';}
     	var action = component.get("c.GetNextAuthenticationType");
     	action.setParams({"MemberId": MemberId,"MemberType":MemberType,"MaximumPointsAvailable":MaximumPointsAvailable,"PointsObtained": CurrentScore, "IsKYMAvailable": IsKYMAvailable, 
-    						"IsOTPAvailable": IsOTPAvailable,"IsDebitPinAvailable":DebitCardStatus,"IsOOWAvailable":IsOOWAvailable,"IsPublicWalletAvailable": IsPublicWalletAvailable,
+    						"IsOTPAvailable": IsOTPAvailable,"DebitCardStatus":DebitCardStatus,"IsOOWAvailable":IsOOWAvailable,"IsPublicWalletAvailable": IsPublicWalletAvailable,
                             "IsCFCUWalletAvailable": IsCFCUWalletAvailable,"IVRGUIDFromUrl":IVRGUIDFromUrl,
 							"AccountNumberInput":component.get("v.MemberNumberEntered"), "currentScore" : component.get("v.CurrentScore")
 							
@@ -897,6 +966,7 @@
 				                        }	                                 
 	                                    else if(result.IsLevel2Achieved == false && result.NextTabLevel2 == 'Not Achievable' )
 	                                    {
+											$A.util.removeClass(ProgressBarStep2, 'active');
 	                                    	$A.util.addClass(ProgressBarStep2, 'three');
 				                        	$A.util.addClass(Level2IndicatorLabel, 'hidden');
 				                        	$A.util.removeClass(Level2IndicatorLabel, 'show');

@@ -64,6 +64,11 @@
 		}
 		if(IsUserSessionLoaded == true && (memberid != undefined && memberid != ''))
 		{
+			var KYMComponent = component.find('KYMComponent');
+			if(KYMComponent != undefined){
+				KYMComponent.KYMMethod(attribute1,ReLoadRequired, IsUserSessionLoaded);
+			}
+		
 			var PublicWalletComponent = component.find('PublicWallet');
 			if(PublicWalletComponent!=undefined)PublicWalletComponent.PublicWalletMethod(attribute1,ReLoadRequired,IsUserSessionLoaded);
 				
@@ -116,7 +121,7 @@
 	var scoringModel = component.get("v.ScoringModel");
 	var LevelModel = component.get("v.LevelModel");
 	var LastLevel = component.get("v.HighestAchievableLevel");
-	var DebitCardStatus = component.get("v.DebitCardStatus");
+	var DebitCardStatus = component.get("v.DebitPinStatus");
 	var CurrentAuthenticationLevel = component.get("v.CurrentAuthenticationLevel");
 	var isPINChange = component.get("v.isPINChange");
 	var isFDLogPreviousDay = component.get("v.isFDLogPreviousDay");
@@ -216,7 +221,7 @@
 				  IsOTPAvailable = false;
 			  }
 			  component.set("v.IsOTPAvailableOnLoad",IsOTPAvailable);
-			  helper.GetNextAuthenticationType(component, event, helper, memberid, MemberType, MaximumPointsAvailable, PointsObtained, IsKYMAvailable, IsOTPAvailable, DebitCardStatus, IsOOWAvailable, IsPublicWalletAvailable, IsCFCUWalletAvailable);
+			  helper.GetNextAuthenticationType(component, event, helper, memberid, MemberType, MaximumPointsAvailable, PointsObtained, IsKYMAvailable, IsOTPAvailable,'Fail' , IsOOWAvailable, IsPublicWalletAvailable, IsCFCUWalletAvailable);
 		}
 		if(eventParam == "Authenticated" && aElement.id =='OTPTab__item'){
 			liElement[i].classList.add("green");
@@ -231,23 +236,23 @@
 			  console.log('Line 248---PointsObtained' + PointsObtained);
 			  console.log('Line 249---CurrentScore' + CurrentScore);
 			  console.log('Line 250---ScoreModelPositiveScore' + ScoreModelPositiveScore);	  			
-			  helper.GetNextAuthenticationType(component, event, helper, memberid, MemberType, MaximumPointsAvailable, PointsObtained, IsKYMAvailable, IsOTPAvailable, DebitCardStatus, IsOOWAvailable, IsPublicWalletAvailable, IsCFCUWalletAvailable);
+			  helper.GetNextAuthenticationType(component, event, helper, memberid, MemberType, MaximumPointsAvailable, PointsObtained, IsKYMAvailable, IsOTPAvailable, 'Fail', IsOOWAvailable, IsPublicWalletAvailable, IsCFCUWalletAvailable);
 			  helper.RedrawComponent(liElement[i]);
 		}
 		if(eventParam == "Valid" && aElement.id =='OTPTab__item'){
 			liElement[i].classList.add("green");
-			component.set('v.OTPIconName','utility:check');
+			  component.set('v.OTPIconName','utility:check');
 			  PointsObtained = parseInt(PointsObtained) + parseInt(ScoreModelPositiveScore);
 			  CurrentScore = parseInt(CurrentScore) +  parseInt(ScoreModelPositiveScore);
-			component.set("v.PointObtained",PointsObtained);
-			component.set("v.CurrentScore",CurrentScore);
+			  component.set("v.PointObtained",PointsObtained);
+			  component.set("v.CurrentScore",CurrentScore);
 			  IsOTPAvailable = false;
 			  component.set("v.IsOTPAvailableOnLoad",IsOTPAvailable);
 			  component.set("v.OTPStatusForDay",true);
 			  console.log('Line 263---PointsObtained' + PointsObtained);
 			  console.log('Line 264---CurrentScore' + CurrentScore);
 			  console.log('Line 265---ScoreModelPositiveScore' + ScoreModelPositiveScore);	
-			  helper.GetNextAuthenticationType(component, event, helper, memberid, MemberType, MaximumPointsAvailable, PointsObtained, IsKYMAvailable, IsOTPAvailable, DebitCardStatus, IsOOWAvailable, IsPublicWalletAvailable, IsCFCUWalletAvailable);
+			  helper.GetNextAuthenticationType(component, event, helper, memberid, MemberType, MaximumPointsAvailable, PointsObtained, IsKYMAvailable, IsOTPAvailable, 'Fail', IsOOWAvailable, IsPublicWalletAvailable, IsCFCUWalletAvailable);
 			  helper.RedrawComponent(liElement[i]);
 		}
 		if(eventParam == "Declined" && aElement.id =='OTPTab__item'){
@@ -257,6 +262,8 @@
 			  component.set("v.MaximumPointsAvailable",MaximumPointsAvailable);
 			  NegativeScoreObtained = parseInt(NegativeScoreObtained) + parseInt(ScoreModelNegativeScore);
 			  CurrentScore = parseInt(CurrentScore) -  parseInt(ScoreModelNegativeScore);
+			  PointsObtained = parseInt(PointsObtained) - parseInt(ScoreModelNegativeScore);
+			  component.set("v.PointObtained",PointsObtained);
 			TotalScoreRequiredToAchieveLevel = parseInt(TotalScoreRequiredToAchieveLevel) +  parseInt(NegativeScoreObtained);
 			IsOTPAvailable = false;
 			component.set("v.CurrentScore",CurrentScore);
@@ -265,155 +272,166 @@
 			  console.log('Line 279---NegativeScoreObtained' + NegativeScoreObtained);
 			  console.log('Line 280---ScoreModelNegativeScore' + ScoreModelNegativeScore);
 			  console.log('Line 281---CurrentScore' + CurrentScore);	
-			  helper.GetNextAuthenticationType(component, event, helper, memberid, MemberType, MaximumPointsAvailable, PointsObtained, IsKYMAvailable, IsOTPAvailable, DebitCardStatus, IsOOWAvailable, IsPublicWalletAvailable, IsCFCUWalletAvailable);
+			  helper.GetNextAuthenticationType(component, event, helper, memberid, MemberType, MaximumPointsAvailable, PointsObtained, IsKYMAvailable, IsOTPAvailable, 'Fail', IsOOWAvailable, IsPublicWalletAvailable, IsCFCUWalletAvailable);
 			  helper.RedrawComponent(liElement[i]);
 		}
 		if(eventParam == "Changed" && aElement.id =='OTPTab__item'){
 			liElement[i].classList.add("red");
-			  component.set('v.OTPIconName','utility:close');
-			  MaximumPointsAvailable = parseInt(MaximumPointsAvailable) - parseInt(ScoreModelNegativeScore);
-			  component.set("v.MaximumPointsAvailable",MaximumPointsAvailable);
-			  NegativeScoreObtained = parseInt(NegativeScoreObtained) + parseInt(ScoreModelNegativeScore);
+			component.set('v.OTPIconName','utility:close');
+			MaximumPointsAvailable = parseInt(MaximumPointsAvailable) - parseInt(ScoreModelNegativeScore);
+			component.set("v.MaximumPointsAvailable",MaximumPointsAvailable);
+			NegativeScoreObtained = parseInt(NegativeScoreObtained) + parseInt(ScoreModelNegativeScore);
 			CurrentScore = parseInt(CurrentScore) -  parseInt(ScoreModelNegativeScore);
 			component.set("v.CurrentScore",CurrentScore);  
+			PointsObtained = parseInt(PointsObtained) - parseInt(ScoreModelNegativeScore);
+			component.set("v.PointObtained",PointsObtained);
 			TotalScoreRequiredToAchieveLevel = parseInt(TotalScoreRequiredToAchieveLevel) +  parseInt(NegativeScoreObtained);
-			  IsOTPAvailable = false;
-			  component.set("v.IsOTPAvailableOnLoad",IsOTPAvailable);
-			  console.log('Line 294---MaximumPointsAvailable' + MaximumPointsAvailable);
-			  console.log('Line 295---NegativeScoreObtained' + NegativeScoreObtained);
-			  console.log('Line 296---ScoreModelNegativeScore' + ScoreModelNegativeScore);
-			  console.log('Line 297---CurrentScore' + CurrentScore);	
-			  helper.GetNextAuthenticationType(component, event, helper, memberid, MemberType, MaximumPointsAvailable, PointsObtained, IsKYMAvailable, IsOTPAvailable, DebitCardStatus, IsOOWAvailable, IsPublicWalletAvailable, IsCFCUWalletAvailable);
-			  helper.RedrawComponent(liElement[i]);
+			IsOTPAvailable = false;
+			component.set("v.IsOTPAvailableOnLoad",IsOTPAvailable);
+			console.log('Line 294---MaximumPointsAvailable' + MaximumPointsAvailable);
+			console.log('Line 295---NegativeScoreObtained' + NegativeScoreObtained);
+			console.log('Line 296---ScoreModelNegativeScore' + ScoreModelNegativeScore);
+			console.log('Line 297---CurrentScore' + CurrentScore);	
+			helper.GetNextAuthenticationType(component, event, helper, memberid, MemberType, MaximumPointsAvailable, PointsObtained, IsKYMAvailable, IsOTPAvailable, 'Fail', IsOOWAvailable, IsPublicWalletAvailable, IsCFCUWalletAvailable);
+			helper.RedrawComponent(liElement[i]);
 		}
 		if(eventParam == "Invalid" && aElement.id =='OTPTab__item'){
 			liElement[i].classList.add("red");
-			  component.set('v.OTPIconName','utility:close');	  			
-			  MaximumPointsAvailable = parseInt(MaximumPointsAvailable) - parseInt(ScoreModelNegativeScore);
-			  component.set("v.MaximumPointsAvailable",MaximumPointsAvailable);
-			  NegativeScoreObtained = parseInt(NegativeScoreObtained) + parseInt(ScoreModelNegativeScore);
-			  CurrentScore = parseInt(CurrentScore) -  parseInt(ScoreModelNegativeScore);
+			component.set('v.OTPIconName','utility:close');	  			
+			MaximumPointsAvailable = parseInt(MaximumPointsAvailable) - parseInt(ScoreModelNegativeScore);
+			component.set("v.MaximumPointsAvailable",MaximumPointsAvailable);
+			NegativeScoreObtained = parseInt(NegativeScoreObtained) + parseInt(ScoreModelNegativeScore);
+			CurrentScore = parseInt(CurrentScore) -  parseInt(ScoreModelNegativeScore);
+			PointsObtained = parseInt(PointsObtained) - parseInt(ScoreModelNegativeScore);
+			component.set("v.PointObtained",PointsObtained);
 			TotalScoreRequiredToAchieveLevel = parseInt(TotalScoreRequiredToAchieveLevel) +  parseInt(NegativeScoreObtained);
-			  IsOTPAvailable = false;
+			IsOTPAvailable = false;
 			component.set("v.IsOTPAvailableOnLoad",IsOTPAvailable);
 			component.set("v.CurrentScore",CurrentScore);  
-			  console.log('Line 310---MaximumPointsAvailable' + MaximumPointsAvailable);
-			  console.log('Line 311---NegativeScoreObtained' + NegativeScoreObtained);
-			  console.log('Line 312---ScoreModelNegativeScore' + ScoreModelNegativeScore);
-			  console.log('Line 313---CurrentScore' + CurrentScore);	
-			  helper.GetNextAuthenticationType(component, event, helper, memberid, MemberType, MaximumPointsAvailable, PointsObtained, IsKYMAvailable, IsOTPAvailable, DebitCardStatus, IsOOWAvailable, IsPublicWalletAvailable, IsCFCUWalletAvailable);
-			  helper.RedrawComponent(liElement[i]);
+			console.log('Line 310---MaximumPointsAvailable' + MaximumPointsAvailable);
+			console.log('Line 311---NegativeScoreObtained' + NegativeScoreObtained);
+			console.log('Line 312---ScoreModelNegativeScore' + ScoreModelNegativeScore);
+			console.log('Line 313---CurrentScore' + CurrentScore);	
+			helper.GetNextAuthenticationType(component, event, helper, memberid, MemberType, MaximumPointsAvailable, PointsObtained, IsKYMAvailable, IsOTPAvailable, 'Fail', IsOOWAvailable, IsPublicWalletAvailable, IsCFCUWalletAvailable);
+			helper.RedrawComponent(liElement[i]);
 			  
 		}
 		if(KYMeventParam == "SUCCESS" && aElement.id =='KYMTab__item'){
-		 
+			component.set("v.KYMColor",'Green');
 			liElement[i].classList.add("green");
-			  component.set('v.KYMIconName','utility:check');
-			  PointsObtained = parseInt(PointsObtained) + parseInt(ScoreModelPositiveScore);
-			  CurrentScore = parseInt(CurrentScore) +  parseInt(ScoreModelPositiveScore);
+			component.set('v.KYMIconName','utility:check');
+			PointsObtained = parseInt(PointsObtained) + parseInt(ScoreModelPositiveScore);
+			CurrentScore = parseInt(CurrentScore) +  parseInt(ScoreModelPositiveScore);
 			component.set("v.PointObtained",PointsObtained);
 			component.set("v.CurrentScore",CurrentScore);  
-			  IsKYMAvailable = false;
-			  component.set("v.IsKYMAvailableOnLoad",IsKYMAvailable);
-			  helper.GetNextAuthenticationType(component, event, helper, memberid, MemberType, MaximumPointsAvailable, PointsObtained, IsKYMAvailable, IsOTPAvailable, DebitCardStatus, IsOOWAvailable, IsPublicWalletAvailable, IsCFCUWalletAvailable);
-			  helper.RedrawComponent(liElement[i]);
+			IsKYMAvailable = false;
+			component.set("v.IsKYMAvailableOnLoad",IsKYMAvailable);
+			helper.GetNextAuthenticationType(component, event, helper, memberid, MemberType, MaximumPointsAvailable, PointsObtained, IsKYMAvailable, IsOTPAvailable, 'Fail', IsOOWAvailable, IsPublicWalletAvailable, IsCFCUWalletAvailable);
+			helper.RedrawComponent(liElement[i]);
 		 }
 		 
 		 if(KYMeventParam == "FAIL" && aElement.id =='KYMTab__item')
 		 {
-			 liElement[i].classList.add("red");
-			   component.set('v.KYMIconName','utility:close');
-			   MaximumPointsAvailable = parseInt(MaximumPointsAvailable) - parseInt(ScoreModelNegativeScore);
-			   component.set("v.MaximumPointsAvailable",MaximumPointsAvailable);
-			   NegativeScoreObtained = parseInt(NegativeScoreObtained) + parseInt(ScoreModelNegativeScore);
-			 CurrentScore = parseInt(CurrentScore) -  parseInt(ScoreModelNegativeScore);
-			 component.set("v.CurrentScore",CurrentScore);  
-			 TotalScoreRequiredToAchieveLevel = parseInt(TotalScoreRequiredToAchieveLevel) +  parseInt(NegativeScoreObtained);
-			   IsKYMAvailable = false;
-			   component.set("v.IsKYMAvailableOnLoad",IsKYMAvailable);
-			   helper.GetNextAuthenticationType(component, event, helper, memberid, MemberType, MaximumPointsAvailable, PointsObtained, IsKYMAvailable, IsOTPAvailable, DebitCardStatus, IsOOWAvailable, IsPublicWalletAvailable, IsCFCUWalletAvailable);
-			   helper.RedrawComponent(liElement[i]);
+			component.set("v.KYMColor",'Red');
+			liElement[i].classList.add("red");
+			component.set('v.KYMIconName','utility:close');
+			MaximumPointsAvailable = parseInt(MaximumPointsAvailable) - parseInt(ScoreModelNegativeScore);
+			component.set("v.MaximumPointsAvailable",MaximumPointsAvailable);
+			NegativeScoreObtained = parseInt(NegativeScoreObtained) + parseInt(ScoreModelNegativeScore);
+			CurrentScore = parseInt(CurrentScore) -  parseInt(ScoreModelNegativeScore);
+			component.set("v.CurrentScore",CurrentScore);  
+			PointsObtained = parseInt(PointsObtained) - parseInt(ScoreModelNegativeScore);
+			component.set("v.PointObtained",PointsObtained);
+			TotalScoreRequiredToAchieveLevel = parseInt(TotalScoreRequiredToAchieveLevel) +  parseInt(NegativeScoreObtained);
+			IsKYMAvailable = false;
+			component.set("v.IsKYMAvailableOnLoad",IsKYMAvailable);
+			helper.GetNextAuthenticationType(component, event, helper, memberid, MemberType, MaximumPointsAvailable, PointsObtained, IsKYMAvailable, IsOTPAvailable, 'Fail', IsOOWAvailable, IsPublicWalletAvailable, IsCFCUWalletAvailable);
+			helper.RedrawComponent(liElement[i]);
 		 }
 		 
 		 
 		 if(parseInt(PublicWalletScore) > 2 && parseInt(PublicWalletFailedCount) <= 1 && aElement.id =='PublicWalletTab__item')
 		 {
-				 component.set("v.PublicWalletColor",'Green');
-				 liElement[i].classList.add("green");
-				 liElement[i].classList.remove("red");
-				 component.set('v.PWIconName','utility:check');
-				  PointsObtained = parseInt(PointsObtained) + parseInt(ScoreModelPositiveScore);
-				  CurrentScore = parseInt(CurrentScore) +  parseInt(ScoreModelPositiveScore);
-				component.set("v.PointObtained",PointsObtained);
-				component.set("v.CurrentScore",CurrentScore);  
-				  IsPublicWalletAvailable = false;
-				  component.set("v.IsPublicWalletAvailableOnLoad",IsPublicWalletAvailable);
-				 component.set("v.PublicWalletStatusForDay", true);
-				 console.log('Line 358---PointsObtained' + PointsObtained);
-				 console.log('Line 359---CurrentScore' + CurrentScore);
-				 console.log('Line 360---ScoreModelPositiveScore' + ScoreModelPositiveScore);
-				  helper.GetNextAuthenticationType(component, event, helper, memberid, MemberType, MaximumPointsAvailable, PointsObtained, IsKYMAvailable, IsOTPAvailable, DebitCardStatus, IsOOWAvailable, IsPublicWalletAvailable, IsCFCUWalletAvailable);
-				  helper.RedrawComponent(liElement[i]);
+			component.set("v.PublicWalletColor",'Green');
+			liElement[i].classList.add("green");
+			liElement[i].classList.remove("red");
+			component.set('v.PWIconName','utility:check');
+			PointsObtained = parseInt(PointsObtained) + parseInt(ScoreModelPositiveScore);
+			CurrentScore = parseInt(CurrentScore) +  parseInt(ScoreModelPositiveScore);
+			component.set("v.PointObtained",PointsObtained);
+			component.set("v.CurrentScore",CurrentScore);  
+			IsPublicWalletAvailable = false;
+			component.set("v.IsPublicWalletAvailableOnLoad",IsPublicWalletAvailable);
+			component.set("v.PublicWalletStatusForDay", true);
+			console.log('Line 358---PointsObtained' + PointsObtained);
+			console.log('Line 359---CurrentScore' + CurrentScore);
+			console.log('Line 360---ScoreModelPositiveScore' + ScoreModelPositiveScore);
+			helper.GetNextAuthenticationType(component, event, helper, memberid, MemberType, MaximumPointsAvailable, PointsObtained, IsKYMAvailable, IsOTPAvailable, 'Fail', IsOOWAvailable, IsPublicWalletAvailable, IsCFCUWalletAvailable);
+			helper.RedrawComponent(liElement[i]);
 		 }
 		 if((parseInt(PublicWalletScore) <= 2 || parseInt(PublicWalletFailedCount) > 1) && aElement.id =='PublicWalletTab__item')
 		 {
-			 component.set("v.PublicWalletColor",'Red');
-			 liElement[i].classList.add("red");
-			 liElement[i].classList.remove("green");
-			   component.set('v.PWIconName','utility:close');
-			   MaximumPointsAvailable = parseInt(MaximumPointsAvailable) - parseInt(ScoreModelNegativeScore);
-			   component.set("v.MaximumPointsAvailable",MaximumPointsAvailable);
-			   NegativeScoreObtained = parseInt(NegativeScoreObtained) + parseInt(ScoreModelNegativeScore);
-			   CurrentScore = parseInt(CurrentScore) -  parseInt(ScoreModelNegativeScore);
-			 TotalScoreRequiredToAchieveLevel = parseInt(TotalScoreRequiredToAchieveLevel) +  parseInt(NegativeScoreObtained);
-			   IsPublicWalletAvailable = false;
-			 component.set("v.IsPublicWalletAvailableOnLoad",IsPublicWalletAvailable);
-			 component.set("v.CurrentScore",CurrentScore);  
-			   console.log('Line 376---MaximumPointsAvailable' + MaximumPointsAvailable);
-			   console.log('Line 377---NegativeScoreObtained' + NegativeScoreObtained);
-			   console.log('Line 378---ScoreModelNegativeScore' + ScoreModelNegativeScore);
-			   console.log('Line 379---CurrentScore' + CurrentScore);	
-			   helper.GetNextAuthenticationType(component, event, helper, memberid, MemberType, MaximumPointsAvailable, PointsObtained, IsKYMAvailable, IsOTPAvailable, DebitCardStatus, IsOOWAvailable, IsPublicWalletAvailable, IsCFCUWalletAvailable);
-			   helper.RedrawComponent(liElement[i]);
+			component.set("v.PublicWalletColor",'Red');
+			liElement[i].classList.add("red");
+			liElement[i].classList.remove("green");
+			component.set('v.PWIconName','utility:close');
+			MaximumPointsAvailable = parseInt(MaximumPointsAvailable) - parseInt(ScoreModelNegativeScore);
+			component.set("v.MaximumPointsAvailable",MaximumPointsAvailable);
+			NegativeScoreObtained = parseInt(NegativeScoreObtained) + parseInt(ScoreModelNegativeScore);
+			CurrentScore = parseInt(CurrentScore) -  parseInt(ScoreModelNegativeScore);
+			PointsObtained = parseInt(PointsObtained) - parseInt(ScoreModelNegativeScore);
+			component.set("v.PointObtained",PointsObtained);
+			TotalScoreRequiredToAchieveLevel = parseInt(TotalScoreRequiredToAchieveLevel) +  parseInt(NegativeScoreObtained);
+			IsPublicWalletAvailable = false;
+			component.set("v.IsPublicWalletAvailableOnLoad",IsPublicWalletAvailable);
+			component.set("v.CurrentScore",CurrentScore);  
+			console.log('Line 376---MaximumPointsAvailable' + MaximumPointsAvailable);
+			console.log('Line 377---NegativeScoreObtained' + NegativeScoreObtained);
+			console.log('Line 378---ScoreModelNegativeScore' + ScoreModelNegativeScore);
+			console.log('Line 379---CurrentScore' + CurrentScore);	
+			helper.GetNextAuthenticationType(component, event, helper, memberid, MemberType, MaximumPointsAvailable, PointsObtained, IsKYMAvailable, IsOTPAvailable, 'Fail', IsOOWAvailable, IsPublicWalletAvailable, IsCFCUWalletAvailable);
+			helper.RedrawComponent(liElement[i]);
 			   
 		 }			 
 		 if(parseInt(CFCUWalletScore) > 2 && parseInt(CFCUWalletFailedCount) <=1 && aElement.id =='CFCUWalletTab__item')
 		 {
-				 liElement[i].classList.add("green");
-				 liElement[i].classList.remove("red");
-				  component.set('v.CFCUIconName','utility:check');
-				  PointsObtained = parseInt(PointsObtained) + parseInt(ScoreModelPositiveScore);
-				  CurrentScore = parseInt(CurrentScore) +  parseInt(ScoreModelPositiveScore);
-				 component.set("v.PointObtained",PointsObtained);
-				 component.set("v.CurrentScore",CurrentScore);  
-				  IsCFCUWalletAvailable = false;
-				  component.set("v.IsCFCUWalletAvailableOnLoad",IsCFCUWalletAvailable);
-				  component.set("v.CFCUWalletStatusForDay", true);
-				  console.log('Line 394---PointsObtained' + PointsObtained);
-				 console.log('Line 395---CurrentScore' + CurrentScore);
-				 console.log('Line 396---ScoreModelPositiveScore' + ScoreModelPositiveScore);
-				  helper.GetNextAuthenticationType(component, event, helper, memberid, MemberType, MaximumPointsAvailable, PointsObtained, IsKYMAvailable, IsOTPAvailable, DebitCardStatus, IsOOWAvailable, IsPublicWalletAvailable, IsCFCUWalletAvailable);
-				  helper.RedrawComponent(liElement[i]);
+			liElement[i].classList.add("green");
+			liElement[i].classList.remove("red");
+			component.set('v.CFCUIconName','utility:check');
+			PointsObtained = parseInt(PointsObtained) + parseInt(ScoreModelPositiveScore);
+			CurrentScore = parseInt(CurrentScore) +  parseInt(ScoreModelPositiveScore);
+			component.set("v.PointObtained",PointsObtained);
+			component.set("v.CurrentScore",CurrentScore);  
+			IsCFCUWalletAvailable = false;
+			component.set("v.IsCFCUWalletAvailableOnLoad",IsCFCUWalletAvailable);
+			component.set("v.CFCUWalletStatusForDay", true);
+			console.log('Line 394---PointsObtained' + PointsObtained);
+			console.log('Line 395---CurrentScore' + CurrentScore);
+			console.log('Line 396---ScoreModelPositiveScore' + ScoreModelPositiveScore);
+			helper.GetNextAuthenticationType(component, event, helper, memberid, MemberType, MaximumPointsAvailable, PointsObtained, IsKYMAvailable, IsOTPAvailable, 'Fail', IsOOWAvailable, IsPublicWalletAvailable, IsCFCUWalletAvailable);
+			helper.RedrawComponent(liElement[i]);
 		 }
 		 if((parseInt(CFCUWalletScore) <= 2 || parseInt(CFCUWalletFailedCount) > 1 ) && aElement.id =='CFCUWalletTab__item')
 		 {
-			 liElement[i].classList.add("red");
-			 liElement[i].classList.remove("green");
-			   component.set('v.CFCUIconName','utility:close');
-			   MaximumPointsAvailable = parseInt(MaximumPointsAvailable) - parseInt(ScoreModelNegativeScore);
-			   component.set("v.MaximumPointsAvailable",MaximumPointsAvailable);
-			   NegativeScoreObtained = parseInt(NegativeScoreObtained) + parseInt(ScoreModelNegativeScore);
-			   CurrentScore = parseInt(CurrentScore) -  parseInt(ScoreModelNegativeScore);
-				TotalScoreRequiredToAchieveLevel = parseInt(TotalScoreRequiredToAchieveLevel) +  parseInt(NegativeScoreObtained);
-				IsCFCUWalletAvailable = false;
-				component.set("v.CurrentScore",CurrentScore);  
-			   component.set("v.IsCFCUWalletAvailableOnLoad",IsCFCUWalletAvailable);
-			   console.log('Line 412---MaximumPointsAvailable' + MaximumPointsAvailable);
-			   console.log('Line 413---NegativeScoreObtained' + NegativeScoreObtained);
-			   console.log('Line 414---ScoreModelNegativeScore' + ScoreModelNegativeScore);
-			   console.log('Line 415---CurrentScore' + CurrentScore);	
-			   helper.GetNextAuthenticationType(component, event, helper, memberid, MemberType, MaximumPointsAvailable, PointsObtained, IsKYMAvailable, IsOTPAvailable, DebitCardStatus, IsOOWAvailable, IsPublicWalletAvailable, IsCFCUWalletAvailable);
-			   helper.RedrawComponent(liElement[i]);
+			liElement[i].classList.add("red");
+			liElement[i].classList.remove("green");
+			component.set('v.CFCUIconName','utility:close');
+			MaximumPointsAvailable = parseInt(MaximumPointsAvailable) - parseInt(ScoreModelNegativeScore);
+			component.set("v.MaximumPointsAvailable",MaximumPointsAvailable);
+			NegativeScoreObtained = parseInt(NegativeScoreObtained) + parseInt(ScoreModelNegativeScore);
+			CurrentScore = parseInt(CurrentScore) -  parseInt(ScoreModelNegativeScore);
+			PointsObtained = parseInt(PointsObtained) - parseInt(ScoreModelNegativeScore);
+			component.set("v.PointObtained",PointsObtained);
+			TotalScoreRequiredToAchieveLevel = parseInt(TotalScoreRequiredToAchieveLevel) +  parseInt(NegativeScoreObtained);
+			IsCFCUWalletAvailable = false;
+			component.set("v.CurrentScore",CurrentScore);  
+			component.set("v.IsCFCUWalletAvailableOnLoad",IsCFCUWalletAvailable);
+			console.log('Line 412---MaximumPointsAvailable' + MaximumPointsAvailable);
+			console.log('Line 413---NegativeScoreObtained' + NegativeScoreObtained);
+			console.log('Line 414---ScoreModelNegativeScore' + ScoreModelNegativeScore);
+			console.log('Line 415---CurrentScore' + CurrentScore);	
+			helper.GetNextAuthenticationType(component, event, helper, memberid, MemberType, MaximumPointsAvailable, PointsObtained, IsKYMAvailable, IsOTPAvailable, 'Fail', IsOOWAvailable, IsPublicWalletAvailable, IsCFCUWalletAvailable);
+			helper.RedrawComponent(liElement[i]);
 		 }
 		 
 		 
@@ -518,6 +536,8 @@ handleRadioClick : function(component, event, helper){
 	component.set("v.SelectedmemberName",membername );
 	var DebitCardStatus = component.get("v.DebitCardStatus");
 	var attribute1 = component.get('v.SelectedmemberId');
+	var KYMComponent = component.find('KYMComponent');
+	
 	var PublicWalletComponent = component.find('PublicWallet');
 	var IsUserSessionLoaded = component.get("v.IsUserSessionLoaded");
 	/*if(ReLoadRequired == undefined){
@@ -525,6 +545,10 @@ handleRadioClick : function(component, event, helper){
 	}*/
 	console.log('Line 520---PointsObtained' + PointsObtained);
 	console.log('Line 521---DebitCardStatus' + DebitCardStatus);
+	if(KYMComponent != undefined){
+		KYMComponent.KYMMethod(attribute1,ReLoadRequired, IsUserSessionLoaded);
+	}
+
 	if(PublicWalletComponent!=undefined){
 		PublicWalletComponent.PublicWalletMethod(attribute1,ReLoadRequired, IsUserSessionLoaded);
 	}
@@ -860,6 +884,7 @@ clearAll : function(component, event){
    component.set("v.isPINChange",false);
    component.set("v.isFDLogPreviousDay",false);
    component.set("v.PublicWalletColor",'');
+   component.set("v.KYMColor",'');
    component.set("v.CFCUWalletColor",'');
    component.set("v.OOWColor",'');
    component.set("v.OTPColor",'');
