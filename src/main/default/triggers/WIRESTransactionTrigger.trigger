@@ -43,6 +43,13 @@ trigger WIRESTransactionTrigger on WIRES_Transaction__c (before insert,before up
                 if(trigger.old[i].Approval_Status__c == 'Cancelled' && trigger.new[i].Approval_Status__c != 'Cancelled'){
                      trigger.new[i].addError('Cancelled transactions can not be updated');
                 }
+                 // Warning message if user updates the status to cancelled
+                 if(trigger.old[i].Approval_Status__c == 'Released In WireXchange' && trigger.new[i].Approval_Status__c == 'Cancelled'){
+                    trigger.new[i].addError('This wire can no longer be cancelled in MARS.  Please Zoom chat the Wire Transfer Verification Team directly to see if the wire can be cancelled before processing has been completed.');
+               }
+               if(trigger.old[i].Approval_Status__c == 'Sent from WireXchange' && trigger.new[i].Approval_Status__c == 'Cancelled'){
+                trigger.new[i].addError('The processing of this wire has been completed and cannot be cancelled');
+               }
             } 
         }
     }
@@ -139,63 +146,31 @@ trigger WIRESTransactionTrigger on WIRES_Transaction__c (before insert,before up
             } 
             
             if(WTIds.size() > 0){
-                Set<Id> range1To5000 = new Set<Id>();
-                Set<Id> range50001To10000 = new Set<Id>();
-                Set<Id> rangeGrtThen10000 = new Set<Id>();
                 
+                Set<Id> rangeForDocuSign = new Set<Id>();
                 Set<Id> rangeForInPersonSigning = new Set<Id>();                
                 
-                for(Integer i=0; i<WTIds.size(); i++){ 
-                    
+                for(Integer i=0; i<WTIds.size(); i++)
+                { 
                     if(WTIds[i].Source__c!=WiresConstant.Source_Branch){
-                        
-                        if(WTIds[i].WireAmount__c<=5000){
                             if(WTIds[i].Frequency__c==WiresConstant.OneTime){
-                                range1To5000.add(WTIds[i].Id);
+                                rangeForDocuSign.add(WTIds[i].Id);
                             }
-                        }
-                        
-                        if(WTIds[i].WireAmount__c>5000 && WTIds[i].WireAmount__c<=10000){
-                            if(WTIds[i].Frequency__c==WiresConstant.OneTime){
-                                range50001To10000.add(WTIds[i].Id);
-                            }
-                        }
-                        
-                        if(WTIds[i].WireAmount__c>10000){
-                            if(WTIds[i].Frequency__c==WiresConstant.OneTime){
-                                rangeGrtThen10000.add(WTIds[i].Id);
-                            }
-                        }
                     }
                     
                     if(WTIds[i].Source__c==WiresConstant.Source_Branch){
-                        if(WTIds[i].Frequency__c==WiresConstant.OneTime){
+                        if(WTIds[i].Frequency__c==WiresConstant.OneTime) {
                             rangeForInPersonSigning.add(WTIds[i].Id);
                         }
                     }
                 }        
                 
+                
+                System.debug('rangeForDocuSign:'+rangeForDocuSign);
                 // we also need docuSign for wires amount less than 5k
                 // STRY0011574: Online - DocuSign should be sent to customer for all online wires.
-                if(range1To5000.size()>0){
-                  System.debug('After Insert: WiresTransToDocuSign low range');
-                  WiresTransToDocuSign.docusignAPIcall(range1To5000);
-                }
-                
-                if(range50001To10000.size()>0){
-                  System.debug('After Insert: WiresTransToDocuSign mid range');
-                  WiresTransToDocuSign.docusignAPIcall(range50001To10000);
-                }
-                
-                if(rangeGrtThen10000.size()>0){
-                  System.debug('After Insert: WiresTransToDocuSign high range');
-                  WiresTransToDocuSign.docusignAPIcall(rangeGrtThen10000);
-                }
-                
-                if(range1To5000.size()>0){
-                    //WiresTransactionApprovalController.SendProgressNotification(range1To5000);
-                    //WiresSMSNotificationController.SendProgressSMSNotification(range1To5000);
-                    //WiresTransactionApprovalController.CheckRedFlgsAndUpdateStatus(range1To5000);
+                if(rangeForDocuSign.size()>0) {
+                    WiresTransToDocuSign.docusignAPIcall(rangeForDocuSign);
                 }
                 
                 if(rangeForInPersonSigning.size()>0){
