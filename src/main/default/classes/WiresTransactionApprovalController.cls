@@ -173,6 +173,16 @@ public class WiresTransactionApprovalController{
     system.debug('WiresList.Identity_Verification_Used__c==' + WiresList.Identity_Verification_Used__c);
     return strMap;
 }
+    
+    @AuraEnabled 
+    public static List<WIRES_Transaction__c> getWiresList() {
+        return [SELECT Id, Name, RecordTypeId,SendOn__c, FromAccount__c,ToAccoutId__c,ToAccountName__c,
+                WireAmount__c, Status__c, Fees__c, 
+                Description__c, Chevron_Account_Number__c, TotalFromAccount__c, 
+                Source__c, Good_Funds_Check__c 
+                FROM WIRES_Transaction__c 
+                Order By CreatedDate DESC LIMIT 50];
+    }
 
 @AuraEnabled
 public static void ChangeOwner(string wiresId){
@@ -225,8 +235,9 @@ public static boolean ApproveTransaction(string WiresRecordId, string Action, st
     //     isUserEligibleforApproval = CheckIfUserInApprovalGroup(WiresRecordId);
     // }
     
+    decimal branchWiresMinAmtReqForSecApproval = CustomSettingsSelector.getBranchWiresMinAmtReqForSecApproval();
+    
     WIRES_Transaction__c WiresObject = (WIRES_Transaction__c)JSON.deserialize(wiresdetails, WIRES_Transaction__c.class);
-
     WIRES_Transaction__c Wires = [SELECT id, Approval_Status__c, FromAccount__c, Share_ID__c, Source__c, TotalFromAccount__c, WireAmount__c, Description__c, IsAccountOpenfor45Days__c, Member_Name__c, Identity_Verification_Used__c, IsEmailStable__c, IsHomePhoneStable__c, IsMobilePhoneStable__c, IsWorkPhoneStable__c, AccountStableReview__c, Available_Balance_Review__c, EmailStableReview__c, Review_Reason__c, Home_Phone_Stable_Review__c, ID_Verification_Review__c, Mobile_Phone_Stable_Review__c, Previous_Wires_Review__c, Work_Phone_Stable_Review__c, FlagAccountOpenfor45Days__c, FlagEmailStablefor30Days__c, FlagHomePhoneStablefor30Days__c, FlagMobilePhoneStablefor30Days__c, FlagWorkPhoneStablefor30Days__c, Docusign_Review__c, First_Approval_Comment__c, Second_Approval_Comment__c, Approved_by_1st_Approver__c
                                   from WIRES_Transaction__c
                                   where id = :WiresRecordId
@@ -260,7 +271,8 @@ public static boolean ApproveTransaction(string WiresRecordId, string Action, st
     
     else if ((Wires.Approval_Status__c == WiresConstant.ApprovalStatus_PendingForApproval || Wires.Approval_Status__c == WiresConstant.ApprovalStatus_PendingForSecondApproval || Wires.Approval_Status__c == WiresConstant.ApprovalStatus_FraudReview || Wires.Approval_Status__c == WiresConstant.ApprovalStatus_GoodFundsReview)){
 
-        if (Wires.Source__c == WiresConstant.Source_Branch){
+        if (Wires.Source__c == WiresConstant.Source_Branch)
+        {
             system.debug('Wires.Approval_Status__c'+Wires.Approval_Status__c);
             system.debug('Wires.Approved_by_1st_Approver__c'+Wires.Approved_by_1st_Approver__c);
             if(Wires.Approval_Status__c == WiresConstant.ApprovalStatus_PendingForSecondApproval && Wires.Approved_by_1st_Approver__c != null){
@@ -269,7 +281,7 @@ public static boolean ApproveTransaction(string WiresRecordId, string Action, st
                 return isAlreadyApproved;
             }
 
-            if (Wires.WireAmount__c > 100000 && Wires.Approval_Status__c != WiresConstant.ApprovalStatus_PendingForSecondApproval){
+            if (Wires.WireAmount__c > branchWiresMinAmtReqForSecApproval && Wires.Approval_Status__c != WiresConstant.ApprovalStatus_PendingForSecondApproval){
 
                 Wires.Approval_Status__c = WiresConstant.ApprovalStatus_PendingForSecondApproval;
 
@@ -286,7 +298,7 @@ public static boolean ApproveTransaction(string WiresRecordId, string Action, st
                 Wires.Previous_Wires2_Review__c = WiresObject.Previous_Wires_Review__c;
                 Wires.ApprovedDate__c = System.now();
 
-                if (Wires.WireAmount__c > 100000 && Wires.Approval_Status__c == WiresConstant.ApprovalStatus_PendingForSecondApproval){
+                if (Wires.WireAmount__c > branchWiresMinAmtReqForSecApproval && Wires.Approval_Status__c == WiresConstant.ApprovalStatus_PendingForSecondApproval){
                    // Wires.Approved_by_2nd_Approver__c = UserInfo.getUserId();
                 } 
                 else{
@@ -351,6 +363,8 @@ public static boolean ApproveTransaction(string WiresRecordId, string Action, st
 public static boolean ApproveTransactionSecondApproval(string WiresRecordId, string Action, string wiresdetails){
 
     System.debug('Call function ApproveTransaction Second Approval');
+    decimal branchWiresMinAmtReqForSecApproval = CustomSettingsSelector.getBranchWiresMinAmtReqForSecApproval();
+    
     Boolean isAlreadyApproved = false;
     WIRES_Transaction__c WiresObject = (WIRES_Transaction__c)JSON.deserialize(wiresdetails, WIRES_Transaction__c.class);
 
@@ -368,14 +382,13 @@ public static boolean ApproveTransactionSecondApproval(string WiresRecordId, str
                 isAlreadyApproved = true;
                 return isAlreadyApproved;
             }
-
-             
-            else{
+            else
+            {
                 Wires.Available_Balance2_Review__c = WiresObject.Available_Balance_Review__c;
                 Wires.Previous_Wires2_Review__c = WiresObject.Previous_Wires_Review__c;
                 Wires.ApprovedDate__c = System.now();
 
-                if (Wires.WireAmount__c > 100000 && Wires.Approval_Status__c == WiresConstant.ApprovalStatus_PendingForSecondApproval){
+                if (Wires.WireAmount__c > branchWiresMinAmtReqForSecApproval && Wires.Approval_Status__c == WiresConstant.ApprovalStatus_PendingForSecondApproval){
                     Wires.Approved_by_2nd_Approver__c = UserInfo.getUserId();
                 }                 
 
@@ -392,7 +405,6 @@ public static boolean ApproveTransactionSecondApproval(string WiresRecordId, str
                 wires.Approved_by_1st_Approver__c = UserInfo.getUserId();
                 wires.ApprovedDate__c = System.now();
             }
-
         }
 
         Wires.AccountStableReview__c = WiresObject.AccountStableReview__c;
@@ -541,8 +553,11 @@ public static void CheckRedFlgsAndUpdateStatus(Set<Id> id){
 
     List<Case> fraudCases = new List<Case>();
     for (WIRES_Transaction__c wt : wireTransactions){
-
-        if (wt.WireAmount__c > 250000){
+        
+        Boolean isFraudReviewMandatory=CustomSettingsSelector.getOnlineWiresIsFraudReviewMandatory(wt.WireAmount__c);
+        Boolean isOperationsReviewMandatory=CustomSettingsSelector.getOnlineWiresIsOperationsReviewMandatory(wt.WireAmount__c);
+            
+        if (isFraudReviewMandatory==true){
             String bankName;
             if (wt.ToAccoutId__r != null){
                 if (String.isNotBlank(wt.ToAccoutId__r.BankName__c)){
@@ -564,7 +579,7 @@ public static void CheckRedFlgsAndUpdateStatus(Set<Id> id){
             case1.Tertiary_Category__c = 'Potential Fraud';
             case1.Description = 'Wire Name: ' + wt.Name + '\n' + 
                                 'Wire Amount: ' + wt.WireAmount__c + '\n' + 
-                                'Send On Date: ' + String.valueof(wt.SendOn__c).removeEnd(' 00:00:00') + '\n' + 
+                                'Send On Date: ' + String.valueof(wt.SendOn__c) + '\n' + 
                                 'Source: ' + wt.Source__c + '\n' + 
                                 'Recipient Bank Name: ' + bankName + '\n' + 
                                 'Recipient Bank ABA Number: ' + wt.ToAccoutId__r.RoutingNumber__c + '\n' + 
@@ -611,7 +626,7 @@ public static void CheckRedFlgsAndUpdateStatus(Set<Id> id){
                     wt.Approval_Status__c = WiresConstant.ApprovalStatus_PendingForApproval;
                     wt.Good_Funds_Check__c = 'FAIL---' + statusMsg.toString();
                     wiresToUpdate.add(wt);
-                } else if (isGoodFundCheck == true && statusCode > 0 && wt.WireAmount__c > 250000){
+                } else if (isGoodFundCheck == true && statusCode > 0 && isOperationsReviewMandatory==true){
                     wt.Approval_Status__c = WiresConstant.ApprovalStatus_PendingForApproval;
                     wt.Good_Funds_Check__c = 'PASS---' + statusMsg.toString();
                     wiresToUpdate.add(wt);
@@ -744,6 +759,7 @@ public static void SendDocusignEmail(Id id){
 }
 
 // --------------------- Send Email Notification..................//
+@testvisible
 private static void SendEmail(Set<Id> id, string ToEmail){
     List<WIRES_Transaction__c> wireTransactions = [SELECT id, Approval_Status__c, ToAccountName__c, ToAccoutId__c, Status__c, FromAccount__c, TotalFromAccount__c, WireAmount__c, ToAccoutId__r.Recipient_AccountNumber__c, ToAccoutId__r.BankName__c, Source__c, FormattedTotalAmount__c, FormattedWireAmount__c
                                                    from WIRES_Transaction__c
@@ -837,6 +853,7 @@ private static void SendEmail(Set<Id> id, string ToEmail){
 
 // --------------------- Send Email Notification..................//
 // --------------------- Send Released to WireXchange Email Notification..................//
+@testvisible
 private static void SendReleasedToWireXchangeEmail(Set<Id> id, string ToEmail){
     List<WIRES_Transaction__c> wireTransactions = [SELECT id, Approval_Status__c, ToAccountName__c, ToAccoutId__c, Status__c, FromAccount__c, TotalFromAccount__c, WireAmount__c, ToAccoutId__r.Recipient_AccountNumber__c, ToAccoutId__r.RoutingNumber__c, ToAccoutId__r.BankName__c, FormattedTotalAmount__c, FormattedWireAmount__c
                                                    from WIRES_Transaction__c
@@ -952,7 +969,7 @@ private static Map<String, Object> checkWiresFunds(string AccountNumber, string 
     requestparam.setEndpoint(apiURL + '/Wires/WiresFundsCheck?amount=' + amount + '&accountNumber=' + AccountNumber + '&shareId=' + ShareID);
     requestparam.setMethod('GET');
     requestparam.setTimeout(10000);
-
+        
     httpResponse response;
     String strStatus = '';
     String strBody = '';
@@ -972,10 +989,13 @@ private static Map<String, Object> checkWiresFunds(string AccountNumber, string 
 
     if (strBody != ''){
         results = (Map<String, Object>)JSON.deserializeUntyped(strBody);
+           
         System.debug('Service response is ....' + results);
     }
     return results;
 }
+    
+    
 
 public static string getCutoffTimeIn12HourAMPMFormat(string cutofftime){
     cutofftime = cutofftime.replace('.', ':');
@@ -1106,19 +1126,19 @@ public static map<string, Object> GetPastWires(string WiresId){
 
             PastWireTransactions = [SELECT id, Approval_Status__c, FromAccount__c, Share_ID__c, Source__c, Member__c, Name, SendOn__c, ToAccoutId__r.Recipient_AccountNumber__c, ToAccoutId__r.Name, WireAmount__c
                                     FROM WIRES_Transaction__c
-                                    where FromAccount__c In:setAccounts AND Frequency__c = :WireTransaction[0].Frequency__c//'One - Time'
-             AND SendOn__c < TODAY
+                                    WHERE FromAccount__c In:setAccounts AND Frequency__c = :WireTransaction[0].Frequency__c AND SendOn__c < TODAY
                                     ORDER BY SendOn__c DESC];
 
             List<PastWiresWrapper> resultList = new List<PastWiresWrapper>();
             for (WIRES_Transaction__c wt : PastWireTransactions){
                 PastWiresWrapper pw = new PastWiresWrapper();
-                pw.WireNumber = wt.Name;
-                pw.SentDate = wt.SendOn__c;
-                pw.FromAccount = wt.FromAccount__c;
+                pw.WireNumber       = wt.Name;
+                pw.SentDate         = wt.SendOn__c;
+                pw.FromAccount      = wt.FromAccount__c;
                 pw.RecipientAccount = wt.ToAccoutId__r.Recipient_AccountNumber__c;
-                pw.Recipient = wt.ToAccoutId__r.Name;
-                pw.Amount = wt.WireAmount__c;
+                pw.Recipient        = wt.ToAccoutId__r.Name;
+                pw.Amount           = wt.WireAmount__c;
+                pw.ApprovalStatus   = wt.Approval_Status__c;
                 resultList.add(pw);
             }
             resultPastWiresMap.put('PastWireTransactions', resultList);
@@ -1426,7 +1446,9 @@ public class PastWiresWrapper{
     @AuraEnabled
     public decimal Amount{ get; set; }
 
-}
+    @AuraEnabled
+    public String ApprovalStatus { get; set; }
+  }
 
 public class AuthorizedMember{
     @AuraEnabled
