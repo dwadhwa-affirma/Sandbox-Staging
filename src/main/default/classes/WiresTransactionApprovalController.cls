@@ -525,7 +525,22 @@ public static void SetWiresStatusToDSDeclined(Set<Id> id){
 
     update wiresToUpdate;
 }
+//ENHC0012905 begin
 
+public static map<id,boolean> checkRedFlagsPriorDocuSign(Set<Id> id){
+    map<id,boolean> wiresIdandRedFlagMap = new map<id,boolean>();
+    List<WIRES_Transaction__c> wireTransactions = [SELECT Id, Name, Approval_Status__c, ToAccountName__c, ToAccoutId__c, Status__c, FromAccount__c, TotalFromAccount__c, WireAmount__c, ToAccoutId__r.Recipient_AccountNumber__c, SendOn__c, Source__c, ToAccoutId__r.BankName__c, ToAccoutId__r.RoutingNumber__c, AccountStableReview__c, EmailStableReview__c, Member_Name__c, Identity_Verification_Used__c, Home_Phone_Stable_Review__c, Mobile_Phone_Stable_Review__c, Work_Phone_Stable_Review__c, FlagAccountOpenfor45Days__c, FlagEmailStablefor30Days__c, FlagHomePhoneStablefor30Days__c, FlagMobilePhoneStablefor30Days__c, FlagWorkPhoneStablefor30Days__c, Share_ID__c, Docusign_IDV_Failure__c
+                                                   FROM WIRES_Transaction__c WHERE id = :id];
+    for (WIRES_Transaction__c wt : wireTransactions){
+        if (wt.FlagAccountOpenfor45Days__c && wt.FlagEmailStablefor30Days__c && wt.FlagHomePhoneStablefor30Days__c && wt.FlagMobilePhoneStablefor30Days__c && wt.FlagWorkPhoneStablefor30Days__c && !wt.Docusign_IDV_Failure__c){
+            wiresIdandRedFlagMap.put(wt.Id,true);
+        }else{
+            wiresIdandRedFlagMap.put(wt.Id,false);
+        }
+    }
+    return wiresIdandRedFlagMap;
+}
+//ENHC0012905 end
 @future(callout = true)
 public static void CheckRedFlgsAndUpdateStatus(Set<Id> id){
 

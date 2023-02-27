@@ -167,11 +167,32 @@ trigger WIRESTransactionTrigger on WIRES_Transaction__c (before insert,before up
                 
                 
                 System.debug('rangeForDocuSign:'+rangeForDocuSign);
+                //ENHC0012905 to check red flag
+                map<id,boolean> wiresIdandRedFlagMap = new  map<id,boolean>();
+                Set<Id> rangeForDocuSignWithRedFlag = new Set<Id>();
+                Set<Id> rangeForDocuSignWithoutRedFlag = new Set<Id>();
+                if(rangeForDocuSign.size()>0){
+                    wiresIdandRedFlagMap = WiresTransactionApprovalController.checkRedFlagsPriorDocuSign(rangeForDocuSign);
+                    for(Id key : wiresIdandRedFlagMap.keySet()){
+                         if(wiresIdandRedFlagMap.get(key) == true){
+
+                            rangeForDocuSignWithRedFlag.add(key);
+                         }else{
+                            rangeForDocuSignWithoutRedFlag.add(key);
+                         }
+                    }
+                }
+                if(rangeForDocuSignWithRedFlag.size() > 0){
+                    WiresTransToDocuSign.docusignAPIcallPrior(rangeForDocuSignWithRedFlag);
+                }
+                if(rangeForDocuSignWithoutRedFlag.size() > 0){
+                    WiresTransToDocuSign.docusignAPIcall(rangeForDocuSignWithoutRedFlag);
+                }
                 // we also need docuSign for wires amount less than 5k
                 // STRY0011574: Online - DocuSign should be sent to customer for all online wires.
-                if(rangeForDocuSign.size()>0) {
+               /* if(rangeForDocuSign.size()>0) {
                     WiresTransToDocuSign.docusignAPIcall(rangeForDocuSign);
-                }
+                }*/
                 
                 if(rangeForInPersonSigning.size()>0){
                     InPersonSigningContoller inPersonSigning=new InPersonSigningContoller();
