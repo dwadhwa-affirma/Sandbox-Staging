@@ -296,7 +296,7 @@
 		console.log('Helper Line 216---PointsObtained' + PointsObtained);
 		if(PageURL == undefined){
 			component.set("v.IsDebitTabVisible", false);
-			action.setParams({"MemberId": memberid,"GUID": GUID,"DebitCardStatus": DebitCardStatus,"SSNFromURL": SSNSearched,"MemberNumberFromURL": MemberSearched,"PhoneFromURL": PhoneSearched, "PageURL" : ' ', "IVRGUIDFromUrl": IVRGUIDFromUrl,
+			action.setParams({"MemberId": memberid,"GUID": GUID,"DebitCardStatus": DebitCardStatus,"SSNFromURL": SSNSearched,"MemberNumberFromURL": MemberSearched,"PhoneFromURL": PhoneSearched, "PageURL" : '', "IVRGUIDFromUrl": IVRGUIDFromUrl,
 								"ReLoadRequired": ReLoadRequired, "ReasonCodeFromURL": ReasonCodeFromURL,"HighFlagFromUrl":HighFlagFromUrl, "PointsObtained":PointsObtained, 
 								"IsOOWTabVisible": component.get("v.IsOOWTabVisible"), "IsUserSessionLoaded": component.get("v.IsUserSessionLoaded"),
 								"EnteredCardNumber": ' ', "CardNumberMatch": ' ',
@@ -358,6 +358,7 @@
 	                    component.set("v.MultipleMemberNumberAlert",result.MultipleMemberNumberAlert);
 						component.set("v.PointObtained", result.CurrentScore);   
 						component.set("v.CurrentScore", result.CurrentScore);
+						component.set("v.DebitPinStatus", result.DebitPinStatus);
 						console.log('Helper Line 292---result.IsCardOwnerSSNMatch' + result.IsCardOwnerSSNMatch);
 						component.set("v.IsCardOwnerSSNMatch", result.IsCardOwnerSSNMatch);						
 						component.set("v.IsUnusualActivity", result.UnusualActivity);
@@ -404,16 +405,12 @@
                         	$A.util.addClass(ProgressBarStep2, 'active');
                         	$A.util.addClass(Level2IndicatorLabel, 'hidden');
                         	$A.util.removeClass(Level2IndicatorLabel, 'show');
-                        	//ProgressBarStep2.classList.add('active');
-                        	//Level2IndicatorLabel.classList.add('hidden');
-                        	//Level2IndicatorLabel.classList.remove('show');
+                        	
                         	component.set("v.CurrentAuthenticationLevel", 'Level 2');
                         }
                         else if(result.IsLevel2Achieved == false && result.NextTabLevel2 == 'Not Achievable' )
                         {
-                        	//ProgressBarStep2.classList.add('three');
-                        	//Level2IndicatorLabel.classList.add('hidden');
-                        	//Level2IndicatorLabel.classList.remove('show');
+                        	
                         	$A.util.addClass(ProgressBarStep2, 'three');
                         	$A.util.addClass(Level2IndicatorLabel, 'hidden');
                         	$A.util.removeClass(Level2IndicatorLabel, 'show');
@@ -421,9 +418,7 @@
                        
                         else 
                         {
-                        	//ProgressBarStep2.classList.remove('three');
-                        	//ProgressBarStep2.classList.remove('active');
-                        	//ProgressBarStep2.classList.add('two');
+                        	
                         	$A.util.removeClass(ProgressBarStep2, 'three');
                         	$A.util.removeClass(ProgressBarStep2, 'active');
                         	$A.util.addClass(ProgressBarStep2, 'two');
@@ -435,9 +430,7 @@
                         var Level3IndicatorLabel = component.find('Level3IndicatorLabel');
                         if(result.IsLevel3Achieved == true && result.NextTabLevel3 == 'Level Reached')
                         {
-                        	//ProgressBarStep3.classList.add('active');
-                        	//Level3IndicatorLabel.classList.add('hidden');
-                        	//Level3IndicatorLabel.classList.remove('show');
+                        	
                         	$A.util.addClass(ProgressBarStep3, 'active');
                         	$A.util.addClass(Level3IndicatorLabel, 'hidden');
                         	$A.util.removeClass(Level3IndicatorLabel, 'show');
@@ -446,9 +439,7 @@
                         }
                         else if(result.IsLevel3Achieved == false && result.NextTabLevel3 == 'Not Achievable')
                         {
-                        	//ProgressBarStep3.classList.add('three');
-                        	//Level3IndicatorLabel.classList.add('hidden');
-                        	//Level3IndicatorLabel.classList.remove('show');
+                        	
                         	$A.util.addClass(ProgressBarStep3, 'three');
                         	$A.util.addClass(Level3IndicatorLabel, 'hidden');
                         	$A.util.removeClass(Level3IndicatorLabel, 'show');
@@ -456,9 +447,7 @@
                         
                         else 
                         {
-                        	//ProgressBarStep3.classList.remove('three');
-                        	//ProgressBarStep3.classList.remove('active');
-                        	//ProgressBarStep3.classList.add('two');
+                        	
                         	$A.util.removeClass(ProgressBarStep3, 'three');
                         	$A.util.removeClass(ProgressBarStep3, 'active');
                         	$A.util.addClass(ProgressBarStep3, 'two');
@@ -990,6 +979,7 @@
 				                        }
 				                        else if(result.IsLevel3Achieved == false && result.NextTabLevel3 == 'Not Achievable')
 				                        {
+											$A.util.removeClass(ProgressBarStep3, 'active');
 				                        	$A.util.addClass(ProgressBarStep3, 'three');
 				                        	$A.util.addClass(Level3IndicatorLabel, 'hidden');
 				                        	$A.util.removeClass(Level3IndicatorLabel, 'show');

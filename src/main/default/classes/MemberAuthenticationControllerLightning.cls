@@ -492,9 +492,12 @@ public class MemberAuthenticationControllerLightning{
     
     @AuraEnabled
     public static void CFCUWalletSaveLogData(string MemberId, string Status, string GUID, string BeneficiaryDetailMatch, string JointOwnerDetailMatch, string CardNumberMatch, string AdditionalTokenOption1Match,
-    string AdditionalTokenOption2Match, string LoanDetailMatch, string IVRGUIDFromUrl, List<object> BeneficiaryAccount, List<object> JointAccount, List<object> LoanAccount,  List<object> Card, string AdditionalTokenOption1, string AdditionalTokenOption2, string MemberNumber, string AdditionalTokenOption3, string AdditionalTokenOption3Match, string AdditionalTokenOption4, string AdditionalTokenOption4Match)
+    string AdditionalTokenOption2Match, string LoanDetailMatch, string IVRGUIDFromUrl, List<object> BeneficiaryAccount, List<object> JointAccount, List<object> LoanAccount,  List<object> Card, 
+    string AdditionalTokenOption1, string AdditionalTokenOption2, string MemberNumber, string AdditionalTokenOption3, string AdditionalTokenOption3Match,
+    string AdditionalTokenOption4, string AdditionalTokenOption4Match, string onlineUserNameMatch, string onlineUserName)
     {
         /*This method save CFCU Wallet log data in MAAP Log object*/
+        system.debug('onlineUserNameMatch##' + onlineUserNameMatch);
         string BA = '';
         string JA = '';
         string LA = '';
@@ -522,6 +525,8 @@ public class MemberAuthenticationControllerLightning{
         log.Additional_Token_Option6_Match__c = AdditionalTokenOption4Match;
                
         log.Loan_Detail_Match__c = LoanDetailMatch;
+        log.Online_User_Name_Match__c = onlineUserNameMatch;
+        log.Online_User_Name__c = onlineUserName;
         if(BeneficiaryAccount.size() > 0){
             for(object obj :BeneficiaryAccount)
             {
@@ -588,6 +593,8 @@ public class MemberAuthenticationControllerLightning{
             log2.Additional_Token_Option6_Match__c = AdditionalTokenOption4Match;
             
             log2.Loan_Detail_Match__c = LoanDetailMatch;
+            log2.Online_User_Name_Match__c = onlineUserNameMatch;
+            log2.Online_User_Name__c = onlineUserName;
             if(BeneficiaryAccount.size() > 0){
                 for(object obj :BeneficiaryAccount)
                 {
@@ -649,6 +656,8 @@ public class MemberAuthenticationControllerLightning{
              MasterAuthenticationLog[0].Additional_Token_Option6_Match__c = AdditionalTokenOption4Match;
                         
              MasterAuthenticationLog[0].Loan_Detail_Match__c = LoanDetailMatch;
+             MasterAuthenticationLog[0].Online_User_Name_Match__c = onlineUserNameMatch;
+             MasterAuthenticationLog[0].Online_User_Name__c = onlineUserName;
              if(BeneficiaryAccount.size() > 0){
                  for(object obj :BeneficiaryAccount)
                  {
@@ -860,8 +869,16 @@ This function read data from MAAP log object and display accordingly  -----*/
         List<JointMemberRelationshipWrapper> JTwrapperLst = new List<JointMemberRelationshipWrapper>();
         List<Account_Details__c> MemberAccountDetail = new List<Account_Details__c>();
         List<Person_Account__c> RelatedPerson = new List<Person_Account__c>();
+        //ENHC0012917 Begin
+        List<Account> onlineUserName = new List<Account>();
+        onlineUserName = [select id, Digital_Banking_Username_Chevron__c from Account where id=: selectedID];
+        if(onlineUserName.size() > 0){
+            resultmap.put('onlineUserName',onlineUserName);
+        }
+
+        // ENHC0012917 Ends
         // do not query for beneficiary as we don't want information to be displayed for selected user who is a beneficiary.
-        RelatedPerson = [select Account_Number__c from Person_Account__c where TypeTranslate__C != '0004/Beneficiary' and PersonID__c =:selectedID];
+        RelatedPerson = [select Account_Number__c, personid__r.Digital_Banking_Username_Chevron__c from Person_Account__c where TypeTranslate__C != '0004/Beneficiary' and PersonID__c =:selectedID];
         List<id> relatedIds = new List<Id>();
         for(Person_Account__c p : relatedPerson ){
             relatedIds.add(p.Account_Number__c);
@@ -965,12 +982,14 @@ This query is working for Relaunch MAAP feature as well*/
         RecordType rec = GetRecordTypeData('Authenticated_Log__c', 'CFCU Wallet Log');
         List<Authenticated_Log__c> authlog = new List<Authenticated_Log__c>();  
         authlog = [Select Id,SalesforceID__c,Current_User__c,Member__c,Decision__c,CFCU_Wallet_Status__c,Staff_Name__c,GUID__c,BeneficiaryDetailMatch__c,Joint_OwnerDetailsMatch__c,
-        CardNumberMatch__c,Additional_Token_Option1_Match__c,Additional_Token_Option2_Match__c,Additional_Token_Option5_Match__c, Additional_Token_Option6_Match__c,Loan_Detail_Match__c, Additional_Token_Option1__c,Additional_Token_Option2__c,Additional_Token_Option5__c,Additional_Token_Option6__c
+        CardNumberMatch__c,Additional_Token_Option1_Match__c,Additional_Token_Option2_Match__c,Additional_Token_Option5_Match__c, Additional_Token_Option6_Match__c,Loan_Detail_Match__c,
+         Additional_Token_Option1__c,Additional_Token_Option2__c,Additional_Token_Option5__c,Additional_Token_Option6__c,Online_User_Name__c,Online_User_Name_Match__c
         From Authenticated_Log__c where createddate = Today and RecordTypeId= : rec.id and SalesforceID__c = : selectedID and IVR_GUID__c = :IVRGUIDFromUrl order by createddate desc Limit 1];          
         system.debug('authlog##' + authlog);
         if(authlog.size() == 0){
             authlog = [Select Id,SalesforceID__c,Current_User__c,Member__c,Decision__c,CFCU_Wallet_Status__c,Staff_Name__c,GUID__c,BeneficiaryDetailMatch__c,Joint_OwnerDetailsMatch__c,
-            CardNumberMatch__c,Additional_Token_Option1_Match__c,Additional_Token_Option2_Match__c,Additional_Token_Option5_Match__c, Additional_Token_Option6_Match__c,Loan_Detail_Match__c, Additional_Token_Option1__c,Additional_Token_Option2__c,Additional_Token_Option5__c,Additional_Token_Option6__c
+            CardNumberMatch__c,Additional_Token_Option1_Match__c,Additional_Token_Option2_Match__c,Additional_Token_Option5_Match__c, Additional_Token_Option6_Match__c,Loan_Detail_Match__c, 
+            Additional_Token_Option1__c,Additional_Token_Option2__c,Additional_Token_Option5__c,Additional_Token_Option6__c, Online_User_Name__c,Online_User_Name_Match__c
             From Authenticated_Log__c where createddate = Today and RecordTypeId= : rec.id and SalesforceID__c = : selectedID and IVR_GUID__c != :IVRGUIDFromUrl  order by createddate desc Limit 1];
             if(authlog.size() > 0){
                 
@@ -1401,7 +1420,7 @@ This function read data from MAAP log object and display accordingly  -----*/
         boolean IsPinChanged;
         string  AccountNumber;
         Integer MemberHighFlagValue =0 ;
-        Boolean IsCardOwnerSSNMatch=true;
+        Boolean IsCardOwnerSSNMatch=false;
         
         set<string> typeList = new set<string>();
         for(Member360_TypeTranslate__c t : Member360_TypeTranslate__c.getAll().values()){
@@ -1835,7 +1854,7 @@ This function read data from MAAP log object and display accordingly  -----*/
             IsOOWAvailable = true;
             system.debug('test1');
         }
-        string DebitPinStatus='';
+        string DebitPinStatus='Fail';
         if(DebitCardStatus =='Pass' && IsCardOwnerSSNMatch == true){
             DebitPinStatus ='Pass';
         }
@@ -1916,11 +1935,11 @@ This function read data from MAAP log object and display accordingly  -----*/
         
         system.debug('KYM' + IsKYMAvailable);
         system.debug('TotalScore KYM' + TotalScore);
-        if(OTP == true)
+        if(OTP == true && OTPColor == 'Green')
         {
             for(Member_Authentication_Scoring_Model__c sm: ScoringModel)
             {
-                if(sm.Authentication_Type__c == 'OTP')
+                if(sm.Authentication_Type__c == 'OTP' )
                 {
                     TotalScore = TotalScore + sm.Positive_Point_Value__c;
                     scoremap.put(sm.Authentication_Type__c,sm.Positive_Point_Value__c.intValue());
@@ -1961,10 +1980,10 @@ This function read data from MAAP log object and display accordingly  -----*/
             IsOOWAvailable = true;
         }
         
-        if(OOW == true){
+        if(OOW == true  && OOWColor == 'Green'){
             for(Member_Authentication_Scoring_Model__c sm: ScoringModel)
             {
-                if(sm.Authentication_Type__c == 'OOW')
+                if(sm.Authentication_Type__c == 'OOW' )
                 {
                     TotalScore = TotalScore + sm.Positive_Point_Value__c;
                     scoremap.put(sm.Authentication_Type__c,sm.Positive_Point_Value__c.intValue());
@@ -1980,10 +1999,10 @@ This function read data from MAAP log object and display accordingly  -----*/
         system.debug('OOW' + IsOOWAvailable);
         system.debug('TotalScore OOW' + TotalScore);
         
-        if(PublicWallet == true){
+        if(PublicWallet == true  && PWColor == 'Green'){
             for(Member_Authentication_Scoring_Model__c sm: ScoringModel)
             {
-                if(sm.Authentication_Type__c == 'Public Wallet')
+                if(sm.Authentication_Type__c == 'Public Wallet' )
                 {
                     TotalScore = TotalScore + sm.Positive_Point_Value__c;
                     scoremap.put(sm.Authentication_Type__c,sm.Positive_Point_Value__c.intValue());
@@ -2000,7 +2019,7 @@ This function read data from MAAP log object and display accordingly  -----*/
         system.debug('TotalScore Public' + TotalScore);
         
         
-        if(CFCUWallet == true){
+        if(CFCUWallet == true  && CWColor == 'Green'){
             for(Member_Authentication_Scoring_Model__c sm: ScoringModel)
             {
                 if(sm.Authentication_Type__c == 'CFCU Wallet')
@@ -2307,10 +2326,10 @@ This function read data from MAAP log object and display accordingly  -----*/
                 
                 
             }
-            if(DebitPinStatus == 'Fail' || DebitPinStatus =='false'){
+            if(PageURL != '' && (DebitPinStatus == 'Fail' || DebitPinStatus =='false')){
                 CurrentScore = CurrentScore - DebitPinNegativeScore.intValue();
             }
-            else if(DebitPinStatus == 'Pass' || DebitPinStatus =='true')
+            else if(PageURL != '' && (DebitPinStatus == 'Pass' || DebitPinStatus =='true'))
             {
                 CurrentScore = CurrentScore + DebitPinPositiveScore.intValue();
             }
@@ -2479,7 +2498,7 @@ This function read data from MAAP log object and display accordingly  -----*/
         result.put('MaximumPointsAvailable',TotalScore);
         result.put('LevelModel', LevelModel);
         result.put('ScoringModel', ScoringModel);
-
+        result.put('DebitPinStatus', DebitPinStatus);
         
         result.put('WarningCodes',rwcwList);
         system.debug('result##' + result);
@@ -2990,13 +3009,13 @@ This function read data from MAAP log object and display accordingly  -----*/
             }
             
         }
-        if(DebitCardStatus == 'Fail' ){
+       /* if(DebitCardStatus == 'Fail' ){
             CurrentScore = CurrentScore - DebitPinNegativeScore.intValue();
         }
         else if(DebitCardStatus == 'Pass')
         {
             CurrentScore = CurrentScore + DebitPinPositiveScore.intValue();
-        }
+        }*/
         system.debug('CurrentScorePost1##' + CurrentScore);
         system.debug('IsPinChanged##' + IsPinChanged);
         if(IsPinChanged == true ){

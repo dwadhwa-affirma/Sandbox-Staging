@@ -217,7 +217,7 @@ rerender : function(component, helper){
 					
 					if(component.get("v.IsDebitTabVisible") == true)
 					{
-						if(DebitCardStatus =='false' && aElement.id =='DebitCardTab__item'){
+						if(DebitCardStatus == 'Fail' && aElement.id =='DebitCardTab__item'){
 							console.log('Renderer 195---DebitCardTab__item' + DebitCardStatus);
 							 liElement[i].classList.add("red");
 							 liElement[i].classList.remove("slds-is-active");
@@ -225,7 +225,7 @@ rerender : function(component, helper){
 				  			 component.set('v.DebitIconName','utility:close');
 				  			 helper.RedrawComponent(liElement[i]);
 						 }
-						 if(DebitCardStatus =='true' && aElement.id =='DebitCardTab__item'){
+						 if(DebitCardStatus =='Pass' && aElement.id =='DebitCardTab__item'){
 							 console.log('Renderer 203---DebitCardTab__item' + DebitCardStatus);
 							 //console.log('Renderer 204---DebitCardTab__item' + IsCardOwnerSSNMatch);
 							 if(component.get("v.IsCardOwnerSSNMatch")){
