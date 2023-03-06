@@ -486,7 +486,7 @@
                                 component.find("AdditionalToken4").set("v.value",result.CFCULastSessionInfo[0].Additional_Token_Option6__c);	
                             }
                             
-                        }else if(result.CFCUReloadManulSessionInfo != undefined && result.CFCUReloadManulSessionInfo.length > 0 && component.get("v.IsReLoadRequired") == undefined){
+                        }else if(result.CFCUReloadManulSessionInfo != undefined && result.CFCUReloadManulSessionInfo.length > 0 && component.get("v.IsReLoadRequired") == undefined && component.get("v.IsUserSessionLoaded") == true){
                             
                             if(result.CFCUReloadManulSessionInfo[0].BeneficiaryDetailMatch__c == undefined){
                                 component.find('BeneficiaryPassButton').set("v.variant", "neutral");

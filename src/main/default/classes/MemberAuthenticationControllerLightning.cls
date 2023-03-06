@@ -3009,13 +3009,13 @@ This function read data from MAAP log object and display accordingly  -----*/
             }
             
         }
-        if(DebitCardStatus == 'Fail' ){
+       /* if(DebitCardStatus == 'Fail' ){
             CurrentScore = CurrentScore - DebitPinNegativeScore.intValue();
         }
         else if(DebitCardStatus == 'Pass')
         {
             CurrentScore = CurrentScore + DebitPinPositiveScore.intValue();
-        }
+        }*/
         system.debug('CurrentScorePost1##' + CurrentScore);
         system.debug('IsPinChanged##' + IsPinChanged);
         if(IsPinChanged == true ){
